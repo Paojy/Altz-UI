@@ -1,0 +1,33 @@
+﻿<Ui xmlns="http://www.blizzard.com/wow/ui/">
+
+	<Script file ="init.lua"/>
+	<Script file ="event.lua"/>
+	<Script file ="pipe.lua"/>
+	<Script file ="filter.lua"/>
+	<Script file ="display.lua"/>
+	<Script file ="colors.lua"/>
+	<Script file ="oglow.lua"/>
+
+	<Script file ="ui\helpers.lua"/>
+	<Script file ="ui\pipes.lua"/>
+	<Script file ="ui\quality.lua"/>
+	<Script file ="ui\colors.lua"/>
+
+	<Script file ="pipes\bags.lua"/>
+	<Script file ="pipes\char.lua"/>
+	<Script file ="pipes\inspect.lua"/>
+	<Script file ="pipes\bank.lua"/>
+	<Script file ="pipes\gbank.lua"/>
+	<Script file ="pipes\trade.lua"/>
+	<Script file ="pipes\tradeskill.lua"/>
+	<Script file ="pipes\merchant.lua"/>
+	<Script file ="pipes\mail.lua"/>
+	<Script file ="pipes\char-flyout.lua"/>
+	<Script file ="pipes\voidstorage.lua"/>
+	<Script file ="pipes\loot.lua"/>
+
+	<Script file ="displays\border.lua"/>
+
+	<Script file ="filters\quality.lua"/>
+	
+</Ui>

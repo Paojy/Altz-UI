@@ -1,0 +1,9 @@
+## Interface: 40300
+## Author: Safturento
+## Version: v1.3.2-712c7c1
+## Title: |cff00aaffst|rAddonManager
+## Notes: A simple and minimalistic addon to disable/enabled addons without logging out.
+## SavedVariables: stAddonProfiles, stLockedAddons
+
+localization.lua
+stAddonManager.lua

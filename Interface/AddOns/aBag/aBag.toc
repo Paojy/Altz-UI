@@ -1,0 +1,8 @@
+## Interface: 50001
+## Title: |cffEE3A8Ca|rBag
+## Author: Blooblahguy adjo
+## RequiredDeps: aCore
+
+Bag_Sort.XML
+Bag_Sort.lua
+bags.lua

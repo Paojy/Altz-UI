@@ -1,0 +1,10 @@
+## Interface: 50001
+## Title: |cffEE3A8Ca|rMap
+## Author:Blue
+## RequiredDeps: aCore
+## Credits: Blooblahguy Athelas
+
+config.lua
+
+mods\minimap.lua
+mods\flare and more.lua

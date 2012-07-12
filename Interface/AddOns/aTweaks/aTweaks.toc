@@ -1,0 +1,26 @@
+﻿## Interface: 50001
+## Title: |cffEE3A8Ca|rTweaks
+## Author: Blue
+## RequiredDeps: Blizzard_CombatText, aCore
+## OptionalDeps: Numeration, Skada, TinyDPS
+## Credits: Elv emelio oscarucb Moolgar Monolit Blooblahguy Nibelheim hankthetank weasoug Xruptor bitbyte Allez Alza nightcracker
+
+config.lua
+
+mods\ImprovedCamera..xml
+mods\AlreadyKnown.lua
+mods\focus.lua
+mods\collectgarbager.lua
+mods\DragEmAll.lua
+mods\InspectFix.lua
+mods\TabTargetPlayer.lua
+mods\Setup.lua
+mods\countdown.lua
+mods\Watchframe.lua
+mods\Tweaks.lua
+mods\AutoMail.lua
+mods\SaySapped.lua
+mods\AutoAchScreenshot.lua
+mods\hoverbind.lua
+mods\combattext.lua
+mods\RaidCD.lua

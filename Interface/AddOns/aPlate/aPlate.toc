@@ -1,0 +1,7 @@
+## Interface: 50001
+## Title: |cffEE3A8Ca|rPlate
+## Author: Blue
+## RequiredDeps: aCore
+## Credits: Tukz
+
+nameplates.lua

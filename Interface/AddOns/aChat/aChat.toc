@@ -1,0 +1,15 @@
+## Interface: 50001
+## Title: |cffEE3A8Ca|rChat
+## Author: Blue
+## RequiredDeps: aCore
+## Credits: Blooblahguy Lolzen Cargor  haste Evl zork Xruptor
+
+config.lua
+
+mods\chat.lua
+mods\Chicchai.lua
+mods\easyChannel.lua
+mods\autoscroll.lua
+mods\channelreplacements.lua
+mods\playermenu.lua
+mods\urlcopy.lua

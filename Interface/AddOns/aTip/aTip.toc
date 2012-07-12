@@ -1,0 +1,10 @@
+## Interface: 50001
+## Title: |cffEE3A8Ca|rTip
+## Author: Blue
+## RequiredDeps: aCore
+## Credits: Freebaser Aezay
+
+config.lua
+
+mods\tip.lua
+mods\spellID.lua

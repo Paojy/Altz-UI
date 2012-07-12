@@ -1,0 +1,13 @@
+﻿## Interface: 50001
+## Title: |cffEE3A8Ca|rCore
+## Author: Blue
+## OptionalDeps: Skada, Numeration, TinyDPS
+## Credits: Zork
+
+lib\core.lua
+lib\pattern.lua
+lib\dragframe.lua
+lib\fader.lua
+lib\slashcmd.lua
+
+panels.lua

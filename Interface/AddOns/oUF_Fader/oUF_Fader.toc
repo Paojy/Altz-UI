@@ -1,0 +1,8 @@
+## Interface: 40300
+## Author: p3lim
+## Version: 40300.23-Beta
+## Title: oUF Fader
+## Notes: Conditional fading plug-in for oUF
+## RequiredDeps: oUF
+
+oUF_Fader.lua
