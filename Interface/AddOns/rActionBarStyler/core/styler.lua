@@ -16,9 +16,6 @@ local color = {
 
 local font = GameFontHighlight:GetFont()  
 
-  local _G = _G
-  local i
-
 -- grow
 local backdrop = {
     bgFile = textures.blank,
@@ -104,7 +101,12 @@ local backdrop2 = {
     local fl  = _G[name.."Flash"]
     local nt  = _G[name.."NormalTexture"]
     local fbg  = _G[name.."FloatingBG"]
+    local fob = _G[name.."FlyoutBorder"]
+    local fobs = _G[name.."FlyoutBorderShadow"]
     if fbg then fbg:Hide() end  --floating background
+    --flyout border stuff
+    if fob then fob:SetTexture(nil) end
+    if fobs then fobs:SetTexture(nil) end
     bo:SetTexture(nil) --hide the border (plain ugly, sry blizz)
     --hotkey
       ho:SetFont(font, 8, "OUTLINE")
@@ -126,6 +128,10 @@ local backdrop2 = {
     bu:SetPushedTexture(textures.pushed)
     bu:SetCheckedTexture(textures.checked)
     bu:SetNormalTexture(textures.normal)
+	if not nt then
+      --fix the non existent texture problem (no clue what is causing this)
+      nt = bu:GetNormalTexture()
+    end
     --cut the default border of the icons and make them shiny
     ic:SetTexCoord(0.1,0.9,0.1,0.9)
     ic:SetPoint("TOPLEFT", bu, "TOPLEFT", 0, 0)
@@ -134,7 +140,7 @@ local backdrop2 = {
     cd:SetPoint("TOPLEFT", bu, "TOPLEFT", 0, 0)
     cd:SetPoint("BOTTOMRIGHT", bu, "BOTTOMRIGHT", 0, 0)
     --apply the normaltexture
-    if ( IsEquippedAction(action) ) then
+    if action and ( IsEquippedAction(action) ) then
       bu:SetNormalTexture(textures.equipped)
       nt:SetVertexColor(color.equipped.r,color.equipped.g,color.equipped.b,1)
     else
@@ -266,7 +272,7 @@ local backdrop2 = {
       styleActionButton(_G["OverrideActionBarButton"..i])
     end
     --style leave button
-    styleLeaveButton(_G["OverrideActionBarLeaveFrameLeaveButton"])
+    styleLeaveButton(OverrideActionBarLeaveFrameLeaveButton)
     --petbar buttons
     for i=1, NUM_PET_ACTION_SLOTS do
       stylePetButton(_G["PetActionButton"..i])
@@ -280,7 +286,18 @@ local backdrop2 = {
       stylePossessButton(_G["PossessButton"..i])
     end
     --extraactionbutton1
-    styleExtraActionButton(_G["ExtraActionButton1"])
+    styleExtraActionButton(ExtraActionButton1)
+	--spell flyout
+    SpellFlyoutBackgroundEnd:SetTexture(nil)
+    SpellFlyoutHorizontalBackground:SetTexture(nil)
+    SpellFlyoutVerticalBackground:SetTexture(nil)
+    local function checkForFlyoutButtons(self)
+      local NUM_FLYOUT_BUTTONS = 10
+      for i = 1, NUM_FLYOUT_BUTTONS do
+        styleActionButton(_G["SpellFlyoutButton"..i])
+      end
+    end
+    SpellFlyout:HookScript("OnShow",checkForFlyoutButtons)
   end
 
   ---------------------------------------

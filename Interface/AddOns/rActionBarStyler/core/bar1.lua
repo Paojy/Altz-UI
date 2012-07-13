@@ -31,6 +31,10 @@
   frame:SetScale(cfg.scale)
 
   --move the buttons into position and reparent them
+  MainMenuBarArtFrame:SetParent(frame)
+  MainMenuBarArtFrame:EnableMouse(false)
+  
+  --move the buttons into position and reparent them
   if cfg.combineBar123 then
     MultiBarBottomLeft:SetParent(frame)
     MultiBarBottomLeft:EnableMouse(false)
@@ -43,9 +47,6 @@
     table.insert(buttonList, button) --add the button object to the list
     button:SetSize(cfg.buttons.size, cfg.buttons.size)
     button:ClearAllPoints()
-    button:SetParent(frame)
-    --set frame reference to the button
-    frame:SetFrameRef(button:GetName(), button)
     if i == 1 then
       button:SetPoint("BOTTOMLEFT", frame, cfg.padding, cfg.padding)
     else
@@ -92,11 +93,13 @@
   end
 
   --create the mouseover functionality
-  if cfg.mouseover.enable and not cfg.eventfader.enable then
+  if cfg.mouseover.enable then
     rButtonBarFader(frame, buttonList, cfg.mouseover.fadeIn, cfg.mouseover.fadeOut) --frame, buttonList, fadeIn, fadeOut
+	frame.mouseover = cfg.mouseover
   end
   
   --create the fade on condition functionality
   if cfg.eventfader.enable then
     ActionbarEventFader(frame, buttonList, cfg.eventfader.fadeIn, cfg.eventfader.fadeOut) --frame, fadeIn, fadeOut
+	frame.mouseover = cfg.eventfader
   end

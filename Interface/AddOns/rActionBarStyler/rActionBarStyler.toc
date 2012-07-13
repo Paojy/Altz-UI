@@ -23,6 +23,7 @@ core\bar5.lua
 core\petbar.lua
 core\stancebar.lua
 core\extrabar.lua
+core\spellflyout.lua
 
 core\cooldowns.lua
 core\cooldownflash.lua

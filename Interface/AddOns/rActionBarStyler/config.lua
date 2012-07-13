@@ -150,11 +150,12 @@
 	  eventfader      = {
         enable          = false,
         fadeIn          = {time = 0.4, alpha = 1},
-        fadeOut         = {time = 0.4, alpha = 0},
+        fadeOut         = {time = 1.5, alpha = 0},
       },
     },
     petbar = {
       enable          = true,
+	  show            = true, --true/false
 	  uselayout5x2    = true,
       scale           = 0.7,
       padding         = 2, --frame padding
@@ -169,7 +170,7 @@
       mouseover       = {
         enable          = true,
         fadeIn          = {time = 0.4, alpha = 1},
-        fadeOut         = {time = 0.3, alpha = 0.4},
+        fadeOut         = {time = 0.4, alpha = 0},
       },
 	  eventfader      = {
         enable          = true,
@@ -179,6 +180,7 @@
     },
     stancebar = {
       enable          = true,
+      show            = true, --true/false
       scale           = 1,
       padding         = 2, --frame padding
       buttons         = {
@@ -192,12 +194,12 @@
       mouseover       = {
         enable          = true,
         fadeIn          = {time = 0.4, alpha = 1},
-        fadeOut         = {time = 0.3, alpha = 0.4},
+        fadeOut         = {time = 0.4, alpha = 0.5},
       },
 	  eventfader      = {
         enable          = false,
         fadeIn          = {time = 0.4, alpha = 1},
-        fadeOut         = {time = 0.4, alpha = 0},
+        fadeOut         = {time = 1.5, alpha = 0},
       },
     },
     extrabar = {
@@ -220,7 +222,8 @@
     },
     micromenu = {
       enable          = true,
-      scale           = 1,
+	  show            = true, --true/false
+      scale           = 0.8,
       padding         = 10, --frame padding
       pos             = { a1 = "TOP", a2 = "TOP", af = "UIParent", x = 0, y = 25 },
       userplaced      = {

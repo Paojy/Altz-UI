@@ -14,15 +14,26 @@
   --hide blizzard
   local blizzHider = CreateFrame("Frame","rABS_BizzardHider")
   blizzHider:Hide()
-  --hide main menu bar
-  MainMenuBar:SetParent(blizzHider)
+  --hide main menu bar frames
+  if gcfg.bars.bar1.enable then
+    MainMenuBar:SetParent(blizzHider)
+    MainMenuBarPageNumber:SetParent(blizzHider)
+    ActionBarDownButton:SetParent(blizzHider)
+    ActionBarUpButton:SetParent(blizzHider)
+	-- bag
+	MainMenuBarBackpackButton:SetParent(blizzHider)
+    CharacterBag0Slot:SetParent(blizzHider)
+    CharacterBag1Slot:SetParent(blizzHider)
+    CharacterBag2Slot:SetParent(blizzHider)
+    CharacterBag3Slot:SetParent(blizzHider)
+  end
   --hide override actionbar frames
-  OverrideActionBarExpBar:SetParent(blizzHider)
-  OverrideActionBarHealthBar:SetParent(blizzHider)
-  OverrideActionBarPowerBar:SetParent(blizzHider)
-  OverrideActionBarPitchFrame:SetParent(blizzHider) --maybe we can use that frame later for pitchig and such
-  --hide the possessbar frame
-  --PossessBarFrame:SetParent(blizzHider) --the possessbar is part of the stancebar because they replace each other
+  if gcfg.bars.overridebar.enable then
+    OverrideActionBarExpBar:SetParent(blizzHider)
+    OverrideActionBarHealthBar:SetParent(blizzHider)
+    OverrideActionBarPowerBar:SetParent(blizzHider)
+    OverrideActionBarPitchFrame:SetParent(blizzHider) --maybe we can use that frame later for pitchig and such
+  end
 
   -----------------------------
   -- HIDE TEXTURES
@@ -37,24 +48,35 @@
   PossessBackground1:SetTexture(nil)
   PossessBackground2:SetTexture(nil)
 
-  --remove OverrideBar textures
-  local textureList =  {
-    "_BG",
-    "EndCapL",
-    "EndCapR",
-    "_Boader",
-    "Divider1",
-    "Divider2",
-    "Divider3",
-    "ExitBG",
-    "MicroBGL",
-    "MicroBGR",
-    "_MicroBGMid",
-    "ButtonBGL",
-    "ButtonBGR",
-    "_ButtonBGMid",
-  }
+  if gcfg.bars.bar1.enable then
+    MainMenuBarTexture0:SetTexture(nil)
+    MainMenuBarTexture1:SetTexture(nil)
+    MainMenuBarTexture2:SetTexture(nil)
+    MainMenuBarTexture3:SetTexture(nil)
+    MainMenuBarLeftEndCap:SetTexture(nil)
+    MainMenuBarRightEndCap:SetTexture(nil)
+  end
 
-  for _,tex in pairs(textureList) do
-    OverrideActionBar[tex]:SetAlpha(0)
+  --remove OverrideBar textures
+  if gcfg.bars.overridebar.enable then
+    local textureList =  {
+      "_BG",
+      "EndCapL",
+      "EndCapR",
+      "_Boader",
+      "Divider1",
+      "Divider2",
+      "Divider3",
+      "ExitBG",
+      "MicroBGL",
+      "MicroBGR",
+      "_MicroBGMid",
+      "ButtonBGL",
+      "ButtonBGR",
+      "_ButtonBGMid",
+    }
+
+    for _,tex in pairs(textureList) do
+      OverrideActionBar[tex]:SetAlpha(0)
+    end
   end

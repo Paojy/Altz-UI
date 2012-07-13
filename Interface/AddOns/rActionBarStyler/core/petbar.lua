@@ -53,6 +53,12 @@
     cd:SetAllPoints(button)
   end
 
+  
+  if not cfg.show then --wait...you no see me? :(
+    frame:SetParent(rABS_BizzardHider)
+    return
+  end
+
   --hide the frame when in a vehicle!
   RegisterStateDriver(frame, "visibility", "[vehicleui] hide; [@pet,exists,nodead] show; hide")
 
@@ -62,7 +68,7 @@
   end
 
   --create the mouseover functionality
-  if cfg.mouseover.enable and not cfg.eventfader.enable then
+  if cfg.mouseover.enable then
     rButtonBarFader(frame, buttonList, cfg.mouseover.fadeIn, cfg.mouseover.fadeOut) --frame, buttonList, fadeIn, fadeOut
   end
 

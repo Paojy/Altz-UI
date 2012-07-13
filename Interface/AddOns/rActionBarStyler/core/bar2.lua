@@ -30,7 +30,7 @@
   --move the buttons into position and reparent them
   MultiBarBottomLeft:SetParent(frame)
   MultiBarBottomLeft:EnableMouse(false)
-
+  
   for i=1, num do
     local button = _G["MultiBarBottomLeftButton"..i]
     table.insert(buttonList, button) --add the button object to the list
@@ -40,10 +40,14 @@
       button:SetPoint("BOTTOMLEFT", frame, cfg.padding, cfg.padding)
     else
       local previous = _G["MultiBarBottomLeftButton"..i-1]
-      button:SetPoint("LEFT", previous, "RIGHT", cfg.buttons.margin, 0)
+      if cfg.uselayout2x6 and i == (num/2+1) then
+        previous = _G["MultiBarBottomLeftButton1"]
+        button:SetPoint("BOTTOM", previous, "TOP", 0, cfg.buttons.margin)
+      else
+        button:SetPoint("LEFT", previous, "RIGHT", cfg.buttons.margin, 0)
+      end
     end
   end
-
   --hide the frame when in a vehicle!
   RegisterStateDriver(frame, "visibility", "[vehicleui] hide;show")
 
@@ -53,11 +57,13 @@
   end
 
   --create the mouseover functionality
-  if cfg.mouseover.enable and not cfg.eventfader.enable then
+  if cfg.mouseover.enable then
     rButtonBarFader(frame, buttonList, cfg.mouseover.fadeIn, cfg.mouseover.fadeOut) --frame, buttonList, fadeIn, fadeOut
+	frame.mouseover = cfg.mouseover
   end
 
   --create the fade on condition functionality
   if cfg.eventfader.enable then
     ActionbarEventFader(frame, buttonList, cfg.eventfader.fadeIn, cfg.eventfader.fadeOut) --frame, fadeIn, fadeOut
+	frame.mouseover = cfg.eventfader
   end
