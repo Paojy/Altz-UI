@@ -86,15 +86,19 @@
     if not fadeIn then fadeIn = defaultFadeIn end
     if not fadeOut then fadeOut = defaultFadeOut end
     frame:EnableMouse(true)
-    frame:SetScript("OnEnter", function() UIFrameFadeIn( frame, fadeIn.time, frame:GetAlpha(), fadeIn.alpha) end)
-    frame:SetScript("OnLeave", function() UIFrameFadeOut(frame, fadeOut.time, frame:GetAlpha(), fadeOut.alpha) end)
-    UIFrameFadeOut(frame, fadeOut.time, frame:GetAlpha(), fadeOut.alpha)
-    for _, button in pairs(buttonList) do
+	-- dont fade by mouse conditions are met
+	
+	frame:SetScript("OnEnter", function(self) if frame.eventmode ~= 1 then UIFrameFadeIn(frame, fadeIn.time, frame:GetAlpha(), fadeIn.alpha) end end)
+    frame:SetScript("OnLeave", function(self) if frame.eventmode ~= 1 then UIFrameFadeOut(frame, fadeOut.time, frame:GetAlpha(), fadeOut.alpha) end end)
+	
+	for _, button in pairs(buttonList) do
       if button then
-        button:HookScript("OnEnter", function() UIFrameFadeIn( frame, fadeIn.time, frame:GetAlpha(), fadeIn.alpha) end)
-        button:HookScript("OnLeave", function() UIFrameFadeOut(frame, fadeOut.time, frame:GetAlpha(), fadeOut.alpha) end)
+        button:HookScript("OnEnter", function() if frame.eventmode ~= 1 then UIFrameFadeIn( frame, fadeIn.time, frame:GetAlpha(), fadeIn.alpha) end end)
+        button:HookScript("OnLeave", function() if frame.eventmode ~= 1 then UIFrameFadeOut(frame, fadeOut.time, frame:GetAlpha(), fadeOut.alpha) end end)
       end
     end
+
+	UIFrameFadeOut(frame, fadeOut.time, frame:GetAlpha(), fadeOut.alpha)
   end
   
     --rFrameFader func
@@ -104,11 +108,31 @@
     if not fadeIn then fadeIn = defaultFadeIn end
     if not fadeOut then fadeOut = defaultFadeOut end
     frame:EnableMouse(true)
-    frame:SetScript("OnEnter", function(self) UIFrameFadeIn( frame, fadeIn.time, frame:GetAlpha(), fadeIn.alpha) end)
-    frame:SetScript("OnLeave", function(self) UIFrameFadeOut(frame, fadeOut.time, frame:GetAlpha(), fadeOut.alpha) end)
+	
+	-- dont fade by mouse conditions are met
+	frame:SetScript("OnEnter", function(self) if frame.eventmode == 0 then UIFrameFadeIn(frame, fadeIn.time, frame:GetAlpha(), fadeIn.alpha) end end)
+    frame:SetScript("OnLeave", function(self) if frame.eventmode == 0 then UIFrameFadeOut(frame, fadeOut.time, frame:GetAlpha(), fadeOut.alpha) end end)
+	
     UIFrameFadeOut(frame, fadeOut.time, frame:GetAlpha(), fadeOut.alpha)
   end
 
+	  --rSpellFlyoutFader func
+	  --the flyout is special, when hovering the flyout the parented bar must not fade out
+  function rSpellFlyoutFader(frame,buttonList,fadeIn,fadeOut)
+    if not frame or not buttonList then return end
+	if not fadeIn then fadeIn = defaultFadeIn end
+	if not fadeOut then fadeOut = defaultFadeOut end
+	
+	SpellFlyout:SetScript("OnEnter", function() if frame.eventmode ~= 1 then UIFrameFadeIn( frame, fadeIn.time, frame:GetAlpha(), fadeIn.alpha) end end)
+	SpellFlyout:SetScript("OnLeave", function() if frame.eventmode ~= 1 then UIFrameFadeOut(frame, fadeOut.time, frame:GetAlpha(), fadeOut.alpha) end end)
+	
+	for _, button in pairs(buttonList) do
+	  if button then
+		button:HookScript("OnEnter", function() if frame.eventmode ~= 1 then UIFrameFadeIn( frame, fadeIn.time, frame:GetAlpha(), fadeIn.alpha) end end)
+	    button:HookScript("OnLeave", function() if frame.eventmode ~= 1 then UIFrameFadeOut(frame, fadeOut.time, frame:GetAlpha(), fadeOut.alpha) end end)
+	  end
+    end
+  end
 -----------------------
 -- fade-in when center conditions meets
 -----------------------
@@ -122,7 +146,8 @@ powerType - A number identifying the power type (number)
 ]]
 
 function regi(frame)
-	frame:RegisterEvent('PLAYER_REGEN_DISABLED')	
+	frame:RegisterEvent('PLAYER_REGEN_DISABLED')
+	frame:RegisterEvent("PLAYER_REGEN_ENABLED")
 	frame:RegisterEvent('UNIT_TARGET')
 	frame:RegisterEvent('PLAYER_TARGET_CHANGED')
 	frame:RegisterEvent('UNIT_HEALTH')
@@ -136,6 +161,7 @@ function regi(frame)
 	frame:RegisterEvent('UNIT_SPELLCAST_CHANNEL_START')
 	frame:RegisterEvent('UNIT_SPELLCAST_CHANNEL_INTERRUPTED')
 	frame:RegisterEvent('UNIT_SPELLCAST_CHANNEL_STOP')
+	frame:RegisterEvent("PLAYER_ENTERING_WORLD")
 end
 
 function ActionbarEventFader(frame,buttonList,fadeIn,fadeOut)
@@ -163,17 +189,6 @@ function ActionbarEventFader(frame,buttonList,fadeIn,fadeOut)
 			UIFrameFadeOut(frame, fadeOut.time, frame:GetAlpha(), fadeOut.alpha)
 		end
 	end)
-	
-	-- dont fade by mouse conditions are met
-	frame:SetScript("OnEnter", function(self) if frame.eventmode == 0 then UIFrameFadeIn(frame, fadeIn.time, frame:GetAlpha(), fadeIn.alpha) end end)
-    frame:SetScript("OnLeave", function(self) if frame.eventmode == 0 then UIFrameFadeOut(frame, fadeOut.time, frame:GetAlpha(), fadeOut.alpha) end end)
-	
-	for _, button in pairs(buttonList) do
-      if button then
-        button:HookScript("OnEnter", function() if frame.eventmode == 0 then UIFrameFadeIn( frame, fadeIn.time, frame:GetAlpha(), fadeIn.alpha) end end)
-        button:HookScript("OnLeave", function() if frame.eventmode == 0 then UIFrameFadeOut(frame, fadeOut.time, frame:GetAlpha(), fadeOut.alpha) end end)
-      end
-    end
 	
     UIFrameFadeOut(frame, fadeOut.time, frame:GetAlpha(), fadeOut.alpha)
 end
@@ -203,10 +218,6 @@ function FrameEventFader(frame,fadeIn,fadeOut)
 			UIFrameFadeOut(frame, fadeOut.time, frame:GetAlpha(), fadeOut.alpha)
 		end
 	end)
-	
-	-- dont fade by mouse conditions are met
-	frame:SetScript("OnEnter", function(self) if frame.eventmode == 0 then UIFrameFadeIn(frame, fadeIn.time, frame:GetAlpha(), fadeIn.alpha) end end)
-    frame:SetScript("OnLeave", function(self) if frame.eventmode == 0 then UIFrameFadeOut(frame, fadeOut.time, frame:GetAlpha(), fadeOut.alpha) end end)
 	
     UIFrameFadeOut(frame, fadeOut.time, frame:GetAlpha(), fadeOut.alpha)
 end
