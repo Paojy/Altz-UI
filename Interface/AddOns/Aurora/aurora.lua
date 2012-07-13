@@ -693,7 +693,6 @@ Skin:SetScript("OnEvent", function(self, event, addon)
 		F.SetBD(HelpFrame)
 		F.SetBD(SpellBookFrame)
 		F.SetBD(PVPBannerFrame)
-		F.SetBD(PetStableFrame)
 		F.SetBD(RaidParentFrame)
 
 		local FrameBDs = {"StaticPopup1", "StaticPopup2", "GameMenuFrame", "InterfaceOptionsFrame", "VideoOptionsFrame", "AudioOptionsFrame", "LFGDungeonReadyStatus", "ChatConfigFrame", "StackSplitFrame", "AddFriendFrame", "FriendsFriendsFrame", "ColorPickerFrame", "ReadyCheckFrame", "LFDRoleCheckPopup", "LFGDungeonReadyDialog", "RolePollPopup", "GuildInviteFrame", "ChannelFrameDaughterFrame", "LFGInvitePopup"}
@@ -916,27 +915,38 @@ Skin:SetScript("OnEvent", function(self, event, addon)
 
 		if class == "HUNTER" or class == "MAGE" or class == "DEATHKNIGHT" or class == "WARLOCK" then
 			if class == "HUNTER" then
-				PetStableFrame:DisableDrawLayer("BACKGROUND")
-				PetStableFrame:DisableDrawLayer("BORDER")
-				PetStableFrameInset:DisableDrawLayer("BACKGROUND")
-				PetStableFrameInset:DisableDrawLayer("BORDER")
 				PetStableBottomInset:DisableDrawLayer("BACKGROUND")
 				PetStableBottomInset:DisableDrawLayer("BORDER")
 				PetStableLeftInset:DisableDrawLayer("BACKGROUND")
 				PetStableLeftInset:DisableDrawLayer("BORDER")
-				PetStableFramePortrait:Hide()
 				PetStableModelShadow:Hide()
-				PetStableFramePortraitFrame:Hide()
-				PetStableFrameTopBorder:Hide()
-				PetStableFrameTopRightCorner:Hide()
 				PetStableModelRotateLeftButton:Hide()
 				PetStableModelRotateRightButton:Hide()
+				PetStableFrameModelBg:Hide()
+				PetStablePrevPageButtonIcon:SetTexture("")
+				PetStableNextPageButtonIcon:SetTexture("")
 
-				F.ReskinClose(PetStableFrameCloseButton)
+				F.ReskinPortraitFrame(PetStableFrame, true)
 				F.ReskinArrow(PetStablePrevPageButton, "left")
 				F.ReskinArrow(PetStableNextPageButton, "right")
+				
+				PetStableSelectedPetIcon:SetTexCoord(.08, .92, .08, .92)
+				F.CreateBG(PetStableSelectedPetIcon)
+				
+				for i = 1, NUM_PET_ACTIVE_SLOTS do
+					local bu = _G["PetStableActivePet"..i]
+					
+					bu.Background:Hide()
+					bu.Border:Hide()
+					
+					bu:SetNormalTexture("")
+					bu.Checked:SetTexture(C.media.checked)
+					
+					_G["PetStableActivePet"..i.."IconTexture"]:SetTexCoord(.08, .92, .08, .92)
+					F.CreateBD(bu, .25)
+				end
 
-				for i = 1, 10 do
+				for i = 1, NUM_PET_STABLE_SLOTS do
 					local bu = _G["PetStableStabledPet"..i]
 					local bd = CreateFrame("Frame", nil, bu)
 					bd:SetPoint("TOPLEFT", -1, 1)
@@ -948,15 +958,13 @@ Skin:SetScript("OnEvent", function(self, event, addon)
 				end
 			end
 
-			local function FixTab()
-				if CharacterFrameTab2:IsShown() then
-					CharacterFrameTab3:SetPoint("LEFT", CharacterFrameTab2, "RIGHT", -15, 0)
+			hooksecurefunc("PetPaperDollFrame_UpdateIsAvailable", function()
+				if not HasPetUI() then
+					CharacterFrameTab3:SetPoint("LEFT", CharacterFrameTab2, "LEFT", 0, 0)
 				else
-					CharacterFrameTab3:SetPoint("LEFT", CharacterFrameTab1, "RIGHT", -15, 0)
+					CharacterFrameTab3:SetPoint("LEFT", CharacterFrameTab2, "RIGHT", -15, 0)
 				end
-			end
-			CharacterFrame:HookScript("OnEvent", FixTab)
-			CharacterFrame:HookScript("OnShow", FixTab)
+			end)
 
 			PetModelFrameRotateLeftButton:Hide()
 			PetModelFrameRotateRightButton:Hide()
@@ -1786,6 +1794,7 @@ Skin:SetScript("OnEvent", function(self, event, addon)
 
 		select(10, CharacterMainHandSlot:GetRegions()):Hide()
 		select(10, CharacterRangedSlot:GetRegions()):Hide()
+		select(11, CharacterRangedSlot:GetRegions()):Hide()
 		select(10, CharacterSecondaryHandSlot:GetRegions()):Hide()
 
 		hooksecurefunc("PaperDollItemSlotButton_Update", function()
@@ -6265,31 +6274,33 @@ Delay:SetScript("OnEvent", function()
 			WorldMapFrameTitle:ClearAllPoints()
 			WorldMapFrameTitle:SetPoint("BOTTOMLEFT", WorldMapDetailFrame, 9, 5)
 			WorldMapFrameTitle:SetParent(frame)
-			WorldMapFrameTitle:SetFont(C.media.font, 18, "OUTLINE")
-			WorldMapFrameTitle:SetShadowOffset(0, 0)
 			WorldMapFrameTitle:SetTextColor(1, 1, 1)
-			WorldMapQuestShowObjectives:SetParent(frame)
-			WorldMapQuestShowObjectives:ClearAllPoints()
 			WorldMapQuestShowObjectives:SetPoint("BOTTOMRIGHT", WorldMapButton, "BOTTOMRIGHT")
+			WorldMapQuestShowObjectives.SetPoint = F.dummy
+			WorldMapQuestShowObjectives:SetFrameStrata("HIGH")
 			WorldMapQuestShowObjectivesText:ClearAllPoints()
 			WorldMapQuestShowObjectivesText:SetPoint("RIGHT", WorldMapQuestShowObjectives, "LEFT", -4, 1)
-			WorldMapQuestShowObjectivesText:SetFont(C.media.font, 18, "OUTLINE")
-			WorldMapQuestShowObjectivesText:SetShadowOffset(0, 0)
 			WorldMapQuestShowObjectivesText:SetTextColor(1, 1, 1)
 			WorldMapTrackQuest:SetParent(frame)
 			WorldMapTrackQuest:ClearAllPoints()
 			WorldMapTrackQuest:SetPoint("TOPLEFT", WorldMapDetailFrame, 9, -5)
-			WorldMapTrackQuestText:SetFont(C.media.font, 18, "OUTLINE")
-			WorldMapTrackQuestText:SetShadowOffset(0, 0)
 			WorldMapTrackQuestText:SetTextColor(1, 1, 1)
-			WorldMapShowDigSites:SetParent(frame)
+			WorldMapShowDigSites:SetFrameStrata("HIGH")
 			WorldMapShowDigSites:ClearAllPoints()
 			WorldMapShowDigSites:SetPoint("BOTTOMRIGHT", WorldMapButton, "BOTTOMRIGHT", 0, 19)
-			WorldMapShowDigSitesText:SetFont(C.media.font, 18, "OUTLINE")
-			WorldMapShowDigSitesText:SetShadowOffset(0, 0)
 			WorldMapShowDigSitesText:ClearAllPoints()
-			WorldMapShowDigSitesText:SetPoint("RIGHT",WorldMapShowDigSites,"LEFT",-4,1)
+			WorldMapShowDigSitesText:SetPoint("RIGHT", WorldMapShowDigSites, "LEFT", -4, 1)
 			WorldMapShowDigSitesText:SetTextColor(1, 1, 1)
+			if AuroraConfig.enableFont then
+				WorldMapFrameTitle:SetFont(C.media.font, 12 / scale, "THINOUTLINE")
+				WorldMapFrameTitle:SetShadowOffset(0, 0)
+				WorldMapQuestShowObjectivesText:SetFont(C.media.font, 12, "OUTLINE")
+				WorldMapQuestShowObjectivesText:SetShadowOffset(0, 0)
+				WorldMapTrackQuestText:SetFont(C.media.font, 12 / scale, "OUTLINE")
+				WorldMapTrackQuestText:SetShadowOffset(0, 0)
+				WorldMapShowDigSitesText:SetFont(C.media.font, 12, "OUTLINE")
+				WorldMapShowDigSitesText:SetShadowOffset(0, 0)
+			end
 		end
 
 		skinmap()
