@@ -1,11 +1,11 @@
-local fontsize = 12
+local fontsize = 14
 local texture = "Interface\\AddOns\\aCore\\media\\statusbar"
 
-local hpHeight = 16
-local hpWidth = 140
+local hpHeight = 14
+local hpWidth = 150
 local iconSize = 32		--Size of all Icons, RaidIcon/ClassIcon/Castbar Icon
 local cbHeight = 8
-local cbWidth = 140
+local cbWidth = 150
 
 local combat = true
 local enhancethreat = true
@@ -121,6 +121,7 @@ local function OnHide(frame)
 	frame.hp.rcolor = nil
 	frame.hp.gcolor = nil
 	frame.hp.bcolor = nil
+	frame.hp.valueperc:SetTextColor(1,1,1)
 
 	frame:SetScript("OnUpdate",nil)
 end
@@ -138,7 +139,7 @@ local function Colorize(frame)
 		end
 	end
 	if g+b == 0 then -- hostile
-		r,g,b = 244/255, 7/255,  7/255
+		r,g,b = 254/255, 144/255,  46/255
 		frame.isFriendly = false
 	elseif r+b == 0 then -- friendly npc
 		r,g,b = 19/255, 213/255, 29/255
@@ -175,27 +176,17 @@ local function UpdateObjects(frame)
 	frame.hp.rcolor, frame.hp.gcolor, frame.hp.bcolor = frame.hp:GetStatusBarColor()
 	frame.hp.hpbg:SetTexture(frame.hp.rcolor, frame.hp.gcolor, frame.hp.bcolor, 0.25)
 	
-	if enhancethreat == true then
-		frame.hp.name:SetTextColor(frame.hp.rcolor, frame.hp.gcolor, frame.hp.bcolor)
-	end
-	
 	--Set the name text
 	frame.hp.name:SetText(frame.hp.oldname:GetText())
 	
 	--Setup level text
 	local level, elite, mylevel = tonumber(frame.hp.oldlevel:GetText()), frame.hp.elite:IsShown(), UnitLevel("player")
-	frame.hp.level:ClearAllPoints()
-
-	frame.hp.level:SetPoint("LEFT", frame.hp, "RIGHT", 5, 0)
-
-	
 	frame.hp.level:SetTextColor(frame.hp.oldlevel:GetTextColor())
+	
 	if frame.hp.boss:IsShown() then
 		frame.hp.level:SetText("??")
 		frame.hp.level:SetTextColor(0.8, 0.05, 0)
 		frame.hp.level:Show()
-	elseif not elite and level == mylevel then
-		frame.hp.level:Hide()
 	else
 		frame.hp.level:SetText(level..(elite and "+" or ""))
 		frame.hp.level:Show()
@@ -220,21 +211,32 @@ local function SkinObjects(frame)
 	createnameplateBD(hp, 0, 0, 0, 0.3, 1)
 	
 	--Create Level
-	
-	hp.level = createtext(hp, fontsize, "OUTLINE", nil)
+	hp.level = createtext(hp, fontsize-2, "OUTLINE", false)
+	hp.level:SetPoint("BOTTOMRIGHT", hp, "TOPLEFT", 19, -fontsize/3)
+	hp.level:SetJustifyH("RIGHT")
 	hp.level:SetTextColor(1, 1, 1)
 	hp.oldlevel = oldlevel
 	hp.boss = bossicon
 	hp.elite = elite
 	
 	--Create Health Text
-	hp.value = createtext(hp, fontsize, "OUTLINE", true)
-	hp.value:SetTextColor(1,1,1)
+	hp.value = createtext(hp, fontsize/2+3, "OUTLINE", false)
+	hp.value:SetPoint("TOPRIGHT", hp, "TOPRIGHT", 0, -fontsize/3)
+	hp.value:SetJustifyH("RIGHT")
+	hp.value:SetTextColor(0.5,0.5,0.5)
 
+	--Create Health Pecentage Text
+	hp.valueperc = createtext(hp, fontsize, "OUTLINE", false)
+	hp.valueperc:SetPoint("BOTTOMRIGHT", hp, "TOPRIGHT", 0, -fontsize/3)
+	hp.valueperc:SetJustifyH("RIGHT")
+	hp.valueperc:SetTextColor(1,1,1)
+	
 	--Create Name Text
-	hp.name = createtext(hp, fontsize, "OUTLINE", false)
-	hp.name:SetPoint('BOTTOMLEFT', hp, 'TOPLEFT', -10, 3)
-	hp.name:SetPoint('BOTTOMRIGHT', hp, 'TOPRIGHT', 10, 3)
+	hp.name = createtext(hp, fontsize-2, "OUTLINE", false)
+	hp.name:SetPoint('BOTTOMRIGHT', hp, 'TOPRIGHT', -30, -fontsize/3)
+	hp.name:SetPoint('BOTTOMLEFT', hp, 'TOPLEFT', 17, -fontsize/3)
+	hp.name:SetTextColor(1,1,1)
+	hp.name:SetJustifyH("LEFT")
 	hp.oldname = oldname
 	
 	hp.hpbg = hp:CreateTexture(nil, 'BORDER')
@@ -252,11 +254,13 @@ local function SkinObjects(frame)
 	--Create Cast Time Text
 	cb.time = createtext(cb, fontsize, "OUTLINE", false)
 	cb.time:SetPoint("RIGHT", cb, "LEFT", -1, 0)
+	cb.time:SetJustifyH("RIGHT")
 	cb.time:SetTextColor(1, 1, 1)
 
 	--Create Cast Name Text
 	cb.name = createtext(cb, fontsize, "OUTLINE", false)
 	cb.name:SetPoint("TOP", cb, "BOTTOM", 0, -3)
+	cb.name:SetJustifyH("CENTER")
 	cb.name:SetTextColor(1, 1, 1)
 
 	--Setup CastBar Icon
@@ -359,15 +363,6 @@ local function HideDrunkenText(frame, ...)
 	end
 end
 
---Force the name text of a nameplate to be behind other nameplates unless it is our target
-local function AdjustNameLevel(frame, ...)
-	if UnitName("target") == frame.hp.name:GetText() and frame:GetAlpha() == 1 then
-		frame.hp.name:SetDrawLayer("OVERLAY")
-	else
-		frame.hp.name:SetDrawLayer("BORDER")
-	end
-end
-
 --Health Text, also border coloring for certain plates depending on health
 local function ShowHealth(frame, ...)
 	-- show current health value
@@ -379,8 +374,21 @@ local function ShowHealth(frame, ...)
 	frame.hp:SetValue(valueHealth - 1)	--Bug Fix 4.1
 	frame.hp:SetValue(valueHealth)
 	
-
-	frame.hp.value:SetText(ShortValue(valueHealth).." - "..(string.format("%d%%", math.floor((valueHealth/maxHealth)*100))))
+	if d < 25 then
+		frame.hp.valueperc:SetTextColor(0.8, 0.05, 0)
+	elseif d < 30 then
+		frame.hp.valueperc:SetTextColor(0.95, 0.7, 0.25)
+	else
+		frame.hp.valueperc:SetTextColor(1, 1, 1)
+	end
+	
+	if valueHealth ~= maxHealth then
+		frame.hp.value:SetText(ShortValue(valueHealth))
+		frame.hp.valueperc:SetText(string.format("%d", math.floor((valueHealth/maxHealth)*100)))
+	else
+		frame.hp.value:SetText("")
+		frame.hp.valueperc:SetText("")
+	end
 end
 
 --Run a function for all visible nameplates
@@ -416,7 +424,6 @@ NamePlates:SetScript('OnUpdate', function(self, elapsed)
 
 	if(self.elapsed and self.elapsed > 0.2) then
 		ForEachPlate(UpdateThreat, self.elapsed)
-		ForEachPlate(AdjustNameLevel)
 		self.elapsed = 0
 	else
 		self.elapsed = (self.elapsed or 0) + elapsed
