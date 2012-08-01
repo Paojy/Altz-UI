@@ -3,6 +3,7 @@ local font = GameFontHighlight:GetFont()
 local Ccolor = RAID_CLASS_COLORS[select(2, UnitClass("player"))]
 local aMedia = "Interface\\AddOns\\aCore\\media\\"
 local blank = "Interface\\Buttons\\WHITE8x8"
+local ver = GetAddOnMetadata("aCore", "Version")
 
 --====================================================--
 --[[                -- shadow --                    ]]--
@@ -366,7 +367,7 @@ Guidetext:Hide()
 
 local Creditstext = createtext(Guide, 15, "NONE", true)
 Creditstext:SetTextColor(0.7, 0.7, 0.7)
-Creditstext:SetText("伤心蓝 CN5_深渊之巢 \n  < 炼狱 > \n \n \n \n |cff3399FF Thanks to \n \n Zork Haste Tukz Haleth Qulight Freebaser Monolit \n and everyone who help me with this Compilations.|r")
+Creditstext:SetText("AltzUI ver"..ver.." \n \n \n \n 伤心蓝 CN5_深渊之巢 \n  < 炼狱 > \n \n \n \n |cff3399FF Thanks to \n \n Zork Haste Tukz Haleth Qulight Freebaser Monolit \n and everyone who help me with this Compilations.|r")
 Creditstext:Hide()
 
 local interval = 0
