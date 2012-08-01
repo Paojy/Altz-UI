@@ -81,11 +81,6 @@ cfg.fastfocus = true
 -- 被闷棍后喊"Sapped!"
 cfg.saysapped = true
 
---Set current tab binding to target nearest enemy player when entering battleground , arena, Elwynn forest and Durotar. 
---Binds back to target nearest enemy in all other zones.
---进入战场，竞技场，艾尔文森林和杜隆塔尔时将Tab键绑定到"选中最近的敌对玩家"上。
-cfg.tabtargetplayer = true
-
 -- Watch Frame replacement
 -- 自定义任务追踪栏
 cfg.customwf = true         -- enable

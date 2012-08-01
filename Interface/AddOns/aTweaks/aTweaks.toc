@@ -13,8 +13,6 @@ mods\focus.lua
 mods\collectgarbager.lua
 mods\DragEmAll.lua
 mods\InspectFix.lua
-mods\TabTargetPlayer.lua
-mods\Setup.lua
 mods\countdown.lua
 mods\Watchframe.lua
 mods\Tweaks.lua
