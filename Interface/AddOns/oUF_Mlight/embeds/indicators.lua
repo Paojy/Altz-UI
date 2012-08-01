@@ -295,8 +295,8 @@ local Enable = function(self)
         self:Tag(self.AuraStatusBR, classIndicators[class]["BR"])
 
         self.AuraStatusCen = self.Health:CreateFontString(nil, "OVERLAY")
-        self.AuraStatusCen:SetPoint("TOP")
-        self.AuraStatusCen:SetJustifyH("CENTER")
+        self.AuraStatusCen:SetPoint("LEFT", self, "LEFT", 0, 0)
+        self.AuraStatusCen:SetJustifyH("LEFT")
         self.AuraStatusCen:SetFont(cfg.font, fontsizeEdge, "OUTLINE")
         self.AuraStatusCen:SetWidth(0)
         self.AuraStatusCen.frequentUpdates = update

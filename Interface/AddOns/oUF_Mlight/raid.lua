@@ -3,10 +3,9 @@ local cfg = ns.cfg
 
 if not cfg.enableraid then return end
 
-local mediaPath = cfg.mediaPath
 local texture = cfg.texture
-local glowTex = cfg.glowTex
 local font, fontsize = cfg.font, cfg.raidfontsize
+local symbols = "Interface\\Addons\\oUF_Mlight\\media\\PIZZADUDEBULLETS.ttf"
 local myclass = select(2, UnitClass("player"))
 local Role
 
@@ -19,11 +18,28 @@ CheckRole = function()
 	return role
 end
 
+local UpdateLFD = function(self, event)
+	local lfdrole = self.LFDRole
+	local role = UnitGroupRolesAssigned(self.unit)
+
+	if role == "DAMAGER" then
+		lfdrole:SetTextColor(1, .1, .1, 1)
+		lfdrole:SetText("D")
+	elseif role == "TANK" then
+		lfdrole:SetTextColor(.3, .4, 1, 1)
+		lfdrole:SetText("T")
+	elseif role == "HEALER" then
+		lfdrole:SetTextColor(0, 1, 0, 1)
+		lfdrole:SetText("H")
+	else
+		lfdrole:SetTextColor(0, 0, 0, 0)
+	end
+end
+
 local func = function(self, unit)
 
     self:SetScript("OnEnter", UnitFrame_OnEnter)
     self:SetScript("OnLeave", UnitFrame_OnLeave)
-
     self:RegisterForClicks"AnyUp"
 	
 	-- shadow border for health bar --
@@ -32,56 +48,53 @@ local func = function(self, unit)
     local hp = CreateFrame("StatusBar", nil, self)
     hp:SetAllPoints(self)
 	hp:SetStatusBarTexture(texture)
-	
     hp.frequentUpdates = true
     hp.Smooth = true
-    if cfg.smoothhealthcolor then
-        self.colors.smooth = {1,0,0, 1,1,0, 1,1,0}
-        hp.colorSmooth = true
-    else
-	    hp.colorClass = true
-        hp.colorReaction = true
-    end
-	
-	if not cfg.classcolormode then
-		hp:SetReverseFill(true)
-	end
 	
 	if not cfg.classcolormode then
 		hp:SetReverseFill(true)
 	end
 	
 	hp.PostUpdate = function(hp, unit, min, max)
-	
 		if not cfg.classcolormode then
 			if UnitIsDeadOrGhost(unit) then hp:SetValue(0)
 			else hp:SetValue(max - hp:GetValue()) end
 		end
-		
 		return ns.updatehealthcolor(hp:GetParent(), 'PostUpdateHealth', unit)
 	end
-	
     self.Health = hp
 	
 	-- backdrop color --
 	local gradient = hp:CreateTexture(nil, "BACKGROUND")
 	gradient:SetPoint("TOPLEFT")
 	gradient:SetPoint("BOTTOMRIGHT")
-	gradient:SetTexture(cfg.texture)
+	gradient:SetTexture(texture)
 	gradient:SetGradientAlpha("VERTICAL", .3, .3, .3, .3, .1, .1, .1, .3)
-	
 	self.gradient = gradient
 	
     local info = hp:CreateFontString(nil, "OVERLAY")
-    info:SetPoint("TOP")
-    info:SetFont(font, fontsize-3, "OUTLINE")
+    info:SetPoint("TOP", hp, "TOP", 0, -2)
+    info:SetFont(symbols, fontsize +3, "OUTLINE")
     info:SetShadowOffset(0, 0)
-    info:SetTextColor(1, 1, 1)
     self:Tag(info, '[Mlight:raidinfo]')
+	
+	local leader = hp:CreateTexture(nil, "OVERLAY")
+    leader:SetSize(12, 12)
+    leader:SetPoint("BOTTOMLEFT", hp, "BOTTOMLEFT", 5, -5)
+    self.Leader = leader
+
+    local masterlooter = hp:CreateTexture(nil, 'OVERLAY')
+    masterlooter:SetSize(12, 12)
+    masterlooter:SetPoint('LEFT', leader, 'RIGHT')
+    self.MasterLooter = masterlooter
+
+	local lfd = hp:CreateFontString(nil, "OVERLAY")
+	lfd:SetPoint("LEFT", hp, 1, -1)
+	lfd:SetFont(symbols, fontsize-2, "OUTLINE")
+	lfd.Override = UpdateLFD
 	
 	local raidname = hp:CreateFontString(nil, "OVERLAY")
 	raidname:SetPoint("BOTTOMRIGHT", hp, "BOTTOMRIGHT", -1, 5)
-
     raidname:SetFont(font, fontsize, "OUTLINE")
     raidname:SetShadowOffset(0, 0)
 	if not cfg.classcolormode then
@@ -97,13 +110,20 @@ local func = function(self, unit)
 
 	-- Auras
     local auras = CreateFrame("Frame", nil, self)
-    auras:SetSize(16, 16)
-    auras:SetPoint("LEFT", hp, "LEFT", 5, 0)
+    auras:SetSize(20, 20)
+    auras:SetPoint("LEFT", hp, "LEFT", 15, 0)
 	auras.tfontsize = 13
 	auras.cfontsize = 8
 	self.MlightAuras = auras
 	
-
+	-- Tankbuff
+    local tankbuff = CreateFrame("Frame", nil, self)
+    tankbuff:SetSize(20, 20)
+    tankbuff:SetPoint("LEFT", auras, "RIGHT", 5, 0)
+	tankbuff.tfontsize = 13
+	tankbuff.cfontsize = 8
+	self.MlightTankbuff = tankbuff
+	
 	-- Indicators
 	self.MlightIndicators = true
 	
@@ -113,14 +133,12 @@ local func = function(self, unit)
         outsideAlpha = 0.5,
     }
     self.Range = range
-	
 end
 
 local dfunc = function(self, unit)
 
     self:SetScript("OnEnter", UnitFrame_OnEnter)
     self:SetScript("OnLeave", UnitFrame_OnLeave)
-
     self:RegisterForClicks"AnyUp"
 	
 	-- shadow border for health bar --
@@ -129,56 +147,54 @@ local dfunc = function(self, unit)
     local hp = CreateFrame("StatusBar", nil, self)
     hp:SetAllPoints(self)
 	hp:SetStatusBarTexture(texture)
-	
     hp.frequentUpdates = true
     hp.Smooth = true
-    if cfg.smoothhealthcolor then
-        self.colors.smooth = {1,0,0, 1,1,0, 1,1,0}
-        hp.colorSmooth = true
-    else
-	    hp.colorClass = true
-        hp.colorReaction = true
-    end
-	
-	if not cfg.classcolormode then
-		hp:SetReverseFill(true)
-	end
 	
 	if not cfg.classcolormode then
 		hp:SetReverseFill(true)
 	end
 	
 	hp.PostUpdate = function(hp, unit, min, max)
-	
 		if not cfg.classcolormode then
 			if UnitIsDeadOrGhost(unit) then hp:SetValue(0)
 			else hp:SetValue(max - hp:GetValue()) end
 		end
-		
 		return ns.updatehealthcolor(hp:GetParent(), 'PostUpdateHealth', unit)
 	end
-	
     self.Health = hp
 	
 	-- backdrop color --
 	local gradient = hp:CreateTexture(nil, "BACKGROUND")
 	gradient:SetPoint("TOPLEFT")
 	gradient:SetPoint("BOTTOMRIGHT")
-	gradient:SetTexture(cfg.texture)
+	gradient:SetTexture(texture)
 	gradient:SetGradientAlpha("VERTICAL", .3, .3, .3, .3, .1, .1, .1, .3)
-	
 	self.gradient = gradient
 	
     local info = hp:CreateFontString(nil, "OVERLAY")
-    info:SetPoint("TOP")
-    info:SetFont(font, fontsize-3, "OUTLINE")
+    info:SetPoint("LEFT", hp, "LEFT", 5, 0)
+    info:SetFont(symbols, fontsize, "OUTLINE")
     info:SetShadowOffset(0, 0)
     info:SetTextColor(1, 1, 1)
     self:Tag(info, '[Mlight:raidinfo]')
+
+	local leader = hp:CreateTexture(nil, "OVERLAY")
+    leader:SetSize(12, 12)
+    leader:SetPoint("BOTTOMLEFT", hp, "BOTTOMLEFT", 5, -5)
+    self.Leader = leader
+
+    local masterlooter = hp:CreateTexture(nil, 'OVERLAY')
+    masterlooter:SetSize(12, 12)
+    masterlooter:SetPoint('LEFT', leader, 'RIGHT')
+    self.MasterLooter = masterlooter
 	
+	local lfd = hp:CreateFontString(nil, "OVERLAY")
+	lfd:SetPoint("LEFT", hp, 1, -1)
+	lfd:SetFont(symbols, fontsize-2, "OUTLINE")
+	lfd.Override = UpdateLFD
+		
 	local raidname = hp:CreateFontString(nil, "OVERLAY")
 	raidname:SetPoint("BOTTOMLEFT", hp, "BOTTOMRIGHT", 5, 0)
-
     raidname:SetFont(font, fontsize, "OUTLINE")
     raidname:SetShadowOffset(0, 0)
 	if not cfg.classcolormode then
@@ -206,7 +222,6 @@ local dfunc = function(self, unit)
         outsideAlpha = 0.5,
     }
     self.Range = range
-	
 end
 
 oUF:RegisterStyle("Mlight_Healerraid", func)
@@ -276,8 +291,8 @@ function showrf(f)
 	f.mode = 1
 end
 
-hiderf(healerraid)
-hiderf(dpsraid)
+hiderf(healerraid) -- set mode to 0
+hiderf(dpsraid) -- set mode to 0
 
 local RoleUpdater = CreateFrame("Frame")
 function RoleUpdater:togglerf()
@@ -291,13 +306,8 @@ function RoleUpdater:togglerf()
 	end
 end
 
-RoleUpdater:RegisterEvent("PLAYER_ENTERING_WORLD")
-RoleUpdater:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED")
-RoleUpdater:RegisterEvent("PLAYER_TALENT_UPDATE")
-RoleUpdater:RegisterEvent("CHARACTER_POINTS_CHANGED")
-RoleUpdater:RegisterEvent("UNIT_INVENTORY_CHANGED")
-RoleUpdater:RegisterEvent("UPDATE_BONUS_ACTIONBAR")
-
+--RoleUpdater:RegisterEvent("PLAYER_ENTERING_WORLD")
+RoleUpdater:RegisterEvent("PLAYER_TALENT_UPDATE")-- this fires before PLAYER_ENTERING_WORLD so we only need this.
 RoleUpdater:SetScript("OnEvent", RoleUpdater.togglerf)
 
 local function SlashCmd(cmd)
@@ -317,7 +327,7 @@ end
 SlashCmdList["MlightRaid"] = SlashCmd;
 SLASH_MlightRaid1 = "/rf"
 
---hide raid
+--hide blz raid frame and manager
 local f = CreateFrame("Frame");
 f:RegisterEvent("PLAYER_ENTERING_WORLD");
 

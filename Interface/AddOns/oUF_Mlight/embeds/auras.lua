@@ -54,7 +54,7 @@ local CreateAuraIcon = function(auras)
     button.border = border
 
     local remaining = button:CreateFontString(nil, "OVERLAY")
-    remaining:SetPoint("BOTTOMLEFT",-1,-3) 
+    remaining:SetPoint("BOTTOMRIGHT",1,-5) 
     remaining:SetFont(font, auras.tfontsize, "THINOUTLINE")
     remaining:SetTextColor(1, 1, 0)
     button.remaining = remaining
@@ -160,7 +160,6 @@ local CustomFilter = function(icons, ...)
     local _, icon, name, _, _, _, dtype, _, _, caster, spellID = ...
 
     icon.asc = false
-    icon.buff = false
     icon.priority = 0
 
     if ns.auras.ascending[spellID] or ns.auras.ascending[name] then
@@ -173,19 +172,11 @@ local CustomFilter = function(icons, ...)
     elseif ns.auras.debuffs[spellID] then
         icon.priority = ns.auras.debuffs[spellID]
         return true
-    elseif ns.auras.buffs[spellID] then
-        icon.priority = ns.auras.buffs[spellID]
-        icon.buff = true
-        return true
     elseif instDebuffs[name] then
         icon.priority = instDebuffs[name]
         return true
     elseif ns.auras.debuffs[name] then
         icon.priority = ns.auras.debuffs[name]
-        return true
-    elseif ns.auras.buffs[name] then
-        icon.priority = ns.auras.buffs[name]
-        icon.buff = true
         return true
     elseif dispellist[dtype] then
         icon.priority = dispelPriority[dtype]
@@ -222,12 +213,14 @@ local AuraTimer = function(self, elapsed)
     end
 end
 
-local buffcolor = { r = 0.0, g = 1.0, b = 1.0 }
-local updateDebuff = function(icon, texture, count, dtype, duration, expires, buff)
-    local color = buff and buffcolor or DebuffTypeColor[dtype] or DebuffTypeColor.none
+local updateDebuff = function(backdrop, icon, texture, count, dtype, duration, expires)
+    local color = DebuffTypeColor[dtype] or DebuffTypeColor.none
 
     icon.border:SetBackdropBorderColor(color.r, color.g, color.b)
-
+    if dispellist[dtype] then
+	backdrop:SetBackdropBorderColor(color.r, color.g, color.b)
+	end
+	
     icon.icon:SetTexture(texture)
     icon.count:SetText((count > 1 and count))
 
@@ -249,7 +242,8 @@ local Update = function(self, event, unit)
     local hide = true
     local auras = self.MlightAuras
     local icon = auras.button
-
+	local backdrop = self.backdrop
+	
     local index = 1
     while true do
         local name, rank, texture, count, dtype, duration, expires, caster, _, _, spellID = UnitDebuff(unit, index)
@@ -261,35 +255,10 @@ local Update = function(self, event, unit)
             --print(name)
             if not cur then
                 cur = icon.priority
-                updateDebuff(icon, texture, count, dtype, duration, expires)
+                updateDebuff(backdrop, icon, texture, count, dtype, duration, expires)
             else
                 if icon.priority > cur then
-                    updateDebuff(icon, texture, count, dtype, duration, expires)
-                end
-            end
-
-            icon:Show()
-            hide = false
-        end
-
-        index = index + 1
-    end
-
-    index = 1
-    while true do
-        local name, rank, texture, count, dtype, duration, expires, caster, _, _, spellID = UnitBuff(unit, index)
-        if not name then break end
-        
-        local show = CustomFilter(auras, unit, icon, name, rank, texture, count, dtype, duration, expires, caster, spellID)
-
-        if(show) and icon.buff then
-			--print(name)
-            if not cur then
-                cur = icon.priority
-                updateDebuff(icon, texture, count, dtype, duration, expires, true)
-            else
-                if icon.priority > cur then
-                    updateDebuff(icon, texture, count, dtype, duration, expires, true)
+                    updateDebuff(backdrop, icon, texture, count, dtype, duration, expires)
                 end
             end
 

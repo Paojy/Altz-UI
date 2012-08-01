@@ -91,7 +91,7 @@ local init = function(self)
 end
 UIDropDownMenu_Initialize(dropdown, init, 'MENU')
 
-local createBackdrop = function(parent, anchor, a, m) 
+local createBackdrop = function(parent, anchor, a, m, c) 
     local frame = CreateFrame("Frame", nil, parent)
 	
 	local flvl = parent:GetFrameLevel()
@@ -103,9 +103,12 @@ local createBackdrop = function(parent, anchor, a, m)
     frame:SetPoint("BOTTOMRIGHT", anchor, "BOTTOMRIGHT", m, -m)
 	
     frame:SetBackdrop(frameBD)
-    frame:SetBackdropColor(.25, .25, .25, a)
-    frame:SetBackdropBorderColor(0, 0, 0)
-
+	if not c then
+		frame:SetBackdropColor(.25, .25, .25, a)
+		frame:SetBackdropBorderColor(0, 0, 0)
+	end
+	
+	parent.backdrop = frame
     return frame
 end
 ns.backdrop = createBackdrop
@@ -286,15 +289,18 @@ local CustomFilter = function(icons, ...)
 end
 
 local PostCastStart = function(castbar, unit)
+	local uc = cfg.uninterruptable
     if unit ~= 'player' then
         if castbar.interrupt then
-            castbar.Backdrop:SetBackdropBorderColor(1, .9, .4)
-            castbar.Backdrop:SetBackdropColor(1, .9, .4)
+		    castbar.IBackdrop:SetBackdropBorderColor(uc[1], uc[2], uc[3])
         else
-            castbar.Backdrop:SetBackdropBorderColor(0, 0, 0)
-            castbar.Backdrop:SetBackdropColor(0, 0, 0)
+            castbar.IBackdrop:SetBackdropBorderColor(0, 0, 0)
         end
+	else
+		castbar.IBackdrop:SetBackdropBorderColor(0, 0, 0)
     end
+	castbar.Backdrop:SetBackdropBorderColor(0, 0, 0, 0)
+	castbar.Backdrop:SetBackdropColor(0, 0, 0, 0)
 end
 
 local CustomTimeText = function(castbar, duration)
@@ -311,30 +317,39 @@ end
 local castbar = function(self, unit)
     local u = unit:match('[^%d]+')
     if multicheck(u, "target", "player", "focus", "boss") then
-        local cb = createStatusbar(self, cfg.texture, "OVERLAY", 5, nil, 0.2, .8, 1, 1)
+        local cb = createStatusbar(self, cfg.texture, "OVERLAY", nil, nil, 0, 0, 0, 0) -- transparent
         cb:SetToplevel(true)
 
         cb.Spark = cb:CreateTexture(nil, "OVERLAY")
         cb.Spark:SetBlendMode("ADD")
         cb.Spark:SetAlpha(0.5)
-        cb.Spark:SetHeight(30)
+        cb.Spark:SetHeight(cfg.height*3.5)
 
         local cbbg = cb:CreateTexture(nil, "BACKGROUND")
         cbbg:SetAllPoints(cb)
         cbbg:SetTexture(cfg.texture)
-        cbbg:SetVertexColor(.1,.1,.1)
+        cbbg:SetVertexColor(.1,.1,.1, 0) -- transparent
 
         cb.Time = createFont(cb, "OVERLAY", cfg.font, cfg.fontsize, cfg.fontflag, 1, 1, 1)
-        cb.Time:SetPoint("RIGHT", cb, -2, 0)
+		if (unit == "player") then
+			cb.Time:SetFont(cfg.font, cfg.fontsize+2, cfg.fontflag)
+			cb.Time:SetPoint("BOTTOM", cb, "TOP", 0, 7)
+		else
+			cb.Time:SetPoint("TOPRIGHT", cb, "BOTTOMRIGHT", 0, -cfg.height*(1-cfg.hpheight)-6)
+		end
         cb.CustomTimeText = CustomTimeText
 
         cb.Text = createFont(cb, "OVERLAY", cfg.font, cfg.fontsize, cfg.fontflag, 1, 1, 1, "LEFT")
-        cb.Text:SetPoint("LEFT", cb, 2, 0)
-        cb.Text:SetPoint("RIGHT", cb.Time, "LEFT")
+        cb.Text:SetPoint("CENTER")
 
         cb.Icon = cb:CreateTexture(nil, 'ARTWORK')
         cb.Icon:SetSize(cfg.cbIconsize, cfg.cbIconsize)
         cb.Icon:SetTexCoord(.1, .9, .1, .9)
+		if (unit == "player") then
+			cb.Icon:SetPoint("BOTTOMRIGHT", cb, "BOTTOMLEFT", -7, -cfg.height*(1-cfg.hpheight)-2)
+		else
+			cb.Icon:SetPoint("TOPRIGHT", cb, "TOPLEFT", -7, 0)
+		end
 		
 		--safezone for castbar of player
         if (unit == "player") then
@@ -342,39 +357,13 @@ local castbar = function(self, unit)
             cb.SafeZone:SetPoint('TOPRIGHT')
             cb.SafeZone:SetPoint('BOTTOMRIGHT')
             cb.SafeZone:SetTexture(cfg.texture)
-            cb.SafeZone:SetVertexColor(1,1,0.3, 1)
+            cb.SafeZone:SetVertexColor( .3, .8, 1, .65)
         end
 		
-		if cfg.CBuserplaced then
-		    cb:SetWidth(cfg.CBwidth-cfg.cbIconsize-7)
-		    if (unit == "player") then
-			cb:SetPoint(unpack(cfg.playerCBposition))
-            cb.Icon:SetPoint("BOTTOMRIGHT", cb, "BOTTOMLEFT", -7, 0)
-			elseif unit == "target" then
-			cb:SetPoint(unpack(cfg.targetCBposition))
-			cb.Icon:SetPoint("BOTTOMLEFT", cb, "BOTTOMRIGHT", 7, 0)
-			elseif unit == "focus" then
-			cb:SetPoint(unpack(cfg.focusCBposition))
-			cb.Icon:SetPoint("BOTTOMRIGHT", cb, "BOTTOMLEFT", -7, 0)
-			else
-		    cb:SetPoint("BOTTOMLEFT", self, "TOPLEFT", cfg.cbIconsize+5, 50)
-            cb.Icon:SetPoint("BOTTOMRIGHT", cb, "BOTTOMLEFT", -7, 0)
-			cb:SetWidth(cfg.width-cfg.cbIconsize-7)
-			end
-		else
-		    if (unit == "player") then
-                cb:SetPoint("BOTTOMRIGHT", self, "TOPRIGHT", -cfg.cbIconsize-5, 50)
-                cb.Icon:SetPoint("BOTTOMLEFT", cb, "BOTTOMRIGHT", 7, 0)
-				cb:SetWidth(cfg.width-cfg.cbIconsize-7)
-			else
-		        cb:SetPoint("BOTTOMLEFT", self, "TOPLEFT", cfg.cbIconsize+5, 50)
-                cb.Icon:SetPoint("BOTTOMRIGHT", cb, "BOTTOMLEFT", -7, 0)
-				cb:SetWidth(cfg.width-cfg.cbIconsize-7)
-		    end
-		end
-		
-        cb.Backdrop = createBackdrop(cb, cb,0,3)
-        cb.IBackdrop = createBackdrop(cb, cb.Icon,0,3)
+		cb:SetAllPoints(self)
+
+        cb.Backdrop = createBackdrop(cb, cb,0,3,1)
+        cb.IBackdrop = createBackdrop(cb, cb.Icon,0,3,1)
 
         cb.PostCastStart = PostCastStart
         cb.PostChannelStart = PostCastStart
@@ -404,29 +393,36 @@ local UpdateHealth = function(self, event, unit)
 		if(UnitIsTapped(unit) and not UnitIsTappedByPlayer(unit) or not UnitIsConnected(unit)) then
 			r, g, b = .6, .6, .6
 		elseif(unit == "pet") then
-			local _, class = UnitClass("player")
+			local _, playerclass = UnitClass("player")
 			if cfg.classcolormode then
-				r, g, b = unpack(self.colors.class[class])
+				r, g, b = unpack(self.colors.class[playerclass])
 			else
-				r, g, b = self.ColorGradient(perc, unpack(self.colors.smooth))
+				r, g, b = self.ColorGradient(perc, 1, unpack(self.colors.smooth))
 			end
 		elseif(UnitIsPlayer(unit)) then
-			local _, class = UnitClass(unit)
+			local _, unitclass = UnitClass(unit)
 			if cfg.classcolormode then
-				if class then r, g, b = unpack(self.colors.class[class]) else r, g, b = 1, 1, 1 end
+				if unitclass then r, g, b = unpack(self.colors.class[unitclass]) else r, g, b = 1, 1, 1 end
 			else
-				r, g, b = self.ColorGradient(perc, unpack(self.colors.smooth))
+				r, g, b = self.ColorGradient(perc, 1, unpack(self.colors.smooth))
 			end
 		elseif(unit and unit:find("boss%d")) then
-			r, g, b = self.ColorGradient(perc, unpack(self.colors.smooth))
+			if cfg.classcolormode then
+				r, g, b = unpack(self.colors.reaction[UnitReaction(unit, "player") or 5])
+			else
+				r, g, b = self.ColorGradient(perc, 1, unpack(self.colors.smooth))
+			end
 		elseif unit then
-			r, g, b = unpack(self.colors.reaction[UnitReaction(unit, "player") or 5])
+			if cfg.classcolormode then
+				r, g, b = unpack(self.colors.reaction[UnitReaction(unit, "player") or 5])
+			else
+				r, g, b = self.ColorGradient(perc, 1, unpack(self.colors.smooth))
+			end
 		end
 
 		self.Health:GetStatusBarTexture():SetGradient("VERTICAL", r, g, b, r/3, g/3, b/3)
 	end
 end
-
 ns.updatehealthcolor = UpdateHealth
 
 local func = function(self, unit)
@@ -459,16 +455,15 @@ local func = function(self, unit)
 	-- health and power text on health frame --
     if not (unit == "targettarget" or unit == "focustarget" or unit == "pet") then
         local hpt = createFont(hp, "OVERLAY", cfg.font, cfg.fontsize, cfg.fontflag, 1, 1, 1)
-        hpt:SetPoint("RIGHT", hp, -2, 0)
+        hpt:SetPoint("RIGHT", self, -2, -1)
         local pt = createFont(hp, "OVERLAY", cfg.font, cfg.fontsize, cfg.fontflag, 1, 1, 1)
-        pt:SetPoint("LEFT", hp, 2, 0)
+        pt:SetPoint("LEFT", self, 2, -1)
 		
         self:Tag(hpt, '[Mlight:hp]')
 		self:Tag(pt, '[Mlight:pp]')
     end
 	
-		-- reverse fill health --
-		
+	-- reverse fill health --
 	if not cfg.classcolormode then
 		hp:SetReverseFill(true)
 	end
@@ -560,7 +555,7 @@ local func = function(self, unit)
 
     local Combat = hp:CreateTexture(nil, 'OVERLAY')
     Combat:SetSize(20, 20)
-    Combat:SetPoint('BOTTOMRIGHT', hp, 3, -26)
+    Combat:SetPoint( "LEFT", hp, "RIGHT", 5, 0)
     self.Combat = Combat
 	
     local ricon = hp:CreateTexture(nil, 'OVERLAY')
@@ -570,7 +565,7 @@ local func = function(self, unit)
 	
 	-- name --
     local name = createFont(hp, "OVERLAY", cfg.font, cfg.fontsize, cfg.fontflag, 1, 1, 1)
-	name:SetPoint("TOPLEFT", hp, "BOTTOMLEFT", 0, -cfg.height*(1-cfg.hpheight)-5)
+	name:SetPoint("TOPLEFT", hp, "BOTTOMLEFT", 0, -cfg.height*(1-cfg.hpheight)-6)
     if(unit == "player" or unit == "pet") then
         name:Hide()
 	elseif(unit == "targettarget" or unit == "focustarget") then
@@ -609,12 +604,10 @@ local UnitSpecific = {
     --========================--
     player = function(self, ...)
         func(self, ...)
-		
-	
         local _, class = UnitClass("player")
 		
         -- Runes, Shards, HolyPower --
-        if multicheck(class, "DEATHKNIGHT", "WARLOCK", "PALADIN", "MONK", "SHAMAN", "PRIEST") then
+        if multicheck(class, "DEATHKNIGHT", "WARLOCK", "PALADIN", "MONK", "SHAMAN", "PRIEST", "ROGUE", "DRUID") then
             local count
             if class == "DEATHKNIGHT" then 
                 count = 6
@@ -628,18 +621,13 @@ local UnitSpecific = {
                 count = UnitPowerMax("player", SPELL_POWER_HOLY_POWER)
 			elseif class == "PRIEST" then
 				count = UnitPowerMax("player", SPELL_POWER_SHADOW_ORBS)
+			elseif class == "ROGUE" or class == "DRUID" then
+				count = 5 -- combopoints
             end
 
             local bars = CreateFrame("Frame", nil, self)
-
-			if cfg.Ruserplaced and class == "DEATHKNIGHT" then
-			bars:SetSize(cfg.Rwidth,cfg.Rheight)
-			bars:SetPoint(unpack(cfg.Runesp))
-			createBackdrop(bars, bars, 0, 3)
-			else
-			bars:SetPoint("TOPRIGHT", self, "BOTTOMRIGHT", 0, -8)
+			bars:SetPoint("BOTTOMRIGHT", self, "TOPRIGHT", 0, 3)
             bars:SetSize(cfg.width, 10)
-			end
 
             local i = count
             for index = 1, count do
@@ -649,14 +637,12 @@ local UnitSpecific = {
                     bars[i]:SetStatusBarColor(253/255, 91/255, 176/255)
                 elseif class == "PALADIN" or class == "MONK" then
                     bars[i]:SetStatusBarColor(255/255, 255/255, 53/255)
-                end 
-				
-                if cfg.Ruserplaced and class == "DEATHKNIGHT" then
-				bars[i]:SetSize((cfg.Rwidth+3)/count-3,cfg.Rheight)
-				end
+				elseif class == "ROGUE" or class == "DRUID" then
+				    bars[i]:SetStatusBarColor(100/255, 200/255, 255/255)
+                end
 				
                 if i == count then
-                    bars[i]:SetPoint("TOPRIGHT", bars, "TOPRIGHT")
+                    bars[i]:SetPoint("BOTTOMRIGHT", bars, "BOTTOMRIGHT")
                 else
                     bars[i]:SetPoint("RIGHT", bars[i+1], "LEFT", -3, 0)
                 end
@@ -674,48 +660,29 @@ local UnitSpecific = {
                 self.Runes = bars
             elseif class == "WARLOCK" then
                 self.SoulShards = bars
-				if cfg.customsp then bars:Hide() end
             elseif class == "PALADIN" then
                 self.HolyPower = bars
-				if cfg.customsp then bars:Hide() end
 			elseif class == "MONK" then
 				self.Harmony = bars
-				if cfg.customsp then bars:Hide() end
 			elseif class == "SHAMAN" then
 				self.TotemBar = bars
 			elseif class == "PRIEST" then
 				self.ShadowOrbs = bars
-				if cfg.customsp then bars:Hide() end
+			elseif class == "ROGUE" or class == "DRUID" then
+			    self.CPoints = bars
             end
         end
-		
-		-- the special soulshards/holypower --
-		if cfg.customsp then
-        local sp = CreateFrame("Frame", nil, self)
-		local spt = createFont(sp, "OVERLAY", symbols, cfg.spfontsize, "OUTLINE", nil, nil, nil)
-		spt:SetPoint(unpack(cfg.spp))
-		self:Tag(spt, '[Mlight:sp]')
-        end
+	
 
 		-- eclipse bar --
         if class == "DRUID" then
             local ebar = CreateFrame("Frame", nil, self)
 		    local Ewidth,Eheight
 			
-			if cfg.Euserplaced then
-			Ewidth = cfg.Ewidth 
-			Eheight = cfg.Eheight
-			else
 			Ewidth = cfg.width
 			Eheight = cfg.height*-(cfg.hpheight-1)
-			end
-			
-			if cfg.Euserplaced then
-			ebar:SetPoint(unpack(cfg.Eclipsep))
-			else
+
             ebar:SetPoint("TOPRIGHT", self, "BOTTOMRIGHT", 0, -12)
-			end
-			
 			ebar:SetSize(Ewidth, Eheight)
             ebar.bd = createBackdrop(ebar, ebar,1,3)
 
@@ -744,26 +711,6 @@ local UnitSpecific = {
 		ri:SetText("|cff8AFF30Zzz|r")
 		self.Resting = ri
 		
-		-- auras --
-        if cfg.auras then 
-            local debuffs = CreateFrame("Frame", nil, self)
-            debuffs:SetHeight(cfg.height*2)
-            debuffs:SetWidth(cfg.width)
-            debuffs:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 0, 4)
-            debuffs.spacing = 6
-            debuffs.size = cfg.height+2
-            debuffs.initialAnchor = "BOTTOMRIGHT"
-			debuffs["growth-x"] = "LEFT"
-            debuffs["growth-y"] = "UP"
-
-
-            debuffs.PostCreateIcon = auraIcon
-            debuffs.PostUpdateIcon = PostUpdateIcon
-            debuffs.CustomFilter = CustomFilter
-
-            self.Debuffs = debuffs
-            self.Debuffs.num = 12 
-        end
     end,
 
     --========================--
@@ -779,7 +726,7 @@ local UnitSpecific = {
             Auras:SetWidth(cfg.width)
             Auras:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 0, 4)
             Auras.spacing = 6
-            Auras.gap = true
+            Auras.gap = false
             Auras.size = cfg.height+2
             Auras.initialAnchor = "BOTTOMLEFT"
 
@@ -792,11 +739,6 @@ local UnitSpecific = {
             self.Auras.numDebuffs = 8
             self.Auras.numBuffs = 16
         end
-
-		-- combo points --
-        local cpoints = createFont(self, "OVERLAY", symbols, cfg.combofontsize, "THINOUTLINE",1,1,1)
-        cpoints:SetPoint(unpack(cfg.combop))
-        self:Tag(cpoints, '[Mlight:cp]')
     end,
 
     --========================--
@@ -811,7 +753,7 @@ local UnitSpecific = {
             Auras:SetWidth(cfg.width)
             Auras:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 0, 4)
             Auras.spacing = 6
-            Auras.gap = true
+            Auras.gap = false
             Auras.size = cfg.height+2
             Auras.initialAnchor = "BOTTOMLEFT"
 
@@ -887,7 +829,7 @@ local UnitSpecific = {
     Auras:SetWidth(cfg.width)
     Auras:SetPoint("RIGHT", self, "LEFT", -5, 0)
     Auras.spacing = 6
-    Auras.gap = true
+    Auras.gap = false
     Auras.size = cfg.height
 	Auras.initialAnchor = "BOTTOMRIGHT"
 	Auras["growth-x"] = "LEFT"
@@ -924,141 +866,16 @@ local spawnHelper = function(self, unit, ...)
 end
 
 oUF:Factory(function(self)
-    spawnHelper(self, "player","TOPRIGHT","UIParent","BOTTOM", -cfg.playerx, cfg.playery)
-    spawnHelper(self, "target","TOPLEFT","UIParent","BOTTOM", cfg.playerx, cfg.playery)
-    spawnHelper(self, "targettarget", "TOPLEFT", "UIParent", "BOTTOM", cfg.playerx +cfg.width +10, cfg.playery)
-    spawnHelper(self, "focus","BOTTOMLEFT","UIParent","BOTTOM", cfg.playerx, cfg.playery + cfg.focusy)
-    spawnHelper(self, "focustarget", "BOTTOMLEFT", "UIParent", "BOTTOM", cfg.playerx +cfg.width +10, cfg.playery + cfg.focusy)
-    spawnHelper(self, "pet", "TOPRIGHT", "UIParent", "BOTTOM", -(cfg.playerx +cfg.width +10), cfg.playery)
+    spawnHelper(self, "player",unpack(cfg.playerpos))
+    spawnHelper(self, "pet",unpack(cfg.petpos))
+    spawnHelper(self, "target",unpack(cfg.targetpos))
+    spawnHelper(self, "targettarget",unpack(cfg.totpos))
+    spawnHelper(self, "focus",unpack(cfg.focuspos))
+    spawnHelper(self, "focustarget",unpack(cfg.focustarget))
 
     if cfg.bossframes then
-        for i = 1, MAX_BOSS_FRAMES do
-            spawnHelper(self,'boss' .. i, "RIGHT", -8, 170 - (60 * i))
+        for i = 1, MAX_BOSS_FRAMES do		
+			spawnHelper(self,'boss' .. i, cfg.boss1pos[1], cfg.boss1pos[2], cfg.boss1pos[3], cfg.boss1pos[4], cfg.boss1pos[5] - (cfg.bossspace * (i-1)))
         end
     end
 end)
-
----------------------------------------------------------------------------
--- helper functions for user
----------------------------------------------------------------------------
-
-local Helper = CreateFrame"Frame"
-Helper:SetFrameStrata"HIGH"
-
-local xleft, xright, ybottom, ytop
-local Ccolor = RAID_CLASS_COLORS[select(2, UnitClass("player"))]
-
-local centertext = Helper:CreateFontString(nil, "OVERLAY")
-centertext:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
-centertext:SetFont(cfg.font, 20, "OUTLINE")
-centertext:SetTextColor(Ccolor.r, Ccolor.g, Ccolor.b)
-centertext:SetText("Target and focus yourself. \n Move the cursor on each line to see it's height/width and understand how the value works. \n \n /mhelp to show or hide this frame.")
-
-local createhelpBackdrop = function(parent) 
-    local frame = CreateFrame("Frame", nil, parent)
-	
-	local flvl = parent:GetFrameLevel()
-	if flvl - 1 >= 0 then
-    frame:SetFrameLevel(flvl-1)
-	end
-	
-    frame:SetPoint("TOPLEFT", parent, "TOPLEFT", 5, -5)
-    frame:SetPoint("BOTTOMRIGHT", parent, "BOTTOMRIGHT", -5, 5)
-	
-    frame:SetBackdrop(frameBD)
-
-    return frame
-end
-
-local function createX()
-	f = CreateFrame("Frame", nil, Helper)
-	f:SetSize(cfg.playerx, 18)
-	f:SetFrameStrata("TOOLTIP")
-	
-	local bg = createhelpBackdrop(f)
-	bg:SetBackdropColor(Ccolor.r/2, Ccolor.g/2, Ccolor.b/2)
-	bg:SetBackdropBorderColor(0.3, 0.3, 0.3) 
-	
-	f.bg = bg
-	
-	return f
-end
-
-xleft = createX()
-xleft:SetPoint("RIGHT", UIParent, "BOTTOM", 0, cfg.playery)
-
-xright = createX()
-xright:SetPoint("LEFT", UIParent, "BOTTOM", 0, cfg.playery)
-
-local xtext = Helper:CreateFontString(nil, "OVERLAY")
-xtext:SetPoint("BOTTOM", xleft, "BOTTOM", 0, 15)
-xtext:SetFont(cfg.font, 20, "OUTLINE")
-xtext:SetTextColor(0.5, 0.5, 0.5)
-xtext:SetText("cfg.playerx")
-xtext:SetShadowOffset(0,0)
-
-local function createY(y)
-	f = CreateFrame("Frame", nil, Helper)
-	f:SetSize(18, y)
-	f:SetFrameStrata("TOOLTIP")
-	
-	local bg = createhelpBackdrop(f)
-	bg:SetBackdropColor(Ccolor.r/2, Ccolor.g/2, Ccolor.b/2)
-	bg:SetBackdropBorderColor(0.3, 0.3, 0.3) 
-	f.bg = bg
-	
-	return f
-end
-
-ybottom = createY(cfg.playery)
-ybottom:SetPoint("BOTTOM", UIParent, "BOTTOM", 0, 0)
-
-ytop = createY(cfg.focusy)
-ytop:SetPoint("BOTTOM", UIParent, "BOTTOM", cfg.playerx, cfg.playery)
-
-local ybottomtext = Helper:CreateFontString(nil, "OVERLAY")
-ybottomtext:SetPoint("LEFT", ybottom, "RIGHT", 10, 0)
-ybottomtext:SetFont(cfg.font, 20, "OUTLINE")
-ybottomtext:SetTextColor(0.5, 0.5, 0.5)
-ybottomtext:SetText("cfg.playery")
-ybottomtext:SetShadowOffset(0,0)
-
-local ytoptext = Helper:CreateFontString(nil, "OVERLAY")
-ytoptext:SetPoint("LEFT", ytop, "RIGHT", 10, 0)
-ytoptext:SetFont(cfg.font, 20, "OUTLINE")
-ytoptext:SetTextColor(0.5, 0.5, 0.5)
-ytoptext:SetText("cfg.focusy")
-ytoptext:SetShadowOffset(0,0)
-
-local function highlight(frame, text)
-frame:SetScript('OnEnter', function() 
-	text:SetTextColor(1, 1, 1) 
-	text:SetShadowOffset(5,-5)
-	frame.bg:SetBackdropColor(Ccolor.r, Ccolor.g, Ccolor.b)
-	frame.bg:SetBackdropBorderColor(1, 1, 0.8) 
-end)
-frame:SetScript('OnLeave', function()
-	text:SetVertexColor(.5, 0.5, 0.5) 
-	text:SetShadowOffset(0, 0) 
-	frame.bg:SetBackdropColor(Ccolor.r/2, Ccolor.g/2, Ccolor.b/2)
-	frame.bg:SetBackdropBorderColor(0.3, 0.3, 0.3) 
-end)
-end
-
-highlight(xleft, xtext)
-highlight(xright, xtext)
-highlight(ybottom, ybottomtext)
-highlight(ytop, ytoptext)
-
-Helper:Hide()
-
-local function toggleHelper()
-if Helper:IsShown() then
-	Helper:Hide()
-else
-	Helper:Show()
-end
-end
-
-SlashCmdList["MlightHelper"] = toggleHelper;
-SLASH_MlightHelper1 = "/mhelp"

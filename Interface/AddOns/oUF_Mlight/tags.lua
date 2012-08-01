@@ -156,53 +156,18 @@ oUF.Tags.Methods['Mlight:altpower'] = function(u)
 end
 oUF.Tags.Events['Mlight:altpower'] = "UNIT_POWER UNIT_MAXPOWER"
 
--------------[[ class specific tags ]]-------------
--- combo points
-oUF.Tags.Methods['Mlight:cp'] = function(u)
-	local cp = UnitExists("vehicle") and GetComboPoints("vehicle", "target") or GetComboPoints("player", "target")
-	if cp == 1 then		return "|cff8AFF30C|r" 
-	elseif cp == 2 then	return "|cff8AFF30C C|r"
-	elseif cp == 3 then	return "|cff8AFF30C C|r |cffFFF130C|r" 
-	elseif cp == 4 then	return "|cff8AFF30C C|r |cffFFF130C C|r" 
-	elseif cp == 5 then	return "|cff8AFF30C C|r |cffFFF130C C|r |cffFF0000C|r" 
-	end
-end
-oUF.Tags.Events['Mlight:cp'] = 'UNIT_COMBO_POINTS'
-
--- holy power or soul shards
-oUF.Tags.Methods['Mlight:sp'] = function(u)
-	local _, class = UnitClass(u)
-	local SP, spcol = 0,{}
-	if class == "PALADIN" then
-		SP = UnitPower("player", 9)
-	elseif class == "WARLOCK" then
-		SP = UnitPower("player", 7)
-	elseif class == "MONK" then
-		SP = UnitPower("player", 12)
-	elseif class == "PRIEST" then
-		SP = UnitPower("player", 13)
-	end
-	if SP == 1 then return "|cff7D26CDC|r"
-	elseif SP == 2 then return "|cff9F79EEC C|r"
-	elseif SP == 3 then return "|cffEE7AE9C C C|r"
-	elseif SP == 4 then	return "|cffEE1289C C C C|r" 
-	elseif SP == 5 then	return "|cffEE0000C C C C C|r" 
-	end
-end
-oUF.Tags.Events['Mlight:sp'] = 'UNIT_POWER'
-
 --------------[[     raid     ]]-------------------
 oUF.Tags.Methods['Mlight:raidinfo'] = function(u)
-    local _, class = UnitClass(u)
-
-    if class then
-        if UnitIsDead(u) then
-            return hex(oUF.colors.class[class]).."RIP|r"
-        elseif UnitIsGhost(u) then
-            return hex(oUF.colors.class[class]).."Gho|r"
-        elseif not UnitIsConnected(u) then
-            return hex(oUF.colors.class[class]).."D/C|r"
-        end
+	local ripcolor = {r = 1, g = 0, b = 0}
+	local ghocolor = {r = 0.5, g = 0.5, b = 0.5}
+	
+    if UnitIsDead(u) then
+        return hex(ripcolor).."b|r"
+    elseif UnitIsGhost(u) then
+        return hex(ghocolor).."z|r"
+    elseif not UnitIsConnected(u) then
+        return hex(ghocolor).."U|r"
     end
+
 end
 oUF.Tags.Events['Mlight:raidinfo'] = 'UNIT_HEALTH UNIT_CONNECTION'

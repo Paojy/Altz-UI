@@ -16,10 +16,11 @@ ns.auras = {
 
     -- Any Zone
     debuffs = {
-        --[GetSpellInfo(6788)] = 16, -- Weakened Soul
+        [GetSpellInfo(6788)] = 16, -- Weakened Soul TEST
     },
 
-    buffs = {
+    buffs = { -- these display on the second icon
+		[GetSpellInfo(139)] = 15, -- Renew TEST
 	--ÄÁÊ¦
 		[GetSpellInfo(33206)] = 15, -- Í´¿àÑ¹ÖÆ
         [GetSpellInfo(47788)] = 15, -- ÊØ»¤Ö®»ê
@@ -38,7 +39,7 @@ ns.auras = {
 	--ÎäÉ®
 		[GetSpellInfo(116849)] = 15, -- ×÷¼ë¸¿Ãü
 		[GetSpellInfo(115203)] = 15, -- ×³µ¨¾Æ
-        [GetSpellInfo(115308)] = 14, -- Æ®Ãì¾Æ		
+        --[GetSpellInfo(115308)] = 14, -- Æ®Ãì¾Æ		
 	--DK
         [GetSpellInfo(50397)] = 15, -- Î×ÑýÖ®Çû
 		[GetSpellInfo(48707)] = 15, -- ·´Ä§·¨»¤ÕÖ
