@@ -17,39 +17,31 @@
   DAY_ONELETTER_ABBR = "%dd";
   MINUTE_ONELETTER_ABBR = "%dm";
   SECOND_ONELETTER_ABBR = "%ds";
-
-  --classcolor
-  local classcolor = RAID_CLASS_COLORS[select(2, UnitClass("player"))]
-
-  if cfg.color.classcolored then
-    cfg.color.normal = classcolor
-  end
-
-  if cfg.background.classcolored then
-    cfg.background.shadowcolor = classcolor
-  end
-
-  --backdrop
-  local backdrop = {
-    bgFile = "",
-    edgeFile = cfg.textures.outer_shadow,
-    tile = false,
-    tileSize = 32,
-    edgeSize = cfg.background.inset,
-    insets = {
-      left = cfg.background.inset,
-      right = cfg.background.inset,
-      top = cfg.background.inset,
-      bottom = cfg.background.inset,
-    },
+  
+textures = {
+	blank             = "Interface\\Buttons\\WHITE8x8",
+    normal            = "Interface\\AddOns\\rBuffFrameStyler\\media\\gloss",
+    outer_shadow      = "Interface\\AddOns\\rBuffFrameStyler\\media\\outer_shadow",
   }
 
-  local backdrop2 = {
-    bgFile = [=[Interface\ChatFrame\ChatFrameBackground]=],
-	edgeFile = [=[Interface\ChatFrame\ChatFrameBackground]=],
+-- grow
+local backdrop = {
+    bgFile = "",
+    edgeFile = textures.outer_shadow,
+    tile = false,
+    edgeSize = 4,
+    insets = { left = 4, right = 4, top = 4, bottom = 4 },
+  }
+  
+-- border  
+local backdrop2 = {
+    bgFile = "",
+	edgeFile = textures.blank,
 	edgeSize = 1,
     insets = {top = 1, left = 1, bottom = 1, right = 1},
 }
+
+
   ---------------------------------------
   -- FUNCTIONS
   ---------------------------------------
@@ -104,7 +96,7 @@
     local icon = _G[name.."Icon"]
 
     if border then
-      border:SetTexture(cfg.textures.normal)
+      border:SetTexture(textures.normal)
       border:SetTexCoord(0,1,0,1)
       border:SetDrawLayer("BACKGROUND",-7)
       if type == "wpn" then
@@ -117,43 +109,41 @@
       --create border (for buff icons)
       local new = b:CreateTexture(nil,"BACKGROUND",nil,-7)
       new:SetAllPoints(b)
-      new:SetTexture(cfg.textures.normal)
-      new:SetVertexColor(cfg.color.normal.r,cfg.color.normal.g,cfg.color.normal.b)
+      new:SetTexture(textures.normal)
+      new:SetVertexColor(0, 0, 0)
       b.Border = border
     end
 
     --icon
     icon:SetTexCoord(0.1,0.9,0.1,0.9)
-    icon:SetPoint("TOPLEFT", b, "TOPLEFT", 0, 0)
-    icon:SetPoint("BOTTOMRIGHT", b, "BOTTOMRIGHT", 0, 0)
+    icon:SetPoint("TOPLEFT", b, "TOPLEFT", 2, -2)
+    icon:SetPoint("BOTTOMRIGHT", b, "BOTTOMRIGHT", -2, 2)
     icon:SetDrawLayer("BACKGROUND",-8)
 
     --duration
-    b.duration:SetFont(cfg.font, cfg.duration.fontsize, "THINOUTLINE")
+    b.duration:SetFont(cfg.font, 13, "THINOUTLINE")
     b.duration:ClearAllPoints()
-    b.duration:SetPoint(cfg.duration.pos.a1,cfg.duration.pos.x,cfg.duration.pos.y)
+    b.duration:SetPoint("BOTTOM",5,-10)
 
     --count
-    b.count:SetFont(cfg.font, cfg.count.fontsize, "THINOUTLINE")
+    b.count:SetFont(cfg.font, 12, "THINOUTLINE")
     b.count:ClearAllPoints()
-    b.count:SetPoint(cfg.count.pos.a1,cfg.count.pos.x,cfg.count.pos.y)
+    b.count:SetPoint("TOPRIGHT",0,0)
 
     --shadow
-    if cfg.background.showshadow then
-      local back = CreateFrame("Frame", nil, b)
-      back:SetPoint("TOPLEFT", b, "TOPLEFT", -cfg.background.inset, cfg.background.inset)
-      back:SetPoint("BOTTOMRIGHT", b, "BOTTOMRIGHT", cfg.background.inset, -cfg.background.inset)
-      back:SetFrameLevel(b:GetFrameLevel()-2)
-      back:SetBackdrop(backdrop)
-      back:SetBackdropBorderColor(cfg.background.shadowcolor.r,cfg.background.shadowcolor.g,cfg.background.shadowcolor.b,cfg.background.shadowcolor.a)
-	  local backbd = CreateFrame("Frame", nil, b)
-      backbd:SetPoint("TOPLEFT", b, "TOPLEFT", -1, 1)
-      backbd:SetPoint("BOTTOMRIGHT", b, "BOTTOMRIGHT", 1, -1)
-      backbd:SetFrameLevel(b:GetFrameLevel()-1)
-      backbd:SetBackdrop(backdrop2)
-      backbd:SetBackdropBorderColor(0, 0, 0)
-    end
-
+    local back = CreateFrame("Frame", nil, b)
+    back:SetPoint("TOPLEFT", b, "TOPLEFT", -2, 2)
+    back:SetPoint("BOTTOMRIGHT", b, "BOTTOMRIGHT", 2, -2)
+    back:SetFrameLevel(b:GetFrameLevel()-2)
+    back:SetBackdrop(backdrop)
+    back:SetBackdropBorderColor(0, 0, 0, 1)
+    local back1 = CreateFrame("Frame", nil, b)
+    back1:SetPoint("TOPLEFT", b, "TOPLEFT", 1, -1)
+    back1:SetPoint("BOTTOMRIGHT", b, "BOTTOMRIGHT", -1, 1)
+    back1:SetFrameLevel(b:GetFrameLevel()-1)
+    back1:SetBackdrop(backdrop2)
+    back1:SetBackdropBorderColor(0, 0, 0, 1)
+	
     --set button styled variable
     b.styled = true
   end
