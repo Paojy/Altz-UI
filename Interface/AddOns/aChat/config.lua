@@ -28,13 +28,6 @@ cfg.autoscrolldelay = 15
 -- Tab 切换聊天频道
 cfg.tabchannel = true
 
--- Minimize the Chat after a few seconds
--- 自动收缩聊天框
-cfg.minchat = true              -- enable
-cfg.maxHeight = 120				-- How high the chat frames are when maximized
-cfg.minimizeTime = 10			-- Minimize after X seconds
-cfg.minimizedLines = 1			-- Number of chat messages to show in minimized state
-cfg.LockInCombat = true			-- Do not maximize in combat
 ---------------------------------------------------------------------------------------
 -------------------[[        My         Config        ]]------------------------------- 
 ---------------------------------------------------------------------------------------

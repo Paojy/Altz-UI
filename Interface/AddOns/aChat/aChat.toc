@@ -7,7 +7,6 @@
 config.lua
 
 mods\chat.lua
-mods\Chicchai.lua
 mods\easyChannel.lua
 mods\autoscroll.lua
 mods\channelreplacements.lua
