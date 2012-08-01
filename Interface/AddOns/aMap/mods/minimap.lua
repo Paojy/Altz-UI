@@ -15,13 +15,6 @@ Minimap.border:SetFrameLevel(2)
 Minimap.border:ClearAllPoints()
 Minimap.border:SetPoint("TOPLEFT", -4, 4)
 Minimap.border:SetPoint("BOTTOMRIGHT", 4, -4)
-	
-local PMinimap = createtex(Minimap, "World\\GENERIC\\ACTIVEDOODADS\\INSTANCEPORTAL\\GENERICGLOW2.BLP", "ADD")
-PMinimap:ClearAllPoints()
-PMinimap:SetPoint("TOPLEFT", Minimap, "TOPLEFT", -90, 90)
-PMinimap:SetPoint("BOTTOMRIGHT", Minimap, "BOTTOMRIGHT", 90, -90)
-PMinimap:SetVertexColor(Ccolor.r, Ccolor.g, Ccolor.b)
-PMinimap:SetDrawLayer("BACKGROUND")
 
 function fixTooltip(self)
 	if self ~= MiniMapMailFrame then
@@ -177,7 +170,7 @@ end)
 
 Minimap:SetScript('OnMouseUp', function (self, button)
 	if button == 'RightButton' then
-		ToggleDropDownMenu(1, nil, MiniMapTrackingDropDown, Minimap, (Minimap:GetWidth()+2), (Minimap:GetHeight()))
+		ToggleDropDownMenu(1, nil, MiniMapTrackingDropDown, Minimap, (Minimap:GetWidth()+8), (Minimap:GetHeight()))
 		GameTooltip:Hide()
 	else
 		Minimap_OnClick(self)

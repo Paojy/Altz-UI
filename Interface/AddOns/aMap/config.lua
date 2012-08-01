@@ -6,7 +6,7 @@ local cfg = CreateFrame("Frame")
 ---------------------------------------------------------------------------------------
 
 cfg.scale = 1.5
-cfg.spawn = {"TOPLEFT", UIParent, "TOPLEFT", 20, -10}
+cfg.spawn = {"TOPLEFT", UIParent, "TOPLEFT", 20, -15}
 cfg.mailposition = {"BOTTOMRIGHT", Minimap,"BOTTOMRIGHT", -5 ,5}
 
 ---------------------------------------------------------------------------------------
