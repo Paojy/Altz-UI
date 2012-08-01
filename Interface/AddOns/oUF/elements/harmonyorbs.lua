@@ -77,8 +77,7 @@ local Enable = function(self, unit)
 
 		self:RegisterEvent('UNIT_POWER', Path, true)
 		self:RegisterEvent('UNIT_DISPLAYPOWER', Path, true)
-		--self:RegisterEvent('UNIT_MAXPOWER', Path)
-		
+
 		for index = 1, UnitPowerMax(unit, SPELL_POWER_LIGHT_FORCE) do
 			local chi = element[index]
 			if(chi:IsObjectType'Texture' and not chi:GetTexture()) then
@@ -96,7 +95,6 @@ local Disable = function(self)
 	if(element) then
 		self:UnregisterEvent('UNIT_POWER', Path)
 		self:UnregisterEvent('UNIT_DISPLAYPOWER', Path)
-		--self:UnregisterEvent('UNIT_MAXPOWER', Path)
 	end
 end
 

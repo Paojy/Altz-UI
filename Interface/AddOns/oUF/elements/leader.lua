@@ -19,7 +19,7 @@
    Leader:SetPoint("BOTTOM", self, "TOP")
    
    -- Register it with oUF
-   self.Leader = Leadera
+   self.Leader = Leader
 
  Hooks
 
@@ -39,7 +39,7 @@ local Update = function(self, event)
 	end
 
 	local unit = self.unit
-	local isLeader = (UnitInParty(unit) or UnitInRaid(unit)) and (WoW5 and UnitIsGroupLeader(unit))
+	local isLeader = (UnitInParty(unit) or UnitInRaid(unit)) and (WoW5 and UnitIsGroupLeader(unit) or UnitIsGroupLeader(unit))
 	if(isLeader) then
 		leader:Show()
 	else
