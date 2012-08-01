@@ -26,9 +26,9 @@ local framegrowBD = {
 function createpxBD(f, a, ba)
 	if f.pxborder then return end
 	local border = CreateFrame("Frame", nil ,f)
-	border:SetPoint("TOPLEFT", -3, 3)
-	border:SetPoint("BOTTOMRIGHT", 3, -3)
-    border:SetBackdrop(framegrowBD)
+	border:SetPoint("TOPLEFT", -1, 1)
+	border:SetPoint("BOTTOMRIGHT", 1, -1)
+    border:SetBackdrop(frame1pxBD)
     border:SetBackdropColor(0.05, 0.05, 0.05, a)
     border:SetBackdropBorderColor(0, 0, 0, ba)
 	if f:GetFrameLevel() - 1 >= 0 then
@@ -37,6 +37,22 @@ function createpxBD(f, a, ba)
 		border:SetFrameLevel(0)
 	end
 	f.pxborder = border
+end
+
+function createskinpxBD(f)
+	if f.skinpxborder == true then return end
+	local border = CreateFrame("Frame", nil ,f)
+	border:SetPoint("TOPLEFT", -1, 1)
+	border:SetPoint("BOTTOMRIGHT", 1, -1)
+    border:SetBackdrop(frame1pxBD)
+    border:SetBackdropColor(0, 0, 0, 0)
+    border:SetBackdropBorderColor(0, 0, 0, 1)
+	if f:GetFrameLevel() - 1 >= 0 then
+		border:SetFrameLevel(f:GetFrameLevel() - 1)
+	else
+		border:SetFrameLevel(0)
+	end
+	f.skinpxborder = true
 end
 
 function creategrowBD(f, r, g, b, a, ba)
@@ -55,6 +71,22 @@ function creategrowBD(f, r, g, b, a, ba)
 	f.border = border
 end
 
+function createskingrowBD(f)
+	if f.skinborder == true then return end
+	local border = CreateFrame("Frame", nil ,f)
+	border:SetPoint("TOPLEFT", -3, 3)
+	border:SetPoint("BOTTOMRIGHT", 3, -3)
+    border:SetBackdrop(framegrowBD)
+    border:SetBackdropColor(0, 0, 0, 0.7)
+    border:SetBackdropBorderColor(0, 0, 0, 1)
+	if f:GetFrameLevel() - 1 >= 0 then
+		border:SetFrameLevel(f:GetFrameLevel() - 1)
+	else
+		border:SetFrameLevel(0)
+	end
+	f.skinborder = true
+end
+
 function createnameplateBD(f, r, g, b, a, ba, anchor)
     if not anchor then anchor = f end
 	local border = CreateFrame("Frame", nil ,f)
@@ -63,10 +95,18 @@ function createnameplateBD(f, r, g, b, a, ba, anchor)
     border:SetBackdrop(framegrowBD)
     border:SetBackdropColor(r, g, b, a)
     border:SetBackdropBorderColor(0, 0, 0, ba)
+	local pxbd = CreateFrame("Frame", nil ,f)
+	pxbd:SetPoint("TOPLEFT", anchor, "TOPLEFT", -1, 1)
+	pxbd:SetPoint("BOTTOMRIGHT", anchor, "BOTTOMRIGHT", 1, -1)
+    pxbd:SetBackdrop(frame1pxBD)
+    pxbd:SetBackdropColor(0, 0, 0, 1)
+    pxbd:SetBackdropBorderColor(0, 0, 0, ba)
 	if f:GetFrameLevel() - 1 >= 0 then
 		border:SetFrameLevel(f:GetFrameLevel() - 1)
+		pxbd:SetFrameLevel(f:GetFrameLevel() - 1)
 	else
 		border:SetFrameLevel(0)
+		pxbd:SetFrameLevel(0)
 	end
 end
 
@@ -74,6 +114,23 @@ function createtipBD(tip)
     tip:SetBackdrop(framegrowBD)
 	tip.border = true
 end
+
+function createdbmBD(f)
+	if f.dbmborder then return end
+	local border = CreateFrame("Frame", nil ,f)
+	border:SetPoint("TOPLEFT", -1, 1)
+	border:SetPoint("BOTTOMRIGHT", 1, -1)
+    border:SetBackdrop(framegrowBD)
+    border:SetBackdropColor(0, 0, 0, 0.5)
+    border:SetBackdropBorderColor(0, 0, 0, 1)
+	if f:GetFrameLevel() - 1 >= 0 then
+		border:SetFrameLevel(f:GetFrameLevel() - 1)
+	else
+		border:SetFrameLevel(0)
+	end
+	f.dbmborder = border
+end
+
 
 function creategradient(f, r, g, b, n, a)
 	local gradient = f:CreateTexture(nil, "BACKGROUND")

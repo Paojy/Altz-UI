@@ -4,15 +4,8 @@ local Ccolor = RAID_CLASS_COLORS[select(2, UnitClass("player"))]
 local aMedia = "Interface\\AddOns\\aCore\\media\\"
 local blank = "Interface\\Buttons\\WHITE8x8"
 
-local xpbarsize = {
-	['Width'] = 330,
-	['Height'] = 10,
-}
-
-local xppos = {"BOTTOM", UIParent, "BOTTOM", 0, 10}
-
 --====================================================--
---[[            -- shadow and lines--               ]]--
+--[[                -- shadow --                    ]]--
 --====================================================--	
 local PShadow = CreateFrame("Frame", nil, UIParent)
 PShadow:SetFrameStrata("BACKGROUND")
@@ -20,49 +13,121 @@ PShadow:SetAllPoints()
 PShadow:SetBackdrop({bgFile = aMedia.."shadow"})
 PShadow:SetBackdropColor(0, 0, 0, 0.3)
 
-local function createline(line, pos, y)
-	line = CreateFrame("Frame", nil, UIParent)
-	line:SetFrameStrata("BACKGROUND")
-	line:SetPoint(pos, 0, y)
-	line:SetSize(GetScreenWidth(), 1)
-	creategrowBD(line, Ccolor.r, Ccolor.g, Ccolor.b, 1, 1)
-	return line
+--====================================================--
+--[[                -- panels --                    ]]--
+--====================================================--	
+
+local function createpanel(panel, pos, y)
+	panel = CreateFrame("Frame", nil, UIParent)
+	panel:SetFrameStrata("BACKGROUND")
+	panel:SetFrameLevel(3)
+	panel:SetPoint(pos, 0, y)
+	panel:SetSize(GetScreenWidth() -20, 7)
+	creategrowBD(panel, 0, 0, 0, 0.3, 1)
+	return panel
 end
 
---local topline = createline(self, "TOP", -15)
-local bottomline = createline(self, "BOTTOM", 15)
+local toppanel = createpanel(self, "TOP", -3)
+local bottompanel = createpanel(self, "BOTTOM", 3)
+
+local function createlittlepanel(panel, width)
+	panel = CreateFrame("Frame", nil, UIParent)
+	panel:SetFrameStrata("MEDIUM")
+	panel:SetFrameLevel(5)
+	panel:SetSize(width, 4)
+	creategradient(panel, Ccolor.r, Ccolor.g, Ccolor.b, 3)
+	creategrowBD(panel, 0.3, 0.3, 0.3, 1, 1)
+	return panel
+end
 --====================================================--
---[[            -- XP bar --                        ]]--
+--[[         -- XP bar (topleft panel)--            ]]--
 --====================================================--
---xp bar
+
 local xpbar = CreateFrame("StatusBar", "ExperienceBar", UIParent)
-xpbar:SetSize(xpbarsize.Width,xpbarsize.Height)
-xpbar:SetPoint(unpack(xppos))
+xpbar:SetFrameStrata("MEDIUM")
+xpbar:SetFrameLevel(5)
+xpbar:SetSize(130,4)
+xpbar:SetPoint("TOPLEFT", UIParent, "TOPLEFT", 15, -10)
 createbargradient(xpbar, Ccolor.r, Ccolor.g, Ccolor.b, 3)
 creategrowBD(xpbar, 0.3, 0.3, 0.3, 1, 1)
 
 local indicator = createtex(xpbar, [[Interface\CastingBar\UI-CastingBar-Spark]], "ADD")
-indicator:SetSize(7, xpbarsize.Height+10)
+indicator:SetSize(7, 15)
 indicator:ClearAllPoints()
 
-local centerbox = CreateFrame("Button", nil, xpbar) -- Center Frame
-centerbox:SetSize(120, 20)
-centerbox:SetPoint("CENTER", 0, 5)
-local Ctext = createtext(centerbox, 12, "OUTLINE", true)
+local function CommaValue(amount)
+	local formatted = amount
+	while true do  
+		formatted, k = string.gsub(formatted, "^(-?%d+)(%d%d%d)", '%1,%2')
+		if (k==0) then
+			break
+		end
+	end
+	return formatted
+end
 
-local leftbox = CreateFrame("Button", nil, xpbar) -- Left Frame
-leftbox:SetSize(40, 20)
-leftbox:SetPoint("LEFT", xpbar, "LEFT", 25, 5)
-local Ltext = createtext(leftbox, 12, "OUTLINE", false)
---Ltext:SetJustifyH("LEFT")
-Ltext:SetPoint("LEFT")
+local _G = getfenv(0)
+function xprptoolitp()
+	GameTooltip:SetOwner(xpbar, "ANCHOR_NONE")
+	GameTooltip:SetPoint("TOPLEFT", Minimap, "TOPRIGHT", 8, 0)
+	
+	local XP, maxXP = UnitXP("player"), UnitXPMax("player")
+	local restXP = GetXPExhaustion()
+	local name, rank, minRep, maxRep, value = GetWatchedFactionInfo()
+	
+	if UnitLevel("player") < MAX_PLAYER_LEVEL then
+		GameTooltip:AddDoubleLine("Current: ", string.format('%s/%s (%d%%)', CommaValue(XP), CommaValue(maxXP), (XP/maxXP)*100), Ccolor.r, Ccolor.g, Ccolor.b, 1, 1, 1)
+		GameTooltip:AddDoubleLine("Remaining: ", string.format('%s', CommaValue(maxXP-XP)), Ccolor.r, Ccolor.g, Ccolor.b, 1, 1, 1)
+		GameTooltip:AddDoubleLine("Rested: ", string.format('|cffb3e1ff%s (%d%%)', CommaValue(restXP), restXP/maxXP*100), Ccolor.r, Ccolor.g, Ccolor.b)
+	end
+	
+	if name and not UnitLevel("player") == MAX_PLAYER_LEVEL then
+		GameTooltip:AddLine(" ")
+	end
 
-local rightbox = CreateFrame("Button", nil, xpbar) -- Right Frame
-rightbox:SetSize(40, 20)
-rightbox:SetPoint("RIGHT", xpbar, "RIGHT", -25, 5)
-local Rtext = createtext(rightbox, 12, "OUTLINE", false)
---Rtext:SetJustifyH("RIGHT")
-Rtext:SetPoint("RIGHT")
+	if name then
+		GameTooltip:AddLine(name.."  (".._G['FACTION_STANDING_LABEL'..rank]..")", Ccolor.r, Ccolor.g, Ccolor.b)
+		GameTooltip:AddDoubleLine("Rep:", string.format('%s/%s (%d%%)', CommaValue(value-minRep), CommaValue(maxRep-minRep), (value-minRep)/(maxRep-minRep)*100), Ccolor.r, Ccolor.g, Ccolor.b, 1, 1, 1)
+		GameTooltip:AddDoubleLine("Remaining:", string.format('%s', CommaValue(maxRep-value)), Ccolor.r, Ccolor.g, Ccolor.b, 1, 1, 1)
+	end	
+	
+	GameTooltip:Show()
+end
+
+function xpbar:updateOnevent()
+	local XP, maxXP = UnitXP("player"), UnitXPMax("player")
+	local name, rank, minRep, maxRep, value = GetWatchedFactionInfo()
+   	if not UnitLevel('player') == MAX_PLAYER_LEVEL then
+		xpbar:SetMinMaxValues(min(0, XP), maxXP)
+		xpbar:SetValue(XP)
+	else
+		xpbar:SetMinMaxValues(minRep, maxRep)
+		xpbar:SetValue(value)
+	end
+	indicator:SetPoint("CENTER", xpbar:GetStatusBarTexture(), "RIGHT")
+end
+
+xpbar:SetScript("OnEnter", xprptoolitp)
+xpbar:SetScript("OnLeave", function() GameTooltip:Hide() end)
+xpbar:SetScript("OnEvent", xpbar.updateOnevent)
+
+xpbar:RegisterEvent("PLAYER_XP_UPDATE")
+xpbar:RegisterEvent('UPDATE_FACTION')
+xpbar:RegisterEvent("PLAYER_LEVEL_UP")
+xpbar:RegisterEvent("PLAYER_ENTERING_WORLD")
+xpbar:RegisterEvent("PLAYER_LOGIN")
+
+--====================================================--
+--[[            -- info panel --                    ]]--
+--====================================================--
+local infopanel = createlittlepanel(self, 185)
+infopanel:SetPoint("TOPLEFT", UIParent, "TOPLEFT", 150, -10)
+
+local centerbox = CreateFrame("Button", nil, infopanel) -- Center Frame
+centerbox:SetSize(200, 20)
+centerbox:SetPoint("TOPLEFT", infopanel, "BOTTOMLEFT", 10, 5)
+local Ctext = createtext(centerbox, 12, "OUTLINE", false)
+Ctext:SetPoint"LEFT"
 
 -- Hex Color
 local Hex
@@ -79,17 +144,6 @@ local memFormat = function(num)
 	else
 		return format("%.1f kb", floor(num))
 	end
-end
-
-local function CommaValue(amount)
-	local formatted = amount
-	while true do  
-		formatted, k = string.gsub(formatted, "^(-?%d+)(%d%d%d)", '%1,%2')
-		if (k==0) then
-			break
-		end
-	end
-	return formatted
 end
 
 -- Ordering
@@ -120,8 +174,8 @@ function memorytooltip()
 		local memory, entry
 		local BlizzMem = collectgarbage("count")
 			
-		GameTooltip:SetOwner(xpbar, "ANCHOR_NONE")
-		GameTooltip:SetPoint("BOTTOM", xpbar, "TOP", 0, 8)
+		GameTooltip:SetOwner(centerbox, "ANCHOR_NONE")
+		GameTooltip:SetPoint("TOPLEFT", Minimap, "TOPRIGHT", 8, 0)
 		GameTooltip:AddLine("Top "..nraddons.." AddOns", Ccolor.r, Ccolor.g, Ccolor.b)
 		GameTooltip:AddLine(" ")	
 			
@@ -149,39 +203,10 @@ function memorytooltip()
 	end
 end
 
-local _G = getfenv(0)
-function xprptoolitp()
-	GameTooltip:SetOwner(xpbar, "ANCHOR_NONE")
-	GameTooltip:SetPoint("BOTTOM", xpbar, "TOP", 0, 8)
-	
-	local XP, maxXP = UnitXP("player"), UnitXPMax("player")
-	local restXP = GetXPExhaustion()
-	local name, rank, minRep, maxRep, value = GetWatchedFactionInfo()
-	
-	if UnitLevel("player") < MAX_PLAYER_LEVEL then
-		GameTooltip:AddDoubleLine("Current: ", string.format('%s/%s (%d%%)', CommaValue(XP), CommaValue(maxXP), (XP/maxXP)*100), Ccolor.r, Ccolor.g, Ccolor.b, 1, 1, 1)
-		GameTooltip:AddDoubleLine("Remaining: ", string.format('%s', CommaValue(maxXP-XP)), Ccolor.r, Ccolor.g, Ccolor.b, 1, 1, 1)
-		GameTooltip:AddDoubleLine("Rested: ", string.format('|cffb3e1ff%s (%d%%)', CommaValue(restXP), restXP/maxXP*100), Ccolor.r, Ccolor.g, Ccolor.b)
-	end
-	
-	if name and not UnitLevel("player") == MAX_PLAYER_LEVEL then
-		GameTooltip:AddLine(" ")
-	end
-
-	if name then
-		GameTooltip:AddLine(name.."  (".._G['FACTION_STANDING_LABEL'..rank]..")", Ccolor.r, Ccolor.g, Ccolor.b)
-		GameTooltip:AddDoubleLine("Rep:", string.format('%s/%s (%d%%)', CommaValue(value-minRep), CommaValue(maxRep-minRep), (value-minRep)/(maxRep-minRep)*100), Ccolor.r, Ccolor.g, Ccolor.b, 1, 1, 1)
-		GameTooltip:AddDoubleLine("Remaining:", string.format('%s', CommaValue(maxRep-value)), Ccolor.r, Ccolor.g, Ccolor.b, 1, 1, 1)
-	end	
-	
-	GameTooltip:Show()
-end
-
-
 -- Update Function
 local hour, fps, lag, dur
 local refresh_timer = 0
-function xpbar:updateOntime(elapsed)
+function infopanel:updateOntime(elapsed)
 	refresh_timer = refresh_timer + elapsed -- Only update this values every refresh_timer seconds
 	if refresh_timer > 1 then -- Updates each X seconds	
 		dur = (Durability().."%sdur|r   "):format(Hex(Ccolor))
@@ -189,82 +214,59 @@ function xpbar:updateOntime(elapsed)
 		lag = (select(3, GetNetStats()).."%sms|r   "):format(Hex(Ccolor))
 		hour = date("%H:%M")
 		
-		Ltext:SetText(dur) -- Left Anchored Text
-		Ctext:SetText(fps..lag) -- Center Anchored Text
-		Rtext:SetText(hour) -- Right Anchored Text
+		Ctext:SetText(dur..fps..lag..hour) -- Center Anchored Text
 		
 		refresh_timer = 0 -- Reset Timer
 	end
 end
 
-function xpbar:updateOnevent()
-	local XP, maxXP = UnitXP("player"), UnitXPMax("player")
-	local name, rank, minRep, maxRep, value = GetWatchedFactionInfo()
-   	if not UnitLevel('player') == MAX_PLAYER_LEVEL then
-		xpbar:SetMinMaxValues(min(0, XP), maxXP)
-		xpbar:SetValue(XP)
-	else
-		xpbar:SetMinMaxValues(minRep, maxRep)
-		xpbar:SetValue(value)
-	end
-	indicator:SetPoint("CENTER", xpbar:GetStatusBarTexture(), "RIGHT")
-end
+centerbox:SetScript("OnEnter", memorytooltip)
+centerbox:SetScript("OnLeave", function() GameTooltip:Hide() end)
+centerbox:SetScript("OnMouseUp", function() ToggleCalendar() end)
 
--- Initialize Function
-local function Init()
-	xpbar:SetScript("OnEnter", xprptoolitp)
-	xpbar:SetScript("OnLeave", function() GameTooltip:Hide() end)
-	
-	centerbox:SetScript("OnEnter", memorytooltip)
-	centerbox:SetScript("OnLeave", function() GameTooltip:Hide() end)
-
-	leftbox:SetScript("OnMouseUp", function() ToggleCharacter("PaperDollFrame") end)
-	rightbox:SetScript("OnMouseUp", function() ToggleCalendar() end)
-	
-	xpbar:SetScript("OnEvent", xpbar.updateOnevent)
-	xpbar:SetScript("OnUpdate", xpbar.updateOntime)
-end
-
-
-Init()
-
-xpbar:RegisterEvent("PLAYER_XP_UPDATE")
-xpbar:RegisterEvent('UPDATE_FACTION')
-xpbar:RegisterEvent("PLAYER_LEVEL_UP")
-xpbar:RegisterEvent("PLAYER_ENTERING_WORLD")
-xpbar:RegisterEvent("PLAYER_LOGIN")
+infopanel:SetScript("OnUpdate", infopanel.updateOntime)
 
 --====================================================--
---[[              -- World Channel --               ]]--
+--[[              -- buff panel --               ]]--
 --====================================================--
 
-local Leftbutton = CreateFrame("Frame", nil, xpbar)
-Leftbutton:SetSize(20,20)
-Leftbutton:SetPoint("CENTER", xpbar, "LEFT", 0 ,0)
-createtex(Leftbutton, "Interface\\PetBattles\\DeadPetIcon")
+local buffpanel = createlittlepanel(self, 320)
+buffpanel:SetPoint("TOPRIGHT", UIParent, "TOPRIGHT", -15, -10)
 
-Leftbutton:SetScript('OnMouseUp', function() WorldChannel() end)
-Leftbutton:SetScript('OnEnter', function()
-		GameTooltip:SetOwner(Leftbutton, "ANCHOR_NONE")
-		GameTooltip:SetPoint("BOTTOMLEFT", Leftbutton, "TOPLEFT", -4, 8)
+--====================================================--
+--[[              -- chat panel --               ]]--
+--====================================================--
+local chatpanel = createlittlepanel(self, 320)
+chatpanel:SetPoint("BOTTOMLEFT", UIParent, "BOTTOMLEFT", 15, 10)
+
+chatpanel:SetScript('OnMouseUp', function() WorldChannel() end)
+chatpanel:SetScript('OnEnter', function()
+		GameTooltip:SetOwner(chatpanel, "ANCHOR_NONE")
+		GameTooltip:SetPoint("BOTTOMLEFT", chatpanel, "TOPLEFT", -1, 3)
 		GameTooltip:AddLine("WorldChannel")
 		GameTooltip:Show()
 		end)
-Leftbutton:SetScript('OnLeave', function() 
+chatpanel:SetScript('OnLeave', function() 
 		GameTooltip:Hide() 
 		end)
-
+		
 --====================================================--
---[[               -- Damage Meter --               ]]--
---====================================================--
+--[[             -- bottom panel --            ]]--
+--====================================================--	
 
-local Rightbutton = CreateFrame("Frame", nil, xpbar)
-Rightbutton:SetSize(20,20)
-Rightbutton:SetPoint("CENTER", xpbar, "RIGHT", 0 ,0)
-createtex(Rightbutton, "Interface\\PetBattles\\DeadPetIcon")
+local bottompanel = createlittlepanel(self, 345)
+bottompanel:SetPoint("BOTTOM", UIParent, "BOTTOM", 0, 10)
+bottompanel:SetScript('OnMouseUp', function() 
+InterfaceOptionsFrame_OpenToCategory(ACTIONBAR_LABEL)
+end)
+--====================================================--
+--[[             -- bottomright panel --            ]]--
+--====================================================--		
+local brpanel = createlittlepanel(self, 320)
+brpanel:SetPoint("BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", -15, 10)
 
 -- tiny dps don't have a global toggle fuction, so just copy it.
-local function toggle()
+local function toggletinydps()
 		if IsAddOnLoaded("TinyDPS") then
 		if tdpsFrame:IsVisible() then
 			CloseDropDownMenus()
@@ -280,23 +282,40 @@ local function toggle()
 		end
 end
 
-Rightbutton:SetScript('OnMouseUp', function() 
+if IsAddOnLoaded("Recount") then
+	local Recount = LibStub("AceAddon-3.0"):GetAddon("Recount")
+	
+	local function togglerecount()
+		if Recount.MainWindow:IsShown() then
+			Recount.MainWindow:Hide()
+			Recount.db.profile.MainWindowVis = false
+		else
+			Recount.MainWindow:Show()
+			Recount:RefreshMainWindow()
+			Recount.db.profile.MainWindowVis = true
+		end
+	end
+end
+
+brpanel:SetScript('OnMouseUp', function() 
         if IsAddOnLoaded("Numeration") then
             Numeration:ToggleVisibility()
 	    elseif IsAddOnLoaded("Skada") then
             Skada:ToggleWindow()
 		elseif IsAddOnLoaded("TinyDPS") then
-			toggle()
-	    else print "Can't find Numeration, Skada or TinyDPS!"
+			toggletinydps()
+		elseif IsAddOnLoaded("Recount") then
+			togglerecount()
+	    else print "Can't find Numeration, Skada, Recount or TinyDPS!"
         end 
 		end)
-Rightbutton:SetScript('OnEnter', function()
-		GameTooltip:SetOwner(Rightbutton, "ANCHOR_NONE")
-		GameTooltip:SetPoint("BOTTOMRIGHT", Rightbutton, "TOPRIGHT", 4, 8)
+brpanel:SetScript('OnEnter', function()
+		GameTooltip:SetOwner(brpanel, "ANCHOR_NONE")
+		GameTooltip:SetPoint("BOTTOMRIGHT", brpanel, "TOPRIGHT", 1, 3)
 		GameTooltip:AddLine("Damage Meter")
 		GameTooltip:Show()
 		end)
-Rightbutton:SetScript('OnLeave', function() 
+brpanel:SetScript('OnLeave', function() 
 		GameTooltip:Hide() 
 		end)
 
@@ -305,11 +324,13 @@ Rightbutton:SetScript('OnLeave', function()
 --====================================================--
 
 local TOPPANEL = CreateFrame("Frame", nil, WorldFrame)
+TOPPANEL:SetFrameStrata("HIGH")
 creategrowBD(TOPPANEL, 0, 0, 0, 0.5, 1)
 TOPPANEL:SetPoint("TOPLEFT",WorldFrame,"TOPLEFT",-5,5)
 TOPPANEL:SetPoint("BOTTOMRIGHT",WorldFrame,"TOPRIGHT",5,-80)
 
 local BOTTOMPANEL = CreateFrame("Frame", nil, WorldFrame)
+BOTTOMPANEL:SetFrameStrata("HIGH")
 creategrowBD(BOTTOMPANEL, 0, 0, 0, 0.5, 1)
 BOTTOMPANEL:SetPoint("BOTTOMLEFT",WorldFrame,"BOTTOMLEFT",-5,-5)
 BOTTOMPANEL:SetPoint("TOPRIGHT",WorldFrame,"BOTTOMRIGHT",5,75)
@@ -343,10 +364,10 @@ Guidetext:SetTextColor(0.7, 0.7, 0.7)
 Guidetext:SetText("|cff3399FF/rl|r - Reload UI \n \n |cff3399FF/hb|r - Key Binding Mode \n \n |cff3399FF/raidcd|r - Test RaidCD bars \n \n |cff3399FF/atweaks|r - move RaidCD bars \n \n |cff3399FFSHIFT+Leftbutton|r - Set Focus \n \n |cff3399FFTab|r - Change between available channels. \n \n |cff3399FF/omf|r - Unlock UnitFrames \n \n |cff3399FF/cd x|r - count down from x second. \n \n Raid Control/World Flare button appears on topright of minimap when available. \n \n |cff3399FFEnjoy!|r")
 Guidetext:Hide()
 
-local Contacttext = createtext(Guide, 15, "NONE", true)
-Contacttext:SetTextColor(0.7, 0.7, 0.7)
-Contacttext:SetText("E-mail:359661355@qq.com \n \n If you have any errors or questions,please post it in the comments of wowinterface.com or send a e-mail to me. \n \n If you are posting errors please always support your comment with a screenshot and in case the lua error you are getting.")
-Contacttext:Hide()
+local Creditstext = createtext(Guide, 15, "NONE", true)
+Creditstext:SetTextColor(0.7, 0.7, 0.7)
+Creditstext:SetText("伤心蓝 CN5_深渊之巢 \n  < 炼狱 > \n \n \n \n |cff3399FF Thanks to \n \n Zork Haste Tukz Haleth Qulight Freebaser Monolit \n and everyone who help me with this Compilations.|r")
+Creditstext:Hide()
 
 local interval = 0
 TOPPANEL:SetScript('OnUpdate', function(self, elapsed)
@@ -358,36 +379,34 @@ TOPPANEL:SetScript('OnUpdate', function(self, elapsed)
 	end
 end)
 
-local function littebutton(bu, x, texturefile, note)
-local texture, text
+local buttonhold = CreateFrame("Frame", nil, BOTTOMPANEL)
+buttonhold:SetPoint("TOPRIGHT",BOTTOMPANEL,"TOPRIGHT", -220, -10)
+buttonhold:SetSize(100,45)
+buttonhold:SetScript('OnEnter', function() BOTTOMTEXT:SetTextColor(0, 0, 0, .5) end)
 
-bu:SetPoint("TOPRIGHT",BOTTOMPANEL,"TOPRIGHT", -285-x, -15)
-bu:SetSize(30,30)
+local function littebutton(self, x, texturefile, note)
+	self = CreateFrame("Button", nil, buttonhold)
+	self:SetPoint("LEFT",buttonhold,"LEFT", 10+(x-1)*45, 0)
+	self:SetSize(35,35)
+	self:SetNormalTexture(texturefile)
+	self:GetNormalTexture():SetTexCoord(0.1,0.9,0.1,0.9)
+	self:GetNormalTexture():SetDesaturated(true)
+	creategrowBD(self, 0, 0, 0, 0.3, 1)
+	
+	self.text = createtext(self, 30, "NONE", false)
+	self.text:SetPoint("RIGHT",BOTTOMPANEL,"RIGHT", -360, 0)
+	self.text:SetTextColor(0.7, 0.7, 0.7)
+	self.text:SetText(note)
+	self.text:Hide()
 
-texture = createtex(bu, texturefile, "ADD")
-texture:SetVertexColor(1, 1, 1)
-
-text = createtext(bu, 30, "NONE", false)
-text:SetPoint("RIGHT",BOTTOMPANEL,"RIGHT", -320, 10)
-text:SetTextColor(0.7, 0.7, 0.7)
-text:SetText(note)
-text:Hide()
-
-bu.texture = texture
-bu.text = text
-
-bu:SetScript('OnEnter', function() bu.texture:SetVertexColor(.1, 1, .1) bu.text:Show() end)
-bu:SetScript('OnLeave', function() bu.texture:SetVertexColor(1, 1, 1) bu.text:Hide() end)
+	self:SetScript('OnEnter', function() self:GetNormalTexture():SetDesaturated(false) self.border:SetBackdropBorderColor(0.2, 0.8, 1, 1) self.text:Show() end)
+	self:SetScript('OnLeave', function() self:GetNormalTexture():SetDesaturated(true) self.border:SetBackdropBorderColor(0, 0, 0, 1) self.text:Hide() end)
+	
+	return self
 end
 
-local Setup = CreateFrame("Frame", nil, BOTTOMPANEL)
-littebutton(Setup, 0, aMedia.."setup", "Setup")
- 
-local Info = CreateFrame("Frame", nil, BOTTOMPANEL)
-littebutton(Info, -40, aMedia.."info", "Info")
-
-local Email = CreateFrame("Frame", nil, BOTTOMPANEL)
-littebutton(Email, -80, aMedia.."email", "Need Help?")
+local Info = littebutton(self, 1, "Interface\\ICONS\\inv_pet_pandarenelemental", "Info")
+local Credits = littebutton(self, 2, "Interface\\ICONS\\inv_pet_deathy", "Credits")
 
 local function fadeout()
 	Minimap:Hide()
@@ -395,9 +414,8 @@ local function fadeout()
 	UIFrameFadeIn(TOPPANEL, 3, 0, 1)
 	UIFrameFadeIn(BOTTOMPANEL, 3, 0, 1)
 	BOTTOMPANEL:EnableMouse(true)
-	Setup:Show()
 	Info:Show()
-	Email:Show()
+	Credits:Show()
 end
 
 local function fadein()
@@ -406,9 +424,8 @@ local function fadein()
     UIFrameFadeOut(TOPPANEL, 2, 1, 0)
 	UIFrameFadeOut(BOTTOMPANEL, 2, 1, 0)
 	BOTTOMPANEL:EnableMouse(false)
-	Setup:Hide()
 	Info:Hide()
-	Email:Hide()
+	Credits:Hide()
 end
 
 TOPPANEL:SetScript("OnEvent",function(self,event,...) 
@@ -430,87 +447,25 @@ BOTTOMPANEL:SetScript('OnMouseUp', function()
 	fadein()
 end)
 
-StaticPopupDialogs["Setup"] = {
-	text = "Do you want to set to Deflaut Options and Reload UI? (Recommed when you use AltUI for the first time.)",
-	button1 = "yes",
-	button2 = "cancel",
-	OnAccept = function() SetDBM() ReloadUI() end,
-	OnCancel = function() 
-	UIFrameFadeOut(TOPPANEL, 2, 1, 0)
-	UIFrameFadeOut(BOTTOMPANEL, 2, 1, 0) 
-	BOTTOMPANEL:EnableMouse(false)
-	end,
-	timeout = 0,
-	whileDead = 1,
-	hideOnEscape = true
-}
-
-Setup:SetScript('OnMouseUp', function()
-	UIFrameFadeIn(UIParent, 1, 0, 1)
-	StaticPopup_Show("Setup")
-	Guide:Hide() Guidetext:Hide() Contacttext:Hide()
-end)
-
 Info:SetScript('OnMouseUp', function()
 	if Guidetext:IsShown() then 
 		Guide:Hide() Guidetext:Hide()
 	else 
-		Guide:Show() Guidetext:Show() Contacttext:Hide()
+		Guide:Show() Guidetext:Show() Creditstext:Hide()
 	end
 end)
 
-Email:SetScript('OnMouseUp', function()
-	if Contacttext:IsShown() then 
-		Guide:Hide() Contacttext:Hide()
+Credits:SetScript('OnMouseUp', function()
+	if Creditstext:IsShown() then 
+		Guide:Hide() Creditstext:Hide()
 	else 
-		Guide:Show() Contacttext:Show() Guidetext:Hide()
+		Guide:Show() Creditstext:Show() Guidetext:Hide()
 	end
 end)
 
 Guide:SetScript('OnMouseUp', function()
-	Guide:Hide() Guidetext:Hide() Contacttext:Hide()
+	Guide:Hide() Guidetext:Hide() Creditstext:Hide()
 end)
-
---====================================================--
---[[               -- Numeration --                 ]]--
---====================================================--
-if IsAddOnLoaded("Numeration") then 
-creategrowBD(NumerationFrame, 0, 0, 0, 0.2, 1)
-NumerationFrame.border:SetPoint("TOPLEFT", "NumerationFrame", "TOPLEFT", 0, -8)
-NumerationFrame.border:SetPoint("BOTTOMRIGHT", "NumerationFrame", "BOTTOMRIGHT", 2, -1)
-end
-
---====================================================--
---[[                 -- Skada --                    ]]--test
---====================================================--
-if IsAddOnLoaded("Skada") then 
-local Skada = Skada
-local barmod = Skada.displays["bar"]
-
-barmod.ApplySettings_ = barmod.ApplySettings
-barmod.ApplySettings = function(self, win)
-barmod.ApplySettings_(self, win)
-	
-	local skada = win.bargroup
-
-	skada:SetTexture(blank)
-	skada:SetSpacing(1, 1)
-	skada:SetFont(font, 10)
-	skada:SetFrameLevel(5)
-	
-	skada:SetBackdrop(nil)
-	if not skada.border then
-		creategrowBD(skada, 0, 0, 0, 0.3, 1)
-		skada.border:ClearAllPoints()
-		skada.border:SetPoint('TOPLEFT', win.bargroup.button or win.bargroup, 'TOPLEFT', -3, 3)
-		skada.border:SetPoint('BOTTOMRIGHT', win.bargroup, 'BOTTOMRIGHT', 3, -3)
-	end
-end
-
-for _, window in ipairs(Skada:GetWindows()) do
-	window:UpdateDisplay()
-end
-end
 
 --====================================================--
 --[[         -- test --         ]]--

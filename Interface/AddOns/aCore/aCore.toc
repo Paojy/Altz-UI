@@ -1,7 +1,7 @@
 ﻿## Interface: 50001
 ## Title: |cffEE3A8Ca|rCore
 ## Author: Blue
-## OptionalDeps: Skada, Numeration, TinyDPS
+## OptionalDeps: Skada, Numeration, TinyDPS, Recount
 ## Credits: Zork
 
 lib\core.lua
@@ -10,4 +10,11 @@ lib\dragframe.lua
 lib\fader.lua
 lib\slashcmd.lua
 
+skins\loadskins.lua
+skins\DBM.lua
+skins\Numeration.lua
+skins\Recount.lua
+skins\Skada.lua
+
 panels.lua
+setup.lua
