@@ -4,7 +4,7 @@ local cfg = CreateFrame("Frame")
 ---------------------------------------------------------------------------------------
 -------------------[[        Config        ]]------------------------------------------ 
 ---------------------------------------------------------------------------------------
-cfg.point = { "TOPRIGHT", "RIGHT", -68, 160}
+cfg.point = {"BOTTOMRIGHT", "BOTTOMRIGHT", -13, 15}
 cfg.cursor = false                   -- 鼠标跟随 make tooltip placed with cursor
 
 cfg.hideTitles = false              -- 隐藏头衔 hide titles

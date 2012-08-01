@@ -152,9 +152,9 @@ GameTooltip:HookScript("OnTooltipSetUnit", function(self)
 
     if GameTooltipStatusBar:IsShown() then
 		GameTooltipStatusBar:ClearAllPoints()
-        GameTooltipStatusBar:SetHeight(10)
-		GameTooltipStatusBar:SetPoint("BOTTOMLEFT", GameTooltipStatusBar:GetParent(), "TOPLEFT", 3, 6)
-		GameTooltipStatusBar:SetPoint("BOTTOMRIGHT", GameTooltipStatusBar:GetParent(), "TOPRIGHT", -3, 6)
+        GameTooltipStatusBar:SetHeight(4)
+		GameTooltipStatusBar:SetPoint("BOTTOMLEFT", GameTooltipStatusBar:GetParent(), "TOPLEFT", 3, 2)
+		GameTooltipStatusBar:SetPoint("BOTTOMRIGHT", GameTooltipStatusBar:GetParent(), "TOPRIGHT", -3, 2)
 		creategrowBD(GameTooltipStatusBar, 0, 0, 0, 0.4, 1)		
     end
 end)
@@ -173,7 +173,8 @@ GameTooltipStatusBar:SetScript("OnValueChanged", function(self, value)
     if unit then
         min, max = UnitHealth(unit), UnitHealthMax(unit)
         if not self.text then
-            self.text = createtext(self, 12, "OUTLINE", true)
+            self.text = createtext(self, 12, "OUTLINE", false)
+			self.text:SetPoint"BOTTOM"
         end
         self.text:Show()
         local hp = ShortValue(min).." / "..ShortValue(max)
