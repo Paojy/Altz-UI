@@ -46,9 +46,8 @@ CHAT_FRAME_TAB_ALERTING_NOMOUSE_ALPHA = 0
     if ebtr then ebtr:Hide() end
 	_G['ChatFrame'..i..'EditBoxLanguage'].Show = _G['ChatFrame'..i..'EditBoxLanguage'].Hide 
 	_G['ChatFrame'..i..'EditBoxLanguage']:Hide()
-	-- build 15882
-	--local tex = ({_G['ChatFrame'..i..'EditBox']:GetRegions()})
-	--tex[6]:SetAlpha(0) tex[7]:SetAlpha(0) tex[8]:SetAlpha(0) tex[9]:SetAlpha(0) tex[10]:SetAlpha(0) tex[11]:SetAlpha(0)
+	local tex = ({_G['ChatFrame'..i..'EditBox']:GetRegions()})
+	tex[6]:SetAlpha(0) tex[7]:SetAlpha(0) tex[8]:SetAlpha(0) tex[9]:SetAlpha(0) tex[10]:SetAlpha(0) tex[11]:SetAlpha(0)
   -- make a new backdrop on edit box
     creategrowBD(_G['ChatFrame'..i..'EditBox'], 0, 0, 0, 0.4, 1)
   -- control the aplha
