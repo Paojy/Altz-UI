@@ -15,7 +15,7 @@
   -----------------------------
 
   if not cfg.enable then return end
-  if gcfg.bars.bar1.combineBar123 then return end
+  if gcfg.bars.bar2.combineBar23 then return end
   
   local num = NUM_ACTIONBAR_BUTTONS
   local buttonList = {}

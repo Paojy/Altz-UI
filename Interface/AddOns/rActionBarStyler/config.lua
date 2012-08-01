@@ -20,16 +20,15 @@
   cfg.bars = {
     bar1 = {
       enable          = true,
-	  combineBar123   = true,
       scale           = 1,
       padding         = 2, --frame padding
       buttons         = {
         size            = 25,
         margin          = 4,
       },
-      pos             = { a1 = "BOTTOM", a2 = "BOTTOM", af = "UIParent", x = -1, y = 25 },
+      pos             = { a1 = "TOP", a2 = "CENTER", af = "UIParent", x = 0, y = -142 },
       userplaced      = {
-        enable          = true,
+        enable          = false,
       },
       mouseover       = {
         enable          = true,
@@ -50,9 +49,9 @@
         size            = 25,
         margin          = 4,
       },
-      pos             = { a1 = "BOTTOM", a2 = "BOTTOM", af = "UIParent", x = -1, y = 25 },
+      pos             = { a1 = "TOP", a2 = "CENTER", af = "UIParent", x = 0, y = -142 },
       userplaced      = {
-        enable          = true,
+        enable          = false,
       },
       mouseover       = {
         enable          = false,
@@ -62,15 +61,16 @@
     },
     bar2 = {
       enable          = true,
+	  combineBar23    = true,--by choosing true both bar 2 and 3 will react to the same hover effect, thus show/hide at the same time, settings for bar5 will be ignored
       scale           = 1,
       padding         = 2, --frame padding
       buttons         = {
         size            = 25,
         margin          = 4,
       },
-      pos             = { a1 = "BOTTOM", a2 = "BOTTOM", af = "UIParent", x = -1, y = 54 },
+      pos             = { a1 = "BOTTOM", a2 = "BOTTOM", af = "UIParent", x = 0, y = 15 },
       userplaced      = {
-        enable          = true,
+        enable          = false,
       },
       mouseover       = {
         enable          = true,
@@ -78,7 +78,7 @@
         fadeOut         = {time = 0.4, alpha = 0},
       },		
 	  eventfader      = {
-        enable          = true,
+        enable          = false,
         fadeIn          = {time = 0.4, alpha = 1},
         fadeOut         = {time = 1.5, alpha = 0},
       },
@@ -91,9 +91,9 @@
         size            = 25,
         margin          = 4,
       },
-      pos             = { a1 = "BOTTOM", a2 = "BOTTOM", af = "UIParent", x = -1, y = 83 },
+      pos             = { a1 = "BOTTOM", a2 = "BOTTOM", af = "UIParent", x = 0, y = 83 },
       userplaced      = {
-        enable          = true,
+        enable          = false,
       },
       mouseover       = {
         enable          = true,
@@ -101,7 +101,7 @@
         fadeOut         = {time = 0.4, alpha = 0},
       },		
 	  eventfader      = {
-        enable          = true,
+        enable          = false,
         fadeIn          = {time = 0.4, alpha = 1},
         fadeOut         = {time = 1.5, alpha = 0},
       },
@@ -156,16 +156,16 @@
     petbar = {
       enable          = true,
 	  show            = true, --true/false
-	  uselayout5x2    = true,
+	  uselayout5x2    = false,
       scale           = 0.7,
       padding         = 2, --frame padding
       buttons         = {
         size            = 33,
         margin          = 4,
       },
-      pos             = { a1 = "BOTTOMRIGHT", a2 = "BOTTOMRIGHT", af = "UIParent", x = -10, y = 6 },
+      pos             = { a1 = "BOTTOM", a2 = "BOTTOM", af = "UIParent", x = 0, y = 115 },
       userplaced      = {
-        enable          = true,
+        enable          = false,
       },
       mouseover       = {
         enable          = true,
@@ -184,15 +184,15 @@
       scale           = 1,
       padding         = 2, --frame padding
       buttons         = {
-        size            = 25,
+        size            = 20,
         margin          = 4,
       },
-      pos             = { a1 = "BOTTOMLEFT", a2 = "BOTTOMLEFT", af = "UIParent", x = 10, y = 6 },
+      pos             = { a1 = "TOPLEFT", a2 = "BOTTOMLEFT", af = Minimap, x = -3, y = -4 },
       userplaced      = {
-        enable          = true,
+        enable          = false,
       },
       mouseover       = {
-        enable          = true,
+        enable          = false,
         fadeIn          = {time = 0.4, alpha = 1},
         fadeOut         = {time = 0.4, alpha = 0.5},
       },
@@ -212,7 +212,7 @@
       },
       pos             = { a1 = "CENTER", a2 = "CENTER", af = "UIParent", x = 210, y = -30 },
       userplaced      = {
-        enable          = true,
+        enable          = false,
       },
       mouseover       = {
         enable          = false,

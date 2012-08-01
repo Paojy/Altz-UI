@@ -16,7 +16,7 @@
 
   if not cfg.enable then return end
 
-  local num = 7 --there seems to be no MAX_OVERRIDE_NUM or the like
+  local num = 8 --there seems to be no MAX_OVERRIDE_NUM or the like
   local buttonList = {}
 
   --create the frame to hold the buttons
