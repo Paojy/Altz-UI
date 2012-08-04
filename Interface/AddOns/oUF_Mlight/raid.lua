@@ -18,24 +18,6 @@ CheckRole = function()
 	return role
 end
 
-local UpdateLFD = function(self, event)
-	local lfdrole = self.LFDRole
-	local role = UnitGroupRolesAssigned(self.unit)
-
-	if role == "DAMAGER" then
-		lfdrole:SetTextColor(1, .1, .1, 1)
-		lfdrole:SetText("D")
-	elseif role == "TANK" then
-		lfdrole:SetTextColor(.3, .4, 1, 1)
-		lfdrole:SetText("T")
-	elseif role == "HEALER" then
-		lfdrole:SetTextColor(0, 1, 0, 1)
-		lfdrole:SetText("H")
-	else
-		lfdrole:SetTextColor(0, 0, 0, 0)
-	end
-end
-
 local func = function(self, unit)
 
     self:SetScript("OnEnter", UnitFrame_OnEnter)
@@ -91,7 +73,7 @@ local func = function(self, unit)
 	local lfd = hp:CreateFontString(nil, "OVERLAY")
 	lfd:SetPoint("LEFT", hp, 1, -1)
 	lfd:SetFont(symbols, fontsize-2, "OUTLINE")
-	lfd.Override = UpdateLFD
+	lfd.Override = ns.UpdateLFD
 	
 	local raidname = hp:CreateFontString(nil, "OVERLAY")
 	raidname:SetPoint("BOTTOMRIGHT", hp, "BOTTOMRIGHT", -1, 5)
@@ -191,7 +173,7 @@ local dfunc = function(self, unit)
 	local lfd = hp:CreateFontString(nil, "OVERLAY")
 	lfd:SetPoint("LEFT", hp, 1, -1)
 	lfd:SetFont(symbols, fontsize-2, "OUTLINE")
-	lfd.Override = UpdateLFD
+	lfd.Override = ns.UpdateLFD
 		
 	local raidname = hp:CreateFontString(nil, "OVERLAY")
 	raidname:SetPoint("BOTTOMLEFT", hp, "BOTTOMRIGHT", 5, 0)

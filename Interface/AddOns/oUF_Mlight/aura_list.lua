@@ -16,11 +16,11 @@ ns.auras = {
 
     -- Any Zone
     debuffs = {
-        [GetSpellInfo(6788)] = 16, -- Weakened Soul TEST
+        --[GetSpellInfo(6788)] = 16, -- Weakened Soul TEST
     },
 
     buffs = { -- these display on the second icon
-		[GetSpellInfo(139)] = 15, -- Renew TEST
+		--[GetSpellInfo(139)] = 15, -- Renew TEST
 	--牧师
 		[GetSpellInfo(33206)] = 15, -- 痛苦压制
         [GetSpellInfo(47788)] = 15, -- 守护之魂

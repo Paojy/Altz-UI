@@ -5,7 +5,7 @@
 ## Notes: oUF layout.
 ## Credits:Freebaser, Haleth, Tukz
 ## Dependencies: oUF
-## OptionalDeps: oUF_Fader
+## OptionalDeps: oUF_Fader, aCore
 
 cfg.lua
 tags.lua

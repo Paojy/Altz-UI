@@ -25,7 +25,7 @@ cfg.hpheight = .90 -- hpheight/unitheight
 
 -- postion
 cfg.playerpos = {"BOTTOM","UIParent","CENTER", 0, -135}
-cfg.petpos = {"BOTTOMRIGHT","UIParent","CENTER", -cfg.width/2 -10, -135}
+cfg.petpos = {"BOTTOMLEFT","UIParent","CENTER", cfg.width/2 +10, -135}
 cfg.targetpos = {"TOPLEFT","UIParent","CENTER", 150, -50}
 cfg.totpos = {"TOPLEFT","UIParent","CENTER", 150 +cfg.width +10, -50}
 cfg.focuspos = {"TOPLEFT","UIParent","CENTER", 150, 50}
@@ -41,6 +41,7 @@ cfg.uninterruptable = {1, 0, 0, 0.1}
 -- auras
 cfg.auras = true  -- disable all auras
 cfg.auraborders = true -- auraborder colored based on debuff type
+cfg.auraperrow = 9 -- number of auras each row, this control the size of icon
 cfg.onlyShowPlayer = false -- only show player debuffs on target
 
 -- show/hide unit
@@ -59,7 +60,7 @@ cfg.toggle = true
 cfg.healerraidposition = {"TOPLEFT", "UIParent","CENTER", 150, -100}
 cfg.healerraidheight, cfg.healerraidwidth = 30, 90
  -- dps/tank mode(1*25)
-cfg.dpsraidposition = {"TOPLEFT", UIParent, "TOPLEFT", 18, -168}
+cfg.dpsraidposition = {"TOPLEFT", UIParent, "TOPLEFT", 20, -168}
 cfg.dpsraidheight, cfg.dpsraidwidth = 15, 70
 
 ---------------------------------------------------------------------------------------
@@ -69,13 +70,9 @@ if GetUnitName("player") == "伤心蓝" or GetUnitName("player") == "Scarlett" t
 
 end
   
-if IsAddOnLoaded("Aurora") then
+if IsAddOnLoaded("Aurora") and IsAddOnLoaded("aCore") then
 cfg.font = GameFontHighlight:GetFont()
-end
-
-if IsAddOnLoaded("aCore") then
-cfg.petpos = {"BOTTOMRIGHT","UIParent","BOTTOM", -180, 23}
-cfg.font = GameFontHighlight:GetFont()
+cfg.showsolo = false
 end
 ---------------------------------------------------------------------------------------
 -------------------[[        Config        End        ]]-------------------------------  

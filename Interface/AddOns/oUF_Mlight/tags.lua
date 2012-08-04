@@ -52,12 +52,6 @@ local function hex(r, g, b)
     return ('|cff%02x%02x%02x'):format(r * 255, g * 255, b * 255)
 end
 
-oUF.colors.power['MANA'] = {0,.85,.99}
-oUF.colors.power['RAGE'] = {.99,.10,.10}
-oUF.colors.power['FOCUS'] = {.99,.50,.20}
-oUF.colors.power['ENERGY'] = {.99,.99,.2}
-oUF.colors.power['RUNIC_POWER'] = {.65,.15,.85}
-
 oUF.Tags.Methods['Mlight:lvl'] = function(u) 
     local level = UnitLevel(u)
     local typ = UnitClassification(u)
