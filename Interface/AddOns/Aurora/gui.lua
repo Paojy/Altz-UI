@@ -28,13 +28,11 @@ end
 local function createToggleBox(parent, name, value, text)
 	local f = CreateFrame("CheckButton", name, parent, "InterfaceOptionsCheckButtonTemplate")
 	f.value = value
-	
-	local label = f:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
-	label:SetPoint("LEFT", f, "RIGHT", 1, 1)
-	label:SetText(text)
-	
+
+	f.Text:SetText(text)
+
 	f:SetScript("OnClick", toggle)
-	
+
 	return f
 end
 
@@ -126,9 +124,9 @@ gui:SetScript("OnEvent", function(self, _, addon)
 
 	-- fill 'old' table
 	copyTable(AuroraConfig, old)
-	
+
 	gui.refresh()
-	
+
 	F.Reskin(reloadButton)
 	F.Reskin(colourButton)
 	F.ReskinCheck(fontBox)
@@ -138,7 +136,7 @@ gui:SetScript("OnEvent", function(self, _, addon)
 	F.ReskinCheck(mapBox)
 	F.ReskinCheck(tooltipsBox)
 	F.ReskinSlider(alphaSlider)
-	
+
 	self:UnregisterEvent("ADDON_LOADED")
 end)
 
@@ -154,14 +152,14 @@ end
 
 gui.cancel = function()
 	copyTable(old, AuroraConfig)
-	
+
 	updateFrames()
 	gui.refresh()
 end
 
 gui.default = function()
 	copyTable(C.defaults, AuroraConfig)
-	
+
 	updateFrames()
 	gui.refresh()
 end
