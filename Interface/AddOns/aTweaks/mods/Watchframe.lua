@@ -4,7 +4,7 @@ local cfg = ns.cfg
 
 if not cfg.customwf then return end
 
-local lColor = RAID_CLASS_COLORS[select(2, UnitClass("player"))]
+local lColor = GetClassColor()
 
 local Opts = {
 

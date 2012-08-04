@@ -2,8 +2,8 @@ local ADDON_NAME, ns = ...
 local cfg = ns.cfg
 
 if not cfg.raidcd then return end
-
---Allez
+local Ccolors = GetAllClassColors()
+--original author : Allez
 
 local spells = {
 	--[20484] = 600,	-- ¸´Éú
@@ -37,7 +37,7 @@ local spells = {
 
 --variables
 local dragFrameList = {}
-local color         = "DC143C"
+local color         = "00DC143C"
 local shortcut      = "atweaks"
 
 --make variables available in the namespace
@@ -45,9 +45,9 @@ ns.dragFrameList    = dragFrameList
 ns.addonColor       = color
 ns.addonShortcut    = shortcut
 
-local pos = {"TOPLEFT", Minimap, "TOPRIGHT", -10, 0}
+local pos = {"BOTTOMLEFT", UIParent, "BOTTOMLEFT", 315, 0}
 local locked = true
-local width, height = 140, 14
+local width, height = 160, 14
 local spacing = 6
 local iconsize = 14
 local fontsize = 11
@@ -79,7 +79,7 @@ local UpdatePositions = function()
 		if i == 1 then
 			bars[i]:SetPoint("TOPLEFT", anchorframe, "TOPRIGHT", 5, 0)
 		else
-			bars[i]:SetPoint("TOPLEFT", bars[i-1], "BOTTOMLEFT", 0, -spacing)
+			bars[i]:SetPoint("BOTTOMLEFT", bars[i-1], "TOPLEFT", 0, spacing)
 		end
 		bars[i].id = i
 	end
@@ -173,7 +173,7 @@ local StartTimer = function(name, spellId)
 	
 	bar:Show()
 	
-	local color = RAID_CLASS_COLORS[select(2, UnitClass(name))]
+	local color = Ccolors[select(2, UnitClass(name))]
 	bar.status:SetStatusBarColor(color.r, color.g, color.b)
 	
 	bar:EnableMouse(true)
