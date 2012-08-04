@@ -1,6 +1,6 @@
 ﻿local ADDON_NAME, ns = ...
 local cfg = ns.cfg
-local Ccolor = RAID_CLASS_COLORS[select(2, UnitClass("player"))]
+local Ccolor = GetClassColor()
 
 CHAT_FRAME_FADE_OUT_TIME = 1
 CHAT_TAB_HIDE_DELAY = 1
