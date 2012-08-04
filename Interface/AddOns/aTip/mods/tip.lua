@@ -6,6 +6,7 @@ local fontsize = 12
 
 local you = "<You>"
 local boss = "Boss"
+local cColors = GetAllClassColors()
 
 local classification = {
     elite = "+",
@@ -23,7 +24,7 @@ local function unitColor(unit)
     local color = { r=1, g=1, b=1 }
     if UnitIsPlayer(unit) then
         local _, class = UnitClass(unit)
-        color = RAID_CLASS_COLORS[class]
+        color = cColors[class]
         return color
     else
         local reaction = UnitReaction(unit, "player")
