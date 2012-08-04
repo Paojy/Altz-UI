@@ -1,7 +1,7 @@
 ﻿local ADDON_NAME, ns = ...
 local cfg = ns.cfg
 
-local Ccolor = RAID_CLASS_COLORS[select(2, UnitClass("player"))]
+local Ccolor = GetClassColor()
 
 Minimap:SetParent(UIParent)
 Minimap:ClearAllPoints()
@@ -13,8 +13,8 @@ Minimap.pxborder:SetFrameLevel(3)
 creategrowBD(Minimap, 0, 0, 0, 0, 1)
 Minimap.border:SetFrameLevel(2)
 Minimap.border:ClearAllPoints()
-Minimap.border:SetPoint("TOPLEFT", -4, 4)
-Minimap.border:SetPoint("BOTTOMRIGHT", 4, -4)
+Minimap.border:SetPoint("TOPLEFT", -3, 3)
+Minimap.border:SetPoint("BOTTOMRIGHT", 3, -3)
 
 function fixTooltip(self)
 	if self ~= MiniMapMailFrame then
