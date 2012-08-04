@@ -25,7 +25,7 @@ local func = function(self, unit)
     self:RegisterForClicks"AnyUp"
 	
 	-- shadow border for health bar --
-    ns.backdrop(self, self, 0, 3)
+    self.backdrop = ns.backdrop(self, self, 0, 3)  -- this also use for dispel border
 
     local hp = CreateFrame("StatusBar", nil, self)
     hp:SetAllPoints(self)
@@ -124,7 +124,7 @@ local dfunc = function(self, unit)
     self:RegisterForClicks"AnyUp"
 	
 	-- shadow border for health bar --
-    ns.backdrop(self, self, 0, 3)
+    self.backdrop = ns.backdrop(self, self, 0, 3)  -- this also use for dispel border
 
     local hp = CreateFrame("StatusBar", nil, self)
     hp:SetAllPoints(self)
@@ -224,14 +224,14 @@ self:SetScale(%d)
 'showRaid', true,
 'xoffset', 5,
 'yOffset', -5,
-'point', "LEFT",
+'point', cfg.anchor,
 'groupFilter', '1,2,3,4,5,6,7,8',
 'groupingOrder', '1,2,3,4,5,6,7,8',
 'groupBy', 'GROUP',
 'maxColumns', 5,
 'unitsPerColumn', 5,
 'columnSpacing', 5,
-'columnAnchorPoint', "TOP"
+'columnAnchorPoint', cfg.partyanchor
 )
 healerraid:SetPoint(unpack(cfg.healerraidposition))
 

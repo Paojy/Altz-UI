@@ -59,6 +59,8 @@ cfg.toggle = true
  -- healer mode(5*5)
 cfg.healerraidposition = {"TOPLEFT", "UIParent","CENTER", 150, -100}
 cfg.healerraidheight, cfg.healerraidwidth = 30, 90
+cfg.anchor = "TOP"
+cfg.partyanchor = "LEFT"
  -- dps/tank mode(1*25)
 cfg.dpsraidposition = {"TOPLEFT", UIParent, "TOPLEFT", 20, -168}
 cfg.dpsraidheight, cfg.dpsraidwidth = 15, 70

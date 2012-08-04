@@ -279,6 +279,7 @@ local Update = function(self, event, unit)
 
     if hide then
         icon:Hide()
+		backdrop:SetBackdropBorderColor(0, 0, 0)
     end
 end
 

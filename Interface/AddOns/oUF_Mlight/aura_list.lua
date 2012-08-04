@@ -16,6 +16,7 @@ ns.auras = {
 
     -- Any Zone
     debuffs = {
+		--[GetSpellInfo(2812)] = 16, -- TEST Ç´Ôð
         --[GetSpellInfo(6788)] = 16, -- Weakened Soul TEST
     },
 

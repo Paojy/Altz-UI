@@ -378,7 +378,11 @@ local UpdateHealth = function(self, event, unit)
 		local r, g, b
 		local min, max, perc
 		min, max = UnitHealth(unit), UnitHealthMax(unit)
-		perc = min/max
+		if max ~= 0 then
+			perc = min/max
+		else
+			perc = 1
+		end
 		
 		if(UnitIsTapped(unit) and not UnitIsTappedByPlayer(unit) or not UnitIsConnected(unit)) then
 			r, g, b = .6, .6, .6
@@ -432,7 +436,7 @@ local func = function(self, unit)
     self:SetScale(cfg.scale)
 	
 	-- shadow border for health bar --
-    createBackdrop(self, self, 0, 3)
+    self.backdrop = createBackdrop(self, self, 0, 3) -- this also use for dispel border
 
 	-- health bar --
     local hp = createStatusbar(self, cfg.texture, nil, cfg.height, nil, .1, .1, .1, 0.5)
@@ -715,7 +719,7 @@ local UnitSpecific = {
 			
             self.Auras = Auras
             self.Auras.numDebuffs = 8
-            self.Auras.numBuffs = 16
+            self.Auras.numBuffs = 10
         end
     end,
 
@@ -739,7 +743,7 @@ local UnitSpecific = {
 			
             self.Auras = Auras
             self.Auras.numDebuffs = 8
-            self.Auras.numBuffs = 16
+            self.Auras.numBuffs = 10
         end
     end,
 
@@ -763,8 +767,8 @@ local UnitSpecific = {
             debuffs:SetWidth(cfg.width)
             debuffs:SetPoint("RIGHT", self, "LEFT", -5, 0)
             debuffs.initialAnchor = "BOTTOMRIGHT"
-	        debuffs["growth-x"] = "LEFT"
-            debuffs["growth-y"] = "UP"
+	        debuffs["growth-x"] = "RIGHT"
+            debuffs["growth-y"] = "DOWN"
 
             debuffs.PostCreateIcon = PostCreateIcon
             debuffs.PostUpdateIcon = PostUpdateIcon
