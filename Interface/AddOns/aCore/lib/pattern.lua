@@ -3,7 +3,7 @@
 -------------------[[        media        ]]------------------
 ---------------------------------------------------------------
 local font = GameFontHighlight:GetFont()
-local Ccolor = RAID_CLASS_COLORS[select(2, UnitClass("player"))]
+local Ccolor = GetClassColor()
 local aMedia = "Interface\\AddOns\\aCore\\media\\"
 local blank = "Interface\\Buttons\\WHITE8x8"
 

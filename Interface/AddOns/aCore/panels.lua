@@ -1,10 +1,9 @@
-﻿
+﻿local addon, ns = ...
 local font = GameFontHighlight:GetFont()
-local Ccolor = RAID_CLASS_COLORS[select(2, UnitClass("player"))]
+local Ccolor = GetClassColor()
 local aMedia = "Interface\\AddOns\\aCore\\media\\"
 local blank = "Interface\\Buttons\\WHITE8x8"
 local ver = GetAddOnMetadata("aCore", "Version")
-
 --====================================================--
 --[[                -- shadow --                    ]]--
 --====================================================--	
@@ -17,7 +16,6 @@ PShadow:SetBackdropColor(0, 0, 0, 0.3)
 --====================================================--
 --[[                -- panels --                    ]]--
 --====================================================--	
-
 local function createpanel(panel, pos, y)
 	panel = CreateFrame("Frame", nil, UIParent)
 	panel:SetFrameStrata("BACKGROUND")
@@ -31,13 +29,18 @@ end
 local toppanel = createpanel(self, "TOP", -3)
 local bottompanel = createpanel(self, "BOTTOM", 3)
 
-local function createlittlepanel(panel, width)
+local function createlittlepanel(panel, width, text)
 	panel = CreateFrame("Frame", nil, UIParent)
 	panel:SetFrameStrata("MEDIUM")
 	panel:SetFrameLevel(5)
 	panel:SetSize(width, 4)
+	panel.text = createtext(panel, 14, "OUTLINE", true)
+	panel.text:SetText(text)
+	panel.text:Hide()
 	creategradient(panel, Ccolor.r, Ccolor.g, Ccolor.b, 3)
 	creategrowBD(panel, 0.3, 0.3, 0.3, 1, 1)
+	panel:SetScript('OnEnter', function() panel.text:Show() end)
+	panel:SetScript('OnLeave', function() panel.text:Hide() end)
 	return panel
 end
 --====================================================--
@@ -70,7 +73,7 @@ end
 local _G = getfenv(0)
 function xprptoolitp()
 	GameTooltip:SetOwner(xpbar, "ANCHOR_NONE")
-	GameTooltip:SetPoint("TOPLEFT", Minimap, "TOPRIGHT", 8, 0)
+	GameTooltip:SetPoint("TOPLEFT", Minimap, "TOPRIGHT", 10, 0)
 	
 	local XP, maxXP = UnitXP("player"), UnitXPMax("player")
 	local restXP = GetXPExhaustion()
@@ -121,12 +124,12 @@ xpbar:RegisterEvent("PLAYER_LOGIN")
 --====================================================--
 --[[            -- info panel --                    ]]--
 --====================================================--
-local infopanel = createlittlepanel(self, 185)
+local infopanel = createlittlepanel(self, 185, "Calendar")
 infopanel:SetPoint("TOPLEFT", UIParent, "TOPLEFT", 150, -10)
 
-local centerbox = CreateFrame("Button", nil, infopanel) -- Center Frame
+local centerbox = CreateFrame("Button", nil, UIParent) -- Center Frame
 centerbox:SetSize(200, 20)
-centerbox:SetPoint("TOPLEFT", infopanel, "BOTTOMLEFT", 10, 5)
+centerbox:SetPoint("TOPLEFT", UIParent, "TOPLEFT", 165, -13)
 local Ctext = createtext(centerbox, 12, "OUTLINE", false)
 Ctext:SetPoint"LEFT"
 
@@ -154,7 +157,7 @@ end
 
 -- Calculates Lower Durability
 local SLOTS = {}
-for _,slot in pairs({"Head", "Shoulder", "Chest", "Waist", "Legs", "Feet", "Wrist", "Hands", "MainHand", "SecondaryHand", "Ranged"})
+for _,slot in pairs({"Head", "Shoulder", "Chest", "Waist", "Legs", "Feet", "Wrist", "Hands", "MainHand", "SecondaryHand"})
 do SLOTS[slot] = GetInventorySlotInfo(slot .. "Slot") end
 function Durability()
 	local l = 1
@@ -176,7 +179,7 @@ function memorytooltip()
 		local BlizzMem = collectgarbage("count")
 			
 		GameTooltip:SetOwner(centerbox, "ANCHOR_NONE")
-		GameTooltip:SetPoint("TOPLEFT", Minimap, "TOPRIGHT", 8, 0)
+		GameTooltip:SetPoint("TOPLEFT", Minimap, "TOPRIGHT", 10, 0)
 		GameTooltip:AddLine("Top "..nraddons.." AddOns", Ccolor.r, Ccolor.g, Ccolor.b)
 		GameTooltip:AddLine(" ")	
 			
@@ -207,7 +210,7 @@ end
 -- Update Function
 local hour, fps, lag, dur
 local refresh_timer = 0
-function infopanel:updateOntime(elapsed)
+function centerbox:updateOntime(elapsed)
 	refresh_timer = refresh_timer + elapsed -- Only update this values every refresh_timer seconds
 	if refresh_timer > 1 then -- Updates each X seconds	
 		dur = (Durability().."%sdur|r   "):format(Hex(Ccolor))
@@ -225,45 +228,40 @@ centerbox:SetScript("OnEnter", memorytooltip)
 centerbox:SetScript("OnLeave", function() GameTooltip:Hide() end)
 centerbox:SetScript("OnMouseUp", function() ToggleCalendar() end)
 
-infopanel:SetScript("OnUpdate", infopanel.updateOntime)
+centerbox:SetScript("OnUpdate", centerbox.updateOntime)
 
 --====================================================--
 --[[              -- buff panel --               ]]--
 --====================================================--
 
-local buffpanel = createlittlepanel(self, 320)
+local buffpanel = createlittlepanel(self, 320, "")
 buffpanel:SetPoint("TOPRIGHT", UIParent, "TOPRIGHT", -15, -10)
 
 --====================================================--
 --[[              -- chat panel --               ]]--
 --====================================================--
-local chatpanel = createlittlepanel(self, 320)
+local chatpanel = createlittlepanel(self, 320, "World Channel")
 chatpanel:SetPoint("BOTTOMLEFT", UIParent, "BOTTOMLEFT", 15, 10)
-
-chatpanel:SetScript('OnMouseUp', function() WorldChannel() end)
-chatpanel:SetScript('OnEnter', function()
-		GameTooltip:SetOwner(chatpanel, "ANCHOR_NONE")
-		GameTooltip:SetPoint("BOTTOMLEFT", chatpanel, "TOPLEFT", -1, 3)
-		GameTooltip:AddLine("WorldChannel")
-		GameTooltip:Show()
-		end)
-chatpanel:SetScript('OnLeave', function() 
-		GameTooltip:Hide() 
-		end)
-		
+chatpanel:SetScript('OnMouseUp', function() 
+	if IsAddOnLoaded("aTweaks") then
+		WorldChannel() 
+	else
+		print"aTweaks |cffEE0000NOT|r loaded"
+	end
+end)
 --====================================================--
 --[[             -- bottom panel --            ]]--
 --====================================================--	
 
-local bottompanel = createlittlepanel(self, 345)
+local bottompanel = createlittlepanel(self, 345, "Action Bar Config")
 bottompanel:SetPoint("BOTTOM", UIParent, "BOTTOM", 0, 10)
 bottompanel:SetScript('OnMouseUp', function() 
-InterfaceOptionsFrame_OpenToCategory(ACTIONBAR_LABEL)
+	InterfaceOptionsFrame_OpenToCategory(ACTIONBAR_LABEL)
 end)
 --====================================================--
 --[[             -- bottomright panel --            ]]--
 --====================================================--		
-local brpanel = createlittlepanel(self, 320)
+local brpanel = createlittlepanel(self, 320, "Damage Meter")
 brpanel:SetPoint("BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", -15, 10)
 
 -- tiny dps don't have a global toggle fuction, so just copy it.
@@ -310,36 +308,23 @@ brpanel:SetScript('OnMouseUp', function()
 	    else print "Can't find Numeration, Skada, Recount or TinyDPS!"
         end 
 		end)
-brpanel:SetScript('OnEnter', function()
-		GameTooltip:SetOwner(brpanel, "ANCHOR_NONE")
-		GameTooltip:SetPoint("BOTTOMRIGHT", brpanel, "TOPRIGHT", 1, 3)
-		GameTooltip:AddLine("Damage Meter")
-		GameTooltip:Show()
-		end)
-brpanel:SetScript('OnLeave', function() 
-		GameTooltip:Hide() 
-		end)
-
 --====================================================--
 --[[                 -- Screen --                   ]]--
 --====================================================--
 
 local TOPPANEL = CreateFrame("Frame", nil, WorldFrame)
-TOPPANEL:SetFrameStrata("HIGH")
+TOPPANEL:SetFrameStrata("FULLSCREEN")
+--TOPPANEL:SetFrameLevel(50)
 creategrowBD(TOPPANEL, 0, 0, 0, 0.5, 1)
 TOPPANEL:SetPoint("TOPLEFT",WorldFrame,"TOPLEFT",-5,5)
 TOPPANEL:SetPoint("BOTTOMRIGHT",WorldFrame,"TOPRIGHT",5,-80)
 
 local BOTTOMPANEL = CreateFrame("Frame", nil, WorldFrame)
-BOTTOMPANEL:SetFrameStrata("HIGH")
+BOTTOMPANEL:SetFrameStrata("FULLSCREEN")
+--BOTTOMPANEL:SetFrameLevel(50)
 creategrowBD(BOTTOMPANEL, 0, 0, 0, 0.5, 1)
 BOTTOMPANEL:SetPoint("BOTTOMLEFT",WorldFrame,"BOTTOMLEFT",-5,-5)
 BOTTOMPANEL:SetPoint("TOPRIGHT",WorldFrame,"BOTTOMRIGHT",5,75)
-
-local BOTTOMTEXT = createtext(BOTTOMPANEL, 20, "NONE", false)
-BOTTOMTEXT:SetPoint("TOP", BOTTOMPANEL, "TOP", 0, -10)
-BOTTOMTEXT:SetTextColor(0, 0, 0,.5)
-BOTTOMTEXT:SetText("Click to hide.")
 
 local Clock = createtext(TOPPANEL, 27, "NONE", false)
 Clock:SetPoint("BOTTOMLEFT", TOPPANEL, "BOTTOMRIGHT", -280, 10)
@@ -355,9 +340,11 @@ AUI:SetTextColor(0.7, 0.7, 0.7)
 AUI:SetText("AltZ UI")
 
 local Guide = CreateFrame("Frame", nil, WorldFrame)
-creategrowBD(Guide, 0, 0, 0, 0.5, 0)
-Guide:SetPoint("TOPLEFT",WorldFrame,"TOPLEFT", -5, -85)
-Guide:SetPoint("BOTTOMRIGHT",WorldFrame,"BOTTOMRIGHT", 5, 80)
+Guide:SetFrameStrata("FULLSCREEN")
+--Guide:SetFrameLevel(50)
+creategrowBD(Guide, 0, 0, 0, 0.5, 1)
+Guide:SetPoint("TOPLEFT",WorldFrame,"TOPLEFT", -5, -90)
+Guide:SetPoint("BOTTOMRIGHT",WorldFrame,"BOTTOMRIGHT", 5, 85)
 Guide:Hide()
 
 local Guidetext = createtext(Guide, 15, "NONE", true)
@@ -365,10 +352,29 @@ Guidetext:SetTextColor(0.7, 0.7, 0.7)
 Guidetext:SetText("|cff3399FF/rl|r - Reload UI \n \n |cff3399FF/hb|r - Key Binding Mode \n \n |cff3399FF/raidcd|r - Test RaidCD bars \n \n |cff3399FF/atweaks|r - move RaidCD bars \n \n |cff3399FFSHIFT+Leftbutton|r - Set Focus \n \n |cff3399FFTab|r - Change between available channels. \n \n |cff3399FF/omf|r - Unlock UnitFrames \n \n |cff3399FF/cd x|r - count down from x second. \n \n Raid Control/World Flare button appears on topright of minimap when available. \n \n |cff3399FFEnjoy!|r")
 Guidetext:Hide()
 
-local Creditstext = createtext(Guide, 15, "NONE", true)
+local Creditstext = createtext(Guide, 20, "NONE", true)
 Creditstext:SetTextColor(0.7, 0.7, 0.7)
-Creditstext:SetText("AltzUI ver"..ver.." \n \n \n \n 伤心蓝 CN5_深渊之巢 \n  < 炼狱 > \n \n \n \n |cff3399FF Thanks to \n \n Zork Haste Tukz Haleth Qulight Freebaser Monolit \n and everyone who help me with this Compilations.|r")
+Creditstext:SetText("AltzUI ver"..ver.." \n \n \n \n 伤心蓝 CN5_深渊之巢 \n  < 炼狱 > \n \n \n \n |cff3399FF Thanks to \n \n deemax Zork Haste Tukz Haleth Qulight Freebaser Monolit \n and everyone who help me with this Compilations.|r")
 Creditstext:Hide()
+
+local Setupbutton = CreateFrame("Button", "AltzuiSetupButton", Guide, "UIPanelButtonTemplate")
+Setupbutton:SetPoint("BOTTOM", 0, 50)
+Setupbutton:SetSize(300, 25)
+Setupbutton:SetText("Initialize")
+Setupbutton.text = createtext(Setupbutton, 15, "NONE", false)
+Setupbutton.text:SetPoint("BOTTOM", Setupbutton, "TOP", 0, 25)
+Setupbutton.text:SetTextColor(0.7, 0.7, 0.7)
+Setupbutton.text:SetText("ver"..ver.." \n \n 伤心蓝 CN5_深渊之巢 \n  < 炼狱 > \n \n |cff3399FF Thanks to \n \n deemax Zork Haste Tukz Haleth Qulight Freebaser Monolit \n and everyone who help me with this Compilations.|r")
+Setupbutton.text2 = createtext(Setupbutton, 25, "NONE", false)
+Setupbutton.text2:SetPoint("TOP", Guide, "TOP", 0, -170)
+Setupbutton.text2:SetTextColor(0.7, 0.7, 0.7)
+Setupbutton.text2:SetText("Welcome to Altz UI Setup")
+Setupbutton:Hide()
+
+Setupbutton:SetScript("OnClick", function()
+	ns.SetupAltzui()  
+	ReloadUI() 
+end)
 
 local interval = 0
 TOPPANEL:SetScript('OnUpdate', function(self, elapsed)
@@ -381,33 +387,65 @@ TOPPANEL:SetScript('OnUpdate', function(self, elapsed)
 end)
 
 local buttonhold = CreateFrame("Frame", nil, BOTTOMPANEL)
-buttonhold:SetPoint("TOPRIGHT",BOTTOMPANEL,"TOPRIGHT", -220, -10)
-buttonhold:SetSize(100,45)
-buttonhold:SetScript('OnEnter', function() BOTTOMTEXT:SetTextColor(0, 0, 0, .5) end)
+buttonhold:SetPoint("BOTTOM",BOTTOMPANEL,"TOP", 0, -50)
+buttonhold:SetSize(400, 85)
+buttonhold.text = createtext(buttonhold, 20, "NONE", false)
+buttonhold.text:SetPoint("TOP", BOTTOMPANEL, "TOP", 0, -10)
+buttonhold.text:SetTextColor(0, 0, 0,.5)
+buttonhold.text:SetText("Click to hide.")
 
-local function littebutton(self, x, texturefile, note)
+local petnum = C_PetJournal.GetNumPets(false)
+local randomindex = random(1 ,petnum)
+local randomID = select(11, C_PetJournal.GetPetInfoByIndex(randomindex))
+
+local function createmodel(parent, facing)
+	local Model = CreateFrame("PlayerModel", nil, parent)
+	Model:SetPoint("CENTER", 0, 7)
+	Model:SetSize(120,120)
+	Model:SetPosition(-0.5, 0, 0)
+	if randomID > 0 then
+		Model:SetCreature(randomID)
+	else
+		Model:SetCreature(1)
+	end
+	Model:SetFacing(facing)
+end
+
+local function littebutton(self, x, note, facing)
 	self = CreateFrame("Button", nil, buttonhold)
-	self:SetPoint("LEFT",buttonhold,"LEFT", 10+(x-1)*45, 0)
-	self:SetSize(35,35)
-	self:SetNormalTexture(texturefile)
-	self:GetNormalTexture():SetTexCoord(0.1,0.9,0.1,0.9)
-	self:GetNormalTexture():SetDesaturated(true)
-	creategrowBD(self, 0, 0, 0, 0.3, 1)
+	if x == 1 then
+		self:SetPoint("LEFT")
+	else
+		self:SetPoint("RIGHT")
+	end
+	self:SetSize(85 ,85)
 	
 	self.text = createtext(self, 30, "NONE", false)
-	self.text:SetPoint("RIGHT",BOTTOMPANEL,"RIGHT", -360, 0)
+	self.text:SetPoint"BOTTOM"
 	self.text:SetTextColor(0.7, 0.7, 0.7)
 	self.text:SetText(note)
 	self.text:Hide()
-
-	self:SetScript('OnEnter', function() self:GetNormalTexture():SetDesaturated(false) self.border:SetBackdropBorderColor(0.2, 0.8, 1, 1) self.text:Show() end)
-	self:SetScript('OnLeave', function() self:GetNormalTexture():SetDesaturated(true) self.border:SetBackdropBorderColor(0, 0, 0, 1) self.text:Hide() end)
+	
+	self.grow = CreateFrame("Frame", nil, self)
+	self.grow:SetSize(140, 50)
+	self.grow:SetPoint("BOTTOM")
+	self.grow.texture = self.grow:CreateTexture(nil)
+	self.grow.texture:SetAllPoints(self.grow)
+	self.grow.texture:SetTexture("World\\GENERIC\\ACTIVEDOODADS\\INSTANCEPORTAL\\GENERICGLOW2.BLP")
+	self.grow.texture:SetVertexColor(.2, .5, 1)
+	self.grow.texture:SetBlendMode("ADD")
+	self.grow.texture:Hide()
+	
+	createmodel(self, facing)
+	
+	self:SetScript('OnEnter', function() self.text:Show() self.grow.texture:Show() end)
+	self:SetScript('OnLeave', function() self.text:Hide() self.grow.texture:Hide() end)
 	
 	return self
 end
 
-local Info = littebutton(self, 1, "Interface\\ICONS\\inv_pet_pandarenelemental", "Info")
-local Credits = littebutton(self, 2, "Interface\\ICONS\\inv_pet_deathy", "Credits")
+local Info = littebutton(self, 1, "Info", 1)
+local Credits = littebutton(self, 2, "Credits", -1)
 
 local function fadeout()
 	Minimap:Hide()
@@ -432,6 +470,13 @@ end
 TOPPANEL:SetScript("OnEvent",function(self,event,...) 
 	if(event == "PLAYER_ENTERING_WORLD") then
 		fadeout()
+		if not aCoreCDB or aCoreCDB == nil then
+			Info:Hide()
+			Credits:Hide()
+			Guide:Show()
+			Setupbutton:Show()
+			aCoreCDB = 1
+		end
 		TOPPANEL:UnregisterEvent("PLAYER_ENTERING_WORLD")
 	elseif UnitIsAFK("player") then
 		fadeout()
@@ -441,8 +486,8 @@ end)
 TOPPANEL:RegisterEvent("PLAYER_ENTERING_WORLD")
 TOPPANEL:RegisterEvent("PLAYER_FLAGS_CHANGED")
 
-BOTTOMPANEL:SetScript('OnEnter', function() BOTTOMTEXT:SetTextColor(.6, .6, .6, .5) end)
-BOTTOMPANEL:SetScript('OnLeave', function() BOTTOMTEXT:SetTextColor(0, 0, 0, .5) end)
+BOTTOMPANEL:SetScript('OnEnter', function() buttonhold.text:SetTextColor(.5, .5, .5, 1) end)
+BOTTOMPANEL:SetScript('OnLeave', function() buttonhold.text:SetTextColor(0, 0, 0, .5) end)
 
 BOTTOMPANEL:SetScript('OnMouseUp', function()
 	fadein()
@@ -467,49 +512,3 @@ end)
 Guide:SetScript('OnMouseUp', function()
 	Guide:Hide() Guidetext:Hide() Creditstext:Hide()
 end)
-
---====================================================--
---[[         -- test --         ]]--
---====================================================--
---[[
-local function listmount()
-	for i=1,GetNumCompanions("CRITTER") do
-		local creatureID, creatureName = GetCompanionInfo("CRITTER", i)
-		print(i..":"..creatureName.."ID:"..creatureID)
-	end
-end
-listmount()
-]]
-local creatures = {
---22514 -- 白色乘骑塔布羊 
---52748 -- 纯血火鹰 
-16548, -- 哼哼先生 
-51090, -- 唱歌的向日葵 
-53623, -- 角鹰兽宝宝
-36607, -- 奥妮克希亚宝宝
-32595, -- 企鹅
-16549, -- 老鼠
-32939, -- 小鹿 
-47944, -- 暗色凤凰宝宝
-32814, -- 暴雪熊宝宝
-33226, -- 螃蟹 
-48107, -- 海鸥 
-37865, -- 小狗 
-7394, -- 小鸡 
-27217, -- 竞争之魂 
-9662, -- 精龙 
-23274, -- 臭臭 
-23258, -- 蛋蛋 
-51635, -- 蜗牛 
-33578, -- 鱼人 
-16547, -- 乌龟 
-}
---[[
-local function createmodel(parent)
-local Model = CreateFrame("PlayerModel", nil, parent)
-Model:SetAllPoints(parent)
-local randomNum = random(1 ,#creatures)
-local creatureID = creatures[randomNum]
-Model:SetCreature(creatureID)
-end
-]]

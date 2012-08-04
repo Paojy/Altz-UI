@@ -1,5 +1,88 @@
 ﻿-- Load varriables on demand
+local addon, ns = ...
 local function SetupAltzui()
+if IsAddOnLoaded("!ClassColors") then
+	if(ClassColorsDB) then table.wipe(wipe(ClassColorsDB)) end
+	ClassColorsDB = {
+	["DEATHKNIGHT"] = {
+		["hex"] = "ffc41e3a",
+		["colorStr"] = "ffb3040f",
+		["b"] = 0.06,
+		["g"] = 0.02,
+		["r"] = 0.70,
+	},
+	["WARRIOR"] = {
+		["hex"] = "ffc69b6d",
+		["colorStr"] = "ffffb171",
+		["b"] = 0.45,
+		["g"] = 0.69,
+		["r"] = 1,
+	},
+	["PALADIN"] = {
+		["hex"] = "fff48cba",
+		["colorStr"] = "fff50a6c",
+		["b"] = 0.41,
+		["g"] = 0.18,
+		["r"] = 1,
+	},
+	["MAGE"] = {
+		["hex"] = "ff68ccef",
+		["colorStr"] = "ff27f0f0",
+		["b"] = 0.94,
+		["g"] = 0.94,
+		["r"] = 0.15,
+	},
+	["PRIEST"] = {
+		["hex"] = "ffffffff",
+		["colorStr"] = "ffffffff",
+		["b"] = 1,
+		["g"] = 1,
+		["r"] = 1,
+	},
+	["WARLOCK"] = {
+		["hex"] = "ff9382c9",
+		["colorStr"] = "ffe200ff",
+		["b"] = 1,
+		["g"] = 0.05,
+		["r"] = 0.72,
+	},
+	["SHAMAN"] = {
+		["hex"] = "ff0070dd",
+		["colorStr"] = "ff445dff",
+		["b"] = 1,
+		["g"] = 0.36,
+		["r"] = 0.27,
+	},
+	["HUNTER"] = {
+		["hex"] = "ffaad372",
+		["colorStr"] = "ffd3d012",
+		["b"] = 0.10,
+		["g"] = 1,
+		["r"] = 0.5,
+	},
+	["DRUID"] = {
+		["hex"] = "ffff7c0a",
+		["colorStr"] = "ffff9b00",
+		["b"] = 0,
+		["g"] = 0.61,
+		["r"] = 1,
+	},
+	["MONK"] = {
+		["hex"] = "ff00ff96",
+		["colorStr"] = "ff00ff97",
+		["b"] = 0.59,
+		["g"] = 1,
+		["r"] = 0,
+	},
+	["ROGUE"] = {
+		["hex"] = "fffff468",
+		["colorStr"] = "ffffe700",
+		["b"] = 0,
+		["g"] = 0.91,
+		["r"] = 1,
+	},
+	}
+end
 -- DBM
 	if IsAddOnLoaded("DBM-Core") then
 		DBM_SavedOptions["ShowMinimapButton"] = false
@@ -75,7 +158,7 @@ local function SetupAltzui()
 						},
 						["set"] = "total",
 						["y"] = 18,
-						["x"] = -18,
+						["x"] = -16,
 						["title"] = {
 							["color"] = {
 								["a"] = 0,
@@ -164,9 +247,10 @@ local function SetupAltzui()
 		ChatFrame_AddMessageGroup(ChatFrame3, "MONEY")
 	end
 end
+ns.SetupAltzui = SetupAltzui
 
 StaticPopupDialogs["SetupAltzUI"] = {
-	text = "Do you want to set to Deflaut Options and Reload UI? (Recommed when you use AltUI for the first time.)",
+	text = "Do you want to set to Deflaut Options and Reload UI?",
 	button1 = "yes",
 	button2 = "cancel",
 	OnAccept = function() SetupAltzui() ReloadUI() end,
@@ -179,6 +263,5 @@ StaticPopupDialogs["SetupAltzUI"] = {
 	whileDead = 1,
 	hideOnEscape = true
 }
-
 SLASH_SETUPALTZ1 = "/setup"
 SlashCmdList["SETUPALTZ"] = function() StaticPopup_Show("SetupAltzUI") end

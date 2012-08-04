@@ -15,3 +15,23 @@ FormatTime = function(time)
 		return string.format('%.2d', time)
 	end
 end
+
+GetClassColor = function()
+local Ccolor
+if(IsAddOnLoaded'!ClassColors' and CUSTOM_CLASS_COLORS) then
+	Ccolor = CUSTOM_CLASS_COLORS[select(2, UnitClass("player"))]
+else
+	Ccolor = RAID_CLASS_COLORS[select(2, UnitClass("player"))]
+end
+return Ccolor
+end
+
+GetAllClassColors = function()
+local Ccolors
+if(IsAddOnLoaded'!ClassColors' and CUSTOM_CLASS_COLORS) then
+	Ccolors = CUSTOM_CLASS_COLORS
+else
+	Ccolors = RAID_CLASS_COLORS
+end
+return Ccolors
+end

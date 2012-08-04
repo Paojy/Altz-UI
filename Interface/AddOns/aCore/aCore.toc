@@ -4,6 +4,7 @@
 ## Author: Blue
 ## OptionalDeps: Skada, Numeration, TinyDPS, Recount
 ## Credits: Zork
+## SavedVariablesPerCharacter: aCoreCDB
 
 lib\core.lua
 lib\pattern.lua
@@ -17,5 +18,5 @@ skins\Numeration.lua
 skins\Recount.lua
 skins\Skada.lua
 
-panels.lua
 setup.lua
+panels.lua
