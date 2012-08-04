@@ -74,40 +74,46 @@ local dispelClass = {
     PALADIN = { Poison = true, Disease = true, },
     MAGE = { Curse = true, },
     DRUID = { Curse = true, Poison = true, },
+    MONK = { Disease = true, Poison = true, },
 }
-
+ 
 local _, class = UnitClass("player")
 local checkTalents = CreateFrame"Frame"
 checkTalents:RegisterEvent"PLAYER_ENTERING_WORLD"
 checkTalents:RegisterEvent"ACTIVE_TALENT_GROUP_CHANGED"
 checkTalents:RegisterEvent"CHARACTER_POINTS_CHANGED"
-
+ 
 checkTalents:SetScript("OnEvent", function(self, event)
-    if multicheck(class, "SHAMAN", "PALADIN", "DRUID", "PRIEST") then
-
+    if multicheck(class, "SHAMAN", "PALADIN", "DRUID", "PRIEST", "MONK") then
+ 
         if class == "SHAMAN" then
             local tree = GetSpecialization()
-
+ 
             dispelClass[class].Magic = tree == 1 and true
-
+ 
         elseif class == "PALADIN" then
             local tree = GetSpecialization()
-
+ 
             dispelClass[class].Magic = tree == 1 and true
-
+ 
         elseif class == "DRUID" then
             local tree = GetSpecialization()
-
+ 
             dispelClass[class].Magic = tree == 1 and true
-
+ 
         elseif class == "PRIEST" then
             local tree = GetSpecialization()
             
             dispelClass[class].Magic = (tree == 1 or tree == 2) and true
             
+        elseif class == "MONK" then
+            local tree = GetSpecialization()
+ 
+            dispelClass[class].Magic = tree == 2 and true
+            
         end
     end
-
+ 
     if event == "PLAYER_ENTERING_WORLD" then
         self:UnregisterEvent("PLAYER_ENTERING_WORLD")
     end
@@ -219,6 +225,8 @@ local updateDebuff = function(backdrop, icon, texture, count, dtype, duration, e
     icon.border:SetBackdropBorderColor(color.r, color.g, color.b)
     if dispellist[dtype] then
 	backdrop:SetBackdropBorderColor(color.r, color.g, color.b)
+	else
+	backdrop:SetBackdropBorderColor(0, 0, 0)
 	end
 	
     icon.icon:SetTexture(texture)
