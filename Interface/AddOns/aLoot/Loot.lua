@@ -144,7 +144,7 @@ addon.LOOT_OPENED = function(self, event, autoloot)
 	else
 		self:ClearAllPoints()
 		self:SetUserPlaced(false)
-		self:SetPoint("BOTTOMLEFT", UIParent, "BOTTOM", 172, 125)		
+		self:SetPoint("TOPLEFT","UIParent","CENTER", 150, -87)		
 	end
 
 	local w = 0
