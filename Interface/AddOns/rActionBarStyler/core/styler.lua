@@ -21,8 +21,8 @@ local backdrop = {
     bgFile = textures.blank,
     edgeFile = textures.outer_shadow,
     tile = false,
-    edgeSize = 4,
-    insets = { left = 4, right = 4, top = 4, bottom = 4 },
+    edgeSize = 3,
+    insets = { left = 3, right = 3, top = 3, bottom = 3 },
   }
   
 -- border  
@@ -38,8 +38,8 @@ local backdrop2 = {
 	-- grow + background
       bu.bg = CreateFrame("Frame", nil, bu)
       bu.bg:SetAllPoints(bu)
-      bu.bg:SetPoint("TOPLEFT", bu, "TOPLEFT", -4, 4)
-      bu.bg:SetPoint("BOTTOMRIGHT", bu, "BOTTOMRIGHT", 4, -4)
+      bu.bg:SetPoint("TOPLEFT", bu, "TOPLEFT", -3, 3)
+      bu.bg:SetPoint("BOTTOMRIGHT", bu, "BOTTOMRIGHT", 3, -3)
       bu.bg:SetFrameLevel(bu:GetFrameLevel()-2)
 	  bu.bg:SetBackdrop(backdrop)
 	  bu.bg:SetBackdropColor(0.05, 0.05, 0.05, 0.7)

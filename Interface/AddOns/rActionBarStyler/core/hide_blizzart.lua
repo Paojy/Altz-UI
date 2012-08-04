@@ -22,10 +22,6 @@
     ActionBarUpButton:SetParent(blizzHider)
 	-- bag
 	MainMenuBarBackpackButton:SetParent(blizzHider)
-    CharacterBag0Slot:SetParent(blizzHider)
-    CharacterBag1Slot:SetParent(blizzHider)
-    CharacterBag2Slot:SetParent(blizzHider)
-    CharacterBag3Slot:SetParent(blizzHider)
   end
   --hide override actionbar frames
   if gcfg.bars.overridebar.enable then

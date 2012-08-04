@@ -10,7 +10,6 @@
   local cfg = CreateFrame("Frame")
   local addon, ns = ...
   ns.cfg = cfg
-
   -----------------------------
   -- CONFIG
   -----------------------------
@@ -28,7 +27,7 @@
       },
       pos             = { a1 = "TOP", a2 = "CENTER", af = "UIParent", x = 0, y = -142 },
       userplaced      = {
-        enable          = false,
+        enable          = true,
       },
       mouseover       = {
         enable          = true,
@@ -51,7 +50,7 @@
       },
       pos             = { a1 = "TOP", a2 = "CENTER", af = "UIParent", x = 0, y = -142 },
       userplaced      = {
-        enable          = false,
+        enable          = true,
       },
       mouseover       = {
         enable          = false,
@@ -70,7 +69,7 @@
       },
       pos             = { a1 = "BOTTOM", a2 = "BOTTOM", af = "UIParent", x = 0, y = 15 },
       userplaced      = {
-        enable          = false,
+        enable          = true,
       },
       mouseover       = {
         enable          = true,
@@ -93,7 +92,7 @@
       },
       pos             = { a1 = "BOTTOM", a2 = "BOTTOM", af = "UIParent", x = 0, y = 83 },
       userplaced      = {
-        enable          = false,
+        enable          = true,
       },
       mouseover       = {
         enable          = true,
@@ -115,7 +114,7 @@
         size            = 25,
         margin          = 4,
       },
-      pos             = { a1 = "RIGHT", a2 = "RIGHT", af = "UIParent", x = 0, y = 0 },
+      pos             = { a1 = "RIGHT", a2 = "RIGHT", af = "UIParent", x = -6, y = 0 },
       userplaced      = {
         enable          = true,
       },
@@ -165,7 +164,7 @@
       },
       pos             = { a1 = "BOTTOM", a2 = "BOTTOM", af = "UIParent", x = 0, y = 115 },
       userplaced      = {
-        enable          = false,
+        enable          = true,
       },
       mouseover       = {
         enable          = true,
@@ -187,9 +186,9 @@
         size            = 20,
         margin          = 4,
       },
-      pos             = { a1 = "TOPLEFT", a2 = "BOTTOMLEFT", af = Minimap, x = -3, y = -4 },
+      pos             = { a1 = "TOPLEFT", a2 = "BOTTOMLEFT", af = Minimap, x = -2, y = -2 },
       userplaced      = {
-        enable          = false,
+        enable          = true,
       },
       mouseover       = {
         enable          = false,
@@ -204,15 +203,15 @@
     },
     extrabar = {
       enable          = true,
-      scale           = 1.5,
+      scale           = 1,
       padding         = 10, --frame padding
       buttons         = {
-        size            = 36,
+        size            = 26,
         margin          = 4,
       },
-      pos             = { a1 = "CENTER", a2 = "CENTER", af = "UIParent", x = 210, y = -30 },
+      pos             = { a1 = "TOP", a2 = "CENTER", af = "UIParent", x = 0, y = -200 },
       userplaced      = {
-        enable          = false,
+        enable          = true,
       },
       mouseover       = {
         enable          = false,
