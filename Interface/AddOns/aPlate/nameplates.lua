@@ -13,6 +13,7 @@ local enhancethreat = true
 local frames = {}
 local dummy = function() return end
 local numChildren = -1
+local Ccolors = GetAllClassColors()
 
 local NamePlates = CreateFrame("Frame", "aplate", UIParent)
 NamePlates:SetScript("OnEvent", function(self, event, ...) self[event](self, ...) end)
@@ -130,9 +131,9 @@ end
 local function Colorize(frame)
 	local r,g,b = frame.hp:GetStatusBarColor()
 	
-	for class, color in pairs(RAID_CLASS_COLORS) do
+	for class, color in pairs(Ccolors) do
 		local r, g, b = floor(r*100+.5)/100, floor(g*100+.5)/100, floor(b*100+.5)/100
-		if RAID_CLASS_COLORS[class].r == r and RAID_CLASS_COLORS[class].g == g and RAID_CLASS_COLORS[class].b == b then
+		if Ccolors[class].r == r and Ccolors[class].g == g and Ccolors[class].b == b then
 			frame.hasClass = true
 			frame.isFriendly = false
 			return
