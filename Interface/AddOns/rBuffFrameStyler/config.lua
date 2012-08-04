@@ -16,7 +16,7 @@
   -----------------------------
 
   cfg.buffframe = {
-    scale           = 0.9,
+    scale           = 1,
     pos             = { a1 = "TOPRIGHT", af = "UIParent", a2 = "TOPRIGHT", x = -15, y = -16 }, 
     userplaced      = false, --want to place the bar somewhere else?
     locked          = true, --frame locked, can be unlocked ingame via /rbuff
@@ -27,11 +27,11 @@
   }
 
   cfg.tempenchant = {
-    scale           = 0.9,
-    pos             = { a1 = "BOTTOMRIGHT", a2 = "BOTTOMRIGHT", af = "UIParent", x = -10, y = 10 },
-    userplaced      = true, --want to place the bar somewhere else?
+    scale           = 1,
+    pos             = { a1 = "TOPLEFT", a2 = "BOTTOMLEFT", af = Minimap, x = -1, y = -2 },
+    userplaced      = false, --want to place the bar somewhere else?
     locked          = true, --frame locked, can be unlocked ingame via /rbuff
-    colSpacing      = 7,
+    colSpacing      = 3,
   }
 
   cfg.font = GameFontHighlight:GetFont()

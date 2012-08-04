@@ -29,8 +29,8 @@ local backdrop = {
     bgFile = "",
     edgeFile = textures.outer_shadow,
     tile = false,
-    edgeSize = 4,
-    insets = { left = 4, right = 4, top = 4, bottom = 4 },
+    edgeSize = 3,
+    insets = { left = 3, right = 3, top = 3, bottom = 3 },
   }
   
 -- border  
@@ -75,7 +75,7 @@ local backdrop2 = {
     local f = rBFS_TempEnchantHolder
     TemporaryEnchantFrame:SetParent(f)
     TemporaryEnchantFrame:ClearAllPoints()
-    TemporaryEnchantFrame:SetPoint("TOPRIGHT",0,0)
+    TemporaryEnchantFrame:SetPoint("TOPLEFT",0,0)
   end
 
   --move buff frame
@@ -132,8 +132,8 @@ local backdrop2 = {
 
     --shadow
     local back = CreateFrame("Frame", nil, b)
-    back:SetPoint("TOPLEFT", b, "TOPLEFT", -2, 2)
-    back:SetPoint("BOTTOMRIGHT", b, "BOTTOMRIGHT", 2, -2)
+    back:SetPoint("TOPLEFT", b, "TOPLEFT", -1, 1)
+    back:SetPoint("BOTTOMRIGHT", b, "BOTTOMRIGHT", 1, -1)
     back:SetFrameLevel(b:GetFrameLevel()-2)
     back:SetBackdrop(backdrop)
     back:SetBackdropBorderColor(0, 0, 0, 1)
@@ -195,17 +195,15 @@ local backdrop2 = {
 
   --update wpn enchant icon positions
   local function updateTempEnchantAnchors()
-    local previousBuff
     for i=1, NUM_TEMP_ENCHANT_FRAMES do
       local b = _G["TempEnchant"..i]
-      if b then
+	  b:ClearAllPoints()
         if (i == 1) then
-          b:SetPoint("TOPRIGHT", TemporaryEnchantFrame, "TOPRIGHT", 0, 0)
+          b:SetPoint("TOPLEFT", TemporaryEnchantFrame, "TOPLEFT", 0, 0)
         else
-          b:SetPoint("RIGHT", previousBuff, "LEFT", -cfg.tempenchant.colSpacing, 0)
+		  local previousBuff = _G["TempEnchant"..i-1]
+          b:SetPoint("LEFT", previousBuff, "RIGHT", cfg.tempenchant.colSpacing, 0)
         end
-        previousBuff = b
-      end
     end
   end
 
