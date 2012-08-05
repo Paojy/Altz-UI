@@ -89,7 +89,7 @@ local UPDATE_VISIBILITY = function(self, event)
 	local showBar
 	local form = GetShapeshiftFormID()
 	if(not form) then
-		local ptt = WoW5 and GetSpecialization() or GetPrimaryTalentTree()
+		local ptt = GetSpecialization()
 		if(ptt and ptt == 1) then -- player has balance spec
 			showBar = true
 		end

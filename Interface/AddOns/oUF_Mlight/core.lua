@@ -667,7 +667,7 @@ local UnitSpecific = {
 			Ewidth = cfg.width
 			Eheight = cfg.height*-(cfg.hpheight-1)
 
-            ebar:SetPoint("TOPRIGHT", self, "BOTTOMRIGHT", 0, -12)
+            ebar:SetPoint("BOTTOMRIGHT", self, "TOPRIGHT", 0, 3)
 			ebar:SetSize(Ewidth, Eheight)
             ebar.bd = createBackdrop(ebar, ebar,1,3)
 
@@ -685,9 +685,9 @@ local UnitSpecific = {
             ebar.Spark:SetAlpha(0.5)
             ebar.Spark:SetHeight(25)
             ebar.Spark:SetPoint("LEFT", sbar:GetStatusBarTexture(), "LEFT", -15, 0)
-
-			self.EclipseBar.PostUnitAura = PostEclipseUpdate
+			
             self.EclipseBar = ebar
+			self.EclipseBar.PostUnitAura = PostEclipseUpdate
         end
 		
 		-- resting Zzz ---
