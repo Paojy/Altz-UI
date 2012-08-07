@@ -293,6 +293,87 @@ local UpdateLFD = function(self, event)
 	end
 end
 ns.UpdateLFD = UpdateLFD
+
+local HarmonyOverride = function(self, event, unit, powerType)
+	if(self.unit ~= unit or (powerType and powerType ~= 'LIGHT_FORCE')) then return end
+	
+	local cholder = self.Harmony
+	
+	local chi = UnitPower("player", SPELL_POWER_LIGHT_FORCE)
+	local maxchi = UnitPowerMax("player", SPELL_POWER_LIGHT_FORCE)
+	
+	if not cholder.maxchi then cholder.maxchi = 5 end
+	
+	if cholder.maxchi ~= maxchi then
+		for i = 1, 5 do
+			cholder[i]:SetWidth((cfg.width+3)/maxchi-3)
+		end
+		
+		cholder.maxchi = maxchi
+	end
+
+	for i = 1, 5 do
+		if i <= chi then
+			cholder[i]:SetAlpha(1)
+		else
+			cholder[i]:SetAlpha(0)
+		end
+	end
+end
+
+local SoulShardsOverride = function(self, event, unit, powerType)
+	if(self.unit ~= unit or (powerType and powerType ~= 'SOUL_SHARDS')) then return end
+	
+	local sholder = self.SoulShards
+	
+	local shard = UnitPower("player", SPELL_POWER_SOUL_SHARDS)
+	local maxshard = UnitPowerMax("player", SPELL_POWER_SOUL_SHARDS)
+	
+	if not sholder.maxshard then sholder.maxshard = 4 end
+	
+	if sholder.maxshard ~= maxshard then
+		for i = 1, 4 do
+			sholder[i]:SetWidth((cfg.width+3)/maxshard-3)
+		end
+		
+		sholder.maxshard = maxshard
+	end
+
+	for i = 1, 4 do
+		if i <= shard then
+			sholder[i]:SetAlpha(1)
+		else
+			sholder[i]:SetAlpha(0)
+		end
+	end
+end
+
+local HolyPowerOverride = function(self, event, unit, powerType)
+	if(self.unit ~= unit or (powerType and powerType ~= 'HOLY_POWER')) then return end
+	
+	local hholder = self.HolyPower
+	
+	local holypower = UnitPower("player", SPELL_POWER_HOLY_POWER)
+	local maxholypower = UnitPowerMax("player", SPELL_POWER_HOLY_POWER)
+	
+	if not hholder.maxholypower then hholder.maxholypower = 5 end
+	
+	if hholder.maxholypower ~= maxholypower then
+		for i = 1, 5 do
+			hholder[i]:SetWidth((cfg.width+3)/maxholypower-3)
+		end
+		
+		hholder.maxholypower = maxholypower
+	end
+
+	for i = 1, 5 do
+		if i <= holypower then
+			hholder[i]:SetAlpha(1)
+		else
+			hholder[i]:SetAlpha(0)
+		end
+	end
+end
 --=============================================--
 --[[                 Castbars                ]]--
 --=============================================--
@@ -541,7 +622,7 @@ local func = function(self, unit)
     local LFDRole = hp:CreateTexture(nil, 'OVERLAY')
     LFDRole:SetSize(12, 12)
     LFDRole:SetPoint('LEFT', masterlooter, 'RIGHT')
-    self.LFDRole = LFDRole
+	LFDRole.Override = UpdateLFD
 
     local Combat = hp:CreateTexture(nil, 'OVERLAY')
     Combat:SetSize(20, 20)
@@ -587,6 +668,30 @@ local func = function(self, unit)
 
 end
 
+local barcolor1 = { -- purple - pink
+	[1] = {180/255, 140/255, 255/255, 1},
+	[2] = {220/255, 130/255, 255/255, 1},
+	[3] = {255/255, 60/255, 255/255, 1},
+	[4] = {255/255, 10/255, 220/130, 1},
+	[5] = {220/255, 10/255, 50/255, 1},
+}
+
+local barcolor2 = { -- lightblue - deepblue
+	[1] = {125/255, 255/255, 245/255, 1},
+	[2] = {55/255, 170/255, 255/255, 1},
+	[3] = {0/255, 100/255, 180/255, 1},
+	[4] = {0/255, 30/255, 220/255, 1},
+	[5] = {0/255, 0/255, 150/255, 1},
+}
+
+local barcolor3 = { -- yellow - red
+	[1] = {230/255, 230/255, 0/255, 1},
+	[2] = {255/255, 180/255, 0/255, 1},
+	[3] = {250/255, 120/255, 20/255, 1},
+	[4] = {255/255, 70/255, 20/255, 1},
+	[5] = {255/255, 0/255, 0/255, 1},
+}
+
 local UnitSpecific = {
 
     --========================--
@@ -601,45 +706,42 @@ local UnitSpecific = {
             local count
             if class == "DEATHKNIGHT" then 
                 count = 6
-			elseif class == "MONK" then
-				count = UnitPowerMax("player" , SPELL_POWER_LIGHT_FORCE)
 			elseif class == "SHAMAN" then
 				count = 4
+			elseif class == "MONK" then
+				count = 5
 			elseif class == "WARLOCK" then
-				count = UnitPowerMax("player", SPELL_POWER_SOUL_SHARDS)
+				count = 4
             elseif class == "PALADIN" then
-                count = UnitPowerMax("player", SPELL_POWER_HOLY_POWER)
+                count = 5
 			elseif class == "PRIEST" then
-				count = UnitPowerMax("player", SPELL_POWER_SHADOW_ORBS)
+				count = 3
 			elseif class == "ROGUE" or class == "DRUID" then
 				count = 5 -- combopoints
             end
 
             local bars = CreateFrame("Frame", nil, self)
-			bars:SetPoint("BOTTOMRIGHT", self, "TOPRIGHT", 0, 3)
+			bars:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 0, 3)
             bars:SetSize(cfg.width, 10)
 
-            local i = count
-            for index = 1, count do
+            for i = 1, count do
                 bars[i] = createStatusbar(bars, cfg.texture, nil, cfg.height*-(cfg.hpheight-1), (cfg.width+3)/count-3, 1, 1, 1, 1)
 
                 if class == "WARLOCK" or class == "PRIEST" then
-                    bars[i]:SetStatusBarColor(253/255, 91/255, 176/255)
+                    bars[i]:SetStatusBarColor(unpack(barcolor1[i]))
                 elseif class == "PALADIN" or class == "MONK" then
-                    bars[i]:SetStatusBarColor(255/255, 255/255, 53/255)
+                    bars[i]:SetStatusBarColor(unpack(barcolor2[i]))
 				elseif class == "ROGUE" or class == "DRUID" then
-				    bars[i]:SetStatusBarColor(100/255, 200/255, 255/255)
+				    bars[i]:SetStatusBarColor(unpack(barcolor3[i]))
                 end
 				
-                if i == count then
-                    bars[i]:SetPoint("BOTTOMRIGHT", bars, "BOTTOMRIGHT")
+                if i == 1 then
+                    bars[i]:SetPoint("BOTTOMLEFT", bars, "BOTTOMLEFT")
                 else
-                    bars[i]:SetPoint("RIGHT", bars[i+1], "LEFT", -3, 0)
+                    bars[i]:SetPoint("LEFT", bars[i-1], "RIGHT", 3, 0)
                 end
 
-                bars[i].bd = createBackdrop(bars[i], bars[i],1,3)
-				
-                i=i-1
+                bars[i].bd = createBackdrop(bars[i], bars[i], 1, 3)
             end
 
             if class == "DEATHKNIGHT" then
@@ -647,13 +749,16 @@ local UnitSpecific = {
                 self.Runes = bars
             elseif class == "WARLOCK" then
                 self.SoulShards = bars
+				self.SoulShards.Override = SoulShardsOverride
             elseif class == "PALADIN" then
                 self.HolyPower = bars
+				self.HolyPower.Override = HolyPowerOverride
 			elseif class == "MONK" then
 				self.Harmony = bars
+				self.Harmony.Override = HarmonyOverride
 			elseif class == "SHAMAN" then
 				self.TotemBar = bars
-			elseif class == "PRIEST" then
+			elseif class == "PRIEST" then 
 				self.ShadowOrbs = bars
 			elseif class == "ROGUE" or class == "DRUID" then
 			    self.CPoints = bars
