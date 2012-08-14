@@ -30,7 +30,10 @@ CHAT_FRAME_TAB_ALERTING_NOMOUSE_ALPHA = 0
       "HighlightRight",
     }
 
-  for i = 1, NUM_CHAT_WINDOWS do
+local chatwindownum = NUM_CHAT_WINDOWS
+
+local function init()
+  for i = 1, chatwindownum do
   -- hide button on the left
     local bf = _G['ChatFrame'..i..'ButtonFrame']
     if bf then 
@@ -79,8 +82,10 @@ CHAT_FRAME_TAB_ALERTING_NOMOUSE_ALPHA = 0
     if tab then
       tab:GetFontString():SetFont(NAMEPLATE_FONT, 13, "THINOUTLINE")
       tab:GetFontString():SetShadowOffset(0,0)
-	  tab.selectedColorTable = { r = Ccolor.r, g = Ccolor.g, b = Ccolor.b };
-      tab:SetAlpha(1)
+	  if i ~= 11 then
+		tab.selectedColorTable = { r = Ccolor.r, g = Ccolor.g, b = Ccolor.b };
+		tab:SetAlpha(1)
+	  end
     end
   -- hide tab texture
 	for index, value in pairs(TAB_TEXTURES) do
@@ -88,6 +93,7 @@ CHAT_FRAME_TAB_ALERTING_NOMOUSE_ALPHA = 0
         texture:SetTexture(nil)
     end
   end
+end
 
 ChatFrameMenuButton.Show = ChatFrameMenuButton.Hide 
 ChatFrameMenuButton:Hide() 
@@ -95,17 +101,25 @@ FriendsMicroButton.Show = FriendsMicroButton.Hide
 FriendsMicroButton:Hide()
 BNToastFrame:SetClampedToScreen(true)
 
-if cfg.hidecombat then
-    local EventFrame = CreateFrame("Frame");
-    EventFrame:RegisterEvent("ADDON_LOADED");
-    local function EventHandler(self, event, ...)
-        if ... == "Blizzard_CombatLog" then
-            local topbar = _G["CombatLogQuickButtonFrame_Custom"];
-            if not topbar then return end
-            topbar:Hide();
-            topbar:HookScript("OnShow", function(self) topbar:Hide(); end);
-            topbar:SetHeight(0);
-        end
-    end
-    EventFrame:SetScript("OnEvent", EventHandler);
-end
+local EventFrame = CreateFrame("Frame")
+EventFrame:RegisterEvent("ADDON_LOADED")
+EventFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
+EventFrame:RegisterEvent("PET_BATTLE_OPENING_START")
+EventFrame:SetScript("OnEvent", function(self, event, arg1)
+	if cfg.hidecombat and event == "ADDON_LOADED" and arg1 == "Blizzard_CombatLog" then
+		local topbar = _G["CombatLogQuickButtonFrame_Custom"]
+        if not topbar then return end
+        topbar:Hide()
+        topbar:HookScript("OnShow", function(self) topbar:Hide() end)
+        topbar:SetHeight(0)
+	end
+	if event == "PLAYER_ENTERING_WORLD" then
+		init()
+		EventFrame:UnregisterEvent("PLAYER_ENTERING_WORLD")
+	end
+	if event == "PET_BATTLE_OPENING_START" then
+		chatwindownum = 11
+		init()
+		EventFrame:UnregisterEvent("PET_BATTLE_OPENING_START")
+	end
+end)
