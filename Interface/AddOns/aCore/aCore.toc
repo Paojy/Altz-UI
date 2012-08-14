@@ -2,7 +2,7 @@
 ## Title: |cffEE3A8Ca|rCore
 ## Version: 5.22
 ## Author: Blue
-## OptionalDeps: Skada, Numeration, TinyDPS, Recount
+## OptionalDeps: Skada, Numeration, TinyDPS, Recount, Aurora
 ## Credits: Zork
 ## SavedVariablesPerCharacter: aCoreCDB
 
