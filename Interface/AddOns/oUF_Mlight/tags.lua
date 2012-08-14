@@ -1,5 +1,4 @@
 ﻿local ADDON_NAME, ns = ...
-local cfg = ns.cfg
 
 local siValue = function(val)
     if (val >= 1e6) then
@@ -52,46 +51,25 @@ local function hex(r, g, b)
     return ('|cff%02x%02x%02x'):format(r * 255, g * 255, b * 255)
 end
 
-oUF.Tags.Methods['Mlight:lvl'] = function(u) 
-    local level = UnitLevel(u)
-    local typ = UnitClassification(u)
-    local color = GetQuestDifficultyColor(level)
-
-    if level <= 0 then
-        level = "??" 
-        color.r, color.g, color.b = 1, 0, 0
-    end
-
-    if typ=="rareelite" then
-        return hex(color)..level..'r+|r'
-    elseif typ=="elite" then
-        return hex(color)..level..'+|r'
-    elseif typ=="rare" then
-        return hex(color)..level..'r|r'
-    else
-        return hex(color)..level..'|r'
-    end
-end
-
+--=============================================--
+--[[                 Tags                    ]]--
+--=============================================--
 oUF.Tags.Methods['Mlight:hp']  = function(u) 
     local min, max = UnitHealth(u), UnitHealthMax(u)
-	if min~=max and min > 0 then 
-    return siValue(min).." | "..math.floor(min/max*100+.5).."%"
+	if min > 0 and max > 0 and min~=max then
+		return siValue(min).." "..hex(1, 0, 1).."'"..hex(1, 1, 0)..math.floor(min/max*100+.5).."|r"
 	end
 end
 oUF.Tags.Events['Mlight:hp'] = 'UNIT_HEALTH'
 
 oUF.Tags.Methods['Mlight:pp'] = function(u) 
 	local min, max = UnitPower(u), UnitPowerMax(u)
-	
-    if min~=max and min > 0 then
+	if min > 0 and max > 0 and min~=max then
         local _, str, r, g, b = UnitPowerType(u)
         local t = oUF.colors.power[str]
-
         if t then
             r, g, b = t[1], t[2], t[3]
         end
-
         return hex(r, g, b)..siValue(min).."|r"
     end
 end
@@ -113,55 +91,52 @@ oUF.Tags.Methods['Mlight:color'] = function(u, r)
 end
 oUF.Tags.Events['Mlight:color'] = 'UNIT_REACTION UNIT_HEALTH'
 
-oUF.Tags.Methods['Mlight:name'] = function(u, r)
-    local name = UnitName(r or u)
-    return name
-end
-oUF.Tags.Events['Mlight:name'] = 'UNIT_NAME_UPDATE'
-
 oUF.Tags.Methods['Mlight:shortname'] = function(u, r)
 	local name = UnitName(r or u)
-	return utf8sub(name, 3, false)
+	return utf8sub(name, 4, false)
 end
 oUF.Tags.Events['Mlight:shortname'] = 'UNIT_NAME_UPDATE'
 
-oUF.Tags.Methods['Mlight:info'] = function(u)
-    if UnitIsDead(u) then
-        return oUF.Tags.Methods['Mlight:lvl'](u).."|cffCFCFCF DEAD|r"
-    elseif UnitIsGhost(u) then
-        return oUF.Tags.Methods['Mlight:lvl'](u).."|cffCFCFCF Gho|r"
-    elseif not UnitIsConnected(u) then
-        return oUF.Tags.Methods['Mlight:lvl'](u).."|cffCFCFCF D/C|r"
-    else
-        return oUF.Tags.Methods['Mlight:lvl'](u)
-    end
-end
-oUF.Tags.Events['Mlight:info'] = 'UNIT_HEALTH'
-
 oUF.Tags.Methods['Mlight:altpower'] = function(u)
-    local cur = UnitPower(u, ALTERNATE_POWER_INDEX)
+    local min = UnitPower(u, ALTERNATE_POWER_INDEX)
     local max = UnitPowerMax(u, ALTERNATE_POWER_INDEX)
 
-    if max > 0 then
-        local per = floor(cur/max*100)
-
-        return format("%d", per > 0 and per or 0).."%"
+    if min > 0 and max > 0 then
+        return format("%d", floor(min/max*100)).."%"
     end
 end
 oUF.Tags.Events['Mlight:altpower'] = "UNIT_POWER UNIT_MAXPOWER"
 
 --------------[[     raid     ]]-------------------
-oUF.Tags.Methods['Mlight:raidinfo'] = function(u)
-	local ripcolor = {r = 1, g = 0, b = 0}
-	local ghocolor = {r = 0.5, g = 0.5, b = 0.5}
-	
-    if UnitIsDead(u) then
-        return hex(ripcolor).."b|r"
-    elseif UnitIsGhost(u) then
-        return hex(ghocolor).."z|r"
-    elseif not UnitIsConnected(u) then
-        return hex(ghocolor).."U|r"
-    end
 
+oUF.Tags.Methods['Mlight:LFD'] = function(u) -- use symbols istead of letters
+	local role = UnitGroupRolesAssigned(u)
+	if role == "HEALER" then
+		return "|cff7CFC00H|r"
+	elseif role == "TANK" then
+		return "|cffF4A460T|r"
+	elseif role == "DAMAGER" then
+		return "|cffEEEE00D|r"
+	end
 end
-oUF.Tags.Events['Mlight:raidinfo'] = 'UNIT_HEALTH UNIT_CONNECTION'
+oUF.Tags.Events['Mlight:LFD'] = "GROUP_ROSTER_UPDATE PLAYER_ROLES_ASSIGNED"
+
+oUF.Tags.Methods['Mlight:AfkDnd'] = function(u) -- used in indicators
+	if UnitIsAFK(u) then
+		return "|cff9FB6CD <afk>|r" 
+	elseif UnitIsDND(u) then
+		return "|cffCD2626 <dnd>|r"
+	end
+end
+oUF.Tags.Events['Mlight:AfkDnd'] = 'PLAYER_FLAGS_CHANGED UNIT_POWER UNIT_MAXPOWER'
+
+oUF.Tags.Methods['Mlight:DDG'] = function(u) -- used in indicators
+	if UnitIsDead(u) then
+		return "|cffCD0000  Dead|r"
+	elseif UnitIsGhost(u) then
+		return "|cffBFEFFF  Ghost|r"
+	elseif not UnitIsConnected(u) then
+		return "|cffCCCCCC  D/C|r"
+	end
+end
+oUF.Tags.Events['Mlight:DDG'] = 'UNIT_HEALTH'

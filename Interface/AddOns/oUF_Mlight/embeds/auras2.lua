@@ -47,7 +47,7 @@ local CreateAuraIcon = function(auras)
     button.border = border
 
     local remaining = button:CreateFontString(nil, "OVERLAY")
-    remaining:SetPoint("BOTTOMRIGHT",1,-5) 
+    remaining:SetPoint("BOTTOMRIGHT",4,-2) 
     remaining:SetFont(font, auras.tfontsize, "THINOUTLINE")
     remaining:SetTextColor(1, 1, 0)
     button.remaining = remaining

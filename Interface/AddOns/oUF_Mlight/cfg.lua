@@ -7,9 +7,9 @@ local cfg = CreateFrame("Frame")
 -- media
 cfg.mediaPath = "Interface\\AddOns\\oUF_Mlight\\media\\"
 cfg.texture = "Interface\\Buttons\\WHITE8x8"
-cfg.font, cfg.fontflag = cfg.mediaPath.."font.TTF", "OUTLINE"--GameFontHighlight:GetFont(), "OUTLINE"
+cfg.highlighttexture = cfg.mediaPath.."highlight"
+cfg.font, cfg.fontflag = cfg.mediaPath.."font.TTF", "OUTLINE"
 cfg.glowTex = cfg.mediaPath.."grow"
-cfg.buttonTex = cfg.mediaPath.."buttontex"
 cfg.fontsize = 12
 
 -- color mode
@@ -20,6 +20,7 @@ cfg.classcolormode = false
 -- size
 cfg.height, cfg.width = 16, 230--height and width for player,focus and target
 cfg.width1 = 70 -- width for pet and tot
+cfg.width2 = 150 -- width for boss 1-5
 cfg.scale = 1.0
 cfg.hpheight = .90 -- hpheight/unitheight
 
@@ -42,7 +43,7 @@ cfg.uninterruptable = {1, 0, 0, 0.1}
 cfg.auras = true  -- disable all auras
 cfg.auraborders = true -- auraborder colored based on debuff type
 cfg.auraperrow = 9 -- number of auras each row, this control the size of icon
-cfg.onlyShowPlayer = false -- only show player debuffs on target
+cfg.onlyShowPlayer = false -- only show auras casted by player on target, focus and boss
 
 -- show/hide unit
 -- boss
@@ -61,6 +62,10 @@ cfg.healerraidposition = {"TOPLEFT", "UIParent","CENTER", 150, -100}
 cfg.healerraidheight, cfg.healerraidwidth = 30, 90
 cfg.anchor = "TOP"
 cfg.partyanchor = "LEFT"
+cfg.showgcd = true
+cfg.healprediction = true
+	cfg.myhealpredictioncolor = { 110/255, 210/255, 0/255, 0.5}
+	cfg.otherhealpredictioncolor = { 0/255, 110/255, 0/255, 0.5}
  -- dps/tank mode(1*25)
 cfg.dpsraidposition = {"TOPLEFT", UIParent, "TOPLEFT", 20, -168}
 cfg.dpsraidheight, cfg.dpsraidwidth = 15, 70
@@ -74,7 +79,7 @@ end
   
 if IsAddOnLoaded("Aurora") and IsAddOnLoaded("aCore") then
 cfg.font = GameFontHighlight:GetFont()
-cfg.showsolo = false
+--cfg.showsolo = false
 end
 ---------------------------------------------------------------------------------------
 -------------------[[        Config        End        ]]-------------------------------  

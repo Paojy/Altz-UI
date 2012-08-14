@@ -16,6 +16,7 @@ embeds\auras.lua
 embeds\auras2.lua
 embeds\indicators.lua
 embeds\totems.lua
+embeds\gcd.lua
 
 core.lua
 raid.lua

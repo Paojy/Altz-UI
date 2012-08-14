@@ -3,7 +3,7 @@ local cfg = ns.cfg
 
 local symbols = "Interface\\Addons\\oUF_Mlight\\media\\PIZZADUDEBULLETS.ttf"
 
-oUF.colors.power["MANA"] = {.9, .9, .9}
+oUF.colors.power["MANA"] = {.3, .8, 1}
 oUF.colors.power["RAGE"] = {.9, .1, .1}
 oUF.colors.power["FUEL"] = {0, 0.55, 0.5}
 oUF.colors.power["FOCUS"] = {.9, .5, .1}
@@ -79,7 +79,7 @@ local createBackdrop = function(parent, anchor, a, m, c)
 
     return frame
 end
-ns.backdrop = createBackdrop
+ns.createBackdrop = createBackdrop
 
 local fixStatusbar = function(bar)
     bar:GetStatusBarTexture():SetHorizTile(false)
@@ -101,7 +101,6 @@ local createStatusbar = function(parent, tex, layer, height, width, r, g, b, alp
 
     return bar
 end
-ns.createStatusbar = createStatusbar
 
 local createFont = function(parent, layer, f, fs, outline, r, g, b, justify)
     local string = parent:CreateFontString(nil, layer)
@@ -113,13 +112,13 @@ local createFont = function(parent, layer, f, fs, outline, r, g, b, justify)
     end
     return string
 end
-
+ns.createFont = createFont
 --=============================================--
---[[     Create dropdown menu for frames     ]]--
+--[[    dropdown menu and hover highlight    ]]--
 --=============================================--
 local dropdown = CreateFrame('Frame', ADDON_NAME .. 'DropDown', UIParent, 'UIDropDownMenuTemplate')
 
-local function menu(self)
+local menu = function(self)
     dropdown:SetParent(self)
     return ToggleDropDownMenu(1, nil, dropdown, 'cursor', 0, 0)
 end
@@ -159,9 +158,91 @@ local init = function(self)
 end
 UIDropDownMenu_Initialize(dropdown, init, 'MENU')
 
+local CreateHighlight = function(self)
+    local OnEnter = function(self)
+		UnitFrame_OnEnter(self)
+		self.Highlight:Show()
+    end
+    local OnLeave = function(self)
+      UnitFrame_OnLeave(self)
+      self.Highlight:Hide()
+    end
+    self:SetScript("OnEnter", OnEnter)
+    self:SetScript("OnLeave", OnLeave)
+	
+	local hl = CreateFrame("Frame", nil, self)
+	hl:SetAllPoints()
+	hl:SetFrameLevel(6)
+    hl.tex = hl:CreateTexture(nil, "OVERLAY")
+    hl.tex:SetAllPoints()
+    hl.tex:SetTexture(cfg.highlighttexture)
+    hl.tex:SetVertexColor( 1, 1, 1, .3)
+    hl.tex:SetBlendMode("ADD")
+    hl:Hide()
+    self.Highlight = hl
+end
+ns.CreateHighlight = CreateHighlight
 --=============================================--
 --[[               Some update               ]]--
 --=============================================--
+local Updatehealthcolor = function(self, event, unit, raid)
+
+	self.colors.smooth = {1,0,0, 1,1,0, 1,1,0}
+	local disconnnected = not UnitIsConnected(unit)
+	local dead = UnitIsDead(unit)
+	local ghost = UnitIsGhost(unit)
+	
+	if(self.unit == unit) then
+		local r, g, b
+		local min, max, perc
+		min, max = UnitHealth(unit), UnitHealthMax(unit)
+		if max ~= 0 then
+			perc = min/max
+		else
+			perc = 1
+		end
+		
+		if UnitIsTapped(unit) and not UnitIsTappedByPlayer(unit) then
+			r, g, b = .6, .6, .6
+		elseif (disconnnected and raid) then
+			r, g, b = .3, .3, .3
+		elseif (ghost and raid) then
+			r, g, b = .6, .6, .6
+		elseif (dead and raid) then
+			r, g, b = 1, 0, 0
+		elseif (unit == "pet") then
+			local _, playerclass = UnitClass("player")
+			if cfg.classcolormode then
+				r, g, b = unpack(self.colors.class[playerclass])
+			else
+				r, g, b = self.ColorGradient(perc, 1, unpack(self.colors.smooth))
+			end
+		elseif(UnitIsPlayer(unit)) then
+			local _, unitclass = UnitClass(unit)
+			if cfg.classcolormode then
+				if unitclass then r, g, b = unpack(self.colors.class[unitclass]) else r, g, b = 1, 1, 1 end
+			else
+				r, g, b = self.ColorGradient(perc, 1, unpack(self.colors.smooth))
+			end
+		elseif(unit and unit:find("boss%d")) then
+			if cfg.classcolormode then
+				r, g, b = unpack(self.colors.reaction[UnitReaction(unit, "player") or 5])
+			else
+				r, g, b = self.ColorGradient(perc, 1, unpack(self.colors.smooth))
+			end
+		elseif unit then
+			if cfg.classcolormode then
+				r, g, b = unpack(self.colors.reaction[UnitReaction(unit, "player") or 5])
+			else
+				r, g, b = self.ColorGradient(perc, 1, unpack(self.colors.smooth))
+			end
+		end
+
+		self.Health:GetStatusBarTexture():SetGradient("VERTICAL", r, g, b, r/3, g/3, b/3)
+	end
+end
+ns.Updatehealthcolor = Updatehealthcolor
+
 local PostEclipseUpdate = function(element, unit)
     if element.hasSolarEclipse then
         element.bd:SetBackdropBorderColor(1, .6, 0)
@@ -200,17 +281,17 @@ local PostCreateIcon = function(auras, button)
     count:SetFont(cfg.font, 12, "OUTLINE")
     count:SetTextColor(.8, .8, .8)
 
-    button.icon:SetTexCoord(.1, .9, .1, .9)
+    button.icon:SetTexCoord(.07, .93, .07, .93)
 	
 	local bg = createBackdrop(button, button,0,3)
 	button.bg = bg
 	
     if cfg.auraborders then
         auras.showDebuffType = true
-        button.overlay:SetTexture(cfg.buttonTex)
-        button.overlay:SetPoint("TOPLEFT", button, "TOPLEFT", -2, 2)
-        button.overlay:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", 2, -2)
-        button.overlay:SetTexCoord(0, 1, 0.02, 1)
+        button.overlay:SetTexture(cfg.texture)
+		button.overlay:SetDrawLayer("BACKGROUND")
+        button.overlay:SetPoint("TOPLEFT", button, "TOPLEFT", -1, 1)
+        button.overlay:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", 1, -1)
     else
         button.overlay:Hide()
     end
@@ -274,25 +355,6 @@ local PostUpdateGapIcon = function(auras, unit, icon, visibleBuffs)
 	icon.bg:Hide()
 	icon.remaining:Hide()
 end
-
-local UpdateLFD = function(self, event)
-	local lfdrole = self.LFDRole
-	local role = UnitGroupRolesAssigned(self.unit)
-
-	if role == "DAMAGER" then
-		lfdrole:SetTextColor(1, .1, .1, 1)
-		lfdrole:SetText("D")
-	elseif role == "TANK" then
-		lfdrole:SetTextColor(.3, .4, 1, 1)
-		lfdrole:SetText("T")
-	elseif role == "HEALER" then
-		lfdrole:SetTextColor(0, 1, 0, 1)
-		lfdrole:SetText("H")
-	else
-		lfdrole:SetTextColor(0, 0, 0, 0)
-	end
-end
-ns.UpdateLFD = UpdateLFD
 
 local HarmonyOverride = function(self, event, unit, powerType)
 	if(self.unit ~= unit or (powerType and powerType ~= 'LIGHT_FORCE')) then return end
@@ -402,6 +464,7 @@ local CreateCastbars = function(self, unit)
     local u = unit:match('[^%d]+')
     if multicheck(u, "target", "player", "focus", "boss") then
         local cb = createStatusbar(self, cfg.texture, "OVERLAY", nil, nil, 0, 0, 0, 0) -- transparent
+		cb:SetAllPoints(self)
         cb:SetToplevel(true)
 
         cb.Spark = cb:CreateTexture(nil, "OVERLAY")
@@ -437,8 +500,6 @@ local CreateCastbars = function(self, unit)
             cb.SafeZone:SetTexture(cfg.texture)
             cb.SafeZone:SetVertexColor( .3, .8, 1, .65)
         end
-		
-		cb:SetAllPoints(self)
 
         cb.PostCastStart = PostCastStart
         cb.PostChannelStart = PostCastStart
@@ -448,69 +509,64 @@ local CreateCastbars = function(self, unit)
 end
 
 --=============================================--
---[[              Unit Frames                ]]--
+--[[                   Auras                 ]]--
 --=============================================--
---[[ Update health bar colour ]]
-local UpdateHealth = function(self, event, unit)
+local CreateAuras = function(self, unit)
+	local u = unit:match('[^%d]+')
+    if multicheck(u, "target", "focus", "pet", "boss") then
+		local Auras = CreateFrame("Frame", nil, self)
+		Auras:SetHeight(cfg.height*2)
+		Auras:SetWidth(cfg.width)
+		Auras.gap = true
+		Auras.PostCreateIcon = PostCreateIcon
+		Auras.PostUpdateIcon = PostUpdateIcon
+		Auras.PostUpdateGapIcon = PostUpdateGapIcon
 
-	self.colors.smooth = {1,0,0, 1,1,0, 1,1,0}
+		if unit == "target" or unit == "focus" then
+			Auras:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 0, 5)
+			Auras.initialAnchor = "BOTTOMLEFT"
+			Auras["growth-x"] = "RIGHT"
+			Auras["growth-y"] = "UP"
+			Auras.numDebuffs = cfg.auraperrow
+			Auras.numBuffs = cfg.auraperrow
+			Auras.onlyShowPlayer = cfg.onlyShowPlayer
+		elseif unit == "pet" then
+			Auras:SetPoint("BOTTOMLEFT", self, "BOTTOMRIGHT", 5, 0)
+			Auras.initialAnchor = "BOTTOMLFET"
+			Auras["growth-x"] = "RIGHT"
+			Auras["growth-y"] = "DOWN"
+			Auras.numDebuffs = 5
+			Auras.numBuffs = 0
+		else -- boss 1-5
+			Auras:SetPoint("BOTTOMRIGHT", self, "BOTTOMLEFT", -5, 0)
+			Auras.initialAnchor = "BOTTOMRIGHT"
+			Auras["growth-x"] = "LEFT"
+			Auras["growth-y"] = "DOWN"		
+			Auras.numDebuffs = 4
+			Auras.numBuffs = 3
+			Auras.onlyShowPlayer = cfg.onlyShowPlayer
+		end
 	
-	if(self.unit == unit) then
-		local r, g, b
-		local min, max, perc
-		min, max = UnitHealth(unit), UnitHealthMax(unit)
-		if max ~= 0 then
-			perc = min/max
-		else
-			perc = 1
-		end
-		
-		if(UnitIsTapped(unit) and not UnitIsTappedByPlayer(unit) or not UnitIsConnected(unit)) then
-			r, g, b = .6, .6, .6
-		elseif(unit == "pet") then
-			local _, playerclass = UnitClass("player")
-			if cfg.classcolormode then
-				r, g, b = unpack(self.colors.class[playerclass])
-			else
-				r, g, b = self.ColorGradient(perc, 1, unpack(self.colors.smooth))
-			end
-		elseif(UnitIsPlayer(unit)) then
-			local _, unitclass = UnitClass(unit)
-			if cfg.classcolormode then
-				if unitclass then r, g, b = unpack(self.colors.class[unitclass]) else r, g, b = 1, 1, 1 end
-			else
-				r, g, b = self.ColorGradient(perc, 1, unpack(self.colors.smooth))
-			end
-		elseif(unit and unit:find("boss%d")) then
-			if cfg.classcolormode then
-				r, g, b = unpack(self.colors.reaction[UnitReaction(unit, "player") or 5])
-			else
-				r, g, b = self.ColorGradient(perc, 1, unpack(self.colors.smooth))
-			end
-		elseif unit then
-			if cfg.classcolormode then
-				r, g, b = unpack(self.colors.reaction[UnitReaction(unit, "player") or 5])
-			else
-				r, g, b = self.ColorGradient(perc, 1, unpack(self.colors.smooth))
-			end
-		end
-
-		self.Health:GetStatusBarTexture():SetGradient("VERTICAL", r, g, b, r/3, g/3, b/3)
+		self.Auras = Auras
 	end
 end
-ns.updatehealthcolor = UpdateHealth
+--=============================================--
+--[[              Unit Frames                ]]--
+--=============================================--
 
 local func = function(self, unit)
+	local u = unit:match('[^%d]+')
 	
-    self:SetScript("OnEnter", UnitFrame_OnEnter)
-    self:SetScript("OnLeave", UnitFrame_OnLeave)
+	CreateHighlight(self)
     self:RegisterForClicks"AnyUp"
 	
 	self.menu = menu
 	
     -- height, width and scale --
-    if(unit == "targettarget" or unit == "focustarget" or unit == "pet") then
+	if multicheck(u, "targettarget", "focustarget", "pet") then
         self:SetSize(cfg.width1, cfg.height)
+	elseif multicheck(u, "boss") then
+		self:SetSize(cfg.width2, cfg.height)
 	else
 	    self:SetSize(cfg.width, cfg.height)
     end
@@ -520,15 +576,13 @@ local func = function(self, unit)
     self.backdrop = createBackdrop(self, self, 0, 3) -- this also use for dispel border
 
 	-- health bar --
-    local hp = createStatusbar(self, cfg.texture, nil, cfg.height, nil, .1, .1, .1, 0.5)
-	hp:SetPoint"LEFT"
-	hp:SetPoint"RIGHT"
-	hp:SetPoint"TOP"
+    local hp = createStatusbar(self, cfg.texture, nil, nil, nil, .1, .1, .1, 0.5)
+	hp:SetAllPoints(self)
     hp.frequentUpdates = true
     hp.Smooth = true
 
 	-- health and power text on health frame --
-    if not (unit == "targettarget" or unit == "focustarget" or unit == "pet") then
+    if multicheck(u, "player", "target", "focus", "boss") then
         local hpt = createFont(hp, "OVERLAY", cfg.font, cfg.fontsize, cfg.fontflag, 1, 1, 1)
         hpt:SetPoint("RIGHT", self, -2, -1)
 		self:Tag(hpt, '[Mlight:hp]')
@@ -551,61 +605,62 @@ local func = function(self, unit)
 				hp:SetValue(max - hp:GetValue()) 
 			end
 		end
-		return UpdateHealth(hp:GetParent(), 'PostUpdateHealth', unit)
+		return Updatehealthcolor(hp:GetParent(), 'PostUpdateHealth', unit)
+	end
+	
+	-- backdrop grey gradient --
+	hp.bg = hp:CreateTexture(nil, "BACKGROUND")
+	hp.bg:SetAllPoints()
+	hp.bg:SetTexture(cfg.texture)
+	if cfg.classcolormode then
+		hp.bg:SetGradientAlpha("VERTICAL", .6, .6, .6, 1, .1, .1, .1, 1)
+	else
+		hp.bg:SetGradientAlpha("VERTICAL", .3, .3, .3, .2, .1, .1, .1, .2)
 	end
 	
     self.Health = hp
-
-	-- backdrop grey gradient --
-	local gradient = hp:CreateTexture(nil, "BACKGROUND")
-	gradient:SetPoint("TOPLEFT")
-	gradient:SetPoint("BOTTOMRIGHT")
-	gradient:SetTexture(cfg.texture)
-	if cfg.classcolormode then
-		gradient:SetGradientAlpha("VERTICAL", .6, .6, .6, .6, .1, .1, .1, .6)
-	else
-		gradient:SetGradientAlpha("VERTICAL", .3, .3, .3, .2, .1, .1, .1, .2)
-	end
-	self.gradient = gradient
-
+	
 	-- power bar --
     if not (unit == "targettarget" or unit == "focustarget") then
-    local pp = createStatusbar(self, cfg.texture, nil, cfg.height*-(cfg.hpheight-1), nil, 1, 1, 1, 1)
-    pp:SetPoint"LEFT"
-    pp:SetPoint"RIGHT"
-	pp:SetPoint("TOP", self, "BOTTOM", 0, -3)
-
-    pp.frequentUpdates = false
-    pp.Smooth = true
+		local pp = createStatusbar(self, cfg.texture, nil, cfg.height*-(cfg.hpheight-1), nil, 1, 1, 1, 1)
+		pp:SetPoint"LEFT"
+		pp:SetPoint"RIGHT"
+		pp:SetPoint("TOP", self, "BOTTOM", 0, -3)
+		pp.frequentUpdates = false
+		pp.Smooth = true
 		
-	-- power color --	
-    if not cfg.classcolormode then
-        pp.colorClass = true
-		pp.colorReaction = true
-    else
-        pp.colorPower = true
-    end
+		-- power color --	
+		if not cfg.classcolormode then
+			pp.colorClass = true
+			pp.colorReaction = true
+		else
+			pp.colorPower = true
+		end
 	
-	-- shadow border for power bar --	
-    createBackdrop(pp, pp, 1, 3)
+		-- shadow border for power bar --	
+		createBackdrop(pp, pp, 1, 3)
 	
-    self.Power = pp
+		self.Power = pp
     end
 
 	-- altpower bar --
-	local u = unit:match('[^%d]+')
     if multicheck(u, "player", "boss") then
-    local altpp = createStatusbar(self, cfg.texture, nil, 4, 100, 1, 1, 1, .8)
-    altpp:SetPoint('TOPLEFT', self, 'TOPLEFT', 20, 2)
-	altpp:SetFrameLevel(self:GetFrameLevel()+10)
-    altpp.bd = createBackdrop(altpp, altpp,1,3)
+		local altpp = createStatusbar(self, cfg.texture, nil, 6, nil, 1, 1, 1, .8)
+		if unit == "player" then
+			altpp:SetPoint('TOPLEFT', pp, 'BOTTOMLEFT', 0, -2)
+			altpp:SetPoint('TOPRIGHT', pp, 'BOTTOMRIGHT', 0, -2)
+		else -- boss
+			altpp:SetPoint('BOTTOMLEFT', hp, 'TOPLEFT', 0, 2)
+			altpp:SetPoint('BOTTOMRIGHT', hp, 'TOPRIGHT', 0, 2)
+		end
+		altpp.bd = createBackdrop(altpp, altpp, 1, 3)
 	
-    altpp.text = createFont(altpp, "OVERLAY", cfg.font, cfg.fontsize, cfg.fontflag, 1, 1, 1)
-    altpp.text:SetPoint"CENTER"
-    self:Tag(altpp.text, "[Mlight:altpower]")
+		altpp.text = createFont(altpp, "OVERLAY", cfg.font, cfg.fontsize, cfg.fontflag, 1, 1, 1)
+		altpp.text:SetPoint"CENTER"
+		self:Tag(altpp.text, "[Mlight:altpower]")
 
-    altpp.PostUpdate = PostAltUpdate
-    self.AltPowerBar = altpp
+		self.AltPowerBar = altpp
+		self.AltPowerBar.PostUpdate = PostAltUpdate
     end
 	
 	-- little thing around unit frames --
@@ -618,11 +673,6 @@ local func = function(self, unit)
     masterlooter:SetSize(12, 12)
     masterlooter:SetPoint('LEFT', leader, 'RIGHT')
     self.MasterLooter = masterlooter
-
-    local LFDRole = hp:CreateTexture(nil, 'OVERLAY')
-    LFDRole:SetSize(12, 12)
-    LFDRole:SetPoint('LEFT', masterlooter, 'RIGHT')
-	LFDRole.Override = UpdateLFD
 
     local Combat = hp:CreateTexture(nil, 'OVERLAY')
     Combat:SetSize(20, 20)
@@ -647,14 +697,18 @@ local func = function(self, unit)
             self:Tag(name, '[Mlight:color][Mlight:shortname]')
         end
     elseif cfg.classcolormode then
-        self:Tag(name, '[Mlight:info] [Mlight:name]')
+        self:Tag(name, '[difficulty][level]|r[shortclassification][status]  [name]')
     else
-        self:Tag(name, '[Mlight:info] [Mlight:color][Mlight:name]')
+        self:Tag(name, '[difficulty][level]|r[shortclassification][status]  [Mlight:color][name]')
     end
     
     if cfg.castbars then
         CreateCastbars(self, unit)
     end
+	
+	if cfg.auras then
+		CreateAuras(self, unit)
+	end
 	
     self.FadeMinAlpha = 0
 	self.FadeInSmooth = 0.4
@@ -795,11 +849,10 @@ local UnitSpecific = {
 			self.EclipseBar.PostUnitAura = PostEclipseUpdate
         end
 		
-		-- resting Zzz ---
-		local ri = createFont(self.Health, "OVERLAY", cfg.font, 10, "OUTLINE", nil, nil, nil)
-		ri:SetPoint("CENTER", self.Health, "CENTER",0,-2)
-		ri:SetText("|cff8AFF30Zzz|r")
-		self.Resting = ri
+		-- resting Zzz and PvP---
+		local playerstatus = createFont(self.Health, "OVERLAY", cfg.font, 10, "OUTLINE", 1, 1, 1)
+		playerstatus:SetPoint("CENTER", self.Health, "CENTER",0,-2)
+		self:Tag(playerstatus, '[raidcolor][pvp][resting]|r')
 		
     end,
 
@@ -808,24 +861,6 @@ local UnitSpecific = {
     --========================--
     target = function(self, ...)
         func(self, ...)
-		
-        if cfg.auras then
-            local Auras = CreateFrame("Frame", nil, self)
-            Auras:SetHeight(cfg.height*2)
-            Auras:SetWidth(cfg.width)
-            Auras:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 0, 4)
-            Auras.gap = true
-            Auras.initialAnchor = "BOTTOMLEFT"
-
-            Auras.PostCreateIcon = PostCreateIcon
-            Auras.PostUpdateIcon = PostUpdateIcon
-            Auras.onlyShowPlayer = cfg.onlyShowPlayer
-			Auras.PostUpdateGapIcon = PostUpdateGapIcon
-			
-            self.Auras = Auras
-            self.Auras.numDebuffs = 8
-            self.Auras.numBuffs = 10
-        end
     end,
 
     --========================--
@@ -833,23 +868,6 @@ local UnitSpecific = {
     --========================--
     focus = function(self, ...)
         func(self, ...)
-
-        if cfg.auras then 
-            local Auras = CreateFrame("Frame", nil, self)
-            Auras:SetHeight(cfg.height*2)
-            Auras:SetWidth(cfg.width)
-            Auras:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 0, 4)
-            Auras.gap = true
-            Auras.initialAnchor = "BOTTOMLEFT"
-
-            Auras.PostCreateIcon = PostCreateIcon
-            Auras.PostUpdateIcon = PostUpdateIcon
-			Auras.PostUpdateGapIcon = PostUpdateGapIcon
-			
-            self.Auras = Auras
-            self.Auras.numDebuffs = 8
-            self.Auras.numBuffs = 10
-        end
     end,
 
     --========================--
@@ -857,7 +875,6 @@ local UnitSpecific = {
     --========================--
     focustarget = function(self, ...)
         func(self, ...)
-
     end,
 
     --========================--
@@ -865,22 +882,6 @@ local UnitSpecific = {
     --========================--
     pet = function(self, ...)
         func(self, ...)
-
-        if cfg.auras then 
-            local debuffs = CreateFrame("Frame", nil, self)
-            debuffs:SetHeight(cfg.height)
-            debuffs:SetWidth(cfg.width)
-            debuffs:SetPoint("RIGHT", self, "LEFT", -5, 0)
-            debuffs.initialAnchor = "BOTTOMRIGHT"
-	        debuffs["growth-x"] = "RIGHT"
-            debuffs["growth-y"] = "DOWN"
-
-            debuffs.PostCreateIcon = PostCreateIcon
-            debuffs.PostUpdateIcon = PostUpdateIcon
-
-            self.Debuffs = debuffs
-            self.Debuffs.num = 5
-        end
     end,
 
     --========================--
@@ -888,7 +889,6 @@ local UnitSpecific = {
     --========================--
     targettarget = function(self, ...)
         func(self, ...)
-
     end,
 
     --========================--
@@ -896,28 +896,6 @@ local UnitSpecific = {
     --========================--
     boss = function(self, ...)
         func(self, ...)
-	
-    -- width --	
-	self:SetWidth(150)
-	self.Power:SetWidth(150)
-	
-    -- auras --	
-    local Auras = CreateFrame("Frame", nil, self)
-    Auras:SetHeight(cfg.height)
-    Auras:SetWidth(cfg.width)
-    Auras:SetPoint("RIGHT", self, "LEFT", -5, 0)
-    Auras.gap = true
-	Auras.initialAnchor = "BOTTOMRIGHT"
-	Auras["growth-x"] = "LEFT"
-
-    Auras.PostCreateIcon = PostCreateIcon
-    Auras.PostUpdateIcon = PostUpdateIcon
-	Auras.onlyShowPlayer = true
-	Auras.PostUpdateGapIcon = PostUpdateGapIcon
-	
-    self.Auras = Auras
-    self.Auras.numDebuffs = 4
-    self.Auras.numBuffs = 3
     end,
 }
 
