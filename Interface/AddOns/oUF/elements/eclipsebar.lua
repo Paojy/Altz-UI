@@ -41,7 +41,6 @@
 
 if(select(2, UnitClass('player')) ~= 'DRUID') then return end
 
-local WoW5 = select(4, GetBuildInfo()) == 50001
 local parent, ns = ...
 local oUF = ns.oUF
 
