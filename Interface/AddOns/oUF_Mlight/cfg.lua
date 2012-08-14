@@ -79,7 +79,7 @@ end
   
 if IsAddOnLoaded("Aurora") and IsAddOnLoaded("aCore") then
 cfg.font = GameFontHighlight:GetFont()
---cfg.showsolo = false
+cfg.showsolo = false
 end
 ---------------------------------------------------------------------------------------
 -------------------[[        Config        End        ]]-------------------------------  
