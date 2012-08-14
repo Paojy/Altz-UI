@@ -1,6 +1,10 @@
 ﻿-- Load varriables on demand
 local addon, ns = ...
 local function SetupAltzui()
+if IsAddOnLoaded("Aurora") then
+	AuroraConfig["tooltips"] = false
+	AuroraConfig["bags"] = false
+end
 if IsAddOnLoaded("!ClassColors") then
 	if(ClassColorsDB) then table.wipe(wipe(ClassColorsDB)) end
 	ClassColorsDB = {

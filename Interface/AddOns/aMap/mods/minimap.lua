@@ -21,7 +21,7 @@ function fixTooltip(self)
 		GameTooltip:SetOwner(self, 'ANCHOR_NONE')
 	end
 	GameTooltip:ClearAllPoints()
-	GameTooltip:SetPoint('TOPLEFT', Minimap, 'TOPRIGHT', 2, 0)
+	GameTooltip:SetPoint("TOPLEFT", Minimap, "TOPRIGHT", 8, 0)
 end
 
 function dropdownOnClick(self)
@@ -64,6 +64,8 @@ QueueStatusMinimapButton:SetParent(Minimap)
 QueueStatusMinimapButton:SetPoint("BOTTOMRIGHT", Minimap, "BOTTOMRIGHT", -2,2)
 QueueStatusMinimapButtonBorder:Hide()
 QueueStatusFrame:SetClampedToScreen(true)
+QueueStatusFrame:ClearAllPoints()
+QueueStatusFrame:SetPoint("TOPLEFT", Minimap, "TOPRIGHT", 10, -2)
 
 --InstanceDifficulty
 GuildInstanceDifficulty:ClearAllPoints()

@@ -73,7 +73,7 @@ end
 local _G = getfenv(0)
 function xprptoolitp()
 	GameTooltip:SetOwner(xpbar, "ANCHOR_NONE")
-	GameTooltip:SetPoint("TOPLEFT", Minimap, "TOPRIGHT", 10, 0)
+	GameTooltip:SetPoint("TOPLEFT", Minimap, "TOPRIGHT", 8, 0)
 	
 	local XP, maxXP = UnitXP("player"), UnitXPMax("player")
 	local restXP = GetXPExhaustion()
@@ -126,6 +126,7 @@ xpbar:RegisterEvent("PLAYER_LOGIN")
 --====================================================--
 local infopanel = createlittlepanel(self, 185, "Calendar")
 infopanel:SetPoint("TOPLEFT", UIParent, "TOPLEFT", 150, -10)
+infopanel:SetScript("OnMouseUp", function() ToggleCalendar() end)
 
 local centerbox = CreateFrame("Button", nil, UIParent) -- Center Frame
 centerbox:SetSize(200, 20)
@@ -179,7 +180,7 @@ function memorytooltip()
 		local BlizzMem = collectgarbage("count")
 			
 		GameTooltip:SetOwner(centerbox, "ANCHOR_NONE")
-		GameTooltip:SetPoint("TOPLEFT", Minimap, "TOPRIGHT", 10, 0)
+		GameTooltip:SetPoint("TOPLEFT", Minimap, "TOPRIGHT", 8, 0)
 		GameTooltip:AddLine("Top "..nraddons.." AddOns", Ccolor.r, Ccolor.g, Ccolor.b)
 		GameTooltip:AddLine(" ")	
 			
@@ -226,7 +227,6 @@ end
 
 centerbox:SetScript("OnEnter", memorytooltip)
 centerbox:SetScript("OnLeave", function() GameTooltip:Hide() end)
-centerbox:SetScript("OnMouseUp", function() ToggleCalendar() end)
 
 centerbox:SetScript("OnUpdate", centerbox.updateOntime)
 
