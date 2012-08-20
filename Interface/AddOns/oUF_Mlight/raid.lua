@@ -175,6 +175,11 @@ local func = function(self, unit)
     resurrecticon:SetPoint"CENTER"
     self.ResurrectIcon = resurrecticon
 	
+    local readycheck = self:CreateTexture(nil, 'OVERLAY')
+    readycheck:SetSize(16, 16)
+    readycheck:SetPoint"CENTER"
+    self.ReadyCheck = readycheck
+   
 	-- Raid debuff
     local auras = CreateFrame("Frame", nil, self)
     auras:SetSize(20, 20)
@@ -269,6 +274,11 @@ local dfunc = function(self, unit)
 	local status = createFont(hp, "OVERLAY", font, fontsize-4, fontflag, 1, 1, 1)
     status:SetPoint"TOPLEFT"
 	self:Tag(status, '[Mlight:AfkDnd][Mlight:DDG]')
+	
+	local readycheck = self:CreateTexture(nil, 'OVERLAY')
+    readycheck:SetSize(16, 16)
+    readycheck:SetPoint"CENTER"
+    self.ReadyCheck = readycheck
 	
 	-- Raid debuff
     local auras = CreateFrame("Frame", nil, self)
