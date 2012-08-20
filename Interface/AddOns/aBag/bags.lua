@@ -9,6 +9,9 @@
 
 if (config.enable ~= 1) then return end
 
+-- bug fix
+UpdateContainerFrameAnchors = function() end
+
 local function Kill(object)
 	if object.IsProtected then 
 		if object:IsProtected() then
@@ -216,7 +219,7 @@ BankFrameItem1:SetScript("OnShow", function()
 end)
 BankPortraitTexture:Hide()
 
-for a = 1, 5 do
+for a = 1, 80 do -- hide all of them
 	select(a, BankFrame:GetRegions()):Hide()
 end
 BankFrame:EnableMouse(0)
