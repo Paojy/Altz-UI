@@ -52,7 +52,7 @@ MinimapNorthTag:SetAlpha(0)
 -- mail 
 MiniMapMailFrame:ClearAllPoints()
 MiniMapMailFrame:SetSize(16, 16)
-MiniMapMailFrame:SetPoint(unpack(cfg.mailposition))
+MiniMapMailFrame:SetPoint("BOTTOM", Minimap, "BOTTOM", 0, 5)
 MiniMapMailFrame:HookScript('OnEnter', fixTooltip)
 MiniMapMailIcon:SetTexture('Interface\\Minimap\\TRACKING\\Mailbox')
 MiniMapMailIcon:SetAllPoints(MiniMapMailFrame)
@@ -65,7 +65,7 @@ QueueStatusMinimapButton:SetPoint("BOTTOMRIGHT", Minimap, "BOTTOMRIGHT", -2,2)
 QueueStatusMinimapButtonBorder:Hide()
 QueueStatusFrame:SetClampedToScreen(true)
 QueueStatusFrame:ClearAllPoints()
-QueueStatusFrame:SetPoint("TOPLEFT", Minimap, "TOPRIGHT", 10, -2)
+QueueStatusFrame:SetPoint("BOTTOMRIGHT", Minimap, "BOTTOMRIGHT", -5, 5)
 
 --InstanceDifficulty
 GuildInstanceDifficulty:ClearAllPoints()
