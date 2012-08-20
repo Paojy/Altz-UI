@@ -45,7 +45,7 @@ local borderDisplay = function(frame, color)
 		end
 
 		return true
-	elseif(frame.oGlowBorder) then
+	elseif frame and (frame.oGlowBorder) then
 		frame.oGlowBorder:Hide()
 	end
 end
