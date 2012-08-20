@@ -233,10 +233,10 @@ end
 		FCF_SetChatWindowFontSize(nil, frame, 12)
 		
 		-- set the size of chat frames
-		frame:SetSize(330,120)
+		frame:SetSize(320,120)
 		
 		-- tell wow that we are using new size
-		SetChatWindowSavedDimensions(id, 340, 120)
+		SetChatWindowSavedDimensions(id, 320, 120)
 		
 		SetDefaultChatPosition(frame)
 		
@@ -250,6 +250,10 @@ end
 		ChatFrame_AddMessageGroup(ChatFrame3, "LOOT")
 		ChatFrame_AddMessageGroup(ChatFrame3, "MONEY")
 	end
+-- Load Variables
+		aCoreCDB = {
+		fade = true
+		}
 end
 ns.SetupAltzui = SetupAltzui
 
