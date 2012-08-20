@@ -17,10 +17,8 @@ end
 
 local addon = CreateFrame("Frame")
 local band = bit.band
-local petflags = COMBATLOG_OBJECT_TYPE_PET
 local mine = COMBATLOG_OBJECT_AFFILIATION_MINE
 local spells = {}
-local pets = {}
 local items = {}
 local watched = {}
 local nextupdate, lastupdate = 0, 0
@@ -67,19 +65,19 @@ local function start(id, starttime, duration, class)
 	update()
 end
 
+local numTabs, totalspellnum
+
 local function parsespellbook(spellbook)
 	i = 1
 	while true do
 		skilltype, id = GetSpellBookItemInfo(i, spellbook)
-		if not id then break end
-		
 		name = GetSpellBookItemName(i, spellbook)
 		if name and skilltype == "SPELL" and spellbook == BOOKTYPE_SPELL and not IsPassiveSpell(i, spellbook) then
 			spells[id] = true
-		elseif name and skilltype == "PETACTION" and spellbook == BOOKTYPE_PET and not IsPassiveSpell(i, spellbook) then
-			pets[id] = true
-		end		
+		end
 		i = i + 1
+		if i >= totalspellnum then i = 1 break end
+		
 		if (id == 88625 or id == 88625 or id == 88625) and (skilltype == "SPELL" and spellbook == BOOKTYPE_SPELL) then
 		   spells[88625] = true
 		   spells[88684] = true
@@ -90,8 +88,13 @@ end
 
 -- events --
 function addon:LEARNED_SPELL_IN_TAB()
+	numTabs = GetNumSpellTabs()
+	totalspellnum = 0
+	for i=1,numTabs do
+		local numSpells = select(4, GetSpellTabInfo(i))
+	totalspellnum = totalspellnum + numSpells
+	end
 	parsespellbook(BOOKTYPE_SPELL)
-	parsespellbook(BOOKTYPE_PET)
 end
 
 function addon:SPELL_UPDATE_COOLDOWN()
@@ -113,26 +116,6 @@ function addon:SPELL_UPDATE_COOLDOWN()
 				end
 			elseif enabled == 1 and watched[id] and timeleft <= 0 then
 				stop(id, "spell")
-			end
-		end
-	end
-	
-	for id in next, pets do
-		local starttime, duration, enabled = GetSpellCooldown(id)
-
-		if starttime == nil then
-			watched[id] = nil
-		elseif starttime == 0 and watched[id] then
-			stop(id, "pet")
-		elseif starttime ~= 0 then
-			local timeleft = starttime + duration - now
-		
-			if enabled == 1 and timeleft > 1.51 then
-				if not watched[id] or watched[id].start ~= starttime then
-					start(id, starttime, timeleft, "pet")
-				end
-			elseif enabled == 1 and watched[id] and timeleft <= 0 then
-				stop(id, "pet")
 			end
 		end
 	end

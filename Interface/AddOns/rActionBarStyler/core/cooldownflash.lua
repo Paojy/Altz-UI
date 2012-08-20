@@ -4,7 +4,6 @@ local lib = LibStub("LibCooldown")
 if not lib then error("CooldownFlash requires LibCooldown") return end
 
 local filter = {
-	["pet"] = "all",
 	["item"] = {
 		[6948] = true, -- hearthstone
 	},
