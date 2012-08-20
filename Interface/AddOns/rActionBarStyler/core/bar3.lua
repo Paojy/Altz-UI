@@ -54,7 +54,7 @@
 
   --create the mouseover functionality
   if cfg.mouseover.enable then
-    rButtonBarFader(frame, buttonList, cfg.mouseover.fadeIn, cfg.mouseover.fadeOut) --frame, buttonList, fadeIn, fadeOut
+    ActionbarFader(frame, buttonList, cfg.mouseover.fadeIn, cfg.mouseover.fadeOut) --frame, buttonList, fadeIn, fadeOut
 	frame.mouseover = cfg.mouseover
   end
 
