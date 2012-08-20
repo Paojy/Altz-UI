@@ -82,7 +82,7 @@ function xprptoolitp()
 	if UnitLevel("player") < MAX_PLAYER_LEVEL then
 		GameTooltip:AddDoubleLine("Current: ", string.format('%s/%s (%d%%)', CommaValue(XP), CommaValue(maxXP), (XP/maxXP)*100), Ccolor.r, Ccolor.g, Ccolor.b, 1, 1, 1)
 		GameTooltip:AddDoubleLine("Remaining: ", string.format('%s', CommaValue(maxXP-XP)), Ccolor.r, Ccolor.g, Ccolor.b, 1, 1, 1)
-		GameTooltip:AddDoubleLine("Rested: ", string.format('|cffb3e1ff%s (%d%%)', CommaValue(restXP), restXP/maxXP*100), Ccolor.r, Ccolor.g, Ccolor.b)
+		if restXP then GameTooltip:AddDoubleLine("Rested: ", string.format('|cffb3e1ff%s (%d%%)', CommaValue(restXP), restXP/maxXP*100), Ccolor.r, Ccolor.g, Ccolor.b) end
 	end
 	
 	if name and not UnitLevel("player") == MAX_PLAYER_LEVEL then
@@ -101,7 +101,7 @@ end
 function xpbar:updateOnevent()
 	local XP, maxXP = UnitXP("player"), UnitXPMax("player")
 	local name, rank, minRep, maxRep, value = GetWatchedFactionInfo()
-   	if not UnitLevel('player') == MAX_PLAYER_LEVEL then
+   	if UnitLevel('player') ~= MAX_PLAYER_LEVEL then
 		xpbar:SetMinMaxValues(min(0, XP), maxXP)
 		xpbar:SetValue(XP)
 	else
@@ -253,10 +253,28 @@ end)
 --[[             -- bottom panel --            ]]--
 --====================================================--	
 
-local bottompanel = createlittlepanel(self, 345, "Action Bar Config")
+local bottompanel = createlittlepanel(self, 345, "")
 bottompanel:SetPoint("BOTTOM", UIParent, "BOTTOM", 0, 10)
-bottompanel:SetScript('OnMouseUp', function() 
-	InterfaceOptionsFrame_OpenToCategory(ACTIONBAR_LABEL)
+
+bottompanel:RegisterEvent("PLAYER_LOGIN")
+bottompanel:SetScript('OnEvent', function(self)
+	if aCoreCDB == nil then return end
+	if aCoreCDB.fade then
+		self.text:SetText("UI Fading: |cff7FFF00ON|r")
+	else
+		self.text:SetText("UI Fading: |cffFF0000OFF|r")
+	end
+end)
+
+bottompanel:SetScript('OnMouseUp', function(self)
+	if aCoreCDB == nil then return end
+	if aCoreCDB.fade then
+		aCoreCDB.fade = false
+		self.text:SetText("UI Fading: |cffFF0000OFF|r")
+	else
+		aCoreCDB.fade = true
+		self.text:SetText("UI Fading: |cff7FFF00ON|r")
+	end
 end)
 --====================================================--
 --[[             -- bottomright panel --            ]]--
@@ -314,17 +332,17 @@ brpanel:SetScript('OnMouseUp', function()
 
 local TOPPANEL = CreateFrame("Frame", nil, WorldFrame)
 TOPPANEL:SetFrameStrata("FULLSCREEN")
---TOPPANEL:SetFrameLevel(50)
 creategrowBD(TOPPANEL, 0, 0, 0, 0.5, 1)
 TOPPANEL:SetPoint("TOPLEFT",WorldFrame,"TOPLEFT",-5,5)
 TOPPANEL:SetPoint("BOTTOMRIGHT",WorldFrame,"TOPRIGHT",5,-80)
+TOPPANEL:Hide()
 
 local BOTTOMPANEL = CreateFrame("Frame", nil, WorldFrame)
 BOTTOMPANEL:SetFrameStrata("FULLSCREEN")
---BOTTOMPANEL:SetFrameLevel(50)
 creategrowBD(BOTTOMPANEL, 0, 0, 0, 0.5, 1)
 BOTTOMPANEL:SetPoint("BOTTOMLEFT",WorldFrame,"BOTTOMLEFT",-5,-5)
 BOTTOMPANEL:SetPoint("TOPRIGHT",WorldFrame,"BOTTOMRIGHT",5,75)
+BOTTOMPANEL:Hide()
 
 local Clock = createtext(TOPPANEL, 27, "NONE", false)
 Clock:SetPoint("BOTTOMLEFT", TOPPANEL, "BOTTOMRIGHT", -280, 10)
@@ -341,7 +359,6 @@ AUI:SetText("AltZ UI")
 
 local Guide = CreateFrame("Frame", nil, WorldFrame)
 Guide:SetFrameStrata("FULLSCREEN")
---Guide:SetFrameLevel(50)
 creategrowBD(Guide, 0, 0, 0, 0.5, 1)
 Guide:SetPoint("TOPLEFT",WorldFrame,"TOPLEFT", -5, -90)
 Guide:SetPoint("BOTTOMRIGHT",WorldFrame,"BOTTOMRIGHT", 5, 85)
@@ -354,27 +371,49 @@ Guidetext:Hide()
 
 local Creditstext = createtext(Guide, 20, "NONE", true)
 Creditstext:SetTextColor(0.7, 0.7, 0.7)
-Creditstext:SetText("AltzUI ver"..ver.." \n \n \n \n 伤心蓝 CN5_深渊之巢 \n  < 炼狱 > \n \n \n \n |cff3399FF Thanks to \n \n deemax Zork Haste Tukz Haleth Qulight Freebaser Monolit \n and everyone who help me with this Compilations.|r")
+Creditstext:SetText("AltzUI ver"..ver.." \n \n \n \n 伤心蓝 < 炼狱 > CN5_深渊之巢  \n \n \n \n |cff3399FF Thanks to \n \n deemax Zork Haste Tukz Haleth Qulight Freebaser Monolit \n and everyone who help me with this Compilations.|r")
+Creditstext:SetText("AltzUI ver"..ver.." \n \n \n \n 傷心藍 < 煉獄 > CN5_深淵之巢 \n \n \n \n |cff3399FF Thanks to \n \n deemax Zork Haste Tukz Haleth Qulight Freebaser Monolit \n and everyone who help me with this Compilations.|r")
+Creditstext:SetText("AltzUI ver"..ver.." \n \n \n \n Paopao <Purgatory> CN5_Abyssion's Lair \n \n \n \n |cff3399FF Thanks to \n \n deemax Zork Haste Tukz Haleth Qulight Freebaser Monolit \n and everyone who help me with this Compilations.|r")
 Creditstext:Hide()
 
-local Setupbutton = CreateFrame("Button", "AltzuiSetupButton", Guide, "UIPanelButtonTemplate")
-Setupbutton:SetPoint("BOTTOM", 0, 50)
-Setupbutton:SetSize(300, 25)
-Setupbutton:SetText("Initialize")
-Setupbutton.text = createtext(Setupbutton, 15, "NONE", false)
-Setupbutton.text:SetPoint("BOTTOM", Setupbutton, "TOP", 0, 25)
-Setupbutton.text:SetTextColor(0.7, 0.7, 0.7)
-Setupbutton.text:SetText("ver"..ver.." \n \n 伤心蓝 CN5_深渊之巢 \n  < 炼狱 > \n \n |cff3399FF Thanks to \n \n deemax Zork Haste Tukz Haleth Qulight Freebaser Monolit \n and everyone who help me with this Compilations.|r")
-Setupbutton.text2 = createtext(Setupbutton, 25, "NONE", false)
-Setupbutton.text2:SetPoint("TOP", Guide, "TOP", 0, -170)
-Setupbutton.text2:SetTextColor(0.7, 0.7, 0.7)
-Setupbutton.text2:SetText("Welcome to Altz UI Setup")
+local SetupPanel = CreateFrame("Frame", nil, WorldFrame)
+SetupPanel:SetFrameStrata("FULLSCREEN")
+creategrowBD(SetupPanel, 0, 0, 0, 0.5, 1)
+SetupPanel:SetPoint("TOPLEFT",WorldFrame,"TOPLEFT", -5, 5)
+SetupPanel:SetPoint("BOTTOMRIGHT",WorldFrame,"BOTTOMRIGHT", 5, -5)
+SetupPanel:Hide()
+
+SetupPanel.text = createtext(SetupPanel, 15, "NONE", false)
+SetupPanel.text:SetPoint("TOP", SetupPanel, "BOTTOM", 0, 75)
+SetupPanel.text:SetTextColor(1, 1, 1)
+if GetLocale() == zhCN then
+	SetupPanel.text:SetText("ver"..ver.." 伤心蓝 < 炼狱 > CN5_深渊之巢")
+elseif GetLocale() == zhCN then
+	SetupPanel.text:SetText("ver"..ver.." 傷心藍 < 煉獄 > CN5_深淵之巢")
+else
+	SetupPanel.text:SetText("ver"..ver.." Paopao <Purgatory> CN5_Abyssion's Lair")
+end
+SetupPanel.text2 = createtext(SetupPanel, 35, "NONE", false)
+SetupPanel.text2:SetPoint("BOTTOM", 0, 110)
+SetupPanel.text2:SetTextColor(1, 1, 1)
+SetupPanel.text2:SetText("Welcome to Altz UI Setup")
+
+local Setupbutton = CreateFrame("Button", "AltzuiSetupButton", SetupPanel)
+Setupbutton:SetPoint("BOTTOM", 0, 80)
+Setupbutton:SetSize(GetScreenWidth()+10, 25)
+creategrowBD(Setupbutton, 0, 0, 0, 0.7, 1)
+Setupbutton.text = createtext(Setupbutton, 20, "NONE", true)
+Setupbutton.text:SetTextColor(0.5, 0.5, 0.5, .1)
+Setupbutton.text:SetText("Install")
 Setupbutton:Hide()
 
 Setupbutton:SetScript("OnClick", function()
 	ns.SetupAltzui()  
 	ReloadUI() 
 end)
+
+Setupbutton:SetScript('OnEnter', function() Setupbutton.text:SetTextColor(Ccolor.r, Ccolor.g, Ccolor.b, 1) Setupbutton.border:SetBackdropBorderColor(Ccolor.r, Ccolor.g, Ccolor.b) end)
+Setupbutton:SetScript('OnLeave', function() Setupbutton.text:SetTextColor(0.5, 0.5, 0.5, .1) Setupbutton.border:SetBackdropBorderColor(0, 0, 0) end)
 
 local interval = 0
 TOPPANEL:SetScript('OnUpdate', function(self, elapsed)
@@ -419,7 +458,7 @@ local function littebutton(self, x, note, facing)
 		self:SetPoint("RIGHT")
 	end
 	self:SetSize(85 ,85)
-	
+
 	self.text = createtext(self, 30, "NONE", false)
 	self.text:SetPoint"BOTTOM"
 	self.text:SetTextColor(0.7, 0.7, 0.7)
@@ -441,6 +480,7 @@ local function littebutton(self, x, note, facing)
 	self:SetScript('OnEnter', function() self.text:Show() self.grow.texture:Show() end)
 	self:SetScript('OnLeave', function() self.text:Hide() self.grow.texture:Hide() end)
 	
+	self:Hide()
 	return self
 end
 
@@ -469,13 +509,12 @@ end
 
 TOPPANEL:SetScript("OnEvent",function(self,event,...) 
 	if(event == "PLAYER_ENTERING_WORLD") then
-		fadeout()
-		if not aCoreCDB or aCoreCDB == nil then
-			Info:Hide()
-			Credits:Hide()
-			Guide:Show()
+		if aCoreCDB == nil then
+			UIParent:SetAlpha(0)
+			SetupPanel:Show()
 			Setupbutton:Show()
-			aCoreCDB = 1
+		else
+			fadeout()
 		end
 		TOPPANEL:UnregisterEvent("PLAYER_ENTERING_WORLD")
 	elseif UnitIsAFK("player") then
