@@ -103,8 +103,9 @@ BNToastFrame:SetClampedToScreen(true)
 
 local EventFrame = CreateFrame("Frame")
 EventFrame:RegisterEvent("ADDON_LOADED")
-EventFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
+EventFrame:RegisterEvent("PLAYER_LOGIN")
 EventFrame:RegisterEvent("PET_BATTLE_OPENING_START")
+
 EventFrame:SetScript("OnEvent", function(self, event, arg1)
 	if cfg.hidecombat and event == "ADDON_LOADED" and arg1 == "Blizzard_CombatLog" then
 		local topbar = _G["CombatLogQuickButtonFrame_Custom"]
@@ -113,9 +114,8 @@ EventFrame:SetScript("OnEvent", function(self, event, arg1)
         topbar:HookScript("OnShow", function(self) topbar:Hide() end)
         topbar:SetHeight(0)
 	end
-	if event == "PLAYER_ENTERING_WORLD" then
+	if event == "PLAYER_LOGIN" then
 		init()
-		EventFrame:UnregisterEvent("PLAYER_ENTERING_WORLD")
 	end
 	if event == "PET_BATTLE_OPENING_START" then
 		chatwindownum = 11

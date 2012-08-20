@@ -8,10 +8,10 @@ function ChatEdit_CustomTabPressed(self)
 	if strsub(tostring(self:GetText()), 1, 1) == "/" then return end
 
 	if  (self:GetAttribute("chatType") == "SAY")  then
-		if (GetNumPartyMembers()>0) then
+		if (GetNumGroupMembers()>0) then
 			self:SetAttribute("chatType", "PARTY");
 			ChatEdit_UpdateHeader(self);
-		elseif (GetNumRaidMembers()>0) then
+		elseif (GetNumGroupMembers()>5) then
 			self:SetAttribute("chatType", "RAID");
 			ChatEdit_UpdateHeader(self);
 		elseif (GetNumBattlefieldScores()>0) then
@@ -24,7 +24,7 @@ function ChatEdit_CustomTabPressed(self)
 			return;
 		end
 	elseif (self:GetAttribute("chatType") == "PARTY") then
-		if (GetNumRaidMembers()>0) then
+		if (GetNumGroupMembers()>5) then
 			self:SetAttribute("chatType", "RAID");
 			ChatEdit_UpdateHeader(self);
 		elseif (GetNumBattlefieldScores()>0) then

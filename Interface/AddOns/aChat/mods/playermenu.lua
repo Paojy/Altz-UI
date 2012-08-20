@@ -17,7 +17,7 @@ UnitPopupButtons["COPYNAME"] = {text = "Copy Name", dist = 0}
 UnitPopupButtons["GUILD_INVITE"] = {text = "Guild Invite", dist = 0}
 UnitPopupButtons["WHO"] = {text = "Who", dist = 0}
 
-insertbefore(UnitPopupMenus["FRIEND"], "GUILD_PROMOTE", "GUILD_INVITE")
+insertbefore(UnitPopupMenus["FRIEND"], "IGNORE", "GUILD_INVITE")
 insertbefore(UnitPopupMenus["FRIEND"], "IGNORE", "COPYNAME")
 insertbefore(UnitPopupMenus["FRIEND"], "IGNORE", "WHO")
 
