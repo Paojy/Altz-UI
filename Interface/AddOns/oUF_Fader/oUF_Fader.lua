@@ -57,6 +57,7 @@ assert(oUF, 'oUF Fader was unable to locate oUF install')
 
   -- Convenience function to do a simple fade out
   local function UIFrameFadeOut(frame, timeToFade, startAlpha, endAlpha)
+    if IsAddOnLoaded("aCore") and (aCoreCDB == nil or not aCoreCDB.fade) then return end
     local fadeInfo = {};
     fadeInfo.mode = "OUT";
     fadeInfo.timeToFade = timeToFade;
