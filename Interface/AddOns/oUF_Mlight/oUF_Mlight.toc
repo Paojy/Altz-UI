@@ -1,7 +1,7 @@
 ## Interface: 50001
 ## Title: oUF_Mlight
 ## Author: Blue
-## Version: 5.08
+## Version: 5.10
 ## Notes: oUF layout.
 ## Credits:Freebaser, Haleth, Tukz
 ## Dependencies: oUF
@@ -17,6 +17,8 @@ embeds\auras2.lua
 embeds\indicators.lua
 embeds\totems.lua
 embeds\gcd.lua
+embeds\range.lua
+embeds\warlockspecbars.lua
 
 core.lua
 raid.lua

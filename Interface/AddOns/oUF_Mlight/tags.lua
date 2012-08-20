@@ -1,6 +1,6 @@
 ﻿local ADDON_NAME, ns = ...
 
-local siValue = function(val)
+local FormatValue = function(val)
     if (val >= 1e6) then
         return ("%.1fm"):format(val / 1e6)
     elseif (val >= 1e3) then
@@ -9,7 +9,21 @@ local siValue = function(val)
         return ("%d"):format(val)
     end
 end
-ns.siValue = siValue
+ns.FormatValue = FormatValue
+
+local day, hour, minute = 86400, 3600, 60
+local FormatTime = function(s)
+    if s >= day then
+        return format("%dd", floor(s/day + 0.5))
+    elseif s >= hour then
+        return format("%dh", floor(s/hour + 0.5))
+    elseif s >= minute then
+        return format("%dm", floor(s/minute + 0.5))
+    end
+
+    return format("%d", math.fmod(s, minute))
+end
+ns.FormatTime = FormatTime
 
 -- calculating the ammount of latters
 local function utf8sub(string, i, dots)
@@ -50,31 +64,10 @@ local function hex(r, g, b)
     end
     return ('|cff%02x%02x%02x'):format(r * 255, g * 255, b * 255)
 end
-
+ns.hex = hex
 --=============================================--
 --[[                 Tags                    ]]--
 --=============================================--
-oUF.Tags.Methods['Mlight:hp']  = function(u) 
-    local min, max = UnitHealth(u), UnitHealthMax(u)
-	if min > 0 and max > 0 and min~=max then
-		return siValue(min).." "..hex(1, 0, 1).."'"..hex(1, 1, 0)..math.floor(min/max*100+.5).."|r"
-	end
-end
-oUF.Tags.Events['Mlight:hp'] = 'UNIT_HEALTH'
-
-oUF.Tags.Methods['Mlight:pp'] = function(u) 
-	local min, max = UnitPower(u), UnitPowerMax(u)
-	if min > 0 and max > 0 and min~=max then
-        local _, str, r, g, b = UnitPowerType(u)
-        local t = oUF.colors.power[str]
-        if t then
-            r, g, b = t[1], t[2], t[3]
-        end
-        return hex(r, g, b)..siValue(min).."|r"
-    end
-end
-oUF.Tags.Events['Mlight:pp'] = 'UNIT_POWER'
-
 oUF.Tags.Methods['Mlight:color'] = function(u, r)
     local reaction = UnitReaction(u, "player")
 

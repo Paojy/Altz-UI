@@ -21,7 +21,9 @@ oUF.colors.reaction[5] = {0.26, 1, 0.22}
 oUF.colors.reaction[6] = {0.26, 1, 0.22}
 oUF.colors.reaction[7] = {0.26, 1, 0.22}
 oUF.colors.reaction[8] = {0.26, 1, 0.22}
-	
+
+oUF.colors.smooth = {1,0,0, 1,1,0, 1,1,0}	
+
 local backdrop = {
     bgFile = [=[Interface\ChatFrame\ChatFrameBackground]=],
     insets = {top = 0, left = 0, bottom = 0, right = 0},
@@ -33,6 +35,9 @@ local frameBD = {
     insets = {left = 3, right = 3, top = 3, bottom = 3}
 }
 
+local FormatValue = ns.FormatValue
+local FormatTime = ns.FormatTime
+local hex = ns.hex
 --=============================================--
 --[[                 Functions               ]]--
 --=============================================--
@@ -41,22 +46,6 @@ local function multicheck(check, ...)
         if check == select(i, ...) then return true end
     end
     return false
-end
-
-local GetTime = GetTime
-local floor, fmod = floor, math.fmod
-local day, hour, minute = 86400, 3600, 60
-
-local FormatTime = function(s)
-    if s >= day then
-        return format("%dd", floor(s/day + 0.5))
-    elseif s >= hour then
-        return format("%dh", floor(s/hour + 0.5))
-    elseif s >= minute then
-        return format("%dm", floor(s/minute + 0.5))
-    end
-
-    return format("%d", fmod(s, minute))
 end
 
 local createBackdrop = function(parent, anchor, a, m, c) 
@@ -158,14 +147,22 @@ local init = function(self)
 end
 UIDropDownMenu_Initialize(dropdown, init, 'MENU')
 
-local CreateHighlight = function(self)
+local OnMouseOver = function(self)
     local OnEnter = function(self)
 		UnitFrame_OnEnter(self)
 		self.Highlight:Show()
+		self.isMouseOver = true
+		for _, element in ipairs(self.mouseovers) do
+			element:ForceUpdate()
+		end
     end
     local OnLeave = function(self)
-      UnitFrame_OnLeave(self)
-      self.Highlight:Hide()
+		UnitFrame_OnLeave(self)
+		self.Highlight:Hide()
+		self.isMouseOver = false
+		for _, element in ipairs(self.mouseovers) do
+			element:ForceUpdate()
+		end
     end
     self:SetScript("OnEnter", OnEnter)
     self:SetScript("OnLeave", OnLeave)
@@ -181,68 +178,81 @@ local CreateHighlight = function(self)
     hl:Hide()
     self.Highlight = hl
 end
-ns.CreateHighlight = CreateHighlight
+ns.OnMouseOver = OnMouseOver
 --=============================================--
 --[[               Some update               ]]--
 --=============================================--
-local Updatehealthcolor = function(self, event, unit, raid)
-
-	self.colors.smooth = {1,0,0, 1,1,0, 1,1,0}
-	local disconnnected = not UnitIsConnected(unit)
-	local dead = UnitIsDead(unit)
-	local ghost = UnitIsGhost(unit)
+local Updatehealthbar = function(self, unit, min, max)
+	local r, g, b
+	local perc
 	
-	if(self.unit == unit) then
-		local r, g, b
-		local min, max, perc
-		min, max = UnitHealth(unit), UnitHealthMax(unit)
-		if max ~= 0 then
-			perc = min/max
+	if max ~= 0 then perc = min/max else perc = 1 end
+	
+	if self.value then
+		if min < max then
+			self.value:SetText(FormatValue(min).." "..hex(1, 0, 1).."'|r"..hex(1, 1, 0)..math.floor(min/max*100+.5).."|r")
+		elseif self.__owner.isMouseOver and UnitIsConnected(unit) then
+			self.value:SetText(FormatValue(min))
 		else
-			perc = 1
+			self.value:SetText(nil)
 		end
-		
-		if UnitIsTapped(unit) and not UnitIsTappedByPlayer(unit) then
-			r, g, b = .6, .6, .6
-		elseif (disconnnected and raid) then
-			r, g, b = .3, .3, .3
-		elseif (ghost and raid) then
-			r, g, b = .6, .6, .6
-		elseif (dead and raid) then
-			r, g, b = 1, 0, 0
-		elseif (unit == "pet") then
-			local _, playerclass = UnitClass("player")
-			if cfg.classcolormode then
-				r, g, b = unpack(self.colors.class[playerclass])
-			else
-				r, g, b = self.ColorGradient(perc, 1, unpack(self.colors.smooth))
-			end
-		elseif(UnitIsPlayer(unit)) then
-			local _, unitclass = UnitClass(unit)
-			if cfg.classcolormode then
-				if unitclass then r, g, b = unpack(self.colors.class[unitclass]) else r, g, b = 1, 1, 1 end
-			else
-				r, g, b = self.ColorGradient(perc, 1, unpack(self.colors.smooth))
-			end
-		elseif(unit and unit:find("boss%d")) then
-			if cfg.classcolormode then
-				r, g, b = unpack(self.colors.reaction[UnitReaction(unit, "player") or 5])
-			else
-				r, g, b = self.ColorGradient(perc, 1, unpack(self.colors.smooth))
-			end
-		elseif unit then
-			if cfg.classcolormode then
-				r, g, b = unpack(self.colors.reaction[UnitReaction(unit, "player") or 5])
-			else
-				r, g, b = self.ColorGradient(perc, 1, unpack(self.colors.smooth))
-			end
+	end
+	
+	if UnitIsTapped(unit) and not UnitIsTappedByPlayer(unit) then
+		r, g, b = .6, .6, .6
+	elseif not UnitIsConnected(unit) then
+		r, g, b = .3, .3, .3
+	elseif UnitIsGhost(unit) then
+		r, g, b = .6, .6, .6
+	elseif UnitIsDead(unit) then
+		r, g, b = 1, 0, 0
+	elseif (unit == "pet") then
+		local _, playerclass = UnitClass("player")
+		if cfg.classcolormode then
+			r, g, b = unpack(oUF.colors.class[playerclass])
+		else
+			r, g, b = oUF.ColorGradient(perc, 1, unpack(oUF.colors.smooth))
 		end
+	elseif(UnitIsPlayer(unit)) then
+		local _, unitclass = UnitClass(unit)
+		if cfg.classcolormode then
+			if unitclass then r, g, b = unpack(oUF.colors.class[unitclass]) else r, g, b = 1, 1, 1 end
+		else
+			r, g, b = oUF.ColorGradient(perc, 1, unpack(oUF.colors.smooth))
+		end
+	elseif unit then
+		if cfg.classcolormode then
+			r, g, b = unpack(oUF.colors.reaction[UnitReaction(unit, "player") or 5])
+		else
+			r, g, b = oUF.ColorGradient(perc, 1, unpack(oUF.colors.smooth))
+		end
+	end
 
-		self.Health:GetStatusBarTexture():SetGradient("VERTICAL", r, g, b, r/3, g/3, b/3)
+	self:GetStatusBarTexture():SetGradient("VERTICAL", r, g, b, r/3, g/3, b/3)
+	
+	if not cfg.classcolormode then
+		self:SetValue(max - self:GetValue()) 
 	end
 end
-ns.Updatehealthcolor = Updatehealthcolor
+ns.Updatehealthbar = Updatehealthbar
 
+local Updatepowerbar = function(self, unit, min, max)
+	local _, type = UnitPowerType(unit)
+	local color = oUF.colors.power[type] or oUF.colors.power.FUEL
+			
+	if self.__owner.isMouseOver and type == "MANA" and UnitIsConnected(unit) then
+		self.value:SetText(hex(unpack(color))..FormatValue(min).."|r")
+	elseif min > 0 and min < max then
+		if type == "MANA" then
+			self.value:SetText(hex(1, 1, 1)..math.floor(min/max*100+.5).."|r"..hex(1, 0, 1).."%|r")
+		else
+			self.value:SetText(hex(color.r, color.g, color.b)..FormatValue(min).."|r")
+		end
+	else
+		self.value:SetText(nil)
+	end
+end
+		
 local PostEclipseUpdate = function(element, unit)
     if element.hasSolarEclipse then
         element.bd:SetBackdropBorderColor(1, .6, 0)
@@ -379,33 +389,6 @@ local HarmonyOverride = function(self, event, unit, powerType)
 			cholder[i]:SetAlpha(1)
 		else
 			cholder[i]:SetAlpha(0)
-		end
-	end
-end
-
-local SoulShardsOverride = function(self, event, unit, powerType)
-	if(self.unit ~= unit or (powerType and powerType ~= 'SOUL_SHARDS')) then return end
-	
-	local sholder = self.SoulShards
-	
-	local shard = UnitPower("player", SPELL_POWER_SOUL_SHARDS)
-	local maxshard = UnitPowerMax("player", SPELL_POWER_SOUL_SHARDS)
-	
-	if not sholder.maxshard then sholder.maxshard = 4 end
-	
-	if sholder.maxshard ~= maxshard then
-		for i = 1, 4 do
-			sholder[i]:SetWidth((cfg.width+3)/maxshard-3)
-		end
-		
-		sholder.maxshard = maxshard
-	end
-
-	for i = 1, 4 do
-		if i <= shard then
-			sholder[i]:SetAlpha(1)
-		else
-			sholder[i]:SetAlpha(0)
 		end
 	end
 end
@@ -557,9 +540,9 @@ end
 local func = function(self, unit)
 	local u = unit:match('[^%d]+')
 	
-	CreateHighlight(self)
+	OnMouseOver(self)
     self:RegisterForClicks"AnyUp"
-	
+	self.mouseovers = {}
 	self.menu = menu
 	
     -- height, width and scale --
@@ -581,31 +564,15 @@ local func = function(self, unit)
     hp.frequentUpdates = true
     hp.Smooth = true
 
-	-- health and power text on health frame --
-    if multicheck(u, "player", "target", "focus", "boss") then
-        local hpt = createFont(hp, "OVERLAY", cfg.font, cfg.fontsize, cfg.fontflag, 1, 1, 1)
-        hpt:SetPoint("RIGHT", self, -2, -1)
-		self:Tag(hpt, '[Mlight:hp]')
-		
-        local pt = createFont(hp, "OVERLAY", cfg.font, cfg.fontsize, cfg.fontflag, 1, 1, 1)
-        pt:SetPoint("LEFT", self, 2, -1)
-		self:Tag(pt, '[Mlight:pp]')
-    end
+	-- health text --
+	if not (unit == "targettarget" or unit == "focustarget" or unit == "pet") then
+		hp.value = createFont(hp, "OVERLAY", cfg.font, cfg.fontsize, cfg.fontflag, 1, 1, 1)
+		hp.value:SetPoint("RIGHT", self, -2, -1)
+	end
 	
 	-- reverse fill health --
 	if not cfg.classcolormode then
 		hp:SetReverseFill(true)
-	end
-	
-	hp.PostUpdate = function(hp, unit, min, max)
-		if not cfg.classcolormode then
-			if UnitIsDeadOrGhost(unit) then 
-				hp:SetValue(0)
-			else 
-				hp:SetValue(max - hp:GetValue()) 
-			end
-		end
-		return Updatehealthcolor(hp:GetParent(), 'PostUpdateHealth', unit)
 	end
 	
 	-- backdrop grey gradient --
@@ -619,6 +586,8 @@ local func = function(self, unit)
 	end
 	
     self.Health = hp
+	self.Health.PostUpdate = Updatehealthbar
+	tinsert(self.mouseovers, self.Health)
 	
 	-- power bar --
     if not (unit == "targettarget" or unit == "focustarget") then
@@ -639,8 +608,17 @@ local func = function(self, unit)
 	
 		-- shadow border for power bar --	
 		createBackdrop(pp, pp, 1, 3)
+		
+		-- power text --
+		if unit ~= "pet" then
+			pp.value = createFont(pp, "OVERLAY", cfg.font, cfg.fontsize, cfg.fontflag, 1, 1, 1)
+			pp.value:SetPoint("LEFT", self, 2, -1)
+		end
+
 	
 		self.Power = pp
+		self.Power.PostUpdate = Updatepowerbar
+		tinsert(self.mouseovers, self.Power)
     end
 
 	-- altpower bar --
@@ -697,9 +675,9 @@ local func = function(self, unit)
             self:Tag(name, '[Mlight:color][Mlight:shortname]')
         end
     elseif cfg.classcolormode then
-        self:Tag(name, '[difficulty][level]|r[shortclassification][status]  [name]')
+        self:Tag(name, '[difficulty][level] |r[shortclassification][status] [name]')
     else
-        self:Tag(name, '[difficulty][level]|r[shortclassification][status]  [Mlight:color][name]')
+        self:Tag(name, '[difficulty][level] |r[shortclassification][status] [Mlight:color][name]')
     end
     
     if cfg.castbars then
@@ -802,8 +780,7 @@ local UnitSpecific = {
                 bars[3], bars[4], bars[5], bars[6] = bars[5], bars[6], bars[3], bars[4]
                 self.Runes = bars
             elseif class == "WARLOCK" then
-                self.SoulShards = bars
-				self.SoulShards.Override = SoulShardsOverride
+                self.WarlockSpecBars = bars
             elseif class == "PALADIN" then
                 self.HolyPower = bars
 				self.HolyPower.Override = HolyPowerOverride

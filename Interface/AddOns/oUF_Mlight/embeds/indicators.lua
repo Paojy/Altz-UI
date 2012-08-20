@@ -8,7 +8,7 @@ local fontsizeEdge = 12
 
 local getTime = function(expirationTime)
     local expire = (expirationTime-GetTime())
-    local timeleft = ns.siValue(expire)
+    local timeleft = ns.FormatValue(expire)
     if expire > 0.5 then
         return ("|cffffff00"..timeleft.."|r")
     end
@@ -184,77 +184,77 @@ classIndicators={
         ["BR"] = "[freebgrid:motw]",
         ["BL"] = "[freebgrid:regrow][freebgrid:wg]",
         ["TR"] = "[freebgrid:lb]",
-        ["Cen"] = "[Mlight:AfkDnd][Mlight:DDG]",
+        ["Cen"] = "",
     },
     ["PRIEST"] = {
         ["TL"] = "[freebgrid:rnw]",
         ["BR"] = "[freebgrid:fort]",
         ["BL"] = "[freebgrid:pws][freebgrid:ws][freebgrid:pwb]",
         ["TR"] = "[freebgrid:pom]",
-        ["Cen"] = "[Mlight:AfkDnd][Mlight:DDG][freebgrid:rnwTime]",
+        ["Cen"] = "[freebgrid:rnwTime]",
     },
     ["PALADIN"] = {
         ["TL"] = "[freebgrid:forbearance]",
         ["BR"] = "[freebgrid:motw][freebgrid:might]",
         ["BL"] = "",
         ["TR"] = "[freebgrid:beacon]",
-        ["Cen"] = "[Mlight:AfkDnd][Mlight:DDG]",
+        ["Cen"] = "",
     },
     ["WARLOCK"] = {
         ["TL"] = "",
         ["BR"] = "[freebgrid:di]",
         ["BL"] = "",
         ["TR"] = "[freebgrid:ss]",
-        ["Cen"] = "[Mlight:AfkDnd][Mlight:DDG]",
+        ["Cen"] = "",
     },
     ["WARRIOR"] = {
         ["TL"] = "",
         ["BR"] = "[freebgrid:stragi][freebgrid:fort]",
         ["BL"] = "",
         ["TR"] = "",
-        ["Cen"] = "[Mlight:AfkDnd][Mlight:DDG]",
+        ["Cen"] = "",
     },
     ["DEATHKNIGHT"] = {
         ["TL"] = "",
         ["BR"] = "",
         ["BL"] = "",
         ["TR"] = "",
-        ["Cen"] = "[Mlight:AfkDnd][Mlight:DDG]",
+        ["Cen"] = "",
     },
     ["SHAMAN"] = {
         ["TL"] = "[freebgrid:rip]",
         ["BR"] = "",
         ["BL"] = "",
         ["TR"] = "[freebgrid:earth]",
-        ["Cen"] = "[Mlight:AfkDnd][Mlight:DDG][freebgrid:ripTime]",
+        ["Cen"] = "[freebgrid:ripTime]",
     },
     ["HUNTER"] = {
         ["TL"] = "",
         ["BR"] = "",
         ["BL"] = "",
         ["TR"] = "",
-        ["Cen"] = "[Mlight:AfkDnd][Mlight:DDG]",
+        ["Cen"] = "",
     },
     ["ROGUE"] = {
         ["TL"] = "",
         ["BR"] = "",
         ["BL"] = "",
         ["TR"] = "",
-        ["Cen"] = "[Mlight:AfkDnd][Mlight:DDG]",
+        ["Cen"] = "",
     },
     ["MAGE"] = {
         ["TL"] = "",
         ["BR"] = "[freebgrid:int]",
         ["BL"] = "",
         ["TR"] = "",
-        ["Cen"] = "[Mlight:AfkDnd][Mlight:DDG]",
+        ["Cen"] = "",
     },
 	["MONK"] = {
         ["TL"] = "[Mlight:zs]",
         ["BR"] = "[freebgrid:motw]",
         ["BL"] = "",
         ["TR"] = "[Mlight:remist]",
-        ["Cen"] = "[Mlight:AfkDnd][Mlight:DDG]",
+        ["Cen"] = "",
     },
 }
 
@@ -267,7 +267,7 @@ local Enable = function(self)
     if(self.MlightIndicators) then
         self.AuraStatusBL = self.Health:CreateFontString(nil, "OVERLAY")
         self.AuraStatusBL:ClearAllPoints()
-        self.AuraStatusBL:SetPoint("BOTTOMLEFT", self.Health, 1, 2)
+        self.AuraStatusBL:SetPoint("BOTTOMLEFT", 1, 2)
 		self.AuraStatusBL:SetJustifyH("LEFT")
         self.AuraStatusBL:SetFont(symbols, indicatorsize, "THINOUTLINE")
         self.AuraStatusBL.frequentUpdates = update
@@ -275,7 +275,7 @@ local Enable = function(self)
 
 		self.AuraStatusBR = self.Health:CreateFontString(nil, "OVERLAY")
         self.AuraStatusBR:ClearAllPoints()
-        self.AuraStatusBR:SetPoint("BOTTOMRIGHT", self.Health, 1, 2)
+        self.AuraStatusBR:SetPoint("BOTTOMRIGHT", 1, 2)
 		self.AuraStatusBR:SetJustifyH("RIGHT")
         self.AuraStatusBR:SetFont(symbols, indicatorsize, "THINOUTLINE")
         self.AuraStatusBR.frequentUpdates = update
@@ -283,7 +283,7 @@ local Enable = function(self)
 		
         self.AuraStatusTL = self.Health:CreateFontString(nil, "OVERLAY")
         self.AuraStatusTL:ClearAllPoints()
-        self.AuraStatusTL:SetPoint("TOPLEFT", self.Health, 1, -2)
+        self.AuraStatusTL:SetPoint("TOPLEFT", 1, -2)
 		self.AuraStatusTL:SetJustifyH("LEFT")
         self.AuraStatusTL:SetFont(symbols, indicatorsize, "THINOUTLINE")
         self.AuraStatusTL.frequentUpdates = update
@@ -291,13 +291,13 @@ local Enable = function(self)
 		
         self.AuraStatusTR = self.Health:CreateFontString(nil, "OVERLAY")
         self.AuraStatusTR:ClearAllPoints()
-        self.AuraStatusTR:SetPoint("TOPRIGHT", self.Health, 2, 0)
+        self.AuraStatusTR:SetPoint("TOPRIGHT", 2, 0)
         self.AuraStatusTR:SetFont(symbols, symbolsize, "OUTLINE")
         self.AuraStatusTR.frequentUpdates = update
         self:Tag(self.AuraStatusTR, classIndicators[class]["TR"])
 		
         self.AuraStatusCen = self.Health:CreateFontString(nil, "OVERLAY")
-        self.AuraStatusCen:SetPoint("LEFT", self, "LEFT", 0, 0)
+        self.AuraStatusCen:SetPoint("LEFT")
         self.AuraStatusCen:SetJustifyH("LEFT")
         self.AuraStatusCen:SetFont(cfg.font, fontsizeEdge, cfg.fontflag)
         self.AuraStatusCen:SetWidth(0)

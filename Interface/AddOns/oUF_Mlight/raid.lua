@@ -11,8 +11,8 @@ local myclass = select(2, UnitClass("player"))
 
 local createFont = ns.createFont
 local createBackdrop = ns.createBackdrop
-local Updatehealthcolor = ns.Updatehealthcolor
-local CreateHighlight = ns.CreateHighlight
+local Updatehealthbar = ns.Updatehealthbar
+local OnMouseOver = ns.OnMouseOver
 --=============================================--
 --[[               Some update               ]]--
 --=============================================--
@@ -40,10 +40,10 @@ local function UpdateThreat(self, event, unit)
 	if (self.unit ~= unit) then return end
 	
 	unit = unit or self.unit
-	local status = UnitThreatSituation(unit)
+	local threat = UnitThreatSituation(unit)
 	
-	if status and status > 1 then
-		local r, g, b = GetThreatStatusColor(status)
+	if threat and threat > 1 then
+		local r, g, b = GetThreatStatusColor(threat)
 		self.threatborder:SetBackdropBorderColor(r, g, b)
 		self.threatborder:Show()
 	else
@@ -88,8 +88,9 @@ end
 --=============================================--
 local func = function(self, unit)
 
-	CreateHighlight(self)
+	OnMouseOver(self)
     self:RegisterForClicks"AnyUp"
+	self.mouseovers = {}
 	
 	-- shadow border for health bar --
     self.backdrop = createBackdrop(self, self, 0, 3)  -- this also use for dispel border
@@ -115,14 +116,6 @@ local func = function(self, unit)
 		hp:SetReverseFill(true)
 	end
 	
-	hp.PostUpdate = function(hp, unit, min, max)
-		if not cfg.classcolormode then
-			if UnitIsDeadOrGhost(unit) then hp:SetValue(0)
-			else hp:SetValue(max - hp:GetValue()) end
-		end
-		return Updatehealthcolor(hp:GetParent(), 'PostUpdateHealth', unit, 1)
-	end
-	
 	-- backdrop grey gradient --
 	hp.bg = hp:CreateTexture(nil, "BACKGROUND")
 	hp.bg:SetAllPoints()
@@ -134,6 +127,7 @@ local func = function(self, unit)
 	end
 	
     self.Health = hp
+	self.Health.PostUpdate = Updatehealthbar
 	
 	-- gcd frane --
 	if cfg.showgcd then
@@ -155,8 +149,8 @@ local func = function(self, unit)
     masterlooter:SetPoint('LEFT', leader, 'RIGHT')
     self.MasterLooter = masterlooter
 
-	local lfd = createFont(hp, "OVERLAY", symbols, fontsize-2, fontflag, 1, 1, 1)
-	lfd:SetPoint("LEFT", hp, 1, -1)
+	local lfd = createFont(hp, "OVERLAY", symbols, fontsize-6, fontflag, 1, 1, 1)
+	lfd:SetPoint("BOTTOM", hp, 0, -1)
 	self:Tag(lfd, '[Mlight:LFD]')
 	
 	local raidname = createFont(hp, "OVERLAY", font, fontsize, fontflag, 1, 1, 1)
@@ -172,9 +166,13 @@ local func = function(self, unit)
     ricon:SetPoint("BOTTOM", hp, "TOP", 0 , -5)
     self.RaidIcon = ricon
 	
-	local resurrecticon = self:CreateTexture(nil, 'OVERLAY')
+	local status = createFont(hp, "OVERLAY", font, fontsize-4, fontflag, 1, 1, 1)
+    status:SetPoint"TOPLEFT"
+	self:Tag(status, '[Mlight:AfkDnd][Mlight:DDG]')
+	
+	local resurrecticon = hp:CreateTexture(nil, "OVERLAY")
     resurrecticon:SetSize(16, 16)
-    resurrecticon:SetPoint("BOTTOM", hp, "BOTTOM", 0 , 5)
+    resurrecticon:SetPoint"CENTER"
     self.ResurrectIcon = resurrecticon
 	
 	-- Raid debuff
@@ -201,13 +199,19 @@ local func = function(self, unit)
         insideAlpha = 1,
         outsideAlpha = 0.5,
     }
-    self.Range = range
+	
+	if cfg.showarrow then
+		self.freebRange = range
+	else
+		self.Range = range
+	end
 end
 
 local dfunc = function(self, unit)
 
-	CreateHighlight(self)
+	OnMouseOver(self)
     self:RegisterForClicks"AnyUp"
+	self.mouseovers = {}
 	
 	-- shadow border for health bar --
     self.backdrop = createBackdrop(self, self, 0, 3)  -- this also use for dispel border
@@ -222,14 +226,6 @@ local dfunc = function(self, unit)
 		hp:SetReverseFill(true)
 	end
 	
-	hp.PostUpdate = function(hp, unit, min, max)
-		if not cfg.classcolormode then
-			if UnitIsDeadOrGhost(unit) then hp:SetValue(0)
-			else hp:SetValue(max - hp:GetValue()) end
-		end
-		return Updatehealthcolor(hp:GetParent(), 'PostUpdateHealth', unit, 1)
-	end
-	
 	-- backdrop grey gradient --
 	hp.bg = hp:CreateTexture(nil, "BACKGROUND")
 	hp.bg:SetAllPoints()
@@ -241,6 +237,7 @@ local dfunc = function(self, unit)
 	end
 	
     self.Health = hp
+	self.Health.PostUpdate = Updatehealthbar
 	
 	local leader = hp:CreateTexture(nil, "OVERLAY")
     leader:SetSize(12, 12)
@@ -252,7 +249,7 @@ local dfunc = function(self, unit)
     masterlooter:SetPoint('LEFT', leader, 'RIGHT')
     self.MasterLooter = masterlooter
 	
-	local lfd = createFont(hp, "OVERLAY", symbols, fontsize-2, fontflag, 1, 1, 1)
+	local lfd = createFont(hp, "OVERLAY", symbols, fontsize-6, fontflag, 1, 1, 1)
 	lfd:SetPoint("LEFT", hp, 1, -1)
 	self:Tag(lfd, '[Mlight:LFD]')
 		
@@ -269,10 +266,9 @@ local dfunc = function(self, unit)
     ricon:SetPoint("BOTTOM", hp, "TOP", 0 , -5)
     self.RaidIcon = ricon
 	
-	local resurrecticon = self:CreateTexture(nil, 'OVERLAY')
-    resurrecticon:SetSize(16, 16)
-    resurrecticon:SetPoint("BOTTOM", hp, "BOTTOM", 0 , 5)
-    self.ResurrectIcon = resurrecticon
+	local status = createFont(hp, "OVERLAY", font, fontsize-4, fontflag, 1, 1, 1)
+    status:SetPoint"TOPLEFT"
+	self:Tag(status, '[Mlight:AfkDnd][Mlight:DDG]')
 	
 	-- Raid debuff
     local auras = CreateFrame("Frame", nil, self)
@@ -287,7 +283,12 @@ local dfunc = function(self, unit)
         insideAlpha = 1,
         outsideAlpha = 0.5,
     }
-    self.Range = range
+	
+	if cfg.showarrow then
+		self.freebRange = range
+	else
+		self.Range = range
+	end
 end
 
 oUF:RegisterStyle("Mlight_Healerraid", func)
@@ -355,13 +356,13 @@ end
 local function hiderf(f)
 	if cfg.showsolo and f:GetAttribute("showSolo") then f:SetAttribute("showSolo", false) end
 	if f:GetAttribute("showParty") then f:SetAttribute("showParty", false) end
-	if f:GetAttribute("showParty") then f:SetAttribute("showRaid", false) end
+	if f:GetAttribute("showRaid") then f:SetAttribute("showRaid", false) end
 end
 
 local function showrf(f)
 	if cfg.showsolo and not f:GetAttribute("showSolo") then f:SetAttribute("showSolo", true) end
 	if not f:GetAttribute("showParty") then f:SetAttribute("showParty", true) end
-	if not f:GetAttribute("showParty") then f:SetAttribute("showRaid", true) end
+	if not f:GetAttribute("showRaid") then f:SetAttribute("showRaid", true) end
 end
 
 function togglerf()
