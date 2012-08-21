@@ -217,11 +217,11 @@ end)
 BankFrameItem1:SetScript("OnShow", function() 
 	_G["aBag_bank"]:Show()
 end)
-BankPortraitTexture:Hide()
 
-for a = 1, 80 do -- hide all of them
+for a = 1, 80 do
 	select(a, BankFrame:GetRegions()):Hide()
 end
+
 BankFrame:EnableMouse(0)
 BankFrame:SetSize(0,0)
 
