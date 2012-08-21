@@ -25,7 +25,7 @@
         size            = 25,
         margin          = 4,
       },
-      pos             = { a1 = "TOP", a2 = "CENTER", af = "UIParent", x = 0, y = -142 },
+      pos             = { a1 = "TOP", a2 = "CENTER", af = "UIParent", x = 0, y = -145 },
       userplaced      = {
         enable          = true,
       },
@@ -48,7 +48,7 @@
         size            = 25,
         margin          = 4,
       },
-      pos             = { a1 = "TOP", a2 = "CENTER", af = "UIParent", x = 0, y = -142 },
+      pos             = { a1 = "TOP", a2 = "CENTER", af = "UIParent", x = 0, y = -145 },
       userplaced      = {
         enable          = true,
       },

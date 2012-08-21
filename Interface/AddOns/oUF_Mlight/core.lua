@@ -189,9 +189,9 @@ local Updatehealthbar = function(self, unit, min, max)
 	if max ~= 0 then perc = min/max else perc = 1 end
 	
 	if self.value then
-		if min < max then
+		if min > 0 and min < max then
 			self.value:SetText(FormatValue(min).." "..hex(1, 0, 1).."'|r"..hex(1, 1, 0)..math.floor(min/max*100+.5).."|r")
-		elseif self.__owner.isMouseOver and UnitIsConnected(unit) then
+		elseif min > 0 and self.__owner.isMouseOver and UnitIsConnected(unit) then
 			self.value:SetText(FormatValue(min))
 		else
 			self.value:SetText(nil)
@@ -237,6 +237,7 @@ end
 ns.Updatehealthbar = Updatehealthbar
 
 local Updatepowerbar = function(self, unit, min, max)
+	if not self.value then return end	
 	local _, type = UnitPowerType(unit)
 	local color = oUF.colors.power[type] or oUF.colors.power.FUEL
 			
@@ -623,13 +624,13 @@ local func = function(self, unit)
 
 	-- altpower bar --
     if multicheck(u, "player", "boss") then
-		local altpp = createStatusbar(self, cfg.texture, nil, 6, nil, 1, 1, 1, .8)
+		local altpp = createStatusbar(self, cfg.texture, nil, 1, nil, 1, 1, 1, .8)
 		if unit == "player" then
-			altpp:SetPoint('TOPLEFT', pp, 'BOTTOMLEFT', 0, -2)
-			altpp:SetPoint('TOPRIGHT', pp, 'BOTTOMRIGHT', 0, -2)
+			altpp:SetPoint('TOPLEFT', self.Power, 'BOTTOMLEFT', 0, -2)
+			altpp:SetPoint('TOPRIGHT', self.Power, 'BOTTOMRIGHT', 0, -2)
 		else -- boss
-			altpp:SetPoint('BOTTOMLEFT', hp, 'TOPLEFT', 0, 2)
-			altpp:SetPoint('BOTTOMRIGHT', hp, 'TOPRIGHT', 0, 2)
+			altpp:SetPoint('BOTTOMLEFT', self.Health, 'TOPLEFT', 0, 2)
+			altpp:SetPoint('BOTTOMRIGHT', self.Health, 'TOPRIGHT', 0, 2)
 		end
 		altpp.bd = createBackdrop(altpp, altpp, 1, 3)
 	

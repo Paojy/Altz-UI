@@ -28,7 +28,7 @@ Battleground Res
 -------------------------------------------------------------------------------]]
 if cfg.battlegroundres then
 	eventHandlers['PLAYER_DEAD'] = function()
-			if (MiniMapBattlefieldFrame.status=='active') or (GetRealZoneText()=='Wintergrasp') or (GetRealZoneText()=='TolBarad') then
+			if ( select(2, GetInstanceInfo()) =='pvp' ) or (GetRealZoneText()=='Wintergrasp') or (GetRealZoneText()=='TolBarad') then
 			RepopMe()
 		end
 	end
