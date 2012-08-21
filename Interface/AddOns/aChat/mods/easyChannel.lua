@@ -8,13 +8,13 @@ function ChatEdit_CustomTabPressed(self)
 	if strsub(tostring(self:GetText()), 1, 1) == "/" then return end
 
 	if  (self:GetAttribute("chatType") == "SAY")  then
-		if (GetNumGroupMembers()>0) then
+		if (IsInGroup()) then
 			self:SetAttribute("chatType", "PARTY");
 			ChatEdit_UpdateHeader(self);
-		elseif (GetNumGroupMembers()>5) then
+		elseif (IsInRaid()) then
 			self:SetAttribute("chatType", "RAID");
 			ChatEdit_UpdateHeader(self);
-		elseif (GetNumBattlefieldScores()>0) then
+		elseif (select(2, GetInstanceInfo()) == 'pvp') then
 			self:SetAttribute("chatType", "BATTLEGROUND");
 			ChatEdit_UpdateHeader(self);
 		elseif (IsInGuild()) then
@@ -24,10 +24,10 @@ function ChatEdit_CustomTabPressed(self)
 			return;
 		end
 	elseif (self:GetAttribute("chatType") == "PARTY") then
-		if (GetNumGroupMembers()>5) then
+		if (IsInRaid()) then
 			self:SetAttribute("chatType", "RAID");
 			ChatEdit_UpdateHeader(self);
-		elseif (GetNumBattlefieldScores()>0) then
+		elseif (select(2, GetInstanceInfo()) == 'pvp') then
 			self:SetAttribute("chatType", "BATTLEGROUND");
 			ChatEdit_UpdateHeader(self);
 		elseif (IsInGuild()) then
@@ -38,7 +38,7 @@ function ChatEdit_CustomTabPressed(self)
 			ChatEdit_UpdateHeader(self);
 		end			
 	elseif (self:GetAttribute("chatType") == "RAID") then
-		if (GetNumBattlefieldScores()>0) then
+		if (select(2, GetInstanceInfo()) == 'pvp') then
 			self:SetAttribute("chatType", "BATTLEGROUND");
 			ChatEdit_UpdateHeader(self);
 		elseif (IsInGuild()) then
@@ -61,7 +61,3 @@ function ChatEdit_CustomTabPressed(self)
 		ChatEdit_UpdateHeader(self);
 	end
 end
-
-GeneralDockManager:EnableMouse(true)
-GeneralDockManager:SetScript("OnEnter", function() MinimapZoneTextButton:SetAlpha(1) end)
-GeneralDockManager:SetScript("OnLeave", function() MinimapZoneTextButton:SetAlpha(0.1) end)

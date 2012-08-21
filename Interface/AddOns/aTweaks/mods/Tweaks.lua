@@ -229,7 +229,7 @@ eventHandlers['COMBAT_LOG_EVENT_UNFILTERED'] = function(...)
 		return
 	end
 
-        local channel = GetNumGroupMembers() > 5 and "RAID" or GetNumGroupMembers() > 0 and "PARTY"
+        local channel = IsInRaid() and "RAID" or IsInGroup() and "PARTY"
 
 	if channel then
 		SendChatMessage(GetSpellLink(arg12).." Interrupted "..GetSpellLink(arg15), channel)
@@ -303,30 +303,6 @@ QuestInfoDescriptionText.SetAlphaGradient=function()
 return false end
 
 end
-
---[[-----------------------------------------------------------------------------
-World Channel
--------------------------------------------------------------------------------]]
-WorldChannel = function()
-   local channels = {GetChannelList()}
-   local customChannelName = cfg.worldchannelname
-   local isInCustomChannel = false
-   for i = 1, #channels do
-      if channels[i] == customChannelName then
-         isInCustomChannel = true
-      end
-   end
-   if isInCustomChannel then
-      print("Leave  "..cfg.worldchannelname)
-      LeaveChannelByName(customChannelName)
-   else
-      JoinPermanentChannel(customChannelName,nil,1)
-      print("Join  "..cfg.worldchannelname)
-      ChatFrame_AddChannel(ChatFrame1,customChannelName)
-      ChatFrame_RemoveMessageGroup(ChatFrame1,"CHANNEL")
-   end
-end
-
 --[[-----------------------------------------------------------------------------
 Reload Cmd
 -------------------------------------------------------------------------------]]

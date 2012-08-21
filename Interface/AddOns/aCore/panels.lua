@@ -240,15 +240,29 @@ buffpanel:SetPoint("TOPRIGHT", UIParent, "TOPRIGHT", -15, -10)
 --====================================================--
 --[[              -- chat panel --               ]]--
 --====================================================--
+local WorldChannel = function()
+   local channels = {GetChannelList()}
+   local customChannelName = cfg.worldchannelname
+   local isInCustomChannel = false
+   for i = 1, #channels do
+      if channels[i] == customChannelName then
+         isInCustomChannel = true
+      end
+   end
+   if isInCustomChannel then
+      print("Leave  "..cfg.worldchannelname)
+      LeaveChannelByName(customChannelName)
+   else
+      JoinPermanentChannel(customChannelName,nil,1)
+      print("Join  "..cfg.worldchannelname)
+      ChatFrame_AddChannel(ChatFrame1,customChannelName)
+      ChatFrame_RemoveMessageGroup(ChatFrame1,"CHANNEL")
+   end
+end
+
 local chatpanel = createlittlepanel(self, 320, "World Channel")
 chatpanel:SetPoint("BOTTOMLEFT", UIParent, "BOTTOMLEFT", 15, 10)
-chatpanel:SetScript('OnMouseUp', function() 
-	if IsAddOnLoaded("aTweaks") then
-		WorldChannel() 
-	else
-		print"aTweaks |cffEE0000NOT|r loaded"
-	end
-end)
+chatpanel:SetScript('OnMouseUp', function() WorldChannel() end)
 --====================================================--
 --[[             -- bottom panel --            ]]--
 --====================================================--	
