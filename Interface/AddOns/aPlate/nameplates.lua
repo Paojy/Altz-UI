@@ -130,15 +130,17 @@ end
 --Color Nameplate
 local function Colorize(frame)
 	local r,g,b = frame.hp:GetStatusBarColor()
-	
-	for class, color in pairs(Ccolors) do
+
+	for class, color in pairs(RAID_CLASS_COLORS) do
 		local r, g, b = floor(r*100+.5)/100, floor(g*100+.5)/100, floor(b*100+.5)/100
-		if Ccolors[class].r == r and Ccolors[class].g == g and Ccolors[class].b == b then
+		if RAID_CLASS_COLORS[class].r == r and RAID_CLASS_COLORS[class].g == g and RAID_CLASS_COLORS[class].b == b then
+			frame.hp:SetStatusBarColor(Ccolors[class].r, Ccolors[class].g, Ccolors[class].b)
 			frame.hasClass = true
 			frame.isFriendly = false
 			return
 		end
 	end
+	
 	if g+b == 0 then -- hostile
 		r,g,b = 254/255, 144/255,  46/255
 		frame.isFriendly = false
