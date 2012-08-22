@@ -2,7 +2,7 @@
 ## Title: |cffEE3A8Ca|rLoot
 ## Author:Blue
 ## RequiredDeps: aCore
-## Credits:Tukz Tekkub Tukz
+## Credits:Tukz Tekkub
 
 Loot.lua
 Rollcolector.lua
