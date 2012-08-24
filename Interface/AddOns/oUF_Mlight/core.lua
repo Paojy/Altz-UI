@@ -240,7 +240,7 @@ local Updatepowerbar = function(self, unit, min, max)
 	if not self.value then return end	
 	local _, type = UnitPowerType(unit)
 	local color = oUF.colors.power[type] or oUF.colors.power.FUEL
-			
+
 	if self.__owner.isMouseOver and type == "MANA" and UnitIsConnected(unit) then
 		self.value:SetText(hex(unpack(color))..FormatValue(min).."|r")
 	elseif min > 0 and min < max then
@@ -269,102 +269,15 @@ end
 
 local PostAltUpdate = function(altpp, min, cur, max)
     local self = altpp.__owner
-
+	
+	altpp.value:SetText(cur)
+	
     local tPath, r, g, b = UnitAlternatePowerTextureInfo(self.unit, 2)
-
     if(r) then
         altpp:SetStatusBarColor(r, g, b, 1)
     else
         altpp:SetStatusBarColor(1, 1, 1, .8)
     end 
-end
-
-local PostCreateIcon = function(auras, button)
-    auras.disableCooldown = true
-	auras.size = (cfg.width+6)/cfg.auraperrow-6
-	auras.showStealableBuffs = true
-	auras.spacing = 6
-	
-    local count = button.count
-    count:ClearAllPoints()
-    count:SetPoint("BOTTOMRIGHT", 3, -3)
-    count:SetFontObject(nil)
-    count:SetFont(cfg.font, 12, "OUTLINE")
-    count:SetTextColor(.8, .8, .8)
-
-    button.icon:SetTexCoord(.07, .93, .07, .93)
-	
-	local bg = createBackdrop(button, button,0,3)
-	button.bg = bg
-	
-    if cfg.auraborders then
-        auras.showDebuffType = true
-        button.overlay:SetTexture(cfg.texture)
-		button.overlay:SetDrawLayer("BACKGROUND")
-        button.overlay:SetPoint("TOPLEFT", button, "TOPLEFT", -1, 1)
-        button.overlay:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", 1, -1)
-    else
-        button.overlay:Hide()
-    end
-
-    local remaining = createFont(button, "OVERLAY", cfg.font, 12, "OUTLINE", .8, .8, .8)
-    remaining:SetPoint("TOPLEFT", -3, 2)
-    button.remaining = remaining
-end
-
-local CreateAuraTimer = function(self,elapsed)
-    self.elapsed = (self.elapsed or 0) + elapsed
-
-    if self.elapsed < .2 then return end
-    self.elapsed = 0
-
-    local timeLeft = self.expires - GetTime()
-    if timeLeft <= 0 then
-        self.remaining:SetText(nil)
-    else
-        self.remaining:SetText(FormatTime(timeLeft))
-    end
-end
-
-local PostUpdateIcon
-local debuffFilter = {
-    --colored debuff(if it's on the enemy and not casted by player)
-}
-do
-    local playerUnits = {
-        player = true,
-        pet = true,
-        vehicle = true,
-    }
-
-    PostUpdateIcon = function(icons, unit, icon, index, offset)
-        local name, _, _, _, dtype, duration, expirationTime, unitCaster = UnitAura(unit, index, icon.filter)
-
-        local texture = icon.icon
-        if playerUnits[icon.owner] or debuffFilter[name] or UnitIsFriend('player', unit) or not icon.debuff then
-            texture:SetDesaturated(false)
-        else
-            texture:SetDesaturated(true)
-        end
-
-        if duration and duration > 0 then
-            icon.remaining:Show()
-        else
-            icon.remaining:Hide()
-        end
-		
-		if duration then
-			icon.bg:Show() -- if the aura is not a gap icon show it's bg
-		end
-		
-        icon.expires = expirationTime
-        icon:SetScript("OnUpdate", CreateAuraTimer)
-    end
-end
-
-local PostUpdateGapIcon = function(auras, unit, icon, visibleBuffs)
-	icon.bg:Hide()
-	icon.remaining:Hide()
 end
 
 local HarmonyOverride = function(self, event, unit, powerType)
@@ -495,6 +408,93 @@ end
 --=============================================--
 --[[                   Auras                 ]]--
 --=============================================--
+local PostCreateIcon = function(auras, icon)
+    icon.icon:SetTexCoord(.07, .93, .07, .93)
+
+    icon.count:ClearAllPoints()
+    icon.count:SetPoint("BOTTOMRIGHT", 3, -3)
+    icon.count:SetFontObject(nil)
+    icon.count:SetFont(cfg.font, 12, cfg.fontflag)
+    icon.count:SetTextColor(.9, .9, .1)
+
+	icon.overlay:SetTexture(cfg.texture)
+	icon.overlay:SetDrawLayer("BACKGROUND")
+    icon.overlay:SetPoint("TOPLEFT", icon, "TOPLEFT", -1, 1)
+    icon.overlay:SetPoint("BOTTOMRIGHT", icon, "BOTTOMRIGHT", 1, -1)
+
+	icon.bg = createBackdrop(icon, icon,0,3)
+
+	icon.remaining = createFont(icon, "OVERLAY", cfg.font, 12, "OUTLINE", .8, .8, .8)
+    icon.remaining:SetPoint("TOPLEFT", -3, 2)
+
+    if cfg.auraborders then
+        auras.showDebuffType = true
+	end
+end
+
+local CreateAuraTimer = function(self, elapsed)
+    self.elapsed = (self.elapsed or 0) + elapsed
+
+    if self.elapsed < .2 then return end
+    self.elapsed = 0
+
+    local timeLeft = self.expires - GetTime()
+    if timeLeft <= 0 then
+        self.remaining:SetText(nil)
+    else
+        self.remaining:SetText(FormatTime(timeLeft))
+    end
+end
+
+local PostUpdateIcon = function(icons, unit, icon, index, offset)
+	local name, _, _, _, _, duration, expirationTime = UnitAura(unit, index, icon.filter)
+
+	if icon.isPlayer or UnitIsFriend('player', unit) or not icon.isDebuff then
+		icon.icon:SetDesaturated(false)
+		if duration and duration > 0 then
+			icon.remaining:Show()
+		else
+			icon.remaining:Hide()
+		end
+	else
+		icon.icon:SetDesaturated(true) -- grey other's debuff casted on enemy.
+		icon.overlay:Hide()
+		icon.remaining:Hide()
+		icon.count:Hide()
+	end
+		
+	if duration then
+		icon.bg:Show() -- if the aura is not a gap icon show it's bg
+	end
+		
+	icon.expires = expirationTime
+	icon:SetScript("OnUpdate", CreateAuraTimer)
+end
+
+local PostUpdateGapIcon = function(auras, unit, icon, visibleBuffs)
+	icon.bg:Hide()
+	icon.remaining:Hide()
+end
+
+local CustomFilter = function(icons, unit, icon, ...)
+	local _, _, _, _, _, _, _, _, _, _, spellID = ...
+	if icon.isPlayer then -- show all my auras
+		return true
+	elseif UnitIsFriend('player', unit) and (not cfg.AuraFilter.ignoreBuff or icon.isDebuff) then
+		return true
+	elseif not UnitIsFriend('player', unit) and (not cfg.AuraFilter.ignoreDebuff or not icon.isDebuff) then
+		return true
+	elseif cfg.AuraFilter.whitelist[spellID] then
+		return true
+	end
+end
+
+local BossAuraFilter = function(icons, unit, icon, ...)
+	if icon.isPlayer or not icon.isDebuff then -- show buff and my auras
+		return true
+	end
+end
+
 local CreateAuras = function(self, unit)
 	local u = unit:match('[^%d]+')
     if multicheck(u, "target", "focus", "pet", "boss") then
@@ -502,10 +502,14 @@ local CreateAuras = function(self, unit)
 		Auras:SetHeight(cfg.height*2)
 		Auras:SetWidth(cfg.width)
 		Auras.gap = true
+		Auras.disableCooldown = true
+		Auras.showStealableBuffs = true
+		Auras.size = (cfg.width+3)/cfg.auraperrow-3
+		Auras.spacing = 3
 		Auras.PostCreateIcon = PostCreateIcon
 		Auras.PostUpdateIcon = PostUpdateIcon
 		Auras.PostUpdateGapIcon = PostUpdateGapIcon
-
+		
 		if unit == "target" or unit == "focus" then
 			Auras:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 0, 5)
 			Auras.initialAnchor = "BOTTOMLEFT"
@@ -513,7 +517,9 @@ local CreateAuras = function(self, unit)
 			Auras["growth-y"] = "UP"
 			Auras.numDebuffs = cfg.auraperrow
 			Auras.numBuffs = cfg.auraperrow
-			Auras.onlyShowPlayer = cfg.onlyShowPlayer
+			if cfg.AuraFilter.ignoreBuff or cfg.AuraFilter.ignoreDebuff then
+				Auras.CustomFilter = CustomFilter
+			end
 		elseif unit == "pet" then
 			Auras:SetPoint("BOTTOMLEFT", self, "BOTTOMRIGHT", 5, 0)
 			Auras.initialAnchor = "BOTTOMLFET"
@@ -522,13 +528,13 @@ local CreateAuras = function(self, unit)
 			Auras.numDebuffs = 5
 			Auras.numBuffs = 0
 		else -- boss 1-5
-			Auras:SetPoint("BOTTOMRIGHT", self, "BOTTOMLEFT", -5, 0)
-			Auras.initialAnchor = "BOTTOMRIGHT"
-			Auras["growth-x"] = "LEFT"
-			Auras["growth-y"] = "DOWN"		
+			Auras:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 0, 5)
+			Auras.initialAnchor = "BOTTOMLEFT"
+			Auras["growth-x"] = "RIGHT"
+			Auras["growth-y"] = "UP"	
 			Auras.numDebuffs = 4
 			Auras.numBuffs = 3
-			Auras.onlyShowPlayer = cfg.onlyShowPlayer
+			Auras.CustomFilter = BossAuraFilter
 		end
 	
 		self.Auras = Auras
@@ -549,7 +555,7 @@ local func = function(self, unit)
     -- height, width and scale --
 	if multicheck(u, "targettarget", "focustarget", "pet") then
         self:SetSize(cfg.width1, cfg.height)
-	elseif multicheck(u, "boss") then
+	elseif unit:match'(boss)%d?$' == 'boss' then
 		self:SetSize(cfg.width2, cfg.height)
 	else
 	    self:SetSize(cfg.width, cfg.height)
@@ -624,19 +630,13 @@ local func = function(self, unit)
 
 	-- altpower bar --
     if multicheck(u, "player", "boss") then
-		local altpp = createStatusbar(self, cfg.texture, nil, 1, nil, 1, 1, 1, .8)
-		if unit == "player" then
-			altpp:SetPoint('TOPLEFT', self.Power, 'BOTTOMLEFT', 0, -2)
-			altpp:SetPoint('TOPRIGHT', self.Power, 'BOTTOMRIGHT', 0, -2)
-		else -- boss
-			altpp:SetPoint('BOTTOMLEFT', self.Health, 'TOPLEFT', 0, 2)
-			altpp:SetPoint('BOTTOMRIGHT', self.Health, 'TOPRIGHT', 0, 2)
-		end
+		local altpp = createStatusbar(self, cfg.texture, nil, cfg.height*-(cfg.hpheight-1), nil, 1, 1, 1, .8)
+		altpp:SetPoint('TOPLEFT', self.Power, 'BOTTOMLEFT', 0, -2)
+		altpp:SetPoint('TOPRIGHT', self.Power, 'BOTTOMRIGHT', 0, -2)
 		altpp.bd = createBackdrop(altpp, altpp, 1, 3)
 	
-		altpp.text = createFont(altpp, "OVERLAY", cfg.font, cfg.fontsize, cfg.fontflag, 1, 1, 1)
-		altpp.text:SetPoint"CENTER"
-		self:Tag(altpp.text, "[Mlight:altpower]")
+		altpp.value = createFont(altpp, "OVERLAY", cfg.font, cfg.fontsize, cfg.fontflag, 1, 1, 1)
+		altpp.value:SetPoint"CENTER"
 
 		self.AltPowerBar = altpp
 		self.AltPowerBar.PostUpdate = PostAltUpdate

@@ -82,23 +82,13 @@ oUF.Tags.Methods['Mlight:color'] = function(u, r)
         return hex(1, 1, 1)
     end
 end
-oUF.Tags.Events['Mlight:color'] = 'UNIT_REACTION UNIT_HEALTH'
+oUF.Tags.Events['Mlight:color'] = 'UNIT_FACTION' -- for tapping
 
 oUF.Tags.Methods['Mlight:shortname'] = function(u, r)
 	local name = UnitName(r or u)
 	return utf8sub(name, 4, false)
 end
-oUF.Tags.Events['Mlight:shortname'] = 'UNIT_NAME_UPDATE'
-
-oUF.Tags.Methods['Mlight:altpower'] = function(u)
-    local min = UnitPower(u, ALTERNATE_POWER_INDEX)
-    local max = UnitPowerMax(u, ALTERNATE_POWER_INDEX)
-
-    if min > 0 and max > 0 then
-        return format("%d", floor(min/max*100)).."%"
-    end
-end
-oUF.Tags.Events['Mlight:altpower'] = "UNIT_POWER UNIT_MAXPOWER"
+oUF.Tags.Events['Mlight:shortname'] = 'UNIT_NAME_UPDATE UNIT_CONNECTION'
 
 --------------[[     raid     ]]-------------------
 
@@ -114,16 +104,16 @@ oUF.Tags.Methods['Mlight:LFD'] = function(u) -- use symbols istead of letters
 end
 oUF.Tags.Events['Mlight:LFD'] = "GROUP_ROSTER_UPDATE PLAYER_ROLES_ASSIGNED"
 
-oUF.Tags.Methods['Mlight:AfkDnd'] = function(u) -- used in indicators
+oUF.Tags.Methods['Mlight:AfkDnd'] = function(u)
 	if UnitIsAFK(u) then
-		return "|cff9FB6CD <afk>|r" 
+		return "|cff9FB6CD <afk>|r"
 	elseif UnitIsDND(u) then
 		return "|cffCD2626 <dnd>|r"
 	end
 end
-oUF.Tags.Events['Mlight:AfkDnd'] = 'PLAYER_FLAGS_CHANGED UNIT_POWER UNIT_MAXPOWER'
+oUF.Tags.Events['Mlight:AfkDnd'] = 'PLAYER_FLAGS_CHANGED'
 
-oUF.Tags.Methods['Mlight:DDG'] = function(u) -- used in indicators
+oUF.Tags.Methods['Mlight:DDG'] = function(u)
 	if UnitIsDead(u) then
 		return "|cffCD0000  Dead|r"
 	elseif UnitIsGhost(u) then
@@ -132,4 +122,4 @@ oUF.Tags.Methods['Mlight:DDG'] = function(u) -- used in indicators
 		return "|cffCCCCCC  D/C|r"
 	end
 end
-oUF.Tags.Events['Mlight:DDG'] = 'UNIT_HEALTH'
+oUF.Tags.Events['Mlight:DDG'] = 'UNIT_HEALTH UNIT_CONNECTION'

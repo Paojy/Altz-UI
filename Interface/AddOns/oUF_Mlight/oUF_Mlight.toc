@@ -3,7 +3,7 @@
 ## Author: Blue
 ## Version: 5.11
 ## Notes: oUF layout.
-## Credits:Haste, Freebaser, Haleth, Tukz, Phanx
+## Credits:Haste, Freebaser, Monolit, Haleth, Phanx, Tukz, p3lim
 ## Dependencies: oUF
 ## OptionalDeps: oUF_Fader, aCore
 
