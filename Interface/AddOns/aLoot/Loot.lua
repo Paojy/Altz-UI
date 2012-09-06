@@ -1,8 +1,6 @@
 ﻿local addon = CreateFrame("Button", "aLootFrame")
 
-local aMeida = "Interface\\AddOns\\aCore\\media\\"
-local bordertex = aMeida.."iconborder"
-local iconSize = 45
+local iconSize = 35
 local frameScale = 1
 local sq, ss, sn
 
@@ -44,7 +42,7 @@ end
 
 local createSlot = function(id)
 	local iconsize = iconSize-2
-	local frame = CreateFrame("Button", 'aLootFrameSlot'..id, addon)
+	local frame = CreateFrame("Button", "aLootFrameSlot"..id, addon)
 	frame:SetPoint("LEFT", 8, 0)
 	frame:SetSize(iconsize, iconsize)
 	frame:SetID(id)
@@ -62,21 +60,21 @@ local createSlot = function(id)
 	iconFrame:ClearAllPoints()
 	iconFrame:SetPoint("RIGHT", frame)
 	
+	creategrowBD(iconFrame, 0, 0, 0, 0, 1)
+	
 	local overlay = iconFrame:CreateTexture(nil, "OVERLAY")
-    overlay:SetTexture(bordertex)
-	overlay:SetPoint("TOPLEFT",iconFrame,"TOPLEFT",0,0)
-	overlay:SetPoint("BOTTOMRIGHT",iconFrame,"BOTTOMRIGHT",0,0)
+	overlay:SetTexture("Interface\\Buttons\\WHITE8x8")
+	overlay:SetDrawLayer("BACKGROUND")
+    overlay:SetAllPoints()
 	frame.overlay = overlay
-
+	
 	local icon = iconFrame:CreateTexture(nil, "ARTWORK")
-	icon:SetAlpha(.8)
 	icon:SetTexCoord(.07, .93, .07, .93)
-	icon:SetPoint("TOPLEFT", 2, -2)
-	icon:SetPoint("BOTTOMRIGHT", -2, 2)
+	icon:SetPoint("TOPLEFT", 1, -1)
+	icon:SetPoint("BOTTOMRIGHT", -1, 1)
 	frame.icon = icon
 
-	local count = createtext(iconFrame, 12, "OUTLINE", false)
-	count:SetJustifyH"RIGHT"
+	local count = createtext(iconFrame, "OVERLAY", 12, "OUTLINE", "RIGHT")
 	count:SetPoint("BOTTOMRIGHT", iconFrame, -1, 2)
 	count:SetText(1)
 	frame.count = count
@@ -112,7 +110,7 @@ addon:SetMovable(true)
 addon:RegisterForClicks"anyup"
 addon:SetParent(UIParent)
 addon:SetUserPlaced(true)
-addon:SetPoint("TOPRIGHT", UIParent, "CENTER", -150, -100)
+addon:SetPoint("TOPRIGHT", UIParent, "CENTER", -150, -90)
 addon:SetWidth(200)
 addon:SetHeight(50)
 addon:SetClampedToScreen(true)
