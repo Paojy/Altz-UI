@@ -131,7 +131,6 @@ function createdbmBD(f)
 	f.dbmborder = border
 end
 
-
 function creategradient(f, r, g, b, n, a)
 	local gradient = f:CreateTexture(nil, "BACKGROUND")
 	gradient:SetPoint("TOPLEFT")
@@ -145,34 +144,9 @@ function createbargradient(bar, r, g, b, n)
 	bar:GetStatusBarTexture():SetGradient("VERTICAL",  r, g, b, r/n, g/n, b/n)
 end
 
-function createtex(f, texpath, blend)
-	local tex = f:CreateTexture(nil, "OVERLAY")
-	tex:SetAllPoints()
-	tex:SetTexture(texpath)
-	if blend then
-		tex:SetBlendMode(blend)
-	end
-	return tex
-end
-
-function createtext(f, fontsize, flag, center)
-	local text = f:CreateFontString(nil, "OVERLAY")
+function createtext(f, layer, fontsize, flag, justifyh)
+	local text = f:CreateFontString(nil, layer)
 	text:SetFont(font, fontsize, flag)
-	text:SetJustifyH("CENTER")
-	if center then
-	text:SetAllPoints()
-	end
+	text:SetJustifyH(justifyh)
 	return text
-end
-
--- fadeout and hide
-local function FandH(f, t)
-if InCombatLockdown() then return end
-local fadeInfo1 = {}
-		fadeInfo1.mode = "OUT"
-		fadeInfo1.timeToFade = t
-		fadeInfo1.finishedFunc = function() f:Hide() end	--隐藏
-		fadeInfo1.startAlpha = f:GetAlpha()
-		fadeInfo1.endAlpha = 0
-UIFrameFade(f, fadeInfo1)
 end
