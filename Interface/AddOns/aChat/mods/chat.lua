@@ -71,11 +71,12 @@ local function init()
   -- place edit box
     local eb = _G['ChatFrame'..i..'EditBox']
     if eb and cf then
-      cf:SetClampRectInsets(0,0,0,0)
+      cf:SetClampedToScreen(false)
       eb:SetAltArrowKeyMode(false)
       eb:ClearAllPoints()
       eb:SetPoint("TOPLEFT",cf,"TOPLEFT",3,47)
 	  eb:SetPoint("BOTTOMRIGHT",cf,"TOPRIGHT",-3,25)
+	  eb:Hide()
     end
   -- chat tabs
     local tab = _G['ChatFrame'..i..'Tab']
