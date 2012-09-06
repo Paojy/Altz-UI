@@ -161,7 +161,7 @@ local function Colorize(frame)
 	frame.hp:SetStatusBarColor(r,g,b)
 end
 
---HealthBar OnShow, use this to set variables for the nameplate, also size the healthbar here because it likes to lose it's
+--HealthBar OnShow, use this to set variables for the nameplate, also size the healthbar here because it likes to lose it"s
 --size settings when it gets reshown
 local function UpdateObjects(frame)
 	local frame = frame:GetParent()
@@ -214,32 +214,28 @@ local function SkinObjects(frame)
 	createnameplateBD(hp, 0, 0, 0, 0.3, 1)
 	
 	--Create Level
-	hp.level = createtext(hp, fontsize-2, "OUTLINE", false)
+	hp.level = createtext(hp, "OVERLAY", fontsize-2, "OUTLINE", "RIGHT")
 	hp.level:SetPoint("BOTTOMRIGHT", hp, "TOPLEFT", 19, -fontsize/3)
-	hp.level:SetJustifyH("RIGHT")
 	hp.level:SetTextColor(1, 1, 1)
 	hp.oldlevel = oldlevel
 	hp.boss = bossicon
 	hp.elite = elite
 	
 	--Create Health Text
-	hp.value = createtext(hp, fontsize/2+3, "OUTLINE", false)
+	hp.value = createtext(hp, "OVERLAY", fontsize/2+3, "OUTLINE", "RIGHT")
 	hp.value:SetPoint("TOPRIGHT", hp, "TOPRIGHT", 0, -fontsize/3)
-	hp.value:SetJustifyH("RIGHT")
 	hp.value:SetTextColor(0.5,0.5,0.5)
 
 	--Create Health Pecentage Text
-	hp.valueperc = createtext(hp, fontsize, "OUTLINE", false)
+	hp.valueperc = createtext(hp, "OVERLAY", fontsize, "OUTLINE", "RIGHT")
 	hp.valueperc:SetPoint("BOTTOMRIGHT", hp, "TOPRIGHT", 0, -fontsize/3)
-	hp.valueperc:SetJustifyH("RIGHT")
 	hp.valueperc:SetTextColor(1,1,1)
 	
 	--Create Name Text
-	hp.name = createtext(hp, fontsize-2, "OUTLINE", false)
+	hp.name = createtext(hp, "OVERLAY", fontsize-2, "OUTLINE", "LEFT")
 	hp.name:SetPoint('BOTTOMRIGHT', hp, 'TOPRIGHT', -30, -fontsize/3)
 	hp.name:SetPoint('BOTTOMLEFT', hp, 'TOPLEFT', 17, -fontsize/3)
 	hp.name:SetTextColor(1,1,1)
-	hp.name:SetJustifyH("LEFT")
 	hp.oldname = oldname
 	
 	hp.hpbg = hp:CreateTexture(nil, 'BORDER')
@@ -255,15 +251,13 @@ local function SkinObjects(frame)
 	createnameplateBD(cb, 0, 0, 0, 0.3, 1)
 	
 	--Create Cast Time Text
-	cb.time = createtext(cb, fontsize, "OUTLINE", false)
+	cb.time = createtext(cb, "OVERLAY", fontsize, "OUTLINE", "RIGHT")
 	cb.time:SetPoint("RIGHT", cb, "LEFT", -1, 0)
-	cb.time:SetJustifyH("RIGHT")
 	cb.time:SetTextColor(1, 1, 1)
 
 	--Create Cast Name Text
-	cb.name = createtext(cb, fontsize, "OUTLINE", false)
+	cb.name = createtext(cb, "OVERLAY", fontsize, "OUTLINE", "CENTER")
 	cb.name:SetPoint("TOP", cb, "BOTTOM", 0, -3)
-	cb.name:SetJustifyH("CENTER")
 	cb.name:SetTextColor(1, 1, 1)
 
 	--Setup CastBar Icon
@@ -410,7 +404,7 @@ local function HookFrames(...)
 		local frame = select(index, ...)
 		local region = frame:GetRegions()
 		
-		if(not frames[frame] and (frame:GetName() and not frame.isSkinned and frame:GetName():find("NamePlate%d")) and region and region:GetObjectType() == 'Texture') then
+		if(not frames[frame] and (frame:GetName() and not frame.isSkinned and frame:GetName():find("NamePlate%d")) and region and region:GetObjectType() == "Texture") then
 			SkinObjects(frame)
 			frame.region = region
 			frame.isSkinned = true
