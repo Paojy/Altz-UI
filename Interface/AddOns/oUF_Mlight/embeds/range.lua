@@ -6,7 +6,6 @@ local cfg = ns.cfg
 
 local _FRAMES = {}
 local OnRangeFrame
-local update = .20
 
 local UnitInRange, UnitIsConnected = UnitInRange, UnitIsConnected
 local SetMapToCurrentZone, WorldMapFrame = SetMapToCurrentZone, WorldMapFrame
@@ -94,19 +93,28 @@ local function GetBearing(unit)
     return pi - atan2(px-tx,ty-py)
 end
 
-function ns:arrow(object, unit)
-    if not object.OoR or not UnitIsConnected(unit) then return end 
-    local bearing = GetBearing(unit)
+function ns:arrow(object)
+    if not object.OoR or not UnitIsConnected(object.unit) then return end 
+    local bearing = GetBearing(object.unit)
     if bearing then
         RotateTexture(object.freebarrow, bearing)
     end
+end
+
+local t = 0
+local Updatedirection = function(self, elapsed)
+	t = t + elapsed
+	if t >= .05 then
+		ns:arrow(self)
+		t = 0
+	end
 end
 
 local timer = 0
 local OnRangeUpdate = function(self, elapsed)
     timer = timer + elapsed
 
-    if(timer >= update) then
+    if timer >= 0.2 then
         for _, object in next, _FRAMES do
             if(object:IsShown()) then
                 local range = object.freebRange
@@ -126,7 +134,6 @@ local OnRangeUpdate = function(self, elapsed)
                 object.freebarrow:Hide()
             end
         end
-
         timer = 0
     end
 end
@@ -156,13 +163,14 @@ local Enable = function(self)
         self.freebarrow:Hide()
 		
 		self:HookScript("OnEnter", function(self)
-			ns:arrow(self, self.unit) 
+			self:SetScript("OnUpdate", Updatedirection)
 		end)
 		
 		self:HookScript("OnLeave", function(self)
 		    if(self.freebarrow and self.freebarrow:IsShown()) then
 				self.freebarrow:Hide()
-			end 
+			end
+			self:SetScript("OnUpdate", nil)
 		end)
 		
         return true

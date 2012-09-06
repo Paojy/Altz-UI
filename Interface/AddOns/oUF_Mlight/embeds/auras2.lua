@@ -28,15 +28,17 @@ local CreateAuraIcon = function(auras)
     button:EnableMouse(false)
     button:SetAllPoints(auras)
 
-    local icon = button:CreateTexture(nil, "OVERLAY")
+    local icon = button:CreateTexture(nil, "ARTWORK")
     icon:SetAllPoints(button)
     icon:SetTexCoord(.07, .93, .07, .93)
 
-    local font = cfg.font
+	local font = cfg.font
     local count = button:CreateFontString(nil, "OVERLAY")
     count:SetFont(font, auras.cfontsize, "THINOUTLINE")
-    count:SetPoint("TOPRIGHT")
-
+	count:ClearAllPoints()
+    count:SetPoint("TOPLEFT", -2, 2)
+	count:SetJustifyH("LEFT")
+	
     local border = CreateFrame("Frame", nil, button)
     border:SetPoint("TOPLEFT", button, "TOPLEFT", -1, 1)
     border:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", 1, -1)
@@ -47,14 +49,15 @@ local CreateAuraIcon = function(auras)
     button.border = border
 
     local remaining = button:CreateFontString(nil, "OVERLAY")
-    remaining:SetPoint("BOTTOMRIGHT",4,-2) 
     remaining:SetFont(font, auras.tfontsize, "THINOUTLINE")
+    remaining:SetPoint("BOTTOMRIGHT", 4, -2)
+	remaining:SetJustifyH("RIGHT")
     remaining:SetTextColor(1, 1, 0)
-    button.remaining = remaining
 
     button.parent = auras
     button.icon = icon
     button.count = count
+	button.remaining = remaining
     button.cd = cd
     button:Hide()
 
@@ -163,4 +166,4 @@ local Disable = function(self)
     end
 end
 
-oUF:AddElement('MlightTankbuff', Update, Enable, Disable)
+oUF:AddElement("MlightTankbuff", Update, Enable, Disable)

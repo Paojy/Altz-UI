@@ -13,15 +13,16 @@ local createFont = ns.createFont
 local createBackdrop = ns.createBackdrop
 local Updatehealthbar = ns.Updatehealthbar
 local OnMouseOver = ns.OnMouseOver
+local createStatusbar = ns.createStatusbar
 --=============================================--
 --[[               Some update               ]]--
 --=============================================--
-local pxbackdrop = {edgeFile = "Interface\\ChatFrame\\ChatFrameBackground", edgeSize = 1}
+local pxbackdrop = { edgeFile = [=[Interface\ChatFrame\ChatFrameBackground]=],  edgeSize = 1, }
 
 local function Createpxborder(self, lvl)
 	local pxbd = CreateFrame("Frame", nil, self)
-	pxbd:SetPoint("TOPLEFT", self, "TOPLEFT", 0, 0)
-	pxbd:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", 0, 0)
+	pxbd:SetPoint("TOPLEFT", self, "TOPLEFT", -3, 3)
+	pxbd:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", 3, -3)
 	pxbd:SetBackdrop(pxbackdrop)
 	pxbd:SetFrameLevel(lvl)
 	pxbd:Hide()
@@ -53,6 +54,7 @@ end
 
 local function healpreditionbar(self, color)
 	local hpb = CreateFrame('StatusBar', nil, self.Health)
+	hpb:SetFrameLevel(2)
 	hpb:SetStatusBarTexture(texture)
 	hpb:SetStatusBarColor(unpack(color))
 	hpb:SetPoint('TOP')
@@ -79,8 +81,8 @@ local function CreateGCDframe(self)
     local Gcd = CreateFrame("StatusBar", nil, self)
     Gcd:SetAllPoints(self)
     Gcd:SetStatusBarTexture(texture)
-    Gcd:SetStatusBarColor(.4, .7, .4, .6)
-    Gcd:SetFrameLevel(5)
+    Gcd:SetStatusBarColor(1, 1, 1, .4)
+    Gcd:SetFrameLevel(4)
     self.GCD = Gcd
 end
 --=============================================--
@@ -92,38 +94,43 @@ local func = function(self, unit)
     self:RegisterForClicks"AnyUp"
 	self.mouseovers = {}
 	
-	-- shadow border for health bar --
-    self.backdrop = createBackdrop(self, self, 0, 3)  -- this also use for dispel border
-
-	-- target border --
-	self.targetborder = Createpxborder(self, 7)
-	self.targetborder:SetBackdropBorderColor(1, 1, .3)
-	self:RegisterEvent('PLAYER_TARGET_CHANGED', ChangedTarget)
-	self:RegisterEvent('RAID_ROSTER_UPDATE', ChangedTarget)
+	-- highlight --
+	self.hl = self:CreateTexture(nil, "HIGHLIGHT")
+    self.hl:SetAllPoints()
+    self.hl:SetTexture(cfg.highlighttexture)
+    self.hl:SetVertexColor( 1, 1, 1, .3)
+    self.hl:SetBlendMode("ADD")
 	
+	-- backdrop --
+	self.bg = self:CreateTexture(nil, "BACKGROUND")
+    self.bg:SetAllPoints()
+    self.bg:SetTexture(cfg.texture)
+	if cfg.classcolormode then
+		self.bg:SetGradientAlpha("VERTICAL", .6, .6, .6, 1, .1, .1, .1, 1)
+	else
+		self.bg:SetGradientAlpha("VERTICAL", .3, .3, .3, .4, .1, .1, .1, .4)
+	end
+	
+	-- border --
+	self.backdrop = createBackdrop(self, self, 0)
+	
+	-- target border --
+	self.targetborder = Createpxborder(self, 1)
+	self.targetborder:SetBackdropBorderColor(1, 1, .4)
+	self:RegisterEvent("PLAYER_TARGET_CHANGED", ChangedTarget)
+	self:RegisterEvent("RAID_ROSTER_UPDATE", ChangedTarget)
+
 	-- threat border --
-	self.threatborder = Createpxborder(self, 6)
-	self:RegisterEvent("UNIT_THREAT_LIST_UPDATE", UpdateThreat)
+	self.threatborder = Createpxborder(self, 0)
 	self:RegisterEvent("UNIT_THREAT_SITUATION_UPDATE", UpdateThreat)
 	
-    local hp = CreateFrame("StatusBar", nil, self)
+    local hp = createStatusbar(self, cfg.texture, "ARTWORK", nil, nil, 1, 1, 1, 1)
+	hp:SetFrameLevel(2)
     hp:SetAllPoints(self)
-	hp:SetStatusBarTexture(texture)
     hp.frequentUpdates = true
-    hp.Smooth = true
 	
 	if not cfg.classcolormode then
 		hp:SetReverseFill(true)
-	end
-	
-	-- backdrop grey gradient --
-	hp.bg = hp:CreateTexture(nil, "BACKGROUND")
-	hp.bg:SetAllPoints()
-	hp.bg:SetTexture(cfg.texture)
-	if cfg.classcolormode then
-		hp.bg:SetGradientAlpha("VERTICAL", .6, .6, .6, 1, .1, .1, .1, 1)
-	else
-		hp.bg:SetGradientAlpha("VERTICAL", .3, .3, .3, .2, .1, .1, .1, .2)
 	end
 	
     self.Health = hp
@@ -139,34 +146,34 @@ local func = function(self, unit)
 		CreateHealPredition(self)
 	end
 	
-	local leader = hp:CreateTexture(nil, "OVERLAY")
+	local leader = hp:CreateTexture(nil, "OVERLAY", 1)
     leader:SetSize(12, 12)
     leader:SetPoint("BOTTOMLEFT", hp, "BOTTOMLEFT", 5, -5)
     self.Leader = leader
 
-    local masterlooter = hp:CreateTexture(nil, 'OVERLAY')
+    local masterlooter = hp:CreateTexture(nil, 'OVERLAY', 1)
     masterlooter:SetSize(12, 12)
     masterlooter:SetPoint('LEFT', leader, 'RIGHT')
     self.MasterLooter = masterlooter
 
-	local lfd = createFont(hp, "OVERLAY", symbols, fontsize-6, fontflag, 1, 1, 1)
+	local lfd = createFont(hp, "OVERLAY", symbols, fontsize-3, fontflag, 1, 1, 1)
 	lfd:SetPoint("BOTTOM", hp, 0, -1)
 	self:Tag(lfd, '[Mlight:LFD]')
 	
 	local raidname = createFont(hp, "OVERLAY", font, fontsize, fontflag, 1, 1, 1)
 	raidname:SetPoint("BOTTOMRIGHT", hp, "BOTTOMRIGHT", -1, 5)
 	if not cfg.classcolormode then
-		self:Tag(raidname, '[Mlight:color][Mlight:shortname]')
+		self:Tag(raidname, '[Mlight:color][Mlight:raidname]')
 	else
-		self:Tag(raidname, '[Mlight:shortname]')
+		self:Tag(raidname, '[Mlight:raidname]')
 	end
 	
-    local ricon = hp:CreateTexture(nil, "OVERLAY")
+    local ricon = hp:CreateTexture(nil, "OVERLAY", 1)
 	ricon:SetSize(10 ,10)
     ricon:SetPoint("BOTTOM", hp, "TOP", 0 , -5)
     self.RaidIcon = ricon
 	
-	local status = createFont(hp, "OVERLAY", font, fontsize-4, fontflag, 1, 1, 1)
+	local status = createFont(hp, "OVERLAY", font, fontsize-2, fontflag, 1, 1, 1)
     status:SetPoint"TOPLEFT"
 	self:Tag(status, '[Mlight:AfkDnd][Mlight:DDG]')
 	
@@ -175,25 +182,27 @@ local func = function(self, unit)
     resurrecticon:SetPoint"CENTER"
     self.ResurrectIcon = resurrecticon
 	
-    local readycheck = self:CreateTexture(nil, 'OVERLAY')
+    local readycheck = self:CreateTexture(nil, 'OVERLAY', 1)
     readycheck:SetSize(16, 16)
     readycheck:SetPoint"CENTER"
     self.ReadyCheck = readycheck
    
 	-- Raid debuff
     local auras = CreateFrame("Frame", nil, self)
-    auras:SetSize(20, 20)
+	auras:SetFrameLevel(3)
+    auras:SetSize(16, 16)
     auras:SetPoint("LEFT", hp, "LEFT", 15, 0)
-	auras.tfontsize = 13
-	auras.cfontsize = 8
+	auras.tfontsize = 10
+	auras.cfontsize = 10
 	self.MlightAuras = auras
 	
 	-- Tankbuff
     local tankbuff = CreateFrame("Frame", nil, self)
-    tankbuff:SetSize(20, 20)
+	tankbuff:SetFrameLevel(3)
+    tankbuff:SetSize(16, 16)
     tankbuff:SetPoint("LEFT", auras, "RIGHT", 5, 0)
-	tankbuff.tfontsize = 13
-	tankbuff.cfontsize = 8
+	tankbuff.tfontsize = 10
+	tankbuff.cfontsize = 10
 	self.MlightTankbuff = tankbuff
 	
 	-- Indicators
@@ -218,75 +227,73 @@ local dfunc = function(self, unit)
     self:RegisterForClicks"AnyUp"
 	self.mouseovers = {}
 	
-	-- shadow border for health bar --
-    self.backdrop = createBackdrop(self, self, 0, 3)  -- this also use for dispel border
-
-    local hp = CreateFrame("StatusBar", nil, self)
+	-- highlight --
+	self.hl = self:CreateTexture(nil, "HIGHLIGHT")
+    self.hl:SetAllPoints()
+    self.hl:SetTexture(cfg.highlighttexture)
+    self.hl:SetVertexColor( 1, 1, 1, .3)
+    self.hl:SetBlendMode("ADD")
+	
+	-- backdrop --
+	self.bg = self:CreateTexture(nil, "BACKGROUND")
+    self.bg:SetAllPoints()
+    self.bg:SetTexture(cfg.texture)
+	if cfg.classcolormode then
+		self.bg:SetGradientAlpha("VERTICAL", .6, .6, .6, 1, .1, .1, .1, 1)
+	else
+		self.bg:SetGradientAlpha("VERTICAL", .3, .3, .3, .4, .1, .1, .1, .4)
+	end
+	
+	-- border --
+	self.backdrop = createBackdrop(self, self, 0)
+	
+    local hp = createStatusbar(self, cfg.texture, "ARTWORK", nil, nil, 1, 1, 1, 1)
+	hp:SetFrameLevel(2)
     hp:SetAllPoints(self)
-	hp:SetStatusBarTexture(texture)
     hp.frequentUpdates = true
-    hp.Smooth = true
 	
 	if not cfg.classcolormode then
 		hp:SetReverseFill(true)
 	end
 	
-	-- backdrop grey gradient --
-	hp.bg = hp:CreateTexture(nil, "BACKGROUND")
-	hp.bg:SetAllPoints()
-	hp.bg:SetTexture(cfg.texture)
-	if cfg.classcolormode then
-		hp.bg:SetGradientAlpha("VERTICAL", .6, .6, .6, 1, .1, .1, .1, 1)
-	else
-		hp.bg:SetGradientAlpha("VERTICAL", .3, .3, .3, .2, .1, .1, .1, .2)
-	end
-	
     self.Health = hp
 	self.Health.PostUpdate = Updatehealthbar
 	
-	local leader = hp:CreateTexture(nil, "OVERLAY")
+	local leader = hp:CreateTexture(nil, "OVERLAY", 1)
     leader:SetSize(12, 12)
     leader:SetPoint("BOTTOMLEFT", hp, "BOTTOMLEFT", 5, -5)
     self.Leader = leader
 
-    local masterlooter = hp:CreateTexture(nil, 'OVERLAY')
+    local masterlooter = hp:CreateTexture(nil, 'OVERLAY', 1)
     masterlooter:SetSize(12, 12)
     masterlooter:SetPoint('LEFT', leader, 'RIGHT')
     self.MasterLooter = masterlooter
 	
-	local lfd = createFont(hp, "OVERLAY", symbols, fontsize-6, fontflag, 1, 1, 1)
+	local lfd = createFont(hp, "OVERLAY", symbols, fontsize-3, fontflag, 1, 1, 1)
 	lfd:SetPoint("LEFT", hp, 1, -1)
 	self:Tag(lfd, '[Mlight:LFD]')
 		
-	local raidname = createFont(hp, "OVERLAY", font, fontsize, fontflag, 1, 1, 1)
+	local raidname = createFont(hp, "OVERLAY", font, fontsize, fontflag, 1, 1, 1, 'RIGHT')
 	raidname:SetPoint("BOTTOMLEFT", hp, "BOTTOMRIGHT", 5, 0)
 	if not cfg.classcolormode then
-		self:Tag(raidname, '[Mlight:color][Mlight:shortname]')
+		self:Tag(raidname, '[Mlight:color][Mlight:raidname]')
 	else
-		self:Tag(raidname, '[Mlight:shortname]')
+		self:Tag(raidname, '[Mlight:raidname]')
 	end
 	
-    local ricon = hp:CreateTexture(nil, "OVERLAY")
+    local ricon = hp:CreateTexture(nil, "OVERLAY", 1)
 	ricon:SetSize(10 ,10)
     ricon:SetPoint("BOTTOM", hp, "TOP", 0 , -5)
     self.RaidIcon = ricon
 	
-	local status = createFont(hp, "OVERLAY", font, fontsize-4, fontflag, 1, 1, 1)
+	local status = createFont(hp, "OVERLAY", font, fontsize-2, fontflag, 1, 1, 1)
     status:SetPoint"TOPLEFT"
 	self:Tag(status, '[Mlight:AfkDnd][Mlight:DDG]')
 	
-	local readycheck = self:CreateTexture(nil, 'OVERLAY')
+	local readycheck = self:CreateTexture(nil, 'OVERLAY', 1)
     readycheck:SetSize(16, 16)
     readycheck:SetPoint"CENTER"
     self.ReadyCheck = readycheck
-	
-	-- Raid debuff
-    local auras = CreateFrame("Frame", nil, self)
-    auras:SetSize(10, 10)
-    auras:SetPoint("LEFT", hp, "LEFT", 5, 0)
-	auras.tfontsize = 1
-	auras.cfontsize = 1
-	self.MlightAuras = auras
 	
 	-- Range
     local range = {
@@ -333,6 +340,9 @@ local function Spawnhealraid()
 	healerraid:SetPoint(unpack(cfg.healerraidposition))
 end
 
+local groupBy = cfg.dpsraidgroupbyclass and "CLASS" or "GROUP"
+local groupingOrder = cfg.dpsraidgroupbyclass and "WARRIOR, DEATHKNIGHT, PALADIN, WARLOCK, SHAMAN, MAGE, MONK, HUNTER, PRIEST, ROGUE, DRUID" or "1,2,3,4,5,6,7,8"
+
 local function Spawndpsraid()
 	oUF:SetActiveStyle"Mlight_DPSraid"
 	dpsraid = oUF:SpawnHeader('DpsRaid_Mlight', nil, 'raid,party,solo',
@@ -347,8 +357,8 @@ local function Spawndpsraid()
 		'showRaid', true,
 		'yOffset', -5,
 		'groupFilter', '1,2,3,4,5,6,7,8',
-		'groupingOrder', '1,2,3,4,5,6,7,8',
-		'groupBy', 'GROUP',
+		'groupingOrder', groupingOrder,
+		'groupBy', groupBy,
 		'unitsPerColumn', 25
 	)
 	dpsraid:SetPoint(unpack(cfg.dpsraidposition))

@@ -88,8 +88,12 @@ oUF.Tags.Methods['Mlight:shortname'] = function(u, r)
 	local name = UnitName(r or u)
 	return utf8sub(name, 4, false)
 end
-oUF.Tags.Events['Mlight:shortname'] = 'UNIT_NAME_UPDATE UNIT_CONNECTION'
 
+oUF.Tags.Methods["Mlight:raidname"] = function(u, r)
+	local name = UnitName(r or u)
+	return utf8sub(name, 4, false)
+end
+oUF.Tags.Events["Mlight:raidname"] = "GROUP_ROSTER_UPDATE"
 --------------[[     raid     ]]-------------------
 
 oUF.Tags.Methods['Mlight:LFD'] = function(u) -- use symbols istead of letters

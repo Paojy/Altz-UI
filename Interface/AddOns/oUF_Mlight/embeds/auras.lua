@@ -8,7 +8,7 @@ local glowBorder = {
 }
 
 local function multicheck(check, ...)
-    for i=1, select('#', ...) do
+    for i=1, select("#", ...) do
         if check == select(i, ...) then return true end
     end
     return false
@@ -35,15 +35,17 @@ local CreateAuraIcon = function(auras)
     button:EnableMouse(false)
     button:SetAllPoints(auras)
 
-    local icon = button:CreateTexture(nil, "OVERLAY")
+    local icon = button:CreateTexture(nil, "ARTWORK")
     icon:SetAllPoints(button)
     icon:SetTexCoord(.07, .93, .07, .93)
 
     local font = cfg.font
     local count = button:CreateFontString(nil, "OVERLAY")
     count:SetFont(font, auras.cfontsize, "THINOUTLINE")
-    count:SetPoint("TOPRIGHT")
-
+	count:ClearAllPoints()
+    count:SetPoint("TOPLEFT", -2, 2)
+	count:SetJustifyH("LEFT")
+	
     local border = CreateFrame("Frame", nil, button)
     border:SetPoint("TOPLEFT", button, "TOPLEFT", -1, 1)
     border:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", 1, -1)
@@ -54,14 +56,15 @@ local CreateAuraIcon = function(auras)
     button.border = border
 
     local remaining = button:CreateFontString(nil, "OVERLAY")
-    remaining:SetPoint("BOTTOMRIGHT",4,-2) 
     remaining:SetFont(font, auras.tfontsize, "THINOUTLINE")
+    remaining:SetPoint("BOTTOMRIGHT", 4, -2)
+	remaining:SetJustifyH("RIGHT")
     remaining:SetTextColor(1, 1, 0)
-    button.remaining = remaining
 
     button.parent = auras
     button.icon = icon
     button.count = count
+	button.remaining = remaining
     button.cd = cd
     button:Hide()
 
@@ -69,12 +72,12 @@ local CreateAuraIcon = function(auras)
 end
 
 local dispelClass = {
-    PRIEST = { Disease = true, },
-    SHAMAN = { Curse = true, },
-    PALADIN = { Poison = true, Disease = true, },
+    PRIEST = { Disease = true, Magic = true, },
+    SHAMAN = { Curse = true, Magic = true, },
+    PALADIN = { Poison = true, Disease = true, Magic = true, },
     MAGE = { Curse = true, },
-    DRUID = { Curse = true, Poison = true, },
-    MONK = { Disease = true, Poison = true, },
+    DRUID = { Curse = true, Poison = true, Magic = true, },
+    MONK = { Disease = true, Poison = true, Magic = true,},
 }
  
 local _, class = UnitClass("player")
@@ -99,7 +102,7 @@ checkTalents:SetScript("OnEvent", function(self, event)
         elseif class == "DRUID" then
             local tree = GetSpecialization()
  
-            dispelClass[class].Magic = tree == 1 and true
+            dispelClass[class].Magic = tree == 4 and true
  
         elseif class == "PRIEST" then
             local tree = GetSpecialization()
@@ -301,4 +304,4 @@ local Disable = function(self)
     end
 end
 
-oUF:AddElement('MlightAuras', Update, Enable, Disable)
+oUF:AddElement("MlightAuras", Update, Enable, Disable)

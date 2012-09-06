@@ -1,10 +1,10 @@
 local ADDON_NAME, ns = ...
 local cfg = ns.cfg
 
-local x = "M"
-local indicatorsize = 6
+local x = "8"
+local indicatorsize = 5
 local symbolsize = 13
-local fontsizeEdge = 12
+local fontsizeEdge = 11
 
 local getTime = function(expirationTime)
     local expire = (expirationTime-GetTime())
@@ -19,9 +19,9 @@ local pomCount = {"i","h","g","f","Z"}
 oUF.Tags.Methods['freebgrid:pom'] = function(u) -- 愈合祷言
     local name, _,_, c, _,_,_, fromwho = UnitAura(u, GetSpellInfo(41635)) 
     if fromwho == "player" then
-        if(c) then return "|cff66FFFF"..pomCount[c].."|r" end 
+        if c and c ~= 0 then return "|cff66FFFF"..pomCount[c].."|r" end 
     else
-        if(c) then return "|cffFFCF7F"..pomCount[c].."|r" end 
+        if c and c ~= 0 then return "|cffFFCF7F"..pomCount[c].."|r" end 
     end
 end
 oUF.Tags.Events['freebgrid:pom'] = "UNIT_AURA"
@@ -117,7 +117,7 @@ oUF.Tags.Methods['freebgrid:ripTime'] = function(u) --激流
 end
 oUF.Tags.Events['freebgrid:ripTime'] = 'UNIT_AURA'
 
-local earthCount = {'i','h','g','f','i','k','l','m','Y'}
+local earthCount = {"i","h","g","f","i","k","l","m","Y"}
 oUF.Tags.Methods['freebgrid:earth'] = function(u) -- 大地之盾
     local c = select(4, UnitAura(u, GetSpellInfo(974))) if c then return '|cffFFCF7F'..earthCount[c]..'|r' end 
 end
@@ -267,7 +267,7 @@ local Enable = function(self)
     if(self.MlightIndicators) then
         self.AuraStatusBL = self.Health:CreateFontString(nil, "OVERLAY")
         self.AuraStatusBL:ClearAllPoints()
-        self.AuraStatusBL:SetPoint("BOTTOMLEFT", 1, 2)
+        self.AuraStatusBL:SetPoint("BOTTOMLEFT")
 		self.AuraStatusBL:SetJustifyH("LEFT")
         self.AuraStatusBL:SetFont(symbols, indicatorsize, "THINOUTLINE")
         self.AuraStatusBL.frequentUpdates = update
@@ -275,7 +275,7 @@ local Enable = function(self)
 
 		self.AuraStatusBR = self.Health:CreateFontString(nil, "OVERLAY")
         self.AuraStatusBR:ClearAllPoints()
-        self.AuraStatusBR:SetPoint("BOTTOMRIGHT", 1, 2)
+        self.AuraStatusBR:SetPoint("BOTTOMRIGHT", 3, 0)
 		self.AuraStatusBR:SetJustifyH("RIGHT")
         self.AuraStatusBR:SetFont(symbols, indicatorsize, "THINOUTLINE")
         self.AuraStatusBR.frequentUpdates = update
@@ -283,7 +283,7 @@ local Enable = function(self)
 		
         self.AuraStatusTL = self.Health:CreateFontString(nil, "OVERLAY")
         self.AuraStatusTL:ClearAllPoints()
-        self.AuraStatusTL:SetPoint("TOPLEFT", 1, -2)
+        self.AuraStatusTL:SetPoint("TOPLEFT")
 		self.AuraStatusTL:SetJustifyH("LEFT")
         self.AuraStatusTL:SetFont(symbols, indicatorsize, "THINOUTLINE")
         self.AuraStatusTL.frequentUpdates = update
@@ -291,7 +291,7 @@ local Enable = function(self)
 		
         self.AuraStatusTR = self.Health:CreateFontString(nil, "OVERLAY")
         self.AuraStatusTR:ClearAllPoints()
-        self.AuraStatusTR:SetPoint("TOPRIGHT", 2, 0)
+        self.AuraStatusTR:SetPoint("CENTER", self.Health, "TOPRIGHT", -4, -4)
         self.AuraStatusTR:SetFont(symbols, symbolsize, "OUTLINE")
         self.AuraStatusTR.frequentUpdates = update
         self:Tag(self.AuraStatusTR, classIndicators[class]["TR"])
