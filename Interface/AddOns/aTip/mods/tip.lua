@@ -138,7 +138,7 @@ GameTooltip:HookScript("OnTooltipSetUnit", function(self)
             self:AddLine(tartext)
         end
 		
-        GameTooltipStatusBar:SetStatusBarColor(color.r, color.g, color.b)
+		createbargradient(GameTooltipStatusBar, color.r, color.g, color.b, 3)
     else
         for i=2, self:NumLines() do
             local tiptext = _G["GameTooltipTextLeft"..i]
@@ -156,7 +156,7 @@ GameTooltip:HookScript("OnTooltipSetUnit", function(self)
         GameTooltipStatusBar:SetHeight(4)
 		GameTooltipStatusBar:SetPoint("BOTTOMLEFT", GameTooltipStatusBar:GetParent(), "TOPLEFT", 3, 2)
 		GameTooltipStatusBar:SetPoint("BOTTOMRIGHT", GameTooltipStatusBar:GetParent(), "TOPRIGHT", -3, 2)
-		creategrowBD(GameTooltipStatusBar, 0, 0, 0, 0.4, 1)		
+		creategrowBD(GameTooltipStatusBar, .25, .25, .25, 1, 1)		
     end
 end)
 
@@ -174,7 +174,7 @@ GameTooltipStatusBar:SetScript("OnValueChanged", function(self, value)
     if unit then
         min, max = UnitHealth(unit), UnitHealthMax(unit)
         if not self.text then
-            self.text = createtext(self, 12, "OUTLINE", false)
+            self.text = createtext(self, "OVERLAY", 12, "OUTLINE", "CENTER")
 			self.text:SetPoint"BOTTOM"
         end
         self.text:Show()
