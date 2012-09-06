@@ -1,5 +1,5 @@
 ## Interface: 50001
-## Version: 5.0.1.71-beta
+## Version: 5.0.4.76
 
 ## Title: Class Colors
 ## Notes: Change class colors without breaking the Blizzard UI.

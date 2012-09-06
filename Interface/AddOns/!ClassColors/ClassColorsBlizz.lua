@@ -12,6 +12,9 @@ if ns.alreadyLoaded then
 	return
 end
 
+local find, format, gsub, match, sub = string.find, string.format, string.gsub, string.match, string.sub
+local pairs, type = pairs, type
+
 ------------------------------------------------------------------------
 
 local addonFuncs = { }
@@ -40,11 +43,10 @@ end
 -- ChatFrame.lua
 
 function GetColoredName(event, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12)
-	local chatType = event:sub(10)
-	if chatType:sub(1, 7) == "WHISPER" then
+	local chatType = sub(event, 10)
+	if sub(chatType, 1, 7) == "WHISPER" then
 		chatType = "WHISPER"
-	end
-	if chatType:sub(1, 7) == "CHANNEL" then
+	elseif sub(chatType, 1, 7) == "CHANNEL" then
 		chatType = "CHANNEL"..arg8
 	end
 
@@ -54,7 +56,7 @@ function GetColoredName(event, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, a
 		if class then
 			local color = CUSTOM_CLASS_COLORS[class]
 			if color then
-				return ("|c%s%s|r"):format(color.colorStr, arg2)
+				return format("|c%s%s|r", color.colorStr, arg2)
 			end
 		end
 	end
@@ -66,15 +68,17 @@ do
 	-- Lines 3188-3208
 	-- Fix class colors in raid roster listing
 	local AddMessage = {}
+
 	local function FixClassColors(frame, message, ...)
-		if message:find("|cff") then
+		if find(message, "|cff") then
 			for hex, class in pairs(blizzHexColors) do
 				local color = CUSTOM_CLASS_COLORS[class]
-				message = message:gsub(hex, color.colorStr)
+				message = gsub(message, hex, color.colorStr)
 			end
 		end
 		return AddMessage[frame](frame, message, ...)
 	end
+
 	for i = 1, NUM_CHAT_WINDOWS do
 		local frame = _G["ChatFrame"..i]
 		AddMessage[frame] = frame.AddMessage
@@ -85,19 +89,22 @@ end
 ------------------------------------------------------------------------
 --	CompactUnitFrame.lua
 
-hooksecurefunc("CompactUnitFrame_UpdateHealthColor", function(frame)
-	if frame.optionTable.useClassColors and UnitIsConnected(frame.unit) then
-		local _, class = UnitClass(frame.unit)
-		if class then
-			local color = CUSTOM_CLASS_COLORS[class]
-			if color then
-				local r, g, b = color.r, color.g, color.b
-				frame.healthBar:SetStatusBarColor(r, g, b)
-				frame.healthBar.r, frame.healthBar.g, frame.healthBar.g = r, g, b
+do
+	local UnitClass, UnitIsConnected = UnitClass, UnitIsConnected
+	hooksecurefunc("CompactUnitFrame_UpdateHealthColor", function(frame)
+		if frame.optionTable.useClassColors and UnitIsConnected(frame.unit) then
+			local _, class = UnitClass(frame.unit)
+			if class then
+				local color = CUSTOM_CLASS_COLORS[class]
+				if color then
+					local r, g, b = color.r, color.g, color.b
+					frame.healthBar:SetStatusBarColor(r, g, b)
+					frame.healthBar.r, frame.healthBar.g, frame.healthBar.g = r, g, b
+				end
 			end
 		end
-	end
-end)
+	end)
+end
 
 ------------------------------------------------------------------------
 --	FriendsFrame.lua
@@ -151,13 +158,15 @@ hooksecurefunc("MasterLooterFrame_UpdatePlayers", function()
 	-- TODO: Find a better way of doing this... Blizzard's way is frankly quite awful,
 	--       creating multiple new local tables every time the function runs. :(
 	for k, playerFrame in pairs(MasterLooterFrame) do
-		if type(k) == "string" and k:match("^player%d+$") and type(playerFrame) == "table" and playerFrame.id and playerFrame.Name then
+		if type(k) == "string" and match(k, "^player%d+$") and type(playerFrame) == "table" and playerFrame.id and playerFrame.Name then
 			local i = playerFrame.id
 			local _, class
 			if IsInRaid() then
 				_, class = UnitClass("raid"..i)
+			elseif i > 1 then
+				_, class = UnitClass("party"..i)
 			else
-				_, class = UnitClass(i > 1 and "party"..(i-1) or "player")
+				_, class = UnitClass("player")
 			end
 			if class then
 				local color = CUSTOM_CLASS_COLORS[class]
@@ -211,7 +220,7 @@ function LootHistoryDropDown_Initialize(self)
 	info.notCheckable = 1
 	local name, class = C_LootHistory.GetPlayerInfo(self.itemIdx, self.playerIdx)
 	local color = CUSTOM_CLASS_COLORS[class]
-	info.text = MASTER_LOOTER_GIVE_TO:format(("|c%s%s|r"):format(color.colorStr, name))
+	info.text = format(MASTER_LOOTER_GIVE_TO, format("|c%s%s|r", color.colorStr, name))
 	info.func = LootHistoryDropDown_OnClick
 
 	UIDropDownMenu_AddButton(info)
@@ -271,10 +280,10 @@ end)
 do
 	local AddMessage = RaidNotice_AddMessage
 	RaidNotice_AddMessage = function(frame, message, ...)
-		if message:find("|cff") then
+		if find(message, "|cff") then
 			for hex, class in pairs(blizzHexColors) do
 				local color = CUSTOM_CLASS_COLORS[class]
-				message = message:gsub(hex, color.colorStr)
+				message = gsub(message, hex, color.colorStr)
 			end
 		end
 		return AddMessage(frame, message, ...)
@@ -522,11 +531,15 @@ addonFuncs["Blizzard_RaidUI"] = function()
 		end
 	end)
 
+	local petowners = {}
+	for i = 1, 40 do
+		petowners["raidpet"..i] = "raid"..i
+	end
 	hooksecurefunc("RaidPulloutButton_UpdateDead", function(button, dead, class)
 		if not dead then
 			if class == "PETS" then
 				local _
-				_, class = UnitClass(button.unit:gsub("raidpet", "raid"))
+				_, class = UnitClass(petowners[button.unit])
 			end
 			if class then
 				local color = CUSTOM_CLASS_COLORS[class]

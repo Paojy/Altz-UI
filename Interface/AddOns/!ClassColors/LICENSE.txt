@@ -12,12 +12,17 @@ name or title of the work or in any other way that may cause it to be
 confused with this software.
 
 Permission is granted for anyone to distribute this software as part of
-a collective work or compilation as long as the software is not modified
-in any way, including by modifying or removing any files.
+a bundled World of Warcraft user interface compilation as long as the
+software is not modified in any way, including by modifying or removing
+any files.
+
+This software may not be distributed standalone or in any other way, in
+whole or in part, modified or unmodified, without specific prior written
+permission from the authors of this software.
 
 The names of this software and/or its authors may not be used to promote
-endorse works derived from or including this software without specific
-prior written permission from the authors of this software.
+or endorse works derived from this software without specific prior
+written permission from the authors of this software.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
