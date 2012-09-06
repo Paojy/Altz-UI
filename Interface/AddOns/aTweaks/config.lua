@@ -3,10 +3,6 @@ local cfg = CreateFrame("Frame")
 ---------------------------------------------------------------------------------------
 -------------------[[        Config        ]]------------------------------------------ 
 ---------------------------------------------------------------------------------------
--- name of worldchannelname
--- 世界频道名称
-cfg.worldchannelname = "大脚世界频道"
-
 -- Automatically takes a screenshot when you earn an achievement.
 -- 成就自动截图
 cfg.autoscreenshot = true
@@ -84,11 +80,11 @@ cfg.saysapped = true
 -- Watch Frame replacement
 -- 自定义任务追踪栏
 cfg.customwf = true         -- enable
-cfg.x = -70				    -- Horizontal offset
-cfg.y = -140				-- Vertical offset
-cfg.anchor = "TOPRIGHT"  	-- Position on screen. CENTER, RIGHT, LEFT, BOTTOM, BOTTOMRIGHT, BOTTOMLEFT, TOP, TOPRIGHT, TOPLEFT
+cfg.x = 0				    -- Horizontal offset
+cfg.y = -150				-- Vertical offset
+cfg.anchor = 'TOPRIGHT'  	-- Position on screen. CENTER, RIGHT, LEFT, BOTTOM, BOTTOMRIGHT, BOTTOMLEFT, TOP, TOPRIGHT, TOPLEFT
 cfg.heightsc = 370	        -- How much shorter than screen height to make the Watch Frame
-cfg.wffont = 13             -- fontsize
+cfg.wffont = 12             -- fontsize
 -- Collapse the Watch Frame 收起任务追踪栏
 cfg.collapsepvp = true
 cfg.collapsearena = false
