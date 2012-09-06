@@ -19,9 +19,8 @@ PShadow:SetBackdropColor(0, 0, 0, 0.3)
 local function createpanel(panel, pos, y)
 	panel = CreateFrame("Frame", nil, UIParent)
 	panel:SetFrameStrata("BACKGROUND")
-	panel:SetFrameLevel(3)
 	panel:SetPoint(pos, 0, y)
-	panel:SetSize(GetScreenWidth() -20, 7)
+	panel:SetSize(UIParent:GetWidth()-20, 7)
 	creategrowBD(panel, 0, 0, 0, 0.3, 1)
 	return panel
 end
@@ -31,38 +30,38 @@ local bottompanel = createpanel(self, "BOTTOM", 3)
 
 local function createlittlepanel(panel, width, text)
 	panel = CreateFrame("Frame", nil, UIParent)
-	panel:SetFrameStrata("MEDIUM")
-	panel:SetFrameLevel(5)
+	panel:SetFrameStrata("LOW")
+	panel:SetFrameLevel(3)
 	panel:SetSize(width, 4)
-	panel.text = createtext(panel, 14, "OUTLINE", true)
+	panel.text = createtext(panel, "HIGHLIGHT", 14, "OUTLINE", "CENTER")
+	panel.text:SetAllPoints()
 	panel.text:SetText(text)
-	panel.text:Hide()
 	creategradient(panel, Ccolor.r, Ccolor.g, Ccolor.b, 3)
 	creategrowBD(panel, 0.3, 0.3, 0.3, 1, 1)
-	panel:SetScript('OnEnter', function() panel.text:Show() end)
-	panel:SetScript('OnLeave', function() panel.text:Hide() end)
 	return panel
 end
---====================================================--
---[[         -- XP bar (topleft panel)--            ]]--
---====================================================--
 
+--====================================================--
+--[[          -- Calendar toggle panel --           ]]--
+--====================================================--
+local infopanel = createlittlepanel(self, 130, "Calendar")
+infopanel:SetPoint("TOPLEFT", UIParent, "TOPLEFT", 15, -10)
+infopanel:SetScript("OnMouseUp", function() ToggleCalendar() end)
+
+--====================================================--
+--[[           -- XP bar and Info bar --            ]]--
+--====================================================--
 local xpbar = CreateFrame("StatusBar", "ExperienceBar", UIParent)
-xpbar:SetFrameStrata("MEDIUM")
-xpbar:SetFrameLevel(5)
-xpbar:SetSize(130,4)
-xpbar:SetPoint("TOPLEFT", UIParent, "TOPLEFT", 15, -10)
+xpbar:SetFrameStrata("LOW")
+xpbar:SetSize(185,4)
+xpbar:SetPoint("TOPLEFT", UIParent, "TOPLEFT", 150, -10)
 createbargradient(xpbar, Ccolor.r, Ccolor.g, Ccolor.b, 3)
 creategrowBD(xpbar, 0.3, 0.3, 0.3, 1, 1)
-
-local indicator = createtex(xpbar, [[Interface\CastingBar\UI-CastingBar-Spark]], "ADD")
-indicator:SetSize(7, 15)
-indicator:ClearAllPoints()
 
 local function CommaValue(amount)
 	local formatted = amount
 	while true do  
-		formatted, k = string.gsub(formatted, "^(-?%d+)(%d%d%d)", '%1,%2')
+		formatted, k = string.gsub(formatted, "^(-?%d+)(%d%d%d)", "%1,%2")
 		if (k==0) then
 			break
 		end
@@ -72,43 +71,44 @@ end
 
 local _G = getfenv(0)
 function xprptoolitp()
-	GameTooltip:SetOwner(xpbar, "ANCHOR_NONE")
-	GameTooltip:SetPoint("TOPLEFT", Minimap, "TOPRIGHT", 8, 0)
+	if not InCombatLockdown() then
+		GameTooltip:SetOwner(xpbar, "ANCHOR_NONE")
+		GameTooltip:SetPoint("TOPLEFT", Minimap, "TOPRIGHT", 8, 0)
 	
-	local XP, maxXP = UnitXP("player"), UnitXPMax("player")
-	local restXP = GetXPExhaustion()
-	local name, rank, minRep, maxRep, value = GetWatchedFactionInfo()
+		local XP, maxXP = UnitXP("player"), UnitXPMax("player")
+		local restXP = GetXPExhaustion()
+		local name, rank, minRep, maxRep, value = GetWatchedFactionInfo()
 	
-	if UnitLevel("player") < MAX_PLAYER_LEVEL then
-		GameTooltip:AddDoubleLine("Current: ", string.format('%s/%s (%d%%)', CommaValue(XP), CommaValue(maxXP), (XP/maxXP)*100), Ccolor.r, Ccolor.g, Ccolor.b, 1, 1, 1)
-		GameTooltip:AddDoubleLine("Remaining: ", string.format('%s', CommaValue(maxXP-XP)), Ccolor.r, Ccolor.g, Ccolor.b, 1, 1, 1)
-		if restXP then GameTooltip:AddDoubleLine("Rested: ", string.format('|cffb3e1ff%s (%d%%)', CommaValue(restXP), restXP/maxXP*100), Ccolor.r, Ccolor.g, Ccolor.b) end
-	end
+		if UnitLevel("player") < MAX_PLAYER_LEVEL then
+			GameTooltip:AddDoubleLine("Current: ", string.format("%s/%s (%d%%)", CommaValue(XP), CommaValue(maxXP), (XP/maxXP)*100), Ccolor.r, Ccolor.g, Ccolor.b, 1, 1, 1)
+			GameTooltip:AddDoubleLine("Remaining: ", string.format("%s", CommaValue(maxXP-XP)), Ccolor.r, Ccolor.g, Ccolor.b, 1, 1, 1)
+			if restXP then GameTooltip:AddDoubleLine("Rested: ", string.format("|cffb3e1ff%s (%d%%)", CommaValue(restXP), restXP/maxXP*100), Ccolor.r, Ccolor.g, Ccolor.b) end
+		end
 	
-	if name and not UnitLevel("player") == MAX_PLAYER_LEVEL then
-		GameTooltip:AddLine(" ")
-	end
+		if name and not UnitLevel("player") == MAX_PLAYER_LEVEL then
+			GameTooltip:AddLine(" ")
+		end
 
-	if name then
-		GameTooltip:AddLine(name.."  (".._G['FACTION_STANDING_LABEL'..rank]..")", Ccolor.r, Ccolor.g, Ccolor.b)
-		GameTooltip:AddDoubleLine("Rep:", string.format('%s/%s (%d%%)', CommaValue(value-minRep), CommaValue(maxRep-minRep), (value-minRep)/(maxRep-minRep)*100), Ccolor.r, Ccolor.g, Ccolor.b, 1, 1, 1)
-		GameTooltip:AddDoubleLine("Remaining:", string.format('%s', CommaValue(maxRep-value)), Ccolor.r, Ccolor.g, Ccolor.b, 1, 1, 1)
-	end	
+		if name then
+			GameTooltip:AddLine(name.."  (".._G["FACTION_STANDING_LABEL"..rank]..")", Ccolor.r, Ccolor.g, Ccolor.b)
+			GameTooltip:AddDoubleLine("Rep:", string.format("%s/%s (%d%%)", CommaValue(value-minRep), CommaValue(maxRep-minRep), (value-minRep)/(maxRep-minRep)*100), Ccolor.r, Ccolor.g, Ccolor.b, 1, 1, 1)
+			GameTooltip:AddDoubleLine("Remaining:", string.format("%s", CommaValue(maxRep-value)), Ccolor.r, Ccolor.g, Ccolor.b, 1, 1, 1)
+		end	
 	
-	GameTooltip:Show()
+		GameTooltip:Show()
+	end
 end
 
 function xpbar:updateOnevent()
 	local XP, maxXP = UnitXP("player"), UnitXPMax("player")
 	local name, rank, minRep, maxRep, value = GetWatchedFactionInfo()
-   	if UnitLevel('player') ~= MAX_PLAYER_LEVEL then
+   	if UnitLevel("player") ~= MAX_PLAYER_LEVEL then
 		xpbar:SetMinMaxValues(min(0, XP), maxXP)
 		xpbar:SetValue(XP)
 	else
 		xpbar:SetMinMaxValues(minRep, maxRep)
 		xpbar:SetValue(value)
 	end
-	indicator:SetPoint("CENTER", xpbar:GetStatusBarTexture(), "RIGHT")
 end
 
 xpbar:SetScript("OnEnter", xprptoolitp)
@@ -116,29 +116,24 @@ xpbar:SetScript("OnLeave", function() GameTooltip:Hide() end)
 xpbar:SetScript("OnEvent", xpbar.updateOnevent)
 
 xpbar:RegisterEvent("PLAYER_XP_UPDATE")
-xpbar:RegisterEvent('UPDATE_FACTION')
+xpbar:RegisterEvent("UPDATE_FACTION")
 xpbar:RegisterEvent("PLAYER_LEVEL_UP")
 xpbar:RegisterEvent("PLAYER_ENTERING_WORLD")
 xpbar:RegisterEvent("PLAYER_LOGIN")
 
---====================================================--
---[[            -- info panel --                    ]]--
---====================================================--
-local infopanel = createlittlepanel(self, 185, "Calendar")
-infopanel:SetPoint("TOPLEFT", UIParent, "TOPLEFT", 150, -10)
-infopanel:SetScript("OnMouseUp", function() ToggleCalendar() end)
-
-local centerbox = CreateFrame("Button", nil, UIParent) -- Center Frame
-centerbox:SetSize(200, 20)
-centerbox:SetPoint("TOPLEFT", UIParent, "TOPLEFT", 165, -13)
-local Ctext = createtext(centerbox, 12, "OUTLINE", false)
+local infobar = CreateFrame("Frame", nil, UIParent) -- Center Frame
+infobar:SetFrameStrata("LOW")
+infobar:SetSize(200, 20)
+infobar:SetAlpha(.3)
+infobar:SetPoint("TOPLEFT", UIParent, "TOPLEFT", 150, -13)
+local Ctext = createtext(infobar, "OVERLAY", 12, "OUTLINE", "LEFT")
 Ctext:SetPoint"LEFT"
 
 -- Hex Color
 local Hex
 do 
 	Hex = function(color)
-        return format('|cff%02x%02x%02x', color.r * 255, color.g * 255, color.b * 255)
+        return format("|cff%02x%02x%02x", color.r * 255, color.g * 255, color.b * 255)
    	end
 end
 
@@ -174,12 +169,12 @@ end
 -- Tooltips
 local nraddons = 20
 function memorytooltip()
-	if  not InCombatLockdown()  then -- Don't Show in Combat
+	if not InCombatLockdown() then -- Don't Show in Combat
 		local addons, total, nr, name = {}, 0, 0
 		local memory, entry
 		local BlizzMem = collectgarbage("count")
 			
-		GameTooltip:SetOwner(centerbox, "ANCHOR_NONE")
+		GameTooltip:SetOwner(infobar, "ANCHOR_NONE")
 		GameTooltip:SetPoint("TOPLEFT", Minimap, "TOPRIGHT", 8, 0)
 		GameTooltip:AddLine("Top "..nraddons.." AddOns", Ccolor.r, Ccolor.g, Ccolor.b)
 		GameTooltip:AddLine(" ")	
@@ -211,7 +206,7 @@ end
 -- Update Function
 local hour, fps, lag, dur
 local refresh_timer = 0
-function centerbox:updateOntime(elapsed)
+function infobar:updateOntime(elapsed)
 	refresh_timer = refresh_timer + elapsed -- Only update this values every refresh_timer seconds
 	if refresh_timer > 1 then -- Updates each X seconds	
 		dur = (Durability().."%sdur|r   "):format(Hex(Ccolor))
@@ -225,24 +220,22 @@ function centerbox:updateOntime(elapsed)
 	end
 end
 
-centerbox:SetScript("OnEnter", memorytooltip)
-centerbox:SetScript("OnLeave", function() GameTooltip:Hide() end)
-
-centerbox:SetScript("OnUpdate", centerbox.updateOntime)
+infobar:SetScript("OnEnter", function(self) memorytooltip() end)
+infobar:SetScript("OnLeave", function(self) GameTooltip:Hide() end)
+infobar:SetScript("OnUpdate", infobar.updateOntime)
 
 --====================================================--
---[[              -- buff panel --               ]]--
+--[[              -- buff panel --                  ]]--
 --====================================================--
-
 local buffpanel = createlittlepanel(self, 320, "")
 buffpanel:SetPoint("TOPRIGHT", UIParent, "TOPRIGHT", -15, -10)
 
 --====================================================--
---[[              -- chat panel --               ]]--
+--[[              -- chat panel --                  ]]--
 --====================================================--
 local WorldChannel = function()
    local channels = {GetChannelList()}
-   local customChannelName = cfg.worldchannelname
+   local customChannelName = "大脚世界频道"
    local isInCustomChannel = false
    for i = 1, #channels do
       if channels[i] == customChannelName then
@@ -250,37 +243,46 @@ local WorldChannel = function()
       end
    end
    if isInCustomChannel then
-      print("Leave  "..cfg.worldchannelname)
+      print("|cffFF0000Leave|r 大脚世界频道")
       LeaveChannelByName(customChannelName)
    else
       JoinPermanentChannel(customChannelName,nil,1)
-      print("Join  "..cfg.worldchannelname)
+      print("|cff7FFF00Join|r 大脚世界频道")
       ChatFrame_AddChannel(ChatFrame1,customChannelName)
       ChatFrame_RemoveMessageGroup(ChatFrame1,"CHANNEL")
    end
 end
 
-local chatpanel = createlittlepanel(self, 320, "World Channel")
+local chatpanel = createlittlepanel(self, 320, "")
+
 chatpanel:SetPoint("BOTTOMLEFT", UIParent, "BOTTOMLEFT", 15, 10)
-chatpanel:SetScript('OnMouseUp', function() WorldChannel() end)
+if GetLocale() == "zhCN" then
+	chatpanel.text:SetText("World Channel")
+	chatpanel:SetScript("OnMouseUp", function() WorldChannel() end)
+else
+	chatpanel.text:SetText("Friends")
+	chatpanel:SetScript("OnMouseUp", function() ToggleFriendsFrame(1) end)
+end
 --====================================================--
---[[             -- bottom panel --            ]]--
+--[[            -- center panel --                  ]]--
 --====================================================--	
+local centerpanel = createlittlepanel(self, 345, "")
+centerpanel:SetPoint("BOTTOM", UIParent, "BOTTOM", 0, 10)
+centerpanel:SetFrameStrata("HIGH")
+FrameFader(centerpanel)
 
-local bottompanel = createlittlepanel(self, 345, "")
-bottompanel:SetPoint("BOTTOM", UIParent, "BOTTOM", 0, 10)
-
-bottompanel:RegisterEvent("PLAYER_LOGIN")
-bottompanel:SetScript('OnEvent', function(self)
+centerpanel:RegisterEvent("PLAYER_LOGIN")
+centerpanel:SetScript("OnEvent", function(self)
 	if aCoreCDB == nil then return end
 	if aCoreCDB.fade then
 		self.text:SetText("UI Fading: |cff7FFF00ON|r")
 	else
 		self.text:SetText("UI Fading: |cffFF0000OFF|r")
 	end
+	centerpanel:SetAlpha(0)
 end)
 
-bottompanel:SetScript('OnMouseUp', function(self)
+centerpanel:SetScript("OnMouseUp", function(self)
 	if aCoreCDB == nil then return end
 	if aCoreCDB.fade then
 		aCoreCDB.fade = false
@@ -298,7 +300,7 @@ brpanel:SetPoint("BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", -15, 10)
 
 -- tiny dps don't have a global toggle fuction, so just copy it.
 local function toggletinydps()
-		if IsAddOnLoaded("TinyDPS") then
+	if IsAddOnLoaded("TinyDPS") then
 		if tdpsFrame:IsVisible() then
 			CloseDropDownMenus()
 			tdps.hidePvP, tdps.hideSolo, tdps.hideIC, tdps.hideOOC = true, true, true, true
@@ -309,8 +311,8 @@ local function toggletinydps()
 			tdpsRefresh()
 			tdpsFrame:Show()
 		end
-		PlaySound('gsTitleOptionExit')
-		end
+		PlaySound("gsTitleOptionExit")
+	end
 end
 
 if IsAddOnLoaded("Recount") then
@@ -328,7 +330,7 @@ if IsAddOnLoaded("Recount") then
 	end
 end
 
-brpanel:SetScript('OnMouseUp', function() 
+brpanel:SetScript("OnMouseUp", function() 
         if IsAddOnLoaded("Numeration") then
             Numeration:ToggleVisibility()
 	    elseif IsAddOnLoaded("Skada") then
@@ -358,15 +360,15 @@ BOTTOMPANEL:SetPoint("BOTTOMLEFT",WorldFrame,"BOTTOMLEFT",-5,-5)
 BOTTOMPANEL:SetPoint("TOPRIGHT",WorldFrame,"BOTTOMRIGHT",5,75)
 BOTTOMPANEL:Hide()
 
-local Clock = createtext(TOPPANEL, 27, "NONE", false)
+local Clock = createtext(TOPPANEL, "OVERLAY", 27, "NONE", "CENTER")
 Clock:SetPoint("BOTTOMLEFT", TOPPANEL, "BOTTOMRIGHT", -280, 10)
 Clock:SetTextColor(0.7, 0.7, 0.7)
 
-local Date = createtext(TOPPANEL, 17, "NONE", false)
-Date:SetPoint("BOTTOMLEFT", TOPPANEL, "BOTTOMRIGHT", -280, 34)
+local Date = createtext(TOPPANEL, "OVERLAY", 17, "NONE", "CENTER")
+Date:SetPoint("BOTTOMLEFT", TOPPANEL, "BOTTOMRIGHT", -280, 40)
 Date:SetTextColor(0.7, 0.7, 0.7)
 
-local AUI = createtext(TOPPANEL, 50, "NONE", false)
+local AUI = createtext(TOPPANEL, "OVERLAY", 50, "NONE", "CENTER")
 AUI:SetPoint("BOTTOMRIGHT", TOPPANEL, "BOTTOMRIGHT", -290, 13)
 AUI:SetTextColor(0.7, 0.7, 0.7)
 AUI:SetText("AltZ UI")
@@ -378,16 +380,22 @@ Guide:SetPoint("TOPLEFT",WorldFrame,"TOPLEFT", -5, -90)
 Guide:SetPoint("BOTTOMRIGHT",WorldFrame,"BOTTOMRIGHT", 5, 85)
 Guide:Hide()
 
-local Guidetext = createtext(Guide, 15, "NONE", true)
+local Guidetext = createtext(Guide, "OVERLAY", 15, "NONE", "CENTER")
+Guidetext:SetAllPoints()
 Guidetext:SetTextColor(0.7, 0.7, 0.7)
 Guidetext:SetText("|cff3399FF/rl|r - Reload UI \n \n |cff3399FF/hb|r - Key Binding Mode \n \n |cff3399FF/raidcd|r - Test RaidCD bars \n \n |cff3399FF/atweaks|r - move RaidCD bars \n \n |cff3399FFSHIFT+Leftbutton|r - Set Focus \n \n |cff3399FFTab|r - Change between available channels. \n \n |cff3399FF/omf|r - Unlock UnitFrames \n \n |cff3399FF/cd x|r - count down from x second. \n \n Raid Control/World Flare button appears on topright of minimap when available. \n \n |cff3399FFEnjoy!|r")
 Guidetext:Hide()
 
-local Creditstext = createtext(Guide, 20, "NONE", true)
+local Creditstext = createtext(Guide, "OVERLAY", 17, "NONE", "CENTER")
+Creditstext:SetAllPoints()
 Creditstext:SetTextColor(0.7, 0.7, 0.7)
-Creditstext:SetText("AltzUI ver"..ver.." \n \n \n \n 伤心蓝 < 炼狱 > CN5_深渊之巢  \n \n \n \n |cff3399FF Thanks to \n \n deemax Zork Haste Tukz Haleth Qulight Freebaser Monolit \n and everyone who help me with this Compilations.|r")
-Creditstext:SetText("AltzUI ver"..ver.." \n \n \n \n 傷心藍 < 煉獄 > CN5_深淵之巢 \n \n \n \n |cff3399FF Thanks to \n \n deemax Zork Haste Tukz Haleth Qulight Freebaser Monolit \n and everyone who help me with this Compilations.|r")
-Creditstext:SetText("AltzUI ver"..ver.." \n \n \n \n Paopao <Purgatory> CN5_Abyssion's Lair \n \n \n \n |cff3399FF Thanks to \n \n deemax Zork Haste Tukz Haleth Qulight Freebaser Monolit \n and everyone who help me with this Compilations.|r")
+if GetLocale() == "zhCN" then
+	Creditstext:SetText("AltzUI ver"..ver.." \n \n \n \n 伤心蓝 < 炼狱 > CN5_深渊之巢  \n \n \n \n |cff3399FF Thanks to \n \n deemax Zork Haste Tukz Haleth Qulight Freebaser Monolit \n and everyone who help me with this Compilations.|r")
+elseif GetLocale() == "zhTW" then
+	Creditstext:SetText("AltzUI ver"..ver.." \n \n \n \n 傷心藍 < 煉獄 > CN5_深淵之巢 \n \n \n \n |cff3399FF Thanks to \n \n deemax Zork Haste Tukz Haleth Qulight Freebaser Monolit \n and everyone who help me with this Compilations.|r")
+else
+	Creditstext:SetText("AltzUI ver"..ver.." \n \n \n \n Paopao <Purgatory> CN5_Abyssion's Lair \n \n \n \n |cff3399FF Thanks to \n \n deemax Zork Haste Tukz Haleth Qulight Freebaser Monolit \n and everyone who help me with this Compilations.|r")
+end
 Creditstext:Hide()
 
 local SetupPanel = CreateFrame("Frame", nil, WorldFrame)
@@ -397,40 +405,41 @@ SetupPanel:SetPoint("TOPLEFT",WorldFrame,"TOPLEFT", -5, 5)
 SetupPanel:SetPoint("BOTTOMRIGHT",WorldFrame,"BOTTOMRIGHT", 5, -5)
 SetupPanel:Hide()
 
-SetupPanel.text = createtext(SetupPanel, 15, "NONE", false)
+SetupPanel.text = createtext(SetupPanel, "OVERLAY", 15, "NONE", "CENTER")
 SetupPanel.text:SetPoint("TOP", SetupPanel, "BOTTOM", 0, 75)
 SetupPanel.text:SetTextColor(1, 1, 1)
-if GetLocale() == zhCN then
+if GetLocale() == "zhCN" then
 	SetupPanel.text:SetText("ver"..ver.." 伤心蓝 < 炼狱 > CN5_深渊之巢")
-elseif GetLocale() == zhCN then
+elseif GetLocale() == "zhTW" then
 	SetupPanel.text:SetText("ver"..ver.." 傷心藍 < 煉獄 > CN5_深淵之巢")
 else
 	SetupPanel.text:SetText("ver"..ver.." Paopao <Purgatory> CN5_Abyssion's Lair")
 end
-SetupPanel.text2 = createtext(SetupPanel, 35, "NONE", false)
+SetupPanel.text2 = createtext(SetupPanel, "OVERLAY", 35, "NONE", "CENTER")
 SetupPanel.text2:SetPoint("BOTTOM", 0, 110)
 SetupPanel.text2:SetTextColor(1, 1, 1)
 SetupPanel.text2:SetText("Welcome to Altz UI Setup")
 
 local Setupbutton = CreateFrame("Button", "AltzuiSetupButton", SetupPanel)
 Setupbutton:SetPoint("BOTTOM", 0, 80)
-Setupbutton:SetSize(GetScreenWidth()+10, 25)
+Setupbutton:SetSize(UIParent:GetWidth()+10, 25)
 creategrowBD(Setupbutton, 0, 0, 0, 0.7, 1)
-Setupbutton.text = createtext(Setupbutton, 20, "NONE", true)
+Setupbutton.text = createtext(Setupbutton, "OVERLAY", 20, "NONE", "CENTER")
+Setupbutton.text:SetAllPoints()
 Setupbutton.text:SetTextColor(0.5, 0.5, 0.5, .1)
 Setupbutton.text:SetText("Install")
 Setupbutton:Hide()
 
 Setupbutton:SetScript("OnClick", function()
 	ns.SetupAltzui()  
-	ReloadUI() 
+	ReloadUI()
 end)
 
-Setupbutton:SetScript('OnEnter', function() Setupbutton.text:SetTextColor(Ccolor.r, Ccolor.g, Ccolor.b, 1) Setupbutton.border:SetBackdropBorderColor(Ccolor.r, Ccolor.g, Ccolor.b) end)
-Setupbutton:SetScript('OnLeave', function() Setupbutton.text:SetTextColor(0.5, 0.5, 0.5, .1) Setupbutton.border:SetBackdropBorderColor(0, 0, 0) end)
+Setupbutton:SetScript("OnEnter", function() Setupbutton.text:SetTextColor(Ccolor.r, Ccolor.g, Ccolor.b, 1) Setupbutton.border:SetBackdropBorderColor(Ccolor.r, Ccolor.g, Ccolor.b) end)
+Setupbutton:SetScript("OnLeave", function() Setupbutton.text:SetTextColor(0.5, 0.5, 0.5, .1) Setupbutton.border:SetBackdropBorderColor(0, 0, 0) end)
 
 local interval = 0
-TOPPANEL:SetScript('OnUpdate', function(self, elapsed)
+TOPPANEL:SetScript("OnUpdate", function(self, elapsed)
  	interval = interval - elapsed
 	if interval <= 0 then
         Clock:SetText(format("%s",date("%H:%M:%S")))
@@ -442,7 +451,7 @@ end)
 local buttonhold = CreateFrame("Frame", nil, BOTTOMPANEL)
 buttonhold:SetPoint("BOTTOM",BOTTOMPANEL,"TOP", 0, -50)
 buttonhold:SetSize(400, 85)
-buttonhold.text = createtext(buttonhold, 20, "NONE", false)
+buttonhold.text = createtext(buttonhold, "OVERLAY", 20, "NONE", "CENTER")
 buttonhold.text:SetPoint("TOP", BOTTOMPANEL, "TOP", 0, -10)
 buttonhold.text:SetTextColor(0, 0, 0,.5)
 buttonhold.text:SetText("Click to hide.")
@@ -451,64 +460,47 @@ local petnum = C_PetJournal.GetNumPets(false)
 local randomindex = random(1 ,petnum)
 local randomID = select(11, C_PetJournal.GetPetInfoByIndex(randomindex))
 
-local function createmodel(parent, facing)
-	local Model = CreateFrame("PlayerModel", nil, parent)
-	Model:SetPoint("CENTER", 0, 7)
-	Model:SetSize(120,120)
-	Model:SetPosition(-0.5, 0, 0)
-	if randomID > 0 then
-		Model:SetCreature(randomID)
+local function littebutton(self, facing, note)
+	self = CreateFrame("PlayerModel", nil, buttonhold)
+	self:SetSize(120,120)
+	if facing == 1 then
+		self:SetPoint("CENTER", buttonhold, "LEFT")
 	else
-		Model:SetCreature(1)
+		self:SetPoint("CENTER", buttonhold, "RIGHT")
 	end
-	Model:SetFacing(facing)
-end
-
-local function littebutton(self, x, note, facing)
-	self = CreateFrame("Button", nil, buttonhold)
-	if x == 1 then
-		self:SetPoint("LEFT")
-	else
-		self:SetPoint("RIGHT")
-	end
-	self:SetSize(85 ,85)
-
-	self.text = createtext(self, 30, "NONE", false)
-	self.text:SetPoint"BOTTOM"
-	self.text:SetTextColor(0.7, 0.7, 0.7)
+	
+	self:SetPosition(-0.5, 0, 0)
+	self:SetFacing(facing)
+	if randomID > 0 then self:SetCreature(randomID) end
+	
+	self.text = createtext(self, "HIGHLIGHT", 20, "NONE", "CENTER")
+	self.text:SetPoint("BOTTOM", self, "BOTTOM", 0, 25)
+	self.text:SetTextColor(1, 1, 1)
 	self.text:SetText(note)
-	self.text:Hide()
 	
-	self.grow = CreateFrame("Frame", nil, self)
-	self.grow:SetSize(140, 50)
-	self.grow:SetPoint("BOTTOM")
-	self.grow.texture = self.grow:CreateTexture(nil)
-	self.grow.texture:SetAllPoints(self.grow)
-	self.grow.texture:SetTexture("World\\GENERIC\\ACTIVEDOODADS\\INSTANCEPORTAL\\GENERICGLOW2.BLP")
-	self.grow.texture:SetVertexColor(.2, .5, 1)
-	self.grow.texture:SetBlendMode("ADD")
-	self.grow.texture:Hide()
-	
-	createmodel(self, facing)
-	
-	self:SetScript('OnEnter', function() self.text:Show() self.grow.texture:Show() end)
-	self:SetScript('OnLeave', function() self.text:Hide() self.grow.texture:Hide() end)
-	
-	self:Hide()
+	self.grow = self:CreateTexture(nil, "HIGHLIGHT")
+	self.grow:SetSize(30, 30)
+	self.grow:SetPoint("CENTER", self.text, "TOPRIGHT", -3, -5)
+	self.grow:SetTexture("Interface\\Cooldown\\star4")
+	self.grow:SetVertexColor(1, 1, 1, .7)
+	self.grow:SetBlendMode("ADD")
+
+	self:EnableMouse(true)
+
 	return self
 end
 
-local Info = littebutton(self, 1, "Info", 1)
-local Credits = littebutton(self, 2, "Credits", -1)
+local Info = littebutton(self, 1, "Info")
+local Credits = littebutton(self, -1, "Credits")
 
 local function fadeout()
 	Minimap:Hide()
 	UIParent:SetAlpha(0)
 	UIFrameFadeIn(TOPPANEL, 3, 0, 1)
 	UIFrameFadeIn(BOTTOMPANEL, 3, 0, 1)
+	Info:EnableMouse(true)	
+	Credits:EnableMouse(true)
 	BOTTOMPANEL:EnableMouse(true)
-	Info:Show()
-	Credits:Show()
 end
 
 local function fadein()
@@ -516,9 +508,9 @@ local function fadein()
 	UIFrameFadeIn(UIParent, 2, 0, 1)
     UIFrameFadeOut(TOPPANEL, 2, 1, 0)
 	UIFrameFadeOut(BOTTOMPANEL, 2, 1, 0)
+	Info:EnableMouse(false)	
+	Credits:EnableMouse(false)
 	BOTTOMPANEL:EnableMouse(false)
-	Info:Hide()
-	Credits:Hide()
 end
 
 TOPPANEL:SetScript("OnEvent",function(self,event,...) 
