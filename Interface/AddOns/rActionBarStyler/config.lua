@@ -74,7 +74,7 @@
       mouseover       = {
         enable          = true,
         fadeIn          = {time = 0.4, alpha = 1},
-        fadeOut         = {time = 0.4, alpha = 0},
+        fadeOut         = {time = 0.4, alpha = 0.2},
       },		
 	  eventfader      = {
         enable          = false,
@@ -210,6 +210,24 @@
         margin          = 4,
       },
       pos             = { a1 = "TOP", a2 = "CENTER", af = "UIParent", x = 0, y = -200 },
+      userplaced      = {
+        enable          = true,
+      },
+      mouseover       = {
+        enable          = false,
+        fadeIn          = {time = 0.4, alpha = 1},
+        fadeOut         = {time = 0.3, alpha = 0.2},
+      },
+    },
+    leave_vehicle = {
+      enable          = true, --enable module
+      scale           = 1,
+      padding         = 10, --frame padding
+      buttons         = {
+        size            = 26,
+        margin          = 5,
+      },
+      pos             = { a1 = "BOTTOMLEFT", a2 = "BOTTOM", af = "UIParent", x = 180, y = 25 },
       userplaced      = {
         enable          = true,
       },
