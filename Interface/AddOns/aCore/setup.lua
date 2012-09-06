@@ -1,93 +1,96 @@
 ﻿-- Load varriables on demand
 local addon, ns = ...
-local function SetupAltzui()
-if IsAddOnLoaded("Aurora") then
-	AuroraConfig["tooltips"] = false
-	AuroraConfig["bags"] = false
-end
-if IsAddOnLoaded("!ClassColors") then
-	if(ClassColorsDB) then table.wipe(wipe(ClassColorsDB)) end
-	ClassColorsDB = {
-	["DEATHKNIGHT"] = {
-		["hex"] = "ffc41e3a",
-		["colorStr"] = "ffb3040f",
-		["b"] = 0.06,
-		["g"] = 0.02,
-		["r"] = 0.70,
-	},
-	["WARRIOR"] = {
-		["hex"] = "ffc69b6d",
-		["colorStr"] = "ffffb171",
-		["b"] = 0.45,
-		["g"] = 0.69,
-		["r"] = 1,
-	},
-	["PALADIN"] = {
-		["hex"] = "fff48cba",
-		["colorStr"] = "fff50a6c",
-		["b"] = 0.41,
-		["g"] = 0.18,
-		["r"] = 1,
-	},
-	["MAGE"] = {
-		["hex"] = "ff68ccef",
-		["colorStr"] = "ff27f0f0",
-		["b"] = 0.94,
-		["g"] = 0.94,
-		["r"] = 0.15,
-	},
-	["PRIEST"] = {
-		["hex"] = "ffffffff",
-		["colorStr"] = "ffffffff",
-		["b"] = 1,
-		["g"] = 1,
-		["r"] = 1,
-	},
-	["WARLOCK"] = {
-		["hex"] = "ff9382c9",
-		["colorStr"] = "ffe200ff",
-		["b"] = 1,
-		["g"] = 0.05,
-		["r"] = 0.72,
-	},
-	["SHAMAN"] = {
-		["hex"] = "ff0070dd",
-		["colorStr"] = "ff445dff",
-		["b"] = 1,
-		["g"] = 0.36,
-		["r"] = 0.27,
-	},
-	["HUNTER"] = {
-		["hex"] = "ffaad372",
-		["colorStr"] = "ffd3d012",
-		["b"] = 0.10,
-		["g"] = 1,
-		["r"] = 0.5,
-	},
-	["DRUID"] = {
-		["hex"] = "ffff7c0a",
-		["colorStr"] = "ffff9b00",
-		["b"] = 0,
-		["g"] = 0.61,
-		["r"] = 1,
-	},
-	["MONK"] = {
-		["hex"] = "ff00ff96",
-		["colorStr"] = "ff00ff97",
-		["b"] = 0.59,
-		["g"] = 1,
-		["r"] = 0,
-	},
-	["ROGUE"] = {
-		["hex"] = "fffff468",
-		["colorStr"] = "ffffe700",
-		["b"] = 0,
-		["g"] = 0.91,
-		["r"] = 1,
-	},
+
+local function LoadVariables()
+	aCoreCDB = {
+		fade = true
 	}
-end
--- DBM
+	if IsAddOnLoaded("Aurora") then
+		AuroraConfig["tooltips"] = false
+		AuroraConfig["bags"] = false
+	end
+	if IsAddOnLoaded("!ClassColors") then
+		if(ClassColorsDB) then table.wipe(wipe(ClassColorsDB)) end
+		ClassColorsDB = {
+		["DEATHKNIGHT"] = {
+			["hex"] = "ffb3040f",
+			["colorStr"] = "ffb3040f",
+			["b"] = 0.06,
+			["g"] = 0.02,
+			["r"] = 0.70,
+		},
+		["WARRIOR"] = {
+			["hex"] = "ffcc6919",
+			["colorStr"] = "ffcc6919",
+			["b"] = 0.1,
+			["g"] = 0.41,
+			["r"] = 0.8,
+		},
+		["PALADIN"] = {
+			["hex"] = "fff50a6c",
+			["colorStr"] = "fff50a6c",
+			["b"] = 0.41,
+			["g"] = 0.18,
+			["r"] = 1,
+		},
+		["MAGE"] = {
+			["hex"] = "ff27f0f0",
+			["colorStr"] = "ff27f0f0",
+			["b"] = 0.94,
+			["g"] = 0.94,
+			["r"] = 0.15,
+		},
+		["PRIEST"] = {
+			["hex"] = "ffffffff",
+			["colorStr"] = "ffffffff",
+			["b"] = 1,
+			["g"] = 1,
+			["r"] = 1,
+		},
+		["WARLOCK"] = {
+			["hex"] = "ffe200ff",
+			["colorStr"] = "ffe200ff",
+			["b"] = 1,
+			["g"] = 0.05,
+			["r"] = 0.72,
+		},
+		["SHAMAN"] = {
+			["hex"] = "ff0700ff",
+			["colorStr"] = "ff0700ff",
+			["b"] = 0.87,
+			["g"] = 0.2,
+			["r"] = 0.13,
+		},
+		["HUNTER"] = {
+			["hex"] = "ff1d9b04",
+			["colorStr"] = "ff1d9b04",
+			["b"] = 0.02,
+			["g"] = 0.61,
+			["r"] = 0.11,
+		},
+		["DRUID"] = {
+			["hex"] = "ffff9b00",
+			["colorStr"] = "ffff9b00",
+			["b"] = 0,
+			["g"] = 0.61,
+			["r"] = 1,
+		},
+		["MONK"] = {
+			["hex"] = "ff00ff97",
+			["colorStr"] = "ff00ff97",
+			["b"] = 0.59,
+			["g"] = 1,
+			["r"] = 0,
+		},
+		["ROGUE"] = {
+			["hex"] = "ffffe700",
+			["colorStr"] = "ffffe700",
+			["b"] = 0,
+			["g"] = 0.91,
+			["r"] = 1,
+		},
+	}
+	end
 	if IsAddOnLoaded("DBM-Core") then
 		DBM_SavedOptions["ShowMinimapButton"] = false
 		-- warning
@@ -147,13 +150,13 @@ end
 		DBT_SavedOptions["DBM"]["HugeBarXOffset"] = 0
 		DBT_SavedOptions["DBM"]["HugeBarYOffset"] = 1
 	end
--- Skada
 	if IsAddOnLoaded("Skada") then
 	if(SkadaDB) then table.wipe(wipe(SkadaDB["profiles"])) end
 	SkadaDB	["profiles"] = {
 		["Default"] = {
 			["windows"] = {
 					{
+						["hidden"] = true,
 						["classicons"] = false,
 						["barslocked"] = true,
 						["background"] = {
@@ -191,69 +194,49 @@ end
 		},
 	}
 	end
--- Numeration
 	if IsAddOnLoaded("Numeration") then
 		NumerationCharOptions["forcehide"] = true
 		NumerationCharOptions["minimap"] = {
 			["hide"] = true,
 		}
 	end
--- Chat settings
-	local SetDefaultChatPosition = function(frame)
-		if frame then
-			local id = frame:GetID()
-			local name = FCF_GetChatWindowInfo(id)
-			local fontSize = select(2, frame:GetFont())
-		
-			if id == 1 then
-				frame:ClearAllPoints()
-				frame:SetPoint("BOTTOMLEFT", "UIParent", "BOTTOMLEFT", 17, 20)
-			end
-		
-			-- lock them if unlocked
-			if not frame.isLocked then FCF_SetLocked(frame, 1) end
-		end
-	end
-	hooksecurefunc("FCF_RestorePositionAndDimensions", SetDefaultChatPosition)
+end
 
-	-- setting chat frames			
+function SetupAltzui()
+
+	LoadVariables()
+
 	FCF_ResetChatWindows()
+
+	ChatFrame1:SetSize(300, 120)
+	ChatFrame1:ClearAllPoints()
+	ChatFrame1:SetPoint("BOTTOMLEFT", UIParent, "BOTTOMLEFT", 17, 20)
+
+	FCF_SavePositionAndDimensions(ChatFrame1)
+	FCF_RestorePositionAndDimensions(ChatFrame1)
+	
 	FCF_SetLocked(ChatFrame1, 1)
 	FCF_DockFrame(ChatFrame2)
 	FCF_SetLocked(ChatFrame2, 1)
 	FCF_OpenNewWindow(LOOT)
 	FCF_SetLocked(ChatFrame3, 1)
 	FCF_DockFrame(ChatFrame3)
-
-	for i = 1, NUM_CHAT_WINDOWS do
-		local frame = _G[format("ChatFrame%s", i)]
-		local id = frame:GetID()
-
-		-- set default tukui font size
-		FCF_SetChatWindowFontSize(nil, frame, 12)
-		
-		-- set the size of chat frames
-		frame:SetSize(320,120)
-		
-		-- tell wow that we are using new size
-		SetChatWindowSavedDimensions(id, 320, 120)
-		
-		SetDefaultChatPosition(frame)
-		
-		-- save new default position and dimension
-		FCF_SavePositionAndDimensions(frame)
-		
-		ChatFrame_RemoveAllMessageGroups(ChatFrame3)
-		ChatFrame_AddMessageGroup(ChatFrame3, "COMBAT_XP_GAIN")
-		ChatFrame_AddMessageGroup(ChatFrame3, "COMBAT_HONOR_GAIN")
-		ChatFrame_AddMessageGroup(ChatFrame3, "COMBAT_FACTION_CHANGE")
-		ChatFrame_AddMessageGroup(ChatFrame3, "LOOT")
-		ChatFrame_AddMessageGroup(ChatFrame3, "MONEY")
+	
+	local channels = {
+		"SAY", "EMOTE", "YELL", "GUILD", "OFFICER", "GUILD_ACHIEVEMENT", "ACHIEVEMENT", "WHISPER","PARTY", "PARTY_LEADER", "RAID", "RAID_LEADER", "RAID_WARNING",
+		"BATTLEGROUND", "BATTLEGROUND_LEADER", "CHANNEL1", "CHANNEL2", "CHANNEL3", "CHANNEL4", "CHANNEL5", "CHANNEL6", "CHANNEL7",
+	}
+	
+	for i, v in ipairs(channels) do
+		ToggleChatColorNamesByClassGroup(true, v)
 	end
--- Load Variables
-		aCoreCDB = {
-		fade = true
-		}
+
+	ChatFrame_RemoveAllMessageGroups(ChatFrame3)
+	ChatFrame_AddMessageGroup(ChatFrame3, "COMBAT_XP_GAIN")
+	ChatFrame_AddMessageGroup(ChatFrame3, "COMBAT_HONOR_GAIN")
+	ChatFrame_AddMessageGroup(ChatFrame3, "COMBAT_FACTION_CHANGE")
+	ChatFrame_AddMessageGroup(ChatFrame3, "LOOT")
+	ChatFrame_AddMessageGroup(ChatFrame3, "MONEY")
 end
 ns.SetupAltzui = SetupAltzui
 
