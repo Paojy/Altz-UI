@@ -1,27 +1,18 @@
-local ADDON_NAME, ns = ...
-local cfg = ns.cfg
-
-if not cfg.unlockframes then return end
-
+-- by emelio
 local addon = CreateFrame("Frame")
-
--- Used to detect 4.0 clients (TOC >= 40000)
-local cata = select(4, GetBuildInfo()) >= 40000
 
 -- Based on the frame list from NDragIt by Nemes.
 -- These frames are hooked on login.
 local frames = {
   -- ["FrameName"] = true (the parent frame should be moved) or false (the frame itself should be moved)
-  
+  -- for child frames (i.e. frames that don"t have a name, but only a parentKey="XX" use
+  -- "ParentFrameName.XX" as frame name. more than one level is supported, e.g. "Foo.Bar.Baz")
+
   -- Blizzard Frames
   ["SpellBookFrame"] = false,
   ["QuestLogFrame"] = false,
   ["QuestLogDetailFrame"] = false,
   ["FriendsFrame"] = false,
-  ["LFGParentFrame"] = false,
-  ["LFDQueueFrame"] = true,
-  ["LFRQueueFrame"] = true,
-  ["LFRBrowseFrame"] = true,
   ["KnowledgeBaseFrame"] = true,
   ["HelpFrame"] = false,
   ["GossipFrame"] = false,
@@ -51,7 +42,6 @@ local frames = {
   ["PaperDollFrame"] = true,
   ["ReputationFrame"] = true,
   ["SkillFrame"] = true,
-  ["PVPFrame"] = not cata, -- changed in cataclysm
   ["PVPBattlegroundFrame"] = true,
   ["SendMailFrame"] = true,
   ["TokenFrame"] = true,
@@ -67,6 +57,13 @@ local frames = {
   ["EncounterJournal"] = false, -- only in 4.2
   ["RaidParentFrame"] = false,
   ["TutorialFrame"] = false,
+  ["MissingLootFrame"] = false,
+  ["ScrollOfResurrectionSelectionFrame"] = false,
+
+  -- New frames in MoP
+  ["PVPBannerFrame"] = false,
+  ["PVEFrame"] = false, -- dungeon finder + challenges
+  ["GuildInviteFrame"] = false,
 
   -- AddOns
   ["LudwigFrame"] = false,
@@ -94,12 +91,18 @@ local lodFrames = {
   Blizzard_BarbershopUI = { ["BarberShopFrame"] = false },
   Blizzard_Calendar = { ["CalendarFrame"] = false, ["CalendarCreateEventFrame"] = true },
   Blizzard_GuildUI = { ["GuildFrame"] = false, ["GuildRosterFrame"] = true },
-  Blizzard_ReforgingUI = { ["ReforgingFrame"] = false, ["ReforgingFrameInvisibleButton"] = true },
+  Blizzard_ReforgingUI = { ["ReforgingFrame"] = false, ["ReforgingFrameInvisibleButton"] = true, ["ReforgingFrame.InvisibleButton"] = true },
   Blizzard_ArchaeologyUI = { ["ArchaeologyFrame"] = false },
   Blizzard_LookingForGuildUI = { ["LookingForGuildFrame"] = false },
   Blizzard_VoidStorageUI = { ["VoidStorageFrame"] = false, ["VoidStorageBorderFrameMouseBlockFrame"] = "VoidStorageFrame" },
   Blizzard_ItemAlterationUI = { ["TransmogrifyFrame"] = false },
   Blizzard_EncounterJournal = { ["EncounterJournal"] = false }, -- as of 4.3
+
+  -- New frames in MoP
+  Blizzard_PetJournal = { ["PetJournalParent"] = false },
+  Blizzard_BlackMarketUI = { ["BlackMarketFrame"] = false }, -- UNTESTED
+  Blizzard_ChallengesUI = { ["ChallengesLeaderboardFrame"] = false }, -- UNTESTED
+  Blizzard_ItemUpgradeUI = { ["ItemUpgradeFrame"] = false, }, -- UNTESTED
 }
 
 local parentFrame = {}
@@ -142,7 +145,20 @@ function addon:HookFrames(list)
 end
 
 function addon:HookFrame(name, moveParent)
-  local frame = _G[name]
+  -- find frame
+  -- name may contain dots for children, e.g. ReforgingFrame.InvisibleButton
+  local frame = _G
+  local s
+  for s in string.gmatch(name, "%w+") do
+    if frame then
+      frame = frame[s]
+    end
+  end
+  -- check if frame was found
+  if frame == _G then
+    frame = nil
+  end
+
   local parent
   if frame and not hooked[name] then
     if moveParent then
@@ -186,11 +202,3 @@ end
 addon:SetScript("OnEvent", function(f, e, ...) f[e](f, ...) end)
 addon:RegisterEvent("PLAYER_LOGIN")
 addon:RegisterEvent("ADDON_LOADED")
-
--- Hook bag frames
-hooksecurefunc("ContainerFrame_GenerateFrame", function(frame, size, id)
-  if id <= NUM_BAG_FRAMES or id == KEYRING_CONTAINER then
-    addon:HookFrame(frame:GetName())
-  end
-end)
-
