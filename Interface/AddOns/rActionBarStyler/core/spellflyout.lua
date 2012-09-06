@@ -16,7 +16,7 @@
           table.insert(buttonList, button) --add the button object to the list
         end
       end
-      rSpellFlyoutFader(frame,buttonList,frame.mouseover.fadeIn,frame.mouseover.fadeOut)
+      SpellFlyoutFader(frame,buttonList,frame.mouseover.fadeIn,frame.mouseover.fadeOut)
     end
   end
   SpellFlyout:HookScript("OnShow",addFlyoutFramesToFader)
