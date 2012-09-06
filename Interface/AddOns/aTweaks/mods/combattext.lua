@@ -10,7 +10,7 @@ local font = GameFontHighlight:GetFont()
 
 for i = 1, 2 do
 	local f = CreateFrame("ScrollingMessageFrame", "LightCT"..i, UIParent)
-	f:SetFont(font, 16, "OUTLINE")
+	f:SetFont(font, 12, "OUTLINE")
 	f:SetShadowColor(0, 0, 0, 0)
 	f:SetFadeDuration(0.2)
 	f:SetTimeVisible(3)
@@ -21,10 +21,10 @@ for i = 1, 2 do
 
 	if i == 1 then
 		f:SetJustifyH"RIGHT"
-		f:SetPoint("RIGHT", UIParent, "CENTER", -185, 80)
+		f:SetPoint("RIGHT", UIParent, "CENTER", -185, 0)
 	else
 		f:SetJustifyH"LEFT"
-		f:SetPoint("LEFT", UIParent, "CENTER", -365, 80)
+		f:SetPoint("LEFT", UIParent, "CENTER", -365, 0)
 	end
 
 	frames[i] = f
