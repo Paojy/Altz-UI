@@ -121,14 +121,14 @@ local backdrop2 = {
     icon:SetDrawLayer("BACKGROUND",-8)
 
     --duration
-    b.duration:SetFont(cfg.font, 13, "THINOUTLINE")
+    b.duration:SetFont(cfg.font, 11, "THINOUTLINE")
     b.duration:ClearAllPoints()
-    b.duration:SetPoint("BOTTOM",5,-10)
+    b.duration:SetPoint("BOTTOM", 2, -10)
 
     --count
     b.count:SetFont(cfg.font, 12, "THINOUTLINE")
     b.count:ClearAllPoints()
-    b.count:SetPoint("TOPRIGHT",0,0)
+    b.count:SetPoint("TOPRIGHT", 0, 0)
 
     --shadow
     local back = CreateFrame("Frame", nil, b)
