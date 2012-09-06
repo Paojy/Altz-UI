@@ -7,8 +7,8 @@ local cfg = CreateFrame("Frame")
 cfg.point = {"BOTTOMRIGHT", "BOTTOMRIGHT", -13, 15}
 cfg.cursor = false                   -- 鼠标跟随 make tooltip placed with cursor
 
-cfg.hideTitles = false              -- 隐藏头衔 hide titles
-cfg.hideRealm = false               -- 隐藏区域 hide realm 
+cfg.hideTitles = true              -- 隐藏头衔 hide titles
+cfg.hideRealm = false               -- 隐藏服务器 hide realm 
 cfg.showspellID = true              -- 显示法术id show spell id
 
 cfg.colorborderClass = false        -- 职业着色边框 class colored border
