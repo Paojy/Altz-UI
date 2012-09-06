@@ -1,4 +1,4 @@
-## Interface: 40000
+## Interface: 50001
 ## Title: oUF: MovableFrames
 ## Author: Haste
 ## Version: 1.11
