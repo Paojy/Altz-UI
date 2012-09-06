@@ -15,7 +15,7 @@ if cfg.acceptres then
 				AcceptResurrect()
 				DoEmote('thank', name)
 			else
-                                local b = CreateFrame("Button")
+                local b = CreateFrame("Button")
 				local formattedText = b:GetText(b:SetFormattedText("%d |4second:seconds", delay))
 				SendChatMessage("Thanks for the rez! I still have "..formattedText.." until I can accept it.", 'WHISPER', nil, name)
 			end
@@ -33,6 +33,7 @@ if cfg.battlegroundres then
 		end
 	end
 end
+
 --[[-----------------------------------------------------------------------------
 Hide Errors
 -------------------------------------------------------------------------------]]
