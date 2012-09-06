@@ -47,9 +47,9 @@ ns.addonShortcut    = shortcut
 
 local pos = {"BOTTOMLEFT", UIParent, "BOTTOMLEFT", 315, 0}
 local locked = true
-local width, height = 160, 14
-local spacing = 6
-local iconsize = 14
+local width, height = 165, 16
+local spacing = 3
+local iconsize = 16
 local fontsize = 11
 local flag = "OUTLINE"
 local texture = "Interface\\AddOns\\aCore\\media\\statusbar"
@@ -137,16 +137,14 @@ local CreateBar = function()
 	bar.status:SetMinMaxValues(0, 100)
 	bar.status:SetFrameLevel(bar:GetFrameLevel()-1)	
 	
-	bar.left = createtext(bar, fontsize, flag, false)
+	bar.left = createtext(bar, "OVERLAY", fontsize, flag, "LEFT")
 	bar.left:SetPoint('LEFT', bar.status, 2, 1)
-	bar.left:SetJustifyH('LEFT')
 	
-	bar.right = createtext(bar, fontsize, flag, false)
+	bar.right = createtext(bar, "OVERLAY", fontsize, flag, "RIGHT")
 	bar.right:SetPoint('RIGHT', bar.status, -2, 1)
-	bar.right:SetJustifyH('RIGHT')
 	
-	createnameplateBD(bar.icon, 0, 0, 0, 0.4, 1)
-	createnameplateBD(bar.status, 0, 0, 0, 0.4, 1)
+	creategrowBD(bar.icon, 0, 0, 0, 0.4, 1)
+	creategrowBD(bar.status, 0, 0, 0, 0.4, 1)
 	return bar
 end
 
