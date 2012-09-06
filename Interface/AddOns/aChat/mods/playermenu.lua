@@ -27,21 +27,17 @@ insertbefore(UnitPopupMenus["FRIEND"], "GUILD_INVITE", "ADDFRIEND")
 
 hooksecurefunc("UnitPopup_HideButtons", function()
 	local dropdownMenu = UIDROPDOWNMENU_INIT_MENU
-	local canCoop = 0
-	if ( dropdownMenu.unit and UnitCanCooperate("player", dropdownMenu.unit) ) then
-		canCoop = 1
-	end
 	for index, value in ipairs(UnitPopupMenus[dropdownMenu.which]) do
 		if ( value == "WHO" ) then
-			if ( haveBattleTag or canCoop == 0 or not UnitIsPlayer(dropdownMenu.unit) or dropdownMenu.name == UnitName("player")) then
+			if ( haveBattleTag or dropdownMenu.name == UnitName("player")) then
 				UnitPopupShown[UIDROPDOWNMENU_MENU_LEVEL][index] = 0;
 			end
 		elseif ( value == "GUILD_INVITE" ) then
-			if ( haveBattleTag or canCoop == 0 or not UnitIsPlayer(dropdownMenu.unit) or not UnitIsSameServer("player", dropdownMenu.unit) or not CanGuildInvite() or dropdownMenu.name == UnitName("player")) then
+			if ( haveBattleTag or not CanGuildInvite() or dropdownMenu.name == UnitName("player")) then
 				UnitPopupShown[UIDROPDOWNMENU_MENU_LEVEL][index] = 0;
 			end
 		elseif ( value == "ADDFRIEND" ) then
-			if ( haveBattleTag or canCoop == 0 or not UnitIsPlayer(dropdownMenu.unit) or not UnitIsSameServer("player", dropdownMenu.unit) or GetFriendInfo(UnitName(dropdownMenu.unit)) or dropdownMenu.name == UnitName("player")) then
+			if ( haveBattleTag or dropdownMenu.name == UnitName("player")) then
 				UnitPopupShown[UIDROPDOWNMENU_MENU_LEVEL][index] = 0;
 			end
 		end
