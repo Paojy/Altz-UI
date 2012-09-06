@@ -126,11 +126,11 @@ local function CreateRollFrame()
 	
 	frame.needbutt, frame.greedbutt, frame.disenchantbutt = need, greed, de
 
-	local bind = createtext(frame, 13, "THINOUTLINE", false)
+	local bind = createtext(frame, "OVERLAY", 13, "OUTLINE", "LEFT")
 	bind:SetPoint("LEFT", de or greed, "RIGHT", 0, -1)
 	frame.fsbind = bind
 
-	local loot = createtext(frame, 13, "THINOUTLINE", false)
+	local loot = createtext(frame, "OVERLAY", 13, "OUTLINE", "LEFT")
 	loot:SetPoint("LEFT", bind, "RIGHT", 0, 0)
 	loot:SetPoint("RIGHT", frame, "RIGHT", -5, nil)
 	loot:SetHeight(10)
@@ -148,7 +148,8 @@ anchor:SetWidth(width)
 anchor:SetHeight(20)
 creategrowBD(anchor, 0, 0, 0, 0.4, 1)
 
-local label = createtext(anchor, 14, "OUTLINE", true)
+local label = createtext(anchor, "OVERLAY", 13, "OUTLINE", "LEFT")
+label:SetAllPoints()
 label:SetText("Loot")
 
 anchor:SetScript("OnClick", anchor.Hide)
@@ -236,4 +237,4 @@ end)
 
 
 SlashCmdList["TEKSLOOT"] = function() if anchor:IsVisible() then anchor:Hide() else anchor:Show() end end
-SLASH_TEKSLOOT1 = "/loot"
+SLASH_TEKSLOOT1 = "/aloot"
