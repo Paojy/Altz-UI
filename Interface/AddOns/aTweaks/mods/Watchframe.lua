@@ -114,6 +114,7 @@ function nWFA.UpdatePosition()
 		WF.ClearAllPoints = OrigWFClearAllPoints;
 	end
 	
+	WF:SetFrameStrata("HIGH")
 	WF:ClearAllPoints();
 	WF:SetPoint(cfg.anchor, "UIParent", cfg.anchor, cfg.x, cfg.y);
 	WF:SetHeight(UIParent:GetHeight() - cfg.heightsc);
