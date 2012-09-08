@@ -2,11 +2,12 @@
 ---------------------------------------------------------------
 -------------------[[        media        ]]------------------
 ---------------------------------------------------------------
+
 local font = GameFontHighlight:GetFont()
 local Ccolor = GetClassColor()
 local aMedia = "Interface\\AddOns\\aCore\\media\\"
 local blank = "Interface\\Buttons\\WHITE8x8"
-
+DAMAGE_TEXT_FONT = aMedia.."df.TTF"
 ---------------------------------------------------------------
 --------------[[     global frame fuctions    ]]---------------
 ---------------------------------------------------------------
