@@ -60,7 +60,7 @@
   end
 
   --hide the frame when in a vehicle!
-  RegisterStateDriver(frame, "visibility", "[vehicleui] hide; [@pet,exists,nodead] show; hide")
+  RegisterStateDriver(frame, "visibility", "[petbattle][overridebar][vehicleui] hide; [@pet,exists,nodead] show; hide")
 
   --create drag frame and drag functionality
   if cfg.userplaced.enable then
