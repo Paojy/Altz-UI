@@ -20,7 +20,9 @@ local function createpanel(panel, pos, y)
 	panel = CreateFrame("Frame", nil, UIParent)
 	panel:SetFrameStrata("BACKGROUND")
 	panel:SetPoint(pos, 0, y)
-	panel:SetSize(UIParent:GetWidth()-20, 7)
+	panel:SetPoint("LEFT", UIParent, "LEFT", 10, 0)
+	panel:SetPoint("RIGHT", UIParent, "RIGHT", -10, 0)
+	panel:SetHeight(7)
 	creategrowBD(panel, 0, 0, 0, 0.3, 1)
 	return panel
 end
@@ -51,6 +53,8 @@ infopanel:SetScript("OnMouseUp", function() ToggleCalendar() end)
 --====================================================--
 --[[           -- XP bar and Info bar --            ]]--
 --====================================================--
+BNToastFrame:SetPoint("TOPLEFT", Minimap, "TOPRIGHT", 10, -20)
+
 local xpbar = CreateFrame("StatusBar", "ExperienceBar", UIParent)
 xpbar:SetFrameStrata("LOW")
 xpbar:SetSize(185,4)
@@ -531,14 +535,14 @@ end)
 TOPPANEL:RegisterEvent("PLAYER_ENTERING_WORLD")
 TOPPANEL:RegisterEvent("PLAYER_FLAGS_CHANGED")
 
-BOTTOMPANEL:SetScript('OnEnter', function() buttonhold.text:SetTextColor(.5, .5, .5, 1) end)
-BOTTOMPANEL:SetScript('OnLeave', function() buttonhold.text:SetTextColor(0, 0, 0, .5) end)
+BOTTOMPANEL:SetScript("OnEnter", function() buttonhold.text:SetTextColor(.5, .5, .5, 1) end)
+BOTTOMPANEL:SetScript("OnLeave", function() buttonhold.text:SetTextColor(0, 0, 0, .5) end)
 
-BOTTOMPANEL:SetScript('OnMouseUp', function()
+BOTTOMPANEL:SetScript("OnMouseUp", function()
 	fadein()
 end)
 
-Info:SetScript('OnMouseUp', function()
+Info:SetScript("OnMouseUp", function()
 	if Guidetext:IsShown() then 
 		Guide:Hide() Guidetext:Hide()
 	else 
@@ -546,7 +550,7 @@ Info:SetScript('OnMouseUp', function()
 	end
 end)
 
-Credits:SetScript('OnMouseUp', function()
+Credits:SetScript("OnMouseUp", function()
 	if Creditstext:IsShown() then 
 		Guide:Hide() Creditstext:Hide()
 	else 
@@ -554,6 +558,6 @@ Credits:SetScript('OnMouseUp', function()
 	end
 end)
 
-Guide:SetScript('OnMouseUp', function()
+Guide:SetScript("OnMouseUp", function()
 	Guide:Hide() Guidetext:Hide() Creditstext:Hide()
 end)
