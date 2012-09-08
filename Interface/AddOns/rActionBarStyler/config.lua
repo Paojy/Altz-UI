@@ -79,7 +79,7 @@
 	  eventfader      = {
         enable          = false,
         fadeIn          = {time = 0.4, alpha = 1},
-        fadeOut         = {time = 1.5, alpha = 0},
+        fadeOut         = {time = 1.5, alpha = 0.2},
       },
     },
     bar3 = {
@@ -169,10 +169,10 @@
       mouseover       = {
         enable          = true,
         fadeIn          = {time = 0.4, alpha = 1},
-        fadeOut         = {time = 0.4, alpha = 0},
+        fadeOut         = {time = 0.4, alpha = 0.2},
       },
 	  eventfader      = {
-        enable          = true,
+        enable          = false,
         fadeIn          = {time = 0.4, alpha = 1},
         fadeOut         = {time = 1.5, alpha = 0},
       },
