@@ -61,6 +61,7 @@ local frames = {
   ["ScrollOfResurrectionSelectionFrame"] = false,
 
   -- New frames in MoP
+  ["PVPFrame"] = false,
   ["PVPBannerFrame"] = false,
   ["PVEFrame"] = false, -- dungeon finder + challenges
   ["GuildInviteFrame"] = false,
