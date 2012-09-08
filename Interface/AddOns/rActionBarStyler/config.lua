@@ -48,7 +48,7 @@
         size            = 25,
         margin          = 4,
       },
-      pos             = { a1 = "TOP", a2 = "CENTER", af = "UIParent", x = 0, y = -145 },
+      pos             = { a1 = "TOP", a2 = "CENTER", af = "UIParent", x = 58, y = -145 },
       userplaced      = {
         enable          = true,
       },
@@ -206,7 +206,7 @@
       scale           = 1,
       padding         = 10, --frame padding
       buttons         = {
-        size            = 26,
+        size            = 30,
         margin          = 4,
       },
       pos             = { a1 = "TOP", a2 = "CENTER", af = "UIParent", x = 0, y = -200 },
@@ -224,7 +224,7 @@
       scale           = 1,
       padding         = 10, --frame padding
       buttons         = {
-        size            = 26,
+        size            = 30,
         margin          = 5,
       },
       pos             = { a1 = "BOTTOMLEFT", a2 = "BOTTOM", af = "UIParent", x = 180, y = 25 },

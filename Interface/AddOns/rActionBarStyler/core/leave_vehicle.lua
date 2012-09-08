@@ -45,7 +45,10 @@
   hi:SetTexCoord(0.6152344,0.6972656,0.359375,0.4414063)
   hi:SetBlendMode("ADD")
 
-  RegisterStateDriver(button, "visibility", "[petbattle]hide; [vehicleui][possessbar][overridebar][@vehicle,exists] show; hide")
+  --[possessbar][overridebar]
+  --the button will spawn if a vehicle exists, but no vehicle ui is in place (the vehicle ui has its own exit button)
+  RegisterStateDriver(frame, "visibility", "[vehicleui][petbattle] hide; [@vehicle,exists] show; hide")
+  RegisterStateDriver(button, "visibility", "[vehicleui][petbattle] hide; [@vehicle,exists] show; hide")
 
   --create drag frame and drag functionality
   if cfg.userplaced.enable then

@@ -1,4 +1,3 @@
-
   -----------------------------
   -- INIT
   -----------------------------
@@ -16,7 +15,7 @@
 
   if not cfg.enable then return end
 
-  local num = 8 --there seems to be no MAX_OVERRIDE_NUM or the like
+  local num = NUM_ACTIONBAR_BUTTONS --there seems to be no MAX_OVERRIDE_NUM or the like
   local buttonList = {}
 
   --create the frame to hold the buttons
@@ -31,10 +30,16 @@
   OverrideActionBar:EnableMouse(false)
   OverrideActionBar:SetScript("OnShow", nil) --remove the onshow script
 
+  local leaveButtonPlaced = false
+
   for i=1, num do
     local button =  _G["OverrideActionBarButton"..i]
-    if not button then
+    if not button and not leaveButtonPlaced then
       button = OverrideActionBar.LeaveButton --the magic 7th button
+      leaveButtonPlaced = true
+    end
+    if not button then
+      break
     end
     table.insert(buttonList, button) --add the button object to the list
     button:SetSize(cfg.buttons.size, cfg.buttons.size)
