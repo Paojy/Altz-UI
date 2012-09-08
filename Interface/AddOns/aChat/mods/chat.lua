@@ -59,7 +59,7 @@ local function init()
   -- chat font
     local cf = _G['ChatFrame'..i]
     if cf then 
-      cf:SetFont(NAMEPLATE_FONT, 12, "THINOUTLINE") 
+      cf:SetFont(NAMEPLATE_FONT, select(2, cf:GetFont()), "THINOUTLINE") 
       cf:SetShadowOffset(0,0)
       cf:SetFrameStrata("LOW")
       cf:SetFrameLevel(2)
