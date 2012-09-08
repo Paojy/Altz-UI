@@ -245,11 +245,7 @@ StaticPopupDialogs["SetupAltzUI"] = {
 	button1 = "yes",
 	button2 = "cancel",
 	OnAccept = function() SetupAltzui() ReloadUI() end,
-	OnCancel = function() 
-	UIFrameFadeOut(TOPPANEL, 2, 1, 0)
-	UIFrameFadeOut(BOTTOMPANEL, 2, 1, 0) 
-	BOTTOMPANEL:EnableMouse(false)
-	end,
+	OnCancel = function() end,
 	timeout = 0,
 	whileDead = 1,
 	hideOnEscape = true
