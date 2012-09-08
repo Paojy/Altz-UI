@@ -415,7 +415,7 @@ local PostCreateIcon = function(auras, icon)
     icon.count:ClearAllPoints()
     icon.count:SetPoint("BOTTOMRIGHT", 3, -3)
     icon.count:SetFontObject(nil)
-    icon.count:SetFont(cfg.font, 10, cfg.fontflag)
+    icon.count:SetFont(cfg.font, 12, cfg.fontflag)
     icon.count:SetTextColor(.9, .9, .1)
 
 	icon.overlay:SetTexture(cfg.texture)
@@ -425,7 +425,7 @@ local PostCreateIcon = function(auras, icon)
 
 	icon.bd = createBackdrop(icon, icon, 0)
 
-	icon.remaining = createFont(icon, "OVERLAY", cfg.font, 9, "OUTLINE", 1, 1, 1)
+	icon.remaining = createFont(icon, "OVERLAY", cfg.font, 12, "OUTLINE", 1, 1, 1)
     icon.remaining:SetPoint("TOPLEFT", -3, 2)
 
     if cfg.auraborders then
@@ -524,7 +524,7 @@ local CreateAuras = function(self, unit)
 			end
 		elseif unit == "pet" then
 			Auras:SetPoint("BOTTOMLEFT", self, "BOTTOMRIGHT", 5, 0)
-			Auras.initialAnchor = "BOTTOMLFET"
+			Auras.initialAnchor = "BOTTOMLEFT"
 			Auras["growth-x"] = "RIGHT"
 			Auras["growth-y"] = "DOWN"
 			Auras.numDebuffs = 5

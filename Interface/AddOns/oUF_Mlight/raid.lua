@@ -21,8 +21,8 @@ local pxbackdrop = { edgeFile = [=[Interface\ChatFrame\ChatFrameBackground]=],  
 
 local function Createpxborder(self, lvl)
 	local pxbd = CreateFrame("Frame", nil, self)
-	pxbd:SetPoint("TOPLEFT", self, "TOPLEFT", -3, 3)
-	pxbd:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", 3, -3)
+	pxbd:SetPoint("TOPLEFT", self, "TOPLEFT", -2, 2)
+	pxbd:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", 2, -2)
 	pxbd:SetBackdrop(pxbackdrop)
 	pxbd:SetFrameLevel(lvl)
 	pxbd:Hide()
@@ -74,6 +74,7 @@ local function CreateHealPredition(self)
 	self.HealPrediction = {
 		myBar = myBar,
 		otherBar = otherBar,
+		maxOverflow = 1,
 	}
 end
 
