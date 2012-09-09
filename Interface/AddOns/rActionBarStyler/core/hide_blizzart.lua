@@ -15,7 +15,7 @@
   local blizzHider = CreateFrame("Frame","rABS_BizzardHider")
   blizzHider:Hide()
   --hide main menu bar frames
-  if gcfg.bars.bar1.enable then
+  if gcfg.bars.bar12.enable then
     MainMenuBar:SetParent(blizzHider)
     MainMenuBarPageNumber:SetParent(blizzHider)
     ActionBarDownButton:SetParent(blizzHider)
@@ -44,7 +44,7 @@
   PossessBackground1:SetTexture(nil)
   PossessBackground2:SetTexture(nil)
 
-  if gcfg.bars.bar1.enable then
+  if gcfg.bars.bar12.enable then
     MainMenuBarTexture0:SetTexture(nil)
     MainMenuBarTexture1:SetTexture(nil)
     MainMenuBarTexture2:SetTexture(nil)
