@@ -1,7 +1,7 @@
 local ADDON_NAME, ns = ...
 local cfg = ns.cfg
 
-if not cfg.raidcd then return end
+if not cfg.raidcd.enable then return end
 local Ccolors = GetAllClassColors()
 --original author : Allez
 
@@ -35,22 +35,10 @@ local spells = {
 	--[34861] = 10, --÷Œ¡∆÷Æª∑
 }
 
---variables
-local dragFrameList = {}
-local color         = "00DC143C"
-local shortcut      = "atweaks"
-
---make variables available in the namespace
-ns.dragFrameList    = dragFrameList
-ns.addonColor       = color
-ns.addonShortcut    = shortcut
-
-local pos = {"BOTTOMLEFT", UIParent, "BOTTOMLEFT", 315, 0}
-local locked = true
-local width, height = 165, 16
-local spacing = 3
-local iconsize = 16
-local fontsize = 11
+local width, height = cfg.raidcd.width, cfg.raidcd.height
+local spacing = cfg.raidcd.spacing
+local iconsize = cfg.raidcd.iconsize
+local fontsize = cfg.raidcd.fontsize
 local flag = "OUTLINE"
 local texture = "Interface\\AddOns\\aCore\\media\\statusbar"
 
@@ -68,16 +56,31 @@ local timer = 0
 
 local bars = {}
 
-local anchorframe = CreateFrame("Frame", "RaidCD", UIParent)
-anchorframe:SetSize(20, 30)
-anchorframe:SetPoint(unpack(pos))
-rCreateDragFrame(anchorframe, dragFrameList, -2 , true) --frame, dragFrameList, inset, clamp
+local function applyDragFunctionality(f)
+    f:SetScript("OnDragStart", function(s) s:StartMoving() end)
+    f:SetScript("OnDragStop", function(s) s:StopMovingOrSizing() end)
+    f:SetClampedToScreen(true)
+    f:SetMovable(true)
+    f:SetUserPlaced(true)
+	creategrowBD(f, 0, 0, 0, .5, 1)
+    f:EnableMouse(nil)
+    f:RegisterForDrag(nil)
+end
+
+local anchorframe = CreateFrame("Frame", "RaidCDanchorframe", UIParent)
+anchorframe:SetSize(width, 20)
+anchorframe:SetPoint("BOTTOMLEFT", UIParent, "BOTTOMLEFT", 180, 170)
+anchorframe.text = createtext(anchorframe, "OVERLAY", fontsize, flag, "CENTER")
+anchorframe.text:SetAllPoints()
+anchorframe.text:SetText("Drag me!")
+applyDragFunctionality(anchorframe)
+anchorframe:Hide()
 
 local UpdatePositions = function()
 	for i = 1, #bars do
 		bars[i]:ClearAllPoints()
 		if i == 1 then
-			bars[i]:SetPoint("TOPLEFT", anchorframe, "TOPRIGHT", 5, 0)
+			bars[i]:SetPoint("BOTTOMLEFT", anchorframe, "TOPLEFT", 0, 8)
 		else
 			bars[i]:SetPoint("BOTTOMLEFT", bars[i-1], "TOPLEFT", 0, spacing)
 		end
@@ -210,10 +213,16 @@ eventf:RegisterEvent("ZONE_CHANGED_NEW_AREA")
 -----------------------------
 -- FUNCTIONS
 -----------------------------
-SlashCmdList[shortcut] = rCreateSlashCmdFunction(ADDON_NAME, shortcut, dragFrameList, color)
-SLASH_atweaks1 = "/"..shortcut;
-
 local function test()
+	  if anchorframe:IsShown() then
+		anchorframe:Hide()
+		anchorframe:EnableMouse(nil)
+        anchorframe:RegisterForDrag(nil)
+	  else
+		anchorframe:Show()
+	    anchorframe:EnableMouse(true)
+        anchorframe:RegisterForDrag("LeftButton", "RightButton")
+	  end
 	  StartTimer(UnitName('player'), 97462)
 	  StartTimer(UnitName('player'), 98008)
 	  StartTimer(UnitName('player'), 51052)

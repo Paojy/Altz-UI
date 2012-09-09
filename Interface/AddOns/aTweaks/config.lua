@@ -39,8 +39,21 @@ cfg.fatiguewarner = true
 -- 打断通报 （团队或小队）
 cfg.interruptedmsg = true
 
+-- Show combat text (only show damage and healing received)
+-- 接收的治疗和伤害
 cfg.combattext = true
-cfg.raidcd = true
+
+-- Raid-wide defensive spell cooldawn.
+-- 团队冷却计时条
+-- type /raidcd to test/move it.
+cfg.raidcd = {
+	enable = true,
+	width = 165, 
+	height =  16,
+	spacing = 3,
+	iconsize = 16,
+	fontsize = 11,
+}
 
 --Automaticly accepts/completes quests
 --自动交接任务
