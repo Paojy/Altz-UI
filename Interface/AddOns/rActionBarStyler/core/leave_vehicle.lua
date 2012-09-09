@@ -47,7 +47,7 @@
 
   --[possessbar][overridebar]
   --the button will spawn if a vehicle exists, but no vehicle ui is in place (the vehicle ui has its own exit button)
-  RegisterStateDriver(frame, "visibility", "[vehicleui][petbattle] hide; [@vehicle,exists] show; hide")
+  --RegisterStateDriver(frame, "visibility", "[vehicleui][petbattle] hide; [@vehicle,exists] show; hide")
   RegisterStateDriver(button, "visibility", "[vehicleui][petbattle] hide; [@vehicle,exists] show; hide")
 
   --create drag frame and drag functionality
