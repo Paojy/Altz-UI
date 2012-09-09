@@ -7,7 +7,7 @@
   local addon, ns = ...
   local gcfg = ns.cfg
   --get some values from the namespace
-  local cfg = gcfg.bars.bar4
+  local cfg = gcfg.bars.bar12
   local dragFrameList = ns.dragFrameList
 
   -----------------------------
@@ -20,52 +20,44 @@
   local buttonList = {}
 
   --create the frame to hold the buttons
-  local frame = CreateFrame("Frame", "rABS_MultiBarRight", UIParent, "SecureHandlerStateTemplate")
-  if cfg.combineBar4AndBar5 then
-    frame:SetWidth(2*cfg.buttons.size + (2-1)*cfg.buttons.margin + 2*cfg.padding)
-  else
-    frame:SetWidth(cfg.buttons.size + 2*cfg.padding)
-  end
-  frame:SetHeight(num*cfg.buttons.size + (num-1)*cfg.buttons.margin + 2*cfg.padding)
+  local frame = CreateFrame("Frame", "rABS_MainMenuBar", UIParent, "SecureHandlerStateTemplate")
+  frame:SetWidth(num*cfg.buttons.size + (num-1)*cfg.buttons.margin + 2*cfg.padding)
+  frame:SetHeight(2*cfg.buttons.size + cfg.buttons.margin + 2*cfg.padding)
   frame:SetPoint(cfg.pos.a1,cfg.pos.af,cfg.pos.a2,cfg.pos.x,cfg.pos.y)
   frame:SetScale(cfg.scale)
-
+  
   --move the buttons into position and reparent them
-  MultiBarRight:SetParent(frame)
-  MultiBarRight:EnableMouse(false)
-  if cfg.combineBar4AndBar5 then
-    MultiBarLeft:SetParent(frame)
-    MultiBarLeft:EnableMouse(false)
-  end
+  MainMenuBarArtFrame:SetParent(frame)
+  MainMenuBarArtFrame:EnableMouse(false)
+  MultiBarBottomLeft:SetParent(frame)
+  MultiBarBottomLeft:EnableMouse(false)
 
   for i=1, num do
-    local button = _G["MultiBarRightButton"..i]
+    local button = _G["ActionButton"..i]
     table.insert(buttonList, button) --add the button object to the list
     button:SetSize(cfg.buttons.size, cfg.buttons.size)
     button:ClearAllPoints()
     if i == 1 then
-      button:SetPoint("TOPRIGHT", frame, -cfg.padding, -cfg.padding)
+      button:SetPoint("TOPLEFT", frame, cfg.padding, -cfg.padding)
     else
-      local previous = _G["MultiBarRightButton"..i-1]
-      button:SetPoint("TOP", previous, "BOTTOM", 0, -cfg.buttons.margin)
+      local previous = _G["ActionButton"..i-1]
+      button:SetPoint("LEFT", previous, "RIGHT", cfg.buttons.margin, 0)
     end
   end
 
-  if cfg.combineBar4AndBar5 then
-    for i=1, num do
-      local button = _G["MultiBarLeftButton"..i]
-      table.insert(buttonList, button) --add the button object to the list
-      button:SetSize(cfg.buttons.size, cfg.buttons.size)
-      button:ClearAllPoints()
-      if i == 1 then
-        button:SetPoint("TOPRIGHT", frame, -(cfg.padding+cfg.buttons.margin+cfg.buttons.size), -cfg.padding)
-      else
-        local previous = _G["MultiBarLeftButton"..i-1]
-        button:SetPoint("TOP", previous, "BOTTOM", 0, -cfg.buttons.margin)
-      end
+  for i=1, num do
+    local button = _G["MultiBarBottomLeftButton"..i]
+    table.insert(buttonList, button) --add the button object to the list
+    button:SetSize(cfg.buttons.size, cfg.buttons.size)
+    button:ClearAllPoints()
+    if i == 1 then
+      button:SetPoint("TOPLEFT", frame, cfg.padding, -cfg.padding -cfg.buttons.margin -cfg.buttons.size)
+    else
+      local previous = _G["MultiBarBottomLeftButton"..i-1]
+      button:SetPoint("LEFT", previous, "RIGHT", cfg.buttons.margin, 0)
     end
   end
-
+  
   --hide the frame when in a vehicle!
   RegisterStateDriver(frame, "visibility", "[petbattle][overridebar][vehicleui] hide; show")
 
@@ -79,7 +71,7 @@
     ActionbarFader(frame, buttonList, cfg.mouseover.fadeIn, cfg.mouseover.fadeOut) --frame, buttonList, fadeIn, fadeOut
 	frame.mouseover = cfg.mouseover
   end
-
+  
   --create the fade on condition functionality
   if cfg.eventfader.enable then
     ActionbarEventFader(frame, buttonList, cfg.eventfader.fadeIn, cfg.eventfader.fadeOut) --frame, fadeIn, fadeOut
