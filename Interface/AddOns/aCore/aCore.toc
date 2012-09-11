@@ -1,6 +1,6 @@
 ﻿## Interface: 50001
 ## Title: |cffEE3A8Ca|rCore
-## Version: 5.22
+## Version: 5.28
 ## Author: Blue
 ## OptionalDeps: Skada, Numeration, TinyDPS, Recount, Aurora
 ## Credits: Zork
