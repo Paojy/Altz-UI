@@ -16,7 +16,7 @@ oUF.colors.power["POWER_TYPE_PYRITE"] = {0.60, 0.09, 0.17}
 oUF.colors.reaction[1] = {255/255, 30/255, 60/255}
 oUF.colors.reaction[2] = {255/255, 30/255, 60/255}
 oUF.colors.reaction[3] = {255/255, 30/255, 60/255}
-oUF.colors.reaction[4] = {1, 1, 0.3}
+oUF.colors.reaction[4] = {1, 1, 0}
 oUF.colors.reaction[5] = {0.26, 1, 0.22}
 oUF.colors.reaction[6] = {0.26, 1, 0.22}
 oUF.colors.reaction[7] = {0.26, 1, 0.22}
@@ -216,7 +216,7 @@ local Updatehealthbar = function(self, unit, min, max)
 
 	self:GetStatusBarTexture():SetGradient("VERTICAL", r, g, b, r/3, g/3, b/3)
 	
-	if not cfg.classcolormode then
+	if cfg.tranparentmode then
 		self:SetValue(max - self:GetValue()) 
 	end
 end
@@ -499,13 +499,15 @@ end
 
 local CreateAuras = function(self, unit)
 	local u = unit:match("[^%d]+")
-    if multicheck(u, "target", "focus", "pet", "boss") then
+    if multicheck(u, "target", "focus", "boss") then
 		local Auras = CreateFrame("Frame", nil, self)
 		Auras:SetHeight(cfg.height*2)
 		Auras:SetWidth(cfg.width-2)
 		Auras.gap = true
 		Auras.disableCooldown = true
-		Auras.showStealableBuffs = true
+		if select(2, UnitClass("player")) == "MAGE" then
+			Auras.showStealableBuffs = true 
+		end
 		Auras.size = (cfg.width+3)/cfg.auraperrow-3
 		Auras.spacing = 3
 		Auras.PostCreateIcon = PostCreateIcon
@@ -522,13 +524,6 @@ local CreateAuras = function(self, unit)
 			if cfg.AuraFilter.ignoreBuff or cfg.AuraFilter.ignoreDebuff then
 				Auras.CustomFilter = CustomFilter
 			end
-		elseif unit == "pet" then
-			Auras:SetPoint("BOTTOMLEFT", self, "BOTTOMRIGHT", 5, 0)
-			Auras.initialAnchor = "BOTTOMLEFT"
-			Auras["growth-x"] = "RIGHT"
-			Auras["growth-y"] = "DOWN"
-			Auras.numDebuffs = 5
-			Auras.numBuffs = 0
 		else -- boss 1-5
 			Auras:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 1, 12)
 			Auras.initialAnchor = "BOTTOMLEFT"
@@ -538,8 +533,35 @@ local CreateAuras = function(self, unit)
 			Auras.numBuffs = 3
 			Auras.CustomFilter = BossAuraFilter
 		end
-	
 		self.Auras = Auras
+	end
+end
+
+local CreateDebuffs = function(self, unit)
+    if unit == "player" or unit == "pet" then
+		local Debuff = CreateFrame("Frame", nil, self)
+		Debuff:SetHeight(cfg.height*2)
+		Debuff:SetWidth(cfg.width-2)
+		Debuff.disableCooldown = true
+		Debuff.spacing = 3
+		Debuff.PostCreateIcon = PostCreateIcon
+		Debuff.PostUpdateIcon = PostUpdateIcon
+	    if cfg.playerdebuff.enable and unit == "player" then
+			Debuff:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 1, 8)
+			Debuff.initialAnchor = "BOTTOMLEFT"
+			Debuff["growth-x"] = "RIGHT"
+			Debuff["growth-y"] = "UP"
+			Debuff.size = (cfg.width+3)/cfg.playerdebuff.num-3
+			Debuff.num = cfg.playerdebuff.num
+		elseif unit == "pet" then
+			Debuff:SetPoint("BOTTOMLEFT", self, "BOTTOMRIGHT", 5, 0)
+			Debuff.initialAnchor = "BOTTOMLEFT"
+			Debuff["growth-x"] = "RIGHT"
+			Debuff["growth-y"] = "DOWN"
+			Debuff.size = (cfg.width+3)/cfg.auraperrow-3
+			Debuff.num = 5
+		end
+		self.Debuffs = Debuff
 	end
 end
 --=============================================--
@@ -565,10 +587,10 @@ local func = function(self, unit)
 	self.bg = self:CreateTexture(nil, "BACKGROUND")
     self.bg:SetAllPoints()
     self.bg:SetTexture(cfg.texture)
-	if cfg.classcolormode then
-		self.bg:SetGradientAlpha("VERTICAL", .6, .6, .6, 1, .1, .1, .1, 1)
+	if cfg.tranparentmode then
+		self.bg:SetGradientAlpha("VERTICAL", .5, .5, .5, .5, 0, 0, 0, .2)
 	else
-		self.bg:SetGradientAlpha("VERTICAL", .3, .3, .3, .4, .1, .1, .1, .4)
+		self.bg:SetGradientAlpha("VERTICAL", .3, .3, .3, 1, .1, .1, .1, 1)
 	end
 	
     -- height, width and scale --
@@ -597,7 +619,7 @@ local func = function(self, unit)
 	end
 	
 	-- reverse fill health --
-	if not cfg.classcolormode then
+	if cfg.tranparentmode then
 		hp:SetReverseFill(true)
 	end
 
@@ -612,16 +634,8 @@ local func = function(self, unit)
 		pp:SetPoint"LEFT"
 		pp:SetPoint"RIGHT"
 		pp:SetPoint("TOP", self, "BOTTOM", 0, -3)
-		pp.frequentUpdates = false
-		
-		-- power color --	
-		if not cfg.classcolormode then
-			pp.colorClass = true
-			pp.colorReaction = true
-		else
-			pp.colorPower = true
-		end
-	
+		pp.frequentUpdates = true
+
 		-- backdrop for power bar --	
 		pp.bd = createBackdrop(pp, pp, 1)
 		
@@ -677,15 +691,15 @@ local func = function(self, unit)
     if unit == "player" or unit == "pet" then
         name:Hide()
 	elseif multicheck(u, "targettarget", "focustarget", "boss") then
-		if cfg.classcolormode then
-			self:Tag(name, "[Mlight:shortname]")
-		else
+		if cfg.nameclasscolormode then
 			self:Tag(name, "[Mlight:color][Mlight:shortname]")
+		else
+			self:Tag(name, "[Mlight:shortname]")
 		end
-    elseif cfg.classcolormode then
-        self:Tag(name, "[difficulty][level][shortclassification]|r [name] [status]")
+    elseif cfg.nameclasscolormode then
+		self:Tag(name, "[difficulty][level][shortclassification]|r [Mlight:color][name] [status]")
     else
-        self:Tag(name, "[difficulty][level][shortclassification]|r [Mlight:color][name] [status]")
+		self:Tag(name, "[difficulty][level][shortclassification]|r [name] [status]")
     end
     
     if cfg.castbars then
@@ -694,8 +708,9 @@ local func = function(self, unit)
 	
 	if cfg.auras then
 		CreateAuras(self, unit)
+		CreateDebuffs(self, unit)
 	end
-	
+
     self.FadeMinAlpha = 0
 	self.FadeInSmooth = 0.4
 	self.FadeOutSmooth = 1.5

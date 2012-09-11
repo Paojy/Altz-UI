@@ -152,7 +152,7 @@ local Enable = function(self)
         local frame = CreateFrame("Frame", nil, UIParent)
         frame:SetAllPoints(self)
         frame:SetFrameStrata("HIGH")
-        frame:SetScale(cfg.arrowscale)
+        frame:SetScale(cfg.arrow.scale)
 
         frame.arrow = frame:CreateTexture(nil, "OVERLAY")
         frame.arrow:SetTexture"Interface\\Addons\\oUF_Mlight\\media\\Arrow"

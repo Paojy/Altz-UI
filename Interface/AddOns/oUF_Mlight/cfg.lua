@@ -12,10 +12,11 @@ cfg.font, cfg.fontflag = cfg.mediaPath.."font.TTF", "OUTLINE"
 cfg.glowTex = cfg.mediaPath.."grow"
 cfg.fontsize = 12
 
--- color mode
--- health colored based on class/disable to make health colored based on percentage
--- power colored based on power type/disable to make power colored based on class
-cfg.classcolormode = false
+-- health/power
+cfg.classcolormode = false  -- true  : health colored based on class, power colored based on powertype
+						   -- flase : health colored based on health percentage, power colored based on class
+cfg.tranparentmode = true -- transparent unit frames?
+cfg.nameclasscolormode = true -- classcolor/white?
 
 -- size
 cfg.height, cfg.width = 16, 230--height and width for player,focus and target
@@ -43,6 +44,10 @@ cfg.uninterruptable = {1, 0, 0, 0.1}
 cfg.auras = true  -- disable all auras
 cfg.auraborders = true -- auraborder colored based on debuff type
 cfg.auraperrow = 9 -- number of auras each row, this control the size of icon
+cfg.playerdebuff = { 
+	enable = true, -- show debuffs on playerframe ?
+	num = 7, -- number of auras each row, this control the size of icon
+}
 cfg.AuraFilter = { -- target and focus
 	ignoreBuff = false, -- hide others' buff on friend
 	ignoreDebuff = false, -- hide others' debuff on enemy
@@ -65,30 +70,43 @@ cfg.tbuserplaced = {
 -- show/hide boss
 cfg.bossframes = true
 
--- raid/party
+---------------------------------------------------------------------------------------
+-------------------[[        Raid/Party       Config        ]]------------------------- 
+---------------------------------------------------------------------------------------
+--[[ share ]]--
 cfg.enableraid = true
 cfg.raidfontsize = 10 -- the fontsize of raid/party members' name
 cfg.showsolo = true -- show raidframe when solo?
+cfg.switch = {
+	auto = true, -- automaticly swith raidframe style when you change current specialization. use /rf to switch between them manually.
+	onlyhealer = false, -- only available when auto set to false
+	onlydps = false, -- only available when auto set to false
+	-- if auto ,onlyhealer and onlydps all set to false, then it will choose the raid frame match your specialization when log-in.
+	}
+cfg.arrow = { 
+	enable = true,
+	scale = 1.0,
+	}
 
-cfg.toggle = true
- -- Set Raidframemode(healer/dpstank) when Specialization changes.
- -- You can also use /rf to switch between them.
- 
- --[[ healer mode(5*5) ]]--
+--[[ healer mode ]]--
 cfg.healerraidposition = {'TOPLEFT', 'UIParent','CENTER', 150, -100}
+cfg.healergroupfilter = '1,2,3,4,5' --'1,2,3,4,5,6,7,8' if you want to show 40 group members
 cfg.healerraidheight, cfg.healerraidwidth = 30, 70
 cfg.anchor = "TOP"
 cfg.partyanchor = "LEFT"
 cfg.showgcd = true
-cfg.showarrow = true
-	cfg.arrowscale = 1.0
-cfg.healprediction = true
-	cfg.myhealpredictioncolor = { 110/255, 210/255, 0/255, 0.5}
-	cfg.otherhealpredictioncolor = { 0/255, 110/255, 0/255, 0.5}
- --[[ dps/tank mode(1*25) ]]--
+cfg.healprediction = {
+	enable = true,
+	mycolor = { 110/255, 210/255, 0/255, 0.5},
+	othercolor = { 0/255, 110/255, 0/255, 0.5},
+	}
+
+--[[ dps/tank mode ]]--
 cfg.dpsraidposition = {"TOPLEFT", UIParent, "TOPLEFT", 20, -168}
+cfg.dpsraidgroupbyclass = true -- sort the members by class
+cfg.dpsgroupfilter = '1,2,3,4,5' --'1,2,3,4,5,6,7,8' if you want to show 40 group members
+cfg.unitnumperline = 25 -- unit number per line
 cfg.dpsraidheight, cfg.dpsraidwidth = 15, 70
-cfg.dpsraidgroupbyclass = true
 ---------------------------------------------------------------------------------------
 -------------------[[        My         Config        ]]------------------------------- 
 ---------------------------------------------------------------------------------------

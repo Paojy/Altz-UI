@@ -227,7 +227,7 @@ local updateDebuff = function(backdrop, icon, texture, count, dtype, duration, e
 
     icon.border:SetBackdropBorderColor(color.r, color.g, color.b)
     if dispellist[dtype] then
-	backdrop:SetBackdropBorderColor(color.r, color.g, color.b)
+	backdrop:SetBackdropBorderColor(color.r/2, color.g/2, color.b/2)
 	else
 	backdrop:SetBackdropBorderColor(0, 0, 0)
 	end

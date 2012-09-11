@@ -59,18 +59,18 @@ local function healpreditionbar(self, color)
 	hpb:SetStatusBarColor(unpack(color))
 	hpb:SetPoint('TOP')
 	hpb:SetPoint('BOTTOM')
-	if cfg.classcolormode then
-		hpb:SetPoint('LEFT', self.Health:GetStatusBarTexture(), 'RIGHT')
-	else
+	if cfg.tranparentmode then
 		hpb:SetPoint('LEFT', self.Health:GetStatusBarTexture(), 'LEFT')
+	else
+		hpb:SetPoint('LEFT', self.Health:GetStatusBarTexture(), 'RIGHT')
 	end
 	hpb:SetWidth(200)
 	return hpb
 end
 
 local function CreateHealPredition(self)
-	local myBar = healpreditionbar(self, cfg.myhealpredictioncolor)
-	local otherBar = healpreditionbar(self, cfg.otherhealpredictioncolor)
+	local myBar = healpreditionbar(self, cfg.healprediction.mycolor)
+	local otherBar = healpreditionbar(self, cfg.healprediction.othercolor)
 	self.HealPrediction = {
 		myBar = myBar,
 		otherBar = otherBar,
@@ -106,10 +106,10 @@ local func = function(self, unit)
 	self.bg = self:CreateTexture(nil, "BACKGROUND")
     self.bg:SetAllPoints()
     self.bg:SetTexture(cfg.texture)
-	if cfg.classcolormode then
-		self.bg:SetGradientAlpha("VERTICAL", .6, .6, .6, 1, .1, .1, .1, 1)
+	if cfg.tranparentmode then
+		self.bg:SetGradientAlpha("VERTICAL", .5, .5, .5, .5, 0, 0, 0, .2)
 	else
-		self.bg:SetGradientAlpha("VERTICAL", .3, .3, .3, .4, .1, .1, .1, .4)
+		self.bg:SetGradientAlpha("VERTICAL", .3, .3, .3, 1, .1, .1, .1, 1)
 	end
 	
 	-- border --
@@ -119,7 +119,6 @@ local func = function(self, unit)
 	self.targetborder = Createpxborder(self, 1)
 	self.targetborder:SetBackdropBorderColor(1, 1, .4)
 	self:RegisterEvent("PLAYER_TARGET_CHANGED", ChangedTarget)
-	self:RegisterEvent("RAID_ROSTER_UPDATE", ChangedTarget)
 
 	-- threat border --
 	self.threatborder = Createpxborder(self, 0)
@@ -130,7 +129,7 @@ local func = function(self, unit)
     hp:SetAllPoints(self)
     hp.frequentUpdates = true
 	
-	if not cfg.classcolormode then
+	if cfg.tranparentmode then
 		hp:SetReverseFill(true)
 	end
 	
@@ -143,7 +142,7 @@ local func = function(self, unit)
 	end
 	
 	-- heal prediction --
-	if cfg.healprediction then
+	if cfg.healprediction.enable then
 		CreateHealPredition(self)
 	end
 	
@@ -152,6 +151,11 @@ local func = function(self, unit)
     leader:SetPoint("BOTTOMLEFT", hp, "BOTTOMLEFT", 5, -5)
     self.Leader = leader
 
+	local assistant = hp:CreateTexture(nil, "OVERLAY", 1)
+    assistant:SetSize(12, 12)
+    assistant:SetPoint("BOTTOMLEFT", hp, "BOTTOMLEFT", 5, -5)
+	self.Assistant = assistant
+	
     local masterlooter = hp:CreateTexture(nil, 'OVERLAY', 1)
     masterlooter:SetSize(12, 12)
     masterlooter:SetPoint('LEFT', leader, 'RIGHT')
@@ -163,7 +167,7 @@ local func = function(self, unit)
 	
 	local raidname = createFont(hp, "OVERLAY", font, fontsize, fontflag, 1, 1, 1)
 	raidname:SetPoint("BOTTOMRIGHT", hp, "BOTTOMRIGHT", -1, 5)
-	if not cfg.classcolormode then
+	if cfg.nameclasscolormode then
 		self:Tag(raidname, '[Mlight:color][Mlight:raidname]')
 	else
 		self:Tag(raidname, '[Mlight:raidname]')
@@ -215,7 +219,7 @@ local func = function(self, unit)
         outsideAlpha = 0.5,
     }
 	
-	if cfg.showarrow then
+	if cfg.arrow.enable then
 		self.freebRange = range
 	else
 		self.Range = range
@@ -239,10 +243,10 @@ local dfunc = function(self, unit)
 	self.bg = self:CreateTexture(nil, "BACKGROUND")
     self.bg:SetAllPoints()
     self.bg:SetTexture(cfg.texture)
-	if cfg.classcolormode then
-		self.bg:SetGradientAlpha("VERTICAL", .6, .6, .6, 1, .1, .1, .1, 1)
+	if cfg.tranparentmode then
+		self.bg:SetGradientAlpha("VERTICAL", .5, .5, .5, .5, 0, 0, 0, .2)
 	else
-		self.bg:SetGradientAlpha("VERTICAL", .3, .3, .3, .4, .1, .1, .1, .4)
+		self.bg:SetGradientAlpha("VERTICAL", .3, .3, .3, 1, .1, .1, .1, 1)
 	end
 	
 	-- border --
@@ -253,7 +257,7 @@ local dfunc = function(self, unit)
     hp:SetAllPoints(self)
     hp.frequentUpdates = true
 	
-	if not cfg.classcolormode then
+	if cfg.tranparentmode then
 		hp:SetReverseFill(true)
 	end
 	
@@ -261,12 +265,17 @@ local dfunc = function(self, unit)
 	self.Health.PostUpdate = Updatehealthbar
 	
 	local leader = hp:CreateTexture(nil, "OVERLAY", 1)
-    leader:SetSize(12, 12)
+    leader:SetSize(8, 8)
     leader:SetPoint("BOTTOMLEFT", hp, "BOTTOMLEFT", 5, -5)
     self.Leader = leader
 
+	local assistant = hp:CreateTexture(nil, "OVERLAY", 1)
+    assistant:SetSize(8, 8)
+    assistant:SetPoint("BOTTOMLEFT", hp, "BOTTOMLEFT", 5, -5)
+	self.Assistant = assistant
+	
     local masterlooter = hp:CreateTexture(nil, 'OVERLAY', 1)
-    masterlooter:SetSize(12, 12)
+    masterlooter:SetSize(8, 8)
     masterlooter:SetPoint('LEFT', leader, 'RIGHT')
     self.MasterLooter = masterlooter
 	
@@ -275,8 +284,8 @@ local dfunc = function(self, unit)
 	self:Tag(lfd, '[Mlight:LFD]')
 		
 	local raidname = createFont(hp, "OVERLAY", font, fontsize, fontflag, 1, 1, 1, 'RIGHT')
-	raidname:SetPoint("BOTTOMLEFT", hp, "BOTTOMRIGHT", 5, 0)
-	if not cfg.classcolormode then
+	raidname:SetPoint"CENTER"
+	if cfg.nameclasscolormode then
 		self:Tag(raidname, '[Mlight:color][Mlight:raidname]')
 	else
 		self:Tag(raidname, '[Mlight:raidname]')
@@ -302,7 +311,7 @@ local dfunc = function(self, unit)
         outsideAlpha = 0.5,
     }
 	
-	if cfg.showarrow then
+	if cfg.arrow.enable then
 		self.freebRange = range
 	else
 		self.Range = range
@@ -327,13 +336,13 @@ local function Spawnhealraid()
 		'showSolo', cfg.showsolo,
 		'showParty', true,
 		'showRaid', true,
-		'xoffset', 5,
+		'xOffset', 5,
 		'yOffset', -5,
 		'point', cfg.anchor,
-		'groupFilter', '1,2,3,4,5,6,7,8',
+		'groupFilter', cfg.healergroupfilter,
 		'groupingOrder', '1,2,3,4,5,6,7,8',
 		'groupBy', 'GROUP',
-		'maxColumns', 5,
+		'maxColumns', 8,
 		'unitsPerColumn', 5,
 		'columnSpacing', 5,
 		'columnAnchorPoint', cfg.partyanchor
@@ -356,11 +365,16 @@ local function Spawndpsraid()
 		'showSolo', cfg.showsolo,
 		'showParty', true,
 		'showRaid', true,
+		'xOffset', 5,
 		'yOffset', -5,
-		'groupFilter', '1,2,3,4,5,6,7,8',
+		'point', "TOP",
+		'groupFilter', cfg.dpsgroupfilter,
 		'groupingOrder', groupingOrder,
 		'groupBy', groupBy,
-		'unitsPerColumn', 25
+		'maxColumns', 8,
+		'unitsPerColumn', cfg.unitnumperline,
+		'columnSpacing', 5,
+		'columnAnchorPoint', "LEFT"
 	)
 	dpsraid:SetPoint(unpack(cfg.dpsraidposition))
 end
@@ -414,7 +428,20 @@ function EventFrame:ADDON_LOADED(arg1)
 end
 
 function EventFrame:PLAYER_TALENT_UPDATE()
-	togglerf()
+	if not cfg.switch.auto then
+		if cfg.switch.onlyhealer then
+			hiderf(dpsraid)
+			showrf(healerraid)
+		elseif cfg.switch.onlydps then
+			hiderf(healerraid)
+			showrf(dpsraid)
+		else
+			togglerf()
+		end
+		EventFrame:UnregisterEvent("PLAYER_TALENT_UPDATE")
+	else
+		togglerf()
+	end
 end
 
 function EventFrame:PLAYER_ENTERING_WORLD()
