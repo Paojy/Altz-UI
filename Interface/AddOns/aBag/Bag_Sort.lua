@@ -104,12 +104,12 @@ function BS_OnUpdate(parentFrame, tElapsed)
 end
 
 function BS_slashBankSortHandler()
-	sortBagRange({11, 10, 9, 8, 7, 6, 5, -1})
+	sortBagRange({-1, 5, 6, 7, 8, 9, 10, 11})
 end
 
 function BS_slashBagSortHandler()
 
-	sortBagRange({4, 3, 2, 1, 0})
+	sortBagRange({0, 1, 2, 3, 4})
 end
 
 function sortBagRange(bagList)
