@@ -46,7 +46,7 @@ end
 --====================================================--
 --[[          -- Calendar toggle panel --           ]]--
 --====================================================--
-local infopanel = createlittlepanel(self, 130, "Calendar")
+local infopanel = createlittlepanel(self, 130, "|cffFF3E96C|ralendar")
 infopanel:SetPoint("TOPLEFT", UIParent, "TOPLEFT", 15, -10)
 infopanel:SetScript("OnMouseUp", function() ToggleCalendar() end)
 
@@ -57,7 +57,7 @@ BNToastFrame:SetPoint("TOPLEFT", Minimap, "TOPRIGHT", 10, -20)
 
 local xpbar = CreateFrame("StatusBar", "ExperienceBar", UIParent)
 xpbar:SetFrameStrata("LOW")
-xpbar:SetSize(185,4)
+xpbar:SetSize(195,4)
 xpbar:SetPoint("TOPLEFT", UIParent, "TOPLEFT", 150, -10)
 createbargradient(xpbar, Ccolor.r, Ccolor.g, Ccolor.b, 3)
 creategrowBD(xpbar, 0.3, 0.3, 0.3, 1, 1)
@@ -128,8 +128,12 @@ xpbar:RegisterEvent("PLAYER_LOGIN")
 local infobar = CreateFrame("Frame", nil, UIParent) -- Center Frame
 infobar:SetFrameStrata("LOW")
 infobar:SetSize(200, 20)
-infobar:SetAlpha(.3)
+infobar:SetAlpha(.6)
 infobar:SetPoint("TOPLEFT", UIParent, "TOPLEFT", 150, -13)
+
+Minimap:HookScript('OnEnter', function() infobar:SetAlpha(1) end)
+Minimap:HookScript('OnLeave', function() infobar:SetAlpha(.6) end)
+
 local Ctext = createtext(infobar, "OVERLAY", 12, "OUTLINE", "LEFT")
 Ctext:SetPoint"LEFT"
 
@@ -231,42 +235,74 @@ infobar:SetScript("OnUpdate", infobar.updateOntime)
 --====================================================--
 --[[              -- buff panel --                  ]]--
 --====================================================--
-local buffpanel = createlittlepanel(self, 320, "")
+local buffpanel = createlittlepanel(self, 330, "")
 buffpanel:SetPoint("TOPRIGHT", UIParent, "TOPRIGHT", -15, -10)
 
 --====================================================--
 --[[              -- chat panel --                  ]]--
 --====================================================--
-local WorldChannel = function()
-   local channels = {GetChannelList()}
-   local customChannelName = "大脚世界频道"
-   local isInCustomChannel = false
-   for i = 1, #channels do
-      if channels[i] == customChannelName then
-         isInCustomChannel = true
-      end
-   end
-   if isInCustomChannel then
-      print("|cffFF0000Leave|r 大脚世界频道")
-      LeaveChannelByName(customChannelName)
-   else
-      JoinPermanentChannel(customChannelName,nil,1)
-      print("|cff7FFF00Join|r 大脚世界频道")
-      ChatFrame_AddChannel(ChatFrame1,customChannelName)
-      ChatFrame_RemoveMessageGroup(ChatFrame1,"CHANNEL")
-   end
+local blpanel = createlittlepanel(self, 330, "")
+
+blpanel:SetPoint("BOTTOMLEFT", UIParent, "BOTTOMLEFT", 15, 10)
+
+blpanel.text:SetText("|cff00B2EEF|rriends   |cff00EE00G|ruild")
+blpanel:SetScript("OnMouseUp", function(self, button) 
+	if button == "RightButton" then
+		if IsInGuild() then 
+			if not GuildFrame then LoadAddOn("Blizzard_GuildUI") end 
+			GuildFrame_Toggle() 
+		else 
+			if not LookingForGuildFrame then LoadAddOn("Blizzard_LookingForGuildUI") end 
+			LookingForGuildFrame_Toggle() 
+		end
+	else
+		ToggleFriendsFrame(1)
+	end
+end)
+--====================================================--
+--[[   -- world channel button only for zhCN --     ]]--
+--====================================================--
+local channels = {GetChannelList()}
+local customChannelName = "大脚世界频道"
+local isInCustomChannel = false
+
+local ToggleWorldChannel = function(button)
+	if isInCustomChannel then
+		LeaveChannelByName(customChannelName)
+		print("|cffFF0000Leave|r 大脚世界频道")
+		button:UnlockHighlight()
+		isInCustomChannel = false	  
+	else
+		JoinPermanentChannel(customChannelName,nil,1)
+		ChatFrame_AddChannel(ChatFrame1,customChannelName)
+		ChatFrame_RemoveMessageGroup(ChatFrame1,"CHANNEL")
+		print("|cff7FFF00Join|r 大脚世界频道")
+		button:LockHighlight()
+		isInCustomChannel = true
+	end
 end
 
-local chatpanel = createlittlepanel(self, 320, "")
+local wcbutton = CreateFrame("Button", "wcButton", blpanel)
+wcbutton:SetPoint("LEFT", 20, 0)
+wcbutton:SetFrameStrata("LOW")
+wcbutton:SetFrameLevel(4)
+wcbutton:SetSize(25, 25)
+wcbutton:SetNormalTexture("Interface\\HELPFRAME\\ReportLagIcon-Chat")
+wcbutton:SetHighlightTexture("Interface\\HELPFRAME\\ReportLagIcon-Chat", "ADD")
+wcbutton:SetPushedTextOffset(3, -3)
+wcbutton:Hide()
 
-chatpanel:SetPoint("BOTTOMLEFT", UIParent, "BOTTOMLEFT", 15, 10)
 if GetLocale() == "zhCN" then
-	chatpanel.text:SetText("World Channel")
-	chatpanel:SetScript("OnMouseUp", function() WorldChannel() end)
-else
-	chatpanel.text:SetText("Friends")
-	chatpanel:SetScript("OnMouseUp", function() ToggleFriendsFrame(1) end)
+	wcbutton:Show()
+	for i = 1, #channels do
+		if channels[i] == customChannelName then
+			isInCustomChannel = true
+			wcbutton:LockHighlight()
+		end
+	end
+	wcbutton:SetScript("OnClick", function(self) ToggleWorldChannel(self) end)
 end
+
 --====================================================--
 --[[            -- center panel --                  ]]--
 --====================================================--	
@@ -299,10 +335,9 @@ end)
 --====================================================--
 --[[             -- bottomright panel --            ]]--
 --====================================================--		
-local brpanel = createlittlepanel(self, 320, "Damage Meter")
+local brpanel = createlittlepanel(self, 330, "|cffFFFF00B|rags   |cffBF3EFFD|ramage Meter")
 brpanel:SetPoint("BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", -15, 10)
 
--- tiny dps don't have a global toggle fuction, so just copy it.
 local function toggletinydps()
 	if IsAddOnLoaded("TinyDPS") then
 		if tdpsFrame:IsVisible() then
@@ -319,10 +354,9 @@ local function toggletinydps()
 	end
 end
 
-if IsAddOnLoaded("Recount") then
-	local Recount = LibStub("AceAddon-3.0"):GetAddon("Recount")
-	
-	local function togglerecount()
+local function togglerecount()
+	if IsAddOnLoaded("Recount") then
+		local Recount = LibStub("AceAddon-3.0"):GetAddon("Recount")
 		if Recount.MainWindow:IsShown() then
 			Recount.MainWindow:Hide()
 			Recount.db.profile.MainWindowVis = false
@@ -334,7 +368,8 @@ if IsAddOnLoaded("Recount") then
 	end
 end
 
-brpanel:SetScript("OnMouseUp", function() 
+brpanel:SetScript("OnMouseUp", function(self, button)
+	if button == "RightButton" then
         if IsAddOnLoaded("Numeration") then
             Numeration:ToggleVisibility()
 	    elseif IsAddOnLoaded("Skada") then
@@ -343,21 +378,29 @@ brpanel:SetScript("OnMouseUp", function()
 			toggletinydps()
 		elseif IsAddOnLoaded("Recount") then
 			togglerecount()
-	    else print "Can't find Numeration, Skada, Recount or TinyDPS!"
-        end 
-		end)
+	    else 
+			print "Can't find Numeration, Skada, Recount or TinyDPS!"
+        end
+	else
+		if IsAddOnLoaded("aBag") then
+			ToggleAllBags()
+		else
+			print "Can't find aBag!"
+		end
+	end
+end)
 --====================================================--
 --[[                 -- Screen --                   ]]--
 --====================================================--
 
-local TOPPANEL = CreateFrame("Frame", nil, WorldFrame)
+local TOPPANEL = CreateFrame("Frame", "AltzAKFtoppanel", WorldFrame)
 TOPPANEL:SetFrameStrata("FULLSCREEN")
 creategrowBD(TOPPANEL, 0, 0, 0, 0.5, 1)
 TOPPANEL:SetPoint("TOPLEFT",WorldFrame,"TOPLEFT",-5,5)
 TOPPANEL:SetPoint("BOTTOMRIGHT",WorldFrame,"TOPRIGHT",5,-80)
 TOPPANEL:Hide()
 
-local BOTTOMPANEL = CreateFrame("Frame", nil, WorldFrame)
+local BOTTOMPANEL = CreateFrame("Frame", "AltzAKFbottompanel", WorldFrame)
 BOTTOMPANEL:SetFrameStrata("FULLSCREEN")
 creategrowBD(BOTTOMPANEL, 0, 0, 0, 0.5, 1)
 BOTTOMPANEL:SetPoint("BOTTOMLEFT",WorldFrame,"BOTTOMLEFT",-5,-5)
@@ -377,7 +420,7 @@ AUI:SetPoint("BOTTOMRIGHT", TOPPANEL, "BOTTOMRIGHT", -290, 13)
 AUI:SetTextColor(0.7, 0.7, 0.7)
 AUI:SetText("AltZ UI")
 
-local Guide = CreateFrame("Frame", nil, WorldFrame)
+local Guide = CreateFrame("Frame", "AltzAKFcenterpanel", WorldFrame)
 Guide:SetFrameStrata("FULLSCREEN")
 creategrowBD(Guide, 0, 0, 0, 0.5, 1)
 Guide:SetPoint("TOPLEFT",WorldFrame,"TOPLEFT", -5, -90)
@@ -402,7 +445,7 @@ else
 end
 Creditstext:Hide()
 
-local SetupPanel = CreateFrame("Frame", nil, WorldFrame)
+local SetupPanel = CreateFrame("Frame", "Altzsetuppanel", WorldFrame)
 SetupPanel:SetFrameStrata("FULLSCREEN")
 creategrowBD(SetupPanel, 0, 0, 0, 0.5, 1)
 SetupPanel:SetPoint("TOPLEFT",WorldFrame,"TOPLEFT", -5, 5)
@@ -452,7 +495,7 @@ TOPPANEL:SetScript("OnUpdate", function(self, elapsed)
 	end
 end)
 
-local buttonhold = CreateFrame("Frame", nil, BOTTOMPANEL)
+local buttonhold = CreateFrame("Frame", "AltzAKFbottomhold", BOTTOMPANEL)
 buttonhold:SetPoint("BOTTOM",BOTTOMPANEL,"TOP", 0, -50)
 buttonhold:SetSize(400, 85)
 buttonhold.text = createtext(buttonhold, "OVERLAY", 20, "NONE", "CENTER")
@@ -465,7 +508,7 @@ local randomindex = random(1 ,petnum)
 local randomID = select(11, C_PetJournal.GetPetInfoByIndex(randomindex))
 
 local function littebutton(self, facing, note)
-	self = CreateFrame("PlayerModel", nil, buttonhold)
+	self = CreateFrame("PlayerModel", "AltzAKFlittlebutton"..facing, buttonhold)
 	self:SetSize(120,120)
 	if facing == 1 then
 		self:SetPoint("CENTER", buttonhold, "LEFT")
