@@ -41,7 +41,6 @@ MinimapZoomIn,
 MinimapZoomOut, 
 MiniMapVoiceChatFrame,
 GameTimeFrame, 
-MinimapZoneTextButton, 
 MiniMapTracking,  
 MiniMapWorldMapButton, 
 MinimapBackdrop,MinimapCluster,GameTimeFrame} do
@@ -76,7 +75,7 @@ GuildInstanceDifficulty:SetFrameStrata("HIGH")
 MiniMapInstanceDifficulty:Hide()
 local id = CreateFrame("Frame", nil, Minimap)
 id:SetPoint("TOPLEFT")
-id:SetSize(25, 25)
+id:SetSize(80, 80)
 local idtext = createtext(id, "OVERLAY", 14, "OUTLINE", "CENTER")
 idtext:SetAllPoints()
 idtext:SetTextColor(Ccolor.r, Ccolor.g, Ccolor.b)
@@ -136,22 +135,16 @@ id:RegisterEvent("PLAYER_DIFFICULTY_CHANGED")
 id:SetScript("OnEvent", function() indiff() end)
 
 -- location
+MinimapZoneTextButton:SetPoint("TOPLEFT", Minimap, "TOPRIGHT", 10, -25)
+MinimapZoneTextButton:SetWidth(400)
+MinimapZoneTextButton:SetParent(Minimap)
+MinimapZoneTextButton:Hide()
+MinimapZoneText:SetAllPoints(MinimapZoneTextButton)
+MinimapZoneText:SetFont(NAMEPLATE_FONT, 18, "OUTLINE") 
+MinimapZoneText:SetJustifyH"LEFT"
 
-local SubLoc = CreateFrame("Frame", "Sub Location", Minimap)
-SubLoc:SetSize(200, 100)
-SubLoc:SetPoint("TOPLEFT", Minimap, "TOPRIGHT", 10, -20)
-
-local SubText = createtext(SubLoc, "OVERLAY", 15, "OUTLINE", "CENTER")
-SubText:SetPoint("TOPLEFT", SubLoc, "TOPLEFT", 0, 0)
-SubText:SetText(GetSubZoneText())
-SubText:Hide()
-local SubText2 = createtext(SubLoc, "OVERLAY", 12, "OUTLINE", "CENTER")
-SubText2:SetPoint("TOPLEFT", SubLoc, "TOPLEFT", 0, -22)
-SubText2:SetText(GetZoneText())
-SubText2:Hide()
-
-Minimap:SetScript('OnEnter', function() SubText:Show() SubText2:Show() end)
-Minimap:SetScript('OnLeave', function() SubText:Hide() SubText2:Hide() end)
+Minimap:HookScript('OnEnter', function() MinimapZoneTextButton:Show() end)
+Minimap:HookScript('OnLeave', function() MinimapZoneTextButton:Hide() end)
 
 -- Clock 
 if not IsAddOnLoaded("Blizzard_TimeManager") then
