@@ -670,6 +670,11 @@ local func = function(self, unit)
     leader:SetPoint("BOTTOMLEFT", hp, "BOTTOMLEFT", 5, -5)
     self.Leader = leader
 
+	local assistant = hp:CreateTexture(nil, "OVERLAY")
+    assistant:SetSize(12, 12)
+    assistant:SetPoint("BOTTOMLEFT", hp, "BOTTOMLEFT", 5, -5)
+	self.Assistant = assistant
+	
     local masterlooter = hp:CreateTexture(nil, "OVERLAY")
     masterlooter:SetSize(12, 12)
     masterlooter:SetPoint("LEFT", leader, "RIGHT")
