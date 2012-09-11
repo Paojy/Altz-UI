@@ -3,6 +3,8 @@ local F, C = unpack(Aurora)
 -- these variables are loaded on init and updated only on gui.okay. Calling gui.cancel resets the saved vars to these
 local old = {}
 
+local checkboxes = {}
+
 -- function to copy table contents and inner table
 local function copyTable(source, target)
 	for key, value in pairs(source) do
@@ -32,6 +34,8 @@ local function createToggleBox(parent, name, value, text)
 	f.Text:SetText(text)
 
 	f:SetScript("OnClick", toggle)
+
+	tinsert(checkboxes, f)
 
 	return f
 end
@@ -65,15 +69,11 @@ line:SetTexture(1, 1, 1, .2)
 local fontBox = createToggleBox(gui, "AuroraOptionsEnableFont", "enableFont", "Replace default game fonts")
 fontBox:SetPoint("TOPLEFT", 16, -140)
 
-local colourBox = CreateFrame("CheckButton", "AuroraOptionsUseClassColours", gui, "InterfaceOptionsCheckButtonTemplate")
+local colourBox = createToggleBox(gui, "AuroraOptionsUseClassColours", "useCustomColour", "Use custom colour rather than class as highlight")
 colourBox:SetPoint("TOPLEFT", fontBox, "BOTTOMLEFT", 0, -8)
 
-local colourBoxText = colourBox:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
-colourBoxText:SetPoint("LEFT", colourBox, "RIGHT", 1, 1)
-colourBoxText:SetText("Use custom colour rather than class as highlight")
-
 local colourButton = CreateFrame("Button", "AuroraOptionsCustomColour", gui, "UIPanelButtonTemplate")
-colourButton:SetPoint("LEFT", colourBoxText, "RIGHT", 20, 0)
+colourButton:SetPoint("LEFT", colourBox.Text, "RIGHT", 20, 0)
 colourButton:SetSize(128, 25)
 colourButton:SetText("Change...")
 
@@ -81,13 +81,16 @@ local bagsBox = createToggleBox(gui, "AuroraOptionsBags", "bags", "Enable Bags")
 bagsBox:SetPoint("TOPLEFT", colourBox, "BOTTOMLEFT", 0, -16)
 
 local lootBox = createToggleBox(gui, "AuroraOptionsLoot", "loot", "Enable Loot")
-lootBox:SetPoint("LEFT", bagsBox, "RIGHT", 80, 0)
+lootBox:SetPoint("LEFT", bagsBox, "RIGHT", 90, 0)
+
+local chatBubbleBox = createToggleBox(gui, "AuroraOptionsChatBubbles", "chatBubbles", "Enable Chat Bubbles")
+chatBubbleBox:SetPoint("LEFT", lootBox, "RIGHT", 90, 0)
 
 local mapBox = createToggleBox(gui, "AuroraOptionsMap", "map", "Enable Map")
 mapBox:SetPoint("TOPLEFT", bagsBox, "BOTTOMLEFT", 0, -8)
 
 local tooltipsBox = createToggleBox(gui, "AuroraOptionsTooltips", "tooltips", "Enable Tooltips")
-tooltipsBox:SetPoint("LEFT", mapBox, "RIGHT", 80, 0)
+tooltipsBox:SetPoint("LEFT", mapBox, "RIGHT", 90, 0)
 
 local reloadText = gui:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
 reloadText:SetPoint("TOPLEFT", bagsBox, "BOTTOMLEFT", 0, -60)
@@ -107,12 +110,11 @@ line2:SetTexture(1, 1, 1, .2)
 
 gui.refresh = function()
 	alphaSlider:SetValue(AuroraConfig.alpha)
-	fontBox:SetChecked(AuroraConfig.enableFont)
-	colourBox:SetChecked(AuroraConfig.useCustomColour)
-	bagsBox:SetChecked(AuroraConfig.bags)
-	lootBox:SetChecked(AuroraConfig.loot)
-	mapBox:SetChecked(AuroraConfig.map)
-	tooltipsBox:SetChecked(AuroraConfig.tooltips)
+
+	for i = 1, #checkboxes do
+		checkboxes[i]:SetChecked(AuroraConfig[checkboxes[i].value] == true)
+	end
+
 	if not colourBox:GetChecked() then
 		colourButton:Disable()
 	end
@@ -125,17 +127,13 @@ gui:SetScript("OnEvent", function(self, _, addon)
 	-- fill 'old' table
 	copyTable(AuroraConfig, old)
 
-	gui.refresh()
-
 	F.Reskin(reloadButton)
 	F.Reskin(colourButton)
-	F.ReskinCheck(fontBox)
-	F.ReskinCheck(colourBox)
-	F.ReskinCheck(bagsBox)
-	F.ReskinCheck(lootBox)
-	F.ReskinCheck(mapBox)
-	F.ReskinCheck(tooltipsBox)
 	F.ReskinSlider(alphaSlider)
+
+	for i = 1, #checkboxes do
+		F.ReskinCheck(checkboxes[i])
+	end
 
 	self:UnregisterEvent("ADDON_LOADED")
 end)

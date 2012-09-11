@@ -41,6 +41,7 @@ C.media = {
 C.defaults = {
 	["alpha"] = 0.5,
 	["bags"] = true,
+	["chatBubbles"] = true,
 	["enableFont"] = true,
 	["loot"] = true,
 	["useCustomColour"] = false,
@@ -1460,22 +1461,21 @@ Skin:SetScript("OnEvent", function(self, event, addon)
 
 		SpellBookSkillLineTab1:SetPoint("TOPLEFT", SpellBookSideTabsFrame, "TOPRIGHT", 11, -36)
 
-		local tabsSkinned = false
 		hooksecurefunc("SpellBookFrame_UpdateSkillLineTabs", function()
-			if tabsSkinned then return end
-			local num = GetNumSpellTabs()
-			if num > 0 then tabsSkinned = true end
-			for i = 1, num do
+			for i = 1, GetNumSpellTabs() do
 				local tab = _G["SpellBookSkillLineTab"..i]
 
-				tab:GetRegions():Hide()
-				tab:SetCheckedTexture(C.media.checked)
+				if not tab.styled then
+					tab:GetRegions():Hide()
+					tab:SetCheckedTexture(C.media.checked)
 
-				F.CreateBG(tab)
-				F.CreateSD(tab, 5, 0, 0, 0, 1, 1)
+					F.CreateBG(tab)
+					F.CreateSD(tab, 5, 0, 0, 0, 1, 1)
 
-				_G["SpellBookSkillLineTab"..i.."TabardIconFrame"]:SetTexCoord(.08, .92, .08, .92)
-				tab:GetNormalTexture():SetTexCoord(.08, .92, .08, .92)
+					tab:GetNormalTexture():SetTexCoord(.08, .92, .08, .92)
+
+					tab.styled = true
+				end
 			end
 		end)
 
@@ -1760,11 +1760,8 @@ Skin:SetScript("OnEvent", function(self, event, addon)
 			end
 		end
 
-		hooksecurefunc("HybridScrollFrame_Update", function(scrollFrame)
-			if scrollFrame == FriendsFrameFriendsScrollFrame then
-				UpdateScroll()
-			end
-		end)
+		hooksecurefunc("FriendsFrame_UpdateFriends", UpdateScroll)
+		hooksecurefunc(FriendsFrameFriendsScrollFrame, "update", UpdateScroll)
 
 		FriendsFrameStatusDropDown:ClearAllPoints()
 		FriendsFrameStatusDropDown:SetPoint("TOPLEFT", FriendsFrame, "TOPLEFT", 10, -28)
@@ -4794,11 +4791,7 @@ Skin:SetScript("OnEvent", function(self, event, addon)
 		EncounterJournalEncounterFrameInfoDetailsScrollFrameScrollChildDescription:SetShadowOffset(1, -1)
 		EncounterJournalEncounterFrameInfoEncounterTitle:SetTextColor(1, 1, 1)
 
-		local modelbg = CreateFrame("Frame", nil, EncounterJournalEncounterFrameModelFrame)
-		modelbg:SetPoint("TOPLEFT", -1, 1)
-		modelbg:SetPoint("BOTTOMRIGHT", 1, -1)
-		modelbg:SetFrameLevel(EncounterJournalEncounterFrameModelFrame:GetFrameLevel()-1)
-		F.CreateBD(modelbg, .25)
+		F.CreateBDFrame(EncounterJournalEncounterFrameModelFrame, .25)
 
 		hooksecurefunc("EncounterJournal_DisplayInstance", function()
 			local bossIndex = 1;
@@ -5462,13 +5455,6 @@ Skin:SetScript("OnEvent", function(self, event, addon)
 			reskinnedRewards = true
 		end)
 
-		local function createButtonBg(bu)
-			bu:SetHighlightTexture(C.media.backdrop)
-			bu:GetHighlightTexture():SetVertexColor(r, g, b, .2)
-
-			bu.bg = F.CreateBG(bu.icon)
-		end
-
 		local tcoords = {
 			["WARRIOR"]     = {0.02, 0.23, 0.02, 0.23},
 			["MAGE"]        = {0.27, 0.47609375, 0.02, 0.23},
@@ -5494,28 +5480,30 @@ Skin:SetScript("OnEvent", function(self, event, addon)
 			end
 
 			for i = 1, numbuttons do
-				local button = GuildRosterContainer.buttons[i]
+				local bu = GuildRosterContainer.buttons[i]
 
-				if not button.bg then
-					createButtonBg(button)
+				if not bu.bg then
+					bu:SetHighlightTexture(C.media.backdrop)
+					bu:GetHighlightTexture():SetVertexColor(r, g, b, .2)
+
+					bu.bg = F.CreateBG(bu.icon)
 				end
 
 				index = offset + i
 				local name, _, _, _, _, _, _, _, _, _, classFileName  = GetGuildRosterInfo(index)
 				if name and index <= visibleMembers then
-					if button.icon:IsShown() then
-						button.icon:SetTexCoord(unpack(tcoords[classFileName]))
-						button.bg:Show()
+					if bu.icon:IsShown() then
+						bu.icon:SetTexCoord(unpack(tcoords[classFileName]))
+						bu.bg:Show()
 					else
-						button.bg:Hide()
+						bu.bg:Hide()
 					end
 				end
 			end
 		end
 
 		hooksecurefunc("GuildRoster_Update", UpdateIcons)
-		GuildRosterContainer:HookScript("OnMouseWheel", UpdateIcons)
-		GuildRosterContainer:HookScript("OnVerticalScroll", UpdateIcons)
+		hooksecurefunc(GuildRosterContainer, "update", UpdateIcons)
 
 		GuildLevelFrame:SetAlpha(0)
 		local closebutton = select(4, GuildTextEditFrame:GetChildren())
@@ -5625,6 +5613,7 @@ Skin:SetScript("OnEvent", function(self, event, addon)
 		ItemSocketingFrame:DisableDrawLayer("BORDER")
 		ItemSocketingFrame:DisableDrawLayer("ARTWORK")
 		ItemSocketingScrollFrameTop:SetAlpha(0)
+		ItemSocketingScrollFrameMiddle:SetAlpha(0)
 		ItemSocketingScrollFrameBottom:SetAlpha(0)
 		ItemSocketingSocket1Left:SetAlpha(0)
 		ItemSocketingSocket1Right:SetAlpha(0)
@@ -7020,14 +7009,7 @@ Delay:SetScript("OnEvent", function()
 	end
 
 	if AuroraConfig.loot == true and not(IsAddOnLoaded("Butsu") or IsAddOnLoaded("LovelyLoot") or IsAddOnLoaded("XLoot")) then
-		F.CreateBD(LootFrame)
-
-		LootFrame:DisableDrawLayer("BORDER")
-		LootFrameInset:DisableDrawLayer("BORDER")
-		LootFrame:DisableDrawLayer("OVERLAY")
-		LootFrameBg:Hide()
-		LootFrameTitleBg:Hide()
-		LootFrameInsetBg:Hide()
+		LootFramePortraitOverlay:Hide()
 
 		select(19, LootFrame:GetRegions()):SetPoint("TOP", LootFrame, "TOP", 0, -7)
 
@@ -7067,8 +7049,56 @@ Delay:SetScript("OnEvent", function()
 		LootFrameNext:ClearAllPoints()
 		LootFrameNext:SetPoint("RIGHT", LootFrameDownButton, "LEFT", -4, 0)
 
+		F.ReskinPortraitFrame(LootFrame, true)
 		F.ReskinArrow(LootFrameUpButton, "up")
 		F.ReskinArrow(LootFrameDownButton, "down")
-		F.ReskinClose(LootFrameCloseButton)
+	end
+
+	if AuroraConfig.chatBubbles then
+		local bubbleHook = CreateFrame("Frame")
+
+		local function styleBubble(frame)
+			for i = 1, frame:GetNumRegions() do
+				local region = select(i, frame:GetRegions())
+				if region:GetObjectType() == "Texture" then
+					region:SetTexture(nil)
+				end
+			end
+
+			frame:SetBackdrop({
+				bgFile = C.media.backdrop,
+				edgeFile = C.media.backdrop,
+				edgeSize = UIParent:GetScale(),
+			})
+			frame:SetBackdropColor(0, 0, 0, .5)
+			frame:SetBackdropBorderColor(0, 0, 0)
+		end
+
+		local function isChatBubble(frame)
+			if frame:GetName() then return end
+			if not frame:GetRegions() then return end
+			return frame:GetRegions():GetTexture() == [[Interface\Tooltips\ChatBubble-Background]]
+		end
+
+		local last = 0
+		local numKids = 0
+
+		bubbleHook:SetScript("OnUpdate", function(self, elapsed)
+			last = last + elapsed
+			if last > .1 then
+				last = 0
+				local newNumKids = WorldFrame:GetNumChildren()
+				if newNumKids ~= numKids then
+					for i=numKids + 1, newNumKids do
+						local frame = select(i, WorldFrame:GetChildren())
+
+						if isChatBubble(frame) then
+							styleBubble(frame)
+						end
+					end
+					numKids = newNumKids
+				end
+			end
+		end)
 	end
 end)
