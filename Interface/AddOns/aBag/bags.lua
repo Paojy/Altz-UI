@@ -1,9 +1,10 @@
-﻿local config = {
+﻿
+local config = {
 	enable = 1,
 	spacing = 4,
 	bpr = 10,
-	bapr = 15,
-	size = 30,
+	bapr = 16,
+	size = 28,
 	scale = 1,
 }
 
@@ -24,9 +25,6 @@ local function Kill(object)
 	object.Show = function() return end
 	object:Hide()
 end
-
-local togglemain, togglebank = 0,0
-local togglebag
 
 local bags = {
 	bag = {
@@ -50,11 +48,12 @@ function SetUp(framen, ...)
 	local frame = CreateFrame("Frame", "aBag_"..framen, UIParent)
 	frame:SetScale(config.scale)
 	if framen == "bag" then 
-		frame:SetWidth(((config.size+config.spacing)*config.bpr)+20-config.spacing)
+		frame:SetWidth(((config.size+config.spacing)*config.bpr)+10-config.spacing)
+		frame:SetPoint("BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", -18, 20)
 	else
-		frame:SetWidth(((config.size+config.spacing)*config.bapr)+20-config.spacing)
+		frame:SetWidth(((config.size+config.spacing)*config.bapr)+16-config.spacing)
+		frame:SetPoint("BOTTOM", UIParent, "BOTTOM", 0, 85)
 	end
-	frame:SetPoint("BOTTOMLEFT", UIParent, "BOTTOM", 180, 60)
 	frame:SetFrameStrata("HIGH")
 	frame:SetFrameLevel(1)
 
@@ -64,12 +63,11 @@ function SetUp(framen, ...)
 	
 	frame:SetClampedToScreen(true)
     frame:SetMovable(true)
-    frame:SetUserPlaced(true)
 	frame:EnableMouse(true)
 	frame:RegisterForDrag("LeftButton","RightButton")
-	frame:SetScript("OnDragStart", function(self) self:StartMoving() end)
+	frame:SetScript("OnDragStart", function(self) self:StartMoving() frame:SetUserPlaced(false) end)
 	frame:SetScript("OnDragStop", function(self) self:StopMovingOrSizing() end)
-	
+
 	local frame_bags = CreateFrame('Frame', "aBag_"..framen.."_bags")
 	frame_bags:SetParent("aBag_"..framen)
 	frame_bags:SetSize(10, 10)
@@ -128,8 +126,11 @@ function SetUp(framen, ...)
 	closet:SetText("X")
 	closet:SetTextColor(.4, .4, .4)
 	close:SetScript('OnMouseUp', function()
-		CloseAllBags()
-		CloseBankFrame()
+		if framen == "bag" then
+			ToggleAllBags()
+		else
+			CloseBankFrame()
+		end
 	end)
 	close:SetScript('OnEnter', function() closet:SetTextColor(1, 1, 1) end)
 	close:SetScript('OnLeave', function() closet:SetTextColor(.4, .4, .4) end)
@@ -208,13 +209,11 @@ for i = 1, 12 do
 end
 
 ContainerFrame1Item1:SetScript("OnHide", function() 
-	_G["aBag_bag"]:Hide() 
-	togglemain = 0 
+	_G["aBag_bag"]:Hide()
 end)
 
 BankFrameItem1:SetScript("OnHide", function() 
 	_G["aBag_bank"]:Hide()
-	togglebank = 0
 end)
 
 BankFrameItem1:SetScript("OnShow", function() 
@@ -290,7 +289,7 @@ function ContainerFrame_GenerateFrame(frame, size, id)
 				ContainerFrame1MoneyFrame:SetFrameStrata("HIGH")
 				ContainerFrame1MoneyFrame:SetFrameLevel(2)
 				if bag==1 and item==16 then
-					itemframes:SetPoint("TOPLEFT", _G["aBag_bag"], "TOPLEFT", 10, -30)
+					itemframes:SetPoint("TOPLEFT", _G["aBag_bag"], "TOPLEFT", 5, -30)
 					lastrowbutton = itemframes
 					lastbutton = itemframes
 				elseif numbuttons==config.bpr then
@@ -325,7 +324,7 @@ function ContainerFrame_GenerateFrame(frame, size, id)
 			ContainerFrame2MoneyFrame:SetParent(_G["aBag_bank"])
 			BankFrameMoneyFrame:Hide()
 			if bank==1 then
-				bankitems:SetPoint("TOPLEFT", _G["aBag_bank"], "TOPLEFT", 10, -30)
+				bankitems:SetPoint("TOPLEFT", _G["aBag_bank"], "TOPLEFT", 8, -30)
 				lastrowbutton = bankitems
 				lastbutton = bankitems
 			elseif numbuttons==config.bapr then
@@ -368,41 +367,64 @@ function ContainerFrame_GenerateFrame(frame, size, id)
 	end
 function updateContainerFrameAnchors() end
 
--- Centralize and rewrite bag opening functions
-function OpenAllBags(frame) ToggleAllBags() end
 function ToggleAllBags()
-	if (togglemain == 1) then
-		if(not BankFrame:IsShown()) then 
-			togglemain = 0
-			CloseBackpack()
-			_G["aBag_bag"]:Hide()
-			for i=1, NUM_BAG_FRAMES, 1 do CloseBag(i) end
-		end
-	else
-		togglemain = 1
-		OpenBackpack()
-		_G["aBag_bag"]:Show()
-		for i=1, NUM_BAG_FRAMES, 1 do OpenBag(i) end
+	if (not UIParent:IsShown()) then return end
+
+	local bagsOpen = 0
+	local totalBags = 1
+	if ( IsBagOpen(0) ) then
+		bagsOpen = bagsOpen +1
+		CloseBackpack()
 	end
 
-	if( BankFrame:IsShown() ) then
-		if (togglebank == 1) then
-			togglebank = 0
-			_G["aBag_bank"]:Hide()
-			BankFrame:Hide()
-			for i=NUM_BAG_FRAMES+1, NUM_CONTAINER_FRAMES, 1 do
-				if ( IsBagOpen(i) ) then CloseBag(i) end
-			end
-		else
-			togglebank = 1
-			_G["aBag_bank"]:Show()
-			BankFrame:Show()
-			for i=1, NUM_CONTAINER_FRAMES, 1 do
-				if (not IsBagOpen(i)) then OpenBag(i) end
-			end
+	for i=1, NUM_BAG_FRAMES, 1 do
+		if ( GetContainerNumSlots(i) > 0 ) then		
+			totalBags = totalBags +1
+		end
+		if ( IsBagOpen(i) ) then
+			CloseBag(i)
+			bagsOpen = bagsOpen +1
+		end
+	end
+	if (bagsOpen < totalBags) then
+		OpenBackpack()
+		for i=1, NUM_BAG_FRAMES, 1 do
+			OpenBag(i)
+			_G["aBag_bag"]:Show()
 		end
 	end
 end
+
+function OpenAllBags(frame)
+	if ( not UIParent:IsShown() ) then
+		return;
+	end
+	
+	for i=0, NUM_BAG_FRAMES, 1 do
+		if (IsBagOpen(i)) then
+			return;
+		end
+	end
+
+	if( frame and not FRAME_THAT_OPENED_BAGS ) then
+		FRAME_THAT_OPENED_BAGS = frame:GetName();
+	end
+
+	OpenBackpack()
+	for i=1, NUM_BAG_FRAMES, 1 do
+		OpenBag(i)
+		_G["aBag_bag"]:Show()
+	end
+end
+
+local EventFrame = CreateFrame("Frame")
+EventFrame:RegisterEvent("BANKFRAME_OPENED")
+
+EventFrame:SetScript("OnEvent", function()
+	for i=NUM_BAG_FRAMES+1, NUM_CONTAINER_FRAMES, 1 do
+		OpenBag(i)
+	end
+end)
 
 hooksecurefunc("ContainerFrame_Update", function(frame)
 		local id = frame:GetID()
