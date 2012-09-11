@@ -8,50 +8,50 @@ function ChatEdit_CustomTabPressed(self)
 	if strsub(tostring(self:GetText()), 1, 1) == "/" then return end
 
 	if  (self:GetAttribute("chatType") == "SAY")  then
-		if (IsInGroup()) then
-			self:SetAttribute("chatType", "PARTY");
-			ChatEdit_UpdateHeader(self);
-		elseif (IsInRaid()) then
-			self:SetAttribute("chatType", "RAID");
-			ChatEdit_UpdateHeader(self);
-		elseif (select(2, GetInstanceInfo()) == 'pvp') then
+		if (select(2, GetInstanceInfo()) == 'pvp') then
 			self:SetAttribute("chatType", "BATTLEGROUND");
 			ChatEdit_UpdateHeader(self);
-		elseif (IsInGuild()) then
+		elseif IsInRaid() then
+			self:SetAttribute("chatType", "RAID");
+			ChatEdit_UpdateHeader(self);
+		elseif IsInGroup() then
+			self:SetAttribute("chatType", "PARTY");
+			ChatEdit_UpdateHeader(self);
+		elseif IsInGuild() then
 			self:SetAttribute("chatType", "GUILD");
 			ChatEdit_UpdateHeader(self);
 		else
 			return;
 		end
-	elseif (self:GetAttribute("chatType") == "PARTY") then
-		if (IsInRaid()) then
+	elseif (self:GetAttribute("chatType") == "BATTLEGROUND") then
+		if IsInRaid() then
 			self:SetAttribute("chatType", "RAID");
 			ChatEdit_UpdateHeader(self);
-		elseif (select(2, GetInstanceInfo()) == 'pvp') then
-			self:SetAttribute("chatType", "BATTLEGROUND");
+		elseif IsInGroup() then
+			self:SetAttribute("chatType", "PARTY");
 			ChatEdit_UpdateHeader(self);
-		elseif (IsInGuild()) then
+		elseif IsInGuild() then
 			self:SetAttribute("chatType", "GUILD");
-			ChatEdit_UpdateHeader(self);
+			ChatEdit_UpdateHeader(self)
 		else
 			self:SetAttribute("chatType", "SAY");
 			ChatEdit_UpdateHeader(self);
 		end			
 	elseif (self:GetAttribute("chatType") == "RAID") then
-		if (select(2, GetInstanceInfo()) == 'pvp') then
-			self:SetAttribute("chatType", "BATTLEGROUND");
+		if IsInGroup() then
+			self:SetAttribute("chatType", "PARTY");
 			ChatEdit_UpdateHeader(self);
-		elseif (IsInGuild()) then
+		elseif IsInGuild() then
 			self:SetAttribute("chatType", "GUILD");
-			ChatEdit_UpdateHeader(self);
+			ChatEdit_UpdateHeader(self)
 		else
 			self:SetAttribute("chatType", "SAY");
 			ChatEdit_UpdateHeader(self);
 		end
-	elseif (self:GetAttribute("chatType") == "BATTLEGROUND") then
-		if (IsInGuild) then
+	elseif (self:GetAttribute("chatType") == "PARTY") then
+		if IsInGuild() then
 			self:SetAttribute("chatType", "GUILD");
-			ChatEdit_UpdateHeader(self);
+			ChatEdit_UpdateHeader(self)
 		else
 			self:SetAttribute("chatType", "SAY");
 			ChatEdit_UpdateHeader(self);
