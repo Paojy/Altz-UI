@@ -54,7 +54,9 @@ infopanel:SetScript("OnMouseUp", function() ToggleCalendar() end)
 --====================================================--
 --[[           -- XP bar and Info bar --            ]]--
 --====================================================--
+BNToastFrame:ClearAllPoints()
 BNToastFrame:SetPoint("TOPLEFT", Minimap, "TOPRIGHT", 10, -20)
+BNToastFrame_UpdateAnchor = function() end
 
 local xpbar = CreateFrame("StatusBar", "ExperienceBar", UIParent)
 xpbar:SetFrameStrata("LOW")
