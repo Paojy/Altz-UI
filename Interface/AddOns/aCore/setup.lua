@@ -219,9 +219,12 @@ function SetupAltzui()
 	FCF_SetLocked(ChatFrame1, 1)
 	FCF_DockFrame(ChatFrame2)
 	FCF_SetLocked(ChatFrame2, 1)
-	FCF_OpenNewWindow(LOOT)
+	FCF_OpenNewWindow(GUILD.."&"..WHISPER)
 	FCF_SetLocked(ChatFrame3, 1)
 	FCF_DockFrame(ChatFrame3)
+	FCF_OpenNewWindow(LOOT)
+	FCF_SetLocked(ChatFrame4, 1)
+	FCF_DockFrame(ChatFrame4)
 	
 	local channels = {
 		"SAY", "EMOTE", "YELL", "GUILD", "OFFICER", "GUILD_ACHIEVEMENT", "ACHIEVEMENT", "WHISPER","PARTY", "PARTY_LEADER", "RAID", "RAID_LEADER", "RAID_WARNING",
@@ -231,13 +234,17 @@ function SetupAltzui()
 	for i, v in ipairs(channels) do
 		ToggleChatColorNamesByClassGroup(true, v)
 	end
-
+	
 	ChatFrame_RemoveAllMessageGroups(ChatFrame3)
-	ChatFrame_AddMessageGroup(ChatFrame3, "COMBAT_XP_GAIN")
-	ChatFrame_AddMessageGroup(ChatFrame3, "COMBAT_HONOR_GAIN")
-	ChatFrame_AddMessageGroup(ChatFrame3, "COMBAT_FACTION_CHANGE")
-	ChatFrame_AddMessageGroup(ChatFrame3, "LOOT")
-	ChatFrame_AddMessageGroup(ChatFrame3, "MONEY")
+	ChatFrame_AddMessageGroup(ChatFrame3, "GUILD")
+	ChatFrame_AddMessageGroup(ChatFrame3, "WHISPER")
+	
+	ChatFrame_RemoveAllMessageGroups(ChatFrame4)
+	ChatFrame_AddMessageGroup(ChatFrame4, "COMBAT_XP_GAIN")
+	ChatFrame_AddMessageGroup(ChatFrame4, "COMBAT_HONOR_GAIN")
+	ChatFrame_AddMessageGroup(ChatFrame4, "COMBAT_FACTION_CHANGE")
+	ChatFrame_AddMessageGroup(ChatFrame4, "LOOT")
+	ChatFrame_AddMessageGroup(ChatFrame4, "MONEY")
 end
 ns.SetupAltzui = SetupAltzui
 
