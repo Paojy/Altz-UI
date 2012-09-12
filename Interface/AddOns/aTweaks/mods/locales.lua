@@ -20,6 +20,11 @@ L["Sell grey"] = "Sell grey"
 L["Guild repair used:"] = "Guild repair used:"
 L["Repair used:"] = "Repair used:"
 L["Interrupted"] = "Interrupted"
+L["No bindings set."] = "No bindings set."
+L["Binding"] = "Binding"
+L["Key"] = "Key"
+L["Save bindings"] = "Save bindings"
+L["Discard bindings"] = "Discard bindings"
 
 if GetLocale() == "zhCN" then
 	L["Open All"] = "全部打开"
@@ -40,6 +45,11 @@ if GetLocale() == "zhCN" then
 	L["Guild repair used:"] = "公会修理用了："
 	L["Repair used:"] = "修理用了："
 	L["Interrupted"] = "打断了"
+	L["No bindings set."] = "没有绑定键位"
+	L["Binding"] = "绑定"
+	L["Key"] = "键位"
+	L["Save bindings"] = "保存"
+	L["Discard bindings"] = "取消"
 end
 
 if GetLocale() == "zhTW" then
@@ -61,6 +71,11 @@ if GetLocale() == "zhTW" then
 	L["Guild repair used:"] = "公會修理用了："
 	L["Repair used:"] = "修理用了："
 	L["Interrupted"] = "打斷了"
+	L["No bindings set."] = "沒有綁定鍵位"
+	L["Binding"] = "綁定"
+	L["Key"] = "鍵位"
+	L["Save bindings"] = "保存"
+	L["Discard bindings"] = "取消"
 end
 
 ns.L = L

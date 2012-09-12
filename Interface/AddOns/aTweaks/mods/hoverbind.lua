@@ -66,9 +66,9 @@ SlashCmdList.MOUSEOVERBIND = function()
 					self:AddLine(bind.button.name, 1, 1, 1)
 					bind.button.bindings = {GetBindingKey(spellmacro.." "..bind.button.name)}
 					if #bind.button.bindings == 0 then
-						self:AddLine("No bindings set.", .6, .6, .6)
+						self:AddLine(L["No bindings set."], .6, .6, .6)
 					else
-						self:AddDoubleLine("Binding", "Key", .6, .6, .6, .6, .6, .6)
+						self:AddDoubleLine(L["Binding"], L["Key"], .6, .6, .6, .6, .6, .6)
 						for i = 1, #bind.button.bindings do
 							self:AddDoubleLine(i, bind.button.bindings[i])
 						end
@@ -89,11 +89,11 @@ SlashCmdList.MOUSEOVERBIND = function()
 				
 				bind.button.bindings = {GetBindingKey(spellmacro.." "..bind.button.name)}
 					if #bind.button.bindings == 0 then
-						GameTooltip:AddLine("No bindings set.", .6, .6, .6)
+						GameTooltip:AddLine(L["No bindings set."], .6, .6, .6)
 					else
-						GameTooltip:AddDoubleLine("Binding", "Key", .6, .6, .6, .6, .6, .6)
+						GameTooltip:AddDoubleLine(L["Binding"], L["Key"], .6, .6, .6, .6, .6, .6)
 						for i = 1, #bind.button.bindings do
-							GameTooltip:AddDoubleLine("Binding"..i, bind.button.bindings[i], 1, 1, 1)
+							GameTooltip:AddDoubleLine(L["Binding"]..i, bind.button.bindings[i], 1, 1, 1)
 						end
 					end
 				GameTooltip:Show()
@@ -117,9 +117,9 @@ SlashCmdList.MOUSEOVERBIND = function()
 					self:AddLine(bind.button.name, 1, 1, 1)
 					bind.button.bindings = {GetBindingKey(bind.button.bindstring)}
 					if #bind.button.bindings == 0 then
-						self:AddLine("No bindings set.", .6, .6, .6)
+						self:AddLine(L["No bindings set."], .6, .6, .6)
 					else
-						self:AddDoubleLine("Binding", "Key", .6, .6, .6, .6, .6, .6)
+						self:AddDoubleLine(L["Binding"], L["Key"], .6, .6, .6, .6, .6, .6)
 						for i = 1, #bind.button.bindings do
 							self:AddDoubleLine(i, bind.button.bindings[i])
 						end
@@ -165,9 +165,9 @@ SlashCmdList.MOUSEOVERBIND = function()
 					self:AddLine(bind.button.name, 1, 1, 1)
 				--	bind.button.bindings = {GetBindingKey(bind.button.bindstring)}
 					if #bind.button.bindings == 0 then
-						self:AddLine("No bindings set.", .6, .6, .6)
+						self:AddLine(L["No bindings set."], .6, .6, .6)
 					else
-						self:AddDoubleLine("Binding", "Key", .6, .6, .6, .6, .6, .6)
+						self:AddDoubleLine(L["Binding"], L["Key"], .6, .6, .6, .6, .6, .6)
 						for i = 1, #bind.button.bindings do
 							self:AddDoubleLine(i, bind.button.bindings[i])
 						end
@@ -257,8 +257,8 @@ SlashCmdList.MOUSEOVERBIND = function()
 
 		StaticPopupDialogs["KEYBIND_MODE"] = {
 			text = L["Binding Mode"],
-			button1 = "Save bindings",
-			button2 = "Discard bindings",
+			button1 = L["Save bindings"],
+			button2 = L["Discard bindings"],
 			OnAccept = function() bind:Deactivate(true) end,
 			OnCancel = function() bind:Deactivate(false) end,
 			timeout = 0,
