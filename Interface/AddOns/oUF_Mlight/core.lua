@@ -372,7 +372,7 @@ local CreateCastbars = function(self, unit)
         cb.Time = createFont(cb, "OVERLAY", cfg.font, cfg.fontsize, cfg.fontflag, 1, 1, 1)
 		if (unit == "player") then
 			cb.Time:SetFont(cfg.font, cfg.fontsize+2, cfg.fontflag)
-			cb.Time:SetPoint("BOTTOM", cb, "TOP", 0, 7)
+			cb.Time:SetPoint("TOP", cb, "BOTTOM", 0, -7)
 		else
 			cb.Time:SetPoint("BOTTOMRIGHT", cb, "TOPRIGHT", -3, -3)
 		end

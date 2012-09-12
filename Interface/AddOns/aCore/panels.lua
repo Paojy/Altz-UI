@@ -129,7 +129,7 @@ xpbar:RegisterEvent("PLAYER_LOGIN")
 local infobar = CreateFrame("Frame", nil, UIParent) -- Center Frame
 infobar:SetFrameStrata("LOW")
 infobar:SetSize(200, 20)
-infobar:SetAlpha(.6)
+infobar:SetAlpha(.3)
 infobar:SetPoint("TOPLEFT", UIParent, "TOPLEFT", 150, -13)
 
 Minimap:HookScript('OnEnter', function() infobar:SetAlpha(1) end)
