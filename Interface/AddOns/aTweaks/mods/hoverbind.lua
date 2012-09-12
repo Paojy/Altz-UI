@@ -1,9 +1,12 @@
 ﻿--ncHoverBind (bug fixed)
 
+local ADDON_NAME, ns = ...
+local L = ns.L
+
 local bind, localmacros = CreateFrame("Frame", "ncHoverBind", UIParent), 0
 -- SLASH COMMAND
 SlashCmdList.MOUSEOVERBIND = function()
-	if InCombatLockdown() then print("You can't bind keys in combat.") return end
+	if InCombatLockdown() then print(L["You can't bind keys in combat."]) return end
 	if not bind.loaded then
 		local find = string.find
 		local _G = getfenv(0)
@@ -196,7 +199,7 @@ SlashCmdList.MOUSEOVERBIND = function()
 				for i = 1, #self.button.bindings do
 					SetBinding(self.button.bindings[i])
 				end
-				print("All keybindings cleared for |cff00ff00"..self.button.name.."|r.")
+				print(L["All keybindings cleared for"].." |cff00ff00"..self.button.name.."|r.")
 				self:Update(self.button, self.spellmacro)
 				if self.spellmacro~="MACRO" then GameTooltip:Hide() end
 				return
@@ -225,7 +228,7 @@ SlashCmdList.MOUSEOVERBIND = function()
 			else
 				SetBinding(alt..ctrl..shift..key, self.spellmacro.." "..self.button.name)
 			end
-			print("|cff00ff00"..alt..ctrl..shift..key.."|r bound to |cff00ff00"..self.button.name.."|r")
+			print("|cff00ff00"..alt..ctrl..shift..key.."|r "..L["bound to"].." |cff00ff00"..self.button.name.."|r")
 			self:Update(self.button, self.spellmacro)
 			if self.spellmacro~="MACRO" then GameTooltip:Hide() end
 		end
@@ -241,10 +244,10 @@ SlashCmdList.MOUSEOVERBIND = function()
 		function bind:Deactivate(save)
 			if save then
 				SaveBindings(2)
-				print("All keybindings have been saved.")
+				print(L["All keybindings have been saved."])
 			else
 				LoadBindings(2)
-				print("All newly set keybindings have been discarded.")
+				print(L["All newly set keybindings have been discarded."])
 			end
 			self.enabled = false
 			self:HideFrame()
@@ -253,7 +256,7 @@ SlashCmdList.MOUSEOVERBIND = function()
 		end
 
 		StaticPopupDialogs["KEYBIND_MODE"] = {
-			text = "Hover your mouse over any actionbutton to bind it. Press the escape key or right click to clear the current actionbutton's keybinding.",
+			text = L["Binding Mode"],
 			button1 = "Save bindings",
 			button2 = "Discard bindings",
 			OnAccept = function() bind:Deactivate(true) end,

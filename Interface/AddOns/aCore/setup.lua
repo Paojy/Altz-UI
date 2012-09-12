@@ -1,5 +1,6 @@
 ﻿-- Load varriables on demand
 local addon, ns = ...
+local L = ns.L
 
 local function LoadVariables()
 	aCoreCDB = {
@@ -241,9 +242,9 @@ end
 ns.SetupAltzui = SetupAltzui
 
 StaticPopupDialogs["SetupAltzUI"] = {
-	text = "Do you want to set to Deflaut Options and Reload UI?",
-	button1 = "yes",
-	button2 = "cancel",
+	text = L["SetupEnsure"],
+ 	button1 = ACCEPT,
+ 	button2 = CANCEL,
 	OnAccept = function() SetupAltzui() ReloadUI() end,
 	OnCancel = function() end,
 	timeout = 0,

@@ -581,7 +581,7 @@ gmbAddOns:SetSize(GameMenuButtonMacros:GetWidth(), GameMenuButtonMacros:GetHeigh
 GameMenuFrame:SetHeight(GameMenuFrame:GetHeight()+GameMenuButtonMacros:GetHeight());
 GameMenuButtonLogout:SetPoint("TOP", gmbAddOns, "BOTTOM", 0, -1)
 gmbAddOns:SetPoint("TOP", GameMenuButtonMacros, "BOTTOM", 0, -1)
-gmbAddOns:SetText("Addons")
+gmbAddOns:SetText(ADDONS)
 gmbAddOns:SetScript("OnClick", function()
 	HideUIPanel(GameMenuFrame);
 	stAddonManager:LoadWindow()

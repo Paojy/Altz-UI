@@ -6,6 +6,8 @@
 ## Credits: Zork
 ## SavedVariablesPerCharacter: aCoreCDB
 
+locales.lua
+
 lib\core.lua
 lib\pattern.lua
 lib\dragframe.lua

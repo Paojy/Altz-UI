@@ -1,5 +1,6 @@
 ﻿local ADDON_NAME, ns = ...
 local cfg = ns.cfg
+local L = ns.L
 
 if not cfg.playermenu then return end 
 
@@ -15,10 +16,10 @@ local clickers = {
 ["ADDFRIEND"] = AddFriend,
 }
 
-UnitPopupButtons["COPYNAME"] = {text = "Copy Name", dist = 0}
-UnitPopupButtons["WHO"] = {text = "Who", dist = 0}
-UnitPopupButtons["GUILD_INVITE"] = {text = "Guild Invite", dist = 0}
-UnitPopupButtons["ADDFRIEND"] = {text = "Add Friend", dist = 0}
+UnitPopupButtons["COPYNAME"] = {text = L["Copy Name"], dist = 0}
+UnitPopupButtons["WHO"] = {text = L["Who"], dist = 0}
+UnitPopupButtons["GUILD_INVITE"] = {text = L["Guild Invite"], dist = 0}
+UnitPopupButtons["ADDFRIEND"] = {text = L["Add Friend"], dist = 0}
 
 insertbefore(UnitPopupMenus["FRIEND"], "IGNORE", "COPYNAME")
 insertbefore(UnitPopupMenus["FRIEND"], "COPYNAME", "WHO")

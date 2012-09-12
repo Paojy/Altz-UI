@@ -3,6 +3,7 @@
 ## Author: Blooblahguy adjo
 ## RequiredDeps: aCore
 
+locales.lua
 Bag_Sort.XML
 Bag_Sort.lua
 bags.lua

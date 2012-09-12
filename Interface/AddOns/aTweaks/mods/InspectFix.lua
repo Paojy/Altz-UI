@@ -127,7 +127,7 @@ local function NIhook(unit)
       blockmsg[addon].count = count
       local now = GetTime()
       if not blockmsg[addon].lastwarn or (now - blockmsg[addon].lastwarn > 30) then -- throttle warnings
-        print("InspectFix blocked a conflicting inspect request from "..addon.." ("..count.." occurences)")
+        --print("InspectFix blocked a conflicting inspect request from "..addon.." ("..count.." occurences)")
 	debug(str)
         blockmsg[addon].lastwarn = now
       end
@@ -255,7 +255,7 @@ function InspectFix:tryhook()
 
   if hookcnt == 7 then
     hookcnt = hookcnt + 1
-    print("InspectFix hook activated.")
+    --print("InspectFix hook activated.")
   end
 end
 function InspectFix_OnEvent(self, event)

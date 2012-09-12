@@ -2,6 +2,7 @@
 
 local ADDON_NAME, ns = ...
 local cfg = ns.cfg
+local L = ns.L
 
 if not cfg.countdown then return end
 
@@ -22,7 +23,7 @@ SlashCmdList['COUNTDOWN'] = function(newtime)
       
         if (countdown + 1) == throttle and countdown >= 0 then
             if countdown == 0 then
-                SendChatMessage('Fire！', cfg.cdchannel)
+                SendChatMessage(L["Fire!"], cfg.cdchannel)
                 throttle = countdown
                 ending = true
             else

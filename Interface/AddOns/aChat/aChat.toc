@@ -4,6 +4,8 @@
 ## RequiredDeps: aCore
 ## Credits: Blooblahguy Lolzen Cargor  haste Evl zork Xruptor
 
+mods\locales.lua
+
 config.lua
 
 mods\chat.lua

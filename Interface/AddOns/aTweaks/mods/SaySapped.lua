@@ -1,5 +1,6 @@
 ﻿local ADDON_NAME, ns = ...
 local cfg = ns.cfg
+local L = ns.L
 
 if not cfg.saysapped then return end
 
@@ -12,8 +13,8 @@ SaySapped:SetScript("OnEvent",function(...)
 	and (select(11,...) == SaySapped.playername)
 	and (select(4,...) == "SPELL_AURA_APPLIED" or select(4,...) == "SPELL_AURA_REFRESH"))
 	then
-		SendChatMessage("Sapped!", "SAY")
-		DEFAULT_CHAT_FRAME:AddMessage("sapped by: "..(select(7,...) or "(unknown)"))
+		SendChatMessage(L["Sapped!"], "SAY")
+		DEFAULT_CHAT_FRAME:AddMessage(L["sapped by:"].." "..(select(7,...) or "(unknown)"))
 	end
 end)
 

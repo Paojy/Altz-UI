@@ -1,4 +1,6 @@
-﻿
+﻿local addon, ns = ...
+local L = ns.L
+
 local config = {
 	enable = 1,
 	spacing = 4,
@@ -83,7 +85,7 @@ function SetUp(framen, ...)
 	
 	local frame_bags_toggle_text = createtext(frame_bags_toggle, "OVERLAY", 12, "OUTLINE", "RIGHT")
 	frame_bags_toggle_text:SetAllPoints()
-	frame_bags_toggle_text:SetText("B")
+	frame_bags_toggle_text:SetText(L["Bag"])
 	frame_bags_toggle_text:SetTextColor(.4, .4, .4)
 	frame_bags_toggle:SetScript('OnMouseUp', function()
 		if not frame_bags:IsShown() then
@@ -103,7 +105,7 @@ function SetUp(framen, ...)
 	
 	local bagsortt = createtext(bagsort, "OVERLAY", 12, "OUTLINE", "RIGHT")
 	bagsortt:SetAllPoints()
-	bagsortt:SetText("S")
+	bagsortt:SetText(L["Sort"])
 	bagsortt:SetTextColor(.4, .4, .4)
 	bagsort:SetScript('OnMouseUp', function()
 		if framen == "bag" then

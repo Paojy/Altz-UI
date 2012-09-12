@@ -5,6 +5,8 @@
 ## OptionalDeps: Numeration, Skada, TinyDPS
 ## Credits: Elv emelio oscarucb Moolgar Monolit Blooblahguy Nibelheim hankthetank weasoug Xruptor bitbyte Allez Alza nightcracker
 
+mods\locales.lua
+
 config.lua
 
 mods\ImprovedCamera..xml

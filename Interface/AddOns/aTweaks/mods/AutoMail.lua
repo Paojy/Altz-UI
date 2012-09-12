@@ -2,6 +2,7 @@
 
 local ADDON_NAME, ns = ...
 local cfg = ns.cfg
+local L = ns.L
 
 if not cfg.automail then return end
 
@@ -37,7 +38,7 @@ function AutoMail:PLAYER_LOGIN()
 	inboxAllButton.text:SetAllPoints(inboxAllButton)
 	inboxAllButton:SetHighlightTexture("Interface\\UnitPowerBarAlt\\Generic1Target_Horizontal_Flash", "ADD")
 	inboxAllButton:GetHighlightTexture():SetAlpha(.3)
-	inboxAllButton.text:SetText("Open All")
+	inboxAllButton.text:SetText(L["Open All"])
 	inboxAllButton:SetScript("OnClick", function() AutoMail.GetMail() end)
 
 	self:UnregisterEvent("PLAYER_LOGIN")
@@ -117,7 +118,7 @@ local function mailLoop(this, arg1)
 			elseif bagCheck() < 1 then
 				triggerStop = true
 				AutoMail:StopMail()
-				DEFAULT_CHAT_FRAME:AddMessage("Your bags are full")
+				DEFAULT_CHAT_FRAME:AddMessage(L["Your bags are full"])
 			else
 				if money > 0 then moneyCount = moneyCount + money end
 				AutoLootMailItem(numInboxItems)
@@ -162,7 +163,7 @@ function AutoMail:StopMail()
 	AutoMail:SetScript("OnUpdate", nil)
 	--check for money output
 	if moneyCount > 0 then
-		DEFAULT_CHAT_FRAME:AddMessage("Total money from mailbox ["..colorMoneyText(moneyCount).."]")
+		DEFAULT_CHAT_FRAME:AddMessage(L["Total money from mailbox "].."["..colorMoneyText(moneyCount).."]")
 	end
 end
 
@@ -171,7 +172,7 @@ function AutoMail:UI_ERROR_MESSAGE(event, arg1)
 	if arg1 == ERR_INV_FULL then
 		triggerStop = true
 		AutoMail:StopMail()
-		DEFAULT_CHAT_FRAME:AddMessage("Your bags are full")
+		DEFAULT_CHAT_FRAME:AddMessage(L["Your bags are full"])
 	end
 end
 

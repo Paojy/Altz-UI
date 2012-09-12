@@ -1,6 +1,7 @@
 ﻿--Author: Weasoug
 local ADDON_NAME, ns = ...
 local cfg = ns.cfg
+local L = ns.L
 
 local addonName, eventHandlers = ..., { }
 
@@ -17,7 +18,7 @@ if cfg.acceptres then
 			else
                 local b = CreateFrame("Button")
 				local formattedText = b:GetText(b:SetFormattedText("%d |4second:seconds", delay))
-				SendChatMessage("Thanks for the rez! I still have "..formattedText.." until I can accept it.", 'WHISPER', nil, name)
+				SendChatMessage(L["Thanks for the rez! I still have"].." "..formattedText.." "..L["until I can accept it."], 'WHISPER', nil, name)
 			end
 		end
 	end
@@ -115,7 +116,7 @@ if cfg.autorepair or cfg.autorepairguild or cfg.selljunk then
 				end
 			end
 			if total > 0 then
-				print("Sell grey " .. MoneyToString(total))
+				print(L["Sell grey"].." " .. MoneyToString(total))
 			end
 		]]
 	end
@@ -128,7 +129,7 @@ if cfg.autorepair or cfg.autorepairguild or cfg.selljunk then
 					RepairAllItems(1)
 					local newCost = GetRepairAllCost()
 					if newCost < cost then
-						print("Guild repair used: " .. MoneyToString(cost - newCost))
+						print(L["Guild repair used:"].." ".. MoneyToString(cost - newCost))
 					end
 				end
 			end
@@ -141,7 +142,7 @@ if cfg.autorepair or cfg.autorepairguild or cfg.selljunk then
 			local cost, canRepair = GetRepairAllCost()
 			if canRepair and cost > 0 and cost <= GetMoney() * 0.2 then
 				RepairAllItems()
-				print("Repair used: " .. MoneyToString(cost))
+				print(L["Repair used:"].." ".. MoneyToString(cost))
 			end
 		]]
 	end
@@ -233,7 +234,7 @@ eventHandlers['COMBAT_LOG_EVENT_UNFILTERED'] = function(...)
         local channel = IsInRaid() and "RAID" or IsInGroup() and "PARTY"
 
 	if channel then
-		SendChatMessage(GetSpellLink(arg12).." Interrupted "..GetSpellLink(arg15), channel)
+		SendChatMessage(GetSpellLink(arg12).." "..L["Interrupted"].." "..GetSpellLink(arg15), channel)
 	end
     end
 end
