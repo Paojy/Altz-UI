@@ -13,7 +13,7 @@ cfg.glowTex = cfg.mediaPath.."grow"
 cfg.fontsize = 12
 
 -- health/power
-cfg.classcolormode = false  -- true  : health colored based on class, power colored based on powertype
+cfg.classcolormode = true  -- true  : health colored based on class, power colored based on powertype
 						   -- flase : health colored based on health percentage, power colored based on class
 cfg.tranparentmode = true -- transparent unit frames?
 cfg.nameclasscolormode = true -- classcolor/white?
@@ -129,5 +129,19 @@ end
 ---------------------------------------------------------------------------------------
 -------------------[[        Config        End        ]]-------------------------------  
 ---------------------------------------------------------------------------------------
-  -- HANDOVER
-  ns.cfg = cfg
+--[[ CPU and Memroy testing
+local interval = 0
+cfg:SetScript("OnUpdate", function(self, elapsed)
+ 	interval = interval - elapsed
+	if interval <= 0 then
+		UpdateAddOnMemoryUsage()
+			print("----------------------")
+			print("|cffBF3EFFoUF_Mlight|r CPU  "..GetAddOnCPUUsage("oUF_Mlight").." Memory "..format("%.1f kb", floor(GetAddOnMemoryUsage("oUF_Mlight"))))
+			print("|cffFFFF00oUF|r CPU  "..GetAddOnCPUUsage("oUF").."  Memory  "..format("%.1f kb", floor(GetAddOnMemoryUsage("oUF"))))
+			print("----------------------")
+		interval = 4
+	end
+end)
+]]--
+-- HANDOVER
+ns.cfg = cfg
