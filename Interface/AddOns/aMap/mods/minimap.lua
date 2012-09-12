@@ -34,17 +34,19 @@ Minimap:SetPoint(unpack(cfg.spawn))
 
 -- Hide thins we dont need
 for _, hide in next,
-{
-MinimapBorder, 
-MinimapBorderTop, 
-MinimapZoomIn, 
-MinimapZoomOut, 
-MiniMapVoiceChatFrame,
-GameTimeFrame, 
-MiniMapTracking,  
-MiniMapWorldMapButton, 
-MinimapBackdrop,MinimapCluster,GameTimeFrame} do
-hide:Hide()
+{	MinimapBorder, 
+	MinimapBorderTop, 
+	MinimapZoomIn, 
+	MinimapZoomOut, 
+	MiniMapVoiceChatFrame,
+	GameTimeFrame, 
+	MiniMapTracking,  
+	MiniMapWorldMapButton, 
+	MinimapBackdrop,
+	MinimapCluster,
+	GameTimeFrame,
+	MiniMapInstanceDifficulty,} do
+	hide:Hide()
 end
 MinimapNorthTag:SetAlpha(0)
 
@@ -72,67 +74,39 @@ GuildInstanceDifficulty:SetScale(.5)
 GuildInstanceDifficulty:SetPoint("BOTTOMLEFT", Minimap, "BOTTOMLEFT", 2, 1)
 GuildInstanceDifficulty:SetFrameStrata("HIGH")
 
-MiniMapInstanceDifficulty:Hide()
 local id = CreateFrame("Frame", nil, Minimap)
-id:SetPoint("TOPLEFT")
-id:SetSize(80, 80)
-local idtext = createtext(id, "OVERLAY", 14, "OUTLINE", "CENTER")
-idtext:SetAllPoints()
+id:SetPoint("TOPLEFT", 8, -8)
+id:SetSize(80, 20)
+local idtext = createtext(id, "OVERLAY", 14, "OUTLINE", "LEFT")
+idtext:SetPoint"LEFT"
 idtext:SetTextColor(Ccolor.r, Ccolor.g, Ccolor.b)
 
 function indiff()
-	local inInstance, instancetype = IsInInstance()
-	local _, _, difficultyIndex, _, _, playerDifficulty, isDynamic = GetInstanceInfo()
-	if inInstance and instancetype == "raid" then
-		if isDynamic and difficultyIndex == 4 then
-			if playerDifficulty == 0 then
-				idtext:SetText("25H")
-			end
-		end
-		if isDynamic and difficultyIndex == 3 then
-			if playerDifficulty == 0 then
-				idtext:SetText("10H")
-			end
-		end
-		if isDynamic and difficultyIndex == 2 then
-			if playerDifficulty == 0 then
-				idtext:SetText("25")
-			end
-			if playerDifficulty == 1 then
-				idtext:SetText("25H") 
-			end
-		end
-		if isDynamic and difficultyIndex == 1 then
-			if playerDifficulty == 0 then
-				idtext:SetText("10") 
-			end
-			if playerDifficulty == 1 then
-				idtext:SetText("10H") 
-			end
-		end
-		if not isDynamic then
-			if difficultyIndex == 1 then
-				idtext:SetText("10") 
-			end
-			if difficultyIndex == 2 then
-				idtext:SetText("25") 
-			end
-			if difficultyIndex == 3 then
-				idtext:SetText("10H") 
-			end
-			if difficultyIndex == 4 then
-				idtext:SetText("25H") 
-			end
-		end
-	end
-	if not inInstance then
-		idtext:SetText("") 
+	local index = GetInstanceDifficulty()
+	if index == 2 then
+		return "5"
+	elseif index == 3 then
+		return "5|cffFF7F00H|r"
+	elseif index == 4 then
+		return "10"
+	elseif index == 5 then
+		return "25"
+	elseif index == 6 then
+		return "10|cffFF7F00H|r"
+	elseif index == 7 then
+		return "25|cffFF7F00H|r"	
+	elseif index == 8 then
+		return "|cff7FFF00LFR|r"
+	elseif index == 9 then
+		return "|cffCD0000CLG|r"
+	elseif index == 10 then
+		return "40"
 	end
 end
+
 id:RegisterEvent("PLAYER_ENTERING_WORLD")
 id:RegisterEvent("PLAYER_DIFFICULTY_CHANGED")
-
-id:SetScript("OnEvent", function() indiff() end)
+id:SetScript("OnEvent", function() idtext:SetText(indiff()) end)
 
 -- location
 MinimapZoneTextButton:SetPoint("TOPLEFT", Minimap, "TOPRIGHT", 10, -25)
