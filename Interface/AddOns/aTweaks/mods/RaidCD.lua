@@ -144,8 +144,10 @@ local CreateBar = function()
 	bar.right = createtext(bar, "OVERLAY", fontsize, flag, "RIGHT")
 	bar.right:SetPoint('RIGHT', bar.status, -2, 1)
 	
-	F.CreateSD(bar.icon, 3, 0, 0, 0, 1, -1)
-	F.CreateSD(bar.status, 3, 0, 0, 0, 1, -1)
+	F.CreateSD(bar.icon, 4, 0, 0, 0, 1, -2)
+	F.CreateBD(bar.icon, 0.5)
+	F.CreateSD(bar.status, 4, 0, 0, 0, 1, -2)
+	F.CreateBD(bar.status, 0.5)
 	return bar
 end
 
