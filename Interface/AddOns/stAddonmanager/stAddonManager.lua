@@ -105,7 +105,7 @@ function stAddonManager:LoadProfileWindow()
 		for i, addon in pairs(stAddonManager.AllAddons) do
 			if addon.name ~= ADDON_NAME then			
 				DisableAddOn(addon.name)
-				stAddonManager.Buttons[i]:SetBackdropColor(0/255, 170/255, 255/255)
+				stAddonManager.Buttons[i]:SetBackdropColor(100/255, 100/255, 100/255)
 				addon.enabled = false
 			end
 		end
@@ -367,7 +367,7 @@ function stAddonManager:LoadWindow()
 		
 		button:SetScript("OnMouseDown", function(self)
 			if addon.enabled then
-				self:SetBackdropColor(0, 0, 0)
+				self:SetBackdropColor(100/255, 100/255, 100/255)
 				DisableAddOn(addon.name)
 				addon.enabled = false
 			else
