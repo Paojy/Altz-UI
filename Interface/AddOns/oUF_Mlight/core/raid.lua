@@ -48,11 +48,11 @@ local function UpdateThreat(self, event, unit)
 	end
 end
 
-local function healpreditionbar(self, color)
+local function healpreditionbar(self, ...)
 	local hpb = CreateFrame('StatusBar', nil, self.Health)
 	hpb:SetFrameLevel(2)
 	hpb:SetStatusBarTexture(texture)
-	hpb:SetStatusBarColor(color)
+	hpb:SetStatusBarColor(...)
 	hpb:SetPoint('TOP')
 	hpb:SetPoint('BOTTOM')
 	if oUF_MlightDB.transparentmode then
@@ -168,6 +168,7 @@ local func = function(self, unit)
 	else
 		self:Tag(raidname, '[Mlight:raidname]')
 	end
+	self.Name = raidname
 	
     local ricon = hp:CreateTexture(nil, "OVERLAY", 1)
 	ricon:SetSize(10 ,10)
@@ -286,6 +287,7 @@ local dfunc = function(self, unit)
 	else
 		self:Tag(raidname, '[Mlight:raidname]')
 	end
+	self.Name = raidname
 	
     local ricon = hp:CreateTexture(nil, "OVERLAY", 1)
 	ricon:SetSize(10 ,10)

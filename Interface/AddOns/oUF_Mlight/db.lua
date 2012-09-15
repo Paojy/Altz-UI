@@ -47,7 +47,7 @@ local function LoadVariables()
 	oUF_MlightDB.enableraid = true
 	oUF_MlightDB.raidfontsize = 10
 	oUF_MlightDB.showsolo = true
-	oUF_MlightDB.autoswitch = true
+	oUF_MlightDB.autoswitch = false
 	oUF_MlightDB.raidonlyhealer = false
 	oUF_MlightDB.raidonlydps = false
 	

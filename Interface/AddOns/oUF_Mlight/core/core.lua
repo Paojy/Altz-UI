@@ -709,7 +709,8 @@ local func = function(self, unit)
     else
 		self:Tag(name, "[difficulty][level][shortclassification]|r [name] [status]")
     end
-    
+    self.Name = name
+	
     if oUF_MlightDB.castbars then
         CreateCastbars(self, unit)
     end
