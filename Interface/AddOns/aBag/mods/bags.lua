@@ -216,13 +216,13 @@ skin(7, "BankFrameBag")
 
 BagItemSearchBox:SetScript("OnUpdate", function()
 	BagItemSearchBox:ClearAllPoints()
-	BagItemSearchBox:SetSize(5*(config.spacing+config.size)-3, 14)
+	BagItemSearchBox:SetSize(4*(config.spacing+config.size)-3, 14)
 	BagItemSearchBox:SetPoint("LEFT", ContainerFrame1MoneyFrame, "RIGHT", 0, 0)
 end)
 
 BankItemSearchBox:SetScript("OnUpdate", function()
 	BankItemSearchBox:ClearAllPoints()
-	BankItemSearchBox:SetSize(5*(config.spacing+config.size)-3, 14)
+	BankItemSearchBox:SetSize(4*(config.spacing+config.size)-3, 14)
 	BankItemSearchBox:SetPoint("LEFT", ContainerFrame2MoneyFrame, "RIGHT", 0, 0)
 end)
 
