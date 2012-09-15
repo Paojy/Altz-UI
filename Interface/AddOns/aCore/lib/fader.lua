@@ -44,7 +44,6 @@ end
 
 -- Convenience function to do a simple fade out
 local function UIFrameFadeOut(frame, timeToFade, startAlpha, endAlpha)
-	if aCoreCDB == nil or not aCoreCDB.fade then return end
 	local fadeInfo = {};
 	fadeInfo.mode = "OUT";
 	fadeInfo.timeToFade = timeToFade;
