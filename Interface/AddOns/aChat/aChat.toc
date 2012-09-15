@@ -4,9 +4,7 @@
 ## RequiredDeps: aCore
 ## Credits: Blooblahguy Lolzen Cargor  haste Evl zork Xruptor
 
-mods\locales.lua
-
-config.lua
+locales.lua
 
 mods\chat.lua
 mods\easyChannel.lua

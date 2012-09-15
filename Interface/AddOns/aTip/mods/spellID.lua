@@ -1,8 +1,4 @@
-﻿local ADDON_NAME, ns = ...
-local cfg = ns.cfg
-
-if not cfg.showspellID then return end
-
+﻿if not aCoreCDB.showspellID then return end
 
 hooksecurefunc(GameTooltip, "SetUnitBuff", function(self,...)
 	local id = select(11,UnitBuff(...))

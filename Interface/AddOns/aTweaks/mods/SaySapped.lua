@@ -1,8 +1,7 @@
-﻿local ADDON_NAME, ns = ...
-local cfg = ns.cfg
+﻿local addon, ns = ...
 local L = ns.L
 
-if not cfg.saysapped then return end
+if not aCoreCDB.saysapped then return end
 
 local SaySapped = CreateFrame("Frame")
 SaySapped.playername = UnitName("player")

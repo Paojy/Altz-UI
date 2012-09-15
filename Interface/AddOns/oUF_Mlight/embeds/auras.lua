@@ -1,5 +1,4 @@
-local ADDON_NAME, ns = ...
-local cfg = ns.cfg
+local addon, ns = ...
 
 local glowBorder = {
     bgFile = [=[Interface\ChatFrame\ChatFrameBackground]=],
@@ -39,7 +38,7 @@ local CreateAuraIcon = function(auras)
     icon:SetAllPoints(button)
     icon:SetTexCoord(.07, .93, .07, .93)
 
-    local font = cfg.font
+    local font = oUF_MlightDB.fontfile
     local count = button:CreateFontString(nil, "OVERLAY")
     count:SetFont(font, auras.cfontsize, "THINOUTLINE")
 	count:ClearAllPoints()

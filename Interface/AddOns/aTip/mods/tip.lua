@@ -1,5 +1,10 @@
-﻿local ADDON_NAME, ns = ...
-local cfg = ns.cfg
+﻿local F, C = unpack(Aurora)
+local addon, ns =...
+local cursor = aCoreCDB.cursor
+local hideTitles = aCoreCDB.hideTitles
+local hideRealm = aCoreCDB.hideRealm
+local colorborderClass = aCoreCDB.colorborderClass
+local combathide = aCoreCDB.combathide
 
 local font = GameFontHighlight:GetFont()
 local fontsize = 12
@@ -53,7 +58,7 @@ GameTooltip:HookScript("OnTooltipSetUnit", function(self)
     local name, unit = self:GetUnit()
 
     if unit then
-        if cfg.combathide and InCombatLockdown() then
+        if combathide and InCombatLockdown() then
             return self:Hide()
         end
 
@@ -70,7 +75,7 @@ GameTooltip:HookScript("OnTooltipSetUnit", function(self)
             UnitIsDND(unit) and CHAT_FLAG_DND or 
             not UnitIsConnected(unit) and "<DC>" or ""))
 
-            if cfg.hideTitles then
+            if hideTitles then
                 local title = UnitPVPName(unit)
                 if title then
                     local text = GameTooltipTextLeft1:GetText()
@@ -80,7 +85,7 @@ GameTooltip:HookScript("OnTooltipSetUnit", function(self)
                 end
             end
 
-            if cfg.hideRealm then
+            if hideRealm then
                 local _, realm = UnitName(unit)
                 if realm then
                     local text = GameTooltipTextLeft1:GetText()
@@ -138,7 +143,8 @@ GameTooltip:HookScript("OnTooltipSetUnit", function(self)
             self:AddLine(tartext)
         end
 		
-		createbargradient(GameTooltipStatusBar, color.r, color.g, color.b, 3)
+		GameTooltipStatusBar:SetStatusBarTexture("Interface\\Buttons\\WHITE8x8")
+		GameTooltipStatusBar:GetStatusBarTexture():SetGradient("VERTICAL",  color.r, color.g, color.b, color.r/3, color.g/3, color.b/3)
     else
         for i=2, self:NumLines() do
             local tiptext = _G["GameTooltipTextLeft"..i]
@@ -154,9 +160,9 @@ GameTooltip:HookScript("OnTooltipSetUnit", function(self)
     if GameTooltipStatusBar:IsShown() then
 		GameTooltipStatusBar:ClearAllPoints()
         GameTooltipStatusBar:SetHeight(4)
-		GameTooltipStatusBar:SetPoint("BOTTOMLEFT", GameTooltipStatusBar:GetParent(), "TOPLEFT", 3, 2)
-		GameTooltipStatusBar:SetPoint("BOTTOMRIGHT", GameTooltipStatusBar:GetParent(), "TOPRIGHT", -3, 2)
-		creategrowBD(GameTooltipStatusBar, .25, .25, .25, 1, 1)		
+		GameTooltipStatusBar:SetPoint("BOTTOMLEFT", GameTooltipStatusBar:GetParent(), "TOPLEFT", 0, 4)
+		GameTooltipStatusBar:SetPoint("BOTTOMRIGHT", GameTooltipStatusBar:GetParent(), "TOPRIGHT", 0, 4)
+		F.CreateBG(GameTooltipStatusBar)		
     end
 end)
 
@@ -185,11 +191,11 @@ end)
 
 hooksecurefunc("GameTooltip_SetDefaultAnchor", function(tooltip, parent)
     local frame = GetMouseFocus()
-    if cfg.cursor then
+    if cursor then
         tooltip:SetOwner(parent, "ANCHOR_CURSOR_RIGHT")
     else
         tooltip:SetOwner(parent, "ANCHOR_NONE")	
-        tooltip:SetPoint(cfg.point[1], UIParent, cfg.point[2], cfg.point[3], cfg.point[4])
+        tooltip:SetPoint("BOTTOMRIGHT",  UIParent, "BOTTOMRIGHT", -16, 18)
     end
     tooltip.default = 1
 end)
@@ -206,13 +212,14 @@ end)
 
 local function style(frame)
     if not frame.border then
-        createtipBD(frame)
+        F.CreateBD(frame, 0.5)
+		frame.border = true
     end
 	
 	frame:SetBackdropColor(0, 0, 0, 0.4)
     frame:SetBackdropBorderColor(0, 0, 0)
 	
-    if cfg.colorborderClass then
+    if colorborderClass then
         local _, unit = GameTooltip:GetUnit()
         if UnitIsPlayer(unit) then
             frame:SetBackdropBorderColor(GameTooltip_UnitColor(unit))
@@ -271,7 +278,8 @@ function ns:UnregisterEvent(...) for i=1,select("#", ...) do f:UnregisterEvent((
 ns:RegisterEvent"PLAYER_LOGIN"
 function ns:PLAYER_LOGIN()
     for i, frame in ipairs(tooltips) do
-        createtipBD(frame, 0.4, 1)
+        F.CreateBD(frame, 0.5)
+		frame.border = true
     end
 
     ns:UnregisterEvent"PLAYER_LOGIN"

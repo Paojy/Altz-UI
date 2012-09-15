@@ -1,9 +1,14 @@
-local ADDON_NAME, ns = ...
-local cfg = ns.cfg
-
-if not cfg.raidcd.enable then return end
-local Ccolors = GetAllClassColors()
 --original author : Allez
+if not aCoreCDB.raidcdenable then return end
+
+local F, C = unpack(Aurora)
+local Ccolors = GetAllClassColors()
+
+local width, height = aCoreCDB.raidcdwidth, aCoreCDB.raidcdheight
+local spacing = 3
+local fontsize = aCoreCDB.raidcdfontsize
+local flag = "OUTLINE"
+local texture = "Interface\\AddOns\\aCore\\media\\statusbar"
 
 local spells = {
 	--[20484] = 600,	-- 复生
@@ -35,13 +40,6 @@ local spells = {
 	--[34861] = 10, --治疗之环
 }
 
-local width, height = cfg.raidcd.width, cfg.raidcd.height
-local spacing = cfg.raidcd.spacing
-local iconsize = cfg.raidcd.iconsize
-local fontsize = cfg.raidcd.fontsize
-local flag = "OUTLINE"
-local texture = "Interface\\AddOns\\aCore\\media\\statusbar"
-
 local show = {
 	raid = true,
 	party = true,
@@ -62,7 +60,7 @@ local function applyDragFunctionality(f)
     f:SetClampedToScreen(true)
     f:SetMovable(true)
     f:SetUserPlaced(true)
-	creategrowBD(f, 0, 0, 0, .5, 1)
+	F.SetBD(f)
     f:EnableMouse(nil)
     f:RegisterForDrag(nil)
 end
@@ -129,7 +127,7 @@ local CreateBar = function()
 	bar:SetSize(width, height)
 	
 	bar.icon = CreateFrame("button", nil, bar)
-	bar.icon:SetSize(iconsize, iconsize)
+	bar.icon:SetSize(height, height)
 	bar.icon:SetPoint("BOTTOMLEFT", 0, 0)
 	
 	bar.status = CreateFrame("Statusbar", nil, bar)
@@ -146,8 +144,8 @@ local CreateBar = function()
 	bar.right = createtext(bar, "OVERLAY", fontsize, flag, "RIGHT")
 	bar.right:SetPoint('RIGHT', bar.status, -2, 1)
 	
-	creategrowBD(bar.icon, 0, 0, 0, 0.4, 1)
-	creategrowBD(bar.status, 0, 0, 0, 0.4, 1)
+	F.CreateSD(bar.icon, 3, 0, 0, 0, 1, -1)
+	F.CreateSD(bar.status, 3, 0, 0, 0, 1, -1)
 	return bar
 end
 

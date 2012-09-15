@@ -1,7 +1,3 @@
-local ADDON_NAME, ns = ...
-local cfg = ns.cfg
-
-if not cfg.tabchannel then return end
 
 ChatTypeInfo["WHISPER"].sticky=0
 function ChatEdit_CustomTabPressed(self)

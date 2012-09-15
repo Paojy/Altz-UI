@@ -1,10 +1,25 @@
---Author: Nibelheim
-local ADDON_NAME, ns = ...
-local cfg = ns.cfg
+--Original Author: Nibelheim
+local F, C = unpack(Aurora)
 
-if not cfg.customwf then return end
-
+local x = 0				    -- Horizontal offset
+local y = -150				-- Vertical offset
+local anchor = 'TOPRIGHT'  	-- Position on screen. CENTER, RIGHT, LEFT, BOTTOM, BOTTOMRIGHT, BOTTOMLEFT, TOP, TOPRIGHT, TOPLEFT
+local heightsc = 370	      -- How much shorter than screen height to make the Watch Frame
+local wffont = 12             -- fontsize
+-- Collapse the Watch Frame
+local collapsepvp = true
+local collapsearena = false
+local collapseparty = true
+local collapseraid = true
+-- Hide the Watch Frame completely
+local hidepvp = false
+local hidearena = true
+local hideparty = false
+local hideraid = false
 local lColor = GetClassColor()
+
+F.Reskin(WatchFrameCollapseExpandButton)
+WatchFrameCollapseExpandButton:SetScale(.7)
 
 local Opts = {
 
@@ -28,17 +43,17 @@ colors = {
 hidden = {
 	-- Collapse the Watch Frame
 	collapse = {
-		pvp = cfg.collapsepvp,
-		arena = cfg.collapsearena,
-		party = cfg.collapseparty,
-		raid = cfg.collapseraid,
+		pvp = collapsepvp,
+		arena = collapsearena,
+		party = collapseparty,
+		raid = collapseraid,
 	},
 	-- Hide the Watch Frame completely
 	hide = {
-		pvp = cfg.hidepvp,
-		arena = cfg.hidearena,
-		party = cfg.hideparty,
-		raid = cfg.hideraid,
+		pvp = hidepvp,
+		arena = hidearena,
+		party = hideparty,
+		raid = hideraid,
 	},
 },
 
@@ -116,8 +131,8 @@ function nWFA.UpdatePosition()
 	
 	WF:SetFrameStrata("HIGH")
 	WF:ClearAllPoints();
-	WF:SetPoint(cfg.anchor, "UIParent", cfg.anchor, cfg.x, cfg.y);
-	WF:SetHeight(UIParent:GetHeight() - cfg.heightsc);
+	WF:SetPoint(anchor, "UIParent", anchor, x, y);
+	WF:SetHeight(UIParent:GetHeight() - heightsc);
 	WF.ClearAllPoints = function() end
 	WF.SetPoint = function() end
 end
@@ -142,12 +157,12 @@ end
 function nWFA.HookFont()
 	local WFT = _G["WatchFrameTitle"]
 	
-	WFT:SetFont(GameFontHighlight:GetFont(), cfg.wffont, "OUTLINE")
+	WFT:SetFont(GameFontHighlight:GetFont(), wffont, "OUTLINE")
 	
 	hooksecurefunc("WatchFrame_SetLine", function(line, anchor, verticalOffset, isHeader, text, dash, hasItem, isComplete)
-		line.text:SetFont(GameFontHighlight:GetFont(), cfg.wffont, "OUTLINE")
+		line.text:SetFont(GameFontHighlight:GetFont(), wffont, "OUTLINE")
 		if line.dash then
-			line.dash:SetFont(GameFontHighlight:GetFont(), cfg.wffont, "OUTLINE")
+			line.dash:SetFont(GameFontHighlight:GetFont(), wffont, "OUTLINE")
 		end
 	end)
 end

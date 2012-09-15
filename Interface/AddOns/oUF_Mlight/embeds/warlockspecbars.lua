@@ -1,4 +1,5 @@
 -- by tukz
+local addon, ns = ...
 if select(2, UnitClass("player")) ~= "WARLOCK" then return end
 
 local MAX_POWER_PER_EMBER = 10

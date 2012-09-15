@@ -1,5 +1,5 @@
 ﻿local ADDON_NAME = ...
-
+local F, C = unpack(Aurora)
 local ns = select(2, ...)
 local L = ns.L
 
@@ -7,18 +7,6 @@ local L = ns.L
 -- MEDIA & CONFIG ------------------------------------
 ------------------------------------------------------
 local font = { GameFontHighlight:GetFont(), 12, "OUTLINE" }
-local barTex = [[Interface\AddOns\stAddonManager\media\normTex.tga]]
-local blankTex = [[Interface\AddOns\stAddonManager\media\blankTex.tga]]
-local glowTex = [[Interface\AddOns\stAddonManager\media\glowTex.tga]]
-
-local bordercolor = {0, 0, 0, 1}
-local backdropcolor = {0.05, 0.05, 0.05, .5}
-local backdrop = {
-	bgFile = blankTex, 
-	edgeFile =  glowTex, 
-	tile = false, tileSize = 0, edgeSize = 5, 
-	insets = { left = 5, right = 5, top = 5, bottom = 5},
-}
 
 ------------------------------------------------------
 -- INITIAL FRAME CREATION ----------------------------
@@ -27,83 +15,12 @@ stAddonManager = CreateFrame("Frame", "stAddonManager", UIParent)
 stAddonManager:SetFrameStrata("HIGH")
 stAddonManager.header = CreateFrame("Frame", "stAddonmanager_Header", stAddonManager)
 
-stAddonManager.header:SetPoint("CENTER", UIParent, "CENTER", 0, 80)
-stAddonManager:SetPoint("TOP", stAddonManager.header, "TOP", 0, -15)
+stAddonManager.header:SetPoint("CENTER", UIParent, "CENTER", 0, 100)
+stAddonManager:SetPoint("TOP", stAddonManager.header, "TOP", 0, -30)
 
 ------------------------------------------------------
 -- FUNCTIONS -----------------------------------------
 ------------------------------------------------------
-local function SkinFrame(frame, transparent)
-	local bgR, bgG, bgB, bgA = unpack(backdropcolor)
-	if transparent then
-		if type(transparent) == "boolean" then
-			bgA = 0
-		else
-			bgA = transparent
-		end
-	end
-	frame:SetBackdrop(backdrop)
-	frame:SetBackdropColor(bgR, bgG, bgB, bgA)
-	frame:SetBackdropBorderColor(unpack(bordercolor))
-end
-
-local function CreateBackdrop(frame, transparent)
-	if not frame.backdrop then
-		local backdrop = CreateFrame("Frame", nil, frame)
-		backdrop:SetPoint("TOPRIGHT", frame, "TOPRIGHT", 1, -1)
-		backdrop:SetPoint("BOTTOMLEFT", frame, "BOTTOMLEFT", -1, -1)
-		SkinFrame(backdrop, transparent)
-		backdrop:SetFrameLevel(frame:GetFrameLevel()>0 and frame:GetFrameLevel()-1 or 0)
-		backdrop:SetFrameStrata(frame:GetFrameStrata())
-		
-		frame.backdrop = backdrop
-	end
-end
-
-local function StripTextures(object, kill)
-	for i=1, object:GetNumRegions() do
-		local region = select(i, object:GetRegions())
-		if region:GetObjectType() == "Texture" then
-			region:SetTexture(nil)
-		end
-	end		
-end
-
-local function SkinScrollBar(frame, thumbTrim)
-	if _G[frame:GetName().."BG"] then _G[frame:GetName().."BG"]:SetTexture(nil) end
-	if _G[frame:GetName().."Track"] then  _G[frame:GetName().."Track"]:SetTexture(nil) end
-	
-	if _G[frame:GetName().."Top"] then
-		_G[frame:GetName().."Top"]:SetTexture(nil)
-		_G[frame:GetName().."Bottom"]:SetTexture(nil)
-		_G[frame:GetName().."Middle"]:SetTexture(nil)
-	end
-
-	local uScroll = _G[frame:GetName().."ScrollUpButton"]
-	local dScroll = _G[frame:GetName().."ScrollDownButton"]
-	local track = _G[frame:GetName().."Track"]
-	
-	if uScroll and dScroll then
-		StripTextures(uScroll)		
-		StripTextures(dScroll)
-		dScroll:EnableMouse(false)
-		uScroll:EnableMouse(false)
-
-		if frame:GetThumbTexture() then
-			frame:GetThumbTexture():SetTexture(nil)
-			if not frame.thumbbg then
-				frame.thumbbg = CreateFrame("Frame", nil, frame)
-				frame.thumbbg:SetPoint("TOPLEFT", frame:GetThumbTexture(), "TOPLEFT", 2, 14)
-				frame.thumbbg:SetPoint("BOTTOMRIGHT", frame:GetThumbTexture(), "BOTTOMRIGHT", -2, -14)
-				SkinFrame(frame.thumbbg, true)
-				if frame.trackbg then
-					frame.thumbbg:SetFrameLevel(frame.trackbg:GetFrameLevel()+2)
-				end
-			end
-		end	
-	end	
-end
-
 local function GetEnabledAddons()
 	local EnabledAddons = {}
 		for i=1, GetNumAddOns() do
@@ -115,28 +32,17 @@ local function GetEnabledAddons()
 	return EnabledAddons
 end
 
-
-
 local function CreateMenuButton(parent, width, height, text, ...)
-	local button = CreateFrame("Button", nil, parent)
+	local button = CreateFrame("Button", nil, parent, "UIPanelButtonTemplate")
 	button:SetFrameLevel(parent:GetFrameLevel()+1)
 	button:SetSize(width, height)
-	SkinFrame(button)
+	F.Reskin(button)
 	if ... then button:SetPoint(...) end
 	
 	button.text = button:CreateFontString(nil, "OVERLAY")
 	button.text:SetFont(unpack(font))
 	button.text:SetPoint("CENTER", 1, 0)
 	if text then button.text:SetText(text) end
-	
-	button:SetScript("OnEnter", function(self)
-		self.text:SetTextColor(0/255, 170/255, 255/255)
-		self:SetBackdropColor(.1, .1, .1)
-	end)
-	button:SetScript("OnLeave", function(self)
-		self.text:SetTextColor(255/255, 255/255, 255/255)
-		self:SetBackdropColor(unpack(backdropcolor))
-	end)	
 	
 	return button
 end
@@ -167,7 +73,6 @@ function stAddonManager:UpdateAddonList(queryString)
 end
 
 
-
 function stAddonManager:LoadProfileWindow()
 	local self = stAddonManager
 	if not stAddonProfiles then stAddonProfiles = {} end
@@ -175,10 +80,9 @@ function stAddonManager:LoadProfileWindow()
 	if self.ProfileWindow then ToggleFrame(self.ProfileWindow) return end
 	
 	local window = CreateFrame("Frame", "stAddonManager_ProfileWindow", self)
-	window:SetPoint("TOPLEFT", self, "TOPRIGHT", 5, 0)
+	window:SetPoint("TOPLEFT", self, "TOPRIGHT", 15, -2)
 	window:SetSize(175, 20)
-	SkinFrame(window, true)
-	CreateBackdrop(window, true)
+	F.SetBD(window)
 		
 	local title = window:CreateFontString(nil, "OVERLAY")
 	title:SetFont(unpack(font))
@@ -186,7 +90,7 @@ function stAddonManager:LoadProfileWindow()
 	title:SetText(L.Profiles)
 	window.title = title
 	
-	local EnableAll = CreateMenuButton(window, (window:GetWidth()-15)/2, 20, L.Enable_All, "TOPLEFT", window, "BOTTOMLEFT", 5, -5)
+	local EnableAll = CreateMenuButton(window, (window:GetWidth()-15)/2, 20, L.Enable_All, "TOPLEFT", window, "BOTTOMLEFT", 5, -15)
 	EnableAll:SetScript("OnClick", function(self)
 		for i, addon in pairs(stAddonManager.AllAddons) do
 			EnableAddOn(addon.name)
@@ -196,12 +100,12 @@ function stAddonManager:LoadProfileWindow()
 	end)
 	self.EnableAll = EnableAll
 	
-	local DisableAll = CreateMenuButton(window, EnableAll:GetWidth(), EnableAll:GetHeight(), L.Disable_All, "TOPRIGHT", window, "BOTTOMRIGHT", -5, -5)
+	local DisableAll = CreateMenuButton(window, EnableAll:GetWidth(), EnableAll:GetHeight(), L.Disable_All, "TOPRIGHT", window, "BOTTOMRIGHT", -5, -15)
 	DisableAll:SetScript("OnClick", function(self)
 		for i, addon in pairs(stAddonManager.AllAddons) do
 			if addon.name ~= ADDON_NAME then			
 				DisableAddOn(addon.name)
-				stAddonManager.Buttons[i]:SetBackdropColor(unpack(backdropcolor))
+				stAddonManager.Buttons[i]:SetBackdropColor(0/255, 170/255, 255/255)
 				addon.enabled = false
 			end
 		end
@@ -212,7 +116,7 @@ function stAddonManager:LoadProfileWindow()
 	SaveProfile:SetScript("OnClick", function(self)
 		if not self.editbox then
 			local editbox = CreateFrame("EditBox", nil, self)
-			SkinFrame(editbox)
+			F.CreateBD(editbox, .5)
 			editbox:SetAllPoints(self)
 			editbox:SetFont(unpack(font))
 			editbox:SetText(L.Profile_Name)
@@ -366,10 +270,6 @@ function stAddonManager:LoadProfileWindow()
 		end
 
 		if not prevButton then prevButton = SaveProfile end
-		window.backdrop:ClearAllPoints()
-		window.backdrop:SetPoint("TOPLEFT", window, "TOPLEFT", 0, -17)
-		window.backdrop:SetPoint("TOPRIGHT", window, "TOPRIGHT", 0, -17)
-		window.backdrop:SetPoint("BOTTOM", prevButton, "BOTTOM", 0, -10)
 	end
 	self.ProfileWindow = window
 	
@@ -386,8 +286,8 @@ function stAddonManager:LoadWindow()
 	window:SetSize(300,320)
 	header:SetSize(window:GetWidth(),20)
 	
-	SkinFrame(window, true)
-	SkinFrame(header)
+	F.SetBD(window)
+	F.SetBD(header)
 	
 	header:EnableMouse(true)
 	header:SetMovable(true)
@@ -399,26 +299,19 @@ function stAddonManager:LoadWindow()
 	hTitle:SetPoint("CENTER")
 	hTitle:SetText("|cff00aaffst|rAddonManager")
 	header.title = hTitle 
-
-	local close = CreateMenuButton(header, 20, 20, "x", "RIGHT", header, "RIGHT", 0, 1)
-	close:SetBackdrop(nil)
-	close:HookScript("OnEnter", function(self) self:SetBackdrop(nil) end)
-	close:HookScript("OnLeave", function(self) self:SetBackdrop(nil) end)
-	close:SetScript("OnClick", function() window:Hide() end)
-	header.close = close
 	
 	local addonListBG = CreateFrame("Frame", window:GetName().."_ScrollBackground", window)
-	addonListBG:SetPoint("TOPLEFT", header, "TOPLEFT", 10, -55)
+	addonListBG:SetPoint("TOPLEFT", header, "TOPLEFT", 10, -70)
 	addonListBG:SetWidth(window:GetWidth()-20)
 	addonListBG:SetHeight(window:GetHeight()-58)
-	SkinFrame(addonListBG)
+	F.CreateBD(addonListBG, 0)
 	
 	--Create scroll frame (God damn these things are a pain)
 	local scrollFrame = CreateFrame("ScrollFrame", window:GetName().."_ScrollFrame", window, "UIPanelScrollFrameTemplate")
 	scrollFrame:SetPoint("TOPLEFT", addonListBG, "TOPLEFT", 0, -5)
 	scrollFrame:SetWidth(addonListBG:GetWidth()-25)
 	scrollFrame:SetHeight(addonListBG:GetHeight()-10)
-	SkinScrollBar(_G[window:GetName().."_ScrollFrameScrollBar"])
+	F.ReskinScroll(_G[window:GetName().."_ScrollFrameScrollBar"])
 	scrollFrame:SetFrameLevel(window:GetFrameLevel()+1)
 	
 	scrollFrame.Anchor = CreateFrame("Frame", window:GetName().."_ScrollAnchor", scrollFrame)
@@ -441,7 +334,7 @@ function stAddonManager:LoadWindow()
 		local button = CreateFrame("Frame", nil, scrollFrame.Anchor)
 		button:SetFrameLevel(scrollFrame.Anchor:GetFrameLevel() + 1)
 		button:SetSize(16, 16)
-		SkinFrame(button)
+		F.CreateBD(button, 0)
 		if addon.enabled then
 			button:SetBackdropColor(0/255, 170/255, 255/255)
 		end
@@ -474,7 +367,7 @@ function stAddonManager:LoadWindow()
 		
 		button:SetScript("OnMouseDown", function(self)
 			if addon.enabled then
-				self:SetBackdropColor(unpack(backdropcolor))
+				self:SetBackdropColor(0, 0, 0)
 				DisableAddOn(addon.name)
 				addon.enabled = false
 			else
@@ -520,10 +413,10 @@ function stAddonManager:LoadWindow()
 	--Search Bar
 	local searchBar = CreateFrame("EditBox", window:GetName().."_SearchBar", window)
 	searchBar:SetFrameLevel(window:GetFrameLevel()+1)
-	searchBar:SetPoint("TOPLEFT", header, "BOTTOMLEFT", 10, -5)
+	searchBar:SetPoint("TOPLEFT", header, "BOTTOMLEFT", 10, -20)
 	searchBar:SetWidth(120)
 	searchBar:SetHeight(23)
-	SkinFrame(searchBar)
+	F.CreateBD(searchBar, .3)
 	searchBar:SetFont(unpack(font))
 	searchBar:SetText(L.Search)
 	searchBar:SetAutoFocus(false)
@@ -537,22 +430,9 @@ function stAddonManager:LoadWindow()
 			stAddonManager:UpdateList(stAddonManager.FilteredAddons)
 		end
 	end)
-		
-	local sbClear = CreateFrame("Button", nil, searchBar)
-	sbClear:SetPoint("RIGHT", searchBar, "RIGHT", 0, 2)
-	sbClear:SetFrameLevel(searchBar:GetFrameLevel()+2)
-	sbClear:SetSize(20, 20)
-	sbClear.text = sbClear:CreateFontString(nil, "OVERLAY")
-	sbClear.text:SetFont(unpack(font))
-	sbClear.text:SetText("x")
-	sbClear.text:SetPoint("CENTER", sbClear, "CENTER", 0, 0)
-	sbClear:SetScript("OnEnter", function(self) self.text:SetTextColor(0/255, 170/255, 255/255) end)
-	sbClear:SetScript("OnLeave", function(self) self.text:SetTextColor(255/255, 255/255, 255/255) end)
-	sbClear:SetScript("OnClick", function(self) searchBar:SetText(L.Search) stAddonManager:UpdateList(stAddonManager.AllAddons) searchBar:ClearFocus() end)
-	searchBar.clear = sbClear
-	stAddonManager.searchBar = searchBar
 
-	local profileButton = CreateMenuButton(window, 70, searchBar:GetHeight(), L.Profiles, "TOPRIGHT", header, "BOTTOMRIGHT", -15, -5)
+	stAddonManager.searchBar = searchBar
+	local profileButton = CreateMenuButton(window, 70, searchBar:GetHeight(), L.Profiles, "TOPRIGHT", header, "BOTTOMRIGHT", -15, -20)
 	profileButton:SetScript("OnClick", function(self)
 		stAddonManager:LoadProfileWindow()
 	end)
@@ -572,37 +452,14 @@ end
 SLASH_STADDONMANAGER1, SLASH_STADDONMANAGER2, SLASH_STADDONMANAGER3 = "/staddonmanager", "/stam", "/staddon"
 SlashCmdList["STADDONMANAGER"] = function() stAddonManager:LoadWindow() end
 
-local function CheckForAddon(event, addon, addonName)
-	return ((event == "PLAYER_ENTERING_WORLD" and IsAddOnLoaded(addonName)) or (event == "ADDON_LOADED" and addon == addonName))
-end
-
 local gmbAddOns = CreateFrame("Button", "GameMenuButtonAddOns", GameMenuFrame, "GameMenuButtonTemplate")
 gmbAddOns:SetSize(GameMenuButtonMacros:GetWidth(), GameMenuButtonMacros:GetHeight())
 GameMenuFrame:SetHeight(GameMenuFrame:GetHeight()+GameMenuButtonMacros:GetHeight());
 GameMenuButtonLogout:SetPoint("TOP", gmbAddOns, "BOTTOM", 0, -1)
 gmbAddOns:SetPoint("TOP", GameMenuButtonMacros, "BOTTOM", 0, -1)
 gmbAddOns:SetText(ADDONS)
+F.Reskin(gmbAddOns)
 gmbAddOns:SetScript("OnClick", function()
 	HideUIPanel(GameMenuFrame);
 	stAddonManager:LoadWindow()
-end)
-
-gmbAddOns:RegisterEvent("ADDON_LOADED")
-gmbAddOns:RegisterEvent("PLAYER_ENTERING_WORLD")
-gmbAddOns:SetScript("OnEvent", function(self, event, addon)
-	if CheckForAddon(event, addon, "Aurora") then
-		local F, C = unpack(Aurora)
-		if not gmbAddOns.skinned then
-			F.Reskin(gmbAddOns)
-			gmbAddOns.skinned = true
-		end
-		
-	elseif CheckForAddon(event, addon, "Tukui") then
-		local T, C, L = unpack(Tukui)
-		T.SkinButton(gmbAddOns)
-		local font = {GameMenuButtonMacros:GetFontString():GetFont()}
-		local shadow = {GameMenuButtonMacros:GetFontString():GetShadowOffset()}
-		gmbAddOns:GetFontString():SetFont(unpack(font))
-		gmbAddOns:GetFontString():SetShadowOffset(unpack(shadow))
-	end
 end)

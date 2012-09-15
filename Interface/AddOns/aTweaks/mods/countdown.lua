@@ -1,17 +1,13 @@
 ﻿-- Author: Blooblahguy
-
-local ADDON_NAME, ns = ...
-local cfg = ns.cfg
+local addon, ns = ...
 local L = ns.L
-
-if not cfg.countdown then return end
 
 local frame = CreateFrame("frame", nil)
 SlashCmdList['COUNTDOWN'] = function(newtime)
     if newtime ~= "" then
         cdtime = newtime+1
     else
-        cdtime = cfg.cdtime+1
+        cdtime = 7
     end
    
     local ending = false
@@ -23,11 +19,11 @@ SlashCmdList['COUNTDOWN'] = function(newtime)
       
         if (countdown + 1) == throttle and countdown >= 0 then
             if countdown == 0 then
-                SendChatMessage(L["Fire!"], cfg.cdchannel)
+                SendChatMessage(L["Fire!"], UnitIsGroupAssistant("player") or UnitIsGroupLeader("player") and "RAID_WARNING" or "SAY")
                 throttle = countdown
                 ending = true
             else
-                SendChatMessage(countdown, cfg.cdchannel)
+                SendChatMessage(countdown, UnitIsGroupAssistant("player") or UnitIsGroupLeader("player") and "RAID_WARNING" or "SAY")
                 throttle = countdown
             end
         end

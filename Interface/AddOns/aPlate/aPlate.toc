@@ -4,4 +4,4 @@
 ## RequiredDeps: aCore
 ## Credits: Tukz
 
-nameplates.lua
+mods\nameplates.lua

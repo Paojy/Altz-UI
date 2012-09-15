@@ -1,8 +1,5 @@
-local ADDON_NAME, ns = ...
-local cfg = ns.cfg
+local addon, ns = ...
 
--- colors
--- from Interface/BUTTONS/UI-TotemBar.blp
 oUF.colors.totems = {
 	[FIRE_TOTEM_SLOT] = { 255/255, 42/255, 18/255 },
 	[EARTH_TOTEM_SLOT] = { 126/255, 248/255, 37/255 },

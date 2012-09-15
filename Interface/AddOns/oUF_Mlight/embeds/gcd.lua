@@ -1,5 +1,4 @@
-﻿-- oUF_GCD-HungtarsoUFGlobalCooldownBar
-local ADDON_NAME, ns = ...
+﻿local addon, ns = ...
 
 classgcdspells ={
     ["DRUID"] = 5176, -- Wrath

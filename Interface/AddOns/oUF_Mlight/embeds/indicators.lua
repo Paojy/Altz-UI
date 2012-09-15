@@ -1,5 +1,4 @@
-local ADDON_NAME, ns = ...
-local cfg = ns.cfg
+local addon, ns = ...
 
 local x = "8"
 local bigmark = 11
@@ -327,7 +326,7 @@ local Enable = function(self)
         self.AuraStatusBL:ClearAllPoints()
         self.AuraStatusBL:SetPoint("BOTTOMLEFT", 0, -2)
 		self.AuraStatusBL:SetJustifyH("LEFT")
-        self.AuraStatusBL:SetFont(cfg.font, timersize, "THINOUTLINE")
+        self.AuraStatusBL:SetFont(oUF_MlightDB.fontfile, timersize, "THINOUTLINE")
         self.AuraStatusBL.frequentUpdates = update
         self:Tag(self.AuraStatusBL, classIndicators[class]["BL"])	
 
@@ -343,7 +342,7 @@ local Enable = function(self)
         self.AuraStatusTL:ClearAllPoints()
         self.AuraStatusTL:SetPoint("TOPLEFT", 0, 0)
 		self.AuraStatusTL:SetJustifyH("LEFT")
-        self.AuraStatusTL:SetFont(cfg.font, timersize, "THINOUTLINE")
+        self.AuraStatusTL:SetFont(oUF_MlightDB.fontfile, timersize, "THINOUTLINE")
         self.AuraStatusTL.frequentUpdates = update
         self:Tag(self.AuraStatusTL, classIndicators[class]["TL"])
 		
@@ -357,7 +356,7 @@ local Enable = function(self)
         self.AuraStatusCen = self.Health:CreateFontString(nil, "OVERLAY")
         self.AuraStatusCen:SetPoint("LEFT", -3, 0)
         self.AuraStatusCen:SetJustifyH("LEFT")
-        self.AuraStatusCen:SetFont(symbols, smallmark, cfg.fontflag)
+        self.AuraStatusCen:SetFont(symbols, smallmark, "OUTLINE")
         self.AuraStatusCen:SetWidth(0)
         self.AuraStatusCen.frequentUpdates = update
         self:Tag(self.AuraStatusCen, classIndicators[class]["Cen"])

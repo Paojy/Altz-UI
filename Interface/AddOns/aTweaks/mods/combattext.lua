@@ -1,10 +1,6 @@
-local ADDON_NAME, ns = ...
-local cfg = ns.cfg
+-- LightCT by Alza
 
-if not cfg.combattext then return end
-
--- LightCT by Alza.
-
+if not aCoreCDB.combattext then return end
 local frames = {}
 local font = GameFontHighlight:GetFont()
 

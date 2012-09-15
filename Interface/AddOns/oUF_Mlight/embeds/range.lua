@@ -1,6 +1,4 @@
-local _, ns = ...
-local cfg = ns.cfg
-
+local addon, ns = ...
 -- oUF range element with code sniplets from TomTom
 -- by Freebaser
 
@@ -152,7 +150,7 @@ local Enable = function(self)
         local frame = CreateFrame("Frame", nil, UIParent)
         frame:SetAllPoints(self)
         frame:SetFrameStrata("HIGH")
-        frame:SetScale(cfg.arrow.scale)
+        frame:SetScale(oUF_MlightDB.arrowsacle)
 
         frame.arrow = frame:CreateTexture(nil, "OVERLAY")
         frame.arrow:SetTexture"Interface\\Addons\\oUF_Mlight\\media\\Arrow"

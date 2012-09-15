@@ -5,14 +5,16 @@
 ## OptionalDeps: Numeration, Skada, TinyDPS
 ## Credits: Elv emelio oscarucb Moolgar Monolit Blooblahguy Nibelheim hankthetank weasoug Xruptor bitbyte Allez Alza nightcracker
 
-mods\locales.lua
+locales.lua
 
-config.lua
+skins\loadskins.lua
+skins\DBM.lua
+skins\Recount.lua
+skins\Skada.lua
 
 mods\ImprovedCamera..xml
 mods\AlreadyKnown.lua
 mods\focus.lua
-mods\collectgarbager.lua
 mods\DragEmAll.lua
 mods\InspectFix.lua
 mods\countdown.lua

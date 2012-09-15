@@ -5,8 +5,7 @@
   -----------------------------
   -- GLOBAL FUNCTIONS
   -----------------------------
-
-  --add some global functions
+  local F, C = unpack(Aurora)
 
   --rGetPoint func
   function rGetPoint(self)
@@ -124,8 +123,7 @@
     df:SetScript("OnLeave", function(s) GameTooltip:Hide() end)
     df:Hide()
     --overlay texture
-	creategrowBD(df, 0, 0, 0, 0.4, 1)
-    df.texture = df.border
+	F.SetBD(df)
     --self stuff
     self.dragFrame = df
     self:SetClampedToScreen(clamp or false)

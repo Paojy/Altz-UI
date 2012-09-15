@@ -1,9 +1,4 @@
-﻿local ADDON_NAME, ns = ...
-local cfg = ns.cfg
-
-if not cfg.fastfocus then return end
-
-local modifier = "shift" --- "alt" "ctrl"
+﻿local modifier = "shift" --- "alt" "ctrl"
 local mouseButton = "1" --- 1 = leftbutton, 2 = tightbutton, 3 = middle button(mouse wheel)
 
 local function SetFocusHotkey(frame) 

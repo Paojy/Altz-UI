@@ -1,8 +1,6 @@
-local ADDON_NAME, ns = ...
-local cfg = ns.cfg
+if not aCoreCDB.alreadyknown then return end
 
-if not cfg.knowncolorenable then return end
-
+local knowncolor = { r = 0.1, g = 1.0, b = 0.2 }
 local tooltip = CreateFrame('GameTooltip')
 tooltip:SetOwner(WorldFrame, 'ANCHOR_NONE')
 
@@ -65,7 +63,7 @@ local function MerchantFrame_UpdateMerchantInfo ()
 			local _, _, _, _, numAvailable, isUsable = GetMerchantItemInfo(index)
 
 			if ( isUsable and IsAlreadyKnown(GetMerchantItemLink(index)) ) then
-				local r, g, b = cfg.knowncolor.r, cfg.knowncolor.g, cfg.knowncolor.b
+				local r, g, b = knowncolor.r, knowncolor.g, knowncolor.b
 				if ( numAvailable == 0 ) then
 					r, g, b = r * 0.5, g * 0.5, b * 0.5
 				end
@@ -92,7 +90,7 @@ local function MerchantFrame_UpdateBuybackInfo ()
 			local _, _, _, _, _, isUsable = GetBuybackItemInfo(index)
 
 			if ( isUsable and IsAlreadyKnown(GetBuybackItemLink(index)) ) then
-				SetItemButtonTextureVertexColor(button, cfg.knowncolor.r, cfg.knowncolor.g, cfg.knowncolor.b)
+				SetItemButtonTextureVertexColor(button, knowncolor.r, knowncolor.g, knowncolor.b)
 			end
 		end
 	end
@@ -118,7 +116,7 @@ local function GuildBankFrame_Update ()
 
 			if ( texture and not locked ) then
 				if ( IsAlreadyKnown(GetGuildBankItemLink(tab, i)) ) then
-					SetItemButtonTextureVertexColor(button, cfg.knowncolor.r, cfg.knowncolor.g, cfg.knowncolor.b)
+					SetItemButtonTextureVertexColor(button, knowncolor.r, knowncolor.g, knowncolor.b)
 				else
 					SetItemButtonTextureVertexColor(button, 1, 1, 1)
 				end
@@ -153,7 +151,7 @@ local function AuctionFrameBrowse_Update ()
 			local _, _, _, _, canUse =  GetAuctionItemInfo('list', index)
 
 			if ( canUse and IsAlreadyKnown(GetAuctionItemLink('list', index)) ) then
-				texture:SetVertexColor(cfg.knowncolor.r, cfg.knowncolor.g, cfg.knowncolor.b)
+				texture:SetVertexColor(knowncolor.r, knowncolor.g, knowncolor.b)
 			end
 		end
 	end
@@ -175,7 +173,7 @@ local function AuctionFrameBid_Update ()
 			local _, _, _, _, canUse =  GetAuctionItemInfo('bidder', index)
 
 			if ( canUse and IsAlreadyKnown(GetAuctionItemLink('bidder', index)) ) then
-				texture:SetVertexColor(cfg.knowncolor.r, cfg.knowncolor.g, cfg.knowncolor.b)
+				texture:SetVertexColor(knowncolor.r, knowncolor.g, knowncolor.b)
 			end
 		end
 	end
@@ -197,7 +195,7 @@ local function AuctionFrameAuctions_Update ()
 			local _, _, _, _, canUse, _, _, _, _, _, _, _, saleStatus = GetAuctionItemInfo('owner', index)
 
 			if ( canUse and IsAlreadyKnown(GetAuctionItemLink('owner', index)) ) then
-				local r, g, b = cfg.knowncolor.r, cfg.knowncolor.g, cfg.knowncolor.b
+				local r, g, b = knowncolor.r, knowncolor.g, knowncolor.b
 				if ( saleStatus == 1 ) then
 					r, g, b = r * 0.5, g * 0.5, b * 0.5
 				end

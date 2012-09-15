@@ -1,8 +1,3 @@
-local ADDON_NAME, ns = ...
-local cfg = ns.cfg
-
-if not cfg.urlcopy then return end
-
   local color = "0099FF"
   local foundurl = false
 

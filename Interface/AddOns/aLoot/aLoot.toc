@@ -4,6 +4,5 @@
 ## RequiredDeps: aCore
 ## Credits:Tukz Tekkub
 
-Loot.lua
-Rollcolector.lua
-Lootgroup.lua
+mods\loot.lua
+mods\lootgroup.lua

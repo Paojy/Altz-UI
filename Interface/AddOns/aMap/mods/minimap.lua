@@ -1,20 +1,13 @@
-﻿local ADDON_NAME, ns = ...
-local cfg = ns.cfg
-
+﻿local F, C = unpack(Aurora)
 local Ccolor = GetClassColor()
 
 Minimap:SetParent(UIParent)
 Minimap:ClearAllPoints()
+Minimap:SetPoint("TOPLEFT", UIParent, "TOPLEFT", 16, -20)
 Minimap:SetFrameStrata("BACKGROUND")
-Minimap:SetSize(120, 120)
+Minimap:SetSize(128, 128)
 Minimap:SetMaskTexture("Interface\\Buttons\\WHITE8x8")
-createpxBD(Minimap, 0, 1)
-Minimap.pxborder:SetFrameLevel(3)
-creategrowBD(Minimap, 0, 0, 0, 0, 1)
-Minimap.border:SetFrameLevel(2)
-Minimap.border:ClearAllPoints()
-Minimap.border:SetPoint("TOPLEFT", -3, 3)
-Minimap.border:SetPoint("BOTTOMRIGHT", 3, -3)
+F.SetBD(Minimap, -1, 1, 1, -1)
 
 function fixTooltip(self)
 	if self ~= MiniMapMailFrame then
@@ -29,8 +22,6 @@ function dropdownOnClick(self)
 	DropDownList1:ClearAllPoints()
 	DropDownList1:SetPoint('TOPLEFT', Minimap, 'TOPRIGHT', 2, 0)
 end
-
-Minimap:SetPoint(unpack(cfg.spawn))
 
 -- Hide thins we dont need
 for _, hide in next,

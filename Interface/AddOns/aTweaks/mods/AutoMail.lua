@@ -1,10 +1,7 @@
-﻿--Author: Xruptor
-
-local ADDON_NAME, ns = ...
-local cfg = ns.cfg
+﻿-- Original Author: Xruptor
+local F, C = unpack(Aurora)
+local addon, ns = ...
 local L = ns.L
-
-if not cfg.automail then return end
 
 local inboxAllButton
 local old_InboxFrame_OnClick
@@ -27,18 +24,12 @@ AutoMail:SetScript("OnEvent", function(self, event, ...) if self[event] then ret
 
 function AutoMail:PLAYER_LOGIN()
 	--make the open all button
-	inboxAllButton = CreateFrame("Button", "AutoMail_OpenAllBTN", InboxFrame)
-	inboxAllButton:SetWidth(100)
-	inboxAllButton:SetHeight(30)
+	inboxAllButton = CreateFrame("Button", "AutoMail_OpenAllBTN", InboxFrame, "UIPanelButtonTemplate")
+	inboxAllButton:SetWidth(80)
+	inboxAllButton:SetHeight(25)
 	inboxAllButton:SetPoint("TOPRIGHT", InboxFrame, "TOPRIGHT", -60, -45)
-	creategrowBD(inboxAllButton, 0, 0, 0, .3, 1)
-	inboxAllButton.border:SetPoint("TOPLEFT")
-	inboxAllButton.border:SetPoint("BOTTOMRIGHT")
-	inboxAllButton.text = createtext(inboxAllButton, "OVERLAY", 15, "OUTLINE", "CENTER")
-	inboxAllButton.text:SetAllPoints(inboxAllButton)
-	inboxAllButton:SetHighlightTexture("Interface\\UnitPowerBarAlt\\Generic1Target_Horizontal_Flash", "ADD")
-	inboxAllButton:GetHighlightTexture():SetAlpha(.3)
-	inboxAllButton.text:SetText(L["Open All"])
+	F.Reskin(inboxAllButton)
+	inboxAllButton:SetText(L["Open All"])
 	inboxAllButton:SetScript("OnClick", function() AutoMail.GetMail() end)
 
 	self:UnregisterEvent("PLAYER_LOGIN")

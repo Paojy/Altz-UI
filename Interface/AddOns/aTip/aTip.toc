@@ -4,7 +4,5 @@
 ## RequiredDeps: aCore
 ## Credits: Freebaser Aezay
 
-config.lua
-
 mods\tip.lua
 mods\spellID.lua

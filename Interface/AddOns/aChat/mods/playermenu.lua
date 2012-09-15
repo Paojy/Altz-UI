@@ -1,8 +1,5 @@
-﻿local ADDON_NAME, ns = ...
-local cfg = ns.cfg
+﻿local addon, ns = ...
 local L = ns.L
-
-if not cfg.playermenu then return end 
 
 local function insertbefore(t, before, val)
 	for k,v in ipairs(t) do if v == before then return table.insert(t, k, val) end end
@@ -10,10 +7,10 @@ local function insertbefore(t, before, val)
 end
 
 local clickers = {
-["COPYNAME"] = function(a1) ChatFrameShow(a1) end, 
-["WHO"] = SendWho,
-["GUILD_INVITE"] = GuildInvite,
-["ADDFRIEND"] = AddFriend,
+	["COPYNAME"] = function(a1) ChatFrameShow(a1) end, 
+	["WHO"] = SendWho,
+	["GUILD_INVITE"] = GuildInvite,
+	["ADDFRIEND"] = AddFriend,
 }
 
 UnitPopupButtons["COPYNAME"] = {text = L["Copy Name"], dist = 0}

@@ -4,6 +4,7 @@
 ## RequiredDeps: aCore
 
 locales.lua
-Bag_Sort.XML
-Bag_Sort.lua
-bags.lua
+
+mods\Bag_Sort.XML
+mods\Bag_Sort.lua
+mods\bags.lua

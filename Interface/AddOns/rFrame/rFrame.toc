@@ -1,0 +1,28 @@
+## Interface: 50001
+## Author: zork
+## Title: rFrame
+## Notes: Actionbar and Buff frame
+## RequiredDeps: aCore
+
+libs\LibStub.lua
+libs\LibCooldown.lua
+
+core\hide_blizzart.lua
+core\slashcmd.lua
+core\micromenu.lua
+core\bags.lua
+core\bar12.lua
+core\overridebar.lua
+core\bar3.lua
+core\bar45.lua
+core\petbar.lua
+core\stancebar.lua
+core\extrabar.lua
+core\leave_vehicle.lua
+core\spellflyout.lua
+core\buff.lua
+
+core\cooldowns.lua
+core\cooldownflash.lua
+core\rangecolor.lua
+core\styler.lua

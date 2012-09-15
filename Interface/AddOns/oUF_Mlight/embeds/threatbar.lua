@@ -1,5 +1,4 @@
-local _, ns = ...
-local oUF = ns.oUF or oUF
+local addon, ns = ...
 
 local verticalgradient = {
 	{ .31, .94, .99, .29, .09, .33},

@@ -1,5 +1,4 @@
-﻿local ADDON_NAME, ns = ...
-local cfg = ns.cfg
+﻿local F, C = unpack(Aurora)
 local Ccolor = GetClassColor()
 
 CHAT_FRAME_FADE_OUT_TIME = 1
@@ -52,7 +51,7 @@ local function init()
 	local tex = ({_G['ChatFrame'..i..'EditBox']:GetRegions()})
 	tex[6]:SetAlpha(0) tex[7]:SetAlpha(0) tex[8]:SetAlpha(0) tex[9]:SetAlpha(0) tex[10]:SetAlpha(0) tex[11]:SetAlpha(0)
   -- make a new backdrop on edit box
-    creategrowBD(_G['ChatFrame'..i..'EditBox'], 0, 0, 0, 0.4, 1)
+    F.SetBD(_G['ChatFrame'..i..'EditBox'])
   -- control the aplha
     _G['ChatFrame'..i..'EditBox']:HookScript("OnEditFocusGained", function(self) self:Show() end)
 	_G['ChatFrame'..i..'EditBox']:HookScript("OnEditFocusLost", function(self) self:Hide() end)
@@ -74,8 +73,8 @@ local function init()
       cf:SetClampedToScreen(false)
       eb:SetAltArrowKeyMode(false)
       eb:ClearAllPoints()
-      eb:SetPoint("TOPLEFT",cf,"TOPLEFT",3,47)
-	  eb:SetPoint("BOTTOMRIGHT",cf,"TOPRIGHT",-3,25)
+      eb:SetPoint("TOPLEFT",cf,"TOPLEFT", 10, 55)
+	  eb:SetPoint("BOTTOMRIGHT",cf,"TOPRIGHT", -3, 32)
 	  eb:Hide()
     end
   -- chat tabs
@@ -108,7 +107,7 @@ EventFrame:RegisterEvent("PLAYER_LOGIN")
 EventFrame:RegisterEvent("PET_BATTLE_OPENING_START")
 
 EventFrame:SetScript("OnEvent", function(self, event, arg1)
-	if cfg.hidecombat and event == "ADDON_LOADED" and arg1 == "Blizzard_CombatLog" then
+	if event == "ADDON_LOADED" and arg1 == "Blizzard_CombatLog" then
 		local topbar = _G["CombatLogQuickButtonFrame_Custom"]
         if not topbar then return end
         topbar:Hide()

@@ -1,8 +1,4 @@
-local ADDON_NAME, ns = ...
-local cfg = ns.cfg
-
-
-if not cfg.channelreplacement then return end
+if not aCoreCDB.channelreplacement then return end
   
   --guild
   CHAT_GUILD_GET = "|Hchannel:GUILD|hG|h %s "

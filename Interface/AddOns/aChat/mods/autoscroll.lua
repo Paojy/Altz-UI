@@ -1,7 +1,4 @@
-local ADDON_NAME, ns = ...
-local cfg = ns.cfg
-
-if not cfg.autoscroll then return end
+if not aCoreCDB.autoscroll then return end
 
 local frame, handlers, running = CreateFrame("Frame"), {}, {}
 
@@ -36,7 +33,7 @@ local function Stop(name)
 end
 
 local scrolldowns = {}
-local delay = cfg.autoscrolldelay  -- Change this value if you want a different delay between your last scroll
+local delay = 15  -- Change this value if you want a different delay between your last scroll
                   -- and the time the frame resets.  This value is in seconds.
 				  
 local function ResetFrame(name, frame)   
