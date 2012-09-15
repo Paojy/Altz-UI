@@ -56,7 +56,6 @@ local function LoadaModVariables()
 	
 	-- [[ aMode settings ]]--
 	
-	aCoreCDB.fade = true
 	-- aChat
 	aCoreCDB.channelreplacement = true
 	aCoreCDB.autoscroll = true
@@ -82,8 +81,8 @@ local function LoadaModVariables()
 	aCoreCDB.combattext = true
 	aCoreCDB.raidcdenable = true
 	aCoreCDB.raidcdwidth = 180
-	aCoreCDB.raidcdheight = 20
-	aCoreCDB.raidcdfontsize = 16
+	aCoreCDB.raidcdheight = 16
+	aCoreCDB.raidcdfontsize = 12
 	aCoreCDB.saysapped = true
 	
 	-- [[ Actionbar Settings ]]--
