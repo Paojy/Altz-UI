@@ -8,12 +8,19 @@ local function LoadVariables()
 	
 	oUF_MlightDB.fontfile = "Interface\\AddOns\\oUF_Mlight\\media\\font.TTF"
 	oUF_MlightDB.fontsize = 12
-
+	oUF_MlightDB.fontflag = "OUTLINE"
+	
 	-- health/power
-	oUF_MlightDB.classcolormode = true					
+	oUF_MlightDB.classcolormode = true
 	oUF_MlightDB.transparentmode = true
 	oUF_MlightDB.nameclasscolormode = true
-
+	oUF_MlightDB.startcolor = {r = 0, g = 0, b = 0, a = 0}
+	oUF_MlightDB.endcolor = {r = .5, g = .5, b = .5, a = 0.5}
+	
+	-- portrait
+	oUF_MlightDB.portrait = false
+	oUF_MlightDB.portraitalpha = 0.6
+	
 	-- size
 	oUF_MlightDB.height	= 16 
 	oUF_MlightDB.width = 230
@@ -66,7 +73,7 @@ local function LoadVariables()
 	--[[ dps/tank mode ]]--
 	oUF_MlightDB.dpsgroupfilter = '1,2,3,4,5'
 	oUF_MlightDB.dpsraidheight = 15
-	oUF_MlightDB.dpsraidwidth = 70
+	oUF_MlightDB.dpsraidwidth = 100
 	oUF_MlightDB.dpsraidgroupbyclass = true
 	oUF_MlightDB.unitnumperline = 25
 end

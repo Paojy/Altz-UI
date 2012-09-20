@@ -1,0 +1,10 @@
+﻿## Interface: 50001
+## Title: |cffEE3A8CAltz|rUI Config
+## Version: 5.30
+## Author: Blue
+## Dependencies: Aurora
+## OptionalDeps: !ClassColors, Skada, Numeration, TinyDPS, Recount, oUF_Mlight
+## SavedVariables: aCoreDB
+## SavedVariablesPerCharacter: aCoreCDB
+
+load.xml

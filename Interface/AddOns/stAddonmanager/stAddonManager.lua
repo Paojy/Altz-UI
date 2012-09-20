@@ -103,9 +103,9 @@ function stAddonManager:LoadProfileWindow()
 	local DisableAll = CreateMenuButton(window, EnableAll:GetWidth(), EnableAll:GetHeight(), L.Disable_All, "TOPRIGHT", window, "BOTTOMRIGHT", -5, -15)
 	DisableAll:SetScript("OnClick", function(self)
 		for i, addon in pairs(stAddonManager.AllAddons) do
-			if addon.name ~= ADDON_NAME then			
+			if addon.name ~= ADDON_NAME or addon.name ~= "Aurora" then			
 				DisableAddOn(addon.name)
-				stAddonManager.Buttons[i]:SetBackdropColor(100/255, 100/255, 100/255)
+				stAddonManager.Buttons[i]:SetBackdropColor(50/255, 50/255, 50/255)
 				addon.enabled = false
 			end
 		end
@@ -337,6 +337,8 @@ function stAddonManager:LoadWindow()
 		F.CreateBD(button, 0)
 		if addon.enabled then
 			button:SetBackdropColor(0/255, 170/255, 255/255)
+		else
+			button:SetBackdropColor(50/255, 50/255, 50/255)
 		end
 		
 		if i == 1 then
@@ -367,7 +369,7 @@ function stAddonManager:LoadWindow()
 		
 		button:SetScript("OnMouseDown", function(self)
 			if addon.enabled then
-				self:SetBackdropColor(100/255, 100/255, 100/255)
+				self:SetBackdropColor(50/255, 50/255, 50/255)
 				DisableAddOn(addon.name)
 				addon.enabled = false
 			else
@@ -390,12 +392,12 @@ function stAddonManager:LoadWindow()
 			if addon.enabled then
 				button:SetBackdropColor(0/255, 170/255, 255/255)
 			else
-				button:SetBackdropColor(unpack(backdropcolor))
+				button:SetBackdropColor(50/255, 50/255, 50/255)
 			end
 			
 			button:SetScript("OnMouseDown", function(self)
 				if addon.enabled then
-					self:SetBackdropColor(unpack(backdropcolor))
+					self:SetBackdropColor(50/255, 50/255, 50/255)
 					DisableAddOn(addon.name)
 					addon.enabled = false
 				else

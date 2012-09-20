@@ -50,7 +50,7 @@ end
 
 local function healpreditionbar(self, ...)
 	local hpb = CreateFrame('StatusBar', nil, self.Health)
-	hpb:SetFrameLevel(2)
+	hpb:SetFrameLevel(3)
 	hpb:SetStatusBarTexture(texture)
 	hpb:SetStatusBarColor(...)
 	hpb:SetPoint('TOP')
@@ -79,7 +79,7 @@ local function CreateGCDframe(self)
     Gcd:SetAllPoints(self)
     Gcd:SetStatusBarTexture(texture)
     Gcd:SetStatusBarColor(1, 1, 1, .4)
-    Gcd:SetFrameLevel(4)
+    Gcd:SetFrameLevel(5)
     self.GCD = Gcd
 end
 --=============================================--
@@ -103,27 +103,38 @@ local func = function(self, unit)
     self.bg:SetAllPoints()
     self.bg:SetTexture(texture)
 	if oUF_MlightDB.transparentmode then
-		self.bg:SetGradientAlpha("VERTICAL", .5, .5, .5, .5, 0, 0, 0, .2)
+		self.bg:SetGradientAlpha("VERTICAL", oUF_MlightDB.endcolor.r, oUF_MlightDB.endcolor.g, oUF_MlightDB.endcolor.b, oUF_MlightDB.endcolor.a, oUF_MlightDB.startcolor.r, oUF_MlightDB.startcolor.g, oUF_MlightDB.startcolor.b, oUF_MlightDB.startcolor.a)
 	else
-		self.bg:SetGradientAlpha("VERTICAL", .3, .3, .3, 1, .1, .1, .1, 1)
+		self.bg:SetGradientAlpha("VERTICAL", oUF_MlightDB.endcolor.r, oUF_MlightDB.endcolor.g, oUF_MlightDB.endcolor.b, 1, oUF_MlightDB.startcolor.r, oUF_MlightDB.startcolor.g, oUF_MlightDB.startcolor.b, 1)
 	end
 	
 	-- border --
 	self.backdrop = createBackdrop(self, self, 0)
 	
 	-- target border --
-	self.targetborder = Createpxborder(self, 1)
+	self.targetborder = Createpxborder(self, 2)
 	self.targetborder:SetBackdropBorderColor(1, 1, .4)
 	self:RegisterEvent("PLAYER_TARGET_CHANGED", ChangedTarget)
 
 	-- threat border --
-	self.threatborder = Createpxborder(self, 0)
+	self.threatborder = Createpxborder(self, 1)
 	self:RegisterEvent("UNIT_THREAT_SITUATION_UPDATE", UpdateThreat)
 	
     local hp = createStatusbar(self, texture, "ARTWORK", nil, nil, 1, 1, 1, 1)
-	hp:SetFrameLevel(2)
+	hp:SetFrameLevel(3)
     hp:SetAllPoints(self)
     hp.frequentUpdates = true
+	
+	-- little black line to make the health bar more clear
+	hp.ind = hp:CreateTexture(nil, "OVERLAY", 1)
+    hp.ind:SetTexture("Interface\\Buttons\\WHITE8x8")
+	hp.ind:SetVertexColor(0, 0, 0)
+	hp.ind:SetSize(1, self:GetHeight())
+	if oUF_MlightDB.transparentmode then
+		hp.ind:SetPoint("RIGHT", hp:GetStatusBarTexture(), "LEFT", 0, 0)
+	else
+		hp.ind:SetPoint("LEFT", hp:GetStatusBarTexture(), "RIGHT", 0, 0)
+	end
 	
 	if oUF_MlightDB.transparentmode then
 		hp:SetReverseFill(true)
@@ -157,11 +168,11 @@ local func = function(self, unit)
     masterlooter:SetPoint('LEFT', leader, 'RIGHT')
     self.MasterLooter = masterlooter
 
-	local lfd = createFont(hp, "OVERLAY", symbols, oUF_MlightDB.raidfontsize-3, "OUTLINE", 1, 1, 1)
+	local lfd = createFont(hp, "OVERLAY", symbols, oUF_MlightDB.raidfontsize-3, 1, 1, 1)
 	lfd:SetPoint("BOTTOM", hp, 0, -1)
 	self:Tag(lfd, '[Mlight:LFD]')
 	
-	local raidname = createFont(hp, "OVERLAY", oUF_MlightDB.fontfile, oUF_MlightDB.raidfontsize, "OUTLINE", 1, 1, 1)
+	local raidname = createFont(hp, "OVERLAY", oUF_MlightDB.fontfile, oUF_MlightDB.raidfontsize, 1, 1, 1)
 	raidname:SetPoint("BOTTOMRIGHT", hp, "BOTTOMRIGHT", -1, 5)
 	if oUF_MlightDB.nameclasscolormode then
 		self:Tag(raidname, '[Mlight:color][Mlight:raidname]')
@@ -175,7 +186,7 @@ local func = function(self, unit)
     ricon:SetPoint("BOTTOM", hp, "TOP", 0 , -5)
     self.RaidIcon = ricon
 	
-	local status = createFont(hp, "OVERLAY", oUF_MlightDB.fontfile, oUF_MlightDB.raidfontsize-2, "OUTLINE", 1, 1, 1)
+	local status = createFont(hp, "OVERLAY", oUF_MlightDB.fontfile, oUF_MlightDB.raidfontsize-2, 1, 1, 1)
     status:SetPoint"TOPLEFT"
 	self:Tag(status, '[Mlight:AfkDnd][Mlight:DDG]')
 	
@@ -191,7 +202,7 @@ local func = function(self, unit)
    
 	-- Raid debuff
     local auras = CreateFrame("Frame", nil, self)
-	auras:SetFrameLevel(3)
+	auras:SetFrameLevel(4)
     auras:SetSize(16, 16)
     auras:SetPoint("LEFT", hp, "LEFT", 15, 0)
 	auras.tfontsize = 10
@@ -200,7 +211,7 @@ local func = function(self, unit)
 	
 	-- Tankbuff
     local tankbuff = CreateFrame("Frame", nil, self)
-	tankbuff:SetFrameLevel(3)
+	tankbuff:SetFrameLevel(4)
     tankbuff:SetSize(16, 16)
     tankbuff:SetPoint("LEFT", auras, "RIGHT", 5, 0)
 	tankbuff.tfontsize = 10
@@ -241,18 +252,29 @@ local dfunc = function(self, unit)
     self.bg:SetAllPoints()
     self.bg:SetTexture(texture)
 	if oUF_MlightDB.transparentmode then
-		self.bg:SetGradientAlpha("VERTICAL", .5, .5, .5, .5, 0, 0, 0, .2)
+		self.bg:SetGradientAlpha("VERTICAL", oUF_MlightDB.endcolor.r, oUF_MlightDB.endcolor.g, oUF_MlightDB.endcolor.b, oUF_MlightDB.endcolor.a, oUF_MlightDB.startcolor.r, oUF_MlightDB.startcolor.g, oUF_MlightDB.startcolor.b, oUF_MlightDB.startcolor.a)
 	else
-		self.bg:SetGradientAlpha("VERTICAL", .3, .3, .3, 1, .1, .1, .1, 1)
+		self.bg:SetGradientAlpha("VERTICAL", oUF_MlightDB.endcolor.r, oUF_MlightDB.endcolor.g, oUF_MlightDB.endcolor.b, 1, oUF_MlightDB.startcolor.r, oUF_MlightDB.startcolor.g, oUF_MlightDB.startcolor.b, 1)
 	end
 	
 	-- border --
 	self.backdrop = createBackdrop(self, self, 0)
 	
     local hp = createStatusbar(self, texture, "ARTWORK", nil, nil, 1, 1, 1, 1)
-	hp:SetFrameLevel(2)
+	hp:SetFrameLevel(3)
     hp:SetAllPoints(self)
     hp.frequentUpdates = true
+	
+	-- little black line to make the health bar more clear
+	hp.ind = hp:CreateTexture(nil, "OVERLAY", 1)
+    hp.ind:SetTexture("Interface\\Buttons\\WHITE8x8")
+	hp.ind:SetVertexColor(0, 0, 0)
+	hp.ind:SetSize(1, self:GetHeight())
+	if oUF_MlightDB.transparentmode then
+		hp.ind:SetPoint("RIGHT", hp:GetStatusBarTexture(), "LEFT", 0, 0)
+	else
+		hp.ind:SetPoint("LEFT", hp:GetStatusBarTexture(), "RIGHT", 0, 0)
+	end
 	
 	if oUF_MlightDB.transparentmode then
 		hp:SetReverseFill(true)
@@ -276,11 +298,11 @@ local dfunc = function(self, unit)
     masterlooter:SetPoint('LEFT', leader, 'RIGHT')
     self.MasterLooter = masterlooter
 	
-	local lfd = createFont(hp, "OVERLAY", symbols, oUF_MlightDB.raidfontsize-3, "OUTLINE", 1, 1, 1)
+	local lfd = createFont(hp, "OVERLAY", symbols, oUF_MlightDB.raidfontsize-3, 1, 1, 1)
 	lfd:SetPoint("LEFT", hp, 1, -1)
 	self:Tag(lfd, '[Mlight:LFD]')
 		
-	local raidname = createFont(hp, "OVERLAY", oUF_MlightDB.fontfile, oUF_MlightDB.raidfontsize, "OUTLINE", 1, 1, 1, 'RIGHT')
+	local raidname = createFont(hp, "OVERLAY", oUF_MlightDB.fontfile, oUF_MlightDB.raidfontsize, 1, 1, 1, 'RIGHT')
 	raidname:SetPoint"CENTER"
 	if oUF_MlightDB.nameclasscolormode then
 		self:Tag(raidname, '[Mlight:color][Mlight:raidname]')
@@ -294,7 +316,7 @@ local dfunc = function(self, unit)
     ricon:SetPoint("BOTTOM", hp, "TOP", 0 , -5)
     self.RaidIcon = ricon
 	
-	local status = createFont(hp, "OVERLAY", oUF_MlightDB.fontfile, oUF_MlightDB.raidfontsize-2, "OUTLINE", 1, 1, 1)
+	local status = createFont(hp, "OVERLAY", oUF_MlightDB.fontfile, oUF_MlightDB.raidfontsize-2, 1, 1, 1)
     status:SetPoint"TOPLEFT"
 	self:Tag(status, '[Mlight:AfkDnd][Mlight:DDG]')
 	

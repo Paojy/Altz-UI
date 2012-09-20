@@ -1,0 +1,7 @@
+﻿## Interface: 50001
+## Title: |cffEE3A8CAltz|rUI
+## Version: 5.30
+## Author: Blue
+## Dependencies: AltzUIConfig
+
+load.xml

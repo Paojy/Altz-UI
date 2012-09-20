@@ -2,7 +2,7 @@
 ## Author: Safturento
 ## Version: v1.3.2-712c7c1
 ## Title: |cff00aaffst|rAddonManager
-## RequiredDeps: aCore
+## RequiredDeps: Aurora
 ## Notes: A simple and minimalistic addon to disable/enabled addons without logging out.
 ## SavedVariables: stAddonProfiles, stLockedAddons
 

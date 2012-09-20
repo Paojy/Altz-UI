@@ -1,8 +1,0 @@
-﻿## Interface: 50001
-## Title: |cffEE3A8Ca|rLoot
-## Author:Blue
-## RequiredDeps: aCore
-## Credits:Tukz Tekkub
-
-mods\loot.lua
-mods\lootgroup.lua

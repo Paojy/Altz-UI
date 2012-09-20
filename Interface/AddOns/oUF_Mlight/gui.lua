@@ -139,6 +139,75 @@ local function createraidsizebox(parent, index, name, value)
 	return rsb
 end
 
+local function creatfontflagbu(parent, index, name, value)
+	local ffb = CreateFrame("Button", "oUF_Mlight"..name.."FontFlagButton", parent, "UIPanelButtonTemplate")
+	ffb.value = value
+	ffb:SetPoint("TOPLEFT", 16, 10-index*30)
+	ffb:SetSize(150, 20)
+	ffb.name = ffb:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
+	ffb.name:SetPoint("LEFT", ffb, "RIGHT", 10, 1)
+	ffb.name:SetText(name)
+	ffb:SetScript("OnClick", function()
+		if oUF_MlightDB[ffb.value] == "OUTLINE" then
+			oUF_MlightDB[ffb.value] = "MONOCHROME"
+		elseif oUF_MlightDB[ffb.value] == "MONOCHROME" then
+			oUF_MlightDB[ffb.value] = "NONE"
+		elseif oUF_MlightDB[ffb.value] == "NONE" then
+			oUF_MlightDB[ffb.value] = "OUTLINE"
+		end
+		ffb:SetText(oUF_MlightDB[ffb.value])
+	end)
+	return ffb
+end
+
+local function createcolorpickerbu(parent, index, name, value, tip)
+	local cpb = CreateFrame("Button", "oUF_Mlight"..name.."ColorPickerButton", parent, "UIPanelButtonTemplate")
+	cpb.value = value
+	cpb:SetPoint("TOPLEFT", 16, 10-index*30)
+	cpb:SetSize(150, 20)
+	
+	cpb.tex = cpb:CreateTexture(nil, "OVERLAY")
+	cpb.tex:SetTexture("Interface\\ChatFrame\\ChatFrameBackground")
+	cpb.tex:SetPoint"CENTER"
+	cpb.tex:SetSize(120, 12)
+
+	cpb.name = cpb:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
+	cpb.name:SetPoint("LEFT", cpb, "RIGHT", 10, 1)
+	cpb.name:SetText(name)
+		
+	cpb:SetScript("OnClick", function()
+		local r, g, b, a = oUF_MlightDB[value].r, oUF_MlightDB[value].g, oUF_MlightDB[value].b, oUF_MlightDB[value].a
+		ColorPickerFrame:SetPoint("TOPLEFT", cpb, "TOPRIGHT", 20, 0)
+		
+		ColorPickerFrame.hasOpacity = oUF_MlightDB.transparentmode -- Opacity slider only available for reverse filling
+		ColorPickerFrame.func = function() 
+			oUF_MlightDB[value].r, oUF_MlightDB[value].g, oUF_MlightDB[value].b = ColorPickerFrame:GetColorRGB()
+			cpb.tex:SetVertexColor(ColorPickerFrame:GetColorRGB())
+		end
+		ColorPickerFrame.opacityFunc = function()
+			oUF_MlightDB[value].a = OpacitySliderFrame:GetValue()
+		end
+		ColorPickerFrame.previousValues = {r = r, g = g, b = b, opacity = a}
+		ColorPickerFrame.opacity = oUF_MlightDB[value].a
+		ColorPickerFrame.cancelFunc = function()
+			oUF_MlightDB[value].r, oUF_MlightDB[value].g, oUF_MlightDB[value].b, oUF_MlightDB[value].a = r, g, b, a
+			cpb.tex:SetVertexColor(oUF_MlightDB[value].r, oUF_MlightDB[value].g, oUF_MlightDB[value].b)
+		end
+		ColorPickerFrame:SetColorRGB(r, g, b)
+		ColorPickerFrame:Hide()
+		ColorPickerFrame:Show()
+	end)
+	if tip then
+		cpb:SetScript("OnEnter", function(self) 
+			GameTooltip:SetOwner(cpb, "ANCHOR_RIGHT", 10, 10)
+			GameTooltip:AddLine(tip)
+			GameTooltip:Show() 
+		end)
+		cpb:SetScript("OnLeave", function(self) GameTooltip:Hide() end)
+	end
+	return cpb
+end
+
 -- dependency relationship
 local function createDR(parent, ...)
     for i=1, select("#", ...) do
@@ -240,64 +309,75 @@ fonttext:SetText(L["font"])
 local fontfilebox = createeditbox(scrollFrame.Anchor, 5, L["fontfile"], "fontfile", L["fontfile2"])
 fontfilebox:SetWidth(300)
 local fontsizebox = createeditbox(scrollFrame.Anchor, 6, L["fontsize"], "fontsize", L["fontsize2"])
+local fontflagbu = creatfontflagbu(scrollFrame.Anchor, 7, L["fontflag"], "fontflag")
 
 local colormodtext = scrollFrame.Anchor:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
-colormodtext:SetPoint("TOPLEFT", 16, 3-7*30)
+colormodtext:SetPoint("TOPLEFT", 16, 3-8*30)
 colormodtext:SetText(L["colormode"])
 
-local classcolormodebu = createcheckbutton(scrollFrame.Anchor, 8, L["classcolormode"], "classcolormode", L["classcolormode2"])
-local transparentmodebu = createcheckbutton(scrollFrame.Anchor, 9, L["transparentmode"], "transparentmode", L["transparentmode2"])
-local nameclasscolormodebu = createcheckbutton(scrollFrame.Anchor, 10, L["nameclasscolormode"], "nameclasscolormode", L["nameclasscolormode2"])
+local classcolormodebu = createcheckbutton(scrollFrame.Anchor, 9, L["classcolormode"], "classcolormode", L["classcolormode2"])
+local transparentmodebu = createcheckbutton(scrollFrame.Anchor, 10, L["transparentmode"], "transparentmode", L["transparentmode2"])
+local startcolorpicker = createcolorpickerbu(scrollFrame.Anchor, 11, L["startcolor"], "startcolor", L["onlywhentransparent"])
+local endcolorpicker = createcolorpickerbu(scrollFrame.Anchor, 12, L["endcolor"], "endcolor", L["onlywhentransparent"])
+local nameclasscolormodebu = createcheckbutton(scrollFrame.Anchor, 13, L["nameclasscolormode"], "nameclasscolormode", L["nameclasscolormode2"])
+
+local portraittext = scrollFrame.Anchor:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
+portraittext:SetPoint("TOPLEFT", 14, 3-14*30)
+portraittext:SetText(L["portrait"])
+
+local portraitbu = createcheckbutton(scrollFrame.Anchor, 15, L["enableportrait"], "portrait")
+local portraitalphaslider = createslider(scrollFrame.Anchor, 16, L["portraitalpha"], "portraitalpha", 0.1, 1, 0.05, L["portraitalpha2"])
+createDR(portraitbu, portraitalphaslider)
 
 local sizetext = scrollFrame.Anchor:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
-sizetext:SetPoint("TOPLEFT", 16, 3-11*30)
+sizetext:SetPoint("TOPLEFT", 14, 3-17*30)
 sizetext:SetText(L["framesize"])
 
-local heightbox = createeditbox(scrollFrame.Anchor, 12, L["height"], "height", L["height2"])
-local widthbox = createeditbox(scrollFrame.Anchor, 13, L["width"], "width", L["width2"])
-local widthpetbox = createeditbox(scrollFrame.Anchor, 14, L["widthpet"], "widthpet", L["widthpet2"])
-local widthbossbox = createeditbox(scrollFrame.Anchor, 15, L["widthboss"], "widthboss", L["widthboss2"])
-local scaleslider = createslider(scrollFrame.Anchor, 16, L["scale"], "scale", 0.5, 3, 0.05, L["scale2"])
-local hpheightslider = createslider(scrollFrame.Anchor, 17, L["hpheight"], "hpheight", 0.2, 0.95, 0.05, L["hpheight2"])
+local heightbox = createeditbox(scrollFrame.Anchor, 18, L["height"], "height", L["height2"])
+local widthbox = createeditbox(scrollFrame.Anchor, 19, L["width"], "width", L["width2"])
+local widthpetbox = createeditbox(scrollFrame.Anchor, 20, L["widthpet"], "widthpet", L["widthpet2"])
+local widthbossbox = createeditbox(scrollFrame.Anchor, 21, L["widthboss"], "widthboss", L["widthboss2"])
+local scaleslider = createslider(scrollFrame.Anchor, 22, L["scale"], "scale", 0.5, 3, 0.05, L["scale2"])
+local hpheightslider = createslider(scrollFrame.Anchor, 23, L["hpheight"], "hpheight", 0.2, 0.95, 0.05, L["hpheight2"])
 
 local castbartext = scrollFrame.Anchor:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
-castbartext:SetPoint("TOPLEFT", 16, 3-18*30)
+castbartext:SetPoint("TOPLEFT", 16, 3-24*30)
 castbartext:SetText(L["castbar"])
 
-local castbarsbu = createcheckbutton(scrollFrame.Anchor, 19, L["enablecastbars"], "castbars", L["enablecastbars2"])
-local cbIconsizebox = createeditbox(scrollFrame.Anchor, 20, L["cbIconsize"], "cbIconsize", L["cbIconsize2"])
+local castbarsbu = createcheckbutton(scrollFrame.Anchor, 25, L["enablecastbars"], "castbars", L["enablecastbars2"])
+local cbIconsizebox = createeditbox(scrollFrame.Anchor, 26, L["cbIconsize"], "cbIconsize", L["cbIconsize2"])
 createDR(castbarsbu, cbIconsizebox)
 
 local auratext = scrollFrame.Anchor:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
-auratext:SetPoint("TOPLEFT", 16, 3-21*30)
+auratext:SetPoint("TOPLEFT", 16, 3-27*30)
 auratext:SetText(L["aura"])
 
-local aurasbu = createcheckbutton(scrollFrame.Anchor, 22, L["enableauras"], "auras", L["enableauras2"])
-local aurabordersbu = createcheckbutton(scrollFrame.Anchor, 23, L["auraborders"], "auraborders", L["auraborders2"])
-local auraperrowslider = createslider(scrollFrame.Anchor, 24, L["aurasperrow"], "auraperrow", 4, 20, 1, L["aurasperrow2"])
-local playerdebuffbu = createcheckbutton(scrollFrame.Anchor, 25, L["enableplayerdebuff"], "playerdebuffenable", L["enableplayerdebuff2"])
-local playerdebuffperrowslider = createslider(scrollFrame.Anchor, 26, L["playerdebuffsperrow"], "playerdebuffnum", 4, 20, 1, L["playerdebuffsperrow2"])
-local AuraFilterignoreBuffbu = createcheckbutton(scrollFrame.Anchor, 27, L["AuraFilterignoreBuff"], "AuraFilterignoreBuff", L["AuraFilterignoreBuff2"])
-local AuraFilterignoreDebuffbu = createcheckbutton(scrollFrame.Anchor, 28, L["AuraFilterignoreDebuff"], "AuraFilterignoreDebuff", L["AuraFilterignoreDebuff2"])
+local aurasbu = createcheckbutton(scrollFrame.Anchor, 28, L["enableauras"], "auras", L["enableauras2"])
+local aurabordersbu = createcheckbutton(scrollFrame.Anchor, 29, L["auraborders"], "auraborders", L["auraborders2"])
+local auraperrowslider = createslider(scrollFrame.Anchor, 30, L["aurasperrow"], "auraperrow", 4, 20, 1, L["aurasperrow2"])
+local playerdebuffbu = createcheckbutton(scrollFrame.Anchor, 31, L["enableplayerdebuff"], "playerdebuffenable", L["enableplayerdebuff2"])
+local playerdebuffperrowslider = createslider(scrollFrame.Anchor, 32, L["playerdebuffsperrow"], "playerdebuffnum", 4, 20, 1, L["playerdebuffsperrow2"])
+local AuraFilterignoreBuffbu = createcheckbutton(scrollFrame.Anchor, 33, L["AuraFilterignoreBuff"], "AuraFilterignoreBuff", L["AuraFilterignoreBuff2"])
+local AuraFilterignoreDebuffbu = createcheckbutton(scrollFrame.Anchor, 34, L["AuraFilterignoreDebuff"], "AuraFilterignoreDebuff", L["AuraFilterignoreDebuff2"])
 local AuraFiltertext = scrollFrame.Anchor:CreateFontString(nil, "ARTWORK", "GameFontNormalLeftYellow")
-AuraFiltertext:SetPoint("TOPLEFT", 16, 3-29*30)
+AuraFiltertext:SetPoint("TOPLEFT", 16, 3-35*30)
 AuraFiltertext:SetText(L["aurafilterinfo"])
 createDR(aurasbu, auraperrowslider, aurabordersbu, playerdebuffbu, playerdebuffperrowslider, AuraFilterignoreBuffbu, AuraFilterignoreDebuffbu)
 createDR(playerdebuffbu, playerdebuffperrowslider)
 
 local threatbartext = scrollFrame.Anchor:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
-threatbartext:SetPoint("TOPLEFT", 16, 3-31*30)
+threatbartext:SetPoint("TOPLEFT", 16, 3-36*30)
 threatbartext:SetText(L["threatbar"])
 
-local showthreatbarbu = createcheckbutton(scrollFrame.Anchor, 32, L["showthreatbar"], "showthreatbar", L["showthreatbar2"])
-local tbvergradientbu = createcheckbutton(scrollFrame.Anchor, 33, L["tbvergradient"], "tbvergradient", L["tbvergradient2"])
+local showthreatbarbu = createcheckbutton(scrollFrame.Anchor, 37, L["showthreatbar"], "showthreatbar", L["showthreatbar2"])
+local tbvergradientbu = createcheckbutton(scrollFrame.Anchor, 38, L["tbvergradient"], "tbvergradient", L["tbvergradient2"])
 createDR(showthreatbarbu, tbvergradientbu)
 
 local bosstext = scrollFrame.Anchor:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
-bosstext:SetPoint("TOPLEFT", 16, 3-34*30)
+bosstext:SetPoint("TOPLEFT", 16, 3-39*30)
 bosstext:SetText(L["bossframe"])
 
-local bossframesbu = createcheckbutton(scrollFrame.Anchor, 35, L["bossframes"], "bossframes", L["bossframes2"])
+local bossframesbu = createcheckbutton(scrollFrame.Anchor, 40, L["bossframes"], "bossframes", L["bossframes2"])
 --====================================================--
 --[[                 -- Raid --                     ]]--
 --====================================================--
@@ -531,6 +611,9 @@ function eventframe:ADDON_LOADED(arg1)
 	for i = 1, #raidsizeboxes do
 		F.Reskin(raidsizeboxes[i])
 	end
+	F.Reskin(fontflagbu)
+	F.Reskin(startcolorpicker)
+	F.Reskin(endcolorpicker)
 	F.CreateBD(wlbox)
 	sort(oUF_MlightDB.AuraFilterwhitelist)
 	F.Reskin(reloadbu)
@@ -561,6 +644,9 @@ function eventframe:PLAYER_ENTERING_WORLD(arg1)
 			raidsizeboxes[i]:SetText("25-man")
 		end
 	end
+	fontflagbu:SetText(oUF_MlightDB[fontflagbu.value])
+	startcolorpicker.tex:SetVertexColor(oUF_MlightDB[startcolorpicker.value].r, oUF_MlightDB[startcolorpicker.value].g, oUF_MlightDB[startcolorpicker.value].b)
+	endcolorpicker.tex:SetVertexColor(oUF_MlightDB[endcolorpicker.value].r, oUF_MlightDB[endcolorpicker.value].g, oUF_MlightDB[endcolorpicker.value].b)
 	CreateWhiteListButtonList()
 	self:UnregisterEvent("PLAYER_ENTERING_WORLD")
 end

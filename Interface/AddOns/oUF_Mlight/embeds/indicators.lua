@@ -326,7 +326,7 @@ local Enable = function(self)
         self.AuraStatusBL:ClearAllPoints()
         self.AuraStatusBL:SetPoint("BOTTOMLEFT", 0, -2)
 		self.AuraStatusBL:SetJustifyH("LEFT")
-        self.AuraStatusBL:SetFont(oUF_MlightDB.fontfile, timersize, "THINOUTLINE")
+        self.AuraStatusBL:SetFont(oUF_MlightDB.fontfile, timersize, oUF_MlightDB.fontflag)
         self.AuraStatusBL.frequentUpdates = update
         self:Tag(self.AuraStatusBL, classIndicators[class]["BL"])	
 
@@ -334,7 +334,7 @@ local Enable = function(self)
         self.AuraStatusBR:ClearAllPoints()
         self.AuraStatusBR:SetPoint("BOTTOMRIGHT", 3, 0)
 		self.AuraStatusBR:SetJustifyH("RIGHT")
-        self.AuraStatusBR:SetFont(symbols, smallmark, "THINOUTLINE")
+        self.AuraStatusBR:SetFont(symbols, smallmark, oUF_MlightDB.fontflag)
         self.AuraStatusBR.frequentUpdates = update
         self:Tag(self.AuraStatusBR, classIndicators[class]["BR"])
 		
@@ -342,21 +342,21 @@ local Enable = function(self)
         self.AuraStatusTL:ClearAllPoints()
         self.AuraStatusTL:SetPoint("TOPLEFT", 0, 0)
 		self.AuraStatusTL:SetJustifyH("LEFT")
-        self.AuraStatusTL:SetFont(oUF_MlightDB.fontfile, timersize, "THINOUTLINE")
+        self.AuraStatusTL:SetFont(oUF_MlightDB.fontfile, timersize, oUF_MlightDB.fontflag)
         self.AuraStatusTL.frequentUpdates = update
         self:Tag(self.AuraStatusTL, classIndicators[class]["TL"])
 		
         self.AuraStatusTR = self.Health:CreateFontString(nil, "OVERLAY")
         self.AuraStatusTR:ClearAllPoints()
         self.AuraStatusTR:SetPoint("CENTER", self.Health, "TOPRIGHT", -4, -4)
-        self.AuraStatusTR:SetFont(symbols, bigmark, "OUTLINE")
+        self.AuraStatusTR:SetFont(symbols, bigmark, oUF_MlightDB.fontflag)
         self.AuraStatusTR.frequentUpdates = update
         self:Tag(self.AuraStatusTR, classIndicators[class]["TR"])
 		
         self.AuraStatusCen = self.Health:CreateFontString(nil, "OVERLAY")
         self.AuraStatusCen:SetPoint("LEFT", -3, 0)
         self.AuraStatusCen:SetJustifyH("LEFT")
-        self.AuraStatusCen:SetFont(symbols, smallmark, "OUTLINE")
+        self.AuraStatusCen:SetFont(symbols, smallmark, oUF_MlightDB.fontflag)
         self.AuraStatusCen:SetWidth(0)
         self.AuraStatusCen.frequentUpdates = update
         self:Tag(self.AuraStatusCen, classIndicators[class]["Cen"])
