@@ -15,8 +15,8 @@ local _G = _G
 local BS_bagGroups --bag group definitions
 local BS_itemSwapGrid --grid of item data based on destination inventory location
 		
-BS_sorting = false     --indicates bag rearrangement is in progress
-BS_pauseRemaining = 0  --how much longer to wait before running the OnUpdate code again
+local BS_sorting = false     --indicates bag rearrangement is in progress
+local BS_pauseRemaining = 0  --how much longer to wait before running the OnUpdate code again
 
 local function BS_clearData()
  	BS_itemSwapGrid = {}
@@ -120,12 +120,12 @@ local function sortBagRange(bagList)
 					--determine category
 					
 					--soulbound items
-                   	local tooltip = _G("BS_toolTip")
-					local owner = _G("Bag_Sort_Core")
+                   	local tooltip = _G["BS_toolTip"]
+					local owner = _G["Bag_Sort_Core"]
                     tooltip:SetOwner(owner, ANCHOR_NONE)
 					tooltip:ClearLines()
 					tooltip:SetBagItem(bagSlot, itemSlot)
-					local tooltipLine2 = _G("BS_toolTipTextLeft2"):GetText()
+					local tooltipLine2 = _G["BS_toolTipTextLeft2"]:GetText()
 					tooltip:Hide()
 
 					if tooltipLine2 and tooltipLine2 == "Soulbound" then
@@ -201,7 +201,7 @@ function T.BagSort()
 end
 
 local Core = CreateFrame("Frame", "Bag_Sort_Core")
-Core:SetScript("OnLoad", function() BS_clearData() end)
-Core:SetScript("OnUpdate", function() BS_OnUpdate(self, elapsed) end)
+Core:SetScript("OnLoad", BS_clearData)
+Core:SetScript("OnUpdate", BS_OnUpdate)
 
 local Tooltip = CreateFrame("GameTooltip", "BS_toolTip", UIParent, "GameTooltipTemplate")

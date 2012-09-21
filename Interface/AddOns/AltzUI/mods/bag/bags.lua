@@ -110,9 +110,9 @@ function SetUp(framen, ...)
 	F.Reskin(bagsort)
 	bagsort:SetScript('OnClick', function()
 		if framen == "bag" then
-			BS_slashBagSortHandler()
+			T.BagSort()
 		else
-			BS_slashBankSortHandler()
+			T.BankSort()
 		end
 	end)
 	
