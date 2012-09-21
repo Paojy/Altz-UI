@@ -1,13 +1,21 @@
 -- LightCT by Alza
 local T, C, L, G = unpack(select(2, ...))
+local dragFrameList = G.dragFrameList
 
 if not aCoreCDB.combattext then return end
 
 local frames = {}
 local font = GameFontHighlight:GetFont()
+local timer = 0
+local number
 
 for i = 1, 2 do
-	local f = CreateFrame("ScrollingMessageFrame", "LightCT"..i, UIParent)
+	local f = CreateFrame("ScrollingMessageFrame", "Combat Text"..i, UIParent)
+	if i == 1 then
+		f.movingname = L["damageCT"]
+	else
+		f.movingname = L["healingCT"]
+	end
 	f:SetFont(font, 12, "OUTLINE")
 	f:SetShadowColor(0, 0, 0, 0)
 	f:SetFadeDuration(0.2)
@@ -16,7 +24,7 @@ for i = 1, 2 do
 	f:SetSpacing(2)
 	f:SetWidth(84)
 	f:SetHeight(150)
-
+	
 	if i == 1 then
 		f:SetJustifyH"RIGHT"
 		f:SetPoint("RIGHT", UIParent, "CENTER", -185, 0)
@@ -24,6 +32,18 @@ for i = 1, 2 do
 		f:SetJustifyH"LEFT"
 		f:SetPoint("LEFT", UIParent, "CENTER", -365, 0)
 	end
+
+	T.CreateDragFrame(f, dragFrameList, -2 , true) --frame, dragFrameList, inset, clamp
+
+	f.dragFrame:SetScript("OnUpdate", function(self, elapsed)
+		timer = timer + elapsed
+		if timer > 1 then	
+			number = random(1 , 10000)
+			frames[1]:AddMessage("-"..number, 1, 0, 0)
+			frames[2]:AddMessage("+"..number, 0, 1, 0)
+			timer = 0
+		end
+	end)
 
 	frames[i] = f
 end
@@ -51,9 +71,9 @@ local tbl = {
 local info
 local template = "-%s (%s)"
 
-local events = CreateFrame"Frame"
-events:RegisterEvent"COMBAT_TEXT_UPDATE"
-events:SetScript("OnEvent", function(self, event, subev, arg2, arg3)
+local eventframe = CreateFrame"Frame"
+eventframe:RegisterEvent"COMBAT_TEXT_UPDATE"
+eventframe:SetScript("OnEvent", function(self, event, subev, arg2, arg3)
 	info = tbl[subev]
 	if(info) then
 		local msg = info.prefix or ""

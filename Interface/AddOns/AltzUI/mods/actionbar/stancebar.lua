@@ -12,10 +12,11 @@ local num2 = NUM_POSSESS_SLOTS
 local buttonList = {}
 
 --make a frame that fits the size of all microbuttons
-local frame = CreateFrame("Frame", "rABS_StanceBar", UIParent, "SecureHandlerStateTemplate")
+local frame = CreateFrame("Frame", "Altz_Stancebar", UIParent, "SecureHandlerStateTemplate")
+frame.movingname = L["Stancebar"]
 frame:SetWidth(num*buttonssize + (num-1)*buttonspace + 2*padding)
 frame:SetHeight(buttonssize + 2*padding)
-frame:SetPoint("TOPLEFT", Minimap, "BOTTOMLEFT", -2, -2)
+frame:SetPoint("TOPLEFT", Minimap, "BOTTOMLEFT", -6, -4)
 
 --STANCE BAR
 --move the buttons into position and reparent them

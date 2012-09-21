@@ -10,7 +10,8 @@ local num = 1
 local buttonList = {}
 
 --create the frame to hold the buttons
-local frame = CreateFrame("Frame", "rABS_ExtraBar", UIParent, "SecureHandlerStateTemplate")
+local frame = CreateFrame("Frame", "Altz_extrabarbutton", UIParent, "SecureHandlerStateTemplate")
+frame.movingname = L["extrabarbutton"]
 frame:SetWidth(num*buttonssize + 2*padding)
 frame:SetHeight(buttonssize + 2*padding)
 frame:SetPoint("TOP", UIParent, "CENTER", 0, -200)

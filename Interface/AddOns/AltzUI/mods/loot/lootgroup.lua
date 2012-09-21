@@ -1,5 +1,6 @@
 ﻿local T, C, L, G = unpack(select(2, ...))
 local F = unpack(Aurora)
+local dragFrameList = G.dragFrameList
 
 local edgetex = "Interface\\Addons\\AltzUI\\media\\grow"
 local width = 250
@@ -144,26 +145,12 @@ local function CreateRollFrame()
 	return frame
 end
 
-local anchor = CreateFrame("Button", nil, UIParent)
+local anchor = CreateFrame("Button", "Altz_lootgroup", UIParent)
+anchor.movingname = L["lootgroup"]
 anchor:SetWidth(width)
 anchor:SetHeight(20)
-F.SetBD(anchor)
-
-local label = T.createtext(anchor, "OVERLAY", 13, "OUTLINE", "LEFT")
-label:SetAllPoints()
-label:SetText("Loot")
-
-anchor:SetScript("OnClick", anchor.Hide)
-anchor:SetScript("OnDragStart", anchor.StartMoving)
-anchor:SetScript("OnDragStop", function(self)
-	self:StopMovingOrSizing()
-	self.db.x, self.db.y = self:GetCenter()
-end)
-anchor:SetMovable(true)
-anchor:EnableMouse(true)
-anchor:RegisterForDrag("LeftButton")
-anchor:RegisterForClicks("RightButtonUp")
-anchor:Hide()
+anchor:SetPoint("CENTER", UIParent, "CENTER" , 0, 250)
+T.CreateDragFrame(anchor, dragFrameList, -2 , true) --frame, dragFrameList, inset, clamp
 
 local frames = {}
 
@@ -223,7 +210,6 @@ end
 
 anchor:RegisterEvent("ADDON_LOADED")
 anchor:SetScript("OnEvent", function(frame, event, addon)
-
 	anchor:UnregisterEvent("ADDON_LOADED")
 	anchor:RegisterEvent("START_LOOT_ROLL")
 	UIParent:UnregisterEvent("START_LOOT_ROLL")
@@ -232,9 +218,4 @@ anchor:SetScript("OnEvent", function(frame, event, addon)
 	anchor:SetScript("OnEvent", function(frame, event, ...) 
 	return START_LOOT_ROLL(...)
 	end)
-
-	anchor:SetPoint("CENTER", UIParent, "CENTER" , 0, 250)
 end)
-
-SlashCmdList["TEKSLOOT"] = function() if anchor:IsVisible() then anchor:Hide() else anchor:Show() end end
-SLASH_TEKSLOOT1 = "/aloot"

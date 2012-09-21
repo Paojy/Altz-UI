@@ -1,6 +1,7 @@
 --original author : Allez
 local T, C, L, G = unpack(select(2, ...))
 local F = unpack(Aurora)
+local dragFrameList = G.dragFrameList
 
 if not aCoreCDB.raidcdenable then return end
 
@@ -54,25 +55,11 @@ local timer = 0
 
 local bars = {}
 
-local function applyDragFunctionality(f)
-    f:SetScript("OnDragStart", function(s) s:StartMoving() end)
-    f:SetScript("OnDragStop", function(s) s:StopMovingOrSizing() end)
-    f:SetClampedToScreen(true)
-    f:SetMovable(true)
-    f:SetUserPlaced(true)
-	F.SetBD(f)
-    f:EnableMouse(nil)
-    f:RegisterForDrag(nil)
-end
-
-local anchorframe = CreateFrame("Frame", "RaidCDanchorframe", UIParent)
+local anchorframe = CreateFrame("Frame", "Altz_RaidCDanchorframe", UIParent)
+anchorframe.movingname = L["RaidCD"]
 anchorframe:SetSize(width, 20)
 anchorframe:SetPoint("BOTTOMLEFT", UIParent, "BOTTOMLEFT", 180, 170)
-anchorframe.text = T.createtext(anchorframe, "OVERLAY", fontsize, flag, "CENTER")
-anchorframe.text:SetAllPoints()
-anchorframe.text:SetText("Drag me!")
-applyDragFunctionality(anchorframe)
-anchorframe:Hide()
+T.CreateDragFrame(anchorframe, dragFrameList, -2 , true) --frame, dragFrameList, inset, clamp
 
 local UpdatePositions = function()
 	for i = 1, #bars do
@@ -210,23 +197,8 @@ eventf:SetScript('OnEvent', OnEvent)
 eventf:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 eventf:RegisterEvent("ZONE_CHANGED_NEW_AREA")
 
------------------------------
--- FUNCTIONS
------------------------------
-local function test()
-	  if anchorframe:IsShown() then
-		anchorframe:Hide()
-		anchorframe:EnableMouse(nil)
-        anchorframe:RegisterForDrag(nil)
-	  else
-		anchorframe:Show()
-	    anchorframe:EnableMouse(true)
-        anchorframe:RegisterForDrag("LeftButton", "RightButton")
-	  end
-	  StartTimer(UnitName('player'), 97462)
-	  StartTimer(UnitName('player'), 98008)
-	  StartTimer(UnitName('player'), 51052)
-end
-
-SlashCmdList["raidcd"] = test;
-SLASH_raidcd1 = "/raidcd"
+anchorframe.dragFrame:SetScript('OnShow', function()
+	StartTimer(UnitName('player'), 97462)
+	StartTimer(UnitName('player'), 98008)
+	StartTimer(UnitName('player'), 51052)
+end)

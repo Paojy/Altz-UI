@@ -93,15 +93,13 @@ function T.CreateDragFrame(self, dragFrameList, inset, clamp)
 	df:RegisterForDrag("LeftButton")
 	df:SetScript("OnDragStart", function(self) self:GetParent():StartMoving() end)
 	df:SetScript("OnDragStop", function(self) self:GetParent():StopMovingOrSizing() end)
-	df:SetScript("OnEnter", function(self)
-		GameTooltip:SetOwner(self, "ANCHOR_TOP")
-		GameTooltip:AddLine(self:GetParent():GetName(), 0, 1, 0.5, 1, 1, 1)
-		GameTooltip:Show()
-	end)
-	df:SetScript("OnLeave", function(s) GameTooltip:Hide() end)
 	df:Hide()
 	--overlay texture
-	F.SetBD(df)
+	local mask = F.CreateBDFrame(df, 0.5)
+	F.CreateSD(mask, 2, 0, 0, 0, 1, -1)
+	mask.text = T.createtext(df, "OVERLAY", 13, "OUTLINE", "RIGHT")
+	mask.text:SetPoint"TOPRIGHT"
+	mask.text:SetText(self.movingname)
 	--self stuff
 	self.dragFrame = df
 	self:SetClampedToScreen(clamp or false)
@@ -111,18 +109,31 @@ end
 
 local function slashCmdFunction(cmd)
       if cmd:match"unlock" then
-        UnlockAllFrames(G.dragFrameList, "Frames unlocked")
+        UnlockAllFrames(G.dragFrameList, "|cff00FF00"..L["to unlock"].."|r")
       elseif cmd:match"lock" then
-        LockAllFrames(G.dragFrameList, "Frames locked")
+        LockAllFrames(G.dragFrameList, "|cffFF0000"..L["to lock"].."|r")
       elseif cmd:match"reset" then
-        ResetAllFramesToDefault(G.dragFrameList, "Frames reseted")
+        ResetAllFramesToDefault(G.dragFrameList, "|cff00FFFF"..L["to reset"].."|r")
       else
-        print("|cffE066FFMoving Command List:|r")
-        print("|cffE066FF/altz lock|r, to lock all frames")
-        print("|cffE066FF/altz unlock|r, to unlock all frames")
-        print("|cffE066FF/altz reset|r, to reset all frames")
+        print("|cffEEEE00Moving Command List:|r")
+        print("|cffFF1493/altz lock|r, "..L["to lock"])
+        print("|cffFF1493/altz unlock|r, "..L["to unlock"])
+        print("|cffFF1493/altz reset|r, "..L["to reset"])
     end
 end
 
 SlashCmdList["altz"] = slashCmdFunction
 SLASH_altz1 = "/altz"
+
+-- attach reset position to reset button.
+local resetbutton = _G["AltzUIResetButton"]
+local resetgui = _G["AltzUI Reset Frame"]
+
+local resetposbutton = CreateFrame("Button", "AltzUIResetPosButton", resetgui, "UIPanelButtonTemplate")
+resetposbutton:SetPoint("RIGHT",resetbutton, "LEFT", -10, 0)
+resetposbutton:SetSize(150, 25)
+resetposbutton:SetText(L["resetallpos"])
+F.Reskin(resetposbutton)
+resetposbutton:SetScript("OnClick", function()
+   ResetAllFramesToDefault(G.dragFrameList, "|cff00FFFF"..L["to reset"].."|r")
+end)

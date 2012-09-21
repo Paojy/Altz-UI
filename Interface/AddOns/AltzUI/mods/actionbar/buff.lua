@@ -41,36 +41,38 @@ local backdrop2 = {
 
 --create drag frame for temp enchant icons
 local function createTempEnchantHolder()
-	local frame = CreateFrame("Frame", "rBFS_TempEnchantHolder", UIParent)
+	local frame = CreateFrame("Frame", "Altz_tempenchantpanel", UIParent)
+	frame.movingname = L["tempenchantpanel"]
 	frame:SetSize(50,50)
 	frame:SetPoint( "TOPLEFT", Minimap, "BOTTOMLEFT", -1, -2)
 	T.CreateDragFrame(frame, dragFrameList, -2 , true) --frame, dragFrameList, inset, clamp
+	return frame
 end
 
 --create drag frame for buff icons
 local function createBuffFrameHolder()
-	local frame = CreateFrame("Frame", "rBFS_BuffFrameHolder", UIParent)
+	local frame = CreateFrame("Frame", "Altz_buffpanel", UIParent)
+	frame.movingname = L["buffpanel"]
 	frame:SetSize(50,50)
 	frame:SetPoint("TOPRIGHT", UIParent, "TOPRIGHT", -15, -16)
 	T.CreateDragFrame(frame, dragFrameList, -2 , true) --frame, dragFrameList, inset, clamp
+	return frame
 end
 
 --create the drag frames
-createTempEnchantHolder()
-createBuffFrameHolder()
+local tempenchantpanel = createTempEnchantHolder()
+local buffpanel = createBuffFrameHolder()
 
 --move tempenchant frame
 local function moveTempEnchantFrame()
-	local f = rBFS_TempEnchantHolder
-	TemporaryEnchantFrame:SetParent(f)
+	TemporaryEnchantFrame:SetParent(tempenchantpanel)
 	TemporaryEnchantFrame:ClearAllPoints()
 	TemporaryEnchantFrame:SetPoint("TOPLEFT",0,0)
 end
 
 --move buff frame
 local function moveBuffFrame()
-	local f = rBFS_BuffFrameHolder
-	BuffFrame:SetParent(f)
+	BuffFrame:SetParent(buffpanel)
 	BuffFrame:ClearAllPoints()
 	BuffFrame:SetPoint("TOPRIGHT",0,0)
 end

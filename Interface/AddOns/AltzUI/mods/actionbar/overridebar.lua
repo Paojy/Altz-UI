@@ -10,7 +10,7 @@ local num = NUM_ACTIONBAR_BUTTONS --there seems to be no MAX_OVERRIDE_NUM or the
 local buttonList = {}
 
 --create the frame to hold the buttons
-local frame = CreateFrame("Frame", "rABS_OverrideBar", UIParent, "SecureHandlerStateTemplate")
+local frame = CreateFrame("Frame", "Altz_OverrideBar", UIParent, "SecureHandlerStateTemplate")
 frame:SetWidth(num*buttonssize + (num-1)*buttonspace + 2*padding)
 frame:SetHeight(buttonssize + 2*padding)
 frame:SetPoint("BOTTOMLEFT", UIParent, "BOTTOM", -140, 30)

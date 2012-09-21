@@ -10,7 +10,8 @@ local num = 1
 local buttonList = {}
 
 --create the frame to hold the buttons
-local frame = CreateFrame("Frame", "rABS_LeaveVehicle", UIParent, "SecureHandlerStateTemplate")
+local frame = CreateFrame("Frame", "Altz_leave_vehicle", UIParent, "SecureHandlerStateTemplate")
+frame.movingname = L["leave_vehicle"]
 frame:SetWidth(num*buttonssize + 2*padding)
 frame:SetHeight(buttonssize + 2*padding)
 frame:SetPoint("BOTTOMLEFT", UIParent, "BOTTOM", 280, 20)

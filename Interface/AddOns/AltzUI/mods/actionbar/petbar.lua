@@ -23,7 +23,8 @@ local num = NUM_PET_ACTION_SLOTS
 local buttonList = {}
 
 --create the frame to hold the buttons
-local frame = CreateFrame("Frame", "rABS_PetBar", UIParent, "SecureHandlerStateTemplate")
+local frame = CreateFrame("Frame", "Altz_Petbar", UIParent, "SecureHandlerStateTemplate")
+frame.movingname = L["Petbar"]
 if not uselayout5x2 then
 	frame:SetWidth(num*petbuttonssize + (num-1)*buttonspace + 2*padding)
 	frame:SetHeight(petbuttonssize + 2*padding)

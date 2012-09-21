@@ -1,5 +1,6 @@
 ﻿local T, C, L, G = unpack(select(2, ...))
 local F = unpack(Aurora)
+local dragFrameList = G.dragFrameList
 local addon, ns = ...
 if not aCoreCDB.enabletip then return end
 
@@ -47,6 +48,13 @@ function GameTooltip_UnitColor(unit)
     local color = unitColor(unit)
     return color.r, color.g, color.b
 end
+
+local anchor = CreateFrame("Button", "Altz_tooltip", UIParent)
+anchor.movingname = L["tooltip"]
+anchor:SetWidth(120)
+anchor:SetHeight(70)
+anchor:SetPoint("BOTTOMRIGHT",  UIParent, "BOTTOMRIGHT", -16, 18)
+T.CreateDragFrame(anchor, dragFrameList, -2 , true) --frame, dragFrameList, inset, clamp
 
 local function getTarget(unit)
     if UnitIsUnit(unit, "player") then
@@ -197,7 +205,7 @@ hooksecurefunc("GameTooltip_SetDefaultAnchor", function(tooltip, parent)
         tooltip:SetOwner(parent, "ANCHOR_CURSOR_RIGHT")
     else
         tooltip:SetOwner(parent, "ANCHOR_NONE")	
-        tooltip:SetPoint("BOTTOMRIGHT",  UIParent, "BOTTOMRIGHT", -16, 18)
+        tooltip:SetPoint("BOTTOMRIGHT",  anchor, "BOTTOMRIGHT")
     end
     tooltip.default = 1
 end)

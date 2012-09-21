@@ -21,7 +21,8 @@ local num = NUM_ACTIONBAR_BUTTONS
 local buttonList = {}
 
 --create the frame to hold the buttons
-local frame = CreateFrame("Frame", "rABS_MultiBarRight", UIParent, "SecureHandlerStateTemplate")
+local frame = CreateFrame("Frame", "Altz_Bar4&5", UIParent, "SecureHandlerStateTemplate")
+frame.movingname = L["Bar4&5"]
 frame:SetWidth(2*buttonssize + (2-1)*buttonspace + 2*padding)
 frame:SetHeight(num*buttonssize + (num-1)*buttonspace + 2*padding)
 frame:SetPoint("RIGHT", UIParent, "RIGHT", -6, 0)

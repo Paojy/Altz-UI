@@ -33,10 +33,11 @@ local buttonHeight = CharacterMicroButton:GetHeight()
 local gap = -3
 
 --create the frame to hold the buttons
-local frame = CreateFrame("Frame", "rABS_MicroMenu", UIParent, "SecureHandlerStateTemplate")
+local frame = CreateFrame("Frame", "Altz_MicroMenu", UIParent, "SecureHandlerStateTemplate")
+frame.movingname = L["MicroMenu"]
 frame:SetWidth(NUM_MICROBUTTONS*buttonWidth + (NUM_MICROBUTTONS-1)*gap + 2*padding)
-frame:SetHeight(buttonHeight + 2*padding)
-frame:SetPoint("TOP", UIParent, "TOP",0, 25)
+frame:SetHeight(30 + 2*padding)
+frame:SetPoint("TOP", UIParent, "TOP",0, -5)
 frame:SetScale(scale)
 
 --move the buttons into position and reparent them
@@ -44,7 +45,7 @@ for _, button in pairs(buttonList) do
 	button:SetParent(frame)
 end
 CharacterMicroButton:ClearAllPoints();
-CharacterMicroButton:SetPoint("LEFT", padding, 0)
+CharacterMicroButton:SetPoint("BOTTOMLEFT", padding, 0)
 
 --disable reanchoring of the micro menu by the petbattle ui
 PetBattleFrame.BottomFrame.MicroButtonFrame:SetScript("OnShow", nil) --remove the onshow script
