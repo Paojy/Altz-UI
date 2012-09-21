@@ -98,6 +98,9 @@ function T.LoadaModVariables()
 	-- [[ Actionbar Settings ]]--
 	aCoreCDB.cooldown = true
 	aCoreCDB.rangecolor = true
+	aCoreCDB.keybindsize = 8
+	aCoreCDB.macronamesize = 12
+	aCoreCDB.countsize = 12
 	
 	aCoreCDB.bar12size = 25
 	aCoreCDB.bar12space = 4
@@ -122,9 +125,9 @@ function T.LoadaModVariables()
 	aCoreCDB.petbarmfade = true
 	aCoreCDB.petbarefade = false
 	aCoreCDB.petbarfademinaplha = 0.2
-	aCoreCDB.stancebarbuttonszie = 20
+	aCoreCDB.stancebarbuttonszie = 19
 	aCoreCDB.stancebarbuttonspace = 4	
-	aCoreCDB.micromenuscale = 0.8
+	aCoreCDB.micromenuscale = 1
 	aCoreCDB.micromenufade = true
 	aCoreCDB.micromenuminalpha = 0
 	aCoreCDB.leave_vehiclebuttonsize = 30
