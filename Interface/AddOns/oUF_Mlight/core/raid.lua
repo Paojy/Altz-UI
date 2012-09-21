@@ -393,7 +393,7 @@ local function Spawndpsraid()
 		'columnSpacing', 5,
 		'columnAnchorPoint', "LEFT"
 	)
-	dpsraid:SetPoint("TOPLEFT", UIParent, "TOPLEFT", 20, -180)
+	dpsraid:SetPoint("TOPLEFT", UIParent, "TOPLEFT", 14, -180)
 end
 
 local function CheckRole()

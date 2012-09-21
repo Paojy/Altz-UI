@@ -1,7 +1,8 @@
 ﻿local addon, ns = ...
 ns.Client = GetLocale()
 ns.L = {}
-
+ -- \n is for add a newline, plese save it when translating. :)
+ 
 ns.L["apply"] = "Use /OMF to move. Reload UI to apply settings."
 ns.L["don't have to rl"] = "These settings become effective immediately"
 ns.L["fade"] = "Fading"

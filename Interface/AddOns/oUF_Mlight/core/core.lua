@@ -551,7 +551,7 @@ local CreateDebuffs = function(self, unit)
 		Debuff.PostCreateIcon = PostCreateIcon
 		Debuff.PostUpdateIcon = PostUpdateIcon
 	    if oUF_MlightDB.playerdebuffenable and unit == "player" then
-			Debuff:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 1, 8)
+			Debuff:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 1, oUF_MlightDB.height*-(oUF_MlightDB.hpheight-1)+7)
 			Debuff.initialAnchor = "BOTTOMLEFT"
 			Debuff["growth-x"] = "RIGHT"
 			Debuff["growth-y"] = "UP"
@@ -654,6 +654,7 @@ local func = function(self, unit)
 		Portrait:SetPoint("BOTTOMRIGHT", -1, 1)
 		Portrait:SetAlpha(oUF_MlightDB.portraitalpha)
 		self.Portrait = Portrait
+		--self.Portrait.PostUpdate = function() Portrait:SetPosition(-0.3, 0.3, 0) end
 	end
 	
 	-- power bar --
@@ -884,7 +885,7 @@ local UnitSpecific = {
 			self.EclipseBar.PostUnitAura = PostEclipseUpdate
         end
 		
-		-- resting Zzz and PvP---
+		-- resting Zzz ---
 		local playerstatus = createFont(self.Health, "ARTWORK", oUF_MlightDB.fontfile, 10, 1, 1, 1)
 		playerstatus:SetPoint("TOPLEFT", self.Health, "TOPLEFT", 2, 5)
 		self:Tag(playerstatus, "[raidcolor][resting]|r")

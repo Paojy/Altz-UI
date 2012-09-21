@@ -173,9 +173,9 @@ oUF.Tags.Methods['freebgrid:regrow'] = function(u) -- ÓúºÏ
         local spellTimer = (expirationTime-GetTime())
 		local TimeLeft = ns.FormatValue(spellTimer)
         if spellTimer > 3 then
-			return "|cffFFA500?|r"
+			return "|cffFFA500"..TimeLeft.."|r"
 		elseif spellTimer > 0 then
-            return "|cff33FF33?|r"
+            return "|cff33FF33"..TimeLeft.."|r"
         end
     end
 end
@@ -348,8 +348,14 @@ local Enable = function(self)
 		
         self.AuraStatusTR = self.Health:CreateFontString(nil, "OVERLAY")
         self.AuraStatusTR:ClearAllPoints()
-        self.AuraStatusTR:SetPoint("CENTER", self.Health, "TOPRIGHT", -4, -4)
-        self.AuraStatusTR:SetFont(symbols, bigmark, oUF_MlightDB.fontflag)
+        
+		if select(2,UnitClass("player")) == "DRUID" then
+			self.AuraStatusTR:SetPoint("TOPRIGHT", 0, 0)
+			self.AuraStatusTR:SetFont(oUF_MlightDB.fontfile, timersize, oUF_MlightDB.fontflag)
+		else
+			self.AuraStatusTR:SetPoint("CENTER", self.Health, "TOPRIGHT", -4, -4)
+			self.AuraStatusTR:SetFont(symbols, bigmark, oUF_MlightDB.fontflag)
+		end
         self.AuraStatusTR.frequentUpdates = update
         self:Tag(self.AuraStatusTR, classIndicators[class]["TR"])
 		
