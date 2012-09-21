@@ -24,8 +24,8 @@ L["AddOns"] = "的插件"
 L["UI Memory usage"] = "自定義插件佔用"
 L["Total incl. Blizzard"] = "所有插件佔用"
 
-L["to lock"] = "解鎖框體"
-L["to unlock"] = "鎖定框體"
+L["to lock"] = "鎖定框體"
+L["to unlock"] = "解鎖框體"
 L["to reset"] = "重置框體位置"
 L["resetallpos"] = "重置位置"
 
