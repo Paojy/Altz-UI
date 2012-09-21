@@ -1,12 +1,13 @@
 ﻿local T, C, L, G = unpack(select(2, ...))
-
+ -- \n is for add a newline, plese save it when translating. :)
+ 
 L["Paopao <Purgatory> CN5_Abyssion's Lair"] = "Paopao <Purgatory> CN5_Abyssion's Lair"
 L["Welcome to Altz UI Setup"] = "Welcome to Altz UI Setup"
 L["Install"] = "Install"
 
 L["AltzUI Reset Settings"] = "AltzUI Reset Settings"
-L["Reset tip"] = "This help you reset your addons to default settings macthing with AltzUI."
 L["Reset All Settings"] = "Reset AltzUI Settings"
+L["Reset tip"] = "This help you reset your addons to default settings macthing with AltzUI."
 L["Reset ClassColor"] = "Reset Class Color to Default Colors."
 L["Reset DBM"] = "Reset the timers' Size and position, RaidWarning's postion, \nBoss HP bars' positon, range and info boxes' position, \nhide it's minimap button."
 L["Reset Skada"] = "Reset Skada's color, size and position, \nhide it's minimap button."
@@ -80,6 +81,10 @@ L["cooldown"] = "Cooldown Text"
 L["cooldown2"] = "Displaying cooldown text on action buttons, inventory items, etc."
 L["rangecolor"] = "Unusable Color"
 L["rangecolor2"] = "Change the color of standard action buttons when they are unusable.\nLike out of range, mana, etc."
+L["keybindsize"] = "Keybind Text Font Size"
+L["macronamesize"] = "Macro Name Text Font Size"
+L["countsize"] = "Count Text Font Size"
+
 L["eventfade"] = "Conditional Fading"
 L["eventfade2"] = "Enable Actionbar Fading when you are not casting, not in combat,\ndon't have a target and got max health or max/min power, etc."
 L["mousefade"] = "Hover Fading"

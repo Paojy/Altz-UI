@@ -1,5 +1,6 @@
 ﻿local T, C, L, G = unpack(select(2, ...))
-
+ -- \n is for add a newline, plese save it when translating. :)
+ 
 L["Paopao <Purgatory> CN5_Abyssion's Lair"] = "Paopao <Purgatory> CN5_Abyssion's Lair"
 L["Thanks to"] = "Thanks to"
 L["and everyone who help me with this Compilations."] = "and everyone who help me with this Compilations."
@@ -8,7 +9,7 @@ L["|cff00B2EEF|rriends   |cff00EE00G|ruild"] = "|cff00B2EEF|rriends   |cff00EE00
 L["|cffFF3E96C|ralendar"] = "|cffFF3E96C|ralendar"
 L["Info"] = "Info"
 L["Credits"] = "Credits"
-L["Instruction"] = "|cff3399FF/rl|r - Reload UI \n \n |cff3399FF/hb|r - Key Binding Mode \n \n |cff3399FF/raidcd|r - Test/Move RaidCD bars \n \n |cff3399FF/aloot|r - Move Loot Groups \n \n |cff3399FFSHIFT+Leftbutton|r - Set Focus \n \n |cff3399FFTab|r - Change between available channels. \n \n |cff3399FF/omf|r - Unlock UnitFrames \n \n |cff3399FF/altz|r - move actionbars, buffframe, etc \n \n |cff3399FF/cd x|r - count down from x second. \n \n World Flare button appears on topright of minimap when available. \n \n |cff3399FFEnjoy!|r"
+L["Instruction"] = "|cff3399FF/rl|r - Reload UI \n \n |cff3399FF/hb|r - Key Binding Mode \n \n |cff3399FFSHIFT+Leftbutton|r - Set Focus \n \n |cff3399FFTab|r - Change between available channels. \n \n |cff3399FF/omf|r - Unlock UnitFrames \n \n |cff3399FF/altz|r - move actionbars, buffframe, etc \n \n |cff3399FF/cd x|r - count down from x second. \n \n World Flare button appears on topright of minimap when available. \n \n |cff3399FFEnjoy!|r"
 L["UI Fading"] = "UI Fading"
 L["Click to hide."] = "Click to hide."
 L["SetupEnsure"] = "Do you want to set to Deflaut Options and Reload UI?"
@@ -22,6 +23,11 @@ L["Top"] = "Top "
 L["AddOns"] = "AddOns"
 L["UI Memory usage"] = "UI Memory usage"
 L["Total incl. Blizzard"] = "Total incl. Blizzard"
+
+L["to lock"] = "Lock all frames"
+L["to unlock"] = "Unlock all frames"
+L["to reset"] = "Reset all frames' position"
+L["resetallpos"] = "Reset Position"
 
 L["undress"] = "Undress All"
 L["Open All"] = "Open All"
@@ -55,3 +61,19 @@ L["Copy Name"] = "Copy Name"
 L["Who"] = "Who"
 L["Guild Invite"] = "Guild Invite"
 L["Add Friend"] = "Add Friend"
+
+L["Bar1&2"] = "Main\nActionbar"
+L["Bar3"] = "Multi\nActionBar"
+L["Bar4&5"] = "RightMulti\nActionBar"
+L["Petbar"] = "Pet Actionbar"
+L["Stancebar"] = "Stance Bar"
+L["MicroMenu"] = "Micro Menu"
+L["leave_vehicle"] = "Leave\nVehicle"
+L["extrabarbutton"] = "Extrabar\nButton"
+L["buffpanel"] = "Buff"
+L["tempenchantpanel"] = "Temp\nEnchant"
+L["lootgroup"] = "Loot Group"
+L["tooltip"] = "Tooltip"
+L["damageCT"] = "Damage CT"
+L["healingCT"] = "Healing CT"
+L["RaidCD"] = "RaidCD"
