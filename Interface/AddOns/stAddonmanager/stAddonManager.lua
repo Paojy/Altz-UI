@@ -12,7 +12,7 @@ local font = { GameFontHighlight:GetFont(), 12, "OUTLINE" }
 -- INITIAL FRAME CREATION ----------------------------
 ------------------------------------------------------
 stAddonManager = CreateFrame("Frame", "stAddonManager", UIParent)
-stAddonManager:SetFrameStrata("HIGH")
+stAddonManager:SetFrameStrata("DIALOG")
 stAddonManager.header = CreateFrame("Frame", "stAddonmanager_Header", stAddonManager)
 
 stAddonManager.header:SetPoint("CENTER", UIParent, "CENTER", 0, 100)
