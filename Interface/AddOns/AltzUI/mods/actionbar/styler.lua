@@ -109,17 +109,17 @@ local function styleActionButton(bu)
 	if fobs then fobs:SetTexture(nil) end
 	bo:SetTexture(nil) --hide the border (plain ugly, sry blizz)
 	--hotkey
-	ho:SetFont(font, 8, "OUTLINE")
+	ho:SetFont(font, aCoreCDB.keybindsize, "OUTLINE")
 	ho:ClearAllPoints()
 	ho:SetPoint("TOPRIGHT", 1, 1)
 	ho:SetPoint("TOPLEFT", 1, 1)
 	--macroname
-	na:SetFont(font, 12, "OUTLINE")
+	na:SetFont(font, aCoreCDB.macronamesize, "OUTLINE")
 	na:ClearAllPoints()
 	na:SetPoint("TOPLEFT", 0, 0)
 	na:SetPoint("TOPRIGHT", 0, 0)
 	--count
-	co:SetFont(font, 12, "OUTLINE")
+	co:SetFont(font, aCoreCDB.countsize, "OUTLINE")
 	co:ClearAllPoints()
 	co:SetPoint("BOTTOMRIGHT", 0, -1)
 	--applying the textures
