@@ -145,7 +145,7 @@ addon.LOOT_OPENED = function(self, event, autoloot)
 	else
 		self:ClearAllPoints()
 		self:SetUserPlaced(false)
-		self:SetPoint("TOPLEFT","UIParent","CENTER", 150, -87)		
+		self:SetPoint("TOPLEFT","UIParent","CENTER", 150, -87)
 	end
 
 	local w = 0
@@ -209,6 +209,11 @@ end
 
 addon.OPEN_MASTER_LOOT_LIST = function(self)
 	ToggleDropDownMenu(1, nil, GroupLootDropDown, addon.slots[ss], 0, 0)
+	local texture, item, quantity, quality, locked = GetLootSlotInfo(ss)
+
+	LootFrame.selectedItemName = item
+	LootFrame.selectedTexture = texture
+	LootFrame.selectedQuality = quality
 end
 
 addon.UPDATE_MASTER_LOOT_LIST = function(self)
@@ -252,4 +257,11 @@ end
 
 StaticPopupDialogs["CONFIRM_LOOT_DISTRIBUTION"].OnAccept = function(self, data)
 	GiveMasterLoot(ss, data)
+end
+
+-- 
+local _MasterLooterFrame_Show = MasterLooterFrame_Show
+function MasterLooterFrame_Show()
+	_MasterLooterFrame_Show()
+	MasterLooterFrame:SetPoint("TOPLEFT", addon, "BOTTOMLEFT", 0, -5)
 end
