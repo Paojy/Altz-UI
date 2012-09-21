@@ -17,14 +17,12 @@ local backdrop = {
 local DBMSkin = CreateFrame("Frame")
 DBMSkin:RegisterEvent("PLAYER_LOGIN")
 DBMSkin:SetScript("OnEvent", function(self, event, addon)
-	if IsAddOnLoaded("DBM-Core") then
 		local function SkinBars(self)
 			for bar in self:GetBarIterator() do
 				if not bar.injected then
 					bar.ApplyStyle = function()
 						local frame = bar.frame
 						local tbar = _G[frame:GetName().."Bar"]
-						local spark = _G[frame:GetName().."BarSpark"]
 						local texture = _G[frame:GetName().."BarTexture"]
 						local icon1 = _G[frame:GetName().."BarIcon1"]
 						local icon2 = _G[frame:GetName().."BarIcon2"]
@@ -39,7 +37,7 @@ DBMSkin:SetScript("OnEvent", function(self, event, addon)
 							icon1.overlay:SetHeight(23)
 							icon1.overlay:SetFrameStrata("BACKGROUND")
 							icon1.overlay:SetPoint("BOTTOMRIGHT", tbar, "BOTTOMLEFT", -2, -2)
-							F.CreateSD(icon1.overlay, 4, 0, 0, 0, 1, -3)
+							F.CreateSD(icon1.overlay, 3, 0, 0, 0, 1, -3)
 						end
 
 						if (icon2.overlay) then
@@ -50,17 +48,7 @@ DBMSkin:SetScript("OnEvent", function(self, event, addon)
 							icon2.overlay:SetHeight(23)
 							icon2.overlay:SetFrameStrata("BACKGROUND")
 							icon2.overlay:SetPoint("BOTTOMLEFT", tbar, "BOTTOMRIGHT", 5, -2)
-							F.CreateSD(icon2.overlay, 4, 0, 0, 0, 1, -3)
-						end
-
-						if bar.color then
-							tbar:SetStatusBarColor(0.1, 0.1, 0.1)
-							tbar:SetBackdrop(backdrop)
-							tbar:SetBackdropColor(0.1, 0.1, 0.1, 0.15)
-						else
-							tbar:SetStatusBarColor(0.1, 0.1, 0.1)
-							tbar:SetBackdrop(backdrop)
-							tbar:SetBackdropColor(0.1, 0.1, 0.1, 0.15)
+							F.CreateSD(icon2.overlay, 3, 0, 0, 0, 1, -3)
 						end
 						
 						if bar.enlarged then frame:SetWidth(bar.owner.options.HugeWidth) else frame:SetWidth(bar.owner.options.Width) end
@@ -70,13 +58,8 @@ DBMSkin:SetScript("OnEvent", function(self, event, addon)
 						if not frame.styled then
 							frame:SetHeight(23)
 							F.CreateSD(frame, 4, 0, 0, 0, 1, -3)
+							F.CreateBD(frame, 0.7)
 							frame.styled = true
-						end
-
-						if not spark.killed then
-							spark:SetAlpha(0)
-							spark:SetTexture(nil)
-							spark.killed = true
 						end
 			
 						if not icon1.styled then
@@ -127,10 +110,6 @@ DBMSkin:SetScript("OnEvent", function(self, event, addon)
 							timer.SetFont = dummy
 							timer.styled = true
 						end
-						
-						DBMRangeCheckRadar:HookScript("OnShow",function(self)
-							F.SetBD(self)
-						end)
 						
 						if bar.owner.options.IconLeft then icon1:Show() icon1.overlay:Show() else icon1:Hide() icon1.overlay:Hide() end
 						if bar.owner.options.IconRight then icon2:Show() icon2.overlay:Show() else icon2:Hide() icon2.overlay:Hide() end
@@ -192,15 +171,13 @@ DBMSkin:SetScript("OnEvent", function(self, event, addon)
 					bar:SetScale(1)
 					bar:SetHeight(19)
 					F.CreateSD(bar, 4, 0, 0, 0, 1, -3)
+					F.CreateBD(bar, 0.7)
 					background:SetNormalTexture(nil)
 					bar.styled = true
 				end	
 				
 				if not progress.styled then
 					progress:SetStatusBarTexture(blank)
-					progress:SetBackdrop(backdrop)
-					progress:SetBackdropColor(r,g,b,1)
-					progress.styled = true
 				end
 				progress:ClearAllPoints()
 				progress:SetPoint("TOPLEFT", bar, "TOPLEFT", 2, -2)
@@ -227,15 +204,22 @@ DBMSkin:SetScript("OnEvent", function(self, event, addon)
 			end
 		end
 		
+		local SkinInfo = function()
+			local infoframe = _G["DBMInfoFrame"]
+			F.SetBD(infoframe)
+			F.CreateBD(infoframe, 0)
+		end
+		
 		hooksecurefunc(DBT, "CreateBar", SkinBars)
 		hooksecurefunc(DBM.BossHealth, "Show", SkinBossTitle)
 		hooksecurefunc(DBM.BossHealth, "AddBoss", SkinBoss)
 		hooksecurefunc(DBM.BossHealth,"UpdateSettings",SkinBoss)
-		
+		hooksecurefunc(DBM.InfoFrame,"Show",SkinInfo)
 		DBM.RangeCheck:Show()
 		DBM.RangeCheck:Hide()
-
-		F.SetBD(DBMRangeCheckRadar)
+		
+		F.SetBD(_G["DBMRangeCheckRadar"])
+		F.SetBD(_G["DBMRangeCheck"])
 		
 		if croprwicons then
 			local replace = string.gsub
@@ -247,5 +231,4 @@ DBMSkin:SetScript("OnEvent", function(self, event, addon)
 				return old(noticeFrame, textString, colorInfo)
 			end
 		end
-	end
 end)
