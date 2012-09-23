@@ -11,6 +11,7 @@
 locales\english.lua
 locales\chinese.lua
 locales\twchinese.lua
+locales\french.lua
 
 db.lua
 gui.lua
