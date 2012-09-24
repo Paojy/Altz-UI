@@ -103,7 +103,7 @@ function stAddonManager:LoadProfileWindow()
 	local DisableAll = CreateMenuButton(window, EnableAll:GetWidth(), EnableAll:GetHeight(), L.Disable_All, "TOPRIGHT", window, "BOTTOMRIGHT", -5, -15)
 	DisableAll:SetScript("OnClick", function(self)
 		for i, addon in pairs(stAddonManager.AllAddons) do
-			if addon.name ~= ADDON_NAME or addon.name ~= "Aurora" then			
+			if addon.name ~= "Aurora" and addon.name ~= ADDON_NAME then
 				DisableAddOn(addon.name)
 				stAddonManager.Buttons[i]:SetBackdropColor(50/255, 50/255, 50/255)
 				addon.enabled = false
