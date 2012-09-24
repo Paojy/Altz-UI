@@ -8,8 +8,8 @@ local function SetFocusHotkey(frame)
 end 
 
 local function CreateFrame_Hook(type, name, parent, template) 
-	if template == "SecureUnitButtonTemplate" then 
-		SetFocusHotkey(_G[name]) 
+	if name and template == "SecureUnitButtonTemplate" then
+		SetFocusHotkey(_G[name])
 	end 
 end 
 
