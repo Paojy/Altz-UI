@@ -28,6 +28,7 @@ embeds\totems.lua
 embeds\gcd.lua
 embeds\range.lua
 embeds\warlockspecbars.lua
+embeds\arcanecharge.lua
 
 core\core.lua
 core\raid.lua

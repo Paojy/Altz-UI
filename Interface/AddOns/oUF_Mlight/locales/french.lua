@@ -1,6 +1,5 @@
 ﻿local addon, ns = ...
-ns.Client = GetLocale()
-ns.L = {}
+if ns.Client ~= "frFR" then return end
  -- \n is for add a newline, plese save it when translating. :)
  
 ns.L["apply"] = "Utiliser /OMF pour bouger. Recharger l'interface pour appliquer les paramètres."

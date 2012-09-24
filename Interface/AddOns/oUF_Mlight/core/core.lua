@@ -3,8 +3,10 @@ local addon, ns = ...
 local symbols = "Interface\\Addons\\oUF_Mlight\\media\\PIZZADUDEBULLETS.ttf"
 local texture = "Interface\\Buttons\\WHITE8x8"
 local highlighttexture = "Interface\\AddOns\\oUF_Mlight\\media\\highlight"
+local reseting = "Interface\\AddOns\\oUF_Mlight\\media\\resting"
+local combat = "Interface\\AddOns\\oUF_Mlight\\media\\combat"
 
-oUF.colors.power["MANA"] = {.3, .8, 1}
+oUF.colors.power["MANA"] = {0, 0.8, 1}
 oUF.colors.power["RAGE"] = {.9, .1, .1}
 oUF.colors.power["FUEL"] = {0, 0.55, 0.5}
 oUF.colors.power["FOCUS"] = {.9, .5, .1}
@@ -24,6 +26,31 @@ oUF.colors.reaction[7] = {0.26, 1, 0.22}
 oUF.colors.reaction[8] = {0.26, 1, 0.22}
 
 oUF.colors.smooth = {1,0,0, 1,1,0, 1,1,0}	
+
+local barcolor1 = { -- priest/mage
+	[1] = {0/255, 25/255, 200/130},
+	[2] = {0/255, 25/255, 200/130},
+	[3] = {20/255, 120/255, 255/255},
+	[4] = {20/255, 120/255, 255/255},
+	[5] = {140/255, 180/255, 255/255},
+	[6] = {140/255, 180/255, 255/255},
+}
+
+local barcolor2 = { --monk/paladin
+	[1] = {150/255, 0/255, 40/255},
+	[2] = {220/255, 20/255, 40/255},
+	[3] = {255/255, 50/255, 90/255},
+	[4] = {255/255, 80/255, 120/255},
+	[5] = {255/255, 110/255, 160/255},
+}
+
+local barcolor3 = { -- combat points
+	[1] = {220/255, 40/255, 0/255},
+	[2] = {255/255, 110/255, 0/255},
+	[3] = {255/255, 150/255, 0/130},
+	[4] = {255/255, 200/255, 0/255},
+	[5] = {255/255, 255/255, 0/255},
+}
 
 local backdrop = {
     bgFile = [=[Interface\ChatFrame\ChatFrameBackground]=],
@@ -61,7 +88,7 @@ local createBackdrop = function(parent, anchor, a)
 
     frame:SetBackdrop(frameBD)
 	if a then
-		frame:SetBackdropColor(.25, .25, .25, a)
+		frame:SetBackdropColor(.15, .15, .15, a)
 		frame:SetBackdropBorderColor(0, 0, 0)
 	end
 
@@ -185,6 +212,12 @@ local Updatehealthbar = function(self, unit, min, max)
 		end
 	end
 	
+	if min > 0 and min < max then
+		self.ind:Show()
+	else
+		self.ind:Hide()
+	end
+	
 	if UnitIsTapped(unit) and not UnitIsTappedByPlayer(unit) then
 		r, g, b = .6, .6, .6
 	elseif not UnitIsConnected(unit) then
@@ -254,19 +287,6 @@ local Updatepowerbar = function(self, unit, min, max)
 	
 	self:GetStatusBarTexture():SetGradient('VERTICAL', r, g, b, r/3, g/3, b/3)
 end
-		
-local PostEclipseUpdate = function(element, unit)
-    if element.hasSolarEclipse then
-        element.bd:SetBackdropBorderColor(1, .6, 0)
-        element.bd:SetBackdropColor(1, .6, 0)
-    elseif element.hasLunarEclipse then
-        element.bd:SetBackdropBorderColor(0, .4, 1)
-        element.bd:SetBackdropColor(0, .4, 1)
-    else
-        element.bd:SetBackdropBorderColor(0, 0, 0)
-        element.bd:SetBackdropColor(0, 0, 0)
-    end
-end
 
 local PostAltUpdate = function(altpp, min, cur, max)
     local self = altpp.__owner
@@ -279,6 +299,69 @@ local PostAltUpdate = function(altpp, min, cur, max)
     else
         altpp:SetStatusBarColor(1, 1, 1, .8)
     end 
+end
+
+local PostEclipseUpdate = function(self, unit)
+    if self.hasSolarEclipse then
+        self.bd:SetBackdropBorderColor(1, .6, 0)
+        self.bd:SetBackdropColor(1, .6, 0)
+    elseif self.hasLunarEclipse then
+        self.bd:SetBackdropBorderColor(0, .4, 1)
+        self.bd:SetBackdropColor(0, .4, 1)
+    else
+        self.bd:SetBackdropBorderColor(0, 0, 0)
+        self.bd:SetBackdropColor(0, 0, 0)
+    end
+end
+
+local ACcount, MaxACcount = 0, 6
+local ArcaneChargePostUpdate = function(self, event, unit)	
+	if UnitDebuff("player", GetSpellInfo(36032)) then
+		ACcount = select(4, UnitDebuff("player", GetSpellInfo(36032)))
+	else
+		ACcount = 0
+	end
+	
+	if ACcount == MaxACcount then
+		for i = 1, MaxACcount do
+			self[i]:SetStatusBarColor(unpack(barcolor1[MaxACcount]))
+		end
+	else
+		for i = 1, MaxACcount do
+			self[i]:SetStatusBarColor(unpack(barcolor1[i]))
+		end
+	end
+end
+
+local SPELL_POWER_SHADOW_ORBS = SPELL_POWER_SHADOW_ORBS
+local numOrbs, PRIEST_BAR_NUM_ORBS = 0, PRIEST_BAR_NUM_ORBS
+local ShadowOrbsPostUpdate = function(self, event, unit, powerType)
+	numOrbs = UnitPower("player", SPELL_POWER_SHADOW_ORBS)
+	
+	if numOrbs == PRIEST_BAR_NUM_ORBS then
+		for i = 1, PRIEST_BAR_NUM_ORBS do
+			self[i]:SetStatusBarColor(unpack(barcolor1[2*PRIEST_BAR_NUM_ORBS]))
+		end
+	else
+		for i = 1, PRIEST_BAR_NUM_ORBS do
+			self[i]:SetStatusBarColor(unpack(barcolor1[2*i]))
+		end
+	end
+end
+
+local Cpoints, MAX_COMBO_POINTS = 0, MAX_COMBO_POINTS
+local CpointsPostUpdate = function(self, event, unit)
+	Cpoints = GetComboPoints('player', 'target')
+	
+	if Cpoints == MAX_COMBO_POINTS then
+		for i = 1, MAX_COMBO_POINTS do
+			self[i]:SetStatusBarColor(unpack(barcolor3[MAX_COMBO_POINTS]))
+		end
+	else
+		for i = 1, MAX_COMBO_POINTS do
+			self[i]:SetStatusBarColor(unpack(barcolor3[i]))
+		end
+	end
 end
 
 local HarmonyOverride = function(self, event, unit, powerType)
@@ -304,6 +387,16 @@ local HarmonyOverride = function(self, event, unit, powerType)
 			cholder[i]:SetAlpha(1)
 		else
 			cholder[i]:SetAlpha(0)
+		end
+	end
+	
+	if chi == cholder.maxchi then
+		for i = 1, cholder.maxchi do
+			cholder[i]:SetStatusBarColor(unpack(barcolor2[cholder.maxchi]))
+		end
+	else
+		for i = 1, cholder.maxchi do
+			cholder[i]:SetStatusBarColor(unpack(barcolor2[i]))
 		end
 	end
 end
@@ -332,6 +425,24 @@ local HolyPowerOverride = function(self, event, unit, powerType)
 		else
 			hholder[i]:SetAlpha(0)
 		end
+	end
+	
+	if holypower == hholder.maxholypower then
+		for i = 1, hholder.maxholypower do
+			hholder[i]:SetStatusBarColor(unpack(barcolor2[hholder.maxholypower]))
+		end
+	else
+		for i = 1, hholder.maxholypower do
+			hholder[i]:SetStatusBarColor(unpack(barcolor2[i]))
+		end
+	end
+end
+
+local CombatPostUpdate = function(self, inCombat)
+	if inCombat then
+		self.__owner.Resting:Hide()
+	elseif IsResting() then 
+		self.__owner.Resting:Show()
 	end
 end
 --=============================================--
@@ -390,7 +501,7 @@ local CreateCastbars = function(self, unit)
         cb.Icon = cb:CreateTexture(nil, "ARTWORK")
         cb.Icon:SetSize(oUF_MlightDB.cbIconsize, oUF_MlightDB.cbIconsize)
         cb.Icon:SetTexCoord(.1, .9, .1, .9)
-		cb.Icon:SetPoint("BOTTOMRIGHT", cb, "BOTTOMLEFT", -7, -oUF_MlightDB.height*(1-oUF_MlightDB.hpheight)-3)
+		cb.Icon:SetPoint("BOTTOMRIGHT", cb, "BOTTOMLEFT", -7, -oUF_MlightDB.height*(1-oUF_MlightDB.hpheight)-6)
 
 		cb.IBackdrop = createBackdrop(cb, cb.Icon)
 		
@@ -501,9 +612,22 @@ local BossAuraFilter = function(icons, unit, icon, ...)
 	end
 end
 
+blacklist ={
+	["36032"] = true, -- Arcane Charge
+}
+
+local PlayerDebuffFilter = function(icons, unit, icon, ...)
+	local SpellID = select(11, ...)
+	if blacklist[tostring(SpellID)] then
+		return false
+	else
+		return true
+	end
+end
+
 local CreateAuras = function(self, unit)
 	local u = unit:match("[^%d]+")
-    if multicheck(u, "target", "focus", "boss") then
+    if multicheck(u, "target", "focus", "boss", "player", "pet") then
 		local Auras = CreateFrame("Frame", nil, self)
 		Auras:SetHeight(oUF_MlightDB.height*2)
 		Auras:SetWidth(oUF_MlightDB.width-2)
@@ -528,7 +652,23 @@ local CreateAuras = function(self, unit)
 			if unit == "target" and (oUF_MlightDB.AuraFilterignoreBuff or oUF_MlightDB.AuraFilterignoreDebuff) then
 				Auras.CustomFilter = CustomFilter
 			end
-		else -- boss 1-5
+		elseif oUF_MlightDB.playerdebuffenable and unit == "player" then
+			Auras:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 1, oUF_MlightDB.height*-(oUF_MlightDB.hpheight-1)+9)
+			Auras.initialAnchor = "BOTTOMLEFT"
+			Auras["growth-x"] = "RIGHT"
+			Auras["growth-y"] = "UP"
+			Auras.numDebuffs = oUF_MlightDB.playerdebuffnum
+			Auras.numBuffs = 0
+			Auras.size = (oUF_MlightDB.width+3)/oUF_MlightDB.playerdebuffnum-3
+			Auras.CustomFilter = PlayerDebuffFilter
+		elseif unit == "pet" then
+			Auras:SetPoint("BOTTOMLEFT", self, "BOTTOMRIGHT", 5, 0)
+			Auras.initialAnchor = "BOTTOMLEFT"
+			Auras["growth-x"] = "RIGHT"
+			Auras["growth-y"] = "DOWN"
+			Auras.numDebuffs = 5
+			Auras.numBuffs = 0
+		elseif u == "boss" then -- boss 1-5
 			Auras:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 1, 12)
 			Auras.initialAnchor = "BOTTOMLEFT"
 			Auras["growth-x"] = "RIGHT"
@@ -541,33 +681,6 @@ local CreateAuras = function(self, unit)
 	end
 end
 
-local CreateDebuffs = function(self, unit)
-    if unit == "player" or unit == "pet" then
-		local Debuff = CreateFrame("Frame", nil, self)
-		Debuff:SetHeight(oUF_MlightDB.height*2)
-		Debuff:SetWidth(oUF_MlightDB.width-2)
-		Debuff.disableCooldown = true
-		Debuff.spacing = 3
-		Debuff.PostCreateIcon = PostCreateIcon
-		Debuff.PostUpdateIcon = PostUpdateIcon
-	    if oUF_MlightDB.playerdebuffenable and unit == "player" then
-			Debuff:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 1, oUF_MlightDB.height*-(oUF_MlightDB.hpheight-1)+7)
-			Debuff.initialAnchor = "BOTTOMLEFT"
-			Debuff["growth-x"] = "RIGHT"
-			Debuff["growth-y"] = "UP"
-			Debuff.size = (oUF_MlightDB.width+3)/oUF_MlightDB.playerdebuffnum-3
-			Debuff.num = oUF_MlightDB.playerdebuffnum
-		elseif unit == "pet" then
-			Debuff:SetPoint("BOTTOMLEFT", self, "BOTTOMRIGHT", 5, 0)
-			Debuff.initialAnchor = "BOTTOMLEFT"
-			Debuff["growth-x"] = "RIGHT"
-			Debuff["growth-y"] = "DOWN"
-			Debuff.size = (oUF_MlightDB.width+3)/oUF_MlightDB.auraperrow-3
-			Debuff.num = 5
-		end
-		self.Debuffs = Debuff
-	end
-end
 --=============================================--
 --[[              Unit Frames                ]]--
 --=============================================--
@@ -619,7 +732,7 @@ local func = function(self, unit)
 	-- health text --
 	if not (unit == "targettarget" or unit == "focustarget" or unit == "pet") then
 		hp.value = createFont(hp, "OVERLAY", oUF_MlightDB.fontfile, oUF_MlightDB.fontsize, 1, 1, 1)
-		hp.value:SetPoint("BOTTOMRIGHT", self, -4, -3)
+		hp.value:SetPoint("BOTTOMRIGHT", self, -4, -5)
 	end
 	
 	-- little black line to make the health bar more clear
@@ -654,7 +767,6 @@ local func = function(self, unit)
 		Portrait:SetPoint("BOTTOMRIGHT", -1, 1)
 		Portrait:SetAlpha(oUF_MlightDB.portraitalpha)
 		self.Portrait = Portrait
-		--self.Portrait.PostUpdate = function() Portrait:SetPosition(-0.3, 0.3, 0) end
 	end
 	
 	-- power bar --
@@ -663,7 +775,7 @@ local func = function(self, unit)
 		pp:SetFrameLevel(2)
 		pp:SetPoint"LEFT"
 		pp:SetPoint"RIGHT"
-		pp:SetPoint("TOP", self, "BOTTOM", 0, -3)
+		pp:SetPoint("TOP", self, "BOTTOM", 0, -5)
 		pp.frequentUpdates = true
 
 		-- backdrop for power bar --	
@@ -672,7 +784,7 @@ local func = function(self, unit)
 		-- power text --
 		if not multicheck(u, "pet", "boss") then
 			pp.value = createFont(pp, "OVERLAY", oUF_MlightDB.fontfile, oUF_MlightDB.fontsize, 1, 1, 1)
-			pp.value:SetPoint("BOTTOMLEFT", self, 4, -3)
+			pp.value:SetPoint("BOTTOMLEFT", self, 4, -5)
 		end
 
 		self.Power = pp
@@ -683,8 +795,8 @@ local func = function(self, unit)
 	-- altpower bar --
     if multicheck(u, "player", "boss") then
 		local altpp = createStatusbar(self, texture, "ARTWORK", 2, nil, 1, 1, 1, 1)
-		altpp:SetPoint("TOPLEFT", self.Power, "BOTTOMLEFT", 0, -3)
-		altpp:SetPoint("TOPRIGHT", self.Power, "BOTTOMRIGHT", 0, -3)
+		altpp:SetPoint("TOPLEFT", self.Power, "BOTTOMLEFT", 0, -5)
+		altpp:SetPoint("TOPRIGHT", self.Power, "BOTTOMRIGHT", 0, -5)
 		altpp.bd = createBackdrop(altpp, altpp, 1)
 
 		altpp.value = createFont(altpp, "OVERLAY", oUF_MlightDB.fontfile, oUF_MlightDB.fontsize-2, 1, 1, 1)
@@ -709,11 +821,6 @@ local func = function(self, unit)
     masterlooter:SetSize(12, 12)
     masterlooter:SetPoint("LEFT", leader, "RIGHT")
     self.MasterLooter = masterlooter
-
-    local Combat = hp:CreateTexture(nil, "OVERLAY")
-    Combat:SetSize(20, 20)
-    Combat:SetPoint( "LEFT", hp, "RIGHT", 1, 0)
-    self.Combat = Combat
 	
     local ricon = hp:CreateTexture(nil, "OVERLAY")
     ricon:SetPoint("CENTER", hp, "CENTER", 0, 0)
@@ -744,7 +851,6 @@ local func = function(self, unit)
 	
 	if oUF_MlightDB.auras then
 		CreateAuras(self, unit)
-		CreateDebuffs(self, unit)
 	end
 
 	self.FadeMinAlpha = oUF_MlightDB.fadingalpha
@@ -759,30 +865,6 @@ local func = function(self, unit)
 
 end
 
-local barcolor1 = { -- purple - pink
-	[1] = {180/255, 140/255, 255/255, 1},
-	[2] = {220/255, 130/255, 255/255, 1},
-	[3] = {255/255, 60/255, 255/255, 1},
-	[4] = {255/255, 10/255, 220/130, 1},
-	[5] = {220/255, 10/255, 50/255, 1},
-}
-
-local barcolor2 = { -- lightblue - deepblue
-	[1] = {125/255, 255/255, 245/255, 1},
-	[2] = {55/255, 170/255, 255/255, 1},
-	[3] = {0/255, 100/255, 180/255, 1},
-	[4] = {0/255, 30/255, 220/255, 1},
-	[5] = {0/255, 0/255, 150/255, 1},
-}
-
-local barcolor3 = { -- yellow - red
-	[1] = {230/255, 230/255, 0/255, 1},
-	[2] = {255/255, 180/255, 0/255, 1},
-	[3] = {250/255, 120/255, 20/255, 1},
-	[4] = {255/255, 70/255, 20/255, 1},
-	[5] = {255/255, 0/255, 0/255, 1},
-}
-
 local UnitSpecific = {
 
     --========================--
@@ -793,7 +875,7 @@ local UnitSpecific = {
         local _, class = UnitClass("player")
 		
         -- Runes, Shards, HolyPower and so on --
-        if multicheck(class, "DEATHKNIGHT", "WARLOCK", "PALADIN", "MONK", "SHAMAN", "PRIEST", "ROGUE", "DRUID") then
+        if multicheck(class, "DEATHKNIGHT", "WARLOCK", "PALADIN", "MONK", "SHAMAN", "PRIEST", "MAGE", "ROGUE", "DRUID") then
             local count
             if class == "DEATHKNIGHT" then 
                 count = 6
@@ -807,6 +889,8 @@ local UnitSpecific = {
                 count = 5
 			elseif class == "PRIEST" then
 				count = 3
+			elseif class == "MAGE" then
+				count = 6
 			elseif class == "ROGUE" or class == "DRUID" then
 				count = 5 -- combopoints
             end
@@ -816,15 +900,7 @@ local UnitSpecific = {
             bars:SetSize(oUF_MlightDB.width, 10)
 
             for i = 1, count do
-                bars[i] = createStatusbar(bars, texture, nil, oUF_MlightDB.height*-(oUF_MlightDB.hpheight-1), (oUF_MlightDB.width+3)/count-3, 1, 1, 1, 1)
-
-                if class == "WARLOCK" or class == "PRIEST" then
-                    bars[i]:SetStatusBarColor(unpack(barcolor1[i]))
-                elseif class == "PALADIN" or class == "MONK" then
-                    bars[i]:SetStatusBarColor(unpack(barcolor2[i]))
-				elseif class == "ROGUE" or class == "DRUID" then
-				    bars[i]:SetStatusBarColor(unpack(barcolor3[i]))
-                end
+                bars[i] = createStatusbar(bars, texture, nil, oUF_MlightDB.height*-(oUF_MlightDB.hpheight-1), (oUF_MlightDB.width+2)/count-3, 1, 1, 1, 1)
 				
                 if i == 1 then
                     bars[i]:SetPoint("BOTTOMLEFT", bars, "BOTTOMLEFT")
@@ -850,8 +926,13 @@ local UnitSpecific = {
 				self.TotemBar = bars
 			elseif class == "PRIEST" then 
 				self.ShadowOrbs = bars
+				self.ShadowOrbs.PostUpdate = ShadowOrbsPostUpdate
+			elseif class == "MAGE" then
+				self.ArcaneCharge = bars
+				self.ArcaneCharge.PostUpdate = ArcaneChargePostUpdate
 			elseif class == "ROGUE" or class == "DRUID" then
 			    self.CPoints = bars
+				self.CPoints.PostUpdate = CpointsPostUpdate
             end
         end
 	
@@ -885,11 +966,24 @@ local UnitSpecific = {
 			self.EclipseBar.PostUnitAura = PostEclipseUpdate
         end
 		
-		-- resting Zzz ---
-		local playerstatus = createFont(self.Health, "ARTWORK", oUF_MlightDB.fontfile, 10, 1, 1, 1)
-		playerstatus:SetPoint("TOPLEFT", self.Health, "TOPLEFT", 2, 5)
-		self:Tag(playerstatus, "[raidcolor][resting]|r")
+		-- Zzz
+		local Resting = self.Health:CreateTexture(nil, 'OVERLAY')
+		Resting:SetSize(18, 18)
+		Resting:SetTexture(reseting)
+		Resting:SetDesaturated(true)
+		Resting:SetVertexColor( 0, 1, 0)
+		Resting:SetPoint("RIGHT", self.Health, "BOTTOMRIGHT", -5, -10)
+		self.Resting = Resting
 		
+		-- Combat
+		local Combat = self.Health:CreateTexture(nil, "OVERLAY")
+		Combat:SetSize(18, 18)
+		Combat:SetTexture(combat)
+		Combat:SetDesaturated(true)
+		Combat:SetPoint("RIGHT", self.Health, "BOTTOMRIGHT", -5, -10)
+		Combat:SetVertexColor( 1, 1, 0)
+		self.Combat = Combat		
+		self.Combat.PostUpdate = CombatPostUpdate		
     end,
 
     --========================--

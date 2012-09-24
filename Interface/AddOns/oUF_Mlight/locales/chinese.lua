@@ -1,6 +1,7 @@
 ﻿local addon, ns = ...
 if ns.Client ~= "zhCN" then return end
-
+ -- \n is for add a newline, plese save it when translating. :)
+ 
 ns.L["apply"] = "使用/omf来移动单位框体，重载界面以生效。"
 ns.L["don't have to rl"] = "这些设置立即生效"
 ns.L["fade"] = "渐隐"
