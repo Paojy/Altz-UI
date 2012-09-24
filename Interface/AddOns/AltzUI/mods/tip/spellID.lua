@@ -1,7 +1,7 @@
 ﻿local T, C, L, G = unpack(select(2, ...))
 local F = unpack(Aurora)
 
-if not aCoreCDB.showspellID or aCoreCDB.enabletip then return end
+if not aCoreCDB.showspellID or not aCoreCDB.enabletip then return end
 
 hooksecurefunc(GameTooltip, "SetUnitBuff", function(self,...)
 	local id = select(11,UnitBuff(...))
