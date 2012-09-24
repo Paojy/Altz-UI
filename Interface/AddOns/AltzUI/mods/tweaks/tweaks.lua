@@ -232,8 +232,6 @@ if acceptfriendlyinvites then
 				StaticPopup_OnClick(_G[name], 1)
 				return
 			end
-		else
-			SendWho('n-"' .. name .. '"')
 		end
 	end
 end
