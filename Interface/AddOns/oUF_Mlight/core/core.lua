@@ -767,6 +767,7 @@ local func = function(self, unit)
 		Portrait:SetPoint("BOTTOMRIGHT", -1, 1)
 		Portrait:SetAlpha(oUF_MlightDB.portraitalpha)
 		self.Portrait = Portrait
+		--self.Portrait.PostUpdate = function() Portrait:SetPosition(-0.3, 0.3, 0) end
 	end
 	
 	-- power bar --
@@ -967,23 +968,31 @@ local UnitSpecific = {
         end
 		
 		-- Zzz
-		local Resting = self.Health:CreateTexture(nil, 'OVERLAY')
+		local Resting = self.Power:CreateTexture(nil, 'OVERLAY')
 		Resting:SetSize(18, 18)
 		Resting:SetTexture(reseting)
 		Resting:SetDesaturated(true)
 		Resting:SetVertexColor( 0, 1, 0)
-		Resting:SetPoint("RIGHT", self.Health, "BOTTOMRIGHT", -5, -10)
+		Resting:SetPoint("RIGHT", self.Power, "RIGHT", -5, 0)
 		self.Resting = Resting
 		
 		-- Combat
-		local Combat = self.Health:CreateTexture(nil, "OVERLAY")
+		local Combat = self.Power:CreateTexture(nil, "OVERLAY")
 		Combat:SetSize(18, 18)
 		Combat:SetTexture(combat)
 		Combat:SetDesaturated(true)
-		Combat:SetPoint("RIGHT", self.Health, "BOTTOMRIGHT", -5, -10)
+		Combat:SetPoint("RIGHT", self.Power, "RIGHT", -5, 0)
 		Combat:SetVertexColor( 1, 1, 0)
 		self.Combat = Combat		
-		self.Combat.PostUpdate = CombatPostUpdate		
+		self.Combat.PostUpdate = CombatPostUpdate
+		
+		-- PvP
+		if oUF_MlightDB.pvpicon then
+			local PvP = self:CreateTexture(nil, 'OVERLAY')
+			PvP:SetSize(35, 35)
+			PvP:SetPoint("CENTER", self, "TOPRIGHT", 5, -5)
+			self.PvP = PvP
+		end
     end,
 
     --========================--

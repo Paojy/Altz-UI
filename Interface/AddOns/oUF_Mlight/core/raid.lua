@@ -389,7 +389,7 @@ local function Spawndpsraid()
 		'groupingOrder', oUF_MlightDB.dpsraidgroupbyclass and "WARRIOR, DEATHKNIGHT, PALADIN, WARLOCK, SHAMAN, MAGE, MONK, HUNTER, PRIEST, ROGUE, DRUID" or "1,2,3,4,5,6,7,8",
 		'groupBy', oUF_MlightDB.dpsraidgroupbyclass and "CLASS" or "GROUP",
 		'maxColumns', 8,
-		'unitsPerColumn', oUF_MlightDB.unitnumperline,
+		'unitsPerColumn', tonumber(oUF_MlightDB.unitnumperline),
 		'columnSpacing', 5,
 		'columnAnchorPoint', "LEFT"
 	)

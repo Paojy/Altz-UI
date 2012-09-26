@@ -373,11 +373,13 @@ local showthreatbarbu = createcheckbutton(scrollFrame.Anchor, 37, L["showthreatb
 local tbvergradientbu = createcheckbutton(scrollFrame.Anchor, 38, L["tbvergradient"], "tbvergradient", L["tbvergradient2"])
 createDR(showthreatbarbu, tbvergradientbu)
 
+local pvpiconbu = createcheckbutton(scrollFrame.Anchor, 39, L["pvpicon"], "pvpicon", L["pvpicon2"])
+
 local bosstext = scrollFrame.Anchor:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
-bosstext:SetPoint("TOPLEFT", 16, 3-39*30)
+bosstext:SetPoint("TOPLEFT", 16, 3-40*30)
 bosstext:SetText(L["bossframe"])
 
-local bossframesbu = createcheckbutton(scrollFrame.Anchor, 40, L["bossframes"], "bossframes", L["bossframes2"])
+local bossframesbu = createcheckbutton(scrollFrame.Anchor, 41, L["bossframes"], "bossframes", L["bossframes2"])
 --====================================================--
 --[[                 -- Raid --                     ]]--
 --====================================================--

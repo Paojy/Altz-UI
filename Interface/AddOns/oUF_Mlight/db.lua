@@ -7,7 +7,7 @@ local function LoadVariables()
 	oUF_MlightDB.fadingalpha = 0.2
 	
 	oUF_MlightDB.fontfile = "Interface\\AddOns\\oUF_Mlight\\media\\font.TTF"
-	oUF_MlightDB.fontsize = 12
+	oUF_MlightDB.fontsize = 14
 	oUF_MlightDB.fontflag = "OUTLINE"
 	
 	-- health/power
@@ -49,6 +49,9 @@ local function LoadVariables()
 
 	-- show/hide boss
 	oUF_MlightDB.bossframes = true
+	
+	-- show pvp timer
+	oUF_MlightDB.pvpicon = false
 
 	--[[ share ]]--
 	oUF_MlightDB.enableraid = true
@@ -74,7 +77,7 @@ local function LoadVariables()
 	oUF_MlightDB.dpsgroupfilter = '1,2,3,4,5'
 	oUF_MlightDB.dpsraidheight = 15
 	oUF_MlightDB.dpsraidwidth = 100
-	oUF_MlightDB.dpsraidgroupbyclass = true
 	oUF_MlightDB.unitnumperline = 25
+	oUF_MlightDB.dpsraidgroupbyclass = true
 end
 ns.LoadVariables = LoadVariables
