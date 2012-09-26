@@ -15,6 +15,7 @@ L["Reset Numeration"] = "隐藏Numeration小地图按钮"
 L["Reset OMF"] = "还原所有单位框体的位置"
 L["Reload UI to apply settings"] = "重载界面以生效。"
 
+L["Enable Bag"] = "启用背包"
 L["Enable Chat"] = "聊天美化"
 L["Replace Channel Name"] = "频道缩写"
 L["Replace Channel Name2"] = "频道缩写"

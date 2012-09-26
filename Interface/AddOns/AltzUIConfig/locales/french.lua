@@ -14,7 +14,8 @@ L["Reset Skada"] = "Réinitialiser la couleur, la taille et la position de Skada
 L["Reset Numeration"] = "Cacher le bouton de Numeration sur la minicarte."
 L["Reset OMF"] = "Remettre les cadres d'unités à leur position par défaut."
 L["Reload UI to apply settings"] = "Recharger l'UI pour appliquer les paramètres."
-	
+
+L["Enable Bag"] = "Enable bag"
 L["Enable Chat"] = "Reskin Chat Frame"
 L["Replace Channel Name"] = "Remplacer le nom du canal" 
 L["Replace Channel Name2"] = "Remplace le nom du canal de discussion."

@@ -15,6 +15,7 @@ L["Reset Numeration"] = "Hide Numeration's minimap button."
 L["Reset OMF"] = "Put Unit Frames back to their default positions."
 L["Reload UI to apply settings"] = "Reload UI to apply settings."
 
+L["Enable Bag"] = "Enable bag"
 L["Enable Chat"] = "Reskin Chat Frame"
 L["Replace Channel Name"] = "Replace Channel Name"
 L["Replace Channel Name2"] = "Replace Channel Name."
