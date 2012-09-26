@@ -21,9 +21,9 @@ local function Skin(timer, value, maxvalue, scale, paused, label)
 				region:SetAlpha(0)
 			end
 		
-			local backdrop = F.CreateBDFrame(statusbar, 0.5)
-			backdrop:SetPoint("BOTTOMRIGHT", statusbar, 1, -2)
-			F.CreateSD(backdrop, 2, 0, 0, 0, 1, -1)
+			statusbar.backdrop = F.CreateBDFrame(statusbar, 0.5)
+			statusbar.backdrop:SetPoint("BOTTOMRIGHT", statusbar, 1, -2)
+			F.CreateSD(statusbar.backdrop, 2, 0, 0, 0, 1, -1)
 			
 			text:ClearAllPoints()
 			text:SetFont(GameFontHighlight:GetFont(), 12, "OUTLINE")
