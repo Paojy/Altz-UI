@@ -1,4 +1,5 @@
 local T, C, L, G = unpack(select(2, ...))
+if not aCoreCDB.enablebag then return end
 
 --category constants
 --number indicates sort priority (1 is highest)
@@ -68,7 +69,7 @@ local function BS_OnUpdate(parentFrame, tElapsed)
 	BS_pauseRemaining = .05
 end
 
-local function sortBagRange(bagList)
+local function sortBagRange(bagList, order)
 	--clear any data from previous sorts
 	BS_clearData()
 	local family
@@ -178,9 +179,15 @@ local function sortBagRange(bagList)
    			--record items in a grid according to their intended final placement
 			for bagSlotNumberIndex, bagSlotNumber in pairs(group.bagSlotNumbers) do
 				if gridSlot <= GetContainerNumSlots(bagSlotNumber) then
-					BS_itemSwapGrid[item.startBag][item.startSlot].destinationBag  = bagSlotNumber
-					BS_itemSwapGrid[item.startBag][item.startSlot].destinationSlot = gridSlot
-					break
+					if order == 0 then -- put their order them from bottomright
+						BS_itemSwapGrid[item.startBag][item.startSlot].destinationBag  = bagSlotNumber
+						BS_itemSwapGrid[item.startBag][item.startSlot].destinationSlot = GetContainerNumSlots(bagSlotNumber) - gridSlot + 1
+						break
+					else -- put their order them from topleft
+						BS_itemSwapGrid[item.startBag][item.startSlot].destinationBag  = bagSlotNumber
+						BS_itemSwapGrid[item.startBag][item.startSlot].destinationSlot = gridSlot
+						break
+					end
 				else
 					gridSlot = gridSlot - GetContainerNumSlots(bagSlotNumber)
 				end
@@ -192,12 +199,20 @@ local function sortBagRange(bagList)
 	BS_sorting = true
 end
 
-function T.BankSort()
-	sortBagRange({-1, 5, 6, 7, 8, 9, 10, 11})
+function T.BankSort(order)
+	if order == 0 then
+		sortBagRange({11, 10, 9, 8, 7, 6, 5, -1}, 0)
+	else
+		sortBagRange({-1, 5, 6, 7, 8, 9, 10, 11}, 1)
+	end
 end
 
-function T.BagSort()
-	sortBagRange({0, 1, 2, 3, 4})
+function T.BagSort(order)
+	if order == 0 then
+		sortBagRange({4, 3, 2, 1, 0}, 0)
+	else
+		sortBagRange({0, 1, 2, 3, 4}, 1)
+	end
 end
 
 local Core = CreateFrame("Frame", "Bag_Sort_Core")

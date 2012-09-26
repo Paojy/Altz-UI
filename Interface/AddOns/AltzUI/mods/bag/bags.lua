@@ -1,6 +1,32 @@
 ﻿local T, C, L, G = unpack(select(2, ...))
 local F, C = unpack(Aurora)
 
+local bags = {
+	bag = {
+		CharacterBag0Slot,
+		CharacterBag1Slot,
+		CharacterBag2Slot,
+		CharacterBag3Slot
+	},
+	bank = {
+		BankFrameBag1,
+		BankFrameBag2,
+		BankFrameBag3,
+		BankFrameBag4,
+		BankFrameBag5,
+		BankFrameBag6,
+		BankFrameBag7
+	}
+}
+
+if not aCoreCDB.enablebag then 
+	for i = 1, #bags.bag do 
+	   bags.bag[i]:UnregisterAllEvents() 
+	   bags.bag[i]:Hide() 
+	end
+	return 
+end
+
 local config = {
 	spacing = 4,
 	bpr = 10,
@@ -24,24 +50,6 @@ local function Kill(object)
 	object.Show = function() return end
 	object:Hide()
 end
-
-local bags = {
-	bag = {
-		CharacterBag0Slot,
-		CharacterBag1Slot,
-		CharacterBag2Slot,
-		CharacterBag3Slot
-	},
-	bank = {
-		BankFrameBag1,
-		BankFrameBag2,
-		BankFrameBag3,
-		BankFrameBag4,
-		BankFrameBag5,
-		BankFrameBag6,
-		BankFrameBag7
-	}
-}
 
 function SetUp(framen, ...)
 	local frame = CreateFrame("Frame", "aBag_"..framen, UIParent)
@@ -108,11 +116,26 @@ function SetUp(framen, ...)
 	bagsort:SetPoint("RIGHT", frame_bags_toggle, "LEFT", -5, 0)
 	bagsort:SetText(L["Sort"])
 	F.Reskin(bagsort)
-	bagsort:SetScript('OnClick', function()
-		if framen == "bag" then
-			T.BagSort()
+	bagsort:SetScript("OnEnter", function(self) 
+		GameTooltip:SetOwner(bagsort, "ANCHOR_LEFT", -10, 10)
+		GameTooltip:AddLine(L["Bagsort_order"])
+		GameTooltip:Show() 
+	end)
+	bagsort:SetScript("OnLeave", function(self) GameTooltip:Hide() end)
+	bagsort:RegisterForClicks("LeftButtonDown", "RightButtonDown")
+	bagsort:SetScript('OnClick', function(self, button)
+		if button == "LeftButton" then
+			if framen == "bag" then
+				T.BagSort(0)
+			else
+				T.BankSort(0)
+			end
 		else
-			T.BankSort()
+			if framen == "bag" then
+				T.BagSort(1)
+			else
+				T.BankSort(1)
+			end
 		end
 	end)
 	
