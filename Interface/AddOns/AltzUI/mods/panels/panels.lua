@@ -75,8 +75,9 @@ BNToastFrame_UpdateAnchor = function() end
 
 local xpbar = CreateFrame("StatusBar", "ExperienceBar", UIParent)
 xpbar:SetFrameStrata("LOW")
-xpbar:SetSize(193,4)
+xpbar:SetSize(G.screenwidth*2/9-130, 4)
 xpbar:SetPoint("TOPLEFT", UIParent, "TOPLEFT", 152, -10)
+
 createbargradient(xpbar, G.Ccolor.r, G.Ccolor.g, G.Ccolor.b, 3)
 xpbar.border = F.CreateBDFrame(xpbar, 1)
 xpbar.border:SetBackdropColor(.3, .3, .3)
@@ -255,13 +256,13 @@ infobar:SetScript("OnUpdate", infobar.updateOntime)
 --====================================================--
 --[[              -- buff panel --                  ]]--
 --====================================================--
-local buffpanel = createlittlepanel(self, 330, "")
+local buffpanel = createlittlepanel(self, G.screenwidth*2/9, "")
 buffpanel:SetPoint("TOPRIGHT", UIParent, "TOPRIGHT", -15, -10)
 
 --====================================================--
 --[[              -- chat panel --                  ]]--
 --====================================================--
-local blpanel = createlittlepanel(self, 330, L["|cff00B2EEF|rriends   |cff00EE00G|ruild"])
+local blpanel = createlittlepanel(self, G.screenwidth*2/9, L["|cff00B2EEF|rriends   |cff00EE00G|ruild"])
 
 blpanel:SetPoint("BOTTOMLEFT", UIParent, "BOTTOMLEFT", 15, 10)
 
@@ -325,14 +326,14 @@ end
 --====================================================--
 --[[            -- center panel --                  ]]--
 --====================================================--	
-local centerpanel = createlittlepanel(self, 345, "|cffFF0000A|r|cffFF8C00l|r|cffFFFF00t|r|cff7FFF00z|r |cff1C86EEU|r|cff8A2BE2I|r")
+local centerpanel = createlittlepanel(self, G.screenwidth*2/9, "|cffFF0000A|r|cffFF8C00l|r|cffFFFF00t|r|cff7FFF00z|r |cff1C86EEU|r|cff8A2BE2I|r")
 centerpanel:SetPoint("BOTTOM", UIParent, "BOTTOM", 0, 10)
 centerpanel:SetFrameStrata("HIGH")
 centerpanel:SetScript("OnMouseUp", function() InterfaceOptionsFrame_OpenToCategory("AltzUI") end)
 --====================================================--
 --[[             -- bottomright panel --            ]]--
 --====================================================--		
-local brpanel = createlittlepanel(self, 330, L["|cffFFFF00B|rags   |cffBF3EFFD|ramage Meter"])
+local brpanel = createlittlepanel(self, G.screenwidth*2/9, L["|cffFFFF00B|rags   |cffBF3EFFD|ramage Meter"])
 brpanel:SetPoint("BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", -15, 10)
 
 local function toggletinydps()
