@@ -56,6 +56,7 @@ L["nomoney"] = "Vous ne pouvez pas réparer! (fond insuffisant)"
 
 L["Sort"] = "T"
 L["Bag"] = "S"
+L["Bagsort_order"] = "LeftButton - sort in an backward order\nRightButton - sort in an forward order"
 
 L["Copy Name"] = "Copier le nom"
 L["Who"] = "Qui"

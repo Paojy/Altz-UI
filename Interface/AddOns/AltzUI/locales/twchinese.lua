@@ -56,7 +56,8 @@ L["nomoney"] = "費用不足"
 	
 L["Sort"] = "理"
 L["Bag"] = "包"
-	
+L["Bagsort_order"] = "左鍵 - 倒序整理\n右鍵 - 順序整理"
+
 L["Copy Name"] = "複製名字"
 L["Who"] = "詳情"
 L["Guild Invite"] = "公會邀請"

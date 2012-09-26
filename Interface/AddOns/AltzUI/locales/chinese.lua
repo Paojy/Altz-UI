@@ -1,7 +1,7 @@
 ﻿local T, C, L, G = unpack(select(2, ...))
 if G.Client ~= "zhCN" then return end
 
-L["Paopao <Purgatory> CN5_Abyssion's Lair"] = "Paopao <Purgatory> CN5_Abyssion's Lair"
+L["Paopao <Purgatory> CN5_Abyssion's Lair"] = "伤心蓝 < 炼狱 > CN5_深渊之巢"
 L["Thanks to"] = "感谢"
 L["and everyone who help me with this Compilations。"] = "和每一个帮我我完成一个插件包的朋友。"
 L["|cffFFFF00B|rags   |cffBF3EFFD|ramage Meter"] = "|cffFFFF00背|r包   |cffBF3EFF伤|r害统计"
@@ -56,6 +56,7 @@ L["nomoney"] = "费用不足"
 
 L["Sort"] = "理"
 L["Bag"] = "包"
+L["Bagsort_order"] = "左鍵 - 倒序整理\n右鍵 - 顺序整理"
 
 L["Copy Name"] = "复制名字"
 L["Who"] = "详情"

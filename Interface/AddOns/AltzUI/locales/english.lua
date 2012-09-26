@@ -61,6 +61,7 @@ L["Copy Name"] = "Copy Name"
 L["Who"] = "Who"
 L["Guild Invite"] = "Guild Invite"
 L["Add Friend"] = "Add Friend"
+L["Bagsort_order"] = "LeftButton - sort in an backward order\nRightButton - sort in an forward order"
 
 L["Bar1&2"] = "Main\nActionbar"
 L["Bar3"] = "Multi\nActionBar"
