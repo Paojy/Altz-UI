@@ -57,6 +57,8 @@ end
 function T.LoadaModVariables()
 	-- [[ aMode settings ]]--
 	
+	-- aBag 
+	aCoreCDB.enablebag = true
 	-- aChat
 	aCoreCDB.enablechat = true
 	aCoreCDB.channelreplacement = true
