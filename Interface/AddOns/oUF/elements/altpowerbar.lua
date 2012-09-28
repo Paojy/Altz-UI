@@ -32,7 +32,6 @@ local ALTERNATE_POWER_INDEX = ALTERNATE_POWER_INDEX
 local UpdatePower = function(self, event, unit, powerType)
 	if self.unit == "vehicle" then
 		if self.realUnit ~= unit or powerType ~= 'ALTERNATE' then return end
-		print"456"
 	else
 		if self.unit ~= unit or powerType ~= 'ALTERNATE' then return end
 	end
