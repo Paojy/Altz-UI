@@ -56,8 +56,7 @@ end
 
 function T.LoadaModVariables()
 	-- [[ aMode settings ]]--
-	
-	-- aBag 
+	-- aBag
 	aCoreCDB.enablebag = true
 	-- aChat
 	aCoreCDB.enablechat = true
@@ -67,14 +66,31 @@ function T.LoadaModVariables()
 	aCoreCDB.enableplate = true
 	aCoreCDB.autotoggleplates = true
 	aCoreCDB.threatplates = true
+	aCoreCDB.platewidth = 150
+	aCoreCDB.plateheight = 7
+	aCoreCDB.platedebuff = true
+	aCoreCDB.platebuff = false
+	aCoreCDB.plateauranum = 5
+	aCoreCDB.plateaurasize = 25
 	-- aTip
 	aCoreCDB.enabletip = true
 	aCoreCDB.cursor = false
 	aCoreCDB.hideRealm = false
 	aCoreCDB.hideTitles = true
 	aCoreCDB.showspellID = true
+	aCoreCDB.showtalent = true
 	aCoreCDB.colorborderClass = false
 	aCoreCDB.combathide = true
+	-- aCT
+	aCoreCDB.combattext = true
+	aCoreCDB.showreceivedct = true
+	aCoreCDB.showoutputct = true
+	aCoreCDB.ctfliter = true
+	aCoreCDB.cticonsize = 13
+	aCoreCDB.ctbigiconsize = 25
+	aCoreCDB.ctshowdots = false
+	aCoreCDB.ctshowhots = false
+	aCoreCDB.ctfadetime = 3
 	-- aTweaks
 	aCoreCDB.autorepair = true
 	aCoreCDB.autorepair_guild = true
@@ -87,9 +103,8 @@ function T.LoadaModVariables()
 	aCoreCDB.acceptres = true
 	aCoreCDB.battlegroundres = true
 	aCoreCDB.hideerrors = true
-	aCoreCDB.acceptfriendlyinvites = true
-	aCoreCDB.autoquests = true
-	aCoreCDB.combattext = true
+	aCoreCDB.acceptfriendlyinvites = false
+	aCoreCDB.autoquests = false
 	aCoreCDB.raidcdenable = true
 	aCoreCDB.raidcdwidth = 180
 	aCoreCDB.raidcdheight = 16
@@ -100,8 +115,8 @@ function T.LoadaModVariables()
 	-- [[ Actionbar Settings ]]--
 	aCoreCDB.cooldown = true
 	aCoreCDB.rangecolor = true
-	aCoreCDB.keybindsize = 8
-	aCoreCDB.macronamesize = 12
+	aCoreCDB.keybindsize = 12
+	aCoreCDB.macronamesize = 8
 	aCoreCDB.countsize = 12
 	
 	aCoreCDB.bar12size = 25
