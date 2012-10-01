@@ -40,6 +40,8 @@ hooksecurefunc("SetItemRef", function(link, text, button, chatFrame)
 end)
 
 GameTooltip:HookScript("OnTooltipSetSpell", function(self)
+	local name = self:GetOwner():GetName()
+	if name and name:match("PlayerTalentFrameTalentsTalentRow%dTalent%d") then return end
 	local id = select(3,self:GetSpell())
 	if id then
 		self:AddLine(" ")
