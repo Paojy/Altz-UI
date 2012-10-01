@@ -1,5 +1,4 @@
 ﻿local T, C, L, G = unpack(select(2, ...))
-local font = GameFontHighlight:GetFont()
 
 T.ShortValue = function(v)
 	if v >= 1e6 then
@@ -19,9 +18,16 @@ T.FormatTime = function(time)
 	end
 end
 
-function T.createtext(f, layer, fontsize, flag, justifyh)
+T.createtext = function(f, layer, fontsize, flag, justifyh)
 	local text = f:CreateFontString(nil, layer)
-	text:SetFont(font, fontsize, flag)
+	text:SetFont(G.norFont, fontsize, flag)
+	text:SetJustifyH(justifyh)
+	return text
+end
+
+T.createnumber = function(f, layer, fontsize, flag, justifyh)
+	local text = f:CreateFontString(nil, layer)
+	text:SetFont(G.numFont, fontsize, flag)
 	text:SetJustifyH(justifyh)
 	return text
 end
