@@ -1,11 +1,6 @@
 ﻿local T, C, L, G = unpack(select(2, ...))
 local F = unpack(Aurora)
 
-local font = GameFontHighlight:GetFont()
-local ver = GetAddOnMetadata("AltzUI", "Version")
-
-DAMAGE_TEXT_FONT = "Interface\\AddOns\\AltzUI\\media\\df.TTF"
-
 local function creategradient(f, r, g, b, n, a)
 	local gradient = f:CreateTexture(nil, "BACKGROUND")
 	gradient:SetPoint("TOPLEFT")
@@ -198,7 +193,7 @@ end
 -- Tooltips
 local nraddons = 20
 function memorytooltip()
-	--if not InCombatLockdown() then -- Don't Show in Combat
+	if not InCombatLockdown() then -- Don't Show in Combat
 		local addons, total, nr, name = {}, 0, 0
 		local memory, entry
 		local BlizzMem = collectgarbage("count")
@@ -229,7 +224,7 @@ function memorytooltip()
 		GameTooltip:AddDoubleLine(L["UI Memory usage"], memFormat(total), G.Ccolor.r, G.Ccolor.g, G.Ccolor.b, G.Ccolor.r, G.Ccolor.g, G.Ccolor.b)
 		GameTooltip:AddDoubleLine(L["Total incl. Blizzard"], memFormat(BlizzMem), G.Ccolor.r, G.Ccolor.g, G.Ccolor.b, G.Ccolor.r, G.Ccolor.g, G.Ccolor.b)
 		GameTooltip:Show()
-	--end
+	end
 end
 
 -- Update Function
