@@ -30,12 +30,8 @@ local oUF = ns.oUF
 local ALTERNATE_POWER_INDEX = ALTERNATE_POWER_INDEX
 
 local UpdatePower = function(self, event, unit, powerType)
-	if self.unit == "vehicle" then
-		if self.realUnit ~= unit or powerType ~= 'ALTERNATE' then return end
-	else
-		if self.unit ~= unit or powerType ~= 'ALTERNATE' then return end
-	end
-	
+	if(self.unit ~= unit or powerType ~= 'ALTERNATE') then return end
+
 	local altpowerbar = self.AltPowerBar
 
 	--[[ :PreUpdate()
@@ -79,12 +75,7 @@ local ForceUpdate = function(element)
 end
 
 local Toggler = function(self, event, unit)
-	if self.unit == "vehicle" then
-		if self.realUnit ~= unit then return end
-	else
-		if self.unit ~= unit then return end	
-	end
-
+	if(unit ~= self.unit) then return end
 	local altpowerbar = self.AltPowerBar
 
 	local barType, minPower, _, _, _, hideFromOthers = UnitAlternatePowerInfo(unit)
@@ -92,7 +83,7 @@ local Toggler = function(self, event, unit)
 		self:RegisterEvent('UNIT_POWER', UpdatePower)
 		self:RegisterEvent('UNIT_MAXPOWER', UpdatePower)
 
-		UpdatePower(self, event, unit, 'ALTERNATE')
+		ForceUpdate(altpowerbar)
 		altpowerbar:Show()
 	else
 		self:UnregisterEvent('UNIT_POWER', UpdatePower)
