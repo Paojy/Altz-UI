@@ -1,34 +1,11 @@
 ## Interface: 50001
 ## Title: oUF_Mlight
 ## Author: Blue
-## Version: 5.25
+## Version: 5.26
 ## Notes: oUF layout.
 ## Credits:Haste, Freebaser, Monolit, Haleth, Phanx, Tukz, p3lim
 ## Dependencies: oUF
 ## OptionalDeps: Aurora
 ## SavedVariablesPerCharacter: oUF_MlightDB
 
-locales\english.lua
-locales\chinese.lua
-locales\twchinese.lua
-locales\french.lua
-
-db.lua
-gui.lua
-
-lib\tags.lua
-lib\aura_list.lua
-
-embeds\fader.lua
-embeds\threatbar.lua
-embeds\auras.lua
-embeds\auras2.lua
-embeds\indicators.lua
-embeds\totems.lua
-embeds\gcd.lua
-embeds\range.lua
-embeds\warlockspecbars.lua
-embeds\arcanecharge.lua
-
-core\core.lua
-core\raid.lua
+load.xml

@@ -83,6 +83,32 @@ local function CreateGCDframe(self)
     self.GCD = Gcd
 end
 --=============================================--
+--[[              Click Cast                 ]]--
+--=============================================--
+local function RegisterClicks(object)
+	local action, macrotext, key_tmp
+	local C = oUF_MlightDB.ClickCast
+	for id, var in pairs(C) do
+		for	key, _ in pairs(C[id]) do
+			key_tmp = string.gsub(key, "Click", "")
+			action = C[id][key]["action"]
+			if action == "follow" then
+				object:SetAttribute(key_tmp.."type"..id, "macro")
+				object:SetAttribute(key_tmp.."macrotext"..id, "/follow mouseover")
+			elseif	action == "tot" then		
+				object:SetAttribute(key_tmp.."type"..id, "macro")
+				object:SetAttribute(key_tmp.."macrotext"..id, "/target mouseovertarget")
+			elseif	action == "target" then		
+				object:SetAttribute(key_tmp.."type"..id, "target")
+			else				
+				object:SetAttribute(key_tmp.."type"..id, "spell")
+				object:SetAttribute(key_tmp.."spell"..id, action)
+			end				
+		end
+		object:RegisterForClicks("AnyDown")
+	end
+end
+--=============================================--
 --[[              Raid Frames                ]]--
 --=============================================--
 local func = function(self, unit)
@@ -232,6 +258,10 @@ local func = function(self, unit)
 	else
 		self.Range = range
 	end
+	
+	if oUF_MlightDB.enableClickCast then
+		RegisterClicks(self)
+	end
 end
 
 local dfunc = function(self, unit)
@@ -336,6 +366,10 @@ local dfunc = function(self, unit)
 	else
 		self.Range = range
 	end
+	
+	if oUF_MlightDB.enableClickCast then
+		RegisterClicks(self)
+	end
 end
 
 oUF:RegisterStyle("Mlight_Healerraid", func)
@@ -344,14 +378,23 @@ oUF:RegisterStyle("Mlight_DPSraid", dfunc)
 local healerraid
 local dpsraid
 
+local initconfig = [[
+	self:SetWidth(%d)
+    self:SetHeight(%d)
+
+	local header = self:GetParent()
+	local clique = header:GetFrameRef("clickcast_header")
+	
+	if(clique) then
+		clique:SetAttribute("clickcast_button", self)
+		clique:RunAttribute("clickcast_register")
+	end
+]]
+
 local function Spawnhealraid()
 	oUF:SetActiveStyle"Mlight_Healerraid"
 	healerraid = oUF:SpawnHeader('HealerRaid_Mlight', nil, 'raid,party,solo',
-		'oUF-initialConfigFunction', ([[
-		self:SetWidth(%d)
-		self:SetHeight(%d)
-		self:SetScale(%d)
-		]]):format(oUF_MlightDB.healerraidwidth, oUF_MlightDB.healerraidheight, 1),
+		'oUF-initialConfigFunction', initconfig:format(oUF_MlightDB.healerraidwidth, oUF_MlightDB.healerraidheight, 1),
 		'showPlayer', true,
 		'showSolo', oUF_MlightDB.showsolo,
 		'showParty', true,
@@ -373,11 +416,7 @@ end
 local function Spawndpsraid()
 	oUF:SetActiveStyle"Mlight_DPSraid"
 	dpsraid = oUF:SpawnHeader('DpsRaid_Mlight', nil, 'raid,party,solo',
-		'oUF-initialConfigFunction', ([[
-		self:SetWidth(%d)
-		self:SetHeight(%d)
-		self:SetScale(%d)
-		]]):format(oUF_MlightDB.dpsraidwidth, oUF_MlightDB.dpsraidheight, 1),
+		'oUF-initialConfigFunction', initconfig:format(oUF_MlightDB.dpsraidwidth, oUF_MlightDB.dpsraidheight, 1),
 		'showPlayer', true,
 		'showSolo', oUF_MlightDB.showsolo,
 		'showParty', true,

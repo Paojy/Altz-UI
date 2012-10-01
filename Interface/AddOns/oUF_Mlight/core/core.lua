@@ -204,7 +204,7 @@ local Updatehealthbar = function(self, unit, min, max)
 	
 	if self.value then
 		if min > 0 and min < max then
-			self.value:SetText(FormatValue(min).." "..hex(1, 0, 1).."|r"..hex(1, 1, 0)..math.floor(min/max*100+.5).."|r")
+			self.value:SetText(FormatValue(min).." "..hex(1, 1, 0)..math.floor(min/max*100+.5).."|r")
 		elseif min > 0 and self.__owner.isMouseOver and UnitIsConnected(unit) then
 			self.value:SetText(FormatValue(min))
 		else
@@ -289,16 +289,7 @@ local Updatepowerbar = function(self, unit, min, max)
 end
 
 local PostAltUpdate = function(altpp, min, cur, max)
-    local self = altpp.__owner
-	
-	altpp.value:SetText(cur)
-	
-    local tPath, r, g, b = UnitAlternatePowerTextureInfo(self.unit, 2)
-    if(r) then
-        altpp:SetStatusBarColor(r, g, b, 1)
-    else
-        altpp:SetStatusBarColor(1, 1, 1, .8)
-    end 
+	altpp.value:SetText(hex(.8, .3, 1)..cur.."|r")
 end
 
 local PostEclipseUpdate = function(self, unit)
@@ -794,10 +785,15 @@ local func = function(self, unit)
     end
 
 	-- altpower bar --
-    if multicheck(u, "player", "boss") then
-		local altpp = createStatusbar(self, texture, "ARTWORK", 2, nil, 1, 1, 1, 1)
-		altpp:SetPoint("TOPLEFT", self.Power, "BOTTOMLEFT", 0, -5)
-		altpp:SetPoint("TOPRIGHT", self.Power, "BOTTOMRIGHT", 0, -5)
+    if multicheck(u, "player", "boss", "pet") then
+		local altpp = createStatusbar(self, texture, "ARTWORK", 2, nil, 1, 1, 0, 1)
+		if unit == pet then
+			altpp:SetPoint("TOPLEFT", self.Power, "BOTTOMLEFT", 0, -5)
+			altpp:SetPoint("TOPRIGHT", self.Power, "BOTTOMRIGHT", 0, -5)
+		else
+			altpp:SetPoint("TOPLEFT", _G["oUF_MlightPlayer"].Power, "BOTTOMLEFT", 0, -5)
+			altpp:SetPoint("TOPRIGHT", _G["oUF_MlightPlayer"].Power, "BOTTOMRIGHT", 0, -5)
+		end
 		altpp.bd = createBackdrop(altpp, altpp, 1)
 
 		altpp.value = createFont(altpp, "OVERLAY", oUF_MlightDB.fontfile, oUF_MlightDB.fontsize-2, 1, 1, 1)

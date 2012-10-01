@@ -13,11 +13,21 @@ end
 local addon, ns = ...
 local L = ns.L
 
+local reloadbuttons = {}
 local checkbuttons = {}
 local editboxes = {}
 local sliders = {}
 local anchorboxes = {}
 local raidsizeboxes = {}
+
+local function createreloadbuttons(parent)
+	local bu = CreateFrame("Button", nil, parent, "UIPanelButtonTemplate")
+	bu:SetPoint("TOPRIGHT", -16, -20)
+	bu:SetSize(150, 25)
+	bu:SetText(APPLY)
+	bu:SetScript("OnClick", ReloadUI)
+	return bu
+end
 
 local function createcheckbutton(parent, index, name, value, tip)
 	local bu = CreateFrame("CheckButton", "oUF_Mlight GUI"..name.."Button", parent, "InterfaceOptionsCheckButtonTemplate")
@@ -54,15 +64,15 @@ local function createeditbox(parent, index, name, value, tip)
 	box:SetFont(GameFontHighlight:GetFont(), 12, "OUTLINE")
 	box:SetAutoFocus(false)
 	box:SetTextInsets(3, 0, 0, 0)
-	box:SetScript("OnShow", function(self) self:SetText(oUF_MlightDB[box.value]) end)
-	box:SetScript("OnEscapePressed", function(self) self:SetText(oUF_MlightDB[box.value]) self:ClearFocus() end)
+	box:SetScript("OnShow", function(self) self:SetText(oUF_MlightDB[self.value]) end)
+	box:SetScript("OnEscapePressed", function(self) self:SetText(oUF_MlightDB[self.value]) self:ClearFocus() end)
 	box:SetScript("OnEnterPressed", function(self)
 		self:ClearFocus()
-		oUF_MlightDB[box.value] = self:GetText()
+		oUF_MlightDB[self.value] = self:GetText()
 	end)
 	if tip then
 		box:SetScript("OnEnter", function(self) 
-			GameTooltip:SetOwner(box, "ANCHOR_RIGHT", 10, 10)
+			GameTooltip:SetOwner(self, "ANCHOR_RIGHT", 10, 10)
 			GameTooltip:AddLine(tip)
 			GameTooltip:Show() 
 		end)
@@ -208,6 +218,7 @@ local function createcolorpickerbu(parent, index, name, value, tip)
 	return cpb
 end
 
+
 -- dependency relationship
 local function createDR(parent, ...)
     for i=1, select("#", ...) do
@@ -265,16 +276,10 @@ gui.intro = gui:CreateFontString(nil, "ARTWORK", "GameFontNormalLeftGrey")
 gui.intro:SetText(L["apply"])
 gui.intro:SetPoint("TOPLEFT", 20, -60)
 
-local reloadbu = CreateFrame("Button", nil, gui, "UIPanelButtonTemplate")
-reloadbu:SetPoint("TOPRIGHT", -16, -20)
-reloadbu:SetSize(150, 25)
-reloadbu:SetText(APPLY)
-reloadbu:SetScript("OnClick", function()
-	ReloadUI()
-end)
+reloadbuttons[1] = createreloadbuttons(gui)
 
 local resetbu = CreateFrame("Button", nil, gui, "UIPanelButtonTemplate")
-resetbu:SetPoint("RIGHT", reloadbu,"LEFT", -5, 0)
+resetbu:SetPoint("RIGHT", reloadbuttons[1],"LEFT", -5, 0)
 resetbu:SetSize(150, 25)
 resetbu:SetText(NEWBIE_TOOLTIP_STOPWATCH_RESETBUTTON)
 resetbu:SetScript("OnClick", function()
@@ -401,13 +406,7 @@ raidgui.intro = raidgui:CreateFontString(nil, "ARTWORK", "GameFontNormalLeftGrey
 raidgui.intro:SetText(L["apply"])
 raidgui.intro:SetPoint("TOPLEFT", 20, -60)
 
-local reloadbu2 = CreateFrame("Button", nil, raidgui, "UIPanelButtonTemplate")
-reloadbu2:SetPoint("TOPRIGHT", -16, -20)
-reloadbu2:SetSize(150, 25)
-reloadbu2:SetText(APPLY)
-reloadbu2:SetScript("OnClick", function()
-	ReloadUI()
-end)
+reloadbuttons[2] = createreloadbuttons(raidgui)
 
 local scrollFrame2 = CreateFrame("ScrollFrame", "oUF_Mlight Raid GUI Frame_ScrollFrame", raidgui, "UIPanelScrollFrameTemplate")
 scrollFrame2:SetPoint("TOPLEFT", raidgui, "TOPLEFT", 10, -80)
@@ -587,6 +586,78 @@ wlbox:SetScript("OnEnterPressed", function(self)
 end)
 
 --====================================================--
+--[[         -- Click Cast Settings --              ]]--
+--====================================================--
+
+local clickcastgui = CreateFrame("Frame", "oUF_Mlight ClickCast GUI", UIParent)
+clickcastgui.name = ("Click Cast")
+clickcastgui.parent = ("oUF_Mlight")
+InterfaceOptions_AddCategory(clickcastgui)
+
+clickcastgui.title = clickcastgui:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
+clickcastgui.title:SetPoint("TOPLEFT", 15, -20)
+clickcastgui.title:SetText("oUF_Mlight Click Cast Settings")
+
+clickcastgui.line = clickcastgui:CreateTexture(nil, "ARTWORK")
+clickcastgui.line:SetSize(600, 1)
+clickcastgui.line:SetPoint("TOP", 0, -50)
+clickcastgui.line:SetTexture(1, 1, 1, .2)
+
+clickcastgui.intro = clickcastgui:CreateFontString(nil, "ARTWORK", "GameFontNormalLeft")
+clickcastgui.intro:SetText(L["clickcastinro"])
+clickcastgui.intro:SetPoint("TOPLEFT", 20, -85)
+
+reloadbuttons[3] = createreloadbuttons(clickcastgui)
+
+local enableClickCastbu = createcheckbutton(clickcastgui, 2, L["enableClickCast"], "enableClickCast")
+
+local scrollFrame4 = CreateFrame("ScrollFrame", "oUF_Mlight ClickCast Frame_ScrollFrame", clickcastgui, "UIPanelScrollFrameTemplate")
+scrollFrame4:SetPoint("TOPLEFT", clickcastgui, "TOPLEFT", 10, -180)
+scrollFrame4:SetPoint("BOTTOMRIGHT", clickcastgui, "BOTTOMRIGHT", -35, 0)
+scrollFrame4:SetFrameLevel(clickcastgui:GetFrameLevel()+1)
+
+scrollFrame4.Anchor = CreateFrame("Frame", "oUF_Mlight ClickCast Frame_ScrollAnchor", scrollFrame4)
+scrollFrame4.Anchor:SetPoint("TOPLEFT", scrollFrame4, "TOPLEFT", 0, -3)
+scrollFrame4.Anchor:SetWidth(scrollFrame4:GetWidth()-30)
+scrollFrame4.Anchor:SetHeight(scrollFrame4:GetHeight()+200)
+scrollFrame4.Anchor:SetFrameLevel(scrollFrame4:GetFrameLevel()+1)
+scrollFrame4:SetScrollChild(scrollFrame4.Anchor)
+
+local clickinputboxes = {}
+local mouse_buttons = {
+	["1"] = {"Click", "shift-", "ctrl-", "alt-"},
+	["2"] = {"Click", "shift-", "ctrl-", "alt-"},
+	["3"] = {"Click", "shift-", "ctrl-", "alt-"},
+	["4"] = {"Click", "shift-", "ctrl-", "alt-"},
+	["5"] = {"Click", "shift-", "ctrl-", "alt-"},
+}
+
+for id, v in pairs(mouse_buttons) do
+	local mousebutton = scrollFrame4.Anchor:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
+	mousebutton:SetPoint("TOPLEFT", 16, -5-((id-1)*5)*30)
+	mousebutton:SetText(L[id])
+	for k1, v1 in pairs(mouse_buttons[id]) do
+		local inputbox = CreateFrame("EditBox", "oUF_Mlight ClickCast"..v1.."EditBox", scrollFrame4.Anchor)
+		inputbox:SetSize(150, 20)
+		inputbox:SetPoint("TOPLEFT", 16, -5-((id-1)*5)*30-k1*30)
+		
+		inputbox.name = inputbox:CreateFontString(nil, "ARTWORK", "GameFontNormalLeftYellow")
+		inputbox.name:SetPoint("LEFT", inputbox, "RIGHT", 10, 1)
+		inputbox.name:SetText(L[v1])
+		
+		inputbox:SetFont(GameFontHighlight:GetFont(), 12, "OUTLINE")
+		inputbox:SetAutoFocus(false)
+		inputbox:SetTextInsets(3, 0, 0, 0)
+		inputbox:SetScript("OnShow", function(self) self:SetText(oUF_MlightDB.ClickCast[id][v1]["action"]) end)
+		inputbox:SetScript("OnEscapePressed", function(self) self:SetText(oUF_MlightDB.ClickCast[id][v1]["action"]) self:ClearFocus() end)
+		inputbox:SetScript("OnEnterPressed", function(self) self:ClearFocus() oUF_MlightDB.ClickCast[id][v1]["action"] = self:GetText()end)
+		
+		createDR(enableClickCastbu, inputbox)
+		tinsert(clickinputboxes, inputbox)
+	end
+end
+
+--====================================================--
 --[[                -- Init --                      ]]--
 --====================================================--
 local eventframe = CreateFrame("Frame")
@@ -597,6 +668,9 @@ function eventframe:ADDON_LOADED(arg1)
 	if arg1 ~= "oUF_Mlight" then return end
 	if oUF_MlightDB == nil then 
 		ns.LoadVariables()
+	end
+	for i = 1, 3 do
+		F.Reskin(reloadbuttons[i])
 	end
 	for i = 1, #checkbuttons do
 		F.ReskinCheck(checkbuttons[i])
@@ -613,17 +687,19 @@ function eventframe:ADDON_LOADED(arg1)
 	for i = 1, #raidsizeboxes do
 		F.Reskin(raidsizeboxes[i])
 	end
+	for i = 1, #clickinputboxes do
+		F.CreateBD(clickinputboxes[i])
+	end
+	F.Reskin(resetbu)	
 	F.Reskin(fontflagbu)
 	F.Reskin(startcolorpicker)
 	F.Reskin(endcolorpicker)
 	F.CreateBD(wlbox)
 	sort(oUF_MlightDB.AuraFilterwhitelist)
-	F.Reskin(reloadbu)
-	F.Reskin(resetbu)
-	F.Reskin(reloadbu2)
 	F.ReskinScroll(_G["oUF_Mlight GUI Frame_ScrollFrameScrollBar"])
 	F.ReskinScroll(_G["oUF_Mlight Raid GUI Frame_ScrollFrameScrollBar"])
 	F.ReskinScroll(_G["oUF_Mlight WhiteList Frame_ScrollFrameScrollBar"])
+	F.ReskinScroll(_G["oUF_Mlight ClickCast Frame_ScrollFrameScrollBar"])
 	self:RegisterEvent("PLAYER_ENTERING_WORLD")
 end
 
