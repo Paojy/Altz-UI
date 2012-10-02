@@ -4,7 +4,6 @@ if not IsAddOnLoaded("Recount") then return end
 
 local _G = _G
 local Recount = _G["Recount"]
-local font = GameFontHighlight:GetFont()
 
 local function skinit(window)
 	F.SetBD(window, 0, -12, 0, 0) 

@@ -6,7 +6,6 @@ if not IsAddOnLoaded("DBM-Core") then return end
 local croprwicons = true					-- Crops blizz shitty borders from icons in RaidWarning messages
 local rwiconsize = 12						-- RaidWarning icon size. Works only if croprwicons = true
 
-local font = GameFontHighlight:GetFont()
 local grow = "Interface\\AddOns\\AltzUI\\media\\grow"
 local blank = "Interface\\AddOns\\AltzUI\\media\\statusbar"
 local backdrop = {
@@ -94,7 +93,7 @@ DBMSkin:SetScript("OnEvent", function(self, event, addon)
 							name:SetPoint("LEFT", frame, "LEFT", 4, 0)
 							name:SetWidth(130)
 							name:SetHeight(8)
-							name:SetFont(font, 10, "OUTLINE")
+							name:SetFont(G.norFont, 10, "OUTLINE")
 							name:SetShadowOffset(0, 0, 0, 0)
 							name:SetJustifyH("LEFT")
 							name.SetFont = dummy
@@ -104,7 +103,7 @@ DBMSkin:SetScript("OnEvent", function(self, event, addon)
 						if not timer.styled then	
 							timer:ClearAllPoints()
 							timer:SetPoint("RIGHT", frame, "RIGHT", -5, 0)
-							timer:SetFont(font, 10, "OUTLINE")
+							timer:SetFont(G.norFont, 10, "OUTLINE")
 							timer:SetShadowOffset(0, 0, 0, 0)
 							timer:SetJustifyH("RIGHT")
 							timer.SetFont = dummy
@@ -130,7 +129,7 @@ DBMSkin:SetScript("OnEvent", function(self, event, addon)
 			if not anchor.styled then
 				local header = {anchor:GetRegions()}
 				if header[1]:IsObjectType("FontString") then
-					header[1]:SetFont(font, 10, "OUTLINE")
+					header[1]:SetFont(G.norFont, 10, "OUTLINE")
 					header[1]:SetShadowOffset(0, 0, 0, 0)
 					header[1]:SetTextColor(1, 1, 1, 1)
 					anchor.styled = true	
@@ -186,7 +185,7 @@ DBMSkin:SetScript("OnEvent", function(self, event, addon)
 				if not name.styled then
 					name:ClearAllPoints()
 					name:SetPoint("LEFT", bar, "LEFT", 4, 0)
-					name:SetFont(font, 10, "OUTLINE")
+					name:SetFont(G.norFont, 10, "OUTLINE")
 					name:SetShadowOffset(0, 0, 0, 0)
 					name:SetJustifyH("LEFT")
 					name.styled = true
@@ -195,7 +194,7 @@ DBMSkin:SetScript("OnEvent", function(self, event, addon)
 				if not timer.styled then
 					timer:ClearAllPoints()
 					timer:SetPoint("RIGHT", bar, "RIGHT", -5, 0)
-					timer:SetFont(font, 10, "OUTLINE")
+					timer:SetFont(G.norFont, 10, "OUTLINE")
 					timer:SetShadowOffset(0, 0, 0, 0)
 					timer:SetJustifyH("RIGHT")
 					timer.styled = true

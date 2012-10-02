@@ -26,7 +26,7 @@ local function Skin(timer, value, maxvalue, scale, paused, label)
 			F.CreateSD(statusbar.backdrop, 2, 0, 0, 0, 1, -1)
 			
 			text:ClearAllPoints()
-			text:SetFont(GameFontHighlight:GetFont(), 12, "OUTLINE")
+			text:SetFont(G.norFont, 12, "OUTLINE")
 			text:SetPoint("CENTER", statusbar)
 			
 			border:SetTexture(nil)

@@ -10,9 +10,6 @@ local hideRealm = aCoreCDB.hideRealm
 local colorborderClass = aCoreCDB.colorborderClass
 local combathide = aCoreCDB.combathide
 
-local font = GameFontHighlight:GetFont()
-local fontsize = 12
-
 local you = "<You>"
 local boss = "Boss"
 
@@ -239,11 +236,11 @@ local function style(frame)
     if frame.NumLines then
         for index=1, frame:NumLines() do
             if index == 1 then
-                _G[frame:GetName()..'TextLeft'..index]:SetFont(font, fontsize+2, "OUTLINE")
+                _G[frame:GetName()..'TextLeft'..index]:SetFont(G.norFont, 14, "OUTLINE")
             else
-                _G[frame:GetName()..'TextLeft'..index]:SetFont(font, fontsize, "OUTLINE")
+                _G[frame:GetName()..'TextLeft'..index]:SetFont(G.norFont, 12, "OUTLINE")
             end
-            _G[frame:GetName()..'TextRight'..index]:SetFont(font, fontsize, "OUTLINE")
+            _G[frame:GetName()..'TextRight'..index]:SetFont(G.norFont, 12, "OUTLINE")
         end
     end
 end
