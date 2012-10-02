@@ -1,7 +1,6 @@
 local T, C, L, G = unpack(select(2, ...))
 local dragFrameList = G.dragFrameList
 
-local font = GameFontHighlight:GetFont()
 local rowSpacing = aCoreCDB.buffrowspace
 local colSpacing = aCoreCDB.buffcolspace
 local buffsPerRow = aCoreCDB.buffsPerRow
@@ -110,14 +109,16 @@ local function applySkin(b, type)
 	icon:SetDrawLayer("BACKGROUND",-8)
 
 	--duration
-	b.duration:SetFont(font, 11, "THINOUTLINE")
+	b.duration:SetFont(G.numFont, 13, "THINOUTLINE")
 	b.duration:ClearAllPoints()
-	b.duration:SetPoint("BOTTOM", 2, -10)
+	b.duration:SetPoint("CENTER", b, "BOTTOM")
 
 	--count
-	b.count:SetFont(font, 12, "THINOUTLINE")
+	b.count:SetFont(G.numFont, 13, "THINOUTLINE")
 	b.count:ClearAllPoints()
-	b.count:SetPoint("TOPRIGHT", 0, 0)
+	b.count:SetPoint("TOPRIGHT", 2, 2)
+	b.count:SetJustifyH("RIGHT")
+	b.count:SetTextColor(.4, .95, 1)
 
 	--shadow
 	local back = CreateFrame("Frame", nil, b)

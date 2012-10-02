@@ -16,8 +16,6 @@ local color = {
 	equipped= { r = 0, g = 0, b = 0, },
 	}
 
-local font = GameFontHighlight:GetFont()
-
 -- grow
 local backdrop = {
 	bgFile = textures.blank,
@@ -109,19 +107,22 @@ local function styleActionButton(bu)
 	if fobs then fobs:SetTexture(nil) end
 	bo:SetTexture(nil) --hide the border (plain ugly, sry blizz)
 	--hotkey
-	ho:SetFont(font, aCoreCDB.keybindsize, "OUTLINE")
+	ho:SetFont(G.numFont, aCoreCDB.keybindsize, "OUTLINE")
 	ho:ClearAllPoints()
-	ho:SetPoint("TOPRIGHT", 1, 1)
-	ho:SetPoint("TOPLEFT", 1, 1)
+	ho:SetJustifyH("RIGHT")
+	ho:SetPoint("LEFT", bu, "TOPLEFT")
+	ho:SetPoint("RIGHT", bu, "TOPRIGHT", 2, 2)
 	--macroname
-	na:SetFont(font, aCoreCDB.macronamesize, "OUTLINE")
+	na:SetFont(G.norFont, aCoreCDB.macronamesize, "OUTLINE")
 	na:ClearAllPoints()
-	na:SetPoint("TOPLEFT", 0, 0)
-	na:SetPoint("TOPRIGHT", 0, 0)
+	na:SetJustifyH("LEFT")
+	na:SetPoint("BOTTOMRIGHT", bu, "BOTTOMRIGHT", 2, -2)
+	na:SetPoint("BOTTOMLEFT", bu, "BOTTOMLEFT", -2, -2)
 	--count
-	co:SetFont(font, aCoreCDB.countsize, "OUTLINE")
+	co:SetFont(G.numFont, aCoreCDB.countsize, "OUTLINE")
 	co:ClearAllPoints()
-	co:SetPoint("BOTTOMRIGHT", 0, -1)
+	co:SetJustifyH("RIGHT")
+	co:SetPoint("BOTTOMRIGHT", bu, "BOTTOMRIGHT", 2, -2)
 	--applying the textures
 	fl:SetTexture(textures.flash)
 	bu:SetHighlightTexture(textures.hover)

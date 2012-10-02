@@ -2,11 +2,9 @@
 local T, C, L, G = unpack(select(2, ...))
 if not aCoreCDB.cooldown then return end
 
-local font = GameFontHighlight:GetFont() 
-
 local function CreateFS(parent, size, justify)
     local f = parent:CreateFontString(nil, "OVERLAY")
-    f:SetFont(font, size, "OUTLINE")
+    f:SetFont(G.numFont, size, "OUTLINE")
     f:SetShadowColor(0, 0, 0, 0)
     if(justify) then f:SetJustifyH(justify) end
     return f
@@ -43,23 +41,22 @@ end
 
 local methods = getmetatable(ActionButton1Cooldown).__index
 hooksecurefunc(methods, "SetCooldown", function(self, start, duration)
-	if(start>0 and duration>2.5) then
+	if start>0 and duration>2.5 then
 		if self.noshowcd then return end
-
+		
 		self.start = start
 		self.duration = duration
 		self.nextUpdate = 0
 
-		local text = self.text
-		if(not text) then
-			text = CreateFS(self, 15, "CENTER")
-			text:SetPoint("CENTER", 0, 0)
-			self.text = text
+		if not self.text then
+			self.text = T.createnumber(self, "OVERLAY", 15, "OUTLINE", "CENTER")
+			self.text:SetTextColor(.4, .95, 1)
+			self.text:SetPoint("CENTER", 0, 0)
 			self:SetScript("OnUpdate", Timer_OnUpdate)
 		end
 
-		text:Show()
-	elseif(self.text) then
+		self.text:Show()
+	elseif self.text then
 		self.text:Hide()
 	end
 end)
