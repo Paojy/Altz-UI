@@ -191,13 +191,20 @@ end
 local function skin(index, frame)
       for i = 1, index do
         local bag = _G[frame..i]
-		local f = _G[bag:GetName().."IconTexture"]
+		local count = _G[bag:GetName().."Count"]		
+		local f = _G[bag:GetName().."IconTexture"]		
+
         bag:SetNormalTexture("")
         bag:SetPushedTexture("")
-		F.CreateBD(bag, 0.3)
+		
         f:SetPoint("TOPLEFT", bag, 1, -1)
 		f:SetPoint("BOTTOMRIGHT", bag, -1, 1)
         f:SetTexCoord(.1, .9, .1, .9)
+		
+		count:SetFont(G.numFont, 12, "OUTLINE")
+		count:SetJustifyV("BOTTOM")
+		
+		F.CreateBD(bag, 0.3)
 		bag.border = bag
     end
 end
