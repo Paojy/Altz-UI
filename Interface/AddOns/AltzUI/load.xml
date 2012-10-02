@@ -49,9 +49,11 @@
 	<Script file="mods\map\minimap.lua"/>
 	<Script file="mods\map\flare and more.lua"/>
 
+	<Script file="mods\nameplate\auralist.lua"/>
 	<Script file="mods\nameplate\nameplates.lua"/>
-	
+		
 	<Script file="mods\tip\spellID.lua"/>
+	<Script file="mods\tip\talent.lua"/>	
 	<Script file="mods\tip\tip.lua"/>
 
 	<Script file="mods\tweaks\already known.lua"/>
