@@ -122,3 +122,6 @@ EventFrame:SetScript("OnEvent", function(self, event, arg1)
 		EventFrame:UnregisterEvent("PET_BATTLE_OPENING_START")
 	end
 end)
+
+F.CreateBD(GeneralDockManagerOverflowButtonList,0.7)
+F.CreateSD(GeneralDockManagerOverflowButtonList, 3, 0, 0, 0, 1, -1)
