@@ -1,6 +1,7 @@
 --Original Author: Nibelheim
 local T, C, L, G = unpack(select(2, ...))
 local F = unpack(Aurora)
+local dragFrameList = G.dragFrameList
 
 F.Reskin(WatchFrameCollapseExpandButton)
 WatchFrameCollapseExpandButton:SetScale(.7)
@@ -15,6 +16,12 @@ local nWFA = CreateFrame("Frame")
 local WF
 local OrigWFSetPoint, OrigWFClearAllPoints
 local origWFHighlight
+
+local anchorframe = CreateFrame("Frame", "Altz_WFanchorframe", UIParent)
+anchorframe.movingname = L["WatchFrame"]
+anchorframe:SetSize(200, 20)
+anchorframe:SetPoint("TOPRIGHT", UIParent, "TOPRIGHT", -5, -150)
+T.CreateDragFrame(anchorframe, dragFrameList, -2 , true) --frame, dragFrameList, inset, clamp
 
 -- Collapse Quest Tracker based on zone
 function nWFA.UpdateCollapseState()
@@ -61,8 +68,8 @@ function nWFA.UpdatePosition()
 	WF:SetFrameStrata("MEDIUM")
 	WF:SetFrameLevel(15) -- higher than multiright actionbar
 	WF:ClearAllPoints()
-	WF:SetPoint("TOPRIGHT", UIParent, "TOPRIGHT", 0, -150)
-	WF:SetHeight(UIParent:GetHeight() - 370)
+	WF:SetPoint("TOP", anchorframe, "TOP")
+	WF:SetHeight(G.screenheight - 300)
 	WF.ClearAllPoints = function() end
 	WF.SetPoint = function() end
 end
@@ -81,11 +88,11 @@ end
 -- Font Updates
 function nWFA.HookFont()
 	local WFT = _G["WatchFrameTitle"]
-	WFT:SetFont(GameFontHighlight:GetFont(), 12, "OUTLINE")
+	WFT:SetFont(G.norFont, 12, "OUTLINE")
 	hooksecurefunc("WatchFrame_SetLine", function(line, anchor, verticalOffset, isHeader, text, dash, hasItem, isComplete)
-		line.text:SetFont(GameFontHighlight:GetFont(), 12, "OUTLINE")
+		line.text:SetFont(G.norFont, 12, "OUTLINE")
 		if line.dash then
-			line.dash:SetFont(GameFontHighlight:GetFont(), 12, "OUTLINE")
+			line.dash:SetFont(G.norFont, 12, "OUTLINE")
 		end
 	end)
 end
