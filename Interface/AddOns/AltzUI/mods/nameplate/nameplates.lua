@@ -2,18 +2,27 @@ local T, C, L, G = unpack(select(2, ...))
 local F = unpack(Aurora)
 if not aCoreCDB.enableplate then return end
 
-local fontsize = 14
 local texture = "Interface\\AddOns\\AltzUI\\media\\statusbar"
-local hpHeight = 14
-local hpWidth = 150
-local iconSize = 32		--Size of all Icons, RaidIcon/ClassIcon/Castbar Icon
+local fontsize = 14
+local hpHeight = aCoreCDB.plateheight
+local hpWidth = aCoreCDB.platewidth
+
+local iconSize = 32		--Size of all Icons, RaidIcon/Castbar Icon
 local cbHeight = 8
-local cbWidth = 150
 
 local combat = aCoreCDB.autotoggleplates
 local enhancethreat = aCoreCDB.threatplates
 
+local enabledebuff = aCoreCDB.platedebuff
+local enablebuff = aCoreCDB.platebuff
+local auranum = aCoreCDB.plateauranum
+local auraiconsize = aCoreCDB.plateaurasize
+
 local frames = {}
+local BuffWhiteList = G.BuffWhiteList
+local DebuffBlackList = G.DebuffBlackList
+local DebuffWhiteList = G.DebuffWhiteList
+
 local dummy = function() return end
 local numChildren = -1
 
@@ -73,11 +82,176 @@ local function HideObjects(parent)
 	end
 end
 
+local day, hour, minute = 86400, 3600, 60
+local function FormatTime(s)
+    if s >= day then
+        return format("%dd", floor(s/day + 0.5))
+    elseif s >= hour then
+        return format("%dh", floor(s/hour + 0.5))
+    elseif s >= minute then
+        return format("%dm", floor(s/minute + 0.5))
+    end
+
+    return format("%d", math.fmod(s, minute))
+end
+
+-- Create aura icons
+local function CreateAuraIcon(parent)
+	local button = CreateFrame("Frame",nil,parent)
+	button:SetSize(auraiconsize, auraiconsize)
+	
+	button.icon = button:CreateTexture(nil, "OVERLAY", nil, 3)
+	button.icon:SetPoint("TOPLEFT",button,"TOPLEFT", 1, -1)
+	button.icon:SetPoint("BOTTOMRIGHT",button,"BOTTOMRIGHT",-1, 1)
+	button.icon:SetTexCoord(.08, .92, 0.08, 0.92)
+	
+	button.overlay = button:CreateTexture(nil, "ARTWORK", nil, 7)
+	button.overlay:SetTexture("Interface\\Buttons\\WHITE8x8")
+	button.overlay:SetAllPoints(button)	
+	
+	button.bd = button:CreateTexture(nil, "ARTWORK", nil, 6)
+	button.bd:SetTexture("Interface\\Buttons\\WHITE8x8")
+	button.bd:SetVertexColor(0, 0, 0)
+	button.bd:SetPoint("TOPLEFT",button,"TOPLEFT", -1, 1)
+	button.bd:SetPoint("BOTTOMRIGHT",button,"BOTTOMRIGHT", 1, -1)
+	
+	button.text = T.createnumber(button, "OVERLAY", auraiconsize-11, "OUTLINE", "CENTER")
+    button.text:SetPoint("CENTER", button, "BOTTOM")
+	button.text:SetTextColor(1, 1, 0)
+	
+	button.count = T.createnumber(button, "OVERLAY", auraiconsize-13, "OUTLINE", "RIGHT")
+	button.count:SetPoint("CENTER", button, "TOPRIGHT")
+	button.count:SetTextColor(.4, .95, 1)
+	
+	return button
+end
+
+-- Update an aura icon
+local function UpdateAuraIcon(button, unit, index, filter)
+	local name, _, icon, count, debuffType, duration, expirationTime, _, _, _, spellID = UnitAura(unit, index, filter)
+
+	button.icon:SetTexture(icon)
+	button.expirationTime = expirationTime
+	button.duration = duration
+	button.spellID = spellID
+	
+	local color = DebuffTypeColor[debuffType] or DebuffTypeColor.none
+	button.overlay:SetVertexColor(color.r, color.g, color.b)
+
+	if count and count > 1 then
+		button.count:SetText(count)
+	else
+		button.count:SetText("")
+	end
+	
+	button:SetScript("OnUpdate", function(self, elapsed)
+		if not self.duration then return end
+		
+		self.elapsed = (self.elapsed or 0) + elapsed
+
+		if self.elapsed < .2 then return end
+		self.elapsed = 0
+
+		local timeLeft = self.expirationTime - GetTime()
+		if timeLeft <= 0 then
+			self.text:SetText(nil)
+		else
+			self.text:SetText(FormatTime(timeLeft))
+		end
+	end)
+	
+	button:Show()
+end
+
+local function DebuffFliter(caster, spellid)
+	if DebuffBlackList[spellid] then
+		return nil
+	elseif caster == "player" then
+		return true
+	elseif DebuffWhiteList[spellid] then
+		return true
+	end
+end
+
+local function BuffFliter(spellid)
+	if BuffWhiteList[spellid] then
+		return true
+	else
+		return nil
+	end
+end
+
+local function OnAura(frame, unit)
+	if not frame.icons or not frame.unit then return end
+	local i = 1
+	if enablebuff then
+		for index = 1, 15 do
+			if i > auranum then return end
+				
+			local bname, _, _, _, _, bduration, _, bcaster, _, _, bspellid = UnitAura(frame.unit, index, 'HELPFUL')
+			local matchbuff = BuffFliter(bspellid)
+				
+			if bduration and matchbuff then
+				if not frame.icons[i] then frame.icons[i] = CreateAuraIcon(frame) end
+				if i == 1 then frame.icons[i]:SetPoint("RIGHT", frame.icons, "RIGHT") end
+				if i ~= 1 and i <= auranum then frame.icons[i]:SetPoint("RIGHT", frame.icons[i-1], "LEFT", -4, 0) end
+				UpdateAuraIcon(frame.icons[i], frame.unit, index, 'HELPFUL')
+				i = i + 1
+			end
+		end
+	end
+	if enabledebuff then
+		for index = 1, 20 do
+			if i > auranum then return end
+			
+			local dname, _, _, _, _, dduration, _, dcaster, _, _, dspellid = UnitAura(frame.unit, index, 'HARMFUL')
+			local matchdebuff = DebuffFliter(dcaster, dspellid)
+			
+			if dduration and matchdebuff then
+				if not frame.icons[i] then frame.icons[i] = CreateAuraIcon(frame) end
+				if i == 1 then frame.icons[i]:SetPoint("RIGHT", frame.icons, "RIGHT") end
+				if i ~= 1 and i <= auranum then frame.icons[i]:SetPoint("RIGHT", frame.icons[i-1], "LEFT", -4, 0) end
+				UpdateAuraIcon(frame.icons[i], frame.unit, index, 'HARMFUL')
+				i = i + 1
+			end
+		end
+	end
+	for index = i, #frame.icons do frame.icons[index]:Hide() end
+end
+
+-- Scan all visible nameplate for a known unit
+local function CheckUnit_Guid(frame, ...)
+	if UnitExists("target") and frame:GetAlpha() == 1 and UnitName("target") == frame.hp.name:GetText() then
+		frame.guid = UnitGUID("target")
+		frame.unit = "target"
+		OnAura(frame, "target")
+	elseif frame.overlay:IsShown() and UnitExists("mouseover") and UnitName("mouseover") == frame.hp.name:GetText() then
+		frame.guid = UnitGUID("mouseover")
+		frame.unit = "mouseover"
+		OnAura(frame, "mouseover")
+	else
+		frame.unit = nil
+	end
+end
+
+-- Attempt to match a nameplate with a GUID from the combat log
+local function MatchGUID(frame, destGUID, spellID)
+	if not frame.guid then return end
+
+	if frame.guid == destGUID then
+		for _, icon in ipairs(frame.icons) do
+			if icon.spellID == spellID then
+				icon:Hide()
+			end
+		end
+	end
+end
+
 --Color the castbar depending on if we can interrupt or not, 
 --also resize it as nameplates somehow manage to resize some frames when they reappear after being hidden
 local function UpdateCastbar(frame)
 	frame:ClearAllPoints()
-	frame:SetSize(cbWidth, cbHeight)
+	frame:SetSize(hpWidth, cbHeight)
 	frame:SetPoint('TOP', frame:GetParent().hp, 'BOTTOM', 0, -8)
 	frame:GetStatusBarTexture():SetHorizTile(true)
 	if(frame.shield:IsShown()) then
@@ -120,12 +294,20 @@ local function OnHide(frame)
 	frame.overlay:Hide()
 	frame.cb:Hide()
 	frame.hasClass = nil
+	frame.unit = nil
+	frame.guid = nil
 	frame.isFriendly = nil
 	frame.hp.rcolor = nil
 	frame.hp.gcolor = nil
 	frame.hp.bcolor = nil
 	frame.hp.valueperc:SetTextColor(1,1,1)
-
+	
+	if frame.icons then
+		for _, icon in ipairs(frame.icons) do
+			icon:Hide()
+		end
+	end
+	
 	frame:SetScript("OnUpdate",nil)
 end
 
@@ -200,6 +382,17 @@ local function UpdateObjects(frame)
 	frame.overlay:ClearAllPoints()
 	frame.overlay:SetAllPoints(frame.hp)
 
+	if enablebuff or enabledebuff then
+		if frame.icons then return end
+		frame.icons = CreateFrame("Frame", nil, frame)
+		frame.icons:SetPoint("BOTTOMRIGHT", frame.hp, "TOPRIGHT", 0, 15)
+		frame.icons:SetWidth(20 + hpWidth)
+		frame.icons:SetHeight(25)
+		frame.icons:SetFrameLevel(frame.hp:GetFrameLevel() + 2)
+		frame:RegisterEvent("UNIT_AURA")
+		frame:HookScript("OnEvent", OnAura)
+	end
+	
 	HideObjects(frame)
 end
 
@@ -217,7 +410,7 @@ local function SkinObjects(frame)
 	F.CreateSD(hp.border, 3, 0, 0, 0, 1, -1)
 	
 	--Create Level
-	hp.level = T.createtext(hp, "OVERLAY", fontsize-2, "OUTLINE", "RIGHT")
+	hp.level = T.createtext(hp, "ARTWORK", fontsize-2, "OUTLINE", "RIGHT")
 	hp.level:SetPoint("BOTTOMRIGHT", hp, "TOPLEFT", 19, -fontsize/3)
 	hp.level:SetTextColor(1, 1, 1)
 	hp.oldlevel = oldlevel
@@ -225,17 +418,17 @@ local function SkinObjects(frame)
 	hp.elite = elite
 	
 	--Create Health Text
-	hp.value = T.createtext(hp, "OVERLAY", fontsize/2+3, "OUTLINE", "RIGHT")
+	hp.value = T.createtext(hp, "ARTWORK", fontsize/2+3, "OUTLINE", "RIGHT")
 	hp.value:SetPoint("TOPRIGHT", hp, "TOPRIGHT", 0, -fontsize/3)
 	hp.value:SetTextColor(0.5,0.5,0.5)
 
 	--Create Health Pecentage Text
-	hp.valueperc = T.createtext(hp, "OVERLAY", fontsize, "OUTLINE", "RIGHT")
+	hp.valueperc = T.createtext(hp, "ARTWORK", fontsize, "OUTLINE", "RIGHT")
 	hp.valueperc:SetPoint("BOTTOMRIGHT", hp, "TOPRIGHT", 0, -fontsize/3)
 	hp.valueperc:SetTextColor(1,1,1)
 	
 	--Create Name Text
-	hp.name = T.createtext(hp, "OVERLAY", fontsize-2, "OUTLINE", "LEFT")
+	hp.name = T.createtext(hp, "ARTWORK", fontsize-2, "OUTLINE", "LEFT")
 	hp.name:SetPoint('BOTTOMRIGHT', hp, 'TOPRIGHT', -30, -fontsize/3)
 	hp.name:SetPoint('BOTTOMLEFT', hp, 'TOPLEFT', 17, -fontsize/3)
 	hp.name:SetTextColor(1,1,1)
@@ -289,8 +482,9 @@ local function SkinObjects(frame)
 
 	--Reposition and Resize RaidIcon
 	raidicon:ClearAllPoints()
-	raidicon:SetPoint("BOTTOM", hp, "TOP", 0, 16)
-	raidicon:SetSize(iconSize*1.4, iconSize*1.4)
+	raidicon:SetDrawLayer("OVERLAY", 7)
+	raidicon:SetPoint("RIGHT", hp, "LEFT", -5, 0)
+	raidicon:SetSize(iconSize, iconSize)
 	raidicon:SetTexture([[Interface\AddOns\AltzUI\media\raidicons.blp]])
 	frame.raidicon = raidicon
 	
@@ -434,7 +628,22 @@ NamePlates:SetScript('OnUpdate', function(self, elapsed)
 	ForEachPlate(ShowHealth)
 	ForEachPlate(CheckBlacklist)
 	ForEachPlate(HideDrunkenText)
+	ForEachPlate(CheckUnit_Guid)
 end)
+
+if enablebuff or enabledebuff then
+	NamePlates:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
+end
+
+function NamePlates:COMBAT_LOG_EVENT_UNFILTERED(_, event, ...)
+	if event == "SPELL_AURA_REMOVED" then
+		local _, sourceGUID, _, _, _, destGUID, _, _, _, spellID = ...
+
+		if sourceGUID == UnitGUID("player") then
+			ForEachPlate(MatchGUID, destGUID, spellID)
+		end
+	end
+end
 
 --Only show nameplates when in combat
 if combat == true then
