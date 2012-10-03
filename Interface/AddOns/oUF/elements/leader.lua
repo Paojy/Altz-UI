@@ -19,7 +19,7 @@
    Leader:SetPoint("BOTTOM", self, "TOP")
    
    -- Register it with oUF
-   self.Leader = Leader
+   self.Leader = Leadera
 
  Hooks
 
