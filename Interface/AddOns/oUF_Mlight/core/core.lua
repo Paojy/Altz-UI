@@ -27,29 +27,20 @@ oUF.colors.reaction[8] = {0.26, 1, 0.22}
 
 oUF.colors.smooth = {1,0,0, 1,1,0, 1,1,0}	
 
-local barcolor1 = { -- priest/mage
-	[1] = {0/255, 25/255, 200/130},
-	[2] = {0/255, 25/255, 200/130},
-	[3] = {20/255, 120/255, 255/255},
-	[4] = {20/255, 120/255, 255/255},
-	[5] = {140/255, 180/255, 255/255},
-	[6] = {140/255, 180/255, 255/255},
+local classicon_colors = { --monk/paladin/preist
+	{150/255, 0/255, 40/255},
+	{220/255, 20/255, 40/255},
+	{255/255, 50/255, 90/255},
+	{255/255, 80/255, 120/255},
+	{255/255, 110/255, 160/255},
 }
 
-local barcolor2 = { --monk/paladin
-	[1] = {150/255, 0/255, 40/255},
-	[2] = {220/255, 20/255, 40/255},
-	[3] = {255/255, 50/255, 90/255},
-	[4] = {255/255, 80/255, 120/255},
-	[5] = {255/255, 110/255, 160/255},
-}
-
-local barcolor3 = { -- combat points
-	[1] = {220/255, 40/255, 0/255},
-	[2] = {255/255, 110/255, 0/255},
-	[3] = {255/255, 150/255, 0/130},
-	[4] = {255/255, 200/255, 0/255},
-	[5] = {255/255, 255/255, 0/255},
+local cpoints_colors = { -- combat points
+	{220/255, 40/255, 0/255},
+	{255/255, 110/255, 0/255},
+	{255/255, 150/255, 0/130},
+	{255/255, 200/255, 0/255},
+	{255/255, 255/255, 0/255},
 }
 
 local backdrop = {
@@ -305,127 +296,26 @@ local PostEclipseUpdate = function(self, unit)
     end
 end
 
-local ACcount, MaxACcount = 0, 6
-local ArcaneChargePostUpdate = function(self, event, unit)	
-	if UnitDebuff("player", GetSpellInfo(36032)) then
-		ACcount = select(4, UnitDebuff("player", GetSpellInfo(36032)))
-	else
-		ACcount = 0
-	end
-	
-	if ACcount == MaxACcount then
-		for i = 1, MaxACcount do
-			self[i]:SetStatusBarColor(unpack(barcolor1[MaxACcount]))
-		end
-	else
-		for i = 1, MaxACcount do
-			self[i]:SetStatusBarColor(unpack(barcolor1[i]))
-		end
-	end
-end
-
-local SPELL_POWER_SHADOW_ORBS = SPELL_POWER_SHADOW_ORBS
-local numOrbs, PRIEST_BAR_NUM_ORBS = 0, PRIEST_BAR_NUM_ORBS
-local ShadowOrbsPostUpdate = function(self, event, unit, powerType)
-	numOrbs = UnitPower("player", SPELL_POWER_SHADOW_ORBS)
-	
-	if numOrbs == PRIEST_BAR_NUM_ORBS then
-		for i = 1, PRIEST_BAR_NUM_ORBS do
-			self[i]:SetStatusBarColor(unpack(barcolor1[2*PRIEST_BAR_NUM_ORBS]))
-		end
-	else
-		for i = 1, PRIEST_BAR_NUM_ORBS do
-			self[i]:SetStatusBarColor(unpack(barcolor1[2*i]))
-		end
-	end
-end
-
-local Cpoints, MAX_COMBO_POINTS = 0, MAX_COMBO_POINTS
-local CpointsPostUpdate = function(self, event, unit)
-	Cpoints = GetComboPoints('player', 'target')
-	
-	if Cpoints == MAX_COMBO_POINTS then
-		for i = 1, MAX_COMBO_POINTS do
-			self[i]:SetStatusBarColor(unpack(barcolor3[MAX_COMBO_POINTS]))
-		end
-	else
-		for i = 1, MAX_COMBO_POINTS do
-			self[i]:SetStatusBarColor(unpack(barcolor3[i]))
-		end
-	end
-end
-
-local HarmonyOverride = function(self, event, unit, powerType)
-	if(self.unit ~= unit or (powerType and powerType ~= "LIGHT_FORCE")) then return end
-	
-	local cholder = self.Harmony
-	
-	local chi = UnitPower("player", SPELL_POWER_LIGHT_FORCE)
-	local maxchi = UnitPowerMax("player", SPELL_POWER_LIGHT_FORCE)
-	
-	if not cholder.maxchi then cholder.maxchi = 5 end
-	
-	if cholder.maxchi ~= maxchi then
-		for i = 1, 5 do
-			cholder[i]:SetWidth((oUF_MlightDB.width+3)/maxchi-3)
-		end
-		
-		cholder.maxchi = maxchi
-	end
-
+local CpointsPostUpdate = function(element, cur)
 	for i = 1, 5 do
-		if i <= chi then
-			cholder[i]:SetAlpha(1)
+		if cur == MAX_COMBO_POINTS then
+			element[i]:SetStatusBarColor(unpack(cpoints_colors[cur]))
 		else
-			cholder[i]:SetAlpha(0)
-		end
-	end
-	
-	if chi == cholder.maxchi then
-		for i = 1, cholder.maxchi do
-			cholder[i]:SetStatusBarColor(unpack(barcolor2[cholder.maxchi]))
-		end
-	else
-		for i = 1, cholder.maxchi do
-			cholder[i]:SetStatusBarColor(unpack(barcolor2[i]))
+			element[i]:SetStatusBarColor(unpack(cpoints_colors[i]))
 		end
 	end
 end
 
-local HolyPowerOverride = function(self, event, unit, powerType)
-	if(self.unit ~= unit or (powerType and powerType ~= "HOLY_POWER")) then return end
-	
-	local hholder = self.HolyPower
-	
-	local holypower = UnitPower("player", SPELL_POWER_HOLY_POWER)
-	local maxholypower = UnitPowerMax("player", SPELL_POWER_HOLY_POWER)
-	
-	if not hholder.maxholypower then hholder.maxholypower = 5 end
-	
-	if hholder.maxholypower ~= maxholypower then
-		for i = 1, 5 do
-			hholder[i]:SetWidth((oUF_MlightDB.width+3)/maxholypower-3)
-		end
-		
-		hholder.maxholypower = maxholypower
-	end
-
+local ClassIconsPostUpdate = function(element, cur, max, maxchange)
 	for i = 1, 5 do
-		if i <= holypower then
-			hholder[i]:SetAlpha(1)
+		if cur == max then
+			element[i]:SetStatusBarColor(unpack(classicon_colors[cur]))
 		else
-			hholder[i]:SetAlpha(0)
+			element[i]:SetStatusBarColor(unpack(classicon_colors[i]))
 		end
-	end
-	
-	if holypower == hholder.maxholypower then
-		for i = 1, hholder.maxholypower do
-			hholder[i]:SetStatusBarColor(unpack(barcolor2[hholder.maxholypower]))
-		end
-	else
-		for i = 1, hholder.maxholypower do
-			hholder[i]:SetStatusBarColor(unpack(barcolor2[i]))
-		end
+		if maxchange then
+			element[i]:SetWidth((oUF_MlightDB.width+3)/max-3)
+		end		
 	end
 end
 
@@ -876,16 +766,12 @@ local UnitSpecific = {
             local count
             if class == "DEATHKNIGHT" then 
                 count = 6
-			elseif class == "SHAMAN" then
-				count = 4
-			elseif class == "MONK" then
-				count = 5
 			elseif class == "WARLOCK" then
 				count = 4
-            elseif class == "PALADIN" then
+            elseif class == "PALADIN" or class == "PRIEST" or class == "MONK" then
                 count = 5
-			elseif class == "PRIEST" then
-				count = 3
+			elseif class == "SHAMAN" then
+				count = 4
 			elseif class == "MAGE" then
 				count = 6
 			elseif class == "ROGUE" or class == "DRUID" then
@@ -897,7 +783,15 @@ local UnitSpecific = {
             bars:SetSize(oUF_MlightDB.width, 10)
 
             for i = 1, count do
-                bars[i] = createStatusbar(bars, texture, nil, oUF_MlightDB.height*-(oUF_MlightDB.hpheight-1), (oUF_MlightDB.width+2)/count-3, 1, 1, 1, 1)
+				if class == "PALADIN" then
+					bars[i] = createStatusbar(bars, texture, nil, oUF_MlightDB.height*-(oUF_MlightDB.hpheight-1), (oUF_MlightDB.width+2)/HOLY_POWER_FULL-3, 1, 1, 1, 1)
+				elseif class == "PRIEST" then
+					bars[i] = createStatusbar(bars, texture, nil, oUF_MlightDB.height*-(oUF_MlightDB.hpheight-1), (oUF_MlightDB.width+2)/PRIEST_BAR_NUM_ORBS-3, 1, 1, 1, 1)
+				elseif class == "MONK" then
+					bars[i] = createStatusbar(bars, texture, nil, oUF_MlightDB.height*-(oUF_MlightDB.hpheight-1), (oUF_MlightDB.width+2)/4-3, 1, 1, 1, 1)
+				else
+					bars[i] = createStatusbar(bars, texture, nil, oUF_MlightDB.height*-(oUF_MlightDB.hpheight-1), (oUF_MlightDB.width+2)/count-3, 1, 1, 1, 1)
+				end
 				
                 if i == 1 then
                     bars[i]:SetPoint("BOTTOMLEFT", bars, "BOTTOMLEFT")
@@ -909,24 +803,17 @@ local UnitSpecific = {
             end
 
             if class == "DEATHKNIGHT" then
-                bars[3], bars[4], bars[5], bars[6] = bars[5], bars[6], bars[3], bars[4]
                 self.Runes = bars
             elseif class == "WARLOCK" then
                 self.WarlockSpecBars = bars
-            elseif class == "PALADIN" then
-                self.HolyPower = bars
-				self.HolyPower.Override = HolyPowerOverride
-			elseif class == "MONK" then
-				self.Harmony = bars
-				self.Harmony.Override = HarmonyOverride
+            elseif class == "PALADIN" or class == "PRIEST" or class == "MONK" then
+                self.ClassIcons = bars
+				self.ClassIcons.UpdateTexture = function() end
+				self.ClassIcons.PostUpdate = ClassIconsPostUpdate
 			elseif class == "SHAMAN" then
 				self.TotemBar = bars
-			elseif class == "PRIEST" then 
-				self.ShadowOrbs = bars
-				self.ShadowOrbs.PostUpdate = ShadowOrbsPostUpdate
 			elseif class == "MAGE" then
 				self.ArcaneCharge = bars
-				self.ArcaneCharge.PostUpdate = ArcaneChargePostUpdate
 			elseif class == "ROGUE" or class == "DRUID" then
 			    self.CPoints = bars
 				self.CPoints.PostUpdate = CpointsPostUpdate

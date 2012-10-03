@@ -2,6 +2,14 @@ local addon, ns = ...
 if select(2, UnitClass("player")) ~= "MAGE" then return end
 
 local count, maxcount = 0, 6
+local arcanecolors = { -- priest/mage
+	[1] = {0/255, 25/255, 200/130},
+	[2] = {0/255, 25/255, 200/130},
+	[3] = {20/255, 120/255, 255/255},
+	[4] = {20/255, 120/255, 255/255},
+	[5] = {140/255, 180/255, 255/255},
+	[6] = {140/255, 180/255, 255/255},
+}
 
 local Update = function(self, event, unit)
 	if self.unit ~= unit then return end
@@ -22,8 +30,13 @@ local Update = function(self, event, unit)
 		else
 			element[index]:Hide()
 		end
+		if count == maxcount then
+			element[index]:SetStatusBarColor(unpack(arcanecolors[count]))
+		else	
+			element[index]:SetStatusBarColor(unpack(arcanecolors[index]))
+		end
 	end
-
+	
 	if element.PostUpdate then return element:PostUpdate(spec) end
 end
 
