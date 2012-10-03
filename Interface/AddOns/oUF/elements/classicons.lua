@@ -156,7 +156,7 @@ do
 
 		ClassPowerEnable = function(self)
 			local element = self.ClassIcons
-			element.__max = 5 --4
+			element.__max = 4
 
 			self:RegisterEvent('UNIT_DISPLAYPOWER', Update)
 			self:RegisterEvent('UNIT_POWER_FREQUENT', Update)
@@ -193,7 +193,7 @@ do
 
 		ClassPowerEnable = function(self)
 			local element = self.ClassIcons
-			element.__max = 5 --PRIEST_BAR_NUM_ORBS
+			element.__max = PRIEST_BAR_NUM_ORBS
 
 			self:RegisterEvent('UNIT_DISPLAYPOWER', Update)
 			self:RegisterEvent('UNIT_POWER_FREQUENT', Update)
@@ -212,7 +212,7 @@ do
 
 		ClassPowerEnable = function(self)
 			local element = self.ClassIcons
-			element.__max = 5 --3
+			element.__max = 3
 
 			self:RegisterEvent('UNIT_DISPLAYPOWER', Update)
 			self:RegisterEvent('UNIT_POWER_FREQUENT', Update)
