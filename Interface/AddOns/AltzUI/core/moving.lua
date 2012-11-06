@@ -1,6 +1,32 @@
 local T, C, L, G = unpack(select(2, ...))
 local F = unpack(Aurora)
 
+-- align
+local align = CreateFrame('Frame', nil, UIParent)
+align:SetAllPoints(UIParent)
+align:Hide()
+
+local width = G.screenwidth/10
+if width > 100 then width = G.screenwidth/20 end
+
+local h = math.floor(G.screenheight/width)
+local w = math.floor(G.screenwidth/width)
+
+for i = 0, h do
+	local line = align:CreateTexture(nil, 'BACKGROUND')
+	line:SetTexture(0, 0.8, 1, 0.5)
+	line:SetPoint("TOPLEFT", CSG, "TOPLEFT", 0, -width*i)
+	line:SetPoint('BOTTOMRIGHT', CSG, 'TOPRIGHT', 0, -width*i - 2)
+end
+
+for i = 0, w do
+	local line2 = align:CreateTexture(nil, 'BACKGROUND')
+	line2:SetTexture(0, 0.8, 1, 0.5)
+	line2:SetPoint("TOPLEFT", CSG, "TOPLEFT", width*i, 0)
+	line2:SetPoint('BOTTOMRIGHT', CSG, 'BOTTOMLEFT', width*i + 2, 0)
+end
+--
+
 local function GetPoint(self)
 	local point = {}
 	point.a1, point.af, point.a2, point.x, point.y = self:GetPoint()
@@ -110,10 +136,13 @@ end
 local function slashCmdFunction(cmd)
       if cmd:match"unlock" then
         UnlockAllFrames(G.dragFrameList, "|cff00FF00"..L["to unlock"].."|r")
+		align:Show()
       elseif cmd:match"lock" then
         LockAllFrames(G.dragFrameList, "|cffFF0000"..L["to lock"].."|r")
+		align:Hide()
       elseif cmd:match"reset" then
         ResetAllFramesToDefault(G.dragFrameList, "|cff00FFFF"..L["to reset"].."|r")
+		align:Hide()
       else
         print("|cffEEEE00Moving Command List:|r")
         print("|cffFF1493/altz lock|r, "..L["to lock"])
