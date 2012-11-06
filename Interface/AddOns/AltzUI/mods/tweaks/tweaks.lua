@@ -155,16 +155,11 @@ Accept Res
 if acceptres then
 	eventframe:RegisterEvent('RESURRECT_REQUEST')
 	function eventframe:RESURRECT_REQUEST(name)
-		if not UnitAffectingCombat('player') or UnitAffectingCombat(name) then
-			local delay = GetCorpseRecoveryDelay()
-			if delay == 0 then
-				AcceptResurrect()
-				DoEmote('thank', name)
-			else
-                local b = CreateFrame("Button")
-				local formattedText = b:GetText(b:SetFormattedText("%d |4second:seconds", delay))
-				SendChatMessage(L["Thanks for the rez! I still have"].." "..formattedText.." "..L["until I can accept it."], 'WHISPER', nil, name)
-			end
+		if UnitAffectingCombat('player') then return end
+		if IsInGroup() and (UnitAffectingCombat('party1') or UnitAffectingCombat('raid1') or UnitAffectingCombat('raid2')) then return end
+		local delay = GetCorpseRecoveryDelay()
+		if delay == 0 then
+			AcceptResurrect()
 		end
 	end
 end
@@ -197,13 +192,15 @@ end
 --[[-----------------------------------------------------------------------------
 Accept Friendly Invites
 -------------------------------------------------------------------------------]]
+local eventframe2 = CreateFrame('Frame')
+eventframe2:RegisterEvent('PARTY_INVITE_REQUEST')
 if acceptfriendlyinvites then
-	eventframe:RegisterEvent('PARTY_INVITE_REQUEST')
-	function eventframe:PARTY_INVITE_REQUEST(name)
-		local accept
-		ShowFriends()
+	eventframe2:SetScript('OnEvent', function(self, event, arg1)
+		if QueueStatusMinimapButton:IsShown() then return end
+        if IsInGroup() then return end
+		local accept = false
 		for index = 1, GetNumFriends() do
-			if GetFriendInfo(index) == name then
+			if GetFriendInfo(index) == arg1 then
 				accept = true
 				break
 			end
@@ -211,7 +208,7 @@ if acceptfriendlyinvites then
 		if not accept and IsInGuild() then
 			GuildRoster()
 			for index = 1, GetNumGuildMembers() do
-				if GetGuildRosterInfo(index) == name then
+				if GetGuildRosterInfo(index) == arg1 then
 					accept = true
 					break
 				end
@@ -219,21 +216,21 @@ if acceptfriendlyinvites then
 		end
 		if not accept then
 			for index = 1, BNGetNumFriends() do
-				local _, _, _, toonName = BNGetFriendInfo(index)
-				if toonName == name then
+				local toonName = select(5, BNGetFriendInfo(index))
+				if toonName == arg1 then
 					accept = true
 					break
 				end
 			end
 		end
 		if accept then
-			name = StaticPopup_Visible('PARTY_INVITE')
-			if name then
-				StaticPopup_OnClick(_G[name], 1)
+			local pop = StaticPopup_Visible('PARTY_INVITE')
+			if pop then
+				StaticPopup_OnClick(_G[pop], 1)
 				return
 			end
 		end
-	end
+	end)
 end
 --[[-----------------------------------------------------------------------------
 Automaticly accepts/completes quests -- Author: Nightcracker
@@ -242,7 +239,7 @@ if autoquests then
 	local function MostValueable()
 		local bestp, besti = 0
 		for i=1,GetNumQuestChoices() do
-			local link, name, _, qty = GetQuestItemLink("choice", i), GetQuestItemInfo("choice", i)
+			local link, _, _, qty = GetQuestItemLink("choice", i), GetQuestItemInfo("choice", i)
 			local price = link and select(11, GetItemInfo(link))
 			if not price then
 				return
