@@ -104,7 +104,7 @@ local function sortBagRange(bagList, order)
 			
 				--get a reference for the item in this location
 				local itemLink = GetContainerItemLink(bagSlot, itemSlot)
-				
+
 				--if this slot is non-empty
 				if itemLink ~= nil then
 				
@@ -116,6 +116,13 @@ local function sortBagRange(bagList, order)
 					
 					--use reference from above to request more detailed information
 					local itemName, _, itemRarity, _, _, itemType, itemSubType, _, itemEquipLoc, _ = GetItemInfo(itemLink)
+					if not itemName then 
+						itemName = itemLink
+						itemRarity = 5
+						itemType = "Pet"
+						itemSubType = "Pet"
+						itemEquipLoc = 0
+					end -- fix for battle pets
 					newItem.name = itemName
 					
 					--determine category
