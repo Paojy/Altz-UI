@@ -269,18 +269,34 @@ local Updatepowerbar = function(self, unit, min, max)
 	
 	if oUF_MlightDB.classcolormode then
 		r, g, b = unpack(powercolor)
-	elseif(UnitIsPlayer(unit)) then
+	elseif UnitIsPlayer(unit) then
 		local _, unitclass = UnitClass(unit)
-		r, g, b = unpack(oUF.colors.class[unitclass])
+		if unitclass then r, g, b = unpack(oUF.colors.class[unitclass]) else r, g, b = 1, 1, 1 end
 	else
 		r, g, b = unpack(oUF.colors.reaction[UnitReaction(unit, 'player') or 5])
 	end
 	
 	self:GetStatusBarTexture():SetGradient('VERTICAL', r, g, b, r/3, g/3, b/3)
 end
+ns.Updatepowerbar = Updatepowerbar
 
 local PostAltUpdate = function(altpp, min, cur, max)
-	altpp.value:SetText(hex(.8, .3, 1)..cur.."|r")
+	altpp.value:SetText(cur)
+	
+	local self = altpp.__owner
+    local tPath, r, g, b = UnitAlternatePowerTextureInfo(self.unit, 2)
+	
+	if not tPath then return end
+	
+    if tPath:match("STONEGUARDAMETHYST_HORIZONTAL_FILL.BLP") then
+		altpp:SetStatusBarColor(.7, .3, 1)
+	elseif tPath:match("STONEGUARDCOBALT_HORIZONTAL_FILL.BLP") then
+		altpp:SetStatusBarColor(.1, .8, 1)
+	elseif tPath:match("STONEGUARDJADE_HORIZONTAL_FILL.BLP") then
+		altpp:SetStatusBarColor(.5, 1, .2)
+	elseif tPath:match("STONEGUARDJASPER_HORIZONTAL_FILL.BLP") then
+        altpp:SetStatusBarColor(1, 0, 0)
+    end
 end
 
 local PostEclipseUpdate = function(self, unit)
@@ -676,7 +692,7 @@ local func = function(self, unit)
 
 	-- altpower bar --
     if multicheck(u, "player", "boss", "pet") then
-		local altpp = createStatusbar(self, texture, "ARTWORK", 2, nil, 1, 1, 0, 1)
+		local altpp = createStatusbar(self, texture, "ARTWORK", 5, nil, 1, 1, 0, 1)
 		if unit == pet then
 			altpp:SetPoint("TOPLEFT", self.Power, "BOTTOMLEFT", 0, -5)
 			altpp:SetPoint("TOPRIGHT", self.Power, "BOTTOMRIGHT", 0, -5)
@@ -739,7 +755,7 @@ local func = function(self, unit)
 	if oUF_MlightDB.auras then
 		CreateAuras(self, unit)
 	end
-
+	
 	self.FadeMinAlpha = oUF_MlightDB.fadingalpha
 	self.FadeInSmooth = 0.4
 	self.FadeOutSmooth = 1.5
@@ -749,7 +765,6 @@ local func = function(self, unit)
 	self.FadeHealth = true
 	self.FadePower = true
 	self.FadeHover = true
-
 end
 
 local UnitSpecific = {
@@ -930,6 +945,9 @@ local UnitSpecific = {
     end,
 }
 
+local EventFrame = CreateFrame("Frame", nil, UIParent)
+RegisterStateDriver(EventFrame, "visibility", "[petbattle] hide; show")
+
 oUF:RegisterStyle("Mlight", func)
 for unit,layout in next, UnitSpecific do
     oUF:RegisterStyle("Mlight - " .. unit:gsub("^%l", string.upper), layout)
@@ -946,10 +964,9 @@ local spawnHelper = function(self, unit, ...)
 
     local object = self:Spawn(unit)
     object:SetPoint(...)
+	object:SetParent(EventFrame)
     return object
 end
-
-local EventFrame = CreateFrame("Frame")
 
 EventFrame:RegisterEvent("ADDON_LOADED")
 

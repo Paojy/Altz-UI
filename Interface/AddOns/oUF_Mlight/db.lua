@@ -331,88 +331,102 @@ for k, _ in pairs(classClickdb) do
 	end
 end
 
-local function LoadVariables()
-	oUF_MlightDB = {}
+local default_Settings = {
+	enablefade = true,
+	fadingalpha = 0.2,
 	
-	oUF_MlightDB.enablefade = true
-	oUF_MlightDB.fadingalpha = 0.2
-	
-	oUF_MlightDB.fontfile = "Interface\\AddOns\\oUF_Mlight\\media\\font.TTF"
-	oUF_MlightDB.fontsize = 13
-	oUF_MlightDB.fontflag = "OUTLINE"
+	fontfile = "Interface\\AddOns\\oUF_Mlight\\media\\font.TTF",
+	fontsize = 13,
+	fontflag = "OUTLINE",
 	
 	-- health/power
-	oUF_MlightDB.classcolormode = true
-	oUF_MlightDB.transparentmode = true
-	oUF_MlightDB.nameclasscolormode = true
-	oUF_MlightDB.startcolor = {r = 0, g = 0, b = 0, a = 0}
-	oUF_MlightDB.endcolor = {r = .5, g = .5, b = .5, a = 0.5}
+	classcolormode = true,
+	transparentmode = true,
+	nameclasscolormode = true,
+	startcolor = {r = 0, g = 0, b = 0, a = 0},
+	endcolor = {r = .5, g = .5, b = .5, a = 0.5},
 	
 	-- portrait
-	oUF_MlightDB.portrait = false
-	oUF_MlightDB.portraitalpha = 0.6
+	portrait = false,
+	portraitalpha = 0.6,
 	
 	-- size
-	oUF_MlightDB.height	= 16 
-	oUF_MlightDB.width = 230
-	oUF_MlightDB.widthpet = 70
-	oUF_MlightDB.widthboss = 170
-	oUF_MlightDB.scale = 1.0 -- slider
-	oUF_MlightDB.hpheight = 0.9 -- slider
+	height	= 16,
+	width = 230,
+	widthpet = 70,
+	widthboss = 170,
+	scale = 1.0, -- slider
+	hpheight = 0.9, -- slider
 
 	-- castbar
-	oUF_MlightDB.castbars = true
-	oUF_MlightDB.cbIconsize = 32
+	castbars = true,
+	cbIconsize = 32,
 
 	-- auras
-	oUF_MlightDB.auras = true
-	oUF_MlightDB.auraborders = true
-	oUF_MlightDB.auraperrow = 9 -- slider
-	oUF_MlightDB.playerdebuffenable = true
-	oUF_MlightDB.playerdebuffnum = 7 -- slider
+	auras = true,
+	auraborders = true,
+	auraperrow = 9, -- slider
+	playerdebuffenable = true,
+	playerdebuffnum = 7, -- slider
 
-	oUF_MlightDB.AuraFilterignoreBuff = false
-	oUF_MlightDB.AuraFilterignoreDebuff = false
-	oUF_MlightDB.AuraFilterwhitelist = {}
+	AuraFilterignoreBuff = false,
+	AuraFilterignoreDebuff = false,
+	AuraFilterwhitelist = {},
 
-	oUF_MlightDB.showthreatbar = true
-	oUF_MlightDB.tbvergradient = false
+	showthreatbar = true,
+	tbvergradient = false,
 
 	-- show/hide boss
-	oUF_MlightDB.bossframes = true
+	bossframes = true,
 	
 	-- show pvp timer
-	oUF_MlightDB.pvpicon = false
+	pvpicon = false,
 
 	--[[ share ]]--
-	oUF_MlightDB.enableraid = true
-	oUF_MlightDB.raidfontsize = 10
-	oUF_MlightDB.showsolo = true
-	oUF_MlightDB.autoswitch = false
-	oUF_MlightDB.raidonlyhealer = false
-	oUF_MlightDB.raidonlydps = false
+	enableraid = true,
+	showraidpet = false,
+	raidfontsize = 10,
+	showsolo = true,
+	autoswitch = false,
+	raidonlyhealer = false,
+	raidonlydps = false,
 	
-	oUF_MlightDB.enablearrow = true
-	oUF_MlightDB.arrowsacle = 1.0
+	enablearrow = true,
+	arrowsacle = 1.0,
 
 	--[[ healer mode ]]--
-	oUF_MlightDB.healergroupfilter = '1,2,3,4,5'
-	oUF_MlightDB.healerraidheight = 30
-	oUF_MlightDB.healerraidwidth = 70
-	oUF_MlightDB.anchor = "TOP" -- dropdown
-	oUF_MlightDB.partyanchor = "LEFT" -- dropdown
-	oUF_MlightDB.showgcd = true
-	oUF_MlightDB.healprediction = true
+	healergroupfilter = '1,2,3,4,5',
+	healerraidheight = 30,
+	healerraidwidth = 70,
+	raidmanabars = true,
+	raidhpheight = 0.9, -- slider
+	anchor = "TOP", -- dropdown
+	partyanchor = "LEFT", -- dropdown
+	showgcd = true,
+	healprediction = true,
 
 	--[[ dps/tank mode ]]--
-	oUF_MlightDB.dpsgroupfilter = '1,2,3,4,5'
-	oUF_MlightDB.dpsraidheight = 15
-	oUF_MlightDB.dpsraidwidth = 100
-	oUF_MlightDB.unitnumperline = 25
-	oUF_MlightDB.dpsraidgroupbyclass = true
+	dpsgroupfilter = '1,2,3,4,5',
+	dpsraidheight = 15,
+	dpsraidwidth = 100,
+	unitnumperline = 25,
+	dpsraidgroupbyclass = true,
 	
 	--[[ click cast ]]--
-	oUF_MlightDB.enableClickCast = false
-	oUF_MlightDB.ClickCast = db
+	enableClickCast = false,
+	ClickCast = db
+}
+
+local function ResetVariables()
+	oUF_MlightDB = {}
+end
+ns.ResetVariables = ResetVariables
+
+local function LoadVariables()
+	for a, b in pairs(default_Settings) do
+		if oUF_MlightDB[a] == nil then
+			oUF_MlightDB[a] = b
+		end
+	end
 end
 ns.LoadVariables = LoadVariables

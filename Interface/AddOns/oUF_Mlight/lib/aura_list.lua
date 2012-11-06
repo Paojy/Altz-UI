@@ -51,6 +51,8 @@ ns.auras = {
         [GetSpellInfo(112048)] = 14, -- ∂‹≈∆∆¡’œ
 		[GetSpellInfo(12975)] = 15, -- ∆∆∏™≥¡÷€
 		[GetSpellInfo(871)] = 15, -- ∂‹«Ω
+	--ƒßπ≈…Ω»˝∫≈Ω¯≥°BUFF
+		[GetSpellInfo(120717)] = 14, -- ∏¥À’÷ÆªÍ
     },
 
     -- Raid Debuffs
@@ -147,11 +149,13 @@ ns.auras = {
 			[GetSpellInfo(118303)] = 7, -- Fixate, the once targeted by the shadows.
 			[GetSpellInfo(118048)] = 7, -- Pillaged, the healing/Armor/damage debuff.
 			[GetSpellInfo(118135)] = 7, -- Pinned Down, Najentus spine 2.0
+			[GetSpellInfo(118163)] = 7, -- «…»°∫¿∂·
 
 			--Elegon
 			[GetSpellInfo(117878)] = 7, -- Overcharged, the stacking increased damage taken debuff.	
 			[GetSpellInfo(117870)] = 7, -- Touch of the Titans, the debuff everybody gets increasing damage done and healing taken.
 			[GetSpellInfo(117949)] = 7, -- Closed Circuit, Magic Healing debuff.
+			[GetSpellInfo(132222)] = 7, -- ≤ªŒ»∂®ƒ‹¡ø
 
 			--Will of the Emperor
 			[GetSpellInfo(116969)] = 7, -- Stomp, Stun from the bosses.

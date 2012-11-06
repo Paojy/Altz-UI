@@ -8,6 +8,7 @@ local highlighttexture = "Interface\\AddOns\\oUF_Mlight\\media\\highlight"
 local createFont = ns.createFont
 local createBackdrop = ns.createBackdrop
 local Updatehealthbar = ns.Updatehealthbar
+local Updatepowerbar = ns.Updatepowerbar
 local OnMouseOver = ns.OnMouseOver
 local createStatusbar = ns.createStatusbar
 --=============================================--
@@ -82,6 +83,28 @@ local function CreateGCDframe(self)
     Gcd:SetFrameLevel(5)
     self.GCD = Gcd
 end
+
+local function UpdateRaidMana(pp, unit, min, max)
+	local _, ptype = UnitPowerType(unit)
+	local self = pp:GetParent()
+    if ptype == 'MANA' then
+		pp:SetHeight(oUF_MlightDB.healerraidheight*-(oUF_MlightDB.raidhpheight-1))
+		self.Health:SetPoint("BOTTOM", pp, "TOP", 0, 3)
+		if min/max > 0.2 then
+			pp.backdrop:SetBackdropColor(.15, .15, .15)
+		elseif UnitIsDead(unit) or UnitIsGhost(unit) or not UnitIsConnected(unit) then
+			pp.backdrop:SetBackdropColor(.5, .5, .5)
+		else
+			pp.backdrop:SetBackdropColor(0, 0, 0.7)
+		end
+		pp.backdrop:SetBackdropBorderColor(0, 0, 0)
+	else
+		pp:SetHeight(0.0000001)
+		self.Health:SetPoint("BOTTOM", self, "BOTTOM")
+		pp.backdrop:SetBackdropBorderColor(0, 0, 0, 0)
+	end
+	Updatepowerbar(pp, unit, min, max)
+end
 --=============================================--
 --[[              Click Cast                 ]]--
 --=============================================--
@@ -124,19 +147,6 @@ local func = function(self, unit)
     self.hl:SetVertexColor( 1, 1, 1, .3)
     self.hl:SetBlendMode("ADD")
 	
-	-- backdrop --
-	self.bg = self:CreateTexture(nil, "BACKGROUND")
-    self.bg:SetAllPoints()
-    self.bg:SetTexture(texture)
-	if oUF_MlightDB.transparentmode then
-		self.bg:SetGradientAlpha("VERTICAL", oUF_MlightDB.endcolor.r, oUF_MlightDB.endcolor.g, oUF_MlightDB.endcolor.b, oUF_MlightDB.endcolor.a, oUF_MlightDB.startcolor.r, oUF_MlightDB.startcolor.g, oUF_MlightDB.startcolor.b, oUF_MlightDB.startcolor.a)
-	else
-		self.bg:SetGradientAlpha("VERTICAL", oUF_MlightDB.endcolor.r, oUF_MlightDB.endcolor.g, oUF_MlightDB.endcolor.b, 1, oUF_MlightDB.startcolor.r, oUF_MlightDB.startcolor.g, oUF_MlightDB.startcolor.b, 1)
-	end
-	
-	-- border --
-	self.backdrop = createBackdrop(self, self, 0)
-	
 	-- target border --
 	self.targetborder = Createpxborder(self, 2)
 	self.targetborder:SetBackdropBorderColor(1, 1, .4)
@@ -149,6 +159,8 @@ local func = function(self, unit)
     local hp = createStatusbar(self, texture, "ARTWORK", nil, nil, 1, 1, 1, 1)
 	hp:SetFrameLevel(3)
     hp:SetAllPoints(self)
+	hp:SetPoint("TOPLEFT", self, "TOPLEFT")
+	hp:SetPoint("TOPRIGHT", self, "TOPRIGHT")
     hp.frequentUpdates = true
 	
 	-- little black line to make the health bar more clear
@@ -166,8 +178,35 @@ local func = function(self, unit)
 		hp:SetReverseFill(true)
 	end
 	
+	-- border --
+	self.backdrop = createBackdrop(hp, hp, 0)
+	
+	-- health backdrop --
+	self.bg = self:CreateTexture(nil, "BACKGROUND")
+    self.bg:SetAllPoints(hp)
+    self.bg:SetTexture(texture)
+	if oUF_MlightDB.transparentmode then
+		self.bg:SetGradientAlpha("VERTICAL", oUF_MlightDB.endcolor.r, oUF_MlightDB.endcolor.g, oUF_MlightDB.endcolor.b, oUF_MlightDB.endcolor.a, oUF_MlightDB.startcolor.r, oUF_MlightDB.startcolor.g, oUF_MlightDB.startcolor.b, oUF_MlightDB.startcolor.a)
+	else
+		self.bg:SetGradientAlpha("VERTICAL", oUF_MlightDB.endcolor.r, oUF_MlightDB.endcolor.g, oUF_MlightDB.endcolor.b, 1, oUF_MlightDB.startcolor.r, oUF_MlightDB.startcolor.g, oUF_MlightDB.startcolor.b, 1)
+	end
+	
     self.Health = hp
 	self.Health.PostUpdate = Updatehealthbar
+	
+	-- raid manabars --
+	if oUF_MlightDB.raidmanabars == true then
+		local pp = createStatusbar(self, texture, "ARTWORK", nil, nil, 1, 1, 1, 1)
+		pp:SetFrameLevel(3)
+		pp:SetPoint("BOTTOMLEFT", self, "BOTTOMLEFT")
+		pp:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT")
+		pp.backdrop = createBackdrop(pp, pp, 1)
+		
+		self.Power = pp
+		self.Power.PostUpdate = UpdateRaidMana
+	else
+		self.Health:SetPoint("BOTTOM", self, "BOTTOM")
+	end
 	
 	-- gcd frane --
 	if oUF_MlightDB.showgcd then
@@ -410,7 +449,27 @@ local function Spawnhealraid()
 		'columnSpacing', 5,
 		'columnAnchorPoint', oUF_MlightDB.partyanchor
 	)
-	healerraid:SetPoint('TOPLEFT', 'UIParent','CENTER', 150, -100)
+	healerraid:SetPoint('TOPLEFT', 'UIParent', 'CENTER', 150, -100)
+	healerpet = oUF:SpawnHeader('HealerPetRaid_Mlight', 'SecureGroupPetHeaderTemplate', 'raid,party,solo',
+		'oUF-initialConfigFunction', initconfig:format(oUF_MlightDB.healerraidwidth, oUF_MlightDB.healerraidheight, 1),
+		'showPlayer', true,
+		'showSolo', oUF_MlightDB.showsolo,
+		'showParty', true,
+		'showRaid', true,
+		'xOffset', 5,
+		'yOffset', -5,
+		'point', oUF_MlightDB.anchor,
+		'groupFilter', oUF_MlightDB.healergroupfilter,
+		'groupingOrder', '1,2,3,4,5,6,7,8',
+		'groupBy', 'GROUP',
+		'maxColumns', 8,
+		'unitsPerColumn', 5,
+		'columnSpacing', 5,
+		'columnAnchorPoint', oUF_MlightDB.partyanchor,
+		--'useOwnerUnit', true,
+		'unitsuffix', 'pet'
+	)
+	healerpet:SetPoint('TOPLEFT', healerraid, 'TOPRIGHT', 10, 0)
 end
 
 local function Spawndpsraid()
@@ -432,7 +491,25 @@ local function Spawndpsraid()
 		'columnSpacing', 5,
 		'columnAnchorPoint', "LEFT"
 	)
-	dpsraid:SetPoint("TOPLEFT", UIParent, "TOPLEFT", 14, -180)
+	dpsraid:SetPoint("TOPLEFT", 'UIParent', "TOPLEFT", 14, -180)
+	dpspet = oUF:SpawnHeader('DpsPetRaid_Mlight', 'SecureGroupPetHeaderTemplate', 'raid,party,solo',
+		'oUF-initialConfigFunction', initconfig:format(oUF_MlightDB.dpsraidwidth, oUF_MlightDB.dpsraidheight, 1),
+		'showPlayer', true,
+		'showSolo', oUF_MlightDB.showsolo,
+		'showParty', true,
+		'showRaid', true,
+		'xOffset', 5,
+		'yOffset', -5,
+		'point', "TOP",
+		'groupFilter', oUF_MlightDB.dpsgroupfilter,
+		'groupingOrder', oUF_MlightDB.dpsraidgroupbyclass and "WARRIOR, DEATHKNIGHT, PALADIN, WARLOCK, SHAMAN, MAGE, MONK, HUNTER, PRIEST, ROGUE, DRUID" or "1,2,3,4,5,6,7,8",
+		'groupBy', oUF_MlightDB.dpsraidgroupbyclass and "CLASS" or "GROUP",
+		'maxColumns', 8,
+		'unitsPerColumn', tonumber(oUF_MlightDB.unitnumperline),
+		'columnSpacing', 5,
+		'columnAnchorPoint', "LEFT" 
+	)
+	dpspet:SetPoint('TOPLEFT', dpsraid, 'TOPRIGHT', 10, 0)
 end
 
 local function CheckRole()
@@ -460,10 +537,14 @@ function togglerf()
 	local Role = CheckRole()
 	if Role then
 		hiderf(dpsraid)
+		hiderf(dpspet)
 		showrf(healerraid)
+		if oUF_MlightDB.showraidpet then showrf(healerpet) else hiderf(healerpet) end
 	else
 		hiderf(healerraid)
+		hiderf(healerpet)
 		showrf(dpsraid)
+		if oUF_MlightDB.showraidpet then showrf(dpspet) else hiderf(dpspet) end
 	end
 end
 
@@ -488,10 +569,14 @@ function EventFrame:PLAYER_TALENT_UPDATE()
 	if oUF_MlightDB.autoswitch then
 		if oUF_MlightDB.raidonlyhealer then
 			hiderf(dpsraid)
+			hiderf(dpspet)
 			showrf(healerraid)
+			if oUF_MlightDB.showraidpet then showrf(healerpet) else hiderf(healerpet) end
 		elseif oUF_MlightDB.raidonlydps then
 			hiderf(healerraid)
+			hiderf(healerpet)
 			showrf(dpsraid)
+			if oUF_MlightDB.showraidpet then showrf(dpspet) else hiderf(dpspet) end
 		else
 			togglerf()
 		end
@@ -516,10 +601,14 @@ end
 local function SlashCmd(cmd)
     if (cmd:match"healer") then
 		hiderf(dpsraid)
+		hiderf(dpspet)
 		showrf(healerraid)
+		if oUF_MlightDB.showraidpet then showrf(healerpet) else hiderf(healerpet) end
     elseif (cmd:match"dps") then
 		hiderf(healerraid)
+		hiderf(healerpet)
 		showrf(dpsraid)
+		if oUF_MlightDB.showraidpet then showrf(dpspet) else hiderf(dpspet) end
     else
       print("|c0000FF00oUF_Mlight command list:|r")
       print("|c0000FF00\/rf healer")

@@ -283,6 +283,7 @@ resetbu:SetPoint("RIGHT", reloadbuttons[1],"LEFT", -5, 0)
 resetbu:SetSize(150, 25)
 resetbu:SetText(NEWBIE_TOOLTIP_STOPWATCH_RESETBUTTON)
 resetbu:SetScript("OnClick", function()
+	ns.ResetVariables()
 	ns.LoadVariables()
 	ReloadUI()
 end)
@@ -425,41 +426,45 @@ sharetext:SetPoint("TOPLEFT", 16, 3-1*30)
 sharetext:SetText(L["raidshare"])
 
 local enableraidbu = createcheckbutton(scrollFrame2.Anchor, 2, L["enableraid"], "enableraid", L["enableraid2"])
-local raidfontsizebox = createeditbox(scrollFrame2.Anchor, 3, L["raidfontsize"], "raidfontsize", L["raidfontsize2"])
-local showsolobu = createcheckbutton(scrollFrame2.Anchor, 4, L["showsolo"], "showsolo", L["showsolo2"])
-local autoswitchbu = createcheckbutton(scrollFrame2.Anchor, 5, L["autoswitch"], "autoswitch", L["autoswitch2"])
-local raidonlyhealerbu = createcheckbutton(scrollFrame2.Anchor, 6, L["raidonlyhealer"], "raidonlyhealer", L["raidonlyhealer2"])
-local raidonlydpsbu = createcheckbutton(scrollFrame2.Anchor, 7, L["raidonlydps"], "raidonlydps", L["raidonlydps2"])
+local showraidpetbu = createcheckbutton(scrollFrame2.Anchor, 3, L["showraidpet"], "showraidpet", L["showraidpet2"])
+local raidfontsizebox = createeditbox(scrollFrame2.Anchor, 4, L["raidfontsize"], "raidfontsize", L["raidfontsize2"])
+local showsolobu = createcheckbutton(scrollFrame2.Anchor, 5, L["showsolo"], "showsolo", L["showsolo2"])
+local autoswitchbu = createcheckbutton(scrollFrame2.Anchor, 6, L["autoswitch"], "autoswitch", L["autoswitch2"])
+local raidonlyhealerbu = createcheckbutton(scrollFrame2.Anchor, 7, L["raidonlyhealer"], "raidonlyhealer", L["raidonlyhealer2"])
+local raidonlydpsbu = createcheckbutton(scrollFrame2.Anchor, 8, L["raidonlydps"], "raidonlydps", L["raidonlydps2"])
 createDR(autoswitchbu, raidonlyhealerbu, raidonlydpsbu)
 local raidtoggletext = scrollFrame2.Anchor:CreateFontString(nil, "ARTWORK", "GameFontNormalLeftYellow")
-raidtoggletext:SetPoint("TOPLEFT", 16, 3-8*30)
+raidtoggletext:SetPoint("TOPLEFT", 16, 3-9*30)
 raidtoggletext:SetText(L["toggleinfo"])
 
-local enablearrowbu = createcheckbutton(scrollFrame2.Anchor, 10, L["enablearrow"], "enablearrow", L["enablearrow2"])
-local arrowsacleslider = createslider(scrollFrame2.Anchor, 11, L["arrowsacle"], "arrowsacle", 0.5, 2, 0.05, L["arrowsacle2"])
+local enablearrowbu = createcheckbutton(scrollFrame2.Anchor, 11, L["enablearrow"], "enablearrow", L["enablearrow2"])
+local arrowsacleslider = createslider(scrollFrame2.Anchor, 12, L["arrowsacle"], "arrowsacle", 0.5, 2, 0.05, L["arrowsacle2"])
 createDR(enablearrowbu, arrowsacleslider)
 
 local healerraidtext = scrollFrame2.Anchor:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
-healerraidtext:SetPoint("TOPLEFT", 16, 3-12*30)
+healerraidtext:SetPoint("TOPLEFT", 16, 3-13*30)
 healerraidtext:SetText(L["healerraidtext"])
 
-local healergroupfilterbox = createraidsizebox(scrollFrame2.Anchor, 13, L["groupsize"], "healergroupfilter")
-local healerraidheightbox = createeditbox(scrollFrame2.Anchor, 14, L["healerraidheight"], "healerraidheight", L["healerraidheight2"])
-local healerraidwidthbox = createeditbox(scrollFrame2.Anchor, 15, L["healerraidwidth"], "healerraidwidth", L["healerraidwidth2"])
-local healerraidanchorddm = createanchorbox(scrollFrame2.Anchor, 16, L["anchor"], "anchor")
-local healerraidpartyanchorddm = createanchorbox(scrollFrame2.Anchor, 17, L["partyanchor"], "partyanchor")
-local showgcdbu = createcheckbutton(scrollFrame2.Anchor, 18, L["showgcd"], "showgcd", L["showgcd2"])
-local healpredictionbu = createcheckbutton(scrollFrame2.Anchor, 19, L["healprediction"], "healprediction", L["healprediction2"])
+local healergroupfilterbox = createraidsizebox(scrollFrame2.Anchor, 14, L["groupsize"], "healergroupfilter")
+local healerraidheightbox = createeditbox(scrollFrame2.Anchor, 15, L["healerraidheight"], "healerraidheight", L["healerraidheight2"])
+local healerraidwidthbox = createeditbox(scrollFrame2.Anchor, 16, L["healerraidwidth"], "healerraidwidth", L["healerraidwidth2"])
+local raidmanabarsbox = createcheckbutton(scrollFrame2.Anchor, 17, L["raidmanabars"], "raidmanabars", L["raidmanabars2"])
+local raidhpheightslider = createslider(scrollFrame2.Anchor, 18, L["hpheight"], "raidhpheight", 0.2, 0.95, 0.05, L["hpheight2"])
+createDR(raidmanabarsbox, raidhpheightslider)
+local healerraidanchorddm = createanchorbox(scrollFrame2.Anchor, 19, L["anchor"], "anchor")
+local healerraidpartyanchorddm = createanchorbox(scrollFrame2.Anchor, 20, L["partyanchor"], "partyanchor")
+local showgcdbu = createcheckbutton(scrollFrame2.Anchor, 21, L["showgcd"], "showgcd", L["showgcd2"])
+local healpredictionbu = createcheckbutton(scrollFrame2.Anchor, 22, L["healprediction"], "healprediction", L["healprediction2"])
 
 local dpstankraidtext = scrollFrame2.Anchor:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
-dpstankraidtext:SetPoint("TOPLEFT", 18, 3-20*30)
+dpstankraidtext:SetPoint("TOPLEFT", 18, 3-23*30)
 dpstankraidtext:SetText(L["dpstankraidtext"])
 
-local dpsgroupfilterbox = createraidsizebox(scrollFrame2.Anchor, 21, L["groupsize"], "dpsgroupfilter")
-local dpsraidheightbox = createeditbox(scrollFrame2.Anchor, 22, L["dpsraidheight"], "dpsraidheight", L["dpsraidheight2"])
-local dpsraidwidthbox = createeditbox(scrollFrame2.Anchor, 23, L["dpsraidwidth"], "dpsraidwidth", L["dpsraidwidth2"])
-local dpsraidgroupbyclassbu = createcheckbutton(scrollFrame2.Anchor, 24, L["dpsraidgroupbyclass"], "dpsraidgroupbyclass", L["dpsraidgroupbyclass2"])
-local unitnumperlinebox = createeditbox(scrollFrame2.Anchor, 25, L["unitnumperline"], "unitnumperline", L["unitnumperline2"])
+local dpsgroupfilterbox = createraidsizebox(scrollFrame2.Anchor, 24, L["groupsize"], "dpsgroupfilter")
+local dpsraidheightbox = createeditbox(scrollFrame2.Anchor, 25, L["dpsraidheight"], "dpsraidheight", L["dpsraidheight2"])
+local dpsraidwidthbox = createeditbox(scrollFrame2.Anchor, 26, L["dpsraidwidth"], "dpsraidwidth", L["dpsraidwidth2"])
+local dpsraidgroupbyclassbu = createcheckbutton(scrollFrame2.Anchor, 27, L["dpsraidgroupbyclass"], "dpsraidgroupbyclass", L["dpsraidgroupbyclass2"])
+local unitnumperlinebox = createeditbox(scrollFrame2.Anchor, 28, L["unitnumperline"], "unitnumperline", L["unitnumperline2"])
 
 --====================================================--
 --[[           -- Aura White List --                ]]--
@@ -666,9 +671,10 @@ eventframe:SetScript("OnEvent", function(self, event, ...) self[event](self, ...
 
 function eventframe:ADDON_LOADED(arg1)
 	if arg1 ~= "oUF_Mlight" then return end
-	if oUF_MlightDB == nil then 
-		ns.LoadVariables()
+	if oUF_MlightDB == nil then
+		ns.ResetVariables()
 	end
+	ns.LoadVariables()
 	for i = 1, 3 do
 		F.Reskin(reloadbuttons[i])
 	end
@@ -715,11 +721,9 @@ function eventframe:PLAYER_ENTERING_WORLD(arg1)
 	end
 	for i = 1, #raidsizeboxes do
 		if oUF_MlightDB[raidsizeboxes[i].value] == "1,2,3,4,5" then
-			oUF_MlightDB[raidsizeboxes[i].value] = "1,2,3,4,5,6,7,8"
-			raidsizeboxes[i]:SetText("40-man")
-		else
-			oUF_MlightDB[raidsizeboxes[i].value] = "1,2,3,4,5"
 			raidsizeboxes[i]:SetText("25-man")
+		else
+			raidsizeboxes[i]:SetText("40-man")
 		end
 	end
 	fontflagbu:SetText(oUF_MlightDB[fontflagbu.value])

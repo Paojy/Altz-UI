@@ -10,10 +10,10 @@ local timersize = 10
 -- Effect: +5% Strength, Agility, and Intellect
 oUF.Tags.Methods['mlight:SAI'] = function(u) 
 	if not (
-	UnitAura(u, GetSpellInfo(1126)) or -- druid
-	UnitAura(u, GetSpellInfo(20217)) or -- paladin
-	UnitAura(u, GetSpellInfo(115921)) or -- monk
-	UnitAura(u, GetSpellInfo(90363)) -- hunter
+	UnitBuff(u, GetSpellInfo(1126)) or -- druid
+	UnitBuff(u, GetSpellInfo(20217)) or -- paladin
+	UnitBuff(u, GetSpellInfo(115921)) or -- monk
+	UnitBuff(u, GetSpellInfo(90363)) -- hunter
 	) then return "|cffCD00CD"..x.."|r" end 
 end
 oUF.Tags.Events['mlight:SAI'] = "UNIT_AURA"
@@ -21,10 +21,10 @@ oUF.Tags.Events['mlight:SAI'] = "UNIT_AURA"
 -- Effect: +10% Stamina
 oUF.Tags.Methods['mlight:Stamina'] = function(u) 
 	if not (
-	UnitAura(u, GetSpellInfo(21562)) or -- priest
-	UnitAura(u, GetSpellInfo(103127)) or -- warlock
-	UnitAura(u, GetSpellInfo(469)) or -- warrior
-	UnitAura(u, GetSpellInfo(90364)) -- hunter
+	UnitBuff(u, GetSpellInfo(21562)) or -- priest
+	UnitBuff(u, GetSpellInfo(103127)) or -- warlock
+	UnitBuff(u, GetSpellInfo(469)) or -- warrior
+	UnitBuff(u, GetSpellInfo(90364)) -- hunter
 	) then return "|cffFFFFFF"..x.."|r" end 
 end
 oUF.Tags.Events['mlight:Stamina'] = "UNIT_AURA"
@@ -32,9 +32,9 @@ oUF.Tags.Events['mlight:Stamina'] = "UNIT_AURA"
 -- Effect: +10% melee and ranged attack power
 oUF.Tags.Methods['mlight:AP'] = function(u) 
 	if not (
-	UnitAura(u, GetSpellInfo(57330)) or -- death knight
-	UnitAura(u, GetSpellInfo(6673)) or -- warrior
-	UnitAura(u, GetSpellInfo(19506)) -- hunter
+	UnitBuff(u, GetSpellInfo(57330)) or -- death knight
+	UnitBuff(u, GetSpellInfo(6673)) or -- warrior
+	UnitBuff(u, GetSpellInfo(19506)) -- hunter
 	) then return "|cff8B4513"..x.."|r" end 
 end
 oUF.Tags.Events['mlight:AP'] = "UNIT_AURA"
@@ -42,10 +42,10 @@ oUF.Tags.Events['mlight:AP'] = "UNIT_AURA"
 -- Effect: +10% spell power
 oUF.Tags.Methods['mlight:SP'] = function(u) 
 	if not (
-	UnitAura(u, GetSpellInfo(1459)) or UnitAura(u, GetSpellInfo(61316)) or -- mage
-	UnitAura(u, GetSpellInfo(77747)) or -- shaman
-	UnitAura(u, GetSpellInfo(109773)) or -- warlock
-	UnitAura(u, GetSpellInfo(126309)) -- hunter
+	UnitBuff(u, GetSpellInfo(1459)) or UnitBuff(u, GetSpellInfo(61316)) or -- mage
+	UnitBuff(u, GetSpellInfo(77747)) or -- shaman
+	UnitBuff(u, GetSpellInfo(109773)) or -- warlock
+	UnitBuff(u, GetSpellInfo(126309)) -- hunter
 	) then return "|cff00FFFF"..x.."|r" end 
 end
 oUF.Tags.Events['mlight:SP'] = "UNIT_AURA"
@@ -53,10 +53,10 @@ oUF.Tags.Events['mlight:SP'] = "UNIT_AURA"
 -- Effect: +10% melee and ranged haste
 oUF.Tags.Methods['mlight:Haste'] = function(u) 
 	if not (
-	UnitAura(u, GetSpellInfo(55610)) or -- death knight
-	UnitAura(u, GetSpellInfo(113742)) or -- rogue
-	UnitAura(u, GetSpellInfo(30809)) or -- shaman
-	UnitAura(u, GetSpellInfo(128432)) or UnitAura(u, GetSpellInfo(128433)) -- hunter (pet)
+	UnitBuff(u, GetSpellInfo(55610)) or -- death knight
+	UnitBuff(u, GetSpellInfo(113742)) or -- rogue
+	UnitBuff(u, GetSpellInfo(30809)) or -- shaman
+	UnitBuff(u, GetSpellInfo(128432)) or UnitBuff(u, GetSpellInfo(128433)) -- hunter (pet)
 	) then return "|cffEEB422"..x.."|r" end
 end
 oUF.Tags.Events['mlight:Haste'] = "UNIT_AURA"
@@ -64,9 +64,9 @@ oUF.Tags.Events['mlight:Haste'] = "UNIT_AURA"
 -- Effect: +5% spell haste
 oUF.Tags.Methods['mlight:SpellHaste'] = function(u) 
 	if not (
-	UnitAura(u, GetSpellInfo(24907)) or -- druid
-	UnitAura(u, GetSpellInfo(15473)) or -- priest
-	UnitAura(u, GetSpellInfo(51470)) -- shaman
+	UnitBuff(u, GetSpellInfo(24907)) or -- druid
+	UnitBuff(u, GetSpellInfo(15473)) or -- priest
+	UnitBuff(u, GetSpellInfo(51470)) -- shaman
 	) then return "|cffFF1493"..x.."|r" end
 end
 oUF.Tags.Events['mlight:SpellHaste'] = "UNIT_AURA"
@@ -74,11 +74,11 @@ oUF.Tags.Events['mlight:SpellHaste'] = "UNIT_AURA"
 -- Effect: +5% ranged, melee, and spell critical chance
 oUF.Tags.Methods['mlight:Crit'] = function(u) 
 	if not (
-	UnitAura(u, GetSpellInfo(17007)) or -- druid
-	UnitAura(u, GetSpellInfo(1459)) or UnitAura(u, GetSpellInfo(61316)) or -- mage
-	UnitAura(u, GetSpellInfo(116781)) or -- monk
-	UnitAura(u, GetSpellInfo(126373)) or UnitAura(u, GetSpellInfo(126309)) or -- hunter
-	UnitAura(u, GetSpellInfo(97229)) or UnitAura(u, GetSpellInfo(90309)) -- hunter (pet)
+	UnitBuff(u, GetSpellInfo(17007)) or -- druid
+	UnitBuff(u, GetSpellInfo(1459)) or UnitBuff(u, GetSpellInfo(61316)) or -- mage
+	UnitBuff(u, GetSpellInfo(116781)) or -- monk
+	UnitBuff(u, GetSpellInfo(126373)) or UnitBuff(u, GetSpellInfo(126309)) or -- hunter
+	UnitBuff(u, GetSpellInfo(97229)) or UnitBuff(u, GetSpellInfo(90309)) -- hunter (pet)
 	) then return "|cffEEEE00"..x.."|r" end
 end
 oUF.Tags.Events['mlight:Crit'] = "UNIT_AURA"
@@ -86,10 +86,10 @@ oUF.Tags.Events['mlight:Crit'] = "UNIT_AURA"
 -- Effect: +3000 mastery
 oUF.Tags.Methods['mlight:Mastery'] = function(u) 
 	if not (
-	UnitAura(u, GetSpellInfo(19740)) or -- paladin
-	UnitAura(u, GetSpellInfo(116956)) or -- shaman
-	UnitAura(u, GetSpellInfo(128997)) or -- hunter
-	UnitAura(u, GetSpellInfo(93435)) -- hunter (pet)
+	UnitBuff(u, GetSpellInfo(19740)) or -- paladin
+	UnitBuff(u, GetSpellInfo(116956)) or -- shaman
+	UnitBuff(u, GetSpellInfo(128997)) or -- hunter
+	UnitBuff(u, GetSpellInfo(93435)) -- hunter (pet)
 	) then return "|cffD3D3D3"..x.."|r" end
 end
 oUF.Tags.Events['mlight:Mastery'] = "UNIT_AURA"
@@ -99,7 +99,7 @@ oUF.Tags.Events['mlight:Mastery'] = "UNIT_AURA"
 -- Priest 牧师
 local pomCount = {"i","h","g","f","Z"}
 oUF.Tags.Methods['freebgrid:pom'] = function(u) -- 愈合祷言
-    local name, _,_, c, _,_,_, fromwho = UnitAura(u, GetSpellInfo(41635)) 
+    local name, _,_, c, _,_,_, fromwho = UnitBuff(u, GetSpellInfo(41635)) 
     if fromwho == "player" then
         if c and c ~= 0 then return "|cff66FFFF"..pomCount[c].."|r" end 
     else
@@ -109,7 +109,7 @@ end
 oUF.Tags.Events['freebgrid:pom'] = "UNIT_AURA"
 
 oUF.Tags.Methods['freebgrid:rnw'] = function(u) -- 恢复
-    local name, _,_,_,_,_, expirationTime, fromwho = UnitAura(u, GetSpellInfo(139))
+    local name, _,_,_,_,_, expirationTime, fromwho = UnitBuff(u, GetSpellInfo(139))
     if(fromwho == "player") then
         local spellTimer = expirationTime - GetTime()
         if spellTimer > 4 then
@@ -124,7 +124,7 @@ end
 oUF.Tags.Events['freebgrid:rnw'] = "UNIT_AURA"
 
 oUF.Tags.Methods['freebgrid:pws'] = function(u) -- 盾
-local name, _,_,_,_,_, expirationTime, fromwho = UnitAura(u, GetSpellInfo(17))
+local name, _,_,_,_,_, expirationTime, fromwho = UnitBuff(u, GetSpellInfo(17))
     if(fromwho == "player") then
         local spellTimer = (expirationTime-GetTime())
 		local TimeLeft = ns.FormatValue(spellTimer)
@@ -140,7 +140,7 @@ oUF.Tags.Events['freebgrid:ws'] = "UNIT_AURA"
 
 -- Druid 德鲁伊
 oUF.Tags.Methods['freebgrid:lb'] = function(u) -- 生命绽放
-    local name, _,_, c,_,_, expirationTime, fromwho = UnitAura(u, GetSpellInfo(33763))
+    local name, _,_, c,_,_, expirationTime, fromwho = UnitBuff(u, GetSpellInfo(33763))
     if(fromwho == "player") then
 		local spellTimer = (expirationTime-GetTime())
 		local TimeLeft = ns.FormatValue(spellTimer)
@@ -156,7 +156,7 @@ end
 oUF.Tags.Events['freebgrid:lb'] = "UNIT_AURA"
 
 oUF.Tags.Methods['freebgrid:rejuv'] = function(u) -- 回春
-    local name, _,_,_,_,_, expirationTime, fromwho = UnitAura(u, GetSpellInfo(774))
+    local name, _,_,_,_,_, expirationTime, fromwho = UnitBuff(u, GetSpellInfo(774))
     if(fromwho == "player") then
         local spellTimer = (expirationTime-GetTime())
 		local TimeLeft = ns.FormatValue(spellTimer)
@@ -168,7 +168,7 @@ end
 oUF.Tags.Events['freebgrid:rejuv'] = "UNIT_AURA"
 
 oUF.Tags.Methods['freebgrid:regrow'] = function(u) -- 愈合
-	local name, _,_,_,_,_, expirationTime, fromwho = UnitAura(u, GetSpellInfo(8936))
+	local name, _,_,_,_,_, expirationTime, fromwho = UnitBuff(u, GetSpellInfo(8936))
     if(fromwho == "player") then
         local spellTimer = (expirationTime-GetTime())
 		local TimeLeft = ns.FormatValue(spellTimer)
@@ -183,7 +183,7 @@ oUF.Tags.Events['freebgrid:regrow'] = "UNIT_AURA"
 
 -- Shaman 萨满
 oUF.Tags.Methods['freebgrid:ripTime'] = function(u) --激流
-    local name, _,_,_,_,_, expirationTime, fromwho = UnitAura(u, GetSpellInfo(61295))
+    local name, _,_,_,_,_, expirationTime, fromwho = UnitBuff(u, GetSpellInfo(61295))
     if(fromwho == "player") then
         local spellTimer = (expirationTime-GetTime())
 		local TimeLeft = ns.FormatValue(spellTimer)
@@ -201,11 +201,14 @@ end
 oUF.Tags.Events['freebgrid:earth'] = 'UNIT_AURA'
 
 -- Paladin 骑士
-oUF.Tags.Methods['freebgrid:beacon'] = function(u) if UnitAura(u, GetSpellInfo(53563)) then return "|cffFFB90FO|r" end end --道标
+oUF.Tags.Methods['freebgrid:beacon'] = function(u) if UnitBuff(u, GetSpellInfo(53563)) then return "|cffFFB90FO|r" end end --道标
 oUF.Tags.Events['freebgrid:beacon'] = "UNIT_AURA"
 
 oUF.Tags.Methods['freebgrid:forbearance'] = function(u) if UnitDebuff(u, GetSpellInfo(25771)) then return "|cffFF9900"..x.."|r" end end
 oUF.Tags.Events['freebgrid:forbearance'] = "UNIT_AURA" -- 自律
+
+oUF.Tags.Methods['freebgrid:eternalflame'] = function(u) if UnitBuff(u, GetSpellInfo(114163)) then return "|cffFFD700"..x.."|r" end end
+oUF.Tags.Events['freebgrid:eternalflame'] = "UNIT_AURA" -- 永恒之火
 
 -- Monk 武僧
 oUF.Tags.Methods['freebgrid:zs'] = function(u) -- 禅意珠
@@ -252,7 +255,7 @@ classIndicators={
     },
     ["PALADIN"] = {
         ["TL"] = "",
-        ["BR"] = "[mlight:SAI]",--mlight:Mastery]
+        ["BR"] = "[freebgrid:eternalflame][mlight:SAI]",--mlight:Mastery]
         ["BL"] = "",
         ["TR"] = "[freebgrid:beacon]",
         ["Cen"] = "[freebgrid:forbearance]",
