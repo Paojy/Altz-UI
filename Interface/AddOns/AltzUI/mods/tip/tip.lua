@@ -22,6 +22,7 @@ local classification = {
 local find = string.find
 local format = string.format
 local hex = function(color)
+	if not color or not color.r then return end
     return format('|cff%02x%02x%02x', color.r * 255, color.g * 255, color.b * 255)
 end
 
