@@ -1,7 +1,7 @@
 ## Interface: 50001
 ## Title: oUF_Mlight
 ## Author: Blue
-## Version: 5.26
+## Version: 5.27
 ## Notes: oUF layout.
 ## Credits:Haste, Freebaser, Monolit, Haleth, Phanx, Tukz, p3lim
 ## Dependencies: oUF
