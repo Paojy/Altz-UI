@@ -45,116 +45,130 @@ function T.Reset()
 	aCoreCDB = {}
 end
 
+local Reset_default_Settings = {
+	setClassColor = true,
+	setDBM = true,
+	setSkada = true,
+	setNumeration = true,
+	setOMF = true,
+}
+
+local aMode_default_Settings = {
+	-- aBag
+	enablebag = true,
+	-- aChat
+	enablechat = true,
+	channelreplacement = true,
+	autoscroll = true,
+	-- aPlate
+	enableplate = true,
+	autotoggleplates = true,
+	threatplates = true,
+	platewidth = 150,
+	plateheight = 7,
+	platedebuff = true,
+	platebuff = false,
+	plateauranum = 5,
+	plateaurasize = 25,
+	-- aTip
+	enabletip = true,
+	cursor = false,
+	hideRealm = false,
+	hideTitles = true,
+	showspellID = true,
+	showtalent = true,
+	colorborderClass = false,
+	combathide = true,
+	-- aCT
+	combattext = true,
+	showreceivedct = true,
+	showoutputct = true,
+	ctfliter = true,
+	cticonsize = 13,
+	ctbigiconsize = 25,
+	ctshowdots = false,
+	ctshowhots = false,
+	ctfadetime = 3,
+	-- aTweaks
+	autorepair = true,
+	autorepair_guild = true,
+	autosell = true,
+	helmcloakbuttons = true,
+	undressbutton = true,
+	autoscreenshot = true,
+	alreadyknown = true,
+	collectgarbage = true,
+	acceptres = true,
+	battlegroundres = true,
+	hideerrors = true,
+	acceptfriendlyinvites = false,
+	autoquests = false,
+	raidcdenable = true,
+	raidcdwidth = 180,
+	raidcdheight = 16,
+	raidcdfontsize = 12,
+	saysapped = true,
+	camera = true,
+	
+	-- [[ Actionbar Settings ]]--
+	cooldown = true,
+	rangecolor = true,
+	keybindsize = 12,
+	macronamesize = 8,
+	countsize = 12,
+	
+	bar12size = 25,
+	bar12space = 4,
+	bar12mfade = true,
+	bar12efade = true,
+	bar12fademinaplha = 0.5,
+	bar3uselayout322 = true,
+	space1 = 5,
+	bar3size = 25,
+	bar3space = 4,
+	bar3mfade = true,
+	bar3efade = false,
+	bar3fademinaplha = 0.5,
+	bar45size = 25,
+	bar45space = 4,
+	bar45mfade = true,
+	bar45efade = false,
+	bar45fademinaplha = 0.2,
+	petbaruselayout5x2 = false,
+	petbarscale = .7,
+	petbuttonspace = 4,
+	petbarmfade = true,
+	petbarefade = false,
+	petbarfademinaplha = 0.2,
+	stancebarbuttonszie = 19,
+	stancebarbuttonspace = 4,
+	micromenuscale = 1,
+	micromenufade = true,
+	micromenuminalpha = 0,
+	leave_vehiclebuttonsize = 30,
+	extrabarbuttonsize = 30,
+
+	-- [[ BuffFrameStyler Settings ]]--
+	buffrowspace = 10,
+	buffcolspace = 3,
+	buffsPerRow = 14,
+	buffdebuffgap = 10,
+}
+
 function T.LoadResetVariables()
-	-- [[ reset addon settings ]]--
-	aCoreCDB.setClassColor = true
-	aCoreCDB.setDBM = true
-	aCoreCDB.setSkada = true
-	aCoreCDB.setNumeration = true
-	aCoreCDB.setOMF = true
+	for a, b in pairs(Reset_default_Settings) do
+		if aCoreCDB[a] == nil then
+			aCoreCDB[a] = b
+		end
+	end
 end
 
 function T.LoadaModVariables()
-	-- [[ aMode settings ]]--
-	-- aBag
-	aCoreCDB.enablebag = true
-	-- aChat
-	aCoreCDB.enablechat = true
-	aCoreCDB.channelreplacement = true
-	aCoreCDB.autoscroll = true
-	-- aPlate
-	aCoreCDB.enableplate = true
-	aCoreCDB.autotoggleplates = true
-	aCoreCDB.threatplates = true
-	aCoreCDB.platewidth = 150
-	aCoreCDB.plateheight = 7
-	aCoreCDB.platedebuff = true
-	aCoreCDB.platebuff = false
-	aCoreCDB.plateauranum = 5
-	aCoreCDB.plateaurasize = 25
-	-- aTip
-	aCoreCDB.enabletip = true
-	aCoreCDB.cursor = false
-	aCoreCDB.hideRealm = false
-	aCoreCDB.hideTitles = true
-	aCoreCDB.showspellID = true
-	aCoreCDB.showtalent = true
-	aCoreCDB.colorborderClass = false
-	aCoreCDB.combathide = true
-	-- aCT
-	aCoreCDB.combattext = true
-	aCoreCDB.showreceivedct = true
-	aCoreCDB.showoutputct = true
-	aCoreCDB.ctfliter = true
-	aCoreCDB.cticonsize = 13
-	aCoreCDB.ctbigiconsize = 25
-	aCoreCDB.ctshowdots = false
-	aCoreCDB.ctshowhots = false
-	aCoreCDB.ctfadetime = 3
-	-- aTweaks
-	aCoreCDB.autorepair = true
-	aCoreCDB.autorepair_guild = true
-	aCoreCDB.autosell = true
-	aCoreCDB.helmcloakbuttons = true
-	aCoreCDB.undressbutton = true
-	aCoreCDB.autoscreenshot = true
-	aCoreCDB.alreadyknown = true
-	aCoreCDB.collectgarbage = true
-	aCoreCDB.acceptres = true
-	aCoreCDB.battlegroundres = true
-	aCoreCDB.hideerrors = true
-	aCoreCDB.acceptfriendlyinvites = false
-	aCoreCDB.autoquests = false
-	aCoreCDB.raidcdenable = true
-	aCoreCDB.raidcdwidth = 180
-	aCoreCDB.raidcdheight = 16
-	aCoreCDB.raidcdfontsize = 12
-	aCoreCDB.saysapped = true
-	aCoreCDB.camera = true
-	
-	-- [[ Actionbar Settings ]]--
-	aCoreCDB.cooldown = true
-	aCoreCDB.rangecolor = true
-	aCoreCDB.keybindsize = 12
-	aCoreCDB.macronamesize = 8
-	aCoreCDB.countsize = 12
-	
-	aCoreCDB.bar12size = 25
-	aCoreCDB.bar12space = 4
-	aCoreCDB.bar12mfade = true
-	aCoreCDB.bar12efade = true	
-	aCoreCDB.bar12fademinaplha = 0.5
-	aCoreCDB.bar3uselayout322 = true
-	aCoreCDB.space1 = 5
-	aCoreCDB.bar3size = 25
-	aCoreCDB.bar3space = 4
-	aCoreCDB.bar3mfade = true
-	aCoreCDB.bar3efade = false		
-	aCoreCDB.bar3fademinaplha = 0.5
-	aCoreCDB.bar45size = 25
-	aCoreCDB.bar45space = 4
-	aCoreCDB.bar45mfade = true
-	aCoreCDB.bar45efade = false	
-	aCoreCDB.bar45fademinaplha = 0.2
-	aCoreCDB.petbaruselayout5x2 = false
-	aCoreCDB.petbarscale = .7
-	aCoreCDB.petbuttonspace = 4
-	aCoreCDB.petbarmfade = true
-	aCoreCDB.petbarefade = false
-	aCoreCDB.petbarfademinaplha = 0.2
-	aCoreCDB.stancebarbuttonszie = 19
-	aCoreCDB.stancebarbuttonspace = 4	
-	aCoreCDB.micromenuscale = 1
-	aCoreCDB.micromenufade = true
-	aCoreCDB.micromenuminalpha = 0
-	aCoreCDB.leave_vehiclebuttonsize = 30
-	aCoreCDB.extrabarbuttonsize = 30
-
-	-- [[ BuffFrameStyler Settings ]]--
-	aCoreCDB.buffrowspace = 10
-	aCoreCDB.buffcolspace = 3
-	aCoreCDB.buffsPerRow = 14
-	aCoreCDB.buffdebuffgap = 10
+	for a, b in pairs(aMode_default_Settings) do
+		if aCoreCDB[a] == nil then
+			aCoreCDB[a] = b
+		end
+	end
 end
 
 function T.ResetAllAddonSettings()

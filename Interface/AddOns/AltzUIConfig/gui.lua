@@ -431,7 +431,7 @@ resetbu:SetText(NEWBIE_TOOLTIP_STOPWATCH_RESETBUTTON)
 resetbu:SetScript("OnClick", function()
 	T.ResetAllAddonSettings()
 	if aCoreCDB.notmeet then
-		T.Reset()	
+		T.Reset()
 		T.SetChatFrame()
 		T.LoadaModVariables()
 		T.LoadResetVariables()
@@ -459,10 +459,10 @@ function eventframe:ADDON_LOADED(arg1)
 	if arg1 ~= "AltzUIConfig" then return end
 	if aCoreCDB == nil then
 		T.Reset()
-		T.LoadaModVariables()		
-		T.LoadResetVariables()
 		aCoreCDB.notmeet = true -- have we met?
 	end
+	T.LoadaModVariables()		
+	T.LoadResetVariables()	
 	for i = 1, #checkbuttons do
 		F.ReskinCheck(checkbuttons[i])
 	end
