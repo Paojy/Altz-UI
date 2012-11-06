@@ -43,7 +43,6 @@
 	<Script file="mods\chat\easyChannel.lua"/>
 	<Script file="mods\chat\urlcopy.lua"/>
 	
-	<Script file="mods\loot\loot.lua"/>
 	<Script file="mods\loot\lootgroup.lua"/>
 	
 	<Script file="mods\map\minimap.lua"/>
