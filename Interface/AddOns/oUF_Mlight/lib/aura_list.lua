@@ -200,6 +200,10 @@ ns.auras = {
 			[GetSpellInfo(122395)] = 7, -- Struggle for Control, the self stun used to interupt the channel.
 			[GetSpellInfo(122457)] = 7, -- Rough Landing, The stun from being tossed and being hit by the toss from the add in Phase 2.
 			[GetSpellInfo(121949)] = 7, -- Parasitic Growth, the dot that scales with healing taken.
+			[GetSpellInfo(124802)] = 9, -- Ò×ÉË
+			
+			-- Å®Íõ
+			[GetSpellInfo(123788)] = 7, -- ¿Ö²Àº¿½Ð
 		},
 		
 		[886] = { --[[Terrace of Endless Spring ÓÀ´ºÌ¨ ]]--
