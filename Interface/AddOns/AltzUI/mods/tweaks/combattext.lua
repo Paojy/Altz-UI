@@ -1,4 +1,4 @@
--- LightCT by Alza
+ï»¿-- LightCT by Alza
 -- xCT by Dandruff
 local T, C, L, G = unpack(select(2, ...))
 local dragFrameList = G.dragFrameList
@@ -33,103 +33,120 @@ eventframe:SetScript("OnEvent", function(self, event, ...) self[event](self, ...
 --[[  Class Specific Filter Assignment  ]]
 if showoutput then
 	if G.myClass == "WARLOCK" then
-		aoefilter[27243] = true  -- Seed of Corruption (DoT) ¸¯Ê´Ö®ÖÖ
-		aoefilter[27285] = true  -- Seed of Corruption (Explosion) ¸¯Ê´Ö®ÖÖ
-		aoefilter[87385] = true  -- Seed of Corruption (Explosion Soulburned) ¸¯Ê´Ö®ÖÖ
-		aoefilter[42223] = true  -- Rain of Fire »ğÑæÖ®Óê
-		aoefilter[5857]  = true  -- Hellfire Effect µØÓüÁÒÑæ
-		aoefilter[47897] = true  -- Shadowflame (shadow direct damage) ¹Å¶ûµ¤Ö®Ï¢
-		aoefilter[47960] = true  -- Shadowflame (fire dot) ¹Å¶ûµ¤Ö®Ï¢
-		aoefilter[50590] = true  -- Immolation Aura Ï×¼À¹â»·
-		aoefilter[30213] = true  -- Legion Strike (Felguard) ¾üÍÅ´ò»÷
-		aoefilter[89753] = true  -- Felstorm (Felguard) Ä§ÈĞ·ç±©
-		aoefilter[20153] = true  -- Immolation (Infrenal) Ï×¼À
+		aoefilter[27243] = true  -- Seed of Corruption (DoT) è…èš€ä¹‹ç§
+		aoefilter[27285] = true  -- Seed of Corruption (Explosion) è…èš€ä¹‹ç§
+		aoefilter[87385] = true  -- Seed of Corruption (Explosion Soulburned) è…èš€ä¹‹ç§
+		aoefilter[42223] = true  -- Rain of Fire ç«ç„°ä¹‹é›¨
+		aoefilter[5857]  = true  -- Hellfire Effect åœ°ç‹±çƒˆç„°
+		aoefilter[47897] = true  -- Shadowflame (shadow direct damage) å¤å°”ä¸¹ä¹‹æ¯
+		aoefilter[47960] = true  -- Shadowflame (fire dot) å¤å°”ä¸¹ä¹‹æ¯
+		aoefilter[50590] = true  -- Immolation Aura çŒ®ç¥­å…‰ç¯
+		aoefilter[30213] = true  -- Legion Strike (Felguard) å†›å›¢æ‰“å‡»
+		aoefilter[89753] = true  -- Felstorm (Felguard) é­”åˆƒé£æš´
+		aoefilter[20153] = true  -- Immolation (Infrenal) çŒ®ç¥­
 		--[[ healing spells ]]--
-		healfilter[63106] = true  -- Siphon Life ÉúÃüºçÎü
-		healfilter[54181] = true  -- Fel Synergy Ğ°ÄÜ¹²Ğ§
-		healfilter[89653] = true  -- Drain Life ÎüÈ¡ÉúÃü
+		healfilter[63106] = true  -- Siphon Life ç”Ÿå‘½è™¹å¸
+		healfilter[54181] = true  -- Fel Synergy é‚ªèƒ½å…±æ•ˆ
+		healfilter[89653] = true  -- Drain Life å¸å–ç”Ÿå‘½
 	elseif G.myClass == "DRUID" then
-		aoefilter[42231] = true  -- Hurricane ì«·ç
-		aoefilter[50288] = true  -- Starfall ĞÇ³½×¹Âä
-		aoefilter[78777] = true  -- Wild Mushroom Ò°ĞÔÄ¢¹½£ºÒı±¬
-		aoefilter[61391] = true  -- Typhoon Ì¨·ç
-		aoefilter[62078] = true  -- Swipe (Cat Form) ºáÉ¨
-		aoefilter[779]   = true  -- Swipe (Bear Form) ºáÉ¨
+		aoefilter[42231] = true  -- Hurricane é£“é£
+		aoefilter[50288] = true  -- Starfall æ˜Ÿè¾°å è½
+		aoefilter[78777] = true  -- Wild Mushroom é‡æ€§è˜‘è‡ï¼šå¼•çˆ†
+		aoefilter[61391] = true  -- Typhoon å°é£
+		aoefilter[62078] = true  -- Swipe (Cat Form) æ¨ªæ‰«
+		aoefilter[779]   = true  -- Swipe (Bear Form) æ¨ªæ‰«
 		--[[ healing spells ]]--
-		aoefilter[44203] = true  -- Tranquility Äş¾²
-		--aoefilter[81269] = true  -- Efflorescence Ñ¸½İÖÎÓú
+		aoefilter[44203] = true  -- Tranquility å®é™
+		--aoefilter[81269] = true  -- Efflorescence è¿…æ·æ²»æ„ˆ
 	elseif G.myClass == "PALADIN" then
-		aoefilter[81297] = true  -- Consecration ·îÏ×
-		aoefilter[53385] = true  -- Divine Storm ÉñÊ¥·ç±©
-		aoefilter[42463] = true  -- Seal of Truth ÕæÀíÊ¥Ó¡
-		aoefilter[101423] = true -- Seal of Righteousness (Thanks Shestak) ÕıÒåÊ¥Ó¡
+		aoefilter[81297] = true  -- Consecration å¥‰çŒ®
+		aoefilter[53385] = true  -- Divine Storm ç¥åœ£é£æš´
+		aoefilter[42463] = true  -- Seal of Truth çœŸç†åœ£å°
+		aoefilter[101423] = true -- Seal of Righteousness (Thanks Shestak) æ­£ä¹‰åœ£å°
 		--[[ healing spells ]]--
-		aoefilter[85222] = true  -- Light of Dawn ÀèÃ÷Ê¥¹â
-		aoefilter[82327] = true  -- Holy Radiance   (Thanks Nidra) Ê¥¹âÆÕÕÕ
+		aoefilter[85222] = true  -- Light of Dawn é»æ˜åœ£å…‰
+		aoefilter[82327] = true  -- Holy Radiance   (Thanks Nidra) åœ£å…‰æ™®ç…§
 	elseif G.myClass == "PRIEST" then
-		aoefilter[49821] = true  -- Mind Seer ¾«Éñ×ÆÉÕ
-		aoefilter[87532] = true  -- Shadowy Apparition °µÓ°»ÃÁé
-		aoefilter[15237] = true  -- Holy Nova (Damage Effect) ÉñÊ¥ĞÂĞÇ
+		aoefilter[49821] = true  -- Mind Seer ç²¾ç¥ç¼çƒ§
+		aoefilter[87532] = true  -- Shadowy Apparition æš—å½±å¹»çµ
+		aoefilter[15237] = true  -- Holy Nova (Damage Effect) ç¥åœ£æ–°æ˜Ÿ
 		--[[ healing spells ]]--
-		aoefilter[596]  = true  -- Prayer of Healing ÖÎÁÆµ»ÑÔ
-		aoefilter[56161]= true  -- Glyph of Prayer of Healing ÖÎÁÆµ»ÑÔ
-		aoefilter[64844]= true  -- Divine Hymn ÉñÊ¥ÔŞÃÀÊ«
-		aoefilter[32546]= true  -- Binding Heal Áª½ÓÖÎÁÆ
-		aoefilter[77489]= true  -- Echo of Light Ê¥¹â»ØÏì
-		aoefilter[34861]= true  -- Circle of Healing ÖÎÁÆÖ®»·
-		aoefilter[23455]= true  -- Holy Nova (Healing Effect) ÉñÊ¥ĞÂĞÇ
-		aoefilter[88686]= true  -- Holy Word: Sanctuary Ê¥ÑÔÊõ£ºÓÓ
+		aoefilter[596]  = true  -- Prayer of Healing æ²»ç–—ç¥·è¨€
+		aoefilter[56161]= true  -- Glyph of Prayer of Healing æ²»ç–—ç¥·è¨€
+		aoefilter[64844]= true  -- Divine Hymn ç¥åœ£èµç¾è¯—
+		aoefilter[32546]= true  -- Binding Heal è”æ¥æ²»ç–—
+		aoefilter[77489]= true  -- Echo of Light åœ£å…‰å›å“
+		aoefilter[34861]= true  -- Circle of Healing æ²»ç–—ä¹‹ç¯
+		aoefilter[23455]= true  -- Holy Nova (Healing Effect) ç¥åœ£æ–°æ˜Ÿ
+		aoefilter[88686]= true  -- Holy Word: Sanctuary åœ£è¨€æœ¯ï¼šä½‘
 		--[[ healing spells ]]--
-		healfilter[15290] = true  -- Vampiric Embrace ÎüÑª¹íÓµ±§
+		healfilter[15290] = true  -- Vampiric Embrace å¸è¡€é¬¼æ‹¥æŠ±
 	elseif G.myClass == "SHAMAN" then
-		aoefilter[421]   = true  -- Chain Lightning ÉÁµçÁ´
-		aoefilter[8349]  = true  -- Fire Nova »ğÑæĞÂĞÇ
-		aoefilter[77478] = true  -- Earhquake µØÕğÊõ
-		aoefilter[51490] = true  -- Thunderstorm À×öª·ç±©
-		aoefilter[8187]  = true  -- Magma Totem ÈÛÑÒÍ¼ÌÚ
-		--aoefilter[8050]  = true	-- Flame Shock (Thanks Shestak) ÁÒÑæÕğ»÷
-		aoefilter[25504] = true  -- Windfury (Thanks NitZo) ·çÅ­¹¥»÷
+		aoefilter[421]   = true  -- Chain Lightning é—ªç”µé“¾
+		aoefilter[8349]  = true  -- Fire Nova ç«ç„°æ–°æ˜Ÿ
+		aoefilter[77478] = true  -- Earhquake åœ°éœ‡æœ¯
+		aoefilter[51490] = true  -- Thunderstorm é›·éœ†é£æš´
+		aoefilter[8187]  = true  -- Magma Totem ç†”å²©å›¾è…¾
+		--aoefilter[8050]  = true	-- Flame Shock (Thanks Shestak) çƒˆç„°éœ‡å‡»
+		aoefilter[25504] = true  -- Windfury (Thanks NitZo) é£æ€’æ”»å‡»
 		--[[ healing spells ]]--
-		aoefilter[73921] = true  -- Healing Rain ÖÎÁÆÖ®Óê
-		aoefilter[1064]  = true  -- Chain Heal ÖÎÁÆÁ´
-		aoefilter[52042] = true  -- Healing Stream Totem ÖÎÁÆÖ®ÈªÍ¼ÌÚ
+		aoefilter[73921] = true  -- Healing Rain æ²»ç–—ä¹‹é›¨
+		aoefilter[1064]  = true  -- Chain Heal æ²»ç–—é“¾
+		aoefilter[52042] = true  -- Healing Stream Totem æ²»ç–—ä¹‹æ³‰å›¾è…¾
 	elseif G.myClass == "MAGE" then
-		aoefilter[44461] = true  -- Living Bomb Explosion »îÌåÕ¨µ¯
-		aoefilter[44457] = true  -- Living Bomb Dot »îÌåÕ¨µ¯
-		aoefilter[2120]  = true  -- Flamestrike ÁÒÑæ·ç±©
-		aoefilter[31661] = true  -- Dragon's Breath ÁúÏ¢Êõ
-		aoefilter[42208] = true  -- Blizzard ±©·çÑ©
-		aoefilter[122]   = true  -- Frost Nova ±ùËªĞÂĞÇ
-		aoefilter[1449]  = true  -- Arcane Explosion Ä§±¬Êõ
-		aoefilter[11113] = true  -- Blast Wave   (Thanks Shestak) ³å»÷²¨
-		aoefilter[83619] = true  -- Fire Power   (Thanks Shestak) ÁÒÑæ±¦Öé
-		aoefilter[120]   = true  -- Cone of Cold (Thanks Shestak) ±ù×¶Êõ
+		aoefilter[44461] = true  -- Living Bomb Explosion æ´»ä½“ç‚¸å¼¹
+		aoefilter[44457] = true  -- Living Bomb Dot æ´»ä½“ç‚¸å¼¹
+		aoefilter[2120]  = true  -- Flamestrike çƒˆç„°é£æš´
+		aoefilter[31661] = true  -- Dragon's Breath é¾™æ¯æœ¯
+		aoefilter[42208] = true  -- Blizzard æš´é£é›ª
+		aoefilter[122]   = true  -- Frost Nova å†°éœœæ–°æ˜Ÿ
+		aoefilter[1449]  = true  -- Arcane Explosion é­”çˆ†æœ¯
+		aoefilter[11113] = true  -- Blast Wave   (Thanks Shestak) å†²å‡»æ³¢
+		aoefilter[83619] = true  -- Fire Power   (Thanks Shestak) çƒˆç„°å®ç 
+		aoefilter[120]   = true  -- Cone of Cold (Thanks Shestak) å†°é”¥æœ¯
 	elseif G.myClass == "WARRIOR" then
-		aoefilter[845]   = true  -- Cleave Ë³ÅüÕ¶
-		aoefilter[46968] = true  -- Shockwave Õğµ´²¨
-		aoefilter[6343]  = true  -- Thunder Clap À×öªÒ»»÷
-		aoefilter[1680]  = true  -- Whirlwind Ğı·çÕ¶
-		aoefilter[50622] = true  -- Bladestorm ½£ÈĞ·ç±©
-		aoefilter[52174] = true  -- Heroic Leap Ó¢ÓÂ·ÉÔ¾
+		aoefilter[845]   = true  -- Cleave é¡ºåŠˆæ–©
+		aoefilter[46968] = true  -- Shockwave éœ‡è¡æ³¢
+		aoefilter[6343]  = true  -- Thunder Clap é›·éœ†ä¸€å‡»
+		aoefilter[1680]  = true  -- Whirlwind æ—‹é£æ–©
+		aoefilter[50622] = true  -- Bladestorm å‰‘åˆƒé£æš´
+		aoefilter[52174] = true  -- Heroic Leap è‹±å‹‡é£è·ƒ
 		--[[ healing spells ]]--
-		healfilter[55694] = true  -- Enraged Regeneration ¿ñÅ­»Ø¸´
+		healfilter[55694] = true  -- Enraged Regeneration ç‹‚æ€’å›å¤
 	elseif G.myClass == "HUNTER" then
-		aoefilter[2643]  = true  -- Multi-Shot ¶àÖØÉä»÷
-		--aoefilter[83077] = true  -- Serpent Sting (Instant Serpent Spread) (Thanks Naughtia) ¶¾Éß¶¤´Ì
-		--aoefilter[1978]  = true  -- Serpent Sting  (Thanks Naughtia) ¶¾Éß¶¤´Ì
-		aoefilter[13812] = true  -- Explosive Trap ±¬Õ¨ÏİÚå
-		--aoefilter[53301] = true  -- Explosive Shot (3 ticks merged as one) ±¬Õ¨Éä»÷
-		--aoefilter[63468] = true  -- Piercing Shots ´©´ÌÉä»÷
+		aoefilter[2643]  = true  -- Multi-Shot å¤šé‡å°„å‡»
+		--aoefilter[83077] = true  -- Serpent Sting (Instant Serpent Spread) (Thanks Naughtia) æ¯’è›‡é’‰åˆº
+		--aoefilter[1978]  = true  -- Serpent Sting  (Thanks Naughtia) æ¯’è›‡é’‰åˆº
+		aoefilter[13812] = true  -- Explosive Trap çˆ†ç‚¸é™·é˜±
+		--aoefilter[53301] = true  -- Explosive Shot (3 ticks merged as one) çˆ†ç‚¸å°„å‡»
+		--aoefilter[63468] = true  -- Piercing Shots ç©¿åˆºå°„å‡»
 	elseif G.myClass == "DEATHKNIGHT" then
-		aoefilter[55095] = true  -- Frost Fever ±ùËªÒß²¡
-		aoefilter[55078] = true  -- Blood Plague ÑªÖ®Òß²¡
-		aoefilter[48721] = true  -- Blood Boil ÑªÒº·ĞÌÚ
-		aoefilter[49184] = true  -- Howling Blast Áİ·ç³å»÷
-		aoefilter[52212] = true  -- Death and Decay ËÀÍöµòÁã
+		aoefilter[55095] = true  -- Frost Fever å†°éœœç–«ç—…
+		aoefilter[55078] = true  -- Blood Plague è¡€ä¹‹ç–«ç—…
+		aoefilter[48721] = true  -- Blood Boil è¡€æ¶²æ²¸è…¾
+		aoefilter[49184] = true  -- Howling Blast å‡›é£å†²å‡»
+		aoefilter[52212] = true  -- Death and Decay æ­»äº¡å‡‹é›¶
 		-- Merging MainHand/OffHand Strikes (by Bozo)(Thanks Shestak)
-		aoefilter[55050] = true  --  Heart Strike (Thanks Shestak) ĞÄÔà´ò»÷
+		aoefilter[55050] = true  --  Heart Strike (Thanks Shestak) å¿ƒè„æ‰“å‡»
 	elseif G.myClass == "ROGUE" then
-		aoefilter[51723] = true  -- Fan of Knives µ¶ÉÈ
+		aoefilter[51723] = true  -- Fan of Knives åˆ€æ‰‡
+	elseif G.myClass == "MONK" then
+		aoefilter[107270] = true  -- ç¥é¹¤å¼•é¡¹è¸¢ ä¼¤å®³
+		aoefilter[117418] = true  -- æ„¤æ€’ä¹‹æ‹³
+		aoefilter[115181] = true  -- ç«ç„°ä¹‹æ¯
+		aoefilter[125033] = true  -- ç¦…æ„ç  çˆ†ç‚¸ ä¼¤å®³
+		aoefilter[130651] = true  -- çœŸæ°”çˆ†è£‚ ä¼¤å®³
+		aoefilter[116847] = true  -- ç¢§ç‰ç–¾é£ ä¼¤å®³
+		aoefilter[117993] = true  -- çœŸæ°”çª ä¼¤å®³
+		--aoefilter[121253] = true  -- é†‰é…¿æŠ•
+		
+		aoefilter[117640] = true  -- ç¥é¹¤å¼•é¡¹è¸¢ æ²»ç–—
+		aoefilter[115310] = true  -- è¿˜é­‚æœ¯
+		aoefilter[116670] = true  -- å¼•é­‚é˜µ
+		aoefilter[124101] = true  -- ç¦…æ„ç  çˆ†ç‚¸ æ²»ç–—
+		aoefilter[130654] = true  -- çœŸæ°”çˆ†è£‚ æ²»ç–—
+		aoefilter[126890] = true  -- ç¢§ç‰ç–¾é£ æ²»ç–—
+		aoefilter[124040] = true  -- çœŸæ°”çª æ²»ç–—
 	end
 end
 
