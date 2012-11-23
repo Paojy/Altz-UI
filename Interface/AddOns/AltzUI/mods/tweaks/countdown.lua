@@ -18,11 +18,11 @@ SlashCmdList['COUNTDOWN'] = function(newtime)
       
         if (countdown + 1) == throttle and countdown >= 0 then
             if countdown == 0 then
-                SendChatMessage(L["Fire!"], UnitIsGroupAssistant("player") or UnitIsGroupLeader("player") and "RAID_WARNING" or "SAY")
+                SendChatMessage(L["Fire!"], (UnitIsGroupAssistant("player") or UnitIsGroupLeader("player")) and "RAID_WARNING" or "SAY")
                 throttle = countdown
                 ending = true
             else
-                SendChatMessage(countdown, UnitIsGroupAssistant("player") or UnitIsGroupLeader("player") and "RAID_WARNING" or "SAY")
+                SendChatMessage(countdown, (UnitIsGroupAssistant("player") or UnitIsGroupLeader("player")) and "RAID_WARNING" or "SAY")
                 throttle = countdown
             end
         end
