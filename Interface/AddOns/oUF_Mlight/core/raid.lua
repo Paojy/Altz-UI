@@ -239,10 +239,18 @@ local func = function(self, unit)
 	
 	local raidname = createFont(hp, "OVERLAY", oUF_MlightDB.fontfile, oUF_MlightDB.raidfontsize, 1, 1, 1)
 	raidname:SetPoint("BOTTOMRIGHT", hp, "BOTTOMRIGHT", -1, 5)
-	if oUF_MlightDB.nameclasscolormode then
-		self:Tag(raidname, '[Mlight:color][Mlight:raidname]')
+	if oUF_MlightDB.showmisshp then
+		if oUF_MlightDB.nameclasscolormode then
+			self:Tag(raidname, '[Mlight:color][Mlight:hpraidname]')
+		else
+			self:Tag(raidname, '[Mlight:hpraidname]')
+		end
 	else
-		self:Tag(raidname, '[Mlight:raidname]')
+		if oUF_MlightDB.nameclasscolormode then
+			self:Tag(raidname, '[Mlight:color][Mlight:raidname]')
+		else
+			self:Tag(raidname, '[Mlight:raidname]')
+		end
 	end
 	self.Name = raidname
 	

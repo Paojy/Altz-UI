@@ -1,13 +1,23 @@
 ﻿local addon, ns = ...
 
 local FormatValue = function(val)
-    if (val >= 1e6) then
-        return ("%.1fm"):format(val / 1e6)
-    elseif (val >= 1e3) then
-        return ("%.1fk"):format(val / 1e3)
-    else
-        return ("%d"):format(val)
-    end
+	if oUF_MlightDB.tenthousand then
+		if (val >= 1e7) then
+			return ("%.1fkw"):format(val / 1e7)
+		elseif (val >= 1e4) then
+			return ("%.1fw"):format(val / 1e4)
+		else
+			return ("%d"):format(val)
+		end
+	else
+		if (val >= 1e6) then
+			return ("%.1fm"):format(val / 1e6)
+		elseif (val >= 1e3) then
+			return ("%.1fk"):format(val / 1e3)
+		else
+			return ("%d"):format(val)
+		end
+	end
 end
 ns.FormatValue = FormatValue
 
@@ -92,9 +102,26 @@ oUF.Tags.Events["Mlight:shortname"] = "UNIT_NAME_UPDATE"
 
 oUF.Tags.Methods["Mlight:raidname"] = function(u, r)
 	local name = UnitName(r or u)
-	return utf8sub(name, 4, false)
+	return utf8sub(name, oUF_MlightDB.namelength, false)
 end
 oUF.Tags.Events["Mlight:raidname"] = "UNIT_NAME_UPDATE"
+
+oUF.Tags.Methods["Mlight:hpraidname"] = function(u, r)
+	local perc
+	local name = UnitName(r or u)
+	if UnitHealthMax(u) ~= 0 then
+		perc = UnitHealth(u)/UnitHealthMax(u)
+	else
+		perc = 1
+	end
+	if perc < .9 then
+		return FormatValue(UnitHealthMax(u) - UnitHealth(u))
+	else
+		return utf8sub(name, oUF_MlightDB.namelength, false)
+	end
+end
+oUF.Tags.Events["Mlight:hpraidname"] = "UNIT_HEALTH UNIT_NAME_UPDATE"
+
 --------------[[     raid     ]]-------------------
 
 oUF.Tags.Methods['Mlight:LFD'] = function(u) -- use symbols istead of letters

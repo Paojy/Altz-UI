@@ -203,7 +203,17 @@ ns.auras = {
 			[GetSpellInfo(124802)] = 9, -- 易伤
 			
 			-- 女王
-			[GetSpellInfo(123788)] = 7, -- 恐怖嚎叫
+			--Grand Empress Shek'zeer
+			[GetSpellInfo(123788)] = 8, -- 恐怖嚎叫
+			[GetSpellInfo(126122)] = 7, -- 腐蚀力场
+			[GetSpellInfo(125390)] = 7, -- 凝视
+			[GetSpellInfo(124097)] = 7, -- 树脂
+			[GetSpellInfo(124777)] = 7, -- 毒液炸弹
+			[GetSpellInfo(124849)] = 7, -- 吞噬恐惧
+			[GetSpellInfo(124863)] = 7, -- 死亡幻想 
+			[GetSpellInfo(124862)] = 7, -- 同上
+			[GetSpellInfo(123845)] = 9, -- 恐惧之心
+			[GetSpellInfo(123846)] = 9, -- 同上
 		},
 		
 		[886] = { --[[Terrace of Endless Spring 永春台 ]]--

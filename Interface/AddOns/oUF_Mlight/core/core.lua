@@ -198,6 +198,8 @@ local Updatehealthbar = function(self, unit, min, max)
 			self.value:SetText(FormatValue(min).." "..hex(1, 1, 0)..math.floor(min/max*100+.5).."|r")
 		elseif min > 0 and self.__owner.isMouseOver and UnitIsConnected(unit) then
 			self.value:SetText(FormatValue(min))
+		elseif oUF_MlightDB.alwayshp then
+			self.value:SetText(FormatValue(min))
 		else
 			self.value:SetText(nil)
 		end
@@ -253,10 +255,10 @@ local Updatepowerbar = function(self, unit, min, max)
 	local type = select(2, UnitPowerType(unit))
 	local powercolor = oUF.colors.power[type] or oUF.colors.power.FUEL
 	
-	if self.value then 	
+	if self.value then
 		if self.__owner.isMouseOver and type == 'MANA' and UnitIsConnected(unit) then
 			self.value:SetText(hex(unpack(powercolor))..FormatValue(min)..'|r')
-		elseif min > 0 and min < max then
+		elseif (min > 0 and min < max) or oUF_MlightDB.alwayspp then
 			if type == 'MANA' then
 				self.value:SetText(hex(1, 1, 1)..math.floor(min/max*100+.5)..'|r'..hex(1, .4, 1)..'%|r')
 			else

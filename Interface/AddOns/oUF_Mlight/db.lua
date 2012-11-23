@@ -338,8 +338,11 @@ local default_Settings = {
 	fontfile = "Interface\\AddOns\\oUF_Mlight\\media\\font.TTF",
 	fontsize = 13,
 	fontflag = "OUTLINE",
+	tenthousand = false,
 	
 	-- health/power
+	alwayshp = false,
+	alwayspp = false,
 	classcolormode = true,
 	transparentmode = true,
 	nameclasscolormode = true,
@@ -386,6 +389,7 @@ local default_Settings = {
 	enableraid = true,
 	showraidpet = false,
 	raidfontsize = 10,
+	namelength = 4,
 	showsolo = true,
 	autoswitch = false,
 	raidonlyhealer = false,
@@ -403,6 +407,7 @@ local default_Settings = {
 	anchor = "TOP", -- dropdown
 	partyanchor = "LEFT", -- dropdown
 	showgcd = true,
+	showmisshp = true,
 	healprediction = true,
 
 	--[[ dps/tank mode ]]--
