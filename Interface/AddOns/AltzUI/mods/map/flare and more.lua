@@ -28,7 +28,7 @@ local wmmenuList = {
 
 wm:SetScript('OnMouseUp', function(self, button) 
 	if (button=="RightButton") then 
-		EasyMenu(wmmenuList, wmmenuFrame, "cursor", -150, 0, "MENU", 2) 
+		EasyMenu(wmmenuList, wmmenuFrame, "cursor", 25, -3, "MENU", 2) 
 	end 
 end)
 
