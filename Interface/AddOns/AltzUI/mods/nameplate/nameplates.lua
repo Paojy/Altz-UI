@@ -4,8 +4,8 @@ if not aCoreCDB.enableplate then return end
 
 local texture = "Interface\\AddOns\\AltzUI\\media\\statusbar"
 local fontsize = 14
-local hpHeight = aCoreCDB.plateheight
-local hpWidth = aCoreCDB.platewidth
+local hpHeight = tonumber(aCoreCDB.plateheight)
+local hpWidth = tonumber(aCoreCDB.platewidth)
 
 local iconSize = 32		--Size of all Icons, RaidIcon/Castbar Icon
 local cbHeight = 8
@@ -52,7 +52,11 @@ local PlateBlacklist = {
 	["Windfury Totem"] = true,
 	["Totem of Wrath"] = true,
 	["Wrath of Air Totem"] = true,
-
+	["Air Totem"] = true,
+	["Water Totem"] = true,
+	["Fire Totem"] = true,
+	["Earth Totem"] = true,
+	
 	--Army of the Dead
 	["Army of the Dead Ghoul"] = true,
 }
@@ -291,6 +295,8 @@ end
 --We need to reset everything when a nameplate it hidden, this is so theres no left over data when a nameplate gets reshown for a differant mob.
 local function OnHide(frame)
 	frame.hp:SetStatusBarColor(frame.hp.rcolor, frame.hp.gcolor, frame.hp.bcolor)
+	frame.hp.name:SetTextColor(1, 1, 1)
+	frame.hp:SetScale(1)
 	frame.overlay:Hide()
 	frame.cb:Hide()
 	frame.hasClass = nil
@@ -313,7 +319,7 @@ end
 
 --Color Nameplate
 local function Colorize(frame)
-	local r,g,b = frame.hp:GetStatusBarColor()
+	local r,g,b = frame.healthOriginal:GetStatusBarColor()
 
 	for class, color in pairs(RAID_CLASS_COLORS) do
 		local r, g, b = floor(r*100+.5)/100, floor(g*100+.5)/100, floor(b*100+.5)/100
@@ -325,9 +331,10 @@ local function Colorize(frame)
 		end
 	end
 	
-	if g+b == 0 then -- hostile
-		r,g,b = 254/255, 144/255,  46/255
-		frame.isFriendly = false
+	if (r + b + b) > 2 then
+		r,g,b = 0.55, 0.57, 0.61
+	elseif g+b == 0 then -- hostile
+		r,g,b = 254/255, 20/255,  0
 	elseif r+b == 0 then -- friendly npc
 		r,g,b = 19/255, 213/255, 29/255
 		frame.isFriendly = true
@@ -359,12 +366,17 @@ local function UpdateObjects(frame)
 	frame.hp:GetStatusBarTexture():SetHorizTile(true)
 			
 	--Colorize Plate
-	Colorize(frame)
-	frame.hp.rcolor, frame.hp.gcolor, frame.hp.bcolor = frame.hp:GetStatusBarColor()
-	frame.hp.hpbg:SetTexture(frame.hp.rcolor, frame.hp.gcolor, frame.hp.bcolor, 0.25)
+	--Colorize(frame)
+	--frame.hp.rcolor, frame.hp.gcolor, frame.hp.bcolor = frame.hp:GetStatusBarColor()
+	--frame.hp.hpbg:SetTexture(frame.hp.rcolor, frame.hp.gcolor, frame.hp.bcolor, 0.25)
 	
 	--Set the name text
 	frame.hp.name:SetText(frame.hp.oldname:GetText())
+	
+	-- why the fuck does blizzard rescale "useless" npc nameplate to 0.4, its really hard to read ...
+	while frame.hp:GetEffectiveScale() < 1 do
+		frame.hp:SetScale(frame.hp:GetScale() + 0.01)
+	end
 	
 	--Setup level text
 	local level, elite, mylevel = tonumber(frame.hp.oldlevel:GetText()), frame.hp.elite:IsShown(), UnitLevel("player")
@@ -397,9 +409,10 @@ local function UpdateObjects(frame)
 end
 
 --This is where we create most 'Static' objects for the nameplate, it gets fired when a nameplate is first seen.
-local function SkinObjects(frame)
+local function SkinObjects(frame, nameFrame)
 	local hp, cb = frame:GetChildren()
-	local threat, hpborder, overlay, oldname, oldlevel, bossicon, raidicon, elite = frame:GetRegions()
+	local threat, hpborder, overlay, oldlevel, bossicon, raidicon, elite = frame:GetRegions()
+	local oldname = nameFrame:GetRegions()
 	local _, cbborder, cbshield, cbicon = cb:GetRegions()
 
 	--Health Bar
@@ -419,7 +432,11 @@ local function SkinObjects(frame)
 	
 	--Create Health Text
 	hp.value = T.createtext(hp, "ARTWORK", fontsize/2+3, "OUTLINE", "RIGHT")
-	hp.value:SetPoint("TOPRIGHT", hp, "TOPRIGHT", 0, -fontsize/3)
+	if hpHeight > 14 then
+		hp.value:SetPoint("BOTTOMRIGHT", hp, "BOTTOMRIGHT", 0, 0)
+	else
+		hp.value:SetPoint("TOPRIGHT", hp, "TOPRIGHT", 0, -fontsize/3)
+	end
 	hp.value:SetTextColor(0.5,0.5,0.5)
 
 	--Create Health Pecentage Text
@@ -440,6 +457,10 @@ local function SkinObjects(frame)
 	
 	hp:HookScript('OnShow', UpdateObjects)
 	frame.hp = hp
+	
+	if not frame.threat then
+		frame.threat = threat
+	end
 	
 	--Cast Bar
 	cb:SetFrameLevel(2)
@@ -505,39 +526,11 @@ local function SkinObjects(frame)
 	frames[frame] = true
 end
 
-local goodR, goodG, goodB = 0, 1, 0
-local badR, badG, badB = 1, 0, 0
-local transitionR, transitionG, transitionB = 0, 1, 0
 local function UpdateThreat(frame, elapsed)
-	frame.hp:Show()
-	if frame.hasClass == true then return end
-	
-	if enhancethreat ~= true then
-		frame.hp:SetStatusBarColor(frame.hp.rcolor, frame.hp.gcolor, frame.hp.bcolor)
+	if frame.threat:IsShown() then
+		frame.hp.name:SetTextColor(1, 0, 0)
 	else
-		if not frame.region:IsShown() then
-			if InCombatLockdown() and frame.isFriendly ~= true then
-				--No Threat
-				frame.hp:SetStatusBarColor(goodR, goodG, goodB)
-				frame.hp.hpbg:SetTexture(goodR, goodG, goodB, 0.25)
-			else
-				--Set colors to their original, not in combat
-				frame.hp:SetStatusBarColor(frame.hp.rcolor, frame.hp.gcolor, frame.hp.bcolor)
-				frame.hp.hpbg:SetTexture(frame.hp.rcolor, frame.hp.gcolor, frame.hp.bcolor, 0.25)
-			end
-		else
-			--Ok we either have threat or we're losing/gaining it
-			local r, g, b = frame.region:GetVertexColor()
-			if g + b == 0 then
-				--Have Threat
-				frame.hp:SetStatusBarColor( badR, badG, badB)
-				frame.hp.hpbg:SetTexture(badR, badG, badB, 0.25)
-			else
-				--Losing/Gaining Threat
-				frame.hp:SetStatusBarColor( transitionR, transitionG, transitionB)	
-				frame.hp.hpbg:SetTexture(transitionR, transitionG, transitionB, 0.25)
-			end
-		end
+		frame.hp.name:SetTextColor(1, 1, 1)
 	end
 end
 
@@ -590,7 +583,7 @@ end
 --Run a function for all visible nameplates
 local function ForEachPlate(functionToRun, ...)
 	for frame in pairs(frames) do
-		if frame:IsShown() then
+		if frame and frame:GetParent():IsShown() then
 			functionToRun(frame, ...)
 		end
 	end
@@ -601,11 +594,10 @@ local select = select
 local function HookFrames(...)
 	for index = 1, select('#', ...) do
 		local frame = select(index, ...)
-		local region = frame:GetRegions()
-		
-		if(not frames[frame] and (frame:GetName() and not frame.isSkinned and frame:GetName():find("NamePlate%d")) and region and region:GetObjectType() == "Texture") then
-			SkinObjects(frame)
-			frame.region = region
+
+		if frame:GetName() and not frame.isSkinned and frame:GetName():find("NamePlate%d") then
+			local child1, child2 = frame:GetChildren()
+			SkinObjects(child1, child2)
 			frame.isSkinned = true
 		end
 	end
@@ -619,15 +611,18 @@ NamePlates:SetScript('OnUpdate', function(self, elapsed)
 	end
 
 	if(self.elapsed and self.elapsed > 0.2) then
-		ForEachPlate(UpdateThreat, self.elapsed)
+		if enhancethreat then
+			ForEachPlate(UpdateThreat, self.elapsed)
+		end
 		self.elapsed = 0
 	else
 		self.elapsed = (self.elapsed or 0) + elapsed
 	end
 	
 	ForEachPlate(ShowHealth)
-	ForEachPlate(CheckBlacklist)
+	--ForEachPlate(CheckBlacklist)
 	ForEachPlate(HideDrunkenText)
+	ForEachPlate(Colorize)
 	ForEachPlate(CheckUnit_Guid)
 end)
 
@@ -669,7 +664,7 @@ function NamePlates:PLAYER_ENTERING_WORLD()
 		end
 	end
 	
-	if enhancethreat == true then
+	if enhancethreat then
 		SetCVar("threatWarning", 3)
 	end
 	
