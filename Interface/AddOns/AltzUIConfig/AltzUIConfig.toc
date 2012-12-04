@@ -1,6 +1,6 @@
-﻿## Interface: 50001
+﻿## Interface: 50100
 ## Title: |cffEE3A8CAltz|rUI Config
-## Version: 5.40
+## Version: 5.41
 ## Author: Blue
 ## Dependencies: Aurora
 ## OptionalDeps: !ClassColors, Skada, Numeration, TinyDPS, Recount, oUF_Mlight, DBM-Core, Carbonite
