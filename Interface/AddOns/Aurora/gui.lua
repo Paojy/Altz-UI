@@ -77,20 +77,23 @@ colourButton:SetPoint("LEFT", colourBox.Text, "RIGHT", 20, 0)
 colourButton:SetSize(128, 25)
 colourButton:SetText("Change...")
 
-local bagsBox = createToggleBox(gui, "AuroraOptionsBags", "bags", "Enable Bags")
+local bagsBox = createToggleBox(gui, "AuroraOptionsBags", "bags", "Bags")
 bagsBox:SetPoint("TOPLEFT", colourBox, "BOTTOMLEFT", 0, -16)
 
-local lootBox = createToggleBox(gui, "AuroraOptionsLoot", "loot", "Enable Loot")
+local lootBox = createToggleBox(gui, "AuroraOptionsLoot", "loot", "Loot")
 lootBox:SetPoint("LEFT", bagsBox, "RIGHT", 90, 0)
 
-local chatBubbleBox = createToggleBox(gui, "AuroraOptionsChatBubbles", "chatBubbles", "Enable Chat Bubbles")
+local chatBubbleBox = createToggleBox(gui, "AuroraOptionsChatBubbles", "chatBubbles", "Chat bubbles")
 chatBubbleBox:SetPoint("LEFT", lootBox, "RIGHT", 90, 0)
 
-local mapBox = createToggleBox(gui, "AuroraOptionsMap", "map", "Enable Map")
+local mapBox = createToggleBox(gui, "AuroraOptionsMap", "map", "Map")
 mapBox:SetPoint("TOPLEFT", bagsBox, "BOTTOMLEFT", 0, -8)
 
-local tooltipsBox = createToggleBox(gui, "AuroraOptionsTooltips", "tooltips", "Enable Tooltips")
+local tooltipsBox = createToggleBox(gui, "AuroraOptionsTooltips", "tooltips", "Tooltips")
 tooltipsBox:SetPoint("LEFT", mapBox, "RIGHT", 90, 0)
+
+local qualityColourBox = createToggleBox(gui, "AuroraOptionsQualityColour", "qualityColour", "Item quality colours")
+qualityColourBox:SetPoint("LEFT", tooltipsBox, "RIGHT", 90, 0)
 
 local reloadText = gui:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
 reloadText:SetPoint("TOPLEFT", bagsBox, "BOTTOMLEFT", 0, -60)
