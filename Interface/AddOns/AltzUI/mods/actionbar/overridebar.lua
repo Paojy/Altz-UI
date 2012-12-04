@@ -43,5 +43,5 @@ for i=1, num do
 end
 
 --show/hide the frame on a given state driver
-RegisterStateDriver(frame, "visibility", "[petbattle] hide; [overridebar][vehicleui] show; hide")
-RegisterStateDriver(OverrideActionBar, "visibility", "[petbattle] hide; [overridebar][vehicleui] show; hide")
+RegisterStateDriver(frame, "visibility", "[petbattle] hide; [overridebar][vehicleui][possessbar,@vehicle,exists] show; hide")
+RegisterStateDriver(OverrideActionBar, "visibility", "[petbattle] hide; [overridebar][vehicleui][possessbar,@vehicle,exists] show; hide")

@@ -169,6 +169,7 @@ end
 local function updateDebuffAnchors(buttonName,index)
 	local numBuffs = BUFF_ACTUAL_DISPLAY
 	local rows = ceil(numBuffs/buffsPerRow)
+	local gap = 8
 	if rows == 0 then gap = 0 end
 	local buff = _G[buttonName..index]
 	if not buff.styled then applySkin(buff, "debuff") end

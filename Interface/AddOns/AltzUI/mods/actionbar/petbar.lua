@@ -58,7 +58,7 @@ for i=1, num do
 end
 
 --hide the frame when in a vehicle!
-RegisterStateDriver(frame, "visibility", "[petbattle][overridebar][vehicleui] hide; [@pet,exists,nodead] show; hide")
+RegisterStateDriver(frame, "visibility", "[petbattle][overridebar][vehicleui][possessbar,@vehicle,exists] hide; [@pet,exists,nodead] show; hide")
 
 --create drag frame and drag functionality
 T.CreateDragFrame(frame, dragFrameList, -2 , true) --frame, dragFrameList, inset, clamp
