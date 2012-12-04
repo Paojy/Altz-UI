@@ -505,8 +505,15 @@ local CustomFilter = function(icons, unit, icon, ...)
 	end
 end
 
+whitelist = {
+	["123059"] = true, -- ∂Ø“°“‚÷æ
+}
+
 local BossAuraFilter = function(icons, unit, icon, ...)
+	local SpellID = select(11, ...)
 	if icon.isPlayer or not icon.isDebuff then -- show buff and my auras
+		return true
+	elseif whitelist[tostring(SpellID)] then
 		return true
 	end
 end
@@ -572,7 +579,7 @@ local CreateAuras = function(self, unit)
 			Auras.initialAnchor = "BOTTOMLEFT"
 			Auras["growth-x"] = "RIGHT"
 			Auras["growth-y"] = "UP"	
-			Auras.numDebuffs = 4
+			Auras.numDebuffs = 6
 			Auras.numBuffs = 3
 			Auras.CustomFilter = BossAuraFilter
 		end
