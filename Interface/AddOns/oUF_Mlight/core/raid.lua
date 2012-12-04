@@ -268,7 +268,7 @@ local func = function(self, unit)
     resurrecticon:SetPoint"CENTER"
     self.ResurrectIcon = resurrecticon
 	
-    local readycheck = self:CreateTexture(nil, 'OVERLAY', 1)
+    local readycheck = hp:CreateTexture(nil, 'OVERLAY', 3)
     readycheck:SetSize(16, 16)
     readycheck:SetPoint"CENTER"
     self.ReadyCheck = readycheck
@@ -397,7 +397,7 @@ local dfunc = function(self, unit)
     status:SetPoint"TOPLEFT"
 	self:Tag(status, '[Mlight:AfkDnd][Mlight:DDG]')
 	
-	local readycheck = self:CreateTexture(nil, 'OVERLAY', 1)
+	local readycheck = hp:CreateTexture(nil, 'OVERLAY', 3)
     readycheck:SetSize(16, 16)
     readycheck:SetPoint"CENTER"
     self.ReadyCheck = readycheck
