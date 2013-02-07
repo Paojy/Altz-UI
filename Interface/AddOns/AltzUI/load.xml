@@ -16,7 +16,8 @@
 	<Script file="mods\skins\Mirrortimer.lua"/>
 	
 	<Script file="mods\panels\panels.lua"/>
-
+	<Script file="mods\panels\petbattles.lua"/>
+	
 	<Script file="mods\actionbar\cooldowns.lua"/>
 	<Script file="mods\actionbar\rangecolor.lua"/>
 	<Script file="mods\actionbar\styler.lua"/>	
