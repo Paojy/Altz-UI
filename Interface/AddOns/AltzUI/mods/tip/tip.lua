@@ -167,7 +167,7 @@ GameTooltip:HookScript("OnTooltipSetUnit", function(self)
 
     if GameTooltipStatusBar:IsShown() then
 		GameTooltipStatusBar:ClearAllPoints()
-        GameTooltipStatusBar:SetHeight(4)
+        GameTooltipStatusBar:SetHeight(8)
 		GameTooltipStatusBar:SetPoint("BOTTOMLEFT", GameTooltipStatusBar:GetParent(), "TOPLEFT", 0, 4)
 		GameTooltipStatusBar:SetPoint("BOTTOMRIGHT", GameTooltipStatusBar:GetParent(), "TOPRIGHT", 0, 4)
 		F.CreateBG(GameTooltipStatusBar)		
