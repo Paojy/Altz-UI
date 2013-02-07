@@ -88,6 +88,7 @@ local aMode_default_Settings = {
 	ctbigiconsize = 25,
 	ctshowdots = false,
 	ctshowhots = false,
+	ctshowpet = true,
 	ctfadetime = 3,
 	-- aTweaks
 	autorepair = true,
