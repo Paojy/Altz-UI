@@ -173,6 +173,7 @@ local function updateDebuffAnchors(buttonName,index)
 	if rows == 0 then gap = 0 end
 	local buff = _G[buttonName..index]
 	if not buff.styled then applySkin(buff, "debuff") end
+	buff:ClearAllPoints()
 	if ((index > 1) and (mod(index, buffsPerRow) == 1)) then
 		buff:SetPoint("TOP", _G[buttonName..(index-buffsPerRow)], "BOTTOM", 0, -rowSpacing)
 	elseif (index == 1) then
