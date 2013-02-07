@@ -63,6 +63,7 @@ L["CT icon size"] = "Icon Size"
 L["CT crit icon size"] = "Crit Icon Size"
 L["CT show dot"] = "Show Dot"
 L["CT show hot"] = "Show Hot"
+L["CT show pet"] = "Show Pet"
 L["CT fade time"] = "Fade time"
 L["CT fade time2"] =  "Amount of time for which combat text remains visible before beginning to fade out"
 

@@ -63,6 +63,7 @@ L["CT icon size"] = "圖標大小"
 L["CT crit icon size"] = "暴擊圖標大小"
 L["CT show dot"] = "顯示DOT"
 L["CT show hot"] = "顯示HOT"
+L["CT show pet"] = "顯示寵物"
 L["CT fade time"] = "隱藏時間"
 L["CT fade time2"] =  "戰鬥信息出現後經過壹小段時間會漸漸隱藏"
 
