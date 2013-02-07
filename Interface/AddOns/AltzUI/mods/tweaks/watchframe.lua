@@ -20,7 +20,7 @@ local origWFHighlight
 local anchorframe = CreateFrame("Frame", "Altz_WFanchorframe", UIParent)
 anchorframe.movingname = L["WatchFrame"]
 anchorframe:SetSize(200, 20)
-anchorframe:SetPoint("TOPRIGHT", UIParent, "TOPRIGHT", -5, -150)
+anchorframe:SetPoint("TOPRIGHT", UIParent, "TOPRIGHT", -50, -150)
 T.CreateDragFrame(anchorframe, dragFrameList, -2 , true) --frame, dragFrameList, inset, clamp
 
 -- Collapse Quest Tracker based on zone
