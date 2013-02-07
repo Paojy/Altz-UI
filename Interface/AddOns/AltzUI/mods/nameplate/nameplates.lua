@@ -641,7 +641,7 @@ function NamePlates:COMBAT_LOG_EVENT_UNFILTERED(_, event, ...)
 end
 
 --Only show nameplates when in combat
-if combat == true then
+if combat then
 	NamePlates:RegisterEvent("PLAYER_REGEN_ENABLED")
 	NamePlates:RegisterEvent("PLAYER_REGEN_DISABLED")
 	
@@ -656,7 +656,7 @@ end
 
 NamePlates:RegisterEvent("PLAYER_ENTERING_WORLD")
 function NamePlates:PLAYER_ENTERING_WORLD()
-	if combat == true then
+	if combat then
 		if InCombatLockdown() then
 			SetCVar("nameplateShowEnemies", 1)
 		else
@@ -668,13 +668,5 @@ function NamePlates:PLAYER_ENTERING_WORLD()
 		SetCVar("threatWarning", 3)
 	end
 	
-    local SHOW_ENEMIES = GetCVarBool("nameplateShowEnemies");
-	local SHOW_FRIENDS = GetCVarBool("nameplateShowFriends");
-	
-        if SHOW_ENEMIES then
-            SetCVar("nameplateShowEnemies", 0);
-		end
-        if SHOW_FRIENDS then
-            SetCVar("nameplateShowFriends", 0);
-        end
+	NamePlates:UnregisterEvent("PLAYER_ENTERING_WORLD")
 end

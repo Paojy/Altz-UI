@@ -16,7 +16,7 @@ local color = {
 	equipped= { r = 0, g = 0, b = 0, },
 	}
 
--- grow
+-- glow
 local backdrop = {
 	bgFile = textures.blank,
 	edgeFile = textures.outer_shadow,
@@ -35,7 +35,7 @@ local backdrop2 = {
 
 local function applyBackground(bu)
 if bu:GetFrameLevel() < 2 then bu:SetFrameLevel(2) end
-	-- grow + background
+	-- glow + background
 	bu.bg = CreateFrame("Frame", nil, bu)
 	bu.bg:SetAllPoints(bu)
 	bu.bg:SetPoint("TOPLEFT", bu, "TOPLEFT", -3, 3)

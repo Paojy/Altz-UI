@@ -6,8 +6,8 @@ if not IsAddOnLoaded("DBM-Core") then return end
 local croprwicons = true					-- Crops blizz shitty borders from icons in RaidWarning messages
 local rwiconsize = 12						-- RaidWarning icon size. Works only if croprwicons = true
 
-local grow = "Interface\\AddOns\\AltzUI\\media\\grow"
-local blank = "Interface\\AddOns\\AltzUI\\media\\statusbar"
+local glow = G.media.glow
+local blank = G.media.bar
 local backdrop = {
 	bgFile = blank,
 	insets = {left = 0, right = 0, top = 0, bottom = 0},

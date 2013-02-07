@@ -18,6 +18,13 @@ G.dragFrameList = {}
 G.norFont = GameFontHighlight:GetFont()
 G.numFont = "Interface\\AddOns\\AltzUI\\media\\number.ttf"
 
+G.media = {
+	blank = "Interface\\Buttons\\WHITE8x8",
+	bar = "Interface\\AddOns\\AltzUI\\media\\statusbar",
+	glow = "Interface\\AddOns\\Aurora\\media\\glow",
+	checked = "Interface\\AddOns\\Aurora\\media\\CheckButtonHilight",
+}
+
 G.Client = GetLocale()
 G.Version = GetAddOnMetadata("AltzUIConfig", "Version")
 
