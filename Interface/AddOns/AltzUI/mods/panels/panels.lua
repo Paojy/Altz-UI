@@ -5,12 +5,12 @@ local function creategradient(f, r, g, b, n, a)
 	local gradient = f:CreateTexture(nil, "BACKGROUND")
 	gradient:SetPoint("TOPLEFT")
 	gradient:SetPoint("BOTTOMRIGHT")
-	gradient:SetTexture("Interface\\Buttons\\WHITE8x8")
+	gradient:SetTexture(G.media.blank)
 	gradient:SetGradientAlpha("VERTICAL",  r, g, b, a, r/n, g/n, b/n, a)
 end
 
 local function createbargradient(bar, r, g, b, n)
-	bar:SetStatusBarTexture("Interface\\Buttons\\WHITE8x8")
+	bar:SetStatusBarTexture(G.media.blank)
 	bar:GetStatusBarTexture():SetGradient("VERTICAL",  r, g, b, r/n, g/n, b/n)
 end
 --====================================================--
@@ -91,32 +91,30 @@ end
 
 local _G = getfenv(0)
 function xprptoolitp()
-	if not InCombatLockdown() then
-		GameTooltip:SetOwner(xpbar, "ANCHOR_NONE")
-		GameTooltip:SetPoint("TOPLEFT", Minimap, "TOPRIGHT", 8, 0)
+	GameTooltip:SetOwner(xpbar, "ANCHOR_NONE")
+	GameTooltip:SetPoint("TOPLEFT", Minimap, "TOPRIGHT", 8, 0)
 	
-		local XP, maxXP = UnitXP("player"), UnitXPMax("player")
-		local restXP = GetXPExhaustion()
-		local name, rank, minRep, maxRep, value = GetWatchedFactionInfo()
+	local XP, maxXP = UnitXP("player"), UnitXPMax("player")
+	local restXP = GetXPExhaustion()
+	local name, rank, minRep, maxRep, value = GetWatchedFactionInfo()
 	
-		if UnitLevel("player") < MAX_PLAYER_LEVEL then
-			GameTooltip:AddDoubleLine(L["Currentxp"], string.format("%s/%s (%d%%)", CommaValue(XP), CommaValue(maxXP), (XP/maxXP)*100), G.Ccolor.r, G.Ccolor.g, G.Ccolor.b, 1, 1, 1)
-			GameTooltip:AddDoubleLine(L["Remainingxp"], string.format("%s", CommaValue(maxXP-XP)), G.Ccolor.r, G.Ccolor.g, G.Ccolor.b, 1, 1, 1)
-			if restXP then GameTooltip:AddDoubleLine(L["Restedxp"], string.format("|cffb3e1ff%s (%d%%)", CommaValue(restXP), restXP/maxXP*100), G.Ccolor.r, G.Ccolor.g, G.Ccolor.b) end
-		end
-	
-		if name and not UnitLevel("player") == MAX_PLAYER_LEVEL then
-			GameTooltip:AddLine(" ")
-		end
-
-		if name then
-			GameTooltip:AddLine(name.."  (".._G["FACTION_STANDING_LABEL"..rank]..")", G.Ccolor.r, G.Ccolor.g, G.Ccolor.b)
-			GameTooltip:AddDoubleLine(L["Currentrep"], string.format("%s/%s (%d%%)", CommaValue(value-minRep), CommaValue(maxRep-minRep), (value-minRep)/(maxRep-minRep)*100), G.Ccolor.r, G.Ccolor.g, G.Ccolor.b, 1, 1, 1)
-			GameTooltip:AddDoubleLine(L["Remainingrep"], string.format("%s", CommaValue(maxRep-value)), G.Ccolor.r, G.Ccolor.g, G.Ccolor.b, 1, 1, 1)
-		end	
-	
-		GameTooltip:Show()
+	if UnitLevel("player") < MAX_PLAYER_LEVEL then
+		GameTooltip:AddDoubleLine(L["Currentxp"], string.format("%s/%s (%d%%)", CommaValue(XP), CommaValue(maxXP), (XP/maxXP)*100), G.Ccolor.r, G.Ccolor.g, G.Ccolor.b, 1, 1, 1)
+		GameTooltip:AddDoubleLine(L["Remainingxp"], string.format("%s", CommaValue(maxXP-XP)), G.Ccolor.r, G.Ccolor.g, G.Ccolor.b, 1, 1, 1)
+		if restXP then GameTooltip:AddDoubleLine(L["Restedxp"], string.format("|cffb3e1ff%s (%d%%)", CommaValue(restXP), restXP/maxXP*100), G.Ccolor.r, G.Ccolor.g, G.Ccolor.b) end
 	end
+	
+	if name and not UnitLevel("player") == MAX_PLAYER_LEVEL then
+		GameTooltip:AddLine(" ")
+	end
+
+	if name then
+		GameTooltip:AddLine(name.."  (".._G["FACTION_STANDING_LABEL"..rank]..")", G.Ccolor.r, G.Ccolor.g, G.Ccolor.b)
+		GameTooltip:AddDoubleLine(L["Currentrep"], string.format("%s/%s (%d%%)", CommaValue(value-minRep), CommaValue(maxRep-minRep), (value-minRep)/(maxRep-minRep)*100), G.Ccolor.r, G.Ccolor.g, G.Ccolor.b, 1, 1, 1)
+		GameTooltip:AddDoubleLine(L["Remainingrep"], string.format("%s", CommaValue(maxRep-value)), G.Ccolor.r, G.Ccolor.g, G.Ccolor.b, 1, 1, 1)
+	end	
+	
+	GameTooltip:Show()
 end
 
 function xpbar:updateOnevent()
@@ -144,11 +142,7 @@ xpbar:RegisterEvent("PLAYER_LOGIN")
 local infobar = CreateFrame("Frame", nil, UIParent) -- Center Frame
 infobar:SetFrameStrata("LOW")
 infobar:SetSize(200, 20)
-infobar:SetAlpha(.3)
 infobar:SetPoint("TOPLEFT", UIParent, "TOPLEFT", 155, -13)
-
-Minimap:HookScript('OnEnter', function() infobar:SetAlpha(1) end)
-Minimap:HookScript('OnLeave', function() infobar:SetAlpha(.6) end)
 
 local Ctext = T.createtext(infobar, "OVERLAY", 12, "OUTLINE", "LEFT")
 Ctext:SetPoint"LEFT"
@@ -159,6 +153,22 @@ do
 	Hex = function(color)
         return format("|cff%02x%02x%02x", color.r * 255, color.g * 255, color.b * 255)
    	end
+end
+
+-- http://www.wowwiki.com/ColorGradient
+local function ColorGradient(perc, ...)
+    if (perc > 1) then
+        local r, g, b = select(select('#', ...) - 2, ...) return r, g, b
+    elseif (perc < 0) then
+        local r, g, b = ... return r, g, b
+    end
+
+    local num = select('#', ...) / 3
+
+    local segment, relperc = math.modf(perc*(num-1))
+    local r1, g1, b1, r2, g2, b2 = select((segment*3)+1, ...)
+
+    return r1 + (r2-r1)*relperc, g1 + (g2-g1)*relperc, b1 + (b2-b1)*relperc
 end
 
 -- Format String
@@ -187,44 +197,42 @@ function Durability()
 			l = math.min(d/md, l)
 		end
 	end
-	return format("%d",l*100)
+	return l
 end
 
 -- Tooltips
 local nraddons = 20
 function memorytooltip()
-	if not InCombatLockdown() then -- Don't Show in Combat
-		local addons, total, nr, name = {}, 0, 0
-		local memory, entry
-		local BlizzMem = collectgarbage("count")
+	local addons, total, nr, name = {}, 0, 0
+	local memory, entry
+	local BlizzMem = collectgarbage("count")
 			
-		GameTooltip:SetOwner(infobar, "ANCHOR_NONE")
-		GameTooltip:SetPoint("TOPLEFT", Minimap, "TOPRIGHT", 8, 0)
-		GameTooltip:AddLine(L["Top"].." "..nraddons.." "..L["AddOns"], G.Ccolor.r, G.Ccolor.g, G.Ccolor.b)
-		GameTooltip:AddLine(" ")	
+	GameTooltip:SetOwner(infobar, "ANCHOR_NONE")
+	GameTooltip:SetPoint("TOPLEFT", Minimap, "TOPRIGHT", 8, 0)
+	GameTooltip:AddLine(L["Top"].." "..nraddons.." "..L["AddOns"], G.Ccolor.r, G.Ccolor.g, G.Ccolor.b)
+	GameTooltip:AddLine(" ")	
 			
-		UpdateAddOnMemoryUsage()
-		for i = 1, GetNumAddOns() do
-			if (GetAddOnMemoryUsage(i) > 0 ) then
-				memory = GetAddOnMemoryUsage(i)
-				entry = {name = GetAddOnInfo(i), memory = memory}
-				table.insert(addons, entry)
-				total = total + memory
-			end
+	UpdateAddOnMemoryUsage()
+	for i = 1, GetNumAddOns() do
+		if (GetAddOnMemoryUsage(i) > 0 ) then
+			memory = GetAddOnMemoryUsage(i)
+			entry = {name = GetAddOnInfo(i), memory = memory}
+			table.insert(addons, entry)
+			total = total + memory
 		end
-		table.sort(addons, AddonCompare)
-		for _, entry in pairs(addons) do
-			if nr < nraddons then
-				GameTooltip:AddDoubleLine(entry.name, memFormat(entry.memory), 1, 1, 1, 0.75, 0.75, 0.75)
-				nr = nr+1
-			end
-		end
-
-		GameTooltip:AddLine(" ")
-		GameTooltip:AddDoubleLine(L["UI Memory usage"], memFormat(total), G.Ccolor.r, G.Ccolor.g, G.Ccolor.b, G.Ccolor.r, G.Ccolor.g, G.Ccolor.b)
-		GameTooltip:AddDoubleLine(L["Total incl. Blizzard"], memFormat(BlizzMem), G.Ccolor.r, G.Ccolor.g, G.Ccolor.b, G.Ccolor.r, G.Ccolor.g, G.Ccolor.b)
-		GameTooltip:Show()
 	end
+	table.sort(addons, AddonCompare)
+	for _, entry in pairs(addons) do
+	if nr < nraddons then
+			GameTooltip:AddDoubleLine(entry.name, memFormat(entry.memory), 1, 1, 1, ColorGradient(entry.memory / 1024, 0, 1, 0, 1, 1, 0, 1, 0, 0))
+			nr = nr+1
+		end
+	end
+
+	GameTooltip:AddLine(" ")
+	GameTooltip:AddDoubleLine(L["UI Memory usage"], memFormat(total), 1, 1, 1, ColorGradient(total / (1024*20), 0, 1, 0, 1, 1, 0, 1, 0, 0))
+	GameTooltip:AddDoubleLine(L["Total incl. Blizzard"], memFormat(BlizzMem), 1, 1, 1, ColorGradient(BlizzMem / (1024*50) , 0, 1, 0, 1, 1, 0, 1, 0, 0))
+	GameTooltip:Show()
 end
 
 -- Update Function
@@ -232,10 +240,18 @@ local hour, fps, lag, dur
 local refresh_timer = 0
 function infobar:updateOntime(elapsed)
 	refresh_timer = refresh_timer + elapsed -- Only update this values every refresh_timer seconds
-	if refresh_timer > 1 then -- Updates each X seconds	
-		dur = (Durability().."%sdur|r   "):format(Hex(G.Ccolor))
-		fps = (floor(GetFramerate()).."%sfps|r   "):format(Hex(G.Ccolor))
-		lag = (select(3, GetNetStats()).."%sms|r   "):format(Hex(G.Ccolor))
+	if refresh_timer > 1 then -- Updates each X seconds
+		local cr, cg, cb = G.Ccolor.r, G.Ccolor.g, G.Ccolor.b
+		
+		local r1, g1, b1 = ColorGradient(Durability()-0.001, 1, 0, 0, 1, 1, 0, 1, 1, 1)
+		dur = format("|cff%02x%02x%02x%d|r|cff%02x%02x%02xdur|r    ", r1 * 255, g1 * 255, b1 * 255, Durability()*100, cr * 255, cg * 255, cb * 255)
+		
+		local r2, g2, b2 = ColorGradient(GetFramerate()/60-0.001, 1, 0, 0, 1, 1, 0, 0, 1, 0)
+		fps = format("|cff%02x%02x%02x%d|r|cff%02x%02x%02xfps|r   ", r2 * 255, g2 * 255, b2 * 255, GetFramerate(), cr * 255, cg * 255, cb * 255)
+
+		local r2, g2, b2 = ColorGradient(select(3, GetNetStats())/500-0.001, 0, 1, 0, 1, 1, 0, 0, 1, 0)
+		lag = format("|cff%02x%02x%02x%d|r|cff%02x%02x%02xms|r    ", r2 * 255, g2 * 255, b2 * 255, select(3, GetNetStats()), cr * 255, cg * 255, cb * 255)
+
 		hour = date("%H:%M")
 		
 		Ctext:SetText(dur..fps..lag..hour) -- Center Anchored Text
@@ -469,12 +485,12 @@ local function littebutton(self, facing, note)
 	self.text:SetTextColor(1, 1, 1)
 	self.text:SetText(note)
 	
-	self.grow = self:CreateTexture(nil, "HIGHLIGHT")
-	self.grow:SetSize(30, 30)
-	self.grow:SetPoint("CENTER", self.text, "TOPRIGHT", -3, -5)
-	self.grow:SetTexture("Interface\\Cooldown\\star4")
-	self.grow:SetVertexColor(1, 1, 1, .7)
-	self.grow:SetBlendMode("ADD")
+	self.glow = self:CreateTexture(nil, "HIGHLIGHT")
+	self.glow:SetSize(30, 30)
+	self.glow:SetPoint("CENTER", self.text, "TOPRIGHT", -3, -5)
+	self.glow:SetTexture("Interface\\Cooldown\\star4")
+	self.glow:SetVertexColor(1, 1, 1, .7)
+	self.glow:SetBlendMode("ADD")
 
 	self:SetScript("OnEnter", function() self:SetFacing(0) end)
 	self:SetScript("OnLeave", function() self:SetFacing(facing) end)
