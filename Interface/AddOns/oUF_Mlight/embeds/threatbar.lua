@@ -36,7 +36,11 @@ local Update = function(self, event, unit)
 
 	local Tankthreat
 	if status <= 1 then -- unit is not tanking
-		Tankthreat = overtauntedprec/rawthreatprec*100
+		if rawthreatprec == 0 then
+			Tankthreat = 0
+		else
+			Tankthreat = overtauntedprec/rawthreatprec*100
+		end
 		if rawthreatprec < 70 then -- safely threat
 			threatbar:GetStatusBarTexture():SetGradient(orientation, unpack(colors[1]))
 		elseif status == 1 then -- ot

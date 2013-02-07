@@ -49,7 +49,7 @@ local backdrop = {
 }
 
 local frameBD = {
-    edgeFile = [=[Interface\AddOns\oUF_Mlight\media\grow]=], edgeSize = 3,
+    edgeFile = [=[Interface\AddOns\oUF_Mlight\media\glow]=], edgeSize = 3,
     bgFile = [=[Interface\ChatFrame\ChatFrameBackground]=],
     insets = {left = 3, right = 3, top = 3, bottom = 3}
 }
@@ -317,7 +317,7 @@ end
 local CpointsPostUpdate = function(element, cur)
 	for i = 1, 5 do
 		if cur == MAX_COMBO_POINTS then
-			element[i]:SetStatusBarColor(unpack(cpoints_colors[cur]))
+			element[i]:SetStatusBarColor(unpack(cpoints_colors[MAX_COMBO_POINTS]))
 		else
 			element[i]:SetStatusBarColor(unpack(cpoints_colors[i]))
 		end
@@ -327,7 +327,7 @@ end
 local ClassIconsPostUpdate = function(element, cur, max, maxchange)
 	for i = 1, 5 do
 		if cur == max then
-			element[i]:SetStatusBarColor(unpack(classicon_colors[cur]))
+			element[i]:SetStatusBarColor(unpack(classicon_colors[max]))
 		else
 			element[i]:SetStatusBarColor(unpack(classicon_colors[i]))
 		end
@@ -461,10 +461,14 @@ local CreateAuraTimer = function(self, elapsed)
     end
 end
 
+local whitelist = {
+	["123059"] = true, -- 动摇意志
+}
+
 local PostUpdateIcon = function(icons, unit, icon, index, offset)
 	local name, _, _, _, _, duration, expirationTime, _, _, _, SpellID = UnitAura(unit, index, icon.filter)
 
-	if icon.isPlayer or UnitIsFriend("player", unit) or not icon.isDebuff or oUF_MlightDB.AuraFilterwhitelist[tostring(SpellID)] then
+	if icon.isPlayer or UnitIsFriend("player", unit) or not icon.isDebuff or oUF_MlightDB.AuraFilterwhitelist[tostring(SpellID)] or whitelist[tostring(SpellID)] then
 		icon.icon:SetDesaturated(false)
 		if duration and duration > 0 then
 			icon.remaining:Show()
@@ -504,10 +508,6 @@ local CustomFilter = function(icons, unit, icon, ...)
 		return true
 	end
 end
-
-whitelist = {
-	["123059"] = true, -- 动摇意志
-}
 
 local BossAuraFilter = function(icons, unit, icon, ...)
 	local SpellID = select(11, ...)
@@ -1000,3 +1000,6 @@ function EventFrame:ADDON_LOADED(arg1)
     end
 	end)
 end
+
+PetCastingBarFrame:Hide()
+PetCastingBarFrame:UnregisterAllEvents()

@@ -61,7 +61,7 @@ local function healpreditionbar(self, ...)
 	else
 		hpb:SetPoint('LEFT', self.Health:GetStatusBarTexture(), 'RIGHT')
 	end
-	hpb:SetWidth(200)
+	hpb:SetWidth(oUF_MlightDB.healerraidwidth)
 	return hpb
 end
 
@@ -237,7 +237,7 @@ local func = function(self, unit)
 	lfd:SetPoint("BOTTOM", hp, 0, -1)
 	self:Tag(lfd, '[Mlight:LFD]')
 	
-	local raidname = createFont(hp, "OVERLAY", oUF_MlightDB.fontfile, oUF_MlightDB.raidfontsize, 1, 1, 1)
+	local raidname = createFont(hp, "ARTWORK", oUF_MlightDB.fontfile, oUF_MlightDB.raidfontsize, 1, 1, 1)
 	raidname:SetPoint("BOTTOMRIGHT", hp, "BOTTOMRIGHT", -1, 5)
 	if oUF_MlightDB.showmisshp then
 		if oUF_MlightDB.nameclasscolormode then
@@ -379,7 +379,7 @@ local dfunc = function(self, unit)
 	lfd:SetPoint("LEFT", hp, 1, -1)
 	self:Tag(lfd, '[Mlight:LFD]')
 		
-	local raidname = createFont(hp, "OVERLAY", oUF_MlightDB.fontfile, oUF_MlightDB.raidfontsize, 1, 1, 1, 'RIGHT')
+	local raidname = createFont(hp, "ARTWORK", oUF_MlightDB.fontfile, oUF_MlightDB.raidfontsize, 1, 1, 1, 'RIGHT')
 	raidname:SetPoint"CENTER"
 	if oUF_MlightDB.nameclasscolormode then
 		self:Tag(raidname, '[Mlight:color][Mlight:raidname]')

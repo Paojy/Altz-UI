@@ -220,7 +220,7 @@ ns.auras = {
 			--Protectors Of the Endless
 			[GetSpellInfo(117519)] = 7, -- Touch of Sha, Dot that lasts untill Kaolan is defeated.
 			[GetSpellInfo(117235)] = 7, -- Purified, haste buff gained by killing mist and being in range.
-			[GetSpellInfo(117353)] = 7, -- Overwhelming Corruption, stacking raidwide softenrage debuff.
+			--[GetSpellInfo(117353)] = 7, -- Overwhelming Corruption, stacking raidwide softenrage debuff.
 			[GetSpellInfo(118091)] = 7, -- Defiled Ground, Increased damage taken from Defiled ground debuff.
 			[GetSpellInfo(117436)] = 7, -- Lightning Prison, Magic stun.
 
