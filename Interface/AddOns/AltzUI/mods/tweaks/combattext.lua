@@ -12,6 +12,7 @@ local iconsize = aCoreCDB.cticonsize
 local bigiconsize = aCoreCDB.ctbigiconsize
 local showdots = aCoreCDB.ctshowdots
 local showhots = aCoreCDB.ctshowhots
+local ctshowpet = aCoreCDB.ctshowpet
 local fadetime = aCoreCDB.ctfadetime
 
 local frames = {}
@@ -250,7 +251,7 @@ end
 function eventframe:COMBAT_LOG_EVENT_UNFILTERED(...)
 	local icon, spellId, amount, critical, spellSchool
     local timestamp, eventType, hideCaster, sourceGUID, sourceName, sourceFlags, sourceFlags2, destGUID, destName, destFlags, destFlags2 = select(1, ...)
-	if sourceGUID == UnitGUID("player") or sourceFlags == gflags then
+	if sourceGUID == UnitGUID("player") or (ctshowpet and sourceGUID == UnitGUID("pet")) or sourceFlags == gflags then
 		if eventType == 'SPELL_HEAL' or (eventType == 'SPELL_PERIODIC_HEAL' and showhots) then
 			spellId = select(12, ...)
 			amount = select(15, ...)
