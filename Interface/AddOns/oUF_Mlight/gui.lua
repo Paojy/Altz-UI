@@ -387,6 +387,12 @@ bosstext:SetPoint("TOPLEFT", 16, 3-43*30)
 bosstext:SetText(L["bossframe"])
 
 local bossframesbu = createcheckbutton(scrollFrame.Anchor, 44, L["bossframes"], "bossframes", L["bossframes2"])
+
+local arenatext = scrollFrame.Anchor:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
+arenatext:SetPoint("TOPLEFT", 16, 3-45*30)
+arenatext:SetText(L["arenaframe"])
+
+local arenaframesbu = createcheckbutton(scrollFrame.Anchor, 46, L["arenaframes"], "arenaframes", L["arenaframes2"])
 --====================================================--
 --[[                 -- Raid --                     ]]--
 --====================================================--

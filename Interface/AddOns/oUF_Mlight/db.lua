@@ -382,6 +382,9 @@ local default_Settings = {
 	-- show/hide boss
 	bossframes = true,
 	
+	-- show/hide arena
+	arenaframs = true,
+	
 	-- show pvp timer
 	pvpicon = false,
 

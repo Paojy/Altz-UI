@@ -533,7 +533,7 @@ end
 
 local CreateAuras = function(self, unit)
 	local u = unit:match("[^%d]+")
-    if multicheck(u, "target", "focus", "boss", "player", "pet") then
+    if multicheck(u, "target", "focus", "boss", "arena", "player", "pet") then
 		local Auras = CreateFrame("Frame", nil, self)
 		Auras:SetHeight(oUF_MlightDB.height*2)
 		Auras:SetWidth(oUF_MlightDB.width-2)
@@ -582,6 +582,13 @@ local CreateAuras = function(self, unit)
 			Auras.numDebuffs = 6
 			Auras.numBuffs = 3
 			Auras.CustomFilter = BossAuraFilter
+		elseif u == "arena" then
+			Auras:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 1, 12)
+			Auras.initialAnchor = "BOTTOMLEFT"
+			Auras["growth-x"] = "RIGHT"
+			Auras["growth-y"] = "UP"
+			Auras.numDebuffs = ceil(oUF_MlightDB.widthboss/((oUF_MlightDB.width+3)/oUF_MlightDB.auraperrow-3))-1
+			Auras.numBuffs = ceil(oUF_MlightDB.widthboss/((oUF_MlightDB.width+3)/oUF_MlightDB.auraperrow-3))-1
 		end
 		self.Auras = Auras
 	end
@@ -619,7 +626,7 @@ local func = function(self, unit)
     -- height, width and scale --
 	if multicheck(u, "targettarget", "focustarget", "pet") then
         self:SetSize(oUF_MlightDB.widthpet, oUF_MlightDB.height)
-	elseif u == "boss" then
+	elseif u == "boss" or u == "arena" then
 		self:SetSize(oUF_MlightDB.widthboss, oUF_MlightDB.height)
 	else
 	    self:SetSize(oUF_MlightDB.width, oUF_MlightDB.height)
@@ -662,7 +669,7 @@ local func = function(self, unit)
 	tinsert(self.mouseovers, self.Health)
 	
 	-- portrait --
-	if oUF_MlightDB.portrait and multicheck(u, "player", "target", "focus", "boss") then
+	if oUF_MlightDB.portrait and multicheck(u, "player", "target", "focus", "boss", "arena") then
 		local Portrait = CreateFrame('PlayerModel', nil, self)
 		if oUF_MlightDB.transparentmode then
 			Portrait:SetFrameLevel(1) -- below hp
@@ -689,7 +696,7 @@ local func = function(self, unit)
 		pp.bd = createBackdrop(pp, pp, 1)
 		
 		-- power text --
-		if not multicheck(u, "pet", "boss") then
+		if not multicheck(u, "pet", "boss", "arena") then
 			pp.value = createFont(pp, "OVERLAY", oUF_MlightDB.fontfile, oUF_MlightDB.fontsize, 1, 1, 1)
 			pp.value:SetPoint("BOTTOMLEFT", self, 4, -5)
 		end
@@ -702,7 +709,7 @@ local func = function(self, unit)
 	-- altpower bar --
     if multicheck(u, "player", "boss", "pet") then
 		local altpp = createStatusbar(self, texture, "ARTWORK", 5, nil, 1, 1, 0, 1)
-		if unit == pet then
+		if unit == "pet" then
 			altpp:SetPoint("TOPLEFT", self.Power, "BOTTOMLEFT", 0, -5)
 			altpp:SetPoint("TOPRIGHT", self.Power, "BOTTOMRIGHT", 0, -5)
 		else
@@ -744,7 +751,7 @@ local func = function(self, unit)
 	name:SetPoint("TOPLEFT", self.Health, "TOPLEFT", 3, 9)
     if unit == "player" or unit == "pet" then
         name:Hide()
-	elseif multicheck(u, "targettarget", "focustarget", "boss") then
+	elseif multicheck(u, "targettarget", "focustarget", "boss", "arena") then
 		if oUF_MlightDB.nameclasscolormode then
 			self:Tag(name, "[Mlight:color][Mlight:shortname]")
 		else
@@ -952,6 +959,13 @@ local UnitSpecific = {
     boss = function(self, ...)
         func(self, ...)
     end,
+	
+	--========================--
+    --  Arena
+    --========================--
+    arena = function(self, ...)
+        func(self, ...)
+    end,
 }
 
 local EventFrame = CreateFrame("Frame", nil, UIParent)
@@ -998,6 +1012,11 @@ function EventFrame:ADDON_LOADED(arg1)
 			spawnHelper(self,"boss" .. i, "TOPRIGHT","UIParent","TOPRIGHT", -10, -260-60*i)
         end
     end
+	if oUF_MlightDB.arenaframs then
+		for i = 1, 5 do
+			spawnHelper(self,"arena" .. i, "TOPRIGHT","UIParent","TOPRIGHT", -10, -260-60*i)
+		end
+	end
 	end)
 end
 
