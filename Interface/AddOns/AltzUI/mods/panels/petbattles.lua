@@ -159,6 +159,8 @@ for index, unit in pairs(extraUnits) do
 	else
 		unit.ActualHealthBar:SetGradient("VERTICAL", 1, .12, .24, .5, .06, .12)
 	end
+	
+	unit.Icon:SetDrawLayer("OVERLAY", 2)
 end
 
 for i = 1, NUM_BATTLE_PETS_IN_BATTLE  do
