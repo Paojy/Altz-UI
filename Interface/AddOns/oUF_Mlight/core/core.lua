@@ -559,7 +559,7 @@ local CreateAuras = function(self, unit)
 				Auras.CustomFilter = CustomFilter
 			end
 		elseif oUF_MlightDB.playerdebuffenable and unit == "player" then
-			Auras:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 1, oUF_MlightDB.height*-(oUF_MlightDB.hpheight-1)+9)
+			Auras:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 1, oUF_MlightDB.height*-(oUF_MlightDB.hpheight-1)+8)
 			Auras.initialAnchor = "BOTTOMLEFT"
 			Auras["growth-x"] = "RIGHT"
 			Auras["growth-y"] = "UP"
@@ -614,13 +614,16 @@ local func = function(self, unit)
     self.hl:SetBlendMode("ADD")
 	
 	-- backdrop --
-	self.bg = self:CreateTexture(nil, "BACKGROUND")
-    self.bg:SetAllPoints()
-    self.bg:SetTexture(texture)
+	self.bg = CreateFrame("Frame", nil, self)
+	self.bg:SetFrameLevel(0)
+	self.bg:SetAllPoints(self)
+	self.bg.tex = self.bg:CreateTexture(nil, "BACKGROUND")
+    self.bg.tex:SetAllPoints()
+    self.bg.tex:SetTexture(texture)
 	if oUF_MlightDB.transparentmode then
-		self.bg:SetGradientAlpha("VERTICAL", oUF_MlightDB.endcolor.r, oUF_MlightDB.endcolor.g, oUF_MlightDB.endcolor.b, oUF_MlightDB.endcolor.a, oUF_MlightDB.startcolor.r, oUF_MlightDB.startcolor.g, oUF_MlightDB.startcolor.b, oUF_MlightDB.startcolor.a)
+		self.bg.tex:SetGradientAlpha("VERTICAL", oUF_MlightDB.endcolor.r, oUF_MlightDB.endcolor.g, oUF_MlightDB.endcolor.b, oUF_MlightDB.endcolor.a, oUF_MlightDB.startcolor.r, oUF_MlightDB.startcolor.g, oUF_MlightDB.startcolor.b, oUF_MlightDB.startcolor.a)
 	else
-		self.bg:SetGradientAlpha("VERTICAL", oUF_MlightDB.endcolor.r, oUF_MlightDB.endcolor.g, oUF_MlightDB.endcolor.b, 1, oUF_MlightDB.startcolor.r, oUF_MlightDB.startcolor.g, oUF_MlightDB.startcolor.b, 1)
+		self.bg.tex:SetGradientAlpha("VERTICAL", oUF_MlightDB.endcolor.r, oUF_MlightDB.endcolor.g, oUF_MlightDB.endcolor.b, 1, oUF_MlightDB.startcolor.r, oUF_MlightDB.startcolor.g, oUF_MlightDB.startcolor.b, 1)
 	end
 	
     -- height, width and scale --
@@ -671,11 +674,7 @@ local func = function(self, unit)
 	-- portrait --
 	if oUF_MlightDB.portrait and multicheck(u, "player", "target", "focus", "boss", "arena") then
 		local Portrait = CreateFrame('PlayerModel', nil, self)
-		if oUF_MlightDB.transparentmode then
-			Portrait:SetFrameLevel(1) -- below hp
-		else
-			Portrait:SetFrameLevel(2) -- over hp
-		end
+		Portrait:SetFrameLevel(1) -- blow hp
 		Portrait:SetPoint("TOPLEFT", 1, 0)
 		Portrait:SetPoint("BOTTOMRIGHT", -1, 1)
 		Portrait:SetAlpha(oUF_MlightDB.portraitalpha)
@@ -689,7 +688,7 @@ local func = function(self, unit)
 		pp:SetFrameLevel(2)
 		pp:SetPoint"LEFT"
 		pp:SetPoint"RIGHT"
-		pp:SetPoint("TOP", self, "BOTTOM", 0, -5)
+		pp:SetPoint("TOP", self, "BOTTOM", 0, -3)
 		pp.frequentUpdates = true
 
 		-- backdrop for power bar --	
