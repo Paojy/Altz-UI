@@ -1,4 +1,4 @@
-Copyright (c) 2009-2012 Phanx <addons@phanx.net>
+Copyright (c) 2009-2013 Phanx <addons@phanx.net>
 
 All rights reserved.
 

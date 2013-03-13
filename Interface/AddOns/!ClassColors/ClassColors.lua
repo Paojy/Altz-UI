@@ -1,7 +1,7 @@
 --[[--------------------------------------------------------------------
 	!ClassColors
 	Change class colors without breaking the Blizzard UI.
-	Copyright (c) 2009–2012 Phanx <addons@phanx.net>. All rights reserved.
+	Copyright (c) 2009–2013 Phanx <addons@phanx.net>. All rights reserved.
 	See the accompanying README and LICENSE files for more information.
 	http://www.wowinterface.com/downloads/info12513-ClassColors.html
 	http://www.curse.com/addons/wow/classcolors
@@ -29,21 +29,21 @@ do
 	--	L.NOTES_DESC = ""
 		L.RESET_DESC = "Klassenfarben auf Standard zurücksetzen."
 
-	elseif GetLocale() == "esES" or GetLocale() == "esMX" then
-		L.NOTES_DESC = "Observe que no todos los accesorios son compatibles con este sistema, y es posible que tengas a volver a cargar la interfaz para que los cambios a ser reconocidos por todos accesorios compatibles."
-		L.RESET_DESC = "Restaurar los colores de clase por defecto."
+	elseif strfind(GAME_LOCALE, "^es") then -- esES, esMX
+		L.NOTES_DESC = "Note que no todos los addons aprobar este, y es posible que tengas a volver a cargar la interfaz para que los cambios ser reconocidos por todos addons compatibles."
+		L.RESET_DESC = "Restaurar los colores de las clases por el defecto."
 
 	elseif GAME_LOCALE == "frFR" then
 	--	L.NOTES_DESC = ""
-		L.RESET_DESC = "Réinitialisez la couleur des classes par défaut."
+		L.RESET_DESC = "Réinitialisez les couleurs des classes par défaut."
 
 	elseif GAME_LOCALE == "itIT" then
 	--	L.NOTES_DESC = ""
-	--	L.RESET_DEST = ""
+		L.RESET_DEST = "Ripristina i colori delle classi di default."
 
-	elseif GAME_LOCALE == "ptBR" then
-		L.NOTES_DESC = "Observe que nem todos os addons são compatíveis com este sistema, e você pode ter que recarregar a interface antes de suas alterações são reconhecidos por todos os addons compatíveis."
-		L.RESET_DESC = "Redefinir todas as cores classe para seus valores padrão."
+	elseif strfind(GAME_LOCALE, "^pt") then -- ptBR, ptPT
+		L.NOTES_DESC = "Note que nem todos os addons aprovar isso, e você pode ter que recarregar a interface antes de suas alterações são reconhecidos por todos os addons compatíveis."
+		L.RESET_DESC = "Redefinir todas as cores de classes para o padrão."
 
 	elseif GAME_LOCALE == "ruRU" then
 	--	L.NOTES_DESC = ""
@@ -55,11 +55,11 @@ do
 
 	elseif GAME_LOCALE == "zhCN" then
 	--	L.NOTES_DESC = ""
-		L.RESET_DESC = "重置职业颜色为默认"
+		L.RESET_DESC = "重置职业颜色为默认。"
 
 	elseif GAME_LOCALE == "zhTW" then
 	--	L.NOTES_DESC = ""
-		L.RESET_DESC = "重置職業顔色為默認"
+		L.RESET_DESC = "重置職業顔色為默認。"
 	end
 end
 
@@ -75,51 +75,25 @@ local callbacks = { }
 local numCallbacks = 0
 
 local function RegisterCallback(self, method, handler)
-	if type(method) ~= "string" and type(method) ~= "function" then
-		error("Bad argument #1 to :RegisterCallback (string or function expected)")
-	end
-
+	assert(type(method) == "string" or type(method) == "function", "Bad argument #1 to :RegisterCallback (string or function expected)")
 	if type(method) == "string" then
-		if type(handler) ~= "table" then
-			error("Bad argument #2 to :RegisterCallback (table expected)")
-		elseif type(handler[method]) ~= "function" then
-			error("Bad argument #1 to :RegisterCallback (method \"" .. method .. "\" not found)")
-		end
-
+		assert(type(handler) == "table", "Bad argument #2 to :RegisterCallback (table expected)")
+		assert(type(handler[method]) == "function", "Bad argument #1 to :RegisterCallback (method \"" .. method .. "\" not found)")
 		method = handler[method]
 	end
-
-	if callbacks[method] then
-	--	Nobody cares. Shut up and play along.
-	--	error("Callback already registered!")
-		return
-	end
-
+	-- assert(not callbacks[method] "Callback already registered!")
 	callbacks[method] = handler or true
 	numCallbacks = numCallbacks + 1
 end
 
 local function UnregisterCallback(self, method, handler)
-	if type(method) ~= "string" and type(method) ~= "function" then
-		error("Bad argument #1 to :RegisterCallback (string or function expected)")
-	end
-
+	assert(type(method) == "string" or type(method) == "function", "Bad argument #1 to :UnregisterCallback (string or function expected)")
 	if type(method) == "string" then
-		if type(handler) ~= "table" then
-			error("Bad argument #2 to :RegisterCallback (table expected)")
-		elseif type(handler[method]) ~= "function" then
-			error("Bad argument #1 to :RegisterCallback (method \"" .. method .. "\" not found)")
-		end
-
+		assert(type(handler) == "table", "Bad argument #2 to :UnregisterCallback (table expected)")
+		assert(type(handler[method]) == "function", "Bad argument #1 to :UnregisterCallback (method \"" .. method .. "\" not found)")
 		method = handler[method]
 	end
-
-	if not callbacks[method] then
-	--	Nobody cares. Shut up and play along.
-	--	error("Callback not registered!")
-		return
-	end
-
+	-- assert(callbacks[method], "Callback not registered!")
 	callbacks[method] = nil
 	numCallbacks = numCallbacks - 1
 end
@@ -127,9 +101,11 @@ end
 local function DispatchCallbacks()
 	if numCallbacks < 1 then return end
 	-- print("CUSTOM_CLASS_COLORS, DispatchCallbacks")
-
 	for method, handler in pairs(callbacks) do
-		method(handler ~= true and handler)
+		local ok, err = pcall(method, handler ~= true and handler or nil)
+		if not ok then
+			print("ERROR:", err)
+		end
 	end
 end
 
@@ -179,7 +155,7 @@ f:SetScript("OnEvent", function(self, event, addon)
 	for i, class in ipairs(classes) do
 		local color = RAID_CLASS_COLORS[class]
 		local r, g, b = color.r, color.g, color.b
-		local hex = ("ff%02x%02x%02x"):format(r * 255, g * 255, b * 255)
+		local hex = format("ff%02x%02x%02x", r * 255, g * 255, b * 255)
 
 		defaults[class] = {
 			r = r,
@@ -196,7 +172,7 @@ f:SetScript("OnEvent", function(self, event, addon)
 				colorStr = hex,
 			}
 		elseif not db[class].hex then
-			db[class].hex = ("ff%02x%02x%02x"):format(db[class].r * 255, db[class].g * 255, db[class].b * 255)
+			db[class].hex = format("ff%02x%02x%02x", db[class].r * 255, db[class].g * 255, db[class].b * 255)
 		end
 
 		CUSTOM_CLASS_COLORS[class] = {
@@ -250,12 +226,12 @@ f:SetScript("OnEvent", function(self, event, addon)
 			color.r = r
 			color.g = g
 			color.b = b
-			color.colorStr = ("ff%02x%02x%02x"):format(r * 255, g * 255, b * 255)
+			color.colorStr = format("ff%02x%02x%02x", r * 255, g * 255, b * 255)
 
 			CUSTOM_CLASS_COLORS[class].r = r
 			CUSTOM_CLASS_COLORS[class].g = g
 			CUSTOM_CLASS_COLORS[class].b = b
-			CUSTOM_CLASS_COLORS[class].colorStr = ("ff%02x%02x%02x"):format(r * 255, g * 255, b * 255)
+			CUSTOM_CLASS_COLORS[class].colorStr = format("ff%02x%02x%02x", r * 255, g * 255, b * 255)
 
 			if cache[i].r ~= r or cache[i].g ~= g or cache[i].b ~= b then
 				DispatchCallbacks()
@@ -315,7 +291,7 @@ f:SetScript("OnEvent", function(self, event, addon)
 				picker:SetColor(cache[class].r, cache[class].g, cache[class].b)
 
 				local r, g, b = cache[i].r, cache[i].g, cache[i].b
-				local hex = ("ff%02x%02x%02x"):format(r * 255, g * 255, b * 255)
+				local hex = format("ff%02x%02x%02x", r * 255, g * 255, b * 255)
 
 				db[class].r = r
 				db[class].g = r
@@ -351,7 +327,7 @@ f:SetScript("OnEvent", function(self, event, addon)
 				changed = true
 
 				local r, g, b = color.r, color.g, color.b
-				local hex = ("ff%02x%02x%02x"):format(r * 255, g * 255, b * 255)
+				local hex = format("ff%02x%02x%02x", r * 255, g * 255, b * 255)
 
 				picker:SetColor(r, g, b)
 

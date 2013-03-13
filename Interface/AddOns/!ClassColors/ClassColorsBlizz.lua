@@ -1,7 +1,7 @@
 --[[--------------------------------------------------------------------
 	CustomClassColors
 	Change class colors without breaking parts of the Blizzard UI.
-	Copyright (c) 2009–2012 Phanx <addons@phanx.net>. All rights reserved.
+	Copyright (c) 2009–2013 Phanx <addons@phanx.net>. All rights reserved.
 	See the accompanying README and LICENSE files for more information.
 	http://www.wowinterface.com/downloads/info12513
 	http://www.curse.com/addons/wow/classcolors
@@ -51,7 +51,7 @@ function GetColoredName(event, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, a
 	end
 
 	local info = ChatTypeInfo[chatType]
-	if info and info.colorNameByClass and arg12 ~= "" then
+	if info and info.colorNameByClass and arg12 and arg12 ~= "" then
 		local _, class = GetPlayerInfoByGUID(arg12)
 		if class then
 			local color = CUSTOM_CLASS_COLORS[class]
@@ -70,7 +70,7 @@ do
 	local AddMessage = {}
 
 	local function FixClassColors(frame, message, ...)
-		if find(message, "|cff") then
+		if type(message) == "string" and find(message, "|cff") then -- type check required for shitty addons that pass nil or non-string values
 			for hex, class in pairs(blizzHexColors) do
 				local color = CUSTOM_CLASS_COLORS[class]
 				message = gsub(message, hex, color.colorStr)
@@ -99,13 +99,12 @@ do
 				if color then
 					local r, g, b = color.r, color.g, color.b
 					frame.healthBar:SetStatusBarColor(r, g, b)
-					frame.healthBar.r, frame.healthBar.g, frame.healthBar.g = r, g, b
+					--frame.healthBar.r, frame.healthBar.g, frame.healthBar.g = r, g, b
 				end
 			end
 		end
 	end)
 end
-
 ------------------------------------------------------------------------
 --	FriendsFrame.lua
 
@@ -249,6 +248,8 @@ end)
 --	RaidFinder.lua
 
 hooksecurefunc("RaidFinderQueueFrameCooldownFrame_Update", function()
+	local _G = _G
+
 	local prefix, members
 	if IsInRaid() then
 		prefix, members = "raid", GetNumGroupMembers()
@@ -294,6 +295,7 @@ end
 --	Blizzard_Calendar.lua
 
 addonFuncs["Blizzard_Calendar"] = function()
+	local _G = _G
 	local CalendarViewEventInviteListScrollFrame, CalendarCreateEventInviteListScrollFrame = CalendarViewEventInviteListScrollFrame, CalendarCreateEventInviteListScrollFrame
 	local HybridScrollFrame_GetOffset = HybridScrollFrame_GetOffset
 	local CalendarEventGetNumInvites, CalendarEventGetInvite = CalendarEventGetNumInvites, CalendarEventGetInvite
@@ -344,6 +346,7 @@ addonFuncs["Blizzard_ChallengesUI"] = function()
 	local F_PLAYER_CLASS = "%s - " .. PLAYER_CLASS
 	local F_PLAYER_CLASS_NO_SPEC = "%s - " .. PLAYER_CLASS_NO_SPEC
 
+	local _G = _G
 	local ChallengesFrame = ChallengesFrame
 	local GetChallengeBestTimeInfo, GetChallengeBestTimeNum, GetSpecializationInfoByID = GetChallengeBestTimeInfo, GetChallengeBestTimeNum, GetSpecializationInfoByID
 
@@ -447,33 +450,20 @@ end
 --	Blizzard_RaidUI.lua
 
 addonFuncs["Blizzard_RaidUI"] = function()
+	local _G = _G
 	local min = math.min
 	local GetNumGroupMembers, GetRaidRosterInfo, IsInRaid, UnitCanCooperate, UnitClass = GetNumGroupMembers, GetRaidRosterInfo, IsInRaid, UnitCanCooperate, UnitClass
 	local MAX_RAID_MEMBERS, MEMBERS_PER_RAID_GROUP = MAX_RAID_MEMBERS, MEMBERS_PER_RAID_GROUP
 
-	local raidGroup = setmetatable({}, { __index = function(t, i)
-		local obj = _G["RaidGroup"..i]
-		if obj then
-			rawset(t, i, obj)
-		end
-		return obj
-	end })
-	local raidGroupButton = setmetatable({}, { __index = function(t, i)
-		local obj = _G["RaidGroupButton"..i]
-		if obj then
-			rawset(t, i, obj)
-		end
-		return obj
-	end })
 	hooksecurefunc("RaidGroupFrame_Update", function()
 		local isRaid = IsInRaid()
 		if not isRaid then return end
 		for i = 1, min(GetNumGroupMembers(), MAX_RAID_MEMBERS) do
 			local name, _, subgroup, _, _, class, _, online, dead = GetRaidRosterInfo(i)
-			if class and online and not dead and raidGroup[subgroup].nextIndex <= MEMBERS_PER_RAID_GROUP then
+			if class and online and not dead and _G["RaidGroup"..subgroup].nextIndex <= MEMBERS_PER_RAID_GROUP then
 				local color = CUSTOM_CLASS_COLORS[class]
 				if color then
-					local button = raidGroupButton[i]
+					local button = _G["RaidGroupButton"..i]
 					button.subframes.name:SetTextColor(color.r, color.g, color.b)
 					button.subframes.class:SetTextColor(color.r, color.g, color.b)
 					button.subframes.level:SetTextColor(color.r, color.g, color.b)
@@ -482,44 +472,22 @@ addonFuncs["Blizzard_RaidUI"] = function()
 		end
 	end)
 
-	local raidGroupButtonName = setmetatable({}, { __index = function(t, i)
-		local obj = _G["RaidGroupButton"..i.."Name"]
-		if obj then
-			rawset(t, i, obj)
-		end
-		return obj
-	end })
-	local raidGroupButtonClass = setmetatable({}, { __index = function(t, i)
-		local obj = _G["RaidGroupButton"..i.."Class"]
-		if obj then
-			rawset(t, i, obj)
-		end
-		return obj
-	end })
-	local raidGroupButtonLevel = setmetatable({}, { __index = function(t, i)
-		local obj = _G["RaidGroupButton"..i.."Level"]
-		if obj then
-			rawset(t, i, obj)
-		end
-		return obj
-	end })
-	hooksecurefunc("RaidGroupFrame_UpdateHealth", function(id)
-		local _, _, _, _, _, class, _, online, dead = GetRaidRosterInfo(id)
+	hooksecurefunc("RaidGroupFrame_UpdateHealth", function(i)
+		local _, _, _, _, _, class, _, online, dead = GetRaidRosterInfo(i)
 		if class and online and not dead then
 			local color = CUSTOM_CLASS_COLORS[class]
 			if color then
 				local r, g, b = color.r, color.g, color.b
-				raidGroupButtonName[id]:SetTextColor(r, g, b)
-				raidGroupButtonClass[id]:SetTextColor(r, g, b)
-				raidGroupButtonLevel[id]:SetTextColor(r, g, b)
+				_G["RaidGroupButton"..i.."Name"]:SetTextColor(r, g, b)
+				_G["RaidGroupButton"..i.."Class"]:SetTextColor(r, g, b)
+				_G["RaidGroupButton"..i.."Level"]:SetTextColor(r, g, b)
 			end
 		end
 	end)
 
 	hooksecurefunc("RaidPullout_UpdateTarget", function(frame, button, unit, which)
 		if UnitCanCooperate("player", unit) then
-			frame = _G[frame]
-			if frame["show"..which] then
+			if _G[frame]["show"..which] then
 				local _, class = UnitClass(unit)
 				if class then
 					local color = class and CUSTOM_CLASS_COLORS[class]
