@@ -1,11 +1,6 @@
 ﻿local T, C, L, G = unpack(select(2, ...))
 local F = unpack(Aurora)
 
-local checkbuttons = {}
-local resetbuttons = {}
-local editboxes = {}
-local sliders = {}
-
 local function createRSbutton(parent, index, addon, value, tip)
 	local bu = CreateFrame("CheckButton", "Reset"..addon.."Button", parent, "InterfaceOptionsCheckButtonTemplate")
 	bu.addon = addon
@@ -14,11 +9,16 @@ local function createRSbutton(parent, index, addon, value, tip)
 	bu.text = bu:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
 	bu.text:SetPoint("LEFT", bu, "RIGHT", 1, 1)
 	bu.text:SetText(NEWBIE_TOOLTIP_STOPWATCH_RESETBUTTON.."  "..bu.addon)
-	bu:SetScript("OnClick", function()
-		if bu:GetChecked() then
-			aCoreCDB[bu.value] = true
+	bu:SetScript("OnShow", function(self)
+		if not IsAddOnLoaded(self.addon) then
+			self:Disable()
+		end
+	end)
+	bu:SetScript("OnClick", function(self)
+		if self:GetChecked() then
+			aCoreCDB[self.value] = true
 		else
-			aCoreCDB[bu.value] = false
+			aCoreCDB[self.value] = false
 		end
 	end)
 	bu:SetScript("OnEnter", function(self) 
@@ -27,8 +27,6 @@ local function createRSbutton(parent, index, addon, value, tip)
 		GameTooltip:Show() 
 	end)
 	bu:SetScript("OnLeave", function(self) GameTooltip:Hide() end)
-	tinsert(resetbuttons, bu)
-	tinsert(checkbuttons, bu)
 	return bu
 end
 
@@ -39,22 +37,25 @@ local function createcheckbutton(parent, index, name, value, tip)
 	bu.text = bu:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
 	bu.text:SetPoint("LEFT", bu, "RIGHT", 1, 1)
 	bu.text:SetText(name)
-	bu:SetScript("OnClick", function()
-		if bu:GetChecked() then
-			aCoreCDB[bu.value] = true
+	F.ReskinCheck(bu)
+	bu:SetScript("OnShow", function(self)
+		self:SetChecked(aCoreCDB[self.value] == true)
+	end)
+	bu:SetScript("OnClick", function(self)
+		if self:GetChecked() then
+			aCoreCDB[self.value] = true
 		else
-			aCoreCDB[bu.value] = false
+			aCoreCDB[self.value] = false
 		end
 	end)
 	if tip then
 		bu:SetScript("OnEnter", function(self) 
-			GameTooltip:SetOwner(bu, "ANCHOR_RIGHT", 10, 10)
+			GameTooltip:SetOwner(self, "ANCHOR_RIGHT", 10, 10)
 			GameTooltip:AddLine(tip)
 			GameTooltip:Show() 
 		end)
 		bu:SetScript("OnLeave", function(self) GameTooltip:Hide() end)
 	end	
-	tinsert(checkbuttons, bu)
 	return bu
 end
 
@@ -122,6 +123,7 @@ local function createeditbox(parent, index, name, value, tip)
 	box:SetFont(GameFontHighlight:GetFont(), 12, "OUTLINE")
 	box:SetAutoFocus(false)
 	box:SetTextInsets(3, 0, 0, 0)
+	F.CreateBD(box)
 	box:SetScript("OnShow", function(self) self:SetText(aCoreCDB[box.value]) end)
 	box:SetScript("OnEscapePressed", function(self) self:SetText(aCoreCDB[box.value]) self:ClearFocus() end)
 	box:SetScript("OnEnterPressed", function(self)
@@ -136,33 +138,39 @@ local function createeditbox(parent, index, name, value, tip)
 		end)
 		box:SetScript("OnLeave", function(self) GameTooltip:Hide() end)
 	end
-	tinsert(editboxes, box)
 	return box
 end
 
-local function createslider(parent, index, name, value, min, max, step, tip)
+local function createslider(parent, index, name, value, divisor, min, max, step, tip)
 	local slider = CreateFrame("Slider", "oUF_Mlight"..name.."Slider", parent, "OptionsSliderTemplate")
 	slider.value = value
 	slider:SetWidth(150)
 	slider:SetPoint("TOPLEFT", 16, 10-index*30)
 	slider.name = slider:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
-	slider.name:SetPoint("LEFT", slider, "RIGHT", 10, 1)
+	slider.name:SetPoint("LEFT", slider, "RIGHT", 35, 1)
 	slider.name:SetText(name)
+	slider.text = slider:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
+	slider.text:SetPoint("LEFT", slider, "RIGHT", 10, 1)
 	BlizzardOptionsPanel_Slider_Enable(slider)
 	slider:SetMinMaxValues(min, max)
 	slider:SetValueStep(step)
+	F.ReskinSlider(slider)
+	slider:SetScript("OnShow", function(self)
+		self:SetValue(aCoreCDB[self.value]*divisor)
+		self.text:SetText(aCoreCDB[self.value])
+	end)
 	slider:SetScript("OnValueChanged", function(self, getvalue)
-		aCoreCDB[slider.value] = getvalue
+		aCoreCDB[self.value] = getvalue/divisor
+		self.text:SetText(aCoreCDB[self.value])
 	end)
 	if tip then
 		slider:SetScript("OnEnter", function(self) 
-			GameTooltip:SetOwner(slider, "ANCHOR_RIGHT", 10, 10)
+			GameTooltip:SetOwner(self, "ANCHOR_RIGHT", 10, 10)
 			GameTooltip:AddLine(tip)
 			GameTooltip:Show() 
 		end)
 		slider:SetScript("OnLeave", function(self) GameTooltip:Hide() end)
 	end
-	tinsert(sliders, slider)
 	return slider
 end
 
@@ -227,6 +235,7 @@ local reloadbu = CreateFrame("Button", "AltzUIReLoadButton", aModgui, "UIPanelBu
 reloadbu:SetPoint("TOPRIGHT", -16, -20)
 reloadbu:SetSize(150, 25)
 reloadbu:SetText(APPLY)
+F.Reskin(reloadbu)
 reloadbu:SetScript("OnClick", function()
 	ReloadUI()
 end)
@@ -242,6 +251,7 @@ scrollFrame.Anchor:SetWidth(scrollFrame:GetWidth()-30)
 scrollFrame.Anchor:SetHeight(scrollFrame:GetHeight()+200)
 scrollFrame.Anchor:SetFrameLevel(scrollFrame:GetFrameLevel()+1)
 scrollFrame:SetScrollChild(scrollFrame.Anchor)
+F.ReskinScroll(_G["AltzUI GUI Frame_ScrollFrameScrollBar"])
 
 local Bagtitle = scrollFrame.Anchor:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
 Bagtitle:SetPoint("TOPLEFT", 16, 3-1*30)
@@ -295,12 +305,12 @@ local combattextbu = createcheckbutton(scrollFrame.Anchor, 28, L["Enalbe CT"], "
 local showreceivedctbu = createcheckbutton(scrollFrame.Anchor, 29, L["ReceivedCT"], "showreceivedct")
 local showoutputctbu = createcheckbutton(scrollFrame.Anchor, 30, L["OutPutCT"], "showoutputct")
 local ctfliterbu = createcheckbutton(scrollFrame.Anchor, 31, L["Fliter CT"], "ctfliter", L["Fliter CT2"])
-local cticonsizeslider = createslider(scrollFrame.Anchor, 32, L["CT icon size"], "cticonsize", 10, 30, 1)
-local ctbigiconsizeslider = createslider(scrollFrame.Anchor, 33, L["CT crit icon size"], "ctbigiconsize", 10, 30, 1)
+local cticonsizeslider = createslider(scrollFrame.Anchor, 32, L["CT icon size"], "cticonsize", 1, 10, 30, 1)
+local ctbigiconsizeslider = createslider(scrollFrame.Anchor, 33, L["CT crit icon size"], "ctbigiconsize", 1, 10, 30, 1)
 local ctshowdotsbu = createcheckbutton(scrollFrame.Anchor, 34, L["CT show dot"], "ctshowdots")
 local ctshowhotsbu = createcheckbutton(scrollFrame.Anchor, 35, L["CT show hot"], "ctshowhots")
 local ctshowpetbu = createcheckbutton(scrollFrame.Anchor, 36, L["CT show pet"], "ctshowpet")
-local ctfadetimeslider = createslider(scrollFrame.Anchor, 37, L["CT fade time"], "ctfadetime", 2, 10, 0.5, L["CT fade time2"])
+local ctfadetimeslider = createslider(scrollFrame.Anchor, 37, L["CT fade time"], "ctfadetime", 10, 20, 100, 5, L["CT fade time2"])
 createDR(combattextbu, showreceivedctbu, showoutputctbu, ctfliterbu, cticonsizeslider, ctbigiconsizeslider, ctshowdotsbu, ctshowhotsbu, ctshowpetbu, ctfadetimeslider)
 
 local aTweakstitle = scrollFrame.Anchor:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
@@ -354,6 +364,7 @@ local reloadbu2 = CreateFrame("Button", "AltzUIReLoadButton2", actionbargui, "UI
 reloadbu2:SetPoint("TOPRIGHT", -16, -20)
 reloadbu2:SetSize(150, 25)
 reloadbu2:SetText(APPLY)
+F.Reskin(reloadbu2)
 reloadbu2:SetScript("OnClick", function()
 	ReloadUI()
 end)
@@ -369,7 +380,8 @@ scrollFrame2.Anchor:SetWidth(scrollFrame2:GetWidth()-30)
 scrollFrame2.Anchor:SetHeight(scrollFrame2:GetHeight()+200)
 scrollFrame2.Anchor:SetFrameLevel(scrollFrame2:GetFrameLevel()+1)
 scrollFrame2:SetScrollChild(scrollFrame2.Anchor)
-
+F.ReskinScroll(_G["rFrame GUI Frame_ScrollFrameScrollBar"])
+	
 local Actionbartitle = scrollFrame2.Anchor:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
 Actionbartitle:SetPoint("TOPLEFT", 16, 3-1*30)
 Actionbartitle:SetText(ACTIONBARS_LABEL)
@@ -389,7 +401,7 @@ local bar12sizebox = createeditbox(scrollFrame2.Anchor, 9, L["buttonsize"], "bar
 local bar12spacebox = createeditbox(scrollFrame2.Anchor, 10, L["buttonspace"], "bar12space")
 local bar12mfadebu = createcheckbutton(scrollFrame2.Anchor, 11, L["mousefade"], "bar12mfade", L["mousefade2"])
 local bar12efadebu = createcheckbutton(scrollFrame2.Anchor, 12, L["eventfade"], "bar12efade", L["eventfade2"])
-local bar12fademinaplhaslider = createslider(scrollFrame2.Anchor, 13, L["fademinalpha"], "bar12fademinaplha", 0, 0.8, 0.05, L["fademinalpha2"])
+local bar12fademinaplhaslider = createslider(scrollFrame2.Anchor, 13, L["fademinalpha"], "bar12fademinaplha", 100, 0, 80, 5, L["fademinalpha2"])
 
 local bar3title = scrollFrame2.Anchor:CreateFontString(nil, "ARTWORK", "GameFontNormalLeftYellow")
 bar3title:SetPoint("TOPLEFT", 16, 3-14*30)
@@ -402,7 +414,7 @@ local bar3sizebox = createeditbox(scrollFrame2.Anchor, 18, L["buttonsize"], "bar
 local bar3spacebox = createeditbox(scrollFrame2.Anchor, 19, L["buttonspace"], "bar3space")
 local bar3mfadebu = createcheckbutton(scrollFrame2.Anchor, 20, L["mousefade"], "bar3mfade", L["mousefade2"])
 local bar3efadebu = createcheckbutton(scrollFrame2.Anchor, 21, L["eventfade"], "bar3efade", L["eventfade2"])
-local bar3fademinaplhaslider = createslider(scrollFrame2.Anchor, 22, L["fademinalpha"], "bar3fademinaplha", 0, 0.8, 0.05, L["fademinalpha2"])
+local bar3fademinaplhaslider = createslider(scrollFrame2.Anchor, 22, L["fademinalpha"], "bar3fademinaplha", 100, 0, 80, 5, L["fademinalpha2"])
 
 local bar45title = scrollFrame2.Anchor:CreateFontString(nil, "ARTWORK", "GameFontNormalLeftYellow")
 bar45title:SetPoint("TOPLEFT", 16, 3-23*30)
@@ -415,18 +427,18 @@ local bar45sizebox = createeditbox(scrollFrame2.Anchor, 26, L["buttonsize"], "ba
 local bar45spacebox = createeditbox(scrollFrame2.Anchor, 27, L["buttonspace"], "bar45space")
 local bar45mfadebu = createcheckbutton(scrollFrame2.Anchor, 28, L["mousefade"], "bar45mfade", L["mousefade2"])
 local bar45efadebu = createcheckbutton(scrollFrame2.Anchor, 29, L["eventfade"], "bar45efade", L["eventfade2"])
-local bar45fademinaplhaslider = createslider(scrollFrame2.Anchor, 30, L["fademinalpha"], "bar45fademinaplha", 0, 0.8, 0.05, L["fademinalpha2"])
+local bar45fademinaplhaslider = createslider(scrollFrame2.Anchor, 30, L["fademinalpha"], "bar45fademinaplha", 100, 0, 80, 5, L["fademinalpha2"])
 
 local petbartitle = scrollFrame2.Anchor:CreateFontString(nil, "ARTWORK", "GameFontNormalLeftYellow")
 petbartitle:SetPoint("TOPLEFT", 16, 3-31*30)
 petbartitle:SetText(L["Petbar"])
 
 local petbaruselayout5x2bu = createcheckbutton(scrollFrame2.Anchor, 32, L["petbaruselayout5x2"], "petbaruselayout5x2", L["petbaruselayout5x22"])
-local petbarscaleslider = createslider(scrollFrame2.Anchor, 33, L["barscale"], "petbarscale", 0.5, 2.5, 0.1)
+local petbarscaleslider = createslider(scrollFrame2.Anchor, 33, L["barscale"], "petbarscale", 10, 5, 25, 1)
 local petbuttonspacebox = createeditbox(scrollFrame2.Anchor, 34, L["buttonspace"], "petbuttonspace")
 local petbarmfadebu = createcheckbutton(scrollFrame2.Anchor, 35, L["mousefade"], "petbarmfade", L["mousefade2"])
 local petbarefadebu = createcheckbutton(scrollFrame2.Anchor, 36, L["eventfade"], "petbarefade", L["eventfade2"])
-local petbarfademinaplhaslider = createslider(scrollFrame2.Anchor, 37, L["fademinalpha"], "petbarfademinaplha", 0, 0.8, 0.05, L["fademinalpha2"])
+local petbarfademinaplhaslider = createslider(scrollFrame2.Anchor, 37, L["fademinalpha"], "petbarfademinaplha", 100, 0, 80, 5, L["fademinalpha2"])
 
 local stancebartitle = scrollFrame2.Anchor:CreateFontString(nil, "ARTWORK", "GameFontNormalLeftYellow")
 stancebartitle:SetPoint("TOPLEFT", 16, 3-38*30)
@@ -439,9 +451,9 @@ local micromenutitle = scrollFrame2.Anchor:CreateFontString(nil, "ARTWORK", "Gam
 micromenutitle:SetPoint("TOPLEFT", 16, 3-41*30)
 micromenutitle:SetText(L["MicroMenu"])
 
-local micromenuscaleslider = createslider(scrollFrame2.Anchor, 42, L["barscale"], "micromenuscale", 0.5, 2.5, 0.1)
+local micromenuscaleslider = createslider(scrollFrame2.Anchor, 42, L["barscale"], "micromenuscale", 10, 5, 25, 1)
 local micromenufadebu = createcheckbutton(scrollFrame2.Anchor, 43, L["mousefade"], "micromenufade", L["mousefade2"])
-local micromenuminalphaslider = createslider(scrollFrame2.Anchor, 44, L["fademinalpha"], "micromenuminalpha", 0, 0.8, 0.05, L["fademinalpha2"])
+local micromenuminalphaslider = createslider(scrollFrame2.Anchor, 44, L["fademinalpha"], "micromenuminalpha", 100, 0, 80, 5, L["fademinalpha2"])
 
 local leave_vehicletitle = scrollFrame2.Anchor:CreateFontString(nil, "ARTWORK", "GameFontNormalLeftYellow")
 leave_vehicletitle:SetPoint("TOPLEFT", 16, 3-45*30)
@@ -488,6 +500,7 @@ local resetbu = CreateFrame("Button", "AltzUIResetButton", resetui, "UIPanelButt
 resetbu:SetPoint("TOPRIGHT", -16, -20)
 resetbu:SetSize(150, 25)
 resetbu:SetText(NEWBIE_TOOLTIP_STOPWATCH_RESETBUTTON)
+F.Reskin(resetbu)
 resetbu:SetScript("OnClick", function()
 	T.ResetAllAddonSettings()
 	if aCoreCDB.notmeet then
@@ -522,35 +535,5 @@ function eventframe:ADDON_LOADED(arg1)
 		aCoreCDB.notmeet = true -- have we met?
 	end
 	T.LoadaModVariables()		
-	T.LoadResetVariables()	
-	for i = 1, #checkbuttons do
-		F.ReskinCheck(checkbuttons[i])
-	end
-	for i = 1, #editboxes do
-		F.CreateBD(editboxes[i])
-	end
-	for i = 1, #sliders do
-		F.ReskinSlider(sliders[i])
-	end
-	F.Reskin(reloadbu)
-	F.Reskin(reloadbu2)
-	F.Reskin(resetbu)
-	F.ReskinScroll(_G["AltzUI GUI Frame_ScrollFrameScrollBar"])
-	F.ReskinScroll(_G["rFrame GUI Frame_ScrollFrameScrollBar"])
-	self:RegisterEvent("PLAYER_ENTERING_WORLD")
-end
-
-function eventframe:PLAYER_ENTERING_WORLD(arg1)
-	for i = 1, #checkbuttons do
-		checkbuttons[i]:SetChecked(aCoreCDB[checkbuttons[i].value] == true)
-	end
-	for i = 1, #sliders do
-		sliders[i]:SetValue(aCoreCDB[sliders[i].value])
-	end
-	for i = 1, #resetbuttons do
-		if not IsAddOnLoaded(resetbuttons[i].addon) then
-			resetbuttons[i]:Disable()
-		end
-	end
-	self:UnregisterEvent("PLAYER_ENTERING_WORLD")
+	T.LoadResetVariables()
 end
