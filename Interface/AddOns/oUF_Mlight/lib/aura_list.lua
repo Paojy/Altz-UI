@@ -21,6 +21,7 @@ ns.auras = {
 
     buffs = { -- these display on the second icon
 		--[GetSpellInfo(139)] = 15, -- Renew TEST
+		[GetSpellInfo(117309)] = 15, -- 净化之水
 	--牧师
 		[GetSpellInfo(33206)] = 15, -- 痛苦压制
         [GetSpellInfo(47788)] = 15, -- 守护之魂
@@ -63,6 +64,56 @@ ns.auras = {
 		
 		-- GetCurrentMapAreaID() or http://www.wowpedia.org/MapID
 
+		[930] = { 
+			-- Throne of Thunder -- 水月大大万岁 ~\(≧▽≦)/~
+			--Trash
+			[SpellName(138349)] = 7, -- Static Wound
+			[SpellName(137371)] = 7, -- Thundering Throw
+
+			--Horridon
+			[SpellName(136767)] = 7, --Triple Puncture
+
+			--Council of Elders
+			[SpellName(137641)] = 7, --Soul Fragment
+			[SpellName(137359)] = 7, --Shadowed Loa Spirit Fixate
+			[SpellName(137972)] = 7, --Twisted Fate
+
+			--Tortos
+			[SpellName(136753)] = 7, --Slashing Talons
+			[SpellName(137633)] = 7, --Crystal Shell
+
+			--Megaera
+			[SpellName(137731)] = 7, --Ignite Flesh
+
+			--Ji-Kun
+			[SpellName(138309)] = 7, --Slimed
+
+			--Durumu the Forgotten
+			[SpellName(133767)] = 7, --Serious Wound
+			[SpellName(133768)] = 7, --Arterial Cut
+
+			--Primordius
+			[SpellName(136050)] = 7, --Malformed Blood
+
+			--Dark Animus
+			[SpellName(138569)] = 7, --Explosive Slam
+
+			--Iron Qon
+			[SpellName(134691)] = 7, --Impale
+			[SpellName(134647)] = 7, --Scorched
+
+			--Twin Consorts
+			[SpellName(137440)] = 7, --Icy Shadows
+			[SpellName(137408)] = 7, --Fan of Flames
+			[SpellName(137360)] = 7, --Corrupted Healing
+
+			--Lei Shen
+			[SpellName(135000)] = 7, --Decapitate
+
+			--Ra-den
+
+		},
+		
         [875] = { --[[Gate of the Setting Sun 残阳关 ]]--
 
             -- Raigonn 莱公
@@ -222,8 +273,9 @@ ns.auras = {
 			[GetSpellInfo(117235)] = 7, -- Purified, haste buff gained by killing mist and being in range.
 			--[GetSpellInfo(117353)] = 7, -- Overwhelming Corruption, stacking raidwide softenrage debuff.
 			[GetSpellInfo(118091)] = 7, -- Defiled Ground, Increased damage taken from Defiled ground debuff.
-			[GetSpellInfo(117436)] = 7, -- Lightning Prison, Magic stun.
-
+			[GetSpellInfo(117436)] = 9, -- Lightning Prison, Magic stun. 闪电牢笼
+			[GetSpellInfo(118191)] = 8, -- 堕落精华
+			
 			--Tsulong
 			[GetSpellInfo(122768)] = 7, -- Dread Shadows, Stacking raid damage debuff (ragnaros superheated style) 
 			[GetSpellInfo(122789)] = 7, -- Sunbeam, standing in the sunbeam, used to clear dread shadows.
