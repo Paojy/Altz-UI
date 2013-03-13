@@ -40,10 +40,11 @@ local CreateAuraIcon = function(auras)
 
     local font = oUF_MlightDB.fontfile
     local count = button:CreateFontString(nil, "OVERLAY")
-    count:SetFont(font, auras.cfontsize, "THINOUTLINE")
+    count:SetFont(font, auras.cfontsize+2, "THINOUTLINE")
 	count:ClearAllPoints()
-    count:SetPoint("TOPLEFT", -2, 2)
+    count:SetPoint("TOPLEFT", -4, 4)
 	count:SetJustifyH("LEFT")
+	count:SetTextColor(1, .5, .8)
 	
     local border = CreateFrame("Frame", nil, button)
     border:SetPoint("TOPLEFT", button, "TOPLEFT", -1, 1)
