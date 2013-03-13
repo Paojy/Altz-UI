@@ -72,32 +72,9 @@ local idtext = T.createtext(id, "OVERLAY", 14, "OUTLINE", "LEFT")
 idtext:SetPoint"LEFT"
 idtext:SetTextColor(G.Ccolor.r, G.Ccolor.g, G.Ccolor.b)
 
-function indiff()
-	local index = GetInstanceDifficulty()
-	if index == 2 then
-		return "5"
-	elseif index == 3 then
-		return "5|cffFF7F00H|r"
-	elseif index == 4 then
-		return "10"
-	elseif index == 5 then
-		return "25"
-	elseif index == 6 then
-		return "10|cffFF7F00H|r"
-	elseif index == 7 then
-		return "25|cffFF7F00H|r"	
-	elseif index == 8 then
-		return "|cff7FFF00LFR|r"
-	elseif index == 9 then
-		return "|cffCD0000CLG|r"
-	elseif index == 10 then
-		return "40"
-	end
-end
-
 id:RegisterEvent("PLAYER_ENTERING_WORLD")
 id:RegisterEvent("PLAYER_DIFFICULTY_CHANGED")
-id:SetScript("OnEvent", function() idtext:SetText(indiff()) end)
+id:SetScript("OnEvent", function() idtext:SetText(select(4, GetInstanceInfo())) end)
 
 -- location
 MinimapZoneTextButton:SetPoint("TOPLEFT", Minimap, "TOPRIGHT", 10, -25)
