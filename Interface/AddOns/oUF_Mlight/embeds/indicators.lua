@@ -22,7 +22,7 @@ oUF.Tags.Events['mlight:SAI'] = "UNIT_AURA"
 oUF.Tags.Methods['mlight:Stamina'] = function(u) 
 	if not (
 	UnitBuff(u, GetSpellInfo(21562)) or -- priest
-	UnitBuff(u, GetSpellInfo(103127)) or -- warlock
+	UnitBuff(u, GetSpellInfo(109773)) or -- warlock
 	UnitBuff(u, GetSpellInfo(469)) or -- warrior
 	UnitBuff(u, GetSpellInfo(90364)) -- hunter
 	) then return "|cffFFFFFF"..x.."|r" end 
