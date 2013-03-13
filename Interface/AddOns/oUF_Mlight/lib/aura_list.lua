@@ -67,48 +67,48 @@ ns.auras = {
 		[930] = { 
 			-- Throne of Thunder -- 水月大大万岁 ~\(≧▽≦)/~
 			--Trash
-			[SpellName(138349)] = 7, -- Static Wound
-			[SpellName(137371)] = 7, -- Thundering Throw
+			[GetSpellInfo(138349)] = 7, -- Static Wound
+			[GetSpellInfo(137371)] = 7, -- Thundering Throw
 
 			--Horridon
-			[SpellName(136767)] = 7, --Triple Puncture
+			[GetSpellInfo(136767)] = 7, --Triple Puncture
 
 			--Council of Elders
-			[SpellName(137641)] = 7, --Soul Fragment
-			[SpellName(137359)] = 7, --Shadowed Loa Spirit Fixate
-			[SpellName(137972)] = 7, --Twisted Fate
+			[GetSpellInfo(137641)] = 7, --Soul Fragment
+			[GetSpellInfo(137359)] = 7, --Shadowed Loa Spirit Fixate
+			[GetSpellInfo(137972)] = 7, --Twisted Fate
 
 			--Tortos
-			[SpellName(136753)] = 7, --Slashing Talons
-			[SpellName(137633)] = 7, --Crystal Shell
+			[GetSpellInfo(136753)] = 7, --Slashing Talons
+			[GetSpellInfo(137633)] = 7, --Crystal Shell
 
 			--Megaera
-			[SpellName(137731)] = 7, --Ignite Flesh
+			[GetSpellInfo(137731)] = 7, --Ignite Flesh
 
 			--Ji-Kun
-			[SpellName(138309)] = 7, --Slimed
+			[GetSpellInfo(138309)] = 7, --Slimed
 
 			--Durumu the Forgotten
-			[SpellName(133767)] = 7, --Serious Wound
-			[SpellName(133768)] = 7, --Arterial Cut
+			[GetSpellInfo(133767)] = 7, --Serious Wound
+			[GetSpellInfo(133768)] = 7, --Arterial Cut
 
 			--Primordius
-			[SpellName(136050)] = 7, --Malformed Blood
+			[GetSpellInfo(136050)] = 7, --Malformed Blood
 
 			--Dark Animus
-			[SpellName(138569)] = 7, --Explosive Slam
+			[GetSpellInfo(138569)] = 7, --Explosive Slam
 
 			--Iron Qon
-			[SpellName(134691)] = 7, --Impale
-			[SpellName(134647)] = 7, --Scorched
+			[GetSpellInfo(134691)] = 7, --Impale
+			[GetSpellInfo(134647)] = 7, --Scorched
 
 			--Twin Consorts
-			[SpellName(137440)] = 7, --Icy Shadows
-			[SpellName(137408)] = 7, --Fan of Flames
-			[SpellName(137360)] = 7, --Corrupted Healing
+			[GetSpellInfo(137440)] = 7, --Icy Shadows
+			[GetSpellInfo(137408)] = 7, --Fan of Flames
+			[GetSpellInfo(137360)] = 7, --Corrupted Healing
 
 			--Lei Shen
-			[SpellName(135000)] = 7, --Decapitate
+			[GetSpellInfo(135000)] = 7, --Decapitate
 
 			--Ra-den
 
