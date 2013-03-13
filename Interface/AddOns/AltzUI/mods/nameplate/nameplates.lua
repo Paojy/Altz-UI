@@ -331,9 +331,7 @@ local function Colorize(frame)
 		end
 	end
 	
-	if (r + b + b) > 2 then
-		r,g,b = 0.55, 0.57, 0.61
-	elseif g+b == 0 then -- hostile
+	if g+b == 0 then -- hostile
 		r,g,b = 254/255, 20/255,  0
 	elseif r+b == 0 then -- friendly npc
 		r,g,b = 19/255, 213/255, 29/255

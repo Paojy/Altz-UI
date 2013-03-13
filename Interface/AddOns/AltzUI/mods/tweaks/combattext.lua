@@ -3,7 +3,9 @@
 local T, C, L, G = unpack(select(2, ...))
 local dragFrameList = G.dragFrameList
 
-if not aCoreCDB.combattext then return end
+local enable = aCoreCDB.combattext
+
+if not enable then return end
 
 local showreceived = aCoreCDB.showreceivedct
 local showoutput = aCoreCDB.showoutputct
@@ -304,14 +306,16 @@ function eventframe:COMBAT_LOG_EVENT_UNFILTERED(...)
 	end
 end
 
-if not IsAddOnLoaded("Blizzard_CombatText") then LoadAddOn("Blizzard_CombatText") end
-if IsAddOnLoaded("Blizzard_CombatText") then
-	CombatText:SetScript("OnUpdate", nil)
-	CombatText:SetScript("OnEvent", nil)
-	CombatText:UnregisterAllEvents()
-end
+if enable then
+	if not IsAddOnLoaded("Blizzard_CombatText") then LoadAddOn("Blizzard_CombatText") end
+	if IsAddOnLoaded("Blizzard_CombatText") then
+		CombatText:SetScript("OnUpdate", nil)
+		CombatText:SetScript("OnEvent", nil)
+		CombatText:UnregisterAllEvents()
+	end
 
-SetCVar("CombatLogPeriodicSpells", 0)
-SetCVar("PetMeleeDamage", 0)
-SetCVar("CombatDamage", 0)
-SetCVar("CombatHealing", 0)
+	SetCVar("CombatLogPeriodicSpells", 0)
+	SetCVar("PetMeleeDamage", 0)
+	SetCVar("CombatDamage", 0)
+	SetCVar("CombatHealing", 0)
+end
