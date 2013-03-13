@@ -114,10 +114,10 @@ oUF.Tags.Methods["Mlight:hpraidname"] = function(u, r)
 	else
 		perc = 1
 	end
-	if perc < .9 then
-		return FormatValue(UnitHealthMax(u) - UnitHealth(u))
-	else
+	if perc > .9 or UnitIsDead(u) then
 		return utf8sub(name, oUF_MlightDB.namelength, false)
+	else
+		return FormatValue(UnitHealthMax(u) - UnitHealth(u))
 	end
 end
 oUF.Tags.Events["Mlight:hpraidname"] = "UNIT_HEALTH UNIT_NAME_UPDATE"
