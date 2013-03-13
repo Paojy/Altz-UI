@@ -1,4 +1,4 @@
-## Interface: 50100
+## Interface: 50200
 ## Author: Safturento
 ## Version: v1.3.2-712c7c1
 ## Title: |cff00aaffst|rAddonManager
