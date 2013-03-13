@@ -12,19 +12,13 @@ end
 local addon, ns = ...
 local L = ns.L
 
-local reloadbuttons = {}
-local checkbuttons = {}
-local editboxes = {}
-local sliders = {}
-local anchorboxes = {}
-local raidsizeboxes = {}
-
 local function createreloadbuttons(parent)
 	local bu = CreateFrame("Button", nil, parent, "UIPanelButtonTemplate")
 	bu:SetPoint("TOPRIGHT", -16, -20)
 	bu:SetSize(150, 25)
 	bu:SetText(APPLY)
 	bu:SetScript("OnClick", ReloadUI)
+	F.Reskin(bu)
 	return bu
 end
 
@@ -35,6 +29,10 @@ local function createcheckbutton(parent, index, name, value, tip)
 	bu.text = bu:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
 	bu.text:SetPoint("LEFT", bu, "RIGHT", 1, 1)
 	bu.text:SetText(name)
+	F.ReskinCheck(bu)
+	bu:SetScript("OnShow", function(self)
+		self:SetChecked(oUF_MlightDB[self.value] == true)
+	end)
 	bu:SetScript("OnEnter", function(self) 
 		GameTooltip:SetOwner(bu, "ANCHOR_RIGHT", 10, 10)
 		GameTooltip:AddLine(tip)
@@ -48,7 +46,6 @@ local function createcheckbutton(parent, index, name, value, tip)
 			oUF_MlightDB[bu.value] = false
 		end
 	end)
-	tinsert(checkbuttons, bu)
 	return bu
 end
 
@@ -63,6 +60,7 @@ local function createeditbox(parent, index, name, value, tip)
 	box:SetFont(GameFontHighlight:GetFont(), 12, "OUTLINE")
 	box:SetAutoFocus(false)
 	box:SetTextInsets(3, 0, 0, 0)
+	F.CreateBD(box)
 	box:SetScript("OnShow", function(self) self:SetText(oUF_MlightDB[self.value]) end)
 	box:SetScript("OnEscapePressed", function(self) self:SetText(oUF_MlightDB[self.value]) self:ClearFocus() end)
 	box:SetScript("OnEnterPressed", function(self)
@@ -77,33 +75,39 @@ local function createeditbox(parent, index, name, value, tip)
 		end)
 		box:SetScript("OnLeave", function(self) GameTooltip:Hide() end)
 	end
-	tinsert(editboxes, box)
 	return box
 end
 
-local function createslider(parent, index, name, value, min, max, step, tip)
+local function createslider(parent, index, name, value, divisor, min, max, step, tip)
 	local slider = CreateFrame("Slider", "oUF_Mlight"..name.."Slider", parent, "OptionsSliderTemplate")
 	slider.value = value
 	slider:SetWidth(150)
 	slider:SetPoint("TOPLEFT", 16, 10-index*30)
 	slider.name = slider:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
-	slider.name:SetPoint("LEFT", slider, "RIGHT", 10, 1)
+	slider.name:SetPoint("LEFT", slider, "RIGHT", 35, 1)
 	slider.name:SetText(name)
+	slider.text = slider:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
+	slider.text:SetPoint("LEFT", slider, "RIGHT", 10, 1)
 	BlizzardOptionsPanel_Slider_Enable(slider)
 	slider:SetMinMaxValues(min, max)
 	slider:SetValueStep(step)
+	F.ReskinSlider(slider)
+	slider:SetScript("OnShow", function(self)
+		self:SetValue(oUF_MlightDB[self.value]*divisor)
+		self.text:SetText(oUF_MlightDB[self.value])
+	end)	
 	slider:SetScript("OnValueChanged", function(self, getvalue)
-		oUF_MlightDB[slider.value] = getvalue
+		oUF_MlightDB[self.value] = getvalue/divisor
+		self.text:SetText(oUF_MlightDB[self.value])
 	end)
 	if tip then
 		slider:SetScript("OnEnter", function(self) 
-			GameTooltip:SetOwner(slider, "ANCHOR_RIGHT", 10, 10)
+			GameTooltip:SetOwner(self, "ANCHOR_RIGHT", 10, 10)
 			GameTooltip:AddLine(tip)
 			GameTooltip:Show() 
 		end)
 		slider:SetScript("OnLeave", function(self) GameTooltip:Hide() end)
 	end
-	tinsert(sliders, slider)
 	return slider
 end
 
@@ -115,6 +119,10 @@ local function createanchorbox(parent, index, name, value)
 	ab.name = ab:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
 	ab.name:SetPoint("LEFT", ab, "RIGHT", 10, 1)
 	ab.name:SetText(name)
+	F.Reskin(ab)
+	ab:SetScript("OnShow", function(self)
+		self:SetText(oUF_MlightDB[self.value])
+	end)
 	ab:SetScript("OnClick", function()
 		if ab:GetText() == "LEFT" then
 			oUF_MlightDB[ab.value] = "TOP"
@@ -123,7 +131,6 @@ local function createanchorbox(parent, index, name, value)
 		end
 		ab:SetText(oUF_MlightDB[ab.value])
 	end)
-	tinsert(anchorboxes, ab)
 	return ab
 end
 
@@ -135,16 +142,19 @@ local function createraidsizebox(parent, index, name, value)
 	rsb.name = rsb:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
 	rsb.name:SetPoint("LEFT", rsb, "RIGHT", 10, 1)
 	rsb.name:SetText(name)
-	rsb:SetScript("OnClick", function()
-		if oUF_MlightDB[rsb.value] == "1,2,3,4,5" then
-			oUF_MlightDB[rsb.value] = "1,2,3,4,5,6,7,8"
-			rsb:SetText("40-man")
+	F.Reskin(rsb)
+	rsb:SetScript("OnShow", function(self)
+		self:SetText(oUF_MlightDB[self.value] == "1,2,3,4,5" and "25-man" or "40-man")
+	end)
+	rsb:SetScript("OnClick", function(self)
+		if oUF_MlightDB[self.value] == "1,2,3,4,5" then
+			oUF_MlightDB[self.value] = "1,2,3,4,5,6,7,8"
+			self:SetText("40-man")
 		else
-			oUF_MlightDB[rsb.value] = "1,2,3,4,5"
-			rsb:SetText("25-man")
+			oUF_MlightDB[self.value] = "1,2,3,4,5"
+			self:SetText("25-man")
 		end
 	end)
-	tinsert(raidsizeboxes, rsb)
 	return rsb
 end
 
@@ -156,15 +166,19 @@ local function creatfontflagbu(parent, index, name, value)
 	ffb.name = ffb:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
 	ffb.name:SetPoint("LEFT", ffb, "RIGHT", 10, 1)
 	ffb.name:SetText(name)
-	ffb:SetScript("OnClick", function()
-		if oUF_MlightDB[ffb.value] == "OUTLINE" then
-			oUF_MlightDB[ffb.value] = "MONOCHROME"
-		elseif oUF_MlightDB[ffb.value] == "MONOCHROME" then
-			oUF_MlightDB[ffb.value] = "NONE"
-		elseif oUF_MlightDB[ffb.value] == "NONE" then
-			oUF_MlightDB[ffb.value] = "OUTLINE"
+	F.Reskin(ffb)
+	ffb:SetScript("OnShow", function(self)
+		self:SetText(oUF_MlightDB[self.value])
+	end)
+	ffb:SetScript("OnClick", function(self)
+		if oUF_MlightDB[self.value] == "OUTLINE" then
+			oUF_MlightDB[self.value] = "MONOCHROME"
+		elseif oUF_MlightDB[self.value] == "MONOCHROME" then
+			oUF_MlightDB[self.value] = "NONE"
+		elseif oUF_MlightDB[self.value] == "NONE" then
+			oUF_MlightDB[self.value] = "OUTLINE"
 		end
-		ffb:SetText(oUF_MlightDB[ffb.value])
+		self:SetText(oUF_MlightDB[self.value])
 	end)
 	return ffb
 end
@@ -183,15 +197,21 @@ local function createcolorpickerbu(parent, index, name, value, tip)
 	cpb.name = cpb:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
 	cpb.name:SetPoint("LEFT", cpb, "RIGHT", 10, 1)
 	cpb.name:SetText(name)
-		
-	cpb:SetScript("OnClick", function()
+	
+	F.Reskin(cpb)
+	
+	cpb:SetScript("OnShow", function(self)
+		self.tex:SetVertexColor(oUF_MlightDB[self.value].r, oUF_MlightDB[self.value].g, oUF_MlightDB[self.value].b)	
+	end)
+	
+	cpb:SetScript("OnClick", function(self)
 		local r, g, b, a = oUF_MlightDB[value].r, oUF_MlightDB[value].g, oUF_MlightDB[value].b, oUF_MlightDB[value].a
-		ColorPickerFrame:SetPoint("TOPLEFT", cpb, "TOPRIGHT", 20, 0)
+		ColorPickerFrame:SetPoint("TOPLEFT", self, "TOPRIGHT", 20, 0)
 		
 		ColorPickerFrame.hasOpacity = oUF_MlightDB.transparentmode -- Opacity slider only available for reverse filling
 		ColorPickerFrame.func = function() 
 			oUF_MlightDB[value].r, oUF_MlightDB[value].g, oUF_MlightDB[value].b = ColorPickerFrame:GetColorRGB()
-			cpb.tex:SetVertexColor(ColorPickerFrame:GetColorRGB())
+			self.tex:SetVertexColor(ColorPickerFrame:GetColorRGB())
 		end
 		ColorPickerFrame.opacityFunc = function()
 			oUF_MlightDB[value].a = OpacitySliderFrame:GetValue()
@@ -200,7 +220,7 @@ local function createcolorpickerbu(parent, index, name, value, tip)
 		ColorPickerFrame.opacity = oUF_MlightDB[value].a
 		ColorPickerFrame.cancelFunc = function()
 			oUF_MlightDB[value].r, oUF_MlightDB[value].g, oUF_MlightDB[value].b, oUF_MlightDB[value].a = r, g, b, a
-			cpb.tex:SetVertexColor(oUF_MlightDB[value].r, oUF_MlightDB[value].g, oUF_MlightDB[value].b)
+			self.tex:SetVertexColor(oUF_MlightDB[value].r, oUF_MlightDB[value].g, oUF_MlightDB[value].b)
 		end
 		ColorPickerFrame:SetColorRGB(r, g, b)
 		ColorPickerFrame:Hide()
@@ -208,7 +228,7 @@ local function createcolorpickerbu(parent, index, name, value, tip)
 	end)
 	if tip then
 		cpb:SetScript("OnEnter", function(self) 
-			GameTooltip:SetOwner(cpb, "ANCHOR_RIGHT", 10, 10)
+			GameTooltip:SetOwner(self, "ANCHOR_RIGHT", 10, 10)
 			GameTooltip:AddLine(tip)
 			GameTooltip:Show() 
 		end)
@@ -275,12 +295,13 @@ gui.intro = gui:CreateFontString(nil, "ARTWORK", "GameFontNormalLeftGrey")
 gui.intro:SetText(L["apply"])
 gui.intro:SetPoint("TOPLEFT", 20, -60)
 
-reloadbuttons[1] = createreloadbuttons(gui)
+reloadbutton1 = createreloadbuttons(gui)
 
 local resetbu = CreateFrame("Button", nil, gui, "UIPanelButtonTemplate")
-resetbu:SetPoint("RIGHT", reloadbuttons[1],"LEFT", -5, 0)
+resetbu:SetPoint("RIGHT", reloadbutton1,"LEFT", -5, 0)
 resetbu:SetSize(150, 25)
 resetbu:SetText(NEWBIE_TOOLTIP_STOPWATCH_RESETBUTTON)
+F.Reskin(resetbu)	
 resetbu:SetScript("OnClick", function()
 	ns.ResetVariables()
 	ns.LoadVariables()
@@ -291,20 +312,21 @@ local scrollFrame = CreateFrame("ScrollFrame", "oUF_Mlight GUI Frame_ScrollFrame
 scrollFrame:SetPoint("TOPLEFT", gui, "TOPLEFT", 10, -80)
 scrollFrame:SetPoint("BOTTOMRIGHT", gui, "BOTTOMRIGHT", -35, 0)
 scrollFrame:SetFrameLevel(gui:GetFrameLevel()+1)
-	
+
 scrollFrame.Anchor = CreateFrame("Frame", "oUF_Mlight GUI Frame_ScrollAnchor", scrollFrame)
 scrollFrame.Anchor:SetPoint("TOPLEFT", scrollFrame, "TOPLEFT", 0, -3)
 scrollFrame.Anchor:SetWidth(scrollFrame:GetWidth()-30)
 scrollFrame.Anchor:SetHeight(scrollFrame:GetHeight()+200)
 scrollFrame.Anchor:SetFrameLevel(scrollFrame:GetFrameLevel()+1)
 scrollFrame:SetScrollChild(scrollFrame.Anchor)
-
+F.ReskinScroll(_G["oUF_Mlight GUI Frame_ScrollFrameScrollBar"])
+	
 local fadetext = scrollFrame.Anchor:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
 fadetext:SetPoint("TOPLEFT", 16, 3-1*30)
 fadetext:SetText(L["fade"])
 
 local enablefadebu = createcheckbutton(scrollFrame.Anchor, 2, L["enablefade"], "enablefade", L["enablefade2"])
-local fadingalphaslider = createslider(scrollFrame.Anchor, 3, L["fadingalpha"], "fadingalpha", 0, 0.8, 0.05, L["fadingalpha2"])
+local fadingalphaslider = createslider(scrollFrame.Anchor, 3, L["fadingalpha"], "fadingalpha", 100, 0, 80, 5, L["fadingalpha2"])
 createDR(enablefadebu, fadingalphaslider)
 
 local fonttext = scrollFrame.Anchor:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
@@ -333,7 +355,7 @@ portraittext:SetPoint("TOPLEFT", 14, 3-17*30)
 portraittext:SetText(L["portrait"])
 
 local portraitbu = createcheckbutton(scrollFrame.Anchor, 18, L["enableportrait"], "portrait")
-local portraitalphaslider = createslider(scrollFrame.Anchor, 19, L["portraitalpha"], "portraitalpha", 0.1, 1, 0.05, L["portraitalpha2"])
+local portraitalphaslider = createslider(scrollFrame.Anchor, 19, L["portraitalpha"], "portraitalpha", 100, 10, 100, 5, L["portraitalpha2"])
 createDR(portraitbu, portraitalphaslider)
 
 local sizetext = scrollFrame.Anchor:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
@@ -344,8 +366,8 @@ local heightbox = createeditbox(scrollFrame.Anchor, 21, L["height"], "height", L
 local widthbox = createeditbox(scrollFrame.Anchor, 22, L["width"], "width", L["width2"])
 local widthpetbox = createeditbox(scrollFrame.Anchor, 23, L["widthpet"], "widthpet", L["widthpet2"])
 local widthbossbox = createeditbox(scrollFrame.Anchor, 24, L["widthboss"], "widthboss", L["widthboss2"])
-local scaleslider = createslider(scrollFrame.Anchor, 25, L["scale"], "scale", 0.5, 3, 0.05, L["scale2"])
-local hpheightslider = createslider(scrollFrame.Anchor, 26, L["hpheight"], "hpheight", 0.2, 0.95, 0.05, L["hpheight2"])
+local scaleslider = createslider(scrollFrame.Anchor, 25, L["scale"], "scale", 100, 50, 300, 5, L["scale2"])
+local hpheightslider = createslider(scrollFrame.Anchor, 26, L["hpheight"], "hpheight", 100, 20, 95, 5, L["hpheight2"])
 
 local castbartext = scrollFrame.Anchor:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
 castbartext:SetPoint("TOPLEFT", 16, 3-27*30)
@@ -361,9 +383,9 @@ auratext:SetText(L["aura"])
 
 local aurasbu = createcheckbutton(scrollFrame.Anchor, 31, L["enableauras"], "auras", L["enableauras2"])
 local aurabordersbu = createcheckbutton(scrollFrame.Anchor, 32, L["auraborders"], "auraborders", L["auraborders2"])
-local auraperrowslider = createslider(scrollFrame.Anchor, 33, L["aurasperrow"], "auraperrow", 4, 20, 1, L["aurasperrow2"])
+local auraperrowslider = createslider(scrollFrame.Anchor, 33, L["aurasperrow"], "auraperrow", 1, 4, 20, 1, L["aurasperrow2"])
 local playerdebuffbu = createcheckbutton(scrollFrame.Anchor, 34, L["enableplayerdebuff"], "playerdebuffenable", L["enableplayerdebuff2"])
-local playerdebuffperrowslider = createslider(scrollFrame.Anchor, 35, L["playerdebuffsperrow"], "playerdebuffnum", 4, 20, 1, L["playerdebuffsperrow2"])
+local playerdebuffperrowslider = createslider(scrollFrame.Anchor, 35, L["playerdebuffsperrow"], "playerdebuffnum", 1, 4, 20, 1, L["playerdebuffsperrow2"])
 local AuraFilterignoreBuffbu = createcheckbutton(scrollFrame.Anchor, 36, L["AuraFilterignoreBuff"], "AuraFilterignoreBuff", L["AuraFilterignoreBuff2"])
 local AuraFilterignoreDebuffbu = createcheckbutton(scrollFrame.Anchor, 37, L["AuraFilterignoreDebuff"], "AuraFilterignoreDebuff", L["AuraFilterignoreDebuff2"])
 local AuraFiltertext = scrollFrame.Anchor:CreateFontString(nil, "ARTWORK", "GameFontNormalLeftYellow")
@@ -414,7 +436,7 @@ raidgui.intro = raidgui:CreateFontString(nil, "ARTWORK", "GameFontNormalLeftGrey
 raidgui.intro:SetText(L["apply"])
 raidgui.intro:SetPoint("TOPLEFT", 20, -60)
 
-reloadbuttons[2] = createreloadbuttons(raidgui)
+reloadbutton2 = createreloadbuttons(raidgui)
 
 local scrollFrame2 = CreateFrame("ScrollFrame", "oUF_Mlight Raid GUI Frame_ScrollFrame", raidgui, "UIPanelScrollFrameTemplate")
 scrollFrame2:SetPoint("TOPLEFT", raidgui, "TOPLEFT", 10, -80)
@@ -427,6 +449,7 @@ scrollFrame2.Anchor:SetWidth(scrollFrame2:GetWidth()-30)
 scrollFrame2.Anchor:SetHeight(scrollFrame2:GetHeight()+200)
 scrollFrame2.Anchor:SetFrameLevel(scrollFrame2:GetFrameLevel()+1)
 scrollFrame2:SetScrollChild(scrollFrame2.Anchor)
+F.ReskinScroll(_G["oUF_Mlight Raid GUI Frame_ScrollFrameScrollBar"])
 
 local sharetext = scrollFrame2.Anchor:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
 sharetext:SetPoint("TOPLEFT", 16, 3-1*30)
@@ -435,7 +458,7 @@ sharetext:SetText(L["raidshare"])
 local enableraidbu = createcheckbutton(scrollFrame2.Anchor, 2, L["enableraid"], "enableraid", L["enableraid2"])
 local showraidpetbu = createcheckbutton(scrollFrame2.Anchor, 3, L["showraidpet"], "showraidpet", L["showraidpet2"])
 local raidfontsizebox = createeditbox(scrollFrame2.Anchor, 4, L["raidfontsize"], "raidfontsize", L["raidfontsize2"])
-local namelengthslider = createslider(scrollFrame2.Anchor, 5, L["namelength"], "namelength", 2, 10, 1, L["namelength2"])
+local namelengthslider = createslider(scrollFrame2.Anchor, 5, L["namelength"], "namelength", 1, 2, 10, 1, L["namelength2"])
 local showsolobu = createcheckbutton(scrollFrame2.Anchor, 6, L["showsolo"], "showsolo", L["showsolo2"])
 local autoswitchbu = createcheckbutton(scrollFrame2.Anchor, 7, L["autoswitch"], "autoswitch", L["autoswitch2"])
 local raidonlyhealerbu = createcheckbutton(scrollFrame2.Anchor, 8, L["raidonlyhealer"], "raidonlyhealer", L["raidonlyhealer2"])
@@ -446,7 +469,7 @@ raidtoggletext:SetPoint("TOPLEFT", 16, 3-10*30)
 raidtoggletext:SetText(L["toggleinfo"])
 
 local enablearrowbu = createcheckbutton(scrollFrame2.Anchor, 12, L["enablearrow"], "enablearrow", L["enablearrow2"])
-local arrowsacleslider = createslider(scrollFrame2.Anchor, 13, L["arrowsacle"], "arrowsacle", 0.5, 2, 0.05, L["arrowsacle2"])
+local arrowsacleslider = createslider(scrollFrame2.Anchor, 13, L["arrowsacle"], "arrowsacle", 100, 50, 200, 5, L["arrowsacle2"])
 createDR(enablearrowbu, arrowsacleslider)
 
 local healerraidtext = scrollFrame2.Anchor:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
@@ -457,7 +480,7 @@ local healergroupfilterbox = createraidsizebox(scrollFrame2.Anchor, 15, L["group
 local healerraidheightbox = createeditbox(scrollFrame2.Anchor, 16, L["healerraidheight"], "healerraidheight", L["healerraidheight2"])
 local healerraidwidthbox = createeditbox(scrollFrame2.Anchor, 17, L["healerraidwidth"], "healerraidwidth", L["healerraidwidth2"])
 local raidmanabarsbox = createcheckbutton(scrollFrame2.Anchor, 18, L["raidmanabars"], "raidmanabars", L["raidmanabars2"])
-local raidhpheightslider = createslider(scrollFrame2.Anchor, 19, L["hpheight"], "raidhpheight", 0.2, 0.95, 0.05, L["hpheight2"])
+local raidhpheightslider = createslider(scrollFrame2.Anchor, 19, L["hpheight"], "raidhpheight", 100, 20, 95, 5, L["hpheight2"])
 createDR(raidmanabarsbox, raidhpheightslider)
 local healerraidanchorddm = createanchorbox(scrollFrame2.Anchor, 20, L["anchor"], "anchor")
 local healerraidpartyanchorddm = createanchorbox(scrollFrame2.Anchor, 21, L["partyanchor"], "partyanchor")
@@ -507,6 +530,7 @@ scrollFrame3.Anchor:SetWidth(scrollFrame3:GetWidth()-30)
 scrollFrame3.Anchor:SetHeight(scrollFrame3:GetHeight()+200)
 scrollFrame3.Anchor:SetFrameLevel(scrollFrame3:GetFrameLevel()+1)
 scrollFrame3:SetScrollChild(scrollFrame3.Anchor)
+F.ReskinScroll(_G["oUF_Mlight WhiteList Frame_ScrollFrameScrollBar"])
 
 local function updateanchors()
 	sort(oUF_MlightDB.AuraFilterwhitelist)
@@ -579,6 +603,7 @@ wlbox:SetPoint("TOPLEFT", 16, -80)
 wlbox:SetFont(GameFontHighlight:GetFont(), 12, "OUTLINE")
 wlbox:SetAutoFocus(false)
 wlbox:SetTextInsets(3, 0, 0, 0)
+F.CreateBD(wlbox)
 wlbox:SetScript("OnShow", function(self) self:SetText(L["input spellID"]) end)
 wlbox:SetScript("OnEditFocusGained", function(self) self:HighlightText() end)
 wlbox:SetScript("OnEscapePressed", function(self)
@@ -621,7 +646,7 @@ clickcastgui.intro = clickcastgui:CreateFontString(nil, "ARTWORK", "GameFontNorm
 clickcastgui.intro:SetText(L["clickcastinro"])
 clickcastgui.intro:SetPoint("TOPLEFT", 20, -85)
 
-reloadbuttons[3] = createreloadbuttons(clickcastgui)
+reloadbutton3 = createreloadbuttons(clickcastgui)
 
 local enableClickCastbu = createcheckbutton(clickcastgui, 2, L["enableClickCast"], "enableClickCast")
 
@@ -636,8 +661,8 @@ scrollFrame4.Anchor:SetWidth(scrollFrame4:GetWidth()-30)
 scrollFrame4.Anchor:SetHeight(scrollFrame4:GetHeight()+200)
 scrollFrame4.Anchor:SetFrameLevel(scrollFrame4:GetFrameLevel()+1)
 scrollFrame4:SetScrollChild(scrollFrame4.Anchor)
-
-local clickinputboxes = {}
+F.ReskinScroll(_G["oUF_Mlight ClickCast Frame_ScrollFrameScrollBar"])
+	
 local mouse_buttons = {
 	["1"] = {"Click", "shift-", "ctrl-", "alt-"},
 	["2"] = {"Click", "shift-", "ctrl-", "alt-"},
@@ -662,12 +687,14 @@ for id, v in pairs(mouse_buttons) do
 		inputbox:SetFont(GameFontHighlight:GetFont(), 12, "OUTLINE")
 		inputbox:SetAutoFocus(false)
 		inputbox:SetTextInsets(3, 0, 0, 0)
+		
+		F.CreateBD(inputbox)
+		
 		inputbox:SetScript("OnShow", function(self) self:SetText(oUF_MlightDB.ClickCast[id][v1]["action"]) end)
 		inputbox:SetScript("OnEscapePressed", function(self) self:SetText(oUF_MlightDB.ClickCast[id][v1]["action"]) self:ClearFocus() end)
 		inputbox:SetScript("OnEnterPressed", function(self) self:ClearFocus() oUF_MlightDB.ClickCast[id][v1]["action"] = self:GetText()end)
 		
 		createDR(enableClickCastbu, inputbox)
-		tinsert(clickinputboxes, inputbox)
 	end
 end
 
@@ -684,62 +711,9 @@ function eventframe:ADDON_LOADED(arg1)
 		ns.ResetVariables()
 	end
 	ns.LoadVariables()
-	for i = 1, 3 do
-		F.Reskin(reloadbuttons[i])
-	end
-	for i = 1, #checkbuttons do
-		F.ReskinCheck(checkbuttons[i])
-	end
-	for i = 1, #sliders do
-		F.ReskinSlider(sliders[i])
-	end
-	for i = 1, #editboxes do
-		F.CreateBD(editboxes[i])
-	end
-	for i = 1, #anchorboxes do
-		F.Reskin(anchorboxes[i])
-	end
-	for i = 1, #raidsizeboxes do
-		F.Reskin(raidsizeboxes[i])
-	end
-	for i = 1, #clickinputboxes do
-		F.CreateBD(clickinputboxes[i])
-	end
-	F.Reskin(resetbu)	
-	F.Reskin(fontflagbu)
-	F.Reskin(startcolorpicker)
-	F.Reskin(endcolorpicker)
-	F.CreateBD(wlbox)
+	
 	sort(oUF_MlightDB.AuraFilterwhitelist)
-	F.ReskinScroll(_G["oUF_Mlight GUI Frame_ScrollFrameScrollBar"])
-	F.ReskinScroll(_G["oUF_Mlight Raid GUI Frame_ScrollFrameScrollBar"])
-	F.ReskinScroll(_G["oUF_Mlight WhiteList Frame_ScrollFrameScrollBar"])
-	F.ReskinScroll(_G["oUF_Mlight ClickCast Frame_ScrollFrameScrollBar"])
-	self:RegisterEvent("PLAYER_ENTERING_WORLD")
-end
-
-function eventframe:PLAYER_ENTERING_WORLD(arg1)
-	for i = 1, #checkbuttons do
-		checkbuttons[i]:SetChecked(oUF_MlightDB[checkbuttons[i].value] == true)
-	end
-	for i = 1, #sliders do
-		sliders[i]:SetValue(oUF_MlightDB[sliders[i].value])
-	end
-	for i = 1, #anchorboxes do
-		anchorboxes[i]:SetText(oUF_MlightDB[anchorboxes[i].value])
-	end
-	for i = 1, #raidsizeboxes do
-		if oUF_MlightDB[raidsizeboxes[i].value] == "1,2,3,4,5" then
-			raidsizeboxes[i]:SetText("25-man")
-		else
-			raidsizeboxes[i]:SetText("40-man")
-		end
-	end
-	fontflagbu:SetText(oUF_MlightDB[fontflagbu.value])
-	startcolorpicker.tex:SetVertexColor(oUF_MlightDB[startcolorpicker.value].r, oUF_MlightDB[startcolorpicker.value].g, oUF_MlightDB[startcolorpicker.value].b)
-	endcolorpicker.tex:SetVertexColor(oUF_MlightDB[endcolorpicker.value].r, oUF_MlightDB[endcolorpicker.value].g, oUF_MlightDB[endcolorpicker.value].b)
 	CreateWhiteListButtonList()
-	self:UnregisterEvent("PLAYER_ENTERING_WORLD")
 end
 
 --[[ CPU and Memroy testing
