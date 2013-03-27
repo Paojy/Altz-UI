@@ -115,31 +115,33 @@ GameTooltip:HookScript("OnTooltipSetUnit", function(self)
         local level = UnitLevel(unit)
 
         if level then
-            local unitClass = UnitIsPlayer(unit) and hex(color)..UnitClass(unit).."|r" or ""
-            local creature = not UnitIsPlayer(unit) and UnitCreatureType(unit) or ""
-            local diff = GetQuestDifficultyColor(level)
+			if not UnitIsWildBattlePet(unit) then
+				local unitClass = UnitIsPlayer(unit) and hex(color)..UnitClass(unit).."|r" or ""
+				local creature = not UnitIsPlayer(unit) and UnitCreatureType(unit) or ""
+				local diff = GetQuestDifficultyColor(level)
 
-            if level == -1 then
-                level = "|cffff0000"..boss
-            end
+				if level == -1 then
+					level = "|cffff0000"..boss
+				end
 
-            local classify = UnitClassification(unit)
-            local textLevel = ("%s%s%s|r"):format(hex(diff), tostring(level), classification[classify] or "")
+				local classify = UnitClassification(unit)
+				local textLevel = ("%s%s%s|r"):format(hex(diff), tostring(level), classification[classify] or "")
 
-            for i=2, self:NumLines() do
-                local tiptext = _G["GameTooltipTextLeft"..i]
-                if tiptext:GetText():find(LEVEL) then
-                    if alive then
-                        tiptext:SetText(("%s %s%s %s"):format(textLevel, creature, UnitRace(unit) or "", unitClass):trim())
-                    else
-                        tiptext:SetText(("%s %s"):format(textLevel, "|cffCCCCCC"..DEAD.."|r"):trim())
-                    end
-                end
+				for i=2, self:NumLines() do
+					local tiptext = _G["GameTooltipTextLeft"..i]
+					if tiptext:GetText():find(LEVEL) then
+						if alive then
+							tiptext:SetText(("%s %s%s %s"):format(textLevel, creature, UnitRace(unit) or "", unitClass):trim())
+						else
+							tiptext:SetText(("%s %s"):format(textLevel, "|cffCCCCCC"..DEAD.."|r"):trim())
+						end
+					end
 
-                if tiptext:GetText():find(PVP) then
-                    tiptext:SetText(nil)
-                end
-            end
+					if tiptext:GetText():find(PVP) then
+						tiptext:SetText(nil)
+					end	
+				end
+			end
         end
 
         if not alive then
@@ -159,11 +161,11 @@ GameTooltip:HookScript("OnTooltipSetUnit", function(self)
 
             if tiptext:GetText():find(PVP) then
                 tiptext:SetText(nil)
-            end
-        end
+			end
 
         GameTooltipStatusBar:SetStatusBarColor(0, .9, 0)
-    end
+		end
+	end
 
     if GameTooltipStatusBar:IsShown() then
 		GameTooltipStatusBar:ClearAllPoints()
