@@ -18,7 +18,7 @@ end
 local function searchforurl(frame, text, ...)
 	foundurl = false
 
-	if string.find(text, "%pTInterface%p+") then
+	if string.find(text, "%pTInterface%p+") or string.find(text, "%pTINTERFACE%p+") then
 		--disable interface textures (lol)
 		foundurl = true
 	end

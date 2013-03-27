@@ -49,9 +49,11 @@ hooksecurefunc(methods, "SetCooldown", function(self, start, duration)
 		self.nextUpdate = 0
 
 		if not self.text then
-			self.text = T.createnumber(self, "OVERLAY", 15, "OUTLINE", "CENTER")
+			self.text = T.createnumber(self, "OVERLAY", 20, "OUTLINE", "CENTER")
 			self.text:SetTextColor(.4, .95, 1)
 			self.text:SetPoint("CENTER", 0, 0)
+			self:SetScript("OnUpdate", Timer_OnUpdate)
+		elseif not self:GetScript("OnUpdate") then
 			self:SetScript("OnUpdate", Timer_OnUpdate)
 		end
 
