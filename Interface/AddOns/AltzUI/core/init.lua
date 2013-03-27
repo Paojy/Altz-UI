@@ -23,6 +23,8 @@ G.media = {
 	bar = "Interface\\AddOns\\AltzUI\\media\\statusbar",
 	glow = "Interface\\AddOns\\Aurora\\media\\glow",
 	checked = "Interface\\AddOns\\Aurora\\media\\CheckButtonHilight",
+	left = "Interface\\AddOns\\AltzUI\\media\\left",
+	right = "Interface\\AddOns\\AltzUI\\media\\right",
 }
 
 G.Client = GetLocale()
