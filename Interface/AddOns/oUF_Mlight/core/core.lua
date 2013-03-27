@@ -1,4 +1,4 @@
-local addon, ns = ...
+﻿local addon, ns = ...
 
 local symbols = "Interface\\Addons\\oUF_Mlight\\media\\PIZZADUDEBULLETS.ttf"
 local texture = "Interface\\Buttons\\WHITE8x8"
@@ -742,7 +742,7 @@ local func = function(self, unit)
 	
     local ricon = hp:CreateTexture(nil, "OVERLAY")
     ricon:SetPoint("CENTER", hp, "CENTER", 0, 0)
-    ricon:SetSize(16, 16)
+    ricon:SetSize(20, 20)
     self.RaidIcon = ricon
 	
 	-- name --
