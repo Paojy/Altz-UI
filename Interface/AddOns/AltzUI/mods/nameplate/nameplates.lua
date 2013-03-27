@@ -34,32 +34,6 @@ SetCVar("bloattest", 0)
 SetCVar("bloatnameplates", 0)
 
 --Nameplates we do NOT want to see
-local PlateBlacklist = {
-	--Shaman Totems (Ones that don't matter)
-	["Earth Elemental Totem"] = true,
-	["Fire Elemental Totem"] = true,
-	["Fire Resistance Totem"] = true,
-	["Flametongue Totem"] = true,
-	["Frost Resistance Totem"] = true,
-	["Healing Stream Totem"] = true,
-	["Magma Totem"] = true,
-	["Mana Spring Totem"] = true,
-	["Nature Resistance Totem"] = true,
-	["Searing Totem"] = true,
-	["Stoneclaw Totem"] = true,
-	["Stoneskin Totem"] = true,
-	["Strength of Earth Totem"] = true,
-	["Windfury Totem"] = true,
-	["Totem of Wrath"] = true,
-	["Wrath of Air Totem"] = true,
-	["Air Totem"] = true,
-	["Water Totem"] = true,
-	["Fire Totem"] = true,
-	["Earth Totem"] = true,
-	
-	--Army of the Dead
-	["Army of the Dead Ghoul"] = true,
-}
 
 local function QueueObject(parent, object)
 	parent.queue = parent.queue or {}
@@ -451,7 +425,25 @@ local function SkinObjects(frame, nameFrame)
 	
 	hp.hpbg = hp:CreateTexture(nil, 'BORDER')
 	hp.hpbg:SetAllPoints(hp)
-	hp.hpbg:SetTexture(1,1,1,0.25) 		
+	hp.hpbg:SetTexture(1,1,1,0.25)
+	
+	hp.threat = hp:CreateTexture(nil, 'ARTWORK', nil, 7)
+	hp.threat:SetAllPoints(hp:GetStatusBarTexture())
+	hp.threat:SetTexture(texture)
+	hp.threat:SetVertexColor(1, 0, 1)
+	hp.threat:Hide()
+	
+	hp.target_ind1 = hp:CreateTexture(nil, 'OVERLAY', nil)
+	hp.target_ind1:SetSize(hpHeight+5, hpHeight+5)
+	hp.target_ind1:SetPoint("RIGHT", hp, "LEFT")
+	hp.target_ind1:SetTexture(G.media.left)
+	hp.target_ind1:Hide()
+
+	hp.target_ind2 = hp:CreateTexture(nil, 'OVERLAY', nil)
+	hp.target_ind2:SetSize(hpHeight+5, hpHeight+5)
+	hp.target_ind2:SetPoint("LEFT", hp, "RIGHT")
+	hp.target_ind2:SetTexture(G.media.right)
+	hp.target_ind2:Hide()
 	
 	hp:HookScript('OnShow', UpdateObjects)
 	frame.hp = hp
@@ -526,20 +518,9 @@ end
 
 local function UpdateThreat(frame, elapsed)
 	if frame.threat:IsShown() then
-		frame.hp.name:SetTextColor(1, 0, 0)
+		frame.hp.threat:Show()
 	else
-		frame.hp.name:SetTextColor(1, 1, 1)
-	end
-end
-
---Create our blacklist for nameplates, so prevent a certain nameplate from ever showing
-local function CheckBlacklist(frame, ...)
-	if PlateBlacklist[frame.hp.name:GetText()] then
-		frame:SetScript("OnUpdate", function() end)
-		frame.hp:Hide()
-		frame.cb:Hide()
-		frame.overlay:Hide()
-		frame.hp.oldlevel:Hide()
+		frame.hp.threat:Hide()
 	end
 end
 
@@ -575,6 +556,17 @@ local function ShowHealth(frame, ...)
 	else
 		frame.hp.value:SetText("")
 		frame.hp.valueperc:SetText("")
+	end
+end
+
+local function ShowTargetInd(frame)
+	if UnitExists("target") and frame:GetParent():GetAlpha() == 1 and UnitName("target") == frame.hp.name:GetText() then
+	--if frame.guid == UnitGUID("target") and frame.guid ~= nil then
+		frame.hp.target_ind1:Show()
+		frame.hp.target_ind2:Show()
+	else
+		frame.hp.target_ind1:Hide()
+		frame.hp.target_ind2:Hide()
 	end
 end
 
@@ -618,17 +610,17 @@ NamePlates:SetScript('OnUpdate', function(self, elapsed)
 	end
 	
 	ForEachPlate(ShowHealth)
-	--ForEachPlate(CheckBlacklist)
 	ForEachPlate(HideDrunkenText)
 	ForEachPlate(Colorize)
 	ForEachPlate(CheckUnit_Guid)
+	ForEachPlate(ShowTargetInd)
 end)
 
 if enablebuff or enabledebuff then
 	NamePlates:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 end
 
-function NamePlates:COMBAT_LOG_EVENT_UNFILTERED(_, event, ...)
+function NamePlates:COMBAT_LOG_EVENT_UNFILTERED(self, event, ...)
 	if event == "SPELL_AURA_REMOVED" then
 		local _, sourceGUID, _, _, _, destGUID, _, _, _, spellID = ...
 
