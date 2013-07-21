@@ -1,0 +1,77 @@
+local T, C, L, G = unpack(select(2, ...))
+local dragFrameList = G.dragFrameList
+
+local buttonssize = aCoreCDB["ActionbarOptions"]["bar12size"]
+local buttonspace = aCoreCDB["ActionbarOptions"]["bar12space"]
+local padding = 4
+local mouseover = {
+	enable= aCoreCDB["ActionbarOptions"]["bar12mfade"],
+	fadeIn= {time = 0.4, alpha = 1},
+	fadeOut = {time = 0.4, alpha = aCoreCDB["ActionbarOptions"]["bar12fademinaplha"]},
+	}
+local eventfader= {
+	enable= aCoreCDB["ActionbarOptions"]["bar12efade"],
+	fadeIn= {time = 0.4, alpha = 1},
+	fadeOut = {time = 1.5, alpha = aCoreCDB["ActionbarOptions"]["bar12fademinaplha"]},
+}
+
+-- FUNCTIONS
+
+local num = NUM_ACTIONBAR_BUTTONS
+local buttonList = {}
+
+--create the frame to hold the buttons
+local frame = CreateFrame("Frame", "Altz_Bar1&2", UIParent, "SecureHandlerStateTemplate")
+frame.movingname = L["Bar1&2"]
+frame.point = {
+	healer = {a1 = "BOTTOM", parent = "UIParent", a2 = "BOTTOM", x = 0, y = 15},
+	dpser = {a1 = "BOTTOM", parent = "UIParent", a2 = "BOTTOM", x = 0, y = 15},
+}
+T.CreateDragFrame(frame) --frame, dragFrameList, inset, clamp
+frame:SetWidth(num*buttonssize + (num-1)*buttonspace + 2*padding)
+frame:SetHeight(2*buttonssize + buttonspace + 2*padding)
+
+--move the buttons into position and reparent them
+MainMenuBarArtFrame:SetParent(frame)
+MainMenuBarArtFrame:EnableMouse(false)
+MultiBarBottomLeft:SetParent(frame)
+MultiBarBottomLeft:EnableMouse(false)
+
+for i=1, num do
+	local button = _G["ActionButton"..i]
+	table.insert(buttonList, button) --add the button object to the list
+	button:SetSize(buttonssize, buttonssize)
+	button:ClearAllPoints()
+	if i == 1 then
+		button:SetPoint("TOPLEFT", frame, padding, -padding)
+	else
+		local previous = _G["ActionButton"..i-1]
+		button:SetPoint("LEFT", previous, "RIGHT", buttonspace, 0)
+	end
+end
+
+for i=1, num do
+	local button = _G["MultiBarBottomLeftButton"..i]
+	table.insert(buttonList, button) --add the button object to the list
+	button:SetSize(buttonssize, buttonssize)
+	button:ClearAllPoints()
+	if i == 1 then
+		button:SetPoint("TOPLEFT", frame, padding, -padding -buttonspace -buttonssize)
+	else
+		local previous = _G["MultiBarBottomLeftButton"..i-1]
+		button:SetPoint("LEFT", previous, "RIGHT", buttonspace, 0)
+	end
+end
+
+--hide the frame when in a vehicle!
+RegisterStateDriver(frame, "visibility", "[petbattle][overridebar][vehicleui][possessbar,@vehicle,exists] hide; show")
+
+--create the mouseover functionality
+if mouseover.enable then
+	T.ActionbarFader(frame, buttonList, mouseover.fadeIn, mouseover.fadeOut) --frame, buttonList, fadeIn, fadeOut
+end
+
+--create the fade on condition functionality
+if eventfader.enable then
+	T.ActionbarEventFader(frame, buttonList, eventfader.fadeIn, eventfader.fadeOut) --frame, fadeIn, fadeOut
+end

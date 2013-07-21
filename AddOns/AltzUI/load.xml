@@ -1,0 +1,77 @@
+﻿<Ui xmlns="http://www.blizzard.com/wow/ui/">
+	<Script file="core\init.lua"/>
+	
+	<Script file="locales\english.lua"/>
+	<Script file="locales\chinese.lua"/>
+	<Script file="locales\twchinese.lua"/>
+	<Script file="locales\french.lua"/>
+	
+	<Include file="lib\oUF\oUF.xml"/>
+	
+	<Script file="core\api.lua"/>
+	<Script file="core\moving.lua"/>
+	<Script file="core\fader.lua"/>
+	
+	<Script file="mods\skins\DBM.lua"/>
+	<Script file="mods\skins\Skada.lua"/>
+	<Script file="mods\skins\Recount.lua"/>
+	<Script file="mods\skins\Mirrortimer.lua"/>
+	
+	<Script file="mods\panels\panels.lua"/>
+	<Script file="mods\panels\petbattles.lua"/>
+	
+	<Include file="mods\unitframes\load.xml"/>
+	
+	<Script file="mods\actionbar\cooldowns.lua"/>
+	<Script file="mods\actionbar\rangecolor.lua"/>
+	<Script file="mods\actionbar\styler.lua"/>	
+	<Script file="mods\actionbar\hide_blizzart.lua"/>
+	<Script file="mods\actionbar\bar12.lua"/>
+	<Script file="mods\actionbar\bar3.lua"/>
+	<Script file="mods\actionbar\bar45.lua"/>
+	<Script file="mods\actionbar\overridebar.lua"/>	
+	<Script file="mods\actionbar\petbar.lua"/>
+	<Script file="mods\actionbar\stancebar.lua"/>
+	<Script file="mods\actionbar\extrabar.lua"/>
+	<!--<Script file="mods\actionbar\micromenu.lua"/>-->
+	<Script file="mods\actionbar\leave_vehicle.lua"/>
+	<Script file="mods\actionbar\spellflyout.lua"/>
+	<Script file="mods\actionbar\buff.lua"/>
+
+	<Script file="mods\bag\sort.lua"/>
+	<Script file="mods\bag\bags.lua"/>
+	
+	<Script file="mods\chat\chat.lua"/>
+	<Script file="mods\chat\autoscroll.lua"/>
+	<Script file="mods\chat\channelreplacements.lua"/>
+	<Script file="mods\chat\playermenu.lua"/>
+	<Script file="mods\chat\easyChannel.lua"/>
+	<Script file="mods\chat\urlcopy.lua"/>
+	<Script file="mods\chat\hide.lua"/>
+	
+	<Script file="mods\loot\lootgroup.lua"/>
+	
+	<Script file="mods\map\minimap.lua"/>
+	<Script file="mods\map\flare and more.lua"/>
+
+	<Script file="mods\nameplate\auralist.lua"/>
+	<Script file="mods\nameplate\nameplates.lua"/>
+		
+	<Script file="mods\tip\spellID.lua"/>
+	<Script file="mods\tip\ItemID.lua"/>
+	<Script file="mods\tip\talent.lua"/>	
+	<Script file="mods\tip\tip.lua"/>
+
+	<Script file="mods\tweaks\already known.lua"/>
+	<Script file="mods\tweaks\automail.lua"/>
+	<Script file="mods\tweaks\combattext.lua"/>
+	<Script file="mods\tweaks\countdown.lua"/>	
+	<Script file="mods\tweaks\dragemall.lua"/>
+	<Script file="mods\tweaks\focus.lua"/>
+	<Script file="mods\tweaks\hoverbind.lua"/>
+	<Script file="mods\tweaks\inspectfix.lua"/>
+	<Script file="mods\tweaks\paperdollframe.lua"/>
+	<Script file="mods\tweaks\tweaks.lua"/>
+	<Script file="mods\tweaks\watchframe.lua"/>
+	<Script file="mods\tweaks\raid tools.lua"/>
+</Ui>
