@@ -109,7 +109,8 @@ minimap_anchor.border = F.CreateBDFrame(minimap_anchor, 0.6)
 F.CreateSD(minimap_anchor.border, 2, 0, 0, 0, 1, -1)
 
 Minimap:SetParent(minimap_anchor)
-Minimap:SetAllPoints()
+Minimap:SetPoint("CENTER")
+Minimap:SetSize(minimap_height, minimap_height)
 Minimap:SetFrameLevel(1)
 Minimap:SetMaskTexture("Interface\\Buttons\\WHITE8x8")
 
@@ -159,7 +160,7 @@ end)
 
 local chatframe_pullback = CreateFrame("Frame", nil, UIParent) 
 chatframe_pullback:SetWidth(8)
-chatframe_pullback:SetHeight(130)
+chatframe_pullback:SetHeight(minimap_height)
 chatframe_pullback:SetFrameStrata("BACKGROUND")
 chatframe_pullback:SetFrameLevel(3)
 chatframe_pullback:SetPoint("BOTTOMLEFT", Minimap, "BOTTOMRIGHT", 5, 0)
@@ -173,7 +174,7 @@ chatframe_pullback:SetScript("OnLeave", function(self) UIFrameFadeOut(self, .5, 
 local chatframe_anchor = CreateFrame("frame",nil,UIParent)
 chatframe_anchor:SetPoint("BOTTOMLEFT", chatframe_pullback, "BOTTOMRIGHT", 5, 0)
 chatframe_anchor:SetWidth(300)
-chatframe_anchor:SetHeight(130)
+chatframe_anchor:SetHeight(minimap_height)
 chatframe_anchor:SetFrameStrata("BACKGROUND")
 
 local cf = _G['ChatFrame1']
