@@ -258,7 +258,7 @@ T.createcheckbutton = function(parent, x, y, name, table, value, tip)
 		bu:SetScript("OnLeave", function(self) GameTooltip:Hide() end)
 	end
 	
-	return bu
+	parent[value] = bu
 end
 
 T.ABtogglebox = function(parent, x, y, id, name)
@@ -352,7 +352,7 @@ T.createeditbox = function(parent, x, y, name, table, value, tip)
 		box:SetScript("OnLeave", function(self) GameTooltip:Hide() end)
 	end
 	
-	return box
+	parent[value] = box
 end
 
 T.createmultilinebox = function(parent, width, height, x, y, name, table, value, tip)
@@ -386,7 +386,6 @@ T.createmultilinebox = function(parent, width, height, x, y, name, table, value,
 	scrollBG.edit:SetMultiLine(true)
 	scrollBG.edit:EnableMouse(true)
 	scrollBG.edit:SetAutoFocus(false)
-	--scrollBG.edit:SetEnabled(true)
 	
 	scrollBG.edit:SetScript("OnShow", function(self) self:SetText(aCoreCDB[table][value]) end)
 	scrollBG.edit:SetScript("OnEscapePressed", function(self) self:SetText(aCoreCDB[table][value]) self:ClearFocus() end)
@@ -403,7 +402,7 @@ T.createmultilinebox = function(parent, width, height, x, y, name, table, value,
 		scrollBG.edit:SetScript("OnLeave", function(self) GameTooltip:Hide() end)
 	end
 	
-	return scrollBG
+	parent[value] = scrollBG
 end
 
 T.createslider = function(parent, x, y, name, table, value, divisor, min, max, step, tip)
@@ -438,7 +437,7 @@ T.createslider = function(parent, x, y, name, table, value, divisor, min, max, s
 	
 	if tip then slider.tooltipText = tip end
 	
-	return slider
+	parent[value] = slider
 end
 
 T.createcolorpickerbu = function(parent, x, y, name, table, value)
@@ -494,7 +493,7 @@ T.createcolorpickerbu = function(parent, x, y, name, table, value)
 		cpb:SetScript("OnLeave", function(self) GameTooltip:Hide() end)
 	end
 	
-	return cpb
+	parent[value] = cpb
 end
 
 T.createradiobuttongroup = function(parent, x, y, name, table, value, group)
@@ -548,7 +547,7 @@ T.createradiobuttongroup = function(parent, x, y, name, table, value, group)
 		end
 	end
 	
-	return frame
+	parent[value] = frame
 end
 
 -- dependency relationship
