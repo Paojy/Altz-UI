@@ -436,6 +436,9 @@ local Character_default_Settings = {
 	ChatOptions = {
 		channelreplacement = true,
 		autoscroll = true,
+		nogoldseller = true,
+		keywordnum = 2,
+		keywordlist = {},
 	},
 	ItemOptions = {
 		enablebag = true,
