@@ -92,7 +92,13 @@ minimap_pullback:SetWidth(8)
 minimap_pullback:SetHeight(minimap_height)
 minimap_pullback:SetFrameStrata("BACKGROUND")
 minimap_pullback:SetFrameLevel(5)
-minimap_pullback:SetPoint("BOTTOMLEFT", UIParent, "BOTTOMLEFT", 15, 30) -- 自定义
+minimap_pullback.movingname = L["minimap_pullback"]
+minimap_pullback.point = {
+	healer = {a1 = "BOTTOMRIGHT", parent = "UIParent", a2 = "BOTTOMRIGHT", x = -10, y = 40},
+	dpser = {a1 = "BOTTOMRIGHT", parent = "UIParent", a2 = "BOTTOMRIGHT", x = -10, y = 40},
+}
+minimap_pullback:SetPoint("BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", -10, 40)
+T.CreateDragFrame(minimap_pullback)
 minimap_pullback.border = F.CreateBDFrame(minimap_pullback, 0.6)
 F.CreateSD(minimap_pullback.border, 2, 0, 0, 0, 1, -1)
 
@@ -101,7 +107,7 @@ minimap_pullback:HookScript("OnEnter", function(self) UIFrameFadeIn(self, .5, se
 minimap_pullback:SetScript("OnLeave", function(self) UIFrameFadeOut(self, .5, self:GetAlpha(), 0.2) end)
 
 local minimap_anchor = CreateFrame("Frame", nil, UIParent)
-minimap_anchor:SetPoint("BOTTOMLEFT", minimap_pullback, "BOTTOMRIGHT", 5, 0)
+minimap_anchor:SetPoint("BOTTOMRIGHT", minimap_pullback, "BOTTOMLEFT", -5, 0)
 minimap_anchor:SetWidth(minimap_height)
 minimap_anchor:SetHeight(minimap_height)
 minimap_anchor:SetFrameStrata("BACKGROUND")
@@ -121,22 +127,22 @@ Updater:Hide()
 
 Updater:SetScript("OnUpdate",function(self,elapsed)
 	if self.mode == "OUT" then
-		if nowwidth > -minimap_height then
-			nowwidth = nowwidth-allwidth/(all/0.2)/3
-			minimap_anchor:SetPoint("BOTTOMLEFT", minimap_pullback, "BOTTOMRIGHT", nowwidth, 0)
+		if nowwidth < allwidth then
+			nowwidth = nowwidth+allwidth/(all/0.2)/3
+			minimap_anchor:SetPoint("BOTTOMRIGHT", minimap_pullback, "BOTTOMLEFT", nowwidth, 0)
 		else
-			minimap_anchor:SetPoint("BOTTOMLEFT", minimap_pullback, "BOTTOMRIGHT", -minimap_height, 0)
+			minimap_anchor:SetPoint("BOTTOMRIGHT", minimap_pullback, "BOTTOMLEFT", allwidth, 0)
 			minimap_pullback.border:SetBackdropColor(G.Ccolor.r, G.Ccolor.g, G.Ccolor.b)
 			Updater:Hide()
 			Updater.mode = "IN"
 			Minimap:Hide()
 		end
 	elseif self.mode == "IN" then
-		if nowwidth <0 then
-			nowwidth = nowwidth+allwidth/(all/0.2)/3
-			minimap_anchor:SetPoint("BOTTOMLEFT", minimap_pullback, "BOTTOMRIGHT", nowwidth, 0);	
+		if nowwidth >0 then
+			nowwidth = nowwidth-allwidth/(all/0.2)/3
+			minimap_anchor:SetPoint("BOTTOMRIGHT", minimap_pullback, "BOTTOMLEFT", nowwidth, 0);	
 		else
-			minimap_anchor:SetPoint("BOTTOMLEFT", minimap_pullback, "BOTTOMRIGHT", 5, 0)
+			minimap_anchor:SetPoint("BOTTOMRIGHT", minimap_pullback, "BOTTOMLEFT", -5, 0)
 			minimap_pullback.border:SetBackdropColor(0, 0, 0, .6)
 			Updater:Hide()
 			Updater.mode = "OUT"
@@ -151,19 +157,25 @@ minimap_pullback:SetScript("OnMouseDown",function(self)
 		T.UIFrameFadeOut(Minimap, 1, Minimap:GetAlpha(), 0)
 	elseif Updater.mode == "IN" then
 		Minimap:Show()
-		nowwidth, allwidth, all = -minimap_height, minimap_height, 1
+		nowwidth, allwidth, all = minimap_height, minimap_height, 1
 		T.UIFrameFadeIn(minimap_anchor, 1, minimap_anchor:GetAlpha(), 1)
 		T.UIFrameFadeIn(Minimap, 1, Minimap:GetAlpha(), 1)
 	end
 	Updater:Show()
 end)
 
-local chatframe_pullback = CreateFrame("Frame", nil, UIParent) 
+local chatframe_pullback = CreateFrame("Frame", G.uiname.."chatframe_pullback", UIParent) 
 chatframe_pullback:SetWidth(8)
 chatframe_pullback:SetHeight(minimap_height)
 chatframe_pullback:SetFrameStrata("BACKGROUND")
 chatframe_pullback:SetFrameLevel(3)
-chatframe_pullback:SetPoint("BOTTOMLEFT", Minimap, "BOTTOMRIGHT", 5, 0)
+chatframe_pullback.movingname = L["chatframe_pullback"]
+chatframe_pullback.point = {
+	healer = {a1 = "BOTTOMLEFT", parent = "UIParent", a2 = "BOTTOMLEFT", x = 10, y = 40},
+	dpser = {a1 = "BOTTOMLEFT", parent = "UIParent", a2 = "BOTTOMLEFT", x = 10, y = 40},
+}
+chatframe_pullback:SetPoint("BOTTOMLEFT", UIParent, "BOTTOMLEFT", 10, 40)
+T.CreateDragFrame(chatframe_pullback)
 chatframe_pullback.border = F.CreateBDFrame(chatframe_pullback, 0.6)
 F.CreateSD(chatframe_pullback.border, 2, 0, 0, 0, 1, -1)
 
@@ -188,9 +200,6 @@ local MoveChat = function()
     FCF_SavePositionAndDimensions(cf)
 	FCF_SetLocked(cf, 1)
 end
-
-chatframe_anchor:RegisterEvent("PLAYER_ENTERING_WORLD")
-chatframe_anchor:SetScript("OnEvent", function() MoveChat() end)
 
 local nowwidth, allwidth, all
 local Updater2 = CreateFrame("Frame")
@@ -932,6 +941,7 @@ StatsFrame:SetScript("OnUpdate", StatsFrame.updateOntime)
 local MicromenuBar = CreateFrame("Frame", G.uiname.."MicromenuBar", UIParent) -- Center Frame
 MicromenuBar:SetFrameStrata("MEDIUM")
 MicromenuBar:SetSize(400, 25)
+MicromenuBar:SetScale(aCoreCDB["OtherOptions"]["micromenuscale"])
 MicromenuBar:SetPoint("BOTTOMLEFT", UIParent, "BOTTOMLEFT", 30, 3)
 
 MicromenuBar.toggle = CreateFrame("Button", nil, MicromenuBar)
@@ -1024,6 +1034,11 @@ local function CreateMicromenuButton(text, texpath, original, left, right, top, 
 				GameMenuFrame:Show()
 			end
 		end)
+	elseif original == PVPMicroButton then
+		Button:SetScript("OnClick", function()
+			if not PVPUIFrame then PVP_LoadUI() end 
+			ToggleFrame(PVPUIFrame)
+		end)
 	else
 		Button:SetScript("OnClick", original:GetScript("OnClick"))
 	end
@@ -1033,12 +1048,12 @@ local function CreateMicromenuButton(text, texpath, original, left, right, top, 
 end
 
 MicromenuBar.Mainmenu = CreateMicromenuButton(MAIN_MENU, "Interface\\MINIMAP\\OBJECTICONS", MainMenuMicroButton, .12, .26, .49, .63)
-MicromenuBar.Spellbook = CreateMicromenuButton(SPELLBOOK, "Interface\\MINIMAP\\TRACKING\\Profession", SpellbookMicroButton, .05, .95, .05, .95)
+MicromenuBar.Spellbook = CreateMicromenuButton(SPELLBOOK_ABILITIES_BUTTON, "Interface\\MINIMAP\\TRACKING\\Profession", SpellbookMicroButton, .05, .95, .05, .95)
 MicromenuBar.Spec = CreateMicromenuButton(TALENTS_BUTTON, "Interface\\MINIMAP\\TRACKING\\Reagents", TalentMicroButton, .05, .95, .05, .95)
-MicromenuBar.Achievement = CreateMicromenuButton(ACHIEVEMENTS, "Interface\\ACHIEVEMENTFRAME\\UI-ACHIEVEMENT-SHIELDS-NOPOINTS", AchievementMicroButton, 0, .45, .5, .95)
+MicromenuBar.Achievement = CreateMicromenuButton(ACHIEVEMENT_BUTTON, "Interface\\ACHIEVEMENTFRAME\\UI-ACHIEVEMENT-SHIELDS-NOPOINTS", AchievementMicroButton, 0, .45, .5, .95)
 MicromenuBar.Quests = CreateMicromenuButton(QUESTLOG_BUTTON, "Interface\\MINIMAP\\TRACKING\\OBJECTICONS", QuestLogMicroButton, 0.11, .25, .48, 1)
-MicromenuBar.PvP = CreateMicromenuButton(PVP, "Interface\\WorldStateFrame\\CombatSwords", PVPMicroButton, 0, .5, 0, .5)
-MicromenuBar.LFR = CreateMicromenuButton(LOOKING_FOR_DUNGEON, "Interface\\LFGFRAME\\BattlenetWorking28", LFDMicroButton, .14, .86, .14, .86)
+MicromenuBar.PvP = CreateMicromenuButton(PLAYER_V_PLAYER, "Interface\\WorldStateFrame\\CombatSwords", PVPMicroButton, 0, .5, 0, .5)
+MicromenuBar.LFR = CreateMicromenuButton(LFG_TITLE, "Interface\\LFGFRAME\\BattlenetWorking28", LFDMicroButton, .14, .86, .14, .86)
 MicromenuBar.Pet = CreateMicromenuButton(MOUNTS_AND_PETS, "Interface\\MINIMAP\\OBJECTICONS", CompanionsMicroButton, .37, .5, .5, .63)
 MicromenuBar.EJ = CreateMicromenuButton(ENCOUNTER_JOURNAL, "Interface\\MINIMAP\\TRACKING\\Class", EJMicroButton, 0, 1, 0, 1)
 MicromenuBar.Bag = CreateMicromenuButton(INVTYPE_BAG, "Interface\\MINIMAP\\TRACKING\\Banker", "Bag", 0, 1, 0, 1)
@@ -1192,8 +1207,8 @@ BOTTOMPANEL:SetScript("OnEvent",function(self, event)
 			fadeout()
 		end
 		
-		local PetNumber = C_PetJournal.GetNumPets(false)
-		local randomIndex = random(1 , PetNumber)
+		local PetNumber = C_PetJournal.GetNumPets(false) or 1
+		local randomIndex = random(1 ,PetNumber)
 		local randomID = select(11, C_PetJournal.GetPetInfoByIndex(randomIndex))
 		Info:SetCreature(randomID)
 		Credits:SetCreature(randomID)
