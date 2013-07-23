@@ -6,6 +6,7 @@
 	<Script file="locales\twchinese.lua"/>
 	<Script file="locales\french.lua"/>
 	
+	<Script file="PopupDialogs.lua"/>
 	<Script file="api.lua"/>
 	<Script file="db.lua"/>
 	<Script file="gui.lua"/>
