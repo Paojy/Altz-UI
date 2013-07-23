@@ -33,17 +33,34 @@ T.createnumber = function(f, layer, fontsize, flag, justifyh)
 	return text
 end
 
+T.pairsByKeys = function(t)
+    local a = {}
+    for n in pairs(t) do table.insert(a, n) end
+    table.sort(a)
+    local i = 0      -- iterator variable
+    local iter = function ()   -- iterator function
+		i = i + 1
+        if a[i] == nil then return nil
+        else return a[i], t[a[i]]
+        end
+      end
+    return iter
+end
+
 T.dummy = function() end
 
 --====================================================--
---[[                -- Functions --                    ]]--
+--[[           -- GUI Functions --                  ]]--
 --====================================================--
 
 function T.SetChatFrame()
 	FCF_ResetChatWindows()
 	
-	ChatFrame1:SetSize(300, 145)
-
+    FCF_SetLocked(ChatFrame1, nil)
+    ChatFrame1:ClearAllPoints()
+	ChatFrame1:SetSize(300, 130)
+    ChatFrame1:SetPoint("BOTTOMLEFT", _G[G.uiname.."chatframe_pullback"], "BOTTOMLEFT", 5, 0)
+	
 	FCF_SavePositionAndDimensions(ChatFrame1)
 	FCF_RestorePositionAndDimensions(ChatFrame1)
 	
@@ -414,10 +431,10 @@ T.createslider = function(parent, x, y, name, table, value, divisor, min, max, s
 	BlizzardOptionsPanel_Slider_Enable(slider)
 	
 	slider:SetMinMaxValues(min, max)
-	_G[slider:GetName()..'Low']:SetText(min)
+	_G[slider:GetName()..'Low']:SetText(min/divisor)
 	_G[slider:GetName()..'Low']:ClearAllPoints()
 	_G[slider:GetName()..'Low']:SetPoint("RIGHT", slider, "LEFT", 10, 0)
-	_G[slider:GetName()..'High']:SetText(max)
+	_G[slider:GetName()..'High']:SetText(max/divisor)
 	_G[slider:GetName()..'High']:ClearAllPoints()
 	_G[slider:GetName()..'High']:SetPoint("LEFT", slider, "RIGHT", -10, 0)
 	
