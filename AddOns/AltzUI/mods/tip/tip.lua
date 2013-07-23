@@ -52,8 +52,8 @@ end
 local anchor = CreateFrame("Button", "Altz_tooltip", UIParent)
 anchor.movingname = L["tooltip"]
 anchor.point = {
-		healer = {a1 = "BOTTOMRIGHT", parent = "UIParent", a2 = "BOTTOMRIGHT", x = -75, y = 40},
-		dpser = {a1 = "BOTTOMRIGHT", parent = "UIParent", a2 = "BOTTOMRIGHT", x = -75, y = 40},
+		healer = {a1 = "BOTTOMRIGHT", parent = "UIParent", a2 = "BOTTOMRIGHT", x = -160, y = 40},
+		dpser = {a1 = "BOTTOMRIGHT", parent = "UIParent", a2 = "BOTTOMRIGHT", x = -160, y = 40},
 	}
 T.CreateDragFrame(anchor) --frame, dragFrameList, inset, clamp	
 anchor:SetWidth(120)
