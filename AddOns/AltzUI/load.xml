@@ -48,6 +48,7 @@
 	<Script file="mods\chat\easyChannel.lua"/>
 	<Script file="mods\chat\urlcopy.lua"/>
 	<Script file="mods\chat\hide.lua"/>
+	<Script file="mods\chat\fliter.lua"/>
 	
 	<Script file="mods\loot\lootgroup.lua"/>
 	
@@ -65,7 +66,6 @@
 	<Script file="mods\tweaks\already known.lua"/>
 	<Script file="mods\tweaks\automail.lua"/>
 	<Script file="mods\tweaks\combattext.lua"/>
-	<Script file="mods\tweaks\countdown.lua"/>	
 	<Script file="mods\tweaks\dragemall.lua"/>
 	<Script file="mods\tweaks\focus.lua"/>
 	<Script file="mods\tweaks\hoverbind.lua"/>
