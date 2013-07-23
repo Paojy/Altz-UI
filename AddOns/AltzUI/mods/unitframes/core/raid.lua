@@ -1,6 +1,7 @@
 ﻿local T, C, L, G = unpack(select(2, ...))
 local oUF = AltzUF or oUF
 
+local bartex = G.media.blank
 --=============================================--
 --[[               Some update               ]]--
 --=============================================--
@@ -176,7 +177,7 @@ local func = function(self, unit)
 	self.threatborder = Createpxborder(self, 1)
 	self:RegisterEvent("UNIT_THREAT_SITUATION_UPDATE", UpdateThreat)
 	
-    local hp = T.createStatusbar(self, G.media.blank, "ARTWORK", nil, nil, 1, 1, 1, 1)
+    local hp = T.createStatusbar(self, bartex, "ARTWORK", nil, nil, 1, 1, 1, 1)
 	hp:SetFrameLevel(3)
     hp:SetAllPoints(self)
 	hp:SetPoint("TOPLEFT", self, "TOPLEFT")
@@ -216,7 +217,7 @@ local func = function(self, unit)
 	
 	-- raid manabars --
 	if aCoreCDB["UnitframeOptions"]["raidmanabars"] == true then
-		local pp = T.createStatusbar(self, G.media.blank, "ARTWORK", nil, nil, 1, 1, 1, 1)
+		local pp = T.createStatusbar(self, bartex, "ARTWORK", nil, nil, 1, 1, 1, 1)
 		pp:SetFrameLevel(3)
 		pp:SetPoint("BOTTOMLEFT", self, "BOTTOMLEFT")
 		pp:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT")
@@ -360,7 +361,7 @@ local dfunc = function(self, unit)
 	-- border --
 	self.backdrop = T.createBackdrop(self, self, 0)
 	
-    local hp = T.createStatusbar(self, G.media.blank, "ARTWORK", nil, nil, 1, 1, 1, 1)
+    local hp = T.createStatusbar(self, bartex, "ARTWORK", nil, nil, 1, 1, 1, 1)
 	hp:SetFrameLevel(3)
     hp:SetAllPoints(self)
     hp.frequentUpdates = true
@@ -487,7 +488,7 @@ local function Spawnhealraid()
 	healerraid.movingname = L["healerraid"]
 	healerraid.point = {
 		healer = {a1 = "CENTER", parent = "UIParent", a2 = "BOTTOM", x = 0, y = 160},
-		dpser = {a1 = "BOTTOMRIGHT", parent = "UIParent", a2 = "BOTTOMRIGHT", x = -75, y = 40},
+		dpser = {a1 = "BOTTOMLEFT", parent = "UIParent", a2 = "BOTTOMLEFT", x = 10, y = 200},
 	}
 	T.CreateDragFrame(healerraid)
 	healerraid.df:ClearAllPoints()
