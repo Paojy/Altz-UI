@@ -51,15 +51,25 @@ local function Kill(object)
 	object:Hide()
 end
 
-function SetUp(framen, ...)
+function SetUp(framen)
 	local frame = CreateFrame("Frame", G.uiname..framen, UIParent)
 	frame:SetScale(config.scale)
 	if framen == "bag" then 
 		frame:SetWidth(((config.size+config.spacing)*config.bpr)+10-config.spacing)
-		frame:SetPoint("BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", -18, 20)
+		frame.movingname = L["bag frame"]
+		frame.point = {
+				healer = {a1 = "BOTTOMRIGHT", parent = "Minimap", a2 = "BOTTOMLEFT", x = -8, y = 2},
+				dpser = {a1 = "BOTTOMRIGHT", parent = "Minimap", a2 = "BOTTOMLEFT", x = -8, y = 2},
+			}
+		T.CreateDragFrame(frame)
 	else
 		frame:SetWidth(((config.size+config.spacing)*config.bapr)+16-config.spacing)
-		frame:SetPoint("BOTTOM", UIParent, "BOTTOM", 0, 85)
+		frame.movingname = L["bank frame"]
+		frame.point = {
+				healer = {a1 = "BOTTOM", parent = "UIParent", a2 = "BOTTOM", x = 0, y = 80},
+				dpser = {a1 = "BOTTOM", parent = "UIParent", a2 = "BOTTOM", x = 0, y = 80},
+			}
+		T.CreateDragFrame(frame)
 	end
 	frame:SetFrameStrata("HIGH")
 	frame:SetFrameLevel(1)
@@ -67,13 +77,6 @@ function SetUp(framen, ...)
 	frame:Hide()
 	
 	F.SetBD(frame)
-	
-	frame:SetClampedToScreen(true)
-    frame:SetMovable(true)
-	frame:EnableMouse(true)
-	frame:RegisterForDrag("LeftButton","RightButton")
-	frame:SetScript("OnDragStart", function(self) self:StartMoving() frame:SetUserPlaced(false) end)
-	frame:SetScript("OnDragStop", function(self) self:StopMovingOrSizing() end)
 	
 	local close = CreateFrame("Button", nil, UIParent, "UIPanelButtonTemplate")
 	close:SetParent(G.uiname..framen)
@@ -238,8 +241,8 @@ end
 BankFrame:EnableMouse(0)
 BankFrame:SetSize(0,0)
 
-SetUp("bag", "BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", -200, 100)
-SetUp("bank", "TOPLEFT", UIParent, "TOPLEFT", 100, -50)
+SetUp("bag")
+SetUp("bank")
 skin(28, "BankFrameItem")
 skin(7, "BankFrameBag")
 
