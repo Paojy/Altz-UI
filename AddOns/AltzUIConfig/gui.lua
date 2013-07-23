@@ -882,7 +882,7 @@ local function CreateRaidDebuffOptions()
 		F.ReskinDropDown(BossDD)
 
 		BossDD.name = T.createtext(BossDD, "OVERLAY", 13, "OUTLINE", "LEFT")
-		BossDD.name:SetPoint("BOTTOMRIGHT", BossDD, "BOTTOMLEFT", 15, 10)
+		BossDD.name:SetPoint("BOTTOMRIGHT", BossDD, "BOTTOMLEFT", 15, 12)
 		BossDD.name:SetText("BOSS")
 
 		UIDropDownMenu_SetWidth(BossDD, 100)

@@ -321,6 +321,6 @@ L["Chat Fliter Keyword Num2"] = "Must contain at least the number of words to hi
 L["goldkeywordlist"] = "Key Words:"
 L["goldkeywordlist2"] = "Input key words separated by a space"
 L["Raid Debuff"] = "Raid Debuff"
-L["Tarsh"] = "Tarsh"
+L["Trash"] = "Trash"
 L["Input Debuff Level"] = "Level"
 L["should be a number."] = "should be a number."

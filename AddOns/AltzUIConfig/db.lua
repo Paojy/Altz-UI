@@ -353,14 +353,14 @@ G.Raids = {
 		EJ_GetEncounterInfo(829),
 		EJ_GetEncounterInfo(832),
 		EJ_GetEncounterInfo(831),
-		L["Tarsh"],
+		L["Trash"],
 	},
 	[EJ_GetInstanceInfo(320)] = { -- 永春台
 		EJ_GetEncounterInfo(683),
 		EJ_GetEncounterInfo(742),
 		EJ_GetEncounterInfo(729),
 		EJ_GetEncounterInfo(709),
-		L["Tarsh"],
+		L["Trash"],
 	},
 	[EJ_GetInstanceInfo(330)] = { -- 恐惧之心
 		EJ_GetEncounterInfo(745),
@@ -369,7 +369,7 @@ G.Raids = {
 		EJ_GetEncounterInfo(741),
 		EJ_GetEncounterInfo(737),
 		EJ_GetEncounterInfo(743),
-		L["Tarsh"],
+		L["Trash"],
 	},
 	[EJ_GetInstanceInfo(317)] = { -- 魔古山宝库
 		EJ_GetEncounterInfo(679),
@@ -378,13 +378,13 @@ G.Raids = {
 		EJ_GetEncounterInfo(687),
 		EJ_GetEncounterInfo(726),
 		EJ_GetEncounterInfo(677),
-		L["Tarsh"],
+		L["Trash"],
 	},
 }
 
 local DebuffList = {
 	[EJ_GetInstanceInfo(317)] = { -- 魔古山宝库
-		[L["Tarsh"]] = {
+		[L["Trash"]] = {
 		},
 		[EJ_GetEncounterInfo(679)] = { -- The Stone Guard
 			[GetSpellInfo(116281)] = {id = 116281, level = 7,}, -- Cobalt Mine Blast, Magic root		
@@ -424,7 +424,7 @@ local DebuffList = {
 	},
 
 	[EJ_GetInstanceInfo(330)] = { -- 恐惧之心
-		[L["Tarsh"]] = {
+		[L["Trash"]] = {
 		},
 		[EJ_GetEncounterInfo(745)] = { -- Imperial Vizier Zor'lok
 			[GetSpellInfo(122761)] = {id = 122761, level = 7,}, -- Exhale, The person targeted for Exhale. 
@@ -475,7 +475,7 @@ local DebuffList = {
 	},
 
 	[EJ_GetInstanceInfo(320)] = { -- 永春台
-		[L["Tarsh"]] = {
+		[L["Trash"]] = {
 		},
 		[EJ_GetEncounterInfo(683)] = { --Protectors Of the Endless		
 			[GetSpellInfo(117519)] = {id = 117519, level = 7,}, -- Touch of Sha, Dot that lasts untill Kaolan is defeated.
@@ -507,7 +507,7 @@ local DebuffList = {
 	},
 
 	[EJ_GetInstanceInfo(362)] = { -- 雷电王座
-		[L["Tarsh"]] = {
+		[L["Trash"]] = {
 			[GetSpellInfo(139900)] = {id = 139900, level = 7,}, --Stormcloud
 			[GetSpellInfo(139550)] = {id = 139550, level = 7,}, --Torment
 			[GetSpellInfo(139888)] = {id = 139888, level = 7,}, --Ancient Venom
