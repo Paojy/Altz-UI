@@ -89,6 +89,7 @@ local function applySkin(b)
 	else
 		b.duration:SetFont(G.numFont, buff.durationsize, "THINOUTLINE")
 	end
+	b.duration:SetShadowOffset(0, 0)
     b.duration:ClearAllPoints()
     b.duration:SetPoint("CENTER", b, "BOTTOM")
 
@@ -98,6 +99,7 @@ local function applySkin(b)
 	else
 		b.count:SetFont(G.numFont, buff.countsize, "THINOUTLINE")
 	end
+	b.count:SetShadowOffset(0, 0)
     b.count:ClearAllPoints()
     b.count:SetPoint("TOPRIGHT", 2, 2)
 	

@@ -24,10 +24,10 @@ local buttonList = {}
 local frame = CreateFrame("Frame", "Altz_Bar1&2", UIParent, "SecureHandlerStateTemplate")
 frame.movingname = L["Bar1&2"]
 frame.point = {
-	healer = {a1 = "BOTTOM", parent = "UIParent", a2 = "BOTTOM", x = 0, y = 15},
-	dpser = {a1 = "BOTTOM", parent = "UIParent", a2 = "BOTTOM", x = 0, y = 15},
+	healer = {a1 = "BOTTOM", parent = "UIParent", a2 = "BOTTOM", x = 0, y = 4},
+	dpser = {a1 = "BOTTOM", parent = "UIParent", a2 = "BOTTOM", x = 0, y = 4},
 }
-T.CreateDragFrame(frame) --frame, dragFrameList, inset, clamp
+T.CreateDragFrame(frame)
 frame:SetWidth(num*buttonssize + (num-1)*buttonspace + 2*padding)
 frame:SetHeight(2*buttonssize + buttonspace + 2*padding)
 

@@ -15,10 +15,10 @@ local buttonList = {}
 local frame = CreateFrame("Frame", "Altz_Stancebar", UIParent, "SecureHandlerStateTemplate")
 frame.movingname = L["Stancebar"]
 frame.point = {
-		healer = {a1 = "BOTTOMRIGHT", parent = "UIParent", a2 = "BOTTOMRIGHT", x = -13, y = 4},
-		dpser = {a1 = "BOTTOMRIGHT", parent = "UIParent", a2 = "BOTTOMRIGHT", x = -13, y = 4},
+		healer = {a1 = "BOTTOMRIGHT", parent = "UIParent", a2 = "BOTTOMRIGHT", x = -18, y = 4},
+		dpser = {a1 = "BOTTOMRIGHT", parent = "UIParent", a2 = "BOTTOMRIGHT", x = -18, y = 4},
 	}
-T.CreateDragFrame(frame) --frame, dragFrameList, inset, clamp
+T.CreateDragFrame(frame)
 frame:SetWidth(num*buttonssize + (num-1)*buttonspace + 2*padding)
 frame:SetHeight(buttonssize + 2*padding)
 

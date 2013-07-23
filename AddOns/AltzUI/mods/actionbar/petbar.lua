@@ -26,10 +26,10 @@ local buttonList = {}
 local frame = CreateFrame("Frame", "Altz_Petbar", UIParent, "SecureHandlerStateTemplate")
 frame.movingname = L["Petbar"]
 frame.point = {
-		healer = {a1 = "BOTTOM", parent = "UIParent", a2 = "BOTTOM", x = 0, y = 115},
-		dpser = {a1 = "BOTTOM", parent = "UIParent", a2 = "BOTTOM", x = 0, y = 115},
+		healer = {a1 = "BOTTOM", parent = "UIParent", a2 = "BOTTOM", x = 0, y = 104},
+		dpser = {a1 = "BOTTOM", parent = "UIParent", a2 = "BOTTOM", x = 0, y = 104},
 	}
-T.CreateDragFrame(frame) --frame, dragFrameList, inset, clamp
+T.CreateDragFrame(frame)
 if not uselayout5x2 then
 	frame:SetWidth(num*petbuttonssize + (num-1)*buttonspace + 2*padding)
 	frame:SetHeight(petbuttonssize + 2*padding)

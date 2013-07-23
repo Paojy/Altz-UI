@@ -26,10 +26,10 @@ local buttonList = {}
 local frame = CreateFrame("Frame", "Altz_Bar3", UIParent, "SecureHandlerStateTemplate")
 frame.movingname = L["Bar3"]
 frame.point = {
-	healer = {a1 = "BOTTOM", parent = "UIParent", a2 = "BOTTOM", x = 0, y = 15},
-	dpser = {a1 = "BOTTOM", parent = "UIParent", a2 = "BOTTOM", x = 0, y = 15},
+	healer = {a1 = "BOTTOM", parent = "UIParent", a2 = "BOTTOM", x = 0, y = 4},
+	dpser = {a1 = "BOTTOM", parent = "UIParent", a2 = "BOTTOM", x = 0, y = 4},
 }
-T.CreateDragFrame(frame) --frame, dragFrameList, inset, clamp
+T.CreateDragFrame(frame)
 if layout3x2x2 then
 	frame:SetWidth(num/2*buttonssize +(num/2-2)*buttonspace +2*padding +num*aCoreCDB["ActionbarOptions"]["bar12size"] +(num-1)*aCoreCDB["ActionbarOptions"]["bar12space"] +2*padding +2*space1)
 	frame:SetHeight(2*buttonssize + 2*padding + buttonspace)
