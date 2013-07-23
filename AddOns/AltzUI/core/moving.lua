@@ -84,7 +84,7 @@ SpecMover:SetMovable(true)
 SpecMover:EnableMouse(true)
 
 F.CreateBD(SpecMover)
-SpecMover:SetBackdropColor(.15, .15, .15, .9)
+SpecMover:SetBackdropColor(.15, .15, .15)
 F.CreateSD(SpecMover, 2, 0, 0, 0, 1, -1)
 	
 SpecMover.title = T.createtext(SpecMover, "OVERLAY", 16, "OUTLINE", "CENTER")
@@ -98,7 +98,7 @@ SpecMover.curframe = T.createtext(SpecMover, "OVERLAY", 12, "OUTLINE", "LEFT")
 SpecMover.curframe:SetPoint("TOPLEFT", SpecMover, "TOPLEFT", 10, -30)
 
 -- a1
-local Point1dropDown = CreateFrame("FRAME", G.uiname.."SpecMoverPoint1DropDown", SpecMover, "UIDropDownMenuTemplate")
+local Point1dropDown = CreateFrame("Frame", G.uiname.."SpecMoverPoint1DropDown", SpecMover, "UIDropDownMenuTemplate")
 Point1dropDown:SetPoint("TOPLEFT", SpecMover, "TOPLEFT", 0, -70)
 F.ReskinDropDown(Point1dropDown)
 
@@ -135,7 +135,7 @@ ParentBox:SetSize(120, 20)
 Reskinbox(ParentBox, L["Anchor Frame"], "parent", Point1dropDown, -2, 2)
 
 -- a2
-local Point2dropDown = CreateFrame("FRAME", G.uiname.."SpecMoverPoint2dropDown", SpecMover, "UIDropDownMenuTemplate")
+local Point2dropDown = CreateFrame("Frame", G.uiname.."SpecMoverPoint2dropDown", SpecMover, "UIDropDownMenuTemplate")
 Point2dropDown:SetPoint("LEFT", ParentBox, "RIGHT", -4, -2)
 F.ReskinDropDown(Point2dropDown)
 
@@ -246,8 +246,8 @@ function T.CreateDragFrame(frame)
 	--overlay texture
 	frame.df.mask = F.CreateBDFrame(frame.df, 0.5)
 	F.CreateSD(frame.df.mask, 2, 0, 0, 0, 1, -1)
-	frame.df.mask.text = T.createtext(frame.df, "OVERLAY", 13, "OUTLINE", "RIGHT")
-	frame.df.mask.text:SetPoint("TOPRIGHT")
+	frame.df.mask.text = T.createtext(frame.df, "OVERLAY", 13, "OUTLINE", "LEFT")
+	frame.df.mask.text:SetPoint("TOPLEFT")
 	frame.df.mask.text:SetText(frame.movingname)
 	
 	frame.df:SetScript("OnMouseDown", function()
@@ -370,6 +370,12 @@ resetposbutton:SetScript("OnClick", function()
 		CurrentFrame = f:GetName()
 		PlaceCurrentFrame()
 	end
+	FCF_SetLocked(ChatFrame1, nil)
+    ChatFrame1:ClearAllPoints()
+	ChatFrame1:SetSize(300, 130)
+    ChatFrame1:SetPoint("BOTTOMLEFT", _G[G.uiname.."chatframe_pullback"],"BOTTOMLEFT", 3, 5)
+	
+	FCF_SavePositionAndDimensions(ChatFrame1)
 	CurrentFrame = "NONE"
 end)
 
