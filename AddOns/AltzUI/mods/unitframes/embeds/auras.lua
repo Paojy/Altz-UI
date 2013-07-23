@@ -1,4 +1,4 @@
-local T, C, L, G = unpack(select(2, ...))
+﻿local T, C, L, G = unpack(select(2, ...))
 local oUF = AltzUF or oUF
 
 local glowBorder = {
@@ -114,60 +114,26 @@ local dispelPriority = {
     Disease = 1,
 }
 
-local instDebuffs = {}
-
-local delaytimer = 0
-local zoneDelay = function(self, elapsed)
-    delaytimer = delaytimer + elapsed
-
-    if delaytimer < 5 then return end
-
-    if IsInInstance() then
-        SetMapToCurrentZone()
-        local zone = GetCurrentMapAreaID()
-
-        if G.auras.instances[zone] then
-            instDebuffs = G.auras.instances[zone]
-        end
-    else
-        instDebuffs = {}
-    end
-
-    self:SetScript("OnUpdate", nil)
-    delaytimer = 0
-end
-
-local getZone = CreateFrame"Frame"
-getZone:RegisterEvent"PLAYER_ENTERING_WORLD"
-getZone:RegisterEvent"ZONE_CHANGED_NEW_AREA"
-getZone:SetScript("OnEvent", function(self, event)
-    -- Delay just in case zone data hasn't loaded
-    self:SetScript("OnUpdate", zoneDelay)
-
-    if event == "PLAYER_ENTERING_WORLD" then
-        self:UnregisterEvent("PLAYER_ENTERING_WORLD")
-    end
-end)
-
 local CustomFilter = function(icons, ...)
     local _, icon, name, _, _, _, dtype, _, _, caster, spellID = ...
 
     icon.asc = false
     icon.priority = 0
 
-    if G.auras.ascending[spellID] or G.auras.ascending[name] then
-        icon.asc = true
-    end
+    --if G.auras.ascending[spellID] or G.auras.ascending[name] then
+        --icon.asc = true
+    --end
 
-    if instDebuffs[spellID] then
-        icon.priority = instDebuffs[spellID]
-        return true
-    elseif G.auras.debuffs[spellID] then
-        icon.priority = G.auras.debuffs[spellID]
-        return true
-    elseif instDebuffs[name] then
-        icon.priority = instDebuffs[name]
-        return true
+    if IsInInstance() then
+        local ins = GetInstanceInfo()
+        if aCoreCDB["RaidDebuff"][ins] then
+			for boss, debufflist in pairs(aCoreCDB["RaidDebuff"][ins]) do
+				if debufflist[name] then
+					icon.priority = debufflist[name].level
+					return true
+				end
+			end
+        end
     elseif G.auras.debuffs[name] then
         icon.priority = G.auras.debuffs[name]
         return true
