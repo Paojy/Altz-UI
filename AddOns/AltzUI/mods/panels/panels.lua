@@ -366,7 +366,7 @@ end)
 	
 -- 战网好友上线提示
 BNToastFrame:ClearAllPoints()
-BNToastFrame:SetPoint("BOTTOMLEFT", minimap_pullback, "TOPLEFT", 0, 10)
+BNToastFrame:SetPoint("BOTTOMLEFT", chatframe_pullback, "TOPLEFT", 0, 10)
 BNToastFrame_UpdateAnchor = function() end
 
 -- 排队的眼睛
@@ -1207,7 +1207,7 @@ BOTTOMPANEL:SetScript("OnEvent",function(self, event)
 			fadeout()
 		end
 		
-		local PetNumber = C_PetJournal.GetNumPets(false) or 1
+		local PetNumber = max(C_PetJournal.GetNumPets(false), 5)
 		local randomIndex = random(1 ,PetNumber)
 		local randomID = select(11, C_PetJournal.GetPetInfoByIndex(randomIndex))
 		Info:SetCreature(randomID)
