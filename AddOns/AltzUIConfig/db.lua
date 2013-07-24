@@ -338,6 +338,11 @@ for k, _ in pairs(classClickdb) do
 	end
 end
 
+local EJ_GetEncounterInfo = function(value)
+	local a = EJ_GetEncounterInfo(value)
+	return a
+end
+
 G.Raids = {
 	[EJ_GetInstanceInfo(362)] = { -- 雷电王座
 		EJ_GetEncounterInfo(827),
@@ -353,7 +358,7 @@ G.Raids = {
 		EJ_GetEncounterInfo(829),
 		EJ_GetEncounterInfo(832),
 		EJ_GetEncounterInfo(831),
-		L["Trash"],
+		L["Trash"],	
 	},
 	[EJ_GetInstanceInfo(320)] = { -- 永春台
 		EJ_GetEncounterInfo(683),
@@ -362,14 +367,14 @@ G.Raids = {
 		EJ_GetEncounterInfo(709),
 		L["Trash"],
 	},
-	[EJ_GetInstanceInfo(330)] = { -- 恐惧之心
+	[EJ_GetInstanceInfo(330)] = { -- 恐惧之心	
 		EJ_GetEncounterInfo(745),
 		EJ_GetEncounterInfo(744),
 		EJ_GetEncounterInfo(713),
 		EJ_GetEncounterInfo(741),
 		EJ_GetEncounterInfo(737),
 		EJ_GetEncounterInfo(743),
-		L["Trash"],
+		L["Trash"],	
 	},
 	[EJ_GetInstanceInfo(317)] = { -- 魔古山宝库
 		EJ_GetEncounterInfo(679),
@@ -379,6 +384,42 @@ G.Raids = {
 		EJ_GetEncounterInfo(726),
 		EJ_GetEncounterInfo(677),
 		L["Trash"],
+	},
+}
+
+local AuraList = {
+	["Buffs"] = {
+	--牧师
+		[GetSpellInfo(33206)]  = { id = 33206,  level = 15,}, -- 痛苦压制
+        [GetSpellInfo(47788)]  = { id = 47788,  level = 15,}, -- 守护之魂
+	--小德
+        [GetSpellInfo(102342)] = { id = 102342, level = 15,}, -- 铁木树皮
+		[GetSpellInfo(22812)]  = { id = 22812,  level = 15,}, -- 树皮术
+		[GetSpellInfo(61336)]  = { id = 61336,  level = 15,}, -- 生存本能
+		[GetSpellInfo(105737)] = { id = 105737, level = 15,}, -- 乌索克之力
+		[GetSpellInfo(22842)]  = { id = 22842,  level = 15,}, -- 狂暴回复
+	--骑士
+		[GetSpellInfo(1022)]   = { id = 1022,   level = 15,}, -- 保护之手
+		[GetSpellInfo(31850)]  = { id = 31850,  level = 15,}, -- 炽热防御者
+        [GetSpellInfo(498)]    = { id = 498,    level = 15,}, -- 圣佑术
+		[GetSpellInfo(642)]    = { id = 642,    level = 15,}, -- 圣盾术
+		[GetSpellInfo(86659)]  = { id = 86659,  level = 15,}, -- 远古列王守卫
+	--武僧
+		[GetSpellInfo(116849)] = { id = 116849, level = 15,}, -- 作茧缚命
+		[GetSpellInfo(115203)] = { id = 115203, level = 15,}, -- 壮胆酒	
+	--DK
+        [GetSpellInfo(50397)]  = { id = 50397,  level = 15,}, -- 巫妖之躯
+		[GetSpellInfo(48707)]  = { id = 48707,  level = 15,}, -- 反魔法护罩
+		[GetSpellInfo(48792)]  = { id = 48792,  level = 15,}, -- 冰封之韧
+		[GetSpellInfo(49222)]  = { id = 49222,  level = 15,}, -- 白骨之盾
+		[GetSpellInfo(49028)]  = { id = 49028,  level = 15,}, -- 吸血鬼之血
+		[GetSpellInfo(55233)]  = { id = 55233,  level = 15,}, -- 符文刃舞
+	--战士
+        [GetSpellInfo(112048)] = { id = 112048, level = 15,}, -- 盾牌屏障
+		[GetSpellInfo(12975)]  = { id = 12975,  level = 15,}, -- 破釜沉舟
+		[GetSpellInfo(871)]    = { id = 871,    level = 15,}, -- 盾墙
+	},
+	["Debuffs"] = {
 	},
 }
 
@@ -908,7 +949,8 @@ local Character_default_Settings = {
 		setNumeration = true,
 		setRecount = true,
 	},
-	RaidDebuff = DebuffList
+	RaidDebuff = DebuffList,
+	CooldownAura = AuraList,
 }
 
 function T.LoadVariables()
