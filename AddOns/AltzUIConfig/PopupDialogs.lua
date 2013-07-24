@@ -39,3 +39,12 @@ StaticPopupDialogs[G.uiname.."incorrect level"] = {
 	whileDead = true,
 	preferredIndex = 3,
 }
+
+StaticPopupDialogs[G.uiname.."Reset Confirm"] = {
+	text = L["Reset Confirm"],
+	button1 = ACCEPT,
+	button2 = CANCEL,
+	hideOnEscape = 1, 
+	whileDead = true,
+	preferredIndex = 3,
+}

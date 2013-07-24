@@ -20,8 +20,8 @@ GUI:EnableMouse(true)
 
 F.SetBD(GUI)
 
-GUI.title = T.createtext(GUI, "OVERLAY", 20, "OUTLINE", "CENTER")
-GUI.title:SetPoint("BOTTOM", GUI, "TOP", 0, -5)
+GUI.title = T.createtext(GUI, "OVERLAY", 25, "OUTLINE", "CENTER")
+GUI.title:SetPoint("BOTTOM", GUI, "TOP", 0, -8)
 GUI.title:SetText("|cffA6FFFFAltz UI  "..G.Version.."|r")
 
 GUI.close = CreateFrame("Button", nil, GUI)
@@ -164,17 +164,44 @@ CreateTab(L["Intro"], IntroOptions, GUI, "VERTICAL")
 IntroOptions:SetScript("OnShow", function() ReloadButton:Hide() end)
 IntroOptions:SetScript("OnHide", function() ReloadButton:Show() end)
 
+local logo = CreateFrame("PlayerModel", G.uiname.."Logo", IntroOptions)
+logo:SetSize(500, 300)
+logo:SetPoint("CENTER")
+logo:SetDisplayInfo(40795)
+
+logo:SetCamDistanceScale(.7)
+logo:SetPosition(-2,0,0)
+logo:SetRotation(-0.3)
+logo.rotation = -0.3
+
+local function RotateModel(self, button)
+    local rotationIncrement = 0.2
+    if button == "LeftButton" then
+		self.rotation = self.rotation - rotationIncrement
+    else
+		self.rotation = self.rotation + rotationIncrement
+    end
+    self.rotation = floor((self.rotation)*10)/10
+    self:SetRotation(self.rotation)
+end
+
+logo:SetScript("OnMouseDown", function(self, button) RotateModel(self, button) end)
+
 local resetbu = CreateFrame("Button", G.uiname.."ResetButton", IntroOptions, "UIPanelButtonTemplate")
 resetbu:SetPoint("BOTTOMLEFT", IntroOptions, "BOTTOM", 100, 80)
 resetbu:SetSize(180, 25)
-resetbu:SetText(NEWBIE_TOOLTIP_STOPWATCH_RESETBUTTON)
+resetbu:SetText(L["Reset"])
 F.Reskin(resetbu)
-resetbu:SetScript("OnClick", function()
-	aCoreCDB = {}
-	T.SetChatFrame()
-	T.LoadVariables()
-	T.ResetAllAddonSettings()
-	ReloadUI()
+resetbu:SetScript("OnClick", function(self)
+	StaticPopupDialogs[G.uiname.."Reset Confirm"].text = format(L["Reset Confirm"], "Altz UI")
+	StaticPopupDialogs[G.uiname.."Reset Confirm"].OnAccept = function()
+		aCoreCDB = {}
+		T.SetChatFrame()
+		T.LoadVariables()
+		T.ResetAllAddonSettings()
+		ReloadUI()
+	end
+	StaticPopup_Show(G.uiname.."Reset Confirm")
 end)
 
 --====================================================--
@@ -765,12 +792,12 @@ RFDebuff_InnerFrame:SetPoint("BOTTOMRIGHT", -30, 20)
 
 local function LineUpRaidDebuffList(parent, raidname)
 	local i = -1
-	for index, boss in T.pairsByKeys(G.Raids[raidname]) do
+	for index, boss in pairs(G.Raids[raidname]) do
 		i = i + 1
 		_G[G.uiname.."RaidDebuff"..raidname..boss.."Title"]:SetPoint("TOPLEFT", parent, "TOPLEFT", 10, -10-i*30)
 		i = i + 1
 		local t = {}
-		for spell, info in T.pairsByKeys(aCoreCDB["RaidDebuff"][raidname][boss], "id") do
+		for spell, info in pairs(aCoreCDB["RaidDebuff"][raidname][boss]) do
 			table.insert(t, info)
 		end
 		sort(t, function(a,b) return a.level > b.level or (a.level == b.level and a.id > b.id) end)
@@ -927,9 +954,9 @@ local function CreateRaidDebuffOptions()
 		Levelinput:SetAutoFocus(false)
 		Levelinput:SetTextInsets(3, 0, 0, 0)
 
-		Levelinput:SetScript("OnShow", function(self) self:SetText(L["Input Debuff Level"]) end)
+		Levelinput:SetScript("OnShow", function(self) self:SetText(L["Input Level"]) end)
 		Levelinput:SetScript("OnEditFocusGained", function(self) self:HighlightText() end)
-		Levelinput:SetScript("OnEscapePressed", function(self) self:ClearFocus() self:SetText(L["Input Debuff Level"]) end)
+		Levelinput:SetScript("OnEscapePressed", function(self) self:ClearFocus() self:SetText(L["Input Level"]) end)
 		Levelinput:SetScript("OnEnterPressed", function(self) self:ClearFocus() end)
 		
 		frame.Levelinput = Levelinput
@@ -942,12 +969,12 @@ local function CreateRaidDebuffOptions()
 		Add:SetScript("OnClick", function(self)
 			local boss = UIDropDownMenu_GetText(BossDD)
 			local spellID = Spellinput:GetText()
-			local level = Levelinput:GetText()
+			local level = tonumber(Levelinput:GetText())
 			if not spellID or not GetSpellInfo(spellID) then
 				StaticPopupDialogs[G.uiname.."incorrect spellid"].text = "|cff7FFF00"..spellID.." |r"..L["not a corret Spell ID"]
 				StaticPopup_Show(G.uiname.."incorrect spellid")
-			elseif not tonumber(level) then
-				StaticPopupDialogs[G.uiname.."incorrect level"].text = "|cff7FFF00"..level.." |r"..L["should be a number."]
+			elseif not level then
+				StaticPopupDialogs[G.uiname.."incorrect level"].text = "|cff7FFF00"..Levelinput:GetText().." |r"..L["should be a number."]
 				StaticPopup_Show(G.uiname.."incorrect level")
 			elseif bosstable[boss] then
 				local name = GetSpellInfo(spellID)
@@ -970,12 +997,12 @@ local function CreateRaidDebuffOptions()
 		
 		frame.Add = Add
 		
-		frame.back = CreateFrame("Button", nil, frame)
-		frame.back:SetSize(26, 26)
-		frame.back:SetNormalTexture("Interface\\BUTTONS\\UI-Panel-CollapseButton-Up")
-		frame.back:SetPushedTexture("Interface\\BUTTONS\\UI-Panel-CollapseButton-Down")
-		frame.back:SetPoint("LEFT", Add, "RIGHT", 2, 0)
-		frame.back:SetScript("OnClick", function() 
+		local Back = CreateFrame("Button", nil, frame)
+		Back:SetSize(26, 26)
+		Back:SetNormalTexture("Interface\\BUTTONS\\UI-Panel-CollapseButton-Up")
+		Back:SetPushedTexture("Interface\\BUTTONS\\UI-Panel-CollapseButton-Down")
+		Back:SetPoint("LEFT", Add, "RIGHT", 2, 0)
+		Back:SetScript("OnClick", function() 
 			local children = {RFInnerframe.raiddebuff:GetChildren()}
 			for i = 1, #children do
 				if children[i]:GetName():match(G.uiname.."Raiddebuff Frame") then
@@ -983,6 +1010,20 @@ local function CreateRaidDebuffOptions()
 				end
 			end
 			RFDebuff_InnerFrame:Show()
+		end)
+		
+		local Reset = CreateFrame("Button", G.uiname..raidname.."Reset RaidDebuff Button", frame, "UIPanelButtonTemplate")
+		Reset:SetPoint("BOTTOM", ReloadButton, "TOP", 0, 10)
+		Reset:SetSize(100, 25)
+		Reset:SetText(L["Reset"])
+		F.Reskin(Reset)
+		Reset:SetScript("OnClick", function(self)
+			StaticPopupDialogs[G.uiname.."Reset Confirm"].text = format(L["Reset Confirm"], raidname)
+			StaticPopupDialogs[G.uiname.."Reset Confirm"].OnAccept = function()
+				aCoreCDB["RaidDebuff"][raidname] = nil
+				ReloadUI()
+			end
+			StaticPopup_Show(G.uiname.."Reset Confirm")
 		end)
 		
 		local tab = CreateFrame("Button", G.uiname.."Raiddebuff Tab"..raidindex, RFDebuff_InnerFrame, "UIPanelButtonTemplate")
@@ -1009,6 +1050,199 @@ local function CreateRaidDebuffOptions()
 	end
 end
 
+RFInnerframe.cooldownaura = CreateOptionPage("RF Options Cooldown Aura", L["Cooldown Aura"], RFInnerframe, "VERTICAL", .3)
+
+local cooldownauraframe = CreateFrame("Frame", G.uiname.."Cooldown Aura Options", RFInnerframe.cooldownaura)
+cooldownauraframe:SetPoint("TOPLEFT", 30, -85)
+cooldownauraframe:SetPoint("BOTTOMRIGHT", -30, 20)
+F.CreateBD(cooldownauraframe, 0)
+cooldownauraframe.tabindex = 1
+cooldownauraframe.tabnum = 2
+for i = 1, 2 do
+	cooldownauraframe["tab"..i] = CreateFrame("Frame", G.uiname.."cooldownauraframe Tab"..i, cooldownauraframe)
+	cooldownauraframe["tab"..i]:SetScript("OnMouseDown", function() end)
+end
+
+local function LineUpCooldownAuraList(parent, auratype)
+	local t = {}
+	for spell, info in pairs(aCoreCDB["CooldownAura"][auratype]) do
+		table.insert(t, info)
+	end
+	sort(t, function(a,b) return a.level > b.level or (a.level == b.level and a.id > b.id) end)
+	for i = 1, #t do
+		_G[G.uiname.."Cooldown"..auratype..t[i].id]:SetPoint("TOPLEFT", parent, "TOPLEFT", 10, 20-i*30)
+	end
+end
+
+local function CreateCooldownAuraButton(parent, auratype, name, spellID, level)
+	local bu = CreateFrame("Frame", G.uiname.."Cooldown"..auratype..spellID, parent)
+	bu:SetSize(330, 20)
+	
+	bu.icon = CreateFrame("Button", nil, bu)
+	bu.icon:SetSize(18, 18)
+	bu.icon:SetNormalTexture(select(3, GetSpellInfo(spellID)))
+	bu.icon:GetNormalTexture():SetTexCoord(0.1,0.9,0.1,0.9)
+	bu.icon:SetPoint"LEFT"
+	F.CreateBG(bu.icon)
+	
+	bu.level = T.createtext(bu, "OVERLAY", 12, "OUTLINE", "LEFT")
+	bu.level:SetPoint("LEFT", 40, 0)
+	bu.level:SetTextColor(1, .2, .6)
+	bu.level:SetText(level)
+	
+	bu.spellname = T.createtext(bu, "OVERLAY", 12, "OUTLINE", "LEFT")
+	bu.spellname:SetPoint("LEFT", 140, 0)
+	bu.spellname:SetTextColor(1, 1, 0)
+	bu.spellname:SetText(name)
+	
+	bu.close = CreateFrame("Button", nil, bu)
+	bu.close:SetSize(22,22)
+	bu.close:SetPoint("LEFT", 310, 0)
+	bu.close.text = T.createtext(bu.close, "OVERLAY", 12, "OUTLINE", "CENTER")
+	bu.close.text:SetPoint("CENTER")
+	bu.close.text:SetText("x")
+	
+	bu.close:SetScript("OnClick", function() 
+		bu:Hide()
+		aCoreCDB["CooldownAura"][auratype][name] = nil
+		LineUpCooldownAuraList(parent, auratype)
+	end)
+	
+	bu:SetScript("OnEnter", function(self)
+		GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+		GameTooltip:SetSpellByID(spellID)
+		GameTooltip:Show()
+	end)
+	bu:SetScript("OnLeave", function() GameTooltip:Hide() end)
+	
+	bu:SetScript("OnMouseDown", function(self)
+		local frame = parent:GetParent():GetParent()
+		if frame.selectdebuff ~= spellID then
+			frame.Spellinput:ClearFocus()
+			frame.Spellinput:SetText(spellID)
+			frame.Levelinput:ClearFocus()
+			frame.Levelinput:SetText(level)	
+			frame.selectdebuff = spellID
+		else
+			frame.Spellinput:ClearFocus()
+			frame.Spellinput:SetText("")
+			frame.Levelinput:ClearFocus()
+			frame.Levelinput:SetText("")		
+			frame.selectdebuff = nil
+		end
+	end)
+	
+	return bu
+end
+
+local function CreateCooldownAuraList(frame, auratype, auratable)
+	for spell, info in pairs (auratable) do
+		if info.id then
+		CreateCooldownAuraButton(frame, auratype, spell, info.id, info.level)
+		end
+	end
+	LineUpCooldownAuraList(frame, auratype)
+end
+
+local function CreateCooldownAuraOptions()
+	for auratype, auratable in T.pairsByKeys(aCoreCDB["CooldownAura"]) do
+		local frame = CreateOptionPage("Cooldown "..auratype.." Options", L[auratype], cooldownauraframe, "HORIZONTAL", .3, true)
+		frame.title:Hide()
+		frame.line:Hide()
+		if auratype == "Buffs" then
+			frame:Show()
+		end
+		
+		frame.SF:SetPoint("TOPLEFT", 10, -40)
+		frame.SF:SetPoint("BOTTOMRIGHT", -30, 20)
+		
+		CreateCooldownAuraList(frame.SFAnchor, auratype, auratable)
+		
+		local Spellinput = CreateFrame("EditBox", G.uiname..auratype.."Spell Input", frame)
+		Spellinput:SetSize(120, 20)
+		Spellinput:SetPoint("TOPLEFT", frame, "TOPLEFT", 15, -10)
+		F.CreateBD(Spellinput)
+		
+		Spellinput:SetFont(GameFontHighlight:GetFont(), 12, "OUTLINE")
+		Spellinput:SetAutoFocus(false)
+		Spellinput:SetTextInsets(3, 0, 0, 0)
+
+		Spellinput:SetScript("OnShow", function(self) self:SetText(L["input spellID"]) end)
+		Spellinput:SetScript("OnEditFocusGained", function(self) self:HighlightText() end)
+		Spellinput:SetScript("OnEscapePressed", function(self) self:ClearFocus() self:SetText(L["input spellID"]) end)
+		Spellinput:SetScript("OnEnterPressed", function(self) self:ClearFocus() end)
+		
+		frame.Spellinput = Spellinput
+		
+		local Levelinput = CreateFrame("EditBox", G.uiname..auratype.."Level Input", frame)
+		Levelinput:SetSize(80, 20)
+		Levelinput:SetPoint("LEFT", Spellinput, "RIGHT", 5, 0)
+		F.CreateBD(Levelinput)
+
+		Levelinput:SetFont(GameFontHighlight:GetFont(), 12, "OUTLINE")
+		Levelinput:SetAutoFocus(false)
+		Levelinput:SetTextInsets(3, 0, 0, 0)
+
+		Levelinput:SetScript("OnShow", function(self) self:SetText(L["Input Level"]) end)
+		Levelinput:SetScript("OnEditFocusGained", function(self) self:HighlightText() end)
+		Levelinput:SetScript("OnEscapePressed", function(self) self:ClearFocus() self:SetText(L["Input Level"]) end)
+		Levelinput:SetScript("OnEnterPressed", function(self) self:ClearFocus() end)
+		
+		frame.Levelinput = Levelinput
+		
+		local Add = CreateFrame("Button", G.uiname..auratype.."Add CooldownAura Button", frame, "UIPanelButtonTemplate")
+		Add:SetPoint("LEFT", Levelinput, "RIGHT", 10, 0)
+		Add:SetSize(70, 20)
+		Add:SetText(ADD)
+		F.Reskin(Add)
+		Add:SetScript("OnClick", function(self)
+			local spellID = Spellinput:GetText()
+			local level = tonumber(Levelinput:GetText())
+			if not spellID or not GetSpellInfo(spellID) then
+				StaticPopupDialogs[G.uiname.."incorrect spellid"].text = "|cff7FFF00"..spellID.." |r"..L["not a corret Spell ID"]
+				StaticPopup_Show(G.uiname.."incorrect spellid")
+			elseif not level then
+				StaticPopupDialogs[G.uiname.."incorrect level"].text = "|cff7FFF00"..Levelinput:GetText().." |r"..L["should be a number."]
+				StaticPopup_Show(G.uiname.."incorrect level")
+			else
+				local name = GetSpellInfo(spellID)
+				if aCoreCDB["CooldownAura"][auratype][name] then -- 已经有这个ID ，改一下层级
+					aCoreCDB["CooldownAura"][auratype][name]["level"] = level
+					_G[G.uiname.."Cooldown"..auratype..spellID].level:SetText(level)
+					LineUpCooldownAuraList(frame.SFAnchor, auratype)
+				elseif _G[G.uiname.."Cooldown"..auratype..spellID] then -- 已经有这个框体
+					aCoreCDB["CooldownAura"][auratype][name] = {id = spellID, level = level,}
+					_G[G.uiname.."Cooldown"..auratype..spellID].level:SetText(level)
+					_G[G.uiname.."Cooldown"..auratype..spellID]:Show()
+					LineUpCooldownAuraList(frame.SFAnchor, auratype)
+				else
+					aCoreCDB["CooldownAura"][auratype][name] = {id = spellID, level = level,}
+					CreateCooldownAuraButton(frame.SFAnchor, auratype, name, spellID, level)
+					LineUpCooldownAuraList(frame.SFAnchor, auratype)
+				end
+			end
+		end)
+		
+		frame.Add = Add
+		
+		local Reset = CreateFrame("Button", G.uiname..auratype.."Reset CooldownAura Button", frame, "UIPanelButtonTemplate")
+		Reset:SetPoint("BOTTOM", ReloadButton, "TOP", 0, 10)
+		Reset:SetSize(100, 25)
+		Reset:SetText(L["Reset"])
+		F.Reskin(Reset)
+		Reset:SetScript("OnClick", function(self)
+			StaticPopupDialogs[G.uiname.."Reset Confirm"].text = format(L["Reset Confirm"], L[auratype])
+			StaticPopupDialogs[G.uiname.."Reset Confirm"].OnAccept = function()
+				aCoreCDB["CooldownAura"][auratype] = nil
+				ReloadUI()
+			end
+			StaticPopup_Show(G.uiname.."Reset Confirm")
+		end)
+		
+		cooldownauraframe[auratype.."Options"] = frame
+	end
+end
+	
 --====================================================--
 --[[           -- Actionbar Options --              ]]--
 --====================================================--
@@ -1231,6 +1465,7 @@ function eventframe:ADDON_LOADED(arg1)
 	CreateAuraFliterButtonList()
 	CreateAutobuyButtonList()
 	CreateRaidDebuffOptions()
+	CreateCooldownAuraOptions()
 	if aCoreCDB["SkinOptions"]["editsettingsbu"] then
 		T.ResetAllAddonSettings()
 		aCoreCDB["SkinOptions"]["editsettingsbu"] = false
