@@ -1,15 +1,6 @@
 ﻿<Ui xmlns="http://www.blizzard.com/wow/ui/">
-	<Script file="locales\english.lua"/>
-	<Script file="locales\chinese.lua"/>
-	<Script file="locales\twchinese.lua"/>
-	<Script file="locales\french.lua"/>
-	
-	<Script file="db.lua"/>
-	<Script file="gui.lua"/>
-	
-	<Script file="lib\tags.lua"/>
-	<Script file="lib\aura_list.lua"/>
-	
+	<Script file="tags.lua"/>
+
 	<Script file="embeds\fader.lua"/>
 	<Script file="embeds\threatbar.lua"/>
 	<Script file="embeds\auras.lua"/>
@@ -23,6 +14,6 @@
 	<Script file="embeds\trinket.lua"/>
 	<Script file="embeds\pvpspec.lua"/>
 	
-	<Script file="core\core.lua"/>
-	<Script file="core\raid.lua"/>
+	<Script file="core.lua"/>
+	<Script file="raid.lua"/>
 </Ui>
