@@ -84,7 +84,7 @@ SpecMover:SetMovable(true)
 SpecMover:EnableMouse(true)
 
 F.CreateBD(SpecMover)
-SpecMover:SetBackdropColor(.15, .15, .15)
+SpecMover:SetBackdropColor(.05, .05, .05)
 F.CreateSD(SpecMover, 2, 0, 0, 0, 1, -1)
 	
 SpecMover.title = T.createtext(SpecMover, "OVERLAY", 16, "OUTLINE", "CENTER")
@@ -388,3 +388,13 @@ unlockbutton:SetScript("OnClick", function()
 	UnlockAll()
 	_G[G.uiname.."GUI Main Frame"]:Hide()
 end)
+
+local function slashCmdFunction(msg)
+	local msg = string.lower(msg)
+	if msg == "unlock" then
+		UnlockAll()
+	end
+end
+
+SlashCmdList["AltzUI"] = slashCmdFunction
+AltzUI1 = "/altz"
