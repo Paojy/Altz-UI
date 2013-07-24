@@ -114,17 +114,26 @@ local dispelPriority = {
     Disease = 1,
 }
 
+--local ascending = { }
+
 local CustomFilter = function(icons, ...)
     local _, icon, name, _, _, _, dtype, _, _, caster, spellID = ...
 
     icon.asc = false
     icon.priority = 0
 
-    --if G.auras.ascending[spellID] or G.auras.ascending[name] then
+    --if ascending[name] then
         --icon.asc = true
     --end
 
-    if IsInInstance() then
+
+	if aCoreCDB["CooldownAura"]["Debuffs"][name] then
+		icon.priority = aCoreCDB["CooldownAura"]["Debuffs"][name].level
+		return true
+    elseif dispellist[dtype] then
+        icon.priority = dispelPriority[dtype]
+        return true
+	elseif IsInInstance() then
         local ins = GetInstanceInfo()
         if aCoreCDB["RaidDebuff"][ins] then
 			for boss, debufflist in pairs(aCoreCDB["RaidDebuff"][ins]) do
@@ -134,12 +143,6 @@ local CustomFilter = function(icons, ...)
 				end
 			end
         end
-    elseif G.auras.debuffs[name] then
-        icon.priority = G.auras.debuffs[name]
-        return true
-    elseif dispellist[dtype] then
-        icon.priority = dispelPriority[dtype]
-        return true
     end
 end
 

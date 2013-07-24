@@ -52,15 +52,11 @@ local CustomFilter = function(icons, ...)
 
     icon.priority = 0
 
-	if G.auras.buffs[spellID] then
-        icon.priority = G.auras.buffs[spellID]
-        icon.buff = true
-        return true
-    elseif G.auras.buffs[name] then
-        icon.priority = G.auras.buffs[name]
-        icon.buff = true
-        return true
-    end
+	if aCoreCDB["CooldownAura"]["Buffs"][name] then
+		icon.priority = aCoreCDB["CooldownAura"]["Buffs"][name].level
+		icon.buff = true
+		return true
+	end
 end
 
 local AuraTimer = function(self, elapsed)
@@ -78,7 +74,7 @@ local AuraTimer = function(self, elapsed)
 end
 
 local buffcolor = { r = 0.5, g = 1.0, b = 1.0 }
-local updateDebuff = function(icon, texture, count, dtype, duration, expires, buff)
+local updateBuff = function(icon, texture, count, dtype, duration, expires, buff)
     local color = buffcolor
 
     icon.border:SetBackdropBorderColor(color.r, color.g, color.b)
@@ -112,10 +108,10 @@ local Update = function(self, event, unit)
 			--print(name)
             if not cur then
                 cur = icon.priority
-                updateDebuff(icon, texture, count, dtype, duration, expires, true)
+                updateBuff(icon, texture, count, dtype, duration, expires, true)
             else
                 if icon.priority > cur then
-                    updateDebuff(icon, texture, count, dtype, duration, expires, true)
+                    updateBuff(icon, texture, count, dtype, duration, expires, true)
                 end
             end
 
