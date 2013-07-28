@@ -1,7 +1,7 @@
 local T, C, L, G = unpack(select(2, ...))
 
 StaticPopupDialogs[G.uiname.."incorrect item ID"] = {
-	text = L["Incorrect Item ID"],
+	text = L["不正确的物品ID"],
 	button1 = ACCEPT, 
 	hideOnEscape = 1, 
 	whileDead = true,
@@ -9,7 +9,7 @@ StaticPopupDialogs[G.uiname.."incorrect item ID"] = {
 }
 
 StaticPopupDialogs[G.uiname.."incorrect item quantity"]= {
-	text = L["Incorrect Quantity"],
+	text = L["不正确的数量"],
 	button1 = ACCEPT, 
 	hideOnEscape = 1, 
 	whileDead = true,
@@ -17,7 +17,7 @@ StaticPopupDialogs[G.uiname.."incorrect item quantity"]= {
 }
 
 StaticPopupDialogs[G.uiname.."incorrect spellid"] = {
-	text = L["Incorret Spell"],
+	text = L["不正确的法术名称"],
 	button1 = ACCEPT, 
 	hideOnEscape = 1, 
 	whileDead = true,
@@ -25,7 +25,7 @@ StaticPopupDialogs[G.uiname.."incorrect spellid"] = {
 }
 
 StaticPopupDialogs[G.uiname.."incorrect spell"] = {
-	text = L["incorrect spell name"],
+	text = L["不正确的法术名称"],
 	button1 = ACCEPT, 
 	hideOnEscape = 1, 
 	whileDead = true,
@@ -33,7 +33,7 @@ StaticPopupDialogs[G.uiname.."incorrect spell"] = {
 }
 
 StaticPopupDialogs[G.uiname.."incorrect level"] = {
-	text = L["should be a number."],
+	text = L["必须是一个数字"],
 	button1 = ACCEPT, 
 	hideOnEscape = 1, 
 	whileDead = true,
@@ -41,7 +41,7 @@ StaticPopupDialogs[G.uiname.."incorrect level"] = {
 }
 
 StaticPopupDialogs[G.uiname.."Reset Confirm"] = {
-	text = L["Reset Confirm"],
+	text = L["重置确认"],
 	button1 = ACCEPT,
 	button2 = CANCEL,
 	hideOnEscape = 1, 
