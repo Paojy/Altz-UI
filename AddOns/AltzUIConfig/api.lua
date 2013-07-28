@@ -47,6 +47,15 @@ T.pairsByKeys = function(t)
     return iter
 end
 
+T.hex = function(r, g, b)
+    if not r then return "|cffFFFFFF" end
+
+    if(type(r) == 'table') then
+        if(r.r) then r, g, b = r.r, r.g, r.b else r, g, b = unpack(r) end
+    end
+    return ('|cff%02x%02x%02x'):format(r * 255, g * 255, b * 255)
+end
+
 T.dummy = function() end
 
 --====================================================--
@@ -95,6 +104,10 @@ function T.SetChatFrame()
 	ChatFrame_AddMessageGroup(ChatFrame4, "COMBAT_FACTION_CHANGE")
 	ChatFrame_AddMessageGroup(ChatFrame4, "LOOT")
 	ChatFrame_AddMessageGroup(ChatFrame4, "MONEY")
+	
+	SELECTED_CHAT_FRAME = ChatFrame1
+	FCF_SelectDockFrame(ChatFrame1)
+	FCF_FadeInChatFrame(ChatFrame1)
 end
 
 T.ResetAllAddonSettings = function()
