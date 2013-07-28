@@ -24,7 +24,7 @@ local buttonList = {}
 
 --create the frame to hold the buttons
 local frame = CreateFrame("Frame", "Altz_Petbar", UIParent, "SecureHandlerStateTemplate")
-frame.movingname = L["Petbar"]
+frame.movingname = L["宠物动作条"]
 frame.point = {
 		healer = {a1 = "BOTTOM", parent = "UIParent", a2 = "BOTTOM", x = 0, y = 104},
 		dpser = {a1 = "BOTTOM", parent = "UIParent", a2 = "BOTTOM", x = 0, y = 104},

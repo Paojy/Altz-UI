@@ -92,7 +92,7 @@ minimap_pullback:SetWidth(8)
 minimap_pullback:SetHeight(minimap_height)
 minimap_pullback:SetFrameStrata("BACKGROUND")
 minimap_pullback:SetFrameLevel(5)
-minimap_pullback.movingname = L["minimap_pullback"]
+minimap_pullback.movingname = L["小地图缩放按钮"]
 minimap_pullback.point = {
 	healer = {a1 = "BOTTOMRIGHT", parent = "UIParent", a2 = "BOTTOMRIGHT", x = -10, y = 40},
 	dpser = {a1 = "BOTTOMRIGHT", parent = "UIParent", a2 = "BOTTOMRIGHT", x = -10, y = 40},
@@ -103,8 +103,8 @@ minimap_pullback.border = F.CreateBDFrame(minimap_pullback, 0.6)
 F.CreateSD(minimap_pullback.border, 2, 0, 0, 0, 1, -1)
 
 minimap_pullback:SetAlpha(.2)
-minimap_pullback:HookScript("OnEnter", function(self) UIFrameFadeIn(self, .5, self:GetAlpha(), 1) end)
-minimap_pullback:SetScript("OnLeave", function(self) UIFrameFadeOut(self, .5, self:GetAlpha(), 0.2) end)
+minimap_pullback:HookScript("OnEnter", function(self) T.UIFrameFadeIn(self, .5, self:GetAlpha(), 1) end)
+minimap_pullback:SetScript("OnLeave", function(self) T.UIFrameFadeOut(self, .5, self:GetAlpha(), 0.2) end)
 
 local minimap_anchor = CreateFrame("Frame", nil, UIParent)
 minimap_anchor:SetPoint("BOTTOMRIGHT", minimap_pullback, "BOTTOMLEFT", -5, 0)
@@ -169,7 +169,7 @@ chatframe_pullback:SetWidth(8)
 chatframe_pullback:SetHeight(minimap_height)
 chatframe_pullback:SetFrameStrata("BACKGROUND")
 chatframe_pullback:SetFrameLevel(3)
-chatframe_pullback.movingname = L["chatframe_pullback"]
+chatframe_pullback.movingname = L["聊天框缩放按钮"]
 chatframe_pullback.point = {
 	healer = {a1 = "BOTTOMLEFT", parent = "UIParent", a2 = "BOTTOMLEFT", x = 10, y = 40},
 	dpser = {a1 = "BOTTOMLEFT", parent = "UIParent", a2 = "BOTTOMLEFT", x = 10, y = 40},
@@ -180,8 +180,8 @@ chatframe_pullback.border = F.CreateBDFrame(chatframe_pullback, 0.6)
 F.CreateSD(chatframe_pullback.border, 2, 0, 0, 0, 1, -1)
 
 chatframe_pullback:SetAlpha(.2)
-chatframe_pullback:HookScript("OnEnter", function(self) UIFrameFadeIn(self, .5, self:GetAlpha(), 1) end)
-chatframe_pullback:SetScript("OnLeave", function(self) UIFrameFadeOut(self, .5, self:GetAlpha(), 0.2) end)
+chatframe_pullback:HookScript("OnEnter", function(self) T.UIFrameFadeIn(self, .5, self:GetAlpha(), 1) end)
+chatframe_pullback:SetScript("OnLeave", function(self) T.UIFrameFadeOut(self, .5, self:GetAlpha(), 0.2) end)
 
 local chatframe_anchor = CreateFrame("frame",nil,UIParent)
 chatframe_anchor:SetPoint("BOTTOMLEFT", chatframe_pullback, "BOTTOMRIGHT", 5, 0)
@@ -321,10 +321,10 @@ T.CollectMinimapButtons = function(parent)
 	else
 		for _, child in ipairs(buttons) do
 			child:HookScript("OnEnter", function()
-				UIFrameFadeIn(parent, .5, parent:GetAlpha(), 1)
+				T.UIFrameFadeIn(parent, .5, parent:GetAlpha(), 1)
 			end)
 			child:HookScript("OnLeave", function()
-				UIFrameFadeOut(parent, .5, parent:GetAlpha(), 0)
+				T.UIFrameFadeOut(parent, .5, parent:GetAlpha(), 0)
 			end)
 		end
 	end
@@ -349,19 +349,19 @@ end)
 MBCF:RegisterEvent("PLAYER_ENTERING_WORLD")
 
 MBCF:SetScript("OnEnter", function(self)
-	UIFrameFadeIn(self, .5, self:GetAlpha(), 1)
+	T.UIFrameFadeIn(self, .5, self:GetAlpha(), 1)
 end)
 
 Minimap:HookScript("OnEnter", function()
-	UIFrameFadeIn(MBCF, .5, MBCF:GetAlpha(), 1)
+	T.UIFrameFadeIn(MBCF, .5, MBCF:GetAlpha(), 1)
 end)
 
 MBCF:SetScript("OnLeave", function(self)
-	UIFrameFadeOut(self, .5, self:GetAlpha(), 0)
+	T.UIFrameFadeOut(self, .5, self:GetAlpha(), 0)
 end)
 
 Minimap:HookScript("OnLeave", function()
-	UIFrameFadeOut(MBCF, .5, MBCF:GetAlpha(), 0)
+	T.UIFrameFadeOut(MBCF, .5, MBCF:GetAlpha(), 0)
 end)
 	
 -- 战网好友上线提示
@@ -420,7 +420,7 @@ Minimap:SetScript('OnMouseUp', function (self, button)
 		GameTooltip:Hide()
 		ToggleDropDownMenu(1, nil, MiniMapTrackingDropDown, Minimap, (Minimap:GetWidth()+8), (Minimap:GetHeight()))
 		DropDownList1:ClearAllPoints()
-		DropDownList1:SetPoint("BOTTOMLEFT", Minimap, "TOPLEFT", -15, 10)
+		DropDownList1:SetPoint("BOTTOMRIGHT", Minimap, "TOPRIGHT", -3, 10)
 	else
 		Minimap_OnClick(self)
 	end
@@ -460,9 +460,9 @@ function xprptoolitp()
 	local name, rank, minRep, maxRep, value = GetWatchedFactionInfo()
 	
 	if UnitLevel("player") < MAX_PLAYER_LEVEL then
-		GameTooltip:AddDoubleLine(L["Currentxp"], string.format("%s/%s (%d%%)", CommaValue(XP), CommaValue(maxXP), (XP/maxXP)*100), G.Ccolor.r, G.Ccolor.g, G.Ccolor.b, 1, 1, 1)
-		GameTooltip:AddDoubleLine(L["Remainingxp"], string.format("%s", CommaValue(maxXP-XP)), G.Ccolor.r, G.Ccolor.g, G.Ccolor.b, 1, 1, 1)
-		if restXP then GameTooltip:AddDoubleLine(L["Restedxp"], string.format("|cffb3e1ff%s (%d%%)", CommaValue(restXP), restXP/maxXP*100), G.Ccolor.r, G.Ccolor.g, G.Ccolor.b) end
+		GameTooltip:AddDoubleLine(L["当前经验"], string.format("%s/%s (%d%%)", CommaValue(XP), CommaValue(maxXP), (XP/maxXP)*100), G.Ccolor.r, G.Ccolor.g, G.Ccolor.b, 1, 1, 1)
+		GameTooltip:AddDoubleLine(L["剩余经验"], string.format("%s", CommaValue(maxXP-XP)), G.Ccolor.r, G.Ccolor.g, G.Ccolor.b, 1, 1, 1)
+		if restXP then GameTooltip:AddDoubleLine(L["双倍"], string.format("|cffb3e1ff%s (%d%%)", CommaValue(restXP), restXP/maxXP*100), G.Ccolor.r, G.Ccolor.g, G.Ccolor.b) end
 	end
 	
 	if name and not UnitLevel("player") == MAX_PLAYER_LEVEL then
@@ -471,8 +471,8 @@ function xprptoolitp()
 
 	if name then
 		GameTooltip:AddLine(name.."  (".._G["FACTION_STANDING_LABEL"..rank]..")", G.Ccolor.r, G.Ccolor.g, G.Ccolor.b)
-		GameTooltip:AddDoubleLine(L["Currentrep"], string.format("%s/%s (%d%%)", CommaValue(value-minRep), CommaValue(maxRep-minRep), (value-minRep)/(maxRep-minRep)*100), G.Ccolor.r, G.Ccolor.g, G.Ccolor.b, 1, 1, 1)
-		GameTooltip:AddDoubleLine(L["Remainingrep"], string.format("%s", CommaValue(maxRep-value)), G.Ccolor.r, G.Ccolor.g, G.Ccolor.b, 1, 1, 1)
+		GameTooltip:AddDoubleLine(L["声望"], string.format("%s/%s (%d%%)", CommaValue(value-minRep), CommaValue(maxRep-minRep), (value-minRep)/(maxRep-minRep)*100), G.Ccolor.r, G.Ccolor.g, G.Ccolor.b, 1, 1, 1)
+		GameTooltip:AddDoubleLine(L["剩余声望"], string.format("%s", CommaValue(maxRep-value)), G.Ccolor.r, G.Ccolor.g, G.Ccolor.b, 1, 1, 1)
 	end	
 	
 	GameTooltip:Show()
@@ -597,7 +597,7 @@ Durability:SetScript("OnEvent", function(self, event)
 		self:UnregisterEvent("PLAYER_ENTERING_WORLD")
 	end
 	r1, g1, b1 = ColorGradient(GetLowestDurability()-0.001, 1, 0, 0, 1, 1, 0, 1, 1, 1)
-	self.text:SetText(format("|cff%02x%02x%02x"..DURABILITY.." |r|cff%02x%02x%02x%d|r", G.Ccolor.r * 255, G.Ccolor.g * 255, G.Ccolor.b * 255, r1 * 255, g1 * 255, b1 * 255, GetLowestDurability()*100))
+	self.text:SetText(format(G.classcolor..DURABILITY.." |r|cff%02x%02x%02x%d|r", r1 * 255, g1 * 255, b1 * 255, GetLowestDurability()*100))
 end)
 
 Durability:RegisterEvent("UPDATE_INVENTORY_DURABILITY")
@@ -610,7 +610,7 @@ Friends:SetScript("OnEvent", function(self, event)
 	if event == "PLAYER_ENTERING_WORLD" then
 		self:UnregisterEvent("PLAYER_ENTERING_WORLD")
 	end
-	self.text:SetText(format("|cff%02x%02x%02x"..FRIENDS.." |r%d", G.Ccolor.r * 255, G.Ccolor.g * 255, G.Ccolor.b * 255, select(2, GetNumFriends())+select(2, BNGetNumFriends())))
+	self.text:SetText(format(G.classcolor..FRIENDS.." |r%d", select(2, GetNumFriends())+select(2, BNGetNumFriends())))
 end)
 
 Friends:RegisterEvent("BN_FRIEND_ACCOUNT_ONLINE")
@@ -634,9 +634,9 @@ GuildMember:SetScript("OnMouseDown", function(self)
 end)
 GuildMember:SetScript("OnEvent", function(self, event)
 	if IsInGuild() then
-		self.text:SetText(format("|cff%02x%02x%02x"..GUILD.." |r%d", G.Ccolor.r * 255, G.Ccolor.g * 255, G.Ccolor.b * 255, select(2, GetNumGuildMembers())))
+		self.text:SetText(format(G.classcolor..GUILD.." |r%d", select(2, GetNumGuildMembers())))
 	else
-		self.text:SetText(format("|cff%02x%02x%02x"..GUILD.." |r%d", G.Ccolor.r * 255, G.Ccolor.g * 255, G.Ccolor.b * 255, NONE))
+		self.text:SetText(format(G.classcolor..GUILD.." |r%d", NONE))
 	end
 	if event == "PLAYER_ENTERING_WORLD" then
 		self:UnregisterEvent("PLAYER_ENTERING_WORLD")
@@ -693,7 +693,7 @@ Gold:SetScript("OnEvent", function(self, event)
 	
 	OldMoney = NewMoney
 	
-	self.text:SetText(format("|cff%02x%02x%02x"..GOLD_AMOUNT_SYMBOL.." |r%d", G.Ccolor.r * 255, G.Ccolor.g * 255, G.Ccolor.b * 255, NewMoney * 0.0001))
+	self.text:SetText(format(G.classcolor..GOLD_AMOUNT_SYMBOL.." |r%d", NewMoney * 0.0001))
 
 	aCoreDB.gold[G.PlayerRealm][G.PlayerName] = GetMoney()
 end)
@@ -708,29 +708,29 @@ Gold:RegisterEvent("PLAYER_ENTERING_WORLD")
 Gold:SetScript("OnEnter", function(self)
 	GameTooltip:SetOwner(self, "ANCHOR_NONE")
 	GameTooltip:SetPoint("TOPLEFT", MinimapZoneTextButton, "BOTTOMLEFT", 0, -5)
-	GameTooltip:AddLine(L["Session"]..": ",.6,.8,1)
-	GameTooltip:AddDoubleLine(L["Earned:"], formatMoney(Profit), 1, 1, 1, 1, 1, 1)
-	GameTooltip:AddDoubleLine(L["Spent:"], formatMoney(Spent), 1, 1, 1, 1, 1, 1)
+	GameTooltip:AddLine(L["本次登陆"]..": ", G.Ccolor.r, G.Ccolor.g, G.Ccolor.b)
+	GameTooltip:AddDoubleLine(L["赚得"], formatMoney(Profit), 1, 1, 1, 1, 1, 1)
+	GameTooltip:AddDoubleLine(L["消费"], formatMoney(Spent), 1, 1, 1, 1, 1, 1)
 	if Profit < Spent then
-		GameTooltip:AddDoubleLine(L["Deficit:"], formatMoney(Profit-Spent), 1, 0, 0, 1, 1, 1)
+		GameTooltip:AddDoubleLine(L["赤字"], formatMoney(Profit-Spent), 1, 0, 0, 1, 1, 1)
 	elseif (Profit-Spent)>0 then
-		GameTooltip:AddDoubleLine(L["Profit:"], formatMoney(Profit-Spent), 0, 1, 0, 1, 1, 1)
+		GameTooltip:AddDoubleLine(L["盈利"], formatMoney(Profit-Spent), 0, 1, 0, 1, 1, 1)
 	end				
 	GameTooltip:AddLine(" ")
 	local totalGold = 0				
-	GameTooltip:AddLine(L["Character"]..": ",.6,.8,1)
+	GameTooltip:AddLine(L["角色"]..": ", G.Ccolor.r, G.Ccolor.g, G.Ccolor.b)
 	for k,v in pairs(aCoreDB.gold[G.PlayerRealm]) do
 		GameTooltip:AddDoubleLine(k, FormatTooltipMoney(v), 1, 1, 1, 1, 1, 1)
 		totalGold = totalGold + v
 	end 
 	GameTooltip:AddLine(" ")
-	GameTooltip:AddLine(L["Server"]..": ",.6,.8,1)
+	GameTooltip:AddLine(L["服务器"]..": ", G.Ccolor.r, G.Ccolor.g, G.Ccolor.b)
 	GameTooltip:AddDoubleLine(TOTAL..": ", FormatTooltipMoney(totalGold), 1, 1, 1, 1, 1, 1)
 	for i = 1, MAX_WATCHED_TOKENS do
 		local name, count, extraCurrencyType, icon, itemID = GetBackpackCurrencyInfo(i)
 		if name and i == 1 then
 			GameTooltip:AddLine(" ")
-			GameTooltip:AddLine(CURRENCY,.6,.8,1)
+			GameTooltip:AddLine(CURRENCY, G.Ccolor.r, G.Ccolor.g, G.Ccolor.b)
 		end
 		local r, g, b = 1 ,1 ,1
 		if itemID then r, g, b = GetItemQualityColor(select(3, GetItemInfo(itemID))) end
@@ -758,7 +758,7 @@ Talent:SetScript("OnEvent", function(self, event)
 	end
 	
 	if GetSpecialization() then
-		self.text:SetText(format("|cff%02x%02x%02x%s|r", G.Ccolor.r * 255, G.Ccolor.g * 255, G.Ccolor.b * 255, select(2, GetSpecializationInfo(GetSpecialization()))))
+		self.text:SetText(format(G.classcolor.."%s|r", select(2, GetSpecializationInfo(GetSpecialization()))))
 	else
 		self.text:SetText("")
 	end
@@ -882,7 +882,7 @@ function memorytooltip()
 			
 	GameTooltip:SetOwner(InfoFrame, "ANCHOR_NONE")
 	GameTooltip:SetPoint("TOPLEFT", MinimapZoneTextButton, "BOTTOMLEFT", 0, -5)
-	GameTooltip:AddLine(L["Top"].." "..nraddons.." "..L["AddOns"], G.Ccolor.r, G.Ccolor.g, G.Ccolor.b)
+	GameTooltip:AddLine(format(L["占用前 %d 的插件"], nraddons), G.Ccolor.r, G.Ccolor.g, G.Ccolor.b)
 	GameTooltip:AddLine(" ")	
 			
 	UpdateAddOnMemoryUsage()
@@ -903,8 +903,8 @@ function memorytooltip()
 	end
 
 	GameTooltip:AddLine(" ")
-	GameTooltip:AddDoubleLine(L["UI Memory usage"], memFormat(total), 1, 1, 1, ColorGradient(total / (1024*20), 0, 1, 0, 1, 1, 0, 1, 0, 0))
-	GameTooltip:AddDoubleLine(L["Total incl. Blizzard"], memFormat(BlizzMem), 1, 1, 1, ColorGradient(BlizzMem / (1024*50) , 0, 1, 0, 1, 1, 0, 1, 0, 0))
+	GameTooltip:AddDoubleLine(L["自定义插件占用"], memFormat(total), 1, 1, 1, ColorGradient(total / (1024*20), 0, 1, 0, 1, 1, 0, 1, 0, 0))
+	GameTooltip:AddDoubleLine(L["所有插件占用"], memFormat(BlizzMem), 1, 1, 1, ColorGradient(BlizzMem / (1024*50) , 0, 1, 0, 1, 1, 0, 1, 0, 0))
 	GameTooltip:Show()
 end
 
@@ -940,7 +940,7 @@ StatsFrame:SetScript("OnUpdate", StatsFrame.updateOntime)
 
 local MicromenuBar = CreateFrame("Frame", G.uiname.."MicromenuBar", UIParent) -- Center Frame
 MicromenuBar:SetFrameStrata("MEDIUM")
-MicromenuBar:SetSize(400, 25)
+MicromenuBar:SetSize(360, 25)
 MicromenuBar:SetScale(aCoreCDB["OtherOptions"]["micromenuscale"])
 MicromenuBar:SetPoint("BOTTOMLEFT", UIParent, "BOTTOMLEFT", 30, 3)
 
@@ -948,7 +948,7 @@ MicromenuBar.toggle = CreateFrame("Button", nil, MicromenuBar)
 MicromenuBar.toggle:SetPoint("RIGHT", MicromenuBar, "LEFT", -2, 0)
 F.Reskin(MicromenuBar.toggle)
 
-MicromenuBar.Char = CreateFrame("PlayerModel", nil, MicromenuBar)
+MicromenuBar.Char = CreateFrame("PlayerModel", G.uiname.."CharButton", MicromenuBar)
 MicromenuBar.Char:SetSize(40, 40)
 MicromenuBar.Char:SetUnit("player")
 MicromenuBar.Char:SetPortraitZoom(1)
@@ -956,9 +956,9 @@ MicromenuBar.Char:SetPoint("BOTTOMLEFT", 0, 5)
 
 local AltzMainMenu = CreateFrame("Frame", G.uiname.."ToggleAltzMainMenu", UIParent, "UIDropDownMenuTemplate")
 local AltzMainMenuList = {
-	{text = L["GUI"], func = function() _G["AltzUI_GUI Main Frame"]:Show() end, notCheckable = true},  -- GUI
-	{text = L["RaidTools"], func = function() _G[G.uiname.."RaidToolFrame"]:Show() end, notCheckable = true},  -- 团队工具
-	{text = L["No Damage Meter"], notCheckable = true},  -- 伤害统计
+	{text = L["控制台"], func = function() _G["AltzUI_GUI Main Frame"]:Show() end, notCheckable = true},  -- GUI
+	{text = L["团队工具"], func = function() _G[G.uiname.."RaidToolFrame"]:Show() end, notCheckable = true},  -- 团队工具
+	{text = L["无统计插件"], notCheckable = true},  -- 伤害统计
 }
 
 MicromenuBar.Char:SetScript("OnMouseDown", function(self, button)
@@ -1022,40 +1022,51 @@ local function CreateMicromenuButton(text, texpath, original, left, right, top, 
 	Button:GetNormalTexture():SetGradientAlpha("VERTICAL", G.Ccolor.r, G.Ccolor.g, G.Ccolor.b, 1, G.Ccolor.r, G.Ccolor.g, G.Ccolor.b, 1)
 	Button:GetNormalTexture():SetTexCoord(left, right, top, bottom)
 	
-	if original == "Bag" then
-		Button:SetScript("OnClick", function()
-			ToggleAllBags()
-		end)
-	elseif original == MainMenuMicroButton then
-		Button:SetScript("OnClick", function()
+	Button:SetScript("OnClick", function()
+		if original == "MainMenuMicroButton" then
 			if GameMenuFrame:IsShown() then
 				GameMenuFrame:Hide()
 			else
 				GameMenuFrame:Show()
 			end
-		end)
-	elseif original == PVPMicroButton then
-		Button:SetScript("OnClick", function()
+		elseif original == "SpellbookMicroButton" then
+			ToggleSpellBook("spell")			
+		elseif original == "TalentMicroButton" then
+			ToggleTalentFrame()
+		elseif original == "AchievementMicroButton" then	
+			ToggleAchievementFrame()
+		elseif original == "QuestLogMicroButton" then
+			ToggleFrame(QuestLogFrame)
+		elseif original == "PVPMicroButton" then
 			if not PVPUIFrame then PVP_LoadUI() end 
 			ToggleFrame(PVPUIFrame)
-		end)
-	else
-		Button:SetScript("OnClick", original:GetScript("OnClick"))
-	end
+		elseif original == "LFDMicroButton" then
+			PVEFrame_ToggleFrame("GroupFinderFrame", LFDParentFrame)
+		elseif original == "CompanionsMicroButton" then
+			if not IsAddOnLoaded("Blizzard_PetJournal") then LoadAddOn("Blizzard_PetJournal") end 
+			ToggleFrame(PetJournalParent)
+		elseif original == "EJMicroButton" then
+			if not IsAddOnLoaded("Blizzard_EncounterJournal") then LoadAddOn("Blizzard_EncounterJournal") end 
+			ToggleFrame(EncounterJournal)
+		elseif original == "Bag" then
+			ToggleAllBags()		
+		end
+	end)
 	
+
 	tinsert(MicromenuButtons, Button)
 	return Button
 end
 
-MicromenuBar.Mainmenu = CreateMicromenuButton(MAIN_MENU, "Interface\\MINIMAP\\OBJECTICONS", MainMenuMicroButton, .12, .26, .49, .63)
-MicromenuBar.Spellbook = CreateMicromenuButton(SPELLBOOK_ABILITIES_BUTTON, "Interface\\MINIMAP\\TRACKING\\Profession", SpellbookMicroButton, .05, .95, .05, .95)
-MicromenuBar.Spec = CreateMicromenuButton(TALENTS_BUTTON, "Interface\\MINIMAP\\TRACKING\\Reagents", TalentMicroButton, .05, .95, .05, .95)
-MicromenuBar.Achievement = CreateMicromenuButton(ACHIEVEMENT_BUTTON, "Interface\\ACHIEVEMENTFRAME\\UI-ACHIEVEMENT-SHIELDS-NOPOINTS", AchievementMicroButton, 0, .45, .5, .95)
-MicromenuBar.Quests = CreateMicromenuButton(QUESTLOG_BUTTON, "Interface\\MINIMAP\\TRACKING\\OBJECTICONS", QuestLogMicroButton, 0.11, .25, .48, 1)
-MicromenuBar.PvP = CreateMicromenuButton(PLAYER_V_PLAYER, "Interface\\WorldStateFrame\\CombatSwords", PVPMicroButton, 0, .5, 0, .5)
-MicromenuBar.LFR = CreateMicromenuButton(LFG_TITLE, "Interface\\LFGFRAME\\BattlenetWorking28", LFDMicroButton, .14, .86, .14, .86)
-MicromenuBar.Pet = CreateMicromenuButton(MOUNTS_AND_PETS, "Interface\\MINIMAP\\OBJECTICONS", CompanionsMicroButton, .37, .5, .5, .63)
-MicromenuBar.EJ = CreateMicromenuButton(ENCOUNTER_JOURNAL, "Interface\\MINIMAP\\TRACKING\\Class", EJMicroButton, 0, 1, 0, 1)
+MicromenuBar.Mainmenu = CreateMicromenuButton(MAIN_MENU, "Interface\\MINIMAP\\OBJECTICONS", "MainMenuMicroButton", .12, .26, .49, .63)
+MicromenuBar.Spellbook = CreateMicromenuButton(SPELLBOOK_ABILITIES_BUTTON, "Interface\\MINIMAP\\TRACKING\\Profession", "SpellbookMicroButton", .05, .95, .05, .95)
+MicromenuBar.Spec = CreateMicromenuButton(TALENTS_BUTTON, "Interface\\MINIMAP\\TRACKING\\Reagents", "TalentMicroButton", .05, .95, .05, .95)
+MicromenuBar.Achievement = CreateMicromenuButton(ACHIEVEMENT_BUTTON, "Interface\\ACHIEVEMENTFRAME\\UI-ACHIEVEMENT-SHIELDS-NOPOINTS", "AchievementMicroButton", 0, .45, .5, .95)
+MicromenuBar.Quests = CreateMicromenuButton(QUESTLOG_BUTTON, "Interface\\MINIMAP\\TRACKING\\OBJECTICONS", "QuestLogMicroButton", 0.11, .25, .48, 1)
+MicromenuBar.PvP = CreateMicromenuButton(PLAYER_V_PLAYER, "Interface\\WorldStateFrame\\CombatSwords", "PVPMicroButton", 0, .5, 0, .5)
+MicromenuBar.LFR = CreateMicromenuButton(LFG_TITLE, "Interface\\LFGFRAME\\BattlenetWorking28", "LFDMicroButton", .14, .86, .14, .86)
+MicromenuBar.Pet = CreateMicromenuButton(MOUNTS_AND_PETS, "Interface\\MINIMAP\\OBJECTICONS", "CompanionsMicroButton", .37, .5, .5, .63)
+MicromenuBar.EJ = CreateMicromenuButton(ENCOUNTER_JOURNAL, "Interface\\MINIMAP\\TRACKING\\Class", "EJMicroButton", 0, 1, 0, 1)
 MicromenuBar.Bag = CreateMicromenuButton(INVTYPE_BAG, "Interface\\MINIMAP\\TRACKING\\Banker", "Bag", 0, 1, 0, 1)
 
 for i = 1, #MicromenuButtons do
@@ -1099,27 +1110,6 @@ TOPPANEL:SetScript("OnUpdate", function(self, elapsed)
 	end
 end)
 
-local CENTERPANEL = CreateFrame("Frame", G.uiname.."AKF Centerpanel", WorldFrame)
-CENTERPANEL:SetFrameStrata("FULLSCREEN")
-CENTERPANEL:SetPoint("TOPLEFT",WorldFrame,"TOPLEFT", -5, -90)
-CENTERPANEL:SetPoint("BOTTOMRIGHT",WorldFrame,"BOTTOMRIGHT", 5, 85)
-F.SetBD(CENTERPANEL)
-CENTERPANEL:Hide()
-
-CENTERPANEL.guidetext = T.createtext(CENTERPANEL, "OVERLAY", 15, "NONE", "CENTER")
-CENTERPANEL.guidetext:SetPoint("CENTER")
-CENTERPANEL.guidetext:SetTextColor(0.7, 0.7, 0.7)
-CENTERPANEL.guidetext:SetText(L["Instruction"])
-CENTERPANEL.guidetext:Hide()
-
-CENTERPANEL.creditstext = T.createtext(CENTERPANEL, "OVERLAY", 17, "NONE", "CENTER")
-CENTERPANEL.creditstext:SetPoint("CENTER")
-CENTERPANEL.creditstext:SetTextColor(0.7, 0.7, 0.7)
-CENTERPANEL.creditstext:SetText("AltzUI ver"..G.Version.." \n \n \n \n "..L["Paopao <Purgatory> CN5_Abyssion's Lair"].."  \n \n \n \n |cff3399FF "..L["Thanks to"].." \n \n deemax Zork Haste Tukz Haleth Qulight Freebaser Monolit \n"..L["and everyone who help me with this Compilations."].."|r")
-CENTERPANEL.creditstext:Hide()
-
-CENTERPANEL:SetScript("OnMouseUp", function(self) self:Hide() self.guidetext:Hide() self.creditstext:Hide() end)
-
 local BOTTOMPANEL = CreateFrame("Frame", G.uiname.."AKF Bottompanel", WorldFrame)
 BOTTOMPANEL:SetFrameStrata("FULLSCREEN")
 BOTTOMPANEL:SetPoint("BOTTOMLEFT",WorldFrame,"BOTTOMLEFT",-5,-5)
@@ -1130,22 +1120,17 @@ BOTTOMPANEL:Hide()
 BOTTOMPANEL.text = T.createtext(BOTTOMPANEL, "OVERLAY", 20, "NONE", "CENTER")
 BOTTOMPANEL.text:SetPoint("TOP", BOTTOMPANEL, "TOP", 0, -10)
 BOTTOMPANEL.text:SetTextColor(0, 0, 0,.5)
-BOTTOMPANEL.text:SetText(L["Click to hide."])
+BOTTOMPANEL.text:SetText(L["点我隐藏"])
 
 BOTTOMPANEL:SetScript("OnEnter", function(self) self.text:SetTextColor(.5, .5, .5, 1) end)
 BOTTOMPANEL:SetScript("OnLeave", function(self) self.text:SetTextColor(0, 0, 0, .5) end)
 
-local function littebutton(facing, note)
+local function littebutton(facing)
 	local petmodelbutton = CreateFrame("PlayerModel", "AltzAKFlittlebutton"..facing, BOTTOMPANEL)
 	petmodelbutton:SetSize(120,120)
 	petmodelbutton:SetPosition(-0.5, 0, 0)
 	petmodelbutton:SetFacing(facing)
-	
-	petmodelbutton.text = T.createtext(petmodelbutton, "HIGHLIGHT", 20, "NONE", "CENTER")
-	petmodelbutton.text:SetPoint("BOTTOM", petmodelbutton, "BOTTOM", 0, 25)
-	petmodelbutton.text:SetTextColor(1, 1, 1)
-	petmodelbutton.text:SetText(note)
-	
+
 	petmodelbutton.spark = petmodelbutton:CreateTexture(nil, "HIGHLIGHT")
 	petmodelbutton.spark:SetSize(30, 30)
 	petmodelbutton.spark:SetPoint("CENTER", petmodelbutton.text, "TOPRIGHT", -3, -5)
@@ -1159,43 +1144,25 @@ local function littebutton(facing, note)
 	return petmodelbutton
 end
 
-local Info = littebutton(1, L["Info"])
+local Info = littebutton(1)
 Info:SetPoint("BOTTOMRIGHT", BOTTOMPANEL, "CENTER", -200, -40)
-Info:SetScript("OnMouseUp", function()
-	if CENTERPANEL.guidetext:IsShown() then 
-		CENTERPANEL:Hide() CENTERPANEL.guidetext:Hide()
-	else
-		CENTERPANEL:Show() CENTERPANEL.guidetext:Show() CENTERPANEL.creditstext:Hide()
-	end
-end)
 
-local Credits = littebutton(-1, L["Credits"])
+local Credits = littebutton(-1)
 Credits:SetPoint("BOTTOMLEFT", BOTTOMPANEL, "CENTER", 200, -40)
-Credits:SetScript("OnMouseUp", function()
-	if CENTERPANEL.creditstext:IsShown() then 
-		CENTERPANEL:Hide() CENTERPANEL.creditstext:Hide()
-	else 
-		CENTERPANEL:Show() CENTERPANEL.creditstext:Show() CENTERPANEL.guidetext:Hide()
-	end
-end)
 
 local function fadeout()
 	Minimap:Hide()
 	UIParent:SetAlpha(0)
 	UIFrameFadeIn(TOPPANEL, 3, TOPPANEL:GetAlpha(), 1)
 	UIFrameFadeIn(BOTTOMPANEL, 3, BOTTOMPANEL:GetAlpha(), 1)
-	Info:EnableMouse(true)	
-	Credits:EnableMouse(true)
 	BOTTOMPANEL:EnableMouse(true)
 end
 
 local function fadein()
 	Minimap:Show()
-	UIFrameFadeIn(UIParent, 2, UIParent:GetAlpha(), 1)
+	UIFrameFadeIn(UIParent, 2, 0, 1)
     UIFrameFadeOut(TOPPANEL, 2, TOPPANEL:GetAlpha(), 0)
 	UIFrameFadeOut(BOTTOMPANEL, 2, BOTTOMPANEL:GetAlpha(), 0)
-	Info:EnableMouse(false)	
-	Credits:EnableMouse(false)
 	BOTTOMPANEL:EnableMouse(false)
 end
 

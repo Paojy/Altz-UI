@@ -11,7 +11,7 @@ GameTooltip:HookScript("OnTooltipSetItem", function(self,...)
 		jewelId4, suffixId, uniqueId, linkLevel, reforgeId = strsplit(":", itemString)
 		
 		self:AddLine(" ")
-		self:AddDoubleLine("ItemID:",format("|cff70C0F5%s|r",itemId))
+		self:AddDoubleLine("ItemID:",format(G.classcolor.."%s|r",itemId))
 		self:Show()
 	end
 end)

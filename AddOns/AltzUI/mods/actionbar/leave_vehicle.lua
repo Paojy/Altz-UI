@@ -11,7 +11,7 @@ local buttonList = {}
 
 --create the frame to hold the buttons
 local frame = CreateFrame("Frame", "Altz_leave_vehicle", UIParent, "SecureHandlerStateTemplate")
-frame.movingname = L["leave_vehicle"]
+frame.movingname = L["离开载具按钮"]
 frame.point = {
 		healer = {a1 = "BOTTOMLEFT", parent = "UIParent", a2 = "BOTTOM", x = 340, y = 20},
 		dpser = {a1 = "BOTTOMLEFT", parent = "UIParent", a2 = "BOTTOM", x = 340, y = 20},

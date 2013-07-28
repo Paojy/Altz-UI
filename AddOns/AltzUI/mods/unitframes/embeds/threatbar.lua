@@ -21,11 +21,11 @@ local Update = function(self, event, unit)
 	local isTanking, status, overtauntedprec, rawthreatprec = UnitDetailedThreatSituation("player", unit)
 	
 	if not overtauntedprec then
-		UIFrameFadeOut(threatbar, 2, threatbar:GetAlpha(), 0)
+		T.UIFrameFadeOut(threatbar, 2, threatbar:GetAlpha(), 0)
 		ind:ClearAllPoints()
 		return
 	else --if IsInRaid() or IsInGroup() then
-		UIFrameFadeIn(threatbar, 1, threatbar:GetAlpha(), 1)
+		T.UIFrameFadeIn(threatbar, 1, threatbar:GetAlpha(), 1)
 	end
 
 	local Tankthreat
@@ -67,7 +67,7 @@ local Enable = function(self)
 		threatbar.indictator:SetBlendMode("ADD")
 
 		threatbar:RegisterEvent("PLAYER_REGEN_ENABLED")
-		threatbar:SetScript("OnEvent", function() UIFrameFadeOut(threatbar, 2, threatbar:GetAlpha(), 0) end)
+		threatbar:SetScript("OnEvent", function() T.UIFrameFadeOut(threatbar, 2, threatbar:GetAlpha(), 0) end)
 
 		self:RegisterEvent("UNIT_THREAT_LIST_UPDATE", Update)
 

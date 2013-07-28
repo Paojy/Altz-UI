@@ -50,7 +50,7 @@ function GameTooltip_UnitColor(unit)
 end
 
 local anchor = CreateFrame("Button", "Altz_tooltip", UIParent)
-anchor.movingname = L["tooltip"]
+anchor.movingname = L["鼠标提示"]
 anchor.point = {
 		healer = {a1 = "BOTTOMRIGHT", parent = "UIParent", a2 = "BOTTOMRIGHT", x = -160, y = 40},
 		dpser = {a1 = "BOTTOMRIGHT", parent = "UIParent", a2 = "BOTTOMRIGHT", x = -160, y = 40},

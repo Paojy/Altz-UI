@@ -20,7 +20,7 @@ local OrigWFSetPoint, OrigWFClearAllPoints
 local origWFHighlight
 
 local anchorframe = CreateFrame("Frame", "Altz_WFanchorframe", UIParent)
-anchorframe.movingname = L["WatchFrame"]
+anchorframe.movingname = L["任务追踪"]
 anchorframe.point = {
 	healer = {a1 = "TOPLEFT", parent = "UIParent", a2 = "TOPLEFT", x = 25, y = -100},
 	dpser = {a1 = "TOPLEFT", parent = "UIParent", a2 = "TOPLEFT", x = 25, y = -100},

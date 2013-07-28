@@ -13,7 +13,7 @@ local buttonList = {}
 
 --make a frame that fits the size of all microbuttons
 local frame = CreateFrame("Frame", "Altz_Stancebar", UIParent, "SecureHandlerStateTemplate")
-frame.movingname = L["Stancebar"]
+frame.movingname = L["姿态/形态条"]
 frame.point = {
 		healer = {a1 = "BOTTOMRIGHT", parent = "UIParent", a2 = "BOTTOMRIGHT", x = -18, y = 4},
 		dpser = {a1 = "BOTTOMRIGHT", parent = "UIParent", a2 = "BOTTOMRIGHT", x = -18, y = 4},

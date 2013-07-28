@@ -16,7 +16,7 @@ local function SetTip(frame)
 	GameTooltip:SetOwner(frame, "ANCHOR_RIGHT")
 	GameTooltip:SetText(frame.tiptext)
 	if not frame:IsEnabled() then
-		GameTooltip:AddLine("|cffff3333"..frame.errtext)
+		GameTooltip:AddLine("|cff7FFF00"..frame.errtext)
 	end
 	for name,roll in pairs(frame.parent.rolls) do if roll == rolltypes[frame.rolltype] then GameTooltip:AddLine(name, 1, 1, 1) end end
 	GameTooltip:Show()
@@ -142,7 +142,7 @@ local function CreateRollFrame()
 end
 
 local anchor = CreateFrame("Button", "Altz_lootgroup", UIParent)
-anchor.movingname = L["lootgroup"]
+anchor.movingname = L["ROLL点框"]
 anchor.point = {
 		healer = {a1 = "CENTER", parent = "UIParent", a2 = "CENTER", x = 0, y = 250},
 		dpser = {a1 = "CENTER", parent = "UIParent", a2 = "CENTER", x = 0, y = 250},

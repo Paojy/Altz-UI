@@ -40,7 +40,7 @@ F.SetBD(RaidToolFrame)
 
 RaidToolFrame.title = T.createtext(RaidToolFrame, "OVERLAY", 14, "OUTLINE", "CENTER")
 RaidToolFrame.title:SetPoint("BOTTOM", RaidToolFrame, "TOP", 0, -5)
-RaidToolFrame.title:SetText("|cffA6FFFF"..L["RaidTools"].."|r")
+RaidToolFrame.title:SetText(G.classcolor..L["团队工具"].."|r")
 
 RaidToolFrame.close = CreateFrame("Button", nil, RaidToolFrame)
 RaidToolFrame.close:SetPoint("BOTTOMRIGHT", -3, 3)
@@ -126,18 +126,18 @@ local function UpdateStats()
 	local raidflasked = #flasked/(#flasked+#unflasked)
 	if raidflasked > .5 then
 		if raidflasked == 1 then
-			rosterflask = L["allhaveflask"]
-			numflask = "|cffA6FFFF0 |r"..L["coloredno"]..L["flask"]
+			rosterflask = L["全合剂增益"]
+			numflask = "|cffA6FFFF0 |r"..L["无2"]..L["合剂"]
 		else
-			rosterflask = L["coloredno"].."|cffA6FFFF"..L["flask"]..":|r \n"..table.concat(unflasked, ", ")
-			numflask = "|cffA6FFFF"..#unflasked.." |r"..L["coloredno"]..L["flask"]
+			rosterflask = L["无2"].."|cffA6FFFF"..L["合剂"]..":|r \n"..table.concat(unflasked, ", ")
+			numflask = "|cffA6FFFF22"..#unflasked.." |r"..L["无2"]..L["合剂"]
 		end
 	else
-		numflask = "|cffA6FFFF"..#flasked.." |r"..L["flask"]
+		numflask = "|cffA6FFFF"..#flasked.." |r"..L["合剂"]
 		if raidflasked == 0 then
-			rosterflask = "|cffA6FFFF"..L["flask"]..":|r "..NONE
+			rosterflask = "|cffA6FFFF"..L["合剂"]..":|r "..NONE
 		else
-			rosterflask = "|cffA6FFFF"..L["flask"]..":|r \n"..table.concat(flasked, ", ")
+			rosterflask = "|cffA6FFFF"..L["合剂"]..":|r \n"..table.concat(flasked, ", ")
 		end
 	end
 	
@@ -145,27 +145,27 @@ local function UpdateStats()
 	local raidfed = #fed/(#fed+#unfed)
 	if raidfed > .5 then
 		if raidfed == 1 then
-			rosterfood = L["allhavefood"]
-			numfood = "|cffA6FFFF0 |r"..L["coloredno"]..L["food"]
+			rosterfood = L["全食物增益"]
+			numfood = "|cffA6FFFF0 |r"..L["无2"]..L["食物"]
 		else
-			numfood = "|cffA6FFFF"..#unfed.." |r"..L["coloredno"]..L["food"]
-			rosterfood = L["coloredno"].."|cffA6FFFF"..L["food"]..":|r \n"..table.concat(unfed, ", ")
+			numfood = "|cffA6FFFF"..#unfed.." |r"..L["无2"]..L["食物"]
+			rosterfood = L["无2"].."|cffA6FFFF"..L["食物"]..":|r \n"..table.concat(unfed, ", ")
 		end
 	else
-		numfood = "|cffA6FFFF"..#fed.." |r"..L["food"]
+		numfood = "|cffA6FFFF"..#fed.." |r"..L["食物"]
 		if raidfed == 0 then
-			rosterfood = "|cffA6FFFF"..L["food"]..":|r "..NONE
+			rosterfood = "|cffA6FFFF"..L["食物"]..":|r "..NONE
 		else
-			rosterfood = "|cffA6FFFF"..L["food"]..":|r \n"..table.concat(fed, ", ")
+			rosterfood = "|cffA6FFFF"..L["食物"]..":|r \n"..table.concat(fed, ", ")
 		end
 	end
 	
 	UpdateOoR()
-	numoor = "|cffA6FFFF"..#OoR.." |r"..L["oor"]
+	numoor = "|cffA6FFFF"..#OoR.." |r"..L["过远"]
 	if #OoR == 0 then
-		rosteroor = "|cffA6FFFF"..L["oor2"]..":|r "..NONE
+		rosteroor = "|cffA6FFFF"..L["距离过远"]..":|r "..NONE
 	else
-		rosteroor = "|cffA6FFFF"..L["oor2"]..":|r \n"..table.concat(OoR, ", ")
+		rosteroor = "|cffA6FFFF"..L["距离过远"]..":|r \n"..table.concat(OoR, ", ")
 	end
 	
 	Stats.text:SetText(numflask.."  "..numfood.."  "..numoor)
@@ -194,7 +194,7 @@ local function OnCombatLogEvent(...)
 end
 
 local function StartCombat()
-	print("|cffA6FFFF战斗开始|r")
+	--print("|cffA6FFFF战斗开始|r")
     table.wipe(prepotion)	
     table.wipe(potion)
 	local n = GetNumGroupMembers()
@@ -216,7 +216,7 @@ for _, name in pairs(fliter) do
 end
 
 local function EndCombat()
-	print("|cffA6FFFF战斗结束|r")
+	--print("|cffA6FFFF战斗结束|r")
     table.wipe(noprepotion)	
     table.wipe(nopotion)
 	local n = GetNumGroupMembers()
@@ -232,14 +232,14 @@ local function EndCombat()
     end
 	if aCoreCDB["RaidToolOptions"]["potion"] then
 		if (#noprepotion>0) then
-			SendChatMessage(L["noprepotion"]..table.concat(noprepotion, ", "), "RAID")
+			SendChatMessage(L["偷药水"]..table.concat(noprepotion, ", "), "RAID")
 		else
-			SendChatMessage(L["allprepotion"], "RAID")
+			SendChatMessage(L["全偷药水"], "RAID")
 		end
 		if (#nopotion>0) then
-			SendChatMessage(L["nopotion"]..table.concat(nopotion, ", "), "RAID")
+			SendChatMessage(L["药水"]..table.concat(nopotion, ", "), "RAID")
 		else
-			SendChatMessage(L["allpotion"], "RAID")
+			SendChatMessage(L["全药水"], "RAID")
 		end
 	end
 end
@@ -357,25 +357,25 @@ AncButton:SetScript("OnClick", function(self)
 		UpdateFlasked()
 		local raidflasked = #flasked/(#flasked+#unflasked)
 		if raidflasked > .5 then
-			SendChatMessage(L["no"]..L["flask"]..": "..table.concat(unflasked, ", "), "RAID")
+			SendChatMessage(L["无"]..L["合剂"]..": "..table.concat(unflasked, ", "), "RAID")
 		elseif raidflasked == 0 then
-			SendChatMessage(L["nonehasflask"], "RAID")
+			SendChatMessage(L["无合剂增益"], "RAID")
 		else
-			SendChatMessage(L["flask"]..": "..table.concat(flasked, ", "), "RAID")
+			SendChatMessage(L["合剂"]..": "..table.concat(flasked, ", "), "RAID")
 		end
 			
 		UpdateFed()
 		local raidfed = #fed/(#fed+#unfed)
 		if raidfed > .5 then
-			SendChatMessage(L["no"]..L["food"]..": "..table.concat(unfed, ", "), "RAID")
+			SendChatMessage(L["无"]..L["食物"]..": "..table.concat(unfed, ", "), "RAID")
 		elseif raidfed == 0 then
-			SendChatMessage(L["nonehasfood"], "RAID")
+			SendChatMessage(L["无食物增益"], "RAID")
 		else
-			SendChatMessage(L["food"]..": "..table.concat(fed, ", "), "RAID")
+			SendChatMessage(L["食物"]..": "..table.concat(fed, ", "), "RAID")
 		end
 			
 		UpdateOoR()
-		SendChatMessage(L["oor2"]..": "..table.concat(OoR, ", "), "RAID")
+		SendChatMessage(L["距离过远"]..": "..table.concat(OoR, ", "), "RAID")
 	end
 end)
 
@@ -395,7 +395,7 @@ PullButton:SetScript("OnEvent", function(self)
 		self:Disable()
 		self:SetScript("OnEnter", function()
 			GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-			GameTooltip:AddLine(L["need dbm"])
+			GameTooltip:AddLine(L["需要加载DBM"])
 			GameTooltip:Show()
 		end)
 		self:SetScript("OnLeave", function() GameTooltip:Hide() end)
@@ -425,7 +425,7 @@ LagCheckButton:SetScript("OnEvent", function(self)
 		self:Disable()
 		self:SetScript("OnEnter", function()
 			GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-			GameTooltip:AddLine(L["need dbm"])
+			GameTooltip:AddLine(L["需要加载DBM"])
 			GameTooltip:Show()
 		end)
 		self:SetScript("OnLeave", function() GameTooltip:Hide() end)
@@ -461,6 +461,37 @@ ReSkinButton(ReadyCheckButton, "TOP", PullButton, "BOTTOM", 0, -8)
 
 local RolePollButton = CompactRaidFrameManagerDisplayFrameLeaderOptionsInitiateRolePoll
 ReSkinButton(RolePollButton, "LEFT", ReadyCheckButton, "RIGHT", 10, 0)
+
+local SwitchRaidButton = CreateFrame("Button", G.uiname.."RaidToolSwitchRaidButton", RaidToolFrame, "UIPanelButtonTemplate")
+SwitchRaidButton:SetPoint("TOP", ReadyCheckButton, "BOTTOM", 0, -8)
+SwitchRaidButton:SetSize(RaidToolFrame:GetWidth()/2-20, 25)
+SwitchRaidButton.text = SwitchRaidButton:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+SwitchRaidButton.text:SetPoint("CENTER")
+
+F.Reskin(SwitchRaidButton)
+
+SwitchRaidButton:SetScript("OnEvent", function(self)
+	if not aCoreCDB["UnitframeOptions"]["autoswitch"] then
+		if T.IsDpsRaidShown() then
+			self.text:SetText(L["dpser"])
+		else
+			self.text:SetText(L["healer"])
+		end
+	else
+		self:UnregisterAllEvents()
+	end
+end)
+SwitchRaidButton:RegisterEvent("PLAYER_ENTERING_WORLD")
+SwitchRaidButton:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED")
+
+SwitchRaidButton:SetScript("OnClick", function(self)
+	T.SwitchRaidFrame()
+	if T.IsDpsRaidShown() then
+		self.text:SetText(L["dpser"])
+	else
+		self.text:SetText(L["healer"])
+	end
+end)
 
 local ConvertGroupButton = CompactRaidFrameManagerDisplayFrameConvertToRaid
 ReSkinButton(ConvertGroupButton, "TOP", ReadyCheckButton, "BOTTOM", 0, -8)

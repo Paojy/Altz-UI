@@ -1,54 +1,6 @@
 local T, C, L, G = unpack(select(2, ...))
 local oUF = AltzUF or oUF
 
-local frameFadeManager = CreateFrame("FRAME")
-
--- Generic fade function
-local function UIFrameFade(frame, fadeInfo)
-	if not frame then return end
-	if not fadeInfo.mode then fadeInfo.mode = "IN" end
-	local alpha
-	if fadeInfo.mode == "IN" then
-		if not fadeInfo.startAlpha then fadeInfo.startAlpha = 0 end
-		if not fadeInfo.endAlpha then fadeInfo.endAlpha = 1 end
-		alpha = 0
-    elseif fadeInfo.mode == "OUT" then
-		if not fadeInfo.startAlpha then fadeInfo.startAlpha = 1.0 end
-		if not fadeInfo.endAlpha then fadeInfo.endAlpha = 0 end
-		alpha = 1.0
-    end
-    frame:SetAlpha(fadeInfo.startAlpha);
-    frame.fadeInfo = fadeInfo
-
-	local index = 1
-	while FADEFRAMES[index] do
-		if ( FADEFRAMES[index] == frame ) then return end -- If frame is already set to fade then return
-		index = index + 1
-    end
-    tinsert(FADEFRAMES, frame)
-    frameFadeManager:SetScript("OnUpdate", UIFrameFade_OnUpdate);
-end
-
--- Convenience function to do a simple fade in
-local function UIFrameFadeIn(frame, timeToFade, startAlpha, endAlpha)
-	local fadeInfo = {};
-	fadeInfo.mode = "IN";
-	fadeInfo.timeToFade = timeToFade;
-	fadeInfo.startAlpha = startAlpha;
-	fadeInfo.endAlpha = endAlpha;
-	UIFrameFade(frame, fadeInfo);
-end
-
--- Convenience function to do a simple fade out
-local function UIFrameFadeOut(frame, timeToFade, startAlpha, endAlpha)
-	local fadeInfo = {};
-	fadeInfo.mode = "OUT";
-	fadeInfo.timeToFade = timeToFade;
-	fadeInfo.startAlpha = startAlpha;
-	fadeInfo.endAlpha = endAlpha;
-	UIFrameFade(frame, fadeInfo);
-end
-
 local function Update(self)
 	if not aCoreCDB["UnitframeOptions"]["enablefade"] then return end
 	local unit = self.unit
@@ -67,13 +19,13 @@ local function Update(self)
 		(self.FadeHover and GetMouseFocus() == self)
 	then
 		if(self.FadeInSmooth) then
-			UIFrameFadeIn(self, self.FadeInSmooth, self:GetAlpha(), self.FadeMaxAlpha or 1)
+			T.UIFrameFadeIn(self, self.FadeInSmooth, self:GetAlpha(), self.FadeMaxAlpha or 1)
 		else
 			self:SetAlpha(self.FadeMaxAlpha or 1)
 		end
 	else
 		if(self.FadeOutSmooth) then
-			UIFrameFadeOut(self, self.FadeOutSmooth, self:GetAlpha(), self.FadeMinAlpha or 0.3)
+			T.UIFrameFadeOut(self, self.FadeOutSmooth, self:GetAlpha(), self.FadeMinAlpha or 0.3)
 		else
 			self:SetAlpha(self.FadeMinAlpha or 0.3)
 		end

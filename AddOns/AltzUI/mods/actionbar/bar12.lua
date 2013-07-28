@@ -22,7 +22,7 @@ local buttonList = {}
 
 --create the frame to hold the buttons
 local frame = CreateFrame("Frame", "Altz_Bar1&2", UIParent, "SecureHandlerStateTemplate")
-frame.movingname = L["Bar1&2"]
+frame.movingname = L["主动作条"]
 frame.point = {
 	healer = {a1 = "BOTTOM", parent = "UIParent", a2 = "BOTTOM", x = 0, y = 4},
 	dpser = {a1 = "BOTTOM", parent = "UIParent", a2 = "BOTTOM", x = 0, y = 4},

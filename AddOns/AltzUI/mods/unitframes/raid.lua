@@ -485,7 +485,7 @@ local function Spawnhealraid()
 		'columnSpacing', 5,
 		'columnAnchorPoint', aCoreCDB["UnitframeOptions"]["partyanchor"]
 	)
-	healerraid.movingname = L["healerraid"]
+	healerraid.movingname = L["治疗模式团队框架"]
 	healerraid.point = {
 		healer = {a1 = "CENTER", parent = "UIParent", a2 = "BOTTOM", x = 0, y = 160},
 		dpser = {a1 = "BOTTOMLEFT", parent = "UIParent", a2 = "BOTTOMLEFT", x = 10, y = 200},
@@ -518,7 +518,7 @@ local function Spawnhealraid()
 		--'useOwnerUnit', true,
 		'unitsuffix', 'pet'
 	)
-	healerpet.movingname = L["healerraidpet"]
+	healerpet.movingname = L["治疗模式宠物团队框架"]
 	healerpet.point = {
 		healer = {a1 = "TOPLEFT", parent = healerraid:GetName(), a2 = "TOPRIGHT", x = 10, y = 0},
 		dpser = {a1 = "TOPLEFT", parent = healerraid:GetName(), a2 = "TOPRIGHT", x = 10, y = 0},
@@ -547,7 +547,7 @@ local function Spawndpsraid()
 		'columnSpacing', 5,
 		'columnAnchorPoint', "LEFT"
 	)
-	dpsraid.movingname = L["dpserraid"]
+	dpsraid.movingname = L["输出模式团队框架"]
 	dpsraid.point = {
 		healer = {a1 = "TOPLEFT", parent = "UIParent", a2 = "TOPLEFT", x = 5, y = -146},
 		dpser = {a1 = "TOPLEFT", parent = "UIParent", a2 = "TOPLEFT", x = 5, y = -146},
@@ -583,7 +583,7 @@ local function Spawndpsraid()
 		'columnSpacing', 5,
 		'columnAnchorPoint', "LEFT" 
 	)
-	dpspet.movingname = L["dpserraidpet"]
+	dpspet.movingname = L["输出模式宠物团队框架"]
 	dpspet.point = {
 		healer = {a1 = "TOPLEFT", parent = dpsraid:GetName(), a2 = "TOPRIGHT", x = 10, y = 0},
 		dpser = {a1 = "TOPLEFT", parent = dpsraid:GetName(), a2 = "TOPRIGHT", x = 10, y = 0},
@@ -671,23 +671,23 @@ function EventFrame:PLAYER_ENTERING_WORLD()
 end
 
 -- 加入团队工具中
-local function SlashCmd(cmd)
-    if (cmd:match"healer") then
+T.IsDpsRaidShown = function()
+	if dpsraid:GetAttribute("showRaid") then
+		return true
+	end
+end
+
+T.SwitchRaidFrame = function()
+	if dpsraid:GetAttribute("showRaid") then
 		hiderf(dpsraid)
 		hiderf(dpspet)
 		showrf(healerraid)
 		if aCoreCDB["UnitframeOptions"]["showraidpet"] then showrf(healerpet) else hiderf(healerpet) end
-    elseif (cmd:match"dps") then
+    else
 		hiderf(healerraid)
 		hiderf(healerpet)
 		showrf(dpsraid)
 		if aCoreCDB["UnitframeOptions"]["showraidpet"] then showrf(dpspet) else hiderf(dpspet) end
-    else
-      print("|c0000FF00AltzUI command list:|r")
-      print("|c0000FF00\/rf healer")
-      print("|c0000FF00\/rf dps")
     end
 end
 
-SlashCmdList["AltzRaid"] = SlashCmd;
-SLASH_AltzRaid1 = "/rf"

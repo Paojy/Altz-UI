@@ -193,10 +193,14 @@ local function CreateCTFrame(i, movingname, justify, a1, parent, a2, x, y)
 		self.timer = (self.timer or 0) + elapsed
 		if self.timer > 1 then	
 			self.number = random(1 , 10000)
-			frames[1]:AddMessage("-"..self.number, 1, 0, 0)
-			frames[2]:AddMessage("+"..self.number, 0, 1, 0)
-			frames[3]:AddMessage(GetSpellTextureFormatted(6603, iconsize)..self.number, 1, 1, 0)
-			frames[4]:AddMessage(GetSpellTextureFormatted(139, iconsize)..self.number, 0.3, 1, 0)
+			if showreceived then
+				frames["damagetaken"]:AddMessage("-"..self.number, 1, 0, 0)
+				frames["healingtaken"]:AddMessage("+"..self.number, 0, 1, 0)
+			end
+			if showoutput then
+				frames["outputdamage"]:AddMessage(GetSpellTextureFormatted(6603, iconsize)..self.number, 1, 1, 0)
+				frames["outputhealing"]:AddMessage(GetSpellTextureFormatted(139, iconsize)..self.number, 0.3, 1, 0)
+			end
 			self.timer = 0
 		end
 	end)
@@ -205,34 +209,34 @@ local function CreateCTFrame(i, movingname, justify, a1, parent, a2, x, y)
 end
 
 local tbl = {
-	["DAMAGE"] = 			{frame = 1, prefix =  "-", 		arg2 = true, 	r = 1, 		g = 0.1, 	b = 0.1},
-	["DAMAGE_CRIT"] = 		{frame = 1, prefix = "c-", 		arg2 = true, 	r = 1, 		g = 0.1, 	b = 0.1},
-	["SPELL_DAMAGE"] = 		{frame = 1, prefix =  "-", 		arg2 = true, 	r = 0.79, 	g = 0.3, 	b = 0.85},
-	["SPELL_DAMAGE_CRIT"] = {frame = 1, prefix = "c-", 		arg2 = true, 	r = 0.79, 	g = 0.3, 	b = 0.85},
-	["HEAL"] = 				{frame = 2, prefix =  "+", 		arg3 = true, 	r = 0.1, 	g = 1, 		b = 0.1},
-	["HEAL_CRIT"] = 		{frame = 2, prefix = "c+", 		arg3 = true, 	r = 0.1, 	g = 1, 		b = 0.1},
-	["PERIODIC_HEAL"] = 	{frame = 2, prefix =  "+", 		arg3 = true, 	r = 0.1, 	g = 1, 		b = 0.1},
-	["MISS"] = 				{frame = 1, prefix = "Miss", 					r = 1, 		g = 0.1, 	b = 0.1},
-	["SPELL_MISS"] = 		{frame = 1, prefix = "Miss", 					r = 0.79, 	g = 0.3, 	b = 0.85},
-	["SPELL_REFLECT"] = 	{frame = 1, prefix = "Reflect", 				r = 1, 		g = 1, 		b = 1},
-	["DODGE"] = 			{frame = 1, prefix = "Dodge", 					r = 1, 		g = 0.1, 	b = 0.1},
-	["PARRY"] = 			{frame = 1, prefix = "Parry", 					r = 1, 		g = 0.1, 	b = 0.1},
-	["BLOCK"] = 			{frame = 1, prefix = "Block", 	spec = true,	r = 1, 		g = 0.1, 	b = 0.1},
-	["RESIST"] = 			{frame = 1, prefix = "Resist", 	spec = true, 	r = 1, 		g = 0.1, 	b = 0.1},
-	["SPELL_RESIST"] = 		{frame = 1, prefix = "Resist", 	spec = true, 	r = 0.79, 	g = 0.3, 	b = 0.85},
-	["ABSORB"] = 			{frame = 1, prefix = "Absorb", 	spec = true, 	r = 1, 		g = 0.1, 	b = 0.1},
-	["SPELL_ABSORBED"] = 	{frame = 1, prefix = "Absorb", 	spec = true, 	r = 0.79, 	g = 0.3, 	b = 0.85},
+	["DAMAGE"] = 			{frame = "damagetaken", prefix =  "-", 		arg2 = true, 	r = 1, 		g = 0.1, 	b = 0.1},
+	["DAMAGE_CRIT"] = 		{frame = "damagetaken", prefix = "c-", 		arg2 = true, 	r = 1, 		g = 0.1, 	b = 0.1},
+	["SPELL_DAMAGE"] = 		{frame = "damagetaken", prefix =  "-", 		arg2 = true, 	r = 0.79, 	g = 0.3, 	b = 0.85},
+	["SPELL_DAMAGE_CRIT"] = {frame = "damagetaken", prefix = "c-", 		arg2 = true, 	r = 0.79, 	g = 0.3, 	b = 0.85},
+	["HEAL"] = 				{frame = "healingtaken", prefix =  "+", 		arg3 = true, 	r = 0.1, 	g = 1, 		b = 0.1},
+	["HEAL_CRIT"] = 		{frame = "healingtaken", prefix = "c+", 		arg3 = true, 	r = 0.1, 	g = 1, 		b = 0.1},
+	["PERIODIC_HEAL"] = 	{frame = "healingtaken", prefix =  "+", 		arg3 = true, 	r = 0.1, 	g = 1, 		b = 0.1},
+	["MISS"] = 				{frame = "damagetaken", prefix = "Miss", 					r = 1, 		g = 0.1, 	b = 0.1},
+	["SPELL_MISS"] = 		{frame = "damagetaken", prefix = "Miss", 					r = 0.79, 	g = 0.3, 	b = 0.85},
+	["SPELL_REFLECT"] = 	{frame = "damagetaken", prefix = "Reflect", 				r = 1, 		g = 1, 		b = 1},
+	["DODGE"] = 			{frame = "damagetaken", prefix = "Dodge", 					r = 1, 		g = 0.1, 	b = 0.1},
+	["PARRY"] = 			{frame = "damagetaken", prefix = "Parry", 					r = 1, 		g = 0.1, 	b = 0.1},
+	["BLOCK"] = 			{frame = "damagetaken", prefix = "Block", 	spec = true,	r = 1, 		g = 0.1, 	b = 0.1},
+	["RESIST"] = 			{frame = "damagetaken", prefix = "Resist", 	spec = true, 	r = 1, 		g = 0.1, 	b = 0.1},
+	["SPELL_RESIST"] = 		{frame = "damagetaken", prefix = "Resist", 	spec = true, 	r = 0.79, 	g = 0.3, 	b = 0.85},
+	["ABSORB"] = 			{frame = "damagetaken", prefix = "Absorb", 	spec = true, 	r = 1, 		g = 0.1, 	b = 0.1},
+	["SPELL_ABSORBED"] = 	{frame = "damagetaken", prefix = "Absorb", 	spec = true, 	r = 0.79, 	g = 0.3, 	b = 0.85},
 }
 
 if showreceived then
-	frames[1] = CreateCTFrame(1, L["damageCT"], "LEFT", "RIGHT", UIParent, "CENTER", -185, 0)
-	frames[2] = CreateCTFrame(2, L["healingCT"], "RIGHT", "LEFT", UIParent, "CENTER", -365, 0)
+	frames["damagetaken"] = CreateCTFrame("damagetaken", L["承受伤害"], "LEFT", "RIGHT", UIParent, "CENTER", -185, 0)
+	frames["healingtaken"] = CreateCTFrame("healingtaken", L["承受治疗"], "RIGHT", "LEFT", UIParent, "CENTER", -365, 0)
 	eventframe:RegisterEvent"COMBAT_TEXT_UPDATE"
 end
 
 if showoutput then
-	frames[3] = CreateCTFrame(3, L["outdamageCT"], "RIGHT", "LEFT", UIParent, "CENTER", 185, 80)
-	frames[4] = CreateCTFrame(4, L["outhealingCT"], "LEFT", "RIGHT", UIParent, "CENTER", 365, 80)	
+	frames["outputdamage"] = CreateCTFrame("outputdamage", L["输出伤害"], "RIGHT", "LEFT", UIParent, "CENTER", 185, 80)
+	frames["outputhealing"] = CreateCTFrame(4, L["输出治疗"], "LEFT", "RIGHT", UIParent, "CENTER", 365, 80)	
 	eventframe:RegisterEvent"COMBAT_LOG_EVENT_UNFILTERED"
 end
 
@@ -263,7 +267,7 @@ function eventframe:COMBAT_LOG_EVENT_UNFILTERED(...)
 			critical = select(18, ...)
 			if fliter and (healfilter[spellId] or aoefilter[spellId]) then return end
 			icon = GetSpellTextureFormatted(spellId, critical and bigiconsize or iconsize)
-			frames[4]:AddMessage(amount..""..icon, 0, 1, 0)
+			frames["outputhealing"]:AddMessage(amount..""..icon, 0, 1, 0)
 		elseif destGUID ~= UnitGUID("player") then
 			if eventType=="SWING_DAMAGE" then
 				amount = select(12, ...)
@@ -293,15 +297,15 @@ function eventframe:COMBAT_LOG_EVENT_UNFILTERED(...)
 				if fliter and spellId and aoefilter[spellId] then return end
 				if critical then
 					if dmgcolor[spellSchool] then
-						frames[3]:AddMessage("+"..amount..""..icon, dmgcolor[spellSchool][1], dmgcolor[spellSchool][2], dmgcolor[spellSchool][3])
+						frames["outputdamage"]:AddMessage("+"..amount..""..icon, dmgcolor[spellSchool][1], dmgcolor[spellSchool][2], dmgcolor[spellSchool][3])
 					else
-						frames[3]:AddMessage("+"..amount..""..icon, dmgcolor[1][1], dmgcolor[1][2], dmgcolor[1][3])
+						frames["outputdamage"]:AddMessage("+"..amount..""..icon, dmgcolor[1][1], dmgcolor[1][2], dmgcolor[1][3])
 					end
 				else
 					if dmgcolor[spellSchool] then
-						frames[3]:AddMessage(amount..""..icon, dmgcolor[spellSchool][1], dmgcolor[spellSchool][2], dmgcolor[spellSchool][3])
+						frames["outputdamage"]:AddMessage(amount..""..icon, dmgcolor[spellSchool][1], dmgcolor[spellSchool][2], dmgcolor[spellSchool][3])
 					else
-						frames[3]:AddMessage(amount..""..icon, dmgcolor[1][1], dmgcolor[1][2], dmgcolor[1][3])
+						frames["outputdamage"]:AddMessage(amount..""..icon, dmgcolor[1][1], dmgcolor[1][2], dmgcolor[1][3])
 					end
 				end
 			end

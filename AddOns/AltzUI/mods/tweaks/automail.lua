@@ -28,7 +28,7 @@ function AutoMail:PLAYER_LOGIN()
 	inboxAllButton:SetHeight(25)
 	inboxAllButton:SetPoint("TOPRIGHT", InboxFrame, "TOPRIGHT", -60, -45)
 	F.Reskin(inboxAllButton)
-	inboxAllButton:SetText(L["Open All"])
+	inboxAllButton:SetText(L["全部打开"])
 	inboxAllButton:SetScript("OnClick", function() AutoMail.GetMail() end)
 
 	self:UnregisterEvent("PLAYER_LOGIN")
@@ -108,7 +108,7 @@ local function mailLoop(this, arg1)
 			elseif bagCheck() < 1 then
 				triggerStop = true
 				AutoMail:StopMail()
-				DEFAULT_CHAT_FRAME:AddMessage(L["Your bags are full"])
+				DEFAULT_CHAT_FRAME:AddMessage(L["背包已满"])
 			else
 				if money > 0 then moneyCount = moneyCount + money end
 				AutoLootMailItem(numInboxItems)
@@ -153,7 +153,7 @@ function AutoMail:StopMail()
 	AutoMail:SetScript("OnUpdate", nil)
 	--check for money output
 	if moneyCount > 0 then
-		DEFAULT_CHAT_FRAME:AddMessage(L["Total money from mailbox "].."["..colorMoneyText(moneyCount).."]")
+		DEFAULT_CHAT_FRAME:AddMessage(L["从邮箱中一共获得"].."["..colorMoneyText(moneyCount).."]")
 	end
 end
 
@@ -162,7 +162,7 @@ function AutoMail:UI_ERROR_MESSAGE(event, arg1)
 	if arg1 == ERR_INV_FULL then
 		triggerStop = true
 		AutoMail:StopMail()
-		DEFAULT_CHAT_FRAME:AddMessage(L["Your bags are full"])
+		DEFAULT_CHAT_FRAME:AddMessage(L["背包已满"])
 	end
 end
 

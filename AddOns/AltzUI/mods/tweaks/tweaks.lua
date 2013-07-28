@@ -96,16 +96,12 @@ function eventframe:MERCHANT_SHOW(...)
 					end
 				end
 				if gearRepaired then
-					print(format(L["RepairCost"].." %.1fg ("..GUILD..")", cost * 0.0001))
+					print(format(L["修理花费"].." %.1fg ("..GUILD..")", cost * 0.0001))
 				end
-			else
-				print(L["noguildmoney2"])
 			end
 		elseif cost > 0 and GetMoney() > cost then
 			RepairAllItems()
-			print(format(L["RepairCost"].." %.1fg", cost * 0.0001))
-		elseif GetMoney() < cost then
-			print(L["nomoney"])
+			print(format(L["修理花费"].." %.1fg", cost * 0.0001))
 		end
 	end
 	if aCoreCDB["ItemOptions"]["autosell"] then
@@ -130,19 +126,19 @@ function eventframe:MERCHANT_SHOW(...)
 				if ItemName == name then-- 有卖的嘛？
 					local needbuy = tonumber(Need) - ItemCount
 					if numAvailable >1 and needbuy > numAvailable then -- 数量够不够
-						print(L["The merchat don't have enough"].."|cffA6FFFF "..ItemName.."|r")
+						print(L["货物不足"]..G.classcolor.." "..ItemName.."|r")
 					elseif needbuy/quantity*price > GetMoney() then -- 钱够不够
-						print(L["nomoney to buy"].."|cffA6FFFF "..ItemName.."|r")
+						print(L["钱不够"]..G.classcolor.." "..ItemName.."|r")
 					else
 						maxStack = GetMerchantItemMaxStack(index)
 						while needbuy > maxStack*quantity do
 							BuyMerchantItem(index, maxStack)
-							print(format(L["autobuybought"], maxStack*quantity, "|cffA6FFFF"..ItemName.."|r"))
+							print(format(L["购买"], maxStack*quantity, G.classcolor..ItemName.."|r"))
 							needbuy = needbuy - maxStack*quantity
 						end
 						if needbuy > 0 then
 							BuyMerchantItem(index, needbuy/quantity)
-							print(format(L["autobuybought"], needbuy, "|cffA6FFFF"..ItemName.."|r"))
+							print(format(L["购买"], needbuy, G.classcolor..ItemName.."|r"))
 						end				
 					end
 				end
@@ -171,8 +167,8 @@ if saysapped then
 		and (select(11,...) == UnitName("player"))
 		and (select(4,...) == "SPELL_AURA_APPLIED" or select(4,...) == "SPELL_AURA_REFRESH"))
 		then
-			SendChatMessage(L["Sapped!"], "SAY")
-			DEFAULT_CHAT_FRAME:AddMessage(L["sapped by:"].." "..(select(7,...) or "(unknown)"))
+			SendChatMessage(L["被闷了"], "SAY")
+			DEFAULT_CHAT_FRAME:AddMessage(L["被闷了2"].." "..(select(7,...) or "(unknown)"))
 		end
 	end
 end

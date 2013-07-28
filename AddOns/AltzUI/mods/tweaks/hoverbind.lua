@@ -5,7 +5,7 @@ local F = unpack(Aurora)
 local bind, localmacros = CreateFrame("Frame", "ncHoverBind", UIParent), 0
 -- SLASH COMMAND
 SlashCmdList.MOUSEOVERBIND = function()
-	if InCombatLockdown() then print(L["You can't bind keys in combat."]) return end
+	if InCombatLockdown() then print(L["你不能在战斗中绑定按键"]) return end
 	if not bind.loaded then
 		local find = string.find
 		local _G = getfenv(0)
@@ -65,9 +65,9 @@ SlashCmdList.MOUSEOVERBIND = function()
 					self:AddLine(bind.button.name, 1, 1, 1)
 					bind.button.bindings = {GetBindingKey(spellmacro.." "..bind.button.name)}
 					if #bind.button.bindings == 0 then
-						self:AddLine(L["No bindings set."], .6, .6, .6)
+						self:AddLine(L["没有绑定键位"], .6, .6, .6)
 					else
-						self:AddDoubleLine(L["Binding"], L["Key"], .6, .6, .6, .6, .6, .6)
+						self:AddDoubleLine(L["绑定"], L["键位"], .6, .6, .6, .6, .6, .6)
 						for i = 1, #bind.button.bindings do
 							self:AddDoubleLine(i, bind.button.bindings[i])
 						end
@@ -88,11 +88,11 @@ SlashCmdList.MOUSEOVERBIND = function()
 				
 				bind.button.bindings = {GetBindingKey(spellmacro.." "..bind.button.name)}
 					if #bind.button.bindings == 0 then
-						GameTooltip:AddLine(L["No bindings set."], .6, .6, .6)
+						GameTooltip:AddLine(L["没有绑定键位"], .6, .6, .6)
 					else
-						GameTooltip:AddDoubleLine(L["Binding"], L["Key"], .6, .6, .6, .6, .6, .6)
+						GameTooltip:AddDoubleLine(L["绑定"], L["键位"], .6, .6, .6, .6, .6, .6)
 						for i = 1, #bind.button.bindings do
-							GameTooltip:AddDoubleLine(L["Binding"]..i, bind.button.bindings[i], 1, 1, 1)
+							GameTooltip:AddDoubleLine(L["绑定"]..i, bind.button.bindings[i], 1, 1, 1)
 						end
 					end
 				GameTooltip:Show()
@@ -116,9 +116,9 @@ SlashCmdList.MOUSEOVERBIND = function()
 					self:AddLine(bind.button.name, 1, 1, 1)
 					bind.button.bindings = {GetBindingKey(bind.button.bindstring)}
 					if #bind.button.bindings == 0 then
-						self:AddLine(L["No bindings set."], .6, .6, .6)
+						self:AddLine(L["没有绑定键位"], .6, .6, .6)
 					else
-						self:AddDoubleLine(L["Binding"], L["Key"], .6, .6, .6, .6, .6, .6)
+						self:AddDoubleLine(L["绑定"], L["键位"], .6, .6, .6, .6, .6, .6)
 						for i = 1, #bind.button.bindings do
 							self:AddDoubleLine(i, bind.button.bindings[i])
 						end
@@ -164,9 +164,9 @@ SlashCmdList.MOUSEOVERBIND = function()
 					self:AddLine(bind.button.name, 1, 1, 1)
 				--	bind.button.bindings = {GetBindingKey(bind.button.bindstring)}
 					if #bind.button.bindings == 0 then
-						self:AddLine(L["No bindings set."], .6, .6, .6)
+						self:AddLine(L["没有绑定键位"], .6, .6, .6)
 					else
-						self:AddDoubleLine(L["Binding"], L["Key"], .6, .6, .6, .6, .6, .6)
+						self:AddDoubleLine(L["绑定"], L["键位"], .6, .6, .6, .6, .6, .6)
 						for i = 1, #bind.button.bindings do
 							self:AddDoubleLine(i, bind.button.bindings[i])
 						end
@@ -198,7 +198,7 @@ SlashCmdList.MOUSEOVERBIND = function()
 				for i = 1, #self.button.bindings do
 					SetBinding(self.button.bindings[i])
 				end
-				print(L["All keybindings cleared for"].." |cff00ff00"..self.button.name.."|r.")
+				print(L["按键绑定解除"].." "..G.classcolor..self.button.name.."|r.")
 				self:Update(self.button, self.spellmacro)
 				if self.spellmacro~="MACRO" then GameTooltip:Hide() end
 				return
@@ -227,7 +227,7 @@ SlashCmdList.MOUSEOVERBIND = function()
 			else
 				SetBinding(alt..ctrl..shift..key, self.spellmacro.." "..self.button.name)
 			end
-			print("|cff00ff00"..alt..ctrl..shift..key.."|r "..L["bound to"].." |cff00ff00"..self.button.name.."|r")
+			print(G.classcolor..alt..ctrl..shift..key.."|r "..L["绑定到"].." "..G.classcolor..self.button.name.."|r")
 			self:Update(self.button, self.spellmacro)
 			if self.spellmacro~="MACRO" then GameTooltip:Hide() end
 		end
@@ -243,10 +243,10 @@ SlashCmdList.MOUSEOVERBIND = function()
 		function bind:Deactivate(save)
 			if save then
 				SaveBindings(2)
-				print(L["All keybindings have been saved."])
+				print(L["所有键位设定保存"])
 			else
 				LoadBindings(2)
-				print(L["All newly set keybindings have been discarded."])
+				print(L["刚才的键位设定修改取消了"])
 			end
 			self.enabled = false
 			self:HideFrame()
@@ -255,9 +255,9 @@ SlashCmdList.MOUSEOVERBIND = function()
 		end
 
 		StaticPopupDialogs["KEYBIND_MODE"] = {
-			text = L["Binding Mode"],
-			button1 = L["Save bindings"],
-			button2 = L["Discard bindings"],
+			text = L["绑定模式"],
+			button1 = L["保存键位"],
+			button2 = L["取消键位"],
 			OnAccept = function() bind:Deactivate(true) end,
 			OnCancel = function() bind:Deactivate(false) end,
 			timeout = 0,

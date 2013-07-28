@@ -1,10 +1,10 @@
 ﻿<Ui xmlns="http://www.blizzard.com/wow/ui/">
 	<Script file="core\init.lua"/>
 	
-	<Script file="locales\english.lua"/>
-	<Script file="locales\chinese.lua"/>
+	<Script file="locales\chinese.lua"/>	
 	<Script file="locales\twchinese.lua"/>
 	<Script file="locales\french.lua"/>
+	<Script file="locales\english.lua"/>
 	
 	<Include file="lib\oUF\oUF.xml"/>
 	
@@ -12,6 +12,9 @@
 	<Script file="core\moving.lua"/>
 	<Script file="core\fader.lua"/>
 	
+	<Script file="mods\blizzards\talenttaint.lua"/>
+	<Script file="mods\blizzards\death.lua"/>
+
 	<Script file="mods\skins\DBM.lua"/>
 	<Script file="mods\skins\Skada.lua"/>
 	<Script file="mods\skins\Recount.lua"/>
@@ -33,7 +36,6 @@
 	<Script file="mods\actionbar\petbar.lua"/>
 	<Script file="mods\actionbar\stancebar.lua"/>
 	<Script file="mods\actionbar\extrabar.lua"/>
-	<!--<Script file="mods\actionbar\micromenu.lua"/>-->
 	<Script file="mods\actionbar\leave_vehicle.lua"/>
 	<Script file="mods\actionbar\spellflyout.lua"/>
 	<Script file="mods\actionbar\buff.lua"/>

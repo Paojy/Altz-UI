@@ -12,10 +12,10 @@ local clickers = {
 	["ADDFRIEND"] = AddFriend,
 }
 
-UnitPopupButtons["COPYNAME"] = {text = L["Copy Name"], dist = 0}
-UnitPopupButtons["WHO"] = {text = L["Who"], dist = 0}
-UnitPopupButtons["GUILD_INVITE"] = {text = L["Guild Invite"], dist = 0}
-UnitPopupButtons["ADDFRIEND"] = {text = L["Add Friend"], dist = 0}
+UnitPopupButtons["COPYNAME"] = {text = L["复制名字"], dist = 0}
+UnitPopupButtons["WHO"] = {text = L["玩家详情"], dist = 0}
+UnitPopupButtons["GUILD_INVITE"] = {text = L["公会邀请"], dist = 0}
+UnitPopupButtons["ADDFRIEND"] = {text = L["添加好友"], dist = 0}
 
 insertbefore(UnitPopupMenus["FRIEND"], "IGNORE", "COPYNAME")
 insertbefore(UnitPopupMenus["FRIEND"], "COPYNAME", "WHO")

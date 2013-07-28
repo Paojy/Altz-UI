@@ -22,7 +22,7 @@ local buttonList = {}
 
 --create the frame to hold the buttons
 local frame = CreateFrame("Frame", "Altz_Bar4&5", UIParent, "SecureHandlerStateTemplate")
-frame.movingname = L["Bar4&5"]
+frame.movingname = L["右侧额外动作条"]
 frame.point = {
 	healer = {a1 = "BOTTOMRIGHT", parent = "UIParent", a2 = "BOTTOMRIGHT", x = -20, y = 195},
 	dpser = {a1 = "BOTTOMRIGHT", parent = "UIParent", a2 = "BOTTOMRIGHT", x = -20, y = 195},

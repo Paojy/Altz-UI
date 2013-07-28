@@ -56,7 +56,7 @@ function SetUp(framen)
 	frame:SetScale(config.scale)
 	if framen == "bag" then 
 		frame:SetWidth(((config.size+config.spacing)*config.bpr)+10-config.spacing)
-		frame.movingname = L["bag frame"]
+		frame.movingname = L["背包"]
 		frame.point = {
 				healer = {a1 = "BOTTOMRIGHT", parent = "Minimap", a2 = "BOTTOMLEFT", x = -8, y = 2},
 				dpser = {a1 = "BOTTOMRIGHT", parent = "Minimap", a2 = "BOTTOMLEFT", x = -8, y = 2},
@@ -64,7 +64,7 @@ function SetUp(framen)
 		T.CreateDragFrame(frame)
 	else
 		frame:SetWidth(((config.size+config.spacing)*config.bapr)+16-config.spacing)
-		frame.movingname = L["bank frame"]
+		frame.movingname = L["银行"]
 		frame.point = {
 				healer = {a1 = "BOTTOM", parent = "UIParent", a2 = "BOTTOM", x = 0, y = 80},
 				dpser = {a1 = "BOTTOM", parent = "UIParent", a2 = "BOTTOM", x = 0, y = 80},
@@ -103,7 +103,7 @@ function SetUp(framen)
 	frame_bags_toggle:SetParent(G.uiname..framen)
 	frame_bags_toggle:SetSize(18, 18)
 	frame_bags_toggle:SetPoint("RIGHT", close, "LEFT", -5, 0)
-	frame_bags_toggle:SetText(L["Bag"])
+	frame_bags_toggle:SetText(L["背包"])
 	F.Reskin(frame_bags_toggle)
 	frame_bags_toggle:SetScript('OnClick', function()
 		if not frame_bags:IsShown() then
@@ -117,11 +117,11 @@ function SetUp(framen)
 	bagsort:SetParent(G.uiname..framen)
 	bagsort:SetSize(18, 18)
 	bagsort:SetPoint("RIGHT", frame_bags_toggle, "LEFT", -5, 0)
-	bagsort:SetText(L["Sort"])
+	bagsort:SetText(L["整理"])
 	F.Reskin(bagsort)
 	bagsort:SetScript("OnEnter", function(self) 
 		GameTooltip:SetOwner(bagsort, "ANCHOR_LEFT", -10, 10)
-		GameTooltip:AddLine(L["Bagsort_order"])
+		GameTooltip:AddLine(L["整理背包提示"])
 		GameTooltip:Show() 
 	end)
 	bagsort:SetScript("OnLeave", function(self) GameTooltip:Hide() end)

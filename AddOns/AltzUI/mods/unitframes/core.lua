@@ -957,7 +957,7 @@ function EventFrame:ADDON_LOADED(arg1)
 	
 	oUF:Factory(function(self)
 		local playerframe = spawnHelper(self, "player")
-		playerframe.movingname = L["playerframe"]
+		playerframe.movingname = L["玩家头像"]
 		playerframe.point = {
 			healer = {a1 = "TOPRIGHT", parent = "UIParent", a2 = "BOTTOM", x = -180, y = 200},
 			dpser = {a1 = "TOP", parent = "UIParent", a2 = "BOTTOM", x = 0, y = 180},
@@ -965,7 +965,7 @@ function EventFrame:ADDON_LOADED(arg1)
 		T.CreateDragFrame(playerframe)
 		
 		local petframe = spawnHelper(self, "pet")
-		petframe.movingname = L["petframe"]
+		petframe.movingname = L["宠物头像"]
 		petframe.point = {
 			healer = {a1 = "RIGHT", parent = playerframe:GetName(), a2 = "LEFT", x = -10, y = 0},
 			dpser = {a1 = "RIGHT", parent = playerframe:GetName(), a2 = "LEFT", x = -10, y = 0},
@@ -973,7 +973,7 @@ function EventFrame:ADDON_LOADED(arg1)
 		T.CreateDragFrame(petframe)
 		
 		local targetframe = spawnHelper(self, "target")
-		targetframe.movingname = L["targetframe"]
+		targetframe.movingname = L["目标头像"]
 		targetframe.point = {
 			healer = {a1 = "TOPLEFT", parent = "UIParent", a2 = "BOTTOM", x = 180, y = 200},
 			dpser = {a1 = "TOPLEFT", parent = "UIParent", a2 = "BOTTOM", x = 150, y = 250},
@@ -981,7 +981,7 @@ function EventFrame:ADDON_LOADED(arg1)
 		T.CreateDragFrame(targetframe)
 	
 		local totframe = spawnHelper(self, "targettarget")
-		totframe.movingname = L["totframe"]
+		totframe.movingname = L["目标的目标头像"]
 		totframe.point = {
 			healer = {a1 = "LEFT", parent = targetframe:GetName(), a2 = "RIGHT" , x = 10, y = 0},
 			dpser = {a1 = "LEFT", parent = targetframe:GetName(), a2 = "RIGHT" , x = 10, y = 0},
@@ -989,7 +989,7 @@ function EventFrame:ADDON_LOADED(arg1)
 		T.CreateDragFrame(totframe)
 	
 		local focusframe = spawnHelper(self, "focus")
-		focusframe.movingname = L["focusframe"]
+		focusframe.movingname = L["焦点头像"]
 		focusframe.point = {
 			healer = {a1 = "BOTTOM", parent = targetframe:GetName(), a2 = "BOTTOM" , x = 0, y = 180},
 			dpser = {a1 = "BOTTOM", parent = targetframe:GetName(), a2 = "BOTTOM" , x = 0, y = 180},
@@ -997,7 +997,7 @@ function EventFrame:ADDON_LOADED(arg1)
 		T.CreateDragFrame(focusframe)		
 		
 		local ftframe = spawnHelper(self, "focustarget")
-		ftframe.movingname = L["ftframe"]
+		ftframe.movingname = L["焦点的目标头像"]
 		ftframe.point = {
 			healer = {a1 = "LEFT", parent = focusframe:GetName(), a2 = "RIGHT" , x = 10, y = 0},
 			dpser = {a1 = "LEFT", parent = focusframe:GetName(), a2 = "RIGHT" , x = 10, y = 0},
@@ -1010,7 +1010,7 @@ function EventFrame:ADDON_LOADED(arg1)
 				bossframes["boss"..i] = spawnHelper(self,"boss" .. i)
 			end
 			for i = 1, MAX_BOSS_FRAMES do
-				bossframes["boss"..i].movingname = L["boss"..i]
+				bossframes["boss"..i].movingname = L["首领头像"..i]
 				if i == 1 then
 					bossframes["boss"..i].point = {
 						healer = {a1 = "TOPRIGHT", parent = "UIParent", a2 = "TOPRIGHT" , x =  -80, y = -300},
@@ -1034,7 +1034,7 @@ function EventFrame:ADDON_LOADED(arg1)
 				arenaframes["arena"..i] = spawnHelper(self,"arena"..i)
 			end
 			for i = 1, 5 do
-				arenaframes["arena"..i].movingname = L["arena"..i]
+				arenaframes["arena"..i].movingname = L["竞技场敌人头像"..i]
 				if i == 1 then
 					arenaframes["arena"..i].point = {
 						healer = {a1 = "TOPRIGHT", parent = "UIParent", a2 = "TOPRIGHT" , x = -140, y = -340},
