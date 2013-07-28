@@ -26,6 +26,7 @@ G.media = {
 G.Version = GetAddOnMetadata("AltzUIConfig", "Version")
 G.Client = GetLocale()
 
+
 G.Ccolor = {}
 if(IsAddOnLoaded'!ClassColors' and CUSTOM_CLASS_COLORS) then
 	G.Ccolor = CUSTOM_CLASS_COLORS[select(2, UnitClass("player"))]
@@ -40,4 +41,5 @@ else
 	G.Ccolors = RAID_CLASS_COLORS
 end
 
+G.classcolor = ('|cff%02x%02x%02x'):format(G.Ccolor.r * 255, G.Ccolor.g * 255, G.Ccolor.b * 255)
 
