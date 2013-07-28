@@ -25,7 +25,7 @@ local function Reskinbox(box, name, value, anchor, x, y)
 	
 	box.name = T.createtext(box, "OVERLAY", 12, "OUTLINE", "LEFT")
 	box.name:SetPoint("BOTTOMLEFT", box, "TOPLEFT", 5, 8)
-	box.name:SetText("|cffA6FFFF"..name.."|r")
+	box.name:SetText(G.classcolor..name.."|r")
 	
 	local bd = CreateFrame("Frame", nil, box)
 	bd:SetPoint("TOPLEFT", -2, 0)
@@ -70,7 +70,7 @@ local function Reskinbox(box, name, value, anchor, x, y)
 end
 
 local SpecMover = CreateFrame("Frame", G.uiname.."SpecMover", UIParent)
-SpecMover:SetPoint("CENTER")
+SpecMover:SetPoint("CENTER", 0, -300)
 SpecMover:SetSize(540, 140)
 SpecMover:SetFrameStrata("HIGH")
 SpecMover:SetFrameLevel(30)
@@ -89,7 +89,7 @@ F.CreateSD(SpecMover, 2, 0, 0, 0, 1, -1)
 	
 SpecMover.title = T.createtext(SpecMover, "OVERLAY", 16, "OUTLINE", "CENTER")
 SpecMover.title:SetPoint("TOP", SpecMover, "TOP", 0, -2)
-SpecMover.title:SetText("|cffA6FFFF"..L["Mover"].."|r")
+SpecMover.title:SetText(G.classcolor..L["界面移动工具"].."|r")
 
 SpecMover.curmode = T.createtext(SpecMover, "OVERLAY", 12, "OUTLINE", "LEFT")
 SpecMover.curmode:SetPoint("TOPLEFT", SpecMover, "TOPLEFT", 10, -15)
@@ -104,7 +104,7 @@ F.ReskinDropDown(Point1dropDown)
 
 Point1dropDown.name = T.createtext(Point1dropDown, "OVERLAY", 12, "OUTLINE", "LEFT")
 Point1dropDown.name:SetPoint("BOTTOMLEFT", Point1dropDown, "TOPLEFT", 15, 5)
-Point1dropDown.name:SetText("|cffA6FFFFPoint1|r")
+Point1dropDown.name:SetText(G.classcolor.."Point1|r")
 
 UIDropDownMenu_SetWidth(Point1dropDown, 100)
 UIDropDownMenu_SetText(Point1dropDown, "")
@@ -132,7 +132,7 @@ end)
 -- parent
 local ParentBox = CreateFrame("EditBox", G.uiname.."SpecMoverParentBox", SpecMover)
 ParentBox:SetSize(120, 20)
-Reskinbox(ParentBox, L["Anchor Frame"], "parent", Point1dropDown, -2, 2)
+Reskinbox(ParentBox, L["锚点框体"], "parent", Point1dropDown, -2, 2)
 
 -- a2
 local Point2dropDown = CreateFrame("Frame", G.uiname.."SpecMoverPoint2dropDown", SpecMover, "UIDropDownMenuTemplate")
@@ -141,7 +141,7 @@ F.ReskinDropDown(Point2dropDown)
 
 Point2dropDown.name = T.createtext(Point2dropDown, "OVERLAY", 12, "OUTLINE", "LEFT")
 Point2dropDown.name:SetPoint("BOTTOMLEFT", Point2dropDown, "TOPLEFT", 15, 5)
-Point2dropDown.name:SetText("|cffA6FFFFPoint2|r")
+Point2dropDown.name:SetText(G.classcolor.."Point2|r")
 
 UIDropDownMenu_SetWidth(Point2dropDown, 100)
 UIDropDownMenu_SetText(Point2dropDown, "")
@@ -189,7 +189,7 @@ end
 local ResetButton = CreateFrame("Button", G.uiname.."SpecMoverResetButton", SpecMover, "UIPanelButtonTemplate")
 ResetButton:SetPoint("BOTTOMLEFT", SpecMover, "BOTTOMLEFT", 20, 10)
 ResetButton:SetSize(250, 25)
-ResetButton:SetText(L["ResetDefaultPos"])
+ResetButton:SetText(L["重置位置"])
 F.Reskin(ResetButton)
 ResetButton:SetScript("OnClick", function()
 	if CurrentFrame ~= "NONE" then
@@ -252,7 +252,7 @@ function T.CreateDragFrame(frame)
 	
 	frame.df:SetScript("OnMouseDown", function()
 		CurrentFrame = fname
-		SpecMover.curframe:SetText(L["CurrentFrame"].." |cffFFFF00"..CurrentFrame.."|r")
+		SpecMover.curframe:SetText(L["选中的框体"].." "..G.classcolor..gsub(frame.movingname, "\n", "").."|r")
 		DisplayCurrentFramePoint()
 		if not selected then
 			UIDropDownMenu_EnableDropDown(Point1dropDown)
@@ -273,7 +273,11 @@ function T.CreateDragFrame(frame)
 end
 
 local function UnlockAll()
-	SpecMover.curframe:SetText(L["CurrentFrame"].." |cffFFFF00"..CurrentFrame.."|r")
+	if CurrentFrame ~= "NONE" then
+		SpecMover.curframe:SetText(L["选中的框体"].." "..G.classcolor..gsub(_G[CurrentFrame].movingname, "\n", "").."|r")
+	else
+		SpecMover.curframe:SetText(L["选中的框体"].." "..G.classcolor..CurrentFrame.."|r")
+	end
 	for i = 1, #G.dragFrameList do
 		G.dragFrameList[i].df:Show()
 	end
@@ -301,7 +305,7 @@ end
 
 local function OnSpecChanged()
 	role = T.CheckRole()
-	SpecMover.curmode:SetText(L["CurrentMode"].." "..L[role])
+	SpecMover.curmode:SetText(L["当前模式"].." "..L[role])
 		
 	for i = 1, #G.dragFrameList do
 		local name = G.dragFrameList[i]:GetName()
@@ -325,7 +329,7 @@ SpecMover:SetScript("OnEvent", function(self, event)
 	elseif event == "PLAYER_REGEN_DISABLED" then
 		if SpecMover:IsShown() then
 			LockAll()
-			print("|cffA6FFFF"..L["EnterCombat"].."|r")
+			print(G.classcolor..L["进入战斗锁定"].."|r")
 			self:RegisterEvent("PLAYER_REGEN_ENABLED")
 		end
 	elseif event == "PLAYER_REGEN_ENABLED" then
@@ -344,7 +348,7 @@ SpecMover:RegisterEvent("PLAYER_LOGIN")
 local LockButton = CreateFrame("Button", G.uiname.."SpecMoverLockButton", SpecMover, "UIPanelButtonTemplate")
 LockButton:SetPoint("LEFT", ResetButton, "RIGHT", 10, 0)
 LockButton:SetSize(250, 25)
-LockButton:SetText(L["to lock"])
+LockButton:SetText(L["锁定框体"])
 F.Reskin(LockButton)
 LockButton:SetScript("OnClick", function()
 	LockAll()
@@ -355,7 +359,7 @@ local IntroOptions = _G[G.uiname.."Intro Frame"]
 local resetposbutton = CreateFrame("Button", G.uiname.."ResetPosButton", IntroOptions, "UIPanelButtonTemplate")
 resetposbutton:SetPoint("BOTTOMRIGHT", IntroOptions, "BOTTOM", -100, 80)
 resetposbutton:SetSize(180, 25)
-resetposbutton:SetText(L["to reset"])
+resetposbutton:SetText(L["重置框体位置"])
 F.Reskin(resetposbutton)
 resetposbutton:SetScript("OnClick", function()
 	for i = 1, #G.dragFrameList do
@@ -382,7 +386,7 @@ end)
 local unlockbutton = CreateFrame("Button", G.uiname.."UnlockAllFramesButton", IntroOptions, "UIPanelButtonTemplate")
 unlockbutton:SetPoint("BOTTOM", IntroOptions, "BOTTOM", 0, 80)
 unlockbutton:SetSize(180, 25)
-unlockbutton:SetText(L["to unlock"])
+unlockbutton:SetText(L["解锁框体"])
 F.Reskin(unlockbutton)
 unlockbutton:SetScript("OnClick", function()
 	UnlockAll()
