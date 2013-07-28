@@ -2,7 +2,7 @@
 ## Title: Aurora
 ## Notes: Minimalistic window theme.
 ## Author: Haleth/Freethinker
-## Version: 4.6
+## Version: 4.6.2
 ## SavedVariables: AuroraConfig
 
 aurora.lua
@@ -45,5 +45,6 @@ FrameXML\Fonts.lua
 FrameXML\LFDFrame.lua
 FrameXML\LFGFrame.lua
 FrameXML\PVEFrame.lua
+FrameXML\QueueStatusFrame.lua
 FrameXML\RolePoll.lua
 FrameXML\StaticPopup.lua

@@ -86,8 +86,6 @@ C.modules["Blizzard_PVPUI"] = function()
 	BonusFrame.WorldPVPHeader:Hide()
 	BonusFrame.ShadowOverlay:Hide()
 
-	--BonusFrame.DiceButton:SetNormalTexture("")
-	--BonusFrame.DiceButton:SetPushedTexture("")
 	F.Reskin(BonusFrame.DiceButton)
 
 	for _, bu in pairs({BonusFrame.RandomBGButton, BonusFrame.CallToArmsButton, BonusFrame.WorldPVP1Button, BonusFrame.WorldPVP2Button}) do
@@ -121,6 +119,8 @@ C.modules["Blizzard_PVPUI"] = function()
 			frame.Icon:SetTexture("Interface\\Icons\\PVPCurrency-Honor-"..englishFaction)
 		end
 	end)
+
+	IncludedBattlegroundsDropDown:SetPoint("TOPRIGHT", BonusFrame.DiceButton, 40, 26)
 
 	-- Role buttons
 
@@ -192,32 +192,24 @@ C.modules["Blizzard_PVPUI"] = function()
 
 		local bg = CreateFrame("Frame", nil, bu)
 		bg:SetPoint("TOPLEFT", 2, 0)
-		bg:SetPoint("BOTTOMRIGHT", 0, 2)
+		bg:SetPoint("BOTTOMRIGHT", -1, 2)
 		F.CreateBD(bg, 0)
 		bg:SetFrameLevel(bu:GetFrameLevel()-1)
 
 		bu.tex = F.CreateGradient(bu)
 		bu.tex:SetDrawLayer("BACKGROUND")
-		bu.tex:SetPoint("TOPLEFT", 3, -1)
-		bu.tex:SetPoint("BOTTOMRIGHT", -1, 3)
+		bu.tex:SetPoint("TOPLEFT", bg, 1, -1)
+		bu.tex:SetPoint("BOTTOMRIGHT", bg, -1, 1)
 
 		bu.SelectedTexture:SetDrawLayer("BACKGROUND")
 		bu.SelectedTexture:SetTexture(r, g, b, .2)
-		bu.SelectedTexture:SetPoint("TOPLEFT", 2, 0)
-		bu.SelectedTexture:SetPoint("BOTTOMRIGHT", 0, 2)
+		bu.SelectedTexture:SetAllPoints(bu.tex)
 
 		bu.Icon:SetTexCoord(.08, .92, .08, .92)
 		bu.Icon.bg = F.CreateBG(bu.Icon)
 		bu.Icon.bg:SetDrawLayer("BACKGROUND", 1)
 		bu.Icon:SetPoint("TOPLEFT", 5, -3)
 	end
-
-	-- if scroll frames aren't bugged then they are terribly implemented
-	local bu1 = HonorFrame.SpecificFrame.buttons[1]
-	bu1.tex:SetPoint("TOPLEFT", 3, 0)
-	bu1.tex:SetPoint("BOTTOMRIGHT", -1, 3)
-	bu1.Icon:SetPoint("TOPLEFT", 4, -2)
-	bu1.SelectedTexture:SetPoint("BOTTOMRIGHT", 0, 3)
 
 	-- Conquest Frame
 

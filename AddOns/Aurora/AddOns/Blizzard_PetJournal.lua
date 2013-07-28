@@ -121,13 +121,14 @@ C.modules["Blizzard_PetJournal"] = function()
 	hooksecurefunc("MountJournal_UpdateMountList", updateScroll)
 	hooksecurefunc(MountJournalListScrollFrame, "update", updateScroll)
 
-	local tooltips = {PetJournalPrimaryAbilityTooltip, PetJournalSecondaryAbilityTooltip}
-	for _, f in pairs(tooltips) do
-		f:DisableDrawLayer("BACKGROUND")
-		local bg = CreateFrame("Frame", nil, f)
-		bg:SetAllPoints()
-		bg:SetFrameLevel(0)
-		F.CreateBD(bg)
+	if C.shouldStyleTooltips then
+		for _, f in pairs({PetJournalPrimaryAbilityTooltip, PetJournalSecondaryAbilityTooltip}) do
+			f:DisableDrawLayer("BACKGROUND")
+			local bg = CreateFrame("Frame", nil, f)
+			bg:SetAllPoints()
+			bg:SetFrameLevel(0)
+			F.CreateBD(bg)
+		end
 	end
 
 	PetJournalLoadoutBorderSlotHeaderText:SetParent(PetJournal)
