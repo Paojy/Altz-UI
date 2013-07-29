@@ -273,15 +273,19 @@ function T.CreateDragFrame(frame)
 end
 
 local function UnlockAll()
-	if CurrentFrame ~= "NONE" then
-		SpecMover.curframe:SetText(L["选中的框体"].." "..G.classcolor..gsub(_G[CurrentFrame].movingname, "\n", "").."|r")
+	if not InCombatLockdown() then
+		if CurrentFrame ~= "NONE" then
+			SpecMover.curframe:SetText(L["选中的框体"].." "..G.classcolor..gsub(_G[CurrentFrame].movingname, "\n", "").."|r")
+		else
+			SpecMover.curframe:SetText(L["选中的框体"].." "..G.classcolor..CurrentFrame.."|r")
+		end
+		for i = 1, #G.dragFrameList do
+			G.dragFrameList[i].df:Show()
+		end
+		SpecMover:Show()
 	else
-		SpecMover.curframe:SetText(L["选中的框体"].." "..G.classcolor..CurrentFrame.."|r")
+		SpecMover:RegisterEvent("PLAYER_REGEN_ENABLED")
 	end
-	for i = 1, #G.dragFrameList do
-		G.dragFrameList[i].df:Show()
-	end
-	SpecMover:Show()
 end
 
 local function LockAll()
@@ -330,7 +334,6 @@ SpecMover:SetScript("OnEvent", function(self, event)
 		if SpecMover:IsShown() then
 			LockAll()
 			print(G.classcolor..L["进入战斗锁定"].."|r")
-			self:RegisterEvent("PLAYER_REGEN_ENABLED")
 		end
 	elseif event == "PLAYER_REGEN_ENABLED" then
 		UnlockAll()
