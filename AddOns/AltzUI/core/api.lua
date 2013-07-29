@@ -1,17 +1,7 @@
 ﻿local T, C, L, G = unpack(select(2, ...))
 
-T.ShortValue = function(v)
-	if v >= 1e6 then
-		return ("%.1fm"):format(v / 1e6):gsub("%.?0+([km])$", "%1")
-	elseif v >= 1e3 or v <= -1e3 then
-		return ("%.1fk"):format(v / 1e3):gsub("%.?0+([km])$", "%1")
-	else
-		return v
-	end
-end
-
-T.FormatUFValue = function(val)
-	if oUF_MlightDB.tenthousand then
+T.ShortValue = function(val)
+	if aCoreCDB["UnitframeOptions"]["tenthousand"] then
 		if (val >= 1e7) then
 			return ("%.1fkw"):format(val / 1e7)
 		elseif (val >= 1e4) then
