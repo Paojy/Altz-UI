@@ -82,6 +82,7 @@ L["不正确的数量"] = "Incorrect Quantity"
 -- 单位框体
 L["单位框体"] = "Unit Frames"
 L["样式"] =  "Style"
+L["以万为单位显示"] = "Show big values as 1w(10thousand) or 1kw(10 million)."
 L["总是显示生命值"] = "Always show HP"
 L["总是显示生命值提示"] = "disable to show HP only when it's not full."
 L["总是显示能量值"] = "Always show PP"

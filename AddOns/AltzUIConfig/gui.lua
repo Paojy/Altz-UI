@@ -409,8 +409,9 @@ T.createcheckbutton(UFInnerframe.style, 30, 270, L["反向填充"], "UnitframeOp
 T.createcolorpickerbu(UFInnerframe.style, 40, 300, L["渐变开始透颜色"], "UnitframeOptions", "startcolor")
 T.createcolorpickerbu(UFInnerframe.style, 210, 300, L["渐变结束透颜色"], "UnitframeOptions", "endcolor")
 T.createcheckbutton(UFInnerframe.style, 30, 330, L["名字职业着色"], "UnitframeOptions", "nameclasscolormode", L["名字职业着色提示"])
-T.createcheckbutton(UFInnerframe.style, 30, 360, L["总是显示生命值"], "UnitframeOptions", "alwayshp", L["总是显示生命值提示"])
-T.createcheckbutton(UFInnerframe.style, 30, 390, L["总是显示能量值"], "UnitframeOptions", "alwayspp", L["总是显示能量值提示"])
+T.createcheckbutton(UFInnerframe.style, 30, 360, L["以万为单位显示"], "UnitframeOptions", "tenthousand")
+T.createcheckbutton(UFInnerframe.style, 30, 390, L["总是显示生命值"], "UnitframeOptions", "alwayshp", L["总是显示生命值提示"])
+T.createcheckbutton(UFInnerframe.style, 30, 420, L["总是显示能量值"], "UnitframeOptions", "alwayspp", L["总是显示能量值提示"])
 
 UFInnerframe.size = CreateOptionPage("UF Options size", L["尺寸"], UFInnerframe, "VERTICAL", .3)
 
@@ -1472,7 +1473,7 @@ local Credits = CreateOptionPage("Credits", L["制作"], GUI, "VERTICAL")
 
 Credits.text = T.createtext(Credits, "OVERLAY", 13, "OUTLINE", "CENTER")
 Credits.text:SetPoint("CENTER")
-Credits.text:SetText(format(L["制作说明"], G.Version, G.classcolor, "Zork Haste Tukz Haleth Qulight Freebaser Monolit"))
+Credits.text:SetText(format(L["制作说明"], G.Version, G.classcolor, "fgprodigal susnow Zork Haste Tukz Haleth Qulight Freebaser Monolit warbaby"))
 
 --====================================================--
 --[[                -- Init --                      ]]--

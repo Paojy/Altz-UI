@@ -733,6 +733,7 @@ local Character_default_Settings = {
 		fontsize = 13,
 		
 		-- health/power
+		tenthousand = false,
 		alwayshp = false,
 		alwayspp = false,
 		classcolormode = true,
