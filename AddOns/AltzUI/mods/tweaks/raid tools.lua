@@ -24,7 +24,7 @@ local flasks = {
 }
 
 local RaidToolFrame = CreateFrame("Frame", G.uiname.."RaidToolFrame", UIParent)
-RaidToolFrame:SetSize(270, 140)
+RaidToolFrame:SetSize(270, 150)
 RaidToolFrame:SetPoint("TOPLEFT", UIParent, "TOPLEFT", 10, -120)
 RaidToolFrame:SetFrameStrata("HIGH")
 RaidToolFrame:Hide()
@@ -494,12 +494,12 @@ SwitchRaidButton:SetScript("OnClick", function(self)
 end)
 
 local ConvertGroupButton = CompactRaidFrameManagerDisplayFrameConvertToRaid
-ReSkinButton(ConvertGroupButton, "TOP", ReadyCheckButton, "BOTTOM", 0, -8)
+ReSkinButton(ConvertGroupButton, "LEFT", SwitchRaidButton, "RIGHT", 10, 0)
 
 local AllAssistButton = CompactRaidFrameManagerDisplayFrameEveryoneIsAssistButton
 AllAssistButton:SetParent(RaidToolFrame)
 AllAssistButton:ClearAllPoints()
-AllAssistButton:SetPoint("TOPLEFT", ReadyCheckButton, "BOTTOMLEFT", 0, -6)
+AllAssistButton:SetPoint("TOPLEFT", RolePollButton, "BOTTOMLEFT", 0, -6)
 AllAssistButton.ClearAllPoints = T.dummy
 AllAssistButton.SetPoint = T.dummy
 F.ReskinCheck(AllAssistButton)
