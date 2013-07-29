@@ -7,12 +7,13 @@
 	<Script file="locales\english.lua"/>
 	
 	<Include file="lib\oUF\oUF.xml"/>
+	<Include file="lib\!NoTaint\embeds.xml"/>
 	
 	<Script file="core\api.lua"/>
 	<Script file="core\moving.lua"/>
 	<Script file="core\fader.lua"/>
 	
-	<Script file="mods\blizzards\talenttaint.lua"/>
+	<!--<Script file="mods\blizzards\talenttaint.lua"/>-->
 	<Script file="mods\blizzards\death.lua"/>
 
 	<Script file="mods\skins\DBM.lua"/>
