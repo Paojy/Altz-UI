@@ -1,0 +1,18 @@
+## Interface: 50100
+## Title: !NoTaint
+## Title-zhCN: |cff880303[网易有爱]|r !NoTaint
+## Author: warbaby
+## Note-zhCN: 处理各种污染问题，包括：1.无法洗天赋的问题 2.暂时没有
+## Version: 13.01.24
+## X-Curse-Packaged-Version: 13.02.13
+## X-Curse-Project-Name: !NoTaint
+## X-Curse-Project-ID: notaint
+## X-Curse-Repository-ID: wow/notaint/mainline
+
+## OptionalDeps: LibChatAnims
+## X-Embeds: LibChatAnims
+
+embeds.xml
+
+Code.lua
+

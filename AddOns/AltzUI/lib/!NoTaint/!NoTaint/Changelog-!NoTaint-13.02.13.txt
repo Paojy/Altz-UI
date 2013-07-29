@@ -1,0 +1,77 @@
+------------------------------------------------------------------------
+r15 | warbaby | 2013-02-13 02:50:07 +0000 (Wed, 13 Feb 2013) | 4 lines
+Changed paths:
+   A /tags/13.02.13 (from /trunk:14)
+
+Tagging as 13.02.13
+
+- includes LibChatAnims to be compatible with other addons
+- Thanks to funkydude (author of BigWigs)
+------------------------------------------------------------------------
+r14 | funkydude | 2013-02-10 19:08:34 +0000 (Sun, 10 Feb 2013) | 1 line
+Changed paths:
+   M /trunk/!NoTaint.toc
+
+add embed/opdep toc data
+------------------------------------------------------------------------
+r13 | funkydude | 2013-02-07 23:49:08 +0000 (Thu, 07 Feb 2013) | 1 line
+Changed paths:
+   M /trunk/!NoTaint.toc
+   A /trunk/.pkgmeta
+   M /trunk/Code.lua
+   A /trunk/Libs
+   A /trunk/Libs/LibStub
+   A /trunk/Libs/LibStub/LibStub.lua
+   D /trunk/copyUIParent.lua
+   A /trunk/embeds.xml
+
+Remove the chat tab flash hooking and embed the LibChatAnims library for preventing that taint so that both addons can be used together.
+------------------------------------------------------------------------
+r12 | warbaby | 2013-01-26 10:54:35 +0000 (Sat, 26 Jan 2013) | 1 line
+Changed paths:
+   M /trunk/Code.lua
+
+- add some comment
+------------------------------------------------------------------------
+r10 | warbaby | 2013-01-26 03:03:35 +0000 (Sat, 26 Jan 2013) | 1 line
+Changed paths:
+   M /trunk/copyUIParent.lua
+
+- fixed a serious bug for not working as intended, sorry guys.
+------------------------------------------------------------------------
+r8 | warbaby | 2013-01-24 02:34:59 +0000 (Thu, 24 Jan 2013) | 1 line
+Changed paths:
+   M /trunk/!NoTaint.toc
+   M /trunk/Code.lua
+   A /trunk/copyUIParent.lua
+
+- fix cause of ChatFrame_AddMessageEventFilter.
+------------------------------------------------------------------------
+r6 | warbaby | 2013-01-22 06:51:15 +0000 (Tue, 22 Jan 2013) | 1 line
+Changed paths:
+   M /trunk/Code.lua
+
+- clean the tainted data of unshown popups.
+------------------------------------------------------------------------
+r4 | warbaby | 2013-01-22 03:38:37 +0000 (Tue, 22 Jan 2013) | 1 line
+Changed paths:
+   M /trunk/!NoTaint.toc
+   M /trunk/Code.lua
+
+- raise an error when addons called UIFrameFlash
+------------------------------------------------------------------------
+r2 | warbaby | 2013-01-16 05:55:37 +0000 (Wed, 16 Jan 2013) | 1 line
+Changed paths:
+   A /trunk/!NoTaint.toc
+   A /trunk/Code.lua
+
+- init release 13.01.16
+------------------------------------------------------------------------
+r1 | svn | 2013-01-16 05:49:34 +0000 (Wed, 16 Jan 2013) | 1 line
+Changed paths:
+   A /branches
+   A /tags
+   A /trunk
+
+notaint/mainline: Initial Import
+------------------------------------------------------------------------

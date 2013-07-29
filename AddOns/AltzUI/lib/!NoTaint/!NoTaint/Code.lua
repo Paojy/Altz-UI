@@ -1,5 +1,3 @@
-local T, C, L, G = unpack(select(2, ...))
-
 --[[--------------------------------------------
 Deal with StaticPopup_Show()
 /run StaticPopup_Show('PARTY_INVITE',"test") 
@@ -68,7 +66,7 @@ do
     end
 
     hooksecurefunc("UIFrameFlash", function (frame, fadeInTime, fadeOutTime, flashDuration, showWhenDone, flashInHoldTime, flashOutHoldTime, syncId)
-        if ( frame and not string.match(frame:GetName(), "GM")) then
+        if ( frame ) then
             if not issecurevariable(frame, "syncId") or not issecurevariable(frame, "fadeInTime") or not issecurevariable(frame, "flashTimer") then
                 error(L.FLASH_FAILED)
                 --UIFrameFlashStop(frame)
@@ -77,3 +75,55 @@ do
         end
     end)
 end
+
+
+--[[-------------------------------------------------------------------
+处理确认框导致不能洗天赋的情况 http://bbs.ngacn.cc/read.php?tid=5901398
+只是解决一部分原因导致的该问题，所以无法保证一定有效
+
+测试方式：
+1. 打开 天赋界面，然后关闭
+2. 运行 /run StaticPopup_Show('PARTY_INVITE',"a") 
+3. 点击确定或取消
+4. 再次打开 天赋界面
+结果：不安装此插件时肯定不能洗天赋，但安装此插件后"可能"成功洗天赋
+
+副作用: 
+1. 如果在有提示框（如组队邀请）的时候打开天赋面板，则此提示框会隐藏
+2. 主菜单的天赋按钮无法自动跳转到天赋页（如停留在雕文页）
+----------------------------------------------------------------------]]
+
+--[[
+
+for k,v in pairs(frame) do
+    if not issecurevariable(frame, k) then frame[k] = nil end
+end
+
+tab:HookScript("OnClick", function()
+    testObj(PlayerTalentGroup)
+end)
+
+hooksecurefunc("UIFrameFade", function (frame, fadeInfo)
+	if (not frame) then
+		return;
+	end
+    if not issecurevariable(frame, "fadeInfo") then
+        UIFrameFadeRemoveFrame(frame)
+        if UICoreFrameFade then 
+            UICoreFrameFade(frame, fadeInfo)
+        else
+            error(L.FADE_PREVENT)
+        end
+    end
+end)
+
+hooksecurefunc("UIFrameFlash", function(frame, ...)
+    --table.wipe(FLASHFRAMES) --this line will cause taint, aslo tDeleteItem(FLASHFRAMES, frame);
+    frame.syncId = nil
+    UICoreFrameFlash(frame, ...)
+end)
+
+hooksecurefunc("UIFrameFlashStop", function(frame)
+    UICoreFrameFlashStop(frame)
+end)
+]]
