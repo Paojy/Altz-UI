@@ -19,47 +19,6 @@ local function ColorGradient(perc, ...)-- http://www.wowwiki.com/ColorGradient
 
     return r1 + (r2-r1)*relperc, g1 + (g2-g1)*relperc, b1 + (b2-b1)*relperc
 end
-
-local function toggletinydps()
-	if IsAddOnLoaded("TinyDPS") then
-		if tdpsFrame:IsVisible() then
-			CloseDropDownMenus()
-			tdps.hidePvP, tdps.hideSolo, tdps.hideIC, tdps.hideOOC = true, true, true, true
-			tdpsFrame:Hide() 
-		else
-			CloseDropDownMenus()
-			tdps.hidePvP, tdps.hideSolo, tdps.hideIC, tdps.hideOOC = nil, nil, nil, nil
-			tdpsRefresh()
-			tdpsFrame:Show()
-		end
-		PlaySound("gsTitleOptionExit")
-	end
-end
-
-local function togglerecount()
-	if IsAddOnLoaded("Recount") then
-		local Recount = LibStub("AceAddon-3.0"):GetAddon("Recount")
-		if Recount.MainWindow:IsShown() then
-			Recount.MainWindow:Hide()
-			Recount.db.profile.MainWindowVis = false
-		else
-			Recount.MainWindow:Show()
-			Recount:RefreshMainWindow()
-			Recount.db.profile.MainWindowVis = true
-		end
-	end
-end
-
-local function togglealdamagemeter()
-	local MainFrame = _G["alDamageMeterFrame"]
-	if MainFrame:GetAlpha() > 0 then
-		MainFrame:SetAlpha(0)
-		MainFrame:EnableMouse(false)
-	else
-		MainFrame:SetAlpha(1)
-		MainFrame:EnableMouse(true)
-	end
-end
 --====================================================--
 --[[                -- Shadow --                    ]]--
 --====================================================--	
@@ -958,7 +917,6 @@ local AltzMainMenu = CreateFrame("Frame", G.uiname.."ToggleAltzMainMenu", UIPare
 local AltzMainMenuList = {
 	{text = L["控制台"], func = function() _G["AltzUI_GUI Main Frame"]:Show() end, notCheckable = true},  -- GUI
 	{text = L["团队工具"], func = function() _G[G.uiname.."RaidToolFrame"]:Show() end, notCheckable = true},  -- 团队工具
-	{text = L["无统计插件"], notCheckable = true},  -- 伤害统计
 }
 
 MicromenuBar.Char:SetScript("OnMouseDown", function(self, button)
@@ -972,33 +930,13 @@ MicromenuBar.Char:SetScript("OnMouseDown", function(self, button)
 end)
 
 MicromenuBar.Char:SetScript("OnEvent", function(self, event, unit)
-	if event == "UNIT_MODEL_CHANGED" then
-		if unit == "player" then
-			self:ClearModel()
-			self:SetUnit("player")
-		end
-	elseif event == "PLAYER_LOGIN" then
-		local DamageMeterButton = AltzMainMenuList[3]
-		if IsAddOnLoaded("Numeration") then
-			DamageMeterButton.func = Numeration:ToggleVisibility()
-			DamageMeterButton.text = "Numeration"
-		elseif IsAddOnLoaded("Skada") then
-			DamageMeterButton.func = Skada:ToggleWindow()
-			DamageMeterButton.text = "Skada"
-		elseif IsAddOnLoaded("TinyDPS") then
-			DamageMeterButton.func = toggletinydps
-			DamageMeterButton.text = "TinyDPS"
-		elseif IsAddOnLoaded("Recount") then
-			DamageMeterButton.func = togglerecount
-			DamageMeterButton.text = "Recount"
-		elseif IsAddOnLoaded("alDamageMeter") then
-			DamageMeterButton.func = togglealdamagemeter
-			DamageMeterButton.text = "alDamageMeter"
-		end
+	if unit == "player" then
+		self:ClearModel()
+		self:SetUnit("player")
 	end
 end)
+
 MicromenuBar.Char:RegisterEvent("UNIT_MODEL_CHANGED")
-MicromenuBar.Char:RegisterEvent("PLAYER_LOGIN")
 
 local MicromenuButtons = {}
 local function CreateMicromenuButton(text, texpath, original, left, right, top, bottom)
@@ -1155,7 +1093,7 @@ local function fadeout()
 	UIParent:SetAlpha(0)
 	UIFrameFadeIn(TOPPANEL, 3, TOPPANEL:GetAlpha(), 1)
 	UIFrameFadeIn(BOTTOMPANEL, 3, BOTTOMPANEL:GetAlpha(), 1)
-	BOTTOMPANEL:EnableMouse(true)
+	BOTTOMPANEL.t = 0
 end
 
 local function fadein()
@@ -1163,7 +1101,15 @@ local function fadein()
 	UIFrameFadeIn(UIParent, 2, 0, 1)
     UIFrameFadeOut(TOPPANEL, 2, TOPPANEL:GetAlpha(), 0)
 	UIFrameFadeOut(BOTTOMPANEL, 2, BOTTOMPANEL:GetAlpha(), 0)
-	BOTTOMPANEL:EnableMouse(false)
+	BOTTOMPANEL:SetScript("OnUpdate",  function(self, e)
+		self.t = self.t + e
+		if self.t > .5 then
+			self:Hide()
+			TOPPANEL:Hide()
+			self:SetScript("OnUpdate", nil)
+			self.t = 0
+		end
+	end)
 end
 
 BOTTOMPANEL:SetScript("OnMouseUp", function() fadein() end)
@@ -1177,8 +1123,13 @@ BOTTOMPANEL:SetScript("OnEvent",function(self, event)
 		local PetNumber = max(C_PetJournal.GetNumPets(false), 5)
 		local randomIndex = random(1 ,PetNumber)
 		local randomID = select(11, C_PetJournal.GetPetInfoByIndex(randomIndex))
-		Info:SetCreature(randomID)
-		Credits:SetCreature(randomID)
+		if randomID then
+			Info:SetCreature(randomID)
+			Credits:SetCreature(randomID)
+		else
+			Info:SetCreature(53623) -- 塞纳里奥角鹰兽宝宝
+			Credits:SetCreature(53623)
+		end
 		
 		self:UnregisterEvent("PLAYER_ENTERING_WORLD")
 	elseif event == "PLAYER_FLAGS_CHANGED" then
