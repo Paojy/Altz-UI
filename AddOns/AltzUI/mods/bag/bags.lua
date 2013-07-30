@@ -56,7 +56,7 @@ function SetUp(framen)
 	frame:SetScale(config.scale)
 	if framen == "bag" then 
 		frame:SetWidth(((config.size+config.spacing)*config.bpr)+10-config.spacing)
-		frame.movingname = L["背包"]
+		frame.movingname = L["背包框"]
 		frame.point = {
 				healer = {a1 = "BOTTOMRIGHT", parent = "Minimap", a2 = "BOTTOMLEFT", x = -8, y = 2},
 				dpser = {a1 = "BOTTOMRIGHT", parent = "Minimap", a2 = "BOTTOMLEFT", x = -8, y = 2},
@@ -64,7 +64,7 @@ function SetUp(framen)
 		T.CreateDragFrame(frame)
 	else
 		frame:SetWidth(((config.size+config.spacing)*config.bapr)+16-config.spacing)
-		frame.movingname = L["银行"]
+		frame.movingname = L["银行框"]
 		frame.point = {
 				healer = {a1 = "BOTTOM", parent = "UIParent", a2 = "BOTTOM", x = 0, y = 80},
 				dpser = {a1 = "BOTTOM", parent = "UIParent", a2 = "BOTTOM", x = 0, y = 80},
