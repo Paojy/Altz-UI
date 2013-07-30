@@ -83,10 +83,10 @@ SpecMover:SetClampedToScreen(true)
 SpecMover:SetMovable(true)
 SpecMover:EnableMouse(true)
 
-F.CreateBD(SpecMover)
-SpecMover:SetBackdropColor(.05, .05, .05)
+F.CreateBD(SpecMover, 1)
 F.CreateSD(SpecMover, 2, 0, 0, 0, 1, -1)
-	
+SpecMover:SetBackdropColor(.05, .05, .05)
+
 SpecMover.title = T.createtext(SpecMover, "OVERLAY", 16, "OUTLINE", "CENTER")
 SpecMover.title:SetPoint("TOP", SpecMover, "TOP", 0, -2)
 SpecMover.title:SetText(G.classcolor..L["界面移动工具"].."|r")
@@ -96,6 +96,30 @@ SpecMover.curmode:SetPoint("TOPLEFT", SpecMover, "TOPLEFT", 10, -15)
 
 SpecMover.curframe = T.createtext(SpecMover, "OVERLAY", 12, "OUTLINE", "LEFT")
 SpecMover.curframe:SetPoint("TOPLEFT", SpecMover, "TOPLEFT", 10, -30)
+
+-- align
+SpecMover.align = CreateFrame('Frame', G.uiname.."Align", SpecMover)
+SpecMover.align:SetAllPoints(UIParent)
+
+local width = G.screenwidth/10
+if width > 200 then width = G.screenwidth/20 end
+
+local h = math.floor(G.screenheight/width)
+local w = math.floor(G.screenwidth/width)
+
+for i = 0, h do
+	SpecMover.align["vertical"..i] = SpecMover.align:CreateTexture(nil, 'BACKGROUND')
+	SpecMover.align["vertical"..i]:SetTexture(0, 0.8, 1, 0.5)
+	SpecMover.align["vertical"..i]:SetPoint("TOPLEFT", UIParent, "TOPLEFT", 0, -width*i + 1)
+	SpecMover.align["vertical"..i]:SetPoint('BOTTOMRIGHT', UIParent, 'TOPRIGHT', 0, -width*i - 1)
+end
+
+for i = 0, w do
+	SpecMover.align["horizontal"..i] = SpecMover.align:CreateTexture(nil, 'BACKGROUND')
+	SpecMover.align["horizontal"..i]:SetTexture(0, 0.8, 1, 0.5)
+	SpecMover.align["horizontal"..i]:SetPoint("TOPLEFT", UIParent, "TOPLEFT", width*i -1, 0)
+	SpecMover.align["horizontal"..i]:SetPoint('BOTTOMRIGHT', UIParent, 'BOTTOMLEFT', width*i + 1, 0)
+end
 
 -- a1
 local Point1dropDown = CreateFrame("Frame", G.uiname.."SpecMoverPoint1DropDown", SpecMover, "UIDropDownMenuTemplate")
