@@ -245,8 +245,13 @@ local BlackList = {
 }
 
 local MBCF = CreateFrame("Frame", "MinimapButtonCollectFrame", Minimap)
-MBCF:SetPoint("BOTTOMLEFT", Minimap, "TOPLEFT", 0, 5)
-MBCF:SetPoint("BOTTOMRIGHT", Minimap, "TOPRIGHT", 0, 5)
+if aCoreCDB["OtherOptions"]["MBCFpos"] == "TOP" then
+	MBCF:SetPoint("BOTTOMLEFT", Minimap, "TOPLEFT", 0, 5)
+	MBCF:SetPoint("BOTTOMRIGHT", Minimap, "TOPRIGHT", 0, 5)
+else
+	MBCF:SetPoint("TOPLEFT", Minimap, "BOTTOMLEFT", 0, -5)
+	MBCF:SetPoint("TOPRIGHT", Minimap, "BOTTOMRIGHT", 0, -5)
+end
 MBCF:SetHeight(20)
 MBCF.bg = MBCF:CreateTexture(nil, "BACKGROUND")
 MBCF.bg:SetTexture(G.media.blank)
@@ -379,7 +384,11 @@ Minimap:SetScript('OnMouseUp', function (self, button)
 		GameTooltip:Hide()
 		ToggleDropDownMenu(1, nil, MiniMapTrackingDropDown, Minimap, (Minimap:GetWidth()+8), (Minimap:GetHeight()))
 		DropDownList1:ClearAllPoints()
-		DropDownList1:SetPoint("BOTTOMRIGHT", Minimap, "TOPRIGHT", -3, 10)
+		if select(2, Minimap:GetCenter())/G.screenheight > .5 then -- In the upper part of the screen
+			DropDownList1:SetPoint("TOPRIGHT", Minimap, "BOTTOMRIGHT", 0, -8)
+		else
+			DropDownList1:SetPoint("BOTTOMRIGHT", Minimap, "TOPRIGHT", 0, 8)
+		end
 	else
 		Minimap_OnClick(self)
 	end
