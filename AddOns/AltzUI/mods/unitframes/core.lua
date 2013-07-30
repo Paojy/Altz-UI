@@ -339,13 +339,14 @@ end
 --=============================================--
 --[[                   Auras                 ]]--
 --=============================================--
+local iconsize = (aCoreCDB["UnitframeOptions"]["width"]+3)/aCoreCDB["UnitframeOptions"]["auraperrow"]-3
 local PostCreateIcon = function(auras, icon)
     icon.icon:SetTexCoord(.07, .93, .07, .93)
 
     icon.count:ClearAllPoints()
-    icon.count:SetPoint("BOTTOMRIGHT", 3, -3)
+    icon.count:SetPoint("BOTTOMRIGHT", 0, -3)
     icon.count:SetFontObject(nil)
-    icon.count:SetFont(G.norFont, 12, "OUTLINE")
+    icon.count:SetFont(G.numFont, iconsize*.65, "OUTLINE")
     icon.count:SetTextColor(.9, .9, .1)
 
 	icon.overlay:SetTexture(G.media.blank)
@@ -355,8 +356,8 @@ local PostCreateIcon = function(auras, icon)
 
 	icon.bd = T.createBackdrop(icon, icon, 0)
 
-	icon.remaining =  T.createtext(icon, "OVERLAY", 12, "OUTLINE", "CENTER")
-    icon.remaining:SetPoint("TOPLEFT", -3, 2)
+	icon.remaining =  T.createnumber(icon, "OVERLAY", iconsize*.65, "OUTLINE", "CENTER")
+    icon.remaining:SetPoint("TOPLEFT", 0, 5)
 
     if aCoreCDB["UnitframeOptions"]["auraborders"] then
         auras.showDebuffType = true
@@ -444,7 +445,7 @@ blacklist ={
 	["124275"] = true, --轻度醉拳
 	["124274"] = true, --中度醉拳
 	["124273"] = true, --重度醉拳
-	["80354"] = true, --时空错位
+	--["80354"] = true, --时空错位
 	--["124273"] = true, --心满意足
 }
 
@@ -465,17 +466,17 @@ local CreateAuras = function(self, unit)
 		Auras:SetWidth(aCoreCDB["UnitframeOptions"]["width"]-2)
 		Auras.gap = true
 		Auras.disableCooldown = true
-		if select(2, UnitClass("player")) == "MAGE" then
+		if G.myClass == "MAGE" then
 			Auras.showStealableBuffs = true 
 		end
-		Auras.size = (aCoreCDB["UnitframeOptions"]["width"]+3)/aCoreCDB["UnitframeOptions"]["auraperrow"]-3
+		Auras.size = iconsize
 		Auras.spacing = 3
 		Auras.PostCreateIcon = PostCreateIcon
 		Auras.PostUpdateIcon = PostUpdateIcon
 		Auras.PostUpdateGapIcon = PostUpdateGapIcon
 		
 		if unit == "target" or unit == "focus" then
-			Auras:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 1, 12)
+			Auras:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 1, 14)
 			Auras.initialAnchor = "BOTTOMLEFT"
 			Auras["growth-x"] = "RIGHT"
 			Auras["growth-y"] = "UP"
@@ -501,7 +502,7 @@ local CreateAuras = function(self, unit)
 			Auras.numDebuffs = 5
 			Auras.numBuffs = 0
 		elseif u == "boss" then -- boss 1-5
-			Auras:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 1, 12)
+			Auras:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 1, 14)
 			Auras.initialAnchor = "BOTTOMLEFT"
 			Auras["growth-x"] = "RIGHT"
 			Auras["growth-y"] = "UP"	
@@ -509,7 +510,7 @@ local CreateAuras = function(self, unit)
 			Auras.numBuffs = 3
 			Auras.CustomFilter = BossAuraFilter
 		elseif u == "arena" then
-			Auras:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 1, 12)
+			Auras:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 1, 14)
 			Auras.initialAnchor = "BOTTOMLEFT"
 			Auras["growth-x"] = "RIGHT"
 			Auras["growth-y"] = "UP"
