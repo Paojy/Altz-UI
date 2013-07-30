@@ -1,5 +1,5 @@
 ﻿local T, C, L, G = unpack(select(2, ...))
-if G.Client == "zhCN" then return end
+if G.Client == "zhCN" or G.Client == "zhTW" then return end
  
 L["点我隐藏"] = "Click to hide."
 
@@ -36,13 +36,14 @@ L["所有键位设定保存"] = "All keybindings have been saved."
 L["刚才的键位设定修改取消了"] = "All newly set keybindings have been discarded."
 L["绑定到"] = "bound to"
 L["绑定模式"] = "Hover your mouse over any actionbutton to bind it. Press the escape key or right click to clear the current actionbutton's keybinding."
-L["被闷了"] = "Sapped!"
-L["被闷了2"] = "sapped by:"
 L["没有绑定键位"] = "No bindings set."
 L["绑定"] = "Binding"
 L["键位"] = "Key"
 L["保存键位"] = "Save bindings"
 L["取消键位"] = "Discard bindings"
+
+L["被闷了"] = "Sapped!"
+L["被闷了2"] = "sapped by:"
 
 L["修理花费"] = "Repair Cost:"
 

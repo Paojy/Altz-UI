@@ -1,5 +1,5 @@
 ﻿local T, C, L, G = unpack(select(2, ...))
-if G.Client == "zhCN" then return end
+if G.Client == "zhCN" or G.Client == "zhTW" then return end
 
 -- 安装
 L["小泡泡"] = "Paopao <Sliver Hand>"
@@ -290,7 +290,6 @@ L["最远镜头提示"] = "Set camera distance to max when login"
 -- 插件皮肤
 L["插件皮肤"] = "Addon Skins"
 L["更改设置"] = "Edit Settings"
-L["更改设置提示"] = "Edit Some of the settings of the addons selected above to match the UI."
 L["更改设置提示"] = "Some of the addon settings need changed to match the UI,\nyou may click the "..L["更改设置"].." button to apply it when reload UI next time."
 
 -- 命令

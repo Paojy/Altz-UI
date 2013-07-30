@@ -1,10 +1,6 @@
 ﻿local T, C, L, G = unpack(select(2, ...))
 if G.Client ~= "zhCN" then return end
 
-L["制作说明"] = "AltzUI ver %s \n \n \n \n 泡泡 <Sliver Hand> zhCN  \n \n \n \n %s Thanks to \n \n %s \n 和每一个帮我我完成一个插件包的朋友。|r"
-L["说明"] = "说明"
-L["制作"] = "制作"
-L["指令"] = "%s/rl|r - 重载界面 \n \n %s/hb|r - 按键绑定模式 \n \n %sSHIFT+左键|r - 设置焦点 \n \n %sTab|r - 切换聊天频道 \n \n %sEnjoy!|r"
 L["点我隐藏"] = "点我隐藏"
 
 L["当前经验"] = "当前经验： "
