@@ -130,7 +130,7 @@ local function UpdateStats()
 			numflask = "|cffA6FFFF0 |r"..L["无2"]..L["合剂"]
 		else
 			rosterflask = L["无2"].."|cffA6FFFF"..L["合剂"]..":|r \n"..table.concat(unflasked, ", ")
-			numflask = "|cffA6FFFF22"..#unflasked.." |r"..L["无2"]..L["合剂"]
+			numflask = "|cffA6FFFF "..#unflasked.." |r"..L["无2"]..L["合剂"]
 		end
 	else
 		numflask = "|cffA6FFFF"..#flasked.." |r"..L["合剂"]
