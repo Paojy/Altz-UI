@@ -3,6 +3,7 @@ local dragFrameList = G.dragFrameList
 
 local buttonssize = aCoreCDB["ActionbarOptions"]["bar12size"]
 local buttonspace = aCoreCDB["ActionbarOptions"]["bar12space"]
+local bar1top = aCoreCDB["ActionbarOptions"]["bar1top"]
 local padding = 4
 local mouseover = {
 	enable= aCoreCDB["ActionbarOptions"]["bar12mfade"],
@@ -43,7 +44,11 @@ for i=1, num do
 	button:SetSize(buttonssize, buttonssize)
 	button:ClearAllPoints()
 	if i == 1 then
-		button:SetPoint("TOPLEFT", frame, padding, -padding)
+		if bar1top then
+			button:SetPoint("TOPLEFT", frame, padding, -padding)
+		else
+			button:SetPoint("BOTTOMLEFT", frame, padding, padding)
+		end
 	else
 		local previous = _G["ActionButton"..i-1]
 		button:SetPoint("LEFT", previous, "RIGHT", buttonspace, 0)
@@ -56,7 +61,11 @@ for i=1, num do
 	button:SetSize(buttonssize, buttonssize)
 	button:ClearAllPoints()
 	if i == 1 then
-		button:SetPoint("TOPLEFT", frame, padding, -padding -buttonspace -buttonssize)
+		if bar1top then
+			button:SetPoint("TOPLEFT", frame, padding, -padding -buttonspace -buttonssize)
+		else
+			button:SetPoint("BOTTOMLEFT", frame, padding, padding +buttonspace +buttonssize)
+		end
 	else
 		local previous = _G["MultiBarBottomLeftButton"..i-1]
 		button:SetPoint("LEFT", previous, "RIGHT", buttonspace, 0)
