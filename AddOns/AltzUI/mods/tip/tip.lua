@@ -11,6 +11,7 @@ local hideTitles = aCoreCDB["TooltipOptions"]["hideTitles"]
 local hideRealm = aCoreCDB["TooltipOptions"]["hideRealm"]
 local colorborderClass = aCoreCDB["TooltipOptions"]["colorborderClass"]
 local combathide = aCoreCDB["TooltipOptions"]["combathide"]
+local scale = aCoreCDB["TooltipOptions"]["size"]
 
 local you = "<You>"
 local boss = "Boss"
@@ -231,6 +232,7 @@ local function style(frame)
 		frame.border = true
     end
 	
+	frame:SetScale(scale)
 	frame:SetBackdropColor(0, 0, 0, 0.4)
     frame:SetBackdropBorderColor(0, 0, 0)
 	
