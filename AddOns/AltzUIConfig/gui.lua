@@ -1277,19 +1277,22 @@ ActionbarInnerframe.common = CreateOptionPage("Actionbar Options common", L["通
 ActionbarInnerframe.common:Show()
 
 T.createcheckbutton(ActionbarInnerframe.common, 30, 60, L["显示冷却时间"], "ActionbarOptions", "cooldown", L["显示冷却时间提示"])
-T.createcheckbutton(ActionbarInnerframe.common, 30, 90, L["不可用颜色"], "ActionbarOptions", "rangecolor", L["不可用颜色提示"])
-T.createslider(ActionbarInnerframe.common, 30, 140, L["键位字体大小"], "ActionbarOptions", "keybindsize", 1, 8, 20, 1)
-T.createslider(ActionbarInnerframe.common, 30, 180, L["宏名字字体大小"], "ActionbarOptions", "macronamesize", 1, 8, 20, 1)
-T.createslider(ActionbarInnerframe.common, 30, 220, L["可用次数字体大小"], "ActionbarOptions", "countsize", 1, 8, 20, 1)
+T.createslider(ActionbarInnerframe.common, 30, 110, L["冷却时间数字大小"], "ActionbarOptions", "cooldownsize", 1, 18, 25, 1, L["冷却时间数字大小提示"])
+T.createcheckbutton(ActionbarInnerframe.common, 30, 150, L["不可用颜色"], "ActionbarOptions", "rangecolor", L["不可用颜色提示"])
+T.createslider(ActionbarInnerframe.common, 30, 200, L["键位字体大小"], "ActionbarOptions", "keybindsize", 1, 8, 20, 1)
+T.createslider(ActionbarInnerframe.common, 30, 240, L["宏名字字体大小"], "ActionbarOptions", "macronamesize", 1, 8, 20, 1)
+T.createslider(ActionbarInnerframe.common, 30, 280, L["可用次数字体大小"], "ActionbarOptions", "countsize", 1, 8, 20, 1)
+T.createDR(ActionbarInnerframe.common.cooldown, ActionbarInnerframe.common.cooldownsize)
 
 ActionbarInnerframe.bar12 = CreateOptionPage("Actionbar Options bar12", L["主动作条"], ActionbarInnerframe, "VERTICAL", .3)
 
 ActionbarInnerframe.bar12.bar2toggle = T.ABtogglebox(ActionbarInnerframe.bar12, 30, 60, 1, L["主动作条"])
-T.createslider(ActionbarInnerframe.bar12, 30, 110, L["图标大小"], "ActionbarOptions", "bar12size", 1, 15, 40, 1)
-T.createslider(ActionbarInnerframe.bar12, 30, 150, L["图标间距"], "ActionbarOptions", "bar12space", 1, 0, 10, 1)
-T.createcheckbutton(ActionbarInnerframe.bar12, 30, 190, L["悬停渐隐"], "ActionbarOptions", "bar12mfade", L["悬停渐隐提示"])
-T.createcheckbutton(ActionbarInnerframe.bar12, 30, 220, L["条件渐隐"], "ActionbarOptions", "bar12efade", L["条件渐隐提示"])
-T.createslider(ActionbarInnerframe.bar12, 30, 270, L["渐隐透明度"], "ActionbarOptions", "bar12fademinaplha", 100, 0, 80, 5, L["渐隐透明度提示"])
+T.createcheckbutton(ActionbarInnerframe.bar12, 30, 100, L["更改上下位置"], "ActionbarOptions", "bar1top")
+T.createslider(ActionbarInnerframe.bar12, 30, 150, L["图标大小"], "ActionbarOptions", "bar12size", 1, 15, 40, 1)
+T.createslider(ActionbarInnerframe.bar12, 30, 190, L["图标间距"], "ActionbarOptions", "bar12space", 1, 0, 10, 1)
+T.createcheckbutton(ActionbarInnerframe.bar12, 30, 230, L["悬停渐隐"], "ActionbarOptions", "bar12mfade", L["悬停渐隐提示"])
+T.createcheckbutton(ActionbarInnerframe.bar12, 30, 260, L["条件渐隐"], "ActionbarOptions", "bar12efade", L["条件渐隐提示"])
+T.createslider(ActionbarInnerframe.bar12, 30, 310, L["渐隐透明度"], "ActionbarOptions", "bar12fademinaplha", 100, 0, 80, 5, L["渐隐透明度提示"])
 
 ActionbarInnerframe.bar3 = CreateOptionPage("Actionbar Options bar3", L["额外动作条"], ActionbarInnerframe, "VERTICAL", .3)
 
@@ -1389,15 +1392,16 @@ T.createDR(PlateOptions.enableplate, PlateOptions.platewidth, PlateOptions.plate
 local TooltipOptions = CreateOptionPage("Tooltip Options", USE_UBERTOOLTIPS, GUI, "VERTICAL")
 
 T.createcheckbutton(TooltipOptions, 30, 60, L["启用"], "TooltipOptions", "enabletip")
-T.createcheckbutton(TooltipOptions, 30, 90, L["跟随光标"], "TooltipOptions", "cursor")
-T.createcheckbutton(TooltipOptions, 30, 120, L["隐藏服务器名称"], "TooltipOptions", "hideRealm")
-T.createcheckbutton(TooltipOptions, 30, 150, L["隐藏称号"], "TooltipOptions", "hideTitles")
-T.createcheckbutton(TooltipOptions, 30, 180, L["显示法术编号"], "TooltipOptions", "showspellID")
-T.createcheckbutton(TooltipOptions, 30, 210, L["显示物品编号"], "TooltipOptions", "showitemID")
-T.createcheckbutton(TooltipOptions, 30, 240, L["显示天赋"], "TooltipOptions", "showtalent")
-T.createcheckbutton(TooltipOptions, 30, 270, L["按职业着色"], "TooltipOptions", "colorborderClass")
-T.createcheckbutton(TooltipOptions, 30, 300, L["战斗中隐藏"], "TooltipOptions", "combathide")
-T.createDR(TooltipOptions.enabletip, TooltipOptions.cursor, TooltipOptions.hideRealm, TooltipOptions.hideTitles, TooltipOptions.showspellID, TooltipOptions.showitemID, TooltipOptions.showtalent, TooltipOptions.colorborderClass, TooltipOptions.combathide)
+T.createslider(TooltipOptions, 30, 110, L["尺寸"], "TooltipOptions", "size", 10, 5, 15, 1)
+T.createcheckbutton(TooltipOptions, 30, 150, L["跟随光标"], "TooltipOptions", "cursor")
+T.createcheckbutton(TooltipOptions, 30, 180, L["隐藏服务器名称"], "TooltipOptions", "hideRealm")
+T.createcheckbutton(TooltipOptions, 30, 210, L["隐藏称号"], "TooltipOptions", "hideTitles")
+T.createcheckbutton(TooltipOptions, 30, 240, L["显示法术编号"], "TooltipOptions", "showspellID")
+T.createcheckbutton(TooltipOptions, 30, 270, L["显示物品编号"], "TooltipOptions", "showitemID")
+T.createcheckbutton(TooltipOptions, 30, 300, L["显示天赋"], "TooltipOptions", "showtalent")
+T.createcheckbutton(TooltipOptions, 30, 340, L["按职业着色"], "TooltipOptions", "colorborderClass")
+T.createcheckbutton(TooltipOptions, 30, 370, L["战斗中隐藏"], "TooltipOptions", "combathide")
+T.createDR(TooltipOptions.enabletip, TooltipOptions.size, TooltipOptions.cursor, TooltipOptions.hideRealm, TooltipOptions.hideTitles, TooltipOptions.showspellID, TooltipOptions.showitemID, TooltipOptions.showtalent, TooltipOptions.colorborderClass, TooltipOptions.combathide)
 
 --====================================================--
 --[[             -- Combattext Options --              ]]--
@@ -1434,16 +1438,21 @@ local OtherOptions = CreateOptionPage("Other Options", OTHER, GUI, "VERTICAL")
 T.createslider(OtherOptions, 30, 80, L["缩放按钮高度"], "OtherOptions", "minimapheight", 1, 100, 300, 5, L["缩放按钮高度提示"])
 T.createslider(OtherOptions, 30, 120, L["系统菜单尺寸"], "OtherOptions", "micromenuscale", 100, 50, 200, 5)
 T.createcheckbutton(OtherOptions, 30, 160, L["整理小地图图标"], "OtherOptions", "collectminimapbuttons")
-T.createcheckbutton(OtherOptions, 30, 190, L["整理隐藏的小地图图标"], "OtherOptions", "collecthidingminimapbuttons")
-T.createDR(OtherOptions.collectminimapbuttons, OtherOptions.collecthidingminimapbuttons)
-T.createcheckbutton(OtherOptions, 30, 220, L["隐藏错误提示"], "OtherOptions", "hideerrors", L["隐藏错误提示提示"])
-T.createcheckbutton(OtherOptions, 30, 250, L["成就截图"], "OtherOptions", "autoscreenshot", L["成就截图提示"])
-T.createcheckbutton(OtherOptions, 30, 280, L["回收内存"], "OtherOptions", "collectgarbage", L["回收内存提示"])
-T.createcheckbutton(OtherOptions, 30, 310, L["最远镜头"], "OtherOptions", "camera", L["最远镜头提示"])
-T.createcheckbutton(OtherOptions, 30, 340, L["自动接受复活"], "OtherOptions", "acceptres", L["自动接受复活提示"])	
-T.createcheckbutton(OtherOptions, 30, 370, L["战场自动释放灵魂"], "OtherOptions", "battlegroundres", L["战场自动释放灵魂提示"])
-T.createcheckbutton(OtherOptions, 30, 400, L["自动交接任务"], "OtherOptions", "autoquests", L["自动交接任务提示"])
-T.createcheckbutton(OtherOptions, 30, 430, L["大喊被闷了"], "OtherOptions", "saysapped", L["大喊被闷了提示"])
+MBCFpos_group = {
+	["TOP"] = L["上方"],
+	["BOTTOM"] = L["下方"],
+}
+T.createradiobuttongroup(OtherOptions, 30, 190, L["整理栏位置"], "OtherOptions", "MBCFpos", MBCFpos_group)
+T.createcheckbutton(OtherOptions, 30, 220, L["整理隐藏的小地图图标"], "OtherOptions", "collecthidingminimapbuttons")
+T.createDR(OtherOptions.collectminimapbuttons, OtherOptions.MBCFpos, OtherOptions.collecthidingminimapbuttons)
+T.createcheckbutton(OtherOptions, 30, 250, L["隐藏错误提示"], "OtherOptions", "hideerrors", L["隐藏错误提示提示"])
+T.createcheckbutton(OtherOptions, 30, 280, L["成就截图"], "OtherOptions", "autoscreenshot", L["成就截图提示"])
+T.createcheckbutton(OtherOptions, 30, 310, L["回收内存"], "OtherOptions", "collectgarbage", L["回收内存提示"])
+T.createcheckbutton(OtherOptions, 30, 340, L["最远镜头"], "OtherOptions", "camera", L["最远镜头提示"])
+T.createcheckbutton(OtherOptions, 30, 370, L["自动接受复活"], "OtherOptions", "acceptres", L["自动接受复活提示"])	
+T.createcheckbutton(OtherOptions, 30, 400, L["战场自动释放灵魂"], "OtherOptions", "battlegroundres", L["战场自动释放灵魂提示"])
+T.createcheckbutton(OtherOptions, 30, 430, L["自动交接任务"], "OtherOptions", "autoquests", L["自动交接任务提示"])
+T.createcheckbutton(OtherOptions, 30, 460, L["大喊被闷了"], "OtherOptions", "saysapped", L["大喊被闷了提示"])
 
 --====================================================--
 --[[               -- Skin Options --               ]]--
