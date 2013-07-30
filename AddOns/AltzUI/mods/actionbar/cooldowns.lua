@@ -54,15 +54,24 @@ hooksecurefunc(methods, "SetCooldown", function(self, start, duration)
 		self.nextUpdate = 0
 
 		if not self.text then
-			self.text = T.createnumber(self, "OVERLAY", 20, "OUTLINE", "CENTER")
+			if self:GetWidth() >= 25 then
+				self.text = T.createnumber(self, "OVERLAY", aCoreCDB["ActionbarOptions"]["cooldownsize"], "OUTLINE", "CENTER")
+			else
+				self.text = T.createnumber(self, "OVERLAY", self:GetWidth()*.8, "OUTLINE", "CENTER")
+			end
 			self.text:SetTextColor(.4, .95, 1)
 			self.text:SetPoint("CENTER", 0, 0)
 			self:SetScript("OnUpdate", Timer_OnUpdate)
+			if self:GetWidth() >= 10 then
+				self.text:Show()
+			else
+				self.text:Hide()
+			end
 		elseif not self:GetScript("OnUpdate") then
 			self:SetScript("OnUpdate", Timer_OnUpdate)
+			self.text:Show()
 		end
 
-		self.text:Show()
 	elseif self.text then
 		self.text:Hide()
 	end
