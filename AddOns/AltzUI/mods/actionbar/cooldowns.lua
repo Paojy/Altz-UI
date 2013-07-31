@@ -2,14 +2,6 @@
 local T, C, L, G = unpack(select(2, ...))
 if not aCoreCDB["ActionbarOptions"]["cooldown"] then return end
 
-local function CreateFS(parent, size, justify)
-    local f = parent:CreateFontString(nil, "OVERLAY")
-    f:SetFont(G.numFont, size, "OUTLINE")
-    f:SetShadowColor(0, 0, 0, 0)
-    if(justify) then f:SetJustifyH(justify) end
-    return f
-end
-
 local format, floor, GetTime = string.format, math.floor, GetTime
 local Multiplier = 0.8
 
@@ -46,34 +38,52 @@ end
 
 local methods = getmetatable(ActionButton1Cooldown).__index
 hooksecurefunc(methods, "SetCooldown", function(self, start, duration)
-	if start>0 and duration>2.5 then
-		if self.noshowcd then return end
-		
-		self.start = start
-		self.duration = duration
-		self.nextUpdate = 0
-
-		if not self.text then
-			if self:GetWidth() >= 25 then
-				self.text = T.createnumber(self, "OVERLAY", aCoreCDB["ActionbarOptions"]["cooldownsize"], "OUTLINE", "CENTER")
+	if self.noshowcd then return end
+	if (self:GetWidth() >= 15) and (self:GetHeight() >= 15) then
+		if start>0 and duration>2.5 then	
+			self.start = start
+			self.duration = duration
+			self.nextUpdate = 0
+	
+			if (self:GetWidth() >= 25) and (self:GetHeight() >= 25) then
+				if not self.text then
+					self.text = T.createnumber(self, "OVERLAY", aCoreCDB["ActionbarOptions"]["cooldownsize"], "OUTLINE", "CENTER")
+					self.text:SetTextColor(.4, .95, 1)
+					self.text:SetPoint("CENTER", 0, 0)					
+				else
+					self.text:SetFont(G.numFont, aCoreCDB["ActionbarOptions"]["cooldownsize"], "OUTLINE")
+				end
 			else
-				self.text = T.createnumber(self, "OVERLAY", self:GetWidth()*.8, "OUTLINE", "CENTER")
+				if not self.text then
+					self.text = T.createnumber(self, "OVERLAY", self:GetWidth()*.7+1, "OUTLINE", "CENTER")
+					self.text:SetTextColor(.4, .95, 1)
+					self.text:SetPoint("CENTER", 0, 0)						
+				else
+					self.text:SetFont(G.numFont, self:GetWidth()*.7+1, "OUTLINE")
+				end
 			end
-			self.text:SetTextColor(.4, .95, 1)
-			self.text:SetPoint("CENTER", 0, 0)
-			self:SetScript("OnUpdate", Timer_OnUpdate)
-			if self:GetWidth() >= 10 then
-				self.text:Show()
-			else
-				self.text:Hide()
+			
+			if not self:GetScript("OnUpdate") then
+				self:SetScript("OnUpdate", Timer_OnUpdate)
 			end
-		elseif not self:GetScript("OnUpdate") then
-			self:SetScript("OnUpdate", Timer_OnUpdate)
+			
 			self.text:Show()
+			
+		elseif self.text then
+			self.text:Hide()
 		end
-
 	elseif self.text then
-		self.text:Hide()
+		if start>0 and duration>2.5 then
+			self.start = start
+			self.duration = duration
+			self.nextUpdate = 0
+			if not self:GetScript("OnUpdate") then
+				self:SetScript("OnUpdate", Timer_OnUpdate)
+				self.text:Show()
+			end
+		else
+			self.text:Hide()
+		end
 	end
 end)
 

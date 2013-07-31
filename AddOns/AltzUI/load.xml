@@ -26,9 +26,6 @@
 	
 	<Include file="mods\unitframes\load.xml"/>
 	
-	<Script file="mods\actionbar\cooldowns.lua"/>
-	<Script file="mods\actionbar\rangecolor.lua"/>
-	<Script file="mods\actionbar\styler.lua"/>	
 	<Script file="mods\actionbar\hide_blizzart.lua"/>
 	<Script file="mods\actionbar\bar12.lua"/>
 	<Script file="mods\actionbar\bar3.lua"/>
@@ -39,6 +36,9 @@
 	<Script file="mods\actionbar\extrabar.lua"/>
 	<Script file="mods\actionbar\leave_vehicle.lua"/>
 	<Script file="mods\actionbar\spellflyout.lua"/>
+	<Script file="mods\actionbar\styler.lua"/>	
+	<Script file="mods\actionbar\cooldowns.lua"/>
+	<Script file="mods\actionbar\rangecolor.lua"/>	
 	<Script file="mods\actionbar\buff.lua"/>
 
 	<Script file="mods\bag\sort.lua"/>
