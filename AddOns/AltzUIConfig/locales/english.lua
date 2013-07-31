@@ -178,7 +178,7 @@ L["重要法术"] = "Cooldown Aura"
 -- 动作条
 L["显示冷却时间"] = "Show Cooldown Text"
 L["冷却时间数字大小"] = "Cooldown Text Size"
-L["冷却时间数字大小提示"] = "This value only affect cooldown frames which size is bigger than 20*20pixel,\n others have their appropriate sized text.\nNote that the cooldown text won't show if it's too small."
+L["冷却时间数字大小提示"] = "This value only affect cooldown frames which size is bigger than 25*25pixel,\n others have their appropriate sized text.\nNote that the cooldown text won't show if it's too small."
 L["显示冷却时间提示"] = "Displaying cooldown text on action buttons, inventory items, etc."
 L["不可用颜色"] = "Unusable Color"
 L["不可用颜色提示"] = "Change the color of standard action buttons when they are unusable.\nLike out of range, mana, etc."
