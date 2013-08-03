@@ -22,8 +22,6 @@ oUF.colors.reaction[8] = {0.26, 1, 0.22}
 
 oUF.colors.smooth = {1,0,0, 1,1,0, 1,1,0}
 
-local bartex = G.media.blank
-
 local classicon_colors = { --monk/paladin/preist
 	{150/255, 0/255, 40/255},
 	{220/255, 20/255, 40/255},
@@ -49,7 +47,6 @@ local function multicheck(check, ...)
     end
     return false
 end
-
 --=============================================--
 --[[             MouseOn update              ]]--
 --=============================================--
@@ -127,11 +124,14 @@ T.Updatehealthbar = function(self, unit, min, max)
 			r, g, b = oUF.ColorGradient(perc, 1, unpack(oUF.colors.smooth))
 		end
 	end
-
-	self:GetStatusBarTexture():SetGradient("VERTICAL", r, g, b, r/3, g/3, b/3)
 	
+	if aCoreCDB["OtherOptions"]["style"] == 1 then
+		self:GetStatusBarTexture():SetGradient("VERTICAL", r, g, b, r/3, g/3, b/3)
+	else
+		self:SetStatusBarColor(r, g, b)
+	end
 	
-	if aCoreCDB["UnitframeOptions"]["transparentmode"] then
+	if aCoreCDB["OtherOptions"]["style"] ~= 3 then
 		self:SetValue(max - self:GetValue()) 
 	end
 end
@@ -164,7 +164,11 @@ T.Updatepowerbar = function(self, unit, min, max)
 		r, g, b = unpack(oUF.colors.reaction[UnitReaction(unit, 'player') or 5])
 	end
 	
-	self:GetStatusBarTexture():SetGradient('VERTICAL', r, g, b, r/3, g/3, b/3)
+	if aCoreCDB["OtherOptions"]["style"] == 1 then
+		self:GetStatusBarTexture():SetGradient("VERTICAL", r, g, b, r/3, g/3, b/3)
+	else
+		self:SetStatusBarColor(r, g, b)
+	end
 end
 
 local PostAltUpdate = function(altpp, min, cur, max)
@@ -289,26 +293,28 @@ end
 local CreateCastbars = function(self, unit)
     local u = unit:match("[^%d]+")
     if multicheck(u, "target", "player", "focus", "boss") then
-        local cb = T.createStatusbar(self, bartex, "ARTWORK", nil, nil, 0, 0, 0, 0) -- transparent
+        local cb = T.createStatusbar(self, "ARTWORK", nil, nil, 0, 0, 0, 0) -- transparent
 		cb:SetAllPoints(self)
         cb:SetFrameLevel(2)
-
+		
+		cb.bg:Hide()
+		
         cb.Spark = cb:CreateTexture(nil, "OVERLAY")
 		cb.Spark:SetTexture("Interface\\UnitPowerBarAlt\\Generic1Player_Pill_Flash")
         cb.Spark:SetBlendMode("ADD")
         cb.Spark:SetAlpha(1)
         cb.Spark:SetSize(8, aCoreCDB["UnitframeOptions"]["height"]*2)
 
-        cb.Time = T.createtext(cb, "OVERLAY", aCoreCDB["UnitframeOptions"]["fontsize"], "OUTLINE", "LEFT")
+        cb.Time = T.createtext(cb, "OVERLAY", aCoreCDB["UnitframeOptions"]["height"]-3, "OUTLINE", "LEFT")
 		if (unit == "player") then
-			cb.Time:SetFont(G.norFont, aCoreCDB["UnitframeOptions"]["fontsize"]+2, "OUTLINE")
+			cb.Time:SetFont(G.norFont, 15, "OUTLINE")
 			cb.Time:SetPoint("TOP", cb, "BOTTOM", 0, -10)
 		else
 			cb.Time:SetPoint("BOTTOMRIGHT", cb, "TOPRIGHT", -3, -3)
 		end
         cb.CustomTimeText = CustomTimeText
 
-        cb.Text =  T.createtext(cb, "OVERLAY", aCoreCDB["UnitframeOptions"]["fontsize"], "OUTLINE", "CENTER")
+        cb.Text =  T.createtext(cb, "OVERLAY", aCoreCDB["UnitframeOptions"]["height"]-3, "OUTLINE", "CENTER")
 		if u == "boss" then
 			cb.Text:SetPoint("BOTTOMLEFT", 3, -3)
 		else
@@ -531,7 +537,6 @@ local func = function(self, unit)
 	T.OnMouseOver(self)
     self:RegisterForClicks"AnyUp"
 	self.mouseovers = {}
-	--self.menu = menu
 	
 	-- highlight --
 	self.hl = self:CreateTexture(nil, "HIGHLIGHT")
@@ -539,18 +544,19 @@ local func = function(self, unit)
     self.hl:SetTexture(G.media.barhightlight)
     self.hl:SetVertexColor( 1, 1, 1, .3)
     self.hl:SetBlendMode("ADD")
-	
+
 	-- backdrop --
 	self.bg = CreateFrame("Frame", nil, self)
 	self.bg:SetFrameLevel(0)
 	self.bg:SetAllPoints(self)
 	self.bg.tex = self.bg:CreateTexture(nil, "BACKGROUND")
     self.bg.tex:SetAllPoints()
-    self.bg.tex:SetTexture(G.media.blank)
-	if aCoreCDB["UnitframeOptions"]["transparentmode"] then
-		self.bg.tex:SetGradientAlpha("VERTICAL", aCoreCDB["UnitframeOptions"]["endcolor"].r, aCoreCDB["UnitframeOptions"]["endcolor"].g, aCoreCDB["UnitframeOptions"]["endcolor"].b, aCoreCDB["UnitframeOptions"]["endcolor"].a, aCoreCDB["UnitframeOptions"]["startcolor"].r, aCoreCDB["UnitframeOptions"]["startcolor"].g, aCoreCDB["UnitframeOptions"]["startcolor"].b, aCoreCDB["UnitframeOptions"]["startcolor"].a)
+	if aCoreCDB["OtherOptions"]["style"] == 1 then
+		self.bg.tex:SetTexture(G.media.blank)
+		self.bg.tex:SetVertexColor(0, 0, 0, 0)	
 	else
-		self.bg.tex:SetGradientAlpha("VERTICAL", aCoreCDB["UnitframeOptions"]["endcolor"].r, aCoreCDB["UnitframeOptions"]["endcolor"].g, aCoreCDB["UnitframeOptions"]["endcolor"].b, 1, aCoreCDB["UnitframeOptions"]["startcolor"].r, aCoreCDB["UnitframeOptions"]["startcolor"].g, aCoreCDB["UnitframeOptions"]["startcolor"].b, 1)
+		self.bg.tex:SetTexture(G.media.ufbar)
+		self.bg.tex:SetVertexColor(0, 0, 0)
 	end
 	
     -- height, width and scale --
@@ -567,14 +573,20 @@ local func = function(self, unit)
     self.backdrop = T.createBackdrop(self, self, 0) -- this also use for dispel border
 	
 	-- health bar --
-    local hp = T.createStatusbar(self, bartex, "ARTWORK", nil, nil, 1, 1, 1, 1)
+    local hp = T.createStatusbar(self, "ARTWORK", nil, nil, 1, 1, 1, 1)
 	hp:SetFrameLevel(2)
 	hp:SetAllPoints(self)
     hp.frequentUpdates = true
 	
+	if aCoreCDB["OtherOptions"]["style"] == 1 then
+		hp.bg:SetGradientAlpha("VERTICAL", .5, .5, .5, .5, 0, 0, 0,0)
+	else
+		hp.bg:SetGradientAlpha("VERTICAL", .2,.2,.2,.15,.25,.25,.25,.6)
+	end
+	
 	-- health text --
 	if not (unit == "targettarget" or unit == "focustarget" or unit == "pet") then
-		hp.value =  T.createtext(hp, "OVERLAY", aCoreCDB["UnitframeOptions"]["fontsize"], "OUTLINE", "RIGHT")
+		hp.value =  T.createtext(hp, "OVERLAY", min(aCoreCDB["UnitframeOptions"]["height"]-3, 22), "OUTLINE", "RIGHT")
 		hp.value:SetPoint("BOTTOMRIGHT", self, -4, -5)
 	end
 	
@@ -583,14 +595,14 @@ local func = function(self, unit)
     hp.ind:SetTexture("Interface\\Buttons\\WHITE8x8")
 	hp.ind:SetVertexColor(0, 0, 0)
 	hp.ind:SetSize(1, self:GetHeight())
-	if aCoreCDB["UnitframeOptions"]["transparentmode"] then
+	if aCoreCDB["OtherOptions"]["style"] ~= 3 then
 		hp.ind:SetPoint("RIGHT", hp:GetStatusBarTexture(), "LEFT", 0, 0)
 	else
 		hp.ind:SetPoint("LEFT", hp:GetStatusBarTexture(), "RIGHT", 0, 0)
 	end
 	
 	-- reverse fill health --
-	if aCoreCDB["UnitframeOptions"]["transparentmode"] then
+	if aCoreCDB["OtherOptions"]["style"] ~= 3 then
 		hp:SetReverseFill(true)
 	end
 	
@@ -598,32 +610,33 @@ local func = function(self, unit)
 	self.Health.PostUpdate = T.Updatehealthbar
 	tinsert(self.mouseovers, self.Health)
 	
-	-- portrait --
-	if aCoreCDB["UnitframeOptions"]["portrait"] and multicheck(u, "player", "target", "focus", "boss", "arena") then
+	-- portrait 只有样式1和样式2才有肖像
+	if aCoreCDB["OtherOptions"]["style"] ~= 3 and aCoreCDB["UnitframeOptions"]["portrait"] and multicheck(u, "player", "target", "focus", "boss", "arena") then
 		local Portrait = CreateFrame('PlayerModel', nil, self)
 		Portrait:SetFrameLevel(1) -- blow hp
 		Portrait:SetPoint("TOPLEFT", 1, 0)
 		Portrait:SetPoint("BOTTOMRIGHT", -1, 1)
 		Portrait:SetAlpha(aCoreCDB["UnitframeOptions"]["portraitalpha"])
 		self.Portrait = Portrait
-		--self.Portrait.PostUpdate = function() Portrait:SetPosition(-0.3, 0.3, 0) end
 	end
 	
 	-- power bar --
     if not (unit == "targettarget" or unit == "focustarget") then
-		local pp = T.createStatusbar(self, bartex, "ARTWORK", aCoreCDB["UnitframeOptions"]["height"]*-(aCoreCDB["UnitframeOptions"]["hpheight"]-1), nil, 1, 1, 1, 1)
+		local pp = T.createStatusbar(self, "ARTWORK", aCoreCDB["UnitframeOptions"]["height"]*-(aCoreCDB["UnitframeOptions"]["hpheight"]-1), nil, 1, 1, 1, 1)
 		pp:SetFrameLevel(2)
 		pp:SetPoint"LEFT"
 		pp:SetPoint"RIGHT"
-		pp:SetPoint("TOP", self, "BOTTOM", 0, -3)
+		pp:SetPoint("TOP", self, "BOTTOM", 0, -1)
 		pp.frequentUpdates = true
+		
+		pp.bg:SetGradientAlpha("VERTICAL", .2,.2,.2,.15,.25,.25,.25,.6)
 
 		-- backdrop for power bar --	
 		pp.bd = T.createBackdrop(pp, pp, 1)
 		
 		-- power text --
 		if not multicheck(u, "pet", "boss", "arena") then
-			pp.value =  T.createtext(pp, "OVERLAY", aCoreCDB["UnitframeOptions"]["fontsize"], "OUTLINE", "LEFT")
+			pp.value =  T.createtext(pp, "OVERLAY", min(aCoreCDB["UnitframeOptions"]["height"]-3, 22), "OUTLINE", "LEFT")
 			pp.value:SetPoint("BOTTOMLEFT", self, 4, -5)
 		end
 
@@ -634,7 +647,7 @@ local func = function(self, unit)
 
 	-- altpower bar --
     if multicheck(u, "player", "boss", "pet") then
-		local altpp = T.createStatusbar(self, bartex, "ARTWORK", 5, nil, 1, 1, 0, 1)
+		local altpp = T.createStatusbar(self, "ARTWORK", 5, nil, 1, 1, 0, 1)
 		if unit == "pet" then
 			altpp:SetPoint("TOPLEFT", self.Power, "BOTTOMLEFT", 0, -5)
 			altpp:SetPoint("TOPRIGHT", self.Power, "BOTTOMRIGHT", 0, -5)
@@ -642,9 +655,11 @@ local func = function(self, unit)
 			altpp:SetPoint("TOPLEFT", _G["oUF_AltzPlayer"].Power, "BOTTOMLEFT", 0, -5)
 			altpp:SetPoint("TOPRIGHT", _G["oUF_AltzPlayer"].Power, "BOTTOMRIGHT", 0, -5)
 		end
+		
+		altpp.bg:SetGradientAlpha("VERTICAL", .2,.2,.2,.15,.25,.25,.25,.6)
 		altpp.bd = T.createBackdrop(altpp, altpp, 1)
 
-		altpp.value =  T.createtext(altpp, "OVERLAY", aCoreCDB["UnitframeOptions"]["fontsize"]-2, "OUTLINE", "CENTER")
+		altpp.value =  T.createtext(altpp, "OVERLAY", 11, "OUTLINE", "CENTER")
 		altpp.value:SetPoint"CENTER"
 
 		self.AltPowerBar = altpp
@@ -673,7 +688,7 @@ local func = function(self, unit)
     self.RaidIcon = ricon
 	
 	-- name --
-    local name =  T.createtext(self.Health, "OVERLAY", aCoreCDB["UnitframeOptions"]["fontsize"], "OUTLINE", "LEFT")
+    local name =  T.createtext(self.Health, "OVERLAY", 13, "OUTLINE", "LEFT")
 	name:SetPoint("TOPLEFT", self.Health, "TOPLEFT", 3, 9)
     if unit == "player" or unit == "pet" then
         name:Hide()
@@ -741,13 +756,13 @@ local UnitSpecific = {
 
             for i = 1, count do
 				if class == "PALADIN" then
-					bars[i] = T.createStatusbar(bars, bartex, nil, aCoreCDB["UnitframeOptions"]["height"]*-(aCoreCDB["UnitframeOptions"]["hpheight"]-1), (aCoreCDB["UnitframeOptions"]["width"]+2)/HOLY_POWER_FULL-3, 1, 1, 1, 1)
+					bars[i] = T.createStatusbar(bars, "ARTWORK", aCoreCDB["UnitframeOptions"]["height"]*-(aCoreCDB["UnitframeOptions"]["hpheight"]-1), (aCoreCDB["UnitframeOptions"]["width"]+2)/HOLY_POWER_FULL-3, 1, 1, 1, 1)
 				elseif class == "PRIEST" then
-					bars[i] = T.createStatusbar(bars, bartex, nil, aCoreCDB["UnitframeOptions"]["height"]*-(aCoreCDB["UnitframeOptions"]["hpheight"]-1), (aCoreCDB["UnitframeOptions"]["width"]+2)/PRIEST_BAR_NUM_ORBS-3, 1, 1, 1, 1)
+					bars[i] = T.createStatusbar(bars, "ARTWORK", aCoreCDB["UnitframeOptions"]["height"]*-(aCoreCDB["UnitframeOptions"]["hpheight"]-1), (aCoreCDB["UnitframeOptions"]["width"]+2)/PRIEST_BAR_NUM_ORBS-3, 1, 1, 1, 1)
 				elseif class == "MONK" then
-					bars[i] = T.createStatusbar(bars, bartex, nil, aCoreCDB["UnitframeOptions"]["height"]*-(aCoreCDB["UnitframeOptions"]["hpheight"]-1), (aCoreCDB["UnitframeOptions"]["width"]+2)/4-3, 1, 1, 1, 1)
+					bars[i] = T.createStatusbar(bars, "ARTWORK", aCoreCDB["UnitframeOptions"]["height"]*-(aCoreCDB["UnitframeOptions"]["hpheight"]-1), (aCoreCDB["UnitframeOptions"]["width"]+2)/4-3, 1, 1, 1, 1)
 				else
-					bars[i] = T.createStatusbar(bars, bartex, nil, aCoreCDB["UnitframeOptions"]["height"]*-(aCoreCDB["UnitframeOptions"]["hpheight"]-1), (aCoreCDB["UnitframeOptions"]["width"]+2)/count-3, 1, 1, 1, 1)
+					bars[i] = T.createStatusbar(bars, "ARTWORK", aCoreCDB["UnitframeOptions"]["height"]*-(aCoreCDB["UnitframeOptions"]["hpheight"]-1), (aCoreCDB["UnitframeOptions"]["width"]+2)/count-3, 1, 1, 1, 1)
 				end
 				
                 if i == 1 then
@@ -756,6 +771,7 @@ local UnitSpecific = {
                     bars[i]:SetPoint("LEFT", bars[i-1], "RIGHT", 3, 0)
                 end
 
+				bars[i].bg:Hide()
                 bars[i].bd = T.createBackdrop(bars[i], bars[i], 1)
             end
 
@@ -788,11 +804,13 @@ local UnitSpecific = {
 			ebar:SetSize(Ewidth, Eheight)
             ebar.bd = T.createBackdrop(ebar, ebar, 1)
 
-            local lbar = T.createStatusbar(ebar, bartex, nil, Eheight, Ewidth, .2, .9, 1, 1)
+            local lbar = T.createStatusbar(ebar, "ARTWORK", Eheight, Ewidth, .2, .9, 1, 1)
+			lbar.bg:Hide()
             lbar:SetPoint("LEFT", ebar, "LEFT")
             ebar.LunarBar = lbar
-
-            local sbar = T.createStatusbar(ebar, bartex, nil, Eheight, Ewidth, 1, 1, 0.15, 1)
+			
+            local sbar = T.createStatusbar(ebar, "ARTWORK", Eheight, Ewidth, 1, 1, 0.15, 1)
+			sbar.bg:Hide()
             sbar:SetPoint("LEFT", lbar:GetStatusBarTexture(), "RIGHT")
             ebar.SolarBar = sbar
 
@@ -842,10 +860,11 @@ local UnitSpecific = {
         func(self, ...)
 			-- threat bar --	
 		if aCoreCDB["UnitframeOptions"]["showthreatbar"] then
-			local threatbar = T.createStatusbar(UIParent, bartex, "ARTWORK", nil, nil, 0.25, 0.25, 0.25, 1)
+			local threatbar = T.createStatusbar(UIParent, "ARTWORK", nil, nil, 0.25, 0.25, 0.25, 1)
 			threatbar:SetPoint("TOPLEFT", self.Power, "BOTTOMLEFT", 0, -3)
 			threatbar:SetPoint("BOTTOMRIGHT", self.Power, "BOTTOMRIGHT", 0, -5)
 			threatbar.bd = T.createBackdrop(threatbar, threatbar, 1)
+			threatbar.bg:Hide()
 			self.ThreatBar = threatbar
 		end
     end,
@@ -895,7 +914,8 @@ local UnitSpecific = {
             self.prepFrame = CreateFrame("Frame", self:GetName().."PrepFrame", UIParent)
             self.prepFrame:SetFrameStrata("BACKGROUND")
             self.prepFrame:SetAllPoints(self)
-			self.prepFrame.Health = T.createStatusbar(self.prepFrame, bartex, "MEDIUM", nil, nil, 1, 1, 1, 1)
+			self.prepFrame.Health = T.createStatusbar(self.prepFrame, "MEDIUM", nil, nil, 1, 1, 1, 1)
+			self.prepFrame.Health.bg:Hide()
 			self.prepFrame.Health:SetAllPoints(self.prepFrame)
 			self.prepFrame.Health.bd = T.createBackdrop(self.prepFrame.Health, self.prepFrame.Health, 0) 
 
@@ -905,7 +925,7 @@ local UnitSpecific = {
             self.prepFrame.Icon:SetTexCoord(.08, .92, .08, .92)
 			self.prepFrame.Icon.bd = T.createBackdrop(self.prepFrame, self.prepFrame.Icon, 0) 			
 
-            self.prepFrame.SpecClass =  T.createtext(self.prepFrame.Health, "OVERLAY", aCoreCDB["UnitframeOptions"]["fontsize"], "OUTLINE", "CENTER")
+            self.prepFrame.SpecClass =  T.createtext(self.prepFrame.Health, "OVERLAY", 13, "OUTLINE", "CENTER")
             self.prepFrame.SpecClass:SetPoint("CENTER")
         end
 

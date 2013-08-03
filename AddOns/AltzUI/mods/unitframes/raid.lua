@@ -1,7 +1,6 @@
 ﻿local T, C, L, G = unpack(select(2, ...))
 local oUF = AltzUF or oUF
 
-local bartex = G.media.blank
 --=============================================--
 --[[               Some update               ]]--
 --=============================================--
@@ -47,7 +46,7 @@ local function healpreditionbar(self, ...)
 	hpb:SetStatusBarColor(...)
 	hpb:SetPoint('TOP')
 	hpb:SetPoint('BOTTOM')
-	if aCoreCDB["UnitframeOptions"]["transparentmode"] then
+	if aCoreCDB["OtherOptions"]["style"] ~= 3 then
 		hpb:SetPoint('LEFT', self.Health:GetStatusBarTexture(), 'LEFT')
 	else
 		hpb:SetPoint('LEFT', self.Health:GetStatusBarTexture(), 'RIGHT')
@@ -177,50 +176,63 @@ local func = function(self, unit)
 	self.threatborder = Createpxborder(self, 1)
 	self:RegisterEvent("UNIT_THREAT_SITUATION_UPDATE", UpdateThreat)
 	
-    local hp = T.createStatusbar(self, bartex, "ARTWORK", nil, nil, 1, 1, 1, 1)
+	-- backdrop --
+	self.bg = CreateFrame("Frame", nil, self)
+	self.bg:SetFrameLevel(0)
+	self.bg:SetAllPoints(self)
+	self.bg.tex = self.bg:CreateTexture(nil, "BACKGROUND")
+    self.bg.tex:SetAllPoints()
+	if aCoreCDB["OtherOptions"]["style"] == 1 then
+		self.bg.tex:SetTexture(G.media.blank)
+		self.bg.tex:SetVertexColor(0, 0, 0, 0)	
+	else
+		self.bg.tex:SetTexture(G.media.ufbar)
+		self.bg.tex:SetVertexColor(0, 0, 0)
+	end
+	
+    local hp = T.createStatusbar(self, "ARTWORK", nil, nil, 1, 1, 1, 1)
 	hp:SetFrameLevel(3)
     hp:SetAllPoints(self)
 	hp:SetPoint("TOPLEFT", self, "TOPLEFT")
 	hp:SetPoint("TOPRIGHT", self, "TOPRIGHT")
     hp.frequentUpdates = true
 	
+	if aCoreCDB["OtherOptions"]["style"] == 1 then
+		hp.bg:SetGradientAlpha("VERTICAL", .5, .5, .5, .5, 0, 0, 0,0)
+	else
+		hp.bg:SetGradientAlpha("VERTICAL", .2,.2,.2,.15,.25,.25,.25,.6)
+	end
+	
 	-- little black line to make the health bar more clear
 	hp.ind = hp:CreateTexture(nil, "OVERLAY", 1)
     hp.ind:SetTexture("Interface\\Buttons\\WHITE8x8")
 	hp.ind:SetVertexColor(0, 0, 0)
 	hp.ind:SetSize(1, self:GetHeight())
-	if aCoreCDB["UnitframeOptions"]["transparentmode"] then
+	if aCoreCDB["OtherOptions"]["style"] ~= 3 then
 		hp.ind:SetPoint("RIGHT", hp:GetStatusBarTexture(), "LEFT", 0, 0)
 	else
 		hp.ind:SetPoint("LEFT", hp:GetStatusBarTexture(), "RIGHT", 0, 0)
 	end
 	
-	if aCoreCDB["UnitframeOptions"]["transparentmode"] then
+	if aCoreCDB["OtherOptions"]["style"] ~= 3 then
 		hp:SetReverseFill(true)
 	end
 	
 	-- border --
 	self.backdrop = T.createBackdrop(hp, hp, 0)
 	
-	-- health backdrop --
-	self.bg = self:CreateTexture(nil, "BACKGROUND")
-    self.bg:SetAllPoints(hp)
-    self.bg:SetTexture(G.media.blank)
-	if aCoreCDB["UnitframeOptions"]["transparentmode"] then
-		self.bg:SetGradientAlpha("VERTICAL", aCoreCDB["UnitframeOptions"]["endcolor"].r, aCoreCDB["UnitframeOptions"]["endcolor"].g, aCoreCDB["UnitframeOptions"]["endcolor"].b, aCoreCDB["UnitframeOptions"]["endcolor"].a, aCoreCDB["UnitframeOptions"]["startcolor"].r, aCoreCDB["UnitframeOptions"]["startcolor"].g, aCoreCDB["UnitframeOptions"]["startcolor"].b, aCoreCDB["UnitframeOptions"]["startcolor"].a)
-	else
-		self.bg:SetGradientAlpha("VERTICAL", aCoreCDB["UnitframeOptions"]["endcolor"].r, aCoreCDB["UnitframeOptions"]["endcolor"].g, aCoreCDB["UnitframeOptions"]["endcolor"].b, 1, aCoreCDB["UnitframeOptions"]["startcolor"].r, aCoreCDB["UnitframeOptions"]["startcolor"].g, aCoreCDB["UnitframeOptions"]["startcolor"].b, 1)
-	end
-	
     self.Health = hp
 	self.Health.PostUpdate = T.Updatehealthbar
 	
 	-- raid manabars --
-	if aCoreCDB["UnitframeOptions"]["raidmanabars"] == true then
-		local pp = T.createStatusbar(self, bartex, "ARTWORK", nil, nil, 1, 1, 1, 1)
+	if aCoreCDB["UnitframeOptions"]["raidmanabars"] then
+		local pp = T.createStatusbar(self, "ARTWORK", nil, nil, 1, 1, 1, 1)
 		pp:SetFrameLevel(3)
 		pp:SetPoint("BOTTOMLEFT", self, "BOTTOMLEFT")
 		pp:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT")
+		
+		pp.bg:SetGradientAlpha("VERTICAL", .2,.2,.2,.15,.25,.25,.25,.6)
+		
 		pp.backdrop = T.createBackdrop(pp, pp, 1)
 		
 		self.Power = pp
@@ -254,7 +266,7 @@ local func = function(self, unit)
     masterlooter:SetPoint('LEFT', leader, 'RIGHT')
     self.MasterLooter = masterlooter
 
-	local lfd =  T.createtext(hp, "OVERLAY", aCoreCDB["UnitframeOptions"]["fontsize"], "OUTLINE", "CENTER")
+	local lfd =  T.createtext(hp, "OVERLAY", 13, "OUTLINE", "CENTER")
 	lfd:SetFont(G.symbols, aCoreCDB["UnitframeOptions"]["raidfontsize"]-3, "OUTLINE")
 	lfd:SetPoint("BOTTOM", hp, 0, -1)
 	self:Tag(lfd, '[Altz:LFD]')
@@ -319,7 +331,7 @@ local func = function(self, unit)
 	-- Range
     local range = {
         insideAlpha = 1,
-        outsideAlpha = 0.5,
+        outsideAlpha = 0.3,
     }
 	
 	if aCoreCDB["UnitframeOptions"]["enablearrow"] then
@@ -349,35 +361,45 @@ local dfunc = function(self, unit)
     self.hl:SetBlendMode("ADD")
 	
 	-- backdrop --
-	self.bg = self:CreateTexture(nil, "BACKGROUND")
-    self.bg:SetAllPoints()
-    self.bg:SetTexture(G.media.blank)
-	if aCoreCDB["UnitframeOptions"]["transparentmode"] then
-		self.bg:SetGradientAlpha("VERTICAL", aCoreCDB["UnitframeOptions"]["endcolor"].r, aCoreCDB["UnitframeOptions"]["endcolor"].g, aCoreCDB["UnitframeOptions"]["endcolor"].b, aCoreCDB["UnitframeOptions"]["endcolor"].a, aCoreCDB["UnitframeOptions"]["startcolor"].r, aCoreCDB["UnitframeOptions"]["startcolor"].g, aCoreCDB["UnitframeOptions"]["startcolor"].b, aCoreCDB["UnitframeOptions"]["startcolor"].a)
+	self.bg = CreateFrame("Frame", nil, self)
+	self.bg:SetFrameLevel(0)
+	self.bg:SetAllPoints(self)
+	self.bg.tex = self.bg:CreateTexture(nil, "BACKGROUND")
+    self.bg.tex:SetAllPoints()
+	if aCoreCDB["OtherOptions"]["style"] == 1 then
+		self.bg.tex:SetTexture(G.media.blank)
+		self.bg.tex:SetVertexColor(0, 0, 0, 0)	
 	else
-		self.bg:SetGradientAlpha("VERTICAL", aCoreCDB["UnitframeOptions"]["endcolor"].r, aCoreCDB["UnitframeOptions"]["endcolor"].g, aCoreCDB["UnitframeOptions"]["endcolor"].b, 1, aCoreCDB["UnitframeOptions"]["startcolor"].r, aCoreCDB["UnitframeOptions"]["startcolor"].g, aCoreCDB["UnitframeOptions"]["startcolor"].b, 1)
+		self.bg.tex:SetTexture(G.media.ufbar)
+		self.bg.tex:SetVertexColor(0, 0, 0)
 	end
 	
 	-- border --
 	self.backdrop = T.createBackdrop(self, self, 0)
 	
-    local hp = T.createStatusbar(self, bartex, "ARTWORK", nil, nil, 1, 1, 1, 1)
+    local hp = T.createStatusbar(self, "ARTWORK", nil, nil, 1, 1, 1, 1)
 	hp:SetFrameLevel(3)
     hp:SetAllPoints(self)
     hp.frequentUpdates = true
+	
+	if aCoreCDB["OtherOptions"]["style"] == 1 then
+		hp.bg:SetGradientAlpha("VERTICAL", .5, .5, .5, .5, 0, 0, 0,0)
+	else
+		hp.bg:SetGradientAlpha("VERTICAL", .2,.2,.2,.15,.25,.25,.25,.6)
+	end
 	
 	-- little black line to make the health bar more clear
 	hp.ind = hp:CreateTexture(nil, "OVERLAY", 1)
     hp.ind:SetTexture("Interface\\Buttons\\WHITE8x8")
 	hp.ind:SetVertexColor(0, 0, 0)
 	hp.ind:SetSize(1, self:GetHeight())
-	if aCoreCDB["UnitframeOptions"]["transparentmode"] then
+	if aCoreCDB["OtherOptions"]["style"] ~= 3 then
 		hp.ind:SetPoint("RIGHT", hp:GetStatusBarTexture(), "LEFT", 0, 0)
 	else
 		hp.ind:SetPoint("LEFT", hp:GetStatusBarTexture(), "RIGHT", 0, 0)
 	end
 	
-	if aCoreCDB["UnitframeOptions"]["transparentmode"] then
+	if aCoreCDB["OtherOptions"]["style"] ~= 3 then
 		hp:SetReverseFill(true)
 	end
 	
@@ -399,7 +421,7 @@ local dfunc = function(self, unit)
     masterlooter:SetPoint('LEFT', leader, 'RIGHT')
     self.MasterLooter = masterlooter
 	
-	local lfd =  T.createtext(hp, "OVERLAY", aCoreCDB["UnitframeOptions"]["fontsize"], "OUTLINE", "LEFT")
+	local lfd =  T.createtext(hp, "OVERLAY", 13, "OUTLINE", "LEFT")
 	lfd:SetFont(G.symbols, aCoreCDB["UnitframeOptions"]["raidfontsize"]-3, "OUTLINE")
 	lfd:SetPoint("LEFT", hp, 1, -1)
 	self:Tag(lfd, '[Altz:LFD]')
@@ -430,7 +452,7 @@ local dfunc = function(self, unit)
 	-- Range
     local range = {
         insideAlpha = 1,
-        outsideAlpha = 0.5,
+        outsideAlpha = 0.3,
     }
 	
 	if aCoreCDB["UnitframeOptions"]["enablearrow"] then
