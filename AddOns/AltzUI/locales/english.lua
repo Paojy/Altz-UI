@@ -1,7 +1,19 @@
 ﻿local T, C, L, G = unpack(select(2, ...))
 if G.Client == "zhCN" or G.Client == "zhTW" then return end
- 
-L["点我隐藏"] = "Click to hide."
+
+L["角色"] = "Character"
+L["团队"] = "Raid"
+L["好友"] = "Frieds"
+L["公会"] = "Guild"
+L["成就"] = "Achievement"
+L["手册"] = "EJ"
+L["宠物"] = "Pet"
+L["PVP"] = "PVP"
+L["LFG"] = "LFG"
+L["任务"] = "Quest"
+L["法术"] = "Spell"
+L["行囊"] = "Inventory"
+L["团队工具"] = "RaidTools"
 
 L["当前经验"] = "Current: "
 L["剩余经验"] = "Remaining: "
@@ -21,6 +33,7 @@ L["服务器"] = "Server"
 L["角色"] = "Character"
 
 L["脱装备"] = "Undress All"
+L["切天赋"] = "Change Active Spec"
 
 L["全部打开"] = "Open All"
 L["背包已满"] = "Your bags are full"
@@ -56,6 +69,7 @@ L["公会邀请"] = "Guild Invite"
 L["添加好友"] = "Add Friend"
 L["整理背包提示"] = "LeftButton - sort in an backward order\nRightButton - sort in an forward order"
 
+L["微型菜单"] = "MicroMenu"
 L["主动作条"] = "Main\nActionbar"
 L["额外动作条"] = "Multi\nActionBar"
 L["右侧额外动作条"] = "RightMulti\nActionBar"
@@ -93,10 +107,6 @@ for i = 1, 5 do
 	L["竞技场敌人头像"..i] = "Arena"..i
 end
 
-L["控制台"] = "AltzUI GUI"
-L["团队工具"] = "RaidTools"
-L["无统计插件"] = "Can't find any Damage Meter"
-
 L["无2"] = "|cffFF0000No|r"
 L["无"] = "No"
 L["合剂"] = "Flask"
@@ -128,3 +138,17 @@ L["进入战斗锁定"] = "Entered combat, lock all frames."
 L["钱不够"] = "Don't have encough money to buy"
 L["购买"] = "Bought %d %s."
 L["货物不足"] = "The merchat don't have enough"
+
+L["插件管理"] = "Addon Manager"
+L[" 搜索"] = "Search"
+L["重载插件"] = "Reload UI"
+L["配置"] = "Profiles"
+L["新配置文件"] = "New Profile"
+L["启用全部"] = "Enable All"
+L["禁用全部"] = "Disable All"
+L["配置文件名字"] = "Profile Name"
+L["设置到"] = "Set To.."
+L["增加到"] = "Add To.."
+L["移除自"] = "Remove From.."
+L["删除配置文件"] = "Delete Profile.."
+L["删除配置文件确认"] = "Are you sure you want to delete this profile? Hold down shift and click again if you are."
