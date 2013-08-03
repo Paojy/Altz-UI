@@ -1,4 +1,5 @@
 ﻿local T, C, L, G = unpack(select(2, ...))
+local F = unpack(Aurora)
 
 T.ShortValue = function(val)
 	if aCoreCDB["UnitframeOptions"]["tenthousand"] then
@@ -120,7 +121,7 @@ T.createBackdrop = function(parent, anchor, a)
     return frame
 end
 
-T.createStatusbar = function(parent, tex, layer, height, width, r, g, b, alpha)
+T.createStatusbar = function(parent, layer, height, width, r, g, b, alpha)
     local bar = CreateFrame"StatusBar"
     bar:SetParent(parent)
     if height then
@@ -129,8 +130,22 @@ T.createStatusbar = function(parent, tex, layer, height, width, r, g, b, alpha)
     if width then
         bar:SetWidth(width)
     end
-    bar:SetStatusBarTexture(tex, layer)
+	
+	if aCoreCDB["OtherOptions"]["style"] == 1 then
+		bar:SetStatusBarTexture(G.media.blank)
+	else
+		bar:SetStatusBarTexture(G.media.ufbar)
+	end
+	
     bar:SetStatusBarColor(r, g, b, alpha)
+	
+	bar.bg = bar:CreateTexture(nil, "BACKGROUND")
+	if aCoreCDB["OtherOptions"]["style"] == 1 then
+		bar.bg:SetTexture(G.media.blank)
+	else
+		bar.bg:SetTexture(G.media.ufbar)
+	end
+	bar.bg:SetAllPoints(true)
 	
     bar:GetStatusBarTexture():SetHorizTile(false)
     bar:GetStatusBarTexture():SetVertTile(false)
