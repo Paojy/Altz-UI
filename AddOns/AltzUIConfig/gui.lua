@@ -405,13 +405,10 @@ T.createcheckbutton(UFInnerframe.style, 30, 150, L["显示肖像"], "UnitframeOp
 T.createslider(UFInnerframe.style, 30, 200, L["肖像透明度"], "UnitframeOptions", "portraitalpha", 100, 10, 100, 5)
 T.createDR(UFInnerframe.style.portrait, UFInnerframe.style.portraitalpha)
 T.createcheckbutton(UFInnerframe.style, 30, 240, L["按职业着色"], "UnitframeOptions", "classcolormode", L["按职业染色提示"])
-T.createcheckbutton(UFInnerframe.style, 30, 270, L["反向填充"], "UnitframeOptions", "transparentmode", L["反向填充提示"])
-T.createcolorpickerbu(UFInnerframe.style, 40, 300, L["渐变开始透颜色"], "UnitframeOptions", "startcolor")
-T.createcolorpickerbu(UFInnerframe.style, 210, 300, L["渐变结束透颜色"], "UnitframeOptions", "endcolor")
-T.createcheckbutton(UFInnerframe.style, 30, 330, L["名字职业着色"], "UnitframeOptions", "nameclasscolormode", L["名字职业着色提示"])
-T.createcheckbutton(UFInnerframe.style, 30, 360, L["以万为单位显示"], "UnitframeOptions", "tenthousand")
-T.createcheckbutton(UFInnerframe.style, 30, 390, L["总是显示生命值"], "UnitframeOptions", "alwayshp", L["总是显示生命值提示"])
-T.createcheckbutton(UFInnerframe.style, 30, 420, L["总是显示能量值"], "UnitframeOptions", "alwayspp", L["总是显示能量值提示"])
+T.createcheckbutton(UFInnerframe.style, 30, 270, L["名字职业着色"], "UnitframeOptions", "nameclasscolormode", L["名字职业着色提示"])
+T.createcheckbutton(UFInnerframe.style, 30, 300, L["以万为单位显示"], "UnitframeOptions", "tenthousand")
+T.createcheckbutton(UFInnerframe.style, 30, 330, L["总是显示生命值"], "UnitframeOptions", "alwayshp", L["总是显示生命值提示"])
+T.createcheckbutton(UFInnerframe.style, 30, 360, L["总是显示能量值"], "UnitframeOptions", "alwayspp", L["总是显示能量值提示"])
 
 UFInnerframe.size = CreateOptionPage("UF Options size", L["尺寸"], UFInnerframe, "VERTICAL", .3)
 
@@ -589,7 +586,7 @@ T.createDR(RFInnerframe.common.enablearrow, RFInnerframe.common.arrowsacle)
 RFInnerframe.switch = CreateOptionPage("RF Options switch", L["切换"], RFInnerframe, "VERTICAL", .3)
 
 T.createcheckbutton(RFInnerframe.switch, 30, 60, L["禁用自动切换"], "UnitframeOptions", "autoswitch", L["禁用自动切换提示"])
-raidonly_group = {
+local raidonly_group = {
 	["healer"] = L["治疗模式"],
 	["dps"] = L["输出/坦克模式"],
 }
@@ -598,7 +595,7 @@ T.createDR(RFInnerframe.switch.autoswitch, RFInnerframe.switch.raidonly)
 
 RFInnerframe.healer = CreateOptionPage("RF Options healer", L["治疗模式"], RFInnerframe, "VERTICAL", .3)
 
-groupfilter_group = {
+local groupfilter_group = {
 	["1,2,3,4,5"] = L["25-man"],
 	["1,2,3,4,5,6,7,8"] = L["40-man"],
 }
@@ -608,7 +605,7 @@ T.createslider(RFInnerframe.healer, 30, 150, L["宽度"], "UnitframeOptions", "h
 T.createcheckbutton(RFInnerframe.healer, 30, 190, L["raidmanabars"], "UnitframeOptions", "raidmanabars")
 T.createslider(RFInnerframe.healer,  30, 240, L["生命条高度比"], "UnitframeOptions", "raidhpheight", 100, 20, 95, 5, L["生命条高度比提示"])
 T.createDR(RFInnerframe.healer.raidmanabars, RFInnerframe.healer.raidhpheight)
-raidanchor_group = {
+local raidanchor_group = {
 	["LEFT"] = L["LEFT"],
 	["TOP"] = L["TOP"],
 }
@@ -1330,16 +1327,21 @@ ActionbarInnerframe.other = CreateOptionPage("Actionbar Options bar12", OTHER, A
 local stancebartitle = ActionbarInnerframe.other:CreateFontString(nil, "ARTWORK", "GameFontNormalLeftYellow")
 stancebartitle:SetPoint("TOPLEFT", 36, -75)
 stancebartitle:SetText(L["姿态/形态条"])
-T.createslider(ActionbarInnerframe.other, 30, 110, L["图标大小"], "ActionbarOptions", "stancebarbuttonszie", 1, 15, 40, 1)
-T.createslider(ActionbarInnerframe.other, 30, 150, L["图标间距"], "ActionbarOptions", "stancebarbuttonspace", 1, 0, 5, 1)
+local stancebarinneranchor_group = {
+	["LEFT"] = L["左"],
+	["RIGHT"] = L["右"],
+}
+T.createradiobuttongroup(ActionbarInnerframe.other, 30, 90, L["排列方向"], "ActionbarOptions", "stancebarinneranchor", stancebarinneranchor_group)
+T.createslider(ActionbarInnerframe.other, 30, 140, L["图标大小"], "ActionbarOptions", "stancebarbuttonszie", 1, 15, 40, 1)
+T.createslider(ActionbarInnerframe.other, 30, 180, L["图标间距"], "ActionbarOptions", "stancebarbuttonspace", 1, 0, 5, 1)
 local leave_vehicletitle = ActionbarInnerframe.other:CreateFontString(nil, "ARTWORK", "GameFontNormalLeftYellow")
-leave_vehicletitle:SetPoint("TOPLEFT", 36, -205)
+leave_vehicletitle:SetPoint("TOPLEFT", 36, -225)
 leave_vehicletitle:SetText(L["离开载具按钮"])
-T.createslider(ActionbarInnerframe.other, 30, 240, L["图标大小"], "ActionbarOptions", "leave_vehiclebuttonsize", 1, 15, 50, 1)
+T.createslider(ActionbarInnerframe.other, 30, 260, L["图标大小"], "ActionbarOptions", "leave_vehiclebuttonsize", 1, 15, 50, 1)
 local extrabartitle = ActionbarInnerframe.other:CreateFontString(nil, "ARTWORK", "GameFontNormalLeftYellow")
-extrabartitle:SetPoint("TOPLEFT", 36, -295)
+extrabartitle:SetPoint("TOPLEFT", 36, -315)
 extrabartitle:SetText(L["额外特殊按钮"])
-T.createslider(ActionbarInnerframe.other, 30, 330, L["图标大小"], "ActionbarOptions", "extrabarbuttonsize", 1, 15, 50, 1)
+T.createslider(ActionbarInnerframe.other, 30, 350, L["图标大小"], "ActionbarOptions", "extrabarbuttonsize", 1, 15, 50, 1)
 
 --====================================================--
 --[[           -- BuffFrame Options --              ]]--
@@ -1435,24 +1437,58 @@ T.createmultilinebox(RaidToolOptions, 200, 60, 35, 205, L["药水通报过滤"],
 --====================================================--
 local OtherOptions = CreateOptionPage("Other Options", OTHER, GUI, "VERTICAL")
 
-T.createslider(OtherOptions, 30, 80, L["缩放按钮高度"], "OtherOptions", "minimapheight", 1, 100, 300, 5, L["缩放按钮高度提示"])
-T.createslider(OtherOptions, 30, 120, L["系统菜单尺寸"], "OtherOptions", "micromenuscale", 100, 50, 200, 5)
-T.createcheckbutton(OtherOptions, 30, 160, L["整理小地图图标"], "OtherOptions", "collectminimapbuttons")
-MBCFpos_group = {
+local style_group = {
+	[1] = L["透明样式"],
+	[2] = L["深色样式"],
+	[3] = L["普通样式"],
+}
+T.createradiobuttongroup(OtherOptions, 30, 70, L["界面风格"], "OtherOptions", "style", style_group)
+OtherOptions.style:HookScript("OnShow", function(self)
+	if aCoreCDB["OtherOptions"]["style"] == 3 then
+		UFInnerframe.style.portrait:Disable()
+		BlizzardOptionsPanel_Slider_Disable(UFInnerframe.style.portraitalpha)
+	else
+		UFInnerframe.style.portrait:Enable()
+		BlizzardOptionsPanel_Slider_Enable(UFInnerframe.style.portraitalpha)
+	end
+end)
+local stylebuttons = {OtherOptions.style:GetChildren()}
+for i = 1, #stylebuttons do
+	stylebuttons[i]:HookScript("OnClick", function(self)
+		if aCoreCDB["OtherOptions"]["style"] == 3 then
+			UFInnerframe.style.portrait:Disable()
+			BlizzardOptionsPanel_Slider_Disable(UFInnerframe.style.portraitalpha)
+		else
+			UFInnerframe.style.portrait:Enable()
+			BlizzardOptionsPanel_Slider_Enable(UFInnerframe.style.portraitalpha)
+		end
+	end)
+end
+T.createslider(OtherOptions, 30, 130, L["缩放按钮高度"], "OtherOptions", "minimapheight", 1, 100, 300, 5, L["缩放按钮高度提示"])
+T.createslider(OtherOptions, 30, 170, L["系统菜单尺寸"], "OtherOptions", "micromenuscale", 100, 50, 200, 5)
+T.createslider(OtherOptions, 30, 210, L["信息条尺寸"], "OtherOptions", "infobarscale", 100, 50, 200, 5)
+T.createcheckbutton(OtherOptions, 30, 250, L["整理小地图图标"], "OtherOptions", "collectminimapbuttons")
+T.createcheckbutton(OtherOptions, 300, 250, L["整理隐藏的小地图图标"], "OtherOptions", "collecthidingminimapbuttons")
+local MBCFpos_group = {
 	["TOP"] = L["上方"],
 	["BOTTOM"] = L["下方"],
 }
-T.createradiobuttongroup(OtherOptions, 30, 190, L["整理栏位置"], "OtherOptions", "MBCFpos", MBCFpos_group)
-T.createcheckbutton(OtherOptions, 30, 220, L["整理隐藏的小地图图标"], "OtherOptions", "collecthidingminimapbuttons")
+T.createradiobuttongroup(OtherOptions, 30, 280, L["整理栏位置"], "OtherOptions", "MBCFpos", MBCFpos_group)
 T.createDR(OtherOptions.collectminimapbuttons, OtherOptions.MBCFpos, OtherOptions.collecthidingminimapbuttons)
-T.createcheckbutton(OtherOptions, 30, 250, L["隐藏错误提示"], "OtherOptions", "hideerrors", L["隐藏错误提示提示"])
-T.createcheckbutton(OtherOptions, 30, 280, L["成就截图"], "OtherOptions", "autoscreenshot", L["成就截图提示"])
-T.createcheckbutton(OtherOptions, 30, 310, L["回收内存"], "OtherOptions", "collectgarbage", L["回收内存提示"])
-T.createcheckbutton(OtherOptions, 30, 340, L["最远镜头"], "OtherOptions", "camera", L["最远镜头提示"])
-T.createcheckbutton(OtherOptions, 30, 370, L["自动接受复活"], "OtherOptions", "acceptres", L["自动接受复活提示"])	
-T.createcheckbutton(OtherOptions, 30, 400, L["战场自动释放灵魂"], "OtherOptions", "battlegroundres", L["战场自动释放灵魂提示"])
-T.createcheckbutton(OtherOptions, 30, 430, L["自动交接任务"], "OtherOptions", "autoquests", L["自动交接任务提示"])
-T.createcheckbutton(OtherOptions, 30, 460, L["大喊被闷了"], "OtherOptions", "saysapped", L["大喊被闷了提示"])
+
+OtherOptions.DividingLine = OtherOptions:CreateTexture(nil, "ARTWORK")
+OtherOptions.DividingLine:SetSize(OtherOptions:GetWidth()-50, 1)
+OtherOptions.DividingLine:SetPoint("TOP", 0, -315)
+OtherOptions.DividingLine:SetTexture(1, 1, 1, .2)
+
+T.createcheckbutton(OtherOptions, 30, 330, L["隐藏错误提示"], "OtherOptions", "hideerrors", L["隐藏错误提示提示"])	
+T.createcheckbutton(OtherOptions, 300, 330, L["成就截图"], "OtherOptions", "autoscreenshot", L["成就截图提示"])
+T.createcheckbutton(OtherOptions, 30, 360, L["回收内存"], "OtherOptions", "collectgarbage", L["回收内存提示"])
+T.createcheckbutton(OtherOptions, 300, 360, L["最远镜头"], "OtherOptions", "camera", L["最远镜头提示"])
+T.createcheckbutton(OtherOptions, 30, 390, L["自动接受复活"], "OtherOptions", "acceptres", L["自动接受复活提示"])	
+T.createcheckbutton(OtherOptions, 300, 390, L["战场自动释放灵魂"], "OtherOptions", "battlegroundres", L["战场自动释放灵魂提示"])
+T.createcheckbutton(OtherOptions, 30, 420, L["自动交接任务"], "OtherOptions", "autoquests", L["自动交接任务提示"])
+T.createcheckbutton(OtherOptions, 300, 420, L["大喊被闷了"], "OtherOptions", "saysapped", L["大喊被闷了提示"])
 
 --====================================================--
 --[[               -- Skin Options --               ]]--
@@ -1510,6 +1546,18 @@ function eventframe:ADDON_LOADED(arg1)
 		aCoreCDB["SkinOptions"]["editsettingsbu"] = false
 	end
 end
+
+local GUIbutton = CreateFrame("Button", G.uiname.."GUI MenuButton", GameMenuFrame, "GameMenuButtonTemplate")
+GUIbutton:SetSize(GameMenuButtonMacros:GetWidth(), GameMenuButtonMacros:GetHeight())
+--GameMenuFrame:SetHeight(GUIbutton:GetHeight()+GameMenuButtonMacros:GetHeight())
+GameMenuButtonLogout:SetPoint("TOP", GUIbutton, "BOTTOM", 0, -1)
+GUIbutton:SetPoint("TOP", GameMenuButtonMacros, "BOTTOM", 0, -1)
+GUIbutton:SetText("Altz UI")
+F.Reskin(GUIbutton)
+GUIbutton:SetScript("OnClick", function()
+	HideUIPanel(GameMenuFrame)
+	_G["AltzUI_GUI Main Frame"]:Show()
+end)
 
 --[[ CPU and Memroy testing
 local interval = 0
