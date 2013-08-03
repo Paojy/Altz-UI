@@ -720,17 +720,32 @@ Net_Stats:RegisterEvent("PLAYER_LOGIN")
 -- 耐久
 local Durability = CreateInfoButton("Durability", InfoFrame, InfoButtons, 40, 20, "CENTER")
 
+local EquipSetsMenu = CreateFrame("Frame", G.uiname.."EquipSetsMenu", UIParent, "UIDropDownMenuTemplate")
+local EquipSetsList = {}
+
+local function UpdateEquipSetsList()
+	local count = GetNumEquipmentSets()
+	if count > 0 then
+		EquipSetsList = {}
+		for index = 1, count do 
+			local name, Icon, setID, isEquipped, totalItems, equippedItems, inventoryItems, missingItems, ignoredSlots = GetEquipmentSetInfo(index)
+			EquipSetsList[index] = {
+				text = name,
+				icon = Icon,
+				tCoordLeft = .1, tCoordRight = .9, tCoordTop = .1, tCoordBottom = .9,
+				checked = isEquipped,
+				func = function() UseEquipmentSet(name) end
+			}
+		end
+	end
+end
+
 local SLOTS = {}
 for _,slot in pairs({"Head", "Shoulder", "Chest", "Waist", "Legs", "Feet", "Wrist", "Hands", "MainHand", "SecondaryHand"}) do 
 	SLOTS[slot] = GetInventorySlotInfo(slot .. "Slot")
 end
 
-Durability:SetScript("OnMouseDown", function() ToggleCharacter("PaperDollFrame") end)
-
-Durability:SetScript("OnEvent", function(self, event)
-	if event == "PLAYER_ENTERING_WORLD" then
-		self:UnregisterEvent("PLAYER_ENTERING_WORLD")
-	end
+local function GetLowestDurability()
 	local l = 1
 	for slot,id in pairs(SLOTS) do
 		local d, md = GetInventoryItemDurability(id)
@@ -738,7 +753,25 @@ Durability:SetScript("OnEvent", function(self, event)
 			l = math.min(d/md, l)
 		end
 	end
-	self.text:SetText(format("%d"..G.classcolor.."dur|r", l*100))
+	return l
+end
+
+Durability:SetScript("OnMouseDown", function(self)
+	if not InCombatLockdown() and GetNumEquipmentSets() > 0 then
+		UpdateEquipSetsList()
+		EasyMenu(EquipSetsList, EquipSetsMenu, "cursor", 0, 0, "MENU", 2)
+		DropDownList1:ClearAllPoints()
+		DropDownList1:SetPoint("BOTTOMLEFT", self, "TOPLEFT", -5, 5)
+	end
+end)
+
+Durability:SetScript("OnEvent", function(self, event)
+	if event == "PLAYER_ENTERING_WORLD" then
+		self.text:SetText(format("%d"..G.classcolor.."dur|r", GetLowestDurability()*100))
+		self:UnregisterEvent("PLAYER_ENTERING_WORLD")
+	elseif event == "UPDATE_INVENTORY_DURABILITY" then
+		self.text:SetText(format("%d"..G.classcolor.."dur|r", GetLowestDurability()*100))
+	end
 end)
 
 Durability:RegisterEvent("UPDATE_INVENTORY_DURABILITY")
