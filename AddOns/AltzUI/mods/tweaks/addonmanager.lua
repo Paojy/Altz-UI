@@ -11,6 +11,13 @@ AddonManager.header = CreateFrame("Frame", "Addonmanager_Header", AddonManager)
 AddonManager.header:SetPoint("CENTER", UIParent, "CENTER", 0, 100)
 AddonManager:SetPoint("TOP", AddonManager.header, "TOP", 0, -30)
 
+local My_Addons = {
+	["!ClassColors"] = true,
+	["Aurora"] = true,
+	["AltzUI"] = true,
+	["AltzUIConfig"] = true,
+	["oGlow"] = true,
+}
 ------------------------------------------------------
 -- FUNCTIONS -----------------------------------------
 ------------------------------------------------------
@@ -93,7 +100,7 @@ function AddonManager:LoadProfileWindow()
 	local DisableAll = CreateMenuButton(window, EnableAll:GetWidth(), EnableAll:GetHeight(), L["禁用全部"], "TOPRIGHT", window, "BOTTOMRIGHT", -5, -15)
 	DisableAll:SetScript("OnClick", function(self)
 		for i, addon in pairs(AddonManager.AllAddons) do
-			if addon.name ~= "Aurora" and addon.name ~= "AltzUI" and  addon.name ~= "AltzUIConfig" then
+			if not My_Addons[addon.name] then
 				DisableAddOn(addon.name)
 				AddonManager.Buttons[i]:SetBackdropColor(50/255, 50/255, 50/255)
 				addon.enabled = false
