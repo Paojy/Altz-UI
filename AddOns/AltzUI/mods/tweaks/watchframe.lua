@@ -22,8 +22,8 @@ local origWFHighlight
 local anchorframe = CreateFrame("Frame", "Altz_WFanchorframe", UIParent)
 anchorframe.movingname = L["任务追踪"]
 anchorframe.point = {
-	healer = {a1 = "TOPLEFT", parent = "UIParent", a2 = "TOPLEFT", x = 25, y = -100},
-	dpser = {a1 = "TOPLEFT", parent = "UIParent", a2 = "TOPLEFT", x = 25, y = -100},
+	healer = {a1 = "TOPLEFT", parent = "UIParent", a2 = "TOPLEFT", x = 35, y = -20},
+	dpser = {a1 = "TOPLEFT", parent = "UIParent", a2 = "TOPLEFT", x = 35, y = -20},
 }
 T.CreateDragFrame(anchorframe) --frame, dragFrameList, inset, clamp	
 anchorframe:SetSize(200, 20)
@@ -93,12 +93,15 @@ end
 -- Font Updates
 function nWFA.HookFont()
 	local WFT = _G["WatchFrameTitle"]
-	WFT:SetFont(G.norFont, 12, "NONE")
+	WFT:SetFont(G.norFont, 12, "OUTLINE")
+	WFT:SetShadowOffset(0, 0)
 	WFT:SetPoint("TOPLEFT", WatchFrameCollapseExpandButton, "TOPRIGHT", 5, 0)
 	hooksecurefunc("WatchFrame_SetLine", function(line, anchor, verticalOffset, isHeader, text, dash, hasItem, isComplete)
-		line.text:SetFont(G.norFont, 12, "NONE")
+		line.text:SetFont(G.norFont, 12, "OUTLINE")
+		line.text:SetShadowOffset(0, 0)
 		if line.dash then
-			line.dash:SetFont(G.norFont, 12, "NONE")
+			line.dash:SetFont(G.norFont, 12, "OUTLINE")
+			line.dash:SetShadowOffset(0, 0)
 		end
 	end)
 end
@@ -108,7 +111,7 @@ function nWFA.HookWFColors()
 	-- Hook into SetLine to change color of lines	
 	hooksecurefunc("WatchFrame_SetLine", function(line, anchor, verticalOffset, isHeader, text, dash, hasItem, isComplete)
 		if isHeader then 
-			line.text:SetTextColor(G.Ccolor.r/1.2, G.Ccolor.g/1.2, G.Ccolor.b/1.2)
+			line.text:SetTextColor(G.Ccolor.r, G.Ccolor.g, G.Ccolor.b)
 		else
 			line.text:SetTextColor(.7, .7, .7)
 		end
@@ -119,14 +122,7 @@ function nWFA.HookWFColors()
 		for index = self.startLine, self.lastLine do
 			line = self.lines[index];
 			if line then
-				if index == self.startLine then
-				-- header
-					if onEnter then
-						line.text:SetTextColor(G.Ccolor.r, G.Ccolor.g, G.Ccolor.b)
-					else
-						line.text:SetTextColor(G.Ccolor.r/1.2, G.Ccolor.g/1.2, G.Ccolor.b/1.2)
-					end
-				else
+				if index ~= self.startLine then
 					if onEnter then
 						line.text:SetTextColor(1, 1, 1)
 						line.dash:SetTextColor(1, 1, 1)
