@@ -750,8 +750,8 @@ local Talent = CreateInfoButton("Talent", InfoFrame, InfoButtons, 40, 20, "LEFT"
 local LootSpecMenu = CreateFrame("Frame", G.uiname.."LootSpecMenu", UIParent, "UIDropDownMenuTemplate")
 
 local SpecList = {
-	{ text = TALENTS_BUTTON, func = function() ToggleTalentFrame() end},
-	{ text = SELECT_LOOT_SPECIALIZATION, hasArrow = 1,
+	{ text = TALENTS_BUTTON, notCheckable = true, func = function() ToggleTalentFrame() end},
+	{ text = SELECT_LOOT_SPECIALIZATION, notCheckable = true, hasArrow = 1,
 		menuList = {
 			{ text = LOOT_SPECIALIZATION_DEFAULT, specializationID = 0 },
 			{ text = "spec1", specializationID = 0 },
@@ -760,7 +760,7 @@ local SpecList = {
 			{ text = "spec4", specializationID = 0 },	
 		}
 	},
-	{ text = L["切天赋"], func = function() 		
+	{ text = L["切天赋"], notCheckable = true, func = function() 		
 			local c = GetActiveSpecGroup(false,false)
 			SetActiveSpecGroup(c == 1 and 2 or 1) 
 		end
