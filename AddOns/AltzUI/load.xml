@@ -21,6 +21,7 @@
 	<Script file="mods\skins\Recount.lua"/>
 	<Script file="mods\skins\Mirrortimer.lua"/>
 	
+	<Script file="mods\tweaks\addonmanager.lua"/>
 	<Script file="mods\panels\panels.lua"/>
 	<Script file="mods\panels\petbattles.lua"/>
 	
@@ -43,6 +44,7 @@
 
 	<Script file="mods\bag\sort.lua"/>
 	<Script file="mods\bag\bags.lua"/>
+	<Script file="mods\bag\gold.lua"/>
 	
 	<Script file="mods\chat\chat.lua"/>
 	<Script file="mods\chat\autoscroll.lua"/>
