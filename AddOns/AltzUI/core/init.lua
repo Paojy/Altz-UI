@@ -30,7 +30,7 @@ G.media = {
 	left = "Interface\\AddOns\\AltzUI\\media\\left",
 	right = "Interface\\AddOns\\AltzUI\\media\\right",
 	barhightlight = "Interface\\AddOns\\AltzUI\\media\\highlight",
-	buttonhighlight = "Interface\\AddOns\\AltzUI\\media\\highligh2",
+	buttonhighlight = "Interface\\AddOns\\AltzUI\\media\\highlight2",
 	reseting = "Interface\\AddOns\\AltzUI\\media\\resting",
 	combat = "Interface\\AddOns\\AltzUI\\media\\combat",
 }

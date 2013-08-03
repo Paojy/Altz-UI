@@ -2,11 +2,12 @@
 ..\FrameXML\UI.xsd">
 <!--@no-lib-strip@-->
 
+
 <Script file="Libs\LibStub\LibStub.lua"/>
 <Include file="Libs\LibChatAnims\LibChatAnims.xml"/>
 <!--@end-no-lib-strip@-->
 
-<Script file="Core.lua"/>
+<Script file="Code.lua"/>
 
 </Ui>
 
