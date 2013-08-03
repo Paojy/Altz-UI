@@ -171,7 +171,7 @@ end
 local function CreateCTFrame(i, movingname, justify, a1, parent, a2, x, y)
 	local f = CreateFrame("ScrollingMessageFrame", "Combat Text"..i, UIParent)
 	
-	f:SetFont("Interface\\AddOns\\AltzUI\\media\\number.ttf", 12, "OUTLINE")
+	f:SetFont("Interface\\AddOns\\AltzUI\\media\\number.ttf", iconsize, "OUTLINE")
 	f:SetShadowColor(0, 0, 0, 0)
 	f:SetFadeDuration(0.2)
 	f:SetTimeVisible(fadetime)
