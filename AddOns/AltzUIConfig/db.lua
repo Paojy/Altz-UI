@@ -730,29 +730,24 @@ local Character_default_Settings = {
 		enablefade = true,
 		fadingalpha = 0.2,
 		
-		fontsize = 13,
-		
 		-- health/power
 		tenthousand = false,
 		alwayshp = false,
 		alwayspp = false,
-		classcolormode = true,
-		transparentmode = true,
+		classcolormode = false,
 		nameclasscolormode = true,
-		startcolor = {r = 0, g = 0, b = 0, a = 0},
-		endcolor = {r = .5, g = .5, b = .5, a = 0.5},
 		
 		-- portrait
 		portrait = false,
 		portraitalpha = 0.6,
 		
 		-- size
-		height	= 16,
+		height	= 18,
 		width = 230,
 		widthpet = 70,
 		widthboss = 170,
 		scale = 1.0, -- slider
-		hpheight = 0.9, -- slider
+		hpheight = 0.75, -- slider
 
 		-- castbar
 		castbars = true,
@@ -797,7 +792,7 @@ local Character_default_Settings = {
 		healerraidheight = 30,
 		healerraidwidth = 66,
 		raidmanabars = true,
-		raidhpheight = 0.9, -- slider
+		raidhpheight = 0.8, -- slider
 		anchor = "TOP", -- dropdown
 		partyanchor = "LEFT", -- dropdown
 		showgcd = true,
@@ -863,6 +858,7 @@ local Character_default_Settings = {
 		petbarmfade = true,
 		petbarefade = false,
 		petbarfademinaplha = 0.2,
+		stancebarinneranchor = "RIGTH",
 		stancebarbuttonszie = 22,
 		stancebarbuttonspace = 4,
 		micromenuscale = 1,
@@ -929,12 +925,15 @@ local Character_default_Settings = {
 		pulltime = 8,
 	},
 	OtherOptions = {
-		minimapheight = 130,
-		micromenuscale = 1,
+		style = 1, -- 1: tansparent , 2:dark bg reverse, 3:dark bg normal -- 加入
+		minimapheight = 130, -- 加入
+		micromenuscale = 1, -- 加入
+		infobarscale = 1, -- 加入
 		collectminimapbuttons = true,
 		MBCFpos = "TOP",
 		collecthidingminimapbuttons = false,
 		hideerrors = true,		
+		
 		autoscreenshot = true,
 		collectgarbage = true,
 		camera = true,		
@@ -956,6 +955,7 @@ local Character_default_Settings = {
 	},
 	RaidDebuff = DebuffList,
 	CooldownAura = AuraList,
+	AddonProfiles = {},
 }
 
 function T.LoadVariables()
