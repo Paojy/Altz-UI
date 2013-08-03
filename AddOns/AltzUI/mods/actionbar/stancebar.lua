@@ -4,6 +4,7 @@ local dragFrameList = G.dragFrameList
 local padding = 4
 local buttonssize = aCoreCDB["ActionbarOptions"]["stancebarbuttonszie"]
 local buttonspace = aCoreCDB["ActionbarOptions"]["stancebarbuttonspace"]
+local anchor = aCoreCDB["ActionbarOptions"]["stancebarinneranchor"]
 
 -- FUNCTIONS
 
@@ -15,8 +16,8 @@ local buttonList = {}
 local frame = CreateFrame("Frame", "Altz_Stancebar", UIParent, "SecureHandlerStateTemplate")
 frame.movingname = L["姿态/形态条"]
 frame.point = {
-		healer = {a1 = "BOTTOMRIGHT", parent = "UIParent", a2 = "BOTTOMRIGHT", x = -18, y = 4},
-		dpser = {a1 = "BOTTOMRIGHT", parent = "UIParent", a2 = "BOTTOMRIGHT", x = -18, y = 4},
+		healer = {a1 = "BOTTOMRIGHT", parent = "UIParent", a2 = "BOTTOMRIGHT", x = -14, y = 15},
+		dpser = {a1 = "BOTTOMRIGHT", parent = "UIParent", a2 = "BOTTOMRIGHT", x = -14, y = 15},
 	}
 T.CreateDragFrame(frame)
 frame:SetWidth(num*buttonssize + (num-1)*buttonspace + 2*padding)
@@ -32,11 +33,20 @@ for i=1, num do
 	table.insert(buttonList, button) --add the button object to the list
 	button:SetSize(buttonssize, buttonssize)
 	button:ClearAllPoints()
-	if i == 1 then
-		button:SetPoint("BOTTOMRIGHT", frame, -padding, padding)
+	if anchor == "LEFT" then
+		if i == 1 then
+			button:SetPoint("BOTTOMLEFT", frame, padding, padding)
+		else
+			local previous = _G["StanceButton"..i-1]
+			button:SetPoint("LEFT", previous, "RIGHT", buttonspace, 0)
+		end
 	else
-		local previous = _G["StanceButton"..i-1]
-		button:SetPoint("RIGHT", previous, "LEFT", -buttonspace, 0)
+		if i == 1 then
+			button:SetPoint("BOTTOMRIGHT", frame, -padding, padding)
+		else
+			local previous = _G["StanceButton"..i-1]
+			button:SetPoint("RIGHT", previous, "LEFT", -buttonspace, 0)
+		end
 	end
 end
 
