@@ -24,11 +24,13 @@ G.symbols = "Interface\\Addons\\AltzUI\\media\\PIZZADUDEBULLETS.ttf"
 G.media = {
 	blank = "Interface\\Buttons\\WHITE8x8",
 	bar = "Interface\\AddOns\\AltzUI\\media\\statusbar",
+	ufbar = "Interface\\AddOns\\AltzUI\\media\\ufbar",
 	glow = "Interface\\AddOns\\Aurora\\media\\glow",
 	checked = "Interface\\AddOns\\Aurora\\media\\CheckButtonHilight",
 	left = "Interface\\AddOns\\AltzUI\\media\\left",
 	right = "Interface\\AddOns\\AltzUI\\media\\right",
 	barhightlight = "Interface\\AddOns\\AltzUI\\media\\highlight",
+	buttonhighlight = "Interface\\AddOns\\AltzUI\\media\\highligh2",
 	reseting = "Interface\\AddOns\\AltzUI\\media\\resting",
 	combat = "Interface\\AddOns\\AltzUI\\media\\combat",
 }
