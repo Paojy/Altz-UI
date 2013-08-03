@@ -301,6 +301,7 @@ function ContainerFrame_GenerateFrame(frame, size, id)
 				ContainerFrame1MoneyFrame:SetPoint("TOPLEFT", _G[G.uiname.."bag"], "TOPLEFT", 8, -10)
 				ContainerFrame1MoneyFrame:SetFrameStrata("HIGH")
 				ContainerFrame1MoneyFrame:SetFrameLevel(2)
+				ContainerFrame1MoneyFrame:SetHeight(20)
 				if bag==1 and item==16 then
 					itemframes:SetPoint("TOPLEFT", _G[G.uiname.."bag"], "TOPLEFT", 5, -30)
 					lastrowbutton = itemframes
