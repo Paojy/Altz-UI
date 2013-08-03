@@ -19,19 +19,66 @@ local function ColorGradient(perc, ...)-- http://www.wowwiki.com/ColorGradient
 
     return r1 + (r2-r1)*relperc, g1 + (g2-g1)*relperc, b1 + (b2-b1)*relperc
 end
+
+local function CreateInfoButton(name, parent, t, width, height, justify)
+	local Button = CreateFrame("Frame", G.uiname..parent:GetName()..name, parent)
+	Button:SetSize(width, height)
+	
+	Button.text = T.createtext(Button, "OVERLAY", 12, "OUTLINE", justify)
+	Button.text:SetPoint("CENTER")
+
+	tinsert(t, Button)
+	return Button
+end
+
+local function Skinbar(bar)
+	if aCoreCDB["OtherOptions"]["style"] == 1 then
+		bar.tex = bar:CreateTexture(nil, "ARTWORK")
+		bar.tex:SetAllPoints()
+		bar.tex:SetTexture(G.media.blank)
+		bar.tex:SetGradient("VERTICAL", G.Ccolor.r, G.Ccolor.g, G.Ccolor.b, G.Ccolor.r/3, G.Ccolor.g/3, G.Ccolor.b/3)
+		F.CreateSD(bar, 2, 0, 0, 0, 1, -1)
+	else
+		bar.tex = bar:CreateTexture(nil, "ARTWORK")
+		bar.tex:SetAllPoints()
+		bar.tex:SetTexture(G.media.ufbar)
+		bar.tex:SetVertexColor(G.Ccolor.r, G.Ccolor.g, G.Ccolor.b)
+		F.CreateSD(bar, 2, 0, 0, 0, 1, -1)
+	end
+end
+
+local function Skinbg(bar)
+	if aCoreCDB["OtherOptions"]["style"] ~= 1 then
+		bar.tex = bar:CreateTexture(nil, "ARTWORK")
+		bar.tex:SetAllPoints()
+		bar.tex:SetTexture(G.media.blank)
+		bar.tex:SetGradientAlpha("VERTICAL", .2,.2,.2,.15,.25,.25,.25,.6)
+		F.CreateBD(bar, 1)
+		F.CreateSD(bar, 2, 0, 0, 0, 1, -1)	
+	end
+end
 --====================================================--
 --[[                -- Shadow --                    ]]--
 --====================================================--	
-local PShadow = CreateFrame("Frame", nil, UIParent)
+local PShadow = CreateFrame("Frame", G.uiname.."Backgroud Shadow", UIParent)
 PShadow:SetFrameStrata("BACKGROUND")
 PShadow:SetAllPoints()
 PShadow:SetBackdrop({bgFile = "Interface\\AddOns\\AltzUI\\media\\shadow"})
 PShadow:SetBackdropColor(0, 0, 0, 0.3)
 
 --====================================================--
---[[              -- Bottom Panel --                ]]--
---====================================================--	
-bottompanel = CreateFrame("Frame", nil, UIParent)
+--[[                 -- Panels --                   ]]--
+--====================================================--
+toppanel = CreateFrame("Frame", G.uiname.."Top Long Panel", UIParent)
+toppanel:SetFrameStrata("BACKGROUND")
+toppanel:SetPoint("TOP", 0, 3)
+toppanel:SetPoint("LEFT", UIParent, "LEFT", -8, 0)
+toppanel:SetPoint("RIGHT", UIParent, "RIGHT", 8, 0)
+toppanel:SetHeight(15)
+toppanel.border = F.CreateBDFrame(toppanel, 0.6)
+F.CreateSD(toppanel.border, 2, 0, 0, 0, 1, -1)
+
+bottompanel = CreateFrame("Frame", G.uiname.."Bottom Long Panel", UIParent)
 bottompanel:SetFrameStrata("BACKGROUND")
 bottompanel:SetPoint("BOTTOM", 0, -3)
 bottompanel:SetPoint("LEFT", UIParent, "LEFT", -8, 0)
@@ -39,6 +86,34 @@ bottompanel:SetPoint("RIGHT", UIParent, "RIGHT", 8, 0)
 bottompanel:SetHeight(15)
 bottompanel.border = F.CreateBDFrame(bottompanel, 0.6)
 F.CreateSD(bottompanel.border, 2, 0, 0, 0, 1, -1)
+
+local TLPanel = CreateFrame("Frame", G.uiname.."TLPanel", UIParent)
+TLPanel:SetFrameStrata("BACKGROUND")
+TLPanel:SetFrameLevel(2)
+TLPanel:SetSize(G.screenwidth*2/9, 5)
+TLPanel:SetPoint("TOPLEFT", UIParent, "TOPLEFT", 15, -10)
+Skinbar(TLPanel)
+
+local TRPanel = CreateFrame("Frame", G.uiname.."TRPanel", UIParent)
+TRPanel:SetFrameStrata("BACKGROUND")
+TRPanel:SetFrameLevel(2)
+TRPanel:SetSize(G.screenwidth*2/9, 5)
+TRPanel:SetPoint("TOPRIGHT", UIParent, "TOPRIGHT", -15, -10)
+Skinbar(TRPanel)
+
+local BLPanel = CreateFrame("Frame", G.uiname.."BLPanel", UIParent)
+BLPanel:SetFrameStrata("BACKGROUND")
+BLPanel:SetFrameLevel(2)
+BLPanel:SetSize(G.screenwidth*2/9, 5)
+BLPanel:SetPoint("BOTTOMLEFT", UIParent, "BOTTOMLEFT", 15, 10)
+Skinbar(BLPanel)
+
+local BRPanel = CreateFrame("Frame", G.uiname.."BRPanel", UIParent)
+BRPanel:SetFrameStrata("BACKGROUND")
+BRPanel:SetFrameLevel(2)
+BRPanel:SetSize(G.screenwidth*2/9, 5)
+BRPanel:SetPoint("BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", -15, 10)
+Skinbar(BRPanel)
 
 --====================================================--
 --[[                   -- Minimap --                ]]--
@@ -53,8 +128,8 @@ minimap_pullback:SetFrameStrata("BACKGROUND")
 minimap_pullback:SetFrameLevel(5)
 minimap_pullback.movingname = L["小地图缩放按钮"]
 minimap_pullback.point = {
-	healer = {a1 = "BOTTOMRIGHT", parent = "UIParent", a2 = "BOTTOMRIGHT", x = -10, y = 40},
-	dpser = {a1 = "BOTTOMRIGHT", parent = "UIParent", a2 = "BOTTOMRIGHT", x = -10, y = 40},
+	healer = {a1 = "BOTTOMRIGHT", parent = "UIParent", a2 = "BOTTOMRIGHT", x = -5, y = 48},
+	dpser = {a1 = "BOTTOMRIGHT", parent = "UIParent", a2 = "BOTTOMRIGHT", x = -5, y = 48},
 }
 minimap_pullback:SetPoint("BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", -10, 40)
 T.CreateDragFrame(minimap_pullback)
@@ -130,8 +205,8 @@ chatframe_pullback:SetFrameStrata("BACKGROUND")
 chatframe_pullback:SetFrameLevel(3)
 chatframe_pullback.movingname = L["聊天框缩放按钮"]
 chatframe_pullback.point = {
-	healer = {a1 = "BOTTOMLEFT", parent = "UIParent", a2 = "BOTTOMLEFT", x = 10, y = 40},
-	dpser = {a1 = "BOTTOMLEFT", parent = "UIParent", a2 = "BOTTOMLEFT", x = 10, y = 40},
+	healer = {a1 = "BOTTOMLEFT", parent = "UIParent", a2 = "BOTTOMLEFT", x = 10, y = 48},
+	dpser = {a1 = "BOTTOMLEFT", parent = "UIParent", a2 = "BOTTOMLEFT", x = 10, y = 48},
 }
 chatframe_pullback:SetPoint("BOTTOMLEFT", UIParent, "BOTTOMLEFT", 10, 40)
 T.CreateDragFrame(chatframe_pullback)
@@ -329,9 +404,11 @@ Minimap:HookScript("OnLeave", function()
 end)
 	
 -- 战网好友上线提示
-BNToastFrame:ClearAllPoints()
-BNToastFrame:SetPoint("BOTTOMLEFT", chatframe_pullback, "TOPLEFT", 0, 10)
-BNToastFrame_UpdateAnchor = function() end
+--BNToastFrame:ClearAllPoints()
+--BNToastFrame:SetPoint("BOTTOMLEFT", chatframe_pullback, "TOPLEFT", 0, 10)
+--BNToastFrame:Show()
+--BNToastFrame.Hide = BNToastFrame.Show
+--BNToastFrame_UpdateAnchor = function() end
 
 -- 排队的眼睛
 QueueStatusMinimapButton:ClearAllPoints()
@@ -361,12 +438,56 @@ InstanceDifficulty:RegisterEvent("PLAYER_ENTERING_WORLD")
 InstanceDifficulty:RegisterEvent("PLAYER_DIFFICULTY_CHANGED")
 InstanceDifficulty:SetScript("OnEvent", function(self) self.text:SetText(select(4, GetInstanceInfo())) end)
 
--- 隐藏时钟
+-- 位置
+MinimapZoneTextButton:SetParent(Minimap)
+MinimapZoneTextButton:ClearAllPoints()
+MinimapZoneTextButton:SetPoint("CENTER", 0, 20)
+MinimapZoneTextButton:EnableMouse(false)
+MinimapZoneTextButton:Hide()
+MinimapZoneText:SetAllPoints(MinimapZoneTextButton)
+MinimapZoneText:SetFont(G.norFont, 12, "OUTLINE") 
+MinimapZoneText:SetShadowOffset(0, 0)
+MinimapZoneText:SetJustifyH("CENTER")
+Minimap:HookScript("OnEnter", function() MinimapZoneTextButton:Show() end)
+Minimap:HookScript("OnLeave", function() MinimapZoneTextButton:Hide() end)
+
+-- 新邮件图标
+MiniMapMailFrame:SetParent(Minimap)
+MiniMapMailFrame:ClearAllPoints()
+MiniMapMailFrame:SetSize(16, 16)
+MiniMapMailFrame:SetPoint("TOP", Minimap, "TOP", 0, -5)
+MiniMapMailFrame:HookScript('OnEnter', function(self)
+	GameTooltip:ClearAllPoints()
+	GameTooltip:SetPoint("BOTTOM", MiniMapMailFrame, "TOP", 0, 5)
+end)
+MiniMapMailIcon:SetTexture('Interface\\Minimap\\TRACKING\\Mailbox')
+MiniMapMailIcon:SetAllPoints(MiniMapMailFrame)
+MiniMapMailBorder:Hide()
+
+-- 时间
 if not IsAddOnLoaded("Blizzard_TimeManager") then LoadAddOn("Blizzard_TimeManager") end
 local clockFrame, clockTime = TimeManagerClockButton:GetRegions()
 clockFrame:Hide()
 clockTime:Hide()
 TimeManagerClockButton:EnableMouse(false)
+
+local clockframe = CreateFrame("Frame", G.uiname.."Clock", Minimap)
+clockframe:SetPoint("BOTTOM", 0, 5)
+clockframe:SetSize(40, 20)
+
+clockframe.text = T.createtext(clockframe, "OVERLAY", 12, "OUTLINE", "CENTER")
+clockframe.text:SetPoint("BOTTOM")
+
+clockframe.t = 0
+clockframe:SetScript("OnUpdate", function(self, e)
+	self.t =  self.t + e
+	if self.t > 5 then
+		self.text:SetText(format("%s",date("%H:%M")))
+		self.t = 0
+	end
+end)
+
+clockframe:SetScript("OnMouseDown", function() ToggleCalendar() end)
 
 -- 缩放小地图比例
 Minimap:EnableMouseWheel(true)
@@ -378,7 +499,7 @@ Minimap:SetScript('OnMouseWheel', function(self, delta)
     end
 end)
 
- -- 右键打开追踪
+-- 右键打开追踪
 Minimap:SetScript('OnMouseUp', function (self, button)
 	if button == 'RightButton' then
 		GameTooltip:Hide()
@@ -421,7 +542,7 @@ end
 local _G = getfenv(0)
 function xprptoolitp()
 	GameTooltip:SetOwner(xpbar, "ANCHOR_NONE")
-	GameTooltip:SetPoint("BOTTOMLEFT", Minimap, "TOPLEFT", -15, 10)
+	GameTooltip:SetPoint("BOTTOMRIGHT", Minimap, "TOPRIGHT", -15, 10)
 	
 	local XP, maxXP = UnitXP("player"), UnitXPMax("player")
 	local restXP = GetXPExhaustion()
@@ -513,324 +634,29 @@ WorldChannelToggle:RegisterEvent("PLAYER_ENTERING_WORLD")
 WorldChannelToggle:RegisterEvent("CHANNEL_UI_UPDATE")
 
 if G.Client == "zhCN" then WorldChannelToggle:Show() else WorldChannelToggle:Hide() end
+
 --====================================================--
---[[                -- Topleft Info --              ]]--
+--[[                --  Info Bar --              ]]--
 --====================================================--
-local InfoFrame = CreateFrame("Frame", G.uiname.."Topleft Info Frame", UIParent) -- Center Frame
-InfoFrame:SetFrameStrata("BACKGROUND")
-InfoFrame:SetSize(200, 80)
-InfoFrame:SetPoint("TOPLEFT", UIParent, "TOPLEFT", 15, -13)
+local InfoFrame = CreateFrame("Frame", G.uiname.."Info Frame", UIParent)
+InfoFrame:SetScale(aCoreCDB["OtherOptions"]["infobarscale"])
+InfoFrame:SetFrameLevel(4)
+InfoFrame:SetSize(160, 20)
+InfoFrame:SetPoint("BOTTOM", 0, 5)
 
 local InfoButtons = {}
-local function CreateInfoButton()
-	local Button = CreateFrame("Frame", nil, InfoFrame)
-	Button.text = T.createtext(Button, "OVERLAY", 12, "NONE", "CENTER")
-	Button.text:SetShadowOffset(1, -1)	
-	Button:SetAllPoints(Button.text)
 
-	tinsert(InfoButtons, Button)
-	return Button
-end
+-- 延迟和帧数
+local Net_Stats = CreateInfoButton("Net_Stats", InfoFrame, InfoButtons, 80, 20, "RIGHT")
 
--- 耐久
-local SLOTS = {}
-for _,slot in pairs({"Head", "Shoulder", "Chest", "Waist", "Legs", "Feet", "Wrist", "Hands", "MainHand", "SecondaryHand"}) do 
-	SLOTS[slot] = GetInventorySlotInfo(slot .. "Slot")
-end
-local function GetLowestDurability()
-	local l = 1
-	for slot,id in pairs(SLOTS) do
-		local d, md = GetInventoryItemDurability(id)
-		if d and md and md ~= 0 then
-			l = math.min(d/md, l)
-		end
-	end
-	return l
-end
-
-local ToggleAutoRepairMenu = CreateFrame("Frame", G.uiname.."ToggleAutoRepairMenu", UIParent, "UIDropDownMenuTemplate")
-local ToggleAutoRepairList = {
-	{text = L["autorepair"], checked= aCoreCDB["ItemOptions"]["autorepair"], func = function(self, _, _, checked) aCoreCDB["ItemOptions"]["autorepair"] = checked end, keepShownOnClick = true}, 
-	{text = L["autorepair_guild"], checked = aCoreCDB["ItemOptions"]["autorepair_guild"], func = function(self, _, _, checked) aCoreCDB["ItemOptions"]["autorepair_guild"] = checked end, keepShownOnClick = true},  
-}
-
-local Durability = CreateInfoButton()
-Durability:SetScript("OnMouseDown", function(self)
-	EasyMenu(ToggleAutoRepairList, ToggleAutoRepairMenu, "cursor", 0, 0, "MENU", 2)
-	DropDownList1:ClearAllPoints()
-	DropDownList1:SetPoint("TOPLEFT", self, "BOTTOMLEFT", 0, -5)	
-end)
-Durability:SetScript("OnEvent", function(self, event)
-	if event == "PLAYER_ENTERING_WORLD" then
-		self:UnregisterEvent("PLAYER_ENTERING_WORLD")
-	end
-	r1, g1, b1 = ColorGradient(GetLowestDurability()-0.001, 1, 0, 0, 1, 1, 0, 1, 1, 1)
-	self.text:SetText(format(G.classcolor..DURABILITY.." |r|cff%02x%02x%02x%d|r", r1 * 255, g1 * 255, b1 * 255, GetLowestDurability()*100))
-end)
-
-Durability:RegisterEvent("UPDATE_INVENTORY_DURABILITY")
-Durability:RegisterEvent("PLAYER_ENTERING_WORLD")
-
--- 好友
-local Friends = CreateInfoButton()
-Friends:SetScript("OnMouseDown", function(self)	ToggleFriendsFrame(1) end)
-Friends:SetScript("OnEvent", function(self, event)
-	if event == "PLAYER_ENTERING_WORLD" then
-		self:UnregisterEvent("PLAYER_ENTERING_WORLD")
-	end
-	self.text:SetText(format(G.classcolor..FRIENDS.." |r%d", select(2, GetNumFriends())+select(2, BNGetNumFriends())))
-end)
-
-Friends:RegisterEvent("BN_FRIEND_ACCOUNT_ONLINE")
-Friends:RegisterEvent("BN_FRIEND_ACCOUNT_OFFLINE")
-Friends:RegisterEvent("BN_FRIEND_TOON_ONLINE")
-Friends:RegisterEvent("BN_FRIEND_TOON_OFFLINE")
-Friends:RegisterEvent("FRIENDLIST_UPDATE")
-Friends:RegisterEvent("PLAYER_ENTERING_WORLD")
-
--- 公会
-local GuildMember = CreateInfoButton()
-GuildMember:SetScript("OnMouseDown", function(self)
-	if IsInGuild() then 
-		if not GuildFrame then LoadAddOn("Blizzard_GuildUI") end 
-		GuildFrame_Toggle()
-		GuildFrame_TabClicked(GuildFrameTab2)
-	else 
-		if not LookingForGuildFrame then LoadAddOn("Blizzard_LookingForGuildUI") end 
-		LookingForGuildFrame_Toggle() 
-	end
-end)
-GuildMember:SetScript("OnEvent", function(self, event)
-	if IsInGuild() then
-		self.text:SetText(format(G.classcolor..GUILD.." |r%d", select(2, GetNumGuildMembers())))
+Net_Stats:SetScript("OnMouseDown", function()
+	local AddonManager = _G[G.uiname.."AddonManager"]
+	if AddonManager:IsShown() then
+		AddonManager:Hide()
 	else
-		self.text:SetText(format(G.classcolor..GUILD.." |r%d", NONE))
-	end
-	if event == "PLAYER_ENTERING_WORLD" then
-		self:UnregisterEvent("PLAYER_ENTERING_WORLD")
+		AddonManager:Show()
 	end
 end)
-
-GuildMember:RegisterEvent("GUILD_ROSTER_SHOW")
-GuildMember:RegisterEvent("PLAYER_ENTERING_WORLD")
-GuildMember:RegisterEvent("GUILD_ROSTER_UPDATE")
-GuildMember:RegisterEvent("PLAYER_GUILD_UPDATE")
-
--- 金币
-local Profit, Spent, OldMoney = 0, 0, 0
-
-local function formatMoney(money)
-	local gold = floor(math.abs(money) / 10000)
-	local silver = mod(floor(math.abs(money) / 100), 100)
-	local copper = mod(floor(math.abs(money)), 100)
-	if gold ~= 0 then
-		return format("%s".."|cffffd700g|r".." %s".."|cffc7c7cfs|r".." %s".."|cffeda55fc|r", gold, silver, copper)
-	elseif silver ~= 0 then
-		return format("%s".."|cffc7c7cfs|r".." %s".."|cffeda55fc|r", silver, copper)
-	else
-		return format("%s".."|cffeda55fc|r", copper)
-	end
-end
-
-local function FormatTooltipMoney(money)
-	local gold, silver, copper = abs(money / 10000), abs(mod(money / 100, 100)), abs(mod(money, 100))
-	local cash = ""
-	cash = format("%d".."|cffffd700g|r".." %d".."|cffc7c7cfs|r".." %d".."|cffeda55fc|r", gold, silver, copper)		
-	return cash
-end	
-	
-local Gold = CreateInfoButton()
-Gold:SetScript("OnMouseDown", function() ToggleCharacter("TokenFrame") end)
-Gold:SetScript("OnEvent", function(self, event)
-	if event == "PLAYER_ENTERING_WORLD" then
-		self:UnregisterEvent("PLAYER_ENTERING_WORLD")
-		OldMoney = GetMoney()
-		if aCoreDB.gold[G.PlayerRealm] == nil then 
-			aCoreDB.gold[G.PlayerRealm] = {}
-		end	
-	end
-		
-	local NewMoney	= GetMoney()
-	local Change = NewMoney - OldMoney -- Positive if we gain money
-		
-	if OldMoney > NewMoney then		-- Lost Money
-		Spent = Spent - Change
-	else							-- Gained Moeny
-		Profit = Profit + Change
-	end
-	
-	OldMoney = NewMoney
-	
-	self.text:SetText(format(G.classcolor..GOLD_AMOUNT_SYMBOL.." |r%d", NewMoney * 0.0001))
-
-	aCoreDB.gold[G.PlayerRealm][G.PlayerName] = GetMoney()
-end)
-
-Gold:RegisterEvent("PLAYER_MONEY")
-Gold:RegisterEvent("SEND_MAIL_MONEY_CHANGED")
-Gold:RegisterEvent("SEND_MAIL_COD_CHANGED")
-Gold:RegisterEvent("PLAYER_TRADE_MONEY")
-Gold:RegisterEvent("TRADE_MONEY_CHANGED")
-Gold:RegisterEvent("PLAYER_ENTERING_WORLD")
-
-Gold:SetScript("OnEnter", function(self)
-	GameTooltip:SetOwner(self, "ANCHOR_NONE")
-	GameTooltip:SetPoint("TOPLEFT", MinimapZoneTextButton, "BOTTOMLEFT", 0, -5)
-	GameTooltip:AddLine(L["本次登陆"]..": ", G.Ccolor.r, G.Ccolor.g, G.Ccolor.b)
-	GameTooltip:AddDoubleLine(L["赚得"], formatMoney(Profit), 1, 1, 1, 1, 1, 1)
-	GameTooltip:AddDoubleLine(L["消费"], formatMoney(Spent), 1, 1, 1, 1, 1, 1)
-	if Profit < Spent then
-		GameTooltip:AddDoubleLine(L["赤字"], formatMoney(Profit-Spent), 1, 0, 0, 1, 1, 1)
-	elseif (Profit-Spent)>0 then
-		GameTooltip:AddDoubleLine(L["盈利"], formatMoney(Profit-Spent), 0, 1, 0, 1, 1, 1)
-	end				
-	GameTooltip:AddLine(" ")
-	local totalGold = 0				
-	GameTooltip:AddLine(L["角色"]..": ", G.Ccolor.r, G.Ccolor.g, G.Ccolor.b)
-	for k,v in pairs(aCoreDB.gold[G.PlayerRealm]) do
-		GameTooltip:AddDoubleLine(k, FormatTooltipMoney(v), 1, 1, 1, 1, 1, 1)
-		totalGold = totalGold + v
-	end 
-	GameTooltip:AddLine(" ")
-	GameTooltip:AddLine(L["服务器"]..": ", G.Ccolor.r, G.Ccolor.g, G.Ccolor.b)
-	GameTooltip:AddDoubleLine(TOTAL..": ", FormatTooltipMoney(totalGold), 1, 1, 1, 1, 1, 1)
-	for i = 1, MAX_WATCHED_TOKENS do
-		local name, count, extraCurrencyType, icon, itemID = GetBackpackCurrencyInfo(i)
-		if name and i == 1 then
-			GameTooltip:AddLine(" ")
-			GameTooltip:AddLine(CURRENCY, G.Ccolor.r, G.Ccolor.g, G.Ccolor.b)
-		end
-		local r, g, b = 1 ,1 ,1
-		if itemID then r, g, b = GetItemQualityColor(select(3, GetItemInfo(itemID))) end
-		if name and count then GameTooltip:AddDoubleLine(name, count, 1, 1, 1, 1, 1, 1) end
-	end
-	GameTooltip:Show()
-end)
-Gold:SetScript("OnLeave", function() GameTooltip:Hide() end)
-
--- 天赋
-local Talent = CreateInfoButton()
-Talent:SetScript("OnMouseDown", function(self, button)
-	if button == "LeftButton" then
-		ToggleTalentFrame()
-	else
-		local c = GetActiveSpecGroup(false,false)
-		SetActiveSpecGroup(c == 1 and 2 or 1)
-	end
-end)
-
-Talent:SetScript("OnEvent", function(self, event)
-	if event == "PLAYER_ENTERING_WORLD" then
-		self:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED")
-		self:UnregisterEvent("PLAYER_ENTERING_WORLD")
-	end
-	
-	if GetSpecialization() then
-		self.text:SetText(format(G.classcolor.."%s|r", select(2, GetSpecializationInfo(GetSpecialization()))))
-	else
-		self.text:SetText("")
-	end
-end)
-
-Talent:RegisterEvent("PLAYER_ENTERING_WORLD")
-
-local LootSpecMenu = CreateFrame("Frame", G.uiname.."LootSpecMenu", UIParent, "UIDropDownMenuTemplate")
-local LootSpecList = {
-	{ text = SELECT_LOOT_SPECIALIZATION, isTitle = true , notCheckable = true},
-	{ text = LOOT_SPECIALIZATION_DEFAULT, specializationID = 0 },
-	{ text = "spec1", specializationID = 0 },
-	{ text = "spec2", specializationID = 0 },
-	{ text = "spec3", specializationID = 0 },
-	{ text = "spec4", specializationID = 0 },
-}
-local numspec = 4
-
-if G.myClass ~= "DRUID" then
-	tremove( LootSpecList, 6)
-	numspec = 3
-end
-
-Talent:SetScript("OnMouseDown", function(self)
-	if UnitLevel("player")>15 then
-		local specPopupButton = LootSpecList[2]
-		local specIndex = GetSpecialization()
-		if specIndex then
-			local specID, specName = GetSpecializationInfo(specIndex)
-			if specName then
-				specPopupButton.text = format(LOOT_SPECIALIZATION_DEFAULT, specName)
-				specPopupButton.func = function(self) SetLootSpecialization(0) end
-				if GetLootSpecialization() == specPopupButton.specializationID then
-					specPopupButton.checked = true
-				else
-					specPopupButton.checked = false
-				end
-			end
-		end
-		for index = 3, numspec+2 do
-			specPopupButton = LootSpecList[index]
-			if specPopupButton then
-				local id, name = GetSpecializationInfo(index-2)
-				specPopupButton.specializationID = id
-				specPopupButton.text = name
-				specPopupButton.func = function(self) SetLootSpecialization(id) end
-				if GetLootSpecialization() == specPopupButton.specializationID then
-					specPopupButton.checked = true
-				else
-					specPopupButton.checked = false
-				end
-			end
-		end
-		EasyMenu(LootSpecList, LootSpecMenu, "cursor", 0, 0, "MENU", 2)
-		DropDownList1:ClearAllPoints()
-		DropDownList1:SetPoint("TOPLEFT", self, "BOTTOMLEFT", 0, -5)
-	end
-end)
-
-for i = 1, #InfoButtons do
-	if i == 1 then
-		InfoButtons[i].text:SetPoint("TOPLEFT", InfoFrame, "TOPLEFT", 0, 0)
-	else
-		InfoButtons[i].text:SetPoint("LEFT", InfoButtons[i-1].text, "RIGHT", 8, 0)
-	end
-end
-
-local StatsFrame = CreateFrame("Frame", G.uiname.."Topleft Stats Frame", InfoFrame) -- Center Frame
-StatsFrame:SetFrameStrata("BACKGROUND")
-StatsFrame:SetSize(200, 80)
-StatsFrame:SetPoint("TOPLEFT", Durability, "BOTTOMLEFT", 0, -10)
-
-local Ttext = T.createtext(StatsFrame, "OVERLAY", 22, "NONE", "LEFT")
-Ttext:SetPoint("TOPLEFT")
-Ttext:SetShadowOffset(1, -1)
-
-local Itext = T.createtext(StatsFrame, "OVERLAY", 14, "NONE", "LEFT")
-Itext:SetPoint("TOPLEFT", Ttext, "TOPRIGHT", 7, -1)
-Itext:SetShadowOffset(1, -1)
-
--- 新邮件图标
-MiniMapMailFrame:ClearAllPoints()
-MiniMapMailFrame:SetSize(18, 18)
-MiniMapMailFrame:SetPoint("LEFT", Itext, "RIGHT", 5, 0)
-MiniMapMailFrame:SetFrameLevel(StatsFrame:GetFrameLevel()+1)
-MiniMapMailFrame:HookScript('OnEnter', function(self)
-	GameTooltip:ClearAllPoints()
-	GameTooltip:SetPoint("TOPLEFT", MinimapZoneTextButton, "BOTTOMLEFT", 0, -5)
-end)
-MiniMapMailIcon:SetTexture('Interface\\Minimap\\TRACKING\\Mailbox')
-MiniMapMailIcon:SetAllPoints(MiniMapMailFrame)
-MiniMapMailBorder:Hide()
-
--- 位置
-MinimapZoneTextButton:SetPoint("TOPLEFT", Ttext, "BOTTOMLEFT", 0, -10)
-MinimapZoneTextButton:SetWidth(400)
-MinimapZoneTextButton:SetParent(InfoFrame)
-MinimapZoneTextButton:HookScript('OnEnter', function(self)
-	GameTooltip:ClearAllPoints()
-	GameTooltip:SetPoint("TOPLEFT", MinimapZoneTextButton, "BOTTOMLEFT", 0, -5)
-end)
-MinimapZoneText:SetAllPoints(MinimapZoneTextButton)
-MinimapZoneText:SetFont(G.norFont, 16, "NONE") 
-MinimapZoneText:SetJustifyH"LEFT"
 
 -- Format String
 local memFormat = function(num)
@@ -841,18 +667,27 @@ local memFormat = function(num)
 	end
 end
 
--- Tooltips
-local nraddons = 20
-function memorytooltip()
+Net_Stats.t = 0
+Net_Stats:SetScript("OnUpdate", function(self, elapsed)
+	self.t = self.t + elapsed
+	if self.t > 1 then -- 每秒刷新一次
+		fps = format("%d"..G.classcolor.."fps|r", GetFramerate())
+		lag = format("%d"..G.classcolor.."ms|r", select(3, GetNetStats()))	
+		self.text:SetText(fps.."  "..lag)
+		self.t = 0
+	end
+end)
+
+Net_Stats:SetScript("OnEnter", function(self) 
 	local addons, total, nr, name = {}, 0, 0
 	local memory, entry
 	local BlizzMem = collectgarbage("count")
 			
-	GameTooltip:SetOwner(InfoFrame, "ANCHOR_NONE")
-	GameTooltip:SetPoint("TOPLEFT", MinimapZoneTextButton, "BOTTOMLEFT", 0, -5)
-	GameTooltip:AddLine(format(L["占用前 %d 的插件"], nraddons), G.Ccolor.r, G.Ccolor.g, G.Ccolor.b)
+	GameTooltip:SetOwner(self, "ANCHOR_NONE")
+	GameTooltip:SetPoint("BOTTOM", InfoFrame, "TOP", 0, 5)
+	GameTooltip:AddLine(format(L["占用前 %d 的插件"], 20), G.Ccolor.r, G.Ccolor.g, G.Ccolor.b)
 	GameTooltip:AddLine(" ")	
-			
+	
 	UpdateAddOnMemoryUsage()
 	for i = 1, GetNumAddOns() do
 		if (GetAddOnMemoryUsage(i) > 0 ) then
@@ -864,7 +699,7 @@ function memorytooltip()
 	end
 	table.sort(addons, function(a, b) return a.memory > b.memory end)
 	for _, entry in pairs(addons) do
-	if nr < nraddons then
+	if nr < 20 then
 			GameTooltip:AddDoubleLine(entry.name, memFormat(entry.memory), 1, 1, 1, ColorGradient(entry.memory / 1024, 0, 1, 0, 1, 1, 0, 1, 0, 0))
 			nr = nr+1
 		end
@@ -874,112 +709,198 @@ function memorytooltip()
 	GameTooltip:AddDoubleLine(L["自定义插件占用"], memFormat(total), 1, 1, 1, ColorGradient(total / (1024*20), 0, 1, 0, 1, 1, 0, 1, 0, 0))
 	GameTooltip:AddDoubleLine(L["所有插件占用"], memFormat(BlizzMem), 1, 1, 1, ColorGradient(BlizzMem / (1024*50) , 0, 1, 0, 1, 1, 0, 1, 0, 0))
 	GameTooltip:Show()
+end)
+Net_Stats:SetScript("OnLeave", function(self) GameTooltip:Hide() end)
+
+Net_Stats:SetScript("OnEvent", function(self, event)
+	T.LoadAddonManagerWindow()
+end)
+Net_Stats:RegisterEvent("PLAYER_LOGIN")
+
+-- 耐久
+local Durability = CreateInfoButton("Durability", InfoFrame, InfoButtons, 40, 20, "CENTER")
+
+local SLOTS = {}
+for _,slot in pairs({"Head", "Shoulder", "Chest", "Waist", "Legs", "Feet", "Wrist", "Hands", "MainHand", "SecondaryHand"}) do 
+	SLOTS[slot] = GetInventorySlotInfo(slot .. "Slot")
 end
 
--- Update Function
-local hour, fps, lag
-local refresh_timer = 0
-function StatsFrame:updateOntime(elapsed)
-	refresh_timer = refresh_timer + elapsed
-	if refresh_timer > 1 then -- 每秒刷新一次
-		local r2, g2, b2 = ColorGradient(GetFramerate()/60-0.001, 1, 0, 0, 1, 1, 0, 0, 1, 0)
-		fps = format("|cff%02x%02x%02x%d|r|cff%02x%02x%02xfps|r  ", r2 * 255, g2 * 255, b2 * 255, GetFramerate(), G.Ccolor.r * 255, G.Ccolor.g * 255, G.Ccolor.b * 255)
+Durability:SetScript("OnMouseDown", function() ToggleCharacter("PaperDollFrame") end)
 
-		local r2, g2, b2 = ColorGradient(select(3, GetNetStats())/500-0.001, 0, 1, 0, 1, 1, 0, 0, 1, 0)
-		lag = format("|cff%02x%02x%02x%d|r|cff%02x%02x%02xms|r  ", r2 * 255, g2 * 255, b2 * 255, select(3, GetNetStats()), G.Ccolor.r * 255, G.Ccolor.g * 255, G.Ccolor.b * 255)
+Durability:SetScript("OnEvent", function(self, event)
+	if event == "PLAYER_ENTERING_WORLD" then
+		self:UnregisterEvent("PLAYER_ENTERING_WORLD")
+	end
+	local l = 1
+	for slot,id in pairs(SLOTS) do
+		local d, md = GetInventoryItemDurability(id)
+		if d and md and md ~= 0 then
+			l = math.min(d/md, l)
+		end
+	end
+	self.text:SetText(format("%d"..G.classcolor.."dur|r", l*100))
+end)
 
-		hour = date("%H:%M")
+Durability:RegisterEvent("UPDATE_INVENTORY_DURABILITY")
+Durability:RegisterEvent("PLAYER_ENTERING_WORLD")
+
+-- 天赋
+local Talent = CreateInfoButton("Talent", InfoFrame, InfoButtons, 40, 20, "LEFT")
+
+local LootSpecMenu = CreateFrame("Frame", G.uiname.."LootSpecMenu", UIParent, "UIDropDownMenuTemplate")
+
+local SpecList = {
+	{ text = TALENTS_BUTTON, func = function() ToggleTalentFrame() end},
+	{ text = SELECT_LOOT_SPECIALIZATION, hasArrow = 1,
+		menuList = {
+			{ text = LOOT_SPECIALIZATION_DEFAULT, specializationID = 0 },
+			{ text = "spec1", specializationID = 0 },
+			{ text = "spec2", specializationID = 0 },
+			{ text = "spec3", specializationID = 0 },
+			{ text = "spec4", specializationID = 0 },	
+		}
+	},
+	{ text = L["切天赋"], func = function() 		
+			local c = GetActiveSpecGroup(false,false)
+			SetActiveSpecGroup(c == 1 and 2 or 1) 
+		end
+	},
+}
+
+local numspec = 4
+if G.myClass ~= "DRUID" then
+	tremove(SpecList[2]["menuList"], 5)
+	numspec = 3
+end
+
+Talent:SetScript("OnMouseDown", function(self, button)
+	if GetSpecialization() then
+		EasyMenu(SpecList, LootSpecMenu, "cursor", 0, 0, "MENU", 2)
+		DropDownList1:ClearAllPoints()
+		DropDownList1:SetPoint("BOTTOMLEFT", self, "TOPLEFT", -5, 5)
+	end
+end)
+
+Talent:SetScript("OnEvent", function(self, event)
+	if event == "PLAYER_ENTERING_WORLD" then
+		self:RegisterEvent("PLAYER_LOOT_SPEC_UPDATED")
+		self:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED")
+		self:UnregisterEvent("PLAYER_ENTERING_WORLD")
+	end
+	
+	local specIndex = GetSpecialization()
+	
+	if specIndex then
+		local specID, specName = GetSpecializationInfo(specIndex)
 		
-		Itext:SetText(fps..lag)
-		Ttext:SetText(hour)
+		self.text:SetText(format(G.classcolor.."%s|r", specName))
 		
-		refresh_timer = 0
+		local specPopupButton = SpecList[2]["menuList"][1]
+		
+		if specName then
+			specPopupButton.text = format(LOOT_SPECIALIZATION_DEFAULT, specName)
+			specPopupButton.func = function(self) SetLootSpecialization(0) end
+			if GetLootSpecialization() == specPopupButton.specializationID then
+				specPopupButton.checked = true
+			else
+				specPopupButton.checked = false
+			end
+		end
+
+		for index = 2, numspec+1 do
+			specPopupButton = SpecList[2]["menuList"][index]
+			if specPopupButton then
+				local id, name = GetSpecializationInfo(index-1)
+				specPopupButton.specializationID = id
+				specPopupButton.text = name
+				specPopupButton.func = function(self) SetLootSpecialization(id) end
+				if GetLootSpecialization() == specPopupButton.specializationID then
+					specPopupButton.checked = true
+				else
+					specPopupButton.checked = false
+				end
+			end
+		end	
+	else
+		self.text:SetText(G.classcolor.."No Talents|r")
+	end
+end)
+
+Talent:RegisterEvent("PLAYER_ENTERING_WORLD")
+
+for i = 1, #InfoButtons do
+	if i == 1 then
+		InfoButtons[i]:SetPoint("LEFT", InfoFrame, "LEFT")
+	else
+		InfoButtons[i]:SetPoint("LEFT", InfoButtons[i-1], "RIGHT", 0, 0)
 	end
 end
-
-StatsFrame:SetScript("OnMouseDown", function(self) ToggleCalendar() end)
-StatsFrame:SetScript("OnEnter", function(self) memorytooltip() end)
-StatsFrame:SetScript("OnLeave", function(self) GameTooltip:Hide() end)
-StatsFrame:SetScript("OnUpdate", StatsFrame.updateOntime)
 
 --====================================================--
 --[[                  -- Micromenu --               ]]--
 --====================================================--
-
-local MicromenuBar = CreateFrame("Frame", G.uiname.."MicromenuBar", UIParent) -- Center Frame
-MicromenuBar:SetFrameStrata("MEDIUM")
-MicromenuBar:SetSize(360, 25)
+local MicromenuBar = CreateFrame("Frame", G.uiname.."MicromenuBar", UIParent)
 MicromenuBar:SetScale(aCoreCDB["OtherOptions"]["micromenuscale"])
-MicromenuBar:SetPoint("BOTTOMLEFT", UIParent, "BOTTOMLEFT", 30, 3)
-
-MicromenuBar.toggle = CreateFrame("Button", nil, MicromenuBar)
-MicromenuBar.toggle:SetPoint("RIGHT", MicromenuBar, "LEFT", -2, 0)
-F.Reskin(MicromenuBar.toggle)
-
-MicromenuBar.Char = CreateFrame("PlayerModel", G.uiname.."CharButton", MicromenuBar)
-MicromenuBar.Char:SetSize(40, 40)
-MicromenuBar.Char:SetUnit("player")
-MicromenuBar.Char:SetPortraitZoom(1)
-MicromenuBar.Char:SetPoint("BOTTOMLEFT", 0, 5)
-
-local AltzMainMenu = CreateFrame("Frame", G.uiname.."ToggleAltzMainMenu", UIParent, "UIDropDownMenuTemplate")
-local AltzMainMenuList = {
-	{text = L["控制台"], func = function() _G["AltzUI_GUI Main Frame"]:Show() end, notCheckable = true},  -- GUI
-	{text = L["团队工具"], func = function() _G[G.uiname.."RaidToolFrame"]:Show() end, notCheckable = true},  -- 团队工具
-}
-
-MicromenuBar.Char:SetScript("OnMouseDown", function(self, button)
-	if button == "LeftButton" then
-		ToggleCharacter("PaperDollFrame")
-	else
-		EasyMenu(AltzMainMenuList, AltzMainMenu, "cursor", 0, 0, "MENU", 2)
-		DropDownList1:ClearAllPoints()
-		DropDownList1:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 0, 5)
-	end
-end)
-
-MicromenuBar.Char:SetScript("OnEvent", function(self, event, unit)
-	if unit == "player" then
-		self:ClearModel()
-		self:SetUnit("player")
-	end
-end)
-
-MicromenuBar.Char:RegisterEvent("UNIT_MODEL_CHANGED")
+MicromenuBar:SetFrameLevel(4)
+MicromenuBar:SetSize(460, 20)
+MicromenuBar:SetPoint("TOP", 0, -5)
+Skinbg(MicromenuBar)
 
 local MicromenuButtons = {}
-local function CreateMicromenuButton(text, texpath, original, left, right, top, bottom)
+
+local function CreateMicromenuButton(text, original)
 	local Button = CreateFrame("Button", nil, MicromenuBar)
-	Button:SetSize(25, 25)
-	Button.text = T.createtext(Button, "HIGHLIGHT", 12, "OUTLINE", "CENTER")
-	Button.text:SetPoint("CENTER", Button, "TOP")
-	if original == QuestLogMicroButton then
-		Button.text:SetWidth(55)
-	else
-		Button.text:SetWidth(45)
-	end
+	Button:SetFrameLevel(5)
+	Button:SetPushedTextOffset(1, -1)
+	Button:SetSize(30, 22)
+	
+	Button.text = T.createtext(Button, "OVERLAY", 12, "OUTLINE", "CENTER")
 	Button.text:SetText(text)
-
-	Button:SetHighlightTexture(texpath)
-	Button:GetHighlightTexture():SetTexCoord(left, right, top, bottom)
-	Button:GetHighlightTexture():SetBlendMode("BLEND")
-
-	Button:SetNormalTexture(texpath)
-	Button:GetNormalTexture():SetDesaturated(true)
-	Button:GetNormalTexture():SetGradientAlpha("VERTICAL", G.Ccolor.r, G.Ccolor.g, G.Ccolor.b, 1, G.Ccolor.r, G.Ccolor.g, G.Ccolor.b, 1)
-	Button:GetNormalTexture():SetTexCoord(left, right, top, bottom)
+	Button.text:SetPoint("CENTER")
+	
+	Button.highlight = Button:CreateTexture(nil, "HIGHLIGHT")
+	Button.highlight:SetPoint("TOPLEFT", -13, -1)
+	Button.highlight:SetPoint("BOTTOMRIGHT", 11, -1)
+	Button.highlight:SetVertexColor(G.Ccolor.r, G.Ccolor.g, G.Ccolor.b, .7)
+	Button.highlight:SetTexture(G.media.buttonhighlight)
+	Button.highlight:SetBlendMode("ADD")
+	
+	Button.highlight2 = Button:CreateTexture(nil, "HIGHLIGHT")
+	Button.highlight2:SetPoint("TOPLEFT", Button, "BOTTOMLEFT", -15, 1)
+	Button.highlight2:SetPoint("TOPRIGHT", Button, "BOTTOMRIGHT", 12, 1)
+	Button.highlight2:SetHeight(20)
+	Button.highlight2:SetVertexColor(G.Ccolor.r, G.Ccolor.g, G.Ccolor.b, .6)
+	Button.highlight2:SetTexture(G.media.barhightlight)
+	Button.highlight2:SetBlendMode("ADD")
 	
 	Button:SetScript("OnClick", function()
-		if original == "MainMenuMicroButton" then
-			if GameMenuFrame:IsShown() then
-				GameMenuFrame:Hide()
+		if original == "RaidTool" then
+			if _G[G.uiname.."RaidToolFrame"]:IsShown() then
+				_G[G.uiname.."RaidToolFrame"]:Hide()
 			else
-				GameMenuFrame:Show()
+				_G[G.uiname.."RaidToolFrame"]:Show()
+			end
+		elseif original == "Charcter" then
+			ToggleCharacter("PaperDollFrame")
+		elseif original == "System" then
+			if GameMenuFrame:IsShown() then
+				HideUIPanel(GameMenuFrame)
+			else
+				ShowUIPanel(GameMenuFrame)
+			end
+		elseif original == "Friends" then
+			ToggleFriendsFrame(1)
+		elseif original == "Guild" then
+			if IsInGuild() then 
+				if not GuildFrame then LoadAddOn("Blizzard_GuildUI") end 
+				GuildFrame_Toggle()
+				GuildFrame_TabClicked(GuildFrameTab2)
+			else 
+				if not LookingForGuildFrame then LoadAddOn("Blizzard_LookingForGuildUI") end 
+				LookingForGuildFrame_Toggle() 
 			end
 		elseif original == "SpellbookMicroButton" then
 			ToggleSpellBook("spell")			
-		elseif original == "TalentMicroButton" then
-			ToggleTalentFrame()
 		elseif original == "AchievementMicroButton" then	
 			ToggleAchievementFrame()
 		elseif original == "QuestLogMicroButton" then
@@ -996,132 +917,132 @@ local function CreateMicromenuButton(text, texpath, original, left, right, top, 
 			if not IsAddOnLoaded("Blizzard_EncounterJournal") then LoadAddOn("Blizzard_EncounterJournal") end 
 			ToggleFrame(EncounterJournal)
 		elseif original == "Bag" then
+			if GameMenuFrame:IsShown() then
+				HideUIPanel(GameMenuFrame)
+			end
 			ToggleAllBags()		
 		end
 	end)
 	
-
 	tinsert(MicromenuButtons, Button)
 	return Button
 end
 
-MicromenuBar.Mainmenu = CreateMicromenuButton(MAIN_MENU, "Interface\\MINIMAP\\OBJECTICONS", "MainMenuMicroButton", .12, .26, .49, .63)
-MicromenuBar.Spellbook = CreateMicromenuButton(SPELLBOOK_ABILITIES_BUTTON, "Interface\\MINIMAP\\TRACKING\\Profession", "SpellbookMicroButton", .05, .95, .05, .95)
-MicromenuBar.Spec = CreateMicromenuButton(TALENTS_BUTTON, "Interface\\MINIMAP\\TRACKING\\Reagents", "TalentMicroButton", .05, .95, .05, .95)
-MicromenuBar.Achievement = CreateMicromenuButton(ACHIEVEMENT_BUTTON, "Interface\\ACHIEVEMENTFRAME\\UI-ACHIEVEMENT-SHIELDS-NOPOINTS", "AchievementMicroButton", 0, .45, .5, .95)
-MicromenuBar.Quests = CreateMicromenuButton(QUESTLOG_BUTTON, "Interface\\MINIMAP\\TRACKING\\OBJECTICONS", "QuestLogMicroButton", 0.11, .25, .48, 1)
-MicromenuBar.PvP = CreateMicromenuButton(PLAYER_V_PLAYER, "Interface\\WorldStateFrame\\CombatSwords", "PVPMicroButton", 0, .5, 0, .5)
-MicromenuBar.LFR = CreateMicromenuButton(LFG_TITLE, "Interface\\LFGFRAME\\BattlenetWorking28", "LFDMicroButton", .14, .86, .14, .86)
-MicromenuBar.Pet = CreateMicromenuButton(MOUNTS_AND_PETS, "Interface\\MINIMAP\\OBJECTICONS", "CompanionsMicroButton", .37, .5, .5, .63)
-MicromenuBar.EJ = CreateMicromenuButton(ENCOUNTER_JOURNAL, "Interface\\MINIMAP\\TRACKING\\Class", "EJMicroButton", 0, 1, 0, 1)
-MicromenuBar.Bag = CreateMicromenuButton(INVTYPE_BAG, "Interface\\MINIMAP\\TRACKING\\Banker", "Bag", 0, 1, 0, 1)
+MicromenuBar.Charcter = CreateMicromenuButton(L["角色"], "Charcter")
+MicromenuBar.RaidTool = CreateMicromenuButton(L["团队"], "RaidTool")
+MicromenuBar.Friends = CreateMicromenuButton(L["好友"], "Friends")
+MicromenuBar.Guild = CreateMicromenuButton(L["公会"], "Guild")
+MicromenuBar.Achievement = CreateMicromenuButton(L["成就"], "AchievementMicroButton")
+MicromenuBar.EJ = CreateMicromenuButton(L["手册"], "EJMicroButton")
+MicromenuBar.System = CreateMicromenuButton(G.classcolor.."AltzUI "..G.Version.."|r", "System")
+MicromenuBar.System:SetSize(80, 25)
+MicromenuBar.Pet = CreateMicromenuButton(L["宠物"], "CompanionsMicroButton")
+MicromenuBar.PvP = CreateMicromenuButton(L["PVP"], "PVPMicroButton")
+MicromenuBar.LFR = CreateMicromenuButton(L["LFG"], "LFDMicroButton")
+MicromenuBar.Quests = CreateMicromenuButton(L["任务"], "QuestLogMicroButton")
+MicromenuBar.Spellbook = CreateMicromenuButton(L["法术"], "SpellbookMicroButton")
+MicromenuBar.Bag = CreateMicromenuButton(L["行囊"], "Bag")
 
 for i = 1, #MicromenuButtons do
 	if i == 1 then
-		MicromenuButtons[i]:SetPoint("BOTTOMLEFT", MicromenuBar.Char, "BOTTOMRIGHT", 5, -5)
+		MicromenuButtons[i]:SetPoint("LEFT", MicromenuBar, "LEFT", 12, 0)
 	else
-		MicromenuButtons[i]:SetPoint("LEFT", MicromenuButtons[i-1], "RIGHT", 5, 0)
+		MicromenuButtons[i]:SetPoint("LEFT", MicromenuButtons[i-1], "RIGHT", 0, 0)
 	end
 end
 
+local function OnHover(button)
+	button.text:SetTextColor(G.Ccolor.r, G.Ccolor.g, G.Ccolor.b)
+end
+
+local function OnLeave(button)
+	button.text:SetTextColor(1, 1, 1)
+end
+
+local function UpdateFade(frame, children, dbvalue)
+	if aCoreCDB["OtherOptions"][dbvalue] then
+		frame:SetAlpha(0)
+		frame:SetScript("OnEnter", function(self) T.UIFrameFadeIn(self, .5, self:GetAlpha(), 1) end)
+		frame:SetScript("OnLeave", function(self) T.UIFrameFadeOut(self, .5, self:GetAlpha(), 0) end)
+		for i = 1, #children do
+			children[i]:SetScript("OnEnter", function(self) OnHover(self) T.UIFrameFadeIn(frame, .5, frame:GetAlpha(), 1) end)
+			children[i]:SetScript("OnLeave", function(self) OnLeave(self) T.UIFrameFadeOut(frame, .5, frame:GetAlpha(), 0) end)
+		end
+		T.UIFrameFadeOut(frame, .5, frame:GetAlpha(), 0)
+	else
+		frame:SetScript("OnEnter", nil)
+		frame:SetScript("OnLeave", nil)
+		for i = 1, #children do
+			children[i]:SetScript("OnEnter", function(self) OnHover(self) end)
+			children[i]:SetScript("OnLeave", function(self) OnLeave(self) end)
+		end
+		T.UIFrameFadeIn(frame, .5, frame:GetAlpha(), 1)
+	end
+end
+
+MicromenuBar:SetScript("OnMouseDown", function(self)
+	if aCoreCDB["OtherOptions"]["fademicromenu"] then
+		aCoreCDB["OtherOptions"]["fademicromenu"] = false
+	else
+		aCoreCDB["OtherOptions"]["fademicromenu"] = true
+	end
+	UpdateFade(self, MicromenuButtons, "fademicromenu")
+end)
+
+MicromenuBar:SetScript("OnEvent", function(self) 
+	UpdateFade(self, MicromenuButtons, "fademicromenu") 
+end)
+
+MicromenuBar:RegisterEvent("PLAYER_LOGIN")
 --====================================================--
 --[[                 -- Screen --                   ]]--
 --====================================================--
-local TOPPANEL = CreateFrame("Frame", G.uiname.."AKF Toppanel", WorldFrame)
-TOPPANEL:SetFrameStrata("FULLSCREEN")
-TOPPANEL:SetPoint("TOPLEFT",WorldFrame,"TOPLEFT",-5,5)
-TOPPANEL:SetPoint("BOTTOMRIGHT",WorldFrame,"TOPRIGHT",5,-80)
-F.SetBD(TOPPANEL)
-TOPPANEL:Hide()
-
-TOPPANEL.Clock = T.createtext(TOPPANEL, "OVERLAY", 27, "NONE", "CENTER")
-TOPPANEL.Clock:SetPoint("BOTTOMLEFT", TOPPANEL, "BOTTOMRIGHT", -280, 10)
-TOPPANEL.Clock:SetTextColor(0.7, 0.7, 0.7)
-
-TOPPANEL.Date = T.createtext(TOPPANEL, "OVERLAY", 17, "NONE", "CENTER")
-TOPPANEL.Date:SetPoint("BOTTOMLEFT", TOPPANEL, "BOTTOMRIGHT", -280, 40)
-TOPPANEL.Date:SetTextColor(0.7, 0.7, 0.7)
-
-TOPPANEL.AUI = T.createtext(TOPPANEL, "OVERLAY", 50, "NONE", "CENTER")
-TOPPANEL.AUI:SetPoint("BOTTOMRIGHT", TOPPANEL, "BOTTOMRIGHT", -290, 13)
-TOPPANEL.AUI:SetTextColor(0.7, 0.7, 0.7)
-TOPPANEL.AUI:SetText("AltZ UI")
-
-TOPPANEL.updater = 0
-TOPPANEL:SetScript("OnUpdate", function(self, elapsed)
- 	self.updater = self.updater - elapsed
-	if self.updater <= 0 then
-        self.Clock:SetText(format("%s",date("%H:%M:%S")))
-		self.Date:SetText(format("%s",date("%a %b/%d")))
-		self.updater = .5
-	end
-end)
-
-local BOTTOMPANEL = CreateFrame("Frame", G.uiname.."AKF Bottompanel", WorldFrame)
+local BOTTOMPANEL = CreateFrame("Frame", G.uiname.."AFK Bottompanel", WorldFrame)
 BOTTOMPANEL:SetFrameStrata("FULLSCREEN")
 BOTTOMPANEL:SetPoint("BOTTOMLEFT",WorldFrame,"BOTTOMLEFT",-5,-5)
-BOTTOMPANEL:SetPoint("TOPRIGHT",WorldFrame,"BOTTOMRIGHT",5,75)
+BOTTOMPANEL:SetPoint("TOPRIGHT",WorldFrame,"BOTTOMRIGHT",5,40)
 F.SetBD(BOTTOMPANEL)
 BOTTOMPANEL:Hide()
 
-BOTTOMPANEL.text = T.createtext(BOTTOMPANEL, "OVERLAY", 20, "NONE", "CENTER")
-BOTTOMPANEL.text:SetPoint("TOP", BOTTOMPANEL, "TOP", 0, -10)
-BOTTOMPANEL.text:SetTextColor(0, 0, 0,.5)
-BOTTOMPANEL.text:SetText(L["点我隐藏"])
+BOTTOMPANEL.petmodelbutton = CreateFrame("PlayerModel", G.uiname.."AFKpetmodel", BOTTOMPANEL)
+BOTTOMPANEL.petmodelbutton:SetSize(120,120)
+BOTTOMPANEL.petmodelbutton:SetPosition(-0.5, 0, 0)
+BOTTOMPANEL.petmodelbutton:SetPoint("CENTER", BOTTOMPANEL, "TOPRIGHT", -190, 0)
 
-BOTTOMPANEL:SetScript("OnEnter", function(self) self.text:SetTextColor(.5, .5, .5, 1) end)
-BOTTOMPANEL:SetScript("OnLeave", function(self) self.text:SetTextColor(0, 0, 0, .5) end)
-
-local function littebutton(facing)
-	local petmodelbutton = CreateFrame("PlayerModel", "AltzAKFlittlebutton"..facing, BOTTOMPANEL)
-	petmodelbutton:SetSize(120,120)
-	petmodelbutton:SetPosition(-0.5, 0, 0)
-	petmodelbutton:SetFacing(facing)
-
-	petmodelbutton.spark = petmodelbutton:CreateTexture(nil, "HIGHLIGHT")
-	petmodelbutton.spark:SetSize(30, 30)
-	petmodelbutton.spark:SetPoint("CENTER", petmodelbutton.text, "TOPRIGHT", -3, -5)
-	petmodelbutton.spark:SetTexture("Interface\\Cooldown\\star4")
-	petmodelbutton.spark:SetVertexColor(1, 1, 1, .7)
-	petmodelbutton.spark:SetBlendMode("ADD")
-
-	petmodelbutton:SetScript("OnEnter", function(self) self:SetFacing(0) end)
-	petmodelbutton:SetScript("OnLeave", function(self) self:SetFacing(facing) end)
-	
-	return petmodelbutton
-end
-
-local Info = littebutton(1)
-Info:SetPoint("BOTTOMRIGHT", BOTTOMPANEL, "CENTER", -200, -40)
-
-local Credits = littebutton(-1)
-Credits:SetPoint("BOTTOMLEFT", BOTTOMPANEL, "CENTER", 200, -40)
+BOTTOMPANEL.petmodelbutton.text = T.createtext(BOTTOMPANEL.petmodelbutton, "OVERLAY", 13, "OUTLINE", "RIGHT")
+BOTTOMPANEL.petmodelbutton.text:SetPoint("CENTER")
+BOTTOMPANEL.petmodelbutton.text:SetText("AltzUI")
 
 local function fadeout()
 	Minimap:Hide()
 	UIParent:SetAlpha(0)
-	UIFrameFadeIn(TOPPANEL, 3, TOPPANEL:GetAlpha(), 1)
 	UIFrameFadeIn(BOTTOMPANEL, 3, BOTTOMPANEL:GetAlpha(), 1)
 	BOTTOMPANEL.t = 0
+	BOTTOMPANEL:EnableKeyboard(true)
 end
 
 local function fadein()
 	Minimap:Show()
 	UIFrameFadeIn(UIParent, 2, 0, 1)
-    UIFrameFadeOut(TOPPANEL, 2, TOPPANEL:GetAlpha(), 0)
 	UIFrameFadeOut(BOTTOMPANEL, 2, BOTTOMPANEL:GetAlpha(), 0)
 	BOTTOMPANEL:SetScript("OnUpdate",  function(self, e)
 		self.t = self.t + e
 		if self.t > .5 then
 			self:Hide()
-			TOPPANEL:Hide()
 			self:SetScript("OnUpdate", nil)
 			self.t = 0
 		end
 	end)
+	BOTTOMPANEL:EnableKeyboard(false)
 end
 
-BOTTOMPANEL:SetScript("OnMouseUp", function() fadein() end)
+BOTTOMPANEL:SetScript("OnKeyDown", function(self, key) 
+	fadein()
+end)
+
+BOTTOMPANEL:SetScript("OnMouseDown", function(self) 
+	fadein()
+end)
 
 BOTTOMPANEL:SetScript("OnEvent",function(self, event) 
 	if event == "PLAYER_ENTERING_WORLD" then
@@ -1133,12 +1054,18 @@ BOTTOMPANEL:SetScript("OnEvent",function(self, event)
 		local randomIndex = random(1 ,PetNumber)
 		local randomID = select(11, C_PetJournal.GetPetInfoByIndex(randomIndex))
 		if randomID then
-			Info:SetCreature(randomID)
-			Credits:SetCreature(randomID)
+			self.petmodelbutton:SetCreature(randomID)
 		else
-			Info:SetCreature(53623) -- 塞纳里奥角鹰兽宝宝
-			Credits:SetCreature(53623)
+			self.petmodelbutton:SetCreature(53623) -- 塞纳里奥角鹰兽宝宝
 		end
+		
+		hooksecurefunc("ToggleDropDownMenu", function(level, value, dropDownFrame, anchorName)
+			if level == 2 and value == SELECT_LOOT_SPECIALIZATION then
+				local listFrame = _G["DropDownList"..level]
+				local point, anchor, relPoint, _, y = listFrame:GetPoint()
+				listFrame:SetPoint(point, anchor, relPoint, 16, y)
+			end
+		end)
 		
 		self:UnregisterEvent("PLAYER_ENTERING_WORLD")
 	elseif event == "PLAYER_FLAGS_CHANGED" then
