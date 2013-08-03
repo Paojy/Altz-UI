@@ -204,8 +204,8 @@ local bf = CreateFrame("Frame", G.uiname.."BuffDragFrame", UIParent)
 bf:SetSize(buff.size, buff.size)
 bf.movingname = L["增益框"]
 bf.point = {
-	healer = {a1 = "TOPRIGHT", parent = "UIParent", a2 = "TOPRIGHT", x = -15, y = -16},
-	dpser = {a1 = "TOPRIGHT", parent = "UIParent", a2 = "TOPRIGHT", x = -15, y = -16},
+	healer = {a1 = "TOPRIGHT", parent = "UIParent", a2 = "TOPRIGHT", x = -16, y = -20},
+	dpser = {a1 = "TOPRIGHT", parent = "UIParent", a2 = "TOPRIGHT", x = -16, y = -20},
 }
 T.CreateDragFrame(bf) --frame, dragFrameList, inset, clamp
 
@@ -215,8 +215,8 @@ if seperate then
 	df:SetSize(debuff.size, debuff.size)	
 	df.movingname = L["减益框"]
 	df.point = {
-		healer = {a1 = "TOPRIGHT", parent = "UIParent", a2 = "TOPRIGHT", x = -15, y = -86},
-		dpser = {a1 = "TOPRIGHT", parent = "UIParent", a2 = "TOPRIGHT", x = -15, y = -86},
+		healer = {a1 = "TOPRIGHT", parent = "UIParent", a2 = "TOPRIGHT", x = -16, y = -96},
+		dpser = {a1 = "TOPRIGHT", parent = "UIParent", a2 = "TOPRIGHT", x = -16, y = -96},
 	}
 	T.CreateDragFrame(df) --frame, dragFrameList, inset, clamp
 end
