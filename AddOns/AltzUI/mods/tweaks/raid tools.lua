@@ -7,7 +7,7 @@ local DBM = DBM
 local potions = {
 	[GetSpellInfo(105697)]=true, --兔妖之啮
 	[GetSpellInfo(105702)]=true, --青龙药水
-	[GetSpellInfo(105702)]=true, --魔古之力药水
+	[GetSpellInfo(105706)]=true, --魔古之力药水
 }
 
 local foods = {
@@ -45,9 +45,7 @@ RaidToolFrame.title:SetText(G.classcolor..L["团队工具"].."|r")
 RaidToolFrame.close = CreateFrame("Button", nil, RaidToolFrame)
 RaidToolFrame.close:SetPoint("BOTTOMRIGHT", -3, 3)
 RaidToolFrame.close:SetSize(15, 15)
-RaidToolFrame.close:SetNormalTexture("Interface\\BUTTONS\\UI-GroupLoot-Pass-Up")
-RaidToolFrame.close:SetHighlightTexture("Interface\\BUTTONS\\UI-GroupLoot-Pass-Highlight")
-RaidToolFrame.close:SetPushedTexture("Interface\\BUTTONS\\UI-GroupLoot-Pass-Down")
+T.SkinButton(RaidToolFrame.close, G.Iconpath.."exit", true)
 RaidToolFrame.close:SetScript("OnClick", function()
 	RaidToolFrame:Hide()
 end)
@@ -188,7 +186,7 @@ end
 local function OnCombatLogEvent(...)
 	local subEvent, srcName, spellName = (select(2,...)), (select(5,...)), (select(13,...))
 	local raidIndex = UnitInRaid(srcName)
-    if subEvent == "SPELL_CAST_SUCCESS" and potion[spellName] and raidIndex then
+    if subEvent == "SPELL_CAST_SUCCESS" and potions[spellName] and raidIndex then
         potion[GetUnitName(("raid%d"):format(raidIndex))] = spellName
     end
 end
@@ -306,7 +304,7 @@ Stats:RegisterEvent("PLAYER_LOGIN")
 local ConfigButton = CreateFrame("Button",  G.uiname.."RaidToolConfig", RaidToolFrame)
 ConfigButton:SetPoint("TOPRIGHT", -10, -15)
 ConfigButton:SetSize(15, 15)
-ConfigButton:SetNormalTexture("Interface\\BUTTONS\\UI-GuildButton-PublicNote-Up")
+T.SkinButton(ConfigButton, G.Iconpath.."RaidTool", true)
 
 ConfigButton:SetScript("OnClick", function(self)
 	local GUI = _G[G.uiname.."GUI Main Frame"]
@@ -350,7 +348,7 @@ WorldMarkButton:RegisterEvent("PLAYER_ENTERING_WORLD")
 local AncButton = CreateFrame("Button",  G.uiname.."RaidToolAncButton", RaidToolFrame)
 AncButton:SetPoint("RIGHT", WorldMarkButton, "LEFT", -5, 0)
 AncButton:SetSize(15, 15)
-AncButton:SetNormalTexture("Interface\\BUTTONS\\UI-GuildButton-MOTD-Up")
+T.SkinButton(AncButton, G.Iconpath.."anc", true)
 
 AncButton:SetScript("OnClick", function(self)
 	if IsInRaid() then
@@ -470,7 +468,19 @@ SwitchRaidButton.text:SetPoint("CENTER")
 
 F.Reskin(SwitchRaidButton)
 
-SwitchRaidButton:SetScript("OnEvent", function(self)
+SwitchRaidButton:SetScript("OnEvent", function(self, event, arg1)
+	if event == "PLAYER_ENTERING_WORLD" then
+		if aCoreCDB["UnitframeOptions"]["enableraid"] then
+			self:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED")
+		else
+			self:Hide()
+			return
+		end
+		self:UnregisterEvent("PLAYER_ENTERING_WORLD")
+	end
+	
+	if arg1 and arg1 ~= "player" then return end -- "PLAYER_SPECIALIZATION_CHANGED"
+	
 	if not aCoreCDB["UnitframeOptions"]["autoswitch"] then
 		if T.IsDpsRaidShown() then
 			self.text:SetText(L["dpser"])
@@ -481,8 +491,8 @@ SwitchRaidButton:SetScript("OnEvent", function(self)
 		self:UnregisterAllEvents()
 	end
 end)
+
 SwitchRaidButton:RegisterEvent("PLAYER_ENTERING_WORLD")
-SwitchRaidButton:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED")
 
 SwitchRaidButton:SetScript("OnClick", function(self)
 	T.SwitchRaidFrame()
@@ -519,8 +529,9 @@ F.SetBD(RaidMarkFrame)
 
 RaidMarkFrame.lockbutton = CreateFrame("Button", nil, RaidMarkFrame)
 RaidMarkFrame.lockbutton:SetPoint("TOPRIGHT", -3, -3)
-RaidMarkFrame.lockbutton:SetSize(20, 20)
-
+RaidMarkFrame.lockbutton:SetSize(15, 15)
+T.SkinButton(RaidMarkFrame.lockbutton, G.Iconpath.."lock", true)
+	
 CompactRaidFrameManagerDisplayFrameRaidMarkers:SetParent(RaidMarkFrame)
 CompactRaidFrameManagerDisplayFrameRaidMarkers:ClearAllPoints()
 CompactRaidFrameManagerDisplayFrameRaidMarkers:SetPoint("CENTER", RaidMarkFrame, "CENTER")
@@ -532,15 +543,11 @@ local function lockraidmarkframe()
 	RaidMarkFrame:EnableMouse(false)
 	RaidMarkFrame:ClearAllPoints()
 	RaidMarkFrame:SetPoint("TOP", RaidToolFrame, "BOTTOM", 0, -5)
-	RaidMarkFrame.lockbutton:SetNormalTexture("Interface\\BUTTONS\\UI-Panel-SmallerButton-Up")
-	RaidMarkFrame.lockbutton:SetPushedTexture("Interface\\BUTTONS\\UI-Panel-SmallerButton-Down")
 	aCoreCDB["RaidToolOptions"]["unlockraidmarks"] = true
 end
 
 local function unlockraidmarkframe()
 	RaidMarkFrame:EnableMouse(true)
-	RaidMarkFrame.lockbutton:SetNormalTexture("Interface\\BUTTONS\\UI-Panel-BiggerButton-Up")
-	RaidMarkFrame.lockbutton:SetPushedTexture("Interface\\BUTTONS\\UI-Panel-BiggerButton-Down")
 	aCoreCDB["RaidToolOptions"]["unlockraidmarks"] = false
 end
 
@@ -559,17 +566,12 @@ RaidMarkFrame:RegisterEvent("PLAYER_LOGIN")
 RaidToolFrame.toggleraidmark = CreateFrame("Button", nil, RaidToolFrame)
 RaidToolFrame.toggleraidmark:SetPoint("BOTTOMRIGHT", -22, 1)
 RaidToolFrame.toggleraidmark:SetSize(20, 20)
-RaidToolFrame.toggleraidmark:SetNormalTexture("Interface\\BUTTONS\\UI-Panel-CollapseButton-Up")
-RaidToolFrame.toggleraidmark:SetPushedTexture("Interface\\BUTTONS\\UI-Panel-CollapseButton-Down")
+T.SkinButton(RaidToolFrame.toggleraidmark, G.Iconpath.."Achievement", true)
 
 local function Toggle()
 	if RaidMarkFrame:IsShown() then
-		RaidToolFrame.toggleraidmark:SetNormalTexture("Interface\\BUTTONS\\UI-Panel-CollapseButton-Up")
-		RaidToolFrame.toggleraidmark:SetPushedTexture("Interface\\BUTTONS\\UI-Panel-CollapseButton-Down")
 		RaidMarkFrame:Hide()
 	else
-		RaidToolFrame.toggleraidmark:SetNormalTexture("Interface\\BUTTONS\\UI-Panel-ExpandButton-Up")
-		RaidToolFrame.toggleraidmark:SetPushedTexture("Interface\\BUTTONS\\UI-Panel-ExpandButton-Down")
 		RaidMarkFrame:Show()
 	end
 end
