@@ -27,9 +27,7 @@ GUI.title:SetText(G.classcolor.."Altz UI  "..G.Version.."|r")
 GUI.close = CreateFrame("Button", nil, GUI)
 GUI.close:SetPoint("BOTTOMRIGHT", -10, 10)
 GUI.close:SetSize(20, 20)
-GUI.close:SetNormalTexture("Interface\\BUTTONS\\UI-GroupLoot-Pass-Up")
-GUI.close:SetHighlightTexture("Interface\\BUTTONS\\UI-GroupLoot-Pass-Highlight")
-GUI.close:SetPushedTexture("Interface\\BUTTONS\\UI-GroupLoot-Pass-Down")
+T.SkinButton(GUI.close, G.Iconpath.."exit", true)
 GUI.close:SetScript("OnClick", function()
 	GUI:Hide()
 end)
@@ -418,6 +416,7 @@ T.createslider(UFInnerframe.size, 30, 160, L["宠物框体宽度"], "UnitframeOp
 T.createslider(UFInnerframe.size, 30, 200, L["首领框体和PVP框体的宽度"], "UnitframeOptions", "widthboss", 1, 50, 500, 1)
 T.createslider(UFInnerframe.size, 30, 240, L["尺寸"], "UnitframeOptions", "scale", 100, 50, 300, 5)
 T.createslider(UFInnerframe.size, 30, 280, L["生命条高度比"], "UnitframeOptions", "hpheight", 100, 20, 95, 5, L["生命条高度比提示"])
+T.createslider(UFInnerframe.size, 30, 320, L["数值字号"], "UnitframeOptions", "valuefontsize", 1, 10, 25, 1, L["数值字号提示"])
 
 UFInnerframe.castbar = CreateOptionPage("UF Options castbar", L["施法条"], UFInnerframe, "VERTICAL", .3)
 
@@ -554,6 +553,21 @@ T.createcheckbutton(UFInnerframe.other, 30, 60, L["启用"], "UnitframeOptions",
 T.createcheckbutton(UFInnerframe.other, 30, 90, L["显示PvP标记"], "UnitframeOptions", "pvpicon", L["显示PvP标记提示"])
 T.createcheckbutton(UFInnerframe.other, 30, 120, L["启用首领框体"], "UnitframeOptions", "bossframes")
 T.createcheckbutton(UFInnerframe.other, 30, 150, L["启用PVP框体"], "UnitframeOptions", "arenaframes")
+
+if G.myClass == "DEATHKNIGHT" then
+    T.createcheckbutton(UFInnerframe.other, 30, 180, format(L["显示冷却"], RUNES), "UnitframeOptions", "runecooldown")
+	T.createslider(UFInnerframe.other, 30, 230, L["字体大小"], "UnitframeOptions", "valuefs", 1, 8, 16, 1)
+elseif G.myClass == "DRUID" then
+	T.createcheckbutton(UFInnerframe.other, 30, 180, format(L["显示数值"], ECLIPSE), "UnitframeOptions", "eclipsevalue")
+	T.createslider(UFInnerframe.other, 30, 230, L["字体大小"], "UnitframeOptions", "valuefs", 1, 8, 16, 1)
+elseif G.myClass == "WARLOCK" then
+	T.createcheckbutton(UFInnerframe.other, 30, 180, format(L["显示数值"], DEMONIC_FURY), "UnitframeOptions", "demonicfuryvalue")
+	T.createslider(UFInnerframe.other, 30, 230, L["字体大小"], "UnitframeOptions", "valuefs", 1, 8, 16, 1)
+elseif G.myClass == "SHAMAN" then
+	T.createcheckbutton(UFInnerframe.other, 30, 180, format(L["显示时间"], WHC_TITLE_SHAMAN_2), "UnitframeOptions", "totemcooldown")
+	T.createslider(UFInnerframe.other, 30, 230, L["字体大小"], "UnitframeOptions", "valuefs", 1, 8, 16, 1)
+end
+
 --====================================================--
 --[[               -- Raid Frames --                ]]--
 --====================================================--
@@ -1401,8 +1415,8 @@ T.createcheckbutton(TooltipOptions, 30, 210, L["隐藏称号"], "TooltipOptions"
 T.createcheckbutton(TooltipOptions, 30, 240, L["显示法术编号"], "TooltipOptions", "showspellID")
 T.createcheckbutton(TooltipOptions, 30, 270, L["显示物品编号"], "TooltipOptions", "showitemID")
 T.createcheckbutton(TooltipOptions, 30, 300, L["显示天赋"], "TooltipOptions", "showtalent")
-T.createcheckbutton(TooltipOptions, 30, 340, L["按职业着色"], "TooltipOptions", "colorborderClass")
-T.createcheckbutton(TooltipOptions, 30, 370, L["战斗中隐藏"], "TooltipOptions", "combathide")
+T.createcheckbutton(TooltipOptions, 30, 330, L["按职业着色"], "TooltipOptions", "colorborderClass")
+T.createcheckbutton(TooltipOptions, 30, 360, L["战斗中隐藏"], "TooltipOptions", "combathide")
 T.createDR(TooltipOptions.enabletip, TooltipOptions.size, TooltipOptions.cursor, TooltipOptions.hideRealm, TooltipOptions.hideTitles, TooltipOptions.showspellID, TooltipOptions.showitemID, TooltipOptions.showtalent, TooltipOptions.colorborderClass, TooltipOptions.combathide)
 
 --====================================================--
