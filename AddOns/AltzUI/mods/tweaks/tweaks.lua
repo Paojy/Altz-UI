@@ -17,7 +17,7 @@ local autoinvitekeywords = aCoreCDB["OtherOptions"]["autoinvitekeywords"]
 
 local eventframe = CreateFrame('Frame')
 eventframe:SetScript('OnEvent', function(self, event, ...)
-	self[event](...)
+	eventframe[event](self, ...)
 end)
 
 --[[-----------------------------------------------------------------------------
@@ -68,7 +68,7 @@ local function TakeScreen(delay, func, ...)
 end
 if autoscreenshot then
 	eventframe:RegisterEvent('ACHIEVEMENT_EARNED')
-	function eventframe:ACHIEVEMENT_EARNED(...)
+	function eventframe:ACHIEVEMENT_EARNED()
 		TakeScreen(1, Screenshot) 
 	end
 end
@@ -81,7 +81,7 @@ for _, slot in pairs({"Head", "Shoulder", "Chest", "Waist", "Legs", "Feet", "Wri
 end
 
 eventframe:RegisterEvent('MERCHANT_SHOW')
-function eventframe:MERCHANT_SHOW(...)
+function eventframe:MERCHANT_SHOW()
 	if CanMerchantRepair() and aCoreCDB["ItemOptions"]["autorepair"] then
 		local gearRepaired = true -- to work around bug when there's not enough money in guild bank
 		local cost = GetRepairAllCost()
