@@ -729,6 +729,7 @@ local Character_default_Settings = {
 	UnitframeOptions = {
 		enablefade = true,
 		fadingalpha = 0.2,
+		valuefontsize = 16,
 		
 		-- health/power
 		tenthousand = false,
@@ -752,7 +753,7 @@ local Character_default_Settings = {
 		-- castbar
 		castbars = true,
 		cbIconsize = 32,
-
+		
 		-- auras
 		auras = true,
 		auraborders = true,
@@ -774,7 +775,14 @@ local Character_default_Settings = {
 		
 		-- show pvp timer
 		pvpicon = false,
-
+		
+		-- show value
+		demonicfuryvalue = true,
+		eclipsevalue = true,
+		runecooldown = true,
+		totemcooldown = true,
+		valuefs = 12,
+		
 		--[[ share ]]--
 		enableraid = true,
 		showraidpet = false,
@@ -792,7 +800,7 @@ local Character_default_Settings = {
 		healerraidheight = 30,
 		healerraidwidth = 66,
 		raidmanabars = true,
-		raidhpheight = 0.8, -- slider
+		raidhpheight = 0.85, -- slider
 		anchor = "TOP", -- dropdown
 		partyanchor = "LEFT", -- dropdown
 		showgcd = true,
@@ -858,7 +866,7 @@ local Character_default_Settings = {
 		petbarmfade = true,
 		petbarefade = false,
 		petbarfademinaplha = 0.2,
-		stancebarinneranchor = "RIGTH",
+		stancebarinneranchor = "RIGHT",
 		stancebarbuttonszie = 22,
 		stancebarbuttonspace = 4,
 		micromenuscale = 1,
