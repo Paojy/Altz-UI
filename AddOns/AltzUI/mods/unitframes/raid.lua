@@ -674,12 +674,14 @@ function EventFrame:PLAYER_LOGIN()
 		end
 	else
 		togglerf()
-		EventFrame:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED")
+		EventFrame:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED")
 	end
 end
 
-function EventFrame:ACTIVE_TALENT_GROUP_CHANGED()
-	togglerf()
+function EventFrame:PLAYER_SPECIALIZATION_CHANGED(arg1)
+	if arg1 == "player" then
+		togglerf()
+	end
 end
 
 function EventFrame:PLAYER_ENTERING_WORLD()

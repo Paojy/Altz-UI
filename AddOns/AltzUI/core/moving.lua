@@ -309,6 +309,7 @@ local function UnlockAll()
 		SpecMover:Show()
 	else
 		SpecMover:RegisterEvent("PLAYER_REGEN_ENABLED")
+		print(G.classcolor..L["进入战斗锁定"].."|r")
 	end
 end
 
@@ -351,8 +352,8 @@ local function OnSpecChanged()
 	end
 end
 
-SpecMover:SetScript("OnEvent", function(self, event)
-	if event == "ACTIVE_TALENT_GROUP_CHANGED" then
+SpecMover:SetScript("OnEvent", function(self, event, arg1)
+	if event == "PLAYER_SPECIALIZATION_CHANGED" and arg1 == "player" then
 		OnSpecChanged()
 	elseif event == "PLAYER_REGEN_DISABLED" then
 		if SpecMover:IsShown() then
@@ -364,7 +365,7 @@ SpecMover:SetScript("OnEvent", function(self, event)
 		self:UnregisterEvent("PLAYER_REGEN_ENABLED")
 	elseif event == "PLAYER_LOGIN" then
 		OnSpecChanged()
-		self:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED")
+		self:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED")
 		self:RegisterEvent("PLAYER_REGEN_DISABLED")
 	end
 end)
