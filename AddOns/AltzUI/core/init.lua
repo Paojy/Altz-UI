@@ -35,6 +35,8 @@ G.media = {
 	combat = "Interface\\AddOns\\AltzUI\\media\\combat",
 }
 
+G.Iconpath = "Interface\\AddOns\\AltzUI\\media\\icons\\"
+
 G.Client = GetLocale()
 G.Version = GetAddOnMetadata("AltzUIConfig", "Version")
 

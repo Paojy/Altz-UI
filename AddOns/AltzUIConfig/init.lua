@@ -23,9 +23,12 @@ G.media = {
 	right = "Interface\\AddOns\\AltzUI\\media\\right",
 }
 
+G.Iconpath = "Interface\\AddOns\\AltzUI\\media\\icons\\"
+
 G.Version = GetAddOnMetadata("AltzUIConfig", "Version")
 G.Client = GetLocale()
 
+G.myClass = select(2, UnitClass("player"))
 
 G.Ccolor = {}
 if(IsAddOnLoaded'!ClassColors' and CUSTOM_CLASS_COLORS) then
