@@ -20,17 +20,6 @@ local function ColorGradient(perc, ...)-- http://www.wowwiki.com/ColorGradient
     return r1 + (r2-r1)*relperc, g1 + (g2-g1)*relperc, b1 + (b2-b1)*relperc
 end
 
-local function CreateInfoButton(name, parent, t, width, height, justify)
-	local Button = CreateFrame("Frame", G.uiname..parent:GetName()..name, parent)
-	Button:SetSize(width, height)
-	
-	Button.text = T.createtext(Button, "OVERLAY", 12, "OUTLINE", justify)
-	Button.text:SetPoint("CENTER")
-
-	tinsert(t, Button)
-	return Button
-end
-
 local function Skinbar(bar)
 	if aCoreCDB["OtherOptions"]["style"] == 1 then
 		bar.tex = bar:CreateTexture(nil, "ARTWORK")
@@ -641,84 +630,27 @@ if G.Client == "zhCN" then WorldChannelToggle:Show() else WorldChannelToggle:Hid
 local InfoFrame = CreateFrame("Frame", G.uiname.."Info Frame", UIParent)
 InfoFrame:SetScale(aCoreCDB["OtherOptions"]["infobarscale"])
 InfoFrame:SetFrameLevel(4)
-InfoFrame:SetSize(160, 20)
-InfoFrame:SetPoint("BOTTOM", 0, 5)
+InfoFrame:SetSize(260, 20)
+InfoFrame.movingname = L["信息条"]
+InfoFrame.point = {
+		healer = {a1 = "BOTTOM", parent = "UIParent", a2 = "BOTTOM", x = 0, y = 5},
+		dpser = {a1 = "BOTTOM", parent = "UIParent", a2 = "BOTTOM", x = 0, y = 5},
+	}
+T.CreateDragFrame(InfoFrame)
 
-local InfoButtons = {}
-
--- 延迟和帧数
-local Net_Stats = CreateInfoButton("Net_Stats", InfoFrame, InfoButtons, 80, 20, "RIGHT")
-
-Net_Stats:SetScript("OnMouseDown", function()
-	local AddonManager = _G[G.uiname.."AddonManager"]
-	if AddonManager:IsShown() then
-		AddonManager:Hide()
-	else
-		AddonManager:Show()
-	end
-end)
-
--- Format String
-local memFormat = function(num)
-	if num > 1024 then
-		return format("%.2f mb", (num / 1024))
-	else
-		return format("%.1f kb", floor(num))
-	end
+local function CreateInfoButton(name, parent, width, height, justify, ...)
+	local Button = CreateFrame("Frame", G.uiname..parent:GetName()..name, parent)
+	Button:SetSize(width, height)
+	Button:SetPoint(...)
+	
+	Button.text = T.createtext(Button, "OVERLAY", 12, "OUTLINE", justify)
+	Button.text:SetPoint(justify)
+	
+	return Button
 end
 
-Net_Stats.t = 0
-Net_Stats:SetScript("OnUpdate", function(self, elapsed)
-	self.t = self.t + elapsed
-	if self.t > 1 then -- 每秒刷新一次
-		fps = format("%d"..G.classcolor.."fps|r", GetFramerate())
-		lag = format("%d"..G.classcolor.."ms|r", select(3, GetNetStats()))	
-		self.text:SetText(fps.."  "..lag)
-		self.t = 0
-	end
-end)
-
-Net_Stats:SetScript("OnEnter", function(self) 
-	local addons, total, nr, name = {}, 0, 0
-	local memory, entry
-	local BlizzMem = collectgarbage("count")
-			
-	GameTooltip:SetOwner(self, "ANCHOR_NONE")
-	GameTooltip:SetPoint("BOTTOM", InfoFrame, "TOP", 0, 5)
-	GameTooltip:AddLine(format(L["占用前 %d 的插件"], 20), G.Ccolor.r, G.Ccolor.g, G.Ccolor.b)
-	GameTooltip:AddLine(" ")	
-	
-	UpdateAddOnMemoryUsage()
-	for i = 1, GetNumAddOns() do
-		if (GetAddOnMemoryUsage(i) > 0 ) then
-			memory = GetAddOnMemoryUsage(i)
-			entry = {name = GetAddOnInfo(i), memory = memory}
-			table.insert(addons, entry)
-			total = total + memory
-		end
-	end
-	table.sort(addons, function(a, b) return a.memory > b.memory end)
-	for _, entry in pairs(addons) do
-	if nr < 20 then
-			GameTooltip:AddDoubleLine(entry.name, memFormat(entry.memory), 1, 1, 1, ColorGradient(entry.memory / 1024, 0, 1, 0, 1, 1, 0, 1, 0, 0))
-			nr = nr+1
-		end
-	end
-
-	GameTooltip:AddLine(" ")
-	GameTooltip:AddDoubleLine(L["自定义插件占用"], memFormat(total), 1, 1, 1, ColorGradient(total / (1024*20), 0, 1, 0, 1, 1, 0, 1, 0, 0))
-	GameTooltip:AddDoubleLine(L["所有插件占用"], memFormat(BlizzMem), 1, 1, 1, ColorGradient(BlizzMem / (1024*50) , 0, 1, 0, 1, 1, 0, 1, 0, 0))
-	GameTooltip:Show()
-end)
-Net_Stats:SetScript("OnLeave", function(self) GameTooltip:Hide() end)
-
-Net_Stats:SetScript("OnEvent", function(self, event)
-	T.LoadAddonManagerWindow()
-end)
-Net_Stats:RegisterEvent("PLAYER_LOGIN")
-
 -- 耐久
-local Durability = CreateInfoButton("Durability", InfoFrame, InfoButtons, 40, 20, "CENTER")
+local Durability = CreateInfoButton("Durability", InfoFrame, 40, 20, "CENTER", "CENTER", InfoFrame, "CENTER", 20, 0)
 
 local EquipSetsMenu = CreateFrame("Frame", G.uiname.."EquipSetsMenu", UIParent, "UIDropDownMenuTemplate")
 local EquipSetsList = {}
@@ -761,7 +693,11 @@ Durability:SetScript("OnMouseDown", function(self)
 		UpdateEquipSetsList()
 		EasyMenu(EquipSetsList, EquipSetsMenu, "cursor", 0, 0, "MENU", 2)
 		DropDownList1:ClearAllPoints()
-		DropDownList1:SetPoint("BOTTOMLEFT", self, "TOPLEFT", -5, 5)
+		if select(2, InfoFrame:GetCenter())/G.screenheight > .5 then -- In the upper part of the screen
+			DropDownList1:SetPoint("TOPLEFT", self, "BOTTOMLEFT", -5, -5)
+		else
+			DropDownList1:SetPoint("BOTTOMLEFT", self, "TOPLEFT", -5, 5)
+		end
 	end
 end)
 
@@ -777,8 +713,89 @@ end)
 Durability:RegisterEvent("UPDATE_INVENTORY_DURABILITY")
 Durability:RegisterEvent("PLAYER_ENTERING_WORLD")
 
+-- 延迟和帧数
+local Net_Stats = CreateInfoButton("Net_Stats", InfoFrame, 80, 20, "RIGHT", "RIGHT", Durability, "LEFT", -5, 0)
+
+Net_Stats:SetScript("OnMouseDown", function()
+	local AddonManager = _G[G.uiname.."AddonManager"]
+	if AddonManager:IsShown() then
+		AddonManager:Hide()
+	else
+		AddonManager:Show()
+	end
+end)
+
+-- Format String
+local memFormat = function(num)
+	if num > 1024 then
+		return format("%.2f mb", (num / 1024))
+	else
+		return format("%.1f kb", floor(num))
+	end
+end
+
+Net_Stats.t = 0
+Net_Stats:SetScript("OnUpdate", function(self, elapsed)
+	self.t = self.t + elapsed
+	if self.t > 1 then -- 每秒刷新一次
+		fps = format("%d"..G.classcolor.."fps|r", GetFramerate())
+		lag = format("%d"..G.classcolor.."ms|r", select(4, GetNetStats()))	
+		self.text:SetText(fps.."  "..lag)
+		self.t = 0
+	end
+end)
+
+Net_Stats:SetScript("OnEnter", function(self)
+	local addons, total, nr, name = {}, 0, 0
+	local memory, entry
+	local BlizzMem = collectgarbage("count")
+	local bandwidthIn, bandwidthOut, latencyHome, latencyWorld = GetNetStats()
+			
+	GameTooltip:SetOwner(self, "ANCHOR_NONE")
+	if select(2, InfoFrame:GetCenter())/G.screenheight > .5 then -- In the upper part of the screen
+		GameTooltip:SetPoint("TOP", InfoFrame, "BOTTOM", 0, -5)
+	else
+		GameTooltip:SetPoint("BOTTOM", InfoFrame, "TOP", 0, 5)
+	end
+	GameTooltip:AddLine(format(L["占用前 %d 的插件"], 20), G.Ccolor.r, G.Ccolor.g, G.Ccolor.b)
+	GameTooltip:AddLine(" ")	
+	
+	UpdateAddOnMemoryUsage()
+	for i = 1, GetNumAddOns() do
+		if (GetAddOnMemoryUsage(i) > 0 ) then
+			memory = GetAddOnMemoryUsage(i)
+			entry = {name = GetAddOnInfo(i), memory = memory}
+			table.insert(addons, entry)
+			total = total + memory
+		end
+	end
+	table.sort(addons, function(a, b) return a.memory > b.memory end)
+	for _, entry in pairs(addons) do
+	if nr < 20 then
+			GameTooltip:AddDoubleLine(entry.name, memFormat(entry.memory), 1, 1, 1, ColorGradient(entry.memory / 1024, 0, 1, 0, 1, 1, 0, 1, 0, 0))
+			nr = nr+1
+		end
+	end
+
+	GameTooltip:AddLine(" ")
+	GameTooltip:AddDoubleLine(L["自定义插件占用"], memFormat(total), 1, 1, 1, ColorGradient(total / (1024*20), 0, 1, 0, 1, 1, 0, 1, 0, 0))
+	GameTooltip:AddDoubleLine(L["所有插件占用"], memFormat(BlizzMem), 1, 1, 1, ColorGradient(BlizzMem / (1024*50) , 0, 1, 0, 1, 1, 0, 1, 0, 0))
+	
+	GameTooltip:AddLine(" ")
+	GameTooltip:AddLine(format(MAINMENUBAR_LATENCY_LABEL, latencyHome, latencyWorld), 1, 1, 1)
+	
+	GameTooltip:Show()
+end)
+ 
+Net_Stats:SetScript("OnLeave", function(self) GameTooltip:Hide() end)
+
+Net_Stats:SetScript("OnEvent", function(self, event)
+	T.LoadAddonManagerWindow()
+end)
+Net_Stats:RegisterEvent("PLAYER_LOGIN")
+
 -- 天赋
-local Talent = CreateInfoButton("Talent", InfoFrame, InfoButtons, 40, 20, "LEFT")
+local Talent = CreateInfoButton("Talent", InfoFrame, 40, 20, "LEFT", "LEFT", Durability, "RIGHT", 5, 0)
 
 local LootSpecMenu = CreateFrame("Frame", G.uiname.."LootSpecMenu", UIParent, "UIDropDownMenuTemplate")
 
@@ -807,19 +824,25 @@ if G.myClass ~= "DRUID" then
 end
 
 Talent:SetScript("OnMouseDown", function(self, button)
-	if GetSpecialization() then
+	if UnitLevel("player")>=10 then -- 10 级别后有天赋
 		EasyMenu(SpecList, LootSpecMenu, "cursor", 0, 0, "MENU", 2)
 		DropDownList1:ClearAllPoints()
-		DropDownList1:SetPoint("BOTTOMLEFT", self, "TOPLEFT", -5, 5)
+		if select(2, InfoFrame:GetCenter())/G.screenheight > .5 then -- In the upper part of the screen
+			DropDownList1:SetPoint("TOPLEFT", self, "BOTTOMLEFT", -5, -5)
+		else
+			DropDownList1:SetPoint("BOTTOMLEFT", self, "TOPLEFT", -5, 5)
+		end
 	end
 end)
 
-Talent:SetScript("OnEvent", function(self, event)
+Talent:SetScript("OnEvent", function(self, event, arg1)
 	if event == "PLAYER_ENTERING_WORLD" then
 		self:RegisterEvent("PLAYER_LOOT_SPEC_UPDATED")
-		self:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED")
+		self:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED")
 		self:UnregisterEvent("PLAYER_ENTERING_WORLD")
 	end
+	
+	if arg1 and arg1 ~= "player" then return end -- "PLAYER_SPECIALIZATION_CHANGED"
 	
 	local specIndex = GetSpecialization()
 	
@@ -828,16 +851,15 @@ Talent:SetScript("OnEvent", function(self, event)
 		
 		self.text:SetText(format(G.classcolor.."%s|r", specName))
 		
-		local specPopupButton = SpecList[2]["menuList"][1]
+		SpecList[2]["disabled"] = false
 		
-		if specName then
-			specPopupButton.text = format(LOOT_SPECIALIZATION_DEFAULT, specName)
-			specPopupButton.func = function(self) SetLootSpecialization(0) end
-			if GetLootSpecialization() == specPopupButton.specializationID then
-				specPopupButton.checked = true
-			else
-				specPopupButton.checked = false
-			end
+		local specPopupButton = SpecList[2]["menuList"][1]
+		specPopupButton.text = format(LOOT_SPECIALIZATION_DEFAULT, specName)
+		specPopupButton.func = function(self) SetLootSpecialization(0) end
+		if GetLootSpecialization() == specPopupButton.specializationID then
+			specPopupButton.checked = true
+		else
+			specPopupButton.checked = false
 		end
 
 		for index = 2, numspec+1 do
@@ -853,21 +875,14 @@ Talent:SetScript("OnEvent", function(self, event)
 					specPopupButton.checked = false
 				end
 			end
-		end	
+		end
 	else
+		SpecList[2]["disabled"] = true
 		self.text:SetText(G.classcolor.."No Talents|r")
 	end
 end)
 
 Talent:RegisterEvent("PLAYER_ENTERING_WORLD")
-
-for i = 1, #InfoButtons do
-	if i == 1 then
-		InfoButtons[i]:SetPoint("LEFT", InfoFrame, "LEFT")
-	else
-		InfoButtons[i]:SetPoint("LEFT", InfoButtons[i-1], "RIGHT", 0, 0)
-	end
-end
 
 --====================================================--
 --[[                  -- Micromenu --               ]]--
@@ -875,8 +890,13 @@ end
 local MicromenuBar = CreateFrame("Frame", G.uiname.."MicromenuBar", UIParent)
 MicromenuBar:SetScale(aCoreCDB["OtherOptions"]["micromenuscale"])
 MicromenuBar:SetFrameLevel(4)
-MicromenuBar:SetSize(460, 20)
-MicromenuBar:SetPoint("TOP", 0, -5)
+MicromenuBar:SetSize(388, 24)
+MicromenuBar.movingname = L["微型菜单"]
+MicromenuBar.point = {
+		healer = {a1 = "TOP", parent = "UIParent", a2 = "TOP", x = 0, y = -5},
+		dpser = {a1 = "TOP", parent = "UIParent", a2 = "TOP", x = 0, y = -5},
+	}
+T.CreateDragFrame(MicromenuBar)
 Skinbg(MicromenuBar)
 
 local MicromenuButtons = {}
@@ -885,22 +905,34 @@ local function CreateMicromenuButton(text, original)
 	local Button = CreateFrame("Button", nil, MicromenuBar)
 	Button:SetFrameLevel(5)
 	Button:SetPushedTextOffset(1, -1)
-	Button:SetSize(30, 22)
+	Button:SetSize(24, 24)
 	
-	Button.text = T.createtext(Button, "OVERLAY", 12, "OUTLINE", "CENTER")
-	Button.text:SetText(text)
-	Button.text:SetPoint("CENTER")
+	if original == "System" then
+		Button.name = T.createtext(Button, "OVERLAY", 14, "OUTLINE", "CENTER")
+		Button.name:SetText(text)
+		Button.name:SetPoint("CENTER")
+	else
+		Button.normal = Button:CreateTexture(nil, "OVERLAY")
+		Button.normal:SetAllPoints()
+		Button.normal:SetTexture("Interface\\AddOns\\AltzUI\\media\\icons\\"..original)
+		Button.normal:SetVertexColor(.6, .6, .6)
+		Button.normal:SetBlendMode("ADD")
+		
+		Button.text = T.createtext(Button, "HIGHLIGHT", 12, "OUTLINE", "CENTER")
+		Button.text:SetText(text)
+		Button.text:SetTextColor(G.Ccolor.r, G.Ccolor.g, G.Ccolor.b)
+	end
 	
 	Button.highlight = Button:CreateTexture(nil, "HIGHLIGHT")
-	Button.highlight:SetPoint("TOPLEFT", -13, -1)
-	Button.highlight:SetPoint("BOTTOMRIGHT", 11, -1)
-	Button.highlight:SetVertexColor(G.Ccolor.r, G.Ccolor.g, G.Ccolor.b, .7)
+	Button.highlight:SetPoint("TOPLEFT", -12, 1)
+	Button.highlight:SetPoint("BOTTOMRIGHT", 12, -1)
+	Button.highlight:SetVertexColor(G.Ccolor.r, G.Ccolor.g, G.Ccolor.b, .8)
 	Button.highlight:SetTexture(G.media.buttonhighlight)
 	Button.highlight:SetBlendMode("ADD")
 	
 	Button.highlight2 = Button:CreateTexture(nil, "HIGHLIGHT")
 	Button.highlight2:SetPoint("TOPLEFT", Button, "BOTTOMLEFT", -15, 1)
-	Button.highlight2:SetPoint("TOPRIGHT", Button, "BOTTOMRIGHT", 12, 1)
+	Button.highlight2:SetPoint("TOPRIGHT", Button, "BOTTOMRIGHT", 15, 1)
 	Button.highlight2:SetHeight(20)
 	Button.highlight2:SetVertexColor(G.Ccolor.r, G.Ccolor.g, G.Ccolor.b, .6)
 	Button.highlight2:SetTexture(G.media.barhightlight)
@@ -932,21 +964,21 @@ local function CreateMicromenuButton(text, original)
 				if not LookingForGuildFrame then LoadAddOn("Blizzard_LookingForGuildUI") end 
 				LookingForGuildFrame_Toggle() 
 			end
-		elseif original == "SpellbookMicroButton" then
+		elseif original == "Spellbook" then
 			ToggleSpellBook("spell")			
-		elseif original == "AchievementMicroButton" then	
+		elseif original == "Achievement" then	
 			ToggleAchievementFrame()
-		elseif original == "QuestLogMicroButton" then
+		elseif original == "Quests" then
 			ToggleFrame(QuestLogFrame)
-		elseif original == "PVPMicroButton" then
+		elseif original == "PvP" then
 			if not PVPUIFrame then PVP_LoadUI() end 
 			ToggleFrame(PVPUIFrame)
-		elseif original == "LFDMicroButton" then
+		elseif original == "LFR" then
 			PVEFrame_ToggleFrame("GroupFinderFrame", LFDParentFrame)
-		elseif original == "CompanionsMicroButton" then
+		elseif original == "Pet" then
 			if not IsAddOnLoaded("Blizzard_PetJournal") then LoadAddOn("Blizzard_PetJournal") end 
 			ToggleFrame(PetJournalParent)
-		elseif original == "EJMicroButton" then
+		elseif original == "EJ" then
 			if not IsAddOnLoaded("Blizzard_EncounterJournal") then LoadAddOn("Blizzard_EncounterJournal") end 
 			ToggleFrame(EncounterJournal)
 		elseif original == "Bag" then
@@ -962,34 +994,44 @@ local function CreateMicromenuButton(text, original)
 end
 
 MicromenuBar.Charcter = CreateMicromenuButton(L["角色"], "Charcter")
-MicromenuBar.RaidTool = CreateMicromenuButton(L["团队"], "RaidTool")
+MicromenuBar.RaidTool = CreateMicromenuButton(L["团队工具"], "RaidTool")
 MicromenuBar.Friends = CreateMicromenuButton(L["好友"], "Friends")
 MicromenuBar.Guild = CreateMicromenuButton(L["公会"], "Guild")
-MicromenuBar.Achievement = CreateMicromenuButton(L["成就"], "AchievementMicroButton")
-MicromenuBar.EJ = CreateMicromenuButton(L["手册"], "EJMicroButton")
+MicromenuBar.Achievement = CreateMicromenuButton(L["成就"], "Achievement")
+MicromenuBar.EJ = CreateMicromenuButton(L["手册"], "EJ")
 MicromenuBar.System = CreateMicromenuButton(G.classcolor.."AltzUI "..G.Version.."|r", "System")
-MicromenuBar.System:SetSize(80, 25)
-MicromenuBar.Pet = CreateMicromenuButton(L["宠物"], "CompanionsMicroButton")
-MicromenuBar.PvP = CreateMicromenuButton(L["PVP"], "PVPMicroButton")
-MicromenuBar.LFR = CreateMicromenuButton(L["LFG"], "LFDMicroButton")
-MicromenuBar.Quests = CreateMicromenuButton(L["任务"], "QuestLogMicroButton")
-MicromenuBar.Spellbook = CreateMicromenuButton(L["法术"], "SpellbookMicroButton")
+MicromenuBar.Pet = CreateMicromenuButton(L["宠物"], "Pet")
+MicromenuBar.PvP = CreateMicromenuButton(L["PVP"], "PvP")
+MicromenuBar.LFR = CreateMicromenuButton(L["LFG"], "LFR")
+MicromenuBar.Quests = CreateMicromenuButton(L["任务"], "Quests")
+MicromenuBar.Spellbook = CreateMicromenuButton(L["法术"], "Spellbook")
 MicromenuBar.Bag = CreateMicromenuButton(L["行囊"], "Bag")
+MicromenuBar.System:SetSize(80, 25)
 
 for i = 1, #MicromenuButtons do
 	if i == 1 then
-		MicromenuButtons[i]:SetPoint("LEFT", MicromenuBar, "LEFT", 12, 0)
+		MicromenuButtons[i]:SetPoint("LEFT", MicromenuBar, "LEFT", 10, 0)
 	else
 		MicromenuButtons[i]:SetPoint("LEFT", MicromenuButtons[i-1], "RIGHT", 0, 0)
 	end
 end
 
 local function OnHover(button)
-	button.text:SetTextColor(G.Ccolor.r, G.Ccolor.g, G.Ccolor.b)
+	if button.normal then
+		button.normal:SetVertexColor(G.Ccolor.r, G.Ccolor.g, G.Ccolor.b)
+		button.text:ClearAllPoints()
+		if select(2, MicromenuBar:GetCenter())/G.screenheight > .5 then -- In the upper part of the screen
+			button.text:SetPoint("TOP", button, "BOTTOM", 0, -4)
+		else
+			button.text:SetPoint("BOTTOM", button, "TOP", 0, 4)
+		end
+	end
 end
 
 local function OnLeave(button)
-	button.text:SetTextColor(1, 1, 1)
+	if button.normal then
+		button.normal:SetVertexColor(.6, .6, .6)
+	end
 end
 
 local function UpdateFade(frame, children, dbvalue)
