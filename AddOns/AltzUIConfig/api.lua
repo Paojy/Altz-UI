@@ -56,6 +56,31 @@ T.hex = function(r, g, b)
     return ('|cff%02x%02x%02x'):format(r * 255, g * 255, b * 255)
 end
 
+T.SkinButton = function(button, tex, blend)
+	local texture = button:CreateTexture(nil, "OVERLAY")
+	texture:SetAllPoints(button)
+	texture:SetTexture(tex)
+	texture:SetVertexColor(1, 1, 1)
+	
+	if blend then
+		texture:SetBlendMode("ADD")
+	end
+	
+	if button:GetScript("OnEnter") then
+		button:HookScript("OnEnter", function() texture:SetVertexColor(G.Ccolor.r, G.Ccolor.g, G.Ccolor.b) end)
+	else
+		button:SetScript("OnEnter", function() texture:SetVertexColor(G.Ccolor.r, G.Ccolor.g, G.Ccolor.b) end)
+	end
+	
+	if button:GetScript("OnLeave") then
+		button:HookScript("OnLeave", function() texture:SetVertexColor(1, 1, 1) end)
+	else
+		button:SetScript("OnLeave", function() texture:SetVertexColor(1, 1, 1) end)
+	end
+	
+	return texture
+end
+
 T.dummy = function() end
 
 --====================================================--

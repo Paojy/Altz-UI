@@ -48,6 +48,31 @@ T.createnumber = function(f, layer, fontsize, flag, justifyh)
 	return text
 end
 
+T.SkinButton = function(button, tex, blend)
+	local texture = button:CreateTexture(nil, "OVERLAY")
+	texture:SetAllPoints(button)
+	texture:SetTexture(tex)
+	texture:SetVertexColor(1, 1, 1)
+	
+	if blend then
+		texture:SetBlendMode("ADD")
+	end
+	
+	if button:GetScript("OnEnter") then
+		button:HookScript("OnEnter", function() texture:SetVertexColor(G.Ccolor.r, G.Ccolor.g, G.Ccolor.b) end)
+	else
+		button:SetScript("OnEnter", function() texture:SetVertexColor(G.Ccolor.r, G.Ccolor.g, G.Ccolor.b) end)
+	end
+	
+	if button:GetScript("OnLeave") then
+		button:HookScript("OnLeave", function() texture:SetVertexColor(1, 1, 1) end)
+	else
+		button:SetScript("OnLeave", function() texture:SetVertexColor(1, 1, 1) end)
+	end
+	
+	return texture
+end
+
 T.dummy = function() end
 
 -- calculating the ammount of latters
