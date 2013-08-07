@@ -62,7 +62,10 @@ local Update = function(self, event, unit, powerType)
 		elseif spec == SPEC_WARLOCK_DEMONOLOGY then
 			local power = UnitPower("player", SPELL_POWER_DEMONIC_FURY)
 			local maxPower = UnitPowerMax("player", SPELL_POWER_DEMONIC_FURY)
-						
+			
+			if wsb[1].value then
+				wsb[1].value:SetText(power)
+			end
 			wsb[1]:SetMinMaxValues(0, maxPower)
 			wsb[1]:SetValue(power)
 		end
@@ -99,12 +102,19 @@ local function Visibility(self, event, unit)
 				wsb[i]:SetStatusBarColor(unpack(emberscolor[i]))
 				wsb[i]:Show()
 			end
+			if wsb[1].value then
+				wsb[1].value:Hide()
+			end
 		elseif spec == SPEC_WARLOCK_AFFLICTION then
 			local maxshards = 4
 			for i = 1, maxshards do
 				wsb[i]:SetWidth((w+3)/maxshards-3)
 				wsb[i]:SetStatusBarColor(unpack(shardscolor[i]))
 				wsb[i]:Show()
+				wsb[i].value:Hide()
+			end
+			if wsb[1].value then
+				wsb[1].value:Hide()
 			end
 		elseif spec == SPEC_WARLOCK_DEMONOLOGY then
 			wsb[1]:SetWidth(w)
@@ -112,6 +122,9 @@ local function Visibility(self, event, unit)
 			wsb[2]:Hide()
 			wsb[3]:Hide()
 			wsb[4]:Hide()
+			if wsb[1].value then
+				wsb[1].value:Show()
+			end			
 		end
 	else
 		if wsb:IsShown() then 
@@ -135,7 +148,13 @@ local function Enable(self)
 	if(wsb) then
 		wsb.__owner = self
 		wsb.ForceUpdate = ForceUpdate
-
+		
+		if wsb.ShowValue and not wsb[1].value then
+			wsb[1].value = T.createtext(wsb[1], "OVERLAY", wsb.Valuefs or 12, "OUTLINE", "CENTER")
+			wsb[1].value:SetPoint("CENTER")
+			wsb[1].value:SetTextColor(150/255, 255/255, 10/255)
+		end
+			
 		self:RegisterEvent("UNIT_POWER", Path)
 		self:RegisterEvent("UNIT_DISPLAYPOWER", Path)
 		self:RegisterEvent("PLAYER_TALENT_UPDATE", Path)
