@@ -8,6 +8,13 @@ oUF.colors.totems = {
 	[AIR_TOTEM_SLOT] = { 15/255, 244/255, 251/255 }
 }
 
+local textcolor = {
+	{ 255/255, 72/255, 48/255 },
+	{ 156/255, 255/255, 77/255 },
+	{ 73/255, 91/255, 255/255 },
+	{ 45/255, 255/255, 255/255 }
+}
+
 local OnClick = function(self)
 	DestroyTotem(self:GetID())
 end
@@ -46,30 +53,44 @@ local UpdateTotem = function(self, event, slot)
 	if(haveTotem) then
 		if(duration > 0) then
 			totem:Show()
-			totem:SetValue(1 - ((GetTime() - startTime) / duration))	
+			totem:SetValue(1 - ((GetTime() - startTime) / duration))
 			-- Status bar update
 			totem:SetScript("OnUpdate",function(self,elapsed)
-					total = total + elapsed
-					if total >= delay then
-						total = 0
-						haveTotem, name, startTime, duration, totemIcon = GetTotemInfo(self.ID)
-							if ((GetTime() - startTime) == 0) then
-								self:SetValue(0)
-							else
-								self:SetValue(1 - ((GetTime() - startTime) / duration))
-							end
+				total = total + elapsed
+				if total >= delay then
+					total = 0
+					haveTotem, name, startTime, duration, totemIcon = GetTotemInfo(self.ID)
+					if ((GetTime() - startTime) >= duration) then
+						self:SetScript("OnUpdate",nil)
+						self:Hide()
+						self:SetValue(0)
+						if self.value then
+							self.value:SetText("")
+						end			
+					else
+						self:SetValue(1 - ((GetTime() - startTime) / duration))
+						if self.value then
+							self.value:SetText(T.FormatTime(duration-(GetTime() - startTime)))
+						end
 					end
-				end)					
+				end
+			end)					
 		else
 			-- There's no need to update because it doesn't have any duration
 			totem:SetScript("OnUpdate",nil)
 			totem:Hide()
 			totem:SetValue(0)
+			if totem.value then
+				totem.value:SetText("")
+			end			
 		end 
 	else
 		-- No totem = no time
+		totem:Hide()		
 		totem:SetValue(0)
-		totem:Hide()
+		if totem.value then
+			totem.value:SetText("")
+		end
 	end
 --
 	if(totems.PostUpdate) then
@@ -100,9 +121,15 @@ local Enable = function(self)
 
 		for i = 1, MAX_TOTEMS do
 			local totem = totems[i]
-
+			
 			totem:SetID(i)
-
+			
+			if totems.ShowValue and not totem.value then
+				totem.value = T.createtext(totem, "OVERLAY", totems.Valuefs or 12, "OUTLINE", "CENTER")
+				totem.value:SetPoint("CENTER")
+				totem.value:SetTextColor(unpack(textcolor[i]))
+			end
+			
 			if(totem:HasScript'OnClick') then
 				totem:SetScript('OnClick', OnClick)
 			end
