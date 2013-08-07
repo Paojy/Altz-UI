@@ -2,7 +2,6 @@
 if G.Client == "zhCN" or G.Client == "zhTW" then return end
 
 L["角色"] = "Character"
-L["团队"] = "Raid"
 L["好友"] = "Frieds"
 L["公会"] = "Guild"
 L["成就"] = "Achievement"
@@ -69,6 +68,7 @@ L["公会邀请"] = "Guild Invite"
 L["添加好友"] = "Add Friend"
 L["整理背包提示"] = "LeftButton - sort in an backward order\nRightButton - sort in an forward order"
 
+L["信息条"] = "Info Bar"
 L["微型菜单"] = "MicroMenu"
 L["主动作条"] = "Main\nActionbar"
 L["额外动作条"] = "Multi\nActionBar"
