@@ -66,10 +66,8 @@ local dispelClass = {
  
 local _, class = UnitClass("player")
 local checkTalents = CreateFrame"Frame"
-checkTalents:RegisterEvent"PLAYER_ENTERING_WORLD"
-checkTalents:RegisterEvent"ACTIVE_TALENT_GROUP_CHANGED"
-checkTalents:RegisterEvent"CHARACTER_POINTS_CHANGED"
- 
+checkTalents:RegisterEvent("PLAYER_ENTERING_WORLD")
+
 checkTalents:SetScript("OnEvent", function(self, event)
     if multicheck(class, "SHAMAN", "PALADIN", "DRUID", "PRIEST", "MONK") then
  
@@ -103,6 +101,7 @@ checkTalents:SetScript("OnEvent", function(self, event)
  
     if event == "PLAYER_ENTERING_WORLD" then
         self:UnregisterEvent("PLAYER_ENTERING_WORLD")
+		self:RegisterEvent("PLAYER_TALENT_UPDATE")
     end
 end)
 
