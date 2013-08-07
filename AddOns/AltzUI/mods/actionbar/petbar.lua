@@ -26,8 +26,8 @@ local buttonList = {}
 local frame = CreateFrame("Frame", "Altz_Petbar", UIParent, "SecureHandlerStateTemplate")
 frame.movingname = L["宠物动作条"]
 frame.point = {
-		healer = {a1 = "BOTTOM", parent = "UIParent", a2 = "BOTTOM", x = 0, y = 104},
-		dpser = {a1 = "BOTTOM", parent = "UIParent", a2 = "BOTTOM", x = 0, y = 104},
+		healer = {a1 = "BOTTOMLEFT", parent = "UIParent", a2 = "BOTTOMLEFT", x = 25, y = 25},
+		dpser = {a1 = "BOTTOMLEFT", parent = "UIParent", a2 = "BOTTOMLEFT", x = 25, y = 25},
 	}
 T.CreateDragFrame(frame)
 if not uselayout5x2 then
