@@ -14,7 +14,7 @@ L["小地图tips"] = "Right click the minimap to toggle traking menu. Click the 
 L["聊天框"] = "Chatframe"
 L["聊天框tips"] = "Press Tab to change between available channels. Click the long button on the left side can stretch or shrink the Chatframe(only out of combat)."
 L["微型菜单"] = "Micro Menu"
-L["微型菜单tips"] = "Press ESC or press the the AltzUI button will open Game Menu. You can find GUI button here. Click on both edges of micromenu can turn on/off hover fade."
+L["微型菜单tips"] = "Press ESC or press the the AltzUI button will open Game Menu. You can find GUI button here."
 L["控制台"] = "AltzUI GUI"
 L["控制台tips"] = "Open GUI Here!"
 L["信息栏"] = "Info Frame"
@@ -69,7 +69,6 @@ L["过滤阈值"] = "Chat Fliter Keyword Number"
 L["过滤阈值提示"] = "Must contain at least the number of words to hide a message."
 
 -- 背包和物品
-L["整合背包"] = "Combine bags"
 L["自动修理"] = "Auto Repair"
 L["自动修理提示"] = "automatically repair items"
 L["自动公会修理"] = "Auto Guild Repair"

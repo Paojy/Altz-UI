@@ -234,7 +234,7 @@ ChatOptions.goldkeywordlist.edit:SetScript("OnEnterPressed", function(self) self
 --====================================================--
 local ItemOptions = CreateOptionPage("Item Options", ITEMS, GUI, "VERTICAL", nil, true)
 
-T.createcheckbutton(ItemOptions, 30, 60, L["整合背包"], "ItemOptions", "enablebag")
+T.createcheckbutton(ItemOptions, 30, 60, L["启用"], "ItemOptions", "enablebag")
 T.createcheckbutton(ItemOptions, 30, 90, L["已会配方着色"], "ItemOptions", "alreadyknown", L["已会配方着色提示"])
 T.createcheckbutton(ItemOptions, 30, 120, L["自动修理"], "ItemOptions", "autorepair", L["自动修理提示"])
 T.createcheckbutton(ItemOptions, 30, 150, L["自动公会修理"], "ItemOptions", "autorepair_guild", L["自动公会修理提示"])
