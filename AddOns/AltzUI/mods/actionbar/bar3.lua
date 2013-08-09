@@ -9,7 +9,7 @@ local space1 = aCoreCDB["ActionbarOptions"]["space1"]
 local mouseover = {
 	enable= aCoreCDB["ActionbarOptions"]["bar3mfade"],
 	fadeIn= {time = 0.4, alpha = 1},
-	fadeOut = {time = 0.4, alpha = aCoreCDB.bar3fademinaplha},
+	fadeOut = {time = 0.4, alpha = aCoreCDB["ActionbarOptions"]["bar3fademinaplha"]},
 	}
 local eventfader= {
 	enable= aCoreCDB["ActionbarOptions"]["bar3efade"],
