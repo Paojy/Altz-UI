@@ -901,19 +901,48 @@ Skinbg(MicromenuBar)
 
 local MicromenuButtons = {}
 
-local function CreateMicromenuButton(text, original)
-	local Button = CreateFrame("Button", nil, MicromenuBar)
+local function CreateMicromenuButton(bu, text, original)
+	local Button
+	if bu then
+		Button = bu
+		Button:SetParent(MicromenuBar)
+		Button:ClearAllPoints()
+		Button:SetNormalTexture(nil)
+		Button:SetPushedTexture(nil)
+		Button:SetHighlightTexture(nil)
+		Button.SetNormalTexture = T.dummy
+		Button.SetPushedTexture = T.dummy
+		Button.SetHighlightTexture = T.SetHighlightTexture
+		for j = 1, Button:GetNumRegions() do
+			local region = select(j, Button:GetRegions())
+			region:Hide()
+			region.Show = T.dummy
+		end
+		for i, child in ipairs({Button:GetChildren()}) do
+			child:Hide()
+			child.Show = T.dummy
+		end
+		if original == "System" then
+			Button:SetSize(80, 43)
+		else
+			Button:SetSize(24, 43)
+		end
+	else
+		Button = CreateFrame("Button", nil, MicromenuBar)
+		Button:SetSize(24, 24)
+	end
+	
 	Button:SetFrameLevel(5)
-	Button:SetPushedTextOffset(1, -1)
-	Button:SetSize(24, 24)
+	Button.normal = Button:CreateTexture(nil, "OVERLAY")
+	Button.normal:SetPoint("BOTTOMLEFT")
+	Button.normal:SetPoint("BOTTOMRIGHT")
+	Button.normal:SetHeight(24)
 	
 	if original == "System" then
 		Button.name = T.createtext(Button, "OVERLAY", 14, "OUTLINE", "CENTER")
 		Button.name:SetText(text)
-		Button.name:SetPoint("CENTER")
+		Button.name:SetPoint("BOTTOM", 0, 4)
 	else
-		Button.normal = Button:CreateTexture(nil, "OVERLAY")
-		Button.normal:SetAllPoints()
 		Button.normal:SetTexture("Interface\\AddOns\\AltzUI\\media\\icons\\"..original)
 		Button.normal:SetVertexColor(.6, .6, .6)
 		Button.normal:SetBlendMode("ADD")
@@ -924,112 +953,80 @@ local function CreateMicromenuButton(text, original)
 	end
 	
 	Button.highlight = Button:CreateTexture(nil, "HIGHLIGHT")
-	Button.highlight:SetPoint("TOPLEFT", -12, 1)
-	Button.highlight:SetPoint("BOTTOMRIGHT", 12, -1)
+	Button.highlight:SetPoint("TOPLEFT", Button.normal, "TOPLEFT", -12, 1)
+	Button.highlight:SetPoint("BOTTOMRIGHT", Button.normal, "BOTTOMRIGHT", 12, -1)
 	Button.highlight:SetVertexColor(G.Ccolor.r, G.Ccolor.g, G.Ccolor.b, .8)
 	Button.highlight:SetTexture(G.media.buttonhighlight)
 	Button.highlight:SetBlendMode("ADD")
 	
 	Button.highlight2 = Button:CreateTexture(nil, "HIGHLIGHT")
-	Button.highlight2:SetPoint("TOPLEFT", Button, "BOTTOMLEFT", -15, 1)
-	Button.highlight2:SetPoint("TOPRIGHT", Button, "BOTTOMRIGHT", 15, 1)
+	Button.highlight2:SetPoint("TOPLEFT", Button.normal, "BOTTOMLEFT", -15, 1)
+	Button.highlight2:SetPoint("TOPRIGHT", Button.normal, "BOTTOMRIGHT", 15, 1)
 	Button.highlight2:SetHeight(20)
 	Button.highlight2:SetVertexColor(G.Ccolor.r, G.Ccolor.g, G.Ccolor.b, .6)
 	Button.highlight2:SetTexture(G.media.barhightlight)
 	Button.highlight2:SetBlendMode("ADD")
 	
-	Button:SetScript("OnClick", function()
-		if original == "RaidTool" then
-			if _G[G.uiname.."RaidToolFrame"]:IsShown() then
-				_G[G.uiname.."RaidToolFrame"]:Hide()
-			else
-				_G[G.uiname.."RaidToolFrame"]:Show()
+	if not bu then
+		Button:SetScript("OnClick", function()
+			if original == "RaidTool" then
+				if _G[G.uiname.."RaidToolFrame"]:IsShown() then
+					_G[G.uiname.."RaidToolFrame"]:Hide()
+				else
+					_G[G.uiname.."RaidToolFrame"]:Show()
+				end
+			elseif original == "Friends" then
+				ToggleFriendsFrame(1)
+			elseif original == "Bag" then
+				if GameMenuFrame:IsShown() then
+					HideUIPanel(GameMenuFrame)
+				end
+				ToggleAllBags()	
 			end
-		elseif original == "Charcter" then
-			ToggleCharacter("PaperDollFrame")
-		elseif original == "System" then
-			if GameMenuFrame:IsShown() then
-				HideUIPanel(GameMenuFrame)
-			else
-				ShowUIPanel(GameMenuFrame)
-			end
-		elseif original == "Friends" then
-			ToggleFriendsFrame(1)
-		elseif original == "Guild" then
-			if IsInGuild() then 
-				if not GuildFrame then LoadAddOn("Blizzard_GuildUI") end 
-				GuildFrame_Toggle()
-				GuildFrame_TabClicked(GuildFrameTab2)
-			else 
-				if not LookingForGuildFrame then LoadAddOn("Blizzard_LookingForGuildUI") end 
-				LookingForGuildFrame_Toggle() 
-			end
-		elseif original == "Spellbook" then
-			ToggleSpellBook("spell")			
-		elseif original == "Achievement" then	
-			ToggleAchievementFrame()
-		elseif original == "Quests" then
-			ToggleFrame(QuestLogFrame)
-		elseif original == "PvP" then
-			if not PVPUIFrame then PVP_LoadUI() end 
-			ToggleFrame(PVPUIFrame)
-		elseif original == "LFR" then
-			PVEFrame_ToggleFrame("GroupFinderFrame", LFDParentFrame)
-		elseif original == "Pet" then
-			if not IsAddOnLoaded("Blizzard_PetJournal") then LoadAddOn("Blizzard_PetJournal") end 
-			ToggleFrame(PetJournalParent)
-		elseif original == "EJ" then
-			if not IsAddOnLoaded("Blizzard_EncounterJournal") then LoadAddOn("Blizzard_EncounterJournal") end 
-			ToggleFrame(EncounterJournal)
-		elseif original == "Bag" then
-			if GameMenuFrame:IsShown() then
-				HideUIPanel(GameMenuFrame)
-			end
-			ToggleAllBags()		
-		end
-	end)
+		end)
+	end
 	
 	tinsert(MicromenuButtons, Button)
+	
 	return Button
 end
 
-MicromenuBar.Charcter = CreateMicromenuButton(L["角色"], "Charcter")
-MicromenuBar.RaidTool = CreateMicromenuButton(L["团队工具"], "RaidTool")
-MicromenuBar.Friends = CreateMicromenuButton(L["好友"], "Friends")
-MicromenuBar.Guild = CreateMicromenuButton(L["公会"], "Guild")
-MicromenuBar.Achievement = CreateMicromenuButton(L["成就"], "Achievement")
-MicromenuBar.EJ = CreateMicromenuButton(L["手册"], "EJ")
-MicromenuBar.System = CreateMicromenuButton(G.classcolor.."AltzUI "..G.Version.."|r", "System")
-MicromenuBar.Pet = CreateMicromenuButton(L["宠物"], "Pet")
-MicromenuBar.PvP = CreateMicromenuButton(L["PVP"], "PvP")
-MicromenuBar.LFR = CreateMicromenuButton(L["LFG"], "LFR")
-MicromenuBar.Quests = CreateMicromenuButton(L["任务"], "Quests")
-MicromenuBar.Spellbook = CreateMicromenuButton(L["法术"], "Spellbook")
-MicromenuBar.Bag = CreateMicromenuButton(L["行囊"], "Bag")
-MicromenuBar.System:SetSize(80, 25)
+MicromenuBar.Charcter = CreateMicromenuButton(CharacterMicroButton, CHARACTER_BUTTON, "Charcter")
+MicromenuBar.RaidTool = CreateMicromenuButton(false, L["团队工具"], "RaidTool")
+MicromenuBar.Friends = CreateMicromenuButton(false, SOCIAL_BUTTON, "Friends")
+MicromenuBar.Guild = CreateMicromenuButton(GuildMicroButton, GUILD, "Guild")
+MicromenuBar.Achievement = CreateMicromenuButton(AchievementMicroButton, ACHIEVEMENT_BUTTON, "Achievement")
+MicromenuBar.EJ = CreateMicromenuButton(EJMicroButton, ENCOUNTER_JOURNAL, "EJ")
+MicromenuBar.System = CreateMicromenuButton(MainMenuMicroButton, G.classcolor.."AltzUI "..G.Version.."|r", "System")
+MicromenuBar.Pet = CreateMicromenuButton(CompanionsMicroButton, MOUNTS_AND_PETS, "Pet")
+MicromenuBar.PvP = CreateMicromenuButton(PVPMicroButton, PLAYER_V_PLAYER, "PvP")
+MicromenuBar.LFR = CreateMicromenuButton(LFDMicroButton, LFG_TITLE, "LFR")
+MicromenuBar.Quests = CreateMicromenuButton(QuestLogMicroButton, QUESTLOG_BUTTON, "Quests")
+MicromenuBar.Spellbook = CreateMicromenuButton(SpellbookMicroButton, SPELLBOOK_ABILITIES_BUTTON, "Spellbook")
+MicromenuBar.Bag = CreateMicromenuButton(false, BAGSLOT, "Bag")
 
 for i = 1, #MicromenuButtons do
 	if i == 1 then
-		MicromenuButtons[i]:SetPoint("LEFT", MicromenuBar, "LEFT", 10, 0)
+		MicromenuButtons[i]:SetPoint("BOTTOMLEFT", MicromenuBar, "BOTTOMLEFT", 10, 0)
 	else
-		MicromenuButtons[i]:SetPoint("LEFT", MicromenuButtons[i-1], "RIGHT", 0, 0)
+		MicromenuButtons[i]:SetPoint("BOTTOMLEFT", MicromenuButtons[i-1], "BOTTOMRIGHT", 0, 0)
 	end
 end
 
 local function OnHover(button)
-	if button.normal then
+	if button:IsEnabled() and button.text then
 		button.normal:SetVertexColor(G.Ccolor.r, G.Ccolor.g, G.Ccolor.b)
 		button.text:ClearAllPoints()
 		if select(2, MicromenuBar:GetCenter())/G.screenheight > .5 then -- In the upper part of the screen
-			button.text:SetPoint("TOP", button, "BOTTOM", 0, -4)
+			button.text:SetPoint("TOP", button.normal, "BOTTOM", 0, -4)
 		else
-			button.text:SetPoint("BOTTOM", button, "TOP", 0, 4)
+			button.text:SetPoint("BOTTOM", button.normal, "TOP", 0, 4)
 		end
 	end
 end
 
 local function OnLeave(button)
-	if button.normal then
+	if button:IsEnabled() and button.text then
 		button.normal:SetVertexColor(.6, .6, .6)
 	end
 end
@@ -1067,6 +1064,7 @@ end)
 MicromenuBar:SetScript("OnEvent", function(self) 
 	UpdateFade(self, MicromenuButtons, "fademicromenu") 
 end)
+
 
 MicromenuBar:RegisterEvent("PLAYER_LOGIN")
 --====================================================--

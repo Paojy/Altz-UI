@@ -1,17 +1,6 @@
 ﻿local T, C, L, G = unpack(select(2, ...))
 if G.Client == "zhCN" or G.Client == "zhTW" then return end
 
-L["角色"] = "Character"
-L["好友"] = "Frieds"
-L["公会"] = "Guild"
-L["成就"] = "Achievement"
-L["手册"] = "EJ"
-L["宠物"] = "Pet"
-L["PVP"] = "PVP"
-L["LFG"] = "LFG"
-L["任务"] = "Quest"
-L["法术"] = "Spell"
-L["行囊"] = "Inventory"
 L["团队工具"] = "RaidTools"
 
 L["当前经验"] = "Current: "

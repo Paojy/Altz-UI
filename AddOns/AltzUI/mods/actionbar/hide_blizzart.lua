@@ -6,17 +6,17 @@ blizzHider:Hide()
 --hide micro menu
 
 local buttonList = {
-	CharacterMicroButton,
-	SpellbookMicroButton,
+	--CharacterMicroButton,
+	--SpellbookMicroButton,
 	TalentMicroButton,
-	AchievementMicroButton,
-	QuestLogMicroButton,
-	GuildMicroButton,
-	PVPMicroButton,
-	LFDMicroButton,
-	CompanionsMicroButton,
-	EJMicroButton,
-	MainMenuMicroButton,
+	--AchievementMicroButton,
+	--QuestLogMicroButton,
+	--GuildMicroButton,
+	--PVPMicroButton,
+	--LFDMicroButton,
+	--CompanionsMicroButton,
+	--EJMicroButton,
+	--MainMenuMicroButton,
 	HelpMicroButton,
 	}
 
