@@ -111,7 +111,6 @@ local function Visibility(self, event, unit)
 				wsb[i]:SetWidth((w+3)/maxshards-3)
 				wsb[i]:SetStatusBarColor(unpack(shardscolor[i]))
 				wsb[i]:Show()
-				wsb[i].value:Hide()
 			end
 			if wsb[1].value then
 				wsb[1].value:Hide()
