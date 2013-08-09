@@ -120,7 +120,7 @@ GameTooltip:HookScript("OnTooltipSetUnit", function(self)
         local alive = not UnitIsDeadOrGhost(unit)
         local level = UnitLevel(unit)
 
-        if level then
+        if level and unit then
 			if not UnitIsWildBattlePet(unit) then
 				local unitClass = UnitIsPlayer(unit) and hex(color)..UnitClass(unit).."|r" or ""
 				local creature = not UnitIsPlayer(unit) and UnitCreatureType(unit) or ""
