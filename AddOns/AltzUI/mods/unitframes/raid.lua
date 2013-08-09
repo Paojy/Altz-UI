@@ -571,8 +571,8 @@ local function Spawndpsraid()
 	)
 	dpsraid.movingname = L["输出模式团队框架"]
 	dpsraid.point = {
-		healer = {a1 = "TOPLEFT", parent = "UIParent", a2 = "TOPLEFT", x = 5, y = -146},
-		dpser = {a1 = "TOPLEFT", parent = "UIParent", a2 = "TOPLEFT", x = 5, y = -146},
+		healer = {a1 = "TOPLEFT", parent = "UIParent", a2 = "TOPLEFT", x = 15, y = -146},
+		dpser = {a1 = "TOPLEFT", parent = "UIParent", a2 = "TOPLEFT", x = 15, y = -146},
 	}	
 	T.CreateDragFrame(dpsraid)
 	dpsraid.df:ClearAllPoints()
