@@ -259,7 +259,7 @@ end
 
 local ClassIconsPostUpdate = function(element, cur, max, maxchange)
 	for i = 1, 5 do
-		if cur == max then
+		if max > 0 and cur == max then
 			element[i]:SetStatusBarColor(unpack(classicon_colors[max]))
 		else
 			element[i]:SetStatusBarColor(unpack(classicon_colors[i]))
@@ -337,8 +337,44 @@ end
 --=============================================--
 --[[                 Castbars                ]]--
 --=============================================--
+
+local uc = {1, 0, 0}
+local tk = {0, 0, 0}
+
+local cbwidth, cbheight
+if aCoreCDB["UnitframeOptions"]["independentcb"] then
+	cbheight = aCoreCDB["UnitframeOptions"]["cbheight"]
+	cbwidth = aCoreCDB["UnitframeOptions"]["cbwidth"]
+else
+	cbheight = aCoreCDB["UnitframeOptions"]["height"]
+	cbwidth = aCoreCDB["UnitframeOptions"]["width"]
+end
+
+local ChannelSpells = {
+	[GetSpellInfo(129197)] = 3, --精神鞭笞（乱）
+	[GetSpellInfo(124468)] = 3, --精神鞭笞
+	[GetSpellInfo(32000)] = 5, --精神灼烧
+	[GetSpellInfo(47540)] = 2, --苦修（第一跳立即生效）
+	[GetSpellInfo(64843)] = 4, --神圣赞美诗
+	[GetSpellInfo(64901)] = 4, --希望圣歌
+	
+	[GetSpellInfo(10)] = 8, --暴风雪
+	[GetSpellInfo(5143)] = 5, --奥术飞弹
+	[GetSpellInfo(12051)] = 3, --唤醒（第一跳立即生效）
+
+	[GetSpellInfo(1120)] = 6, --吸取灵魂
+	[GetSpellInfo(689)] = 6, --吸取生命
+	[GetSpellInfo(108371)] = 6, --生命收割
+	[GetSpellInfo(4629)] = 6, --火焰之雨
+	[GetSpellInfo(1949)] = 14, --地狱烈焰（第一跳立即生效）
+	[GetSpellInfo(755)] = 6, --生命通道
+	[GetSpellInfo(103103)] = 4, --灾难之握
+	
+	[GetSpellInfo(740)] = 4, --宁静
+	[GetSpellInfo(16914)] = 10, --飓风
+}
+
 local PostCastStart = function(castbar, unit)
-	local uc = {1, 0, 0}
     if unit == "player" then
 		castbar.IBackdrop:SetBackdropBorderColor(0, 0, 0)
 	else
@@ -350,6 +386,81 @@ local PostCastStart = function(castbar, unit)
     end
 end
 
+local PostChannelStart = function(castbar, unit, spell)
+
+    if unit == "player" then
+		castbar.IBackdrop:SetBackdropBorderColor(0, 0, 0)
+	else
+		if castbar.interrupt then
+		    castbar.IBackdrop:SetBackdropBorderColor(uc[1], uc[2], uc[3])
+        else
+            castbar.IBackdrop:SetBackdropBorderColor(0, 0, 0)
+        end
+    end
+	
+	if aCoreCDB["UnitframeOptions"]["channelticks"] then
+		if unit == "player" and ChannelSpells[spell] then
+			if #castbar.Ticks ~= 0 then
+				for i = 1, #castbar.Ticks do
+					castbar.Ticks[i]:Hide()
+				end
+			end
+			castbar.tick = ChannelSpells[spell]
+			for i = 1, (castbar.tick-1) do
+				if not castbar.Ticks[i] then
+					castbar.Ticks[i] = castbar:CreateTexture(nil, "OVERLAY")
+					castbar.Ticks[i]:SetTexture(tk[1], tk[2], tk[3])
+					castbar.Ticks[i]:SetSize(2, cbheight)
+				else
+					castbar.Ticks[i]:Show()
+				end
+				castbar.Ticks[i]:SetPoint("RIGHT", castbar, "RIGHT", -cbwidth/castbar.tick*i, 0)
+			end
+			--print("start")
+		end
+	end
+end
+
+local PostChannelUpdate = function(castbar, unit, spell)
+	if aCoreCDB["UnitframeOptions"]["channelticks"] then
+		if unit == "player" and ChannelSpells[spell] then
+			if #castbar.Ticks ~= 0 then
+				for i = 1, #castbar.Ticks do
+					castbar.Ticks[i]:Hide()
+				end
+			end
+			castbar.tick = ChannelSpells[spell] + 1
+			for i = 1, (castbar.tick-1) do
+				if not castbar.Ticks[i] then
+					castbar.Ticks[i] = castbar:CreateTexture(nil, "OVERLAY")
+					castbar.Ticks[i]:SetTexture(tk[1], tk[2], tk[3])
+					castbar.Ticks[i]:SetSize(2, cbheight)
+				else
+					castbar.Ticks[i]:Show()
+				end
+				if i == 1 then
+					castbar.Ticks[i]:SetPoint("RIGHT", castbar, "RIGHT", cbwidth*castbar.delay/castbar.max, 0)
+				else
+					castbar.Ticks[i]:SetPoint("RIGHT", castbar, "RIGHT", cbwidth*(castbar.delay/castbar.max-(1+castbar.delay/castbar.max)/(castbar.tick-1)*(i-1)), 0)
+				end
+			end
+			--print("update")
+		end
+	end
+end
+
+local PostChannelStop = function(castbar, unit, spell)
+	if aCoreCDB["UnitframeOptions"]["channelticks"] then
+		if unit == "player" then
+			if #castbar.Ticks ~= 0 then
+				for i = 1, #castbar.Ticks do
+					castbar.Ticks[i]:Hide()
+				end
+			end
+		end
+	end
+end
+
 local CustomTimeText = function(castbar, duration)
     if castbar.casting then
         castbar.Time:SetFormattedText("|cff97FFFF%.1f/%.1f|r", duration, castbar.max)
@@ -358,14 +469,26 @@ local CustomTimeText = function(castbar, duration)
     end
 end
 
+local CustomDelayText = function(castbar, duration)
+    if castbar.casting then
+        castbar.Time:SetFormattedText("|cff97FFFF%.1f/%.1f|r|cff8A8A8A(%.1f)|r", duration, castbar.max, -castbar.delay)
+    elseif castbar.channeling then
+        castbar.Time:SetFormattedText("|cff97FFFF%.1f/%.1f|r|cff8A8A8A(%.1f)|r", castbar.max - duration, castbar.max, -castbar.delay)
+    end
+end
+
 local CreateCastbars = function(self, unit)
     local u = unit:match("[^%d]+")
     if multicheck(u, "target", "player", "focus", "boss") then
-        local cb = T.createStatusbar(self, "ARTWORK", nil, nil, 0, 0, 0, 0) -- transparent
+        local cb = CreateFrame("StatusBar", G.uiname..unit.."Castbar", self)
+		if aCoreCDB["OtherOptions"]["style"] == 1 then
+			cb:SetStatusBarTexture(G.media.blank)
+		else
+			cb:SetStatusBarTexture(G.media.ufbar)
+		end
+		cb:SetStatusBarColor(0, 0, 0, 0)
 		cb:SetAllPoints(self)
         cb:SetFrameLevel(2)
-		
-		cb.bg:Hide()
 		
         cb.Spark = cb:CreateTexture(nil, "OVERLAY")
 		cb.Spark:SetTexture("Interface\\UnitPowerBarAlt\\Generic1Player_Pill_Flash")
@@ -373,15 +496,16 @@ local CreateCastbars = function(self, unit)
         cb.Spark:SetAlpha(1)
         cb.Spark:SetSize(8, aCoreCDB["UnitframeOptions"]["height"]*2)
 
-        cb.Time = T.createnumber(cb, "OVERLAY", 14, "OUTLINE", "LEFT")
-		if (unit == "player") then
+        cb.Time = T.createnumber(cb, "OVERLAY", 14, "OUTLINE", "CENTER")
+		if unit == "player" then
 			cb.Time:SetFont(G.norFont, 15, "OUTLINE")
 			cb.Time:SetPoint("TOP", cb, "BOTTOM", 0, -10)
 		else
 			cb.Time:SetPoint("BOTTOMRIGHT", cb, "TOPRIGHT", -3, -3)
 		end
         cb.CustomTimeText = CustomTimeText
-
+		cb.CustomDelayText = CustomDelayText
+		
         cb.Text =  T.createtext(cb, "OVERLAY", 14, "OUTLINE", "CENTER")
 		if u == "boss" then
 			cb.Text:SetPoint("BOTTOMLEFT", 3, -3)
@@ -392,20 +516,64 @@ local CreateCastbars = function(self, unit)
         cb.Icon = cb:CreateTexture(nil, "ARTWORK")
         cb.Icon:SetSize(aCoreCDB["UnitframeOptions"]["cbIconsize"], aCoreCDB["UnitframeOptions"]["cbIconsize"])
         cb.Icon:SetTexCoord(.1, .9, .1, .9)
-		cb.Icon:SetPoint("BOTTOMRIGHT", cb, "BOTTOMLEFT", -7, -aCoreCDB["UnitframeOptions"]["height"]*(1-aCoreCDB["UnitframeOptions"]["hpheight"])-6)
+		cb.Icon:SetPoint("BOTTOMRIGHT", cb, "BOTTOMLEFT", -7, -aCoreCDB["UnitframeOptions"]["height"]*(1-aCoreCDB["UnitframeOptions"]["hpheight"]))
 
 		cb.IBackdrop = T.createBackdrop(cb, cb.Icon)
 		
-		--safezone for castbar of player
-        if (unit == "player") then
+        if unit == "player" then
             cb.SafeZone = cb:CreateTexture(nil, "OVERLAY")
             cb.SafeZone:SetTexture(G.media.blank)
-            cb.SafeZone:SetVertexColor( .3, .8, 1, .3)
+            cb.SafeZone:SetVertexColor( 1, 1, 1, .5)
+			
+			if aCoreCDB["UnitframeOptions"]["independentcb"] then
+				cb:ClearAllPoints()
+				cb:SetSize(aCoreCDB["UnitframeOptions"]["cbwidth"], aCoreCDB["UnitframeOptions"]["cbheight"])
+				cb.movingname = L["玩家施法条"]
+				cb.point = {
+						healer = {a1 = "TOP", parent = "UIParent", a2 = "CENTER", x = 0, y = -150},
+						dpser = {a1 = "TOP", parent = "UIParent", a2 = "CENTER", x = 0, y = -150},
+					}
+				T.CreateDragFrame(cb)
+				
+				cb:SetStatusBarColor( .35, .65, 1, 1)
+				cb.bd = T.createBackdrop(cb, cb, 1)
+				cb.Icon:SetPoint("BOTTOMRIGHT", cb, "BOTTOMLEFT", -7, 0)
+				cb.Spark:SetSize(8, aCoreCDB["UnitframeOptions"]["cbheight"]*2)
+				
+				cb.Time:ClearAllPoints()
+				if aCoreCDB["UnitframeOptions"]["timepos"] == "CENTER" then
+					cb.Time:SetPoint("BOTTOM", cb, "TOP", 0, 3)
+				elseif aCoreCDB["UnitframeOptions"]["timepos"] == "LEFT" then
+					cb.Time:SetPoint("BOTTOMLEFT", cb, "TOPLEFT", 0, 3)
+					cb.Time:SetJustifyH("LEFT")
+				elseif aCoreCDB["UnitframeOptions"]["timepos"] == "RIGHT" then
+					cb.Time:SetPoint("BOTTOMRIGHT", cb, "TOPRIGHT", 0, 3)
+					cb.Time:SetJustifyH("RIGHT")
+				elseif aCoreCDB["UnitframeOptions"]["timepos"] == "BOTTOM" then
+					cb.Time:SetPoint("TOP", cb, "BOTTOM", 0, -3)
+				end
+				
+				cb.Text:ClearAllPoints()
+				if aCoreCDB["UnitframeOptions"]["namepos"] == "CENTER" then
+					cb.Text:SetPoint("BOTTOM", cb, "TOP", 0, 3)
+				elseif aCoreCDB["UnitframeOptions"]["namepos"] == "LEFT" then
+					cb.Text:SetPoint("BOTTOMLEFT", cb, "TOPLEFT", 0, 3)
+					cb.Text:SetJustifyH("LEFT")
+				elseif aCoreCDB["UnitframeOptions"]["namepos"] == "RIGHT" then
+					cb.Text:SetPoint("BOTTOMRIGHT", cb, "TOPRIGHT", 0, 3)
+					cb.Text:SetJustifyH("RIGHT")
+				elseif aCoreCDB["UnitframeOptions"]["namepos"] == "BOTTOM" then
+					cb.Text:SetPoint("TOP", cb, "BOTTOM", 0, -3)
+				end
+			end
         end
-
+		
+		cb.Ticks = {}
         cb.PostCastStart = PostCastStart
-        cb.PostChannelStart = PostCastStart
-
+        cb.PostChannelStart = PostChannelStart
+		cb.PostChannelUpdate = PostChannelUpdate
+		cb.PostChannelStop = PostChannelStop
+		
         self.Castbar = cb
     end
 end
