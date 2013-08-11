@@ -753,6 +753,12 @@ local Character_default_Settings = {
 		-- castbar
 		castbars = true,
 		cbIconsize = 32,
+		independentcb = false,
+		namepos = "LEFT",
+		timepos = "RIGHT",
+		cbheight = 8,
+		cbwidth = 230,
+		channelticks = false,
 		
 		-- auras
 		auras = true,
