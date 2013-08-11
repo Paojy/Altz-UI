@@ -56,7 +56,7 @@ anchor.point = {
 		healer = {a1 = "BOTTOMRIGHT", parent = "UIParent", a2 = "BOTTOMRIGHT", x = -160, y = 50},
 		dpser = {a1 = "BOTTOMRIGHT", parent = "UIParent", a2 = "BOTTOMRIGHT", x = -160, y = 50},
 	}
-T.CreateDragFrame(anchor) --frame, dragFrameList, inset, clamp	
+T.CreateDragFrame(anchor)
 anchor:SetWidth(120)
 anchor:SetHeight(70)
 
