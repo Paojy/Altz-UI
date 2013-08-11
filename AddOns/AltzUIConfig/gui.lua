@@ -422,7 +422,20 @@ UFInnerframe.castbar = CreateOptionPage("UF Options castbar", L["施法条"], UF
 
 T.createcheckbutton(UFInnerframe.castbar, 30, 60, L["启用"], "UnitframeOptions", "castbars")
 T.createslider(UFInnerframe.castbar, 30, 110, L["图标大小"], "UnitframeOptions", "cbIconsize", 1, 10, 50, 1)
-T.createDR(UFInnerframe.castbar.castbars, UFInnerframe.castbar.cbIconsize)
+T.createcheckbutton(UFInnerframe.castbar, 30, 150, L["独立玩家施法条"], "UnitframeOptions", "independentcb")
+local CBtextpos_group = {
+	["CENTER"] = L["中间"],
+	["BOTTOM"] = L["下方"],
+	["LEFT"] = L["左"],
+	["RIGHT"] = L["右"],
+}
+T.createslider(UFInnerframe.castbar, 30, 200, L["高度"], "UnitframeOptions", "cbheight", 1, 5, 30, 1)
+T.createslider(UFInnerframe.castbar, 30, 240, L["宽度"], "UnitframeOptions", "cbwidth", 1, 50, 500, 5)
+T.createradiobuttongroup(UFInnerframe.castbar, 30, 270, L["法术名称位置"], "UnitframeOptions", "namepos", CBtextpos_group)
+T.createradiobuttongroup(UFInnerframe.castbar, 30, 300, L["施法时间位置"], "UnitframeOptions", "timepos", CBtextpos_group)
+T.createDR(UFInnerframe.castbar.independentcb, UFInnerframe.castbar.cbheight, UFInnerframe.castbar.cbwidth, UFInnerframe.castbar.namepos, UFInnerframe.castbar.timepos)
+T.createcheckbutton(UFInnerframe.castbar, 30, 340, L["引导法术分段"], "UnitframeOptions", "channelticks")
+T.createDR(UFInnerframe.castbar.castbars, UFInnerframe.castbar.cbIconsize, UFInnerframe.castbar.independentcb, UFInnerframe.castbar.cbheight, UFInnerframe.castbar.cbwidth, UFInnerframe.castbar.namepos, UFInnerframe.castbar.timepos, UFInnerframe.castbar.channelticks)
 
 UFInnerframe.aura = CreateOptionPage("UF Options aura", AURAS, UFInnerframe, "VERTICAL", .3)
 
