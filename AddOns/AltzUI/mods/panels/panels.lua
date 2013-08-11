@@ -437,8 +437,29 @@ MinimapZoneText:SetAllPoints(MinimapZoneTextButton)
 MinimapZoneText:SetFont(G.norFont, 12, "OUTLINE") 
 MinimapZoneText:SetShadowOffset(0, 0)
 MinimapZoneText:SetJustifyH("CENTER")
-Minimap:HookScript("OnEnter", function() MinimapZoneTextButton:Show() end)
-Minimap:HookScript("OnLeave", function() MinimapZoneTextButton:Hide() end)
+
+local Coords = T.createtext(Minimap, "OVERLAY", 12, "OUTLINE", "CENTER")
+Coords:SetPoint("CENTER", 0, 0)
+Coords:Hide()
+
+Minimap:HookScript("OnUpdate",function()
+	local x,y=GetPlayerMapPosition("player")
+	if x>0 or y>0 then
+		Coords:SetText(string.format("%0.1f,%0.1f",x*100,y*100));
+	else
+		Coords:SetText("")
+	end
+end)
+
+Minimap:HookScript("OnEvent",function(self,event,...)
+	if event=="ZONE_CHANGED_NEW_AREA" and not WorldMapFrame:IsShown() then
+		SetMapToCurrentZone();
+	end
+end)
+
+WorldMapFrame:HookScript("OnHide",SetMapToCurrentZone)
+Minimap:HookScript("OnEnter", function() MinimapZoneTextButton:Show() Coords:Show() end)
+Minimap:HookScript("OnLeave", function() MinimapZoneTextButton:Hide() Coords:Hide() end)
 
 -- 新邮件图标
 MiniMapMailFrame:SetParent(Minimap)
@@ -1064,7 +1085,6 @@ end)
 MicromenuBar:SetScript("OnEvent", function(self) 
 	UpdateFade(self, MicromenuButtons, "fademicromenu") 
 end)
-
 
 MicromenuBar:RegisterEvent("PLAYER_LOGIN")
 --====================================================--
