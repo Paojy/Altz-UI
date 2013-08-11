@@ -339,7 +339,14 @@ end
 --=============================================--
 
 local uc = {1, 0, 0}
-local tk = {0, 0, 0}
+local tk
+if aCoreCDB["UnitframeOptions"]["independentcb"]  then -- 独立施法条
+	tk = {0, 0, 0}
+elseif aCoreCDB["OtherOptions"]["style"] == 1 or aCoreCDB["OtherOptions"]["style"] == 3 then -- 透明或者经典主题
+	tk = {0, 0, 0}
+else -- 深色主题
+	tk = {1, 1, 1}
+end
 
 local cbwidth, cbheight
 if aCoreCDB["UnitframeOptions"]["independentcb"] then
