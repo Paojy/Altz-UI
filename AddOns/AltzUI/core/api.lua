@@ -181,7 +181,7 @@ end
 T.CheckRole = function()
 	local role
 	local tree = GetSpecialization()
-	if ((G.myClass == "MONK" and tree == 2) or (G.myClass == "PRIEST" and (tree == 1 or tree ==2)) or (G.myClass == "PALADIN" and tree == 1)) or (G.myClass == "DRUID" and tree == 4) or (myclass == "SHAMAN" and tree == 3) then
+	if (G.myClass == "MONK" and tree == 2) or (G.myClass == "PRIEST" and (tree == 1 or tree ==2)) or (G.myClass == "PALADIN" and tree == 1) or (G.myClass == "DRUID" and tree == 4) or (G.myClass == "SHAMAN" and tree == 3) then
 		role = "healer"
 	else
 		role = "dpser"
