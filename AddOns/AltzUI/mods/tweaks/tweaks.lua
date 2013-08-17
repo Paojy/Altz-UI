@@ -6,7 +6,6 @@ local collect = aCoreCDB["OtherOptions"]["collectgarbage"]
 local acceptres = aCoreCDB["OtherOptions"]["acceptres"]
 local battlegroundres = aCoreCDB["OtherOptions"]["battlegroundres"]
 local hideerrors = aCoreCDB["OtherOptions"]["hideerrors"]
-local autoquests = aCoreCDB["OtherOptions"]["autoquests"]
 local saysapped = aCoreCDB["OtherOptions"]["saysapped"]
 local autoscreenshot = aCoreCDB["OtherOptions"]["autoscreenshot"]
 local camera = aCoreCDB["OtherOptions"]["camera"]
@@ -282,43 +281,4 @@ if autoinvite then
 	function eventframe:CHAT_MSG_BN_WHISPER(arg1, arg2, ...)
 		AutoInvite("CHAT_MSG_BN_WHISPER", arg1, arg2, ...)
 	end
-end
---[[-----------------------------------------------------------------------------
-Automaticly accepts/completes quests -- Author: Nightcracker
--------------------------------------------------------------------------------]]
-if autoquests then
-	local function MostValueable()
-		local bestp, besti = 0
-		for i=1,GetNumQuestChoices() do
-			local link, _, _, qty = GetQuestItemLink("choice", i), GetQuestItemInfo("choice", i)
-			local price = link and select(11, GetItemInfo(link))
-			if not price then
-				return
-			elseif (price * (qty or 1)) > bestp then
-				bestp, besti = (price * (qty or 1)), i
-			end
-		end
-		if besti then
-			local btn = _G["QuestInfoItem"..besti]
-			if (btn.type == "choice") then
-				btn:GetScript("OnClick")(btn)
-			end
-		end
-	end
-	
-	eventframe:RegisterEvent("QUEST_DETAIL")
-	eventframe:RegisterEvent("QUEST_COMPLETE")
-	eventframe:RegisterEvent("QUEST_ACCEPT_CONFIRM")
-	
-	function eventframe:QUEST_DETAIL() AcceptQuest() CompleteQuest() end
-	function eventframe:QUEST_COMPLETE() 
-		if (GetNumQuestChoices() and GetNumQuestChoices() < 1) then
-			GetQuestReward()
-		else
-			MostValueable()
-		end
-	end
-	function eventframe:QUEST_ACCEPT_CONFIRM() ConfirmAcceptQuest() end
-	
-	QuestInfoDescriptionText.SetAlphaGradient=function() return false end
 end
