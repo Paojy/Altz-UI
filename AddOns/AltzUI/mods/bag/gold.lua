@@ -23,9 +23,9 @@ local function FormatTooltipMoney(money)
 	return cash
 end	
 	
-local Gold = ContainerFrame1MoneyFrame
+local eventframe = CreateFrame("Frame")
 
-Gold:SetScript("OnEvent", function(self, event)
+eventframe:SetScript("OnEvent", function(self, event)
 	if event == "PLAYER_ENTERING_WORLD" then
 		self:UnregisterEvent("PLAYER_ENTERING_WORLD")
 		OldMoney = GetMoney()
@@ -48,12 +48,14 @@ Gold:SetScript("OnEvent", function(self, event)
 	aCoreDB.gold[G.PlayerRealm][G.PlayerName] = GetMoney()
 end)
 
-Gold:RegisterEvent("PLAYER_MONEY")
-Gold:RegisterEvent("SEND_MAIL_MONEY_CHANGED")
-Gold:RegisterEvent("SEND_MAIL_COD_CHANGED")
-Gold:RegisterEvent("PLAYER_TRADE_MONEY")
-Gold:RegisterEvent("TRADE_MONEY_CHANGED")
-Gold:RegisterEvent("PLAYER_ENTERING_WORLD")
+eventframe:RegisterEvent("PLAYER_MONEY")
+eventframe:RegisterEvent("SEND_MAIL_MONEY_CHANGED")
+eventframe:RegisterEvent("SEND_MAIL_COD_CHANGED")
+eventframe:RegisterEvent("PLAYER_TRADE_MONEY")
+eventframe:RegisterEvent("TRADE_MONEY_CHANGED")
+eventframe:RegisterEvent("PLAYER_ENTERING_WORLD")
+
+local Gold = ContainerFrame1MoneyFrame
 
 local function ShowMoneyTooltip()
 	GameTooltip:SetOwner(Gold, "ANCHOR_NONE")
