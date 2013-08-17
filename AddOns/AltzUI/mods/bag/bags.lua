@@ -208,7 +208,6 @@ local function skin(index, frame)
 		count:SetJustifyV("BOTTOM")
 		
 		F.CreateBD(bag, 0.3)
-		bag.border = bag
     end
 end
 
@@ -450,11 +449,11 @@ hooksecurefunc("ContainerFrame_Update", function(frame)
 			Kill(questTexture)	
 			isQuestItem, questId, isActive = GetContainerItemQuestInfo(id, itemButton:GetID())
 			if ( questId and not isActive ) then
-				itemButton.border:SetBackdropBorderColor(1, 1, 0, 1)
+				itemButton:SetBackdropBorderColor(1, 1, 0, 1)
 			elseif ( questId or isQuestItem ) then
-				itemButton.border:SetBackdropBorderColor(1, 1, 0, 1)
+				itemButton:SetBackdropBorderColor(1, 1, 0, 1)
 			else
-				itemButton.border:SetBackdropBorderColor(0, 0, 0, 1)
+				itemButton:SetBackdropBorderColor(0, 0, 0, 1)
 			end
 		end
 end)
@@ -464,11 +463,11 @@ hooksecurefunc("BankFrameItemButton_Update", function(button)
 		if questTexture then Kill(questTexture)	end
 		local isQuestItem, questId, isActive = GetContainerItemQuestInfo(BANK_CONTAINER, button:GetID())
 		if ( questId and not isActive ) then
-			button.border:SetBackdropBorderColor(1, 1, 0, 1)
+			button:SetBackdropBorderColor(1, 1, 0, 1)
 		elseif ( questId or isQuestItem ) then
-			button.border:SetBackdropBorderColor(1, 1, 0, 1)
+			button:SetBackdropBorderColor(1, 1, 0, 1)
 		else
-			button.border:SetBackdropBorderColor(0, 0, 0, 1)
+			button:SetBackdropBorderColor(0, 0, 0, 1)
 		end
 end)
 
