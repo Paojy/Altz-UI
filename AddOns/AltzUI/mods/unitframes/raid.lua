@@ -4,12 +4,12 @@ local oUF = AltzUF or oUF
 --=============================================--
 --[[               Some update               ]]--
 --=============================================--
-local pxbackdrop = { edgeFile = [=[Interface\ChatFrame\ChatFrameBackground]=],  edgeSize = 1, }
+local pxbackdrop = { edgeFile = [=[Interface\ChatFrame\ChatFrameBackground]=],  edgeSize = 2, }
 
 local function Createpxborder(self, lvl)
 	local pxbd = CreateFrame("Frame", nil, self)
-	pxbd:SetPoint("TOPLEFT", self, "TOPLEFT", -2, 2)
-	pxbd:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", 2, -2)
+	pxbd:SetPoint("TOPLEFT", self, "TOPLEFT", -3, 3)
+	pxbd:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", 3, -3)
 	pxbd:SetBackdrop(pxbackdrop)
 	pxbd:SetFrameLevel(lvl)
 	pxbd:Hide()
