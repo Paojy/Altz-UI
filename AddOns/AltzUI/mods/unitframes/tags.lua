@@ -20,7 +20,7 @@ oUF.Tags.Events['Altz:color'] = 'UNIT_FACTION' -- for tapping
 
 oUF.Tags.Methods['Altz:shortname'] = function(u, r)
 	local name = UnitName(r or u)
-	return T.utf8sub(name, 4)
+	return T.utf8sub(name, 8)
 end
 oUF.Tags.Events["Altz:shortname"] = "UNIT_NAME_UPDATE"
 
