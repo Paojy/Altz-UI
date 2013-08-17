@@ -69,7 +69,7 @@ do
     hooksecurefunc("UIFrameFlash", function (frame, fadeInTime, fadeOutTime, flashDuration, showWhenDone, flashInHoldTime, flashOutHoldTime, syncId)
         if ( frame ) then
 			local framename = frame:GetName()
-			print(framename)
+			--print(framename)
 			if framename and framename:match("Micro") then return end
             if not issecurevariable(frame, "syncId") or not issecurevariable(frame, "fadeInTime") or not issecurevariable(frame, "flashTimer") then
                 error(L.FLASH_FAILED)
