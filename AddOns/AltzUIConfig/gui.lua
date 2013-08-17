@@ -1361,14 +1361,16 @@ local stancebarinneranchor_group = {
 T.createradiobuttongroup(ActionbarInnerframe.other, 30, 90, L["排列方向"], "ActionbarOptions", "stancebarinneranchor", stancebarinneranchor_group)
 T.createslider(ActionbarInnerframe.other, 30, 140, L["图标大小"], "ActionbarOptions", "stancebarbuttonszie", 1, 15, 40, 1)
 T.createslider(ActionbarInnerframe.other, 30, 180, L["图标间距"], "ActionbarOptions", "stancebarbuttonspace", 1, 0, 5, 1)
+T.createcheckbutton(ActionbarInnerframe.other, 30, 215, L["悬停渐隐"], "ActionbarOptions", "stancebarmfade", L["悬停渐隐提示"])
+T.createslider(ActionbarInnerframe.other, 30, 260, L["渐隐透明度"], "ActionbarOptions", "stancebarfademinaplha", 100, 0, 80, 5, L["渐隐透明度提示"])
 local leave_vehicletitle = ActionbarInnerframe.other:CreateFontString(nil, "ARTWORK", "GameFontNormalLeftYellow")
-leave_vehicletitle:SetPoint("TOPLEFT", 36, -225)
+leave_vehicletitle:SetPoint("TOPLEFT", 36, -295)
 leave_vehicletitle:SetText(L["离开载具按钮"])
-T.createslider(ActionbarInnerframe.other, 30, 260, L["图标大小"], "ActionbarOptions", "leave_vehiclebuttonsize", 1, 15, 50, 1)
+T.createslider(ActionbarInnerframe.other, 30, 330, L["图标大小"], "ActionbarOptions", "leave_vehiclebuttonsize", 1, 15, 50, 1)
 local extrabartitle = ActionbarInnerframe.other:CreateFontString(nil, "ARTWORK", "GameFontNormalLeftYellow")
-extrabartitle:SetPoint("TOPLEFT", 36, -315)
+extrabartitle:SetPoint("TOPLEFT", 36, -375)
 extrabartitle:SetText(L["额外特殊按钮"])
-T.createslider(ActionbarInnerframe.other, 30, 350, L["图标大小"], "ActionbarOptions", "extrabarbuttonsize", 1, 15, 50, 1)
+T.createslider(ActionbarInnerframe.other, 30, 410, L["图标大小"], "ActionbarOptions", "extrabarbuttonsize", 1, 15, 50, 1)
 
 --====================================================--
 --[[           -- BuffFrame Options --              ]]--
