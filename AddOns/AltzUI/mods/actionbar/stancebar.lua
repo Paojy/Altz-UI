@@ -5,7 +5,12 @@ local padding = 4
 local buttonssize = aCoreCDB["ActionbarOptions"]["stancebarbuttonszie"]
 local buttonspace = aCoreCDB["ActionbarOptions"]["stancebarbuttonspace"]
 local anchor = aCoreCDB["ActionbarOptions"]["stancebarinneranchor"]
-
+local mouseover = {
+	enable= aCoreCDB["ActionbarOptions"]["stancebarmfade"],
+	fadeIn= {time = 0.4, alpha = 1},
+	fadeOut = {time = 0.4, alpha = aCoreCDB["ActionbarOptions"]["stancebarfademinaplha"]},
+	}
+	
 -- FUNCTIONS
 
 local num = NUM_STANCE_SLOTS
@@ -70,3 +75,8 @@ end
 
 --hide the frame when in a vehicle!
 RegisterStateDriver(frame, "visibility", "[petbattle][overridebar][vehicleui][possessbar,@vehicle,exists] hide; show")
+
+--create the mouseover functionality
+if mouseover.enable then
+	T.ActionbarFader(frame, buttonList, mouseover.fadeIn, mouseover.fadeOut) --frame, buttonList, fadeIn, fadeOut
+end
