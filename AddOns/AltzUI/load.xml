@@ -79,4 +79,5 @@
 	<Script file="mods\tweaks\tweaks.lua"/>
 	<Script file="mods\tweaks\watchframe.lua"/>
 	<Script file="mods\tweaks\raid tools.lua"/>
+	<Script file="mods\tweaks\quest.lua"/>
 </Ui>
