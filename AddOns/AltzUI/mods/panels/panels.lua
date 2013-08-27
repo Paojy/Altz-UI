@@ -445,7 +445,7 @@ Coords:Hide()
 Minimap:HookScript("OnUpdate",function()
 	local x,y=GetPlayerMapPosition("player")
 	if x>0 or y>0 then
-		Coords:SetText(string.format("%0.1f,%0.1f",x*100,y*100));
+		Coords:SetText(string.format("%d,%d",x*100,y*100));
 	else
 		Coords:SetText("")
 	end
