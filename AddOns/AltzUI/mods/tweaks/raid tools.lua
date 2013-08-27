@@ -243,7 +243,7 @@ local function EndCombat()
 end
 
 local incombat = 0
-local function OnHealth(unit)
+local function OnHealth()
 	local bossexists = UnitExists("boss1") or UnitExists("boss2") or UnitExists("boss3") or UnitExists("boss4") or UnitExists("boss5")
 	if incombat == 0 and bossexists then
 		incombat = 1
@@ -280,8 +280,7 @@ Stats:SetScript("OnEvent", function(self, event, ...)
 	elseif event == "COMBAT_LOG_EVENT_UNFILTERED" then
 		OnCombatLogEvent(...)
 	elseif event == "UNIT_HEALTH" then
-		local unit = ...
-		OnHealth(unit)
+		OnHealth()
 	elseif event == "PLAYER_LOGIN" then
 		if IsInRaid() then
 			self:RegisterEvent("UNIT_AURA")
