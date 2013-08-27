@@ -96,6 +96,7 @@ for i = 1, 5 do
 	L["竞技场敌人头像"..i] = "Arena"..i
 end
 L["玩家施法条"] = "Player Cast Bar"
+L["玩家平砍计时条"] = "Player Swing Timer"
 
 L["无2"] = "|cffFF0000No|r"
 L["无"] = "No"
