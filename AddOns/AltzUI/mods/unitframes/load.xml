@@ -13,6 +13,7 @@
 	<Script file="embeds\arcanecharge.lua"/>
 	<Script file="embeds\trinket.lua"/>
 	<Script file="embeds\pvpspec.lua"/>
+	<Script file="embeds\swing.lua"/>
 	
 	<Script file="core.lua"/>
 	<Script file="raid.lua"/>

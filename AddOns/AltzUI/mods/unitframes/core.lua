@@ -302,7 +302,7 @@ local CombatPostUpdate = function(self, inCombat)
 	end
 end
 
-function UpdatePrep()
+local function UpdatePrep()
     local numOpps = GetNumArenaOpponentSpecs()
     if numOpps > 0 then
         for i=1, 5 do
@@ -583,6 +583,105 @@ local CreateCastbars = function(self, unit)
 		
         self.Castbar = cb
     end
+end
+
+--=============================================--
+--[[               Swing Timer               ]]--
+--=============================================--
+local CreateSwingTimer = function(self, unit) -- only for player
+	local bar = CreateFrame("Frame", G.uiname..unit.."SwingTimer", self)
+	bar:SetSize(aCoreCDB["UnitframeOptions"]["swwidth"], aCoreCDB["UnitframeOptions"]["swheight"])
+	bar.movingname = L["玩家平砍计时条"]
+	bar.point = {
+		healer = {a1 = "TOP", parent = "UIParent", a2 = "CENTER", x = 0, y = -160},
+		dpser = {a1 = "TOP", parent = "UIParent", a2 = "CENTER", x = 0, y = -160},
+	}
+	T.CreateDragFrame(bar)
+
+	-- 双手
+	bar.Twohand = CreateFrame("StatusBar", nil, bar)
+	bar.Twohand:SetAllPoints(bar)
+	if aCoreCDB["OtherOptions"]["style"] == 1 then
+		bar.Twohand:SetStatusBarTexture(G.media.blank)
+	else
+		bar.Twohand:SetStatusBarTexture(G.media.ufbar)
+	end
+	bar.Twohand:SetStatusBarColor(1, 1, .2)
+	bar.Twohand.bd = T.createBackdrop(bar.Twohand, bar.Twohand, 1)
+	bar.Twohand:SetFrameLevel(20)
+	
+	bar.Twohand.Spark = bar.Twohand:CreateTexture(nil, "OVERLAY")
+    bar.Twohand.Spark:SetSize(8, aCoreCDB["UnitframeOptions"]["swheight"]*2)
+	bar.Twohand.Spark:SetPoint("CENTER", bar.Twohand:GetStatusBarTexture(), "RIGHT")
+	bar.Twohand.Spark:SetTexture("Interface\\UnitPowerBarAlt\\Generic1Player_Pill_Flash")
+	bar.Twohand.Spark:SetVertexColor(1, 1, .2)
+	bar.Twohand.Spark:SetBlendMode("ADD")
+		
+	bar.Twohand:Hide()
+	
+	-- 主手
+	bar.Mainhand = CreateFrame("StatusBar", nil, bar)
+	bar.Mainhand:SetAllPoints(bar)
+	if aCoreCDB["OtherOptions"]["style"] == 1 then
+		bar.Mainhand:SetStatusBarTexture(G.media.blank)
+	else
+		bar.Mainhand:SetStatusBarTexture(G.media.ufbar)
+	end
+	bar.Mainhand:SetStatusBarColor(1, 1, .2)
+	bar.Mainhand.bd = T.createBackdrop(bar.Mainhand, bar.Mainhand, 1)
+	bar.Mainhand:SetFrameLevel(20)
+	
+	bar.Mainhand.Spark = bar.Mainhand:CreateTexture(nil, "OVERLAY")
+	bar.Mainhand.Spark:SetSize(8, aCoreCDB["UnitframeOptions"]["swheight"]*2)
+	
+	bar.Mainhand.Spark:SetPoint("CENTER", bar.Mainhand:GetStatusBarTexture(), "RIGHT")
+	bar.Mainhand.Spark:SetTexture("Interface\\UnitPowerBarAlt\\Generic1Player_Pill_Flash")
+	bar.Mainhand.Spark:SetVertexColor(1, 1, .2)
+	bar.Mainhand.Spark:SetBlendMode("ADD")		
+		
+	bar.Mainhand:Hide()
+	
+	-- 副手
+	bar.Offhand = CreateFrame("StatusBar", nil, bar)
+	bar.Offhand:SetPoint("TOPLEFT", bar, "BOTTOMLEFT", 0, -3)
+	bar.Offhand:SetPoint("TOPRIGHT", bar, "BOTTOMRIGHT", 0, -3)
+	bar.Offhand:SetHeight(aCoreCDB["UnitframeOptions"]["swheight"]/2)
+	if aCoreCDB["OtherOptions"]["style"] == 1 then
+		bar.Offhand:SetStatusBarTexture(G.media.blank)
+	else
+		bar.Offhand:SetStatusBarTexture(G.media.ufbar)
+	end
+	bar.Offhand:SetStatusBarColor(.2, 1, 1)
+	bar.Offhand.bd = T.createBackdrop(bar.Offhand, bar.Offhand, 1)
+	bar.Offhand:SetFrameLevel(20)
+	
+	bar.Offhand.Spark = bar.Offhand:CreateTexture(nil, "OVERLAY")
+    bar.Offhand.Spark:SetSize(8, aCoreCDB["UnitframeOptions"]["swheight"])
+	bar.Offhand.Spark:SetPoint("CENTER", bar.Offhand:GetStatusBarTexture(), "RIGHT")
+	bar.Offhand.Spark:SetTexture("Interface\\UnitPowerBarAlt\\Generic1Player_Pill_Flash")
+	bar.Offhand.Spark:SetVertexColor(.2, 1, 1)
+	bar.Offhand.Spark:SetBlendMode("ADD")		
+		
+	bar.Offhand:Hide()
+	
+	if not aCoreCDB["UnitframeOptions"]["swoffhand"] then
+		bar.Offhand.Show = bar.Offhand.Hide
+	end
+	
+	if aCoreCDB["UnitframeOptions"]["swtimer"] then
+		bar.Text = T.createtext(bar.Twohand, "OVERLAY", aCoreCDB["UnitframeOptions"]["swtimersize"], "OUTLINE", "CENTER")
+		bar.Text:SetPoint("CENTER")
+		
+		bar.TextMH = T.createtext(bar.Mainhand, "OVERLAY", aCoreCDB["UnitframeOptions"]["swtimersize"], "OUTLINE", "CENTER")
+		bar.TextMH:SetPoint("CENTER")
+		
+		bar.TextOH = T.createtext(bar.Offhand, "OVERLAY", aCoreCDB["UnitframeOptions"]["swtimersize"]/1.5, "OUTLINE", "CENTER")
+		bar.TextOH:SetPoint("CENTER")
+	end
+	
+	bar.hideOoc = true
+	 
+	self.Swing = bar
 end
 
 --=============================================--
@@ -954,6 +1053,10 @@ local func = function(self, unit)
     if aCoreCDB["UnitframeOptions"]["castbars"] then
         CreateCastbars(self, unit)
     end
+	
+	if aCoreCDB["UnitframeOptions"]["swing"] then
+		CreateSwingTimer(self, unit)
+	end
 	
 	if aCoreCDB["UnitframeOptions"]["auras"] then
 		CreateAuras(self, unit)
