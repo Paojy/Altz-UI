@@ -437,6 +437,17 @@ T.createDR(UFInnerframe.castbar.independentcb, UFInnerframe.castbar.cbheight, UF
 T.createcheckbutton(UFInnerframe.castbar, 30, 340, L["引导法术分段"], "UnitframeOptions", "channelticks")
 T.createDR(UFInnerframe.castbar.castbars, UFInnerframe.castbar.cbIconsize, UFInnerframe.castbar.independentcb, UFInnerframe.castbar.cbheight, UFInnerframe.castbar.cbwidth, UFInnerframe.castbar.namepos, UFInnerframe.castbar.timepos, UFInnerframe.castbar.channelticks)
 
+UFInnerframe.swingtimer = CreateOptionPage("UF Options swingtimer", L["平砍计时条"], UFInnerframe, "VERTICAL", .3)
+
+T.createcheckbutton(UFInnerframe.swingtimer, 30, 60, L["启用"], "UnitframeOptions", "swing")
+T.createslider(UFInnerframe.swingtimer, 30, 110, L["高度"], "UnitframeOptions", "swheight", 1, 5, 30, 1)
+T.createslider(UFInnerframe.swingtimer, 30, 150, L["宽度"], "UnitframeOptions", "swwidth", 1, 50, 500, 5)
+T.createcheckbutton(UFInnerframe.swingtimer, 30, 190, L["显示副手"], "UnitframeOptions", "swoffhand")
+T.createcheckbutton(UFInnerframe.swingtimer, 30, 220, L["显示平砍计时"], "UnitframeOptions", "swtimer")
+T.createslider(UFInnerframe.swingtimer, 30, 270, L["字体大小"], "UnitframeOptions", "swtimersize", 1, 8, 20, 1)
+T.createDR(UFInnerframe.swingtimer.swing, UFInnerframe.swingtimer.swheight, UFInnerframe.swingtimer.swwidth, UFInnerframe.swingtimer.swoffhand, UFInnerframe.swingtimer.swtimer)
+T.createDR(UFInnerframe.swingtimer.swtimer, UFInnerframe.swingtimer.swtimersize)
+
 UFInnerframe.aura = CreateOptionPage("UF Options aura", AURAS, UFInnerframe, "VERTICAL", .3)
 
 T.createcheckbutton(UFInnerframe.aura, 30, 60, L["启用"], "UnitframeOptions", "auras")
@@ -1004,7 +1015,7 @@ local function CreateRaidDebuffOptions()
 		F.Reskin(Add)
 		Add:SetScript("OnClick", function(self)
 			local boss = UIDropDownMenu_GetText(BossDD)
-			local spellID = Spellinput:GetText()
+			local spellID = tonumber(Spellinput:GetText())
 			local level = tonumber(Levelinput:GetText())
 			if not spellID or not GetSpellInfo(spellID) then
 				StaticPopupDialogs[G.uiname.."incorrect spellid"].text = "|cff7FFF00"..spellID.." |r"..L["不是一个有效的法术ID"]
@@ -1232,7 +1243,7 @@ local function CreateCooldownAuraOptions()
 		Add:SetText(ADD)
 		F.Reskin(Add)
 		Add:SetScript("OnClick", function(self)
-			local spellID = Spellinput:GetText()
+			local spellID = tonumber(Spellinput:GetText())
 			local level = tonumber(Levelinput:GetText())
 			if not spellID or not GetSpellInfo(spellID) then
 				StaticPopupDialogs[G.uiname.."incorrect spellid"].text = "|cff7FFF00"..spellID.." |r"..L["不是一个有效的法术ID"]

@@ -760,6 +760,14 @@ local Character_default_Settings = {
 		cbwidth = 230,
 		channelticks = false,
 		
+		-- swing timer
+		swing = false,
+		swheight = 12,
+		swwidth = 230,
+		swoffhand = false,
+		swtimer = true,
+		swtimersize = 12,
+		
 		-- auras
 		auras = true,
 		auraborders = true,
