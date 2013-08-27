@@ -107,21 +107,34 @@ local OnMouseOver = function(self)
 end
 
 local function EnableWheelCastOnFrame(object)
-	object:SetAttribute("_onenter", [[
-		self:ClearBindings()
-		self:SetBindingClick(1, "MOUSEWHEELUP", self, "Button6")
-		self:SetBindingClick(1, "SHIFT-MOUSEWHEELUP", self, "Button7")
-		self:SetBindingClick(1, "CTRL-MOUSEWHEELUP", self, "Button8")
-		self:SetBindingClick(1, "ALT-MOUSEWHEELUP", self, "Button9")
-		self:SetBindingClick(1, "MOUSEWHEELDOWN", self, "Button10")
-		self:SetBindingClick(1, "SHIFT-MOUSEWHEELDOWN", self, "Button11")
-		self:SetBindingClick(1, "CTRL-MOUSEWHEELDOWN", self, "Button12")
-		self:SetBindingClick(1, "ALT-MOUSEWHEELDOWN", self, "Button13")
-	]])
+	local enable = false
+	for i = 6, 13 do
+		if aCoreCDB["UnitframeOptions"]["ClickCast"][tostring(i)]["Click"]["action"] and aCoreCDB["UnitframeOptions"]["ClickCast"][tostring(i)]["Click"]["action"] ~= "NONE" then
+			--print(i, "a", aCoreCDB["UnitframeOptions"]["ClickCast"][tostring(i)]["Click"]["action"])
+			enable = true
+		elseif aCoreCDB["UnitframeOptions"]["ClickCast"][tostring(i)]["Click"]["macro"] and aCoreCDB["UnitframeOptions"]["ClickCast"][tostring(i)]["Click"]["macro"] ~= "" then
+			--print(i, "m", aCoreCDB["UnitframeOptions"]["ClickCast"][tostring(i)]["Click"]["macro"])
+			enable = true
+		end
+	end
+	if enable then
+		--print("Enable")
+		object:SetAttribute("_onenter", [[
+			self:ClearBindings()
+			self:SetBindingClick(1, "MOUSEWHEELUP", self, "Button6")
+			self:SetBindingClick(1, "SHIFT-MOUSEWHEELUP", self, "Button7")
+			self:SetBindingClick(1, "CTRL-MOUSEWHEELUP", self, "Button8")
+			self:SetBindingClick(1, "ALT-MOUSEWHEELUP", self, "Button9")
+			self:SetBindingClick(1, "MOUSEWHEELDOWN", self, "Button10")
+			self:SetBindingClick(1, "SHIFT-MOUSEWHEELDOWN", self, "Button11")
+			self:SetBindingClick(1, "CTRL-MOUSEWHEELDOWN", self, "Button12")
+			self:SetBindingClick(1, "ALT-MOUSEWHEELDOWN", self, "Button13")
+		]])
 
-	object:SetAttribute("_onleave", [[
-		self:ClearBindings()
-	]])
+		object:SetAttribute("_onleave", [[
+			self:ClearBindings()
+		]])
+	end
 end
 
 local function RegisterClicks(object)
