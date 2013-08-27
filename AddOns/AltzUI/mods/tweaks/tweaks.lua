@@ -178,13 +178,29 @@ if acceptres then
 	eventframe:RegisterEvent('RESURRECT_REQUEST')
 	function eventframe:RESURRECT_REQUEST(name)
 		if UnitAffectingCombat('player') then return end
-		if IsInGroup() and (UnitAffectingCombat('party1') or UnitAffectingCombat('raid1') or UnitAffectingCombat('raid2')) then return end
+		if IsInGroup() then
+			if IsInRaid() then
+				for i = 1, 39 do
+					if UnitAffectingCombat(format('raid%d', i)) then
+						return
+					end
+				end
+			else
+				for i = 1, 4 do
+					if UnitAffectingCombat(format('party%d', i)) then
+						return
+					end
+				end
+			end
+		end
+		
 		local delay = GetCorpseRecoveryDelay()
 		if delay == 0 then
 			AcceptResurrect()
 		end
 	end
 end
+
 --[[-----------------------------------------------------------------------------
 Battleground Res
 -------------------------------------------------------------------------------]]
