@@ -107,7 +107,7 @@ local function CreateRollFrame()
 	status:SetFrameLevel(status:GetFrameLevel()-1)
 	status:SetStatusBarTexture("Interface\\Buttons\\WHITE8x8")
 	status:SetStatusBarColor(.8, .8, .8, .9)
-	F.CreateSD(status, 3, 0, 0, 0, 1, -1)
+	T.CreateSD(status, 3, 0, 0, 0, 1, -1)
 	
 	status.parent = frame
 	frame.status = status

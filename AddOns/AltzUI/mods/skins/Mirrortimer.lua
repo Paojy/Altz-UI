@@ -23,7 +23,7 @@ local function Skin(timer, value, maxvalue, scale, paused, label)
 		
 			statusbar.backdrop = F.CreateBDFrame(statusbar, 0.5)
 			statusbar.backdrop:SetPoint("BOTTOMRIGHT", statusbar, 1, -2)
-			F.CreateSD(statusbar.backdrop, 2, 0, 0, 0, 1, -1)
+			T.CreateSD(statusbar.backdrop, 2, 0, 0, 0, 1, -1)
 			
 			text:ClearAllPoints()
 			text:SetFont(G.norFont, 12, "OUTLINE")

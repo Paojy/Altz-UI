@@ -26,13 +26,13 @@ local function Skinbar(bar)
 		bar.tex:SetAllPoints()
 		bar.tex:SetTexture(G.media.blank)
 		bar.tex:SetGradient("VERTICAL", G.Ccolor.r, G.Ccolor.g, G.Ccolor.b, G.Ccolor.r/3, G.Ccolor.g/3, G.Ccolor.b/3)
-		F.CreateSD(bar, 2, 0, 0, 0, 1, -1)
+		T.CreateSD(bar, 2, 0, 0, 0, 1, -1)
 	else
 		bar.tex = bar:CreateTexture(nil, "ARTWORK")
 		bar.tex:SetAllPoints()
 		bar.tex:SetTexture(G.media.ufbar)
 		bar.tex:SetVertexColor(G.Ccolor.r, G.Ccolor.g, G.Ccolor.b)
-		F.CreateSD(bar, 2, 0, 0, 0, 1, -1)
+		T.CreateSD(bar, 2, 0, 0, 0, 1, -1)
 	end
 end
 
@@ -43,7 +43,7 @@ local function Skinbg(bar)
 		bar.tex:SetTexture(G.media.blank)
 		bar.tex:SetGradientAlpha("VERTICAL", .2,.2,.2,.15,.25,.25,.25,.6)
 		F.CreateBD(bar, 1)
-		F.CreateSD(bar, 2, 0, 0, 0, 1, -1)	
+		T.CreateSD(bar, 2, 0, 0, 0, 1, -1)	
 	end
 end
 --====================================================--
@@ -65,7 +65,7 @@ toppanel:SetPoint("LEFT", UIParent, "LEFT", -8, 0)
 toppanel:SetPoint("RIGHT", UIParent, "RIGHT", 8, 0)
 toppanel:SetHeight(15)
 toppanel.border = F.CreateBDFrame(toppanel, 0.6)
-F.CreateSD(toppanel.border, 2, 0, 0, 0, 1, -1)
+T.CreateSD(toppanel.border, 2, 0, 0, 0, 1, -1)
 
 bottompanel = CreateFrame("Frame", G.uiname.."Bottom Long Panel", UIParent)
 bottompanel:SetFrameStrata("BACKGROUND")
@@ -74,7 +74,7 @@ bottompanel:SetPoint("LEFT", UIParent, "LEFT", -8, 0)
 bottompanel:SetPoint("RIGHT", UIParent, "RIGHT", 8, 0)
 bottompanel:SetHeight(15)
 bottompanel.border = F.CreateBDFrame(bottompanel, 0.6)
-F.CreateSD(bottompanel.border, 2, 0, 0, 0, 1, -1)
+T.CreateSD(bottompanel.border, 2, 0, 0, 0, 1, -1)
 
 local TLPanel = CreateFrame("Frame", G.uiname.."TLPanel", UIParent)
 TLPanel:SetFrameStrata("BACKGROUND")
@@ -123,7 +123,7 @@ minimap_pullback.point = {
 minimap_pullback:SetPoint("BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", -10, 40)
 T.CreateDragFrame(minimap_pullback)
 minimap_pullback.border = F.CreateBDFrame(minimap_pullback, 0.6)
-F.CreateSD(minimap_pullback.border, 2, 0, 0, 0, 1, -1)
+T.CreateSD(minimap_pullback.border, 2, 0, 0, 0, 1, -1)
 
 minimap_pullback:SetAlpha(.2)
 minimap_pullback:HookScript("OnEnter", function(self) T.UIFrameFadeIn(self, .5, self:GetAlpha(), 1) end)
@@ -135,7 +135,7 @@ minimap_anchor:SetWidth(minimap_height)
 minimap_anchor:SetHeight(minimap_height)
 minimap_anchor:SetFrameStrata("BACKGROUND")
 minimap_anchor.border = F.CreateBDFrame(minimap_anchor, 0.6)
-F.CreateSD(minimap_anchor.border, 2, 0, 0, 0, 1, -1)
+T.CreateSD(minimap_anchor.border, 2, 0, 0, 0, 1, -1)
 
 Minimap:SetParent(minimap_anchor)
 Minimap:SetPoint("CENTER")
@@ -200,7 +200,7 @@ chatframe_pullback.point = {
 chatframe_pullback:SetPoint("BOTTOMLEFT", UIParent, "BOTTOMLEFT", 10, 40)
 T.CreateDragFrame(chatframe_pullback)
 chatframe_pullback.border = F.CreateBDFrame(chatframe_pullback, 0.6)
-F.CreateSD(chatframe_pullback.border, 2, 0, 0, 0, 1, -1)
+T.CreateSD(chatframe_pullback.border, 2, 0, 0, 0, 1, -1)
 
 chatframe_pullback:SetAlpha(.2)
 chatframe_pullback:HookScript("OnEnter", function(self) T.UIFrameFadeIn(self, .5, self:GetAlpha(), 1) end)

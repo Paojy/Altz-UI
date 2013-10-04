@@ -36,7 +36,7 @@ DBMSkin:SetScript("OnEvent", function(self, event, addon)
 							icon1.overlay:SetHeight(23)
 							icon1.overlay:SetFrameStrata("BACKGROUND")
 							icon1.overlay:SetPoint("BOTTOMRIGHT", tbar, "BOTTOMLEFT", -2, -2)
-							F.CreateSD(icon1.overlay, 3, 0, 0, 0, 1, -3)
+							T.CreateSD(icon1.overlay, 3, 0, 0, 0, 1, -3)
 						end
 
 						if (icon2.overlay) then
@@ -47,7 +47,7 @@ DBMSkin:SetScript("OnEvent", function(self, event, addon)
 							icon2.overlay:SetHeight(23)
 							icon2.overlay:SetFrameStrata("BACKGROUND")
 							icon2.overlay:SetPoint("BOTTOMLEFT", tbar, "BOTTOMRIGHT", 5, -2)
-							F.CreateSD(icon2.overlay, 3, 0, 0, 0, 1, -3)
+							T.CreateSD(icon2.overlay, 3, 0, 0, 0, 1, -3)
 						end
 						
 						if bar.enlarged then frame:SetWidth(bar.owner.options.HugeWidth) else frame:SetWidth(bar.owner.options.Width) end
@@ -56,7 +56,7 @@ DBMSkin:SetScript("OnEvent", function(self, event, addon)
 						frame:SetScale(1)
 						if not frame.styled then
 							frame:SetHeight(23)
-							F.CreateSD(frame, 4, 0, 0, 0, 1, -3)
+							T.CreateSD(frame, 4, 0, 0, 0, 1, -3)
 							F.CreateBD(frame, 0.7)
 							frame.styled = true
 						end
@@ -169,7 +169,7 @@ DBMSkin:SetScript("OnEvent", function(self, event, addon)
 				if not bar.styled then
 					bar:SetScale(1)
 					bar:SetHeight(19)
-					F.CreateSD(bar, 4, 0, 0, 0, 1, -3)
+					T.CreateSD(bar, 4, 0, 0, 0, 1, -3)
 					F.CreateBD(bar, 0.7)
 					background:SetNormalTexture(nil)
 					bar.styled = true

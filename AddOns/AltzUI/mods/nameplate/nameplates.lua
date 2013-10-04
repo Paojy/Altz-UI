@@ -377,7 +377,7 @@ local function SkinObjects(frame, nameFrame)
 	hp:SetFrameLevel(2)
 	hp:SetStatusBarTexture(texture)
 	hp.border = F.CreateBDFrame(hp, 1)
-	F.CreateSD(hp.border, 3, 0, 0, 0, 1, -1)
+	T.CreateSD(hp.border, 3, 0, 0, 0, 1, -1)
 	
 	--Create Level
 	hp.level = T.createtext(hp, "ARTWORK", fontsize-2, "OUTLINE", "RIGHT")
@@ -441,7 +441,7 @@ local function SkinObjects(frame, nameFrame)
 	cb:SetFrameLevel(2)
 	cb:SetStatusBarTexture(texture)
 	cb.border = F.CreateBDFrame(cb, 0.6)
-	F.CreateSD(cb.border, 3, 0, 0, 0, 1, -1)
+	T.CreateSD(cb.border, 3, 0, 0, 0, 1, -1)
 	
 	--Create Cast Name Text
 	cbtext:SetFont(G.norFont, fontsize-2, "OUTLINE")
@@ -459,7 +459,7 @@ local function SkinObjects(frame, nameFrame)
 	cb.iconborder = F.CreateBG(cb.icon)
 	cb.iconborder:SetDrawLayer("OVERLAY",-1)
 	--cb.iconborder = F.CreateBDFrame(cb.icon, 0.6)
-	--F.CreateSD(cb.iconborder, 3, 0, 0, 0, 1, -1)
+	--T.CreateSD(cb.iconborder, 3, 0, 0, 0, 1, -1)
 	
 	cb.shield = cbshield
 	cbshield:ClearAllPoints()
