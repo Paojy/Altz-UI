@@ -445,7 +445,7 @@ T.createslider(UFInnerframe.swingtimer, 30, 150, L["宽度"], "UnitframeOptions"
 T.createcheckbutton(UFInnerframe.swingtimer, 30, 190, L["显示副手"], "UnitframeOptions", "swoffhand")
 T.createcheckbutton(UFInnerframe.swingtimer, 30, 220, L["显示平砍计时"], "UnitframeOptions", "swtimer")
 T.createslider(UFInnerframe.swingtimer, 30, 270, L["字体大小"], "UnitframeOptions", "swtimersize", 1, 8, 20, 1)
-T.createDR(UFInnerframe.swingtimer.swing, UFInnerframe.swingtimer.swheight, UFInnerframe.swingtimer.swwidth, UFInnerframe.swingtimer.swoffhand, UFInnerframe.swingtimer.swtimer)
+T.createDR(UFInnerframe.swingtimer.swing, UFInnerframe.swingtimer.swheight, UFInnerframe.swingtimer.swwidth, UFInnerframe.swingtimer.swoffhand, UFInnerframe.swingtimer.swtimer, UFInnerframe.swingtimer.swtimersize)
 T.createDR(UFInnerframe.swingtimer.swtimer, UFInnerframe.swingtimer.swtimersize)
 
 UFInnerframe.aura = CreateOptionPage("UF Options aura", AURAS, UFInnerframe, "VERTICAL", .3)
