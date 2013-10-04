@@ -344,6 +344,23 @@ local EJ_GetEncounterInfo = function(value)
 end
 
 G.Raids = {
+	[EJ_GetInstanceInfo(369)] = { -- 围攻奥格瑞玛
+		EJ_GetEncounterInfo(852),
+		EJ_GetEncounterInfo(849),
+		EJ_GetEncounterInfo(866),
+		EJ_GetEncounterInfo(867),
+		EJ_GetEncounterInfo(868),
+		EJ_GetEncounterInfo(864),
+		EJ_GetEncounterInfo(856),
+		EJ_GetEncounterInfo(850),
+		EJ_GetEncounterInfo(846),
+		EJ_GetEncounterInfo(870),
+		EJ_GetEncounterInfo(851),
+		EJ_GetEncounterInfo(865),
+		EJ_GetEncounterInfo(853),
+		EJ_GetEncounterInfo(869),
+		L["Trash"],	
+	},
 	[EJ_GetInstanceInfo(362)] = { -- 雷电王座
 		EJ_GetEncounterInfo(827),
 		EJ_GetEncounterInfo(819),
@@ -424,6 +441,116 @@ local AuraList = {
 }
 
 local DebuffList = {
+	[EJ_GetInstanceInfo(369)] = { -- 魔古山宝库
+		[L["Trash"]] = {
+		},
+		[EJ_GetEncounterInfo(852)] = {
+			[GetSpellInfo(143297)] = {id = 143297, level = 8,}, -- 煞液喷溅
+			[GetSpellInfo(143436)] = {id = 143436, level = 7,}, -- 腐蚀冲击
+			[GetSpellInfo(143460)] = {id = 143460, level = 8,}, -- 煞之池	
+			[GetSpellInfo(143579)] = {id = 143579, level = 10,}, -- 煞之腐败
+		},
+		[EJ_GetEncounterInfo(849)] = {
+			[GetSpellInfo(143198)] = {id = 143198, level = 7,}, -- 绞喉
+			[GetSpellInfo(143434)] = {id = 143434, level = 10,}, -- 暗言术：祸
+			[GetSpellInfo(143840)] = {id = 143840, level = 8,}, -- 苦痛印记
+			[GetSpellInfo(144176)] = {id = 144176, level = 9,}, -- 暗影虚弱
+			[GetSpellInfo(143962)] = {id = 143962, level = 7,}, -- 炼狱之击
+			[GetSpellInfo(143423)] = {id = 143423, level = 7,}, --煞能灼烧
+			[GetSpellInfo(143023)] = {id = 143023, level = 7,}, --蚀骨酒
+		},
+		[EJ_GetEncounterInfo(866)] = {
+			[GetSpellInfo(144452)] = {id = 144452, level = 7,}, -- 净化
+			[GetSpellInfo(146124)] = {id = 146124, level = 10,}, -- 自惑
+		},
+		[EJ_GetEncounterInfo(867)] = {
+			[GetSpellInfo(144358)] = {id = 144358, level = 7,}, -- 自尊受挫
+			[GetSpellInfo(144452)] = {id = 144452, level = 10,}, -- 傲慢标记
+			[GetSpellInfo(144843)] = {id = 144843, level = 7,}, -- 压制
+			[GetSpellInfo(144452)] = {id = 144452, level = 10,}, -- 傲慢标记
+			[GetSpellInfo(144574)] = {id = 144574, level = 7,}, -- 腐化囚笼	144574 144684 144636 144683
+			[GetSpellInfo(146594)] = {id = 146594, level = 7,}, -- 泰坦之赐
+			[GetSpellInfo(144364)] = {id = 144364, level = 7,}, -- 泰坦之力
+			[GetSpellInfo(147207)] = {id = 147207, level = 7,}, -- 削弱意志
+			[GetSpellInfo(146817)] = {id = 146817, level = 8,}, -- 傲慢光环
+			[GetSpellInfo(146822)] = {id = 146822, level = 7,}, -- 傲慢投影
+		},
+		[EJ_GetEncounterInfo(868)] = {
+			[GetSpellInfo(147683)] = {id = 147683, level = 7,}, -- 雷霆一击
+			[GetSpellInfo(147705)] = {id = 147705, level = 8,}, -- 毒云术
+			[GetSpellInfo(146765)] = {id = 146765, level = 8,}, -- 烈焰箭
+			[GetSpellInfo(147068)] = {id = 147068, level = 7,}, -- 葛拉克朗之焰
+			[GetSpellInfo(147029)] = {id = 147029, level = 7,}, -- 葛拉克朗之焰
+		},
+		[EJ_GetEncounterInfo(864)] = {
+			[GetSpellInfo(144467)] = {id = 144467, level = 7,}, -- 燃烧护甲
+			[GetSpellInfo(144498)] = {id = 144498, level = 7,}, -- 爆裂焦油
+			[GetSpellInfo(146325)] = {id = 146325, level = 8,}, -- 切割激光
+		},
+		[EJ_GetEncounterInfo(856)] = {
+			[GetSpellInfo(144330)] = {id = 144330, level = 9,}, -- 钢铁囚笼
+			[GetSpellInfo(144215)] = {id = 144215, level = 7,}, -- 冰霜风暴打击
+			[GetSpellInfo(144304)] = {id = 144304, level = 8,}, -- 撕裂
+			[GetSpellInfo(144089)] = {id = 144089, level = 10,}, -- 剧毒之雾
+		},
+		[EJ_GetEncounterInfo(850)] = {
+			[GetSpellInfo(143494)] = {id = 143494, level = 7,}, -- 碎甲重击
+			[GetSpellInfo(143431)] = {id = 143431, level = 9,}, -- 魔法打击
+			[GetSpellInfo(143638)] = {id = 143638, level = 7,}, -- 碎骨重锤
+			[GetSpellInfo(143480)] = {id = 143480, level = 7,}, -- 刺客印记
+			[GetSpellInfo(143882)] = {id = 143882, level = 7,}, -- 猎人印记
+		},
+		[EJ_GetEncounterInfo(846)] = {
+			[GetSpellInfo(142990)] = {id = 142990, level = 8,}, -- 致命打击
+			[GetSpellInfo(142913)] = {id = 142913, level = 11,}, -- 散逸能量
+			[GetSpellInfo(142865)] = {id = 142865, level = 7,}, -- 强大的上古屏障
+			[GetSpellInfo(142864)] = {id = 142864, level = 7,}, -- 上古屏障
+			[GetSpellInfo(142863)] = {id = 142863, level = 7,}, -- 脆弱上古屏障
+		},
+		[EJ_GetEncounterInfo(870)] = {
+			[GetSpellInfo(148510)] = {id = 148510, level = 7,}, -- 粉碎护甲
+			[GetSpellInfo(146217)] = {id = 146217, level = 7,}, -- 投掷酒桶
+			[GetSpellInfo(146235)] = {id = 146235, level = 9,}, -- 火焰之息
+			[GetSpellInfo(145218)] = {id = 145218, level = 9,}, -- 硬化血肉
+			[GetSpellInfo(146289)] = {id = 146289, level = 9,}, -- 严重瘫痪
+			[GetSpellInfo(145987)] = {id = 145987, level = 8,}, -- 设置炸弹
+		},
+		[EJ_GetEncounterInfo(851)] = {
+			[GetSpellInfo(143773)] = {id = 143773, level = 7,}, -- 冰冻吐息
+			[GetSpellInfo(143766)] = {id = 143766, level = 7,}, -- 恐慌
+			[GetSpellInfo(143800)] = {id = 143800, level = 7,}, -- 冰冻之血
+			[GetSpellInfo(143791)] = {id = 143791, level = 8,}, -- 腐蚀之血
+			[GetSpellInfo(143780)] = {id = 143780, level = 7,}, -- 酸性吐息
+			[GetSpellInfo(143784)] = {id = 143784, level = 8,}, -- 炽燃之血
+			[GetSpellInfo(143452)] = {id = 143452, level = 6,}, -- 鲜血淋漓
+			[GetSpellInfo(143445)] = {id = 143445, level = 9,}, -- 锁定
+			[GetSpellInfo(143767)] = {id = 143767, level = 7,}, -- 灼热吐息	
+		},
+		[EJ_GetEncounterInfo(865)] = {
+			[GetSpellInfo(144236)] = {id = 144236, level = 6,}, -- 图像识别
+			[GetSpellInfo(143385)] = {id = 143385, level = 7,}, -- 电荷冲击
+			[GetSpellInfo(143856)] = {id = 143856, level = 7,}, -- 过热
+		},
+		[EJ_GetEncounterInfo(853)] = {
+			[GetSpellInfo(143339)] = {id = 143339, level = 8,}, -- 注射
+			[GetSpellInfo(142533)] = {id = 142533, level = 7,}, -- 毒素：红色
+			[GetSpellInfo(142671)] = {id = 142671, level = 7,}, -- 催眠术
+			[GetSpellInfo(143358)] = {id = 143358, level = 9,}, -- 饥饿
+			[GetSpellInfo(143939)] = {id = 143939, level = 7,}, -- 凿击
+			[GetSpellInfo(142532)] = {id = 142532, level = 7,}, -- 毒素：蓝色
+			[GetSpellInfo(142534)] = {id = 142534, level = 7,}, -- 毒素：黄色
+			[GetSpellInfo(143974)] = {id = 143974, level = 9,}, -- 盾击
+			[GetSpellInfo(142948)] = {id = 142948, level = 7,}, -- 瞄准
+		},
+		[EJ_GetEncounterInfo(869)] = {
+			[GetSpellInfo(145171)] = {id = 145171, level = 7,},
+			[GetSpellInfo(145065)] = {id = 145065, level = 7,},
+			[GetSpellInfo(145183)] = {id = 145183, level = 7,},
+			[GetSpellInfo(144762)] = {id = 144762, level = 7,},
+			[GetSpellInfo(145213)] = {id = 145213, level = 7,},
+			[GetSpellInfo(145195)] = {id = 145195, level = 7,},
+		},
+	},
 	[EJ_GetInstanceInfo(317)] = { -- 魔古山宝库
 		[L["Trash"]] = {
 		},
