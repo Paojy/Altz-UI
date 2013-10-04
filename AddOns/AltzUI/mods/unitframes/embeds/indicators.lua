@@ -4,7 +4,7 @@ local oUF = AltzUF or oUF
 local x = "8"
 local bigmark = 11
 local smallmark = 5
-local timersize = 10
+local timersize = 12
 
 -- [[ Raid Buffs ]] -- http://www.wowhead.com/guide=1100#buffs-stats
 
@@ -363,7 +363,7 @@ local Enable = function(self)
         self.AuraStatusCen = self.Health:CreateFontString(nil, "OVERLAY")
         self.AuraStatusCen:SetPoint("LEFT", -3, 0)
         self.AuraStatusCen:SetJustifyH("LEFT")
-        self.AuraStatusCen:SetFont(G.symbols, smallmark, "OUTLINE")
+        self.AuraStatusCen:SetFont(G.symbols, smallmark+4, "OUTLINE")
         self.AuraStatusCen:SetWidth(0)
         self.AuraStatusCen.frequentUpdates = update
         self:Tag(self.AuraStatusCen, classIndicators[G.myClass]["Cen"])
