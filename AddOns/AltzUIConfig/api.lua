@@ -460,6 +460,15 @@ T.createmultilinebox = function(parent, width, height, x, y, name, table, value,
 	parent[value] = scrollBG
 end
 
+local function TestSlider_OnValueChanged(self, value)
+   if not self._onsetting then   -- is single threaded 
+     self._onsetting = true
+     self:SetValue(self:GetValue())
+     value = self:GetValue()     -- cant use original 'value' parameter
+     self._onsetting = false
+   else return end               -- ignore recursion for actual event handler
+ end
+ 
 T.createslider = function(parent, x, y, name, table, value, divisor, min, max, step, tip)
 	local slider = CreateFrame("Slider", G.uiname..value.."Slider", parent, "OptionsSliderTemplate")
 	slider:SetPoint("TOPLEFT", x, -y)
@@ -487,6 +496,7 @@ T.createslider = function(parent, x, y, name, table, value, divisor, min, max, s
 	end)
 	slider:SetScript("OnValueChanged", function(self, getvalue)
 		aCoreCDB[table][value] = getvalue/divisor
+		TestSlider_OnValueChanged(self, getvalue)
 		_G[slider:GetName()..'Text']:SetText(name.." |cFF00FFFF"..aCoreCDB[table][value].."|r")
 	end)
 	
