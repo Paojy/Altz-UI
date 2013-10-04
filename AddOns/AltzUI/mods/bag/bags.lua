@@ -445,15 +445,22 @@ hooksecurefunc("ContainerFrame_Update", function(frame)
 		local isQuestItem, questId, isActive, questTexture
 		for i=1, frame.size, 1 do
 			itemButton = _G[name.."Item"..i]
+			if not itemButton.tex then
+				itemButton.tex = itemButton:CreateTexture(nil, 'BACKGROUND', 2)
+				itemButton.tex:SetTexture"Interface\\Buttons\\WHITE8x8"
+				itemButton.tex:SetPoint("TOPLEFT", itemButton, -1, 1)
+				itemButton.tex:SetPoint("BOTTOMRIGHT", itemButton, 1, -1)
+			end
+			
 			questTexture = _G[name.."Item"..i.."IconQuestTexture"]
 			Kill(questTexture)	
 			isQuestItem, questId, isActive = GetContainerItemQuestInfo(id, itemButton:GetID())
 			if ( questId and not isActive ) then
-				itemButton:SetBackdropBorderColor(1, 1, 0, 1)
+				itemButton.tex:SetVertexColor(1, 1, 0, 1)
 			elseif ( questId or isQuestItem ) then
-				itemButton:SetBackdropBorderColor(1, 1, 0, 1)
+				itemButton.tex:SetVertexColor(1, 1, 0, 1)
 			else
-				itemButton:SetBackdropBorderColor(0, 0, 0, 1)
+				itemButton.tex:SetVertexColor(0, 0, 0, 0)
 			end
 		end
 end)
@@ -462,12 +469,14 @@ hooksecurefunc("BankFrameItemButton_Update", function(button)
 		local questTexture = _G[button:GetName().."IconQuestTexture"]
 		if questTexture then Kill(questTexture)	end
 		local isQuestItem, questId, isActive = GetContainerItemQuestInfo(BANK_CONTAINER, button:GetID())
-		if ( questId and not isActive ) then
-			button:SetBackdropBorderColor(1, 1, 0, 1)
-		elseif ( questId or isQuestItem ) then
-			button:SetBackdropBorderColor(1, 1, 0, 1)
-		else
-			button:SetBackdropBorderColor(0, 0, 0, 1)
+		if button.tex then
+			if ( questId and not isActive ) then
+				button.tex:SetVertexColor(1, 1, 0, 1)
+			elseif ( questId or isQuestItem ) then
+				button.tex:SetVertexColor(1, 1, 0, 1)
+			else
+				button.tex:SetVertexColor(0, 0, 0, 0)
+			end
 		end
 end)
 
