@@ -1,8 +1,8 @@
-## Interface: 50300
+## Interface: 50400
 ## Title: Aurora
 ## Notes: Minimalistic window theme.
 ## Author: Haleth/Freethinker
-## Version: 4.6.2
+## Version: 5.0.1
 ## SavedVariables: AuroraConfig
 
 aurora.lua
@@ -41,10 +41,18 @@ AddOns\Blizzard_TrainerUI.lua
 AddOns\Blizzard_VoidStorageUI.lua
 AddOns\Recount.lua
 
+FrameXML\AlertFrames.lua
+FrameXML\FlexRaidFrame.lua
 FrameXML\Fonts.lua
 FrameXML\LFDFrame.lua
 FrameXML\LFGFrame.lua
+FrameXML\LootHistory.lua
 FrameXML\PVEFrame.lua
 FrameXML\QueueStatusFrame.lua
+FrameXML\RaidFinder.lua
 FrameXML\RolePoll.lua
+FrameXML\ScenarioFinder.lua
+FrameXML\SpellBookFrame.lua
 FrameXML\StaticPopup.lua
+FrameXML\TaxiFrame.lua
+FrameXML\WorldStateFrame.lua
