@@ -1,6 +1,8 @@
-local alpha
+local alpha, useButtonGradientColour
 
 -- [[ Core ]]
+
+setfenv(WorldMapFrame_OnShow, setmetatable({ UpdateMicroButtons = function() end }, { __index = _G }))
 
 local addon, core = ...
 
@@ -3460,55 +3462,6 @@ Delay:SetScript("OnEvent", function()
 		end
 	else
 		C.shouldStyleTooltips = false
-	end
-
-	if AuroraConfig.map == true and not(IsAddOnLoaded("MetaMap") or IsAddOnLoaded("m_Map") or IsAddOnLoaded("Mapster")) then
-		WorldMapFrameMiniBorderLeft:SetAlpha(0)
-		WorldMapFrameMiniBorderRight:SetAlpha(0)
-
-		local scale = WORLDMAP_WINDOWED_SIZE
-		local mapbg = CreateFrame("Frame", nil, WorldMapDetailFrame)
-		mapbg:SetPoint("TOPLEFT", -1 / scale, 1 / scale)
-		mapbg:SetPoint("BOTTOMRIGHT", 1 / scale, -1 / scale)
-		mapbg:SetFrameLevel(0)
-		mapbg:SetBackdrop({
-			bgFile = C.media.backdrop,
-		})
-		mapbg:SetBackdropColor(0, 0, 0)
-
-		local frame = CreateFrame("Frame",nil,WorldMapButton)
-		frame:SetFrameStrata("HIGH")
-
-		local function skinmap()
-			WorldMapFrameMiniBorderLeft:SetAlpha(0)
-			WorldMapFrameMiniBorderRight:SetAlpha(0)
-			WorldMapFrameCloseButton:ClearAllPoints()
-			WorldMapFrameCloseButton:SetPoint("TOPRIGHT", WorldMapButton, "TOPRIGHT", 3, 3)
-			WorldMapFrameCloseButton:SetFrameStrata("HIGH")
-			WorldMapFrameSizeUpButton:ClearAllPoints()
-			WorldMapFrameSizeUpButton:SetPoint("TOPRIGHT", WorldMapButton, "TOPRIGHT", 3, -18)
-			WorldMapFrameSizeUpButton:SetFrameStrata("HIGH")
-			WorldMapFrameTitle:ClearAllPoints()
-			WorldMapFrameTitle:SetPoint("BOTTOMLEFT", WorldMapDetailFrame, 9, 5)
-			WorldMapFrameTitle:SetParent(frame)
-			WorldMapFrameTitle:SetTextColor(1, 1, 1)
-			WorldMapTrackQuest:SetParent(frame)
-			WorldMapTrackQuest:ClearAllPoints()
-			WorldMapTrackQuest:SetPoint("TOPLEFT", WorldMapDetailFrame, 9, -5)
-			WorldMapTrackQuestText:SetTextColor(1, 1, 1)
-			if AuroraConfig.enableFont then
-				WorldMapFrameTitle:SetFont(C.media.font, 12 / scale, "THINOUTLINE")
-				WorldMapFrameTitle:SetShadowOffset(0, 0)
-				WorldMapTrackQuestText:SetFont(C.media.font, 12 / scale, "OUTLINE")
-				WorldMapTrackQuestText:SetShadowOffset(0, 0)
-			end
-		end
-
-		skinmap()
-		hooksecurefunc("WorldMap_ToggleSizeDown", skinmap)
-
-		F.ReskinDropDown(WorldMapLevelDropDown)
-		F.ReskinCheck(WorldMapTrackQuest)
 	end
 
 	if AuroraConfig.bags == true and not(IsAddOnLoaded("Baggins") or IsAddOnLoaded("Stuffing") or IsAddOnLoaded("Combuctor") or IsAddOnLoaded("cargBags") or IsAddOnLoaded("famBags") or IsAddOnLoaded("ArkInventory") or IsAddOnLoaded("Bagnon")) then
