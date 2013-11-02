@@ -341,7 +341,7 @@ T.ABtogglebox = function(parent, x, y, id, name)
 		elseif id == 4 then
 			SHOW_MULTI_ACTIONBAR_4 = self:GetChecked()
 		end
-		InterfaceOptions_UpdateMultiActionBars()
+		--InterfaceOptions_UpdateMultiActionBars()
 	end)
 	
 	return bu
@@ -488,8 +488,9 @@ T.createslider = function(parent, x, y, name, table, value, divisor, min, max, s
 	_G[slider:GetName()..'Text']:ClearAllPoints()
 	_G[slider:GetName()..'Text']:SetPoint("BOTTOM", slider, "TOP", 0, 3)
 	_G[slider:GetName()..'Text']:SetFontObject(GameFontHighlight)
+	--slider:SetStepsPerPage(step)
 	slider:SetValueStep(step)
-
+	
 	slider:SetScript("OnShow", function(self)
 		self:SetValue((aCoreCDB[table][value])*divisor)
 		_G[slider:GetName()..'Text']:SetText(name.." |cFF00FFFF"..aCoreCDB[table][value].."|r")

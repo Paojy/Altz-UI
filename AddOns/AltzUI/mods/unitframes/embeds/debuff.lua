@@ -56,56 +56,60 @@ local CreateAuraIcon = function(auras)
 end
 
 local dispelClass = {
-    PRIEST = { Disease = true, Magic = true, },
-    SHAMAN = { Curse = true, Magic = true, },
-    PALADIN = { Poison = true, Disease = true, Magic = true, },
+	PRIEST = {},
+    SHAMAN = { Curse = true },
+    PALADIN = { Poison = true, Disease = true },
     MAGE = { Curse = true, },
-    DRUID = { Curse = true, Poison = true, Magic = true, },
-    MONK = { Disease = true, Poison = true, Magic = true,},
+    DRUID = { Curse = true, Poison = true },
+    MONK = { Disease = true, Poison = true},
 }
- 
-local _, class = UnitClass("player")
+
+local dispellist = dispelClass[G.myClass] or {}
+
 local checkTalents = CreateFrame"Frame"
 checkTalents:RegisterEvent("PLAYER_ENTERING_WORLD")
-
 checkTalents:SetScript("OnEvent", function(self, event)
-    if multicheck(class, "SHAMAN", "PALADIN", "DRUID", "PRIEST", "MONK") then
+    if multicheck(G.myClass, "SHAMAN", "PALADIN", "DRUID", "PRIEST", "MONK") then
  
-        if class == "SHAMAN" then
+        if G.myClass == "SHAMAN" then
             local tree = GetSpecialization()
  
-            dispelClass[class].Magic = tree == 1 and true
+            dispelClass[G.myClass].Magic = tree == 1 and true
  
-        elseif class == "PALADIN" then
+        elseif G.myClass == "PALADIN" then
             local tree = GetSpecialization()
  
-            dispelClass[class].Magic = tree == 1 and true
+            dispelClass[G.myClass].Magic = tree == 1 and true
  
-        elseif class == "DRUID" then
+        elseif G.myClass == "DRUID" then
             local tree = GetSpecialization()
  
-            dispelClass[class].Magic = tree == 4 and true
+            dispelClass[G.myClass].Magic = tree == 4 and true
  
-        elseif class == "PRIEST" then
+        elseif G.myClass == "PRIEST" then
             local tree = GetSpecialization()
-            
-            dispelClass[class].Magic = (tree == 1 or tree == 2) and true
-            
-        elseif class == "MONK" then
+  
+            dispelClass[G.myClass].Magic = (tree == 1 or tree == 2) and true
+            dispelClass[G.myClass].Disease = (tree == 1 or tree == 2) and true
+			
+        elseif G.myClass == "MONK" then
             local tree = GetSpecialization()
- 
-            dispelClass[class].Magic = tree == 2 and true
-            
+			
+			dispelClass[G.myClass].Magic = tree == 2 and true
+			
         end
     end
  
+	--for k, v in pairs(dispellist) do
+		--print(k,v)
+	--end
+	
     if event == "PLAYER_ENTERING_WORLD" then
         self:UnregisterEvent("PLAYER_ENTERING_WORLD")
 		self:RegisterEvent("PLAYER_TALENT_UPDATE")
     end
 end)
 
-local dispellist = dispelClass[class] or {}
 local dispelPriority = {
     Magic = 4,
     Curse = 3,
@@ -129,7 +133,9 @@ local CustomFilter = function(icons, ...)
 	if aCoreCDB["CooldownAura"]["Debuffs"][name] then
 		icon.priority = aCoreCDB["CooldownAura"]["Debuffs"][name].level
 		return true
-	elseif IsInInstance() then
+	end
+	
+	if IsInInstance() then
         local ins = GetInstanceInfo()
         if aCoreCDB["RaidDebuff"][ins] then
 			for boss, debufflist in pairs(aCoreCDB["RaidDebuff"][ins]) do
@@ -139,7 +145,9 @@ local CustomFilter = function(icons, ...)
 				end
 			end
         end
-    elseif dispellist[dtype] then
+	end
+	
+    if dispellist[dtype] then
         icon.priority = dispelPriority[dtype]
         return true
     end
@@ -178,10 +186,11 @@ local updateDebuff = function(backdrop, icon, texture, count, dtype, duration, e
     local color = DebuffTypeColor[dtype] or DebuffTypeColor.none
 
     icon.border:SetBackdropBorderColor(color.r, color.g, color.b)
+	
     if dispellist[dtype] then
-	backdrop:SetBackdropBorderColor(color.r/2, color.g/2, color.b/2)
+		backdrop:SetBackdropBorderColor(color.r, color.g, color.b)
 	else
-	backdrop:SetBackdropBorderColor(0, 0, 0)
+		backdrop:SetBackdropBorderColor(0, 0, 0)
 	end
 	
     icon.icon:SetTexture(texture)
@@ -215,7 +224,6 @@ local Update = function(self, event, unit)
         local show = CustomFilter(auras, unit, icon, name, rank, texture, count, dtype, duration, expires, caster, spellID)
 
         if(show) then
-            --print(name)
             if not cur then
                 cur = icon.priority
                 updateDebuff(backdrop, icon, texture, count, dtype, duration, expires)

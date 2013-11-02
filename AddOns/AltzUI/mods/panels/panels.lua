@@ -908,6 +908,7 @@ Talent:RegisterEvent("PLAYER_ENTERING_WORLD")
 --====================================================--
 --[[                  -- Micromenu --               ]]--
 --====================================================--
+
 local MicromenuBar = CreateFrame("Frame", G.uiname.."MicromenuBar", UIParent)
 MicromenuBar:SetScale(aCoreCDB["OtherOptions"]["micromenuscale"])
 MicromenuBar:SetFrameLevel(4)
@@ -922,11 +923,25 @@ Skinbg(MicromenuBar)
 
 local MicromenuButtons = {}
 
-local function CreateMicromenuButton(bu, text, original)
+local MicromenuBar2 = CreateFrame("Frame", G.uiname.."MicromenuBar2", UIParent)
+MicromenuBar2:SetScale(aCoreCDB["OtherOptions"]["micromenuscale"])
+MicromenuBar2:SetFrameLevel(4)
+MicromenuBar2:SetSize(128, 24)
+MicromenuBar2.movingname = L["团队工具"]
+MicromenuBar2.point = {
+		healer = {a1 = "RIGHT", parent = MicromenuBar:GetName(), a2 = "LEFT", x = -10, y = 0},
+		dpser = {a1 = "RIGHT", parent = MicromenuBar:GetName(), a2 = "LEFT", x = -10, y = 0},
+	}
+T.CreateDragFrame(MicromenuBar2)
+Skinbg(MicromenuBar2)
+
+local Micromenu2Buttons = {}
+
+local function CreateMicromenuButton(parent, bu, text, original)
 	local Button
 	if bu then
 		Button = bu
-		Button:SetParent(MicromenuBar)
+		Button:SetParent(parent)
 		Button:ClearAllPoints()
 		Button:SetNormalTexture(nil)
 		Button:SetPushedTexture(nil)
@@ -943,14 +958,16 @@ local function CreateMicromenuButton(bu, text, original)
 			child:Hide()
 			child.Show = T.dummy
 		end
-		if original == "System" then
-			Button:SetSize(80, 43)
-		else
-			Button:SetSize(24, 43)
-		end
 	else
-		Button = CreateFrame("Button", nil, MicromenuBar)
-		Button:SetSize(24, 24)
+		Button = CreateFrame("Button", nil, parent)
+	end
+	
+	if original == "System" then
+		Button:SetSize(80, 43)
+	elseif original == "RaidTool" then
+		Button:SetSize(100, 43)
+	else
+		Button:SetSize(24, 43)
 	end
 	
 	Button:SetFrameLevel(5)
@@ -959,7 +976,7 @@ local function CreateMicromenuButton(bu, text, original)
 	Button.normal:SetPoint("BOTTOMRIGHT")
 	Button.normal:SetHeight(24)
 	
-	if original == "System" then
+	if original == "System" or original == "RaidTool" then
 		Button.name = T.createtext(Button, "OVERLAY", 14, "OUTLINE", "CENTER")
 		Button.name:SetText(text)
 		Button.name:SetPoint("BOTTOM", 0, 4)
@@ -1006,25 +1023,28 @@ local function CreateMicromenuButton(bu, text, original)
 			end
 		end)
 	end
-	
-	tinsert(MicromenuButtons, Button)
+	if original == "RaidTool" then
+		tinsert(Micromenu2Buttons, Button)
+	else
+		tinsert(MicromenuButtons, Button)
+	end
 	
 	return Button
 end
 
-MicromenuBar.Charcter = CreateMicromenuButton(CharacterMicroButton, CHARACTER_BUTTON, "Charcter")
-MicromenuBar.RaidTool = CreateMicromenuButton(false, L["团队工具"], "RaidTool")
-MicromenuBar.Friends = CreateMicromenuButton(false, SOCIAL_BUTTON, "Friends")
-MicromenuBar.Guild = CreateMicromenuButton(GuildMicroButton, GUILD, "Guild")
-MicromenuBar.Achievement = CreateMicromenuButton(AchievementMicroButton, ACHIEVEMENT_BUTTON, "Achievement")
-MicromenuBar.EJ = CreateMicromenuButton(EJMicroButton, ENCOUNTER_JOURNAL, "EJ")
-MicromenuBar.System = CreateMicromenuButton(MainMenuMicroButton, G.classcolor.."AltzUI "..G.Version.."|r", "System")
-MicromenuBar.Pet = CreateMicromenuButton(CompanionsMicroButton, MOUNTS_AND_PETS, "Pet")
-MicromenuBar.PvP = CreateMicromenuButton(PVPMicroButton, PLAYER_V_PLAYER, "PvP")
-MicromenuBar.LFR = CreateMicromenuButton(LFDMicroButton, LFG_TITLE, "LFR")
-MicromenuBar.Quests = CreateMicromenuButton(QuestLogMicroButton, QUESTLOG_BUTTON, "Quests")
-MicromenuBar.Spellbook = CreateMicromenuButton(SpellbookMicroButton, SPELLBOOK_ABILITIES_BUTTON, "Spellbook")
-MicromenuBar.Bag = CreateMicromenuButton(false, BAGSLOT, "Bag")
+MicromenuBar.Charcter = CreateMicromenuButton(MicromenuBar, CharacterMicroButton, CHARACTER_BUTTON, "Charcter")
+MicromenuBar.Friends = CreateMicromenuButton(MicromenuBar, false, SOCIAL_BUTTON, "Friends")
+MicromenuBar.Guild = CreateMicromenuButton(MicromenuBar, GuildMicroButton, GUILD, "Guild")
+MicromenuBar.Achievement = CreateMicromenuButton(MicromenuBar, AchievementMicroButton, ACHIEVEMENT_BUTTON, "Achievement")
+MicromenuBar.EJ = CreateMicromenuButton(MicromenuBar, EJMicroButton, ENCOUNTER_JOURNAL, "EJ")
+MicromenuBar.Store = CreateMicromenuButton(MicromenuBar, StoreMicroButton, ENCOUNTER_JOURNAL, "Store")
+MicromenuBar.System = CreateMicromenuButton(MicromenuBar, MainMenuMicroButton, G.classcolor.."AltzUI "..G.Version.."|r", "System")
+MicromenuBar.Pet = CreateMicromenuButton(MicromenuBar, CompanionsMicroButton, MOUNTS_AND_PETS, "Pet")
+MicromenuBar.PvP = CreateMicromenuButton(MicromenuBar, PVPMicroButton, PLAYER_V_PLAYER, "PvP")
+MicromenuBar.LFR = CreateMicromenuButton(MicromenuBar, LFDMicroButton, LFG_TITLE, "LFR")
+MicromenuBar.Quests = CreateMicromenuButton(MicromenuBar, QuestLogMicroButton, QUESTLOG_BUTTON, "Quests")
+MicromenuBar.Spellbook = CreateMicromenuButton(MicromenuBar, SpellbookMicroButton, SPELLBOOK_ABILITIES_BUTTON, "Spellbook")
+MicromenuBar.Bag = CreateMicromenuButton(MicromenuBar, false, BAGSLOT, "Bag")
 
 for i = 1, #MicromenuButtons do
 	if i == 1 then
@@ -1057,17 +1077,21 @@ local function UpdateFade(frame, children, dbvalue)
 		frame:SetAlpha(0)
 		frame:SetScript("OnEnter", function(self) T.UIFrameFadeIn(self, .5, self:GetAlpha(), 1) end)
 		frame:SetScript("OnLeave", function(self) T.UIFrameFadeOut(self, .5, self:GetAlpha(), 0) end)
-		for i = 1, #children do
-			children[i]:SetScript("OnEnter", function(self) OnHover(self) T.UIFrameFadeIn(frame, .5, frame:GetAlpha(), 1) end)
-			children[i]:SetScript("OnLeave", function(self) OnLeave(self) T.UIFrameFadeOut(frame, .5, frame:GetAlpha(), 0) end)
+		if children then
+			for i = 1, #children do
+				children[i]:SetScript("OnEnter", function(self) OnHover(self) T.UIFrameFadeIn(frame, .5, frame:GetAlpha(), 1) end)
+				children[i]:SetScript("OnLeave", function(self) OnLeave(self) T.UIFrameFadeOut(frame, .5, frame:GetAlpha(), 0) end)
+			end
 		end
 		T.UIFrameFadeOut(frame, .5, frame:GetAlpha(), 0)
 	else
 		frame:SetScript("OnEnter", nil)
 		frame:SetScript("OnLeave", nil)
-		for i = 1, #children do
-			children[i]:SetScript("OnEnter", function(self) OnHover(self) end)
-			children[i]:SetScript("OnLeave", function(self) OnLeave(self) end)
+		if children then
+			for i = 1, #children do
+				children[i]:SetScript("OnEnter", function(self) OnHover(self) end)
+				children[i]:SetScript("OnLeave", function(self) OnLeave(self) end)
+			end
 		end
 		T.UIFrameFadeIn(frame, .5, frame:GetAlpha(), 1)
 	end
@@ -1087,6 +1111,25 @@ MicromenuBar:SetScript("OnEvent", function(self)
 end)
 
 MicromenuBar:RegisterEvent("PLAYER_LOGIN")
+
+MicromenuBar2.Raidtool = CreateMicromenuButton(MicromenuBar2, false, G.classcolor..L["团队工具"].."|r", "RaidTool")
+MicromenuBar2.Raidtool:SetPoint("BOTTOM", MicromenuBar2, "BOTTOM")
+
+MicromenuBar2:SetScript("OnMouseDown", function(self)
+	if aCoreCDB["OtherOptions"]["fademicromenu2"] then
+		aCoreCDB["OtherOptions"]["fademicromenu2"] = false
+	else
+		aCoreCDB["OtherOptions"]["fademicromenu2"] = true
+	end
+	UpdateFade(self, Micromenu2Buttons, "fademicromenu2")
+end)
+
+MicromenuBar2:SetScript("OnEvent", function(self) 
+	UpdateFade(self, Micromenu2Buttons, "fademicromenu2") 
+end)
+
+MicromenuBar2:RegisterEvent("PLAYER_LOGIN")
+
 --====================================================--
 --[[                 -- Screen --                   ]]--
 --====================================================--

@@ -480,13 +480,13 @@ SwitchRaidButton:SetScript("OnEvent", function(self, event, arg1)
 	
 	if arg1 and arg1 ~= "player" then return end -- "PLAYER_SPECIALIZATION_CHANGED"
 	
-	if not aCoreCDB["UnitframeOptions"]["autoswitch"] then
-		if T.IsDpsRaidShown() then
-			self.text:SetText(L["dpser"])
-		else
-			self.text:SetText(L["healer"])
-		end
+	if T.IsDpsRaidShown() then
+		self.text:SetText(L["dpser"])
 	else
+		self.text:SetText(L["healer"])
+	end
+		
+	if aCoreCDB["UnitframeOptions"]["autoswitch"] then
 		self:UnregisterAllEvents()
 	end
 end)
