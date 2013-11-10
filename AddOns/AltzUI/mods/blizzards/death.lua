@@ -15,7 +15,7 @@ hooksecurefunc("StaticPopup_Show", function(which, text_arg1, text_arg2, data)
       StaticPopup_Hide("DEATH")
    end
 end)
-
+--[[
 setfenv(WorldMapFrame_OnShow, setmetatable({UpdateMicroButtons = function() end}, {__index = _G}))
 setfenv(FriendsFrame_OnShow, setmetatable({UpdateMicroButtons = function() end}, {__index = _G}))
 setfenv(SpellBookFrame_OnShow, setmetatable({UpdateMicroButtons = function() end}, {__index = _G}))
@@ -32,7 +32,7 @@ ParentalControls:SetScript("OnEvent", function(self, event, addon)
 		setfenv(PlayerTalentFrame_OnHide, setmetatable({UpdateMicroButtons = function() end}, {__index = _G}))
 	end
 end)
-
+]]--
 hooksecurefunc("StaticPopup_Show", function(which)
   if(which == "ADDON_ACTION_FORBIDDEN") then
     StaticPopup_Hide(which);
