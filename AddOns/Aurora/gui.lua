@@ -69,7 +69,7 @@ line:SetTexture(1, 1, 1, .2)
 local fontBox = createToggleBox(gui, "enableFont", "Replace default game fonts")
 fontBox:SetPoint("TOPLEFT", 16, -140)
 
-local colourBox = createToggleBox(gui, "useCustomColour", "Use custom colour rather than class as highlight")
+local colourBox = createToggleBox(gui, "useCustomColour", "Custom highlight colour")
 colourBox:SetPoint("TOPLEFT", fontBox, "BOTTOMLEFT", 0, -8)
 
 local colourButton = CreateFrame("Button", nil, gui, "UIPanelButtonTemplate")
@@ -83,17 +83,14 @@ useButtonGradientColourBox:SetPoint("TOPLEFT", colourBox, "BOTTOMLEFT", 0, -8)
 local bagsBox = createToggleBox(gui, "bags", "Bags")
 bagsBox:SetPoint("TOPLEFT", useButtonGradientColourBox, "BOTTOMLEFT", 0, -16)
 
-local lootBox = createToggleBox(gui, "loot", "Loot")
-lootBox:SetPoint("LEFT", bagsBox, "RIGHT", 90, 0)
-
 local chatBubbleBox = createToggleBox(gui, "chatBubbles", "Chat bubbles")
-chatBubbleBox:SetPoint("LEFT", lootBox, "RIGHT", 90, 0)
+chatBubbleBox:SetPoint("LEFT", bagsBox, "RIGHT", 90, 0)
 
-local mapBox = createToggleBox(gui, "map", "Map")
-mapBox:SetPoint("TOPLEFT", bagsBox, "BOTTOMLEFT", 0, -8)
+local lootBox = createToggleBox(gui, "loot", "Loot")
+lootBox:SetPoint("TOPLEFT", bagsBox, "BOTTOMLEFT", 0, -8)
 
 local tooltipsBox = createToggleBox(gui, "tooltips", "Tooltips")
-tooltipsBox:SetPoint("LEFT", mapBox, "RIGHT", 90, 0)
+tooltipsBox:SetPoint("LEFT", lootBox, "RIGHT", 90, 0)
 
 local reloadText = gui:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
 reloadText:SetPoint("TOPLEFT", bagsBox, "BOTTOMLEFT", 0, -60)
@@ -183,8 +180,7 @@ colourBox:SetScript("OnClick", function(self)
 end)
 
 local function setColour()
-	local r, g, b = ColorPickerFrame:GetColorRGB()
-	AuroraConfig.customColour.r, AuroraConfig.customColour.g, AuroraConfig.customColour.b = r, g, b
+	AuroraConfig.customColour.r, AuroraConfig.customColour.g, AuroraConfig.customColour.b = ColorPickerFrame:GetColorRGB()
 end
 
 local function resetColour(restore)
