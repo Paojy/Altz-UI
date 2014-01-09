@@ -58,7 +58,7 @@ local function init()
 		-- chat font
 		local cf = _G['ChatFrame'..i]
 		if cf then 
-			cf:SetFont(NAMEPLATE_FONT, select(2, cf:GetFont()), "THINOUTLINE") 
+			cf:SetFont(STANDARD_TEXT_FONT, select(2, cf:GetFont()), "THINOUTLINE") 
 			cf:SetShadowOffset(0,0)
 			cf:SetFrameStrata("LOW")
 			cf:SetFrameLevel(2)
@@ -80,7 +80,7 @@ local function init()
 		-- chat tabs
 		local tab = _G['ChatFrame'..i..'Tab']
 		if tab then
-			tab:GetFontString():SetFont(NAMEPLATE_FONT, 13, "THINOUTLINE")
+			tab:GetFontString():SetFont(STANDARD_TEXT_FONT, 13, "THINOUTLINE")
 			tab:GetFontString():SetShadowOffset(0,0)
 			if i ~= 11 then
 			tab.selectedColorTable = { r = G.Ccolor.r, g = G.Ccolor.g, b = G.Ccolor.b };
