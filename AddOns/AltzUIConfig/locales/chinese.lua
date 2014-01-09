@@ -311,7 +311,7 @@ L["更改设置提示"] = "一部分设置需要更改才能与整体风格保�
 
 -- 命令
 L["命令"] = "命令"
-L["指令"] = " %s/rl|r - 重载界面 \n \n %s/hb|r - 按键绑定模式 \n \n %sSHIFT+左键|r - 设置焦点 \n \n %sTab|r - 切换聊天频道 \n \n %sEnjoy!|r"
+L["指令"] = " %s/rl|r - 重载界面 \n \n %s/hb|r - 按键绑定模式 \n \n %sSHIFT+左键|r - 设置焦点 \n \n %sTab|r - 切换聊天频道 \n \n %s/Tutorials|r - 重置教程 \n \n %sEnjoy!|r"
 
 -- 制作
 L["制作"] = "制作"

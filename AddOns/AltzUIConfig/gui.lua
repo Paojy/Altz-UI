@@ -1549,7 +1549,7 @@ local Comands = CreateOptionPage("Comands", L["命令"], GUI, "VERTICAL")
 
 Comands.text = T.createtext(Comands, "OVERLAY", 13, "OUTLINE", "LEFT")
 Comands.text:SetPoint("TOPLEFT", 30, -60)
-Comands.text:SetText(format(L["指令"], G.classcolor, G.classcolor, G.classcolor, G.classcolor, G.classcolor))
+Comands.text:SetText(format(L["指令"], G.classcolor, G.classcolor, G.classcolor, G.classcolor, G.classcolor, G.classcolor))
 
 --====================================================--
 --[[               -- Credits --               ]]--
@@ -1586,19 +1586,22 @@ function eventframe:ADDON_LOADED(arg1)
 		aCoreCDB["SkinOptions"]["editsettingsbu"] = false
 	end
 end
-
+--[[
 local GUIbutton = CreateFrame("Button", G.uiname.."GUI MenuButton", GameMenuFrame, "GameMenuButtonTemplate")
 GUIbutton:SetSize(GameMenuButtonMacros:GetWidth(), GameMenuButtonMacros:GetHeight())
---GameMenuFrame:SetHeight(GUIbutton:GetHeight()+GameMenuButtonMacros:GetHeight())
-GameMenuButtonLogout:SetPoint("TOP", GUIbutton, "BOTTOM", 0, -1)
-GUIbutton:SetPoint("TOP", GameMenuButtonMacros, "BOTTOM", 0, -1)
+GUIbutton:SetPoint("BOTTOM", GameMenuButtonHelp, "TOP", 0, -1)
 GUIbutton:SetText("Altz UI")
 F.Reskin(GUIbutton)
+GameMenuButtonLogout:ClearAllPoints()
+GameMenuButtonLogout:SetPoint("TOP", GUIbutton, "BOTTOM", 0, -20)
+GameMenuFrame:SetHeight(GUIbutton:GetHeight()+GameMenuButtonMacros:GetHeight()+20)
+
 GUIbutton:SetScript("OnClick", function()
 	HideUIPanel(GameMenuFrame)
 	_G["AltzUI_GUI Main Frame"]:Show()
 end)
 
+]]--
 --[[ CPU and Memroy testing
 local interval = 0
 cfg:SetScript("OnUpdate", function(self, elapsed)

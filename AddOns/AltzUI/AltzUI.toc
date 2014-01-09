@@ -1,7 +1,7 @@
 ﻿## Interface: 50400
 ## Title: |cffEE3A8CAltz|rUI
 ## X-oUF: AltzUF
-## Version: 5.59
+## Version: 5.60
 ## Author: Blue
 ## Dependencies: AltzUIConfig
 

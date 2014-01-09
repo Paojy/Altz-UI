@@ -59,6 +59,7 @@ L["整理背包提示"] = "LeftButton - sort in an backward order\nRightButton -
 
 L["信息条"] = "Info Bar"
 L["微型菜单"] = "MicroMenu"
+L["控制台"] = "Config"
 L["主动作条"] = "Main\nActionbar"
 L["额外动作条"] = "Multi\nActionBar"
 L["右侧额外动作条"] = "RightMulti\nActionBar"

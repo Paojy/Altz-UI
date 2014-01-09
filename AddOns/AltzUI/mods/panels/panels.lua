@@ -935,7 +935,20 @@ MicromenuBar2.point = {
 T.CreateDragFrame(MicromenuBar2)
 Skinbg(MicromenuBar2)
 
+local MicromenuBar3 = CreateFrame("Frame", G.uiname.."MicromenuBar3", UIParent)
+MicromenuBar3:SetScale(aCoreCDB["OtherOptions"]["micromenuscale"])
+MicromenuBar3:SetFrameLevel(4)
+MicromenuBar3:SetSize(128, 24)
+MicromenuBar3.movingname = L["控制台"]
+MicromenuBar3.point = {
+		healer = {a1 = "LEFT", parent = MicromenuBar:GetName(), a2 = "RIGHT", x = 10, y = 0},
+		dpser = {a1 = "LEFT", parent = MicromenuBar:GetName(), a2 = "RIGHT", x = 10, y = 0},
+	}
+T.CreateDragFrame(MicromenuBar3)
+Skinbg(MicromenuBar3)
+
 local Micromenu2Buttons = {}
+local Micromenu3Buttons = {}
 
 local function CreateMicromenuButton(parent, bu, text, original)
 	local Button
@@ -966,6 +979,8 @@ local function CreateMicromenuButton(parent, bu, text, original)
 		Button:SetSize(80, 43)
 	elseif original == "RaidTool" then
 		Button:SetSize(100, 43)
+	elseif original == "Config" then
+		Button:SetSize(100, 43)
 	else
 		Button:SetSize(24, 43)
 	end
@@ -976,7 +991,7 @@ local function CreateMicromenuButton(parent, bu, text, original)
 	Button.normal:SetPoint("BOTTOMRIGHT")
 	Button.normal:SetHeight(24)
 	
-	if original == "System" or original == "RaidTool" then
+	if original == "System" or original == "RaidTool" or original == "Config" then
 		Button.name = T.createtext(Button, "OVERLAY", 14, "OUTLINE", "CENTER")
 		Button.name:SetText(text)
 		Button.name:SetPoint("BOTTOM", 0, 4)
@@ -1013,6 +1028,12 @@ local function CreateMicromenuButton(parent, bu, text, original)
 				else
 					_G[G.uiname.."RaidToolFrame"]:Show()
 				end
+			elseif original == "Config" then
+				if _G[G.uiname.."GUI Main Frame"]:IsShown() then
+					_G[G.uiname.."GUI Main Frame"]:Hide()
+				else
+					_G[G.uiname.."GUI Main Frame"]:Show()
+				end
 			elseif original == "Friends" then
 				ToggleFriendsFrame(1)
 			elseif original == "Bag" then
@@ -1025,6 +1046,8 @@ local function CreateMicromenuButton(parent, bu, text, original)
 	end
 	if original == "RaidTool" then
 		tinsert(Micromenu2Buttons, Button)
+	elseif original == "Config" then
+		tinsert(Micromenu3Buttons, Button)
 	else
 		tinsert(MicromenuButtons, Button)
 	end
@@ -1130,6 +1153,23 @@ end)
 
 MicromenuBar2:RegisterEvent("PLAYER_LOGIN")
 
+MicromenuBar3.Config = CreateMicromenuButton(MicromenuBar3, false, G.classcolor..L["控制台"].."|r", "Config")
+MicromenuBar3.Config:SetPoint("BOTTOM", MicromenuBar3, "BOTTOM")
+
+MicromenuBar3:SetScript("OnMouseDown", function(self)
+	if aCoreCDB["OtherOptions"]["fademicromenu3"] then
+		aCoreCDB["OtherOptions"]["fademicromenu3"] = false
+	else
+		aCoreCDB["OtherOptions"]["fademicromenu3"] = true
+	end
+	UpdateFade(self, Micromenu3Buttons, "fademicromenu3")
+end)
+
+MicromenuBar3:SetScript("OnEvent", function(self) 
+	UpdateFade(self, Micromenu3Buttons, "fademicromenu3") 
+end)
+
+MicromenuBar3:RegisterEvent("PLAYER_LOGIN")
 --====================================================--
 --[[                 -- Screen --                   ]]--
 --====================================================--

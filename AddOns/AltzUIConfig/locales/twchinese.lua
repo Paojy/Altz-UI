@@ -310,7 +310,7 @@ L["更改设置提示"] = "一部分設置需要更改才能與整體風格保�
 
 -- 命令
 L["命令"] = "命令"
-L["指令"] = " %s/rl|r - 重載界面 \n \n %s/hb|r - 按鍵綁定模式 \n \n %sSHIFT+左鍵|r - 設置焦點 \n \n %sTab|r - 切换聊天頻道 \n \n %sEnjoy!|r"
+L["指令"] = " %s/rl|r - 重載界面 \n \n %s/hb|r - 按鍵綁定模式 \n \n %sSHIFT+左鍵|r - 設置焦點 \n \n %sTab|r - 切换聊天頻道 \n \n %s/Tutorials|r - 重置教程 \n \n %sEnjoy!|r"
 
 -- 制作
 L["制作"] = "制作"

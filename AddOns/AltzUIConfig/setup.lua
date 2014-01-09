@@ -155,7 +155,7 @@ local function CreateInstructions()
 	CreateInstruction(_G[G.uiname.."Info Frame"], nil, L["信息栏"], L["信息栏tips"], "ANCHOR_RIGHT")
 	CreateInstruction(Minimap, nil,L["小地图"], L["小地图tips"], "ANCHOR_LEFT")
 	CreateInstruction(_G[G.uiname.."MicromenuBar"], nil, L["微型菜单"], L["微型菜单tips"], "ANCHOR_BOTTOMLEFT")
-	CreateInstruction(_G[ G.uiname.."GUI MenuButton"], nil, L["控制台"], L["控制台tips"], "ANCHOR_RIGHT")
+	CreateInstruction(_G[G.uiname.."MicromenuBar3"], nil, L["控制台"], L["控制台tips"], "ANCHOR_RIGHT")
 	CreateInstruction(_G[G.uiname.."UnlockAllFramesButton"], nil, L["解锁按钮"], L["解锁按钮tips"], "ANCHOR_RIGHT")
 	CreateInstruction(_G[G.uiname.."SpecMover"], nil, L["布局模式"], L["布局模式tips"], "ANCHOR_RIGHT")
 	CreateInstruction(_G[G.uiname.."SpecMoverLockButton"], nil, L["锁定按钮"], L["锁定按钮tips"], "ANCHOR_RIGHT")
@@ -207,3 +207,10 @@ eventframe:SetScript("OnEvent", function()
 		aCoreDB.meet = 2
 	end
 end)
+
+SlashCmdList['Tutorials'] = function()
+	CreateInstructions()
+end
+
+SLASH_Tutorials1 = "/Tutorials"
+SLASH_Tutorials2 = "/Tut"
