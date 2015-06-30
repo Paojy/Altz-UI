@@ -1,6 +1,66 @@
 local F, C = unpack(select(2, ...))
 
-tinsert(C.modules["Aurora"], function()
+tinsert(C.themes["Aurora"], function()
+	local function styleRewardButton(button)
+		local buttonName = button:GetName()
+
+		local icon = _G[buttonName.."IconTexture"]
+		local cta = _G[buttonName.."ShortageBorder"]
+		local count = _G[buttonName.."Count"]
+		local na = _G[buttonName.."NameFrame"]
+
+		F.CreateBG(icon)
+		icon:SetTexCoord(.08, .92, .08, .92)
+		icon:SetDrawLayer("OVERLAY")
+		count:SetDrawLayer("OVERLAY")
+		na:SetTexture(0, 0, 0, .25)
+		na:SetSize(118, 39)
+
+		if cta then
+			cta:SetAlpha(0)
+		end
+
+		button.bg2 = CreateFrame("Frame", nil, button)
+		button.bg2:SetPoint("TOPLEFT", na, "TOPLEFT", 10, 0)
+		button.bg2:SetPoint("BOTTOMRIGHT", na, "BOTTOMRIGHT")
+		F.CreateBD(button.bg2, 0)
+	end
+
+	hooksecurefunc("LFDQueueFrameRandom_UpdateFrame", function()
+		for i = 1, LFD_MAX_REWARDS do
+			local button = _G["LFDQueueFrameRandomScrollFrameChildFrameItem"..i]
+
+			if button and not button.styled then
+				styleRewardButton(button)
+				button.styled = true
+			end
+		end
+	end)
+	hooksecurefunc("ScenarioQueueFrameRandom_UpdateFrame", function()
+		for i = 1, 2 do
+			local button = _G["ScenarioQueueFrameRandomScrollFrameChildFrameItem"..i]
+
+			if button and not button.styled then
+				styleRewardButton(button)
+				button.styled = true
+			end
+		end
+	end)
+	hooksecurefunc("RaidFinderQueueFrameRewards_UpdateFrame", function()
+		for i = 1, LFD_MAX_REWARDS do
+			local button = _G["RaidFinderQueueFrameScrollFrameChildFrameItem"..i]
+
+			if button and not button.styled then
+				styleRewardButton(button)
+				button.styled = true
+			end
+		end
+	end)
+
+	styleRewardButton(LFDQueueFrameRandomScrollFrameChildFrame.MoneyReward)
+	styleRewardButton(ScenarioQueueFrameRandomScrollFrameChildFrame.MoneyReward)
+	styleRewardButton(RaidFinderQueueFrameScrollFrameChildFrame.MoneyReward)
+
 	LFGDungeonReadyDialogBackground:Hide()
 	LFGDungeonReadyDialogBottomArt:Hide()
 	LFGDungeonReadyDialogFiligree:Hide()
@@ -175,11 +235,13 @@ tinsert(C.modules["Aurora"], function()
 		F.ReskinCheck(roleButton.checkButton)
 	end
 
-	for _, roleButton in pairs({LFDRoleCheckPopupRoleButtonTank, LFDRoleCheckPopupRoleButtonHealer, LFDRoleCheckPopupRoleButtonDPS, LFGInvitePopupRoleButtonTank, LFGInvitePopupRoleButtonHealer, LFGInvitePopupRoleButtonDPS}) do
+	for _, roleButton in pairs({LFDRoleCheckPopupRoleButtonTank, LFDRoleCheckPopupRoleButtonHealer, LFDRoleCheckPopupRoleButtonDPS, LFGInvitePopupRoleButtonTank, LFGInvitePopupRoleButtonHealer, LFGInvitePopupRoleButtonDPS, LFGListApplicationDialog.DamagerButton, LFGListApplicationDialog.TankButton, LFGListApplicationDialog.HealerButton}) do
+		local checkButton = roleButton.checkButton or roleButton.CheckButton
+
 		roleButton.cover:SetTexture(C.media.roleIcons)
 		roleButton:SetNormalTexture(C.media.roleIcons)
 
-		roleButton.checkButton:SetFrameLevel(roleButton:GetFrameLevel() + 2)
+		checkButton:SetFrameLevel(roleButton:GetFrameLevel() + 2)
 
 		local left = roleButton:CreateTexture(nil, "OVERLAY")
 		left:SetWidth(1)
@@ -209,7 +271,7 @@ tinsert(C.modules["Aurora"], function()
 		bottom:SetPoint("BOTTOMLEFT", roleButton, 9, 11)
 		bottom:SetPoint("BOTTOMRIGHT", roleButton, -9, 11)
 
-		F.ReskinCheck(roleButton.checkButton)
+		F.ReskinCheck(checkButton)
 	end
 
 	do

@@ -259,6 +259,7 @@ end
 
 local ClassIconsPostUpdate = function(element, cur, max, maxchange)
 	for i = 1, 5 do
+		if not max or not cur then return end
 		if max > 0 and cur == max then
 			element[i]:SetStatusBarColor(unpack(classicon_colors[max]))
 		else
@@ -359,17 +360,17 @@ end
 
 local ChannelSpells = {
 	[GetSpellInfo(129197)] = 3, --精神鞭笞（乱）
-	[GetSpellInfo(124468)] = 3, --精神鞭笞
+	--[GetSpellInfo(124468)] = 3, --精神鞭笞
 	[GetSpellInfo(32000)] = 5, --精神灼烧
 	[GetSpellInfo(47540)] = 2, --苦修（第一跳立即生效）
 	[GetSpellInfo(64843)] = 4, --神圣赞美诗
-	[GetSpellInfo(64901)] = 4, --希望圣歌
+	--[GetSpellInfo(64901)] = 4, --希望圣歌
 	
 	[GetSpellInfo(10)] = 8, --暴风雪
 	[GetSpellInfo(5143)] = 5, --奥术飞弹
 	[GetSpellInfo(12051)] = 3, --唤醒（第一跳立即生效）
 
-	[GetSpellInfo(1120)] = 6, --吸取灵魂
+	--[GetSpellInfo(1120)] = 6, --吸取灵魂
 	[GetSpellInfo(689)] = 6, --吸取生命
 	[GetSpellInfo(108371)] = 6, --生命收割
 	[GetSpellInfo(4629)] = 6, --火焰之雨

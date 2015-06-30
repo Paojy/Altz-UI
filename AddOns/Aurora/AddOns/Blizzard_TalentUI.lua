@@ -1,6 +1,6 @@
 local F, C = unpack(select(2, ...))
 
-C.modules["Blizzard_TalentUI"] = function()
+C.themes["Blizzard_TalentUI"] = function()
 	local r, g, b = C.r, C.g, C.b
 
 	PlayerTalentFrameTalents:DisableDrawLayer("BORDER")
@@ -110,7 +110,7 @@ C.modules["Blizzard_TalentUI"] = function()
 		local index = 1
 		local bonuses
 		if self.isPet then
-			bonuses = {GetSpecializationSpells(shownSpec, nil, self.isPet)}
+			bonuses = {GetSpecializationSpells(shownSpec, nil, self.isPet, true)}
 		else
 			bonuses = SPEC_SPELLS_DISPLAY[id]
 		end
@@ -211,7 +211,7 @@ C.modules["Blizzard_TalentUI"] = function()
 		end
 	end
 
-	for i = 1, MAX_NUM_TALENT_TIERS do
+	for i = 1, MAX_TALENT_TIERS do
 		local row = _G["PlayerTalentFrameTalentsTalentRow"..i]
 		_G["PlayerTalentFrameTalentsTalentRow"..i.."Bg"]:Hide()
 		row:DisableDrawLayer("BORDER")
@@ -243,7 +243,7 @@ C.modules["Blizzard_TalentUI"] = function()
 	end
 
 	hooksecurefunc("TalentFrame_Update", function()
-		for i = 1, MAX_NUM_TALENT_TIERS do
+		for i = 1, MAX_TALENT_TIERS do
 			for j = 1, NUM_TALENT_COLUMNS do
 				local bu = _G["PlayerTalentFrameTalentsTalentRow"..i.."Talent"..j]
 				if bu.knownSelection:IsShown() then

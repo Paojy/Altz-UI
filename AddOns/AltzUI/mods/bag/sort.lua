@@ -222,6 +222,14 @@ function T.BagSort(order)
 	end
 end
 
+function T.ReagentBankSort(order)
+	if order == 0 then
+		sortBagRange({-3}, 0)
+	else
+		sortBagRange({-3}, 1)
+	end
+end
+
 local Core = CreateFrame("Frame", "Bag_Sort_Core")
 Core:SetScript("OnLoad", BS_clearData)
 Core:SetScript("OnUpdate", BS_OnUpdate)

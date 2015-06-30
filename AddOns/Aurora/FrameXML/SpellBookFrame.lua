@@ -1,6 +1,6 @@
 local F, C = unpack(select(2, ...))
 
-tinsert(C.modules["Aurora"], function()
+tinsert(C.themes["Aurora"], function()
 	SpellBookFrame:DisableDrawLayer("BACKGROUND")
 	SpellBookFrame:DisableDrawLayer("BORDER")
 	SpellBookFrame:DisableDrawLayer("OVERLAY")
@@ -130,16 +130,6 @@ tinsert(C.modules["Aurora"], function()
 				end
 				bu.reskinned = true
 			end
-		end
-	end)
-
-	hooksecurefunc("SpellBook_UpdateWhatHasChangedTab", function()
-		for i = 1, #SpellBookWhatHasChanged.ChangedItems do
-			local bu = SpellBook_GetWhatChangedItem(i)
-			bu.Ring:Hide()
-			select(2, bu:GetRegions()):Hide()
-			bu:SetTextColor(.9, .9, .9)
-			bu.Title:SetTextColor(1, 1, 1)
 		end
 	end)
 

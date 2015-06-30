@@ -528,8 +528,8 @@ local function Spawnhealraid()
 	T.CreateDragFrame(healerraid)
 	healerraid.df:ClearAllPoints()
 	local size
-	if aCoreCDB["UnitframeOptions"]["dpsgroupfilter"] == "1,2,3,4,5" then
-		size = 25
+	if aCoreCDB["UnitframeOptions"]["dpsgroupfilter"] == "1,2,3,4,5,6" then
+		size = 30
 	else
 		size = 40
 	end
@@ -590,8 +590,8 @@ local function Spawndpsraid()
 	T.CreateDragFrame(dpsraid)
 	dpsraid.df:ClearAllPoints()
 	local size, more
-	if aCoreCDB["UnitframeOptions"]["dpsgroupfilter"] == "1,2,3,4,5" then
-		size = 25
+	if aCoreCDB["UnitframeOptions"]["dpsgroupfilter"] == "1,2,3,4,5,6" then
+		size = 30
 	else
 		size = 40
 	end

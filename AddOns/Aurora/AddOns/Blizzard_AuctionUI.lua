@@ -1,6 +1,6 @@
 local F, C = unpack(select(2, ...))
 
-C.modules["Blizzard_AuctionUI"] = function()
+C.themes["Blizzard_AuctionUI"] = function()
 	local r, g, b = C.r, C.g, C.b
 
 	F.SetBD(AuctionFrame, 2, -10, 0, 10)
@@ -51,28 +51,31 @@ C.modules["Blizzard_AuctionUI"] = function()
 	AuctionsDurationSort:DisableDrawLayer("BACKGROUND")
 	AuctionsHighBidderSort:DisableDrawLayer("BACKGROUND")
 	AuctionsBidSort:DisableDrawLayer("BACKGROUND")
+	select(6, BrowseCloseButton:GetRegions()):Hide()
+	select(6, BrowseBuyoutButton:GetRegions()):Hide()
+	select(6, BrowseBidButton:GetRegions()):Hide()
+	select(6, BidCloseButton:GetRegions()):Hide()
+	select(6, BidBuyoutButton:GetRegions()):Hide()
+	select(6, BidBidButton:GetRegions()):Hide()
 
-	for i = 1, NUM_FILTERS_TO_DISPLAY do
-		_G["AuctionFilterButton"..i]:SetNormalTexture("")
-	end
+	hooksecurefunc("FilterButton_SetType", function(button)
+		button:SetNormalTexture("")
+	end)
 
-	do
-		local i = 1
-		local tab = _G["AuctionFrameTab"..i]
+	local lastSkinnedTab = 1
+	AuctionFrame:HookScript("OnShow", function()
+		local tab = _G["AuctionFrameTab"..lastSkinnedTab]
 
 		while tab do
 			F.ReskinTab(tab)
-			i = i + 1
-			tab = _G["AuctionFrameTab"..i]
+			lastSkinnedTab = lastSkinnedTab + 1
+			tab = _G["AuctionFrameTab"..lastSkinnedTab]
 		end
-	end
+	end)
 
 	local abuttons = {"BrowseBidButton", "BrowseBuyoutButton", "BrowseCloseButton", "BrowseSearchButton", "BrowseResetButton", "BidBidButton", "BidBuyoutButton", "BidCloseButton", "AuctionsCloseButton", "AuctionsCancelAuctionButton", "AuctionsCreateAuctionButton", "AuctionsNumStacksMaxButton", "AuctionsStackSizeMaxButton"}
 	for i = 1, #abuttons do
-		local reskinbutton = _G[abuttons[i]]
-		if reskinbutton then
-			F.Reskin(reskinbutton)
-		end
+		F.Reskin(_G[abuttons[i]])
 	end
 
 	BrowseCloseButton:ClearAllPoints()
@@ -112,6 +115,7 @@ C.modules["Blizzard_AuctionUI"] = function()
 
 			F.CreateBG(it)
 
+			it.IconBorder:SetTexture("")
 			_G["BrowseButton"..i.."Left"]:Hide()
 			select(5, _G["BrowseButton"..i]:GetRegions()):Hide()
 			_G["BrowseButton"..i.."Right"]:Hide()
@@ -143,6 +147,7 @@ C.modules["Blizzard_AuctionUI"] = function()
 
 		F.CreateBG(it)
 
+		it.IconBorder:SetTexture("")
 		_G["BidButton"..i.."Left"]:Hide()
 		select(6, _G["BidButton"..i]:GetRegions()):Hide()
 		_G["BidButton"..i.."Right"]:Hide()
@@ -173,6 +178,7 @@ C.modules["Blizzard_AuctionUI"] = function()
 
 		F.CreateBG(it)
 
+		it.IconBorder:SetTexture("")
 		_G["AuctionsButton"..i.."Left"]:Hide()
 		select(4, _G["AuctionsButton"..i]:GetRegions()):Hide()
 		_G["AuctionsButton"..i.."Right"]:Hide()
@@ -194,7 +200,7 @@ C.modules["Blizzard_AuctionUI"] = function()
 	local auctionhandler = CreateFrame("Frame")
 	auctionhandler:RegisterEvent("NEW_AUCTION_UPDATE")
 	auctionhandler:SetScript("OnEvent", function()
-		local AuctionsItemButtonIconTexture = select(14, AuctionsItemButton:GetRegions()) -- blizzard, please name your textures
+		local AuctionsItemButtonIconTexture = select(14, AuctionsItemButton:GetRegions())
 		if AuctionsItemButtonIconTexture then
 			AuctionsItemButtonIconTexture:SetTexCoord(.08, .92, .08, .92)
 			AuctionsItemButtonIconTexture:SetPoint("TOPLEFT", 1, -1)
@@ -215,12 +221,14 @@ C.modules["Blizzard_AuctionUI"] = function()
 	F.ReskinInput(BrowseName)
 	F.ReskinArrow(BrowsePrevPageButton, "left")
 	F.ReskinArrow(BrowseNextPageButton, "right")
+	F.ReskinCheck(ExactMatchCheckButton)
 	F.ReskinCheck(IsUsableCheckButton)
 	F.ReskinCheck(ShowOnPlayerCheckButton)
 
+	BrowsePrevPageButton:SetPoint("TOPLEFT", 660, -60)
+	BrowseNextPageButton:SetPoint("TOPRIGHT", 67, -60)
 	BrowsePrevPageButton:GetRegions():SetPoint("LEFT", BrowsePrevPageButton, "RIGHT", 2, 0)
 
-	-- seriously, consistency
 	BrowseDropDownLeft:SetAlpha(0)
 	BrowseDropDownMiddle:SetAlpha(0)
 	BrowseDropDownRight:SetAlpha(0)
@@ -240,7 +248,7 @@ C.modules["Blizzard_AuctionUI"] = function()
 	local bg = CreateFrame("Frame", nil, BrowseDropDown)
 	bg:SetPoint("TOPLEFT", 16, -5)
 	bg:SetPoint("BOTTOMRIGHT", 109, 11)
-	bg:SetFrameLevel(BrowseDropDown:GetFrameLevel(-1))
+	bg:SetFrameLevel(BrowseDropDown:GetFrameLevel()-1)
 	F.CreateBD(bg, 0)
 
 	F.CreateGradient(bg)
@@ -254,5 +262,33 @@ C.modules["Blizzard_AuctionUI"] = function()
 	local inputs = {"BrowseMinLevel", "BrowseMaxLevel", "BrowseBidPriceGold", "BrowseBidPriceSilver", "BrowseBidPriceCopper", "BidBidPriceGold", "BidBidPriceSilver", "BidBidPriceCopper", "StartPriceGold", "StartPriceSilver", "StartPriceCopper", "BuyoutPriceGold", "BuyoutPriceSilver", "BuyoutPriceCopper", "AuctionsStackSizeEntry", "AuctionsNumStacksEntry"}
 	for i = 1, #inputs do
 		F.ReskinInput(_G[inputs[i]])
+	end
+
+	-- [[ WoW token ]]
+
+	local BrowseWowTokenResults = BrowseWowTokenResults
+
+	F.Reskin(BrowseWowTokenResults.Buyout)
+
+	-- Tutorial
+
+	local WowTokenGameTimeTutorial = WowTokenGameTimeTutorial
+
+	F.ReskinPortraitFrame(WowTokenGameTimeTutorial, true)
+	F.Reskin(StoreButton)
+
+	-- Token
+
+	do
+		local Token = BrowseWowTokenResults.Token
+		local icon = Token.Icon
+		local iconBorder = Token.IconBorder
+
+		Token.ItemBorder:Hide()
+		iconBorder:SetTexture(C.media.backdrop)
+		iconBorder:SetDrawLayer("BACKGROUND")
+		iconBorder:SetPoint("TOPLEFT", icon, -1, 1)
+		iconBorder:SetPoint("BOTTOMRIGHT", icon, 1, -1)
+		icon:SetTexCoord(.08, .92, .08, .92)
 	end
 end

@@ -1,6 +1,6 @@
 local F, C = unpack(select(2, ...))
 
-tinsert(C.modules["Aurora"], function()
+tinsert(C.themes["Aurora"], function()
 	local r, g, b = C.r, C.g, C.b
 
 	local function colourMinimize(f)
@@ -104,7 +104,7 @@ tinsert(C.modules["Aurora"], function()
 				for _, pixel in pairs(closeButton.pixels) do
 					pixel:Show()
 				end
-				closeButton.minimize.Hide()
+				closeButton.minimize:Hide()
 			end
 		end
 	end)

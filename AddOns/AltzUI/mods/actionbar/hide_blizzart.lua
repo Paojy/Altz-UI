@@ -8,7 +8,7 @@ blizzHider:Hide()
 local buttonList = {
 	--CharacterMicroButton,
 	--SpellbookMicroButton,
-	TalentMicroButton,
+	---TalentMicroButton,
 	--AchievementMicroButton,
 	--QuestLogMicroButton,
 	--GuildMicroButton,

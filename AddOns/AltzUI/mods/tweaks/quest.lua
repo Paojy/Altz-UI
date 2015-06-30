@@ -23,8 +23,8 @@ local function questlevel()
 		end
 	end
 end
-hooksecurefunc("QuestLog_Update", questlevel)
-QuestLogScrollFrameScrollBar:HookScript("OnValueChanged", questlevel)
+--hooksecurefunc("QuestLog_Update", questlevel)
+--QuestLogScrollFrameScrollBar:HookScript("OnValueChanged", questlevel)
 	
 if autoquests then
   local Monomyth = CreateFrame("Frame")
@@ -109,7 +109,7 @@ if autoquests then
         if(available > 0) then
             for index = 1, available do
                 if(not IsAvailableQuestTrivial(index) or IsTrackingTrivial()) then
-                    SelectAvailableQuest(index)
+                    --SelectAvailableQuest(index)
                 end
             end
         end

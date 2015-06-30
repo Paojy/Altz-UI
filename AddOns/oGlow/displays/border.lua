@@ -13,6 +13,7 @@ local createBorder = function(self, point)
 			bc = self:CreateTexture(nil, "BACKGROUND")
 		end
 
+
 		bc:SetTexture"Interface\\Buttons\\WHITE8x8"
 		--bc:SetBlendMode"ADD"
 		--bc:SetAlpha(.8)

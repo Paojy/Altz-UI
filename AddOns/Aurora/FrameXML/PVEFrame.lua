@@ -1,6 +1,6 @@
 local F, C = unpack(select(2, ...))
 
-tinsert(C.modules["Aurora"], function()
+tinsert(C.themes["Aurora"], function()
 	local r, g, b = C.r, C.g, C.b
 
 	PVEFrame:DisableDrawLayer("ARTWORK")
@@ -12,6 +12,7 @@ tinsert(C.modules["Aurora"], function()
 	select(25, PVEFrame:GetRegions()):Hide()
 
 	PVEFrameTab2:SetPoint("LEFT", PVEFrameTab1, "RIGHT", -15, 0)
+	PVEFrameTab3:SetPoint("LEFT", PVEFrameTab2, "RIGHT", -15, 0)
 
 	GroupFinderFrameGroupButton1.icon:SetTexture("Interface\\Icons\\INV_Helmet_08")
 	GroupFinderFrameGroupButton2.icon:SetTexture("Interface\\Icons\\Icon_Scenarios")
@@ -49,4 +50,5 @@ tinsert(C.modules["Aurora"], function()
 	F.ReskinPortraitFrame(PVEFrame)
 	F.ReskinTab(PVEFrameTab1)
 	F.ReskinTab(PVEFrameTab2)
+	F.ReskinTab(PVEFrameTab3)
 end)

@@ -634,7 +634,7 @@ T.createDR(RFInnerframe.switch.autoswitch, RFInnerframe.switch.raidonly)
 RFInnerframe.healer = CreateOptionPage("RF Options healer", L["治疗模式"], RFInnerframe, "VERTICAL", .3)
 
 local groupfilter_group = {
-	["1,2,3,4,5"] = L["25-man"],
+	["1,2,3,4,5,6"] = L["30-man"],
 	["1,2,3,4,5,6,7,8"] = L["40-man"],
 }
 T.createradiobuttongroup(RFInnerframe.healer, 30, 60, L["团队规模"], "UnitframeOptions", "healergroupfilter", groupfilter_group)

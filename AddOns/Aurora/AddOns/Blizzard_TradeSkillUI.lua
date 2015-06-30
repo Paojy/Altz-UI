@@ -1,8 +1,9 @@
 local F, C = unpack(select(2, ...))
 
-C.modules["Blizzard_TradeSkillUI"] = function()
+C.themes["Blizzard_TradeSkillUI"] = function()
 	F.CreateBD(TradeSkillGuildFrame)
 	F.CreateBD(TradeSkillGuildFrameContainer, .25)
+
 	TradeSkillFramePortrait:Hide()
 	TradeSkillFramePortrait.Show = F.dummy
 	for i = 18, 20 do
@@ -13,7 +14,6 @@ C.modules["Blizzard_TradeSkillUI"] = function()
 	select(22, TradeSkillFrame:GetRegions()):Hide()
 	for i = 1, 3 do
 		select(i, TradeSkillExpandButtonFrame:GetRegions()):SetAlpha(0)
-		select(i, TradeSkillFilterButton:GetRegions()):Hide()
 	end
 	for i = 1, 9 do
 		select(i, TradeSkillGuildFrame:GetRegions()):Hide()
@@ -40,7 +40,7 @@ C.modules["Blizzard_TradeSkillUI"] = function()
 	F.Reskin(TradeSkillCreateAllButton)
 	F.Reskin(TradeSkillCancelButton)
 	F.Reskin(TradeSkillViewGuildCraftersButton)
-	F.Reskin(TradeSkillFilterButton)
+	F.ReskinFilterButton(TradeSkillFilterButton)
 
 	TradeSkillRankFrame:SetStatusBarTexture(C.media.backdrop)
 	TradeSkillRankFrame.SetStatusBarColor = F.dummy
@@ -124,7 +124,7 @@ C.modules["Blizzard_TradeSkillUI"] = function()
 	hooksecurefunc("TradeSkillFrame_Update", function()
 		local numTradeSkills = GetNumTradeSkills()
 		local skillOffset = FauxScrollFrame_GetOffset(TradeSkillListScrollFrame)
-		local skillIndex
+		local _, skillIndex, skillType, isExpanded
 		local diplayedSkills = TRADE_SKILLS_DISPLAYED
 		local hasFilterBar = TradeSkillFilterBar:IsShown()
 		if hasFilterBar then

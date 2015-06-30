@@ -344,63 +344,24 @@ local EJ_GetEncounterInfo = function(value)
 end
 
 G.Raids = {
-	[EJ_GetInstanceInfo(369)] = { -- 围攻奥格瑞玛
-		EJ_GetEncounterInfo(852),
-		EJ_GetEncounterInfo(849),
-		EJ_GetEncounterInfo(866),
-		EJ_GetEncounterInfo(867),
-		EJ_GetEncounterInfo(868),
-		EJ_GetEncounterInfo(864),
-		EJ_GetEncounterInfo(856),
-		EJ_GetEncounterInfo(850),
-		EJ_GetEncounterInfo(846),
-		EJ_GetEncounterInfo(870),
-		EJ_GetEncounterInfo(851),
-		EJ_GetEncounterInfo(865),
-		EJ_GetEncounterInfo(853),
-		EJ_GetEncounterInfo(869),
+	[EJ_GetInstanceInfo(669)] = { -- 围攻奥格瑞玛
+		EJ_GetEncounterInfo(1426),
+		EJ_GetEncounterInfo(1425),
+		EJ_GetEncounterInfo(1392),
+		EJ_GetEncounterInfo(1432),
+		
+		EJ_GetEncounterInfo(1396),
+		EJ_GetEncounterInfo(1372),
+		EJ_GetEncounterInfo(1433),
+		EJ_GetEncounterInfo(1427),
+		
+		EJ_GetEncounterInfo(1391),
+		EJ_GetEncounterInfo(1447),
+		EJ_GetEncounterInfo(1394),
+		EJ_GetEncounterInfo(1395),
+		
+		EJ_GetEncounterInfo(1438),
 		L["Trash"],	
-	},
-	[EJ_GetInstanceInfo(362)] = { -- 雷电王座
-		EJ_GetEncounterInfo(827),
-		EJ_GetEncounterInfo(819),
-		EJ_GetEncounterInfo(816),
-		EJ_GetEncounterInfo(825),
-		EJ_GetEncounterInfo(821),
-		EJ_GetEncounterInfo(828),
-		EJ_GetEncounterInfo(818),
-		EJ_GetEncounterInfo(820),
-		EJ_GetEncounterInfo(824),
-		EJ_GetEncounterInfo(817),
-		EJ_GetEncounterInfo(829),
-		EJ_GetEncounterInfo(832),
-		EJ_GetEncounterInfo(831),
-		L["Trash"],	
-	},
-	[EJ_GetInstanceInfo(320)] = { -- 永春台
-		EJ_GetEncounterInfo(683),
-		EJ_GetEncounterInfo(742),
-		EJ_GetEncounterInfo(729),
-		EJ_GetEncounterInfo(709),
-		L["Trash"],
-	},
-	[EJ_GetInstanceInfo(330)] = { -- 恐惧之心	
-		EJ_GetEncounterInfo(745),
-		EJ_GetEncounterInfo(744),
-		EJ_GetEncounterInfo(713),
-		EJ_GetEncounterInfo(741),
-		EJ_GetEncounterInfo(737),
-		EJ_GetEncounterInfo(743),
-		L["Trash"],	
-	},
-	[EJ_GetInstanceInfo(317)] = { -- 魔古山宝库
-		EJ_GetEncounterInfo(679),
-		EJ_GetEncounterInfo(689),
-		EJ_GetEncounterInfo(682),
-		EJ_GetEncounterInfo(687),
-		EJ_GetEncounterInfo(726),
-		EJ_GetEncounterInfo(677),
-		L["Trash"],
 	},
 }
 
@@ -441,408 +402,223 @@ local AuraList = {
 }
 
 local DebuffList = {
-	[EJ_GetInstanceInfo(369)] = { -- 魔古山宝库
+	[EJ_GetInstanceInfo(669)] = { -- 地狱火堡垒
 		[L["Trash"]] = {
 		},
-		[EJ_GetEncounterInfo(852)] = {
-			[GetSpellInfo(143297)] = {id = 143297, level = 8,}, -- 煞液喷溅
-			[GetSpellInfo(143436)] = {id = 143436, level = 7,}, -- 腐蚀冲击
-			[GetSpellInfo(143460)] = {id = 143460, level = 8,}, -- 煞之池	
-			[GetSpellInfo(143579)] = {id = 143579, level = 10,}, -- 煞之腐败
+		
+		[EJ_GetEncounterInfo(1426)] = { --奇袭地狱火
+			[GetSpellInfo(186016)] = {id = 186016, level = 8,}, -- 邪火弹药 拿彈藥的dot
+			[GetSpellInfo(185090)] = {id = 185090, level = 8,}, -- 英姿勃发
+			[GetSpellInfo(180319)] = {id = 180319, level = 8,}, -- 振奋狂哮
+			[GetSpellInfo(184379)] = {id = 184379, level = 8,}, -- 啸风战斧 boss aoe 點名出人群三角站位
+			[GetSpellInfo(184238)] = {id = 184238, level = 8,}, -- 颤抖！ 減速
+			[GetSpellInfo(184243)] = {id = 184243, level = 8,}, -- 猛击 易傷
+			[GetSpellInfo(181968)] = {id = 181968, level = 8,}, -- 恶魔变形 術士變身
+			[GetSpellInfo(185816)] = {id = 185816, level = 8,}, -- 修复 工程師修理坦克，打斷
+			[GetSpellInfo(185806)] = {id = 185806, level = 8,}, -- 导电冲击脉冲 擊暈
+			[GetSpellInfo(180022)] = {id = 180022, level = 8,}, -- 钻孔 你要被車碾了
+			[GetSpellInfo(185157)] = {id = 185157, level = 8,}, -- 灼烧 正面錐形aoe dot
+			[GetSpellInfo(187655)] = {id = 187655, level = 8,}, -- 腐化虹吸
 		},
-		[EJ_GetEncounterInfo(849)] = {
-			[GetSpellInfo(143198)] = {id = 143198, level = 7,}, -- 绞喉
-			[GetSpellInfo(143434)] = {id = 143434, level = 10,}, -- 暗言术：祸
-			[GetSpellInfo(143840)] = {id = 143840, level = 8,}, -- 苦痛印记
-			[GetSpellInfo(144176)] = {id = 144176, level = 9,}, -- 暗影虚弱
-			[GetSpellInfo(143962)] = {id = 143962, level = 7,}, -- 炼狱之击
-			[GetSpellInfo(143423)] = {id = 143423, level = 7,}, --煞能灼烧
-			[GetSpellInfo(143023)] = {id = 143023, level = 7,}, --蚀骨酒
+		
+		[EJ_GetEncounterInfo(1425)] = { --钢铁掠夺者
+			[GetSpellInfo(182074)] = {id = 182074, level = 8,}, -- 焚燒/献祭	踩到火
+			[GetSpellInfo(182020)] = {id = 182020, level = 8,}, -- 猛擊/重击	aoe
+			[GetSpellInfo(182001)] = {id = 182001, level = 8,}, -- 不穩定的球體/不稳定的宝珠	8碼分散
+			[GetSpellInfo(182280)] = {id = 182280, level = 8,}, -- 砲擊/炮击	離boss越遠傷害越低，p1只點坦，p2點全部
+			[GetSpellInfo(182003)] = {id = 182003, level = 8,}, -- 燃料污漬/燃料尾痕	踩到水減速
+			[GetSpellInfo(179897)] = {id = 179897, level = 8,}, -- 閃擊/迅猛突袭	 被夾住啦
+			[GetSpellInfo(185242)] = {id = 185242, level = 8,}, 	
+			[GetSpellInfo(185978)] = {id = 185978, level = 8,}, -- 火焰彈易傷/易爆火焰炸弹	火焰炸彈爆炸易傷
 		},
-		[EJ_GetEncounterInfo(866)] = {
-			[GetSpellInfo(144452)] = {id = 144452, level = 7,}, -- 净化
-			[GetSpellInfo(146124)] = {id = 146124, level = 10,}, -- 自惑
+		
+		[EJ_GetEncounterInfo(1392)] = { --考莫克
+			[GetSpellInfo(180115)] = {id = 180115, level = 8,}, -- 暗影能量/暗影能量	吃水buff，放一次強化技能消一層
+			[GetSpellInfo(180116)] = {id = 180116, level = 8,}, -- 炸裂能量/爆炸能量	吃水buff，放一次強化技能消一層
+			[GetSpellInfo(180117)] = {id = 180117, level = 8,}, -- 邪惡能量/邪恶能量	吃水buff，放一次強化技能消一層
+			[GetSpellInfo(180244)] = {id = 180244, level = 8,}, -- 猛擊/重击	aoe，4碼分散
+			[GetSpellInfo(181345)] = {id = 181345, level = 8,}, -- 邪惡碎擊/攫取之手	被手抓
+			[GetSpellInfo(181321)] = {id = 181321, level = 8,}, -- 魔化之觸/邪能之触	擊飛+50%法易傷
+			[GetSpellInfo(181306)] = {id = 181306, level = 8,}, -- 炸裂爆發/爆裂冲击	定身，10秒爆炸，40碼aoe
+			[GetSpellInfo(187819)] = {id = 187819, level = 8,}, -- 粉碎/邪污碾压	被手抓
+			[GetSpellInfo(180270)] = {id = 180270, level = 8,}, -- 暗影團塊/暗影血球	強化紫色暗影波
+			[GetSpellInfo(185519)] = {id = 185519, level = 8,}, -- 熾熱團塊/炽热血球	強化黃色暗影波
+			[GetSpellInfo(185521)] = {id = 185521, level = 8,}, -- 邪惡團塊/邪污血球	強化綠色暗影波
+			[GetSpellInfo(181082)] = {id = 181082, level = 8,}, -- 暗影池/暗影之池	掉進水池(誰沒事去踩這個抓id啊)
+			[GetSpellInfo(186559)] = {id = 186559, level = 8,}, -- 熾焰火池/火焰之池	掉進水池
+			[GetSpellInfo(186560)] = {id = 186560, level = 8,}, -- 邪惡池塘/邪污之池	掉進水池
+			[GetSpellInfo(181208)] = {id = 181208, level = 8,}, -- 暗影殘渣/暗影残渣	接水dot
+			[GetSpellInfo(185686)] = {id = 185686, level = 8,}, -- 熾熱殘渣/爆炸残渣	接水dot
+			[GetSpellInfo(185687)] = {id = 185687, level = 8,}, -- 腐惡殘渣/邪恶残渣	接水dot
 		},
-		[EJ_GetEncounterInfo(867)] = {
-			[GetSpellInfo(144358)] = {id = 144358, level = 7,}, -- 自尊受挫
-			[GetSpellInfo(144452)] = {id = 144452, level = 10,}, -- 傲慢标记
-			[GetSpellInfo(144843)] = {id = 144843, level = 7,}, -- 压制
-			[GetSpellInfo(144452)] = {id = 144452, level = 10,}, -- 傲慢标记
-			[GetSpellInfo(144574)] = {id = 144574, level = 7,}, -- 腐化囚笼	144574 144684 144636 144683
-			[GetSpellInfo(146594)] = {id = 146594, level = 7,}, -- 泰坦之赐
-			[GetSpellInfo(144364)] = {id = 144364, level = 7,}, -- 泰坦之力
-			[GetSpellInfo(147207)] = {id = 147207, level = 7,}, -- 削弱意志
-			[GetSpellInfo(146817)] = {id = 146817, level = 8,}, -- 傲慢光环
-			[GetSpellInfo(146822)] = {id = 146822, level = 7,}, -- 傲慢投影
+		[EJ_GetEncounterInfo(1432)] = { --高阶地狱	 
+			[GetSpellInfo(184449)] = {id = 184449, level = 8,}, -- 死靈法師印記/死灵印记	可驅散，5個分別是紫/紫/紫/黃/紅，傷害由低到高(我也不知道為啥紫燈這麼多個)火议会
+			[GetSpellInfo(184450)] = {id = 184450, level = 8,}, -- 
+			[GetSpellInfo(184676)] = {id = 184676, level = 8,}, -- 
+			[GetSpellInfo(185065)] = {id = 185065, level = 8,}, -- 
+			[GetSpellInfo(185066)] = {id = 185066, level = 8,}, -- 
+			[GetSpellInfo(184657)] = {id = 184657, level = 8,}, -- 夢魘幻貌/梦魇幻影	暗牧亂舞
+			[GetSpellInfo(184673)] = {id = 184673, level = 8,}, -- 	 
+			[GetSpellInfo(183701)] = {id = 183701, level = 8,}, --  魔化風暴/邪能風暴	劍聖aoe
+			[GetSpellInfo(184359)] = {id = 184359, level = 8,}, --  憤怒/愤怒	血沸增傷，驅散
+			[GetSpellInfo(184360)] = {id = 184360, level = 8,}, -- 
+			[GetSpellInfo(184358)] = {id = 184358, level = 8,}, --  惡魔之怒/堕落狂怒	血沸點名
+			[GetSpellInfo(184365)] = {id = 184365, level = 8,}, --  破壞躍擊/毁灭飞跃	血沸跳躍
+			[GetSpellInfo(183885)] = {id = 183885, level = 8,}, --  镜像/镜像	劍聖鏡像
+			[GetSpellInfo(184847)] = {id = 184847, level = 8,}, --  強酸創傷/酸性创伤	破甲
+			[GetSpellInfo(184652)] = {id = 184652, level = 8,}, --  收割/暗影收割	踩圈
+			[GetSpellInfo(184357)] = {id = 184357, level = 8,}, --  腐壞之血/污血	降低血量上限
+			[GetSpellInfo(184355)] = {id = 184355, level = 8,}, --  血液沸騰/血液沸腾	血沸對最遠的5人上流血dot
 		},
-		[EJ_GetEncounterInfo(868)] = {
-			[GetSpellInfo(147683)] = {id = 147683, level = 7,}, -- 雷霆一击
-			[GetSpellInfo(147705)] = {id = 147705, level = 8,}, -- 毒云术
-			[GetSpellInfo(146765)] = {id = 146765, level = 8,}, -- 烈焰箭
-			[GetSpellInfo(147068)] = {id = 147068, level = 7,}, -- 葛拉克朗之焰
-			[GetSpellInfo(147029)] = {id = 147029, level = 7,}, -- 葛拉克朗之焰
+		[EJ_GetEncounterInfo(1396)] = { --基尔罗格·死眼
+			[GetSpellInfo(180389)] = {id = 180389, level = 8,}, --  
+			[GetSpellInfo(188929)] = {id = 188929, level = 8,}, --  追心飛刀/剖心飞刀	點名飛刀/流血DOT
+			[GetSpellInfo(184396)] = {id = 184396, level = 8,}, --  
+			[GetSpellInfo(182159)] = {id = 182159, level = 8,}, --  惡魔腐化/邪能腐蚀	特殊能量，疊滿被心控
+			[GetSpellInfo(180313)] = {id = 180313, level = 8,}, --  惡魔附身/恶魔附身	被心控
+			[GetSpellInfo(180718)] = {id = 180718, level = 8,}, --  不朽決心/永痕的决心	增傷，可疊20層
+			[GetSpellInfo(181488)] = {id = 181488, level = 8,}, --  死亡幻象/死亡幻象	
+			[GetSpellInfo(185563)] = {id = 185563, level = 8,}, --  不死救贖/永恒的救赎	一個光圈，站進去清腐化
+			[GetSpellInfo(180200)] = {id = 180200, level = 8,}, --  撕碎護甲/碎甲	不該中；身上有主動減傷就不會中(同萊登)
+			[GetSpellInfo(180575)] = {id = 180575, level = 8,}, --  魔化烈焰/邪能烈焰	
+			[GetSpellInfo(183917)] = {id = 183917, level = 8,}, --  撕裂嚎叫/撕裂嚎叫	施法加速/流血dot
+			[GetSpellInfo(186919)] = {id = 186919, level = 8,}, --  
+			[GetSpellInfo(188852)] = {id = 188852, level = 8,}, --  濺血/溅血	踩水
+			[GetSpellInfo(180224)] = {id = 180224, level = 8,}, --  死亡掙扎/死亡挣扎	aoe
+			[GetSpellInfo(184551)] = {id = 184551, level = 8,}, --  死亡之門/死亡之门	aoe增傷
+			[GetSpellInfo(180163)] = {id = 180163, level = 8,}, --  猛烈強擊/野蛮打击	大怪連擊，疊腐化
+			[GetSpellInfo(184067)] = {id = 184067, level = 8,}, --  魔化之沼/邪能腐液	踩水
 		},
-		[EJ_GetEncounterInfo(864)] = {
-			[GetSpellInfo(144467)] = {id = 144467, level = 7,}, -- 燃烧护甲
-			[GetSpellInfo(144498)] = {id = 144498, level = 7,}, -- 爆裂焦油
-			[GetSpellInfo(146325)] = {id = 146325, level = 8,}, -- 切割激光
+		[EJ_GetEncounterInfo(1372)] = { --血魔
+			[GetSpellInfo(180093)] = {id = 180093, level = 8,}, --  靈魂箭雨/灵魂箭雨	緩速
+			[GetSpellInfo(179864)] = {id = 179864, level = 8,}, --  死亡之影/死亡之影	點名進場
+			[GetSpellInfo(179867)] = {id = 179867, level = 8,}, --  血魔的腐化/血魔的腐化	進過場，不能再次進場
+			[GetSpellInfo(181295)] = {id = 181295, level = 8,}, --  消化/消化	內場，debuff結束秒殺，剩3秒出場
+			[GetSpellInfo(185038)] = {id = 185038, level = 8,}, --  
+			[GetSpellInfo(180148)] = {id = 180148, level = 8,}, --  嗜命/生命渴望	傀儡(小怪)盯人，追上10碼爆炸
+			[GetSpellInfo(179977)] = {id = 179977, level = 8,}, --  末日之觸/毁灭之触	去角落放圈
+			[GetSpellInfo(179995)] = {id = 179995, level = 8,}, --  末日之井/末日井	踩到圈
+			[GetSpellInfo(185190)] = {id = 185190, level = 8,}, --  魔化烈焰/邪能烈焰	大怪buff
+			[GetSpellInfo(185189)] = {id = 185189, level = 8,}, --  魔化之怒/邪能之怒	大怪dot
+			[GetSpellInfo(179909)] = {id = 179909, level = 8,}, --  命運共享/命运相连	能動/定身，找被定身的集合消連線
+			[GetSpellInfo(179908)] = {id = 179908, level = 8,}, --  	 
+			[GetSpellInfo(186770)] = {id = 186770, level = 8,}, --  靈魂之池/灵魂之池	碰到血魔的洗澡水
+			[GetSpellInfo(180491)] = {id = 180491, level = 8,}, --  靈魂之核/灵魂纽带	暗牧(中怪)暗影箭增傷
+			[GetSpellInfo(181582)] = {id = 181582, level = 8,}, --  低沉怒吼/狂野怒吼	大怪增傷
+			[GetSpellInfo(181973)] = {id = 181973, level = 8,}, --  靈魂饗宴/灵魂盛宴	100%易傷1分鐘
 		},
-		[EJ_GetEncounterInfo(856)] = {
-			[GetSpellInfo(144330)] = {id = 144330, level = 9,}, -- 钢铁囚笼
-			[GetSpellInfo(144215)] = {id = 144215, level = 7,}, -- 冰霜风暴打击
-			[GetSpellInfo(144304)] = {id = 144304, level = 8,}, -- 撕裂
-			[GetSpellInfo(144089)] = {id = 144089, level = 10,}, -- 剧毒之雾
+		[EJ_GetEncounterInfo(1433)] = { --暗影领主艾斯卡
+			[GetSpellInfo(185239)] = {id = 185239, level = 8,}, --  安祖烈光/安苏之光	拿球疊dot
+			[GetSpellInfo(182325)] = {id = 182325, level = 8,}, --  幻魅之傷/幻影之伤	dot，hp90%以上消失或拿球消
+			[GetSpellInfo(182600)] = {id = 182600, level = 8,}, --  魔化火焰/邪能焚化	踩火
+			[GetSpellInfo(181957)] = {id = 181957, level = 8,}, --  幻魅之風/幻影之风	吹下去，拿球消
+			[GetSpellInfo(182178)] = {id = 182200, level = 8,}, --  魔化戰輪/邪能飞轮	出人群
+			[GetSpellInfo(182178)] = {id = 182200, level = 8,}, --   
+			[GetSpellInfo(179219)] = {id = 179219, level = 8,}, --  幻魅魔化炸彈/幻影邪能炸弹	別驅
+			[GetSpellInfo(181753)] = {id = 181753, level = 8,}, --  魔化炸彈/邪能炸弹	拿球驅散
+			[GetSpellInfo(181824)] = {id = 181824, level = 8,}, --  幻魅腐化/幻影腐蚀	10秒後爆炸，拿球清
+			[GetSpellInfo(187344)] = {id = 187344, level = 8,}, --  幻魅火葬/幻影焚化	幻魅腐化給附近的人的易傷
+			[GetSpellInfo(185456)] = {id = 185456, level = 8,}, --  絕望之鍊/绝望之链	配對(無誤)
+			[GetSpellInfo(185510)] = {id = 185510, level = 8,}, --  黑暗束縛/暗影之缚	把鍊子綁在一起，沒有鍊子的人靠近會引爆
 		},
-		[EJ_GetEncounterInfo(850)] = {
-			[GetSpellInfo(143494)] = {id = 143494, level = 7,}, -- 碎甲重击
-			[GetSpellInfo(143431)] = {id = 143431, level = 9,}, -- 魔法打击
-			[GetSpellInfo(143638)] = {id = 143638, level = 7,}, -- 碎骨重锤
-			[GetSpellInfo(143480)] = {id = 143480, level = 7,}, -- 刺客印记
-			[GetSpellInfo(143882)] = {id = 143882, level = 7,}, -- 猎人印记
+		[EJ_GetEncounterInfo(1427)] = { --永恒者索克雷萨
+			[GetSpellInfo(182038)] = {id = 182038, level = 8,}, -- 粉碎防禦/粉碎防御	迴盪之擊易傷，分攤，坦克2次換
+			[GetSpellInfo(189627)] = {id = 189627, level = 8,}, -- 烈性魔珠/易爆的邪能宝珠	點名球追人，追到爆炸
+			[GetSpellInfo(182218)] = {id = 182218, level = 8,}, -- 魔炎殘渣/	衝鋒留下綠火，75%減速
+			[GetSpellInfo(180415)] = {id = 180415, level = 8,}, -- 魔化牢籠/邪能牢笼	水晶暈人
+			[GetSpellInfo(183017)] = {id = 183017, level = 8,}, -- 
+			[GetSpellInfo(189540)] = {id = 189540, level = 8,}, --	 極限威能/压倒能量	傀儡隨便電人，6秒dot
+			[GetSpellInfo(184124)] = {id = 184124, level = 8,}, --	 曼那瑞之賜/堕落者之赐	綠圈aoe，別靠近別人
+			[GetSpellInfo(182769)] = {id = 182769, level = 8,}, --	 恐怖凝視/魅影重重	p2被小怪追
+			[GetSpellInfo(184239)] = {id = 184239, level = 8,}, --暗言術：痛苦/暗言术：恶	喚影師施放，驅散
+			[GetSpellInfo(184053)] = {id = 184053, level = 8,}, --魔化屏障/邪能壁垒	支配者替boss套盾
+			[GetSpellInfo(182900)] = {id = 182900, level = 8,}, --惡性糾纏/恶毒鬼魅	小怪恐懼
+			[GetSpellInfo(182925)] = {id = 182925, level = 8,}, -- 
+			[GetSpellInfo(188666)] = {id = 188666, level = 8,}, -- 永世饑渴/无尽饥渴	潛獵者追人，正面秒殺
+			[GetSpellInfo(190776)] = {id = 190776, level = 8,}, -- 索奎薩爾的應變之計/索克雷萨之咒	潛獵者傀儡易傷
+			[GetSpellInfo(188767)] = {id = 188767, level = 8,}, -- 染血追蹤者/步履蹒跚	潛獵者跑速加快
 		},
-		[EJ_GetEncounterInfo(846)] = {
-			[GetSpellInfo(142990)] = {id = 142990, level = 8,}, -- 致命打击
-			[GetSpellInfo(142913)] = {id = 142913, level = 11,}, -- 散逸能量
-			[GetSpellInfo(142865)] = {id = 142865, level = 7,}, -- 强大的上古屏障
-			[GetSpellInfo(142864)] = {id = 142864, level = 7,}, -- 上古屏障
-			[GetSpellInfo(142863)] = {id = 142863, level = 7,}, -- 脆弱上古屏障
+		[EJ_GetEncounterInfo(1391)] = { --邪能领主扎昆
+			[GetSpellInfo(180000)] = {id = 180000, level = 8,}, --凋零徽印/凋零契印	2-4層換坦
+			[GetSpellInfo(179987)] = {id = 179987, level = 8,}, --蔑視光環/蔑视光环	p1光環，移動扣血
+			[GetSpellInfo(181683)] = {id = 181683, level = 8,}, -- 壓迫光環/抑制光环	p2光環
+			[GetSpellInfo(179993)] = {id = 179993, level = 8,}, -- 惡意光環/怨恨光环	p3光環
+			[GetSpellInfo(180526)] = {id = 180526, level = 8,}, -- 腐化洗禮/腐蚀序列	P2 aoe標記，被標記的人會5碼aoe
+			[GetSpellInfo(180166)] = {id = 180166, level = 8,}, -- 傷害之觸/裂伤之触	吸收治療量，驅散跳到別人身上
+			[GetSpellInfo(180164)] = {id = 180164, level = 8,}, -- 
+			[GetSpellInfo(182459)] = {id = 182459, level = 8,}, -- 定罪赦令/谴责法令	分攤
+			[GetSpellInfo(180604)] = {id = 180604, level = 8,}, -- 剝奪之地/亵渎之地	P3地板紫圈
+			[GetSpellInfo(180040)] = {id = 180040, level = 8,}, -- 統御者之禦/统御者壁垒	P3大怪給暴君90%減傷
+			[GetSpellInfo(180300)] = {id = 180300, level = 8,}, -- 煉獄風暴/地火风暴	P1三豆AOE
 		},
-		[EJ_GetEncounterInfo(870)] = {
-			[GetSpellInfo(148510)] = {id = 148510, level = 7,}, -- 粉碎护甲
-			[GetSpellInfo(146217)] = {id = 146217, level = 7,}, -- 投掷酒桶
-			[GetSpellInfo(146235)] = {id = 146235, level = 9,}, -- 火焰之息
-			[GetSpellInfo(145218)] = {id = 145218, level = 9,}, -- 硬化血肉
-			[GetSpellInfo(146289)] = {id = 146289, level = 9,}, -- 严重瘫痪
-			[GetSpellInfo(145987)] = {id = 145987, level = 8,}, -- 设置炸弹
+		[EJ_GetEncounterInfo(1447)] = { --祖霍拉克
+			[GetSpellInfo(189260)] = {id = 189260, level = 8,}, -- 裂魂/破碎之魂	進場的暗影易傷
+			[GetSpellInfo(179407)] = {id = 179407, level = 8,}, -- 虛體/魂不附体	進場debuff
+			[GetSpellInfo(182008)] = {id = 182008, level = 8,}, -- 潛在能量/潜伏能量	撞到波爆炸
+			[GetSpellInfo(189032)] = {id = 189032, level = 8,}, --被污染/玷污	吸收盾，分別是綠/黃/紅燈，刷滿6碼爆炸
+			[GetSpellInfo(189031)] = {id = 189031, level = 8,}, --
+			[GetSpellInfo(189030)] = {id = 189030, level = 8,}, --	 
+			[GetSpellInfo(179428)] = {id = 179428, level = 8,}, -- 轟隆裂隙/轰鸣的裂隙	站在漩渦上，一個漩渦只要一個人踩
+			[GetSpellInfo(181508)] = {id = 181508, level = 8,}, --
+			[GetSpellInfo(181515)] = {id = 181515, level = 8,}, --  毀滅種子/毁灭之种	出人群
+			[GetSpellInfo(181653)] = {id = 181653, level = 8,}, -- 惡魔水晶/邪能水晶	
+			[GetSpellInfo(188998)] = {id = 188998, level = 8,}, -- 耗竭靈魂/枯竭灵魂	不能再次進場
 		},
-		[EJ_GetEncounterInfo(851)] = {
-			[GetSpellInfo(143773)] = {id = 143773, level = 7,}, -- 冰冻吐息
-			[GetSpellInfo(143766)] = {id = 143766, level = 7,}, -- 恐慌
-			[GetSpellInfo(143800)] = {id = 143800, level = 7,}, -- 冰冻之血
-			[GetSpellInfo(143791)] = {id = 143791, level = 8,}, -- 腐蚀之血
-			[GetSpellInfo(143780)] = {id = 143780, level = 7,}, -- 酸性吐息
-			[GetSpellInfo(143784)] = {id = 143784, level = 8,}, -- 炽燃之血
-			[GetSpellInfo(143452)] = {id = 143452, level = 6,}, -- 鲜血淋漓
-			[GetSpellInfo(143445)] = {id = 143445, level = 9,}, -- 锁定
-			[GetSpellInfo(143767)] = {id = 143767, level = 7,}, -- 灼热吐息	
+		[EJ_GetEncounterInfo(1394)] = { --暴君维哈里
+			[GetSpellInfo(186134)] = {id = 186134, level = 8,}, --魔化之觸/邪蚀	受到火焰傷害的標記，持續15秒，碰到暗影傷害會爆炸
+			[GetSpellInfo(186135)] = {id = 186135, level = 8,}, -- 虛無之觸/灵媒	受到暗影傷害的標記，持續15秒，碰到火焰傷害會爆炸
+			[GetSpellInfo(185656)] = {id = 185656, level = 8,}, -- 影魔殲滅/邪影屠戮	觸發爆炸&5碼內玩家獲得的易傷
+			[GetSpellInfo(186073)] = {id = 186073, level = 8,}, -- 魔化焦灼/邪能炙烤	踩到綠火
+			[GetSpellInfo(186063)] = {id = 186063, level = 8,}, -- 破滅虛空/虚空消耗	踩到紫水
+			[GetSpellInfo(186407)] = {id = 186407, level = 8,}, -- 惡魔奔騰/魔能喷涌	點名，5秒後腳下出綠火
+			[GetSpellInfo(186333)] = {id = 186333, level = 8,}, -- 虛無怒濤/灵能涌动	點名，5秒後腳下出紫水
+			[GetSpellInfo(186448)] = {id = 186448, level = 8,}, --魔炎亂舞/邪焰乱舞	綠色大怪易傷
+			[GetSpellInfo(186453)] = {id = 186453, level = 8,}, -- 
+			[GetSpellInfo(186785)] = {id = 186785, level = 8,}, --	枯萎凝視/凋零凝视	紫色大怪易傷
+			[GetSpellInfo(186783)] = {id = 186783, level = 8,}, --	 
+			[GetSpellInfo(188208)] = {id = 188208, level = 8,}, --	 著火/点燃	小鬼火球砸中的dot
+			[GetSpellInfo(186547)] = {id = 186547, level = 8,}, --	 黑洞/黑洞	全團aoe直到踩掉為止
+			[GetSpellInfo(186500)] = {id = 186500, level = 8,}, --	 魔化鎖鍊/邪能锁链	跑遠拉斷
+			[GetSpellInfo(187204)] = {id = 187204, level = 8,}, --	 極度混沌/混乱压制	P4增傷，10秒一層
+			[GetSpellInfo(189775)] = {id = 189775, level = 8,}, --	 強化魔化鎖鍊/	
 		},
-		[EJ_GetEncounterInfo(865)] = {
-			[GetSpellInfo(144236)] = {id = 144236, level = 6,}, -- 图像识别
-			[GetSpellInfo(143385)] = {id = 143385, level = 7,}, -- 电荷冲击
-			[GetSpellInfo(143856)] = {id = 143856, level = 7,}, -- 过热
+		[EJ_GetEncounterInfo(1395)] = { --玛诺洛斯
+			[GetSpellInfo(181275)] = {id = 181275, level = 8,}, --	 軍團的詛咒/军团诅咒	驅散召喚領主
+			[GetSpellInfo(181099)] = {id = 181099, level = 8,}, --	 毀滅印記/末日印记	受到傷害移除並爆炸，20碼AOE
+			[GetSpellInfo(181119)] = {id = 181119, level = 8,}, --	 末日尖刺/末日之刺	層數越高，結束時的傷害越高
+			[GetSpellInfo(189717)] = {id = 189717, level = 8,}, --	
+			[GetSpellInfo(182171)] = {id = 182171, level = 8,}, --	 瑪諾洛斯之血/玛洛诺斯之血	踩到P1綠水
+			[GetSpellInfo(184252)] = {id = 184252, level = 8,}, --	刺傷/穿刺之伤	(p2p3/p4)不該中；旋刃戳刺時身上有主動減傷就不會中(同萊登)
+			[GetSpellInfo(191231)] = {id = 191231, level = 8,}, --	 
+			[GetSpellInfo(181359)] = {id = 181359, level = 8,}, --	 巨力衝擊/巨力冲击	擊飛
+			[GetSpellInfo(181597)] = {id = 181597, level = 8,}, --	 瑪諾洛斯的凝視/玛诺洛斯凝视	恐懼，分攤傷害
+			[GetSpellInfo(181841)] = {id = 181841, level = 8,}, --	 暗影之力/暗影之力	推人(小心加速)
+			[GetSpellInfo(182006)] = {id = 182006, level = 8,}, --	 瑪諾洛斯的強力凝視/强化玛诺洛斯凝视	恐懼，分攤傷害產生白水
+			[GetSpellInfo(182088)] = {id = 182088, level = 8,}, --	 強化暗影之力/强化暗影之力	p4推人
+			[GetSpellInfo(182031)] = {id = 182031, level = 8,}, --	 凝視之影/凝视暗影	踩到白色
+			[GetSpellInfo(190482)] = {id = 190482, level = 8,}, --	 擁抱暗影/束缚暗影	
 		},
-		[EJ_GetEncounterInfo(853)] = {
-			[GetSpellInfo(143339)] = {id = 143339, level = 8,}, -- 注射
-			[GetSpellInfo(142533)] = {id = 142533, level = 7,}, -- 毒素：红色
-			[GetSpellInfo(142671)] = {id = 142671, level = 7,}, -- 催眠术
-			[GetSpellInfo(143358)] = {id = 143358, level = 9,}, -- 饥饿
-			[GetSpellInfo(143939)] = {id = 143939, level = 7,}, -- 凿击
-			[GetSpellInfo(142532)] = {id = 142532, level = 7,}, -- 毒素：蓝色
-			[GetSpellInfo(142534)] = {id = 142534, level = 7,}, -- 毒素：黄色
-			[GetSpellInfo(143974)] = {id = 143974, level = 9,}, -- 盾击
-			[GetSpellInfo(142948)] = {id = 142948, level = 7,}, -- 瞄准
+		[EJ_GetEncounterInfo(1438)] = { --阿克蒙德
+			[GetSpellInfo(183634)] = {id = 183634, level = 8,}, --	 影魔衝擊/暗影冲击	擊飛，分攤落地傷害
+			[GetSpellInfo(187742)] = {id = 187742, level = 8,}, --	暗影爆破/暗影冲击	大怪易傷，坦克2層換
+			[GetSpellInfo(183864)] = {id = 183864, level = 8,}, --	 
+			[GetSpellInfo(183828)] = {id = 183828, level = 8,}, --	 死亡烙印/死亡烙印	大怪死才消失
+			[GetSpellInfo(183586)] = {id = 183586, level = 8,}, --	 毀滅之火/魔火	踩火dot
+			[GetSpellInfo(182879)] = {id = 182879, level = 8,}, --	 毀滅之火鎖定/魔火锁定	追人
+			[GetSpellInfo(183963)] = {id = 183963, level = 8,}, --	 那魯之光/纳鲁之光	伊芮爾的小球，免疫暗影傷害
+			[GetSpellInfo(185014)] = {id = 185014, level = 8,}, --	 聚集混沌/聚焦混乱	即將被傳遞塑形混沌
+			[GetSpellInfo(186123)] = {id = 186123, level = 8,}, --	 塑型混沌/精炼混乱	正面直線aoe，傳遞給箭頭指向的人
+			[GetSpellInfo(184964)] = {id = 184964, level = 8,}, --	 束縛折磨/枷锁酷刑	遠離靈魂30碼消除
+			[GetSpellInfo(186952)] = {id = 186952, level = 8,}, -- 	虛空放逐/虚空放逐	進場
+			[GetSpellInfo(186961)] = {id = 186961, level = 8,}, --	
+			[GetSpellInfo(187047)] = {id = 187047, level = 8,}, --	 吞噬生命/吞噬声明	內場，降低受到的治療量
+			[GetSpellInfo(189891)] = {id = 189891, level = 8,}, --	 虛空裂隙/虚空撕裂	傳送門在外場變成的水池
+			[GetSpellInfo(190049)] = {id = 190049, level = 8,}, --	 虛空腐化/虚空腐化	內場易傷
+			[GetSpellInfo(188796)] = {id = 188796, level = 8,}, --	 惡魔腐化/邪能腐蚀	場邊綠水
 		},
-		[EJ_GetEncounterInfo(869)] = {
-			[GetSpellInfo(145171)] = {id = 145171, level = 7,},
-			[GetSpellInfo(145065)] = {id = 145065, level = 7,},
-			[GetSpellInfo(145183)] = {id = 145183, level = 7,},
-			[GetSpellInfo(144762)] = {id = 144762, level = 7,},
-			[GetSpellInfo(145213)] = {id = 145213, level = 7,},
-			[GetSpellInfo(145195)] = {id = 145195, level = 7,},
-		},
-	},
-	[EJ_GetInstanceInfo(317)] = { -- 魔古山宝库
-		[L["Trash"]] = {
-		},
-		[EJ_GetEncounterInfo(679)] = { -- The Stone Guard
-			[GetSpellInfo(116281)] = {id = 116281, level = 7,}, -- Cobalt Mine Blast, Magic root		
-		},
-		[EJ_GetEncounterInfo(689)] = { --Feng the Accursed
-			[GetSpellInfo(116040)] = {id = 116040, level = 7,}, -- Epicenter, roomwide aoe.
-			[GetSpellInfo(116784)] = {id = 116784, level = 7,}, -- Wildfire Spark, Debuff that explodes leaving fire on the ground after 5 sec.
-			[GetSpellInfo(116374)] = {id = 116374, level = 7,}, -- Lightning Charge, Stun debuff.
-			[GetSpellInfo(116417)] = {id = 116417, level = 7,}, -- Arcane Resonance, aoe-people-around-you-debuff.
-			[GetSpellInfo(116942)] = {id = 116942, level = 7,}, -- Flaming Spear, fire damage dot.		
-		},
-		[EJ_GetEncounterInfo(682)] = { -- Gara'jal the Spiritbinder
-			[GetSpellInfo(122151)] = {id = 122151, level = 7,},	-- Voodoo Doll, shared damage with the tank.
-			[GetSpellInfo(116161)] = {id = 116161, level = 7,},	-- Crossed Over, people in the spirit world.
-		},
-		[EJ_GetEncounterInfo(687)] = { -- The Spirit Kings
-			[GetSpellInfo(117708)] = {id = 117708, level = 7,}, -- Meddening Shout, The mind control debuff.
-			[GetSpellInfo(118303)] = {id = 118303, level = 7,}, -- Fixate, the once targeted by the shadows.
-			[GetSpellInfo(118048)] = {id = 118048, level = 7,}, -- Pillaged, the healing/Armor/damage debuff.
-			[GetSpellInfo(118135)] = {id = 118135, level = 7,}, -- Pinned Down, Najentus spine 2.0
-			[GetSpellInfo(118163)] = {id = 118163, level = 7,}, -- 巧取豪夺
-		},
-		[EJ_GetEncounterInfo(726)] = { --Elegon
-			[GetSpellInfo(117878)] = {id = 117878, level = 7,}, -- Overcharged, the stacking increased damage taken debuff.	
-			[GetSpellInfo(117870)] = {id = 117870, level = 7,}, -- Touch of the Titans, the debuff everybody gets increasing damage done and healing taken.
-			[GetSpellInfo(117949)] = {id = 117949, level = 7,}, -- Closed Circuit, Magic Healing debuff.
-			[GetSpellInfo(132222)] = {id = 132222, level = 7,}, -- 不稳定能量
-		},
-		[EJ_GetEncounterInfo(677)] = { --Will of the Emperor
-			[GetSpellInfo(116969)] = {id = 116969, level = 7,}, -- Stomp, Stun from the bosses.
-			[GetSpellInfo(116835)] = {id = 116835, level = 7,}, -- Devestating Arc, Armor debuff from the boss.
-			[GetSpellInfo(116778)] = {id = 116778, level = 7,}, -- Focused Defense, Fixate from the Emperors Courage.
-			[GetSpellInfo(117485)] = {id = 117485, level = 7,}, -- Impending Thrust, Stacking slow from the Emperors Courage.
-			[GetSpellInfo(116525)] = {id = 116525, level = 7,}, -- Focused Assault, Fixate from the Emperors Rage
-			[GetSpellInfo(116550)] = {id = 116550, level = 7,}, -- Energizing Smash, Knockdown from the Emperors Strength
-		},
-	},
-
-	[EJ_GetInstanceInfo(330)] = { -- 恐惧之心
-		[L["Trash"]] = {
-		},
-		[EJ_GetEncounterInfo(745)] = { -- Imperial Vizier Zor'lok
-			[GetSpellInfo(122761)] = {id = 122761, level = 7,}, -- Exhale, The person targeted for Exhale. 
-			[GetSpellInfo(123812)] = {id = 123812, level = 7,}, -- Pheromones of Zeal, the gas in the middle of the room.
-			[GetSpellInfo(122706)] = {id = 122706, level = 7,}, -- Noise Cancelling, The "safe zone" from the roomwide aoe.
-			[GetSpellInfo(122740)] = {id = 122740, level = 7,}, -- Convert, The mindcontrol Debuff.
-		},
-		[EJ_GetEncounterInfo(744)] = { -- Blade Lord Ta'yak
-			[GetSpellInfo(123180)] = {id = 123180, level = 7,}, -- Wind Step, Bleeding Debuff from stealth.
-			[GetSpellInfo(123474)] = {id = 123474, level = 7,}, -- Overwhelming Assault, stacking tank swap debuff. 
-		},
-		[EJ_GetEncounterInfo(713)] = { -- Garalon
-			[GetSpellInfo(122774)] = {id = 122774, level = 7,}, -- Crush, stun from the crush ability.
-			[GetSpellInfo(123426)] = {id = 123426, level = 7,}, -- Weak Points, Increased damage done to one leg.
-			[GetSpellInfo(123428)] = {id = 123428, level = 7,}, -- Weak Points, Increased damage to another leg.
-			[GetSpellInfo(123423)] = {id = 123423, level = 7,}, -- Weak Points, Increased damage to another leg.
-			[GetSpellInfo(123235)] = {id = 123235, level = 7,}, -- Weak Points, Increased damage to another leg.
-			[GetSpellInfo(122835)] = {id = 122835, level = 7,}, -- Pheromones, The buff indicating who is carrying the pheramone.
-			[GetSpellInfo(123081)] = {id = 123081, level = 7,}, -- Punchency, The stacking debuff causing the raid damage.
-		},
-		[EJ_GetEncounterInfo(741)] = { 	--Wind Lord Mel'jarak
-			[GetSpellInfo(122055)] = {id = 122055, level = 7,}, -- Residue, The debuff after breaking a prsion preventing further breaking.
-			[GetSpellInfo(121885)] = {id = 121885, level = 7,}, -- Amber Prison, The stun that somebody has to click off.
-			[GetSpellInfo(121881)] = {id = 121881, level = 7,}, -- Amber Prison, not sure what the differance is but both were used.
-			[GetSpellInfo(122125)] = {id = 122125, level = 7,}, -- Corrosive Resin pool, the **** on the floor your not supposed to stand in.
-			[GetSpellInfo(122064)] = {id = 122064, level = 7,}, -- Corrosive Resin, the dot you clear by moving/jumping.
-		},
-		[EJ_GetEncounterInfo(737)] = { -- Amber-Shaper Un'sok 
-			[GetSpellInfo(122370)] = {id = 122370, level = 7,}, -- Reshape Life, the transformation ala putricide.
-			[GetSpellInfo(122784)] = {id = 122784, level = 7,}, -- Reshape Life, Both were used.
-			[GetSpellInfo(124802)] = {id = 124802, level = 7,}, -- The transformed players increase damage taken cooldown.
-			[GetSpellInfo(122395)] = {id = 122395, level = 7,}, -- Struggle for Control, the self stun used to interupt the channel.
-			[GetSpellInfo(122457)] = {id = 122457, level = 7,}, -- Rough Landing, The stun from being tossed and being hit by the toss from the add in Phase 2.
-			[GetSpellInfo(121949)] = {id = 121949, level = 7,}, -- Parasitic Growth, the dot that scales with healing taken.
-		},
-		[EJ_GetEncounterInfo(743)] = { --Grand Empress Shek'zeer
-			[GetSpellInfo(123788)] = {id = 123788, level = 8,}, -- 恐怖嚎叫
-			[GetSpellInfo(126122)] = {id = 126122, level = 7,}, -- 腐蚀力场
-			[GetSpellInfo(125390)] = {id = 125390, level = 7,}, -- 凝视
-			[GetSpellInfo(124097)] = {id = 124097, level = 7,}, -- 树脂
-			[GetSpellInfo(124777)] = {id = 124777, level = 7,}, -- 毒液炸弹
-			[GetSpellInfo(124849)] = {id = 124849, level = 7,}, -- 吞噬恐惧
-			[GetSpellInfo(124863)] = {id = 124863, level = 7,}, -- 死亡幻想 
-			[GetSpellInfo(124862)] = {id = 124862, level = 7,}, -- 同上
-			[GetSpellInfo(123845)] = {id = 123845, level = 8,}, -- 恐惧之心
-			[GetSpellInfo(123846)] = {id = 123846, level = 8,}, -- 同上
-		},
-	},
-
-	[EJ_GetInstanceInfo(320)] = { -- 永春台
-		[L["Trash"]] = {
-		},
-		[EJ_GetEncounterInfo(683)] = { --Protectors Of the Endless		
-			[GetSpellInfo(117519)] = {id = 117519, level = 7,}, -- Touch of Sha, Dot that lasts untill Kaolan is defeated.
-			[GetSpellInfo(117235)] = {id = 117235, level = 7,}, -- Purified, haste buff gained by killing mist and being in range.
-			[GetSpellInfo(118091)] = {id = 118091, level = 7,}, -- Defiled Ground, Increased damage taken from Defiled ground debuff.
-			[GetSpellInfo(117436)] = {id = 117436, level = 9,}, -- Lightning Prison, Magic stun. 闪电牢笼
-			[GetSpellInfo(118191)] = {id = 118191, level = 8,}, -- 堕落精华
-		},
-		[EJ_GetEncounterInfo(742)] = { --Tsulong
-			[GetSpellInfo(122768)] = {id = 122768, level = 7,}, -- Dread Shadows, Stacking raid damage debuff (ragnaros superheated style) 
-			[GetSpellInfo(122789)] = {id = 122789, level = 7,}, -- Sunbeam, standing in the sunbeam, used to clear dread shadows.
-			[GetSpellInfo(122858)] = {id = 122858, level = 7,}, -- Bathed in Light, 500% increased healing done debuff.
-			[GetSpellInfo(122752)] = {id = 122752, level = 7,}, -- Shadow Breath, increased shadow breath damage debuff.
-			[GetSpellInfo(123011)] = {id = 123011, level = 7,}, -- Terrorize, Magical dot dealing % health.
-			[GetSpellInfo(123036)] = {id = 123036, level = 7,}, -- Fright, 2 second fear.
-			[GetSpellInfo(122777)] = {id = 122777, level = 7,}, -- Nightmares, 3 second fear.
-		},
-		[EJ_GetEncounterInfo(729)] = { --Lei Shi
-			[GetSpellInfo(123121)] = {id = 123121, level = 7,}, -- Spray, Stacking frost damage taken debuff.
-		},
-		[EJ_GetEncounterInfo(709)] = { --Sha of Fear
-			[GetSpellInfo(129147)] = {id = 129147, level = 7,}, -- Ominous Cackle, Debuff that sends players to the outer platforms.
-			[GetSpellInfo(119086)] = {id = 119086, level = 7,}, -- Penetrating Bolt, Increased Shadow damage debuff.
-			[GetSpellInfo(119775)] = {id = 119775, level = 7,}, -- Reaching Attack, Increased Shadow damage debuff.
-			[GetSpellInfo(119985)] = {id = 119985, level = 7,}, -- Dread Spray, stacking magic debuff, fears at 2 stacks.
-			[GetSpellInfo(119983)] = {id = 119983, level = 7,}, -- Dread Spray, is also used.
-			[GetSpellInfo(119414)] = {id = 119414, level = 7,}, -- Breath of Fear, Fear+Massiv damage.
-			},
 	},
 
-	[EJ_GetInstanceInfo(362)] = { -- 雷电王座
-		[L["Trash"]] = {
-			[GetSpellInfo(139900)] = {id = 139900, level = 7,}, --Stormcloud
-			[GetSpellInfo(139550)] = {id = 139550, level = 7,}, --Torment
-			[GetSpellInfo(139888)] = {id = 139888, level = 7,}, --Ancient Venom
-			[GetSpellInfo(136751)] = {id = 136751, level = 7,}, --Sonic Screech
-			[GetSpellInfo(136753)] = {id = 136753, level = 7,}, --Slashing Talons
-			[GetSpellInfo(140686)] = {id = 140686, level = 7,}, --Corrosive Breath
-			[GetSpellInfo(140682)] = {id = 140682, level = 7,}, --Chokin Mists
-			[GetSpellInfo(140616)] = {id = 140616, level = 7,}, --Shale Shards
-			[GetSpellInfo(139356)] = {id = 139356, level = 7,},--Extermination Beam
-		},
-		[EJ_GetEncounterInfo(827)] = { -- Jin'rokh the Breaker
-			[GetSpellInfo(138006)] = {id = 138006, level = 7,}, --Electrified Waters
-			[GetSpellInfo(138732)] = {id = 138732, level = 7,}, --Ionization
-			[GetSpellInfo(138349)] = {id = 138349, level = 7,}, --Static Wound
-			[GetSpellInfo(137371)] = {id = 137371, level = 7,}, --Thundering Throw
-			[GetSpellInfo(137399)] = {id = 137399, level = 7,}, --Focused Lightning
-			[GetSpellInfo(138733)] = {id = 138733, level = 7,}, --Ionization
-		},
-		[EJ_GetEncounterInfo(819)] = { --Horridon
-			[GetSpellInfo(136767)] = {id = 136767, level = 7,}, --Triple Puncture
-			[GetSpellInfo(136708)] = {id = 136708, level = 7,}, --Stone Gaze
-			[GetSpellInfo(136719)] = {id = 136719, level = 7,}, --Blazing Sunlight
-			[GetSpellInfo(136654)] = {id = 136654, level = 7,}, --Rending Charge
-			[GetSpellInfo(136587)] = {id = 136587, level = 7,}, --Venom Bolt Volley
-			[GetSpellInfo(136512)] = {id = 136512, level = 7,}, --Hex of Confusion
-			[GetSpellInfo(140946)] = {id = 140946, level = 7,}, --Dire Fixation
-			[GetSpellInfo(136769)] = {id = 136769, level = 7,}, --Charge
-			[GetSpellInfo(136723)] = {id = 136723, level = 7,}, --Sand Trap
-			[GetSpellInfo(136710)] = {id = 136710, level = 7,}, --Deadly Plague (disease)
-			[GetSpellInfo(136670)] = {id = 136670, level = 7,}, --Mortal Strike
-			[GetSpellInfo(136573)] = {id = 136573, level = 7,}, --Frozen Bolt (DebuffId used by frozen orb)		
-		},
-		[EJ_GetEncounterInfo(816)] = { --Council of Elders
-			[GetSpellInfo(137641)] = {id = 137641, level = 7,}, --Soul Fragment
-			[GetSpellInfo(137359)] = {id = 137359, level = 7,}, --Shadowed Loa Spirit Fixate
-			[GetSpellInfo(137972)] = {id = 137972, level = 7,}, --Twisted Fate
-			[GetSpellInfo(137650)] = {id = 137650, level = 7,}, --Shadowed Soul
-			[GetSpellInfo(137085)] = {id = 137085, level = 7,}, --Chilled to the Bone
-			[GetSpellInfo(136922)] = {id = 136922, level = 7,}, --Frostbite
-			[GetSpellInfo(136917)] = {id = 136917, level = 7,}, --Biting Cold
-			[GetSpellInfo(136903)] = {id = 136903, level = 7,}, --Frigid Assault
-			[GetSpellInfo(136857)] = {id = 136857, level = 7,}, --Entrapped
-			[GetSpellInfo(137891)] = {id = 137891, level = 7,}, --Twisted Fate
-			[GetSpellInfo(137084)] = {id = 137084, level = 7,}, --Body Heat
-			[GetSpellInfo(136878)] = {id = 136878, level = 7,}, --Ensnared
-			[GetSpellInfo(136860)] = {id = 136860, level = 7,}, --Quicksand
-		},
-		[EJ_GetEncounterInfo(825)] = { --Tortos	
-			[GetSpellInfo(136753)] = {id = 136753, level = 7,}, --Slashing Talons
-			[GetSpellInfo(137633)] = {id = 137633, level = 7,}, --Crystal Shell 晶化甲壳
-			[GetSpellInfo(140701)] = {id = 140701, level = 8,}, --Kick Shell
-			[GetSpellInfo(134920)] = {id = 134920, level = 7,}, --Quake Stomp
-			[GetSpellInfo(136751)] = {id = 136751, level = 7,}, --Sonic Screech
-		},
-		[EJ_GetEncounterInfo(821)] = { --Megaera
-			[GetSpellInfo(137731)] = {id = 137731, level = 7,}, --Ignite Flesh
-			[GetSpellInfo(139822)] = {id = 139822, level = 7,}, --Cinders
-			[GetSpellInfo(139866)] = {id = 139866, level = 7,}, --Torrent of Ice
-			[GetSpellInfo(139841)] = {id = 139841, level = 7,}, --Arctic Freeze
-			[GetSpellInfo(134378)] = {id = 134378, level = 7,}, --Acid Rain
-			[GetSpellInfo(139839)] = {id = 139839, level = 7,}, --Rot Armor
-			[GetSpellInfo(140179)] = {id = 140179, level = 7,}, --Suppression
-			[GetSpellInfo(139994)] = {id = 139994, level = 7,}, --Diffusion
-			[GetSpellInfo(134396)] = {id = 134396, level = 7,}, --Consuming Flames (Dispell)
-			[GetSpellInfo(136892)] = {id = 136892, level = 7,}, --Frozen Solid
-			[GetSpellInfo(139909)] = {id = 139909, level = 7,}, --Icy Ground
-			[GetSpellInfo(137746)] = {id = 137746, level = 7,}, --Consuming Magic
-			[GetSpellInfo(139843)] = {id = 139843, level = 7,}, --Artic Freeze
-			[GetSpellInfo(139840)] = {id = 139840, level = 7,}, --Rot Armor
-		},
-		[EJ_GetEncounterInfo(828)] = { --Ji-Kun
-			[GetSpellInfo(138309)] = {id = 138309, level = 7,}, --Slimed
-			[GetSpellInfo(140092)] = {id = 140092, level = 7,}, --Infected Talons
-			[GetSpellInfo(134256)] = {id = 134256, level = 7,}, --Slimed
-			[GetSpellInfo(138319)] = {id = 138319, level = 7,}, --Feed Pool
-			[GetSpellInfo(134366)] = {id = 134366, level = 7,}, --Talon Rake
-			[GetSpellInfo(140014)] = {id = 140014, level = 7,}, --Daedelian Wings
-			[GetSpellInfo(140571)] = {id = 140571, level = 7,}, --Feed Pool
-			[GetSpellInfo(134372)] = {id = 134372, level = 7,}, --Screech
-		},
-		[EJ_GetEncounterInfo(818)] = { --Durumu the Forgotten
-			[GetSpellInfo(133767)] = {id = 133767, level = 7,}, --Serious Wound
-			[GetSpellInfo(133768)] = {id = 133768, level = 7,}, --Arterial Cut
-			[GetSpellInfo(134755)] = {id = 134755, level = 7,}, --Eye Sore
-			[GetSpellInfo(136413)] = {id = 136413, level = 7,}, --Force of Will
-			[GetSpellInfo(133795)] = {id = 133795, level = 7,}, --Life Drain
-			[GetSpellInfo(133597)] = {id = 133597, level = 7,}, --Dark Parasite
-			[GetSpellInfo(133598)] = {id = 133598, level = 7,}, --Dark Plague
-			[GetSpellInfo(134007)] = {id = 134007, level = 7,}, --Devour
-			[GetSpellInfo(136932)] = {id = 136932, level = 7,}, --Force of Will
-			[GetSpellInfo(134122)] = {id = 134122, level = 7,}, --Blue Beam
-			[GetSpellInfo(134123)] = {id = 134123, level = 7,}, --Red Beam
-			[GetSpellInfo(134124)] = {id = 134124, level = 7,}, --Yellow Beam
-			[GetSpellInfo(133732)] = {id = 133732, level = 7,}, --Infrared Light (the stacking red debuff)
-			[GetSpellInfo(133677)] = {id = 133677, level = 7,}, --Blue Rays (the stacking blue debuff)  
-			[GetSpellInfo(133738)] = {id = 133738, level = 7,}, --Bright Light (the stacking yellow debuff)
-			[GetSpellInfo(133737)] = {id = 133737, level = 7,}, --Bright Light (The one that says you are actually in a beam)
-			[GetSpellInfo(133675)] = {id = 133675, level = 7,}, --Blue Rays (The one that says you are actually in a beam)
-			[GetSpellInfo(134626)] = {id = 134626, level = 7,}, --Lingering Gaze
-		},
-		[EJ_GetEncounterInfo(820)] = { --Primordius
-			[GetSpellInfo(136050)] = {id = 136050, level = 7,}, --Malformed Blood
-			[GetSpellInfo(140546)] = {id = 140546, level = 7,}, --Fully Mutated
-			[GetSpellInfo(137000)] = {id = 137000, level = 7,}, --Black Blood
-			[GetSpellInfo(136180)] = {id = 136180, level = 7,}, --Keen Eyesight (Helpful)
-			[GetSpellInfo(136181)] = {id = 136181, level = 7,}, --Impared Eyesight (Harmful)
-			[GetSpellInfo(136182)] = {id = 136182, level = 7,}, --Improved Synapses (Helpful)
-			[GetSpellInfo(136183)] = {id = 136183, level = 7,}, --Dulled Synapses (Harmful)
-			[GetSpellInfo(136184)] = {id = 136184, level = 7,}, --Thick Bones (Helpful)
-			[GetSpellInfo(136185)] = {id = 136185, level = 7,}, --Fragile Bones (Harmful)
-			[GetSpellInfo(136186)] = {id = 136186, level = 7,}, --Clear Mind (Helpful)
-			[GetSpellInfo(136187)] = {id = 136187, level = 7,}, --Clouded Mind (Harmful)
-			[GetSpellInfo(136228)] = {id = 136228, level = 7,}, --Volatile Pathogen
-		},
-		[EJ_GetEncounterInfo(824)] = { --Dark Animus
-			[GetSpellInfo(138569)] = {id = 138569, level = 7,}, --Explosive Slam
-			[GetSpellInfo(138609)] = {id = 138609, level = 7,}, --Matter Swap
-			[GetSpellInfo(138659)] = {id = 138659, level = 7,}, --Touch of the Animus
-			[GetSpellInfo(136954)] = {id = 136954, level = 7,}, --Anima Ring
-			[GetSpellInfo(138691)] = {id = 138691, level = 7,}, --Anima Font
-			[GetSpellInfo(136962)] = {id = 136962, level = 7,}, --Anima Ring
-			[GetSpellInfo(138480)] = {id = 138480, level = 7,}, --Crimson Wake Fixate
-		},
-		[EJ_GetEncounterInfo(817)] = { --Iron Qon
-			[GetSpellInfo(134691)] = {id = 134691, level = 7,}, --Impale
-			[GetSpellInfo(134647)] = {id = 134647, level = 7,}, --Scorched
-			[GetSpellInfo(136193)] = {id = 136193, level = 7,}, --Arcing Lightning
-			[GetSpellInfo(135145)] = {id = 135145, level = 7,}, --Freeze
-			[GetSpellInfo(135147)] = {id = 135147, level = 7,}, --Dead Zone
-			[GetSpellInfo(136520)] = {id = 136520, level = 7,}, --Frozen Blood
-			[GetSpellInfo(137669)] = {id = 137669, level = 7,}, --Storm Cloud
-			[GetSpellInfo(137668)] = {id = 137668, level = 7,}, --Burning Cinders
-			[GetSpellInfo(137654)] = {id = 137654, level = 7,}, --Rushing Winds 
-			[GetSpellInfo(136577)] = {id = 136577, level = 7,}, --Wind Storm
-			[GetSpellInfo(136192)] = {id = 136192, level = 7,}, --Lightning Storm
-			[GetSpellInfo(136615)] = {id = 136615, level = 7,}, --Electrified
-		},
-		[EJ_GetEncounterInfo(829)] = { --Twin Consorts
-			[GetSpellInfo(137440)] = {id = 137440, level = 7,}, --Icy Shadows
-			[GetSpellInfo(137408)] = {id = 137408, level = 7,}, --Fan of Flames
-			[GetSpellInfo(137360)] = {id = 137360, level = 7,}, --Corrupted Healing
-			[GetSpellInfo(137341)] = {id = 137341, level = 7,}, --Beast of Nightmares
-			[GetSpellInfo(137417)] = {id = 137417, level = 7,},--Flames of Passion
-			[GetSpellInfo(138306)] = {id = 138306, level = 7,}, --Serpent's Vitality
-			[GetSpellInfo(137375)] = {id = 137375, level = 7,},--Beast of Nightmares
-			[GetSpellInfo(136722)] = {id = 136722, level = 7,},--Slumber Spores
-		},
-		[EJ_GetEncounterInfo(832)] = { --Lei Shen
-			[GetSpellInfo(135000)] = {id = 135000, level = 7,}, --Decapitate
-			[GetSpellInfo(134916)] = {id = 134916, level = 7,}, --Decapitate
-			[GetSpellInfo(135150)] = {id = 135150, level = 7,}, --Crashing Thunder
-			[GetSpellInfo(139011)] = {id = 139011, level = 7,}, --Helm of Command
-			[GetSpellInfo(136478)] = {id = 136478, level = 7,}, --Fusion Slash
-			[GetSpellInfo(136853)] = {id = 136853, level = 7,}, --Lightning Bolt
-			[GetSpellInfo(135695)] = {id = 135695, level = 7,}, --Static Shock
-			[GetSpellInfo(136295)] = {id = 136295, level = 7,}, --Overcharged
-			[GetSpellInfo(136543)] = {id = 136543, level = 7,}, --Ball Lightning
-			[GetSpellInfo(134821)] = {id = 134821, level = 7,}, --Discharged Energy
-			[GetSpellInfo(136326)] = {id = 136326, level = 7,}, --Overcharge
-			[GetSpellInfo(137176)] = {id = 137176, level = 7,}, --Overloaded Circuits
-			[GetSpellInfo(135153)] = {id = 135153, level = 7,}, --Crashing Thunder
-			[GetSpellInfo(136914)] = {id = 136914, level = 7,}, --Electrical Shock
-			[GetSpellInfo(135001)] = {id = 135001, level = 7,}, --Maim
-		},
-		[EJ_GetEncounterInfo(831)] = { --Ra-den
-		},
-	},
+
 }
 
 local Account_default_Settings = {
@@ -937,7 +713,7 @@ local Character_default_Settings = {
 		arrowsacle = 1.0,
 
 		--[[ healer mode ]]--
-		healergroupfilter = '1,2,3,4,5',
+		healergroupfilter = '1,2,3,4,5,6',
 		healerraidheight = 30,
 		healerraidwidth = 66,
 		raidmanabars = true,
@@ -949,7 +725,7 @@ local Character_default_Settings = {
 		healprediction = true,
 
 		--[[ dps/tank mode ]]--
-		dpsgroupfilter = '1,2,3,4,5',
+		dpsgroupfilter = '1,2,3,4,5,6',
 		dpsraidheight = 15,
 		dpsraidwidth = 100,
 		unitnumperline = 25,

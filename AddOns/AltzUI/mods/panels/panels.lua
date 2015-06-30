@@ -810,11 +810,6 @@ end)
  
 Net_Stats:SetScript("OnLeave", function(self) GameTooltip:Hide() end)
 
-Net_Stats:SetScript("OnEvent", function(self, event)
-	T.LoadAddonManagerWindow()
-end)
-Net_Stats:RegisterEvent("PLAYER_LOGIN")
-
 -- 天赋
 local Talent = CreateInfoButton("Talent", InfoFrame, 40, 20, "LEFT", "LEFT", Durability, "RIGHT", 5, 0)
 
@@ -1041,6 +1036,8 @@ local function CreateMicromenuButton(parent, bu, text, original)
 					HideUIPanel(GameMenuFrame)
 				end
 				ToggleAllBags()	
+			else
+				print(original)
 			end
 		end)
 	end
@@ -1060,10 +1057,10 @@ MicromenuBar.Friends = CreateMicromenuButton(MicromenuBar, false, SOCIAL_BUTTON,
 MicromenuBar.Guild = CreateMicromenuButton(MicromenuBar, GuildMicroButton, GUILD, "Guild")
 MicromenuBar.Achievement = CreateMicromenuButton(MicromenuBar, AchievementMicroButton, ACHIEVEMENT_BUTTON, "Achievement")
 MicromenuBar.EJ = CreateMicromenuButton(MicromenuBar, EJMicroButton, ENCOUNTER_JOURNAL, "EJ")
-MicromenuBar.Store = CreateMicromenuButton(MicromenuBar, StoreMicroButton, ENCOUNTER_JOURNAL, "Store")
+MicromenuBar.Store = CreateMicromenuButton(MicromenuBar, StoreMicroButton, BLIZZARD_STORE, "Store")
 MicromenuBar.System = CreateMicromenuButton(MicromenuBar, MainMenuMicroButton, G.classcolor.."AltzUI "..G.Version.."|r", "System")
-MicromenuBar.Pet = CreateMicromenuButton(MicromenuBar, CompanionsMicroButton, MOUNTS_AND_PETS, "Pet")
-MicromenuBar.PvP = CreateMicromenuButton(MicromenuBar, PVPMicroButton, PLAYER_V_PLAYER, "PvP")
+MicromenuBar.Pet = CreateMicromenuButton(MicromenuBar, CollectionsMicroButton, MOUNTS_AND_PETS, "Pet")
+MicromenuBar.Talent = CreateMicromenuButton(MicromenuBar, TalentMicroButton, TALENTS_BUTTON, "Talent")
 MicromenuBar.LFR = CreateMicromenuButton(MicromenuBar, LFDMicroButton, LFG_TITLE, "LFR")
 MicromenuBar.Quests = CreateMicromenuButton(MicromenuBar, QuestLogMicroButton, QUESTLOG_BUTTON, "Quests")
 MicromenuBar.Spellbook = CreateMicromenuButton(MicromenuBar, SpellbookMicroButton, SPELLBOOK_ABILITIES_BUTTON, "Spellbook")

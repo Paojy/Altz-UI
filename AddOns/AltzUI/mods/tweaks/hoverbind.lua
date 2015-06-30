@@ -1,4 +1,4 @@
-﻿--ncHoverBind (bug fixed)
+﻿--ncHoverBind
 local T, C, L, G = unpack(select(2, ...))
 local F = unpack(Aurora)
 
@@ -37,9 +37,8 @@ SlashCmdList.MOUSEOVERBIND = function()
 
 		bind:SetScript("OnEvent", function(self) self:Deactivate(false) end)
 		bind:SetScript("OnLeave", function(self) self:HideFrame() end)
-		-- chaged the following two Script from OnKeyUp to OnKeyDown to fix can't bind a combine key such as SHFT+T, ALT+SHIFT+Q
-		bind:SetScript("OnKeyDown", function(self, key) self:Listener(key) end)
-		bind:SetScript("OnMouseDown", function(self, key) self:Listener(key) end)
+		bind:SetScript("OnKeyUp", function(self, key) self:Listener(key) end)
+		bind:SetScript("OnMouseUp", function(self, key) self:Listener(key) end)
 		bind:SetScript("OnMouseWheel", function(self, delta) if delta>0 then self:Listener("MOUSEWHEELUP") else self:Listener("MOUSEWHEELDOWN") end end)
 
 		function bind:Update(b, spellmacro)
@@ -54,8 +53,8 @@ SlashCmdList.MOUSEOVERBIND = function()
 			ShoppingTooltip1:Hide()
 			
 			if spellmacro=="SPELL" then
-				self.button.id = SpellBook_GetSpellID(self.button:GetID())
-				self.button.name = GetSpellName(self.button.id, SpellBookFrame.bookType)
+				self.button.id = SpellBook_GetSpellBookSlot(self.button)
+				self.button.name = GetSpellBookItemName(self.button.id, SpellBookFrame.bookType)
 				
 				GameTooltip:AddLine("Trigger")
 				GameTooltip:Show()
@@ -151,18 +150,11 @@ SlashCmdList.MOUSEOVERBIND = function()
 				
 				GameTooltip:AddLine("Trigger")
 				GameTooltip:Show()
-				-- fix can't bind anykey when a macro isn't available
-				-- must comment the line in OnHide function
-				-- such as you are Fury Warrior and you have a macro
-				-- #showtooltip /cast BladeStorm
-				-- you can't bind any key to this button because OnHide is not called forever
-				bind.button.bindings = {GetBindingKey(bind.button.bindstring)}
-
 				GameTooltip:SetScript("OnHide", function(self)
 					self:SetOwner(bind, "ANCHOR_NONE")
 					self:SetPoint("BOTTOM", bind, "TOP", 0, 1)
 					self:AddLine(bind.button.name, 1, 1, 1)
-				--	bind.button.bindings = {GetBindingKey(bind.button.bindstring)}
+					bind.button.bindings = {GetBindingKey(bind.button.bindstring)}
 					if #bind.button.bindings == 0 then
 						self:AddLine(L["没有绑定键位"], .6, .6, .6)
 					else
@@ -178,22 +170,6 @@ SlashCmdList.MOUSEOVERBIND = function()
 		end
 
 		function bind:Listener(key)
-			-- fix bind the SCREENSHOT key, now press SCREENSHOT key will take a screen shot
-			-- GetBindingFromClick
-			if GetBindingByKey(key) == "SCREENSHOT" then
-				RunBinding("SCREENSHOT");
-				return
-			end
-
-			-- change behavior to bind only one key for one button
-			if #self.button.bindings > 0 then
-				for i = 1, #self.button.bindings do
-					SetBinding(self.button.bindings[i])
-				end
-				self:Update(self.button, self.spellmacro)
-				if self.spellmacro~="MACRO" then GameTooltip:Hide() end
-			end
-
 			if key == "ESCAPE" or key == "RightButton" then
 				for i = 1, #self.button.bindings do
 					SetBinding(self.button.bindings[i])
@@ -215,6 +191,7 @@ SlashCmdList.MOUSEOVERBIND = function()
 			or key == "MiddleButton"
 			then return end
 			
+
 			if key == "Button4" then key = "BUTTON4" end
 			if key == "Button5" then key = "BUTTON5" end
 			
@@ -268,7 +245,8 @@ SlashCmdList.MOUSEOVERBIND = function()
 		-- REGISTERING
 		local stance = StanceButton1:GetScript("OnClick")
 		local pet = PetActionButton1:GetScript("OnClick")
-		local button = SecureActionButton_OnClick
+--		local button = SecureActionButton_OnClick
+		local button = ActionButton1:GetScript("OnClick")
 
 		local function register(val)
 			if val.IsProtected and val.GetObjectType and val.GetScript and val:GetObjectType()=="CheckButton" and val:IsProtected() then
@@ -290,14 +268,14 @@ SlashCmdList.MOUSEOVERBIND = function()
 		end
 
 		for i=1,12 do
-			local b = _G["SpellButton"..i]
-			b:HookScript("OnEnter", function(self) bind:Update(self, "SPELL") end)
+			local sb = _G["SpellButton"..i]
+			sb:HookScript("OnEnter", function(self) bind:Update(self, "SPELL") end)
 		end
 		
 		local function registermacro()
 			for i=1,36 do
-				local b = _G["MacroButton"..i]
-				b:HookScript("OnEnter", function(self) bind:Update(self, "MACRO") end)
+				local mb = _G["MacroButton"..i]
+				mb:HookScript("OnEnter", function(self) bind:Update(self, "MACRO") end)
 			end
 			MacroFrameTab1:HookScript("OnMouseUp", function() localmacros = 0 end)
 			MacroFrameTab2:HookScript("OnMouseUp", function() localmacros = 1 end)
@@ -317,22 +295,8 @@ SlashCmdList.MOUSEOVERBIND = function()
 	if not bind.enabled then
 		bind:Activate()
 		StaticPopup_Show("KEYBIND_MODE")
-		-- fix issue that enter /hb it doesn't display bind tooltip when mouse is over action button
-		local stance = StanceButton1:GetScript("OnClick")
-		local pet = PetActionButton1:GetScript("OnClick")
-		local button = SecureActionButton_OnClick
-		local focus = GetMouseFocus()
-		if focus.IsProtected and focus.GetObjectType and focus.GetScript and focus:GetObjectType()=="CheckButton" and focus:IsProtected() then
-			local script = focus:GetScript("OnClick")
-			if script==button then
-				bind:Update(focus)
-			elseif script==stance then
-				bind:Update(focus, "STANCE")
-			elseif script==pet then
-				bind:Update(focus, "PET")
-			end
-		end
 	end
 end
+
 SLASH_MOUSEOVERBIND1 = "/hb"
 SLASH_MOUSEOVERBIND2 = "/hoverbind"

@@ -329,9 +329,9 @@ WorldMarkButton:ClearAllPoints()
 WorldMarkButton:SetPoint("RIGHT", ConfigButton, "LEFT", -5, 0)
 WorldMarkButton:SetSize(15, 15)
 
-_G[WorldMarkButton:GetName().."Left"]:SetAlpha(0) 
-_G[WorldMarkButton:GetName().."Middle"]:SetAlpha(0) 
-_G[WorldMarkButton:GetName().."Right"]:SetAlpha(0) 
+--_G[WorldMarkButton:GetName().."Left"]:SetAlpha(0) 
+--_G[WorldMarkButton:GetName().."Middle"]:SetAlpha(0) 
+--_G[WorldMarkButton:GetName().."Right"]:SetAlpha(0) 
 
 WorldMarkButton:HookScript("OnEvent", function(self, event) 
 	if UnitIsGroupAssistant("player") or UnitIsGroupLeader("player") or (IsInGroup() and not IsInRaid()) then

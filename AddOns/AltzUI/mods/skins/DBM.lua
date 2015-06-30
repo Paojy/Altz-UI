@@ -217,8 +217,8 @@ DBMSkin:SetScript("OnEvent", function(self, event, addon)
 		DBM.RangeCheck:Show()
 		DBM.RangeCheck:Hide()
 		
-		F.SetBD(_G["DBMRangeCheckRadar"])
-		F.SetBD(_G["DBMRangeCheck"])
+		--F.SetBD(_G["DBMRangeCheckRadar"])
+		--F.SetBD(_G["DBMRangeCheck"])
 		
 		if croprwicons then
 			local replace = string.gsub
