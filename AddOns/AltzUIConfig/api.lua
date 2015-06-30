@@ -223,26 +223,28 @@ T.ResetAllAddonSettings = function()
 	}
 	end
 	if aCoreCDB["SkinOptions"]["setDBM"] and IsAddOnLoaded("DBM-Core") then
-		DBM_SavedOptions["ShowMinimapButton"] = false
-		-- hp frame
-		DBM_SavedOptions["AlwaysShowHealthFrame"] = false
-		DBM_SavedOptions["HealthFrameGrowUp"] = false
-		-- range
-		DBM_SavedOptions["RangeFrameFrames"] = "radar"
-		-- timersettings
-		DBT_SavedOptions["DBM"]["IconLeft"] = true
-		DBT_SavedOptions["DBM"]["IconRight"] = false
-		DBT_SavedOptions["DBM"]["Texture"] = "Interface\\Buttons\\WHITE8x8"
-		DBT_SavedOptions["DBM"]["ExpandUpwards"] = false
-		DBT_SavedOptions["DBM"]["FontSize"] = 10
-		-- smalltimer
-		DBT_SavedOptions["DBM"]["Scale"] = 1
-		DBT_SavedOptions["DBM"]["BarXOffset"] = 0
-		DBT_SavedOptions["DBM"]["BarYOffset"] = 1
-		-- hugetimer
-		DBT_SavedOptions["DBM"]["HugeScale"] = 1
-		DBT_SavedOptions["DBM"]["HugeBarXOffset"] = 0
-		DBT_SavedOptions["DBM"]["HugeBarYOffset"] = 1
+		if DBM_SavedOptions then
+			DBM_SavedOptions["ShowMinimapButton"] = false
+			-- hp frame
+			DBM_SavedOptions["AlwaysShowHealthFrame"] = false
+			DBM_SavedOptions["HealthFrameGrowUp"] = false
+			-- range
+			DBM_SavedOptions["RangeFrameFrames"] = "radar"
+			-- timersettings
+			DBT_SavedOptions["DBM"]["IconLeft"] = true
+			DBT_SavedOptions["DBM"]["IconRight"] = false
+			DBT_SavedOptions["DBM"]["Texture"] = "Interface\\Buttons\\WHITE8x8"
+			DBT_SavedOptions["DBM"]["ExpandUpwards"] = false
+			DBT_SavedOptions["DBM"]["FontSize"] = 10
+			-- smalltimer
+			DBT_SavedOptions["DBM"]["Scale"] = 1
+			DBT_SavedOptions["DBM"]["BarXOffset"] = 0
+			DBT_SavedOptions["DBM"]["BarYOffset"] = 1
+			-- hugetimer
+			DBT_SavedOptions["DBM"]["HugeScale"] = 1
+			DBT_SavedOptions["DBM"]["HugeBarXOffset"] = 0
+			DBT_SavedOptions["DBM"]["HugeBarYOffset"] = 1
+		end
 	end
 	if aCoreCDB["SkinOptions"]["setSkada"] and IsAddOnLoaded("Skada") then
 	if SkadaDB then wipe(SkadaDB["profiles"]) end
