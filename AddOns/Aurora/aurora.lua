@@ -46,7 +46,7 @@ C.media = {
 }
 
 C.defaults = {
-	["acknowledgedSplashScreen"] = true,
+	["acknowledgedSplashScreen"] = false,
 
 	["alpha"] = 0.5,
 	["bags"] = true,

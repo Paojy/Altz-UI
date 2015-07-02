@@ -1,9 +1,8 @@
 --[[--------------------------------------------------------------------
-	CustomClassColors
-	Change class colors without breaking parts of the Blizzard UI.
-	Copyright (c) 2009–2013 Phanx <addons@phanx.net>. All rights reserved.
-	See the accompanying README and LICENSE files for more information.
-	http://www.wowinterface.com/downloads/info12513
+	!ClassColors
+	Change class colors without breaking the Blizzard UI.
+	Copyright (c) 2009-2014 Phanx <addons@phanx.net>. All rights reserved.
+	http://www.wowinterface.com/downloads/info12513-ClassColors.html
 	http://www.curse.com/addons/wow/classcolors
 ----------------------------------------------------------------------]]
 
@@ -12,14 +11,14 @@ if ns.alreadyLoaded then
 	return
 end
 
-local find, format, gsub, match, sub = string.find, string.format, string.gsub, string.match, string.sub
+local strfind, format, gsub, strmatch, strsub = string.find, string.format, string.gsub, string.match, string.sub
 local pairs, type = pairs, type
 
 ------------------------------------------------------------------------
 
-local addonFuncs = { }
+local addonFuncs = {}
 
-local blizzHexColors = { }
+local blizzHexColors = {}
 for class, color in pairs(RAID_CLASS_COLORS) do
 	blizzHexColors[color.colorStr] = class
 end
@@ -43,15 +42,23 @@ end
 -- ChatFrame.lua
 
 function GetColoredName(event, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12)
-	local chatType = sub(event, 10)
-	if sub(chatType, 1, 7) == "WHISPER" then
+	local chatType = strsub(event, 10)
+	if strsub(chatType, 1, 17) == "WHISPER" then
 		chatType = "WHISPER"
-	elseif sub(chatType, 1, 7) == "CHANNEL" then
+	elseif strsub(chatType, 1, 17) == "CHANNEL" then
 		chatType = "CHANNEL"..arg8
+	else
+		chatType = strsub(event, 10)
+	end
+	local info = ChatTypeInfo[chatType]
+
+	if chatType == "GUILD" then
+		arg2 = Ambiguate(arg2, "guild")
+	else
+		arg2 = Ambiguate(arg2, "none")
 	end
 
-	local info = ChatTypeInfo[chatType]
-	if info and info.colorNameByClass and arg12 and arg12 ~= "" then
+	if info and info.colorNameByClass and arg12 and arg12 ~= "" and arg12 ~= 0 then
 		local _, class = GetPlayerInfoByGUID(arg12)
 		if class then
 			local color = CUSTOM_CLASS_COLORS[class]
@@ -70,10 +77,10 @@ do
 	local AddMessage = {}
 
 	local function FixClassColors(frame, message, ...)
-		if type(message) == "string" and find(message, "|cff") then -- type check required for shitty addons that pass nil or non-string values
+		if type(message) == "string" and strfind(message, "|cff") then -- type check required for shitty addons that pass nil or non-string values
 			for hex, class in pairs(blizzHexColors) do
 				local color = CUSTOM_CLASS_COLORS[class]
-				message = gsub(message, hex, color.colorStr)
+				message = color and gsub(message, hex, color.colorStr) or message -- color check required for Warmup, maybe others
 			end
 		end
 		return AddMessage[frame](frame, message, ...)
@@ -91,6 +98,7 @@ end
 
 do
 	local UnitClass, UnitIsConnected = UnitClass, UnitIsConnected
+
 	hooksecurefunc("CompactUnitFrame_UpdateHealthColor", function(frame)
 		if frame.optionTable.useClassColors and UnitIsConnected(frame.unit) then
 			local _, class = UnitClass(frame.unit)
@@ -99,7 +107,6 @@ do
 				if color then
 					local r, g, b = color.r, color.g, color.b
 					frame.healthBar:SetStatusBarColor(r, g, b)
-					--frame.healthBar.r, frame.healthBar.g, frame.healthBar.g = r, g, b
 				end
 			end
 		end
@@ -131,7 +138,103 @@ hooksecurefunc("LFDQueueFrameRandomCooldownFrame_Update", function()
 		if class then
 			local color = CUSTOM_CLASS_COLORS[class]
 			if color then
-				_G["LFDQueueFrameCooldownFrameName"..i]:SetFormattedText("|c%s%s|r", color.colorStr, UnitName("party"..i))
+				local name, server = UnitName("party"..i) -- skip call to GetUnitName wrapper func
+				if server and server ~= "" then
+					_G["LFDQueueFrameCooldownFrameName"..i]:SetFormattedText("|c%s%s-%s|r", color.colorStr, name, server)
+				else
+					_G["LFDQueueFrameCooldownFrameName"..i]:SetFormattedText("|c%s%s|r", color.colorStr, name)
+				end
+			end
+		end
+	end
+end)
+
+------------------------------------------------------------------------
+-- LFGFrame.lua
+
+hooksecurefunc("LFGCooldownCover_Update", function(self)
+	local nextIndex, numPlayers, prefix = 1
+	if IsInRaid() then
+		numPlayers = GetNumGroupMembers()
+		prefix = "raid"
+	else
+		numPlayers = GetNumSubgroupMembers()
+		prefix = "party"
+	end
+	for i = 1, numPlayers do
+		if nextIndex > #self.Names then
+			break
+		end
+		local unit = prefix..i
+		if self.showAll or (self.showCooldown and UnitHasLFGRandomCooldown(unit)) or UnitHasLFGDeserter(unit) then
+			local _, class = UnitName(unit)
+			if class then
+				local color = CUSTOM_CLASS_COLORS[class]
+				if color then
+					local name, server = UnitName(unit) -- skip call to GetUnitName wrapper func
+					if server and server ~= "" then
+						self.Names[nextIndex]:SetFormattedText("|c%s%s-%s|r", color.colorStr, name, server)
+					else
+						self.Names[nextIndex]:SetFormattedText("|c%s%s|r", color.colorStr, name)
+					end
+				end
+			end
+			nextIndex = nextIndex + 1
+		end
+	end
+end)
+
+------------------------------------------------------------------------
+-- LFGList.lua
+
+hooksecurefunc("LFGListApplicationViewer_UpdateApplicantMember", function(member, appID, memberIdx, status, pendingStatus)
+	if not pendingStatus and (status == "failed" or status == "cancelled" or status == "declined" or status == "invitedeclined" or status == "timedout") then
+		-- grayedOut
+		return
+	end
+	local _, class = C_LFGList.GetApplicantMemberInfo(appID, memberIdx)
+	if class then
+		local color = CUSTOM_CLASS_COLORS[class]
+		if color then
+			member.Name:SetTextColor(color.r, color.g, color.b)
+		end
+	end
+end)
+
+hooksecurefunc("LFGListApplicantMember_OnEnter", function(self)
+	local applicantID = self:GetParent().applicantID
+	local memberIdx = self.memberIdx
+	local _, class = C_LFGList.GetApplicantMemberInfo(applicantID, memberIdx)
+	if class then
+		local color = CUSTOM_CLASS_COLORS[class]
+		if color then
+			GameTooltipTextLeft1:SetTextColor(color.r, color.g, color.b)
+		end
+	end
+end)
+
+local LFG_LIST_TOOLTIP_MEMBERS_SIMPLE = gsub(LFG_LIST_TOOLTIP_MEMBERS_SIMPLE, "%%d", "%%d+")
+
+hooksecurefunc("LFGListSearchEntry_OnEnter", function(self)
+	local resultID = self.resultID
+	local _, activityID, _, _, _, _, _, _, _, _, _, _, numMembers = C_LFGList.GetSearchResultInfo(resultID)
+	local _, _, _, _, _, _, _, _, displayType = C_LFGList.GetActivityInfo(activityID)
+	if displayType ~= LE_LFG_LIST_DISPLAY_TYPE_CLASS_ENUMERATE then return end
+	local start
+	for i = 4, GameTooltip:NumLines() do
+		if strfind(_G["GameTooltipTextLeft"..i]:GetText(), LFG_LIST_TOOLTIP_MEMBERS_SIMPLE) then
+			start = i
+			break
+		end
+	end
+	if start then
+		for i = 1, numMembers do
+			local _, class = C_LFGList.GetSearchResultMemberInfo(resultID, i)
+			if class then
+				local color = CUSTOM_CLASS_COLORS[class]
+				if color then
+					_G["GameTooltipTextLeft"..(start+i)]:SetTextColor(color.r, color.g, color.b)
+				end
 			end
 		end
 	end
@@ -157,7 +260,7 @@ hooksecurefunc("MasterLooterFrame_UpdatePlayers", function()
 	-- TODO: Find a better way of doing this... Blizzard's way is frankly quite awful,
 	--       creating multiple new local tables every time the function runs. :(
 	for k, playerFrame in pairs(MasterLooterFrame) do
-		if type(k) == "string" and match(k, "^player%d+$") and type(playerFrame) == "table" and playerFrame.id and playerFrame.Name then
+		if type(k) == "string" and strmatch(k, "^player%d+$") and type(playerFrame) == "table" and playerFrame.id and playerFrame.Name then
 			local i = playerFrame.id
 			local _, class
 			if IsInRaid() then
@@ -209,19 +312,19 @@ end)
 
 function LootHistoryDropDown_Initialize(self)
 	local info = UIDropDownMenu_CreateInfo()
-	info.isTitle = 1
 	info.text = MASTER_LOOTER
 	info.fontObject = GameFontNormalLeft
+	info.isTitle = 1
 	info.notCheckable = 1
 	UIDropDownMenu_AddButton(info)
 
-	info = UIDropDownMenu_CreateInfo()
-	info.notCheckable = 1
 	local name, class = C_LootHistory.GetPlayerInfo(self.itemIdx, self.playerIdx)
 	local color = CUSTOM_CLASS_COLORS[class]
+
+	info = UIDropDownMenu_CreateInfo()
 	info.text = format(MASTER_LOOTER_GIVE_TO, format("|c%s%s|r", color.colorStr, name))
 	info.func = LootHistoryDropDown_OnClick
-
+	info.notCheckable = 1
 	UIDropDownMenu_AddButton(info)
 end
 
@@ -230,17 +333,15 @@ end
 
 hooksecurefunc("PaperDollFrame_SetLevel", function()
 	local className, class = UnitClass("player")
-	local color = CUSTOM_CLASS_COLORS[class]
-	if color then
-		local spec = GetSpecialization()
-		if spec then
-			local _, spec = GetSpecializationInfo(spec)
-			if specName then
-				CharacterLevelText:SetFormattedText(PLAYER_LEVEL, UnitLevel("player"), color.colorStr, specName, className)
-			else
-				CharacterLevelText:SetFormattedText(PLAYER_LEVEL_NO_SPEC, UnitLevel("player"), color.colorStr, className)
-			end
-		end
+	local color = CUSTOM_CLASS_COLORS[class].colorStr
+	local spec, specName, _ = GetSpecialization()
+	if spec then
+		_, specName = GetSpecializationInfo(spec)
+	end
+	if specName and specName ~= "" then
+		CharacterLevelText:SetFormattedText(PLAYER_LEVEL, UnitLevel("player"), color, specName, className)
+	else
+		CharacterLevelText:SetFormattedText(PLAYER_LEVEL_NO_SPEC, UnitLevel("player"), color, className)
 	end
 end)
 
@@ -248,8 +349,6 @@ end)
 --	RaidFinder.lua
 
 hooksecurefunc("RaidFinderQueueFrameCooldownFrame_Update", function()
-	local _G = _G
-
 	local prefix, members
 	if IsInRaid() then
 		prefix, members = "raid", GetNumGroupMembers()
@@ -281,7 +380,7 @@ end)
 do
 	local AddMessage = RaidNotice_AddMessage
 	RaidNotice_AddMessage = function(frame, message, ...)
-		if find(message, "|cff") then
+		if strfind(message, "|cff") then
 			for hex, class in pairs(blizzHexColors) do
 				local color = CUSTOM_CLASS_COLORS[class]
 				message = gsub(message, hex, color.colorStr)
@@ -347,55 +446,55 @@ addonFuncs["Blizzard_ChallengesUI"] = function()
 	local F_PLAYER_CLASS_NO_SPEC = "%s - " .. PLAYER_CLASS_NO_SPEC
 
 	local _G = _G
-	local ChallengesFrame = ChallengesFrame
+	local ChallengesFrame, GameTooltip = ChallengesFrame, GameTooltip
 	local GetChallengeBestTimeInfo, GetChallengeBestTimeNum, GetSpecializationInfoByID = GetChallengeBestTimeInfo, GetChallengeBestTimeNum, GetSpecializationInfoByID
 
-	local gameTooltipTextLeft = setmetatable({}, { __index = function(t, i)
-		local obj = _G["GameTooltipTextLeft"..i]
-		if obj then
-			rawset(t, i, obj)
-		end
-		return obj
-	end })
+	local GuildBest, RealmBest = ChallengesFrameDetails:GetChildren()
 
-	hooksecurefunc("ChallengesFrameGuild_OnEnter", function(self)
+	GuildBest:SetScript("OnEnter", function(self)
 		local guildTime = ChallengesFrame.details.GuildTime
-		if not guildTime.hasTime then return end
+		if not guildTime.hasTime or not guildTime.mapID then return end
+
+		GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+		GameTooltip:SetText(CHALLENGE_MODE_GUILD_BEST)
 
 		for i = 1, GetChallengeBestTimeNum(guildTime.mapID, true) do
 			local name, className, class, specID = GetChallengeBestTimeInfo(guildTime.mapID, i, true)
-			if class then
+			if name then
 				local color = CUSTOM_CLASS_COLORS[class].colorStr
-				if color then
-					local _, specName = GetSpecializationInfoByID(specID)
-					if specName and specName ~= "" then
-						gameTooltipTextLeft[i+1]:SetFormattedText(F_PLAYER_CLASS, name, color, specName, className)
-					else
-						gameTooltipTextLeft[i+1]:SetFormattedText(F_PLAYER_CLASS_NO_SPEC, name, color, className)
-					end
+				local _, specName = GetSpecializationInfoByID(specID)
+				if specName and specName ~= "" then
+					GameTooltip:AddLine(format(F_PLAYER_CLASS, name, color, specName, className))
+				else
+					GameTooltip:AddLine(format(F_PLAYER_CLASS_NO_SPEC, name, color, className))
 				end
 			end
 		end
+
+		GameTooltip:Show()
 	end)
 
-	hooksecurefunc("ChallengesFrameRealm_OnEnter", function(self)
+	RealmBest:SetScript("OnEnter", function(self)
 		local realmTime = ChallengesFrame.details.RealmTime
-		if not realmTime.hasTime then return end
+		if not realmTime.hasTime or not realmTime.mapID then return end
+
+		GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+		GameTooltip:SetText(CHALLENGE_MODE_REALM_BEST)
 
 		for i = 1, GetChallengeBestTimeNum(realmTime.mapID, false) do
 			local name, className, class, specID = GetChallengeBestTimeInfo(realmTime.mapID, i, false)
-			if class then
+			if name then
 				local color = CUSTOM_CLASS_COLORS[class].colorStr
-				if color then
-					local _, specName = GetSpecializationInfoByID(specID)
-					if specName and specName ~= "" then
-						gameTooltipTextLeft[i+1]:SetFormattedText(F_PLAYER_CLASS, name, color, specName, className)
-					else
-						gameTooltipTextLeft[i+1]:SetFormattedText(F_PLAYER_CLASS_NO_SPEC, name, color, className)
-					end
+				local _, specName = GetSpecializationInfoByID(specID)
+				if specName and specName ~= "" then
+					GameTooltip:AddLine(format(F_PLAYER_CLASS, name, color, specName, className))
+				else
+					GameTooltip:AddLine(format(F_PLAYER_CLASS_NO_SPEC, name, color, className))
 				end
 			end
 		end
+
+		GameTooltip:Show()
 	end)
 end
 
@@ -418,7 +517,7 @@ end
 
 addonFuncs["Blizzard_InspectUI"] = function()
 	local InspectFrame, InspectLevelText = InspectFrame, InspectLevelText
-	local GetSpecialization, GetSpecializationInfo, UnitClass, UnitLevel = GetSpecialization, GetSpecializationInfo, UnitClass, UnitLevel
+	local GetInspectSpecialization, GetSpecializationInfoByID, UnitClass, UnitLevel = GetInspectSpecialization, GetSpecializationInfoByID, UnitClass, UnitLevel
 
 	hooksecurefunc("InspectPaperDollFrame_SetLevel", function()
 		local unit = InspectFrame.unit
@@ -432,9 +531,9 @@ addonFuncs["Blizzard_InspectUI"] = function()
 				if level == -1 then
 					level = "??"
 				end
-				local spec, specName, _ = GetSpecialization(true)
+				local spec, specName = GetInspectSpecialization(unit)
 				if spec then
-					_, specName = GetSpecializationInfo(spec, true)
+					spec, specName = GetSpecializationInfoByID(spec)
 				end
 				if specName and specName ~= "" then
 					InspectLevelText:SetFormattedText(PLAYER_LEVEL, level, color.colorStr, specName, className)
@@ -527,7 +626,7 @@ addonFuncs["Blizzard_TradeSkillUI"] = function()
 	local FauxScrollFrame_GetOffset, TradeSkillGuildCraftersFrame = FauxScrollFrame_GetOffset, TradeSkillGuildCraftersFrame
 	local GetGuildRecipeInfoPostQuery, GetGuildRecipeMember = GetGuildRecipeInfoPostQuery, GetGuildRecipeMember
 
-	hooksecurefunc("TradeSkillGuilCraftersFrame_Update", function()
+	hooksecurefunc(TradeSkillGuilCraftersFrame_Update and "TradeSkillGuilCraftersFrame_Update" or "TradeSkillGuildCraftersFrame_Update", function()
 		local _, _, numMembers = GetGuildRecipeInfoPostQuery()
 		local offset = FauxScrollFrame_GetOffset(TradeSkillGuildCraftersFrame)
 		for i = 1, TRADE_SKILL_GUILD_CRAFTERS_DISPLAYED do
