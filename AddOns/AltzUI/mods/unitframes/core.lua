@@ -1099,19 +1099,19 @@ local UnitSpecific = {
 				count = 5 -- combopoints
             end
 
-            local bars = CreateFrame("Frame", nil, self)
+            local bars = CreateFrame("Frame", G.uiname.."SpecOrbs", self)
 			bars:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 0, 3)
             bars:SetSize(aCoreCDB["UnitframeOptions"]["width"], 10)
 
             for i = 1, count do
 				if G.myClass == "PALADIN" then
-					bars[i] = T.createStatusbar(bars, "ARTWORK", aCoreCDB["UnitframeOptions"]["height"]*-(aCoreCDB["UnitframeOptions"]["hpheight"]-1), (aCoreCDB["UnitframeOptions"]["width"]+2)/HOLY_POWER_FULL-3, 1, 1, 1, 1)
+					bars[i] = T.createStatusbar(bars, "ARTWORK", aCoreCDB["UnitframeOptions"]["height"]*-(aCoreCDB["UnitframeOptions"]["hpheight"]-1), (aCoreCDB["UnitframeOptions"]["width"]+2)/HOLY_POWER_FULL-3, 1, 1, 1, 1, G.uiname.."SpecOrbs"..i)
 				elseif G.myClass == "PRIEST" then
-					bars[i] = T.createStatusbar(bars, "ARTWORK", aCoreCDB["UnitframeOptions"]["height"]*-(aCoreCDB["UnitframeOptions"]["hpheight"]-1), (aCoreCDB["UnitframeOptions"]["width"]+2)/PRIEST_BAR_NUM_ORBS-3, 1, 1, 1, 1)
+					bars[i] = T.createStatusbar(bars, "ARTWORK", aCoreCDB["UnitframeOptions"]["height"]*-(aCoreCDB["UnitframeOptions"]["hpheight"]-1), (aCoreCDB["UnitframeOptions"]["width"]+2)/SPELL_POWER_SHADOW_ORBS-3, 1, 1, 1, 1, G.uiname.."SpecOrbs"..i)
 				elseif G.myClass == "MONK" then
-					bars[i] = T.createStatusbar(bars, "ARTWORK", aCoreCDB["UnitframeOptions"]["height"]*-(aCoreCDB["UnitframeOptions"]["hpheight"]-1), (aCoreCDB["UnitframeOptions"]["width"]+2)/4-3, 1, 1, 1, 1)
+					bars[i] = T.createStatusbar(bars, "ARTWORK", aCoreCDB["UnitframeOptions"]["height"]*-(aCoreCDB["UnitframeOptions"]["hpheight"]-1), (aCoreCDB["UnitframeOptions"]["width"]+2)/4-3, 1, 1, 1, 1, G.uiname.."SpecOrbs"..i)
 				else
-					bars[i] = T.createStatusbar(bars, "ARTWORK", aCoreCDB["UnitframeOptions"]["height"]*-(aCoreCDB["UnitframeOptions"]["hpheight"]-1), (aCoreCDB["UnitframeOptions"]["width"]+2)/count-3, 1, 1, 1, 1)
+					bars[i] = T.createStatusbar(bars, "ARTWORK", aCoreCDB["UnitframeOptions"]["height"]*-(aCoreCDB["UnitframeOptions"]["hpheight"]-1), (aCoreCDB["UnitframeOptions"]["width"]+2)/count-3, 1, 1, 1, 1, G.uiname.."SpecOrbs"..i)
 				end
 				
                 if i == 1 then
@@ -1369,8 +1369,8 @@ function EventFrame:ADDON_LOADED(arg1)
 		local playerframe = spawnHelper(self, "player")
 		playerframe.movingname = L["玩家头像"]
 		playerframe.point = {
-			healer = {a1 = "TOPRIGHT", parent = "UIParent", a2 = "BOTTOM", x = -180, y = 200},
-			dpser = {a1 = "TOP", parent = "UIParent", a2 = "BOTTOM", x = 0, y = 180},
+			healer = {a1 = "TOPRIGHT", parent = "UIParent", a2 = "BOTTOM", x = -230, y = 350},
+			dpser = {a1 = "TOP", parent = "UIParent", a2 = "BOTTOM", x = 0, y = 280},
 		}
 		T.CreateDragFrame(playerframe)
 		
@@ -1385,8 +1385,8 @@ function EventFrame:ADDON_LOADED(arg1)
 		local targetframe = spawnHelper(self, "target")
 		targetframe.movingname = L["目标头像"]
 		targetframe.point = {
-			healer = {a1 = "TOPLEFT", parent = "UIParent", a2 = "BOTTOM", x = 180, y = 200},
-			dpser = {a1 = "TOPLEFT", parent = "UIParent", a2 = "BOTTOM", x = 150, y = 250},
+			healer = {a1 = "TOPLEFT", parent = "UIParent", a2 = "BOTTOM", x = 230, y = 350},
+			dpser = {a1 = "TOPLEFT", parent = "UIParent", a2 = "BOTTOM", x = 150, y = 350},
 		}
 		T.CreateDragFrame(targetframe)
 	

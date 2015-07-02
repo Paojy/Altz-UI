@@ -522,8 +522,8 @@ local function Spawnhealraid()
 	)
 	healerraid.movingname = L["治疗模式团队框架"]
 	healerraid.point = {
-		healer = {a1 = "CENTER", parent = "UIParent", a2 = "BOTTOM", x = 0, y = 160},
-		dpser = {a1 = "BOTTOMLEFT", parent = "UIParent", a2 = "BOTTOMLEFT", x = 10, y = 200},
+		healer = {a1 = "CENTER", parent = "UIParent", a2 = "BOTTOM", x = 0, y = 225},
+		dpser = {a1 = "BOTTOMLEFT", parent = "UIParent", a2 = "BOTTOMLEFT", x = 10, y = 250},
 	}
 	T.CreateDragFrame(healerraid)
 	healerraid.df:ClearAllPoints()

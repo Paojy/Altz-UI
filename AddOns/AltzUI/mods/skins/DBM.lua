@@ -32,8 +32,8 @@ DBMSkin:SetScript("OnEvent", function(self, event, addon)
 							icon1.overlay = _G[icon1.overlay:GetName()]
 						else
 							icon1.overlay = CreateFrame("Frame", "$parentIcon1Overlay", tbar)
-							icon1.overlay:SetWidth(23)
-							icon1.overlay:SetHeight(23)
+							icon1.overlay:SetWidth(28)
+							icon1.overlay:SetHeight(28)
 							icon1.overlay:SetFrameStrata("BACKGROUND")
 							icon1.overlay:SetPoint("BOTTOMRIGHT", tbar, "BOTTOMLEFT", -2, -2)
 							T.CreateSD(icon1.overlay, 3, 0, 0, 0, 1, -3)
@@ -43,8 +43,8 @@ DBMSkin:SetScript("OnEvent", function(self, event, addon)
 							icon2.overlay = _G[icon2.overlay:GetName()]
 						else
 							icon2.overlay = CreateFrame("Frame", "$parentIcon2Overlay", tbar)
-							icon2.overlay:SetWidth(23)
-							icon2.overlay:SetHeight(23)
+							icon2.overlay:SetWidth(28)
+							icon2.overlay:SetHeight(28)
 							icon2.overlay:SetFrameStrata("BACKGROUND")
 							icon2.overlay:SetPoint("BOTTOMLEFT", tbar, "BOTTOMRIGHT", 5, -2)
 							T.CreateSD(icon2.overlay, 3, 0, 0, 0, 1, -3)
@@ -55,7 +55,7 @@ DBMSkin:SetScript("OnEvent", function(self, event, addon)
 
 						frame:SetScale(1)
 						if not frame.styled then
-							frame:SetHeight(23)
+							frame:SetHeight(28)
 							T.CreateSD(frame, 4, 0, 0, 0, 1, -3)
 							F.CreateBD(frame, 0.7)
 							frame.styled = true
@@ -93,7 +93,7 @@ DBMSkin:SetScript("OnEvent", function(self, event, addon)
 							name:SetPoint("LEFT", frame, "LEFT", 4, 0)
 							name:SetPoint("RIGHT", frame, "RIGHT", -10, 0)
 							name:SetHeight(8)
-							name:SetFont(G.norFont, 10, "OUTLINE")
+							name:SetFont(G.norFont, 14, "OUTLINE")
 							name:SetShadowOffset(0, 0, 0, 0)
 							name:SetJustifyH("LEFT")
 							name.SetFont = dummy
@@ -103,7 +103,7 @@ DBMSkin:SetScript("OnEvent", function(self, event, addon)
 						if not timer.styled then	
 							timer:ClearAllPoints()
 							timer:SetPoint("RIGHT", frame, "RIGHT", -5, 0)
-							timer:SetFont(G.norFont, 10, "OUTLINE")
+							timer:SetFont(G.norFont, 14, "OUTLINE")
 							timer:SetShadowOffset(0, 0, 0, 0)
 							timer:SetJustifyH("RIGHT")
 							timer.SetFont = dummy
@@ -129,7 +129,7 @@ DBMSkin:SetScript("OnEvent", function(self, event, addon)
 			if not anchor.styled then
 				local header = {anchor:GetRegions()}
 				if header[1]:IsObjectType("FontString") then
-					header[1]:SetFont(G.norFont, 10, "OUTLINE")
+					header[1]:SetFont(G.norFont, 14, "OUTLINE")
 					header[1]:SetShadowOffset(0, 0, 0, 0)
 					header[1]:SetTextColor(1, 1, 1, 1)
 					anchor.styled = true	
@@ -152,14 +152,14 @@ DBMSkin:SetScript("OnEvent", function(self, event, addon)
 				if (count == 1) then
 					local _, anch, _ , _, _ = bar:GetPoint()
 					bar:ClearAllPoints()
-					if DBM_SavedOptions.HealthFrameGrowUp then
+					if DBM_AllSavedOptions["Default"]["HealthFrameGrowUp"] then
 						bar:SetPoint("BOTTOM", anch, "TOP", 0, 3)
 					else
 						bar:SetPoint("TOP", anch, "BOTTOM", 0, -3)
 					end
 				else
 					bar:ClearAllPoints()
-					if DBM_SavedOptions.HealthFrameGrowUp then
+					if DBM_AllSavedOptions["Default"]["HealthFrameGrowUp"] then
 						bar:SetPoint("BOTTOMLEFT", prev, "TOPLEFT", 0, 3)
 					else
 						bar:SetPoint("TOPLEFT", prev, "BOTTOMLEFT", 0, -3)
@@ -185,7 +185,7 @@ DBMSkin:SetScript("OnEvent", function(self, event, addon)
 				if not name.styled then
 					name:ClearAllPoints()
 					name:SetPoint("LEFT", bar, "LEFT", 4, 0)
-					name:SetFont(G.norFont, 10, "OUTLINE")
+					name:SetFont(G.norFont, 14, "OUTLINE")
 					name:SetShadowOffset(0, 0, 0, 0)
 					name:SetJustifyH("LEFT")
 					name.styled = true
@@ -194,7 +194,7 @@ DBMSkin:SetScript("OnEvent", function(self, event, addon)
 				if not timer.styled then
 					timer:ClearAllPoints()
 					timer:SetPoint("RIGHT", bar, "RIGHT", -5, 0)
-					timer:SetFont(G.norFont, 10, "OUTLINE")
+					timer:SetFont(G.norFont, 14, "OUTLINE")
 					timer:SetShadowOffset(0, 0, 0, 0)
 					timer:SetJustifyH("RIGHT")
 					timer.styled = true

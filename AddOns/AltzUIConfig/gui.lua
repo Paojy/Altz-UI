@@ -1535,12 +1535,46 @@ T.createcheckbutton(OtherOptions, 300, 420, L["大喊被闷了"], "OtherOptions"
 --====================================================--
 local SkinOptions = CreateOptionPage("Skin Options", L["插件皮肤"], GUI, "VERTICAL")
 
-T.createcheckbutton(SkinOptions, 30, 60, "ClassColor", "SkinOptions", "setClassColor", L["更改设置提示"])
-T.createcheckbutton(SkinOptions, 30, 90, "DBM", "SkinOptions", "setDBM", L["更改设置提示"])
-T.createcheckbutton(SkinOptions, 30, 120, "Skada", "SkinOptions", "setSkada", L["更改设置提示"])
-T.createcheckbutton(SkinOptions, 30, 150, "Numeration", "SkinOptions", "setNumeration", L["更改设置提示"])
-T.createcheckbutton(SkinOptions, 30, 180, "Recount", "SkinOptions", "setRecount")
-T.createcheckbutton(SkinOptions, 30, 210, L["更改设置"], "SkinOptions", "editsettingsbu")
+local function CreateApplySettingButton(addon)
+	local Button = CreateFrame("Button", G.uiname..addon.."ApplySettingButton", SkinOptions, "UIPanelButtonTemplate")
+	Button:SetPoint("LEFT", SkinOptions[addon], "RIGHT", 150, 0)
+	Button:SetSize(100, 25)
+	Button:SetText(L["更改设置"])
+	Button:SetScript("OnEnter", function(self) 
+			GameTooltip:SetOwner(self, "ANCHOR_RIGHT",  -20, 10)
+			GameTooltip:AddLine(L["更改设置提示"])
+			GameTooltip:Show() 
+		end)
+	Button:SetScript("OnLeave", function(self) GameTooltip:Hide() end)
+	F.Reskin(Button)
+	
+	SkinOptions[addon]:HookScript("OnClick", function(self)
+		if self:GetChecked() then
+			Button:Enable()
+		else
+			Button:Disable()
+		end
+	end)
+	
+	SkinOptions[addon]:HookScript("OnShow", function(self)
+		if self:GetChecked() then
+			Button:Enable()
+		else
+			Button:Disable()
+		end
+	end)
+	
+	return Button
+end
+
+T.createcheckbutton(SkinOptions, 30, 60, "ClassColor", "SkinOptions", "setClassColor")
+local SetClassColorButton = CreateApplySettingButton("setClassColor")
+
+T.createcheckbutton(SkinOptions, 30, 90, "DBM", "SkinOptions", "setDBM")
+local SetDBMButton = CreateApplySettingButton("setDBM")
+
+T.createcheckbutton(SkinOptions, 30, 120, "Skada", "SkinOptions", "setSkada")
+local SetSkadaButton = CreateApplySettingButton("setSkada")
 
 --====================================================--
 --[[               -- Commands --               ]]--
@@ -1581,10 +1615,9 @@ function eventframe:ADDON_LOADED(arg1)
 	CreateAutobuyButtonList()
 	CreateRaidDebuffOptions()
 	CreateCooldownAuraOptions()
-	if aCoreCDB["SkinOptions"]["editsettingsbu"] then
-		T.ResetAllAddonSettings()
-		aCoreCDB["SkinOptions"]["editsettingsbu"] = false
-	end
+	SetClassColorButton:SetScript("OnClick", function() T.ResetClasscolors(true) end)
+	SetDBMButton:SetScript("OnClick", function() T.ResetDBM(true) end)
+	SetSkadaButton:SetScript("OnClick", function() T.ResetSkada(true) end)
 end
 --[[
 local GUIbutton = CreateFrame("Button", G.uiname.."GUI MenuButton", GameMenuFrame, "GameMenuButtonTemplate")

@@ -135,159 +135,310 @@ function T.SetChatFrame()
 	FCF_FadeInChatFrame(ChatFrame1)
 end
 
-T.ResetAllAddonSettings = function()
+
+T.ResetAurora = function(reload)
 	if IsAddOnLoaded("Aurora") then
 		AuroraConfig["tooltips"] = false
 		AuroraConfig["bags"] = false
 	end
+	if reload then ReloadUI() end
+end
+
+T.ResetClasscolors = function(reload)
 	if aCoreCDB["SkinOptions"]["setClassColor"] and IsAddOnLoaded("!ClassColors") then
 		if ClassColorsDB then wipe(ClassColorsDB) end
 		ClassColorsDB = {
-		["DEATHKNIGHT"] = {
-			["hex"] = "ffb3040f",
-			["colorStr"] = "ffb3040f",
-			["b"] = 0.06,
-			["g"] = 0.02,
-			["r"] = 0.70,
-		},
-		["WARRIOR"] = {
-			["hex"] = "ffcc6919",
-			["colorStr"] = "ffcc6919",
-			["b"] = 0.1,
-			["g"] = 0.41,
-			["r"] = 0.8,
-		},
-		["PALADIN"] = {
-			["hex"] = "fff50a6c",
-			["colorStr"] = "fff50a6c",
-			["b"] = 0.41,
-			["g"] = 0.18,
-			["r"] = 1,
-		},
-		["MAGE"] = {
-			["hex"] = "ff27f0f0",
-			["colorStr"] = "ff27f0f0",
-			["b"] = 0.94,
-			["g"] = 0.94,
-			["r"] = 0.15,
-		},
-		["PRIEST"] = {
-			["hex"] = "ffffffff",
-			["colorStr"] = "ffffffff",
-			["b"] = 1,
-			["g"] = 1,
-			["r"] = 1,
-		},
-		["WARLOCK"] = {
-			["hex"] = "ffe200ff",
-			["colorStr"] = "ffe200ff",
-			["b"] = 1,
-			["g"] = 0.05,
-			["r"] = 0.72,
-		},
-		["SHAMAN"] = {
-			["hex"] = "ff0700ff",
-			["colorStr"] = "ff0700ff",
-			["b"] = 0.87,
-			["g"] = 0.2,
-			["r"] = 0.13,
-		},
-		["HUNTER"] = {
-			["hex"] = "ff1d9b04",
-			["colorStr"] = "ff1d9b04",
-			["b"] = 0.02,
-			["g"] = 0.61,
-			["r"] = 0.11,
-		},
-		["DRUID"] = {
-			["hex"] = "ffff9b00",
-			["colorStr"] = "ffff9b00",
-			["b"] = 0,
-			["g"] = 0.61,
-			["r"] = 1,
-		},
-		["MONK"] = {
-			["hex"] = "ff00ff97",
-			["colorStr"] = "ff00ff97",
-			["b"] = 0.59,
-			["g"] = 1,
-			["r"] = 0,
-		},
-		["ROGUE"] = {
-			["hex"] = "ffffe700",
-			["colorStr"] = "ffffe700",
-			["b"] = 0,
-			["g"] = 0.91,
-			["r"] = 1,
-		},
-	}
-	end
-	if aCoreCDB["SkinOptions"]["setDBM"] and IsAddOnLoaded("DBM-Core") then
-		if DBM_SavedOptions then
-			DBM_SavedOptions["ShowMinimapButton"] = false
-			-- hp frame
-			DBM_SavedOptions["AlwaysShowHealthFrame"] = false
-			DBM_SavedOptions["HealthFrameGrowUp"] = false
-			-- range
-			DBM_SavedOptions["RangeFrameFrames"] = "radar"
-			-- timersettings
-			DBT_SavedOptions["DBM"]["IconLeft"] = true
-			DBT_SavedOptions["DBM"]["IconRight"] = false
-			DBT_SavedOptions["DBM"]["Texture"] = "Interface\\Buttons\\WHITE8x8"
-			DBT_SavedOptions["DBM"]["ExpandUpwards"] = false
-			DBT_SavedOptions["DBM"]["FontSize"] = 10
-			-- smalltimer
-			DBT_SavedOptions["DBM"]["Scale"] = 1
-			DBT_SavedOptions["DBM"]["BarXOffset"] = 0
-			DBT_SavedOptions["DBM"]["BarYOffset"] = 1
-			-- hugetimer
-			DBT_SavedOptions["DBM"]["HugeScale"] = 1
-			DBT_SavedOptions["DBM"]["HugeBarXOffset"] = 0
-			DBT_SavedOptions["DBM"]["HugeBarYOffset"] = 1
-		end
-	end
-	if aCoreCDB["SkinOptions"]["setSkada"] and IsAddOnLoaded("Skada") then
-	if SkadaDB then wipe(SkadaDB["profiles"]) end
-	SkadaDB	["profiles"] = {
-		["Default"] = {
-			["windows"] = {
-					{
-						["hidden"] = true,
-						["classicons"] = false,
-						["background"] = {
-							["bordertexture"] = "Blizzard Tooltip",
-						},
-						["set"] = "total",
-						["title"] = {
-							["color"] = {
-								["a"] = 0,
-							},
-							["borderthickness"] = 0,
-						},
-						["barbgcolor"] = {
-							["a"] = 0,
-							["r"] = 0.2,
-							["g"] = 0.2,
-							["b"] = 0.2,
-						},
-						["barcolor"] = {
-							["a"] = 0.9,
-							["r"] = 0.2,
-							["g"] = 0.8,
-							["b"] = 1,
-						},
-					}, -- [1]
-				},
-			["icon"] = {
-				["hide"] = true,
+			["DEATHKNIGHT"] = {
+				["hex"] = "ffb3040f",
+				["colorStr"] = "ffb3040f",
+				["b"] = 0.06,
+				["g"] = 0.02,
+				["r"] = 0.70,
 			},
-		},
-	}
+			["WARRIOR"] = {
+				["hex"] = "ffcc6919",
+				["colorStr"] = "ffcc6919",
+				["b"] = 0.1,
+				["g"] = 0.41,
+				["r"] = 0.8,
+			},
+			["PALADIN"] = {
+				["hex"] = "fff50a6c",
+				["colorStr"] = "fff50a6c",
+				["b"] = 0.41,
+				["g"] = 0.18,
+				["r"] = 1,
+			},
+			["MAGE"] = {
+				["hex"] = "ff27f0f0",
+				["colorStr"] = "ff27f0f0",
+				["b"] = 0.94,
+				["g"] = 0.94,
+				["r"] = 0.15,
+			},
+			["PRIEST"] = {
+				["hex"] = "ffffffff",
+				["colorStr"] = "ffffffff",
+				["b"] = 1,
+				["g"] = 1,
+				["r"] = 1,
+			},
+			["WARLOCK"] = {
+				["hex"] = "ffe200ff",
+				["colorStr"] = "ffe200ff",
+				["b"] = 1,
+				["g"] = 0.05,
+				["r"] = 0.72,
+			},
+			["SHAMAN"] = {
+				["hex"] = "ff0700ff",
+				["colorStr"] = "ff0700ff",
+				["b"] = 0.87,
+				["g"] = 0.2,
+				["r"] = 0.13,
+			},
+			["HUNTER"] = {
+				["hex"] = "ff1d9b04",
+				["colorStr"] = "ff1d9b04",
+				["b"] = 0.02,
+				["g"] = 0.61,
+				["r"] = 0.11,
+			},
+			["DRUID"] = {
+				["hex"] = "ffff9b00",
+				["colorStr"] = "ffff9b00",
+				["b"] = 0,
+				["g"] = 0.61,
+				["r"] = 1,
+			},
+			["MONK"] = {
+				["hex"] = "ff00ff97",
+				["colorStr"] = "ff00ff97",
+				["b"] = 0.59,
+				["g"] = 1,
+				["r"] = 0,
+			},
+			["ROGUE"] = {
+				["hex"] = "ffffe700",
+				["colorStr"] = "ffffe700",
+				["b"] = 0,
+				["g"] = 0.91,
+				["r"] = 1,
+			},
+		}
 	end
-	if aCoreCDB["SkinOptions"]["setNumeration"] and IsAddOnLoaded("Numeration") then
-		NumerationCharOptions["forcehide"] = true
-		NumerationCharOptions["minimap"]["hide"] = true
+	if reload then ReloadUI() end
+end
+
+T.ResetSkada =function(reload)
+	if aCoreCDB["SkinOptions"]["setSkada"] and IsAddOnLoaded("Skada") then
+		local Skada = Skada
+		local windows = Skada:GetWindows()
+		if #windows == 0 then
+			Skada:CreateWindow("altz_1", nil, "bar")
+			Skada:CreateWindow("altz_2", nil, "bar")		
+		elseif #windows == 1 then
+			Skada:CreateWindow("altz_1", nil, "bar")
+		end
+		SkadaDB["profiles"] = {
+				["Default"] = {
+					["autostop"] = true,
+					["windows"] = {
+						{
+							["barheight"] = 20,
+							["classicons"] = false,
+							["barslocked"] = true,
+							["y"] = 45,
+							["x"] = -187,
+							["name"] = "1",
+							["point"] = "BOTTOMRIGHT",
+							["buttons"] = {
+								["menu"] = false,
+								["mode"] = false,
+								["reset"] = false,
+							},
+							["barwidth"] = 155,
+							["background"] = {
+								["color"] = {
+									["a"] = 0,
+								},
+								["height"] = 150,
+							},
+							["title"] = {
+								["color"] = {
+									["a"] = 0,
+								},
+								["height"] = 20,
+							},
+						}, -- [1]
+						{
+							["titleset"] = true,
+							["barheight"] = 20,
+							["classicons"] = false,
+							["barslocked"] = true,
+							["enabletitle"] = true,
+							["wipemode"] = "",
+							["set"] = "current",
+							["hidden"] = false,
+							["y"] = 45,
+							["barfont"] = "Accidental Presidency",
+							["name"] = "2",
+							["display"] = "bar",
+							["barfontflags"] = "",
+							["classcolortext"] = false,
+							["scale"] = 1,
+							["reversegrowth"] = false,
+							["returnaftercombat"] = false,
+							["roleicons"] = false,
+							["barorientation"] = 1,
+							["snapto"] = true,
+							["version"] = 1,
+							["modeincombat"] = "",
+							["bartexture"] = "BantoBar",
+							["barwidth"] = 155,
+							["barspacing"] = 0,
+							["clickthrough"] = false,
+							["barfontsize"] = 11,
+							["barbgcolor"] = {
+								["a"] = 0.6,
+								["b"] = 0.3,
+								["g"] = 0.3,
+								["r"] = 0.3,
+							},
+							["background"] = {
+								["borderthickness"] = 0,
+								["height"] = 150,
+								["color"] = {
+									["a"] = 0,
+									["b"] = 0.5,
+									["g"] = 0,
+									["r"] = 0,
+								},
+								["bordertexture"] = "None",
+								["margin"] = 0,
+								["texture"] = "Solid",
+							},
+							["barcolor"] = {
+								["a"] = 1,
+								["b"] = 0.8,
+								["g"] = 0.3,
+								["r"] = 0.3,
+							},
+							["classcolorbars"] = true,
+							["title"] = {
+								["color"] = {
+									["a"] = 0,
+									["b"] = 0.3,
+									["g"] = 0.1,
+									["r"] = 0.1,
+								},
+								["bordertexture"] = "None",
+								["font"] = "Accidental Presidency",
+								["borderthickness"] = 2,
+								["fontsize"] = 11,
+								["fontflags"] = "",
+								["height"] = 20,
+								["margin"] = 0,
+								["texture"] = "Aluminium",
+							},
+							["buttons"] = {
+								["segment"] = true,
+								["menu"] = false,
+								["mode"] = false,
+								["report"] = true,
+								["reset"] = false,
+							},
+							["x"] = -343,
+							["point"] = "BOTTOMRIGHT",
+						}, -- [2]
+					},
+				},
+			}
+		local Skada_L = LibStub("AceLocale-3.0"):GetLocale("Skada", false)
+		SkadaDB["profiles"]["Default"]["columns"] = {}
+		SkadaDB["profiles"]["Default"]["columns"][Skada_L["Damage"].."_Percent"] = false
+		SkadaDB["profiles"]["Default"]["columns"][Skada_L["Healing"].."_Percent"] = false
+		SkadaDB["profiles"]["Default"]["columns"][Skada_L["Damage taken"].."_Percent"] = false
+		SkadaDB["profiles"]["Default"]["showranks"] = false
+		if reload then ReloadUI() end
+	end	
+end
+
+T.ResetDBM =function(reload)
+	if aCoreCDB["SkinOptions"]["setDBM"] and IsAddOnLoaded("DBM-Core") then
+		if DBM_AllSavedOptions then
+			DBM_AllSavedOptions["Default"]["ShowMinimapButton"] = false
+			-- BOSS血条
+			DBM_AllSavedOptions["Default"]["HPFramePoint"] = "BOTTOM"			
+			DBM_AllSavedOptions["Default"]["HPFrameY"] = 120
+			DBM_AllSavedOptions["Default"]["HPFrameX"] = -375
+			DBM_AllSavedOptions["Default"]["HealthFrameWidth"] = 200
+			DBM_AllSavedOptions["Default"]["AlwaysShowHealthFrame"] = false
+			DBM_AllSavedOptions["Default"]["HealthFrameGrowUp"] = false
+			-- 信息框
+			DBM_AllSavedOptions["Default"]["InfoFramePoint"] = "BOTTOM"
+			DBM_AllSavedOptions["Default"]["InfoFrameX"] = -310
+			DBM_AllSavedOptions["Default"]["InfoFrameY"] = 195
+			-- 距离框
+			DBM_AllSavedOptions["Default"]["RangeFramePoint"] = "BOTTOM"
+			DBM_AllSavedOptions["Default"]["RangeFrameX"] = 450
+			DBM_AllSavedOptions["Default"]["RangeFrameY"] = 270
+			DBM_AllSavedOptions["Default"]["RangeFrameRadarPoint"] = "BOTTOM"
+			DBM_AllSavedOptions["Default"]["RangeFrameRadarX"] = 300
+			DBM_AllSavedOptions["Default"]["RangeFrameRadarY"] = 180
+			DBM_AllSavedOptions["Default"]["RangeFrameFrames"] = "radar"
+			-- 计时条
+			DBT_AllPersistentOptions["Default"]["DBM"]["IconLeft"] = true
+			DBT_AllPersistentOptions["Default"]["DBM"]["IconRight"] = false
+			DBT_AllPersistentOptions["Default"]["DBM"]["Texture"] = "Interface\\Buttons\\WHITE8x8"
+			DBT_AllPersistentOptions["Default"]["DBM"]["ExpandUpwards"] = false
+			DBT_AllPersistentOptions["Default"]["DBM"]["FontSize"] = 14
+			DBT_AllPersistentOptions["Default"]["DBM"]["ExpandUpwards"] = false
+			-- 一般计时条
+			DBT_AllPersistentOptions["Default"]["DBM"]["TimerPoint"] = "LEFT"
+			DBT_AllPersistentOptions["Default"]["DBM"]["TimerY"] = 50
+			DBT_AllPersistentOptions["Default"]["DBM"]["TimerX"] = 150
+			DBT_AllPersistentOptions["Default"]["DBM"]["Height"] = 24
+			DBT_AllPersistentOptions["Default"]["DBM"]["Width"] = 183
+			DBT_AllPersistentOptions["Default"]["DBM"]["Scale"] = 1
+			DBT_AllPersistentOptions["Default"]["DBM"]["BarXOffset"] = 0
+			DBT_AllPersistentOptions["Default"]["DBM"]["BarYOffset"] = 1
+			-- 大型计时条
+			DBT_AllPersistentOptions["Default"]["DBM"]["EnlargeBarsPercent"] = 0.125
+			DBT_AllPersistentOptions["Default"]["DBM"]["HugeTimerPoint"] = "CENTER"
+			DBT_AllPersistentOptions["Default"]["DBM"]["HugeTimerX"] = -330
+			DBT_AllPersistentOptions["Default"]["DBM"]["HugeTimerY"] = 0			
+			DBT_AllPersistentOptions["Default"]["DBM"]["HugeScale"] = 1
+			DBT_AllPersistentOptions["Default"]["DBM"]["HugeWidth"] = 200
+			DBT_AllPersistentOptions["Default"]["DBM"]["HugeBarXOffset"] = 0
+			DBT_AllPersistentOptions["Default"]["DBM"]["HugeBarYOffset"] = 1
+			-- 一般警报
+			DBM_AllSavedOptions["Default"]["WarningIconRight"] = true
+			DBM_AllSavedOptions["Default"]["WarningIconLeft"] = true
+			DBM_AllSavedOptions["Default"]["WarningFontStyle"] = "THICKOUTLINE"
+			DBM_AllSavedOptions["Default"]["WarningFont"] = "Interface\\AddOns\\Aurora\\media\\font.ttf"
+			DBM_AllSavedOptions["Default"]["WarningFontShadow"] = true
+			DBM_AllSavedOptions["Default"]["WarningPoint"] = "TOP"
+			DBM_AllSavedOptions["Default"]["WarningY"] = -150
+			DBM_AllSavedOptions["Default"]["WarningX"] = -0
+			-- 特殊警报
+			DBM_AllSavedOptions["Default"]["SpecialWarningFontSize"] = 65
+			DBM_AllSavedOptions["Default"]["SpecialWarningFont"] = "Interface\\AddOns\\Aurora\\media\\font.ttf"
+			DBM_AllSavedOptions["Default"]["SpecialWarningFontStyle"] = "THICKOUTLINE"
+			DBM_AllSavedOptions["Default"]["SpecialWarningFontShadow"] = true
+			DBM_AllSavedOptions["Default"]["SpecialWarningPoint"] = "CENTER"
+			DBM_AllSavedOptions["Default"]["SpecialWarningX"] = 0
+			DBM_AllSavedOptions["Default"]["SpecialWarningY"] = 150			
+		end
+		if reload then ReloadUI() end
 	end
+end
+
+T.ResetAllAddonSettings = function()
+	T.ResetAurora()
+	T.ResetClasscolors()
+	T.ResetSkada()
+	T.ResetDBM()
 end
 
 T.createcheckbutton = function(parent, x, y, name, table, value, tip)

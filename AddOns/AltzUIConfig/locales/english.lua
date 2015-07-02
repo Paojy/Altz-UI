@@ -305,8 +305,8 @@ L["最远镜头提示"] = "Set camera distance to max when login"
 
 -- 插件皮肤
 L["插件皮肤"] = "Addon Skins"
-L["更改设置"] = "Edit Settings"
-L["更改设置提示"] = "Some of the addon settings need changed to match the UI,\nyou may click the "..L["更改设置"].." button to apply it when reload UI next time."
+L["更改设置"] = "Reset Addon"
+L["更改设置提示"] = "Load default settings for this addon"
 
 -- 命令
 L["命令"] = "Commands"

@@ -160,9 +160,8 @@ T.createBackdrop = function(parent, anchor, a)
     return frame
 end
 
-T.createStatusbar = function(parent, layer, height, width, r, g, b, alpha)
-    local bar = CreateFrame"StatusBar"
-    bar:SetParent(parent)
+T.createStatusbar = function(parent, layer, height, width, r, g, b, alpha, name)
+    local bar = CreateFrame("StatusBar", name, parent)
     if height then
         bar:SetHeight(height)
     end
