@@ -309,6 +309,8 @@ local BlackList = {
 }
 
 local MBCF = CreateFrame("Frame", "MinimapButtonCollectFrame", Minimap)
+MBCF:SetFrameStrata("HIGH")
+
 if aCoreCDB["OtherOptions"]["MBCFpos"] == "TOP" then
 	MBCF:SetPoint("BOTTOMLEFT", Minimap, "TOPLEFT", 0, 5)
 	MBCF:SetPoint("BOTTOMRIGHT", Minimap, "TOPRIGHT", 0, 5)
@@ -399,6 +401,13 @@ end)
 --BNToastFrame.Hide = BNToastFrame.Show
 --BNToastFrame_UpdateAnchor = function() end
 
+--要塞
+GarrisonLandingPageMinimapButton:ClearAllPoints()
+GarrisonLandingPageMinimapButton:SetParent(Minimap)
+GarrisonLandingPageMinimapButton:SetPoint("TOPRIGHT", Minimap, "TOPRIGHT", -5, -5)
+GarrisonLandingPageMinimapButton:SetClampedToScreen(true)
+GarrisonLandingPageMinimapButton:SetSize(30, 30)
+
 -- 排队的眼睛
 QueueStatusMinimapButton:ClearAllPoints()
 QueueStatusMinimapButton:SetParent(Minimap)
@@ -425,6 +434,7 @@ InstanceDifficulty.text:SetTextColor(G.Ccolor.r, G.Ccolor.g, G.Ccolor.b)
 
 InstanceDifficulty:RegisterEvent("PLAYER_ENTERING_WORLD")
 InstanceDifficulty:RegisterEvent("PLAYER_DIFFICULTY_CHANGED")
+InstanceDifficulty:RegisterEvent("GROUP_ROSTER_UPDATE")
 InstanceDifficulty:SetScript("OnEvent", function(self) self.text:SetText(select(4, GetInstanceInfo())) end)
 
 -- 位置
@@ -736,15 +746,6 @@ Durability:RegisterEvent("PLAYER_ENTERING_WORLD")
 
 -- 延迟和帧数
 local Net_Stats = CreateInfoButton("Net_Stats", InfoFrame, 80, 20, "RIGHT", "RIGHT", Durability, "LEFT", -5, 0)
-
-Net_Stats:SetScript("OnMouseDown", function()
-	local AddonManager = _G[G.uiname.."AddonManager"]
-	if AddonManager:IsShown() then
-		AddonManager:Hide()
-	else
-		AddonManager:Show()
-	end
-end)
 
 -- Format String
 local memFormat = function(num)
