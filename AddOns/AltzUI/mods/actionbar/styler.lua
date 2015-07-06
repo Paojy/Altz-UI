@@ -85,6 +85,26 @@ local function styleExtraActionButton(bu)
 	bu.rabs_styled = true
 end
 
+local function styleExtraActionButton2(bu)
+	if not bu or (bu and bu.rabs_styled) then return end
+	local name = bu:GetName()
+	--remove the style background theme
+	bu.Style:Hide()
+	--icon
+	--bu.icon:SetTexCoord(0.1,0.9,0.1,0.9)
+	--bu.icon:SetAllPoints(bu)
+	--cooldown
+	--bu.cooldown:SetAllPoints(bu.icon)
+	--add button normaltexture
+	bu:SetNormalTexture(textures.normal)
+	local nt = bu:GetNormalTexture()
+	nt:SetVertexColor(color.normal.r,color.normal.g,color.normal.b,1)
+	nt:SetAllPoints(bu)
+	--apply background
+	if not bu.bg then applyBackground(bu) end
+	bu.rabs_styled = true
+end--floating
+
 --initial style func
 local function styleActionButton(bu)
 	if not bu or (bu and bu.rabs_styled) then return end
@@ -288,6 +308,7 @@ local function init()
 	end
 	--extraactionbutton1
 	styleExtraActionButton(ExtraActionButton1)
+	styleExtraActionButton2(DraenorZoneAbilityFrame.SpellButton)
 	--spell flyout
 	SpellFlyoutBackgroundEnd:SetTexture(nil)
 	SpellFlyoutHorizontalBackground:SetTexture(nil)
