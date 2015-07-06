@@ -13,8 +13,8 @@ local buttonList = {}
 local frame = CreateFrame("Frame", "Altz_leave_vehicle", UIParent, "SecureHandlerStateTemplate")
 frame.movingname = L["离开载具按钮"]
 frame.point = {
-		healer = {a1 = "BOTTOMLEFT", parent = "UIParent", a2 = "BOTTOM", x = 340, y = 20},
-		dpser = {a1 = "BOTTOMLEFT", parent = "UIParent", a2 = "BOTTOM", x = 340, y = 20},
+		healer = {a1 = "BOTTOMLEFT", parent = "UIParent", a2 = "BOTTOM", x = 420, y = 20},
+		dpser = {a1 = "BOTTOMLEFT", parent = "UIParent", a2 = "BOTTOM", x = 420, y = 20},
 	}
 T.CreateDragFrame(frame) --frame, dragFrameList, inset, clamp
 frame:SetWidth(num*buttonssize + 2*padding)
