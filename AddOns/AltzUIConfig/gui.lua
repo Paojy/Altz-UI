@@ -588,7 +588,7 @@ elseif G.myClass == "WARLOCK" then
 	T.createcheckbutton(UFInnerframe.other, 30, 180, format(L["显示数值"], DEMONIC_FURY), "UnitframeOptions", "demonicfuryvalue")
 	T.createslider(UFInnerframe.other, 30, 230, L["字体大小"], "UnitframeOptions", "valuefs", 1, 8, 16, 1)
 elseif G.myClass == "SHAMAN" then
-	T.createcheckbutton(UFInnerframe.other, 30, 180, format(L["显示时间"], WHC_TITLE_SHAMAN_2), "UnitframeOptions", "totemcooldown")
+	T.createcheckbutton(UFInnerframe.other, 30, 180, format(L["显示时间"], TUTORIAL_TITLE61_SHAMAN), "UnitframeOptions", "totemcooldown")
 	T.createslider(UFInnerframe.other, 30, 230, L["字体大小"], "UnitframeOptions", "valuefs", 1, 8, 16, 1)
 end
 
@@ -1345,11 +1345,12 @@ ActionbarInnerframe.bar45 = CreateOptionPage("Actionbar Options bar45", L["右�
 --ActionbarInnerframe.bar45.bar4toggle = T.ABtogglebox(ActionbarInnerframe.bar45, 30, 60, 3, L["右侧额外动作条"].." 1")
 --ActionbarInnerframe.bar45.bar5toggle = T.ABtogglebox(ActionbarInnerframe.bar45, 30, 90, 4, L["右侧额外动作条"].." 2")
 --T.createDR(ActionbarInnerframe.bar45.bar4toggle, ActionbarInnerframe.bar45.bar5toggle)
-T.createslider(ActionbarInnerframe.bar45, 30, 60, L["图标大小"], "ActionbarOptions", "bar45size", 1, 15, 40, 1)
-T.createslider(ActionbarInnerframe.bar45, 30, 100, L["图标间距"], "ActionbarOptions", "bar45space", 1, 0, 10, 1)
-T.createcheckbutton(ActionbarInnerframe.bar45, 30, 140, L["悬停渐隐"], "ActionbarOptions", "bar45mfade", L["悬停渐隐提示"])
-T.createcheckbutton(ActionbarInnerframe.bar45, 30, 170, L["条件渐隐"], "ActionbarOptions", "bar45efade", L["条件渐隐提示"])
-T.createslider(ActionbarInnerframe.bar45, 30, 220, L["渐隐透明度"], "ActionbarOptions", "bar45fademinaplha", 100, 0, 80, 5, L["渐隐透明度提示"])
+T.createcheckbutton(ActionbarInnerframe.bar45, 30, 60, L["横向动作条"], "ActionbarOptions", "Horizontalbar45")
+T.createslider(ActionbarInnerframe.bar45, 30, 110, L["图标大小"], "ActionbarOptions", "bar45size", 1, 15, 40, 1)
+T.createslider(ActionbarInnerframe.bar45, 30, 150, L["图标间距"], "ActionbarOptions", "bar45space", 1, 0, 10, 1)
+T.createcheckbutton(ActionbarInnerframe.bar45, 30, 200, L["悬停渐隐"], "ActionbarOptions", "bar45mfade", L["悬停渐隐提示"])
+T.createcheckbutton(ActionbarInnerframe.bar45, 30, 230, L["条件渐隐"], "ActionbarOptions", "bar45efade", L["条件渐隐提示"])
+T.createslider(ActionbarInnerframe.bar45, 30, 280, L["渐隐透明度"], "ActionbarOptions", "bar45fademinaplha", 100, 0, 80, 5, L["渐隐透明度提示"])
 
 ActionbarInnerframe.petbar = CreateOptionPage("Actionbar Options petbar", L["宠物动作条"], ActionbarInnerframe, "VERTICAL", .3)
 

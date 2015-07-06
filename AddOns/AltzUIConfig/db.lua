@@ -777,6 +777,7 @@ local Character_default_Settings = {
 		bar45mfade = true,
 		bar45efade = false,
 		bar45fademinaplha = 0,
+		Horizontalbar45 = false,
 		petbaruselayout5x2 = false,
 		petbarscale = .7,
 		petbuttonspace = 4,
