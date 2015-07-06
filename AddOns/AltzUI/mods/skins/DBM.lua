@@ -87,28 +87,6 @@ DBMSkin:SetScript("OnEvent", function(self, event, addon)
 							tbar:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -2, 2)
 							tbar.styled = true
 						end
-
-						if not name.styled then
-							name:ClearAllPoints()
-							name:SetPoint("LEFT", frame, "LEFT", 4, 0)
-							name:SetPoint("RIGHT", frame, "RIGHT", -10, 0)
-							name:SetHeight(8)
-							name:SetFont(G.norFont, 14, "OUTLINE")
-							name:SetShadowOffset(0, 0, 0, 0)
-							name:SetJustifyH("LEFT")
-							name.SetFont = dummy
-							name.styled = true
-						end
-						
-						if not timer.styled then	
-							timer:ClearAllPoints()
-							timer:SetPoint("RIGHT", frame, "RIGHT", -5, 0)
-							timer:SetFont(G.norFont, 14, "OUTLINE")
-							timer:SetShadowOffset(0, 0, 0, 0)
-							timer:SetJustifyH("RIGHT")
-							timer.SetFont = dummy
-							timer.styled = true
-						end
 						
 						if bar.owner.options.IconLeft then icon1:Show() icon1.overlay:Show() else icon1:Hide() icon1.overlay:Hide() end
 						if bar.owner.options.IconRight then icon2:Show() icon2.overlay:Show() else icon2:Hide() icon2.overlay:Hide() end
@@ -122,21 +100,6 @@ DBMSkin:SetScript("OnEvent", function(self, event, addon)
 					bar:ApplyStyle()
 				end
 			end
-		end
-
-		local SkinBossTitle = function()
-			local anchor = DBMBossHealthDropdown:GetParent()
-			if not anchor.styled then
-				local header = {anchor:GetRegions()}
-				if header[1]:IsObjectType("FontString") then
-					header[1]:SetFont(G.norFont, 14, "OUTLINE")
-					header[1]:SetShadowOffset(0, 0, 0, 0)
-					header[1]:SetTextColor(1, 1, 1, 1)
-					anchor.styled = true	
-				end
-				header = nil
-			end
-			anchor = nil
 		end
 		
 		local SkinBoss = function()
@@ -182,23 +145,6 @@ DBMSkin:SetScript("OnEvent", function(self, event, addon)
 				progress:SetPoint("TOPLEFT", bar, "TOPLEFT", 2, -2)
 				progress:SetPoint("BOTTOMRIGHT", bar, "BOTTOMRIGHT", -2, 2)
 
-				if not name.styled then
-					name:ClearAllPoints()
-					name:SetPoint("LEFT", bar, "LEFT", 4, 0)
-					name:SetFont(G.norFont, 14, "OUTLINE")
-					name:SetShadowOffset(0, 0, 0, 0)
-					name:SetJustifyH("LEFT")
-					name.styled = true
-				end
-				
-				if not timer.styled then
-					timer:ClearAllPoints()
-					timer:SetPoint("RIGHT", bar, "RIGHT", -5, 0)
-					timer:SetFont(G.norFont, 14, "OUTLINE")
-					timer:SetShadowOffset(0, 0, 0, 0)
-					timer:SetJustifyH("RIGHT")
-					timer.styled = true
-				end
 				count = count + 1
 			end
 		end
@@ -210,10 +156,8 @@ DBMSkin:SetScript("OnEvent", function(self, event, addon)
 		end
 		
 		hooksecurefunc(DBT, "CreateBar", SkinBars)
-		hooksecurefunc(DBM.BossHealth, "Show", SkinBossTitle)
 		hooksecurefunc(DBM.BossHealth, "AddBoss", SkinBoss)
 		hooksecurefunc(DBM.BossHealth,"UpdateSettings",SkinBoss)
-		--hooksecurefunc(DBM.InfoFrame,"Show",SkinInfo)
 		DBM.RangeCheck:Show()
 		DBM.RangeCheck:Hide()
 		
