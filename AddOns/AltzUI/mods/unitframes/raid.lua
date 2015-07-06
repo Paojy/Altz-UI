@@ -323,7 +323,7 @@ local func = function(self, unit)
 	-- Raid debuff
     local auras = CreateFrame("Frame", nil, self)
 	auras:SetFrameLevel(4)
-    auras:SetSize(16, 16)
+    auras:SetSize(20, 20)
     auras:SetPoint("LEFT", hp, "LEFT", 15, 0)
 	auras.tfontsize = 10
 	auras.cfontsize = 10
@@ -332,7 +332,7 @@ local func = function(self, unit)
 	-- Tankbuff
     local tankbuff = CreateFrame("Frame", nil, self)
 	tankbuff:SetFrameLevel(4)
-    tankbuff:SetSize(16, 16)
+    tankbuff:SetSize(20, 20)
     tankbuff:SetPoint("LEFT", auras, "RIGHT", 5, 0)
 	tankbuff.tfontsize = 10
 	tankbuff.cfontsize = 10
