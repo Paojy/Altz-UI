@@ -220,6 +220,7 @@ L["5*2布局提示"] = "Use Layout 5*2 for Pet Actionbar, disable to use layout 
 L["姿态/形态条"] = "Stance Bar"
 L["离开载具按钮"] = "Leave Vehicle Button"
 L["额外特殊按钮"] = "Extrabar Button"
+L["横向动作条"] = "Horizontal RightMultiActionBar"
 
 -- 增益和减益
 L["行距"] = "Row Space"
