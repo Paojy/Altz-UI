@@ -1,7 +1,7 @@
 ﻿## Interface: 60200
 ## Title: |cffEE3A8CAltz|rUI
 ## X-oUF: AltzUF
-## Version: 6.21
+## Version: 6.22
 ## Author: Blue
 ## Dependencies: AltzUIConfig
 
