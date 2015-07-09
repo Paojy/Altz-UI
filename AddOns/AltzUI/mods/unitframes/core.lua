@@ -28,6 +28,7 @@ local classicon_colors = { --monk/paladin/preist
 	{255/255, 50/255, 90/255},
 	{255/255, 80/255, 120/255},
 	{255/255, 110/255, 160/255},
+	{255/255, 140/255, 190/255},
 }
 
 local cpoints_colors = { -- combat points
@@ -35,6 +36,7 @@ local cpoints_colors = { -- combat points
 	{255/255, 110/255, 0/255},
 	{255/255, 150/255, 0/130},
 	{255/255, 200/255, 0/255},
+	{255/255, 255/255, 0/255},
 	{255/255, 255/255, 0/255},
 }
 
@@ -258,7 +260,7 @@ local CpointsPostUpdate = function(element, cur)
 end
 
 local ClassIconsPostUpdate = function(element, cur, max, maxchange)
-	for i = 1, 5 do
+	for i = 1, 6 do
 		if not max or not cur then return end
 		if max > 0 and cur == max then
 			element[i]:SetStatusBarColor(unpack(classicon_colors[max]))
@@ -1090,7 +1092,7 @@ local UnitSpecific = {
 			elseif G.myClass == "WARLOCK" then
 				count = 4
             elseif G.myClass == "PALADIN" or G.myClass == "PRIEST" or G.myClass == "MONK" then
-                count = 5
+                count = 6
 			elseif G.myClass == "SHAMAN" then
 				count = 4
 			elseif G.myClass == "MAGE" then
@@ -1104,16 +1106,8 @@ local UnitSpecific = {
             bars:SetSize(aCoreCDB["UnitframeOptions"]["width"], 10)
 
             for i = 1, count do
-				if G.myClass == "PALADIN" then
-					bars[i] = T.createStatusbar(bars, "ARTWORK", aCoreCDB["UnitframeOptions"]["height"]*-(aCoreCDB["UnitframeOptions"]["hpheight"]-1), (aCoreCDB["UnitframeOptions"]["width"]+2)/HOLY_POWER_FULL-3, 1, 1, 1, 1, G.uiname.."SpecOrbs"..i)
-				elseif G.myClass == "PRIEST" then
-					bars[i] = T.createStatusbar(bars, "ARTWORK", aCoreCDB["UnitframeOptions"]["height"]*-(aCoreCDB["UnitframeOptions"]["hpheight"]-1), (aCoreCDB["UnitframeOptions"]["width"]+2)/SPELL_POWER_SHADOW_ORBS-3, 1, 1, 1, 1, G.uiname.."SpecOrbs"..i)
-				elseif G.myClass == "MONK" then
-					bars[i] = T.createStatusbar(bars, "ARTWORK", aCoreCDB["UnitframeOptions"]["height"]*-(aCoreCDB["UnitframeOptions"]["hpheight"]-1), (aCoreCDB["UnitframeOptions"]["width"]+2)/4-3, 1, 1, 1, 1, G.uiname.."SpecOrbs"..i)
-				else
-					bars[i] = T.createStatusbar(bars, "ARTWORK", aCoreCDB["UnitframeOptions"]["height"]*-(aCoreCDB["UnitframeOptions"]["hpheight"]-1), (aCoreCDB["UnitframeOptions"]["width"]+2)/count-3, 1, 1, 1, 1, G.uiname.."SpecOrbs"..i)
-				end
-				
+				bars[i] = T.createStatusbar(bars, "ARTWORK", aCoreCDB["UnitframeOptions"]["height"]*-(aCoreCDB["UnitframeOptions"]["hpheight"]-1), (aCoreCDB["UnitframeOptions"]["width"]+2)/count-3, 1, 1, 1, 1, G.uiname.."SpecOrbs"..i)
+
                 if i == 1 then
                     bars[i]:SetPoint("BOTTOMLEFT", bars, "BOTTOMLEFT")
                 else
