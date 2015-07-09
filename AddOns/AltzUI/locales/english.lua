@@ -118,6 +118,12 @@ L["全偷药水"] = "Everyone had potion buff when combat started."
 L["药水"] = "Didn't use potion during combat: "
 L["全药水"] = "Everyone used potion during combat."
 
+L["无法自动邀请进组:"] = "I can't invite you:"
+L["我不能组人"] = "I'm not a raid leader or an assistant"
+L["小队满了"] = "party is full"
+L["团队满了"] = "raid is full"
+L["客户端错误"] = "I can't invite you by key word now, your account seems to be sticking to %s."
+
 L["界面移动工具"] = "Frame Mover"
 L["锚点框体"] = "Anchor Frame"
 L["重置位置"] = "Reset this frame to it's default position."
