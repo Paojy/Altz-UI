@@ -83,7 +83,7 @@ end
 local createAuraIcon = function(icons, index)
 	icons.createdIcons = icons.createdIcons + 1
 
-	local button = CreateFrame("Button", nil, icons)
+	local button = CreateFrame("Button", "AltzAuraButton"..index, icons)
 	button:RegisterForClicks'RightButtonUp'
 
 	local cd = CreateFrame("Cooldown", nil, button, "CooldownFrameTemplate")

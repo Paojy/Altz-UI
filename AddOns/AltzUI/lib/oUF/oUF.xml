@@ -38,7 +38,8 @@
 	<Script file='elements\druidmana.lua' />
 	<Script file='elements\classicons.lua' />
 	<Script file='elements\stagger.lua' />
-
+	<Script file='elements\raidrole.lua' />
+	
 	<!-- Clique support -->
 	<Button name="oUF_ClickCastUnitTemplate" virtual="true" inherits="SecureUnitButtonTemplate,SecureHandlerEnterLeaveTemplate">
 		<Attributes>
