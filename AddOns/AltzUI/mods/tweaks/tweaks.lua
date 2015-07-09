@@ -12,7 +12,6 @@ local camera = aCoreCDB["OtherOptions"]["camera"]
 
 local acceptfriendlyinvites = aCoreCDB["OtherOptions"]["acceptfriendlyinvites"]
 local autoinvite = aCoreCDB["OtherOptions"]["autoinvite"]
-local autoinvitekeywords = aCoreCDB["OtherOptions"]["autoinvitekeywords"]
 
 local eventframe = CreateFrame('Frame')
 eventframe:SetScript('OnEvent', function(self, event, ...)
@@ -151,6 +150,7 @@ Camera
 if camera then
 	eventframe:RegisterEvent('VARIABLES_LOADED')
 	function eventframe:VARIABLES_LOADED()
+		SetCVar("cameraSmoothTrackingStyle", 0)
 		SetCVar("cameraDistanceMax", 25)
 		SetCVar("cameraDistanceMaxFactor", 2)
 		eventframe:UnregisterEvent('VARIABLES_LOADED')
@@ -272,21 +272,73 @@ end
 --[[-----------------------------------------------------------------------------
 Key Word Invite
 -------------------------------------------------------------------------------]]
+local BlzGames = {
+	["App"]="Battle.Net-Client",
+	["D3"]="Diablo 3",
+	["Hero"]="Heroes of the Storm",
+	["S2"]="Starcarft 2",
+	["WoW"]="World of Warcraft",
+	["WTCG"]="Hearthstone",
+}
+
+local function InvitePlayer(name)
+	local partyMemberCount = GetNumSubgroupMembers(LE_PARTY_CATEGORY_HOME)
+	local raidMemberCount = GetNumGroupMembers(LE_PARTY_CATEGORY_HOME)
+	if raidMemberCount == 0 then			-- Not in raid
+		if partyMemberCount == 0 then				-- Solo
+			InviteUnit(name)
+			return true
+		else-- Party
+			if not IsRealPartyLeader() then
+				return false, L["我不能组人"]
+			end
+			if partyMemberCount == 4 then
+				if aCoreCDB["OtherOptions"]["autoinviteautoconvert"] then
+					ConvertToRaid()
+				else
+					return false, L["小队满了"]
+				end
+			end
+			InviteUnit(name)
+			return true
+		end
+	else
+		if raidMemberCount < 40 then
+			if not IsRealRaidLeader() or not IsRaidOfficer() then
+				return false, L["我不能组人"]
+			end
+			InviteUnit(name)
+			return true
+		else
+			return false, L["团队满了"]
+		end
+	end
+end
+
+local errAlreadyInGroup = string.gsub(ERR_ALREADY_IN_GROUP_S, "%%s", "(%%a*)")
 if autoinvite then
     eventframe:RegisterEvent("CHAT_MSG_WHISPER")
     eventframe:RegisterEvent("CHAT_MSG_BN_WHISPER")
 	local function AutoInvite(event, arg1, arg2, ...)
-		local keywords = {string.split(" ", autoinvitekeywords)}
-		if (not IsInGroup() or UnitIsGroupLeader("player") or UnitIsGroupAssistant("player")) then
-			for _, keyword in pairs(keywords) do
-				if keyword == arg1:lower() then
-					if event == "CHAT_MSG_WHISPER" then
-						InviteUnit(arg2)
-					elseif event == "CHAT_MSG_BN_WHISPER" then
-						local _, toonName, _, realmName = BNGetToonInfo(select(11, ...))
-						InviteUnit(toonName.."-"..realmName)
+		local keywords = {string.split(" ", aCoreCDB["OtherOptions"]["autoinvitekeywords"])}
+		local success, reason
+		for _, keyword in pairs(keywords) do
+			if keyword:lower() == arg1:lower() then
+				if event == "CHAT_MSG_WHISPER" then
+					success, reason = InvitePlayer(arg2)
+					if not success then
+						SendChatMessage(L["无法自动邀请进组:"]..reason, "WHISPER", nil, arg2)
 					end
-					return
+				elseif event == "CHAT_MSG_BN_WHISPER" then
+					local _, toonName, client, realmName = BNGetToonInfo(select(11, ...))
+					if client == "WoW" then
+						success, reason = InvitePlayer(toonName.."-"..realmName)
+						if not success then
+							BNSendWhisper(select(11, ...), L["无法自动邀请进组:"]..reason)
+						end
+					else
+						BNSendWhisper(select(11, ...), L["无法自动邀请进组:"]..string.format(L["客户端错误"], BlzGames[client]))
+					end
 				end
 			end
 		end
