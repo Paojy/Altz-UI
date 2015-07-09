@@ -1,6 +1,8 @@
 ﻿local T, C, L, G = unpack(select(2, ...))
 local F = unpack(Aurora)
 
+if not aCoreCDB["ItemOptions"]["enablebag"] then return end
+
 local BFrame = CreateFrame('frame')
 
 config = {
@@ -62,14 +64,18 @@ local function skin(frame)
 	frame:SetBackdrop({bgFile = G.media.blank, edgeFile = G.media.blank, edgeSize = 1})
 	frame:SetBackdropColor(0,0,0,.1)
 	frame:SetBackdropBorderColor(0,0,0,1)
+
 	f:SetPoint("TOPLEFT", frame, 1, -1)
 	f:SetPoint("BOTTOMRIGHT", frame, -1, 1)
 	f:SetTexCoord(.1, .9, .1, .9)
 	
 	if (q) then
-		q:SetPoint("TOPLEFT", frame, 1, -1)
-		q:SetPoint("BOTTOMRIGHT", frame, -1, 1)
-		q:SetTexCoord(.1, .9, .1, .9)
+		q:SetPoint("TOPLEFT", frame, -1, 1)
+		q:SetPoint("BOTTOMRIGHT", frame, 1, -1)
+		q:SetTexture(G.media.blank)
+		q:SetVertexColor(1, 1, 0)
+		q:SetDrawLayer("BACKGROUND")
+		q.SetTexture = T.dummy
 	end
 end
 
