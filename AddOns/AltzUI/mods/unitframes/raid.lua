@@ -265,20 +265,27 @@ local func = function(self, unit)
 	end
 	
 	local leader = hp:CreateTexture(nil, "OVERLAY", 1)
-    leader:SetSize(12, 12)
-    leader:SetPoint("BOTTOMLEFT", hp, "BOTTOMLEFT", 5, -5)
+    leader:SetSize(10, 10)
+    leader:SetPoint("BOTTOMLEFT", hp, "BOTTOMLEFT", 0, -5)
     self.Leader = leader
 
 	local assistant = hp:CreateTexture(nil, "OVERLAY", 1)
-    assistant:SetSize(12, 12)
-    assistant:SetPoint("BOTTOMLEFT", hp, "BOTTOMLEFT", 5, -5)
+    assistant:SetSize(10, 10)
+    assistant:SetPoint("BOTTOMLEFT", hp, "BOTTOMLEFT", 0, -5)
 	self.Assistant = assistant
 	
     local masterlooter = hp:CreateTexture(nil, 'OVERLAY', 1)
-    masterlooter:SetSize(12, 12)
-    masterlooter:SetPoint('LEFT', leader, 'RIGHT')
+    masterlooter:SetSize(10, 10)
+    masterlooter:SetPoint('LEFT', leader, 'RIGHT', 0, 1)
     self.MasterLooter = masterlooter
-
+	
+	if aCoreCDB["UnitframeOptions"]["healtank_assisticon"] then
+		local raidrole = hp:CreateTexture(nil, 'OVERLAY', 1)
+		raidrole:SetSize(10, 10)
+		raidrole:SetPoint('LEFT', masterlooter, 'RIGHT')
+		self.RaidRole = raidrole
+	end
+	
 	local lfd =  T.createtext(hp, "OVERLAY", 13, "OUTLINE", "CENTER")
 	lfd:SetFont(G.symbols, aCoreCDB["UnitframeOptions"]["raidfontsize"]-3, "OUTLINE")
 	lfd:SetPoint("BOTTOM", hp, 0, -1)
@@ -420,19 +427,26 @@ local dfunc = function(self, unit)
 	self.Health.PostUpdate = T.Updatehealthbar
 	
 	local leader = hp:CreateTexture(nil, "OVERLAY", 1)
-    leader:SetSize(8, 8)
-    leader:SetPoint("BOTTOMLEFT", hp, "BOTTOMLEFT", 5, -5)
+    leader:SetSize(10, 10)
+    leader:SetPoint("BOTTOMLEFT", hp, "BOTTOMLEFT", 0, -3)
     self.Leader = leader
 
 	local assistant = hp:CreateTexture(nil, "OVERLAY", 1)
-    assistant:SetSize(8, 8)
-    assistant:SetPoint("BOTTOMLEFT", hp, "BOTTOMLEFT", 5, -5)
+    assistant:SetSize(10, 10)
+    assistant:SetPoint("BOTTOMLEFT", hp, "BOTTOMLEFT", 0, -3)
 	self.Assistant = assistant
 	
     local masterlooter = hp:CreateTexture(nil, 'OVERLAY', 1)
-    masterlooter:SetSize(8, 8)
-    masterlooter:SetPoint('LEFT', leader, 'RIGHT')
+    masterlooter:SetSize(10, 10)
+    masterlooter:SetPoint('LEFT', leader, 'RIGHT', 0, 1)
     self.MasterLooter = masterlooter
+	
+	if aCoreCDB["UnitframeOptions"]["dpstank_assisticon"] then
+		local raidrole = hp:CreateTexture(nil, 'OVERLAY', 1)
+		raidrole:SetSize(10, 10)
+		raidrole:SetPoint('LEFT', masterlooter, 'RIGHT')
+		self.RaidRole = raidrole
+	end
 	
 	local lfd =  T.createtext(hp, "OVERLAY", 13, "OUTLINE", "LEFT")
 	lfd:SetFont(G.symbols, aCoreCDB["UnitframeOptions"]["raidfontsize"]-3, "OUTLINE")
@@ -528,10 +542,14 @@ local function Spawnhealraid()
 	T.CreateDragFrame(healerraid)
 	healerraid.df:ClearAllPoints()
 	local size
-	if aCoreCDB["UnitframeOptions"]["dpsgroupfilter"] == "1,2,3,4,5,6" then
-		size = 30
-	else
+	if aCoreCDB["UnitframeOptions"]["healergroupfilter"] == "1,2,3,4,5,6,7,8" then
 		size = 40
+	elseif aCoreCDB["UnitframeOptions"]["healergroupfilter"] == "1,2,3,4,5,6" then
+		size = 30
+	elseif aCoreCDB["UnitframeOptions"]["healergroupfilter"] == "1,2,3,4" then
+		size = 20
+	else
+		size = 10
 	end
 	healerraid.df:SetSize((size/5)*(aCoreCDB["UnitframeOptions"]["healerraidwidth"]+5)-5, 5*(aCoreCDB["UnitframeOptions"]["healerraidheight"]+5)-5)
 	healerpet = oUF:SpawnHeader('Altz_HealerPetRaid', 'SecureGroupPetHeaderTemplate', 'raid,party,solo',
@@ -590,10 +608,15 @@ local function Spawndpsraid()
 	T.CreateDragFrame(dpsraid)
 	dpsraid.df:ClearAllPoints()
 	local size, more
-	if aCoreCDB["UnitframeOptions"]["dpsgroupfilter"] == "1,2,3,4,5,6" then
-		size = 30
-	else
+	local size
+	if aCoreCDB["UnitframeOptions"]["dpsgroupfilter"] == "1,2,3,4,5,6,7,8" then
 		size = 40
+	elseif aCoreCDB["UnitframeOptions"]["dpsgroupfilter"] == "1,2,3,4,5,6" then
+		size = 30
+	elseif aCoreCDB["UnitframeOptions"]["dpsgroupfilter"] == "1,2,3,4" then
+		size = 20
+	else
+		size = 10
 	end
 	if size%aCoreCDB["UnitframeOptions"]["unitnumperline"] == 0 then
 		more = 0
