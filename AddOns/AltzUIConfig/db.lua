@@ -723,13 +723,15 @@ local Character_default_Settings = {
 		showgcd = true,
 		showmisshp = true,
 		healprediction = true,
-
+		healtank_assisticon = false,
+		
 		--[[ dps/tank mode ]]--
 		dpsgroupfilter = '1,2,3,4,5,6',
 		dpsraidheight = 15,
 		dpsraidwidth = 100,
 		unitnumperline = 25,
 		dpsraidgroupbyclass = true,
+		dpstank_assisticon = true,
 		
 		--[[ click cast ]]--
 		enableClickCast = false,
@@ -747,6 +749,7 @@ local Character_default_Settings = {
 		autorepair_guild = true,
 		autosell = true,
 		alreadyknown = true,
+		showitemlevel = true,
 		autobuy = false,
 		autobuylist = {
 		["79249"] = 20, -- 清心书卷

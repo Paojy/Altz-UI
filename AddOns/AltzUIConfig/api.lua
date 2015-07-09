@@ -720,7 +720,7 @@ T.createradiobuttongroup = function(parent, x, y, name, table, value, group)
 	frame:SetPoint("TOPLEFT", x, -y)
 	frame:SetSize(150, 30)
 	
-	for k, v in pairs(group) do
+	for k, v in T.pairsByKeys(group) do
 		frame[k] = CreateFrame("CheckButton", G.uiname..value..k.."RadioButtonGroup", frame, "UIRadioButtonTemplate")
 		F.ReskinRadio(frame[k])
 		
@@ -731,7 +731,7 @@ T.createradiobuttongroup = function(parent, x, y, name, table, value, group)
 		end)
 		
 		frame[k]:SetScript("OnClick", function(self)
-			if self:GetChecked() then 
+			if self:GetChecked() then
 				aCoreCDB[table][value] = k
 			else
 				self:SetChecked(true)
@@ -739,10 +739,10 @@ T.createradiobuttongroup = function(parent, x, y, name, table, value, group)
 		end)		
 	end
 	
-	for k, v in pairs(group) do
+	for k, v in T.pairsByKeys(group) do
 		frame[k]:HookScript("OnClick", function(self)
 			if aCoreCDB[table][value] == k then
-				for key, value in pairs(group) do
+				for key, value in T.pairsByKeys(group) do
 					if key ~= k then
 						frame[key]:SetChecked(false)
 					end

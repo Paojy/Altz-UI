@@ -235,14 +235,16 @@ ChatOptions.goldkeywordlist.edit:SetScript("OnEnterPressed", function(self) self
 local ItemOptions = CreateOptionPage("Item Options", ITEMS, GUI, "VERTICAL", nil, true)
 
 T.createcheckbutton(ItemOptions, 30, 60, L["启用"], "ItemOptions", "enablebag")
-T.createcheckbutton(ItemOptions, 30, 90, L["已会配方着色"], "ItemOptions", "alreadyknown", L["已会配方着色提示"])
-T.createcheckbutton(ItemOptions, 30, 120, L["自动修理"], "ItemOptions", "autorepair", L["自动修理提示"])
-T.createcheckbutton(ItemOptions, 30, 150, L["自动公会修理"], "ItemOptions", "autorepair_guild", L["自动公会修理提示"])
-T.createcheckbutton(ItemOptions, 30, 180, L["自动售卖"], "ItemOptions", "autosell", L["自动售卖提示"])
-T.createcheckbutton(ItemOptions, 30, 210, L["自动购买"], "ItemOptions", "autobuy", L["自动购买提示"])
+T.createcheckbutton(ItemOptions, 30, 90, L["显示物品等级"], "ItemOptions", "showitemlevel", L["显示物品等级提示"])
+T.createDR(ItemOptions.enablebag, ItemOptions.showitemlevel)
+T.createcheckbutton(ItemOptions, 30, 120, L["已会配方着色"], "ItemOptions", "alreadyknown", L["已会配方着色提示"])
+T.createcheckbutton(ItemOptions, 30, 150, L["自动修理"], "ItemOptions", "autorepair", L["自动修理提示"])
+T.createcheckbutton(ItemOptions, 30, 180, L["自动公会修理"], "ItemOptions", "autorepair_guild", L["自动公会修理提示"])
+T.createcheckbutton(ItemOptions, 30, 210, L["自动售卖"], "ItemOptions", "autosell", L["自动售卖提示"])
+T.createcheckbutton(ItemOptions, 30, 240, L["自动购买"], "ItemOptions", "autobuy", L["自动购买提示"])
 
 ItemOptions.SF:ClearAllPoints()
-ItemOptions.SF:SetPoint("TOPLEFT", ItemOptions, "TOPLEFT", 40, -280)
+ItemOptions.SF:SetPoint("TOPLEFT", ItemOptions, "TOPLEFT", 40, -310)
 ItemOptions.SF:SetPoint("BOTTOMRIGHT", ItemOptions, "BOTTOMRIGHT", -300, 135)
 F.CreateBD(ItemOptions.SF, .3)
 
@@ -314,7 +316,7 @@ end
 
 local Autobuy_iteminput = CreateFrame("EditBox", G.uiname.."AutobuyList ItemInput", ItemOptions)
 Autobuy_iteminput:SetSize(150, 20)
-Autobuy_iteminput:SetPoint("TOPLEFT", 40, -250)
+Autobuy_iteminput:SetPoint("TOPLEFT", 40, -280)
 F.CreateBD(Autobuy_iteminput)
 
 Autobuy_iteminput:SetFont(GameFontHighlight:GetFont(), 12, "OUTLINE")
@@ -634,6 +636,8 @@ T.createDR(RFInnerframe.switch.autoswitch, RFInnerframe.switch.raidonly)
 RFInnerframe.healer = CreateOptionPage("RF Options healer", L["治疗模式"], RFInnerframe, "VERTICAL", .3)
 
 local groupfilter_group = {
+	["1,2"] = L["10-man"],
+	["1,2,3,4"] = L["20-man"],		
 	["1,2,3,4,5,6"] = L["30-man"],
 	["1,2,3,4,5,6,7,8"] = L["40-man"],
 }
@@ -652,14 +656,16 @@ T.createradiobuttongroup(RFInnerframe.healer, 30, 310, L["小队排列方向"], 
 T.createcheckbutton(RFInnerframe.healer, 30, 340, L["GCD"], "UnitframeOptions", "showgcd", L["GCD提示"])
 T.createcheckbutton(RFInnerframe.healer, 30, 370, L["显示缺失生命值"], "UnitframeOptions", "showmisshp", L["显示缺失生命值提示"])
 T.createcheckbutton(RFInnerframe.healer, 30, 400, L["治疗和吸收预估"], "UnitframeOptions", "healprediction", L["治疗和吸收预估提示"])
+T.createcheckbutton(RFInnerframe.healer, 30, 430, L["主坦克和主助手"], "UnitframeOptions", "healtank_assisticon", L["主坦克和主助手提示"])
 
 RFInnerframe.dps = CreateOptionPage("RF Options dps", L["输出/坦克模式"], RFInnerframe, "VERTICAL", .3)
 
 T.createradiobuttongroup(RFInnerframe.dps, 30, 60, L["团队规模"], "UnitframeOptions", "dpsgroupfilter", groupfilter_group)
 T.createslider(RFInnerframe.dps, 30, 110, L["高度"], "UnitframeOptions", "dpsraidheight", 1, 10, 150, 1)
 T.createslider(RFInnerframe.dps, 30, 150, L["宽度"], "UnitframeOptions", "dpsraidwidth", 1, 10, 150, 1)
-T.createcheckbutton(RFInnerframe.dps, 30, 190, L["职业顺序"], "UnitframeOptions", "dpsraidgroupbyclass")
-T.createslider(RFInnerframe.dps, 30, 240, L["整体高度"], "UnitframeOptions", "unitnumperline", 1, 1, 40, 1, L["整体高度提示"])
+T.createcheckbutton(RFInnerframe.dps, 30, 190, L["主坦克和主助手"], "UnitframeOptions", "dpstank_assisticon", L["主坦克和主助手提示"])
+T.createcheckbutton(RFInnerframe.dps, 30, 220, L["职业顺序"], "UnitframeOptions", "dpsraidgroupbyclass")
+T.createslider(RFInnerframe.dps, 30, 270, L["整体高度"], "UnitframeOptions", "unitnumperline", 1, 1, 40, 1, L["整体高度提示"])
 
 RFInnerframe.clickcast = CreateOptionPage("RF Options clickcast", L["点击施法"], RFInnerframe, "VERTICAL", .3)
 
@@ -1525,7 +1531,7 @@ OtherOptions.DividingLine:SetTexture(1, 1, 1, .2)
 T.createcheckbutton(OtherOptions, 30, 330, L["隐藏错误提示"], "OtherOptions", "hideerrors", L["隐藏错误提示提示"])	
 T.createcheckbutton(OtherOptions, 300, 330, L["成就截图"], "OtherOptions", "autoscreenshot", L["成就截图提示"])
 T.createcheckbutton(OtherOptions, 30, 360, L["回收内存"], "OtherOptions", "collectgarbage", L["回收内存提示"])
-T.createcheckbutton(OtherOptions, 300, 360, L["最远镜头"], "OtherOptions", "camera", L["最远镜头提示"])
+T.createcheckbutton(OtherOptions, 300, 360, L["镜头优化"], "OtherOptions", "camera", L["镜头优化提示"])
 T.createcheckbutton(OtherOptions, 30, 390, L["自动接受复活"], "OtherOptions", "acceptres", L["自动接受复活提示"])	
 T.createcheckbutton(OtherOptions, 300, 390, L["战场自动释放灵魂"], "OtherOptions", "battlegroundres", L["战场自动释放灵魂提示"])
 T.createcheckbutton(OtherOptions, 30, 420, L["自动交接任务"], "OtherOptions", "autoquests", L["自动交接任务提示"])
