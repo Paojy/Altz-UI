@@ -127,17 +127,9 @@ function eventframe:MERCHANT_SHOW()
 						print(L["货物不足"]..G.classcolor.." "..ItemName.."|r")
 					elseif needbuy/quantity*price > GetMoney() then -- 钱够不够
 						print(L["钱不够"]..G.classcolor.." "..ItemName.."|r")
-					else
-						maxStack = GetMerchantItemMaxStack(index)
-						while needbuy > maxStack*quantity do
-							BuyMerchantItem(index, maxStack)
-							print(format(L["购买"], maxStack*quantity, G.classcolor..ItemName.."|r"))
-							needbuy = needbuy - maxStack*quantity
-						end
-						if needbuy > 0 then
-							BuyMerchantItem(index, needbuy/quantity)
-							print(format(L["购买"], needbuy, G.classcolor..ItemName.."|r"))
-						end				
+					elseif needbuy > 0 then
+						BuyMerchantItem(index, needbuy)
+						print(format(L["购买"], needbuy, G.classcolor..ItemName.."|r"))
 					end
 				end
 			end
