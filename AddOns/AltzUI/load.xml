@@ -7,7 +7,6 @@
 	<Script file="locales\english.lua"/>
 	
 	<Include file="lib\oUF\oUF.xml"/>
-	<Include file="lib\!NoTaint\embeds.xml"/>
 	
 	<Script file="core\api.lua"/>
 	<Script file="core\moving.lua"/>
@@ -46,6 +45,7 @@
 	<Script file="mods\bag\bags.lua"/>
 	<Script file="mods\bag\gold.lua"/>
 	<Script file="mods\bag\itemlevel.lua"/>
+	<Script file="mods\bag\craft.lua"/>
 	
 	<Script file="mods\chat\chat.lua"/>
 	<Script file="mods\chat\autoscroll.lua"/>
