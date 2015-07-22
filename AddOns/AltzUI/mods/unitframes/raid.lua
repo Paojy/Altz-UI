@@ -380,6 +380,15 @@ local dfunc = function(self, unit)
     self.hl:SetVertexColor( 1, 1, 1, .3)
     self.hl:SetBlendMode("ADD")
 	
+	-- target border --
+	self.targetborder = Createpxborder(self, 2)
+	self.targetborder:SetBackdropBorderColor(1, 1, .4)
+	self:RegisterEvent("PLAYER_TARGET_CHANGED", ChangedTarget)
+
+	-- threat border --
+	self.threatborder = Createpxborder(self, 1)
+	self:RegisterEvent("UNIT_THREAT_SITUATION_UPDATE", UpdateThreat)
+	
 	-- backdrop --
 	self.bg = CreateFrame("Frame", nil, self)
 	self.bg:SetFrameLevel(0)
