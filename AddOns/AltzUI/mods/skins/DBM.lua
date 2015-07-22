@@ -88,6 +88,28 @@ DBMSkin:SetScript("OnEvent", function(self, event, addon)
 							tbar.styled = true
 						end
 						
+						if not name.styled then
+							name:ClearAllPoints()
+							name:SetPoint("LEFT", frame, "LEFT", 4, 0)
+							name:SetPoint("RIGHT", frame, "RIGHT", -10, 0)
+							name:SetHeight(8)
+							name:SetFont(G.norFont, 14, "OUTLINE")
+							name:SetShadowOffset(0, 0, 0, 0)
+							name:SetJustifyH("LEFT")
+							name.SetFont = dummy
+							name.styled = true
+						end
+						
+						if not timer.styled then	
+							timer:ClearAllPoints()
+							timer:SetPoint("RIGHT", frame, "RIGHT", -5, 0)
+							timer:SetFont(G.norFont, 14, "OUTLINE")
+							timer:SetShadowOffset(0, 0, 0, 0)
+							timer:SetJustifyH("RIGHT")
+							timer.SetFont = dummy
+							timer.styled = true
+						end
+						
 						if bar.owner.options.IconLeft then icon1:Show() icon1.overlay:Show() else icon1:Hide() icon1.overlay:Hide() end
 						if bar.owner.options.IconRight then icon2:Show() icon2.overlay:Show() else icon2:Hide() icon2.overlay:Hide() end
 						tbar:SetAlpha(1)
