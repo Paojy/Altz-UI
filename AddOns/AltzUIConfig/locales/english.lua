@@ -317,7 +317,7 @@ L["更改设置提示"] = "Load default settings for this addon"
 
 -- 命令
 L["命令"] = "Commands"
-L["指令"] = "%s/rl|r - Reload UI \n \n %s/hb|r - Key Binding Mode \n \n %sSHIFT+Leftbutton|r - Set Focus \n \n %sTab|r - Change between available channels. \n \n %s/Tutorials|r - Tutorials \n \n %sEnjoy!|r"
+L["指令"] = "%s/rl|r - Reload UI \n \n %s/hb|r - Key Binding Mode \n \n %sSHIFT+Click|r - Set Focus \n \n %sALT+Click|r - Mill/Prospect/Disenchant/Unlock instantly \n \n %sTab|r - Change between available channels. \n \n %s/Tutorials|r - Tutorials \n \n %sEnjoy!|r"
 
 -- 制作
 L["制作"] = "Credits"

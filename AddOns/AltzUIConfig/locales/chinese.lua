@@ -317,7 +317,7 @@ L["更改设置"] = "重新设置该插件"
 L["更改设置提示"] = "这将改变该插件的设置并重载界面"
 -- 命令
 L["命令"] = "命令"
-L["指令"] = " %s/rl|r - 重载界面 \n \n %s/hb|r - 按键绑定模式 \n \n %sSHIFT+左键|r - 设置焦点 \n \n %sTab|r - 切换聊天频道 \n \n %s/Tutorials|r - 重置教程 \n \n %sEnjoy!|r"
+L["指令"] = " %s/rl|r - 重载界面 \n \n %s/hb|r - 按键绑定模式 \n \n %sSHIFT+左键|r - 设置焦点 \n \n %sALT+单击物品|r - 快速分解、研磨、选矿、开锁 \n \n %sTab|r - 切换聊天频道 \n \n %s/Tutorials|r - 重置教程 \n \n %sEnjoy!|r"
 
 -- 制作
 L["制作"] = "制作"

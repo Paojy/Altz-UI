@@ -317,7 +317,7 @@ L["更改设置提示"] = "這將改變該插件的設置並重載界面"
 
 -- 命令
 L["命令"] = "命令"
-L["指令"] = " %s/rl|r - 重載界面 \n \n %s/hb|r - 按鍵綁定模式 \n \n %sSHIFT+左鍵|r - 設置焦點 \n \n %sTab|r - 切换聊天頻道 \n \n %s/Tutorials|r - 重置教程 \n \n %sEnjoy!|r"
+L["指令"] = " %s/rl|r - 重載界面 \n \n %s/hb|r - 按鍵綁定模式 \n \n %sSHIFT+左鍵|r - 設置焦點 \n \n %sALT+單擊物品|r - 快速分解、研磨、選礦、開鎖 \n \n %sTab|r - 切換聊天頻道 \n \n %s/Tutorials|r - 重置教程 \n \n %sEnjoy!|r"
 
 -- 制作
 L["制作"] = "制作"
