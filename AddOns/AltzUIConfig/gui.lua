@@ -682,33 +682,88 @@ for i = 1, 20 do
 	clickcastframe["tab"..i]:SetScript("OnMouseDown", function() end)
 end
 
-StaticPopupDialogs[G.uiname.."give macro"] = {
-	text = L["输入一个宏"],
-	button1 = ACCEPT, 
-	button2 = CANCEL,
-	hasEditBox = 1,
-	hideOnEscape = 1, 
-	whileDead = true,
-	preferredIndex = 3,
-}
+local MacroPop = CreateFrame("Frame", G.uiname.."give macro", clickcastframe)
+MacroPop:SetPoint("TOPLEFT", clickcastframe, "TOPLEFT", 10, -150)
+MacroPop:SetPoint("BOTTOMRIGHT", clickcastframe, "BOTTOMRIGHT", -10, 20)
+
+F.SetBD(MacroPop)
+MacroPop:Hide()
+MacroPop:SetScript("OnHide", function(self) self:Hide() end)
+
+MacroPop.scrollBG = CreateFrame("ScrollFrame", G.uiname.."give macro MultiLineEditBox_BG", MacroPop, "UIPanelScrollFrameTemplate")
+MacroPop.scrollBG:SetPoint("TOPLEFT", 10, -30)
+MacroPop.scrollBG:SetSize(330, 80)
+MacroPop.scrollBG:SetFrameLevel(MacroPop:GetFrameLevel()+1)
+F.CreateBD(MacroPop.scrollBG, 0)
+	
+MacroPop.scrollBG.gradient = F.CreateGradient(MacroPop.scrollBG)
+MacroPop.scrollBG.gradient:SetPoint("TOPLEFT", MacroPop.scrollBG, 1, -1)
+MacroPop.scrollBG.gradient:SetPoint("BOTTOMRIGHT", MacroPop.scrollBG, -1, 1)
+	
+MacroPop.scrollBG.name = MacroPop.scrollBG:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
+MacroPop.scrollBG.name:SetPoint("BOTTOMLEFT", MacroPop.scrollBG, "TOPLEFT", 5, 8)
+MacroPop.scrollBG.name:SetJustifyH("LEFT")
+MacroPop.scrollBG.name:SetText(L["输入一个宏"])
+
+MacroPop.scrollAC = CreateFrame("Frame", G.uiname.."give macro MultiLineEditBox_ScrollAC", MacroPop.scrollBG)
+MacroPop.scrollAC:SetPoint("TOP", MacroPop.scrollBG, "TOP", 0, -3)
+MacroPop.scrollAC:SetWidth(MacroPop.scrollBG:GetWidth())
+MacroPop.scrollAC:SetHeight(MacroPop.scrollBG:GetHeight())
+MacroPop.scrollAC:SetFrameLevel(MacroPop.scrollBG:GetFrameLevel()+1)
+MacroPop.scrollBG:SetScrollChild(MacroPop.scrollAC)
+
+MacroPop.scrollBG.edit = CreateFrame("EditBox", G.uiname.."give macro MultiLineEditBox", MacroPop.scrollAC)
+MacroPop.scrollBG.edit:SetTextInsets(3, 3, 3, 3)
+MacroPop.scrollBG.edit:SetFrameLevel(MacroPop.scrollAC:GetFrameLevel()+1)
+MacroPop.scrollBG.edit:SetAllPoints()
+MacroPop.scrollBG.edit:SetFont(GameFontHighlight:GetFont(), 12, "OUTLINE")
+MacroPop.scrollBG.edit:SetMultiLine(true)
+MacroPop.scrollBG.edit:EnableMouse(true)
+MacroPop.scrollBG.edit:SetAutoFocus(false)
+MacroPop.scrollBG.edit:SetMaxLetters(255)
+
+MacroPop.scrollBG.limit = MacroPop.scrollBG:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
+MacroPop.scrollBG.limit:SetPoint("TOP", MacroPop.scrollBG, "BOTTOM", 0, -3)
+MacroPop.scrollBG.limit:SetJustifyH("CENTER")
+
+MacroPop.scrollBG.edit:SetScript("OnChar", function(self)
+	MacroPop.scrollBG.limit:SetText(format(MACROFRAME_CHAR_LIMIT, self:GetNumLetters()))
+end)
+
+MacroPop.Accept = CreateFrame("Button", G.uiname.."MacroPop Accept", MacroPop, "UIPanelButtonTemplate")
+MacroPop.Accept:SetPoint("BOTTOMRIGHT", MacroPop, "BOTTOM", -30, 7)
+MacroPop.Accept:SetSize(100, 25)
+MacroPop.Accept:SetText(ACCEPT)
+F.Reskin(MacroPop.Accept)
 
 local selectid, selectv
-StaticPopupDialogs[G.uiname.."give macro"].OnAccept = function(self)
-	local m = _G[self:GetName().."EditBox"]:GetText()
-	aCoreCDB["UnitframeOptions"]["ClickCast"][selectid][selectv]["macro"] = m
-end
 
-StaticPopupDialogs[G.uiname.."give macro"].OnShow = function(self)
-	_G[self:GetName().."EditBox"]:SetAutoFocus(true)
-	if not aCoreCDB["UnitframeOptions"]["ClickCast"][selectid][selectv]["macro"] or aCoreCDB["UnitframeOptions"]["ClickCast"][selectid][selectv]["macro"] == "" then
-		_G[self:GetName().."EditBox"]:SetText(L["输入一个宏"])
-		_G[self:GetName().."EditBox"]:HighlightText()
-	else
-		_G[self:GetName().."EditBox"]:SetText(aCoreCDB["UnitframeOptions"]["ClickCast"][selectid][selectv]["macro"])
+MacroPop.Accept:SetScript("OnClick", function()
+	local m = MacroPop.scrollBG.edit:GetText()
+	aCoreCDB["UnitframeOptions"]["ClickCast"][selectid][selectv]["macro"] = m
+	MacroPop:Hide()
+end)
+
+MacroPop.Cancel = CreateFrame("Button", G.uiname.."MacroPop Cancel", MacroPop, "UIPanelButtonTemplate")
+MacroPop.Cancel:SetPoint("BOTTOMLEFT", MacroPop, "BOTTOM", 30, 7)
+MacroPop.Cancel:SetSize(100, 25)
+MacroPop.Cancel:SetText(CANCEL)
+F.Reskin(MacroPop.Cancel)
+
+MacroPop.Cancel:SetScript("OnClick", function()
+	MacroPop:Hide()
+end)
+
+MacroPop:SetScript("OnShow", function(self)
+	if not aCoreCDB["UnitframeOptions"]["ClickCast"][selectid][selectv]["macro"] then
+		aCoreCDB["UnitframeOptions"]["ClickCast"][selectid][selectv]["macro"] = ""
 	end
-end
+	self.scrollBG.edit:SetText(aCoreCDB["UnitframeOptions"]["ClickCast"][selectid][selectv]["macro"])
+	self.scrollBG.limit:SetText(format(MACROFRAME_CHAR_LIMIT, self.scrollBG.edit:GetNumLetters()))
+end)
 
 local modifier = {"Click", "shift-", "ctrl-", "alt-"}
+local active
 
 for i = 1, 5 do
 	local index = tostring(i)
@@ -720,6 +775,7 @@ for i = 1, 5 do
 	end
 	for k, v in pairs(modifier) do
 		local inputbox = CreateFrame("EditBox", "ClickCast Button"..index..v.."EditBox", clickcastframe["Button"..index])
+		inputbox.id = "frame"..i.."index"..index.."value"..v
 		inputbox:SetSize(150, 20)
 		inputbox:SetPoint("TOPLEFT", 16, 20-k*30)
 		F.CreateBD(inputbox)
@@ -734,6 +790,13 @@ for i = 1, 5 do
 		
 		inputbox:SetScript("OnShow", function(self) self:SetText(aCoreCDB["UnitframeOptions"]["ClickCast"][index][v]["action"]) end)
 		inputbox:SetScript("OnEscapePressed", function(self) self:SetText(aCoreCDB["UnitframeOptions"]["ClickCast"][index][v]["action"]) self:ClearFocus() end)
+		inputbox:SetScript("OnEditFocusGained", function(self)
+			active = self.id
+			if MacroPop.id ~= active then
+				MacroPop:Hide()
+			end
+		end)
+		inputbox:SetScript("OnHide", function() MacroPop:Hide() end)
 		
 		inputbox:SetScript("OnEnterPressed", function(self)
 			local var = self:GetText()
@@ -741,7 +804,8 @@ for i = 1, 5 do
 				aCoreCDB["UnitframeOptions"]["ClickCast"][index][v]["action"] = var
 				if var == "macro" then
 					selectid, selectv = index, v
-					StaticPopup_Show(G.uiname.."give macro")
+					MacroPop:Show()
+					MacroPop.id = self.id
 				end
 			elseif GetSpellInfo(var) or var == "NONE" then -- 法术已学会
 				aCoreCDB["UnitframeOptions"]["ClickCast"][index][v]["action"] = var
@@ -760,6 +824,7 @@ clickcastframe["MouseUp"].title:Hide()
 clickcastframe["MouseUp"].line:Hide()
 for k, v in pairs(modifier) do
 	local inputbox = CreateFrame("EditBox", "ClickCast MouseUp"..v.."EditBox", clickcastframe["MouseUp"])
+	inputbox.id = "MouseUp".."index"..k.."value"..v
 	inputbox:SetSize(150, 20)
 	inputbox:SetPoint("TOPLEFT", 16, 20-k*30)
 	F.CreateBD(inputbox)
@@ -774,6 +839,13 @@ for k, v in pairs(modifier) do
 		
 	inputbox:SetScript("OnShow", function(self) self:SetText(aCoreCDB["UnitframeOptions"]["ClickCast"][tostring(k+5)]["Click"]["action"]) end)
 	inputbox:SetScript("OnEscapePressed", function(self) self:SetText(aCoreCDB["UnitframeOptions"]["ClickCast"][tostring(k+5)]["Click"]["action"]) self:ClearFocus() end)
+	inputbox:SetScript("OnEditFocusGained", function(self)
+		active = self.id
+		if MacroPop.id ~= active then
+			MacroPop:Hide()
+		end
+	end)
+	inputbox:SetScript("OnHide", function() MacroPop:Hide() end)
 		
 	inputbox:SetScript("OnEnterPressed", function(self)
 		local var = self:GetText()
@@ -781,7 +853,8 @@ for k, v in pairs(modifier) do
 			aCoreCDB["UnitframeOptions"]["ClickCast"][tostring(k+5)]["Click"]["action"] = var
 			if var == "macro" then
 				selectid, selectv = tostring(k+5), "Click"
-				StaticPopup_Show(G.uiname.."give macro")
+				MacroPop:Show()
+				MacroPop.id = self.id
 			end
 		elseif GetSpellInfo(var) or var == "NONE" then -- 法术已学会
 			aCoreCDB["UnitframeOptions"]["ClickCast"][tostring(k+5)]["Click"]["action"] = var
@@ -799,6 +872,7 @@ clickcastframe["MouseDown"].title:Hide()
 clickcastframe["MouseDown"].line:Hide()
 for k, v in pairs(modifier) do
 	local inputbox = CreateFrame("EditBox", "ClickCast MouseDown"..v.."EditBox", clickcastframe["MouseDown"])
+	inputbox.id = "MouseDown".."index"..k.."value"..v
 	inputbox:SetSize(150, 20)
 	inputbox:SetPoint("TOPLEFT", 16, 20-k*30)
 	F.CreateBD(inputbox)
@@ -813,14 +887,22 @@ for k, v in pairs(modifier) do
 		
 	inputbox:SetScript("OnShow", function(self) self:SetText(aCoreCDB["UnitframeOptions"]["ClickCast"][tostring(k+9)]["Click"]["action"]) end)
 	inputbox:SetScript("OnEscapePressed", function(self) self:SetText(aCoreCDB["UnitframeOptions"]["ClickCast"][tostring(k+9)]["Click"]["action"]) self:ClearFocus() end)
-		
+	inputbox:SetScript("OnEditFocusGained", function(self)
+		active = self.id
+		if MacroPop.id ~= active then
+			MacroPop:Hide()
+		end
+	end)
+	inputbox:SetScript("OnHide", function() MacroPop:Hide() end)
+	
 	inputbox:SetScript("OnEnterPressed", function(self)
 		local var = self:GetText()
 		if (var == "target" or var == "tot" or var == "follow" or var == "macro" or var == "focus") then
 			aCoreCDB["UnitframeOptions"]["ClickCast"][tostring(k+9)]["Click"]["action"] = var
 			if var == "macro" then
 				selectid, selectv = tostring(k+9), "Click"
-				StaticPopup_Show(G.uiname.."give macro")
+				MacroPop:Show()
+				MacroPop.id = self.id
 			end
 		elseif GetSpellInfo(var) or var == "NONE" then -- 法术已学会
 			aCoreCDB["UnitframeOptions"]["ClickCast"][tostring(k+9)]["Click"]["action"] = var
@@ -1590,7 +1672,7 @@ local Comands = CreateOptionPage("Comands", L["命令"], GUI, "VERTICAL")
 
 Comands.text = T.createtext(Comands, "OVERLAY", 13, "OUTLINE", "LEFT")
 Comands.text:SetPoint("TOPLEFT", 30, -60)
-Comands.text:SetText(format(L["指令"], G.classcolor, G.classcolor, G.classcolor, G.classcolor, G.classcolor, G.classcolor))
+Comands.text:SetText(format(L["指令"], G.classcolor, G.classcolor, G.classcolor, G.classcolor, G.classcolor, G.classcolor, G.classcolor))
 
 --====================================================--
 --[[               -- Credits --               ]]--
