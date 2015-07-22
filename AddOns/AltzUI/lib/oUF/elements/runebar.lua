@@ -96,7 +96,7 @@ local UpdateRune = function(self, event, rid)
 		rune:SetMinMaxValues(0, 1)
 		rune:SetValue(1)
 		rune:SetScript("OnUpdate", nil)
-	else
+	elseif start then
 		rune.duration = GetTime() - start
 		rune.max = duration
 		rune:SetMinMaxValues(1, duration)
