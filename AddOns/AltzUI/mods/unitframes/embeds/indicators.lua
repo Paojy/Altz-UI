@@ -1,4 +1,4 @@
-local T, C, L, G = unpack(select(2, ...))
+Ôªølocal T, C, L, G = unpack(select(2, ...))
 local oUF = AltzUF or oUF
 
 local x = "8"
@@ -97,19 +97,19 @@ oUF.Tags.Events['mlight:Mastery'] = "UNIT_AURA"
 
 -- [[ Healers' indicators ]] -- 
 
--- Priest ƒ¡ ¶
-local pomCount = {"i","h","g","f","Z"}
-oUF.Tags.Methods['freebgrid:pom'] = function(u) -- ”˙∫œµª—‘
-    local name, _,_, c, _,_,_, fromwho = UnitBuff(u, GetSpellInfo(41635)) 
+-- Priest ÁâßÂ∏à
+local pomCount = {"‚ë†","‚ë°","‚ë¢","‚ë£","‚ë§","‚ë•","‚ë¶","‚ëß","‚ë®","‚ë©"}
+oUF.Tags.Methods['freebgrid:pom'] = function(u) -- ÊÑàÂêàÁ•∑Ë®Ä
+    local name, _,_, c, _,_,_, fromwho = UnitBuff(u, GetSpellInfo(41635))
     if fromwho == "player" then
-        if c and c ~= 0 then return "|cff66FFFF"..pomCount[c].."|r" end 
+        if c and c ~= 0 then return "|cff66FFFF"..pomCount[c].."|r" end
     else
         if c and c ~= 0 then return "|cffFFCF7F"..pomCount[c].."|r" end 
     end
 end
 oUF.Tags.Events['freebgrid:pom'] = "UNIT_AURA"
 
-oUF.Tags.Methods['freebgrid:rnw'] = function(u) -- ª÷∏¥
+oUF.Tags.Methods['freebgrid:rnw'] = function(u) -- ÊÅ¢Â§ç
     local name, _,_,_,_,_, expirationTime, fromwho = UnitBuff(u, GetSpellInfo(139))
     if(fromwho == "player") then
         local spellTimer = expirationTime - GetTime()
@@ -124,7 +124,7 @@ oUF.Tags.Methods['freebgrid:rnw'] = function(u) -- ª÷∏¥
 end
 oUF.Tags.Events['freebgrid:rnw'] = "UNIT_AURA"
 
-oUF.Tags.Methods['freebgrid:pws'] = function(u) -- ∂‹
+oUF.Tags.Methods['freebgrid:pws'] = function(u) -- Áõæ
 local name, _,_,_,_,_, expirationTime, fromwho = UnitBuff(u, GetSpellInfo(17))
     if(fromwho == "player") then
         local spellTimer = (expirationTime-GetTime())
@@ -136,11 +136,11 @@ local name, _,_,_,_,_, expirationTime, fromwho = UnitBuff(u, GetSpellInfo(17))
 end
 oUF.Tags.Events['freebgrid:pws'] = "UNIT_AURA"
 
-oUF.Tags.Methods['freebgrid:ws'] = function(u) if UnitDebuff(u, GetSpellInfo(6788)) then return "|cffFF9900"..x.."|r" end end -- –È»ı¡ÈªÍ
+oUF.Tags.Methods['freebgrid:ws'] = function(u) if UnitDebuff(u, GetSpellInfo(6788)) then return "|cffFF9900"..x.."|r" end end -- ËôöÂº±ÁÅµÈ≠Ç
 oUF.Tags.Events['freebgrid:ws'] = "UNIT_AURA"
 
--- Druid µ¬¬≥“¡
-oUF.Tags.Methods['freebgrid:lb'] = function(u) -- …˙√¸’¿∑≈
+-- Druid Âæ∑È≤Å‰ºä
+oUF.Tags.Methods['freebgrid:lb'] = function(u) -- ÁîüÂëΩÁªΩÊîæ
     local name, _,_, c,_,_, expirationTime, fromwho = UnitBuff(u, GetSpellInfo(33763))
     if(fromwho == "player") then
 		local spellTimer = (expirationTime-GetTime())
@@ -156,7 +156,7 @@ oUF.Tags.Methods['freebgrid:lb'] = function(u) -- …˙√¸’¿∑≈
 end
 oUF.Tags.Events['freebgrid:lb'] = "UNIT_AURA"
 
-oUF.Tags.Methods['freebgrid:rejuv'] = function(u) -- ªÿ¥∫
+oUF.Tags.Methods['freebgrid:rejuv'] = function(u) -- ÂõûÊò•
     local name, _,_,_,_,_, expirationTime, fromwho = UnitBuff(u, GetSpellInfo(774))
     if(fromwho == "player") then
         local spellTimer = (expirationTime-GetTime())
@@ -168,7 +168,7 @@ oUF.Tags.Methods['freebgrid:rejuv'] = function(u) -- ªÿ¥∫
 end
 oUF.Tags.Events['freebgrid:rejuv'] = "UNIT_AURA"
 
-oUF.Tags.Methods['freebgrid:regrow'] = function(u) -- ”˙∫œ
+oUF.Tags.Methods['freebgrid:regrow'] = function(u) -- ÊÑàÂêà
 	local name, _,_,_,_,_, expirationTime, fromwho = UnitBuff(u, GetSpellInfo(8936))
     if(fromwho == "player") then
         local spellTimer = (expirationTime-GetTime())
@@ -182,8 +182,8 @@ oUF.Tags.Methods['freebgrid:regrow'] = function(u) -- ”˙∫œ
 end
 oUF.Tags.Events['freebgrid:regrow'] = "UNIT_AURA"
 
--- Shaman »¯¬˙
-oUF.Tags.Methods['freebgrid:ripTime'] = function(u) --º§¡˜
+-- Shaman Ëê®Êª°
+oUF.Tags.Methods['freebgrid:ripTime'] = function(u) --ÊøÄÊµÅ
     local name, _,_,_,_,_, expirationTime, fromwho = UnitBuff(u, GetSpellInfo(61295))
     if(fromwho == "player") then
         local spellTimer = (expirationTime-GetTime())
@@ -195,24 +195,24 @@ oUF.Tags.Methods['freebgrid:ripTime'] = function(u) --º§¡˜
 end
 oUF.Tags.Events['freebgrid:ripTime'] = 'UNIT_AURA'
 
-local earthCount = {"i","h","g","f","i","k","l","m","Y"}
-oUF.Tags.Methods['freebgrid:earth'] = function(u) -- ¥Ûµÿ÷Æ∂‹
+local earthCount = {"‚ë†","‚ë°","‚ë¢","‚ë£","‚ë§","‚ë•","‚ë¶","‚ëß","‚ë®","‚ë©"}
+oUF.Tags.Methods['freebgrid:earth'] = function(u) -- Â§ßÂú∞‰πãÁõæ
     local c = select(4, UnitAura(u, GetSpellInfo(974))) if c then return '|cffFFCF7F'..earthCount[c]..'|r' end 
 end
 oUF.Tags.Events['freebgrid:earth'] = 'UNIT_AURA'
 
--- Paladin ∆Ô ø
-oUF.Tags.Methods['freebgrid:beacon'] = function(u) if UnitBuff(u, GetSpellInfo(53563)) then return "|cffFFB90FO|r" end end --µ¿±Í
+-- Paladin È™ëÂ£´
+oUF.Tags.Methods['freebgrid:beacon'] = function(u) if UnitBuff(u, GetSpellInfo(53563)) then return "|cffFFB90FO|r" end end --ÈÅìÊ†á
 oUF.Tags.Events['freebgrid:beacon'] = "UNIT_AURA"
 
 oUF.Tags.Methods['freebgrid:forbearance'] = function(u) if UnitDebuff(u, GetSpellInfo(25771)) then return "|cffFF9900"..x.."|r" end end
-oUF.Tags.Events['freebgrid:forbearance'] = "UNIT_AURA" -- ◊‘¬…
+oUF.Tags.Events['freebgrid:forbearance'] = "UNIT_AURA" -- Ëá™Âæã
 
 oUF.Tags.Methods['freebgrid:eternalflame'] = function(u) if UnitBuff(u, GetSpellInfo(114163)) then return "|cffFFD700"..x.."|r" end end
-oUF.Tags.Events['freebgrid:eternalflame'] = "UNIT_AURA" -- ”¿∫„÷Æª
+oUF.Tags.Events['freebgrid:eternalflame'] = "UNIT_AURA" -- Ê∞∏ÊÅí‰πãÁÅ´
 
--- Monk Œ‰…Æ
-oUF.Tags.Methods['freebgrid:zs'] = function(u) -- Ï¯“‚÷È
+-- Monk Ê≠¶ÂÉß
+oUF.Tags.Methods['freebgrid:zs'] = function(u) -- Á¶ÖÊÑèÁè†
     local name, _,_,_,_,_, expirationTime, fromwho = UnitAura(u, GetSpellInfo(124081))
     if(fromwho == "player") then
         local spellTimer = (expirationTime-GetTime())
@@ -224,10 +224,15 @@ oUF.Tags.Methods['freebgrid:zs'] = function(u) -- Ï¯“‚÷È
 end
 oUF.Tags.Events['freebgrid:zs'] = 'UNIT_AURA'
 
-oUF.Tags.Methods['freebgrid:sooth'] = function(u) if UnitAura(u, GetSpellInfo(115175)) then return "|cff97FFFF"..x.."|r" end end -- ∏ßŒø÷ÆŒÌ
+oUF.Tags.Methods['freebgrid:sooth'] = function(u)-- ÊäöÊÖ∞‰πãÈõæ
+	local name, _,_,_,_,_, _, fromwho = UnitAura(u, GetSpellInfo(115175))
+	if (fromwho == "player") then
+		return "|cff97FFFF"..x.."|r"
+	end
+end 
 oUF.Tags.Events['freebgrid:sooth'] = "UNIT_AURA"
 
-oUF.Tags.Methods['freebgrid:remist'] = function(u) -- ∏¥À’÷ÆŒÌ
+oUF.Tags.Methods['freebgrid:remist'] = function(u) -- Â§çËãè‰πãÈõæ
     local name, _,_,_,_,_, expirationTime, fromwho = UnitAura(u, GetSpellInfo(115151))
     if(fromwho == "player") then
         local spellTimer = (expirationTime-GetTime())
@@ -350,9 +355,12 @@ local Enable = function(self)
         self.AuraStatusTR = self.Health:CreateFontString(nil, "OVERLAY")
         self.AuraStatusTR:ClearAllPoints()
         
-		if select(2,UnitClass("player")) == "DRUID" then
+		if G.myClass == "DRUID" then
 			self.AuraStatusTR:SetPoint("TOPRIGHT", 0, 0)
-			self.AuraStatusTR:SetFont(G.norFont, timersize, "OUTLINE")
+			self.AuraStatusTR:SetFont(ChatFrame1:GetFont(), timersize, "OUTLINE")
+		elseif G.myClass == "PRIEST" or G.myClass == "SHAMAN" then
+			self.AuraStatusTR:SetPoint("TOPRIGHT", 0, 0)
+			self.AuraStatusTR:SetFont(ChatFrame1:GetFont(), timersize+3, "OUTLINE")
 		else
 			self.AuraStatusTR:SetPoint("CENTER", self.Health, "TOPRIGHT", -4, -4)
 			self.AuraStatusTR:SetFont(G.symbols, bigmark, "OUTLINE")
