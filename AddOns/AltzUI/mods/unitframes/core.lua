@@ -73,6 +73,96 @@ end
 --=============================================--
 --[[               Some update               ]]--
 --=============================================--
+
+T.Overridehealthbar = function(self, event, unit)
+	if(self.unit ~= unit) then return end
+	
+	local health = self.Health
+	local min, max = UnitHealth(unit), UnitHealthMax(unit)
+	local disconnected = not UnitIsConnected(unit)
+	
+    local per = select(16, UnitDebuff(unit, GetSpellInfo(179987)))
+	--local test = UnitDebuff(unit, GetSpellInfo(6788))
+	
+	local max_health
+	if per then
+		max_health = max_health*per/100
+	--elseif test then
+		--max_health = max*.5
+	else
+		max_health = max
+	end
+	
+	health:SetMinMaxValues(0, max_health)
+	
+	if disconnected then
+		health:SetValue(max_health)
+	elseif aCoreCDB["OtherOptions"]["style"] ~= 3 then
+		health:SetValue(max_health - min) 
+	else
+		health:SetValue(min) 
+	end
+
+	local r, g, b
+	local perc
+	
+	if max ~= 0 then perc = min/max else perc = 1 end
+
+	if health.value then
+		if min > 0 and min < max then
+			health.value:SetText(T.ShortValue(min).." "..T.hex(1, 1, 0)..math.floor(min/max*100+.5).."|r")
+		elseif min > 0 and health.__owner.isMouseOver and UnitIsConnected(unit) then
+			health.value:SetText(T.ShortValue(min))
+		elseif aCoreCDB["UnitframeOptions"]["alwayshp"] then
+			health.value:SetText(T.ShortValue(min))
+		else
+			health.value:SetText(nil)
+		end
+	end
+	
+	if min > 0 and min < max then
+		health.ind:Show()
+	else
+		health.ind:Hide()
+	end
+	
+	if UnitIsTapped(unit) and not UnitIsTappedByPlayer(unit) then
+		r, g, b = .6, .6, .6
+	elseif not UnitIsConnected(unit) then
+		r, g, b = .3, .3, .3
+	elseif UnitIsGhost(unit) then
+		r, g, b = .6, .6, .6
+	elseif UnitIsDead(unit) then
+		r, g, b = 1, 0, 0
+	elseif (unit == "pet") then
+		local _, playerclass = UnitClass("player")
+		if aCoreCDB["UnitframeOptions"]["classcolormode"] then
+			r, g, b = unpack(oUF.colors.class[playerclass])
+		else
+			r, g, b = oUF.ColorGradient(perc, 1, unpack(oUF.colors.smooth))
+		end
+	elseif(UnitIsPlayer(unit)) then
+		local _, unitclass = UnitClass(unit)
+		if aCoreCDB["UnitframeOptions"]["classcolormode"] then
+			if unitclass then r, g, b = unpack(oUF.colors.class[unitclass]) else r, g, b = 1, 1, 1 end
+		else
+			r, g, b = oUF.ColorGradient(perc, 1, unpack(oUF.colors.smooth))
+		end
+	elseif unit then
+		if aCoreCDB["UnitframeOptions"]["classcolormode"] then
+			r, g, b = unpack(oUF.colors.reaction[UnitReaction(unit, "player") or 5])
+		else
+			r, g, b = oUF.ColorGradient(perc, 1, unpack(oUF.colors.smooth))
+		end
+	end
+	
+	if aCoreCDB["OtherOptions"]["style"] == 1 then
+		health:GetStatusBarTexture():SetGradient("VERTICAL", r, g, b, r/3, g/3, b/3)
+	else
+		health:SetStatusBarColor(r, g, b)
+	end
+end
+
 T.Updatehealthbar = function(self, unit, min, max)
 	local r, g, b
 	local perc
@@ -1032,7 +1122,8 @@ local func = function(self, unit)
 	
     local ricon = hp:CreateTexture(nil, "OVERLAY")
     ricon:SetPoint("CENTER", hp, "CENTER", 0, 0)
-    ricon:SetSize(20, 20)
+    ricon:SetSize(30, 30)
+	ricon:SetTexture[[Interface\AddOns\AltzUI\media\raidicons.blp]]
     self.RaidIcon = ricon
 	
 	-- name --

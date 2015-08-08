@@ -248,9 +248,9 @@ classIndicators={
     ["DRUID"] = {
         ["TL"] = "[freebgrid:lb]",
         ["BR"] = "[mlight:SAI]",--[mlight:SpellHaste][mlight:Crit]
-        ["BL"] = "[freebgrid:rejuv]",
+        ["BL"] = "",
         ["TR"] = "[freebgrid:regrow]",
-        ["Cen"] = "",
+        ["Cen"] = "[freebgrid:rejuv]",
     },
     ["PRIEST"] = {
         ["TL"] = "[freebgrid:rnw]",
@@ -261,7 +261,7 @@ classIndicators={
     },
     ["PALADIN"] = {
         ["TL"] = "",
-        ["BR"] = "[freebgrid:eternalflame][mlight:SAI]",--mlight:Mastery]
+        ["BR"] = "[freebgrid:eternalflame][mlight:SAI]",--mlight:Mastery
         ["BL"] = "",
         ["TR"] = "[freebgrid:beacon]",
         ["Cen"] = "[freebgrid:forbearance]",
@@ -330,7 +330,7 @@ local Enable = function(self)
     if(self.AltzIndicators) then
         self.AuraStatusBL = self.Health:CreateFontString(nil, "OVERLAY")
         self.AuraStatusBL:ClearAllPoints()
-        self.AuraStatusBL:SetPoint("BOTTOMLEFT", 0, -2)
+        self.AuraStatusBL:SetPoint("LEFT", 1, 0)
 		self.AuraStatusBL:SetJustifyH("LEFT")
         self.AuraStatusBL:SetFont(G.norFont, timersize, "OUTLINE")
         self.AuraStatusBL.frequentUpdates = update
@@ -369,9 +369,15 @@ local Enable = function(self)
         self:Tag(self.AuraStatusTR, classIndicators[G.myClass]["TR"])
 		
         self.AuraStatusCen = self.Health:CreateFontString(nil, "OVERLAY")
-        self.AuraStatusCen:SetPoint("LEFT", -3, 0)
-        self.AuraStatusCen:SetJustifyH("LEFT")
-        self.AuraStatusCen:SetFont(G.symbols, smallmark+4, "OUTLINE")
+       
+        self.AuraStatusCen:SetJustifyH("CENTER")
+		if G.myClass == "DRUID" then
+			self.AuraStatusCen:SetFont(ChatFrame1:GetFont(), timersize, "OUTLINE")
+			self.AuraStatusCen:SetPoint("TOP", 0, 0)
+		else
+			self.AuraStatusCen:SetFont(G.symbols, smallmark+2, "OUTLINE")
+			self.AuraStatusCen:SetPoint("TOP", 0, 2)
+		end
         self.AuraStatusCen:SetWidth(0)
         self.AuraStatusCen.frequentUpdates = update
         self:Tag(self.AuraStatusCen, classIndicators[G.myClass]["Cen"])

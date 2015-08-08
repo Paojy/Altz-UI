@@ -14,10 +14,11 @@ local function multicheck(check, ...)
     return false
 end
 
-local CreateAuraIcon = function(auras)
+local CreateAuraIcon = function(auras, size, ...)
     local button = CreateFrame("Button", nil, auras)
     button:EnableMouse(false)
-    button:SetAllPoints(auras)
+	button:SetSize(size, size)
+    button:SetPoint(...)
 
     local icon = button:CreateTexture(nil, "ARTWORK")
     icon:SetAllPoints(button)
@@ -119,38 +120,32 @@ local dispelPriority = {
 
 --local ascending = { }
 
-local CustomFilter = function(icons, ...)
-    local _, icon, name, _, _, _, dtype, _, _, caster, spellID = ...
-
-    icon.asc = false
-    icon.priority = 0
-
+local CustomFilter = function(...)
+    local name, _, _, _, dtype, _, _, caster, spellID = ...
+	
+    local priority = 0
+	local asc = false
+	
     --if ascending[name] then
-        --icon.asc = true
+        --asc = true
     --end
 
-
 	if aCoreCDB["CooldownAura"]["Debuffs"][name] then
-		icon.priority = aCoreCDB["CooldownAura"]["Debuffs"][name].level
-		return true
-	end
-	
-	if IsInInstance() then
+		priority = aCoreCDB["CooldownAura"]["Debuffs"][name].level
+	elseif IsInInstance() then
         local ins = GetInstanceInfo()
         if aCoreCDB["RaidDebuff"][ins] then
 			for boss, debufflist in pairs(aCoreCDB["RaidDebuff"][ins]) do
 				if debufflist[name] then
-					icon.priority = debufflist[name].level
-					return true
+					priority = debufflist[name].level
 				end
 			end
         end
-	end
-	
-    if dispellist[dtype] then
-        icon.priority = dispelPriority[dtype]
-        return true
+	elseif dispellist[dtype] then
+        priority = dispelPriority[dtype]
     end
+	
+	return priority, asc
 end
 
 local AuraTimerAsc = function(self, elapsed)
@@ -187,10 +182,12 @@ local updateDebuff = function(backdrop, icon, texture, count, dtype, duration, e
 
     icon.border:SetBackdropBorderColor(color.r, color.g, color.b)
 	
-    if dispellist[dtype] then
-		backdrop:SetBackdropBorderColor(color.r, color.g, color.b)
-	else
-		backdrop:SetBackdropBorderColor(0, 0, 0)
+	if backdrop then
+		if dispellist[dtype] then
+			backdrop:SetBackdropBorderColor(color.r, color.g, color.b)
+		else
+			backdrop:SetBackdropBorderColor(0, 0, 0)
+		end
 	end
 	
     icon.icon:SetTexture(texture)
@@ -210,58 +207,83 @@ local Update = function(self, event, unit)
     if(self.unit ~= unit) then
 	return end
 
-    local cur
-    local hide = true
-    local auras = self.AltzAuras
-    local icon = auras.button
+	local active_dubuffs = {}
+    local hide1, hide2 = true, true
+    local auras = self.AltzAuras2
+    local icon1 = auras.button1
+	local icon2 = auras.button2
+	
 	local backdrop = self.backdrop
 	
     local index = 1
     while true do
         local name, rank, texture, count, dtype, duration, expires, caster, _, _, spellID = UnitDebuff(unit, index)
         if not name then break end
-        
-        local show = CustomFilter(auras, unit, icon, name, rank, texture, count, dtype, duration, expires, caster, spellID)
-
-        if(show) then
-            if not cur then
-                cur = icon.priority
-                updateDebuff(backdrop, icon, texture, count, dtype, duration, expires)
-            else
-                if icon.priority > cur then
-                    updateDebuff(backdrop, icon, texture, count, dtype, duration, expires)
-                end
-            end
-
-            icon:Show()
-            hide = false
-        end
-
-        index = index + 1
+		
+		local priority, asc = CustomFilter(name, rank, texture, count, dtype, duration, expires, caster, spellID)
+		
+		if priority > 0 then
+			active_dubuffs[name] = {}
+			active_dubuffs[name]["priority"] = priority
+			active_dubuffs[name]["spellID"] = spellID
+			active_dubuffs[name]["asc"] = asc
+			active_dubuffs[name]["texture"] = texture
+			active_dubuffs[name]["count"] = count
+			active_dubuffs[name]["dtype"] = dtype
+			active_dubuffs[name]["duration"] = duration
+			active_dubuffs[name]["expires"] = expires
+		end
+		
+		index = index + 1
     end
-
-    if hide then
-        icon:Hide()
+	
+	if index > 1 then
+		local t = {}
+		for name, info in pairs(active_dubuffs) do
+			table.insert(t, info)
+		end
+		sort(t, function(a,b) return a.priority > b.priority or (a.priority == b.priority and a.spellID > b.spellID) end)
+		
+		if t[1] then
+			updateDebuff(backdrop, icon1, t[1]["texture"], t[1]["count"], t[1]["dtype"], t[1]["duration"], t[1]["expires"])
+			icon1:Show()
+			hide1 = false
+		end
+		
+		if t[2] then
+			updateDebuff(nil, icon2, t[2]["texture"], t[2]["count"], t[2]["dtype"], t[2]["duration"], t[2]["expires"])
+			icon2:Show()
+			hide2 = false
+		end
+	end
+	
+    if hide1 then
+        icon1:Hide()
 		backdrop:SetBackdropBorderColor(0, 0, 0)
+    end
+	
+	if hide2 then
+        icon2:Hide()
     end
 end
 
 local Enable = function(self)
-    local auras = self.AltzAuras
+    local auras = self.AltzAuras2
 
     if(auras) then
-        auras.button = CreateAuraIcon(auras)
+        auras.button1 = CreateAuraIcon(auras, auras.sizeA, auras.point1A, self, auras.point2A, auras.xA, auras.yA)
+		auras.button2 = CreateAuraIcon(auras, auras.sizeB, auras.point1B, self, auras.point2B, auras.xB, auras.yB)
         self:RegisterEvent("UNIT_AURA", Update)
         return true
     end
 end
 
 local Disable = function(self)
-    local auras = self.AltzAuras
+    local auras = self.AltzAuras2
 
     if(auras) then
         self:UnregisterEvent("UNIT_AURA", Update)
     end
 end
 
-oUF:AddElement("AltzAuras", Update, Enable, Disable)
+oUF:AddElement("AltzAuras2", Update, Enable, Disable)

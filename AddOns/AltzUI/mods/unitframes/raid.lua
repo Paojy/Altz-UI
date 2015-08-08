@@ -146,7 +146,8 @@ local function RegisterClicks(object)
 			action = C[id][key]["action"]
 			macro = C[id][key]["macro"]
 			if action == "follow" then
-				object:SetAttribute(key_tmp.."type"..id, "follow")
+				object:SetAttribute(key_tmp.."type"..id, "macro")
+				object:SetAttribute(key_tmp.."macrotext"..id, "/follow mouseover")
 			elseif	action == "tot" then		
 				object:SetAttribute(key_tmp.."type"..id, "macro")
 				object:SetAttribute(key_tmp.."macrotext"..id, "/target mouseovertarget")
@@ -220,7 +221,7 @@ local func = function(self, unit)
 	hp.ind = hp:CreateTexture(nil, "OVERLAY", 1)
     hp.ind:SetTexture("Interface\\Buttons\\WHITE8x8")
 	hp.ind:SetVertexColor(0, 0, 0)
-	hp.ind:SetSize(1, self:GetHeight())
+	hp.ind:SetSize(1, hp:GetHeight())
 	if aCoreCDB["OtherOptions"]["style"] ~= 3 then
 		hp.ind:SetPoint("RIGHT", hp:GetStatusBarTexture(), "LEFT", 0, 0)
 	else
@@ -236,6 +237,7 @@ local func = function(self, unit)
 	
     self.Health = hp
 	self.Health.PostUpdate = T.Updatehealthbar
+	self.Health.Override = T.Overridehealthbar
 	
 	-- raid manabars --
 	if aCoreCDB["UnitframeOptions"]["raidmanabars"] then
@@ -310,7 +312,8 @@ local func = function(self, unit)
 	
     local ricon = hp:CreateTexture(nil, "OVERLAY", 1)
 	ricon:SetSize(18 ,18)
-    ricon:SetPoint("TOP", hp, "TOP", 0 , 5)
+    ricon:SetPoint("RIGHT", hp, "TOP", -8 , 0)
+	ricon:SetTexture[[Interface\AddOns\AltzUI\media\raidicons.blp]]
     self.RaidIcon = ricon
 	
 	local status = T.createtext(hp, "OVERLAY", aCoreCDB["UnitframeOptions"]["raidfontsize"]-2, "OUTLINE", "LEFT")
@@ -326,21 +329,32 @@ local func = function(self, unit)
     readycheck:SetSize(16, 16)
     readycheck:SetPoint"CENTER"
     self.ReadyCheck = readycheck
-   
-	-- Raid debuff
-    local auras = CreateFrame("Frame", nil, self)
-	auras:SetFrameLevel(4)
-    auras:SetSize(20, 20)
-    auras:SetPoint("LEFT", hp, "LEFT", 15, 0)
-	auras.tfontsize = 10
-	auras.cfontsize = 10
-	self.AltzAuras = auras
+	
+	local Auras = CreateFrame("Frame", nil, self)
+	Auras:SetFrameLevel(4)
+    Auras:SetSize(20, 20)
+    Auras:SetPoint("LEFT", hp, "LEFT", 15, 0)
+	Auras.tfontsize = 10
+	Auras.cfontsize = 10
+	
+	Auras.sizeA = 20
+	Auras.point1A = "CENTER"
+	Auras.point2A = "CENTER"
+	Auras.xA = 0
+	Auras.yA = 0
+	
+	Auras.sizeB = 15
+	Auras.point1B = "BOTTOMLEFT"
+	Auras.point2B = "BOTTOMLEFT"
+	Auras.xB = 2
+	Auras.yB = 3
+	self.AltzAuras2 = Auras
 	
 	-- Tankbuff
     local tankbuff = CreateFrame("Frame", nil, self)
 	tankbuff:SetFrameLevel(4)
-    tankbuff:SetSize(20, 20)
-    tankbuff:SetPoint("LEFT", auras, "RIGHT", 5, 0)
+    tankbuff:SetSize(15, 15)
+    tankbuff:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", -2, 3)
 	tankbuff.tfontsize = 10
 	tankbuff.cfontsize = 10
 	self.AltzTankbuff = tankbuff
@@ -474,6 +488,7 @@ local dfunc = function(self, unit)
     local ricon = hp:CreateTexture(nil, "OVERLAY", 1)
 	ricon:SetSize(13 ,13)
     ricon:SetPoint("TOP", hp, "TOP", 0 , 5)
+	ricon:SetTexture[[Interface\AddOns\AltzUI\media\raidicons.blp]]
     self.RaidIcon = ricon
 	
 	local status = T.createtext(hp, "OVERLAY", aCoreCDB["UnitframeOptions"]["raidfontsize"]-2, "OUTLINE", "LEFT")
