@@ -444,7 +444,6 @@ local function SkinObjects(frame, nameFrame)
 		
 		hp.redarrow = hp:CreateTexture(nil, 'OVERLAY', nil)
 		hp.redarrow:SetSize(50, 50)
-		--hp.redarrow:SetPoint("BOTTOM", hp, "TOP", 0, auraiconsize+15)
 		hp.redarrow:SetTexture(redarrow)
 		hp.redarrow:Hide()
 		
@@ -711,12 +710,14 @@ local function ShowTargetInd(frame)
 		end
 	end
 	
-	if frame.iconnumber and frame.iconnumber > 0 then
-		frame.hp.redarrow:SetPoint("BOTTOM", frame.hp, "TOP", 0, auraiconsize+15)
-	elseif not frame.fullhealth then
-		frame.hp.redarrow:SetPoint("BOTTOM", frame.hp, "TOP", 0, 10)
-	else
-		frame.hp.redarrow:SetPoint("BOTTOM", frame.hp, "TOP", 0, -8)
+	if numberstyle then
+		if frame.iconnumber and frame.iconnumber > 0 then
+			frame.hp.redarrow:SetPoint("BOTTOM", frame.hp, "TOP", 0, auraiconsize+15)
+		elseif not frame.fullhealth then
+			frame.hp.redarrow:SetPoint("BOTTOM", frame.hp, "TOP", 0, 10)
+		else
+			frame.hp.redarrow:SetPoint("BOTTOM", frame.hp, "TOP", 0, -8)
+		end
 	end
 end
 
