@@ -9,7 +9,7 @@ if not enable then return end
 
 local showreceived = aCoreCDB["CombattextOptions"]["showreceivedct"]
 local showoutput = aCoreCDB["CombattextOptions"]["showoutputct"]
-local fliter = aCoreCDB["CombattextOptions"]["ctfliter"]
+local filter = aCoreCDB["CombattextOptions"]["ctfilter"]
 local iconsize = aCoreCDB["CombattextOptions"]["cticonsize"]
 local bigiconsize = aCoreCDB["CombattextOptions"]["ctbigiconsize"]
 local showdots = aCoreCDB["CombattextOptions"]["ctshowdots"]
@@ -265,7 +265,7 @@ function eventframe:COMBAT_LOG_EVENT_UNFILTERED(...)
 			spellId = select(12, ...)
 			amount = select(15, ...)
 			critical = select(18, ...)
-			if fliter and (healfilter[spellId] or aoefilter[spellId]) then return end
+			if filter and (healfilter[spellId] or aoefilter[spellId]) then return end
 			icon = GetSpellTextureFormatted(spellId, critical and bigiconsize or iconsize)
 			frames["outputhealing"]:AddMessage(amount..""..icon, 0, 1, 0)
 		elseif destGUID ~= UnitGUID("player") then
@@ -294,7 +294,7 @@ function eventframe:COMBAT_LOG_EVENT_UNFILTERED(...)
 			end
 			
 			if amount and icon then
-				if fliter and spellId and aoefilter[spellId] then return end
+				if filter and spellId and aoefilter[spellId] then return end
 				if critical then
 					if dmgcolor[spellSchool] then
 						frames["outputdamage"]:AddMessage("+"..amount..""..icon, dmgcolor[spellSchool][1], dmgcolor[spellSchool][2], dmgcolor[spellSchool][3])

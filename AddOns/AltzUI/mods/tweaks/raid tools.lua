@@ -210,9 +210,9 @@ local function StartCombat()
    end
 end
 
-local fliter = {string.split(" ", aCoreCDB["RaidToolOptions"]["potionblacklist"])}
+local filter = {string.split(" ", aCoreCDB["RaidToolOptions"]["potionblacklist"])}
 local blacklist = {}
-for _, name in pairs(fliter) do
+for _, name in pairs(filter) do
 	blacklist[name] = true
 end
 
