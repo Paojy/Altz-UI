@@ -253,13 +253,13 @@ local function LineUpAutobuyList()
 	local index = 1
 	for itemID, quantity in pairs(aCoreCDB["ItemOptions"]["autobuylist"]) do
 		if not itemID then return end
-		_G[G.uiname.."AutobuyList Button"..itemID]:SetPoint("TOPLEFT", ItemOptions.SF, "TOPLEFT", 5, 20-index*30)
+		_G[G.uiname.."AutobuyList Button"..itemID]:SetPoint("TOPLEFT", ItemOptions.SFAnchor, "TOPLEFT", 5, 20-index*30)
 		index = index + 1
 	end
 end
 
 local function CreateAutobuyButton(itemID, name, icon, quantity)
-	local bu = CreateFrame("Frame", G.uiname.."AutobuyList Button"..itemID, ItemOptions.SF)
+	local bu = CreateFrame("Frame", G.uiname.."AutobuyList Button"..itemID, ItemOptions.SFAnchor)
 	bu:SetSize(300, 28)
 	F.CreateBD(bu, .2)
 	
@@ -465,7 +465,7 @@ T.createDR(UFInnerframe.aura.playerdebuffenable, UFInnerframe.aura.playerdebuffn
 UFInnerframe.aurawhitelist = CreateOptionPage("UF Options aurawhitelist", L["白名单"], UFInnerframe, "VERTICAL", .3, true)
 UFInnerframe.aurawhitelist.SF:SetPoint("TOPLEFT", 26, -80)
 
-local function LineUpAuraFliterList()
+local function LineUpAuraFilterList()
 	sort(aCoreCDB["UnitframeOptions"]["AuraFilterwhitelist"])
 	local index = 1
 	for spellID, name in pairs(aCoreCDB["UnitframeOptions"]["AuraFilterwhitelist"]) do
@@ -475,7 +475,7 @@ local function LineUpAuraFliterList()
 	end
 end
 
-local function CreateAuraFliterButton(name, icon, spellID)
+local function CreateAuraFilterButton(name, icon, spellID)
 	local bu = CreateFrame("Frame", G.uiname.."WhiteList Button"..spellID, UFInnerframe.aurawhitelist.SF)
 	bu:SetSize(350, 20)
 
@@ -513,36 +513,36 @@ local function CreateAuraFliterButton(name, icon, spellID)
 		bu:Hide()
 		aCoreCDB["UnitframeOptions"]["AuraFilterwhitelist"][spellID] = nil
 		print("|cffFF0000"..name.." |r"..L["从法术过滤白名单中移出"])
-		LineUpAuraFliterList()
+		LineUpAuraFilterList()
 	end)
 	
 	return bu
 end
 
-local function CreateAuraFliterButtonList()
+local function CreateAuraFilterButtonList()
 	sort(aCoreCDB["UnitframeOptions"]["AuraFilterwhitelist"])
 	for spellID, name in pairs(aCoreCDB["UnitframeOptions"]["AuraFilterwhitelist"]) do
 		if spellID then
 			local icon = select(3, GetSpellInfo(spellID))
-			CreateAuraFliterButton(name, icon, spellID)
+			CreateAuraFilterButton(name, icon, spellID)
 		end
 	end
-	LineUpAuraFliterList()
+	LineUpAuraFilterList()
 end
 
-local AuraFliter_spellIDinput = CreateFrame("EditBox", G.uiname.."WhiteList Input", UFInnerframe.aurawhitelist)
-AuraFliter_spellIDinput:SetSize(250, 20)
-AuraFliter_spellIDinput:SetPoint("TOPLEFT", 30, -60)
-F.CreateBD(AuraFliter_spellIDinput)
+local AuraFilter_spellIDinput = CreateFrame("EditBox", G.uiname.."WhiteList Input", UFInnerframe.aurawhitelist)
+AuraFilter_spellIDinput:SetSize(250, 20)
+AuraFilter_spellIDinput:SetPoint("TOPLEFT", 30, -60)
+F.CreateBD(AuraFilter_spellIDinput)
 
-AuraFliter_spellIDinput:SetFont(GameFontHighlight:GetFont(), 12, "OUTLINE")
-AuraFliter_spellIDinput:SetAutoFocus(false)
-AuraFliter_spellIDinput:SetTextInsets(3, 0, 0, 0)
+AuraFilter_spellIDinput:SetFont(GameFontHighlight:GetFont(), 12, "OUTLINE")
+AuraFilter_spellIDinput:SetAutoFocus(false)
+AuraFilter_spellIDinput:SetTextInsets(3, 0, 0, 0)
 
-AuraFliter_spellIDinput:SetScript("OnShow", function(self) self:SetText(L["输入法术ID"]) end)
-AuraFliter_spellIDinput:SetScript("OnEditFocusGained", function(self) self:HighlightText() end)
-AuraFliter_spellIDinput:SetScript("OnEscapePressed", function(self) self:ClearFocus() AuraFliter_spellIDinput:SetText(L["输入法术ID"]) end)
-AuraFliter_spellIDinput:SetScript("OnEnterPressed", function(self)
+AuraFilter_spellIDinput:SetScript("OnShow", function(self) self:SetText(L["输入法术ID"]) end)
+AuraFilter_spellIDinput:SetScript("OnEditFocusGained", function(self) self:HighlightText() end)
+AuraFilter_spellIDinput:SetScript("OnEscapePressed", function(self) self:ClearFocus() AuraFilter_spellIDinput:SetText(L["输入法术ID"]) end)
+AuraFilter_spellIDinput:SetScript("OnEnterPressed", function(self)
 	local spellID = self:GetText()
 	self:ClearFocus()
 	local name, _, icon = GetSpellInfo(spellID)
@@ -553,12 +553,12 @@ AuraFliter_spellIDinput:SetScript("OnEnterPressed", function(self)
 			aCoreCDB["UnitframeOptions"]["AuraFilterwhitelist"][spellID] = name
 			_G[G.uiname.."WhiteList Button"..spellID]:Show()
 			print("|cff7FFF00"..name.." |r"..L["被添加到法术过滤白名单中"])
-			LineUpAuraFliterList()
+			LineUpAuraFilterList()
 		else
 			aCoreCDB["UnitframeOptions"]["AuraFilterwhitelist"][spellID] = name		
-			CreateAuraFliterButton(name, icon, spellID)
+			CreateAuraFilterButton(name, icon, spellID)
 			print("|cff7FFF00"..name.." |r"..L["被添加到法术过滤白名单中"])
-			LineUpAuraFliterList()
+			LineUpAuraFilterList()
 		end
 	else
 		StaticPopupDialogs[G.uiname.."incorrect spellid"].text = "|cff7FFF00"..spellID.." |r"..L["不是一个有效的法术ID"]
@@ -566,12 +566,12 @@ AuraFliter_spellIDinput:SetScript("OnEnterPressed", function(self)
 	end
 end)
 
-AuraFliter_spellIDinput:SetScript("OnEnter", function(self) 
+AuraFilter_spellIDinput:SetScript("OnEnter", function(self) 
 	GameTooltip:SetOwner(self, "ANCHOR_RIGHT", -20, 10)
 	GameTooltip:AddLine(L["白名单提示"])
 	GameTooltip:Show() 
 end)
-AuraFliter_spellIDinput:SetScript("OnLeave", function(self) GameTooltip:Hide() end)
+AuraFilter_spellIDinput:SetScript("OnLeave", function(self) GameTooltip:Hide() end)
 		
 UFInnerframe.other = CreateOptionPage("UF Options other", OTHER, UFInnerframe, "VERTICAL", .3)
 
@@ -1434,11 +1434,12 @@ ActionbarInnerframe.bar45 = CreateOptionPage("Actionbar Options bar45", L["右�
 --ActionbarInnerframe.bar45.bar5toggle = T.ABtogglebox(ActionbarInnerframe.bar45, 30, 90, 4, L["右侧额外动作条"].." 2")
 --T.createDR(ActionbarInnerframe.bar45.bar4toggle, ActionbarInnerframe.bar45.bar5toggle)
 T.createcheckbutton(ActionbarInnerframe.bar45, 30, 60, L["横向动作条"], "ActionbarOptions", "Horizontalbar45")
-T.createslider(ActionbarInnerframe.bar45, 30, 110, L["图标大小"], "ActionbarOptions", "bar45size", 1, 15, 40, 1)
-T.createslider(ActionbarInnerframe.bar45, 30, 150, L["图标间距"], "ActionbarOptions", "bar45space", 1, 0, 10, 1)
-T.createcheckbutton(ActionbarInnerframe.bar45, 30, 200, L["悬停渐隐"], "ActionbarOptions", "bar45mfade", L["悬停渐隐提示"])
-T.createcheckbutton(ActionbarInnerframe.bar45, 30, 230, L["条件渐隐"], "ActionbarOptions", "bar45efade", L["条件渐隐提示"])
-T.createslider(ActionbarInnerframe.bar45, 30, 280, L["渐隐透明度"], "ActionbarOptions", "bar45fademinaplha", 100, 0, 80, 5, L["渐隐透明度提示"])
+T.createcheckbutton(ActionbarInnerframe.bar45, 30, 90, L["6*4布局"], "ActionbarOptions", "bar45uselayout64")
+T.createslider(ActionbarInnerframe.bar45, 30, 140, L["图标大小"], "ActionbarOptions", "bar45size", 1, 15, 40, 1)
+T.createslider(ActionbarInnerframe.bar45, 30, 180, L["图标间距"], "ActionbarOptions", "bar45space", 1, 0, 10, 1)
+T.createcheckbutton(ActionbarInnerframe.bar45, 30, 230, L["悬停渐隐"], "ActionbarOptions", "bar45mfade", L["悬停渐隐提示"])
+T.createcheckbutton(ActionbarInnerframe.bar45, 30, 260, L["条件渐隐"], "ActionbarOptions", "bar45efade", L["条件渐隐提示"])
+T.createslider(ActionbarInnerframe.bar45, 30, 310, L["渐隐透明度"], "ActionbarOptions", "bar45fademinaplha", 100, 0, 80, 5, L["渐隐透明度提示"])
 
 ActionbarInnerframe.petbar = CreateOptionPage("Actionbar Options petbar", L["宠物动作条"], ActionbarInnerframe, "VERTICAL", .3)
 
@@ -1504,19 +1505,290 @@ debufftitle:SetText(L["Debuffs"])
 --[[           -- NamePlates Options --             ]]--
 --====================================================--
 local PlateOptions = CreateOptionPage("Plate Options", UNIT_NAMEPLATES, GUI, "VERTICAL")
-	
-T.createcheckbutton(PlateOptions, 30, 60, L["启用"], "PlateOptions", "enableplate")
-T.createslider(PlateOptions, 30, 110, L["姓名板宽度"], "PlateOptions", "platewidth", 1, 100, 300, 5)
-T.createslider(PlateOptions, 30, 150, L["姓名板高度"], "PlateOptions", "plateheight", 1, 5, 25, 1)
-PlateOptions.classcolorplatestoggle = T.CVartogglebox(PlateOptions, 30, 190, "ShowClassColorInNameplate", SHOW_CLASS_COLOR_IN_V_KEY)
-T.createcheckbutton(PlateOptions, 30, 220, L["仇恨染色"], "PlateOptions", "threatplates", L["仇恨染色提示"])
-T.createcheckbutton(PlateOptions, 30, 250, L["自动显示/隐藏"], "PlateOptions", "autotoggleplates", L["自动显示/隐藏提示"])
-T.createcheckbutton(PlateOptions, 30, 280, L["显示减益"], "PlateOptions", "platedebuff", L["显示减益提示"])
-T.createcheckbutton(PlateOptions, 30, 310, L["显示增益"], "PlateOptions", "platebuff", L["显示增益提示"])
-T.createslider(PlateOptions, 30, 360, L["图标数量"], "PlateOptions", "plateauranum", 1, 3, 10, 1)
-T.createslider(PlateOptions, 30, 400, L["图标大小"], "PlateOptions", "plateaurasize", 1, 20, 40, 2)
-T.createDR(PlateOptions.enableplate, PlateOptions.platewidth, PlateOptions.plateheight, PlateOptions.threatplates, PlateOptions.autotoggleplates, PlateOptions.platedebuff, PlateOptions.platebuff, PlateOptions.plateauranum, PlateOptions.plateaurasize)
 
+local PlateInnerframe = CreateFrame("Frame", G.uiname.."Actionbar Options Innerframe", PlateOptions)
+PlateInnerframe:SetPoint("TOPLEFT", 40, -60)
+PlateInnerframe:SetPoint("BOTTOMLEFT", -20, 20)
+PlateInnerframe:SetWidth(PlateOptions:GetWidth()-200)
+F.CreateBD(PlateInnerframe, .3)
+
+PlateInnerframe.tabindex = 1
+PlateInnerframe.tabnum = 20
+for i = 1, 20 do
+	PlateInnerframe["tab"..i] = CreateFrame("Frame", G.uiname.."PlateInnerframe Tab"..i, PlateInnerframe)
+	PlateInnerframe["tab"..i]:SetScript("OnMouseDown", function() end)
+end
+
+PlateInnerframe.common = CreateOptionPage("Actionbar Options common", L["通用设置"], PlateInnerframe, "VERTICAL", .3)
+PlateInnerframe.common:Show()
+
+T.createcheckbutton(PlateInnerframe.common, 30, 60, L["启用"], "PlateOptions", "enableplate")
+T.createcheckbutton(PlateInnerframe.common, 30, 90, L["数字样式"], "PlateOptions", "numberstyle")
+T.createslider(PlateInnerframe.common, 30, 140, L["姓名板宽度"], "PlateOptions", "platewidth", 1, 100, 300, 5)
+T.createslider(PlateInnerframe.common, 30, 180, L["姓名板高度"], "PlateOptions", "plateheight", 1, 5, 25, 1)
+PlateOptions.classcolorplatestoggle = T.CVartogglebox(PlateInnerframe.common, 30, 220, "ShowClassColorInNameplate", SHOW_CLASS_COLOR_IN_V_KEY)
+T.createcheckbutton(PlateInnerframe.common, 30, 250, L["仇恨染色"], "PlateOptions", "threatplates", L["仇恨染色提示"])
+T.createcheckbutton(PlateInnerframe.common, 30, 280, L["自动显示/隐藏"], "PlateOptions", "autotoggleplates", L["自动显示/隐藏提示"])
+T.createslider(PlateInnerframe.common, 30, 330, L["图标数量"], "PlateOptions", "plateauranum", 1, 3, 10, 1)
+T.createslider(PlateInnerframe.common, 30, 370, L["图标大小"], "PlateOptions", "plateaurasize", 1, 20, 40, 2)
+T.createDR(PlateInnerframe.common.enableplate, PlateInnerframe.common.platewidth, PlateInnerframe.common.plateheight, PlateInnerframe.common.threatplates, PlateInnerframe.common.autotoggleplates, PlateInnerframe.common.plateauranum, PlateInnerframe.common.plateaurasize)
+
+PlateInnerframe.auralist = CreateOptionPage("Actionbar Options common", L["光环"], PlateInnerframe, "VERTICAL", .3)
+
+local plateauralistframe = CreateFrame("Frame", G.uiname.."Plate Aura List Options", PlateInnerframe.auralist)
+plateauralistframe:SetPoint("TOPLEFT", 30, -85)
+plateauralistframe:SetPoint("BOTTOMRIGHT", -30, 20)
+F.CreateBD(plateauralistframe, 0)
+plateauralistframe.tabindex = 1
+plateauralistframe.tabnum = 2
+for i = 1, 2 do
+	plateauralistframe["tab"..i] = CreateFrame("Frame", G.uiname.."plateauralistframe Tab"..i, plateauralistframe)
+	plateauralistframe["tab"..i]:SetScript("OnMouseDown", function() end)
+end
+
+local function LineUpplateauralist(parent, list)
+	local index = 1
+	for spellid, info in T.pairsByKeys(aCoreCDB["PlateOptions"][list]) do
+		_G[G.uiname..list..spellid]:SetPoint("TOPLEFT", parent, "TOPLEFT", 10, 20-index*30)
+		index =  index + 1
+	end
+end
+	
+local function CreateplateauralistButton(spellID, parent, list)
+	local bu = CreateFrame("Frame", G.uiname..list..spellID, parent)
+	bu:SetSize(330, 20)
+	
+	bu.icon = CreateFrame("Button", nil, bu)
+	bu.icon:SetSize(18, 18)
+	bu.icon:SetNormalTexture(select(3, GetSpellInfo(spellID)))
+	bu.icon:GetNormalTexture():SetTexCoord(0.1,0.9,0.1,0.9)
+	bu.icon:SetPoint"LEFT"
+	F.CreateBG(bu.icon)
+	
+	bu.spellname = T.createtext(bu, "OVERLAY", 12, "OUTLINE", "LEFT")
+	bu.spellname:SetPoint("LEFT", 140, 0)
+	bu.spellname:SetTextColor(1, 1, 0)
+	bu.spellname:SetText(GetSpellInfo(spellID))
+	
+	bu.close = CreateFrame("Button", nil, bu)
+	bu.close:SetSize(22,22)
+	bu.close:SetPoint("LEFT", 310, 0)
+	bu.close.text = T.createtext(bu.close, "OVERLAY", 12, "OUTLINE", "CENTER")
+	bu.close.text:SetPoint("CENTER")
+	bu.close.text:SetText("x")
+	
+	bu.close:SetScript("OnClick", function() 
+		bu:Hide()
+		aCoreCDB["PlateOptions"][list][spellID] = nil
+		LineUpplateauralist(parent, list)
+	end)
+	
+	bu:SetScript("OnEnter", function(self)
+		GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+		GameTooltip:SetSpellByID(spellID)
+		GameTooltip:Show()
+	end)
+	bu:SetScript("OnLeave", function() GameTooltip:Hide() end)
+	
+	return bu
+end
+
+local function Createplateauralist(list, parent)
+	for spellID, info in T.pairsByKeys(aCoreCDB["PlateOptions"][list]) do
+		CreateplateauralistButton(spellID, parent, list)
+	end
+	LineUpplateauralist(parent, list)
+end
+	
+local function CreatePlateAuraOptions(name, flitertype, list)
+	local plateauralist = CreateOptionPage(list.."Options", name, plateauralistframe, "HORIZONTAL", .3, true)
+	plateauralist.title:Hide()
+	plateauralist.line:Hide()
+	if list == "myplateauralist" then
+		plateauralist:Show()
+	end
+	
+	local filtertype_group = {}
+	filtertype_group["whitelist"] = L["白名单"]
+	filtertype_group["none"] = L["全部隐藏"]
+	
+	if list == "myplateauralist" then
+		filtertype_group["blacklist"] = L["黑名单"]
+	end
+	
+	T.createradiobuttongroup(plateauralist, 10, 0, L["过滤方式"], "PlateOptions", flitertype, filtertype_group)
+	
+	plateauralist.SF:SetPoint("TOPLEFT", 10, -50)
+	plateauralist.SF:SetPoint("BOTTOMRIGHT", -30, 20)
+	
+	Createplateauralist(list, plateauralist.SFAnchor)
+	
+	plateauralist.Spellinput = CreateFrame("EditBox", G.uiname..list.."Spell Input", plateauralist)
+	plateauralist.Spellinput:SetSize(120, 20)
+	plateauralist.Spellinput:SetPoint("TOPLEFT", plateauralist, "TOPLEFT", 20, -30)
+	F.CreateBD(plateauralist.Spellinput)
+	
+	plateauralist.Spellinput:SetFont(GameFontHighlight:GetFont(), 12, "OUTLINE")
+	plateauralist.Spellinput:SetAutoFocus(false)
+	plateauralist.Spellinput:SetTextInsets(3, 0, 0, 0)
+	
+	plateauralist.Spellinput:SetScript("OnShow", function(self) self:SetText(L["输入法术ID"]) end)
+	plateauralist.Spellinput:SetScript("OnEditFocusGained", function(self) self:HighlightText() end)
+	plateauralist.Spellinput:SetScript("OnEscapePressed", function(self) self:ClearFocus() self:SetText(L["输入法术ID"]) end)
+	plateauralist.Spellinput:SetScript("OnEnterPressed", function(self) self:ClearFocus() end)
+	
+	plateauralist.Add = CreateFrame("Button", G.uiname..list.."Add Button", plateauralist, "UIPanelButtonTemplate")
+	plateauralist.Add:SetPoint("LEFT", plateauralist.Spellinput, "RIGHT", 10, 0)
+	plateauralist.Add:SetSize(70, 20)
+	plateauralist.Add:SetText(ADD)
+	F.Reskin(plateauralist.Add)
+	
+	plateauralist.Add:SetScript("OnClick", function(self)
+		local spellID = tonumber(plateauralist.Spellinput:GetText())
+
+		if not spellID or not GetSpellInfo(spellID) then
+			StaticPopupDialogs[G.uiname.."incorrect spellid"].text = "|cff7FFF00"..plateauralist.Spellinput:GetText().." |r"..L["不是一个有效的法术ID"]
+			StaticPopup_Show(G.uiname.."incorrect spellid")
+		elseif not aCoreCDB["PlateOptions"][list][spellID] then
+			aCoreCDB["PlateOptions"][list][spellID] = true
+			if _G[G.uiname..list..spellID] then
+				_G[G.uiname..list..spellID]:Show()
+				LineUpplateauralist(plateauralist.SFAnchor, list)
+			else
+				CreateplateauralistButton(spellID, plateauralist.SFAnchor, list)
+				LineUpplateauralist(plateauralist.SFAnchor, list)
+			end
+		end
+	end)
+	
+	plateauralist.Reset = CreateFrame("Button", G.uiname..list.."Reset Button", plateauralist, "UIPanelButtonTemplate")
+	plateauralist.Reset:SetPoint("BOTTOM", ReloadButton, "TOP", 0, 10)
+	plateauralist.Reset:SetSize(100, 25)
+	plateauralist.Reset:SetText(L["重置"])	
+	F.Reskin(plateauralist.Reset)
+	
+	plateauralist.Reset:SetScript("OnClick", function(self)
+		StaticPopupDialogs[G.uiname.."Reset Confirm"].text = format(L["重置确认"], name)
+		StaticPopupDialogs[G.uiname.."Reset Confirm"].OnAccept = function()
+			aCoreCDB["PlateOptions"][list] = nil
+			ReloadUI()
+		end
+		StaticPopup_Show(G.uiname.."Reset Confirm")
+	end)
+end
+
+PlateInnerframe.customcoloredplates = CreateOptionPage("Actionbar Options common", L["自定义颜色"], PlateInnerframe, "VERTICAL", .3, true)
+
+PlateInnerframe.customcoloredplates.SF:ClearAllPoints()
+PlateInnerframe.customcoloredplates.SF:SetPoint("TOPLEFT", PlateInnerframe.customcoloredplates, "TOPLEFT", 30, -60)
+PlateInnerframe.customcoloredplates.SF:SetPoint("BOTTOMRIGHT", PlateInnerframe.customcoloredplates, "BOTTOMRIGHT", -50, 30)
+F.CreateBD(PlateInnerframe.customcoloredplates.SF, .3)
+
+local function CreateCColoredPlatesButton(parent, index, name, r, g, b)
+	local bu = CreateFrame("Frame", G.uiname.."CColoredPlatesList Button"..index, parent)
+	bu:SetPoint("TOPLEFT", parent, "TOPLEFT", 5, 20-index*30)
+	bu:SetSize(360, 28)
+	F.CreateBD(bu, .2)
+	
+	bu.index = T.createtext(bu, "OVERLAY", 16, "OUTLINE", "LEFT")
+	bu.index:SetPoint("LEFT", 10, 0)
+	bu.index:SetTextColor(1, 1, 1)
+	bu.index:SetText(index..".")
+	
+	bu.name_input = CreateFrame("EditBox", G.uiname..G.uiname.."CColoredPlatesList Button"..index.."NameInput", bu)
+	bu.name_input:SetSize(200, 20)
+	bu.name_input:SetPoint("LEFT", 40, 0)
+	F.CreateBD(bu.name_input, 0)
+	bu.name_input:SetBackdropColor(0, 0, 0, 0)
+	bu.name_input:SetBackdropBorderColor(0, 0, 0, 0)
+	
+	bu.name_input:SetFont(GameFontHighlight:GetFont(), 12, "OUTLINE")
+	bu.name_input:SetAutoFocus(false)
+	bu.name_input:SetTextInsets(3, 0, 0, 0)
+	
+	bu.name_input:SetScript("OnShow", function(self) self:SetText(aCoreCDB["PlateOptions"]["customcoloredplates"][index].name) end)
+	bu.name_input:SetScript("OnEditFocusGained", function(self) 
+		self:SetBackdropColor(0, 1, 1, .3)
+		self:SetBackdropBorderColor(1, 1, 1, 1)
+	end)
+	bu.name_input:SetScript("OnEditFocusLost", function(self) 
+		self:SetBackdropColor(0, 0, 0, 0)
+		self:SetBackdropBorderColor(0, 0, 0, 0)
+		self.new_value = self:GetText()
+		self:SetText(aCoreCDB["PlateOptions"]["customcoloredplates"][index].name)	
+	end)
+	bu.name_input:SetScript("OnEscapePressed", function(self)
+		self:ClearFocus()
+	end)
+	bu.name_input:SetScript("OnEnterPressed", function(self)
+		self:ClearFocus()
+		self:SetBackdropColor(0, 0, 0, 0)
+		self:SetBackdropBorderColor(0, 0, 0, 0)
+		aCoreCDB["PlateOptions"]["customcoloredplates"][index].name = self.new_value
+		self:SetText(self.new_value)
+	end)
+	
+	bu.cpb = CreateFrame("Button", G.uiname.."CColoredPlatesList Button"..index.."ColorPickerButton", bu, "UIPanelButtonTemplate")
+	bu.cpb:SetPoint("RIGHT", -60, 0)
+	bu.cpb:SetSize(55, 20)
+	F.Reskin(bu.cpb)
+	
+	bu.cpb.ctex = bu.cpb:CreateTexture(nil, "OVERLAY")
+	bu.cpb.ctex:SetTexture(G.media.blank)
+	bu.cpb.ctex:SetPoint"CENTER"
+	bu.cpb.ctex:SetSize(50, 18)
+	
+	bu.cpb:SetScript("OnShow", function(self) self.ctex:SetVertexColor(aCoreCDB["PlateOptions"]["customcoloredplates"][index].color.r, aCoreCDB["PlateOptions"]["customcoloredplates"][index].color.g, aCoreCDB["PlateOptions"]["customcoloredplates"][index].color.b) end)
+	bu.cpb:SetScript("OnClick", function(self)
+		local r, g, b = aCoreCDB["PlateOptions"]["customcoloredplates"][index].color.r, aCoreCDB["PlateOptions"]["customcoloredplates"][index].color.g, aCoreCDB["PlateOptions"]["customcoloredplates"][index].color.b
+		
+		ColorPickerFrame:ClearAllPoints()
+		ColorPickerFrame:SetPoint("TOPLEFT", self, "TOPRIGHT", 20, 0)
+		ColorPickerFrame.hasOpacity = false
+		
+		ColorPickerFrame.func = function()
+			aCoreCDB["PlateOptions"]["customcoloredplates"][index].color.r, aCoreCDB["PlateOptions"]["customcoloredplates"][index].color.g, aCoreCDB["PlateOptions"]["customcoloredplates"][index].color.b = ColorPickerFrame:GetColorRGB()
+			self.ctex:SetVertexColor(ColorPickerFrame:GetColorRGB())
+		end
+		
+		ColorPickerFrame.previousValues = {r = r, g = g, b = b}
+		
+		ColorPickerFrame.cancelFunc = function()
+			aCoreCDB["PlateOptions"]["customcoloredplates"][index].color.r, aCoreCDB["PlateOptions"]["customcoloredplates"][index].color.g, aCoreCDB["PlateOptions"]["customcoloredplates"][index].color.b = r, g, b
+			self.ctex:SetVertexColor(aCoreCDB["PlateOptions"]["customcoloredplates"][index].color.r, aCoreCDB["PlateOptions"]["customcoloredplates"][index].color.g, aCoreCDB[table][value].b)
+		end
+		
+		ColorPickerFrame:SetColorRGB(r, g, b)
+		ColorPickerFrame:Hide()
+		ColorPickerFrame:Show()
+	end)
+	
+	bu.reset = CreateFrame("Button", nil, bu, "UIPanelButtonTemplate")
+	bu.reset:SetSize(38,18)
+	bu.reset:SetPoint("RIGHT", -5, 0)
+	F.Reskin(bu.reset)
+	bu.reset:SetText(L["重置"])
+	
+	bu.reset:SetScript("OnClick", function(self)
+		table.wipe(aCoreCDB["PlateOptions"]["customcoloredplates"][index])
+		aCoreCDB["PlateOptions"]["customcoloredplates"][index] = {
+			name = L["空"],
+			color = {r = 1, g = 1, b = 1},
+		}
+		bu.name_input:SetText(L["空"])
+		bu.cpb.ctex:SetVertexColor(1, 1, 1)
+	end)
+	
+	return bu
+end
+
+local function CreateCColoredPlatesList()
+	for index, info in pairs(aCoreCDB["PlateOptions"]["customcoloredplates"]) do
+		local name = info.name
+		local r, g, b =  info.color.r, info.color.g, info.color.b
+		CreateCColoredPlatesButton(PlateInnerframe.customcoloredplates.SFAnchor, index, name, r, g, b)
+	end
+end
 --====================================================--
 --[[             -- Tooltip Options --              ]]--
 --====================================================--
@@ -1542,14 +1814,14 @@ local CombattextOptions = CreateOptionPage("CombatText Options", L["战斗信息
 T.createcheckbutton(CombattextOptions, 30, 60, L["启用"], "CombattextOptions", "combattext")
 T.createcheckbutton(CombattextOptions, 30, 90, L["承受伤害/治疗"], "CombattextOptions", "showreceivedct")
 T.createcheckbutton(CombattextOptions, 30, 120, L["输出伤害/治疗"], "CombattextOptions", "showoutputct")
-T.createcheckbutton(CombattextOptions, 30, 150, L["过滤战斗信息"], "CombattextOptions", "ctfliter", L["过滤战斗信息提示"])
+T.createcheckbutton(CombattextOptions, 30, 150, L["过滤战斗信息"], "CombattextOptions", "ctfilter", L["过滤战斗信息提示"])
 T.createslider(CombattextOptions, 30, 200, L["图标大小"], "CombattextOptions", "cticonsize", 1, 10, 30, 1)
 T.createslider(CombattextOptions, 30, 240, L["暴击图标大小"], "CombattextOptions", "ctbigiconsize", 1, 10, 30, 1)
 T.createcheckbutton(CombattextOptions, 30, 280, L["显示DOT"], "CombattextOptions", "ctshowdots")
 T.createcheckbutton(CombattextOptions, 30, 310, L["显示HOT"], "CombattextOptions", "ctshowhots")
 T.createcheckbutton(CombattextOptions, 30, 340, L["显示宠物"], "CombattextOptions", "ctshowpet")
 T.createslider(CombattextOptions, 30, 390, L["隐藏时间"], "CombattextOptions", "ctfadetime", 10, 20, 100, 5, L["隐藏时间提示"])
-T.createDR(CombattextOptions.combattext, CombattextOptions.showreceivedct, CombattextOptions.showoutputct, CombattextOptions.ctfliter, CombattextOptions.cticonsize, CombattextOptions.ctbigiconsize, CombattextOptions.ctshowdots, CombattextOptions.ctshowhots, CombattextOptions.ctshowpet, CombattextOptions.ctfadetime)
+T.createDR(CombattextOptions.combattext, CombattextOptions.showreceivedct, CombattextOptions.showoutputct, CombattextOptions.ctfilter, CombattextOptions.cticonsize, CombattextOptions.ctbigiconsize, CombattextOptions.ctshowdots, CombattextOptions.ctshowhots, CombattextOptions.ctshowpet, CombattextOptions.ctfadetime)
 
 --====================================================--
 --[[              -- RaidTool Options --                ]]--
@@ -1700,10 +1972,13 @@ function eventframe:ADDON_LOADED(arg1)
 	end
 	T.LoadAccountVariables()
 	T.LoadVariables()
-	CreateAuraFliterButtonList()
+	CreateAuraFilterButtonList()
 	CreateAutobuyButtonList()
 	CreateRaidDebuffOptions()
 	CreateCooldownAuraOptions()
+	CreatePlateAuraOptions(L["我的法术"], "myfiltertype", "myplateauralist")
+	CreatePlateAuraOptions(L["其他法术"], "otherfiltertype", "otherplateauralist")
+	CreateCColoredPlatesList()
 	SetClassColorButton:SetScript("OnClick", function() T.ResetClasscolors(true) end)
 	SetDBMButton:SetScript("OnClick", function() T.ResetDBM(true) end)
 	SetSkadaButton:SetScript("OnClick", function() T.ResetSkada(true) end)

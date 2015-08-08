@@ -62,6 +62,20 @@ T.CreateSD = function(parent, size, r, g, b, alpha, offset)
 	sd:SetAlpha(alpha or 1)
 end
 
+T.CreateThinSD = function(parent, size, r, g, b, alpha, offset)
+	local sd = CreateFrame("Frame", nil, parent)
+	sd.size = size or 1
+	sd.offset = offset or 0
+	sd:SetBackdrop({
+		edgeFile = G.media.blank,
+		edgeSize = sd.size,
+	})
+	sd:SetPoint("TOPLEFT", parent, -sd.size - 1 - sd.offset, sd.size + 1 + sd.offset)
+	sd:SetPoint("BOTTOMRIGHT", parent, sd.size + 1 + sd.offset, -sd.size - 1 - sd.offset)
+	sd:SetBackdropBorderColor(r or 0, g or 0, b or 0)
+	sd:SetAlpha(alpha or 1)
+end
+
 T.SkinButton = function(button, tex, blend)
 	local texture = button:CreateTexture(nil, "OVERLAY")
 	texture:SetAllPoints(button)
