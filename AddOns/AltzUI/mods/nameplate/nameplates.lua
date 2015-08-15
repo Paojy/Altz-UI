@@ -359,9 +359,8 @@ local function UpdateObjects(frame)
 		
 	-- why the fuck does blizzard rescale "useless" npc nameplate to 0.4, its really hard to read ...
 	if not numberstyle then 
-		while frame.hp:GetEffectiveScale() < 1 do
-		frame.hp:SetScale(frame.hp:GetScale() + 0.01)
-		frame.cb:SetScale(frame.cb:GetScale() + 0.01)
+		if frame.hp:GetEffectiveScale() < 1 then
+		--frame.cb:SetScale(1)
 		end
 	end
 	
@@ -428,7 +427,7 @@ local function SkinObjects(frame, nameFrame)
 		
 		--Create Level
 		hp.level = hp:CreateFontString(nil, "OVERLAY")	
-		hp.level:SetFont(numberstylefont, fontsize, "OUTLINE")
+		hp.level:SetFont(numberstylefont, fontsize-4, "OUTLINE")
 		hp.level:SetPoint("LEFT", hp.name, "RIGHT", 4, 0)
 		hp.level:SetShadowOffset(1, -1)	
 		
@@ -476,7 +475,7 @@ local function SkinObjects(frame, nameFrame)
 		-- castbar text
 		cbtext:ClearAllPoints()
 		cbtext:SetPoint("TOP", cbicon, "BOTTOM", 0, -8)	
-		cbtext:SetFont(G.norFont, fontsize-2, "OUTLINE")
+		cbtext:SetFont(G.norFont, fontsize-4, "OUTLINE")
 		cb.cbtext = cbtext	
 
 		cb.shield = cbshield
