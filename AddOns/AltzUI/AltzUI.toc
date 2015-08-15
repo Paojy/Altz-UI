@@ -1,8 +1,15 @@
 ﻿## Interface: 60200
 ## Title: |cffEE3A8CAltz|rUI
 ## X-oUF: AltzUF
-## Version: 6.25
+## Version: 6.26
 ## Author: Blue
 ## Dependencies: AltzUIConfig
+## X-DBM-Timer-Skin: 1
+## X-DBM-Timer-Skin: 1
+## X-DBM-Timer-Skin-Name: AltzUI
+## X-DBM-Timer-Skin-Textures: Interface\AddOns\AltzUI\media\statusbar.tga
+## X-DBM-Timer-Skin-Texture-Names: Altz
+## X-DBM-Timer-Skin-Fonts: Interface\AddOns\Aurora\media\font.ttf
+## X-DBM-Timer-Skin-Font-Names: Altz Font
 
 load.xml

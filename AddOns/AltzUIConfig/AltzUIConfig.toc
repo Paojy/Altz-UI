@@ -1,9 +1,9 @@
 ﻿## Interface: 60200
 ## Title: |cffEE3A8CAltz|rUI Config
-## Version: 6.25
+## Version: 6.26
 ## Author: Blue
 ## Dependencies: Aurora
-## OptionalDeps: !ClassColors, Skada, Numeration, TinyDPS, Recount, oUF_Mlight, DBM-Core, Carbonite
+## OptionalDeps: !ClassColors, Skada, DBM-Core, BigWigs
 ## SavedVariables: aCoreDB
 ## SavedVariablesPerCharacter: aCoreCDB
 
