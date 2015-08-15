@@ -762,6 +762,7 @@ local Account_default_Settings = {
 local Character_default_Settings = {
 	FramePoints = {},
 	UnitframeOptions = {
+		style = 1, -- 1: tansparent , 2:dark bg reverse, 3:dark bg normal -- 加入
 		enablefade = true,
 		fadingalpha = 0.2,
 		valuefontsize = 16,
@@ -993,7 +994,6 @@ local Character_default_Settings = {
 		pulltime = 8,
 	},
 	OtherOptions = {
-		style = 1, -- 1: tansparent , 2:dark bg reverse, 3:dark bg normal -- 加入
 		minimapheight = 165, -- 加入
 		micromenuscale = 1, -- 加入
 		infobarscale = 1, -- 加入
@@ -1014,12 +1014,10 @@ local Character_default_Settings = {
 		saysapped = true,
 	},
 	SkinOptions = {
-		editsettings = true,
 		setClassColor = true,
 		setDBM = true,
 		setSkada = true,
-		setNumeration = true,
-		setRecount = true,
+		setBW = true,
 	},
 	RaidDebuff = DebuffList,
 	CooldownAura = AuraList,

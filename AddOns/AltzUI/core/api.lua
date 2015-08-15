@@ -183,7 +183,7 @@ T.createStatusbar = function(parent, layer, height, width, r, g, b, alpha, name)
         bar:SetWidth(width)
     end
 	
-	if aCoreCDB["OtherOptions"]["style"] == 1 then
+	if aCoreCDB["UnitframeOptions"]["style"] == 1 then
 		bar:SetStatusBarTexture(G.media.blank)
 	else
 		bar:SetStatusBarTexture(G.media.ufbar)
@@ -192,7 +192,7 @@ T.createStatusbar = function(parent, layer, height, width, r, g, b, alpha, name)
     bar:SetStatusBarColor(r, g, b, alpha)
 	
 	bar.bg = bar:CreateTexture(nil, "BACKGROUND")
-	if aCoreCDB["OtherOptions"]["style"] == 1 then
+	if aCoreCDB["UnitframeOptions"]["style"] == 1 then
 		bar.bg:SetTexture(G.media.blank)
 	else
 		bar.bg:SetTexture(G.media.ufbar)

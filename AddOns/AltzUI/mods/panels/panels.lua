@@ -21,7 +21,7 @@ local function ColorGradient(perc, ...)-- http://www.wowwiki.com/ColorGradient
 end
 
 local function Skinbar(bar)
-	if aCoreCDB["OtherOptions"]["style"] == 1 then
+	if aCoreCDB["UnitframeOptions"]["style"] == 1 then
 		bar.tex = bar:CreateTexture(nil, "ARTWORK")
 		bar.tex:SetAllPoints()
 		bar.tex:SetTexture(G.media.blank)
@@ -37,7 +37,7 @@ local function Skinbar(bar)
 end
 
 local function Skinbg(bar)
-	if aCoreCDB["OtherOptions"]["style"] ~= 1 then
+	if aCoreCDB["UnitframeOptions"]["style"] ~= 1 then
 		bar.tex = bar:CreateTexture(nil, "ARTWORK")
 		bar.tex:SetAllPoints()
 		bar.tex:SetTexture(G.media.blank)

@@ -398,17 +398,43 @@ end
 UFInnerframe.style = CreateOptionPage("UF Options style", L["样式"], UFInnerframe, "VERTICAL", .3)
 UFInnerframe.style:Show()
 
-T.createcheckbutton(UFInnerframe.style, 30, 60, L["条件渐隐"], "UnitframeOptions", "enablefade", L["条件渐隐提示"])
-T.createslider(UFInnerframe.style, 30, 110, L["渐隐透明度"], "UnitframeOptions", "fadingalpha", 100, 0, 80, 5, L["渐隐透明度提示"])
+T.createcheckbutton(UFInnerframe.style, 30, 100, L["条件渐隐"], "UnitframeOptions", "enablefade", L["条件渐隐提示"])
+T.createslider(UFInnerframe.style, 30, 150, L["渐隐透明度"], "UnitframeOptions", "fadingalpha", 100, 0, 80, 5, L["渐隐透明度提示"])
 T.createDR(UFInnerframe.style.enablefade, UFInnerframe.style.fadingalpha)
-T.createcheckbutton(UFInnerframe.style, 30, 150, L["显示肖像"], "UnitframeOptions", "portrait")
-T.createslider(UFInnerframe.style, 30, 200, L["肖像透明度"], "UnitframeOptions", "portraitalpha", 100, 10, 100, 5)
+T.createcheckbutton(UFInnerframe.style, 30, 190, L["显示肖像"], "UnitframeOptions", "portrait")
+T.createslider(UFInnerframe.style, 30, 240, L["肖像透明度"], "UnitframeOptions", "portraitalpha", 100, 10, 100, 5)
 T.createDR(UFInnerframe.style.portrait, UFInnerframe.style.portraitalpha)
-T.createcheckbutton(UFInnerframe.style, 30, 240, L["按职业着色"], "UnitframeOptions", "classcolormode", L["按职业染色提示"])
-T.createcheckbutton(UFInnerframe.style, 30, 270, L["名字职业着色"], "UnitframeOptions", "nameclasscolormode", L["名字职业着色提示"])
-T.createcheckbutton(UFInnerframe.style, 30, 300, L["以万为单位显示"], "UnitframeOptions", "tenthousand")
-T.createcheckbutton(UFInnerframe.style, 30, 330, L["总是显示生命值"], "UnitframeOptions", "alwayshp", L["总是显示生命值提示"])
-T.createcheckbutton(UFInnerframe.style, 30, 360, L["总是显示能量值"], "UnitframeOptions", "alwayspp", L["总是显示能量值提示"])
+T.createcheckbutton(UFInnerframe.style, 30, 280, L["以万为单位显示"], "UnitframeOptions", "tenthousand")
+T.createcheckbutton(UFInnerframe.style, 30, 310, L["总是显示生命值"], "UnitframeOptions", "alwayshp", L["总是显示生命值提示"])
+T.createcheckbutton(UFInnerframe.style, 30, 340, L["总是显示能量值"], "UnitframeOptions", "alwayspp", L["总是显示能量值提示"])
+
+local style_group = {
+	[1] = L["透明样式"],
+	[2] = L["深色样式"],
+	[3] = L["普通样式"],
+}
+T.createradiobuttongroup(UFInnerframe.style, 30, 60, L["界面风格"], "UnitframeOptions", "style", style_group)
+UFInnerframe.style.style:HookScript("OnShow", function(self)
+	if aCoreCDB["UnitframeOptions"]["style"] == 3 then
+		UFInnerframe.style.portrait:Disable()
+		BlizzardOptionsPanel_Slider_Disable(UFInnerframe.style.portraitalpha)
+	else
+		UFInnerframe.style.portrait:Enable()
+		BlizzardOptionsPanel_Slider_Enable(UFInnerframe.style.portraitalpha)
+	end
+end)
+local stylebuttons = {UFInnerframe.style.style:GetChildren()}
+for i = 1, #stylebuttons do
+	stylebuttons[i]:HookScript("OnClick", function(self)
+		if aCoreCDB["UnitframeOptions"]["style"] == 3 then
+			UFInnerframe.style.portrait:Disable()
+			BlizzardOptionsPanel_Slider_Disable(UFInnerframe.style.portraitalpha)
+		else
+			UFInnerframe.style.portrait:Enable()
+			BlizzardOptionsPanel_Slider_Enable(UFInnerframe.style.portraitalpha)
+		end
+	end)
+end
 
 UFInnerframe.size = CreateOptionPage("UF Options size", L["尺寸"], UFInnerframe, "VERTICAL", .3)
 
@@ -1838,58 +1864,31 @@ T.createmultilinebox(RaidToolOptions, 200, 60, 35, 205, L["药水通报过滤"],
 --====================================================--
 local OtherOptions = CreateOptionPage("Other Options", OTHER, GUI, "VERTICAL")
 
-local style_group = {
-	[1] = L["透明样式"],
-	[2] = L["深色样式"],
-	[3] = L["普通样式"],
-}
-T.createradiobuttongroup(OtherOptions, 30, 70, L["界面风格"], "OtherOptions", "style", style_group)
-OtherOptions.style:HookScript("OnShow", function(self)
-	if aCoreCDB["OtherOptions"]["style"] == 3 then
-		UFInnerframe.style.portrait:Disable()
-		BlizzardOptionsPanel_Slider_Disable(UFInnerframe.style.portraitalpha)
-	else
-		UFInnerframe.style.portrait:Enable()
-		BlizzardOptionsPanel_Slider_Enable(UFInnerframe.style.portraitalpha)
-	end
-end)
-local stylebuttons = {OtherOptions.style:GetChildren()}
-for i = 1, #stylebuttons do
-	stylebuttons[i]:HookScript("OnClick", function(self)
-		if aCoreCDB["OtherOptions"]["style"] == 3 then
-			UFInnerframe.style.portrait:Disable()
-			BlizzardOptionsPanel_Slider_Disable(UFInnerframe.style.portraitalpha)
-		else
-			UFInnerframe.style.portrait:Enable()
-			BlizzardOptionsPanel_Slider_Enable(UFInnerframe.style.portraitalpha)
-		end
-	end)
-end
-T.createslider(OtherOptions, 30, 130, L["缩放按钮高度"], "OtherOptions", "minimapheight", 1, 100, 300, 5, L["缩放按钮高度提示"])
-T.createslider(OtherOptions, 30, 170, L["系统菜单尺寸"], "OtherOptions", "micromenuscale", 100, 50, 200, 5)
-T.createslider(OtherOptions, 30, 210, L["信息条尺寸"], "OtherOptions", "infobarscale", 100, 50, 200, 5)
-T.createcheckbutton(OtherOptions, 30, 250, L["整理小地图图标"], "OtherOptions", "collectminimapbuttons")
-T.createcheckbutton(OtherOptions, 300, 250, L["整理隐藏的小地图图标"], "OtherOptions", "collecthidingminimapbuttons")
+T.createslider(OtherOptions, 30, 80, L["缩放按钮高度"], "OtherOptions", "minimapheight", 1, 100, 300, 5, L["缩放按钮高度提示"])
+T.createslider(OtherOptions, 30, 120, L["系统菜单尺寸"], "OtherOptions", "micromenuscale", 100, 50, 200, 5)
+T.createslider(OtherOptions, 30, 160, L["信息条尺寸"], "OtherOptions", "infobarscale", 100, 50, 200, 5)
+T.createcheckbutton(OtherOptions, 30, 190, L["整理小地图图标"], "OtherOptions", "collectminimapbuttons")
+T.createcheckbutton(OtherOptions, 300, 190, L["整理隐藏的小地图图标"], "OtherOptions", "collecthidingminimapbuttons")
 local MBCFpos_group = {
 	["TOP"] = L["上方"],
 	["BOTTOM"] = L["下方"],
 }
-T.createradiobuttongroup(OtherOptions, 30, 280, L["整理栏位置"], "OtherOptions", "MBCFpos", MBCFpos_group)
+T.createradiobuttongroup(OtherOptions, 30, 220, L["整理栏位置"], "OtherOptions", "MBCFpos", MBCFpos_group)
 T.createDR(OtherOptions.collectminimapbuttons, OtherOptions.MBCFpos, OtherOptions.collecthidingminimapbuttons)
 
 OtherOptions.DividingLine = OtherOptions:CreateTexture(nil, "ARTWORK")
 OtherOptions.DividingLine:SetSize(OtherOptions:GetWidth()-50, 1)
-OtherOptions.DividingLine:SetPoint("TOP", 0, -315)
+OtherOptions.DividingLine:SetPoint("TOP", 0, -255)
 OtherOptions.DividingLine:SetTexture(1, 1, 1, .2)
 
-T.createcheckbutton(OtherOptions, 30, 330, L["隐藏错误提示"], "OtherOptions", "hideerrors", L["隐藏错误提示提示"])	
-T.createcheckbutton(OtherOptions, 300, 330, L["成就截图"], "OtherOptions", "autoscreenshot", L["成就截图提示"])
-T.createcheckbutton(OtherOptions, 30, 360, L["回收内存"], "OtherOptions", "collectgarbage", L["回收内存提示"])
-T.createcheckbutton(OtherOptions, 300, 360, L["镜头优化"], "OtherOptions", "camera", L["镜头优化提示"])
-T.createcheckbutton(OtherOptions, 30, 390, L["自动接受复活"], "OtherOptions", "acceptres", L["自动接受复活提示"])	
-T.createcheckbutton(OtherOptions, 300, 390, L["战场自动释放灵魂"], "OtherOptions", "battlegroundres", L["战场自动释放灵魂提示"])
-T.createcheckbutton(OtherOptions, 30, 420, L["自动交接任务"], "OtherOptions", "autoquests", L["自动交接任务提示"])
-T.createcheckbutton(OtherOptions, 300, 420, L["大喊被闷了"], "OtherOptions", "saysapped", L["大喊被闷了提示"])
+T.createcheckbutton(OtherOptions, 30, 270, L["隐藏错误提示"], "OtherOptions", "hideerrors", L["隐藏错误提示提示"])	
+T.createcheckbutton(OtherOptions, 300, 270, L["成就截图"], "OtherOptions", "autoscreenshot", L["成就截图提示"])
+T.createcheckbutton(OtherOptions, 30, 300, L["回收内存"], "OtherOptions", "collectgarbage", L["回收内存提示"])
+T.createcheckbutton(OtherOptions, 300, 300, L["镜头优化"], "OtherOptions", "camera", L["镜头优化提示"])
+T.createcheckbutton(OtherOptions, 30, 330, L["自动接受复活"], "OtherOptions", "acceptres", L["自动接受复活提示"])	
+T.createcheckbutton(OtherOptions, 300, 330, L["战场自动释放灵魂"], "OtherOptions", "battlegroundres", L["战场自动释放灵魂提示"])
+T.createcheckbutton(OtherOptions, 30, 360, L["自动交接任务"], "OtherOptions", "autoquests", L["自动交接任务提示"])
+T.createcheckbutton(OtherOptions, 300, 360, L["大喊被闷了"], "OtherOptions", "saysapped", L["大喊被闷了提示"])
 
 --====================================================--
 --[[               -- Skin Options --               ]]--
@@ -1934,8 +1933,12 @@ local SetClassColorButton = CreateApplySettingButton("setClassColor")
 T.createcheckbutton(SkinOptions, 30, 90, "DBM", "SkinOptions", "setDBM")
 local SetDBMButton = CreateApplySettingButton("setDBM")
 
-T.createcheckbutton(SkinOptions, 30, 120, "Skada", "SkinOptions", "setSkada")
+T.createcheckbutton(SkinOptions, 30, 120, "BigWigs", "SkinOptions", "setBW")
+local SetBWButton = CreateApplySettingButton("setBW")
+
+T.createcheckbutton(SkinOptions, 30, 150, "Skada", "SkinOptions", "setSkada")
 local SetSkadaButton = CreateApplySettingButton("setSkada")
+
 
 --====================================================--
 --[[               -- Commands --               ]]--
@@ -1981,6 +1984,7 @@ function eventframe:ADDON_LOADED(arg1)
 	CreateCColoredPlatesList()
 	SetClassColorButton:SetScript("OnClick", function() T.ResetClasscolors(true) end)
 	SetDBMButton:SetScript("OnClick", function() T.ResetDBM(true) end)
+	SetBWButton:SetScript("OnClick", function() T.ResetBW(true) end)
 	SetSkadaButton:SetScript("OnClick", function() T.ResetSkada(true) end)
 end
 --[[

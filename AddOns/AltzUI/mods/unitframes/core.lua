@@ -97,7 +97,7 @@ T.Overridehealthbar = function(self, event, unit)
 	
 	if disconnected then
 		health:SetValue(max_health)
-	elseif aCoreCDB["OtherOptions"]["style"] ~= 3 then
+	elseif aCoreCDB["UnitframeOptions"]["style"] ~= 3 then
 		health:SetValue(max_health - min) 
 	else
 		health:SetValue(min) 
@@ -136,27 +136,27 @@ T.Overridehealthbar = function(self, event, unit)
 		r, g, b = 1, 0, 0
 	elseif (unit == "pet") then
 		local _, playerclass = UnitClass("player")
-		if aCoreCDB["UnitframeOptions"]["classcolormode"] then
+		if aCoreCDB["UnitframeOptions"]["style"] == 3 then
 			r, g, b = unpack(oUF.colors.class[playerclass])
 		else
 			r, g, b = oUF.ColorGradient(perc, 1, unpack(oUF.colors.smooth))
 		end
 	elseif(UnitIsPlayer(unit)) then
 		local _, unitclass = UnitClass(unit)
-		if aCoreCDB["UnitframeOptions"]["classcolormode"] then
+		if aCoreCDB["UnitframeOptions"]["style"] == 3 then
 			if unitclass then r, g, b = unpack(oUF.colors.class[unitclass]) else r, g, b = 1, 1, 1 end
 		else
 			r, g, b = oUF.ColorGradient(perc, 1, unpack(oUF.colors.smooth))
 		end
 	elseif unit then
-		if aCoreCDB["UnitframeOptions"]["classcolormode"] then
+		if aCoreCDB["UnitframeOptions"]["style"] == 3 then
 			r, g, b = unpack(oUF.colors.reaction[UnitReaction(unit, "player") or 5])
 		else
 			r, g, b = oUF.ColorGradient(perc, 1, unpack(oUF.colors.smooth))
 		end
 	end
 	
-	if aCoreCDB["OtherOptions"]["style"] == 1 then
+	if aCoreCDB["UnitframeOptions"]["style"] == 1 then
 		health:GetStatusBarTexture():SetGradient("VERTICAL", r, g, b, r/3, g/3, b/3)
 	else
 		health:SetStatusBarColor(r, g, b)
@@ -197,33 +197,33 @@ T.Updatehealthbar = function(self, unit, min, max)
 		r, g, b = 1, 0, 0
 	elseif (unit == "pet") then
 		local _, playerclass = UnitClass("player")
-		if aCoreCDB["UnitframeOptions"]["classcolormode"] then
+		if aCoreCDB["UnitframeOptions"]["style"] == 3 then
 			r, g, b = unpack(oUF.colors.class[playerclass])
 		else
 			r, g, b = oUF.ColorGradient(perc, 1, unpack(oUF.colors.smooth))
 		end
 	elseif(UnitIsPlayer(unit)) then
 		local _, unitclass = UnitClass(unit)
-		if aCoreCDB["UnitframeOptions"]["classcolormode"] then
+		if aCoreCDB["UnitframeOptions"]["style"] == 3 then
 			if unitclass then r, g, b = unpack(oUF.colors.class[unitclass]) else r, g, b = 1, 1, 1 end
 		else
 			r, g, b = oUF.ColorGradient(perc, 1, unpack(oUF.colors.smooth))
 		end
 	elseif unit then
-		if aCoreCDB["UnitframeOptions"]["classcolormode"] then
+		if aCoreCDB["UnitframeOptions"]["style"] == 3 then
 			r, g, b = unpack(oUF.colors.reaction[UnitReaction(unit, "player") or 5])
 		else
 			r, g, b = oUF.ColorGradient(perc, 1, unpack(oUF.colors.smooth))
 		end
 	end
 	
-	if aCoreCDB["OtherOptions"]["style"] == 1 then
+	if aCoreCDB["UnitframeOptions"]["style"] == 1 then
 		self:GetStatusBarTexture():SetGradient("VERTICAL", r, g, b, r/3, g/3, b/3)
 	else
 		self:SetStatusBarColor(r, g, b)
 	end
 	
-	if aCoreCDB["OtherOptions"]["style"] ~= 3 then
+	if aCoreCDB["UnitframeOptions"]["style"] ~= 3 then
 		self:SetValue(max - self:GetValue()) 
 	end
 end
@@ -247,7 +247,7 @@ T.Updatepowerbar = function(self, unit, min, max)
 		end
 	end
 	
-	if aCoreCDB["UnitframeOptions"]["classcolormode"] then
+	if aCoreCDB["UnitframeOptions"]["style"] == 3 then
 		r, g, b = unpack(powercolor)
 	elseif UnitIsPlayer(unit) then
 		local _, unitclass = UnitClass(unit)
@@ -256,7 +256,7 @@ T.Updatepowerbar = function(self, unit, min, max)
 		r, g, b = unpack(oUF.colors.reaction[UnitReaction(unit, 'player') or 5])
 	end
 	
-	if aCoreCDB["OtherOptions"]["style"] == 1 then
+	if aCoreCDB["UnitframeOptions"]["style"] == 1 then
 		self:GetStatusBarTexture():SetGradient("VERTICAL", r, g, b, r/3, g/3, b/3)
 	else
 		self:SetStatusBarColor(r, g, b)
@@ -435,7 +435,7 @@ local uc = {1, 0, 0}
 local tk
 if aCoreCDB["UnitframeOptions"]["independentcb"]  then -- 独立施法条
 	tk = {0, 0, 0}
-elseif aCoreCDB["OtherOptions"]["style"] == 1 or aCoreCDB["OtherOptions"]["style"] == 3 then -- 透明或者经典主题
+elseif aCoreCDB["UnitframeOptions"]["style"] == 1 or aCoreCDB["UnitframeOptions"]["style"] == 3 then -- 透明或者经典主题
 	tk = {0, 0, 0}
 else -- 深色主题
 	tk = {1, 1, 1}
@@ -581,7 +581,7 @@ local CreateCastbars = function(self, unit)
     local u = unit:match("[^%d]+")
     if multicheck(u, "target", "player", "focus", "boss") then
         local cb = CreateFrame("StatusBar", G.uiname..unit.."Castbar", self)
-		if aCoreCDB["OtherOptions"]["style"] == 1 then
+		if aCoreCDB["UnitframeOptions"]["style"] == 1 then
 			cb:SetStatusBarTexture(G.media.blank)
 		else
 			cb:SetStatusBarTexture(G.media.ufbar)
@@ -694,7 +694,7 @@ local CreateSwingTimer = function(self, unit) -- only for player
 	-- 双手
 	bar.Twohand = CreateFrame("StatusBar", nil, bar)
 	bar.Twohand:SetAllPoints(bar)
-	if aCoreCDB["OtherOptions"]["style"] == 1 then
+	if aCoreCDB["UnitframeOptions"]["style"] == 1 then
 		bar.Twohand:SetStatusBarTexture(G.media.blank)
 	else
 		bar.Twohand:SetStatusBarTexture(G.media.ufbar)
@@ -715,7 +715,7 @@ local CreateSwingTimer = function(self, unit) -- only for player
 	-- 主手
 	bar.Mainhand = CreateFrame("StatusBar", nil, bar)
 	bar.Mainhand:SetAllPoints(bar)
-	if aCoreCDB["OtherOptions"]["style"] == 1 then
+	if aCoreCDB["UnitframeOptions"]["style"] == 1 then
 		bar.Mainhand:SetStatusBarTexture(G.media.blank)
 	else
 		bar.Mainhand:SetStatusBarTexture(G.media.ufbar)
@@ -739,7 +739,7 @@ local CreateSwingTimer = function(self, unit) -- only for player
 	bar.Offhand:SetPoint("TOPLEFT", bar, "BOTTOMLEFT", 0, -3)
 	bar.Offhand:SetPoint("TOPRIGHT", bar, "BOTTOMRIGHT", 0, -3)
 	bar.Offhand:SetHeight(aCoreCDB["UnitframeOptions"]["swheight"]/2)
-	if aCoreCDB["OtherOptions"]["style"] == 1 then
+	if aCoreCDB["UnitframeOptions"]["style"] == 1 then
 		bar.Offhand:SetStatusBarTexture(G.media.blank)
 	else
 		bar.Offhand:SetStatusBarTexture(G.media.ufbar)
@@ -989,7 +989,7 @@ local func = function(self, unit)
 	self.bg:SetAllPoints(self)
 	self.bg.tex = self.bg:CreateTexture(nil, "BACKGROUND")
     self.bg.tex:SetAllPoints()
-	if aCoreCDB["OtherOptions"]["style"] == 1 then
+	if aCoreCDB["UnitframeOptions"]["style"] == 1 then
 		self.bg.tex:SetTexture(G.media.blank)
 		self.bg.tex:SetVertexColor(0, 0, 0, 0)	
 	else
@@ -1016,7 +1016,7 @@ local func = function(self, unit)
 	hp:SetAllPoints(self)
     hp.frequentUpdates = true
 	
-	if aCoreCDB["OtherOptions"]["style"] == 1 then
+	if aCoreCDB["UnitframeOptions"]["style"] == 1 then
 		hp.bg:SetGradientAlpha("VERTICAL", .5, .5, .5, .5, 0, 0, 0,0)
 	else
 		hp.bg:SetGradientAlpha("VERTICAL", .2,.2,.2,.15,.25,.25,.25,.6)
@@ -1033,14 +1033,14 @@ local func = function(self, unit)
     hp.ind:SetTexture("Interface\\Buttons\\WHITE8x8")
 	hp.ind:SetVertexColor(0, 0, 0)
 	hp.ind:SetSize(1, self:GetHeight())
-	if aCoreCDB["OtherOptions"]["style"] ~= 3 then
+	if aCoreCDB["UnitframeOptions"]["style"] ~= 3 then
 		hp.ind:SetPoint("RIGHT", hp:GetStatusBarTexture(), "LEFT", 0, 0)
 	else
 		hp.ind:SetPoint("LEFT", hp:GetStatusBarTexture(), "RIGHT", 0, 0)
 	end
 	
 	-- reverse fill health --
-	if aCoreCDB["OtherOptions"]["style"] ~= 3 then
+	if aCoreCDB["UnitframeOptions"]["style"] ~= 3 then
 		hp:SetReverseFill(true)
 	end
 	
@@ -1049,7 +1049,7 @@ local func = function(self, unit)
 	tinsert(self.mouseovers, self.Health)
 	
 	-- portrait 只有样式1和样式2才有肖像
-	if aCoreCDB["OtherOptions"]["style"] ~= 3 and aCoreCDB["UnitframeOptions"]["portrait"] and multicheck(u, "player", "target", "focus", "boss", "arena") then
+	if aCoreCDB["UnitframeOptions"]["style"] ~= 3 and aCoreCDB["UnitframeOptions"]["portrait"] and multicheck(u, "player", "target", "focus", "boss", "arena") then
 		local Portrait = CreateFrame('PlayerModel', nil, self)
 		Portrait:SetFrameLevel(1) -- blow hp
 		Portrait:SetPoint("TOPLEFT", 1, 0)
@@ -1132,12 +1132,12 @@ local func = function(self, unit)
     if unit == "player" or unit == "pet" then
         name:Hide()
 	elseif multicheck(u, "targettarget", "focustarget", "boss", "arena") then
-		if aCoreCDB["UnitframeOptions"]["nameclasscolormode"] then
+		if aCoreCDB["UnitframeOptions"]["style"] == 1 or aCoreCDB["UnitframeOptions"]["style"] == 2 then
 			self:Tag(name, "[Altz:color][Altz:shortname]")
 		else
 			self:Tag(name, "[Altz:shortname]")
 		end
-    elseif aCoreCDB["UnitframeOptions"]["nameclasscolormode"] then
+    elseif aCoreCDB["UnitframeOptions"]["style"] == 1 or aCoreCDB["UnitframeOptions"]["style"] == 2 then
 		self:Tag(name, "[difficulty][level][shortclassification]|r [Altz:color][name] [status]")
     else
 		self:Tag(name, "[difficulty][level][shortclassification]|r [name] [status]")

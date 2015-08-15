@@ -367,6 +367,7 @@ end
 T.ResetDBM =function(reload)
 	if aCoreCDB["SkinOptions"]["setDBM"] and IsAddOnLoaded("DBM-Core") then
 		if DBM_AllSavedOptions then
+			DBM.Bars:SetSkin("AltzUI")		
 			DBM_AllSavedOptions["Default"]["ShowMinimapButton"] = false
 			-- BOSS血条
 			DBM_AllSavedOptions["Default"]["HPFramePoint"] = "BOTTOM"			
@@ -387,31 +388,15 @@ T.ResetDBM =function(reload)
 			DBM_AllSavedOptions["Default"]["RangeFrameRadarX"] = 300
 			DBM_AllSavedOptions["Default"]["RangeFrameRadarY"] = 180
 			DBM_AllSavedOptions["Default"]["RangeFrameFrames"] = "radar"
-			-- 计时条
-			DBT_AllPersistentOptions["Default"]["DBM"]["IconLeft"] = true
-			DBT_AllPersistentOptions["Default"]["DBM"]["IconRight"] = false
-			DBT_AllPersistentOptions["Default"]["DBM"]["Texture"] = "Interface\\Buttons\\WHITE8x8"
-			DBT_AllPersistentOptions["Default"]["DBM"]["ExpandUpwards"] = false
-			DBT_AllPersistentOptions["Default"]["DBM"]["FontSize"] = 14
-			DBT_AllPersistentOptions["Default"]["DBM"]["ExpandUpwards"] = false
 			-- 一般计时条
 			DBT_AllPersistentOptions["Default"]["DBM"]["TimerPoint"] = "LEFT"
 			DBT_AllPersistentOptions["Default"]["DBM"]["TimerY"] = 50
 			DBT_AllPersistentOptions["Default"]["DBM"]["TimerX"] = 150
-			DBT_AllPersistentOptions["Default"]["DBM"]["Height"] = 24
-			DBT_AllPersistentOptions["Default"]["DBM"]["Width"] = 183
-			DBT_AllPersistentOptions["Default"]["DBM"]["Scale"] = 1
-			DBT_AllPersistentOptions["Default"]["DBM"]["BarXOffset"] = 0
-			DBT_AllPersistentOptions["Default"]["DBM"]["BarYOffset"] = 1
+			DBT_AllPersistentOptions["Default"]["DBM"]["FillUpBars"] = true
 			-- 大型计时条
-			DBT_AllPersistentOptions["Default"]["DBM"]["EnlargeBarsPercent"] = 0.125
 			DBT_AllPersistentOptions["Default"]["DBM"]["HugeTimerPoint"] = "CENTER"
 			DBT_AllPersistentOptions["Default"]["DBM"]["HugeTimerX"] = -330
 			DBT_AllPersistentOptions["Default"]["DBM"]["HugeTimerY"] = 0			
-			DBT_AllPersistentOptions["Default"]["DBM"]["HugeScale"] = 1
-			DBT_AllPersistentOptions["Default"]["DBM"]["HugeWidth"] = 200
-			DBT_AllPersistentOptions["Default"]["DBM"]["HugeBarXOffset"] = 0
-			DBT_AllPersistentOptions["Default"]["DBM"]["HugeBarYOffset"] = 1
 			-- 一般警报
 			DBM_AllSavedOptions["Default"]["WarningIconRight"] = true
 			DBM_AllSavedOptions["Default"]["WarningIconLeft"] = true
@@ -428,17 +413,58 @@ T.ResetDBM =function(reload)
 			DBM_AllSavedOptions["Default"]["SpecialWarningFontShadow"] = true
 			DBM_AllSavedOptions["Default"]["SpecialWarningPoint"] = "CENTER"
 			DBM_AllSavedOptions["Default"]["SpecialWarningX"] = 0
-			DBM_AllSavedOptions["Default"]["SpecialWarningY"] = 150			
+			DBM_AllSavedOptions["Default"]["SpecialWarningY"] = 150
 		end
 		if reload then ReloadUI() end
 	end
 end
+
+T.ResetBW =function(reload)
+	if aCoreCDB["SkinOptions"]["setBW"] and IsAddOnLoaded("Bigwigs") then
+		if BigWigs3DB then
+			BigWigs3DB["namespaces"]["BigWigs_Plugins_Bars"]["profiles"]["Default"]["barStyle"] = "AltzUI"
+
+			--BigWigs3DB["namespaces"]["BigWigs_Plugins_Alt Power"]["profiles"]["Default"]["posx"] = 420
+			--BigWigs3DB["namespaces"]["BigWigs_Plugins_Alt Power"]["profiles"]["Default"]["posy"] = 160
+			
+			BigWigs3DB["namespaces"]["BigWigs_Plugins_Bars"]["profiles"]["Default"]["fill"] = true
+			BigWigs3DB["namespaces"]["BigWigs_Plugins_Bars"]["profiles"]["Default"]["BigWigsAnchor_width"] = 150
+			
+			--BigWigs3DB["namespaces"]["BigWigs_Plugins_Bars"]["profiles"]["Default"]["BigWigsAnchor_x"] = 38.4006290244915
+			--BigWigs3DB["namespaces"]["BigWigs_Plugins_Bars"]["profiles"]["Default"]["BigWigsAnchor_y"] = 504.53291841031
+			
+			BigWigs3DB["namespaces"]["BigWigs_Plugins_Bars"]["profiles"]["Default"]["BigWigsEmphasizeAnchor_width"] = 200
+			BigWigs3DB["namespaces"]["BigWigs_Plugins_Bars"]["profiles"]["Default"]["emphasizeScale"] = 1
+			--BigWigs3DB["namespaces"]["BigWigs_Plugins_Bars"]["profiles"]["Default"]["BigWigsEmphasizeAnchor_x"] = 356.266867036815			
+			--BigWigs3DB["namespaces"]["BigWigs_Plugins_Bars"]["profiles"]["Default"]["BigWigsEmphasizeAnchor_y"] = 432.000146594044
+			
+			--BigWigs3DB["namespaces"]["BigWigs_Plugins_Messages"]["profiles"]["Default"]["BWMessageAnchor_x"] = 617.066548707488
+			--BigWigs3DB["namespaces"]["BigWigs_Plugins_Messages"]["profiles"]["Default"]["BWMessageAnchor_y"] = 584.533190059665
+			
+			--BigWigs3DB["namespaces"]["BigWigs_Plugins_Messages"]["profiles"]["Default"]["BWEmphasizeMessageAnchor_x"] = 615.99986904383
+			--BigWigs3DB["namespaces"]["BigWigs_Plugins_Messages"]["profiles"]["Default"]["BWEmphasizeMessageAnchor_y"] = 496.000067038534
+			
+			--BigWigs3DB["namespaces"]["BigWigs_Plugins_Messages"]["profiles"]["Default"]["BWEmphasizeCountdownMessageAnchor_x"] = 668.799985051155
+			--BigWigs3DB["namespaces"]["BigWigs_Plugins_Messages"]["profiles"]["Default"]["BWEmphasizeCountdownMessageAnchor_y"] = 449.066786837575
+			
+			--BigWigs3DB["namespaces"]["BigWigs_Plugins_Proximity"]["profiles"]["Default"]["width"] = 140.00016784668
+			--BigWigs3DB["namespaces"]["BigWigs_Plugins_Proximity"]["profiles"]["Default"]["height"] = 119.999984741211
+			
+			--BigWigs3DB["namespaces"]["BigWigs_Plugins_Proximity"]["profiles"]["Default"]["posy"] = 143.999772171979
+			--BigWigs3DB["namespaces"]["BigWigs_Plugins_Proximity"]["profiles"]["Default"]["posx"] = 817.067012987129
+
+		end
+		if reload then ReloadUI() end
+	end
+end
+
 
 T.ResetAllAddonSettings = function()
 	T.ResetAurora()
 	T.ResetClasscolors()
 	T.ResetSkada()
 	T.ResetDBM()
+	T.ResetBW()
 end
 
 T.createcheckbutton = function(parent, x, y, name, table, value, tip)
