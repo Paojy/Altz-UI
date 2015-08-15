@@ -15,11 +15,11 @@
 	<!--<Script file="mods\blizzards\talenttaint.lua"/>-->
 	<Script file="mods\blizzards\death.lua"/>
 
-	<Script file="mods\skins\DBM.lua"/>
 	<Script file="mods\skins\Skada.lua"/>
-	<Script file="mods\skins\Recount.lua"/>
 	<Script file="mods\skins\Mirrortimer.lua"/>
-	
+	<Include file="mods\skins\TimerSkin.xml"/>	
+	<Script file="mods\skins\Skin.lua"/>
+
 	<Script file="mods\tweaks\addonmanager.lua"/>
 	<Script file="mods\panels\panels.lua"/>
 	<Script file="mods\panels\petbattles.lua"/>
