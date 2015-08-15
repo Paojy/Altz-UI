@@ -315,6 +315,8 @@ L["大喊被闷了"] = "Say Sapped"
 L["大喊被闷了提示"] = "says 'Sapped!' to alert those around you when a rogue saps you."
 L["镜头优化"] = "Camera Distance Max"
 L["镜头优化提示"] = "Set camera distance to max when login, and fix angle of view when casting a channeling spell"
+L["显示插件使用小提示"] = "Show addon tips when afk"
+L["显示插件使用小提示提示"] = "Show addon tips on bottom of the screen when afk"
 
 -- 插件皮肤
 L["插件皮肤"] = "Addon Skins"
@@ -323,7 +325,7 @@ L["更改设置提示"] = "Load default settings for this addon"
 
 -- 命令
 L["命令"] = "Commands"
-L["指令"] = "%s/rl|r - Reload UI \n \n %s/hb|r - Key Binding Mode \n \n %sSHIFT+Click|r - Set Focus \n \n %sALT+Click|r - Mill/Prospect/Disenchant/Unlock instantly \n \n %sTab|r - Change between available channels. \n \n %s/Tutorials|r - Tutorials \n \n %sEnjoy!|r"
+L["指令"] = " %s/rl|r - Reload UI \n \n %s/hb|r - Key Binding Mode \n \n %sSHIFT+Click|r - Set Focus \n \n %sALT+Click|r - Mill/Prospect/Disenchant/Unlock instantly \n \n %sTab|r - Change between available channels. \n \n %s/Tutorials|r - Tutorials \n \n %sEnjoy!|r"
 
 -- 制作
 L["制作"] = "Credits"

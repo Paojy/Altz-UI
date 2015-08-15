@@ -1174,7 +1174,7 @@ MicromenuBar3:RegisterEvent("PLAYER_LOGIN")
 local BOTTOMPANEL = CreateFrame("Frame", G.uiname.."AFK Bottompanel", WorldFrame)
 BOTTOMPANEL:SetFrameStrata("FULLSCREEN")
 BOTTOMPANEL:SetPoint("BOTTOMLEFT",WorldFrame,"BOTTOMLEFT",-5,-5)
-BOTTOMPANEL:SetPoint("TOPRIGHT",WorldFrame,"BOTTOMRIGHT",5,40)
+BOTTOMPANEL:SetPoint("TOPRIGHT",WorldFrame,"BOTTOMRIGHT",5,60)
 F.SetBD(BOTTOMPANEL)
 BOTTOMPANEL:Hide()
 
@@ -1187,15 +1187,102 @@ BOTTOMPANEL.petmodelbutton.text = T.createtext(BOTTOMPANEL.petmodelbutton, "OVER
 BOTTOMPANEL.petmodelbutton.text:SetPoint("CENTER")
 BOTTOMPANEL.petmodelbutton.text:SetText("AltzUI")
 
-local function fadeout()
+BOTTOMPANEL.tipframe = CreateFrame("Frame", G.uiname.."AFK tips", BOTTOMPANEL)
+BOTTOMPANEL.tipframe:SetHeight(40)
+BOTTOMPANEL.tipframe:SetPoint("LEFT", BOTTOMPANEL, "LEFT", 200, 0)
+BOTTOMPANEL.tipframe:SetPoint("RIGHT", BOTTOMPANEL, "RIGHT", -200, 0)
+BOTTOMPANEL.tipframe:Hide()
+
+BOTTOMPANEL.tipframe.text = T.createtext(BOTTOMPANEL.tipframe, "OVERLAY", 8, "OUTLINE", "CENTER")
+BOTTOMPANEL.tipframe.text:SetPoint("BOTTOM", BOTTOMPANEL.tipframe, "CENTER", 0, 0)
+BOTTOMPANEL.tipframe.text:SetPoint("LEFT")
+BOTTOMPANEL.tipframe.text:SetPoint("RIGHT")
+
+local current_tip = 1
+
+local function SetRandomTip()
+	local index = random(1 , #L["TIPS"])
+	BOTTOMPANEL.tipframe.text:SetText(L["TIPS"][index])
+	current_tip = index
+end
+
+local function SetTip(index)
+	BOTTOMPANEL.tipframe.text:SetText(L["TIPS"][index])
+	current_tip = index
+end
+
+local function Previous_tip()
+	if current_tip == 1 then
+		SetTip(#L["TIPS"])
+	else
+		SetTip(current_tip - 1)
+	end
+end
+
+local function Next_tip()
+	if current_tip == #L["TIPS"] then
+		SetTip(1)
+	else
+		SetTip(current_tip + 1)
+	end
+end
+
+StaticPopupDialogs[G.uiname.."hideAFKtips"] = {
+	text = L["隐藏提示的提示"],
+	button1 = ACCEPT, 
+	hideOnEscape = 1, 
+	whileDead = true,
+	preferredIndex = 3,
+}
+
+local function DontShowTips()
+	aCoreCDB["OtherOptions"]["showAFKtips"] = false
+	BOTTOMPANEL.tipframe:Hide()
+	StaticPopup_Show(G.uiname.."hideAFKtips")
+	T.fadein()
+end
+
+BOTTOMPANEL.tipframe.next = CreateFrame("Button", G.uiname.."Next tip Button", BOTTOMPANEL.tipframe, "UIPanelButtonTemplate")
+BOTTOMPANEL.tipframe.next:SetSize(120,15)
+BOTTOMPANEL.tipframe.next:SetPoint("TOP", BOTTOMPANEL.tipframe, "CENTER", 0, -5)
+BOTTOMPANEL.tipframe.next:SetText(L["下一条"])
+BOTTOMPANEL.tipframe.next:Hide()
+_G[G.uiname.."Next tip ButtonText"]:SetFont(G.norFont, 8, "OUTLINE")
+
+BOTTOMPANEL.tipframe.next:SetScript("OnClick", Next_tip)
+
+BOTTOMPANEL.tipframe.previous = CreateFrame("Button", G.uiname.."Previous tip Button", BOTTOMPANEL.tipframe, "UIPanelButtonTemplate")
+BOTTOMPANEL.tipframe.previous:SetSize(120,15)
+BOTTOMPANEL.tipframe.previous:SetPoint("RIGHT", BOTTOMPANEL.tipframe.next, "LEFT", -5, 0)
+BOTTOMPANEL.tipframe.previous:SetText(L["上一条"])
+BOTTOMPANEL.tipframe.previous:Hide()
+_G[G.uiname.."Previous tip ButtonText"]:SetFont(G.norFont, 8, "OUTLINE")
+
+BOTTOMPANEL.tipframe.previous:SetScript("OnClick", Previous_tip)
+
+BOTTOMPANEL.tipframe.dontshow = CreateFrame("Button", G.uiname.."Dontshow tip Button", BOTTOMPANEL.tipframe, "UIPanelButtonTemplate")
+BOTTOMPANEL.tipframe.dontshow:SetSize(120,15)
+BOTTOMPANEL.tipframe.dontshow:SetPoint("LEFT", BOTTOMPANEL.tipframe.next, "RIGHT", 5, 0)
+BOTTOMPANEL.tipframe.dontshow:SetText(L["我不想看到这些提示"])
+BOTTOMPANEL.tipframe.dontshow:Hide()
+_G[G.uiname.."Dontshow tip ButtonText"]:SetFont(G.norFont, 8, "OUTLINE")
+
+BOTTOMPANEL.tipframe.dontshow:SetScript("OnClick", DontShowTips)
+
+T.fadeout = function()
 	Minimap:Hide()
 	UIParent:SetAlpha(0)
 	UIFrameFadeIn(BOTTOMPANEL, 3, BOTTOMPANEL:GetAlpha(), 1)
+	
+	SetRandomTip()
+	if aCoreCDB["OtherOptions"]["showAFKtips"] then
+		BOTTOMPANEL.tipframe:Show()
+	end
 	BOTTOMPANEL.t = 0
 	BOTTOMPANEL:EnableKeyboard(true)
 end
 
-local function fadein()
+T.fadein = function()
 	Minimap:Show()
 	UIFrameFadeIn(UIParent, 2, 0, 1)
 	UIFrameFadeOut(BOTTOMPANEL, 2, BOTTOMPANEL:GetAlpha(), 0)
@@ -1210,18 +1297,37 @@ local function fadein()
 	BOTTOMPANEL:EnableKeyboard(false)
 end
 
+local function ShowTipButtons()
+	BOTTOMPANEL.tipframe.next:Show()
+	BOTTOMPANEL.tipframe.previous:Show()
+	BOTTOMPANEL.tipframe.dontshow:Show()
+end
+
+local function HideTipButtons()
+	BOTTOMPANEL.tipframe.next:Hide()
+	BOTTOMPANEL.tipframe.previous:Hide()
+	BOTTOMPANEL.tipframe.dontshow:Hide()
+end
+
+BOTTOMPANEL.tipframe:SetScript("OnEnter", ShowTipButtons)
+BOTTOMPANEL.tipframe.next:SetScript("OnEnter", ShowTipButtons)
+BOTTOMPANEL.tipframe.previous:SetScript("OnEnter", ShowTipButtons)
+BOTTOMPANEL.tipframe.dontshow:SetScript("OnEnter", ShowTipButtons)
+BOTTOMPANEL.tipframe:SetScript("OnLeave", HideTipButtons)
+BOTTOMPANEL.tipframe:SetScript("OnHide", HideTipButtons)
+
 BOTTOMPANEL:SetScript("OnKeyDown", function(self, key) 
-	fadein()
+	T.fadein()
 end)
 
 BOTTOMPANEL:SetScript("OnMouseDown", function(self) 
-	fadein()
+	T.fadein()
 end)
 
 BOTTOMPANEL:SetScript("OnEvent",function(self, event) 
 	if event == "PLAYER_ENTERING_WORLD" then
 		if aCoreDB.meet then
-			fadeout()
+			T.fadeout()
 		end
 		
 		local PetNumber = max(C_PetJournal.GetNumPets(false), 5)
@@ -1244,7 +1350,7 @@ BOTTOMPANEL:SetScript("OnEvent",function(self, event)
 		self:UnregisterEvent("PLAYER_ENTERING_WORLD")
 	elseif event == "PLAYER_FLAGS_CHANGED" then
 		if UnitIsAFK("player") then
-			fadeout()
+			T.fadeout()
 		end
 	end
 end)

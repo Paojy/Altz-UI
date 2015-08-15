@@ -150,3 +150,24 @@ L["增加到"] = "Add To.."
 L["移除自"] = "Remove From.."
 L["删除配置文件"] = "Delete Profile.."
 L["删除配置文件确认"] = "Are you sure you want to delete this profile? Hold down shift and click again if you are."
+
+L["上一条"] = "Previous"
+L["下一条"] = "Next"
+L["我不想看到这些提示"] = "I dont want to see them"
+L["隐藏提示的提示"] = "You can Redisplay these tips in GUI → Other"
+
+L["TIPS"] = {
+	"click clock on the minimap to open the calendar",
+	"How show class colors on raidframs? GUI → UnitFrames → Style → Classic Theme",
+	"How to display the independent castbar ? GUI → Unit Frames → Castbar → Independent player castbar",
+	"Want to show healer-style raidframe always？GUI → Raid Frames → Switch → click Disable Auto Switch and Healer",
+	"How to switch positions of actionbar 1 and 2？GUI → Actionbars → MainActionbar → Place bar1 above bar2",
+	"How to set custom color on the nameplate for a specific unit？GUI → Unit Nameplates → Custom Color",
+	"How to change the size of minimap？GUI → Other → Togglebutton Height",
+	"/rl - reload UI",
+	"/hb - Key Binding Mode",
+	"SHIFT+Click - Set Focus. It's available for unit frames",
+	"ALT+Click  - Mill/Prospect/Disenchant/Unlock instantly",
+	"Press Tab to change between available channels when editbox of chatframe is activate",
+	"Where is the font file？Interface\\AddOns\\Aurora\\media\\font.ttf(main font),Interface\\AddOns\\AltzUI\\media\\number.ttf(font for some time text)",
+ }

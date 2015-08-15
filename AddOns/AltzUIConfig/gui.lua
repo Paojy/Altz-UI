@@ -1889,7 +1889,7 @@ T.createcheckbutton(OtherOptions, 30, 330, L["自动接受复活"], "OtherOption
 T.createcheckbutton(OtherOptions, 300, 330, L["战场自动释放灵魂"], "OtherOptions", "battlegroundres", L["战场自动释放灵魂提示"])
 T.createcheckbutton(OtherOptions, 30, 360, L["自动交接任务"], "OtherOptions", "autoquests", L["自动交接任务提示"])
 T.createcheckbutton(OtherOptions, 300, 360, L["大喊被闷了"], "OtherOptions", "saysapped", L["大喊被闷了提示"])
-
+T.createcheckbutton(OtherOptions, 30, 390, L["显示插件使用小提示"], "OtherOptions", "showAFKtips", L["显示插件使用小提示提示"])
 --====================================================--
 --[[               -- Skin Options --               ]]--
 --====================================================--

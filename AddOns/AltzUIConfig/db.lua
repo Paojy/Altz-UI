@@ -1012,6 +1012,7 @@ local Character_default_Settings = {
         autoinvitekeywords = "111 123",		
 		autoquests = false,
 		saysapped = true,
+		showAFKtips = true,
 	},
 	SkinOptions = {
 		setClassColor = true,
