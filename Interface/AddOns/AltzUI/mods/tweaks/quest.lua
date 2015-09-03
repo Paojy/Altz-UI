@@ -242,9 +242,9 @@ if autoquests then
 
     Monomyth:Register("QUEST_COMPLETE", function()
 		local choices = GetNumQuestChoices()
-		if(choices <= 1) then
+		if (choices <= 1) then
 			GetQuestReward(1)
-		elseif(choices > 1) then
+		elseif (choices > 1) then
 			local bestValue, bestIndex = 0
 
 			for index = 1, choices do
@@ -267,7 +267,7 @@ if autoquests then
 			end
 
 			if(bestIndex) then
-				_G["QuestInfoItem" .. bestIndex]:Click()
+				_G["QuestInfoRewardsFrameQuestInfoItem" .. bestIndex]:Click()
 			end
 		end
 	end)
