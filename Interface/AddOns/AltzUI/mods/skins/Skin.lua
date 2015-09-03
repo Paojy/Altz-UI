@@ -168,17 +168,15 @@ f:RegisterEvent("PLAYER_LOGIN")
 local reason
 
 f:SetScript("OnEvent", function(self, event, addon)
-    if event == "ADDON_LOADED" then
-        reason = select(5, GetAddOnInfo("BigWigs_Plugins"))
-        if (reason == "MISSING" and addon == "BigWigs") or addon == "BigWigs_Plugins" then
-           registerBWStyle()
-        end
-    elseif event == "PLAYER_LOGIN" then
-        if IsAddOnLoaded("BigWigs") then
-           registerBWStyle()
+	if event == "ADDON_LOADED" then
+		if not reason then reason = (select(6, GetAddOnInfo("BigWigs_Plugins"))) end
+		if (reason == "MISSING" and addon == "BigWigs") or addon == "BigWigs_Plugins" then
+			registerBWStyle()
 		end
-        if IsAddOnLoaded("DBM-Core") then
+        if addon == "DBM-Core" then
             registerDBMStyle()
-        end
-    end
+        end		
+	elseif event == "PLAYER_LOGIN" then
+		registerBWStyle()
+	end
 end)
