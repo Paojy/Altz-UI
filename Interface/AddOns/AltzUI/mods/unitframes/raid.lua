@@ -42,10 +42,12 @@ end
 local function healpreditionbar(self, ...)
 	local hpb = CreateFrame('StatusBar', nil, self.Health)
 	hpb:SetFrameLevel(4)
-	hpb:SetStatusBarTexture(G.media.blank)
+	hpb:SetStatusBarTexture("Interface\\RaidFrame\\Shield-Fill")
+	hpb:GetStatusBarTexture():SetBlendMode("ADD")
 	hpb:SetStatusBarColor(...)
 	hpb:SetPoint('TOP')
 	hpb:SetPoint('BOTTOM')
+	
 	if aCoreCDB["UnitframeOptions"]["style"] ~= 3 then
 		hpb:SetPoint('LEFT', self.Health:GetStatusBarTexture(), 'LEFT')
 	else
