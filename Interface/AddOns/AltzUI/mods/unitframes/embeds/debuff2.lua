@@ -57,12 +57,12 @@ local CreateAuraIcon = function(auras, size, ...)
 end
 
 local dispelClass = {
-	PRIEST = {},
-    SHAMAN = { Curse = true },
-    PALADIN = { Poison = true, Disease = true },
-    MAGE = { Curse = true, },
-    DRUID = { Curse = true, Poison = true },
-    MONK = { Disease = true, Poison = true},
+	PRIEST = {Disease = true, Magic = true},
+    SHAMAN = { Curse = true, Magic = true},
+    PALADIN = { Poison = true, Disease = true, Magic = true},
+    MAGE = { Curse = true},
+    DRUID = { Curse = true, Poison = true, Magic = true},
+    MONK = { Disease = true, Poison = true, Magic = true},
 }
 
 local dispellist = dispelClass[G.myClass] or {}
