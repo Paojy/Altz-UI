@@ -9,9 +9,13 @@ local hideerrors = aCoreCDB["OtherOptions"]["hideerrors"]
 local saysapped = aCoreCDB["OtherOptions"]["saysapped"]
 local autoscreenshot = aCoreCDB["OtherOptions"]["autoscreenshot"]
 local camera = aCoreCDB["OtherOptions"]["camera"]
-
 local acceptfriendlyinvites = aCoreCDB["OtherOptions"]["acceptfriendlyinvites"]
 local autoinvite = aCoreCDB["OtherOptions"]["autoinvite"]
+local vignettealert = aCoreCDB["OtherOptions"]["vignettealert"]
+local flashtaskbar = aCoreCDB["OtherOptions"]["flashtaskbar"]
+local autopet = aCoreCDB["OtherOptions"]["autopet"]
+local LFGRewards = aCoreCDB["OtherOptions"]["LFGRewards"]
+local autoacceptproposal = aCoreCDB["OtherOptions"]["autoacceptproposal"]
 
 local eventframe = CreateFrame('Frame')
 eventframe:SetScript('OnEvent', function(self, event, ...)
@@ -189,6 +193,7 @@ if acceptres then
 		local delay = GetCorpseRecoveryDelay()
 		if delay == 0 then
 			AcceptResurrect()
+			StaticPopup_Hide("RESURRECT") 
 		end
 	end
 end
@@ -342,3 +347,159 @@ if autoinvite then
 		AutoInvite("CHAT_MSG_BN_WHISPER", arg1, arg2, ...)
 	end
 end
+
+--[[-----------------------------------------------------------------------------
+Simple Vignette alert
+-------------------------------------------------------------------------------]]
+local vignettes = {}
+
+if vignettealert then
+	eventframe:RegisterEvent("VIGNETTE_ADDED")
+	function eventframe:VIGNETTE_ADDED(id)
+		if id and not vignettes[id] then
+			local x, y, name, icon = C_Vignettes.GetVignetteInfoFromInstanceID(id)
+			local left, right, top, bottom = GetObjectIconTextureCoords(icon)
+			
+			PlaySoundFile("Sound\\Interface\\RaidWarning.wav")
+			local str = "|TInterface\\MINIMAP\\OBJECTICONS:0:0:0:0:256:256:"..(left*256)..":"..(right*256)..":"..(top*256)..":"..(bottom*256).."|t"
+			RaidNotice_AddMessage(RaidWarningFrame, str..(name or "Unknown").." "..L["出现了！"], ChatTypeInfo["RAID_WARNING"])
+			print(str..name,L["出现了！"])
+			vignettes[id] = true
+		end
+	end
+end
+
+
+--[[-----------------------------------------------------------------------------
+Flash Taskbar
+-------------------------------------------------------------------------------]]
+local flashtimer = 0
+
+local function DoFlash()
+	if (flashtimer + 5 < GetTime()) then
+		FlashClientIcon()
+		flashtimer = GetTime()
+	end
+end
+
+if flashtaskbar then
+	local DF = _G ["DetailsFramework"]
+	if DF then
+		hooksecurefunc ("LFGDungeonReadyStatus_ResetReadyStates", function()
+			DoFlash()
+		end)
+
+		hooksecurefunc ("PVPReadyDialog_Display", function()
+			DoFlash()
+		end)
+		
+		eventframe:RegisterEvent("READY_CHECK")
+		eventframe:RegisterEvent("CHAT_MSG_ADDON")
+
+		function eventframe:READY_CHECK()
+			DoFlash()
+		end
+		
+		function eventframe:CHAT_MSG_ADDON(prefix, msg)
+			if prefix == "BigWigs" and msg:find("BWPull") then
+				DoFlash()
+			elseif prefix == "D4" and msg:find("PT") then
+				DoFlash()
+			end		
+		end
+	end
+end
+
+--[[-----------------------------------------------------------------------------
+Random Pet
+-------------------------------------------------------------------------------]]
+
+local function SummonPet(fav)
+	C_Timer.After(3, function() 
+		local active = C_PetJournal.GetSummonedPetGUID()
+		if not active and not UnitOnTaxi("player") then		
+			if fav then
+				C_PetJournal.SummonRandomPet(false)
+			else
+				C_PetJournal.SummonRandomPet(true)
+			end
+		end		
+	end)
+end
+
+if autopet then
+	eventframe:RegisterEvent("PLAYER_ENTERING_WORLD")
+	eventframe:RegisterEvent("PLAYER_CONTROL_GAINED")
+	eventframe:RegisterEvent("UNIT_EXITED_VEHICLE")
+	eventframe:RegisterEvent("PLAYER_ALIVE")
+
+	function eventframe:PLAYER_ENTERING_WORLD()
+		SummonPet()
+	end
+
+	function eventframe:PLAYER_CONTROL_GAINED()
+		SummonPet()
+	end
+
+	function eventframe:UNIT_EXITED_VEHICLE()
+		SummonPet()
+	end
+
+	function eventframe:PLAYER_ALIVE()
+		SummonPet()
+	end
+end
+
+--[[-----------------------------------------------------------------------------
+LFG Call to Arms rewards
+-------------------------------------------------------------------------------]]
+
+--744 Random Timewalker Dungeon 
+--788 Random Warlords of Draenor Dungeon 
+--789 Random Warlords of Draenor Heroic 
+
+if LFGRewards then
+	eventframe:RegisterEvent("LFG_UPDATE_RANDOM_INFO")
+end
+
+local LFG_Timer = 0
+
+function eventframe:LFG_UPDATE_RANDOM_INFO()
+	local eligible, forTank, forHealer, forDamage = GetLFGRoleShortageRewards(789, LFG_ROLE_SHORTAGE_RARE)
+	local IsTank, IsHealer, IsDamage = C_LFGList.GetAvailableRoles()
+	
+	local ingroup, tank, healer, damager, result
+	
+	tank = IsTank and forTank and "|cff00B2EE"..TANK.."|r" or ""
+	healer = IsHealer and forHealer and "|cff00EE00"..HEALER.."|r" or ""
+	damager = IsDamage and forDamage and "|cff00EE00"..DAMAGER.."|r" or ""
+	
+	if IsInGroup(LE_PARTY_CATEGORY) or IsInGroup(LE_PARTY_CATEGORY_INSTANCE) then
+		ingroup = true
+	end
+	
+	if ((IsTank and forTank) or (IsHealer and forHealer) or (IsDamage and forDamage)) and not ingroup then
+		if  GetTime() - LFG_Timer > 20 then -- 不要刷屏！
+			PlaySoundFile("Sound\\Interface\\RaidWarning.wav")
+			RaidNotice_AddMessage(RaidWarningFrame, format(LFG_CALL_TO_ARMS, tank.." "..healer.." "..damager), ChatTypeInfo["RAID_WARNING"])
+			print(format(LFG_CALL_TO_ARMS, tank.." "..healer.." "..damager))
+			LFG_Timer = GetTime()
+		end
+	end
+end
+--[[-----------------------------------------------------------------------------
+LFG Auto Accept Proposal
+-------------------------------------------------------------------------------]]
+--[[
+if autoacceptproposal then
+	eventframe:RegisterEvent("LFG_PROPOSAL_SHOW")
+end
+
+function eventframe:LFG_PROPOSAL_SHOW()
+	C_Timer.After(25, function()
+		if LFGDungeonReadyDialogEnterDungeonButton:IsShown() then
+			PlaySoundFile("Sound\\Interface\\RaidWarning.wav")
+		end
+	end)
+end
+]]--
