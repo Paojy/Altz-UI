@@ -399,7 +399,7 @@ end
 
 --This is where we create most 'Static' objects for the nameplate, it gets fired when a nameplate is first seen.
 local function SkinObjects(frame, nameFrame)
-	local hp, cb = frame:GetChildren()
+	local hp, ab, cb = frame:GetChildren()
 	local threat, hpborder, overlay, oldlevel, bossicon, raidicon, elite = frame:GetRegions()
 	local oldname = nameFrame:GetRegions()
 	local _, cbborder, cbshield, cbicon, cbtext, cbshadow = cb:GetRegions()
@@ -485,6 +485,10 @@ local function SkinObjects(frame, nameFrame)
 		cb:HookScript('OnValueChanged', OnValueChanged)			
 		frame.cb = cb
 		
+		-- absorb bar 
+		ab:ClearAllPoints()
+		frame.ab = ab
+	
 		-- raidicon
 		raidicon:ClearAllPoints()
 		raidicon:SetPoint("RIGHT", hp.name, "LEFT", -4, 0)
@@ -592,6 +596,10 @@ local function SkinObjects(frame, nameFrame)
 		cb:HookScript('OnValueChanged', OnValueChanged)			
 		frame.cb = cb
 		
+		-- absorb bar 
+		ab:ClearAllPoints()
+		frame.ab = ab
+			
 		--Highlight
 		overlay:SetTexture(1,1,1,0.15)
 		overlay:SetAllPoints(hp)	
