@@ -64,17 +64,60 @@ function T.ActionbarFader(frame, buttonList, fadeIn, fadeOut)
 	if not fadeOut then fadeOut = defaultFadeOut end
 	frame:EnableMouse(true)
 
-	frame:SetScript("OnEnter", function(self) if frame.eventmode ~= 1 then UIFrameFadeIn(frame, fadeIn.time, frame:GetAlpha(), fadeIn.alpha) end end)
-	frame:SetScript("OnLeave", function(self) if frame.eventmode ~= 1 then UIFrameFadeOut(frame, fadeOut.time, frame:GetAlpha(), fadeOut.alpha) end end)
+	frame:SetScript("OnEnter", function(self)
+		if frame.eventmode ~= 1 then
+			UIFrameFadeIn(frame, fadeIn.time, frame:GetAlpha(), fadeIn.alpha)
+			for _, bu in pairs(buttonList) do
+				local name = bu:GetName()
+				local cd= _G[name.."Cooldown"]
+				cd:SetDrawBling(true)
+			end
+		end
+	
+	end)
+	frame:SetScript("OnLeave", function(self) 
+		if frame.eventmode ~= 1 then
+			UIFrameFadeOut(frame, fadeOut.time, frame:GetAlpha(), fadeOut.alpha)
+			for _, bu in pairs(buttonList) do
+				local name = bu:GetName()
+				local cd= _G[name.."Cooldown"]
+				cd:SetDrawBling(false)
+			end
+		end
+	end)
 
 	for _, button in pairs(buttonList) do
 		if button then
-			button:HookScript("OnEnter", function() if frame.eventmode ~= 1 then UIFrameFadeIn( frame, fadeIn.time, frame:GetAlpha(), fadeIn.alpha) end end)
-			button:HookScript("OnLeave", function() if frame.eventmode ~= 1 then UIFrameFadeOut(frame, fadeOut.time, frame:GetAlpha(), fadeOut.alpha) end end)
+			button:HookScript("OnEnter", function() 
+				if frame.eventmode ~= 1 then
+					UIFrameFadeIn( frame, fadeIn.time, frame:GetAlpha(), fadeIn.alpha)
+					for _, bu in pairs(buttonList) do
+						local name = bu:GetName()
+						local cd= _G[name.."Cooldown"]
+						cd:SetDrawBling(true)
+					end
+				end
+			end)
+			
+			button:HookScript("OnLeave", function() 
+				if frame.eventmode ~= 1 then 
+					UIFrameFadeOut(frame, fadeOut.time, frame:GetAlpha(), fadeOut.alpha)
+					for _, bu in pairs(buttonList) do
+						local name = bu:GetName()
+						local cd= _G[name.."Cooldown"]
+						cd:SetDrawBling(false)
+					end
+				end
+			end)
 		end
 	end
 	
 	UIFrameFadeOut(frame, fadeOut.time, frame:GetAlpha(), fadeOut.alpha)
+	for _, bu in pairs(buttonList) do
+		local name = bu:GetName()
+		local cd= _G[name.."Cooldown"]
+		cd:SetDrawBling(false)
+	end
 end
 
 function T.FrameFader(frame,fadeIn,fadeOut)
@@ -95,13 +138,51 @@ function T.SpellFlyoutFader(frame,buttonList,fadeIn,fadeOut)
 	if not fadeIn then fadeIn = defaultFadeIn end
 	if not fadeOut then fadeOut = defaultFadeOut end
 
-	SpellFlyout:SetScript("OnEnter", function() if frame.eventmode ~= 1 then UIFrameFadeIn(frame, fadeIn.time, frame:GetAlpha(), fadeIn.alpha) end end)
-	SpellFlyout:SetScript("OnLeave", function() if frame.eventmode ~= 1 then UIFrameFadeOut(frame, fadeOut.time, frame:GetAlpha(), fadeOut.alpha) end end)
+	SpellFlyout:SetScript("OnEnter", function()
+		if frame.eventmode ~= 1 then
+			UIFrameFadeIn(frame, fadeIn.time, frame:GetAlpha(), fadeIn.alpha)
+			for _, bu in pairs(buttonList) do
+				local name = bu:GetName()
+				local cd= _G[name.."Cooldown"]
+				cd:SetDrawBling(true)
+			end
+		end
+	end)
+	
+	SpellFlyout:SetScript("OnLeave", function()
+		if frame.eventmode ~= 1 then
+			UIFrameFadeOut(frame, fadeOut.time, frame:GetAlpha(), fadeOut.alpha)
+			for _, bu in pairs(buttonList) do
+				local name = bu:GetName()
+				local cd= _G[name.."Cooldown"]
+				cd:SetDrawBling(false)
+			end
+		end
+	end)
 
 	for _, button in pairs(buttonList) do
 		if button then
-			button:SetScript("OnEnter", function() if frame.eventmode ~= 1 then UIFrameFadeIn(frame, fadeIn.time, frame:GetAlpha(), fadeIn.alpha) end end)
-			button:SetScript("OnLeave", function() if frame.eventmode ~= 1 then UIFrameFadeOut(frame, fadeOut.time, frame:GetAlpha(), fadeOut.alpha) end end)
+			button:SetScript("OnEnter", function()
+				if frame.eventmode ~= 1 then
+					UIFrameFadeIn(frame, fadeIn.time, frame:GetAlpha(), fadeIn.alpha)
+					for _, bu in pairs(buttonList) do
+						local name = bu:GetName()
+						local cd= _G[name.."Cooldown"]
+						cd:SetDrawBling(false)
+					end
+				end
+			end)
+			
+			button:SetScript("OnLeave", function()
+				if frame.eventmode ~= 1 then
+					UIFrameFadeOut(frame, fadeOut.time, frame:GetAlpha(), fadeOut.alpha)
+					for _, bu in pairs(buttonList) do
+						local name = bu:GetName()
+						local cd= _G[name.."Cooldown"]
+						cd:SetDrawBling(false)
+					end
+				end
+			end)
 		end
 	end
 end
@@ -148,13 +229,28 @@ function T.ActionbarEventFader(frame,buttonList,fadeIn,fadeOut)
 		then
 			frame.eventmode = 1
 			UIFrameFadeIn( frame, fadeIn.time, frame:GetAlpha(), fadeIn.alpha)
+			for _, bu in pairs(buttonList) do
+				local name = bu:GetName()
+				local cd= _G[name.."Cooldown"]
+				cd:SetDrawBling(true)
+			end
 		else
 			frame.eventmode = 0
 			UIFrameFadeOut(frame, fadeOut.time, frame:GetAlpha(), fadeOut.alpha)
+			for _, bu in pairs(buttonList) do
+				local name = bu:GetName()
+				local cd= _G[name.."Cooldown"]
+				cd:SetDrawBling(false)
+			end
 		end
 	end)
 	
     UIFrameFadeOut(frame, fadeOut.time, frame:GetAlpha(), fadeOut.alpha)
+	for _, bu in pairs(buttonList) do
+		local name = bu:GetName()
+		local cd= _G[name.."Cooldown"]
+		cd:SetDrawBling(false)
+	end
 end
 
 function T.FrameEventFader(frame,fadeIn,fadeOut)
