@@ -2050,7 +2050,7 @@ T.createcheckbutton(OtherOptions, 300, 390, L["稀有警报"], "OtherOptions", "
 T.createcheckbutton(OtherOptions, 30, 420, L["任务栏闪动"], "OtherOptions", "flashtaskbar", L["任务栏闪动提示"])
 T.createcheckbutton(OtherOptions, 300, 420, L["随机奖励"], "OtherOptions", "LFGRewards", L["随机奖励提示"])
 T.createcheckbutton(OtherOptions, 30, 450, L["自动召宝宝"], "OtherOptions", "autopet", L["自动召宝宝提示"])
-T.createcheckbutton(OtherOptions, 300, 450, L["自动接受排本邀请"], "OtherOptions", "autoacceptproposal", L["自动接受排本邀请提示"])
+--T.createcheckbutton(OtherOptions, 300, 450, L["自动接受排本邀请"], "OtherOptions", "autoacceptproposal", L["自动接受排本邀请提示"])
 --====================================================--
 --[[               -- Skin Options --               ]]--
 --====================================================--
