@@ -4,22 +4,6 @@ local F = unpack(Aurora)
 --====================================================--
 --[[                -- Functions --                    ]]--
 --====================================================--
-
-local function ColorGradient(perc, ...)-- http://www.wowwiki.com/ColorGradient
-    if (perc > 1) then
-        local r, g, b = select(select('#', ...) - 2, ...) return r, g, b
-    elseif (perc < 0) then
-        local r, g, b = ... return r, g, b
-    end
-
-    local num = select('#', ...) / 3
-
-    local segment, relperc = math.modf(perc*(num-1))
-    local r1, g1, b1, r2, g2, b2 = select((segment*3)+1, ...)
-
-    return r1 + (r2-r1)*relperc, g1 + (g2-g1)*relperc, b1 + (b2-b1)*relperc
-end
-
 local function Skinbar(bar)
 	if aCoreCDB["UnitframeOptions"]["style"] == 1 then
 		bar.tex = bar:CreateTexture(nil, "ARTWORK")
@@ -794,14 +778,14 @@ Net_Stats:SetScript("OnEnter", function(self)
 	table.sort(addons, function(a, b) return a.memory > b.memory end)
 	for _, entry in pairs(addons) do
 	if nr < 20 then
-			GameTooltip:AddDoubleLine(entry.name, memFormat(entry.memory), 1, 1, 1, ColorGradient(entry.memory / 1024, 0, 1, 0, 1, 1, 0, 1, 0, 0))
+			GameTooltip:AddDoubleLine(entry.name, memFormat(entry.memory), 1, 1, 1, T.ColorGradient(entry.memory / 1024, 0, 1, 0, 1, 1, 0, 1, 0, 0))
 			nr = nr+1
 		end
 	end
 
 	GameTooltip:AddLine(" ")
-	GameTooltip:AddDoubleLine(L["自定义插件占用"], memFormat(total), 1, 1, 1, ColorGradient(total / (1024*20), 0, 1, 0, 1, 1, 0, 1, 0, 0))
-	GameTooltip:AddDoubleLine(L["所有插件占用"], memFormat(BlizzMem), 1, 1, 1, ColorGradient(BlizzMem / (1024*50) , 0, 1, 0, 1, 1, 0, 1, 0, 0))
+	GameTooltip:AddDoubleLine(L["自定义插件占用"], memFormat(total), 1, 1, 1, T.ColorGradient(total / (1024*20), 0, 1, 0, 1, 1, 0, 1, 0, 0))
+	GameTooltip:AddDoubleLine(L["所有插件占用"], memFormat(BlizzMem), 1, 1, 1, T.ColorGradient(BlizzMem / (1024*50) , 0, 1, 0, 1, 1, 0, 1, 0, 0))
 	
 	GameTooltip:AddLine(" ")
 	GameTooltip:AddLine(format(MAINMENUBAR_LATENCY_LABEL, latencyHome, latencyWorld), 1, 1, 1)
