@@ -40,7 +40,8 @@
 	<Script file="mods\actionbar\cooldowns.lua"/>
 	<Script file="mods\actionbar\rangecolor.lua"/>	
 	<Script file="mods\actionbar\buff.lua"/>
-
+	<Script file="mods\actionbar\cooldownflash.lua"/>
+	
 	<Script file="mods\bag\sort.lua"/>
 	<Script file="mods\bag\bags.lua"/>
 	<Script file="mods\bag\gold.lua"/>

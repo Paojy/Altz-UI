@@ -234,18 +234,20 @@ ChatOptions.goldkeywordlist.edit:SetScript("OnEnterPressed", function(self) self
 --====================================================--
 local ItemOptions = CreateOptionPage("Item Options", ITEMS, GUI, "VERTICAL", nil, true)
 
-T.createcheckbutton(ItemOptions, 30, 60, L["启用"], "ItemOptions", "enablebag")
-T.createcheckbutton(ItemOptions, 30, 90, L["显示物品等级"], "ItemOptions", "showitemlevel", L["显示物品等级提示"])
+T.createcheckbutton(ItemOptions, 30, 60, L["启用背包模块"], "ItemOptions", "enablebag")
+T.createslider(ItemOptions, 30, 110, L["背包图标大小"], "ItemOptions", "bagiconsize", 1, 20, 40, 1)
+T.createslider(ItemOptions, 30, 150, L["背包每行图标数量"], "ItemOptions", "bagiconperrow", 1, 10, 25, 1)
+T.createcheckbutton(ItemOptions, 30, 180, L["显示物品等级"], "ItemOptions", "showitemlevel", L["显示物品等级提示"])
 T.createDR(ItemOptions.enablebag, ItemOptions.showitemlevel)
-T.createcheckbutton(ItemOptions, 30, 120, L["已会配方着色"], "ItemOptions", "alreadyknown", L["已会配方着色提示"])
-T.createcheckbutton(ItemOptions, 30, 150, L["自动修理"], "ItemOptions", "autorepair", L["自动修理提示"])
-T.createcheckbutton(ItemOptions, 30, 180, L["自动公会修理"], "ItemOptions", "autorepair_guild", L["自动公会修理提示"])
-T.createcheckbutton(ItemOptions, 30, 210, L["自动售卖"], "ItemOptions", "autosell", L["自动售卖提示"])
-T.createcheckbutton(ItemOptions, 30, 240, L["自动购买"], "ItemOptions", "autobuy", L["自动购买提示"])
+T.createcheckbutton(ItemOptions, 30, 210, L["已会配方着色"], "ItemOptions", "alreadyknown", L["已会配方着色提示"])
+T.createcheckbutton(ItemOptions, 30, 240, L["自动修理"], "ItemOptions", "autorepair", L["自动修理提示"])
+T.createcheckbutton(ItemOptions, 30, 270, L["自动公会修理"], "ItemOptions", "autorepair_guild", L["自动公会修理提示"])
+T.createcheckbutton(ItemOptions, 30, 300, L["自动售卖"], "ItemOptions", "autosell", L["自动售卖提示"])
+T.createcheckbutton(ItemOptions, 30, 330, L["自动购买"], "ItemOptions", "autobuy", L["自动购买提示"])
 
 ItemOptions.SF:ClearAllPoints()
-ItemOptions.SF:SetPoint("TOPLEFT", ItemOptions, "TOPLEFT", 40, -310)
-ItemOptions.SF:SetPoint("BOTTOMRIGHT", ItemOptions, "BOTTOMRIGHT", -300, 135)
+ItemOptions.SF:SetPoint("TOPLEFT", ItemOptions, "TOPLEFT", 40, -400)
+ItemOptions.SF:SetPoint("BOTTOMRIGHT", ItemOptions, "BOTTOMRIGHT", -300, 45)
 F.CreateBD(ItemOptions.SF, .3)
 
 local function LineUpAutobuyList()
@@ -316,7 +318,7 @@ end
 
 local Autobuy_iteminput = CreateFrame("EditBox", G.uiname.."AutobuyList ItemInput", ItemOptions)
 Autobuy_iteminput:SetSize(150, 20)
-Autobuy_iteminput:SetPoint("TOPLEFT", 40, -280)
+Autobuy_iteminput:SetPoint("TOPLEFT", 40, -370)
 F.CreateBD(Autobuy_iteminput)
 
 Autobuy_iteminput:SetFont(GameFontHighlight:GetFont(), 12, "OUTLINE")
@@ -1435,7 +1437,6 @@ T.createDR(ActionbarInnerframe.common.cooldown, ActionbarInnerframe.common.coold
 
 ActionbarInnerframe.bar12 = CreateOptionPage("Actionbar Options bar12", L["主动作条"], ActionbarInnerframe, "VERTICAL", .3)
 
---ActionbarInnerframe.bar12.bar2toggle = T.ABtogglebox(ActionbarInnerframe.bar12, 30, 60, 1, L["主动作条"])
 T.createcheckbutton(ActionbarInnerframe.bar12, 30, 60, L["更改上下位置"], "ActionbarOptions", "bar1top")
 T.createslider(ActionbarInnerframe.bar12, 30, 110, L["图标大小"], "ActionbarOptions", "bar12size", 1, 15, 40, 1)
 T.createslider(ActionbarInnerframe.bar12, 30, 150, L["图标间距"], "ActionbarOptions", "bar12space", 1, 0, 10, 1)
@@ -1445,8 +1446,13 @@ T.createslider(ActionbarInnerframe.bar12, 30, 270, L["渐隐透明度"], "Action
 
 ActionbarInnerframe.bar3 = CreateOptionPage("Actionbar Options bar3", L["额外动作条"], ActionbarInnerframe, "VERTICAL", .3)
 
---ActionbarInnerframe.bar3.bar3toggle = T.ABtogglebox(ActionbarInnerframe.bar3, 30, 60, 2, L["额外动作条"])
-T.createcheckbutton(ActionbarInnerframe.bar3, 30, 60, L["3*2*2布局"], "ActionbarOptions", "bar3uselayout322", L["3*2*2布局提示"])
+local bar3layout_group = {
+	["layout43"] = L["布局43"],
+	["layout62"] = L["布局62"],
+	["layout322"] = L["布局322"],
+	["layout1"] = L["布局1"],
+}
+T.createradiobuttongroup(ActionbarInnerframe.bar3, 30, 60, L["额外动作条布局"], "ActionbarOptions", "bar3layout", bar3layout_group)
 T.createslider(ActionbarInnerframe.bar3, 30, 110, L["额外动作条间距"], "ActionbarOptions", "space1", 1, -300, 150, 1, L["额外动作条间距提示"])
 T.createslider(ActionbarInnerframe.bar3, 30, 150, L["图标大小"], "ActionbarOptions", "bar3size", 1, 15, 40, 1)
 T.createslider(ActionbarInnerframe.bar3, 30, 190, L["图标间距"], "ActionbarOptions", "bar3space", 1, 0, 10, 1)
@@ -1456,9 +1462,6 @@ T.createslider(ActionbarInnerframe.bar3, 30, 310, L["渐隐透明度"], "Actionb
 
 ActionbarInnerframe.bar45 = CreateOptionPage("Actionbar Options bar45", L["右侧额外动作条"], ActionbarInnerframe, "VERTICAL", .3)
 
---ActionbarInnerframe.bar45.bar4toggle = T.ABtogglebox(ActionbarInnerframe.bar45, 30, 60, 3, L["右侧额外动作条"].." 1")
---ActionbarInnerframe.bar45.bar5toggle = T.ABtogglebox(ActionbarInnerframe.bar45, 30, 90, 4, L["右侧额外动作条"].." 2")
---T.createDR(ActionbarInnerframe.bar45.bar4toggle, ActionbarInnerframe.bar45.bar5toggle)
 T.createcheckbutton(ActionbarInnerframe.bar45, 30, 60, L["横向动作条"], "ActionbarOptions", "Horizontalbar45")
 T.createcheckbutton(ActionbarInnerframe.bar45, 30, 90, L["6*4布局"], "ActionbarOptions", "bar45uselayout64")
 T.createslider(ActionbarInnerframe.bar45, 30, 140, L["图标大小"], "ActionbarOptions", "bar45size", 1, 15, 40, 1)
@@ -1499,6 +1502,159 @@ extrabartitle:SetPoint("TOPLEFT", 36, -375)
 extrabartitle:SetText(L["额外特殊按钮"])
 T.createslider(ActionbarInnerframe.other, 30, 410, L["图标大小"], "ActionbarOptions", "extrabarbuttonsize", 1, 15, 50, 1)
 
+ActionbarInnerframe.cooldownflash = CreateOptionPage("Actionbar Options cooldownflash", L["冷却提示"], ActionbarInnerframe, "VERTICAL", .3)
+T.createcheckbutton(ActionbarInnerframe.cooldownflash, 30, 60, L["启用"], "ActionbarOptions", "cdflash_enable")
+T.createslider(ActionbarInnerframe.cooldownflash, 30, 100, L["图标大小"], "ActionbarOptions", "cdflash_size", 1, 15, 100, 1)
+T.createslider(ActionbarInnerframe.cooldownflash, 30, 140, L["透明度"], "ActionbarOptions", "cdflash_alpha", 1, 30, 100, 1)
+
+local cooldownflashframe = CreateFrame("Frame", G.uiname.."Cooldown flash Options", ActionbarInnerframe.cooldownflash)
+cooldownflashframe:SetPoint("TOPLEFT", 30, -190)
+cooldownflashframe:SetPoint("BOTTOMRIGHT", -30, 20)
+F.CreateBD(cooldownflashframe, 0)
+cooldownflashframe.tabindex = 1
+cooldownflashframe.tabnum = 2
+for i = 1, 2 do
+	cooldownflashframe["tab"..i] = CreateFrame("Frame", G.uiname.."cooldownflashframe Tab"..i, cooldownflashframe)
+	cooldownflashframe["tab"..i]:SetScript("OnMouseDown", function() end)
+end
+
+local function LineUpcooldownflashlist(parent, list)
+	local index = 1
+	for spellid, info in T.pairsByKeys(aCoreCDB["ActionbarOptions"]["caflash_bl"][list]) do
+		_G[G.uiname.."caflash_bl"..list..spellid]:SetPoint("TOPLEFT", parent, "TOPLEFT", 10, 20-index*30)
+		index =  index + 1
+	end
+end
+	
+local function CreatecooldownflashlistButton(spellID, parent, list)
+	local bu = CreateFrame("Frame", G.uiname.."caflash_bl"..list..spellID, parent)
+	bu:SetSize(330, 20)
+	
+	bu.icon = CreateFrame("Button", nil, bu)
+	bu.icon:SetSize(18, 18)
+	if list == "item" then
+		bu.icon:SetNormalTexture(select(10, GetItemInfo(spellID)))
+	elseif list == "spell" then
+		bu.icon:SetNormalTexture(select(3, GetSpellInfo(spellID)))
+	end
+	bu.icon:GetNormalTexture():SetTexCoord(0.1,0.9,0.1,0.9)
+	bu.icon:SetPoint"LEFT"
+	F.CreateBG(bu.icon)
+	
+	bu.spellname = T.createtext(bu, "OVERLAY", 12, "OUTLINE", "LEFT")
+	bu.spellname:SetPoint("LEFT", 140, 0)
+	bu.spellname:SetTextColor(1, 1, 0)
+	if list == "item" then
+		bu.spellname:SetText(GetItemInfo(spellID))
+	elseif list == "spell" then	
+		bu.spellname:SetText(GetSpellInfo(spellID))
+	end
+	
+	bu.close = CreateFrame("Button", nil, bu)
+	bu.close:SetSize(22,22)
+	bu.close:SetPoint("LEFT", 310, 0)
+	bu.close.text = T.createtext(bu.close, "OVERLAY", 12, "OUTLINE", "CENTER")
+	bu.close.text:SetPoint("CENTER")
+	bu.close.text:SetText("x")
+	
+	bu.close:SetScript("OnClick", function() 
+		bu:Hide()
+		aCoreCDB["ActionbarOptions"]["caflash_bl"][list][spellID] = nil
+		LineUpcooldownflashlist(parent, list)
+	end)
+	
+	bu:SetScript("OnEnter", function(self)
+		GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+		GameTooltip:SetSpellByID(spellID)
+		GameTooltip:Show()
+	end)
+	bu:SetScript("OnLeave", function() GameTooltip:Hide() end)
+	
+	return bu
+end
+
+local function Createcooldownflashlist(list, parent)
+	for spellID, info in T.pairsByKeys(aCoreCDB["ActionbarOptions"]["caflash_bl"][list]) do
+		CreatecooldownflashlistButton(spellID, parent, list)
+	end
+	LineUpcooldownflashlist(parent, list)
+end
+	
+local function CreateCooldownFlashOptions(name, list)
+	local cooldownflashlist = CreateOptionPage(list.."Options", name, cooldownflashframe, "HORIZONTAL", .3, true)
+	cooldownflashlist.title:Hide()
+	cooldownflashlist.line:Hide()
+	if list == "spell" then
+		cooldownflashlist:Show()
+	end
+	cooldownflashlist.SF:SetPoint("TOPLEFT", 10, -20)
+	cooldownflashlist.SF:SetPoint("BOTTOMRIGHT", -30, 20)
+	
+	Createcooldownflashlist(list, cooldownflashlist.SFAnchor)
+	
+	cooldownflashlist.Spellinput = CreateFrame("EditBox", G.uiname.."caflash_bl"..list.."Spell Input", cooldownflashlist)
+	cooldownflashlist.Spellinput:SetSize(120, 20)
+	cooldownflashlist.Spellinput:SetPoint("TOPLEFT", cooldownflashlist, "TOPLEFT", 20, -5)
+	F.CreateBD(cooldownflashlist.Spellinput)
+	
+	cooldownflashlist.Spellinput:SetFont(GameFontHighlight:GetFont(), 12, "OUTLINE")
+	cooldownflashlist.Spellinput:SetAutoFocus(false)
+	cooldownflashlist.Spellinput:SetTextInsets(3, 0, 0, 0)
+	
+	local inputword
+	if list == "item" then
+		inputword = L["输入物品ID"]
+	elseif list == "spell" then
+		inputword = L["输入法术ID"]
+	end	
+	cooldownflashlist.Spellinput:SetScript("OnShow", function(self) self:SetText(inputword) end)
+	cooldownflashlist.Spellinput:SetScript("OnEditFocusGained", function(self) self:HighlightText() end)
+	cooldownflashlist.Spellinput:SetScript("OnEscapePressed", function(self) self:ClearFocus() self:SetText(inputword) end)
+	cooldownflashlist.Spellinput:SetScript("OnEnterPressed", function(self) self:ClearFocus() end)
+	
+	cooldownflashlist.Add = CreateFrame("Button", G.uiname.."caflash_bl"..list.."Add Button", cooldownflashlist, "UIPanelButtonTemplate")
+	cooldownflashlist.Add:SetPoint("LEFT", cooldownflashlist.Spellinput, "RIGHT", 10, 0)
+	cooldownflashlist.Add:SetSize(70, 20)
+	cooldownflashlist.Add:SetText(ADD)
+	F.Reskin(cooldownflashlist.Add)
+	
+	cooldownflashlist.Add:SetScript("OnClick", function(self)
+		local ID = tonumber(cooldownflashlist.Spellinput:GetText())
+		if list == "item" then
+			if not ID then
+				StaticPopupDialogs[G.uiname.."incorrect item ID"].text = L["不正确的物品ID"]
+				StaticPopup_Show(G.uiname.."incorrect item ID")
+			elseif not GetItem(ID) then
+				StaticPopupDialogs[G.uiname.."incorrect item ID"].text = "|cff7FFF00"..ID.." |r"..L["不正确的物品ID"]
+				StaticPopup_Show(G.uiname.."incorrect item ID")
+			elseif not aCoreCDB["ActionbarOptions"]["caflash_bl"][list][ID] then
+				aCoreCDB["ActionbarOptions"]["caflash_bl"][list][ID] = true
+				if _G[G.uiname.."caflash_bl"..list..ID] then
+					_G[G.uiname.."caflash_bl"..list..ID]:Show()
+				else
+					CreatecooldownflashlistButton(ID, cooldownflashlist.SFAnchor, list)	
+				end
+				LineUpcooldownflashlist(cooldownflashlist.SFAnchor, list)
+			end
+		elseif list == "spell" then
+			if not ID then
+				StaticPopupDialogs[G.uiname.."incorrect spellid"].text = L["不是一个有效的法术ID"]
+				StaticPopup_Show(G.uiname.."incorrect spellid")
+			elseif not GetSpellInfo(ID) then
+				StaticPopupDialogs[G.uiname.."incorrect spellid"].text = "|cff7FFF00"..ID.." |r"..L["不是一个有效的法术ID"]
+				StaticPopup_Show(G.uiname.."incorrect spellid")
+			elseif not aCoreCDB["ActionbarOptions"]["caflash_bl"][list][ID] then
+				aCoreCDB["ActionbarOptions"]["caflash_bl"][list][ID] = true
+				if _G[G.uiname.."caflash_bl"..list..ID] then
+					_G[G.uiname.."caflash_bl"..list..ID]:Show()
+				else
+					CreatecooldownflashlistButton(ID, cooldownflashlist.SFAnchor, list)	
+				end
+				LineUpcooldownflashlist(cooldownflashlist.SFAnchor, list)
+			end
+		end
+	end)
+end
 --====================================================--
 --[[           -- BuffFrame Options --              ]]--
 --====================================================--
@@ -1890,6 +2046,11 @@ T.createcheckbutton(OtherOptions, 300, 330, L["战场自动释放灵魂"], "Othe
 T.createcheckbutton(OtherOptions, 30, 360, L["自动交接任务"], "OtherOptions", "autoquests", L["自动交接任务提示"])
 T.createcheckbutton(OtherOptions, 300, 360, L["大喊被闷了"], "OtherOptions", "saysapped", L["大喊被闷了提示"])
 T.createcheckbutton(OtherOptions, 30, 390, L["显示插件使用小提示"], "OtherOptions", "showAFKtips", L["显示插件使用小提示提示"])
+T.createcheckbutton(OtherOptions, 300, 390, L["稀有警报"], "OtherOptions", "vignettealert", L["稀有警报提示"])
+T.createcheckbutton(OtherOptions, 30, 420, L["任务栏闪动"], "OtherOptions", "flashtaskbar", L["任务栏闪动提示"])
+T.createcheckbutton(OtherOptions, 300, 420, L["随机奖励"], "OtherOptions", "LFGRewards", L["随机奖励提示"])
+T.createcheckbutton(OtherOptions, 30, 450, L["自动召宝宝"], "OtherOptions", "autopet", L["自动召宝宝提示"])
+T.createcheckbutton(OtherOptions, 300, 450, L["自动接受排本邀请"], "OtherOptions", "autoacceptproposal", L["自动接受排本邀请提示"])
 --====================================================--
 --[[               -- Skin Options --               ]]--
 --====================================================--
@@ -1963,6 +2124,7 @@ Credits.text:SetText(format(L["制作说明"], G.Version, G.classcolor, "fgprodi
 --====================================================--
 local eventframe = CreateFrame("Frame")
 eventframe:RegisterEvent("ADDON_LOADED")
+eventframe:RegisterEvent("PLAYER_ENTERING_WORLD")
 eventframe:SetScript("OnEvent", function(self, event, ...) self[event](self, ...) end)
 
 function eventframe:ADDON_LOADED(arg1)
@@ -1975,18 +2137,32 @@ function eventframe:ADDON_LOADED(arg1)
 	end
 	T.LoadAccountVariables()
 	T.LoadVariables()
+
+end
+
+function eventframe:PLAYER_ENTERING_WORLD()
 	CreateAuraFilterButtonList()
-	CreateAutobuyButtonList()
+	
+	C_Timer.After(3, function() CreateAutobuyButtonList() end)
+	
 	CreateRaidDebuffOptions()
 	CreateCooldownAuraOptions()
+
+	CreateCooldownFlashOptions(L["忽略法术"], "spell")
+	C_Timer.After(3, function() CreateCooldownFlashOptions(L["忽略物品"], "item") end)
+	
 	CreatePlateAuraOptions(L["我的法术"], "myfiltertype", "myplateauralist")
 	CreatePlateAuraOptions(L["其他法术"], "otherfiltertype", "otherplateauralist")
 	CreateCColoredPlatesList()
+	
 	SetClassColorButton:SetScript("OnClick", function() T.ResetClasscolors(true) end)
 	SetDBMButton:SetScript("OnClick", function() T.ResetDBM(true) end)
 	SetBWButton:SetScript("OnClick", function() T.ResetBW(true) end)
-	SetSkadaButton:SetScript("OnClick", function() T.ResetSkada(true) end)
+	SetSkadaButton:SetScript("OnClick", function() T.ResetSkada(true) end)	
+	
+	eventframe:UnregisterEvent("PLAYER_ENTERING_WORLD")
 end
+
 --[[
 local GUIbutton = CreateFrame("Button", G.uiname.."GUI MenuButton", GameMenuFrame, "GameMenuButtonTemplate")
 GUIbutton:SetSize(GameMenuButtonMacros:GetWidth(), GameMenuButtonMacros:GetHeight())

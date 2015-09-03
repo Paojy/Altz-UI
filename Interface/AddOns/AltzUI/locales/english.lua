@@ -98,6 +98,7 @@ for i = 1, 5 do
 end
 L["玩家施法条"] = "Player Cast Bar"
 L["玩家平砍计时条"] = "Player Swing Timer"
+L["冷却提示"] = "Cooldown Alert"
 
 L["无2"] = "|cffFF0000No|r"
 L["无"] = "No"
@@ -171,3 +172,5 @@ L["TIPS"] = {
 	"Press Tab to change between available channels when editbox of chatframe is activate",
 	"Where is the font file？Interface\\AddOns\\Aurora\\media\\font.ttf(main font),Interface\\AddOns\\AltzUI\\media\\number.ttf(font for some time text)",
  }
+ 
+L["出现了！"] = "spotted!"

@@ -878,6 +878,8 @@ local Character_default_Settings = {
 	},
 	ItemOptions = {
 		enablebag = true,
+		bagiconsize = 30,
+		bagiconperrow = 14,
 		autorepair = true,
 		autorepair_guild = true,
 		autosell = true,
@@ -901,7 +903,7 @@ local Character_default_Settings = {
 		bar12mfade = true,
 		bar12efade = true,
 		bar12fademinaplha = 0.2,
-		bar3uselayout322 = true,
+		bar3layout = "layout322",
 		space1 = 5,
 		bar3size = 25,
 		bar3space = 4,
@@ -931,6 +933,17 @@ local Character_default_Settings = {
 		micromenuminalpha = 0,
 		leave_vehiclebuttonsize = 30,
 		extrabarbuttonsize = 30,
+		cdflash_enable = true,
+		cdflash_alpha = 100,
+		cdflash_size = 60,
+		caflash_bl = {
+			item = {
+				[6948] = true,
+			},
+			spell = {
+			
+			},
+		},
 	},
 	BuffFrameOptions = {
 		seperate = true,
@@ -1013,6 +1026,11 @@ local Character_default_Settings = {
 		autoquests = false,
 		saysapped = true,
 		showAFKtips = true,
+		vignettealert = true,
+		flashtaskbar = true,
+		autopet = true,
+		LFGRewards = true,
+		autoacceptproposal = true,
 	},
 	SkinOptions = {
 		setClassColor = true,

@@ -98,6 +98,7 @@ for i = 1, 5 do
 end
 L["玩家施法条"] = "玩家施法條"
 L["玩家平砍计时条"] = "玩家平砍計時條"
+L["冷却提示"] = "冷卻提示"
 
 L["无2"] = "|cffFF0000無|r"
 L["无"] = "無"
@@ -157,3 +158,5 @@ L["TIPS"] = {
 	"激活輸入框時點擊Tab可以切換聊天頻道",
 	"字體文件在哪裏？Interface\\AddOns\\Aurora\\media\\font.ttf(主要字體)，Interface\\AddOns\\AltzUI\\media\\number.ttf(壹些時間文本用的字體)",
  }
+
+L["出现了！"] = "出現了！"
