@@ -8,12 +8,12 @@ local BFrame = CreateFrame('frame')
 config = {
 	spacing = 4,
 	["bank"] = {
-		buttons_per_row = 14,
-		button_size = 30,
+		buttons_per_row = aCoreCDB["ItemOptions"]["bagiconperrow"],
+		button_size = aCoreCDB["ItemOptions"]["bagiconsize"],
 	},
 	["bag"] = {
-		buttons_per_row = 14,
-		button_size = 30,
+		buttons_per_row = aCoreCDB["ItemOptions"]["bagiconperrow"],
+		button_size = aCoreCDB["ItemOptions"]["bagiconsize"],
 	}
 }
 
