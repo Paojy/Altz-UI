@@ -124,21 +124,45 @@ oUF.Tags.Methods['freebgrid:rnw'] = function(u) -- 恢复
 end
 oUF.Tags.Events['freebgrid:rnw'] = "UNIT_AURA"
 
-oUF.Tags.Methods['freebgrid:pws'] = function(u) -- 盾
-local name, _,_,_,_,_, expirationTime, fromwho = UnitBuff(u, GetSpellInfo(17))
-    if(fromwho == "player") then
-        local spellTimer = (expirationTime-GetTime())
-		local TimeLeft = T.FormatTime(spellTimer)
-        if spellTimer > 0 then
-            return "|cffFFF68F"..TimeLeft.."|r"
-        end
-    end
+oUF.Tags.Methods['freebgrid:pws'] = function(u) -- 盾和虚弱灵魂
+	local pws_time, ws_time, r, g, b, colorstr
+	
+	local pws, _,_,_,_,_, pws_expiration = UnitBuff(u, GetSpellInfo(17), nil, "PLAYER")
+	if pws then
+	
+		pws_time = T.FormatTime(pws_expiration-GetTime())
+		
+		real_absorb = select(15, UnitBuff(u, GetSpellInfo(17), nil, "PLAYER"))
+		max_absorb = string.match(gsub(gsub(GetSpellDescription(17), ",", ""),"%d+","",1),"%d+")
+		r, g, b = T.ColorGradient(real_absorb/max_absorb, 1,0,0, 1,1,.8, 1,1,1)
+		colorstr = ('|cff%02x%02x%02x'):format(r * 255, g * 255, b * 255)
+		
+	end
+	
+	local ws, _,_,_,_,_, ws_expiration = UnitDebuff(u, GetSpellInfo(6788))
+	if ws then
+		ws_time = T.FormatTime(ws_expiration-GetTime())	
+	end
+	
+	if pws then
+		return colorstr..pws_time.."|r"
+	elseif ws then
+		return "|cff9370DB-"..ws_time.."|r"
+	end
 end
-oUF.Tags.Events['freebgrid:pws'] = "UNIT_AURA"
+oUF.Tags.Events['freebgrid:pws'] = "UNIT_AURA UNIT_ABSORB_AMOUNT_CHANGED"
 
-oUF.Tags.Methods['freebgrid:ws'] = function(u) if UnitDebuff(u, GetSpellInfo(6788)) then return "|cffFF9900"..x.."|r" end end -- 虚弱灵魂
-oUF.Tags.Events['freebgrid:ws'] = "UNIT_AURA"
-
+oUF.Tags.Methods['freebgrid:yzdx'] = function(u) -- 意志洞悉
+	if UnitBuff(u, GetSpellInfo(152118), nil, "PLAYER") then
+		real_absorb = select(15, UnitBuff(u, GetSpellInfo(152118), nil, "PLAYER"))
+		max_absorb = UnitHealthMax("player")*0.75
+		local r, g, b = T.ColorGradient(real_absorb/max_absorb, 1,0,0, 1,1,.3, 1,1,1)
+		local colorstr = ('|cff%02x%02x%02x'):format(r * 255, g * 255, b * 255)
+		return colorstr..x.."|r"
+	end 
+end
+oUF.Tags.Events['freebgrid:yzdx'] = "UNIT_ABSORB_AMOUNT_CHANGED" 
+ 
 -- Druid 德鲁伊
 oUF.Tags.Methods['freebgrid:lb'] = function(u) -- 生命绽放
     local name, _,_, c,_,_, expirationTime, fromwho = UnitBuff(u, GetSpellInfo(33763))
@@ -208,8 +232,35 @@ oUF.Tags.Events['freebgrid:beacon'] = "UNIT_AURA"
 oUF.Tags.Methods['freebgrid:forbearance'] = function(u) if UnitDebuff(u, GetSpellInfo(25771)) then return "|cffFF9900"..x.."|r" end end
 oUF.Tags.Events['freebgrid:forbearance'] = "UNIT_AURA" -- 自律
 
-oUF.Tags.Methods['freebgrid:eternalflame'] = function(u) if UnitBuff(u, GetSpellInfo(114163)) then return "|cffFFD700"..x.."|r" end end
+oUF.Tags.Methods['freebgrid:eternalflame'] = function(u)
+    local name, _,_,_,_,_, expirationTime, fromwho = UnitBuff(u, GetSpellInfo(114163))
+    if(fromwho == "player") then
+        local spellTimer = (expirationTime-GetTime())
+		local TimeLeft = T.FormatTime(spellTimer)
+        if spellTimer > 0 then
+            return "|cffFFD700"..TimeLeft.."|r"
+        end
+    end
+end
 oUF.Tags.Events['freebgrid:eternalflame'] = "UNIT_AURA" -- 永恒之火
+
+oUF.Tags.Methods['freebgrid:sjhd'] = function(u)
+	for i = 1,10 do
+		local name, _,_,_,_,_, expirationTime, fromwho,_,_,spellid = UnitBuff(u, i, nil, "PLAYER")
+		if name then
+			if spellid == 148039 then
+				local spellTimer = (expirationTime-GetTime())
+				local TimeLeft = T.FormatTime(spellTimer)
+				if spellTimer > 0 then
+					return "|cffFFD700"..TimeLeft.."|r"
+				end
+			end
+		else
+			break
+		end
+	end
+end
+oUF.Tags.Events['freebgrid:sjhd'] = "UNIT_AURA" -- 圣洁护盾
 
 -- Monk 武僧
 oUF.Tags.Methods['freebgrid:zs'] = function(u) -- 禅意珠
@@ -253,15 +304,15 @@ classIndicators={
         ["Cen"] = "[freebgrid:rejuv]",
     },
     ["PRIEST"] = {
-        ["TL"] = "[freebgrid:rnw]",
-        ["BR"] = "[mlight:Stamina]",--[mlight:SpellHaste]
-        ["BL"] = "[freebgrid:pws]",
+        ["TL"] = "[freebgrid:rnw][freebgrid:pws]",
+        ["BR"] = "[mlight:Stamina]",
+        ["BL"] = "",
         ["TR"] = "[freebgrid:pom]",
-        ["Cen"] = "[freebgrid:ws]",
+        ["Cen"] = "[freebgrid:yzdx]",
     },
     ["PALADIN"] = {
-        ["TL"] = "",
-        ["BR"] = "[freebgrid:eternalflame][mlight:SAI]",--mlight:Mastery
+        ["TL"] = "[freebgrid:eternalflame][freebgrid:sjhd]",
+        ["BR"] = "[mlight:SAI]",--mlight:Mastery
         ["BL"] = "",
         ["TR"] = "[freebgrid:beacon]",
         ["Cen"] = "[freebgrid:forbearance]",
@@ -346,7 +397,7 @@ local Enable = function(self)
 		
         self.AuraStatusTL = self.Health:CreateFontString(nil, "OVERLAY")
         self.AuraStatusTL:ClearAllPoints()
-        self.AuraStatusTL:SetPoint("TOPLEFT", 0, 0)
+        self.AuraStatusTL:SetPoint("TOPLEFT", 1, 0)
 		self.AuraStatusTL:SetJustifyH("LEFT")
         self.AuraStatusTL:SetFont(G.norFont, timersize, "OUTLINE")
         self.AuraStatusTL.frequentUpdates = update
