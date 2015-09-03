@@ -20,6 +20,20 @@ T.CreateDragFrame(frame) --frame, dragFrameList, inset, clamp
 frame:SetWidth(num*buttonssize + 2*padding)
 frame:SetHeight(buttonssize + 2*padding)
 
+MainMenuBarVehicleLeaveButton:SetParent(frame)
+MainMenuBarVehicleLeaveButton:ClearAllPoints()
+MainMenuBarVehicleLeaveButton:SetPoint("CENTER", 0, 0)
+MainMenuBarVehicleLeaveButton:SetScript("OnEvent", function(self,event)
+	if ( CanExitVehicle() and ActionBarController_GetCurrentActionBarState() == LE_ACTIONBAR_STATE_MAIN ) then
+		MainMenuBarVehicleLeaveButton:Show()
+		MainMenuBarVehicleLeaveButton:Enable()
+	else
+		MainMenuBarVehicleLeaveButton:SetHighlightTexture([[Interface\Buttons\ButtonHilight-Square]], "ADD")
+		MainMenuBarVehicleLeaveButton:UnlockHighlight()
+		MainMenuBarVehicleLeaveButton:Hide()
+	end
+end)
+
 --the button
 local button = CreateFrame("BUTTON", "rABS_LeaveVehicleButton", frame, "SecureHandlerClickTemplate, SecureHandlerStateTemplate");
 table.insert(buttonList, button) --add the button object to the list
@@ -41,5 +55,4 @@ hi:SetBlendMode("ADD")
 
 --[possessbar][overridebar]
 --the button will spawn if a vehicle exists, but no vehicle ui is in place (the vehicle ui has its own exit button)
---RegisterStateDriver(frame, "visibility", "[vehicleui][petbattle] hide; [@vehicle,exists] show; hide")
 RegisterStateDriver(button, "visibility", "[vehicleui][petbattle] hide; [@vehicle,exists] show; hide")
