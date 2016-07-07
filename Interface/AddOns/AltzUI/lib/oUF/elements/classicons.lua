@@ -65,8 +65,8 @@ local UpdateTexture = function(element)
 	elseif(PlayerClass == 'WARLOCK') then
 		red, green, blue = 1, .5, 1
 		desaturated = true
-	elseif(PlayerClass == 'PRIEST') then
-		red, green, blue = 1, 1, 1
+	elseif(PlayerClass == 'MAGE') then
+		red, green, blue = 0.5, 0.5, 1
 	elseif(PlayerClass == 'PALADIN') then
 		red, green, blue = 1, .96, .41
 		desaturated = true
@@ -82,11 +82,10 @@ local UpdateTexture = function(element)
 	end
 end
 
-local Update = function(self, event, unit, powerType)
+local Update = function(self, event, unit, powerType)	
 	if(unit ~= 'player' or powerType ~= ClassPowerType) then
 		return
 	end
-
 	local element = self.ClassIcons
 
 	--[[ :PreUpdate()
@@ -203,20 +202,20 @@ do
 	if(PlayerClass == 'MONK') then
 		ClassPowerID = SPELL_POWER_CHI
 		ClassPowerType = "CHI"
+		RequireSpec = SPEC_MONK_WINDWALKER
 	elseif(PlayerClass == 'PALADIN') then
 		ClassPowerID = SPELL_POWER_HOLY_POWER
 		ClassPowerType = "HOLY_POWER"
-		RequireSpell = 85673 -- Word of Glory
-	elseif(PlayerClass == 'PRIEST') then
-		ClassPowerID = SPELL_POWER_SHADOW_ORBS
-		ClassPowerType = "SHADOW_ORBS"
-		RequireSpec = SPEC_PRIEST_SHADOW
-		RequireSpell = 95740 -- Shadow Orbs
+		RequireSpell = 210191 -- Word of Glory
+	elseif(PlayerClass == 'MAGE') then
+		ClassPowerID = SPELL_POWER_ARCANE_CHARGES
+		ClassPowerType = "ARCANE_CHARGES"
+		RequireSpec = SPEC_MAGE_ARCANE
+		--RequireSpell = 95740 -- 
 	elseif(PlayerClass == 'WARLOCK') then
 		ClassPowerID = SPELL_POWER_SOUL_SHARDS
 		ClassPowerType = "SOUL_SHARDS"
-		RequireSpec = SPEC_WARLOCK_AFFLICTION
-		RequireSpell = WARLOCK_SOULBURN
+		--RequireSpell = WARLOCK_SOULBURN
 	end
 end
 

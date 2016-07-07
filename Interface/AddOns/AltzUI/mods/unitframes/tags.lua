@@ -5,7 +5,7 @@ local oUF = AltzUF or oUF
 oUF.Tags.Methods['Altz:color'] = function(u, r)
     local reaction = UnitReaction(u, "player")
 
-    if (UnitIsTapped(u) and not UnitIsTappedByPlayer(u)) then
+    if UnitIsTapDenied(u) then
         return T.hex(oUF.colors.tapped)
     elseif (UnitIsPlayer(u)) then
         local _, class = UnitClass(u)

@@ -126,7 +126,7 @@ T.Overridehealthbar = function(self, event, unit)
 		health.ind:Hide()
 	end
 	
-	if UnitIsTapped(unit) and not UnitIsTappedByPlayer(unit) then
+	if UnitIsTapDenied(unit) then
 		r, g, b = .6, .6, .6
 	elseif not UnitIsConnected(unit) then
 		r, g, b = .3, .3, .3
@@ -187,7 +187,7 @@ T.Updatehealthbar = function(self, unit, min, max)
 		self.ind:Hide()
 	end
 	
-	if UnitIsTapped(unit) and not UnitIsTappedByPlayer(unit) then
+	if UnitIsTapDenied(unit) then
 		r, g, b = .6, .6, .6
 	elseif not UnitIsConnected(unit) then
 		r, g, b = .3, .3, .3
@@ -282,63 +282,6 @@ local PostAltUpdate = function(altpp, min, cur, max)
     end
 end
 
-local PostEclipseUpdateVisibility = function(self, unit)
-	self.directionIsLunar = GetEclipseDirection()
-	if self.value then
-		if self.directionIsLunar == "moon" then
-			self.value:SetTextColor(1, .6, 0)
-			self.SolarBar.dir:Show()
-			self.LunarBar.dir:Hide()		
-		elseif self.directionIsLunar == "sun" then
-			self.value:SetTextColor(0, .4, 1)
-			self.SolarBar.dir:Hide()
-			self.LunarBar.dir:Show()
-		else
-			self.value:SetTextColor(1, 1, 1)
-			self.SolarBar.dir:Hide()
-			self.LunarBar.dir:Hide()
-		end
-	end	
-
-end
-
-local PostEclipseUpdateAura = function(self, unit)
-    if self.hasSolarEclipse then
-        self.bd:SetBackdropBorderColor(1, .6, 0)
-        self.bd:SetBackdropColor(1, .6, 0)
-    elseif self.hasLunarEclipse then
-        self.bd:SetBackdropBorderColor(0, .4, 1)
-        self.bd:SetBackdropColor(0, .4, 1)
-    else
-        self.bd:SetBackdropBorderColor(0, 0, 0)
-        self.bd:SetBackdropColor(0, 0, 0)
-    end
-end
-
-local PostEclipseDirectionChange = function(self, unit)
-	if self.value then
-		if self.directionIsLunar == "moon" then
-			self.value:SetTextColor(1, .6, 0)
-			self.SolarBar.dir:Show()
-			self.LunarBar.dir:Hide()		
-		elseif self.directionIsLunar == "sun" then
-			self.value:SetTextColor(0, .4, 1)
-			self.SolarBar.dir:Hide()
-			self.LunarBar.dir:Show()
-		else
-			self.value:SetTextColor(1, 1, 1)
-			self.SolarBar.dir:Hide()
-			self.LunarBar.dir:Hide()
-		end
-	end	
-end
-
-local PostEclipseUpdatePower = function(self, unit)
-	if self.value then
-		self.value:SetText(math.abs(UnitPower('player', SPELL_POWER_ECLIPSE)))
-	end
-end
-
 local CpointsPostUpdate = function(element, cur)
 	for i = 1, 5 do
 		if cur == MAX_COMBO_POINTS then
@@ -360,13 +303,6 @@ local ClassIconsPostUpdate = function(element, cur, max, maxchange)
 		if maxchange then
 			element[i]:SetWidth((aCoreCDB["UnitframeOptions"]["width"]+3)/max-3)
 		end		
-	end
-end
-
-local PostUpdateRunesType = function(self, rune, rid, alt)
-	if rune.value then
-		local colors = oUF.colors.runes[GetRuneType(rid) or alt]
-		rune.value:SetTextColor(colors[1], colors[2], colors[3])
 	end
 end
 
@@ -451,27 +387,27 @@ else
 end
 
 local ChannelSpells = {
-	[GetSpellInfo(129197)] = 3, --精神鞭笞（乱）
+	--[GetSpellInfo(129197)] = 3, --精神鞭笞（乱）
 	--[GetSpellInfo(124468)] = 3, --精神鞭笞
 	[GetSpellInfo(32000)] = 5, --精神灼烧
 	[GetSpellInfo(47540)] = 2, --苦修（第一跳立即生效）
 	[GetSpellInfo(64843)] = 4, --神圣赞美诗
 	--[GetSpellInfo(64901)] = 4, --希望圣歌
 	
-	[GetSpellInfo(10)] = 8, --暴风雪
+	--[GetSpellInfo(10)] = 8, --暴风雪
 	[GetSpellInfo(5143)] = 5, --奥术飞弹
 	[GetSpellInfo(12051)] = 3, --唤醒（第一跳立即生效）
 
 	--[GetSpellInfo(1120)] = 6, --吸取灵魂
 	[GetSpellInfo(689)] = 6, --吸取生命
-	[GetSpellInfo(108371)] = 6, --生命收割
+	--[GetSpellInfo(108371)] = 6, --生命收割
 	[GetSpellInfo(4629)] = 6, --火焰之雨
-	[GetSpellInfo(1949)] = 14, --地狱烈焰（第一跳立即生效）
+	--[GetSpellInfo(1949)] = 14, --地狱烈焰（第一跳立即生效）
 	[GetSpellInfo(755)] = 6, --生命通道
-	[GetSpellInfo(103103)] = 4, --灾难之握
+	--[GetSpellInfo(103103)] = 4, --灾难之握
 	
 	[GetSpellInfo(740)] = 4, --宁静
-	[GetSpellInfo(16914)] = 10, --飓风
+	--[GetSpellInfo(16914)] = 10, --飓风
 }
 
 local PostCastStart = function(castbar, unit)
@@ -1176,18 +1112,12 @@ local UnitSpecific = {
         func(self, ...)
 		
         -- Runes, Shards, HolyPower and so on --
-        if multicheck(G.myClass, "DEATHKNIGHT", "WARLOCK", "PALADIN", "MONK", "SHAMAN", "PRIEST", "MAGE", "ROGUE", "DRUID") then
+        if multicheck(G.myClass, "DEATHKNIGHT", "WARLOCK", "PALADIN", "MONK", "MAGE", "ROGUE", "DRUID") then
             local count
             if G.myClass == "DEATHKNIGHT" then 
                 count = 6
-			elseif G.myClass == "WARLOCK" then
-				count = 4
-            elseif G.myClass == "PALADIN" or G.myClass == "PRIEST" or G.myClass == "MONK" then
+            elseif G.myClass == "PALADIN" or G.myClass == "MONK" or G.myClass == "WARLOCK" or G.myClass == "MAGE" then
                 count = 6
-			elseif G.myClass == "SHAMAN" then
-				count = 4
-			elseif G.myClass == "MAGE" then
-				count = 6
 			elseif G.myClass == "ROGUE" or G.myClass == "DRUID" then
 				count = 5 -- combopoints
             end
@@ -1213,90 +1143,20 @@ local UnitSpecific = {
 				if aCoreCDB["UnitframeOptions"]["runecooldown"] then
 					for i = 1, 6 do
 						bars[i].value = T.createtext(bars[i], "OVERLAY", aCoreCDB["UnitframeOptions"]["valuefs"], "OUTLINE", "CENTER")
-						bars[i].bg:Show()
-						bars[i].bg.multiplier = .3
-						bars[i].bg:SetAlpha(.6)
 						bars[i].value:SetPoint("CENTER")
+						bars[i]:SetStatusBarColor(.7, .7, 1)
 					end
 				end
                 self.Runes = bars
-				self.Runes.PostUpdateType = PostUpdateRunesType		
 				self.Runes.PostUpdateRune = PostUpdateRunes
-            elseif G.myClass == "WARLOCK" then
-				if aCoreCDB["UnitframeOptions"]["demonicfuryvalue"] then
-					bars.ShowValue = true
-					bars.Valuefs = aCoreCDB["UnitframeOptions"]["valuefs"]
-				end
-                self.WarlockSpecBars = bars
-            elseif G.myClass == "PALADIN" or G.myClass == "PRIEST" or G.myClass == "MONK" then
+            elseif G.myClass == "PALADIN" or G.myClass == "MONK" or G.myClass == "WARLOCK" or G.myClass == "MAGE" then
                 self.ClassIcons = bars
 				self.ClassIcons.UpdateTexture = function() end
 				self.ClassIcons.PostUpdate = ClassIconsPostUpdate
-			elseif G.myClass == "SHAMAN" then
-				if aCoreCDB["UnitframeOptions"]["totemcooldown"] then
-					bars.ShowValue = true
-					bars.Valuefs = aCoreCDB["UnitframeOptions"]["valuefs"]
-				end
-				self.TotemBar = bars
-			elseif G.myClass == "MAGE" then
-				self.ArcaneCharge = bars
 			elseif G.myClass == "ROGUE" or G.myClass == "DRUID" then
 			    self.CPoints = bars
 				self.CPoints.PostUpdate = CpointsPostUpdate
             end
-        end
-	
-		-- eclipse bar --
-        if G.myClass == "DRUID" then
-            local ebar = CreateFrame("Frame", nil, self)
-		    local Ewidth,Eheight
-			Ewidth = aCoreCDB["UnitframeOptions"]["width"]
-			Eheight = aCoreCDB["UnitframeOptions"]["height"]*-(aCoreCDB["UnitframeOptions"]["hpheight"]-1)
-			
-            ebar:SetPoint("BOTTOMRIGHT", self, "TOPRIGHT", 0, 3)
-			ebar:SetSize(Ewidth, Eheight)
-            ebar.bd = T.createBackdrop(ebar, ebar, 1)
-
-            local lbar = T.createStatusbar(ebar, "ARTWORK", Eheight, Ewidth, .2, .9, 1, 1)
-			lbar:SetFrameLevel(ebar:GetFrameLevel())
-			lbar.dir = lbar:CreateTexture(nil, "OVERLAY")
-			lbar.dir:SetSize(Eheight+5, Eheight+5)
-			lbar.dir:SetPoint("LEFT", lbar:GetStatusBarTexture(), "RIGHT", 5, 1)
-			lbar.dir:SetTexture("Interface\\AddOns\\Aurora\\media\\arrow-right-active")
-			lbar.dir:SetVertexColor(0, .4, 1)
-			lbar.dir:Hide()
-			lbar.bg:Hide()
-            lbar:SetPoint("LEFT", ebar, "LEFT")
-            ebar.LunarBar = lbar
-			
-            local sbar = T.createStatusbar(ebar, "ARTWORK", Eheight, Ewidth, 1, 1, 0.15, 1)
-			sbar:SetFrameLevel(ebar:GetFrameLevel())
-			sbar.dir = sbar:CreateTexture(nil, "OVERLAY")
-			sbar.dir:SetSize(Eheight+5, Eheight+5)
-			sbar.dir:SetPoint("RIGHT", sbar, "LEFT", -5, 1)
-			sbar.dir:SetTexture("Interface\\AddOns\\Aurora\\media\\arrow-left-active")
-			sbar.dir:SetVertexColor(1, .6, 0)
-			sbar.dir:Hide()
-			sbar.bg:Hide()
-            sbar:SetPoint("LEFT", lbar:GetStatusBarTexture(), "RIGHT")
-            ebar.SolarBar = sbar
-
-            ebar.Spark = sbar:CreateTexture(nil, "OVERLAY")
-			ebar.Spark:SetSize(1, Eheight)
-            ebar.Spark:SetTexture(G.media.blank)
-			ebar.Spark:SetVertexColor(0, 0, 0)
-            ebar.Spark:SetPoint("CENTER", sbar:GetStatusBarTexture(), "LEFT", 0, 0)
-			
-			if aCoreCDB["UnitframeOptions"]["eclipsevalue"] then
-				ebar.value = T.createtext(ebar, "OVERLAY", aCoreCDB["UnitframeOptions"]["valuefs"], "OUTLINE", "CENTER")
-				ebar.value:SetPoint("CENTER")
-			end
-			
-            self.EclipseBar = ebar
-			self.EclipseBar.PostUnitAura = PostEclipseUpdateAura
-			self.EclipseBar.PostDirectionChange = PostEclipseDirectionChange		
-			self.EclipseBar.PostUpdatePower = PostEclipseUpdatePower
-			self.EclipseBar.PostUpdateVisibility = PostEclipseUpdateVisibility		
         end
 		
 		-- Zzz

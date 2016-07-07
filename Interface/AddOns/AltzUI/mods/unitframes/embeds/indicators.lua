@@ -6,95 +6,6 @@ local bigmark = 11
 local smallmark = 5
 local timersize = 12
 
--- [[ Raid Buffs ]] -- http://www.wowhead.com/guide=1100#buffs-stats
-
--- Effect: +5% Strength, Agility, and Intellect
-oUF.Tags.Methods['mlight:SAI'] = function(u) 
-	if not (
-	UnitBuff(u, GetSpellInfo(1126)) or -- druid
-	UnitBuff(u, GetSpellInfo(20217)) or -- paladin
-	UnitBuff(u, GetSpellInfo(115921)) or -- monk
-	UnitBuff(u, GetSpellInfo(90363)) -- hunter
-	) then return "|cffCD00CD"..x.."|r" end 
-end
-oUF.Tags.Events['mlight:SAI'] = "UNIT_AURA"
-
--- Effect: +10% Stamina
-oUF.Tags.Methods['mlight:Stamina'] = function(u) 
-	if not (
-	UnitBuff(u, GetSpellInfo(21562)) or -- priest
-	UnitBuff(u, GetSpellInfo(109773)) or -- warlock
-	UnitBuff(u, GetSpellInfo(469)) or -- warrior
-	UnitBuff(u, GetSpellInfo(90364)) -- hunter
-	) then return "|cffFFFFFF"..x.."|r" end 
-end
-oUF.Tags.Events['mlight:Stamina'] = "UNIT_AURA"
-
--- Effect: +10% melee and ranged attack power
-oUF.Tags.Methods['mlight:AP'] = function(u) 
-	if not (
-	UnitBuff(u, GetSpellInfo(57330)) or -- death knight
-	UnitBuff(u, GetSpellInfo(6673)) or -- warrior
-	UnitBuff(u, GetSpellInfo(19506)) -- hunter
-	) then return "|cff8B4513"..x.."|r" end 
-end
-oUF.Tags.Events['mlight:AP'] = "UNIT_AURA"
-
--- Effect: +10% spell power
-oUF.Tags.Methods['mlight:SP'] = function(u) 
-	if not (
-	UnitBuff(u, GetSpellInfo(1459)) or UnitBuff(u, GetSpellInfo(61316)) or -- mage
-	--UnitBuff(u, GetSpellInfo(77747)) or -- shaman
-	UnitBuff(u, GetSpellInfo(109773)) or -- warlock
-	UnitBuff(u, GetSpellInfo(126309)) -- hunter
-	) then return "|cff00FFFF"..x.."|r" end 
-end
-oUF.Tags.Events['mlight:SP'] = "UNIT_AURA"
-
--- Effect: +10% melee and ranged haste
-oUF.Tags.Methods['mlight:Haste'] = function(u) 
-	if not (
-	UnitBuff(u, GetSpellInfo(55610)) or -- death knight
-	UnitBuff(u, GetSpellInfo(113742)) or -- rogue
-	UnitBuff(u, GetSpellInfo(30809)) or -- shaman
-	UnitBuff(u, GetSpellInfo(128432)) or UnitBuff(u, GetSpellInfo(128433)) -- hunter (pet)
-	) then return "|cffEEB422"..x.."|r" end
-end
-oUF.Tags.Events['mlight:Haste'] = "UNIT_AURA"
-
--- Effect: +5% spell haste
-oUF.Tags.Methods['mlight:SpellHaste'] = function(u) 
-	if not (
-	UnitBuff(u, GetSpellInfo(24907)) or -- druid
-	UnitBuff(u, GetSpellInfo(15473)) or -- priest
-	UnitBuff(u, GetSpellInfo(51470)) -- shaman
-	) then return "|cffFF1493"..x.."|r" end
-end
-oUF.Tags.Events['mlight:SpellHaste'] = "UNIT_AURA"
-
--- Effect: +5% ranged, melee, and spell critical chance
-oUF.Tags.Methods['mlight:Crit'] = function(u) 
-	if not (
-	UnitBuff(u, GetSpellInfo(17007)) or -- druid
-	UnitBuff(u, GetSpellInfo(1459)) or UnitBuff(u, GetSpellInfo(61316)) or -- mage
-	UnitBuff(u, GetSpellInfo(116781)) or -- monk
-	UnitBuff(u, GetSpellInfo(126373)) or UnitBuff(u, GetSpellInfo(126309)) or -- hunter
-	UnitBuff(u, GetSpellInfo(97229)) or UnitBuff(u, GetSpellInfo(90309)) -- hunter (pet)
-	) then return "|cffEEEE00"..x.."|r" end
-end
-oUF.Tags.Events['mlight:Crit'] = "UNIT_AURA"
-
--- Effect: +3000 mastery
-oUF.Tags.Methods['mlight:Mastery'] = function(u) 
-	if not (
-	UnitBuff(u, GetSpellInfo(19740)) or -- paladin
-	UnitBuff(u, GetSpellInfo(116956)) or -- shaman
-	UnitBuff(u, GetSpellInfo(128997)) or -- hunter
-	UnitBuff(u, GetSpellInfo(93435)) -- hunter (pet)
-	) then return "|cffD3D3D3"..x.."|r" end
-end
-oUF.Tags.Events['mlight:Mastery'] = "UNIT_AURA"
-
 -- [[ Healers' indicators ]] -- 
 
 -- Priest 牧师
@@ -156,9 +67,11 @@ oUF.Tags.Methods['freebgrid:yzdx'] = function(u) -- 意志洞悉
 	if UnitBuff(u, GetSpellInfo(152118), nil, "PLAYER") then
 		real_absorb = select(15, UnitBuff(u, GetSpellInfo(152118), nil, "PLAYER"))
 		max_absorb = UnitHealthMax("player")*0.75
-		local r, g, b = T.ColorGradient(real_absorb/max_absorb, 1,0,0, 1,1,.3, 1,1,1)
-		local colorstr = ('|cff%02x%02x%02x'):format(r * 255, g * 255, b * 255)
-		return colorstr..x.."|r"
+		if real_absorb and max_absorb then
+			local r, g, b = T.ColorGradient(real_absorb/max_absorb, 1,0,0, 1,1,.3, 1,1,1)
+			local colorstr = ('|cff%02x%02x%02x'):format(r * 255, g * 255, b * 255)
+			return colorstr..x.."|r"
+		end
 	end 
 end
 oUF.Tags.Events['freebgrid:yzdx'] = "UNIT_ABSORB_AMOUNT_CHANGED" 
@@ -232,36 +145,6 @@ oUF.Tags.Events['freebgrid:beacon'] = "UNIT_AURA"
 oUF.Tags.Methods['freebgrid:forbearance'] = function(u) if UnitDebuff(u, GetSpellInfo(25771)) then return "|cffFF9900"..x.."|r" end end
 oUF.Tags.Events['freebgrid:forbearance'] = "UNIT_AURA" -- 自律
 
-oUF.Tags.Methods['freebgrid:eternalflame'] = function(u)
-    local name, _,_,_,_,_, expirationTime, fromwho = UnitBuff(u, GetSpellInfo(114163))
-    if(fromwho == "player") then
-        local spellTimer = (expirationTime-GetTime())
-		local TimeLeft = T.FormatTime(spellTimer)
-        if spellTimer > 0 then
-            return "|cffFFD700"..TimeLeft.."|r"
-        end
-    end
-end
-oUF.Tags.Events['freebgrid:eternalflame'] = "UNIT_AURA" -- 永恒之火
-
-oUF.Tags.Methods['freebgrid:sjhd'] = function(u)
-	for i = 1,10 do
-		local name, _,_,_,_,_, expirationTime, fromwho,_,_,spellid = UnitBuff(u, i, nil, "PLAYER")
-		if name then
-			if spellid == 148039 then
-				local spellTimer = (expirationTime-GetTime())
-				local TimeLeft = T.FormatTime(spellTimer)
-				if spellTimer > 0 then
-					return "|cffFFD700"..TimeLeft.."|r"
-				end
-			end
-		else
-			break
-		end
-	end
-end
-oUF.Tags.Events['freebgrid:sjhd'] = "UNIT_AURA" -- 圣洁护盾
-
 -- Monk 武僧
 oUF.Tags.Methods['freebgrid:zs'] = function(u) -- 禅意珠
     local name, _,_,_,_,_, expirationTime, fromwho = UnitAura(u, GetSpellInfo(124081))
@@ -298,80 +181,87 @@ oUF.Tags.Events['freebgrid:remist'] = 'UNIT_AURA'
 classIndicators={
     ["DRUID"] = {
         ["TL"] = "[freebgrid:lb]",
-        ["BR"] = "[mlight:SAI]",--[mlight:SpellHaste][mlight:Crit]
+        ["BR"] = "",
         ["BL"] = "",
         ["TR"] = "[freebgrid:regrow]",
         ["Cen"] = "[freebgrid:rejuv]",
     },
     ["PRIEST"] = {
         ["TL"] = "[freebgrid:rnw][freebgrid:pws]",
-        ["BR"] = "[mlight:Stamina]",
+        ["BR"] = "",
         ["BL"] = "",
         ["TR"] = "[freebgrid:pom]",
         ["Cen"] = "[freebgrid:yzdx]",
     },
     ["PALADIN"] = {
-        ["TL"] = "[freebgrid:eternalflame][freebgrid:sjhd]",
-        ["BR"] = "[mlight:SAI]",--mlight:Mastery
+        ["TL"] = "",
+        ["BR"] = "",
         ["BL"] = "",
         ["TR"] = "[freebgrid:beacon]",
         ["Cen"] = "[freebgrid:forbearance]",
     },
     ["WARLOCK"] = {
         ["TL"] = "",
-        ["BR"] = "[mlight:Stamina][mlight:SP]",
+        ["BR"] = "",
         ["BL"] = "",
         ["TR"] = "",
         ["Cen"] = "",
     },
     ["WARRIOR"] = {
         ["TL"] = "",
-        ["BR"] = "[mlight:Stamina][mlight:AP]",
+        ["BR"] = "",
         ["BL"] = "",
         ["TR"] = "",
         ["Cen"] = "",
     },
     ["DEATHKNIGHT"] = {
         ["TL"] = "",
-        ["BR"] = "[mlight:AP]",--[mlight:Haste]
+        ["BR"] = "",
         ["BL"] = "",
         ["TR"] = "",
         ["Cen"] = "",
     },
     ["SHAMAN"] = {
         ["TL"] = "[freebgrid:ripTime]",
-        ["BR"] = "[mlight:SP]",--[mlight:Haste][mlight:SpellHaste][mlight:Mastery]
+        ["BR"] = "",
         ["BL"] = "",
         ["TR"] = "[freebgrid:earth]",
         ["Cen"] = "",
     },
     ["HUNTER"] = {
         ["TL"] = "",
-        ["BR"] = "[mlight:SAI][mlight:Stamina][mlight:AP][mlight:SP]",--[mlight:Haste][mlight:Crit][mlight:Mastery]
+        ["BR"] = "",
         ["BL"] = "",
         ["TR"] = "",
         ["Cen"] = "",
     },
     ["ROGUE"] = {
         ["TL"] = "",
-        ["BR"] = "",--[mlight:Haste]
+        ["BR"] = "",
         ["BL"] = "",
         ["TR"] = "",
         ["Cen"] = "",
     },
     ["MAGE"] = {
         ["TL"] = "",
-        ["BR"] = "[mlight:SP]",--[mlight:Crit]
+        ["BR"] = "",
         ["BL"] = "",
         ["TR"] = "",
         ["Cen"] = "",
     },
 	["MONK"] = {
         ["TL"] = "[freebgrid:remist]",
-        ["BR"] = "[mlight:SAI]",--[mlight:Crit]
+        ["BR"] = "",
         ["BL"] = "[freebgrid:zs]",
         ["TR"] = "",
         ["Cen"] = "[freebgrid:sooth]",
+    },
+	["DEMONHUNTER"] = {
+        ["TL"] = "",
+        ["BR"] = "",
+        ["BL"] = "",
+        ["TR"] = "",
+        ["Cen"] = "",
     },
 }
 

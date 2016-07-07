@@ -39,9 +39,9 @@ local oUF = ns.oUF
 local GetComboPoints = GetComboPoints
 local MAX_COMBO_POINTS = MAX_COMBO_POINTS
 
-local Update = function(self, event, unit)
-	if(unit == 'pet') then return end
-
+local Update = function(self, event, unit, type)
+	if event ~= "PLAYER_TARGET_CHANGED" and unit ~= 'player' then return end
+	
 	local cpoints = self.CPoints
 	if(cpoints.PreUpdate) then
 		cpoints:PreUpdate()
@@ -53,7 +53,7 @@ local Update = function(self, event, unit)
 	else
 		cp = GetComboPoints('player', 'target')
 	end
-
+	
 	for i=1, MAX_COMBO_POINTS do
 		if(i <= cp) then
 			cpoints[i]:Show()
@@ -81,7 +81,7 @@ local Enable = function(self)
 		cpoints.__owner = self
 		cpoints.ForceUpdate = ForceUpdate
 
-		self:RegisterEvent('UNIT_COMBO_POINTS', Path, true)
+		self:RegisterEvent('UNIT_POWER_FREQUENT', Path, true)
 		self:RegisterEvent('PLAYER_TARGET_CHANGED', Path, true)
 
 		for index = 1, MAX_COMBO_POINTS do
@@ -102,7 +102,7 @@ local Disable = function(self)
 		for index = 1, MAX_COMBO_POINTS do
 			cpoints[index]:Hide()
 		end
-		self:UnregisterEvent('UNIT_COMBO_POINTS', Path)
+		self:UnregisterEvent('UNIT_POWER_FREQUENT', Path)
 		self:UnregisterEvent('PLAYER_TARGET_CHANGED', Path)
 	end
 end
