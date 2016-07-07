@@ -6,7 +6,6 @@ local bodercolor = {r = 0.4, g = 0.35, b = 0.35}
 local gloss = "Interface\\AddOns\\AltzUI\\media\\gloss"
 
 local ceil, min, max = ceil, min, max
-local ShouldShowConsolidatedBuffFrame = ShouldShowConsolidatedBuffFrame
 
 local buffFrameHeight = 0
 local seperate = aCoreCDB["BuffFrameOptions"]["seperate"]
@@ -139,25 +138,15 @@ local function updateAllBuffAnchors()
     local offset      = numEnchants
     local realIndex, previousButton, aboveButton
     --position the tempenchant button depending on the consolidated button status
-    if ShouldShowConsolidatedBuffFrame() then
-      TempEnchant1:ClearAllPoints()
-      TempEnchant1:SetPoint("TOPRIGHT", ConsolidatedBuffs, "TOPLEFT", -buff.iconpadding, 0)
-      offset = offset + 1
-    else
-      TempEnchant1:ClearAllPoints()
-      TempEnchant1:SetPoint("TOPRIGHT", _G[G.uiname.."BuffDragFrame"], "TOPRIGHT", 0, 0)
-    end
+    TempEnchant1:ClearAllPoints()
+    TempEnchant1:SetPoint("TOPRIGHT", _G[G.uiname.."BuffDragFrame"], "TOPRIGHT", 0, 0)
     
     --calculate the previous button in case tempenchant or consolidated buff are loaded
     if BuffFrame.numEnchants > 0 then
       previousButton = _G["TempEnchant"..numEnchants]
-    elseif ShouldShowConsolidatedBuffFrame() then
-      previousButton = ConsolidatedBuffs
     end
     --calculate the above button in case tempenchant or consolidated buff are loaded
-    if ShouldShowConsolidatedBuffFrame() then
-      aboveButton = ConsolidatedBuffs
-    elseif numEnchants > 0 then
+	if numEnchants > 0 then
       aboveButton = TempEnchant1
     end
     --loop on all active buff buttons
@@ -233,16 +222,6 @@ TempEnchant2:ClearAllPoints()
 TempEnchant2:SetPoint("TOPRIGHT", TempEnchant1, "TOPLEFT", -buff.iconpadding, 0)
 TempEnchant3:ClearAllPoints()
 TempEnchant3:SetPoint("TOPRIGHT", TempEnchant2, "TOPLEFT", -buff.iconpadding, 0)
-
---consolidated buff stuff
-ConsolidatedBuffs:SetScript("OnLoad", nil) --do not fuck up the icon anymore
-applySkin(ConsolidatedBuffs)
---position the consolidate buff button
-ConsolidatedBuffs:ClearAllPoints()
-ConsolidatedBuffs:SetPoint("TOPRIGHT", _G[G.uiname.."BuffDragFrame"], "TOPRIGHT", 0, 0)
-  
-ConsolidatedBuffsTooltip:SetScale(1.2)
-F.CreateBD(ConsolidatedBuffsTooltip)
 
 --hook Blizzard functions
 hooksecurefunc("BuffFrame_UpdateAllBuffAnchors", updateAllBuffAnchors)
