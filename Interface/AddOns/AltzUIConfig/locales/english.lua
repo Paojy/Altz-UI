@@ -248,12 +248,9 @@ L["堆叠数字大小"] = "Stack font size"
 L["分离Buff和Debuff"] = "Seperate Buffs and Debuffs."
 
 -- 姓名板
-L["姓名板宽度"] = "Nameplate Width"
-L["姓名板高度"] = "Nameplate Height"
 L["数字样式"] = "Numberic Style"
 L["自动显示/隐藏"] = "Auto Toggle"
 L["自动显示/隐藏提示"] = "Toggle Nameplates when entering and levaing combat."
-L["仇恨染色"] = "Threat Color"
 L["仇恨染色提示"] = "Enchat Threat Color to Nameplates."
 L["自定义颜色"] = "Custom Color"
 L["空"] = "Empty"
@@ -263,6 +260,8 @@ L["黑名单"] = "Black List"
 L["白名单"] = "White List"
 L["全部隐藏"] = "Hide All"
 L["过滤方式"] = "Filter Type"
+L["友善职业染色"] = "Use Class color on friendly players"
+L["敌对职业染色"] = "Use Class color on hostile players"
 
 -- 鼠标提示
 L["跟随光标"] = "Show at Mouse"

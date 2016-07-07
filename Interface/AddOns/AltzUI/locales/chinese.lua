@@ -157,6 +157,7 @@ L["TIPS"] = {
 	"ALT+单击物品 - 快速分解、研磨、选矿、开锁",
 	"激活输入框时点击Tab可以切换聊天频道",
 	"字体文件在哪里？Interface\\AddOns\\Aurora\\media\\font.ttf(主要字体)，Interface\\AddOns\\AltzUI\\media\\number.ttf(一些时间文本用的字体)",
+	"按住Ctrl，Shift或Alt可以快速滚动聊天框。",
  }
 
 L["出现了！"] = "出现了！"

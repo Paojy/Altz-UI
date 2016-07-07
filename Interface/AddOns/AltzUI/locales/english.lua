@@ -171,6 +171,7 @@ L["TIPS"] = {
 	"ALT+Click  - Mill/Prospect/Disenchant/Unlock instantly",
 	"Press Tab to change between available channels when editbox of chatframe is activate",
 	"Where is the font file？Interface\\AddOns\\Aurora\\media\\font.ttf(main font),Interface\\AddOns\\AltzUI\\media\\number.ttf(font for some time text)",
+	"Hold Ctrl, Alt or Shift to scoll chatframe to top/buttom.",
  }
  
 L["出现了！"] = "spotted!"
