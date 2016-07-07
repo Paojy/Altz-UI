@@ -304,6 +304,13 @@ local default_ClassClick = {
 							},
 		},
 	},
+	DEMONHUNTER = {
+		["1"] = {
+			["Click"]			= {
+				["action"]	= "target",
+							},
+		},
+	},
 }
 
 local classClickdb = default_ClassClick[select(2, UnitClass("player"))]
@@ -389,11 +396,11 @@ local AuraList = {
         [GetSpellInfo(50397)]  = { id = 50397,  level = 15,}, -- 巫妖之躯
 		[GetSpellInfo(48707)]  = { id = 48707,  level = 15,}, -- 反魔法护罩
 		[GetSpellInfo(48792)]  = { id = 48792,  level = 15,}, -- 冰封之韧
-		[GetSpellInfo(49222)]  = { id = 49222,  level = 15,}, -- 白骨之盾
+		--[GetSpellInfo(49222)]  = { id = 49222,  level = 15,}, -- 白骨之盾
 		[GetSpellInfo(49028)]  = { id = 49028,  level = 15,}, -- 吸血鬼之血
 		[GetSpellInfo(55233)]  = { id = 55233,  level = 15,}, -- 符文刃舞
 	--战士
-        [GetSpellInfo(112048)] = { id = 112048, level = 15,}, -- 盾牌屏障
+        --[GetSpellInfo(112048)] = { id = 112048, level = 15,}, -- 盾牌屏障
 		[GetSpellInfo(12975)]  = { id = 12975,  level = 15,}, -- 破釜沉舟
 		[GetSpellInfo(871)]    = { id = 871,    level = 15,}, -- 盾墙
 	},
@@ -627,43 +634,43 @@ G.WhiteList = {
 	[22812] = true, -- 樹皮術
 	[22842] = true, -- 狂暴恢復
 	[1850] = true, -- 疾奔
-	[50334] = true, -- 狂暴
+	--[50334] = true, -- 狂暴
 	[31821] = true, -- 光環精通
 	[1022] = true, -- 保護
 	[1044] = true, -- 自由
 	[642] = true, -- 無敵
 	[6940] = true, -- 犧牲祝福
 	[31884] = true,--翅膀
-	[114039] = true, --纯净之手
+	--[114039] = true, --纯净之手
 	[105809] = true,--狂热
-	[114917] = true, -- 怜悯治疗
+	--[114917] = true, -- 怜悯治疗
 	[85499]= true,--加速
-	[51713] = true, -- 暗影之舞
+	--[51713] = true, -- 暗影之舞
 	[2983] = true, -- 疾跑
 	[31224] = true, -- 斗篷
 	[13750] = true, -- 衝動
 	[5277] = true, -- 閃避
 	[74001] = true, -- 戰鬥就緒
-	[55694] = true, -- 狂怒恢復
+	--[55694] = true, -- 狂怒恢復
 	[871] = true, --盾墻
 	[18499] = true, -- 狂暴之怒
 	[23920] = true, -- 盾反
 	[1719] = true, -- 魯莽
 	[114028] = true, --群体反射
-	[114029] = true, --捍卫
+	--[114029] = true, --捍卫
 	[114030] = true, --警戒
 	[107574] = true,--天神下凡
 	[12292] = true, -- old death wish
 	[33206] = true, -- 痛苦壓制
 	[37274] = true, -- 能量灌注
-	[6346] = true, -- 反恐
+	--[6346] = true, -- 反恐
 	[47585] = true, -- 消散
-	[81700] = true, -- 天使长
+	--[81700] = true, -- 天使长
 	[47788] = true,--翅膀
 	[10060] = true,--能量灌注
-	[30823] = true, -- 薩滿之怒
-	[974] = true, -- 大地之盾
-	[16188] = true, -- 自然迅捷
+	--[30823] = true, -- 薩滿之怒
+	--[974] = true, -- 大地之盾
+	--[16188] = true, -- 自然迅捷
 	[79206] = true, --移动施法
 	[16166] = true, --元素掌握
 	[8178] = true,--根基
@@ -673,7 +680,7 @@ G.WhiteList = {
 	[45438] = true, -- 寒冰屏障
 	[12042] = true, -- 奥强
 	[12472] = true, --冰脈
-	[12043] = true,--气定
+	--[12043] = true,--气定
 	[108839] = true,
 	[110909] = true,--时间操控
 	[49039] = true, -- 巫妖之軀
@@ -687,9 +694,9 @@ G.WhiteList = {
 	[54216] = true,--主人召唤
 	[108416] = true,
 	[108503] = true,
-	[113858] = true,
-	[113861] = true,
-	[113860] = true,
+	--[113858] = true,
+	--[113861] = true,
+	--[113860] = true,
 	[104773] = true,
 	[122278] = true,
 	[122783] = true,
@@ -708,13 +715,13 @@ G.WhiteList = {
 	[81261] =true, -- 太阳光束
 	[19386] =true, -- 翼龙钉刺
 	[5116] =true, -- 震荡射击
-	[61394] =true, -- 冰冻陷阱雕文
-	[44572] =true, -- 深度冻结
+	--[61394] =true, -- 冰冻陷阱雕文
+	--[44572] =true, -- 深度冻结
 	[31661] =true, -- 龙之吐息
 	[118] =true, -- 变形
 	[82691] =true, -- 霜之环
 	[105421] =true, -- 盲目之光
-	[105593] =true, -- 正义之拳
+	--[105593] =true, -- 正义之拳
 	[853] =true, -- 制裁之锤
 	[20066] =true, -- 忏悔
 	[605] =true, -- 主宰心灵
@@ -735,7 +742,7 @@ G.WhiteList = {
 	[31117] =true, -- 痛苦无常
 	[5246] =true, -- 破胆怒吼
 	[46968] =true, --冲击波
-	[18498] =true, -- 沉默 - GAG订单
+	--[18498] =true, -- 沉默 - GAG订单
 	[20549] =true, -- 战争践踏
 	[25046] =true, -- 奥术洪流
 }
@@ -868,7 +875,7 @@ local Character_default_Settings = {
 		
 		--[[ click cast ]]--
 		enableClickCast = false,
-		ClickCast = ClickCastDB
+		ClickCast = ClickCastDB,
 	},
 	ChatOptions = {
 		channelreplacement = true,
@@ -963,12 +970,11 @@ local Character_default_Settings = {
 	PlateOptions = {
 		enableplate = true,
 		autotoggleplates = true,
-		threatplates = true,
-		platewidth = 150,
-		plateheight = 7,
 		plateauranum = 5,
 		plateaurasize = 25,
 		numberstyle = true,
+		firendlyCR = false,
+		enemyCR = true,
 		myplateauralist = G.BlackList,		
 		otherplateauralist = G.WhiteList,
 		myfiltertype = "blacklist", -- "blacklist", "whitelist", "none"

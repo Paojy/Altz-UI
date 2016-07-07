@@ -611,15 +611,6 @@ T.createcheckbutton(UFInnerframe.other, 30, 150, L["启用PVP框体"], "Unitfram
 if G.myClass == "DEATHKNIGHT" then
     T.createcheckbutton(UFInnerframe.other, 30, 180, format(L["显示冷却"], RUNES), "UnitframeOptions", "runecooldown")
 	T.createslider(UFInnerframe.other, 30, 230, L["字体大小"], "UnitframeOptions", "valuefs", 1, 8, 16, 1)
-elseif G.myClass == "DRUID" then
-	T.createcheckbutton(UFInnerframe.other, 30, 180, format(L["显示数值"], ECLIPSE), "UnitframeOptions", "eclipsevalue")
-	T.createslider(UFInnerframe.other, 30, 230, L["字体大小"], "UnitframeOptions", "valuefs", 1, 8, 16, 1)
-elseif G.myClass == "WARLOCK" then
-	T.createcheckbutton(UFInnerframe.other, 30, 180, format(L["显示数值"], DEMONIC_FURY), "UnitframeOptions", "demonicfuryvalue")
-	T.createslider(UFInnerframe.other, 30, 230, L["字体大小"], "UnitframeOptions", "valuefs", 1, 8, 16, 1)
-elseif G.myClass == "SHAMAN" then
-	T.createcheckbutton(UFInnerframe.other, 30, 180, format(L["显示时间"], TUTORIAL_TITLE61_SHAMAN), "UnitframeOptions", "totemcooldown")
-	T.createslider(UFInnerframe.other, 30, 230, L["字体大小"], "UnitframeOptions", "valuefs", 1, 8, 16, 1)
 end
 
 --====================================================--
@@ -1706,14 +1697,12 @@ PlateInnerframe.common:Show()
 
 T.createcheckbutton(PlateInnerframe.common, 30, 60, L["启用"], "PlateOptions", "enableplate")
 T.createcheckbutton(PlateInnerframe.common, 30, 90, L["数字样式"], "PlateOptions", "numberstyle")
-T.createslider(PlateInnerframe.common, 30, 140, L["姓名板宽度"], "PlateOptions", "platewidth", 1, 100, 300, 5)
-T.createslider(PlateInnerframe.common, 30, 180, L["姓名板高度"], "PlateOptions", "plateheight", 1, 5, 25, 1)
-PlateOptions.classcolorplatestoggle = T.CVartogglebox(PlateInnerframe.common, 30, 220, "ShowClassColorInNameplate", SHOW_CLASS_COLOR_IN_V_KEY)
-T.createcheckbutton(PlateInnerframe.common, 30, 250, L["仇恨染色"], "PlateOptions", "threatplates", L["仇恨染色提示"])
-T.createcheckbutton(PlateInnerframe.common, 30, 280, L["自动显示/隐藏"], "PlateOptions", "autotoggleplates", L["自动显示/隐藏提示"])
-T.createslider(PlateInnerframe.common, 30, 330, L["图标数量"], "PlateOptions", "plateauranum", 1, 3, 10, 1)
-T.createslider(PlateInnerframe.common, 30, 370, L["图标大小"], "PlateOptions", "plateaurasize", 1, 20, 40, 2)
-T.createDR(PlateInnerframe.common.enableplate, PlateInnerframe.common.platewidth, PlateInnerframe.common.plateheight, PlateInnerframe.common.threatplates, PlateInnerframe.common.autotoggleplates, PlateInnerframe.common.plateauranum, PlateInnerframe.common.plateaurasize)
+T.createcheckbutton(PlateInnerframe.common, 30, 120, L["友善职业染色"], "PlateOptions", "firendlyCR")
+T.createcheckbutton(PlateInnerframe.common, 30, 150, L["敌对职业染色"], "PlateOptions", "enemyCR")
+T.createcheckbutton(PlateInnerframe.common, 30, 180, L["自动显示/隐藏"], "PlateOptions", "autotoggleplates", L["自动显示/隐藏提示"])
+T.createslider(PlateInnerframe.common, 30, 230, L["图标数量"], "PlateOptions", "plateauranum", 1, 3, 10, 1)
+T.createslider(PlateInnerframe.common, 30, 280, L["图标大小"], "PlateOptions", "plateaurasize", 1, 20, 40, 2)
+T.createDR(PlateInnerframe.common.enableplate, PlateInnerframe.common.numberstyle, PlateInnerframe.common.firendlyCR, PlateInnerframe.common.enemyCR, PlateInnerframe.common.autotoggleplates, PlateInnerframe.common.plateauranum, PlateInnerframe.common.plateaurasize)
 
 PlateInnerframe.auralist = CreateOptionPage("Actionbar Options common", L["光环"], PlateInnerframe, "VERTICAL", .3)
 
@@ -1739,7 +1728,7 @@ end
 local function CreateplateauralistButton(spellID, parent, list)
 	local bu = CreateFrame("Frame", G.uiname..list..spellID, parent)
 	bu:SetSize(330, 20)
-	
+
 	bu.icon = CreateFrame("Button", nil, bu)
 	bu.icon:SetSize(18, 18)
 	bu.icon:SetNormalTexture(select(3, GetSpellInfo(spellID)))
@@ -1751,7 +1740,7 @@ local function CreateplateauralistButton(spellID, parent, list)
 	bu.spellname:SetPoint("LEFT", 140, 0)
 	bu.spellname:SetTextColor(1, 1, 0)
 	bu.spellname:SetText(GetSpellInfo(spellID))
-	
+
 	bu.close = CreateFrame("Button", nil, bu)
 	bu.close:SetSize(22,22)
 	bu.close:SetPoint("LEFT", 310, 0)
