@@ -20,7 +20,7 @@ C.themes["Blizzard_TalentUI"] = function()
 		select(i, PlayerTalentFrameSpecializationSpellScrollFrameScrollChild:GetRegions()):Hide()
 	end
 
-	F.CreateBG(PlayerTalentFrameTalentsClearInfoFrame)
+	--F.CreateBG(PlayerTalentFrameTalentsClearInfoFrame)
 	PlayerTalentFrameTalentsClearInfoFrameIcon:SetTexCoord(.08, .92, .08, .92)
 
 	PlayerTalentFrameSpecializationSpellScrollFrameScrollChild.Seperator:SetTexture(1, 1, 1)

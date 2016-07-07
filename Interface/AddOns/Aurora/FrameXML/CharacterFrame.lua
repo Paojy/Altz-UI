@@ -12,7 +12,7 @@ tinsert(C.themes["Aurora"], function()
 		i = i + 1
 	end
 
-	-- [[ Expand button ]]
+	--[[ Expand button 
 
 	CharacterFrameExpandButton:GetNormalTexture():SetAlpha(0)
 	CharacterFrameExpandButton:GetPushedTexture():SetAlpha(0)
@@ -27,5 +27,5 @@ tinsert(C.themes["Aurora"], function()
 
 	hooksecurefunc("CharacterFrame_Collapse", function()
 		CharacterFrameExpandButton.tex:SetTexture(C.media.arrowRight)
-	end)
+	end)]]
 end)

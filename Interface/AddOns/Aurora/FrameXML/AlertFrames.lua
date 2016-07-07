@@ -1,6 +1,7 @@
 local F, C = unpack(select(2, ...))
 
 tinsert(C.themes["Aurora"], function()
+	if not abc then return end
 	-- Achievement alert
 	local function fixBg(f)
 		if f:GetObjectType() == "AnimationGroup" then

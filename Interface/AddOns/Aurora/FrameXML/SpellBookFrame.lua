@@ -82,7 +82,7 @@ tinsert(C.themes["Aurora"], function()
 
 				F.CreateBG(tab)
 
-				tab:GetNormalTexture():SetTexCoord(.08, .92, .08, .92)
+				--tab:GetNormalTexture():SetTexCoord(.08, .92, .08, .92)
 
 				tab.styled = true
 			end
@@ -90,6 +90,7 @@ tinsert(C.themes["Aurora"], function()
 	end)
 
 	local coreTabsSkinned = false
+	--[[
 	hooksecurefunc("SpellBookCoreAbilities_UpdateTabs", function()
 		if coreTabsSkinned then return end
 		coreTabsSkinned = true
@@ -132,7 +133,7 @@ tinsert(C.themes["Aurora"], function()
 			end
 		end
 	end)
-
+]]
 	SpellBookFrameTutorialButton.Ring:Hide()
 	SpellBookFrameTutorialButton:SetPoint("TOPLEFT", SpellBookFrame, "TOPLEFT", -12, 12)
 end)

@@ -799,7 +799,7 @@ Skin:SetScript("OnEvent", function(self, event, addon)
 	local addonModule = C.themes[addon]
 	if addonModule then
 		if type(addonModule) == "function" then
-			addonModule()
+			--addonModule()
 		else
 			for _, moduleFunc in pairs(addonModule) do
 				moduleFunc()
@@ -839,7 +839,7 @@ Skin:SetScript("OnEvent", function(self, event, addon)
 			end
 		end
 
-		local lightbds = {"SecondaryProfession1", "SecondaryProfession2", "SecondaryProfession3", "SecondaryProfession4", "ChatConfigChatSettingsClassColorLegend", "ChatConfigChannelSettingsClassColorLegend", "FriendsFriendsList", "HelpFrameGM_ResponseScrollFrame1", "HelpFrameGM_ResponseScrollFrame2", "FriendsFriendsNoteFrame", "AddFriendNoteFrame", "ScrollOfResurrectionSelectionFrameList", "HelpFrameReportBugScrollFrame", "HelpFrameSubmitSuggestionScrollFrame", "ReportPlayerNameDialogCommentFrame", "ReportCheatingDialogCommentFrame"}
+		local lightbds = {"SecondaryProfession1", "SecondaryProfession2", "SecondaryProfession3", "SecondaryProfession4", "ChatConfigChatSettingsClassColorLegend", "ChatConfigChannelSettingsClassColorLegend", "FriendsFriendsList", "HelpFrameGM_ResponseScrollFrame1", "HelpFrameGM_ResponseScrollFrame2", "AddFriendNoteFrame", "ScrollOfResurrectionSelectionFrameList", "HelpFrameReportBugScrollFrame", "HelpFrameSubmitSuggestionScrollFrame", "ReportPlayerNameDialogCommentFrame", "ReportCheatingDialogCommentFrame"}
 		for i = 1, #lightbds do
 			local bd = _G[lightbds[i]]
 			if bd then
@@ -1137,7 +1137,7 @@ Skin:SetScript("OnEvent", function(self, event, addon)
 					_G["PetStableStabledPet"..i.."IconTexture"]:SetTexCoord(.08, .92, .08, .92)
 				end
 			end
-
+--[[
 			hooksecurefunc("PetPaperDollFrame_UpdateIsAvailable", function()
 				if not HasPetUI() then
 					CharacterFrameTab3:SetPoint("LEFT", CharacterFrameTab2, "LEFT", 0, 0)
@@ -1150,6 +1150,7 @@ Skin:SetScript("OnEvent", function(self, event, addon)
 			PetModelFrameRotateRightButton:Hide()
 			PetModelFrameShadowOverlay:Hide()
 			PetPaperDollPetModelBg:SetAlpha(0)
+]]			
 		end
 
 		-- Ghost frame
@@ -1762,7 +1763,7 @@ Skin:SetScript("OnEvent", function(self, event, addon)
 
 		-- Missing loot frame
 
-		MissingLootFrameCorner:Hide()
+		--[[MissingLootFrameCorner:Hide()
 
 		hooksecurefunc("MissingLootFrame_Show", function()
 			for i = 1, GetNumMissingLootItems() do
@@ -1781,21 +1782,7 @@ Skin:SetScript("OnEvent", function(self, event, addon)
 
 		F.CreateBD(MissingLootFrame)
 		F.ReskinClose(MissingLootFramePassButton)
-
-		-- BN conversation
-
-		BNConversationInviteDialogHeader:SetTexture("")
-
-		F.CreateBD(BNConversationInviteDialog)
-		F.CreateBD(BNConversationInviteDialogList, .25)
-
-		F.Reskin(BNConversationInviteDialogInviteButton)
-		F.Reskin(BNConversationInviteDialogCancelButton)
-		F.ReskinScroll(BNConversationInviteDialogListScrollFrameScrollBar)
-		for i = 1, BN_CONVERSATION_INVITE_NUM_DISPLAYED do
-			F.ReskinCheck(_G["BNConversationInviteDialogListFriend"..i].checkButton)
-		end
-
+]]
 		-- Tabard frame
 
 		TabardFrameMoneyInset:DisableDrawLayer("BORDER")
@@ -1826,19 +1813,19 @@ Skin:SetScript("OnEvent", function(self, event, addon)
 		GuildRegistrarFrameBottom:Hide()
 		GuildRegistrarFrameMiddle:Hide()
 		select(19, GuildRegistrarFrame:GetRegions()):Hide()
-		select(6, GuildRegistrarFrameEditBox:GetRegions()):Hide()
-		select(7, GuildRegistrarFrameEditBox:GetRegions()):Hide()
+		--select(6, GuildRegistrarFrameEditBox:GetRegions()):Hide()
+		--select(7, GuildRegistrarFrameEditBox:GetRegions()):Hide()
 
-		GuildRegistrarFrameEditBox:SetHeight(20)
+		--GuildRegistrarFrameEditBox:SetHeight(20)
 
 		F.ReskinPortraitFrame(GuildRegistrarFrame, true)
-		F.CreateBD(GuildRegistrarFrameEditBox, .25)
+		--F.CreateBD(GuildRegistrarFrameEditBox, .25)
 		F.Reskin(GuildRegistrarFrameGoodbyeButton)
 		F.Reskin(GuildRegistrarFramePurchaseButton)
 		F.Reskin(GuildRegistrarFrameCancelButton)
 
 		-- Item text
-
+--[[
 		select(18, ItemTextFrame:GetRegions()):Hide()
 		InboxFrameBg:Hide()
 		ItemTextScrollFrameMiddle:SetAlpha(0)
@@ -1855,7 +1842,7 @@ Skin:SetScript("OnEvent", function(self, event, addon)
 		F.ReskinScroll(ItemTextScrollFrameScrollBar)
 		F.ReskinArrow(ItemTextPrevPageButton, "left")
 		F.ReskinArrow(ItemTextNextPageButton, "right")
-
+]]
 		-- Petition frame
 
 		select(18, PetitionFrame:GetRegions()):Hide()
@@ -2172,7 +2159,6 @@ Skin:SetScript("OnEvent", function(self, event, addon)
 		RaidInfoDetailCorner:Hide()
 		RaidInfoFrameHeader:Hide()
 		for i = 1, 9 do
-			select(i, FriendsFriendsNoteFrame:GetRegions()):Hide()
 			select(i, AddFriendNoteFrame:GetRegions()):Hide()
 			select(i, ReportPlayerNameDialogCommentFrame:GetRegions()):Hide()
 			select(i, ReportCheatingDialogCommentFrame:GetRegions()):Hide()
@@ -2210,7 +2196,7 @@ Skin:SetScript("OnEvent", function(self, event, addon)
 		for i = 1, MAX_DISPLAY_CHANNEL_BUTTONS do
 			_G["ChannelButton"..i]:SetNormalTexture("")
 		end
-		CharacterStatsPaneTop:Hide()
+--[[		CharacterStatsPaneTop:Hide()
 		CharacterStatsPaneBottom:Hide()
 		hooksecurefunc("PaperDollFrame_CollapseStatCategory", function(categoryFrame)
 			categoryFrame.BgMinimized:Hide()
@@ -2228,7 +2214,7 @@ Skin:SetScript("OnEvent", function(self, event, addon)
 				end
 				titles = true
 			end
-		end)
+		end)]]
 		SendScrollBarBackgroundTop:Hide()
 		HelpFrameKnowledgebaseTopTileStreaks:Hide()
 		for i = 2, 5 do
