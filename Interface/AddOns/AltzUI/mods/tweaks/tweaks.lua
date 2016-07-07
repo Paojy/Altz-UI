@@ -147,7 +147,7 @@ if camera then
 	eventframe:RegisterEvent('VARIABLES_LOADED')
 	function eventframe:VARIABLES_LOADED()
 		SetCVar("cameraSmoothTrackingStyle", 0)
-		SetCVar("cameraDistanceMax", 25)
+		--SetCVar("cameraDistanceMax", 25)
 		SetCVar("cameraDistanceMaxFactor", 2)
 		eventframe:UnregisterEvent('VARIABLES_LOADED')
 	end

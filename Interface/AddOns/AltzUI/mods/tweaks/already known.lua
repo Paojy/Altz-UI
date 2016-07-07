@@ -11,7 +11,7 @@ do
 	local knowns = {}
 
 	-- things we have to care. please let me know if any lack or surplus here.
-	local weapon, armor, container, consumable, glyph, trade_goods, recipe, gem, miscallaneous, quest = GetAuctionItemClasses()
+	local consumable, glyph, recipe, miscallaneous = AUCTION_CATEGORY_CONSUMABLES, AUCTION_CATEGORY_GLYPHS, AUCTION_CATEGORY_RECIPES, AUCTION_CATEGORY_MISCELLANEOUS
 	local knowables = { [consumable] = true, [glyph] = true, [recipe] = true, [miscallaneous] = true, }
 
 	local lines = {}
