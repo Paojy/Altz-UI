@@ -54,7 +54,7 @@ for i = 1, NUM_CHAT_WINDOWS do
 local name = 'ChatFrame'..i 
 local frame = _G[name]  
 scrolldowns[name] = frame.ScrollDown   
-Register(name.."DownTick", ScrollOnce, 0.1, name, frame)   
+Register(name.."DownTick", ScrollOnce, 0, name, frame)   
 Register(name.."DownTimeout", ResetFrame, delay, name, frame)
     for _,func in ipairs(funcs) do      
         local orig = frame[func]      

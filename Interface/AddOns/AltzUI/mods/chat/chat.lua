@@ -49,7 +49,7 @@ local function init()
 		_G['ChatFrame'..i..'EditBoxLanguage'].Show = _G['ChatFrame'..i..'EditBoxLanguage'].Hide 
 		_G['ChatFrame'..i..'EditBoxLanguage']:Hide()
 		local tex = ({_G['ChatFrame'..i..'EditBox']:GetRegions()})
-		tex[6]:SetAlpha(0) tex[7]:SetAlpha(0) tex[8]:SetAlpha(0) tex[9]:SetAlpha(0) tex[10]:SetAlpha(0) tex[11]:SetAlpha(0)
+		tex[6]:SetAlpha(0) tex[7]:SetAlpha(0) tex[8]:SetAlpha(0) tex[9]:SetAlpha(0) tex[10]:SetAlpha(0)
 		-- make a new backdrop on edit box
 		F.SetBD(_G['ChatFrame'..i..'EditBox'])
 		-- control the aplha
@@ -124,3 +124,19 @@ end)
 
 F.CreateBD(GeneralDockManagerOverflowButtonList,0.7)
 T.CreateSD(GeneralDockManagerOverflowButtonList, 3, 0, 0, 0, 1, -1)
+
+function FloatingChatFrame_OnMouseScroll(self, delta)
+	if ( delta > 0 ) then
+		if IsModifierKeyDown() then
+			self:ScrollToTop()
+		else
+			self:ScrollUp()
+		end
+	else
+		if IsModifierKeyDown() then
+			self:ScrollToBottom()
+		else
+			self:ScrollDown()
+		end
+	end
+end
