@@ -308,7 +308,7 @@ local function init()
 	end
 	--extraactionbutton1
 	styleExtraActionButton(ExtraActionButton1)
-	styleExtraActionButton2(DraenorZoneAbilityFrame.SpellButton)
+	styleExtraActionButton2(ZoneAbilityFrame.SpellButton)
 	--spell flyout
 	SpellFlyoutBackgroundEnd:SetTexture(nil)
 	SpellFlyoutHorizontalBackground:SetTexture(nil)

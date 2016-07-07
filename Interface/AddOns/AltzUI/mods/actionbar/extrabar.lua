@@ -45,14 +45,14 @@ T.CreateDragFrame(frame2) --frame, dragFrameList, inset, clamp
 frame2:SetWidth(num*buttonssize + 2*padding)
 frame2:SetHeight(buttonssize + 2*padding)
 
-DraenorZoneAbilityFrame:SetParent(frame2)
-DraenorZoneAbilityFrame:EnableMouse(false)
-DraenorZoneAbilityFrame:ClearAllPoints()
-DraenorZoneAbilityFrame:SetPoint("CENTER", 0, 0)
-DraenorZoneAbilityFrame.ignoreFramePositionManager = true
+ZoneAbilityFrame:SetParent(frame2)
+ZoneAbilityFrame:EnableMouse(false)
+ZoneAbilityFrame:ClearAllPoints()
+ZoneAbilityFrame:SetPoint("CENTER", 0, 0)
+ZoneAbilityFrame.ignoreFramePositionManager = true
 
 --the extra button
-local button2 = DraenorZoneAbilityFrame.SpellButton
+local button2 = ZoneAbilityFrame.SpellButton
 table.insert(buttonList, button2) --add the button object to the list
 button2:SetSize(buttonssize,buttonssize)
 
