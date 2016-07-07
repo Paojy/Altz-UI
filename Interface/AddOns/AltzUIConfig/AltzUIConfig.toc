@@ -1,6 +1,6 @@
-﻿## Interface: 60200
+﻿## Interface: 70000
 ## Title: |cffEE3A8CAltz|rUI Config
-## Version: 6.27
+## Version: 7.00
 ## Author: Blue
 ## Dependencies: Aurora
 ## OptionalDeps: !ClassColors, Skada, DBM-Core, BigWigs
