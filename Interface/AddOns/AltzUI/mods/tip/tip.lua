@@ -231,7 +231,7 @@ local function style(frame)
         F.CreateBD(frame, 0.5)
 		frame.border = true
     end
-	
+
 	frame:SetScale(scale)
 	frame:SetBackdropColor(0, 0, 0, 0.4)
     frame:SetBackdropBorderColor(0, 0, 0)
@@ -262,11 +262,12 @@ local tooltips = {
     ShoppingTooltip2, 
     ShoppingTooltip3,
     WorldMapTooltip,
+	WorldMapTooltip.BackdropFrame,
     DropDownList1MenuBackdrop, 
     DropDownList2MenuBackdrop,
 }
 
-for i, frame in ipairs(tooltips) do
+for i, frame in pairs(tooltips) do
     frame:SetScript("OnShow", function(frame) style(frame) end)
 end
 
