@@ -811,20 +811,24 @@ local SpecList = {
 			{ text = "spec4", specializationID = 0 },	
 		}
 	},
-	{ text = L["切天赋"], notCheckable = true, func = function() 		
-			local c = GetActiveSpecGroup(false,false)
-			SetActiveSpecGroup(c == 1 and 2 or 1) 
-		end
+	{ text = L["切天赋"], notCheckable = true, hasArrow = 1,
+			menuList = {
+			{ text = "spec1", specializationID = 0 },
+			{ text = "spec2", specializationID = 0 },
+			{ text = "spec3", specializationID = 0 },
+			{ text = "spec4", specializationID = 0 },	
+		}
 	},
 }
 
 local numspec = 4
 if G.myClass ~= "DRUID" then
 	tremove(SpecList[2]["menuList"], 5)
+	tremove(SpecList[3]["menuList"], 4)
 	numspec = 3
 end
 
-Talent:SetScript("OnMouseDown", function(self, button)
+local function TalentOnClick(self, button)
 	if UnitLevel("player")>=10 then -- 10 级别后有天赋
 		EasyMenu(SpecList, LootSpecMenu, "cursor", 0, 0, "MENU", 2)
 		DropDownList1:ClearAllPoints()
@@ -834,7 +838,9 @@ Talent:SetScript("OnMouseDown", function(self, button)
 			DropDownList1:SetPoint("BOTTOMLEFT", self, "TOPLEFT", -5, 5)
 		end
 	end
-end)
+end
+
+Talent:SetScript("OnMouseDown", TalentOnClick)
 
 Talent:SetScript("OnEvent", function(self, event, arg1)
 	if event == "PLAYER_ENTERING_WORLD" then
@@ -853,6 +859,7 @@ Talent:SetScript("OnEvent", function(self, event, arg1)
 		self.text:SetText(format(G.classcolor.."%s|r", specName))
 		
 		SpecList[2]["disabled"] = false
+		SpecList[3]["disabled"] = false
 		
 		local specPopupButton = SpecList[2]["menuList"][1]
 		specPopupButton.text = format(LOOT_SPECIALIZATION_DEFAULT, specName)
@@ -869,7 +876,9 @@ Talent:SetScript("OnEvent", function(self, event, arg1)
 				local id, name = GetSpecializationInfo(index-1)
 				specPopupButton.specializationID = id
 				specPopupButton.text = name
-				specPopupButton.func = function(self) SetLootSpecialization(id) end
+				specPopupButton.func = function(self) 
+					SetLootSpecialization(id)
+				end
 				if GetLootSpecialization() == specPopupButton.specializationID then
 					specPopupButton.checked = true
 				else
@@ -877,8 +886,24 @@ Talent:SetScript("OnEvent", function(self, event, arg1)
 				end
 			end
 		end
+		
+		for index = 1, numspec do
+			specbutton = SpecList[3]["menuList"][index]
+			if specbutton then
+				local _, name = GetSpecializationInfo(index)
+				specbutton.specializationID = index
+				specbutton.text = name
+				specbutton.func = function(self) SetSpecialization(index) end
+				if GetSpecialization() == specbutton.specializationID then
+					specbutton.checked = true
+				else
+					specbutton.checked = false
+				end
+			end
+		end
 	else
 		SpecList[2]["disabled"] = true
+		SpecList[3]["disabled"] = true
 		self.text:SetText(G.classcolor.."No Talents|r")
 	end
 end)
@@ -1152,6 +1177,71 @@ MicromenuBar3:SetScript("OnEvent", function(self)
 end)
 
 MicromenuBar3:RegisterEvent("PLAYER_LOGIN")
+
+--====================================================--
+--[[          --  Order Hall Command Bar --         ]]--
+--====================================================--
+OrderHall_LoadUI()
+local OrderHall_eframe = CreateFrame("Frame")
+OrderHall_eframe:RegisterUnitEvent("DISPLAY_SIZE_CHANGED")
+OrderHall_eframe:RegisterUnitEvent("UI_SCALE_CHANGED")
+OrderHall_eframe:RegisterUnitEvent("GARRISON_FOLLOWER_CATEGORIES_UPDATED")
+OrderHall_eframe:RegisterUnitEvent("GARRISON_FOLLOWER_ADDED")
+OrderHall_eframe:RegisterUnitEvent("GARRISON_FOLLOWER_REMOVED")
+
+OrderHall_eframe:SetScript("OnEvent", function(self, event)
+	local index = 1
+	C_Timer.After(0.1, function()
+		for i, child in ipairs({OrderHallCommandBar:GetChildren()}) do
+			if i >= 3 and child.Icon and child.Count and child.TroopPortraitCover then
+				child:SetPoint("TOPLEFT", OrderHallCommandBar.ClassIcon, "BOTTOMLEFT", -5, -index*25+20)
+				child.TroopPortraitCover:Hide()
+				
+				child.Icon:SetSize(40,20)
+				local bg = F.CreateBDFrame(child.Icon, 0)
+				F.CreateBD(bg, 1)
+				
+				child.Count:SetFont(G.norFont, 14, "OUTLINE")
+				child.Count:SetTextColor(1, 1, 1)
+				child.Count:SetShadowOffset(0, 0)
+				
+				index = index + 1
+			end
+		end
+	end)
+end)
+
+OrderHallCommandBar:HookScript("OnShow", function()
+	if not OrderHallCommandBar.styled then
+		OrderHallCommandBar.Background:SetAtlas(nil)
+		
+		OrderHallCommandBar.ClassIcon:ClearAllPoints()
+		OrderHallCommandBar.ClassIcon:SetPoint("TOPLEFT", 15, -20)
+		OrderHallCommandBar.ClassIcon:SetSize(40,20)
+		OrderHallCommandBar.ClassIcon:SetAlpha(1)
+		local bg = F.CreateBDFrame(OrderHallCommandBar.ClassIcon, 0)
+		F.CreateBD(bg, 1)
+		
+		OrderHallCommandBar.AreaName:ClearAllPoints()
+		OrderHallCommandBar.AreaName:SetPoint("LEFT", OrderHallCommandBar.ClassIcon, "RIGHT", 5, 0)
+		OrderHallCommandBar.AreaName:SetFont(G.norFont, 14, "OUTLINE")
+		OrderHallCommandBar.AreaName:SetTextColor(1, 1, 1)
+		OrderHallCommandBar.AreaName:SetShadowOffset(0, 0)
+		
+		OrderHallCommandBar.CurrencyIcon:ClearAllPoints()
+		OrderHallCommandBar.CurrencyIcon:SetPoint("LEFT", OrderHallCommandBar.AreaName, "RIGHT", 5, 0)
+		OrderHallCommandBar.Currency:ClearAllPoints()
+		OrderHallCommandBar.Currency:SetPoint("LEFT", OrderHallCommandBar.CurrencyIcon, "RIGHT", 5, 0)
+		OrderHallCommandBar.Currency:SetFont(G.norFont, 14, "OUTLINE")
+		OrderHallCommandBar.Currency:SetTextColor(1, 1, 1)
+		OrderHallCommandBar.Currency:SetShadowOffset(0, 0)
+		
+		OrderHallCommandBar.WorldMapButton:Hide()
+		
+		OrderHallCommandBar.styled = true
+	end
+end)
+
 --====================================================--
 --[[                 -- Screen --                   ]]--
 --====================================================--
@@ -1285,12 +1375,14 @@ local function ShowTipButtons()
 	BOTTOMPANEL.tipframe.next:Show()
 	BOTTOMPANEL.tipframe.previous:Show()
 	BOTTOMPANEL.tipframe.dontshow:Show()
+	Talent:EnableMouse(false)
 end
 
 local function HideTipButtons()
 	BOTTOMPANEL.tipframe.next:Hide()
 	BOTTOMPANEL.tipframe.previous:Hide()
 	BOTTOMPANEL.tipframe.dontshow:Hide()
+	Talent:EnableMouse(true)
 end
 
 BOTTOMPANEL.tipframe:SetScript("OnEnter", ShowTipButtons)
