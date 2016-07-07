@@ -54,7 +54,7 @@ BlackBg.titleframe.model:SetCamDistanceScale(.7)
 BlackBg.titleframe.model:SetPosition(-15, -0.1, -6.2)
 
 BlackBg.titleframe.model:SetFogColor(0.1, 0.1, 0.1)
-BlackBg.titleframe.model:SetLight(1, 1, 0, 1, 0, 1, .7, .7, .7, 1)
+--BlackBg.titleframe.model:SetLight(true)--(enabled[, omni, dirX, dirY, dirZ, ambIntensity[, ambR, ambG, ambB], dirIntensity[, dirR, dirG, dirB]])
 
 BlackBg.titleframe.uiname = T.createtext(BlackBg.titleframe, "OVERLAY", 35, "NONE", "CENTER")
 BlackBg.titleframe.uiname:SetPoint("BOTTOM", BlackBg.titleframe, "CENTER")

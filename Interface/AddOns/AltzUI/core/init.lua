@@ -43,7 +43,7 @@ G.Version = GetAddOnMetadata("AltzUIConfig", "Version")
 G.PlayerRealm = GetRealmName()
 G.PlayerName = UnitName("player");
 		
-G.resolution = GetCVar("gxResolution")
+G.resolution = GetCVar("gxFullscreenResolution")
 G.screenheight = tonumber(string.match(G.resolution, "%d+x(%d+)"))
 G.screenwidth = tonumber(string.match(G.resolution, "(%d+)x+%d"))
 
