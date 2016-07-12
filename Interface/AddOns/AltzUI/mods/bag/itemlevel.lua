@@ -29,6 +29,143 @@ local function AddText(Button)
 	Button.level:SetPoint("BOTTOMLEFT")
 end
 
+local upgradeTable = {
+	[  1] = { upgrade = 1, max = 1, ilevel = 8 },
+	[373] = { upgrade = 1, max = 3, ilevel = 4 },
+	[374] = { upgrade = 2, max = 3, ilevel = 8 },
+	[375] = { upgrade = 1, max = 3, ilevel = 4 },
+	[376] = { upgrade = 2, max = 3, ilevel = 4 },
+	[377] = { upgrade = 3, max = 3, ilevel = 4 },
+	[378] = {                       ilevel = 7 },
+	[379] = { upgrade = 1, max = 2, ilevel = 4 },
+	[380] = { upgrade = 2, max = 2, ilevel = 4 },
+	[445] = { upgrade = 0, max = 2, ilevel = 0 },
+	[446] = { upgrade = 1, max = 2, ilevel = 4 },
+	[447] = { upgrade = 2, max = 2, ilevel = 8 },
+	[451] = { upgrade = 0, max = 1, ilevel = 0 },
+	[452] = { upgrade = 1, max = 1, ilevel = 8 },
+	[453] = { upgrade = 0, max = 2, ilevel = 0 },
+	[454] = { upgrade = 1, max = 2, ilevel = 4 },
+	[455] = { upgrade = 2, max = 2, ilevel = 8 },
+	[456] = { upgrade = 0, max = 1, ilevel = 0 },
+	[457] = { upgrade = 1, max = 1, ilevel = 8 },
+	[458] = { upgrade = 0, max = 4, ilevel = 0 },
+	[459] = { upgrade = 1, max = 4, ilevel = 4 },
+	[460] = { upgrade = 2, max = 4, ilevel = 8 },
+	[461] = { upgrade = 3, max = 4, ilevel = 12 },
+	[462] = { upgrade = 4, max = 4, ilevel = 16 },
+	[465] = { upgrade = 0, max = 2, ilevel = 0 },
+	[466] = { upgrade = 1, max = 2, ilevel = 4 },
+	[467] = { upgrade = 2, max = 2, ilevel = 8 },
+	[468] = { upgrade = 0, max = 4, ilevel = 0 },
+	[469] = { upgrade = 1, max = 4, ilevel = 4 },
+	[470] = { upgrade = 2, max = 4, ilevel = 8 },
+	[471] = { upgrade = 3, max = 4, ilevel = 12 },
+	[472] = { upgrade = 4, max = 4, ilevel = 16 },
+	[491] = { upgrade = 0, max = 4, ilevel = 0 },
+	[492] = { upgrade = 1, max = 4, ilevel = 4 },
+	[493] = { upgrade = 2, max = 4, ilevel = 8 },
+	[494] = { upgrade = 0, max = 6, ilevel = 0 },
+	[495] = { upgrade = 1, max = 6, ilevel = 4 },
+	[496] = { upgrade = 2, max = 6, ilevel = 8 },
+	[497] = { upgrade = 3, max = 6, ilevel = 12 },
+	[498] = { upgrade = 4, max = 6, ilevel = 16 },
+	[503] = { upgrade = 3, max = 3, ilevel = 1 },
+	[504] = { upgrade = 3, max = 4, ilevel = 12 },
+	[505] = { upgrade = 4, max = 4, ilevel = 16 },
+	[506] = { upgrade = 5, max = 6, ilevel = 20 },
+	[507] = { upgrade = 6, max = 6, ilevel = 24 },
+	[529] = { upgrade = 0, max = 2, ilevel = 0 },
+	[530] = { upgrade = 1, max = 2, ilevel = 5 },
+	[531] = { upgrade = 2, max = 2, ilevel = 10 },
+
+}
+
+-- Convert the ITEM_LEVEL constant into a pattern for our use
+local itemLevelPattern = _G["ITEM_LEVEL"]:gsub("%%d", "(%%d+)")
+
+local scanningTooltip
+local heirloomCache = {}
+local function GetHeirloomTrueLevel(itemString)
+	if type(itemString) ~= "string" then return nil,false end
+	local scantooltip=false
+	local header,s1,s2,s3,s4,s5,s6,s7,s8,s9,s10,s11,s12,s13,s14 = strsplit(":", itemString, 16)
+	s13=tonumber(s13) or 0
+	s14=tonumber(s14) or 0
+	scantooltip=(s13==1 or s13==2) and (s14==693 or s14==615) -- Really to be better tested
+	scantooltip=true
+	local _, itemLink, rarity, itemLevel = GetItemInfo(itemString)
+	if (not itemLink) then
+		return nil,false
+	end
+	if not scantooltip then
+		scantooltip=rarity == _G.LE_ITEM_QUALITY_HEIRLOOM
+	else
+		local ilvl = heirloomCache[itemLink]
+		if ilvl ~= nil then
+			return ilvl, true
+		end
+		
+		if not scanningTooltip then
+			scanningTooltip = _G.CreateFrame("GameTooltip", "LibItemUpgradeInfoTooltip", nil, "GameTooltipTemplate")
+			scanningTooltip:SetOwner(_G.WorldFrame, "ANCHOR_NONE")
+		end
+		scanningTooltip:ClearLines()
+		
+		local rc,message=pcall(scanningTooltip.SetHyperlink,scanningTooltip,itemLink)
+		if (not rc) then
+			return nil,false
+		end
+		
+		-- line 1 is the item name
+		-- line 2 may be the item level, or it may be a modifier like "Heroic"
+		-- check up to line 4 just in case
+		for i = 2, 4 do
+			local label, text = _G["LibItemUpgradeInfoTooltipTextLeft"..i], nil
+			if label then text=label:GetText() end
+			if text then
+				ilvl = tonumber(text:match(itemLevelPattern))
+				if ilvl ~= nil then
+					heirloomCache[itemLink] = ilvl
+					return ilvl, true
+				end
+			end
+		end
+	end
+	return itemLevel, false
+end
+
+local function GetUpgradeID(itemString)
+	--local instaid,upgradeid =itemString:match("item:%d+:%d+:%d+:%d+:%d+:%d+:%-?%d+:%-?%d+:%d+:(%d+):%d:%d:(%d)")
+	--local instaid,upgradeid =itemString:match("item:%d+:%d+:%d+:%d+:%d+:%d+:%-?%d+:%-?%d+:%d+:%d+:(%d+):%d+:%d+:(%d+)")
+	if itemString then
+		local itemString = itemString:match("item[%-?%d:]+") or ""-- Standardize itemlink to itemstring
+		local instaid, _, numBonuses, affixes = select(12, strsplit(":", itemString, 15))
+		instaid=tonumber(instaid) or 7
+		if instaid >0 and (instaid-4)%8==0 then
+			return tonumber(select(numBonuses + 1, strsplit(":", affixes)))
+		end
+	end
+end
+
+local function GetItemLevelUpgrade(id)
+	return upgradeTable[id].ilevel
+end
+
+local function GetUpgradedItemLevel(itemString)
+	-- check for heirlooms first
+	local ilvl, isTrue = GetHeirloomTrueLevel(itemString)
+	if isTrue then
+		return ilvl
+	end
+	-- not an heirloom? fall back to the regular item logic
+	local id = GetUpgradeID(itemString)
+	if ilvl and id then
+		ilvl = ilvl + GetItemLevelUpgrade(id)
+	end
+	return ilvl
+end
+
 T.UpdateItemLevel_CharacterInventorySlot = function()
 	for index, name in ipairs (inventorySlotNames) do
 		local Button = _G["Character" .. name]
@@ -40,7 +177,8 @@ T.UpdateItemLevel_CharacterInventorySlot = function()
 		local ItemLink = GetInventoryItemLink("player", SlotNumber)
 		
 		if ItemLink then
-			local Name, Link, Rarity, Level, MinLevel, Type, SubType, StackCount, EquipLoc, Texture, SellPrice = GetItemInfo(ItemLink)
+			local Name, Link, Rarity = GetItemInfo(ItemLink)
+			local Level = GetUpgradedItemLevel(Link)
 			if Rarity and Rarity > 1 then
 				Button.level:SetText(Level)
 				Button.level:SetTextColor(GetItemQualityColor(Rarity))
@@ -59,7 +197,8 @@ local function BagSlotUpdate(id, Button)
 	end
 	local ItemLink = GetContainerItemLink(id, Button:GetID())
 	if ItemLink then
-		local Name, Link, Rarity, Level, MinLevel, Type, SubType, StackCount, EquipLoc, Texture, SellPrice = GetItemInfo(ItemLink)
+		local Name, Link, Rarity, fLevel, MinLevel, Type, SubType, StackCount, EquipLoc, Texture, SellPrice = GetItemInfo(ItemLink)
+		local Level = GetUpgradedItemLevel(Link)
 		if Rarity and Rarity > 1 and (Type == ARMOR or Type == WEAPON) then
 			Button.level:SetText(Level)
 			Button.level:SetTextColor(GetItemQualityColor(Rarity))
