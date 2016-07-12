@@ -349,4 +349,4 @@ L["指令"] = " %s/rl|r - 重載界面 \n \n %s/hb|r - 按鍵綁定模式 \n \n 
 
 -- 制作
 L["制作"] = "制作"
-L["制作说明"] = "AltzUI ver %s \n \n \n \n 泡泡 <Sliver Hand> zhCN \n \n \n \n %s Thanks to \n \n %s \n 和每一個幫我我完成一個插件包的朋友。|r"
+L["制作说明"] = "AltzUI ver %s \n \n \n \n 泡泡 <Sliver Hand> zhCN \n \n \n \n %s Thanks to \n \n %s \n 和每一個幫我完成一個插件包的朋友。|r"

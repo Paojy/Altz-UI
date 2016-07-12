@@ -1046,6 +1046,10 @@ local function CreateMicromenuButton(parent, bu, text, original)
 					HideUIPanel(GameMenuFrame)
 				end
 				ToggleAllBags()	
+			elseif original == "anc" then
+				PlaySound("igMainMenuOption");
+				ShowUIPanel(InterfaceOptionsFrame);
+				InterfaceOptionsFrame.lastFrame = GameMenuFrame
 			else
 				print(original)
 			end
@@ -1062,12 +1066,12 @@ local function CreateMicromenuButton(parent, bu, text, original)
 	return Button
 end
 
+MicromenuBar.UI = CreateMicromenuButton(MicromenuBar, false, UIOPTIONS_MENU, "anc")
 MicromenuBar.Charcter = CreateMicromenuButton(MicromenuBar, CharacterMicroButton, CHARACTER_BUTTON, "Charcter")
 MicromenuBar.Friends = CreateMicromenuButton(MicromenuBar, false, SOCIAL_BUTTON, "Friends")
 MicromenuBar.Guild = CreateMicromenuButton(MicromenuBar, GuildMicroButton, GUILD, "Guild")
 MicromenuBar.Achievement = CreateMicromenuButton(MicromenuBar, AchievementMicroButton, ACHIEVEMENT_BUTTON, "Achievement")
 MicromenuBar.EJ = CreateMicromenuButton(MicromenuBar, EJMicroButton, ENCOUNTER_JOURNAL, "EJ")
-MicromenuBar.Store = CreateMicromenuButton(MicromenuBar, StoreMicroButton, BLIZZARD_STORE, "Store")
 MicromenuBar.System = CreateMicromenuButton(MicromenuBar, MainMenuMicroButton, G.classcolor.."AltzUI "..G.Version.."|r", "System")
 MicromenuBar.Pet = CreateMicromenuButton(MicromenuBar, CollectionsMicroButton, MOUNTS_AND_PETS, "Pet")
 MicromenuBar.Talent = CreateMicromenuButton(MicromenuBar, TalentMicroButton, TALENTS_BUTTON, "Talent")
@@ -1183,17 +1187,17 @@ MicromenuBar3:RegisterEvent("PLAYER_LOGIN")
 --====================================================--
 OrderHall_LoadUI()
 local OrderHall_eframe = CreateFrame("Frame")
-OrderHall_eframe:RegisterUnitEvent("DISPLAY_SIZE_CHANGED")
-OrderHall_eframe:RegisterUnitEvent("UI_SCALE_CHANGED")
-OrderHall_eframe:RegisterUnitEvent("GARRISON_FOLLOWER_CATEGORIES_UPDATED")
-OrderHall_eframe:RegisterUnitEvent("GARRISON_FOLLOWER_ADDED")
-OrderHall_eframe:RegisterUnitEvent("GARRISON_FOLLOWER_REMOVED")
+OrderHall_eframe:RegisterEvent("DISPLAY_SIZE_CHANGED")
+OrderHall_eframe:RegisterEvent("UI_SCALE_CHANGED")
+OrderHall_eframe:RegisterEvent("GARRISON_FOLLOWER_CATEGORIES_UPDATED")
+OrderHall_eframe:RegisterEvent("GARRISON_FOLLOWER_ADDED")
+OrderHall_eframe:RegisterEvent("GARRISON_FOLLOWER_REMOVED")
 
 OrderHall_eframe:SetScript("OnEvent", function(self, event)
 	local index = 1
 	C_Timer.After(0.1, function()
 		for i, child in ipairs({OrderHallCommandBar:GetChildren()}) do
-			if i >= 3 and child.Icon and child.Count and child.TroopPortraitCover then
+			if child.Icon and child.Count and child.TroopPortraitCover then
 				child:SetPoint("TOPLEFT", OrderHallCommandBar.ClassIcon, "BOTTOMLEFT", -5, -index*25+20)
 				child.TroopPortraitCover:Hide()
 				
@@ -1213,6 +1217,7 @@ end)
 
 OrderHallCommandBar:HookScript("OnShow", function()
 	if not OrderHallCommandBar.styled then
+		OrderHallCommandBar:EnableMouse(false)
 		OrderHallCommandBar.Background:SetAtlas(nil)
 		
 		OrderHallCommandBar.ClassIcon:ClearAllPoints()

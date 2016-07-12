@@ -109,7 +109,7 @@ if autoquests then
         if(available > 0) then
             for index = 1, available do
                 if(not IsAvailableQuestTrivial(index) or IsTrackingTrivial()) then
-                    --SelectAvailableQuest(index)
+                    SelectAvailableQuest(index)
                 end
             end
         end
