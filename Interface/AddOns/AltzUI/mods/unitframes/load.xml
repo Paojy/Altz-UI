@@ -14,6 +14,7 @@
 	<Script file="embeds\trinket.lua"/>
 	<Script file="embeds\pvpspec.lua"/>
 	<Script file="embeds\swing.lua"/>
+	<Script file="embeds\shamanmana.lua"/>
 	
 	<Script file="core.lua"/>
 	<Script file="raid.lua"/>

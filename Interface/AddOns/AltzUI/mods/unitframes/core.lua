@@ -10,6 +10,7 @@ oUF.colors.power["AMMOSLOT"] = {0.8, 0.6, 0}
 oUF.colors.power["RUNIC_POWER"] = {.1, .9, .9}
 oUF.colors.power["POWER_TYPE_STEAM"] = {0.55, 0.57, 0.61}
 oUF.colors.power["POWER_TYPE_PYRITE"] = {0.60, 0.09, 0.17}
+oUF.colors.power["MEALSTORM"] = {0.4, 0.7, 1}
 
 oUF.colors.reaction[1] = {255/255, 30/255, 60/255}
 oUF.colors.reaction[2] = {255/255, 30/255, 60/255}
@@ -265,21 +266,6 @@ end
 
 local PostAltUpdate = function(altpp, min, cur, max)
 	altpp.value:SetText(cur)
-	
-	local self = altpp.__owner
-    local tPath, r, g, b = UnitAlternatePowerTextureInfo(self.unit, 2)
-	
-	if not tPath then return end
-	
-    if tPath:match("STONEGUARDAMETHYST_HORIZONTAL_FILL.BLP") then
-		altpp:SetStatusBarColor(.7, .3, 1)
-	elseif tPath:match("STONEGUARDCOBALT_HORIZONTAL_FILL.BLP") then
-		altpp:SetStatusBarColor(.1, .8, 1)
-	elseif tPath:match("STONEGUARDJADE_HORIZONTAL_FILL.BLP") then
-		altpp:SetStatusBarColor(.5, 1, .2)
-	elseif tPath:match("STONEGUARDJASPER_HORIZONTAL_FILL.BLP") then
-        altpp:SetStatusBarColor(1, 0, 0)
-    end
 end
 
 local CpointsPostUpdate = function(element, cur)
@@ -1013,7 +999,7 @@ local func = function(self, unit)
 			pp.value =  T.createnumber(pp, "OVERLAY", aCoreCDB["UnitframeOptions"]["valuefontsize"], "OUTLINE", "LEFT")
 			pp.value:SetPoint("BOTTOMLEFT", self, 4, -2)
 		end
-
+		
 		self.Power = pp
 		self.Power.PostUpdate = T.Updatepowerbar
 		tinsert(self.mouseovers, self.Power)
@@ -1158,6 +1144,26 @@ local UnitSpecific = {
 				self.CPoints.PostUpdate = CpointsPostUpdate
             end
         end
+		
+		-- Shaman mana
+		if G.myClass == "SHAMAN" then
+			local shamanmana = T.createStatusbar(self, "ARTWORK", aCoreCDB["UnitframeOptions"]["height"]*-(aCoreCDB["UnitframeOptions"]["hpheight"]-1), nil, 1, 1, 1, 1)
+			shamanmana:SetFrameLevel(2)
+			shamanmana:SetPoint"LEFT"
+			shamanmana:SetPoint"RIGHT"
+			shamanmana:SetPoint("BOTTOM", self, "TOP", 0, 1)
+			
+			shamanmana:SetMinMaxValues(0, 2)
+			shamanmana:SetValue(1)
+			
+			shamanmana.bg:SetGradientAlpha("VERTICAL", .2,.2,.2,.15,.25,.25,.25,.6)
+			shamanmana.bg.multiplier =.20
+			
+			-- backdrop --	
+			shamanmana.bd = T.createBackdrop(shamanmana, shamanmana, 1)
+			
+			self.ShamanMana = shamanmana
+		end
 		
 		-- Zzz
 		local Resting = self.Power:CreateTexture(nil, 'OVERLAY')
