@@ -4,6 +4,7 @@ local F = unpack(Aurora)
 if not aCoreCDB["ItemOptions"]["enablebag"] then return end
 
 local BFrame = CreateFrame('frame')
+local bank_shown = 0
 
 config = {
 	spacing = 4,
@@ -19,11 +20,6 @@ config = {
 
 BFrame.bags = CreateFrame("frame")
 BFrame.bags:RegisterEvent("ADDON_LOADED")
-
-local togglemain, togglebank = 0,0
-local togglebag
-
-local bags, bank = nil;
 
 local bags = {
 	['bag'] = {
@@ -130,7 +126,6 @@ function BFrame.bags:setUp(frameName, ...)
 	frame:Hide()
 	
 	frame.bags = CreateFrame('Frame', nil, frame)
-	frame.bags:SetPoint("BOTTOMRIGHT", frame, "TOPRIGHT", 0, 2)
 	F.CreateBD(frame.bags, 0.3)
 	frame.bags:Hide()
 
@@ -209,8 +204,20 @@ function BFrame.bags:setUp(frameName, ...)
 			lastbutton = f
 			frame.bags:SetWidth((24+config.spacing)*(getn(bags[frameName]))+18)
 			frame.bags:SetHeight(40)
+			frame.bags:SetPoint("BOTTOMRIGHT", frame, "TOPRIGHT", 0, 2)
 		end
 	else
+		BankFramePurchaseInfo:ClearAllPoints()
+		BankFramePurchaseInfo:SetPoint("BOTTOMLEFT", frame, "TOPLEFT", 0 ,30)
+		BankFramePurchaseInfo:SetPoint("BOTTOMRIGHT", frame, "TOPRIGHT", 0 ,30)
+		F.SetBD(BankFramePurchaseInfo)
+		
+		ReagentBankFrameUnlockInfo:ClearAllPoints()
+		ReagentBankFrameUnlockInfo:SetPoint("BOTTOMLEFT", frame, "TOPLEFT", 0 ,30)
+		ReagentBankFrameUnlockInfo:SetPoint("BOTTOMRIGHT", frame, "TOPRIGHT", 0 ,30)
+		ReagentBankFrameUnlockInfo:SetHeight(150)
+		--F.SetBD(BankFramePurchaseInfo)
+		
 		lastbutton = nil
 		
 		local tab1 = CreateFrame("frame", nil, _G[G.uiname.."bank"])
@@ -303,13 +310,19 @@ function BFrame.bags:setUp(frameName, ...)
 			
 			frame.bags:SetWidth((24+config.spacing)*(7)+16)
 			frame.bags:SetHeight(40)
+			frame.bags:SetPoint("BOTTOMRIGHT", frame, "TOPRIGHT", 0, 25)
 		end
+		
+		frame:SetScript("OnHide", function()
+			bank_shown = 0
+		end)
 	end
 	return frame
 end
 
 local numrows, lastrowbutton, numbuttons, lastbutton = 0, ContainerFrame1Item1, 1, ContainerFrame1Item1
 local banknumrows, banklastrowbutton, banknumbuttons, banklastbutton = 0, BankFrameItem1, 1, BankFrameItem1
+
 function ContainerFrame_GenerateFrame(frame, size, id)
 	frame.size = size;
 	for i=1, size, 1 do
@@ -321,6 +334,36 @@ function ContainerFrame_GenerateFrame(frame, size, id)
 	frame:SetID(id);
 	frame:Show()
 	
+	if bank_shown == 0 then
+		banknumrows, banklastrowbutton, banknumbuttons, banklastbutton = 0, BankFrameItem1, 1, BankFrameItem1
+		for bank = 1, 28 do
+			local bankitems = _G["BankFrameItem"..bank]
+			bankitems:ClearAllPoints()
+			bankitems:SetWidth(config.bank.button_size)
+			bankitems:SetHeight(config.bank.button_size)
+			bankitems:SetFrameStrata("HIGH")
+			bankitems:SetFrameLevel(2)
+			skin(bankitems)
+			
+			BankFrameMoneyFrame:Hide()
+			if bank==1 then
+				bankitems:SetPoint("TOPLEFT", _G[G.uiname.."bank"], "TOPLEFT", 10, -30)
+				banklastrowbutton = bankitems
+				banklastbutton = bankitems
+			elseif banknumbuttons==config.bank.buttons_per_row then
+				bankitems:SetPoint("TOP", banklastrowbutton, "BOTTOM", 0, -config.spacing)
+				banklastrowbutton = bankitems
+				banknumrows = banknumrows + 1
+				banknumbuttons = 1
+			else
+				bankitems:SetPoint("LEFT", banklastbutton, "RIGHT", config.spacing, 0)
+				banknumbuttons = banknumbuttons + 1
+			end
+		banklastbutton = bankitems
+		end
+		bank_shown = 1
+	end
+		
 	if ( id < 5 ) then
 		local slots = GetContainerNumSlots(id)
 
@@ -366,58 +409,29 @@ function ContainerFrame_GenerateFrame(frame, size, id)
 			end
 		end
 	else
-		if (id == 5) then
-			banknumrows, banklastrowbutton, banknumbuttons, banklastbutton = 0, BankFrameItem1, 1, BankFrameItem1
-			for bank = 1, 28 do
-				local bankitems = _G["BankFrameItem"..bank]
-				bankitems:ClearAllPoints()
-				bankitems:SetWidth(config.bank.button_size)
-				bankitems:SetHeight(config.bank.button_size)
-				bankitems:SetFrameStrata("HIGH")
-				bankitems:SetFrameLevel(2)
-				skin(bankitems)
+		local slots = GetContainerNumSlots(id)
+		for item = slots, 1, -1 do
+			local itemframes = _G["ContainerFrame"..(id+1).."Item"..item]
+			itemframes:ClearAllPoints()
+			itemframes:SetWidth(config.bank.button_size)
+			itemframes:SetHeight(config.bank.button_size)
+			itemframes:SetFrameStrata("HIGH")
+			itemframes:SetFrameLevel(2)
+			skin(itemframes)
 				
-				BankFrameMoneyFrame:Hide()
-				if bank==1 then
-					bankitems:SetPoint("TOPLEFT", _G[G.uiname.."bank"], "TOPLEFT", 10, -30)
-					banklastrowbutton = bankitems
-					banklastbutton = bankitems
-				elseif banknumbuttons==config.bank.buttons_per_row then
-					bankitems:SetPoint("TOP", banklastrowbutton, "BOTTOM", 0, -config.spacing)
-					banklastrowbutton = bankitems
-					banknumrows = banknumrows + 1
-					banknumbuttons = 1
-				else
-					bankitems:SetPoint("LEFT", banklastbutton, "RIGHT", config.spacing, 0)
-					banknumbuttons = banknumbuttons + 1
-				end
-				banklastbutton = bankitems
+			if banknumbuttons == config.bank.buttons_per_row then
+				itemframes:SetPoint("TOP", banklastrowbutton, "BOTTOM", 0, -config.spacing)
+				banklastrowbutton = itemframes
+				banknumrows = banknumrows + 1
+				banknumbuttons = 1
+			else
+				itemframes:SetPoint("LEFT", banklastbutton, "RIGHT", config.spacing, 0)
+				banknumbuttons = banknumbuttons + 1
 			end
+			banklastbutton = itemframes
 		end
-			local slots = GetContainerNumSlots(id)
-			for item = slots, 1, -1 do
-				local itemframes = _G["ContainerFrame"..(id+1).."Item"..item]
-				itemframes:ClearAllPoints()
-				itemframes:SetWidth(config.bank.button_size)
-				itemframes:SetHeight(config.bank.button_size)
-				itemframes:SetFrameStrata("HIGH")
-				itemframes:SetFrameLevel(2)
-				skin(itemframes)
-				
-				if banknumbuttons == config.bank.buttons_per_row then
-					itemframes:SetPoint("TOP", banklastrowbutton, "BOTTOM", 0, -config.spacing)
-					banklastrowbutton = itemframes
-					banknumrows = banknumrows + 1
-					banknumbuttons = 1
-				else
-					itemframes:SetPoint("LEFT", banklastbutton, "RIGHT", config.spacing, 0)
-					banknumbuttons = banknumbuttons + 1
-				end
-				banklastbutton = itemframes
-			end
-			_G[G.uiname.."bank"]:SetHeight(((config.bank.button_size+config.spacing)*(banknumrows+1)+40)-config.spacing)
+		_G[G.uiname.."bank"]:SetHeight(((config.bank.button_size+config.spacing)*(banknumrows+1)+40)-config.spacing)
 	end
-	
 	
 	hideCrap()
 end
@@ -574,21 +588,16 @@ end
 
 ContainerFrame1Item1:SetScript("OnHide", function() 
 	_G[G.uiname.."bag"]:Hide() 
-	togglemain = 0 
 end)
 BankFrameItem1:SetScript("OnHide", function() 
 	_G[G.uiname.."bank"]:Hide()
-	togglebank = 0
 end)
 BankFrameItem1:SetScript("OnShow", function() 
 	_G[G.uiname.."bank"]:Show()
-	togglebank = 1
-	
 end)
 ReagentBankFrame:SetScript("OnHide", function()
 	if not BankFrameItem1:IsShown() then
 		_G[G.uiname.."bank"]:Hide()
-		togglebank = 0
 	end
 end)
 
