@@ -10,7 +10,7 @@ local timersize = 12
 
 -- Priest 牧师
 local pomCount = {"①","②","③","④","⑤","⑥","⑦","⑧","⑨","⑩"}
-oUF.Tags.Methods['freebgrid:pom'] = function(u) -- 愈合祷言
+oUF.Tags.Methods['Mlight:pom'] = function(u) -- 愈合祷言
     local name, _,_, c, _,_,_, fromwho = UnitBuff(u, GetSpellInfo(41635))
     if fromwho == "player" then
         if c and c ~= 0 then return "|cff66FFFF"..pomCount[c].."|r" end
@@ -18,9 +18,9 @@ oUF.Tags.Methods['freebgrid:pom'] = function(u) -- 愈合祷言
         if c and c ~= 0 then return "|cffFFCF7F"..pomCount[c].."|r" end 
     end
 end
-oUF.Tags.Events['freebgrid:pom'] = "UNIT_AURA"
+oUF.Tags.Events['Mlight:pom'] = "UNIT_AURA"
 
-oUF.Tags.Methods['freebgrid:rnw'] = function(u) -- 恢复
+oUF.Tags.Methods['Mlight:rnw'] = function(u) -- 恢复
     local name, _,_,_,_,_, expirationTime, fromwho = UnitBuff(u, GetSpellInfo(139))
     if(fromwho == "player") then
         local spellTimer = expirationTime - GetTime()
@@ -33,9 +33,9 @@ oUF.Tags.Methods['freebgrid:rnw'] = function(u) -- 恢复
         end
     end
 end
-oUF.Tags.Events['freebgrid:rnw'] = "UNIT_AURA"
+oUF.Tags.Events['Mlight:rnw'] = "UNIT_AURA"
 
-oUF.Tags.Methods['freebgrid:pws'] = function(u) -- 盾和虚弱灵魂
+oUF.Tags.Methods['Mlight:pws'] = function(u) -- 盾和虚弱灵魂
 	local pws_time, ws_time, r, g, b, colorstr
 	
 	local pws, _,_,_,_,_, pws_expiration = UnitBuff(u, GetSpellInfo(17), nil, "PLAYER")
@@ -61,9 +61,9 @@ oUF.Tags.Methods['freebgrid:pws'] = function(u) -- 盾和虚弱灵魂
 		return "|cff9370DB-"..ws_time.."|r"
 	end
 end
-oUF.Tags.Events['freebgrid:pws'] = "UNIT_AURA UNIT_ABSORB_AMOUNT_CHANGED"
+oUF.Tags.Events['Mlight:pws'] = "UNIT_AURA UNIT_ABSORB_AMOUNT_CHANGED"
 
-oUF.Tags.Methods['freebgrid:yzdx'] = function(u) -- 意志洞悉
+oUF.Tags.Methods['Mlight:yzdx'] = function(u) -- 意志洞悉
 	if UnitBuff(u, GetSpellInfo(152118), nil, "PLAYER") then
 		real_absorb = select(15, UnitBuff(u, GetSpellInfo(152118), nil, "PLAYER"))
 		max_absorb = UnitHealthMax("player")*0.75
@@ -74,10 +74,10 @@ oUF.Tags.Methods['freebgrid:yzdx'] = function(u) -- 意志洞悉
 		end
 	end 
 end
-oUF.Tags.Events['freebgrid:yzdx'] = "UNIT_ABSORB_AMOUNT_CHANGED" 
+oUF.Tags.Events['Mlight:yzdx'] = "UNIT_ABSORB_AMOUNT_CHANGED" 
  
 -- Druid 德鲁伊
-oUF.Tags.Methods['freebgrid:lb'] = function(u) -- 生命绽放
+oUF.Tags.Methods['Mlight:lb'] = function(u) -- 生命绽放
     local name, _,_, c,_,_, expirationTime, fromwho = UnitBuff(u, GetSpellInfo(33763))
     if(fromwho == "player") then
 		local spellTimer = (expirationTime-GetTime())
@@ -91,9 +91,9 @@ oUF.Tags.Methods['freebgrid:lb'] = function(u) -- 生命绽放
         end
     end
 end
-oUF.Tags.Events['freebgrid:lb'] = "UNIT_AURA"
+oUF.Tags.Events['Mlight:lb'] = "UNIT_AURA"
 
-oUF.Tags.Methods['freebgrid:rejuv'] = function(u) -- 回春
+oUF.Tags.Methods['Mlight:rejuv'] = function(u) -- 回春
     local name, _,_,_,_,_, expirationTime, fromwho = UnitBuff(u, GetSpellInfo(774))
     if(fromwho == "player") then
         local spellTimer = (expirationTime-GetTime())
@@ -103,9 +103,9 @@ oUF.Tags.Methods['freebgrid:rejuv'] = function(u) -- 回春
         end
     end
 end
-oUF.Tags.Events['freebgrid:rejuv'] = "UNIT_AURA"
+oUF.Tags.Events['Mlight:rejuv'] = "UNIT_AURA"
 
-oUF.Tags.Methods['freebgrid:regrow'] = function(u) -- 愈合
+oUF.Tags.Methods['Mlight:regrow'] = function(u) -- 愈合
 	local name, _,_,_,_,_, expirationTime, fromwho = UnitBuff(u, GetSpellInfo(8936))
     if(fromwho == "player") then
         local spellTimer = (expirationTime-GetTime())
@@ -117,10 +117,10 @@ oUF.Tags.Methods['freebgrid:regrow'] = function(u) -- 愈合
         end
     end
 end
-oUF.Tags.Events['freebgrid:regrow'] = "UNIT_AURA"
+oUF.Tags.Events['Mlight:regrow'] = "UNIT_AURA"
 
 -- Shaman 萨满
-oUF.Tags.Methods['freebgrid:ripTime'] = function(u) --激流
+oUF.Tags.Methods['Mlight:ripTime'] = function(u) --激流
     local name, _,_,_,_,_, expirationTime, fromwho = UnitBuff(u, GetSpellInfo(61295))
     if(fromwho == "player") then
         local spellTimer = (expirationTime-GetTime())
@@ -130,23 +130,17 @@ oUF.Tags.Methods['freebgrid:ripTime'] = function(u) --激流
         end
     end
 end
-oUF.Tags.Events['freebgrid:ripTime'] = 'UNIT_AURA'
-
-local earthCount = {"①","②","③","④","⑤","⑥","⑦","⑧","⑨","⑩"}
-oUF.Tags.Methods['freebgrid:earth'] = function(u) -- 大地之盾
-    local c = select(4, UnitAura(u, GetSpellInfo(974))) if c then return '|cffFFCF7F'..earthCount[c]..'|r' end 
-end
-oUF.Tags.Events['freebgrid:earth'] = 'UNIT_AURA'
+oUF.Tags.Events['Mlight:ripTime'] = 'UNIT_AURA'
 
 -- Paladin 骑士
-oUF.Tags.Methods['freebgrid:beacon'] = function(u) if UnitBuff(u, GetSpellInfo(53563)) then return "|cffFFB90FO|r" end end --道标
-oUF.Tags.Events['freebgrid:beacon'] = "UNIT_AURA"
+oUF.Tags.Methods['Mlight:beacon'] = function(u) if UnitBuff(u, GetSpellInfo(53563)) then return "|cffFFB90FO|r" end end --道标
+oUF.Tags.Events['Mlight:beacon'] = "UNIT_AURA"
 
-oUF.Tags.Methods['freebgrid:forbearance'] = function(u) if UnitDebuff(u, GetSpellInfo(25771)) then return "|cffFF9900"..x.."|r" end end
-oUF.Tags.Events['freebgrid:forbearance'] = "UNIT_AURA" -- 自律
+oUF.Tags.Methods['Mlight:forbearance'] = function(u) if UnitDebuff(u, GetSpellInfo(25771)) then return "|cffFF9900"..x.."|r" end end
+oUF.Tags.Events['Mlight:forbearance'] = "UNIT_AURA" -- 自律
 
 -- Monk 武僧
-oUF.Tags.Methods['freebgrid:zs'] = function(u) -- 禅意珠
+oUF.Tags.Methods['Mlight:zs'] = function(u) -- 禅意珠
     local name, _,_,_,_,_, expirationTime, fromwho = UnitAura(u, GetSpellInfo(124081))
     if(fromwho == "player") then
         local spellTimer = (expirationTime-GetTime())
@@ -156,17 +150,29 @@ oUF.Tags.Methods['freebgrid:zs'] = function(u) -- 禅意珠
         end
     end
 end
-oUF.Tags.Events['freebgrid:zs'] = 'UNIT_AURA'
+oUF.Tags.Events['Mlight:zs'] = 'UNIT_AURA'
 
-oUF.Tags.Methods['freebgrid:sooth'] = function(u)-- 抚慰之雾
+oUF.Tags.Methods['Mlight:sooth'] = function(u)-- 抚慰之雾
 	local name, _,_,_,_,_, _, fromwho = UnitAura(u, GetSpellInfo(115175))
 	if (fromwho == "player") then
 		return "|cff97FFFF"..x.."|r"
 	end
 end 
-oUF.Tags.Events['freebgrid:sooth'] = "UNIT_AURA"
+oUF.Tags.Events['Mlight:sooth'] = "UNIT_AURA"
 
-oUF.Tags.Methods['freebgrid:remist'] = function(u) -- 复苏之雾
+oUF.Tags.Methods['Mlight:mist'] = function(u) -- 氤氲之雾
+    local name, _,_,_,_,_, expirationTime, fromwho = UnitAura(u, GetSpellInfo(124682))
+    if(fromwho == "player") then
+        local spellTimer = (expirationTime-GetTime())
+		local TimeLeft = T.FormatTime(spellTimer)
+        if spellTimer > 0 then
+            return "|cffEEB422"..TimeLeft.."|r"
+        end
+    end
+end 
+oUF.Tags.Events['Mlight:mist'] = 'UNIT_AURA'
+
+oUF.Tags.Methods['Mlight:remist'] = function(u) -- 复苏之雾
     local name, _,_,_,_,_, expirationTime, fromwho = UnitAura(u, GetSpellInfo(115151))
     if(fromwho == "player") then
         local spellTimer = (expirationTime-GetTime())
@@ -176,29 +182,29 @@ oUF.Tags.Methods['freebgrid:remist'] = function(u) -- 复苏之雾
         end
     end
 end 
-oUF.Tags.Events['freebgrid:remist'] = 'UNIT_AURA'
+oUF.Tags.Events['Mlight:remist'] = 'UNIT_AURA'
 
 classIndicators={
     ["DRUID"] = {
-        ["TL"] = "[freebgrid:lb]",
+        ["TL"] = "[Mlight:lb]",
         ["BR"] = "",
         ["BL"] = "",
-        ["TR"] = "[freebgrid:regrow]",
-        ["Cen"] = "[freebgrid:rejuv]",
+        ["TR"] = "[Mlight:regrow]",
+        ["Cen"] = "[Mlight:rejuv]",
     },
     ["PRIEST"] = {
-        ["TL"] = "[freebgrid:rnw][freebgrid:pws]",
+        ["TL"] = "[Mlight:rnw][Mlight:pws]",
         ["BR"] = "",
         ["BL"] = "",
-        ["TR"] = "[freebgrid:pom]",
-        ["Cen"] = "[freebgrid:yzdx]",
+        ["TR"] = "[Mlight:pom]",
+        ["Cen"] = "[Mlight:yzdx]",
     },
     ["PALADIN"] = {
         ["TL"] = "",
         ["BR"] = "",
         ["BL"] = "",
-        ["TR"] = "[freebgrid:beacon]",
-        ["Cen"] = "[freebgrid:forbearance]",
+        ["TR"] = "[Mlight:beacon]",
+        ["Cen"] = "[Mlight:forbearance]",
     },
     ["WARLOCK"] = {
         ["TL"] = "",
@@ -222,10 +228,10 @@ classIndicators={
         ["Cen"] = "",
     },
     ["SHAMAN"] = {
-        ["TL"] = "[freebgrid:ripTime]",
+        ["TL"] = "[Mlight:ripTime]",
         ["BR"] = "",
         ["BL"] = "",
-        ["TR"] = "[freebgrid:earth]",
+        ["TR"] = "",
         ["Cen"] = "",
     },
     ["HUNTER"] = {
@@ -250,11 +256,11 @@ classIndicators={
         ["Cen"] = "",
     },
 	["MONK"] = {
-        ["TL"] = "[freebgrid:remist]",
+        ["TL"] = "[Mlight:remist]",
         ["BR"] = "",
-        ["BL"] = "[freebgrid:zs]",
-        ["TR"] = "",
-        ["Cen"] = "[freebgrid:sooth]",
+        ["BL"] = "[Mlight:mist]",
+        ["TR"] = "[Mlight:zs]",
+        ["Cen"] = "[Mlight:sooth]",
     },
 	["DEMONHUNTER"] = {
         ["TL"] = "",
@@ -298,10 +304,10 @@ local Enable = function(self)
         
 		if G.myClass == "DRUID" then
 			self.AuraStatusTR:SetPoint("TOPRIGHT", 0, 0)
-			self.AuraStatusTR:SetFont(ChatFrame1:GetFont(), timersize, "OUTLINE")
-		elseif G.myClass == "PRIEST" or G.myClass == "SHAMAN" then
+			self.AuraStatusTR:SetFont(G.norFont, timersize, "OUTLINE")
+		elseif G.myClass == "PRIEST" or G.myClass == "SHAMAN" or G.myClass == "MONK" then
 			self.AuraStatusTR:SetPoint("TOPRIGHT", 0, 0)
-			self.AuraStatusTR:SetFont(ChatFrame1:GetFont(), timersize+3, "OUTLINE")
+			self.AuraStatusTR:SetFont(G.norFont, timersize+3, "OUTLINE")
 		else
 			self.AuraStatusTR:SetPoint("CENTER", self.Health, "TOPRIGHT", -4, -4)
 			self.AuraStatusTR:SetFont(G.symbols, bigmark, "OUTLINE")
