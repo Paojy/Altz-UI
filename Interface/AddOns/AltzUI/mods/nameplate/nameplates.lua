@@ -264,7 +264,15 @@ end
 
 local function IsOnThreatList(unit)
 	local _, threatStatus = UnitDetailedThreatSituation("player", unit)
-	return threatStatus ~= nil
+	if threatStatus == 3 then
+		return .9, .1, .4
+	elseif threatStatus == 2 then
+		return .9, .1, .9
+	elseif threatStatus == 1 then
+		return .4, .1, .9
+	elseif threatStatus == 0 then
+		return .1, .7, .9
+	end
 end
 
 local function IsTapDenied(unitFrame)
@@ -299,8 +307,8 @@ local function UpdateHealthColor(unitFrame)
 			elseif ( IsTapDenied(unitFrame) ) then
 				r, g, b = 0.3, 0.3, 0.3
 			else
-				if IsOnThreatList(unitFrame.displayedUnit) then
-					r, g, b = 1.0, 0.0, 0.0
+				if aCoreCDB["PlateOptions"]["threatcolor"] and IsOnThreatList(unitFrame.displayedUnit) then
+					r, g, b = IsOnThreatList(unitFrame.displayedUnit)
 				else
 					r, g, b = UnitSelectionColor(unit, true)
 				end
@@ -410,10 +418,8 @@ local function NamePlate_OnEvent(self, event, ...)
 			UpdateBuffs(self)
 			UpdateSelectionHighlight(self)
 		elseif ( event == "UNIT_THREAT_LIST_UPDATE" ) then
-			if ( self.optionTable.considerSelectionInCombatAsHostile ) then
-				UpdateName(self)
-				UpdateHealthColor(self)
-			end
+			UpdateName(self)
+			UpdateHealthColor(self)
 		elseif ( event == "UNIT_NAME_UPDATE" ) then
 			UpdateName(self)
 			UpdateHealthColor(self)
