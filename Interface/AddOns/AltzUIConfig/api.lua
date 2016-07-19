@@ -165,8 +165,8 @@ T.ResetClasscolors = function(reload)
 			["PALADIN"] = {
 				["hex"] = "fff50a6c",
 				["colorStr"] = "fff50a6c",
-				["b"] = 0.41,
-				["g"] = 0.18,
+				["b"] = 0.56,
+				["g"] = 0.07,
 				["r"] = 1,
 			},
 			["MAGE"] = {
@@ -187,8 +187,8 @@ T.ResetClasscolors = function(reload)
 				["hex"] = "ffe200ff",
 				["colorStr"] = "ffe200ff",
 				["b"] = 1,
-				["g"] = 0.05,
-				["r"] = 0.72,
+				["g"] = 0.03,
+				["r"] = 0.49,
 			},
 			["SHAMAN"] = {
 				["hex"] = "ff0700ff",
@@ -224,6 +224,12 @@ T.ResetClasscolors = function(reload)
 				["b"] = 0,
 				["g"] = 0.91,
 				["r"] = 1,
+			},
+			["DEMONHUNTER"] = {
+				["r"] = 0.64,
+				["colorStr"] = "ffa330c9",
+				["g"] = 0.19,
+				["b"] = 0.79,
 			},
 		}
 	end
