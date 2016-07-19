@@ -129,11 +129,11 @@ Minimap:SetMaskTexture("Interface\\Buttons\\WHITE8x8")
 
 local nowwidth, allwidth, all
 local Updater = CreateFrame("Frame")
-Updater.mode = "OUT"
+Updater.mode = "IN"
 Updater:Hide()
 
 Updater:SetScript("OnUpdate",function(self,elapsed)
-	if self.mode == "OUT" then
+	if self.mode == "IN" then
 		if nowwidth < allwidth then
 			nowwidth = nowwidth+allwidth/(all/0.2)/3
 			minimap_anchor:SetPoint("BOTTOMRIGHT", minimap_pullback, "BOTTOMLEFT", nowwidth, 0)
@@ -141,10 +141,10 @@ Updater:SetScript("OnUpdate",function(self,elapsed)
 			minimap_anchor:SetPoint("BOTTOMRIGHT", minimap_pullback, "BOTTOMLEFT", allwidth, 0)
 			minimap_pullback.border:SetBackdropColor(G.Ccolor.r, G.Ccolor.g, G.Ccolor.b)
 			Updater:Hide()
-			Updater.mode = "IN"
+			Updater.mode = "OUT"
 			Minimap:Hide()
 		end
-	elseif self.mode == "IN" then
+	elseif self.mode == "OUT" then
 		if nowwidth >0 then
 			nowwidth = nowwidth-allwidth/(all/0.2)/3
 			minimap_anchor:SetPoint("BOTTOMRIGHT", minimap_pullback, "BOTTOMLEFT", nowwidth, 0);	
@@ -152,24 +152,58 @@ Updater:SetScript("OnUpdate",function(self,elapsed)
 			minimap_anchor:SetPoint("BOTTOMRIGHT", minimap_pullback, "BOTTOMLEFT", -5, 0)
 			minimap_pullback.border:SetBackdropColor(0, 0, 0, .6)
 			Updater:Hide()
-			Updater.mode = "OUT"
+			Updater.mode = "IN"
 		end		
 	end
 end)
 
-minimap_pullback:SetScript("OnMouseDown",function(self)
+local minimap_movein = function()
 	if Updater.mode == "OUT" then
-		nowwidth, allwidth, all = 0, minimap_height, 1
-		T.UIFrameFadeOut(minimap_anchor, 1, minimap_anchor:GetAlpha(), 0)
-		T.UIFrameFadeOut(Minimap, 1, Minimap:GetAlpha(), 0)
-	elseif Updater.mode == "IN" then
 		Minimap:Show()
 		nowwidth, allwidth, all = minimap_height, minimap_height, 1
 		T.UIFrameFadeIn(minimap_anchor, 1, minimap_anchor:GetAlpha(), 1)
 		T.UIFrameFadeIn(Minimap, 1, Minimap:GetAlpha(), 1)
+		Updater:Show()
+	end
+end
+
+local minimap_moveout = function()
+	if Updater.mode == "IN" then
+	nowwidth, allwidth, all = 0, minimap_height, 1
+	T.UIFrameFadeOut(minimap_anchor, 1, minimap_anchor:GetAlpha(), 0)
+	T.UIFrameFadeOut(Minimap, 1, Minimap:GetAlpha(), 0)
+	Updater:Show()
+	end
+end
+
+local minimap_toggle = function()
+	if Updater.mode == "IN" then
+		minimap_moveout()
+	else
+		minimap_movein()
 	end
 	Updater:Show()
+end
+
+Updater:SetScript("OnEvent", function(self, event)
+	if aCoreCDB["OtherOptions"]["hidemapandchat"] then
+		if event == "PLAYER_REGEN_DISABLED" then
+			minimap_moveout()
+		elseif event == "PLAYER_REGEN_ENABLED" then
+			minimap_movein()
+		elseif event == "PLAYER_LOGIN" then
+			if InCombatLockdown() then
+				minimap_moveout()
+			end
+			self:RegisterEvent("PLAYER_REGEN_ENABLED")
+			self:RegisterEvent("PLAYER_REGEN_DISABLED")
+		end
+	end
 end)
+
+Updater:RegisterEvent("PLAYER_LOGIN")
+
+minimap_pullback:SetScript("OnMouseDown", minimap_toggle)
 
 local chatframe_pullback = CreateFrame("Frame", G.uiname.."chatframe_pullback", UIParent) 
 chatframe_pullback:SetWidth(8)
@@ -214,7 +248,7 @@ Updater2.mode = "OUT"
 Updater2:Hide()
 
 Updater2:SetScript("OnUpdate",function(self,elapsed)
-	if self.mode == "OUT" then
+	if self.mode == "IN" then
 		if nowwidth > -375 then
 			nowwidth = nowwidth-allwidth/(all/0.2)/4
 			chatframe_anchor:SetPoint("BOTTOMLEFT", chatframe_pullback, "BOTTOMRIGHT", nowwidth, 0)
@@ -223,9 +257,9 @@ Updater2:SetScript("OnUpdate",function(self,elapsed)
 			chatframe_anchor:SetPoint("BOTTOMLEFT", chatframe_pullback, "BOTTOMRIGHT", -375, 0)
 			chatframe_pullback.border:SetBackdropColor(G.Ccolor.r, G.Ccolor.g, G.Ccolor.b)
 			self:Hide()
-			self.mode = "IN"
+			self.mode = "OUT"
 		end
-	elseif self.mode == "IN" then
+	elseif self.mode == "OUT" then
 		if nowwidth <0 then
 			nowwidth = nowwidth+allwidth/(all/0.2)/4
 			chatframe_anchor:SetPoint("BOTTOMLEFT", chatframe_pullback, "BOTTOMRIGHT", nowwidth, 0)
@@ -234,27 +268,61 @@ Updater2:SetScript("OnUpdate",function(self,elapsed)
 			chatframe_anchor:SetPoint("BOTTOMLEFT", chatframe_pullback, "BOTTOMRIGHT", 5, 0)
 			chatframe_pullback.border:SetBackdropColor(0, 0, 0, .6)			
 			self:Hide()
-			self.mode = "OUT"
+			self.mode = "IN"
 		end		
 	end
 end)
 
-chatframe_pullback:SetScript("OnMouseDown",function(self)
+local chatframe_movein = function()
 	if Updater2.mode == "OUT" then
-		nowwidth, allwidth, all = 0, 375, 1
-		T.UIFrameFadeOut(cf, 1, cf:GetAlpha(), 0)
-		T.UIFrameFadeOut(dm, 1, dm:GetAlpha(), 0)
-	elseif Updater2.mode == "IN" then
 		nowwidth, allwidth, all = -375, 375, 1
 		T.UIFrameFadeIn(cf, 1, cf:GetAlpha(), 1)
 		T.UIFrameFadeIn(dm, 1, dm:GetAlpha(), 1)
+		Updater2:Show()
+	end
+end
+
+local chatframe_moveout = function()
+	if Updater2.mode == "IN" then
+		nowwidth, allwidth, all = 0, 375, 1
+		T.UIFrameFadeOut(cf, 1, cf:GetAlpha(), 0)
+		T.UIFrameFadeOut(dm, 1, dm:GetAlpha(), 0)
+		Updater2:Show()
+	end
+end
+
+local chatframe_toggle = function()
+	if Updater2.mode == "IN" then
+		chatframe_moveout()
+	else
+		chatframe_movein()
 	end
 	Updater2:Show()
+end
+
+Updater2:SetScript("OnEvent", function(self, event)
+	if aCoreCDB["OtherOptions"]["hidemapandchat"] then
+		if event == "PLAYER_REGEN_DISABLED" then
+			chatframe_moveout()
+		elseif event == "PLAYER_REGEN_ENABLED" then
+			chatframe_movein()
+		elseif event == "PLAYER_LOGIN" then
+			if InCombatLockdown() then
+				chatframe_moveout()
+			end
+			self:RegisterEvent("PLAYER_REGEN_ENABLED")
+			self:RegisterEvent("PLAYER_REGEN_DISABLED")
+		end
+	end
 end)
+
+Updater2:RegisterEvent("PLAYER_LOGIN")
+
+chatframe_pullback:SetScript("OnMouseDown", chatframe_toggle)
 
 for i = 1, NUM_CHAT_WINDOWS do
 	_G['ChatFrame'..i..'EditBox']:HookScript("OnEditFocusGained", function(self)
-		if Updater2.mode == "IN" then
+		if Updater2.mode == "OUT" then
 			nowwidth, allwidth, all = -375, 375, 1
 			T.UIFrameFadeIn(cf, 1, cf:GetAlpha(), 1)
 			T.UIFrameFadeIn(dm, 1, dm:GetAlpha(), 1)
@@ -377,13 +445,6 @@ end)
 Minimap:HookScript("OnLeave", function()
 	T.UIFrameFadeOut(MBCF, .5, MBCF:GetAlpha(), 0)
 end)
-	
--- 战网好友上线提示
---BNToastFrame:ClearAllPoints()
---BNToastFrame:SetPoint("BOTTOMLEFT", chatframe_pullback, "TOPLEFT", 0, 10)
---BNToastFrame:Show()
---BNToastFrame.Hide = BNToastFrame.Show
---BNToastFrame_UpdateAnchor = function() end
 
 --要塞
 GarrisonLandingPageMinimapButton:ClearAllPoints()
@@ -420,6 +481,39 @@ InstanceDifficulty:RegisterEvent("PLAYER_ENTERING_WORLD")
 InstanceDifficulty:RegisterEvent("PLAYER_DIFFICULTY_CHANGED")
 InstanceDifficulty:RegisterEvent("GROUP_ROSTER_UPDATE")
 InstanceDifficulty:SetScript("OnEvent", function(self) self.text:SetText(select(4, GetInstanceInfo())) end)
+
+-- 远古魔力 7.0
+local ancientmana = CreateFrame("Frame", nil, Minimap)
+ancientmana:SetPoint("TOPLEFT", 5, -5)
+ancientmana:SetSize(200, 20)
+
+ancientmana.icon = CreateFrame("Frame", nil, ancientmana)
+ancientmana.icon:SetSize(15, 15)
+ancientmana.icon:SetPoint"TOPLEFT"
+T.CreateThinSD(ancientmana.icon, 1, 0, 0, 0, 1, -2)
+ancientmana.icon.texture = ancientmana.icon:CreateTexture(nil, "OVERLAY")
+ancientmana.icon.texture:SetAllPoints()
+ancientmana.icon.texture:SetTexture(1377394)
+
+ancientmana.text = T.createtext(ancientmana, "OVERLAY", 12, "OUTLINE", "LEFT")
+ancientmana.text:SetPoint("LEFT", ancientmana.icon, "RIGHT", 5, 0)
+ancientmana.text:SetTextColor(1, 1, 1)
+
+ancientmana:RegisterEvent("PLAYER_ENTERING_WORLD")
+ancientmana:RegisterEvent("WORLD_MAP_UPDATE")
+ancientmana:RegisterEvent("CURRENCY_DISPLAY_UPDATE")
+ancientmana:SetScript("OnEvent", function(self, event)
+	if event == "CURRENCY_DISPLAY_UPDATE" then
+		name, amount, texturePath, earnedThisWeek, weeklyMax, totalMax, isDiscovered, quality = GetCurrencyInfo(1155)
+		ancientmana.text:SetText(amount.."/"..totalMax)
+	else
+		if GetCurrentMapAreaID() == 1033 then
+			self:Show()
+		else
+			self:Hide()
+		end
+	end
+end)
 
 -- 位置
 MinimapZoneTextButton:SetParent(Minimap)
