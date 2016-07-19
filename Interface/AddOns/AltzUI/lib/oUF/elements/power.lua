@@ -123,8 +123,9 @@ local GetDisplayPower = function(unit)
 	end
 end
 
-local Update = function(self, event, unit)
+local Update = function(self, event, unit, t)
 	if(self.unit ~= unit) then return end
+
 	local power = self.Power
 
 	if(power.PreUpdate) then power:PreUpdate(unit) end

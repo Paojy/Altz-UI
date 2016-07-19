@@ -52,8 +52,10 @@ local default_ClassClick = {
 			["Click"]			= {
 				["action"]	= 33763,	--"生命绽放",
 							},
-			["ctrl-"]		= {
-				["action"]	= 88423,	--"净化灵魂",
+		},					
+		["12"] = {
+			["Click"]			= {
+				["action"]	= 88423,	--"驱散",
 							},						
 		},
 	},
@@ -737,10 +739,8 @@ local Character_default_Settings = {
 		pvpicon = false,
 		
 		-- show value
-		demonicfuryvalue = true,
-		eclipsevalue = true,
 		runecooldown = true,
-		totemcooldown = true,
+		shamanmana = true,
 		valuefs = 12,
 		
 		--[[ share ]]--
@@ -798,7 +798,8 @@ local Character_default_Settings = {
 		autobuy = false,
 		autobuylist = {
 		["79249"] = 20, -- 清心书卷
-		}
+		},
+		itemlevels = {},
 	},
 	ActionbarOptions = {
 		cooldown = true,
@@ -876,6 +877,7 @@ local Character_default_Settings = {
 		plateauranum = 5,
 		plateaurasize = 25,
 		numberstyle = true,
+		threatcolor = true,
 		firendlyCR = false,
 		enemyCR = true,
 		myplateauralist = G.BlackList,		
@@ -940,6 +942,7 @@ local Character_default_Settings = {
 		autopet = true,
 		LFGRewards = true,
 		autoacceptproposal = true,
+		hidemapandchat = false,
 	},
 	SkinOptions = {
 		setClassColor = true,

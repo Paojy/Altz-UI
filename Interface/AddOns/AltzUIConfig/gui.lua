@@ -131,7 +131,7 @@ local function CreateOptionPage(name, title, parent, orientation, a, scroll)
 	Options.line = Options:CreateTexture(nil, "ARTWORK")
 	Options.line:SetSize(parent:GetWidth()-50, 1)
 	Options.line:SetPoint("TOP", 0, -50)
-	Options.line:SetTexture(1, 1, 1, .2)
+	Options.line:SetColorTexture(1, 1, 1, .2)
 	
 	if scroll then
 		Options.SF = CreateFrame("ScrollFrame", G.uiname..name.." ScrollFrame", Options, "UIPanelScrollFrameTemplate")
@@ -180,7 +180,7 @@ IntroOptions.text:SetText(L["小泡泡"].."\nbbs.ngacn.cc/read.php?tid=4729675\n
 IntroOptions.line = IntroOptions:CreateTexture(nil, "ARTWORK")
 IntroOptions.line:SetSize(IntroOptions:GetWidth()-30, 1)
 IntroOptions.line:SetPoint("BOTTOM", 0, 50)
-IntroOptions.line:SetTexture(1, 1, 1, .2)
+IntroOptions.line:SetColorTexture(1, 1, 1, .2)
 
 local function RotateModel(self, button)
     local rotationIncrement = 0.2
@@ -611,6 +611,10 @@ T.createcheckbutton(UFInnerframe.other, 30, 150, L["启用PVP框体"], "Unitfram
 if G.myClass == "DEATHKNIGHT" then
     T.createcheckbutton(UFInnerframe.other, 30, 180, format(L["显示冷却"], RUNES), "UnitframeOptions", "runecooldown")
 	T.createslider(UFInnerframe.other, 30, 230, L["字体大小"], "UnitframeOptions", "valuefs", 1, 8, 16, 1)
+end
+
+if G.myClass == "SHAMAN" then
+    T.createcheckbutton(UFInnerframe.other, 30, 180, L["显示发力条"], "UnitframeOptions", "shamanmana", L["显示发力条提示"])
 end
 
 --====================================================--
@@ -1699,6 +1703,7 @@ T.createcheckbutton(PlateInnerframe.common, 30, 60, L["启用"], "PlateOptions",
 T.createcheckbutton(PlateInnerframe.common, 30, 90, L["数字样式"], "PlateOptions", "numberstyle")
 T.createcheckbutton(PlateInnerframe.common, 30, 120, L["友善职业染色"], "PlateOptions", "firendlyCR")
 T.createcheckbutton(PlateInnerframe.common, 30, 150, L["敌对职业染色"], "PlateOptions", "enemyCR")
+T.createcheckbutton(PlateInnerframe.common, 30, 150, L["仇恨染色"], "PlateOptions", "threatcolor")
 T.createcheckbutton(PlateInnerframe.common, 30, 180, L["自动显示/隐藏"], "PlateOptions", "autotoggleplates", L["自动显示/隐藏提示"])
 T.createslider(PlateInnerframe.common, 30, 230, L["图标数量"], "PlateOptions", "plateauranum", 1, 3, 10, 1)
 T.createslider(PlateInnerframe.common, 30, 280, L["图标大小"], "PlateOptions", "plateaurasize", 1, 20, 40, 2)
@@ -2024,7 +2029,7 @@ T.createDR(OtherOptions.collectminimapbuttons, OtherOptions.MBCFpos, OtherOption
 OtherOptions.DividingLine = OtherOptions:CreateTexture(nil, "ARTWORK")
 OtherOptions.DividingLine:SetSize(OtherOptions:GetWidth()-50, 1)
 OtherOptions.DividingLine:SetPoint("TOP", 0, -255)
-OtherOptions.DividingLine:SetTexture(1, 1, 1, .2)
+OtherOptions.DividingLine:SetColorTexture(1, 1, 1, .2)
 
 T.createcheckbutton(OtherOptions, 30, 270, L["隐藏错误提示"], "OtherOptions", "hideerrors", L["隐藏错误提示提示"])	
 T.createcheckbutton(OtherOptions, 300, 270, L["成就截图"], "OtherOptions", "autoscreenshot", L["成就截图提示"])
@@ -2039,6 +2044,7 @@ T.createcheckbutton(OtherOptions, 300, 390, L["稀有警报"], "OtherOptions", "
 T.createcheckbutton(OtherOptions, 30, 420, L["任务栏闪动"], "OtherOptions", "flashtaskbar", L["任务栏闪动提示"])
 T.createcheckbutton(OtherOptions, 300, 420, L["随机奖励"], "OtherOptions", "LFGRewards", L["随机奖励提示"])
 T.createcheckbutton(OtherOptions, 30, 450, L["自动召宝宝"], "OtherOptions", "autopet", L["自动召宝宝提示"])
+T.createcheckbutton(OtherOptions, 300, 450, L["在战斗中隐藏小地图和聊天框"], "OtherOptions", "hidemapandchat")
 --T.createcheckbutton(OtherOptions, 300, 450, L["自动接受排本邀请"], "OtherOptions", "autoacceptproposal", L["自动接受排本邀请提示"])
 --====================================================--
 --[[               -- Skin Options --               ]]--

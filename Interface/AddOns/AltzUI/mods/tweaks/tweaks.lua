@@ -361,9 +361,9 @@ if vignettealert then
 			local left, right, top, bottom = GetObjectIconTextureCoords(icon)
 			
 			PlaySoundFile("Sound\\Interface\\RaidWarning.wav")
-			local str = "|TInterface\\MINIMAP\\OBJECTICONS:0:0:0:0:256:256:"..(left*256)..":"..(right*256)..":"..(top*256)..":"..(bottom*256).."|t"
-			RaidNotice_AddMessage(RaidWarningFrame, str..(name or "Unknown").." "..L["出现了！"], ChatTypeInfo["RAID_WARNING"])
-			print(str..name,L["出现了！"])
+			--local str = "|TInterface\\MINIMAP\\OBJECTICONS:0:0:0:0:256:256:"..(left*256)..":"..(right*256)..":"..(top*256)..":"..(bottom*256).."|t"
+			RaidNotice_AddMessage(RaidWarningFrame, (name or "Unknown").." "..L["出现了！"], ChatTypeInfo["RAID_WARNING"])
+			print(name,L["出现了！"])
 			vignettes[id] = true
 		end
 	end
