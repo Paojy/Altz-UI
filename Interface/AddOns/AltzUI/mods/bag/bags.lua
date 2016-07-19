@@ -152,12 +152,13 @@ function BFrame.bags:setUp(frameName, ...)
 	F.Reskin(bagsort)
 	bagsort:SetScript("OnEnter", function(self) 
 		GameTooltip:SetOwner(bagsort, "ANCHOR_LEFT", -10, 10)
-		GameTooltip:AddLine(L["整理背包提示"])
-		GameTooltip:Show() 
+		GameTooltip:AddLine(BAG_CLEANUP_BAGS)
+		GameTooltip:Show()
 	end)
 	bagsort:SetScript("OnLeave", function(self) GameTooltip:Hide() end)
 	bagsort:RegisterForClicks("LeftButtonDown", "RightButtonDown")
 	bagsort:SetScript('OnClick', function(self, button)
+		PlaySound("UI_BagSorting_01")
 		if button == "LeftButton" then
 			if frameName == "bag" then
 				T.BagSort(0)
@@ -227,10 +228,8 @@ function BFrame.bags:setUp(frameName, ...)
 		tab1:SetPoint("BOTTOMRIGHT", frame, "TOP", 0, 2)
 		tab1:SetHeight(24)
 		F.SetBD(tab1)
-		tab1.text = tab1:CreateFontString("button")
+		tab1.text = T.createtext(tab1, "OVERLAY", 12, "OUTLINE", "CENTER")
 		tab1.text:SetPoint("CENTER", tab1, "CENTER", 2, 0)
-		tab1.text:SetJustifyH("CENTER")
-		tab1.text:SetFont(G.norFont, 12, "OUTLINE")
 		tab1.text:SetText(BANK)
 		tab1.text:SetTextColor(1, 1, 1)
 		tab1:SetScript("OnMouseUp", function(self) 
@@ -246,10 +245,8 @@ function BFrame.bags:setUp(frameName, ...)
 		tab2:SetPoint("BOTTOMRIGHT", frame, "TOPRIGHT", 0, 2)
 		tab2:SetHeight(24)
 		F.SetBD(tab2)
-		tab2.text = tab2:CreateFontString("button")
+		tab2.text = T.createtext(tab2, "OVERLAY", 12, "OUTLINE", "CENTER")
 		tab2.text:SetPoint("CENTER", tab2, "CENTER", 2, 0)
-		tab2.text:SetJustifyH("CENTER")
-		tab2.text:SetFont(G.norFont, 12, "OUTLINE")
 		tab2.text:SetText(REAGENT_BANK)
 		tab2.text:SetTextColor(.4,.4,.4)
 		tab2:SetScript("OnMouseUp", function(self) 
@@ -324,17 +321,19 @@ local numrows, lastrowbutton, numbuttons, lastbutton = 0, ContainerFrame1Item1, 
 local banknumrows, banklastrowbutton, banknumbuttons, banklastbutton = 0, BankFrameItem1, 1, BankFrameItem1
 
 function ContainerFrame_GenerateFrame(frame, size, id)
-	frame.size = size;
-	for i=1, size, 1 do
-		local index = size - i + 1;
-		local itemButton = _G[frame:GetName().."Item"..i];
-		itemButton:SetID(index);
-		itemButton:Show();
+	frame.size = size
+	
+	for i= 1, size, 1 do
+		local itemButton = _G[frame:GetName().."Item"..i]
+		itemButton:SetID(size - i + 1)
+		itemButton:Show()
 	end
-	frame:SetID(id);
+	
+	frame:SetID(id)
 	frame:Show()
 	
 	if bank_shown == 0 then
+		BankFrameMoneyFrame:Hide()
 		banknumrows, banklastrowbutton, banknumbuttons, banklastbutton = 0, BankFrameItem1, 1, BankFrameItem1
 		for bank = 1, 28 do
 			local bankitems = _G["BankFrameItem"..bank]
@@ -345,12 +344,17 @@ function ContainerFrame_GenerateFrame(frame, size, id)
 			bankitems:SetFrameLevel(2)
 			skin(bankitems)
 			
-			BankFrameMoneyFrame:Hide()
+			--if not bankitems.idtext then
+				--bankitems.idtext = T.createtext(bankitems, "OVERLAY", 10, "OUTLINE", "CENTER")
+				--bankitems.idtext:SetPoint("TOP")
+				--bankitems.idtext:SetText("B/"..bank)
+			--end
+			
 			if bank==1 then
 				bankitems:SetPoint("TOPLEFT", _G[G.uiname.."bank"], "TOPLEFT", 10, -30)
 				banklastrowbutton = bankitems
 				banklastbutton = bankitems
-			elseif banknumbuttons==config.bank.buttons_per_row then
+			elseif banknumbuttons == config.bank.buttons_per_row then
 				bankitems:SetPoint("TOP", banklastrowbutton, "BOTTOM", 0, -config.spacing)
 				banklastrowbutton = bankitems
 				banknumrows = banknumrows + 1
@@ -359,14 +363,16 @@ function ContainerFrame_GenerateFrame(frame, size, id)
 				bankitems:SetPoint("LEFT", banklastbutton, "RIGHT", config.spacing, 0)
 				banknumbuttons = banknumbuttons + 1
 			end
-		banklastbutton = bankitems
+			banklastbutton = bankitems
 		end
 		bank_shown = 1
 	end
-		
-	if ( id < 5 ) then
-		local slots = GetContainerNumSlots(id)
 
+	if  id >= 0 and id <= 4 then
+		local slots = GetContainerNumSlots(id)
+		
+		
+		
 		for item = slots, 1, -1 do
 			local itemframes = _G["ContainerFrame"..(id+1).."Item"..item]
 			itemframes:ClearAllPoints()
@@ -375,6 +381,12 @@ function ContainerFrame_GenerateFrame(frame, size, id)
 			itemframes:SetFrameStrata("HIGH")
 			itemframes:SetFrameLevel(2)
 			skin(itemframes)
+			
+			--if not itemframes.idtext then
+				--itemframes.idtext = T.createtext(itemframes, "OVERLAY", 10, "OUTLINE", "CENTER")
+				--itemframes.idtext:SetPoint("TOP")
+				--itemframes.idtext:SetText(id.."/"..item)
+			--end
 			
 			if id == 0 and item == 16 then
 				numrows, lastrowbutton, numbuttons, lastbutton = 0, ContainerFrame1Item1, 1, ContainerFrame1Item1
@@ -397,6 +409,7 @@ function ContainerFrame_GenerateFrame(frame, size, id)
 		
 		BackpackTokenFrameToken1:ClearAllPoints()
 		BackpackTokenFrameToken1:SetPoint("BOTTOMLEFT", _G[G.uiname.."bag"], "BOTTOMLEFT", 0, 8)
+		
 		for i = 1, 3 do
 			_G["BackpackTokenFrameToken"..i]:SetFrameStrata("TOOLTIP")
 			_G["BackpackTokenFrameToken"..i]:SetFrameLevel(5)
@@ -408,7 +421,9 @@ function ContainerFrame_GenerateFrame(frame, size, id)
 				_G["BackpackTokenFrameToken"..i]:SetPoint("LEFT", _G["BackpackTokenFrameToken"..(i-1)], "RIGHT", 10, 0)
 			end
 		end
+		
 	else
+	
 		local slots = GetContainerNumSlots(id)
 		for item = slots, 1, -1 do
 			local itemframes = _G["ContainerFrame"..(id+1).."Item"..item]
@@ -418,7 +433,13 @@ function ContainerFrame_GenerateFrame(frame, size, id)
 			itemframes:SetFrameStrata("HIGH")
 			itemframes:SetFrameLevel(2)
 			skin(itemframes)
-				
+			
+			--if not itemframes.idtext then
+				--itemframes.idtext = T.createtext(itemframes, "OVERLAY", 10, "OUTLINE", "CENTER")
+				--itemframes.idtext:SetPoint("TOP")
+				--itemframes.idtext:SetText(id.."/"..item)
+			--end
+			
 			if banknumbuttons == config.bank.buttons_per_row then
 				itemframes:SetPoint("TOP", banklastrowbutton, "BOTTOM", 0, -config.spacing)
 				banklastrowbutton = itemframes
@@ -430,6 +451,7 @@ function ContainerFrame_GenerateFrame(frame, size, id)
 			end
 			banklastbutton = itemframes
 		end
+		
 		_G[G.uiname.."bank"]:SetHeight(((config.bank.button_size+config.spacing)*(banknumrows+1)+40)-config.spacing)
 	end
 	
