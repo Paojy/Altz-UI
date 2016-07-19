@@ -158,6 +158,7 @@ L["我不想看到这些提示"] = "I dont want to see them"
 L["隐藏提示的提示"] = "You can Redisplay these tips in GUI → Other"
 
 L["TIPS"] = {
+	"Altz UI can hide minimap and chatframe when you enter a combat and show them when you leave.GUI → Other",
 	"click clock on the minimap to open the calendar",
 	"How show class colors on raidframs? GUI → UnitFrames → Style → Classic Theme",
 	"How to display the independent castbar ? GUI → Unit Frames → Castbar → Independent player castbar",
