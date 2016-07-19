@@ -42,7 +42,6 @@ tinsert(C.themes["Aurora"], function()
 		slot:SetPushedTexture("")
 		slot.icon:SetTexCoord(.08, .92, .08, .92)
 
-		border:SetTexture(C.media.backdrop)
 		border:SetPoint("TOPLEFT", -1, 1)
 		border:SetPoint("BOTTOMRIGHT", 1, -1)
 		border:SetDrawLayer("BACKGROUND")
@@ -76,10 +75,15 @@ tinsert(C.themes["Aurora"], function()
 	hooksecurefunc("PaperDollItemSlotButton_Update", function(button)
 		-- also fires for bag slots, we don't want that
 		if button.popoutButton then
+			button.IconBorder:SetTexture(C.media.backdrop)
 			button.icon:SetShown(button.hasItem)
 			colourPopout(button.popoutButton)
 		end
 	end)
+
+	-- [[ Stats pane ]]
+
+	CharacterStatsPane.ClassBackground:Hide()
 
 	-- [[ Sidebar tabs ]]
 
@@ -94,10 +98,10 @@ tinsert(C.themes["Aurora"], function()
 			end
 		end
 
-		tab.Highlight:SetTexture(r, g, b, .2)
+		tab.Highlight:SetColorTexture(r, g, b, .2)
 		tab.Highlight:SetPoint("TOPLEFT", 3, -4)
 		tab.Highlight:SetPoint("BOTTOMRIGHT", -1, 0)
-		tab.Hider:SetTexture(.3, .3, .3, .4)
+		tab.Hider:SetColorTexture(.3, .3, .3, .4)
 		tab.TabBg:SetAlpha(0)
 
 		select(2, tab:GetRegions()):ClearAllPoints()
@@ -145,9 +149,9 @@ tinsert(C.themes["Aurora"], function()
 				_G["PaperDollEquipmentManagerPaneButton"..i.."BgMiddle"]:Hide()
 				_G["PaperDollEquipmentManagerPaneButton"..i.."BgBottom"]:SetAlpha(0)
 
-				bu.HighlightBar:SetTexture(r, g, b, .1)
+				bu.HighlightBar:SetColorTexture(r, g, b, .1)
 				bu.HighlightBar:SetDrawLayer("BACKGROUND")
-				bu.SelectedBar:SetTexture(r, g, b, .2)
+				bu.SelectedBar:SetColorTexture(r, g, b, .2)
 				bu.SelectedBar:SetDrawLayer("BACKGROUND")
 
 				bd:Hide()

@@ -24,8 +24,9 @@ tinsert(C.themes["Aurora"], function()
 		F.Reskin(InterfaceOptionsFrameDefaults)
 		F.Reskin(InterfaceOptionsFrameOkay)
 		F.Reskin(InterfaceOptionsFrameCancel)
+		F.Reskin(InterfaceOptionsSocialPanelRedockChat)
 		F.Reskin(InterfaceOptionsSocialPanelTwitterLoginButton)
-		F.Reskin(InterfaceOptionsHelpPanelResetTutorials)
+		F.Reskin(InterfaceOptionsDisplayPanelResetTutorials)
 
 		InterfaceOptionsFrameOkay:SetPoint("BOTTOMRIGHT", InterfaceOptionsFrameCancel, "BOTTOMLEFT", -1, 0)
 
@@ -36,19 +37,99 @@ tinsert(C.themes["Aurora"], function()
 		local line = InterfaceOptionsFrame:CreateTexture(nil, "ARTWORK")
 		line:SetSize(1, 546)
 		line:SetPoint("LEFT", 205, 10)
-		line:SetTexture(1, 1, 1, .2)
+		line:SetColorTexture(1, 1, 1, .2)
 
-		local checkboxes = {"InterfaceOptionsControlsPanelStickyTargeting", "InterfaceOptionsControlsPanelAutoDismount", "InterfaceOptionsControlsPanelAutoClearAFK", "InterfaceOptionsControlsPanelBlockTrades", "InterfaceOptionsControlsPanelBlockGuildInvites", "InterfaceOptionsControlsPanelBlockChatChannelInvites", "InterfaceOptionsControlsPanelLootAtMouse", "InterfaceOptionsControlsPanelAutoLootCorpse", "InterfaceOptionsControlsPanelAutoOpenLootHistory", "InterfaceOptionsControlsPanelInteractOnLeftClick", "InterfaceOptionsControlsPanelReverseCleanUpBags", "InterfaceOptionsControlsPanelReverseNewLoot", "InterfaceOptionsCombatPanelAttackOnAssist", "InterfaceOptionsCombatPanelStopAutoAttack", "InterfaceOptionsNamesPanelUnitNameplatesNameplateClassColors", "InterfaceOptionsCombatPanelTargetOfTarget", "InterfaceOptionsCombatPanelShowSpellAlerts", "InterfaceOptionsCombatPanelReducedLagTolerance", "InterfaceOptionsCombatPanelActionButtonUseKeyDown", "InterfaceOptionsCombatPanelEnemyCastBarsOnPortrait", "InterfaceOptionsCombatPanelEnemyCastBarsOnNameplates", "InterfaceOptionsCombatPanelEnemyCastBarsOnOnlyTargetNameplates", "InterfaceOptionsCombatPanelEnemyCastBarsNameplateSpellNames", "InterfaceOptionsCombatPanelAutoSelfCast", "InterfaceOptionsCombatPanelLossOfControl", "InterfaceOptionsDisplayPanelShowCloak", "InterfaceOptionsDisplayPanelShowHelm", "InterfaceOptionsDisplayPanelShowAggroPercentage", "InterfaceOptionsDisplayPanelPlayAggroSounds", "InterfaceOptionsDisplayPanelShowSpellPointsAvg", "InterfaceOptionsDisplayPanelShowFreeBagSpace", "InterfaceOptionsDisplayPanelCinematicSubtitles", "InterfaceOptionsDisplayPanelRotateMinimap", "InterfaceOptionsDisplayPanelShowAccountAchievments", "InterfaceOptionsObjectivesPanelAutoQuestTracking", "InterfaceOptionsObjectivesPanelMapFade", "InterfaceOptionsSocialPanelProfanityFilter", "InterfaceOptionsSocialPanelSpamFilter", "InterfaceOptionsSocialPanelChatBubbles", "InterfaceOptionsSocialPanelPartyChat", "InterfaceOptionsSocialPanelChatHoverDelay", "InterfaceOptionsSocialPanelGuildMemberAlert", "InterfaceOptionsSocialPanelChatMouseScroll", "InterfaceOptionsSocialPanelEnableTwitter", "InterfaceOptionsSocialPanelWholeChatWindowClickable", "InterfaceOptionsActionBarsPanelBottomLeft", "InterfaceOptionsActionBarsPanelBottomRight", "InterfaceOptionsActionBarsPanelRight", "InterfaceOptionsActionBarsPanelRightTwo", "InterfaceOptionsActionBarsPanelLockActionBars", "InterfaceOptionsActionBarsPanelAlwaysShowActionBars", "InterfaceOptionsActionBarsPanelSecureAbilityToggle", "InterfaceOptionsActionBarsPanelCountdownCooldowns", "InterfaceOptionsNamesPanelMyName", "InterfaceOptionsNamesPanelMinus", "InterfaceOptionsNamesPanelFriendlyPlayerNames", "InterfaceOptionsNamesPanelFriendlyPets", "InterfaceOptionsNamesPanelFriendlyGuardians", "InterfaceOptionsNamesPanelFriendlyTotems", "InterfaceOptionsNamesPanelUnitNameplatesFriends", "InterfaceOptionsNamesPanelUnitNameplatesFriendlyPets", "InterfaceOptionsNamesPanelUnitNameplatesFriendlyGuardians", "InterfaceOptionsNamesPanelUnitNameplatesFriendlyTotems", "InterfaceOptionsNamesPanelGuilds", "InterfaceOptionsNamesPanelGuildTitles", "InterfaceOptionsNamesPanelTitles", "InterfaceOptionsNamesPanelNonCombatCreature", "InterfaceOptionsNamesPanelEnemyPlayerNames", "InterfaceOptionsNamesPanelEnemyPets", "InterfaceOptionsNamesPanelEnemyGuardians", "InterfaceOptionsNamesPanelEnemyTotems", "InterfaceOptionsNamesPanelUnitNameplatesEnemies", "InterfaceOptionsNamesPanelUnitNameplatesEnemyPets", "InterfaceOptionsNamesPanelUnitNameplatesEnemyGuardians", "InterfaceOptionsNamesPanelUnitNameplatesEnemyTotems", "InterfaceOptionsNamesPanelUnitNameplatesEnemyMinus", "InterfaceOptionsCombatTextPanelTargetDamage", "InterfaceOptionsCombatTextPanelPeriodicDamage", "InterfaceOptionsCombatTextPanelPetDamage", "InterfaceOptionsCombatTextPanelHealing", "InterfaceOptionsCombatTextPanelHealingAbsorbTarget", "InterfaceOptionsCombatTextPanelTargetEffects", "InterfaceOptionsCombatTextPanelOtherTargetEffects", "InterfaceOptionsCombatTextPanelEnableFCT", "InterfaceOptionsCombatTextPanelDodgeParryMiss", "InterfaceOptionsCombatTextPanelDamageReduction", "InterfaceOptionsCombatTextPanelRepChanges", "InterfaceOptionsCombatTextPanelReactiveAbilities", "InterfaceOptionsCombatTextPanelFriendlyHealerNames", "InterfaceOptionsCombatTextPanelCombatState", "InterfaceOptionsCombatTextPanelHealingAbsorbSelf", "InterfaceOptionsCombatTextPanelComboPoints", "InterfaceOptionsCombatTextPanelLowManaHealth", "InterfaceOptionsCombatTextPanelEnergyGains", "InterfaceOptionsCombatTextPanelPeriodicEnergyGains", "InterfaceOptionsCombatTextPanelHonorGains", "InterfaceOptionsCombatTextPanelAuras", "InterfaceOptionsCombatTextPanelPetBattle", "InterfaceOptionsStatusTextPanelPlayer", "InterfaceOptionsStatusTextPanelPet", "InterfaceOptionsStatusTextPanelParty", "InterfaceOptionsStatusTextPanelTarget", "InterfaceOptionsStatusTextPanelAlternateResource", "InterfaceOptionsStatusTextPanelXP", "InterfaceOptionsUnitFramePanelPartyPets", "InterfaceOptionsUnitFramePanelArenaEnemyFrames", "InterfaceOptionsUnitFramePanelArenaEnemyCastBar", "InterfaceOptionsUnitFramePanelArenaEnemyPets", "InterfaceOptionsUnitFramePanelFullSizeFocusFrame", "InterfaceOptionsBuffsPanelDispellableDebuffs", "InterfaceOptionsBuffsPanelCastableBuffs", "InterfaceOptionsBuffsPanelConsolidateBuffs", "InterfaceOptionsBuffsPanelShowAllEnemyDebuffs", "InterfaceOptionsBattlenetPanelOnlineFriends", "InterfaceOptionsBattlenetPanelOfflineFriends", "InterfaceOptionsBattlenetPanelBroadcasts", "InterfaceOptionsBattlenetPanelFriendRequests", "InterfaceOptionsBattlenetPanelShowToastWindow", "InterfaceOptionsCameraPanelFollowTerrain", "InterfaceOptionsCameraPanelHeadBob", "InterfaceOptionsCameraPanelWaterCollision", "InterfaceOptionsCameraPanelSmartPivot", "InterfaceOptionsMousePanelInvertMouse", "InterfaceOptionsMousePanelEnableMouseSpeed", "InterfaceOptionsMousePanelClickToMove", "InterfaceOptionsMousePanelWoWMouse", "InterfaceOptionsHelpPanelShowTutorials", "InterfaceOptionsHelpPanelEnhancedTooltips", "InterfaceOptionsHelpPanelShowLuaErrors", "InterfaceOptionsAccessibilityPanelMovePad", "InterfaceOptionsAccessibilityPanelColorblindMode"}
+		local checkboxes = {
+			"InterfaceOptionsControlsPanelStickyTargeting",
+			"InterfaceOptionsControlsPanelAutoDismount",
+			"InterfaceOptionsControlsPanelAutoClearAFK",
+			"InterfaceOptionsControlsPanelAutoLootCorpse",
+			"InterfaceOptionsControlsPanelInteractOnLeftClick",
+			"InterfaceOptionsControlsPanelLootAtMouse",
+			"InterfaceOptionsCombatPanelTargetOfTarget",
+			"InterfaceOptionsCombatPanelFlashLowHealthWarning",
+			"InterfaceOptionsCombatPanelLossOfControl",
+			"InterfaceOptionsCombatPanelEnableFloatingCombatText",
+			"InterfaceOptionsCombatPanelAutoSelfCast",
+			"InterfaceOptionsDisplayPanelRotateMinimap",
+			"InterfaceOptionsDisplayPanelAJAlerts",
+			"InterfaceOptionsDisplayPanelShowTutorials",
+			"InterfaceOptionsSocialPanelProfanityFilter",
+			"InterfaceOptionsSocialPanelSpamFilter",
+			"InterfaceOptionsSocialPanelGuildMemberAlert",
+			"InterfaceOptionsSocialPanelBlockTrades",
+			"InterfaceOptionsSocialPanelBlockGuildInvites",
+			"InterfaceOptionsSocialPanelBlockChatChannelInvites",
+			"InterfaceOptionsSocialPanelShowAccountAchievments",
+			"InterfaceOptionsSocialPanelOnlineFriends",
+			"InterfaceOptionsSocialPanelOfflineFriends",
+			"InterfaceOptionsSocialPanelBroadcasts",
+			"InterfaceOptionsSocialPanelFriendRequests",
+			"InterfaceOptionsSocialPanelShowToastWindow",
+			"InterfaceOptionsSocialPanelEnableTwitter",
+			"InterfaceOptionsActionBarsPanelBottomLeft",
+			"InterfaceOptionsActionBarsPanelBottomRight",
+			"InterfaceOptionsActionBarsPanelRight",
+			"InterfaceOptionsActionBarsPanelRightTwo",
+			"InterfaceOptionsActionBarsPanelLockActionBars",
+			"InterfaceOptionsActionBarsPanelAlwaysShowActionBars",
+			"InterfaceOptionsActionBarsPanelCountdownCooldowns",
+			"InterfaceOptionsNamesPanelMyName",
+			"InterfaceOptionsNamesPanelNonCombatCreature",
+			"InterfaceOptionsNamesPanelFriendlyPlayerNames",
+			"InterfaceOptionsNamesPanelFriendlyMinions",
+			"InterfaceOptionsNamesPanelEnemyPlayerNames",
+			"InterfaceOptionsNamesPanelEnemyMinions",
+			"InterfaceOptionsNamesPanelUnitNameplatesPersonalResource",
+			"InterfaceOptionsNamesPanelUnitNameplatesPersonalResourceOnEnemy",
+			"InterfaceOptionsNamesPanelUnitNameplatesMakeLarger",
+			"InterfaceOptionsNamesPanelUnitNameplatesShowAll",
+			"InterfaceOptionsNamesPanelUnitNameplatesAggroFlash",
+			"InterfaceOptionsNamesPanelUnitNameplatesFriendlyMinions",
+			"InterfaceOptionsNamesPanelUnitNameplatesEnemyMinions",
+			"InterfaceOptionsNamesPanelUnitNameplatesEnemyMinus",
+			"InterfaceOptionsCameraPanelWaterCollision",
+			"InterfaceOptionsMousePanelInvertMouse",
+			"InterfaceOptionsMousePanelEnableMouseSpeed",
+			"InterfaceOptionsMousePanelClickToMove",
+			"InterfaceOptionsAccessibilityPanelMovePad",
+			"InterfaceOptionsAccessibilityPanelCinematicSubtitles",
+			"InterfaceOptionsAccessibilityPanelColorblindMode"
+		}
 		for i = 1, #checkboxes do
 			F.ReskinCheck(_G[checkboxes[i]])
 		end
 
-		local dropdowns = {"InterfaceOptionsControlsPanelAutoLootKeyDropDown", "InterfaceOptionsCombatPanelFocusCastKeyDropDown", "InterfaceOptionsCombatPanelSelfCastKeyDropDown", "InterfaceOptionsCombatPanelLossOfControlFullDropDown", "InterfaceOptionsCombatPanelLossOfControlSilenceDropDown", "InterfaceOptionsCombatPanelLossOfControlInterruptDropDown", "InterfaceOptionsCombatPanelLossOfControlDisarmDropDown", "InterfaceOptionsCombatPanelLossOfControlRootDropDown", "InterfaceOptionsDisplayPanelOutlineDropDown", "InterfaceOptionsObjectivesPanelQuestSorting", "InterfaceOptionsSocialPanelChatStyle", "InterfaceOptionsSocialPanelTimestamps", "InterfaceOptionsSocialPanelWhisperMode", "InterfaceOptionsSocialPanelBnWhisperMode", "InterfaceOptionsActionBarsPanelPickupActionKeyDropDown", "InterfaceOptionsNamesPanelNPCNamesDropDown", "InterfaceOptionsNamesPanelUnitNameplatesMotionDropDown", "InterfaceOptionsCombatTextPanelTargetModeDropDown", "InterfaceOptionsCombatTextPanelFCTDropDown", "InterfaceOptionsStatusTextPanelDisplayDropDown", "InterfaceOptionsCameraPanelStyleDropDown", "InterfaceOptionsMousePanelClickMoveStyleDropDown", "InterfaceOptionsAccessibilityPanelColorFilterDropDown"}
+		local dropdowns = {
+			"InterfaceOptionsControlsPanelAutoLootKeyDropDown",
+			"InterfaceOptionsCombatPanelFocusCastKeyDropDown",
+			"InterfaceOptionsCombatPanelSelfCastKeyDropDown",
+			"InterfaceOptionsDisplayPanelOutlineDropDown",
+			"InterfaceOptionsDisplayPanelSelfHighlightDropDown",
+			"InterfaceOptionsDisplayPanelDisplayDropDown",
+			"InterfaceOptionsDisplayPanelChatBubblesDropDown",
+			"InterfaceOptionsSocialPanelChatStyle",
+			"InterfaceOptionsSocialPanelTimestamps",
+			"InterfaceOptionsSocialPanelWhisperMode",
+			"InterfaceOptionsActionBarsPanelPickupActionKeyDropDown",
+			"InterfaceOptionsNamesPanelNPCNamesDropDown",
+			"InterfaceOptionsNamesPanelUnitNameplatesMotionDropDown",
+			"InterfaceOptionsCameraPanelStyleDropDown",
+			"InterfaceOptionsMousePanelClickMoveStyleDropDown",
+			"InterfaceOptionsAccessibilityPanelColorFilterDropDown"
+		}
 		for i = 1, #dropdowns do
 			F.ReskinDropDown(_G[dropdowns[i]])
 		end
 
-		local sliders = {"InterfaceOptionsCombatPanelSpellAlertOpacitySlider", "InterfaceOptionsCombatPanelMaxSpellStartRecoveryOffset", "InterfaceOptionsBattlenetPanelToastDurationSlider", "InterfaceOptionsCameraPanelMaxDistanceSlider", "InterfaceOptionsCameraPanelFollowSpeedSlider", "InterfaceOptionsMousePanelMouseSensitivitySlider", "InterfaceOptionsMousePanelMouseLookSpeedSlider"}
+		local sliders = {
+			"InterfaceOptionsCombatPanelSpellAlertOpacitySlider",
+			"InterfaceOptionsCameraPanelMaxDistanceSlider",
+			"InterfaceOptionsCameraPanelFollowSpeedSlider",
+			"InterfaceOptionsMousePanelMouseSensitivitySlider",
+			"InterfaceOptionsMousePanelMouseLookSpeedSlider",
+			"InterfaceOptionsAccessibilityPanelColorblindStrengthSlider"
+		}
 		for i = 1, #sliders do
 			F.ReskinSlider(_G[sliders[i]])
 		end
@@ -56,7 +137,31 @@ tinsert(C.themes["Aurora"], function()
 		if IsAddOnLoaded("Blizzard_CompactRaidFrames") then
 			CompactUnitFrameProfilesGeneralOptionsFrameAutoActivateBG:Hide()
 
-			local boxes = {CompactUnitFrameProfilesRaidStylePartyFrames, CompactUnitFrameProfilesGeneralOptionsFrameKeepGroupsTogether, CompactUnitFrameProfilesGeneralOptionsFrameHorizontalGroups, CompactUnitFrameProfilesGeneralOptionsFrameDisplayIncomingHeals, CompactUnitFrameProfilesGeneralOptionsFrameDisplayPowerBar, CompactUnitFrameProfilesGeneralOptionsFrameDisplayAggroHighlight, CompactUnitFrameProfilesGeneralOptionsFrameUseClassColors, CompactUnitFrameProfilesGeneralOptionsFrameDisplayPets, CompactUnitFrameProfilesGeneralOptionsFrameDisplayMainTankAndAssist, CompactUnitFrameProfilesGeneralOptionsFrameDisplayBorder, CompactUnitFrameProfilesGeneralOptionsFrameShowDebuffs, CompactUnitFrameProfilesGeneralOptionsFrameDisplayOnlyDispellableDebuffs, CompactUnitFrameProfilesGeneralOptionsFrameAutoActivate2Players, CompactUnitFrameProfilesGeneralOptionsFrameAutoActivate3Players, CompactUnitFrameProfilesGeneralOptionsFrameAutoActivate5Players, CompactUnitFrameProfilesGeneralOptionsFrameAutoActivate10Players, CompactUnitFrameProfilesGeneralOptionsFrameAutoActivate15Players, CompactUnitFrameProfilesGeneralOptionsFrameAutoActivate25Players, CompactUnitFrameProfilesGeneralOptionsFrameAutoActivate40Players, CompactUnitFrameProfilesGeneralOptionsFrameAutoActivateSpec1, CompactUnitFrameProfilesGeneralOptionsFrameAutoActivateSpec2, CompactUnitFrameProfilesGeneralOptionsFrameAutoActivatePvP, CompactUnitFrameProfilesGeneralOptionsFrameAutoActivatePvE}
+			local boxes = {
+				CompactUnitFrameProfilesRaidStylePartyFrames,
+				CompactUnitFrameProfilesGeneralOptionsFrameKeepGroupsTogether,
+				CompactUnitFrameProfilesGeneralOptionsFrameHorizontalGroups,
+				CompactUnitFrameProfilesGeneralOptionsFrameDisplayIncomingHeals,
+				CompactUnitFrameProfilesGeneralOptionsFrameDisplayPowerBar,
+				CompactUnitFrameProfilesGeneralOptionsFrameDisplayAggroHighlight,
+				CompactUnitFrameProfilesGeneralOptionsFrameUseClassColors,
+				CompactUnitFrameProfilesGeneralOptionsFrameDisplayPets,
+				CompactUnitFrameProfilesGeneralOptionsFrameDisplayMainTankAndAssist,
+				CompactUnitFrameProfilesGeneralOptionsFrameDisplayBorder,
+				CompactUnitFrameProfilesGeneralOptionsFrameShowDebuffs,
+				CompactUnitFrameProfilesGeneralOptionsFrameDisplayOnlyDispellableDebuffs,
+				CompactUnitFrameProfilesGeneralOptionsFrameAutoActivate2Players,
+				CompactUnitFrameProfilesGeneralOptionsFrameAutoActivate3Players,
+				CompactUnitFrameProfilesGeneralOptionsFrameAutoActivate5Players,
+				CompactUnitFrameProfilesGeneralOptionsFrameAutoActivate10Players,
+				CompactUnitFrameProfilesGeneralOptionsFrameAutoActivate15Players,
+				CompactUnitFrameProfilesGeneralOptionsFrameAutoActivate25Players,
+				CompactUnitFrameProfilesGeneralOptionsFrameAutoActivate40Players,
+				CompactUnitFrameProfilesGeneralOptionsFrameAutoActivateSpec1,
+				CompactUnitFrameProfilesGeneralOptionsFrameAutoActivateSpec2,
+				CompactUnitFrameProfilesGeneralOptionsFrameAutoActivatePvP,
+				CompactUnitFrameProfilesGeneralOptionsFrameAutoActivatePvE
+			}
 
 			for _, box in next, boxes do
 				F.ReskinCheck(box)

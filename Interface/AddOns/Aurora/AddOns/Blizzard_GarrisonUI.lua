@@ -7,7 +7,7 @@ C.themes["Blizzard_GarrisonUI"] = function()
 
 	local GarrisonBuildingFrame = GarrisonBuildingFrame
 
-	for i = 1, 18 do
+	for i = 1, 14 do
 		select(i, GarrisonBuildingFrame:GetRegions()):Hide()
 	end
 
@@ -43,7 +43,7 @@ C.themes["Blizzard_GarrisonUI"] = function()
 		tab.bg = bg
 
 		local hl = tab:GetHighlightTexture()
-		hl:SetTexture(r, g, b, .1)
+		hl:SetColorTexture(r, g, b, .1)
 		hl:ClearAllPoints()
 		hl:SetPoint("TOPLEFT", bg, 1, -1)
 		hl:SetPoint("BOTTOMRIGHT", bg, -1, 1)
@@ -72,13 +72,13 @@ C.themes["Blizzard_GarrisonUI"] = function()
 				bg:SetFrameLevel(button:GetFrameLevel()-1)
 				F.CreateBD(bg, .25)
 
-				button.SelectedBG:SetTexture(r, g, b, .2)
+				button.SelectedBG:SetColorTexture(r, g, b, .2)
 				button.SelectedBG:ClearAllPoints()
 				button.SelectedBG:SetPoint("TOPLEFT", bg, 1, -1)
 				button.SelectedBG:SetPoint("BOTTOMRIGHT", bg, -1, 1)
 
 				local hl = button:GetHighlightTexture()
-				hl:SetTexture(r, g, b, .1)
+				hl:SetColorTexture(r, g, b, .1)
 				hl:ClearAllPoints()
 				hl:SetPoint("TOPLEFT", bg, 1, -1)
 				hl:SetPoint("BOTTOMRIGHT", bg, -1, 1)
@@ -274,7 +274,7 @@ C.themes["Blizzard_GarrisonUI"] = function()
 
 		local selectedTex = bg:CreateTexture(nil, "BACKGROUND")
 		selectedTex:SetAllPoints()
-		selectedTex:SetTexture(r, g, b, .2)
+		selectedTex:SetColorTexture(r, g, b, .2)
 		selectedTex:Hide()
 		tab.selectedTex = selectedTex
 
@@ -376,7 +376,7 @@ C.themes["Blizzard_GarrisonUI"] = function()
 
 	local GarrisonMissionFrame = GarrisonMissionFrame
 
-	for i = 1, 18 do
+	for i = 1, 14 do
 		select(i, GarrisonMissionFrame:GetRegions()):Hide()
 	end
 
@@ -514,7 +514,7 @@ C.themes["Blizzard_GarrisonUI"] = function()
 		local overlay = MissionPage.Stage:CreateTexture()
 		overlay:SetDrawLayer("ARTWORK", 3)
 		overlay:SetAllPoints(bg)
-		overlay:SetTexture(0, 0, 0, .5)
+		overlay:SetColorTexture(0, 0, 0, .5)
 
 		local iconbg = select(16, MissionPage:GetRegions())
 		iconbg:ClearAllPoints()
@@ -532,14 +532,14 @@ C.themes["Blizzard_GarrisonUI"] = function()
 	local function onAssignFollowerToMission(self, frame)
 		local portrait = frame.PortraitFrame
 
-		portrait.LevelBorder:SetTexture(0, 0, 0, .5)
+		portrait.LevelBorder:SetColorTexture(0, 0, 0, .5)
 		portrait.LevelBorder:SetSize(44, 11)
 	end
 
 	local function onRemoveFollowerFromMission(self, frame)
 		local portrait = frame.PortraitFrame
 
-		portrait.LevelBorder:SetTexture(0, 0, 0, .5)
+		portrait.LevelBorder:SetColorTexture(0, 0, 0, .5)
 		portrait.LevelBorder:SetSize(44, 11)
 
 		if portrait.squareBG then portrait.squareBG:SetBackdropBorderColor(0, 0, 0) end
@@ -601,19 +601,6 @@ C.themes["Blizzard_GarrisonUI"] = function()
 		bg:SetPoint("BOTTOMRIGHT", 0, 1)
 	end
 
-	-- Portraits
-
-	hooksecurefunc("GarrisonMissionFrame_SetFollowerPortrait", function(portraitFrame, followerInfo)
-		if not portraitFrame.styled then
-			F.ReskinGarrisonPortrait(portraitFrame)
-			portraitFrame.styled = true
-		end
-
-		local color = ITEM_QUALITY_COLORS[followerInfo.quality]
-
-		portraitFrame.squareBG:SetBackdropBorderColor(color.r, color.g, color.b)
-	end)
-
 	-- Mechanic tooltip
 
 	if AuroraConfig.tooltips then
@@ -652,7 +639,7 @@ C.themes["Blizzard_GarrisonUI"] = function()
 
 	local GarrisonRecruitSelectFrame = GarrisonRecruitSelectFrame
 
-	for i = 1, 18 do
+	for i = 1, 14 do
 		select(i, GarrisonRecruitSelectFrame:GetRegions()):Hide()
 	end
 	GarrisonRecruitSelectFrame.TitleText:Show()
@@ -733,19 +720,7 @@ C.themes["Blizzard_GarrisonUI"] = function()
 			local portrait = button.PortraitFrame
 
 			if not button.restyled then
-				button.BG:Hide()
-				button.Selection:SetTexture("")
-				button.AbilitiesBG:SetTexture("")
-
 				F.CreateBD(button, .25)
-
-				button.BusyFrame:SetAllPoints()
-
-				local hl = button:GetHighlightTexture()
-				hl:SetTexture(r, g, b, .1)
-				hl:ClearAllPoints()
-				hl:SetPoint("TOPLEFT", 1, -1)
-				hl:SetPoint("BOTTOMRIGHT", -1, 1)
 
 				if portrait then
 					F.ReskinGarrisonPortrait(portrait)
@@ -754,12 +729,6 @@ C.themes["Blizzard_GarrisonUI"] = function()
 				end
 
 				button.restyled = true
-			end
-
-			if button.Selection:IsShown() then
-				button:SetBackdropColor(r, g, b, .2)
-			else
-				button:SetBackdropColor(0, 0, 0, .25)
 			end
 
 			if portrait then

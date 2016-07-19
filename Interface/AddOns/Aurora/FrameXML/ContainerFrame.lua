@@ -52,7 +52,6 @@ tinsert(C.themes["Aurora"], function()
 			newItemTexture:SetDrawLayer("BACKGROUND")
 			newItemTexture:SetSize(1, 1)
 
-			border:SetTexture(C.media.backdrop)
 			border:SetPoint("TOPLEFT", -1, 1)
 			border:SetPoint("BOTTOMRIGHT", 1, -1)
 			border:SetDrawLayer("BACKGROUND", 1)
@@ -96,6 +95,7 @@ tinsert(C.themes["Aurora"], function()
 		for i = 1, frame.size do
 			local itemButton = _G[name.."Item"..i]
 
+			itemButton.IconBorder:SetTexture(C.media.backdrop)
 			if _G[name.."Item"..i.."IconQuestTexture"]:IsShown() then
 				itemButton.IconBorder:SetVertexColor(1, 1, 0)
 			end

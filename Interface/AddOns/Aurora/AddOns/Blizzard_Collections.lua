@@ -16,11 +16,13 @@ C.themes["Blizzard_Collections"] = function()
 	F.ReskinTab(CollectionsJournalTab2)
 	F.ReskinTab(CollectionsJournalTab3)
 	F.ReskinTab(CollectionsJournalTab4)
+	F.ReskinTab(CollectionsJournalTab5)
 	F.ReskinClose(CollectionsJournalCloseButton)
 
 	CollectionsJournalTab2:SetPoint("LEFT", CollectionsJournalTab1, "RIGHT", -15, 0)
 	CollectionsJournalTab3:SetPoint("LEFT", CollectionsJournalTab2, "RIGHT", -15, 0)
 	CollectionsJournalTab4:SetPoint("LEFT", CollectionsJournalTab3, "RIGHT", -15, 0)
+	CollectionsJournalTab5:SetPoint("LEFT", CollectionsJournalTab4, "RIGHT", -15, 0)
 
 	-- [[ Mounts and pets ]]
 
@@ -457,7 +459,7 @@ C.themes["Blizzard_Collections"] = function()
 			button.level:SetPoint("BOTTOM", 0, 1)
 
 			local newLevelBg = button:CreateTexture(nil, "OVERLAY")
-			newLevelBg:SetTexture(0, 0, 0, .5)
+			newLevelBg:SetColorTexture(0, 0, 0, .5)
 			newLevelBg:SetPoint("BOTTOMLEFT", button, "BOTTOMLEFT", 4, 5)
 			newLevelBg:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", -4, 5)
 			newLevelBg:SetHeight(11)
@@ -502,4 +504,75 @@ C.themes["Blizzard_Collections"] = function()
 			end
 		end
 	end)
+
+	-- [[ WardrobeCollection ]]
+
+	local WardrobeCollectionFrame = WardrobeCollectionFrame
+	local ModelsFrame = WardrobeCollectionFrame.ModelsFrame
+
+	WardrobeCollectionFrameBg:Hide()
+	ModelsFrame:DisableDrawLayer("BACKGROUND")
+	ModelsFrame:DisableDrawLayer("BORDER")
+	ModelsFrame:DisableDrawLayer("ARTWORK")
+	ModelsFrame:DisableDrawLayer("OVERLAY")
+
+	F.ReskinInput(WardrobeCollectionFrameSearchBox)
+	F.ReskinFilterButton(WardrobeCollectionFrame.FilterButton)
+	F.ReskinDropDown(WardrobeCollectionFrameWeaponDropDown)
+	F.ReskinArrow(WardrobeCollectionFrame.NavigationFrame.PrevPageButton, "left")
+	F.ReskinArrow(WardrobeCollectionFrame.NavigationFrame.NextPageButton, "right")
+
+	WardrobeCollectionFrame.NavigationFrame.PrevPageButton:SetPoint("BOTTOM", 23, 51)
+	WardrobeCollectionFrame.NavigationFrame.NextPageButton:SetPoint("BOTTOM", 58, 51)
+
+	-- Progress bar
+
+	local progressBar = WardrobeCollectionFrame.progressBar
+	progressBar.borderLeft:Hide()
+	progressBar.borderMid:Hide()
+	progressBar.borderRight:Hide()
+	progressBar:DisableDrawLayer("BACKGROUND")
+
+	progressBar.text:SetPoint("CENTER", 0, 1)
+	progressBar:SetStatusBarTexture(C.media.backdrop)
+
+	F.CreateBDFrame(progressBar, .25)
+
+	-- [[ Wardrobe ]]
+
+	local WardrobeFrame = WardrobeFrame
+	local WardrobeTransmogFrame = WardrobeTransmogFrame
+
+	WardrobeTransmogFrameBg:Hide()
+	WardrobeTransmogFrame.Inset.BG:Hide()
+	WardrobeTransmogFrame.Inset:DisableDrawLayer("BORDER")
+	WardrobeTransmogFrame.MoneyLeft:Hide()
+	WardrobeTransmogFrame.MoneyMiddle:Hide()
+	WardrobeTransmogFrame.MoneyRight:Hide()
+	WardrobeTransmogFrame.SpecButton.Icon:Hide()
+
+	for i = 1, 9 do
+		select(i, WardrobeTransmogFrame.SpecButton:GetRegions()):Hide()
+	end
+
+	F.ReskinPortraitFrame(WardrobeFrame)
+	F.Reskin(WardrobeTransmogFrame.ApplyButton)
+	F.Reskin(WardrobeOutfitDropDown.SaveButton)
+	F.ReskinArrow(WardrobeTransmogFrame.SpecButton, "down")
+	F.ReskinDropDown(WardrobeOutfitDropDown)
+
+	WardrobeOutfitDropDown:SetHeight(32)
+	WardrobeOutfitDropDown.SaveButton:SetPoint("LEFT", WardrobeOutfitDropDown, "RIGHT", -13, 2)
+	WardrobeTransmogFrame.SpecButton:SetPoint("RIGHT", WardrobeTransmogFrame.ApplyButton, "LEFT", -3, 0)
+
+	local slots = {"Head", "Shoulder", "Chest", "Waist", "Legs", "Feet", "Wrist", "Hands", "Back", "Shirt", "Tabard", "MainHand", "SecondaryHand"}
+
+	for i = 1, #slots do
+		local slot = WardrobeTransmogFrame.Model[slots[i].."Button"]
+		if slot then
+			slot.Border:Hide()
+			slot.Icon:SetDrawLayer("BACKGROUND", 1)
+			F.ReskinIcon(slot.Icon)
+		end
+	end
 end

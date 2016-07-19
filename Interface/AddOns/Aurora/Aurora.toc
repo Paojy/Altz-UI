@@ -1,8 +1,8 @@
-## Interface: 60200
+## Interface: 70000
 ## Title: Aurora
 ## Notes: Minimalistic window theme.
 ## Author: Haleth/Lightsword
-## Version: 6.4.0
+## Version: 7.0.0
 ## SavedVariables: AuroraConfig
 
 aurora.lua
@@ -47,6 +47,7 @@ FrameXML\BankFrame.lua
 FrameXML\CharacterFrame.lua
 FrameXML\Constants.lua
 FrameXML\ContainerFrame.lua
+FrameXML\DressUpFrames.lua
 FrameXML\EquipmentFlyout.lua
 FrameXML\Fonts.lua
 FrameXML\GameTooltip.lua
