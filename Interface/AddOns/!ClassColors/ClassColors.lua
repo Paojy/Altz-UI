@@ -1,7 +1,7 @@
 --[[--------------------------------------------------------------------
 	!ClassColors
 	Change class colors without breaking the Blizzard UI.
-	Copyright (c) 2009-2014 Phanx <addons@phanx.net>. All rights reserved.
+	Copyright (c) 2009-2015 Phanx <addons@phanx.net>. All rights reserved.
 	http://www.wowinterface.com/downloads/info12513-ClassColors.html
 	http://www.curse.com/addons/wow/classcolors
 ----------------------------------------------------------------------]]
@@ -12,61 +12,12 @@ if CUSTOM_CLASS_COLORS then
 	return
 end
 
-------------------------------------------------------------------------
-
-local L = {
-	TITLE = GetAddOnMetadata("!ClassColors", "Title"),
-	NOTES = GetAddOnMetadata("!ClassColors", "Notes"),
-	NOTES_DESC = "Note that not all addons support this, and you may need to reload the UI before your changes are recognized by all compatible addons.",
-	RESET = RESET,
-	RESET_DESC = "Reset all class colors to their Blizzard defaults.",
-}
-
-do
-	local GAME_LOCALE = GetLocale()
-	if GAME_LOCALE == "deDE" then
-		L.NOTES_DESC = "Beachten Sie, dass nicht alle Addons dieses System unterstützen, und möglicherweise müssen Sie die UI neuladen, um die Änderungen zu alle kompatiblen Addons übernehmen."
-		L.RESET_DESC = "Alle Klassenfarben auf die Standardfarben zurücksetzen."
-
-	elseif GAME_LOCALE == "esES" or GAME_LOCALE == "esMX" then
-		L.NOTES_DESC = "Note que no todos los addons aprobar este, y es posible que tengas a volver a cargar la interfaz para que los cambios ser reconocidos por todos addons compatibles."
-		L.RESET_DESC = "Restaurar todos los colores de las clases por el defecto."
-
-	elseif GAME_LOCALE == "frFR" then
-	--	L.NOTES_DESC = ""
-		L.RESET_DESC = "Réinitialisez les couleurs des classes par défaut."
-
-	elseif GAME_LOCALE == "itIT" then
-	--	L.NOTES_DESC = ""
-		L.RESET_DESC = "Ripristina i colori delle classi di default."
-
-	elseif GAME_LOCALE == "ptBR" then
-		L.NOTES_DESC = "Note que nem todos os addons aprovar isso, e você pode ter que recarregar a interface antes de suas alterações são reconhecidos por todos os addons compatíveis."
-		L.RESET_DESC = "Redefinir todas as cores de classes para o padrão."
-
-	elseif GAME_LOCALE == "ruRU" then -- Last updated 2014-08-18 by Yafis
-		L.NOTES_DESC = "Обратите внимание, что не все аддоны поддерживают это, и возможно вам потребуется перезагрузить интерфейс, прежде чем изменения вступят в силу на всех совместимых аддонах. "
-		L.RESET_DESC = "Сбросить окраску классов на значение по умолчанию."
-
-	elseif GAME_LOCALE == "koKR" then
-	--	L.NOTES_DESC = ""
-		L.RESET_DESC = "직업 색상을 기본값으로 되돌립니다."
-
-	elseif GAME_LOCALE == "zhCN" then
-	--	L.NOTES_DESC = ""
-		L.RESET_DESC = "重置职业颜色为默认。"
-
-	elseif GAME_LOCALE == "zhTW" then
-	--	L.NOTES_DESC = ""
-		L.RESET_DESC = "重置職業顔色為默認。"
-	end
-end
-
-FillLocalizedClassList(L, false)
-
-------------------------------------------------------------------------
-
 CUSTOM_CLASS_COLORS = {}
+
+------------------------------------------------------------------------
+
+local L = ns.L 
+L.TITLE = GetAddOnMetadata("!ClassColors", "Title")
 
 ------------------------------------------------------------------------
 

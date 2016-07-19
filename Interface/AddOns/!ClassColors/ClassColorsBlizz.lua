@@ -1,7 +1,7 @@
 --[[--------------------------------------------------------------------
 	!ClassColors
 	Change class colors without breaking the Blizzard UI.
-	Copyright (c) 2009-2014 Phanx <addons@phanx.net>. All rights reserved.
+	Copyright (c) 2009-2015 Phanx <addons@phanx.net>. All rights reserved.
 	http://www.wowinterface.com/downloads/info12513-ClassColors.html
 	http://www.curse.com/addons/wow/classcolors
 ----------------------------------------------------------------------]]
@@ -43,12 +43,10 @@ end
 
 function GetColoredName(event, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12)
 	local chatType = strsub(event, 10)
-	if strsub(chatType, 1, 17) == "WHISPER" then
+	if strsub(chatType, 1, 7) == "WHISPER" then
 		chatType = "WHISPER"
-	elseif strsub(chatType, 1, 17) == "CHANNEL" then
+	elseif strsub(chatType, 1, 7) == "CHANNEL" then
 		chatType = "CHANNEL"..arg8
-	else
-		chatType = strsub(event, 10)
 	end
 	local info = ChatTypeInfo[chatType]
 
@@ -72,7 +70,7 @@ function GetColoredName(event, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, a
 end
 
 do
-	-- Lines 3188-3208
+	-- Lines 3220+
 	-- Fix class colors in raid roster listing
 	local AddMessage = {}
 
@@ -127,6 +125,14 @@ hooksecurefunc("WhoList_Update", function()
 			end
 		end
 	end
+end)
+
+------------------------------------------------------------------------
+--	LevelUpDisplay.lua
+
+hooksecurefunc("BossBanner_ConfigureLootFrame", function(lootFrame, data)
+    local color = CUSTOM_CLASS_COLORS[data.className]
+    lootFrame.PlayerName:SetTextColor(color.r, color.g, color.b)
 end)
 
 ------------------------------------------------------------------------
@@ -499,6 +505,28 @@ addonFuncs["Blizzard_ChallengesUI"] = function()
 end
 
 ------------------------------------------------------------------------
+-- Blizzard_HeirloomCollection.lua
+
+addonFuncs["Blizzard_Collections"] = function()
+	function HeirloomsJournal:UpdateClassFilterDropDownText()
+        local text
+        if self.classFilter == 0 then -- NO_CLASS_FILTER
+            text = ALL_CLASSES
+        else
+            local className, classTag = GetClassInfoByID(self.classFilter)
+            local classColorStr = CUSTOM_CLASS_COLORS[classTag].colorStr -- CHANGED
+            if self.specFilter == 0 then -- NO_SPEC_FILTER
+                text = HEIRLOOMS_CLASS_FILTER_FORMAT:format(classColorStr, className)
+            else
+                local specName = GetSpecializationNameForSpecID(self.specFilter)
+                text = HEIRLOOMS_CLASS_SPEC_FILTER_FORMAT:format(classColorStr, className, specName)
+            end
+        end
+        UIDropDownMenu_SetText(self.classDropDown, text)
+    end
+end
+
+------------------------------------------------------------------------
 --	Blizzard_GuildRoster.lua
 
 addonFuncs["Blizzard_GuildUI"] = function()
@@ -617,6 +645,12 @@ addonFuncs["Blizzard_RaidUI"] = function()
 		end
 	end)
 end
+
+------------------------------------------------------------------------
+--	Blizzard_StoreUISecure.lua
+
+-- RAID_CLASS_COLORS is referenced several times in here, but it is
+-- forbidden to addons, so there's nothing we can do about it.
 
 ------------------------------------------------------------------------
 --	Blizzard_TradeSkillUI.lua

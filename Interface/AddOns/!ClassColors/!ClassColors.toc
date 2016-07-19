@@ -1,6 +1,6 @@
-﻿## Interface: 60000
-## Version: 6.0.3.24
-## X-Curse-Packaged-Version: 6.0.3.24
+﻿## Interface: 60200
+## Version: 6.2.2.0
+## X-Curse-Packaged-Version: 6.2.2.0
 ## X-Curse-Project-Name: Class Colors
 ## X-Curse-Project-ID: classcolors
 ## X-Curse-Repository-ID: wow/classcolors/mainline
@@ -15,12 +15,13 @@
 
 ## Author: Phanx
 ## X-Email: addons@phanx.net
-## X-Copyright: Copyright (c) 2009-2014 Phanx. All rights reserved.
+## X-Copyright: Copyright (c) 2009-2015 Phanx. All rights reserved.
 ## X-CompatibleLocales: enUS, deDE, esES, esMX, frFR, itIT, koKR, ptBR, ruRU, zhCN, zhTW
 ## X-Localizations: enUS, deDE, esES, esMX, ptBR, ruRU
 ## X-Website: https://github.com/Phanx/ClassColors
 
 ## SavedVariables: ClassColorsDB
 
+Localization.lua
 ClassColors.lua
 ClassColorsBlizz.lua
