@@ -1146,7 +1146,7 @@ local UnitSpecific = {
         end
 		
 		-- Shaman mana
-		if G.myClass == "SHAMAN" then
+		if G.myClass == "SHAMAN" and aCoreCDB["UnitframeOptions"]["shamanmana"] then
 			local shamanmana = T.createStatusbar(self, "ARTWORK", aCoreCDB["UnitframeOptions"]["height"]*-(aCoreCDB["UnitframeOptions"]["hpheight"]-1), nil, 1, 1, 1, 1)
 			shamanmana:SetFrameLevel(2)
 			shamanmana:SetPoint"LEFT"
