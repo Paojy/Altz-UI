@@ -84,55 +84,37 @@ local upgradeTable = {
 -- Convert the ITEM_LEVEL constant into a pattern for our use
 local itemLevelPattern = _G["ITEM_LEVEL"]:gsub("%%d", "(%%d+)")
 
-local scanningTooltip
-local heirloomCache = {}
+local scanningTooltip = CreateFrame("GameTooltip", "LibItemUpgradeInfoTooltip", nil, "GameTooltipTemplate")
+scanningTooltip:SetOwner(WorldFrame, "ANCHOR_NONE")
+
 local function GetHeirloomTrueLevel(itemString)
-	if type(itemString) ~= "string" then return nil,false end
-	local scantooltip=false
-	local header,s1,s2,s3,s4,s5,s6,s7,s8,s9,s10,s11,s12,s13,s14 = strsplit(":", itemString, 16)
-	s13=tonumber(s13) or 0
-	s14=tonumber(s14) or 0
-	scantooltip=(s13==1 or s13==2) and (s14==693 or s14==615) -- Really to be better tested
-	scantooltip=true
-	local _, itemLink, rarity, itemLevel = GetItemInfo(itemString)
-	if (not itemLink) then
-		return nil,false
-	end
-	if not scantooltip then
-		scantooltip=rarity == _G.LE_ITEM_QUALITY_HEIRLOOM
-	else
-		local ilvl = heirloomCache[itemLink]
-		if ilvl ~= nil then
+	local name, itemLink, rarity, itemLevel = GetItemInfo(itemString)
+	if not rarity then return end
+	if rarity>1 then
+		local ilvl = aCoreCDB["ItemOptions"]["itemlevels"][itemLink]
+		if ilvl then
+			--print(itemLink,  ilvl, "已经存在")
 			return ilvl, true
-		end
-		
-		if not scanningTooltip then
-			scanningTooltip = _G.CreateFrame("GameTooltip", "LibItemUpgradeInfoTooltip", nil, "GameTooltipTemplate")
-			scanningTooltip:SetOwner(_G.WorldFrame, "ANCHOR_NONE")
-		end
-		scanningTooltip:ClearLines()
-		
-		local rc,message=pcall(scanningTooltip.SetHyperlink,scanningTooltip,itemLink)
-		if (not rc) then
-			return nil,false
-		end
-		
-		-- line 1 is the item name
-		-- line 2 may be the item level, or it may be a modifier like "Heroic"
-		-- check up to line 4 just in case
-		for i = 2, 4 do
-			local label, text = _G["LibItemUpgradeInfoTooltipTextLeft"..i], nil
-			if label then text=label:GetText() end
-			if text then
-				ilvl = tonumber(text:match(itemLevelPattern))
-				if ilvl ~= nil then
-					heirloomCache[itemLink] = ilvl
-					return ilvl, true
+		else
+			scanningTooltip:ClearLines()
+			scanningTooltip:SetHyperlink(itemLink)
+			for i = 2, 4 do
+				local label, text = _G["LibItemUpgradeInfoTooltipTextLeft"..i], nil
+				if label then 
+					text = label:GetText()
+					if text then
+						ilvl = tonumber(text:match(itemLevelPattern))
+						if ilvl ~= nil then
+							aCoreCDB["ItemOptions"]["itemlevels"][itemLink] = ilvl
+							--print(itemLink,  ilvl, "新增")
+							return ilvl, true
+						end
+					end
 				end
 			end
 		end
+		return itemLevel, false
 	end
-	return itemLevel, false
 end
 
 local function GetUpgradeID(itemString)
@@ -178,7 +160,7 @@ T.UpdateItemLevel_CharacterInventorySlot = function()
 		
 		if ItemLink then
 			local Name, Link, Rarity = GetItemInfo(ItemLink)
-			local Level = GetUpgradedItemLevel(Link)
+			local Level = GetUpgradedItemLevel(ItemLink)
 			if Rarity and Rarity > 1 then
 				Button.level:SetText(Level)
 				Button.level:SetTextColor(GetItemQualityColor(Rarity))
@@ -198,8 +180,9 @@ local function BagSlotUpdate(id, Button)
 	local ItemLink = GetContainerItemLink(id, Button:GetID())
 	if ItemLink then
 		local Name, Link, Rarity, fLevel, MinLevel, Type, SubType, StackCount, EquipLoc, Texture, SellPrice = GetItemInfo(ItemLink)
-		local Level = GetUpgradedItemLevel(Link)
+		
 		if Rarity and Rarity > 1 and (Type == ARMOR or Type == WEAPON) then
+			local Level = GetUpgradedItemLevel(ItemLink)
 			Button.level:SetText(Level)
 			Button.level:SetTextColor(GetItemQualityColor(Rarity))
 			--print("update"..Level)
@@ -213,8 +196,26 @@ local function BagSlotUpdate(id, Button)
 	end
 end
 
+T.UpdateItemLevel_Bag = function(BagID)
+	local Size = GetContainerNumSlots(BagID)
+	for Slot = 1, Size do
+		local Button = _G["ContainerFrame"..(BagID+1).."Item"..Slot]
+		BagSlotUpdate(BagID, Button)
+	end
+end
+
 T.UpdateItemLevel_Bags = function()
-	for BagID = 0 , 11 do
+	for BagID = 0 , 4 do
+		local Size = GetContainerNumSlots(BagID)
+		for Slot = 1, Size do
+			local Button = _G["ContainerFrame"..(BagID+1).."Item"..Slot]
+			BagSlotUpdate(BagID, Button)
+		end
+	end
+end
+
+T.UpdateItemLevel_Bank = function()
+	for BagID = 5 , 11 do
 		local Size = GetContainerNumSlots(BagID)
 		for Slot = 1, Size do
 			local Button = _G["ContainerFrame"..(BagID+1).."Item"..Slot]
@@ -233,13 +234,13 @@ EventFrame.t = 0
 
 EventFrame:RegisterEvent("ADDON_LOADED")
 EventFrame:RegisterEvent("BAG_UPDATE")
-EventFrame:RegisterEvent("BANKFRAME_OPENED")
 EventFrame:RegisterEvent("PLAYERBANKSLOTS_CHANGED")
 EventFrame:RegisterEvent("UNIT_INVENTORY_CHANGED")
 EventFrame:RegisterEvent("PLAYER_EQUIPMENT_CHANGED")
 
 EventFrame:SetScript("OnEvent", function(self, event, arg1)
 	if event == "ADDON_LOADED" and arg1 == "AltzUI" then
+	
 		local MyBag = _G[G.uiname.."bag"]
 		if MyBag then
 			MyBag:HookScript("OnShow", function() 
@@ -248,19 +249,35 @@ EventFrame:SetScript("OnEvent", function(self, event, arg1)
 		else
 			print("Bag Item Level Error")
 		end
+		
+		local MyBank = _G[G.uiname.."bank"]
+		if MyBank then
+			MyBank:HookScript("OnShow", function() 
+				T.UpdateItemLevel_Bank()
+			end)
+		else
+			print("Bank Item Level Error")
+		end
+		
 		EventFrame:SetScript("OnUpdate", function(self, elapsed)
 			self.t = self.t + elapsed
 			if self.t > 2 then
 				T.UpdateItemLevel_CharacterInventorySlot()
 				T.UpdateItemLevel_Bags()
+				T.UpdateItemLevel_Bank()
+				ToggleAllBags()
+				ToggleAllBags()				
 				EventFrame:SetScript("OnUpdate", nil)
-				ToggleAllBags()
-				ToggleAllBags()
 			end
 		end)
 	elseif event == "PLAYER_EQUIPMENT_CHANGED" then
 		T.UpdateItemLevel_CharacterInventorySlot()
-	else
+	elseif event == "PLAYERBANKSLOTS_CHANGED" then
+		T.UpdateItemLevel_Bank()
+	elseif event == "UNIT_INVENTORY_CHANGED" then
 		T.UpdateItemLevel_Bags()
+		T.UpdateItemLevel_Bank()
+	elseif event == "BAG_UPDATE" then
+		T.UpdateItemLevel_Bag(arg1)
 	end
 end)
