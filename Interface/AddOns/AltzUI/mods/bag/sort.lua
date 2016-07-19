@@ -17,7 +17,8 @@ local BS_bagGroups --bag group definitions
 local BS_itemSwapGrid --grid of item data based on destination inventory location
 		
 local BS_sorting = false     --indicates bag rearrangement is in progress
-local BS_pauseRemaining = 0  --how much longer to wait before running the OnUpdate code again
+local BS_pauseRemaining = 0.05  --how much longer to wait before running the OnUpdate code again
+local BS_delay = 1 -- 留给系统整理的时间
 
 local function BS_clearData()
  	BS_itemSwapGrid = {}
@@ -42,21 +43,26 @@ local function BS_OnUpdate(parentFrame, tElapsed)
 			local destinationSlot = BS_itemSwapGrid[bagIndex][slotIndex].destinationSlot
 
 			--see if either item slot is currently locked
-	        local _, _, locked1 = GetContainerItemInfo(bagIndex, slotIndex)
-	        local _, _, locked2 = GetContainerItemInfo(destinationBag, destinationSlot)
+	        local _, count1, locked1, _, _, _, _, _, _, itemID1  = GetContainerItemInfo(bagIndex, slotIndex)
+	        local _, count2, locked2, _, _, _, _, _, _, itemID2  = GetContainerItemInfo(destinationBag, destinationSlot)
 	        
 	        if locked1 or locked2 then
 	            blockedThisRound = true
 			--if item not already where it belongs, move it
 			elseif bagIndex ~= destinationBag or slotIndex ~= destinationSlot then
-               	PickupContainerItem(bagIndex, slotIndex)
-				PickupContainerItem(destinationBag, destinationSlot)
-				
-				local tempItem = BS_itemSwapGrid[destinationBag][destinationSlot]
-				BS_itemSwapGrid[destinationBag][destinationSlot] = BS_itemSwapGrid[bagIndex][slotIndex]
-				BS_itemSwapGrid[bagIndex][slotIndex] = tempItem
+				if itemID1 ~= itemID2 or count1 ~= count2 then
+					
+					ClearCursor()
+					PickupContainerItem(bagIndex, slotIndex)
+					PickupContainerItem(destinationBag, destinationSlot)
+					ClearCursor()
+					
+					local tempItem = BS_itemSwapGrid[destinationBag][destinationSlot]
+					BS_itemSwapGrid[destinationBag][destinationSlot] = BS_itemSwapGrid[bagIndex][slotIndex]
+					BS_itemSwapGrid[bagIndex][slotIndex] = tempItem
 
-				changesThisRound = true
+					changesThisRound = true
+				end
 	        end
 		end
 	end
@@ -66,32 +72,34 @@ local function BS_OnUpdate(parentFrame, tElapsed)
 	    BS_clearData()
 	end
 	
-	BS_pauseRemaining = .05
+	BS_pauseRemaining = 0.05
 end
 
 local function sortBagRange(bagList, order)
+	
 	--clear any data from previous sorts
 	BS_clearData()
 	local family
-
-	--assign bags to bag groups
+	
+	--assign bags to bag groups	
 	for slotNumIndex, slotNum in pairs(bagList) do
-		
 		if GetContainerNumSlots(slotNum) > 0 then --if bag exists
 			--initialize the item grid for this bag (used later)
 			BS_itemSwapGrid[slotNum] = {}
 			family = select(2, GetContainerNumFreeSlots(slotNum))
-		   if family then
-			if family == 0 then family = 'default' end
-			if not BS_bagGroups[family] then
-				BS_bagGroups[family] = {}
-				BS_bagGroups[family].bagSlotNumbers = {}
-			 end
-			table.insert(BS_bagGroups[family].bagSlotNumbers, slotNum)
-		  end
+		    if family then
+				if family == 0 then
+					family = 'default'
+				end
+				if not BS_bagGroups[family] then
+					BS_bagGroups[family] = {}
+					BS_bagGroups[family].bagSlotNumbers = {}
+				end
+				table.insert(BS_bagGroups[family].bagSlotNumbers, slotNum)
+			end
 		end
 	end
-	
+
 	--for each bag group
 	for groupKey, group in pairs(BS_bagGroups) do
 		--initialize the list of items for this bag group
@@ -100,11 +108,11 @@ local function sortBagRange(bagList, order)
 		for bagKey, bagSlot in pairs(group.bagSlotNumbers) do
 		
 			--for each item slot in this bag
-			for itemSlot=1, GetContainerNumSlots(bagSlot) do
+			for itemSlot= 1, GetContainerNumSlots(bagSlot) do
 			
 				--get a reference for the item in this location
-				local itemLink = GetContainerItemLink(bagSlot, itemSlot)
-
+				local texture, count, locked, quality, readable, lootable, itemLink, isFiltered, hasNoValue, itemID = GetContainerItemInfo(bagSlot, itemSlot)
+				
 				--if this slot is non-empty
 				if itemLink ~= nil then
 				
@@ -165,10 +173,10 @@ local function sortBagRange(bagList, order)
 					--closer to the start of the string
 					
 					newItem.sortString = newItem.sortString .. itemType .. itemSubType .. itemEquipLoc .. itemName
+					newItem.count = count
 					
 					--add this item's accumulated data to the item list for this bag group
 					tinsert(group.itemList, newItem)
-
 					--record location
 					BS_itemSwapGrid[bagSlot][itemSlot] = newItem
 					newItem.startBag = bagSlot
@@ -178,7 +186,13 @@ local function sortBagRange(bagList, order)
 		end
 		
 		--sort the item list for this bag group by sort strings
-		table.sort(group.itemList, function(a, b) return a.sortString < b.sortString end)
+		table.sort(group.itemList, function(a, b)
+			if a.sortString < b.sortString then
+				return true
+			elseif a.sortString == b.sortString and a.count > b.count then
+				return true
+			end
+		end)
 		
 		--show the results for this group
 		for index, item in pairs(group.itemList) do
@@ -206,27 +220,70 @@ local function sortBagRange(bagList, order)
 	BS_sorting = true
 end
 
+
+local function CheckStacks(bagList)
+	for slotNumIndex, slotNum in pairs(bagList) do
+		for itemSlot = 1, GetContainerNumSlots(slotNum) do
+			local texture, count, locked, quality, readable, lootable, itemLink, isFiltered, hasNoValue, itemID = GetContainerItemInfo(slotNum, itemSlot)
+			if itemLink then
+				local name, _, _, _, _, _, _, maxStack = GetItemInfo(itemID)
+				
+				if count < maxStack then -- 需要寻找可以堆的
+					for slotNumIndex1, slotNum1 in pairs(bagList) do
+						for itemSlot1 = 1, GetContainerNumSlots(slotNum1) do
+							if (slotNum ~= slotNum1 or itemSlot ~= itemSlot1) and GetContainerItemLink(slotNum1, itemSlot1) == itemLink then
+								local count1 = select(2, GetContainerItemInfo(slotNum1, itemSlot1))
+								if count1 < maxStack then -- 找到一样的而且还没堆满
+									return BS_delay
+								end
+							end
+						end
+					end
+				end
+			end
+		end
+	end
+end
+
+local function CleanStackItems(bagList, order, container)
+	local delay = CheckStacks(bagList) or 0.1
+	if delay > 0.1 then
+		if container == "bank" then
+			SortBankBags()
+		elseif container == "reagents" then
+			SortReagentBankBags()
+		else
+			SortBags()
+		end
+	end
+	--print("total", delay)
+	C_Timer.After(delay, function() sortBagRange(bagList, order) end)
+end
+
 function T.BankSort(order)
+	stackclean = false
 	if order == 0 then
-		sortBagRange({11, 10, 9, 8, 7, 6, 5, -1}, 0)
+		CleanStackItems({11, 10, 9, 8, 7, 6, 5, -1}, 0, "bank")
 	else
-		sortBagRange({-1, 5, 6, 7, 8, 9, 10, 11}, 1)
+		CleanStackItems({-1, 5, 6, 7, 8, 9, 10, 11}, 1, "bank")
 	end
 end
 
 function T.BagSort(order)
+	stackclean = false
 	if order == 0 then
-		sortBagRange({4, 3, 2, 1, 0}, 0)
+		CleanStackItems({4, 3, 2, 1, 0}, 0, "bag")
 	else
-		sortBagRange({0, 1, 2, 3, 4}, 1)
+		CleanStackItems({0, 1, 2, 3, 4}, 1, "bag")
 	end
 end
 
 function T.ReagentBankSort(order)
+	stackclean = false
 	if order == 0 then
-		sortBagRange({-3}, 0)
+		CleanStackItems({-3}, 0, "reagents")
 	else
-		sortBagRange({-3}, 1)
+		CleanStackItems({-3}, 1, "reagents")
 	end
 end
 
