@@ -946,22 +946,28 @@ RFDebuff_InnerFrame:SetPoint("BOTTOMRIGHT", -30, 20)
 
 local function LineUpRaidDebuffList(parent, raidname)
 	local i = -1
+	
+	if not G.Raids[raidname] then
+		aCoreCDB["RaidDebuff"][raidname] = nil
+		return
+	end
+	
 	for index, boss in pairs(G.Raids[raidname]) do
 		i = i + 1
 		if _G[G.uiname.."RaidDebuff"..raidname..boss.."Title"] then
-		_G[G.uiname.."RaidDebuff"..raidname..boss.."Title"]:SetPoint("TOPLEFT", parent, "TOPLEFT", 10, -10-i*30)
-		i = i + 1
-		local t = {}
-		for spell, info in pairs(aCoreCDB["RaidDebuff"][raidname][boss]) do
-			table.insert(t, info)
-		end
-		sort(t, function(a,b) return a.level > b.level or (a.level == b.level and a.id > b.id) end)
-		for a = 1, #t do
-			_G[G.uiname.."RaidDebuff"..raidname..boss..t[a].id]:SetPoint("TOPLEFT", parent, "TOPLEFT", 10, -10-i*30)
+			_G[G.uiname.."RaidDebuff"..raidname..boss.."Title"]:SetPoint("TOPLEFT", parent, "TOPLEFT", 10, -10-i*30)
 			i = i + 1
-		end
+			local t = {}
+			for spell, info in pairs(aCoreCDB["RaidDebuff"][raidname][boss]) do
+				table.insert(t, info)
+			end
+			sort(t, function(a,b) return a.level > b.level or (a.level == b.level and a.id > b.id) end)
+			for a = 1, #t do
+				_G[G.uiname.."RaidDebuff"..raidname..boss..t[a].id]:SetPoint("TOPLEFT", parent, "TOPLEFT", 10, -10-i*30)
+				i = i + 1
+			end
 		else
-			print(raidname,boss)
+			print(raidname,boss," is bugged, please reset its raid debuff settings.")
 		end
 	end
 end
@@ -1075,6 +1081,12 @@ local function CreateRaidDebuffOptions()
 
 		UIDropDownMenu_Initialize(BossDD, function(self, level, menuList)
 			local info = UIDropDownMenu_CreateInfo()
+			
+			if not G.Raids[raidname] then
+				aCoreCDB["RaidDebuff"][raidname] = nil
+				return
+			end
+			
 			for i = 1, #(G.Raids[raidname]) do
 				info.text = G.Raids[raidname][i]
 				info.func = function()
@@ -1703,10 +1715,10 @@ T.createcheckbutton(PlateInnerframe.common, 30, 60, L["启用"], "PlateOptions",
 T.createcheckbutton(PlateInnerframe.common, 30, 90, L["数字样式"], "PlateOptions", "numberstyle")
 T.createcheckbutton(PlateInnerframe.common, 30, 120, L["友善职业染色"], "PlateOptions", "firendlyCR")
 T.createcheckbutton(PlateInnerframe.common, 30, 150, L["敌对职业染色"], "PlateOptions", "enemyCR")
-T.createcheckbutton(PlateInnerframe.common, 30, 150, L["仇恨染色"], "PlateOptions", "threatcolor")
-T.createcheckbutton(PlateInnerframe.common, 30, 180, L["自动显示/隐藏"], "PlateOptions", "autotoggleplates", L["自动显示/隐藏提示"])
-T.createslider(PlateInnerframe.common, 30, 230, L["图标数量"], "PlateOptions", "plateauranum", 1, 3, 10, 1)
-T.createslider(PlateInnerframe.common, 30, 280, L["图标大小"], "PlateOptions", "plateaurasize", 1, 20, 40, 2)
+T.createcheckbutton(PlateInnerframe.common, 30, 180, L["仇恨染色"], "PlateOptions", "threatcolor")
+T.createcheckbutton(PlateInnerframe.common, 30, 210, L["自动显示/隐藏"], "PlateOptions", "autotoggleplates", L["自动显示/隐藏提示"])
+T.createslider(PlateInnerframe.common, 30, 260, L["图标数量"], "PlateOptions", "plateauranum", 1, 3, 10, 1)
+T.createslider(PlateInnerframe.common, 30, 310, L["图标大小"], "PlateOptions", "plateaurasize", 1, 20, 40, 2)
 T.createDR(PlateInnerframe.common.enableplate, PlateInnerframe.common.numberstyle, PlateInnerframe.common.firendlyCR, PlateInnerframe.common.enemyCR, PlateInnerframe.common.autotoggleplates, PlateInnerframe.common.plateauranum, PlateInnerframe.common.plateaurasize)
 
 PlateInnerframe.auralist = CreateOptionPage("Actionbar Options common", L["光环"], PlateInnerframe, "VERTICAL", .3)
@@ -1990,14 +2002,18 @@ local CombattextOptions = CreateOptionPage("CombatText Options", L["战斗信息
 T.createcheckbutton(CombattextOptions, 30, 60, L["启用"], "CombattextOptions", "combattext")
 T.createcheckbutton(CombattextOptions, 30, 90, L["承受伤害/治疗"], "CombattextOptions", "showreceivedct")
 T.createcheckbutton(CombattextOptions, 30, 120, L["输出伤害/治疗"], "CombattextOptions", "showoutputct")
-T.createcheckbutton(CombattextOptions, 30, 150, L["过滤战斗信息"], "CombattextOptions", "ctfilter", L["过滤战斗信息提示"])
+local textformattype_group = {
+	["k"] = "10000 → 10k",
+	["w"] = "10000 → 1w",
+}
+T.createradiobuttongroup(CombattextOptions, 30, 150, L["数字缩写样式"], "CombattextOptions", "formattype", textformattype_group)
 T.createslider(CombattextOptions, 30, 200, L["图标大小"], "CombattextOptions", "cticonsize", 1, 10, 30, 1)
 T.createslider(CombattextOptions, 30, 240, L["暴击图标大小"], "CombattextOptions", "ctbigiconsize", 1, 10, 30, 1)
 T.createcheckbutton(CombattextOptions, 30, 280, L["显示DOT"], "CombattextOptions", "ctshowdots")
 T.createcheckbutton(CombattextOptions, 30, 310, L["显示HOT"], "CombattextOptions", "ctshowhots")
 T.createcheckbutton(CombattextOptions, 30, 340, L["显示宠物"], "CombattextOptions", "ctshowpet")
 T.createslider(CombattextOptions, 30, 390, L["隐藏时间"], "CombattextOptions", "ctfadetime", 10, 20, 100, 5, L["隐藏时间提示"])
-T.createDR(CombattextOptions.combattext, CombattextOptions.showreceivedct, CombattextOptions.showoutputct, CombattextOptions.ctfilter, CombattextOptions.cticonsize, CombattextOptions.ctbigiconsize, CombattextOptions.ctshowdots, CombattextOptions.ctshowhots, CombattextOptions.ctshowpet, CombattextOptions.ctfadetime)
+T.createDR(CombattextOptions.combattext, CombattextOptions.showreceivedct, CombattextOptions.showoutputct, CombattextOptions.cticonsize, CombattextOptions.ctbigiconsize, CombattextOptions.ctshowdots, CombattextOptions.ctshowhots, CombattextOptions.ctshowpet, CombattextOptions.ctfadetime)
 
 --====================================================--
 --[[              -- RaidTool Options --                ]]--

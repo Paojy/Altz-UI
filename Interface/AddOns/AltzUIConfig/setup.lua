@@ -67,13 +67,13 @@ BlackBg.titleframe.author:SetTextColor(1, 1, 1)
 BlackBg.titleframe.author:SetText("ver"..G.Version.." "..L["小泡泡"])
 
 BlackBg.titleframe:SetScript("OnEnter", function(self)
-	self.model:SetLight(1, 0, 0, 1, 0, 1, .7, .7, .7, 1)
+	--self.model:SetLight(1, 0, 0, 1, 0, 1, .7, .7, .7, 1)
 	self.model:ClearFog() 
 end)
 
 BlackBg.titleframe:SetScript("OnLeave", function(self)
 	self.model:SetFogColor(0.1, 0.1, 0.1) 
-	self.model:SetLight(1, 1, 0, 1, 0, 1, .7, .7, .7, 1)
+	--self.model:SetLight(1, 1, 0, 1, 0, 1, .7, .7, .7, 1)
 end)
 
 BlackBg.introframe = CreateFrame("Button", G.uiname.."BlackBg Intro", BlackBg)
