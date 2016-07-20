@@ -57,12 +57,11 @@ local CreateAuraIcon = function(auras, size, ...)
 end
 
 local dispelClass = {
-	PRIEST = {Disease = true, Magic = true},
-    SHAMAN = { Curse = true, Magic = true},
-    PALADIN = { Poison = true, Disease = true, Magic = true},
-    MAGE = { Curse = true},
-    DRUID = { Curse = true, Poison = true, Magic = true},
-    MONK = { Disease = true, Poison = true, Magic = true},
+	PRIEST = {Disease = true},
+    SHAMAN = {Curse = true},
+    PALADIN = {Poison = true, Disease = true},
+    DRUID = {Curse = true, Poison = true},
+    MONK = {Disease = true, Poison = true},	
 }
 
 local dispellist = dispelClass[G.myClass] or {}
@@ -71,33 +70,38 @@ local checkTalents = CreateFrame"Frame"
 checkTalents:RegisterEvent("PLAYER_ENTERING_WORLD")
 checkTalents:SetScript("OnEvent", function(self, event)
     if multicheck(G.myClass, "SHAMAN", "PALADIN", "DRUID", "PRIEST", "MONK") then
- 
+		local tree = GetSpecialization()
+		
         if G.myClass == "SHAMAN" then
-            local tree = GetSpecialization()
- 
-            dispelClass[G.myClass].Magic = tree == 1 and true
- 
+			if tree == 3 then
+				dispellist.Magic = true
+			else
+				dispellist.Magic = false
+			end
         elseif G.myClass == "PALADIN" then
-            local tree = GetSpecialization()
- 
-            dispelClass[G.myClass].Magic = tree == 1 and true
- 
+			if tree == 1 then
+				dispellist.Magic = true
+			else
+				dispellist.Magic = false
+			end
         elseif G.myClass == "DRUID" then
-            local tree = GetSpecialization()
- 
-            dispelClass[G.myClass].Magic = tree == 4 and true
- 
+            if tree == 4 then
+				dispellist.Magic = true
+			else
+				dispellist.Magic = false
+			end
         elseif G.myClass == "PRIEST" then
-            local tree = GetSpecialization()
-  
-            dispelClass[G.myClass].Magic = (tree == 1 or tree == 2) and true
-            dispelClass[G.myClass].Disease = (tree == 1 or tree == 2) and true
-			
+			if tree == 1 or tree == 2 then
+				dispellist.Magic = true
+			else
+				dispellist.Magic = false
+			end
         elseif G.myClass == "MONK" then
-            local tree = GetSpecialization()
-			
-			dispelClass[G.myClass].Magic = tree == 2 and true
-			
+            if tree == 2 then
+				dispellist.Magic = true
+			else
+				dispellist.Magic = false
+			end
         end
     end
  
