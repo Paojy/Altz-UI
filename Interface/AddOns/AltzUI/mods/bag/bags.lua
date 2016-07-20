@@ -53,6 +53,7 @@ local function skin(frame)
 	local tex = frame.IconBorder:GetTexture()
 	
 	frame:SetAlpha(1)
+	frame:SetFrameStrata("HIGH")
 	
 	frame:SetNormalTexture("")
 	frame:SetPushedTexture("")
@@ -114,15 +115,16 @@ function BFrame.bags:setUp(frameName, ...)
 	else
 		frame.movingname = L["银行框"]
 		frame.point = {
-				healer = {a1 = "BOTTOM", parent = "UIParent", a2 = "BOTTOM", x = 0, y = 80},
-				dpser = {a1 = "BOTTOM", parent = "UIParent", a2 = "BOTTOM", x = 0, y = 80},
+				healer = {a1 = "BOTTOM", parent = "AltzUI_bag", a2 = "TOP", x = 0, y = 0},
+				dpser = {a1 = "BOTTOM", parent = "AltzUI_bag", a2 = "TOP", x = 0, y = 0},
 			}
 		T.CreateDragFrame(frame)
 	end
-
+	
 	frame:SetFrameStrata("HIGH")
-	frame:SetFrameLevel(1)
-	F.CreateBD(frame, 0.3)
+	frame.bg = T.CreateThinSD(frame, 1, 0, 0, 0, 0.5, -1)
+	frame.bg:SetFrameStrata("MEDIUM")
+	frame.bg:SetFrameLevel(99)
 	frame:Hide()
 	
 	frame.bags = CreateFrame('Frame', nil, frame)
@@ -217,7 +219,6 @@ function BFrame.bags:setUp(frameName, ...)
 		ReagentBankFrameUnlockInfo:SetPoint("BOTTOMLEFT", frame, "TOPLEFT", 0 ,30)
 		ReagentBankFrameUnlockInfo:SetPoint("BOTTOMRIGHT", frame, "TOPRIGHT", 0 ,30)
 		ReagentBankFrameUnlockInfo:SetHeight(150)
-		--F.SetBD(BankFramePurchaseInfo)
 		
 		lastbutton = nil
 		
@@ -337,11 +338,10 @@ function ContainerFrame_GenerateFrame(frame, size, id)
 		banknumrows, banklastrowbutton, banknumbuttons, banklastbutton = 0, BankFrameItem1, 1, BankFrameItem1
 		for bank = 1, 28 do
 			local bankitems = _G["BankFrameItem"..bank]
+			
 			bankitems:ClearAllPoints()
 			bankitems:SetWidth(config.bank.button_size)
 			bankitems:SetHeight(config.bank.button_size)
-			bankitems:SetFrameStrata("HIGH")
-			bankitems:SetFrameLevel(2)
 			skin(bankitems)
 			
 			--if not bankitems.idtext then
@@ -378,8 +378,6 @@ function ContainerFrame_GenerateFrame(frame, size, id)
 			itemframes:ClearAllPoints()
 			itemframes:SetWidth(config.bag.button_size)
 			itemframes:SetHeight(config.bag.button_size)
-			itemframes:SetFrameStrata("HIGH")
-			itemframes:SetFrameLevel(2)
 			skin(itemframes)
 			
 			--if not itemframes.idtext then
@@ -407,17 +405,15 @@ function ContainerFrame_GenerateFrame(frame, size, id)
 
 		_G[G.uiname.."bag"]:SetHeight(((config.bag.button_size+config.spacing)*(numrows+1)+60)-config.spacing)
 		
-		BackpackTokenFrameToken1:ClearAllPoints()
-		BackpackTokenFrameToken1:SetPoint("BOTTOMLEFT", _G[G.uiname.."bag"], "BOTTOMLEFT", 0, 8)
-		
 		for i = 1, 3 do
-			_G["BackpackTokenFrameToken"..i]:SetFrameStrata("TOOLTIP")
-			_G["BackpackTokenFrameToken"..i]:SetFrameLevel(5)
 			_G["BackpackTokenFrameToken"..i.."Icon"]:SetSize(12,12) 
 			_G["BackpackTokenFrameToken"..i.."Icon"]:SetTexCoord(.1,.9,.1,.9) 
-			_G["BackpackTokenFrameToken"..i.."Icon"]:SetPoint("LEFT", _G["BackpackTokenFrameToken"..i], "RIGHT", -8, 2) 
+				_G["BackpackTokenFrameToken"..i.."Icon"]:SetPoint("LEFT", _G["BackpackTokenFrameToken"..i], "RIGHT", -8, 2) 
 			_G["BackpackTokenFrameToken"..i.."Count"]:SetFont(G.numFont, 14)
-			if (i ~= 1) then
+			_G["BackpackTokenFrameToken"..i]:ClearAllPoints()
+			if (i == 1) then
+				_G["BackpackTokenFrameToken"..i]:SetPoint("BOTTOMLEFT", _G[G.uiname.."bag"], "BOTTOMLEFT", 0, 8)
+			else
 				_G["BackpackTokenFrameToken"..i]:SetPoint("LEFT", _G["BackpackTokenFrameToken"..(i-1)], "RIGHT", 10, 0)
 			end
 		end
@@ -430,8 +426,6 @@ function ContainerFrame_GenerateFrame(frame, size, id)
 			itemframes:ClearAllPoints()
 			itemframes:SetWidth(config.bank.button_size)
 			itemframes:SetHeight(config.bank.button_size)
-			itemframes:SetFrameStrata("HIGH")
-			itemframes:SetFrameLevel(2)
 			skin(itemframes)
 			
 			--if not itemframes.idtext then
@@ -547,8 +541,6 @@ local function quickreagent(show)
 			itemframe:ClearAllPoints()
 			itemframe:SetWidth(config.bank.button_size)
 			itemframe:SetHeight(config.bank.button_size)
-			itemframe:SetFrameStrata("HIGH")
-			itemframe:SetFrameLevel(2)
 			skin(itemframe)
 			
 			if r == 1 then
@@ -572,8 +564,6 @@ local function quickreagent(show)
 
 		local children = {ReagentBankFrame:GetChildren()}
 		children[1]:SetPoint("BOTTOM", _G[G.uiname.."bank"], "BOTTOM", 0, 10)
-		children[1]:SetFrameStrata("HIGH")
-		children[1]:SetFrameLevel(3)
 	else
 		
 	end
@@ -630,10 +620,7 @@ function SkinEditBox(frame)
 	frame.Right:Hide()
 	frame.Middle:Hide()
 	frame:GetChildren():SetAlpha(0)
-	
-	frame:SetFrameStrata("HIGH")
 	frame:SetWidth(200)
-	
 	frame.bg = CreateFrame('frame', nil, frame)
 	frame.bg:SetPoint("TOPLEFT", frame, "TOPLEFT", -4, 0)
 	frame.bg:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", 0, 0)
@@ -659,14 +646,10 @@ hooksecurefunc("ContainerFrame_Update", function(frame)
 	ContainerFrame1MoneyFrame:ClearAllPoints()
 	ContainerFrame1MoneyFrame:Show()
 	ContainerFrame1MoneyFrame:SetPoint("TOPLEFT", _G[G.uiname.."bag"], "TOPLEFT", 6, -10)
-	ContainerFrame1MoneyFrame:SetFrameStrata("HIGH")
-	ContainerFrame1MoneyFrame:SetFrameLevel(2)
 	
 	ContainerFrame2MoneyFrame:Show()
 	ContainerFrame2MoneyFrame:ClearAllPoints()
 	ContainerFrame2MoneyFrame:SetPoint("TOPLEFT", _G[G.uiname.."bank"], "TOPLEFT", 6, -10)
-	ContainerFrame2MoneyFrame:SetFrameStrata("HIGH")
-	ContainerFrame2MoneyFrame:SetFrameLevel(2)
 	ContainerFrame2MoneyFrame:SetParent(_G[G.uiname.."bank"])
 	
 	ContainerFrame1:EnableMouse(false);
