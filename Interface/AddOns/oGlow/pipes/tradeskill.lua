@@ -25,7 +25,7 @@ local doHook = function()
 			if(_E) then return pipe(...) end
 		end
 
-		hooksecurefunc('TradeSkillFrame_SetSelection', hook)
+		--hooksecurefunc('TradeSkillFrame_SetSelection', hook)
 	end
 end
 
