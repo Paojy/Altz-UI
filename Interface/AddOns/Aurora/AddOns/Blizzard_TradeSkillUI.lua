@@ -1,66 +1,93 @@
 local F, C = unpack(select(2, ...))
 
-C.themes["Blizzard_TradeSkillUI"] = function()
-	F.CreateBD(TradeSkillGuildFrame)
-	F.CreateBD(TradeSkillGuildFrameContainer, .25)
 
+local function colourScroll(f)
+	if f:IsEnabled() then
+		f.tex:SetVertexColor(r, g, b)
+	end
+end
+
+local function clearScroll(f)
+	f.tex:SetVertexColor(1, 1, 1)
+end
+
+local function SkinScrollBar(f)
+	for k, v in pairs{f:GetChildren()} do
+		v:SetWidth(17)
+		F.Reskin(v, true)
+		
+		v:SetDisabledTexture(C.media.backdrop)
+		local dis = v:GetDisabledTexture()
+		dis:SetVertexColor(0, 0, 0, .4)
+		dis:SetDrawLayer("OVERLAY")
+
+		v.tex = v:CreateTexture(nil, "ARTWORK")
+		v.tex:SetSize(8, 8)
+		v.tex:SetPoint("CENTER")
+		v.tex:SetVertexColor(1, 1, 1)
+		
+		v:HookScript("OnEnter", colourScroll)
+		v:HookScript("OnLeave", clearScroll)
+			
+		if v:GetName() == "TradeSkillFrameScrollUpButton" then
+			v.tex:SetTexture(C.media.arrowUp)
+		else
+			v.tex:SetTexture(C.media.arrowDown)
+		end
+	end
+	
+	for k, bu in pairs{f:GetRegions()} do
+		if bu:GetName() == "TradeSkillFrameThumbTexture" then
+			bu:SetAlpha(0)
+			bu:SetWidth(17)
+
+			bu.bg = CreateFrame("Frame", nil, f)
+			bu.bg:SetPoint("TOPLEFT", bu, 0, -2)
+			bu.bg:SetPoint("BOTTOMRIGHT", bu, 0, 4)
+			F.CreateBD(bu.bg, 0)
+			
+			local tex = F.CreateGradient(f)
+			tex:SetPoint("TOPLEFT", bu.bg, 1, -1)
+			tex:SetPoint("BOTTOMRIGHT", bu.bg, -1, 1)
+		else
+			 bu:Hide()
+		end
+	end
+end
+
+C.themes["Blizzard_TradeSkillUI"] = function()
+	F.ReskinPortraitFrame(TradeSkillFrame, false)
 	TradeSkillFramePortrait:Hide()
 	TradeSkillFramePortrait.Show = F.dummy
-	for i = 18, 20 do
-		select(i, TradeSkillFrame:GetRegions()):Hide()
-		select(i, TradeSkillFrame:GetRegions()).Show = F.dummy
-	end
-	TradeSkillHorizontalBarLeft:Hide()
-	select(22, TradeSkillFrame:GetRegions()):Hide()
-	for i = 1, 3 do
-		select(i, TradeSkillExpandButtonFrame:GetRegions()):SetAlpha(0)
-	end
-	for i = 1, 9 do
-		select(i, TradeSkillGuildFrame:GetRegions()):Hide()
-	end
-	TradeSkillListScrollFrame:GetRegions():Hide()
-	select(2, TradeSkillListScrollFrame:GetRegions()):Hide()
-	TradeSkillDetailHeaderLeft:Hide()
-	select(6, TradeSkillDetailScrollChildFrame:GetRegions()):Hide()
-	TradeSkillDetailScrollFrameTop:SetAlpha(0)
-	TradeSkillDetailScrollFrameBottom:SetAlpha(0)
-	TradeSkillGuildCraftersFrameTrack:Hide()
-	TradeSkillRankFrameBorder:Hide()
-	TradeSkillRankFrameBackground:Hide()
+	TradeSkillFramePortraitFrame:Hide()
+	TradeSkillFramePortraitFrame.Show = F.dummy
 
-	TradeSkillDetailScrollFrame:SetHeight(176)
+	F.Reskin(TradeSkillFrame.DetailsFrame.CreateButton)
+	F.Reskin(TradeSkillFrame.DetailsFrame.CreateAllButton)
+	F.Reskin(TradeSkillFrame.DetailsFrame.ExitButton)
+	F.ReskinFilterButton(TradeSkillFrame.FilterButton)
 
-	local a1, p, a2, x, y = TradeSkillGuildFrame:GetPoint()
-	TradeSkillGuildFrame:ClearAllPoints()
-	TradeSkillGuildFrame:SetPoint(a1, p, a2, x + 16, y)
-
-	TradeSkillLinkButton:SetPoint("LEFT", 0, -1)
-
-	F.Reskin(TradeSkillCreateButton)
-	F.Reskin(TradeSkillCreateAllButton)
-	F.Reskin(TradeSkillCancelButton)
-	F.Reskin(TradeSkillViewGuildCraftersButton)
-	F.ReskinFilterButton(TradeSkillFilterButton)
-
-	TradeSkillRankFrame:SetStatusBarTexture(C.media.backdrop)
-	TradeSkillRankFrame.SetStatusBarColor = F.dummy
-	TradeSkillRankFrame:GetStatusBarTexture():SetGradient("VERTICAL", .1, .3, .9, .2, .4, 1)
-
-	local bg = CreateFrame("Frame", nil, TradeSkillRankFrame)
+	TradeSkillFrame.RankFrame:SetStatusBarTexture(C.media.backdrop)
+	TradeSkillFrame.RankFrame.SetStatusBarColor = F.dummy
+	TradeSkillFrame.RankFrame:GetStatusBarTexture():SetGradient("VERTICAL", .1, .3, .9, .2, .4, 1)
+	TradeSkillFrame.RankFrame.BorderLeft:Hide()
+	TradeSkillFrame.RankFrame.BorderRight:Hide()
+	TradeSkillFrame.RankFrame.BorderMid:Hide()
+	
+	local bg = CreateFrame("Frame", nil, TradeSkillFrame.RankFrame)
 	bg:SetPoint("TOPLEFT", -1, 1)
 	bg:SetPoint("BOTTOMRIGHT", 1, -1)
-	bg:SetFrameLevel(TradeSkillRankFrame:GetFrameLevel()-1)
+	bg:SetFrameLevel(TradeSkillFrame.RankFrame:GetFrameLevel()-1)
 	F.CreateBD(bg, .25)
 
-	for i = 1, MAX_TRADE_SKILL_REAGENTS do
-		local bu = _G["TradeSkillReagent"..i]
-		local ic = _G["TradeSkillReagent"..i.."IconTexture"]
-
-		_G["TradeSkillReagent"..i.."NameFrame"]:SetAlpha(0)
-
+	for i = 1, 8 do
+		local bu = TradeSkillFrame.DetailsFrame.Contents["Reagent"..i]
+		local ic = bu.Icon
 		ic:SetTexCoord(.08, .92, .08, .92)
 		ic:SetDrawLayer("ARTWORK")
 		F.CreateBG(ic)
+		
+		bu.NameFrame:SetAlpha(0)
 
 		local bd = CreateFrame("Frame", nil, bu)
 		bd:SetPoint("TOPLEFT", 39, -1)
@@ -68,142 +95,71 @@ C.themes["Blizzard_TradeSkillUI"] = function()
 		bd:SetFrameLevel(0)
 		F.CreateBD(bd, .25)
 
-		_G["TradeSkillReagent"..i.."Name"]:SetParent(bd)
+		bu.Name:SetParent(bd)
 	end
-
-	hooksecurefunc("TradeSkillFrame_SetSelection", function()
-		local ic = TradeSkillSkillIcon:GetNormalTexture()
-		if ic then
-			ic:SetTexCoord(.08, .92, .08, .92)
-			ic:SetPoint("TOPLEFT", 1, -1)
-			ic:SetPoint("BOTTOMRIGHT", -1, 1)
-			F.CreateBD(TradeSkillSkillIcon)
-		else
-			TradeSkillSkillIcon:SetBackdrop(nil)
-		end
-	end)
-
-	local colourExpandOrCollapse = F.colourExpandOrCollapse
-	local clearExpandOrCollapse = F.clearExpandOrCollapse
-
-	local function styleSkillButton(skillButton)
-		skillButton:SetNormalTexture("")
-		skillButton.SetNormalTexture = F.dummy
-		skillButton:SetPushedTexture("")
-
-		skillButton.bg = CreateFrame("Frame", nil, skillButton)
-		skillButton.bg:SetSize(13, 13)
-		skillButton.bg:SetPoint("LEFT", 4, 1)
-		skillButton.bg:SetFrameLevel(skillButton:GetFrameLevel()-1)
-		F.CreateBD(skillButton.bg, 0)
-
-		skillButton.tex = F.CreateGradient(skillButton)
-		skillButton.tex:SetPoint("TOPLEFT", skillButton.bg, 1, -1)
-		skillButton.tex:SetPoint("BOTTOMRIGHT", skillButton.bg, -1, 1)
-
-		skillButton.minus = skillButton:CreateTexture(nil, "OVERLAY")
-		skillButton.minus:SetSize(7, 1)
-		skillButton.minus:SetPoint("CENTER", skillButton.bg)
-		skillButton.minus:SetTexture(C.media.backdrop)
-		skillButton.minus:SetVertexColor(1, 1, 1)
-
-		skillButton.plus = skillButton:CreateTexture(nil, "OVERLAY")
-		skillButton.plus:SetSize(1, 7)
-		skillButton.plus:SetPoint("CENTER", skillButton.bg)
-		skillButton.plus:SetTexture(C.media.backdrop)
-		skillButton.plus:SetVertexColor(1, 1, 1)
-
-		skillButton:HookScript("OnEnter", colourExpandOrCollapse)
-		skillButton:HookScript("OnLeave", clearExpandOrCollapse)
-	end
-
-	styleSkillButton(TradeSkillCollapseAllButton)
-	TradeSkillCollapseAllButton:SetDisabledTexture("")
-	TradeSkillCollapseAllButton:SetHighlightTexture("")
-
-	hooksecurefunc("TradeSkillFrame_Update", function()
-		local numTradeSkills = GetNumTradeSkills()
-		local skillOffset = FauxScrollFrame_GetOffset(TradeSkillListScrollFrame)
-		local _, skillIndex, skillType, isExpanded
-		local diplayedSkills = TRADE_SKILLS_DISPLAYED
-		local hasFilterBar = TradeSkillFilterBar:IsShown()
-		if hasFilterBar then
-			diplayedSkills = TRADE_SKILLS_DISPLAYED - 1
-		end
-		local buttonIndex = 0
-
-		for i = 1, diplayedSkills do
-			skillIndex = i + skillOffset
-			_, skillType, _, isExpanded = GetTradeSkillInfo(skillIndex)
-			if hasFilterBar then
-				buttonIndex = i + 1
-			else
-				buttonIndex = i
-			end
-
-			local skillButton = _G["TradeSkillSkill"..buttonIndex]
-
-			if not skillButton.styled then
-				skillButton.styled = true
-
-				local buttonHighlight = _G["TradeSkillSkill"..buttonIndex.."Highlight"]
-				buttonHighlight:SetTexture("")
-				buttonHighlight.SetTexture = F.dummy
-
-				skillButton.SubSkillRankBar.BorderLeft:Hide()
-				skillButton.SubSkillRankBar.BorderRight:Hide()
-				skillButton.SubSkillRankBar.BorderMid:Hide()
-
-				skillButton.SubSkillRankBar:SetHeight(12)
-				skillButton.SubSkillRankBar:SetStatusBarTexture(C.media.backdrop)
-				skillButton.SubSkillRankBar:GetStatusBarTexture():SetGradient("VERTICAL", .1, .3, .9, .2, .4, 1)
-				F.CreateBDFrame(skillButton.SubSkillRankBar, .25)
-
-				styleSkillButton(skillButton)
-			end
-
-			if skillIndex <= numTradeSkills then
-				if skillType == "header" or skillType == "subheader" then
-					if skillType == "subheader" then
-						skillButton.bg:SetPoint("LEFT", 24, 1)
-					else
-						skillButton.bg:SetPoint("LEFT", 4, 1)
-					end
-
-					skillButton.bg:Show()
-					skillButton.tex:Show()
-					skillButton.minus:Show()
-					if isExpanded then
-						skillButton.plus:Hide()
-					else
-						skillButton.plus:Show()
-					end
-				else
-					skillButton.bg:Hide()
-					skillButton.tex:Hide()
-					skillButton.minus:Hide()
-					skillButton.plus:Hide()
-				end
-			end
-
-			if TradeSkillCollapseAllButton.collapsed == 1 then
-				TradeSkillCollapseAllButton.plus:Show()
-			else
-				TradeSkillCollapseAllButton.plus:Hide()
+	
+	TradeSkillFrame.DetailsFrame:SetScript("OnUpdate", function(self)
+		if self.pendingRefresh then
+			self:RefreshDisplay();
+			self.pendingRefresh = false;
+		
+			local ic = TradeSkillFrame.DetailsFrame.Contents.ResultIcon:GetNormalTexture()
+			if ic then
+				ic:SetTexCoord(.08, .92, .08, .92)
+				ic:SetPoint("TOPLEFT", 1, -1)
+				ic:SetPoint("BOTTOMRIGHT", -1, 1)
 			end
 		end
 	end)
+	
+	F.CreateBD(TradeSkillFrame.DetailsFrame.Contents.ResultIcon)
+	TradeSkillFrame.DetailsFrame.Contents.ResultIcon.Background:Hide()
+	
+	local r, g, b = C.r, C.g, C.b
+	
+	local function onEnable(self)
+		self:SetHeight(self.storedHeight) -- prevent it from resizing
+		self:SetBackdropColor(0, 0, 0, 0)
+	end
 
-	TradeSkillIncrementButton:SetPoint("RIGHT", TradeSkillCreateButton, "LEFT", -9, 0)
+	local function onDisable(self)
+		self:SetBackdropColor(r, g, b, .2)
+	end
 
-	F.ReskinPortraitFrame(TradeSkillFrame, true)
-	F.ReskinClose(TradeSkillGuildFrameCloseButton)
-	F.ReskinScroll(TradeSkillDetailScrollFrameScrollBar)
-	F.ReskinScroll(TradeSkillListScrollFrameScrollBar)
-	F.ReskinScroll(TradeSkillGuildCraftersFrameScrollBar)
-	F.ReskinInput(TradeSkillInputBox, nil, 33)
-	F.ReskinInput(TradeSkillFrameSearchBox)
-	F.ReskinArrow(TradeSkillDecrementButton, "left")
-	F.ReskinArrow(TradeSkillIncrementButton, "right")
-	F.ReskinArrow(TradeSkillLinkButton, "right")
+	local function onClick(self)
+		self:GetFontString():SetTextColor(1, 1, 1)
+	end
+	
+	for _, tab in pairs({TradeSkillFrame.RecipeList.LearnedTab, TradeSkillFrame.RecipeList.UnlearnedTab}) do
+		tab.LeftDisabled:SetAlpha(0)
+		tab.MiddleDisabled:SetAlpha(0)
+		tab.RightDisabled:SetAlpha(0)
+
+		tab.Left:SetAlpha(0)
+		tab.Middle:SetAlpha(0)
+		tab.Right:SetAlpha(0)
+
+		tab.Text:SetPoint("CENTER")
+		tab.Text:SetTextColor(1, 1, 1)
+
+		tab:HookScript("OnEnable", onEnable)
+		tab:HookScript("OnDisable", onDisable)
+		tab:HookScript("OnClick", onClick)
+		
+		tab:SetHeight(25)
+		tab.SetHeight = function() end
+
+		F.Reskin(tab)
+	end
+	
+	TradeSkillFrame.RecipeList.LearnedTab:SetBackdropColor(r, g, b, .2)
+	
+	TradeSkillFrame.DetailsFrame.Background:SetAlpha(0)
+	TradeSkillFrame.RecipeInset:Hide()
+	TradeSkillFrame.DetailsInset:Hide()
+	
+	SkinScrollBar(TradeSkillFrame.RecipeList.scrollBar)
+	SkinScrollBar(TradeSkillFrame.DetailsFrame.ScrollBar)
+	F.ReskinInput(TradeSkillFrame.SearchBox)
+	TradeSkillFrame.SearchBox:SetPoint("TOPLEFT", 190, -60)
 end

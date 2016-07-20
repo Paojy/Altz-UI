@@ -13,12 +13,6 @@ C.themes["Blizzard_AuctionUI"] = function()
 	ABBD:SetFrameLevel(AuctionProgressBar:GetFrameLevel()-1)
 	F.CreateBD(ABBD, .25)
 
-	AuctionProgressBarIcon:SetTexCoord(.08, .92, .08, .92)
-	F.CreateBG(AuctionProgressBarIcon)
-
-	AuctionProgressBarText:ClearAllPoints()
-	AuctionProgressBarText:SetPoint("CENTER", 0, 1)
-
 	F.ReskinClose(AuctionProgressFrameCancelButton, "LEFT", AuctionProgressBar, "RIGHT", 4, 0)
 	select(14, AuctionProgressFrameCancelButton:GetRegions()):SetPoint("CENTER", 0, 2)
 
@@ -27,7 +21,6 @@ C.themes["Blizzard_AuctionUI"] = function()
 	for i = 1, 4 do
 		select(i, AuctionProgressFrame:GetRegions()):Hide()
 	end
-	AuctionProgressBarBorder:Hide()
 	BrowseFilterScrollFrame:GetRegions():Hide()
 	select(2, BrowseFilterScrollFrame:GetRegions()):Hide()
 	BrowseScrollFrame:GetRegions():Hide()
@@ -58,7 +51,7 @@ C.themes["Blizzard_AuctionUI"] = function()
 	select(6, BidBuyoutButton:GetRegions()):Hide()
 	select(6, BidBidButton:GetRegions()):Hide()
 
-	hooksecurefunc("FilterButton_SetType", function(button)
+	hooksecurefunc("FilterButton_SetUp", function(button)
 		button:SetNormalTexture("")
 	end)
 
@@ -224,7 +217,16 @@ C.themes["Blizzard_AuctionUI"] = function()
 	F.ReskinCheck(ExactMatchCheckButton)
 	F.ReskinCheck(IsUsableCheckButton)
 	F.ReskinCheck(ShowOnPlayerCheckButton)
-
+	
+	BrowseNameText:ClearAllPoints()
+	BrowseNameText:SetPoint("TOPLEFT", AuctionFrameBrowse, "TOPLEFT", 80, -38)
+	BrowseLevelText:ClearAllPoints()
+	BrowseLevelText:SetPoint("TOPLEFT", AuctionFrameBrowse, "TOPLEFT", 230, -40)
+	BrowseDropDownName:ClearAllPoints()
+	BrowseDropDownName:SetPoint("TOPLEFT", AuctionFrameBrowse, "TOPLEFT", 310, -40)
+	BrowseDropDown:ClearAllPoints()
+	BrowseDropDown:SetPoint("TOPLEFT", AuctionFrameBrowse, "TOPLEFT", 290, -48)
+	
 	BrowsePrevPageButton:SetPoint("TOPLEFT", 660, -60)
 	BrowseNextPageButton:SetPoint("TOPRIGHT", 67, -60)
 	BrowsePrevPageButton:GetRegions():SetPoint("LEFT", BrowsePrevPageButton, "RIGHT", 2, 0)
