@@ -633,7 +633,7 @@ local function OnNamePlateCreated(namePlate)
 		namePlate.UnitFrame.healthBar:SetMinMaxValues(0, 1)
 		
 		namePlate.UnitFrame.healthBar.border = F.CreateBDFrame(namePlate.UnitFrame.healthBar, 1)
-		T.CreateSD(namePlate.UnitFrame.healthBar.border, 1, 0, 0, 0, 1, -1)
+		T.CreateSD(namePlate.UnitFrame.healthBar.border, 1, 0, 0, 0, 0, -1)
 		
 		namePlate.UnitFrame.healthBar.bg = namePlate.UnitFrame.healthBar:CreateTexture(nil, 'BORDER')
 		namePlate.UnitFrame.healthBar.bg:SetAllPoints(namePlate.UnitFrame.healthBar)
@@ -660,7 +660,7 @@ local function OnNamePlateCreated(namePlate)
 		namePlate.UnitFrame.castBar:SetStatusBarTexture(G.media.ufbar)
 		namePlate.UnitFrame.castBar:SetStatusBarColor(0.5, 0.5, 0.5)
 		namePlate.UnitFrame.castBar.border = F.CreateBDFrame(namePlate.UnitFrame.castBar, 0.6)
-		T.CreateSD(namePlate.UnitFrame.castBar.border, 1, 0, 0, 0, 1, -1)
+		T.CreateSD(namePlate.UnitFrame.castBar.border, 1, 0, 0, 0, 0, -1)
 		
 		namePlate.UnitFrame.castBar.bg = namePlate.UnitFrame.castBar:CreateTexture(nil, 'BORDER')
 		namePlate.UnitFrame.castBar.bg:SetAllPoints(namePlate.UnitFrame.castBar)

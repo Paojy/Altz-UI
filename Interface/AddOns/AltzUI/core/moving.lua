@@ -84,7 +84,7 @@ SpecMover:SetMovable(true)
 SpecMover:EnableMouse(true)
 
 F.CreateBD(SpecMover, 1)
-T.CreateSD(SpecMover, 2, 0, 0, 0, 1, -1)
+T.CreateSD(SpecMover, 2, 0, 0, 0, 0, -1)
 SpecMover:SetBackdropColor(.05, .05, .05)
 
 SpecMover.title = T.createtext(SpecMover, "OVERLAY", 16, "OUTLINE", "CENTER")
@@ -269,7 +269,7 @@ function T.CreateDragFrame(frame)
 	
 	--overlay texture
 	frame.df.mask = F.CreateBDFrame(frame.df, 0.5)
-	T.CreateSD(frame.df.mask, 2, 0, 0, 0, 1, -1)
+	T.CreateSD(frame.df.mask, 2, 0, 0, 0, 0, -1)
 	frame.df.mask.text = T.createtext(frame.df, "OVERLAY", 13, "OUTLINE", "LEFT")
 	frame.df.mask.text:SetPoint("TOPLEFT")
 	frame.df.mask.text:SetText(frame.movingname)

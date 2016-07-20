@@ -21,6 +21,30 @@ T.ShortValue = function(val)
 	end
 end
 
+T.ShortValue2 = function(val)
+	if type(val) == "number" then
+		if aCoreCDB["CombattextOptions"]["formattype"] == "w" then
+			if (val >= 1e7) then
+				return ("%.1fkw"):format(val / 1e7)
+			elseif (val >= 1e4) then
+				return ("%.1fw"):format(val / 1e4)
+			else
+				return ("%d"):format(val)
+			end
+		else
+			if (val >= 1e6) then
+				return ("%.1fm"):format(val / 1e6)
+			elseif (val >= 1e3) then
+				return ("%.1fk"):format(val / 1e3)
+			else
+				return ("%d"):format(val)
+			end
+		end
+	else
+		return val
+	end
+end
+
 local day, hour, minute = 86400, 3600, 60
 T.FormatTime = function(s)
     if s >= day then
@@ -68,13 +92,16 @@ T.CreateSD = function(parent, size, r, g, b, alpha, offset)
 	sd.size = size or 5
 	sd.offset = offset or 0
 	sd:SetBackdrop({
+		bgFile = G.media.blank,
 		edgeFile = G.media.glow,
 		edgeSize = sd.size,
 	})
 	sd:SetPoint("TOPLEFT", parent, -sd.size - 1 - sd.offset, sd.size + 1 + sd.offset)
 	sd:SetPoint("BOTTOMRIGHT", parent, sd.size + 1 + sd.offset, -sd.size - 1 - sd.offset)
 	sd:SetBackdropBorderColor(r or 0, g or 0, b or 0)
-	sd:SetAlpha(alpha or 1)
+	sd:SetBackdropColor(r or 0, g or 0, b or 0, alpha or 0)
+	
+	return sd
 end
 
 T.CreateThinSD = function(parent, size, r, g, b, alpha, offset)
@@ -82,13 +109,16 @@ T.CreateThinSD = function(parent, size, r, g, b, alpha, offset)
 	sd.size = size or 1
 	sd.offset = offset or 0
 	sd:SetBackdrop({
+		bgFile = G.media.blank,
 		edgeFile = G.media.blank,
 		edgeSize = sd.size,
 	})
 	sd:SetPoint("TOPLEFT", parent, -sd.size - 1 - sd.offset, sd.size + 1 + sd.offset)
 	sd:SetPoint("BOTTOMRIGHT", parent, sd.size + 1 + sd.offset, -sd.size - 1 - sd.offset)
 	sd:SetBackdropBorderColor(r or 0, g or 0, b or 0)
-	sd:SetAlpha(alpha or 1)
+	sd:SetBackdropColor(r or 0, g or 0, b or 0, alpha or 0)
+	
+	return sd
 end
 
 T.SkinButton = function(button, tex, blend)

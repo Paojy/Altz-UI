@@ -79,7 +79,7 @@ for index, unit in pairs(units) do
 	local bg = CreateFrame("Frame", nil, unit)
 	bg:SetWidth(unit.healthBarWidth + 2)
 	bg:SetFrameLevel(unit:GetFrameLevel()-1)
-	T.CreateSD(bg, 3, 0, 0, 0, 1, -2)
+	T.CreateSD(bg, 3, 0, 0, 0, 0, -2)
 	F.CreateBD(bg, .5)
 	
 	unit.HealthText:SetPoint("CENTER", bg, "CENTER")

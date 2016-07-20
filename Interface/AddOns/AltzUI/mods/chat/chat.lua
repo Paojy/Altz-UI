@@ -122,8 +122,8 @@ EventFrame:SetScript("OnEvent", function(self, event, arg1)
 	end
 end)
 
-F.CreateBD(GeneralDockManagerOverflowButtonList,0.7)
-T.CreateSD(GeneralDockManagerOverflowButtonList, 3, 0, 0, 0, 1, -1)
+F.CreateBD(GeneralDockManagerOverflowButtonList, 0.7)
+T.CreateSD(GeneralDockManagerOverflowButtonList, 3, 0, 0, 0, 0, -1)
 
 function FloatingChatFrame_OnMouseScroll(self, delta)
 	if ( delta > 0 ) then
