@@ -42,28 +42,59 @@ local MAX_COMBO_POINTS = MAX_COMBO_POINTS
 local Update = function(self, event, unit, type)
 	if event ~= "PLAYER_TARGET_CHANGED" and unit ~= 'player' then return end
 	
-	local cpoints = self.CPoints
-	if(cpoints.PreUpdate) then
-		cpoints:PreUpdate()
-	end
-
-	local cp
-	if(UnitHasVehicleUI'player') then
-		cp = GetComboPoints('vehicle', 'target')
-	else
-		cp = GetComboPoints('player', 'target')
+	local element = self.CPoints
+	if(element.PreUpdate) then
+		element:PreUpdate()
 	end
 	
-	for i=1, MAX_COMBO_POINTS do
-		if(i <= cp) then
-			cpoints[i]:Show()
-		else
-			cpoints[i]:Hide()
+	local cur, max, oldMax
+	if(UnitHasVehicleUI'player') then
+		cur = GetComboPoints('vehicle', 'target')
+		max = UnitPowerMax('vehicle', SPELL_POWER_COMBO_POINTS)
+	else
+		cur = GetComboPoints('player', 'target')
+		max = UnitPowerMax('player', SPELL_POWER_COMBO_POINTS)
+	end
+	
+	if max <= 6 then
+		for i = 1, max do
+			if(i <= cur) then
+				element[i]:Show()
+			else
+				element[i]:Hide()
+			end
+		end
+	else
+		for i = 1, 5 do
+			if cur <= 5 then
+				if(i <= cur) then
+					element[i]:Show()
+				else
+					element[i]:Hide()
+				end
+			else
+				element[i]:Show()
+			end
 		end
 	end
 
-	if(cpoints.PostUpdate) then
-		return cpoints:PostUpdate(cp)
+	oldMax = element.__max
+	if(max ~= oldMax) then
+		if max == 5 or max == 8 then
+			element[6]:Hide()
+		else
+			for i = 1, 6 do
+				if i > max then
+					element[i]:Hide()
+				end
+			end
+		end
+		
+		element.__max = max
+	end
+	
+	if(element.PostUpdate) then
+		return element:PostUpdate(cur, max, oldMax ~= max, event)
 	end
 end
 

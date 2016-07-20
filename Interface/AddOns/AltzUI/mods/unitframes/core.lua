@@ -34,10 +34,6 @@ local classicon_colors = { --monk/paladin/preist
 
 local cpoints_colors = { -- combat points
 	{220/255, 40/255, 0/255},
-	{255/255, 110/255, 0/255},
-	{255/255, 150/255, 0/130},
-	{255/255, 200/255, 0/255},
-	{255/255, 255/255, 0/255},
 	{255/255, 255/255, 0/255},
 }
 
@@ -268,12 +264,33 @@ local PostAltUpdate = function(altpp, min, cur, max)
 	altpp.value:SetText(cur)
 end
 
-local CpointsPostUpdate = function(element, cur)
-	for i = 1, 5 do
-		if cur == MAX_COMBO_POINTS then
-			element[i]:SetStatusBarColor(unpack(cpoints_colors[MAX_COMBO_POINTS]))
+local CpointsPostUpdate = function(element, cur, max, maxchanged)
+	if max <= 6 then
+		for i = 1, max do
+			element[i]:SetStatusBarColor(unpack(cpoints_colors[1]))
+		end
+	else
+		if cur <= 5 then
+			for i = 1, cur do
+				element[i]:SetStatusBarColor(unpack(cpoints_colors[1]))
+			end
 		else
-			element[i]:SetStatusBarColor(unpack(cpoints_colors[i]))
+			for i = 1, cur - 5 do
+				element[i]:SetStatusBarColor(unpack(cpoints_colors[2]))
+			end
+			for i = cur - 4, 5 do
+				element[i]:SetStatusBarColor(unpack(cpoints_colors[1]))
+			end
+		end
+	end
+	
+	if maxchanged then
+		for i = 1, 6 do
+			if max == 5 or max == 8 then
+				element[i]:SetWidth((aCoreCDB["UnitframeOptions"]["width"]+3)/5-3)
+			else
+				element[i]:SetWidth((aCoreCDB["UnitframeOptions"]["width"]+3)/max-3)
+			end
 		end
 	end
 end
@@ -1099,14 +1116,7 @@ local UnitSpecific = {
 		
         -- Runes, Shards, HolyPower and so on --
         if multicheck(G.myClass, "DEATHKNIGHT", "WARLOCK", "PALADIN", "MONK", "MAGE", "ROGUE", "DRUID") then
-            local count
-            if G.myClass == "DEATHKNIGHT" then 
-                count = 6
-            elseif G.myClass == "PALADIN" or G.myClass == "MONK" or G.myClass == "WARLOCK" or G.myClass == "MAGE" then
-                count = 6
-			elseif G.myClass == "ROGUE" or G.myClass == "DRUID" then
-				count = 5 -- combopoints
-            end
+			local count = 6
 
             local bars = CreateFrame("Frame", G.uiname.."SpecOrbs", self)
 			bars:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 0, 3)
