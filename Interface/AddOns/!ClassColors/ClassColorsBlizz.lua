@@ -659,23 +659,24 @@ addonFuncs["Blizzard_TradeSkillUI"] = function()
 	local TRADE_SKILL_GUILD_CRAFTERS_DISPLAYED = TRADE_SKILL_GUILD_CRAFTERS_DISPLAYED
 	local FauxScrollFrame_GetOffset, TradeSkillGuildCraftersFrame = FauxScrollFrame_GetOffset, TradeSkillGuildCraftersFrame
 	local GetGuildRecipeInfoPostQuery, GetGuildRecipeMember = GetGuildRecipeInfoPostQuery, GetGuildRecipeMember
-
-	hooksecurefunc(TradeSkillGuilCraftersFrame_Update and "TradeSkillGuilCraftersFrame_Update" or "TradeSkillGuildCraftersFrame_Update", function()
-		local _, _, numMembers = GetGuildRecipeInfoPostQuery()
-		local offset = FauxScrollFrame_GetOffset(TradeSkillGuildCraftersFrame)
-		for i = 1, TRADE_SKILL_GUILD_CRAFTERS_DISPLAYED do
-			if i > numMembers then
-				break
-			end
-			local _, class, online = GetGuildRecipeMember(i + offset)
-			if class and online then
-				local color = CUSTOM_CLASS_COLORS[class]
-				if color then
-					_G["TradeSkillGuildCrafter"..i.."Text"]:SetTextColor(color.r, color.g, color.b)
+	if TradeSkillGuilCraftersFrame_Update then
+		hooksecurefunc("TradeSkillGuilCraftersFrame_Update", function()
+			local _, _, numMembers = GetGuildRecipeInfoPostQuery()
+			local offset = FauxScrollFrame_GetOffset(TradeSkillGuildCraftersFrame)
+			for i = 1, TRADE_SKILL_GUILD_CRAFTERS_DISPLAYED do
+				if i > numMembers then
+					break
+				end
+				local _, class, online = GetGuildRecipeMember(i + offset)
+				if class and online then
+					local color = CUSTOM_CLASS_COLORS[class]
+					if color then
+						_G["TradeSkillGuildCrafter"..i.."Text"]:SetTextColor(color.r, color.g, color.b)
+					end
 				end
 			end
-		end
-	end)
+		end)
+	end
 end
 
 ------------------------------------------------------------------------
