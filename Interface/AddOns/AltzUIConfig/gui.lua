@@ -1308,7 +1308,12 @@ end
 local function CreateCooldownAuraList(frame, auratype, auratable)
 	for spell, info in pairs (auratable) do
 		if info.id then
-		CreateCooldownAuraButton(frame, auratype, spell, info.id, info.level)
+			if GetSpellInfo(info.id) then
+				CreateCooldownAuraButton(frame, auratype, spell, info.id, info.level)
+			else
+				print(spell.." is gone, delete it.")
+				aCoreCDB["CooldownAura"][auratype][spell] = nil
+			end		
 		end
 	end
 	LineUpCooldownAuraList(frame, auratype)
@@ -1783,7 +1788,12 @@ end
 
 local function Createplateauralist(list, parent)
 	for spellID, info in T.pairsByKeys(aCoreCDB["PlateOptions"][list]) do
-		CreateplateauralistButton(spellID, parent, list)
+		if GetSpellInfo(spellID) then
+			CreateplateauralistButton(spellID, parent, list)
+		else
+			print("spell ID "..spellID.." is gone, delete it.")
+			aCoreCDB["PlateOptions"][list][spellID] = nil
+		end
 	end
 	LineUpplateauralist(parent, list)
 end
