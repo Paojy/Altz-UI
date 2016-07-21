@@ -55,12 +55,21 @@ C.themes["Blizzard_AchievementUI"] = function()
 			end
 		end)
 	end
-
+	
+	AchievementFrameHeaderLeftDDLInset:Hide()
+	AchievementFrameHeaderLeftDDLInset.Show = function() end
+	
 	AchievementFrameHeaderPoints:SetPoint("TOP", AchievementFrame, "TOP", 0, -6)
-	AchievementFrameFilterDropDown:SetPoint("TOPRIGHT", AchievementFrame, "TOPRIGHT", -98, 1)
+	
+	F.ReskinInput(AchievementFrame.searchBox, 20, 150)
+	AchievementFrame.searchBox:ClearAllPoints()
+	AchievementFrame.searchBox:SetPoint("TOPRIGHT", AchievementFrame, "TOPRIGHT", -50, -4)
+	
+	AchievementFrameFilterDropDown:ClearAllPoints()
+	AchievementFrameFilterDropDown:SetPoint("TOPRIGHT", AchievementFrame.searchBox, "TOPLEFT", 15, 4)
 	AchievementFrameFilterDropDownText:ClearAllPoints()
 	AchievementFrameFilterDropDownText:SetPoint("CENTER", -10, 1)
-
+	
 	AchievementFrameSummaryCategoriesStatusBar:SetStatusBarTexture(C.media.backdrop)
 	AchievementFrameSummaryCategoriesStatusBar:GetStatusBarTexture():SetGradient("VERTICAL", 0, .4, 0, 0, .6, 0)
 	AchievementFrameSummaryCategoriesStatusBarLeft:Hide()
