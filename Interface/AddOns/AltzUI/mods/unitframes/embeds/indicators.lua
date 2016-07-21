@@ -35,46 +35,44 @@ oUF.Tags.Methods['Mlight:rnw'] = function(u) -- 恢复
 end
 oUF.Tags.Events['Mlight:rnw'] = "UNIT_AURA"
 
-oUF.Tags.Methods['Mlight:pws'] = function(u) -- 盾和虚弱灵魂
-	local pws_time, ws_time, r, g, b, colorstr
+oUF.Tags.Methods['Mlight:pws'] = function(u) -- 盾
+	local pws_time, perc, r, g, b, colorstr
 	
 	local pws, _,_,_,_,_, pws_expiration = UnitBuff(u, GetSpellInfo(17), nil, "PLAYER")
 	if pws then
-	
 		pws_time = T.FormatTime(pws_expiration-GetTime())
 		
-		real_absorb = select(15, UnitBuff(u, GetSpellInfo(17), nil, "PLAYER"))
-		max_absorb = string.match(gsub(gsub(GetSpellDescription(17), ",", ""),"%d+","",1),"%d+")
-		r, g, b = T.ColorGradient(real_absorb/max_absorb, 1,0,0, 1,1,.8, 1,1,1)
+		real_absorb = select(17, UnitBuff(u, GetSpellInfo(17), nil, "PLAYER"))
+		max_absorb = tostring(string.match(gsub(gsub(GetSpellDescription(17), ",", ""),"%d+","",1),"%d+"))
+		
+		perc = real_absorb/max_absorb
+		
+		r, g, b = T.ColorGradient(perc, 1, 0, 0, 1, 1, 0, 0, 1, 0)
 		colorstr = ('|cff%02x%02x%02x'):format(r * 255, g * 255, b * 255)
 		
-	end
-	
-	local ws, _,_,_,_,_, ws_expiration = UnitDebuff(u, GetSpellInfo(6788))
-	if ws then
-		ws_time = T.FormatTime(ws_expiration-GetTime())	
-	end
-	
-	if pws then
 		return colorstr..pws_time.."|r"
-	elseif ws then
-		return "|cff9370DB-"..ws_time.."|r"
 	end
 end
 oUF.Tags.Events['Mlight:pws'] = "UNIT_AURA UNIT_ABSORB_AMOUNT_CHANGED"
 
 oUF.Tags.Methods['Mlight:yzdx'] = function(u) -- 意志洞悉
-	if UnitBuff(u, GetSpellInfo(152118), nil, "PLAYER") then
-		real_absorb = select(15, UnitBuff(u, GetSpellInfo(152118), nil, "PLAYER"))
-		max_absorb = UnitHealthMax("player")*0.75
-		if real_absorb and max_absorb then
-			local r, g, b = T.ColorGradient(real_absorb/max_absorb, 1,0,0, 1,1,.3, 1,1,1)
-			local colorstr = ('|cff%02x%02x%02x'):format(r * 255, g * 255, b * 255)
-			return colorstr..x.."|r"
-		end
-	end 
+	local yzdx_time, perc, r, g, b, colorstr
+	
+	local yzdx, _,_,_,_,_, yzdx_expiration = UnitBuff(u, GetSpellInfo(152118), nil, "PLAYER")
+	if yzdx then
+		yzdx_time = T.FormatTime(yzdx_expiration-GetTime())
+		
+		real_absorb = select(17, UnitBuff(u, GetSpellInfo(152118), nil, "PLAYER"))
+		max_absorb = tostring(string.match(gsub(gsub(GetSpellDescription(152118), ",", ""),"%d+","",1),"%d+"))*2.5
+		
+		perc = real_absorb/max_absorb
+		r, g, b = T.ColorGradient(perc, 0, 0, 1, 0, 1, 1, 1, 1, 1)
+		colorstr = ('|cff%02x%02x%02x'):format(r * 255, g * 255, b * 255)
+
+		return colorstr..yzdx_time.."|r"
+	end
 end
-oUF.Tags.Events['Mlight:yzdx'] = "UNIT_ABSORB_AMOUNT_CHANGED" 
+oUF.Tags.Events['Mlight:yzdx'] = "UNIT_AURA UNIT_ABSORB_AMOUNT_CHANGED" 
  
 -- Druid 德鲁伊
 oUF.Tags.Methods['Mlight:lb'] = function(u) -- 生命绽放
@@ -195,9 +193,9 @@ classIndicators={
     ["PRIEST"] = {
         ["TL"] = "[Mlight:rnw][Mlight:pws]",
         ["BR"] = "",
-        ["BL"] = "",
+        ["BL"] = "[Mlight:yzdx]",
         ["TR"] = "[Mlight:pom]",
-        ["Cen"] = "[Mlight:yzdx]",
+        ["Cen"] = "",
     },
     ["PALADIN"] = {
         ["TL"] = "",
