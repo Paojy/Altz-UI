@@ -1085,6 +1085,7 @@ local Character_default_Settings = {
 		LFGRewards = true,
 		autoacceptproposal = true,
 		hidemapandchat = false,
+		hours24 = true,
 	},
 	SkinOptions = {
 		setClassColor = true,

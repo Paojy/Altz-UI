@@ -576,16 +576,35 @@ clockframe:SetSize(40, 20)
 clockframe.text = T.createtext(clockframe, "OVERLAY", 12, "OUTLINE", "CENTER")
 clockframe.text:SetPoint("BOTTOM")
 
-clockframe.t = 0
+function clockframe:Update()
+	if aCoreCDB["OtherOptions"]["hours24"] then
+		clockframe.text:SetText(format("%s",date("%H:%M")))
+	else
+		clockframe.text:SetText(format("%s",date("%I:%M")))
+	end
+end
+
+clockframe.t = 5
 clockframe:SetScript("OnUpdate", function(self, e)
 	self.t =  self.t + e
 	if self.t > 5 then
-		self.text:SetText(format("%s",date("%H:%M")))
+		self.Update()
 		self.t = 0
 	end
 end)
 
-clockframe:SetScript("OnMouseDown", function() ToggleCalendar() end)
+clockframe:SetScript("OnMouseDown", function(self, bu) 
+	if bu == "LeftButton" then
+		ToggleCalendar()
+	else
+		if aCoreCDB["OtherOptions"]["hours24"] then
+			aCoreCDB["OtherOptions"]["hours24"] = false
+		else
+			aCoreCDB["OtherOptions"]["hours24"] = true
+		end
+		self.Update()
+	end
+end)
 
 -- 缩放小地图比例
 Minimap:EnableMouseWheel(true)
