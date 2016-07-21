@@ -1140,10 +1140,6 @@ local function CreateMicromenuButton(parent, bu, text, original)
 					HideUIPanel(GameMenuFrame)
 				end
 				ToggleAllBags()	
-			elseif original == "anc" then
-				PlaySound("igMainMenuOption");
-				ShowUIPanel(InterfaceOptionsFrame);
-				InterfaceOptionsFrame.lastFrame = GameMenuFrame
 			else
 				print(original)
 			end
@@ -1160,13 +1156,14 @@ local function CreateMicromenuButton(parent, bu, text, original)
 	return Button
 end
 
-MicromenuBar.UI = CreateMicromenuButton(MicromenuBar, false, UIOPTIONS_MENU, "anc")
+--MicromenuBar.UI = CreateMicromenuButton(MicromenuBar, false, UIOPTIONS_MENU, "anc")
 MicromenuBar.Charcter = CreateMicromenuButton(MicromenuBar, CharacterMicroButton, CHARACTER_BUTTON, "Charcter")
 MicromenuBar.Friends = CreateMicromenuButton(MicromenuBar, false, SOCIAL_BUTTON, "Friends")
 MicromenuBar.Guild = CreateMicromenuButton(MicromenuBar, GuildMicroButton, GUILD, "Guild")
 MicromenuBar.Achievement = CreateMicromenuButton(MicromenuBar, AchievementMicroButton, ACHIEVEMENT_BUTTON, "Achievement")
 MicromenuBar.EJ = CreateMicromenuButton(MicromenuBar, EJMicroButton, ENCOUNTER_JOURNAL, "EJ")
-MicromenuBar.System = CreateMicromenuButton(MicromenuBar, MainMenuMicroButton, G.classcolor.."  AltzUI "..G.Version.."|r", "System")
+MicromenuBar.Store = CreateMicromenuButton(MicromenuBar, StoreMicroButton, BLIZZARD_STORE, "Store") 
+MicromenuBar.System = CreateMicromenuButton(MicromenuBar, MainMenuMicroButton, G.classcolor.." AltzUI "..G.Version.."|r", "System")
 MicromenuBar.Pet = CreateMicromenuButton(MicromenuBar, CollectionsMicroButton, MOUNTS_AND_PETS, "Pet")
 MicromenuBar.Talent = CreateMicromenuButton(MicromenuBar, TalentMicroButton, TALENTS_BUTTON, "Talent")
 MicromenuBar.LFR = CreateMicromenuButton(MicromenuBar, LFDMicroButton, LFG_TITLE, "LFR")
