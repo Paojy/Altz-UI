@@ -214,7 +214,7 @@ local FriendlyFrameOptions = {
 }
 
 local PlayerFrameOptions = {
-	UseClassColor = aCoreCDB["PlateOptions"]["classcolor"]
+	UseClassColor = aCoreCDB["PlateOptions"]["firendlyCR"]
 }
 
 local function UpdateName(unitFrame)
