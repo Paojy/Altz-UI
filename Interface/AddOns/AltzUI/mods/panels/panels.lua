@@ -358,6 +358,7 @@ local BlackList = {
 	["MiniMapBattlefieldFrame"] = true,
 	["QueueStatusMinimapButton"] = true,
 	["MinimapButtonCollectFrame"] = true,
+	["GarrisonLandingPageMinimapButton"] = true,
 }
 
 local MBCF = CreateFrame("Frame", "MinimapButtonCollectFrame", Minimap)
@@ -410,12 +411,18 @@ T.CollectMinimapButtons = function(parent)
 			end)
 		end
 	end
+	local space
+	if #buttons > 5 then
+		space = -5
+	else
+		space = 0
+	end
 	for i =1, #buttons do
 		buttons[i]:ClearAllPoints()
 		if i == 1 then
 			buttons[i]:SetPoint("LEFT", parent, "LEFT", 0, 0)
 		else
-			buttons[i]:SetPoint("LEFT", buttons[i-1], "RIGHT", 0, 0)
+			buttons[i]:SetPoint("LEFT", buttons[i-1], "RIGHT", space, 0)
 		end
 		buttons[i].ClearAllPoints = T.dummy
 		buttons[i].SetPoint = T.dummy
@@ -423,7 +430,7 @@ T.CollectMinimapButtons = function(parent)
 end
 
 MBCF:SetScript("OnEvent", function(self)
-	T.CollectMinimapButtons(MBCF)
+	C_Timer.After(0.3, function() T.CollectMinimapButtons(MBCF) end)
 	self:SetAlpha(0)
 	self:UnregisterEvent("PLAYER_ENTERING_WORLD")
 end)
@@ -1077,9 +1084,11 @@ local function CreateMicromenuButton(parent, bu, text, original)
 		Button:SetNormalTexture(nil)
 		Button:SetPushedTexture(nil)
 		Button:SetHighlightTexture(nil)
+		Button:SetDisabledTexture(nil)
 		Button.SetNormalTexture = T.dummy
 		Button.SetPushedTexture = T.dummy
-		Button.SetHighlightTexture = T.SetHighlightTexture
+		Button.SetHighlightTexture = T.dummy
+		Button.SetDisabledTexture = T.dummy
 		for j = 1, Button:GetNumRegions() do
 			local region = select(j, Button:GetRegions())
 			region:Hide()
