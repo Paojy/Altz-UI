@@ -452,20 +452,31 @@ UFInnerframe.castbar = CreateOptionPage("UF Options castbar", L["施法条"], UF
 
 T.createcheckbutton(UFInnerframe.castbar, 30, 60, L["启用"], "UnitframeOptions", "castbars")
 T.createslider(UFInnerframe.castbar, 30, 110, L["图标大小"], "UnitframeOptions", "cbIconsize", 1, 10, 50, 1)
-T.createcheckbutton(UFInnerframe.castbar, 30, 150, L["独立玩家施法条"], "UnitframeOptions", "independentcb")
+T.createcheckbutton(UFInnerframe.castbar, 30, 150, L["独立施法条"], "UnitframeOptions", "independentcb")
+T.createslider(UFInnerframe.castbar, 30, 200, L["玩家施法条"]..L["高度"], "UnitframeOptions", "cbheight", 1, 5, 30, 1)
+T.createslider(UFInnerframe.castbar, 230, 200, L["玩家施法条"]..L["宽度"], "UnitframeOptions", "cbwidth", 1, 50, 500, 5)
+UFInnerframe.castbar.cbheight:SetWidth(170)
+UFInnerframe.castbar.cbwidth:SetWidth(170)
+T.createslider(UFInnerframe.castbar, 30, 240, L["目标施法条"]..L["高度"], "UnitframeOptions", "target_cbheight", 1, 5, 30, 1)
+T.createslider(UFInnerframe.castbar, 230, 240, L["目标施法条"]..L["宽度"], "UnitframeOptions", "target_cbwidth", 1, 50, 500, 5)
+UFInnerframe.castbar.target_cbheight:SetWidth(170)
+UFInnerframe.castbar.target_cbwidth:SetWidth(170)
+T.createslider(UFInnerframe.castbar, 30, 280, L["焦点施法条"]..L["高度"], "UnitframeOptions", "focus_cbheight", 1, 5, 30, 1)
+T.createslider(UFInnerframe.castbar, 230, 280, L["焦点施法条"]..L["宽度"], "UnitframeOptions", "focus_cbwidth", 1, 50, 500, 5)
+UFInnerframe.castbar.focus_cbheight:SetWidth(170)
+UFInnerframe.castbar.focus_cbwidth:SetWidth(170)
+
 local CBtextpos_group = {
-	["CENTER"] = L["中间"],
-	["BOTTOM"] = L["下方"],
 	["LEFT"] = L["左"],
+	["TOPLEFT"] = L["左上"],
 	["RIGHT"] = L["右"],
+	["TOPRIGHT"] = L["右上"],
 }
-T.createslider(UFInnerframe.castbar, 30, 200, L["高度"], "UnitframeOptions", "cbheight", 1, 5, 30, 1)
-T.createslider(UFInnerframe.castbar, 30, 240, L["宽度"], "UnitframeOptions", "cbwidth", 1, 50, 500, 5)
-T.createradiobuttongroup(UFInnerframe.castbar, 30, 270, L["法术名称位置"], "UnitframeOptions", "namepos", CBtextpos_group)
-T.createradiobuttongroup(UFInnerframe.castbar, 30, 300, L["施法时间位置"], "UnitframeOptions", "timepos", CBtextpos_group)
-T.createDR(UFInnerframe.castbar.independentcb, UFInnerframe.castbar.cbheight, UFInnerframe.castbar.cbwidth, UFInnerframe.castbar.namepos, UFInnerframe.castbar.timepos)
-T.createcheckbutton(UFInnerframe.castbar, 30, 340, L["引导法术分段"], "UnitframeOptions", "channelticks")
-T.createDR(UFInnerframe.castbar.castbars, UFInnerframe.castbar.cbIconsize, UFInnerframe.castbar.independentcb, UFInnerframe.castbar.cbheight, UFInnerframe.castbar.cbwidth, UFInnerframe.castbar.namepos, UFInnerframe.castbar.timepos, UFInnerframe.castbar.channelticks)
+T.createradiobuttongroup(UFInnerframe.castbar, 30, 310, L["法术名称位置"], "UnitframeOptions", "namepos", CBtextpos_group)
+T.createradiobuttongroup(UFInnerframe.castbar, 30, 340, L["施法时间位置"], "UnitframeOptions", "timepos", CBtextpos_group)
+T.createDR(UFInnerframe.castbar.independentcb, UFInnerframe.castbar.cbheight, UFInnerframe.castbar.cbwidth, UFInnerframe.castbar.target_cbheight, UFInnerframe.castbar.target_cbwidth, UFInnerframe.castbar.focus_cbheight, UFInnerframe.castbar.focus_cbwidth, UFInnerframe.castbar.namepos, UFInnerframe.castbar.timepos)
+T.createcheckbutton(UFInnerframe.castbar, 30, 380, L["引导法术分段"], "UnitframeOptions", "channelticks")
+T.createDR(UFInnerframe.castbar.castbars, UFInnerframe.castbar.cbIconsize, UFInnerframe.castbar.independentcb, UFInnerframe.castbar.cbheight, UFInnerframe.castbar.cbwidth, UFInnerframe.castbar.target_cbheight, UFInnerframe.castbar.target_cbwidth, UFInnerframe.castbar.focus_cbheight, UFInnerframe.castbar.focus_cbwidth, UFInnerframe.castbar.namepos, UFInnerframe.castbar.timepos, UFInnerframe.castbar.channelticks)
 
 UFInnerframe.swingtimer = CreateOptionPage("UF Options swingtimer", L["平砍计时条"], UFInnerframe, "VERTICAL", .3)
 
@@ -1721,10 +1732,10 @@ T.createcheckbutton(PlateInnerframe.common, 30, 90, L["数字样式"], "PlateOpt
 T.createcheckbutton(PlateInnerframe.common, 30, 120, L["友善职业染色"], "PlateOptions", "firendlyCR")
 T.createcheckbutton(PlateInnerframe.common, 30, 150, L["敌对职业染色"], "PlateOptions", "enemyCR")
 T.createcheckbutton(PlateInnerframe.common, 30, 180, L["仇恨染色"], "PlateOptions", "threatcolor")
-T.createcheckbutton(PlateInnerframe.common, 30, 210, L["自动显示/隐藏"], "PlateOptions", "autotoggleplates", L["自动显示/隐藏提示"])
+T.CVartogglebox(PlateInnerframe.common, 30, 210, "nameplateShowAll", UNIT_NAMEPLATES_AUTOMODE)
 T.createslider(PlateInnerframe.common, 30, 260, L["图标数量"], "PlateOptions", "plateauranum", 1, 3, 10, 1)
 T.createslider(PlateInnerframe.common, 30, 310, L["图标大小"], "PlateOptions", "plateaurasize", 1, 20, 40, 2)
-T.createDR(PlateInnerframe.common.enableplate, PlateInnerframe.common.numberstyle, PlateInnerframe.common.firendlyCR, PlateInnerframe.common.enemyCR, PlateInnerframe.common.autotoggleplates, PlateInnerframe.common.plateauranum, PlateInnerframe.common.plateaurasize)
+T.createDR(PlateInnerframe.common.enableplate, PlateInnerframe.common.numberstyle, PlateInnerframe.common.firendlyCR, PlateInnerframe.common.enemyCR, PlateInnerframe.common.plateauranum, PlateInnerframe.common.plateaurasize)
 
 PlateInnerframe.auralist = CreateOptionPage("Actionbar Options common", L["光环"], PlateInnerframe, "VERTICAL", .3)
 
@@ -2010,20 +2021,22 @@ T.createDR(TooltipOptions.enabletip, TooltipOptions.size, TooltipOptions.cursor,
 local CombattextOptions = CreateOptionPage("CombatText Options", L["战斗信息"], GUI, "VERTICAL")
 
 T.createcheckbutton(CombattextOptions, 30, 60, L["启用"], "CombattextOptions", "combattext")
-T.createcheckbutton(CombattextOptions, 30, 90, L["承受伤害/治疗"], "CombattextOptions", "showreceivedct")
-T.createcheckbutton(CombattextOptions, 30, 120, L["输出伤害/治疗"], "CombattextOptions", "showoutputct")
+T.createcheckbutton(CombattextOptions, 30, 90, L["隐藏浮动战斗信息"], "CombattextOptions", "hidblz", L["隐藏浮动战斗信息提示"])
+T.createcheckbutton(CombattextOptions, 30, 120, L["承受伤害/治疗"], "CombattextOptions", "showreceivedct")
+T.createcheckbutton(CombattextOptions, 30, 150, L["输出伤害/治疗"], "CombattextOptions", "showoutputct")
 local textformattype_group = {
 	["k"] = "10000 → 10k",
 	["w"] = "10000 → 1w",
 }
-T.createradiobuttongroup(CombattextOptions, 30, 150, L["数字缩写样式"], "CombattextOptions", "formattype", textformattype_group)
-T.createslider(CombattextOptions, 30, 200, L["图标大小"], "CombattextOptions", "cticonsize", 1, 10, 30, 1)
-T.createslider(CombattextOptions, 30, 240, L["暴击图标大小"], "CombattextOptions", "ctbigiconsize", 1, 10, 30, 1)
-T.createcheckbutton(CombattextOptions, 30, 280, L["显示DOT"], "CombattextOptions", "ctshowdots")
-T.createcheckbutton(CombattextOptions, 30, 310, L["显示HOT"], "CombattextOptions", "ctshowhots")
-T.createcheckbutton(CombattextOptions, 30, 340, L["显示宠物"], "CombattextOptions", "ctshowpet")
-T.createslider(CombattextOptions, 30, 390, L["隐藏时间"], "CombattextOptions", "ctfadetime", 10, 20, 100, 5, L["隐藏时间提示"])
-T.createDR(CombattextOptions.combattext, CombattextOptions.showreceivedct, CombattextOptions.showoutputct, CombattextOptions.cticonsize, CombattextOptions.ctbigiconsize, CombattextOptions.ctshowdots, CombattextOptions.ctshowhots, CombattextOptions.ctshowpet, CombattextOptions.ctfadetime)
+T.createradiobuttongroup(CombattextOptions, 30, 180, L["数字缩写样式"], "CombattextOptions", "formattype", textformattype_group)
+T.createslider(CombattextOptions, 30, 230, L["图标大小"], "CombattextOptions", "cticonsize", 1, 10, 30, 1)
+T.createslider(CombattextOptions, 30, 270, L["暴击图标大小"], "CombattextOptions", "ctbigiconsize", 1, 10, 30, 1)
+T.createcheckbutton(CombattextOptions, 30, 310, L["显示DOT"], "CombattextOptions", "ctshowdots")
+T.createcheckbutton(CombattextOptions, 30, 340, L["显示HOT"], "CombattextOptions", "ctshowhots")
+T.createcheckbutton(CombattextOptions, 30, 370, L["显示宠物"], "CombattextOptions", "ctshowpet")
+T.createslider(CombattextOptions, 30, 420, L["隐藏时间"], "CombattextOptions", "ctfadetime", 10, 20, 100, 5, L["隐藏时间提示"])
+
+T.createDR(CombattextOptions.combattext, CombattextOptions.hidblz, CombattextOptions.showreceivedct, CombattextOptions.showoutputct, CombattextOptions.cticonsize, CombattextOptions.ctbigiconsize, CombattextOptions.ctshowdots, CombattextOptions.ctshowhots, CombattextOptions.ctshowpet, CombattextOptions.ctfadetime)
 
 --====================================================--
 --[[              -- RaidTool Options --                ]]--
