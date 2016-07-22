@@ -78,24 +78,12 @@ T.Overridehealthbar = function(self, event, unit)
 	local min, max = UnitHealth(unit), UnitHealthMax(unit)
 	local disconnected = not UnitIsConnected(unit)
 	
-    local per = select(16, UnitDebuff(unit, GetSpellInfo(179987)))
-	--local test = UnitDebuff(unit, GetSpellInfo(6788))
-	
-	local max_health
-	if per then
-		max_health = max_health*per/100
-	--elseif test then
-		--max_health = max*.5
-	else
-		max_health = max
-	end
-	
-	health:SetMinMaxValues(0, max_health)
+	health:SetMinMaxValues(0, max)
 	
 	if disconnected then
-		health:SetValue(max_health)
+		health:SetValue(max)
 	elseif aCoreCDB["UnitframeOptions"]["style"] ~= 3 then
-		health:SetValue(max_health - min) 
+		health:SetValue(max - min) 
 	else
 		health:SetValue(min) 
 	end
@@ -559,53 +547,75 @@ local CreateCastbars = function(self, unit)
 
 		cb.IBackdrop = T.createBackdrop(cb, cb.Icon)
 		
-        if unit == "player" then
-            cb.SafeZone = cb:CreateTexture(nil, "OVERLAY")
-            cb.SafeZone:SetTexture(G.media.blank)
-            cb.SafeZone:SetVertexColor( 1, 1, 1, .5)
+		if multicheck(u, "target", "player", "focus") and aCoreCDB["UnitframeOptions"]["independentcb"] then
+			cb:ClearAllPoints()
 			
-			if aCoreCDB["UnitframeOptions"]["independentcb"] then
-				cb:ClearAllPoints()
+			if unit == "player" then
+				cb.SafeZone = cb:CreateTexture(nil, "OVERLAY")
+				cb.SafeZone:SetTexture(G.media.blank)
+				cb.SafeZone:SetVertexColor( 1, 1, 1, .5)
+				
 				cb:SetSize(aCoreCDB["UnitframeOptions"]["cbwidth"], aCoreCDB["UnitframeOptions"]["cbheight"])
 				cb.movingname = L["玩家施法条"]
 				cb.point = {
 						healer = {a1 = "TOP", parent = "UIParent", a2 = "CENTER", x = 0, y = -150},
 						dpser = {a1 = "TOP", parent = "UIParent", a2 = "CENTER", x = 0, y = -150},
 					}
-				T.CreateDragFrame(cb)
-				
-				cb:SetStatusBarColor( .35, .65, 1, 1)
-				cb.bd = T.createBackdrop(cb, cb, 1)
-				cb.Icon:SetPoint("BOTTOMRIGHT", cb, "BOTTOMLEFT", -7, 0)
 				cb.Spark:SetSize(8, aCoreCDB["UnitframeOptions"]["cbheight"]*2)
-				
-				cb.Time:ClearAllPoints()
-				if aCoreCDB["UnitframeOptions"]["timepos"] == "CENTER" then
-					cb.Time:SetPoint("BOTTOM", cb, "TOP", 0, 3)
-				elseif aCoreCDB["UnitframeOptions"]["timepos"] == "LEFT" then
-					cb.Time:SetPoint("BOTTOMLEFT", cb, "TOPLEFT", 0, 3)
-					cb.Time:SetJustifyH("LEFT")
-				elseif aCoreCDB["UnitframeOptions"]["timepos"] == "RIGHT" then
-					cb.Time:SetPoint("BOTTOMRIGHT", cb, "TOPRIGHT", 0, 3)
-					cb.Time:SetJustifyH("RIGHT")
-				elseif aCoreCDB["UnitframeOptions"]["timepos"] == "BOTTOM" then
-					cb.Time:SetPoint("TOP", cb, "BOTTOM", 0, -3)
-				end
-				
-				cb.Text:ClearAllPoints()
-				if aCoreCDB["UnitframeOptions"]["namepos"] == "CENTER" then
-					cb.Text:SetPoint("BOTTOM", cb, "TOP", 0, 3)
-				elseif aCoreCDB["UnitframeOptions"]["namepos"] == "LEFT" then
-					cb.Text:SetPoint("BOTTOMLEFT", cb, "TOPLEFT", 0, 3)
-					cb.Text:SetJustifyH("LEFT")
-				elseif aCoreCDB["UnitframeOptions"]["namepos"] == "RIGHT" then
-					cb.Text:SetPoint("BOTTOMRIGHT", cb, "TOPRIGHT", 0, 3)
-					cb.Text:SetJustifyH("RIGHT")
-				elseif aCoreCDB["UnitframeOptions"]["namepos"] == "BOTTOM" then
-					cb.Text:SetPoint("TOP", cb, "BOTTOM", 0, -3)
-				end
+			elseif unit == "target" then
+				cb:SetSize(aCoreCDB["UnitframeOptions"]["target_cbwidth"], aCoreCDB["UnitframeOptions"]["target_cbheight"])
+				cb.movingname = L["目标施法条"]
+				cb.point = {
+						healer = {a1 = "TOPLEFT", parent = "oUF_AltzTarget", a2 = "BOTTOMLEFT", x = 0, y = -10},
+						dpser = {a1 = "TOPLEFT", parent = "oUF_AltzTarget", a2 = "BOTTOMLEFT", x = 0, y = -10},
+					}
+				cb.Spark:SetSize(8, aCoreCDB["UnitframeOptions"]["target_cbheight"]*2)
+			elseif unit == "focus" then
+				cb:SetSize(aCoreCDB["UnitframeOptions"]["focus_cbwidth"], aCoreCDB["UnitframeOptions"]["focus_cbheight"])
+				cb.movingname = L["焦点施法条"]
+				cb.point = {
+						healer = {a1 = "TOPLEFT", parent = "oUF_AltzFocus", a2 = "BOTTOMLEFT", x = 0, y = -10},
+						dpser = {a1 = "TOPLEFT", parent = "oUF_AltzFocus", a2 = "BOTTOMLEFT", x = 0, y = -10},
+					}
+				cb.Spark:SetSize(8, aCoreCDB["UnitframeOptions"]["focus_cbheight"]*2)
 			end
-        end
+			
+			T.CreateDragFrame(cb)
+			
+			cb:SetStatusBarColor( .35, .65, 1, 1)
+			cb.bd = T.createBackdrop(cb, cb, 1)
+			cb.Icon:SetPoint("BOTTOMRIGHT", cb, "BOTTOMLEFT", -7, 0)
+			
+			cb.Time:ClearAllPoints()
+			if aCoreCDB["UnitframeOptions"]["timepos"] == "TOPLEFT" then
+				cb.Time:SetPoint("BOTTOMLEFT", cb, "TOPLEFT", 0, 3)
+				cb.Time:SetJustifyH("LEFT")
+			elseif aCoreCDB["UnitframeOptions"]["timepos"] == "LEFT" then
+				cb.Time:SetPoint("LEFT", cb, "LEFT", 0, 0)
+				cb.Time:SetJustifyH("LEFT")
+			elseif aCoreCDB["UnitframeOptions"]["timepos"] == "TOPRIGHT" then
+				cb.Time:SetPoint("BOTTOMRIGHT", cb, "TOPRIGHT", 0, 3)
+				cb.Time:SetJustifyH("RIGHT")
+			else -- RIGHT
+				cb.Time:SetPoint("RIGHT", cb, "RIGHT", 0, 0)
+				cb.Time:SetJustifyH("RIGHT")
+			end
+			
+			cb.Text:ClearAllPoints()
+			if aCoreCDB["UnitframeOptions"]["namepos"] == "TOPLEFT" then
+				cb.Text:SetPoint("BOTTOMLEFT", cb, "TOPLEFT", 0, 3)
+				cb.Text:SetJustifyH("LEFT")
+			elseif aCoreCDB["UnitframeOptions"]["namepos"] == "LEFT" then
+				cb.Text:SetPoint("LEFT", cb, "LEFT", 0, 0)
+				cb.Text:SetJustifyH("LEFT")
+			elseif aCoreCDB["UnitframeOptions"]["namepos"] == "TOPRIGHT" then
+				cb.Text:SetPoint("BOTTOMRIGHT", cb, "TOPRIGHT", 0, 3)
+				cb.Text:SetJustifyH("RIGHT")
+			else -- RIGHT
+				cb.Text:SetPoint("RIGHT", cb, "RIGHT", 0, 0)
+				cb.Text:SetJustifyH("RIGHT")
+			end
+		end
 		
 		cb.Ticks = {}
         cb.PostCastStart = PostCastStart

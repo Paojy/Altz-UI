@@ -843,11 +843,15 @@ local Character_default_Settings = {
 		-- castbar
 		castbars = true,
 		cbIconsize = 32,
-		independentcb = false,
+		independentcb = true,
 		namepos = "LEFT",
 		timepos = "RIGHT",
-		cbheight = 8,
+		cbheight = 16,
 		cbwidth = 230,
+		target_cbheight = 16,
+		target_cbwidth = 230,
+		focus_cbheight = 16,
+		focus_cbwidth = 230,
 		channelticks = false,
 		
 		-- swing timer
