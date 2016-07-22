@@ -140,6 +140,7 @@ T.ResetAurora = function(reload)
 	if IsAddOnLoaded("Aurora") then
 		AuroraConfig["tooltips"] = false
 		AuroraConfig["bags"] = false
+		AuroraConfig["acknowledgedSplashScreen"] = true
 	end
 	if reload then ReloadUI() end
 end
