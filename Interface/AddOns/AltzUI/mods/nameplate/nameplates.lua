@@ -8,50 +8,11 @@ local numberstylefont = "Interface\\AddOns\\AltzUI\\media\\Infinity Gears.ttf"
 local fontsize = 14
 
 local numberstyle = aCoreCDB["PlateOptions"]["numberstyle"]
-local combat = aCoreCDB["PlateOptions"]["autotoggleplates"]
 
 local auranum = aCoreCDB["PlateOptions"]["plateauranum"]
 local auraiconsize = aCoreCDB["PlateOptions"]["plateaurasize"]
 local firendlyCR = aCoreCDB["PlateOptions"]["firendlyCR"]
 local enemyCR = aCoreCDB["PlateOptions"]["enemyCR"]
-
---[[ Class bar stuff ]]-- 
-
-local function RedrawManaBar()
-	local manaBar = ClassNameplateManaBarFrame
-	manaBar:SetWidth(110)
-	manaBar:SetHeight(2)
-	manaBar.SetWidth = function() end
-	manaBar.SetHeight = function() end
-	manaBar.FullPowerFrame:ClearAllPoints()
-end
-
-local function MoveClassResource(onTarget, bar)
-	if (not bar) then
-		return
-	end
-	local showSelf = GetCVar("nameplateShowSelf")
-	if (showSelf == "0") then
-		return
-	end
-
-	if (onTarget and NamePlateTargetResourceFrame) then
-		local namePlateTarget = C_NamePlate.GetNamePlateForUnit("target")
-		if (namePlateTarget) then
-			NamePlateTargetResourceFrame:ClearAllPoints()
-			NamePlateTargetResourceFrame:SetPoint("CENTER", namePlateTarget.UnitFrame.castBar, "TOP", 0, 5)
-		end
-	elseif (not onTarget and NamePlatePlayerResourceFrame) then
-		-- Not getting called because, for some reason, 
-		-- NamePlatePlayerResourceFrame is only true when onTarget is false
-		local namePlatePlayer = C_NamePlate.GetNamePlateForUnit("player")
-		if (namePlatePlayer) then
-			NamePlatePlayerResourceFrame:ClearAllPoints()
-			NamePlatePlayerResourceFrame:SetPoint("BOTTOM", namePlatePlayer.UnitFrame, "TOP", 0, 0)
-		end
-	end
-end
-
 
 --[[ Auras ]]-- 
 
@@ -202,20 +163,6 @@ local function UpdateBuffs(unitFrame)
 end
 
 --[[ Unit frame ]]--
-
-local OPTION_TABLE_NONE = {}
-
-local EnemyFrameOptions = {
-
-}
-
-local FriendlyFrameOptions = {
-
-}
-
-local PlayerFrameOptions = {
-	UseClassColor = aCoreCDB["PlateOptions"]["firendlyCR"]
-}
 
 local function UpdateName(unitFrame)
 	local name = GetUnitName(unitFrame.displayedUnit, false)
@@ -411,13 +358,13 @@ local function NamePlate_OnEvent(self, event, ...)
 	elseif ( event == "PLAYER_ENTERING_WORLD" ) then
 		UpdateAll(self)
 	elseif ( arg1 == self.unit or arg1 == self.displayedUnit ) then
-		if ( event == "UNIT_HEALTH_FREQUENT" ) then
+		if ( event == "UNIT_HEALTH" ) then
 			UpdateHealth(self)
 			UpdateSelectionHighlight(self)
 		elseif ( event == "UNIT_AURA" ) then
 			UpdateBuffs(self)
 			UpdateSelectionHighlight(self)
-		elseif ( event == "UNIT_THREAT_LIST_UPDATE" ) then
+		elseif ( event == "UNIT_THREAT_SITUATION_UPDATE" ) then
 			UpdateName(self)
 			UpdateHealthColor(self)
 		elseif ( event == "UNIT_NAME_UPDATE" ) then
@@ -434,14 +381,11 @@ local function UpdateNamePlateEvents(unitFrame)
 	local unit = unitFrame.unit
 	local displayedUnit
 	if ( unit ~= unitFrame.displayedUnit ) then
-		-- Only register for displayedUnit if different from unit
 		displayedUnit = unitFrame.displayedUnit
 	end
-	unitFrame:RegisterUnitEvent("UNIT_HEALTH_FREQUENT", unit, displayedUnit)
+	unitFrame:RegisterUnitEvent("UNIT_HEALTH", unit, displayedUnit)
 	unitFrame:RegisterUnitEvent("UNIT_AURA", unit, displayedUnit)
-	unitFrame:RegisterUnitEvent("UNIT_THREAT_LIST_UPDATE", unit, displayedUnit)
-	-- unitFrame:RegisterUnitEvent("UNIT_THREAT_SITUATION_UPDATE", unit, displayedUnit)
-	-- unitFrame:RegisterUnitEvent("PLAYER_FLAGS_CHANGED", unit, displayedUnit)  -- i.e. AFK, DND
+	unitFrame:RegisterUnitEvent("UNIT_THREAT_SITUATION_UPDATE", unit, displayedUnit)
 end
 
 local function RegisterNamePlateEvents(unitFrame)
@@ -451,7 +395,6 @@ local function RegisterNamePlateEvents(unitFrame)
 	unitFrame:RegisterEvent("UNIT_PET")
 	unitFrame:RegisterEvent("UNIT_ENTERED_VEHICLE")
 	unitFrame:RegisterEvent("UNIT_EXITED_VEHICLE")
-	-- unitFrame:RegisterEvent("UNIT_CONNECTION") 
 	UpdateNamePlateEvents(unitFrame)
 	unitFrame:SetScript("OnEvent", NamePlate_OnEvent)
 end
@@ -505,36 +448,16 @@ local function OnRaidTargetUpdate()
 	end
 end
 
-local function OnTargetChanged()
-	NamePlateDriverFrame:SetupClassNameplateBars() -- Calling Blizz code here
-end
-
-local function SetOptions(unitFrame, unit)
-	if ( UnitIsUnit("player", unit) ) then
-		unitFrame.optionTable = PlayerFrameOptions
-	elseif ( UnitIsFriend("player", unit) ) then
-		unitFrame.optionTable = FriendlyFrameOptions
-	else
-		unitFrame.optionTable = EnemyFrameOptions
-	end
-end
-
 function NamePlates_UpdateNamePlateOptions()
 	-- Called at VARIABLES_LOADED and by "Larger Nameplates" interface options checkbox
-
-	EnemyFrameOptions.useClassColors = GetCVarBool("ShowClassColorInNameplate")
-	EnemyFrameOptions.playLoseAggroHighlight = GetCVarBool("ShowNamePlateLoseAggroFlash")
-
 	local baseNamePlateWidth = 110
 	local baseNamePlateHeight = 45
-	local namePlateVerticalScale = tonumber(GetCVar("NamePlateVerticalScale"))
 	local horizontalScale = tonumber(GetCVar("NamePlateHorizontalScale"))
 	C_NamePlate.SetNamePlateOtherSize(baseNamePlateWidth * horizontalScale, baseNamePlateHeight)
 	C_NamePlate.SetNamePlateSelfSize(baseNamePlateWidth, baseNamePlateHeight)
 
 	for i, namePlate in ipairs(C_NamePlate.GetNamePlates()) do
 		local unitFrame = namePlate.UnitFrame
-		SetOptions(unitFrame, unitFrame.unit)
 		UpdateAll(unitFrame)
 	end
 end
@@ -721,14 +644,12 @@ local function OnNamePlateCreated(namePlate)
 	end
 	
 	namePlate.UnitFrame:EnableMouse(false)
-	namePlate.UnitFrame.optionTable = OPTION_TABLE_NONE
 end
 
 local function OnNamePlateAdded(unit)
 	local namePlate = C_NamePlate.GetNamePlateForUnit(unit)
 	local unitFrame = namePlate.UnitFrame
 	SetUnit(unitFrame, unit)
-	SetOptions(unitFrame, unit)
 	UpdateAll(unitFrame)
 	NamePlateDriverFrame:SetupClassNameplateBars()
 end
@@ -741,8 +662,8 @@ end
 local function NamePlates_OnEvent(self, event, ...) 
 	if ( event == "VARIABLES_LOADED" ) then
 		HideBlizzard()
-		RedrawManaBar()
-		hooksecurefunc(NamePlateDriverFrame, "SetupClassNameplateBar", MoveClassResource)
+		SetCVar("nameplateShowSelf", 0)
+		SetCVar("nameplateResourceOnTarget", 0)
 		NamePlates_UpdateNamePlateOptions()
 	elseif ( event == "NAME_PLATE_CREATED" ) then
 		local namePlate = ...
@@ -753,32 +674,12 @@ local function NamePlates_OnEvent(self, event, ...)
 	elseif ( event == "NAME_PLATE_UNIT_REMOVED" ) then 
 		local unit = ...
 		OnNamePlateRemoved(unit)
-	elseif event == "PLAYER_TARGET_CHANGED" then
-		OnTargetChanged()
 	elseif event == "RAID_TARGET_UPDATE" then
 		OnRaidTargetUpdate()
 	elseif event == "DISPLAY_SIZE_CHANGED" then
 		NamePlates_UpdateNamePlateOptions()
-	elseif event == "CVAR_UPDATE" then
-		local name = ...
-		if name == "SHOW_CLASS_COLOR_IN_V_KEY" or name == "SHOW_NAMEPLATE_LOSE_AGGRO_FLASH" then
-			NamePlates_UpdateNamePlateOptions()
-		end
 	elseif ( event == "UNIT_FACTION" ) then
 		OnUnitFactionChanged(...)
-	elseif combat then
-		if event == "PLAYER_REGEN_ENABLED" then
-			SetCVar("nameplateShowEnemies", 0)
-		elseif event == "PLAYER_REGEN_DISABLED" then
-			SetCVar("nameplateShowEnemies", 1)
-		elseif event == "PLAYER_ENTERING_WORLD"	then
-			if InCombatLockdown() then
-				SetCVar("nameplateShowEnemies", 1)
-			else
-				SetCVar("nameplateShowEnemies", 0)
-			end
-			NamePlatesFrame:UnregisterEvent("PLAYER_ENTERING_WORLD")
-		end
 	end
 end
 
@@ -786,17 +687,11 @@ local NamePlatesFrame = CreateFrame("Frame", "NamePlatesFrame", UIParent)
 NamePlatesFrame:SetScript("OnEvent", NamePlates_OnEvent)
 NamePlatesFrame:RegisterEvent("VARIABLES_LOADED")
 NamePlatesFrame:RegisterEvent("NAME_PLATE_CREATED")
-
 NamePlatesFrame:RegisterEvent("NAME_PLATE_UNIT_ADDED")
 NamePlatesFrame:RegisterEvent("NAME_PLATE_UNIT_REMOVED")
-NamePlatesFrame:RegisterEvent("CVAR_UPDATE")
 NamePlatesFrame:RegisterEvent("DISPLAY_SIZE_CHANGED")
-NamePlatesFrame:RegisterEvent("PLAYER_TARGET_CHANGED")
 NamePlatesFrame:RegisterEvent("RAID_TARGET_UPDATE")
 NamePlatesFrame:RegisterEvent("UNIT_FACTION")
-NamePlatesFrame:RegisterEvent("PLAYER_REGEN_ENABLED")
-NamePlatesFrame:RegisterEvent("PLAYER_REGEN_DISABLED")
-NamePlatesFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
 
 
 
