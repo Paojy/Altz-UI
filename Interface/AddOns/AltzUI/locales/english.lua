@@ -97,6 +97,8 @@ for i = 1, 5 do
 	L["竞技场敌人头像"..i] = "Arena"..i
 end
 L["玩家施法条"] = "Player Cast Bar"
+L["目标施法条"] = "Target Cast Bar"
+L["焦点施法条"] = "Focus Cast Bar"
 L["玩家平砍计时条"] = "Player Swing Timer"
 L["冷却提示"] = "Cooldown Alert"
 
