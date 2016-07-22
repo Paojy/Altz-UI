@@ -90,15 +90,22 @@ end)
 local hooked = {}
 local active = {}
 
-local abEventWatcher = CreateFrame('Frame'); abEventWatcher:Hide()
+local abEventWatcher = CreateFrame('Frame')
+abEventWatcher:Hide()
 abEventWatcher:SetScript('OnEvent', function(self, event)
-	for cooldown in pairs(active) do
-		local button = cooldown:GetParent()
-		local start, duration, enable = GetActionCooldown(button.action)
-		cooldown:SetCooldown(start, duration)
+	if event == 'ACTIONBAR_UPDATE_COOLDOWN' then
+		for cooldown in pairs(active) do
+			local button = cooldown:GetParent()
+			local start, duration, enable = GetActionCooldown(button.action)
+			cooldown:SetCooldown(start, duration)
+		end
+	else
+		SetCVar("countdownForCooldowns", 0)
 	end
 end)
+
 abEventWatcher:RegisterEvent('ACTIONBAR_UPDATE_COOLDOWN')
+abEventWatcher:RegisterEvent('PLAYER_LOGIN')
 
 local function cooldown_OnShow(self)
 	active[self] = true
