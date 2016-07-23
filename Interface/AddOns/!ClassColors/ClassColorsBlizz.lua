@@ -512,7 +512,7 @@ addonFuncs["Blizzard_Collections"] = function()
         local text
         if self.classFilter == 0 then -- NO_CLASS_FILTER
             text = ALL_CLASSES
-        else
+        elseif self.classFilter then
             local className, classTag = GetClassInfoByID(self.classFilter)
             local classColorStr = CUSTOM_CLASS_COLORS[classTag].colorStr -- CHANGED
             if self.specFilter == 0 then -- NO_SPEC_FILTER
