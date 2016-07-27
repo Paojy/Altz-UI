@@ -533,15 +533,14 @@ T.ABtogglebox = function(parent, x, y, id, name)
 	return bu
 end
 
-T.CVartogglebox = function(parent, x, y, value, name)
+T.CVartogglebox = function(parent, x, y, value, name, arg1, arg2, tip)
 	local bu = CreateFrame("CheckButton", G.uiname..value.."Button", parent, "InterfaceOptionsCheckButtonTemplate")
 	bu:SetPoint("TOPLEFT", x, -y)
 	F.ReskinCheck(bu)
 	
 	_G[bu:GetName() .. "Text"]:SetText(name)
-	
 	bu:SetScript("OnShow", function(self)
-		if GetCVar(value) == "1" then
+		if GetCVar(value) == arg1 then
 			self:SetChecked(true)
 		else
 			self:SetChecked(false)
@@ -549,12 +548,22 @@ T.CVartogglebox = function(parent, x, y, value, name)
 	end)
 	bu:SetScript("OnClick", function(self)
 		if self:GetChecked() then
-			SetCVar(value, "1")
+			SetCVar(value, arg1)
 		else
-			SetCVar(value, "0")
+			SetCVar(value, arg2)
 		end
 	end)
-	return bu
+	
+	if tip then
+		bu:SetScript("OnEnter", function(self) 
+			GameTooltip:SetOwner(self, "ANCHOR_RIGHT",  -20, 10)
+			GameTooltip:AddLine(tip)
+			GameTooltip:Show() 
+		end)
+		bu:SetScript("OnLeave", function(self) GameTooltip:Hide() end)
+	end
+	
+	parent[value] = bu
 end
 
 T.createeditbox = function(parent, x, y, name, table, value, tip)

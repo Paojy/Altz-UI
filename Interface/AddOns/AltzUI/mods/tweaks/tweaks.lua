@@ -147,8 +147,10 @@ if camera then
 	eventframe:RegisterEvent('VARIABLES_LOADED')
 	function eventframe:VARIABLES_LOADED()
 		SetCVar("cameraSmoothTrackingStyle", 0)
-		--SetCVar("cameraDistanceMax", 25)
-		SetCVar("cameraDistanceMaxFactor", 2)
+		SetCVar("cameraSmoothStyle", 0) -- 智能镜头跟随
+		SetCVar("cameraWaterCollision", 0) -- 水体碰撞
+		SetCVar("cameraDistanceMaxFactor", 2) -- 最远镜头距离
+		SetCVar("nameplateMaxDistance", 40) -- 侦测姓名板距离
 		eventframe:UnregisterEvent('VARIABLES_LOADED')
 	end
 end
