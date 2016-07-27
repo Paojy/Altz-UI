@@ -39,9 +39,9 @@ local oUF = ns.oUF
 local GetComboPoints = GetComboPoints
 local MAX_COMBO_POINTS = MAX_COMBO_POINTS
 
-local Update = function(self, event, unit, type)
-	if event ~= "PLAYER_TARGET_CHANGED" and unit ~= 'player' then return end
-	
+local Update = function(self, event, unit, powerType)
+	if (unit ~= 'player' and unit ~= 'vehicle') or powerType ~= 'COMBO_POINTS' and event ~= "PLAYER_ENTERING_WORLD" then return end
+
 	local element = self.CPoints
 	if(element.PreUpdate) then
 		element:PreUpdate()
@@ -52,7 +52,7 @@ local Update = function(self, event, unit, type)
 		cur = GetComboPoints('vehicle', 'target')
 		max = UnitPowerMax('vehicle', SPELL_POWER_COMBO_POINTS)
 	else
-		cur = GetComboPoints('player', 'target')
+		cur = UnitPower('player', SPELL_POWER_COMBO_POINTS)
 		max = UnitPowerMax('player', SPELL_POWER_COMBO_POINTS)
 	end
 	
@@ -111,9 +111,9 @@ local Enable = function(self)
 	if(cpoints) then
 		cpoints.__owner = self
 		cpoints.ForceUpdate = ForceUpdate
-
+		
 		self:RegisterEvent('UNIT_POWER_FREQUENT', Path, true)
-		self:RegisterEvent('PLAYER_TARGET_CHANGED', Path, true)
+		self:RegisterEvent('UNIT_DISPLAYPOWER', Path, true)
 
 		for index = 1, MAX_COMBO_POINTS do
 			local cpoint = cpoints[index]
@@ -133,9 +133,11 @@ local Disable = function(self)
 		for index = 1, MAX_COMBO_POINTS do
 			cpoints[index]:Hide()
 		end
+
 		self:UnregisterEvent('UNIT_POWER_FREQUENT', Path)
-		self:UnregisterEvent('PLAYER_TARGET_CHANGED', Path)
+		self:UnregisterEvent('UNIT_DISPLAYPOWER', Path)
 	end
 end
 
 oUF:AddElement('CPoints', Path, Enable, Disable)
+
