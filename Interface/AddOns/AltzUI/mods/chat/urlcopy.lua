@@ -1,75 +1,75 @@
 local T, C, L, G = unpack(select(2, ...))
-local color = "0099FF"
-local foundurl = false
+if not aCoreCDB["ChatOptions"]["copychat"] then return end
 
-function string.color(text, color)
-	return "|cff"..color..text.."|r"
-end
+local _AddMessage = ChatFrame1.AddMessage 
+local _SetItemRef = SetItemRef 
+local blacklist = { 
+   [ChatFrame2] = true, 
+} 
 
-function string.link(text, type, value, color)
-	return "|H"..type..":"..tostring(value).."|h"..tostring(text):color(color or "ffffff").."|h"
-end
+local ts = G.classcolor..'|HyCopy|h%s|h|r %s' 
+local AddMessage = function(self, text, ...) 
+   if(type(text) == 'string') then 
+        if showtime then 
+          text = format(ts, date'%H:%M', text)  --text = format(ts, date'%H:%M:%S', text) 
+        else 
+     text = format(ts, '> ', text) 
+       end 
+end 
 
-local function highlighturl(before,url,after)
-	foundurl = true
-	return " "..string.link("["..url.."]", "url", url, color).." "
-end
+   return _AddMessage(self, text, ...) 
+end 
 
-local function searchforurl(frame, text, ...)
-	foundurl = false
+for i=1, NUM_CHAT_WINDOWS do 
+   local cf = _G['ChatFrame'..i] 
+   if(not blacklist[cf]) then 
+      cf.AddMessage = AddMessage 
+   end 
+end 
 
-	if string.find(text, "%pTInterface%p+") or string.find(text, "%pTINTERFACE%p+") then
-		--disable interface textures (lol)
-		foundurl = true
-	end
+local MouseIsOver = function(frame) 
+   local s = frame:GetParent():GetEffectiveScale() 
+   local x, y = GetCursorPosition() 
+   x = x / s 
+   y = y / s 
 
-	if not foundurl then
-		--192.168.1.1:1234
-		text = string.gsub(text, "(%s?)(%d%d?%d?%.%d%d?%d?%.%d%d?%d?%.%d%d?%d?:%d%d?%d?%d?%d?)(%s?)", highlighturl)
-	end
-	if not foundurl then
-		--192.168.1.1
-		text = string.gsub(text, "(%s?)(%d%d?%d?%.%d%d?%d?%.%d%d?%d?%.%d%d?%d?)(%s?)", highlighturl)
-	end
-	if not foundurl then
-		--www.teamspeak.com:3333
-		text = string.gsub(text, "(%s?)([%w_-]+%.?[%w_-]+%.[%w_-]+:%d%d%d?%d?%d?)(%s?)", highlighturl)
-	end
-	if not foundurl then
-		--http://www.google.com
-		text = string.gsub(text, "(%s?)(%a+://[%w_/%.%?%%=~&-'%-]+)(%s?)", highlighturl)
-	end
-	if not foundurl then
-		--www.google.com
-		text = string.gsub(text, "(%s?)(www%.[%w_/%.%?%%=~&-'%-]+)(%s?)", highlighturl)
-	end
-	if not foundurl then
-		--lol@lol.com
-		text = string.gsub(text, "(%s?)([_%w-%.~-]+@[_%w-]+%.[_%w-%.]+)(%s?)", highlighturl)
-	end
+   local left = frame:GetLeft() 
+   local right = frame:GetRight() 
+   local top = frame:GetTop() 
+   local bottom = frame:GetBottom() 
 
-	frame.am(frame,text,...)
-end
+   if(not left) then 
+      return 
+   end 
 
-for i = 1, NUM_CHAT_WINDOWS do
-	if ( i ~= 2 ) then
-		local cf = _G["ChatFrame"..i]
-		cf.am = cf.AddMessage
-		cf.AddMessage = searchforurl
-	end
-end
+   if((x > left and x < right) and (y > bottom and y < top)) then 
+      return 1 
+   else 
+      return 
+   end 
+end 
 
-local orig = ChatFrame_OnHyperlinkShow
-function ChatFrame_OnHyperlinkShow(frame, link, text, button)
-	local type, value = link:match("(%a+):(.+)")
-	if ( type == "url" ) then
-		local eb = LAST_ACTIVE_CHAT_EDIT_BOX or _G[frame:GetName()..'EditBox']
-		if eb then
-			eb:SetText(value)
-			eb:SetFocus()
-			eb:HighlightText()
-		end
-	else
-		orig(self, link, text, button)
-	end
+local borderManipulation = function(...) 
+   for l = 1, select('#', ...) do 
+      local obj = select(l, ...) 
+      if(obj:GetObjectType() == 'FontString' and MouseIsOver(obj)) then 
+         return obj:GetText() 
+      end 
+   end 
+end 
+
+local eb = ChatFrame1EditBox 
+SetItemRef = function(link, text, button, ...) 
+   if(link:sub(1, 5) ~= 'yCopy') then return _SetItemRef(link, text, button, ...) end 
+
+   local text = borderManipulation(SELECTED_CHAT_FRAME:GetRegions()) 
+   if(text) then 
+      text = text:gsub('|c%x%x%x%x%x%x%x%x(.-)|r', '%1') 
+      text = text:gsub('|H.-|h(.-)|h', '%1') 
+
+      eb:Insert(text) 
+      eb:Show() 
+      eb:HighlightText() 
+      eb:SetFocus() 
+   end 
 end
