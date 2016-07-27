@@ -1,5 +1,6 @@
 local T, C, L, G = unpack(select(2, ...))
 
+local wantws = true
 --ChatTypeInfo["WHISPER"].sticky= 0
 function ChatEdit_CustomTabPressed(self)
 	if strsub(tostring(self:GetText()), 1, 1) == "/" then return end

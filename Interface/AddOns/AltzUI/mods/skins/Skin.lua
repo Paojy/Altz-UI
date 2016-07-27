@@ -162,20 +162,21 @@ local function registerDBMStyle()
 	end
 end
 
-f:RegisterEvent("ADDON_LOADED")
+f:RegisterEvent("PLAYER_ENTERING_WORLD")
 f:RegisterEvent("PLAYER_LOGIN")
-
+f:RegisterEvent("ADDON_LOADED")
 local reason
 
 f:SetScript("OnEvent", function(self, event, addon)
-	if event == "ADDON_LOADED" then
+	if event == "PLAYER_ENTERING_WORLD" then
+		if IsAddOnLoaded("DBM-Core") then
+			registerDBMStyle()
+		end
+	elseif event == "ADDON_LOADED" then
 		if not reason then reason = (select(6, GetAddOnInfo("BigWigs_Plugins"))) end
 		if (reason == "MISSING" and addon == "BigWigs") or addon == "BigWigs_Plugins" then
 			registerBWStyle()
 		end
-        if addon == "DBM-Core" then
-            registerDBMStyle()
-        end		
 	elseif event == "PLAYER_LOGIN" then
 		registerBWStyle()
 	end
