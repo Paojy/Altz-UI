@@ -269,6 +269,13 @@ L["全部隐藏"] = "Hide All"
 L["过滤方式"] = "Filter Type"
 L["友善职业染色"] = "Use Class color on friendly players"
 L["敌对职业染色"] = "Use Class color on hostile players"
+L["显示玩家姓名板"] = "Show My Nameplate"
+L["显示玩家姓名板光环"] = "Show Aura Icons on My Nameplate"
+L["显示姓名板资源"] = "Show Class Resources(Combo Points, Holy Power, etc)"
+L["姓名板资源位置"] = "Resources Position"
+L["目标姓名板"] = "Target Nameplate"
+L["玩家姓名板"] = "My Nameplate"
+L["不显示资源"] = "Don't show it"
 
 -- 鼠标提示
 L["跟随光标"] = "Show at Mouse"
