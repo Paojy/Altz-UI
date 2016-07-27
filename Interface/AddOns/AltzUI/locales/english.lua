@@ -139,6 +139,8 @@ L["进入战斗锁定"] = "Entered combat, lock all frames."
 L["钱不够"] = "Don't have encough money to buy"
 L["购买"] = "Bought %d %s."
 L["货物不足"] = "The merchat don't have enough"
+L["光标"] = "cusor"
+L["当前"] = "current"
 
 L["插件管理"] = "Addon Manager"
 L[" 搜索"] = "Search"

@@ -355,6 +355,7 @@ L["随机奖励提示"] = "Alert you when LFG RoleShortage Rewards occurs with R
 L["自动接受排本邀请"] = "Automatically Accept Proposal"
 L["自动接受排本邀请提示"] = "Automatically accept proposal of LFG after 35s"
 L["在战斗中隐藏小地图和聊天框"] = "hide minimap and chatframe in combat"
+L["大地图坐标"] = "World map coords"
 
 -- 插件皮肤
 L["插件皮肤"] = "Addon Skins"
