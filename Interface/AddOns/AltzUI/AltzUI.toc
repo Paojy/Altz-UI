@@ -1,7 +1,7 @@
 ﻿## Interface: 70000
 ## Title: |cffEE3A8CAltz|rUI
 ## X-oUF: AltzUF
-## Version: 7.07
+## Version: 7.08
 ## Author: Blue
 ## Dependencies: AltzUIConfig
 ## X-DBM-Timer-Skin: 1
