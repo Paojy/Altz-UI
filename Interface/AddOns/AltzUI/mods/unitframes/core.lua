@@ -12,9 +12,9 @@ oUF.colors.power["POWER_TYPE_STEAM"] = {0.55, 0.57, 0.61}
 oUF.colors.power["POWER_TYPE_PYRITE"] = {0.60, 0.09, 0.17}
 oUF.colors.power["MEALSTORM"] = {0.4, 0.7, 1}
 
-oUF.colors.reaction[1] = {255/255, 30/255, 60/255}
-oUF.colors.reaction[2] = {255/255, 30/255, 60/255}
-oUF.colors.reaction[3] = {255/255, 30/255, 60/255}
+oUF.colors.reaction[1] = {1, .1, .2}
+oUF.colors.reaction[2] = {1, .1, .2}
+oUF.colors.reaction[3] = {1, .1, .2}
 oUF.colors.reaction[4] = {1, 1, 0}
 oUF.colors.reaction[5] = {0.26, 1, 0.22}
 oUF.colors.reaction[6] = {0.26, 1, 0.22}
@@ -24,17 +24,17 @@ oUF.colors.reaction[8] = {0.26, 1, 0.22}
 oUF.colors.smooth = {1,0,0, 1,1,0, 1,1,0}
 
 local classicon_colors = { --monk/paladin/preist
-	{150/255, 0/255, 40/255},
-	{220/255, 20/255, 40/255},
-	{255/255, 50/255, 90/255},
-	{255/255, 80/255, 120/255},
-	{255/255, 110/255, 160/255},
-	{255/255, 140/255, 190/255},
+	{.6, 0, .1},
+	{.9, .1, .2},
+	{1, .2, .3},
+	{1, .3, .4},
+	{1, .4, .5},
+	{1, .5, .6},
 }
 
 local cpoints_colors = { -- combat points
-	{220/255, 40/255, 0/255},
-	{255/255, 255/255, 0/255},
+	{1, 0, 0},
+	{1, 1, 0},
 }
 
 --=============================================--

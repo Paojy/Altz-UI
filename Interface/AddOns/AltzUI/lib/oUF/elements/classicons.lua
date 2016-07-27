@@ -211,11 +211,9 @@ do
 		ClassPowerID = SPELL_POWER_ARCANE_CHARGES
 		ClassPowerType = "ARCANE_CHARGES"
 		RequireSpec = SPEC_MAGE_ARCANE
-		--RequireSpell = 95740 -- 
 	elseif(PlayerClass == 'WARLOCK') then
 		ClassPowerID = SPELL_POWER_SOUL_SHARDS
 		ClassPowerType = "SOUL_SHARDS"
-		--RequireSpell = WARLOCK_SOULBURN
 	end
 end
 

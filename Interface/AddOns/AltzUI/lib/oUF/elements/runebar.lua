@@ -43,8 +43,6 @@ if select(2, UnitClass("player")) ~= "DEATHKNIGHT" then return end
 local parent, ns = ...
 local oUF = ns.oUF
 
-local runemap = { 1, 2, 3, 4, 5, 6 }
-
 local OnUpdate = function(self, elapsed)
 	local duration = self.duration + elapsed
 	if(duration >= self.max) then
@@ -57,7 +55,7 @@ end
 
 local UpdateRune = function(self, event, rid)
 	local runes = self.Runes
-	local rune = runes[runemap[rid]]
+	local rune = runes[rid]
 	if(not rune) then return end
 
 	if(UnitHasVehicleUI'player') then
@@ -100,7 +98,7 @@ local Enable = function(self, unit)
 		runes.ForceUpdate = ForceUpdate
 
 		for i=1, 6 do
-			local rune = runes[runemap[i]]
+			local rune = runes[i]
 			if(rune:IsObjectType'StatusBar' and not rune:GetStatusBarTexture()) then
 				rune:SetStatusBarTexture[[Interface\TargetingFrame\UI-StatusBar]]
 			end
