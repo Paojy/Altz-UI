@@ -1330,6 +1330,7 @@ local Character_default_Settings = {
 		autoacceptproposal = true,
 		hidemapandchat = false,
 		hours24 = true,
+		worldmapcoords = false,
 	},
 	SkinOptions = {
 		setClassColor = true,

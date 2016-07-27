@@ -2098,6 +2098,7 @@ T.createcheckbutton(OtherOptions, 300, 360, L["回收内存"], "OtherOptions", "
 T.createcheckbutton(OtherOptions, 300, 390, L["镜头优化"], "OtherOptions", "camera", L["镜头优化提示"])
 T.createcheckbutton(OtherOptions, 300, 420, L["显示插件使用小提示"], "OtherOptions", "showAFKtips", L["显示插件使用小提示提示"])
 T.createcheckbutton(OtherOptions, 300, 450, L["任务栏闪动"], "OtherOptions", "flashtaskbar", L["任务栏闪动提示"])
+T.createcheckbutton(OtherOptions, 300, 480, L["大地图坐标"], "OtherOptions", "worldmapcoords")
 
 if G.Client ~= "zhCN" then OtherOptions.overrideArchive:Hide() end
 --T.createcheckbutton(OtherOptions, 300, 450, L["自动接受排本邀请"], "OtherOptions", "autoacceptproposal", L["自动接受排本邀请提示"])
