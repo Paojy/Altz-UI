@@ -39,6 +39,10 @@ function eventframe:PLAYER_LOGIN()
 		SetCVar("floatingCombatTextCombatDamage", 0)
 		SetCVar("floatingCombatTextCombatHealing", 0)
 		SetCVar("enableFloatingCombatText", 0)
+	else
+		SetCVar("floatingCombatTextCombatDamage", 1)
+		SetCVar("floatingCombatTextCombatHealing", 1)
+		SetCVar("enableFloatingCombatText", 1)
 	end
 end
 
