@@ -359,6 +359,7 @@ local BlackList = {
 	["QueueStatusMinimapButton"] = true,
 	["MinimapButtonCollectFrame"] = true,
 	["GarrisonLandingPageMinimapButton"] = true,
+	["MinimapZoneTextButton"] = true,
 }
 
 local MBCF = CreateFrame("Frame", "MinimapButtonCollectFrame", Minimap)
@@ -377,60 +378,77 @@ MBCF.bg:SetTexture(G.media.blank)
 MBCF.bg:SetAllPoints(MBCF)
 MBCF.bg:SetGradientAlpha("HORIZONTAL", 0, 0, 0, .8, 0, 0, 0, 0)
 
-T.CollectMinimapButtons = function(parent)
-	if aCoreCDB["OtherOptions"]["collectminimapbuttons"] then
-		for i, child in ipairs({Minimap:GetChildren()}) do
-			if child:GetName() and not BlackList[child:GetName()] then
-				if child:GetObjectType() == "Button" or strupper(child:GetName()):match("BUTTON") then
-					if child:IsShown() or aCoreCDB["OtherOptions"]["collecthidingminimapbuttons"] then
-						child:SetParent(parent)
-						for j = 1, child:GetNumRegions() do
-							local region = select(j, child:GetRegions())
-							if region:GetObjectType() == "Texture" then
-								local texture = region:GetTexture()
-								if texture == "Interface\\CharacterFrame\\TempPortraitAlphaMask" or texture == "Interface\\Minimap\\MiniMap-TrackingBorder" or texture == "Interface\\Minimap\\UI-Minimap-Background" or texture == "Interface\\Minimap\\UI-Minimap-ZoomButton-Highlight" then
-									region:Hide()
-								end
-							end
-						end
-						tinsert(buttons, child)
-					end
-				end
-			end
-		end
-	end
+T.ArrangeMinimapButtons = function(parent)
 	if #buttons == 0 then 
-		parent:Hide() 
-	else
-		for _, child in ipairs(buttons) do
-			child:HookScript("OnEnter", function()
-				T.UIFrameFadeIn(parent, .5, parent:GetAlpha(), 1)
-			end)
-			child:HookScript("OnLeave", function()
-				T.UIFrameFadeOut(parent, .5, parent:GetAlpha(), 0)
-			end)
-		end
+		parent:Hide()
+		return
 	end
+
 	local space
 	if #buttons > 5 then
 		space = -5
 	else
 		space = 0
 	end
-	for i =1, #buttons do
-		buttons[i]:ClearAllPoints()
-		if i == 1 then
-			buttons[i]:SetPoint("LEFT", parent, "LEFT", 0, 0)
-		else
-			buttons[i]:SetPoint("LEFT", buttons[i-1], "RIGHT", space, 0)
+	
+	local lastbutton
+	for k, button in pairs(buttons) do
+		button:ClearAllPoints()
+		if button:IsShown() then
+			if not lastbutton then
+				button:SetPoint("LEFT", parent, "LEFT", 0, 0)
+			else
+				button:SetPoint("LEFT", lastbutton, "RIGHT", space, 0)
+			end
+			lastbutton = button
 		end
-		buttons[i].ClearAllPoints = T.dummy
-		buttons[i].SetPoint = T.dummy
+	end
+end
+
+T.CollectMinimapButtons = function(parent)
+	if aCoreCDB["OtherOptions"]["collectminimapbuttons"] then
+		for i, child in ipairs({Minimap:GetChildren()}) do
+			if child:GetName() and not BlackList[child:GetName()] then
+				if child:GetObjectType() == "Button" or strupper(child:GetName()):match("BUTTON") then
+					child:SetParent(parent)
+					for j = 1, child:GetNumRegions() do
+						local region = select(j, child:GetRegions())
+						if region:GetObjectType() == "Texture" then
+							local texture = region:GetTexture()
+							if texture == "Interface\\CharacterFrame\\TempPortraitAlphaMask" or texture == "Interface\\Minimap\\MiniMap-TrackingBorder" or texture == "Interface\\Minimap\\UI-Minimap-Background" or texture == "Interface\\Minimap\\UI-Minimap-ZoomButton-Highlight" then
+								region:Hide()
+							end
+						end
+					end
+					child:HookScript("OnShow", function() 
+						T.ArrangeMinimapButtons(parent)
+					end)
+					child:HookScript("OnShow", function() 
+						T.ArrangeMinimapButtons(parent)
+					end)
+					child:HookScript("OnHide", function() 
+						T.ArrangeMinimapButtons(parent)
+					end)
+					child:HookScript("OnEnter", function()
+						T.UIFrameFadeIn(parent, .5, parent:GetAlpha(), 1)
+					end)
+					child:HookScript("OnLeave", function()
+						T.UIFrameFadeOut(parent, .5, parent:GetAlpha(), 0)
+					end)
+					child:SetScript("OnDragStart", nil)
+					child:SetScript("OnDragStop", nil)
+					tinsert(buttons, child)
+				end
+			end
+		end
 	end
 end
 
 MBCF:SetScript("OnEvent", function(self)
-	C_Timer.After(0.3, function() T.CollectMinimapButtons(MBCF) end)
+	C_Timer.After(0.3, function()
+		T.CollectMinimapButtons(MBCF)
+		T.ArrangeMinimapButtons(MBCF)
+	end)
 	self:SetAlpha(0)
 	self:UnregisterEvent("PLAYER_ENTERING_WORLD")
 end)
