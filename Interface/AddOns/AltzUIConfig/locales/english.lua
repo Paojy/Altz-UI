@@ -61,6 +61,8 @@ L["重置确认"] = "Do do want to reset all the %s settings?"
 L["重置"] = "Reset"
 
 -- 聊天
+L["复制聊天"] = "Copy chat"
+L["复制聊天提示"] = "Click every the '>' before every line to copy it."
 L["频道缩写"] = "Replace Channel Name"
 L["滚动聊天框"] = "Scroll Chat Frame"
 L["滚动聊天框提示"] = "Auto Scroll Chat Frame to Bottom after a few seconds."
