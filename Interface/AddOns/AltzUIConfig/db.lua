@@ -1168,6 +1168,7 @@ local Character_default_Settings = {
 		autoscroll = true,
 		nogoldseller = true,
 		goldkeywordnum = 2,
+		showbg = false,
 	},
 	ItemOptions = {
 		enablebag = true,
