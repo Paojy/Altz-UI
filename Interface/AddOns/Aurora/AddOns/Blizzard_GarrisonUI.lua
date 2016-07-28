@@ -601,6 +601,19 @@ C.themes["Blizzard_GarrisonUI"] = function()
 		bg:SetPoint("BOTTOMRIGHT", 0, 1)
 	end
 
+	-- Portraits
+
+	hooksecurefunc("GarrisonMissionPortrait_SetFollowerPortrait", function(portraitFrame, followerInfo)
+		if not portraitFrame.styled then
+			F.ReskinGarrisonPortrait(portraitFrame)
+			portraitFrame.styled = true
+		end
+
+		local color = ITEM_QUALITY_COLORS[followerInfo.quality]
+
+		portraitFrame.squareBG:SetBackdropBorderColor(color.r, color.g, color.b)
+	end)
+
 	-- Mechanic tooltip
 
 	if AuroraConfig.tooltips then
@@ -716,11 +729,27 @@ C.themes["Blizzard_GarrisonUI"] = function()
 		local numButtons = #buttons
 
 		for i = 1, #buttons do
-			local button = buttons[i]
+			local button = buttons[i].Follower
 			local portrait = button.PortraitFrame
 
 			if not button.restyled then
+				button.BG:Hide()
+				button.Selection:SetTexture("")
+				button.AbilitiesBG:SetTexture("")
+
 				F.CreateBD(button, .25)
+
+				button.BusyFrame:SetAllPoints()
+
+				local hl = button:GetHighlightTexture()
+				if C.isBetaClient then
+					hl:SetColorTexture(r, g, b, .1)
+				else
+					hl:SetTexture(r, g, b, .1)
+				end
+				hl:ClearAllPoints()
+				hl:SetPoint("TOPLEFT", 1, -1)
+				hl:SetPoint("BOTTOMRIGHT", -1, 1)
 
 				if portrait then
 					F.ReskinGarrisonPortrait(portrait)
@@ -729,6 +758,12 @@ C.themes["Blizzard_GarrisonUI"] = function()
 				end
 
 				button.restyled = true
+			end
+
+			if button.Selection:IsShown() then
+				button:SetBackdropColor(r, g, b, .2)
+			else
+				button:SetBackdropColor(0, 0, 0, .25)
 			end
 
 			if portrait then

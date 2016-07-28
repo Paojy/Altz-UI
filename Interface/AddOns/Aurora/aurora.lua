@@ -31,6 +31,7 @@ C.classcolours = {
 	["SHAMAN"] = { r = 0, g = 0.6, b = 0.6 };
 	["WARRIOR"] = { r = 0.9, g = 0.65, b = 0.45 },
 	["DEATHKNIGHT"] = { r = 0.77, g = 0.12 , b = 0.23 },
+	["DEMONHUNTER"] = { r = 0.64, g = 0.19, b = 0.79 },
 }
 
 C.media = {
@@ -62,6 +63,9 @@ C.defaults = {
 }
 
 C.frames = {}
+
+C.TOC = select(4, GetBuildInfo())
+C.isBetaClient = C.TOC >= 70000
 
 -- [[ Cached variables ]]
 
@@ -157,7 +161,7 @@ F.Reskin = function(f, noHighlight)
 
 	if not noHighlight then
 		f:HookScript("OnEnter", colourButton)
- 		f:HookScript("OnLeave", clearButton)
+		f:HookScript("OnLeave", clearButton)
 	end
 end
 
@@ -187,16 +191,27 @@ local function clearScroll(f)
 	f.tex:SetVertexColor(1, 1, 1)
 end
 
-F.ReskinScroll = function(f)
+F.ReskinScroll = function(f, parent)
 	local frame = f:GetName()
-	
-	if _G[frame.."Track"] then _G[frame.."Track"]:Hide() end
-	if _G[frame.."BG"] then _G[frame.."BG"]:Hide() end
-	if _G[frame.."Top"] then _G[frame.."Top"]:Hide() end
-	if _G[frame.."Middle"] then _G[frame.."Middle"]:Hide() end
-	if _G[frame.."Bottom"] then _G[frame.."Bottom"]:Hide() end
 
-	local bu = _G[frame.."ThumbTexture"]
+	if frame then
+		if _G[frame.."Track"] then _G[frame.."Track"]:Hide() end
+		if _G[frame.."BG"] then _G[frame.."BG"]:Hide() end
+		if _G[frame.."Top"] then _G[frame.."Top"]:Hide() end
+		if _G[frame.."Middle"] then _G[frame.."Middle"]:Hide() end
+		if _G[frame.."Bottom"] then _G[frame.."Bottom"]:Hide() end
+	else
+		if f.trackBG then f.trackBG:Hide() end
+		if f.Background then f.Background:Hide() end
+		if f.Top then f.Top:Hide() end
+		if f.Middle then f.Middle:Hide() end
+		if f.Bottom then f.Bottom:Hide() end
+		if f.ScrollBarTop then f.ScrollBarTop:Hide() end
+		if f.ScrollBarMiddle then f.ScrollBarMiddle:Hide() end
+		if f.ScrollBarBottom then f.ScrollBarBottom:Hide() end
+	end
+
+	local bu = f.ThumbTexture or f.thumbTexture or _G[frame.."ThumbTexture"]
 	bu:SetAlpha(0)
 	bu:SetWidth(17)
 
@@ -209,8 +224,8 @@ F.ReskinScroll = function(f)
 	tex:SetPoint("TOPLEFT", bu.bg, 1, -1)
 	tex:SetPoint("BOTTOMRIGHT", bu.bg, -1, 1)
 
-	local up = _G[frame.."ScrollUpButton"]
-	local down = _G[frame.."ScrollDownButton"]
+	local up = f.ScrollUpButton or f.UpButton or _G[(frame or parent).."ScrollUpButton"]
+	local down = f.ScrollDownButton or f.DownButton or _G[(frame or parent).."ScrollDownButton"]
 
 	up:SetWidth(17)
 	down:SetWidth(17)
@@ -272,12 +287,20 @@ F.ReskinDropDown = function(f)
 	if middle then middle:SetAlpha(0) end
 	if right then right:SetAlpha(0) end
 
-	local down = _G[frame.."Button"]
+	local bg = CreateFrame("Frame", nil, f)
+	bg:SetPoint("TOPLEFT", 10, -4)
+	bg:SetPoint("BOTTOMRIGHT", -12, 8)
+	bg:SetFrameLevel(f:GetFrameLevel()-1)
+	F.CreateBD(bg, 0)
 
+	local gradient = F.CreateGradient(f)
+	gradient:SetPoint("TOPLEFT", bg, 1, -1)
+	gradient:SetPoint("BOTTOMRIGHT", bg, -1, 1)
+
+	local down = _G[frame.."Button"]
 	down:SetSize(20, 20)
 	down:ClearAllPoints()
-	down:SetPoint("RIGHT", -18, 2)
-
+	down:SetPoint("TOPRIGHT", bg)
 	F.Reskin(down, true)
 
 	down:SetDisabledTexture(C.media.backdrop)
@@ -295,29 +318,19 @@ F.ReskinDropDown = function(f)
 
 	down:HookScript("OnEnter", colourArrow)
 	down:HookScript("OnLeave", clearArrow)
-
-	local bg = CreateFrame("Frame", nil, f)
-	bg:SetPoint("TOPLEFT", 16, -4)
-	bg:SetPoint("BOTTOMRIGHT", -18, 8)
-	bg:SetFrameLevel(f:GetFrameLevel()-1)
-	F.CreateBD(bg, 0)
-
-	local gradient = F.CreateGradient(f)
-	gradient:SetPoint("TOPLEFT", bg, 1, -1)
-	gradient:SetPoint("BOTTOMRIGHT", bg, -1, 1)
 end
 
 local function colourClose(f)
 	if f:IsEnabled() then
 		for _, pixel in pairs(f.pixels) do
-			pixel:SetVertexColor(r, g, b)
+			pixel:SetColorTexture(r, g, b)
 		end
 	end
 end
 
 local function clearClose(f)
 	for _, pixel in pairs(f.pixels) do
-		pixel:SetVertexColor(1, 1, 1)
+		pixel:SetColorTexture(1, 1, 1)
 	end
 end
 
@@ -348,24 +361,23 @@ F.ReskinClose = function(f, a1, p, a2, x, y)
 
 	f.pixels = {}
 
-	for i = 1, 9 do
-		local tex = f:CreateTexture()
-		tex:SetColorTexture(1, 1, 1)
-		tex:SetSize(1, 1)
-		tex:SetPoint("BOTTOMLEFT", 3+i, 3+i)
-		tinsert(f.pixels, tex)
-	end
-
-	for i = 1, 9 do
-		local tex = f:CreateTexture()
-		tex:SetColorTexture(1, 1, 1)
-		tex:SetSize(1, 1)
-		tex:SetPoint("TOPLEFT", 3+i, -3-i)
-		tinsert(f.pixels, tex)
+	local lineOfs = 2.5
+	for i = 1, 2 do
+		local line = f:CreateLine()
+		line:SetColorTexture(1, 1, 1)
+		line:SetThickness(0.5)
+		if i == 1 then
+			line:SetStartPoint("TOPLEFT", lineOfs, -lineOfs)
+			line:SetEndPoint("BOTTOMRIGHT", -lineOfs, lineOfs)
+		else
+			line:SetStartPoint("TOPRIGHT", -lineOfs, -lineOfs)
+			line:SetEndPoint("BOTTOMLEFT", lineOfs, lineOfs)
+		end
+		tinsert(f.pixels, line)
 	end
 
 	f:HookScript("OnEnter", colourClose)
- 	f:HookScript("OnLeave", clearClose)
+	f:HookScript("OnLeave", clearClose)
 end
 
 F.ReskinInput = function(f, height, width)
@@ -540,19 +552,22 @@ end
 F.ReskinPortraitFrame = function(f, isButtonFrame)
 	local name = f:GetName()
 
-	_G[name.."Bg"]:Hide()
+	f.Bg:Hide()
 	_G[name.."TitleBg"]:Hide()
-	_G[name.."Portrait"]:Hide()
-	_G[name.."PortraitFrame"]:Hide()
+	f.portrait:Hide()
+	f.portraitFrame:Hide()
 	_G[name.."TopRightCorner"]:Hide()
-	_G[name.."TopLeftCorner"]:Hide()
-	_G[name.."TopBorder"]:Hide()
-	_G[name.."TopTileStreaks"]:SetTexture("")
+	f.topLeftCorner:Hide()
+	f.topBorderBar:Hide()
+	f.TopTileStreaks:SetTexture("")
 	_G[name.."BotLeftCorner"]:Hide()
 	_G[name.."BotRightCorner"]:Hide()
 	_G[name.."BottomBorder"]:Hide()
-	_G[name.."LeftBorder"]:Hide()
+	f.leftBorderBar:Hide()
 	_G[name.."RightBorder"]:Hide()
+
+	F.ReskinClose(f.CloseButton)
+	f.portrait.Show = F.dummy
 
 	if isButtonFrame then
 		_G[name.."BtnCornerLeft"]:SetTexture("")
@@ -564,7 +579,6 @@ F.ReskinPortraitFrame = function(f, isButtonFrame)
 	end
 
 	F.CreateBD(f)
-	F.ReskinClose(_G[name.."CloseButton"])
 end
 
 F.CreateBDFrame = function(f, a)
@@ -1081,14 +1095,13 @@ Skin:SetScript("OnEvent", function(self, event, addon)
 		-- Tab text position
 
 		hooksecurefunc("PanelTemplates_DeselectTab", function(tab)
-			local text = tab.Text or _G[tab:GetName().."Text"]  
-			text:SetPoint("CENTER", tab, "CENTER")  
+			local text = tab.Text or _G[tab:GetName().."Text"]
+			text:SetPoint("CENTER", tab, "CENTER")
 		end)
 
 		hooksecurefunc("PanelTemplates_SelectTab", function(tab)
-			local text = tab.Text or _G[tab:GetName().."Text"]  
-			text:SetPoint("CENTER", tab, "CENTER")  
-
+			local text = tab.Text or _G[tab:GetName().."Text"]
+			text:SetPoint("CENTER", tab, "CENTER")
 		end)
 
 		-- [[ Custom skins ]]

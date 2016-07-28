@@ -307,6 +307,12 @@ C.themes["Blizzard_EncounterJournal"] = function()
 	F.CreateBD(EncounterJournalSearchResults)
 	EncounterJournalSearchResults:SetBackdropColor(.15, .15, .15, .9)
 
+	EncounterJournal.searchBox.searchPreviewContainer.botLeftCorner:Hide()
+	EncounterJournal.searchBox.searchPreviewContainer.botRightCorner:Hide()
+	EncounterJournal.searchBox.searchPreviewContainer.bottomBorder:Hide()
+	EncounterJournal.searchBox.searchPreviewContainer.leftBorder:Hide()
+	EncounterJournal.searchBox.searchPreviewContainer.rightBorder:Hide()
+
 	local function resultOnEnter(self)
 		self.hl:Show()
 	end
@@ -515,6 +521,7 @@ C.themes["Blizzard_EncounterJournal"] = function()
 
 			if data.iconPath then
 				suggestion.icon:SetMask(nil)
+				suggestion.icon:SetTexture(data.iconPath)
 				suggestion.icon:SetTexCoord(.08, .92, .08, .92)
 			end
 		end
@@ -530,6 +537,7 @@ C.themes["Blizzard_EncounterJournal"] = function()
 
 				if data.iconPath then
 					suggestion.icon:SetMask(nil)
+					suggestion.icon:SetTexture(data.iconPath)
 					suggestion.icon:SetTexCoord(.08, .92, .08, .92)
 				end
 			end
@@ -537,14 +545,12 @@ C.themes["Blizzard_EncounterJournal"] = function()
 	end)
 
 	hooksecurefunc("EJSuggestFrame_UpdateRewards", function(suggestion)
-		if suggestion.reward.data then
-			local texture = suggestion.reward.data.itemIcon or suggestion.reward.data.currencyIcon or 454046
-			if ( suggestion.reward.data.isRewardTable ) then
-				texture = 454046
-			end
-			suggestion.reward.icon:SetMask(nil)
-			suggestion.reward.icon:SetTexCoord(.08, .92, .08, .92)
+		local rewardData = suggestion.reward.data
+		if rewardData then
+			local texture = rewardData.itemIcon or rewardData.currencyIcon or [[Interface\Icons\achievement_guildperk_mobilebanking]]
+			suggestion.reward.icon:SetMask("")
 			suggestion.reward.icon:SetTexture(texture)
+			suggestion.reward.icon:SetTexCoord(.08, .92, .08, .92)
 		end
 	end)
 	

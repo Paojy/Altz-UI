@@ -24,9 +24,6 @@ tinsert(C.themes["Aurora"], function()
 		F.Reskin(InterfaceOptionsFrameDefaults)
 		F.Reskin(InterfaceOptionsFrameOkay)
 		F.Reskin(InterfaceOptionsFrameCancel)
-		F.Reskin(InterfaceOptionsSocialPanelRedockChat)
-		F.Reskin(InterfaceOptionsSocialPanelTwitterLoginButton)
-		F.Reskin(InterfaceOptionsDisplayPanelResetTutorials)
 
 		InterfaceOptionsFrameOkay:SetPoint("BOTTOMRIGHT", InterfaceOptionsFrameCancel, "BOTTOMLEFT", -1, 0)
 
@@ -39,100 +36,86 @@ tinsert(C.themes["Aurora"], function()
 		line:SetPoint("LEFT", 205, 10)
 		line:SetColorTexture(1, 1, 1, .2)
 
-		local checkboxes = {
-			"InterfaceOptionsControlsPanelStickyTargeting",
-			"InterfaceOptionsControlsPanelAutoDismount",
-			"InterfaceOptionsControlsPanelAutoClearAFK",
-			"InterfaceOptionsControlsPanelAutoLootCorpse",
-			"InterfaceOptionsControlsPanelInteractOnLeftClick",
-			"InterfaceOptionsControlsPanelLootAtMouse",
-			"InterfaceOptionsCombatPanelTargetOfTarget",
-			"InterfaceOptionsCombatPanelFlashLowHealthWarning",
-			"InterfaceOptionsCombatPanelLossOfControl",
-			"InterfaceOptionsCombatPanelEnableFloatingCombatText",
-			"InterfaceOptionsCombatPanelAutoSelfCast",
-			"InterfaceOptionsDisplayPanelRotateMinimap",
-			"InterfaceOptionsDisplayPanelAJAlerts",
-			"InterfaceOptionsDisplayPanelShowTutorials",
-			"InterfaceOptionsSocialPanelProfanityFilter",
-			"InterfaceOptionsSocialPanelSpamFilter",
-			"InterfaceOptionsSocialPanelGuildMemberAlert",
-			"InterfaceOptionsSocialPanelBlockTrades",
-			"InterfaceOptionsSocialPanelBlockGuildInvites",
-			"InterfaceOptionsSocialPanelBlockChatChannelInvites",
-			"InterfaceOptionsSocialPanelShowAccountAchievments",
-			"InterfaceOptionsSocialPanelOnlineFriends",
-			"InterfaceOptionsSocialPanelOfflineFriends",
-			"InterfaceOptionsSocialPanelBroadcasts",
-			"InterfaceOptionsSocialPanelFriendRequests",
-			"InterfaceOptionsSocialPanelShowToastWindow",
-			"InterfaceOptionsSocialPanelEnableTwitter",
-			"InterfaceOptionsActionBarsPanelBottomLeft",
-			"InterfaceOptionsActionBarsPanelBottomRight",
-			"InterfaceOptionsActionBarsPanelRight",
-			"InterfaceOptionsActionBarsPanelRightTwo",
-			"InterfaceOptionsActionBarsPanelLockActionBars",
-			"InterfaceOptionsActionBarsPanelAlwaysShowActionBars",
-			"InterfaceOptionsActionBarsPanelCountdownCooldowns",
-			"InterfaceOptionsNamesPanelMyName",
-			"InterfaceOptionsNamesPanelNonCombatCreature",
-			"InterfaceOptionsNamesPanelFriendlyPlayerNames",
-			"InterfaceOptionsNamesPanelFriendlyMinions",
-			"InterfaceOptionsNamesPanelEnemyPlayerNames",
-			"InterfaceOptionsNamesPanelEnemyMinions",
-			"InterfaceOptionsNamesPanelUnitNameplatesPersonalResource",
-			"InterfaceOptionsNamesPanelUnitNameplatesPersonalResourceOnEnemy",
-			"InterfaceOptionsNamesPanelUnitNameplatesMakeLarger",
-			"InterfaceOptionsNamesPanelUnitNameplatesShowAll",
-			"InterfaceOptionsNamesPanelUnitNameplatesAggroFlash",
-			"InterfaceOptionsNamesPanelUnitNameplatesFriendlyMinions",
-			"InterfaceOptionsNamesPanelUnitNameplatesEnemyMinions",
-			"InterfaceOptionsNamesPanelUnitNameplatesEnemyMinus",
-			"InterfaceOptionsCameraPanelWaterCollision",
-			"InterfaceOptionsMousePanelInvertMouse",
-			"InterfaceOptionsMousePanelEnableMouseSpeed",
-			"InterfaceOptionsMousePanelClickToMove",
-			"InterfaceOptionsAccessibilityPanelMovePad",
-			"InterfaceOptionsAccessibilityPanelCinematicSubtitles",
-			"InterfaceOptionsAccessibilityPanelColorblindMode"
-		}
+		local checkboxes, dropdowns, sliders
+		-- Controls
+		checkboxes = {"InterfaceOptionsControlsPanelStickyTargeting", "InterfaceOptionsControlsPanelAutoDismount", "InterfaceOptionsControlsPanelAutoClearAFK", "InterfaceOptionsControlsPanelAutoLootCorpse", "InterfaceOptionsControlsPanelInteractOnLeftClick", "InterfaceOptionsControlsPanelLootAtMouse"}
 		for i = 1, #checkboxes do
 			F.ReskinCheck(_G[checkboxes[i]])
 		end
+		F.ReskinDropDown(InterfaceOptionsControlsPanelAutoLootKeyDropDown)
 
-		local dropdowns = {
-			"InterfaceOptionsControlsPanelAutoLootKeyDropDown",
-			"InterfaceOptionsCombatPanelFocusCastKeyDropDown",
-			"InterfaceOptionsCombatPanelSelfCastKeyDropDown",
-			"InterfaceOptionsDisplayPanelOutlineDropDown",
-			"InterfaceOptionsDisplayPanelSelfHighlightDropDown",
-			"InterfaceOptionsDisplayPanelDisplayDropDown",
-			"InterfaceOptionsDisplayPanelChatBubblesDropDown",
-			"InterfaceOptionsSocialPanelChatStyle",
-			"InterfaceOptionsSocialPanelTimestamps",
-			"InterfaceOptionsSocialPanelWhisperMode",
-			"InterfaceOptionsActionBarsPanelPickupActionKeyDropDown",
-			"InterfaceOptionsNamesPanelNPCNamesDropDown",
-			"InterfaceOptionsNamesPanelUnitNameplatesMotionDropDown",
-			"InterfaceOptionsCameraPanelStyleDropDown",
-			"InterfaceOptionsMousePanelClickMoveStyleDropDown",
-			"InterfaceOptionsAccessibilityPanelColorFilterDropDown"
-		}
+		-- Combat
+		checkboxes = {"InterfaceOptionsCombatPanelTargetOfTarget", "InterfaceOptionsCombatPanelFlashLowHealthWarning", "InterfaceOptionsCombatPanelLossOfControl", "InterfaceOptionsCombatPanelAutoSelfCast", "InterfaceOptionsCombatPanelEnableFloatingCombatText"}
+		for i = 1, #checkboxes do
+			F.ReskinCheck(_G[checkboxes[i]])
+		end
+		F.ReskinDropDown(InterfaceOptionsCombatPanelFocusCastKeyDropDown)
+		F.ReskinDropDown(InterfaceOptionsCombatPanelSelfCastKeyDropDown)
+		F.ReskinSlider(InterfaceOptionsCombatPanelSpellAlertOpacitySlider)
+
+		-- Display
+		checkboxes = {"InterfaceOptionsDisplayPanelRotateMinimap", "InterfaceOptionsDisplayPanelAJAlerts", "InterfaceOptionsDisplayPanelShowTutorials"}
+		for i = 1, #checkboxes do
+			F.ReskinCheck(_G[checkboxes[i]])
+		end
+		dropdowns = {"InterfaceOptionsDisplayPanelOutlineDropDown", "InterfaceOptionsDisplayPanelSelfHighlightDropDown", "InterfaceOptionsDisplayPanelDisplayDropDown", "InterfaceOptionsDisplayPanelChatBubblesDropDown"}
 		for i = 1, #dropdowns do
 			F.ReskinDropDown(_G[dropdowns[i]])
 		end
+		F.Reskin(InterfaceOptionsDisplayPanelResetTutorials)
 
-		local sliders = {
-			"InterfaceOptionsCombatPanelSpellAlertOpacitySlider",
-			"InterfaceOptionsCameraPanelMaxDistanceSlider",
-			"InterfaceOptionsCameraPanelFollowSpeedSlider",
-			"InterfaceOptionsMousePanelMouseSensitivitySlider",
-			"InterfaceOptionsMousePanelMouseLookSpeedSlider",
-			"InterfaceOptionsAccessibilityPanelColorblindStrengthSlider"
-		}
-		for i = 1, #sliders do
-			F.ReskinSlider(_G[sliders[i]])
+		-- Social
+		checkboxes = {"InterfaceOptionsSocialPanelProfanityFilter", "InterfaceOptionsSocialPanelSpamFilter", "InterfaceOptionsSocialPanelGuildMemberAlert", "InterfaceOptionsSocialPanelBlockTrades", "InterfaceOptionsSocialPanelBlockGuildInvites", "InterfaceOptionsSocialPanelBlockChatChannelInvites", "InterfaceOptionsSocialPanelShowAccountAchievments",
+					"InterfaceOptionsSocialPanelOnlineFriends", "InterfaceOptionsSocialPanelOfflineFriends", "InterfaceOptionsSocialPanelBroadcasts", "InterfaceOptionsSocialPanelFriendRequests", "InterfaceOptionsSocialPanelShowToastWindow", "InterfaceOptionsSocialPanelEnableTwitter"}
+		for i = 1, #checkboxes do
+			F.ReskinCheck(_G[checkboxes[i]])
 		end
+		dropdowns = {"InterfaceOptionsSocialPanelChatStyle", "InterfaceOptionsSocialPanelTimestamps", "InterfaceOptionsSocialPanelWhisperMode"}
+		for i = 1, #dropdowns do
+			F.ReskinDropDown(_G[dropdowns[i]])
+		end
+		F.Reskin(InterfaceOptionsSocialPanelTwitterLoginButton)
+		F.Reskin(InterfaceOptionsSocialPanelRedockChat)
+
+		-- ActionBars
+		checkboxes = {"InterfaceOptionsActionBarsPanelBottomLeft", "InterfaceOptionsActionBarsPanelBottomRight", "InterfaceOptionsActionBarsPanelRight", "InterfaceOptionsActionBarsPanelRightTwo", "InterfaceOptionsActionBarsPanelLockActionBars", "InterfaceOptionsActionBarsPanelAlwaysShowActionBars", "InterfaceOptionsActionBarsPanelCountdownCooldowns"}
+		for i = 1, #checkboxes do
+			F.ReskinCheck(_G[checkboxes[i]])
+		end
+		F.ReskinDropDown(InterfaceOptionsActionBarsPanelPickupActionKeyDropDown)
+
+		-- Names
+		checkboxes = {"InterfaceOptionsNamesPanelMyName", "InterfaceOptionsNamesPanelNonCombatCreature", "InterfaceOptionsNamesPanelFriendlyPlayerNames", "InterfaceOptionsNamesPanelFriendlyMinions", "InterfaceOptionsNamesPanelEnemyPlayerNames", "InterfaceOptionsNamesPanelEnemyMinions",
+					"InterfaceOptionsNamesPanelUnitNameplatesPersonalResource", "InterfaceOptionsNamesPanelUnitNameplatesPersonalResourceOnEnemy", "InterfaceOptionsNamesPanelUnitNameplatesMakeLarger", "InterfaceOptionsNamesPanelUnitNameplatesShowAll", "InterfaceOptionsNamesPanelUnitNameplatesAggroFlash",
+					"InterfaceOptionsNamesPanelUnitNameplatesFriendlyMinions", "InterfaceOptionsNamesPanelUnitNameplatesEnemyMinions", "InterfaceOptionsNamesPanelUnitNameplatesEnemyMinus"}
+		for i = 1, #checkboxes do
+			F.ReskinCheck(_G[checkboxes[i]])
+		end
+		F.ReskinDropDown(InterfaceOptionsNamesPanelNPCNamesDropDown)
+		F.ReskinDropDown(InterfaceOptionsNamesPanelUnitNameplatesMotionDropDown)
+
+		-- Camera
+		F.ReskinCheck(InterfaceOptionsCameraPanelWaterCollision)
+		F.ReskinDropDown(InterfaceOptionsCameraPanelStyleDropDown)
+		F.ReskinSlider(InterfaceOptionsCameraPanelMaxDistanceSlider)
+		F.ReskinSlider(InterfaceOptionsCameraPanelFollowSpeedSlider)
+
+		-- Mouse
+		checkboxes = {"InterfaceOptionsMousePanelInvertMouse", "InterfaceOptionsMousePanelEnableMouseSpeed", "InterfaceOptionsMousePanelClickToMove"}
+		for i = 1, #checkboxes do
+			F.ReskinCheck(_G[checkboxes[i]])
+		end
+		F.ReskinDropDown(InterfaceOptionsMousePanelClickMoveStyleDropDown)
+		F.ReskinSlider(InterfaceOptionsMousePanelMouseLookSpeedSlider)
+		F.ReskinSlider(InterfaceOptionsMousePanelMouseSensitivitySlider)
+
+		-- Accessibility
+		checkboxes = {"InterfaceOptionsAccessibilityPanelMovePad", "InterfaceOptionsAccessibilityPanelCinematicSubtitles", "InterfaceOptionsAccessibilityPanelColorblindMode"}
+		for i = 1, #checkboxes do
+			F.ReskinCheck(_G[checkboxes[i]])
+		end
+		F.ReskinDropDown(InterfaceOptionsAccessibilityPanelColorFilterDropDown)
+		F.ReskinSlider(InterfaceOptionsAccessibilityPanelColorblindStrengthSlider)
 
 		if IsAddOnLoaded("Blizzard_CompactRaidFrames") then
 			CompactUnitFrameProfilesGeneralOptionsFrameAutoActivateBG:Hide()
