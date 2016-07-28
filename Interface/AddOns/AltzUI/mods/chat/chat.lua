@@ -64,8 +64,10 @@ local function init()
 			cf:SetFrameLevel(2)
 		end
 		-- remove chat frame backdrop
-		for g = 1, #CHAT_FRAME_TEXTURES do
-			_G["ChatFrame"..i..CHAT_FRAME_TEXTURES[g]]:SetTexture(nil)
+		if not aCoreCDB["ChatOptions"]["showbg"] then
+			for g = 1, #CHAT_FRAME_TEXTURES do
+				_G["ChatFrame"..i..CHAT_FRAME_TEXTURES[g]]:SetTexture(nil)
+			end
 		end
 		-- place edit box
 		local eb = _G['ChatFrame'..i..'EditBox']
