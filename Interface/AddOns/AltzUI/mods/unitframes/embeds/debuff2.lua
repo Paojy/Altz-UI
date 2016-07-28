@@ -136,6 +136,8 @@ local CustomFilter = function(...)
 
 	if aCoreCDB["CooldownAura"]["Debuffs"][name] then
 		priority = aCoreCDB["CooldownAura"]["Debuffs"][name].level
+	elseif dispellist[dtype] then
+        priority = dispelPriority[dtype]
 	elseif IsInInstance() then
         local ins = GetInstanceInfo()
         if aCoreCDB["RaidDebuff"][ins] then
@@ -145,8 +147,6 @@ local CustomFilter = function(...)
 				end
 			end
         end
-	elseif dispellist[dtype] then
-        priority = dispelPriority[dtype]
     end
 	
 	return priority, asc

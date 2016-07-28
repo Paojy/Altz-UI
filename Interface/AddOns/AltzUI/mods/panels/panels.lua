@@ -994,48 +994,49 @@ Talent:SetScript("OnEvent", function(self, event, arg1)
 	if specIndex then
 		local specID, specName = GetSpecializationInfo(specIndex)
 		
-		self.text:SetText(format(G.classcolor.."%s|r", specName))
-		
-		SpecList[2]["disabled"] = false
-		SpecList[3]["disabled"] = false
-		
-		local specPopupButton = SpecList[2]["menuList"][1]
-		specPopupButton.text = format(LOOT_SPECIALIZATION_DEFAULT, specName)
-		specPopupButton.func = function(self) SetLootSpecialization(0) end
-		if GetLootSpecialization() == specPopupButton.specializationID then
-			specPopupButton.checked = true
-		else
-			specPopupButton.checked = false
-		end
+		if specName then
+			self.text:SetText(format(G.classcolor.."%s|r", specName))
+			SpecList[2]["disabled"] = false
+			SpecList[3]["disabled"] = false
+			
+			local specPopupButton = SpecList[2]["menuList"][1]
+			specPopupButton.text = format(LOOT_SPECIALIZATION_DEFAULT, specName)
+			specPopupButton.func = function(self) SetLootSpecialization(0) end
+			if GetLootSpecialization() == specPopupButton.specializationID then
+				specPopupButton.checked = true
+			else
+				specPopupButton.checked = false
+			end
 
-		for index = 2, numspec+1 do
-			specPopupButton = SpecList[2]["menuList"][index]
-			if specPopupButton then
-				local id, name = GetSpecializationInfo(index-1)
-				specPopupButton.specializationID = id
-				specPopupButton.text = name
-				specPopupButton.func = function(self) 
-					SetLootSpecialization(id)
-				end
-				if GetLootSpecialization() == specPopupButton.specializationID then
-					specPopupButton.checked = true
-				else
-					specPopupButton.checked = false
+			for index = 2, numspec+1 do
+				specPopupButton = SpecList[2]["menuList"][index]
+				if specPopupButton then
+					local id, name = GetSpecializationInfo(index-1)
+					specPopupButton.specializationID = id
+					specPopupButton.text = name
+					specPopupButton.func = function(self) 
+						SetLootSpecialization(id)
+					end
+					if GetLootSpecialization() == specPopupButton.specializationID then
+						specPopupButton.checked = true
+					else
+						specPopupButton.checked = false
+					end
 				end
 			end
-		end
-		
-		for index = 1, numspec do
-			specbutton = SpecList[3]["menuList"][index]
-			if specbutton then
-				local _, name = GetSpecializationInfo(index)
-				specbutton.specializationID = index
-				specbutton.text = name
-				specbutton.func = function(self) SetSpecialization(index) end
-				if GetSpecialization() == specbutton.specializationID then
-					specbutton.checked = true
-				else
-					specbutton.checked = false
+			
+			for index = 1, numspec do
+				specbutton = SpecList[3]["menuList"][index]
+				if specbutton then
+					local _, name = GetSpecializationInfo(index)
+					specbutton.specializationID = index
+					specbutton.text = name
+					specbutton.func = function(self) SetSpecialization(index) end
+					if GetSpecialization() == specbutton.specializationID then
+						specbutton.checked = true
+					else
+						specbutton.checked = false
+					end
 				end
 			end
 		end

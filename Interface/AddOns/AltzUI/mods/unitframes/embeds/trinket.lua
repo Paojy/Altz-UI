@@ -27,9 +27,12 @@ local Update = function(self, event, ...)
 	if(self.Trinket.PreUpdate) then self.Trinket:PreUpdate(event) end
 
 	if event == "COMBAT_LOG_EVENT_UNFILTERED" then
-		local _, eventType, _, sourceGUID, _, _, _, _, _, _, _, spellID = ...
+		local _, eventType, _, sourceGUID, sourceName, _, _, _, _, _, _, spellID = ...
 		if eventType == "SPELL_CAST_SUCCESS" and sourceGUID == UnitGUID(self.unit) and trinketSpells[spellID] then
-			CooldownFrame_SetTimer(self.Trinket.cooldownFrame, GetTime(), trinketSpells[spellID], 1)
+			self.Trinket.cooldownFrame:SetCooldown(GetTime(), trinketSpells[spellID])
+			if self.Trinket.trinketUseAnnounce then
+				SendChatMessage(sourceName..L["使用了徽章"], "SAY")
+			end
 		end
 	elseif event == "ARENA_OPPONENT_UPDATE" then
 		local unit, type = ...
@@ -39,7 +42,7 @@ local Update = function(self, event, ...)
 			end
 		end
 	elseif event == 'PLAYER_ENTERING_WORLD' then
-		CooldownFrame_SetTimer(self.Trinket.cooldownFrame, 1, 1, 1)
+		self.Trinket.cooldownFrame:SetCooldown(0, 0)
 	end
 
 	if(self.Trinket.PostUpdate) then self.Trinket:PostUpdate(event) end
@@ -52,7 +55,7 @@ local Enable = function(self)
 		self:RegisterEvent("PLAYER_ENTERING_WORLD", Update, true)
 
 		if not self.Trinket.cooldownFrame then
-			self.Trinket.cooldownFrame = CreateFrame("Cooldown", nil, self.Trinket)
+			self.Trinket.cooldownFrame = CreateFrame("Cooldown", nil, self.Trinket, "CooldownFrameTemplate")
 			self.Trinket.cooldownFrame:SetAllPoints(self.Trinket)
 		end
 
@@ -62,7 +65,16 @@ local Enable = function(self)
 			self.Trinket.Icon:SetTexCoord(0.07, 0.93, 0.07, 0.93)
 			self.Trinket.Icon:SetTexture(GetTrinketIcon('player'))
 		end
-
+		
+		if self.Trinket.trinketUpAnnounce then
+			self.Trinket.cooldownFrame:SetScript("OnHide", function()
+				local name = GetUnitName(self.unit, false) or "unknown"
+				if self:IsShown() then
+				SendChatMessage(name..L["的徽章冷却就绪"], "SAY")
+				end
+			end)
+		end
+		
 		return true
 	end
 end
