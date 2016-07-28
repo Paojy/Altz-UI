@@ -74,6 +74,7 @@ L["聊天过滤"] = "Chat Filter"
 L["聊天过滤提示"] = "Hide a chat messages containing key word(s) below."
 L["过滤阈值"] = "Chat Filter Keyword Number"
 L["过滤阈值提示"] = "Must contain at least the number of words to hide a message."
+L["显示聊天框背景"] = "Show background for chat frames."
 
 -- 背包和物品
 L["启用背包模块"] = "Enbale Inventory Mods"

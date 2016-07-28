@@ -127,6 +127,9 @@ L["小队满了"] = "party is full"
 L["团队满了"] = "raid is full"
 L["客户端错误"] = "I can't invite you by key word now, your account seems to be sticking to %s."
 
+L["的徽章冷却就绪"] = "'s TrinketPVP is ready"
+L["使用了徽章"] = " uses TrinketPVP"
+
 L["界面移动工具"] = "Frame Mover"
 L["锚点框体"] = "Anchor Frame"
 L["重置位置"] = "Reset this frame to it's default position."
