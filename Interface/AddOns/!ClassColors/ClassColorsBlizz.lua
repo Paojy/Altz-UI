@@ -1,7 +1,7 @@
 --[[--------------------------------------------------------------------
 	!ClassColors
 	Change class colors without breaking the Blizzard UI.
-	Copyright (c) 2009-2015 Phanx <addons@phanx.net>. All rights reserved.
+	Copyright (c) 2009-2016 Phanx <addons@phanx.net>. All rights reserved.
 	http://www.wowinterface.com/downloads/info12513-ClassColors.html
 	http://www.curse.com/addons/wow/classcolors
 ----------------------------------------------------------------------]]
@@ -454,9 +454,40 @@ addonFuncs["Blizzard_ChallengesUI"] = function()
 	local _G = _G
 	local ChallengesFrame, GameTooltip = ChallengesFrame, GameTooltip
 	local GetChallengeBestTimeInfo, GetChallengeBestTimeNum, GetSpecializationInfoByID = GetChallengeBestTimeInfo, GetChallengeBestTimeNum, GetSpecializationInfoByID
+	
+	hooksecurefunc("ChallengesFrame_Update", function()
+		for i = 1, 4 do
+			local bu = select(i, ChallengesFrame.GuildBest:GetChildren())	
+			if bu and bu.leaderInfo then
+			
+				local str = CHALLENGE_MODE_GUILD_BEST_LINE
+				if (bu.leaderInfo.isYou) then
+					str = CHALLENGE_MODE_GUILD_BEST_LINE_YOU
+				end
+				
+				local class = bu.leaderInfo.class
+				local name = bu.leaderInfo.name
+				local color = CUSTOM_CLASS_COLORS[class].colorStr
+				bu.CharacterName:SetText(str:format(color, name))
+				
+				bu:SetScript("OnEnter", function(self)
+					local leaderInfo = self.leaderInfo
+				
+					GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
+					local name = C_ChallengeMode.GetMapInfo(leaderInfo.mapid);
+					GameTooltip:SetText(name, 1, 1, 1)
+					GameTooltip:AddLine(CHALLENGE_MODE_POWER_LEVEL:format(leaderInfo.level))
+					for i = 1, #leaderInfo.members do
+						local classColorStr = CUSTOM_CLASS_COLORS[leaderInfo.members[i].class].colorStr
+						GameTooltip:AddLine(CHALLENGE_MODE_GUILD_BEST_LINE:format(classColorStr,leaderInfo.members[i].name))
+					end
+					GameTooltip:Show()
+				end)
+			end
+		end
+	end)
 
-	local GuildBest, RealmBest = ChallengesFrameDetails:GetChildren()
-
+	--[[
 	GuildBest:SetScript("OnEnter", function(self)
 		local guildTime = ChallengesFrame.details.GuildTime
 		if not guildTime.hasTime or not guildTime.mapID then return end
@@ -478,51 +509,32 @@ addonFuncs["Blizzard_ChallengesUI"] = function()
 		end
 
 		GameTooltip:Show()
-	end)
-
-	RealmBest:SetScript("OnEnter", function(self)
-		local realmTime = ChallengesFrame.details.RealmTime
-		if not realmTime.hasTime or not realmTime.mapID then return end
-
-		GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-		GameTooltip:SetText(CHALLENGE_MODE_REALM_BEST)
-
-		for i = 1, GetChallengeBestTimeNum(realmTime.mapID, false) do
-			local name, className, class, specID = GetChallengeBestTimeInfo(realmTime.mapID, i, false)
-			if name then
-				local color = CUSTOM_CLASS_COLORS[class].colorStr
-				local _, specName = GetSpecializationInfoByID(specID)
-				if specName and specName ~= "" then
-					GameTooltip:AddLine(format(F_PLAYER_CLASS, name, color, specName, className))
-				else
-					GameTooltip:AddLine(format(F_PLAYER_CLASS_NO_SPEC, name, color, className))
-				end
-			end
-		end
-
-		GameTooltip:Show()
-	end)
+	end)]]
 end
 
 ------------------------------------------------------------------------
 -- Blizzard_HeirloomCollection.lua
 
 addonFuncs["Blizzard_Collections"] = function()
+	local NO_CLASS_FILTER = 0
+	local NO_SPEC_FILTER = 0
+
 	function HeirloomsJournal:UpdateClassFilterDropDownText()
-        local text
-        if self.classFilter == 0 then -- NO_CLASS_FILTER
-            text = ALL_CLASSES
-        elseif self.classFilter then
-            local className, classTag = GetClassInfoByID(self.classFilter)
-            local classColorStr = CUSTOM_CLASS_COLORS[classTag].colorStr -- CHANGED
-            if self.specFilter == 0 then -- NO_SPEC_FILTER
-                text = HEIRLOOMS_CLASS_FILTER_FORMAT:format(classColorStr, className)
-            else
-                local specName = GetSpecializationNameForSpecID(self.specFilter)
-                text = HEIRLOOMS_CLASS_SPEC_FILTER_FORMAT:format(classColorStr, className, specName)
-            end
-        end
-        UIDropDownMenu_SetText(self.classDropDown, text)
+		local text;
+		local classFilter, specFilter = C_Heirloom.GetClassAndSpecFilters()
+		if classFilter == NO_CLASS_FILTER then
+			text = ALL_CLASSES
+		else
+			local className, classTag = GetClassInfoByID(classFilter)
+			local classColorStr = CUSTOM_CLASS_COLORS[classTag].colorStr
+			if specFilter == NO_SPEC_FILTER then
+				text = HEIRLOOMS_CLASS_FILTER_FORMAT:format(classColorStr, className)
+			else
+				local specName = GetSpecializationNameForSpecID(specFilter)
+				text = HEIRLOOMS_CLASS_SPEC_FILTER_FORMAT:format(classColorStr, className, specName)
+			end
+		end
+		UIDropDownMenu_SetText(self.classDropDown, text)
     end
 end
 
@@ -656,27 +668,26 @@ end
 --	Blizzard_TradeSkillUI.lua
 
 addonFuncs["Blizzard_TradeSkillUI"] = function()
-	local TRADE_SKILL_GUILD_CRAFTERS_DISPLAYED = TRADE_SKILL_GUILD_CRAFTERS_DISPLAYED
-	local FauxScrollFrame_GetOffset, TradeSkillGuildCraftersFrame = FauxScrollFrame_GetOffset, TradeSkillGuildCraftersFrame
-	local GetGuildRecipeInfoPostQuery, GetGuildRecipeMember = GetGuildRecipeInfoPostQuery, GetGuildRecipeMember
-	if TradeSkillGuilCraftersFrame_Update then
-		hooksecurefunc("TradeSkillGuilCraftersFrame_Update", function()
-			local _, _, numMembers = GetGuildRecipeInfoPostQuery()
-			local offset = FauxScrollFrame_GetOffset(TradeSkillGuildCraftersFrame)
-			for i = 1, TRADE_SKILL_GUILD_CRAFTERS_DISPLAYED do
-				if i > numMembers then
-					break
-				end
-				local _, class, online = GetGuildRecipeMember(i + offset)
-				if class and online then
-					local color = CUSTOM_CLASS_COLORS[class]
-					if color then
-						_G["TradeSkillGuildCrafter"..i.."Text"]:SetTextColor(color.r, color.g, color.b)
-					end
+	hooksecurefunc(TradeSkillFrame.DetailsFrame.GuildFrame, "Refresh", function(self)
+		if self.waitingOnData then return end
+
+		local _, _, numMembers = GetGuildRecipeInfoPostQuery()
+		local offset = FauxScrollFrame_GetOffset(self.Container.ScrollFrame)
+		for i, craftersButton in ipairs(self.Container.ScrollFrame.buttons) do
+			local dataIndex = offset + i
+			if dataIndex > numMembers then
+				break
+			end
+
+			local _, _, class, online = GetGuildRecipeMember(i + offset)
+			if class and online then
+				local color = CUSTOM_CLASS_COLORS[class]
+				if color then
+					craftersButton.Text:SetTextColor(color.r, color.g, color.b)
 				end
 			end
-		end)
-	end
+		end
+	end)
 end
 
 ------------------------------------------------------------------------

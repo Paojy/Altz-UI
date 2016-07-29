@@ -1,9 +1,5 @@
-﻿## Interface: 60200
-## Version: 6.2.2.0
-## X-Curse-Packaged-Version: 6.2.2.0
-## X-Curse-Project-Name: Class Colors
-## X-Curse-Project-ID: classcolors
-## X-Curse-Repository-ID: wow/classcolors/mainline
+﻿## Interface: 70000
+## Version: 7.0.3.1
 
 ## Title: Class Colors
 ## Notes: Change class colors without breaking parts of the default UI.
@@ -15,10 +11,12 @@
 
 ## Author: Phanx
 ## X-Email: addons@phanx.net
-## X-Copyright: Copyright (c) 2009-2015 Phanx. All rights reserved.
+## X-Copyright: Copyright (c) 2009-2016 Phanx. All rights reserved.
 ## X-CompatibleLocales: enUS, deDE, esES, esMX, frFR, itIT, koKR, ptBR, ruRU, zhCN, zhTW
 ## X-Localizations: enUS, deDE, esES, esMX, ptBR, ruRU
 ## X-Website: https://github.com/Phanx/ClassColors
+## X-Curse-Project-ID: classcolors
+## X-WoWI-ID: 12513
 
 ## SavedVariables: ClassColorsDB
 

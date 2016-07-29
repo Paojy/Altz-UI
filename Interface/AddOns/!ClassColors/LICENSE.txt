@@ -13,8 +13,7 @@ Permission is granted for anyone to aggregate this software with other works
 not derived from this software for the purpose of creating a user interface
 replacement (commonly referred to as a "compilation" or "addon pack") for the
 "World of Warcraft" game client, and to distribute such collective works on
-websites operated by Curse Inc or ZAM Network LLC (including curse.com,
-curseforge.com, wowace.com and wowinterface.com) as long as the software is
+the websites at Curse.com and WoWInterface.com, as long as the software is
 not modified in any way, including by modifying or removing any files.
 
 This software may not be redistributed by itself or in any other way, in whole
