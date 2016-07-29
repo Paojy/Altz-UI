@@ -10,6 +10,7 @@ gui.lua
 
 AddOns\Blizzard_AchievementUI.lua
 AddOns\Blizzard_ArchaeologyUI.lua
+AddOns\Blizzard_ArtifactUI.lua
 AddOns\Blizzard_AuctionUI.lua
 AddOns\Blizzard_BarbershopUI.lua
 AddOns\Blizzard_BattlefieldMinimap.lua

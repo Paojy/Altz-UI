@@ -279,4 +279,76 @@ C.themes["Blizzard_TalentUI"] = function()
 	F.Reskin(PlayerTalentFrameSpecializationLearnButton)
 	F.Reskin(PlayerTalentFrameActivateButton)
 	F.Reskin(PlayerTalentFramePetSpecializationLearnButton)
+	
+	-- PvP Talents
+	
+	PlayerTalentFramePVPTalents.XPBar.Frame:Hide()
+	
+	local bg = CreateFrame("Frame", nil, PlayerTalentFramePVPTalents.XPBar.Bar)
+	bg:SetPoint("TOPLEFT", 0, 1)
+	bg:SetPoint("BOTTOMRIGHT", 0, -1)
+	bg:SetFrameLevel(PlayerTalentFramePVPTalents.XPBar.Bar:GetFrameLevel()-1)
+	F.CreateBD(bg, .3)
+	PlayerTalentFramePVPTalents.XPBar.Bar.Background:Hide()
+	
+	PlayerTalentFramePVPTalents.XPBar.NextAvailable.Frame:Hide()
+	F.CreateBD(PlayerTalentFramePVPTalents.XPBar.NextAvailable, .5)
+	PlayerTalentFramePVPTalents.XPBar.NextAvailable:ClearAllPoints()
+	PlayerTalentFramePVPTalents.XPBar.NextAvailable:SetPoint("LEFT", PlayerTalentFramePVPTalents.XPBar.Bar, "RIGHT")
+	PlayerTalentFramePVPTalents.XPBar.NextAvailable:SetSize(25, 25)
+	PlayerTalentFramePVPTalents.XPBar.NextAvailable.Icon:SetAllPoints()
+	
+	PlayerTalentFramePVPTalents.XPBar.NextAvailable.Frame.Show = F.dummy
+	PlayerTalentFramePVPTalents.XPBar.Levelbg = CreateFrame("Frame", nil, PlayerTalentFramePVPTalents.XPBar)
+	PlayerTalentFramePVPTalents.XPBar.Levelbg:SetPoint("RIGHT", PlayerTalentFramePVPTalents.XPBar.Bar, "LEFT")
+	PlayerTalentFramePVPTalents.XPBar.Levelbg:SetSize(25, 25)
+	PlayerTalentFramePVPTalents.XPBar.Levelbg:SetFrameLevel(1)
+	PlayerTalentFramePVPTalents.XPBar.Level:SetPoint("CENTER", PlayerTalentFramePVPTalents.XPBar.Levelbg, "CENTER")
+	PlayerTalentFramePVPTalents.XPBar.Level:SetJustifyH("CENTER")
+	F.CreateBD(PlayerTalentFramePVPTalents.XPBar.Levelbg, .5)
+	
+	for i = 1, 7 do
+		select(i, PlayerTalentFramePVPTalents.Talents:GetRegions()):Hide()
+	end
+	
+	for i = 1, 6 do
+		PlayerTalentFramePVPTalents.Talents["Tier"..i].Bg:SetAlpha(0)
+		PlayerTalentFramePVPTalents.Talents["Tier"..i].TopLine:SetDesaturated(true)
+		PlayerTalentFramePVPTalents.Talents["Tier"..i].TopLine:SetVertexColor(r, g, b)
+		PlayerTalentFramePVPTalents.Talents["Tier"..i].BottomLine:SetDesaturated(true)
+		PlayerTalentFramePVPTalents.Talents["Tier"..i].BottomLine:SetVertexColor(r, g, b)
+		for j = 1, 3 do
+			local bu = PlayerTalentFramePVPTalents.Talents["Tier"..i]["Talent"..j]
+			bu.LeftCap:Hide()
+			bu.RightCap:Hide()
+			bu.Slot:Hide()
+			bu.Cover:SetAlpha(0)
+			bu.knownSelection:SetAlpha(0)
+			bu.learnSelection:SetAlpha(0)
+			bu.highlight:Hide()
+			
+			bu.Icon:SetTexCoord(.08, .92, .08, .92)
+			local iconbg = F.CreateBG(bu.Icon)
+			iconbg:SetDrawLayer("BACKGROUND", -1)
+			
+			bu.bg = CreateFrame("Frame", nil, bu)
+			bu.bg:SetPoint("TOPLEFT", 10, 0)
+			bu.bg:SetPoint("BOTTOMRIGHT")
+			bu.bg:SetFrameLevel(bu:GetFrameLevel()-1)
+			F.CreateBD(bu.bg, .25)
+		end
+	end
+		
+	hooksecurefunc("PVPTalentFrame_Update", function()
+		for i = 1, 6 do
+			for j = 1, 3 do
+				local bu = PlayerTalentFramePVPTalents.Talents["Tier"..i]["Talent"..j]
+				if bu.knownSelection:IsShown() then
+					bu.bg:SetBackdropColor(r, g, b, .2)
+				else
+					bu.bg:SetBackdropColor(0, 0, 0, .25)
+				end
+			end
+		end
+	end)
 end

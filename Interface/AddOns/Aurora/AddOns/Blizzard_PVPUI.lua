@@ -118,7 +118,9 @@ C.themes["Blizzard_PVPUI"] = function()
 
 	for _, roleButton in pairs({RoleInset.HealerIcon, RoleInset.TankIcon, RoleInset.DPSIcon}) do
 		roleButton.cover:SetTexture(C.media.roleIcons)
+		--roleButton.cover:SetTexCoord(.08, .92, .08, .92)
 		roleButton:SetNormalTexture(C.media.roleIcons)
+		--roleButton:GetNormalTexture():SetTexCoord(.08, .92, .08, .92)
 
 		roleButton.checkButton:SetFrameLevel(roleButton:GetFrameLevel() + 2)
 
@@ -137,8 +139,8 @@ C.themes["Blizzard_PVPUI"] = function()
 			right:SetWidth(1)
 			right:SetTexture(C.media.backdrop)
 			right:SetVertexColor(0, 0, 0)
-			right:SetPoint("TOPRIGHT", roleButton, -6, -4)
-			right:SetPoint("BOTTOMRIGHT", roleButton, -6, 7)
+			right:SetPoint("TOPRIGHT", roleButton, -5, -4)
+			right:SetPoint("BOTTOMRIGHT", roleButton, -5, 7)
 			roleButton["rightLine"..i] = right
 
 			local top = roleButton:CreateTexture()
@@ -334,4 +336,29 @@ C.themes["Blizzard_PVPUI"] = function()
 	F.ReskinScroll(HonorFrameSpecificFrameScrollBar)
 	F.ReskinScroll(WarGamesFrameScrollFrameScrollBar)
 	F.ReskinScroll(WarGamesFrameInfoScrollFrameScrollBar)
+	
+	HonorFrame.XPBar.Frame:Hide()
+	
+	local bg = CreateFrame("Frame", nil, HonorFrame.XPBar.Bar)
+	bg:SetPoint("TOPLEFT", 0, 1)
+	bg:SetPoint("BOTTOMRIGHT", 0, -1)
+	bg:SetFrameLevel(HonorFrame.XPBar.Bar:GetFrameLevel()-1)
+	F.CreateBD(bg, .3)
+	HonorFrame.XPBar.Bar.Background:Hide()
+	
+	HonorFrame.XPBar.NextAvailable.Frame:Hide()
+	F.CreateBD(HonorFrame.XPBar.NextAvailable, .5)
+	HonorFrame.XPBar.NextAvailable:ClearAllPoints()
+	HonorFrame.XPBar.NextAvailable:SetPoint("LEFT", HonorFrame.XPBar.Bar, "RIGHT")
+	HonorFrame.XPBar.NextAvailable:SetSize(25, 25)
+	HonorFrame.XPBar.NextAvailable.Icon:SetAllPoints()
+	
+	HonorFrame.XPBar.NextAvailable.Frame.Show = F.dummy
+	HonorFrame.XPBar.Levelbg = CreateFrame("Frame", nil, HonorFrame.XPBar)
+	HonorFrame.XPBar.Levelbg:SetPoint("RIGHT", HonorFrame.XPBar.Bar, "LEFT")
+	HonorFrame.XPBar.Levelbg:SetSize(25, 25)
+	HonorFrame.XPBar.Levelbg:SetFrameLevel(1)
+	HonorFrame.XPBar.Level:SetPoint("CENTER", HonorFrame.XPBar.Levelbg, "CENTER")
+	HonorFrame.XPBar.Level:SetJustifyH("CENTER")
+	F.CreateBD(HonorFrame.XPBar.Levelbg, .5)
 end
