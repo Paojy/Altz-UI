@@ -91,10 +91,10 @@ local function styleExtraActionButton2(bu)
 	--remove the style background theme
 	bu.Style:Hide()
 	--icon
-	--bu.icon:SetTexCoord(0.1,0.9,0.1,0.9)
-	--bu.icon:SetAllPoints(bu)
+	bu.Icon:SetTexCoord(0.1,0.9,0.1,0.9)
+	bu.Icon:SetAllPoints(bu)
 	--cooldown
-	--bu.cooldown:SetAllPoints(bu.icon)
+	bu.Cooldown:SetAllPoints(bu.icon)
 	--add button normaltexture
 	bu:SetNormalTexture(textures.normal)
 	local nt = bu:GetNormalTexture()
