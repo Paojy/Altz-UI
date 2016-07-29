@@ -489,7 +489,13 @@ end
 local function UpdateHealth(unitFrame)
 	local unit = unitFrame.displayedUnit
 	local minHealth, maxHealth = UnitHealth(unit), UnitHealthMax(unit)
-	local perc = minHealth/maxHealth
+	local perc
+	if maxHealth == 0 then
+		perc = 1
+	else
+		perc = minHealth/maxHealth
+	end
+	
 	local perc_text = string.format("%d", math.floor(perc*100))
 	
 	if not numberstyle then
@@ -595,7 +601,9 @@ local function UpdateCastBar(unitFrame)
 	castBar.failedCastColor = CreateColor(0.5, 0.2, 0.2)
 	castBar.nonInterruptibleColor = CreateColor(0.3, 0.3, 0.3)
 	CastingBarFrame_AddWidgetForFade(castBar, castBar.BorderShield)
-	CastingBarFrame_SetUnit(castBar, unitFrame.unit, false, true)
+	if not UnitIsUnit("player", unitFrame.displayedUnit) then  
+		CastingBarFrame_SetUnit(castBar, unitFrame.unit, false, true)
+	end
 end
 
 local function UpdateSelectionHighlight(unitFrame)
@@ -683,7 +691,7 @@ local function NamePlate_OnEvent(self, event, ...)
 	elseif ( event == "PLAYER_ENTERING_WORLD" ) then
 		UpdateAll(self)
 	elseif ( arg1 == self.unit or arg1 == self.displayedUnit ) then
-		if ( event == "UNIT_HEALTH" ) then
+		if ( event == "UNIT_HEALTH_FREQUENT" ) then
 			UpdateHealth(self)
 			UpdateSelectionHighlight(self)
 		elseif ( event == "UNIT_AURA" ) then
@@ -706,7 +714,7 @@ local function UpdateNamePlateEvents(unitFrame)
 	if ( unit ~= unitFrame.displayedUnit ) then
 		displayedUnit = unitFrame.displayedUnit
 	end
-	unitFrame:RegisterUnitEvent("UNIT_HEALTH", unit, displayedUnit)
+	unitFrame:RegisterUnitEvent("UNIT_HEALTH_FREQUENT", unit, displayedUnit)
 	unitFrame:RegisterUnitEvent("UNIT_AURA", unit, displayedUnit)
 	unitFrame:RegisterUnitEvent("UNIT_THREAT_SITUATION_UPDATE", unit, displayedUnit)
 end
