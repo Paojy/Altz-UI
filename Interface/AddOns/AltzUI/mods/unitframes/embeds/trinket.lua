@@ -2,6 +2,7 @@ local T, C, L, G = unpack(select(2, ...))
 local oUF = AltzUF or oUF
 
 local trinketSpells = {
+	[195710] = 180,
 	[59752] = 120,
 	[42292] = 120,
 	[7744] = 45,
