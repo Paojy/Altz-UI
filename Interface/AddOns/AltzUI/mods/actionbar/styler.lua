@@ -94,7 +94,7 @@ local function styleExtraActionButton2(bu)
 	bu.Icon:SetTexCoord(0.1,0.9,0.1,0.9)
 	bu.Icon:SetAllPoints(bu)
 	--cooldown
-	bu.Cooldown:SetAllPoints(bu.icon)
+	bu.Cooldown:SetAllPoints(bu.Icon)
 	--add button normaltexture
 	bu:SetNormalTexture(textures.normal)
 	local nt = bu:GetNormalTexture()
