@@ -39,9 +39,47 @@ hooksecurefunc("SetItemRef", function(link, text, button, chatFrame)
 	end
 end)
 
+hooksecurefunc("PVPTalentFrame_Update", function()
+	for i = 1, 6 do
+		for j = 1, 3 do
+			local bu = PlayerTalentFramePVPTalents.Talents["Tier"..i]["Talent"..j]
+			if bu.knownSelection:IsShown() then
+				bu.bg:SetBackdropColor(r, g, b, .2)
+			else
+				bu.bg:SetBackdropColor(0, 0, 0, .25)
+			end
+		end
+	end
+end)
+
+local eventframe = CreateFrame("Frame")
+eventframe:RegisterEvent("ADDON_LOADED")
+eventframe:SetScript("OnEvent", function(self, event, addon)
+	if addon == "Blizzard_TalentUI" then
+	
+		for i = 1, 7 do
+			for j = 1, 3 do
+				local bu = _G["PlayerTalentFrameTalentsTalentRow"..i.."Talent"..j]
+				bu.nospellid = true
+			end
+		end
+		
+		for i = 1, 6 do
+			for j = 1, 3 do
+				local pvpbu = PlayerTalentFramePVPTalents.Talents["Tier"..i]["Talent"..j]
+				pvpbu.nospellid = true
+			end
+		end
+		
+	end
+end)
+
 GameTooltip:HookScript("OnTooltipSetSpell", function(self)
-	local name = self:GetOwner():GetName()
-	if name and name:match("PlayerTalentFrameTalentsTalentRow%dTalent%d") then return end
+	local parent = self:GetOwner()
+	if parent and parent.nospellid then
+		return
+	end
+	
 	local id = select(3,self:GetSpell())
 	if id then
 		self:AddLine(" ")

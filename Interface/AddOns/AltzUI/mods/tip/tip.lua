@@ -226,6 +226,8 @@ GameTooltip:HookScript("OnUpdate", function(self, ...)
    end
 end)
 
+local styledline = 0
+
 local function style(frame)
     if not frame.border then
         F.CreateBD(frame, 0.5)
@@ -244,13 +246,20 @@ local function style(frame)
     end
 
     if frame.NumLines then
-        for index=1, frame:NumLines() do
+        for index = styledline+1, 30 do
             if index == 1 then
                 _G[frame:GetName()..'TextLeft'..index]:SetFont(G.norFont, 14, "OUTLINE")
-            else
+				_G[frame:GetName()..'TextRight'..index]:SetFont(G.norFont, 12, "OUTLINE")
+				styledline = index
+            elseif _G[frame:GetName()..'TextLeft'..index] then
                 _G[frame:GetName()..'TextLeft'..index]:SetFont(G.norFont, 12, "OUTLINE")
+				_G[frame:GetName()..'TextRight'..index]:SetFont(G.norFont, 12, "OUTLINE")
+				styledline = index
+				--print(index.."ok")
+			else
+				--print(index.."break")
+				break
             end
-            _G[frame:GetName()..'TextRight'..index]:SetFont(G.norFont, 12, "OUTLINE")
         end
     end
 end
