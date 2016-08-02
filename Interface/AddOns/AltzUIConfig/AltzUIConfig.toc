@@ -1,7 +1,7 @@
 ﻿## Interface: 70000
 ## Title: |cffEE3A8CAltz|rUI Config
-## Version: 7.09
-## Author: Blue
+## Version: 7.10
+## Author: Paopao001
 ## Dependencies: Aurora
 ## OptionalDeps: !ClassColors, Skada, DBM-Core, BigWigs
 ## SavedVariables: aCoreDB
