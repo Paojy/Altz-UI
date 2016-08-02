@@ -20,6 +20,15 @@ oUF.Tags.Methods['Mlight:pom'] = function(u) -- 愈合祷言
 end
 oUF.Tags.Events['Mlight:pom'] = "UNIT_AURA"
 
+oUF.Tags.Methods['Mlight:atonement'] = function(u) -- 救赎
+    local name, _,_,_,_,_, expirationTime, fromwho = UnitBuff(u, GetSpellInfo(194384))
+    if(fromwho == "player") then
+        local spellTimer = expirationTime - GetTime()
+        return "|cffFFE4C4"..T.FormatTime(spellTimer).."|r"
+    end
+end
+oUF.Tags.Events['Mlight:atonement'] = "UNIT_AURA"
+
 oUF.Tags.Methods['Mlight:rnw'] = function(u) -- 恢复
     local name, _,_,_,_,_, expirationTime, fromwho = UnitBuff(u, GetSpellInfo(139))
     if(fromwho == "player") then
@@ -117,6 +126,16 @@ oUF.Tags.Methods['Mlight:regrow'] = function(u) -- 愈合
 end
 oUF.Tags.Events['Mlight:regrow'] = "UNIT_AURA"
 
+oUF.Tags.Methods['Mlight:wildgrowth'] = function(u) -- 野性成长
+	local name, _,_,_,_,_, expirationTime, fromwho = UnitBuff(u, GetSpellInfo(48438))
+    if(fromwho == "player") then
+        local spellTimer = (expirationTime-GetTime())
+		local TimeLeft = T.FormatTime(spellTimer)
+        return "|cff33FF33"..TimeLeft.."|r"
+    end
+end
+oUF.Tags.Events['Mlight:wildgrowth'] = "UNIT_AURA"
+
 -- Shaman 萨满
 oUF.Tags.Methods['Mlight:ripTime'] = function(u) --激流
     local name, _,_,_,_,_, expirationTime, fromwho = UnitBuff(u, GetSpellInfo(61295))
@@ -186,7 +205,7 @@ classIndicators={
     ["DRUID"] = {
         ["TL"] = "[Mlight:lb]",
         ["BR"] = "",
-        ["BL"] = "",
+        ["BL"] = "[Mlight:wildgrowth]",
         ["TR"] = "[Mlight:regrow]",
         ["Cen"] = "[Mlight:rejuv]",
     },
@@ -195,7 +214,7 @@ classIndicators={
         ["BR"] = "",
         ["BL"] = "[Mlight:yzdx]",
         ["TR"] = "[Mlight:pom]",
-        ["Cen"] = "",
+        ["Cen"] = "[Mlight:atonement]",
     },
     ["PALADIN"] = {
         ["TL"] = "",
@@ -273,6 +292,7 @@ local update = .25
 
 local Enable = function(self)
     if(self.AltzIndicators) then
+		-- 左中 数字
         self.AuraStatusBL = self.Health:CreateFontString(nil, "OVERLAY")
         self.AuraStatusBL:ClearAllPoints()
         self.AuraStatusBL:SetPoint("LEFT", 1, 0)
@@ -280,7 +300,8 @@ local Enable = function(self)
         self.AuraStatusBL:SetFont(G.norFont, timersize, "OUTLINE")
         self.AuraStatusBL.frequentUpdates = update
         self:Tag(self.AuraStatusBL, classIndicators[G.myClass]["BL"])	
-
+		
+		-- 右下 符号
 		self.AuraStatusBR = self.Health:CreateFontString(nil, "OVERLAY")
         self.AuraStatusBR:ClearAllPoints()
         self.AuraStatusBR:SetPoint("BOTTOMRIGHT", 3, 0)
@@ -289,6 +310,7 @@ local Enable = function(self)
         self.AuraStatusBR.frequentUpdates = update
         self:Tag(self.AuraStatusBR, classIndicators[G.myClass]["BR"])
 		
+		-- 左上 数字
         self.AuraStatusTL = self.Health:CreateFontString(nil, "OVERLAY")
         self.AuraStatusTL:ClearAllPoints()
         self.AuraStatusTL:SetPoint("TOPLEFT", 1, 0)
@@ -296,31 +318,33 @@ local Enable = function(self)
         self.AuraStatusTL:SetFont(G.norFont, timersize, "OUTLINE")
         self.AuraStatusTL.frequentUpdates = update
         self:Tag(self.AuraStatusTL, classIndicators[G.myClass]["TL"])
-		
+			
+		-- 右上
         self.AuraStatusTR = self.Health:CreateFontString(nil, "OVERLAY")
         self.AuraStatusTR:ClearAllPoints()
         
 		if G.myClass == "DRUID" then
 			self.AuraStatusTR:SetPoint("TOPRIGHT", 0, 0)
-			self.AuraStatusTR:SetFont(G.norFont, timersize, "OUTLINE")
+			self.AuraStatusTR:SetFont(G.norFont, timersize, "OUTLINE") -- 数字
 		elseif G.myClass == "PRIEST" or G.myClass == "SHAMAN" or G.myClass == "MONK" then
 			self.AuraStatusTR:SetPoint("TOPRIGHT", 0, 0)
-			self.AuraStatusTR:SetFont(G.norFont, timersize+3, "OUTLINE")
+			self.AuraStatusTR:SetFont(G.norFont, timersize+3, "OUTLINE") -- 大数字
 		else
-			self.AuraStatusTR:SetPoint("CENTER", self.Health, "TOPRIGHT", -4, -4)
+			self.AuraStatusTR:SetPoint("CENTER", self.Health, "TOPRIGHT", -4, -4) -- 符号
 			self.AuraStatusTR:SetFont(G.symbols, bigmark, "OUTLINE")
 		end
         self.AuraStatusTR.frequentUpdates = update
         self:Tag(self.AuraStatusTR, classIndicators[G.myClass]["TR"])
 		
+		-- 中上
         self.AuraStatusCen = self.Health:CreateFontString(nil, "OVERLAY")
        
         self.AuraStatusCen:SetJustifyH("CENTER")
-		if G.myClass == "DRUID" then
-			self.AuraStatusCen:SetFont(ChatFrame1:GetFont(), timersize, "OUTLINE")
+		if G.myClass == "DRUID" or G.myClass == "PRIEST" then
+			self.AuraStatusCen:SetFont(ChatFrame1:GetFont(), timersize, "OUTLINE") -- 文字
 			self.AuraStatusCen:SetPoint("TOP", 0, 0)
 		else
-			self.AuraStatusCen:SetFont(G.symbols, smallmark+2, "OUTLINE")
+			self.AuraStatusCen:SetFont(G.symbols, smallmark+2, "OUTLINE") -- 符号
 			self.AuraStatusCen:SetPoint("TOP", 0, 2)
 		end
         self.AuraStatusCen:SetWidth(0)
