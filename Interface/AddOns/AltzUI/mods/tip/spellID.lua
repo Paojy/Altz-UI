@@ -39,19 +39,6 @@ hooksecurefunc("SetItemRef", function(link, text, button, chatFrame)
 	end
 end)
 
-hooksecurefunc("PVPTalentFrame_Update", function()
-	for i = 1, 6 do
-		for j = 1, 3 do
-			local bu = PlayerTalentFramePVPTalents.Talents["Tier"..i]["Talent"..j]
-			if bu.knownSelection:IsShown() then
-				bu.bg:SetBackdropColor(r, g, b, .2)
-			else
-				bu.bg:SetBackdropColor(0, 0, 0, .25)
-			end
-		end
-	end
-end)
-
 local eventframe = CreateFrame("Frame")
 eventframe:RegisterEvent("ADDON_LOADED")
 eventframe:SetScript("OnEvent", function(self, event, addon)

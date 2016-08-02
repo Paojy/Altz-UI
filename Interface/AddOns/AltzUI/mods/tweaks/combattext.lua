@@ -129,7 +129,7 @@ end
 
 if showoutput then
 	frames["outputdamage"] = CreateCTFrame("outputdamage", L["输出伤害"], "RIGHT", "LEFT", UIParent, "CENTER", 185, 80)
-	frames["outputhealing"] = CreateCTFrame(4, L["输出治疗"], "LEFT", "RIGHT", UIParent, "CENTER", 365, 80)	
+	frames["outputhealing"] = CreateCTFrame("outputhealing", L["输出治疗"], "LEFT", "RIGHT", UIParent, "CENTER", 365, 80)	
 	eventframe:RegisterEvent"COMBAT_LOG_EVENT_UNFILTERED"
 end
 
