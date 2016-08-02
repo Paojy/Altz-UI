@@ -150,7 +150,7 @@ if camera then
 		SetCVar("cameraSmoothTrackingStyle", 0)
 		SetCVar("cameraSmoothStyle", 0) -- 智能镜头跟随
 		SetCVar("cameraWaterCollision", 0) -- 水体碰撞
-		SetCVar("cameraDistanceMaxFactor", 2) -- 最远镜头距离
+		SetCVar("cameraDistanceMaxFactor", 1.9) -- 最远镜头距离
 		SetCVar("nameplateMaxDistance", 40) -- 侦测姓名板距离
 		eventframe:UnregisterEvent('VARIABLES_LOADED')
 	end
