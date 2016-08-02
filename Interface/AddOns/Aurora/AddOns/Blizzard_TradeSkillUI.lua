@@ -161,5 +161,22 @@ C.themes["Blizzard_TradeSkillUI"] = function()
 	SkinScrollBar(TradeSkillFrame.RecipeList.scrollBar)
 	SkinScrollBar(TradeSkillFrame.DetailsFrame.ScrollBar)
 	F.ReskinInput(TradeSkillFrame.SearchBox)
+	F.ReskinInput(TradeSkillFrame.DetailsFrame.CreateMultipleInputBox)
+	TradeSkillFrame.DetailsFrame.CreateMultipleInputBox.Left:Hide()
+	TradeSkillFrame.DetailsFrame.CreateMultipleInputBox.Middle:Hide()
+	TradeSkillFrame.DetailsFrame.CreateMultipleInputBox.Right:Hide()
+	select(3, TradeSkillFrame.DetailsFrame.CreateMultipleInputBox:GetRegions()):Hide()
+	select(4, TradeSkillFrame.DetailsFrame.CreateMultipleInputBox:GetRegions()):Hide()
+	select(5, TradeSkillFrame.DetailsFrame.CreateMultipleInputBox:GetRegions()):Hide()
+	TradeSkillFrame.DetailsFrame.CreateMultipleInputBox:SetPoint("LEFT", TradeSkillFrame.DetailsFrame.CreateAllButton, "RIGHT", 27, 0)
+	
+	F.ReskinArrow(TradeSkillFrame.LinkToButton, "right")
+	F.ReskinArrow(TradeSkillFrame.DetailsFrame.CreateMultipleInputBox.IncrementButton, "right")
+	TradeSkillFrame.DetailsFrame.CreateMultipleInputBox.IncrementButton:SetPoint("LEFT", TradeSkillFrame.DetailsFrame.CreateMultipleInputBox, "RIGHT", 1, 0)
+	F.ReskinArrow(TradeSkillFrame.DetailsFrame.CreateMultipleInputBox.DecrementButton, "left")
+	TradeSkillFrame.DetailsFrame.CreateMultipleInputBox.DecrementButton:SetPoint("RIGHT", TradeSkillFrame.DetailsFrame.CreateMultipleInputBox, "LEFT", -3, 0)
+	
+	TradeSkillFrame.LinkToButton:SetPoint("BOTTOMRIGHT", TradeSkillFrame.FilterButton, "TOPRIGHT", 0, 2)
+
 	TradeSkillFrame.SearchBox:SetPoint("TOPLEFT", 190, -60)
 end

@@ -214,6 +214,7 @@ function BFrame.bags:setUp(frameName, ...)
 		BankFramePurchaseInfo:SetPoint("BOTTOMLEFT", frame, "TOPLEFT", 0 ,30)
 		BankFramePurchaseInfo:SetPoint("BOTTOMRIGHT", frame, "TOPRIGHT", 0 ,30)
 		F.SetBD(BankFramePurchaseInfo)
+		F.Reskin(BankFramePurchaseButton)
 		
 		ReagentBankFrameUnlockInfo:ClearAllPoints()
 		ReagentBankFrameUnlockInfo:SetPoint("BOTTOMLEFT", frame, "TOPLEFT", 0 ,30)

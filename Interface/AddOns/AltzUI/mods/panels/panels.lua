@@ -1465,6 +1465,7 @@ BOTTOMPANEL.tipframe.next:SetPoint("TOP", BOTTOMPANEL.tipframe, "CENTER", 0, -5)
 BOTTOMPANEL.tipframe.next:SetText(L["下一条"])
 BOTTOMPANEL.tipframe.next:Hide()
 _G[G.uiname.."Next tip ButtonText"]:SetFont(G.norFont, 8, "OUTLINE")
+F.Reskin(BOTTOMPANEL.tipframe.next)
 
 BOTTOMPANEL.tipframe.next:SetScript("OnClick", Next_tip)
 
@@ -1474,6 +1475,7 @@ BOTTOMPANEL.tipframe.previous:SetPoint("RIGHT", BOTTOMPANEL.tipframe.next, "LEFT
 BOTTOMPANEL.tipframe.previous:SetText(L["上一条"])
 BOTTOMPANEL.tipframe.previous:Hide()
 _G[G.uiname.."Previous tip ButtonText"]:SetFont(G.norFont, 8, "OUTLINE")
+F.Reskin(BOTTOMPANEL.tipframe.previous)
 
 BOTTOMPANEL.tipframe.previous:SetScript("OnClick", Previous_tip)
 
@@ -1483,6 +1485,7 @@ BOTTOMPANEL.tipframe.dontshow:SetPoint("LEFT", BOTTOMPANEL.tipframe.next, "RIGHT
 BOTTOMPANEL.tipframe.dontshow:SetText(L["我不想看到这些提示"])
 BOTTOMPANEL.tipframe.dontshow:Hide()
 _G[G.uiname.."Dontshow tip ButtonText"]:SetFont(G.norFont, 8, "OUTLINE")
+F.Reskin(BOTTOMPANEL.tipframe.dontshow)
 
 BOTTOMPANEL.tipframe.dontshow:SetScript("OnClick", DontShowTips)
 

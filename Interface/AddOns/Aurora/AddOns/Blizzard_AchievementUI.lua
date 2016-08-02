@@ -66,7 +66,7 @@ C.themes["Blizzard_AchievementUI"] = function()
 	AchievementFrame.searchBox:SetPoint("TOPRIGHT", AchievementFrame, "TOPRIGHT", -50, -4)
 	
 	AchievementFrameFilterDropDown:ClearAllPoints()
-	AchievementFrameFilterDropDown:SetPoint("TOPRIGHT", AchievementFrame.searchBox, "TOPLEFT", 15, 4)
+	AchievementFrameFilterDropDown:SetPoint("TOPRIGHT", AchievementFrame.searchBox, "TOPLEFT", -5, 4)
 	AchievementFrameFilterDropDownText:ClearAllPoints()
 	AchievementFrameFilterDropDownText:SetPoint("CENTER", -10, 1)
 	

@@ -557,6 +557,8 @@ C.themes["Blizzard_EncounterJournal"] = function()
 	local bg = EncounterJournal.LootJournal:GetRegions()
 	bg:Hide()
 	
+	F.ReskinDropDown(LootJournalViewDropDown)
+	
 	for k, bu in pairs(EncounterJournal.LootJournal.LegendariesFrame.buttons) do
 		bu.Background:Hide()
 		F.Reskin(bu)
