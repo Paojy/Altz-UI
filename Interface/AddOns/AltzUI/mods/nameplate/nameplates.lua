@@ -228,7 +228,9 @@ if playerplate then
 					PowerFrame.powerBar:SetPoint("TOPRIGHT", namePlatePlayer.UnitFrame.healthBar, "BOTTOMRIGHT", 0, -3)
 				else
 					PowerFrame.powerperc:ClearAllPoints()
-					PowerFrame.powerperc:SetPoint("BOTTOMLEFT", namePlatePlayer.UnitFrame.healthperc, "BOTTOMRIGHT", 0, 0)
+					PowerFrame.powerperc:SetPoint("TOP", namePlatePlayer.UnitFrame.healthperc, "BOTTOM", 0, 0)
+					PowerFrame.powerperc:SetJustifyH("CENTER")
+					PowerFrame.powerperc:SetJustifyV("TOP")
 				end
 			end
 		elseif event == "NAME_PLATE_UNIT_REMOVED" and UnitIsUnit(unit, "player") then
@@ -635,8 +637,10 @@ local function UpdateRaidTarget(unitFrame)
 	local icon = unitFrame.RaidTargetFrame.RaidTargetIcon
 	local index = GetRaidTargetIndex(unitFrame.displayedUnit)
 	if ( index ) then
-		SetRaidTargetIconTexture(icon, index)
-		icon:Show()
+		if not UnitIsUnit(unitFrame.displayedUnit, "player") then
+			SetRaidTargetIconTexture(icon, index)
+			icon:Show()
+		end
 	else
 		icon:Hide()
 	end
@@ -697,7 +701,7 @@ local function NamePlate_OnEvent(self, event, ...)
 		elseif ( event == "UNIT_AURA" ) then
 			UpdateBuffs(self)
 			UpdateSelectionHighlight(self)
-		elseif ( event == "UNIT_THREAT_SITUATION_UPDATE" ) then
+		elseif ( event == "UNIT_THREAT_LIST_UPDATE" ) then
 			UpdateHealthColor(self)
 		elseif ( event == "UNIT_NAME_UPDATE" ) then
 			UpdateName(self)
@@ -716,7 +720,7 @@ local function UpdateNamePlateEvents(unitFrame)
 	end
 	unitFrame:RegisterUnitEvent("UNIT_HEALTH_FREQUENT", unit, displayedUnit)
 	unitFrame:RegisterUnitEvent("UNIT_AURA", unit, displayedUnit)
-	unitFrame:RegisterUnitEvent("UNIT_THREAT_SITUATION_UPDATE", unit, displayedUnit)
+	unitFrame:RegisterUnitEvent("UNIT_THREAT_LIST_UPDATE", unit, displayedUnit)
 end
 
 local function RegisterNamePlateEvents(unitFrame)
