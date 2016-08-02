@@ -233,9 +233,32 @@ end)
 function T.CreateDragFrame(frame)
 	local fname = frame:GetName()
 	
-	if not aCoreCDB["FramePoints"][fname] then
+	if aCoreCDB["FramePoints"][fname] == nil then
 		aCoreCDB["FramePoints"][fname] = frame.point
+	else
+		for role, points in pairs(frame.point) do
+			if aCoreCDB["FramePoints"][fname][role] == nil then
+				aCoreCDB["FramePoints"][fname][role] = frame.point[role]
+			else
+				if aCoreCDB["FramePoints"][fname][role]["a1"] == nil then
+					aCoreCDB["FramePoints"][fname][role]["a1"] = frame.point[role].a1
+				end
+				if aCoreCDB["FramePoints"][fname][role]["a2"] == nil then
+					aCoreCDB["FramePoints"][fname][role]["a2"] = frame.point[role].a2
+				end
+				if aCoreCDB["FramePoints"][fname][role]["parent"] == nil then
+					aCoreCDB["FramePoints"][fname][role]["parent"] = frame.point[role].parent
+				end
+				if aCoreCDB["FramePoints"][fname][role]["x"] == nil then
+					aCoreCDB["FramePoints"][fname][role]["x"] = frame.point[role].x
+				end
+				if aCoreCDB["FramePoints"][fname][role]["y"] == nil then
+					aCoreCDB["FramePoints"][fname][role]["y"] = frame.point[role].y
+				end
+			end
+		end
 	end
+
 	table.insert(G.dragFrameList, frame) --add frame object to the list
 	
 	frame:SetMovable(true)
@@ -385,8 +408,8 @@ end)
 -- place buttons to GUI
 local IntroOptions = _G[G.uiname.."Intro Frame"]
 local resetposbutton = CreateFrame("Button", G.uiname.."ResetPosButton", IntroOptions, "UIPanelButtonTemplate")
-resetposbutton:SetPoint("BOTTOMRIGHT", IntroOptions, "BOTTOM", -100, 80)
-resetposbutton:SetSize(180, 25)
+resetposbutton:SetPoint("BOTTOMRIGHT", IntroOptions, "BOTTOM", -145, 80)
+resetposbutton:SetSize(130, 25)
 resetposbutton:SetText(L["重置框体位置"])
 F.Reskin(resetposbutton)
 resetposbutton:SetScript("OnClick", function()
@@ -412,8 +435,8 @@ resetposbutton:SetScript("OnClick", function()
 end)
 
 local unlockbutton = CreateFrame("Button", G.uiname.."UnlockAllFramesButton", IntroOptions, "UIPanelButtonTemplate")
-unlockbutton:SetPoint("BOTTOM", IntroOptions, "BOTTOM", 0, 80)
-unlockbutton:SetSize(180, 25)
+unlockbutton:SetPoint("BOTTOMRIGHT", IntroOptions, "BOTTOM", -5, 80)
+unlockbutton:SetSize(130, 25)
 unlockbutton:SetText(L["解锁框体"])
 F.Reskin(unlockbutton)
 unlockbutton:SetScript("OnClick", function()

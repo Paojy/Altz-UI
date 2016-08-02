@@ -424,7 +424,7 @@ G.Raids = {
 		EJ_GetEncounterInfo(1395),
 		
 		EJ_GetEncounterInfo(1438),
-		L["Trash"],	
+		"Trash",	
 	},
 	
 }
@@ -694,7 +694,7 @@ G.DebuffList = {
 		},
 	},
 	[EJ_GetInstanceInfo(669)] = { -- 地狱火堡垒
-		[L["Trash"]] = {
+		["Trash"] = {
 		},
 		
 		[EJ_GetEncounterInfo(1426)] = { --奇袭地狱火
@@ -1078,15 +1078,15 @@ local Character_default_Settings = {
 
 		-- castbar
 		castbars = true,
-		cbIconsize = 32,
+		cbIconsize = 33,
 		independentcb = true,
 		namepos = "LEFT",
 		timepos = "RIGHT",
 		cbheight = 16,
 		cbwidth = 230,
-		target_cbheight = 16,
+		target_cbheight = 5,
 		target_cbwidth = 230,
-		focus_cbheight = 16,
+		focus_cbheight = 5,
 		focus_cbwidth = 230,
 		channelticks = false,
 		
@@ -1180,9 +1180,7 @@ local Character_default_Settings = {
 		alreadyknown = true,
 		showitemlevel = true,
 		autobuy = false,
-		autobuylist = {
-		["79249"] = 20, -- 清心书卷
-		},
+		autobuylist = {},
 		itemlevels = {},
 	},
 	ActionbarOptions = {
@@ -1379,5 +1377,246 @@ function T.LoadAccountVariables()
 				end
 			end
 		end
+	end
+end
+
+T.ExportSettings = function(editbox)
+	local str = "AltzUI Export".."~"..G.Version.."~"..G.Client.."~"..G.myClass
+	for OptionCategroy, OptionTable in pairs(Character_default_Settings) do
+		if type(OptionTable) == "table" then
+			for setting, value in pairs(OptionTable) do
+				if type(value) ~= "table" then -- 3
+					if aCoreCDB[OptionCategroy][setting] ~= value then
+						local valuetext
+						if aCoreCDB[OptionCategroy][setting] == false then
+							valuetext = "false"
+						elseif aCoreCDB[OptionCategroy][setting] == true then
+							valuetext = "true"
+						else
+							valuetext = aCoreCDB[OptionCategroy][setting]
+						end
+						str = str.."^"..OptionCategroy.."~"..setting.."~"..valuetext
+					end
+				else
+					if OptionCategroy == "RaidDebuff" then -- 完全复制 6
+						for boss, auratable in pairs(value) do
+							for auraname, aurainfo in pairs (aCoreCDB["RaidDebuff"][setting][boss]) do
+								str = str.."^"..OptionCategroy.."~"..setting.."~"..boss.."~"..auraname.."~"..aurainfo.id.."~"..aurainfo.level
+							end
+						end
+					elseif OptionCategroy == "CooldownAura" then -- 完全复制 5
+						for auraname, aurainfo in pairs (aCoreCDB["CooldownAura"][setting]) do
+							str = str.."^"..OptionCategroy.."~"..setting.."~"..auraname.."~"..aurainfo.id.."~"..aurainfo.level
+						end
+					elseif OptionCategroy == "PlateOptions" then
+						if setting == "customcoloredplates" then -- 非空则复制 7
+							for index, t in pairs(aCoreCDB["PlateOptions"]["customcoloredplates"]) do
+								if t.name ~= L["空"] then
+									str = str.."^"..OptionCategroy.."~"..setting.."~"..index.."~"..t.name.."~"..t.color.r.."~"..t.color.g.."~"..t.color.b
+								end
+							end
+						else -- 完全复制 4
+							for id, _ in pairs(aCoreCDB["PlateOptions"][setting]) do
+								str = str.."^"..OptionCategroy.."~"..setting.."~"..id.."~true"
+							end
+						end		
+					elseif setting == "ClickCast" then -- 6
+						for k, _ in pairs(value) do
+							for j, v in pairs(value[k]) do -- j  Click ctrl- shift- alt-
+								local action = aCoreCDB["UnitframeOptions"]["ClickCast"][k][j].action
+								local macro = aCoreCDB["UnitframeOptions"]["ClickCast"][k][j].macro
+								if action ~= v.action or macro ~= v.macro then
+									str = str.."^"..OptionCategroy.."~"..setting.."~"..k.."~"..j.."~"..action.."~"..macro
+								end
+							end
+						end
+					elseif setting == "AuraFilterwhitelist" then -- 完全复制 4
+						for id, spellname in pairs(aCoreCDB["UnitframeOptions"]["AuraFilterwhitelist"]) do -- 默认是空的
+							str = str.."^"..OptionCategroy.."~"..setting.."~"..id.."~"..spellname
+						end
+					elseif setting == "autobuylist" then -- 完全复制 4
+						for id, count in pairs(aCoreCDB["ItemOptions"]["autobuylist"]) do -- 默认是空的
+							str = str.."^"..OptionCategroy.."~"..setting.."~"..id.."~"..count
+						end
+					elseif setting == "caflash_bl" then -- 完全复制 5
+						for cdtpye, cdtable in pairs(aCoreCDB["ActionbarOptions"]["caflash_bl"]) do
+							for id, _ in pairs(cdtable) do
+								str = str.."^"..OptionCategroy.."~"..setting.."~"..cdtpye.."~"..id.."~true"
+							end
+						end
+					end
+				end
+			end
+		end
+	end
+	for frame, info in pairs (aCoreCDB["FramePoints"]) do
+		for mode, xy in pairs(info) do
+			for key, _ in pairs(xy) do
+				local f = _G[frame]
+				if f then
+					if xy[key] ~= f["point"][mode][key] then
+						str = str.."^FramePoints~"..frame.."~"..mode.."~"..key.."~"..xy[key]
+						--print(frame.."~"..mode.."~"..key.."~"..xy[key])
+					end
+				else -- 框体在当前配置尚未创建
+					str = str.."^FramePoints~"..frame.."~"..mode.."~"..key.."~"..xy[key]
+					--print(frame.."~"..mode.."~"..key.."~"..xy[key])
+				end
+			end
+		end
+	end
+	editbox:SetText(str)
+	editbox:HighlightText()
+end
+
+T.ImportSettings = function(str)
+	local optionlines = {string.split("^", str)}
+	local uiname, version, client, class = string.split("~", optionlines[1])
+	local sameversion, sameclient, sameclass
+	
+	if uiname ~= "AltzUI Export" then
+		StaticPopup_Show(G.uiname.."Cannot Import")
+	else
+		local import_str = ""
+		if version ~= G.Version then
+			import_str = import_str..format(L["版本不符合"], version, G.Version)
+		else
+			sameversion = true
+		end
+		
+		if client ~= G.Client then
+			import_str = import_str..format(L["客户端不符合"], client, G.Client)
+		else
+			sameclient = true
+		end
+		
+		if class ~= G.myClass then
+			import_str = import_str..format(L["职业不符合"], G.ClassInfo[class], G.ClassInfo[G.myClass])
+		else
+			sameclass = true
+		end
+		
+		if not (sameversion and sameclient and sameclass) then
+			import_str = import_str..L["不完整导入"]
+		end
+		StaticPopupDialogs[G.uiname.."Import Confirm"].text = format(L["导入确认"]..import_str, "Altz UI")
+		StaticPopupDialogs[G.uiname.."Import Confirm"].OnAccept = function()
+			aCoreCDB = {}
+			T.SetChatFrame()
+			T.LoadVariables()
+			
+			-- 完全复制的设置
+			if sameclient then
+				aCoreCDB.RaidDebuff = {}
+				for instance, bosstable in pairs(G.Raids) do
+					if aCoreCDB.RaidDebuff[instance] == nil then
+						aCoreCDB.RaidDebuff[instance] = {}
+					end
+					for _, bossname in pairs(bosstable) do
+						aCoreCDB.RaidDebuff[instance][bossname] = {}
+					end
+				end	
+				
+				aCoreCDB.CooldownAura = {}
+				aCoreCDB.CooldownAura.Buffs = {}
+				aCoreCDB.CooldownAura.Debuffs = {}
+			end
+			
+			if sameclass then
+				aCoreCDB.PlateOptions.myplateauralist = {}
+				aCoreCDB.ActionbarOptions.caflash_bl.spell = {}
+			end
+			
+			aCoreCDB.ActionbarOptions.caflash_bl.item = {}
+			aCoreCDB.PlateOptions.otherplateauralist = {}
+			
+			for index, v in pairs(optionlines) do
+				if index ~= 1 then
+					local OptionCategroy, setting, arg1, arg2, arg3, arg4, arg5 = string.split("~", v)	
+					local count = select(2, string.gsub(v, "~", "~")) + 1
+	
+					if count == 3 then -- 可以直接赋值
+						if aCoreCDB[OptionCategroy][setting] then
+							if arg1 == "true" then
+								aCoreCDB[OptionCategroy][setting] = true
+							elseif arg1 == "false" then
+								aCoreCDB[OptionCategroy][setting] = false
+							elseif tonumber(arg1) and setting ~= "autoinvitekeywords" and setting ~= "goldkeywordlist" then
+								aCoreCDB[OptionCategroy][setting] = tonumber(arg1)
+							else
+								aCoreCDB[OptionCategroy][setting] = arg1
+							end
+						end
+					else -- 是个表格 sameclient sameclass
+						if OptionCategroy == "RaidDebuff" then -- 完全复制 6 OptionCategroy.."~"..setting.."~"..boss.."~"..auraname.."~"..aurainfo.id.."~"..aurainfo.level
+							if sameclient then
+								if aCoreCDB[OptionCategroy][setting][arg1][arg2] == nil then
+									aCoreCDB[OptionCategroy][setting][arg1][arg2] = {}
+									aCoreCDB[OptionCategroy][setting][arg1][arg2]["id"] = tonumber(arg3)
+									aCoreCDB[OptionCategroy][setting][arg1][arg2]["level"] = tonumber(arg4)
+								end
+							end
+						elseif OptionCategroy == "CooldownAura" then -- 完全复制 5 OptionCategroy.."~"..setting.."~"..auraname.."~"..aurainfo.id.."~"..aurainfo.level
+							if sameclient then
+								if aCoreCDB[OptionCategroy][setting][arg1] == nil then
+									aCoreCDB[OptionCategroy][setting][arg1] = {}
+									aCoreCDB[OptionCategroy][setting][arg1]["id"] = tonumber(arg2)
+									aCoreCDB[OptionCategroy][setting][arg1]["level"] = tonumber(arg3)
+								end
+							end
+						elseif OptionCategroy == "PlateOptions" then
+							if setting == "customcoloredplates" then -- 非空则复制 7 OptionCategroy.."~"..setting.."~"..index.."~"..t.name.."~"..t.color.r.."~"..t.color.g.."~"..t.color.b
+								if sameclient then
+									aCoreCDB[OptionCategroy][setting][tonumber(arg1)] = {
+										name = arg2,
+										color = {
+											r = tonumber(arg3),
+											g = tonumber(arg4),
+											b = tonumber(arg5),
+										},
+									}
+								end
+							elseif arg1 == "otherplateauralist" then -- 完全复制 4 OptionCategroy.."~"..setting.."~"..id.."~true"
+								aCoreCDB[OptionCategroy][setting][tonumber(arg1)] = true
+							elseif sameclass then
+								aCoreCDB[OptionCategroy][setting][tonumber(arg1)] = true
+							end
+						elseif OptionCategroy == "FramePoints" then -- 5 ^FramePoints~"..frame.."~"..mode.."~"..key.."~"..xy[key]
+							if aCoreCDB[OptionCategroy][setting] == nil then
+								aCoreCDB[OptionCategroy][setting] = {}
+							end
+							if aCoreCDB[OptionCategroy][setting][arg1] == nil then
+								aCoreCDB[OptionCategroy][setting][arg1] = {}
+							end
+							if arg2 == "x" or arg2 == "y" then
+								aCoreCDB[OptionCategroy][setting][arg1][arg2] = tonumber(arg3)
+							else
+								aCoreCDB[OptionCategroy][setting][arg1][arg2] = arg3
+							end
+						elseif setting == "ClickCast" then -- 6 OptionCategroy.."~"..setting.."~"..k.."~"..j.."~"..action.."~"..macro
+							if sameclient and sameclass then
+								aCoreCDB[OptionCategroy][setting][tostring(arg1)][arg2]["action"] = arg3
+								aCoreCDB[OptionCategroy][setting][tostring(arg1)][arg2]["macro"] = arg4
+							end
+						elseif setting == "AuraFilterwhitelist" then -- 完全复制 4 OptionCategroy.."~"..setting.."~"..id.."~"..spellname
+							if sameclient then
+								aCoreCDB[OptionCategroy][setting][arg1] = arg2
+							end
+						elseif setting == "autobuylist" then -- 完全复制 4 OptionCategroy.."~"..setting.."~"..id.."~"..count
+							aCoreCDB[OptionCategroy][setting][arg1] = arg2
+						elseif setting == "caflash_bl" then -- 完全复制 5 OptionCategroy.."~"..setting.."~"..cdtpye.."~"..id.."~true"
+							if arg1 == "item" then
+								aCoreCDB[OptionCategroy][setting][arg1][tonumber(arg2)] = true
+							elseif sameclass then
+								aCoreCDB[OptionCategroy][setting][arg1][tonumber(arg2)] = true
+							end
+						end
+					end
+
+				end
+			end
+		ReloadUI()
+		end
+		StaticPopup_Show(G.uiname.."Import Confirm")
 	end
 end

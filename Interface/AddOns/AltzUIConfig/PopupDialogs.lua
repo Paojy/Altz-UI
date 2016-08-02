@@ -48,3 +48,20 @@ StaticPopupDialogs[G.uiname.."Reset Confirm"] = {
 	whileDead = true,
 	preferredIndex = 3,
 }
+
+StaticPopupDialogs[G.uiname.."Import Confirm"] = {
+	text = L["导入确认"],
+	button1 = ACCEPT,
+	button2 = CANCEL,
+	hideOnEscape = 1, 
+	whileDead = true,
+	preferredIndex = 3,
+}
+
+StaticPopupDialogs[G.uiname.."Cannot Import"] = {
+	text = L["无法导入"],
+	button1 = ACCEPT,
+	hideOnEscape = 1, 
+	whileDead = true,
+	preferredIndex = 3,
+}

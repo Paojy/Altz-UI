@@ -50,3 +50,10 @@ end
 
 G.classcolor = ('|cff%02x%02x%02x'):format(G.Ccolor.r * 255, G.Ccolor.g * 255, G.Ccolor.b * 255)
 
+G.ClassInfo = {}
+
+for i = 1, GetNumClasses() do
+	local classDisplayName, classTag, classID = GetClassInfo(i)
+	local color = G.Ccolors[classTag]
+	G.ClassInfo[classTag] =  ('|cff%02x%02x%02x'..classDisplayName.."|r"):format(color.r * 255, color.g * 255, color.b * 255)
+end
