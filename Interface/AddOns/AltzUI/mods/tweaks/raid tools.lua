@@ -69,7 +69,7 @@ local function UpdateFlasked()
 	for id =1, n do
 		local unit = ("raid%d"):format(id)
 		local name = GetUnitName(unit, false)
-		if aCoreCDB["RaidToolOptions"]["onlyactive"] and select(3, GetRaidRosterInfo(id))<=5 or not aCoreCDB["RaidToolOptions"]["onlyactive"] then
+		if aCoreCDB["RaidToolOptions"]["onlyactive"] and select(3, GetRaidRosterInfo(id))<=4 or not aCoreCDB["RaidToolOptions"]["onlyactive"] then
 			local value = false
 			for flask, v in pairs(flasks) do
 				if UnitBuff(unit, flask) then
@@ -92,7 +92,7 @@ local function UpdateFed()
 	for id =1, n do
 		local unit = ("raid%d"):format(id)
 		local name = GetUnitName(unit, false)
-		if aCoreCDB["RaidToolOptions"]["onlyactive"] and select(3, GetRaidRosterInfo(id))<=5 or not aCoreCDB["RaidToolOptions"]["onlyactive"] then
+		if aCoreCDB["RaidToolOptions"]["onlyactive"] and select(3, GetRaidRosterInfo(id))<=4 or not aCoreCDB["RaidToolOptions"]["onlyactive"] then
 			local value = false
 			for food, v in pairs(foods) do
 				if UnitBuff(unit, food) then
@@ -114,7 +114,7 @@ local function UpdateOoR()
 	for id =1, n do
 		local unit = ("raid%d"):format(id)
 		local name = GetUnitName(unit, false)
-		if aCoreCDB["RaidToolOptions"]["onlyactive"] and select(3, GetRaidRosterInfo(id))<=5 or not aCoreCDB["RaidToolOptions"]["onlyactive"] then
+		if aCoreCDB["RaidToolOptions"]["onlyactive"] and select(3, GetRaidRosterInfo(id))<=4 or not aCoreCDB["RaidToolOptions"]["onlyactive"] then
 			if not UnitInRange(unit) then
 				tinsert(OoR, name)
 			end
@@ -224,7 +224,7 @@ local function EndCombat()
 	for id =1, n do
 		local unit = ("raid%d"):format(id)
         local name = GetUnitName(unit,false)
-		if aCoreCDB["RaidToolOptions"]["onlyactive"] and select(3, GetRaidRosterInfo(id))<=5 or not aCoreCDB["RaidToolOptions"]["onlyactive"] then
+		if aCoreCDB["RaidToolOptions"]["onlyactive"] and select(3, GetRaidRosterInfo(id))<=4 or not aCoreCDB["RaidToolOptions"]["onlyactive"] then
 			if not blacklist[name] then
 				if not prepotion[name] then tinsert(noprepotion, name) end
 				if not potion[name] then tinsert(nopotion, name) end
