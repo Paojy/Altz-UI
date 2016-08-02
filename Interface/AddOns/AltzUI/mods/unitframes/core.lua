@@ -631,6 +631,7 @@ end
 --[[               Swing Timer               ]]--
 --=============================================--
 local CreateSwingTimer = function(self, unit) -- only for player
+	if unit ~= "player" then return end
 	local bar = CreateFrame("Frame", G.uiname..unit.."SwingTimer", self)
 	bar:SetSize(aCoreCDB["UnitframeOptions"]["swwidth"], aCoreCDB["UnitframeOptions"]["swheight"])
 	bar.movingname = L["玩家平砍计时条"]
