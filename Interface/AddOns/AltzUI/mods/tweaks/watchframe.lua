@@ -78,3 +78,15 @@ end
       
 hooksecurefunc(ACHIEVEMENT_TRACKER_MODULE, "OnBlockHeaderEnter", hoverachieve)
 hooksecurefunc(ACHIEVEMENT_TRACKER_MODULE, "OnBlockHeaderLeave", hoverachieve)
+
+local eventframe = CreateFrame("Frame")
+eventframe:RegisterEvent("PLAYER_ENTERING_WORLD")
+eventframe:SetScript("OnEvent", function()
+	if aCoreCDB["OtherOptions"]["collapseWF"] then
+		if IsInInstance() then
+			ObjectiveTracker_Collapse()
+		else
+			ObjectiveTracker_Expand()
+		end
+	end
+end)
