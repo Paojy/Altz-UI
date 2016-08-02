@@ -196,8 +196,8 @@ end
 logo:SetScript("OnMouseDown", function(self, button) RotateModel(self, button) end)
 
 local resetbu = CreateFrame("Button", G.uiname.."ResetButton", IntroOptions, "UIPanelButtonTemplate")
-resetbu:SetPoint("BOTTOMLEFT", IntroOptions, "BOTTOM", 100, 80)
-resetbu:SetSize(180, 25)
+resetbu:SetPoint("BOTTOMLEFT", IntroOptions, "BOTTOM", 5, 80)
+resetbu:SetSize(130, 25)
 resetbu:SetText(L["重置"])
 F.Reskin(resetbu)
 resetbu:SetScript("OnClick", function(self)
@@ -212,6 +212,50 @@ resetbu:SetScript("OnClick", function(self)
 	StaticPopup_Show(G.uiname.."Reset Confirm")
 end)
 
+T.createmultilinebox(IntroOptions, 550, 390, 50, 20, nil, nil, "Import")
+IntroOptions.Import:Hide()
+
+local import = CreateFrame("Button", G.uiname.."importbutton",  IntroOptions.Import, "UIPanelButtonTemplate")
+import:SetPoint("BOTTOMLEFT", IntroOptions, "BOTTOM", 5, 110)
+import:SetSize(270, 25)
+import:SetText(L["导入"])
+F.Reskin(import)
+import:SetScript("OnClick", function(self)
+	T.ImportSettings(IntroOptions.Import.edit:GetText())
+end)
+
+local export = CreateFrame("Button", G.uiname.."exportbutton",  IntroOptions.Import, "UIPanelButtonTemplate")
+export:SetPoint("BOTTOMRIGHT", IntroOptions, "BOTTOM", -5, 110)
+export:SetSize(270, 25)
+export:SetText(L["导出"])
+F.Reskin(export)
+export:SetScript("OnClick", function(self)
+	T.ExportSettings(IntroOptions.Import.edit)
+end)
+
+local settingcopybu = CreateFrame("Button", G.uiname.."settingcopybutton",  IntroOptions, "UIPanelButtonTemplate")
+settingcopybu:SetPoint("BOTTOMLEFT", IntroOptions, "BOTTOM", 145, 80)
+settingcopybu:SetSize(130, 25)
+settingcopybu:SetText("导入/导出配置")
+F.Reskin(settingcopybu)
+settingcopybu:SetScript("OnClick", function(self)
+	if not IntroOptions.Import:IsShown() then
+		IntroOptions.Import:Show()
+		logo:Hide()
+	else
+		IntroOptions.Import:Hide()
+		logo:Show()
+	end
+end)
+
+settingcopybu:SetScript("OnHide", function()
+	IntroOptions.Import:Hide()
+	logo:Show()
+end)
+
+IntroOptions.Import:SetScript("OnHide", function()
+	StaticPopup_Hide(G.uiname.."Import Confirm")
+end)
 --====================================================--
 --[[              -- Chat Options --                ]]--
 --====================================================--
@@ -232,6 +276,7 @@ T.createmultilinebox(ChatOptions, 300, 150, 35, 365, L["关键词"], "ChatOption
 ChatOptions.goldkeywordlist.edit:SetScript("OnShow", function(self) self:SetText(aCoreDB["goldkeywordlist"]) end)
 ChatOptions.goldkeywordlist.edit:SetScript("OnEscapePressed", function(self) self:SetText(aCoreDB["goldkeywordlist"]) self:ClearFocus() end)
 ChatOptions.goldkeywordlist.edit:SetScript("OnEnterPressed", function(self) self:ClearFocus() aCoreDB["goldkeywordlist"] = self:GetText() end)
+T.createDR(ChatOptions.nogoldseller, ChatOptions.goldkeywordnum)
 --====================================================--
 --[[          -- Bag and Items Options --           ]]--
 --====================================================--
@@ -252,6 +297,16 @@ ItemOptions.SF:ClearAllPoints()
 ItemOptions.SF:SetPoint("TOPLEFT", ItemOptions, "TOPLEFT", 40, -400)
 ItemOptions.SF:SetPoint("BOTTOMRIGHT", ItemOptions, "BOTTOMRIGHT", -300, 45)
 F.CreateBD(ItemOptions.SF, .3)
+
+local ClearIlvlInfoButton = CreateFrame("Button", G.uiname.."ClearIlvlInfoButton", ItemOptions, "UIPanelButtonTemplate")
+ClearIlvlInfoButton:SetPoint("LEFT", _G[ItemOptions.showitemlevel:GetName() .. "Text"], "RIGHT", 20, 0)
+ClearIlvlInfoButton:SetSize(100, 25)
+ClearIlvlInfoButton:SetText(L["重置"])
+F.Reskin(ClearIlvlInfoButton)
+ClearIlvlInfoButton:SetScript("OnClick", function()
+	aCoreCDB["ItemOptions"]["itemlevels"] = {}
+	ReloadUI()
+end)
 
 local function LineUpAutobuyList()
 	sort(aCoreCDB["ItemOptions"]["autobuylist"])
@@ -425,7 +480,11 @@ UFInnerframe.style.style:HookScript("OnShow", function(self)
 		BlizzardOptionsPanel_Slider_Disable(UFInnerframe.style.portraitalpha)
 	else
 		UFInnerframe.style.portrait:Enable()
-		BlizzardOptionsPanel_Slider_Enable(UFInnerframe.style.portraitalpha)
+		if UFInnerframe.style.portrait:GetChecked() then
+			BlizzardOptionsPanel_Slider_Enable(UFInnerframe.style.portraitalpha)
+		else
+			BlizzardOptionsPanel_Slider_Disable(UFInnerframe.style.portraitalpha)
+		end
 	end
 end)
 local stylebuttons = {UFInnerframe.style.style:GetChildren()}
@@ -436,7 +495,11 @@ for i = 1, #stylebuttons do
 			BlizzardOptionsPanel_Slider_Disable(UFInnerframe.style.portraitalpha)
 		else
 			UFInnerframe.style.portrait:Enable()
-			BlizzardOptionsPanel_Slider_Enable(UFInnerframe.style.portraitalpha)
+			if UFInnerframe.style.portrait:GetChecked() then
+				BlizzardOptionsPanel_Slider_Enable(UFInnerframe.style.portraitalpha)
+			else
+				BlizzardOptionsPanel_Slider_Disable(UFInnerframe.style.portraitalpha)
+			end
 		end
 	end)
 end
@@ -617,7 +680,7 @@ AuraFilter_spellIDinput:SetScript("OnLeave", function(self) GameTooltip:Hide() e
 		
 UFInnerframe.other = CreateOptionPage("UF Options other", OTHER, UFInnerframe, "VERTICAL", .3)
 
-T.createcheckbutton(UFInnerframe.other, 30, 60, L["启用"], "UnitframeOptions", "showthreatbar")
+T.createcheckbutton(UFInnerframe.other, 30, 60, L["启用仇恨条"], "UnitframeOptions", "showthreatbar")
 T.createcheckbutton(UFInnerframe.other, 30, 90, L["显示PvP标记"], "UnitframeOptions", "pvpicon", L["显示PvP标记提示"])
 T.createcheckbutton(UFInnerframe.other, 30, 120, L["启用首领框体"], "UnitframeOptions", "bossframes")
 T.createcheckbutton(UFInnerframe.other, 30, 150, L["启用PVP框体"], "UnitframeOptions", "arenaframes")
@@ -628,7 +691,7 @@ if G.myClass == "DEATHKNIGHT" then
 end
 
 if G.myClass == "SHAMAN" then
-    T.createcheckbutton(UFInnerframe.other, 30, 180, L["显示发力条"], "UnitframeOptions", "shamanmana", L["显示发力条提示"])
+    T.createcheckbutton(UFInnerframe.other, 30, 180, L["显示法力条"], "UnitframeOptions", "shamanmana", L["显示法力条提示"])
 end
 
 --====================================================--
@@ -659,6 +722,7 @@ T.createslider(RFInnerframe.common, 30, 170, L["名字长度"], "UnitframeOption
 T.createcheckbutton(RFInnerframe.common, 30, 210, L["启用方向箭头"], "UnitframeOptions", "enablearrow", L["enablearrow2"])
 T.createslider(RFInnerframe.common, 30, 260, L["尺寸"], "UnitframeOptions", "arrowsacle", 100, 50, 200, 5)
 T.createDR(RFInnerframe.common.enablearrow, RFInnerframe.common.arrowsacle)
+T.createDR(RFInnerframe.common.enableraid, RFInnerframe.common.showraidpet, RFInnerframe.common.showsolo, RFInnerframe.common.namelength, RFInnerframe.common.enablearrow, RFInnerframe.common.arrowsacle)
 
 RFInnerframe.switch = CreateOptionPage("RF Options switch", L["切换"], RFInnerframe, "VERTICAL", .3)
 
@@ -1532,6 +1596,7 @@ ActionbarInnerframe.cooldownflash = CreateOptionPage("Actionbar Options cooldown
 T.createcheckbutton(ActionbarInnerframe.cooldownflash, 30, 60, L["启用"], "ActionbarOptions", "cdflash_enable")
 T.createslider(ActionbarInnerframe.cooldownflash, 30, 100, L["图标大小"], "ActionbarOptions", "cdflash_size", 1, 15, 100, 1)
 T.createslider(ActionbarInnerframe.cooldownflash, 30, 140, L["透明度"], "ActionbarOptions", "cdflash_alpha", 1, 30, 100, 1)
+T.createDR(ActionbarInnerframe.cooldownflash.cdflash_enable, ActionbarInnerframe.cooldownflash.cdflash_size, ActionbarInnerframe.cooldownflash.cdflash_alpha)
 
 local cooldownflashframe = CreateFrame("Frame", G.uiname.."Cooldown flash Options", ActionbarInnerframe.cooldownflash)
 cooldownflashframe:SetPoint("TOPLEFT", 30, -190)
@@ -1734,18 +1799,18 @@ T.createcheckbutton(PlateInnerframe.common, 30, 60, L["启用"], "PlateOptions",
 T.CVartogglebox(PlateInnerframe.common, 30, 90, "nameplateShowAll", UNIT_NAMEPLATES_AUTOMODE, "1", "0")
 T.createcheckbutton(PlateInnerframe.common, 30, 120, L["数字样式"], "PlateOptions", "numberstyle")
 T.createcheckbutton(PlateInnerframe.common, 30, 150, L["显示玩家姓名板"], "PlateOptions", "playerplate")
-T.createcheckbutton(PlateInnerframe.common, 30, 180, L["显示玩家姓名板光环"], "PlateOptions", "plateaura")
+T.createcheckbutton(PlateInnerframe.common, 70, 180, L["显示玩家姓名板光环"], "PlateOptions", "plateaura")
 T.createcheckbutton(PlateInnerframe.common, 30, 210, L["显示姓名板资源"], "PlateOptions", "classresource_show")
 local classresource_group = {
 	["target"] = L["目标姓名板"],
 	["player"] = L["玩家姓名板"],
 }
-T.createradiobuttongroup(PlateInnerframe.common, 30, 240, L["姓名板资源位置"], "PlateOptions", "classresource", classresource_group)
+T.createradiobuttongroup(PlateInnerframe.common, 70, 240, L["姓名板资源位置"], "PlateOptions", "classresource", classresource_group)
 T.createcheckbutton(PlateInnerframe.common, 30, 270, L["友善职业染色"], "PlateOptions", "firendlyCR")
 T.createcheckbutton(PlateInnerframe.common, 30, 300, L["敌对职业染色"], "PlateOptions", "enemyCR")
 T.createcheckbutton(PlateInnerframe.common, 30, 330, L["仇恨染色"], "PlateOptions", "threatcolor")
-T.createslider(PlateInnerframe.common, 30, 380, L["图标数量"], "PlateOptions", "plateauranum", 1, 3, 10, 1)
-T.createslider(PlateInnerframe.common, 30, 430, L["图标大小"], "PlateOptions", "plateaurasize", 1, 20, 40, 2)
+T.createslider(PlateInnerframe.common, 30, 380, L["光环"].." "..L["图标数量"], "PlateOptions", "plateauranum", 1, 3, 10, 1)
+T.createslider(PlateInnerframe.common, 30, 430, L["光环"].." "..L["图标大小"], "PlateOptions", "plateaurasize", 1, 20, 40, 2)
 T.createDR(PlateInnerframe.common.playerplate, PlateInnerframe.common.plateaura)
 T.createDR(PlateInnerframe.common.classresource_show, PlateInnerframe.common.classresource)
 T.createDR(PlateInnerframe.common.enableplate, PlateInnerframe.common.numberstyle, PlateInnerframe.common.playerplate, PlateInnerframe.common.classresource_show, PlateInnerframe.common.classresource, PlateInnerframe.common.firendlyCR, PlateInnerframe.common.enemyCR, PlateInnerframe.common.threatcolor, PlateInnerframe.common.plateauranum, PlateInnerframe.common.plateaurasize)
@@ -2049,14 +2114,14 @@ T.createcheckbutton(CombattextOptions, 30, 340, L["显示HOT"], "CombattextOptio
 T.createcheckbutton(CombattextOptions, 30, 370, L["显示宠物"], "CombattextOptions", "ctshowpet")
 T.createslider(CombattextOptions, 30, 420, L["隐藏时间"], "CombattextOptions", "ctfadetime", 10, 20, 100, 5, L["隐藏时间提示"])
 
-T.createDR(CombattextOptions.combattext, CombattextOptions.hidblz, CombattextOptions.showreceivedct, CombattextOptions.showoutputct, CombattextOptions.cticonsize, CombattextOptions.ctbigiconsize, CombattextOptions.ctshowdots, CombattextOptions.ctshowhots, CombattextOptions.ctshowpet, CombattextOptions.ctfadetime)
+T.createDR(CombattextOptions.combattext, CombattextOptions.hidblz, CombattextOptions.showreceivedct, CombattextOptions.showoutputct, CombattextOptions.formattype, CombattextOptions.cticonsize, CombattextOptions.ctbigiconsize, CombattextOptions.ctshowdots, CombattextOptions.ctshowhots, CombattextOptions.ctshowpet, CombattextOptions.ctfadetime)
 
 --====================================================--
 --[[              -- RaidTool Options --                ]]--
 --====================================================--
 local RaidToolOptions = CreateOptionPage("RaidTool Options", L["团队工具"], GUI, "VERTICAL")
 
-T.createcheckbutton(RaidToolOptions, 30, 60, L["1-5队"], "RaidToolOptions", "onlyactive")
+T.createcheckbutton(RaidToolOptions, 30, 60, L["1-4队"], "RaidToolOptions", "onlyactive")
 T.createslider(RaidToolOptions, 30, 110, L["倒数时长"], "RaidToolOptions", "pulltime", 1, 3, 20, 1, L["需要启用DBM"])
 T.createcheckbutton(RaidToolOptions, 30, 150, L["药水通报"], "RaidToolOptions", "potion")
 T.createmultilinebox(RaidToolOptions, 200, 60, 35, 205, L["药水通报过滤"], "RaidToolOptions", "potionblacklist", L["药水通报过滤提示"])
@@ -2067,39 +2132,46 @@ T.createmultilinebox(RaidToolOptions, 200, 60, 35, 205, L["药水通报过滤"],
 local OtherOptions = CreateOptionPage("Other Options", OTHER, GUI, "VERTICAL")
 
 T.createslider(OtherOptions, 30, 80, L["缩放按钮高度"], "OtherOptions", "minimapheight", 1, 100, 300, 5, L["缩放按钮高度提示"])
-T.createslider(OtherOptions, 30, 120, L["系统菜单尺寸"], "OtherOptions", "micromenuscale", 100, 50, 200, 5)
-T.createslider(OtherOptions, 30, 160, L["信息条尺寸"], "OtherOptions", "infobarscale", 100, 50, 200, 5)
-T.createcheckbutton(OtherOptions, 30, 190, L["整理小地图图标"], "OtherOptions", "collectminimapbuttons")
+T.createslider(OtherOptions, 260, 80, L["系统菜单尺寸"], "OtherOptions", "micromenuscale", 100, 50, 200, 5)
+T.createslider(OtherOptions, 470, 80, L["信息条尺寸"], "OtherOptions", "infobarscale", 100, 50, 200, 5)
+
+OtherOptions.minimapheight:SetWidth(160)
+OtherOptions.micromenuscale:SetWidth(160)
+OtherOptions.infobarscale:SetWidth(160)
+
+T.createcheckbutton(OtherOptions, 30, 110, L["整理小地图图标"], "OtherOptions", "collectminimapbuttons")
 local MBCFpos_group = {
 	["TOP"] = L["上方"],
 	["BOTTOM"] = L["下方"],
 }
-T.createradiobuttongroup(OtherOptions, 200, 190, L["整理栏位置"], "OtherOptions", "MBCFpos", MBCFpos_group)
+T.createradiobuttongroup(OtherOptions, 200, 110, L["整理栏位置"], "OtherOptions", "MBCFpos", MBCFpos_group)
+T.createDR(OtherOptions.collectminimapbuttons, OtherOptions.MBCFpos)
 
 OtherOptions.DividingLine = OtherOptions:CreateTexture(nil, "ARTWORK")
 OtherOptions.DividingLine:SetSize(OtherOptions:GetWidth()-50, 1)
-OtherOptions.DividingLine:SetPoint("TOP", 0, -225)
+OtherOptions.DividingLine:SetPoint("TOP", 0, -140)
 OtherOptions.DividingLine:SetColorTexture(1, 1, 1, .2)
 
-T.createcheckbutton(OtherOptions, 30, 240, L["自动召宝宝"], "OtherOptions", "autopet", L["自动召宝宝提示"])
-T.createcheckbutton(OtherOptions, 30, 270, L["随机奖励"], "OtherOptions", "LFGRewards", L["随机奖励提示"])
-T.createcheckbutton(OtherOptions, 30, 300, L["稀有警报"], "OtherOptions", "vignettealert", L["稀有警报提示"])
-T.createcheckbutton(OtherOptions, 30, 330, L["在战斗中隐藏小地图和聊天框"], "OtherOptions", "hidemapandchat")
-T.createcheckbutton(OtherOptions, 30, 360, L["自动交接任务"], "OtherOptions", "autoquests", L["自动交接任务提示"])
-T.createcheckbutton(OtherOptions, 30, 390, L["自动接受复活"], "OtherOptions", "acceptres", L["自动接受复活提示"])	
-T.createcheckbutton(OtherOptions, 30, 420, L["战场自动释放灵魂"], "OtherOptions", "battlegroundres", L["战场自动释放灵魂提示"])
-T.createcheckbutton(OtherOptions, 30, 450, L["大喊被闷了"], "OtherOptions", "saysapped", L["大喊被闷了提示"])
-T.CVartogglebox(OtherOptions, 30, 480, "overrideArchive", "反和谐(大退生效)", "0", "1")
+T.createcheckbutton(OtherOptions, 30, 150, L["自动召宝宝"], "OtherOptions", "autopet", L["自动召宝宝提示"])
+T.createcheckbutton(OtherOptions, 30, 180, L["随机奖励"], "OtherOptions", "LFGRewards", L["随机奖励提示"])
+T.createcheckbutton(OtherOptions, 30, 210, L["稀有警报"], "OtherOptions", "vignettealert", L["稀有警报提示"])
+T.createcheckbutton(OtherOptions, 30, 240, L["在战斗中隐藏小地图和聊天框"], "OtherOptions", "hidemapandchat")
+T.createcheckbutton(OtherOptions, 30, 270, L["在副本中收起任务追踪"], "OtherOptions", "collapseWF", L["在副本中收起任务追踪提示"])
+T.createcheckbutton(OtherOptions, 30, 300, L["自动交接任务"], "OtherOptions", "autoquests", L["自动交接任务提示"])
+T.createcheckbutton(OtherOptions, 30, 330, L["自动接受复活"], "OtherOptions", "acceptres", L["自动接受复活提示"])	
+T.createcheckbutton(OtherOptions, 30, 360, L["战场自动释放灵魂"], "OtherOptions", "battlegroundres", L["战场自动释放灵魂提示"])
+T.createcheckbutton(OtherOptions, 30, 390, L["大喊被闷了"], "OtherOptions", "saysapped", L["大喊被闷了提示"])
+T.CVartogglebox(OtherOptions, 30, 420, "overrideArchive", "反和谐(大退生效)", "0", "1")
 
-T.createcheckbutton(OtherOptions, 300, 240, L["成就截图"], "OtherOptions", "autoscreenshot", L["成就截图提示"])
-T.CVartogglebox(OtherOptions, 300, 270, "screenshotQuality", "提升截图画质", "10", "1")
-T.CVartogglebox(OtherOptions, 300, 300, "screenshotFormat", "截图保存为tga格式", "tga", "jpg", "截图保存为tga提示")
-T.createcheckbutton(OtherOptions, 300, 330, L["隐藏错误提示"], "OtherOptions", "hideerrors", L["隐藏错误提示提示"])	
-T.createcheckbutton(OtherOptions, 300, 360, L["回收内存"], "OtherOptions", "collectgarbage", L["回收内存提示"])
-T.createcheckbutton(OtherOptions, 300, 390, L["镜头优化"], "OtherOptions", "camera", L["镜头优化提示"])
-T.createcheckbutton(OtherOptions, 300, 420, L["显示插件使用小提示"], "OtherOptions", "showAFKtips", L["显示插件使用小提示提示"])
-T.createcheckbutton(OtherOptions, 300, 450, L["任务栏闪动"], "OtherOptions", "flashtaskbar", L["任务栏闪动提示"])
-T.createcheckbutton(OtherOptions, 300, 480, L["大地图坐标"], "OtherOptions", "worldmapcoords")
+T.createcheckbutton(OtherOptions, 300, 150, L["成就截图"], "OtherOptions", "autoscreenshot", L["成就截图提示"])
+T.CVartogglebox(OtherOptions, 300, 180, "screenshotQuality", "提升截图画质", "10", "1")
+T.CVartogglebox(OtherOptions, 300, 210, "screenshotFormat", "截图保存为tga格式", "tga", "jpg", "截图保存为tga提示")
+T.createcheckbutton(OtherOptions, 300, 240, L["隐藏错误提示"], "OtherOptions", "hideerrors", L["隐藏错误提示提示"])	
+T.createcheckbutton(OtherOptions, 300, 270, L["回收内存"], "OtherOptions", "collectgarbage", L["回收内存提示"])
+T.createcheckbutton(OtherOptions, 300, 300, L["镜头优化"], "OtherOptions", "camera", L["镜头优化提示"])
+T.createcheckbutton(OtherOptions, 300, 330, L["显示插件使用小提示"], "OtherOptions", "showAFKtips", L["显示插件使用小提示提示"])
+T.createcheckbutton(OtherOptions, 300, 360, L["任务栏闪动"], "OtherOptions", "flashtaskbar", L["任务栏闪动提示"])
+T.createcheckbutton(OtherOptions, 300, 390, L["大地图坐标"], "OtherOptions", "worldmapcoords")
 
 if G.Client ~= "zhCN" then OtherOptions.overrideArchive:Hide() end
 --T.createcheckbutton(OtherOptions, 300, 450, L["自动接受排本邀请"], "OtherOptions", "autoacceptproposal", L["自动接受排本邀请提示"])
