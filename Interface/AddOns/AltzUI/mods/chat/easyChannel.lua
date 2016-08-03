@@ -21,7 +21,7 @@ function ChatEdit_CustomTabPressed(self)
 				self:SetAttribute("chatType", "WHISPER")
 				header:SetFormattedText(CHAT_WHISPER_SEND, name)
 			end
-		elseif IsInInstance() then
+		elseif IsInInstance() and HasLFGRestrictions() then
 			self:SetAttribute("chatType", "INSTANCE_CHAT")
 			ChatEdit_UpdateHeader(self)
 		elseif IsInRaid() then
@@ -45,7 +45,7 @@ function ChatEdit_CustomTabPressed(self)
 			return
 		end
 	elseif (chattype == "BN_WHISPER") or (chattype == "WHISPER") then
-		if IsInInstance() then
+		if IsInInstance() and HasLFGRestrictions() then
 			self:SetAttribute("chatType", "INSTANCE_CHAT")
 			ChatEdit_UpdateHeader(self)
 		elseif IsInRaid() then

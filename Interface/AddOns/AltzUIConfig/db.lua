@@ -1453,7 +1453,7 @@ T.ExportSettings = function(editbox)
 		for mode, xy in pairs(info) do
 			for key, _ in pairs(xy) do
 				local f = _G[frame]
-				if f then
+				if f and f["point"] then
 					if xy[key] ~= f["point"][mode][key] then
 						str = str.."^FramePoints~"..frame.."~"..mode.."~"..key.."~"..xy[key]
 						--print(frame.."~"..mode.."~"..key.."~"..xy[key])
