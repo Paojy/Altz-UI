@@ -14,6 +14,7 @@ anchorframe:SetSize(240, 20)
 
 local vm = ObjectiveTrackerFrame
 
+F.ReskinArrow(vm.HeaderMenu.MinimizeButton, "down")
 vm:SetFrameStrata("MEDIUM")
 vm:SetFrameLevel(15) -- higher than multiright actionbar
 vm:ClearAllPoints()
