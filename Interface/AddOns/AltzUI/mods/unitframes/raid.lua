@@ -577,7 +577,19 @@ local function Spawnhealraid()
 	else
 		size = 10
 	end
-	healerraid.df:SetSize((size/5)*(aCoreCDB["UnitframeOptions"]["healerraidwidth"]+5)-5, 5*(aCoreCDB["UnitframeOptions"]["healerraidheight"]+5)-5)
+	if aCoreCDB["UnitframeOptions"]["anchor"] == "LEFT" then
+		if aCoreCDB["UnitframeOptions"]["partyanchor"] == "LEFT" then
+			healerraid.df:SetSize(5*(size/5)*(aCoreCDB["UnitframeOptions"]["healerraidwidth"]+5)-5, aCoreCDB["UnitframeOptions"]["healerraidheight"])
+		else
+			healerraid.df:SetSize(5*(aCoreCDB["UnitframeOptions"]["healerraidwidth"]+5)-5, (size/5)*(aCoreCDB["UnitframeOptions"]["healerraidheight"]+5)-5)
+		end
+	else -- "TOP"
+		if aCoreCDB["UnitframeOptions"]["partyanchor"] == "LEFT" then
+			healerraid.df:SetSize((size/5)*(aCoreCDB["UnitframeOptions"]["healerraidwidth"]+5)-5, 5*(aCoreCDB["UnitframeOptions"]["healerraidheight"]+5)-5)
+		else
+			healerraid.df:SetSize(aCoreCDB["UnitframeOptions"]["healerraidwidth"], 5*(size/5)*(aCoreCDB["UnitframeOptions"]["healerraidheight"]+5)-5)
+		end
+	end
 	healerpet = oUF:SpawnHeader('Altz_HealerPetRaid', 'SecureGroupPetHeaderTemplate', 'raid,party,solo',
 		'oUF-initialConfigFunction', initconfig:format(aCoreCDB["UnitframeOptions"]["healerraidwidth"], aCoreCDB["UnitframeOptions"]["healerraidheight"], 1),
 		'showPlayer', true,
