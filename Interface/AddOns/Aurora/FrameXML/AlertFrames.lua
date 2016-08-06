@@ -1,327 +1,425 @@
 local F, C = unpack(select(2, ...))
 
-if true then return end
+-- GuildChallengeAlertSystem = AlertFrame:AddSimpleAlertFrameSubSystem(GuildChallengeAlertFrame, GuildChallengeAlertFrame_SetUp)
+-- DungeonCompletionAlertSystem = AlertFrame:AddSimpleAlertFrameSubSystem(DungeonCompletionAlertFrame, DungeonCompletionAlertFrame_SetUp)
+-- ScenarioAlertSystem = AlertFrame:AddSimpleAlertFrameSubSystem(ScenarioAlertFrame, ScenarioAlertFrame_SetUp)
+-- InvasionAlertSystem = AlertFrame:AddSimpleAlertFrameSubSystem(ScenarioLegionInvasionAlertFrame, ScenarioLegionInvasionAlertFrame_SetUp, ScenarioLegionInvasionAlertFrame_Coalesce)
+-- DigsiteCompleteAlertSystem = AlertFrame:AddSimpleAlertFrameSubSystem(DigsiteCompleteToastFrame, DigsiteCompleteToastFrame_SetUp)
+-- StorePurchaseAlertSystem = AlertFrame:AddSimpleAlertFrameSubSystem(StorePurchaseAlertFrame, StorePurchaseAlertFrame_SetUp)
+-- GarrisonBuildingAlertSystem = AlertFrame:AddSimpleAlertFrameSubSystem(GarrisonBuildingAlertFrame, GarrisonBuildingAlertFrame_SetUp)
+-- GarrisonMissionAlertSystem = AlertFrame:AddSimpleAlertFrameSubSystem(GarrisonMissionAlertFrame, GarrisonMissionAlertFrame_SetUp)
+-- GarrisonShipMissionAlertSystem = AlertFrame:AddSimpleAlertFrameSubSystem(GarrisonShipMissionAlertFrame, GarrisonMissionAlertFrame_SetUp)
+-- GarrisonRandomMissionAlertSystem = AlertFrame:AddSimpleAlertFrameSubSystem(GarrisonRandomMissionAlertFrame, GarrisonRandomMissionAlertFrame_SetUp)
+-- GarrisonFollowerAlertSystem = AlertFrame:AddSimpleAlertFrameSubSystem(GarrisonFollowerAlertFrame, GarrisonFollowerAlertFrame_SetUp)
+-- GarrisonShipFollowerAlertSystem = AlertFrame:AddSimpleAlertFrameSubSystem(GarrisonShipFollowerAlertFrame, GarrisonShipFollowerAlertFrame_SetUp)
+-- GarrisonTalentAlertSystem = AlertFrame:AddSimpleAlertFrameSubSystem(GarrisonTalentAlertFrame, GarrisonTalentAlertFrame_SetUp)
+-- WorldQuestCompleteAlertSystem = AlertFrame:AddSimpleAlertFrameSubSystem(WorldQuestCompleteAlertFrame, WorldQuestCompleteAlertFrame_SetUp, WorldQuestCompleteAlertFrame_Coalesce)
+-- LegendaryItemAlertSystem = AlertFrame:AddSimpleAlertFrameSubSystem(LegendaryItemAlertFrame, LegendaryItemAlertFrame_SetUp)
+-- AchievementAlertSystem = AlertFrame:AddQueuedAlertFrameSubSystem("AchievementAlertFrameTemplate", AchievementAlertFrame_SetUp, 2, 6);
+-- CriteriaAlertSystem = AlertFrame:AddQueuedAlertFrameSubSystem("CriteriaAlertFrameTemplate", CriteriaAlertFrame_SetUp, 2, 0);
+-- LootAlertSystem = AlertFrame:AddQueuedAlertFrameSubSystem("LootWonAlertFrameTemplate", LootWonAlertFrame_SetUp, 6, math.huge);
+-- LootUpgradeAlertSystem = AlertFrame:AddQueuedAlertFrameSubSystem("LootUpgradeFrameTemplate", LootUpgradeFrame_SetUp, 6, math.huge);
+-- MoneyWonAlertSystem = AlertFrame:AddQueuedAlertFrameSubSystem("MoneyWonAlertFrameTemplate", MoneyWonAlertFrame_SetUp, 6, math.huge);
+-- NewRecipeLearnedAlertSystem = AlertFrame:AddQueuedAlertFrameSubSystem("NewRecipeLearnedAlertFrameTemplate", NewRecipeLearnedAlertFrame_SetUp, 2, 6);
+	
+--[[:SetTexture(135940)
+
+local f = CreateFrame("Button", "Azt", UIParent)
+f:ClearAllPoints()
+f:SetPoint("CENTER", UIParent,"CENTER")
+f.SetPoint = F.dummy
+f:Show()
+f:SetScript("OnClick", nil)
+f:SetScript("OnLeave", nil)
+]]
+
+--AchievementFrame_LoadUI()
+--AchievementAlertSystem:ShowAlert(839)
+--CriteriaAlertSystem:ShowAlert(1470460934)
+--NewRecipeLearnedAlertSystem:ShowAlert(196387)
+
+local function TakeScreen(delay, func, ...) 
+	local waitTable = {} 
+	local waitFrame = CreateFrame("Frame", "WaitFrame", UIParent) 
+	waitFrame:SetScript("onUpdate", function (self, elapse) 
+		local count = #waitTable 
+		local i = 1 
+		while (i <= count) do 
+			local waitRecord = tremove(waitTable, i) 
+			local d = tremove(waitRecord, 1) 
+			local f = tremove(waitRecord, 1) 
+			local p = tremove(waitRecord, 1) 
+			if (d > elapse) then 
+				tinsert(waitTable, i, {d-elapse, f, p}) 
+				i = i + 1 
+			else 
+				count = count - 1 
+				f(unpack(p)) 
+			end 
+		end 
+	end) 
+	tinsert(waitTable, {delay, func, {...} }) 
+end
 
 tinsert(C.themes["Aurora"], function()
-	-- Achievement alert
-	local function fixBg(f)
-		if f:GetObjectType() == "AnimationGroup" then
-			f = f:GetParent()
-		end
-		f.bg:SetBackdropColor(0, 0, 0, AuroraConfig.alpha)
-	end
+	hooksecurefunc(AlertFrame, "AddAlertFrame", function(self, f)
+		if f.queue == AchievementAlertSystem then
+			if not f.skin then
+				F.CreateBD(f, .5) 
+				f.animIn:HookScript("OnPlay", function() f:SetBackdropColor(0, 0, 0, .5) end)
+				
+				f.Background:SetTexture(nil)
+				f.GuildBanner:SetTexture(nil)
+				f.OldAchievement:SetTexture(nil)
+				f.GuildBorder:SetTexture(nil)
 
-	hooksecurefunc("AlertFrame_FixAnchors", function()
-		for i = 1, MAX_ACHIEVEMENT_ALERTS do
-			local frame = _G["AchievementAlertFrame"..i]
+				f.Unlocked:SetFont(C.media.font, 10, "OUTLINE")
+				f.Unlocked:SetShadowOffset(0, 0)
+				f.Unlocked:SetTextColor(1,1,1)
 
-			if frame then
-				frame:SetAlpha(1)
-				frame.SetAlpha = F.dummy
+				f.Name:SetFont(C.media.font, 15, "OUTLINE")
+				f.Name:SetShadowOffset(0, 0)
+				f.Name:SetTextColor(1,1,1)
 
-				local ic = _G["AchievementAlertFrame"..i.."Icon"]
-				local texture = _G["AchievementAlertFrame"..i.."IconTexture"]
-				local guildName = _G["AchievementAlertFrame"..i.."GuildName"]
+				f.GuildName:SetFont(C.media.font, 15, "OUTLINE")
+				f.GuildName:SetShadowOffset(0, 0)
+				f.GuildName:SetTextColor(1,1,1)
+				f.GuildName:ClearAllPoints()
+				f.GuildName:SetPoint("BOTTOM", f.Unlocked, "TOP", 0, 2)
 
-				ic:ClearAllPoints()
-				ic:SetPoint("LEFT", frame, "LEFT", -26, 0)
+				f.Icon.Bling:SetTexture(nil)
+				f.Icon.Overlay:SetTexture(nil)
+				f.Icon.Texture:SetTexCoord(.1, .9, .1, .9)
+				F.CreateBG(f.Icon.Texture)
 
-				if not frame.bg then
-					frame.bg = CreateFrame("Frame", nil, frame)
-					frame.bg:SetPoint("TOPLEFT", texture, -10, 12)
-					frame.bg:SetPoint("BOTTOMRIGHT", texture, "BOTTOMRIGHT", 240, -12)
-					frame.bg:SetFrameLevel(frame:GetFrameLevel()-1)
-					F.CreateBD(frame.bg)
-
-					frame:HookScript("OnEnter", fixBg)
-					frame:HookScript("OnShow", fixBg)
-					frame.animIn:HookScript("OnFinished", fixBg)
-					F.CreateBD(frame.bg)
-
-					F.CreateBG(texture)
-
-					_G["AchievementAlertFrame"..i.."Background"]:Hide()
-					_G["AchievementAlertFrame"..i.."IconOverlay"]:Hide()
-					_G["AchievementAlertFrame"..i.."GuildBanner"]:SetTexture("")
-					_G["AchievementAlertFrame"..i.."GuildBorder"]:SetTexture("")
-					_G["AchievementAlertFrame"..i.."OldAchievement"]:SetTexture("")
-
-					guildName:ClearAllPoints()
-					guildName:SetPoint("TOPLEFT", 50, -14)
-					guildName:SetPoint("TOPRIGHT", -50, -14)
-
-					_G["AchievementAlertFrame"..i.."Unlocked"]:SetTextColor(1, 1, 1)
-					_G["AchievementAlertFrame"..i.."Unlocked"]:SetShadowOffset(1, -1)
-				end
-
-				frame.glow:Hide()
-				frame.shine:Hide()
-				frame.glow.Show = F.dummy
-				frame.shine.Show = F.dummy
-
-				texture:SetTexCoord(.08, .92, .08, .92)
-
-				if guildName:IsShown() then
-					_G["AchievementAlertFrame"..i.."Shield"]:SetPoint("TOPRIGHT", -10, -22)
-				end
+				f.Shield.Icon:SetTexture(nil)
+				f.Shield.Points:SetFont(C.media.font, 20, "OUTLINE")
+				f.Shield.Points:SetShadowOffset(0, 0)
+				f.Shield.Points:SetTextColor(1,1,0)
+				
+				f.glow:SetTexture(nil)
+				f.shine:SetTexture(nil)
+				
+				f.skin = true
 			end
+			
+		elseif f.queue == CriteriaAlertSystem then
+			if not f.skin then
+				F.CreateBD(f, .5) 
+				f.animIn:HookScript("OnPlay", function() f:SetBackdropColor(0, 0, 0, .5) end)
+				
+				f.Background:SetTexture(nil)
+				
+				f.Unlocked:SetFont(C.media.font, 10, "OUTLINE")
+				f.Unlocked:SetShadowOffset(0, 0)
+				f.Unlocked:SetTextColor(1,1,1)
+
+				f.Name:SetFont(C.media.font, 15, "OUTLINE")
+				f.Name:SetShadowOffset(0, 0)
+				f.Name:SetTextColor(1,1,1)
+
+				f.Icon.Bling:SetTexture(nil)
+				f.Icon.Overlay:SetTexture(nil)
+				f.Icon.Texture:SetTexCoord(.1, .9, .1, .9)
+				f.Icon.Texture:ClearAllPoints()
+				f.Icon.Texture:SetPoint("TOPLEFT", f, "TOPLEFT")
+				f.Icon.Texture:SetSize(52, 52)
+				F.CreateBG(f.Icon.Texture)
+
+				f.glow:SetTexture(nil)
+				f.shine:SetTexture(nil)
+				
+				f.skin = true
+			end
+			
+		elseif f.queue == LootAlertSystem then
+			if not f.skin then
+				F.CreateBD(f, .5) 
+				f.animIn:HookScript("OnFinished", function() f:SetBackdropColor(0, 0, 0, .5) end)
+				
+				f.Background:SetTexture(nil)
+				f.PvPBackground:SetTexture(nil)
+				f.BGAtlas:SetTexture(nil)
+				
+				f.shine:SetTexture(nil)
+				f.glow:SetTexture(nil)
+				
+				f.Icon:SetDrawLayer("BORDER")
+				f.Icon:SetTexCoord(.08, .92, .08, .92)
+				F.CreateBG(f.Icon)
+				
+				f.SpecRing:SetTexture(nil)
+				f.SpecIcon:SetTexCoord(.08, .92, .08, .92)
+				f.SpecIcon.bg = F.CreateBG(f.SpecIcon)
+				f.SpecIcon.bg:SetDrawLayer("BORDER", 2)
+				f.SpecIcon.bg:SetShown(f.SpecIcon:IsShown() and f.SpecIcon:GetTexture() ~= nil)
+			
+				f.skin = true
+			end
+			
+			f.IconBorder:SetTexture(nil)
+			
+		elseif f.queue == LootUpgradeAlertSystem then
+			if not f.skin then
+				F.CreateBD(f, .5) 
+				f.animIn:HookScript("OnPlay", function() f:SetBackdropColor(0, 0, 0, .5) end)
+				
+				f.Background:SetTexture(nil)
+				f.Sheen:SetTexture(nil)
+				
+				f.Icon:SetDrawLayer("BORDER", 5)
+				f.Icon:SetTexCoord(.08, .92, .08, .92)
+				F.CreateBG(f.Icon)
+				
+				f.Icon:ClearAllPoints()
+				f.Icon:SetPoint("CENTER", f.BaseQualityBorder)
+				
+				f.BaseQualityBorder:SetSize(52, 52)
+				f.BaseQualityBorder:SetTexture(C.media.backdrop)
+				f.UpgradeQualityBorder:SetTexture(C.media.backdrop)
+				f.UpgradeQualityBorder:SetSize(52, 52)
+				
+				f.skin = true
+			end
+			
+			f.BaseQualityBorder:SetTexture(nil)
+			f.BorderGlow:SetTexture(nil)
+			f.UpgradeQualityBorder:SetTexture(nil)
+			
+		elseif f.queue == MoneyWonAlertSystem then
+			if not f.skin then
+				F.CreateBD(f, .5) 
+				f.animIn:HookScript("OnFinished", function() f:SetBackdropColor(0, 0, 0, .5) end)
+				
+				f.Background:SetTexture(nil)
+				
+				f.Icon:SetTexCoord(.1, .9, .1, .9)
+				f.Icon:SetDrawLayer("ARTWORK")
+				F.CreateBG(f.Icon)
+				f.IconBorder:SetTexture(nil)
+				
+				f.Label:SetFont(C.media.font, 12, "OUTLINE")
+				f.Label:SetShadowOffset(0, 0)
+				f.Label:SetTextColor(1,1,1)
+				
+				f.Amount:SetFont(C.media.font, 15, "OUTLINE")
+				f.Amount:SetShadowOffset(0, 0)
+				f.Amount:SetTextColor(1,1,1)
+				
+				f.skin = true
+			end
+			
+		elseif f.queue == NewRecipeLearnedAlertSystem then
+			if not f.skin then
+				F.CreateBD(f, .5) 
+				f.animIn:HookScript("OnPlay", function() f:SetBackdropColor(0, 0, 0, .5) end)
+		
+				select(1, f:GetRegions()):SetTexture(nil)
+				f.Icon:SetDrawLayer("ARTWORK")
+				
+				F.CreateBG(f.Icon)
+
+				f.glow:SetTexture(nil)
+				f.shine:SetTexture(nil)
+
+				f.skin = true
+			end
+			
+			f.Icon:SetMask(nil)
+			f.Icon:SetTexCoord(.1, .9, .1, .9)
 		end
 	end)
-
+	
+	-- BonusRollLootWonFrame
+	
+	hooksecurefunc("LootWonAlertFrame_SetUp", function(f)
+		if not f.skin then
+			F.CreateBD(f, .5) 
+			f.animIn:HookScript("OnFinished", function() f:SetBackdropColor(0, 0, 0, .5) end)
+			
+			f.Background:SetTexture(nil)
+			f.PvPBackground:SetTexture(nil)
+			f.BGAtlas:SetTexture(nil)
+			
+			f.shine:SetTexture(nil)
+			f.glow:SetTexture(nil)
+			
+			f.Icon:SetDrawLayer("BORDER")
+			f.Icon:SetTexCoord(.08, .92, .08, .92)
+			F.CreateBG(f.Icon)
+			
+			f.SpecRing:SetTexture(nil)
+			f.SpecIcon:SetTexCoord(.08, .92, .08, .92)
+			f.SpecIcon.bg = F.CreateBG(f.SpecIcon)
+			f.SpecIcon.bg:SetDrawLayer("BORDER", 2)
+			f.SpecIcon.bg:SetShown(f.SpecIcon:IsShown() and f.SpecIcon:GetTexture() ~= nil)
+		
+			f.skin = true
+		end
+		
+		f.IconBorder:SetTexture(nil)
+	end)
+	
+	-- BonusRollMoneyWonFrame
+	
+	hooksecurefunc("MoneyWonAlertFrame_SetUp", function(f)	
+		if not f.skin then
+			F.CreateBD(f, .5) 
+			f.animIn:HookScript("OnFinished", function() f:SetBackdropColor(0, 0, 0, .5) end)
+			
+			f.Background:SetTexture(nil)
+			
+			f.Icon:SetTexCoord(.1, .9, .1, .9)
+			f.Icon:SetDrawLayer("ARTWORK")
+			F.CreateBG(f.Icon)
+			f.IconBorder:SetTexture(nil)
+			
+			f.Label:SetFont(C.media.font, 12, "OUTLINE")
+			f.Label:SetShadowOffset(0, 0)
+			f.Label:SetTextColor(1,1,1)
+			
+			f.Amount:SetFont(C.media.font, 15, "OUTLINE")
+			f.Amount:SetShadowOffset(0, 0)
+			f.Amount:SetTextColor(1,1,1)
+			
+			f.skin = true
+		end
+	end)
+	
 	-- Guild challenges
 
 	local challenge = CreateFrame("Frame", nil, GuildChallengeAlertFrame)
+	challenge:SetFrameLevel(GuildChallengeAlertFrame:GetFrameLevel()-1)
 	challenge:SetPoint("TOPLEFT", 8, -12)
 	challenge:SetPoint("BOTTOMRIGHT", -8, 13)
 	challenge:SetFrameLevel(GuildChallengeAlertFrame:GetFrameLevel()-1)
 	F.CreateBD(challenge)
-	F.CreateBG(GuildChallengeAlertFrameEmblemBackground)
-
-	GuildChallengeAlertFrameGlow:SetTexture("")
-	GuildChallengeAlertFrameShine:SetTexture("")
-	GuildChallengeAlertFrameEmblemBorder:SetTexture("")
-
+	
+	GuildChallengeAlertFrameEmblemBackground:SetTexture(nil)
+	select(2, GuildChallengeAlertFrame:GetRegions()):SetTexture(nil)
+	GuildChallengeAlertFrameEmblemBorder:SetTexture(nil)
+	
+	GuildChallengeAlertFrameEmblemIcon:SetTexCoord(.1, .9, .1, .9)
+	F.CreateBG(GuildChallengeAlertFrameEmblemIcon)
+	
+	local fs = select(5, GuildChallengeAlertFrame:GetRegions())
+	fs:SetFont(C.media.font, 14, "OUTLINE")
+	fs:SetShadowOffset(0, 0)
+	fs:SetTextColor(1,1,1)
+	
+	GuildChallengeAlertFrameType:SetFont(C.media.font, 12, "OUTLINE")
+	GuildChallengeAlertFrameType:SetShadowOffset(0, 0)
+	GuildChallengeAlertFrameType:SetTextColor(1,1,1)
+	
+	GuildChallengeAlertFrameCount:SetFont(C.media.font, 15, "OUTLINE")
+	GuildChallengeAlertFrameCount:SetShadowOffset(0, 0)
+	GuildChallengeAlertFrameCount:SetTextColor(1,1,0)
+	
+	GuildChallengeAlertFrameGlow:SetTexture(nil)
+	GuildChallengeAlertFrameShine:SetTexture(nil)
+	
 	-- Dungeon completion rewards
+	
+	DungeonCompletionAlertFrame.dungeonTexture:SetTexCoord(.1, .9, .1, .9)
+	F.CreateBG(DungeonCompletionAlertFrame.dungeonTexture)
 
-	local bg = CreateFrame("Frame", nil, DungeonCompletionAlertFrame1)
-	bg:SetPoint("TOPLEFT", 6, -14)
-	bg:SetPoint("BOTTOMRIGHT", -6, 6)
-	bg:SetFrameLevel(DungeonCompletionAlertFrame1:GetFrameLevel()-1)
-	F.CreateBD(bg)
+	DungeonCompletionAlertFrame.raidArt:SetTexture(nil)
+	DungeonCompletionAlertFrame.dungeonArt1:SetTexture(nil)
+	DungeonCompletionAlertFrame.dungeonArt2:SetTexture(nil)
+	DungeonCompletionAlertFrame.dungeonArt3:SetTexture(nil)
+	DungeonCompletionAlertFrame.dungeonArt4:SetTexture(nil)
 
-	DungeonCompletionAlertFrame1DungeonTexture:SetDrawLayer("ARTWORK")
-	DungeonCompletionAlertFrame1DungeonTexture:SetTexCoord(.02, .98, .02, .98)
-	F.CreateBG(DungeonCompletionAlertFrame1DungeonTexture)
+	local fs = select(7, DungeonCompletionAlertFrame:GetRegions())
+	fs:SetFont(C.media.font, 10, "OUTLINE")
+	fs:SetShadowOffset(0, 0)
+	fs:SetTextColor(1,1,1)
 
-	DungeonCompletionAlertFrame1.dungeonArt1:SetAlpha(0)
-	DungeonCompletionAlertFrame1.dungeonArt2:SetAlpha(0)
-	DungeonCompletionAlertFrame1.dungeonArt3:SetAlpha(0)
-	DungeonCompletionAlertFrame1.dungeonArt4:SetAlpha(0)
-	DungeonCompletionAlertFrame1.raidArt:SetAlpha(0)
+	local InstanceName = select(8, DungeonCompletionAlertFrame:GetRegions())
+	InstanceName:SetFont(C.media.font, 15, "OUTLINE")
+	InstanceName:SetShadowOffset(0, 0)
+	InstanceName:SetTextColor(1,1,1)
 
-	DungeonCompletionAlertFrame1.dungeonTexture:SetPoint("BOTTOMLEFT", DungeonCompletionAlertFrame1, "BOTTOMLEFT", 13, 13)
-	DungeonCompletionAlertFrame1.dungeonTexture.SetPoint = F.dummy
-
-	DungeonCompletionAlertFrame1.shine:Hide()
-	DungeonCompletionAlertFrame1.shine.Show = F.dummy
-	DungeonCompletionAlertFrame1.glow:Hide()
-	DungeonCompletionAlertFrame1.glow.Show = F.dummy
-
-	hooksecurefunc("DungeonCompletionAlertFrame_ShowAlert", function()
-		local bu = DungeonCompletionAlertFrame1Reward1
-		local index = 1
-
-		while bu do
-			if not bu.styled then
-				_G["DungeonCompletionAlertFrame1Reward"..index.."Border"]:Hide()
-
-				bu.texture:SetTexCoord(.08, .92, .08, .92)
-				F.CreateBG(bu.texture)
-
-				bu.styled = true
+	DungeonCompletionAlertFrame.heroicIcon:SetTexture(nil)
+	DungeonCompletionAlertFrame.glowFrame.glow:SetTexture(nil)
+	DungeonCompletionAlertFrame.shine:SetTexture(nil)
+	
+	local DungeonCompletionAlertFramebg = CreateFrame("Frame", nil, DungeonCompletionAlertFrame)
+	DungeonCompletionAlertFramebg:SetPoint("TOPLEFT", 0, -8)
+	DungeonCompletionAlertFramebg:SetPoint("BOTTOMRIGHT", 0, 0)
+	DungeonCompletionAlertFramebg:SetFrameLevel(DungeonCompletionAlertFrame:GetFrameLevel()-1)
+	F.CreateBD(DungeonCompletionAlertFramebg)
+			
+	hooksecurefunc("DungeonCompletionAlertFrame_SetUp", function(f)
+		local name, typeID, subtypeID, textureFilename, moneyBase, moneyVar, experienceBase, experienceVar, numStrangers, numRewards = GetLFGCompletionReward()
+		
+		for i = 1, numRewards+1 do
+			local reward = _G["DungeonCompletionAlertFrameReward"..i]
+			if reward then
+				select(2, reward:GetRegions()):SetTexture(nil)
+				reward.texture:SetTexCoord(.1, .9, .1, .9)
+				reward.texture:ClearAllPoints()
+				reward.texture:SetPoint("TOPLEFT", 6, -6)
+				reward.texture:SetPoint("BOTTOMRIGHT", -6, 6)
+				F.CreateBG(reward.texture)
+				
+				if i == 1 then
+					reward:SetPoint("TOPRIGHT", f, "TOPRIGHT", -10, 0)
+				else
+					reward:SetPoint("RIGHT", _G["DungeonCompletionAlertFrameReward"..(i-1)], "LEFT", 0, 0)
+				end
 			end
-
-			index = index + 1
-			bu = _G["DungeonCompletionAlertFrame1Reward"..index]
 		end
 	end)
-
-	-- Challenge popup
-
-	hooksecurefunc("AlertFrame_SetChallengeModeAnchors", function()
-		local frame = ChallengeModeAlertFrame1
-
-		if frame then
-			frame:SetAlpha(1)
-			frame.SetAlpha = F.dummy
-
-			if not frame.bg then
-				frame.bg = CreateFrame("Frame", nil, frame)
-				frame.bg:SetPoint("TOPLEFT", ChallengeModeAlertFrame1DungeonTexture, -12, 12)
-				frame.bg:SetPoint("BOTTOMRIGHT", ChallengeModeAlertFrame1DungeonTexture, 243, -12)
-				frame.bg:SetFrameLevel(frame:GetFrameLevel()-1)
-				F.CreateBD(frame.bg)
-
-				frame:HookScript("OnEnter", fixBg)
-				frame:HookScript("OnShow", fixBg)
-				frame.animIn:HookScript("OnFinished", fixBg)
-
-				F.CreateBG(ChallengeModeAlertFrame1DungeonTexture)
-			end
-
-			frame:GetRegions():Hide()
-
-			ChallengeModeAlertFrame1Shine:Hide()
-			ChallengeModeAlertFrame1Shine.Show = F.dummy
-			ChallengeModeAlertFrame1GlowFrame:Hide()
-			ChallengeModeAlertFrame1GlowFrame.Show = F.dummy
-			ChallengeModeAlertFrame1Border:Hide()
-			ChallengeModeAlertFrame1Border.Show = F.dummy
-
-			ChallengeModeAlertFrame1DungeonTexture:SetTexCoord(.08, .92, .08, .92)
-		end
-	end)
-
+	
 	-- Scenario alert
 
-	hooksecurefunc("AlertFrame_SetScenarioAnchors", function()
-		local frame = ScenarioAlertFrame1
+	select(1, ScenarioAlertFrame:GetRegions()):Hide()
+	select(3, ScenarioAlertFrame:GetRegions()):Hide()
 
-		if frame then
-			frame:SetAlpha(1)
-			frame.SetAlpha = F.dummy
+	ScenarioAlertFrame.dungeonTexture:SetTexCoord(.1, .9, .1, .9)
+	F.CreateBG(ScenarioAlertFrame.dungeonTexture)
 
-			if not frame.bg then
-				frame.bg = CreateFrame("Frame", nil, frame)
-				frame.bg:SetPoint("TOPLEFT", ScenarioAlertFrame1DungeonTexture, -12, 12)
-				frame.bg:SetPoint("BOTTOMRIGHT", ScenarioAlertFrame1DungeonTexture, 244, -12)
-				frame.bg:SetFrameLevel(frame:GetFrameLevel()-1)
-				F.CreateBD(frame.bg)
+	local fs = select(4, ScenarioAlertFrame:GetRegions())
+	fs:SetFont(C.media.font, 10, "OUTLINE")
+	fs:SetShadowOffset(0, 0)
+	fs:SetTextColor(1,1,1)
 
-				frame:HookScript("OnEnter", fixBg)
-				frame:HookScript("OnShow", fixBg)
-				frame.animIn:HookScript("OnFinished", fixBg)
+	local ScenarioName = select(5, ScenarioAlertFrame:GetRegions())
+	ScenarioName:SetFont(C.media.font, 15, "OUTLINE")
+	ScenarioName:SetShadowOffset(0, 0)
+	ScenarioName:SetTextColor(1,1,1)
 
-				F.CreateBG(ScenarioAlertFrame1DungeonTexture)
-				ScenarioAlertFrame1DungeonTexture:SetDrawLayer("OVERLAY")
-			end
-
-			frame:GetRegions():Hide()
-			select(3, frame:GetRegions()):Hide()
-
-			ScenarioAlertFrame1Shine:Hide()
-			ScenarioAlertFrame1Shine.Show = F.dummy
-			ScenarioAlertFrame1GlowFrame:Hide()
-			ScenarioAlertFrame1GlowFrame.Show = F.dummy
-
-			ScenarioAlertFrame1DungeonTexture:SetTexCoord(.08, .92, .08, .92)
-		end
-	end)
-
-	hooksecurefunc("ScenarioAlertFrame_ShowAlert", function()
-		local bu = ScenarioAlertFrame1Reward1
-		local index = 1
-
-		while bu do
-			if not bu.styled then
-				_G["ScenarioAlertFrame1Reward"..index.."Border"]:Hide()
-
-				bu.texture:SetTexCoord(.08, .92, .08, .92)
-				F.CreateBG(bu.texture)
-
-				bu.styled = true
-			end
-
-			index = index + 1
-			bu = _G["ScenarioAlertFrame1Reward"..index]
-		end
-	end)
-
-	-- Loot won alert
-
-	-- I still don't know why I can't parent bg to frame
-	local function showHideBg(self)
-		self.bg:SetShown(self:IsShown())
-	end
-
-	local function onUpdate(self)
-		self.bg:SetAlpha(self:GetAlpha())
-	end
-
-	hooksecurefunc("LootWonAlertFrame_SetUp", function(frame)
-		if not frame.bg then
-			frame.bg = CreateFrame("Frame", nil, UIParent)
-			frame.bg:SetPoint("TOPLEFT", frame, 10, -10)
-			frame.bg:SetPoint("BOTTOMRIGHT", frame, -10, 10)
-			frame.bg:SetFrameStrata("DIALOG")
-			frame.bg:SetFrameLevel(frame:GetFrameLevel()-1)
-			frame.bg:SetShown(frame:IsShown())
-			F.CreateBD(frame.bg)
-
-			frame:HookScript("OnShow", showHideBg)
-			frame:HookScript("OnHide", showHideBg)
-			frame:HookScript("OnUpdate", onUpdate)
-
-			frame.shine:SetTexture("")
-			frame.SpecRing:SetTexture("")
-
-			frame.Icon:SetTexCoord(.08, .92, .08, .92)
-			F.CreateBG(frame.Icon)
-
-			frame.SpecIcon:SetTexCoord(.08, .92, .08, .92)
-			frame.SpecIcon.bg = F.CreateBG(frame.SpecIcon)
-			frame.SpecIcon.bg:SetDrawLayer("BORDER", 2)
-		end
-
-		frame.Background:Hide()
-		frame.IconBorder:Hide()
-		frame.glow:SetTexture("")
-		frame.PvPBackground:Hide()
-		frame.BGAtlas:Hide()
-
-		frame.Icon:SetDrawLayer("BORDER")
-		frame.SpecIcon.bg:SetShown(frame.SpecIcon:IsShown() and frame.SpecIcon:GetTexture() ~= nil) -- sometimes appears when it shouldn't
-	end)
-
-	-- Money won alert
-
-	hooksecurefunc("MoneyWonAlertFrame_SetUp", function(frame)
-		if not frame.bg then
-			frame.bg = CreateFrame("Frame", nil, UIParent)
-			frame.bg:SetPoint("TOPLEFT", frame, 10, -10)
-			frame.bg:SetPoint("BOTTOMRIGHT", frame, -10, 10)
-			frame.bg:SetFrameStrata("DIALOG")
-			frame.bg:SetFrameLevel(frame:GetFrameLevel()-1)
-			frame.bg:SetShown(frame:IsShown())
-			F.CreateBD(frame.bg)
-
-			frame:HookScript("OnShow", showHideBg)
-			frame:HookScript("OnHide", showHideBg)
-			frame:HookScript("OnUpdate", onUpdate)
-
-			frame.Background:Hide()
-			frame.IconBorder:Hide()
-
-			frame.Icon:SetTexCoord(.08, .92, .08, .92)
-			F.CreateBG(frame.Icon)
-		end
-	end)
-
-	-- Criteria alert
-
-	hooksecurefunc("CriteriaAlertFrame_ShowAlert", function()
-		for i = 1, MAX_ACHIEVEMENT_ALERTS do
-			local frame = _G["CriteriaAlertFrame"..i]
-			if frame and not frame.bg then
-				local icon = _G["CriteriaAlertFrame"..i.."IconTexture"]
-
-				frame.bg = CreateFrame("Frame", nil, UIParent)
-				frame.bg:SetPoint("TOPLEFT", icon, -6, 5)
-				frame.bg:SetPoint("BOTTOMRIGHT", icon, 236, -5)
-				frame.bg:SetFrameStrata("DIALOG")
-				frame.bg:SetFrameLevel(frame:GetFrameLevel()-1)
-				frame.bg:SetShown(frame:IsShown())
-				F.CreateBD(frame.bg)
-
-				frame:SetScript("OnShow", showHideBg)
-				frame:SetScript("OnHide", showHideBg)
-				frame:HookScript("OnUpdate", onUpdate)
-
-				_G["CriteriaAlertFrame"..i.."Background"]:Hide()
-				_G["CriteriaAlertFrame"..i.."IconOverlay"]:Hide()
-				frame.glow:Hide()
-				frame.glow.Show = F.dummy
-				frame.shine:Hide()
-				frame.shine.Show = F.dummy
-
-				_G["CriteriaAlertFrame"..i.."Unlocked"]:SetTextColor(.9, .9, .9)
-
-				icon:SetTexCoord(.08, .92, .08, .92)
-				F.CreateBG(icon)
+	ScenarioAlertFrame.glowFrame.glow:SetTexture(nil)
+	ScenarioAlertFrame.shine:SetTexture(nil)
+	
+	local ScenarioAlertFramebg = CreateFrame("Frame", nil, ScenarioAlertFrame)
+	ScenarioAlertFramebg:SetPoint("TOPLEFT", 0, 0)
+	ScenarioAlertFramebg:SetPoint("BOTTOMRIGHT", 0, 0)
+	ScenarioAlertFramebg:SetFrameLevel(ScenarioAlertFrame:GetFrameLevel()-1)
+	F.CreateBD(ScenarioAlertFramebg)
+	
+	hooksecurefunc("ScenarioAlertFrame_SetUp", function(f)
+		local name, typeID, subtypeID, textureFilename, moneyBase, moneyVar, experienceBase, experienceVar, numStrangers, numRewards = GetLFGCompletionReward()
+		
+		for i = 1, numRewards+1 do
+			local reward = _G["ScenarioAlertFrameReward"..i]
+			if reward then
+				select(2, reward:GetRegions()):SetTexture(nil)
+				reward.texture:SetTexCoord(.1, .9, .1, .9)
+				reward.texture:ClearAllPoints()
+				reward.texture:SetPoint("TOPLEFT", 6, -6)
+				reward.texture:SetPoint("BOTTOMRIGHT", -6, 6)
+				F.CreateBG(reward.texture)
+				
+				if i == 1 then
+					reward:SetPoint("TOPRIGHT", f, "TOPRIGHT", -10, 0)
+				else
+					reward:SetPoint("RIGHT", _G["ScenarioAlertFrameReward"..(i-1)], "LEFT", 0, 0)
+				end
 			end
 		end
 	end)
-
+		
 	-- Digsite completion alert
 
 	do
@@ -332,10 +430,8 @@ tinsert(C.themes["Aurora"], function()
 
 		frame:GetRegions():Hide()
 
-		frame.glow:Hide()
-		frame.glow.Show = F.dummy
-		frame.shine:Hide()
-		frame.shine.Show = F.dummy
+		frame.glow:SetTexture(nil)
+		frame.shine:SetTexture(nil)
 	end
 
 	-- Garrison building alert
@@ -391,13 +487,31 @@ tinsert(C.themes["Aurora"], function()
 		bg:SetFrameLevel(frame:GetFrameLevel()-1)
 		F.CreateBD(bg)
 	end
+	
+	-- Garrison Random Mission alert
+	
+	do
+		local frame = GarrisonRandomMissionAlertFrame
 
+		frame.Background:Hide()
+		frame.Blank:Hide()
+		frame.IconBG:Hide()
+		frame.glow:SetTexture("")
+		frame.shine:SetTexture("")
+
+		local bg = CreateFrame("Frame", nil, frame)
+		bg:SetPoint("TOPLEFT", 8, -8)
+		bg:SetPoint("BOTTOMRIGHT", -8, 10)
+		bg:SetFrameLevel(frame:GetFrameLevel()-1)
+		F.CreateBD(bg)
+	end
+	
 	-- Garrison follower alert
 
 	do
 		local frame = GarrisonFollowerAlertFrame
-
-		frame:GetRegions():Hide()
+		
+		select(5, frame:GetRegions()):Hide()
 		frame.FollowerBG:SetAlpha(0)
 		frame.glow:SetTexture("")
 		frame.shine:SetTexture("")
@@ -411,7 +525,7 @@ tinsert(C.themes["Aurora"], function()
 		F.ReskinGarrisonPortrait(frame.PortraitFrame)
 	end
 
-	hooksecurefunc("GarrisonFollowerAlertFrame_ShowAlert", function(_, _, _, _, quality)
+	hooksecurefunc("GarrisonFollowerAlertFrame_SetUp", function(_, _, _, _, quality)
 		local color = BAG_ITEM_QUALITY_COLORS[quality]
 		if color then
 			GarrisonFollowerAlertFrame.PortraitFrame.squareBG:SetBackdropBorderColor(color.r, color.g, color.b)
@@ -420,30 +534,120 @@ tinsert(C.themes["Aurora"], function()
 		end
 	end)
 
-	-- Loot upgrade alert
-
-	hooksecurefunc("LootUpgradeFrame_SetUp", function(frame)
-		if not frame.bg then
-			local bg = CreateFrame("Frame", nil, frame)
-			bg:SetPoint("TOPLEFT", 10, -10)
-			bg:SetPoint("BOTTOMRIGHT", -10, 10)
-			bg:SetFrameLevel(frame:GetFrameLevel()-1)
-			F.CreateBD(bg)
-			frame.bg = bg
-
-			frame.Background:Hide()
-
-			F.ReskinIcon(frame.Icon)
-			frame.Icon:SetDrawLayer("BORDER", 5)
-			frame.Icon:ClearAllPoints()
-			frame.Icon:SetPoint("CENTER", frame.BaseQualityBorder)
+	-- Garrison ship follower alert
+	
+	do
+		local frame = GarrisonShipFollowerAlertFrame
+		
+		frame.Background:Hide()
+		frame.FollowerBG:SetAlpha(0)
+		
+		frame.glow:SetTexture("")
+		frame.shine:SetTexture("")
+		
+		local bg = CreateFrame("Frame", nil, frame)
+		bg:SetPoint("TOPLEFT", 10, -3)
+		bg:SetPoint("BOTTOMRIGHT", -16, 16)
+		bg:SetFrameLevel(frame:GetFrameLevel()-1)
+		F.CreateBD(bg)
+	end
+	
+	-- Garrison talent alert
+	
+	do
+		local frame = GarrisonTalentAlertFrame
+		select(1, frame:GetRegions()):Hide()
+		frame.Icon:SetTexCoord(.1, .9, .1, .9)
+		frame.Icon:SetDrawLayer("ARTWORK")
+		F.CreateBG(frame.Icon)
+		
+		frame.glow:SetTexture("")
+		frame.shine:SetTexture("")
+		
+		local bg = CreateFrame("Frame", nil, frame)
+		bg:SetPoint("TOPLEFT", 8, -8)
+		bg:SetPoint("BOTTOMRIGHT", -8, 10)
+		bg:SetFrameLevel(frame:GetFrameLevel()-1)
+		
+		F.CreateBD(bg)
+	end
+	
+	-- Store Purchase alert
+	do
+		local frame = StorePurchaseAlertFrame
+		frame.Background:Hide()
+		frame.Icon:SetTexCoord(.1, .9, .1, .9)
+		F.CreateBG(frame.Icon)
+		
+		frame.glow:SetTexture("")
+		frame.shine:SetTexture("")
+		
+		local bg = CreateFrame("Frame", nil, frame)
+		bg:SetPoint("TOPLEFT", 8, -8)
+		bg:SetPoint("BOTTOMRIGHT", -8, 8)
+		bg:SetFrameLevel(frame:GetFrameLevel()-1)
+		F.CreateBD(bg)
+	end
+	
+	-- World Quest alert
+	
+	do
+		local frame = WorldQuestCompleteAlertFrame
+		frame.QuestTexture:SetTexCoord(.1, .9, .1, .9)
+		frame.QuestTexture:SetDrawLayer("ARTWORK")
+		F.CreateBG(frame.QuestTexture)
+		
+		for i = 2, 5 do
+			select(i, frame:GetRegions()):Hide()
 		end
-
-		frame.BaseQualityBorder:SetTexture(C.media.backdrop)
-		frame.UpgradeQualityBorder:SetTexture(C.media.backdrop)
-		frame.BaseQualityBorder:SetSize(52, 52)
-		frame.UpgradeQualityBorder:SetSize(52, 52)
-		frame.BaseQualityBorder:SetVertexColor(frame.BaseQualityItemName:GetTextColor())
-		frame.UpgradeQualityBorder:SetVertexColor(frame.UpgradeQualityItemName:GetTextColor())
-	end)
+		
+		frame.shine:SetTexture("")
+		
+		local bg = CreateFrame("Frame", nil, frame)
+		bg:SetPoint("TOPLEFT", 8, -8)
+		bg:SetPoint("BOTTOMRIGHT", -8, 6)
+		bg:SetFrameLevel(frame:GetFrameLevel()-1)
+		F.CreateBD(bg)
+	end
+	
+	-- Scenario Legion Invasion Alert Frame
+	
+	do
+		local frame = ScenarioLegionInvasionAlertFrame
+		select(1, frame:GetRegions()):Hide()
+		
+		local icon = select(2, frame:GetRegions())
+		icon:SetTexCoord(.1, .9, .1, .9)
+		icon:SetDrawLayer("ARTWORK")
+		F.CreateBG(icon)
+		
+		local bg = CreateFrame("Frame", nil, frame)
+		bg:SetPoint("TOPLEFT", 8, -8)
+		bg:SetPoint("BOTTOMRIGHT", -8, 6)
+		bg:SetFrameLevel(frame:GetFrameLevel()-1)
+		F.CreateBD(bg)
+	end
+	
+	-- Legendary Item Alert
+	
+	do
+		local frame = LegendaryItemAlertFrame
+		
+		frame.Icon:SetTexCoord(.1, .9, .1, .9)
+		frame.Icon:SetDrawLayer("ARTWORK")
+		F.CreateBG(frame.Icon)
+		
+		frame.glow:SetTexture("")
+		frame.shine:SetTexture("")
+				
+		select(2, LegendaryItemAlertFrame:GetRegions()):Hide()
+		select(8, LegendaryItemAlertFrame:GetRegions()):Hide()
+		select(9, LegendaryItemAlertFrame:GetRegions()):Hide()
+		
+		local bg = CreateFrame("Frame", nil, frame)
+		bg:SetPoint("TOPLEFT", 35, -18)
+		bg:SetPoint("BOTTOMRIGHT", -10, 22)
+		bg:SetFrameLevel(frame:GetFrameLevel()-1)
+		F.CreateBD(bg)
+	end
 end)
