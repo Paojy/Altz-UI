@@ -68,7 +68,6 @@ tinsert(C.themes["Aurora"], function()
 				F.CreateBD(f, .5) 
 				f.animIn:HookScript("OnPlay", function() f:SetBackdropColor(0, 0, 0, .5) end)
 				
-				f.Background:SetTexture(nil)
 				f.GuildBanner:SetTexture(nil)
 				f.OldAchievement:SetTexture(nil)
 				f.GuildBorder:SetTexture(nil)
@@ -85,23 +84,24 @@ tinsert(C.themes["Aurora"], function()
 				f.GuildName:SetShadowOffset(0, 0)
 				f.GuildName:SetTextColor(1,1,1)
 				f.GuildName:ClearAllPoints()
-				f.GuildName:SetPoint("BOTTOM", f.Unlocked, "TOP", 0, 2)
 
 				f.Icon.Bling:SetTexture(nil)
-				f.Icon.Overlay:SetTexture(nil)
+				
 				f.Icon.Texture:SetTexCoord(.1, .9, .1, .9)
 				F.CreateBG(f.Icon.Texture)
-
-				f.Shield.Icon:SetTexture(nil)
+	
 				f.Shield.Points:SetFont(C.media.font, 20, "OUTLINE")
 				f.Shield.Points:SetShadowOffset(0, 0)
 				f.Shield.Points:SetTextColor(1,1,0)
 				
-				f.glow:SetTexture(nil)
-				f.shine:SetTexture(nil)
-				
 				f.skin = true
 			end
+			
+			f.Background:SetTexture(nil)
+			f.Icon.Overlay:SetTexture(nil)
+			f.glow:SetTexture(nil)
+			f.shine:SetTexture(nil)
+			f.Shield.Icon:SetTexture(nil)
 			
 		elseif f.queue == CriteriaAlertSystem then
 			if not f.skin then
@@ -124,6 +124,7 @@ tinsert(C.themes["Aurora"], function()
 				f.Icon.Texture:ClearAllPoints()
 				f.Icon.Texture:SetPoint("TOPLEFT", f, "TOPLEFT")
 				f.Icon.Texture:SetSize(52, 52)
+				f.Icon.Texture:SetDrawLayer("ARTWORK")
 				F.CreateBG(f.Icon.Texture)
 
 				f.glow:SetTexture(nil)
@@ -136,11 +137,7 @@ tinsert(C.themes["Aurora"], function()
 			if not f.skin then
 				F.CreateBD(f, .5) 
 				f.animIn:HookScript("OnFinished", function() f:SetBackdropColor(0, 0, 0, .5) end)
-				
-				f.Background:SetTexture(nil)
-				f.PvPBackground:SetTexture(nil)
-				f.BGAtlas:SetTexture(nil)
-				
+								
 				f.shine:SetTexture(nil)
 				f.glow:SetTexture(nil)
 				
@@ -157,6 +154,9 @@ tinsert(C.themes["Aurora"], function()
 				f.skin = true
 			end
 			
+			f.Background:SetTexture(nil)
+			f.PvPBackground:SetTexture(nil)
+			f.BGAtlas:SetTexture(nil)			
 			f.IconBorder:SetTexture(nil)
 			
 		elseif f.queue == LootUpgradeAlertSystem then
@@ -166,6 +166,7 @@ tinsert(C.themes["Aurora"], function()
 				
 				f.Background:SetTexture(nil)
 				f.Sheen:SetTexture(nil)
+				f.BorderGlow:SetTexture(nil)
 				
 				f.Icon:SetDrawLayer("BORDER", 5)
 				f.Icon:SetTexCoord(.08, .92, .08, .92)
@@ -183,7 +184,6 @@ tinsert(C.themes["Aurora"], function()
 			end
 			
 			f.BaseQualityBorder:SetTexture(nil)
-			f.BorderGlow:SetTexture(nil)
 			f.UpgradeQualityBorder:SetTexture(nil)
 			
 		elseif f.queue == MoneyWonAlertSystem then
@@ -236,11 +236,7 @@ tinsert(C.themes["Aurora"], function()
 		if not f.skin then
 			F.CreateBD(f, .5) 
 			f.animIn:HookScript("OnFinished", function() f:SetBackdropColor(0, 0, 0, .5) end)
-			
-			f.Background:SetTexture(nil)
-			f.PvPBackground:SetTexture(nil)
-			f.BGAtlas:SetTexture(nil)
-			
+							
 			f.shine:SetTexture(nil)
 			f.glow:SetTexture(nil)
 			
@@ -257,6 +253,9 @@ tinsert(C.themes["Aurora"], function()
 			f.skin = true
 		end
 		
+		f.Background:SetTexture(nil)
+		f.PvPBackground:SetTexture(nil)
+		f.BGAtlas:SetTexture(nil)			
 		f.IconBorder:SetTexture(nil)
 	end)
 	
