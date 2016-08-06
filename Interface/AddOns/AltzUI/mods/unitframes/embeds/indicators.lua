@@ -3,7 +3,7 @@ local oUF = AltzUF or oUF
 
 local x = "8"
 local bigmark = 11
-local smallmark = 5
+local smallmark = 7
 local timersize = 12
 
 -- [[ Healers' indicators ]] -- 
@@ -157,17 +157,17 @@ oUF.Tags.Methods['Mlight:forbearance'] = function(u) if UnitDebuff(u, GetSpellIn
 oUF.Tags.Events['Mlight:forbearance'] = "UNIT_AURA" -- 自律
 
 -- Monk 武僧
-oUF.Tags.Methods['Mlight:zs'] = function(u) -- 禅意珠
-    local name, _,_,_,_,_, expirationTime, fromwho = UnitAura(u, GetSpellInfo(124081))
+oUF.Tags.Methods['Mlight:jhzq'] = function(u) -- 精华之泉
+    local name, _,_,_,_,_, expirationTime, fromwho = UnitAura(u, GetSpellInfo(191840))
     if(fromwho == "player") then
         local spellTimer = (expirationTime-GetTime())
 		local TimeLeft = T.FormatTime(spellTimer)
         if spellTimer > 0 then
-            return "|cff00FBFF"..TimeLeft.."|r"
+            return "|cff97FFFF"..TimeLeft.."|r"
         end
     end
 end
-oUF.Tags.Events['Mlight:zs'] = 'UNIT_AURA'
+oUF.Tags.Events['Mlight:jhzq'] = 'UNIT_AURA'
 
 oUF.Tags.Methods['Mlight:sooth'] = function(u)-- 抚慰之雾
 	local name, _,_,_,_,_, _, fromwho = UnitAura(u, GetSpellInfo(115175))
@@ -276,7 +276,7 @@ classIndicators={
         ["TL"] = "[Mlight:remist]",
         ["BR"] = "",
         ["BL"] = "[Mlight:mist]",
-        ["TR"] = "[Mlight:zs]",
+        ["TR"] = "[Mlight:jhzq]",
         ["Cen"] = "[Mlight:sooth]",
     },
 	["DEMONHUNTER"] = {
@@ -306,7 +306,7 @@ local Enable = function(self)
         self.AuraStatusBR:ClearAllPoints()
         self.AuraStatusBR:SetPoint("BOTTOMRIGHT", 3, 0)
 		self.AuraStatusBR:SetJustifyH("RIGHT")
-        self.AuraStatusBR:SetFont(G.symbols, smallmark, "OUTLINE")
+        self.AuraStatusBR:SetFont(G.symbols, bigmark, "OUTLINE")
         self.AuraStatusBR.frequentUpdates = update
         self:Tag(self.AuraStatusBR, classIndicators[G.myClass]["BR"])
 		
@@ -323,10 +323,10 @@ local Enable = function(self)
         self.AuraStatusTR = self.Health:CreateFontString(nil, "OVERLAY")
         self.AuraStatusTR:ClearAllPoints()
         
-		if G.myClass == "DRUID" then
+		if G.myClass == "DRUID" or G.myClass == "MONK"then
 			self.AuraStatusTR:SetPoint("TOPRIGHT", 0, 0)
 			self.AuraStatusTR:SetFont(G.norFont, timersize, "OUTLINE") -- 数字
-		elseif G.myClass == "PRIEST" or G.myClass == "SHAMAN" or G.myClass == "MONK" then
+		elseif G.myClass == "PRIEST" then
 			self.AuraStatusTR:SetPoint("TOPRIGHT", 0, 0)
 			self.AuraStatusTR:SetFont(G.norFont, timersize+3, "OUTLINE") -- 大数字
 		else
@@ -344,7 +344,7 @@ local Enable = function(self)
 			self.AuraStatusCen:SetFont(ChatFrame1:GetFont(), timersize, "OUTLINE") -- 文字
 			self.AuraStatusCen:SetPoint("TOP", 0, 0)
 		else
-			self.AuraStatusCen:SetFont(G.symbols, smallmark+2, "OUTLINE") -- 符号
+			self.AuraStatusCen:SetFont(G.symbols, smallmark, "OUTLINE") -- 符号
 			self.AuraStatusCen:SetPoint("TOP", 0, 2)
 		end
         self.AuraStatusCen:SetWidth(0)
