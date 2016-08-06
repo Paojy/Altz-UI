@@ -72,13 +72,33 @@ hooksecurefunc(ACHIEVEMENT_TRACKER_MODULE, "SetBlockHeader", function(_, block)
         end
 	end
 end)
-      
 local function hoverachieve(_, block)
 	block.HeaderText:SetTextColor(G.Ccolor.r, G.Ccolor.g, G.Ccolor.b)
 end
       
 hooksecurefunc(ACHIEVEMENT_TRACKER_MODULE, "OnBlockHeaderEnter", hoverachieve)
 hooksecurefunc(ACHIEVEMENT_TRACKER_MODULE, "OnBlockHeaderLeave", hoverachieve)
+
+
+ScenarioStageBlock:HookScript("OnShow", function()
+	if not ScenarioStageBlock.skinned then
+		ScenarioStageBlock.NormalBG:SetAlpha(0)
+		ScenarioStageBlock.FinalBG:SetAlpha(0)
+		ScenarioStageBlock.GlowTexture:SetTexture(nil)
+		
+		ScenarioStageBlock.Stage:SetFont(G.norFont, 18, "OUTLINE")
+		ScenarioStageBlock.Stage:SetTextColor(1, 1, 1)
+		
+		ScenarioStageBlock.Name:SetFont(G.norFont, 12, "OUTLINE")
+		
+		ScenarioStageBlock.CompleteLabel:SetFont(G.norFont, 18, "OUTLINE")
+		ScenarioStageBlock.CompleteLabel:SetTextColor(1, 1, 1)
+		ScenarioStageBlock.skinned = true
+	end
+end)
+
+--ScenarioChallengeModeBlock
+--ScenarioProvingGroundsBlock
 
 local eventframe = CreateFrame("Frame")
 eventframe:RegisterEvent("PLAYER_ENTERING_WORLD")
