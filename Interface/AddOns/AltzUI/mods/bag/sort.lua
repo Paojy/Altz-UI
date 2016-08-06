@@ -3,14 +3,19 @@ if not aCoreCDB["ItemOptions"]["enablebag"] then return end
 
 --category constants
 --number indicates sort priority (1 is highest)
-BS_SOULBOUND   = 1
-BS_REAGENT     = 2
-BS_CONSUMABLE  = 3
-BS_QUEST       = 4
-BS_TRADE       = 5
+local FirstItems = {
+	[6948] = "!1", -- 炉石
+	[140192] = "!2", -- 达拉然炉石
+	[110560] = "!3", -- 要塞炉石
+}
+BS_CONSUMABLE  = 1
+BS_SOULBOUND   = 2
+BS_REAGENT     = 3
+BS_TRADE       = 4
+BS_TRASH       = 5
 BS_QUALITY     = 6
 BS_COMMON      = 7
-BS_TRASH       = 8
+BS_QUEST       = 8
 
 local _G = _G
 local BS_bagGroups --bag group definitions
@@ -143,8 +148,10 @@ local function sortBagRange(bagList, order)
 					tooltip:SetBagItem(bagSlot, itemSlot)
 					local tooltipLine2 = _G["BS_toolTipTextLeft2"]:GetText()
 					tooltip:Hide()
-
-					if tooltipLine2 and tooltipLine2 == "Soulbound" then
+					
+					if FirstItems[itemID] then
+						newItem.sortString = newItem.sortString .. FirstItems[itemID]
+					elseif tooltipLine2 and tooltipLine2 == "Soulbound" then
 						newItem.sortString = newItem.sortString .. BS_SOULBOUND
 					--consumable items
 					elseif itemType == "Consumable" then
@@ -172,7 +179,8 @@ local function sortBagRange(bagList, order)
 					--finish the sort string, placing more important information
 					--closer to the start of the string
 					
-					newItem.sortString = newItem.sortString .. itemType .. itemSubType .. itemEquipLoc .. itemName
+					newItem.sortString = newItem.sortString .. itemType .. itemSubType .. itemID .. itemRarity.. itemEquipLoc .. itemName
+					--print(newItem.sortString)
 					newItem.count = count
 					
 					--add this item's accumulated data to the item list for this bag group

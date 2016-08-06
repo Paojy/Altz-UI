@@ -1,5 +1,19 @@
 ﻿local T, C, L, G = unpack(select(2, ...))
 local F = unpack(Aurora)
+--[[
+	SortBags
+	GetSortBagsRightToLeft 
+	SetSortBagsRightToLeft
+	
+	true 4/28→4/27→....3/28....0/16....0/1
+	false 0/16→0/15→....1/28...4/28...4/1
+
+	GetInsertItemsLeftToRight
+	SetInsertItemsLeftToRight
+	
+	true 4/28→4/27→....3/28....0/16....0/1
+	false 0/16→0/15→....1/28...4/28...4/1
+]]
 
 if not aCoreCDB["ItemOptions"]["enablebag"] then return end
 
@@ -368,11 +382,10 @@ function ContainerFrame_GenerateFrame(frame, size, id)
 		end
 		bank_shown = 1
 	end
+	
 
 	if  id >= 0 and id <= 4 then
 		local slots = GetContainerNumSlots(id)
-		
-		
 		
 		for item = slots, 1, -1 do
 			local itemframes = _G["ContainerFrame"..(id+1).."Item"..item]
@@ -665,5 +678,6 @@ BFrame.bags:SetScript("OnEvent", function(self, event, addon)
 	if (addon == "AltzUI") then
 		bags = BFrame.bags:setUp("bag", "BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", -10, 10)
 		bank = BFrame.bags:setUp("bank", "TOPLEFT", UIParent, "TOPLEFT", 10, -134)
+		SetInsertItemsLeftToRight(false)
 	end
 end)
