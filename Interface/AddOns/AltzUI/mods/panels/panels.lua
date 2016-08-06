@@ -415,11 +415,14 @@ T.CollectMinimapButtons = function(parent)
 						local region = select(j, child:GetRegions())
 						if region:GetObjectType() == "Texture" then
 							local texture = region:GetTexture()
-							if texture == "Interface\\CharacterFrame\\TempPortraitAlphaMask" or texture == "Interface\\Minimap\\MiniMap-TrackingBorder" or texture == "Interface\\Minimap\\UI-Minimap-Background" or texture == "Interface\\Minimap\\UI-Minimap-ZoomButton-Highlight" then
-								region:Hide()
+							if (string.find(texture, "Interface\\CharacterFrame") or string.find(texture, "Interface\\Minimap")) then
+								region:SetTexture(nil)
+							elseif texture == 136430 or texture == 136467 then 
+								region:SetTexture(nil)
 							end
 						end
 					end
+					
 					child:HookScript("OnShow", function() 
 						T.ArrangeMinimapButtons(parent)
 					end)
