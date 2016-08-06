@@ -2099,20 +2099,21 @@ T.createDR(TooltipOptions.enabletip, TooltipOptions.size, TooltipOptions.cursor,
 local CombattextOptions = CreateOptionPage("CombatText Options", L["战斗信息"], GUI, "VERTICAL")
 
 T.createcheckbutton(CombattextOptions, 30, 60, L["启用"], "CombattextOptions", "combattext")
-T.createcheckbutton(CombattextOptions, 30, 90, L["隐藏浮动战斗信息"], "CombattextOptions", "hidblz", L["隐藏浮动战斗信息提示"])
-T.createcheckbutton(CombattextOptions, 30, 120, L["承受伤害/治疗"], "CombattextOptions", "showreceivedct")
-T.createcheckbutton(CombattextOptions, 30, 150, L["输出伤害/治疗"], "CombattextOptions", "showoutputct")
+T.createcheckbutton(CombattextOptions, 30, 90, L["隐藏浮动战斗信息接受"], "CombattextOptions", "hidblz_receive")
+T.createcheckbutton(CombattextOptions, 30, 120, L["隐藏浮动战斗信息输出"], "CombattextOptions", "hidblz")
+T.createcheckbutton(CombattextOptions, 30, 150, L["承受伤害/治疗"], "CombattextOptions", "showreceivedct")
+T.createcheckbutton(CombattextOptions, 30, 180, L["输出伤害/治疗"], "CombattextOptions", "showoutputct")
 local textformattype_group = {
 	["k"] = "10000 → 10k",
 	["w"] = "10000 → 1w",
 }
-T.createradiobuttongroup(CombattextOptions, 30, 180, L["数字缩写样式"], "CombattextOptions", "formattype", textformattype_group)
-T.createslider(CombattextOptions, 30, 230, L["图标大小"], "CombattextOptions", "cticonsize", 1, 10, 30, 1)
-T.createslider(CombattextOptions, 30, 270, L["暴击图标大小"], "CombattextOptions", "ctbigiconsize", 1, 10, 30, 1)
-T.createcheckbutton(CombattextOptions, 30, 310, L["显示DOT"], "CombattextOptions", "ctshowdots")
-T.createcheckbutton(CombattextOptions, 30, 340, L["显示HOT"], "CombattextOptions", "ctshowhots")
-T.createcheckbutton(CombattextOptions, 30, 370, L["显示宠物"], "CombattextOptions", "ctshowpet")
-T.createslider(CombattextOptions, 30, 420, L["隐藏时间"], "CombattextOptions", "ctfadetime", 10, 20, 100, 5, L["隐藏时间提示"])
+T.createradiobuttongroup(CombattextOptions, 30, 210, L["数字缩写样式"], "CombattextOptions", "formattype", textformattype_group)
+T.createslider(CombattextOptions, 30, 260, L["图标大小"], "CombattextOptions", "cticonsize", 1, 10, 30, 1)
+T.createslider(CombattextOptions, 30, 300, L["暴击图标大小"], "CombattextOptions", "ctbigiconsize", 1, 10, 30, 1)
+T.createcheckbutton(CombattextOptions, 30, 340, L["显示DOT"], "CombattextOptions", "ctshowdots")
+T.createcheckbutton(CombattextOptions, 30, 370, L["显示HOT"], "CombattextOptions", "ctshowhots")
+T.createcheckbutton(CombattextOptions, 30, 400, L["显示宠物"], "CombattextOptions", "ctshowpet")
+T.createslider(CombattextOptions, 30, 450, L["隐藏时间"], "CombattextOptions", "ctfadetime", 10, 20, 100, 5, L["隐藏时间提示"])
 
 T.createDR(CombattextOptions.combattext, CombattextOptions.hidblz, CombattextOptions.showreceivedct, CombattextOptions.showoutputct, CombattextOptions.formattype, CombattextOptions.cticonsize, CombattextOptions.ctbigiconsize, CombattextOptions.ctshowdots, CombattextOptions.ctshowhots, CombattextOptions.ctshowpet, CombattextOptions.ctfadetime)
 

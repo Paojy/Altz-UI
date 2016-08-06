@@ -310,7 +310,8 @@ L["显示HOT"] = "Show Hot"
 L["显示宠物"] = "Show Pet"
 L["隐藏时间"] = "Fade time"
 L["隐藏时间提示"] =  "Amount of time for which combat text remains visible before beginning to fade out"
-L["隐藏浮动战斗信息"] = "Hide blizzard floating combat text"
+L["隐藏浮动战斗信息接受"] = "Hide blizzard combat text(OutPut Healing/Damage Text)"
+L["隐藏浮动战斗信息输出"] = "Hide blizzard combat text(Received Healing/Damage Text)"
 
 -- 团队工具
 L["团队工具"] = "RaidTools"

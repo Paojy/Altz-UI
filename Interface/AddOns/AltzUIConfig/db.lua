@@ -1286,6 +1286,8 @@ local Character_default_Settings = {
 	},
 	CombattextOptions = {
 		combattext = true,
+		hidblz = true,
+		hidblz_receive = false,
 		showreceivedct = true,
 		showoutputct = true,
 		formattype = "k",
