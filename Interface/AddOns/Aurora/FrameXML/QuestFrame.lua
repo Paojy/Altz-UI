@@ -80,7 +80,9 @@ tinsert(C.themes["Aurora"], function()
 	for _, questButton in pairs({"QuestFrameAcceptButton", "QuestFrameDeclineButton", "QuestFrameCompleteQuestButton", "QuestFrameCompleteButton", "QuestFrameGoodbyeButton", "QuestFrameGreetingGoodbyeButton"}) do
 		F.Reskin(_G[questButton])
 	end
-
+	
+	F.Reskin(QuestFrameDetailPanel.IgnoreButton)
+	
 	F.ReskinScroll(QuestProgressScrollFrameScrollBar)
 	F.ReskinScroll(QuestRewardScrollFrameScrollBar)
 	F.ReskinScroll(QuestDetailScrollFrameScrollBar)
