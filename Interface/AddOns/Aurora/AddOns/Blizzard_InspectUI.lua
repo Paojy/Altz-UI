@@ -40,7 +40,9 @@ C.themes["Blizzard_InspectUI"] = function()
 	hooksecurefunc("InspectPaperDollItemSlotButton_Update", function(button)
 		button.icon:SetShown(button.hasItem)
 	end)
-
+	
+	F.Reskin(InspectPaperDollFrame.ViewButton)
+	
 	-- PvP
 
 	InspectPVPFrame.BG:Hide()
