@@ -638,56 +638,199 @@ G.DebuffList = {
 	},
 	
 	[EJ_GetInstanceInfo(768)] = { -- 翡翠梦魇
-		[EJ_GetEncounterInfo(1703)] = {
-
+		[EJ_GetEncounterInfo(1703)]={
+			[GetSpellInfo(204504)] = {id = 204504, level = 8,},
+			[GetSpellInfo(203045)] = {id = 203045, level = 8,},
+			[GetSpellInfo(203096)] = {id = 203096, level = 8,},
+			[GetSpellInfo(204463)] = {id = 204463, level = 8,},
+			[GetSpellInfo(203646)] = {id = 203646, level = 8,},
+			[GetSpellInfo(202978)] = {id = 202978, level = 8,},
+			[GetSpellInfo(205043)] = {id = 205043, level = 8,},
 		},
-		[EJ_GetEncounterInfo(1738)] = {
-
+		[EJ_GetEncounterInfo(1738)]={
+			[GetSpellInfo(210099)] = {id = 210099, level = 8,},
+			[GetSpellInfo(209469)] = {id = 209469, level = 8,},
+			[GetSpellInfo(210984)] = {id = 210984, level = 8,},
+			[GetSpellInfo(208697)] = {id = 208697, level = 8,},
+			[GetSpellInfo(208929)] = {id = 208929, level = 8,},
+			[GetSpellInfo(212886)] = {id = 212886, level = 8,},
+			[GetSpellInfo(215128)] = {id = 215128, level = 8,},
+			[GetSpellInfo(215836)] = {id = 215836, level = 8,},
+			[GetSpellInfo(215845)] = {id = 215845, level = 8,},
+			[GetSpellInfo(209471)] = {id = 209471, level = 8,},
 		},
-		[EJ_GetEncounterInfo(1744)] = {
-
+		[EJ_GetEncounterInfo(1744)]={
+			[GetSpellInfo(210228)] = {id = 210228, level = 8,},
+			[GetSpellInfo(215300)] = {id = 215300, level = 8,},
+			--[GetSpellInfo(215307)] = {id = 215307, level = 8,},
+			[GetSpellInfo(213124)] = {id = 213124, level = 8,},
+			--[GetSpellInfo(215489)] = {id = 215489, level = 8,},
+			[GetSpellInfo(215460)] = {id = 215460, level = 8,},
+			[GetSpellInfo(215582)] = {id = 215582, level = 8,},
+			[GetSpellInfo(210850)] = {id = 210850, level = 8,},
+			[GetSpellInfo(218124)] = {id = 218124, level = 8,},
+			--[GetSpellInfo(218144)] = {id = 218144, level = 8,},
+			[GetSpellInfo(218519)] = {id = 218519, level = 8,},
 		},
-		[EJ_GetEncounterInfo(1667)] = {
-
+		[EJ_GetEncounterInfo(1667)]={
+			[GetSpellInfo(197943)] = {id = 197943, level = 8,},
+			[GetSpellInfo(204859)] = {id = 204859, level = 8,},
+			[GetSpellInfo(198006)] = {id = 198006, level = 8,},
+			[GetSpellInfo(198108)] = {id = 198108, level = 8,},
+			[GetSpellInfo(198388)] = {id = 198388, level = 8,},
+			[GetSpellInfo(198392)] = {id = 198392, level = 8,},
+			[GetSpellInfo(205611)] = {id = 205611, level = 8,},
+			[GetSpellInfo(197980)] = {id = 197980, level = 8,},
 		},
-		[EJ_GetEncounterInfo(1704)] = {
-
+		[EJ_GetEncounterInfo(1704)]={
+			[GetSpellInfo(207681)] = {id = 207681, level = 8,},
+			[GetSpellInfo(204731)] = {id = 204731, level = 8,},
+			[GetSpellInfo(204044)] = {id = 204044, level = 8,},
+			[GetSpellInfo(205341)] = {id = 205341, level = 8,},
+			[GetSpellInfo(203121)] = {id = 203121, level = 8,},
+			[GetSpellInfo(203124)] = {id = 203124, level = 8,},
+			[GetSpellInfo(203125)] = {id = 203125, level = 8,},
+			[GetSpellInfo(203102)] = {id = 203102, level = 8,},
+			[GetSpellInfo(203110)] = {id = 203110, level = 8,},
+			[GetSpellInfo(203770)] = {id = 203770, level = 8,},
+			[GetSpellInfo(203787)] = {id = 203787, level = 8,},
+			[GetSpellInfo(204078)] = {id = 204078, level = 8,},
+			[GetSpellInfo(214543)] = {id = 214543, level = 8,},
 		},
-		[EJ_GetEncounterInfo(1750)] = {
-
+		[EJ_GetEncounterInfo(1750)]={
+			[GetSpellInfo(210279)] = {id = 210279, level = 8,},
+			[GetSpellInfo(210315)] = {id = 210315, level = 8,},
+			[GetSpellInfo(212681)] = {id = 212681, level = 8,},
+			[GetSpellInfo(211612)] = {id = 211612, level = 8,},
+			[GetSpellInfo(211989)] = {id = 211989, level = 8,}, -- buff
+			[GetSpellInfo(211990)] = {id = 211990, level = 8,},
+			[GetSpellInfo(216516)] = {id = 216516, level = 8,},
+			[GetSpellInfo(211507)] = {id = 211507, level = 8,},
+			[GetSpellInfo(211471)] = {id = 211471, level = 8,},
+			[GetSpellInfo(213162)] = {id = 213162, level = 8,},
 		},
-		[EJ_GetEncounterInfo(1726)] = {
-
+		[EJ_GetEncounterInfo(1726)]={
+			[GetSpellInfo(206005)] = {id = 206005, level = 8,},
+			[GetSpellInfo(206109)] = {id = 206109, level = 8,},
+			[GetSpellInfo(206651)] = {id = 206651, level = 8,},
+			[GetSpellInfo(209158)] = {id = 209158, level = 8,},
+			[GetSpellInfo(210451)] = {id = 210451, level = 8,},
+			--[GetSpellInfo(209034)] = {id = 209034, level = 8,},
+			[GetSpellInfo(208431)] = {id = 208431, level = 8,},
+			[GetSpellInfo(207409)] = {id = 207409, level = 8,},
+			[GetSpellInfo(208385)] = {id = 208385, level = 8,},
+			[GetSpellInfo(211802)] = {id = 211802, level = 8,},
+			[GetSpellInfo(224508)] = {id = 224508, level = 8,},
+			[GetSpellInfo(205771)] = {id = 205771, level = 8,},
+			[GetSpellInfo(211634)] = {id = 211634, level = 8,},
 		},
 	},
 
 	[EJ_GetInstanceInfo(786)] = { -- 暗夜要塞
-		[EJ_GetEncounterInfo(1706)] = {
-
+		[EJ_GetEncounterInfo(1706)]={
+			[GetSpellInfo(211659)] = {id = 211659, level = 8,},
+			--[GetSpellInfo(204531)] = {id = 204531, level = 8,},
+			[GetSpellInfo(204284)] = {id = 204284, level = 8,},
+			[GetSpellInfo(204766)] = {id = 204766, level = 8,},
+			[GetSpellInfo(204483)] = {id = 204483, level = 8,},
+			[GetSpellInfo(204744)] = {id = 204744, level = 8,},
+			[GetSpellInfo(214718)] = {id = 214718, level = 8,},
 		},
-		[EJ_GetEncounterInfo(1725)] = {
-
+		[EJ_GetEncounterInfo(1725)]={
+			[GetSpellInfo(212099)] = {id = 212099, level = 8,},
+			[GetSpellInfo(206607)] = {id = 206607, level = 8,},
+			[GetSpellInfo(206617)] = {id = 206617, level = 8,},
+			[GetSpellInfo(205707)] = {id = 205707, level = 8,},
+			[GetSpellInfo(228335)] = {id = 228335, level = 8,},
+			--[GetSpellInfo(207228)] = {id = 207228, level = 8,},
+			[GetSpellInfo(219823)] = {id = 219823, level = 8,},
 		},
-		[EJ_GetEncounterInfo(1731)] = {
-
+		[EJ_GetEncounterInfo(1731)]={
+			[GetSpellInfo(206641)] = {id = 206641, level = 8,},
+			[GetSpellInfo(214573)] = {id = 214573, level = 8,},
+			[GetSpellInfo(206488)] = {id = 206488, level = 8,},
+			[GetSpellInfo(206798)] = {id = 206798, level = 8,},
+			[GetSpellInfo(206838)] = {id = 206838, level = 8,}, -- buff
+			[GetSpellInfo(208499)] = {id = 208499, level = 8,},
+			--[GetSpellInfo(211615)] = {id = 211615, level = 8,},
+			[GetSpellInfo(208910)] = {id = 208910, level = 8,},
+			--[GetSpellInfo(208915)] = {id = 208915, level = 8,},
+			[GetSpellInfo(207631)] = {id = 207631, level = 8,},
+			[GetSpellInfo(206645)] = {id = 206645, level = 8,},
+			[GetSpellInfo(206557)] = {id = 206557, level = 8,},
+			[GetSpellInfo(206560)] = {id = 206560, level = 8,},
+			[GetSpellInfo(206559)] = {id = 206559, level = 8,},
+			[GetSpellInfo(207327)] = {id = 207327, level = 8,},
+			[GetSpellInfo(207513)] = {id = 207513, level = 8,},
 		},
-		[EJ_GetEncounterInfo(1751)] = {
-
+		[EJ_GetEncounterInfo(1751)]={
+			[GetSpellInfo(215458)] = {id = 215458, level = 8,},
+			[GetSpellInfo(212531)] = {id = 212531, level = 8,},
+			--[GetSpellInfo(212587)] = {id = 212587, level = 8,},
+			[GetSpellInfo(212647)] = {id = 212647, level = 8,},
+			[GetSpellInfo(213148)] = {id = 213148, level = 8,},
+			--[GetSpellInfo(213181)] = {id = 213181, level = 8,},
+			--[GetSpellInfo(213166)] = {id = 213166, level = 8,},
+			[GetSpellInfo(213504)] = {id = 213504, level = 8,},
+			[GetSpellInfo(212736)] = {id = 212736, level = 8,},
+			[GetSpellInfo(213278)] = {id = 213278, level = 8,},
 		},
-		[EJ_GetEncounterInfo(1762)] = {
-
+		[EJ_GetEncounterInfo(1762)]={
+			[GetSpellInfo(206480)] = {id = 206480, level = 8,},
+			[GetSpellInfo(208230)] = {id = 208230, level = 8,},
+			[GetSpellInfo(206311)] = {id = 206311, level = 8,},
+			[GetSpellInfo(212794)] = {id = 212794, level = 8,},
+			[GetSpellInfo(215988)] = {id = 215988, level = 8,},
+			[GetSpellInfo(206466)] = {id = 206466, level = 8,},
+			[GetSpellInfo(216024)] = {id = 216024, level = 8,},
+			[GetSpellInfo(216027)] = {id = 216027, level = 8,},
+			[GetSpellInfo(216040)] = {id = 216040, level = 8,},
+			[GetSpellInfo(216685)] = {id = 216685, level = 8,},
 		},
-		[EJ_GetEncounterInfo(1713)] = {
-
+		[EJ_GetEncounterInfo(1713)]={
+			[GetSpellInfo(206677)] = {id = 206677, level = 8,},
+			[GetSpellInfo(205344)] = {id = 205344, level = 8,},
 		},
-		[EJ_GetEncounterInfo(1761)] = {
-
+		[EJ_GetEncounterInfo(1761)]={
+			[GetSpellInfo(218342)] = {id = 218342, level = 8,},
+			[GetSpellInfo(218503)] = {id = 218503, level = 8,},
+			[GetSpellInfo(218780)] = {id = 218780, level = 8,},
+			[GetSpellInfo(218304)] = {id = 218304, level = 8,},
+			[GetSpellInfo(218809)] = {id = 218809, level = 8,},
+			[GetSpellInfo(219235)] = {id = 219235, level = 8,},
+			[GetSpellInfo(219270)] = {id = 219270, level = 8,},
 		},
-		[EJ_GetEncounterInfo(1732)] = {
-
+		[EJ_GetEncounterInfo(1732)]={
+			[GetSpellInfo(206965)] = {id = 206965, level = 8,},
+			[GetSpellInfo(206388)] = {id = 206388, level = 8,},
+			[GetSpellInfo(206464)] = {id = 206464, level = 8,},
+			[GetSpellInfo(214167)] = {id = 214167, level = 8,},
+			--[GetSpellInfo(205984)] = {id = 205984, level = 8,},
+			--[GetSpellInfo(214335)] = {id = 214335, level = 8,},
+			[GetSpellInfo(206398)] = {id = 206398, level = 8,},
+			[GetSpellInfo(205649)] = {id = 205649, level = 8,},
+			[GetSpellInfo(206936)] = {id = 206936, level = 8,},
+			[GetSpellInfo(207720)] = {id = 207720, level = 8,},
+			[GetSpellInfo(206585)] = {id = 206585, level = 8,},
+			[GetSpellInfo(206589)] = {id = 206589, level = 8,},
+			[GetSpellInfo(207831)] = {id = 207831, level = 8,},
+			[GetSpellInfo(205445)] = {id = 205445, level = 8,},
+			[GetSpellInfo(205429)] = {id = 205429, level = 8,},
+			[GetSpellInfo(217046)] = {id = 217046, level = 8,},
+			[GetSpellInfo(216345)] = {id = 216345, level = 8,},
+			[GetSpellInfo(216344)] = {id = 216344, level = 8,},
 		},
-		[EJ_GetEncounterInfo(1743)] = {
-
+		[EJ_GetEncounterInfo(1743)]={
+			[GetSpellInfo(209166)] = {id = 209166, level = 8,},
+			[GetSpellInfo(209165)] = {id = 209165, level = 8,},
+			[GetSpellInfo(209433)] = {id = 209433, level = 8,},
+			[GetSpellInfo(208659)] = {id = 208659, level = 8,},
+			[GetSpellInfo(211261)] = {id = 211261, level = 8,},
+			[GetSpellInfo(209244)] = {id = 209244, level = 8,},
+			[GetSpellInfo(209598)] = {id = 209598, level = 8,},
+			[GetSpellInfo(209615)] = {id = 209615, level = 8,},
+			[GetSpellInfo(209973)] = {id = 209973, level = 8,},
+			[GetSpellInfo(211885)] = {id = 211885, level = 8,},
 		},
 		[EJ_GetEncounterInfo(1737)] = {
 
