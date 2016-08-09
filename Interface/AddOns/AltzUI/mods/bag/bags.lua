@@ -397,7 +397,7 @@ function ContainerFrame_GenerateFrame(frame, size, id)
 			--if not itemframes.idtext then
 				--itemframes.idtext = T.createtext(itemframes, "OVERLAY", 10, "OUTLINE", "CENTER")
 				--itemframes.idtext:SetPoint("TOP")
-				--itemframes.idtext:SetText(id.."/"..item)
+				--itemframes.idtext:SetText(1+id.."/"..item)
 			--end
 			
 			if id == 0 and item == 16 then
@@ -445,7 +445,7 @@ function ContainerFrame_GenerateFrame(frame, size, id)
 			--if not itemframes.idtext then
 				--itemframes.idtext = T.createtext(itemframes, "OVERLAY", 10, "OUTLINE", "CENTER")
 				--itemframes.idtext:SetPoint("TOP")
-				--itemframes.idtext:SetText(id.."/"..item)
+				--itemframes.idtext:SetText(1+id.."/"..item)
 			--end
 			
 			if banknumbuttons == config.bank.buttons_per_row then
@@ -466,20 +466,48 @@ function ContainerFrame_GenerateFrame(frame, size, id)
 	hideCrap()
 end
 
+function OpenBag() end
 function ToggleBag() end
-function ToggleBackpack() end
+
 function OpenBackpack() end
-function CloseBackpack() end
-function updateContainerFrameAnchors() end
+function ToggleBackpack() end
+
 function UpdateContainerFrameAnchors() end
+
 function OpenAllBags(frame) ToggleAllBags("open") end
-	
+
+local function OpenOneBag(id)
+	if ( not CanOpenPanels() ) then
+		if ( UnitIsDead("player") ) then
+			NotWhileDeadError();
+		end
+		return;
+	end
+
+	local size = GetContainerNumSlots(id);
+	if ( size > 0 ) then
+		local containerShowing;
+		for i=1, NUM_CONTAINER_FRAMES, 1 do
+			local frame = _G["ContainerFrame"..i];
+			if ( frame:IsShown() and frame:GetID() == id ) then
+				containerShowing = i;
+			end
+		end
+		if ( not containerShowing ) then
+			ContainerFrame_GenerateFrame(ContainerFrame_GetOpenFrame(), size, id);
+		end
+		if (not ContainerFrame1.allBags) then
+			CheckBagSettingsTutorial();
+		end
+	end
+end
+
 function ToggleAllBags(func)
 	if (func == "open") then
 		togglemain = 1
 		OpenBackpack()
 		_G[G.uiname.."bag"]:Show()
-		for i=0, NUM_BAG_FRAMES, 1 do OpenBag(i) end
+		for i=0, NUM_BAG_FRAMES, 1 do OpenOneBag(i) end
 	else
 		if (togglemain == 1) then
 			if (not _G[G.uiname.."bank"]:IsShown()) then
@@ -493,7 +521,7 @@ function ToggleAllBags(func)
 				togglemain = 1
 				OpenBackpack()
 				_G[G.uiname.."bag"]:Show()
-				for i=0, NUM_BAG_FRAMES, 1 do OpenBag(i) end
+				for i=0, NUM_BAG_FRAMES, 1 do OpenOneBag(i) end
 			end
 		end
 	end
@@ -501,14 +529,14 @@ function ToggleAllBags(func)
 	if BankFrame:IsShown() then
 		_G[G.uiname.."bank"]:Show()
 		for i=1, NUM_CONTAINER_FRAMES, 1 do
-			OpenBag(i)
+			OpenOneBag(i)
 		end
 	end
 end
 BackpackTokenFrame:Hide();
 
 local function quickbank(show)
-	local numrows, lastrowbutton, numbuttons, lastbutton = 0, BankFrameItem1, 1, BankFrameItem1
+	local numrows, numbuttons = 0, 1
 	
 	for i = 1, 28 do
 		local name = _G["BankFrameItem"..i]
