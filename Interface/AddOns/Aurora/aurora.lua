@@ -1633,7 +1633,9 @@ Skin:SetScript("OnEvent", function(self, event, addon)
 		select(4, TradeRecipientItem7:GetRegions()):Hide()
 		TradeFramePlayerPortrait:Hide()
 		TradeFrameRecipientPortrait:Hide()
-
+		TradeFramePortraitFrame:Hide()
+		TradeFrameLeftBorder:Hide()
+		
 		F.ReskinPortraitFrame(TradeFrame, true)
 		F.Reskin(TradeFrameTradeButton)
 		F.Reskin(TradeFrameCancelButton)
@@ -1862,6 +1864,11 @@ Skin:SetScript("OnEvent", function(self, event, addon)
 		F.CreateBD(BonusRollFrame)
 		F.CreateBDFrame(BonusRollFrame.PromptFrame.Timer, .25)
 
+		BonusRollFrame.SpecRing:SetTexture(nil)
+		BonusRollFrame.SpecIcon:SetTexCoord(.08, .92, .08, .92)
+		BonusRollFrame.SpecIcon.bg = F.CreateBG(BonusRollFrame.SpecIcon)
+		BonusRollFrame.SpecIcon.bg:SetDrawLayer("OVERLAY", 1)
+				
 		-- Chat config
 
 		hooksecurefunc("ChatConfig_CreateCheckboxes", function(frame, checkBoxTable, checkBoxTemplate)
