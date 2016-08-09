@@ -31,12 +31,24 @@ f.SetPoint = F.dummy
 f:Show()
 f:SetScript("OnClick", nil)
 f:SetScript("OnLeave", nil)
-]]
 
---AchievementFrame_LoadUI()
---AchievementAlertSystem:ShowAlert(839)
---CriteriaAlertSystem:ShowAlert(1470460934)
---NewRecipeLearnedAlertSystem:ShowAlert(196387)
+OnPlay
+<AnimationGroup parentKey="animIn">
+	<Alpha fromAlpha="1" toAlpha="0" duration="0" order="1"/>
+	<Alpha fromAlpha="0" toAlpha="1" duration="0.2" order="2"/>
+</AnimationGroup>
+
+OnFinished
+<AnimationGroup name="$parentAnimIn" parentKey="animIn">
+	<Alpha fromAlpha="1" toAlpha="0" duration="0" order="1"/>
+	<Alpha fromAlpha="0" toAlpha="1" duration="0.2" order="2"/>
+</AnimationGroup>
+
+AchievementFrame_LoadUI()
+AchievementAlertSystem:ShowAlert(839)
+CriteriaAlertSystem:ShowAlert(1470460934)
+NewRecipeLearnedAlertSystem:ShowAlert(196387)
+]]
 
 local function TakeScreen(delay, func, ...) 
 	local waitTable = {} 
@@ -140,11 +152,12 @@ tinsert(C.themes["Aurora"], function()
 				F.CreateBD(f, .5) 
 				f.animIn:HookScript("OnPlay", function() f:SetBackdropColor(0, 0, 0, .5) end)
 				f.animIn:HookScript("OnFinished", function() f:SetBackdropColor(0, 0, 0, .5) end)
-								
+				f:HookScript("OnEnter", function() f:SetBackdropColor(0, 0, 0, .5) end)
+				
 				f.shine:SetTexture(nil)
 				f.glow:SetTexture(nil)
 				
-				f.Icon:SetDrawLayer("BORDER")
+				f.Icon:SetDrawLayer("ARTWORK")
 				f.Icon:SetTexCoord(.08, .92, .08, .92)
 				F.CreateBG(f.Icon)
 				
@@ -152,11 +165,11 @@ tinsert(C.themes["Aurora"], function()
 				f.SpecIcon:SetTexCoord(.08, .92, .08, .92)
 				f.SpecIcon.bg = F.CreateBG(f.SpecIcon)
 				f.SpecIcon.bg:SetDrawLayer("BORDER", 2)
-				f.SpecIcon.bg:SetShown(f.SpecIcon:IsShown() and f.SpecIcon:GetTexture() ~= nil)
-			
+				
 				f.skin = true
 			end
 			
+			f.SpecIcon.bg:SetShown(f.SpecIcon:IsShown() and f.SpecIcon:GetTexture() ~= nil)
 			f.Background:SetTexture(nil)
 			f.PvPBackground:SetTexture(nil)
 			f.BGAtlas:SetTexture(nil)			
@@ -167,6 +180,7 @@ tinsert(C.themes["Aurora"], function()
 				F.CreateBD(f, .5) 
 				f.animIn:HookScript("OnPlay", function() f:SetBackdropColor(0, 0, 0, .5) end)
 				f.animIn:HookScript("OnFinished", function() f:SetBackdropColor(0, 0, 0, .5) end)
+				f:HookScript("OnEnter", function() f:SetBackdropColor(0, 0, 0, .5) end)
 				
 				f.Background:SetTexture(nil)
 				f.Sheen:SetTexture(nil)
@@ -247,7 +261,7 @@ tinsert(C.themes["Aurora"], function()
 			f.shine:SetTexture(nil)
 			f.glow:SetTexture(nil)
 			
-			f.Icon:SetDrawLayer("BORDER")
+			f.Icon:SetDrawLayer("ARTWORK")
 			f.Icon:SetTexCoord(.08, .92, .08, .92)
 			F.CreateBG(f.Icon)
 			
@@ -255,11 +269,11 @@ tinsert(C.themes["Aurora"], function()
 			f.SpecIcon:SetTexCoord(.08, .92, .08, .92)
 			f.SpecIcon.bg = F.CreateBG(f.SpecIcon)
 			f.SpecIcon.bg:SetDrawLayer("BORDER", 2)
-			f.SpecIcon.bg:SetShown(f.SpecIcon:IsShown() and f.SpecIcon:GetTexture() ~= nil)
-		
+			
 			f.skin = true
 		end
 		
+		f.SpecIcon.bg:SetShown(f.SpecIcon:IsShown() and f.SpecIcon:GetTexture() ~= nil)
 		f.Background:SetTexture(nil)
 		f.PvPBackground:SetTexture(nil)
 		f.BGAtlas:SetTexture(nil)			
@@ -357,8 +371,8 @@ tinsert(C.themes["Aurora"], function()
 	DungeonCompletionAlertFramebg:SetPoint("BOTTOMRIGHT", 0, 0)
 	DungeonCompletionAlertFramebg:SetFrameLevel(DungeonCompletionAlertFrame:GetFrameLevel()-1)
 	F.CreateBD(DungeonCompletionAlertFramebg)
-			
-	hooksecurefunc("DungeonCompletionAlertFrame_SetUp", function(f)
+	
+	DungeonCompletionAlertFrame:SetScript("OnShow", function(f)
 		local name, typeID, subtypeID, textureFilename, moneyBase, moneyVar, experienceBase, experienceVar, numStrangers, numRewards = GetLFGCompletionReward()
 		
 		for i = 1, numRewards+1 do
@@ -403,8 +417,8 @@ tinsert(C.themes["Aurora"], function()
 
 	ScenarioAlertFrame.glowFrame.glow:SetTexture(nil)
 	ScenarioAlertFrame.shine:SetTexture(nil)
-
-	hooksecurefunc("ScenarioAlertFrame_SetUp", function(f)
+	
+	ScenarioAlertFrame:SetScript("OnShow", function(f)
 		local name, typeID, subtypeID, textureFilename, moneyBase, moneyVar, experienceBase, experienceVar, numStrangers, numRewards = GetLFGCompletionReward()
 		
 		for i = 1, numRewards+1 do
@@ -445,28 +459,7 @@ tinsert(C.themes["Aurora"], function()
 		frame.animIn:HookScript("OnPlay", function() bg:SetBackdropColor(0, 0, 0, .5) end)
 		frame.animIn:HookScript("OnFinished", function() bg:SetBackdropColor(0, 0, 0, .5) end)
 		
-		hooksecurefunc("ScenarioLegionInvasionAlertFrame_SetUp", function(f)
-			local rewards = f:GetChildren()
-			for i = 1, #rewards do
-				local reward = rewards[i]
-				if reward then
-					select(2, reward:GetRegions()):SetTexture(nil)
-					reward.texture:SetTexCoord(.1, .9, .1, .9)
-					reward.texture:ClearAllPoints()
-					reward.texture:SetPoint("TOPLEFT", 6, -6)
-					reward.texture:SetPoint("BOTTOMRIGHT", -6, 6)
-					F.CreateBG(reward.texture)
-					
-					if i == 1 then
-						reward:SetPoint("TOPRIGHT", f, "TOPRIGHT", -10, 0)
-					else
-						reward:SetPoint("RIGHT", rewards[i-1], "LEFT", 0, 0)
-					end
-				end
-			end
-		end)
-		
-		hooksecurefunc("ScenarioLegionInvasionAlertFrame_Coalesce", function(f)
+		frame:SetScript("OnShow", function(f)
 			local rewards = f:GetChildren()
 			for i = 1, #rewards do
 				local reward = rewards[i]
@@ -510,28 +503,7 @@ tinsert(C.themes["Aurora"], function()
 		frame.animIn:HookScript("OnPlay", function() bg:SetBackdropColor(0, 0, 0, .5) end)
 		frame.animIn:HookScript("OnFinished", function() bg:SetBackdropColor(0, 0, 0, .5) end)
 		
-		hooksecurefunc("WorldQuestCompleteAlertFrame_SetUp", function(f)
-			local rewards = f:GetChildren()
-			for i = 1, #rewards do
-				local reward = rewards[i]
-				if reward then
-					select(2, reward:GetRegions()):SetTexture(nil)
-					reward.texture:SetTexCoord(.1, .9, .1, .9)
-					reward.texture:ClearAllPoints()
-					reward.texture:SetPoint("TOPLEFT", 6, -6)
-					reward.texture:SetPoint("BOTTOMRIGHT", -6, 6)
-					F.CreateBG(reward.texture)
-					
-					if i == 1 then
-						reward:SetPoint("TOPRIGHT", f, "TOPRIGHT", -10, 0)
-					else
-						reward:SetPoint("RIGHT", rewards[i-1], "LEFT", 0, 0)
-					end
-				end
-			end
-		end)
-		
-		hooksecurefunc("WorldQuestCompleteAlertFrame_Coalesce", function(f)
+		frame:SetScript("OnShow", function(f)
 			local rewards = f:GetChildren()
 			for i = 1, #rewards do
 				local reward = rewards[i]
