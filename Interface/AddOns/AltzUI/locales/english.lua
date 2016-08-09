@@ -29,7 +29,7 @@ L["从邮箱中一共获得"] = "Total money from mailbox "
 
 L["锁定框体"] = "Lock all frames"
 L["解锁框体"] = "Unlock all frames"
-L["重置框体位置"] = "Reset all frames' position"
+L["重置框体位置"] = "Reset Positions"
 
 L["你不能在战斗中绑定按键"] = "You can't bind keys in combat."
 L["按键绑定解除"] = "All keybindings cleared for"
