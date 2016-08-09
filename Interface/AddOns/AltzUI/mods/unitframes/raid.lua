@@ -762,8 +762,10 @@ function EventFrame:PLAYER_ENTERING_WORLD()
 	if aCoreCDB["UnitframeOptions"] == nil or not aCoreCDB["UnitframeOptions"]["enableraid"] then return end
 	CompactRaidFrameManager:Hide()
 	CompactRaidFrameContainer:Hide()
+	PartyMemberBackground:Hide()
 	CompactRaidFrameManager.Show = CompactRaidFrameManager.Hide
 	CompactRaidFrameContainer.Show = CompactRaidFrameContainer.Hide
+	PartyMemberBackground.Show = PartyMemberBackground.Hide
 
 	EventFrame:UnregisterEvent("PLAYER_ENTERING_WORLD")
 end
