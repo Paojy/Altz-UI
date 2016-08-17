@@ -58,9 +58,9 @@ local function healpreditionbar(self, ...)
 end
 
 local function CreateHealPredition(self)
-	local myBar = healpreditionbar(self, 110/255, 210/255, 0/255, .5)
-	local otherBar = healpreditionbar(self, 0/255, 110/255, 0/255, .5)
-	local absorbBar = healpreditionbar(self, 50/255, 255/255, 255/255, .7)
+	local myBar = healpreditionbar(self, .4, .8, 0, .5)
+	local otherBar = healpreditionbar(self, 0, .4, 0, .5)
+	local absorbBar = healpreditionbar(self, .2, 1, 1, .7)
 	
 	self.HealPrediction = {
 		myBar = myBar,

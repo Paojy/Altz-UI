@@ -78,8 +78,8 @@ end
 local Disable = function(self)
 	local threatbar = self.ThreatBar
 	if threatbar then
-		self:UnregisterEvent("PLAYER_REGEN_ENABLED")
-		self:UnregisterEvent("UNIT_THREAT_LIST_UPDATE")
+		threatbar:UnregisterEvent("PLAYER_REGEN_ENABLED")
+		self:UnregisterEvent("UNIT_THREAT_LIST_UPDATE", Update)
 		threatbar:Hide()
 	end
 end
