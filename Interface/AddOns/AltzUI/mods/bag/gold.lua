@@ -59,9 +59,20 @@ eventframe:RegisterEvent("PLAYER_ENTERING_WORLD")
 
 local Gold = ContainerFrame1MoneyFrame
 
+local ResetButton = CreateFrame("Button", "Reset_Statistics", Gold)
+ResetButton:SetSize(15, 15)
+ResetButton:SetPoint("LEFT", Gold, "RIGHT", -5, 0)
+ResetButton:SetFrameLevel(Gold:GetFrameLevel()+2)
+ResetButton:SetAlpha(0)
+
+ResetButton.tex = ResetButton:CreateTexture(nil, "ARTWORK")
+ResetButton.tex:SetAllPoints()
+ResetButton.tex:SetTexture("Interface\\Buttons\\UI-RefreshButton")
+ResetButton:RegisterForClicks("AnyDown")
+
 local function ShowMoneyTooltip()
 	GameTooltip:SetOwner(Gold, "ANCHOR_NONE")
-	GameTooltip:SetPoint("BOTTOMLEFT", _G[G.uiname.."bag"], "TOPLEFT", -3, 5)
+	GameTooltip:SetPoint("BOTTOMLEFT", _G[G.uiname.."bag"], "TOPLEFT", -1, 2)
 	GameTooltip:AddLine(L["本次登陆"]..": ", G.Ccolor.r, G.Ccolor.g, G.Ccolor.b)
 	GameTooltip:AddDoubleLine(L["赚得"], formatMoney(Profit), 1, 1, 1, 1, 1, 1)
 	GameTooltip:AddDoubleLine(L["消费"], formatMoney(Spent), 1, 1, 1, 1, 1, 1)
@@ -91,6 +102,7 @@ local function ShowMoneyTooltip()
 		if name and count then GameTooltip:AddDoubleLine(name, count, 1, 1, 1, 1, 1, 1) end
 	end
 	GameTooltip:Show()
+	ResetButton:SetAlpha(1)
 end
 
 Gold:SetScript("OnEnter", function() ShowMoneyTooltip() end)
@@ -98,5 +110,24 @@ Gold:SetScript("OnLeave", function() GameTooltip:Hide() end)
 
 for i, child in ipairs({Gold:GetChildren()}) do
 	child:SetScript("OnEnter", function() ShowMoneyTooltip() end)
-	child:SetScript("OnLeave", function() GameTooltip:Hide() end)
+	child:SetScript("OnLeave", function() GameTooltip:Hide() ResetButton:SetAlpha(0) end)
 end
+
+ResetButton:SetScript("OnClick", function(self)
+	aCoreDB.gold[G.PlayerRealm] = {}
+	aCoreDB.gold[G.PlayerRealm][G.PlayerName] = GetMoney()
+	ShowMoneyTooltip()
+end)
+
+ResetButton:SetScript("OnEnter", function(self)
+	GameTooltip:SetOwner(self, "ANCHOR_NONE")
+	GameTooltip:SetPoint("BOTTOMLEFT", _G[G.uiname.."bag"], "TOPLEFT", -1, 2)
+	GameTooltip:AddLine(L["重置金币信息"])
+	GameTooltip:Show()
+	self:SetAlpha(1)
+end)
+
+ResetButton:SetScript("OnLeave", function(self)
+	GameTooltip:Hide()
+	self:SetAlpha(0)
+end)
