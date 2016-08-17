@@ -690,8 +690,12 @@ if G.myClass == "DEATHKNIGHT" then
 	T.createslider(UFInnerframe.other, 30, 230, L["字体大小"], "UnitframeOptions", "valuefs", 1, 8, 16, 1)
 end
 
-if G.myClass == "SHAMAN" then
-    T.createcheckbutton(UFInnerframe.other, 30, 180, L["显示法力条"], "UnitframeOptions", "shamanmana", L["显示法力条提示"])
+if G.myClass == "SHAMAN" or G.myClass == "PREIST" or G.myClass == "DRUID" then
+    T.createcheckbutton(UFInnerframe.other, 30, 180, L["显示法力条"], "UnitframeOptions", "dpsmana", L["显示法力条提示"])
+end
+
+if G.myClass == "MONK" then
+    T.createcheckbutton(UFInnerframe.other, 30, 180, L["显示醉拳条"], "UnitframeOptions", "stagger")
 end
 
 --====================================================--
@@ -2115,7 +2119,7 @@ T.createcheckbutton(CombattextOptions, 30, 370, L["显示HOT"], "CombattextOptio
 T.createcheckbutton(CombattextOptions, 30, 400, L["显示宠物"], "CombattextOptions", "ctshowpet")
 T.createslider(CombattextOptions, 30, 450, L["隐藏时间"], "CombattextOptions", "ctfadetime", 10, 20, 100, 5, L["隐藏时间提示"])
 
-T.createDR(CombattextOptions.combattext, CombattextOptions.hidblz, CombattextOptions.showreceivedct, CombattextOptions.showoutputct, CombattextOptions.formattype, CombattextOptions.cticonsize, CombattextOptions.ctbigiconsize, CombattextOptions.ctshowdots, CombattextOptions.ctshowhots, CombattextOptions.ctshowpet, CombattextOptions.ctfadetime)
+T.createDR(CombattextOptions.combattext, CombattextOptions.hidblz_receive, CombattextOptions.hidblz, CombattextOptions.showreceivedct, CombattextOptions.showoutputct, CombattextOptions.formattype, CombattextOptions.cticonsize, CombattextOptions.ctbigiconsize, CombattextOptions.ctshowdots, CombattextOptions.ctshowhots, CombattextOptions.ctshowpet, CombattextOptions.ctfadetime)
 
 --====================================================--
 --[[              -- RaidTool Options --                ]]--

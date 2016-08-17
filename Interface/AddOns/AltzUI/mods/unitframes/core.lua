@@ -1166,24 +1166,57 @@ local UnitSpecific = {
             end
         end
 		
-		-- Shaman mana
-		if G.myClass == "SHAMAN" and aCoreCDB["UnitframeOptions"]["shamanmana"] then
-			local shamanmana = T.createStatusbar(self, "ARTWORK", aCoreCDB["UnitframeOptions"]["height"]*-(aCoreCDB["UnitframeOptions"]["hpheight"]-1), nil, 1, 1, 1, 1)
-			shamanmana:SetFrameLevel(2)
-			shamanmana:SetPoint"LEFT"
-			shamanmana:SetPoint"RIGHT"
-			shamanmana:SetPoint("BOTTOM", self, "TOP", 0, 1)
+		if G.myClass == "MONK" or G.myClass == "MAGE" then
+			local totembars = CreateFrame("Frame", G.uiname.."Totems", self)
+			totembars:SetPoint("BOTTOMRIGHT", self, "BOTTOMLEFT", -3, 0)
+			totembars:SetPoint("TOPLEFT", self, "TOPLEFT", -10, 0)
 			
-			shamanmana:SetMinMaxValues(0, 2)
-			shamanmana:SetValue(1)
+			for i = 1, 4 do
+				totembars[i] = T.createStatusbar(totembars, "ARTWORK", aCoreCDB["UnitframeOptions"]["height"], 3, 1, 1, 1, 1, G.uiname.."Totem1")
+				totembars[i]:SetPoint("RIGHT", totembars, "RIGHT")		
+				totembars[i]:SetOrientation("VERTICAL")
+				totembars[i].bg:Hide()
+				totembars[i].bd = T.createBackdrop(totembars[i], totembars[i], 1)
+			end
 			
-			shamanmana.bg:SetGradientAlpha("VERTICAL", .2,.2,.2,.15,.25,.25,.25,.6)
-			shamanmana.bg.multiplier =.20
+			self.TotemBar = totembars
+		end
+		
+		-- Stagger
+		if G.myClass == "MONK" and aCoreCDB["UnitframeOptions"]["stagger"] then
+			local stagger = T.createStatusbar(self, "ARTWORK", aCoreCDB["UnitframeOptions"]["height"]*-(aCoreCDB["UnitframeOptions"]["hpheight"]-1), nil, 1, 1, 1, 1)
+			stagger:SetFrameLevel(2)
+			stagger:SetPoint"LEFT"
+			stagger:SetPoint"RIGHT"
+			stagger:SetPoint("BOTTOM", self, "TOP", 0, 1)
+			
+			stagger.bg:SetGradientAlpha("VERTICAL", .2,.2,.2,.15,.25,.25,.25,.6)
+			stagger.bg.multiplier =.20
 			
 			-- backdrop --	
-			shamanmana.bd = T.createBackdrop(shamanmana, shamanmana, 1)
+			stagger.bd = T.createBackdrop(stagger, stagger, 1)
 			
-			self.ShamanMana = shamanmana
+			self.Stagger = stagger
+		end
+		
+		-- Shaman mana
+		if multicheck(G.myClass, "SHAMAN", "PRESIT", "DRUID") and aCoreCDB["UnitframeOptions"]["dpsmana"] then
+			local dpsmana = T.createStatusbar(self, "ARTWORK", aCoreCDB["UnitframeOptions"]["height"]*-(aCoreCDB["UnitframeOptions"]["hpheight"]-1), nil, 1, 1, 1, 1)
+			dpsmana:SetFrameLevel(2)
+			dpsmana:SetPoint"LEFT"
+			dpsmana:SetPoint"RIGHT"
+			dpsmana:SetPoint("BOTTOM", self, "TOP", 0, 1)
+			
+			dpsmana:SetMinMaxValues(0, 2)
+			dpsmana:SetValue(1)
+			
+			dpsmana.bg:SetGradientAlpha("VERTICAL", .2,.2,.2,.15,.25,.25,.25,.6)
+			dpsmana.bg.multiplier =.20
+			
+			-- backdrop --	
+			dpsmana.bd = T.createBackdrop(dpsmana, dpsmana, 1)
+			
+			self.Dpsmana = dpsmana
 		end
 		
 		-- Zzz

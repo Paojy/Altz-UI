@@ -62,7 +62,11 @@ local UnitHealthMax = UnitHealthMax
 local UnitStagger = UnitStagger
 
 local _, playerClass = UnitClass("player")
-local color
+local color = {
+	 {r = 0.52, g = 1.0, b = 0.52},
+	 {r = 1.0, g = 0.98, b = 0.72},
+	 {r = 1.0, g = 0.42, b = 0.42},
+}
 
 local Update = function(self, event, unit)
 	if unit and unit ~= self.unit then return end
@@ -87,16 +91,16 @@ local Update = function(self, event, unit)
 	else
 		rgb = color[STAGGER_GREEN_INDEX]
 	end
-
-	local r, g, b = rgb[1], rgb[2], rgb[3]
+	
+	local r, g, b = rgb.r, rgb.g, rgb.b
 	element:SetStatusBarColor(r, g, b)
-
+	
 	local bg = element.bg
 	if(bg) then
 		local mu = bg.multiplier or 1
 		bg:SetVertexColor(r * mu, g * mu, b * mu)
 	end
-
+	
 	if(element.PostUpdate) then
 		element:PostUpdate(maxHealth, stagger, staggerPercent, r, g, b)
 	end
@@ -138,9 +142,7 @@ local Enable = function(self, unit)
 		element.__owner = self
 		element.ForceUpdate = ForceUpdate
 		element:Hide()
-
-		color = self.colors.power[BREWMASTER_POWER_BAR_NAME]
-
+		
 		self:RegisterEvent('UNIT_DISPLAYPOWER', VisibilityPath)
 		self:RegisterEvent('PLAYER_TALENT_UPDATE', VisibilityPath, true)
 

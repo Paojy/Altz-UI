@@ -1265,7 +1265,8 @@ local Character_default_Settings = {
 		
 		-- show value
 		runecooldown = true,
-		shamanmana = true,
+		dpsmana = true,
+		stagger = true,
 		valuefs = 12,
 		
 		--[[ share ]]--
