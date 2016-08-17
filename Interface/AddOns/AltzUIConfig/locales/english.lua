@@ -161,6 +161,7 @@ L["启用PVP框体"] = "Enable Arenaframes"
 L["显示法力条"] = "show mana bar"
 L["显示法力条提示"] = "show mana bar for enchancement and elemental shaman"
 L["启用仇恨条"] = "show threat bar"
+L["显示醉拳条"] = "show stagger bar"
 
 -- 团队框架
 L["团队框架"] = "Raid Frames"

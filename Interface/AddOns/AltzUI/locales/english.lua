@@ -19,6 +19,7 @@ L["盈利"] = "Profit:"
 L["本次登陆"] = "Session"
 L["服务器"] = "Server"
 L["角色"] = "Character"
+L["重置金币信息"] = "Click to reset."
 
 L["脱装备"] = "Undress All"
 L["切天赋"] = "Change Active Spec"
