@@ -1809,6 +1809,10 @@ Skin:SetScript("OnEvent", function(self, event, addon)
 
 		F.ReskinPortraitFrame(ItemTextFrame, true)
 		F.ReskinScroll(ItemTextScrollFrameScrollBar)
+		ItemTextScrollFrameScrollBar.Top:Hide()
+		ItemTextScrollFrameScrollBar.Middle:Hide()
+		ItemTextScrollFrameScrollBar.Bottom:Hide()
+		ItemTextScrollFrameScrollBar.Background:Hide()
 		F.ReskinArrow(ItemTextPrevPageButton, "left")
 		F.ReskinArrow(ItemTextNextPageButton, "right")
 
