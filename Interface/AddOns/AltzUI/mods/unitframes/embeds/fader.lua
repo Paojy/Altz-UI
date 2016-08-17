@@ -1,6 +1,16 @@
 local T, C, L, G = unpack(select(2, ...))
 local oUF = AltzUF or oUF
 
+local EmptyPowerType = {
+	["RAGE"] = true,
+	["RUNIC_POWER"] = true, 
+	["LUNAR_POWER"] = true, 
+	["MAELSTROM"] = true, 
+	["INSANITY"] = true, 
+	["FURY"] = true, 
+	["PAIN"] = true,
+}
+
 local function Update(self)
 	if not aCoreCDB["UnitframeOptions"]["enablefade"] then return end
 	local unit = self.unit
@@ -14,8 +24,8 @@ local function Update(self)
 		(self.FadeTarget and (unit:find('target') and UnitExists(unit))) or
 		(self.FadeTarget and UnitExists(unit .. 'target')) or
 		(self.FadeHealth and UnitHealth(unit) < UnitHealthMax(unit)) or
-		(self.FadePower and ((powerType == 'RAGE' or powerType == 'RUNIC_POWER') and power > 0)) or
-		(self.FadePower and ((powerType ~= 'RAGE' and powerType ~= 'RUNIC_POWER') and power < UnitPowerMax(unit))) or
+		(self.FadePower and EmptyPowerType[select(2, UnitPowerType("player"))] and UnitPower("player") > 0) or
+		(self.FadePower and (not EmptyPowerType[select(2, UnitPowerType("player"))]) and UnitPower("player") < UnitPowerMax("player")) or
 		(self.FadeHover and GetMouseFocus() == self)
 	then
 		if(self.FadeInSmooth) then

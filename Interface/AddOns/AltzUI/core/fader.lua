@@ -5,7 +5,7 @@ local defaultFadeIn   = {time = 0.4, alpha = 1}
 local defaultFadeOut  = {time = 0.4, alpha = 0}
 local defaultEventFadeOut  = {time = 1.5, alpha = 0}
 
-local frameFadeManager = CreateFrame("FRAME");
+local frameFadeManager = CreateFrame("FRAME")
 
 -- Generic fade function
 local function UIFrameFade(frame, fadeInfo)
@@ -21,7 +21,7 @@ local function UIFrameFade(frame, fadeInfo)
 		if not fadeInfo.endAlpha then fadeInfo.endAlpha = 0 end
 		alpha = 1.0
     end
-    frame:SetAlpha(fadeInfo.startAlpha);
+    frame:SetAlpha(fadeInfo.startAlpha)
     frame.fadeInfo = fadeInfo
 
 	local index = 1
@@ -30,28 +30,28 @@ local function UIFrameFade(frame, fadeInfo)
 		index = index + 1
     end
     tinsert(FADEFRAMES, frame)
-    frameFadeManager:SetScript("OnUpdate", UIFrameFade_OnUpdate);
+    frameFadeManager:SetScript("OnUpdate", UIFrameFade_OnUpdate)
 end
 
 -- Convenience function to do a simple fade in
 local function UIFrameFadeIn(frame, timeToFade, startAlpha, endAlpha)
-	local fadeInfo = {};
-	fadeInfo.mode = "IN";
-	fadeInfo.timeToFade = timeToFade;
-	fadeInfo.startAlpha = startAlpha;
-	fadeInfo.endAlpha = endAlpha;
-	UIFrameFade(frame, fadeInfo);
+	local fadeInfo = {}
+	fadeInfo.mode = "IN"
+	fadeInfo.timeToFade = timeToFade
+	fadeInfo.startAlpha = startAlpha
+	fadeInfo.endAlpha = endAlpha
+	UIFrameFade(frame, fadeInfo)
 end
 T.UIFrameFadeIn = UIFrameFadeIn
 
 -- Convenience function to do a simple fade out
 local function UIFrameFadeOut(frame, timeToFade, startAlpha, endAlpha)
-	local fadeInfo = {};
-	fadeInfo.mode = "OUT";
-	fadeInfo.timeToFade = timeToFade;
-	fadeInfo.startAlpha = startAlpha;
-	fadeInfo.endAlpha = endAlpha;
-	UIFrameFade(frame, fadeInfo);
+	local fadeInfo = {}
+	fadeInfo.mode = "OUT"
+	fadeInfo.timeToFade = timeToFade
+	fadeInfo.startAlpha = startAlpha
+	fadeInfo.endAlpha = endAlpha
+	UIFrameFade(frame, fadeInfo)
 end
 T.UIFrameFadeOut = UIFrameFadeOut
 --==================================================================--
@@ -189,9 +189,6 @@ end
 --==================================================================--
 --              fade-in when center conditions meets                --
 --==================================================================--
---[[   powerType - A number identifying the power type (number)   ]]--
---[[   0 - Mana 1 - Rage 2 - Focus 3 - Energy 6 - Runic Power     ]]--
-
 local function regi(frame)
 	frame:RegisterEvent('PLAYER_REGEN_DISABLED')
 	frame:RegisterEvent('PLAYER_REGEN_ENABLED')
@@ -211,6 +208,38 @@ local function regi(frame)
 	frame:RegisterEvent("PLAYER_ENTERING_WORLD")
 end
 
+--[[
+	MANA = 0
+	*RAGE = 1
+	FOCUS = 2
+	ENERGY = 3
+	COMBO_POINTS = 4
+	RUNES = 5
+	*RUNIC_POWER = 6
+	SOUL_SHARDS = 7
+	*LUNAR_POWER = 8
+	HOLY_POWER = 9
+	ALTERNATE_POWER = 10
+	*MAELSTROM = 11
+	CHI = 12
+	*INSANITY = 13
+	OBSOLETE = 14
+	OBSOLETE2 = 15
+	ARCANE_CHARGES = 16
+	*FURY = 17
+	*PAIN = 18
+]]
+
+local EmptyPowerType = {
+	["RAGE"] = true,
+	["RUNIC_POWER"] = true, 
+	["LUNAR_POWER"] = true, 
+	["MAELSTROM"] = true, 
+	["INSANITY"] = true, 
+	["FURY"] = true, 
+	["PAIN"] = true,
+}
+
 function T.ActionbarEventFader(frame,buttonList,fadeIn,fadeOut)
 	if not frame or not buttonList then return end
     if not fadeIn then fadeIn = defaultFadeIn end
@@ -224,8 +253,8 @@ function T.ActionbarEventFader(frame,buttonList,fadeIn,fadeOut)
 			UnitAffectingCombat('player') or
 			UnitExists('target') or
 			UnitHealth('player') < UnitHealthMax('player') or
-			((UnitPowerType("player") == 1 or UnitPowerType("player") == 6) and UnitPower("player") > 0) or
-			((UnitPowerType("player") ~= 1 and UnitPowerType("player") ~= 6) and UnitPower("player") < UnitPowerMax("player"))
+			(EmptyPowerType[select(2, UnitPowerType("player"))] and UnitPower("player") > 0) or
+			(not EmptyPowerType[select(2, UnitPowerType("player"))] and UnitPower("player") < UnitPowerMax("player"))
 		then
 			frame.eventmode = 1
 			UIFrameFadeIn( frame, fadeIn.time, frame:GetAlpha(), fadeIn.alpha)
@@ -266,12 +295,13 @@ function T.FrameEventFader(frame,fadeIn,fadeOut)
 			UnitAffectingCombat('player') or
 			UnitExists('target') or
 			UnitHealth('player') < UnitHealthMax('player') or
-			((UnitPowerType("player") == 1 or UnitPowerType("player") == 6) and UnitPower("player") > 0) or
-			((UnitPowerType("player") ~= 1 and UnitPowerType("player") ~= 6) and UnitPower("player") < UnitPowerMax("player"))
+			(EmptyPowerType[select(2, UnitPowerType("player"))] and UnitPower("player") > 0) or
+			(not EmptyPowerType[select(2, UnitPowerType("player"))] and UnitPower("player") < UnitPowerMax("player"))
 		then
 			frame.eventmode = 1
 			UIFrameFadeIn( frame, fadeIn.time, frame:GetAlpha(), fadeIn.alpha)
 		else
+			print(333)
 			frame.eventmode = 0
 			UIFrameFadeOut(frame, fadeOut.time, frame:GetAlpha(), fadeOut.alpha)
 		end
