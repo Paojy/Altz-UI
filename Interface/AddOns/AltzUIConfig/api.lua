@@ -187,9 +187,9 @@ T.ResetClasscolors = function(reload)
 			["WARLOCK"] = {
 				["hex"] = "ffe200ff",
 				["colorStr"] = "ffe200ff",
-				["b"] = 1,
-				["g"] = 0.03,
-				["r"] = 0.49,
+				["b"] = 0.95,
+				["g"] = 0.56,
+				["r"] = 0.76,
 			},
 			["SHAMAN"] = {
 				["hex"] = "ff0700ff",
@@ -227,10 +227,10 @@ T.ResetClasscolors = function(reload)
 				["r"] = 1,
 			},
 			["DEMONHUNTER"] = {
-				["r"] = 0.64,
+				["r"] = 0.6,
 				["colorStr"] = "ffa330c9",
-				["g"] = 0.19,
-				["b"] = 0.79,
+				["g"] = 0.1,
+				["b"] = 0.78,
 			},
 		}
 	end
