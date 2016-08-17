@@ -100,6 +100,7 @@ local lodFrames = {
   Blizzard_VoidStorageUI = { ["VoidStorageFrame"] = false, ["VoidStorageBorderFrameMouseBlockFrame"] = "VoidStorageFrame" },
   Blizzard_ItemAlterationUI = { ["TransmogrifyFrame"] = false },
   Blizzard_EncounterJournal = { ["EncounterJournal"] = false }, -- as of 4.3
+  Blizzard_Collections = { ["WardrobeFrame"] = false },
 
   -- New frames in MoP
   Blizzard_PetJournal = { ["PetJournalParent"] = false },
