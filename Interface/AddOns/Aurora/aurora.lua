@@ -2224,8 +2224,9 @@ Skin:SetScript("OnEvent", function(self, event, addon)
 		-- [[ Text colour functions ]]
 
 		NORMAL_QUEST_DISPLAY = "|cffffffff%s|r"
-		TRIVIAL_QUEST_DISPLAY = "|cffffffff%s (low level)|r"
-
+		TRIVIAL_QUEST_DISPLAY = gsub(TRIVIAL_QUEST_DISPLAY, "000000", "ffffff")
+		IGNORED_QUEST_DISPLAY = gsub(IGNORED_QUEST_DISPLAY, "000000", "ffffff")
+		
 		GameFontBlackMedium:SetTextColor(1, 1, 1)
 		QuestFont:SetTextColor(1, 1, 1)
 		MailFont_Large:SetTextColor(1, 1, 1)
