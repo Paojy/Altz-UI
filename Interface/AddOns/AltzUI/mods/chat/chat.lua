@@ -110,11 +110,11 @@ EventFrame:RegisterEvent("PET_BATTLE_OPENING_START")
 
 EventFrame:SetScript("OnEvent", function(self, event, arg1)
 	if event == "ADDON_LOADED" and arg1 == "Blizzard_CombatLog" then
-		local topbar = _G["CombatLogQuickButtonFrame_Custom"]
-		if not topbar then return end
-		topbar:Hide()
-		topbar:HookScript("OnShow", function(self) topbar:Hide() end)
-		topbar:SetHeight(0)
+		--local topbar = _G["CombatLogQuickButtonFrame_Custom"]
+		--if not topbar then return end
+		--topbar:Hide()
+		--topbar:HookScript("OnShow", function(self) topbar:Hide() end)
+		--topbar:SetHeight(0)
 	elseif event == "PLAYER_LOGIN" then
 		init()
 	elseif event == "PET_BATTLE_OPENING_START" then
