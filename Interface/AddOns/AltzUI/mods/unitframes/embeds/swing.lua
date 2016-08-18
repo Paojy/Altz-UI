@@ -47,7 +47,6 @@ local lasthit
 local MainhandID = GetInventoryItemID("player", 16)
 local OffhandID = GetInventoryItemID("player", 17)
 local RangedID = GetInventoryItemID("player", 18)
-local PlayerGUID = UnitGUID("player")
 
 local toc = select(4, GetBuildInfo())
 
@@ -284,7 +283,7 @@ local Ranged = function(self, event, unit, spellName)
 end
 
 local Melee = function(self, event, _, subevent, _, GUID)
-	if GUID ~= PlayerGUID then return end
+	if GUID ~= UnitGUID("player") then return end
 	if not string.find(subevent, "SWING") then return end
 	
 	local bar = self.Swing
@@ -347,7 +346,7 @@ local ParryHaste = function(self, event, _, subevent, ...)
 	tarGUID = select(7, ...)
 	missType = select(9, ...)
 	
-	if tarGUID ~= PlayerGUID then return end
+	if tarGUID ~= UnitGUID("player") then return end
 	if not meleeing then return end
 	if not string.find(subevent, "MISSED") then return end
 	if missType ~= "PARRY" then return end
