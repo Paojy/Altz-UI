@@ -9,14 +9,16 @@ local timersize = 12
 -- [[ Healers' indicators ]] -- 
 
 -- Priest 牧师
-local pomCount = {"①","②","③","④","⑤","⑥","⑦","⑧","⑨","⑩"}
+local pomCount = {"①","②","③","④","⑤","⑥","⑦","⑧","⑨","⑩","⑪","⑫","⑬","⑭","⑮","⑯","⑰","⑱","⑲","⑳",}
 oUF.Tags.Methods['Mlight:pom'] = function(u) -- 愈合祷言
     local name, _,_, c, _,_,_, fromwho = UnitBuff(u, GetSpellInfo(41635))
+	if c then
     if fromwho == "player" then
         if c and c ~= 0 then return "|cff66FFFF"..pomCount[c].."|r" end
     else
         if c and c ~= 0 then return "|cffFFCF7F"..pomCount[c].."|r" end 
     end
+	end
 end
 oUF.Tags.Events['Mlight:pom'] = "UNIT_AURA"
 
@@ -136,6 +138,9 @@ oUF.Tags.Methods['Mlight:wildgrowth'] = function(u) -- 野性成长
 end
 oUF.Tags.Events['Mlight:wildgrowth'] = "UNIT_AURA"
 
+oUF.Tags.Methods['Mlight:snla'] = function(u) if UnitBuff(u, GetSpellInfo(102351)) or UnitBuff(u, GetSpellInfo(102351)) then return "|cffFFF8DCY|r" end end --塞纳里奥结界
+oUF.Tags.Events['Mlight:snla'] = "UNIT_AURA"
+
 -- Shaman 萨满
 oUF.Tags.Methods['Mlight:ripTime'] = function(u) --激流
     local name, _,_,_,_,_, expirationTime, fromwho = UnitBuff(u, GetSpellInfo(61295))
@@ -150,11 +155,30 @@ end
 oUF.Tags.Events['Mlight:ripTime'] = 'UNIT_AURA'
 
 -- Paladin 骑士
-oUF.Tags.Methods['Mlight:beacon'] = function(u) if UnitBuff(u, GetSpellInfo(53563)) then return "|cffFFB90FO|r" end end --道标
-oUF.Tags.Events['Mlight:beacon'] = "UNIT_AURA"
+oUF.Tags.Methods['Mlight:beacon'] = function(u) --道标
+    local name, _,_,_,_,_, expirationTime, fromwho = UnitBuff(u, GetSpellInfo(53563))
+	local name2, _,_,_,_,_, expirationTime2, fromwho2 = UnitBuff(u, GetSpellInfo(156910))
+	
+    if (fromwho == "player") or (fromwho2 == "player") then
+        return "|cffFFB90FO|r"
+    end
+end
+oUF.Tags.Events['Mlight:beacon'] = 'UNIT_AURA'
 
 oUF.Tags.Methods['Mlight:forbearance'] = function(u) if UnitDebuff(u, GetSpellInfo(25771)) then return "|cffFF9900"..x.."|r" end end
 oUF.Tags.Events['Mlight:forbearance'] = "UNIT_AURA" -- 自律
+
+oUF.Tags.Methods['Mlight:fyxy'] = function(u) -- 赋予信仰
+    local name, _,_,_,_,_, expirationTime, fromwho = UnitAura(u, GetSpellInfo(223306))
+    if(fromwho == "player") then
+        local spellTimer = (expirationTime-GetTime())
+		local TimeLeft = T.FormatTime(spellTimer)
+        if spellTimer > 0 then
+            return "|cff97FFFF"..TimeLeft.."|r"
+        end
+    end
+end
+oUF.Tags.Events['Mlight:fyxy'] = 'UNIT_AURA'
 
 -- Monk 武僧
 oUF.Tags.Methods['Mlight:jhzq'] = function(u) -- 精华之泉
@@ -203,11 +227,11 @@ oUF.Tags.Events['Mlight:remist'] = 'UNIT_AURA'
 
 classIndicators={
     ["DRUID"] = {
-        ["TL"] = "[Mlight:lb]",
-        ["BR"] = "",
+        ["TL"] = "[Mlight:regrow]",
+        ["BR"] = "[Mlight:snla]",
         ["BL"] = "[Mlight:wildgrowth]",
-        ["TR"] = "[Mlight:regrow]",
-        ["Cen"] = "[Mlight:rejuv]",
+        ["TR"] = "[Mlight:rejuv]",
+        ["Cen"] = "[Mlight:lb]",
     },
     ["PRIEST"] = {
         ["TL"] = "[Mlight:rnw][Mlight:pws]",
@@ -217,7 +241,7 @@ classIndicators={
         ["Cen"] = "[Mlight:atonement]",
     },
     ["PALADIN"] = {
-        ["TL"] = "",
+        ["TL"] = "[Mlight:fyxy]",
         ["BR"] = "",
         ["BL"] = "",
         ["TR"] = "[Mlight:beacon]",
@@ -301,10 +325,10 @@ local Enable = function(self)
         self.AuraStatusBL.frequentUpdates = update
         self:Tag(self.AuraStatusBL, classIndicators[G.myClass]["BL"])	
 		
-		-- 右下 符号
+		-- 右中 符号
 		self.AuraStatusBR = self.Health:CreateFontString(nil, "OVERLAY")
         self.AuraStatusBR:ClearAllPoints()
-        self.AuraStatusBR:SetPoint("BOTTOMRIGHT", 3, 0)
+        self.AuraStatusBR:SetPoint("RIGHT", -1, 0)
 		self.AuraStatusBR:SetJustifyH("RIGHT")
         self.AuraStatusBR:SetFont(G.symbols, bigmark, "OUTLINE")
         self.AuraStatusBR.frequentUpdates = update

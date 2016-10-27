@@ -518,10 +518,16 @@ ancientmana:SetSize(200, 20)
 ancientmana.icon = CreateFrame("Frame", nil, ancientmana)
 ancientmana.icon:SetSize(15, 15)
 ancientmana.icon:SetPoint"TOPLEFT"
-T.CreateThinSD(ancientmana.icon, 1, 0, 0, 0, 1, -2)
+
 ancientmana.icon.texture = ancientmana.icon:CreateTexture(nil, "OVERLAY")
 ancientmana.icon.texture:SetAllPoints()
 ancientmana.icon.texture:SetTexture(1377394)
+ancientmana.icon.texture:SetTexCoord(0.1,0.9,0.1,0.9)
+
+ancientmana.icon.bg = ancientmana.icon:CreateTexture(nil, "BORDER")
+ancientmana.icon.bg:SetPoint("TOPLEFT", -1, 1)
+ancientmana.icon.bg:SetPoint("BOTTOMRIGHT", 1, -1)
+ancientmana.icon.bg:SetColorTexture(0, 0, 0)
 
 ancientmana.text = T.createtext(ancientmana, "OVERLAY", 12, "OUTLINE", "LEFT")
 ancientmana.text:SetPoint("LEFT", ancientmana.icon, "RIGHT", 5, 0)
@@ -559,11 +565,13 @@ Coords:SetPoint("CENTER", 0, 0)
 Coords:Hide()
 
 Minimap:HookScript("OnUpdate",function()
-	local x,y=GetPlayerMapPosition("player")
-	if x>0 or y>0 then
-		Coords:SetText(string.format("%d,%d",x*100,y*100));
-	else
-		Coords:SetText("")
+	if select(2, GetInstanceInfo()) == "none" then
+		local x,y=GetPlayerMapPosition("player")
+		if x>0 or y>0 then
+			Coords:SetText(string.format("%d,%d",x*100,y*100));
+		else
+			Coords:SetText("")
+		end
 	end
 end)
 

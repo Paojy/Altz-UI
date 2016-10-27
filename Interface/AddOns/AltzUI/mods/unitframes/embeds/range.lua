@@ -162,7 +162,9 @@ local Enable = function(self)
         self.freebarrow:Hide()
 		
 		self:HookScript("OnEnter", function(self)
-			self:SetScript("OnUpdate", Updatedirection)
+			if select(2, GetInstanceInfo()) == "none" then
+				self:SetScript("OnUpdate", Updatedirection)
+			end
 		end)
 		
 		self:HookScript("OnLeave", function(self)

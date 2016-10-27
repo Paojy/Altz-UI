@@ -68,11 +68,16 @@ xMPDB.herbs = {
 	[89639] = true, -- Desecrated Herb
 	-- Warlords of Draenor
 	[109124] = true, -- Frostweed
-	[109125] = true, -- Fireweed
-	[109126] = true, -- Gorgrond Flytrap
+	[109125] = true, -- Fireweed 
 	[109127] = true, -- Starflower
 	[109128] = true, -- Nagrand Arrowbloom
 	[109129] = true, -- Talador Orchid
+	
+	[124101] = true,
+	[124102] = true,
+	[124103] = true,
+	[124104] = true,
+	[124105] = true,
 }
 
 --[[------------------------
@@ -101,6 +106,9 @@ xMPDB.ore = {
 	-- Warlords of Draenor
 	[109119] = true, -- True Iron Ore
 	[109118] = true, -- Blackrock Ore
+	
+	[123919] = true,
+	[123918] = true,
 }
 
 
@@ -380,6 +388,8 @@ function processCheck(id, itemType, qual, link)
 	if itemType and qual and XMP_DB and spells[13262] then
 		--only allow if the type of item is a weapon or armor, and it's a specific quality
 		if (itemType == ARMOR or itemType == WEAPON) and qual > 1 and qual < 5 and IsEquippableItem(link) and not XMP_DB[id] then
+			return 13262
+		elseif IsArtifactRelicItem(id) and qual > 1 and qual < 5 and not XMP_DB[id] then
 			return 13262
 		end
 	end

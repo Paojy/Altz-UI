@@ -8,7 +8,6 @@ local battlegroundres = aCoreCDB["OtherOptions"]["battlegroundres"]
 local hideerrors = aCoreCDB["OtherOptions"]["hideerrors"]
 local saysapped = aCoreCDB["OtherOptions"]["saysapped"]
 local autoscreenshot = aCoreCDB["OtherOptions"]["autoscreenshot"]
-local camera = aCoreCDB["OtherOptions"]["camera"]
 local acceptfriendlyinvites = aCoreCDB["OtherOptions"]["acceptfriendlyinvites"]
 local autoinvite = aCoreCDB["OtherOptions"]["autoinvite"]
 local vignettealert = aCoreCDB["OtherOptions"]["vignettealert"]
@@ -83,6 +82,9 @@ for _, slot in pairs({"Head", "Shoulder", "Chest", "Waist", "Legs", "Feet", "Wri
 	IDs[slot] = GetInventorySlotInfo(slot .. "Slot")
 end
 
+local greylist = {
+	[129158] = true,
+}
 eventframe:RegisterEvent('MERCHANT_SHOW')
 function eventframe:MERCHANT_SHOW()
 	if CanMerchantRepair() and aCoreCDB["ItemOptions"]["autorepair"] then
@@ -111,7 +113,8 @@ function eventframe:MERCHANT_SHOW()
 		for bag = 0, 4 do
 			for slot = 0, GetContainerNumSlots(bag) do
 				local link = GetContainerItemLink(bag, slot)
-				if link and (select(3, GetItemInfo(link))==0) then
+				local id = GetContainerItemID(bag, slot)
+				if link and (select(3, GetItemInfo(link))==0) and not greylist[id] then
 					UseContainerItem(bag, slot)
 				end
 			end
@@ -139,20 +142,6 @@ function eventframe:MERCHANT_SHOW()
 				end
 			end
 		end
-	end
-end
---[[-----------------------------------------------------------------------------
-Camera
--------------------------------------------------------------------------------]]
-if camera then
-	eventframe:RegisterEvent('VARIABLES_LOADED')
-	function eventframe:VARIABLES_LOADED()
-		SetCVar("cameraSmoothTrackingStyle", 0)
-		SetCVar("cameraSmoothStyle", 0) -- 智能镜头跟随
-		SetCVar("cameraWaterCollision", 0) -- 水体碰撞
-		SetCVar("cameraDistanceMaxFactor", 1.9) -- 最远镜头距离
-		SetCVar("nameplateMaxDistance", 40) -- 侦测姓名板距离
-		eventframe:UnregisterEvent('VARIABLES_LOADED')
 	end
 end
 --[[-----------------------------------------------------------------------------
@@ -468,7 +457,7 @@ end
 local LFG_Timer = 0
 
 function eventframe:LFG_UPDATE_RANDOM_INFO()
-	local eligible, forTank, forHealer, forDamage = GetLFGRoleShortageRewards(789, LFG_ROLE_SHORTAGE_RARE)
+	local eligible, forTank, forHealer, forDamage = GetLFGRoleShortageRewards(1046, LFG_ROLE_SHORTAGE_RARE)
 	local IsTank, IsHealer, IsDamage = C_LFGList.GetAvailableRoles()
 	
 	local ingroup, tank, healer, damager, result
@@ -498,21 +487,23 @@ if croods then
 	WorldMapButton.coordText = WorldMapFrameCloseButton:CreateFontString(nil, "OVERLAY", "GameFontGreen") 
 	WorldMapButton.coordText:SetPoint("BOTTOM", WorldMapButton, "BOTTOM", 0, 6)
 
-	WorldMapButton:HookScript("OnUpdate", function(self) 
-	   local px, py = GetPlayerMapPosition("player") 
-	   local x, y = GetCursorPosition() 
-	   local width, height, scale = self:GetWidth(), self:GetHeight(), self:GetEffectiveScale() 
-	   local centerX, centerY = self:GetCenter() 
-	   x, y = (x/scale - (centerX - (width/2))) / width, (centerY + (height/2) - y/scale) / height 
-	   if px == 0 and py == 0 and (x > 1 or y > 1 or x < 0 or y < 0) then 
-		  self.coordText:SetText("") 
-	   elseif px == 0 and py == 0 then 
-		  self.coordText:SetText(format(L["光标"].." %d, %d", x*100, y*100)) 
-	   elseif x > 1 or y > 1 or x < 0 or y < 0 then 
-		  self.coordText:SetText(format(L["当前"].." %d, %d", px*100, py*100)) 
-	   else 
-		  self.coordText:SetText(format(L["当前"].." %d, %d   "..L["光标"].." %d, %d", px*100, py*100, x*100, y*100)) 
-	   end 
+	WorldMapButton:HookScript("OnUpdate", function(self)
+	    if select(2, GetInstanceInfo()) == "none" then
+		   local px, py = GetPlayerMapPosition("player") 
+		   local x, y = GetCursorPosition() 
+		   local width, height, scale = self:GetWidth(), self:GetHeight(), self:GetEffectiveScale() 
+		   local centerX, centerY = self:GetCenter() 
+		   x, y = (x/scale - (centerX - (width/2))) / width, (centerY + (height/2) - y/scale) / height 
+		   if px == 0 and py == 0 and (x > 1 or y > 1 or x < 0 or y < 0) then 
+			  self.coordText:SetText("") 
+		   elseif px == 0 and py == 0 then 
+			  self.coordText:SetText(format(L["光标"].." %d, %d", x*100, y*100)) 
+		   elseif x > 1 or y > 1 or x < 0 or y < 0 then 
+			  self.coordText:SetText(format(L["当前"].." %d, %d", px*100, py*100)) 
+		   else 
+			  self.coordText:SetText(format(L["当前"].." %d, %d   "..L["光标"].." %d, %d", px*100, py*100, x*100, y*100)) 
+		   end
+	    end
 	end) 
 end
 --[[-----------------------------------------------------------------------------

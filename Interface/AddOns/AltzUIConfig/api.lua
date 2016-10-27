@@ -265,6 +265,7 @@ T.ResetSkada =function(reload)
 								["reset"] = false,
 							},
 							["barwidth"] = 155,
+							["barfontflags"] = "",
 							["background"] = {
 								["color"] = {
 									["a"] = 0,

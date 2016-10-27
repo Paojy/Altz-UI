@@ -11,9 +11,12 @@ C.themes["Blizzard_MacroUI"] = function()
 		select(i, MacroFrameTab1:GetRegions()).Show = F.dummy
 		select(i, MacroFrameTab2:GetRegions()).Show = F.dummy
 	end
-	for i = 1, 5 do
-		select(i, MacroPopupFrame:GetRegions()):Hide()
+	select(1, MacroPopupFrame:GetRegions()):Hide()
+	
+	for i = 1, 8 do
+		select(i, MacroPopupFrame.BorderBox:GetRegions()):Hide()
 	end
+	
 	MacroPopupScrollFrame:GetRegions():Hide()
 	select(2, MacroPopupScrollFrame:GetRegions()):Hide()
 	MacroPopupNameLeft:Hide()
@@ -49,24 +52,30 @@ C.themes["Blizzard_MacroUI"] = function()
 
 		F.CreateBD(bu, .25)
 	end
+	
+	MacroPopupFrame:HookScript("OnShow", function()
+		for i = 1, NUM_MACRO_ICONS_SHOWN do
+			local bu = _G["MacroPopupButton"..i]
+			local ic = _G["MacroPopupButton"..i.."Icon"]
+			
+			if not bu.skined then
+				bu:SetCheckedTexture(C.media.checked)
+				select(2, bu:GetRegions()):Hide()
 
-	for i = 1, NUM_MACRO_ICONS_SHOWN do
-		local bu = _G["MacroPopupButton"..i]
-		local ic = _G["MacroPopupButton"..i.."Icon"]
+				ic:SetPoint("TOPLEFT", 1, -1)
+				ic:SetPoint("BOTTOMRIGHT", -1, 1)
+				ic:SetTexCoord(.08, .92, .08, .92)
 
-		bu:SetCheckedTexture(C.media.checked)
-		select(2, bu:GetRegions()):Hide()
-
-		ic:SetPoint("TOPLEFT", 1, -1)
-		ic:SetPoint("BOTTOMRIGHT", -1, 1)
-		ic:SetTexCoord(.08, .92, .08, .92)
-
-		F.CreateBD(bu, .25)
-	end
+				F.CreateBD(bu, .25)
+				bu.skined = true
+			end
+		end
+	end)
 
 	F.ReskinPortraitFrame(MacroFrame, true)
 	F.CreateBD(MacroFrameScrollFrame, .25)
 	F.CreateBD(MacroPopupFrame)
+	MacroPopupFrame:SetHeight(525)
 	F.CreateBD(MacroPopupEditBox, .25)
 	F.CreateBD(MacroFrameSelectedMacroButton, .25)
 	F.Reskin(MacroDeleteButton)
@@ -80,4 +89,5 @@ C.themes["Blizzard_MacroUI"] = function()
 	F.ReskinScroll(MacroButtonScrollFrameScrollBar)
 	F.ReskinScroll(MacroFrameScrollFrameScrollBar)
 	F.ReskinScroll(MacroPopupScrollFrameScrollBar)
+	MacroPopupScrollFrameMiddle:Hide()
 end

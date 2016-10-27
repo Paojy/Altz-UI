@@ -14,7 +14,7 @@ barmod.ApplySettings = function(self, win)
 
 	skada:SetTexture(blank)
 	skada:SetSpacing(1, 1)
-	skada:SetFont(G.norFont, 12)
+	skada:SetFont(G.norFont, 12, "NONE")
 	
 	skada:SetBackdrop(nil)
 	skada.borderFrame:SetBackdrop(nil)

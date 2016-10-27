@@ -690,7 +690,7 @@ if G.myClass == "DEATHKNIGHT" then
 	T.createslider(UFInnerframe.other, 30, 230, L["字体大小"], "UnitframeOptions", "valuefs", 1, 8, 16, 1)
 end
 
-if G.myClass == "SHAMAN" or G.myClass == "PREIST" or G.myClass == "DRUID" then
+if G.myClass == "SHAMAN" or G.myClass == "PRIEST" or G.myClass == "DRUID" then
     T.createcheckbutton(UFInnerframe.other, 30, 180, L["显示法力条"], "UnitframeOptions", "dpsmana", L["显示法力条提示"])
 end
 
@@ -1627,9 +1627,9 @@ local function CreatecooldownflashlistButton(spellID, parent, list)
 	
 	bu.icon = CreateFrame("Button", nil, bu)
 	bu.icon:SetSize(18, 18)
-	if list == "item" then
+	if list == "item" and GetItemInfo(spellID) then
 		bu.icon:SetNormalTexture(select(10, GetItemInfo(spellID)))
-	elseif list == "spell" then
+	elseif list == "spell" and GetSpellInfo(spellID) then
 		bu.icon:SetNormalTexture(select(3, GetSpellInfo(spellID)))
 	end
 	bu.icon:GetNormalTexture():SetTexCoord(0.1,0.9,0.1,0.9)
@@ -2173,10 +2173,9 @@ T.CVartogglebox(OtherOptions, 300, 180, "screenshotQuality", L["提升截图画�
 T.CVartogglebox(OtherOptions, 300, 210, "screenshotFormat", L["截图保存为tga格式"], "tga", "jpg", "截图保存为tga提示")
 T.createcheckbutton(OtherOptions, 300, 240, L["隐藏错误提示"], "OtherOptions", "hideerrors", L["隐藏错误提示提示"])	
 T.createcheckbutton(OtherOptions, 300, 270, L["回收内存"], "OtherOptions", "collectgarbage", L["回收内存提示"])
-T.createcheckbutton(OtherOptions, 300, 300, L["镜头优化"], "OtherOptions", "camera", L["镜头优化提示"])
-T.createcheckbutton(OtherOptions, 300, 330, L["显示插件使用小提示"], "OtherOptions", "showAFKtips", L["显示插件使用小提示提示"])
-T.createcheckbutton(OtherOptions, 300, 360, L["任务栏闪动"], "OtherOptions", "flashtaskbar", L["任务栏闪动提示"])
-T.createcheckbutton(OtherOptions, 300, 390, L["大地图坐标"], "OtherOptions", "worldmapcoords")
+T.createcheckbutton(OtherOptions, 300, 300, L["显示插件使用小提示"], "OtherOptions", "showAFKtips", L["显示插件使用小提示提示"])
+T.createcheckbutton(OtherOptions, 300, 330, L["任务栏闪动"], "OtherOptions", "flashtaskbar", L["任务栏闪动提示"])
+T.createcheckbutton(OtherOptions, 300, 360, L["大地图坐标"], "OtherOptions", "worldmapcoords")
 
 if G.Client ~= "zhCN" then OtherOptions.overrideArchive:Hide() end
 --T.createcheckbutton(OtherOptions, 300, 450, L["自动接受排本邀请"], "OtherOptions", "autoacceptproposal", L["自动接受排本邀请提示"])

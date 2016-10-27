@@ -1161,6 +1161,9 @@ local UnitSpecific = {
 				self.ClassIcons.UpdateTexture = function() end
 				self.ClassIcons.PostUpdate = ClassIconsPostUpdate
 			elseif G.myClass == "ROGUE" or G.myClass == "DRUID" then
+				if G.myClass == "DRUID" and aCoreCDB["UnitframeOptions"]["dpsmana"] then
+					bars:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 0, 8)
+				end
 			    self.CPoints = bars
 				self.CPoints.PostUpdate = CpointsPostUpdate
             end
@@ -1200,7 +1203,7 @@ local UnitSpecific = {
 		end
 		
 		-- Shaman mana
-		if multicheck(G.myClass, "SHAMAN", "PRESIT", "DRUID") and aCoreCDB["UnitframeOptions"]["dpsmana"] then
+		if multicheck(G.myClass, "SHAMAN", "PRIEST", "DRUID") and aCoreCDB["UnitframeOptions"]["dpsmana"] then
 			local dpsmana = T.createStatusbar(self, "ARTWORK", aCoreCDB["UnitframeOptions"]["height"]*-(aCoreCDB["UnitframeOptions"]["hpheight"]-1), nil, 1, 1, 1, 1)
 			dpsmana:SetFrameLevel(2)
 			dpsmana:SetPoint"LEFT"

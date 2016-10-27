@@ -98,9 +98,9 @@ local function init()
 end
 
 ChatFrameMenuButton.Show = ChatFrameMenuButton.Hide 
-ChatFrameMenuButton:Hide() 
-FriendsMicroButton.Show = FriendsMicroButton.Hide 
-FriendsMicroButton:Hide()
+ChatFrameMenuButton:Hide()
+QuickJoinToastButton.Show = QuickJoinToastButton.Hide 
+QuickJoinToastButton:Hide()
 BNToastFrame:SetClampedToScreen(true)
 
 local EventFrame = CreateFrame("Frame")

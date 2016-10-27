@@ -30,6 +30,7 @@ tinsert(C.themes["Aurora"], function()
 	local function isChatBubble(frame)
 		if frame:GetName() then return end
 		if not frame:GetRegions() then return end
+		if frame:GetRegions():GetObjectType() ~= "Texture" then return end
 		return frame:GetRegions():GetTexture() == [[Interface\Tooltips\ChatBubble-Background]]
 	end
 
