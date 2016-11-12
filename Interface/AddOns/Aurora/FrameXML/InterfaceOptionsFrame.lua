@@ -97,7 +97,6 @@ tinsert(C.themes["Aurora"], function()
 		-- Camera
 		F.ReskinCheck(InterfaceOptionsCameraPanelWaterCollision)
 		F.ReskinDropDown(InterfaceOptionsCameraPanelStyleDropDown)
-		F.ReskinSlider(InterfaceOptionsCameraPanelMaxDistanceSlider)
 		F.ReskinSlider(InterfaceOptionsCameraPanelFollowSpeedSlider)
 
 		-- Mouse

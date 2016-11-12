@@ -297,6 +297,8 @@ C.themes["Blizzard_TalentUI"] = function()
 	PlayerTalentFramePVPTalents.XPBar.NextAvailable:SetPoint("LEFT", PlayerTalentFramePVPTalents.XPBar.Bar, "RIGHT")
 	PlayerTalentFramePVPTalents.XPBar.NextAvailable:SetSize(25, 25)
 	PlayerTalentFramePVPTalents.XPBar.NextAvailable.Icon:SetAllPoints()
+	PlayerTalentFramePVPTalents.XPBar.NextAvailable.Icon:SetTexCoord(.08, .92, .08, .92)
+	PlayerTalentFramePVPTalents.XPBar.NextAvailable.Icon.SetTexCoord = function() end
 	
 	PlayerTalentFramePVPTalents.XPBar.NextAvailable.Frame.Show = F.dummy
 	PlayerTalentFramePVPTalents.XPBar.Levelbg = CreateFrame("Frame", nil, PlayerTalentFramePVPTalents.XPBar)

@@ -422,7 +422,9 @@ C.themes["Blizzard_EncounterJournal"] = function()
 	F.ReskinScroll(EncounterJournalEncounterFrameInfoBossesScrollFrameScrollBar)
 	F.ReskinScroll(EncounterJournalEncounterFrameInfoDetailsScrollFrameScrollBar)
 	F.ReskinScroll(EncounterJournalEncounterFrameInfoLootScrollFrameScrollBar)
-
+	
+	F.ReskinScroll2(EncounterJournal.LootJournal.ItemSetsFrame.ScrollBar)
+	
 	-- [[ Suggest frame ]]
 
 	local suggestFrame = EncounterJournal.suggestFrame
@@ -571,4 +573,29 @@ C.themes["Blizzard_EncounterJournal"] = function()
 		F.CreateBG(bu.Icon)
 		bu.Icon:SetDrawLayer("ARTWORK")
 	end
+	
+	-- ItemSetsFrame
+
+	hooksecurefunc(EncounterJournal.LootJournal.ItemSetsFrame, "UpdateList", function()
+		local itemSets = EncounterJournal.LootJournal.ItemSetsFrame.buttons
+		for i = 1, #itemSets do
+			local itemSet = itemSets[i]
+			itemSet.ItemLevel:SetTextColor(1, 1, 1)
+			itemSet.Background:Hide()
+
+			if not itemSet.bg then
+				itemSet.bg = F.CreateBDFrame(itemSet, .25)
+			end
+
+			local items = itemSet.ItemButtons
+			for j = 1, #items do
+				local item = items[j]
+				item.Border:Hide()
+				item.Icon:SetPoint("TOPLEFT", 1, -1)
+				item.Icon:SetTexCoord(.08, .92, .08, .92)
+				item.Icon:SetDrawLayer("OVERLAY")
+				F.CreateBG(item.Icon)
+			end
+		end
+	end)
 end

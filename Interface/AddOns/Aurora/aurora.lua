@@ -263,6 +263,58 @@ F.ReskinScroll = function(f, parent)
 	down:HookScript("OnLeave", clearScroll)
 end
 
+F.ReskinScroll2 = function(f)
+	local bu = f.thumbTexture
+	bu:SetAlpha(0)
+	bu:SetWidth(17)
+
+	bu.bg = CreateFrame("Frame", nil, f)
+	bu.bg:SetPoint("TOPLEFT", bu, 0, -2)
+	bu.bg:SetPoint("BOTTOMRIGHT", bu, 0, 4)
+	F.CreateBD(bu.bg, 0)
+
+	local tex = F.CreateGradient(f)
+	tex:SetPoint("TOPLEFT", bu.bg, 1, -1)
+	tex:SetPoint("BOTTOMRIGHT", bu.bg, -1, 1)
+
+	local up, down = f:GetChildren()
+
+	up:SetWidth(17)
+	down:SetWidth(17)
+
+	F.Reskin(up, true)
+	F.Reskin(down, true)
+
+	up:SetDisabledTexture(C.media.backdrop)
+	local dis1 = up:GetDisabledTexture()
+	dis1:SetVertexColor(0, 0, 0, .4)
+	dis1:SetDrawLayer("OVERLAY")
+
+	down:SetDisabledTexture(C.media.backdrop)
+	local dis2 = down:GetDisabledTexture()
+	dis2:SetVertexColor(0, 0, 0, .4)
+	dis2:SetDrawLayer("OVERLAY")
+
+	local uptex = up:CreateTexture(nil, "ARTWORK")
+	uptex:SetTexture(C.media.arrowUp)
+	uptex:SetSize(8, 8)
+	uptex:SetPoint("CENTER")
+	uptex:SetVertexColor(1, 1, 1)
+	up.tex = uptex
+
+	local downtex = down:CreateTexture(nil, "ARTWORK")
+	downtex:SetTexture(C.media.arrowDown)
+	downtex:SetSize(8, 8)
+	downtex:SetPoint("CENTER")
+	downtex:SetVertexColor(1, 1, 1)
+	down.tex = downtex
+
+	up:HookScript("OnEnter", colourScroll)
+	up:HookScript("OnLeave", clearScroll)
+	down:HookScript("OnEnter", colourScroll)
+	down:HookScript("OnLeave", clearScroll)
+end
+
 local function colourArrow(f)
 	if f:IsEnabled() then
 		f.tex:SetVertexColor(r, g, b)
