@@ -5,10 +5,10 @@ local DBM = DBM
 --INSTANCE_ENCOUNTER_ENGAGE_UNIT
 --IsEncounterInProgress
 local potions = {
-	[GetSpellInfo(156428)]=true, --德拉诺力量药水
-	[GetSpellInfo(156430)]=true, --德拉诺护甲药水
-	[GetSpellInfo(156423)]=true, --德拉诺敏捷药水
-	[GetSpellInfo(156426)]=true, --德拉诺智力药水
+	[GetSpellInfo(229206)]=true,	--延时之力
+	[GetSpellInfo(188029)]=true,	--不屈药水
+	[GetSpellInfo(188028)]=true,	--上古战神
+	[GetSpellInfo(188027)]=true,	--致命优雅
 }
 
 local foods = {
@@ -16,14 +16,10 @@ local foods = {
 }
 
 local flasks = {
-	--[GetSpellInfo(117666)]=true, -- 帝王传承 测试
-	[GetSpellInfo(156079)]=true, --德拉诺强效智力合剂
-	[GetSpellInfo(156081)]=true, --德拉诺强效全能合剂
-	[GetSpellInfo(156080)]=true, --德拉诺强效力量合剂
-	[GetSpellInfo(156078)]=true, --德拉诺强效急速合剂
-	[GetSpellInfo(156064)]=true, --德拉诺强效敏捷合剂
-	[GetSpellInfo(156082)]=true, --德拉诺强效精神合剂
-	[GetSpellInfo(156084)]=true, --德拉诺强效耐力合剂
+	[GetSpellInfo(188035)]=true,
+	[GetSpellInfo(188031)]=true,
+	[GetSpellInfo(188033)]=true,
+	[GetSpellInfo(188034)]=true,
 }
 
 local RaidToolFrame = CreateFrame("Frame", G.uiname.."RaidToolFrame", UIParent)
