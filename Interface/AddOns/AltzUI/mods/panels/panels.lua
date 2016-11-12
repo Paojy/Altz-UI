@@ -480,14 +480,21 @@ GarrisonLandingPageMinimapButton:SetParent(Minimap)
 GarrisonLandingPageMinimapButton:SetPoint("TOPRIGHT", Minimap, "TOPRIGHT", -8, 2)
 GarrisonLandingPageMinimapButton:SetClampedToScreen(true)
 GarrisonLandingPageMinimapButton:SetSize(30, 30)
-GarrisonLandingPageMinimapButton:HookScript("OnShow", function(self)
+GarrisonLandingPageMinimapButton:HookScript("OnEvent", function(self)
 	self:GetNormalTexture():SetAtlas(nil)
 	self:SetNormalTexture("Interface\\AddOns\\AltzUI\\media\\icons\\Guild")
 	self:GetNormalTexture():SetBlendMode("ADD")
 	self:GetNormalTexture():SetSize(20, 20)
 	self:GetNormalTexture():ClearAllPoints()
-	self:GetNormalTexture():SetPoint("CENTER")
-	self:SetPushedTexture("")
+	self:GetNormalTexture():SetPoint("CENTER", 0, 1)
+	
+	self:GetPushedTexture():SetAtlas(nil)
+	self:SetPushedTexture("Interface\\AddOns\\AltzUI\\media\\icons\\Guild")
+	self:GetPushedTexture():SetBlendMode("ADD")
+	self:GetPushedTexture():SetSize(20, 20)
+	self:GetPushedTexture():ClearAllPoints()
+	self:GetPushedTexture():SetPoint("CENTER", 1, 0)
+	self:GetPushedTexture():SetVertexColor(G.Ccolor.r, G.Ccolor.g, G.Ccolor.b)
 end)
 
 
@@ -710,8 +717,7 @@ end
 
 local _G = getfenv(0)
 function xprptoolitp()
-	GameTooltip:SetOwner(xpbar, "ANCHOR_NONE")
-	GameTooltip:SetPoint("BOTTOMRIGHT", Minimap, "TOPRIGHT", -15, 10)
+	GameTooltip_SetDefaultAnchor(GameTooltip, UIParent)
 	
 	local XP, maxXP = UnitXP("player"), UnitXPMax("player")
 	local restXP = GetXPExhaustion()
@@ -738,6 +744,9 @@ end
 
 xpbar:SetScript("OnEnter", xprptoolitp)
 xpbar:SetScript("OnLeave", function() GameTooltip:Hide() end)
+
+artifactbar:SetScript("OnEnter", MainMenuBar_ArtifactTick_OnEnter)
+artifactbar:SetScript("OnLeave", function() GameTooltip:Hide() end)
 
 xpbar:SetScript("OnEvent", function(self, event, arg1)
 	local artifactItemID, _, _, _, artifactTotalXP, artifactPointsSpent, _, _, _, _, _, _, artifactMaxed = C_ArtifactUI.GetEquippedArtifactInfo()
