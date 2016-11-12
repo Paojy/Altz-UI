@@ -477,9 +477,19 @@ end)
 --要塞
 GarrisonLandingPageMinimapButton:ClearAllPoints()
 GarrisonLandingPageMinimapButton:SetParent(Minimap)
-GarrisonLandingPageMinimapButton:SetPoint("TOPRIGHT", Minimap, "TOPRIGHT", -5, -5)
+GarrisonLandingPageMinimapButton:SetPoint("TOPRIGHT", Minimap, "TOPRIGHT", -8, 2)
 GarrisonLandingPageMinimapButton:SetClampedToScreen(true)
 GarrisonLandingPageMinimapButton:SetSize(30, 30)
+GarrisonLandingPageMinimapButton:HookScript("OnShow", function(self)
+	self:GetNormalTexture():SetAtlas(nil)
+	self:SetNormalTexture("Interface\\AddOns\\AltzUI\\media\\icons\\Guild")
+	self:GetNormalTexture():SetBlendMode("ADD")
+	self:GetNormalTexture():SetSize(20, 20)
+	self:GetNormalTexture():ClearAllPoints()
+	self:GetNormalTexture():SetPoint("CENTER")
+	self:SetPushedTexture("")
+end)
+
 
 -- 排队的眼睛
 QueueStatusMinimapButton:ClearAllPoints()
@@ -677,9 +687,15 @@ xpbar:SetOrientation("VERTICAL")
 xpbar:SetStatusBarTexture(G.media.blank)
 xpbar:SetStatusBarColor(.3, .4, 1)
 xpbar:SetFrameLevel(Minimap:GetFrameLevel()+3)
-xpbar:SetPoint("BOTTOMRIGHT", Minimap, "BOTTOMRIGHT", 0, 0)
-xpbar:SetPoint("TOPRIGHT", Minimap, "TOPRIGHT", 0, 0)
 xpbar.border = F.CreateBDFrame(xpbar, .8)
+
+local artifactbar = CreateFrame("StatusBar", G.uiname.."ArtifactExperienceBar", Minimap)
+artifactbar:SetWidth(5)
+artifactbar:SetOrientation("VERTICAL")
+artifactbar:SetStatusBarTexture(G.media.blank)
+artifactbar:SetStatusBarColor(.901, .8, .601)
+artifactbar:SetFrameLevel(Minimap:GetFrameLevel()+3)
+artifactbar.border = F.CreateBDFrame(artifactbar, .8)
 
 local function CommaValue(amount)
 	local formatted = amount
@@ -720,26 +736,64 @@ function xprptoolitp()
 	GameTooltip:Show()
 end
 
-function xpbar:updateOnevent()
-	local XP, maxXP = UnitXP("player"), UnitXPMax("player")
-	local name, rank, minRep, maxRep, value = GetWatchedFactionInfo()
-   	if UnitLevel("player") ~= MAX_PLAYER_LEVEL then
-		xpbar:SetMinMaxValues(min(0, XP), maxXP)
-		xpbar:SetValue(XP)
-	else
-		xpbar:SetMinMaxValues(minRep, maxRep)
-		xpbar:SetValue(value)
-	end
-end
-
 xpbar:SetScript("OnEnter", xprptoolitp)
 xpbar:SetScript("OnLeave", function() GameTooltip:Hide() end)
-xpbar:SetScript("OnEvent", xpbar.updateOnevent)
+
+xpbar:SetScript("OnEvent", function(self, event, arg1)
+	local artifactItemID, _, _, _, artifactTotalXP, artifactPointsSpent, _, _, _, _, _, _, artifactMaxed = C_ArtifactUI.GetEquippedArtifactInfo()
+	local name, reaction, min, max, value, factionID = GetWatchedFactionInfo()
+	local newLevel = UnitLevel("player")
+	
+	local showArtifact = artifactItemID and not artifactMaxed
+	local showXPorRep = (newLevel < MAX_PLAYER_LEVEL and not IsXPUserDisabled()) or name
+	
+	if event == "PLAYER_LOGIN" or event == "PLAYER_LEVEL_UP" or event == "PLAYER_XP_UPDATE" or event == "UPDATE_FACTION" then
+		if showXPorRep then
+			xpbar:Show()
+			local XP, maxXP = UnitXP("player"), UnitXPMax("player")
+			local name, rank, minRep, maxRep, value = GetWatchedFactionInfo()
+			if UnitLevel("player") ~= MAX_PLAYER_LEVEL then
+				xpbar:SetMinMaxValues(min(0, XP), maxXP)
+				xpbar:SetValue(XP)
+			else
+				xpbar:SetMinMaxValues(minRep, maxRep)
+				xpbar:SetValue(value)
+			end
+		else
+			xpbar:Hide()
+		end
+	end
+	
+	if event == "PLAYER_LOGIN" or (event == "UNIT_INVENTORY_CHANGED" and arg1 == "player") or event == "ARTIFACT_XP_UPDATE" then
+		if showArtifact then
+			artifactbar:Show()
+			local numPointsAvailableToSpend, xp, xpForNextPoint = MainMenuBar_GetNumArtifactTraitsPurchasableFromXP(artifactPointsSpent, artifactTotalXP)
+			artifactbar:SetMinMaxValues(0, xpForNextPoint)
+			artifactbar:SetValue(xp)
+		else
+			artifactbar:Hide()
+		end
+	end
+	
+	if showXPorRep then
+		xpbar:SetPoint("BOTTOMRIGHT", Minimap, "BOTTOMRIGHT", 0, 0)
+		xpbar:SetPoint("TOPRIGHT", Minimap, "TOPRIGHT", 0, 0)
+		if showArtifact then
+			artifactbar:SetPoint("BOTTOMRIGHT", xpbar, "BOTTOMLEFT", -1, 0)
+			artifactbar:SetPoint("TOPRIGHT", xpbar, "TOPLEFT", -1, 0)
+		end
+	elseif showArtifact then
+		artifactbar:SetPoint("BOTTOMRIGHT", Minimap, "BOTTOMRIGHT", 0, 0)
+		artifactbar:SetPoint("TOPRIGHT", Minimap, "TOPRIGHT", 0, 0)
+	end 
+end)
 
 xpbar:RegisterEvent("PLAYER_XP_UPDATE")
 xpbar:RegisterEvent("UPDATE_FACTION")
 xpbar:RegisterEvent("PLAYER_LEVEL_UP")
 xpbar:RegisterEvent("PLAYER_LOGIN")
+xpbar:RegisterEvent("UNIT_INVENTORY_CHANGED")
+xpbar:RegisterEvent("ARTIFACT_XP_UPDATE")
 
 -- 世界频道
 local WorldChannelToggle = CreateFrame("Button", G.uiname.."World Channel Button", ChatFrame1)
