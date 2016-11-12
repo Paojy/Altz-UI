@@ -92,14 +92,32 @@ local function GetHeirloomTrueLevel(itemString)
 	if not rarity then return end
 	if rarity>1 then
 		local ilvl = aCoreCDB["ItemOptions"]["itemlevels"][itemLink]
-		if ilvl then
+		if rarity == 6 then
+			C_Timer.After(.5, function()
+				scanningTooltip:ClearLines()
+				scanningTooltip:SetHyperlink(itemLink)
+				for i = 2, 4 do
+					local label, text = _G["LibItemUpgradeInfoTooltipTextLeft"..i]
+					if label then 
+						text = label:GetText()
+						if text then
+							ilvl = tonumber(text:match(itemLevelPattern))
+							if ilvl ~= nil then
+								--print(itemLink,  ilvl, "神器")
+								return ilvl, true
+							end
+						end
+					end
+				end
+			end)
+		elseif ilvl then
 			--print(itemLink,  ilvl, "已经存在")
 			return ilvl, true
 		else
 			scanningTooltip:ClearLines()
 			scanningTooltip:SetHyperlink(itemLink)
 			for i = 2, 4 do
-				local label, text = _G["LibItemUpgradeInfoTooltipTextLeft"..i], nil
+				local label, text = _G["LibItemUpgradeInfoTooltipTextLeft"..i]
 				if label then 
 					text = label:GetText()
 					if text then
