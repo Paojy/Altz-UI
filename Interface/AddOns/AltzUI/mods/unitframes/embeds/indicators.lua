@@ -104,13 +104,25 @@ oUF.Tags.Events['Mlight:lb'] = "UNIT_AURA"
 
 oUF.Tags.Methods['Mlight:rejuv'] = function(u) -- 回春
     local name, _,_,_,_,_, expirationTime, fromwho = UnitBuff(u, GetSpellInfo(774))
-    if(fromwho == "player") then
+	local name2, _,_,_,_,_, expirationTime2, fromwho2 = UnitBuff(u, GetSpellInfo(155777))
+	local text, text2 = "", ""
+    if (fromwho == "player") then
         local spellTimer = (expirationTime-GetTime())
 		local TimeLeft = T.FormatTime(spellTimer)
         if spellTimer > 0 then
-            return "|cffFF00BB"..TimeLeft.."|r"
+            text = "|cffFF00BB"..TimeLeft.."|r"
         end
     end
+	if (fromwho2 == "player") then
+        local spellTimer2 = (expirationTime2-GetTime())
+		local TimeLeft2 = T.FormatTime(spellTimer2)
+        if spellTimer2 > 0 then
+            text2 = "|cffFF6EB4 "..TimeLeft2.."|r"
+        end
+    end
+	if text or text2 then
+		return text..text2
+	end
 end
 oUF.Tags.Events['Mlight:rejuv'] = "UNIT_AURA"
 
@@ -138,7 +150,16 @@ oUF.Tags.Methods['Mlight:wildgrowth'] = function(u) -- 野性成长
 end
 oUF.Tags.Events['Mlight:wildgrowth'] = "UNIT_AURA"
 
-oUF.Tags.Methods['Mlight:snla'] = function(u) if UnitBuff(u, GetSpellInfo(102351)) or UnitBuff(u, GetSpellInfo(102351)) then return "|cffFFF8DCY|r" end end --塞纳里奥结界
+oUF.Tags.Methods['Mlight:snla'] = function(u)
+	if UnitBuff(u, GetSpellInfo(102351)) then
+		local w = select(11, UnitBuff(u, GetSpellInfo(102351)))
+		if w == 102351 then
+			return "|cffFFF8DCY|r"
+		else
+			return "|cff33FF33b|r"
+		end
+	end
+end --塞纳里奥结界
 oUF.Tags.Events['Mlight:snla'] = "UNIT_AURA"
 
 -- Shaman 萨满
