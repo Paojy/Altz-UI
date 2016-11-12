@@ -47,7 +47,7 @@ end
 
 local Visibility = function(self, event, unit)
 	local spec = GetSpecialization()
-	if UnitHasVehiclePlayerFrameUI('player') or (G.myClass == "SHAMAN" and spec == 3) or (G.myClass == "PRIEST" and spec ~= 3) or (G.myClass == "DRUID" and spec == 4) then
+	if UnitHasVehiclePlayerFrameUI('player') or (G.myClass == "SHAMAN" and spec == 3) or (G.myClass == "PRIEST" and spec ~= 3) then
 		if self.Dpsmana:IsShown() then
 			self.Dpsmana:Hide()
 			self:UnregisterEvent('UNIT_POWER_FREQUENT', Path)
