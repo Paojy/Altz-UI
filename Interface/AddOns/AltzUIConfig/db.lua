@@ -369,6 +369,19 @@ G.Raids = {
 		EJ_GetEncounterInfo(1672),
 	},
 	
+	[EJ_GetInstanceInfo(860)] = { -- 重返卡拉赞
+		EJ_GetEncounterInfo(1820),
+		EJ_GetEncounterInfo(1826),
+		EJ_GetEncounterInfo(1827),
+		EJ_GetEncounterInfo(1825),
+		EJ_GetEncounterInfo(1835),
+		EJ_GetEncounterInfo(1837),
+		EJ_GetEncounterInfo(1836),
+		EJ_GetEncounterInfo(1817),
+		EJ_GetEncounterInfo(1818),
+		EJ_GetEncounterInfo(1838),
+	},
+	
 	[EJ_GetInstanceInfo(822)] = { -- 破碎群岛
 		EJ_GetEncounterInfo(1790),
 		EJ_GetEncounterInfo(1774),
@@ -392,7 +405,13 @@ G.Raids = {
 		EJ_GetEncounterInfo(1750),
 		EJ_GetEncounterInfo(1726),
 	},
-
+	
+	[EJ_GetInstanceInfo(861)] = { -- 勇气试炼
+		EJ_GetEncounterInfo(1819),
+		EJ_GetEncounterInfo(1830),
+		EJ_GetEncounterInfo(1829),
+	},
+	
 	[EJ_GetInstanceInfo(786)] = { -- 暗夜要塞
 		EJ_GetEncounterInfo(1706),
 		EJ_GetEncounterInfo(1725),
@@ -597,6 +616,39 @@ G.DebuffList = {
 		},
 	},
 	
+	[EJ_GetInstanceInfo(860)] = { -- 重返卡拉赞
+		[EJ_GetEncounterInfo(1820)] = {
+			
+		},
+		[EJ_GetEncounterInfo(1826)] = {
+			
+		},
+		[EJ_GetEncounterInfo(1827)] = {
+			
+		},
+		[EJ_GetEncounterInfo(1825)] = {
+			
+		},
+		[EJ_GetEncounterInfo(1835)] = {
+			
+		},
+		[EJ_GetEncounterInfo(1837)] = {
+			
+		},
+		[EJ_GetEncounterInfo(1836)] = {
+			
+		},
+		[EJ_GetEncounterInfo(1817)] = {
+			
+		},
+		[EJ_GetEncounterInfo(1818)] = {
+			
+		},
+		[EJ_GetEncounterInfo(1838)] = {
+			
+		},
+	},
+	
 	[EJ_GetInstanceInfo(822)] = { -- 破碎群岛
 		[EJ_GetEncounterInfo(1790)] = {
 			
@@ -725,6 +777,43 @@ G.DebuffList = {
 		},
 	},
 
+	[EJ_GetInstanceInfo(861)] = { -- 勇气试炼
+		[EJ_GetEncounterInfo(1819)]={
+			[GetSpellInfo(228932)] = {id = 228932, level = 8,}, --228918
+			[GetSpellInfo(227491)] = {id = 227491, level = 8,},
+			[GetSpellInfo(227490)] = {id = 227490, level = 8,},
+			[GetSpellInfo(227500)] = {id = 227500, level = 8,},
+			[GetSpellInfo(227498)] = {id = 227498, level = 8,},
+			[GetSpellInfo(227499)] = {id = 227499, level = 8,},
+			[GetSpellInfo(227781)] = {id = 227781, level = 8,},
+			[GetSpellInfo(227475)] = {id = 227475, level = 8,},
+			[GetSpellInfo(228029)] = {id = 228029, level = 8,},
+			[GetSpellInfo(228007)] = {id = 228007, level = 8,},
+		},
+		[EJ_GetEncounterInfo(1830)]={
+			[GetSpellInfo(228769)] = {id = 228769, level = 8,},
+			[GetSpellInfo(228758)] = {id = 228758, level = 8,},
+			[GetSpellInfo(228768)] = {id = 228768, level = 8,},
+			[GetSpellInfo(228253)] = {id = 228253, level = 8,},
+			[GetSpellInfo(228228)] = {id = 228228, level = 8,},
+			[GetSpellInfo(228248)] = {id = 228248, level = 8,},
+		},
+		[EJ_GetEncounterInfo(1829)]={
+			[GetSpellInfo(227982)] = {id = 227982, level = 8,},
+			[GetSpellInfo(228054)] = {id = 228054, level = 8,},
+			[GetSpellInfo(193367)] = {id = 193367, level = 8,},
+			[GetSpellInfo(229119)] = {id = 229119, level = 8,},
+			[GetSpellInfo(228127)] = {id = 228127, level = 8,},
+			[GetSpellInfo(228055)] = {id = 228055, level = 8,},
+			[GetSpellInfo(228519)] = {id = 228519, level = 8,},
+			[GetSpellInfo(230197)] = {id = 230197, level = 8,},
+			[GetSpellInfo(227998)] = {id = 227998, level = 8,},
+			[GetSpellInfo(230267)] = {id = 230267, level = 8,},
+			[GetSpellInfo(232488)] = {id = 232488, level = 8,},
+			[GetSpellInfo(232450)] = {id = 232450, level = 8,},
+		},
+	},
+	
 	[EJ_GetInstanceInfo(786)] = { -- 暗夜要塞
 		[EJ_GetEncounterInfo(1706)]={
 			[GetSpellInfo(211659)] = {id = 211659, level = 8,},
