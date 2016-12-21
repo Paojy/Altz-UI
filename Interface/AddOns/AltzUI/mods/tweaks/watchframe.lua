@@ -43,6 +43,7 @@ hooksecurefunc(QUEST_TRACKER_MODULE, "SetBlockHeader", function(_, block)
     block.HeaderText:SetTextColor(G.Ccolor.r, G.Ccolor.g, G.Ccolor.b)
     block.HeaderText:SetJustifyH("LEFT")
     block.HeaderText:SetWidth(200)
+    block.HeaderText:SetHeight(15)
 	local heightcheck = block.HeaderText:GetNumLines()      
     if heightcheck==2 then
         local height = block:GetHeight()     
