@@ -750,7 +750,7 @@ artifactbar:SetScript("OnLeave", function() GameTooltip:Hide() end)
 
 xpbar:SetScript("OnEvent", function(self, event, arg1)
 	local artifactItemID, _, _, _, artifactTotalXP, artifactPointsSpent, _, _, _, _, _, _, artifactMaxed = C_ArtifactUI.GetEquippedArtifactInfo()
-	local name, reaction, min, max, value, factionID = GetWatchedFactionInfo()
+	local name, reaction, minRep, maxRep, value, factionID = GetWatchedFactionInfo()
 	local newLevel = UnitLevel("player")
 	
 	local showArtifact = artifactItemID and not artifactMaxed
