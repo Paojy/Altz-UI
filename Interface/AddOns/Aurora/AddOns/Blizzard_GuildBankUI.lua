@@ -14,13 +14,21 @@ C.themes["Blizzard_GuildBankUI"] = function()
 	GuildBankTabLimitBackgroundLeft:SetTexture("")
 	GuildBankTabLimitBackgroundRight:SetTexture("")
 	GuildBankEmblemFrame:Hide()
-	GuildBankPopupFrameTopLeft:Hide()
-	GuildBankPopupFrameBottomLeft:Hide()
+	if GuildBankPopupFrameTopLeft then
+		GuildBankPopupFrameTopLeft:Hide()
+	end
+	if GuildBankPopupFrameBottomLeft then
+		GuildBankPopupFrameBottomLeft:Hide()
+	end
 	GuildBankMoneyFrameBackgroundLeft:Hide()
 	GuildBankMoneyFrameBackgroundMiddle:Hide()
 	GuildBankMoneyFrameBackgroundRight:Hide()
-	select(2, GuildBankPopupFrame:GetRegions()):Hide()
-	select(4, GuildBankPopupFrame:GetRegions()):Hide()
+	if select(2, GuildBankPopupFrame:GetRegions()) then
+		select(2, GuildBankPopupFrame:GetRegions()):Hide()
+	end
+	if select(4, GuildBankPopupFrame:GetRegions()) then
+		select(4, GuildBankPopupFrame:GetRegions()):Hide()
+	end
 	GuildBankPopupNameLeft:Hide()
 	GuildBankPopupNameMiddle:Hide()
 	GuildBankPopupNameRight:Hide()
@@ -107,11 +115,14 @@ C.themes["Blizzard_GuildBankUI"] = function()
 
 	for i = 1, NUM_GUILDBANK_ICONS_PER_ROW * NUM_GUILDBANK_ICON_ROWS do
 		local bu = _G["GuildBankPopupButton"..i]
+		if bu then
+			bu:SetCheckedTexture(C.media.checked)
+			select(2, bu:GetRegions()):Hide()
+		end
 
-		bu:SetCheckedTexture(C.media.checked)
-		select(2, bu:GetRegions()):Hide()
-
-		_G["GuildBankPopupButton"..i.."Icon"]:SetTexCoord(.08, .92, .08, .92)
+		if _G["GuildBankPopupButton"..i.."Icon"] then
+			_G["GuildBankPopupButton"..i.."Icon"]:SetTexCoord(.08, .92, .08, .92)
+		end
 
 		F.CreateBG(_G["GuildBankPopupButton"..i.."Icon"])
 	end

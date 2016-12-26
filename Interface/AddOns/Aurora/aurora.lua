@@ -96,15 +96,19 @@ end
 
 F.CreateBG = function(frame)
 	local f = frame
-	if frame:GetObjectType() == "Texture" then f = frame:GetParent() end
+	if f then
+		if frame:GetObjectType() == "Texture" then f = frame:GetParent() end
 
-	local bg = f:CreateTexture(nil, "BACKGROUND")
-	bg:SetPoint("TOPLEFT", frame, -1, 1)
-	bg:SetPoint("BOTTOMRIGHT", frame, 1, -1)
-	bg:SetTexture(C.media.backdrop)
-	bg:SetVertexColor(0, 0, 0)
+		local bg = f:CreateTexture(nil, "BACKGROUND")
+		bg:SetPoint("TOPLEFT", frame, -1, 1)
+		bg:SetPoint("BOTTOMRIGHT", frame, 1, -1)
+		bg:SetTexture(C.media.backdrop)
+		bg:SetVertexColor(0, 0, 0)
 
-	return bg
+		return bg
+	else
+		return frame
+	end
 end
 
 -- we assign these after loading variables for caching
