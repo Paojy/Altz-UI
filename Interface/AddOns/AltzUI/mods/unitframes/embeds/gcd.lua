@@ -1,26 +1,11 @@
 ﻿local T, C, L, G = unpack(select(2, ...))
 local oUF = AltzUF or oUF
 
-classgcdspells ={
-    ["DRUID"] = 5176, -- Wrath
-    ["PRIEST"] = 585, -- Smite 
-    ["PALADIN"] = 19740, -- Blessing of Might
-    ["WARLOCK"] = 172, -- Corruption 
-    ["WARRIOR"] = 772, -- Rend
-    ["DEATHKNIGHT"] = 49892, -- Death Coil
-    ["SHAMAN"] = 77472, -- Healing Wave
-    ["HUNTER"] = 1978, -- Serpent Sting 
-    ["ROGUE"] = 1752, -- Sinister Strike
-    ["MAGE"] = 5504, -- Conjure Water
-	["MONK"] = 115178, -- Resuscitate
-}
-
 local GetTime = GetTime
 local GetSpellCooldown = GetSpellCooldown
 local gcdisshown
 
-local _, class = UnitClass("player")
-local spellid = classgcdspells[class]
+local spellid = 61304
 
 local OnUpdateGCD = function(self)
 	local perc = (GetTime() - self.starttime) / self.duration

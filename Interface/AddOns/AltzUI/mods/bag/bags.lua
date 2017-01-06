@@ -234,6 +234,7 @@ function BFrame.bags:setUp(frameName, ...)
 		ReagentBankFrameUnlockInfo:SetPoint("BOTTOMLEFT", frame, "TOPLEFT", 0 ,30)
 		ReagentBankFrameUnlockInfo:SetPoint("BOTTOMRIGHT", frame, "TOPRIGHT", 0 ,30)
 		ReagentBankFrameUnlockInfo:SetHeight(150)
+		F.Reskin(ReagentBankFrame.DespositButton)
 		
 		lastbutton = nil
 		
@@ -606,8 +607,6 @@ local function quickreagent(show)
 
 		local children = {ReagentBankFrame:GetChildren()}
 		children[1]:SetPoint("BOTTOM", _G[G.uiname.."bank"], "BOTTOM", 0, 10)
-	else
-		
 	end
 end
 

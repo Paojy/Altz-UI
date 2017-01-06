@@ -77,7 +77,8 @@ local Enable = function(self, unit)
 	if(dpsmana and unit == 'player') then
 		dpsmana.__owner = self
 		dpsmana.ForceUpdate = ForceUpdate
-
+		dpsmana:Hide()
+		
 		self:RegisterEvent('UNIT_DISPLAYPOWER', VisibilityPath)
 		self:RegisterEvent('PLAYER_TALENT_UPDATE', VisibilityPath)
 
