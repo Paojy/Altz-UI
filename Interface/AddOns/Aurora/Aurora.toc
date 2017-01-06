@@ -43,6 +43,7 @@ AddOns\Blizzard_TimeManager.lua
 AddOns\Blizzard_TradeSkillUI.lua
 AddOns\Blizzard_TrainerUI.lua
 AddOns\Blizzard_VoidStorageUI.lua
+AddOns\Blizzard_OrderHallUI.lua
 AddOns\Recount.lua
 
 FrameXML\AlertFrames.lua

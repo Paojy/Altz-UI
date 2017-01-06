@@ -15,6 +15,7 @@ C.themes["Blizzard_GarrisonUI"] = function()
 
 	F.CreateBD(GarrisonBuildingFrame)
 	F.ReskinClose(GarrisonBuildingFrame.CloseButton)
+	GarrisonBuildingFrame.GarrCorners:Hide()
 
 	-- Tutorial button
 
@@ -90,11 +91,13 @@ C.themes["Blizzard_GarrisonUI"] = function()
 
 	-- Building level tooltip
 
-	local BuildingLevelTooltip = GarrisonBuildingFrame.BuildingLevelTooltip
+	if AuroraConfig.tooltips then
+		local BuildingLevelTooltip = GarrisonBuildingFrame.BuildingLevelTooltip
 
-	for i = 1, 9 do
-		select(i, BuildingLevelTooltip:GetRegions()):Hide()
-		F.CreateBD(BuildingLevelTooltip)
+		for i = 1, 9 do
+			select(i, BuildingLevelTooltip:GetRegions()):Hide()
+			F.CreateBD(BuildingLevelTooltip)
+		end
 	end
 
 	-- Follower list
@@ -184,6 +187,7 @@ C.themes["Blizzard_GarrisonUI"] = function()
 
 		icon:SetTexCoord(.08, .92, .08, .92)
 		F.CreateBG(icon)
+		F.ReskinGarrisonPortrait(CapacitiveDisplay.ShipmentIconFrame.Follower)
 	end
 
 	do
@@ -254,6 +258,7 @@ C.themes["Blizzard_GarrisonUI"] = function()
 		for _, reward in pairs(button.Rewards) do
 			reward:GetRegions():Hide()
 			reward.Icon:SetTexCoord(.08, .92, .08, .92)
+			reward.IconBorder:Hide()
 			F.CreateBG(reward.Icon)
 		end
 
@@ -379,8 +384,9 @@ C.themes["Blizzard_GarrisonUI"] = function()
 	for i = 1, 14 do
 		select(i, GarrisonMissionFrame:GetRegions()):Hide()
 	end
-
 	GarrisonMissionFrame.TitleText:Show()
+	GarrisonMissionFrame.GarrCorners:Hide()
+	select(11, GarrisonMissionFrame.MissionComplete.BonusRewards:GetRegions()):SetTextColor(1, .8, 0)
 
 	F.CreateBD(GarrisonMissionFrame)
 	F.ReskinClose(GarrisonMissionFrame.CloseButton)
@@ -479,6 +485,7 @@ C.themes["Blizzard_GarrisonUI"] = function()
 			reward:GetRegions():Hide()
 
 			reward.Icon:SetTexCoord(.08, .92, .08, .92)
+			reward.IconBorder:SetAlpha(0)
 			F.CreateBG(reward.Icon)
 		end
 	end)
@@ -523,26 +530,27 @@ C.themes["Blizzard_GarrisonUI"] = function()
 
 	for i = 1, 3 do
 		local follower = MissionPage.Followers[i]
-
 		follower:GetRegions():Hide()
-
 		F.CreateBD(follower, .25)
+
+		follower.PortraitFrame.Highlight:Hide()
+		follower.PortraitFrame.PortraitFeedbackGlow:Hide()
+		follower.PortraitFrame.PortraitRing:SetAlpha(0)
+		follower.PortraitFrame.PortraitRingQuality:SetAlpha(0)
+		follower.PortraitFrame.LevelBorder:SetAlpha(0)
+		follower.PortraitFrame.Level:SetText("")
+		follower.PortraitFrame.Empty:SetColorTexture(0,0,0)
+		follower.PortraitFrame.Empty:SetAllPoints(follower.PortraitFrame.Portrait)
 	end
 
 	local function onAssignFollowerToMission(self, frame)
-		local portrait = frame.PortraitFrame
-
-		portrait.LevelBorder:SetColorTexture(0, 0, 0, .5)
-		portrait.LevelBorder:SetSize(44, 11)
+		frame.PortraitFrame.LevelBorder:SetAlpha(0)
 	end
 
 	local function onRemoveFollowerFromMission(self, frame)
-		local portrait = frame.PortraitFrame
-
-		portrait.LevelBorder:SetColorTexture(0, 0, 0, .5)
-		portrait.LevelBorder:SetSize(44, 11)
-
-		if portrait.squareBG then portrait.squareBG:SetBackdropBorderColor(0, 0, 0) end
+		if frame.PortraitFrame.squareBG then
+			frame.PortraitFrame.squareBG:Hide()
+		end
 	end
 
 	hooksecurefunc(GarrisonMissionFrame, "AssignFollowerToMission", onAssignFollowerToMission)
@@ -568,6 +576,26 @@ C.themes["Blizzard_GarrisonUI"] = function()
 
 		F.CreateBD(reward, .15)
 	end
+
+	local buffFrame = MissionPage.BuffsFrame
+	buffFrame.BuffsBG:Hide()
+	hooksecurefunc(GarrisonMissionFrame, "UpdateMissionData", function()
+		local buffIndex = 1
+		local buff = buffFrame.Buffs[buffIndex]
+		while buff do
+			if not buff.styled then
+				buff.Icon:SetDrawLayer("BORDER", 1)
+				F.ReskinIcon(buff.Icon)
+				buff.styled = true
+			end
+			buffIndex = buffIndex + 1
+			buff = buffFrame.Buffs[buffIndex]
+		end
+	end)
+
+	local env = MissionPage.Stage.MissionEnvIcon
+	env.Texture:SetDrawLayer("BORDER", 1)
+	F.ReskinIcon(env.Texture)
 
 	-- Follower tab
 
@@ -612,6 +640,17 @@ C.themes["Blizzard_GarrisonUI"] = function()
 		local color = ITEM_QUALITY_COLORS[followerInfo.quality]
 
 		portraitFrame.squareBG:SetBackdropBorderColor(color.r, color.g, color.b)
+		portraitFrame.squareBG:Show()
+	end)
+
+	hooksecurefunc(GarrisonFollowerMission, "AssignFollowerToMission", function(self, frame)
+		frame.PortraitFrame.LevelBorder:SetAlpha(0)
+	end)
+
+	hooksecurefunc(GarrisonFollowerMission, "RemoveFollowerFromMission", function(self, frame)
+		if frame.PortraitFrame.squareBG then
+			frame.PortraitFrame.squareBG:Hide()
+		end
 	end)
 
 	-- Mechanic tooltip
@@ -656,6 +695,7 @@ C.themes["Blizzard_GarrisonUI"] = function()
 		select(i, GarrisonRecruitSelectFrame:GetRegions()):Hide()
 	end
 	GarrisonRecruitSelectFrame.TitleText:Show()
+	GarrisonRecruitSelectFrame.GarrCorners:Hide()
 
 	F.CreateBD(GarrisonRecruitSelectFrame)
 	F.ReskinClose(GarrisonRecruitSelectFrame.CloseButton)
@@ -711,9 +751,9 @@ C.themes["Blizzard_GarrisonUI"] = function()
 		F.ReskinArrow(left, "left")
 		F.ReskinArrow(right, "right")
 		left:SetSize(35, 35)
-		left.tex:SetSize(16, 16)
+		left.bgTex:SetSize(16, 16)
 		right:SetSize(35, 35)
-		right.tex:SetSize(16, 16)
+		right.bgTex:SetSize(16, 16)
 	end
 
 	-- [[ Shared templates ]]
@@ -739,17 +779,11 @@ C.themes["Blizzard_GarrisonUI"] = function()
 
 				F.CreateBD(button, .25)
 
-				button.BusyFrame:SetAllPoints()
-
 				local hl = button:GetHighlightTexture()
-				if C.isBetaClient then
-					hl:SetColorTexture(r, g, b, .1)
-				else
-					hl:SetTexture(r, g, b, .1)
-				end
+				hl:SetColorTexture(r, g, b, .1)
 				hl:ClearAllPoints()
-				hl:SetPoint("TOPLEFT", 1, -1)
-				hl:SetPoint("BOTTOMRIGHT", -1, 1)
+				hl:SetPoint("TOPLEFT", button,"TOPLEFT",1, -1)
+				hl:SetPoint("BOTTOMRIGHT",button, "BOTTOMRIGHT",-1, 1)
 
 				if portrait then
 					F.ReskinGarrisonPortrait(portrait)
@@ -778,6 +812,7 @@ C.themes["Blizzard_GarrisonUI"] = function()
 
 	hooksecurefunc(GarrisonMissionFrameFollowers, "UpdateData", onUpdateData)
 	hooksecurefunc(GarrisonLandingPageFollowerList, "UpdateData", onUpdateData)
+	hooksecurefunc(GarrisonFollowerList, "UpdateData", onUpdateData)
 
 	hooksecurefunc("GarrisonFollowerButton_AddAbility", function(self, index)
 		local ability = self.Abilities[index]
@@ -818,10 +853,26 @@ C.themes["Blizzard_GarrisonUI"] = function()
 		end
 
 		self.numAbilitiesStyled = numAbilitiesStyled
+
+		local ally = self.AbilitiesFrame.CombatAllySpell[1].iconTexture
+		ally:SetTexCoord(.08, .92, .08, .92)
+		F.CreateBG(ally)
+
+		for i = 1, 2 do
+			if not self.AbilitiesFrame.Equipment then return end
+			local equip = self.AbilitiesFrame.Equipment[i]
+			equip.Border:Hide()
+			equip.BG:Hide()
+			equip.Icon:SetTexCoord(.08, .92, .08, .92)
+			if not equip.bg then
+				equip.bg = F.CreateBDFrame(equip.Icon)
+			end
+		end
 	end
 
 	hooksecurefunc(GarrisonMissionFrame.FollowerList, "ShowFollower", onShowFollower)
 	hooksecurefunc(GarrisonLandingPageFollowerList, "ShowFollower", onShowFollower)
+	hooksecurefunc(GarrisonFollowerList, "ShowFollower", onShowFollower)
 
 	-- [[ Shipyard ]]
 
@@ -847,6 +898,53 @@ C.themes["Blizzard_GarrisonUI"] = function()
 		F.ReskinIcon(equipment.Icon)
 	end
 
+	-- GarrisonShipyardFrame, need review
+
+	for i = 1, 14 do
+		select(i, GarrisonShipyardFrame.BorderFrame:GetRegions()):Hide()
+	end
+
+	GarrisonShipyardFrame.BorderFrame.TitleText:Show()
+	GarrisonShipyardFrame.BorderFrame.GarrCorners:Hide()
+	GarrisonShipyardFrame.BackgroundTile:Hide()
+
+	local sbg = CreateFrame("Frame", nil, GarrisonShipyardFrame)
+	sbg:SetAllPoints()
+	sbg:SetFrameLevel(GarrisonShipyardFrame:GetFrameLevel() - 1)
+	F.CreateBD(sbg)
+
+	F.ReskinInput(GarrisonShipyardFrameFollowers.SearchBox)
+	F.ReskinScroll(GarrisonShipyardFrameFollowersListScrollFrameScrollBar)
+	GarrisonShipyardFrameFollowers:GetRegions():Hide()
+	select(2, GarrisonShipyardFrameFollowers:GetRegions()):Hide()
+	GarrisonShipyardFrameFollowers:DisableDrawLayer("BORDER")
+	GarrisonShipyardFrameFollowers.MaterialFrame:GetRegions():Hide()
+
+	local shipyardTab = GarrisonShipyardFrame.FollowerTab
+	shipyardTab:DisableDrawLayer("BORDER")
+	
+	do
+		local xpBar = shipyardTab.XPBar
+
+		select(1, xpBar:GetRegions()):Hide()
+		xpBar.XPLeft:Hide()
+		xpBar.XPRight:Hide()
+		select(4, xpBar:GetRegions()):Hide()
+
+		xpBar:SetStatusBarTexture(C.media.backdrop)
+
+		F.CreateBDFrame(xpBar)
+	end
+
+	F.ReskinClose(GarrisonShipyardFrame.BorderFrame.CloseButton2)
+	F.ReskinTab(GarrisonShipyardFrameTab1)
+	F.ReskinTab(GarrisonShipyardFrameTab2)
+	--F.ReskinClose(GarrisonShipyardFrame.MissionTab.MissionPage.CloseButton)
+	F.Reskin(GarrisonShipyardFrame.MissionTab.MissionPage.StartMissionButton)
+	GarrisonShipyardFrame.MissionCompleteBackground:GetRegions():Hide()
+	GarrisonShipyardFrame.MissionTab.MissionList.CompleteDialog:GetRegions():Hide()
+	F.Reskin(GarrisonShipyardFrame.MissionTab.MissionList.CompleteDialog.BorderFrame.ViewButton)
+
 	-- [[ Master plan support ]]
 
 	do
@@ -854,12 +952,15 @@ C.themes["Blizzard_GarrisonUI"] = function()
 		f:RegisterEvent("ADDON_LOADED")
 		f:SetScript("OnEvent", function(self, event, addon)
 			if addon == "MasterPlan" then
-				F.ReskinTab(GarrisonLandingPageTab4)
+				local minimize = MissionPage.MinimizeButton
 
 				F.ReskinTab(GarrisonMissionFrameTab3)
 				F.ReskinTab(GarrisonMissionFrameTab4)
+				F.ReskinTab(GarrisonShipyardFrameTab3)
+				F.ReskinTab(GarrisonLandingPageTab4)
+				F.Reskin(MPPokeTentativeParties)
+				F.Reskin(MPCompleteAll)
 
-				local minimize = MissionPage.MinimizeButton
 				MissionPage.CloseButton:SetSize(17, 17)
 				MissionPage.CloseButton:ClearAllPoints()
 				MissionPage.CloseButton:SetPoint("TOPRIGHT", -10, -5)
@@ -869,6 +970,40 @@ C.themes["Blizzard_GarrisonUI"] = function()
 				minimize:ClearAllPoints()
 				minimize:SetPoint("RIGHT", MissionPage.CloseButton, "LEFT", -1, 0)
 				minimize.plus:Hide()
+
+				local function reskinBar(bar)
+					for i = 2, 5 do
+						select(i, bar:GetRegions()):Hide()
+					end
+					F.Reskin(bar.Up, true)
+					F.Reskin(bar.Down, true)
+
+					local bu = bar:GetRegions()
+					bu:SetAlpha(0)
+					bu:SetWidth(17)
+					bu.bg = CreateFrame("Frame", nil, bar)
+					bu.bg:SetPoint("TOPLEFT", bu, 0, -2)
+					bu.bg:SetPoint("BOTTOMRIGHT", bu, 0, 4)
+					F.CreateBD(bu.bg, 0)
+					local tex = F.CreateGradient(bar)
+					tex:SetPoint("TOPLEFT", bu.bg, 1, -1)
+					tex:SetPoint("BOTTOMRIGHT", bu.bg, -1, 1)
+
+					local uptex = bar.Up:CreateTexture(nil, "ARTWORK")
+					uptex:SetTexture(C.media.arrowUp)
+					uptex:SetSize(8, 8)
+					uptex:SetPoint("CENTER")
+					uptex:SetVertexColor(1, 1, 1)
+
+					local downtex = bar.Down:CreateTexture(nil, "ARTWORK")
+					downtex:SetTexture(C.media.arrowDown)
+					downtex:SetSize(8, 8)
+					downtex:SetPoint("CENTER")
+					downtex:SetVertexColor(1, 1, 1)
+				end
+				reskinBar(MasterPlanMissionList.List.Bar)
+				reskinBar(MPShipMoI.List.Bar)
+				reskinBar(MPLandingPageAlts.List.Bar)
 
 				self:UnregisterEvent("ADDON_LOADED")
 			end

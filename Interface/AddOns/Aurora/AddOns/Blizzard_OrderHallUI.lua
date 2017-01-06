@@ -39,7 +39,7 @@ C.themes["Blizzard_OrderHallUI"] = function()
 		for j = 1, 20 do
 			texture = select(j, bu:GetRegions())
 			if texture:GetObjectType() == "Texture" then
-				texture:Hide()
+				texture:SetAlpha(0)
 			end
 		end
 		F.Reskin(bu)

@@ -111,25 +111,27 @@ C.themes["Blizzard_TalentUI"] = function()
 		else
 			bonuses = SPEC_SPELLS_DISPLAY[id]
 		end
+		
+		if bonuses then
+			for i = 1, #bonuses, 2 do
+				local frame = scrollChild["abilityButton"..index]
+				local _, icon = GetSpellTexture(bonuses[i])
 
-		for i = 1, #bonuses, 2 do
-			local frame = scrollChild["abilityButton"..index]
-			local _, icon = GetSpellTexture(bonuses[i])
+				frame.icon:SetTexture(icon)
+				frame.subText:SetTextColor(.75, .75, .75)
 
-			frame.icon:SetTexture(icon)
-			frame.subText:SetTextColor(.75, .75, .75)
+				if not frame.styled then
+					frame.ring:Hide()
+					frame.icon:SetTexCoord(.08, .92, .08, .92)
+					F.CreateBG(frame.icon)
 
-			if not frame.styled then
-				frame.ring:Hide()
-				frame.icon:SetTexCoord(.08, .92, .08, .92)
-				F.CreateBG(frame.icon)
+					frame.styled = true
+				end
 
-				frame.styled = true
+				index = index + 1
 			end
-
-			index = index + 1
 		end
-
+		
 		for i = 1, GetNumSpecializations(nil, self.isPet) do
 			local bu = self["specButton"..i]
 
@@ -282,6 +284,9 @@ C.themes["Blizzard_TalentUI"] = function()
 	
 	-- PvP Talents
 	
+	PlayerTalentFramePVPTalents.PortraitMouseOverFrame:SetAlpha(0)
+	PlayerTalentFramePVPTalents.PortraitBackground:SetAlpha(0)
+	PlayerTalentFramePVPTalents.SmallWreath:SetAlpha(0)
 	PlayerTalentFramePVPTalents.XPBar.Frame:Hide()
 	
 	local bg = CreateFrame("Frame", nil, PlayerTalentFramePVPTalents.XPBar.Bar)

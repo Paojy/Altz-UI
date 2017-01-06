@@ -73,7 +73,7 @@ tinsert(C.themes["Aurora"], function()
 			tex:SetTexture(C.media.arrowDown)
 			tex:SetSize(8, 8)
 			tex:SetPoint("CENTER")
-			arrowButton.tex = tex
+			arrowButton.bgTex = tex
 
 			local colourArrow, clearArrow = F.colourArrow, F.clearArrow
 			arrowButton:SetScript("OnEnter", colourArrow)
