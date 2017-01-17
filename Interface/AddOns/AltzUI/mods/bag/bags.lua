@@ -571,7 +571,7 @@ local function quickbank(show)
 	end
 
 	if (show) then
-		_G[G.uiname.."bank"]:SetHeight(((config.bank.button_size+config.spacing)*(numrows)+40)-config.spacing)
+		_G[G.uiname.."bank"]:SetHeight(((config.bank.button_size+config.spacing)*(numrows+1)+40)-config.spacing)
 	end
 
 	_G[G.uiname.."bank"]:Show()
