@@ -252,7 +252,7 @@ C.themes["Blizzard_AuctionUI"] = function()
 	tex:SetSize(8, 8)
 	tex:SetPoint("CENTER")
 	tex:SetVertexColor(1, 1, 1)
-	BrowseDropDownButton.tex = tex
+	BrowseDropDownButton.bgTex = tex
 
 	local bg = CreateFrame("Frame", nil, BrowseDropDown)
 	bg:SetPoint("TOPLEFT", 16, -5)

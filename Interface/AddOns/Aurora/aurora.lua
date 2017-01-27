@@ -131,7 +131,7 @@ local function colourButton(f)
 	if useButtonGradientColour then
 		f:SetBackdropColor(r, g, b, .3)
 	else
-		f.tex:SetVertexColor(r / 4, g / 4, b / 4)
+		f.bgTex:SetVertexColor(r / 4, g / 4, b / 4)
 	end
 
 	f:SetBackdropBorderColor(r, g, b)
@@ -141,7 +141,7 @@ local function clearButton(f)
 	if useButtonGradientColour then
 		f:SetBackdropColor(0, 0, 0, 0)
 	else
-		f.tex:SetVertexColor(buttonR, buttonG, buttonB, buttonA)
+		f.bgTex:SetVertexColor(buttonR, buttonG, buttonB, buttonA)
 	end
 
 	f:SetBackdropBorderColor(0, 0, 0)
@@ -161,7 +161,7 @@ F.Reskin = function(f, noHighlight)
 
 	F.CreateBD(f, .0)
 
-	f.tex = F.CreateGradient(f)
+	f.bgTex = F.CreateGradient(f)
 
 	if not noHighlight then
 		f:HookScript("OnEnter", colourButton)
@@ -187,12 +187,12 @@ end
 
 local function colourScroll(f)
 	if f:IsEnabled() then
-		f.tex:SetVertexColor(r, g, b)
+		f.bgTex:SetVertexColor(r, g, b)
 	end
 end
 
 local function clearScroll(f)
-	f.tex:SetVertexColor(1, 1, 1)
+	f.bgTex:SetVertexColor(1, 1, 1)
 end
 
 F.ReskinScroll = function(f, parent)
@@ -252,14 +252,14 @@ F.ReskinScroll = function(f, parent)
 	uptex:SetSize(8, 8)
 	uptex:SetPoint("CENTER")
 	uptex:SetVertexColor(1, 1, 1)
-	up.tex = uptex
+	up.bgTex = uptex
 
 	local downtex = down:CreateTexture(nil, "ARTWORK")
 	downtex:SetTexture(C.media.arrowDown)
 	downtex:SetSize(8, 8)
 	downtex:SetPoint("CENTER")
 	downtex:SetVertexColor(1, 1, 1)
-	down.tex = downtex
+	down.bgTex = downtex
 
 	up:HookScript("OnEnter", colourScroll)
 	up:HookScript("OnLeave", clearScroll)
@@ -304,14 +304,14 @@ F.ReskinScroll2 = function(f)
 	uptex:SetSize(8, 8)
 	uptex:SetPoint("CENTER")
 	uptex:SetVertexColor(1, 1, 1)
-	up.tex = uptex
+	up.bgTex = uptex
 
 	local downtex = down:CreateTexture(nil, "ARTWORK")
 	downtex:SetTexture(C.media.arrowDown)
 	downtex:SetSize(8, 8)
 	downtex:SetPoint("CENTER")
 	downtex:SetVertexColor(1, 1, 1)
-	down.tex = downtex
+	down.bgTex = downtex
 
 	up:HookScript("OnEnter", colourScroll)
 	up:HookScript("OnLeave", clearScroll)
@@ -321,12 +321,12 @@ end
 
 local function colourArrow(f)
 	if f:IsEnabled() then
-		f.tex:SetVertexColor(r, g, b)
+		f.bgTex:SetVertexColor(r, g, b)
 	end
 end
 
 local function clearArrow(f)
-	f.tex:SetVertexColor(1, 1, 1)
+	f.bgTex:SetVertexColor(1, 1, 1)
 end
 
 F.colourArrow = colourArrow
@@ -370,7 +370,7 @@ F.ReskinDropDown = function(f)
 	tex:SetSize(8, 8)
 	tex:SetPoint("CENTER")
 	tex:SetVertexColor(1, 1, 1)
-	down.tex = tex
+	down.bgTex = tex
 
 	down:HookScript("OnEnter", colourArrow)
 	down:HookScript("OnLeave", clearArrow)
@@ -474,7 +474,7 @@ F.ReskinArrow = function(f, direction)
 	tex:SetTexture("Interface\\AddOns\\Aurora\\media\\arrow-"..direction.."-active")
 	tex:SetSize(8, 8)
 	tex:SetPoint("CENTER")
-	f.tex = tex
+	f.bgTex = tex
 
 	f:HookScript("OnEnter", colourArrow)
 	f:HookScript("OnLeave", clearArrow)
@@ -713,7 +713,7 @@ F.ReskinNavBar = function(f)
 	tex:SetTexture(C.media.arrowLeft)
 	tex:SetSize(8, 8)
 	tex:SetPoint("CENTER")
-	overflowButton.tex = tex
+	overflowButton.bgTex = tex
 
 	overflowButton:HookScript("OnEnter", colourArrow)
 	overflowButton:HookScript("OnLeave", clearArrow)
@@ -764,6 +764,33 @@ F.AddPlugin = function(func)
 		func()
 	else
 		tinsert(C.themes["Aurora"], func)
+	end
+end
+
+F.ReskinGarrisonPortrait = function(portrait)
+	local level = portrait.Level
+	local cover = portrait.PortraitRingCover
+
+	portrait.Portrait:ClearAllPoints()
+	portrait.Portrait:SetPoint("TOPLEFT", 4, -4)
+	portrait.PortraitRing:Hide()
+	portrait.PortraitRingQuality:SetTexture("")
+	portrait.LevelBorder:Hide()
+	portrait.LevelBorder.Show = F.dummy
+
+	level:ClearAllPoints()
+	level:SetPoint("BOTTOM", portrait, 0, 12)
+
+	local squareBG = CreateFrame("Frame", nil, portrait)
+	squareBG:SetFrameLevel(portrait:GetFrameLevel())
+	squareBG:SetPoint("TOPLEFT", 3, -3)
+	squareBG:SetPoint("BOTTOMRIGHT", -3, 11)
+	F.CreateBD(squareBG, 1)
+	portrait.squareBG = squareBG
+
+	if cover then
+		cover:SetColorTexture(0, 0, 0)
+		cover:SetAllPoints(squareBG)
 	end
 end
 
@@ -2329,6 +2356,7 @@ Skin:SetScript("OnEvent", function(self, event, addon)
 
 		ChatConfigFrameDefaultButton:SetWidth(125)
 		ChatConfigFrameDefaultButton:SetPoint("TOPLEFT", ChatConfigCategoryFrame, "BOTTOMLEFT", 0, -4)
+		ChatConfigFrameRedockButton:SetWidth(125)
 		ChatConfigFrameOkayButton:SetPoint("TOPRIGHT", ChatConfigBackgroundFrame, "BOTTOMRIGHT", 0, -4)
 		PaperDollEquipmentManagerPaneEquipSet:SetWidth(PaperDollEquipmentManagerPaneEquipSet:GetWidth()-1)
 		PaperDollEquipmentManagerPaneSaveSet:SetPoint("LEFT", PaperDollEquipmentManagerPaneEquipSet, "RIGHT", 1, 0)
@@ -2347,7 +2375,7 @@ Skin:SetScript("OnEvent", function(self, event, addon)
 
 		-- [[ Buttons ]]
 
-		local buttons = {"AudioOptionsFrameOkay", "AudioOptionsFrameCancel", "AudioOptionsFrameDefaults", "ChatConfigFrameOkayButton", "ChatConfigFrameDefaultButton", "WhoFrameWhoButton", "WhoFrameAddFriendButton", "WhoFrameGroupInviteButton", "ChannelFrameNewButton", "RaidFrameRaidInfoButton", "RaidFrameConvertToRaidButton", "GearManagerDialogPopupOkay", "GearManagerDialogPopupCancel", "StackSplitOkayButton", "StackSplitCancelButton", "GameMenuButtonHelp", "GameMenuButtonWhatsNew", "GameMenuButtonStore", "GameMenuButtonOptions", "GameMenuButtonUIOptions", "GameMenuButtonKeybindings", "GameMenuButtonMacros", "GameMenuButtonAddons", "GameMenuButtonLogout", "GameMenuButtonQuit", "GameMenuButtonContinue", "LFDQueueFrameFindGroupButton", "AddFriendEntryFrameAcceptButton", "AddFriendEntryFrameCancelButton", "FriendsFriendsSendRequestButton", "FriendsFriendsCloseButton", "ColorPickerOkayButton", "ColorPickerCancelButton", "GuildInviteFrameJoinButton", "GuildInviteFrameDeclineButton", "RaidInfoExtendButton", "RaidInfoCancelButton", "PaperDollEquipmentManagerPaneEquipSet", "PaperDollEquipmentManagerPaneSaveSet", "HelpFrameAccountSecurityOpenTicket", "HelpFrameCharacterStuckStuck", "HelpFrameOpenTicketHelpOpenTicket", "ReadyCheckFrameYesButton", "ReadyCheckFrameNoButton", "HelpFrameKnowledgebaseSearchButton", "GhostFrame", "HelpFrameGM_ResponseNeedMoreHelp", "HelpFrameGM_ResponseCancel", "AddFriendInfoFrameContinueButton", "LFDQueueFramePartyBackfillBackfillButton", "LFDQueueFramePartyBackfillNoBackfillButton", "ChannelFrameDaughterFrameOkayButton", "ChannelFrameDaughterFrameCancelButton", "LFDQueueFrameNoLFDWhileLFRLeaveQueueButton", "RaidFinderFrameFindRaidButton", "RaidFinderQueueFrameIneligibleFrameLeaveQueueButton", "RaidFinderQueueFramePartyBackfillBackfillButton", "RaidFinderQueueFramePartyBackfillNoBackfillButton", "ScrollOfResurrectionSelectionFrameAcceptButton", "ScrollOfResurrectionSelectionFrameCancelButton", "ScrollOfResurrectionFrameAcceptButton", "ScrollOfResurrectionFrameCancelButton", "HelpFrameReportBugSubmit", "HelpFrameSubmitSuggestionSubmit", "ReportPlayerNameDialogReportButton", "ReportPlayerNameDialogCancelButton", "ReportCheatingDialogReportButton", "ReportCheatingDialogCancelButton"}
+		local buttons = {"AudioOptionsFrameOkay", "AudioOptionsFrameCancel", "AudioOptionsFrameDefaults", "ChatConfigFrameOkayButton", "ChatConfigFrameDefaultButton", "ChatConfigFrameRedockButton", "WhoFrameWhoButton", "WhoFrameAddFriendButton", "WhoFrameGroupInviteButton", "ChannelFrameNewButton", "RaidFrameRaidInfoButton", "RaidFrameConvertToRaidButton", "GearManagerDialogPopupOkay", "GearManagerDialogPopupCancel", "StackSplitOkayButton", "StackSplitCancelButton", "GameMenuButtonHelp", "GameMenuButtonWhatsNew", "GameMenuButtonStore", "GameMenuButtonOptions", "GameMenuButtonUIOptions", "GameMenuButtonKeybindings", "GameMenuButtonMacros", "GameMenuButtonAddons", "GameMenuButtonLogout", "GameMenuButtonQuit", "GameMenuButtonContinue", "LFDQueueFrameFindGroupButton", "AddFriendEntryFrameAcceptButton", "AddFriendEntryFrameCancelButton", "FriendsFriendsSendRequestButton", "FriendsFriendsCloseButton", "ColorPickerOkayButton", "ColorPickerCancelButton", "GuildInviteFrameJoinButton", "GuildInviteFrameDeclineButton", "RaidInfoExtendButton", "RaidInfoCancelButton", "PaperDollEquipmentManagerPaneEquipSet", "PaperDollEquipmentManagerPaneSaveSet", "HelpFrameAccountSecurityOpenTicket", "HelpFrameCharacterStuckStuck", "HelpFrameOpenTicketHelpOpenTicket", "ReadyCheckFrameYesButton", "ReadyCheckFrameNoButton", "HelpFrameKnowledgebaseSearchButton", "GhostFrame", "HelpFrameGM_ResponseNeedMoreHelp", "HelpFrameGM_ResponseCancel", "AddFriendInfoFrameContinueButton", "LFDQueueFramePartyBackfillBackfillButton", "LFDQueueFramePartyBackfillNoBackfillButton", "ChannelFrameDaughterFrameOkayButton", "ChannelFrameDaughterFrameCancelButton", "LFDQueueFrameNoLFDWhileLFRLeaveQueueButton", "RaidFinderFrameFindRaidButton", "RaidFinderQueueFrameIneligibleFrameLeaveQueueButton", "RaidFinderQueueFramePartyBackfillBackfillButton", "RaidFinderQueueFramePartyBackfillNoBackfillButton", "ScrollOfResurrectionSelectionFrameAcceptButton", "ScrollOfResurrectionSelectionFrameCancelButton", "ScrollOfResurrectionFrameAcceptButton", "ScrollOfResurrectionFrameCancelButton", "HelpFrameReportBugSubmit", "HelpFrameSubmitSuggestionSubmit", "ReportPlayerNameDialogReportButton", "ReportPlayerNameDialogCancelButton", "ReportCheatingDialogReportButton", "ReportCheatingDialogCancelButton"}
 		for i = 1, #buttons do
 		local reskinbutton = _G[buttons[i]]
 			if reskinbutton then
@@ -2361,5 +2389,28 @@ Skin:SetScript("OnEvent", function(self, event, addon)
 		for i = 1, #closebuttons do
 			F.ReskinClose(_G[closebuttons[i]])
 		end
+		
+		F.CreateBD(WardrobeOutfitFrame)
+	
+		local x_offset
+		
+		hooksecurefunc(WardrobeOutfitFrame, "Toggle", function()
+			for i = 1, WardrobeOutfitFrame:GetNumChildren() do
+				local bu = select(i, WardrobeOutfitFrame:GetChildren())
+				
+				if i == 1 then
+					x_offset = select(4, bu:GetPoint())
+				end
+				
+				bu.Highlight:SetPoint("TOPLEFT", -x_offset + 1, 0)
+				bu.Highlight:SetPoint("BOTTOMRIGHT", WardrobeOutfitFrame:GetWidth() - bu:GetWidth() - x_offset - 1, 0)
+				
+				bu.Selection:SetPoint("TOPLEFT", -x_offset + 1, 0)
+				bu.Selection:SetPoint("BOTTOMRIGHT", WardrobeOutfitFrame:GetWidth() - bu:GetWidth() - x_offset - 1, 0)
+				
+				bu.Highlight:SetColorTexture(r, g, b, .2)
+				bu.Selection:SetColorTexture(.5, .5, .5, .2)
+			end
+		end)
 	end
 end)

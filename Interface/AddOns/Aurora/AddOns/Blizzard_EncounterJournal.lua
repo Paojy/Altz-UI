@@ -33,6 +33,13 @@ C.themes["Blizzard_EncounterJournal"] = function()
 	EncounterJournalEncounterFrameInfoLootScrollFrameFilterToggle.DownLeft:SetAlpha(0)	
 	EncounterJournalEncounterFrameInfoLootScrollFrameFilterToggle.DownRight:SetAlpha(0)	
 	
+	select(5, EncounterJournalEncounterFrameInfoLootScrollFrameSlotFilterToggle:GetRegions()):Hide()
+	select(6, EncounterJournalEncounterFrameInfoLootScrollFrameSlotFilterToggle:GetRegions()):Hide()
+	EncounterJournalEncounterFrameInfoLootScrollFrameSlotFilterToggle.UpLeft:SetAlpha(0)
+	EncounterJournalEncounterFrameInfoLootScrollFrameSlotFilterToggle.UpRight:SetAlpha(0)	
+	EncounterJournalEncounterFrameInfoLootScrollFrameSlotFilterToggle.DownLeft:SetAlpha(0)	
+	EncounterJournalEncounterFrameInfoLootScrollFrameSlotFilterToggle.DownRight:SetAlpha(0)	
+	
 	F.SetBD(EncounterJournal)
 
 	-- [[ Dungeon / raid tabs ]]
@@ -414,6 +421,7 @@ C.themes["Blizzard_EncounterJournal"] = function()
 	F.Reskin(EncounterJournalEncounterFrameInfoDifficulty)
 	F.Reskin(EncounterJournalEncounterFrameInfoResetButton)
 	F.Reskin(EncounterJournalEncounterFrameInfoLootScrollFrameFilterToggle)
+	F.Reskin(EncounterJournalEncounterFrameInfoLootScrollFrameSlotFilterToggle)
 	F.ReskinClose(EncounterJournalCloseButton)
 	F.ReskinInput(EncounterJournalSearchBox)
 	F.ReskinScroll(EncounterJournalInstanceSelectScrollFrameScrollBar)

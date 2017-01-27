@@ -62,7 +62,7 @@ local eb = ChatFrame1EditBox
 SetItemRef = function(link, text, button, ...) 
    if(link:sub(1, 5) ~= 'yCopy') then return _SetItemRef(link, text, button, ...) end 
 
-   local text = borderManipulation(SELECTED_CHAT_FRAME:GetRegions()) 
+   local text = borderManipulation(SELECTED_CHAT_FRAME.FontStringContainer:GetRegions())
    if(text) then 
       text = text:gsub('|c%x%x%x%x%x%x%x%x(.-)|r', '%1') 
       text = text:gsub('|H.-|h(.-)|h', '%1') 

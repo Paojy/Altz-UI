@@ -14,10 +14,12 @@ C.themes["Blizzard_ArtifactUI"] = function()
 	ArtifactFrame.ForgeBadgeFrame.ForgeClassBadgeIcon:Hide()
 	ArtifactFrame.ForgeBadgeFrame.ForgeLevelBackground:ClearAllPoints()
 	ArtifactFrame.ForgeBadgeFrame.ForgeLevelBackground:SetPoint("TOPLEFT", ArtifactFrame, "TOPLEFT", 5, -5 )
+	ArtifactFrame.ForgeBadgeFrame.ForgeLevelBackground:SetAlpha(0)
 	ArtifactFrame.AppearancesTab.Background:Hide()
+	F.ReskinClose(ArtifactFrame.CloseButton)
 	
 	ArtifactFrame.AppearancesTab:HookScript("OnShow", function()
-		for i = 1, 20 do
+		for i = 1, 25 do
 			local bu = select(i, ArtifactFrame.AppearancesTab:GetChildren())
 			if bu then
 				bu.Background:Hide()

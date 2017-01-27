@@ -3,12 +3,12 @@ local F, C = unpack(select(2, ...))
 
 local function colourScroll(f)
 	if f:IsEnabled() then
-		f.tex:SetVertexColor(r, g, b)
+		f.bgTex:SetVertexColor(r, g, b)
 	end
 end
 
 local function clearScroll(f)
-	f.tex:SetVertexColor(1, 1, 1)
+	f.bgTex:SetVertexColor(1, 1, 1)
 end
 
 local function SkinScrollBar(f)
@@ -21,18 +21,18 @@ local function SkinScrollBar(f)
 		dis:SetVertexColor(0, 0, 0, .4)
 		dis:SetDrawLayer("OVERLAY")
 
-		v.tex = v:CreateTexture(nil, "ARTWORK")
-		v.tex:SetSize(8, 8)
-		v.tex:SetPoint("CENTER")
-		v.tex:SetVertexColor(1, 1, 1)
+		v.bgTex = v:CreateTexture(nil, "ARTWORK")
+		v.bgTex:SetSize(8, 8)
+		v.bgTex:SetPoint("CENTER")
+		v.bgTex:SetVertexColor(1, 1, 1)
 		
 		v:HookScript("OnEnter", colourScroll)
 		v:HookScript("OnLeave", clearScroll)
 			
 		if v:GetName() == "TradeSkillFrameScrollUpButton" then
-			v.tex:SetTexture(C.media.arrowUp)
+			v.bgTex:SetTexture(C.media.arrowUp)
 		else
-			v.tex:SetTexture(C.media.arrowDown)
+			v.bgTex:SetTexture(C.media.arrowDown)
 		end
 	end
 	

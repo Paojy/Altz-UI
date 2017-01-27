@@ -163,6 +163,28 @@ end --塞纳里奥结界
 oUF.Tags.Events['Mlight:snla'] = "UNIT_AURA"
 
 -- Shaman 萨满
+oUF.Tags.Methods['Mlight:rip40'] = function(u) --激流40%
+	if IsEquippedItem(137085) then
+		local health, max_health, perc = UnitHealth(u), UnitHealthMax(u)
+		if health and max_health and max_health ~= 0 then
+			perc = health/max_health
+			local startTime, duration = GetSpellCooldown(61295)
+			startTime = startTime or 0
+			duration = duration or 0
+			cd = cd or 0
+			if duration <= 1.5 or (startTime+duration-GetTime()) <= 0 then
+				if not UnitIsDead(u) and perc < .35 then
+					return "|cff76EE00O|r"
+				elseif not UnitIsDead(u) and perc < .4 then
+					return "|cffFFFF00O|r"
+				end
+			end
+		end
+	end
+end
+oUF.Tags.Events['Mlight:Mlight:rip40'] = 'UNIT_AURA ACTIONBAR_UPDATE_STATE'
+
+
 oUF.Tags.Methods['Mlight:ripTime'] = function(u) --激流
     local name, _,_,_,_,_, expirationTime, fromwho = UnitBuff(u, GetSpellInfo(61295))
     if(fromwho == "player") then
@@ -290,10 +312,10 @@ classIndicators={
         ["Cen"] = "",
     },
     ["SHAMAN"] = {
-        ["TL"] = "[Mlight:ripTime]",
-        ["BR"] = "",
+        ["TL"] = "",
+        ["BR"] = "[Mlight:rip40]",
         ["BL"] = "",
-        ["TR"] = "",
+        ["TR"] = "[Mlight:ripTime]",
         ["Cen"] = "",
     },
     ["HUNTER"] = {
@@ -368,7 +390,7 @@ local Enable = function(self)
         self.AuraStatusTR = self.Health:CreateFontString(nil, "OVERLAY")
         self.AuraStatusTR:ClearAllPoints()
         
-		if G.myClass == "DRUID" or G.myClass == "MONK"then
+		if G.myClass == "DRUID" or G.myClass == "MONK" or G.myClass == "SHAMAN" then
 			self.AuraStatusTR:SetPoint("TOPRIGHT", 0, 0)
 			self.AuraStatusTR:SetFont(G.norFont, timersize, "OUTLINE") -- 数字
 		elseif G.myClass == "PRIEST" then
