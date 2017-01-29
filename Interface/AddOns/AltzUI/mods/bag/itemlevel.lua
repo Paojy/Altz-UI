@@ -104,6 +104,7 @@ local function GetHeirloomTrueLevel(itemString)
 							ilvl = tonumber(text:match(itemLevelPattern))
 							if ilvl ~= nil then
 								--print(itemLink,  ilvl, "神器")
+								scanningTooltip:ClearLines()
 								return ilvl, true
 							end
 						end
@@ -112,6 +113,7 @@ local function GetHeirloomTrueLevel(itemString)
 			end)
 		elseif ilvl then
 			--print(itemLink,  ilvl, "已经存在")
+			scanningTooltip:ClearLines()
 			return ilvl, true
 		else
 			scanningTooltip:ClearLines()
@@ -125,12 +127,14 @@ local function GetHeirloomTrueLevel(itemString)
 						if ilvl ~= nil then
 							aCoreCDB["ItemOptions"]["itemlevels"][itemLink] = ilvl
 							--print(itemLink,  ilvl, "新增")
+							scanningTooltip:ClearLines()
 							return ilvl, true
 						end
 					end
 				end
 			end
 		end
+		scanningTooltip:ClearLines()
 		return itemLevel, false
 	end
 end

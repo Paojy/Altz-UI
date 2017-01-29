@@ -390,7 +390,7 @@ local ChannelSpells = {
 	[GetSpellInfo(12051)] = 3, --唤醒（第一跳立即生效）
 
 	--[GetSpellInfo(1120)] = 6, --吸取灵魂
-	[GetSpellInfo(689)] = 6, --吸取生命
+	--[GetSpellInfo(689)] = 6, --吸取生命
 	--[GetSpellInfo(108371)] = 6, --生命收割
 	[GetSpellInfo(4629)] = 6, --火焰之雨
 	--[GetSpellInfo(1949)] = 14, --地狱烈焰（第一跳立即生效）
