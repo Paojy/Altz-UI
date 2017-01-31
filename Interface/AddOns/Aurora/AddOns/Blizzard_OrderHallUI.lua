@@ -240,12 +240,15 @@ C.themes["Blizzard_OrderHallUI"] = function()
 
 	hooksecurefunc(OrderHallTalentFrame, "RefreshAllData", function()
 		for i = 34, 38 do
-			select(i, OrderHallTalentFrame:GetRegions()):SetAlpha(0)
+			local t = select(i, OrderHallTalentFrame:GetRegions())
+			if t then
+				t:SetAlpha(0)
+			end
 		end
 
 		for i = 5, 15 do
 			local bu = select(i, OrderHallTalentFrame:GetChildren())
-			if not bu.styled then
+			if bu and not bu.styled then
 				bu.Icon:SetTexCoord(.08, .92, .08, .92)
 				bu.Border:SetAlpha(0)
 				bu.Highlight:SetColorTexture(1, 1, 1, .25)
