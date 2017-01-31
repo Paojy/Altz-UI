@@ -35,13 +35,11 @@ eventframe:SetScript("OnEvent", function(self, event, ...) self[event](self, ...
 eventframe:RegisterEvent"PLAYER_LOGIN"
 
 function eventframe:PLAYER_LOGIN()
+	SetCVar("floatingCombatTextCombatDamage", 1)
+	SetCVar("floatingCombatTextCombatHealing", 1)
 	if aCoreCDB["CombattextOptions"]["hidblz_receive"] then
-	
 		SetCVar("floatingCombatTextCombatDamage", 0)
 		SetCVar("floatingCombatTextCombatHealing", 0)
-	else
-		SetCVar("floatingCombatTextCombatDamage", 1)
-		SetCVar("floatingCombatTextCombatHealing", 1)
 	end
 	if aCoreCDB["CombattextOptions"]["hidblz"] then
 		SetCVar("enableFloatingCombatText", 0)
