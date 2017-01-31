@@ -773,6 +773,12 @@ local function HideBlizzard()
 		end
 		NamePlates_UpdateNamePlateOptions()
 	end
+	
+	SetCVar("nameplateOtherTopInset", 0.08)
+	SetCVar("nameplateOtherBottomInset", 0.1)
+	SetCVar("namePlateMinScale", 1)
+	SetCVar("namePlateMaxScale", 1)
+	SetCVar("nameplateMaxDistance", 45)
 end
 
 local function OnUnitFactionChanged(unit)
