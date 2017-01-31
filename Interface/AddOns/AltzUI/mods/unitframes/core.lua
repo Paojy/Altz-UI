@@ -378,27 +378,7 @@ else
 end
 
 local ChannelSpells = {
-	--[GetSpellInfo(129197)] = 3, --精神鞭笞（乱）
-	--[GetSpellInfo(124468)] = 3, --精神鞭笞
-	[GetSpellInfo(32000)] = 5, --精神灼烧
-	[GetSpellInfo(47540)] = 2, --苦修（第一跳立即生效）
-	[GetSpellInfo(64843)] = 4, --神圣赞美诗
-	--[GetSpellInfo(64901)] = 4, --希望圣歌
-	
-	--[GetSpellInfo(10)] = 8, --暴风雪
-	[GetSpellInfo(5143)] = 5, --奥术飞弹
-	[GetSpellInfo(12051)] = 3, --唤醒（第一跳立即生效）
-
-	--[GetSpellInfo(1120)] = 6, --吸取灵魂
-	--[GetSpellInfo(689)] = 6, --吸取生命
-	--[GetSpellInfo(108371)] = 6, --生命收割
-	[GetSpellInfo(4629)] = 6, --火焰之雨
-	--[GetSpellInfo(1949)] = 14, --地狱烈焰（第一跳立即生效）
-	[GetSpellInfo(755)] = 6, --生命通道
-	--[GetSpellInfo(103103)] = 4, --灾难之握
-	
-	[GetSpellInfo(740)] = 4, --宁静
-	--[GetSpellInfo(16914)] = 10, --飓风
+	[GetSpellInfo(15407)] = 3, --精神鞭笞
 }
 
 local PostCastStart = function(castbar, unit)
@@ -436,7 +416,7 @@ local PostChannelStart = function(castbar, unit, spell)
 			for i = 1, (castbar.tick-1) do
 				if not castbar.Ticks[i] then
 					castbar.Ticks[i] = castbar:CreateTexture(nil, "OVERLAY")
-					castbar.Ticks[i]:SetTexture(tk[1], tk[2], tk[3])
+					castbar.Ticks[i]:SetColorTexture(tk[1], tk[2], tk[3])
 					castbar.Ticks[i]:SetSize(2, cbheight)
 				else
 					castbar.Ticks[i]:Show()
@@ -460,7 +440,7 @@ local PostChannelUpdate = function(castbar, unit, spell)
 			for i = 1, (castbar.tick-1) do
 				if not castbar.Ticks[i] then
 					castbar.Ticks[i] = castbar:CreateTexture(nil, "OVERLAY")
-					castbar.Ticks[i]:SetTexture(tk[1], tk[2], tk[3])
+					castbar.Ticks[i]:SetColorTexture(tk[1], tk[2], tk[3])
 					castbar.Ticks[i]:SetSize(2, cbheight)
 				else
 					castbar.Ticks[i]:Show()
@@ -1447,7 +1427,7 @@ function EventFrame:ADDON_LOADED(arg1)
 		end
 		
 		local arenaframes = {}
-		if aCoreCDB["UnitframeOptions"]["arenaframs"] then
+		if aCoreCDB["UnitframeOptions"]["arenaframes"] then
 			for i = 1, 5 do
 				arenaframes["arena"..i] = spawnHelper(self,"arena"..i)
 			end
@@ -1460,7 +1440,7 @@ function EventFrame:ADDON_LOADED(arg1)
 					}
 				else
 					arenaframes["arena"..i].point = {
-						healer = {a1 = "TOP", parent = arenaframes["arena"..(i-1)]:GetName(), a2 = "BOTTOM" , x = 0, y = -40},
+					 	healer = {a1 = "TOP", parent = arenaframes["arena"..(i-1)]:GetName(), a2 = "BOTTOM" , x = 0, y = -40},
 						dpser = {a1 = "TOP", parent = arenaframes["arena"..(i-1)]:GetName(), a2 = "BOTTOM" , x = 0, y = -40},
 					}
 				end
