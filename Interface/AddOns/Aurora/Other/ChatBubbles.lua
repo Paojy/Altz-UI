@@ -13,8 +13,9 @@ tinsert(C.themes["Aurora"], function()
 			if region:GetObjectType() == "Texture" then
 				region:SetTexture(nil)
 			elseif region:GetObjectType() == "FontString" then
-				region:SetFont(C.media.font, 13)
+				region:SetFont(C.media.font, 13, "OUTLINE")
 				region:SetShadowOffset(scale, -scale)
+				region:SetShadowColor(0, 0, 0, 0)
 			end
 		end
 
@@ -25,13 +26,15 @@ tinsert(C.themes["Aurora"], function()
 		})
 		frame:SetBackdropColor(0, 0, 0, AuroraConfig.alpha)
 		frame:SetBackdropBorderColor(0, 0, 0)
+		F.CreateSD(frame)
 	end
 
 	local function isChatBubble(frame)
 		if frame:GetName() then return end
-		if not frame:GetRegions() then return end
-		if frame:GetRegions():GetObjectType() ~= "Texture" then return end
-		return frame:GetRegions():GetTexture() == [[Interface\Tooltips\ChatBubble-Background]]
+		local region = frame:GetRegions()
+		if region and region:IsObjectType("Texture") then
+			return region:GetTexture() == [[Interface\Tooltips\ChatBubble-Background]]
+		end
 	end
 
 	local last = 0

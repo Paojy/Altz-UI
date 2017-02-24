@@ -9,6 +9,9 @@ C.themes["Blizzard_InspectUI"] = function()
 	for i = 1, 5 do
 		select(i, InspectModelFrame:GetRegions()):Hide()
 	end
+	F.Reskin(InspectPaperDollFrame.ViewButton)
+	InspectPaperDollFrame.ViewButton:ClearAllPoints()
+	InspectPaperDollFrame.ViewButton:SetPoint("TOP", InspectFrame, 0, -45)
 
 	-- Character
 
@@ -28,39 +31,36 @@ C.themes["Blizzard_InspectUI"] = function()
 
 		slot:SetNormalTexture("")
 		slot:SetPushedTexture("")
+		slot:GetHighlightTexture():SetColorTexture(1, 1, 1, .25)
 
-		border:SetPoint("TOPLEFT", -1, 1)
-		border:SetPoint("BOTTOMRIGHT", 1, -1)
+		border:SetPoint("TOPLEFT", -1.2, 1.2)
+		border:SetPoint("BOTTOMRIGHT", 1.2, -1.2)
 		border:SetDrawLayer("BACKGROUND")
-
+		F.CreateBDFrame(slot, .25)
 		slot.icon:SetTexCoord(.08, .92, .08, .92)
 	end
 
 	hooksecurefunc("InspectPaperDollItemSlotButton_Update", function(button)
-		button.IconBorder:SetTexture(C.media.backdrop) 
+		button.IconBorder:SetTexture(C.media.backdrop)
 		button.icon:SetShown(button.hasItem)
 	end)
-	
-	F.Reskin(InspectPaperDollFrame.ViewButton)
-	
-	-- PvP
 
+	-- PVP
 	InspectPVPFrame.BG:Hide()
-	
-	for tier = 1, MAX_PVP_TALENT_TIERS do
-		for column = 1, MAX_PVP_TALENT_COLUMNS do
-			local bu = InspectPVPFrame.Talents["Tier"..tier]["Talent"..column]
-			
+	for i = 1, 6 do
+		local row = InspectPVPFrame.Talents["Tier"..i]
+		for j = 1, 3 do
+			local bu = row["Talent"..j]
 			bu.Slot:Hide()
 			bu.border:SetTexture("")
-			
-			bu.Icon:SetDrawLayer("ARTWORK")	
+
+			bu.Icon:SetDrawLayer("ARTWORK")
 			bu.Icon:SetTexCoord(.08, .92, .08, .92)
-					
+
 			F.CreateBG(bu.Icon)
 		end
 	end
-	
+
 	-- Talents
 
 	local inspectSpec = InspectTalentFrame.InspectSpec
@@ -140,7 +140,8 @@ C.themes["Blizzard_InspectUI"] = function()
 		bottom:SetPoint("BOTTOMLEFT", roleIcon, 2, 2)
 		bottom:SetPoint("BOTTOMRIGHT", roleIcon, -2, 2)
 	end
-	
+
+
 	for i = 1, 4 do
 		local tab = _G["InspectFrameTab"..i]
 		F.ReskinTab(tab)

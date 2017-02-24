@@ -34,13 +34,15 @@ C.themes["Blizzard_VoidStorageUI"] = function()
 			local border = bu.IconBorder
 
 			bu:SetPushedTexture("")
+			bu:GetHighlightTexture():SetColorTexture(1, 1, 1, .25)
 			_G[voidButton..i.."Bg"]:Hide()
 
 			bu.icon:SetTexCoord(.08, .92, .08, .92)
 
 			border:SetTexture(C.media.backdrop)
-			border:SetPoint("TOPLEFT", -1, 1)
-			border:SetPoint("BOTTOMRIGHT", 1, -1)
+			border.SetTexture = F.dummy
+			border:SetPoint("TOPLEFT", -1.2, 1.2)
+			border:SetPoint("BOTTOMRIGHT", 1.2, -1.2)
 			border:SetDrawLayer("BACKGROUND")
 
 			F.CreateBDFrame(bu, .25)
@@ -53,10 +55,13 @@ C.themes["Blizzard_VoidStorageUI"] = function()
 		local searchOverlay = bu.searchOverlay
 
 		bu:SetPushedTexture("")
+		bu:GetHighlightTexture():SetColorTexture(1, 1, 1, .25)
+		F.CreateBDFrame(bu, .25)
 
 		border:SetTexture(C.media.backdrop)
-		border:SetPoint("TOPLEFT", -1, 1)
-		border:SetPoint("BOTTOMRIGHT", 1, -1)
+		border.SetTexture = F.dummy
+		border:SetPoint("TOPLEFT", -1.2, 1.2)
+		border:SetPoint("BOTTOMRIGHT", 1.2, -1.2)
 		border:SetDrawLayer("BACKGROUND")
 
 		searchOverlay:SetPoint("TOPLEFT", -1, 1)

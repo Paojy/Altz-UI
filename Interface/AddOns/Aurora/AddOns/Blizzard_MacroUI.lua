@@ -11,14 +11,14 @@ C.themes["Blizzard_MacroUI"] = function()
 		select(i, MacroFrameTab1:GetRegions()).Show = F.dummy
 		select(i, MacroFrameTab2:GetRegions()).Show = F.dummy
 	end
-	select(1, MacroPopupFrame:GetRegions()):Hide()
-	
+
 	for i = 1, 8 do
 		select(i, MacroPopupFrame.BorderBox:GetRegions()):Hide()
 	end
-	
-	MacroPopupScrollFrame:GetRegions():Hide()
-	select(2, MacroPopupScrollFrame:GetRegions()):Hide()
+	for i = 1, 3 do
+		select(i, MacroPopupScrollFrame:GetRegions()):Hide()
+	end
+	MacroPopupFrame:GetRegions():Hide()
 	MacroPopupNameLeft:Hide()
 	MacroPopupNameMiddle:Hide()
 	MacroPopupNameRight:Hide()
@@ -28,14 +28,14 @@ C.themes["Blizzard_MacroUI"] = function()
 	MacroButtonScrollFrameTop:Hide()
 	MacroButtonScrollFrameBottom:Hide()
 	MacroButtonScrollFrameMiddle:Hide()
-	
+
 	MacroFrameSelectedMacroButton:SetPoint("TOPLEFT", MacroFrameSelectedMacroBackground, "TOPLEFT", 12, -16)
 	MacroFrameSelectedMacroButtonIcon:SetPoint("TOPLEFT", 1, -1)
 	MacroFrameSelectedMacroButtonIcon:SetPoint("BOTTOMRIGHT", -1, 1)
 	MacroFrameSelectedMacroButtonIcon:SetTexCoord(.08, .92, .08, .92)
 
 	MacroPopupFrame:SetPoint("TOPLEFT", MacroFrame, "TOPRIGHT", 1, 0)
-
+	MacroPopupFrame:SetHeight(525)
 	MacroNewButton:ClearAllPoints()
 	MacroNewButton:SetPoint("RIGHT", MacroExitButton, "LEFT", -1, 0)
 
@@ -52,13 +52,13 @@ C.themes["Blizzard_MacroUI"] = function()
 
 		F.CreateBD(bu, .25)
 	end
-	
+
 	MacroPopupFrame:HookScript("OnShow", function()
 		for i = 1, NUM_MACRO_ICONS_SHOWN do
 			local bu = _G["MacroPopupButton"..i]
 			local ic = _G["MacroPopupButton"..i.."Icon"]
-			
-			if not bu.skined then
+
+			if not bu.styled then
 				bu:SetCheckedTexture(C.media.checked)
 				select(2, bu:GetRegions()):Hide()
 
@@ -67,7 +67,7 @@ C.themes["Blizzard_MacroUI"] = function()
 				ic:SetTexCoord(.08, .92, .08, .92)
 
 				F.CreateBD(bu, .25)
-				bu.skined = true
+				bu.styled = true
 			end
 		end
 	end)
@@ -75,7 +75,7 @@ C.themes["Blizzard_MacroUI"] = function()
 	F.ReskinPortraitFrame(MacroFrame, true)
 	F.CreateBD(MacroFrameScrollFrame, .25)
 	F.CreateBD(MacroPopupFrame)
-	MacroPopupFrame:SetHeight(525)
+	F.CreateSD(MacroPopupFrame)
 	F.CreateBD(MacroPopupEditBox, .25)
 	F.CreateBD(MacroFrameSelectedMacroButton, .25)
 	F.Reskin(MacroDeleteButton)
@@ -89,5 +89,4 @@ C.themes["Blizzard_MacroUI"] = function()
 	F.ReskinScroll(MacroButtonScrollFrameScrollBar)
 	F.ReskinScroll(MacroFrameScrollFrameScrollBar)
 	F.ReskinScroll(MacroPopupScrollFrameScrollBar)
-	MacroPopupScrollFrameMiddle:Hide()
 end

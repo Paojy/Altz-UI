@@ -131,7 +131,8 @@ tinsert(C.themes["Aurora"], function()
 		header.Left:Hide()
 		header.Middle:Hide()
 		header.Right:Hide()
-
+		header.Label:SetFont(C.media.font, 14, "OUTLINE")
+		header.Label:SetShadowColor(0, 0, 0, 0)
 		header:SetHighlightTexture("")
 
 		local hl = header:CreateTexture(nil, "BACKGROUND")
@@ -182,6 +183,8 @@ tinsert(C.themes["Aurora"], function()
 	F.ReskinDropDown(EntryCreation.ActivityDropDown)
 	F.ReskinCheck(EntryCreation.ItemLevel.CheckButton)
 	F.ReskinCheck(EntryCreation.VoiceChat.CheckButton)
+	F.ReskinCheck(EntryCreation.PrivateGroup.CheckButton)
+	F.ReskinCheck(LFGListFrame.ApplicationViewer.AutoAcceptButton)
 
 	-- [[ Role count ]]
 
@@ -277,6 +280,7 @@ tinsert(C.themes["Aurora"], function()
 	end
 
 	F.CreateBD(LFGListApplicationDialog)
+	F.CreateSD(LFGListApplicationDialog)
 	F.CreateBD(LFGListApplicationDialog.Description, .25)
 	F.Reskin(LFGListApplicationDialog.SignUpButton)
 	F.Reskin(LFGListApplicationDialog.CancelButton)
@@ -286,6 +290,7 @@ tinsert(C.themes["Aurora"], function()
 	local LFGListInviteDialog = LFGListInviteDialog
 
 	F.CreateBD(LFGListInviteDialog)
+	F.CreateSD(LFGListInviteDialog)
 	F.Reskin(LFGListInviteDialog.AcceptButton)
 	F.Reskin(LFGListInviteDialog.DeclineButton)
 	F.Reskin(LFGListInviteDialog.AcknowledgeButton)

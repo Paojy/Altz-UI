@@ -6,7 +6,7 @@ tinsert(C.themes["Aurora"], function()
 			select(i, frame:GetRegions()):Hide()
 		end
 
-		F.CreateBD(frame)
+		--F.CreateBD(frame)
 	end
 
 	local function restyleGarrisonFollowerAbilityTooltipTemplate(frame)
@@ -19,7 +19,7 @@ tinsert(C.themes["Aurora"], function()
 		icon:SetTexCoord(.08, .92, .08, .92)
 		F.CreateBG(icon)
 
-		F.CreateBD(frame)
+		--F.CreateBD(frame)
 	end
 
 	restyleGarrisonFollowerTooltipTemplate(GarrisonFollowerTooltip)
@@ -30,6 +30,9 @@ tinsert(C.themes["Aurora"], function()
 
 	restyleGarrisonFollowerAbilityTooltipTemplate(FloatingGarrisonFollowerAbilityTooltip)
 	F.ReskinClose(FloatingGarrisonFollowerAbilityTooltip.CloseButton)
+
+	restyleGarrisonFollowerTooltipTemplate(FloatingGarrisonShipyardFollowerTooltip)
+	F.ReskinClose(FloatingGarrisonShipyardFollowerTooltip.CloseButton)
 
 	hooksecurefunc("GarrisonFollowerTooltipTemplate_SetGarrisonFollower", function(tooltipFrame)
 		-- Abilities
@@ -78,9 +81,9 @@ tinsert(C.themes["Aurora"], function()
 
 		tooltipFrame.numTraitsStyled = numTraitsStyled
 	end)
-
+	
 	-- Mission tooltip
-
+	
 	restyleGarrisonFollowerTooltipTemplate(FloatingGarrisonMissionTooltip)
 	F.ReskinClose(FloatingGarrisonMissionTooltip.CloseButton)
 end)

@@ -99,7 +99,7 @@ tinsert(C.themes["Aurora"], function()
 		local name = GetBuybackItemLink(GetNumBuybackItems())
 		if name then
 			local _, _, quality = GetItemInfo(name)
-			local r, g, b = GetItemQualityColor(quality)
+			local r, g, b = GetItemQualityColor(quality or 1)
 
 			MerchantBuyBackItemName:SetTextColor(r, g, b)
 		end
@@ -167,6 +167,12 @@ tinsert(C.themes["Aurora"], function()
 				F.CreateBG(ic)
 				bu.reskinned = true
 			end
+		end
+	end)
+
+	hooksecurefunc("MerchantFrame_UpdateRepairButtons", function()
+		if CanGuildBankRepair() then
+			MerchantRepairText:SetPoint("CENTER", MerchantFrame, "BOTTOMLEFT", 65, 73)
 		end
 	end)
 end)

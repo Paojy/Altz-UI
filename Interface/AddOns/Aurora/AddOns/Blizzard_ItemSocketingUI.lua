@@ -40,7 +40,8 @@ C.themes["Blizzard_ItemSocketingUI"] = function()
 
 	hooksecurefunc("ItemSocketingFrame_Update", function()
 		for i = 1, MAX_NUM_SOCKETS do
-			_G["ItemSocketingSocket"..i].bg:SetBackdropBorderColor(1, 1, 1)
+			local color = GEM_TYPE_INFO[GetSocketTypes(i)]
+			_G["ItemSocketingSocket"..i].bg:SetBackdropBorderColor(color.r, color.g, color.b)
 		end
 
 		local num = GetNumSockets()

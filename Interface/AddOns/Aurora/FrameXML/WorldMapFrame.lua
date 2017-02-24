@@ -119,4 +119,12 @@ tinsert(C.themes["Aurora"], function()
 	TrackingOptions.Background:Hide()
 	TrackingOptions.IconOverlay:SetTexture("")
 	TrackingOptions.Button.Border:Hide()
+
+	-- Battlefield Minimap
+
+	for i = 1, 9 do
+		select(i, OpacityFrame:GetRegions()):Hide()
+	end
+	F.SetBD(OpacityFrame)
+	F.ReskinSlider(OpacityFrameSlider)
 end)

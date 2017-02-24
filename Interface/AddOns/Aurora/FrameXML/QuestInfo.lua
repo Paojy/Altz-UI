@@ -85,7 +85,7 @@ tinsert(C.themes["Aurora"], function()
 		bu.Icon:SetDrawLayer("BACKGROUND", 1)
 		F.CreateBG(bu.Icon, 1)
 
-		local bg = CreateFrame("Frame", nil, bu)
+		local bg = F.CreateBDFrame(bu, .25)
 		bg:SetPoint("TOPLEFT", bu, 1, 1)
 
 		if isMapQuestInfo then
@@ -94,9 +94,6 @@ tinsert(C.themes["Aurora"], function()
 		else
 			bg:SetPoint("BOTTOMRIGHT", bu, -3, 1)
 		end
-
-		bg:SetFrameLevel(0)
-		F.CreateBD(bg, .25)
 
 		bu.bg = bg
 	end
@@ -112,11 +109,26 @@ tinsert(C.themes["Aurora"], function()
 	end)
 
 	restyleRewardButton(QuestInfoSkillPointFrame)
-	restyleRewardButton(MapQuestInfoRewardsFrame.XPFrame, true)
-	restyleRewardButton(MapQuestInfoRewardsFrame.MoneyFrame, true)
-	restyleRewardButton(MapQuestInfoRewardsFrame.SkillPointFrame, true)
-
 	MapQuestInfoRewardsFrame.XPFrame.Name:SetShadowOffset(0, 0)
+	for i, name in next, {"HonorFrame", "MoneyFrame", "SkillPointFrame", "XPFrame", "ArtifactXPFrame", "TitleFrame"} do
+		restyleRewardButton(MapQuestInfoRewardsFrame[name], true)
+	end
+
+	-- Spell Rewards
+
+	local spellRewards = {QuestInfoRewardsFrame, MapQuestInfoRewardsFrame}
+	for _, rewardFrame in pairs(spellRewards) do
+		local spellRewardFrame = rewardFrame.spellRewardPool:Acquire()
+		local icon = spellRewardFrame.Icon
+		local nameFrame = spellRewardFrame.NameFrame
+
+		icon:SetTexCoord(.08, .92, .08, .92)
+		F.CreateBDFrame(icon)
+		nameFrame:Hide()
+		local bg = F.CreateBDFrame(nameFrame, .25)
+		bg:SetPoint("TOPLEFT", icon, "TOPRIGHT", 0, 2)
+		bg:SetPoint("BOTTOMRIGHT", icon, "BOTTOMRIGHT", 101, -1)
+	end
 
 	-- [[ Change text colours ]]
 
@@ -170,4 +182,7 @@ tinsert(C.themes["Aurora"], function()
 
 	QuestInfoRewardsFrame.XPFrame.ReceiveText:SetTextColor(1, 1, 1)
 	QuestInfoRewardsFrame.XPFrame.ReceiveText.SetTextColor = F.dummy
+
+	QuestInfoRewardsFrame.spellHeaderPool:Acquire():SetVertexColor(1, 1, 1)
+	QuestInfoRewardsFrame.spellHeaderPool:Acquire().SetVertexColor = F.dummy
 end)

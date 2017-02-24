@@ -16,6 +16,7 @@ tinsert(C.themes["Aurora"], function()
 	end
 
 	F.ReskinPortraitFrame(WorldStateScoreFrame, true)
+	F.Reskin(WorldStateScoreFrameQueueButton)
 	F.Reskin(WorldStateScoreFrameLeaveButton)
 	F.ReskinScroll(WorldStateScoreScrollFrameScrollBar)
 

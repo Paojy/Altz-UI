@@ -103,7 +103,7 @@ C.themes["Blizzard_Calendar"] = function()
 
 	CalendarTodayFrame:SetBackdrop({
 		edgeFile = C.media.backdrop,
-		edgeSize = 1,
+		edgeSize = 1.2,
 	})
 	CalendarTodayFrame:SetBackdropBorderColor(r, g, b)
 
