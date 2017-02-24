@@ -1,10 +1,10 @@
-## Interface: 70100
-## Title: |cff0080ffAurora|r
-## Title-zhCN: |cff0080ffAurora|r 材质美化
-## Title-zhTW: |cff0080ffAurora|r 材質美化
+## Interface: 70000
+## Title: Aurora
 ## Notes: Minimalistic window theme.
+## Notes-zhCN:小泡泡修正版，引用请标明出处。
+## Notes-zhTW:小泡泡修正版，引用請標明出處。
 ## Author: Haleth/Lightsword
-## Version: NDui MOD
+## Version: 7.0.2b
 ## SavedVariables: AuroraConfig
 
 aurora.lua
