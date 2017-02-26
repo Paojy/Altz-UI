@@ -1,8 +1,8 @@
-## Interface: 70000
+## Interface: 70100
 ## Title: Aurora
 ## Notes: Minimalistic window theme.
-## Notes-zhCN:小泡泡修正版，引用请标明出处。
-## Notes-zhTW:小泡泡修正版，引用請標明出處。
+## Notes-zhCN:小泡泡&siweia修正版，引用请标明出处。
+## Notes-zhTW:小泡泡&siweia修正版，引用請標明出處。
 ## Author: Haleth/Lightsword
 ## Version: 7.0.2b
 ## SavedVariables: AuroraConfig
