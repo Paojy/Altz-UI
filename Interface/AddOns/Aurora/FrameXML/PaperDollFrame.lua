@@ -40,12 +40,13 @@ tinsert(C.themes["Aurora"], function()
 
 		slot:SetNormalTexture("")
 		slot:SetPushedTexture("")
+		slot:GetHighlightTexture():SetColorTexture(1, 1, 1, .25)
 		slot.icon:SetTexCoord(.08, .92, .08, .92)
 
-		border:SetPoint("TOPLEFT", -1, 1)
-		border:SetPoint("BOTTOMRIGHT", 1, -1)
+		border:SetPoint("TOPLEFT", -1.2, 1.2)
+		border:SetPoint("BOTTOMRIGHT", 1.2, -1.2)
 		border:SetDrawLayer("BACKGROUND")
-
+		F.CreateBDFrame(slot, .25)
 		local popout = slot.popoutButton
 
 		popout:SetNormalTexture("")
@@ -83,7 +84,14 @@ tinsert(C.themes["Aurora"], function()
 
 	-- [[ Stats pane ]]
 
-	CharacterStatsPane.ClassBackground:Hide()
+	local pane = CharacterStatsPane
+	pane.ClassBackground:Hide()
+	local category = {pane.ItemLevelCategory, pane.AttributesCategory, pane.EnhancementsCategory}
+	for k, v in pairs(category) do
+		v.Background:Hide()
+		F.CreateGradient(v)
+		F.CreateBD(v, 0)
+	end
 
 	-- [[ Sidebar tabs ]]
 
@@ -124,6 +132,21 @@ tinsert(C.themes["Aurora"], function()
 	end
 
 	-- [[ Equipment manager ]]
+
+	for i = 1, 8 do
+		select(i, GearManagerDialogPopup.BorderBox:GetRegions()):Hide()
+	end
+	GearManagerDialogPopup.BG:Hide()
+	F.CreateBD(GearManagerDialogPopup)
+	F.CreateSD(GearManagerDialogPopup)
+	GearManagerDialogPopup:SetHeight(525)
+	for i = 1, 3 do
+		select(i, GearManagerDialogPopupScrollFrame:GetRegions()):Hide()
+	end
+	F.ReskinScroll(GearManagerDialogPopupScrollFrameScrollBar)
+	F.Reskin(GearManagerDialogPopupOkay)
+	F.Reskin(GearManagerDialogPopupCancel)
+	F.ReskinInput(GearManagerDialogPopupEditBox)
 
 	for i = 1, NUM_GEARSET_ICONS_SHOWN do
 		local bu = _G["GearManagerDialogPopupButton"..i]

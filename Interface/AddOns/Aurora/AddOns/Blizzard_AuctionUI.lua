@@ -116,6 +116,7 @@ C.themes["Blizzard_AuctionUI"] = function()
 			F.CreateBG(it)
 
 			it.IconBorder:SetTexture("")
+			it.IconBorder.SetTexture = F.dummy
 			_G["BrowseButton"..i.."Left"]:Hide()
 			select(5, _G["BrowseButton"..i]:GetRegions()):Hide()
 			_G["BrowseButton"..i.."Right"]:Hide()
@@ -179,6 +180,7 @@ C.themes["Blizzard_AuctionUI"] = function()
 		F.CreateBG(it)
 
 		it.IconBorder:SetTexture("")
+		it.IconBorder.SetTexture = F.dummy
 		_G["AuctionsButton"..i.."Left"]:Hide()
 		select(4, _G["AuctionsButton"..i]:GetRegions()):Hide()
 		_G["AuctionsButton"..i.."Right"]:Hide()
@@ -206,6 +208,7 @@ C.themes["Blizzard_AuctionUI"] = function()
 			AuctionsItemButtonIconTexture:SetPoint("TOPLEFT", 1, -1)
 			AuctionsItemButtonIconTexture:SetPoint("BOTTOMRIGHT", -1, 1)
 		end
+		AuctionsItemButton.IconBorder:SetTexture("")
 	end)
 
 	F.CreateBD(AuctionsItemButton, .25)
@@ -224,16 +227,7 @@ C.themes["Blizzard_AuctionUI"] = function()
 	F.ReskinCheck(ExactMatchCheckButton)
 	F.ReskinCheck(IsUsableCheckButton)
 	F.ReskinCheck(ShowOnPlayerCheckButton)
-	
-	BrowseNameText:ClearAllPoints()
-	BrowseNameText:SetPoint("TOPLEFT", AuctionFrameBrowse, "TOPLEFT", 80, -38)
-	BrowseLevelText:ClearAllPoints()
-	BrowseLevelText:SetPoint("TOPLEFT", AuctionFrameBrowse, "TOPLEFT", 230, -40)
-	BrowseDropDownName:ClearAllPoints()
-	BrowseDropDownName:SetPoint("TOPLEFT", AuctionFrameBrowse, "TOPLEFT", 310, -40)
-	BrowseDropDown:ClearAllPoints()
-	BrowseDropDown:SetPoint("TOPLEFT", AuctionFrameBrowse, "TOPLEFT", 290, -48)
-	
+
 	BrowsePrevPageButton:SetPoint("TOPLEFT", 660, -60)
 	BrowseNextPageButton:SetPoint("TOPRIGHT", 67, -60)
 	BrowsePrevPageButton:GetRegions():SetPoint("LEFT", BrowsePrevPageButton, "RIGHT", 2, 0)

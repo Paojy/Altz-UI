@@ -4,15 +4,15 @@ tinsert(C.themes["Aurora"], function()
 	if not AuroraConfig.tooltips then return end
 
 	local tooltips = {
-		"GameTooltip",
-		"ItemRefTooltip",
-		"ShoppingTooltip1",
-		"ShoppingTooltip2",
-		"WorldMapTooltip",
-		"ChatMenu",
-		"EmoteMenu",
-		"LanguageMenu",
-		"VoiceMacroMenu",
+		GameTooltip,
+		ItemRefTooltip,
+		ShoppingTooltip1,
+		ShoppingTooltip2,
+		WorldMapTooltip,
+		ChatMenu,
+		EmoteMenu,
+		LanguageMenu,
+		VoiceMacroMenu,
 	}
 
 	local backdrop = {
@@ -35,7 +35,7 @@ tinsert(C.themes["Aurora"], function()
 	end
 
 	for i = 1, #tooltips do
-		local t = _G[tooltips[i]]
+		local t = tooltips[i]
 		t:SetBackdrop(nil)
 		local bg = CreateFrame("Frame", nil, t)
 		bg:SetPoint("TOPLEFT")

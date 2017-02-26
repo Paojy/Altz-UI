@@ -5,7 +5,7 @@ tinsert(C.themes["Aurora"], function()
 		select(i, QueueStatusFrame:GetRegions()):Hide()
 	end
 
-	F.CreateBD(QueueStatusFrame)
+	--F.CreateBD(QueueStatusFrame)
 
 	hooksecurefunc("QueueStatusFrame_GetEntry", function(self, entryIndex)
 		local entry = self.StatusEntries[entryIndex]

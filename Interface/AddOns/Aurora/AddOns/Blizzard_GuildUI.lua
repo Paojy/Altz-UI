@@ -11,6 +11,7 @@ C.themes["Blizzard_GuildUI"] = function()
 	F.CreateBD(GuildLogContainer, .25)
 	F.CreateBD(GuildNewsFiltersFrame)
 	F.CreateBD(GuildTextEditFrame)
+	F.CreateSD(GuildTextEditFrame)
 	F.CreateBD(GuildTextEditContainer, .25)
 	F.CreateBD(GuildRecruitmentInterestFrame, .25)
 	F.CreateBD(GuildRecruitmentAvailabilityFrame, .25)
@@ -107,15 +108,10 @@ C.themes["Blizzard_GuildUI"] = function()
 	GuildRecruitmentCommentFrame:SetPoint("TOPLEFT", GuildRecruitmentLevelFrame, "BOTTOMLEFT", 0, 1)
 
 	F.ReskinCheck(GuildRosterShowOfflineButton)
-	F.ReskinCheck(GuildNewsFiltersFrame.GuildAchievement)
-	F.ReskinCheck(GuildNewsFiltersFrame.Achievement)
-	F.ReskinCheck(GuildNewsFiltersFrame.DungeonEncounter)
-	F.ReskinCheck(GuildNewsFiltersFrame.EpicItemLooted)
-	F.ReskinCheck(GuildNewsFiltersFrame.EpicItemPurchased)
-	F.ReskinCheck(GuildNewsFiltersFrame.EpicItemCrafted)
-	F.ReskinCheck(GuildNewsFiltersFrame.LegendaryItemLooted)
-	
-	
+	for i = 1, 7 do
+		F.ReskinCheck(GuildNewsFiltersFrame.GuildNewsFilterButtons[i])
+	end
+
 	local a1, p, a2, x, y = GuildNewsBossModel:GetPoint()
 	GuildNewsBossModel:ClearAllPoints()
 	GuildNewsBossModel:SetPoint(a1, p, a2, x+5, y)
@@ -219,7 +215,7 @@ C.themes["Blizzard_GuildUI"] = function()
 			end
 
 			index = offset + i
-			local name, _, _, _, _, _, _, _, _, _, classFileName  = GetGuildRosterInfo(index)
+			local name, _, _, _, _, _, _, _, _, _, classFileName = GetGuildRosterInfo(index)
 			if name and index <= visibleMembers and bu.icon:IsShown() then
 				local tcoords = CLASS_ICON_TCOORDS[classFileName]
 				bu.icon:SetTexCoord(tcoords[1] + 0.022, tcoords[2] - 0.025, tcoords[3] + 0.022, tcoords[4] - 0.025)
@@ -259,4 +255,33 @@ C.themes["Blizzard_GuildUI"] = function()
 			select(j, _G["GuildInfoFrameTab"..i]:GetRegions()).Show = F.dummy
 		end
 	end
+
+	-- Tradeskill View
+	hooksecurefunc("GuildRoster_UpdateTradeSkills", function()
+		local buttons = GuildRosterContainer.buttons
+		for i = 1, #buttons do
+			local index = HybridScrollFrame_GetOffset(GuildRosterContainer) + i
+			local str = _G["GuildRosterContainerButton"..i.."String1"]
+			local header = _G["GuildRosterContainerButton"..i.."HeaderButton"]
+			if header then
+				local _, _, _, headerName = GetGuildTradeSkillInfo(index)
+				if headerName then
+					str:Hide()
+				else
+					str:Show()
+				end
+
+				if not header.bg then
+					for j = 1, 3 do
+						select(j, header:GetRegions()):Hide()
+					end
+
+					header.bg = F.CreateBDFrame(header, .25)
+					header.bg:SetAllPoints()
+					header:SetHighlightTexture(C.media.backdrop)
+					header:GetHighlightTexture():SetVertexColor(r, g, b, .25)
+				end
+			end
+		end
+	end)
 end
