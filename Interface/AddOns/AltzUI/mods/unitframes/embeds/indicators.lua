@@ -268,24 +268,33 @@ oUF.Tags.Methods['Mlight:remist'] = function(u) -- 复苏之雾
 end 
 oUF.Tags.Events['Mlight:remist'] = 'UNIT_AURA'
 
+oUF.Tags.Methods['Mlight:ayj'] = function(u) --暗夜井释放
+    local name, _,_,_,_,_, expirationTime, fromwho = UnitBuff(u, GetSpellInfo(225724))
+	
+    if (fromwho == "player") then
+        return "|cffAB82FF-|r"
+    end
+end
+oUF.Tags.Events['Mlight:ayj'] = 'UNIT_AURA'
+
 classIndicators={
     ["DRUID"] = {
         ["TL"] = "[Mlight:regrow]",
-        ["BR"] = "[Mlight:snla]",
+        ["BR"] = "[Mlight:ayj][Mlight:snla]",
         ["BL"] = "[Mlight:wildgrowth]",
         ["TR"] = "[Mlight:rejuv]",
         ["Cen"] = "[Mlight:lb]",
     },
     ["PRIEST"] = {
         ["TL"] = "[Mlight:rnw][Mlight:pws]",
-        ["BR"] = "",
+        ["BR"] = "[Mlight:ayj]",
         ["BL"] = "[Mlight:yzdx]",
         ["TR"] = "[Mlight:pom]",
         ["Cen"] = "[Mlight:atonement]",
     },
     ["PALADIN"] = {
         ["TL"] = "[Mlight:fyxy]",
-        ["BR"] = "",
+        ["BR"] = "[Mlight:ayj]",
         ["BL"] = "",
         ["TR"] = "[Mlight:beacon]",
         ["Cen"] = "[Mlight:forbearance]",
@@ -313,7 +322,7 @@ classIndicators={
     },
     ["SHAMAN"] = {
         ["TL"] = "",
-        ["BR"] = "[Mlight:rip40]",
+        ["BR"] = "[Mlight:ayj][Mlight:rip40]",
         ["BL"] = "",
         ["TR"] = "[Mlight:ripTime]",
         ["Cen"] = "",
@@ -341,7 +350,7 @@ classIndicators={
     },
 	["MONK"] = {
         ["TL"] = "[Mlight:remist]",
-        ["BR"] = "",
+        ["BR"] = "[Mlight:ayj]",
         ["BL"] = "[Mlight:mist]",
         ["TR"] = "[Mlight:jhzq]",
         ["Cen"] = "[Mlight:sooth]",
