@@ -1719,7 +1719,7 @@ local function CreateCooldownFlashOptions(name, list)
 			if not ID then
 				StaticPopupDialogs[G.uiname.."incorrect item ID"].text = L["不正确的物品ID"]
 				StaticPopup_Show(G.uiname.."incorrect item ID")
-			elseif not GetItem(ID) then
+			elseif not GetItemInfo(ID) then
 				StaticPopupDialogs[G.uiname.."incorrect item ID"].text = "|cff7FFF00"..ID.." |r"..L["不正确的物品ID"]
 				StaticPopup_Show(G.uiname.."incorrect item ID")
 			elseif not aCoreCDB["ActionbarOptions"]["caflash_bl"][list][ID] then
