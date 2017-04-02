@@ -1,6 +1,6 @@
-﻿## Interface: 70100
+﻿## Interface: 70200
 ## Title: |cffEE3A8CAltz|rUI Config
-## Version: 7.18
+## Version: 7.19
 ## Author: Paopao001
 ## Dependencies: Aurora
 ## OptionalDeps: !ClassColors, Skada, DBM-Core, BigWigs
