@@ -21,7 +21,8 @@ barmod.ApplySettings = function(self, win)
 	
 	if not skada.border then
 		skada.border = CreateFrame("Frame", G.uiname..skada:GetName().."Skin", skada)
-		skada.border:SetAllPoints(skada.borderFrame)
+		skada.border:SetPoint("TOPLEFT", skada, "TOPLEFT", -1, 1)
+		skada.border:SetPoint("BOTTOMRIGHT", skada, "BOTTOMRIGHT", 1, -1)
 		F.SetBD(skada.border)
 	end
 end

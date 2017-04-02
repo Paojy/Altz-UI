@@ -485,7 +485,7 @@ LFG Auto Accept Proposal
 -------------------------------------------------------------------------------]]
 if croods then
 	WorldMapButton.coordText = WorldMapFrameCloseButton:CreateFontString(nil, "OVERLAY", "GameFontGreen") 
-	WorldMapButton.coordText:SetPoint("BOTTOM", WorldMapButton, "BOTTOM", 0, 6)
+	WorldMapButton.coordText:SetPoint("BOTTOM", WorldMapScrollFrame, "BOTTOM", 0, 6)
 
 	WorldMapButton:HookScript("OnUpdate", function(self)
 	    if select(2, GetInstanceInfo()) == "none" then
