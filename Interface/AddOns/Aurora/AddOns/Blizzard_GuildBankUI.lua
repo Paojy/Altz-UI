@@ -55,6 +55,7 @@ C.themes["Blizzard_GuildBankUI"] = function()
 	end
 	GuildBankPopupFrame.BG:Hide()
 	F.CreateBD(GuildBankPopupFrame)
+	F.CreateSD(GuildBankPopupFrame)
 	F.CreateBD(GuildBankPopupEditBox, .25)
 	GuildBankPopupFrame:SetPoint("TOPLEFT", GuildBankFrame, "TOPRIGHT", 2, -30)
 	GuildBankPopupFrame:SetHeight(525)

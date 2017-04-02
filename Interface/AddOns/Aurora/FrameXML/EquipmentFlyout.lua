@@ -23,11 +23,13 @@ tinsert(C.themes["Aurora"], function()
 
 		bu:SetNormalTexture("")
 		bu:SetPushedTexture("")
+		bu:GetHighlightTexture():SetColorTexture(1, 1, 1, .25)
 		F.CreateBG(bu)
 
 		border:SetTexture(C.media.backdrop)
-		border:SetPoint("TOPLEFT", -1, 1)
-		border:SetPoint("BOTTOMRIGHT", 1, -1)
+		border.SetTexture = F.dummy
+		border:SetPoint("TOPLEFT", -1.2, 1.2)
+		border:SetPoint("BOTTOMRIGHT", 1.2, -1.2)
 		border:SetDrawLayer("BACKGROUND", 1)
 
 		bu.icon:SetTexCoord(.08, .92, .08, .92)

@@ -9,7 +9,6 @@ C.themes["Blizzard_PVPUI"] = function()
 	local ConquestFrame = ConquestFrame
 	local WarGamesFrame = WarGamesFrame
 	local PVPArenaTeamsFrame = PVPArenaTeamsFrame
-	local englishFaction = UnitFactionGroup("player")
 
 	-- Category buttons
 
@@ -23,7 +22,7 @@ C.themes["Blizzard_PVPUI"] = function()
 		F.Reskin(bu, true)
 
 		bu.Background:SetAllPoints()
-		bu.Background:SetColorTexture(r, g, b, .2)
+		bu.Background:SetColorTexture(r, g, b, .25)
 		bu.Background:Hide()
 
 		icon:SetTexCoord(.08, .92, .08, .92)
@@ -76,14 +75,14 @@ C.themes["Blizzard_PVPUI"] = function()
 
 	F.Reskin(BonusFrame.DiceButton)
 
-	for _, bonusButton in pairs({"RandomBGButton", "Arena1Button", "AshranButton"}) do
+	for _, bonusButton in pairs({"RandomBGButton", "Arena1Button", "AshranButton", "BrawlButton"}) do
 		local bu = BonusFrame[bonusButton]
 		local reward = bu.Reward
 
 		F.Reskin(bu, true)
 
 		bu.SelectedTexture:SetDrawLayer("BACKGROUND")
-		bu.SelectedTexture:SetColorTexture(r, g, b, .2)
+		bu.SelectedTexture:SetColorTexture(r, g, b, .25)
 		bu.SelectedTexture:SetAllPoints()
 
 		if reward then
@@ -93,21 +92,19 @@ C.themes["Blizzard_PVPUI"] = function()
 	end
 
 	IncludedBattlegroundsDropDown:SetPoint("TOPRIGHT", BonusFrame.DiceButton, 40, 26)
+	HonorFrame.XPBar.Frame:Hide()
+	HonorFrame.XPBar.Bar.Background:Hide()
+	F.CreateBDFrame(HonorFrame.XPBar.Bar.Background)
 
 	-- Role buttons
 
-	local RoleInsets = {HonorFrame.RoleInset, ConquestFrame.RoleInset}
-	
-	for index, RoleInset in pairs(RoleInsets) do
-		RoleInset:DisableDrawLayer("BACKGROUND")
-		RoleInset:DisableDrawLayer("BORDER")
+	local function styleRole(f)
+		f:DisableDrawLayer("BACKGROUND")
+		f:DisableDrawLayer("BORDER")
 
-		for _, roleButton in pairs({RoleInset.HealerIcon, RoleInset.TankIcon, RoleInset.DPSIcon}) do
+		for _, roleButton in pairs({f.HealerIcon, f.TankIcon, f.DPSIcon}) do
 			roleButton.cover:SetTexture(C.media.roleIcons)
-			--roleButton.cover:SetTexCoord(.08, .92, .08, .92)
 			roleButton:SetNormalTexture(C.media.roleIcons)
-			--roleButton:GetNormalTexture():SetTexCoord(.08, .92, .08, .92)
-
 			roleButton.checkButton:SetFrameLevel(roleButton:GetFrameLevel() + 2)
 
 			for i = 1, 2 do
@@ -125,8 +122,8 @@ C.themes["Blizzard_PVPUI"] = function()
 				right:SetWidth(1)
 				right:SetTexture(C.media.backdrop)
 				right:SetVertexColor(0, 0, 0)
-				right:SetPoint("TOPRIGHT", roleButton, -5, -4)
-				right:SetPoint("BOTTOMRIGHT", roleButton, -5, 7)
+				right:SetPoint("TOPRIGHT", roleButton, -6, -4)
+				right:SetPoint("BOTTOMRIGHT", roleButton, -6, 7)
 				roleButton["rightLine"..i] = right
 
 				local top = roleButton:CreateTexture()
@@ -156,6 +153,8 @@ C.themes["Blizzard_PVPUI"] = function()
 			F.ReskinCheck(roleButton.checkButton)
 		end
 	end
+	styleRole(HonorFrame.RoleInset)
+	styleRole(ConquestFrame.RoleInset)
 
 	-- Honor frame specific
 
@@ -172,14 +171,14 @@ C.themes["Blizzard_PVPUI"] = function()
 		F.CreateBD(bg, 0)
 		bg:SetFrameLevel(bu:GetFrameLevel()-1)
 
-		bu.bgTex = F.CreateGradient(bu)
-		bu.bgTex:SetDrawLayer("BACKGROUND")
-		bu.bgTex:SetPoint("TOPLEFT", bg, 1, -1)
-		bu.bgTex:SetPoint("BOTTOMRIGHT", bg, -1, 1)
+		bu.tex = F.CreateGradient(bu)
+		bu.tex:SetDrawLayer("BACKGROUND")
+		bu.tex:SetPoint("TOPLEFT", bg, 1, -1)
+		bu.tex:SetPoint("BOTTOMRIGHT", bg, -1, 1)
 
 		bu.SelectedTexture:SetDrawLayer("BACKGROUND")
-		bu.SelectedTexture:SetColorTexture(r, g, b, .2)
-		bu.SelectedTexture:SetAllPoints(bu.bgTex)
+		bu.SelectedTexture:SetColorTexture(r, g, b, .25)
+		bu.SelectedTexture:SetAllPoints(bu.tex)
 
 		bu.Icon:SetTexCoord(.08, .92, .08, .92)
 		bu.Icon.bg = F.CreateBG(bu.Icon)
@@ -201,7 +200,7 @@ C.themes["Blizzard_PVPUI"] = function()
 	ConquestFrame.RatedBGHeader:Hide()
 	ConquestFrame.ShadowOverlay:Hide()
 
-	F.CreateBD(ConquestTooltip)
+	--F.CreateBD(ConquestTooltip)
 
 	local ConquestFrameButton_OnEnter = function(self)
 		ConquestTooltip:SetPoint("TOPLEFT", self, "TOPRIGHT", 1, 0)
@@ -214,18 +213,20 @@ C.themes["Blizzard_PVPUI"] = function()
 	for _, bu in pairs({ConquestFrame.Arena2v2, ConquestFrame.Arena3v3, ConquestFrame.RatedBG}) do
 		F.Reskin(bu, true)
 		local reward = bu.Reward
-
-		bu.SelectedTexture:SetDrawLayer("BACKGROUND")
-		bu.SelectedTexture:SetColorTexture(r, g, b, .2)
-		bu.SelectedTexture:SetAllPoints()
-
 		if reward then
 			reward.Border:Hide()
 			F.ReskinIcon(reward.Icon)
 		end
+
+		bu.SelectedTexture:SetDrawLayer("BACKGROUND")
+		bu.SelectedTexture:SetColorTexture(r, g, b, .25)
+		bu.SelectedTexture:SetAllPoints()
 	end
 
 	ConquestFrame.Arena3v3:SetPoint("TOP", ConquestFrame.Arena2v2, "BOTTOM", 0, -1)
+	ConquestFrame.XPBar.Frame:Hide()
+	ConquestFrame.XPBar.Bar.Background:Hide()
+	F.CreateBDFrame(ConquestFrame.XPBar.Bar.Background)
 
 	-- War games
 
@@ -272,7 +273,7 @@ C.themes["Blizzard_PVPUI"] = function()
 		tex:SetPoint("BOTTOMRIGHT", -2, 3)
 
 		SelectedTexture:SetDrawLayer("BACKGROUND")
-		SelectedTexture:SetColorTexture(r, g, b, .2)
+		SelectedTexture:SetColorTexture(r, g, b, .25)
 		SelectedTexture:SetPoint("TOPLEFT", 2, 0)
 		SelectedTexture:SetPoint("BOTTOMRIGHT", -1, 2)
 
@@ -323,38 +324,4 @@ C.themes["Blizzard_PVPUI"] = function()
 	F.ReskinScroll(HonorFrameSpecificFrameScrollBar)
 	F.ReskinScroll(WarGamesFrameScrollFrameScrollBar)
 	F.ReskinScroll(WarGamesFrameInfoScrollFrameScrollBar)
-	
-	
-	-- XPBar
-	
-	local BarFrames = {HonorFrame, ConquestFrame}
-	
-	for index, BarFrame in pairs(BarFrames) do
-		BarFrame.XPBar.Frame:Hide()
-		
-		local bg = CreateFrame("Frame", nil, BarFrame.XPBar.Bar)
-		bg:SetPoint("TOPLEFT", 0, 1)
-		bg:SetPoint("BOTTOMRIGHT", 0, -1)
-		bg:SetFrameLevel(BarFrame.XPBar.Bar:GetFrameLevel()-1)
-		F.CreateBD(bg, .3)
-		BarFrame.XPBar.Bar.Background:Hide()
-		
-		BarFrame.XPBar.NextAvailable.Frame:Hide()
-		F.CreateBD(BarFrame.XPBar.NextAvailable, .5)
-		BarFrame.XPBar.NextAvailable:ClearAllPoints()
-		BarFrame.XPBar.NextAvailable:SetPoint("LEFT", BarFrame.XPBar.Bar, "RIGHT")
-		BarFrame.XPBar.NextAvailable:SetSize(25, 25)
-		BarFrame.XPBar.NextAvailable.Icon:SetAllPoints()
-		BarFrame.XPBar.NextAvailable.Icon:SetTexCoord(.08, .92, .08, .92)
-		BarFrame.XPBar.NextAvailable.Icon.SetTexCoord = function() end
-		
-		BarFrame.XPBar.NextAvailable.Frame.Show = F.dummy
-		BarFrame.XPBar.Levelbg = CreateFrame("Frame", nil, BarFrame.XPBar)
-		BarFrame.XPBar.Levelbg:SetPoint("RIGHT", BarFrame.XPBar.Bar, "LEFT")
-		BarFrame.XPBar.Levelbg:SetSize(25, 25)
-		BarFrame.XPBar.Levelbg:SetFrameLevel(1)
-		BarFrame.XPBar.Level:SetPoint("CENTER", BarFrame.XPBar.Levelbg, "CENTER")
-		BarFrame.XPBar.Level:SetJustifyH("CENTER")
-		F.CreateBD(BarFrame.XPBar.Levelbg, .5)
-	end
 end

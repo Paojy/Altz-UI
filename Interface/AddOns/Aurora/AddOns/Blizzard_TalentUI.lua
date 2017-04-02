@@ -111,7 +111,7 @@ C.themes["Blizzard_TalentUI"] = function()
 		else
 			bonuses = SPEC_SPELLS_DISPLAY[id]
 		end
-		
+
 		if bonuses then
 			for i = 1, #bonuses, 2 do
 				local frame = scrollChild["abilityButton"..index]
@@ -131,7 +131,7 @@ C.themes["Blizzard_TalentUI"] = function()
 				index = index + 1
 			end
 		end
-		
+
 		for i = 1, GetNumSpecializations(nil, self.isPet) do
 			local bu = self["specButton"..i]
 
@@ -147,8 +147,6 @@ C.themes["Blizzard_TalentUI"] = function()
 		local _, _, _, icon = GetSpecializationInfo(i, false, nil)
 		PlayerTalentFrameSpecialization["specButton"..i].specIcon:SetTexture(icon)
 	end
-
-	PlayerTalentFrameSpecializationLearnButton.Flash:SetTexture("")
 
 	local buttons = {"PlayerTalentFrameSpecializationSpecButton", "PlayerTalentFramePetSpecializationSpecButton"}
 
@@ -244,7 +242,7 @@ C.themes["Blizzard_TalentUI"] = function()
 			for j = 1, NUM_TALENT_COLUMNS do
 				local bu = _G["PlayerTalentFrameTalentsTalentRow"..i.."Talent"..j]
 				if bu.knownSelection:IsShown() then
-					bu.bg:SetBackdropColor(r, g, b, .2)
+					bu.bg:SetBackdropColor(r, g, b, .25)
 				else
 					bu.bg:SetBackdropColor(0, 0, 0, .25)
 				end
@@ -276,68 +274,46 @@ C.themes["Blizzard_TalentUI"] = function()
 	PlayerTalentFrameTalentsTutorialButton:SetPoint("TOPLEFT", PlayerTalentFrame, "TOPLEFT", -12, 12)
 	PlayerTalentFrameSpecializationTutorialButton.Ring:Hide()
 	PlayerTalentFrameSpecializationTutorialButton:SetPoint("TOPLEFT", PlayerTalentFrame, "TOPLEFT", -12, 12)
+	PlayerTalentFramePetSpecializationTutorialButton.Ring:Hide()
+	PlayerTalentFramePetSpecializationTutorialButton:SetPoint("TOPLEFT", PlayerTalentFrame, "TOPLEFT", -12, 12)
 
 	F.ReskinPortraitFrame(PlayerTalentFrame, true)
 	F.Reskin(PlayerTalentFrameSpecializationLearnButton)
 	F.Reskin(PlayerTalentFrameActivateButton)
 	F.Reskin(PlayerTalentFramePetSpecializationLearnButton)
-	
-	-- PvP Talents
-	
-	PlayerTalentFramePVPTalents.PortraitMouseOverFrame:SetAlpha(0)
+
+	-- PVP Talents
+
+	PlayerTalentFramePVPTalents.XPBar.Frame:Hide()
+	PlayerTalentFramePVPTalents.XPBar.Bar.Background:Hide()
+	F.CreateBDFrame(PlayerTalentFramePVPTalents.XPBar.Bar.Background)
+	F.Reskin(PlayerTalentFramePVPTalents.XPBar.PrestigeReward.Accept)
 	PlayerTalentFramePVPTalents.PortraitBackground:SetAlpha(0)
 	PlayerTalentFramePVPTalents.SmallWreath:SetAlpha(0)
-	PlayerTalentFramePVPTalents.XPBar.Frame:Hide()
-	
-	local bg = CreateFrame("Frame", nil, PlayerTalentFramePVPTalents.XPBar.Bar)
-	bg:SetPoint("TOPLEFT", 0, 1)
-	bg:SetPoint("BOTTOMRIGHT", 0, -1)
-	bg:SetFrameLevel(PlayerTalentFramePVPTalents.XPBar.Bar:GetFrameLevel()-1)
-	F.CreateBD(bg, .3)
-	PlayerTalentFramePVPTalents.XPBar.Bar.Background:Hide()
-	
-	PlayerTalentFramePVPTalents.XPBar.NextAvailable.Frame:Hide()
-	F.CreateBD(PlayerTalentFramePVPTalents.XPBar.NextAvailable, .5)
-	PlayerTalentFramePVPTalents.XPBar.NextAvailable:ClearAllPoints()
-	PlayerTalentFramePVPTalents.XPBar.NextAvailable:SetPoint("LEFT", PlayerTalentFramePVPTalents.XPBar.Bar, "RIGHT")
-	PlayerTalentFramePVPTalents.XPBar.NextAvailable:SetSize(25, 25)
-	PlayerTalentFramePVPTalents.XPBar.NextAvailable.Icon:SetAllPoints()
-	PlayerTalentFramePVPTalents.XPBar.NextAvailable.Icon:SetTexCoord(.08, .92, .08, .92)
-	PlayerTalentFramePVPTalents.XPBar.NextAvailable.Icon.SetTexCoord = function() end
-	
-	PlayerTalentFramePVPTalents.XPBar.NextAvailable.Frame.Show = F.dummy
-	PlayerTalentFramePVPTalents.XPBar.Levelbg = CreateFrame("Frame", nil, PlayerTalentFramePVPTalents.XPBar)
-	PlayerTalentFramePVPTalents.XPBar.Levelbg:SetPoint("RIGHT", PlayerTalentFramePVPTalents.XPBar.Bar, "LEFT")
-	PlayerTalentFramePVPTalents.XPBar.Levelbg:SetSize(25, 25)
-	PlayerTalentFramePVPTalents.XPBar.Levelbg:SetFrameLevel(1)
-	PlayerTalentFramePVPTalents.XPBar.Level:SetPoint("CENTER", PlayerTalentFramePVPTalents.XPBar.Levelbg, "CENTER")
-	PlayerTalentFramePVPTalents.XPBar.Level:SetJustifyH("CENTER")
-	F.CreateBD(PlayerTalentFramePVPTalents.XPBar.Levelbg, .5)
-	
-	for i = 1, 7 do
+	for i = 1, 8 do
 		select(i, PlayerTalentFramePVPTalents.Talents:GetRegions()):Hide()
 	end
-	
-	for i = 1, 6 do
-		PlayerTalentFramePVPTalents.Talents["Tier"..i].Bg:SetAlpha(0)
-		PlayerTalentFramePVPTalents.Talents["Tier"..i].TopLine:SetDesaturated(true)
-		PlayerTalentFramePVPTalents.Talents["Tier"..i].TopLine:SetVertexColor(r, g, b)
-		PlayerTalentFramePVPTalents.Talents["Tier"..i].BottomLine:SetDesaturated(true)
-		PlayerTalentFramePVPTalents.Talents["Tier"..i].BottomLine:SetVertexColor(r, g, b)
+	for i = 1, MAX_PVP_TALENT_TIERS do
+		local row = PlayerTalentFramePVPTalents.Talents["Tier"..i]
+		row.Bg:Hide()
+		row.TopLine:SetDesaturated(true)
+		row.TopLine:SetVertexColor(r, g, b)
+		row.BottomLine:SetDesaturated(true)
+		row.BottomLine:SetVertexColor(r, g, b)
+
 		for j = 1, 3 do
-			local bu = PlayerTalentFramePVPTalents.Talents["Tier"..i]["Talent"..j]
+			local bu = row["Talent"..j]
+			bu.learnSelection:SetAlpha(0)
+			bu.knownSelection:SetAlpha(0)
 			bu.LeftCap:Hide()
 			bu.RightCap:Hide()
-			bu.Slot:Hide()
 			bu.Cover:SetAlpha(0)
-			bu.knownSelection:SetAlpha(0)
-			bu.learnSelection:SetAlpha(0)
-			bu.highlight:Hide()
-			
+			bu:SetHighlightTexture("")
+			bu.Slot:SetAlpha(0)
+			bu.Icon:SetDrawLayer("ARTWORK")
 			bu.Icon:SetTexCoord(.08, .92, .08, .92)
-			local iconbg = F.CreateBG(bu.Icon)
-			iconbg:SetDrawLayer("BACKGROUND", -1)
-			
+			F.CreateBG(bu.Icon)
+
 			bu.bg = CreateFrame("Frame", nil, bu)
 			bu.bg:SetPoint("TOPLEFT", 10, 0)
 			bu.bg:SetPoint("BOTTOMRIGHT")
@@ -345,17 +321,28 @@ C.themes["Blizzard_TalentUI"] = function()
 			F.CreateBD(bu.bg, .25)
 		end
 	end
-		
 	hooksecurefunc("PVPTalentFrame_Update", function()
-		for i = 1, 6 do
+		for i = 1, MAX_PVP_TALENT_TIERS do
 			for j = 1, 3 do
 				local bu = PlayerTalentFramePVPTalents.Talents["Tier"..i]["Talent"..j]
 				if bu.knownSelection:IsShown() then
-					bu.bg:SetBackdropColor(r, g, b, .2)
+					bu.bg:SetBackdropColor(r, g, b, .25)
 				else
 					bu.bg:SetBackdropColor(0, 0, 0, .25)
 				end
 			end
 		end
 	end)
+
+	-- PrestigeLevelDialog
+
+	local dialog = PVPTalentPrestigeLevelDialog
+	F.ReskinPortraitFrame(dialog)
+	F.Reskin(dialog.Accept)
+	F.Reskin(dialog.Cancel)
+	F.ReskinClose(dialog.CloseButton)
+	dialog.MaxLevelReward.Frame:SetAlpha(0)
+	dialog.MaxLevelReward.Icon:SetTexCoord(.08, .92, .08, .92)
+	dialog.MaxLevelReward.Icon.SetTexCoord = F.dummy
+	F.CreateBDFrame(dialog.MaxLevelReward.Icon)
 end

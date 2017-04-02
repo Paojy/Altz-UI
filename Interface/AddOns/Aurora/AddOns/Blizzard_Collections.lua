@@ -12,6 +12,7 @@ C.themes["Blizzard_Collections"] = function()
 	end
 
 	F.CreateBD(CollectionsJournal)
+	F.CreateSD(CollectionsJournal)
 	F.ReskinTab(CollectionsJournalTab1)
 	F.ReskinTab(CollectionsJournalTab2)
 	F.ReskinTab(CollectionsJournalTab3)
@@ -47,7 +48,7 @@ C.themes["Blizzard_Collections"] = function()
 
 	F.CreateBD(MountJournal.MountCount, .25)
 	F.CreateBD(PetJournal.PetCount, .25)
-	F.CreateBD(MountJournal.MountDisplay.ModelFrame, .25)
+	F.CreateBD(MountJournal.MountDisplay.ModelScene, .25)
 
 	F.Reskin(MountJournalMountButton)
 	F.Reskin(PetJournalSummonButton)
@@ -56,8 +57,8 @@ C.themes["Blizzard_Collections"] = function()
 	F.ReskinScroll(PetJournalListScrollFrameScrollBar)
 	F.ReskinInput(MountJournalSearchBox)
 	F.ReskinInput(PetJournalSearchBox)
-	F.ReskinArrow(MountJournal.MountDisplay.ModelFrame.RotateLeftButton, "left")
-	F.ReskinArrow(MountJournal.MountDisplay.ModelFrame.RotateRightButton, "right")
+	F.ReskinArrow(MountJournal.MountDisplay.ModelScene.RotateLeftButton, "left")
+	F.ReskinArrow(MountJournal.MountDisplay.ModelScene.RotateRightButton, "right")
 	F.ReskinFilterButton(PetJournalFilterButton)
 	F.ReskinFilterButton(MountJournalFilterButton)
 
@@ -350,11 +351,8 @@ C.themes["Blizzard_Collections"] = function()
 
 	F.ReskinInput(ToyBox.searchBox)
 	F.ReskinFilterButton(ToyBoxFilterButton)
-	F.ReskinArrow(ToyBox.navigationFrame.prevPageButton, "left")
-	F.ReskinArrow(ToyBox.navigationFrame.nextPageButton, "right")
-
-	ToyBox.navigationFrame.prevPageButton:SetPoint("BOTTOMRIGHT", -320, 51)
-	ToyBox.navigationFrame.nextPageButton:SetPoint("BOTTOMRIGHT", -285, 51)
+	F.ReskinArrow(ToyBox.PagingFrame.PrevPageButton, "left")
+	F.ReskinArrow(ToyBox.PagingFrame.NextPageButton, "right")
 
 	-- Progress bar
 
@@ -425,11 +423,13 @@ C.themes["Blizzard_Collections"] = function()
 	F.ReskinInput(HeirloomsJournalSearchBox)
 	F.ReskinDropDown(HeirloomsJournalClassDropDown)
 	F.ReskinFilterButton(HeirloomsJournalFilterButton)
-	F.ReskinArrow(HeirloomsJournal.navigationFrame.prevPageButton, "left")
-	F.ReskinArrow(HeirloomsJournal.navigationFrame.nextPageButton, "right")
+	F.ReskinArrow(HeirloomsJournal.PagingFrame.PrevPageButton, "left")
+	F.ReskinArrow(HeirloomsJournal.PagingFrame.NextPageButton, "right")
 
-	HeirloomsJournal.navigationFrame.prevPageButton:SetPoint("BOTTOMRIGHT", -320, 51)
-	HeirloomsJournal.navigationFrame.nextPageButton:SetPoint("BOTTOMRIGHT", -285, 51)
+	hooksecurefunc(HeirloomsJournal, "UpdateButton", function(self, button)
+		button.level:SetFontObject("GameFontWhiteSmall")
+		button.special:SetTextColor(1, .8, 0)
+	end)
 
 	-- Progress bar
 
@@ -470,7 +470,7 @@ C.themes["Blizzard_Collections"] = function()
 
 		if button.iconTexture:IsShown() then
 			button.name:SetTextColor(1, 1, 1)
-			button.bg:SetVertexColor(.9, .8, .5)
+			button.bg:SetVertexColor(0, .8, 1)
 			button.newLevelBg:Show()
 		else
 			button.name:SetTextColor(.5, .5, .5)
@@ -484,7 +484,7 @@ C.themes["Blizzard_Collections"] = function()
 			local header = HeirloomsJournal.heirloomHeaderFrames[i]
 			if not header.styled then
 				header.text:SetTextColor(1, 1, 1)
-				header.text:SetFont(C.media.font, 16)
+				header.text:SetFont(C.media.font, 16, "OUTLINE")
 
 				header.styled = true
 			end
@@ -495,7 +495,7 @@ C.themes["Blizzard_Collections"] = function()
 
 			if button.iconTexture:IsShown() then
 				button.name:SetTextColor(1, 1, 1)
-				button.bg:SetVertexColor(.9, .8, .5)
+				button.bg:SetVertexColor(0, .8, 1)
 				button.newLevelBg:Show()
 			else
 				button.name:SetTextColor(.5, .5, .5)
@@ -505,38 +505,88 @@ C.themes["Blizzard_Collections"] = function()
 		end
 	end)
 
-	-- [[ WardrobeCollection ]]
+	-- [[ WardrobeCollectionFrame ]]
 
-	local WardrobeCollectionFrame = WardrobeCollectionFrame
-	local ModelsFrame = WardrobeCollectionFrame.ModelsFrame
-
-	WardrobeCollectionFrameBg:Hide()
-	ModelsFrame:DisableDrawLayer("BACKGROUND")
-	ModelsFrame:DisableDrawLayer("BORDER")
-	ModelsFrame:DisableDrawLayer("ARTWORK")
-	ModelsFrame:DisableDrawLayer("OVERLAY")
-
-	F.ReskinInput(WardrobeCollectionFrameSearchBox)
+	for i = 1, 35 do
+		select(i, WardrobeCollectionFrame.ItemsCollectionFrame:GetRegions()):Hide()
+	end
 	F.ReskinFilterButton(WardrobeCollectionFrame.FilterButton)
 	F.ReskinDropDown(WardrobeCollectionFrameWeaponDropDown)
-	F.ReskinArrow(WardrobeCollectionFrame.NavigationFrame.PrevPageButton, "left")
-	F.ReskinArrow(WardrobeCollectionFrame.NavigationFrame.NextPageButton, "right")
+	F.ReskinInput(WardrobeCollectionFrameSearchBox)
 
-	WardrobeCollectionFrame.NavigationFrame.PrevPageButton:SetPoint("BOTTOM", 23, 51)
-	WardrobeCollectionFrame.NavigationFrame.NextPageButton:SetPoint("BOTTOM", 58, 51)
+	for index = 1, 2 do
+		local tab = _G["WardrobeCollectionFrameTab"..index]
+		for i = 1, 6 do
+			select(i, tab:GetRegions()):SetAlpha(0)
+		end
+		tab:SetHighlightTexture("")
+		tab.bg = F.CreateBDFrame(tab, .25)
+		tab.bg:SetPoint("TOPLEFT", 3, -3)
+		tab.bg:SetPoint("BOTTOMRIGHT", -3, -1)
+	end
+	hooksecurefunc("WardrobeCollectionFrame_SetTab", function(tabID)
+		for index = 1, 2 do
+			local tab = _G["WardrobeCollectionFrameTab"..index]
+			if tabID == index then
+				tab.bg:SetBackdropColor(r, g, b, .2)
+			else
+				tab.bg:SetBackdropColor(0, 0, 0, .2)
+			end
+		end
+	end)
 
-	-- Progress bar
+	F.ReskinArrow(WardrobeCollectionFrame.ItemsCollectionFrame.PagingFrame.PrevPageButton, "left")
+	F.ReskinArrow(WardrobeCollectionFrame.ItemsCollectionFrame.PagingFrame.NextPageButton, "right")
+	WardrobeCollectionFrame.ItemsCollectionFrame.BGCornerTopLeft:SetAlpha(0)
+	WardrobeCollectionFrame.ItemsCollectionFrame.BGCornerTopRight:SetAlpha(0)
 
 	local progressBar = WardrobeCollectionFrame.progressBar
-	progressBar.borderLeft:Hide()
-	progressBar.borderMid:Hide()
-	progressBar.borderRight:Hide()
 	progressBar:DisableDrawLayer("BACKGROUND")
-
+	for i = 1, 3 do
+		select(i, progressBar:GetRegions()):Hide()
+	end
 	progressBar.text:SetPoint("CENTER", 0, 1)
 	progressBar:SetStatusBarTexture(C.media.backdrop)
-
 	F.CreateBDFrame(progressBar, .25)
+
+	-- ItemSetsCollection
+
+	local SetsCollectionFrame = WardrobeCollectionFrame.SetsCollectionFrame
+	SetsCollectionFrame.LeftInset:Hide()
+	SetsCollectionFrame.RightInset:Hide()
+	F.CreateBDFrame(SetsCollectionFrame.Model, .25)
+
+	local ScrollFrame = SetsCollectionFrame.ScrollFrame
+	F.ReskinScroll(ScrollFrame.scrollBar)
+	for i = 1, #ScrollFrame.buttons do
+		local bu = ScrollFrame.buttons[i]
+		bu.Background:Hide()
+		bu.HighlightTexture:SetTexture("")
+		F.ReskinIcon(bu.Icon)
+
+		bu.SelectedTexture:SetDrawLayer("BACKGROUND")
+		bu.SelectedTexture:SetColorTexture(r, g, b, .25)
+		bu.SelectedTexture:ClearAllPoints()
+		bu.SelectedTexture:SetPoint("TOPLEFT", 1, -2)
+		bu.SelectedTexture:SetPoint("BOTTOMRIGHT", -1, 2)
+		F.CreateBDFrame(bu.SelectedTexture, .25)
+	end
+
+	local DetailsFrame = SetsCollectionFrame.DetailsFrame
+	DetailsFrame.ModelFadeTexture:Hide()
+	DetailsFrame.IconRowBackground:Hide()
+	F.ReskinFilterButton(DetailsFrame.VariantSetsButton, "Down")
+
+	hooksecurefunc(SetsCollectionFrame, "SetItemFrameQuality", function(self, itemFrame)
+		local ic = itemFrame.Icon
+		if not itemFrame.styled then
+			ic:SetTexCoord(.08, .92, .08, .92)
+			F.CreateBDFrame(ic)
+			itemFrame.IconBorder:Hide()
+			itemFrame.IconBorder.Show = F.dummy
+			itemFrame.styled = true
+		end
+	end)
 
 	-- [[ Wardrobe ]]
 
@@ -560,9 +610,16 @@ C.themes["Blizzard_Collections"] = function()
 	F.Reskin(WardrobeOutfitDropDown.SaveButton)
 	F.ReskinArrow(WardrobeTransmogFrame.SpecButton, "down")
 	F.ReskinDropDown(WardrobeOutfitDropDown)
-
 	WardrobeOutfitDropDown:SetHeight(32)
 	WardrobeOutfitDropDown.SaveButton:SetPoint("LEFT", WardrobeOutfitDropDown, "RIGHT", -13, 2)
+	for i = 1, 9 do
+		select(i, WardrobeOutfitFrame:GetRegions()):Hide()
+	end
+	F.CreateBDFrame(WardrobeOutfitFrame, .25)
+	F.CreateSD(WardrobeOutfitFrame, .25)
+	for i = 1, 10 do
+		select(i, WardrobeTransmogFrame.Model.ClearAllPendingButton:GetRegions()):Hide()
+	end
 	WardrobeTransmogFrame.SpecButton:SetPoint("RIGHT", WardrobeTransmogFrame.ApplyButton, "LEFT", -3, 0)
 
 	local slots = {"Head", "Shoulder", "Chest", "Waist", "Legs", "Feet", "Wrist", "Hands", "Back", "Shirt", "Tabard", "MainHand", "SecondaryHand"}
@@ -573,6 +630,92 @@ C.themes["Blizzard_Collections"] = function()
 			slot.Border:Hide()
 			slot.Icon:SetDrawLayer("BACKGROUND", 1)
 			F.ReskinIcon(slot.Icon)
+			slot:SetHighlightTexture(C.media.backdrop)
+			local hl = slot:GetHighlightTexture()
+			hl:SetVertexColor(1, 1, 1, .25)
+			hl:SetPoint("TOPLEFT", 2, -2)
+			hl:SetPoint("BOTTOMRIGHT", -2, 2)
 		end
 	end
+
+	-- Edit Frame
+	for i = 1, 11 do
+		select(i, WardrobeOutfitEditFrame:GetRegions()):Hide()
+	end
+	WardrobeOutfitEditFrame.Title:Show()
+	for i = 2, 5 do
+		select(i, WardrobeOutfitEditFrame.EditBox:GetRegions()):Hide()
+	end
+	F.CreateBD(WardrobeOutfitEditFrame)
+	F.CreateSD(WardrobeOutfitEditFrame)
+	F.CreateBDFrame(WardrobeOutfitEditFrame.EditBox,.25)
+	F.Reskin(WardrobeOutfitEditFrame.AcceptButton)
+	F.Reskin(WardrobeOutfitEditFrame.CancelButton)
+	F.Reskin(WardrobeOutfitEditFrame.DeleteButton)
+
+	-- HPetBattleAny
+	local reskinHPet
+	CollectionsJournal:HookScript("OnShow", function()
+		if not IsAddOnLoaded("HPetBattleAny") then return end
+		if not reskinHPet then
+			F.Reskin(HPetInitOpenButton)
+			F.Reskin(HPetAllInfoButton)
+			for i = 1, 9 do
+				select(i, HPetAllInfoButton:GetRegions()):Hide()
+			end
+
+			if PetJournalBandageButton then
+				PetJournalBandageButtonBorder:Hide()
+				PetJournalBandageButtonIcon:SetTexCoord(.08, .92, .08, .92)
+				PetJournalBandageButton:SetPoint("TOPRIGHT", PetJournalHealPetButton, "TOPLEFT", -3, 0)
+				PetJournalBandageButton:SetPoint("BOTTOMLEFT", PetJournalHealPetButton, "BOTTOMLEFT", -35, 0)
+				F.CreateBDFrame(PetJournalBandageButtonIcon)
+			end
+			reskinHPet = true
+		end
+	end)
+end
+
+do
+	-- HPetBattleAny
+	local f = CreateFrame("Frame")
+	f:RegisterEvent("PLAYER_ENTERING_WORLD")
+	f:RegisterEvent("PET_BATTLE_OPENING_START")
+	f:SetScript("OnEvent", function(_, event)
+		if not IsAddOnLoaded("HPetBattleAny") then return end
+		if event == "PLAYER_ENTERING_WORLD" then
+			HPetOption:HookScript("OnShow", function(self)
+				if not self.reskin then
+					local bu = {"Reset", "Help", "UpdateStone"}
+					for k, v in pairs(bu) do
+						F.Reskin(_G["HPetOption"..v])
+					end
+
+					local box = {"Message", "OnlyInPetInfo", "MiniTip", "Sound", "FastForfeit", "OtherTooltip", "HighGlow", "AutoSaveAbility", "ShowBandageButton", "ShowHideID", "PetGrowInfo", "BreedIDStyle", "PetGreedInfo", "PetBreedInfo", "ShowBreedID", "EnemyAbility", "LockAbilitys", "ShowAbilitysName", "OtherAbility", "AllyAbility"}
+					for k, v in pairs(box) do
+						F.ReskinCheck(_G["HPetOption"..v])
+					end
+					F.ReskinSlider(_G["HPetOptionAbilitysScale"])
+					F.ReskinInput(_G["HPetOptionScaleBox"])
+
+					self.reskin = true
+				end
+			end)
+			f:UnregisterEvent("PLAERY_ENTERING_WORLD")
+		elseif event == "PET_BATTLE_OPENING_START" then
+			C_Timer.After(.01, function()
+				if f.styled then return end
+				for i = 1, 6 do
+					local bu = HAbiFrameActiveEnemy.AbilityButtons[i]
+					bu.NormalTexture:SetTexture(nil)
+					bu.NormalTexture.SetTexture = F.dummy
+					bu.Icon:SetTexCoord(.08, .92, .08, .92)
+					local bg = F.CreateBDFrame(bu.Icon)
+					F.CreateSD(bg)
+				end
+				f.styled = true
+			end)
+			f:UnregisterEvent("PET_BATTLE_OPENING_START")
+		end
+	end)
 end

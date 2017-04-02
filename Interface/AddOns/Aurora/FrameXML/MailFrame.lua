@@ -23,6 +23,7 @@ tinsert(C.themes["Aurora"], function()
 	F.Reskin(OpenMailDeleteButton)
 	F.Reskin(OpenMailCancelButton)
 	F.Reskin(OpenMailReportSpamButton)
+	F.Reskin(OpenAllMail)
 	F.ReskinInput(SendMailNameEditBox, 20)
 	F.ReskinInput(SendMailSubjectEditBox)
 	F.ReskinInput(SendMailMoneyGold)
@@ -71,23 +72,19 @@ tinsert(C.themes["Aurora"], function()
 		local bu = _G["MailItem"..i.."Button"]
 		local st = _G["MailItem"..i.."ButtonSlot"]
 		local ic = _G["MailItem"..i.."Button".."Icon"]
+		local bd = _G["MailItem"..i.."Button".."IconBorder"]
 		local line = select(3, _G["MailItem"..i]:GetRegions())
 
 		local a, b = it:GetRegions()
 		a:Hide()
 		b:Hide()
-
 		bu:SetCheckedTexture(C.media.checked)
 
 		st:Hide()
 		line:Hide()
 		ic:SetTexCoord(.08, .92, .08, .92)
-
-		local bg = CreateFrame("Frame", nil, bu)
-		bg:SetPoint("TOPLEFT", -1, 1)
-		bg:SetPoint("BOTTOMRIGHT", 1, -1)
-		bg:SetFrameLevel(bu:GetFrameLevel()-1)
-		F.CreateBD(bg, 0)
+		bd:SetAlpha(0)
+		F.CreateBDFrame(bu)
 	end
 
 	for i = 1, ATTACHMENTS_MAX_SEND do
@@ -96,14 +93,13 @@ tinsert(C.themes["Aurora"], function()
 
 		bu:GetRegions():Hide()
 
-		border:SetTexture(C.media.backdrop)
-		border:SetPoint("TOPLEFT", -1, 1)
-		border:SetPoint("BOTTOMRIGHT", 1, -1)
+		border:SetPoint("TOPLEFT", -1.2, 1.2)
+		border:SetPoint("BOTTOMRIGHT", 1.2, -1.2)
 		border:SetDrawLayer("BACKGROUND")
 
 		local bg = CreateFrame("Frame", nil, bu)
-		bg:SetPoint("TOPLEFT", -1, 1)
-		bg:SetPoint("BOTTOMRIGHT", 1, -1)
+		bg:SetPoint("TOPLEFT", -1.2, 1.2)
+		bg:SetPoint("BOTTOMRIGHT", 1.2, -1.2)
 		bg:SetFrameLevel(0)
 		F.CreateBD(bg, .25)
 	end
@@ -130,13 +126,14 @@ tinsert(C.themes["Aurora"], function()
 		ic:SetTexCoord(.08, .92, .08, .92)
 
 		border:SetTexture(C.media.backdrop)
-		border:SetPoint("TOPLEFT", -1, 1)
-		border:SetPoint("BOTTOMRIGHT", 1, -1)
+		border.SetTexture = F.dummy
+		border:SetPoint("TOPLEFT", -1.2, 1.2)
+		border:SetPoint("BOTTOMRIGHT", 1.2, -1.2)
 		border:SetDrawLayer("BACKGROUND")
 
 		local bg = CreateFrame("Frame", nil, bu)
-		bg:SetPoint("TOPLEFT", -1, 1)
-		bg:SetPoint("BOTTOMRIGHT", 1, -1)
+		bg:SetPoint("TOPLEFT", -1.2, 1.2)
+		bg:SetPoint("BOTTOMRIGHT", 1.2, -1.2)
 		bg:SetFrameLevel(0)
 		F.CreateBD(bg, .25)
 	end
@@ -144,6 +141,7 @@ tinsert(C.themes["Aurora"], function()
 	hooksecurefunc("SendMailFrame_Update", function()
 		for i = 1, ATTACHMENTS_MAX_SEND do
 			local button = _G["SendMailAttachment"..i]
+			button.IconBorder:SetTexture(C.media.backdrop)
 			if button:GetNormalTexture() then
 				button:GetNormalTexture():SetTexCoord(.08, .92, .08, .92)
 			end

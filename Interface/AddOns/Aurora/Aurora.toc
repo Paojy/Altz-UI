@@ -1,16 +1,17 @@
-## Interface: 70000
-## Title: Aurora
+## Interface: 70200
+## Title: |cff0080ffAurora|r
+## Title-zhCN: |cff0080ffAurora|r 材质美化
+## Title-zhTW: |cff0080ffAurora|r 材質美化
 ## Notes: Minimalistic window theme.
-## Notes-zhCN:小泡泡修正版，引用请标明出处。
-## Notes-zhTW:小泡泡修正版，引用請標明出處。
 ## Author: Haleth/Lightsword
-## Version: 7.0.2
+## Version: NDui MOD
 ## SavedVariables: AuroraConfig
 
 aurora.lua
 gui.lua
 
 AddOns\Blizzard_AchievementUI.lua
+AddOns\Blizzard_AdventureMap.lua
 AddOns\Blizzard_ArchaeologyUI.lua
 AddOns\Blizzard_ArtifactUI.lua
 AddOns\Blizzard_AuctionUI.lua
@@ -21,30 +22,32 @@ AddOns\Blizzard_BlackMarketUI.lua
 AddOns\Blizzard_Calendar.lua
 AddOns\Blizzard_ChallengesUI.lua
 AddOns\Blizzard_Collections.lua
+AddOns\Blizzard_CompactRaidFrames.lua
+AddOns\Blizzard_Contribution.lua
 AddOns\Blizzard_DeathRecap.lua
 AddOns\Blizzard_DebugTools.lua
 AddOns\Blizzard_EncounterJournal.lua
+AddOns\Blizzard_FlightMap.lua
 AddOns\Blizzard_GarrisonUI.lua
-AddOns\Blizzard_GlyphUI.lua
 AddOns\Blizzard_GMSurveyUI.lua
 AddOns\Blizzard_GuildBankUI.lua
 AddOns\Blizzard_GuildControlUI.lua
 AddOns\Blizzard_GuildUI.lua
 AddOns\Blizzard_InspectUI.lua
-AddOns\Blizzard_ItemAlterationUI.lua
 AddOns\Blizzard_ItemSocketingUI.lua
 AddOns\Blizzard_ItemUpgradeUI.lua
 AddOns\Blizzard_LookingForGuildUI.lua
 AddOns\Blizzard_MacroUI.lua
+AddOns\Blizzard_ObliterumUI.lua
+AddOns\Blizzard_OrderHallUI.lua
 AddOns\Blizzard_PVPUI.lua
 AddOns\Blizzard_QuestChoice.lua
+AddOns\Blizzard_RaidUI.lua
 AddOns\Blizzard_TalentUI.lua
 AddOns\Blizzard_TimeManager.lua
 AddOns\Blizzard_TradeSkillUI.lua
 AddOns\Blizzard_TrainerUI.lua
 AddOns\Blizzard_VoidStorageUI.lua
-AddOns\Blizzard_OrderHallUI.lua
-AddOns\Recount.lua
 
 FrameXML\AlertFrames.lua
 FrameXML\BankFrame.lua
@@ -63,10 +66,8 @@ FrameXML\LFGList.lua
 FrameXML\LFRFrame.lua
 FrameXML\LootFrame.lua
 FrameXML\LootHistory.lua
-FrameXML\LossOfControlFrame.lua
 FrameXML\MailFrame.lua
 FrameXML\MerchantFrame.lua
-FrameXML\ModelPreviewFrame.lua
 FrameXML\NavigationBar.lua
 FrameXML\PaperDollFrame.lua
 FrameXML\ProductChoiceFrame.lua
@@ -75,6 +76,7 @@ FrameXML\QuestFrame.lua
 FrameXML\QuestInfo.lua
 FrameXML\QuestMapFrame.lua
 FrameXML\QueueStatusFrame.lua
+FrameXML\QuickJoin.lua
 FrameXML\RaidFinder.lua
 FrameXML\RecruitAFriendFrame.lua
 FrameXML\RolePoll.lua
@@ -88,5 +90,6 @@ FrameXML\WorldMapFrame.lua
 FrameXML\WorldStateFrame.lua
 
 SharedXML\AddonList.lua
+SharedXML\ModelPreviewFrame.lua
 
 Other\ChatBubbles.lua

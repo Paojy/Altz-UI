@@ -10,16 +10,18 @@ tinsert(C.themes["Aurora"], function()
 	local QuestScrollFrame = QuestScrollFrame
 	local StoryHeader = QuestScrollFrame.Contents.StoryHeader
 
-	QuestMapFrame.VerticalSeparator:Hide()
-	QuestScrollFrame.Background:Hide()
+	QuestMapFrame.VerticalSeparator:SetAlpha(0)
+	QuestScrollFrame.Background:SetAlpha(0)
 
-	F.CreateBD(QuestScrollFrame.StoryTooltip)
+	if AuroraConfig.tooltips then
+		F.CreateBD(QuestScrollFrame.StoryTooltip)
+	end
 	F.ReskinScroll(QuestScrollFrame.ScrollBar)
 
 	-- Story header
 
-	StoryHeader.Background:Hide()
-	StoryHeader.Shadow:Hide()
+	StoryHeader.Background:SetAlpha(0)
+	StoryHeader.Shadow:SetAlpha(0)
 
 	do
 		local bg = F.CreateBDFrame(StoryHeader, .25)
@@ -40,7 +42,7 @@ tinsert(C.themes["Aurora"], function()
 		end)
 
 		StoryHeader:HookScript("OnLeave", function()
-			hl:Hide()
+			hl:Hide(0)
 		end)
 	end
 
@@ -50,11 +52,12 @@ tinsert(C.themes["Aurora"], function()
 	local RewardsFrame = DetailsFrame.RewardsFrame
 	local CompleteQuestFrame = DetailsFrame.CompleteQuestFrame
 
-	DetailsFrame:GetRegions():Hide()
-	select(2, DetailsFrame:GetRegions()):Hide()
-	select(3, DetailsFrame:GetRegions()):Hide()
-	select(6, DetailsFrame.ShareButton:GetRegions()):Hide()
-	select(7, DetailsFrame.ShareButton:GetRegions()):Hide()
+	DetailsFrame:GetRegions():SetAlpha(0)
+	select(2, DetailsFrame:GetRegions()):SetAlpha(0)
+	select(3, DetailsFrame:GetRegions()):SetAlpha(0)
+	select(6, DetailsFrame.ShareButton:GetRegions()):SetAlpha(0)
+	select(7, DetailsFrame.ShareButton:GetRegions()):SetAlpha(0)
+	DetailsFrame.SealMaterialBG:SetAlpha(0)
 
 	F.Reskin(DetailsFrame.BackButton)
 	F.Reskin(DetailsFrame.AbandonButton)
@@ -75,18 +78,18 @@ tinsert(C.themes["Aurora"], function()
 
 	-- Rewards frame
 
-	RewardsFrame.Background:Hide()
-	select(2, RewardsFrame:GetRegions()):Hide()
+	RewardsFrame.Background:SetAlpha(0)
+	select(2, RewardsFrame:GetRegions()):SetAlpha(0)
 
 	-- Scroll frame
 
 	F.ReskinScroll(DetailsFrame.ScrollFrame.ScrollBar)
 
 	-- Complete quest frame
-	CompleteQuestFrame:GetRegions():Hide()
-	select(2, CompleteQuestFrame:GetRegions()):Hide()
-	select(6, CompleteQuestFrame.CompleteButton:GetRegions()):Hide()
-	select(7, CompleteQuestFrame.CompleteButton:GetRegions()):Hide()
+	CompleteQuestFrame:GetRegions():SetAlpha(0)
+	select(2, CompleteQuestFrame:GetRegions()):SetAlpha(0)
+	select(6, CompleteQuestFrame.CompleteButton:GetRegions()):SetAlpha(0)
+	select(7, CompleteQuestFrame.CompleteButton:GetRegions()):SetAlpha(0)
 
 	F.Reskin(CompleteQuestFrame.CompleteButton)
 
@@ -94,10 +97,10 @@ tinsert(C.themes["Aurora"], function()
 
 	local QuestLogPopupDetailFrame = QuestLogPopupDetailFrame
 
-	select(18, QuestLogPopupDetailFrame:GetRegions()):Hide()
-	QuestLogPopupDetailFrameScrollFrameTop:Hide()
-	QuestLogPopupDetailFrameScrollFrameBottom:Hide()
-	QuestLogPopupDetailFrameScrollFrameMiddle:Hide()
+	select(18, QuestLogPopupDetailFrame:GetRegions()):SetAlpha(0)
+	QuestLogPopupDetailFrameScrollFrameTop:SetAlpha(0)
+	QuestLogPopupDetailFrameScrollFrameBottom:SetAlpha(0)
+	QuestLogPopupDetailFrameScrollFrameMiddle:SetAlpha(0)
 
 	F.ReskinPortraitFrame(QuestLogPopupDetailFrame, true)
 	F.ReskinScroll(QuestLogPopupDetailFrameScrollFrameScrollBar)
@@ -109,7 +112,7 @@ tinsert(C.themes["Aurora"], function()
 
 	local ShowMapButton = QuestLogPopupDetailFrame.ShowMapButton
 
-	ShowMapButton.Texture:Hide()
+	ShowMapButton.Texture:SetAlpha(0)
 	ShowMapButton.Highlight:SetTexture("")
 	ShowMapButton.Highlight:SetTexture("")
 

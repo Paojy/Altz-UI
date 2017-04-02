@@ -14,6 +14,7 @@ C.themes["Blizzard_GarrisonUI"] = function()
 	GarrisonBuildingFrame.TitleText:Show()
 
 	F.CreateBD(GarrisonBuildingFrame)
+	F.CreateSD(GarrisonBuildingFrame)
 	F.ReskinClose(GarrisonBuildingFrame.CloseButton)
 	GarrisonBuildingFrame.GarrCorners:Hide()
 
@@ -125,6 +126,7 @@ C.themes["Blizzard_GarrisonUI"] = function()
 	F.CreateBD(TownHallBox, .25)
 	F.Reskin(InfoBox.UpgradeButton)
 	F.Reskin(TownHallBox.UpgradeButton)
+	GarrisonBuildingFrame.MapFrame.TownHall.TownHallName:SetTextColor(1, .8, 0)
 
 	do
 		local FollowerPortrait = InfoBox.FollowerPortrait
@@ -225,6 +227,7 @@ C.themes["Blizzard_GarrisonUI"] = function()
 	end
 
 	F.CreateBD(GarrisonLandingPage)
+	F.CreateSD(GarrisonLandingPage)
 	F.ReskinClose(GarrisonLandingPage.CloseButton)
 	F.ReskinTab(GarrisonLandingPageTab1)
 	F.ReskinTab(GarrisonLandingPageTab2)
@@ -258,8 +261,10 @@ C.themes["Blizzard_GarrisonUI"] = function()
 		for _, reward in pairs(button.Rewards) do
 			reward:GetRegions():Hide()
 			reward.Icon:SetTexCoord(.08, .92, .08, .92)
-			reward.IconBorder:Hide()
+			reward.IconBorder:SetAlpha(0)
 			F.CreateBG(reward.Icon)
+			reward:ClearAllPoints()
+			reward:SetPoint("TOPRIGHT", -4, -4)
 		end
 
 		F.CreateBD(bg, .25)
@@ -386,15 +391,28 @@ C.themes["Blizzard_GarrisonUI"] = function()
 	end
 	GarrisonMissionFrame.TitleText:Show()
 	GarrisonMissionFrame.GarrCorners:Hide()
-	select(11, GarrisonMissionFrame.MissionComplete.BonusRewards:GetRegions()):SetTextColor(1, .8, 0)
 
 	F.CreateBD(GarrisonMissionFrame)
+	F.CreateSD(GarrisonMissionFrame)
 	F.ReskinClose(GarrisonMissionFrame.CloseButton)
 	F.ReskinTab(GarrisonMissionFrameTab1)
 	F.ReskinTab(GarrisonMissionFrameTab2)
 
 	GarrisonMissionFrameTab1:ClearAllPoints()
 	GarrisonMissionFrameTab1:SetPoint("BOTTOMLEFT", 11, -40)
+
+	-- Mission Complete Page
+
+	local missionComplete = GarrisonMissionFrame.MissionComplete
+	local bonusRewards = missionComplete.BonusRewards
+	select(11, bonusRewards:GetRegions()):SetTextColor(1, .8, 0)
+	bonusRewards.Saturated:Hide()
+	bonusRewards.Saturated.Show = F.dummy
+	for i = 1, 9 do
+		select(i, bonusRewards:GetRegions()):SetAlpha(0)
+	end
+	F.CreateBD(bonusRewards, .25)
+	F.Reskin(missionComplete.NextMissionButton)
 
 	-- Follower list
 
@@ -858,7 +876,7 @@ C.themes["Blizzard_GarrisonUI"] = function()
 		ally:SetTexCoord(.08, .92, .08, .92)
 		F.CreateBG(ally)
 
-		for i = 1, 2 do
+		for i = 1, 3 do
 			if not self.AbilitiesFrame.Equipment then return end
 			local equip = self.AbilitiesFrame.Equipment[i]
 			equip.Border:Hide()
@@ -912,6 +930,7 @@ C.themes["Blizzard_GarrisonUI"] = function()
 	sbg:SetAllPoints()
 	sbg:SetFrameLevel(GarrisonShipyardFrame:GetFrameLevel() - 1)
 	F.CreateBD(sbg)
+	F.CreateSD(sbg)
 
 	F.ReskinInput(GarrisonShipyardFrameFollowers.SearchBox)
 	F.ReskinScroll(GarrisonShipyardFrameFollowersListScrollFrameScrollBar)
@@ -939,18 +958,19 @@ C.themes["Blizzard_GarrisonUI"] = function()
 	F.ReskinClose(GarrisonShipyardFrame.BorderFrame.CloseButton2)
 	F.ReskinTab(GarrisonShipyardFrameTab1)
 	F.ReskinTab(GarrisonShipyardFrameTab2)
-	--F.ReskinClose(GarrisonShipyardFrame.MissionTab.MissionPage.CloseButton)
+	F.ReskinClose(GarrisonShipyardFrame.MissionTab.MissionPage.CloseButton)
 	F.Reskin(GarrisonShipyardFrame.MissionTab.MissionPage.StartMissionButton)
 	GarrisonShipyardFrame.MissionCompleteBackground:GetRegions():Hide()
 	GarrisonShipyardFrame.MissionTab.MissionList.CompleteDialog:GetRegions():Hide()
 	F.Reskin(GarrisonShipyardFrame.MissionTab.MissionList.CompleteDialog.BorderFrame.ViewButton)
 
-	-- [[ Master plan support ]]
+	-- [[ Addon supports ]]
 
 	do
+		local skinIndex = 0
 		local f = CreateFrame("Frame")
 		f:RegisterEvent("ADDON_LOADED")
-		f:SetScript("OnEvent", function(self, event, addon)
+		f:SetScript("OnEvent", function(_, event, addon)
 			if addon == "MasterPlan" then
 				local minimize = MissionPage.MinimizeButton
 
@@ -1005,8 +1025,36 @@ C.themes["Blizzard_GarrisonUI"] = function()
 				reskinBar(MPShipMoI.List.Bar)
 				reskinBar(MPLandingPageAlts.List.Bar)
 
-				self:UnregisterEvent("ADDON_LOADED")
+				skinIndex = skinIndex + 1
+
+			elseif addon == "GarrisonMissionManager" then
+				hooksecurefunc(MissionList, "Update", function()
+					local buttons = MissionList.listScroll.buttons
+					for i = 1, #buttons do
+						local bu = select(3, buttons[i]:GetChildren())
+						if bu and bu:GetObjectType() == "Button" and not bu.styled then
+							F.Reskin(bu)
+							bu:SetSize(60, 45)
+							bu.styled = true
+						end
+					end
+				end)
+
+				MissionPage:HookScript("OnShow", function()
+					for i = 18, 26 do
+						local bu = select(i, MissionPage:GetChildren())
+						if bu and bu:GetObjectType() == "Button" and not bu.styled then
+							F.Reskin(bu)
+							bu:SetSize(50, 45)
+							bu.styled = true
+						end
+					end
+				end)
+
+				skinIndex = skinIndex + 1
 			end
+
+			if skinIndex == 2 then f:UnregisterEvent(event) end
 		end)
 	end
 end

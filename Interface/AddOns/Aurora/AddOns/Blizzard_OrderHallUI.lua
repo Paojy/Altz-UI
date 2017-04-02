@@ -1,50 +1,20 @@
 local F, C = unpack(select(2, ...))
 
 C.themes["Blizzard_OrderHallUI"] = function()
+	local r, g, b = C.r, C.g, C.b
+
 	F.Reskin(OrderHallMissionFrameMissions.CompleteDialog.BorderFrame.ViewButton)
 	F.Reskin(OrderHallMissionFrameMissions.CombatAllyUI.InProgress.Unassign)
 	F.Reskin(OrderHallMissionFrame.MissionTab.MissionPage.StartMissionButton)
-	F.ReskinClose(OrderHallMissionFrame.MissionTab.ZoneSupportMissionPage.CloseButton)
 	F.ReskinClose(OrderHallMissionFrame.CloseButton)
 	F.ReskinClose(OrderHallMissionFrame.MissionTab.MissionPage.CloseButton)
-	
 	F.ReskinTab(OrderHallMissionFrameTab1)
 	F.ReskinTab(OrderHallMissionFrameTab2)
 	F.ReskinTab(OrderHallMissionFrameTab3)
-	
-	F.ReskinTab(OrderHallMissionFrameMissionsTab1)
-	OrderHallMissionFrameMissionsTab1.Middle:SetAlpha(0)
-	OrderHallMissionFrameMissionsTab1.SelectedMid:SetAlpha(0)
-	OrderHallMissionFrameMissionsTab1.Left:SetAlpha(0)
-	OrderHallMissionFrameMissionsTab1.SelectedLeft:SetAlpha(0)
-	OrderHallMissionFrameMissionsTab1.Right:SetAlpha(0)
-	OrderHallMissionFrameMissionsTab1.SelectedRight:SetAlpha(0)
-	
-	F.ReskinTab(OrderHallMissionFrameMissionsTab2)
-	OrderHallMissionFrameMissionsTab2.Middle:SetAlpha(0)
-	OrderHallMissionFrameMissionsTab2.SelectedMid:SetAlpha(0)
-	OrderHallMissionFrameMissionsTab2.Left:SetAlpha(0)
-	OrderHallMissionFrameMissionsTab2.SelectedLeft:SetAlpha(0)
-	OrderHallMissionFrameMissionsTab2.Right:SetAlpha(0)
-	OrderHallMissionFrameMissionsTab2.SelectedRight:SetAlpha(0)
-	
 	F.ReskinScroll(OrderHallMissionFrameMissionsListScrollFrameScrollBar)
 	F.ReskinScroll(OrderHallMissionFrameFollowersListScrollFrameScrollBar)
-	
-	for i = 1, 9 do
-		local bu = _G["OrderHallMissionFrameMissionsListScrollFrameButton"..i]
-		bu.Overlay:SetAlpha(0)
-		bu.LocBG:SetAlpha(0)
-		bu.Highlight:SetAlpha(0)
-		for j = 1, 20 do
-			texture = select(j, bu:GetRegions())
-			if texture:GetObjectType() == "Texture" then
-				texture:SetAlpha(0)
-			end
-		end
-		F.Reskin(bu)
-	end
-	
+	select(11, OrderHallMissionFrame.MissionComplete.BonusRewards:GetRegions()):SetTextColor(1, .8, 0)
+
 	for i = 1, 18 do
 		select(i, OrderHallMissionFrameMissions:GetRegions()):Hide()
 	end
@@ -95,6 +65,39 @@ C.themes["Blizzard_OrderHallUI"] = function()
 
 	-- Mission UI
 
+	for i = 1, 2 do
+		local tab = _G["OrderHallMissionFrameMissionsTab"..i]
+		tab.Left:Hide()
+		tab.Middle:Hide()
+		tab.Right:Hide()
+		tab.SelectedLeft:SetTexture("")
+		tab.SelectedMid:SetTexture("")
+		tab.SelectedRight:SetTexture("")
+		F.CreateBD(tab, .25)
+	end
+	OrderHallMissionFrameMissionsTab1:SetBackdropColor(r, g, b, .2)
+
+	local MissionList = OrderHallMissionFrame.MissionTab.MissionList
+	local buttons = MissionList.listScroll.buttons
+	for i = 1, #buttons do
+		local button = buttons[i]
+
+		for i = 1, 12 do
+			local rareOverlay = button.RareOverlay
+			local rareText = button.RareText
+			select(i, button:GetRegions()):Hide()
+			F.CreateBD(button, .25)
+
+			rareText:ClearAllPoints()
+			rareText:SetPoint("BOTTOMLEFT", button, 20, 10)
+			rareOverlay:SetDrawLayer("BACKGROUND")
+			rareOverlay:SetTexture(C.media.backdrop)
+			rareOverlay:ClearAllPoints()
+			rareOverlay:SetAllPoints()
+			rareOverlay:SetVertexColor(0.098, 0.537, 0.969, 0.2)
+		end
+	end
+
 	local MissionPage = OrderHallMissionFrame.MissionTab.MissionPage
 	for i = 1, 15 do
 		select(i, MissionPage:GetRegions()):Hide()
@@ -131,70 +134,90 @@ C.themes["Blizzard_OrderHallUI"] = function()
 		local follower = MissionPage.Followers[i]
 		follower:GetRegions():Hide()
 		F.CreateBD(follower, .25)
-		
+
 		follower.PortraitFrame.Highlight:Hide()
 		follower.PortraitFrame.PortraitFeedbackGlow:Hide()
-		
 		follower.PortraitFrame.PortraitRing:SetAlpha(0)
 		follower.PortraitFrame.PortraitRingQuality:SetAlpha(0)
 		follower.PortraitFrame.LevelBorder:SetAlpha(0)
 		follower.PortraitFrame.Level:SetText("")
-		
 		follower.PortraitFrame.Empty:SetColorTexture(0,0,0)
 		follower.PortraitFrame.Empty:SetAllPoints(follower.PortraitFrame.Portrait)
 	end
+
+	local buffFrame = MissionPage.BuffsFrame
+	buffFrame.BuffsBG:Hide()
+	hooksecurefunc(GarrisonMission, "UpdateMissionData", function()
+		local buffIndex = 1
+		local buff = buffFrame.Buffs[buffIndex]
+		while buff do
+			if not buff.styled then
+				buff.Icon:SetDrawLayer("BORDER", 1)
+				F.ReskinIcon(buff.Icon)
+				buff.styled = true
+			end
+			buffIndex = buffIndex + 1
+			buff = buffFrame.Buffs[buffIndex]
+		end
+	end)
 
 	for i = 1, 3 do
 		local num = 1
 		local enemy = MissionPage.Enemies[i].Mechanics
 		local mec = enemy[num]
 		while mec do
-			mec.Icon:SetTexCoord(.08,.92,.08,.92)
+			mec.Icon:SetDrawLayer("BORDER", 1)
+			F.ReskinIcon(mec.Icon)
 			num = num + 1
 			mec = enemy[num]
 		end
 	end
-	
-	OrderHallMissionFrame.MissionTab.MissionPage.RewardsFrame:GetRegions():SetAlpha(0)
-	OrderHallMissionFrame.MissionTab.MissionPage.RewardsFrame:DisableDrawLayer("BORDER")
-	F.CreateBD(OrderHallMissionFrame.MissionTab.MissionPage.RewardsFrame)
-	
+
+	local rewardFrame = MissionPage.RewardsFrame
+	for i = 1, 10 do
+		select(i, rewardFrame:GetRegions()):Hide()
+	end
+	F.CreateBD(rewardFrame, .25)
+
+	local item = rewardFrame.OvermaxItem
+	item.Icon:SetDrawLayer("BORDER", 1)
+	F.ReskinIcon(item.Icon)
+
 	for i = 1, 2 do
 		local reward = MissionPage.RewardsFrame.Rewards[i]
 		local icon = reward.Icon
 		reward.BG:Hide()
-		icon:SetTexCoord(.08, .92, .08, .92)
 		icon:SetDrawLayer("BORDER", 1)
-		F.CreateBG(icon)
+		F.ReskinIcon(icon)
 		reward.ItemBurst:SetDrawLayer("BORDER", 2)
 		F.CreateBD(reward, .15)
 	end
 
+	-- Mission Complete Page
+
+	local missionComplete = OrderHallMissionFrame.MissionComplete
+	local bonusRewards = missionComplete.BonusRewards
+	select(11, bonusRewards:GetRegions()):SetTextColor(1, .8, 0)
+	bonusRewards.Saturated:Hide()
+	bonusRewards.Saturated.Show = F.dummy
+	for i = 1, 9 do
+		select(i, bonusRewards:GetRegions()):SetAlpha(0)
+	end
+	F.CreateBD(bonusRewards, .25)
+	F.Reskin(missionComplete.NextMissionButton)
+
 	-- Add Ally
 
-	
-	F.CreateBD(OrderHallMissionFrameMissions.CombatAllyUI.InProgress.CombatAllySpell)
-	OrderHallMissionFrameMissions.CombatAllyUI.InProgress.CombatAllySpell.iconTexture:SetTexCoord(.08, .92, .08, .92)
-	
-	OrderHallMissionFrame.MissionTab.ZoneSupportMissionPage.Follower1.PortraitFrame.Highlight:Hide()
-	OrderHallMissionFrame.MissionTab.ZoneSupportMissionPage.Follower1.PortraitFrame.PortraitFeedbackGlow:Hide()
-	
-	OrderHallMissionFrame.MissionTab.ZoneSupportMissionPage.Follower1.PortraitFrame.PortraitRing:SetAlpha(0)
-	OrderHallMissionFrame.MissionTab.ZoneSupportMissionPage.Follower1.PortraitFrame.PortraitRingQuality:SetAlpha(0)
-	OrderHallMissionFrame.MissionTab.ZoneSupportMissionPage.Follower1.PortraitFrame.LevelBorder:SetAlpha(0)
-	OrderHallMissionFrame.MissionTab.ZoneSupportMissionPage.Follower1.PortraitFrame.Level:SetText("")
-	
-	OrderHallMissionFrame.MissionTab.ZoneSupportMissionPage.Follower1.PortraitFrame.Empty:SetColorTexture(0,0,0)
-	OrderHallMissionFrame.MissionTab.ZoneSupportMissionPage.Follower1.PortraitFrame.Empty:SetAllPoints(OrderHallMissionFrame.MissionTab.ZoneSupportMissionPage.Follower1.PortraitFrame.Portrait)
-	
+	local allySpell = OrderHallMissionFrameMissions.CombatAllyUI.InProgress.CombatAllySpell
+	allySpell.iconTexture:SetTexCoord(.08, .92, .08, .92)
+	F.CreateBDFrame(allySpell.iconTexture)
+
 	local allyPortrait = OrderHallMissionFrameMissions.CombatAllyUI.InProgress.PortraitFrame
-	
 	F.ReskinGarrisonPortrait(allyPortrait)
 	OrderHallMissionFrame:HookScript("OnShow", function(self)
 		if allyPortrait:IsShown() then
 			allyPortrait.squareBG:SetBackdropBorderColor(allyPortrait.PortraitRingQuality:GetVertexColor())
 		end
-		
 		OrderHallMissionFrameMissions.CombatAllyUI.Available.AddFollowerButton.EmptyPortrait:SetAlpha(0)
 		OrderHallMissionFrameMissions.CombatAllyUI.Available.AddFollowerButton.PortraitHighlight:SetAlpha(0)
 	end)
@@ -208,22 +231,27 @@ C.themes["Blizzard_OrderHallUI"] = function()
 			self.InProgress.PortraitFrame.squareBG:Hide()
 		end
 	end)
-	
-	OrderHallMissionFrame.MissionTab.ZoneSupportMissionPage.CombatAllyLabel.TextBackground:SetAlpha(0)
-	for i = 1, 11 do
-		texture = select(i, OrderHallMissionFrame.MissionTab.ZoneSupportMissionPage:GetRegions())
-		if texture:GetObjectType() == "Texture" then
-			texture:Hide()
-		end
-	end
-	for i = 1, 3 do
-		texture = select(i, OrderHallMissionFrame.MissionTab.ZoneSupportMissionPage.Follower1:GetRegions())
-		texture:Hide()
-	end
 
-	F.CreateBD(OrderHallMissionFrame.MissionTab.ZoneSupportMissionPage)
-	F.Reskin(OrderHallMissionFrame.MissionTab.ZoneSupportMissionPage.StartMissionButton)
-	OrderHallMissionFrame.MissionTab.ZoneSupportMissionPage.CombatAllySpell.iconTexture:SetTexCoord(.08, .92, .08, .92)
+	local zonesupport = OrderHallMissionFrame.MissionTab.ZoneSupportMissionPage
+	F.ReskinClose(zonesupport.CloseButton)
+	F.Reskin(zonesupport.StartMissionButton)
+	zonesupport.CombatAllySpell.iconTexture:SetTexCoord(.08, .92, .08, .92)
+	F.CreateBDFrame(zonesupport.CombatAllySpell.iconTexture)
+	for i = 1, 10 do
+		select(i, zonesupport:GetRegions()):Hide()
+	end
+	F.CreateBD(zonesupport, .3)
+	zonesupport.Follower1:GetRegions():Hide()
+	F.CreateBD(zonesupport.Follower1, .3)
+
+	zonesupport.Follower1.PortraitFrame.Highlight:Hide()
+	zonesupport.Follower1.PortraitFrame.PortraitFeedbackGlow:Hide()
+	zonesupport.Follower1.PortraitFrame.PortraitRing:SetAlpha(0)
+	zonesupport.Follower1.PortraitFrame.PortraitRingQuality:SetAlpha(0)
+	zonesupport.Follower1.PortraitFrame.LevelBorder:SetAlpha(0)
+	zonesupport.Follower1.PortraitFrame.Level:SetText("")
+	zonesupport.Follower1.PortraitFrame.Empty:SetColorTexture(0,0,0)
+	zonesupport.Follower1.PortraitFrame.Empty:SetAllPoints(zonesupport.Follower1.PortraitFrame.Portrait)
 
 	-- Talent Frame
 
@@ -234,21 +262,19 @@ C.themes["Blizzard_OrderHallUI"] = function()
 	OrderHallTalentFrameTitleText:Show()
 	OrderHallTalentFrameBg:Hide()
 	F.CreateBD(OrderHallTalentFrame)
+	F.CreateSD(OrderHallTalentFrame)
 	ClassHallTalentInset:Hide()
 	OrderHallTalentFramePortrait:Hide()
 	OrderHallTalentFramePortraitFrame:Hide()
 
 	hooksecurefunc(OrderHallTalentFrame, "RefreshAllData", function()
-		for i = 34, 38 do
-			local t = select(i, OrderHallTalentFrame:GetRegions())
-			if t then
-				t:SetAlpha(0)
-			end
+		for i = 34, 41 do
+			select(i, OrderHallTalentFrame:GetRegions()):SetAlpha(0)
 		end
 
-		for i = 5, 15 do
+		for i = 5, 18 do
 			local bu = select(i, OrderHallTalentFrame:GetChildren())
-			if bu and not bu.styled then
+			if not bu.styled then
 				bu.Icon:SetTexCoord(.08, .92, .08, .92)
 				bu.Border:SetAlpha(0)
 				bu.Highlight:SetColorTexture(1, 1, 1, .25)
@@ -265,4 +291,32 @@ C.themes["Blizzard_OrderHallUI"] = function()
 			end
 		end
 	end)
+
+	-- Addon Supports
+	do
+		if IsAddOnLoaded("GarrisonMissionManager") then
+			hooksecurefunc(MissionList, "Update", function()
+				local buttons = MissionList.listScroll.buttons
+				for i = 1, #buttons do
+					local bu = select(3, buttons[i]:GetChildren())
+					if bu and bu:GetObjectType() == "Button" and not bu.styled then
+						F.Reskin(bu)
+						bu:SetSize(60, 45)
+						bu.styled = true
+					end
+				end
+			end)
+
+			MissionPage:HookScript("OnShow", function()
+				for i = 18, 26 do
+					local bu = select(i, MissionPage:GetChildren())
+					if bu and bu:GetObjectType() == "Button" and not bu.styled then
+						F.Reskin(bu)
+						bu:SetSize(50, 45)
+						bu.styled = true
+					end
+				end
+			end)
+		end
+	end
 end

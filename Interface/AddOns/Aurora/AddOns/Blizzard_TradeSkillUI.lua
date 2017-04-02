@@ -1,182 +1,115 @@
 local F, C = unpack(select(2, ...))
 
-
-local function colourScroll(f)
-	if f:IsEnabled() then
-		f.bgTex:SetVertexColor(r, g, b)
-	end
-end
-
-local function clearScroll(f)
-	f.bgTex:SetVertexColor(1, 1, 1)
-end
-
-local function SkinScrollBar(f)
-	for k, v in pairs{f:GetChildren()} do
-		v:SetWidth(17)
-		F.Reskin(v, true)
-		
-		v:SetDisabledTexture(C.media.backdrop)
-		local dis = v:GetDisabledTexture()
-		dis:SetVertexColor(0, 0, 0, .4)
-		dis:SetDrawLayer("OVERLAY")
-
-		v.bgTex = v:CreateTexture(nil, "ARTWORK")
-		v.bgTex:SetSize(8, 8)
-		v.bgTex:SetPoint("CENTER")
-		v.bgTex:SetVertexColor(1, 1, 1)
-		
-		v:HookScript("OnEnter", colourScroll)
-		v:HookScript("OnLeave", clearScroll)
-			
-		if v:GetName() == "TradeSkillFrameScrollUpButton" then
-			v.bgTex:SetTexture(C.media.arrowUp)
-		else
-			v.bgTex:SetTexture(C.media.arrowDown)
-		end
-	end
-	
-	for k, bu in pairs{f:GetRegions()} do
-		if bu:GetName() == "TradeSkillFrameThumbTexture" then
-			bu:SetAlpha(0)
-			bu:SetWidth(17)
-
-			bu.bg = CreateFrame("Frame", nil, f)
-			bu.bg:SetPoint("TOPLEFT", bu, 0, -2)
-			bu.bg:SetPoint("BOTTOMRIGHT", bu, 0, 4)
-			F.CreateBD(bu.bg, 0)
-			
-			local tex = F.CreateGradient(f)
-			tex:SetPoint("TOPLEFT", bu.bg, 1, -1)
-			tex:SetPoint("BOTTOMRIGHT", bu.bg, -1, 1)
-		else
-			 bu:Hide()
-		end
-	end
-end
-
 C.themes["Blizzard_TradeSkillUI"] = function()
-	F.ReskinPortraitFrame(TradeSkillFrame, false)
+	local r, g, b = C.r, C.g, C.b
+
+	F.CreateBD(TradeSkillFrame)
+	F.CreateSD(TradeSkillFrame)
+	F.ReskinClose(TradeSkillFrameCloseButton)
+	for i = 1, 17 do
+		select(i, TradeSkillFrame:GetRegions()):Hide()
+	end
+	TradeSkillFrameTitleText:Show()
 	TradeSkillFramePortrait:Hide()
 	TradeSkillFramePortrait.Show = F.dummy
-	TradeSkillFramePortraitFrame:Hide()
-	TradeSkillFramePortraitFrame.Show = F.dummy
 
-	F.Reskin(TradeSkillFrame.DetailsFrame.CreateButton)
-	F.Reskin(TradeSkillFrame.DetailsFrame.CreateAllButton)
-	F.Reskin(TradeSkillFrame.DetailsFrame.ExitButton)
-	F.ReskinFilterButton(TradeSkillFrame.FilterButton)
-
-	TradeSkillFrame.RankFrame:SetStatusBarTexture(C.media.backdrop)
-	TradeSkillFrame.RankFrame.SetStatusBarColor = F.dummy
-	TradeSkillFrame.RankFrame:GetStatusBarTexture():SetGradient("VERTICAL", .1, .3, .9, .2, .4, 1)
-	TradeSkillFrame.RankFrame.BorderLeft:Hide()
-	TradeSkillFrame.RankFrame.BorderRight:Hide()
-	TradeSkillFrame.RankFrame.BorderMid:Hide()
-	
-	local bg = CreateFrame("Frame", nil, TradeSkillFrame.RankFrame)
+	local rankFrame = TradeSkillFrame.RankFrame
+	rankFrame:SetStatusBarTexture(C.media.backdrop)
+	rankFrame.SetStatusBarColor = F.dummy
+	rankFrame:GetStatusBarTexture():SetGradient("VERTICAL", .1, .3, .9, .2, .4, 1)
+	rankFrame.BorderMid:Hide()
+	rankFrame.BorderLeft:Hide()
+	rankFrame.BorderRight:Hide()
+	local bg = CreateFrame("Frame", nil, rankFrame)
 	bg:SetPoint("TOPLEFT", -1, 1)
 	bg:SetPoint("BOTTOMRIGHT", 1, -1)
-	bg:SetFrameLevel(TradeSkillFrame.RankFrame:GetFrameLevel()-1)
+	bg:SetFrameLevel(rankFrame:GetFrameLevel()-1)
 	F.CreateBD(bg, .25)
 
-	for i = 1, 8 do
-		local bu = TradeSkillFrame.DetailsFrame.Contents["Reagent"..i]
-		local ic = bu.Icon
-		ic:SetTexCoord(.08, .92, .08, .92)
-		ic:SetDrawLayer("ARTWORK")
-		F.CreateBG(ic)
-		
-		bu.NameFrame:SetAlpha(0)
+	F.ReskinInput(TradeSkillFrame.SearchBox)
+	TradeSkillFrame.SearchBox:SetWidth(200)
+	F.ReskinFilterButton(TradeSkillFrame.FilterButton)
+	F.ReskinArrow(TradeSkillFrame.LinkToButton, "right")
 
-		local bd = CreateFrame("Frame", nil, bu)
-		bd:SetPoint("TOPLEFT", 39, -1)
-		bd:SetPoint("BOTTOMRIGHT", 0, 1)
-		bd:SetFrameLevel(0)
-		F.CreateBD(bd, .25)
+	-- Recipe List
 
-		bu.Name:SetParent(bd)
+	local recipe = TradeSkillFrame.RecipeList
+	TradeSkillFrame.RecipeInset:Hide()
+	F.ReskinScroll(recipe.scrollBar)
+
+	for i = 1, #recipe.Tabs do
+		local tab = recipe.Tabs[i]
+		for i = 1, 6 do
+			select(i, tab:GetRegions()):SetAlpha(0)
+		end
+		tab:SetHighlightTexture("")
+		tab.bg = F.CreateBDFrame(tab, .25)
+		tab.bg:SetPoint("TOPLEFT", 3, -3)
+		tab.bg:SetPoint("BOTTOMRIGHT", -3, 0)
 	end
-	
-	TradeSkillFrame.DetailsFrame:SetScript("OnUpdate", function(self)
-		if self.pendingRefresh then
-			self:RefreshDisplay();
-			self.pendingRefresh = false;
-		
-			local ic = TradeSkillFrame.DetailsFrame.Contents.ResultIcon:GetNormalTexture()
-			if ic then
-				ic:SetTexCoord(.08, .92, .08, .92)
-				ic:SetPoint("TOPLEFT", 1, -1)
-				ic:SetPoint("BOTTOMRIGHT", -1, 1)
-			end
+	hooksecurefunc(recipe, "OnLearnedTabClicked", function()
+		recipe.Tabs[1].bg:SetBackdropColor(r, g, b, .2)
+		recipe.Tabs[2].bg:SetBackdropColor(0, 0, 0, .2)
+	end)
+	hooksecurefunc(recipe, "OnUnlearnedTabClicked", function()
+		recipe.Tabs[1].bg:SetBackdropColor(0, 0, 0, .2)
+		recipe.Tabs[2].bg:SetBackdropColor(r, g, b, .2)
+	end)
+
+	-- Recipe Details
+
+	local detailsInset = TradeSkillFrame.DetailsInset
+	detailsInset.Bg:Hide()
+	detailsInset:DisableDrawLayer("BORDER")
+	local details = TradeSkillFrame.DetailsFrame
+	details.Background:Hide()
+	F.ReskinScroll(details.ScrollBar)
+	F.Reskin(details.CreateAllButton)
+	F.Reskin(details.CreateButton)
+	F.Reskin(details.ExitButton)
+	F.ReskinInput(details.CreateMultipleInputBox)
+	F.ReskinArrow(details.CreateMultipleInputBox.DecrementButton, "left")
+	F.ReskinArrow(details.CreateMultipleInputBox.IncrementButton, "right")
+	for i = 1, 9 do
+		select(i, details.CreateMultipleInputBox:GetRegions()):Hide()
+	end
+	select(1, details.CreateMultipleInputBox:GetRegions()):Show()
+
+	local contents = details.Contents
+	hooksecurefunc(contents.ResultIcon, "SetNormalTexture", function(self)
+		if not self.styled then
+			F.ReskinIcon(self:GetNormalTexture())
+			self.IconBorder:SetAlpha(0)
+			self.ResultBorder:SetAlpha(0)
+			self.styled = true
 		end
 	end)
-	
-	F.CreateBD(TradeSkillFrame.DetailsFrame.Contents.ResultIcon)
-	TradeSkillFrame.DetailsFrame.Contents.ResultIcon.Background:Hide()
-	
-	local r, g, b = C.r, C.g, C.b
-	
-	local function onEnable(self)
-		self:SetHeight(self.storedHeight) -- prevent it from resizing
-		self:SetBackdropColor(0, 0, 0, 0)
+	for i = 1, #contents.Reagents do
+		local reagent = contents.Reagents[i]
+		reagent.Icon:SetTexCoord(.08, .92, .08, .92)
+		F.CreateBDFrame(reagent.Icon)
+		reagent.NameFrame:Hide()
+		local bg = F.CreateBDFrame(reagent.NameFrame, .2)
+		bg:SetPoint("TOPLEFT", reagent.Icon, "TOPRIGHT", 2, 0)
+		bg:SetPoint("BOTTOMRIGHT", -4, 0)
 	end
+	F.Reskin(details.ViewGuildCraftersButton)
 
-	local function onDisable(self)
-		self:SetBackdropColor(r, g, b, .2)
+	-- Guild Recipe
+
+	local guildFrame = details.GuildFrame
+	F.ReskinClose(guildFrame.CloseButton)
+	for i = 1, 10 do
+		select(i, guildFrame:GetRegions()):Hide()
 	end
-
-	local function onClick(self)
-		self:GetFontString():SetTextColor(1, 1, 1)
+	guildFrame.Title:Show()
+	F.CreateBD(guildFrame)
+	F.CreateSD(guildFrame)
+	guildFrame:ClearAllPoints()
+	guildFrame:SetPoint("BOTTOMLEFT", TradeSkillFrame, "BOTTOMRIGHT", 2, 0)
+	F.ReskinScroll(guildFrame.Container.ScrollFrame.scrollBar)
+	for i = 1, 9 do
+		select(i, guildFrame.Container:GetRegions()):Hide()
 	end
-	
-	for _, tab in pairs({TradeSkillFrame.RecipeList.LearnedTab, TradeSkillFrame.RecipeList.UnlearnedTab}) do
-		tab.LeftDisabled:SetAlpha(0)
-		tab.MiddleDisabled:SetAlpha(0)
-		tab.RightDisabled:SetAlpha(0)
-
-		tab.Left:SetAlpha(0)
-		tab.Middle:SetAlpha(0)
-		tab.Right:SetAlpha(0)
-
-		tab.Text:SetPoint("CENTER")
-		tab.Text:SetTextColor(1, 1, 1)
-
-		tab:HookScript("OnEnable", onEnable)
-		tab:HookScript("OnDisable", onDisable)
-		tab:HookScript("OnClick", onClick)
-		
-		tab:SetHeight(25)
-		tab.SetHeight = function() end
-
-		F.Reskin(tab)
-	end
-	
-	TradeSkillFrame.RecipeList.LearnedTab:SetBackdropColor(r, g, b, .2)
-	
-	TradeSkillFrame.DetailsFrame.Background:SetAlpha(0)
-	TradeSkillFrame.RecipeInset:Hide()
-	TradeSkillFrame.DetailsInset:Hide()
-	
-	SkinScrollBar(TradeSkillFrame.RecipeList.scrollBar)
-	SkinScrollBar(TradeSkillFrame.DetailsFrame.ScrollBar)
-	F.ReskinInput(TradeSkillFrame.SearchBox)
-	F.ReskinInput(TradeSkillFrame.DetailsFrame.CreateMultipleInputBox)
-	TradeSkillFrame.DetailsFrame.CreateMultipleInputBox.Left:Hide()
-	TradeSkillFrame.DetailsFrame.CreateMultipleInputBox.Middle:Hide()
-	TradeSkillFrame.DetailsFrame.CreateMultipleInputBox.Right:Hide()
-	select(3, TradeSkillFrame.DetailsFrame.CreateMultipleInputBox:GetRegions()):Hide()
-	select(4, TradeSkillFrame.DetailsFrame.CreateMultipleInputBox:GetRegions()):Hide()
-	select(5, TradeSkillFrame.DetailsFrame.CreateMultipleInputBox:GetRegions()):Hide()
-	TradeSkillFrame.DetailsFrame.CreateMultipleInputBox:SetPoint("LEFT", TradeSkillFrame.DetailsFrame.CreateAllButton, "RIGHT", 27, 0)
-	
-	F.ReskinArrow(TradeSkillFrame.LinkToButton, "right")
-	F.ReskinArrow(TradeSkillFrame.DetailsFrame.CreateMultipleInputBox.IncrementButton, "right")
-	TradeSkillFrame.DetailsFrame.CreateMultipleInputBox.IncrementButton:SetPoint("LEFT", TradeSkillFrame.DetailsFrame.CreateMultipleInputBox, "RIGHT", 1, 0)
-	F.ReskinArrow(TradeSkillFrame.DetailsFrame.CreateMultipleInputBox.DecrementButton, "left")
-	TradeSkillFrame.DetailsFrame.CreateMultipleInputBox.DecrementButton:SetPoint("RIGHT", TradeSkillFrame.DetailsFrame.CreateMultipleInputBox, "LEFT", -3, 0)
-	
-	TradeSkillFrame.LinkToButton:SetPoint("BOTTOMRIGHT", TradeSkillFrame.FilterButton, "TOPRIGHT", 0, 2)
-
-	TradeSkillFrame.SearchBox:SetPoint("TOPLEFT", 190, -60)
+	F.CreateBD(guildFrame.Container)
 end

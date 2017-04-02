@@ -2,6 +2,7 @@ local F, C = unpack(select(2, ...))
 
 tinsert(C.themes["Aurora"], function()
 	F.CreateBD(RolePollPopup)
+	F.CreateSD(RolePollPopup)
 	F.Reskin(RolePollPopupAcceptButton)
 	F.ReskinClose(RolePollPopupCloseButton)
 

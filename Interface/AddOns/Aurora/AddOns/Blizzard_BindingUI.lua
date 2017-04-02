@@ -21,6 +21,7 @@ C.themes["Blizzard_BindingUI"] = function()
 	F.Reskin(KeyBindingFrame.cancelButton)
 	F.ReskinCheck(KeyBindingFrame.characterSpecificButton)
 	F.ReskinScroll(KeyBindingFrameScrollFrameScrollBar)
+	KeyBindingFrameScrollFrame.scrollFrameScrollBarBackground:Hide()
 
 	local function styleBindingButton(bu)
 		local selected = bu.selectedHighlight
