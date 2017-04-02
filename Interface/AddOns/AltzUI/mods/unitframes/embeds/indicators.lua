@@ -2,7 +2,7 @@
 local oUF = AltzUF or oUF
 
 local x = "8"
-local bigmark = 11
+local bigmark = 15
 local smallmark = 7
 local timersize = 12
 

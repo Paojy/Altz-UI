@@ -1052,7 +1052,7 @@ local func = function(self, unit)
 	
     local ricon = hp:CreateTexture(nil, "OVERLAY")
     ricon:SetPoint("CENTER", hp, "CENTER", 0, 0)
-    ricon:SetSize(30, 30)
+    ricon:SetSize(40, 40)
 	ricon:SetTexture[[Interface\AddOns\AltzUI\media\raidicons.blp]]
     self.RaidIcon = ricon
 	
