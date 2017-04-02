@@ -333,8 +333,8 @@ function frm:PLAYER_LOGIN()
 			if not id then return end
 			if not xMPDB then return end
 		
-			local _, _, qual, itemLevel, _, itemType = GetItemInfo(link)
-			local spellID = processCheck(id, itemType, qual, link)
+			local _, _, qual, itemLevel, _, itemType, _, _, EquipLoc = GetItemInfo(link)
+			local spellID = processCheck(id, EquipLoc, qual, link)
 
 			--check to show or hide the button
 			if spellID then
@@ -366,7 +366,7 @@ function frm:PLAYER_LOGIN()
 	self.PLAYER_LOGIN = nil
 end
 
-function processCheck(id, itemType, qual, link)
+function processCheck(id, EquipLoc, qual, link)
 	if not spells then return nil end
 
 	--first check milling
@@ -385,9 +385,9 @@ function processCheck(id, itemType, qual, link)
 	end
 	
 	--otherwise check disenchat
-	if itemType and qual and XMP_DB and spells[13262] then
+	if EquipLoc and qual and XMP_DB and spells[13262] then
 		--only allow if the type of item is a weapon or armor, and it's a specific quality
-		if (itemType == ARMOR or itemType == WEAPON) and qual > 1 and qual < 5 and IsEquippableItem(link) and not XMP_DB[id] then
+		if EquipLoc ~= "" and qual > 1 and qual < 5 and IsEquippableItem(link) and not XMP_DB[id] then
 			return 13262
 		elseif IsArtifactRelicItem(id) and qual > 1 and qual < 5 and not XMP_DB[id] then
 			return 13262
