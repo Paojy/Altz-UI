@@ -749,7 +749,7 @@ artifactbar:SetScript("OnEnter", MainMenuBar_ArtifactTick_OnEnter)
 artifactbar:SetScript("OnLeave", function() GameTooltip:Hide() end)
 
 xpbar:SetScript("OnEvent", function(self, event, arg1)
-	local artifactItemID, _, _, _, artifactTotalXP, artifactPointsSpent, _, _, _, _, _, _, artifactMaxed = C_ArtifactUI.GetEquippedArtifactInfo()
+	local artifactItemID, _, _, _, artifactTotalXP, artifactPointsSpent, _, _, _, _, _, artifactMaxed, artifactTier = C_ArtifactUI.GetEquippedArtifactInfo()
 	local name, reaction, minRep, maxRep, value, factionID = GetWatchedFactionInfo()
 	local newLevel = UnitLevel("player")
 	
@@ -776,7 +776,7 @@ xpbar:SetScript("OnEvent", function(self, event, arg1)
 	if event == "PLAYER_LOGIN" or (event == "UNIT_INVENTORY_CHANGED" and arg1 == "player") or event == "ARTIFACT_XP_UPDATE" then
 		if showArtifact then
 			artifactbar:Show()
-			local numPointsAvailableToSpend, xp, xpForNextPoint = MainMenuBar_GetNumArtifactTraitsPurchasableFromXP(artifactPointsSpent, artifactTotalXP)
+			local numPointsAvailableToSpend, xp, xpForNextPoint = MainMenuBar_GetNumArtifactTraitsPurchasableFromXP(artifactPointsSpent, artifactTotalXP, artifactTier)
 			artifactbar:SetMinMaxValues(0, xpForNextPoint)
 			artifactbar:SetValue(xp)
 		else
@@ -1624,7 +1624,7 @@ BOTTOMPANEL:SetScript("OnMouseDown", function(self)
 end)
 
 BOTTOMPANEL:SetScript("OnEvent",function(self, event) 
-	if event == "PLAYER_ENTERING_WORLD" then
+	if event == "PLAYER_ENTERING_WORLD" and aCoreCDB["OtherOptions"]["afkscreen"] then
 		if aCoreDB.meet then
 			T.fadeout()
 		end
@@ -1647,7 +1647,7 @@ BOTTOMPANEL:SetScript("OnEvent",function(self, event)
 		end)
 		
 		self:UnregisterEvent("PLAYER_ENTERING_WORLD")
-	elseif event == "PLAYER_FLAGS_CHANGED" then
+	elseif event == "PLAYER_FLAGS_CHANGED" and aCoreCDB["OtherOptions"]["afkscreen"] then
 		if UnitIsAFK("player") then
 			T.fadeout()
 		end

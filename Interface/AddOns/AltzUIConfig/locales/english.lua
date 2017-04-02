@@ -370,6 +370,8 @@ L["在副本中收起任务追踪"] = "Collapse tracker in instances"
 L["在副本中收起任务追踪提示"] = "Collapse ObjectiveTracker when entering an instances/battleground, expand it when you leave."
 L["提升截图画质"] = "Upgrade Screenshot picture quality"
 L["截图保存为tga格式"] = "Screenshot saved as TGA format"
+L["暂离屏幕"] = "Hide interface when AFK"
+L["暂离屏幕提示"]= "Hide interface when AFK or Login"
 
 -- 插件皮肤
 L["插件皮肤"] = "Addon Skins"

@@ -1282,6 +1282,7 @@ local Character_default_Settings = {
 		hidemapandchat = false,
 		hours24 = true,
 		worldmapcoords = false,
+		afkscreen = true,
 	},
 	SkinOptions = {
 		setClassColor = true,
