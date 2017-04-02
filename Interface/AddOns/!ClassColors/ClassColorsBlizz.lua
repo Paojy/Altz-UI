@@ -465,7 +465,7 @@ addonFuncs["Blizzard_ChallengesUI"] = function()
 					str = CHALLENGE_MODE_GUILD_BEST_LINE_YOU
 				end
 				
-				local class = bu.leaderInfo.class
+				local class = bu.leaderInfo.classFileName
 				local name = bu.leaderInfo.name
 				local color = CUSTOM_CLASS_COLORS[class].colorStr
 				bu.CharacterName:SetText(str:format(color, name))
@@ -474,11 +474,11 @@ addonFuncs["Blizzard_ChallengesUI"] = function()
 					local leaderInfo = self.leaderInfo
 				
 					GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
-					local name = C_ChallengeMode.GetMapInfo(leaderInfo.mapid);
+					local name = C_ChallengeMode.GetMapInfo(leaderInfo.mapChallengeModeID);
 					GameTooltip:SetText(name, 1, 1, 1)
 					GameTooltip:AddLine(CHALLENGE_MODE_POWER_LEVEL:format(leaderInfo.level))
 					for i = 1, #leaderInfo.members do
-						local classColorStr = CUSTOM_CLASS_COLORS[leaderInfo.members[i].class].colorStr
+						local classColorStr = CUSTOM_CLASS_COLORS[leaderInfo.members[i].classFileName].colorStr
 						GameTooltip:AddLine(CHALLENGE_MODE_GUILD_BEST_LINE:format(classColorStr,leaderInfo.members[i].name))
 					end
 					GameTooltip:Show()
