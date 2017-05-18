@@ -382,6 +382,13 @@ G.Raids = {
 		EJ_GetEncounterInfo(1838),
 	},
 	
+	[EJ_GetInstanceInfo(900)] = { -- 永夜大教堂
+		EJ_GetEncounterInfo(1905),
+		EJ_GetEncounterInfo(1906),
+		EJ_GetEncounterInfo(1904),
+		EJ_GetEncounterInfo(1878),
+	},
+	
 	[EJ_GetInstanceInfo(822)] = { -- 破碎群岛
 		EJ_GetEncounterInfo(1790),
 		EJ_GetEncounterInfo(1774),
@@ -424,27 +431,18 @@ G.Raids = {
 		EJ_GetEncounterInfo(1743),
 		EJ_GetEncounterInfo(1737),
 	},
-	
-	[EJ_GetInstanceInfo(669)] = { -- 地狱火
-		EJ_GetEncounterInfo(1426),
-		EJ_GetEncounterInfo(1425),
-		EJ_GetEncounterInfo(1392),
-		EJ_GetEncounterInfo(1432),
-		
-		EJ_GetEncounterInfo(1396),
-		EJ_GetEncounterInfo(1372),
-		EJ_GetEncounterInfo(1433),
-		EJ_GetEncounterInfo(1427),
-		
-		EJ_GetEncounterInfo(1391),
-		EJ_GetEncounterInfo(1447),
-		EJ_GetEncounterInfo(1394),
-		EJ_GetEncounterInfo(1395),
-		
-		EJ_GetEncounterInfo(1438),
-		"Trash",	
+	[EJ_GetInstanceInfo(875)] = { -- 萨格拉斯之墓
+		EJ_GetEncounterInfo(1862),
+		EJ_GetEncounterInfo(1867),
+		EJ_GetEncounterInfo(1856),
+		EJ_GetEncounterInfo(1903),
+		EJ_GetEncounterInfo(1861),
+		EJ_GetEncounterInfo(1896),
+		EJ_GetEncounterInfo(1897),
+		EJ_GetEncounterInfo(1873),
+		EJ_GetEncounterInfo(1898),
+		"Trash",
 	},
-	
 }
 
 G.DebuffList = {
@@ -645,6 +643,21 @@ G.DebuffList = {
 			
 		},
 		[EJ_GetEncounterInfo(1838)] = {
+			
+		},
+	},
+	
+	[EJ_GetInstanceInfo(900)] = { -- 永夜大教堂
+		[EJ_GetEncounterInfo(1905)] = {
+			
+		},
+		[EJ_GetEncounterInfo(1906)] = {
+			
+		},
+		[EJ_GetEncounterInfo(1904)] = {
+			
+		},
+		[EJ_GetEncounterInfo(1878)] = {
 			
 		},
 	},
@@ -899,47 +912,35 @@ G.DebuffList = {
 			[GetSpellInfo(208802)] = {id = 208802, level = 8,},
 		},
 	},
-	[EJ_GetInstanceInfo(669)] = { -- 地狱火堡垒
+	[EJ_GetInstanceInfo(875)] = { -- 萨格拉斯之墓
 		["Trash"] = {
 		
 		},
-		[EJ_GetEncounterInfo(1426)] = { --奇袭地狱火
+		[EJ_GetEncounterInfo(1862)] = {
 		
 		},
-		[EJ_GetEncounterInfo(1425)] = { --钢铁掠夺者
+		[EJ_GetEncounterInfo(1867)] = {
 			
 		},
-		[EJ_GetEncounterInfo(1392)] = { --考莫克
+		[EJ_GetEncounterInfo(1856)] = {
 			
 		},
-		[EJ_GetEncounterInfo(1432)] = { --高阶地狱	 
+		[EJ_GetEncounterInfo(1903)] = { 
 			
 		},
-		[EJ_GetEncounterInfo(1396)] = { --基尔罗格·死眼
+		[EJ_GetEncounterInfo(1861)] = {
 		
 		},
-		[EJ_GetEncounterInfo(1372)] = { --血魔
+		[EJ_GetEncounterInfo(1896)] = {
 			
 		},
-		[EJ_GetEncounterInfo(1433)] = { --暗影领主艾斯卡
+		[EJ_GetEncounterInfo(1897)] = {
 			
 		},
-		[EJ_GetEncounterInfo(1427)] = { --永恒者索克雷萨
+		[EJ_GetEncounterInfo(1873)] = {
 			
 		},
-		[EJ_GetEncounterInfo(1391)] = { --邪能领主扎昆
-			
-		},
-		[EJ_GetEncounterInfo(1447)] = { --祖霍拉克
-		
-		},
-		[EJ_GetEncounterInfo(1394)] = { --暴君维哈里
-			
-		},
-		[EJ_GetEncounterInfo(1395)] = { --玛诺洛斯
-		
-		},
-		[EJ_GetEncounterInfo(1438)] = { --阿克蒙德
+		[EJ_GetEncounterInfo(1898)] = {
 		
 		},
 	},
