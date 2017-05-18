@@ -201,7 +201,11 @@ if playerplate then
 				PowerFrame.powerBar:SetValue(perc)
 			else
 				if minPower ~= maxPower then
-					PowerFrame.powerperc:SetText(perc_text)
+					if powertype == 0 then
+						PowerFrame.powerperc:SetText(perc_text)
+					else
+						PowerFrame.powerperc:SetText(minPower)
+					end
 				else
 					PowerFrame.powerperc:SetText("")
 				end
@@ -400,7 +404,7 @@ if classresource_show then
 
 					oldMax = self.maxbar
 					if(max ~= oldMax) then
-						if max == 5 or max == 8 then
+						if max == 5 or max == 10 then
 							self[6]:Hide()
 							for i = 1, 6 do
 								self[i]:SetWidth(102/5-2)
