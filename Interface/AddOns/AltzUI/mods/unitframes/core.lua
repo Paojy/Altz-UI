@@ -274,8 +274,11 @@ local CpointsPostUpdate = function(element, cur, max, maxchanged)
 	
 	if maxchanged then
 		for i = 1, 6 do
-			if max == 5 or max == 8 then
+			if max == 5 or max == 10 then
 				element[i]:SetWidth((aCoreCDB["UnitframeOptions"]["width"]+3)/5-3)
+				if i == 6 then
+					element[i]:Hide()
+				end
 			else
 				element[i]:SetWidth((aCoreCDB["UnitframeOptions"]["width"]+3)/max-3)
 			end
