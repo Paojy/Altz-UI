@@ -538,7 +538,6 @@ ancientmana.icon:SetPoint"TOPLEFT"
 
 ancientmana.icon.texture = ancientmana.icon:CreateTexture(nil, "OVERLAY")
 ancientmana.icon.texture:SetAllPoints()
-ancientmana.icon.texture:SetTexture(1377394)
 ancientmana.icon.texture:SetTexCoord(0.1,0.9,0.1,0.9)
 
 ancientmana.icon.bg = ancientmana.icon:CreateTexture(nil, "BORDER")
@@ -554,11 +553,22 @@ ancientmana:RegisterEvent("PLAYER_ENTERING_WORLD")
 ancientmana:RegisterEvent("WORLD_MAP_UPDATE")
 ancientmana:RegisterEvent("CURRENCY_DISPLAY_UPDATE")
 ancientmana:SetScript("OnEvent", function(self, event)
-	if event == "CURRENCY_DISPLAY_UPDATE" then
-		name, amount, texturePath, earnedThisWeek, weeklyMax, totalMax, isDiscovered, quality = GetCurrencyInfo(1155)
+	local currencyid
+	if GetCurrentMapAreaID() == 1021 then
+		currencyid = 1342
+	elseif GetCurrentMapAreaID() == 1033 then
+		currencyid = 1155
+	end
+	if currencyid then
+		name, amount, texturePath, earnedThisWeek, weeklyMax, totalMax, isDiscovered, quality = GetCurrencyInfo(currencyid)
 		ancientmana.text:SetText(amount.."/"..totalMax)
-	else
+	end
+	if event ~= "CURRENCY_DISPLAY_UPDATE" then
 		if GetCurrentMapAreaID() == 1033 then
+			ancientmana.icon.texture:SetTexture("Interface\\Icons\\inv_misc_ancient_mana")
+			self:Show()
+		elseif GetCurrentMapAreaID() == 1021 then
+			ancientmana.icon.texture:SetTexture("Interface\\Icons\\inv_misc_summonable_boss_token")
 			self:Show()
 		else
 			self:Hide()
@@ -733,7 +743,7 @@ function xprptoolitp()
 		GameTooltip:AddLine(" ")
 	end
 
-	if name then
+	if name and maxRep>minRep then
 		GameTooltip:AddLine(name.."  (".._G["FACTION_STANDING_LABEL"..rank]..")", G.Ccolor.r, G.Ccolor.g, G.Ccolor.b)
 		GameTooltip:AddDoubleLine(L["声望"], string.format("%s/%s (%d%%)", CommaValue(value-minRep), CommaValue(maxRep-minRep), (value-minRep)/(maxRep-minRep)*100), G.Ccolor.r, G.Ccolor.g, G.Ccolor.b, 1, 1, 1)
 		GameTooltip:AddDoubleLine(L["剩余声望"], string.format("%s", CommaValue(maxRep-value)), G.Ccolor.r, G.Ccolor.g, G.Ccolor.b, 1, 1, 1)
@@ -754,7 +764,7 @@ xpbar:SetScript("OnEvent", function(self, event, arg1)
 	local newLevel = UnitLevel("player")
 	
 	local showArtifact = artifactItemID and not artifactMaxed
-	local showXPorRep = (newLevel < MAX_PLAYER_LEVEL and not IsXPUserDisabled()) or name
+	local showXPorRep = ((newLevel < MAX_PLAYER_LEVEL and not IsXPUserDisabled()) or name) and maxRep>minRep
 	
 	if event == "PLAYER_LOGIN" or event == "PLAYER_LEVEL_UP" or event == "PLAYER_XP_UPDATE" or event == "UPDATE_FACTION" then
 		if showXPorRep then
@@ -1058,18 +1068,26 @@ Talent:SetScript("OnEvent", function(self, event, arg1)
 	if event == "PLAYER_ENTERING_WORLD" then
 		self:RegisterEvent("PLAYER_LOOT_SPEC_UPDATED")
 		self:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED")
+		self:RegisterEvent("PLAYER_LOOT_SPEC_UPDATED")
 		self:UnregisterEvent("PLAYER_ENTERING_WORLD")
 	end
 	
 	if arg1 and arg1 ~= "player" then return end -- "PLAYER_SPECIALIZATION_CHANGED"
 	
 	local specIndex = GetSpecialization()
+	local Loot_specIndex = GetLootSpecialization()
 	
 	if specIndex then
 		local specID, specName = GetSpecializationInfo(specIndex)
+		local Loot_specID, Loot_specName = GetSpecializationInfoByID(Loot_specIndex)
 		
 		if specName then
-			self.text:SetText(format(G.classcolor.."%s|r", specName))
+			if Loot_specName then
+				self.text:SetText(format(G.classcolor.."%s ("..SELECT_LOOT_SPECIALIZATION.." %s)|r", specName, Loot_specName))
+			else
+				self.text:SetText(format(G.classcolor.."%s|r", specName))
+			end
+			
 			SpecList[2]["disabled"] = false
 			SpecList[3]["disabled"] = false
 			
