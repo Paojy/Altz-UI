@@ -84,7 +84,15 @@ oUF.Tags.Methods['Mlight:yzdx'] = function(u) -- 意志洞悉
 	end
 end
 oUF.Tags.Events['Mlight:yzdx'] = "UNIT_AURA UNIT_ABSORB_AMOUNT_CHANGED" 
- 
+
+oUF.Tags.Methods['Mlight:tlzg'] = function(u)
+	local name, _,_,_,_,_, _, fromwho = UnitBuff(u, GetSpellInfo(208065))
+	if(fromwho == "player") then
+		return "|cff0000FFb|r"
+	end
+end --图雷之光
+oUF.Tags.Events['Mlight:tlzg'] = "UNIT_AURA"
+
 -- Druid 德鲁伊
 oUF.Tags.Methods['Mlight:lb'] = function(u) -- 生命绽放
     local name, _,_, c,_,_, expirationTime, fromwho = UnitBuff(u, GetSpellInfo(33763))
@@ -151,7 +159,8 @@ end
 oUF.Tags.Events['Mlight:wildgrowth'] = "UNIT_AURA"
 
 oUF.Tags.Methods['Mlight:snla'] = function(u)
-	if UnitBuff(u, GetSpellInfo(102351)) then
+	local name, _,_,_,_,_, _, fromwho = UnitBuff(u, GetSpellInfo(102351))
+	if(fromwho == "player") then
 		local w = select(11, UnitBuff(u, GetSpellInfo(102351)))
 		if w == 102351 then
 			return "|cffFFF8DCY|r"
@@ -287,7 +296,7 @@ classIndicators={
     },
     ["PRIEST"] = {
         ["TL"] = "[Mlight:rnw][Mlight:pws]",
-        ["BR"] = "[Mlight:ayj]",
+        ["BR"] = "[Mlight:ayj][Mlight:tlzg]",
         ["BL"] = "[Mlight:yzdx]",
         ["TR"] = "[Mlight:pom]",
         ["Cen"] = "[Mlight:atonement]",
