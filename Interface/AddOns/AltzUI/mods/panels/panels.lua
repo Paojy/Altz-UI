@@ -764,7 +764,7 @@ xpbar:SetScript("OnEvent", function(self, event, arg1)
 	local newLevel = UnitLevel("player")
 	
 	local showArtifact = artifactItemID and not artifactMaxed
-	local showXPorRep = ((newLevel < MAX_PLAYER_LEVEL and not IsXPUserDisabled()) or name) and maxRep>minRep
+	local showXPorRep = ((newLevel < MAX_PLAYER_LEVEL and not IsXPUserDisabled()) or name) or maxRep>minRep
 	
 	if event == "PLAYER_LOGIN" or event == "PLAYER_LEVEL_UP" or event == "PLAYER_XP_UPDATE" or event == "UPDATE_FACTION" then
 		if showXPorRep then

@@ -1632,7 +1632,9 @@ local function CreatecooldownflashlistButton(spellID, parent, list)
 	elseif list == "spell" and GetSpellInfo(spellID) then
 		bu.icon:SetNormalTexture(select(3, GetSpellInfo(spellID)))
 	end
-	bu.icon:GetNormalTexture():SetTexCoord(0.1,0.9,0.1,0.9)
+	if bu.icon:GetNormalTexture() then
+		bu.icon:GetNormalTexture():SetTexCoord(0.1,0.9,0.1,0.9)
+	end
 	bu.icon:SetPoint"LEFT"
 	F.CreateBG(bu.icon)
 	
