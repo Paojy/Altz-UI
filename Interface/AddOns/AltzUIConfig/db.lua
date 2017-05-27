@@ -702,6 +702,7 @@ G.DebuffList = {
 	},
 	
 	[EJ_GetInstanceInfo(768)] = { -- 翡翠梦魇
+	
 		[EJ_GetEncounterInfo(1703)]={
 			[GetSpellInfo(204504)] = {id = 204504, level = 8,},
 			[GetSpellInfo(203045)] = {id = 203045, level = 8,},
@@ -912,39 +913,84 @@ G.DebuffList = {
 			[GetSpellInfo(208802)] = {id = 208802, level = 8,},
 		},
 	},
+	
 	[EJ_GetInstanceInfo(875)] = { -- 萨格拉斯之墓
-		["Trash"] = {
-		
-		},
 		[EJ_GetEncounterInfo(1862)] = {
-		
+			[GetSpellInfo(231363)] = {id = 231363, level = 8,},
+			[GetSpellInfo(233279)] = {id = 233279, level = 8,},
+			[GetSpellInfo(233062)] = {id = 233062, level = 8,},
+			[GetSpellInfo(234346)] = {id = 234346, level = 8,},
+			[GetSpellInfo(238588)] = {id = 238588, level = 8,},
 		},
 		[EJ_GetEncounterInfo(1867)] = {
-			
+			[GetSpellInfo(233426)] = {id = 233426, level = 8,},
+			[GetSpellInfo(233431)] = {id = 233431, level = 8,},
+			[GetSpellInfo(233441)] = {id = 233441, level = 8,},
+			[GetSpellInfo(239401)] = {id = 239401, level = 8,},
+			[GetSpellInfo(233983)] = {id = 233983, level = 8,},
+			[GetSpellInfo(234015)] = {id = 234015, level = 8,},
+			[GetSpellInfo(235230)] = {id = 235230, level = 8,},
 		},
 		[EJ_GetEncounterInfo(1856)] = {
-			
+			[GetSpellInfo(231998)] = {id = 231998, level = 8,},
+			[GetSpellInfo(231854)] = {id = 231854, level = 8,},
+			[GetSpellInfo(232061)] = {id = 232061, level = 8,},
+			[GetSpellInfo(233429)] = {id = 233429, level = 8,},
+			[GetSpellInfo(232174)] = {id = 232174, level = 8,},
+			[GetSpellInfo(231729)] = {id = 231729, level = 8,},
+			[GetSpellInfo(240319)] = {id = 240319, level = 8,},
+			[GetSpellInfo(241600)] = {id = 241600, level = 8,},
 		},
-		[EJ_GetEncounterInfo(1903)] = { 
-			
+			[EJ_GetEncounterInfo(1903)] = { 
+			[GetSpellInfo(230139)] = {id = 230139, level = 8,},
+			[GetSpellInfo(230201)] = {id = 230201, level = 8,},
+			[GetSpellInfo(232722)] = {id = 232722, level = 8,},
+			[GetSpellInfo(230358)] = {id = 230358, level = 8,},
+			[GetSpellInfo(230384)] = {id = 230384, level = 8,},
+			[GetSpellInfo(232913)] = {id = 232913, level = 8,},
+			[GetSpellInfo(239362)] = {id = 239362, level = 8,},
 		},
 		[EJ_GetEncounterInfo(1861)] = {
-		
+			[GetSpellInfo(236550)] = {id = 236550, level = 8,},
+			[GetSpellInfo(236697)] = {id = 236697, level = 8,},
+			[GetSpellInfo(236603)] = {id = 236603, level = 8,},
+			[GetSpellInfo(236519)] = {id = 236519, level = 8,},
+			[GetSpellInfo(236712)] = {id = 236712, level = 8,},
+			[GetSpellInfo(239264)] = {id = 239264, level = 8,},
 		},
 		[EJ_GetEncounterInfo(1896)] = {
-			
-		},
+			[GetSpellInfo(239006)] = {id = 239006, level = 8,},
+			[GetSpellInfo(236507)] = {id = 236507, level = 8,},
+			[GetSpellInfo(235907)] = {id = 235907, level = 8,},
+			[GetSpellInfo(238570)] = {id = 238570, level = 8,},
+			[GetSpellInfo(235927)] = {id = 235927, level = 8,},
+			[GetSpellInfo(236513)] = {id = 236513, level = 8,},
+			[GetSpellInfo(236131)] = {id = 236131, level = 8,},
+			[GetSpellInfo(236515)] = {id = 236515, level = 8,},
+			[GetSpellInfo(236361)] = {id = 236361, level = 8,},
+			[GetSpellInfo(236542)] = {id = 236542, level = 8,},
+			[GetSpellInfo(236544)] = {id = 236544, level = 8,},
+			[GetSpellInfo(236548)] = {id = 236548, level = 8,},
+        },
 		[EJ_GetEncounterInfo(1897)] = {
-			
-		},
+			[GetSpellInfo(235271)] = {id = 235271, level = 8,},
+			[GetSpellInfo(241635)] = {id = 241635, level = 8,},
+			[GetSpellInfo(235267)] = {id = 235267, level = 8,},
+			[GetSpellInfo(234891)] = {id = 234891, level = 8,},
+			[GetSpellInfo(239153)] = {id = 239153, level = 8,},
+	    },
 		[EJ_GetEncounterInfo(1873)] = {
-			
+			[GetSpellInfo(236604)] = {id = 236604, level = 8,},
+			[GetSpellInfo(236494)] = {id = 236494, level = 8,},
+			[GetSpellInfo(233856)] = {id = 233856, level = 8,},
+			[GetSpellInfo(239739)] = {id = 239739, level = 8,},
+			[GetSpellInfo(242017)] = {id = 242017, level = 8,},
+			[GetSpellInfo(240728)] = {id = 240728, level = 8,},
+			[GetSpellInfo(234418)] = {id = 234418, level = 8,},
 		},
 		[EJ_GetEncounterInfo(1898)] = {
-		
 		},
-	},
-
+	},	
 }
 
 G.WhiteList = {
