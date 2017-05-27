@@ -731,22 +731,37 @@ function xprptoolitp()
 	
 	local XP, maxXP = UnitXP("player"), UnitXPMax("player")
 	local restXP = GetXPExhaustion()
-	local name, rank, minRep, maxRep, value = GetWatchedFactionInfo()
+	local name, rank, minRep, maxRep, value, factionID = GetWatchedFactionInfo()
+	local ranktext = _G["FACTION_STANDING_LABEL"..rank]
 	
 	if UnitLevel("player") < MAX_PLAYER_LEVEL then
 		GameTooltip:AddDoubleLine(L["当前经验"], string.format("%s/%s (%d%%)", CommaValue(XP), CommaValue(maxXP), (XP/maxXP)*100), G.Ccolor.r, G.Ccolor.g, G.Ccolor.b, 1, 1, 1)
 		GameTooltip:AddDoubleLine(L["剩余经验"], string.format("%s", CommaValue(maxXP-XP)), G.Ccolor.r, G.Ccolor.g, G.Ccolor.b, 1, 1, 1)
 		if restXP then GameTooltip:AddDoubleLine(L["双倍"], string.format("|cffb3e1ff%s (%d%%)", CommaValue(restXP), restXP/maxXP*100), G.Ccolor.r, G.Ccolor.g, G.Ccolor.b) end
+		if name then
+			GameTooltip:AddLine(" ")
+		end
 	end
 	
-	if name and not UnitLevel("player") == MAX_PLAYER_LEVEL then
-		GameTooltip:AddLine(" ")
-	end
-
-	if name and maxRep>minRep then
-		GameTooltip:AddLine(name.."  (".._G["FACTION_STANDING_LABEL"..rank]..")", G.Ccolor.r, G.Ccolor.g, G.Ccolor.b)
-		GameTooltip:AddDoubleLine(L["声望"], string.format("%s/%s (%d%%)", CommaValue(value-minRep), CommaValue(maxRep-minRep), (value-minRep)/(maxRep-minRep)*100), G.Ccolor.r, G.Ccolor.g, G.Ccolor.b, 1, 1, 1)
-		GameTooltip:AddDoubleLine(L["剩余声望"], string.format("%s", CommaValue(maxRep-value)), G.Ccolor.r, G.Ccolor.g, G.Ccolor.b, 1, 1, 1)
+	if name then
+		local minrep, maxrep, valuerep
+		if GetFriendshipReputation(factionID) then
+			local friendID, friendRep, friendMaxRep, friendName, friendText, friendTexture, friendTextLevel, friendThreshold, nextFriendThreshold = GetFriendshipReputation(factionID)
+			minrep, maxrep, valuerep = friendThreshold, nextFriendThreshold, friendRep
+			ranktext = friendTextLevel
+		elseif C_Reputation.IsFactionParagon(factionID) then
+			local currentValue, threshold = C_Reputation.GetFactionParagonInfo(factionID)
+			minrep, maxrep, valuerep = 0, threshold, mod(currentValue, threshold)
+		else
+			minrep, maxrep, valuerep = minRep, maxRep, value
+		end
+		
+		GameTooltip:AddLine(name.."  ("..ranktext..")", G.Ccolor.r, G.Ccolor.g, G.Ccolor.b)
+		
+		if maxrep and maxrep > valuerep then
+			GameTooltip:AddDoubleLine(L["声望"], string.format("%s/%s (%d%%)", CommaValue(valuerep-minrep), CommaValue(maxrep-minrep), (valuerep-minrep)/(maxrep-minrep)*100), G.Ccolor.r, G.Ccolor.g, G.Ccolor.b, 1, 1, 1)
+			GameTooltip:AddDoubleLine(L["剩余声望"], string.format("%s", CommaValue(maxrep-valuerep)), G.Ccolor.r, G.Ccolor.g, G.Ccolor.b, 1, 1, 1)
+		 end
 	end	
 	
 	GameTooltip:Show()
@@ -764,7 +779,7 @@ xpbar:SetScript("OnEvent", function(self, event, arg1)
 	local newLevel = UnitLevel("player")
 	
 	local showArtifact = artifactItemID and not artifactMaxed
-	local showXPorRep = ((newLevel < MAX_PLAYER_LEVEL and not IsXPUserDisabled()) or name) or maxRep>minRep
+	local showXPorRep = (newLevel < MAX_PLAYER_LEVEL and not IsXPUserDisabled()) or name
 	
 	if event == "PLAYER_LOGIN" or event == "PLAYER_LEVEL_UP" or event == "PLAYER_XP_UPDATE" or event == "UPDATE_FACTION" then
 		if showXPorRep then
@@ -774,6 +789,22 @@ xpbar:SetScript("OnEvent", function(self, event, arg1)
 			if UnitLevel("player") ~= MAX_PLAYER_LEVEL then
 				xpbar:SetMinMaxValues(min(0, XP), maxXP)
 				xpbar:SetValue(XP)
+			elseif GetFriendshipReputation(factionID) then
+				local friendID, friendRep, friendMaxRep, friendName, friendText, friendTexture, friendTextLevel, friendThreshold, nextFriendThreshold = GetFriendshipReputation(factionID)
+				if ( nextFriendThreshold ) then
+					xpbar:SetMinMaxValues(friendThreshold, nextFriendThreshold)
+					xpbar:SetValue(friendRep)
+				else
+					xpbar:SetMinMaxValues(0, 1)
+					xpbar:SetValue(1)
+				end
+			elseif C_Reputation.IsFactionParagon(factionID) then
+				local currentValue, threshold = C_Reputation.GetFactionParagonInfo(factionID)
+				xpbar:SetMinMaxValues(0, threshold)
+				xpbar:SetValue(mod(currentValue, threshold))
+			elseif reaction == MAX_REPUTATION_REACTION then
+				xpbar:SetMinMaxValues(0, 1)
+				xpbar:SetValue(1)
 			else
 				xpbar:SetMinMaxValues(minRep, maxRep)
 				xpbar:SetValue(value)
