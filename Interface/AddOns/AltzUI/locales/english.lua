@@ -102,6 +102,7 @@ L["目标施法条"] = "Target Cast Bar"
 L["焦点施法条"] = "Focus Cast Bar"
 L["玩家平砍计时条"] = "Player Swing Timer"
 L["冷却提示"] = "Cooldown Alert"
+L["图腾条"] = "Totem Bar"
 
 L["无2"] = "|cffFF0000No|r"
 L["无"] = "No"
@@ -181,6 +182,7 @@ L["TIPS"] = {
 	"Press Tab to change between available channels when editbox of chatframe is activate",
 	"Where is the font file？Interface\\AddOns\\Aurora\\media\\font.ttf(main font),Interface\\AddOns\\AltzUI\\media\\number.ttf(font for some time text)",
 	"Hold Ctrl, Alt or Shift to scoll chatframe to top/buttom.",
+	"Click the edge of some button will toggle on/off its autohide function, eg MicroMenu/Raidtools/Config.",
  }
  
 L["出现了！"] = "spotted!"
