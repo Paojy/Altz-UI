@@ -168,7 +168,7 @@ mmbbox:SetPoint("LEFT", shadowBox, "RIGHT", 110, 0)
 local appearance = addSubCategory(gui, L["Appearance"])
 appearance:SetPoint("TOPLEFT", tooltipsBox, "BOTTOMLEFT", 0, -30)
 
-local fontBox = createToggleBox(gui, "enableFont", L["Replace default game fonts"], true)
+local fontBox = createToggleBox(gui, "enableFont", L["Replace default game fonts"])
 fontBox:SetPoint("TOPLEFT", appearance, "BOTTOMLEFT", 0, -20)
 
 local colourBox = createToggleBox(gui, "useCustomColour", L["Custom Color"])
