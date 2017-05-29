@@ -710,7 +710,7 @@ local repbar = CreateFrame("StatusBar", G.uiname.."WatchedFactionBar", Minimap)
 repbar:SetWidth(5)
 repbar:SetOrientation("VERTICAL")
 repbar:SetStatusBarTexture(G.media.blank)
-repbar:SetStatusBarColor(.2, .8, .8)
+repbar:SetStatusBarColor(.4, 1, .2)
 repbar:SetFrameLevel(Minimap:GetFrameLevel()+3)
 repbar.border = F.CreateBDFrame(repbar, .8)
 
