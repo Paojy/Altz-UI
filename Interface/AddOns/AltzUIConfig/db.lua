@@ -441,7 +441,6 @@ G.Raids = {
 		EJ_GetEncounterInfo(1897),
 		EJ_GetEncounterInfo(1873),
 		EJ_GetEncounterInfo(1898),
-		"Trash",
 	},
 }
 
@@ -1123,6 +1122,12 @@ local Character_default_Settings = {
 		dpsmana = true,
 		stagger = true,
 		valuefs = 12,
+		
+		-- totems
+		totems = true,
+		totemsize = 25,
+		growthDirection = 'HORIZONTAL',
+		sortDirection = 'ASCENDING',
 		
 		--[[ share ]]--
 		enableraid = true,
