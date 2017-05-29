@@ -1152,22 +1152,6 @@ local UnitSpecific = {
             end
         end
 		
-		if G.myClass == "MONK" or G.myClass == "MAGE" then
-			local totembars = CreateFrame("Frame", G.uiname.."Totems", self)
-			totembars:SetPoint("BOTTOMRIGHT", self, "BOTTOMLEFT", -3, 0)
-			totembars:SetPoint("TOPLEFT", self, "TOPLEFT", -10, 0)
-			
-			for i = 1, 4 do
-				totembars[i] = T.createStatusbar(totembars, "ARTWORK", aCoreCDB["UnitframeOptions"]["height"], 3, 1, 1, 1, 1, G.uiname.."Totem1")
-				totembars[i]:SetPoint("RIGHT", totembars, "RIGHT")		
-				totembars[i]:SetOrientation("VERTICAL")
-				totembars[i].bg:Hide()
-				totembars[i].bd = T.createBackdrop(totembars[i], totembars[i], 1)
-			end
-			
-			self.TotemBar = totembars
-		end
-		
 		-- Stagger
 		if G.myClass == "MONK" and aCoreCDB["UnitframeOptions"]["stagger"] then
 			local stagger = T.createStatusbar(self, "ARTWORK", aCoreCDB["UnitframeOptions"]["height"]*-(aCoreCDB["UnitframeOptions"]["hpheight"]-1), nil, 1, 1, 1, 1)

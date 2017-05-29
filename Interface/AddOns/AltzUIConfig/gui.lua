@@ -677,7 +677,22 @@ AuraFilter_spellIDinput:SetScript("OnEnter", function(self)
 	GameTooltip:Show() 
 end)
 AuraFilter_spellIDinput:SetScript("OnLeave", function(self) GameTooltip:Hide() end)
-		
+
+UFInnerframe.totembar = CreateOptionPage("UF Options totembar", L["图腾条"], UFInnerframe, "VERTICAL", .3)
+
+T.createcheckbutton(UFInnerframe.totembar, 30, 60, L["启用"], "UnitframeOptions", "totems")
+T.createslider(UFInnerframe.totembar, 30, 110, L["图标大小"], "UnitframeOptions", "totemsize", 1, 15, 40, 1)
+local totembargrowthdirection_group = {
+	["HORIZONTAL"] = L["水平"],
+	["VERTICAL"] = L["垂直"],
+}
+T.createradiobuttongroup(UFInnerframe.totembar, 30, 140, L["排列方向"], "UnitframeOptions", "growthDirection", totembargrowthdirection_group)
+local totembarinneranchor_group = {
+	["ASCENDING"] = L["正向"],
+	["DESCENDING"] = L["反向"],
+}
+T.createradiobuttongroup(UFInnerframe.totembar, 30, 170, L["排列方向"], "UnitframeOptions", "sortDirection", totembarinneranchor_group)
+
 UFInnerframe.other = CreateOptionPage("UF Options other", OTHER, UFInnerframe, "VERTICAL", .3)
 
 T.createcheckbutton(UFInnerframe.other, 30, 60, L["启用仇恨条"], "UnitframeOptions", "showthreatbar")
