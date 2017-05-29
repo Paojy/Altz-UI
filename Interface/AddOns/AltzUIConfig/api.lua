@@ -92,7 +92,7 @@ function T.SetChatFrame()
 	
     FCF_SetLocked(ChatFrame1, nil)
     ChatFrame1:ClearAllPoints()
-	ChatFrame1:SetSize(300, 130)
+	ChatFrame1:SetSize(300, 150)
     ChatFrame1:SetPoint("BOTTOMLEFT", _G[G.uiname.."chatframe_pullback"], "BOTTOMLEFT", 5, 0)
 	
 	FCF_SavePositionAndDimensions(ChatFrame1)
@@ -270,13 +270,23 @@ T.ResetSkada =function(reload)
 								["color"] = {
 									["a"] = 0,
 								},
-								["height"] = 155,
+								["height"] = 175,
 							},
 							["title"] = {
 								["color"] = {
 									["a"] = 0,
+									["b"] = 0.3,
+									["g"] = 0.1,
+									["r"] = 0.1,
 								},
+								["bordertexture"] = "None",
+								["font"] = "Accidental Presidency",
+								["borderthickness"] = 2,
+								["fontsize"] = 11,
+								["fontflags"] = "",
 								["height"] = 24,
+								["margin"] = 0,
+								["texture"] = "Aluminium",
 							},
 						}, -- [1]
 						{
@@ -315,7 +325,7 @@ T.ResetSkada =function(reload)
 							},
 							["background"] = {
 								["borderthickness"] = 0,
-								["height"] = 155,
+								["height"] = 175,
 								["color"] = {
 									["a"] = 0,
 									["b"] = 0.5,
