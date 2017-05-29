@@ -706,6 +706,14 @@ xpbar:SetStatusBarColor(.3, .4, 1)
 xpbar:SetFrameLevel(Minimap:GetFrameLevel()+3)
 xpbar.border = F.CreateBDFrame(xpbar, .8)
 
+local repbar = CreateFrame("StatusBar", G.uiname.."WatchedFactionBar", Minimap)
+repbar:SetWidth(5)
+repbar:SetOrientation("VERTICAL")
+repbar:SetStatusBarTexture(G.media.blank)
+repbar:SetStatusBarColor(.2, .8, .8)
+repbar:SetFrameLevel(Minimap:GetFrameLevel()+3)
+repbar.border = F.CreateBDFrame(repbar, .8)
+
 local artifactbar = CreateFrame("StatusBar", G.uiname.."ArtifactExperienceBar", Minimap)
 artifactbar:SetWidth(5)
 artifactbar:SetOrientation("VERTICAL")
@@ -725,23 +733,27 @@ local function CommaValue(amount)
 	return formatted
 end
 
-local _G = getfenv(0)
-function xprptoolitp()
+xpbar:SetScript("OnEnter", function()
 	GameTooltip_SetDefaultAnchor(GameTooltip, UIParent)
 	
 	local XP, maxXP = UnitXP("player"), UnitXPMax("player")
 	local restXP = GetXPExhaustion()
-	local name, rank, minRep, maxRep, value, factionID = GetWatchedFactionInfo()
-	local ranktext = _G["FACTION_STANDING_LABEL"..rank]
 	
 	if UnitLevel("player") < MAX_PLAYER_LEVEL then
 		GameTooltip:AddDoubleLine(L["当前经验"], string.format("%s/%s (%d%%)", CommaValue(XP), CommaValue(maxXP), (XP/maxXP)*100), G.Ccolor.r, G.Ccolor.g, G.Ccolor.b, 1, 1, 1)
 		GameTooltip:AddDoubleLine(L["剩余经验"], string.format("%s", CommaValue(maxXP-XP)), G.Ccolor.r, G.Ccolor.g, G.Ccolor.b, 1, 1, 1)
 		if restXP then GameTooltip:AddDoubleLine(L["双倍"], string.format("|cffb3e1ff%s (%d%%)", CommaValue(restXP), restXP/maxXP*100), G.Ccolor.r, G.Ccolor.g, G.Ccolor.b) end
-		if name then
-			GameTooltip:AddLine(" ")
-		end
 	end
+	
+	GameTooltip:Show()
+end)
+xpbar:SetScript("OnLeave", function() GameTooltip:Hide() end)
+
+repbar:SetScript("OnEnter", function()
+	GameTooltip_SetDefaultAnchor(GameTooltip, UIParent)
+	
+	local name, rank, minRep, maxRep, value, factionID = GetWatchedFactionInfo()
+	local ranktext = _G["FACTION_STANDING_LABEL"..rank]
 	
 	if name then
 		local minrep, maxrep, valuerep
@@ -761,17 +773,23 @@ function xprptoolitp()
 		if maxrep and maxrep > valuerep then
 			GameTooltip:AddDoubleLine(L["声望"], string.format("%s/%s (%d%%)", CommaValue(valuerep-minrep), CommaValue(maxrep-minrep), (valuerep-minrep)/(maxrep-minrep)*100), G.Ccolor.r, G.Ccolor.g, G.Ccolor.b, 1, 1, 1)
 			GameTooltip:AddDoubleLine(L["剩余声望"], string.format("%s", CommaValue(maxrep-valuerep)), G.Ccolor.r, G.Ccolor.g, G.Ccolor.b, 1, 1, 1)
-		 end
+		end
 	end	
 	
 	GameTooltip:Show()
-end
-
-xpbar:SetScript("OnEnter", xprptoolitp)
-xpbar:SetScript("OnLeave", function() GameTooltip:Hide() end)
+end)
+repbar:SetScript("OnLeave", function() GameTooltip:Hide() end)
+repbar:SetScript("OnMouseDown", function() ToggleCharacter("ReputationFrame") end)
 
 artifactbar:SetScript("OnEnter", MainMenuBar_ArtifactTick_OnEnter)
 artifactbar:SetScript("OnLeave", function() GameTooltip:Hide() end)
+artifactbar:SetScript("OnMouseDown", function()
+	if not ArtifactFrame or not ArtifactFrame:IsShown() then
+		ShowUIPanel(SocketInventoryItem(16))
+	elseif ArtifactFrame and ArtifactFrame:IsShown() then
+		HideUIPanel(ArtifactFrame)
+	end
+end)
 
 xpbar:SetScript("OnEvent", function(self, event, arg1)
 	local artifactItemID, _, _, _, artifactTotalXP, artifactPointsSpent, _, _, _, _, _, artifactMaxed, artifactTier = C_ArtifactUI.GetEquippedArtifactInfo()
@@ -779,38 +797,47 @@ xpbar:SetScript("OnEvent", function(self, event, arg1)
 	local newLevel = UnitLevel("player")
 	
 	local showArtifact = artifactItemID and not artifactMaxed
-	local showXPorRep = (newLevel < MAX_PLAYER_LEVEL and not IsXPUserDisabled()) or name
+	local showXP = newLevel < MAX_PLAYER_LEVEL and not IsXPUserDisabled()
+	local showRep = name
 	
-	if event == "PLAYER_LOGIN" or event == "PLAYER_LEVEL_UP" or event == "PLAYER_XP_UPDATE" or event == "UPDATE_FACTION" then
-		if showXPorRep then
+	if event == "PLAYER_LOGIN" or event == "PLAYER_LEVEL_UP" or event == "PLAYER_XP_UPDATE" then
+		if showXP then
 			xpbar:Show()
 			local XP, maxXP = UnitXP("player"), UnitXPMax("player")
+			xpbar:SetMinMaxValues(min(0, XP), maxXP)
+			xpbar:SetValue(XP)
+		else
+			xpbar:Hide()
+		end
+	end
+	
+	if event == "PLAYER_LOGIN" or event == "UPDATE_FACTION" then
+		if showRep then
+			repbar:Show()
 			local name, rank, minRep, maxRep, value = GetWatchedFactionInfo()
-			if UnitLevel("player") ~= MAX_PLAYER_LEVEL then
-				xpbar:SetMinMaxValues(min(0, XP), maxXP)
-				xpbar:SetValue(XP)
-			elseif GetFriendshipReputation(factionID) then
+			
+			if GetFriendshipReputation(factionID) then
 				local friendID, friendRep, friendMaxRep, friendName, friendText, friendTexture, friendTextLevel, friendThreshold, nextFriendThreshold = GetFriendshipReputation(factionID)
 				if ( nextFriendThreshold ) then
-					xpbar:SetMinMaxValues(friendThreshold, nextFriendThreshold)
-					xpbar:SetValue(friendRep)
+					repbar:SetMinMaxValues(friendThreshold, nextFriendThreshold)
+					repbar:SetValue(friendRep)
 				else
-					xpbar:SetMinMaxValues(0, 1)
-					xpbar:SetValue(1)
+					repbar:SetMinMaxValues(0, 1)
+					repbar:SetValue(1)
 				end
 			elseif C_Reputation.IsFactionParagon(factionID) then
 				local currentValue, threshold = C_Reputation.GetFactionParagonInfo(factionID)
-				xpbar:SetMinMaxValues(0, threshold)
-				xpbar:SetValue(mod(currentValue, threshold))
+				repbar:SetMinMaxValues(0, threshold)
+				repbar:SetValue(mod(currentValue, threshold))
 			elseif reaction == MAX_REPUTATION_REACTION then
-				xpbar:SetMinMaxValues(0, 1)
-				xpbar:SetValue(1)
+				repbar:SetMinMaxValues(0, 1)
+				repbar:SetValue(1)
 			else
-				xpbar:SetMinMaxValues(minRep, maxRep)
-				xpbar:SetValue(value)
+				repbar:SetMinMaxValues(minRep, maxRep)
+				repbar:SetValue(value)
 			end
 		else
-			xpbar:Hide()
+			repbar:Hide()
 		end
 	end
 	
@@ -825,17 +852,31 @@ xpbar:SetScript("OnEvent", function(self, event, arg1)
 		end
 	end
 	
-	if showXPorRep then
+	if showXP then
 		xpbar:SetPoint("BOTTOMRIGHT", Minimap, "BOTTOMRIGHT", 0, 0)
 		xpbar:SetPoint("TOPRIGHT", Minimap, "TOPRIGHT", 0, 0)
-		if showArtifact then
+		if showRep then
+			repbar:SetPoint("BOTTOMRIGHT", xpbar, "BOTTOMLEFT", -1, 0)
+			repbar:SetPoint("TOPRIGHT", xpbar, "TOPLEFT", -1, 0)
+			if showArtifact then
+				artifactbar:SetPoint("BOTTOMRIGHT", repbar, "BOTTOMLEFT", -1, 0)
+				artifactbar:SetPoint("TOPRIGHT", repbar, "TOPLEFT", -1, 0)
+			end
+		elseif showArtifact then
 			artifactbar:SetPoint("BOTTOMRIGHT", xpbar, "BOTTOMLEFT", -1, 0)
 			artifactbar:SetPoint("TOPRIGHT", xpbar, "TOPLEFT", -1, 0)
+		end
+	elseif showRep then
+		repbar:SetPoint("BOTTOMRIGHT", Minimap, "BOTTOMRIGHT", 0, 0)
+		repbar:SetPoint("TOPRIGHT", Minimap, "TOPRIGHT", 0, 0)
+		if showArtifact then
+			artifactbar:SetPoint("BOTTOMRIGHT", repbar, "BOTTOMLEFT", -1, 0)
+			artifactbar:SetPoint("TOPRIGHT", repbar, "TOPLEFT", -1, 0)
 		end
 	elseif showArtifact then
 		artifactbar:SetPoint("BOTTOMRIGHT", Minimap, "BOTTOMRIGHT", 0, 0)
 		artifactbar:SetPoint("TOPRIGHT", Minimap, "TOPRIGHT", 0, 0)
-	end 
+	end
 end)
 
 xpbar:RegisterEvent("PLAYER_XP_UPDATE")
