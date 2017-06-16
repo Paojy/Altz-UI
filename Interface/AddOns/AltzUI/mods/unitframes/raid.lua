@@ -362,7 +362,11 @@ local func = function(self, unit)
 	self.AltzTankbuff = tankbuff
 	
 	-- Indicators
-	self.AltzIndicators = true
+	if aCoreCDB["UnitframeOptions"]["hotind_style"] == "number_ind" then
+		self.AltzIndicators = true
+	else
+		T.CreateAuras(self, unit)
+	end
 	
 	-- Range
     local range = {

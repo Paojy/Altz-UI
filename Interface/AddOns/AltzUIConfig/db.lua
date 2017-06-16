@@ -218,7 +218,7 @@ local default_ClassClick = {
 	},
 }
 
-local classClickdb = default_ClassClick[select(2, UnitClass("player"))]
+local classClickdb = default_ClassClick[G.myClass]
 local modifiers = { "Click", "shift-", "ctrl-", "alt-"}
 
 local ClickCastDB = {}
@@ -1040,6 +1040,67 @@ for i = 1, 50 do
 	}
 end
 
+local default_HealerIndicatorAuraList = {
+	PRIEST = { 
+        [17] = true,		-- 真言术盾
+        [139] = true,		-- 恢复
+        [41635] = true,		-- 愈合祷言
+        [194384] = true,	-- 救赎
+        [152118] = true,	-- 意志洞悉
+	    [208065] = true,	-- 图雷之光	
+	},
+	DRUID = { 
+	    [774] = true,		-- 回春
+        [155777] = true,	-- 萌芽
+        [8936] = true,		-- 愈合
+        [33763] = true,		-- 生命绽放
+        [48438] = true,		-- 野性成长
+		[102351] = true,	-- 塞纳里奥结界
+        [102352] = true,	-- 塞纳里奥结界
+        [200389] = true,	-- 栽培
+	},
+	SHAMAN = { 
+		[61295] = true,		-- 激流
+	},
+	PALADIN = {
+	    [53563] = true,		-- 圣光道标
+        [156910] = true,	-- 信仰道标
+		[25771] = true,		-- 自律
+		[223306] = true,	-- 赋予信仰
+	},
+	WARRIOR = { 
+		[12975] = true,		-- 援护
+		[114030] = true,	-- 警戒
+	},
+	MAGE = { 
+	
+	},
+	WARLOCK = { 
+	
+	},
+	HUNTER = { 
+		[34477] = true,		-- 误导
+	},
+	ROGUE = { 
+		[57934] = true,		-- 嫁祸
+	},
+	DEATHKNIGHT = {
+	
+	},
+	MONK = {
+	    [119611] = true,	-- 复苏之雾
+        [124682] = true,	-- 氤氲之雾
+        [124081] = true,	-- 禅意波
+		[191840] = true,	-- 精华之泉
+		[115175] = true,	-- 抚慰之雾
+	},
+	DEMONHUNTER = {
+	
+	},
+}
+
+local HealerIndicatorAuraList = default_HealerIndicatorAuraList[G.myClass]
+
 local Account_default_Settings = {
 	meet = false,
 	gold = {},
@@ -1153,7 +1214,11 @@ local Character_default_Settings = {
 		showmisshp = true,
 		healprediction = true,
 		healtank_assisticon = false,
-		
+		hotind_style = "icon_ind",-- "icon_ind", "number_ind"
+		hotind_size = 15,
+		hotind_filtertype = "whitelist", -- "blacklist", "whitelist"
+		hotind_auralist = HealerIndicatorAuraList,
+				
 		--[[ dps/tank mode ]]--
 		dpsgroupfilter = '1,2,3,4,5,6',
 		dpsraidheight = 15,

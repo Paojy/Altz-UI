@@ -221,6 +221,9 @@ L["必须是一个数字"] = "should be a number."
 L["重要法术"] = "Cooldown Aura"
 L["主坦克和主助手"] = "tank icon and main assist icon"
 L["主坦克和主助手提示"] = "show tank icon and main assist icon on raid frames"
+L["治疗指示器"] = "Healer Indicators"
+L["数字指示器"] = "Number-style Indicators"
+L["图标指示器"] = "Icon-style Indicators"
 
 -- 动作条
 L["显示冷却时间"] = "Show Cooldown Text"

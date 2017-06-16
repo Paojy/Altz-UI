@@ -2,9 +2,9 @@
 local oUF = AltzUF or oUF
 
 local x = "8"
-local bigmark = 15
-local smallmark = 7
-local timersize = 12
+local bigmark = aCoreCDB["UnitframeOptions"]["hotind_size"]
+local smallmark = aCoreCDB["UnitframeOptions"]["hotind_size"]/2
+local timersize = aCoreCDB["UnitframeOptions"]["hotind_size"]-3
 
 -- [[ Healers' indicators ]] -- 
 

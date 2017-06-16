@@ -778,6 +778,143 @@ T.createcheckbutton(RFInnerframe.healer, 30, 370, L["显示缺失生命值"], "U
 T.createcheckbutton(RFInnerframe.healer, 30, 400, L["治疗和吸收预估"], "UnitframeOptions", "healprediction", L["治疗和吸收预估提示"])
 T.createcheckbutton(RFInnerframe.healer, 30, 430, L["主坦克和主助手"], "UnitframeOptions", "healtank_assisticon", L["主坦克和主助手提示"])
 
+RFInnerframe.ind = CreateOptionPage("RF Options indicators", L["治疗指示器"], RFInnerframe, "VERTICAL", .3, true)
+local indicatorstyle_group = {
+	["number_ind"] = L["数字指示器"],
+	["icon_ind"] = L["图标指示器"],
+}
+T.createradiobuttongroup(RFInnerframe.ind, 30, 60, L["样式"], "UnitframeOptions", "hotind_style", indicatorstyle_group)
+T.createslider(RFInnerframe.ind, 30, 110, L["尺寸"], "UnitframeOptions", "hotind_size", 1, 10, 40, 1)
+
+local indicatorfiltertype_group = {
+	["whitelist"] = L["白名单"],
+	["blacklist"] = L["黑名单"],
+}
+T.createradiobuttongroup(RFInnerframe.ind, 30, 140, L["过滤方式"], "UnitframeOptions", "hotind_filtertype", indicatorfiltertype_group)
+	
+local function LineUphotindauralist(parent)
+	local index = 1
+	for spellid, info in T.pairsByKeys(aCoreCDB["UnitframeOptions"]["hotind_auralist"]) do
+		_G[G.uiname.."hotind"..spellid]:SetPoint("TOPLEFT", parent, "TOPLEFT", 10, 20-index*30)
+		index =  index + 1
+	end
+end
+	
+local function CreatehotindauralistButton(spellID, parent)
+	local bu = CreateFrame("Frame", G.uiname.."hotind"..spellID, parent)
+	bu:SetSize(330, 20)
+
+	bu.icon = CreateFrame("Button", nil, bu)
+	bu.icon:SetSize(18, 18)
+	bu.icon:SetNormalTexture(select(3, GetSpellInfo(spellID)))
+	bu.icon:GetNormalTexture():SetTexCoord(0.1,0.9,0.1,0.9)
+	bu.icon:SetPoint"LEFT"
+	F.CreateBG(bu.icon)
+	
+	bu.spellname = T.createtext(bu, "OVERLAY", 12, "OUTLINE", "LEFT")
+	bu.spellname:SetPoint("LEFT", 140, 0)
+	bu.spellname:SetTextColor(1, 1, 0)
+	bu.spellname:SetText(GetSpellInfo(spellID))
+
+	bu.close = CreateFrame("Button", nil, bu)
+	bu.close:SetSize(22,22)
+	bu.close:SetPoint("LEFT", 310, 0)
+	bu.close.text = T.createtext(bu.close, "OVERLAY", 12, "OUTLINE", "CENTER")
+	bu.close.text:SetPoint("CENTER")
+	bu.close.text:SetText("x")
+	
+	bu.close:SetScript("OnClick", function() 
+		bu:Hide()
+		aCoreCDB["UnitframeOptions"]["hotind_auralist"][spellID] = nil
+		LineUphotindauralist(parent)
+	end)
+	
+	bu:SetScript("OnEnter", function(self)
+		GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+		GameTooltip:SetSpellByID(spellID)
+		GameTooltip:Show()
+	end)
+	bu:SetScript("OnLeave", function() GameTooltip:Hide() end)
+	
+	return bu
+end
+
+local function Createhotindauralist(parent)
+	for spellID, info in T.pairsByKeys(aCoreCDB["UnitframeOptions"]["hotind_auralist"]) do
+		if GetSpellInfo(spellID) then
+			CreatehotindauralistButton(spellID, parent)
+		else
+			print("spell ID "..spellID.." is gone, delete it.")
+			aCoreCDB["UnitframeOptions"]["hotind_auralist"][spellID] = nil
+		end
+	end
+	LineUphotindauralist(parent)
+end
+	
+local function CreatehotindAuraOptions()
+
+	RFInnerframe.ind.SF:SetPoint("TOPLEFT", 30, -190)
+	RFInnerframe.ind.SF:SetPoint("BOTTOMRIGHT", -30, 20)
+	
+	Createhotindauralist(RFInnerframe.ind.SFAnchor)
+	
+	RFInnerframe.ind.Spellinput = CreateFrame("EditBox", G.uiname.."hotind_auralist Spell Input", RFInnerframe.ind)
+	RFInnerframe.ind.Spellinput:SetSize(120, 20)
+	RFInnerframe.ind.Spellinput:SetPoint("TOPLEFT", RFInnerframe.ind, "TOPLEFT", 40, -170)
+	F.CreateBD(RFInnerframe.ind.Spellinput)
+	
+	RFInnerframe.ind.Spellinput:SetFont(GameFontHighlight:GetFont(), 12, "OUTLINE")
+	RFInnerframe.ind.Spellinput:SetAutoFocus(false)
+	RFInnerframe.ind.Spellinput:SetTextInsets(3, 0, 0, 0)
+	
+	RFInnerframe.ind.Spellinput:SetScript("OnShow", function(self) self:SetText(L["输入法术ID"]) end)
+	RFInnerframe.ind.Spellinput:SetScript("OnEditFocusGained", function(self) self:HighlightText() end)
+	RFInnerframe.ind.Spellinput:SetScript("OnEscapePressed", function(self) self:ClearFocus() self:SetText(L["输入法术ID"]) end)
+	RFInnerframe.ind.Spellinput:SetScript("OnEnterPressed", function(self) self:ClearFocus() end)
+	
+	RFInnerframe.ind.Add = CreateFrame("Button", G.uiname.."hotind_auralist Add Button", RFInnerframe.ind, "UIPanelButtonTemplate")
+	RFInnerframe.ind.Add:SetPoint("LEFT", RFInnerframe.ind.Spellinput, "RIGHT", 10, 0)
+	RFInnerframe.ind.Add:SetSize(70, 20)
+	RFInnerframe.ind.Add:SetText(ADD)
+	F.Reskin(RFInnerframe.ind.Add)
+	
+	RFInnerframe.ind.Add:SetScript("OnClick", function(self)
+		local spellID = tonumber(RFInnerframe.ind.Spellinput:GetText())
+
+		if not spellID or not GetSpellInfo(spellID) then
+			StaticPopupDialogs[G.uiname.."incorrect spellid"].text = "|cff7FFF00"..RFInnerframe.ind.Spellinput:GetText().." |r"..L["不是一个有效的法术ID"]
+			StaticPopup_Show(G.uiname.."incorrect spellid")
+		elseif not aCoreCDB["UnitframeOptions"]["hotind_auralist"][spellID] then
+			aCoreCDB["UnitframeOptions"]["hotind_auralist"][spellID] = true
+			if _G[G.uiname.."hotind"..spellID] then
+				_G[G.uiname.."hotind"..spellID]:Show()
+				LineUphotindauralist(RFInnerframe.ind.SFAnchor)
+			else
+				CreatehotindauralistButton(spellID, RFInnerframe.ind.SFAnchor)
+				LineUphotindauralist(RFInnerframe.ind.SFAnchor)
+			end
+		end
+	end)
+	
+	RFInnerframe.ind.Reset = CreateFrame("Button", G.uiname.."hotind_auralist Reset Button", RFInnerframe.ind, "UIPanelButtonTemplate")
+	RFInnerframe.ind.Reset:SetPoint("BOTTOM", ReloadButton, "TOP", 0, 10)
+	RFInnerframe.ind.Reset:SetSize(100, 25)
+	RFInnerframe.ind.Reset:SetText(L["重置"])	
+	F.Reskin(RFInnerframe.ind.Reset)
+	
+	RFInnerframe.ind.Reset:SetScript("OnClick", function(self)
+		StaticPopupDialogs[G.uiname.."Reset Confirm"].text = format(L["重置确认"], L["治疗指示器"])
+		StaticPopupDialogs[G.uiname.."Reset Confirm"].OnAccept = function()
+			aCoreCDB["UnitframeOptions"]["hotind_style"] = "icon_ind"
+			aCoreCDB["UnitframeOptions"]["hotind_size"] = 15
+			aCoreCDB["UnitframeOptions"]["hotind_filtertype"] = "whitelist"
+			aCoreCDB["UnitframeOptions"]["hotind_auralist"] = nil
+			ReloadUI()
+		end
+		StaticPopup_Show(G.uiname.."Reset Confirm")
+	end)
+end
+
 RFInnerframe.dps = CreateOptionPage("RF Options dps", L["输出/坦克模式"], RFInnerframe, "VERTICAL", .3)
 
 T.createradiobuttongroup(RFInnerframe.dps, 30, 60, L["团队规模"], "UnitframeOptions", "dpsgroupfilter", groupfilter_group)
@@ -2291,6 +2428,7 @@ function eventframe:PLAYER_ENTERING_WORLD()
 	C_Timer.After(3, function() CreateAutobuyButtonList() end)
 	
 	CreateRaidDebuffOptions()
+	CreatehotindAuraOptions()
 	CreateCooldownAuraOptions()
 
 	CreateCooldownFlashOptions(L["忽略法术"], "spell")

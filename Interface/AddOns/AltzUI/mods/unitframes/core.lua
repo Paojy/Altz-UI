@@ -740,6 +740,26 @@ local PostCreateIcon = function(auras, icon)
 	end
 end
 
+local PostCreateIndicatorIcon = function(auras, icon)
+	icon.icon:SetTexCoord(.07, .93, .07, .93)
+
+    icon.count:ClearAllPoints()
+    icon.count:SetPoint("BOTTOM", 0, -3)
+    icon.count:SetFontObject(nil)
+	icon.count:SetFont(G.numFont, aCoreCDB["UnitframeOptions"]["hotind_size"]*.8, "OUTLINE")
+    icon.count:SetTextColor(.9, .9, .1)
+
+	icon.overlay:SetTexture(G.media.blank)
+	icon.overlay:SetDrawLayer("BACKGROUND")
+    icon.overlay:SetPoint("TOPLEFT", icon, "TOPLEFT", -1, 1)
+    icon.overlay:SetPoint("BOTTOMRIGHT", icon, "BOTTOMRIGHT", 1, -1)
+
+	icon.bd = T.createBackdrop(icon, icon, 0, true)
+	
+	icon.cd.noshowcd = true
+	icon.cd:SetReverse(true)
+end
+
 local CreateAuraTimer = function(self, elapsed)
     self.elapsed = (self.elapsed or 0) + elapsed
 
@@ -832,22 +852,44 @@ local PlayerDebuffFilter = function(icons, unit, icon, ...)
 	end
 end
 
-local CreateAuras = function(self, unit)
-	local u = unit:match("[^%d]+")
-    if multicheck(u, "target", "focus", "boss", "arena", "player", "pet") then
-		local Auras = CreateFrame("Frame", nil, self)
-		Auras:SetHeight(aCoreCDB["UnitframeOptions"]["height"]*2)
-		Auras:SetWidth(aCoreCDB["UnitframeOptions"]["width"]-2)
-		Auras.gap = true
-		Auras.disableCooldown = true
-		if G.myClass == "MAGE" then
-			Auras.showStealableBuffs = true 
+local HealerInd_AuraFilter = function(icons, unit, icon, ...)
+	local SpellID = select(11, ...)
+	if icon.isPlayer then -- show my buffs
+		if aCoreCDB["UnitframeOptions"]["hotind_filtertype"] == "blacklist" and not aCoreCDB["UnitframeOptions"]["hotind_auralist"][SpellID] then
+			return true
+		elseif aCoreCDB["UnitframeOptions"]["hotind_filtertype"] == "whitelist"	and aCoreCDB["UnitframeOptions"]["hotind_auralist"][SpellID] then
+			return true
 		end
-		Auras.size = iconsize
-		Auras.spacing = 3
-		Auras.PostCreateIcon = PostCreateIcon
-		Auras.PostUpdateIcon = PostUpdateIcon
-		Auras.PostUpdateGapIcon = PostUpdateGapIcon
+	end
+end
+
+
+T.CreateAuras = function(self, unit)
+	if not unit then return end
+	local u = unit:match("[^%d]+")
+    if multicheck(u, "target", "focus", "boss", "arena", "player", "pet", "raid") then
+		local Auras = CreateFrame("Frame", nil, self)
+		if u == "raid" then
+			Auras:SetHeight(aCoreCDB["UnitframeOptions"]["healerraidheight"])
+			Auras:SetWidth(aCoreCDB["UnitframeOptions"]["healerraidwidth"]-2)
+			Auras.size = aCoreCDB["UnitframeOptions"]["hotind_size"]
+			Auras.spacing = 1
+			Auras.PostCreateIcon = PostCreateIndicatorIcon
+		else
+			Auras:SetHeight(aCoreCDB["UnitframeOptions"]["height"]*2)
+			Auras:SetWidth(aCoreCDB["UnitframeOptions"]["width"]-2)
+			Auras.disableCooldown = true
+			if G.myClass == "MAGE" then
+				Auras.showStealableBuffs = true 
+			end
+			Auras.size = iconsize
+			Auras.spacing = 3
+			Auras.PostCreateIcon = PostCreateIcon
+			Auras.PostUpdateIcon = PostUpdateIcon
+			
+			Auras.gap = true
+			Auras.PostUpdateGapIcon = PostUpdateGapIcon
+		end
 		
 		if unit == "target" or unit == "focus" then
 			Auras:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 1, 14)
@@ -893,6 +935,14 @@ local CreateAuras = function(self, unit)
 			Auras["growth-y"] = "UP"
 			Auras.numDebuffs = ceil(aCoreCDB["UnitframeOptions"]["widthboss"]/((aCoreCDB["UnitframeOptions"]["width"]+3)/aCoreCDB["UnitframeOptions"]["auraperrow"]-3))-1
 			Auras.numBuffs = ceil(aCoreCDB["UnitframeOptions"]["widthboss"]/((aCoreCDB["UnitframeOptions"]["width"]+3)/aCoreCDB["UnitframeOptions"]["auraperrow"]-3))-1
+		elseif u == "raid" then
+			Auras:SetPoint("TOPRIGHT", self, "TOPRIGHT", -1, -1)
+			Auras.initialAnchor = "TOPRIGHT"
+			Auras["growth-x"] = "LEFT"
+			Auras["growth-y"] = "DOWN"	
+			Auras.numDebuffs = 1
+			Auras.numBuffs = 8
+			Auras.CustomFilter = HealerInd_AuraFilter
 		end
 		self.Auras = Auras
 	end
@@ -1086,7 +1136,7 @@ local func = function(self, unit)
 	end
 	
 	if aCoreCDB["UnitframeOptions"]["auras"] then
-		CreateAuras(self, unit)
+		T.CreateAuras(self, unit)
 	end
 	
 	self.FadeMinAlpha = aCoreCDB["UnitframeOptions"]["fadingalpha"]
