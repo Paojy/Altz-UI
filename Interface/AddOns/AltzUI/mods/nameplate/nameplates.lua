@@ -187,7 +187,7 @@ if playerplate then
 	
 	PowerFrame:SetScript("OnEvent", function(self, event, unit)
 		if event == "PLAYER_ENTERING_WORLD" or (event == "UNIT_POWER_FREQUENT" and unit == "player") then
-			local minPower, maxPower, _, powertype = UnitPower("player"), UnitPowerMax("player"), UnitPowerType("player")
+			local minPower, maxPower, powertype_index, powertype = UnitPower("player"), UnitPowerMax("player"), UnitPowerType("player")
 			local perc
 			
 			if maxPower ~= 0 then
@@ -201,7 +201,7 @@ if playerplate then
 				PowerFrame.powerBar:SetValue(perc)
 			else
 				if minPower ~= maxPower then
-					if powertype == 0 then
+					if powertype_index == 0 then
 						PowerFrame.powerperc:SetText(perc_text)
 					else
 						PowerFrame.powerperc:SetText(minPower)
@@ -650,6 +650,18 @@ local function UpdateRaidTarget(unitFrame)
 	end
 end
 
+local function UpdateNamePlateEvents(unitFrame)
+	-- These are events affected if unit is in a vehicle
+	local unit = unitFrame.unit
+	local displayedUnit
+	if ( unit ~= unitFrame.displayedUnit ) then
+		displayedUnit = unitFrame.displayedUnit
+	end
+	unitFrame:RegisterUnitEvent("UNIT_HEALTH_FREQUENT", unit, displayedUnit)
+	unitFrame:RegisterUnitEvent("UNIT_AURA", unit, displayedUnit)
+	unitFrame:RegisterUnitEvent("UNIT_THREAT_LIST_UPDATE", unit, displayedUnit)
+end
+
 local function UpdateInVehicle(unitFrame)
 	if ( UnitHasVehicleUI(unitFrame.unit) ) then
 		if ( not unitFrame.inVehicle ) then
@@ -713,18 +725,6 @@ local function NamePlate_OnEvent(self, event, ...)
 			UpdateAll(self)
 		end
 	end
-end
-
-local function UpdateNamePlateEvents(unitFrame)
-	-- These are events affected if unit is in a vehicle
-	local unit = unitFrame.unit
-	local displayedUnit
-	if ( unit ~= unitFrame.displayedUnit ) then
-		displayedUnit = unitFrame.displayedUnit
-	end
-	unitFrame:RegisterUnitEvent("UNIT_HEALTH_FREQUENT", unit, displayedUnit)
-	unitFrame:RegisterUnitEvent("UNIT_AURA", unit, displayedUnit)
-	unitFrame:RegisterUnitEvent("UNIT_THREAT_LIST_UPDATE", unit, displayedUnit)
 end
 
 local function RegisterNamePlateEvents(unitFrame)
