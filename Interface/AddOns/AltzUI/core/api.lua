@@ -204,17 +204,27 @@ local frameBD = {
     insets = {left = 3, right = 3, top = 3, bottom = 3}
 }
 
-T.createBackdrop = function(parent, anchor, a)
+local frameBD_thin = {
+    edgeFile = G.media.blank, edgeSize = 1,
+    bgFile = G.media.blank,
+    insets = {left = 1, right = 1, top = 1, bottom = 1}
+}
+
+T.createBackdrop = function(parent, anchor, a, BD_thin)
     local frame = CreateFrame("Frame", nil, parent)
 
 	local flvl = parent:GetFrameLevel()
 	if flvl - 1 >= 0 then frame:SetFrameLevel(flvl-1) end
-
-	frame:ClearAllPoints()
-    frame:SetPoint("TOPLEFT", anchor, "TOPLEFT", -3, 3)
-    frame:SetPoint("BOTTOMRIGHT", anchor, "BOTTOMRIGHT", 3, -3)
-
-    frame:SetBackdrop(frameBD)
+	
+	if BD_thin then
+		frame:SetPoint("TOPLEFT", anchor, "TOPLEFT", -1, 1)
+		frame:SetPoint("BOTTOMRIGHT", anchor, "BOTTOMRIGHT", 1, -1)
+		frame:SetBackdrop(frameBD_thin)
+	else
+		frame:SetPoint("TOPLEFT", anchor, "TOPLEFT", -3, 3)
+		frame:SetPoint("BOTTOMRIGHT", anchor, "BOTTOMRIGHT", 3, -3)
+		frame:SetBackdrop(frameBD)
+	end
 	if a then
 		frame:SetBackdropColor(.15, .15, .15, a)
 		frame:SetBackdropBorderColor(0, 0, 0)
