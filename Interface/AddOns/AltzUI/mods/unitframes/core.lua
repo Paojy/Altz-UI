@@ -213,19 +213,19 @@ T.Updatehealthbar = function(self, unit, min, max)
 	end
 end
 
-T.Updatepowerbar = function(self, unit, min, max)
+T.Updatepowerbar = function(self, unit, cur, min, max)
 	local r, g, b
 	local type = select(2, UnitPowerType(unit))
 	local powercolor = oUF.colors.power[type] or oUF.colors.power.FUEL
 	
 	if self.value then
 		if self.__owner.isMouseOver and type == 'MANA' and UnitIsConnected(unit) then
-			self.value:SetText(T.hex(unpack(powercolor))..T.ShortValue(min)..'|r')
-		elseif (min > 0 and min < max) or aCoreCDB["UnitframeOptions"]["alwayspp"] then
+			self.value:SetText(T.hex(unpack(powercolor))..T.ShortValue(cur)..'|r')
+		elseif (cur > 0 and cur < max) or aCoreCDB["UnitframeOptions"]["alwayspp"] then
 			if type == 'MANA' then
-				self.value:SetText(T.hex(1, 1, 1)..math.floor(min/max*100+.5)..'|r'..T.hex(1, .4, 1)..'%|r')
+				self.value:SetText(T.hex(1, 1, 1)..math.floor(cur/max*100+.5)..'|r'..T.hex(1, .4, 1)..'%|r')
 			else
-				self.value:SetText(T.hex(unpack(powercolor))..T.ShortValue(min)..'|r')
+				self.value:SetText(T.hex(unpack(powercolor))..T.ShortValue(cur)..'|r')
 			end
 		else
 			self.value:SetText(nil)
@@ -248,31 +248,56 @@ T.Updatepowerbar = function(self, unit, min, max)
 	end
 end
 
-local PostAltUpdate = function(altpp, min, cur, max)
+local PostAltUpdate = function(altpp, unit, cur, min, max)
 	altpp.value:SetText(cur)
 end
 
-local CpointsPostUpdate = function(element, cur, max, maxchanged)
+local CpointsUpdate = function(self, event, unit, powerType)
+	if (unit ~= 'player' and unit ~= 'vehicle') or powerType ~= 'COMBO_POINTS' and event ~= "PLAYER_ENTERING_WORLD" then return end
+
+	local element = self.ClassPower
+
+	local cur, max, oldMax
+	if(UnitHasVehicleUI'player') then
+		cur = GetComboPoints('vehicle', 'target')
+		max = UnitPowerMax('vehicle', SPELL_POWER_COMBO_POINTS)
+	else
+		cur = UnitPower('player', SPELL_POWER_COMBO_POINTS)
+		max = UnitPowerMax('player', SPELL_POWER_COMBO_POINTS)
+	end
+	
 	if max <= 6 then
 		for i = 1, max do
 			element[i]:SetStatusBarColor(unpack(cpoints_colors[1]))
+			if(i <= cur) then
+				element[i]:Show()
+			else
+				element[i]:Hide()
+			end
 		end
 	else
-		if cur <= 5 then
-			for i = 1, cur do
+		for i = 1, 5 do
+			if cur <= 5 then
 				element[i]:SetStatusBarColor(unpack(cpoints_colors[1]))
-			end
-		else
-			for i = 1, cur - 5 do
-				element[i]:SetStatusBarColor(unpack(cpoints_colors[2]))
-			end
-			for i = cur - 4, 5 do
-				element[i]:SetStatusBarColor(unpack(cpoints_colors[1]))
+				if(i <= cur) then
+					element[i]:Show()
+				else
+					element[i]:Hide()
+				end
+			else
+				for i = 1, cur - 5 do
+					element[i]:SetStatusBarColor(unpack(cpoints_colors[2]))
+				end
+				for i = cur - 4, 5 do
+					element[i]:SetStatusBarColor(unpack(cpoints_colors[1]))
+				end
+				element[i]:Show()
 			end
 		end
 	end
 	
-	if maxchanged then
+	oldMax = element.__max
+	if(max ~= oldMax) then
 		for i = 1, 6 do
 			if max == 5 or max == 10 then
 				element[i]:SetWidth((aCoreCDB["UnitframeOptions"]["width"]+3)/5-3)
@@ -281,8 +306,12 @@ local CpointsPostUpdate = function(element, cur, max, maxchanged)
 				end
 			else
 				element[i]:SetWidth((aCoreCDB["UnitframeOptions"]["width"]+3)/max-3)
+				if i > max then
+					element[i]:Hide()
+				end
 			end
 		end
+		element.__max = max
 	end
 end
 
@@ -319,9 +348,9 @@ end
 
 local CombatPostUpdate = function(self, inCombat)
 	if inCombat then
-		self.__owner.Resting:Hide()
+		self.__owner.RestingIndicator:Hide()
 	elseif IsResting() then 
-		self.__owner.Resting:Show()
+		self.__owner.RestingIndicator:Show()
 	end
 end
 
@@ -388,7 +417,7 @@ local PostCastStart = function(castbar, unit)
     if unit == "player" then
 		castbar.IBackdrop:SetBackdropBorderColor(0, 0, 0)
 	else
-		if castbar.interrupt then
+		if castbar.notInterruptible then
 		    castbar.IBackdrop:SetBackdropBorderColor(uc[1], uc[2], uc[3])
         else
             castbar.IBackdrop:SetBackdropBorderColor(0, 0, 0)
@@ -401,7 +430,7 @@ local PostChannelStart = function(castbar, unit, spell)
     if unit == "player" then
 		castbar.IBackdrop:SetBackdropBorderColor(0, 0, 0)
 	else
-		if castbar.interrupt then
+		if castbar.notInterruptible then
 		    castbar.IBackdrop:SetBackdropBorderColor(uc[1], uc[2], uc[3])
         else
             castbar.IBackdrop:SetBackdropBorderColor(0, 0, 0)
@@ -1083,31 +1112,31 @@ local func = function(self, unit)
 		altpp.value =  T.createtext(altpp, "OVERLAY", 11, "OUTLINE", "CENTER")
 		altpp.value:SetPoint"CENTER"
 
-		self.AltPowerBar = altpp
-		self.AltPowerBar.PostUpdate = PostAltUpdate
+		self.AlternativePower = altpp
+		self.AlternativePower.PostUpdate = PostAltUpdate
     end
 
 	-- little thing around unit frames --
     local leader = hp:CreateTexture(nil, "OVERLAY")
     leader:SetSize(12, 12)
     leader:SetPoint("BOTTOMLEFT", hp, "BOTTOMLEFT", 5, -5)
-    self.Leader = leader
+    self.LeaderIndicator = leader
 
 	local assistant = hp:CreateTexture(nil, "OVERLAY")
     assistant:SetSize(12, 12)
     assistant:SetPoint("BOTTOMLEFT", hp, "BOTTOMLEFT", 5, -5)
-	self.Assistant = assistant
+	self.AssistantIndicator = assistant
 	
     local masterlooter = hp:CreateTexture(nil, "OVERLAY")
     masterlooter:SetSize(12, 12)
     masterlooter:SetPoint("LEFT", leader, "RIGHT")
-    self.MasterLooter = masterlooter
+    self.MasterLooterIndicator = masterlooter
 	
     local ricon = hp:CreateTexture(nil, "OVERLAY")
     ricon:SetPoint("CENTER", hp, "CENTER", 0, 0)
     ricon:SetSize(40, 40)
 	ricon:SetTexture[[Interface\AddOns\AltzUI\media\raidicons.blp]]
-    self.RaidIcon = ricon
+    self.RaidTargetIndicator = ricon
 	
 	-- name --
     local name =  T.createtext(self.Health, "OVERLAY", 13, "OUTLINE", "LEFT")
@@ -1190,15 +1219,15 @@ local UnitSpecific = {
                 self.Runes = bars
 				self.Runes.PostUpdateRune = PostUpdateRunes
             elseif G.myClass == "PALADIN" or G.myClass == "MONK" or G.myClass == "WARLOCK" or G.myClass == "MAGE" then
-                self.ClassIcons = bars
-				self.ClassIcons.UpdateTexture = function() end
-				self.ClassIcons.PostUpdate = ClassIconsPostUpdate
+                self.ClassPower = bars
+				self.ClassPower.UpdateTexture = function() end
+				self.ClassPower.PostUpdate = ClassIconsPostUpdate
 			elseif G.myClass == "ROGUE" or G.myClass == "DRUID" then
 				if G.myClass == "DRUID" and aCoreCDB["UnitframeOptions"]["dpsmana"] then
 					bars:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 0, 8)
 				end
-			    self.CPoints = bars
-				self.CPoints.PostUpdate = CpointsPostUpdate
+			    self.ClassPower = bars
+				self.ClassPower.Override = CpointsUpdate
             end
         end
 		
@@ -1246,7 +1275,7 @@ local UnitSpecific = {
 		Resting:SetDesaturated(true)
 		Resting:SetVertexColor( 0, 1, 0)
 		Resting:SetPoint("RIGHT", self.Power, "RIGHT", -5, 0)
-		self.Resting = Resting
+		self.RestingIndicator = Resting
 		
 		-- Combat
 		local Combat = self.Power:CreateTexture(nil, "OVERLAY")
@@ -1255,15 +1284,15 @@ local UnitSpecific = {
 		Combat:SetDesaturated(true)
 		Combat:SetPoint("RIGHT", self.Power, "RIGHT", -5, 0)
 		Combat:SetVertexColor( 1, 1, 0)
-		self.Combat = Combat		
-		self.Combat.PostUpdate = CombatPostUpdate
+		self.CombatIndicator = Combat		
+		self.CombatIndicator.PostUpdate = CombatPostUpdate
 		
 		-- PvP
 		if aCoreCDB["UnitframeOptions"]["pvpicon"] then
 			local PvP = self:CreateTexture(nil, 'OVERLAY')
 			PvP:SetSize(35, 35)
 			PvP:SetPoint("CENTER", self, "TOPRIGHT", 5, -5)
-			self.PvP = PvP
+			self.PvPIndicator = PvP
 		end
     end,
 

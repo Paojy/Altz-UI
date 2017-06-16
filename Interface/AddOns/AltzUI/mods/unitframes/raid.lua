@@ -62,7 +62,7 @@ local function CreateHealPredition(self)
 	local otherBar = healpreditionbar(self, 0, .4, 0, .5)
 	local absorbBar = healpreditionbar(self, .2, 1, 1, .7)
 	
-	self.HealPrediction = {
+	self.HealthPrediction = {
 		myBar = myBar,
 		otherBar = otherBar,
 		absorbBar = absorbBar,
@@ -271,23 +271,23 @@ local func = function(self, unit)
 	local leader = hp:CreateTexture(nil, "OVERLAY", 1)
     leader:SetSize(10, 10)
     leader:SetPoint("BOTTOMLEFT", hp, "BOTTOMLEFT", 0, -5)
-    self.Leader = leader
+    self.LeaderIndicator = leader
 
 	local assistant = hp:CreateTexture(nil, "OVERLAY", 1)
     assistant:SetSize(10, 10)
     assistant:SetPoint("BOTTOMLEFT", hp, "BOTTOMLEFT", 0, -5)
-	self.Assistant = assistant
+	self.AssistantIndicator = assistant
 	
     local masterlooter = hp:CreateTexture(nil, 'OVERLAY', 1)
     masterlooter:SetSize(10, 10)
     masterlooter:SetPoint('LEFT', leader, 'RIGHT', 0, 1)
-    self.MasterLooter = masterlooter
+    self.MasterLooterIndicator = masterlooter
 	
 	if aCoreCDB["UnitframeOptions"]["healtank_assisticon"] then
 		local raidrole = hp:CreateTexture(nil, 'OVERLAY', 1)
 		raidrole:SetSize(10, 10)
 		raidrole:SetPoint('LEFT', masterlooter, 'RIGHT')
-		self.RaidRole = raidrole
+		self.RaidRoleIndicator = raidrole
 	end
 	
 	local lfd =  T.createtext(hp, "OVERLAY", 13, "OUTLINE", "CENTER")
@@ -316,7 +316,7 @@ local func = function(self, unit)
 	ricon:SetSize(18 ,18)
     ricon:SetPoint("RIGHT", hp, "TOP", -8 , 0)
 	ricon:SetTexture[[Interface\AddOns\AltzUI\media\raidicons.blp]]
-    self.RaidIcon = ricon
+    self.RaidTargetIndicator = ricon
 	
 	local status = T.createtext(hp, "OVERLAY", aCoreCDB["UnitframeOptions"]["raidfontsize"]-2, "OUTLINE", "LEFT")
     status:SetPoint"TOPLEFT"
@@ -325,12 +325,12 @@ local func = function(self, unit)
 	local resurrecticon = hp:CreateTexture(nil, "OVERLAY")
     resurrecticon:SetSize(16, 16)
     resurrecticon:SetPoint"CENTER"
-    self.ResurrectIcon = resurrecticon
+    self.ResurrectIndicator = resurrecticon
 	
     local readycheck = hp:CreateTexture(nil, 'OVERLAY', 3)
     readycheck:SetSize(16, 16)
     readycheck:SetPoint"CENTER"
-    self.ReadyCheck = readycheck
+    self.ReadyCheckIndicator = readycheck
 	
 	local Auras = CreateFrame("Frame", nil, self)
 	Auras:SetFrameLevel(4)
@@ -458,23 +458,23 @@ local dfunc = function(self, unit)
 	local leader = hp:CreateTexture(nil, "OVERLAY", 1)
     leader:SetSize(10, 10)
     leader:SetPoint("BOTTOMLEFT", hp, "BOTTOMLEFT", 0, -3)
-    self.Leader = leader
+    self.LeaderIndicator = leader
 
 	local assistant = hp:CreateTexture(nil, "OVERLAY", 1)
     assistant:SetSize(10, 10)
     assistant:SetPoint("BOTTOMLEFT", hp, "BOTTOMLEFT", 0, -3)
-	self.Assistant = assistant
+	self.AssistantIndicator = assistant
 	
     local masterlooter = hp:CreateTexture(nil, 'OVERLAY', 1)
     masterlooter:SetSize(10, 10)
     masterlooter:SetPoint('LEFT', leader, 'RIGHT', 0, 1)
-    self.MasterLooter = masterlooter
+    self.MasterLooterIndicator = masterlooter
 	
 	if aCoreCDB["UnitframeOptions"]["dpstank_assisticon"] then
 		local raidrole = hp:CreateTexture(nil, 'OVERLAY', 1)
 		raidrole:SetSize(10, 10)
 		raidrole:SetPoint('LEFT', masterlooter, 'RIGHT')
-		self.RaidRole = raidrole
+		self.RaidRoleIndicator = raidrole
 	end
 	
 	local lfd =  T.createtext(hp, "OVERLAY", 13, "OUTLINE", "LEFT")
@@ -495,7 +495,7 @@ local dfunc = function(self, unit)
 	ricon:SetSize(13 ,13)
     ricon:SetPoint("TOP", hp, "TOP", 0 , 5)
 	ricon:SetTexture[[Interface\AddOns\AltzUI\media\raidicons.blp]]
-    self.RaidIcon = ricon
+    self.RaidTargetIndicator = ricon
 	
 	local status = T.createtext(hp, "OVERLAY", aCoreCDB["UnitframeOptions"]["raidfontsize"]-2, "OUTLINE", "LEFT")
     status:SetPoint"TOPLEFT"
@@ -504,7 +504,7 @@ local dfunc = function(self, unit)
 	local readycheck = hp:CreateTexture(nil, 'OVERLAY', 3)
     readycheck:SetSize(16, 16)
     readycheck:SetPoint"CENTER"
-    self.ReadyCheck = readycheck
+    self.ReadyCheckIndicator = readycheck
 	
 	-- Range
     local range = {
