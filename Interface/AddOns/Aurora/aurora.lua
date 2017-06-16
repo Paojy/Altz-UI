@@ -39,7 +39,7 @@ C.defaults = {
 	["buttonSolidColour"] = {.2, .2, .2, 1},
 	["useButtonGradientColour"] = true,
 	["chatBubbles"] = true,
-	["enableFont"] = false,
+	["enableFont"] = true,
 	["loot"] = true,
 	["useCustomColour"] = false,
 		["customColour"] = {r = 1, g = 1, b = 1},
@@ -75,7 +75,7 @@ local CreateTex = function(f)
 end
 
 F.CreateSD = function(f)
-	if not C.defaults["shadow"] then return end
+	if not AuroraConfig.shadow then return end
 	if f.Shadow then return end
 	f.Shadow = CreateFrame("Frame", nil, f)
 	f.Shadow:SetPoint("TOPLEFT", f, -1, 1)
@@ -906,7 +906,9 @@ Skin:SetScript("OnEvent", function(self, event, addon)
 				local menu = _G["DropDownList"..i.."MenuBackdrop"]
 				local backdrop = _G["DropDownList"..i.."Backdrop"]
 				if not backdrop.reskinned then
-					--F.CreateBD(menu)
+					if AuroraConfig.tooltips then
+						F.CreateBD(menu)
+					end
 					F.CreateBD(backdrop)
 					F.CreateSD(backdrop)
 					backdrop.reskinned = true

@@ -18,15 +18,25 @@ C.themes["Blizzard_Contribution"] = function()
 		end
 	end)
 
-	hooksecurefunc(ContributionMixin, "FindOrAcquireReward", function(self, rewardID)
-		local reward = self.rewards[rewardID]
-		if not reward.styled then
-			reward.RewardName:SetTextColor(1, 1, 1)
-			reward.Icon:SetTexCoord(.08, .92, .08, .92)
-			reward.Border:Hide()
-			F.CreateBDFrame(reward.Icon)
+	hooksecurefunc(ContributionRewardMixin, "Setup", function(self)
+		if not self.styled then
+			self.RewardName:SetTextColor(1, 1, 1)
+			self.Icon:SetTexCoord(.08, .92, .08, .92)
+			self.Icon.SetTexCoord = F.dummy
+			self.Border:Hide()
+			F.CreateBDFrame(self.Icon)
 
-			reward.styled = true
+			self.styled = true
 		end
 	end)
+
+	-- Tooltips
+	if AuroraConfig.tooltips then
+		ContributionTooltip:SetBackdrop(nil)
+		ContributionBuffTooltip:DisableDrawLayer("BACKGROUND")
+		F.CreateBDFrame(ContributionTooltip)
+		F.CreateBDFrame(ContributionBuffTooltip)
+		ContributionBuffTooltip.Icon:SetTexCoord(.08, .92, .08, .92)
+		ContributionBuffTooltip.Border:SetAlpha(0)
+	end
 end
