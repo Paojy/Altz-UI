@@ -39,6 +39,14 @@ end
 local methods = getmetatable(ActionButton1Cooldown).__index
 hooksecurefunc(methods, "SetCooldown", function(self, start, duration)
 	if self.noshowcd then return end
+	local parent = self:GetParent()
+	if parent then
+		local parent_name = parent:GetName()
+		if parent_name and parent_name:find("CompactRaidFrame") then
+			return
+		end
+	end
+	
 	if (self:GetWidth() >= 15) and (self:GetHeight() >= 15) then
 		if start>0 and duration>2.5 then	
 			self.start = start
