@@ -79,13 +79,13 @@ local function CreateGCDframe(self)
     self.GCD = Gcd
 end
 
-local function UpdateRaidMana(pp, unit, min, max)
+local function UpdateRaidMana(pp, unit, cur, min, max)
 	local _, ptype = UnitPowerType(unit)
 	local self = pp:GetParent()
     if ptype == 'MANA' then
 		pp:SetHeight(aCoreCDB["UnitframeOptions"]["healerraidheight"]*-(aCoreCDB["UnitframeOptions"]["raidhpheight"]-1))
 		self.Health:SetPoint("BOTTOM", pp, "TOP", 0, 3)
-		if min/max > 0.2 then
+		if cur/max > 0.2 then
 			pp.backdrop:SetBackdropColor(.15, .15, .15)
 		elseif UnitIsDead(unit) or UnitIsGhost(unit) or not UnitIsConnected(unit) then
 			pp.backdrop:SetBackdropColor(.5, .5, .5)
@@ -98,7 +98,7 @@ local function UpdateRaidMana(pp, unit, min, max)
 		self.Health:SetPoint("BOTTOM", self, "BOTTOM")
 		pp.backdrop:SetBackdropBorderColor(0, 0, 0, 0)
 	end
-	T.Updatepowerbar(pp, unit, min, max)
+	T.Updatepowerbar(pp, unit, cur, min, max)
 end
 --=============================================--
 --[[              Click Cast                 ]]--
