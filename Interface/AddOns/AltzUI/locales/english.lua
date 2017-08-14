@@ -33,7 +33,7 @@ L["解锁框体"] = "Unlock all frames"
 L["重置框体位置"] = "Reset Positions"
 
 L["你不能在战斗中绑定按键"] = "You can't bind keys in combat."
-L["按键绑定解除"] = "Keybinding reset to defau;ts"
+L["按键绑定解除"] = "Keybinding reset to defaults"
 L["所有键位设定保存"] = "All keybindings have been saved."
 L["刚才的键位设定修改取消了"] = "All newly set keybindings have been discarded."
 L["绑定到"] = "bound to"
