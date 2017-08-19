@@ -6,7 +6,7 @@ L["团队工具"] = "RaidTools"
 L["当前经验"] = "Current: "
 L["剩余经验"] = "Remaining: "
 L["双倍"] = "Rested: "
-L["声望"] = "Rep :"
+L["声望"] = "Rep:"
 L["剩余声望"] = "Remaining: "
 L["占用前 %d 的插件"] = "Top %d AddOns"
 L["自定义插件占用"] = "UI Memory usage"
@@ -26,14 +26,14 @@ L["切天赋"] = "Change Active Spec"
 
 L["全部打开"] = "Open All"
 L["背包已满"] = "Your bags are full"
-L["从邮箱中一共获得"] = "Total money from mailbox "
+L["从邮箱中一共获得"] = "Total money from mailbox"
 
 L["锁定框体"] = "Lock all frames"
 L["解锁框体"] = "Unlock all frames"
 L["重置框体位置"] = "Reset Positions"
 
 L["你不能在战斗中绑定按键"] = "You can't bind keys in combat."
-L["按键绑定解除"] = "All keybindings cleared for"
+L["按键绑定解除"] = "Keybinding reset to defaults"
 L["所有键位设定保存"] = "All keybindings have been saved."
 L["刚才的键位设定修改取消了"] = "All newly set keybindings have been discarded."
 L["绑定到"] = "bound to"
@@ -74,8 +74,8 @@ L["ROLL点框"] = "Loot Group"
 L["鼠标提示"] = "Tooltip"
 L["承受伤害"] = "Received\nHealing Text"
 L["承受治疗"] = "Received\nDamage Text"
-L["输出伤害"] = "OutPut\nHealing Text"
-L["输出治疗"] = "OutPut\nDamage Text"
+L["输出伤害"] = "Output\nHealing Text"
+L["输出治疗"] = "Output\nDamage Text"
 L["任务追踪"] = "Watch Frame"
 L["小地图缩放按钮"] = "Minimap\nToggle Button"
 L["聊天框缩放按钮"] = "ChatFrame\nToggle Button"
@@ -113,7 +113,7 @@ L["距离过远"] = "Out of range"
 L["不在团队中"] = "Not in raid"
 L["dbm_pull"] = "Pull"
 L["dbm_lag"] = "Check Lag"
-L["需要加载DBM"] = "Need to load DBM enable it."
+L["需要加载DBM"] = "DBM needs to be enabled for this option."
 L["无合剂增益"] = "No one has flask buff."
 L["无食物增益"] = "No one has food buff."
 L["全合剂增益"] = "Everyone has flask buff."
@@ -141,10 +141,10 @@ L["选中的框体"] = "CurrentFrame"
 L["当前模式"] = "CurrentMode"
 L["进入战斗锁定"] = "Entered combat, lock all frames."
 
-L["钱不够"] = "Don't have encough money to buy"
+L["钱不够"] = "You don't have enough gold to purchase this"
 L["购买"] = "Bought %d %s."
-L["货物不足"] = "The merchat don't have enough"
-L["光标"] = "cusor"
+L["货物不足"] = "The merchant don't have enough"
+L["光标"] = "cursor"
 L["当前"] = "current"
 
 L["插件管理"] = "Addon Manager"
@@ -159,30 +159,30 @@ L["设置到"] = "Set To.."
 L["增加到"] = "Add To.."
 L["移除自"] = "Remove From.."
 L["删除配置文件"] = "Delete Profile.."
-L["删除配置文件确认"] = "Are you sure you want to delete this profile? Hold down shift and click again if you are."
+L["删除配置文件确认"] = "Are you sure you want to delete this profile? Hold shift and click again if you are."
 
 L["上一条"] = "Previous"
 L["下一条"] = "Next"
 L["我不想看到这些提示"] = "I dont want to see them"
-L["隐藏提示的提示"] = "You can Redisplay these tips in GUI → Other"
+L["隐藏提示的提示"] = "You can reenable these tips in GUI → Other"
 
 L["TIPS"] = {
-	"Altz UI can hide minimap and chatframe when you enter a combat and show them when you leave.GUI → Other",
-	"click clock on the minimap to open the calendar, right click to switch the time text between 12h/24h.",
-	"How show class colors on raidframs? GUI → UnitFrames → Style → Classic Theme",
-	"How to display the independent castbar ? GUI → Unit Frames → Castbar → Independent player castbar",
-	"Want to show healer-style raidframe always？GUI → Raid Frames → Switch → click Disable Auto Switch and Healer",
-	"How to switch positions of actionbar 1 and 2？GUI → Actionbars → MainActionbar → Place bar1 above bar2",
-	"How to set custom color on the nameplate for a specific unit？GUI → Unit Nameplates → Custom Color",
-	"How to change the size of minimap？GUI → Other → Togglebutton Height",
+	"Altz UI can hide the minimap and chat frame when you enter combat and show them when you leave. GUI → Other",
+	"Click the clock on the minimap to open the calendar; right click to switch the time text between 12h and 24h.",
+	"Want to enable class colors on your raid frames? GUI → UnitFrames → Style → Classic Theme",
+	"Want to display the independent castbar? GUI → Unit Frames → Castbar → Independent player castbar",
+	"Want to use the healer-style raid frame? GUI → Raid Frames → Switch → click Disable Auto Switch and Healer",
+	"Want to switch the positions of the first and second actionbar? GUI → Actionbars → MainActionbar → Place bar1 above bar2",
+	"Want to use a custom color of the nameplate of a specific unit? GUI → Unit Nameplates → Custom Color",
+	"Want to change the size of the mini-map? GUI → Other → Togglebutton Height",
 	"/rl - reload UI",
 	"/hb - Key Binding Mode",
-	"SHIFT+Click - Set Focus. It's available for unit frames",
-	"ALT+Click  - Mill/Prospect/Disenchant/Unlock instantly",
-	"Press Tab to change between available channels when editbox of chatframe is activate",
-	"Where is the font file？Interface\\AddOns\\Aurora\\media\\font.ttf(main font),Interface\\AddOns\\AltzUI\\media\\number.ttf(font for some time text)",
+	"Use SHIFT+Click to set your focus; it's available for unit frames",
+	"Use ALT+Click to mill/prospect, disenchant, unlock instantly",
+	"Press Tab to change between available channels when the editbox of the chat frame is activated",
+	"The font files are located at Interface\\AddOns\\Aurora\\media\\font.ttf(main font),Interface\\AddOns\\AltzUI\\media\\number.ttf(font for some time text)",
 	"Hold Ctrl, Alt or Shift to scoll chatframe to top/buttom.",
-	"Click the edge of some button will toggle on/off its autohide function, eg MicroMenu/Raidtools/Config.",
+	"Clicking the edge of some button will toggle it's autohide function, eg MicroMenu/Raidtools/Config.",
  }
  
 L["出现了！"] = "spotted!"

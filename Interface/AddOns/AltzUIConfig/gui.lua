@@ -1322,7 +1322,7 @@ local function CreateRaidDebuffOptions()
 			end
 			
 			for i = 1, #(G.Raids[raidname]) do
-				info.text = G.Raids[raidname][i]
+				--info.text = G.Raids[raidname][i]
 				info.func = function()
 					UIDropDownMenu_SetText(BossDD, G.Raids[raidname][i])
 					CloseDropDownMenus()
