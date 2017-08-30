@@ -92,25 +92,6 @@ do
 end
 
 ------------------------------------------------------------------------
---	CompactUnitFrame.lua
-
-do
-	local UnitClass, UnitIsConnected = UnitClass, UnitIsConnected
-
-	hooksecurefunc("CompactUnitFrame_UpdateHealthColor", function(frame)
-		if frame.optionTable.useClassColors and UnitIsConnected(frame.unit) then
-			local _, class = UnitClass(frame.unit)
-			if class then
-				local color = CUSTOM_CLASS_COLORS[class]
-				if color then
-					local r, g, b = color.r, color.g, color.b
-					frame.healthBar:SetStatusBarColor(r, g, b)
-				end
-			end
-		end
-	end)
-end
-------------------------------------------------------------------------
 --	FriendsFrame.lua
 
 hooksecurefunc("WhoList_Update", function()

@@ -6,6 +6,8 @@
 	<Script file="locales\french.lua"/>
 	<Script file="locales\english.lua"/>
 	
+	<Script file="lib\LibStub.lua"/>
+	<Include file="lib\UIDropDownMenu\UIDropDownMenu.xml"/>
 	<Include file="lib\oUF\oUF.xml"/>
 	
 	<Script file="core\api.lua"/>

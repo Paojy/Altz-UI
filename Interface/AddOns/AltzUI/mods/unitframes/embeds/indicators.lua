@@ -158,7 +158,7 @@ oUF.Tags.Methods['Mlight:wildgrowth'] = function(u) -- 野性成长
 end
 oUF.Tags.Events['Mlight:wildgrowth'] = "UNIT_AURA"
 
-oUF.Tags.Methods['Mlight:snla'] = function(u)
+oUF.Tags.Methods['Mlight:snla'] = function(u) --塞纳里奥结界
 	local name, _,_,_,_,_, _, fromwho = UnitBuff(u, GetSpellInfo(102351))
 	if(fromwho == "player") then
 		local w = select(11, UnitBuff(u, GetSpellInfo(102351)))
@@ -168,7 +168,7 @@ oUF.Tags.Methods['Mlight:snla'] = function(u)
 			return "|cff33FF33b|r"
 		end
 	end
-end --塞纳里奥结界
+end
 oUF.Tags.Events['Mlight:snla'] = "UNIT_AURA"
 
 -- Shaman 萨满
@@ -286,24 +286,49 @@ oUF.Tags.Methods['Mlight:ayj'] = function(u) --暗夜井释放
 end
 oUF.Tags.Events['Mlight:ayj'] = 'UNIT_AURA'
 
+oUF.Tags.Methods['Mlight:lt'] = function(u) --基尔加丹的蓝图
+    local name,_,_,_,_,_, expirationTime, fromwho = UnitBuff(u, GetSpellInfo(242622)) -- hot
+	local name2,_,_,_,_,_, expirationTime2, fromwho2 = UnitBuff(u, GetSpellInfo(242623)) -- 吸收盾
+    if (fromwho == "player") then
+        return "|cffFF3030b|r"
+	elseif (fromwho2 == "player") then
+		return "|cffFF3030z|r"
+    end
+end
+oUF.Tags.Events['Mlight:lt'] = 'UNIT_AURA'
+
+oUF.Tags.Methods['Mlight:da'] = function(u) --信仰档案
+    local name,_,_,_,_,_, expirationTime, fromwho = UnitBuff(u, GetSpellInfo(242619)) -- hot
+	local name2,_,_,_,_,_, expirationTime2, fromwho2 = UnitBuff(u, GetSpellInfo(242621)) -- 吸收盾
+    if (fromwho == "player") then
+        return "|cffFFD700b|r"
+	elseif (fromwho2 == "player") then
+		local w = select(11, UnitBuff(u, GetSpellInfo(242621)))
+		if w == 242621 then
+			return "|cffFFD700z|r"
+		end
+    end
+end
+oUF.Tags.Events['Mlight:da'] = 'UNIT_AURA'
+
 classIndicators={
     ["DRUID"] = {
         ["TL"] = "[Mlight:regrow]",
-        ["BR"] = "[Mlight:ayj][Mlight:snla]",
+        ["BR"] = "[Mlight:ayj][Mlight:da][Mlight:lt][Mlight:snla]",
         ["BL"] = "[Mlight:wildgrowth]",
         ["TR"] = "[Mlight:rejuv]",
         ["Cen"] = "[Mlight:lb]",
     },
     ["PRIEST"] = {
         ["TL"] = "[Mlight:rnw][Mlight:pws]",
-        ["BR"] = "[Mlight:ayj][Mlight:tlzg]",
+        ["BR"] = "[Mlight:ayj][Mlight:da][Mlight:lt][Mlight:tlzg]",
         ["BL"] = "[Mlight:yzdx]",
         ["TR"] = "[Mlight:pom]",
         ["Cen"] = "[Mlight:atonement]",
     },
     ["PALADIN"] = {
         ["TL"] = "[Mlight:fyxy]",
-        ["BR"] = "[Mlight:ayj]",
+        ["BR"] = "[Mlight:ayj][Mlight:da][Mlight:lt]",
         ["BL"] = "",
         ["TR"] = "[Mlight:beacon]",
         ["Cen"] = "[Mlight:forbearance]",
@@ -331,7 +356,7 @@ classIndicators={
     },
     ["SHAMAN"] = {
         ["TL"] = "",
-        ["BR"] = "[Mlight:ayj][Mlight:rip40]",
+        ["BR"] = "[Mlight:ayj][Mlight:da][Mlight:lt][Mlight:rip40]",
         ["BL"] = "",
         ["TR"] = "[Mlight:ripTime]",
         ["Cen"] = "",
@@ -359,7 +384,7 @@ classIndicators={
     },
 	["MONK"] = {
         ["TL"] = "[Mlight:remist]",
-        ["BR"] = "[Mlight:ayj]",
+        ["BR"] = "[Mlight:ayj][Mlight:da][Mlight:lt]",
         ["BL"] = "[Mlight:mist]",
         ["TR"] = "[Mlight:jhzq]",
         ["Cen"] = "[Mlight:sooth]",

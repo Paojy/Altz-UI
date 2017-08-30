@@ -380,6 +380,8 @@ L["提升截图画质"] = "Upgrade Screenshot picture quality"
 L["截图保存为tga格式"] = "Screenshot saved as TGA format"
 L["暂离屏幕"] = "Hide interface when AFK"
 L["暂离屏幕提示"]= "Hide interface when AFK or Login"
+L["隐藏边缘装饰"] = "Hide decorative bars."
+L["隐藏边缘装饰提示"] = "Hide decorative bars on top and bottom of the screen."
 
 -- 插件皮肤
 L["插件皮肤"] = "Addon Skins"

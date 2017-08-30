@@ -1322,10 +1322,10 @@ local function CreateRaidDebuffOptions()
 			end
 			
 			for i = 1, #(G.Raids[raidname]) do
-				--info.text = G.Raids[raidname][i]
+				info.text = G.Raids[raidname][i]
 				info.func = function()
 					UIDropDownMenu_SetText(BossDD, G.Raids[raidname][i])
-					CloseDropDownMenus()
+					L_CloseDropDownMenus()
 				end
 				UIDropDownMenu_AddButton(info)
 			end
@@ -2331,6 +2331,7 @@ T.createcheckbutton(OtherOptions, 300, 300, L["显示插件使用小提示"], "O
 T.createcheckbutton(OtherOptions, 300, 330, L["任务栏闪动"], "OtherOptions", "flashtaskbar", L["任务栏闪动提示"])
 T.createcheckbutton(OtherOptions, 300, 360, L["大地图坐标"], "OtherOptions", "worldmapcoords")
 T.createcheckbutton(OtherOptions, 300, 390, L["暂离屏幕"], "OtherOptions", "afkscreen", L["暂离屏幕提示"])
+T.createcheckbutton(OtherOptions, 300, 420, L["隐藏边缘装饰"], "OtherOptions", "hidepanels", L["隐藏边缘装饰提示"])
 if G.Client ~= "zhCN" then OtherOptions.overrideArchive:Hide() end
 --T.createcheckbutton(OtherOptions, 300, 450, L["自动接受排本邀请"], "OtherOptions", "autoacceptproposal", L["自动接受排本邀请提示"])
 --====================================================--

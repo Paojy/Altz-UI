@@ -1,6 +1,7 @@
 ﻿local T, C, L, G = unpack(select(2, ...))
 local F = unpack(Aurora)
 
+local hidepanels = aCoreCDB["OtherOptions"]["hidepanels"]
 --====================================================--
 --[[                -- Functions --                    ]]--
 --====================================================--
@@ -42,52 +43,53 @@ PShadow:SetBackdropColor(0, 0, 0, 0.3)
 --====================================================--
 --[[                 -- Panels --                   ]]--
 --====================================================--
-toppanel = CreateFrame("Frame", G.uiname.."Top Long Panel", UIParent)
-toppanel:SetFrameStrata("BACKGROUND")
-toppanel:SetPoint("TOP", 0, 3)
-toppanel:SetPoint("LEFT", UIParent, "LEFT", -8, 0)
-toppanel:SetPoint("RIGHT", UIParent, "RIGHT", 8, 0)
-toppanel:SetHeight(15)
-toppanel.border = F.CreateBDFrame(toppanel, 0.6)
-T.CreateSD(toppanel.border, 2, 0, 0, 0, 0, -1)
+if not hidepanels then
+	local toppanel = CreateFrame("Frame", G.uiname.."Top Long Panel", UIParent)
+	toppanel:SetFrameStrata("BACKGROUND")
+	toppanel:SetPoint("TOP", 0, 3)
+	toppanel:SetPoint("LEFT", UIParent, "LEFT", -8, 0)
+	toppanel:SetPoint("RIGHT", UIParent, "RIGHT", 8, 0)
+	toppanel:SetHeight(15)
+	toppanel.border = F.CreateBDFrame(toppanel, 0.6)
+	T.CreateSD(toppanel.border, 2, 0, 0, 0, 0, -1)
 
-bottompanel = CreateFrame("Frame", G.uiname.."Bottom Long Panel", UIParent)
-bottompanel:SetFrameStrata("BACKGROUND")
-bottompanel:SetPoint("BOTTOM", 0, -3)
-bottompanel:SetPoint("LEFT", UIParent, "LEFT", -8, 0)
-bottompanel:SetPoint("RIGHT", UIParent, "RIGHT", 8, 0)
-bottompanel:SetHeight(15)
-bottompanel.border = F.CreateBDFrame(bottompanel, 0.6)
-T.CreateSD(bottompanel.border, 2, 0, 0, 0, 0, -1)
+	local bottompanel = CreateFrame("Frame", G.uiname.."Bottom Long Panel", UIParent)
+	bottompanel:SetFrameStrata("BACKGROUND")
+	bottompanel:SetPoint("BOTTOM", 0, -3)
+	bottompanel:SetPoint("LEFT", UIParent, "LEFT", -8, 0)
+	bottompanel:SetPoint("RIGHT", UIParent, "RIGHT", 8, 0)
+	bottompanel:SetHeight(15)
+	bottompanel.border = F.CreateBDFrame(bottompanel, 0.6)
+	T.CreateSD(bottompanel.border, 2, 0, 0, 0, 0, -1)
 
-local TLPanel = CreateFrame("Frame", G.uiname.."TLPanel", UIParent)
-TLPanel:SetFrameStrata("BACKGROUND")
-TLPanel:SetFrameLevel(2)
-TLPanel:SetSize(G.screenwidth*2/9, 5)
-TLPanel:SetPoint("TOPLEFT", UIParent, "TOPLEFT", 15, -10)
-Skinbar(TLPanel)
+	local TLPanel = CreateFrame("Frame", G.uiname.."TLPanel", UIParent)
+	TLPanel:SetFrameStrata("BACKGROUND")
+	TLPanel:SetFrameLevel(2)
+	TLPanel:SetSize(G.screenwidth*2/9, 5)
+	TLPanel:SetPoint("TOPLEFT", UIParent, "TOPLEFT", 15, -10)
+	Skinbar(TLPanel)
 
-local TRPanel = CreateFrame("Frame", G.uiname.."TRPanel", UIParent)
-TRPanel:SetFrameStrata("BACKGROUND")
-TRPanel:SetFrameLevel(2)
-TRPanel:SetSize(G.screenwidth*2/9, 5)
-TRPanel:SetPoint("TOPRIGHT", UIParent, "TOPRIGHT", -15, -10)
-Skinbar(TRPanel)
+	local TRPanel = CreateFrame("Frame", G.uiname.."TRPanel", UIParent)
+	TRPanel:SetFrameStrata("BACKGROUND")
+	TRPanel:SetFrameLevel(2)
+	TRPanel:SetSize(G.screenwidth*2/9, 5)
+	TRPanel:SetPoint("TOPRIGHT", UIParent, "TOPRIGHT", -15, -10)
+	Skinbar(TRPanel)
 
-local BLPanel = CreateFrame("Frame", G.uiname.."BLPanel", UIParent)
-BLPanel:SetFrameStrata("BACKGROUND")
-BLPanel:SetFrameLevel(2)
-BLPanel:SetSize(G.screenwidth*2/9, 5)
-BLPanel:SetPoint("BOTTOMLEFT", UIParent, "BOTTOMLEFT", 15, 10)
-Skinbar(BLPanel)
+	local BLPanel = CreateFrame("Frame", G.uiname.."BLPanel", UIParent)
+	BLPanel:SetFrameStrata("BACKGROUND")
+	BLPanel:SetFrameLevel(2)
+	BLPanel:SetSize(G.screenwidth*2/9, 5)
+	BLPanel:SetPoint("BOTTOMLEFT", UIParent, "BOTTOMLEFT", 15, 10)
+	Skinbar(BLPanel)
 
-local BRPanel = CreateFrame("Frame", G.uiname.."BRPanel", UIParent)
-BRPanel:SetFrameStrata("BACKGROUND")
-BRPanel:SetFrameLevel(2)
-BRPanel:SetSize(G.screenwidth*2/9, 5)
-BRPanel:SetPoint("BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", -15, 10)
-Skinbar(BRPanel)
-
+	local BRPanel = CreateFrame("Frame", G.uiname.."BRPanel", UIParent)
+	BRPanel:SetFrameStrata("BACKGROUND")
+	BRPanel:SetFrameLevel(2)
+	BRPanel:SetSize(G.screenwidth*2/9, 5)
+	BRPanel:SetPoint("BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", -15, 10)
+	Skinbar(BRPanel)
+end
 --====================================================--
 --[[                   -- Minimap --                ]]--
 --====================================================--

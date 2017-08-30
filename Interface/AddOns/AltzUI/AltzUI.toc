@@ -1,7 +1,7 @@
-﻿## Interface: 70200
+﻿## Interface: 70300
 ## Title: |cffEE3A8CAltz|rUI
 ## X-oUF: AltzUF
-## Version: 7.22
+## Version: 7.23
 ## Author: Paopao001
 ## Dependencies: AltzUIConfig
 ## X-DBM-Timer-Skin: 1

@@ -2057,7 +2057,7 @@ Skin:SetScript("OnEvent", function(self, event, addon)
 		RaidInfoFrameHeader:Hide()
 		for i = 1, 9 do
 			select(i, AddFriendNoteFrame:GetRegions()):Hide()
-			select(i, ReportPlayerNameDialogCommentFrame:GetRegions()):Hide()
+			--select(i, ReportPlayerNameDialogCommentFrame:GetRegions()):Hide()
 			select(i, ReportCheatingDialogCommentFrame:GetRegions()):Hide()
 		end
 		HelpFrameHeader:Hide()
