@@ -174,7 +174,7 @@ function BFrame.bags:setUp(frameName, ...)
 	bagsort:SetScript("OnLeave", function(self) GameTooltip:Hide() end)
 	bagsort:RegisterForClicks("LeftButtonDown", "RightButtonDown")
 	bagsort:SetScript('OnClick', function(self, button)
-		PlaySound("UI_BagSorting_01")
+		PlaySound(43937)
 		if button == "LeftButton" then
 			if frameName == "bag" then
 				T.BagSort(0)

@@ -45,7 +45,7 @@ hooksecurefunc("UnitPopup_OnClick", function(self)
 	local dropdownFrame = UIDROPDOWNMENU_INIT_MENU
 	local button = self.value
 	if clickers[button] then clickers[button](dropdownFrame.name) end
-	PlaySound("UChatScrollButton")
+	PlaySound(1115)
 end)
 
 function ChatFrameShow(name)

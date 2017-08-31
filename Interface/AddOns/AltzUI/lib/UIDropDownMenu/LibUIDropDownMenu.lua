@@ -817,7 +817,7 @@ function L_UIDropDownMenuButton_OnClick(self)
 	end
 
 	if ( playSound ) then
-		PlaySound("UChatScrollButton");
+		PlaySound(1115);
 	end
 end
 
