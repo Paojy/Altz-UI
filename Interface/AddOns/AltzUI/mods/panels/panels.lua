@@ -1138,7 +1138,7 @@ end
 
 Talent:SetScript("OnMouseDown", TalentOnClick)
 
-Talent:SetScript("OnEvent", function(self, event, arg1)
+Talent:SetScript("OnEvent", function(self, event)
 	if event == "PLAYER_ENTERING_WORLD" then
 		self:RegisterEvent("PLAYER_LOOT_SPEC_UPDATED")
 		self:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED")
@@ -1146,11 +1146,9 @@ Talent:SetScript("OnEvent", function(self, event, arg1)
 		self:UnregisterEvent("PLAYER_ENTERING_WORLD")
 	end
 	
-	if arg1 and arg1 ~= "player" then return end -- "PLAYER_SPECIALIZATION_CHANGED"
-	
 	local specIndex = GetSpecialization()
 	local Loot_specIndex = GetLootSpecialization()
-	
+
 	if specIndex then
 		local specID, specName = GetSpecializationInfo(specIndex)
 		local Loot_specID, Loot_specName = GetSpecializationInfoByID(Loot_specIndex)
