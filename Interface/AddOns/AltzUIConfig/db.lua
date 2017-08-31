@@ -1618,9 +1618,9 @@ T.ImportSettings = function(str)
 					local count = select(2, string.gsub(v, "~", "~")) + 1
 	
 					if count == 3 then -- 可以直接赋值
-						if aCoreCDB[OptionCategroy][setting] then
+						if aCoreCDB[OptionCategroy][setting] ~= nil then
 							if arg1 == "true" then
-								aCoreCDB[OptionCategroy][setting] = true
+								aCoreCDB[OptionCategroy][setting] = true	
 							elseif arg1 == "false" then
 								aCoreCDB[OptionCategroy][setting] = false
 							elseif tonumber(arg1) and setting ~= "autoinvitekeywords" and setting ~= "goldkeywordlist" then
