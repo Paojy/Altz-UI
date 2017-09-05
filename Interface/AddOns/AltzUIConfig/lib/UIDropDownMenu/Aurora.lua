@@ -9,6 +9,7 @@ hooksecurefunc("L_UIDropDownMenu_CreateFrames", function(level, index)
 		local menu = _G["L_DropDownList"..i.."MenuBackdrop"]
 		local backdrop = _G["L_DropDownList"..i.."Backdrop"]
 		if not backdrop.reskinned then
+			F.CreateBD(menu)
 			F.CreateBD(backdrop)
 			F.CreateSD(backdrop)
 			backdrop.reskinned = true

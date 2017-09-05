@@ -530,51 +530,50 @@ InstanceDifficulty:RegisterEvent("GROUP_ROSTER_UPDATE")
 InstanceDifficulty:SetScript("OnEvent", function(self) self.text:SetText(select(4, GetInstanceInfo())) end)
 
 -- 远古魔力 7.0
-local ancientmana = CreateFrame("Frame", nil, Minimap)
-ancientmana:SetPoint("TOPLEFT", 5, -5)
-ancientmana:SetSize(200, 20)
 
-ancientmana.icon = CreateFrame("Frame", nil, ancientmana)
-ancientmana.icon:SetSize(15, 15)
-ancientmana.icon:SetPoint"TOPLEFT"
+local Currency = {
+	[1021] = 1342,
+	[1033] = 1155,
+	[1171] = 1508,
+}
 
-ancientmana.icon.texture = ancientmana.icon:CreateTexture(nil, "OVERLAY")
-ancientmana.icon.texture:SetAllPoints()
-ancientmana.icon.texture:SetTexCoord(0.1,0.9,0.1,0.9)
+local CurrencyButton = CreateFrame("Frame", nil, Minimap)
+CurrencyButton:SetPoint("TOPLEFT", 5, -5)
+CurrencyButton:SetSize(200, 20)
 
-ancientmana.icon.bg = ancientmana.icon:CreateTexture(nil, "BORDER")
-ancientmana.icon.bg:SetPoint("TOPLEFT", -1, 1)
-ancientmana.icon.bg:SetPoint("BOTTOMRIGHT", 1, -1)
-ancientmana.icon.bg:SetColorTexture(0, 0, 0)
+CurrencyButton.icon = CreateFrame("Frame", nil, CurrencyButton)
+CurrencyButton.icon:SetSize(15, 15)
+CurrencyButton.icon:SetPoint"TOPLEFT"
 
-ancientmana.text = T.createtext(ancientmana, "OVERLAY", 12, "OUTLINE", "LEFT")
-ancientmana.text:SetPoint("LEFT", ancientmana.icon, "RIGHT", 5, 0)
-ancientmana.text:SetTextColor(1, 1, 1)
+CurrencyButton.icon.texture = CurrencyButton.icon:CreateTexture(nil, "OVERLAY")
+CurrencyButton.icon.texture:SetAllPoints()
+CurrencyButton.icon.texture:SetTexCoord(0.1,0.9,0.1,0.9)
 
-ancientmana:RegisterEvent("PLAYER_ENTERING_WORLD")
-ancientmana:RegisterEvent("WORLD_MAP_UPDATE")
-ancientmana:RegisterEvent("CURRENCY_DISPLAY_UPDATE")
-ancientmana:SetScript("OnEvent", function(self, event)
-	local currencyid
-	if GetCurrentMapAreaID() == 1021 then
-		currencyid = 1342
-	elseif GetCurrentMapAreaID() == 1033 then
-		currencyid = 1155
-	end
-	if currencyid then
-		name, amount, texturePath, earnedThisWeek, weeklyMax, totalMax, isDiscovered, quality = GetCurrencyInfo(currencyid)
-		ancientmana.text:SetText(amount.."/"..totalMax)
-	end
-	if event ~= "CURRENCY_DISPLAY_UPDATE" then
-		if GetCurrentMapAreaID() == 1033 then
-			ancientmana.icon.texture:SetTexture("Interface\\Icons\\inv_misc_ancient_mana")
-			self:Show()
-		elseif GetCurrentMapAreaID() == 1021 then
-			ancientmana.icon.texture:SetTexture("Interface\\Icons\\inv_misc_summonable_boss_token")
-			self:Show()
-		else
-			self:Hide()
+CurrencyButton.icon.bg = CurrencyButton.icon:CreateTexture(nil, "BORDER")
+CurrencyButton.icon.bg:SetPoint("TOPLEFT", -1, 1)
+CurrencyButton.icon.bg:SetPoint("BOTTOMRIGHT", 1, -1)
+CurrencyButton.icon.bg:SetColorTexture(0, 0, 0)
+
+CurrencyButton.text = T.createtext(CurrencyButton, "OVERLAY", 12, "OUTLINE", "LEFT")
+CurrencyButton.text:SetPoint("LEFT", CurrencyButton.icon, "RIGHT", 5, 0)
+CurrencyButton.text:SetTextColor(1, 1, 1)
+
+CurrencyButton:RegisterEvent("PLAYER_ENTERING_WORLD")
+CurrencyButton:RegisterEvent("WORLD_MAP_UPDATE")
+CurrencyButton:RegisterEvent("CURRENCY_DISPLAY_UPDATE")
+CurrencyButton:SetScript("OnEvent", function(self, event)
+	local map = GetCurrentMapAreaID()
+	local currency = Currency[map]
+	
+	if map and currency then
+		name, amount, texturePath, earnedThisWeek, weeklyMax, totalMax, isDiscovered, quality = GetCurrencyInfo(currency)
+		CurrencyButton.text:SetText(amount.."/"..totalMax)
+		if event ~= "CURRENCY_DISPLAY_UPDATE" then
+			CurrencyButton.icon.texture:SetTexture(texturePath)
 		end
+		self:Show()
+	else
+		self:Hide()
 	end
 end)
 
@@ -685,7 +684,7 @@ end)
 Minimap:SetScript('OnMouseUp', function (self, button)
 	if button == 'RightButton' then
 		GameTooltip:Hide()
-		L_ToggleDropDownMenu(1, nil, MiniMapTrackingDropDown, Minimap, (Minimap:GetWidth()+8), (Minimap:GetHeight()))
+		ToggleDropDownMenu(1, nil, MiniMapTrackingDropDown, Minimap, (Minimap:GetWidth()+8), (Minimap:GetHeight()))
 		DropDownList1:ClearAllPoints()
 		if select(2, Minimap:GetCenter())/G.screenheight > .5 then -- In the upper part of the screen
 			DropDownList1:SetPoint("TOPRIGHT", Minimap, "BOTTOMRIGHT", 0, -8)
@@ -1002,12 +1001,12 @@ end
 Durability:SetScript("OnMouseDown", function(self)
 	if not InCombatLockdown() and GetNumEquipmentSets() > 0 then
 		UpdateEquipSetsList()
-		EasyMenu(EquipSetsList, EquipSetsMenu, "cursor", 0, 0, "MENU", 2)
-		DropDownList1:ClearAllPoints()
+		L_EasyMenu(EquipSetsList, EquipSetsMenu, "cursor", 0, 0, "MENU", 2)
+		L_DropDownList1:ClearAllPoints()
 		if select(2, InfoFrame:GetCenter())/G.screenheight > .5 then -- In the upper part of the screen
-			DropDownList1:SetPoint("TOPLEFT", self, "BOTTOMLEFT", -5, -5)
+			L_DropDownList1:SetPoint("TOPLEFT", self, "BOTTOMLEFT", -5, -5)
 		else
-			DropDownList1:SetPoint("BOTTOMLEFT", self, "TOPLEFT", -5, 5)
+			L_DropDownList1:SetPoint("BOTTOMLEFT", self, "TOPLEFT", -5, 5)
 		end
 	end
 end)
@@ -1126,12 +1125,12 @@ end
 
 local function TalentOnClick(self, button)
 	if UnitLevel("player")>=10 then -- 10 级别后有天赋
-		EasyMenu(SpecList, LootSpecMenu, "cursor", 0, 0, "MENU", 2)
-		DropDownList1:ClearAllPoints()
+		L_EasyMenu(SpecList, LootSpecMenu, "cursor", 0, 0, "MENU", 2)
+		L_DropDownList1:ClearAllPoints()
 		if select(2, InfoFrame:GetCenter())/G.screenheight > .5 then -- In the upper part of the screen
-			DropDownList1:SetPoint("TOPLEFT", self, "BOTTOMLEFT", -5, -5)
+			L_DropDownList1:SetPoint("TOPLEFT", self, "BOTTOMLEFT", -5, -5)
 		else
-			DropDownList1:SetPoint("BOTTOMLEFT", self, "TOPLEFT", -5, 5)
+			L_DropDownList1:SetPoint("BOTTOMLEFT", self, "TOPLEFT", -5, 5)
 		end
 	end
 end
@@ -1730,7 +1729,7 @@ BOTTOMPANEL:SetScript("OnEvent",function(self, event)
 		
 		hooksecurefunc("L_ToggleDropDownMenu", function(level, value, dropDownFrame, anchorName)
 			if level == 2 and value == SELECT_LOOT_SPECIALIZATION then
-				local listFrame = _G["DropDownList"..level]
+				local listFrame = _G["L_DropDownList"..level]
 				local point, anchor, relPoint, _, y = listFrame:GetPoint()
 				listFrame:SetPoint(point, anchor, relPoint, 16, y)
 			end
