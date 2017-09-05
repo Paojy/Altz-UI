@@ -20,4 +20,5 @@
 			<AbsDimension x="180" y="10"/>
 		</Size>
 	</Button>
+	<Script file="Aurora.lua"/>
 </Ui>

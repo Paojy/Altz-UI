@@ -1250,14 +1250,14 @@ local function CreateEncounterDebuffButton(parent, raid, boss, name, spellID, le
 	bu:SetScript("OnMouseDown", function(self)
 		local frame = parent:GetParent()
 		if frame.selectdebuff ~= spellID then
-			UIDropDownMenu_SetText(frame.BossDD, boss)
+			L_UIDropDownMenu_SetText(frame.BossDD, boss)
 			frame.Spellinput:ClearFocus()
 			frame.Spellinput:SetText(spellID)
 			frame.Levelinput:ClearFocus()
 			frame.Levelinput:SetText(level)	
 			frame.selectdebuff = spellID
 		else
-			UIDropDownMenu_SetText(frame.BossDD, "")
+			L_UIDropDownMenu_SetText(frame.BossDD, "")
 			frame.Spellinput:ClearFocus()
 			frame.Spellinput:SetText("")
 			frame.Levelinput:ClearFocus()
@@ -1302,7 +1302,7 @@ local function CreateRaidDebuffOptions()
 		
 		CreateEncounterDebuffList(frame.SFAnchor, raidname, bosstable)
 		
-		local BossDD = CreateFrame("Frame", G.uiname..raidname.."SelectBossDropdown", frame, "UIDropDownMenuTemplate")
+		local BossDD = CreateFrame("Frame", G.uiname..raidname.."SelectBossDropdown", frame, "L_UIDropDownMenuTemplate")
 		BossDD:SetPoint("BOTTOMLEFT", frame, "TOPLEFT", 10, 5)
 		F.ReskinDropDown(BossDD)
 
@@ -1310,11 +1310,11 @@ local function CreateRaidDebuffOptions()
 		BossDD.name:SetPoint("BOTTOMRIGHT", BossDD, "BOTTOMLEFT", 15, 12)
 		BossDD.name:SetText("BOSS")
 
-		UIDropDownMenu_SetWidth(BossDD, 100)
-		UIDropDownMenu_SetText(BossDD, "")
+		L_UIDropDownMenu_SetWidth(BossDD, 100)
+		L_UIDropDownMenu_SetText(BossDD, "")
 
-		UIDropDownMenu_Initialize(BossDD, function(self, level, menuList)
-			local info = UIDropDownMenu_CreateInfo()
+		L_UIDropDownMenu_Initialize(BossDD, function(self, level, menuList)
+			local info = L_UIDropDownMenu_CreateInfo()
 			
 			if not G.Raids[raidname] then
 				aCoreCDB["RaidDebuff"][raidname] = nil
@@ -1324,10 +1324,10 @@ local function CreateRaidDebuffOptions()
 			for i = 1, #(G.Raids[raidname]) do
 				info.text = G.Raids[raidname][i]
 				info.func = function()
-					UIDropDownMenu_SetText(BossDD, G.Raids[raidname][i])
+					L_UIDropDownMenu_SetText(BossDD, G.Raids[raidname][i])
 					L_CloseDropDownMenus()
 				end
-				UIDropDownMenu_AddButton(info)
+				L_UIDropDownMenu_AddButton(info)
 			end
 		end)
 		
@@ -1371,7 +1371,7 @@ local function CreateRaidDebuffOptions()
 		Add:SetText(ADD)
 		F.Reskin(Add)
 		Add:SetScript("OnClick", function(self)
-			local boss = UIDropDownMenu_GetText(BossDD)
+			local boss = L_UIDropDownMenu_GetText(BossDD)
 			local spellID = tonumber(Spellinput:GetText())
 			local level = tonumber(Levelinput:GetText())
 			if not spellID or not GetSpellInfo(spellID) then

@@ -2,6 +2,7 @@
 -- ----------------------------------------------------------------------------
 -- Localized Lua globals.
 -- ----------------------------------------------------------------------------
+
 local _G = getfenv(0)
 local strsub, strlen, strmatch, gsub = strsub, strlen, strmatch, gsub
 local max, match = max, match

@@ -685,7 +685,7 @@ end)
 Minimap:SetScript('OnMouseUp', function (self, button)
 	if button == 'RightButton' then
 		GameTooltip:Hide()
-		ToggleDropDownMenu(1, nil, MiniMapTrackingDropDown, Minimap, (Minimap:GetWidth()+8), (Minimap:GetHeight()))
+		L_ToggleDropDownMenu(1, nil, MiniMapTrackingDropDown, Minimap, (Minimap:GetWidth()+8), (Minimap:GetHeight()))
 		DropDownList1:ClearAllPoints()
 		if select(2, Minimap:GetCenter())/G.screenheight > .5 then -- In the upper part of the screen
 			DropDownList1:SetPoint("TOPRIGHT", Minimap, "BOTTOMRIGHT", 0, -8)
@@ -963,7 +963,7 @@ end
 -- 耐久
 local Durability = CreateInfoButton("Durability", InfoFrame, 40, 20, "CENTER", "CENTER", InfoFrame, "CENTER", 20, 0)
 
-local EquipSetsMenu = CreateFrame("Frame", G.uiname.."EquipSetsMenu", UIParent, "UIDropDownMenuTemplate")
+local EquipSetsMenu = CreateFrame("Frame", G.uiname.."EquipSetsMenu", UIParent, "L_UIDropDownMenuTemplate")
 local EquipSetsList = {}
 
 local function UpdateEquipSetsList()
@@ -1094,7 +1094,7 @@ Net_Stats:SetScript("OnLeave", function(self) GameTooltip:Hide() end)
 -- 天赋
 local Talent = CreateInfoButton("Talent", InfoFrame, 40, 20, "LEFT", "LEFT", Durability, "RIGHT", 5, 0)
 
-local LootSpecMenu = CreateFrame("Frame", G.uiname.."LootSpecMenu", UIParent, "UIDropDownMenuTemplate")
+local LootSpecMenu = CreateFrame("Frame", G.uiname.."LootSpecMenu", UIParent, "L_UIDropDownMenuTemplate")
 
 local SpecList = {
 	{ text = TALENTS_BUTTON, notCheckable = true, func = function() ToggleTalentFrame() end},
@@ -1728,7 +1728,7 @@ BOTTOMPANEL:SetScript("OnEvent",function(self, event)
 			self.petmodelbutton:SetCreature(53623) -- 塞纳里奥角鹰兽宝宝
 		end
 		
-		hooksecurefunc("ToggleDropDownMenu", function(level, value, dropDownFrame, anchorName)
+		hooksecurefunc("L_ToggleDropDownMenu", function(level, value, dropDownFrame, anchorName)
 			if level == 2 and value == SELECT_LOOT_SPECIALIZATION then
 				local listFrame = _G["DropDownList"..level]
 				local point, anchor, relPoint, _, y = listFrame:GetPoint()
