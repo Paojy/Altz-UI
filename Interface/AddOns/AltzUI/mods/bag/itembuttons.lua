@@ -96,8 +96,11 @@ local function Update_IB()
 						end
 						
 						bu:Show()
-						bu:SetAttribute("type", "item")                
-						bu:SetAttribute("item", "item:"..itemID)               
+						
+						if not InCombatLockdown() then
+							bu:SetAttribute("type", "item")                
+							bu:SetAttribute("item", "item:"..itemID)               
+						end
 						
 						bu:SetScript("OnEnter", function()
 							GameTooltip:SetOwner(bu, "ANCHOR_TOPRIGHT")
