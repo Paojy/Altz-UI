@@ -7,6 +7,7 @@ ns[2] = {} -- C, config
 ns[3] = {} -- L, localization
 ns[4] = {} -- G, globals (Optionnal)
 
+AltzUI = ns
 --[[--------------
 --     init     --
 --------------]]--

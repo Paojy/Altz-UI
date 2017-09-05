@@ -103,6 +103,7 @@ L["焦点施法条"] = "Focus Cast Bar"
 L["玩家平砍计时条"] = "Player Swing Timer"
 L["冷却提示"] = "Cooldown Alert"
 L["图腾条"] = "Totem Bar"
+L["便捷物品按钮"] = "Convenient Item Buttons"
 
 L["无2"] = "|cffFF0000No|r"
 L["无"] = "No"

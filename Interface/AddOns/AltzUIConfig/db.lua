@@ -1042,6 +1042,21 @@ G.BlackList = {
 	[15407] = true, -- 精神鞭笞
 }
 
+local Customitembuttons = {}
+
+for i = 1, 30 do
+	Customitembuttons[i] = {
+		itemID = "",
+		exactItem = false,
+		showCount = false,
+		All = true,
+		OrderHall = false,
+		Raid = false,
+		Dungeon = false,
+		PVP = false,
+	}
+end
+
 local Customcoloredplates = {}
 
 for i = 1, 50 do
@@ -1262,6 +1277,14 @@ local Character_default_Settings = {
 		autobuy = false,
 		autobuylist = {},
 		itemlevels = {},
+		itembuttons = true,
+		itembuttons_size = 32,
+		itembuttons_fsize = 15,
+		growdirection_h = "LEFT",
+		growdirection_v = "UP",
+		number_perline = 6,
+		button_space = 2,
+		itembuttons_table = Customitembuttons,
 	},
 	ActionbarOptions = {
 		cooldown = true,
@@ -1490,6 +1513,18 @@ T.ExportSettings = function(editbox)
 						for auraname, aurainfo in pairs (aCoreCDB["CooldownAura"][setting]) do
 							str = str.."^"..OptionCategroy.."~"..setting.."~"..auraname.."~"..aurainfo.id.."~"..aurainfo.level
 						end
+					elseif OptionCategroy == "ItemOptions" then
+						if setting == "autobuylist" then -- 完全复制 4
+							for id, count in pairs(aCoreCDB["ItemOptions"]["autobuylist"]) do -- 默认是空的
+								str = str.."^"..OptionCategroy.."~"..setting.."~"..id.."~"..count
+							end
+						elseif setting == "itembuttons_table" then -- 非空则复制 11
+							for index, t in pairs(aCoreCDB["ItemOptions"]["itembuttons_table"]) do
+								if t.itemID ~= "" then
+									str = str.."^"..OptionCategroy.."~"..setting.."~"..index.."~"..t.itemID.."~"..(t.exactItem and "true" or "false").."~"..(t.showCount and "true" or "false").."~"..(t.All and "true" or "false").."~"..(t.OrderHall and "true" or "false").."~"..(t.Raid and "true" or "false").."~"..(t.Dungeon and "true" or "false").."~"..(t.PVP and "true" or "false")
+								end
+							end
+						end
 					elseif OptionCategroy == "PlateOptions" then
 						if setting == "customcoloredplates" then -- 非空则复制 7
 							for index, t in pairs(aCoreCDB["PlateOptions"]["customcoloredplates"]) do
@@ -1497,11 +1532,12 @@ T.ExportSettings = function(editbox)
 									str = str.."^"..OptionCategroy.."~"..setting.."~"..index.."~"..t.name.."~"..t.color.r.."~"..t.color.g.."~"..t.color.b
 								end
 							end
+						
 						else -- 完全复制 4
 							for id, _ in pairs(aCoreCDB["PlateOptions"][setting]) do
 								str = str.."^"..OptionCategroy.."~"..setting.."~"..id.."~true"
 							end
-						end		
+						end
 					elseif setting == "ClickCast" then -- 6
 						for k, _ in pairs(value) do
 							for j, v in pairs(value[k]) do -- j  Click ctrl- shift- alt-
@@ -1515,10 +1551,6 @@ T.ExportSettings = function(editbox)
 					elseif setting == "AuraFilterwhitelist" then -- 完全复制 4
 						for id, spellname in pairs(aCoreCDB["UnitframeOptions"]["AuraFilterwhitelist"]) do -- 默认是空的
 							str = str.."^"..OptionCategroy.."~"..setting.."~"..id.."~"..spellname
-						end
-					elseif setting == "autobuylist" then -- 完全复制 4
-						for id, count in pairs(aCoreCDB["ItemOptions"]["autobuylist"]) do -- 默认是空的
-							str = str.."^"..OptionCategroy.."~"..setting.."~"..id.."~"..count
 						end
 					elseif setting == "caflash_bl" then -- 完全复制 5
 						for cdtpye, cdtable in pairs(aCoreCDB["ActionbarOptions"]["caflash_bl"]) do
@@ -1614,7 +1646,7 @@ T.ImportSettings = function(str)
 			
 			for index, v in pairs(optionlines) do
 				if index ~= 1 then
-					local OptionCategroy, setting, arg1, arg2, arg3, arg4, arg5 = string.split("~", v)	
+					local OptionCategroy, setting, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9 = string.split("~", v)	
 					local count = select(2, string.gsub(v, "~", "~")) + 1
 	
 					if count == 3 then -- 可以直接赋值
@@ -1645,6 +1677,22 @@ T.ImportSettings = function(str)
 									aCoreCDB[OptionCategroy][setting][arg1]["id"] = tonumber(arg2)
 									aCoreCDB[OptionCategroy][setting][arg1]["level"] = tonumber(arg3)
 								end
+							end
+						elseif OptionCategroy == "ItemOptions" then
+							if setting == "autobuylist" then -- 完全复制 4 OptionCategroy.."~"..setting.."~"..id.."~"..count
+								aCoreCDB[OptionCategroy][setting][arg1] = arg2
+							elseif setting == "itembuttons_table" then -- 非空则复制 11 OptionCategroy.."~"..setting.."~"..index.."~"..t.itemID.."~"..t.exactItem.."~"..t.showCount.."~"..t.All.."~"..t.OrderHall.."~"..t.Raid.."~"..t.Dungeon.."~"..t.PVP
+								local ID = tonumber(arg2)
+								aCoreCDB[OptionCategroy][setting][tonumber(arg1)] = {
+									itemID = ID,
+									exactItem = ((arg3 == "true") and true or false),
+									showCount = ((arg4 == "true") and true or false),
+									All = ((arg5 == "true") and true or false),
+									OrderHall = ((arg6 == "true") and true or false),
+									Raid = ((arg7 == "true") and true or false),
+									Dungeon = ((arg8 == "true") and true or false),
+									PVP = ((arg9 == "true") and true or false),
+								}
 							end
 						elseif OptionCategroy == "PlateOptions" then
 							if setting == "customcoloredplates" then -- 非空则复制 7 OptionCategroy.."~"..setting.."~"..index.."~"..t.name.."~"..t.color.r.."~"..t.color.g.."~"..t.color.b
@@ -1684,8 +1732,6 @@ T.ImportSettings = function(str)
 							if sameclient then
 								aCoreCDB[OptionCategroy][setting][arg1] = arg2
 							end
-						elseif setting == "autobuylist" then -- 完全复制 4 OptionCategroy.."~"..setting.."~"..id.."~"..count
-							aCoreCDB[OptionCategroy][setting][arg1] = arg2
 						elseif setting == "caflash_bl" then -- 完全复制 5 OptionCategroy.."~"..setting.."~"..cdtpye.."~"..id.."~true"
 							if arg1 == "item" then
 								aCoreCDB[OptionCategroy][setting][arg1][tonumber(arg2)] = true

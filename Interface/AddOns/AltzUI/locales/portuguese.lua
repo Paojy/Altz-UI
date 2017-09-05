@@ -103,6 +103,7 @@ L["焦点施法条"] = "Barra de lançamento do foco"
 L["玩家平砍计时条"] = "Tempo de balanço do jogador"
 L["冷却提示"] = "Alerta de recarga"
 L["图腾条"] = "Barra de totem"
+--L["便捷物品按钮"] = "Convenient Item Buttons"
 
 L["无2"] = "|cffFF0000Não|r"
 L["无"] = "Não"

@@ -47,6 +47,7 @@
 	<Script file="mods\bag\gold.lua"/>
 	<Script file="mods\bag\itemlevel.lua"/>
 	<Script file="mods\bag\craft.lua"/>
+	<Script file="mods\bag\itembuttons.lua"/>
 	
 	<Script file="mods\chat\chat.lua"/>
 	<Script file="mods\chat\autoscroll.lua"/>

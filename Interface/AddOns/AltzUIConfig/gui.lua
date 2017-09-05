@@ -280,26 +280,42 @@ T.createDR(ChatOptions.nogoldseller, ChatOptions.goldkeywordnum)
 --====================================================--
 --[[          -- Bag and Items Options --           ]]--
 --====================================================--
-local ItemOptions = CreateOptionPage("Item Options", ITEMS, GUI, "VERTICAL", nil, true)
+local ItemOptions = CreateOptionPage("Item Options", ITEMS, GUI, "VERTICAL")
 
-T.createcheckbutton(ItemOptions, 30, 60, L["启用背包模块"], "ItemOptions", "enablebag")
-T.createslider(ItemOptions, 30, 110, L["背包图标大小"], "ItemOptions", "bagiconsize", 1, 20, 40, 1)
-T.createslider(ItemOptions, 30, 150, L["背包每行图标数量"], "ItemOptions", "bagiconperrow", 1, 10, 25, 1)
-T.createcheckbutton(ItemOptions, 30, 180, L["显示物品等级"], "ItemOptions", "showitemlevel", L["显示物品等级提示"])
-T.createDR(ItemOptions.enablebag, ItemOptions.showitemlevel)
-T.createcheckbutton(ItemOptions, 30, 210, L["已会配方着色"], "ItemOptions", "alreadyknown", L["已会配方着色提示"])
-T.createcheckbutton(ItemOptions, 30, 240, L["自动修理"], "ItemOptions", "autorepair", L["自动修理提示"])
-T.createcheckbutton(ItemOptions, 30, 270, L["自动公会修理"], "ItemOptions", "autorepair_guild", L["自动公会修理提示"])
-T.createcheckbutton(ItemOptions, 30, 300, L["自动售卖"], "ItemOptions", "autosell", L["自动售卖提示"])
-T.createcheckbutton(ItemOptions, 30, 330, L["自动购买"], "ItemOptions", "autobuy", L["自动购买提示"])
+local IInnerframe = CreateFrame("Frame", G.uiname.."Item Options Innerframe", ItemOptions)
+IInnerframe:SetPoint("TOPLEFT", 40, -60)
+IInnerframe:SetPoint("BOTTOMLEFT", -20, 20)
+IInnerframe:SetWidth(ItemOptions:GetWidth()-200)
+F.CreateBD(IInnerframe, .3)
 
-ItemOptions.SF:ClearAllPoints()
-ItemOptions.SF:SetPoint("TOPLEFT", ItemOptions, "TOPLEFT", 40, -400)
-ItemOptions.SF:SetPoint("BOTTOMRIGHT", ItemOptions, "BOTTOMRIGHT", -300, 45)
-F.CreateBD(ItemOptions.SF, .3)
+IInnerframe.tabindex = 1
+IInnerframe.tabnum = 20
+for i = 1, 20 do
+	IInnerframe["tab"..i] = CreateFrame("Frame", G.uiname.."IInnerframe Tab"..i, IInnerframe)
+	IInnerframe["tab"..i]:SetScript("OnMouseDown", function() end)
+end
 
-local ClearIlvlInfoButton = CreateFrame("Button", G.uiname.."ClearIlvlInfoButton", ItemOptions, "UIPanelButtonTemplate")
-ClearIlvlInfoButton:SetPoint("LEFT", _G[ItemOptions.showitemlevel:GetName() .. "Text"], "RIGHT", 20, 0)
+IInnerframe.common = CreateOptionPage("Item Options common", L["通用设置"], IInnerframe, "VERTICAL", .3, true)
+IInnerframe.common:Show()
+
+T.createcheckbutton(IInnerframe.common, 30, 60, L["启用背包模块"], "ItemOptions", "enablebag")
+T.createslider(IInnerframe.common, 30, 110, L["背包图标大小"], "ItemOptions", "bagiconsize", 1, 20, 40, 1)
+T.createslider(IInnerframe.common, 30, 150, L["背包每行图标数量"], "ItemOptions", "bagiconperrow", 1, 10, 25, 1)
+T.createcheckbutton(IInnerframe.common, 30, 180, L["显示物品等级"], "ItemOptions", "showitemlevel", L["显示物品等级提示"])
+T.createDR(IInnerframe.common.enablebag, IInnerframe.common.showitemlevel)
+T.createcheckbutton(IInnerframe.common, 30, 210, L["已会配方着色"], "ItemOptions", "alreadyknown", L["已会配方着色提示"])
+T.createcheckbutton(IInnerframe.common, 30, 240, L["自动修理"], "ItemOptions", "autorepair", L["自动修理提示"])
+T.createcheckbutton(IInnerframe.common, 230, 240, L["自动公会修理"], "ItemOptions", "autorepair_guild", L["自动公会修理提示"])
+T.createcheckbutton(IInnerframe.common, 30, 270, L["自动售卖"], "ItemOptions", "autosell", L["自动售卖提示"])
+T.createcheckbutton(IInnerframe.common, 230, 270, L["自动购买"], "ItemOptions", "autobuy", L["自动购买提示"])
+
+IInnerframe.common.SF:ClearAllPoints()
+IInnerframe.common.SF:SetPoint("TOPLEFT", IInnerframe.common, "TOPLEFT", 40, -340)
+IInnerframe.common.SF:SetPoint("BOTTOMRIGHT", IInnerframe.common, "BOTTOMRIGHT", -100, 25)
+F.CreateBD(IInnerframe.common.SF, .3)
+
+local ClearIlvlInfoButton = CreateFrame("Button", G.uiname.."ClearIlvlInfoButton", IInnerframe.common, "UIPanelButtonTemplate")
+ClearIlvlInfoButton:SetPoint("LEFT", _G[IInnerframe.common.showitemlevel:GetName() .. "Text"], "RIGHT", 20, 0)
 ClearIlvlInfoButton:SetSize(100, 25)
 ClearIlvlInfoButton:SetText(L["重置"])
 F.Reskin(ClearIlvlInfoButton)
@@ -313,13 +329,13 @@ local function LineUpAutobuyList()
 	local index = 1
 	for itemID, quantity in pairs(aCoreCDB["ItemOptions"]["autobuylist"]) do
 		if not itemID then return end
-		_G[G.uiname.."AutobuyList Button"..itemID]:SetPoint("TOPLEFT", ItemOptions.SFAnchor, "TOPLEFT", 5, 20-index*30)
+		_G[G.uiname.."AutobuyList Button"..itemID]:SetPoint("TOPLEFT", IInnerframe.common.SFAnchor, "TOPLEFT", 5, 20-index*30)
 		index = index + 1
 	end
 end
 
 local function CreateAutobuyButton(itemID, name, icon, quantity)
-	local bu = CreateFrame("Frame", G.uiname.."AutobuyList Button"..itemID, ItemOptions.SFAnchor)
+	local bu = CreateFrame("Frame", G.uiname.."AutobuyList Button"..itemID, IInnerframe.common.SFAnchor)
 	bu:SetSize(300, 28)
 	F.CreateBD(bu, .2)
 	
@@ -374,9 +390,9 @@ local function CreateAutobuyButtonList()
 	LineUpAutobuyList()
 end
 
-local Autobuy_iteminput = CreateFrame("EditBox", G.uiname.."AutobuyList ItemInput", ItemOptions)
+local Autobuy_iteminput = CreateFrame("EditBox", G.uiname.."AutobuyList ItemInput", IInnerframe.common)
 Autobuy_iteminput:SetSize(150, 20)
-Autobuy_iteminput:SetPoint("TOPLEFT", 40, -370)
+Autobuy_iteminput:SetPoint("TOPLEFT", 40, -310)
 F.CreateBD(Autobuy_iteminput)
 
 Autobuy_iteminput:SetFont(GameFontHighlight:GetFont(), 12, "OUTLINE")
@@ -388,7 +404,7 @@ Autobuy_iteminput:SetScript("OnEditFocusGained", function(self) self:HighlightTe
 Autobuy_iteminput:SetScript("OnEscapePressed", function(self) self:ClearFocus() self:SetText(L["输入物品ID"]) end)
 Autobuy_iteminput:SetScript("OnEnterPressed", function(self) self:ClearFocus() end)
 
-local Autobuy_quantityinput = CreateFrame("EditBox", G.uiname.."AutobuyList QuantityInput", ItemOptions)
+local Autobuy_quantityinput = CreateFrame("EditBox", G.uiname.."AutobuyList QuantityInput", IInnerframe.common)
 Autobuy_quantityinput:SetSize(80, 20)
 Autobuy_quantityinput:SetPoint("LEFT", Autobuy_iteminput, "RIGHT", 15, 0)
 F.CreateBD(Autobuy_quantityinput)
@@ -402,7 +418,7 @@ Autobuy_quantityinput:SetScript("OnEditFocusGained", function(self) self:Highlig
 Autobuy_quantityinput:SetScript("OnEscapePressed", function(self) self:ClearFocus() self:SetText(L["输入数量"]) end)
 Autobuy_quantityinput:SetScript("OnEnterPressed", function(self) self:ClearFocus() end)
 
-local Autobuy_additembutton = CreateFrame("Button", G.uiname.."Autobuy Add Item Button", ItemOptions, "UIPanelButtonTemplate")
+local Autobuy_additembutton = CreateFrame("Button", G.uiname.."Autobuy Add Item Button", IInnerframe.common, "UIPanelButtonTemplate")
 Autobuy_additembutton:SetPoint("LEFT", Autobuy_quantityinput, "RIGHT", 15, 0)
 Autobuy_additembutton:SetSize(50, 20)
 Autobuy_additembutton:SetText(ADD)
@@ -437,6 +453,288 @@ Autobuy_additembutton:SetScript("OnClick", function(self)
 	end
 end)
 
+IInnerframe.IB = CreateOptionPage("Item Options item buttons", L["便捷物品按钮"], IInnerframe, "VERTICAL", .3, true)
+
+T.createcheckbutton(IInnerframe.IB, 30, 60, L["启用"], "ItemOptions", "itembuttons", L["便捷物品按钮提示"])
+T.createslider(IInnerframe.IB, 30, 100, L["图标大小"], "ItemOptions", "itembuttons_size", 1, 20, 60, 1)
+T.createslider(IInnerframe.IB, 230, 100, L["字体大小"], "ItemOptions", "itembuttons_fsize", 1, 8, 30, 1)
+IInnerframe.IB.itembuttons_size:SetWidth(170)
+IInnerframe.IB.itembuttons_fsize:SetWidth(170)
+T.createslider(IInnerframe.IB, 30, 140, L["每行图标数量"], "ItemOptions", "number_perline", 1, 1, 10, 1)
+T.createslider(IInnerframe.IB, 230, 140, L["图标间距"], "ItemOptions", "button_space", 1, 0, 10, 1)
+IInnerframe.IB.number_perline:SetWidth(170)
+IInnerframe.IB.button_space:SetWidth(170)
+
+local growdirection_h_group = {
+	["LEFT"] = L["左"],
+	["RIGHT"] = L["右"],
+}
+T.createradiobuttongroup(IInnerframe.IB, 30, 170, L["水平"]..L["排列方向"], "ItemOptions", "growdirection_h", growdirection_h_group)
+local growdirection_v_group = {
+	["UP"] = L["上"],
+	["DOWN"] = L["下"],
+}
+T.createradiobuttongroup(IInnerframe.IB, 30, 200, L["垂直"]..L["排列方向"], "ItemOptions", "growdirection_v", growdirection_v_group)
+
+IInnerframe.IB.SF:ClearAllPoints()
+IInnerframe.IB.SF:SetPoint("TOPLEFT", IInnerframe.IB, "TOPLEFT", 25, -240)
+IInnerframe.IB.SF:SetPoint("BOTTOMRIGHT", IInnerframe.IB, "BOTTOMRIGHT", -35, 25)
+F.CreateBD(IInnerframe.IB.SF, .3)
+
+local IB_ConditionsMenu = CreateFrame("Frame", G.uiname.."IB_ConditionsMenu", UIParent, "L_UIDropDownMenuTemplate")
+
+local IB_Conditions_List = {
+	{ 
+		text = L["总是显示"],
+		isNotRadio = true,
+		keepShownOnClick = true,
+		arg1 = "All",
+	},
+	{
+		text = L["在职业大厅显示"],
+		isNotRadio = true,
+		keepShownOnClick = true,
+		arg1 = "OrderHall",
+	},
+	{
+		text = L["在团队副本中显示"],
+		isNotRadio = true,
+		keepShownOnClick = true,
+		arg1 = "Raid",
+	},
+	{
+		text = L["在地下城中显示"],
+		isNotRadio = true,
+		keepShownOnClick = true,
+		arg1 = "Dungeon",
+	},
+	{
+		text = L["在战场中显示"],
+		isNotRadio = true,
+		keepShownOnClick = true,
+		arg1 = "PVP",
+	},
+	{
+		text = CLOSE,
+		notCheckable = true,
+		func = L_CloseDropDownMenus(1),
+	},
+}
+
+	
+local function Create_IB_Button(parent, index, itemID, exactItem, showCount, All, OrderHall, Raid, Dungeon, PVP)
+	local AltzUI_T = unpack(AltzUI)
+	
+	local bu = CreateFrame("Frame", G.uiname.."IB Edit Button"..index, parent)
+	bu:SetPoint("TOPLEFT", parent, "TOPLEFT", 5, 20-index*30)
+	bu:SetSize(380, 24)
+	F.CreateBD(bu, .2)
+	
+	bu.index = T.createtext(bu, "OVERLAY", 10, "OUTLINE", "LEFT")
+	bu.index:SetPoint("LEFT", 10, 0)
+	bu.index:SetTextColor(1, 1, 1)
+	bu.index:SetText(index..".")
+	
+	bu.name_input = CreateFrame("EditBox", G.uiname.."IB Edit Button"..index.."NameInput", bu)
+	bu.name_input:SetSize(100, 18)
+	bu.name_input:SetPoint("LEFT", 25, 0)
+	F.CreateBD(bu.name_input, 0)
+	bu.name_input:SetBackdropColor(0, 0, 0, 0)
+	bu.name_input:SetBackdropBorderColor(0, 0, 0, 0)
+	
+	bu.name_input:SetFont(GameFontHighlight:GetFont(), 10, "OUTLINE")
+	bu.name_input:SetAutoFocus(false)
+	bu.name_input:SetTextInsets(3, 0, 0, 0)
+	
+	bu.name_input:SetScript("OnEnter", function(self)
+		GameTooltip:SetOwner(self, "ANCHOR_RIGHT",  -20, 10)
+		GameTooltip:AddLine(L["输入物品ID"])
+		GameTooltip:Show()
+	end)
+	bu.name_input:SetScript("OnLeave", function(self) GameTooltip:Hide() end)
+	
+	bu.cb_exact = CreateFrame("CheckButton", G.uiname.."IB Edit Button"..index.."Exact Check Button", bu, "InterfaceOptionsSmallCheckButtonTemplate")
+	bu.cb_exact:SetPoint("LEFT", bu.name_input, "RIGHT", 5, 0)
+	bu.cb_exact:SetHitRectInsets(0, -50, 0, 0)
+	F.ReskinCheck(bu.cb_exact)
+	
+	_G[bu.cb_exact:GetName() .. "Text"]:SetText(L["精确匹配"])
+	_G[bu.cb_exact:GetName() .. "Text"]:SetFont(G.norFont, 10, "NONE")
+	
+	bu.cb_exact:SetScript("OnShow", function(self) self:SetChecked(aCoreCDB["ItemOptions"]["itembuttons_table"][index].exactItem) end)
+	bu.cb_exact:SetScript("OnClick", function(self)
+		if self:GetChecked() then
+			aCoreCDB["ItemOptions"]["itembuttons_table"][index].exactItem = true
+		else
+			aCoreCDB["ItemOptions"]["itembuttons_table"][index].exactItem = false
+		end
+		AltzUI_T.Update_IB()
+	end)
+	
+	bu.cb_exact:SetScript("OnDisable", function(self)
+		_G[self:GetName() .. "Text"]:SetTextColor(.5, .5, .5)
+		local tex = select(7, self:GetRegions())
+		tex:SetVertexColor(.7, .7, .7, .5)
+	end)
+	
+	bu.cb_exact:SetScript("OnEnable", function(self)
+		local tex = select(7, self:GetRegions())
+		tex:SetVertexColor(buttonR, buttonG, buttonB, buttonA)
+		_G[self:GetName() .. "Text"]:SetTextColor(1, 1, 1)
+	end)
+	
+	bu.cb_exact:SetScript("OnEnter", function(self) 
+		GameTooltip:SetOwner(self, "ANCHOR_RIGHT",  -20, 10)
+		GameTooltip:AddLine(L["精确匹配提示"])
+		GameTooltip:Show() 
+	end)
+	bu.cb_exact:SetScript("OnLeave", function(self) GameTooltip:Hide() end)
+	
+	bu.cb_count = CreateFrame("CheckButton", G.uiname.."IB Edit Button"..index.."ShowCount Check Button", bu, "InterfaceOptionsSmallCheckButtonTemplate")
+	bu.cb_count:SetPoint("LEFT", bu.cb_exact, "RIGHT", 60, 0)
+	bu.cb_count:SetHitRectInsets(0, -50, 0, 0)
+	F.ReskinCheck(bu.cb_count)
+	
+	_G[bu.cb_count:GetName() .. "Text"]:SetText(L["显示数量"])
+	_G[bu.cb_count:GetName() .. "Text"]:SetFont(G.norFont, 10, "NONE")
+	
+	bu.cb_count:SetScript("OnShow", function(self) self:SetChecked(aCoreCDB["ItemOptions"]["itembuttons_table"][index].showCount) end)
+	bu.cb_count:SetScript("OnClick", function(self)
+		if self:GetChecked() then
+			aCoreCDB["ItemOptions"]["itembuttons_table"][index].showCount = true
+		else
+			aCoreCDB["ItemOptions"]["itembuttons_table"][index].showCount = false
+		end
+		AltzUI_T.Update_IB()
+	end)
+	
+	bu.cb_count:SetScript("OnDisable", function(self)
+		local tex = select(7, self:GetRegions())
+		tex:SetVertexColor(.7, .7, .7, .5)
+		_G[self:GetName() .. "Text"]:SetTextColor(.5, .5, .5)
+	end)
+	
+	bu.cb_count:SetScript("OnEnable", function(self)
+		local tex = select(7, self:GetRegions())
+		tex:SetVertexColor(buttonR, buttonG, buttonB, buttonA)
+		_G[self:GetName() .. "Text"]:SetTextColor(1, 1, 1)
+	end)
+	
+	bu.cb_count:SetScript("OnEnter", function(self) 
+		GameTooltip:SetOwner(self, "ANCHOR_RIGHT",  -20, 10)
+		GameTooltip:AddLine(L["显示数量提示"])
+		GameTooltip:Show() 
+	end)
+	bu.cb_count:SetScript("OnLeave", function(self) GameTooltip:Hide() end)
+	
+	bu.condi = CreateFrame("Button", G.uiname.."IB Edit Button"..index.."Select Condition Button", bu, "UIPanelButtonTemplate")
+	bu.condi:SetSize(50,18)
+	bu.condi:SetPoint("LEFT", bu.cb_count, "RIGHT", 60, 0)
+	F.Reskin(bu.condi)
+	_G[bu.condi:GetName() .. "Text"]:SetFont(G.norFont, 10, "NONE")
+	bu.condi:SetText(L["条件"])
+	
+	bu.condi:SetScript("OnMouseDown", function()
+		for i = 1, 5 do
+			IB_Conditions_List[i].checked = function()
+				if aCoreCDB["ItemOptions"]["itembuttons_table"][index][IB_Conditions_List[i].arg1] then
+					return true
+				end
+			end
+			IB_Conditions_List[i].func = function(self, arg1, arg2, checked)
+				if checked then
+					aCoreCDB["ItemOptions"]["itembuttons_table"][index][IB_Conditions_List[i].arg1] = true
+				else
+					aCoreCDB["ItemOptions"]["itembuttons_table"][index][IB_Conditions_List[i].arg1] = false
+				end
+				AltzUI_T.Update_IB()
+			end
+		end
+		L_EasyMenu(IB_Conditions_List, IB_ConditionsMenu, bu.condi, 0, 0, "MENU", 2)
+	end)
+
+	bu.name_input:SetScript("OnShow", function(self)
+		local itemName = GetItemInfo(aCoreCDB["ItemOptions"]["itembuttons_table"][index].itemID)
+		if itemName then
+			self:SetText(itemName)
+			bu.cb_exact:Enable()
+			bu.cb_count:Enable()
+			bu.condi:Enable()
+		else
+			self:SetText("")
+			bu.cb_exact:Disable()
+			bu.cb_count:Disable()
+			bu.condi:Disable()
+		end
+	end)
+	bu.name_input:SetScript("OnEditFocusGained", function(self) 
+		self:SetBackdropColor(0, 1, 1, .3)
+		self:SetBackdropBorderColor(1, 1, 1, 1)
+		self:SetText(aCoreCDB["ItemOptions"]["itembuttons_table"][index].itemID)
+	end)
+	bu.name_input:SetScript("OnEditFocusLost", function(self) 
+		self:SetBackdropColor(0, 0, 0, 0)
+		self:SetBackdropBorderColor(0, 0, 0, 0)
+		local itemName = GetItemInfo(aCoreCDB["ItemOptions"]["itembuttons_table"][index].itemID)
+		if itemName then
+			self:SetText(itemName)
+			bu.cb_exact:Enable()
+			bu.cb_count:Enable()
+			bu.condi:Enable()
+		else
+			self:SetText("")
+			bu.cb_exact:Disable()
+			bu.cb_count:Disable()
+			bu.condi:Disable()
+		end
+	end)
+	bu.name_input:SetScript("OnEscapePressed", function(self)
+		self:ClearFocus()
+	end)
+	bu.name_input:SetScript("OnEnterPressed", function(self)
+		local id = self:GetText()
+		if GetItemInfo(id) then
+			aCoreCDB["ItemOptions"]["itembuttons_table"][index].itemID = tonumber(id)
+			AltzUI_T.Update_IB()
+		end
+		self:ClearFocus()
+	end)
+	
+	bu.reset = CreateFrame("Button", nil, bu, "UIPanelButtonTemplate")
+	bu.reset:SetSize(18,18)
+	bu.reset:SetPoint("RIGHT", -5, 0)
+	F.Reskin(bu.reset)
+	bu.reset:SetText("X")
+	
+	bu.reset:SetScript("OnClick", function(self)
+	
+		aCoreCDB["ItemOptions"]["itembuttons_table"][index].itemID = ""
+		aCoreCDB["ItemOptions"]["itembuttons_table"][index].exactItem = false
+		aCoreCDB["ItemOptions"]["itembuttons_table"][index].showCount = false
+		aCoreCDB["ItemOptions"]["itembuttons_table"][index].All = true
+		aCoreCDB["ItemOptions"]["itembuttons_table"][index].OrderHall = false
+		aCoreCDB["ItemOptions"]["itembuttons_table"][index].Raid = false
+		aCoreCDB["ItemOptions"]["itembuttons_table"][index].Dungeon = false
+		aCoreCDB["ItemOptions"]["itembuttons_table"][index].PVP = false
+		
+		bu.name_input:SetText("")
+		bu.cb_exact:Disable()
+		bu.cb_exact:SetChecked(false)
+		bu.cb_count:Disable()
+		bu.cb_count:SetChecked(false)
+		bu.condi:Disable()
+		AltzUI_T.Update_IB()
+		
+	end)
+	
+	return bu
+end
+
+local function CreateIB_ButtonsList()
+	for index, info in pairs(aCoreCDB["ItemOptions"]["itembuttons_table"]) do
+		Create_IB_Button(IInnerframe.IB.SFAnchor, index, info.itemID, info.exactItem, info.showCount, info.All, info.OrderHall, info.Raid, info.Dungeon, info.PVP)
+	end
+end
 --====================================================--
 --[[               -- Unit Frames --                ]]--
 --====================================================--
@@ -2140,7 +2438,7 @@ local function CreateCColoredPlatesButton(parent, index, name, r, g, b)
 	bu.index:SetTextColor(1, 1, 1)
 	bu.index:SetText(index..".")
 	
-	bu.name_input = CreateFrame("EditBox", G.uiname..G.uiname.."CColoredPlatesList Button"..index.."NameInput", bu)
+	bu.name_input = CreateFrame("EditBox", G.uiname.."CColoredPlatesList Button"..index.."NameInput", bu)
 	bu.name_input:SetSize(200, 20)
 	bu.name_input:SetPoint("LEFT", 40, 0)
 	F.CreateBD(bu.name_input, 0)
@@ -2424,6 +2722,8 @@ function eventframe:ADDON_LOADED(arg1)
 end
 
 function eventframe:PLAYER_ENTERING_WORLD()
+	CreateIB_ButtonsList()
+	
 	CreateAuraFilterButtonList()
 	
 	C_Timer.After(3, function() CreateAutobuyButtonList() end)
