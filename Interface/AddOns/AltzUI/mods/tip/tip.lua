@@ -24,37 +24,29 @@ local classification = {
 
 local find = string.find
 local format = string.format
-local hex = function(color)
-	if not color or not color.r then return end
-    return format('|cff%02x%02x%02x', color.r * 255, color.g * 255, color.b * 255)
+local hex = function(r, b, g)
+    return format('|cff%02x%02x%02x', r * 255, g * 255, b * 255)
 end
 
 local function unitColor(unit)
-    local color = { r=1, g=1, b=1 }
+    local r, g, b = 1, 1, 1
     if UnitIsPlayer(unit) then
         local _, class = UnitClass(unit)
-        color = G.Ccolors[class]
-        return color
+        r, g, b = G.Ccolors[class].r, G.Ccolors[class].g, G.Ccolors[class].b
     else
         local reaction = UnitReaction(unit, "player")
         if reaction then
-            color = FACTION_BAR_COLORS[reaction]
-            return color
+            r, g, b = FACTION_BAR_COLORS[reaction].r, FACTION_BAR_COLORS[reaction].g, FACTION_BAR_COLORS[reaction].b 
         end
     end
-    return color
-end
-
-function GameTooltip_UnitColor(unit)
-    local color = unitColor(unit)
-    return color.r, color.g, color.b
+    return r, g, b
 end
 
 local anchor = CreateFrame("Button", "Altz_tooltip", UIParent)
 anchor.movingname = L["鼠标提示"]
 anchor.point = {
-		healer = {a1 = "BOTTOMRIGHT", parent = "UIParent", a2 = "BOTTOMRIGHT", x = -198, y = 47 },
-		dpser = {a1 = "BOTTOMRIGHT", parent = "UIParent", a2 = "BOTTOMRIGHT", x = -198, y = 47},
+		healer = {a1 = "BOTTOMRIGHT", parent = "Minimap", a2 = "TOPRIGHT", x = 0, y = 40 },
+		dpser = {a1 = "BOTTOMRIGHT", parent = "Minimap", a2 = "TOPRIGHT", x = 0, y = 40},
 	}
 T.CreateDragFrame(anchor)
 anchor:SetWidth(120)
@@ -76,7 +68,7 @@ GameTooltip:HookScript("OnTooltipSetUnit", function(self)
             return self:Hide()
         end
 
-        local color = unitColor(unit)
+        local r, g, b = unitColor(unit)
         local ricon = GetRaidTargetIndex(unit)
 
         if ricon then
@@ -122,7 +114,7 @@ GameTooltip:HookScript("OnTooltipSetUnit", function(self)
 
         if level and unit then
 			if not UnitIsWildBattlePet(unit) then
-				local unitClass = UnitIsPlayer(unit) and hex(color)..UnitClass(unit).."|r" or ""
+				local unitClass = UnitIsPlayer(unit) and hex(r, g, b)..UnitClass(unit).."|r" or ""
 				local creature = not UnitIsPlayer(unit) and UnitCreatureType(unit) or ""
 				local diff = GetQuestDifficultyColor(level)
 
@@ -131,7 +123,7 @@ GameTooltip:HookScript("OnTooltipSetUnit", function(self)
 				end
 
 				local classify = UnitClassification(unit)
-				local textLevel = ("%s%s%s|r"):format(hex(diff), tostring(level), classification[classify] or "")
+				local textLevel = ("%s%s%s|r"):format(hex(diff.r, diff.g, diff.b), tostring(level), classification[classify] or "")
 
 				for i=2, self:NumLines() do
 					local tiptext = _G["GameTooltipTextLeft"..i]
@@ -160,7 +152,7 @@ GameTooltip:HookScript("OnTooltipSetUnit", function(self)
         end
 		
 		GameTooltipStatusBar:SetStatusBarTexture("Interface\\Buttons\\WHITE8x8")
-		GameTooltipStatusBar:GetStatusBarTexture():SetGradient("VERTICAL",  color.r, color.g, color.b, color.r/3, color.g/3, color.b/3)
+		GameTooltipStatusBar:GetStatusBarTexture():SetGradient("VERTICAL",  r, g, b, r/3, g/3, b/3)
     else
         for i=2, self:NumLines() do
             local tiptext = _G["GameTooltipTextLeft"..i]
@@ -241,7 +233,7 @@ local function style(frame)
     if colorborderClass then
         local _, unit = GameTooltip:GetUnit()
         if UnitIsPlayer(unit) then
-            frame:SetBackdropBorderColor(GameTooltip_UnitColor(unit))
+            frame:SetBackdropBorderColor(unitColor(unit))
         end
     end
 
