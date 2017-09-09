@@ -13,8 +13,8 @@ local IB_Frame = CreateFrame("Frame", G.uiname.."IB_Frame", UIParent)
 IB_Frame:SetSize(icon_size, icon_size)
 IB_Frame.movingname = L["便捷物品按钮"]
 IB_Frame.point = {
-	healer = {a1 = "BOTTOMRIGHT", parent = "Minimap", a2 = "BOTTOMLEFT", x = -8, y = 2},
-	dpser = {a1 = "BOTTOMRIGHT", parent = "Minimap", a2 = "BOTTOMLEFT", x = -8, y = 2},
+	healer = {a1 = "BOTTOMLEFT", parent = "Minimap", a2 = "TOPLEFT", x = 0, y = 5},
+	dpser = {a1 = "BOTTOMLEFT", parent = "Minimap", a2 = "TOPLEFT", x = 0, y = 5},
 }
 T.CreateDragFrame(IB_Frame)
 
@@ -69,6 +69,9 @@ local function Create_IB(ItemID, index, exactItem, showCount, All, OrderHall, Ra
 end
 
 local function Update_IB()
+	
+	if InCombatLockdown() or G.bag_sorting then return end
+	
 	for k, bu in pairs(IB_Buttons) do
 		local orderhall = C_Garrison.IsPlayerInGarrison(LE_GARRISON_TYPE_7_0)
 		local instanceType = select(2, GetInstanceInfo())
@@ -96,14 +99,14 @@ local function Update_IB()
 						end
 						
 						bu:Show()
-						
-						if not InCombatLockdown() then
-							bu:SetAttribute("type", "item")                
-							bu:SetAttribute("item", "item:"..itemID)               
+						if GetMouseFocus() == bu then
+							GameTooltip:SetBagItem(bag, slot)
 						end
+						bu:SetAttribute("type", "item")                
+						bu:SetAttribute("item", "item:"..itemID)               
 						
 						bu:SetScript("OnEnter", function()
-							GameTooltip:SetOwner(bu, "ANCHOR_TOPRIGHT")
+							GameTooltip:SetOwner(bu, "ANCHOR_TOPRIGHT")	
 							GameTooltip:SetBagItem(bag, slot)
 							GameTooltip:Show()
 						end)

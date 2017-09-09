@@ -1,6 +1,7 @@
 local T, C, L, G = unpack(select(2, ...))
 if not aCoreCDB["ItemOptions"]["enablebag"] then return end
 
+G.bag_sorting = false
 --category constants
 --number indicates sort priority (1 is highest)
 local FirstItems = {
@@ -254,6 +255,7 @@ local function CheckStacks(bagList)
 end
 
 local function CleanStackItems(bagList, order, container)
+	G.bag_sorting = true
 	local delay = CheckStacks(bagList) or 0.1
 	if delay > 0.1 then
 		if container == "bank" then
@@ -266,6 +268,9 @@ local function CleanStackItems(bagList, order, container)
 	end
 	--print("total", delay)
 	C_Timer.After(delay, function() sortBagRange(bagList, order) end)
+	C_Timer.After(3, function() 
+		G.bag_sorting = false
+	end)
 end
 
 function T.BankSort(order)
