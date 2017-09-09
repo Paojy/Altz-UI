@@ -150,10 +150,9 @@ Say Sapped
 if saysapped then
 	eventframe:RegisterEvent('COMBAT_LOG_EVENT_UNFILTERED')
 	function eventframe:COMBAT_LOG_EVENT_UNFILTERED(...)
-		if ((select(14,...) == 6770)
-		and (select(11,...) == UnitName("player"))
-		and (select(4,...) == "SPELL_AURA_APPLIED" or select(4,...) == "SPELL_AURA_REFRESH"))
-		then
+		local timestamp, etype, hideCaster,
+        sourceGUID, sourceName, sourceFlags, sourceRaidFlags, destGUID, destName, destFlags, destRaidFlags, spellID = ...
+		if (etype == "SPELL_AURA_APPLIED" or etype == "SPELL_AURA_REFRESH") and destName == G.PlayerName and spellID == 6770 then
 			SendChatMessage(L["被闷了"], "SAY")
 			DEFAULT_CHAT_FRAME:AddMessage(L["被闷了2"].." "..(select(7,...) or "(unknown)"))
 		end
