@@ -188,7 +188,7 @@ local minimap_toggle = function()
 end
 
 Updater:SetScript("OnEvent", function(self, event)
-	if aCoreCDB["OtherOptions"]["hidemapandchat"] then
+	if aCoreCDB["OtherOptions"]["hidemap"] then
 		if event == "PLAYER_REGEN_DISABLED" then
 			minimap_moveout()
 		elseif event == "PLAYER_REGEN_ENABLED" then
@@ -303,7 +303,7 @@ local chatframe_toggle = function()
 end
 
 Updater2:SetScript("OnEvent", function(self, event)
-	if aCoreCDB["OtherOptions"]["hidemapandchat"] then
+	if aCoreCDB["OtherOptions"]["hidechat"] then
 		if event == "PLAYER_REGEN_DISABLED" then
 			chatframe_moveout()
 		elseif event == "PLAYER_REGEN_ENABLED" then
@@ -943,8 +943,8 @@ InfoFrame:SetFrameLevel(4)
 InfoFrame:SetSize(260, 20)
 InfoFrame.movingname = L["信息条"]
 InfoFrame.point = {
-		healer = {a1 = "BOTTOM", parent = "UIParent", a2 = "BOTTOM", x = 0, y = 5},
-		dpser = {a1 = "BOTTOM", parent = "UIParent", a2 = "BOTTOM", x = 0, y = 5},
+		healer = {a1 = "BOTTOM", parent = "UIParent", a2 = "BOTTOM", x = -40, y = 5},
+		dpser = {a1 = "BOTTOM", parent = "UIParent", a2 = "BOTTOM", x = -40, y = 5},
 	}
 T.CreateDragFrame(InfoFrame)
 

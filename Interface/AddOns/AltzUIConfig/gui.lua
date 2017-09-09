@@ -653,20 +653,19 @@ local function Create_IB_Button(parent, index, itemID, exactItem, showCount, All
 		L_EasyMenu(IB_Conditions_List, IB_ConditionsMenu, bu.condi, 0, 0, "MENU", 2)
 	end)
 
-	bu.name_input:SetScript("OnShow", function(self)
-		local itemName = GetItemInfo(aCoreCDB["ItemOptions"]["itembuttons_table"][index].itemID)
-		if itemName then
-			self:SetText(itemName)
-			bu.cb_exact:Enable()
-			bu.cb_count:Enable()
-			bu.condi:Enable()
-		else
-			self:SetText("")
-			bu.cb_exact:Disable()
-			bu.cb_count:Disable()
-			bu.condi:Disable()
-		end
-	end)
+	local itemName = GetItemInfo(aCoreCDB["ItemOptions"]["itembuttons_table"][index].itemID)
+	if itemName then
+		bu.name_input:SetText(itemName)
+		bu.cb_exact:Enable()
+		bu.cb_count:Enable()
+		bu.condi:Enable()
+	else
+		bu.name_input:SetText("")
+		bu.cb_exact:Disable()
+		bu.cb_count:Disable()
+		bu.condi:Disable()
+	end
+
 	bu.name_input:SetScript("OnEditFocusGained", function(self) 
 		self:SetBackdropColor(0, 1, 1, .3)
 		self:SetBackdropBorderColor(1, 1, 1, 1)
@@ -2612,13 +2611,14 @@ OtherOptions.DividingLine:SetColorTexture(1, 1, 1, .2)
 T.createcheckbutton(OtherOptions, 30, 150, L["自动召宝宝"], "OtherOptions", "autopet", L["自动召宝宝提示"])
 T.createcheckbutton(OtherOptions, 30, 180, L["随机奖励"], "OtherOptions", "LFGRewards", L["随机奖励提示"])
 T.createcheckbutton(OtherOptions, 30, 210, L["稀有警报"], "OtherOptions", "vignettealert", L["稀有警报提示"])
-T.createcheckbutton(OtherOptions, 30, 240, L["在战斗中隐藏小地图和聊天框"], "OtherOptions", "hidemapandchat")
-T.createcheckbutton(OtherOptions, 30, 270, L["在副本中收起任务追踪"], "OtherOptions", "collapseWF", L["在副本中收起任务追踪提示"])
-T.createcheckbutton(OtherOptions, 30, 300, L["自动交接任务"], "OtherOptions", "autoquests", L["自动交接任务提示"])
-T.createcheckbutton(OtherOptions, 30, 330, L["自动接受复活"], "OtherOptions", "acceptres", L["自动接受复活提示"])	
-T.createcheckbutton(OtherOptions, 30, 360, L["战场自动释放灵魂"], "OtherOptions", "battlegroundres", L["战场自动释放灵魂提示"])
-T.createcheckbutton(OtherOptions, 30, 390, L["大喊被闷了"], "OtherOptions", "saysapped", L["大喊被闷了提示"])
-T.CVartogglebox(OtherOptions, 30, 420, "overrideArchive", "反和谐(大退生效)", "0", "1")
+T.createcheckbutton(OtherOptions, 30, 240, L["在战斗中隐藏小地图"], "OtherOptions", "hidemap")
+T.createcheckbutton(OtherOptions, 30, 270, L["在战斗中隐藏聊天框"], "OtherOptions", "hidechat")
+T.createcheckbutton(OtherOptions, 30, 300, L["在副本中收起任务追踪"], "OtherOptions", "collapseWF", L["在副本中收起任务追踪提示"])
+T.createcheckbutton(OtherOptions, 30, 330, L["自动交接任务"], "OtherOptions", "autoquests", L["自动交接任务提示"])
+T.createcheckbutton(OtherOptions, 30, 360, L["自动接受复活"], "OtherOptions", "acceptres", L["自动接受复活提示"])	
+T.createcheckbutton(OtherOptions, 30, 390, L["战场自动释放灵魂"], "OtherOptions", "battlegroundres", L["战场自动释放灵魂提示"])
+T.createcheckbutton(OtherOptions, 30, 420, L["大喊被闷了"], "OtherOptions", "saysapped", L["大喊被闷了提示"])
+T.CVartogglebox(OtherOptions, 30, 450, "overrideArchive", "反和谐(大退生效)", "0", "1")
 
 T.createcheckbutton(OtherOptions, 300, 150, L["成就截图"], "OtherOptions", "autoscreenshot", L["成就截图提示"])
 T.CVartogglebox(OtherOptions, 300, 180, "screenshotQuality", L["提升截图画质"], "10", "1")
@@ -2722,7 +2722,7 @@ function eventframe:ADDON_LOADED(arg1)
 end
 
 function eventframe:PLAYER_ENTERING_WORLD()
-	CreateIB_ButtonsList()
+	C_Timer.After(5, function() CreateIB_ButtonsList() end)
 	
 	CreateAuraFilterButtonList()
 	
