@@ -124,14 +124,14 @@ local tbl = {
 }
 
 if showreceived then
-	frames["damagetaken"] = CreateCTFrame("damagetaken", L["承受伤害"], "LEFT", "RIGHT", UIParent, "CENTER", -185, 0)
-	frames["healingtaken"] = CreateCTFrame("healingtaken", L["承受治疗"], "RIGHT", "LEFT", UIParent, "CENTER", -365, 0)
+	frames["damagetaken"] = CreateCTFrame("damagetaken", L["承受伤害"], "LEFT", "RIGHT", UIParent, "CENTER", -485, 0)
+	frames["healingtaken"] = CreateCTFrame("healingtaken", L["承受治疗"], "RIGHT", "LEFT", UIParent, "CENTER", -665, 0)
 	eventframe:RegisterEvent"COMBAT_TEXT_UPDATE"
 end
 
 if showoutput then
-	frames["outputdamage"] = CreateCTFrame("outputdamage", L["输出伤害"], "RIGHT", "LEFT", UIParent, "CENTER", 185, 80)
-	frames["outputhealing"] = CreateCTFrame("outputhealing", L["输出治疗"], "LEFT", "RIGHT", UIParent, "CENTER", 365, 80)	
+	frames["outputdamage"] = CreateCTFrame("outputdamage", L["输出伤害"], "RIGHT", "LEFT", UIParent, "CENTER", 485, 80)
+	frames["outputhealing"] = CreateCTFrame("outputhealing", L["输出治疗"], "LEFT", "RIGHT", UIParent, "CENTER", 665, 80)	
 	eventframe:RegisterEvent"COMBAT_LOG_EVENT_UNFILTERED"
 end
 

@@ -6,8 +6,8 @@ local dragFrameList = G.dragFrameList
 local anchorframe = CreateFrame("Frame", "Altz_WFanchorframe", UIParent)
 anchorframe.movingname = L["任务追踪"]
 anchorframe.point = {
-	healer = {a1 = "TOPRIGHT", parent = "UIParent", a2 = "TOPRIGHT", x = -35, y = -180},
-	dpser = {a1 = "TOPRIGHT", parent = "UIParent", a2 = "TOPRIGHT", x = -35, y = -180},
+	healer = {a1 = "TOPRIGHT", parent = "UIParent", a2 = "TOPRIGHT", x = -250, y = -180},
+	dpser = {a1 = "TOPRIGHT", parent = "UIParent", a2 = "TOPRIGHT", x = -250, y = -180},
 }
 T.CreateDragFrame(anchorframe) --frame, dragFrameList, inset, clamp	
 anchorframe:SetSize(240, 20)

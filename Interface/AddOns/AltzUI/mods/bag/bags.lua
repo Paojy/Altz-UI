@@ -122,8 +122,8 @@ function BFrame.bags:setUp(frameName, ...)
 	if frameName == "bag" then
 		frame.movingname = L["背包框"]
 		frame.point = {
-				healer = {a1 = "BOTTOMRIGHT", parent = "Minimap", a2 = "BOTTOMLEFT", x = -8, y = 2},
-				dpser = {a1 = "BOTTOMRIGHT", parent = "Minimap", a2 = "BOTTOMLEFT", x = -8, y = 2},
+				healer = {a1 = "BOTTOMRIGHT", parent = "Minimap", a2 = "BOTTOMLEFT", x = -4, y = -1},
+				dpser = {a1 = "BOTTOMRIGHT", parent = "Minimap", a2 = "BOTTOMLEFT", x = -4, y = -1},
 			}
 		T.CreateDragFrame(frame)
 	else

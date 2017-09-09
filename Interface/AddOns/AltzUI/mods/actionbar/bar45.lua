@@ -26,8 +26,8 @@ local buttonList = {}
 local frame = CreateFrame("Frame", "Altz_Bar4&5", UIParent, "SecureHandlerStateTemplate")
 frame.movingname = L["右侧额外动作条"]
 frame.point = {
-	healer = {a1 = "BOTTOMRIGHT", parent = "UIParent", a2 = "BOTTOMRIGHT", x = -14, y = 225},
-	dpser = {a1 = "BOTTOMRIGHT", parent = "UIParent", a2 = "BOTTOMRIGHT", x = -14, y = 225},
+	healer = {a1 = "RIGHT", parent = "UIParent", a2 = "RIGHT", x = -14, y = 0},
+	dpser = {a1 = "RIGHT", parent = "UIParent", a2 = "RIGHT", x = -14, y = 0},
 }
 T.CreateDragFrame(frame)
 

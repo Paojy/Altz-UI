@@ -13,8 +13,8 @@ local buttonList = {}
 local frame = CreateFrame("Frame", "Altz_extrabarbutton", UIParent, "SecureHandlerStateTemplate")
 frame.movingname = L["额外特殊按钮"]
 frame.point = {
-		healer = {a1 = "BOTTOMLEFT", parent = "UIParent", a2 = "BOTTOM", x = 320, y = 20},
-		dpser = {a1 = "BOTTOMLEFT", parent = "UIParent", a2 = "BOTTOM", x = 320, y = 20},
+		healer = {a1 = "BOTTOMLEFT", parent = "UIParent", a2 = "BOTTOM", x = 150, y = 600},
+		dpser = {a1 = "BOTTOMLEFT", parent = "UIParent", a2 = "BOTTOM", x = 150, y = 600},
 	}
 T.CreateDragFrame(frame) --frame, dragFrameList, inset, clamp
 frame:SetWidth(num*buttonssize + 2*padding)
