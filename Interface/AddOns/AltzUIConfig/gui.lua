@@ -1990,10 +1990,11 @@ T.createslider(ActionbarInnerframe.bar12, 30, 270, L["渐隐透明度"], "Action
 ActionbarInnerframe.bar3 = CreateOptionPage("Actionbar Options bar3", L["额外动作条"], ActionbarInnerframe, "VERTICAL", .3)
 
 local bar3layout_group = {
+	["layout1"] = L["布局1"],
+	["layout232"] = L["布局232"],
+	["layout322"] = L["布局322"],
 	["layout43"] = L["布局43"],
 	["layout62"] = L["布局62"],
-	["layout322"] = L["布局322"],
-	["layout1"] = L["布局1"],
 }
 T.createradiobuttongroup(ActionbarInnerframe.bar3, 30, 60, L["额外动作条布局"], "ActionbarOptions", "bar3layout", bar3layout_group)
 T.createslider(ActionbarInnerframe.bar3, 30, 110, L["额外动作条间距"], "ActionbarOptions", "space1", 1, -300, 150, 1, L["额外动作条间距提示"])
