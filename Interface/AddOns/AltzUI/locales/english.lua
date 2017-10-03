@@ -104,6 +104,8 @@ L["玩家平砍计时条"] = "Player Swing Timer"
 L["冷却提示"] = "Cooldown Alert"
 L["图腾条"] = "Totem Bar"
 L["便捷物品按钮"] = "Convenient Item Buttons"
+L["多人坐骑控制框"] = "Vehicle Seat Indicator"
+L["耐久提示框"] = "Durability Frame"
 
 L["无2"] = "|cffFF0000No|r"
 L["无"] = "No"

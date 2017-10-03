@@ -12,7 +12,8 @@
 	<Script file="core\moving.lua"/>
 	<Script file="core\fader.lua"/>
 	
-	<!--<Script file="mods\blizzards\talenttaint.lua"/>-->
+	<Script file="mods\blizzards\DurabilityFrame.lua"/>
+	<Script file="mods\blizzards\VehicleSeatIndicator.lua"/>
 	<Script file="mods\blizzards\death.lua"/>
 
 	<Script file="mods\skins\Skada.lua"/>

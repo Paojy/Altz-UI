@@ -104,6 +104,8 @@ L["玩家平砍计时条"] = "Tempo de balanço do jogador"
 L["冷却提示"] = "Alerta de recarga"
 L["图腾条"] = "Barra de totem"
 --L["便捷物品按钮"] = "Convenient Item Buttons"
+--L["多人坐骑控制框"] = "Vehicle Seat Indicator"
+--L["耐久提示框"] = "Durability Frame"
 
 L["无2"] = "|cffFF0000Não|r"
 L["无"] = "Não"
