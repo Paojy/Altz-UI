@@ -24,7 +24,7 @@ local classification = {
 
 local find = string.find
 local format = string.format
-local hex = function(r, b, g)
+local hex = function(r, g, b)
     return format('|cff%02x%02x%02x', r * 255, g * 255, b * 255)
 end
 
