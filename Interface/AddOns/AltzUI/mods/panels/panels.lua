@@ -529,11 +529,13 @@ InstanceDifficulty:RegisterEvent("PLAYER_DIFFICULTY_CHANGED")
 InstanceDifficulty:RegisterEvent("GROUP_ROSTER_UPDATE")
 InstanceDifficulty:SetScript("OnEvent", function(self) self.text:SetText(select(4, GetInstanceInfo())) end)
 
--- 远古魔力 7.0
+-- 货币
 
 local Currency = {
 	[1021] = 1342,
 	[1033] = 1155,
+	[1135] = 1508,
+	[1170] = 1508,
 	[1171] = 1508,
 }
 
