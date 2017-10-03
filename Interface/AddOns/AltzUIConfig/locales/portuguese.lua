@@ -398,6 +398,7 @@ L["暂离屏幕"] = "Esconder interface quando LDT"
 L["暂离屏幕提示"]= "Esconde interface quando LDT ou ao logar"
 L["隐藏边缘装饰"] = "Esconder barras decorativas"
 L["隐藏边缘装饰提示"] = "Esconde barras decorativas superior e inferior da tela."
+--L["快速焦点"] = "Use SHIFT+Click to set focus."
 
 -- 插件皮肤
 L["插件皮肤"] = "'Skins' p/ AddOns"
@@ -406,7 +407,7 @@ L["更改设置提示"] = "Restaura configurações padrões para esse AddOn"
 
 -- 命令
 L["命令"] = "Comandos"
-L["指令"] = " %s/rl|r - Recarregar UI \n \n %s/hb|r - Modo vinculação de teclas \n \n %sSHIFT+Click|r - Para focar o alvo do mouse \n \n %sALT+Click|r - Triturar/Prospectar/Desencantar/Destravar automáticamente \n \n %sTab|r - Alterne entre canais de bate-papo. \n \n %s/Tutorials|r - Tutoriais \n \n %sDivirta-se!|r"
+L["指令"] = " %s/rl|r - Recarregar UI \n \n %s/hb|r - Modo vinculação de teclas \n \n %sALT+Click|r - Triturar/Prospectar/Desencantar/Destravar automáticamente \n \n %sTab|r - Alterne entre canais de bate-papo. \n \n %s/Tutorials|r - Tutoriais \n \n %sDivirta-se!|r"
 
 -- 制作
 L["制作"] = "Creditos"

@@ -1,4 +1,5 @@
 ﻿local T, C, L, G = unpack(select(2, ...))
+if not aCoreCDB["OtherOptions"]["shiftfocus"] then return end
 
 local modifier = "shift" --- "alt" "ctrl"
 local mouseButton = "1" --- 1 = leftbutton, 2 = tightbutton, 3 = middle button(mouse wheel)

@@ -2631,7 +2631,7 @@ T.createcheckbutton(OtherOptions, 300, 360, L["大地图坐标"], "OtherOptions"
 T.createcheckbutton(OtherOptions, 300, 390, L["暂离屏幕"], "OtherOptions", "afkscreen", L["暂离屏幕提示"])
 T.createcheckbutton(OtherOptions, 300, 420, L["隐藏边缘装饰"], "OtherOptions", "hidepanels", L["隐藏边缘装饰提示"])
 if G.Client ~= "zhCN" then OtherOptions.overrideArchive:Hide() end
---T.createcheckbutton(OtherOptions, 300, 450, L["自动接受排本邀请"], "OtherOptions", "autoacceptproposal", L["自动接受排本邀请提示"])
+T.createcheckbutton(OtherOptions, 300, 450, L["快速焦点"], "OtherOptions", "shiftfocus")
 --====================================================--
 --[[               -- Skin Options --               ]]--
 --====================================================--
@@ -2689,7 +2689,7 @@ local Comands = CreateOptionPage("Comands", L["命令"], GUI, "VERTICAL")
 
 Comands.text = T.createtext(Comands, "OVERLAY", 13, "OUTLINE", "LEFT")
 Comands.text:SetPoint("TOPLEFT", 30, -60)
-Comands.text:SetText(format(L["指令"], G.classcolor, G.classcolor, G.classcolor, G.classcolor, G.classcolor, G.classcolor, G.classcolor))
+Comands.text:SetText(format(L["指令"], G.classcolor, G.classcolor, G.classcolor, G.classcolor, G.classcolor, G.classcolor))
 
 --====================================================--
 --[[               -- Credits --               ]]--

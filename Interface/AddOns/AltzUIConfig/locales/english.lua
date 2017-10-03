@@ -398,6 +398,7 @@ L["暂离屏幕"] = "Hide interface when AFK"
 L["暂离屏幕提示"]= "Hide interface when AFK or Login"
 L["隐藏边缘装饰"] = "Hide decorative bars."
 L["隐藏边缘装饰提示"] = "Hide decorative bars on top and bottom of the screen."
+L["快速焦点"] = "Use SHIFT+Click to set focus."
 
 -- 插件皮肤
 L["插件皮肤"] = "Addon Skins"
@@ -406,7 +407,7 @@ L["更改设置提示"] = "Load default settings for this addon"
 
 -- 命令
 L["命令"] = "Commands"
-L["指令"] = " %s/rl|r - Reload UI \n \n %s/hb|r - Key Binding Mode \n \n %sSHIFT+Click|r - Set Focus \n \n %sALT+Click|r - Mill/Prospect/Disenchant/Unlock instantly \n \n %sTab|r - Change between available channels. \n \n %s/Tutorials|r - Tutorials \n \n %sEnjoy!|r"
+L["指令"] = " %s/rl|r - Reload UI \n \n %s/hb|r - Key Binding Mode \n \n %sALT+Click|r - Mill/Prospect/Disenchant/Unlock instantly \n \n %sTab|r - Change between available channels. \n \n %s/Tutorials|r - Tutorials \n \n %sEnjoy!|r"
 
 -- 制作
 L["制作"] = "Credits"
