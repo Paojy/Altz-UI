@@ -1,9 +1,9 @@
 local T, C, L, G = unpack(select(2, ...))
 -- by zork
 
-local defaultFadeIn   = {time = 0.4, alpha = 1}
-local defaultFadeOut  = {time = 0.4, alpha = 0}
-local defaultEventFadeOut  = {time = 1.5, alpha = 0}
+local defaultFadeIn = {time = 0.4, alpha = 1}
+local defaultFadeOut = {time = 0.4, alpha = 0}
+local defaultEventFadeOut = {time = 1.5, alpha = 0}
 
 local frameFadeManager = CreateFrame("FRAME")
 
@@ -16,21 +16,21 @@ local function UIFrameFade(frame, fadeInfo)
 		if not fadeInfo.startAlpha then fadeInfo.startAlpha = 0 end
 		if not fadeInfo.endAlpha then fadeInfo.endAlpha = 1 end
 		alpha = 0
-    elseif fadeInfo.mode == "OUT" then
+	elseif fadeInfo.mode == "OUT" then
 		if not fadeInfo.startAlpha then fadeInfo.startAlpha = 1.0 end
 		if not fadeInfo.endAlpha then fadeInfo.endAlpha = 0 end
 		alpha = 1.0
-    end
-    frame:SetAlpha(fadeInfo.startAlpha)
-    frame.fadeInfo = fadeInfo
+	end
+	frame:SetAlpha(fadeInfo.startAlpha)
+	frame.fadeInfo = fadeInfo
 
 	local index = 1
 	while FADEFRAMES[index] do
 		if ( FADEFRAMES[index] == frame ) then return end -- If frame is already set to fade then return
 		index = index + 1
-    end
-    tinsert(FADEFRAMES, frame)
-    frameFadeManager:SetScript("OnUpdate", UIFrameFade_OnUpdate)
+	end
+	tinsert(FADEFRAMES, frame)
+	frameFadeManager:SetScript("OnUpdate", UIFrameFade_OnUpdate)
 end
 
 -- Convenience function to do a simple fade in
@@ -55,7 +55,7 @@ local function UIFrameFadeOut(frame, timeToFade, startAlpha, endAlpha)
 end
 T.UIFrameFadeOut = UIFrameFadeOut
 --==================================================================--
---              fade-in on enter/fade-out on leave                  --
+-- fade-in on enter/fade-out on leave --
 --==================================================================--
 
 function T.ActionbarFader(frame, buttonList, fadeIn, fadeOut)
@@ -73,9 +73,9 @@ function T.ActionbarFader(frame, buttonList, fadeIn, fadeOut)
 				cd:SetDrawBling(true)
 			end
 		end
-	
+
 	end)
-	frame:SetScript("OnLeave", function(self) 
+	frame:SetScript("OnLeave", function(self)
 		if frame.eventmode ~= 1 then
 			UIFrameFadeOut(frame, fadeOut.time, frame:GetAlpha(), fadeOut.alpha)
 			for _, bu in pairs(buttonList) do
@@ -88,7 +88,7 @@ function T.ActionbarFader(frame, buttonList, fadeIn, fadeOut)
 
 	for _, button in pairs(buttonList) do
 		if button then
-			button:HookScript("OnEnter", function() 
+			button:HookScript("OnEnter", function()
 				if frame.eventmode ~= 1 then
 					UIFrameFadeIn( frame, fadeIn.time, frame:GetAlpha(), fadeIn.alpha)
 					for _, bu in pairs(buttonList) do
@@ -98,9 +98,9 @@ function T.ActionbarFader(frame, buttonList, fadeIn, fadeOut)
 					end
 				end
 			end)
-			
-			button:HookScript("OnLeave", function() 
-				if frame.eventmode ~= 1 then 
+
+			button:HookScript("OnLeave", function()
+				if frame.eventmode ~= 1 then
 					UIFrameFadeOut(frame, fadeOut.time, frame:GetAlpha(), fadeOut.alpha)
 					for _, bu in pairs(buttonList) do
 						local name = bu:GetName()
@@ -111,7 +111,7 @@ function T.ActionbarFader(frame, buttonList, fadeIn, fadeOut)
 			end)
 		end
 	end
-	
+
 	UIFrameFadeOut(frame, fadeOut.time, frame:GetAlpha(), fadeOut.alpha)
 	for _, bu in pairs(buttonList) do
 		local name = bu:GetName()
@@ -148,7 +148,7 @@ function T.SpellFlyoutFader(frame,buttonList,fadeIn,fadeOut)
 			end
 		end
 	end)
-	
+
 	SpellFlyout:SetScript("OnLeave", function()
 		if frame.eventmode ~= 1 then
 			UIFrameFadeOut(frame, fadeOut.time, frame:GetAlpha(), fadeOut.alpha)
@@ -172,7 +172,7 @@ function T.SpellFlyoutFader(frame,buttonList,fadeIn,fadeOut)
 					end
 				end
 			end)
-			
+
 			button:SetScript("OnLeave", function()
 				if frame.eventmode ~= 1 then
 					UIFrameFadeOut(frame, fadeOut.time, frame:GetAlpha(), fadeOut.alpha)
@@ -187,7 +187,7 @@ function T.SpellFlyoutFader(frame,buttonList,fadeIn,fadeOut)
 	end
 end
 --==================================================================--
---              fade-in when center conditions meets                --
+-- fade-in when center conditions meets --
 --==================================================================--
 local function regi(frame)
 	frame:RegisterEvent('PLAYER_REGEN_DISABLED')
@@ -209,52 +209,52 @@ local function regi(frame)
 end
 
 --[[
-	MANA = 0
-	*RAGE = 1
-	FOCUS = 2
-	ENERGY = 3
-	COMBO_POINTS = 4
-	RUNES = 5
-	*RUNIC_POWER = 6
-	SOUL_SHARDS = 7
-	*LUNAR_POWER = 8
-	HOLY_POWER = 9
-	ALTERNATE_POWER = 10
-	*MAELSTROM = 11
-	CHI = 12
-	*INSANITY = 13
-	OBSOLETE = 14
-	OBSOLETE2 = 15
-	ARCANE_CHARGES = 16
-	*FURY = 17
-	*PAIN = 18
+MANA = 0
+*RAGE = 1
+FOCUS = 2
+ENERGY = 3
+COMBO_POINTS = 4
+RUNES = 5
+*RUNIC_POWER = 6
+SOUL_SHARDS = 7
+*LUNAR_POWER = 8
+HOLY_POWER = 9
+ALTERNATE_POWER = 10
+*MAELSTROM = 11
+CHI = 12
+*INSANITY = 13
+OBSOLETE = 14
+OBSOLETE2 = 15
+ARCANE_CHARGES = 16
+*FURY = 17
+*PAIN = 18
 ]]
 
 local EmptyPowerType = {
 	["RAGE"] = true,
-	["RUNIC_POWER"] = true, 
-	["LUNAR_POWER"] = true, 
-	["MAELSTROM"] = true, 
-	["INSANITY"] = true, 
-	["FURY"] = true, 
+	["RUNIC_POWER"] = true,
+	["LUNAR_POWER"] = true,
+	["MAELSTROM"] = true,
+	["INSANITY"] = true,
+	["FURY"] = true,
 	["PAIN"] = true,
 }
 
 function T.ActionbarEventFader(frame,buttonList,fadeIn,fadeOut)
 	if not frame or not buttonList then return end
-    if not fadeIn then fadeIn = defaultFadeIn end
-    if not fadeOut then fadeOut = defaultEventFadeOut end
-	
+	if not fadeIn then fadeIn = defaultFadeIn end
+	if not fadeOut then fadeOut = defaultEventFadeOut end
+
 	regi(frame)
-	
+
 	frame:SetScript("OnEvent", function(self,event)
 		if
-			UnitCastingInfo('player') or UnitChannelInfo('player') or
-			UnitAffectingCombat('player') or
-			UnitExists('target') or
-			UnitHealth('player') < UnitHealthMax('player') or
-			(EmptyPowerType[select(2, UnitPowerType("player"))] and UnitPower("player") > 0) or
-			(not EmptyPowerType[select(2, UnitPowerType("player"))] and UnitPower("player") < UnitPowerMax("player"))
+		UnitCastingInfo('player') or UnitChannelInfo('player') or
+		UnitAffectingCombat('player') or
+		UnitExists('target') or
+		UnitHealth('player') < UnitHealthMax('player') or
+		(EmptyPowerType[select(2, UnitPowerType("player"))] and UnitPower("player") > 0) or
+		(not EmptyPowerType[select(2, UnitPowerType("player"))] and UnitPower("player") < UnitPowerMax("player"))
 		then
 			frame.eventmode = 1
 			UIFrameFadeIn( frame, fadeIn.time, frame:GetAlpha(), fadeIn.alpha)
@@ -273,8 +273,8 @@ function T.ActionbarEventFader(frame,buttonList,fadeIn,fadeOut)
 			end
 		end
 	end)
-	
-    UIFrameFadeOut(frame, fadeOut.time, frame:GetAlpha(), fadeOut.alpha)
+
+	UIFrameFadeOut(frame, fadeOut.time, frame:GetAlpha(), fadeOut.alpha)
 	for _, bu in pairs(buttonList) do
 		local name = bu:GetName()
 		local cd= _G[name.."Cooldown"]
@@ -284,19 +284,19 @@ end
 
 function T.FrameEventFader(frame,fadeIn,fadeOut)
 	if not frame then return end
-    if not fadeIn then fadeIn = defaultFadeIn end
-    if not fadeOut then fadeOut = defaultEventFadeOut end
-	
+	if not fadeIn then fadeIn = defaultFadeIn end
+	if not fadeOut then fadeOut = defaultEventFadeOut end
+
 	regi(frame)
-	
+
 	frame:SetScript("OnEvent", function(self,event)
 		if
-			UnitCastingInfo('player') or UnitChannelInfo('player') or
-			UnitAffectingCombat('player') or
-			UnitExists('target') or
-			UnitHealth('player') < UnitHealthMax('player') or
-			(EmptyPowerType[select(2, UnitPowerType("player"))] and UnitPower("player") > 0) or
-			(not EmptyPowerType[select(2, UnitPowerType("player"))] and UnitPower("player") < UnitPowerMax("player"))
+		UnitCastingInfo('player') or UnitChannelInfo('player') or
+		UnitAffectingCombat('player') or
+		UnitExists('target') or
+		UnitHealth('player') < UnitHealthMax('player') or
+		(EmptyPowerType[select(2, UnitPowerType("player"))] and UnitPower("player") > 0) or
+		(not EmptyPowerType[select(2, UnitPowerType("player"))] and UnitPower("player") < UnitPowerMax("player"))
 		then
 			frame.eventmode = 1
 			UIFrameFadeIn( frame, fadeIn.time, frame:GetAlpha(), fadeIn.alpha)
@@ -306,6 +306,6 @@ function T.FrameEventFader(frame,fadeIn,fadeOut)
 			UIFrameFadeOut(frame, fadeOut.time, frame:GetAlpha(), fadeOut.alpha)
 		end
 	end)
-	
-    UIFrameFadeOut(frame, fadeOut.time, frame:GetAlpha(), fadeOut.alpha)
+
+	UIFrameFadeOut(frame, fadeOut.time, frame:GetAlpha(), fadeOut.alpha)
 end
