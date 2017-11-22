@@ -327,8 +327,11 @@ function BFrame.bags:setUp(frameName, ...)
 			frame.bags:SetPoint("BOTTOMRIGHT", frame, "TOPRIGHT", 0, 25)
 		end
 		
-		frame:SetScript("OnHide", function()
-			bank_shown = 0
+		frame:RegisterEvent('BANKFRAME_CLOSED')
+		frame:SetScript("OnEvent", function(self, event, arg)
+			if event == "BANKFRAME_CLOSED" then
+				bank_shown = 0
+			end
 		end)
 	end
 	return frame

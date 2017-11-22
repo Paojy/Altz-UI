@@ -11,8 +11,8 @@ local function registerBWStyle()
     local backdropBorder = {
         bgFile = [[Interface\AddOns\AltzUI\media\statusbar]],
         edgeFile = [[Interface\AddOns\AltzUI\media\glow]],
-        tile = false, tileSize = 0, edgeSize = 3,
-        insets = {left = 3, right = 3, top = 3, bottom = 3}
+        tile = false, tileSize = 0, edgeSize = 2,
+        insets = {left = 2, right = 2, top = 2, bottom = 2}
     }
 
     local function styleBar(bar)
@@ -26,8 +26,8 @@ local function registerBWStyle()
         bd:SetBackdropBorderColor(0, 0, 0, 1)
 
         bd:ClearAllPoints()
-        bd:SetPoint("TOPLEFT", bar, "TOPLEFT", -3, 3)
-        bd:SetPoint("BOTTOMRIGHT", bar, "BOTTOMRIGHT", 3, -3)
+        bd:SetPoint("TOPLEFT", bar, "TOPLEFT", -2, 2)
+        bd:SetPoint("BOTTOMRIGHT", bar, "BOTTOMRIGHT", 2, -2)
         bd:Show()
 
         if bars.db.profile.icon then
@@ -47,8 +47,8 @@ local function registerBWStyle()
             iconBd:SetBackdropBorderColor(0, 0, 0, 1)
 
             iconBd:ClearAllPoints()
-            iconBd:SetPoint("TOPLEFT", icon, "TOPLEFT", -3, 3)
-            iconBd:SetPoint("BOTTOMRIGHT", icon, "BOTTOMRIGHT", 3, -3)
+            iconBd:SetPoint("TOPLEFT", icon, "TOPLEFT", -2, 2)
+            iconBd:SetPoint("BOTTOMRIGHT", icon, "BOTTOMRIGHT", 2, -2)
             iconBd:Show()
         end
 
