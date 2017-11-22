@@ -22,11 +22,11 @@ end
 
 local function Reskinbox(box, name, value, anchor, x, y)
 	box:SetPoint("LEFT", anchor, "RIGHT", x, y)
-	
+
 	box.name = T.createtext(box, "OVERLAY", 12, "OUTLINE", "LEFT")
 	box.name:SetPoint("BOTTOMLEFT", box, "TOPLEFT", 5, 8)
 	box.name:SetText(G.classcolor..name.."|r")
-	
+
 	local bd = CreateFrame("Frame", nil, box)
 	bd:SetPoint("TOPLEFT", -2, 0)
 	bd:SetPoint("BOTTOMRIGHT")
@@ -36,11 +36,11 @@ local function Reskinbox(box, name, value, anchor, x, y)
 	local gradient = F.CreateGradient(box)
 	gradient:SetPoint("TOPLEFT", bd, 1, -1)
 	gradient:SetPoint("BOTTOMRIGHT", bd, -1, 1)
-	
+
 	box:SetFont(GameFontHighlight:GetFont(), 12, "OUTLINE")
 	box:SetAutoFocus(false)
 	box:SetTextInsets(3, 0, 0, 0)
-	
+
 	box:SetScript("OnShow", function(self)
 		if CurrentFrame ~= "NONE" then
 			self:SetText(aCoreCDB["FramePoints"][CurrentFrame][role][value])
@@ -48,8 +48,8 @@ local function Reskinbox(box, name, value, anchor, x, y)
 			self:SetText("")
 		end
 	end)
-	
-	box:SetScript("OnEscapePressed", function(self) 
+
+	box:SetScript("OnEscapePressed", function(self)
 		if CurrentFrame ~= "NONE" then
 			self:SetText(aCoreCDB["FramePoints"][CurrentFrame][role][value])
 		else
@@ -57,7 +57,7 @@ local function Reskinbox(box, name, value, anchor, x, y)
 		end
 		self:ClearFocus()
 	end)
-	
+
 	box:SetScript("OnEnterPressed", function(self)
 		if CurrentFrame ~= "NONE" then
 			aCoreCDB["FramePoints"][CurrentFrame][role][value] = self:GetText()
@@ -135,9 +135,9 @@ L_UIDropDownMenu_SetText(Point1dropDown, "")
 
 L_UIDropDownMenu_Initialize(Point1dropDown, function(self, level, menuList)
 	local info = L_UIDropDownMenu_CreateInfo()
-	for i =  1, #anchors do
+	for i = 1, #anchors do
 		info.text = anchors[i]
-		info.checked = function() 
+		info.checked = function()
 			if CurrentFrame ~= "NONE" then
 				return (aCoreCDB["FramePoints"][CurrentFrame][role]["a1"] == info.text)
 			end
@@ -172,9 +172,9 @@ L_UIDropDownMenu_SetText(Point2dropDown, "")
 
 L_UIDropDownMenu_Initialize(Point2dropDown, function(self, level, menuList)
 	local info = L_UIDropDownMenu_CreateInfo()
-	for i =  1, #anchors do
+	for i = 1, #anchors do
 		info.text = anchors[i]
-		info.checked = function() 
+		info.checked = function()
 			if CurrentFrame ~= "NONE" then
 				return (aCoreCDB["FramePoints"][CurrentFrame][role]["a2"] == info.text)
 			end
@@ -218,13 +218,13 @@ F.Reskin(ResetButton)
 ResetButton:SetScript("OnClick", function()
 	if CurrentFrame ~= "NONE" then
 		local frame = _G[CurrentFrame]
-		
+
 		aCoreCDB["FramePoints"][CurrentFrame][role].a1 = frame["point"][role].a1
 		aCoreCDB["FramePoints"][CurrentFrame][role].parent = frame["point"][role].parent
 		aCoreCDB["FramePoints"][CurrentFrame][role].a2 = frame["point"][role].a2
 		aCoreCDB["FramePoints"][CurrentFrame][role].x = frame["point"][role].x
 		aCoreCDB["FramePoints"][CurrentFrame][role].y = frame["point"][role].y
-		
+
 		PlaceCurrentFrame()
 		DisplayCurrentFramePoint()
 	end
@@ -232,7 +232,7 @@ end)
 
 function T.CreateDragFrame(frame)
 	local fname = frame:GetName()
-	
+
 	if aCoreCDB["FramePoints"][fname] == nil then
 		aCoreCDB["FramePoints"][fname] = frame.point
 	else
@@ -260,10 +260,10 @@ function T.CreateDragFrame(frame)
 	end
 
 	table.insert(G.dragFrameList, frame) --add frame object to the list
-	
+
 	frame:SetMovable(true)
 	frame:SetClampedToScreen(true)
-	
+
 	frame.df = CreateFrame("Frame", fname.."DragFrame", UIParent)
 	frame.df:SetAllPoints(frame)
 	frame.df:SetFrameStrata("HIGH")
@@ -279,7 +279,7 @@ function T.CreateDragFrame(frame)
 			self:SetPoint("CENTER", frame, "CENTER", dfx-self.x, dfy-self.y)
 		end
 	end)
-	frame.df:SetScript("OnDragStop", function(self) 
+	frame.df:SetScript("OnDragStop", function(self)
 		frame:StopMovingOrSizing()
 		local x, y = frame:GetCenter() -- 结束的位置
 		local x1, y1 = ("%d"):format(x - self.x), ("%d"):format(y -self.y)
@@ -289,21 +289,21 @@ function T.CreateDragFrame(frame)
 		DisplayCurrentFramePoint()
 	end)
 	frame.df:Hide()
-	
+
 	--overlay texture
 	frame.df.mask = F.CreateBDFrame(frame.df, 0.5)
 	T.CreateSD(frame.df.mask, 2, 0, 0, 0, 0, -1)
 	frame.df.mask.text = T.createtext(frame.df, "OVERLAY", 13, "OUTLINE", "LEFT")
 	frame.df.mask.text:SetPoint("TOPLEFT")
 	frame.df.mask.text:SetText(frame.movingname)
-	
+
 	frame.df:SetScript("OnMouseDown", function()
 		CurrentFrame = fname
 		SpecMover.curframe:SetText(L["选中的框体"].." "..G.classcolor..gsub(frame.movingname, "\n", "").."|r")
 		DisplayCurrentFramePoint()
 		if not selected then
 			L_UIDropDownMenu_EnableDropDown(Point1dropDown)
-			L_UIDropDownMenu_EnableDropDown(Point2dropDown) 
+			L_UIDropDownMenu_EnableDropDown(Point2dropDown)
 			ParentBox:Enable()
 			XBox:Enable()
 			YBox:Enable()
@@ -347,7 +347,7 @@ local function LockAll()
 	XBox:Disable()
 	YBox:Disable()
 	selected = false
-	
+
 	for i = 1, #G.dragFrameList do
 		G.dragFrameList[i].df.mask:SetBackdropBorderColor(0, 0, 0)
 		G.dragFrameList[i].df:Hide()
@@ -358,12 +358,12 @@ end
 local function OnSpecChanged()
 	role = T.CheckRole()
 	SpecMover.curmode:SetText(L["当前模式"].." "..L[role])
-		
+
 	for i = 1, #G.dragFrameList do
 		local name = G.dragFrameList[i]:GetName()
 		local points = aCoreCDB["FramePoints"][name][role]
 		G.dragFrameList[i]:ClearAllPoints()
-		G.dragFrameList[i]:SetPoint(points.a1, _G[points.parent], points.a2, points.x, points.y)	
+		G.dragFrameList[i]:SetPoint(points.a1, _G[points.parent], points.a2, points.x, points.y)
 		if string.match(name, "Raid") then
 			G.dragFrameList[i].df:ClearAllPoints()
 			if string.match(points.parent, "Raid") then
@@ -426,10 +426,10 @@ resetposbutton:SetScript("OnClick", function()
 		PlaceCurrentFrame()
 	end
 	FCF_SetLocked(ChatFrame1, nil)
-    ChatFrame1:ClearAllPoints()
+	ChatFrame1:ClearAllPoints()
 	ChatFrame1:SetSize(300, 130)
-    ChatFrame1:SetPoint("BOTTOMLEFT", _G[G.uiname.."chatframe_pullback"],"BOTTOMLEFT", 3, 5)
-	
+	ChatFrame1:SetPoint("BOTTOMLEFT", _G[G.uiname.."chatframe_pullback"],"BOTTOMLEFT", 3, 5)
+
 	FCF_SavePositionAndDimensions(ChatFrame1)
 	CurrentFrame = "NONE"
 end)

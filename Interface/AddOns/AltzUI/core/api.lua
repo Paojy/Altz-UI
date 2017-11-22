@@ -47,24 +47,24 @@ end
 
 local day, hour, minute = 86400, 3600, 60
 T.FormatTime = function(s)
-    if s >= day then
-        return format("%dd", floor(s/day + 0.5))
-    elseif s >= hour then
-        return format("%dh", floor(s/hour + 0.5))
-    elseif s >= minute then
-        return format("%dm", floor(s/minute + 0.5))
-    end
+	if s >= day then
+		return format("%dd", floor(s/day + 0.5))
+	elseif s >= hour then
+		return format("%dh", floor(s/hour + 0.5))
+	elseif s >= minute then
+		return format("%dm", floor(s/minute + 0.5))
+	end
 
-    return format("%d", math.fmod(s, minute))
+	return format("%d", math.fmod(s, minute))
 end
 
 T.ColorGradient = function(perc, ...)-- http://www.wowwiki.com/ColorGradient
 	local r, g, b, r1, g1, b1, r2, g2, b2
-    if (perc >= 1) then
-        r, g, b = select(select('#', ...) - 2, ...)
+	if (perc >= 1) then
+		r, g, b = select(select('#', ...) - 2, ...)
 		return r, g, b
-    elseif (perc < 0) then
-        r, g, b = ... 
+	elseif (perc < 0) then
+		r, g, b = ...
 		return r, g, b
 	else
 		local num = select('#', ...) / 3
@@ -104,7 +104,7 @@ T.CreateSD = function(parent, size, r, g, b, alpha, offset)
 	sd:SetPoint("BOTTOMRIGHT", parent, sd.size + 1 + sd.offset, -sd.size - 1 - sd.offset)
 	sd:SetBackdropBorderColor(r or 0, g or 0, b or 0)
 	sd:SetBackdropColor(r or 0, g or 0, b or 0, alpha or 0)
-	
+
 	return sd
 end
 
@@ -121,7 +121,7 @@ T.CreateThinSD = function(parent, size, r, g, b, alpha, offset)
 	sd:SetPoint("BOTTOMRIGHT", parent, sd.size + 1 + sd.offset, -sd.size - 1 - sd.offset)
 	sd:SetBackdropBorderColor(r or 0, g or 0, b or 0)
 	sd:SetBackdropColor(r or 0, g or 0, b or 0, alpha or 0)
-	
+
 	return sd
 end
 
@@ -130,23 +130,23 @@ T.SkinButton = function(button, tex, blend)
 	texture:SetAllPoints(button)
 	texture:SetTexture(tex)
 	texture:SetVertexColor(1, 1, 1)
-	
+
 	if blend then
 		texture:SetBlendMode("ADD")
 	end
-	
+
 	if button:GetScript("OnEnter") then
 		button:HookScript("OnEnter", function() texture:SetVertexColor(G.Ccolor.r, G.Ccolor.g, G.Ccolor.b) end)
 	else
 		button:SetScript("OnEnter", function() texture:SetVertexColor(G.Ccolor.r, G.Ccolor.g, G.Ccolor.b) end)
 	end
-	
+
 	if button:GetScript("OnLeave") then
 		button:HookScript("OnLeave", function() texture:SetVertexColor(1, 1, 1) end)
 	else
 		button:SetScript("OnLeave", function() texture:SetVertexColor(1, 1, 1) end)
 	end
-	
+
 	return texture
 end
 
@@ -155,67 +155,67 @@ T.dummy = function() end
 -- calculating the ammount of latters
 T.utf8sub = function(str, i, wrap)
 	if str then
-	local bytes = string.len(str)
-	if bytes <= i then
-		return str
-	else
-		local len, pos = 0, 1
-		while pos <= bytes do
-			len = len + 1
-			local c = string.byte(str, pos)
-			if c > 0 and c <= 127 then
-				pos = pos + 1
-			elseif c >= 192 and c <= 223 then
-				pos = pos + 2
-			elseif c >= 224 and c <= 239 then
-				pos = pos + 3
-				len = len + 1
-			elseif c >= 240 and c <= 247 then
-				pos = pos + 4
-				len = len + 1
-			end
-			if len == i then break end
-		end
-		if len == i and pos <= bytes then
-			if wrap then
-				return string.sub(str, 1, pos - 1).."\n"..T.utf8sub(string.sub(str, pos, bytes), i, true)
-			else
-				return string.sub(str, 1, pos - 1)
-			end
-		else
+		local bytes = string.len(str)
+		if bytes <= i then
 			return str
+		else
+			local len, pos = 0, 1
+			while pos <= bytes do
+				len = len + 1
+				local c = string.byte(str, pos)
+				if c > 0 and c <= 127 then
+					pos = pos + 1
+				elseif c >= 192 and c <= 223 then
+					pos = pos + 2
+				elseif c >= 224 and c <= 239 then
+					pos = pos + 3
+					len = len + 1
+				elseif c >= 240 and c <= 247 then
+					pos = pos + 4
+					len = len + 1
+				end
+				if len == i then break end
+			end
+			if len == i and pos <= bytes then
+				if wrap then
+					return string.sub(str, 1, pos - 1).."\n"..T.utf8sub(string.sub(str, pos, bytes), i, true)
+				else
+					return string.sub(str, 1, pos - 1)
+				end
+			else
+				return str
+			end
 		end
-	end
 	end
 end
 
 T.hex = function(r, g, b)
-    if not r then return "|cffFFFFFF" end
+	if not r then return "|cffFFFFFF" end
 
-    if(type(r) == 'table') then
-        if(r.r) then r, g, b = r.r, r.g, r.b else r, g, b = unpack(r) end
-    end
-    return ('|cff%02x%02x%02x'):format(r * 255, g * 255, b * 255)
+	if(type(r) == 'table') then
+		if(r.r) then r, g, b = r.r, r.g, r.b else r, g, b = unpack(r) end
+	end
+	return ('|cff%02x%02x%02x'):format(r * 255, g * 255, b * 255)
 end
 
 local frameBD = {
-    edgeFile = G.media.glow, edgeSize = 3,
-    bgFile = G.media.blank,
-    insets = {left = 3, right = 3, top = 3, bottom = 3}
+	edgeFile = G.media.glow, edgeSize = 3,
+	bgFile = G.media.blank,
+	insets = {left = 3, right = 3, top = 3, bottom = 3}
 }
 
 local frameBD_thin = {
-    edgeFile = G.media.blank, edgeSize = 1,
-    bgFile = G.media.blank,
-    insets = {left = 1, right = 1, top = 1, bottom = 1}
+	edgeFile = G.media.blank, edgeSize = 1,
+	bgFile = G.media.blank,
+	insets = {left = 1, right = 1, top = 1, bottom = 1}
 }
 
 T.createBackdrop = function(parent, anchor, a, BD_thin)
-    local frame = CreateFrame("Frame", nil, parent)
+	local frame = CreateFrame("Frame", nil, parent)
 
 	local flvl = parent:GetFrameLevel()
 	if flvl - 1 >= 0 then frame:SetFrameLevel(flvl-1) end
-	
+
 	if BD_thin then
 		frame:SetPoint("TOPLEFT", anchor, "TOPLEFT", -1, 1)
 		frame:SetPoint("BOTTOMRIGHT", anchor, "BOTTOMRIGHT", 1, -1)
@@ -230,26 +230,26 @@ T.createBackdrop = function(parent, anchor, a, BD_thin)
 		frame:SetBackdropBorderColor(0, 0, 0)
 	end
 
-    return frame
+	return frame
 end
 
 T.createStatusbar = function(parent, layer, height, width, r, g, b, alpha, name)
-    local bar = CreateFrame("StatusBar", name, parent)
-    if height then
-        bar:SetHeight(height)
-    end
-    if width then
-        bar:SetWidth(width)
-    end
-	
+	local bar = CreateFrame("StatusBar", name, parent)
+	if height then
+		bar:SetHeight(height)
+	end
+	if width then
+		bar:SetWidth(width)
+	end
+
 	if aCoreCDB["UnitframeOptions"]["style"] == 1 then
 		bar:SetStatusBarTexture(G.media.blank)
 	else
 		bar:SetStatusBarTexture(G.media.ufbar)
 	end
-	
-    bar:SetStatusBarColor(r, g, b, alpha)
-	
+
+	bar:SetStatusBarColor(r, g, b, alpha)
+
 	bar.bg = bar:CreateTexture(nil, "BACKGROUND")
 	if aCoreCDB["UnitframeOptions"]["style"] == 1 then
 		bar.bg:SetTexture(G.media.blank)
@@ -257,11 +257,11 @@ T.createStatusbar = function(parent, layer, height, width, r, g, b, alpha, name)
 		bar.bg:SetTexture(G.media.ufbar)
 	end
 	bar.bg:SetAllPoints(true)
-	
-    bar:GetStatusBarTexture():SetHorizTile(false)
-    bar:GetStatusBarTexture():SetVertTile(false)
-	
-    return bar
+
+	bar:GetStatusBarTexture():SetHorizTile(false)
+	bar:GetStatusBarTexture():SetVertTile(false)
+
+	return bar
 end
 
 T.CheckRole = function()
