@@ -1996,13 +1996,16 @@ local bar3layout_group = {
 	["layout43"] = L["布局43"],
 	["layout62"] = L["布局62"],
 }
-T.createradiobuttongroup(ActionbarInnerframe.bar3, 30, 60, L["额外动作条布局"], "ActionbarOptions", "bar3layout", bar3layout_group)
-T.createslider(ActionbarInnerframe.bar3, 30, 110, L["额外动作条间距"], "ActionbarOptions", "space1", 1, -300, 150, 1, L["额外动作条间距提示"])
-T.createslider(ActionbarInnerframe.bar3, 30, 150, L["图标大小"], "ActionbarOptions", "bar3size", 1, 15, 40, 1)
-T.createslider(ActionbarInnerframe.bar3, 30, 190, L["图标间距"], "ActionbarOptions", "bar3space", 1, 0, 10, 1)
-T.createcheckbutton(ActionbarInnerframe.bar3, 30, 230, L["悬停渐隐"], "ActionbarOptions", "bar3mfade", L["悬停渐隐提示"])
-T.createcheckbutton(ActionbarInnerframe.bar3, 30, 260, L["条件渐隐"], "ActionbarOptions", "bar3efade", L["条件渐隐提示"])
-T.createslider(ActionbarInnerframe.bar3, 30, 310, L["渐隐透明度"], "ActionbarOptions", "bar3fademinaplha", 100, 0, 80, 5, L["渐隐透明度提示"])
+T.createradiobuttongroup(ActionbarInnerframe.bar3, 30, 90, L["额外动作条布局"], "ActionbarOptions", "bar3layout", bar3layout_group)
+_G[G.uiname.."bar3layoutRadioButtonGroup"].name:ClearAllPoints()
+_G[G.uiname.."bar3layoutRadioButtonGroup"].name:SetPoint("BOTTOMLEFT", _G[G.uiname.."bar3layoutRadioButtonGroup"], "TOPLEFT", 0, 5)
+
+T.createslider(ActionbarInnerframe.bar3, 30, 140, L["额外动作条间距"], "ActionbarOptions", "space1", 1, -300, 150, 1, L["额外动作条间距提示"])
+T.createslider(ActionbarInnerframe.bar3, 30, 180, L["图标大小"], "ActionbarOptions", "bar3size", 1, 15, 40, 1)
+T.createslider(ActionbarInnerframe.bar3, 30, 220, L["图标间距"], "ActionbarOptions", "bar3space", 1, 0, 10, 1)
+T.createcheckbutton(ActionbarInnerframe.bar3, 30, 260, L["悬停渐隐"], "ActionbarOptions", "bar3mfade", L["悬停渐隐提示"])
+T.createcheckbutton(ActionbarInnerframe.bar3, 30, 290, L["条件渐隐"], "ActionbarOptions", "bar3efade", L["条件渐隐提示"])
+T.createslider(ActionbarInnerframe.bar3, 30, 340, L["渐隐透明度"], "ActionbarOptions", "bar3fademinaplha", 100, 0, 80, 5, L["渐隐透明度提示"])
 
 ActionbarInnerframe.bar45 = CreateOptionPage("Actionbar Options bar45", L["右侧额外动作条"], ActionbarInnerframe, "VERTICAL", .3)
 

@@ -31,7 +31,10 @@ frame.point = {
 }
 T.CreateDragFrame(frame)
 
-if layout == "layout232" or "layout322" then
+if layout == "layout232" then
+	frame:SetWidth(num/3*buttonssize +(num/3-2)*buttonspace +2*padding +num*aCoreCDB["ActionbarOptions"]["bar12size"] +(num-1)*aCoreCDB["ActionbarOptions"]["bar12space"] +2*padding +2*space1)
+	frame:SetHeight(3*buttonssize + 2*padding + buttonspace)
+elseif layout == "layout322" then
 	frame:SetWidth(num/2*buttonssize +(num/2-2)*buttonspace +2*padding +num*aCoreCDB["ActionbarOptions"]["bar12size"] +(num-1)*aCoreCDB["ActionbarOptions"]["bar12space"] +2*padding +2*space1)
 	frame:SetHeight(2*buttonssize + 2*padding + buttonspace)
 elseif layout == "layout62" then
