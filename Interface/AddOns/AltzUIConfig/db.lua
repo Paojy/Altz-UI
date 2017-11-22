@@ -1336,38 +1336,134 @@ G.DebuffList = {
 
 	[EJ_GetInstanceInfo(946)] = { -- 燃烧王座
 		[EJ_GetEncounterInfo(1992)] = { --> 加洛西灭世者
-
+			[GetSpellInfo(246220)] = {id = 246220, level = 8,}, --邪能轰炸
+			[GetSpellInfo(244410)] = {id = 244410, level = 8,}, --屠戮
+			[GetSpellInfo(246920)] = {id = 246920, level = 8,}, --错乱屠戮
 		},
+		
 		[EJ_GetEncounterInfo(1987)] = { --> 萨格拉斯的恶犬
-
+			[GetSpellInfo(251445)] = {id = 251445, level = 8,}, --闷烧
+			[GetSpellInfo(245098)] = {id = 245098, level = 8,}, --腐蚀
+			[GetSpellInfo(244768)] = {id = 244768, level = 8,}, --荒芜凝视
+			[GetSpellInfo(244072)] = {id = 244072, level = 8,}, --熔火之触
+			[GetSpellInfo(244091)] = {id = 244091, level = 8,}, --烧焦
+			[GetSpellInfo(248815)] = {id = 248815, level = 8,}, --燃烧腐蚀
+			[GetSpellInfo(254429)] = {id = 254429, level = 8,}, --黑暗压迫
+			[GetSpellInfo(248819)] = {id = 248819, level = 8,}, --虹吸腐蚀
+			[GetSpellInfo(244055)] = {id = 244055, level = 8,}, --暗影触痕
+			[GetSpellInfo(244054)] = {id = 244054, level = 8,}, --烈焰触痕
+			[GetSpellInfo(245022)] = {id = 245022, level = 8,}, --炽然
 		},
+		
 		[EJ_GetEncounterInfo(1997)] = { --> 安托兰统帅议会
-
+			[GetSpellInfo(257974)] = { id = 257974, level = 8, }, --混乱脉冲
+			[GetSpellInfo(244892)] = { id = 244892, level = 8, }, --弱点攻击
+			[GetSpellInfo(244737)] = { id = 244737, level = 8, }, --震荡手雷
+			[GetSpellInfo(244748)] = { id = 244748, level = 8, }, --震荡手雷
+			[GetSpellInfo(244172)] = { id = 244172, level = 8, }, --灵能突袭
+			[GetSpellInfo(253306)] = { id = 253306, level = 8, }, --灵能创伤
+			[GetSpellInfo(244910)] = { id = 244910, level = 8, }, --邪能护盾
 		},
+		
 		[EJ_GetEncounterInfo(1985)] = { --> 传送门守护者哈萨贝尔
-
+			[GetSpellInfo(244016)] = { id = 244016, level = 8, }, -- 时空裂隙
+			[GetSpellInfo(246208)] = { id = 246208, level = 8, }, -- 酸性之网
+			[GetSpellInfo(244613)] = { id = 244613, level = 8, }, -- 永燃烈焰
+			[GetSpellInfo(244849)] = { id = 244849, level = 8, }, -- 腐蚀烂泥
+			[GetSpellInfo(245075)] = { id = 245075, level = 8, }, -- 饥饿幽影
+			[GetSpellInfo(245118)] = { id = 245118, level = 8, }, -- 饱足幽影
+			[GetSpellInfo(244949)] = { id = 244949, level = 8, }, -- 邪丝缠缚
+			[GetSpellInfo(244915)] = { id = 244915, level = 8, }, -- 吸取精华
+			[GetSpellInfo(245050)] = { id = 245050, level = 8, }, -- 欺骗幻境
+			[GetSpellInfo(245040)] = { id = 245040, level = 8, }, -- 腐蚀
 		},
+		
 		[EJ_GetEncounterInfo(2025)] = { --> 生命的缚誓者艾欧娜尔
-
+			[GetSpellInfo(248795)] = { id = 248795, level = 8, }, -- 邪能池
+			[GetSpellInfo(248332)] = { id = 248332, level = 8, }, -- 邪能之雨
+			[GetSpellInfo(249017)] = { id = 249017, level = 8, }, -- 反馈-奥术奇点
+			[GetSpellInfo(250693)] = { id = 250693, level = 8, }, -- 奥能累积
+			[GetSpellInfo(249014)] = { id = 249014, level = 8, }, -- 反馈-邪污足迹
+			[GetSpellInfo(250140)] = { id = 250140, level = 8, }, -- 邪污足迹
+			[GetSpellInfo(249015)] = { id = 249015, level = 8, }, -- 反馈-燃烧的余烬
+			[GetSpellInfo(250691)] = { id = 250691, level = 8, }, -- 燃烧的余烬
+			[GetSpellInfo(249016)] = { id = 249016, level = 8, }, -- 反馈-目标锁定                                       
 		},
+		
 		[EJ_GetEncounterInfo(2009)] = { --> 裂魂者伊墨纳尔
-
+			[GetSpellInfo(247367)] = { id = 247367, level = 8, }, -- 震击之枪
+			[GetSpellInfo(250255)] = { id = 250255, level = 8, }, -- 强化震击之枪
+			[GetSpellInfo(255029)] = { id = 255029, level = 8, }, -- 催眠气罐
+			[GetSpellInfo(247565)] = { id = 247565, level = 8, }, -- 催眠毒气
+			[GetSpellInfo(247687)] = { id = 247687, level = 8, }, -- 撕裂
+			[GetSpellInfo(247932)] = { id = 247932, level = 8, }, -- 霰弹爆破
+			[GetSpellInfo(248070)] = { id = 248070, level = 8, }, -- 强化霰弹爆破
+			[GetSpellInfo(254183)] = { id = 254183, level = 8, }, -- 灼伤皮肤
+			[GetSpellInfo(247641)] = { id = 247641, level = 8, }, -- 静滞陷阱
+			[GetSpellInfo(250224)] = { id = 250224, level = 8, }, -- 震晕
+			[GetSpellInfo(248321)] = { id = 248321, level = 8, }, -- 洪荒烈火
 		},
+		
 		[EJ_GetEncounterInfo(2004)] = { --> 金加洛斯
-
+			[GetSpellInfo(245919)] = { id = 245919, level = 8, }, -- 熔铸之击
+			[GetSpellInfo(245770)] = { id = 245770, level = 8, }, -- 屠戮
+			[GetSpellInfo(249686)] = { id = 249686, level = 8, }, -- 轰鸣屠戮
+			[GetSpellInfo(246698)] = { id = 246698, level = 8, }, -- 破坏
 		},
-		[EJ_GetEncounterInfo(1983)] = { --> 瓦里玛萨斯
-
+		
+		[EJ_GetEncounterInfo(1983)] = { --> 瓦里玛萨斯                  
+			[GetSpellInfo(243968)] = { id = 243968, level = 8, }, -- 烈焰折磨
+			[GetSpellInfo(243977)] = { id = 243977, level = 8, }, -- 冰霜折磨
+			[GetSpellInfo(243980)] = { id = 243980, level = 8, }, -- 邪能折磨
+			[GetSpellInfo(243973)] = { id = 243973, level = 8, }, -- 暗影折磨
+			[GetSpellInfo(243961)] = { id = 243961, level = 8, }, -- 哀难
+			[GetSpellInfo(244005)] = { id = 244005, level = 8, }, -- 黑暗裂隙
+			[GetSpellInfo(244094)] = { id = 244094, level = 8, }, -- 冥魂之拥
+			[GetSpellInfo(248732)] = { id = 248732, level = 8, }, -- 毁灭回响
 		},
+		
 		[EJ_GetEncounterInfo(1986)] = { --> 破坏魔女巫会
-
+			[GetSpellInfo(253753)] = { id = 253753, level = 8, }, -- 恐惧
+			[GetSpellInfo(244899)] = { id = 244899, level = 8, }, -- 火焰打击
+			[GetSpellInfo(245634)] = { id = 245634, level = 8, }, -- 飞旋的军刀
+			[GetSpellInfo(253520)] = { id = 253520, level = 8, }, -- 爆裂冲击
+			[GetSpellInfo(253020)] = { id = 253020, level = 8, }, -- 黑暗风暴
+			[GetSpellInfo(245518)] = { id = 245518, level = 8, }, -- 快速冻结
+			[GetSpellInfo(245586)] = { id = 245586, level = 8, }, -- 冷凝之血
+			[GetSpellInfo(253697)] = { id = 253697, level = 8, }, -- 冰霜之球
+			[GetSpellInfo(250757)] = { id = 250757, level = 8, }, -- 宇宙之光
+			[GetSpellInfo(250097)] = { id = 250097, level = 8, }, -- 阿曼苏尔的诡诈
 		},
+		
 		[EJ_GetEncounterInfo(1984)] = { --> 阿格拉玛
-
+			[GetSpellInfo(245990)] = { id = 245990, level = 8, }, -- 泰沙拉克之触
+			[GetSpellInfo(254452)] = { id = 254452, level = 8, }, -- 饕餮烈焰
+			[GetSpellInfo(244736)] = { id = 244736, level = 8, }, -- 烈焰之迹
+			[GetSpellInfo(244291)] = { id = 244291, level = 8, }, -- 破敌者
+			[GetSpellInfo(255060)] = { id = 255060, level = 8, }, -- 强化破敌者
+			[GetSpellInfo(247079)] = { id = 247079, level = 8, }, -- 强化撕裂烈焰
+			[GetSpellInfo(244912)] = { id = 244912, level = 8, }, -- 烈焰喷薄
 		},
+		
 		[EJ_GetEncounterInfo(2031)] = { --> 寂灭者阿古斯
-
+			[GetSpellInfo(248167)] = { id = 248167, level = 8, }, -- 死亡之雾
+			[GetSpellInfo(248396)] = { id = 248396, level = 8, }, -- 灵魂凋零
+			[GetSpellInfo(248499)] = { id = 248499, level = 8, }, -- 巨镰横扫
+			[GetSpellInfo(258646)] = { id = 258646, level = 8, }, -- 天空之赐
+			[GetSpellInfo(253903)] = { id = 253903, level = 8, }, -- 天空之力
+			[GetSpellInfo(258647)] = { id = 258647, level = 8, }, -- 海洋之赐
+			[GetSpellInfo(253901)] = { id = 253901, level = 8, }, -- 海洋之力
+			[GetSpellInfo(250669)] = { id = 250669, level = 8, }, -- 灵魂爆发
+			[GetSpellInfo(251570)] = { id = 251570, level = 8, }, -- 灵魂炸弹
+			[GetSpellInfo(255199)] = { id = 255199, level = 8, }, -- 阿格拉玛的化身
+			[GetSpellInfo(255200)] = { id = 255200, level = 8, }, -- 阿格拉玛的恩赐
+			[GetSpellInfo(252729)] = { id = 252729, level = 8, }, -- 宇宙射线
+			[GetSpellInfo(252616)] = { id = 252616, level = 8, }, -- 宇宙道标
+			[GetSpellInfo(257299)] = { id = 257299, level = 8, }, -- 怒火余烬
+			[GetSpellInfo(258039)] = { id = 258039, level = 8, }, -- 死亡之镰
+			[GetSpellInfo(256899)] = { id = 256899, level = 8, }, -- 灵魂引爆
 		},
+		
 		["Trash"] = {
 		
 		},
