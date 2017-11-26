@@ -1,7 +1,7 @@
 
 -- local T, C, L, G = unpack(select(2, ...))
 
-local addon, ns = ...
+local _, ns = ...
 ns[1] = {} -- T, functions, constants, variables
 ns[2] = {} -- C, config
 ns[3] = {} -- L, localization

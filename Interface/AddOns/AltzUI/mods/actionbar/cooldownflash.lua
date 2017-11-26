@@ -5,12 +5,12 @@ local minalpha = aCoreCDB["ActionbarOptions"]["cdflash_alpha"]
 local size = aCoreCDB["ActionbarOptions"]["cdflash_size"]
 
 local backdrop = {
-	  bgFile = G.media.blank, 
-	  edgeFile = G.media.glow, 
-	  tile = false, tileSize = 0, edgeSize = 3, 
+	  bgFile = G.media.blank,
+	  edgeFile = G.media.glow,
+	  tile = false, tileSize = 0, edgeSize = 3,
 	  insets = { left = 3, right = 3, top = 3, bottom = 3}
 }
-	
+
 local flash = CreateFrame("Frame", G.uiname.."Cooldown Flash", UIParent)
 
 flash:SetSize(size,size)
@@ -25,13 +25,13 @@ flash.point = {
 }
 T.CreateDragFrame(flash)
 
-flash.icon = flash:CreateTexture(nil, "OVERLAY")	
+flash.icon = flash:CreateTexture(nil, "OVERLAY")
 flash.icon:SetPoint("TOPLEFT", 3, -3)
 flash.icon:SetPoint("BOTTOMRIGHT", -3, 3)
 flash.icon:SetTexCoord(.08, .92, .08, .92)
-	
+
 flash:Hide()
-	
+
 flash:SetScript("OnUpdate", function(self, e)
 	flash.e = flash.e + e
 	if flash.e > .75 then
@@ -46,17 +46,7 @@ end)
 local startcalls = {}
 local stopcalls = {}
 
-local function RegisterCallback(event, func)
-	if event=="start" then
-		tinsert(startcalls, func)
-	elseif event=="stop" then
-		tinsert(stopcalls, func)
-	end
-end
-
 local addon = CreateFrame("Frame")
-local band = bit.band
-local mine = COMBATLOG_OBJECT_AFFILIATION_MINE
 local spells = {}
 local items = {}
 local watched = {}
@@ -70,14 +60,14 @@ local function stop(id, class)
 	end
 
 	if aCoreCDB["ActionbarOptions"]["caflash_bl"][class][id] then return end
-	
+
 	flash.icon:SetTexture(class=="item" and GetItemIcon(id) or select(3, GetSpellInfo(id)))
 	flash.e = 0
 	flash:Show()
 end
 
 local function update()
-	for id, tab in next, watched do
+	for id in next, watched do
 		local duration = watched[id].dur - lastupdate
 		if duration < 0 then
 			stop(id, watched[id].class)
@@ -89,7 +79,7 @@ local function update()
 		end
 	end
 	lastupdate = 0
-	
+
 	if nextupdate < 0 then addon:Hide() end
 end
 
@@ -102,11 +92,11 @@ local function start(id, starttime, duration, class)
 		["class"] = class,
 	}
 	addon:Show()
-	
+
 	for _, func in next, startcalls do
 		func(id, duration, class)
 	end
-	
+
 	update()
 end
 
@@ -122,7 +112,7 @@ local function parsespellbook(spellbook)
 		end
 		i = i + 1
 		if i >= totalspellnum then i = 1 break end
-		
+
 		if (id == 88625 or id == 88625 or id == 88625) and (skilltype == "SPELL" and spellbook == BOOKTYPE_SPELL) then
 		   spells[88625] = true
 		   spells[88684] = true
@@ -147,14 +137,14 @@ function addon:SPELL_UPDATE_COOLDOWN()
 
 	for id in next, spells do
 		local starttime, duration, enabled = GetSpellCooldown(id)
-		
+
 		if starttime == nil then
 			watched[id] = nil
 		elseif starttime == 0 and watched[id] then
 			stop(id, "spell")
 		elseif starttime ~= 0 then
 			local timeleft = starttime + duration - now
-		
+
 			if enabled == 1 and timeleft > 1.51 then
 				if not watched[id] or watched[id].start ~= starttime then
 					start(id, starttime, timeleft, "spell")
@@ -217,7 +207,7 @@ local function onupdate(self, elapsed)
 	nextupdate = nextupdate - elapsed
 	lastupdate = lastupdate + elapsed
 	if nextupdate > 0 then return end
-	
+
 	update(self)
 end
 

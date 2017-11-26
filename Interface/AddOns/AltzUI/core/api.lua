@@ -1,5 +1,4 @@
 ﻿local T, C, L, G = unpack(select(2, ...))
-local F = unpack(Aurora)
 
 T.ShortValue = function(val)
 	if aCoreCDB["UnitframeOptions"]["tenthousand"] then
@@ -233,7 +232,7 @@ T.createBackdrop = function(parent, anchor, a, BD_thin)
 	return frame
 end
 
-T.createStatusbar = function(parent, layer, height, width, r, g, b, alpha, name)
+T.createStatusbar = function(parent, _, height, width, r, g, b, alpha, name)
 	local bar = CreateFrame("StatusBar", name, parent)
 	if height then
 		bar:SetHeight(height)

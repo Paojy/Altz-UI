@@ -109,7 +109,7 @@ ttt:SetScript("OnUpdate",function(self,elapsed)
 end);
 
 -- HOOK: OnTooltipSetUnit
-gtt:HookScript("OnTooltipSetUnit",function(self,...)
+gtt:HookScript("OnTooltipSetUnit",function(self)
 	if (TipTac_Config) and (TipTac_Config.showTalents == false) then
 		return;
 	end

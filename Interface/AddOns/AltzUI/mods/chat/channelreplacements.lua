@@ -1,6 +1,6 @@
 local T, C, L, G = unpack(select(2, ...))
 if not aCoreCDB["ChatOptions"]["channelreplacement"] then return end
-  
+
 --guild
 CHAT_GUILD_GET = "|Hchannel:GUILD|hG|h %s "
 CHAT_OFFICER_GET = "|Hchannel:OFFICER|hO|h %s "
@@ -34,8 +34,6 @@ CHAT_FLAG_AFK = "[AFK] "
 CHAT_FLAG_DND = "[DND] "
 CHAT_FLAG_GM = "[GM] "
 
-local gsub = _G.string.gsub
-
 for i = 1, NUM_CHAT_WINDOWS do
 	if ( i ~= 2 ) then
 		local f = _G["ChatFrame"..i]
@@ -44,4 +42,4 @@ for i = 1, NUM_CHAT_WINDOWS do
 			return am(frame, text:gsub('|h%[(%d+)%. .-%]|h', '|h%1|h'), ...)
 		end
 	end
-end 
+end

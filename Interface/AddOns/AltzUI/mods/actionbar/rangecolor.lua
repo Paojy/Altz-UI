@@ -2,14 +2,12 @@
 local T, C, L, G = unpack(select(2, ...))
 if not aCoreCDB["ActionbarOptions"]["rangecolor"] then return end
 
-local _G = _G
 local EventFrame =  CreateFrame("Frame")
 local IsUsableAction = IsUsableAction
 local IsActionInRange = IsActionInRange
 local ActionHasRange = ActionHasRange
-local HasAction = HasAction
 
-function EventFrame:RangeOnUpdate(elapsed)
+function EventFrame:RangeOnUpdate()
 	if (not self.rangeTimer) then
 		return
 	end

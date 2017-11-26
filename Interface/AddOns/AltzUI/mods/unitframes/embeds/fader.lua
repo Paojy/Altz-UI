@@ -3,20 +3,17 @@ local oUF = AltzUF or oUF
 
 local EmptyPowerType = {
 	["RAGE"] = true,
-	["RUNIC_POWER"] = true, 
-	["LUNAR_POWER"] = true, 
-	["MAELSTROM"] = true, 
-	["INSANITY"] = true, 
-	["FURY"] = true, 
+	["RUNIC_POWER"] = true,
+	["LUNAR_POWER"] = true,
+	["MAELSTROM"] = true,
+	["INSANITY"] = true,
+	["FURY"] = true,
 	["PAIN"] = true,
 }
 
 local function Update(self)
 	if not aCoreCDB["UnitframeOptions"]["enablefade"] then return end
 	local unit = self.unit
-
-	local _, powerType = UnitPowerType(unit)
-	local power = UnitPower(unit)
 
 	if
 		(self.FadeCasting and (UnitCastingInfo(unit) or UnitChannelInfo(unit))) or
@@ -40,10 +37,6 @@ local function Update(self)
 			self:SetAlpha(self.FadeMinAlpha or 0.3)
 		end
 	end
-end
-
-local function ForceUpdate(element)
-	return Update(element.__owner)
 end
 
 local function Enable(self, unit)

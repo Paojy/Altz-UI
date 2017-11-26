@@ -11,15 +11,12 @@ local frameFadeManager = CreateFrame("FRAME")
 local function UIFrameFade(frame, fadeInfo)
 	if not frame then return end
 	if not fadeInfo.mode then fadeInfo.mode = "IN" end
-	local alpha
 	if fadeInfo.mode == "IN" then
 		if not fadeInfo.startAlpha then fadeInfo.startAlpha = 0 end
 		if not fadeInfo.endAlpha then fadeInfo.endAlpha = 1 end
-		alpha = 0
 	elseif fadeInfo.mode == "OUT" then
 		if not fadeInfo.startAlpha then fadeInfo.startAlpha = 1.0 end
 		if not fadeInfo.endAlpha then fadeInfo.endAlpha = 0 end
-		alpha = 1.0
 	end
 	frame:SetAlpha(fadeInfo.startAlpha)
 	frame.fadeInfo = fadeInfo
@@ -247,7 +244,7 @@ function T.ActionbarEventFader(frame,buttonList,fadeIn,fadeOut)
 
 	regi(frame)
 
-	frame:SetScript("OnEvent", function(self,event)
+	frame:SetScript("OnEvent", function(self)
 		if
 		UnitCastingInfo('player') or UnitChannelInfo('player') or
 		UnitAffectingCombat('player') or
@@ -289,7 +286,7 @@ function T.FrameEventFader(frame,fadeIn,fadeOut)
 
 	regi(frame)
 
-	frame:SetScript("OnEvent", function(self,event)
+	frame:SetScript("OnEvent", function(self)
 		if
 		UnitCastingInfo('player') or UnitChannelInfo('player') or
 		UnitAffectingCombat('player') or

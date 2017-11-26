@@ -2,7 +2,7 @@
 
 local oUF = AltzUF or oUF
 
-oUF.Tags.Methods['Altz:color'] = function(u, r)
+oUF.Tags.Methods['Altz:color'] = function(u)
     local reaction = UnitReaction(u, "player")
 
     if UnitIsTapDenied(u) then

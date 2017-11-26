@@ -9,16 +9,16 @@ local blank = "Interface\\AddOns\\AltzUI\\media\\statusbar"
 barmod.ApplySettings_ = barmod.ApplySettings
 barmod.ApplySettings = function(self, win)
 	barmod.ApplySettings_(self, win)
-	
+
 	local skada = win.bargroup
 
 	skada:SetTexture(blank)
 	skada:SetSpacing(1, 1)
 	skada:SetFont(G.norFont, 12, "NONE")
-	
+
 	skada:SetBackdrop(nil)
 	skada.borderFrame:SetBackdrop(nil)
-	
+
 	if not skada.border then
 		skada.border = CreateFrame("Frame", G.uiname..skada:GetName().."Skin", skada)
 		skada.border:SetPoint("TOPLEFT", skada, "TOPLEFT", -1, 1)

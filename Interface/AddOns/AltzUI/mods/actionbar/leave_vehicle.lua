@@ -1,5 +1,4 @@
 local T, C, L, G = unpack(select(2, ...))
-local dragFrameList = G.dragFrameList
 
 local padding = 10
 local buttonssize = aCoreCDB["ActionbarOptions"]["leave_vehiclebuttonsize"]
@@ -23,7 +22,7 @@ frame:SetHeight(buttonssize + 2*padding)
 MainMenuBarVehicleLeaveButton:SetParent(frame)
 MainMenuBarVehicleLeaveButton:ClearAllPoints()
 MainMenuBarVehicleLeaveButton:SetPoint("CENTER", 0, 0)
-MainMenuBarVehicleLeaveButton:SetScript("OnEvent", function(self,event)
+MainMenuBarVehicleLeaveButton:SetScript("OnEvent", function(self)
 	if ( CanExitVehicle() and ActionBarController_GetCurrentActionBarState() == LE_ACTIONBAR_STATE_MAIN ) then
 		MainMenuBarVehicleLeaveButton:Show()
 		MainMenuBarVehicleLeaveButton:Enable()

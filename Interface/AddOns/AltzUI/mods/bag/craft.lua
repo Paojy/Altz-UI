@@ -68,11 +68,11 @@ xMPDB.herbs = {
 	[89639] = true, -- Desecrated Herb
 	-- Warlords of Draenor
 	[109124] = true, -- Frostweed
-	[109125] = true, -- Fireweed 
+	[109125] = true, -- Fireweed
 	[109127] = true, -- Starflower
 	[109128] = true, -- Nagrand Arrowbloom
 	[109129] = true, -- Talador Orchid
-	
+
 	[124101] = true,
 	[124102] = true,
 	[124103] = true,
@@ -106,7 +106,7 @@ xMPDB.ore = {
 	-- Warlords of Draenor
 	[109119] = true, -- True Iron Ore
 	[109118] = true, -- Blackrock Ore
-	
+
 	[123919] = true,
 	[123918] = true,
 }
@@ -156,7 +156,6 @@ xMPDB.lock = {
 local spells = {}
 local setInCombat = 0
 local lastItem
-local ARMOR, WEAPON = ARMOR, WEAPON
 
 local colors = {
 	[51005] = {r=181/255, g=230/255, b=29/255},	--milling
@@ -194,7 +193,7 @@ button:RegisterForDrag("LeftButton")
 button:SetFrameStrata("TOOLTIP")
 
 --secured on leave function to hide the frame when we are in combat
-button:SetAttribute("_onleave", "self:ClearAllPoints() self:SetAlpha(0) self:Hide()") 
+button:SetAttribute("_onleave", "self:ClearAllPoints() self:SetAlpha(0) self:Hide()")
 
 button:HookScript("OnLeave", function(self)
 	AutoCastShine_AutoCastStop(self)
@@ -205,17 +204,17 @@ button:HookScript("OnReceiveDrag", function(self)
 	AutoCastShine_AutoCastStop(self)
 	if InCombatLockdown() then checkCombat(self) else self:ClearAllPoints() self:Hide() end --prevent combat errors
 end)
-button:HookScript("OnDragStop", function(self, button)
+button:HookScript("OnDragStop", function(self)
 	AutoCastShine_AutoCastStop(self)
 	if InCombatLockdown() then checkCombat(self) else self:ClearAllPoints() self:Hide() end --prevent combat errors
 end)
 button:Hide()
 
-function button:MODIFIER_STATE_CHANGED(event, modi)
+function button:MODIFIER_STATE_CHANGED(_, modi)
 	if not modi then return end
 	if modi ~= "LALT" or modi ~= "RALT" then return end
 	if not self:IsShown() then return end
-	
+
 	--clear the auto shine if alt key has been released
 	if not IsAltKeyDown() and not InCombatLockdown() then
 		AutoCastShine_AutoCastStop(self)
@@ -274,10 +273,10 @@ local TimerOnUpdate = function(self, time)
 end
 
 function frm:PLAYER_LOGIN()
-	
+
 	--check for DB
 	if not XMP_DB then XMP_DB = {} end
-	
+
 	--milling
 	if(IsSpellKnown(51005)) then
 		spells[51005] = GetSpellInfo(51005)
@@ -287,7 +286,7 @@ function frm:PLAYER_LOGIN()
 	if(IsSpellKnown(31252)) then
 		spells[31252] = GetSpellInfo(31252)
 	end
-	
+
 	--disenchanting
 	if(IsSpellKnown(13262)) then
 		spells[13262] = GetSpellInfo(13262)
@@ -297,7 +296,7 @@ function frm:PLAYER_LOGIN()
 	if(IsSpellKnown(1804)) then
 		spells[1804] = GetSpellInfo(1804)
 	end
-	
+
 	GameTooltip:HookScript('OnTooltipSetItem', function(self)
 		--do some checks before we do anything
 		if InCombatLockdown() then return end	--if were in combat then exit
@@ -305,12 +304,12 @@ function frm:PLAYER_LOGIN()
 		if CursorHasItem() then return end	--if the mouse has an item then exit
 		if MailFrame:IsVisible() then return end --don't continue if the mailbox is open.  For addons such as Postal.
 		if AuctionFrame and AuctionFrame:IsShown() then return end --dont enable if were at the auction house
-	
+
 		local item, link = self:GetItem()
 
 		--make sure we have an item to work with
 		if not item and not link then return end
-		
+
 		local owner = self:GetOwner() --get the owner of the tooltip
 
 		--if it's the character frames <alt> equipment switch then ignore it
@@ -323,22 +322,22 @@ function frm:PLAYER_LOGIN()
 		--make sure we have an item, it's not an equipped one, and the darn lootframe isn't showing
 
 		--if item and link and not IsEquippedItem(link) and not LootFrame:IsShown() then
-		if item and link and not LootFrame:IsShown() then	
+		if item and link and not LootFrame:IsShown() then
 			--get the bag slot info
 			local bag = owner:GetParent():GetID()
 			local slot = owner:GetID()
 			local id = type(link) == "number" and link or select(3, link:find("item:(%d+):"))
 			id = tonumber(id)
-		
+
 			if not id then return end
 			if not xMPDB then return end
-		
-			local _, _, qual, itemLevel, _, itemType, _, _, EquipLoc = GetItemInfo(link)
+
+			local _, _, qual, _, _, _, _, _, EquipLoc = GetItemInfo(link)
 			local spellID = processCheck(id, EquipLoc, qual, link)
 
 			--check to show or hide the button
 			if spellID then
-			
+
 				--set the item for disenchant check
 				lastItem = link
 
@@ -349,7 +348,7 @@ function frm:PLAYER_LOGIN()
 				button:SetAllPoints(owner)
 				button:SetAlpha(1)
 				button:Show()
-				
+
 				AutoCastShine_AutoCastStart(button, colors[spellID].r, colors[spellID].g, colors[spellID].b)
 			else
 				button:SetScript("OnUpdate", nil)
@@ -358,10 +357,10 @@ function frm:PLAYER_LOGIN()
 				button:ClearAllPoints()
 				button:Hide()
 			end
-			
+
 		end
 	end)
-	
+
 	self:UnregisterEvent("PLAYER_LOGIN")
 	self.PLAYER_LOGIN = nil
 end
@@ -373,7 +372,7 @@ function processCheck(id, EquipLoc, qual, link)
 	if xMPDB.herbs[id] and spells[51005] then
 		return 51005
 	end
-	
+
 	--second checking prospecting
 	if xMPDB.ore[id] and spells[31252] then
 		return 31252
@@ -383,7 +382,7 @@ function processCheck(id, EquipLoc, qual, link)
 	if xMPDB.lock[id] and spells[1804] then
 		return 1804
 	end
-	
+
 	--otherwise check disenchat
 	if EquipLoc and qual and XMP_DB and spells[13262] then
 		--only allow if the type of item is a weapon or armor, and it's a specific quality
@@ -393,7 +392,7 @@ function processCheck(id, EquipLoc, qual, link)
 			return 13262
 		end
 	end
-	
+
 	return nil
 end
 

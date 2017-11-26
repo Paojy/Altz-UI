@@ -81,7 +81,7 @@ for index, unit in pairs(units) do
 	bg:SetFrameLevel(unit:GetFrameLevel()-1)
 	T.CreateSD(bg, 3, 0, 0, 0, 0, -2)
 	F.CreateBD(bg, .5)
-	
+
 	unit.HealthText:SetPoint("CENTER", bg, "CENTER")
 
 	unit.PetTypeString = unit:CreateFontString(nil, "ARTWORK")
@@ -159,7 +159,7 @@ for index, unit in pairs(extraUnits) do
 	else
 		unit.ActualHealthBar:SetGradient("VERTICAL", 1, .12, .24, .5, .06, .12)
 	end
-	
+
 	unit.Icon:SetDrawLayer("OVERLAY", 2)
 end
 
@@ -294,7 +294,7 @@ bf.xpBar:ClearAllPoints()
 bf.xpBar:SetPoint("BOTTOM", bf.TurnTimer, "TOP", 0, 5)
 bf.xpBar:SetStatusBarTexture(G.media.bar)
 F.CreateBDFrame(bf.xpBar, 0)
-	
+
 for i = 7, 12 do
 	select(i, bf.xpBar:GetRegions()):Hide()
 end

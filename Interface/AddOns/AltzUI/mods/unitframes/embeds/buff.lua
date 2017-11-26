@@ -21,7 +21,7 @@ local CreateAuraIcon = function(auras)
 	count:ClearAllPoints()
     count:SetPoint("TOPLEFT", -2, 2)
 	count:SetJustifyH("LEFT")
-	
+
     local border = CreateFrame("Frame", nil, button)
     border:SetPoint("TOPLEFT", button, "TOPLEFT", -1, 1)
     border:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", 1, -1)
@@ -47,8 +47,8 @@ local CreateAuraIcon = function(auras)
     return button
 end
 
-local CustomFilter = function(icons, ...)
-    local _, icon, name, _, _, _, dtype, _, _, caster, spellID = ...
+local CustomFilter = function(_, ...)
+    local _, icon, name = ...
 
     icon.priority = 0
 
@@ -74,7 +74,7 @@ local AuraTimer = function(self, elapsed)
 end
 
 local buffcolor = { r = 0.5, g = 1.0, b = 1.0 }
-local updateBuff = function(icon, texture, count, dtype, duration, expires, buff)
+local updateBuff = function(icon, texture, count, _, duration, expires)
     local color = buffcolor
 
     icon.border:SetBackdropBorderColor(color.r, color.g, color.b)
@@ -88,7 +88,7 @@ local updateBuff = function(icon, texture, count, dtype, duration, expires, buff
     icon:SetScript("OnUpdate", AuraTimer)
 end
 
-local Update = function(self, event, unit)
+local Update = function(self, _, unit)
     if(self.unit ~= unit) then
 	return end
 
@@ -101,7 +101,7 @@ local Update = function(self, event, unit)
     while true do
         local name, rank, texture, count, dtype, duration, expires, caster, _, _, spellID = UnitBuff(unit, index)
         if not name then break end
-        
+
         local show = CustomFilter(auras, unit, icon, name, rank, texture, count, dtype, duration, expires, caster, spellID)
 
         if(show) and icon.buff then

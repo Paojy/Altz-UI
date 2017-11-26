@@ -19,7 +19,7 @@ local function addFlyoutFramesToFader(self)
 		fade = aCoreCDB["ActionbarOptions"]["bar45mfade"] or aCoreCDB["ActionbarOptions"]["bar45efade"]
 		minalpha = aCoreCDB["ActionbarOptions"]["bar45fademinaplha"]
 	end
-	
+
 	if fade and minalpha then
 		local NUM_FLYOUT_BUTTONS = 10
 		local buttonList = {}

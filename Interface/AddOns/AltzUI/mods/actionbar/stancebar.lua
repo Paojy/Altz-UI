@@ -1,5 +1,4 @@
 local T, C, L, G = unpack(select(2, ...))
-local dragFrameList = G.dragFrameList
 
 local padding = 4
 local buttonssize = aCoreCDB["ActionbarOptions"]["stancebarbuttonszie"]
@@ -10,7 +9,7 @@ local mouseover = {
 	fadeIn= {time = 0.4, alpha = 1},
 	fadeOut = {time = 0.4, alpha = aCoreCDB["ActionbarOptions"]["stancebarfademinaplha"]},
 	}
-	
+
 -- FUNCTIONS
 
 local num = NUM_STANCE_SLOTS
