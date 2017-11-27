@@ -1,4 +1,23 @@
-xMPDB = {}
+local IsSpellKnown = IsSpellKnown
+local strfind, strlower, format = strfind, string.lower, string.format
+local InCombatLockdown = InCombatLockdown
+local tonumber = tonumber
+local GetItemInfo = GetItemInfo
+local IsArtifactRelicItem = IsArtifactRelicItem
+local SPELL_FAILED_CANT_BE_DISENCHANTED = SPELL_FAILED_CANT_BE_DISENCHANTED
+local GetSpellInfo = GetSpellInfo
+local IsEquippableItem = IsEquippableItem
+local CursorHasItem = CursorHasItem
+local select = select
+local type = type
+local IsAltKeyDown = IsAltKeyDown
+
+--Global variables that we don't cache, list them here for mikk's FindGlobals script
+-- GLOBALS: GameTooltip, AutoCastShine_AutoCastStart, AutoCastShine_AutoCastStop, DEFAULT_CHAT_FRAME
+-- GLOBALS: MailFrame, LootFrame, AuctionFrame
+
+local xMPDB = {}
+local XMP_DB
 
 --[[------------------------
 	HERBS 草药
@@ -272,6 +291,37 @@ local TimerOnUpdate = function(self, time)
 	end
 end
 
+local function processCheck(id, EquipLoc, qual, link)
+	if not spells then return nil end
+
+	--first check milling
+	if xMPDB.herbs[id] and spells[51005] then
+		return 51005
+	end
+
+	--second checking prospecting
+	if xMPDB.ore[id] and spells[31252] then
+		return 31252
+	end
+
+	--third checking lock picking  (thanks to Kailsoul)
+	if xMPDB.lock[id] and spells[1804] then
+		return 1804
+	end
+
+	--otherwise check disenchat
+	if EquipLoc and qual and XMP_DB and spells[13262] then
+		--only allow if the type of item is a weapon or armor, and it's a specific quality
+		if EquipLoc ~= "" and qual > 1 and qual < 5 and IsEquippableItem(link) and not XMP_DB[id] then
+			return 13262
+		elseif IsArtifactRelicItem(id) and qual > 1 and qual < 5 and not XMP_DB[id] then
+			return 13262
+		end
+	end
+
+	return nil
+end
+
 function frm:PLAYER_LOGIN()
 
 	--check for DB
@@ -313,9 +363,9 @@ function frm:PLAYER_LOGIN()
 		local owner = self:GetOwner() --get the owner of the tooltip
 
 		--if it's the character frames <alt> equipment switch then ignore it
-		if owner and owner:GetName() and strfind(string.lower(owner:GetName()), "character") and strfind(string.lower(owner:GetName()), "slot") then return end
-		if owner and owner:GetParent() and owner:GetParent():GetName() and strfind(string.lower(owner:GetParent():GetName()), "paperdoll") then return end
-		if owner and owner:GetName() and strfind(string.lower(owner:GetName()), "equipmentflyout") then return end
+		if owner and owner:GetName() and strfind(strlower(owner:GetName()), "character") and strfind(strlower(owner:GetName()), "slot") then return end
+		if owner and owner:GetParent() and owner:GetParent():GetName() and strfind(strlower(owner:GetParent():GetName()), "paperdoll") then return end
+		if owner and owner:GetName() and strfind(strlower(owner:GetName()), "equipmentflyout") then return end
 
 		--reset if no item (link will be nil)
 		lastItem = link
@@ -344,7 +394,7 @@ function frm:PLAYER_LOGIN()
 				button:SetScript("OnUpdate", TimerOnUpdate)
 				button.tick = 0
 				button.active = true
-				button:SetAttribute('macrotext', string.format('/cast %s\n/use %s %s', spells[spellID], bag, slot))
+				button:SetAttribute('macrotext', format('/cast %s\n/use %s %s', spells[spellID], bag, slot))
 				button:SetAllPoints(owner)
 				button:SetAlpha(1)
 				button:Show()
@@ -363,37 +413,6 @@ function frm:PLAYER_LOGIN()
 
 	self:UnregisterEvent("PLAYER_LOGIN")
 	self.PLAYER_LOGIN = nil
-end
-
-function processCheck(id, EquipLoc, qual, link)
-	if not spells then return nil end
-
-	--first check milling
-	if xMPDB.herbs[id] and spells[51005] then
-		return 51005
-	end
-
-	--second checking prospecting
-	if xMPDB.ore[id] and spells[31252] then
-		return 31252
-	end
-
-	--third checking lock picking  (thanks to Kailsoul)
-	if xMPDB.lock[id] and spells[1804] then
-		return 1804
-	end
-
-	--otherwise check disenchat
-	if EquipLoc and qual and XMP_DB and spells[13262] then
-		--only allow if the type of item is a weapon or armor, and it's a specific quality
-		if EquipLoc ~= "" and qual > 1 and qual < 5 and IsEquippableItem(link) and not XMP_DB[id] then
-			return 13262
-		elseif IsArtifactRelicItem(id) and qual > 1 and qual < 5 and not XMP_DB[id] then
-			return 13262
-		end
-	end
-
-	return nil
 end
 
 --instead of having a large array with all the possible non-disenchant items
@@ -417,7 +436,7 @@ UIErrorsFrame:SetScript("OnEvent", function(self, event, msg, r, g, b, ...)
 			--check to see if it's already in the database, if it isn't then add it to the DE list.
 			if id and not XMP_DB[id] then
 				XMP_DB[id] = true
-				DEFAULT_CHAT_FRAME:AddMessage(string.format("|cFF99CC33xanMortarPestle|r: %s added to database. %s", lastItem, SPELL_FAILED_CANT_BE_DISENCHANTED))
+				DEFAULT_CHAT_FRAME:AddMessage(format("|cFF99CC33xanMortarPestle|r: %s added to database. %s", lastItem, SPELL_FAILED_CANT_BE_DISENCHANTED))
 			end
 		end
 	end

@@ -2,6 +2,14 @@ local T, C, L, G = unpack(select(2, ...))
 
 if not aCoreCDB["UnitframeOptions"]["totems"] then return end
 
+local _G = _G
+local CooldownFrame_Set = CooldownFrame_Set
+local MAX_TOTEMS = MAX_TOTEMS
+local GetTotemInfo = GetTotemInfo
+
+--Global variables that we don't cache, list them here for mikk's FindGlobals script
+-- GLOBALS: MAX_TOTEMS
+
 local TotemBar = CreateFrame("Frame", "AltzUI_TotemBar", UIParent)
 TotemBar.movingname = L["图腾条"]
 TotemBar.point = {
@@ -74,10 +82,10 @@ else
 end
 
 TotemBar:SetScript("OnEvent", function()
-	local button, startTime, duration, icon
+	local button, startTime, duration, icon, _
 	for i=1, MAX_TOTEMS do
 		button = _G["TotemFrameTotem"..i];
-		haveTotem, _, startTime, duration, icon = GetTotemInfo(button.slot)
+		_, _, startTime, duration, icon = GetTotemInfo(button.slot)
 
 		if button:IsShown() then
 			TotemBar[i]:Show()

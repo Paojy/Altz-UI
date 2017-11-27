@@ -1,4 +1,23 @@
-InspectFix = CreateFrame("Button", "InspectFixHiddenFrame", UIParent)
+local tostring = tostring
+local GetAddOnMetadata = GetAddOnMetadata
+local GetInventoryItemLink = GetInventoryItemLink
+local CanInspect = CanInspect
+local hooksecurefunc = hooksecurefunc
+local GetTime = GetTime
+local print = print
+local _G = _G
+local UnitExists = UnitExists
+local string = string
+local UnitIsPlayer = UnitIsPlayer
+
+--Global variables that we don't cache, list them here for mikk's FindGlobals script
+-- GLOBALS: GameTooltip, InspectPaperDollItemSlotButton_Update, InspectPaperDollFrame
+-- GLOBALS: SLASH_INSPECTFIX1, INVSLOT_FIRST_EQUIPPED, DEFAULT_CHAT_FRAME, InspectFrame_OnEvent
+-- GLOBALS: debugstack, INVSLOT_LAST_EQUIPPED, Examiner, SLASH_INSPECTFIX2, UIParent
+-- GLOBALS: InspectPaperDollItemSlotButton_OnEnter, InspectFrame_UnitChanged, InspectFrame
+-- GLOBALS: InspectFix_OnEvent, InspectFrame_OnUpdate
+
+local InspectFix = CreateFrame("Button", "InspectFixHiddenFrame", UIParent)
 local addonName = "InspectFix"
 local revision = tonumber(("$Revision: 26 $"):match("%d+"))
 

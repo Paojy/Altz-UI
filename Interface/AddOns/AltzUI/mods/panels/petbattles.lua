@@ -1,6 +1,16 @@
 local T, C, L, G = unpack(select(2, ...))
 local F = unpack(Aurora)
 
+
+local C_PetBattles = C_PetBattles
+local LE_BATTLE_PET_ALLY = LE_BATTLE_PET_ALLY
+local CreateFrame = CreateFrame
+local LE_BATTLE_PET_ENEMY = LE_BATTLE_PET_ENEMY
+local PET_TYPE_SUFFIX = PET_TYPE_SUFFIX
+
+--Global variables that we don't cache, list them here for mikk's FindGlobals script
+-- GLOBALS: NUM_BATTLE_PET_ABILITIES, PetBattlePetSelectionFrame_Show, PetBattlePetSelectionFrame_Hide
+
 local testmode = false
 
 local frame = PetBattleFrame

@@ -1,6 +1,33 @@
 local T, C, L, G = unpack(select(2, ...))
 local F = unpack(Aurora)
 
+local format = format
+local DressUpItemLink = DressUpItemLink
+local pairs = pairs
+local RollOnLoot = RollOnLoot
+local GetLootRollTimeLeft = GetLootRollTimeLeft
+local ITEM_QUALITY_COLORS = ITEM_QUALITY_COLORS
+local PASS = PASS
+local ShowInspectCursor = ShowInspectCursor
+local GREED = GREED
+local IsShiftKeyDown = IsShiftKeyDown
+local IsModifiedClick = IsModifiedClick
+local ipairs = ipairs
+local ResetCursor = ResetCursor
+local next = next
+local GetLootRollItemInfo = GetLootRollItemInfo
+local table = table
+local _G = _G
+local IsControlKeyDown = IsControlKeyDown
+local SetDesaturation = SetDesaturation
+local ROLL_DISENCHANT = ROLL_DISENCHANT
+local GetLootRollItemLink = GetLootRollItemLink
+local NEED = NEED
+
+--Global variables that we don't cache, list them here for mikk's FindGlobals script
+-- GLOBALS: UIParent, WorldFrame, CreateFrame, ChatEdit_InsertLink, GameTooltip_ShowCompareItem
+-- GLOBALS: GameTooltip, CursorOnUpdate, C_LootHistory
+
 local width = 250
 
 local function ClickRoll(frame)

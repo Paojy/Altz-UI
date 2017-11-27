@@ -1,6 +1,12 @@
 local T, C, L, G = unpack(select(2, ...))
 local oUF = AltzUF or oUF
 
+local tonumber = tonumber
+local IsInInstance = IsInInstance
+local UnitFactionGroup = UnitFactionGroup
+local GetSpecializationInfoByID = GetSpecializationInfoByID
+local GetArenaOpponentSpec = GetArenaOpponentSpec
+
 local Update = function(self, event, unit)
 	if event == 'ARENA_OPPONENT_UPDATE' and unit ~= self.unit then return; end
 	local specIcon = self.PVPSpecIcon

@@ -1,3 +1,12 @@
+local GetAddOnInfo = GetAddOnInfo
+local select = select
+local IsAddOnLoaded = IsAddOnLoaded
+local type = type
+local floor = floor
+
+--Global variables that we don't cache, list them here for mikk's FindGlobals script
+-- GLOBALS: DBT, DBM, aCoreCDB, AltzUISkinFont, BigWigs
+
 local f = CreateFrame("Frame")
 local function registerBWStyle()
     if not BigWigs or not aCoreCDB["SkinOptions"]["setBW"] then return end

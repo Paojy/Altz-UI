@@ -1,6 +1,10 @@
 local T, C, L, G = unpack(select(2, ...))
 if not aCoreCDB["ChatOptions"]["autoscroll"] then return end
 
+local pairs = pairs
+local next = next
+local unpack = unpack
+
 local frame = CreateFrame("Frame")
 local handlers = {}
 local running = {}

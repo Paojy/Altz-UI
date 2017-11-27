@@ -1,6 +1,14 @@
 local T, C, L, G = unpack(select(2, ...))
 if not aCoreCDB["ChatOptions"]["copychat"] then return end
 
+local format = format
+local GetCursorPosition = GetCursorPosition
+local select = select
+local type = type
+
+--Global variables that we don't cache, list them here for mikk's FindGlobals script
+-- GLOBALS: SetItemRef, SELECTED_CHAT_FRAME
+
 local _AddMessage = ChatFrame1.AddMessage
 local _SetItemRef = SetItemRef
 local blacklist = {
@@ -9,15 +17,11 @@ local blacklist = {
 
 local ts = G.classcolor..'|HyCopy|h%s|h|r %s'
 local AddMessage = function(self, text, ...)
-   if(type(text) == 'string') then
-        if showtime then
-          text = format(ts, date'%H:%M', text)  --text = format(ts, date'%H:%M:%S', text)
-        else
-     text = format(ts, '> ', text)
-       end
-end
+	if(type(text) == 'string') then
+		text = format(ts, '> ', text)
+	end
 
-   return _AddMessage(self, text, ...)
+	return _AddMessage(self, text, ...)
 end
 
 for i=1, NUM_CHAT_WINDOWS do

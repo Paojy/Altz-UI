@@ -40,6 +40,18 @@
 local _, ns = ...
 local oUF = oUF or ns.oUF
 
+local GetTime = GetTime
+local GetSpellInfo = GetSpellInfo
+local CreateFrame = CreateFrame
+local UnitAttackSpeed = UnitAttackSpeed
+local UnitCastingInfo = UnitCastingInfo
+local select = select
+local strfind = string.find
+local unpack = unpack
+local UnitGUID = UnitGUID
+local GetInventoryItemID = GetInventoryItemID
+local UnitRangedDamage = UnitRangedDamage
+
 local meleeing
 local rangeing
 local lasthit
@@ -282,7 +294,7 @@ end
 
 local Melee = function(self, _, _, subevent, _, GUID)
 	if GUID ~= UnitGUID("player") then return end
-	if not string.find(subevent, "SWING") then return end
+	if not strfind(subevent, "SWING") then return end
 
 	local bar = self.Swing
 
@@ -346,7 +358,7 @@ local ParryHaste = function(self, _, _, subevent, ...)
 
 	if tarGUID ~= UnitGUID("player") then return end
 	if not meleeing then return end
-	if not string.find(subevent, "MISSED") then return end
+	if not strfind(subevent, "MISSED") then return end
 	if missType ~= "PARRY" then return end
 
 	local bar = self.Swing

@@ -1,6 +1,21 @@
 local T, C, L, G = unpack(select(2, ...))
 local oUF = AltzUF or oUF
 
+local UnitPowerMax = UnitPowerMax
+local UnitPowerType = UnitPowerType
+local GetMouseFocus = GetMouseFocus
+local UnitHealth = UnitHealth
+local UnitChannelInfo = UnitChannelInfo
+local UnitCastingInfo = UnitCastingInfo
+local select = select
+local UnitHealthMax = UnitHealthMax
+local UnitExists = UnitExists
+local UnitPower = UnitPower
+local UnitAffectingCombat = UnitAffectingCombat
+
+--Global variables that we don't cache, list them here for mikk's FindGlobals script
+-- GLOBALS: aCoreCDB
+
 local EmptyPowerType = {
 	["RAGE"] = true,
 	["RUNIC_POWER"] = true,

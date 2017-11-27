@@ -1,6 +1,23 @@
 local T, C, L, G = unpack(select(2, ...))
 if not aCoreCDB["ItemOptions"]["enablebag"] then return end
 
+local SortBankBags = SortBankBags
+local SortReagentBankBags = SortReagentBankBags
+local table = table
+local GetContainerItemLink = GetContainerItemLink
+local GetContainerNumSlots = GetContainerNumSlots
+local GetItemInfo = GetItemInfo
+local ANCHOR_NONE = ANCHOR_NONE
+local C_Timer_After = C_Timer.After
+local SortBags = SortBags
+local PickupContainerItem = PickupContainerItem
+local GetContainerItemInfo = GetContainerItemInfo
+local pairs = pairs
+local select = select
+local ClearCursor = ClearCursor
+local tinsert = tinsert
+local GetContainerNumFreeSlots = GetContainerNumFreeSlots
+
 G.bag_sorting = false
 --category constants
 --number indicates sort priority (1 is highest)
@@ -9,14 +26,14 @@ local FirstItems = {
 	[140192] = "!2", -- 达拉然炉石
 	[110560] = "!3", -- 要塞炉石
 }
-BS_CONSUMABLE  = 1
-BS_SOULBOUND   = 2
-BS_REAGENT     = 3
-BS_TRADE       = 4
-BS_TRASH       = 5
-BS_QUALITY     = 6
-BS_COMMON      = 7
-BS_QUEST       = 8
+local BS_CONSUMABLE  = 1
+local BS_SOULBOUND   = 2
+local BS_REAGENT     = 3
+local BS_TRADE       = 4
+local BS_TRASH       = 5
+local BS_QUALITY     = 6
+local BS_COMMON      = 7
+local BS_QUEST       = 8
 
 local _G = _G
 local BS_bagGroups --bag group definitions
@@ -267,14 +284,11 @@ local function CleanStackItems(bagList, order, container)
 		end
 	end
 	--print("total", delay)
-	C_Timer.After(delay, function() sortBagRange(bagList, order) end)
-	C_Timer.After(3, function()
-		G.bag_sorting = false
-	end)
+	C_Timer_After(delay, function() sortBagRange(bagList, order) end)
+	C_Timer_After(3, function() G.bag_sorting = false end)
 end
 
 function T.BankSort(order)
-	stackclean = false
 	if order == 0 then
 		CleanStackItems({11, 10, 9, 8, 7, 6, 5, -1}, 0, "bank")
 	else
@@ -283,7 +297,6 @@ function T.BankSort(order)
 end
 
 function T.BagSort(order)
-	stackclean = false
 	if order == 0 then
 		CleanStackItems({4, 3, 2, 1, 0}, 0, "bag")
 	else
@@ -292,7 +305,6 @@ function T.BagSort(order)
 end
 
 function T.ReagentBankSort(order)
-	stackclean = false
 	if order == 0 then
 		CleanStackItems({-3}, 0, "reagents")
 	else

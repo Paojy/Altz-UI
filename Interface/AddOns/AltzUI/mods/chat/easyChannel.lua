@@ -1,5 +1,20 @@
 local T, C, L, G = unpack(select(2, ...))
 
+
+local GetChannelName = GetChannelName
+local IsInGuild = IsInGuild
+local IsInRaid = IsInRaid
+local _G = _G
+local tostring = tostring
+local IsInInstance = IsInInstance
+local BNet_GetBNetIDAccount = BNet_GetBNetIDAccount
+local IsInGroup = IsInGroup
+local HasLFGRestrictions = HasLFGRestrictions
+local strsub = strsub
+
+--Global variables that we don't cache, list them here for mikk's FindGlobals script
+-- GLOBALS: ChatEdit_CustomTabPressed, ChatEdit_UpdateHeader, CHAT_WHISPER_SEND, CHAT_BN_WHISPER_SEND
+
 --ChatTypeInfo["WHISPER"].sticky= 0
 function ChatEdit_CustomTabPressed(self)
 	if strsub(tostring(self:GetText()), 1, 1) == "/" then return end

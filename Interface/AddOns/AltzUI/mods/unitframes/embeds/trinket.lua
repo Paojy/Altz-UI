@@ -1,6 +1,16 @@
 local T, C, L, G = unpack(select(2, ...))
 local oUF = AltzUF or oUF
 
+local GetTime = GetTime
+local UnitFactionGroup = UnitFactionGroup
+local UnitExists = UnitExists
+local GetUnitName = GetUnitName
+local SendChatMessage = SendChatMessage
+local UnitIsPlayer = UnitIsPlayer
+local CreateFrame = CreateFrame
+local UnitGUID = UnitGUID
+local IsInInstance = IsInInstance
+
 local trinketSpells = {
 	[195710] = 180,
 	[59752] = 120,

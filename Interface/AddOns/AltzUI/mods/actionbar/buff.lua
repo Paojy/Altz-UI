@@ -1,5 +1,13 @@
 local T, C, L, G = unpack(select(2, ...))
 
+local GetSpellInfo = GetSpellInfo
+local mod = mod
+local select = select
+local _G = _G
+
+--Global variables that we don't cache, list them here for mikk's FindGlobals script
+-- GLOBALS: BuffFrame, DebuffButton1, TempEnchant1, BUFF_ACTUAL_DISPLAY
+
 local bodercolor = {r = 0.4, g = 0.35, b = 0.35}
 local gloss = "Interface\\AddOns\\AltzUI\\media\\gloss"
 

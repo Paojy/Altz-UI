@@ -2,6 +2,24 @@ local T, C, L, G = unpack(select(2, ...))
 
 if not (aCoreCDB["ItemOptions"]["enablebag"] and aCoreCDB["ItemOptions"]["showitemlevel"]) then return end
 
+local GetContainerNumSlots = GetContainerNumSlots
+local ToggleAllBags = ToggleAllBags
+local ipairs = ipairs
+local GetItemQualityColor = GetItemQualityColor
+local print = print
+local GetInventorySlotInfo = GetInventorySlotInfo
+local C_Timer_After = C_Timer.After
+local tonumber = tonumber
+local _G = _G
+local select = select
+local GetInventoryItemLink = GetInventoryItemLink
+local GetContainerItemLink = GetContainerItemLink
+local strsplit = strsplit
+local GetItemInfo = GetItemInfo
+
+--Global variables that we don't cache, list them here for mikk's FindGlobals script
+-- GLOBALS: aCoreCDB
+
 local inventorySlotNames = {
   "HeadSlot",
   "NeckSlot",
@@ -90,7 +108,7 @@ local function GetHeirloomTrueLevel(itemString)
 	if rarity>1 then
 		local ilvl = aCoreCDB["ItemOptions"]["itemlevels"][itemLink]
 		if rarity == 6 then
-			C_Timer.After(.5, function()
+			C_Timer_After(.5, function()
 				scanningTooltip:ClearLines()
 				scanningTooltip:SetHyperlink(itemLink)
 				for i = 2, 4 do

@@ -4,6 +4,54 @@ local oUF = AltzUF or oUF
 
 if not aCoreCDB["PlateOptions"]["enableplate"] then return end
 
+local UnitPowerMax = UnitPowerMax
+local UnitReaction = UnitReaction
+local tonumber = tonumber
+local GetRuneCooldown = GetRuneCooldown
+local UnitIsPlayer = UnitIsPlayer
+local hooksecurefunc = hooksecurefunc
+local UnitPowerType = UnitPowerType
+local UnitClass = UnitClass
+local UnitExists = UnitExists
+local ipairs = ipairs
+local GetCVar = GetCVar
+local UnitIsConnected = UnitIsConnected
+local UnitAura = UnitAura
+local CreateColor = CreateColor
+local UnitDetailedThreatSituation = UnitDetailedThreatSituation
+local SetRaidTargetIconTexture = SetRaidTargetIconTexture
+local pairs = pairs
+local GetSpecialization = GetSpecialization
+local GetUnitName = GetUnitName
+local GetRaidTargetIndex = GetRaidTargetIndex
+local UnitHealthMax = UnitHealthMax
+local CreateFrame = CreateFrame
+local UnitHasVehicleUI = UnitHasVehicleUI
+local UnitPower = UnitPower
+local SetCVar = SetCVar
+local format = format
+local GetTime = GetTime
+local UnitSelectionColor = UnitSelectionColor
+local unpack = unpack
+local UnitPlayerControlled = UnitPlayerControlled
+local UnitIsUnit = UnitIsUnit
+local math = math
+local UnitHealth = UnitHealth
+local C_NamePlate = C_NamePlate
+local UnitCanAttack = UnitCanAttack
+local select = select
+local string = string
+local UnitIsTapDenied = UnitIsTapDenied
+local DebuffTypeColor = DebuffTypeColor
+local floor = floor
+
+--Global variables that we don't cache, list them here for mikk's FindGlobals script
+-- GLOBALS: NamePlateDriverFrame, InterfaceOptionsNamesPanelUnitNameplatesMakeLarger
+-- GLOBALS: CastingBarFrame_OnUpdate, CastingBarFrame_OnEvent, CastingBarFrame_OnLoad
+-- GLOBALS: NamePlatePlayerResourceFrame, CastingBarFrame_AddWidgetForFade, aCoreCDB
+-- GLOBALS: CastingBarFrame_OnShow, ClassNameplateManaBarFrame, CastingBarFrame_SetUnit
+-- GLOBALS: NamePlates_UpdateNamePlateOptions, NamePlateTargetResourceFrame
+
 local iconcastbar = "Interface\\AddOns\\AltzUI\\media\\dM3"
 local redarrow = "Interface\\AddOns\\AltzUI\\media\\NeonRedArrow"
 local numberstylefont = "Interface\\AddOns\\AltzUI\\media\\Infinity Gears.ttf"

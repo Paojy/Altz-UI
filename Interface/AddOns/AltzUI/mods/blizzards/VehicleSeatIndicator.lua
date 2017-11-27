@@ -1,5 +1,10 @@
 local T, C, L, G = unpack(select(2, ...))
 
+local _G = _G
+
+--Global variables that we don't cache, list them here for mikk's FindGlobals script
+-- GLOBALS: aCoreCDB
+
 local frame = VehicleSeatIndicator
 local name = frame:GetName()
 

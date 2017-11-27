@@ -17,6 +17,12 @@ local atan2 = math.atan2
 local modf = math.modf
 local abs = math.abs
 local floor = floor
+local GetInstanceInfo = GetInstanceInfo
+local CreateFrame = CreateFrame
+local table = table
+
+--Global variables that we don't cache, list them here for mikk's FindGlobals script
+-- GLOBALS: UIParent, aCoreCDB
 
 local function ColorGradient(perc, ...)
     local num = select("#", ...)

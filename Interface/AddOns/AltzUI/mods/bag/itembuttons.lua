@@ -2,6 +2,25 @@ local T, C, L, G = unpack(select(2, ...))
 
 if not aCoreCDB["ItemOptions"]["itembuttons"] then return true end
 
+local pairs = pairs
+local GetContainerNumSlots = GetContainerNumSlots
+local GetContainerItemID = GetContainerItemID
+local NUM_BAG_SLOTS = NUM_BAG_SLOTS
+local LE_GARRISON_TYPE_7_0 = LE_GARRISON_TYPE_7_0
+local GetInstanceInfo = GetInstanceInfo
+local floor = floor
+local GetMouseFocus = GetMouseFocus
+local C_Garrison_IsPlayerInGarrison = C_Garrison.IsPlayerInGarrison
+local GetItemSpell = GetItemSpell
+local GetItemCount = GetItemCount
+local select = select
+local GetItemIcon = GetItemIcon
+local InCombatLockdown = InCombatLockdown
+local table = table
+
+--Global variables that we don't cache, list them here for mikk's FindGlobals script
+-- GLOBALS: GameTooltip, aCoreCDB, CreateFrame
+
 local icon_size = aCoreCDB["ItemOptions"]["itembuttons_size"]
 local font_size = aCoreCDB["ItemOptions"]["itembuttons_fsize"]
 local num = aCoreCDB["ItemOptions"]["number_perline"]
@@ -73,7 +92,7 @@ local function Update_IB()
 	if InCombatLockdown() or G.bag_sorting then return end
 
 	for _, bu in pairs(IB_Buttons) do
-		local orderhall = C_Garrison.IsPlayerInGarrison(LE_GARRISON_TYPE_7_0)
+		local orderhall = C_Garrison_IsPlayerInGarrison(LE_GARRISON_TYPE_7_0)
 		local instanceType = select(2, GetInstanceInfo())
 
 		local hasitem = false

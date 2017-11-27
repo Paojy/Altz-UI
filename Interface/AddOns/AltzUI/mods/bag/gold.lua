@@ -2,6 +2,22 @@ local T, C, L, G = unpack(select(2, ...))
 
 if not aCoreCDB["ItemOptions"]["enablebag"] then return end
 
+local format = format
+local mod = mod
+local floor = floor
+local GetMoney = GetMoney
+local GetBackpackCurrencyInfo = GetBackpackCurrencyInfo
+local TOTAL = TOTAL
+local abs = abs
+local math = math
+local MAX_WATCHED_TOKENS = MAX_WATCHED_TOKENS
+local _G = _G
+local pairs = pairs
+local CURRENCY = CURRENCY
+
+--Global variables that we don't cache, list them here for mikk's FindGlobals script
+-- GLOBALS: GameTooltip, aCoreDB
+
 local Profit, Spent, OldMoney = 0, 0, 0
 
 local function formatMoney(money)

@@ -1,6 +1,14 @@
 -- by emelio
 local T, C, L, G = unpack(select(2, ...))
 
+local _G = _G
+local string = string
+local pairs = pairs
+local type = type
+
+--Global variables that we don't cache, list them here for mikk's FindGlobals script
+-- GLOBALS: DEFAULT_CHAT_FRAME
+
 local addon = CreateFrame("Frame")
 
 -- Based on the frame list from NDragIt by Nemes.

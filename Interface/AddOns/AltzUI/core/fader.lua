@@ -1,6 +1,24 @@
 local T, C, L, G = unpack(select(2, ...))
 -- by zork
 
+local UnitPowerMax = UnitPowerMax
+local pairs = pairs
+local UnitCastingInfo = UnitCastingInfo
+local UnitHealthMax = UnitHealthMax
+local UnitPower = UnitPower
+local UnitPowerType = UnitPowerType
+local print = print
+local UnitExists = UnitExists
+local UnitChannelInfo = UnitChannelInfo
+local select = select
+local UnitAffectingCombat = UnitAffectingCombat
+local _G = _G
+local tinsert = tinsert
+local UnitHealth = UnitHealth
+
+--Global variables that we don't cache, list them here for mikk's FindGlobals script
+-- GLOBALS: SpellFlyout, FADEFRAMES, UIFrameFade_OnUpdate
+
 local defaultFadeIn = {time = 0.4, alpha = 1}
 local defaultFadeOut = {time = 0.4, alpha = 0}
 local defaultEventFadeOut = {time = 1.5, alpha = 0}

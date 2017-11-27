@@ -2,7 +2,14 @@
 local T, C, L, G = unpack(select(2, ...))
 if not aCoreCDB["ActionbarOptions"]["cooldown"] then return end
 
+local tonumber = tonumber
+local pairs = pairs
+local GetActionCooldown = GetActionCooldown
+local SetCVar = SetCVar
 local format, floor, GetTime = string.format, math.floor, GetTime
+
+--Global variables that we don't cache, list them here for mikk's FindGlobals script
+-- GLOBALS: aCoreCDB
 
 local function GetFormattedTime(s)
 	if s>3600 then

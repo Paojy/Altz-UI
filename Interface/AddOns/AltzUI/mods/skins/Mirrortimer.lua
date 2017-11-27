@@ -1,6 +1,8 @@
 local T, C, L, G = unpack(select(2, ...))
 local F = unpack(Aurora)
 
+local _G = _G
+
 local total = MIRRORTIMER_NUMTIMERS
 
 local function Skin()

@@ -1,6 +1,10 @@
 local T, C, L, G = unpack(select(2, ...))
 local oUF = AltzUF or oUF
 
+local unpack = unpack
+local UnitDetailedThreatSituation = UnitDetailedThreatSituation
+local InCombatLockdown = InCombatLockdown
+
 local horizontalgradient = {
 	{ .29, .09, .33, .31, .94, .99},
 	{ .48, .28, .02, 1, 0, 0},

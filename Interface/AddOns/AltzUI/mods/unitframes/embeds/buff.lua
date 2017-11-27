@@ -1,6 +1,13 @@
 local T, C, L, G = unpack(select(2, ...))
 local oUF = AltzUF or oUF
 
+local GetTime = GetTime
+local UnitBuff = UnitBuff
+local CreateFrame = CreateFrame
+
+--Global variables that we don't cache, list them here for mikk's FindGlobals script
+-- GLOBALS: aCoreCDB
+
 local glowBorder = {
     bgFile = [=[Interface\ChatFrame\ChatFrameBackground]=],
     edgeFile = [=[Interface\ChatFrame\ChatFrameBackground]=], edgeSize = 1,
@@ -41,7 +48,6 @@ local CreateAuraIcon = function(auras)
     button.icon = icon
     button.count = count
 	button.remaining = remaining
-    button.cd = cd
     button:Hide()
 
     return button

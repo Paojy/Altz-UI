@@ -1,5 +1,10 @@
 local T, C, L, G = unpack(select(2, ...))
 
+local UnitIsDead = UnitIsDead
+
+--Global variables that we don't cache, list them here for mikk's FindGlobals script
+-- GLOBALS: StaticPopup_Hide, StaticPopup_Show
+
 local eventframe = CreateFrame("Frame")
 
 eventframe:SetScript("OnEvent", function(self)

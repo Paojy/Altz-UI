@@ -1,6 +1,13 @@
 local T, C, L, G = unpack(select(2, ...))
 local oUF = AltzUF or oUF
 
+local UnitPowerMax = UnitPowerMax
+local UnitPowerType = UnitPowerType
+local UnitHasVehiclePlayerFrameUI = UnitHasVehiclePlayerFrameUI
+local GetSpecialization = GetSpecialization
+local UnitPower = UnitPower
+local SPELL_POWER_MANA = SPELL_POWER_MANA
+
 local function Update(self, _, unit, powertype)
 	if(unit ~= 'player' or (powertype and powertype ~= 'MANA')) then return end
 

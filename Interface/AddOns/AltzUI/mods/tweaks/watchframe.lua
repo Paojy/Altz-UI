@@ -2,6 +2,13 @@
 local T, C, L, G = unpack(select(2, ...))
 local F = unpack(Aurora)
 
+local GetTrackedAchievements = GetTrackedAchievements
+local IsInInstance = IsInInstance
+local GetAchievementInfo = GetAchievementInfo
+
+--Global variables that we don't cache, list them here for mikk's FindGlobals script
+-- GLOBALS: ScenarioStageBlock, ObjectiveTracker_Collapse, aCoreCDB, ObjectiveTracker_Expand
+
 local anchorframe = CreateFrame("Frame", "Altz_WFanchorframe", UIParent)
 anchorframe.movingname = L["任务追踪"]
 anchorframe.point = {
