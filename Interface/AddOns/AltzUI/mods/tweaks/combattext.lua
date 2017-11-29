@@ -1,6 +1,7 @@
 ﻿-- LightCT by Alza
 -- xCT by Dandruff
 local T, C, L, G = unpack(select(2, ...))
+local dragFrameList = G.dragFrameList
 
 local enable = aCoreCDB["CombattextOptions"]["combattext"]
 
@@ -48,7 +49,7 @@ function eventframe:PLAYER_LOGIN()
 end
 
 local GetSpellTextureFormatted = function(spellID, iconSize)
-	local msg
+	local msg = ""
 	if spellID == PET_ATTACK_TEXTURE then
 		msg = " \124T"..PET_ATTACK_TEXTURE..":"..iconSize..":"..iconSize..":0:0:64:64:5:59:5:59\124t"
 	else
@@ -64,7 +65,7 @@ end
 
 local function CreateCTFrame(i, movingname, justify, a1, parent, a2, x, y)
 	local f = CreateFrame("ScrollingMessageFrame", "Combat Text"..i, UIParent)
-
+	
 	f:SetFont("Interface\\AddOns\\AltzUI\\media\\number.ttf", iconsize, "OUTLINE")
 	f:SetShadowColor(0, 0, 0, 0)
 	f:SetFadeDuration(0.2)
@@ -73,19 +74,19 @@ local function CreateCTFrame(i, movingname, justify, a1, parent, a2, x, y)
 	f:SetSpacing(3)
 	f:SetWidth(84)
 	f:SetHeight(150)
-
+	
 	f.movingname = movingname
 	f.point = {
 		healer = {a1 = a1, parent = parent:GetName(), a2 = a2, x = x, y = y},
 		dpser = {a1 = a1, parent = parent:GetName(), a2 = a2, x = x, y = y},
 	}
 	T.CreateDragFrame(f) --frame, dragFrameList, inset, clamp
-
+	
 	f:SetJustifyH(justify)
-
+	
 	f.df:SetScript("OnUpdate", function(self, elapsed)
 		self.timer = (self.timer or 0) + elapsed
-		if self.timer > 1 then
+		if self.timer > 1 then	
 			self.number = random(1 , 10000)
 			if showreceived then
 				frames["damagetaken"]:AddMessage("-"..self.number, 1, 0, 0)
@@ -98,7 +99,7 @@ local function CreateCTFrame(i, movingname, justify, a1, parent, a2, x, y)
 			self.timer = 0
 		end
 	end)
-
+	
 	return f
 end
 
@@ -130,7 +131,7 @@ end
 
 if showoutput then
 	frames["outputdamage"] = CreateCTFrame("outputdamage", L["输出伤害"], "RIGHT", "LEFT", UIParent, "CENTER", 485, 80)
-	frames["outputhealing"] = CreateCTFrame("outputhealing", L["输出治疗"], "LEFT", "RIGHT", UIParent, "CENTER", 665, 80)
+	frames["outputhealing"] = CreateCTFrame("outputhealing", L["输出治疗"], "LEFT", "RIGHT", UIParent, "CENTER", 665, 80)	
 	eventframe:RegisterEvent"COMBAT_LOG_EVENT_UNFILTERED"
 end
 
@@ -153,7 +154,7 @@ end
 
 function eventframe:COMBAT_LOG_EVENT_UNFILTERED(...)
 	local icon, spellId, amount, critical, spellSchool
-    local _, eventType, _, sourceGUID, _, sourceFlags, _, destGUID, _, _, _ = select(1, ...)
+    local timestamp, eventType, hideCaster, sourceGUID, sourceName, sourceFlags, sourceFlags2, destGUID, destName, destFlags, destFlags2 = select(1, ...)
 	if sourceGUID == UnitGUID("player") or (ctshowpet and sourceGUID == UnitGUID("pet")) or sourceFlags == gflags then
 		if eventType == 'SPELL_HEAL' or (showhots and eventType == 'SPELL_PERIODIC_HEAL') then
 			spellId = select(12, ...)
@@ -185,7 +186,7 @@ function eventframe:COMBAT_LOG_EVENT_UNFILTERED(...)
 				amount = select(15, ...) -- misstype
 				icon = GetSpellTextureFormatted(spellId, iconsize)
 			end
-
+			
 			if amount and icon then
 				if critical then
 					if dmgcolor[spellSchool] then

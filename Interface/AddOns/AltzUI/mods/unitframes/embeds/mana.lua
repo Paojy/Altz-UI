@@ -1,14 +1,7 @@
 local T, C, L, G = unpack(select(2, ...))
 local oUF = AltzUF or oUF
 
-local UnitPowerMax = UnitPowerMax
-local UnitPowerType = UnitPowerType
-local UnitHasVehiclePlayerFrameUI = UnitHasVehiclePlayerFrameUI
-local GetSpecialization = GetSpecialization
-local UnitPower = UnitPower
-local SPELL_POWER_MANA = SPELL_POWER_MANA
-
-local function Update(self, _, unit, powertype)
+local function Update(self, event, unit, powertype)
 	if(unit ~= 'player' or (powertype and powertype ~= 'MANA')) then return end
 
 	local dpsmana = self.Dpsmana
@@ -26,9 +19,9 @@ local function Update(self, _, unit, powertype)
 	dpsmana:SetValue(min)
 
 	local r, g, b, t
-
+	
 	t = self.colors.power['MANA']
-
+	
 	if(t) then
 		r, g, b = t[1], t[2], t[3]
 	end
@@ -58,7 +51,7 @@ local Visibility = function(self, event, unit)
 		if self.Dpsmana:IsShown() then
 			self.Dpsmana:Hide()
 			self:UnregisterEvent('UNIT_POWER_FREQUENT', Path)
-			self:UnregisterEvent('UNIT_MAXPOWER', Path)
+			self:UnregisterEvent('UNIT_MAXPOWER', Path)	
 		end
 	else
 		if(not self.Dpsmana:IsShown()) then
@@ -85,7 +78,7 @@ local Enable = function(self, unit)
 		dpsmana.__owner = self
 		dpsmana.ForceUpdate = ForceUpdate
 		dpsmana:Hide()
-
+		
 		self:RegisterEvent('UNIT_DISPLAYPOWER', VisibilityPath)
 		self:RegisterEvent('PLAYER_TALENT_UPDATE', VisibilityPath)
 
@@ -99,7 +92,7 @@ end
 
 local Disable = function(self)
 	local dpsmana = self.Dpsmana
-	if(dpsmana) then
+	if(dpsmana) then	
 		self:UnregisterEvent('UNIT_DISPLAYPOWER', VisibilityPath)
 		self:UnregisterEvent('PLAYER_TALENT_UPDATE', VisibilityPath)
 	end

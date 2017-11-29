@@ -1,23 +1,4 @@
-local tostring = tostring
-local GetAddOnMetadata = GetAddOnMetadata
-local GetInventoryItemLink = GetInventoryItemLink
-local CanInspect = CanInspect
-local hooksecurefunc = hooksecurefunc
-local GetTime = GetTime
-local print = print
-local _G = _G
-local UnitExists = UnitExists
-local string = string
-local UnitIsPlayer = UnitIsPlayer
-
---Global variables that we don't cache, list them here for mikk's FindGlobals script
--- GLOBALS: GameTooltip, InspectPaperDollItemSlotButton_Update, InspectPaperDollFrame
--- GLOBALS: SLASH_INSPECTFIX1, INVSLOT_FIRST_EQUIPPED, DEFAULT_CHAT_FRAME, InspectFrame_OnEvent
--- GLOBALS: debugstack, INVSLOT_LAST_EQUIPPED, Examiner, SLASH_INSPECTFIX2, UIParent
--- GLOBALS: InspectPaperDollItemSlotButton_OnEnter, InspectFrame_UnitChanged, InspectFrame
--- GLOBALS: InspectFix_OnEvent, InspectFrame_OnUpdate
-
-local InspectFix = CreateFrame("Button", "InspectFixHiddenFrame", UIParent)
+InspectFix = CreateFrame("Button", "InspectFixHiddenFrame", UIParent)
 local addonName = "InspectFix"
 local revision = tonumber(("$Revision: 26 $"):match("%d+"))
 
@@ -44,7 +25,7 @@ local function unitchange(self)
   end
 end
 
-local function inspectfilter(self, event, ...)
+local function inspectfilter(self, event, ...) 
   --myprint(event,...)
   if loaded then
     -- ignore an inspect target disappearance or change to non-player - ie, keep the window open
@@ -103,7 +84,7 @@ local function pdfonenter(self)
         GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
         GameTooltip:SetHyperlink(inspect_item[id])
       else
-        local _,link = GameTooltip:GetItem()
+        local name,link = GameTooltip:GetItem()
 	if link and link ~= inspect_item[id] then
 	  debug("Updating "..(inspect_item[id] or "nil").." to "..link)
           inspect_item[id] = link
@@ -116,7 +97,7 @@ end
 
 function InspectFix:GetID() return self.val end
 InspectFix.val = INVSLOT_FIRST_EQUIPPED
-function InspectFix:Update()
+function InspectFix:Update() 
  for slot = INVSLOT_FIRST_EQUIPPED, INVSLOT_LAST_EQUIPPED do
    InspectFix.val = slot
    pdfupdate(InspectFix)
@@ -288,7 +269,7 @@ InspectFix:RegisterEvent("ADDON_LOADED")
 function InspectFix:Load()
   InspectFix:tryhook()
   loaded = true
-  local revstr
+  local revstr 
   revstr = GetAddOnMetadata("InspectFix", "X-Curse-Packaged-Version")
   if not revstr then
   revstr = GetAddOnMetadata("InspectFix", "Version")

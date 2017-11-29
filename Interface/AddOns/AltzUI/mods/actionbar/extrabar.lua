@@ -1,4 +1,5 @@
 local T, C, L, G = unpack(select(2, ...))
+local dragFrameList = G.dragFrameList
 
 local padding = 10
 local buttonssize = aCoreCDB["ActionbarOptions"]["extrabarbuttonsize"]

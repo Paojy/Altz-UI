@@ -67,7 +67,7 @@ local function UpdateFlasked()
 		local name = GetUnitName(unit, false)
 		if aCoreCDB["RaidToolOptions"]["onlyactive"] and select(3, GetRaidRosterInfo(id))<=4 or not aCoreCDB["RaidToolOptions"]["onlyactive"] then
 			local value = false
-			for flask in pairs(flasks) do
+			for flask, v in pairs(flasks) do
 				if UnitBuff(unit, flask) then
 					tinsert(flasked, name)
 					value = true
@@ -90,7 +90,7 @@ local function UpdateFed()
 		local name = GetUnitName(unit, false)
 		if aCoreCDB["RaidToolOptions"]["onlyactive"] and select(3, GetRaidRosterInfo(id))<=4 or not aCoreCDB["RaidToolOptions"]["onlyactive"] then
 			local value = false
-			for food in pairs(foods) do
+			for food, v in pairs(foods) do
 				if UnitBuff(unit, food) then
 					tinsert(fed, name)
 					value = true
@@ -137,7 +137,7 @@ local function UpdateStats()
 			rosterflask = "|cffA6FFFF"..L["合剂"]..":|r \n"..table.concat(flasked, ", ")
 		end
 	end
-
+	
 	UpdateFed()
 	local raidfed = #fed/(#fed+#unfed)
 	if raidfed > .5 then
@@ -156,7 +156,7 @@ local function UpdateStats()
 			rosterfood = "|cffA6FFFF"..L["食物"]..":|r \n"..table.concat(fed, ", ")
 		end
 	end
-
+	
 	UpdateOoR()
 	numoor = "|cffA6FFFF"..#OoR.." |r"..L["过远"]
 	if #OoR == 0 then
@@ -164,21 +164,21 @@ local function UpdateStats()
 	else
 		rosteroor = "|cffA6FFFF"..L["距离过远"]..":|r \n"..table.concat(OoR, ", ")
 	end
-
+	
 	Stats.text:SetText(numflask.."  "..numfood.."  "..numoor)
 end
 
 local function UpdateStatsToolTip()
 	GameTooltip:SetOwner(Stats, "ANCHOR_NONE")
 	GameTooltip:SetPoint("TOPLEFT", RaidToolFrame, "TOPRIGHT", 10, 0)
-
+	
 	GameTooltip:AddLine(" ")
 	GameTooltip:AddLine(rosterflask, 1, 1, 1, true)
 	GameTooltip:AddLine(" ")
 	GameTooltip:AddLine(rosterfood, 1, 1, 1, true)
 	GameTooltip:AddLine(" ")
 	GameTooltip:AddLine(rosteroor, 1, 1, 1, true)
-
+	
 	GameTooltip:Show()
 end
 
@@ -192,12 +192,12 @@ end
 
 local function StartCombat()
 	--print("|cffA6FFFF战斗开始|r")
-    table.wipe(prepotion)
+    table.wipe(prepotion)	
     table.wipe(potion)
 	local n = GetNumGroupMembers()
 	for id =1, n do
 		local uID = ("raid%d"):format(id)
-        for buffName in pairs(potions) do
+        for buffName, value in pairs(potions) do
 			if UnitBuff(uID, buffName) then
 				prepotion[GetUnitName(uID,true)] = true
 				break
@@ -214,7 +214,7 @@ end
 
 local function EndCombat()
 	--print("|cffA6FFFF战斗结束|r")
-    table.wipe(noprepotion)
+    table.wipe(noprepotion)	
     table.wipe(nopotion)
 	local n = GetNumGroupMembers()
 	for id =1, n do
@@ -307,7 +307,7 @@ T.SkinButton(ConfigButton, G.Iconpath.."RaidTool", true)
 ConfigButton:SetScript("OnClick", function(self)
 	local GUI = _G[G.uiname.."GUI Main Frame"]
 	GUI:Show()
-
+	
 	for i = 1, 20 do
 		local tab = GUI["tab"..i]
 		if tab.fname == G.uiname.."RaidTool Options" then
@@ -328,11 +328,11 @@ WorldMarkButton:ClearAllPoints()
 WorldMarkButton:SetPoint("RIGHT", ConfigButton, "LEFT", -5, 0)
 WorldMarkButton:SetSize(15, 15)
 
---_G[WorldMarkButton:GetName().."Left"]:SetAlpha(0)
---_G[WorldMarkButton:GetName().."Middle"]:SetAlpha(0)
---_G[WorldMarkButton:GetName().."Right"]:SetAlpha(0)
+--_G[WorldMarkButton:GetName().."Left"]:SetAlpha(0) 
+--_G[WorldMarkButton:GetName().."Middle"]:SetAlpha(0) 
+--_G[WorldMarkButton:GetName().."Right"]:SetAlpha(0) 
 
-WorldMarkButton:HookScript("OnEvent", function(self)
+WorldMarkButton:HookScript("OnEvent", function(self, event) 
 	if UnitIsGroupAssistant("player") or UnitIsGroupLeader("player") or (IsInGroup() and not IsInRaid()) then
 		self:Enable()
 	else
@@ -359,7 +359,7 @@ AncButton:SetScript("OnClick", function(self)
 		else
 			SendChatMessage(L["合剂"]..": "..table.concat(flasked, ", "), "RAID")
 		end
-
+			
 		UpdateFed()
 		local raidfed = #fed/(#fed+#unfed)
 		if raidfed > .5 then
@@ -369,7 +369,7 @@ AncButton:SetScript("OnClick", function(self)
 		else
 			SendChatMessage(L["食物"]..": "..table.concat(fed, ", "), "RAID")
 		end
-
+			
 		UpdateOoR()
 		SendChatMessage(L["距离过远"]..": "..table.concat(OoR, ", "), "RAID")
 	end
@@ -476,15 +476,15 @@ SwitchRaidButton:SetScript("OnEvent", function(self, event, arg1)
 		end
 		self:UnregisterEvent("PLAYER_ENTERING_WORLD")
 	end
-
+	
 	if arg1 and arg1 ~= "player" then return end -- "PLAYER_SPECIALIZATION_CHANGED"
-
+	
 	if T.IsDpsRaidShown() then
 		self.text:SetText(L["dpser"])
 	else
 		self.text:SetText(L["healer"])
 	end
-
+		
 	if aCoreCDB["UnitframeOptions"]["autoswitch"] then
 		self:UnregisterAllEvents()
 	end
@@ -529,7 +529,7 @@ RaidMarkFrame.lockbutton = CreateFrame("Button", nil, RaidMarkFrame)
 RaidMarkFrame.lockbutton:SetPoint("TOPRIGHT", -3, -3)
 RaidMarkFrame.lockbutton:SetSize(15, 15)
 T.SkinButton(RaidMarkFrame.lockbutton, G.Iconpath.."lock", true)
-
+	
 CompactRaidFrameManagerDisplayFrameRaidMarkers:SetParent(RaidMarkFrame)
 CompactRaidFrameManagerDisplayFrameRaidMarkers:ClearAllPoints()
 CompactRaidFrameManagerDisplayFrameRaidMarkers:SetPoint("CENTER", RaidMarkFrame, "CENTER")

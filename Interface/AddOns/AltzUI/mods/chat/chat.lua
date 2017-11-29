@@ -35,8 +35,8 @@ local function init()
 	for i = 1, chatwindownum do
 		-- hide button on the left
 		local bf = _G['ChatFrame'..i..'ButtonFrame']
-		if bf then
-			bf:Hide()
+		if bf then 
+			bf:Hide() 
 			bf:HookScript("OnShow", function(s) s:Hide(); end)
 		end
 		-- hide things on edit box
@@ -46,7 +46,7 @@ local function init()
 		if ebtm then ebtm:Hide() end
 		local ebtr = _G['ChatFrame'..i..'EditBoxRight']
 		if ebtr then ebtr:Hide() end
-		_G['ChatFrame'..i..'EditBoxLanguage'].Show = _G['ChatFrame'..i..'EditBoxLanguage'].Hide
+		_G['ChatFrame'..i..'EditBoxLanguage'].Show = _G['ChatFrame'..i..'EditBoxLanguage'].Hide 
 		_G['ChatFrame'..i..'EditBoxLanguage']:Hide()
 		local tex = ({_G['ChatFrame'..i..'EditBox']:GetRegions()})
 		tex[6]:SetAlpha(0) tex[7]:SetAlpha(0) tex[8]:SetAlpha(0) tex[9]:SetAlpha(0) tex[10]:SetAlpha(0)
@@ -57,8 +57,8 @@ local function init()
 		_G['ChatFrame'..i..'EditBox']:HookScript("OnEditFocusLost", function(self) self:Hide() end)
 		-- chat font
 		local cf = _G['ChatFrame'..i]
-		if cf then
-			cf:SetFont(STANDARD_TEXT_FONT, select(2, cf:GetFont()), "THINOUTLINE")
+		if cf then 
+			cf:SetFont(STANDARD_TEXT_FONT, select(2, cf:GetFont()), "THINOUTLINE") 
 			cf:SetShadowOffset(0,0)
 			cf:SetFrameStrata("LOW")
 			cf:SetFrameLevel(2)
@@ -90,16 +90,16 @@ local function init()
 			end
 		end
 		-- hide tab texture
-		for _, value in pairs(TAB_TEXTURES) do
+		for index, value in pairs(TAB_TEXTURES) do
 			local texture = _G['ChatFrame'..i..'Tab'..value]
 			texture:SetTexture(nil)
 		end
 	end
 end
 
-ChatFrameMenuButton.Show = ChatFrameMenuButton.Hide
+ChatFrameMenuButton.Show = ChatFrameMenuButton.Hide 
 ChatFrameMenuButton:Hide()
-QuickJoinToastButton.Show = QuickJoinToastButton.Hide
+QuickJoinToastButton.Show = QuickJoinToastButton.Hide 
 QuickJoinToastButton:Hide()
 BNToastFrame:SetClampedToScreen(true)
 

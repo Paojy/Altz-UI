@@ -2,30 +2,7 @@ local T, C, L, G = unpack(select(2, ...))
 
 if not aCoreCDB["TooltipOptions"]["showtalent"] or not aCoreCDB["TooltipOptions"]["enabletip"] then return end
 
-local UnitInRaid = UnitInRaid
-local GetInspectSpecialization = GetInspectSpecialization
-local GetSpecialization = GetSpecialization
-local GetSpecializationInfoByID = GetSpecializationInfoByID
-local NotifyInspect = NotifyInspect
-local UnitIsPlayer = UnitIsPlayer
-local CanInspect = CanInspect
-local CopyTable = CopyTable
-local tremove = tremove
-local GetTime = GetTime
-local GetSpecializationInfo = GetSpecializationInfo
-local ipairs = ipairs
-local UnitIsUnit = UnitIsUnit
-local wipe = wipe
-local UnitName = UnitName
-local UnitLevel = UnitLevel
-local _G = _G
-local GetMouseFocus = GetMouseFocus
-local UnitGUID = UnitGUID
-local UnitInParty = UnitInParty
-
---Global variables that we don't cache, list them here for mikk's FindGlobals script
--- GLOBALS: GameTooltip, lastInspectRequest, Examiner, InspectFrame, TipTac_Config
-
+local gtt = GameTooltip
 -- String Constants
 local TALENTS_PREFIX = TALENTS..":|cffffffff ";	-- MoP: Could be changed from TALENTS to SPECIALIZATION
 local TALENTS_NA = NOT_APPLICABLE:lower();
@@ -74,14 +51,14 @@ local function GatherTalents(isInspect)
 	end
 	-- Set the tips line output, for inspect, only update if the tip is still showing a unit!
 	if (not isInspect) then
-		GameTooltip:AddLine(TALENTS_PREFIX..current.format);
-	elseif (GameTooltip:GetUnit()) then
-		for i = 2, GameTooltip:NumLines() do
+		gtt:AddLine(TALENTS_PREFIX..current.format);
+	elseif (gtt:GetUnit()) then
+		for i = 2, gtt:NumLines() do
 			if ((_G["GameTooltipTextLeft"..i]:GetText() or ""):match("^"..TALENTS_PREFIX)) then
 				_G["GameTooltipTextLeft"..i]:SetFormattedText("%s%s",TALENTS_PREFIX,current.format);
 				-- Do not call Show() if the tip is fading out, this only works with TipTac, if TipTacTalents are used alone, it might still bug the fadeout
-				if (not GameTooltip.fadeOut) then
-					GameTooltip:Show();
+				if (not gtt.fadeOut) then
+					gtt:Show();
 				end
 				break;
 			end
@@ -132,7 +109,7 @@ ttt:SetScript("OnUpdate",function(self,elapsed)
 end);
 
 -- HOOK: OnTooltipSetUnit
-GameTooltip:HookScript("OnTooltipSetUnit",function(self)
+gtt:HookScript("OnTooltipSetUnit",function(self,...)
 	if (TipTac_Config) and (TipTac_Config.showTalents == false) then
 		return;
 	end

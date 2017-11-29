@@ -16,7 +16,7 @@ local function Createpxborder(self, lvl)
 	return pxbd
 end
 
-local function ChangedTarget(self)
+local function ChangedTarget(self, event, unit)
 	if UnitIsUnit('target', self.unit) then
 		self.targetborder:Show()
 	else
@@ -24,12 +24,12 @@ local function ChangedTarget(self)
 	end
 end
 
-local function UpdateThreat(self, _, unit)
+local function UpdateThreat(self, event, unit)	
 	if (self.unit ~= unit) then return end
-
+	
 	unit = unit or self.unit
 	local threat = UnitThreatSituation(unit)
-
+	
 	if threat and threat > 1 then
 		local r, g, b = GetThreatStatusColor(threat)
 		self.threatborder:SetBackdropBorderColor(r, g, b)
@@ -47,7 +47,7 @@ local function healpreditionbar(self, ...)
 	hpb:SetStatusBarColor(...)
 	hpb:SetPoint('TOP')
 	hpb:SetPoint('BOTTOM')
-
+	
 	if aCoreCDB["UnitframeOptions"]["style"] ~= 3 then
 		hpb:SetPoint('LEFT', self.Health:GetStatusBarTexture(), 'LEFT')
 	else
@@ -61,7 +61,7 @@ local function CreateHealPredition(self)
 	local myBar = healpreditionbar(self, .4, .8, 0, .5)
 	local otherBar = healpreditionbar(self, 0, .4, 0, .5)
 	local absorbBar = healpreditionbar(self, .2, 1, 1, .7)
-
+	
 	self.HealthPrediction = {
 		myBar = myBar,
 		otherBar = otherBar,
@@ -140,9 +140,9 @@ local function EnableWheelCastOnFrame(object)
 end
 
 local function RegisterClicks(object)
-	local action, key_tmp
+	local action, macrotext, key_tmp
 	local C = aCoreCDB["UnitframeOptions"]["ClickCast"]
-	for id in pairs(C) do
+	for id, var in pairs(C) do
 		for	key, _ in pairs(C[id]) do
 			key_tmp = string.gsub(key, "Click", "")
 			action = C[id][key]["action"]
@@ -150,10 +150,10 @@ local function RegisterClicks(object)
 			if action == "follow" then
 				object:SetAttribute(key_tmp.."type"..id, "macro")
 				object:SetAttribute(key_tmp.."macrotext"..id, "/follow mouseover")
-			elseif	action == "tot" then
+			elseif	action == "tot" then		
 				object:SetAttribute(key_tmp.."type"..id, "macro")
 				object:SetAttribute(key_tmp.."macrotext"..id, "/target mouseovertarget")
-			elseif	action == "focus" then
+			elseif	action == "focus" then		
 				object:SetAttribute(key_tmp.."type"..id, "focus")
 			elseif	action == "target" then
 				object:SetAttribute(key_tmp.."type"..id, "target")
@@ -163,7 +163,7 @@ local function RegisterClicks(object)
 			else
 				object:SetAttribute(key_tmp.."type"..id, "spell")
 				object:SetAttribute(key_tmp.."spell"..id, action)
-			end
+			end				
 		end
 		object:RegisterForClicks("AnyDown")
 	end
@@ -175,14 +175,14 @@ local func = function(self, unit)
 
     self:RegisterForClicks"AnyUp"
 	self.mouseovers = {}
-
+	
 	-- highlight --
 	self.hl = self:CreateTexture(nil, "HIGHLIGHT")
     self.hl:SetAllPoints()
     self.hl:SetTexture(G.media.barhightlight)
     self.hl:SetVertexColor( 1, 1, 1, .3)
     self.hl:SetBlendMode("ADD")
-
+	
 	-- target border --
 	self.targetborder = Createpxborder(self, 2)
 	self.targetborder:SetBackdropBorderColor(1, 1, .4)
@@ -191,7 +191,7 @@ local func = function(self, unit)
 	-- threat border --
 	self.threatborder = Createpxborder(self, 1)
 	self:RegisterEvent("UNIT_THREAT_SITUATION_UPDATE", UpdateThreat)
-
+	
 	-- backdrop --
 	self.bg = CreateFrame("Frame", nil, self)
 	self.bg:SetFrameLevel(0)
@@ -200,25 +200,25 @@ local func = function(self, unit)
     self.bg.tex:SetAllPoints()
 	if aCoreCDB["UnitframeOptions"]["style"] == 1 then
 		self.bg.tex:SetTexture(G.media.blank)
-		self.bg.tex:SetVertexColor(0, 0, 0, 0)
+		self.bg.tex:SetVertexColor(0, 0, 0, 0)	
 	else
 		self.bg.tex:SetTexture(G.media.ufbar)
 		self.bg.tex:SetVertexColor(0, 0, 0)
 	end
-
+	
     local hp = T.createStatusbar(self, "ARTWORK", nil, nil, 1, 1, 1, 1)
 	hp:SetFrameLevel(3)
     hp:SetAllPoints(self)
 	hp:SetPoint("TOPLEFT", self, "TOPLEFT")
 	hp:SetPoint("TOPRIGHT", self, "TOPRIGHT")
     hp.frequentUpdates = true
-
+	
 	if aCoreCDB["UnitframeOptions"]["style"] == 1 then
 		hp.bg:SetGradientAlpha("VERTICAL", .5, .5, .5, .5, 0, 0, 0,0)
 	else
 		hp.bg:SetGradientAlpha("VERTICAL", .2,.2,.2,.15,.25,.25,.25,.6)
 	end
-
+	
 	-- little black line to make the health bar more clear
 	hp.ind = hp:CreateTexture(nil, "OVERLAY", 1)
     hp.ind:SetTexture("Interface\\Buttons\\WHITE8x8")
@@ -229,45 +229,45 @@ local func = function(self, unit)
 	else
 		hp.ind:SetPoint("LEFT", hp:GetStatusBarTexture(), "RIGHT", 0, 0)
 	end
-
+	
 	if aCoreCDB["UnitframeOptions"]["style"] ~= 3 then
 		hp:SetReverseFill(true)
 	end
-
+	
 	-- border --
 	self.backdrop = T.createBackdrop(hp, hp, 0)
-
+	
     self.Health = hp
 	self.Health.PostUpdate = T.Updatehealthbar
 	self.Health.Override = T.Overridehealthbar
-
+	
 	-- raid manabars --
 	if aCoreCDB["UnitframeOptions"]["raidmanabars"] then
 		local pp = T.createStatusbar(self, "ARTWORK", nil, nil, 1, 1, 1, 1)
 		pp:SetFrameLevel(3)
 		pp:SetPoint("BOTTOMLEFT", self, "BOTTOMLEFT")
 		pp:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT")
-
+		
 		pp.bg:SetGradientAlpha("VERTICAL", .2,.2,.2,.15,.25,.25,.25,.6)
-
+		
 		pp.backdrop = T.createBackdrop(pp, pp, 1)
-
+		
 		self.Power = pp
 		self.Power.PostUpdate = UpdateRaidMana
 	else
 		self.Health:SetPoint("BOTTOM", self, "BOTTOM")
 	end
-
+	
 	-- gcd frane --
 	if aCoreCDB["UnitframeOptions"]["showgcd"] then
 		CreateGCDframe(self)
 	end
-
+	
 	-- heal prediction --
 	if aCoreCDB["UnitframeOptions"]["healprediction"] then
 		CreateHealPredition(self)
 	end
-
+	
 	local leader = hp:CreateTexture(nil, "OVERLAY", 1)
     leader:SetSize(10, 10)
     leader:SetPoint("BOTTOMLEFT", hp, "BOTTOMLEFT", 0, -5)
@@ -277,24 +277,24 @@ local func = function(self, unit)
     assistant:SetSize(10, 10)
     assistant:SetPoint("BOTTOMLEFT", hp, "BOTTOMLEFT", 0, -5)
 	self.AssistantIndicator = assistant
-
+	
     local masterlooter = hp:CreateTexture(nil, 'OVERLAY', 1)
     masterlooter:SetSize(10, 10)
     masterlooter:SetPoint('LEFT', leader, 'RIGHT', 0, 1)
     self.MasterLooterIndicator = masterlooter
-
+	
 	if aCoreCDB["UnitframeOptions"]["healtank_assisticon"] then
 		local raidrole = hp:CreateTexture(nil, 'OVERLAY', 1)
 		raidrole:SetSize(10, 10)
 		raidrole:SetPoint('LEFT', masterlooter, 'RIGHT')
 		self.RaidRoleIndicator = raidrole
 	end
-
+	
 	local lfd =  T.createtext(hp, "OVERLAY", 13, "OUTLINE", "CENTER")
 	lfd:SetFont(G.symbols, aCoreCDB["UnitframeOptions"]["raidfontsize"]-3, "OUTLINE")
 	lfd:SetPoint("BOTTOM", hp, 0, -1)
 	self:Tag(lfd, '[Altz:LFD]')
-
+	
 	local raidname = T.createtext(hp, "ARTWORK", aCoreCDB["UnitframeOptions"]["raidfontsize"], "OUTLINE", "RIGHT")
 	raidname:SetPoint("BOTTOMRIGHT", hp, "BOTTOMRIGHT", -1, 5)
 	if aCoreCDB["UnitframeOptions"]["showmisshp"] then
@@ -311,47 +311,47 @@ local func = function(self, unit)
 		end
 	end
 	self.Name = raidname
-
+	
     local ricon = hp:CreateTexture(nil, "OVERLAY", 1)
 	ricon:SetSize(18 ,18)
     ricon:SetPoint("RIGHT", hp, "TOP", -8 , 0)
 	ricon:SetTexture[[Interface\AddOns\AltzUI\media\raidicons.blp]]
     self.RaidTargetIndicator = ricon
-
+	
 	local status = T.createtext(hp, "OVERLAY", aCoreCDB["UnitframeOptions"]["raidfontsize"]-2, "OUTLINE", "LEFT")
     status:SetPoint"TOPLEFT"
 	self:Tag(status, '[Altz:AfkDnd][Altz:DDG]')
-
+	
 	local resurrecticon = hp:CreateTexture(nil, "OVERLAY")
     resurrecticon:SetSize(16, 16)
     resurrecticon:SetPoint"CENTER"
     self.ResurrectIndicator = resurrecticon
-
+	
     local readycheck = hp:CreateTexture(nil, 'OVERLAY', 3)
     readycheck:SetSize(16, 16)
     readycheck:SetPoint"CENTER"
     self.ReadyCheckIndicator = readycheck
-
+	
 	local Auras = CreateFrame("Frame", nil, self)
 	Auras:SetFrameLevel(4)
     Auras:SetSize(20, 20)
     Auras:SetPoint("LEFT", hp, "LEFT", 15, 0)
 	Auras.tfontsize = 10
 	Auras.cfontsize = 10
-
+	
 	Auras.sizeA = 20
 	Auras.point1A = "CENTER"
 	Auras.point2A = "CENTER"
 	Auras.xA = 0
 	Auras.yA = 0
-
+	
 	Auras.sizeB = 15
 	Auras.point1B = "BOTTOMLEFT"
 	Auras.point2B = "BOTTOMLEFT"
 	Auras.xB = 2
 	Auras.yB = 3
 	self.AltzAuras2 = Auras
-
+	
 	-- Tankbuff
     local tankbuff = CreateFrame("Frame", nil, self)
 	tankbuff:SetFrameLevel(4)
@@ -360,46 +360,46 @@ local func = function(self, unit)
 	tankbuff.tfontsize = 10
 	tankbuff.cfontsize = 10
 	self.AltzTankbuff = tankbuff
-
+	
 	-- Indicators
 	if aCoreCDB["UnitframeOptions"]["hotind_style"] == "number_ind" then
 		self.AltzIndicators = true
 	else
 		T.CreateAuras(self, unit)
 	end
-
+	
 	-- Range
     local range = {
         insideAlpha = 1,
         outsideAlpha = 0.3,
     }
-
+	
 	if aCoreCDB["UnitframeOptions"]["enablearrow"] then
 		self.freebRange = range
 	else
 		self.Range = range
 	end
-
+	
 	if aCoreCDB["UnitframeOptions"]["enableClickCast"] then
 		EnableWheelCastOnFrame(self)
 		RegisterClicks(self)
 	end
-
+	
 	OnMouseOver(self)
 end
 
-local dfunc = function(self)
+local dfunc = function(self, unit)
 
     self:RegisterForClicks"AnyUp"
 	self.mouseovers = {}
-
+	
 	-- highlight --
 	self.hl = self:CreateTexture(nil, "HIGHLIGHT")
     self.hl:SetAllPoints()
     self.hl:SetTexture(G.media.barhightlight)
     self.hl:SetVertexColor( 1, 1, 1, .3)
     self.hl:SetBlendMode("ADD")
-
+	
 	-- target border --
 	self.targetborder = Createpxborder(self, 2)
 	self.targetborder:SetBackdropBorderColor(1, 1, .4)
@@ -408,7 +408,7 @@ local dfunc = function(self)
 	-- threat border --
 	self.threatborder = Createpxborder(self, 1)
 	self:RegisterEvent("UNIT_THREAT_SITUATION_UPDATE", UpdateThreat)
-
+	
 	-- backdrop --
 	self.bg = CreateFrame("Frame", nil, self)
 	self.bg:SetFrameLevel(0)
@@ -417,26 +417,26 @@ local dfunc = function(self)
     self.bg.tex:SetAllPoints()
 	if aCoreCDB["UnitframeOptions"]["style"] == 1 then
 		self.bg.tex:SetTexture(G.media.blank)
-		self.bg.tex:SetVertexColor(0, 0, 0, 0)
+		self.bg.tex:SetVertexColor(0, 0, 0, 0)	
 	else
 		self.bg.tex:SetTexture(G.media.ufbar)
 		self.bg.tex:SetVertexColor(0, 0, 0)
 	end
-
+	
 	-- border --
 	self.backdrop = T.createBackdrop(self, self, 0)
-
+	
     local hp = T.createStatusbar(self, "ARTWORK", nil, nil, 1, 1, 1, 1)
 	hp:SetFrameLevel(3)
     hp:SetAllPoints(self)
     hp.frequentUpdates = true
-
+	
 	if aCoreCDB["UnitframeOptions"]["style"] == 1 then
 		hp.bg:SetGradientAlpha("VERTICAL", .5, .5, .5, .5, 0, 0, 0,0)
 	else
 		hp.bg:SetGradientAlpha("VERTICAL", .2,.2,.2,.15,.25,.25,.25,.6)
 	end
-
+	
 	-- little black line to make the health bar more clear
 	hp.ind = hp:CreateTexture(nil, "OVERLAY", 1)
     hp.ind:SetTexture("Interface\\Buttons\\WHITE8x8")
@@ -447,14 +447,14 @@ local dfunc = function(self)
 	else
 		hp.ind:SetPoint("LEFT", hp:GetStatusBarTexture(), "RIGHT", 0, 0)
 	end
-
+	
 	if aCoreCDB["UnitframeOptions"]["style"] ~= 3 then
 		hp:SetReverseFill(true)
 	end
-
+	
     self.Health = hp
 	self.Health.PostUpdate = T.Updatehealthbar
-
+	
 	local leader = hp:CreateTexture(nil, "OVERLAY", 1)
     leader:SetSize(10, 10)
     leader:SetPoint("BOTTOMLEFT", hp, "BOTTOMLEFT", 0, -3)
@@ -464,24 +464,24 @@ local dfunc = function(self)
     assistant:SetSize(10, 10)
     assistant:SetPoint("BOTTOMLEFT", hp, "BOTTOMLEFT", 0, -3)
 	self.AssistantIndicator = assistant
-
+	
     local masterlooter = hp:CreateTexture(nil, 'OVERLAY', 1)
     masterlooter:SetSize(10, 10)
     masterlooter:SetPoint('LEFT', leader, 'RIGHT', 0, 1)
     self.MasterLooterIndicator = masterlooter
-
+	
 	if aCoreCDB["UnitframeOptions"]["dpstank_assisticon"] then
 		local raidrole = hp:CreateTexture(nil, 'OVERLAY', 1)
 		raidrole:SetSize(10, 10)
 		raidrole:SetPoint('LEFT', masterlooter, 'RIGHT')
 		self.RaidRoleIndicator = raidrole
 	end
-
+	
 	local lfd =  T.createtext(hp, "OVERLAY", 13, "OUTLINE", "LEFT")
 	lfd:SetFont(G.symbols, aCoreCDB["UnitframeOptions"]["raidfontsize"]-3, "OUTLINE")
 	lfd:SetPoint("LEFT", hp, 1, -1)
 	self:Tag(lfd, '[Altz:LFD]')
-
+		
 	local raidname = T.createtext(hp, "ARTWORK", aCoreCDB["UnitframeOptions"]["raidfontsize"], "OUTLINE", "RIGHT")
 	raidname:SetPoint"CENTER"
 	if aCoreCDB["UnitframeOptions"]["style"] == 1 or aCoreCDB["UnitframeOptions"]["style"] == 2 then
@@ -490,39 +490,39 @@ local dfunc = function(self)
 		self:Tag(raidname, '[Altz:raidname]')
 	end
 	self.Name = raidname
-
+	
     local ricon = hp:CreateTexture(nil, "OVERLAY", 1)
 	ricon:SetSize(13 ,13)
     ricon:SetPoint("TOP", hp, "TOP", 0 , 5)
 	ricon:SetTexture[[Interface\AddOns\AltzUI\media\raidicons.blp]]
     self.RaidTargetIndicator = ricon
-
+	
 	local status = T.createtext(hp, "OVERLAY", aCoreCDB["UnitframeOptions"]["raidfontsize"]-2, "OUTLINE", "LEFT")
     status:SetPoint"TOPLEFT"
 	self:Tag(status, '[Altz:AfkDnd][Altz:DDG]')
-
+	
 	local readycheck = hp:CreateTexture(nil, 'OVERLAY', 3)
     readycheck:SetSize(16, 16)
     readycheck:SetPoint"CENTER"
     self.ReadyCheckIndicator = readycheck
-
+	
 	-- Range
     local range = {
         insideAlpha = 1,
         outsideAlpha = 0.3,
     }
-
+	
 	if aCoreCDB["UnitframeOptions"]["enablearrow"] then
 		self.freebRange = range
 	else
 		self.Range = range
 	end
-
+	
 	if aCoreCDB["UnitframeOptions"]["enableClickCast"] then
 		EnableWheelCastOnFrame(self)
 		RegisterClicks(self)
 	end
-
+	
 	OnMouseOver(self)
 end
 
@@ -538,7 +538,7 @@ local initconfig = [[
 
 	local header = self:GetParent()
 	local clique = header:GetFrameRef("clickcast_header")
-
+	
 	if(clique) then
 		clique:SetAttribute("clickcast_button", self)
 		clique:RunAttribute("clickcast_register")
@@ -646,9 +646,10 @@ local function Spawndpsraid()
 	dpsraid.point = {
 		healer = {a1 = "TOPLEFT", parent = "UIParent", a2 = "TOPLEFT", x = 15, y = -146},
 		dpser = {a1 = "TOPLEFT", parent = "UIParent", a2 = "TOPLEFT", x = 15, y = -146},
-	}
+	}	
 	T.CreateDragFrame(dpsraid)
 	dpsraid.df:ClearAllPoints()
+	local size, more
 	local size
 	if aCoreCDB["UnitframeOptions"]["dpsgroupfilter"] == "1,2,3,4,5,6,7,8" then
 		size = 40
@@ -658,6 +659,11 @@ local function Spawndpsraid()
 		size = 20
 	else
 		size = 10
+	end
+	if size%aCoreCDB["UnitframeOptions"]["unitnumperline"] == 0 then
+		more = 0
+	else
+		more = 1
 	end
 	dpsraid.df:SetSize((math.floor(size/aCoreCDB["UnitframeOptions"]["unitnumperline"])+1)*aCoreCDB["UnitframeOptions"]["dpsraidwidth"], aCoreCDB["UnitframeOptions"]["unitnumperline"]*(aCoreCDB["UnitframeOptions"]["dpsraidheight"]+5)-5)
 	dpspet = oUF:SpawnHeader('Altz_DpsPetRaid', 'SecureGroupPetHeaderTemplate', 'raid,party,solo',
@@ -675,13 +681,13 @@ local function Spawndpsraid()
 		'maxColumns', 8,
 		'unitsPerColumn', aCoreCDB["UnitframeOptions"]["unitnumperline"],
 		'columnSpacing', 5,
-		'columnAnchorPoint', "LEFT"
+		'columnAnchorPoint', "LEFT" 
 	)
 	dpspet.movingname = L["输出模式宠物团队框架"]
 	dpspet.point = {
 		healer = {a1 = "TOPLEFT", parent = dpsraid:GetName(), a2 = "TOPRIGHT", x = 10, y = 0},
 		dpser = {a1 = "TOPLEFT", parent = dpsraid:GetName(), a2 = "TOPRIGHT", x = 10, y = 0},
-	}
+	}	
 	T.CreateDragFrame(dpspet)
 	dpspet.df:ClearAllPoints()
 	dpspet.df:SetSize(aCoreCDB["UnitframeOptions"]["dpsraidwidth"], aCoreCDB["UnitframeOptions"]["unitnumperline"]*(aCoreCDB["UnitframeOptions"]["dpsraidheight"]+5)-5)

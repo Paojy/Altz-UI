@@ -1,4 +1,5 @@
 local T, C, L, G = unpack(select(2, ...))
+local dragFrameList = G.dragFrameList
 
 local buttonssize = aCoreCDB["ActionbarOptions"]["bar45size"]
 local buttonspace = aCoreCDB["ActionbarOptions"]["bar45space"]
@@ -13,7 +14,7 @@ local eventfader= {
 	fadeIn= {time = 0.4, alpha = 1},
 	fadeOut = {time = 1.5, alpha = aCoreCDB["ActionbarOptions"]["bar45fademinaplha"]},
 	}
-
+	
 local Horizontalbar45 = aCoreCDB["ActionbarOptions"]["Horizontalbar45"]
 local layout6x4 = aCoreCDB["ActionbarOptions"]["bar45uselayout64"]
 -- FUNCTIONS
@@ -55,7 +56,7 @@ if Horizontalbar45 then
 				button:SetPoint("LEFT", previous, "RIGHT", buttonspace, 0)
 			end
 		end
-
+		
 		for i=1, num do
 			local button = _G["MultiBarLeftButton"..i]
 			table.insert(buttonList, button) --add the button object to the list
@@ -103,7 +104,7 @@ if Horizontalbar45 then
 elseif layout6x4 then
 		frame:SetWidth(4*buttonssize + (4-1)*buttonspace + 2*padding)
 		frame:SetHeight(6*buttonssize + (6-1)*buttonspace + 2*padding)
-
+			
 		for i=1, num do
 			local button = _G["MultiBarRightButton"..i]
 			table.insert(buttonList, button) --add the button object to the list
@@ -118,7 +119,7 @@ elseif layout6x4 then
 				button:SetPoint("TOP", previous, "BOTTOM", 0, -buttonspace)
 			end
 		end
-
+		
 		for i=1, num do
 			local button = _G["MultiBarLeftButton"..i]
 			table.insert(buttonList, button) --add the button object to the list

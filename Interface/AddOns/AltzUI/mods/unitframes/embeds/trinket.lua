@@ -1,16 +1,6 @@
 local T, C, L, G = unpack(select(2, ...))
 local oUF = AltzUF or oUF
 
-local GetTime = GetTime
-local UnitFactionGroup = UnitFactionGroup
-local UnitExists = UnitExists
-local GetUnitName = GetUnitName
-local SendChatMessage = SendChatMessage
-local UnitIsPlayer = UnitIsPlayer
-local CreateFrame = CreateFrame
-local UnitGUID = UnitGUID
-local IsInInstance = IsInInstance
-
 local trinketSpells = {
 	[195710] = 180,
 	[59752] = 120,
@@ -29,10 +19,10 @@ end
 local Update = function(self, event, ...)
 	local _, instanceType = IsInInstance();
 	if instanceType ~= 'arena' then
-		self.Trinket:Hide();
+		self.Trinket:Hide(); 
 		return;
 	else
-		self.Trinket:Show();
+		self.Trinket:Show(); 
 	end
 
 	if(self.Trinket.PreUpdate) then self.Trinket:PreUpdate(event) end
@@ -76,7 +66,7 @@ local Enable = function(self)
 			self.Trinket.Icon:SetTexCoord(0.07, 0.93, 0.07, 0.93)
 			self.Trinket.Icon:SetTexture(GetTrinketIcon('player'))
 		end
-
+		
 		if self.Trinket.trinketUpAnnounce then
 			self.Trinket.cooldownFrame:SetScript("OnHide", function()
 				local name = GetUnitName(self.unit, false) or "unknown"
@@ -85,18 +75,18 @@ local Enable = function(self)
 				end
 			end)
 		end
-
+		
 		return true
 	end
 end
-
+ 
 local Disable = function(self)
 	if self.Trinket then
 		self:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED", Update)
 		self:UnregisterEvent("ARENA_OPPONENT_UPDATE", Update)
-		self:UnregisterEvent("PLAYER_ENTERING_WORLD", Update)
+		self:UnregisterEvent("PLAYER_ENTERING_WORLD", Update)		
 		self.Trinket:Hide()
 	end
 end
-
+ 
 oUF:AddElement('Trinket', Update, Enable, Disable)

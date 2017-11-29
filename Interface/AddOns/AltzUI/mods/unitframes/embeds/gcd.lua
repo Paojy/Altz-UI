@@ -17,7 +17,7 @@ local OnUpdateGCD = function(self)
 end
 
 local OnHideGCD = function(self)
-	self:SetScript('OnUpdate', nil)
+ 	self:SetScript('OnUpdate', nil)
 	gcdisshown = nil
 end
 
@@ -26,10 +26,10 @@ local OnShowGCD = function(self)
 	gcdisshown = 1
 end
 
-local Update = function(self)
+local Update = function(self, event, unit)
 
 	if not self.showgcd or gcdisshown then return end
-
+	
 	if self.GCD then
 		local start, dur = GetSpellCooldown(spellid)
 
@@ -37,7 +37,7 @@ local Update = function(self)
 		if (not dur) then dur = 0 end
 
 		if dur == 0 then
-			self.GCD:Hide()
+			self.GCD:Hide() 
 		else
 			self.GCD.starttime = start
 			self.GCD.duration = dur
@@ -53,7 +53,7 @@ local Enable = function(self)
 		self.GCD:Hide()
 		self.GCD.starttime = 0
 		self.GCD.duration = 0
-
+	
 		self:HookScript("OnEnter", function(self) self.showgcd = true end)
 		self:HookScript("OnLeave", function(self) self.showgcd = false end)
 
@@ -67,7 +67,7 @@ end
 local Disable = function(self)
 	if (self.GCD) then
 		self:UnregisterEvent('ACTIONBAR_UPDATE_COOLDOWN')
-		self.GCD:Hide()
+		self.GCD:Hide()  
 	end
 end
 

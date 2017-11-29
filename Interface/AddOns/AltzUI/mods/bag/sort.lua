@@ -1,23 +1,6 @@
 local T, C, L, G = unpack(select(2, ...))
 if not aCoreCDB["ItemOptions"]["enablebag"] then return end
 
-local SortBankBags = SortBankBags
-local SortReagentBankBags = SortReagentBankBags
-local table = table
-local GetContainerItemLink = GetContainerItemLink
-local GetContainerNumSlots = GetContainerNumSlots
-local GetItemInfo = GetItemInfo
-local ANCHOR_NONE = ANCHOR_NONE
-local C_Timer_After = C_Timer.After
-local SortBags = SortBags
-local PickupContainerItem = PickupContainerItem
-local GetContainerItemInfo = GetContainerItemInfo
-local pairs = pairs
-local select = select
-local ClearCursor = ClearCursor
-local tinsert = tinsert
-local GetContainerNumFreeSlots = GetContainerNumFreeSlots
-
 G.bag_sorting = false
 --category constants
 --number indicates sort priority (1 is highest)
@@ -26,37 +9,37 @@ local FirstItems = {
 	[140192] = "!2", -- 达拉然炉石
 	[110560] = "!3", -- 要塞炉石
 }
-local BS_CONSUMABLE  = 1
-local BS_SOULBOUND   = 2
-local BS_REAGENT     = 3
-local BS_TRADE       = 4
-local BS_TRASH       = 5
-local BS_QUALITY     = 6
-local BS_COMMON      = 7
-local BS_QUEST       = 8
+BS_CONSUMABLE  = 1
+BS_SOULBOUND   = 2
+BS_REAGENT     = 3
+BS_TRADE       = 4
+BS_TRASH       = 5
+BS_QUALITY     = 6
+BS_COMMON      = 7
+BS_QUEST       = 8
 
 local _G = _G
 local BS_bagGroups --bag group definitions
 local BS_itemSwapGrid --grid of item data based on destination inventory location
-
+		
 local BS_sorting = false     --indicates bag rearrangement is in progress
 local BS_pauseRemaining = 0.05  --how much longer to wait before running the OnUpdate code again
 local BS_delay = 1 -- 留给系统整理的时间
 
 local function BS_clearData()
-	BS_itemSwapGrid = {}
+ 	BS_itemSwapGrid = {}
 	BS_bagGroups = {}
 end
 
-local function BS_OnUpdate(_, tElapsed)
+local function BS_OnUpdate(parentFrame, tElapsed)
 	if not BS_sorting then return end
-
+	
 	BS_pauseRemaining = BS_pauseRemaining - tElapsed
 	if BS_pauseRemaining > 0 then return end
 
 	local changesThisRound = false
 	local blockedThisRound = false
-
+	
 	--for each bag in the grid
 	for bagIndex in pairs(BS_itemSwapGrid) do
 	    --for each slot in this bag
@@ -68,18 +51,18 @@ local function BS_OnUpdate(_, tElapsed)
 			--see if either item slot is currently locked
 	        local _, count1, locked1, _, _, _, _, _, _, itemID1  = GetContainerItemInfo(bagIndex, slotIndex)
 	        local _, count2, locked2, _, _, _, _, _, _, itemID2  = GetContainerItemInfo(destinationBag, destinationSlot)
-
+	        
 	        if locked1 or locked2 then
 	            blockedThisRound = true
 			--if item not already where it belongs, move it
 			elseif bagIndex ~= destinationBag or slotIndex ~= destinationSlot then
 				if itemID1 ~= itemID2 or count1 ~= count2 then
-
+					
 					ClearCursor()
 					PickupContainerItem(bagIndex, slotIndex)
 					PickupContainerItem(destinationBag, destinationSlot)
 					ClearCursor()
-
+					
 					local tempItem = BS_itemSwapGrid[destinationBag][destinationSlot]
 					BS_itemSwapGrid[destinationBag][destinationSlot] = BS_itemSwapGrid[bagIndex][slotIndex]
 					BS_itemSwapGrid[bagIndex][slotIndex] = tempItem
@@ -89,23 +72,23 @@ local function BS_OnUpdate(_, tElapsed)
 	        end
 		end
 	end
-
+	
 	if not changesThisRound and not blockedThisRound then
 	    BS_sorting = false
 	    BS_clearData()
 	end
-
+	
 	BS_pauseRemaining = 0.05
 end
 
 local function sortBagRange(bagList, order)
-
+	
 	--clear any data from previous sorts
 	BS_clearData()
 	local family
-
-	--assign bags to bag groups
-	for _, slotNum in pairs(bagList) do
+	
+	--assign bags to bag groups	
+	for slotNumIndex, slotNum in pairs(bagList) do
 		if GetContainerNumSlots(slotNum) > 0 then --if bag exists
 			--initialize the item grid for this bag (used later)
 			BS_itemSwapGrid[slotNum] = {}
@@ -124,30 +107,30 @@ local function sortBagRange(bagList, order)
 	end
 
 	--for each bag group
-	for _, group in pairs(BS_bagGroups) do
+	for groupKey, group in pairs(BS_bagGroups) do
 		--initialize the list of items for this bag group
 		group.itemList = {}
 		--for each bag in this group
-		for _, bagSlot in pairs(group.bagSlotNumbers) do
-
+		for bagKey, bagSlot in pairs(group.bagSlotNumbers) do
+		
 			--for each item slot in this bag
 			for itemSlot= 1, GetContainerNumSlots(bagSlot) do
-
+			
 				--get a reference for the item in this location
-				local _, count, _, _, _, _, itemLink, _, _, itemID = GetContainerItemInfo(bagSlot, itemSlot)
-
+				local texture, count, locked, quality, readable, lootable, itemLink, isFiltered, hasNoValue, itemID = GetContainerItemInfo(bagSlot, itemSlot)
+				
 				--if this slot is non-empty
 				if itemLink ~= nil then
-
+				
 					--collect important data about the item
 					local newItem   = {}
-
+					
 					--initialize the sorting string for this item
 					newItem.sortString = ""
-
+					
 					--use reference from above to request more detailed information
 					local itemName, _, itemRarity, _, _, itemType, itemSubType, _, itemEquipLoc, _ = GetItemInfo(itemLink)
-					if not itemName then
+					if not itemName then 
 						itemName = itemLink
 						itemRarity = 5
 						itemType = "Pet"
@@ -155,18 +138,18 @@ local function sortBagRange(bagList, order)
 						itemEquipLoc = 0
 					end -- fix for battle pets
 					newItem.name = itemName
-
+					
 					--determine category
-
+					
 					--soulbound items
-					local tooltip = _G["BS_toolTip"]
+                   	local tooltip = _G["BS_toolTip"]
 					local owner = _G["Bag_Sort_Core"]
                     tooltip:SetOwner(owner, ANCHOR_NONE)
 					tooltip:ClearLines()
 					tooltip:SetBagItem(bagSlot, itemSlot)
 					local tooltipLine2 = _G["BS_toolTipTextLeft2"]:GetText()
 					tooltip:Hide()
-
+					
 					if FirstItems[itemID] then
 						newItem.sortString = newItem.sortString .. FirstItems[itemID]
 					elseif tooltipLine2 and tooltipLine2 == "Soulbound" then
@@ -193,14 +176,14 @@ local function sortBagRange(bagList, order)
 					else
 						newItem.sortString = newItem.sortString .. BS_QUALITY
 					end
-
+					
 					--finish the sort string, placing more important information
 					--closer to the start of the string
-
+					
 					newItem.sortString = newItem.sortString .. itemType .. itemSubType .. itemID .. itemRarity.. itemEquipLoc .. itemName
 					--print(newItem.sortString)
 					newItem.count = count
-
+					
 					--add this item's accumulated data to the item list for this bag group
 					tinsert(group.itemList, newItem)
 					--record location
@@ -210,7 +193,7 @@ local function sortBagRange(bagList, order)
 				end
 			end
 		end
-
+		
 		--sort the item list for this bag group by sort strings
 		table.sort(group.itemList, function(a, b)
 			if a.sortString < b.sortString then
@@ -219,12 +202,12 @@ local function sortBagRange(bagList, order)
 				return true
 			end
 		end)
-
+		
 		--show the results for this group
 		for index, item in pairs(group.itemList) do
 			local gridSlot = index
-			--record items in a grid according to their intended final placement
-			for _, bagSlotNumber in pairs(group.bagSlotNumbers) do
+   			--record items in a grid according to their intended final placement
+			for bagSlotNumberIndex, bagSlotNumber in pairs(group.bagSlotNumbers) do
 				if gridSlot <= GetContainerNumSlots(bagSlotNumber) then
 					if order == 0 then -- put their order them from bottomright
 						BS_itemSwapGrid[item.startBag][item.startSlot].destinationBag  = bagSlotNumber
@@ -241,21 +224,21 @@ local function sortBagRange(bagList, order)
 	        end
 	    end
 	end
-
+	
 	--signal for sorting to begin
 	BS_sorting = true
 end
 
 
 local function CheckStacks(bagList)
-	for _, slotNum in pairs(bagList) do
+	for slotNumIndex, slotNum in pairs(bagList) do
 		for itemSlot = 1, GetContainerNumSlots(slotNum) do
-			local _, count, _, _, _, _, itemLink, _, _, itemID = GetContainerItemInfo(slotNum, itemSlot)
+			local texture, count, locked, quality, readable, lootable, itemLink, isFiltered, hasNoValue, itemID = GetContainerItemInfo(slotNum, itemSlot)
 			if itemLink then
-				local _, _, _, _, _, _, _, maxStack = GetItemInfo(itemID)
-
+				local name, _, _, _, _, _, _, maxStack = GetItemInfo(itemID)
+				
 				if count < maxStack then -- 需要寻找可以堆的
-					for _, slotNum1 in pairs(bagList) do
+					for slotNumIndex1, slotNum1 in pairs(bagList) do
 						for itemSlot1 = 1, GetContainerNumSlots(slotNum1) do
 							if (slotNum ~= slotNum1 or itemSlot ~= itemSlot1) and GetContainerItemLink(slotNum1, itemSlot1) == itemLink then
 								local count1 = select(2, GetContainerItemInfo(slotNum1, itemSlot1))
@@ -284,11 +267,14 @@ local function CleanStackItems(bagList, order, container)
 		end
 	end
 	--print("total", delay)
-	C_Timer_After(delay, function() sortBagRange(bagList, order) end)
-	C_Timer_After(3, function() G.bag_sorting = false end)
+	C_Timer.After(delay, function() sortBagRange(bagList, order) end)
+	C_Timer.After(3, function() 
+		G.bag_sorting = false
+	end)
 end
 
 function T.BankSort(order)
+	stackclean = false
 	if order == 0 then
 		CleanStackItems({11, 10, 9, 8, 7, 6, 5, -1}, 0, "bank")
 	else
@@ -297,6 +283,7 @@ function T.BankSort(order)
 end
 
 function T.BagSort(order)
+	stackclean = false
 	if order == 0 then
 		CleanStackItems({4, 3, 2, 1, 0}, 0, "bag")
 	else
@@ -305,6 +292,7 @@ function T.BagSort(order)
 end
 
 function T.ReagentBankSort(order)
+	stackclean = false
 	if order == 0 then
 		CleanStackItems({-3}, 0, "reagents")
 	else
@@ -315,3 +303,5 @@ end
 local Core = CreateFrame("Frame", "Bag_Sort_Core")
 Core:SetScript("OnLoad", BS_clearData)
 Core:SetScript("OnUpdate", BS_OnUpdate)
+
+local Tooltip = CreateFrame("GameTooltip", "BS_toolTip", UIParent, "GameTooltipTemplate")

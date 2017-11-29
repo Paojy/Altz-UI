@@ -1,11 +1,5 @@
 local T, C, L, G = unpack(select(2, ...))
-
-local CanExitVehicle = CanExitVehicle
-local ActionBarController_GetCurrentActionBarState = ActionBarController_GetCurrentActionBarState
-local LE_ACTIONBAR_STATE_MAIN = LE_ACTIONBAR_STATE_MAIN
-
---Global variables that we don't cache, list them here for mikk's FindGlobals script
--- GLOBALS: MainMenuBarVehicleLeaveButton
+local dragFrameList = G.dragFrameList
 
 local padding = 10
 local buttonssize = aCoreCDB["ActionbarOptions"]["leave_vehiclebuttonsize"]
@@ -29,7 +23,7 @@ frame:SetHeight(buttonssize + 2*padding)
 MainMenuBarVehicleLeaveButton:SetParent(frame)
 MainMenuBarVehicleLeaveButton:ClearAllPoints()
 MainMenuBarVehicleLeaveButton:SetPoint("CENTER", 0, 0)
-MainMenuBarVehicleLeaveButton:SetScript("OnEvent", function(self)
+MainMenuBarVehicleLeaveButton:SetScript("OnEvent", function(self,event)
 	if ( CanExitVehicle() and ActionBarController_GetCurrentActionBarState() == LE_ACTIONBAR_STATE_MAIN ) then
 		MainMenuBarVehicleLeaveButton:Show()
 		MainMenuBarVehicleLeaveButton:Enable()
@@ -46,7 +40,7 @@ table.insert(buttonList, button) --add the button object to the list
 button:SetSize(buttonssize, buttonssize)
 button:SetPoint("BOTTOMLEFT", frame, padding, padding)
 button:RegisterForClicks("AnyUp")
-button:SetScript("OnClick", VehicleExit)
+button:SetScript("OnClick", function(self) VehicleExit() end)
 
 button:SetNormalTexture("INTERFACE\\PLAYERACTIONBARALT\\NATURAL")
 button:SetPushedTexture("INTERFACE\\PLAYERACTIONBARALT\\NATURAL")
