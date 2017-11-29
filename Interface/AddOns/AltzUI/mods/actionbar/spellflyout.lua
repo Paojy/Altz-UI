@@ -4,6 +4,12 @@ local T, C, L, G = unpack(select(2, ...))
 --this one is tricky...when hovering a bar with mouveover fading you want the bar to stay when leaving the bar but hovering the flyoutframe
 --thus on loadup of the flyout frame the fader has to adept to the current flyout button
 
+local _G = _G
+local tinsert = table.insert
+
+--Global variables that we don't cache, list them here for mikk's FindGlobals script
+-- GLOBALS: aCoreCDB
+
 local function addFlyoutFramesToFader(self)
 	--print(self:GetParent():GetParent():GetParent():GetName())
 	local fade, minalpha = false, 0
@@ -19,7 +25,7 @@ local function addFlyoutFramesToFader(self)
 		fade = aCoreCDB["ActionbarOptions"]["bar45mfade"] or aCoreCDB["ActionbarOptions"]["bar45efade"]
 		minalpha = aCoreCDB["ActionbarOptions"]["bar45fademinaplha"]
 	end
-	
+
 	if fade and minalpha then
 		local NUM_FLYOUT_BUTTONS = 10
 		local buttonList = {}
@@ -28,7 +34,7 @@ local function addFlyoutFramesToFader(self)
 		for i = 1, NUM_FLYOUT_BUTTONS do
 			local button = _G["SpellFlyoutButton"..i]
 			if button then
-				table.insert(buttonList, button) --add the button object to the list
+				tinsert(buttonList, button) --add the button object to the list
 			end
 		end
 		T.SpellFlyoutFader(frame, buttonList, fadeIn, fadeOut)

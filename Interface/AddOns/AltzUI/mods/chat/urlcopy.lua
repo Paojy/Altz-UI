@@ -1,75 +1,79 @@
 local T, C, L, G = unpack(select(2, ...))
 if not aCoreCDB["ChatOptions"]["copychat"] then return end
 
-local _AddMessage = ChatFrame1.AddMessage 
-local _SetItemRef = SetItemRef 
-local blacklist = { 
-   [ChatFrame2] = true, 
-} 
+local format = format
+local GetCursorPosition = GetCursorPosition
+local select = select
+local type = type
 
-local ts = G.classcolor..'|HyCopy|h%s|h|r %s' 
-local AddMessage = function(self, text, ...) 
-   if(type(text) == 'string') then 
-        if showtime then 
-          text = format(ts, date'%H:%M', text)  --text = format(ts, date'%H:%M:%S', text) 
-        else 
-     text = format(ts, '> ', text) 
-       end 
-end 
+--Global variables that we don't cache, list them here for mikk's FindGlobals script
+-- GLOBALS: SetItemRef, SELECTED_CHAT_FRAME
 
-   return _AddMessage(self, text, ...) 
-end 
+local _AddMessage = ChatFrame1.AddMessage
+local _SetItemRef = SetItemRef
+local blacklist = {
+   [ChatFrame2] = true,
+}
 
-for i=1, NUM_CHAT_WINDOWS do 
-   local cf = _G['ChatFrame'..i] 
-   if(not blacklist[cf]) then 
-      cf.AddMessage = AddMessage 
-   end 
-end 
+local ts = G.classcolor..'|HyCopy|h%s|h|r %s'
+local AddMessage = function(self, text, ...)
+	if(type(text) == 'string') then
+		text = format(ts, '> ', text)
+	end
 
-local MouseIsOver = function(frame) 
-   local s = frame:GetParent():GetEffectiveScale() 
-   local x, y = GetCursorPosition() 
-   x = x / s 
-   y = y / s 
+	return _AddMessage(self, text, ...)
+end
 
-   local left = frame:GetLeft() 
-   local right = frame:GetRight() 
-   local top = frame:GetTop() 
-   local bottom = frame:GetBottom() 
+for i=1, NUM_CHAT_WINDOWS do
+   local cf = _G['ChatFrame'..i]
+   if(not blacklist[cf]) then
+      cf.AddMessage = AddMessage
+   end
+end
 
-   if(not left) then 
-      return 
-   end 
+local MouseIsOver = function(frame)
+   local s = frame:GetParent():GetEffectiveScale()
+   local x, y = GetCursorPosition()
+   x = x / s
+   y = y / s
 
-   if((x > left and x < right) and (y > bottom and y < top)) then 
-      return 1 
-   else 
-      return 
-   end 
-end 
+   local left = frame:GetLeft()
+   local right = frame:GetRight()
+   local top = frame:GetTop()
+   local bottom = frame:GetBottom()
 
-local borderManipulation = function(...) 
-   for l = 1, select('#', ...) do 
-      local obj = select(l, ...) 
-      if(obj:GetObjectType() == 'FontString' and MouseIsOver(obj)) then 
-         return obj:GetText() 
-      end 
-   end 
-end 
+   if(not left) then
+      return
+   end
 
-local eb = ChatFrame1EditBox 
-SetItemRef = function(link, text, button, ...) 
-   if(link:sub(1, 5) ~= 'yCopy') then return _SetItemRef(link, text, button, ...) end 
+   if((x > left and x < right) and (y > bottom and y < top)) then
+      return 1
+   else
+      return
+   end
+end
 
-   local text = borderManipulation(SELECTED_CHAT_FRAME.FontStringContainer:GetRegions())
-   if(text) then 
-      text = text:gsub('|c%x%x%x%x%x%x%x%x(.-)|r', '%1') 
-      text = text:gsub('|H.-|h(.-)|h', '%1') 
+local borderManipulation = function(...)
+   for l = 1, select('#', ...) do
+      local obj = select(l, ...)
+      if(obj:GetObjectType() == 'FontString' and MouseIsOver(obj)) then
+         return obj:GetText()
+      end
+   end
+end
 
-      eb:Insert(text) 
-      eb:Show() 
-      eb:HighlightText() 
-      eb:SetFocus() 
-   end 
+local eb = ChatFrame1EditBox
+SetItemRef = function(link, text, button, ...)
+   if(link:sub(1, 5) ~= 'yCopy') then return _SetItemRef(link, text, button, ...) end
+
+   text = borderManipulation(SELECTED_CHAT_FRAME.FontStringContainer:GetRegions())
+   if(text) then
+      text = text:gsub('|c%x%x%x%x%x%x%x%x(.-)|r', '%1')
+      text = text:gsub('|H.-|h(.-)|h', '%1')
+
+      eb:Insert(text)
+      eb:Show()
+      eb:HighlightText()
+      eb:SetFocus()
+   end
 end

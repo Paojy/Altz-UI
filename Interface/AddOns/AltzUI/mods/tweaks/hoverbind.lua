@@ -1,13 +1,11 @@
 ﻿--ncHoverBind
 local T, C, L, G = unpack(select(2, ...))
-local F = unpack(Aurora)
 
 local bind, localmacros = CreateFrame("Frame", "ncHoverBind", UIParent), 0
 -- SLASH COMMAND
 SlashCmdList.MOUSEOVERBIND = function()
 	if InCombatLockdown() then print(L["你不能在战斗中绑定按键"]) return end
 	if not bind.loaded then
-		local find = string.find
 		local _G = getfenv(0)
 
 		bind:SetFrameStrata("DIALOG")
@@ -45,17 +43,17 @@ SlashCmdList.MOUSEOVERBIND = function()
 			if not self.enabled or InCombatLockdown() then return end
 			self.button = b
 			self.spellmacro = spellmacro
-			
+
 			self:ClearAllPoints()
 			self:SetAllPoints(b)
 			self:Show()
-			
+
 			ShoppingTooltip1:Hide()
-			
+
 			if spellmacro=="SPELL" then
 				self.button.id = SpellBook_GetSpellBookSlot(self.button)
 				self.button.name = GetSpellBookItemName(self.button.id, SpellBookFrame.bookType)
-				
+
 				GameTooltip:AddLine("Trigger")
 				GameTooltip:Show()
 				GameTooltip:SetScript("OnHide", function(self)
@@ -76,15 +74,15 @@ SlashCmdList.MOUSEOVERBIND = function()
 				end)
 			elseif spellmacro=="MACRO" then
 				self.button.id = self.button:GetID()
-				
+
 				if localmacros==1 then self.button.id = self.button.id + 36 end
-				
+
 				self.button.name = GetMacroInfo(self.button.id)
-				
+
 				GameTooltip:SetOwner(bind, "ANCHOR_NONE")
 				GameTooltip:SetPoint("BOTTOM", bind, "TOP", 0, 1)
 				GameTooltip:AddLine(bind.button.name, 1, 1, 1)
-				
+
 				bind.button.bindings = {GetBindingKey(spellmacro.." "..bind.button.name)}
 					if #bind.button.bindings == 0 then
 						GameTooltip:AddLine(L["没有绑定键位"], .6, .6, .6)
@@ -98,15 +96,15 @@ SlashCmdList.MOUSEOVERBIND = function()
 			elseif spellmacro=="STANCE" or spellmacro=="PET" then
 				self.button.id = tonumber(b:GetID())
 				self.button.name = b:GetName()
-				
+
 				if not self.button.name then return end
-				
+
 				if not self.button.id or self.button.id < 1 or self.button.id > (spellmacro=="STANCE" and 10 or 12) then
 					self.button.bindstring = "CLICK "..self.button.name..":LeftButton"
 				else
 					self.button.bindstring = (spellmacro=="STANCE" and "SHAPESHIFTBUTTON" or "BONUSACTIONBUTTON")..self.button.id
 				end
-				
+
 				GameTooltip:AddLine("Trigger")
 				GameTooltip:Show()
 				GameTooltip:SetScript("OnHide", function(self)
@@ -128,9 +126,9 @@ SlashCmdList.MOUSEOVERBIND = function()
 			else
 				self.button.action = tonumber(b.action)
 				self.button.name = b:GetName()
-				
+
 				if not self.button.name then return end
-				
+
 				if not self.button.action or self.button.action < 1 or self.button.action > 132 then
 					self.button.bindstring = "CLICK "..self.button.name..":LeftButton"
 				else
@@ -147,7 +145,7 @@ SlashCmdList.MOUSEOVERBIND = function()
 						self.button.bindstring = "MULTIACTIONBAR3BUTTON"..modact
 					end
 				end
-				
+
 				GameTooltip:AddLine("Trigger")
 				GameTooltip:Show()
 				GameTooltip:SetScript("OnHide", function(self)
@@ -179,7 +177,7 @@ SlashCmdList.MOUSEOVERBIND = function()
 				if self.spellmacro~="MACRO" then GameTooltip:Hide() end
 				return
 			end
-			
+
 			if key == "LSHIFT"
 			or key == "RSHIFT"
 			or key == "LCTRL"
@@ -189,15 +187,15 @@ SlashCmdList.MOUSEOVERBIND = function()
 			or key == "UNKNOWN"
 			or key == "LeftButton"
 			then return end
-			
+
 			if key == "MiddleButton" then key = "BUTTON3" end
 			if key == "Button4" then key = "BUTTON4" end
 			if key == "Button5" then key = "BUTTON5" end
-			
+
 			local alt = IsAltKeyDown() and "ALT-" or ""
 			local ctrl = IsControlKeyDown() and "CTRL-" or ""
 			local shift = IsShiftKeyDown() and "SHIFT-" or ""
-			
+
 			if not self.spellmacro or self.spellmacro=="PET" or self.spellmacro=="STANCE" then
 				SetBinding(alt..ctrl..shift..key, self.button.bindstring)
 			else
@@ -270,7 +268,7 @@ SlashCmdList.MOUSEOVERBIND = function()
 			local sb = _G["SpellButton"..i]
 			sb:HookScript("OnEnter", function(self) bind:Update(self, "SPELL") end)
 		end
-		
+
 		local function registermacro()
 			for i=1,36 do
 				local mb = _G["MacroButton"..i]
@@ -279,7 +277,7 @@ SlashCmdList.MOUSEOVERBIND = function()
 			MacroFrameTab1:HookScript("OnMouseUp", function() localmacros = 0 end)
 			MacroFrameTab2:HookScript("OnMouseUp", function() localmacros = 1 end)
 		end
-		
+
 		if not IsAddOnLoaded("Blizzard_MacroUI") then
 			hooksecurefunc("LoadAddOn", function(addon)
 				if addon=="Blizzard_MacroUI" then

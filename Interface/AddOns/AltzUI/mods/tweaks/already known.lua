@@ -2,6 +2,30 @@ local T, C, L, G = unpack(select(2, ...))
 
 if not aCoreCDB["ItemOptions"]["alreadyknown"] then return end
 
+local SetItemButtonTextureVertexColor = SetItemButtonTextureVertexColor
+local GetCurrentGuildBankTab = GetCurrentGuildBankTab
+local GetMerchantItemLink = GetMerchantItemLink
+local GetNumBuybackItems = GetNumBuybackItems
+local GetBuybackItemInfo = GetBuybackItemInfo
+local GetAuctionItemInfo = GetAuctionItemInfo
+local GetGuildBankItemLink = GetGuildBankItemLink
+local GetItemInfo = GetItemInfo
+local GetAuctionItemLink = GetAuctionItemLink
+local hooksecurefunc = hooksecurefunc
+local GetNumAuctionItems = GetNumAuctionItems
+local GetMerchantNumItems = GetMerchantNumItems
+local math = math
+local _G = _G
+local GetGuildBankItemInfo = GetGuildBankItemInfo
+local GetBuybackItemLink = GetBuybackItemLink
+local GetMerchantItemInfo = GetMerchantItemInfo
+
+--Global variables that we don't cache, list them here for mikk's FindGlobals script
+-- GLOBALS: BidScrollFrame, NUM_AUCTIONS_TO_DISPLAY, AuctionsScrollFrame, GuildBankFrame
+-- GLOBALS: MerchantFrame, BrowseScrollFrame, MAX_GUILDBANK_SLOTS_PER_TAB, NUM_BROWSE_TO_DISPLAY
+-- GLOBALS: MERCHANT_ITEMS_PER_PAGE, NUM_BIDS_TO_DISPLAY, ITEM_SPELL_KNOWN, NUM_SLOTS_PER_GUILDBANK_GROUP
+-- GLOBALS: FauxScrollFrame_GetOffset, BUYBACK_ITEMS_PER_PAGE
+
 local knowncolor = { r = 0.1, g = 1.0, b = 0.2 }
 local tooltip = CreateFrame('GameTooltip')
 tooltip:SetOwner(WorldFrame, 'ANCHOR_NONE')

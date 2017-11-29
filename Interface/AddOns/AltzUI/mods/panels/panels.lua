@@ -28,12 +28,12 @@ local function Skinbg(bar)
 		bar.tex:SetTexture(G.media.blank)
 		bar.tex:SetGradientAlpha("VERTICAL", .2,.2,.2,.15,.25,.25,.25,.6)
 		F.CreateBD(bar, 1)
-		T.CreateSD(bar, 2, 0, 0, 0, 0, -1)	
+		T.CreateSD(bar, 2, 0, 0, 0, 0, -1)
 	end
 end
 --====================================================--
 --[[                -- Shadow --                    ]]--
---====================================================--	
+--====================================================--
 local PShadow = CreateFrame("Frame", G.uiname.."Backgroud Shadow", UIParent)
 PShadow:SetFrameStrata("BACKGROUND")
 PShadow:SetAllPoints()
@@ -96,7 +96,7 @@ end
 local minimap_height = aCoreCDB["OtherOptions"]["minimapheight"]
 
 -- 收缩和伸展的按钮
-local minimap_pullback = CreateFrame("Frame", G.uiname.."minimap_pullback", UIParent) 
+local minimap_pullback = CreateFrame("Frame", G.uiname.."minimap_pullback", UIParent)
 minimap_pullback:SetWidth(8)
 minimap_pullback:SetHeight(minimap_height)
 minimap_pullback:SetFrameStrata("BACKGROUND")
@@ -134,7 +134,7 @@ local Updater = CreateFrame("Frame")
 Updater.mode = "IN"
 Updater:Hide()
 
-Updater:SetScript("OnUpdate",function(self,elapsed)
+Updater:SetScript("OnUpdate",function(self)
 	if self.mode == "IN" then
 		if nowwidth < allwidth then
 			nowwidth = nowwidth+allwidth/(all/0.2)/3
@@ -149,13 +149,13 @@ Updater:SetScript("OnUpdate",function(self,elapsed)
 	elseif self.mode == "OUT" then
 		if nowwidth >0 then
 			nowwidth = nowwidth-allwidth/(all/0.2)/3
-			minimap_anchor:SetPoint("BOTTOMRIGHT", minimap_pullback, "BOTTOMLEFT", nowwidth, 0);	
+			minimap_anchor:SetPoint("BOTTOMRIGHT", minimap_pullback, "BOTTOMLEFT", nowwidth, 0);
 		else
 			minimap_anchor:SetPoint("BOTTOMRIGHT", minimap_pullback, "BOTTOMLEFT", -5, 0)
 			minimap_pullback.border:SetBackdropColor(0, 0, 0, .6)
 			Updater:Hide()
 			Updater.mode = "IN"
-		end		
+		end
 	end
 end)
 
@@ -207,7 +207,7 @@ Updater:RegisterEvent("PLAYER_LOGIN")
 
 minimap_pullback:SetScript("OnMouseDown", minimap_toggle)
 
-local chatframe_pullback = CreateFrame("Frame", G.uiname.."chatframe_pullback", UIParent) 
+local chatframe_pullback = CreateFrame("Frame", G.uiname.."chatframe_pullback", UIParent)
 chatframe_pullback:SetWidth(8)
 chatframe_pullback:SetHeight(minimap_height)
 chatframe_pullback:SetFrameStrata("BACKGROUND")
@@ -237,19 +237,18 @@ local dm = _G['GeneralDockManager']
 
 --move chat
 local MoveChat = function()
-    FCF_SetLocked(cf, nil) 
+    FCF_SetLocked(cf, nil)
     cf:ClearAllPoints()
     cf:SetPoint("BOTTOMLEFT", chatframe_anchor ,"BOTTOMLEFT", 3, 5)
     FCF_SavePositionAndDimensions(cf)
 	FCF_SetLocked(cf, 1)
 end
 
-local nowwidth, allwidth, all
 local Updater2 = CreateFrame("Frame")
 Updater2.mode = "OUT"
 Updater2:Hide()
 
-Updater2:SetScript("OnUpdate",function(self,elapsed)
+Updater2:SetScript("OnUpdate",function(self)
 	if self.mode == "IN" then
 		if nowwidth > -375 then
 			nowwidth = nowwidth-allwidth/(all/0.2)/4
@@ -265,13 +264,13 @@ Updater2:SetScript("OnUpdate",function(self,elapsed)
 		if nowwidth <0 then
 			nowwidth = nowwidth+allwidth/(all/0.2)/4
 			chatframe_anchor:SetPoint("BOTTOMLEFT", chatframe_pullback, "BOTTOMRIGHT", nowwidth, 0)
-			MoveChat()			
+			MoveChat()
 		else
 			chatframe_anchor:SetPoint("BOTTOMLEFT", chatframe_pullback, "BOTTOMRIGHT", 5, 0)
-			chatframe_pullback.border:SetBackdropColor(0, 0, 0, .6)			
+			chatframe_pullback.border:SetBackdropColor(0, 0, 0, .6)
 			self:Hide()
 			self.mode = "IN"
-		end		
+		end
 	end
 end)
 
@@ -335,7 +334,7 @@ end
 
 -- 隐藏按钮
 for _, hide in next,
-	{MinimapBorder, MinimapBorderTop, MinimapZoomIn, MinimapZoomOut, MiniMapVoiceChatFrame, MiniMapTracking,  
+	{MinimapBorder, MinimapBorderTop, MinimapZoomIn, MinimapZoomOut, MiniMapVoiceChatFrame, MiniMapTracking,
 	MiniMapWorldMapButton, MinimapBackdrop, MinimapCluster, GameTimeFrame, MiniMapInstanceDifficulty,} do
 	hide:Hide()
 end
@@ -343,7 +342,7 @@ MinimapNorthTag:SetAlpha(0)
 
 -- 整合按钮
 local buttons = {}
-local BlackList = { 
+local BlackList = {
 	["MiniMapTracking"] = true,
 	["MiniMapVoiceChatFrame"] = true,
 	["MiniMapWorldMapButton"] = true,
@@ -381,7 +380,7 @@ MBCF.bg:SetAllPoints(MBCF)
 MBCF.bg:SetGradientAlpha("HORIZONTAL", 0, 0, 0, .8, 0, 0, 0, 0)
 
 T.ArrangeMinimapButtons = function(parent)
-	if #buttons == 0 then 
+	if #buttons == 0 then
 		parent:Hide()
 		return
 	end
@@ -392,9 +391,9 @@ T.ArrangeMinimapButtons = function(parent)
 	else
 		space = 0
 	end
-	
+
 	local lastbutton
-	for k, button in pairs(buttons) do
+	for _, button in pairs(buttons) do
 		button:ClearAllPoints()
 		if button:IsShown() then
 			if not lastbutton then
@@ -409,7 +408,7 @@ end
 
 T.CollectMinimapButtons = function(parent)
 	if aCoreCDB["OtherOptions"]["collectminimapbuttons"] then
-		for i, child in ipairs({Minimap:GetChildren()}) do
+		for _, child in ipairs({Minimap:GetChildren()}) do
 			if child:GetName() and not BlackList[child:GetName()] then
 				if child:GetObjectType() == "Button" or strupper(child:GetName()):match("BUTTON") then
 					child:SetParent(parent)
@@ -419,19 +418,19 @@ T.CollectMinimapButtons = function(parent)
 							local texture = region:GetTexture()
 							if (string.find(texture, "Interface\\CharacterFrame") or string.find(texture, "Interface\\Minimap")) then
 								region:SetTexture(nil)
-							elseif texture == 136430 or texture == 136467 then 
+							elseif texture == 136430 or texture == 136467 then
 								region:SetTexture(nil)
 							end
 						end
 					end
-					
-					child:HookScript("OnShow", function() 
+
+					child:HookScript("OnShow", function()
 						T.ArrangeMinimapButtons(parent)
 					end)
-					child:HookScript("OnShow", function() 
+					child:HookScript("OnShow", function()
 						T.ArrangeMinimapButtons(parent)
 					end)
-					child:HookScript("OnHide", function() 
+					child:HookScript("OnHide", function()
 						T.ArrangeMinimapButtons(parent)
 					end)
 					child:HookScript("OnEnter", function()
@@ -489,7 +488,7 @@ GarrisonLandingPageMinimapButton:HookScript("OnEvent", function(self)
 	self:GetNormalTexture():SetSize(20, 20)
 	self:GetNormalTexture():ClearAllPoints()
 	self:GetNormalTexture():SetPoint("CENTER", 0, 1)
-	
+
 	self:GetPushedTexture():SetAtlas(nil)
 	self:SetPushedTexture("Interface\\AddOns\\AltzUI\\media\\icons\\Guild")
 	self:GetPushedTexture():SetBlendMode("ADD")
@@ -566,7 +565,7 @@ CurrencyButton:RegisterEvent("CURRENCY_DISPLAY_UPDATE")
 CurrencyButton:SetScript("OnEvent", function(self, event)
 	local map = GetCurrentMapAreaID()
 	local currency = Currency[map]
-	
+
 	if map and currency then
 		name, amount, texturePath, earnedThisWeek, weeklyMax, totalMax, isDiscovered, quality = GetCurrencyInfo(currency)
 		CurrencyButton.text:SetText(amount.."/"..totalMax)
@@ -586,7 +585,7 @@ MinimapZoneTextButton:SetPoint("CENTER", 0, 20)
 MinimapZoneTextButton:EnableMouse(false)
 MinimapZoneTextButton:Hide()
 MinimapZoneText:SetAllPoints(MinimapZoneTextButton)
-MinimapZoneText:SetFont(G.norFont, 12, "OUTLINE") 
+MinimapZoneText:SetFont(G.norFont, 12, "OUTLINE")
 MinimapZoneText:SetShadowOffset(0, 0)
 MinimapZoneText:SetJustifyH("CENTER")
 
@@ -605,7 +604,7 @@ Minimap:HookScript("OnUpdate",function()
 	end
 end)
 
-Minimap:HookScript("OnEvent",function(self,event,...)
+Minimap:HookScript("OnEvent",function(self,event)
 	if event=="ZONE_CHANGED_NEW_AREA" and not WorldMapFrame:IsShown() then
 		SetMapToCurrentZone();
 	end
@@ -659,7 +658,7 @@ clockframe:SetScript("OnUpdate", function(self, e)
 	end
 end)
 
-clockframe:SetScript("OnMouseDown", function(self, bu) 
+clockframe:SetScript("OnMouseDown", function(self, bu)
 	if bu == "LeftButton" then
 		ToggleCalendar()
 	else
@@ -727,7 +726,7 @@ artifactbar.border = F.CreateBDFrame(artifactbar, .8)
 
 local function CommaValue(amount)
 	local formatted = amount
-	while true do  
+	while true do
 		formatted, k = string.gsub(formatted, "^(-?%d+)(%d%d%d)", "%1,%2")
 		if (k==0) then
 			break
@@ -738,30 +737,30 @@ end
 
 xpbar:SetScript("OnEnter", function()
 	GameTooltip_SetDefaultAnchor(GameTooltip, UIParent)
-	
+
 	local XP, maxXP = UnitXP("player"), UnitXPMax("player")
 	local restXP = GetXPExhaustion()
-	
+
 	if UnitLevel("player") < MAX_PLAYER_LEVEL then
 		GameTooltip:AddDoubleLine(L["当前经验"], string.format("%s/%s (%d%%)", CommaValue(XP), CommaValue(maxXP), (XP/maxXP)*100), G.Ccolor.r, G.Ccolor.g, G.Ccolor.b, 1, 1, 1)
 		GameTooltip:AddDoubleLine(L["剩余经验"], string.format("%s", CommaValue(maxXP-XP)), G.Ccolor.r, G.Ccolor.g, G.Ccolor.b, 1, 1, 1)
 		if restXP then GameTooltip:AddDoubleLine(L["双倍"], string.format("|cffb3e1ff%s (%d%%)", CommaValue(restXP), restXP/maxXP*100), G.Ccolor.r, G.Ccolor.g, G.Ccolor.b) end
 	end
-	
+
 	GameTooltip:Show()
 end)
 xpbar:SetScript("OnLeave", function() GameTooltip:Hide() end)
 
 repbar:SetScript("OnEnter", function()
 	GameTooltip_SetDefaultAnchor(GameTooltip, UIParent)
-	
+
 	local name, rank, minRep, maxRep, value, factionID = GetWatchedFactionInfo()
 	local ranktext = _G["FACTION_STANDING_LABEL"..rank]
-	
+
 	if name then
 		local minrep, maxrep, valuerep
 		if GetFriendshipReputation(factionID) then
-			local friendID, friendRep, friendMaxRep, friendName, friendText, friendTexture, friendTextLevel, friendThreshold, nextFriendThreshold = GetFriendshipReputation(factionID)
+			local _, friendRep, _, _, _, _, friendTextLevel, friendThreshold, nextFriendThreshold = GetFriendshipReputation(factionID)
 			minrep, maxrep, valuerep = friendThreshold, nextFriendThreshold, friendRep
 			ranktext = friendTextLevel
 		elseif C_Reputation.IsFactionParagon(factionID) then
@@ -770,15 +769,15 @@ repbar:SetScript("OnEnter", function()
 		else
 			minrep, maxrep, valuerep = minRep, maxRep, value
 		end
-		
+
 		GameTooltip:AddLine(name.."  ("..ranktext..")", G.Ccolor.r, G.Ccolor.g, G.Ccolor.b)
-		
+
 		if maxrep and maxrep > valuerep then
 			GameTooltip:AddDoubleLine(L["声望"], string.format("%s/%s (%d%%)", CommaValue(valuerep-minrep), CommaValue(maxrep-minrep), (valuerep-minrep)/(maxrep-minrep)*100), G.Ccolor.r, G.Ccolor.g, G.Ccolor.b, 1, 1, 1)
 			GameTooltip:AddDoubleLine(L["剩余声望"], string.format("%s", CommaValue(maxrep-valuerep)), G.Ccolor.r, G.Ccolor.g, G.Ccolor.b, 1, 1, 1)
 		end
-	end	
-	
+	end
+
 	GameTooltip:Show()
 end)
 repbar:SetScript("OnLeave", function() GameTooltip:Hide() end)
@@ -796,13 +795,13 @@ end)
 
 xpbar:SetScript("OnEvent", function(self, event, arg1)
 	local artifactItemID, _, _, _, artifactTotalXP, artifactPointsSpent, _, _, _, _, _, artifactMaxed, artifactTier = C_ArtifactUI.GetEquippedArtifactInfo()
-	local name, reaction, minRep, maxRep, value, factionID = GetWatchedFactionInfo()
+	local name, reaction, _, _, _, factionID = GetWatchedFactionInfo()
 	local newLevel = UnitLevel("player")
-	
+
 	local showArtifact = artifactItemID and not artifactMaxed
 	local showXP = newLevel < MAX_PLAYER_LEVEL and not IsXPUserDisabled()
 	local showRep = name
-	
+
 	if event == "PLAYER_LOGIN" or event == "PLAYER_LEVEL_UP" or event == "PLAYER_XP_UPDATE" then
 		if showXP then
 			xpbar:Show()
@@ -813,14 +812,14 @@ xpbar:SetScript("OnEvent", function(self, event, arg1)
 			xpbar:Hide()
 		end
 	end
-	
+
 	if event == "PLAYER_LOGIN" or event == "UPDATE_FACTION" then
 		if showRep then
 			repbar:Show()
-			local name, rank, minRep, maxRep, value = GetWatchedFactionInfo()
-			
+			local _, _, minRep, maxRep, value = GetWatchedFactionInfo()
+
 			if GetFriendshipReputation(factionID) then
-				local friendID, friendRep, friendMaxRep, friendName, friendText, friendTexture, friendTextLevel, friendThreshold, nextFriendThreshold = GetFriendshipReputation(factionID)
+				local _, friendRep, _, _, _, _, _, friendThreshold, nextFriendThreshold = GetFriendshipReputation(factionID)
 				if ( nextFriendThreshold ) then
 					repbar:SetMinMaxValues(friendThreshold, nextFriendThreshold)
 					repbar:SetValue(friendRep)
@@ -843,18 +842,18 @@ xpbar:SetScript("OnEvent", function(self, event, arg1)
 			repbar:Hide()
 		end
 	end
-	
+
 	if event == "PLAYER_LOGIN" or (event == "UNIT_INVENTORY_CHANGED" and arg1 == "player") or event == "ARTIFACT_XP_UPDATE" then
 		if showArtifact then
 			artifactbar:Show()
-			local numPointsAvailableToSpend, xp, xpForNextPoint = MainMenuBar_GetNumArtifactTraitsPurchasableFromXP(artifactPointsSpent, artifactTotalXP, artifactTier)
+			local _, xp, xpForNextPoint = MainMenuBar_GetNumArtifactTraitsPurchasableFromXP(artifactPointsSpent, artifactTotalXP, artifactTier)
 			artifactbar:SetMinMaxValues(0, xpForNextPoint)
 			artifactbar:SetValue(xp)
 		else
 			artifactbar:Hide()
 		end
 	end
-	
+
 	if showXP then
 		xpbar:SetPoint("BOTTOMRIGHT", Minimap, "BOTTOMRIGHT", 0, 0)
 		xpbar:SetPoint("TOPRIGHT", Minimap, "TOPRIGHT", 0, 0)
@@ -907,7 +906,7 @@ WorldChannelToggle:SetScript("OnClick", function(self)
 	end
 	if inchannel then
 		LeaveChannelByName("大脚世界频道")
-		print("|cffFF0000离开|r 大脚世界频道")  
+		print("|cffFF0000离开|r 大脚世界频道")
 	else
 		JoinPermanentChannel("大脚世界频道",nil,1)
 		ChatFrame_AddChannel(ChatFrame1,"大脚世界频道")
@@ -925,7 +924,7 @@ WorldChannelToggle:SetScript("OnEvent", function(self, event)
 			break
 		end
 	end
-	
+
 	if event == "PLAYER_ENTERING_WORLD" then
 		self:UnregisterEvent("PLAYER_ENTERING_WORLD")
 	end
@@ -954,10 +953,10 @@ local function CreateInfoButton(name, parent, width, height, justify, ...)
 	local Button = CreateFrame("Frame", G.uiname..parent:GetName()..name, parent)
 	Button:SetSize(width, height)
 	Button:SetPoint(...)
-	
+
 	Button.text = T.createtext(Button, "OVERLAY", 12, "OUTLINE", justify)
 	Button.text:SetPoint(justify)
-	
+
 	return Button
 end
 
@@ -971,8 +970,8 @@ local function UpdateEquipSetsList()
 	local count = GetNumEquipmentSets()
 	if count > 0 then
 		EquipSetsList = {}
-		for index = 1, count do 
-			local name, Icon, setID, isEquipped, totalItems, equippedItems, inventoryItems, missingItems, ignoredSlots = GetEquipmentSetInfo(index)
+		for index = 1, count do
+			local name, Icon, _, isEquipped = GetEquipmentSetInfo(index)
 			EquipSetsList[index] = {
 				text = name,
 				icon = Icon,
@@ -985,13 +984,13 @@ local function UpdateEquipSetsList()
 end
 
 local SLOTS = {}
-for _,slot in pairs({"Head", "Shoulder", "Chest", "Waist", "Legs", "Feet", "Wrist", "Hands", "MainHand", "SecondaryHand"}) do 
+for _,slot in pairs({"Head", "Shoulder", "Chest", "Waist", "Legs", "Feet", "Wrist", "Hands", "MainHand", "SecondaryHand"}) do
 	SLOTS[slot] = GetInventorySlotInfo(slot .. "Slot")
 end
 
 local function GetLowestDurability()
 	local l = 1
-	for slot,id in pairs(SLOTS) do
+	for _,id in pairs(SLOTS) do
 		local d, md = GetInventoryItemDurability(id)
 		if d and md and md ~= 0 then
 			l = math.min(d/md, l)
@@ -1042,18 +1041,18 @@ Net_Stats:SetScript("OnUpdate", function(self, elapsed)
 	self.t = self.t + elapsed
 	if self.t > 1 then -- 每秒刷新一次
 		fps = format("%d"..G.classcolor.."fps|r", GetFramerate())
-		lag = format("%d"..G.classcolor.."ms|r", select(4, GetNetStats()))	
+		lag = format("%d"..G.classcolor.."ms|r", select(4, GetNetStats()))
 		self.text:SetText(fps.."  "..lag)
 		self.t = 0
 	end
 end)
 
 Net_Stats:SetScript("OnEnter", function(self)
-	local addons, total, nr, name = {}, 0, 0
+	local addons, total, nr = {}, 0, 0
 	local memory, entry
 	local BlizzMem = collectgarbage("count")
-	local bandwidthIn, bandwidthOut, latencyHome, latencyWorld = GetNetStats()
-			
+	local _, _, latencyHome, latencyWorld = GetNetStats()
+
 	GameTooltip:SetOwner(self, "ANCHOR_NONE")
 	if select(2, InfoFrame:GetCenter())/G.screenheight > .5 then -- In the upper part of the screen
 		GameTooltip:SetPoint("TOP", InfoFrame, "BOTTOM", 0, -5)
@@ -1061,8 +1060,8 @@ Net_Stats:SetScript("OnEnter", function(self)
 		GameTooltip:SetPoint("BOTTOM", InfoFrame, "TOP", 0, 5)
 	end
 	GameTooltip:AddLine(format(L["占用前 %d 的插件"], 20), G.Ccolor.r, G.Ccolor.g, G.Ccolor.b)
-	GameTooltip:AddLine(" ")	
-	
+	GameTooltip:AddLine(" ")
+
 	UpdateAddOnMemoryUsage()
 	for i = 1, GetNumAddOns() do
 		if (GetAddOnMemoryUsage(i) > 0 ) then
@@ -1074,7 +1073,7 @@ Net_Stats:SetScript("OnEnter", function(self)
 	end
 	table.sort(addons, function(a, b) return a.memory > b.memory end)
 	for _, entry in pairs(addons) do
-	if nr < 20 then
+		if nr < 20 then
 			GameTooltip:AddDoubleLine(entry.name, memFormat(entry.memory), 1, 1, 1, T.ColorGradient(entry.memory / 1024, 0, 1, 0, 1, 1, 0, 1, 0, 0))
 			nr = nr+1
 		end
@@ -1083,13 +1082,13 @@ Net_Stats:SetScript("OnEnter", function(self)
 	GameTooltip:AddLine(" ")
 	GameTooltip:AddDoubleLine(L["自定义插件占用"], memFormat(total), 1, 1, 1, T.ColorGradient(total / (1024*20), 0, 1, 0, 1, 1, 0, 1, 0, 0))
 	GameTooltip:AddDoubleLine(L["所有插件占用"], memFormat(BlizzMem), 1, 1, 1, T.ColorGradient(BlizzMem / (1024*50) , 0, 1, 0, 1, 1, 0, 1, 0, 0))
-	
+
 	GameTooltip:AddLine(" ")
 	GameTooltip:AddLine(format(MAINMENUBAR_LATENCY_LABEL, latencyHome, latencyWorld), 1, 1, 1)
-	
+
 	GameTooltip:Show()
 end)
- 
+
 Net_Stats:SetScript("OnLeave", function(self) GameTooltip:Hide() end)
 
 -- 天赋
@@ -1105,7 +1104,7 @@ local SpecList = {
 			{ text = "spec1", specializationID = 0 },
 			{ text = "spec2", specializationID = 0 },
 			{ text = "spec3", specializationID = 0 },
-			{ text = "spec4", specializationID = 0 },	
+			{ text = "spec4", specializationID = 0 },
 		}
 	},
 	{ text = L["切天赋"], notCheckable = true, hasArrow = 1,
@@ -1113,7 +1112,7 @@ local SpecList = {
 			{ text = "spec1", specializationID = 0 },
 			{ text = "spec2", specializationID = 0 },
 			{ text = "spec3", specializationID = 0 },
-			{ text = "spec4", specializationID = 0 },	
+			{ text = "spec4", specializationID = 0 },
 		}
 	},
 }
@@ -1125,7 +1124,7 @@ if G.myClass ~= "DRUID" then
 	numspec = 3
 end
 
-local function TalentOnClick(self, button)
+local function TalentOnClick(self)
 	if UnitLevel("player")>=10 then -- 10 级别后有天赋
 		L_EasyMenu(SpecList, LootSpecMenu, "cursor", 0, 0, "MENU", 2)
 		L_DropDownList1:ClearAllPoints()
@@ -1146,24 +1145,24 @@ Talent:SetScript("OnEvent", function(self, event)
 		self:RegisterEvent("PLAYER_LOOT_SPEC_UPDATED")
 		self:UnregisterEvent("PLAYER_ENTERING_WORLD")
 	end
-	
+
 	local specIndex = GetSpecialization()
 	local Loot_specIndex = GetLootSpecialization()
 
 	if specIndex then
-		local specID, specName = GetSpecializationInfo(specIndex)
-		local Loot_specID, Loot_specName = GetSpecializationInfoByID(Loot_specIndex)
-		
+		local _, specName = GetSpecializationInfo(specIndex)
+		local _, Loot_specName = GetSpecializationInfoByID(Loot_specIndex)
+
 		if specName then
 			if Loot_specName then
 				self.text:SetText(format(G.classcolor.."%s ("..SELECT_LOOT_SPECIALIZATION.." %s)|r", specName, Loot_specName))
 			else
 				self.text:SetText(format(G.classcolor.."%s|r", specName))
 			end
-			
+
 			SpecList[2]["disabled"] = false
 			SpecList[3]["disabled"] = false
-			
+
 			local specPopupButton = SpecList[2]["menuList"][1]
 			specPopupButton.text = format(LOOT_SPECIALIZATION_DEFAULT, specName)
 			specPopupButton.func = function(self) SetLootSpecialization(0) end
@@ -1179,7 +1178,7 @@ Talent:SetScript("OnEvent", function(self, event)
 					local id, name = GetSpecializationInfo(index-1)
 					specPopupButton.specializationID = id
 					specPopupButton.text = name
-					specPopupButton.func = function(self) 
+					specPopupButton.func = function(self)
 						SetLootSpecialization(id)
 					end
 					if GetLootSpecialization() == specPopupButton.specializationID then
@@ -1189,7 +1188,7 @@ Talent:SetScript("OnEvent", function(self, event)
 					end
 				end
 			end
-			
+
 			for index = 1, numspec do
 				specbutton = SpecList[3]["menuList"][index]
 				if specbutton then
@@ -1278,14 +1277,14 @@ local function CreateMicromenuButton(parent, bu, text, original)
 			region:Hide()
 			region.Show = T.dummy
 		end
-		for i, child in ipairs({Button:GetChildren()}) do
+		for _, child in ipairs({Button:GetChildren()}) do
 			child:Hide()
 			child.Show = T.dummy
 		end
 	else
 		Button = CreateFrame("Button", nil, parent)
 	end
-	
+
 	if original == "System" then
 		Button:SetSize(80, 43)
 	elseif original == "RaidTool" then
@@ -1295,13 +1294,13 @@ local function CreateMicromenuButton(parent, bu, text, original)
 	else
 		Button:SetSize(24, 43)
 	end
-	
+
 	Button:SetFrameLevel(5)
 	Button.normal = Button:CreateTexture(nil, "OVERLAY")
 	Button.normal:SetPoint("BOTTOMLEFT")
 	Button.normal:SetPoint("BOTTOMRIGHT")
 	Button.normal:SetHeight(24)
-	
+
 	if original == "System" or original == "RaidTool" or original == "Config" then
 		Button.name = T.createtext(Button, "OVERLAY", 14, "OUTLINE", "CENTER")
 		Button.name:SetText(text)
@@ -1310,19 +1309,19 @@ local function CreateMicromenuButton(parent, bu, text, original)
 		Button.normal:SetTexture("Interface\\AddOns\\AltzUI\\media\\icons\\"..original)
 		Button.normal:SetVertexColor(.6, .6, .6)
 		Button.normal:SetBlendMode("ADD")
-		
+
 		Button.text = T.createtext(Button, "HIGHLIGHT", 12, "OUTLINE", "CENTER")
 		Button.text:SetText(text)
 		Button.text:SetTextColor(G.Ccolor.r, G.Ccolor.g, G.Ccolor.b)
 	end
-	
+
 	Button.highlight = Button:CreateTexture(nil, "HIGHLIGHT")
 	Button.highlight:SetPoint("TOPLEFT", Button.normal, "TOPLEFT", -12, 1)
 	Button.highlight:SetPoint("BOTTOMRIGHT", Button.normal, "BOTTOMRIGHT", 12, -1)
 	Button.highlight:SetVertexColor(G.Ccolor.r, G.Ccolor.g, G.Ccolor.b, .8)
 	Button.highlight:SetTexture(G.media.buttonhighlight)
 	Button.highlight:SetBlendMode("ADD")
-	
+
 	Button.highlight2 = Button:CreateTexture(nil, "HIGHLIGHT")
 	Button.highlight2:SetPoint("TOPLEFT", Button.normal, "BOTTOMLEFT", -15, 1)
 	Button.highlight2:SetPoint("TOPRIGHT", Button.normal, "BOTTOMRIGHT", 15, 1)
@@ -1330,7 +1329,7 @@ local function CreateMicromenuButton(parent, bu, text, original)
 	Button.highlight2:SetVertexColor(G.Ccolor.r, G.Ccolor.g, G.Ccolor.b, .6)
 	Button.highlight2:SetTexture(G.media.barhightlight)
 	Button.highlight2:SetBlendMode("ADD")
-	
+
 	if not bu then
 		Button:SetScript("OnClick", function()
 			if original == "RaidTool" then
@@ -1351,7 +1350,7 @@ local function CreateMicromenuButton(parent, bu, text, original)
 				if GameMenuFrame:IsShown() then
 					HideUIPanel(GameMenuFrame)
 				end
-				ToggleAllBags()	
+				ToggleAllBags()
 			else
 				print(original)
 			end
@@ -1364,7 +1363,7 @@ local function CreateMicromenuButton(parent, bu, text, original)
 	else
 		tinsert(MicromenuButtons, Button)
 	end
-	
+
 	return Button
 end
 
@@ -1374,7 +1373,7 @@ MicromenuBar.Friends = CreateMicromenuButton(MicromenuBar, false, SOCIAL_BUTTON,
 MicromenuBar.Guild = CreateMicromenuButton(MicromenuBar, GuildMicroButton, GUILD, "Guild")
 MicromenuBar.Achievement = CreateMicromenuButton(MicromenuBar, AchievementMicroButton, ACHIEVEMENT_BUTTON, "Achievement")
 MicromenuBar.EJ = CreateMicromenuButton(MicromenuBar, EJMicroButton, ENCOUNTER_JOURNAL, "EJ")
-MicromenuBar.Store = CreateMicromenuButton(MicromenuBar, StoreMicroButton, BLIZZARD_STORE, "Store") 
+MicromenuBar.Store = CreateMicromenuButton(MicromenuBar, StoreMicroButton, BLIZZARD_STORE, "Store")
 MicromenuBar.System = CreateMicromenuButton(MicromenuBar, MainMenuMicroButton, G.classcolor.." AltzUI "..G.Version.."|r", "System")
 MicromenuBar.Pet = CreateMicromenuButton(MicromenuBar, CollectionsMicroButton, MOUNTS_AND_PETS, "Pet")
 MicromenuBar.Talent = CreateMicromenuButton(MicromenuBar, TalentMicroButton, TALENTS_BUTTON, "Talent")
@@ -1443,8 +1442,8 @@ MicromenuBar:SetScript("OnMouseDown", function(self)
 	UpdateFade(self, MicromenuButtons, "fademicromenu")
 end)
 
-MicromenuBar:SetScript("OnEvent", function(self) 
-	UpdateFade(self, MicromenuButtons, "fademicromenu") 
+MicromenuBar:SetScript("OnEvent", function(self)
+	UpdateFade(self, MicromenuButtons, "fademicromenu")
 end)
 
 MicromenuBar:RegisterEvent("PLAYER_LOGIN")
@@ -1461,8 +1460,8 @@ MicromenuBar2:SetScript("OnMouseDown", function(self)
 	UpdateFade(self, Micromenu2Buttons, "fademicromenu2")
 end)
 
-MicromenuBar2:SetScript("OnEvent", function(self) 
-	UpdateFade(self, Micromenu2Buttons, "fademicromenu2") 
+MicromenuBar2:SetScript("OnEvent", function(self)
+	UpdateFade(self, Micromenu2Buttons, "fademicromenu2")
 end)
 
 MicromenuBar2:RegisterEvent("PLAYER_LOGIN")
@@ -1479,8 +1478,8 @@ MicromenuBar3:SetScript("OnMouseDown", function(self)
 	UpdateFade(self, Micromenu3Buttons, "fademicromenu3")
 end)
 
-MicromenuBar3:SetScript("OnEvent", function(self) 
-	UpdateFade(self, Micromenu3Buttons, "fademicromenu3") 
+MicromenuBar3:SetScript("OnEvent", function(self)
+	UpdateFade(self, Micromenu3Buttons, "fademicromenu3")
 end)
 
 MicromenuBar3:RegisterEvent("PLAYER_LOGIN")
@@ -1498,25 +1497,25 @@ OrderHall_eframe:SetScript("OnEvent", function(self, event, arg1)
 		OrderHall_eframe:RegisterEvent("GARRISON_FOLLOWER_CATEGORIES_UPDATED")
 		OrderHall_eframe:RegisterEvent("GARRISON_FOLLOWER_ADDED")
 		OrderHall_eframe:RegisterEvent("GARRISON_FOLLOWER_REMOVED")
-		
+
 		OrderHallCommandBar:HookScript("OnShow", function()
 			if not OrderHallCommandBar.styled then
 				OrderHallCommandBar:EnableMouse(false)
 				OrderHallCommandBar.Background:SetAtlas(nil)
-				
+
 				OrderHallCommandBar.ClassIcon:ClearAllPoints()
 				OrderHallCommandBar.ClassIcon:SetPoint("TOPLEFT", 15, -20)
 				OrderHallCommandBar.ClassIcon:SetSize(40,20)
 				OrderHallCommandBar.ClassIcon:SetAlpha(1)
 				local bg = F.CreateBDFrame(OrderHallCommandBar.ClassIcon, 0)
 				F.CreateBD(bg, 1)
-				
+
 				OrderHallCommandBar.AreaName:ClearAllPoints()
 				OrderHallCommandBar.AreaName:SetPoint("LEFT", OrderHallCommandBar.ClassIcon, "RIGHT", 5, 0)
 				OrderHallCommandBar.AreaName:SetFont(G.norFont, 14, "OUTLINE")
 				OrderHallCommandBar.AreaName:SetTextColor(1, 1, 1)
 				OrderHallCommandBar.AreaName:SetShadowOffset(0, 0)
-				
+
 				OrderHallCommandBar.CurrencyIcon:ClearAllPoints()
 				OrderHallCommandBar.CurrencyIcon:SetPoint("LEFT", OrderHallCommandBar.AreaName, "RIGHT", 5, 0)
 				OrderHallCommandBar.Currency:ClearAllPoints()
@@ -1524,28 +1523,28 @@ OrderHall_eframe:SetScript("OnEvent", function(self, event, arg1)
 				OrderHallCommandBar.Currency:SetFont(G.norFont, 14, "OUTLINE")
 				OrderHallCommandBar.Currency:SetTextColor(1, 1, 1)
 				OrderHallCommandBar.Currency:SetShadowOffset(0, 0)
-				
+
 				OrderHallCommandBar.WorldMapButton:Hide()
-				
+
 				OrderHallCommandBar.styled = true
 			end
 		end)
 	elseif event ~= "ADDON_LOADED" then
 		local index = 1
 		C_Timer.After(0.1, function()
-			for i, child in ipairs({OrderHallCommandBar:GetChildren()}) do
+			for _, child in ipairs({OrderHallCommandBar:GetChildren()}) do
 				if child.Icon and child.Count and child.TroopPortraitCover then
 					child:SetPoint("TOPLEFT", OrderHallCommandBar.ClassIcon, "BOTTOMLEFT", -5, -index*25+20)
 					child.TroopPortraitCover:Hide()
-					
+
 					child.Icon:SetSize(40,20)
 					local bg = F.CreateBDFrame(child.Icon, 0)
 					F.CreateBD(bg, 1)
-					
+
 					child.Count:SetFont(G.norFont, 14, "OUTLINE")
 					child.Count:SetTextColor(1, 1, 1)
 					child.Count:SetShadowOffset(0, 0)
-					
+
 					index = index + 1
 				end
 			end
@@ -1614,8 +1613,8 @@ end
 
 StaticPopupDialogs[G.uiname.."hideAFKtips"] = {
 	text = L["隐藏提示的提示"],
-	button1 = ACCEPT, 
-	hideOnEscape = 1, 
+	button1 = ACCEPT,
+	hideOnEscape = 1,
 	whileDead = true,
 	preferredIndex = 3,
 }
@@ -1661,7 +1660,7 @@ T.fadeout = function()
 	Minimap:Hide()
 	UIParent:SetAlpha(0)
 	UIFrameFadeIn(BOTTOMPANEL, 3, BOTTOMPANEL:GetAlpha(), 1)
-	
+
 	SetRandomTip()
 	if aCoreCDB["OtherOptions"]["showAFKtips"] then
 		BOTTOMPANEL.tipframe:Show()
@@ -1706,20 +1705,20 @@ BOTTOMPANEL.tipframe.dontshow:SetScript("OnEnter", ShowTipButtons)
 BOTTOMPANEL.tipframe:SetScript("OnLeave", HideTipButtons)
 BOTTOMPANEL.tipframe:SetScript("OnHide", HideTipButtons)
 
-BOTTOMPANEL:SetScript("OnKeyDown", function(self, key) 
+BOTTOMPANEL:SetScript("OnKeyDown", function(self)
 	T.fadein()
 end)
 
-BOTTOMPANEL:SetScript("OnMouseDown", function(self) 
+BOTTOMPANEL:SetScript("OnMouseDown", function(self)
 	T.fadein()
 end)
 
-BOTTOMPANEL:SetScript("OnEvent",function(self, event) 
+BOTTOMPANEL:SetScript("OnEvent",function(self, event)
 	if event == "PLAYER_ENTERING_WORLD" and aCoreCDB["OtherOptions"]["afkscreen"] then
 		if aCoreDB.meet then
 			T.fadeout()
 		end
-		
+
 		local PetNumber = max(C_PetJournal.GetNumPets(false), 5)
 		local randomIndex = random(1 ,PetNumber)
 		local randomID = select(11, C_PetJournal.GetPetInfoByIndex(randomIndex))
@@ -1728,15 +1727,15 @@ BOTTOMPANEL:SetScript("OnEvent",function(self, event)
 		else
 			self.petmodelbutton:SetCreature(53623) -- 塞纳里奥角鹰兽宝宝
 		end
-		
-		hooksecurefunc("L_ToggleDropDownMenu", function(level, value, dropDownFrame, anchorName)
+
+		hooksecurefunc("L_ToggleDropDownMenu", function(level, value)
 			if level == 2 and value == SELECT_LOOT_SPECIALIZATION then
 				local listFrame = _G["L_DropDownList"..level]
 				local point, anchor, relPoint, _, y = listFrame:GetPoint()
 				listFrame:SetPoint(point, anchor, relPoint, 16, y)
 			end
 		end)
-		
+
 		self:UnregisterEvent("PLAYER_ENTERING_WORLD")
 	elseif event == "PLAYER_FLAGS_CHANGED" and aCoreCDB["OtherOptions"]["afkscreen"] then
 		if UnitIsAFK("player") then

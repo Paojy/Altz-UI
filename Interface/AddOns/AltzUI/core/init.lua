@@ -1,7 +1,10 @@
 
 -- local T, C, L, G = unpack(select(2, ...))
 
-local addon, ns = ...
+--Global variables that we don't cache, list them here for mikk's FindGlobals script
+-- GLOBALS: AltzUI
+
+local _, ns = ...
 ns[1] = {} -- T, functions, constants, variables
 ns[2] = {} -- C, config
 ns[3] = {} -- L, localization

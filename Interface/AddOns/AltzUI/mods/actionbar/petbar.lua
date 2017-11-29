@@ -1,5 +1,4 @@
 local T, C, L, G = unpack(select(2, ...))
-local dragFrameList = G.dragFrameList
 
 local scale = aCoreCDB["ActionbarOptions"]["petbarscale"]
 local petbuttonssize = 33

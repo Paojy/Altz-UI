@@ -1,6 +1,14 @@
 -- by emelio
 local T, C, L, G = unpack(select(2, ...))
 
+local _G = _G
+local string = string
+local pairs = pairs
+local type = type
+
+--Global variables that we don't cache, list them here for mikk's FindGlobals script
+-- GLOBALS: DEFAULT_CHAT_FRAME
+
 local addon = CreateFrame("Frame")
 
 -- Based on the frame list from NDragIt by Nemes.
@@ -36,7 +44,6 @@ local frames = {
   --["ArenaFrame"] = false,
   ["ItemTextFrame"] = false,
   ["GameMenuFrame"] = false,
-  ["InterfaceOptionsFrame"] = false,
   ["MacOptionsFrame"] = false,
   ["PetPaperDollFrame"] = true,
   ["PetPaperDollFrameCompanionFrame"] = "CharacterFrame",
@@ -80,7 +87,6 @@ local lodFrames = {
   Blizzard_CraftUI = { ["CraftFrame"] = false },
   Blizzard_GMSurveyUI = { ["GMSurveyFrame"] = false },
   Blizzard_InspectUI = { ["InspectFrame"] = false, ["InspectPVPFrame"] = true, ["InspectTalentFrame"] = true },
-  Blizzard_ItemSocketingUI = { ["ItemSocketingFrame"] = false },
   Blizzard_MacroUI = { ["MacroFrame"] = false },
   Blizzard_TalentUI = { ["PlayerTalentFrame"] = false },
   Blizzard_TradeSkillUI = { ["TradeSkillFrame"] = false },
@@ -152,7 +158,6 @@ function addon:HookFrame(name, moveParent)
   -- find frame
   -- name may contain dots for children, e.g. ReforgingFrame.InvisibleButton
   local frame = _G
-  local s
   for s in string.gmatch(name, "%w+") do
     if frame then
       frame = frame[s]

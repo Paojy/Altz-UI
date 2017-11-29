@@ -1,4 +1,11 @@
-local NAME, addon = ...
+local GetAddOnInfo = GetAddOnInfo
+local select = select
+local IsAddOnLoaded = IsAddOnLoaded
+local type = type
+local floor = floor
+
+--Global variables that we don't cache, list them here for mikk's FindGlobals script
+-- GLOBALS: DBT, DBM, aCoreCDB, AltzUISkinFont, BigWigs
 
 local f = CreateFrame("Frame")
 local function registerBWStyle()
@@ -117,7 +124,7 @@ local function registerBWStyle()
     bars:RegisterBarStyle("AltzUI", {
         apiVersion = 1,
         version = 1,
-        GetSpacing = function(bar) return 8 end,
+        GetSpacing = function() return 8 end,
         ApplyStyle = styleBar,
         BarStopped = removeStyle,
         GetStyleName = function() return "AltzUI" end,
@@ -138,20 +145,20 @@ local function registerDBMStyle()
         Font = "", --If this has any set font it will override the XML font template, so it needs to be blank.
         FontSize = 14,
 		IconLeft = true,
-		IconRight = false,	
+		IconRight = false,
 
 		Height = 20,
 		Width = 183,
 		Scale = 1,
 		BarXOffset = 0,
 		BarYOffset = 3,
-	
+
 		HugeScale = 1,
 		HugeWidth = 200,
 		HugeBarXOffset = 0,
 		HugeBarYOffset = 3,
     }
-	
+
     if DBM.Bars.options.Texture:find("DBM") then
         DBM.Bars.options.Texture = skin.defaults.Texture
     end

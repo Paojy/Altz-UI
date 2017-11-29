@@ -1,7 +1,22 @@
 local T, C, L, G = unpack(select(2, ...))
-local F, C = unpack(Aurora)
 
 if not aCoreCDB["ItemOptions"]["enablebag"] then return end
+
+local format = format
+local mod = mod
+local floor = floor
+local GetMoney = GetMoney
+local GetBackpackCurrencyInfo = GetBackpackCurrencyInfo
+local TOTAL = TOTAL
+local abs = abs
+local math = math
+local MAX_WATCHED_TOKENS = MAX_WATCHED_TOKENS
+local _G = _G
+local pairs = pairs
+local CURRENCY = CURRENCY
+
+--Global variables that we don't cache, list them here for mikk's FindGlobals script
+-- GLOBALS: GameTooltip, aCoreDB
 
 local Profit, Spent, OldMoney = 0, 0, 0
 
@@ -20,31 +35,30 @@ end
 
 local function FormatTooltipMoney(money)
 	local gold, silver, copper = abs(money / 10000), abs(mod(money / 100, 100)), abs(mod(money, 100))
-	local cash = ""
-	cash = format("%d".."|cffffd700g|r".." %d".."|cffc7c7cfs|r".." %d".."|cffeda55fc|r", gold, silver, copper)		
+	local cash = format("%d".."|cffffd700g|r".." %d".."|cffc7c7cfs|r".." %d".."|cffeda55fc|r", gold, silver, copper)
 	return cash
-end	
-	
+end
+
 local eventframe = CreateFrame("Frame")
 
 eventframe:SetScript("OnEvent", function(self, event)
 	if event == "PLAYER_ENTERING_WORLD" then
 		self:UnregisterEvent("PLAYER_ENTERING_WORLD")
 		OldMoney = GetMoney()
-		if aCoreDB.gold[G.PlayerRealm] == nil then 
+		if aCoreDB.gold[G.PlayerRealm] == nil then
 			aCoreDB.gold[G.PlayerRealm] = {}
-		end	
+		end
 	end
-		
+
 	local NewMoney	= GetMoney()
 	local Change = NewMoney - OldMoney -- Positive if we gain money
-		
+
 	if OldMoney > NewMoney then		-- Lost Money
 		Spent = Spent - Change
 	else							-- Gained Moeny
 		Profit = Profit + Change
 	end
-	
+
 	OldMoney = NewMoney
 
 	aCoreDB.gold[G.PlayerRealm][G.PlayerName] = GetMoney()
@@ -80,25 +94,23 @@ local function ShowMoneyTooltip()
 		GameTooltip:AddDoubleLine(L["赤字"], formatMoney(Profit-Spent), 1, 0, 0, 1, 1, 1)
 	elseif (Profit-Spent)>0 then
 		GameTooltip:AddDoubleLine(L["盈利"], formatMoney(Profit-Spent), 0, 1, 0, 1, 1, 1)
-	end				
+	end
 	GameTooltip:AddLine(" ")
-	local totalGold = 0				
+	local totalGold = 0
 	GameTooltip:AddLine(L["角色"]..": ", G.Ccolor.r, G.Ccolor.g, G.Ccolor.b)
 	for k,v in pairs(aCoreDB.gold[G.PlayerRealm]) do
 		GameTooltip:AddDoubleLine(k, FormatTooltipMoney(v), 1, 1, 1, 1, 1, 1)
 		totalGold = totalGold + v
-	end 
+	end
 	GameTooltip:AddLine(" ")
 	GameTooltip:AddLine(L["服务器"]..": ", G.Ccolor.r, G.Ccolor.g, G.Ccolor.b)
 	GameTooltip:AddDoubleLine(TOTAL..": ", FormatTooltipMoney(totalGold), 1, 1, 1, 1, 1, 1)
 	for i = 1, MAX_WATCHED_TOKENS do
-		local name, count, extraCurrencyType, icon, itemID = GetBackpackCurrencyInfo(i)
+		local name, count = GetBackpackCurrencyInfo(i)
 		if name and i == 1 then
 			GameTooltip:AddLine(" ")
 			GameTooltip:AddLine(CURRENCY, G.Ccolor.r, G.Ccolor.g, G.Ccolor.b)
 		end
-		local r, g, b = 1 ,1 ,1
-		if itemID then r, g, b = GetItemQualityColor(select(3, GetItemInfo(itemID))) end
 		if name and count then GameTooltip:AddDoubleLine(name, count, 1, 1, 1, 1, 1, 1) end
 	end
 	GameTooltip:Show()
@@ -108,7 +120,7 @@ end
 Gold:SetScript("OnEnter", function() ShowMoneyTooltip() end)
 Gold:SetScript("OnLeave", function() GameTooltip:Hide() end)
 
-for i, child in ipairs({Gold:GetChildren()}) do
+for _, child in ipairs({Gold:GetChildren()}) do
 	child:SetScript("OnEnter", function() ShowMoneyTooltip() end)
 	child:SetScript("OnLeave", function() GameTooltip:Hide() ResetButton:SetAlpha(0) end)
 end

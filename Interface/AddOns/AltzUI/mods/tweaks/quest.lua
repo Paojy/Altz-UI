@@ -1,10 +1,10 @@
 ﻿-- Original Author: Weasoug, etc
 local T, C, L, G = unpack(select(2, ...))
-local F = unpack(Aurora)
 
 local autoquests = aCoreCDB["OtherOptions"]["autoquests"]
 
 --显示任务等级
+--[[
 local function questlevel()
 	local buttons = QuestLogScrollFrame.buttons
 	local numButtons = #buttons
@@ -23,9 +23,9 @@ local function questlevel()
 		end
 	end
 end
---hooksecurefunc("QuestLog_Update", questlevel)
---QuestLogScrollFrameScrollBar:HookScript("OnValueChanged", questlevel)
-	
+hooksecurefunc("QuestLog_Update", questlevel)
+QuestLogScrollFrameScrollBar:HookScript("OnValueChanged", questlevel)
+--]]
 if autoquests then
   local Monomyth = CreateFrame("Frame")
     Monomyth:SetScript("OnEvent", function(self, event, ...) self[event](...) end)
@@ -210,7 +210,7 @@ if autoquests then
     end)
 
     local choiceQueue
-    Monomyth:Register("QUEST_ITEM_UPDATE", function(...)
+    Monomyth:Register("QUEST_ITEM_UPDATE", function()
         if(choiceQueue and Monomyth[choiceQueue]) then
 			Monomyth[choiceQueue]()
 		end
@@ -285,7 +285,7 @@ if autoquests then
     end)
 
 	local atBank, atMail, atMerchant
-		
+
     Monomyth:Register("MERCHANT_SHOW", function()
         atMerchant = true
     end)
@@ -360,7 +360,7 @@ if autoquests then
         [ERR_QUEST_NEED_PREREQS] = true,
     }
 
-    ChatFrame_AddMessageEventFilter("CHAT_MSG_SYSTEM", function(self, event, message)
+    ChatFrame_AddMessageEventFilter("CHAT_MSG_SYSTEM", function(self, _, message)
         return errors[message]
     end)
 

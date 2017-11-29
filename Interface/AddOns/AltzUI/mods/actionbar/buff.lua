@@ -1,11 +1,17 @@
 local T, C, L, G = unpack(select(2, ...))
-local F = unpack(Aurora)
-local dragFrameList = G.dragFrameList
+
+local GetSpellInfo = GetSpellInfo
+local mod = mod
+local select = select
+local _G = _G
+
+--Global variables that we don't cache, list them here for mikk's FindGlobals script
+-- GLOBALS: BuffFrame, DebuffButton1, TempEnchant1, BUFF_ACTUAL_DISPLAY
 
 local bodercolor = {r = 0.4, g = 0.35, b = 0.35}
 local gloss = "Interface\\AddOns\\AltzUI\\media\\gloss"
 
-local ceil, min, max = ceil, min, max
+local ceil = ceil
 
 local buffFrameHeight = 0
 local seperate = aCoreCDB["BuffFrameOptions"]["seperate"]
@@ -37,15 +43,13 @@ local function applySkin(b)
     --button name
     local name = b:GetName()
     --check the button type
-    local tempenchant, consolidated, Debuff, Buff = false, false, false, false
+    local tempenchant, consolidated, Debuff = false, false, false
     if (name:match("TempEnchant")) then
       tempenchant = true
     elseif (name:match("Consolidated")) then
       consolidated = true
     elseif (name:match("Debuff")) then
       Debuff = true
-    else
-      Buff = true
     end
 
     --button
@@ -54,7 +58,7 @@ local function applySkin(b)
 	else
 		b:SetSize(buff.size, buff.size)
 	end
-	
+
     --icon
     local icon = _G[name.."Icon"]
     if consolidated then
@@ -64,7 +68,7 @@ local function applySkin(b)
     icon:ClearAllPoints()
 	icon:SetPoint("TOPLEFT", b, "TOPLEFT", 0, 0)
 	icon:SetPoint("BOTTOMRIGHT", b, "BOTTOMRIGHT", 0, 0)
-	
+
     icon:SetDrawLayer("BACKGROUND",-8)
     b.icon = icon
 
@@ -101,9 +105,9 @@ local function applySkin(b)
 	b.count:SetShadowOffset(0, 0)
     b.count:ClearAllPoints()
     b.count:SetPoint("TOPRIGHT", 2, 2)
-	
+
 	T.createBackdrop(b, b, 0)
-	
+
     --set button styled variable
     b.styled = true
 end
@@ -118,17 +122,17 @@ local function updateDebuffAnchors(buttonName,index)
     button:ClearAllPoints()
     if index == 1 then
       if seperate then
-        button:SetPoint("TOPRIGHT", _G[G.uiname.."DebuffDragFrame"], "TOPRIGHT", 0, 0)    
+        button:SetPoint("TOPRIGHT", _G[G.uiname.."DebuffDragFrame"], "TOPRIGHT", 0, 0)
       else
         button:SetPoint("TOPRIGHT", _G[G.uiname.."BuffDragFrame"], "TOPRIGHT", 0, -buffFrameHeight)
-      end     
+      end
     elseif index > 1 and mod(index, debuff.PerRow) == 1 then
       button:SetPoint("TOPRIGHT", _G[buttonName..(index-debuff.PerRow)], "BOTTOMRIGHT", 0, -debuff.rowspace)
     else
       button:SetPoint("TOPRIGHT", _G[buttonName..(index-1)], "TOPLEFT", -debuff.iconpadding, 0)
     end
 end
-  
+
   --update buff anchors
 local function updateAllBuffAnchors()
     --variables
@@ -140,7 +144,7 @@ local function updateAllBuffAnchors()
     --position the tempenchant button depending on the consolidated button status
     TempEnchant1:ClearAllPoints()
     TempEnchant1:SetPoint("TOPRIGHT", _G[G.uiname.."BuffDragFrame"], "TOPRIGHT", 0, 0)
-    
+
     --calculate the previous button in case tempenchant or consolidated buff are loaded
     if BuffFrame.numEnchants > 0 then
       previousButton = _G["TempEnchant"..numEnchants]
@@ -171,7 +175,7 @@ local function updateAllBuffAnchors()
           button:SetPoint("TOPRIGHT", previousButton, "TOPLEFT", -buff.iconpadding, 0)
         end
         previousButton = button
-        
+
       end
     end
     --calculate the height of the buff rows for the debuff frame calculation later
@@ -179,7 +183,7 @@ local function updateAllBuffAnchors()
     local height = buff.size*rows + buff.rowspace*rows
     buffFrameHeight = height
 	--make sure the debuff frames update the position asap
-    if DebuffButton1 and not seperate then    
+    if DebuffButton1 and not seperate then
       updateDebuffAnchors("DebuffButton", 1)
     end
 end
@@ -201,7 +205,7 @@ T.CreateDragFrame(bf) --frame, dragFrameList, inset, clamp
 --debuff drag frame
 if seperate then
 	local df = CreateFrame("Frame", G.uiname.."DebuffDragFrame", UIParent)
-	df:SetSize(debuff.size, debuff.size)	
+	df:SetSize(debuff.size, debuff.size)
 	df.movingname = L["减益框"]
 	df.point = {
 		healer = {a1 = "TOPRIGHT", parent = "UIParent", a2 = "TOPRIGHT", x = -16, y = -96},

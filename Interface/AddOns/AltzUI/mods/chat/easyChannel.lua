@@ -1,14 +1,28 @@
 local T, C, L, G = unpack(select(2, ...))
 
-local wantws = true
+
+local GetChannelName = GetChannelName
+local IsInGuild = IsInGuild
+local IsInRaid = IsInRaid
+local _G = _G
+local tostring = tostring
+local IsInInstance = IsInInstance
+local BNet_GetBNetIDAccount = BNet_GetBNetIDAccount
+local IsInGroup = IsInGroup
+local HasLFGRestrictions = HasLFGRestrictions
+local strsub = strsub
+
+--Global variables that we don't cache, list them here for mikk's FindGlobals script
+-- GLOBALS: ChatEdit_CustomTabPressed, ChatEdit_UpdateHeader, CHAT_WHISPER_SEND, CHAT_BN_WHISPER_SEND
+
 --ChatTypeInfo["WHISPER"].sticky= 0
 function ChatEdit_CustomTabPressed(self)
 	if strsub(tostring(self:GetText()), 1, 1) == "/" then return end
 	local name = self:GetAttribute("tellTarget")
 	local chattype = self:GetAttribute("chatType")
-	local channel = self:GetAttribute("channelTarget")	
+	local channel = self:GetAttribute("channelTarget")
 	local header = _G[self:GetName().."Header"]
-	
+
 	if  (chattype == "SAY")  then
 		if name then
 			--print("target",name)
@@ -68,7 +82,7 @@ function ChatEdit_CustomTabPressed(self)
 		else
 			self:SetAttribute("chatType", "SAY")
 			ChatEdit_UpdateHeader(self)
-		end		
+		end
 	elseif (chattype == "INSTANCE_CHAT") then
 		if IsInRaid() then
 			self:SetAttribute("chatType", "RAID")
@@ -90,7 +104,7 @@ function ChatEdit_CustomTabPressed(self)
 		else
 			self:SetAttribute("chatType", "SAY")
 			ChatEdit_UpdateHeader(self)
-		end			
+		end
 	elseif (chattype == "RAID") then
 		if IsInGroup() then
 			self:SetAttribute("chatType", "PARTY")

@@ -1,6 +1,32 @@
 local T, C, L, G = unpack(select(2, ...))
 local F = unpack(Aurora)
-local dragFrameList = G.dragFrameList
+
+local format = format
+local DressUpItemLink = DressUpItemLink
+local pairs = pairs
+local RollOnLoot = RollOnLoot
+local GetLootRollTimeLeft = GetLootRollTimeLeft
+local ITEM_QUALITY_COLORS = ITEM_QUALITY_COLORS
+local PASS = PASS
+local ShowInspectCursor = ShowInspectCursor
+local GREED = GREED
+local IsShiftKeyDown = IsShiftKeyDown
+local IsModifiedClick = IsModifiedClick
+local ipairs = ipairs
+local ResetCursor = ResetCursor
+local next = next
+local GetLootRollItemInfo = GetLootRollItemInfo
+local table = table
+local _G = _G
+local IsControlKeyDown = IsControlKeyDown
+local SetDesaturation = SetDesaturation
+local ROLL_DISENCHANT = ROLL_DISENCHANT
+local GetLootRollItemLink = GetLootRollItemLink
+local NEED = NEED
+
+--Global variables that we don't cache, list them here for mikk's FindGlobals script
+-- GLOBALS: UIParent, WorldFrame, CreateFrame, ChatEdit_InsertLink, GameTooltip_ShowCompareItem
+-- GLOBALS: GameTooltip, CursorOnUpdate, C_LootHistory
 
 local width = 250
 
@@ -9,7 +35,6 @@ local function ClickRoll(frame)
 end
 
 local function HideTip() GameTooltip:Hide() end
-local function HideTip2() GameTooltip:Hide() ResetCursor() end
 
 local rolltypes = {"need", "greed", "disenchant", [0] = "pass"}
 local function SetTip(frame)
@@ -41,7 +66,7 @@ local function LootClick(frame)
 end
 
 local cancelled_rolls = {}
-local function OnEvent(frame, event, rollid)
+local function OnEvent(frame, _, rollid)
 	cancelled_rolls[rollid] = true
 	if frame.rollid ~= rollid then return end
 
@@ -108,7 +133,7 @@ local function CreateRollFrame()
 	status:SetStatusBarTexture("Interface\\Buttons\\WHITE8x8")
 	status:SetStatusBarColor(.8, .8, .8, .9)
 	T.CreateSD(status, 3, 0, 0, 0, 0.5, -1)
-	
+
 	status.parent = frame
 	frame.status = status
 
@@ -123,7 +148,7 @@ local function CreateRollFrame()
 	local greed, greedtext = CreateRollButton(frame, "Interface\\Buttons\\UI-GroupLoot-Coin-Up", "Interface\\Buttons\\UI-GroupLoot-Coin-Highlight", "Interface\\Buttons\\UI-GroupLoot-Coin-Down", 2, GREED, "LEFT", need, "RIGHT", 0, -1)
 	local de, detext
 	de, detext = CreateRollButton(frame, "Interface\\Buttons\\UI-GroupLoot-DE-Up", "Interface\\Buttons\\UI-GroupLoot-DE-Highlight", "Interface\\Buttons\\UI-GroupLoot-DE-Down", 3, ROLL_DISENCHANT, "LEFT", greed, "RIGHT", 0, 1)
-	local pass, passtext = CreateRollButton(frame, "Interface\\Buttons\\UI-GroupLoot-Pass-Up", nil, "Interface\\Buttons\\UI-GroupLoot-Pass-Down", 0, PASS, "BOTTOMRIGHT", frame.status, "BOTTOMRIGHT", 30, -3)
+	local _, passtext = CreateRollButton(frame, "Interface\\Buttons\\UI-GroupLoot-Pass-Up", nil, "Interface\\Buttons\\UI-GroupLoot-Pass-Down", 0, PASS, "BOTTOMRIGHT", frame.status, "BOTTOMRIGHT", 30, -3)
 	frame.needbutt, frame.greedbutt, frame.disenchantbutt = need, greed, de
 	frame.need, frame.greed, frame.pass, frame.disenchant = needtext, greedtext, passtext, detext
 
@@ -158,7 +183,7 @@ f:SetPoint("TOPLEFT", next(frames) and frames[#frames] or anchor, "BOTTOMLEFT", 
 table.insert(frames, f)
 
 local function GetFrame()
-	for i,f in ipairs(frames) do
+	for _,f in ipairs(frames) do
 		if not f.rollid then return f end
 	end
 
@@ -177,7 +202,7 @@ end
 local typemap = {[0] = 'pass', 'need', 'greed', 'disenchant'}
 local function UpdateRoll(i, rolltype)
 	local num = 0
-	local rollid, itemLink, numPlayers, isDone = C_LootHistory.GetItem(i)
+	local rollid, _, numPlayers, isDone = C_LootHistory.GetItem(i)
 
 	if isDone or not numPlayers then return end
 
@@ -185,7 +210,7 @@ local function UpdateRoll(i, rolltype)
 	if not f then return end
 
 	for j=1,numPlayers do
-		local name, class, thisrolltype = C_LootHistory.GetPlayerInfo(i, j)
+		local name, _, thisrolltype = C_LootHistory.GetPlayerInfo(i, j)
 		f.rolls[name] = typemap[thisrolltype]
 		if rolltype == thisrolltype then num = num + 1 end
 	end
@@ -205,7 +230,7 @@ local function START_LOOT_ROLL(rollid, time)
 	f.pass:SetText(0)
 	f.disenchant:SetText(0)
 
-	local texture, name, count, quality, bop, canNeed, canGreed, canDisenchant, reasonNeed, reasonGreed, reasonDisenchant, deSkillRequired = GetLootRollItemInfo(rollid)
+	local texture, name, _, quality, bop, canNeed, canGreed, canDisenchant, reasonNeed, reasonGreed, reasonDisenchant, deSkillRequired = GetLootRollItemInfo(rollid)
 	f.button:SetNormalTexture(texture)
 	f.button.link = GetLootRollItemLink(rollid)
 
@@ -268,7 +293,7 @@ end
 
 
 anchor:RegisterEvent("ADDON_LOADED")
-anchor:SetScript("OnEvent", function(frame, event, addon)
+anchor:SetScript("OnEvent", function(self)
 
 	anchor:UnregisterEvent("ADDON_LOADED")
 	anchor:RegisterEvent("START_LOOT_ROLL")
@@ -276,7 +301,7 @@ anchor:SetScript("OnEvent", function(frame, event, addon)
 	UIParent:UnregisterEvent("START_LOOT_ROLL")
 	UIParent:UnregisterEvent("CANCEL_LOOT_ROLL")
 
-	anchor:SetScript("OnEvent", function(frame, event, ...)
+	anchor:SetScript("OnEvent", function(self, event, ...)
 		if event == "LOOT_HISTORY_ROLL_CHANGED" then return LOOT_HISTORY_ROLL_CHANGED(...)
 		else return START_LOOT_ROLL(...) end
 	end)

@@ -17,10 +17,15 @@ local atan2 = math.atan2
 local modf = math.modf
 local abs = math.abs
 local floor = floor
+local GetInstanceInfo = GetInstanceInfo
+local CreateFrame = CreateFrame
+local table = table
+
+--Global variables that we don't cache, list them here for mikk's FindGlobals script
+-- GLOBALS: UIParent, aCoreCDB
 
 local function ColorGradient(perc, ...)
     local num = select("#", ...)
-    local hexes = type(select(1, ...)) == "string"
 
     if perc == 1 then
         return select(num-2, ...), select(num-1, ...), select(num, ...)
@@ -93,7 +98,7 @@ local function GetBearing(unit)
 end
 
 local function arrow(object)
-    if not object.OoR or not UnitIsConnected(object.unit) then return end 
+    if not object.OoR or not UnitIsConnected(object.unit) then return end
     local bearing = GetBearing(object.unit)
     if bearing then
         RotateTexture(object.freebarrow, bearing)
@@ -160,20 +165,20 @@ local Enable = function(self)
 
         self.freebarrow = frame
         self.freebarrow:Hide()
-		
+
 		self:HookScript("OnEnter", function(self)
 			if select(2, GetInstanceInfo()) == "none" then
 				self:SetScript("OnUpdate", Updatedirection)
 			end
 		end)
-		
+
 		self:HookScript("OnLeave", function(self)
 		    if(self.freebarrow and self.freebarrow:IsShown()) then
 				self.freebarrow:Hide()
 			end
 			self:SetScript("OnUpdate", nil)
 		end)
-		
+
         return true
     end
 end

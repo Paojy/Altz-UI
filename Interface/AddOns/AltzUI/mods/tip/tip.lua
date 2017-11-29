@@ -1,6 +1,5 @@
 ﻿local T, C, L, G = unpack(select(2, ...))
 local F = unpack(Aurora)
-local dragFrameList = G.dragFrameList
 
 local _, ns = ...
 
@@ -22,7 +21,6 @@ local classification = {
     rareelite = " Rare+",
 	}
 
-local find = string.find
 local format = string.format
 local hex = function(r, g, b)
     return format('|cff%02x%02x%02x', r * 255, g * 255, b * 255)
@@ -36,7 +34,7 @@ local function unitColor(unit)
     else
         local reaction = UnitReaction(unit, "player")
         if reaction then
-            r, g, b = FACTION_BAR_COLORS[reaction].r, FACTION_BAR_COLORS[reaction].g, FACTION_BAR_COLORS[reaction].b 
+            r, g, b = FACTION_BAR_COLORS[reaction].r, FACTION_BAR_COLORS[reaction].g, FACTION_BAR_COLORS[reaction].b
         end
     end
     return r, g, b
@@ -77,8 +75,8 @@ GameTooltip:HookScript("OnTooltipSetUnit", function(self)
         end
 
         if UnitIsPlayer(unit) then
-            self:AppendText((" |cff00cc00%s|r"):format(UnitIsAFK(unit) and CHAT_FLAG_AFK or 
-            UnitIsDND(unit) and CHAT_FLAG_DND or 
+            self:AppendText((" |cff00cc00%s|r"):format(UnitIsAFK(unit) and CHAT_FLAG_AFK or
+            UnitIsDND(unit) and CHAT_FLAG_DND or
             not UnitIsConnected(unit) and "<DC>" or ""))
 
             if hideTitles then
@@ -100,7 +98,7 @@ GameTooltip:HookScript("OnTooltipSetUnit", function(self)
                 end
             end
 
-            local unitGuild, tmp,tmp2 = GetGuildInfo(unit)
+            local _, tmp,tmp2 = GetGuildInfo(unit)
             local text = GameTooltipTextLeft2:GetText()
             if tmp then
                --tmp2=tmp2+1
@@ -137,7 +135,7 @@ GameTooltip:HookScript("OnTooltipSetUnit", function(self)
 
 					if tiptext:GetText():find(PVP) then
 						tiptext:SetText(nil)
-					end	
+					end
 				end
 			end
         end
@@ -150,7 +148,7 @@ GameTooltip:HookScript("OnTooltipSetUnit", function(self)
             local tartext = ("%s: %s"):format(TARGET, getTarget(unit.."target"))
             self:AddLine(tartext)
         end
-		
+
 		GameTooltipStatusBar:SetStatusBarTexture("Interface\\Buttons\\WHITE8x8")
 		GameTooltipStatusBar:GetStatusBarTexture():SetGradient("VERTICAL",  r, g, b, r/3, g/3, b/3)
     else
@@ -170,7 +168,7 @@ GameTooltip:HookScript("OnTooltipSetUnit", function(self)
         GameTooltipStatusBar:SetHeight(8)
 		GameTooltipStatusBar:SetPoint("BOTTOMLEFT", GameTooltipStatusBar:GetParent(), "TOPLEFT", 0, 4)
 		GameTooltipStatusBar:SetPoint("BOTTOMRIGHT", GameTooltipStatusBar:GetParent(), "TOPRIGHT", 0, 4)
-		F.CreateBG(GameTooltipStatusBar)		
+		F.CreateBG(GameTooltipStatusBar)
     end
 end)
 
@@ -198,21 +196,19 @@ GameTooltipStatusBar:SetScript("OnValueChanged", function(self, value)
 end)
 
 hooksecurefunc("GameTooltip_SetDefaultAnchor", function(tooltip, parent)
-    local frame = GetMouseFocus()
     if cursor then
         tooltip:SetOwner(parent, "ANCHOR_CURSOR_RIGHT")
     else
-        tooltip:SetOwner(parent, "ANCHOR_NONE")	
+        tooltip:SetOwner(parent, "ANCHOR_NONE")
         tooltip:SetPoint("BOTTOMRIGHT",  anchor, "BOTTOMRIGHT")
     end
     tooltip.default = 1
 end)
 
-GameTooltip:HookScript("OnUpdate", function(self, ...)
+GameTooltip:HookScript("OnUpdate", function(self)
    if self:GetAnchorType() == "ANCHOR_CURSOR" then
 	  local x, y = GetCursorPosition()
 	  local effScale = self:GetEffectiveScale()
-	  local width = self:GetWidth() or 0
 	  self:ClearAllPoints()
 	  self:SetPoint("BOTTOMLEFT", UIParent, "BOTTOMLEFT", x / effScale +5, y / effScale + 20)
    end
@@ -229,7 +225,7 @@ local function style(frame)
 	frame:SetScale(scale)
 	frame:SetBackdropColor(0, 0, 0, 0.4)
     frame:SetBackdropBorderColor(0, 0, 0)
-	
+
     if colorborderClass then
         local _, unit = GameTooltip:GetUnit()
         if UnitIsPlayer(unit) then
@@ -260,16 +256,16 @@ local tooltips = {
     GameTooltip,
     ItemRefTooltip,
     ShoppingTooltip1,
-    ShoppingTooltip2, 
+    ShoppingTooltip2,
     ShoppingTooltip3,
     WorldMapTooltip,
 	WorldMapTooltip.BackdropFrame,
-    DropDownList1MenuBackdrop, 
+    DropDownList1MenuBackdrop,
     DropDownList2MenuBackdrop,
 }
 
-for i, frame in pairs(tooltips) do
-    frame:SetScript("OnShow", function(frame) style(frame) end)
+for _, frame in pairs(tooltips) do
+    frame:SetScript("OnShow", function(self) style(self) end)
 end
 
 local itemrefScripts = {
@@ -279,7 +275,7 @@ local itemrefScripts = {
     "OnTooltipSetSpell",
 }
 
-for i, script in ipairs(itemrefScripts) do
+for _, script in ipairs(itemrefScripts) do
     ItemRefTooltip:HookScript(script, function(self)
         style(self)
     end)
@@ -296,7 +292,7 @@ function ns:UnregisterEvent(...) for i=1,select("#", ...) do f:UnregisterEvent((
 
 ns:RegisterEvent"PLAYER_LOGIN"
 function ns:PLAYER_LOGIN()
-    for i, frame in ipairs(tooltips) do
+    for _, frame in ipairs(tooltips) do
         F.CreateBD(frame, 0.5)
 		frame.border = true
     end

@@ -1,6 +1,24 @@
 local T, C, L, G = unpack(select(2, ...))
 -- by zork
 
+local UnitPowerMax = UnitPowerMax
+local pairs = pairs
+local UnitCastingInfo = UnitCastingInfo
+local UnitHealthMax = UnitHealthMax
+local UnitPower = UnitPower
+local UnitPowerType = UnitPowerType
+local print = print
+local UnitExists = UnitExists
+local UnitChannelInfo = UnitChannelInfo
+local select = select
+local UnitAffectingCombat = UnitAffectingCombat
+local _G = _G
+local tinsert = tinsert
+local UnitHealth = UnitHealth
+
+--Global variables that we don't cache, list them here for mikk's FindGlobals script
+-- GLOBALS: SpellFlyout, FADEFRAMES, UIFrameFade_OnUpdate
+
 local defaultFadeIn = {time = 0.4, alpha = 1}
 local defaultFadeOut = {time = 0.4, alpha = 0}
 local defaultEventFadeOut = {time = 1.5, alpha = 0}
@@ -11,15 +29,12 @@ local frameFadeManager = CreateFrame("FRAME")
 local function UIFrameFade(frame, fadeInfo)
 	if not frame then return end
 	if not fadeInfo.mode then fadeInfo.mode = "IN" end
-	local alpha
 	if fadeInfo.mode == "IN" then
 		if not fadeInfo.startAlpha then fadeInfo.startAlpha = 0 end
 		if not fadeInfo.endAlpha then fadeInfo.endAlpha = 1 end
-		alpha = 0
 	elseif fadeInfo.mode == "OUT" then
 		if not fadeInfo.startAlpha then fadeInfo.startAlpha = 1.0 end
 		if not fadeInfo.endAlpha then fadeInfo.endAlpha = 0 end
-		alpha = 1.0
 	end
 	frame:SetAlpha(fadeInfo.startAlpha)
 	frame.fadeInfo = fadeInfo
@@ -247,7 +262,7 @@ function T.ActionbarEventFader(frame,buttonList,fadeIn,fadeOut)
 
 	regi(frame)
 
-	frame:SetScript("OnEvent", function(self,event)
+	frame:SetScript("OnEvent", function(self)
 		if
 		UnitCastingInfo('player') or UnitChannelInfo('player') or
 		UnitAffectingCombat('player') or
@@ -289,7 +304,7 @@ function T.FrameEventFader(frame,fadeIn,fadeOut)
 
 	regi(frame)
 
-	frame:SetScript("OnEvent", function(self,event)
+	frame:SetScript("OnEvent", function(self)
 		if
 		UnitCastingInfo('player') or UnitChannelInfo('player') or
 		UnitAffectingCombat('player') or

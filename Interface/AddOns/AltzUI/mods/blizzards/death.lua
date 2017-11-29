@@ -1,8 +1,13 @@
 local T, C, L, G = unpack(select(2, ...))
 
+local UnitIsDead = UnitIsDead
+
+--Global variables that we don't cache, list them here for mikk's FindGlobals script
+-- GLOBALS: StaticPopup_Hide, StaticPopup_Show
+
 local eventframe = CreateFrame("Frame")
 
-eventframe:SetScript("OnEvent", function(self, event)
+eventframe:SetScript("OnEvent", function(self)
 	if UnitIsDead("player") then
 		StaticPopup_Show("DEATH")
 	end
@@ -10,7 +15,7 @@ end)
 
 eventframe:RegisterEvent("PLAYER_ENTERING_WORLD")
 
-hooksecurefunc("StaticPopup_Show", function(which, text_arg1, text_arg2, data)
+hooksecurefunc("StaticPopup_Show", function(which)
 	if which == "DEATH" and not UnitIsDead("player") then
       StaticPopup_Hide("DEATH")
    end
