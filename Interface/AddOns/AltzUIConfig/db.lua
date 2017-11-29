@@ -1353,6 +1353,7 @@ G.DebuffList = {
 			[GetSpellInfo(244055)] = {id = 244055, level = 8,}, --暗影触痕
 			[GetSpellInfo(244054)] = {id = 244054, level = 8,}, --烈焰触痕
 			[GetSpellInfo(245022)] = {id = 245022, level = 8,}, --炽然
+			[GetSpellInfo(244071)] = {id = 244071, level = 8,}, --恐惧		
 		},
 		
 		[EJ_GetEncounterInfo(1997)] = { --> 安托兰统帅议会
@@ -1363,6 +1364,7 @@ G.DebuffList = {
 			[GetSpellInfo(244172)] = { id = 244172, level = 8, }, --灵能突袭
 			[GetSpellInfo(253306)] = { id = 253306, level = 8, }, --灵能创伤
 			[GetSpellInfo(244910)] = { id = 244910, level = 8, }, --邪能护盾
+			[GetSpellInfo(253037)] = { id = 253037, level = 8, }, --恶魔冲锋
 		},
 		
 		[EJ_GetEncounterInfo(1985)] = { --> 传送门守护者哈萨贝尔
@@ -1376,6 +1378,7 @@ G.DebuffList = {
 			[GetSpellInfo(244915)] = { id = 244915, level = 8, }, -- 吸取精华
 			[GetSpellInfo(245050)] = { id = 245050, level = 8, }, -- 欺骗幻境
 			[GetSpellInfo(245040)] = { id = 245040, level = 8, }, -- 腐蚀
+			[GetSpellInfo(244709)] = { id = 244709, level = 8, }, -- 烈焰引爆
 		},
 		
 		[EJ_GetEncounterInfo(2025)] = { --> 生命的缚誓者艾欧娜尔
@@ -1387,7 +1390,8 @@ G.DebuffList = {
 			[GetSpellInfo(250140)] = { id = 250140, level = 8, }, -- 邪污足迹
 			[GetSpellInfo(249015)] = { id = 249015, level = 8, }, -- 反馈-燃烧的余烬
 			[GetSpellInfo(250691)] = { id = 250691, level = 8, }, -- 燃烧的余烬
-			[GetSpellInfo(249016)] = { id = 249016, level = 8, }, -- 反馈-目标锁定                                       
+			[GetSpellInfo(249016)] = { id = 249016, level = 8, }, -- 反馈-目标锁定     
+			[GetSpellInfo(249194)] = { id = 249194, level = 8, }, -- 痛苦    
 		},
 		
 		[EJ_GetEncounterInfo(2009)] = { --> 裂魂者伊墨纳尔
@@ -1395,6 +1399,8 @@ G.DebuffList = {
 			[GetSpellInfo(250255)] = { id = 250255, level = 8, }, -- 强化震击之枪
 			[GetSpellInfo(255029)] = { id = 255029, level = 8, }, -- 催眠气罐
 			[GetSpellInfo(247565)] = { id = 247565, level = 8, }, -- 催眠毒气
+			[GetSpellInfo(250006)] = { id = 250006, level = 8, }, -- 强化脉冲手雷
+			[GetSpellInfo(247716)] = { id = 247716, level = 8, }, -- 充能轰炸
 			[GetSpellInfo(247687)] = { id = 247687, level = 8, }, -- 撕裂
 			[GetSpellInfo(247932)] = { id = 247932, level = 8, }, -- 霰弹爆破
 			[GetSpellInfo(248070)] = { id = 248070, level = 8, }, -- 强化霰弹爆破
@@ -1402,13 +1408,16 @@ G.DebuffList = {
 			[GetSpellInfo(247641)] = { id = 247641, level = 8, }, -- 静滞陷阱
 			[GetSpellInfo(250224)] = { id = 250224, level = 8, }, -- 震晕
 			[GetSpellInfo(248321)] = { id = 248321, level = 8, }, -- 洪荒烈火
+			[GetSpellInfo(248255)] = { id = 248255, level = 8, }, -- 地狱火火箭
 		},
 		
 		[EJ_GetEncounterInfo(2004)] = { --> 金加洛斯
 			[GetSpellInfo(245919)] = { id = 245919, level = 8, }, -- 熔铸之击
 			[GetSpellInfo(245770)] = { id = 245770, level = 8, }, -- 屠戮
+			[GetSpellInfo(249535)] = { id = 249535, level = 8, }, -- 破坏术
 			[GetSpellInfo(249686)] = { id = 249686, level = 8, }, -- 轰鸣屠戮
 			[GetSpellInfo(246698)] = { id = 246698, level = 8, }, -- 破坏
+			[GetSpellInfo(246840)] = { id = 246840, level = 8, }, -- 毁灭者
 		},
 		
 		[EJ_GetEncounterInfo(1983)] = { --> 瓦里玛萨斯                  
@@ -1420,6 +1429,7 @@ G.DebuffList = {
 			[GetSpellInfo(244005)] = { id = 244005, level = 8, }, -- 黑暗裂隙
 			[GetSpellInfo(244094)] = { id = 244094, level = 8, }, -- 冥魂之拥
 			[GetSpellInfo(248732)] = { id = 248732, level = 8, }, -- 毁灭回响
+			[GetSpellInfo(244042)] = { id = 244042, level = 8, }, -- 被标记的猎物
 		},
 		
 		[EJ_GetEncounterInfo(1986)] = { --> 破坏魔女巫会
@@ -1437,12 +1447,15 @@ G.DebuffList = {
 		
 		[EJ_GetEncounterInfo(1984)] = { --> 阿格拉玛
 			[GetSpellInfo(245990)] = { id = 245990, level = 8, }, -- 泰沙拉克之触
+			[GetSpellInfo(245994)] = { id = 245994, level = 8, }, -- 灼热之焰
 			[GetSpellInfo(254452)] = { id = 254452, level = 8, }, -- 饕餮烈焰
 			[GetSpellInfo(244736)] = { id = 244736, level = 8, }, -- 烈焰之迹
 			[GetSpellInfo(244291)] = { id = 244291, level = 8, }, -- 破敌者
 			[GetSpellInfo(255060)] = { id = 255060, level = 8, }, -- 强化破敌者
 			[GetSpellInfo(247079)] = { id = 247079, level = 8, }, -- 强化撕裂烈焰
 			[GetSpellInfo(244912)] = { id = 244912, level = 8, }, -- 烈焰喷薄
+			[GetSpellInfo(245916)] = { id = 245916, level = 8, }, -- 熔火残渣
+			
 		},
 		
 		[EJ_GetEncounterInfo(2031)] = { --> 寂灭者阿古斯
@@ -1459,6 +1472,7 @@ G.DebuffList = {
 			[GetSpellInfo(255200)] = { id = 255200, level = 8, }, -- 阿格拉玛的恩赐
 			[GetSpellInfo(252729)] = { id = 252729, level = 8, }, -- 宇宙射线
 			[GetSpellInfo(252616)] = { id = 252616, level = 8, }, -- 宇宙道标
+			[GetSpellInfo(252634)] = { id = 252634, level = 8, }, -- 宇宙重击
 			[GetSpellInfo(257299)] = { id = 257299, level = 8, }, -- 怒火余烬
 			[GetSpellInfo(258039)] = { id = 258039, level = 8, }, -- 死亡之镰
 			[GetSpellInfo(256899)] = { id = 256899, level = 8, }, -- 灵魂引爆
