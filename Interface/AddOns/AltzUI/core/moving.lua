@@ -133,7 +133,7 @@ Point1dropDown.name:SetText(G.classcolor.."Point1|r")
 L_UIDropDownMenu_SetWidth(Point1dropDown, 100)
 L_UIDropDownMenu_SetText(Point1dropDown, "")
 
-L_UIDropDownMenu_Initialize(Point1dropDown, function(self)
+L_UIDropDownMenu_Initialize(Point1dropDown, function(self, level, menuList)
 	local info = L_UIDropDownMenu_CreateInfo()
 	for i = 1, #anchors do
 		info.text = anchors[i]
@@ -170,7 +170,7 @@ Point2dropDown.name:SetText(G.classcolor.."Point2|r")
 L_UIDropDownMenu_SetWidth(Point2dropDown, 100)
 L_UIDropDownMenu_SetText(Point2dropDown, "")
 
-L_UIDropDownMenu_Initialize(Point2dropDown, function(self)
+L_UIDropDownMenu_Initialize(Point2dropDown, function(self, level, menuList)
 	local info = L_UIDropDownMenu_CreateInfo()
 	for i = 1, #anchors do
 		info.text = anchors[i]
@@ -236,7 +236,7 @@ function T.CreateDragFrame(frame)
 	if aCoreCDB["FramePoints"][fname] == nil then
 		aCoreCDB["FramePoints"][fname] = frame.point
 	else
-		for role in pairs(frame.point) do
+		for role, points in pairs(frame.point) do
 			if aCoreCDB["FramePoints"][fname][role] == nil then
 				aCoreCDB["FramePoints"][fname][role] = frame.point[role]
 			else
@@ -445,7 +445,7 @@ unlockbutton:SetScript("OnClick", function()
 end)
 
 local function slashCmdFunction(msg)
-	msg = string.lower(msg)
+	local msg = string.lower(msg)
 	if msg == "unlock" then
 		UnlockAll()
 	end

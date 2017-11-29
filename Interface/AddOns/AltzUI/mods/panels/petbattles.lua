@@ -1,16 +1,6 @@
 local T, C, L, G = unpack(select(2, ...))
 local F = unpack(Aurora)
 
-
-local C_PetBattles = C_PetBattles
-local LE_BATTLE_PET_ALLY = LE_BATTLE_PET_ALLY
-local CreateFrame = CreateFrame
-local LE_BATTLE_PET_ENEMY = LE_BATTLE_PET_ENEMY
-local PET_TYPE_SUFFIX = PET_TYPE_SUFFIX
-
---Global variables that we don't cache, list them here for mikk's FindGlobals script
--- GLOBALS: NUM_BATTLE_PET_ABILITIES, PetBattlePetSelectionFrame_Show, PetBattlePetSelectionFrame_Hide
-
 local testmode = false
 
 local frame = PetBattleFrame
@@ -91,7 +81,7 @@ for index, unit in pairs(units) do
 	bg:SetFrameLevel(unit:GetFrameLevel()-1)
 	T.CreateSD(bg, 3, 0, 0, 0, 0, -2)
 	F.CreateBD(bg, .5)
-
+	
 	unit.HealthText:SetPoint("CENTER", bg, "CENTER")
 
 	unit.PetTypeString = unit:CreateFontString(nil, "ARTWORK")
@@ -169,7 +159,7 @@ for index, unit in pairs(extraUnits) do
 	else
 		unit.ActualHealthBar:SetGradient("VERTICAL", 1, .12, .24, .5, .06, .12)
 	end
-
+	
 	unit.Icon:SetDrawLayer("OVERLAY", 2)
 end
 
@@ -304,7 +294,7 @@ bf.xpBar:ClearAllPoints()
 bf.xpBar:SetPoint("BOTTOM", bf.TurnTimer, "TOP", 0, 5)
 bf.xpBar:SetStatusBarTexture(G.media.bar)
 F.CreateBDFrame(bf.xpBar, 0)
-
+	
 for i = 7, 12 do
 	select(i, bf.xpBar:GetRegions()):Hide()
 end

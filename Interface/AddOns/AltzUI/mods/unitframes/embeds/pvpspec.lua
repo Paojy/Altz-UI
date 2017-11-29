@@ -1,12 +1,6 @@
 local T, C, L, G = unpack(select(2, ...))
 local oUF = AltzUF or oUF
 
-local tonumber = tonumber
-local IsInInstance = IsInInstance
-local UnitFactionGroup = UnitFactionGroup
-local GetSpecializationInfoByID = GetSpecializationInfoByID
-local GetArenaOpponentSpec = GetArenaOpponentSpec
-
 local Update = function(self, event, unit)
 	if event == 'ARENA_OPPONENT_UPDATE' and unit ~= self.unit then return; end
 	local specIcon = self.PVPSpecIcon
@@ -17,6 +11,7 @@ local Update = function(self, event, unit)
 	if(specIcon.PreUpdate) then specIcon:PreUpdate(event) end
 
 	if instanceType == 'arena' then
+		local numOpps = GetNumArenaOpponentSpecs()
 		local ID = self.unit:match('arena(%d)') or self:GetID() or 0
 		local specID = GetArenaOpponentSpec(tonumber(ID))
 		if specID and specID > 0 then
@@ -54,15 +49,15 @@ local Enable = function(self)
 		return true
 	end
 end
-
+ 
 local Disable = function(self)
 	local specIcon = self.PVPSpecIcon
 	if specIcon then
 		self:UnregisterEvent("ARENA_PREP_OPPONENT_SPECIALIZATIONS", Update)
 		self:UnregisterEvent("ARENA_OPPONENT_UPDATE", Update)
-		self:UnregisterEvent("PLAYER_ENTERING_WORLD", Update)
+		self:UnregisterEvent("PLAYER_ENTERING_WORLD", Update)		
 		specIcon:Hide()
 	end
 end
-
+ 
 oUF:AddElement('PVPSpecIcon', Update, Enable, Disable)

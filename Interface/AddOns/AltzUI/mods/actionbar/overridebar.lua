@@ -1,4 +1,5 @@
 local T, C, L, G = unpack(select(2, ...))
+local dragFrameList = G.dragFrameList
 
 local padding = 4
 local buttonssize = 35

@@ -1,13 +1,6 @@
 local T, C, L, G = unpack(select(2, ...))
 if not aCoreCDB["ChatOptions"]["channelreplacement"] then return end
-
---Global variables that we don't cache, list them here for mikk's FindGlobals script
--- GLOBALS: CHAT_PARTY_LEADER_GET, CHAT_PARTY_GET, CHAT_RAID_WARNING_GET, CHAT_RAID_LEADER_GET
--- GLOBALS: CHAT_BN_WHISPER_GET, CHAT_WHISPER_GET, CHAT_FLAG_AFK, CHAT_BN_WHISPER_INFORM_GET
--- GLOBALS: CHAT_FLAG_GM, CHAT_FLAG_DND, CHAT_YELL_GET, CHAT_SAY_GET, CHAT_PARTY_GUIDE_GET
--- GLOBALS: CHAT_BATTLEGROUND_GET, CHAT_GUILD_GET, CHAT_RAID_GET, CHAT_BATTLEGROUND_LEADER_GET
--- GLOBALS: CHAT_OFFICER_GET, CHAT_WHISPER_INFORM_GET
-
+  
 --guild
 CHAT_GUILD_GET = "|Hchannel:GUILD|hG|h %s "
 CHAT_OFFICER_GET = "|Hchannel:OFFICER|hO|h %s "
@@ -41,6 +34,8 @@ CHAT_FLAG_AFK = "[AFK] "
 CHAT_FLAG_DND = "[DND] "
 CHAT_FLAG_GM = "[GM] "
 
+local gsub = _G.string.gsub
+
 for i = 1, NUM_CHAT_WINDOWS do
 	if ( i ~= 2 ) then
 		local f = _G["ChatFrame"..i]
@@ -49,4 +44,4 @@ for i = 1, NUM_CHAT_WINDOWS do
 			return am(frame, text:gsub('|h%[(%d+)%. .-%]|h', '|h%1|h'), ...)
 		end
 	end
-end
+end 

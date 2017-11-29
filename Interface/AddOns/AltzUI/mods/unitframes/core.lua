@@ -71,7 +71,7 @@ end
 --[[ Some update ]]--
 --=============================================--
 
-T.Overridehealthbar = function(self, _, unit)
+T.Overridehealthbar = function(self, event, unit)
 	if(self.unit ~= unit) then return end
 
 	local health = self.Health
@@ -213,7 +213,7 @@ T.Updatehealthbar = function(self, unit, min, max)
 	end
 end
 
-T.Updatepowerbar = function(self, unit, cur, _, max)
+T.Updatepowerbar = function(self, unit, cur, min, max)
 	local r, g, b
 	local type = select(2, UnitPowerType(unit))
 	local powercolor = oUF.colors.power[type] or oUF.colors.power.FUEL
@@ -248,7 +248,7 @@ T.Updatepowerbar = function(self, unit, cur, _, max)
 	end
 end
 
-local PostAltUpdate = function(altpp, _, cur)
+local PostAltUpdate = function(altpp, unit, cur, min, max)
 	altpp.value:SetText(cur)
 end
 
@@ -329,7 +329,7 @@ local ClassIconsPostUpdate = function(element, cur, max, maxchange)
 	end
 end
 
-local PostUpdateRunes = function(self, rune, _, _, _, runeReady)
+local PostUpdateRunes = function(self, rune, rid, start, duration, runeReady)
 	if rune.value then
 		if runeReady then
 			rune.value:SetText("")
@@ -360,10 +360,10 @@ local function UpdatePrep()
 		for i=1, 5 do
 			if not _G["oUF_AltzArena"..i] then return end
 			local s = GetArenaOpponentSpec(i)
-			local spec, class = "UNKNOWN", "UNKNOWN"
+			local _, spec, class, texture = nil, "UNKNOWN", "UNKNOWN", "INTERFACE\\ICONS\\INV_MISC_QUESTIONMARK"
 
 			if s and s > 0 then
-				_, spec, _, _, _, _, class = GetSpecializationInfoByID(s)
+				_, spec, _, texture, _, _, class = GetSpecializationInfoByID(s)
 			end
 
 			if (i <= numOpps) then
@@ -488,7 +488,7 @@ local PostChannelUpdate = function(castbar, unit, spell)
 	end
 end
 
-local PostChannelStop = function(castbar, unit)
+local PostChannelStop = function(castbar, unit, spell)
 	if aCoreCDB["UnitframeOptions"]["channelticks"] then
 		if unit == "player" then
 			if #castbar.Ticks ~= 0 then
@@ -769,7 +769,7 @@ local PostCreateIcon = function(auras, icon)
 	end
 end
 
-local PostCreateIndicatorIcon = function(_, icon)
+local PostCreateIndicatorIcon = function(auras, icon)
 	icon.icon:SetTexCoord(.07, .93, .07, .93)
 
 	icon.count:ClearAllPoints()
@@ -807,8 +807,8 @@ local whitelist = {
 	["123059"] = true, -- 动摇意志
 }
 
-local PostUpdateIcon = function(_, unit, icon, index)
-	local _, _, _, _, _, duration, expirationTime, _, _, _, SpellID = UnitAura(unit, index, icon.filter)
+local PostUpdateIcon = function(icons, unit, icon, index, offset)
+	local name, _, _, _, _, duration, expirationTime, _, _, _, SpellID = UnitAura(unit, index, icon.filter)
 
 	if icon.isPlayer or UnitIsFriend("player", unit) or not icon.isDebuff or aCoreCDB["UnitframeOptions"]["AuraFilterwhitelist"][tostring(SpellID)] or whitelist[tostring(SpellID)] then
 		icon.icon:SetDesaturated(false)
@@ -833,12 +833,12 @@ local PostUpdateIcon = function(_, unit, icon, index)
 	icon:SetScript("OnUpdate", CreateAuraTimer)
 end
 
-local PostUpdateGapIcon = function(_, _, icon)
+local PostUpdateGapIcon = function(auras, unit, icon, visibleBuffs)
 	icon.bd:Hide()
 	icon.remaining:Hide()
 end
 
-local CustomFilter = function(_, unit, icon, ...)
+local CustomFilter = function(icons, unit, icon, ...)
 	local SpellID = select(11, ...)
 	if icon.isPlayer then -- show all my auras
 		return true
@@ -851,7 +851,7 @@ local CustomFilter = function(_, unit, icon, ...)
 	end
 end
 
-local BossAuraFilter = function(_, _, icon, ...)
+local BossAuraFilter = function(icons, unit, icon, ...)
 	local SpellID = select(11, ...)
 	if icon.isPlayer or not icon.isDebuff then -- show buff and my auras
 		return true
@@ -872,7 +872,7 @@ blacklist ={
 	--["124273"] = true, --心满意足
 }
 
-local PlayerDebuffFilter = function(_, _, _, ...)
+local PlayerDebuffFilter = function(icons, unit, icon, ...)
 	local SpellID = select(11, ...)
 	if blacklist[tostring(SpellID)] then
 		return false
@@ -881,7 +881,7 @@ local PlayerDebuffFilter = function(_, _, _, ...)
 	end
 end
 
-local HealerInd_AuraFilter = function(_, _, icon, ...)
+local HealerInd_AuraFilter = function(icons, unit, icon, ...)
 	local SpellID = select(11, ...)
 	if icon.isPlayer then -- show my buffs
 		if aCoreCDB["UnitframeOptions"]["hotind_filtertype"] == "blacklist" and not aCoreCDB["UnitframeOptions"]["hotind_auralist"][SpellID] then

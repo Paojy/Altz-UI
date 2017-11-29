@@ -2,14 +2,8 @@
 local T, C, L, G = unpack(select(2, ...))
 if not aCoreCDB["ActionbarOptions"]["cooldown"] then return end
 
-local tonumber = tonumber
-local pairs = pairs
-local GetActionCooldown = GetActionCooldown
-local SetCVar = SetCVar
 local format, floor, GetTime = string.format, math.floor, GetTime
-
---Global variables that we don't cache, list them here for mikk's FindGlobals script
--- GLOBALS: aCoreCDB
+local Multiplier = 0.8
 
 local function GetFormattedTime(s)
 	if s>3600 then
@@ -52,20 +46,20 @@ hooksecurefunc(methods, "SetCooldown", function(self, start, duration)
 			return
 		end
 	end
-
+	
 	if (self:GetWidth() >= 15) and (self:GetHeight() >= 15) then
 		local s, d = tonumber(start), tonumber(duration)
 		if s and d then
-			if s > 0 and d > 2.5 then
+			if s > 0 and d > 2.5 then	
 				self.start = s
 				self.duration = d
 				self.nextUpdate = 0
-
+		
 				if (self:GetWidth() >= 25) and (self:GetHeight() >= 25) then
 					if not self.text then
 						self.text = T.createnumber(self, "OVERLAY", aCoreCDB["ActionbarOptions"]["cooldownsize"], "OUTLINE", "CENTER")
 						self.text:SetTextColor(.4, .95, 1)
-						self.text:SetPoint("CENTER", 0, 0)
+						self.text:SetPoint("CENTER", 0, 0)					
 					else
 						self.text:SetFont(G.numFont, aCoreCDB["ActionbarOptions"]["cooldownsize"], "OUTLINE")
 					end
@@ -73,18 +67,18 @@ hooksecurefunc(methods, "SetCooldown", function(self, start, duration)
 					if not self.text then
 						self.text = T.createnumber(self, "OVERLAY", self:GetWidth()*.7+1, "OUTLINE", "CENTER")
 						self.text:SetTextColor(.4, .95, 1)
-						self.text:SetPoint("CENTER", 0, 0)
+						self.text:SetPoint("CENTER", 0, 0)						
 					else
 						self.text:SetFont(G.numFont, self:GetWidth()*.7+1, "OUTLINE")
 					end
 				end
-
+				
 				if not self:GetScript("OnUpdate") then
 					self:SetScript("OnUpdate", Timer_OnUpdate)
 				end
-
+				
 				self.text:Show()
-
+				
 			elseif self.text then
 				self.text:Hide()
 			end
@@ -113,7 +107,7 @@ abEventWatcher:SetScript('OnEvent', function(self, event)
 	if event == 'ACTIONBAR_UPDATE_COOLDOWN' then
 		for cooldown in pairs(active) do
 			local button = cooldown:GetParent()
-			local start, duration = GetActionCooldown(button.action)
+			local start, duration, enable = GetActionCooldown(button.action)
 			cooldown:SetCooldown(start, duration)
 		end
 	else
@@ -126,7 +120,7 @@ abEventWatcher:RegisterEvent('PLAYER_LOGIN')
 
 local function cooldown_OnShow(self)
 	active[self] = true
-end
+    end
 
 local function cooldown_OnHide(self)
 	active[self] = nil
@@ -141,7 +135,7 @@ local function actionButton_Register(frame)
 	end
 end
 
-for _, frame in pairs(ActionBarButtonEventsFrame.frames) do
+for i, frame in pairs(ActionBarButtonEventsFrame.frames) do
 	actionButton_Register(frame)
 end
 

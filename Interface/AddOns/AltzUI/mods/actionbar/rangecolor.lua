@@ -2,16 +2,14 @@
 local T, C, L, G = unpack(select(2, ...))
 if not aCoreCDB["ActionbarOptions"]["rangecolor"] then return end
 
+local _G = _G
+local EventFrame =  CreateFrame("Frame")
 local IsUsableAction = IsUsableAction
 local IsActionInRange = IsActionInRange
 local ActionHasRange = ActionHasRange
+local HasAction = HasAction
 
---Global variables that we don't cache, list them here for mikk's FindGlobals script
--- GLOBALS: TOOLTIP_UPDATE_TIME
-
-local EventFrame =  CreateFrame("Frame")
-
-function EventFrame:RangeOnUpdate()
+function EventFrame:RangeOnUpdate(elapsed)
 	if (not self.rangeTimer) then
 		return
 	end

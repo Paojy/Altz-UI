@@ -1,13 +1,6 @@
 local T, C, L, G = unpack(select(2, ...))
 local oUF = AltzUF or oUF
 
-local GetTime = GetTime
-local UnitBuff = UnitBuff
-local CreateFrame = CreateFrame
-
---Global variables that we don't cache, list them here for mikk's FindGlobals script
--- GLOBALS: aCoreCDB
-
 local glowBorder = {
     bgFile = [=[Interface\ChatFrame\ChatFrameBackground]=],
     edgeFile = [=[Interface\ChatFrame\ChatFrameBackground]=], edgeSize = 1,
@@ -28,7 +21,7 @@ local CreateAuraIcon = function(auras)
 	count:ClearAllPoints()
     count:SetPoint("TOPLEFT", -2, 2)
 	count:SetJustifyH("LEFT")
-
+	
     local border = CreateFrame("Frame", nil, button)
     border:SetPoint("TOPLEFT", button, "TOPLEFT", -1, 1)
     border:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", 1, -1)
@@ -48,13 +41,14 @@ local CreateAuraIcon = function(auras)
     button.icon = icon
     button.count = count
 	button.remaining = remaining
+    button.cd = cd
     button:Hide()
 
     return button
 end
 
-local CustomFilter = function(_, ...)
-    local _, icon, name = ...
+local CustomFilter = function(icons, ...)
+    local _, icon, name, _, _, _, dtype, _, _, caster, spellID = ...
 
     icon.priority = 0
 
@@ -80,7 +74,7 @@ local AuraTimer = function(self, elapsed)
 end
 
 local buffcolor = { r = 0.5, g = 1.0, b = 1.0 }
-local updateBuff = function(icon, texture, count, _, duration, expires)
+local updateBuff = function(icon, texture, count, dtype, duration, expires, buff)
     local color = buffcolor
 
     icon.border:SetBackdropBorderColor(color.r, color.g, color.b)
@@ -94,7 +88,7 @@ local updateBuff = function(icon, texture, count, _, duration, expires)
     icon:SetScript("OnUpdate", AuraTimer)
 end
 
-local Update = function(self, _, unit)
+local Update = function(self, event, unit)
     if(self.unit ~= unit) then
 	return end
 
@@ -107,7 +101,7 @@ local Update = function(self, _, unit)
     while true do
         local name, rank, texture, count, dtype, duration, expires, caster, _, _, spellID = UnitBuff(unit, index)
         if not name then break end
-
+        
         local show = CustomFilter(auras, unit, icon, name, rank, texture, count, dtype, duration, expires, caster, spellID)
 
         if(show) and icon.buff then

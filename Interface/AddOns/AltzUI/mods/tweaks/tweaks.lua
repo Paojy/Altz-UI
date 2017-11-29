@@ -1,5 +1,6 @@
 ﻿-- Original Author: Weasoug, etc
 local T, C, L, G = unpack(select(2, ...))
+local F = unpack(Aurora)
 
 local collect = aCoreCDB["OtherOptions"]["collectgarbage"]
 local acceptres = aCoreCDB["OtherOptions"]["acceptres"]
@@ -13,6 +14,7 @@ local vignettealert = aCoreCDB["OtherOptions"]["vignettealert"]
 local flashtaskbar = aCoreCDB["OtherOptions"]["flashtaskbar"]
 local autopet = aCoreCDB["OtherOptions"]["autopet"]
 local LFGRewards = aCoreCDB["OtherOptions"]["LFGRewards"]
+local autoacceptproposal = aCoreCDB["OtherOptions"]["autoacceptproposal"]
 local croods = aCoreCDB["OtherOptions"]["worldmapcoords"]
 
 local eventframe = CreateFrame('Frame')
@@ -29,54 +31,54 @@ SlashCmdList["ALTZRL"] = ReloadUI
 Collect Garbage
 -------------------------------------------------------------------------------]]
 if collect then
-	local eventcount = 0
-	local a = CreateFrame("Frame")
-	a:RegisterAllEvents()
-	a:SetScript("OnEvent", function(self, event)
-		eventcount = eventcount + 1
-		if InCombatLockdown() then return end
-		if eventcount > 6000 or event == "PLAYER_ENTERING_WORLD" then
-			collectgarbage("collect")
+	local eventcount = 0 
+	local a = CreateFrame("Frame") 
+	a:RegisterAllEvents() 
+	a:SetScript("OnEvent", function(self, event) 
+		eventcount = eventcount + 1 
+		if InCombatLockdown() then return end 
+		if eventcount > 6000 or event == "PLAYER_ENTERING_WORLD" then 
+			collectgarbage("collect") 
 			eventcount = 0
-		end
+		end 
 	end)
 end
 --[[-----------------------------------------------------------------------------
 Auto Screenshot
 -------------------------------------------------------------------------------]]
-local function TakeScreen(delay, func, ...)
-	local waitTable = {}
-	local waitFrame = CreateFrame("Frame", "WaitFrame", UIParent)
-	waitFrame:SetScript("onUpdate", function (self, elapse)
-		local count = #waitTable
-		local i = 1
-		while (i <= count) do
-			local waitRecord = tremove(waitTable, i)
-			local d = tremove(waitRecord, 1)
-			local f = tremove(waitRecord, 1)
-			local p = tremove(waitRecord, 1)
-			if (d > elapse) then
-				tinsert(waitTable, i, {d-elapse, f, p})
-				i = i + 1
-			else
-				count = count - 1
-				f(unpack(p))
-			end
-		end
-	end)
-	tinsert(waitTable, {delay, func, {...} })
+local function TakeScreen(delay, func, ...) 
+	local waitTable = {} 
+	local waitFrame = CreateFrame("Frame", "WaitFrame", UIParent) 
+	waitFrame:SetScript("onUpdate", function (self, elapse) 
+		local count = #waitTable 
+		local i = 1 
+		while (i <= count) do 
+			local waitRecord = tremove(waitTable, i) 
+			local d = tremove(waitRecord, 1) 
+			local f = tremove(waitRecord, 1) 
+			local p = tremove(waitRecord, 1) 
+			if (d > elapse) then 
+				tinsert(waitTable, i, {d-elapse, f, p}) 
+				i = i + 1 
+			else 
+				count = count - 1 
+				f(unpack(p)) 
+			end 
+		end 
+	end) 
+	tinsert(waitTable, {delay, func, {...} }) 
 end
 if autoscreenshot then
 	eventframe:RegisterEvent('ACHIEVEMENT_EARNED')
 	function eventframe:ACHIEVEMENT_EARNED()
-		TakeScreen(1, Screenshot)
+		TakeScreen(1, Screenshot) 
 	end
 end
 --[[-----------------------------------------------------------------------------
 Auto repair and sell grey items
 -------------------------------------------------------------------------------]]
 local IDs = {}
-for _, slot in pairs({"Head", "Shoulder", "Chest", "Waist", "Legs", "Feet", "Wrist", "Hands", "MainHand", "SecondaryHand"}) do
+for _, slot in pairs({"Head", "Shoulder", "Chest", "Waist", "Legs", "Feet", "Wrist", "Hands", "MainHand", "SecondaryHand"}) do 	
 	IDs[slot] = GetInventorySlotInfo(slot .. "Slot")
 end
 
@@ -91,7 +93,7 @@ function eventframe:MERCHANT_SHOW()
 		if cost > 0 and CanGuildBankRepair() and aCoreCDB["ItemOptions"]["autorepair_guild"] then
 			if GetGuildBankWithdrawMoney() > cost then
 				RepairAllItems(1)
-				for _, id in pairs(IDs) do
+				for slot, id in pairs(IDs) do
 					local dur, maxdur = GetInventoryItemDurability(id)
 					if dur and maxdur and dur < maxdur then
 						gearRepaired = false
@@ -122,11 +124,11 @@ function eventframe:MERCHANT_SHOW()
 		for ItemID, Need in pairs(aCoreCDB["ItemOptions"]["autobuylist"]) do
 			local ItemCount = GetItemCount(tonumber(ItemID))
 			if ItemCount >= tonumber(Need) then return end -- 足够了
-
+			
 			local ItemName = GetItemInfo(tonumber(ItemID))
 			local numMerchantItems = GetMerchantNumItems()
 			for index = 1, numMerchantItems do
-				local name, _, price, quantity, numAvailable = GetMerchantItemInfo(index)
+				local name, texture, price, quantity, numAvailable, isUsable, extendedCost = GetMerchantItemInfo(index)
 				if ItemName == name then-- 有卖的嘛？
 					local needbuy = tonumber(Need) - ItemCount
 					if numAvailable >1 and needbuy > numAvailable then -- 数量够不够
@@ -148,7 +150,8 @@ Say Sapped
 if saysapped then
 	eventframe:RegisterEvent('COMBAT_LOG_EVENT_UNFILTERED')
 	function eventframe:COMBAT_LOG_EVENT_UNFILTERED(...)
-		local _, etype, _, _, _, _, _, _, destName, _, _, spellID = ...
+		local timestamp, etype, hideCaster,
+        sourceGUID, sourceName, sourceFlags, sourceRaidFlags, destGUID, destName, destFlags, destRaidFlags, spellID = ...
 		if (etype == "SPELL_AURA_APPLIED" or etype == "SPELL_AURA_REFRESH") and destName == G.PlayerName and spellID == 6770 then
 			SendChatMessage(L["被闷了"], "SAY")
 			DEFAULT_CHAT_FRAME:AddMessage(L["被闷了2"].." "..(select(7,...) or "(unknown)"))
@@ -160,7 +163,7 @@ Accept Res
 -------------------------------------------------------------------------------]]
 if acceptres then
 	eventframe:RegisterEvent('RESURRECT_REQUEST')
-	function eventframe:RESURRECT_REQUEST()
+	function eventframe:RESURRECT_REQUEST(name)
 		if UnitAffectingCombat('player') then return end
 		if IsInGroup() then
 			if IsInRaid() then
@@ -177,11 +180,11 @@ if acceptres then
 				end
 			end
 		end
-
+		
 		local delay = GetCorpseRecoveryDelay()
 		if delay == 0 then
 			AcceptResurrect()
-			StaticPopup_Hide("RESURRECT")
+			StaticPopup_Hide("RESURRECT") 
 		end
 	end
 end
@@ -202,7 +205,7 @@ Hide Errors
 -------------------------------------------------------------------------------]]
 if hideerrors then
 	local allowedErrors = { }
-
+	
 	eventframe:RegisterEvent('UI_ERROR_MESSAGE')
 	function eventframe:UI_ERROR_MESSAGE(message)
 		if allowedErrors[message] then
@@ -300,6 +303,7 @@ local function InvitePlayer(name)
 	end
 end
 
+local errAlreadyInGroup = string.gsub(ERR_ALREADY_IN_GROUP_S, "%%s", "(%%a*)")
 if autoinvite then
     eventframe:RegisterEvent("CHAT_MSG_WHISPER")
     eventframe:RegisterEvent("CHAT_MSG_BN_WHISPER")
@@ -344,9 +348,9 @@ if vignettealert then
 	eventframe:RegisterEvent("VIGNETTE_ADDED")
 	function eventframe:VIGNETTE_ADDED(id)
 		if id and not vignettes[id] then
-			local _, _, name, icon = C_Vignettes.GetVignetteInfoFromInstanceID(id)
+			local x, y, name, icon = C_Vignettes.GetVignetteInfoFromInstanceID(id)
 			local left, right, top, bottom = GetObjectIconTextureCoords(icon)
-
+			
 			PlaySoundFile("Sound\\Interface\\RaidWarning.wav")
 			--local str = "|TInterface\\MINIMAP\\OBJECTICONS:0:0:0:0:256:256:"..(left*256)..":"..(right*256)..":"..(top*256)..":"..(bottom*256).."|t"
 			RaidNotice_AddMessage(RaidWarningFrame, (name or "Unknown").." "..L["出现了！"], ChatTypeInfo["RAID_WARNING"])
@@ -379,20 +383,20 @@ if flashtaskbar then
 		hooksecurefunc ("PVPReadyDialog_Display", function()
 			DoFlash()
 		end)
-
+		
 		eventframe:RegisterEvent("READY_CHECK")
 		eventframe:RegisterEvent("CHAT_MSG_ADDON")
 
 		function eventframe:READY_CHECK()
 			DoFlash()
 		end
-
+		
 		function eventframe:CHAT_MSG_ADDON(prefix, msg)
 			if prefix == "BigWigs" and msg:find("BWPull") then
 				DoFlash()
 			elseif prefix == "D4" and msg:find("PT") then
 				DoFlash()
-			end
+			end		
 		end
 	end
 end
@@ -402,15 +406,15 @@ Random Pet
 -------------------------------------------------------------------------------]]
 
 local function SummonPet(fav)
-	C_Timer.After(3, function()
+	C_Timer.After(3, function() 
 		local active = C_PetJournal.GetSummonedPetGUID()
-		if not active and not UnitOnTaxi("player") then
+		if not active and not UnitOnTaxi("player") then		
 			if fav then
 				C_PetJournal.SummonRandomPet(false)
 			else
 				C_PetJournal.SummonRandomPet(true)
 			end
-		end
+		end		
 	end)
 end
 
@@ -441,9 +445,9 @@ end
 LFG Call to Arms rewards
 -------------------------------------------------------------------------------]]
 
---744 Random Timewalker Dungeon
---788 Random Warlords of Draenor Dungeon
---789 Random Warlords of Draenor Heroic
+--744 Random Timewalker Dungeon 
+--788 Random Warlords of Draenor Dungeon 
+--789 Random Warlords of Draenor Heroic 
 
 if LFGRewards then
 	eventframe:RegisterEvent("LFG_UPDATE_RANDOM_INFO")
@@ -452,19 +456,19 @@ end
 local LFG_Timer = 0
 
 function eventframe:LFG_UPDATE_RANDOM_INFO()
-	local _, forTank, forHealer, forDamage = GetLFGRoleShortageRewards(1046, LFG_ROLE_SHORTAGE_RARE)
+	local eligible, forTank, forHealer, forDamage = GetLFGRoleShortageRewards(1046, LFG_ROLE_SHORTAGE_RARE)
 	local IsTank, IsHealer, IsDamage = C_LFGList.GetAvailableRoles()
-
-	local ingroup, tank, healer, damager
-
+	
+	local ingroup, tank, healer, damager, result
+	
 	tank = IsTank and forTank and "|cff00B2EE"..TANK.."|r" or ""
 	healer = IsHealer and forHealer and "|cff00EE00"..HEALER.."|r" or ""
 	damager = IsDamage and forDamage and "|cff00EE00"..DAMAGER.."|r" or ""
-
+	
 	if IsInGroup(LE_PARTY_CATEGORY) or IsInGroup(LE_PARTY_CATEGORY_INSTANCE) then
 		ingroup = true
 	end
-
+	
 	if ((IsTank and forTank) or (IsHealer and forHealer) or (IsDamage and forDamage)) and not ingroup then
 		if  GetTime() - LFG_Timer > 20 then -- 不要刷屏！
 			PlaySoundFile("Sound\\Interface\\RaidWarning.wav")
@@ -479,27 +483,27 @@ end
 LFG Auto Accept Proposal
 -------------------------------------------------------------------------------]]
 if croods then
-	WorldMapButton.coordText = WorldMapFrameCloseButton:CreateFontString(nil, "OVERLAY", "GameFontGreen")
+	WorldMapButton.coordText = WorldMapFrameCloseButton:CreateFontString(nil, "OVERLAY", "GameFontGreen") 
 	WorldMapButton.coordText:SetPoint("BOTTOM", WorldMapScrollFrame, "BOTTOM", 0, 6)
 
 	WorldMapButton:HookScript("OnUpdate", function(self)
 	    if select(2, GetInstanceInfo()) == "none" then
-		   local px, py = GetPlayerMapPosition("player")
-		   local x, y = GetCursorPosition()
-		   local width, height, scale = self:GetWidth(), self:GetHeight(), self:GetEffectiveScale()
-		   local centerX, centerY = self:GetCenter()
-		   x, y = (x/scale - (centerX - (width/2))) / width, (centerY + (height/2) - y/scale) / height
-		   if px == 0 and py == 0 and (x > 1 or y > 1 or x < 0 or y < 0) then
-			  self.coordText:SetText("")
-		   elseif px == 0 and py == 0 then
-			  self.coordText:SetText(format(L["光标"].." %d, %d", x*100, y*100))
-		   elseif x > 1 or y > 1 or x < 0 or y < 0 then
-			  self.coordText:SetText(format(L["当前"].." %d, %d", px*100, py*100))
-		   else
-			  self.coordText:SetText(format(L["当前"].." %d, %d   "..L["光标"].." %d, %d", px*100, py*100, x*100, y*100))
+		   local px, py = GetPlayerMapPosition("player") 
+		   local x, y = GetCursorPosition() 
+		   local width, height, scale = self:GetWidth(), self:GetHeight(), self:GetEffectiveScale() 
+		   local centerX, centerY = self:GetCenter() 
+		   x, y = (x/scale - (centerX - (width/2))) / width, (centerY + (height/2) - y/scale) / height 
+		   if px == 0 and py == 0 and (x > 1 or y > 1 or x < 0 or y < 0) then 
+			  self.coordText:SetText("") 
+		   elseif px == 0 and py == 0 then 
+			  self.coordText:SetText(format(L["光标"].." %d, %d", x*100, y*100)) 
+		   elseif x > 1 or y > 1 or x < 0 or y < 0 then 
+			  self.coordText:SetText(format(L["当前"].." %d, %d", px*100, py*100)) 
+		   else 
+			  self.coordText:SetText(format(L["当前"].." %d, %d   "..L["光标"].." %d, %d", px*100, py*100, x*100, y*100)) 
 		   end
 	    end
-	end)
+	end) 
 end
 --[[-----------------------------------------------------------------------------
 LFG Auto Accept Proposal

@@ -1,10 +1,6 @@
 local T, C, L, G = unpack(select(2, ...))
 local oUF = AltzUF or oUF
 
-local unpack = unpack
-local UnitDetailedThreatSituation = UnitDetailedThreatSituation
-local InCombatLockdown = InCombatLockdown
-
 local horizontalgradient = {
 	{ .29, .09, .33, .31, .94, .99},
 	{ .48, .28, .02, 1, 0, 0},
@@ -12,18 +8,18 @@ local horizontalgradient = {
 	{ .27, .17, .12, .92, .68, .31,},
 }
 
-local Update = function(self, _, unit)
+local Update = function(self, event, unit)
 	if unit ~= self.unit or not InCombatLockdown() then return end
-
+	
 	local threatbar = self.ThreatBar
 	local ind = self.ThreatBar.indictator
 	local orientation = "HORIZONTAL"
 	local colors = horizontalgradient
-
+	
 	unit = unit or self.unit
 
-	local _, status, overtauntedprec, rawthreatprec = UnitDetailedThreatSituation("player", unit)
-
+	local isTanking, status, overtauntedprec, rawthreatprec = UnitDetailedThreatSituation("player", unit)
+	
 	if not overtauntedprec then
 		T.UIFrameFadeOut(threatbar, 2, threatbar:GetAlpha(), 0)
 		ind:ClearAllPoints()

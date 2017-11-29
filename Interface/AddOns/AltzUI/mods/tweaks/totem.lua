@@ -1,14 +1,7 @@
 local T, C, L, G = unpack(select(2, ...))
+local F = unpack(Aurora)
 
 if not aCoreCDB["UnitframeOptions"]["totems"] then return end
-
-local _G = _G
-local CooldownFrame_Set = CooldownFrame_Set
-local MAX_TOTEMS = MAX_TOTEMS
-local GetTotemInfo = GetTotemInfo
-
---Global variables that we don't cache, list them here for mikk's FindGlobals script
--- GLOBALS: MAX_TOTEMS
 
 local TotemBar = CreateFrame("Frame", "AltzUI_TotemBar", UIParent)
 TotemBar.movingname = L["图腾条"]
@@ -36,16 +29,16 @@ for i=1, MAX_TOTEMS do
 	TotemBu.cooldown:SetReverse(true)
 	TotemBu.cooldown:SetAllPoints()
 	TotemBar[i] = TotemBu
-
+	
 end
 
 for i=1, MAX_TOTEMS do
 	local button = TotemBar[i]
 	local prevButton = TotemBar[i-1]
-
+		
 	button:SetSize(aCoreCDB["UnitframeOptions"]["totemsize"], aCoreCDB["UnitframeOptions"]["totemsize"])
 	button:ClearAllPoints()
-
+		
 	if aCoreCDB["UnitframeOptions"]["growthDirection"] == "HORIZONTAL" and aCoreCDB["UnitframeOptions"]["sortDirection"] == "ASCENDING" then
 		if i == 1 then
 			button:SetPoint("LEFT", TotemBar, "LEFT", 5, 0)
@@ -82,11 +75,11 @@ else
 end
 
 TotemBar:SetScript("OnEvent", function()
-	local button, startTime, duration, icon, _
+	local totemName, button, startTime, duration, icon
 	for i=1, MAX_TOTEMS do
 		button = _G["TotemFrameTotem"..i];
-		_, _, startTime, duration, icon = GetTotemInfo(button.slot)
-
+		haveTotem, totemName, startTime, duration, icon = GetTotemInfo(button.slot)
+		
 		if button:IsShown() then
 			TotemBar[i]:Show()
 			TotemBar[i].iconTexture:SetTexture(icon)

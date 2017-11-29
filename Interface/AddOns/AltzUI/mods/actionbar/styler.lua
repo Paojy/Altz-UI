@@ -87,6 +87,7 @@ end
 
 local function styleExtraActionButton2(bu)
 	if not bu or (bu and bu.rabs_styled) then return end
+	local name = bu:GetName()
 	--remove the style background theme
 	bu.Style:Hide()
 	--icon
@@ -170,7 +171,7 @@ local function styleActionButton(bu)
 	--make the normaltexture match the buttonsize
 	nt:SetAllPoints(bu)
 	--hook to prevent Blizzard from reseting our colors
-	hooksecurefunc(nt, "SetVertexColor", function(nt, r, g, b)
+	hooksecurefunc(nt, "SetVertexColor", function(nt, r, g, b, a)
 		local bu = nt:GetParent()
 		local action = bu.action
 		--print("bu"..bu:GetName().."R"..r.."G"..g.."B"..b)

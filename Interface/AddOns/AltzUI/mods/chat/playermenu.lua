@@ -6,7 +6,7 @@ local function insertbefore(t, before, val)
 end
 
 local clickers = {
-	["COPYNAME"] = function(a1) ChatFrameShow(a1) end,
+	["COPYNAME"] = function(a1) ChatFrameShow(a1) end, 
 	["WHO"] = SendWho,
 	["GUILD_INVITE"] = GuildInvite,
 	["ADDFRIEND"] = AddFriend,
