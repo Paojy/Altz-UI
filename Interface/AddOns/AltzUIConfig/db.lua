@@ -1731,6 +1731,7 @@ local Character_default_Settings = {
 		raidfontsize = 10,
 		namelength = 4,
 		showsolo = false,
+		toggleForVehicle = true,
 		autoswitch = false,
 		raidonly = "healer",
 		

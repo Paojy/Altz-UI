@@ -1037,6 +1037,7 @@ T.createcheckbutton(RFInnerframe.common, 30, 120, L["未进组时显示"], "Unit
 T.createslider(RFInnerframe.common, 30, 170, L["名字长度"], "UnitframeOptions", "namelength", 1, 2, 10, 1)
 T.createcheckbutton(RFInnerframe.common, 30, 210, L["启用方向箭头"], "UnitframeOptions", "enablearrow", L["enablearrow2"])
 T.createslider(RFInnerframe.common, 30, 260, L["尺寸"], "UnitframeOptions", "arrowsacle", 100, 50, 200, 5)
+T.createcheckbutton(RFInnerframe.common, 30, 290, L["刷新载具"], "UnitframeOptions", "toggleForVehicle")
 T.createDR(RFInnerframe.common.enablearrow, RFInnerframe.common.arrowsacle)
 T.createDR(RFInnerframe.common.enableraid, RFInnerframe.common.showraidpet, RFInnerframe.common.showsolo, RFInnerframe.common.namelength, RFInnerframe.common.enablearrow, RFInnerframe.common.arrowsacle)
 

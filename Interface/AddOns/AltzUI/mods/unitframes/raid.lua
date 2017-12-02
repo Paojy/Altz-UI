@@ -385,6 +385,8 @@ local func = function(self, unit)
 		RegisterClicks(self)
 	end
 	
+	self:SetAttribute("toggleForVehicle", aCoreCDB["UnitframeOptions"]["toggleForVehicle"])
+	
 	OnMouseOver(self)
 end
 
@@ -522,6 +524,8 @@ local dfunc = function(self, unit)
 		EnableWheelCastOnFrame(self)
 		RegisterClicks(self)
 	end
+	
+	self:SetAttribute("toggleForVehicle", aCoreCDB["UnitframeOptions"]["toggleForVehicle"])
 	
 	OnMouseOver(self)
 end
