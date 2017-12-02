@@ -12,12 +12,8 @@ local timersize = aCoreCDB["UnitframeOptions"]["hotind_size"]-3
 local pomCount = {"①","②","③","④","⑤","⑥","⑦","⑧","⑨","⑩","⑪","⑫","⑬","⑭","⑮","⑯","⑰","⑱","⑲","⑳",}
 oUF.Tags.Methods['Mlight:pom'] = function(u) -- 愈合祷言
     local name, _,_, c, _,_,_, fromwho = UnitBuff(u, GetSpellInfo(41635))
-	if c then
-    if fromwho == "player" then
+	if c and fromwho == "player" then
         if c and c ~= 0 then return "|cff66FFFF"..pomCount[c].."|r" end
-    else
-        if c and c ~= 0 then return "|cffFFCF7F"..pomCount[c].."|r" end 
-    end
 	end
 end
 oUF.Tags.Events['Mlight:pom'] = "UNIT_AURA"
