@@ -138,7 +138,7 @@ function T.SpellFlyoutFader(frame,buttonList,fadeIn,fadeOut)
 	if not fadeIn then fadeIn = defaultFadeIn end
 	if not fadeOut then fadeOut = defaultFadeOut end
 
-	SpellFlyout:SetScript("OnEnter", function()
+	SpellFlyout:HookScript("OnEnter", function()
 		if frame.eventmode ~= 1 then
 			UIFrameFadeIn(frame, fadeIn.time, frame:GetAlpha(), fadeIn.alpha)
 			for _, bu in pairs(buttonList) do
@@ -149,7 +149,7 @@ function T.SpellFlyoutFader(frame,buttonList,fadeIn,fadeOut)
 		end
 	end)
 
-	SpellFlyout:SetScript("OnLeave", function()
+	SpellFlyout:HookScript("OnLeave", function()
 		if frame.eventmode ~= 1 then
 			UIFrameFadeOut(frame, fadeOut.time, frame:GetAlpha(), fadeOut.alpha)
 			for _, bu in pairs(buttonList) do
@@ -162,7 +162,7 @@ function T.SpellFlyoutFader(frame,buttonList,fadeIn,fadeOut)
 
 	for _, button in pairs(buttonList) do
 		if button then
-			button:SetScript("OnEnter", function()
+			button:HookScript("OnEnter", function()
 				if frame.eventmode ~= 1 then
 					UIFrameFadeIn(frame, fadeIn.time, frame:GetAlpha(), fadeIn.alpha)
 					for _, bu in pairs(buttonList) do
@@ -173,7 +173,7 @@ function T.SpellFlyoutFader(frame,buttonList,fadeIn,fadeOut)
 				end
 			end)
 
-			button:SetScript("OnLeave", function()
+			button:HookScript("OnLeave", function()
 				if frame.eventmode ~= 1 then
 					UIFrameFadeOut(frame, fadeOut.time, frame:GetAlpha(), fadeOut.alpha)
 					for _, bu in pairs(buttonList) do
