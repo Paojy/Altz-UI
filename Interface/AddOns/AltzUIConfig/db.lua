@@ -264,8 +264,6 @@ local AuraList = {
         [GetSpellInfo(102342)] = { id = 102342, level = 15,}, -- 铁木树皮
 		[GetSpellInfo(22812)]  = { id = 22812,  level = 15,}, -- 树皮术
 		[GetSpellInfo(61336)]  = { id = 61336,  level = 15,}, -- 生存本能
-		[GetSpellInfo(105737)] = { id = 105737, level = 15,}, -- 乌索克之力
-		[GetSpellInfo(22842)]  = { id = 22842,  level = 15,}, -- 狂暴回复
 	--骑士
 		[GetSpellInfo(1022)]   = { id = 1022,   level = 15,}, -- 保护之手
 		[GetSpellInfo(31850)]  = { id = 31850,  level = 15,}, -- 炽热防御者
@@ -274,9 +272,8 @@ local AuraList = {
 		[GetSpellInfo(86659)]  = { id = 86659,  level = 15,}, -- 远古列王守卫
 	--武僧
 		[GetSpellInfo(116849)] = { id = 116849, level = 15,}, -- 作茧缚命
-		[GetSpellInfo(115203)] = { id = 115203, level = 15,}, -- 壮胆酒	
+		[GetSpellInfo(115203)] = { id = 115203, level = 15,}, -- 壮胆酒
 	--DK
-        [GetSpellInfo(50397)]  = { id = 50397,  level = 15,}, -- 巫妖之躯
 		[GetSpellInfo(48707)]  = { id = 48707,  level = 15,}, -- 反魔法护罩
 		[GetSpellInfo(48792)]  = { id = 48792,  level = 15,}, -- 冰封之韧
 		[GetSpellInfo(49028)]  = { id = 49028,  level = 15,}, -- 吸血鬼之血
@@ -1412,7 +1409,7 @@ G.DebuffList = {
 		},
 		
 		[EJ_GetEncounterInfo(2004)] = { --> 金加洛斯
-			[GetSpellInfo(245919)] = { id = 245919, level = 8, }, -- 熔铸之击
+			[GetSpellInfo(254919)] = { id = 254919, level = 8, }, -- 熔铸之击
 			[GetSpellInfo(245770)] = { id = 245770, level = 8, }, -- 屠戮
 			[GetSpellInfo(249535)] = { id = 249535, level = 8, }, -- 破坏术
 			[GetSpellInfo(249686)] = { id = 249686, level = 8, }, -- 轰鸣屠戮
@@ -1479,7 +1476,8 @@ G.DebuffList = {
 		},
 		
 		["Trash"] = {
-		
+			[GetSpellInfo(252621)] = { id = 252621, level = 8, }, -- 魔化束缚
+			[GetSpellInfo(257920)] = { id = 257920, level = 8, }, -- 魔能火炬
 		},
 	},
 	
