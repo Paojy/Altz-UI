@@ -308,15 +308,6 @@ oUF.Tags.Methods['Mlight:da'] = function(u) --信仰档案
 end
 oUF.Tags.Events['Mlight:da'] = 'UNIT_AURA'
 
-local ghCount = {"j", "k", "l", "m", "8"}
-oUF.Tags.Methods['Mlight:gh'] = function(u) --众神之父的规划
-    local name,_,_,c,_,_, expirationTime, fromwho = UnitBuff(u, GetSpellInfo(253287)) -- hot
-	if c and fromwho == "player" then
-        if c and c ~= 0 then return "|cffAB82FF"..ghCount[c].."|r" end
-	end
-end
-oUF.Tags.Events['Mlight:gh'] = 'UNIT_AURA'
-
 oUF.Tags.Methods['Mlight:xnhd'] = function(u) --邪能护盾
     local name,_,_,_,_,_, expirationTime, fromwho = UnitBuff(u, GetSpellInfo(253277))
     if (fromwho == "player") then
@@ -328,21 +319,21 @@ oUF.Tags.Events['Mlight:xnhd'] = 'UNIT_AURA'
 classIndicators={
     ["DRUID"] = {
         ["TL"] = "[Mlight:regrow]",
-        ["BR"] = "[Mlight:xnhd][Mlight:gh][Mlight:ayj][Mlight:da][Mlight:lt][Mlight:snla]",
+        ["BR"] = "[Mlight:xnhd][Mlight:ayj][Mlight:da][Mlight:lt][Mlight:snla]",
         ["BL"] = "[Mlight:wildgrowth]",
         ["TR"] = "[Mlight:rejuv]",
         ["Cen"] = "[Mlight:lb]",
     },
     ["PRIEST"] = {
         ["TL"] = "[Mlight:rnw][Mlight:pws]",
-        ["BR"] = "[Mlight:xnhd][Mlight:gh][Mlight:ayj][Mlight:da][Mlight:lt][Mlight:tlzg]",
+        ["BR"] = "[Mlight:xnhd][Mlight:ayj][Mlight:da][Mlight:lt][Mlight:tlzg]",
         ["BL"] = "[Mlight:yzdx]",
         ["TR"] = "[Mlight:pom]",
         ["Cen"] = "[Mlight:atonement]",
     },
     ["PALADIN"] = {
         ["TL"] = "[Mlight:fyxy]",
-        ["BR"] = "[Mlight:xnhd][Mlight:gh][Mlight:ayj][Mlight:da][Mlight:lt]",
+        ["BR"] = "[Mlight:xnhd][Mlight:ayj][Mlight:da][Mlight:lt]",
         ["BL"] = "",
         ["TR"] = "[Mlight:beacon]",
         ["Cen"] = "[Mlight:forbearance]",
@@ -370,7 +361,7 @@ classIndicators={
     },
     ["SHAMAN"] = {
         ["TL"] = "",
-        ["BR"] = "[Mlight:xnhd][Mlight:gh][Mlight:ayj][Mlight:da][Mlight:lt][Mlight:rip40]",
+        ["BR"] = "[Mlight:xnhd][Mlight:ayj][Mlight:da][Mlight:lt][Mlight:rip40]",
         ["BL"] = "",
         ["TR"] = "[Mlight:ripTime]",
         ["Cen"] = "",
@@ -398,10 +389,10 @@ classIndicators={
     },
 	["MONK"] = {
         ["TL"] = "[Mlight:remist]",
-        ["BR"] = "[Mlight:xnhd][Mlight:gh][Mlight:ayj][Mlight:da][Mlight:lt]",
+        ["BR"] = "[Mlight:xnhd][Mlight:ayj][Mlight:da][Mlight:lt]",
         ["BL"] = "[Mlight:mist]",
         ["TR"] = "[Mlight:jhzq]",
-        ["Cen"] = "[Mlight:sooth][Mlight:gh]",
+        ["Cen"] = "[Mlight:sooth]",
     },
 	["DEMONHUNTER"] = {
         ["TL"] = "",
