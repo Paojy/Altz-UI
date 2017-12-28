@@ -1478,6 +1478,10 @@ G.DebuffList = {
 		["Trash"] = {
 			[GetSpellInfo(252621)] = { id = 252621, level = 8, }, -- 魔化束缚
 			[GetSpellInfo(257920)] = { id = 257920, level = 8, }, -- 魔能火炬
+			[GetSpellInfo(244590)] = { id = 244590, level = 8, }, -- 炽热熔火魔能
+			[GetSpellInfo(249297)] = { id = 249297, level = 8, }, -- 归源之焰
+			[GetSpellInfo(246199)] = { id = 246199, level = 8, }, -- 燃烧之风
+			[GetSpellInfo(246209)] = { id = 246209, level = 8, }, -- 惩戒烈焰
 		},
 	},
 	
@@ -1940,7 +1944,6 @@ local Character_default_Settings = {
 		autoacceptproposal = true,
 		hidemap = false,
 		hidechat = false,
-		hours24 = true,
 		worldmapcoords = false,
 		afkscreen = true,
 		hidepanels = false,
