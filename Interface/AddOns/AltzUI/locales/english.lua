@@ -154,7 +154,7 @@ L["隐藏提示的提示"] = "You can re-enable these tips in GUI → Other"
 
 L["TIPS"] = {
 	"Altz UI can hide the minimap and chat frame when you enter combat and show them when you leave. GUI → Other",
-	"Click the clock on the minimap to open the calendar; right click to switch the time text between 12h and 24h.",
+	"Click the clock on the minimap to open the calendar; right click changes between local/server time while a modified right click (holding alt, ctrl, or shift) changes 12/24 format.",
 	"Want to enable class colors on your raid frames? GUI → UnitFrames → Style → Classic Theme",
 	"Want to display the independent castbar? GUI → Unit Frames → Castbar → Independent player castbar",
 	"Want to use the healer-style raid frame? GUI → Raid Frames → Switch → click Disable Auto Switch and Healer",

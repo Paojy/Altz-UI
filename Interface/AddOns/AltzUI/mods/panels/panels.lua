@@ -643,11 +643,7 @@ clockframe.text = T.createtext(clockframe, "OVERLAY", 12, "OUTLINE", "CENTER")
 clockframe.text:SetPoint("BOTTOM")
 
 function clockframe:Update()
-	if aCoreCDB["OtherOptions"]["hours24"] then
-		clockframe.text:SetText(format("%s",date("%H:%M")))
-	else
-		clockframe.text:SetText(format("%s",date("%I:%M")))
-	end
+    clockframe.text:SetText(GameTime_GetTime())
 end
 
 clockframe.t = 5
@@ -659,17 +655,15 @@ clockframe:SetScript("OnUpdate", function(self, e)
 	end
 end)
 
-clockframe:SetScript("OnMouseDown", function(self, bu) 
-	if bu == "LeftButton" then
-		ToggleCalendar()
-	else
-		if aCoreCDB["OtherOptions"]["hours24"] then
-			aCoreCDB["OtherOptions"]["hours24"] = false
-		else
-			aCoreCDB["OtherOptions"]["hours24"] = true
-		end
-		self.Update()
-	end
+clockframe:SetScript("OnMouseDown", function(self, bu)
+    if bu == "LeftButton" then
+        ToggleCalendar()
+    elseif IsModifierKeyDown() then
+        TimeManager_ToggleTimeFormat()
+    else
+        TimeManager_ToggleLocalTime()
+    end
+    self.Update()
 end)
 
 -- 缩放小地图比例

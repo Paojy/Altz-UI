@@ -154,7 +154,7 @@ L["隐藏提示的提示"] = "Você pode reativar essas dicas em GUI → Outros"
 
 L["TIPS"] = {
 	"Altz UI pdoe esconder o minimapa e bate-papo quando você entrar e mostrar quando sair de combate. GUI → Outros",
-	"Clique no relógio do minimapa para abrir calendário; clique-direito para alternar entre os formatos 12H e 24H.",
+	--"Click the clock on the minimap to open the calendar; right click changes between local/server time while a modified right click (holding alt, ctrl, or shift) changes 12/24 format.",
 	"Quer ativar cores por classe nos seus quadros de raide? GUI → Quadros de unidade → Estilo → Tema clássico",
 	"Quer mostrar barras de lançamento independentes? GUI → Quadros de unidade → Barra de lançamento → Marque 'Barra de lançamento indenpendente'",
 	"Quer usar o estilo curandeiro nos quadros de raide? GUI → Quadros de raide → Alternância → Marque 'Desativar alternância automática'",
