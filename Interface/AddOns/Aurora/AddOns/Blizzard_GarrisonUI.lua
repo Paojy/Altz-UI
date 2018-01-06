@@ -490,6 +490,8 @@ C.themes["Blizzard_GarrisonUI"] = function()
 	end
 
 	hooksecurefunc("GarrisonMissionButton_SetRewards", function(self, rewards, numRewards)
+		if IsAddOnLoaded("GarrisonMaster") then return end
+
 		if self.numRewardsStyled == nil then
 			self.numRewardsStyled = 0
 		end
@@ -498,10 +500,7 @@ C.themes["Blizzard_GarrisonUI"] = function()
 			self.numRewardsStyled = self.numRewardsStyled + 1
 
 			local reward = self.Rewards[self.numRewardsStyled]
-			local icon = reward.Icon
-
 			reward:GetRegions():Hide()
-
 			reward.Icon:SetTexCoord(.08, .92, .08, .92)
 			reward.IconBorder:SetAlpha(0)
 			F.CreateBG(reward.Icon)
@@ -655,7 +654,7 @@ C.themes["Blizzard_GarrisonUI"] = function()
 			portraitFrame.styled = true
 		end
 
-		local color = ITEM_QUALITY_COLORS[followerInfo.quality]
+		local color = BAG_ITEM_QUALITY_COLORS[followerInfo.quality]
 
 		portraitFrame.squareBG:SetBackdropBorderColor(color.r, color.g, color.b)
 		portraitFrame.squareBG:Show()
@@ -800,8 +799,8 @@ C.themes["Blizzard_GarrisonUI"] = function()
 				local hl = button:GetHighlightTexture()
 				hl:SetColorTexture(r, g, b, .1)
 				hl:ClearAllPoints()
-				hl:SetPoint("TOPLEFT", button,"TOPLEFT",1, -1)
-				hl:SetPoint("BOTTOMRIGHT",button, "BOTTOMRIGHT",-1, 1)
+				hl:SetPoint("TOPLEFT", button, "TOPLEFT", 1, -1)
+				hl:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", -1, 1)
 
 				if portrait then
 					F.ReskinGarrisonPortrait(portrait)
@@ -818,12 +817,9 @@ C.themes["Blizzard_GarrisonUI"] = function()
 				button:SetBackdropColor(0, 0, 0, .25)
 			end
 
-			if portrait then
-				if portrait.PortraitRingQuality:IsShown() then
-					portrait.squareBG:SetBackdropBorderColor(portrait.PortraitRingQuality:GetVertexColor())
-				else
-					portrait.squareBG:SetBackdropBorderColor(0, 0, 0)
-				end
+			if portrait and portrait.quality then
+				local color = BAG_ITEM_QUALITY_COLORS[portrait.quality]
+				portrait.squareBG:SetBackdropBorderColor(color.r, color.g, color.b)
 			end
 		end
 	end
