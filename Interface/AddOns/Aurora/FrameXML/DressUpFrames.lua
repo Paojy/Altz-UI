@@ -2,25 +2,14 @@ local F, C = unpack(select(2, ...))
 
 tinsert(C.themes["Aurora"], function()
 	-- Dressup Frame
-	DressUpFramePortrait:Hide()
-	DressUpFramePortraitFrame:Hide()
-	DressUpFrameLeftBorder:Hide()
-	DressUpFrameRightBorder:Hide()
-	DressUpFrameBottomBorder:Hide()
-	DressUpFrameTopBorder:Hide()
-	DressUpFrameBotLeftCorner:Hide()
-	DressUpFrameBotRightCorner:Hide()
-	DressUpFrameBtnCornerLeft:Hide()
-	DressUpFrameBtnCornerRight:Hide()
-	DressUpFrameBg:Hide()
-	DressUpFrameTopTileStreaks:Hide()
-	DressUpFrameInset:Hide()
-	DressUpFrameButtonBottomBorder:Hide()
-	--select(18, DressUpFrame:GetRegions()):Hide()
 
-	for i = 2, 5 do
+	DressUpFramePortrait:Hide()
+	for i = 1, 17 do
 		select(i, DressUpFrame:GetRegions()):Hide()
 	end
+	select(8, DressUpFrame:GetRegions()):Show()
+	DressUpFrameInset:Hide()
+	MaximizeMinimizeFrame:GetRegions():Hide()
 
 	F.SetBD(DressUpFrame, 5, 5, -5, 0)
 	F.Reskin(DressUpFrameOutfitDropDown.SaveButton)
@@ -31,15 +20,11 @@ tinsert(C.themes["Aurora"], function()
 
 	DressUpFrameOutfitDropDown:SetHeight(32)
 	DressUpFrameOutfitDropDown.SaveButton:SetPoint("LEFT", DressUpFrameOutfitDropDown, "RIGHT", -13, 2)
-	DressUpFrameCancelButton:SetPoint("BOTTOMRIGHT", DressUpFrame, "BOTTOMRIGHT", -10, 4)
 	DressUpFrameResetButton:SetPoint("RIGHT", DressUpFrameCancelButton, "LEFT", -1, 0)
-	
-	select(1, MaximizeMinimizeFrame:GetRegions()):Hide()
-	
+
 	for _, button in pairs{MaximizeMinimizeFrame.MaximizeButton, MaximizeMinimizeFrame.MinimizeButton} do
 
 		button:SetSize(17, 17)
-		
 		button:ClearAllPoints()
 		button:SetPoint("RIGHT", DressUpFrameCloseButton, "LEFT", -1, 0)
 
@@ -80,23 +65,17 @@ tinsert(C.themes["Aurora"], function()
 		tinsert(button.pixels, vline)
 
 		if button == MaximizeMinimizeFrame.MaximizeButton then
-			hline:SetPoint("TOP", 0, -4)
-			vline:SetPoint("RIGHT", -4, 0)
+			hline:SetPoint("TOP", 1, -4)
+			vline:SetPoint("RIGHT", -4, 1)
 		else
-			hline:SetPoint("BOTTOM", 0, 4)
-			vline:SetPoint("LEFT", 4, 0)
+			hline:SetPoint("BOTTOM", 1, 4)
+			vline:SetPoint("LEFT", 4, 1)
 		end
 
 		button:SetScript("OnEnter", colourArrow)
 		button:SetScript("OnLeave", clearArrow)
 	end
-	
-	DressUpModel:HookScript("OnShow", function(self)
-		self:ClearAllPoints()
-		self:SetPoint("TOPLEFT", DressUpFrame, "TOPLEFT", 10, -63)
-		self:SetPoint("BOTTOMRIGHT", DressUpFrame, "BOTTOMRIGHT", -10, 28)
-	end)
-	
+
 	-- SideDressUp
 
 	for i = 1, 4 do

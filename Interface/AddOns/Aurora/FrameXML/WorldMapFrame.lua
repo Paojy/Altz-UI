@@ -80,11 +80,11 @@ tinsert(C.themes["Aurora"], function()
 		tinsert(button.pixels, vline)
 
 		if button == WorldMapFrame.BorderFrame.MaximizeMinimizeFrame.MaximizeButton then
-			hline:SetPoint("TOP", 0, -4)
-			vline:SetPoint("RIGHT", -4, 0)
+			hline:SetPoint("TOP", 1, -4)
+			vline:SetPoint("RIGHT", -4, 1)
 		else
-			hline:SetPoint("BOTTOM", 0, 4)
-			vline:SetPoint("LEFT", 4, 0)
+			hline:SetPoint("BOTTOM", 1, 4)
+			vline:SetPoint("LEFT", 4, 1)
 		end
 
 		button:SetScript("OnEnter", colourArrow)
