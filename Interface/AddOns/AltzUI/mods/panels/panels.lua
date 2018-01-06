@@ -1518,10 +1518,7 @@ OrderHall_eframe:SetScript("OnEvent", function(self, event, arg1)
 				OrderHallCommandBar.Currency:SetFont(G.norFont, 14, "OUTLINE")
 				OrderHallCommandBar.Currency:SetTextColor(1, 1, 1)
 				OrderHallCommandBar.Currency:SetShadowOffset(0, 0)
-				
-				OrderHallCommandBar.CurrencyHitTest:ClearAllPoints()
-				OrderHallCommandBar.CurrencyHitTest:SetAllPoints(OrderHallCommandBar.CurrencyIcon)
-				
+								
 				OrderHallCommandBar.WorldMapButton:Hide()
 				
 				OrderHallCommandBar.styled = true
