@@ -27,7 +27,7 @@ C.media = {
 	["arrowRight"] = "Interface\\AddOns\\Aurora\\media\\arrow-right-active",
 	["backdrop"] = "Interface\\ChatFrame\\ChatFrameBackground",
 	["checked"] = "Interface\\AddOns\\Aurora\\media\\CheckButtonHilight",
-	["font"] = "Interface\\AddOns\\Aurora\\media\\font.TTF",
+	["font"] = STANDARD_TEXT_FONT,
 	["gradient"] = "Interface\\AddOns\\Aurora\\media\\gradient",
 	["roleIcons"] = "Interface\\Addons\\Aurora\\media\\UI-LFG-ICON-ROLES",
 }
@@ -39,13 +39,13 @@ C.defaults = {
 	["buttonSolidColour"] = {.2, .2, .2, 1},
 	["useButtonGradientColour"] = true,
 	["chatBubbles"] = true,
-	["enableFont"] = true,
+	["enableFont"] = false,
 	["loot"] = true,
 	["useCustomColour"] = false,
 		["customColour"] = {r = 1, g = 1, b = 1},
-	["tooltips"] = false,
+	["tooltips"] = true,
 	["mmb"] = false,
-	["shadow"] = false,
+	["shadow"] = true,
 }
 
 C.frames = {}
@@ -68,7 +68,7 @@ local CreateTex = function(f)
 	if f.Tex then return end
 	f.Tex = f:CreateTexture(nil, "BACKGROUND", nil, 1)
 	f.Tex:SetAllPoints()
-	f.Tex:SetTexture(C.media.backdrop, true, true)
+	f.Tex:SetTexture("Interface\\Addons\\Aurora\\Media\\bgTex", true, true)
 	f.Tex:SetHorizTile(true)
 	f.Tex:SetVertTile(true)
 	f.Tex:SetBlendMode("ADD")
@@ -78,9 +78,9 @@ F.CreateSD = function(f)
 	if not AuroraConfig.shadow then return end
 	if f.Shadow then return end
 	f.Shadow = CreateFrame("Frame", nil, f)
-	f.Shadow:SetPoint("TOPLEFT", f, -1, 1)
-	f.Shadow:SetPoint("BOTTOMRIGHT", f, 1, -1)
-	f.Shadow:SetBackdrop({edgeFile = C.media.backdrop, edgeSize = 1})
+	f.Shadow:SetPoint("TOPLEFT", f, -2, 2)
+	f.Shadow:SetPoint("BOTTOMRIGHT", f, 2, -2)
+	f.Shadow:SetBackdrop({edgeFile = "Interface\\Addons\\Aurora\\Media\\glowTex", edgeSize = 3})
 	f.Shadow:SetBackdropBorderColor(0, 0, 0)
 	CreateTex(f)
 	return f.Shadow
@@ -1958,12 +1958,14 @@ Skin:SetScript("OnEvent", function(self, event, addon)
 		end)
 
 		F.CreateBD(MovieFrame.CloseDialog)
+		F.CreateSD(MovieFrame.CloseDialog)
 		F.Reskin(MovieFrame.CloseDialog.ConfirmButton)
 		F.Reskin(MovieFrame.CloseDialog.ResumeButton)
 
 		-- Pet battle queue popup
 
 		F.CreateBD(PetBattleQueueReadyFrame)
+		F.CreateSD(PetBattleQueueReadyFrame)
 		F.CreateBG(PetBattleQueueReadyFrame.Art)
 		F.Reskin(PetBattleQueueReadyFrame.AcceptButton)
 		F.Reskin(PetBattleQueueReadyFrame.DeclineButton)
@@ -1980,28 +1982,28 @@ Skin:SetScript("OnEvent", function(self, event, addon)
 
 		do
 			local left = PVPReadyDialogRoleIcon:CreateTexture(nil, "OVERLAY")
-			left:SetWidth(1)
+			left:SetWidth(1.2)
 			left:SetTexture(C.media.backdrop)
 			left:SetVertexColor(0, 0, 0)
 			left:SetPoint("TOPLEFT", 9, -7)
 			left:SetPoint("BOTTOMLEFT", 9, 10)
 
 			local right = PVPReadyDialogRoleIcon:CreateTexture(nil, "OVERLAY")
-			right:SetWidth(1)
+			right:SetWidth(1.2)
 			right:SetTexture(C.media.backdrop)
 			right:SetVertexColor(0, 0, 0)
 			right:SetPoint("TOPRIGHT", -8, -7)
 			right:SetPoint("BOTTOMRIGHT", -8, 10)
 
 			local top = PVPReadyDialogRoleIcon:CreateTexture(nil, "OVERLAY")
-			top:SetHeight(1)
+			top:SetHeight(1.2)
 			top:SetTexture(C.media.backdrop)
 			top:SetVertexColor(0, 0, 0)
 			top:SetPoint("TOPLEFT", 9, -7)
 			top:SetPoint("TOPRIGHT", -8, -7)
 
 			local bottom = PVPReadyDialogRoleIcon:CreateTexture(nil, "OVERLAY")
-			bottom:SetHeight(1)
+			bottom:SetHeight(1.2)
 			bottom:SetTexture(C.media.backdrop)
 			bottom:SetVertexColor(0, 0, 0)
 			bottom:SetPoint("BOTTOMLEFT", 9, 10)
