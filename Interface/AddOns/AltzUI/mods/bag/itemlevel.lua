@@ -201,9 +201,9 @@ local function BagSlotUpdate(id, Button)
 	end
 	local ItemLink = GetContainerItemLink(id, Button:GetID())
 	if ItemLink then
-		local Name, Link, Rarity, fLevel, MinLevel, Type, SubType, StackCount, EquipLoc, Texture, SellPrice = GetItemInfo(ItemLink)
+		local Name, Link, Rarity, fLevel, MinLevel, Type, SubType, StackCount, EquipLoc, Texture, SellPrice, Type_i, SubType_i = GetItemInfo(ItemLink)
 		
-		if Rarity and Rarity > 1 and EquipLoc ~= "" then
+		if Rarity and Rarity > 1 and (EquipLoc ~= "" or (Type_i == 3 and SubType_i == 11)) then
 			local Level = GetUpgradedItemLevel(ItemLink)
 			Button.level:SetText(Level)
 			Button.level:SetTextColor(GetItemQualityColor(Rarity))
