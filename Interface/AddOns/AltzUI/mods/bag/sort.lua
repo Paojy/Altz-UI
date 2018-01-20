@@ -2,21 +2,26 @@ local T, C, L, G = unpack(select(2, ...))
 if not aCoreCDB["ItemOptions"]["enablebag"] then return end
 
 G.bag_sorting = false
+
+local power_spell = GetSpellInfo(255176)
 --category constants
 --number indicates sort priority (1 is highest)
 local FirstItems = {
-	[6948] = "!1", -- 炉石
-	[140192] = "!2", -- 达拉然炉石
-	[110560] = "!3", -- 要塞炉石
+	[6948] = "!!!1", -- 炉石
+	[140192] = "!!!2", -- 达拉然炉石
+	[110560] = "!!!3", -- 要塞炉石
 }
-BS_CONSUMABLE  = 1
-BS_SOULBOUND   = 2
+
+BS_ARTIFACT    = 0
+BS_LEGENDARY   = 1
+BS_ARMOR	   = 2
 BS_REAGENT     = 3
 BS_TRADE       = 4
-BS_TRASH       = 5
-BS_QUALITY     = 6
-BS_COMMON      = 7
-BS_QUEST       = 8
+BS_POWER       = 5
+BS_QUEST       = 3
+BS_CONSUMABLES = 7
+BS_POWER       = 8
+BS_TRASH       = 9
 
 local _G = _G
 local BS_bagGroups --bag group definitions
@@ -129,58 +134,54 @@ local function sortBagRange(bagList, order)
 					newItem.sortString = ""
 					
 					--use reference from above to request more detailed information
-					local itemName, _, itemRarity, _, _, itemType, itemSubType, _, itemEquipLoc, _ = GetItemInfo(itemLink)
-					if not itemName then 
+					local itemName, _, itemRarity, _, _, itemType, itemSubType, _, itemEquipLoc, _, _, itemClass, itemSubclass = GetItemInfo(itemLink)
+					
+					if not itemName then
 						itemName = itemLink
 						itemRarity = 5
 						itemType = "Pet"
 						itemSubType = "Pet"
 						itemEquipLoc = 0
 					end -- fix for battle pets
+					
 					newItem.name = itemName
 					
-					--determine category
-					
-					--soulbound items
-                   	local tooltip = _G["BS_toolTip"]
-					local owner = _G["Bag_Sort_Core"]
-                    tooltip:SetOwner(owner, ANCHOR_NONE)
-					tooltip:ClearLines()
-					tooltip:SetBagItem(bagSlot, itemSlot)
-					local tooltipLine2 = _G["BS_toolTipTextLeft2"]:GetText()
-					tooltip:Hide()
-					
+					--determine category		
 					if FirstItems[itemID] then
 						newItem.sortString = newItem.sortString .. FirstItems[itemID]
-					elseif tooltipLine2 and tooltipLine2 == "Soulbound" then
-						newItem.sortString = newItem.sortString .. BS_SOULBOUND
-					--consumable items
-					elseif itemType == "Consumable" then
-						newItem.sortString = newItem.sortString .. BS_CONSUMABLE
+					--artifact
+					elseif itemRarity == 6 then
+						newItem.sortString = newItem.sortString .. BS_ARTIFACT
+					--legendary
+					elseif itemRarity == 5 then
+						newItem.sortString = newItem.sortString .. BS_LEGENDARY	
+					-- armor
+					elseif itemClass == 2 or itemClass == 4 or (itemClass == 3 and itemSubclass == 11) then
+						newItem.sortString = newItem.sortString .. BS_ARMOR
 					--reagents
-					elseif itemType == "Reagent" then
+					elseif itemClass == 7 then
 						newItem.sortString = newItem.sortString .. BS_REAGENT
 					--trade goods
-					elseif itemType == "Trade Goods" then
+					elseif itemClass == 8 then
 						newItem.sortString = newItem.sortString .. BS_TRADE
 					--quest items
-					elseif itemType == "Quest" then
+					elseif itemClass == 12 then
 						newItem.sortString = newItem.sortString .. BS_QUEST
+					--power
+					elseif GetItemSpell(itemLink) == power_spell then
+						newItem.sortString = newItem.sortString .. BS_POWER						
+					--consumables
+					elseif itemClass == 0 then
+						newItem.sortString = newItem.sortString .. BS_CONSUMABLES
 					--junk
 					elseif itemRarity == 0 then
-						newItem.sortString = newItem.sortString .. BS_TRASH
-					--common quality
-					elseif itemRarity == 1 then
-						newItem.sortString = newItem.sortString .. BS_COMMON
-					--higher quality
-					else
-						newItem.sortString = newItem.sortString .. BS_QUALITY
+						newItem.sortString = newItem.sortString .. BS_TRASH		
 					end
 					
 					--finish the sort string, placing more important information
 					--closer to the start of the string
 					
-					newItem.sortString = newItem.sortString .. itemType .. itemSubType .. itemID .. itemRarity.. itemEquipLoc .. itemName
+					newItem.sortString = newItem.sortString .. itemClass.. itemSubclass.. itemEquipLoc .. itemID  .. itemName
 					--print(newItem.sortString)
 					newItem.count = count
 					
