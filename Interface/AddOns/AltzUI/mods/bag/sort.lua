@@ -181,7 +181,7 @@ local function sortBagRange(bagList, order)
 					--finish the sort string, placing more important information
 					--closer to the start of the string
 					
-					newItem.sortString = newItem.sortString .. itemClass.. itemSubclass.. itemEquipLoc .. itemID  .. itemName
+					newItem.sortString = newItem.sortString .. itemType .. itemSubType .. itemEquipLoc .. itemID  .. itemName
 					--print(newItem.sortString)
 					newItem.count = count
 					
