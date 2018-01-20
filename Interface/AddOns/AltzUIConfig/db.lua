@@ -260,6 +260,7 @@ local AuraList = {
 	--牧师
 		[GetSpellInfo(33206)]  = { id = 33206,  level = 15,}, -- 痛苦压制
         [GetSpellInfo(47788)]  = { id = 47788,  level = 15,}, -- 守护之魂
+		[GetSpellInfo(47585)]  = { id = 47585,  level = 15,}, -- 消散		
 	--小德
         [GetSpellInfo(102342)] = { id = 102342, level = 15,}, -- 铁木树皮
 		[GetSpellInfo(22812)]  = { id = 22812,  level = 15,}, -- 树皮术
@@ -281,6 +282,24 @@ local AuraList = {
 	--战士
 		[GetSpellInfo(12975)]  = { id = 12975,  level = 15,}, -- 破釜沉舟
 		[GetSpellInfo(871)]    = { id = 871,    level = 15,}, -- 盾墙
+		[GetSpellInfo(184364)]  = { id = 184364,  level = 15,}, -- 狂怒回复
+	--DH
+		[GetSpellInfo(196555)]  = { id = 196555,  level = 15,}, -- 虚空行走 浩劫
+	--猎人
+		[GetSpellInfo(186265)]  = { id = 186265,  level = 15,}, -- 灵龟守护
+	--盗贼
+		[GetSpellInfo(31224)]  = { id = 31224,  level = 15,}, -- 暗影斗篷
+		[GetSpellInfo(1966)]  = { id = 1966,  level = 15,}, -- 佯攻
+	--术士
+		[GetSpellInfo(104773)]  = { id = 104773,  level = 15,}, -- 不灭决心
+	--法师
+		[GetSpellInfo(45438)]  = { id = 45438,  level = 15,}, -- 寒冰屏障
+	--武僧
+		[GetSpellInfo(122470)]  = { id = 122470,  level = 15,}, -- 业报之触
+		[GetSpellInfo(122783)]  = { id = 122783,  level = 15,}, -- 散魔功
+	--萨满
+		[GetSpellInfo(108271)]  = { id = 108271,  level = 15,}, -- 星界转移
+
 	},
 	["Debuffs"] = {
 		[GetSpellInfo(243237)]  = { id = 243237,  level = 15,}, -- 爆裂
@@ -1146,7 +1165,7 @@ G.DebuffList = {
 			[GetSpellInfo(232488)] = {id = 232488, level = 8,},
 			[GetSpellInfo(232450)] = {id = 232450, level = 8,},
 		},
-		["Trash"] = {
+        ["Trash"] = {
 		
 		},
 	},
@@ -1168,6 +1187,8 @@ G.DebuffList = {
 			[GetSpellInfo(206838)] = {id = 206838, level = 8,},
 			[GetSpellInfo(208499)] = {id = 208499, level = 8,},
 			[GetSpellInfo(208910)] = {id = 208910, level = 8,},
+			[GetSpellInfo(206798)] = {id = 206798, level = 8,},
+            [GetSpellInfo(215062)] = {id = 215062, level = 8,},
 		},
 		[EJ_GetEncounterInfo(1751)]={
 			[GetSpellInfo(215458)] = {id = 215458, level = 8,},
@@ -1233,7 +1254,19 @@ G.DebuffList = {
 			[GetSpellInfo(221606)] = {id = 221606, level = 8,},
 			[GetSpellInfo(209454)] = {id = 209454, level = 8,},
 			[GetSpellInfo(208802)] = {id = 208802, level = 8,},
-		},
+			[GetSpellInfo(206222)] = {id = 206222, level = 8,},
+			[GetSpellInfo(206366)] = {id = 206366, level = 8,},
+			[GetSpellInfo(217830)] = {id = 217830, level = 8,},
+			[GetSpellInfo(206847)] = {id = 206847, level = 8,},
+			[GetSpellInfo(206310)] = {id = 206310, level = 8,},
+			[GetSpellInfo(221486)] = {id = 221486, level = 8,},
+			[GetSpellInfo(221326)] = {id = 221326, level = 8,},
+			[GetSpellInfo(221781)] = {id = 221781, level = 8,},
+			[GetSpellInfo(209191)] = {id = 209191, level = 8,},
+			[GetSpellInfo(227009)] = {id = 227009, level = 8,},
+			[GetSpellInfo(206506)] = {id = 206506, level = 8,},
+			[GetSpellInfo(221299)] = {id = 221299, level = 8,},
+			},
 		["Trash"] = {
 		
 		},
@@ -1482,6 +1515,7 @@ G.DebuffList = {
 			[GetSpellInfo(249297)] = { id = 249297, level = 8, }, -- 归源之焰
 			[GetSpellInfo(246199)] = { id = 246199, level = 8, }, -- 燃烧之风
 			[GetSpellInfo(246209)] = { id = 246209, level = 8, }, -- 惩戒烈焰
+			[GetSpellInfo(254122)] = { id = 254122, level = 8, }, -- 混乱云雾
 		},
 	},
 	
