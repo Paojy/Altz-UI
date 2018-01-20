@@ -341,6 +341,8 @@ local numrows, lastrowbutton, numbuttons, lastbutton = 0, ContainerFrame1Item1, 
 local banknumrows, banklastrowbutton, banknumbuttons, banklastbutton = 0, BankFrameItem1, 1, BankFrameItem1
 
 function ContainerFrame_GenerateFrame(frame, size, id)
+	BACKPACK_HEIGHT = BACKPACK_HEIGHT or 14 -- 防bug
+	
 	frame.size = size
 	
 	for i= 1, size, 1 do
@@ -404,7 +406,7 @@ function ContainerFrame_GenerateFrame(frame, size, id)
 				--itemframes.idtext:SetText(1+id.."/"..item)
 			--end
 			
-			if id == 0 and item == 16 then
+			if id == 0 and item == GetContainerNumSlots(0) then
 				numrows, lastrowbutton, numbuttons, lastbutton = 0, ContainerFrame1Item1, 1, ContainerFrame1Item1
 				itemframes:SetPoint("TOPLEFT", _G[G.uiname.."bag"], "TOPLEFT", 10, -30)
 				lastrowbutton = itemframes
