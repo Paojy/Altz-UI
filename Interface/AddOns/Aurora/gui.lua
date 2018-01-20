@@ -147,7 +147,7 @@ title:SetText("|cff0080ffAurora|r "..GetAddOnMetadata("Aurora", "Version"))
 local features = addSubCategory(gui, L["Features"])
 features:SetPoint("TOPLEFT", 16, -80)
 
-local bagsBox = createToggleBox(gui, "bags", L["Bags"])
+local bagsBox = createToggleBox(gui, "bags", L["Bags"], true)
 bagsBox:SetPoint("TOPLEFT", features, "BOTTOMLEFT", 0, -20)
 
 local chatBubbleBox = createToggleBox(gui, "chatBubbles", L["ChatBubbles"])
@@ -156,7 +156,7 @@ chatBubbleBox:SetPoint("LEFT", bagsBox, "RIGHT", 110, 0)
 local lootBox = createToggleBox(gui, "loot", L["Loot"])
 lootBox:SetPoint("LEFT", chatBubbleBox, "RIGHT", 110, 0)
 
-local tooltipsBox = createToggleBox(gui, "tooltips", L["Tooltips"])
+local tooltipsBox = createToggleBox(gui, "tooltips", L["Tooltips"], true)
 tooltipsBox:SetPoint("TOPLEFT", bagsBox, "BOTTOMLEFT", 0, -8)
 
 local shadowBox = createToggleBox(gui, "shadow", L["Shadow Border"])

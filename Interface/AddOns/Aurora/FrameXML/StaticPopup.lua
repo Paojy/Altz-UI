@@ -37,7 +37,7 @@ tinsert(C.themes["Aurora"], function()
 		F.CreateBD(frame)
 		F.CreateSD(frame)
 
-		for j = 1, 3 do
+		for j = 1, 4 do
 			F.Reskin(frame["button"..j])
 		end
 
