@@ -2551,7 +2551,8 @@ T.createcheckbutton(TooltipOptions, 30, 270, L["显示物品编号"], "TooltipOp
 T.createcheckbutton(TooltipOptions, 30, 300, L["显示天赋"], "TooltipOptions", "showtalent")
 T.createcheckbutton(TooltipOptions, 30, 330, L["按职业着色"], "TooltipOptions", "colorborderClass")
 T.createcheckbutton(TooltipOptions, 30, 360, L["战斗中隐藏"], "TooltipOptions", "combathide")
-T.createDR(TooltipOptions.enabletip, TooltipOptions.size, TooltipOptions.cursor, TooltipOptions.hideRealm, TooltipOptions.hideTitles, TooltipOptions.showspellID, TooltipOptions.showitemID, TooltipOptions.showtalent, TooltipOptions.colorborderClass, TooltipOptions.combathide)
+T.createslider(TooltipOptions, 30, 400, L["BackdropOpacity"], "TooltipOptions", "backdropOpacity", 100, 1, 100, 1)
+T.createDR(TooltipOptions.enabletip, TooltipOptions.size, TooltipOptions.cursor, TooltipOptions.hideRealm, TooltipOptions.hideTitles, TooltipOptions.showspellID, TooltipOptions.showitemID, TooltipOptions.showtalent, TooltipOptions.colorborderClass, TooltipOptions.combathide, TooltipOptions.backdropOpacity)
 
 --====================================================--
 --[[             -- Combattext Options --              ]]--
