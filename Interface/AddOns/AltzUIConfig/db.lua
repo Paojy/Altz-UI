@@ -283,6 +283,7 @@ local AuraList = {
 		[GetSpellInfo(12975)]  = { id = 12975,  level = 15,}, -- 破釜沉舟
 		[GetSpellInfo(871)]    = { id = 871,    level = 15,}, -- 盾墙
 		[GetSpellInfo(184364)]  = { id = 184364,  level = 15,}, -- 狂怒回复
+		[GetSpellInfo(118038)]  = { id = 118038,  level = 15,}, -- 剑在人在
 	--DH
 		[GetSpellInfo(196555)]  = { id = 196555,  level = 15,}, -- 虚空行走 浩劫
 	--猎人
@@ -855,6 +856,7 @@ G.DebuffList = {
 			[GetSpellInfo(199097)] = {id = 199097, level = 8,}, -- 催眠之云
 		},
 		["Trash"] = {
+			[GetSpellInfo(225963)] = {id = 225963, level = 8,}, -- 嗜血跳跃
 			[GetSpellInfo(203163)] = {id = 203163, level = 8,}, -- 可恶的蝙蝠
 			[GetSpellInfo(225909)] = {id = 225909, level = 8,}, -- 灵魂毒液
 			[GetSpellInfo(200261)] = {id = 200261, level = 8,}, -- 碎骨打击
@@ -927,6 +929,7 @@ G.DebuffList = {
 			[GetSpellInfo(230050)] = {id = 230050, level = 8,}, -- 力场之刃
 			[GetSpellInfo(228252)] = {id = 228252, level = 8,}, -- 暗影撕裂
 			[GetSpellInfo(230083)] = {id = 230083, level = 8,}, -- 废灵
+			[GetSpellInfo(228333)] = {id = 228333, level = 8,}, -- 爆裂充能
 		},
 	},
 	
@@ -1506,6 +1509,12 @@ G.DebuffList = {
 			[GetSpellInfo(257299)] = { id = 257299, level = 8, }, -- 怒火余烬
 			[GetSpellInfo(258039)] = { id = 258039, level = 8, }, -- 死亡之镰
 			[GetSpellInfo(256899)] = { id = 256899, level = 8, }, -- 灵魂引爆
+			[GetSpellInfo(258834)] = { id = 258834, level = 8, }, -- 毁灭之锋
+			[GetSpellInfo(257931)] = { id = 257931, level = 8, }, -- 萨格拉斯的恐惧
+			[GetSpellInfo(257869)] = { id = 257869, level = 8, }, -- 萨格拉斯的狂怒
+			[GetSpellInfo(257911)] = { id = 257911, level = 8, }, -- 狂野怒意
+			[GetSpellInfo(257930)] = { id = 257930, level = 8, }, -- 毁灭之惧
+			[GetSpellInfo(257966)] = { id = 257966, level = 8, }, -- 萨格拉斯的判决
 		},
 		
 		["Trash"] = {
@@ -1904,6 +1913,9 @@ local Character_default_Settings = {
 	},
 	PlateOptions = {
 		enableplate = true,
+		blzplates = true,
+		blzplates_nameonly = true,
+		name_fontsize = 18,
 		autotoggleplates = true,
 		plateauranum = 5,
 		plateaurasize = 25,
