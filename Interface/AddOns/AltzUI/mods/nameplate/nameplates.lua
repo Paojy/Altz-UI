@@ -792,19 +792,13 @@ local function HideBlizzard()
 		NamePlates_UpdateNamePlateOptions()
 	end
 	
-	SetCVar("nameplateShowFriendlyNPCs", 1) --npc
 	SetCVar("nameplateOtherTopInset", 0.08)
 	SetCVar("nameplateOtherBottomInset", 0.1)
 	SetCVar("namePlateMinScale", 1)
 	SetCVar("namePlateMaxScale", 1)
 	SetCVar("nameplateMaxDistance", 45)
-	SetCVar("nameplateOverlapH",  0.3) --default is 0.8 
-	SetCVar("nameplateOverlapV",  0.7) --default is 1.1 
-	SetCVar("nameplateShowEnemyGuardians", 1) --守護者 
-	SetCVar("nameplateShowEnemyMinions", 1)  --僕從 
-	SetCVar("nameplateShowEnemyPets", 1)  --寵物 
-	SetCVar("nameplateShowEnemyTotems", 1) --圖騰
-	SetCVar("nameplateShowEnemyMinus", 1) --次要
+	SetCVar("nameplateOverlapH",  0.3) --default is 0.8
+	SetCVar("nameplateOverlapV",  0.7) --default is 1.1
 end
 
 local function OnUnitFactionChanged(unit)
