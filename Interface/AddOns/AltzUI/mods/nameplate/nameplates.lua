@@ -228,11 +228,11 @@ if playerplate then
 				PowerFrame:SetParent(namePlatePlayer)
 				if not numberstyle then
 					PowerFrame.powerBar:ClearAllPoints()
-					PowerFrame.powerBar:SetPoint("TOPLEFT", namePlatePlayer.UnitFrame.healthBar, "BOTTOMLEFT", 0, -3)
-					PowerFrame.powerBar:SetPoint("TOPRIGHT", namePlatePlayer.UnitFrame.healthBar, "BOTTOMRIGHT", 0, -3)
+					PowerFrame.powerBar:SetPoint("TOPLEFT", namePlatePlayer.NUnitFrame.healthBar, "BOTTOMLEFT", 0, -3)
+					PowerFrame.powerBar:SetPoint("TOPRIGHT", namePlatePlayer.NUnitFrame.healthBar, "BOTTOMRIGHT", 0, -3)
 				else
 					PowerFrame.powerperc:ClearAllPoints()
-					PowerFrame.powerperc:SetPoint("TOP", namePlatePlayer.UnitFrame.healthperc, "BOTTOM", 0, 0)
+					PowerFrame.powerperc:SetPoint("TOP", namePlatePlayer.NUnitFrame.healthperc, "BOTTOM", 0, 0)
 					PowerFrame.powerperc:SetJustifyH("CENTER")
 					PowerFrame.powerperc:SetJustifyV("TOP")
 				end
@@ -451,9 +451,9 @@ if classresource_show then
 					self:ClearAllPoints()
 					self:Show()
 					if numberstyle then
-						self:SetPoint("TOP", namePlatePlayer.UnitFrame.name, "TOP", 0, 0) -- 玩家数字
+						self:SetPoint("TOP", namePlatePlayer.NUnitFrame.name, "TOP", 0, 0) -- 玩家数字
 					else
-						self:SetPoint("BOTTOM", namePlatePlayer.UnitFrame.healthBar, "TOP", 0, 3) -- 玩家条
+						self:SetPoint("BOTTOM", namePlatePlayer.NUnitFrame.healthBar, "TOP", 0, 3) -- 玩家条
 					end
 				end
 			elseif event == "NAME_PLATE_UNIT_REMOVED" and UnitIsUnit(unit, "player") then
@@ -461,13 +461,13 @@ if classresource_show then
 			end
 		elseif classresource == "target" and (event == "PLAYER_TARGET_CHANGED" or event == "NAME_PLATE_UNIT_ADDED") then
 			local namePlateTarget = C_NamePlate.GetNamePlateForUnit("target")
-			if namePlateTarget and UnitCanAttack("player", namePlateTarget.UnitFrame.displayedUnit) then
+			if namePlateTarget and UnitCanAttack("player", namePlateTarget.NUnitFrame.displayedUnit) then
 				self:SetParent(namePlateTarget)
 				self:ClearAllPoints()
 				if numberstyle then
-					self:SetPoint("TOP", namePlateTarget.UnitFrame.name, "BOTTOM", 0, -2) -- 目标数字
+					self:SetPoint("TOP", namePlateTarget.NUnitFrame.name, "BOTTOM", 0, -2) -- 目标数字
 				else
-					self:SetPoint("TOP", namePlateTarget.UnitFrame.healthBar, "BOTTOM", 0, -2) -- 目标条
+					self:SetPoint("TOP", namePlateTarget.NUnitFrame.healthBar, "BOTTOM", 0, -2) -- 目标条
 				end
 				self:Show()
 			else
@@ -701,6 +701,17 @@ local function UpdateAll(unitFrame)
 			end
 		end
 	end
+	
+	if aCoreCDB["PlateOptions"]["blzplates"] then
+		local namePlate = unitFrame:GetParent()
+		if namePlate.NUnitFrame:IsShown() then
+			namePlate.UnitFrame:Hide()
+		elseif aCoreCDB["PlateOptions"]["blzplates_nameonly"] then
+			namePlate.UnitFrame.name:Show()
+		else
+			namePlate.UnitFrame:Show()
+		end
+	end
 end
 
 local function NamePlate_OnEvent(self, event, ...)
@@ -758,9 +769,12 @@ end
 --[[ Driver frame ]]--
 
 local function HideBlizzard()
-	NamePlateDriverFrame:UnregisterAllEvents()
+	if not aCoreCDB["PlateOptions"]["blzplates"] then
+		NamePlateDriverFrame:UnregisterAllEvents()
+	end
 	ClassNameplateManaBarFrame:Hide()
-
+	SystemFont_NamePlate:SetFont(G.norFont, aCoreCDB["PlateOptions"]["name_fontsize"], "OUTLINE")
+	
 	hooksecurefunc(NamePlateDriverFrame, "SetupClassNameplateBar", function()
 		NamePlateTargetResourceFrame:Hide()
 		NamePlatePlayerResourceFrame:Hide()	
@@ -778,25 +792,33 @@ local function HideBlizzard()
 		NamePlates_UpdateNamePlateOptions()
 	end
 	
+	SetCVar("nameplateShowFriendlyNPCs", 1) --npc
 	SetCVar("nameplateOtherTopInset", 0.08)
 	SetCVar("nameplateOtherBottomInset", 0.1)
 	SetCVar("namePlateMinScale", 1)
 	SetCVar("namePlateMaxScale", 1)
 	SetCVar("nameplateMaxDistance", 45)
+	SetCVar("nameplateOverlapH",  0.3) --default is 0.8 
+	SetCVar("nameplateOverlapV",  0.7) --default is 1.1 
+	SetCVar("nameplateShowEnemyGuardians", 1) --守護者 
+	SetCVar("nameplateShowEnemyMinions", 1)  --僕從 
+	SetCVar("nameplateShowEnemyPets", 1)  --寵物 
+	SetCVar("nameplateShowEnemyTotems", 1) --圖騰
+	SetCVar("nameplateShowEnemyMinus", 1) --次要
 end
 
 local function OnUnitFactionChanged(unit)
 	-- This would make more sense as a unitFrame:RegisterUnitEvent
 	local namePlate = C_NamePlate.GetNamePlateForUnit(unit)
 	if (namePlate) then
-		UpdateName(namePlate.UnitFrame)
-		UpdateHealthColor(namePlate.UnitFrame)
+		UpdateName(namePlate.NUnitFrame)
+		UpdateHealthColor(namePlate.NUnitFrame)
 	end
 end
 
 local function OnRaidTargetUpdate()
 	for _, namePlate in pairs(C_NamePlate.GetNamePlates()) do
-		UpdateRaidTarget(namePlate.UnitFrame)
+		UpdateRaidTarget(namePlate.NUnitFrame)
 	end
 end
 
@@ -809,209 +831,209 @@ function NamePlates_UpdateNamePlateOptions()
 	C_NamePlate.SetNamePlateEnemySize(baseNamePlateWidth, baseNamePlateHeight)
 
 	for i, namePlate in ipairs(C_NamePlate.GetNamePlates()) do
-		local unitFrame = namePlate.UnitFrame
+		local unitFrame = namePlate.NUnitFrame
 		UpdateAll(unitFrame)
 	end
 end
 
 local function OnNamePlateCreated(namePlate)
-	namePlate.UnitFrame = CreateFrame("Button", "$parentUnitFrame", namePlate)
-	namePlate.UnitFrame:SetAllPoints(namePlate)
-	namePlate.UnitFrame:SetFrameLevel(namePlate:GetFrameLevel())
+	namePlate.NUnitFrame = CreateFrame("Button", "$parentUnitFrame", namePlate)
+	namePlate.NUnitFrame:SetAllPoints(namePlate)
+	namePlate.NUnitFrame:SetFrameLevel(namePlate:GetFrameLevel())
 	
 	if numberstyle then -- 数字样式
-		namePlate.UnitFrame.healthperc = namePlate.UnitFrame:CreateFontString(nil, "OVERLAY")
-		namePlate.UnitFrame.healthperc:SetFont(numberstylefont, fontsize*2, "OUTLINE")
-		namePlate.UnitFrame.healthperc:SetPoint("CENTER")
-		namePlate.UnitFrame.healthperc:SetTextColor(1,1,1)
-		namePlate.UnitFrame.healthperc:SetShadowColor(0, 0, 0, 0.4)
-		namePlate.UnitFrame.healthperc:SetShadowOffset(1, -1)
-		namePlate.UnitFrame.healthperc:SetText("92")
+		namePlate.NUnitFrame.healthperc = namePlate.NUnitFrame:CreateFontString(nil, "OVERLAY")
+		namePlate.NUnitFrame.healthperc:SetFont(numberstylefont, fontsize*2, "OUTLINE")
+		namePlate.NUnitFrame.healthperc:SetPoint("CENTER")
+		namePlate.NUnitFrame.healthperc:SetTextColor(1,1,1)
+		namePlate.NUnitFrame.healthperc:SetShadowColor(0, 0, 0, 0.4)
+		namePlate.NUnitFrame.healthperc:SetShadowOffset(1, -1)
+		namePlate.NUnitFrame.healthperc:SetText("92")
 		
-		namePlate.UnitFrame.name = T.createtext(namePlate.UnitFrame, "ARTWORK", fontsize-4, "OUTLINE", "CENTER")
-		namePlate.UnitFrame.name:SetPoint("TOP", namePlate.UnitFrame.healthperc, "BOTTOM", 0, -3)
-		namePlate.UnitFrame.name:SetTextColor(1,1,1)
-		namePlate.UnitFrame.name:SetText("Name")
+		namePlate.NUnitFrame.name = T.createtext(namePlate.NUnitFrame, "ARTWORK", fontsize-4, "OUTLINE", "CENTER")
+		namePlate.NUnitFrame.name:SetPoint("TOP", namePlate.NUnitFrame.healthperc, "BOTTOM", 0, -3)
+		namePlate.NUnitFrame.name:SetTextColor(1,1,1)
+		namePlate.NUnitFrame.name:SetText("Name")
 		
-		namePlate.UnitFrame.castBar = CreateFrame("StatusBar", nil, namePlate.UnitFrame)
-		namePlate.UnitFrame.castBar:Hide()
-		namePlate.UnitFrame.castBar.iconWhenNoninterruptible = false
-		namePlate.UnitFrame.castBar:SetSize(30,30)
+		namePlate.NUnitFrame.castBar = CreateFrame("StatusBar", nil, namePlate.NUnitFrame)
+		namePlate.NUnitFrame.castBar:Hide()
+		namePlate.NUnitFrame.castBar.iconWhenNoninterruptible = false
+		namePlate.NUnitFrame.castBar:SetSize(30,30)
 		if classresource_show and classresource == "target" then
-			namePlate.UnitFrame.castBar:SetPoint("TOP", namePlate.UnitFrame.name, "BOTTOM", 0, -7)
+			namePlate.NUnitFrame.castBar:SetPoint("TOP", namePlate.NUnitFrame.name, "BOTTOM", 0, -7)
 		else
-			namePlate.UnitFrame.castBar:SetPoint("TOP", namePlate.UnitFrame.name, "BOTTOM", 0, -3)
+			namePlate.NUnitFrame.castBar:SetPoint("TOP", namePlate.NUnitFrame.name, "BOTTOM", 0, -3)
 		end
-		namePlate.UnitFrame.castBar:SetStatusBarTexture(iconcastbar)
-		namePlate.UnitFrame.castBar:SetStatusBarColor(0.5, 0.5, 0.5)
+		namePlate.NUnitFrame.castBar:SetStatusBarTexture(iconcastbar)
+		namePlate.NUnitFrame.castBar:SetStatusBarColor(0.5, 0.5, 0.5)
 		
-		namePlate.UnitFrame.castBar.border = F.CreateBDFrame(namePlate.UnitFrame.castBar, 0)
-		T.CreateThinSD(namePlate.UnitFrame.castBar.border, 1, 0, 0, 0, 1, -2)
+		namePlate.NUnitFrame.castBar.border = F.CreateBDFrame(namePlate.NUnitFrame.castBar, 0)
+		T.CreateThinSD(namePlate.NUnitFrame.castBar.border, 1, 0, 0, 0, 1, -2)
 		
-		namePlate.UnitFrame.castBar.bg = namePlate.UnitFrame.castBar:CreateTexture(nil, 'BORDER')
-		namePlate.UnitFrame.castBar.bg:SetAllPoints(namePlate.UnitFrame.castBar)
-		namePlate.UnitFrame.castBar.bg:SetTexture(1/3, 1/3, 1/3, .5)
+		namePlate.NUnitFrame.castBar.bg = namePlate.NUnitFrame.castBar:CreateTexture(nil, 'BORDER')
+		namePlate.NUnitFrame.castBar.bg:SetAllPoints(namePlate.NUnitFrame.castBar)
+		namePlate.NUnitFrame.castBar.bg:SetTexture(1/3, 1/3, 1/3, .5)
 
-		namePlate.UnitFrame.castBar.Icon = namePlate.UnitFrame.castBar:CreateTexture(nil, "OVERLAY", 1)
-		namePlate.UnitFrame.castBar.Icon:SetPoint("CENTER")
-		namePlate.UnitFrame.castBar.Icon:SetTexCoord(0.05, 0.95, 0.05, 0.95)
-		namePlate.UnitFrame.castBar.Icon:SetSize(25, 25)
-		namePlate.UnitFrame.castBar.iconborder = F.CreateBG(namePlate.UnitFrame.castBar.Icon)
-		namePlate.UnitFrame.castBar.iconborder:SetDrawLayer("OVERLAY",-1)
+		namePlate.NUnitFrame.castBar.Icon = namePlate.NUnitFrame.castBar:CreateTexture(nil, "OVERLAY", 1)
+		namePlate.NUnitFrame.castBar.Icon:SetPoint("CENTER")
+		namePlate.NUnitFrame.castBar.Icon:SetTexCoord(0.05, 0.95, 0.05, 0.95)
+		namePlate.NUnitFrame.castBar.Icon:SetSize(25, 25)
+		namePlate.NUnitFrame.castBar.iconborder = F.CreateBG(namePlate.NUnitFrame.castBar.Icon)
+		namePlate.NUnitFrame.castBar.iconborder:SetDrawLayer("OVERLAY",-1)
 		
-		namePlate.UnitFrame.castBar.Text = T.createtext(namePlate.UnitFrame.castBar, "OVERLAY", fontsize-4, "OUTLINE", "CENTER")
-		namePlate.UnitFrame.castBar.Text:SetPoint("CENTER")
+		namePlate.NUnitFrame.castBar.Text = T.createtext(namePlate.NUnitFrame.castBar, "OVERLAY", fontsize-4, "OUTLINE", "CENTER")
+		namePlate.NUnitFrame.castBar.Text:SetPoint("CENTER")
 
-		namePlate.UnitFrame.castBar.BorderShield = namePlate.UnitFrame.castBar:CreateTexture(nil, "OVERLAY", 1)
-		namePlate.UnitFrame.castBar.BorderShield:SetAtlas("nameplates-InterruptShield")
-		namePlate.UnitFrame.castBar.BorderShield:SetSize(15, 15)
-		namePlate.UnitFrame.castBar.BorderShield:SetPoint("CENTER", namePlate.UnitFrame.castBar, "BOTTOMLEFT")
-		namePlate.UnitFrame.castBar.BorderShield:SetDrawLayer("OVERLAY",2)
+		namePlate.NUnitFrame.castBar.BorderShield = namePlate.NUnitFrame.castBar:CreateTexture(nil, "OVERLAY", 1)
+		namePlate.NUnitFrame.castBar.BorderShield:SetAtlas("nameplates-InterruptShield")
+		namePlate.NUnitFrame.castBar.BorderShield:SetSize(15, 15)
+		namePlate.NUnitFrame.castBar.BorderShield:SetPoint("CENTER", namePlate.NUnitFrame.castBar, "BOTTOMLEFT")
+		namePlate.NUnitFrame.castBar.BorderShield:SetDrawLayer("OVERLAY",2)
 		
-		namePlate.UnitFrame.castBar.Spark = namePlate.UnitFrame.castBar:CreateTexture(nil, "OVERLAY")
-		namePlate.UnitFrame.castBar.Spark:SetSize(30, 45)
-		namePlate.UnitFrame.castBar.Spark:SetTexture("Interface\\CastingBar\\UI-CastingBar-Spark")
-		namePlate.UnitFrame.castBar.Spark:SetBlendMode("ADD")
-		namePlate.UnitFrame.castBar.Spark:SetPoint("CENTER", 0, 3)
+		namePlate.NUnitFrame.castBar.Spark = namePlate.NUnitFrame.castBar:CreateTexture(nil, "OVERLAY")
+		namePlate.NUnitFrame.castBar.Spark:SetSize(30, 45)
+		namePlate.NUnitFrame.castBar.Spark:SetTexture("Interface\\CastingBar\\UI-CastingBar-Spark")
+		namePlate.NUnitFrame.castBar.Spark:SetBlendMode("ADD")
+		namePlate.NUnitFrame.castBar.Spark:SetPoint("CENTER", 0, 3)
 		
-		namePlate.UnitFrame.castBar.Flash = namePlate.UnitFrame.castBar:CreateTexture(nil, "OVERLAY")
-		namePlate.UnitFrame.castBar.Flash:SetAllPoints()
-		namePlate.UnitFrame.castBar.Flash:SetTexture(G.media.ufbar)
-		namePlate.UnitFrame.castBar.Flash:SetBlendMode("ADD")
+		namePlate.NUnitFrame.castBar.Flash = namePlate.NUnitFrame.castBar:CreateTexture(nil, "OVERLAY")
+		namePlate.NUnitFrame.castBar.Flash:SetAllPoints()
+		namePlate.NUnitFrame.castBar.Flash:SetTexture(G.media.ufbar)
+		namePlate.NUnitFrame.castBar.Flash:SetBlendMode("ADD")
 		
-		CastingBarFrame_OnLoad(namePlate.UnitFrame.castBar, nil, false, true)
-		namePlate.UnitFrame.castBar:SetScript("OnEvent", CastingBarFrame_OnEvent)
-		namePlate.UnitFrame.castBar:SetScript("OnUpdate", CastingBarFrame_OnUpdate)
-		namePlate.UnitFrame.castBar:SetScript("OnShow", CastingBarFrame_OnShow)
+		CastingBarFrame_OnLoad(namePlate.NUnitFrame.castBar, nil, false, true)
+		namePlate.NUnitFrame.castBar:SetScript("OnEvent", CastingBarFrame_OnEvent)
+		namePlate.NUnitFrame.castBar:SetScript("OnUpdate", CastingBarFrame_OnUpdate)
+		namePlate.NUnitFrame.castBar:SetScript("OnShow", CastingBarFrame_OnShow)
 
-		namePlate.UnitFrame.RaidTargetFrame = CreateFrame("Frame", nil, namePlate.UnitFrame)
-		namePlate.UnitFrame.RaidTargetFrame:SetSize(30, 30)
-		namePlate.UnitFrame.RaidTargetFrame:SetPoint("RIGHT", namePlate.UnitFrame.name, "LEFT")
+		namePlate.NUnitFrame.RaidTargetFrame = CreateFrame("Frame", nil, namePlate.NUnitFrame)
+		namePlate.NUnitFrame.RaidTargetFrame:SetSize(30, 30)
+		namePlate.NUnitFrame.RaidTargetFrame:SetPoint("RIGHT", namePlate.NUnitFrame.name, "LEFT")
 
-		namePlate.UnitFrame.RaidTargetFrame.RaidTargetIcon = namePlate.UnitFrame.RaidTargetFrame:CreateTexture(nil, "OVERLAY")
-		namePlate.UnitFrame.RaidTargetFrame.RaidTargetIcon:SetTexture([[Interface\AddOns\AltzUI\media\raidicons.blp]])
-		namePlate.UnitFrame.RaidTargetFrame.RaidTargetIcon:SetAllPoints()
-		namePlate.UnitFrame.RaidTargetFrame.RaidTargetIcon:Hide()
+		namePlate.NUnitFrame.RaidTargetFrame.RaidTargetIcon = namePlate.NUnitFrame.RaidTargetFrame:CreateTexture(nil, "OVERLAY")
+		namePlate.NUnitFrame.RaidTargetFrame.RaidTargetIcon:SetTexture([[Interface\AddOns\AltzUI\media\raidicons.blp]])
+		namePlate.NUnitFrame.RaidTargetFrame.RaidTargetIcon:SetAllPoints()
+		namePlate.NUnitFrame.RaidTargetFrame.RaidTargetIcon:Hide()
 		
-		namePlate.UnitFrame.redarrow = namePlate.UnitFrame:CreateTexture(nil, 'OVERLAY')
-		namePlate.UnitFrame.redarrow:SetSize(50, 50)
-		namePlate.UnitFrame.redarrow:SetTexture(redarrow)
-		namePlate.UnitFrame.redarrow:Hide()
+		namePlate.NUnitFrame.redarrow = namePlate.NUnitFrame:CreateTexture(nil, 'OVERLAY')
+		namePlate.NUnitFrame.redarrow:SetSize(50, 50)
+		namePlate.NUnitFrame.redarrow:SetTexture(redarrow)
+		namePlate.NUnitFrame.redarrow:Hide()
 		
-		namePlate.UnitFrame.icons = CreateFrame("Frame", nil, namePlate.UnitFrame)
-		namePlate.UnitFrame.icons:SetPoint("BOTTOM", namePlate.UnitFrame.healthperc, "TOP", 0, 0)
-		namePlate.UnitFrame.icons:SetWidth(140)
-		namePlate.UnitFrame.icons:SetHeight(25)
-		namePlate.UnitFrame.icons:SetFrameLevel(namePlate.UnitFrame:GetFrameLevel() + 2)
+		namePlate.NUnitFrame.icons = CreateFrame("Frame", nil, namePlate.NUnitFrame)
+		namePlate.NUnitFrame.icons:SetPoint("BOTTOM", namePlate.NUnitFrame.healthperc, "TOP", 0, 0)
+		namePlate.NUnitFrame.icons:SetWidth(140)
+		namePlate.NUnitFrame.icons:SetHeight(25)
+		namePlate.NUnitFrame.icons:SetFrameLevel(namePlate.NUnitFrame:GetFrameLevel() + 2)
 	else -- 条形样式
-		namePlate.UnitFrame.healthBar = CreateFrame("StatusBar", nil, namePlate.UnitFrame)
-		namePlate.UnitFrame.healthBar:SetHeight(8)
-		namePlate.UnitFrame.healthBar:SetPoint("LEFT", 0, 0)
-		namePlate.UnitFrame.healthBar:SetPoint("RIGHT", 0, 0)
-		namePlate.UnitFrame.healthBar:SetStatusBarTexture(G.media.ufbar)
-		namePlate.UnitFrame.healthBar:SetMinMaxValues(0, 1)
+		namePlate.NUnitFrame.healthBar = CreateFrame("StatusBar", nil, namePlate.NUnitFrame)
+		namePlate.NUnitFrame.healthBar:SetHeight(8)
+		namePlate.NUnitFrame.healthBar:SetPoint("LEFT", 0, 0)
+		namePlate.NUnitFrame.healthBar:SetPoint("RIGHT", 0, 0)
+		namePlate.NUnitFrame.healthBar:SetStatusBarTexture(G.media.ufbar)
+		namePlate.NUnitFrame.healthBar:SetMinMaxValues(0, 1)
 		
-		namePlate.UnitFrame.healthBar.bd = T.createBackdrop(namePlate.UnitFrame.healthBar, namePlate.UnitFrame.healthBar, 1)
+		namePlate.NUnitFrame.healthBar.bd = T.createBackdrop(namePlate.NUnitFrame.healthBar, namePlate.NUnitFrame.healthBar, 1)
 		
-		namePlate.UnitFrame.healthBar.value = T.createtext(namePlate.UnitFrame.healthBar, "OVERLAY", fontsize-4, "OUTLINE", "CENTER")
-		namePlate.UnitFrame.healthBar.value:SetPoint("BOTTOMRIGHT", namePlate.UnitFrame.healthBar, "TOPRIGHT", 0, -fontsize/3)
-		namePlate.UnitFrame.healthBar.value:SetTextColor(1,1,1)
-		namePlate.UnitFrame.healthBar.value:SetText("Value")
+		namePlate.NUnitFrame.healthBar.value = T.createtext(namePlate.NUnitFrame.healthBar, "OVERLAY", fontsize-4, "OUTLINE", "CENTER")
+		namePlate.NUnitFrame.healthBar.value:SetPoint("BOTTOMRIGHT", namePlate.NUnitFrame.healthBar, "TOPRIGHT", 0, -fontsize/3)
+		namePlate.NUnitFrame.healthBar.value:SetTextColor(1,1,1)
+		namePlate.NUnitFrame.healthBar.value:SetText("Value")
 		
-		namePlate.UnitFrame.name = T.createtext(namePlate.UnitFrame, "OVERLAY", fontsize-4, "OUTLINE", "CENTER")
-		namePlate.UnitFrame.name:SetPoint("TOPLEFT", namePlate.UnitFrame, "TOPLEFT", 5, -5)
-		namePlate.UnitFrame.name:SetPoint("BOTTOMRIGHT", namePlate.UnitFrame, "TOPRIGHT", -5, -15)
-		namePlate.UnitFrame.name:SetIndentedWordWrap(false)
-		namePlate.UnitFrame.name:SetTextColor(1,1,1)
-		namePlate.UnitFrame.name:SetText("Name")
+		namePlate.NUnitFrame.name = T.createtext(namePlate.NUnitFrame, "OVERLAY", fontsize-4, "OUTLINE", "CENTER")
+		namePlate.NUnitFrame.name:SetPoint("TOPLEFT", namePlate.NUnitFrame, "TOPLEFT", 5, -5)
+		namePlate.NUnitFrame.name:SetPoint("BOTTOMRIGHT", namePlate.NUnitFrame, "TOPRIGHT", -5, -15)
+		namePlate.NUnitFrame.name:SetIndentedWordWrap(false)
+		namePlate.NUnitFrame.name:SetTextColor(1,1,1)
+		namePlate.NUnitFrame.name:SetText("Name")
 		
-		namePlate.UnitFrame.castBar = CreateFrame("StatusBar", nil, namePlate.UnitFrame)
-		namePlate.UnitFrame.castBar:Hide()
-		namePlate.UnitFrame.castBar.iconWhenNoninterruptible = false
-		namePlate.UnitFrame.castBar:SetHeight(8)
+		namePlate.NUnitFrame.castBar = CreateFrame("StatusBar", nil, namePlate.NUnitFrame)
+		namePlate.NUnitFrame.castBar:Hide()
+		namePlate.NUnitFrame.castBar.iconWhenNoninterruptible = false
+		namePlate.NUnitFrame.castBar:SetHeight(8)
 		if classresource_show and classresource == "target" then
-			namePlate.UnitFrame.castBar:SetPoint("TOPLEFT", namePlate.UnitFrame.healthBar, "BOTTOMLEFT", 0, -7)
-			namePlate.UnitFrame.castBar:SetPoint("TOPRIGHT", namePlate.UnitFrame.healthBar, "BOTTOMRIGHT", 0, -7)
+			namePlate.NUnitFrame.castBar:SetPoint("TOPLEFT", namePlate.NUnitFrame.healthBar, "BOTTOMLEFT", 0, -7)
+			namePlate.NUnitFrame.castBar:SetPoint("TOPRIGHT", namePlate.NUnitFrame.healthBar, "BOTTOMRIGHT", 0, -7)
 		else
-			namePlate.UnitFrame.castBar:SetPoint("TOPLEFT", namePlate.UnitFrame.healthBar, "BOTTOMLEFT", 0, -3)
-			namePlate.UnitFrame.castBar:SetPoint("TOPRIGHT", namePlate.UnitFrame.healthBar, "BOTTOMRIGHT", 0, -3)
+			namePlate.NUnitFrame.castBar:SetPoint("TOPLEFT", namePlate.NUnitFrame.healthBar, "BOTTOMLEFT", 0, -3)
+			namePlate.NUnitFrame.castBar:SetPoint("TOPRIGHT", namePlate.NUnitFrame.healthBar, "BOTTOMRIGHT", 0, -3)
 		end
-		namePlate.UnitFrame.castBar:SetStatusBarTexture(G.media.ufbar)
-		namePlate.UnitFrame.castBar:SetStatusBarColor(0.5, 0.5, 0.5)
+		namePlate.NUnitFrame.castBar:SetStatusBarTexture(G.media.ufbar)
+		namePlate.NUnitFrame.castBar:SetStatusBarColor(0.5, 0.5, 0.5)
 		
-		T.createBackdrop(namePlate.UnitFrame.castBar, namePlate.UnitFrame.castBar, 1)
+		T.createBackdrop(namePlate.NUnitFrame.castBar, namePlate.NUnitFrame.castBar, 1)
 		
-		namePlate.UnitFrame.castBar.Text = T.createtext(namePlate.UnitFrame.castBar, "OVERLAY", fontsize-4, "OUTLINE", "CENTER")
-		namePlate.UnitFrame.castBar.Text:SetPoint("CENTER")
-		namePlate.UnitFrame.castBar.Text:SetText("Spell Name")
+		namePlate.NUnitFrame.castBar.Text = T.createtext(namePlate.NUnitFrame.castBar, "OVERLAY", fontsize-4, "OUTLINE", "CENTER")
+		namePlate.NUnitFrame.castBar.Text:SetPoint("CENTER")
+		namePlate.NUnitFrame.castBar.Text:SetText("Spell Name")
 		
-		namePlate.UnitFrame.castBar.Icon = namePlate.UnitFrame.castBar:CreateTexture(nil, "OVERLAY", 1)
-		namePlate.UnitFrame.castBar.Icon:SetPoint("BOTTOMRIGHT", namePlate.UnitFrame.castBar, "BOTTOMLEFT", -4, -1)
-		namePlate.UnitFrame.castBar.Icon:SetTexCoord(0.05, 0.95, 0.05, 0.95)
+		namePlate.NUnitFrame.castBar.Icon = namePlate.NUnitFrame.castBar:CreateTexture(nil, "OVERLAY", 1)
+		namePlate.NUnitFrame.castBar.Icon:SetPoint("BOTTOMRIGHT", namePlate.NUnitFrame.castBar, "BOTTOMLEFT", -4, -1)
+		namePlate.NUnitFrame.castBar.Icon:SetTexCoord(0.05, 0.95, 0.05, 0.95)
 		if classresource_show and classresource == "target" then
-			namePlate.UnitFrame.castBar.Icon:SetSize(25, 25)
+			namePlate.NUnitFrame.castBar.Icon:SetSize(25, 25)
 		else
-			namePlate.UnitFrame.castBar.Icon:SetSize(21, 21)
+			namePlate.NUnitFrame.castBar.Icon:SetSize(21, 21)
 		end
-		namePlate.UnitFrame.castBar.Icon.iconborder = F.CreateBG(namePlate.UnitFrame.castBar.Icon)
-		namePlate.UnitFrame.castBar.Icon.iconborder:SetDrawLayer("OVERLAY", -1)
+		namePlate.NUnitFrame.castBar.Icon.iconborder = F.CreateBG(namePlate.NUnitFrame.castBar.Icon)
+		namePlate.NUnitFrame.castBar.Icon.iconborder:SetDrawLayer("OVERLAY", -1)
 		
-		namePlate.UnitFrame.castBar.BorderShield = namePlate.UnitFrame.castBar:CreateTexture(nil, "OVERLAY", 1)
-		namePlate.UnitFrame.castBar.BorderShield:SetAtlas("nameplates-InterruptShield")
-		namePlate.UnitFrame.castBar.BorderShield:SetSize(15, 15)
-		namePlate.UnitFrame.castBar.BorderShield:SetPoint("LEFT", namePlate.UnitFrame.castBar, "LEFT", 5, -5)
+		namePlate.NUnitFrame.castBar.BorderShield = namePlate.NUnitFrame.castBar:CreateTexture(nil, "OVERLAY", 1)
+		namePlate.NUnitFrame.castBar.BorderShield:SetAtlas("nameplates-InterruptShield")
+		namePlate.NUnitFrame.castBar.BorderShield:SetSize(15, 15)
+		namePlate.NUnitFrame.castBar.BorderShield:SetPoint("LEFT", namePlate.NUnitFrame.castBar, "LEFT", 5, -5)
 
-		namePlate.UnitFrame.castBar.Spark = namePlate.UnitFrame.castBar:CreateTexture(nil, "OVERLAY")
-		namePlate.UnitFrame.castBar.Spark:SetSize(30, 25)
-		namePlate.UnitFrame.castBar.Spark:SetTexture("Interface\\CastingBar\\UI-CastingBar-Spark")
-		namePlate.UnitFrame.castBar.Spark:SetBlendMode("ADD")
-		namePlate.UnitFrame.castBar.Spark:SetPoint("CENTER", 0, 3)
+		namePlate.NUnitFrame.castBar.Spark = namePlate.NUnitFrame.castBar:CreateTexture(nil, "OVERLAY")
+		namePlate.NUnitFrame.castBar.Spark:SetSize(30, 25)
+		namePlate.NUnitFrame.castBar.Spark:SetTexture("Interface\\CastingBar\\UI-CastingBar-Spark")
+		namePlate.NUnitFrame.castBar.Spark:SetBlendMode("ADD")
+		namePlate.NUnitFrame.castBar.Spark:SetPoint("CENTER", 0, 3)
 		
-		namePlate.UnitFrame.castBar.Flash = namePlate.UnitFrame.castBar:CreateTexture(nil, "OVERLAY")
-		namePlate.UnitFrame.castBar.Flash:SetAllPoints()
-		namePlate.UnitFrame.castBar.Flash:SetTexture(G.media.ufbar)
-		namePlate.UnitFrame.castBar.Flash:SetBlendMode("ADD")
+		namePlate.NUnitFrame.castBar.Flash = namePlate.NUnitFrame.castBar:CreateTexture(nil, "OVERLAY")
+		namePlate.NUnitFrame.castBar.Flash:SetAllPoints()
+		namePlate.NUnitFrame.castBar.Flash:SetTexture(G.media.ufbar)
+		namePlate.NUnitFrame.castBar.Flash:SetBlendMode("ADD")
 		
-		CastingBarFrame_OnLoad(namePlate.UnitFrame.castBar, nil, false, true)
-		namePlate.UnitFrame.castBar:SetScript("OnEvent", CastingBarFrame_OnEvent)
-		namePlate.UnitFrame.castBar:SetScript("OnUpdate", CastingBarFrame_OnUpdate)
-		namePlate.UnitFrame.castBar:SetScript("OnShow", CastingBarFrame_OnShow)
+		CastingBarFrame_OnLoad(namePlate.NUnitFrame.castBar, nil, false, true)
+		namePlate.NUnitFrame.castBar:SetScript("OnEvent", CastingBarFrame_OnEvent)
+		namePlate.NUnitFrame.castBar:SetScript("OnUpdate", CastingBarFrame_OnUpdate)
+		namePlate.NUnitFrame.castBar:SetScript("OnShow", CastingBarFrame_OnShow)
 
-		namePlate.UnitFrame.RaidTargetFrame = CreateFrame("Frame", nil, namePlate.UnitFrame)
-		namePlate.UnitFrame.RaidTargetFrame:SetSize(30, 30)
-		namePlate.UnitFrame.RaidTargetFrame:SetPoint("RIGHT", namePlate.UnitFrame.name, "LEFT")
+		namePlate.NUnitFrame.RaidTargetFrame = CreateFrame("Frame", nil, namePlate.NUnitFrame)
+		namePlate.NUnitFrame.RaidTargetFrame:SetSize(30, 30)
+		namePlate.NUnitFrame.RaidTargetFrame:SetPoint("RIGHT", namePlate.NUnitFrame.name, "LEFT")
 
-		namePlate.UnitFrame.RaidTargetFrame.RaidTargetIcon = namePlate.UnitFrame.RaidTargetFrame:CreateTexture(nil, "OVERLAY")
-		namePlate.UnitFrame.RaidTargetFrame.RaidTargetIcon:SetTexture([[Interface\AddOns\AltzUI\media\raidicons.blp]])
-		namePlate.UnitFrame.RaidTargetFrame.RaidTargetIcon:SetAllPoints()
-		namePlate.UnitFrame.RaidTargetFrame.RaidTargetIcon:Hide()
+		namePlate.NUnitFrame.RaidTargetFrame.RaidTargetIcon = namePlate.NUnitFrame.RaidTargetFrame:CreateTexture(nil, "OVERLAY")
+		namePlate.NUnitFrame.RaidTargetFrame.RaidTargetIcon:SetTexture([[Interface\AddOns\AltzUI\media\raidicons.blp]])
+		namePlate.NUnitFrame.RaidTargetFrame.RaidTargetIcon:SetAllPoints()
+		namePlate.NUnitFrame.RaidTargetFrame.RaidTargetIcon:Hide()
 		
-		namePlate.UnitFrame.redarrow = namePlate.UnitFrame:CreateTexture("$parent_Arrow", 'OVERLAY')
-		namePlate.UnitFrame.redarrow:SetSize(50, 50)
-		namePlate.UnitFrame.redarrow:SetTexture(redarrow)
-		namePlate.UnitFrame.redarrow:SetPoint("CENTER")
-		namePlate.UnitFrame.redarrow:Hide()
+		namePlate.NUnitFrame.redarrow = namePlate.NUnitFrame:CreateTexture("$parent_Arrow", 'OVERLAY')
+		namePlate.NUnitFrame.redarrow:SetSize(50, 50)
+		namePlate.NUnitFrame.redarrow:SetTexture(redarrow)
+		namePlate.NUnitFrame.redarrow:SetPoint("CENTER")
+		namePlate.NUnitFrame.redarrow:Hide()
 		
-		namePlate.UnitFrame.icons = CreateFrame("Frame", nil, namePlate.UnitFrame)
-		namePlate.UnitFrame.icons:SetPoint("BOTTOM", namePlate.UnitFrame, "TOP", 0, 0)
-		namePlate.UnitFrame.icons:SetWidth(140)
-		namePlate.UnitFrame.icons:SetHeight(25)
-		namePlate.UnitFrame.icons:SetFrameLevel(namePlate.UnitFrame:GetFrameLevel() + 2)
+		namePlate.NUnitFrame.icons = CreateFrame("Frame", nil, namePlate.NUnitFrame)
+		namePlate.NUnitFrame.icons:SetPoint("BOTTOM", namePlate.NUnitFrame, "TOP", 0, 0)
+		namePlate.NUnitFrame.icons:SetWidth(140)
+		namePlate.NUnitFrame.icons:SetHeight(25)
+		namePlate.NUnitFrame.icons:SetFrameLevel(namePlate.NUnitFrame:GetFrameLevel() + 2)
 	end
 	
-	namePlate.UnitFrame:EnableMouse(false)
+	namePlate.NUnitFrame:EnableMouse(false)
 end
 
 local function OnNamePlateAdded(unit)
 	local namePlate = C_NamePlate.GetNamePlateForUnit(unit)
-	local unitFrame = namePlate.UnitFrame
+	local unitFrame = namePlate.NUnitFrame
 	SetUnit(unitFrame, unit)
 	UpdateAll(unitFrame)
 end
 
 local function OnNamePlateRemoved(unit)
 	local namePlate = C_NamePlate.GetNamePlateForUnit(unit)
-	SetUnit(namePlate.UnitFrame, nil)
+	SetUnit(namePlate.NUnitFrame, nil)
 end
 
 local function NamePlates_OnEvent(self, event, ...) 
@@ -1021,6 +1043,11 @@ local function NamePlates_OnEvent(self, event, ...)
 			SetCVar("nameplateShowSelf", 1)
 		else
 			SetCVar("nameplateShowSelf", 0)
+		end
+		if aCoreCDB["PlateOptions"]["blzplates"] and aCoreCDB["PlateOptions"]["blzplates_nameonly"] then
+			SetCVar("nameplateShowOnlyNames", 1)
+		else
+			SetCVar("nameplateShowOnlyNames", 0)
 		end
 		NamePlates_UpdateNamePlateOptions()
 	elseif ( event == "NAME_PLATE_CREATED" ) then

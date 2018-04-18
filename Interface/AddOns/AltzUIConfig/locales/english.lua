@@ -297,6 +297,10 @@ L["显示姓名板资源"] = "Show Class Resources(Combo Points, Holy Power, etc
 L["姓名板资源位置"] = "Resources Position"
 L["目标姓名板"] = "Target Nameplate"
 L["玩家姓名板"] = "My Nameplate"
+L["副本友方姓名板"] = "Show friendly plates in instances"
+L["副本友方姓名板说明"] = "Firendly nameplates are only available for Blizzard nameplates."
+L["只显示名字"] = "Name-only"
+L["名字字体大小"] = "Name fontsize"
 
 -- 鼠标提示
 L["跟随光标"] = "Show at Mouse"

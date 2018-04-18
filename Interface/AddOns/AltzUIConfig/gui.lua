@@ -2256,24 +2256,28 @@ PlateInnerframe.common = CreateOptionPage("Actionbar Options common", L["通用�
 PlateInnerframe.common:Show()
 
 T.createcheckbutton(PlateInnerframe.common, 30, 60, L["启用"], "PlateOptions", "enableplate")
-T.CVartogglebox(PlateInnerframe.common, 30, 90, "nameplateShowAll", UNIT_NAMEPLATES_AUTOMODE, "1", "0")
-T.createcheckbutton(PlateInnerframe.common, 30, 120, L["数字样式"], "PlateOptions", "numberstyle")
-T.createcheckbutton(PlateInnerframe.common, 30, 150, L["显示玩家姓名板"], "PlateOptions", "playerplate")
-T.createcheckbutton(PlateInnerframe.common, 70, 180, L["显示玩家姓名板光环"], "PlateOptions", "plateaura")
-T.createcheckbutton(PlateInnerframe.common, 30, 210, L["显示姓名板资源"], "PlateOptions", "classresource_show")
+T.CVartogglebox(PlateInnerframe.common, 120, 60, "nameplateShowAll", UNIT_NAMEPLATES_AUTOMODE, "1", "0")
+T.createcheckbutton(PlateInnerframe.common, 260, 60, L["数字样式"], "PlateOptions", "numberstyle")
+T.createcheckbutton(PlateInnerframe.common, 30, 90, L["副本友方姓名板"], "PlateOptions", "blzplates", L["副本友方姓名板说明"])
+T.createcheckbutton(PlateInnerframe.common, 220, 90, L["只显示名字"], "PlateOptions", "blzplates_nameonly")
+T.createslider(PlateInnerframe.common, 30, 140, L["名字字体大小"], "PlateOptions", "name_fontsize", 1, 10, 30, 1)
+T.createcheckbutton(PlateInnerframe.common, 30, 170, L["显示玩家姓名板"], "PlateOptions", "playerplate")
+T.createcheckbutton(PlateInnerframe.common, 70, 200, L["显示玩家姓名板光环"], "PlateOptions", "plateaura")
+T.createcheckbutton(PlateInnerframe.common, 30, 230, L["显示姓名板资源"], "PlateOptions", "classresource_show")
 local classresource_group = {
 	["target"] = L["目标姓名板"],
 	["player"] = L["玩家姓名板"],
 }
-T.createradiobuttongroup(PlateInnerframe.common, 70, 240, L["姓名板资源位置"], "PlateOptions", "classresource", classresource_group)
-T.createcheckbutton(PlateInnerframe.common, 30, 270, L["友善职业染色"], "PlateOptions", "firendlyCR")
-T.createcheckbutton(PlateInnerframe.common, 30, 300, L["敌对职业染色"], "PlateOptions", "enemyCR")
-T.createcheckbutton(PlateInnerframe.common, 30, 330, L["仇恨染色"], "PlateOptions", "threatcolor")
-T.createslider(PlateInnerframe.common, 30, 380, L["光环"].." "..L["图标数量"], "PlateOptions", "plateauranum", 1, 3, 10, 1)
-T.createslider(PlateInnerframe.common, 30, 430, L["光环"].." "..L["图标大小"], "PlateOptions", "plateaurasize", 1, 20, 40, 2)
+T.createradiobuttongroup(PlateInnerframe.common, 70, 260, L["姓名板资源位置"], "PlateOptions", "classresource", classresource_group)
+T.createcheckbutton(PlateInnerframe.common, 30, 290, L["友善职业染色"], "PlateOptions", "firendlyCR")
+T.createcheckbutton(PlateInnerframe.common, 30, 320, L["敌对职业染色"], "PlateOptions", "enemyCR")
+T.createcheckbutton(PlateInnerframe.common, 30, 350, L["仇恨染色"], "PlateOptions", "threatcolor")
+T.createslider(PlateInnerframe.common, 30, 400, L["光环"].." "..L["图标数量"], "PlateOptions", "plateauranum", 1, 3, 10, 1)
+T.createslider(PlateInnerframe.common, 30, 435, L["光环"].." "..L["图标大小"], "PlateOptions", "plateaurasize", 1, 20, 40, 2)
+T.createDR(PlateInnerframe.common.blzplates, PlateInnerframe.common.blzplates_nameonly, PlateInnerframe.common.name_fontsize)
 T.createDR(PlateInnerframe.common.playerplate, PlateInnerframe.common.plateaura)
 T.createDR(PlateInnerframe.common.classresource_show, PlateInnerframe.common.classresource)
-T.createDR(PlateInnerframe.common.enableplate, PlateInnerframe.common.numberstyle, PlateInnerframe.common.playerplate, PlateInnerframe.common.classresource_show, PlateInnerframe.common.classresource, PlateInnerframe.common.firendlyCR, PlateInnerframe.common.enemyCR, PlateInnerframe.common.threatcolor, PlateInnerframe.common.plateauranum, PlateInnerframe.common.plateaurasize)
+T.createDR(PlateInnerframe.common.enableplate, PlateInnerframe.common.numberstyle, PlateInnerframe.common.playerplate, PlateInnerframe.common.classresource_show, PlateInnerframe.common.classresource, PlateInnerframe.common.firendlyCR, PlateInnerframe.common.enemyCR, PlateInnerframe.common.threatcolor, PlateInnerframe.common.plateauranum, PlateInnerframe.common.plateaurasize, PlateInnerframe.common.blzplates, PlateInnerframe.common.blzplates_nameonly, PlateInnerframe.common.name_fontsize)
 
 PlateInnerframe.auralist = CreateOptionPage("Actionbar Options common", L["光环"], PlateInnerframe, "VERTICAL", .3)
 
