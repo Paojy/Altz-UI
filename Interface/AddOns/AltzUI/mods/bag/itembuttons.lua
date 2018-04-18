@@ -8,6 +8,7 @@ local num = aCoreCDB["ItemOptions"]["number_perline"]
 local space = aCoreCDB["ItemOptions"]["button_space"]
 local growdirection_v = aCoreCDB["ItemOptions"]["growdirection_v"]
 local growdirection_h = aCoreCDB["ItemOptions"]["growdirection_h"]
+local update_lock
 
 local IB_Frame = CreateFrame("Frame", G.uiname.."IB_Frame", UIParent)
 IB_Frame:SetSize(icon_size, icon_size)
@@ -21,29 +22,35 @@ T.CreateDragFrame(IB_Frame)
 local IB_Buttons = {}
 
 local function Lineup_IB()
-	table.sort(IB_Buttons, function(a,b) return a.ind < b.ind end)
+	if not InCombatLockdown() and not update_lock then
 	
-	local index = 0
-	
-	for i = 1, #IB_Buttons do
-		local Button = IB_Buttons[i]
-		if Button and Button:IsShown() then
-			Button:ClearAllPoints()
-			if growdirection_v == "UP" then
-				if growdirection_h == "RIGHT" then
-					Button:SetPoint("BOTTOMLEFT", IB_Frame, "BOTTOMLEFT", (index%num)*(icon_size+space), (floor(index/num))*(icon_size+space))
+		update_lock = true
+		C_Timer.After(1, function() update_lock = false end)
+		
+		table.sort(IB_Buttons, function(a,b) return a.ind < b.ind end)
+		
+		local index = 0
+		
+		for i = 1, #IB_Buttons do
+			local Button = IB_Buttons[i]
+			if Button and Button:IsShown() then
+				Button:ClearAllPoints()
+				if growdirection_v == "UP" then
+					if growdirection_h == "RIGHT" then
+						Button:SetPoint("BOTTOMLEFT", IB_Frame, "BOTTOMLEFT", (index%num)*(icon_size+space), (floor(index/num))*(icon_size+space))
+					else
+						Button:SetPoint("BOTTOMRIGHT", IB_Frame,"BOTTOMRIGHT", -(index%num)*(icon_size+space), (floor(index/num))*(icon_size+space))
+					end
 				else
-					Button:SetPoint("BOTTOMRIGHT", IB_Frame,"BOTTOMRIGHT", -(index%num)*(icon_size+space), (floor(index/num))*(icon_size+space))
+					if growdirection_h == "RIGHT" then
+						Button:SetPoint("TOPLEFT", IB_Frame, "TOPLEFT", (index%num)*(icon_size+space), -(floor(index/num))*(icon_size+space))
+					else
+						Button:SetPoint("TOPRIGHT", IB_Frame, "TOPRIGHT", -(index%num)*(icon_size+space), -(floor(index/num))*(icon_size+space))
+					end
 				end
-			else
-				if growdirection_h == "RIGHT" then
-					Button:SetPoint("TOPLEFT", IB_Frame, "TOPLEFT", (index%num)*(icon_size+space), -(floor(index/num))*(icon_size+space))
-				else
-					Button:SetPoint("TOPRIGHT", IB_Frame, "TOPRIGHT", -(index%num)*(icon_size+space), -(floor(index/num))*(icon_size+space))
-				end
+				
+				index = index + 1
 			end
-			
-			index = index + 1
 		end
 	end
 end
