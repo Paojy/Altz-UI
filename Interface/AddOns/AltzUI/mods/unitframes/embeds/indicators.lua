@@ -208,8 +208,12 @@ oUF.Tags.Methods['Mlight:beacon'] = function(u) --道标
 	local name2, _,_,_,_,_, expirationTime2, fromwho2 = UnitBuff(u, GetSpellInfo(156910))
 	local name3, _,_,_,_,_, expirationTime3, fromwho3 = UnitBuff(u, GetSpellInfo(200025))
 	
-    if (fromwho == "player") or (fromwho2 == "player") or (fromwho3 == "player") then
+    if fromwho == "player" then
         return "|cffFFB90FO|r"
+	elseif fromwho2 == "player" then
+		return "|cffE0FFFFO|r"
+	elseif fromwho3 == "player" then
+		return "|cff7CFC00O|r"
     end
 end
 oUF.Tags.Events['Mlight:beacon'] = 'UNIT_AURA'
