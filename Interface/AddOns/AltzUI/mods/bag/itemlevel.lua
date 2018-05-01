@@ -143,7 +143,7 @@ local function GetUpgradeID(itemString)
 	--local instaid,upgradeid =itemString:match("item:%d+:%d+:%d+:%d+:%d+:%d+:%-?%d+:%-?%d+:%d+:(%d+):%d:%d:(%d)")
 	--local instaid,upgradeid =itemString:match("item:%d+:%d+:%d+:%d+:%d+:%d+:%-?%d+:%-?%d+:%d+:%d+:(%d+):%d+:%d+:(%d+)")
 	if itemString then
-		local itemString = itemString:match("item[%-?%d:]+") or ""-- Standardize itemlink to itemstring
+		local itemString = itemString:match("itemLink[%-?%d:]+") or ""-- Standardize itemlink to itemstring
 		local instaid, _, numBonuses, affixes = select(12, strsplit(":", itemString, 15))
 		instaid=tonumber(instaid) or 7
 		if instaid >0 and (instaid-4)%8==0 then
