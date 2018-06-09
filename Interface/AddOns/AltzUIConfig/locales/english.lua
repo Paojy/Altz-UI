@@ -1,5 +1,5 @@
 ﻿local T, C, L, G = unpack(select(2, ...))
-if G.Client == "zhCN" or G.Client == "zhTW" then return end
+if G.Client == "zhCN" or G.Client == "zhTW" or G.Client == "ptBR" then return end
 
 -- 安装
 L["小泡泡"] = "Paopao <Sliver Hand>"
@@ -208,13 +208,13 @@ L["整体高度"] = "Number Per Line"
 L["整体高度提示"] = "How many units do you want to show per line?"
 L["点击施法"] = "Click-Cast"
 L["点击施法提示"] = "Input %starget|r to target mouseover unit.\nInput %stot|r to target mouseover unit's target.\nInput %sfocus|r to set mouseover unit as focus unit.\nInput %sfollow|r to follow mouseover unit.\nInput %sa spell|r to cast it to the mouseover unit.\nInput %smacro|r bind a macro to the action"
-L["Button1"] = "Left" 
-L["Button2"] = "Right" 
-L["Button3"] = "Middle" 
-L["Button4"] = "4" 
-L["Button5"] = "5" 
-L["MouseUp"] = "MouseUp" 
-L["MouseDown"] = "MouseDown" 
+L["Button1"] = "Left"
+L["Button2"] = "Right"
+L["Button3"] = "Middle"
+L["Button4"] = "4"
+L["Button5"] = "5"
+L["MouseUp"] = "MouseUp"
+L["MouseDown"] = "MouseDown"
 L["不正确的法术名称"] = "Incorret Spell"
 L["输入一个宏"] = "Enter a macro"
 L["团队减益"] = "Raid Debuff"

@@ -1,5 +1,5 @@
 ﻿local T, C, L, G = unpack(select(2, ...))
-if G.Client == "zhCN" or G.Client == "zhTW" then return end
+if G.Client == "zhCN" or G.Client == "zhTW" or G.Client == "ptBR" then return end
 
 L["团队工具"] = "RaidTools"
 
