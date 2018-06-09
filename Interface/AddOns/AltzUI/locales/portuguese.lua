@@ -1,5 +1,5 @@
 local T, C, L, G = unpack(select(2, ...))
-if G.Client ~= "ptBR" then return end -- AltzUI - Portuguese Language
+if G.Client ~= "ptBR" then return end -- AltzUI - Brazilian Portuguese
 
 L["团队工具"] = "Ferramentas de Raide"
 
@@ -24,7 +24,7 @@ L["角色"] = "Personagem"
 L["重置金币信息"] = "Clique para restaurar."
 
 L["脱装备"] = "Despir-se"
-L["切天赋"] = "Trocar 'Spec' ativa"
+L["切天赋"] = "Alternar especialização ativa"
 
 L["锁定框体"] = "Travar quadros"
 L["解锁框体"] = "Destravar quadros"
@@ -100,9 +100,9 @@ L["焦点施法条"] = "Barra de lançamento do foco"
 L["玩家平砍计时条"] = "Tempo de balanço do jogador"
 L["冷却提示"] = "Alerta de recarga"
 L["图腾条"] = "Barra de totem"
---L["便捷物品按钮"] = "Convenient Item Buttons"
---L["多人坐骑控制框"] = "Vehicle Seat Indicator"
---L["耐久提示框"] = "Durability Frame"
+L["便捷物品按钮"] = "Botões de itens conveniêntes"
+L["多人坐骑控制框"] = "Indicador de assento do veículo"
+L["耐久提示框"] = "Quadro de durabilidade"
 
 L["无2"] = "|cffFF0000Não|r"
 L["无"] = "Não"
@@ -128,8 +128,8 @@ L["小队满了"] = "grupo está cheio"
 L["团队满了"] = "raide está cheio"
 L["客户端错误"] = "Eu não posso convidar você por palavra-passe agora, sua conta parece aderir à %s."
 
-L["的徽章冷却就绪"] = "'s TrinketPVP is ready"
-L["使用了徽章"] = " uses TrinketPVP"
+L["的徽章冷却就绪"] = "'s BerloquePVP está pronto"
+L["使用了徽章"] = " usou BerloquePVP"
 
 L["界面移动工具"] = "Organizar quadros"
 L["锚点框体"] = "Quadro ancorado"
@@ -153,8 +153,8 @@ L["我不想看到这些提示"] = "Eu não quero vê-los"
 L["隐藏提示的提示"] = "Você pode reativar essas dicas em GUI → Outros"
 
 L["TIPS"] = {
-	"Altz UI pdoe esconder o minimapa e bate-papo quando você entrar e mostrar quando sair de combate. GUI → Outros",
-	--"Click the clock on the minimap to open the calendar; right click changes between local/server time while a modified right click (holding alt, ctrl, or shift) changes 12/24 format.",
+	"Altz UI pode esconder o minimapa e bate-papo quando você entrar e mostrar quando sair de combate. GUI → Outros",
+	"Clique no relógio no minimapa para abrir o calendário; Clique-direito alterna entre horário local/servidor enquanto um clique-direito (pressionando alt, ctrl, ou shift) muda o formato do horário entre 12/24",
 	"Quer ativar cores por classe nos seus quadros de raide? GUI → Quadros de unidade → Estilo → Tema clássico",
 	"Quer mostrar barras de lançamento independentes? GUI → Quadros de unidade → Barra de lançamento → Marque 'Barra de lançamento indenpendente'",
 	"Quer usar o estilo curandeiro nos quadros de raide? GUI → Quadros de raide → Alternância → Marque 'Desativar alternância automática'",
