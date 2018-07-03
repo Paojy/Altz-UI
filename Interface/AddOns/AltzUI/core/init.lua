@@ -20,6 +20,7 @@ G.dragFrameList = {}
 
 G.norFont = GameFontHighlight:GetFont()
 G.numFont = "Interface\\AddOns\\AltzUI\\media\\number.ttf"
+G.numFont2 = "Interface\\AddOns\\AltzUI\\media\\number2.ttf"
 G.symbols = "Interface\\Addons\\AltzUI\\media\\PIZZADUDEBULLETS.ttf"
 
 G.media = {

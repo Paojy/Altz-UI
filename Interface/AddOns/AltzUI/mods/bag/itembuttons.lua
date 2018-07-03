@@ -23,14 +23,14 @@ local IB_Buttons = {}
 
 local function Lineup_IB()
 	if not InCombatLockdown() and not update_lock then
-	
+
 		update_lock = true
 		C_Timer.After(1, function() update_lock = false end)
-		
+
 		table.sort(IB_Buttons, function(a,b) return a.ind < b.ind end)
-		
+
 		local index = 0
-		
+
 		for i = 1, #IB_Buttons do
 			local Button = IB_Buttons[i]
 			if Button and Button:IsShown() then
@@ -48,7 +48,7 @@ local function Lineup_IB()
 						Button:SetPoint("TOPRIGHT", IB_Frame, "TOPRIGHT", -(index%num)*(icon_size+space), -(floor(index/num))*(icon_size+space))
 					end
 				end
-				
+
 				index = index + 1
 			end
 		end
@@ -60,9 +60,9 @@ local function Create_IB(ItemID, index, exactItem, showCount, All, OrderHall, Ra
 	bu:SetSize(icon_size, icon_size)
 
 	T.CreateSD(bu, 3, 0, 0, 0, 0, -2)
-	
+
 	bu.ind = index
-	
+
 	local texture = bu:CreateTexture(nil,"HIGH")
 	texture:SetPoint("TOPLEFT", bu, "TOPLEFT")
 	texture:SetPoint("BOTTOMRIGHT", bu, "BOTTOMRIGHT")
@@ -76,67 +76,67 @@ local function Create_IB(ItemID, index, exactItem, showCount, All, OrderHall, Ra
 end
 
 local function Update_IB()
-	
+
 	if InCombatLockdown() or G.bag_sorting then return end
-	
+
 	for k, bu in pairs(IB_Buttons) do
 		local orderhall = C_Garrison.IsPlayerInGarrison(LE_GARRISON_TYPE_7_0)
 		local instanceType = select(2, GetInstanceInfo())
-		
+
 		local hasitem = false
 		local info = aCoreCDB["ItemOptions"]["itembuttons_table"][bu.ind]
-		
+
 		if info.All or (info.OrderHall and orderhall) or (info.Raid and instanceType == "raid") or (info.Dungeon and instanceType == "party") or (info.PVP and instanceType == "pvp") then
-			
-			for bag = 0, NUM_BAG_SLOTS do
-				for slot = 1, GetContainerNumSlots(bag) do
-			
-					local itemID = GetContainerItemID(bag, slot)            
-					local itemSpell = GetItemSpell(itemID)
-					
-					if (itemID == info.itemID) or (not info.exactItem and itemSpell and itemSpell == GetItemSpell(info.itemID)) then
-						
-						local icon = GetItemIcon(itemID)                
-						bu.icon:SetTexture(icon)              
-						
-						if info.showCount then
-							bu.text:SetText(GetItemCount(itemID))
-						else
-							bu.text:SetText("")
-						end
-						
-						bu:Show()
-						if GetMouseFocus() == bu then
-							GameTooltip:SetBagItem(bag, slot)
-						end
-						bu:SetAttribute("type", "item")                
-						bu:SetAttribute("item", "item:"..itemID)               
-						
-						bu:SetScript("OnEnter", function()
-							GameTooltip:SetOwner(bu, "ANCHOR_TOPRIGHT")	
-							GameTooltip:SetBagItem(bag, slot)
-							GameTooltip:Show()
-						end)
-						bu:SetScript("OnLeave", function()
-							GameTooltip:Hide()
-						end)
-						
-						hasitem = true
-						
-					end
-					
-				end
-			end
-		end	
-	
+
+			-- for bag = 0, NUM_BAG_SLOTS do
+			-- 	for slot = 1, GetContainerNumSlots(bag) do
+			--
+			-- 		local itemID = GetContainerItemID(bag, slot)
+			-- 		local itemSpell = GetItemSpell(itemID)
+			--
+			-- 		if (itemID == info.itemID) or (not info.exactItem and itemSpell and itemSpell == GetItemSpell(info.itemID)) then
+			--
+			-- 			local icon = GetItemIcon(itemID)
+			-- 			bu.icon:SetTexture(icon)
+			--
+			-- 			if info.showCount then
+			-- 				bu.text:SetText(GetItemCount(itemID))
+			-- 			else
+			-- 				bu.text:SetText("")
+			-- 			end
+			--
+			-- 			bu:Show()
+			-- 			if GetMouseFocus() == bu then
+			-- 				GameTooltip:SetBagItem(bag, slot)
+			-- 			end
+			-- 			bu:SetAttribute("type", "item")
+			-- 			bu:SetAttribute("item", "item:"..itemID)
+			--
+			-- 			bu:SetScript("OnEnter", function()
+			-- 				GameTooltip:SetOwner(bu, "ANCHOR_TOPRIGHT")
+			-- 				GameTooltip:SetBagItem(bag, slot)
+			-- 				GameTooltip:Show()
+			-- 			end)
+			-- 			bu:SetScript("OnLeave", function()
+			-- 				GameTooltip:Hide()
+			-- 			end)
+			--
+			-- 			hasitem = true
+			--
+			-- 		end
+			--
+			-- 	end
+			-- end
+		end
+
 		if not hasitem then
 			bu:SetAttribute("type", nil)
-			bu:SetAttribute("item", nil) 
+			bu:SetAttribute("item", nil)
 			bu:Hide()
 		end
-		
+
 	end
-	
+
 	Lineup_IB()
 end
 
