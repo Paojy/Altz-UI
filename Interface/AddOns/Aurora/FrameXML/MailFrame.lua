@@ -93,13 +93,13 @@ tinsert(C.themes["Aurora"], function()
 
 		bu:GetRegions():Hide()
 
-		border:SetPoint("TOPLEFT", -1.2, 1.2)
-		border:SetPoint("BOTTOMRIGHT", 1.2, -1.2)
+		border:SetPoint("TOPLEFT", -1, 1)
+		border:SetPoint("BOTTOMRIGHT", 1, -1)
 		border:SetDrawLayer("BACKGROUND")
 
 		local bg = CreateFrame("Frame", nil, bu)
-		bg:SetPoint("TOPLEFT", -1.2, 1.2)
-		bg:SetPoint("BOTTOMRIGHT", 1.2, -1.2)
+		bg:SetPoint("TOPLEFT", -1, 1)
+		bg:SetPoint("BOTTOMRIGHT", 1, -1)
 		bg:SetFrameLevel(0)
 		F.CreateBD(bg, .25)
 	end
@@ -127,13 +127,13 @@ tinsert(C.themes["Aurora"], function()
 
 		border:SetTexture(C.media.backdrop)
 		border.SetTexture = F.dummy
-		border:SetPoint("TOPLEFT", -1.2, 1.2)
-		border:SetPoint("BOTTOMRIGHT", 1.2, -1.2)
+		border:SetPoint("TOPLEFT", -1, 1)
+		border:SetPoint("BOTTOMRIGHT", 1, -1)
 		border:SetDrawLayer("BACKGROUND")
 
 		local bg = CreateFrame("Frame", nil, bu)
-		bg:SetPoint("TOPLEFT", -1.2, 1.2)
-		bg:SetPoint("BOTTOMRIGHT", 1.2, -1.2)
+		bg:SetPoint("TOPLEFT", -1, 1)
+		bg:SetPoint("BOTTOMRIGHT", 1, -1)
 		bg:SetFrameLevel(0)
 		F.CreateBD(bg, .25)
 	end

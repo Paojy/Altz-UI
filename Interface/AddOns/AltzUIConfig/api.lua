@@ -61,23 +61,23 @@ T.SkinButton = function(button, tex, blend)
 	texture:SetAllPoints(button)
 	texture:SetTexture(tex)
 	texture:SetVertexColor(1, 1, 1)
-	
+
 	if blend then
 		texture:SetBlendMode("ADD")
 	end
-	
+
 	if button:GetScript("OnEnter") then
 		button:HookScript("OnEnter", function() texture:SetVertexColor(G.Ccolor.r, G.Ccolor.g, G.Ccolor.b) end)
 	else
 		button:SetScript("OnEnter", function() texture:SetVertexColor(G.Ccolor.r, G.Ccolor.g, G.Ccolor.b) end)
 	end
-	
+
 	if button:GetScript("OnLeave") then
 		button:HookScript("OnLeave", function() texture:SetVertexColor(1, 1, 1) end)
 	else
 		button:SetScript("OnLeave", function() texture:SetVertexColor(1, 1, 1) end)
 	end
-	
+
 	return texture
 end
 
@@ -89,15 +89,15 @@ T.dummy = function() end
 
 function T.SetChatFrame()
 	FCF_ResetChatWindows()
-	
+
     FCF_SetLocked(ChatFrame1, nil)
     ChatFrame1:ClearAllPoints()
-	ChatFrame1:SetSize(300, 150)
+	ChatFrame1:SetSize(450, 150)
     ChatFrame1:SetPoint("BOTTOMLEFT", _G[G.uiname.."chatframe_pullback"], "BOTTOMLEFT", 5, 0)
-	
+
 	FCF_SavePositionAndDimensions(ChatFrame1)
 	FCF_RestorePositionAndDimensions(ChatFrame1)
-	
+
 	FCF_SetLocked(ChatFrame1, 1)
 	FCF_DockFrame(ChatFrame2)
 	FCF_SetLocked(ChatFrame2, 1)
@@ -107,29 +107,29 @@ function T.SetChatFrame()
 	FCF_OpenNewWindow(LOOT)
 	FCF_SetLocked(ChatFrame4, 1)
 	FCF_DockFrame(ChatFrame4)
-	
+
 	local channels = {
 		"SAY", "EMOTE", "YELL", "GUILD", "OFFICER", "GUILD_ACHIEVEMENT", "ACHIEVEMENT", "WHISPER","PARTY", "PARTY_LEADER", "RAID", "RAID_LEADER", "RAID_WARNING",
 		"BATTLEGROUND", "BATTLEGROUND_LEADER", "CHANNEL1", "CHANNEL2", "CHANNEL3", "CHANNEL4", "CHANNEL5", "CHANNEL6", "CHANNEL7",
 	}
-	
+
 	for i, v in ipairs(channels) do
 		ToggleChatColorNamesByClassGroup(true, v)
 	end
-	
+
 	ChatFrame_RemoveAllMessageGroups(ChatFrame3)
 	ChatFrame_AddMessageGroup(ChatFrame3, "GUILD")
 	ChatFrame_AddMessageGroup(ChatFrame3, "WHISPER")
 	ChatFrame_AddMessageGroup(ChatFrame3, "BN_WHISPER")
 	ChatFrame_AddMessageGroup(ChatFrame3, "BN_CONVERSATION")
-	
+
 	ChatFrame_RemoveAllMessageGroups(ChatFrame4)
 	ChatFrame_AddMessageGroup(ChatFrame4, "COMBAT_XP_GAIN")
 	ChatFrame_AddMessageGroup(ChatFrame4, "COMBAT_HONOR_GAIN")
 	ChatFrame_AddMessageGroup(ChatFrame4, "COMBAT_FACTION_CHANGE")
 	ChatFrame_AddMessageGroup(ChatFrame4, "LOOT")
 	ChatFrame_AddMessageGroup(ChatFrame4, "MONEY")
-	
+
 	SELECTED_CHAT_FRAME = ChatFrame1
 	FCF_SelectDockFrame(ChatFrame1)
 	FCF_FadeInChatFrame(ChatFrame1)
@@ -243,7 +243,7 @@ T.ResetSkada =function(reload)
 		local windows = Skada:GetWindows()
 		if #windows == 0 then
 			Skada:CreateWindow("altz_1", nil, "bar")
-			Skada:CreateWindow("altz_2", nil, "bar")		
+			Skada:CreateWindow("altz_2", nil, "bar")
 		elseif #windows == 1 then
 			Skada:CreateWindow("altz_1", nil, "bar")
 		end
@@ -379,16 +379,16 @@ T.ResetSkada =function(reload)
 		SkadaDB["profiles"]["Default"]["columns"][Skada_L["Damage taken"].."_Percent"] = false
 		SkadaDB["profiles"]["Default"]["showranks"] = false
 		if reload then ReloadUI() end
-	end	
+	end
 end
 
 T.ResetDBM =function(reload)
 	if aCoreCDB["SkinOptions"]["setDBM"] and IsAddOnLoaded("DBM-Core") then
 		if DBM_AllSavedOptions then
-			DBM.Bars:SetSkin("AltzUI")		
+			DBM.Bars:SetSkin("AltzUI")
 			DBM_AllSavedOptions["Default"]["ShowMinimapButton"] = false
 			-- BOSS血条
-			DBM_AllSavedOptions["Default"]["HPFramePoint"] = "BOTTOM"			
+			DBM_AllSavedOptions["Default"]["HPFramePoint"] = "BOTTOM"
 			DBM_AllSavedOptions["Default"]["HPFrameY"] = 120
 			DBM_AllSavedOptions["Default"]["HPFrameX"] = -375
 			DBM_AllSavedOptions["Default"]["HealthFrameWidth"] = 200
@@ -414,7 +414,7 @@ T.ResetDBM =function(reload)
 			-- 大型计时条
 			DBT_AllPersistentOptions["Default"]["DBM"]["HugeTimerPoint"] = "CENTER"
 			DBT_AllPersistentOptions["Default"]["DBM"]["HugeTimerX"] = -330
-			DBT_AllPersistentOptions["Default"]["DBM"]["HugeTimerY"] = 0			
+			DBT_AllPersistentOptions["Default"]["DBM"]["HugeTimerY"] = 0
 			-- 一般警报
 			DBM_AllSavedOptions["Default"]["WarningIconRight"] = true
 			DBM_AllSavedOptions["Default"]["WarningIconLeft"] = true
@@ -444,30 +444,30 @@ T.ResetBW =function(reload)
 
 			--BigWigs3DB["namespaces"]["BigWigs_Plugins_Alt Power"]["profiles"]["Default"]["posx"] = 420
 			--BigWigs3DB["namespaces"]["BigWigs_Plugins_Alt Power"]["profiles"]["Default"]["posy"] = 160
-			
+
 			BigWigs3DB["namespaces"]["BigWigs_Plugins_Bars"]["profiles"]["Default"]["fill"] = true
 			BigWigs3DB["namespaces"]["BigWigs_Plugins_Bars"]["profiles"]["Default"]["BigWigsAnchor_width"] = 150
-			
+
 			--BigWigs3DB["namespaces"]["BigWigs_Plugins_Bars"]["profiles"]["Default"]["BigWigsAnchor_x"] = 38.4006290244915
 			--BigWigs3DB["namespaces"]["BigWigs_Plugins_Bars"]["profiles"]["Default"]["BigWigsAnchor_y"] = 504.53291841031
-			
+
 			BigWigs3DB["namespaces"]["BigWigs_Plugins_Bars"]["profiles"]["Default"]["BigWigsEmphasizeAnchor_width"] = 200
 			BigWigs3DB["namespaces"]["BigWigs_Plugins_Bars"]["profiles"]["Default"]["emphasizeScale"] = 1
-			--BigWigs3DB["namespaces"]["BigWigs_Plugins_Bars"]["profiles"]["Default"]["BigWigsEmphasizeAnchor_x"] = 356.266867036815			
+			--BigWigs3DB["namespaces"]["BigWigs_Plugins_Bars"]["profiles"]["Default"]["BigWigsEmphasizeAnchor_x"] = 356.266867036815
 			--BigWigs3DB["namespaces"]["BigWigs_Plugins_Bars"]["profiles"]["Default"]["BigWigsEmphasizeAnchor_y"] = 432.000146594044
-			
+
 			--BigWigs3DB["namespaces"]["BigWigs_Plugins_Messages"]["profiles"]["Default"]["BWMessageAnchor_x"] = 617.066548707488
 			--BigWigs3DB["namespaces"]["BigWigs_Plugins_Messages"]["profiles"]["Default"]["BWMessageAnchor_y"] = 584.533190059665
-			
+
 			--BigWigs3DB["namespaces"]["BigWigs_Plugins_Messages"]["profiles"]["Default"]["BWEmphasizeMessageAnchor_x"] = 615.99986904383
 			--BigWigs3DB["namespaces"]["BigWigs_Plugins_Messages"]["profiles"]["Default"]["BWEmphasizeMessageAnchor_y"] = 496.000067038534
-			
+
 			--BigWigs3DB["namespaces"]["BigWigs_Plugins_Messages"]["profiles"]["Default"]["BWEmphasizeCountdownMessageAnchor_x"] = 668.799985051155
 			--BigWigs3DB["namespaces"]["BigWigs_Plugins_Messages"]["profiles"]["Default"]["BWEmphasizeCountdownMessageAnchor_y"] = 449.066786837575
-			
+
 			--BigWigs3DB["namespaces"]["BigWigs_Plugins_Proximity"]["profiles"]["Default"]["width"] = 140.00016784668
 			--BigWigs3DB["namespaces"]["BigWigs_Plugins_Proximity"]["profiles"]["Default"]["height"] = 119.999984741211
-			
+
 			--BigWigs3DB["namespaces"]["BigWigs_Plugins_Proximity"]["profiles"]["Default"]["posy"] = 143.999772171979
 			--BigWigs3DB["namespaces"]["BigWigs_Plugins_Proximity"]["profiles"]["Default"]["posx"] = 817.067012987129
 
@@ -497,9 +497,9 @@ T.createcheckbutton = function(parent, x, y, name, table, value, tip)
 	local bu = CreateFrame("CheckButton", G.uiname..value.."Button", parent, "InterfaceOptionsCheckButtonTemplate")
 	bu:SetPoint("TOPLEFT", x, -y)
 	F.ReskinCheck(bu)
-	
+
 	_G[bu:GetName() .. "Text"]:SetText(name)
-	
+
 	bu:SetScript("OnShow", function(self) self:SetChecked(aCoreCDB[table][value]) end)
 	bu:SetScript("OnClick", function(self)
 		if self:GetChecked() then
@@ -508,26 +508,26 @@ T.createcheckbutton = function(parent, x, y, name, table, value, tip)
 			aCoreCDB[table][value] = false
 		end
 	end)
-	
+
 	bu:SetScript("OnDisable", function(self)
 		local tex = select(7, bu:GetRegions())
 		tex:SetVertexColor(.7, .7, .7, .5)
 	end)
-	
+
 	bu:SetScript("OnEnable", function(self)
 		local tex = select(7, bu:GetRegions())
 		tex:SetVertexColor(buttonR, buttonG, buttonB, buttonA)
 	end)
-	
+
 	if tip then
-		bu:SetScript("OnEnter", function(self) 
+		bu:SetScript("OnEnter", function(self)
 			GameTooltip:SetOwner(self, "ANCHOR_RIGHT",  -20, 10)
 			GameTooltip:AddLine(tip)
-			GameTooltip:Show() 
+			GameTooltip:Show()
 		end)
 		bu:SetScript("OnLeave", function(self) GameTooltip:Hide() end)
 	end
-	
+
 	parent[value] = bu
 end
 
@@ -535,9 +535,9 @@ T.ABtogglebox = function(parent, x, y, id, name)
 	local bu = CreateFrame("CheckButton", G.uiname.."Actionbar"..id.."Toggle", parent, "InterfaceOptionsCheckButtonTemplate")
 	bu:SetPoint("TOPLEFT", x, -y)
 	F.ReskinCheck(bu)
-	
+
 	_G[bu:GetName() .. "Text"]:SetText(name)
-	
+
 	bu:SetScript("OnShow", function(self)
 		if select(id, GetActionBarToggles())== 1 then
 			self:SetChecked(true)
@@ -545,7 +545,7 @@ T.ABtogglebox = function(parent, x, y, id, name)
 			self:SetChecked(false)
 		end
 	end)
-	
+
 	bu:SetScript("OnClick", function(self)
 		if id == 1 then
 			SHOW_MULTI_ACTIONBAR_1 = self:GetChecked()
@@ -558,7 +558,7 @@ T.ABtogglebox = function(parent, x, y, id, name)
 		end
 		--InterfaceOptions_UpdateMultiActionBars()
 	end)
-	
+
 	return bu
 end
 
@@ -566,7 +566,7 @@ T.CVartogglebox = function(parent, x, y, value, name, arg1, arg2, tip)
 	local bu = CreateFrame("CheckButton", G.uiname..value.."Button", parent, "InterfaceOptionsCheckButtonTemplate")
 	bu:SetPoint("TOPLEFT", x, -y)
 	F.ReskinCheck(bu)
-	
+
 	_G[bu:GetName() .. "Text"]:SetText(name)
 	bu:SetScript("OnShow", function(self)
 		if GetCVar(value) == arg1 then
@@ -582,16 +582,16 @@ T.CVartogglebox = function(parent, x, y, value, name, arg1, arg2, tip)
 			SetCVar(value, arg2)
 		end
 	end)
-	
+
 	if tip then
-		bu:SetScript("OnEnter", function(self) 
+		bu:SetScript("OnEnter", function(self)
 			GameTooltip:SetOwner(self, "ANCHOR_RIGHT",  -20, 10)
 			GameTooltip:AddLine(tip)
-			GameTooltip:Show() 
+			GameTooltip:Show()
 		end)
 		bu:SetScript("OnLeave", function(self) GameTooltip:Hide() end)
 	end
-	
+
 	parent[value] = bu
 end
 
@@ -599,7 +599,7 @@ T.createeditbox = function(parent, x, y, name, table, value, tip)
 	local box = CreateFrame("EditBox", G.uiname..value.."EditBox", parent)
 	box:SetSize(180, 20)
 	box:SetPoint("TOPLEFT", x, -y)
-	
+
 	local bd = CreateFrame("Frame", nil, box)
 	bd:SetPoint("TOPLEFT", -2, 0)
 	bd:SetPoint("BOTTOMRIGHT")
@@ -609,36 +609,36 @@ T.createeditbox = function(parent, x, y, name, table, value, tip)
 	local gradient = F.CreateGradient(box)
 	gradient:SetPoint("TOPLEFT", bd, 1, -1)
 	gradient:SetPoint("BOTTOMRIGHT", bd, -1, 1)
-	
+
 	box.name = box:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
 	box.name:SetPoint("LEFT", box, "RIGHT", 10, 1)
 	box.name:SetText(name)
-	
+
 	box:SetFont(GameFontHighlight:GetFont(), 12, "OUTLINE")
 	box:SetAutoFocus(false)
 	box:SetTextInsets(3, 0, 0, 0)
-	
+
 	box:SetScript("OnShow", function(self) self:SetText(aCoreCDB[table][value]) end)
 	box:SetScript("OnEscapePressed", function(self) self:SetText(aCoreCDB[table][value]) self:ClearFocus() end)
 	box:SetScript("OnEnterPressed", function(self) self:ClearFocus() aCoreCDB[table][value] = self:GetText() end)
-	
+
 	box:SetScript("OnDisable", function(self)
 		gradient:SetVertexColor(.7, .7, .7, .5)
 	end)
-	
+
 	box:SetScript("OnEnable", function(self)
 		gradient:SetVertexColor(buttonR, buttonG, buttonB, buttonA)
 	end)
-	
+
 	if tip then
-		box:SetScript("OnEnter", function(self) 
+		box:SetScript("OnEnter", function(self)
 			GameTooltip:SetOwner(self, "ANCHOR_RIGHT", -20, 10)
 			GameTooltip:AddLine(tip)
-			GameTooltip:Show() 
+			GameTooltip:Show()
 		end)
 		box:SetScript("OnLeave", function(self) GameTooltip:Hide() end)
 	end
-	
+
 	parent[value] = box
 end
 
@@ -648,18 +648,18 @@ T.createmultilinebox = function(parent, width, height, x, y, name, table, value,
 	scrollBG:SetSize(width, height)
 	scrollBG:SetFrameLevel(parent:GetFrameLevel()+1)
 	F.CreateBD(scrollBG, 0)
-	
+
 	local gradient = F.CreateGradient(scrollBG)
 	gradient:SetPoint("TOPLEFT", scrollBG, 1, -1)
 	gradient:SetPoint("BOTTOMRIGHT", scrollBG, -1, 1)
-	
+
 	if name then
 		scrollBG.name = scrollBG:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
 		scrollBG.name:SetPoint("BOTTOMLEFT", scrollBG, "TOPLEFT", 5, 8)
 		scrollBG.name:SetJustifyH("LEFT")
 		scrollBG.name:SetText(name)
 	end
-	
+
 	local scrollAC = CreateFrame("Frame", G.uiname..value.."MultiLineEditBox_ScrollAC", scrollBG)
 	scrollAC:SetPoint("TOP", scrollBG, "TOP", 0, -3)
 	scrollAC:SetWidth(scrollBG:GetWidth())
@@ -675,44 +675,44 @@ T.createmultilinebox = function(parent, width, height, x, y, name, table, value,
 	scrollBG.edit:SetMultiLine(true)
 	scrollBG.edit:EnableMouse(true)
 	scrollBG.edit:SetAutoFocus(false)
-	
+
 	if table then
 		scrollBG.edit:SetScript("OnShow", function(self) self:SetText(aCoreCDB[table][value]) end)
 		scrollBG.edit:SetScript("OnEscapePressed", function(self) self:SetText(aCoreCDB[table][value]) self:ClearFocus() end)
 		scrollBG.edit:SetScript("OnEnterPressed", function(self) self:ClearFocus() aCoreCDB[table][value] = self:GetText() end)
 	end
-	
+
 	F.ReskinScroll(_G[G.uiname..value.."MultiLineEditBox_BGScrollBar"])
-		
+
 	if tip then
-		scrollBG.edit:SetScript("OnEnter", function(self) 
+		scrollBG.edit:SetScript("OnEnter", function(self)
 			GameTooltip:SetOwner(self, "ANCHOR_RIGHT", -20, 10)
 			GameTooltip:AddLine(tip)
-			GameTooltip:Show() 
+			GameTooltip:Show()
 		end)
 		scrollBG.edit:SetScript("OnLeave", function(self) GameTooltip:Hide() end)
 	end
-	
+
 	parent[value] = scrollBG
 end
 
 local function TestSlider_OnValueChanged(self, value)
-   if not self._onsetting then   -- is single threaded 
+   if not self._onsetting then   -- is single threaded
      self._onsetting = true
      self:SetValue(self:GetValue())
      value = self:GetValue()     -- cant use original 'value' parameter
      self._onsetting = false
    else return end               -- ignore recursion for actual event handler
  end
- 
+
 T.createslider = function(parent, x, y, name, table, value, divisor, min, max, step, tip)
 	local slider = CreateFrame("Slider", G.uiname..value.."Slider", parent, "OptionsSliderTemplate")
 	slider:SetPoint("TOPLEFT", x, -y)
 	slider:SetWidth(220)
 	F.ReskinSlider(slider)
-	
+
 	BlizzardOptionsPanel_Slider_Enable(slider)
-	
+
 	slider:SetMinMaxValues(min, max)
 	_G[slider:GetName()..'Low']:SetText(min/divisor)
 	_G[slider:GetName()..'Low']:ClearAllPoints()
@@ -720,13 +720,13 @@ T.createslider = function(parent, x, y, name, table, value, divisor, min, max, s
 	_G[slider:GetName()..'High']:SetText(max/divisor)
 	_G[slider:GetName()..'High']:ClearAllPoints()
 	_G[slider:GetName()..'High']:SetPoint("LEFT", slider, "RIGHT", -10, 0)
-	
+
 	_G[slider:GetName()..'Text']:ClearAllPoints()
 	_G[slider:GetName()..'Text']:SetPoint("BOTTOM", slider, "TOP", 0, 3)
 	_G[slider:GetName()..'Text']:SetFontObject(GameFontHighlight)
 	--slider:SetStepsPerPage(step)
 	slider:SetValueStep(step)
-	
+
 	slider:SetScript("OnShow", function(self)
 		self:SetValue((aCoreCDB[table][value])*divisor)
 		_G[slider:GetName()..'Text']:SetText(name.." |cFF00FFFF"..aCoreCDB[table][value].."|r")
@@ -736,9 +736,9 @@ T.createslider = function(parent, x, y, name, table, value, divisor, min, max, s
 		TestSlider_OnValueChanged(self, getvalue)
 		_G[slider:GetName()..'Text']:SetText(name.." |cFF00FFFF"..aCoreCDB[table][value].."|r")
 	end)
-	
+
 	if tip then slider.tooltipText = tip end
-	
+
 	parent[value] = slider
 end
 
@@ -747,7 +747,7 @@ T.createcolorpickerbu = function(parent, x, y, name, table, value)
 	cpb:SetPoint("TOPLEFT", x, -y)
 	cpb:SetSize(25, 25)
 	F.Reskin(cpb)
-	
+
 	cpb.ctex = cpb:CreateTexture(nil, "OVERLAY")
 	cpb.ctex:SetTexture(G.media.blank)
 	cpb.ctex:SetPoint"CENTER"
@@ -756,45 +756,45 @@ T.createcolorpickerbu = function(parent, x, y, name, table, value)
 	cpb.name = cpb:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
 	cpb.name:SetPoint("LEFT", cpb, "RIGHT", 10, 1)
 	cpb.name:SetText(name)
-	
+
 	cpb:SetScript("OnShow", function(self) self.ctex:SetVertexColor(aCoreCDB[table][value].r, aCoreCDB[table][value].g, aCoreCDB[table][value].b) end)
 	cpb:SetScript("OnClick", function(self)
 		local r, g, b, a = aCoreCDB[table][value].r, aCoreCDB[table][value].g, aCoreCDB[table][value].b, aCoreCDB[table][value].a
-		
+
 		ColorPickerFrame:ClearAllPoints()
 		ColorPickerFrame:SetPoint("TOPLEFT", self, "TOPRIGHT", 20, 0)
 		ColorPickerFrame.hasOpacity, ColorPickerFrame.opacity = aCoreCDB[table]["transparentmode"], a -- Opacity slider only available for reverse filling
-		
+
 		ColorPickerFrame.func = function()
 			aCoreCDB[table][value].r, aCoreCDB[table][value].g, aCoreCDB[table][value].b = ColorPickerFrame:GetColorRGB()
 			self.ctex:SetVertexColor(ColorPickerFrame:GetColorRGB())
 		end
-		
+
 		ColorPickerFrame.opacityFunc = function()
 			aCoreCDB[table][value].a = OpacitySliderFrame:GetValue()
 		end
-		
+
 		ColorPickerFrame.previousValues = {r = r, g = g, b = b, opacity = a}
-		
+
 		ColorPickerFrame.cancelFunc = function()
 			aCoreCDB[table][value].r, aCoreCDB[table][value].g, aCoreCDB[table][value].b, aCoreCDB[table][value].a = r, g, b, a
 			self.ctex:SetVertexColor(aCoreCDB[table][value].r, aCoreCDB[table][value].g, aCoreCDB[table][value].b)
 		end
-		
+
 		ColorPickerFrame:SetColorRGB(r, g, b)
 		ColorPickerFrame:Hide()
 		ColorPickerFrame:Show()
 	end)
-	
+
 	if tip then
-		cpb:SetScript("OnEnter", function(self) 
+		cpb:SetScript("OnEnter", function(self)
 			GameTooltip:SetOwner(self, "ANCHOR_RIGHT", 10, 10)
 			GameTooltip:AddLine(tip)
-			GameTooltip:Show() 
+			GameTooltip:Show()
 		end)
 		cpb:SetScript("OnLeave", function(self) GameTooltip:Hide() end)
 	end
-	
+
 	parent[value] = cpb
 end
 
@@ -802,17 +802,17 @@ T.createradiobuttongroup = function(parent, x, y, name, table, value, group)
 	local frame = CreateFrame("Frame", G.uiname..value.."RadioButtonGroup", parent)
 	frame:SetPoint("TOPLEFT", x, -y)
 	frame:SetSize(150, 30)
-	
+
 	for k, v in T.pairsByKeys(group) do
 		frame[k] = CreateFrame("CheckButton", G.uiname..value..k.."RadioButtonGroup", frame, "UIRadioButtonTemplate")
 		F.ReskinRadio(frame[k])
-		
+
 		_G[frame[k]:GetName() .. "Text"]:SetText(v)
-		
+
 		frame[k]:SetScript("OnShow", function(self)
 			self:SetChecked(aCoreCDB[table][value] == k)
 		end)
-		
+
 		frame[k]:SetScript("OnClick", function(self)
 			if self:GetChecked() then
 				aCoreCDB[table][value] = k
@@ -821,7 +821,7 @@ T.createradiobuttongroup = function(parent, x, y, name, table, value, group)
 			end
 		end)
 	end
-	
+
 	for k, v in T.pairsByKeys(group) do
 		frame[k]:HookScript("OnClick", function(self)
 			if aCoreCDB[table][value] == k then
@@ -833,10 +833,10 @@ T.createradiobuttongroup = function(parent, x, y, name, table, value, group)
 			end
 		end)
 	end
-	
+
 	frame.name = frame:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
 	frame.name:SetText(name)
-	
+
 	local buttons = {frame:GetChildren()}
 	for i = 1, #buttons do
 		if i == 1 then
@@ -848,7 +848,7 @@ T.createradiobuttongroup = function(parent, x, y, name, table, value, group)
 			frame.name:SetPoint("LEFT", _G[buttons[i]:GetName() .. "Text"], "RIGHT", 10, 1)
 		end
 	end
-	
+
 	parent[value] = frame
 end
 

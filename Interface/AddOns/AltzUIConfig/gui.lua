@@ -52,18 +52,18 @@ local function CreateTab(text, frame, parent, orientation, a)
 	local tab = parent["tab"..parent.tabindex]
 	tab.n = parent.tabindex
 	tab.fname = frame:GetName()
-	
+
 	tab:SetFrameLevel(parent:GetFrameLevel()+2)
-	
+
 	if a then
 		F.CreateBD(tab, a)
 	else
 		F.CreateBD(tab)
 	end
-	
+
 	tab.name = T.createtext(tab, "OVERLAY", 12, "OUTLINE", "LEFT")
 	tab.name:SetText(text)
-	
+
 	if orientation == "VERTICAL" then
 		tab.name:SetPoint("LEFT", 10, 0)
 		tab:SetSize(130, 25)
@@ -114,7 +114,7 @@ local function CreateTab(text, frame, parent, orientation, a)
 			end
 		end
 	end
-	
+
 	parent.tabindex = parent.tabindex +1
 end
 
@@ -132,7 +132,7 @@ local function CreateOptionPage(name, title, parent, orientation, a, scroll)
 	Options.line:SetSize(parent:GetWidth()-50, 1)
 	Options.line:SetPoint("TOP", 0, -50)
 	Options.line:SetColorTexture(1, 1, 1, .2)
-	
+
 	if scroll then
 		Options.SF = CreateFrame("ScrollFrame", G.uiname..name.." ScrollFrame", Options, "UIPanelScrollFrameTemplate")
 		Options.SF:SetPoint("TOPLEFT", Options, "TOPLEFT", 10, -80)
@@ -144,12 +144,12 @@ local function CreateOptionPage(name, title, parent, orientation, a, scroll)
 		Options.SFAnchor:SetWidth(Options.SF:GetWidth()-30)
 		Options.SFAnchor:SetHeight(Options.SF:GetHeight()+200)
 		Options.SFAnchor:SetFrameLevel(Options.SF:GetFrameLevel()+1)
-		
+
 		Options.SF:SetScrollChild(Options.SFAnchor)
-		
+
 		F.ReskinScroll(_G[G.uiname..name.." ScrollFrameScrollBar"])
 	end
-	
+
 	return Options
 end
 --====================================================--
@@ -338,43 +338,43 @@ local function CreateAutobuyButton(itemID, name, icon, quantity)
 	local bu = CreateFrame("Frame", G.uiname.."AutobuyList Button"..itemID, IInnerframe.common.SFAnchor)
 	bu:SetSize(300, 28)
 	F.CreateBD(bu, .2)
-	
+
 	bu.icon = CreateFrame("Button", nil, bu)
 	bu.icon:SetSize(20, 20)
 	bu.icon:SetNormalTexture(icon or G.media.blank)
 	bu.icon:GetNormalTexture():SetTexCoord(0.1,0.9,0.1,0.9)
 	bu.icon:SetPoint("LEFT", 5, 0)
 	F.CreateBG(bu.icon)
-	
+
 	bu.name = T.createtext(bu, "OVERLAY", 16, "OUTLINE", "LEFT")
 	bu.name:SetPoint("LEFT", 40, 0)
 	bu.name:SetTextColor(1, .2, .6)
 	bu.name:SetText(name)
-	
+
 	bu.num = T.createtext(bu, "OVERLAY", 16, "OUTLINE", "LEFT")
 	bu.num:SetPoint("LEFT", 235, 0)
 	bu.num:SetTextColor(1, 1, 0)
 	bu.num:SetText(quantity)
-	
+
 	bu.close = CreateFrame("Button", nil, bu, "UIPanelButtonTemplate")
 	bu.close:SetSize(18,18)
 	bu.close:SetPoint("RIGHT", -5, 0)
 	F.Reskin(bu.close)
 	bu.close:SetText("x")
-	
+
 	bu:SetScript("OnEnter", function(self)
 		GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
 		GameTooltip:SetItemByID(tonumber(itemID))
 		GameTooltip:Show()
 	end)
 	bu:SetScript("OnLeave", function() GameTooltip:Hide() end)
-	
-	bu.close:SetScript("OnClick", function(self) 
+
+	bu.close:SetScript("OnClick", function(self)
 		bu:Hide()
 		aCoreCDB["ItemOptions"]["autobuylist"][itemID] = nil
 		LineUpAutobuyList()
 	end)
-	
+
 	return bu
 end
 
@@ -484,7 +484,7 @@ F.CreateBD(IInnerframe.IB.SF, .3)
 local IB_ConditionsMenu = CreateFrame("Frame", G.uiname.."IB_ConditionsMenu", UIParent, "L_UIDropDownMenuTemplate")
 
 local IB_Conditions_List = {
-	{ 
+	{
 		text = L["总是显示"],
 		isNotRadio = true,
 		keepShownOnClick = true,
@@ -521,46 +521,46 @@ local IB_Conditions_List = {
 	},
 }
 
-	
+
 local function Create_IB_Button(parent, index, itemID, exactItem, showCount, All, OrderHall, Raid, Dungeon, PVP)
 	local AltzUI_T = unpack(AltzUI)
-	
+
 	local bu = CreateFrame("Frame", G.uiname.."IB Edit Button"..index, parent)
 	bu:SetPoint("TOPLEFT", parent, "TOPLEFT", 5, 20-index*30)
 	bu:SetSize(380, 24)
 	F.CreateBD(bu, .2)
-	
+
 	bu.index = T.createtext(bu, "OVERLAY", 10, "OUTLINE", "LEFT")
 	bu.index:SetPoint("LEFT", 10, 0)
 	bu.index:SetTextColor(1, 1, 1)
 	bu.index:SetText(index..".")
-	
+
 	bu.name_input = CreateFrame("EditBox", G.uiname.."IB Edit Button"..index.."NameInput", bu)
 	bu.name_input:SetSize(100, 18)
 	bu.name_input:SetPoint("LEFT", 25, 0)
 	F.CreateBD(bu.name_input, 0)
 	bu.name_input:SetBackdropColor(0, 0, 0, 0)
 	bu.name_input:SetBackdropBorderColor(0, 0, 0, 0)
-	
+
 	bu.name_input:SetFont(GameFontHighlight:GetFont(), 10, "OUTLINE")
 	bu.name_input:SetAutoFocus(false)
 	bu.name_input:SetTextInsets(3, 0, 0, 0)
-	
+
 	bu.name_input:SetScript("OnEnter", function(self)
 		GameTooltip:SetOwner(self, "ANCHOR_RIGHT",  -20, 10)
 		GameTooltip:AddLine(L["输入物品ID"])
 		GameTooltip:Show()
 	end)
 	bu.name_input:SetScript("OnLeave", function(self) GameTooltip:Hide() end)
-	
+
 	bu.cb_exact = CreateFrame("CheckButton", G.uiname.."IB Edit Button"..index.."Exact Check Button", bu, "InterfaceOptionsSmallCheckButtonTemplate")
 	bu.cb_exact:SetPoint("LEFT", bu.name_input, "RIGHT", 5, 0)
 	bu.cb_exact:SetHitRectInsets(0, -50, 0, 0)
 	F.ReskinCheck(bu.cb_exact)
-	
+
 	_G[bu.cb_exact:GetName() .. "Text"]:SetText(L["精确匹配"])
 	_G[bu.cb_exact:GetName() .. "Text"]:SetFont(G.norFont, 10, "NONE")
-	
+
 	bu.cb_exact:SetScript("OnShow", function(self) self:SetChecked(aCoreCDB["ItemOptions"]["itembuttons_table"][index].exactItem) end)
 	bu.cb_exact:SetScript("OnClick", function(self)
 		if self:GetChecked() then
@@ -570,34 +570,34 @@ local function Create_IB_Button(parent, index, itemID, exactItem, showCount, All
 		end
 		AltzUI_T.Update_IB()
 	end)
-	
+
 	bu.cb_exact:SetScript("OnDisable", function(self)
 		_G[self:GetName() .. "Text"]:SetTextColor(.5, .5, .5)
 		local tex = select(7, self:GetRegions())
 		tex:SetVertexColor(.7, .7, .7, .5)
 	end)
-	
+
 	bu.cb_exact:SetScript("OnEnable", function(self)
 		local tex = select(7, self:GetRegions())
 		tex:SetVertexColor(buttonR, buttonG, buttonB, buttonA)
 		_G[self:GetName() .. "Text"]:SetTextColor(1, 1, 1)
 	end)
-	
-	bu.cb_exact:SetScript("OnEnter", function(self) 
+
+	bu.cb_exact:SetScript("OnEnter", function(self)
 		GameTooltip:SetOwner(self, "ANCHOR_RIGHT",  -20, 10)
 		GameTooltip:AddLine(L["精确匹配提示"])
-		GameTooltip:Show() 
+		GameTooltip:Show()
 	end)
 	bu.cb_exact:SetScript("OnLeave", function(self) GameTooltip:Hide() end)
-	
+
 	bu.cb_count = CreateFrame("CheckButton", G.uiname.."IB Edit Button"..index.."ShowCount Check Button", bu, "InterfaceOptionsSmallCheckButtonTemplate")
 	bu.cb_count:SetPoint("LEFT", bu.cb_exact, "RIGHT", 60, 0)
 	bu.cb_count:SetHitRectInsets(0, -50, 0, 0)
 	F.ReskinCheck(bu.cb_count)
-	
+
 	_G[bu.cb_count:GetName() .. "Text"]:SetText(L["显示数量"])
 	_G[bu.cb_count:GetName() .. "Text"]:SetFont(G.norFont, 10, "NONE")
-	
+
 	bu.cb_count:SetScript("OnShow", function(self) self:SetChecked(aCoreCDB["ItemOptions"]["itembuttons_table"][index].showCount) end)
 	bu.cb_count:SetScript("OnClick", function(self)
 		if self:GetChecked() then
@@ -607,33 +607,33 @@ local function Create_IB_Button(parent, index, itemID, exactItem, showCount, All
 		end
 		AltzUI_T.Update_IB()
 	end)
-	
+
 	bu.cb_count:SetScript("OnDisable", function(self)
 		local tex = select(7, self:GetRegions())
 		tex:SetVertexColor(.7, .7, .7, .5)
 		_G[self:GetName() .. "Text"]:SetTextColor(.5, .5, .5)
 	end)
-	
+
 	bu.cb_count:SetScript("OnEnable", function(self)
 		local tex = select(7, self:GetRegions())
 		tex:SetVertexColor(buttonR, buttonG, buttonB, buttonA)
 		_G[self:GetName() .. "Text"]:SetTextColor(1, 1, 1)
 	end)
-	
-	bu.cb_count:SetScript("OnEnter", function(self) 
+
+	bu.cb_count:SetScript("OnEnter", function(self)
 		GameTooltip:SetOwner(self, "ANCHOR_RIGHT",  -20, 10)
 		GameTooltip:AddLine(L["显示数量提示"])
-		GameTooltip:Show() 
+		GameTooltip:Show()
 	end)
 	bu.cb_count:SetScript("OnLeave", function(self) GameTooltip:Hide() end)
-	
+
 	bu.condi = CreateFrame("Button", G.uiname.."IB Edit Button"..index.."Select Condition Button", bu, "UIPanelButtonTemplate")
 	bu.condi:SetSize(50,18)
 	bu.condi:SetPoint("LEFT", bu.cb_count, "RIGHT", 60, 0)
 	F.Reskin(bu.condi)
 	_G[bu.condi:GetName() .. "Text"]:SetFont(G.norFont, 10, "NONE")
 	bu.condi:SetText(L["条件"])
-	
+
 	bu.condi:SetScript("OnMouseDown", function()
 		for i = 1, 5 do
 			IB_Conditions_List[i].checked = function()
@@ -666,12 +666,12 @@ local function Create_IB_Button(parent, index, itemID, exactItem, showCount, All
 		bu.condi:Disable()
 	end
 
-	bu.name_input:SetScript("OnEditFocusGained", function(self) 
+	bu.name_input:SetScript("OnEditFocusGained", function(self)
 		self:SetBackdropColor(0, 1, 1, .3)
 		self:SetBackdropBorderColor(1, 1, 1, 1)
 		self:SetText(aCoreCDB["ItemOptions"]["itembuttons_table"][index].itemID)
 	end)
-	bu.name_input:SetScript("OnEditFocusLost", function(self) 
+	bu.name_input:SetScript("OnEditFocusLost", function(self)
 		self:SetBackdropColor(0, 0, 0, 0)
 		self:SetBackdropBorderColor(0, 0, 0, 0)
 		local itemName = GetItemInfo(aCoreCDB["ItemOptions"]["itembuttons_table"][index].itemID)
@@ -698,15 +698,15 @@ local function Create_IB_Button(parent, index, itemID, exactItem, showCount, All
 		end
 		self:ClearFocus()
 	end)
-	
+
 	bu.reset = CreateFrame("Button", nil, bu, "UIPanelButtonTemplate")
 	bu.reset:SetSize(18,18)
 	bu.reset:SetPoint("RIGHT", -5, 0)
 	F.Reskin(bu.reset)
 	bu.reset:SetText("X")
-	
+
 	bu.reset:SetScript("OnClick", function(self)
-	
+
 		aCoreCDB["ItemOptions"]["itembuttons_table"][index].itemID = ""
 		aCoreCDB["ItemOptions"]["itembuttons_table"][index].exactItem = false
 		aCoreCDB["ItemOptions"]["itembuttons_table"][index].showCount = false
@@ -715,7 +715,7 @@ local function Create_IB_Button(parent, index, itemID, exactItem, showCount, All
 		aCoreCDB["ItemOptions"]["itembuttons_table"][index].Raid = false
 		aCoreCDB["ItemOptions"]["itembuttons_table"][index].Dungeon = false
 		aCoreCDB["ItemOptions"]["itembuttons_table"][index].PVP = false
-		
+
 		bu.name_input:SetText("")
 		bu.cb_exact:Disable()
 		bu.cb_exact:SetChecked(false)
@@ -723,9 +723,9 @@ local function Create_IB_Button(parent, index, itemID, exactItem, showCount, All
 		bu.cb_count:SetChecked(false)
 		bu.condi:Disable()
 		AltzUI_T.Update_IB()
-		
+
 	end)
-	
+
 	return bu
 end
 
@@ -887,37 +887,37 @@ local function CreateAuraFilterButton(name, icon, spellID)
 	bu.icon:GetNormalTexture():SetTexCoord(0.1,0.9,0.1,0.9)
 	bu.icon:SetPoint"LEFT"
 	F.CreateBG(bu.icon)
-	
+
 	bu.spellid = T.createtext(bu, "OVERLAY", 12, "OUTLINE", "LEFT")
 	bu.spellid:SetPoint("LEFT", 40, 0)
 	bu.spellid:SetTextColor(1, .2, .6)
 	bu.spellid:SetText(spellID)
-	
+
 	bu.spellname = T.createtext(bu, "OVERLAY", 12, "OUTLINE", "LEFT")
 	bu.spellname:SetPoint("LEFT", 140, 0)
 	bu.spellname:SetTextColor(1, 1, 0)
 	bu.spellname:SetText(name)
-	
+
 	bu.close = CreateFrame("Button", nil, bu, "UIPanelButtonTemplate")
 	bu.close:SetSize(18,18)
 	bu.close:SetPoint("RIGHT")
 	F.Reskin(bu.close)
 	bu.close:SetText("x")
-	
+
 	bu:SetScript("OnEnter", function(self)
 		GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
 		GameTooltip:SetSpellByID(tonumber(spellID))
 		GameTooltip:Show()
 	end)
 	bu:SetScript("OnLeave", function() GameTooltip:Hide() end)
-	
-	bu.close:SetScript("OnClick", function() 
+
+	bu.close:SetScript("OnClick", function()
 		bu:Hide()
 		aCoreCDB["UnitframeOptions"]["AuraFilterwhitelist"][spellID] = nil
 		print("|cffFF0000"..name.." |r"..L["从法术过滤白名单中移出"])
 		LineUpAuraFilterList()
 	end)
-	
+
 	return bu
 end
 
@@ -957,7 +957,7 @@ AuraFilter_spellIDinput:SetScript("OnEnterPressed", function(self)
 			print("|cff7FFF00"..name.." |r"..L["被添加到法术过滤白名单中"])
 			LineUpAuraFilterList()
 		else
-			aCoreCDB["UnitframeOptions"]["AuraFilterwhitelist"][spellID] = name		
+			aCoreCDB["UnitframeOptions"]["AuraFilterwhitelist"][spellID] = name
 			CreateAuraFilterButton(name, icon, spellID)
 			print("|cff7FFF00"..name.." |r"..L["被添加到法术过滤白名单中"])
 			LineUpAuraFilterList()
@@ -968,10 +968,10 @@ AuraFilter_spellIDinput:SetScript("OnEnterPressed", function(self)
 	end
 end)
 
-AuraFilter_spellIDinput:SetScript("OnEnter", function(self) 
+AuraFilter_spellIDinput:SetScript("OnEnter", function(self)
 	GameTooltip:SetOwner(self, "ANCHOR_RIGHT", -20, 10)
 	GameTooltip:AddLine(L["白名单提示"])
-	GameTooltip:Show() 
+	GameTooltip:Show()
 end)
 AuraFilter_spellIDinput:SetScript("OnLeave", function(self) GameTooltip:Hide() end)
 
@@ -1055,7 +1055,7 @@ RFInnerframe.healer = CreateOptionPage("RF Options healer", L["治疗模式"], R
 
 local groupfilter_group = {
 	["1,2"] = L["10-man"],
-	["1,2,3,4"] = L["20-man"],		
+	["1,2,3,4"] = L["20-man"],
 	["1,2,3,4,5,6"] = L["30-man"],
 	["1,2,3,4,5,6,7,8"] = L["40-man"],
 }
@@ -1089,7 +1089,7 @@ local indicatorfiltertype_group = {
 	["blacklist"] = L["黑名单"],
 }
 T.createradiobuttongroup(RFInnerframe.ind, 30, 140, L["过滤方式"], "UnitframeOptions", "hotind_filtertype", indicatorfiltertype_group)
-	
+
 local function LineUphotindauralist(parent)
 	local index = 1
 	for spellid, info in T.pairsByKeys(aCoreCDB["UnitframeOptions"]["hotind_auralist"]) do
@@ -1097,7 +1097,7 @@ local function LineUphotindauralist(parent)
 		index =  index + 1
 	end
 end
-	
+
 local function CreatehotindauralistButton(spellID, parent)
 	local bu = CreateFrame("Frame", G.uiname.."hotind"..spellID, parent)
 	bu:SetSize(330, 20)
@@ -1108,7 +1108,7 @@ local function CreatehotindauralistButton(spellID, parent)
 	bu.icon:GetNormalTexture():SetTexCoord(0.1,0.9,0.1,0.9)
 	bu.icon:SetPoint"LEFT"
 	F.CreateBG(bu.icon)
-	
+
 	bu.spellname = T.createtext(bu, "OVERLAY", 12, "OUTLINE", "LEFT")
 	bu.spellname:SetPoint("LEFT", 140, 0)
 	bu.spellname:SetTextColor(1, 1, 0)
@@ -1120,20 +1120,20 @@ local function CreatehotindauralistButton(spellID, parent)
 	bu.close.text = T.createtext(bu.close, "OVERLAY", 12, "OUTLINE", "CENTER")
 	bu.close.text:SetPoint("CENTER")
 	bu.close.text:SetText("x")
-	
-	bu.close:SetScript("OnClick", function() 
+
+	bu.close:SetScript("OnClick", function()
 		bu:Hide()
 		aCoreCDB["UnitframeOptions"]["hotind_auralist"][spellID] = nil
 		LineUphotindauralist(parent)
 	end)
-	
+
 	bu:SetScript("OnEnter", function(self)
 		GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
 		GameTooltip:SetSpellByID(spellID)
 		GameTooltip:Show()
 	end)
 	bu:SetScript("OnLeave", function() GameTooltip:Hide() end)
-	
+
 	return bu
 end
 
@@ -1148,34 +1148,34 @@ local function Createhotindauralist(parent)
 	end
 	LineUphotindauralist(parent)
 end
-	
+
 local function CreatehotindAuraOptions()
 
 	RFInnerframe.ind.SF:SetPoint("TOPLEFT", 30, -190)
 	RFInnerframe.ind.SF:SetPoint("BOTTOMRIGHT", -30, 20)
-	
+
 	Createhotindauralist(RFInnerframe.ind.SFAnchor)
-	
+
 	RFInnerframe.ind.Spellinput = CreateFrame("EditBox", G.uiname.."hotind_auralist Spell Input", RFInnerframe.ind)
 	RFInnerframe.ind.Spellinput:SetSize(120, 20)
 	RFInnerframe.ind.Spellinput:SetPoint("TOPLEFT", RFInnerframe.ind, "TOPLEFT", 40, -170)
 	F.CreateBD(RFInnerframe.ind.Spellinput)
-	
+
 	RFInnerframe.ind.Spellinput:SetFont(GameFontHighlight:GetFont(), 12, "OUTLINE")
 	RFInnerframe.ind.Spellinput:SetAutoFocus(false)
 	RFInnerframe.ind.Spellinput:SetTextInsets(3, 0, 0, 0)
-	
+
 	RFInnerframe.ind.Spellinput:SetScript("OnShow", function(self) self:SetText(L["输入法术ID"]) end)
 	RFInnerframe.ind.Spellinput:SetScript("OnEditFocusGained", function(self) self:HighlightText() end)
 	RFInnerframe.ind.Spellinput:SetScript("OnEscapePressed", function(self) self:ClearFocus() self:SetText(L["输入法术ID"]) end)
 	RFInnerframe.ind.Spellinput:SetScript("OnEnterPressed", function(self) self:ClearFocus() end)
-	
+
 	RFInnerframe.ind.Add = CreateFrame("Button", G.uiname.."hotind_auralist Add Button", RFInnerframe.ind, "UIPanelButtonTemplate")
 	RFInnerframe.ind.Add:SetPoint("LEFT", RFInnerframe.ind.Spellinput, "RIGHT", 10, 0)
 	RFInnerframe.ind.Add:SetSize(70, 20)
 	RFInnerframe.ind.Add:SetText(ADD)
 	F.Reskin(RFInnerframe.ind.Add)
-	
+
 	RFInnerframe.ind.Add:SetScript("OnClick", function(self)
 		local spellID = tonumber(RFInnerframe.ind.Spellinput:GetText())
 
@@ -1193,13 +1193,13 @@ local function CreatehotindAuraOptions()
 			end
 		end
 	end)
-	
+
 	RFInnerframe.ind.Reset = CreateFrame("Button", G.uiname.."hotind_auralist Reset Button", RFInnerframe.ind, "UIPanelButtonTemplate")
 	RFInnerframe.ind.Reset:SetPoint("BOTTOM", ReloadButton, "TOP", 0, 10)
 	RFInnerframe.ind.Reset:SetSize(100, 25)
-	RFInnerframe.ind.Reset:SetText(L["重置"])	
+	RFInnerframe.ind.Reset:SetText(L["重置"])
 	F.Reskin(RFInnerframe.ind.Reset)
-	
+
 	RFInnerframe.ind.Reset:SetScript("OnClick", function(self)
 		StaticPopupDialogs[G.uiname.."Reset Confirm"].text = format(L["重置确认"], L["治疗指示器"])
 		StaticPopupDialogs[G.uiname.."Reset Confirm"].OnAccept = function()
@@ -1250,11 +1250,11 @@ MacroPop.scrollBG:SetPoint("TOPLEFT", 10, -30)
 MacroPop.scrollBG:SetSize(330, 80)
 MacroPop.scrollBG:SetFrameLevel(MacroPop:GetFrameLevel()+1)
 F.CreateBD(MacroPop.scrollBG, 0)
-	
+
 MacroPop.scrollBG.gradient = F.CreateGradient(MacroPop.scrollBG)
 MacroPop.scrollBG.gradient:SetPoint("TOPLEFT", MacroPop.scrollBG, 1, -1)
 MacroPop.scrollBG.gradient:SetPoint("BOTTOMRIGHT", MacroPop.scrollBG, -1, 1)
-	
+
 MacroPop.scrollBG.name = MacroPop.scrollBG:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
 MacroPop.scrollBG.name:SetPoint("BOTTOMLEFT", MacroPop.scrollBG, "TOPLEFT", 5, 8)
 MacroPop.scrollBG.name:SetJustifyH("LEFT")
@@ -1334,15 +1334,15 @@ for i = 1, 5 do
 		inputbox:SetSize(150, 20)
 		inputbox:SetPoint("TOPLEFT", 16, 20-k*30)
 		F.CreateBD(inputbox)
-		
+
 		inputbox.name = inputbox:CreateFontString(nil, "ARTWORK", "GameFontNormalLeftYellow")
 		inputbox.name:SetPoint("LEFT", inputbox, "RIGHT", 10, 1)
 		inputbox.name:SetText(v)
-		
+
 		inputbox:SetFont(GameFontHighlight:GetFont(), 12, "OUTLINE")
 		inputbox:SetAutoFocus(false)
 		inputbox:SetTextInsets(3, 0, 0, 0)
-		
+
 		inputbox:SetScript("OnShow", function(self) self:SetText(aCoreCDB["UnitframeOptions"]["ClickCast"][index][v]["action"]) end)
 		inputbox:SetScript("OnEscapePressed", function(self) self:SetText(aCoreCDB["UnitframeOptions"]["ClickCast"][index][v]["action"]) self:ClearFocus() end)
 		inputbox:SetScript("OnEditFocusGained", function(self)
@@ -1352,7 +1352,7 @@ for i = 1, 5 do
 			end
 		end)
 		inputbox:SetScript("OnHide", function() MacroPop:Hide() end)
-		
+
 		inputbox:SetScript("OnEnterPressed", function(self)
 			local var = self:GetText()
 			if (var == "target" or var == "tot" or var == "follow" or var == "macro" or var == "focus") then
@@ -1383,15 +1383,15 @@ for k, v in pairs(modifier) do
 	inputbox:SetSize(150, 20)
 	inputbox:SetPoint("TOPLEFT", 16, 20-k*30)
 	F.CreateBD(inputbox)
-		
+
 	inputbox.name = inputbox:CreateFontString(nil, "ARTWORK", "GameFontNormalLeftYellow")
 	inputbox.name:SetPoint("LEFT", inputbox, "RIGHT", 10, 1)
 	inputbox.name:SetText(v)
-		
+
 	inputbox:SetFont(GameFontHighlight:GetFont(), 12, "OUTLINE")
 	inputbox:SetAutoFocus(false)
 	inputbox:SetTextInsets(3, 0, 0, 0)
-		
+
 	inputbox:SetScript("OnShow", function(self) self:SetText(aCoreCDB["UnitframeOptions"]["ClickCast"][tostring(k+5)]["Click"]["action"]) end)
 	inputbox:SetScript("OnEscapePressed", function(self) self:SetText(aCoreCDB["UnitframeOptions"]["ClickCast"][tostring(k+5)]["Click"]["action"]) self:ClearFocus() end)
 	inputbox:SetScript("OnEditFocusGained", function(self)
@@ -1401,7 +1401,7 @@ for k, v in pairs(modifier) do
 		end
 	end)
 	inputbox:SetScript("OnHide", function() MacroPop:Hide() end)
-		
+
 	inputbox:SetScript("OnEnterPressed", function(self)
 		local var = self:GetText()
 		if (var == "target" or var == "tot" or var == "follow" or var == "macro" or var == "focus") then
@@ -1431,15 +1431,15 @@ for k, v in pairs(modifier) do
 	inputbox:SetSize(150, 20)
 	inputbox:SetPoint("TOPLEFT", 16, 20-k*30)
 	F.CreateBD(inputbox)
-		
+
 	inputbox.name = inputbox:CreateFontString(nil, "ARTWORK", "GameFontNormalLeftYellow")
 	inputbox.name:SetPoint("LEFT", inputbox, "RIGHT", 10, 1)
 	inputbox.name:SetText(v)
-		
+
 	inputbox:SetFont(GameFontHighlight:GetFont(), 12, "OUTLINE")
 	inputbox:SetAutoFocus(false)
 	inputbox:SetTextInsets(3, 0, 0, 0)
-		
+
 	inputbox:SetScript("OnShow", function(self) self:SetText(aCoreCDB["UnitframeOptions"]["ClickCast"][tostring(k+9)]["Click"]["action"]) end)
 	inputbox:SetScript("OnEscapePressed", function(self) self:SetText(aCoreCDB["UnitframeOptions"]["ClickCast"][tostring(k+9)]["Click"]["action"]) self:ClearFocus() end)
 	inputbox:SetScript("OnEditFocusGained", function(self)
@@ -1449,7 +1449,7 @@ for k, v in pairs(modifier) do
 		end
 	end)
 	inputbox:SetScript("OnHide", function() MacroPop:Hide() end)
-	
+
 	inputbox:SetScript("OnEnterPressed", function(self)
 		local var = self:GetText()
 		if (var == "target" or var == "tot" or var == "follow" or var == "macro" or var == "focus") then
@@ -1478,12 +1478,12 @@ RFDebuff_InnerFrame:SetPoint("BOTTOMRIGHT", -30, 20)
 
 local function LineUpRaidDebuffList(parent, raidname)
 	local i = -1
-	
+
 	if not G.Raids[raidname] then
 		aCoreCDB["RaidDebuff"][raidname] = nil
 		return
 	end
-	
+
 	for index, boss in pairs(G.Raids[raidname]) do
 		i = i + 1
 		if _G[G.uiname.."RaidDebuff"..raidname..boss.."Title"] then
@@ -1507,44 +1507,44 @@ end
 local function CreateEncounterDebuffButton(parent, raid, boss, name, spellID, level)
 	local bu = CreateFrame("Frame", G.uiname.."RaidDebuff"..raid..boss..spellID, parent)
 	bu:SetSize(330, 20)
-	
+
 	bu.icon = CreateFrame("Button", nil, bu)
 	bu.icon:SetSize(18, 18)
 	bu.icon:SetNormalTexture(select(3, GetSpellInfo(spellID)))
 	bu.icon:GetNormalTexture():SetTexCoord(0.1,0.9,0.1,0.9)
 	bu.icon:SetPoint"LEFT"
 	F.CreateBG(bu.icon)
-	
+
 	bu.level = T.createtext(bu, "OVERLAY", 12, "OUTLINE", "LEFT")
 	bu.level:SetPoint("LEFT", 40, 0)
 	bu.level:SetTextColor(1, .2, .6)
 	bu.level:SetText(level)
-	
+
 	bu.spellname = T.createtext(bu, "OVERLAY", 12, "OUTLINE", "LEFT")
 	bu.spellname:SetPoint("LEFT", 140, 0)
 	bu.spellname:SetTextColor(1, 1, 0)
 	bu.spellname:SetText(name)
-	
+
 	bu.close = CreateFrame("Button", nil, bu)
 	bu.close:SetSize(22,22)
 	bu.close:SetPoint("LEFT", 310, 0)
 	bu.close.text = T.createtext(bu.close, "OVERLAY", 12, "OUTLINE", "CENTER")
 	bu.close.text:SetPoint("CENTER")
 	bu.close.text:SetText("x")
-	
-	bu.close:SetScript("OnClick", function() 
+
+	bu.close:SetScript("OnClick", function()
 		bu:Hide()
 		aCoreCDB["RaidDebuff"][raid][boss][name] = nil
 		LineUpRaidDebuffList(parent, raid)
 	end)
-	
+
 	bu:SetScript("OnEnter", function(self)
 		GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
 		GameTooltip:SetSpellByID(spellID)
 		GameTooltip:Show()
 	end)
 	bu:SetScript("OnLeave", function() GameTooltip:Hide() end)
-	
+
 	bu:SetScript("OnMouseDown", function(self)
 		local frame = parent:GetParent()
 		if frame.selectdebuff ~= spellID then
@@ -1552,18 +1552,18 @@ local function CreateEncounterDebuffButton(parent, raid, boss, name, spellID, le
 			frame.Spellinput:ClearFocus()
 			frame.Spellinput:SetText(spellID)
 			frame.Levelinput:ClearFocus()
-			frame.Levelinput:SetText(level)	
+			frame.Levelinput:SetText(level)
 			frame.selectdebuff = spellID
 		else
 			L_UIDropDownMenu_SetText(frame.BossDD, "")
 			frame.Spellinput:ClearFocus()
 			frame.Spellinput:SetText("")
 			frame.Levelinput:ClearFocus()
-			frame.Levelinput:SetText("")		
+			frame.Levelinput:SetText("")
 			frame.selectdebuff = nil
 		end
 	end)
-	
+
 	return bu
 end
 
@@ -1587,19 +1587,19 @@ local function CreateRaidDebuffOptions()
 		frame:SetPoint("TOPLEFT", 40, -95)
 		frame:SetPoint("BOTTOMRIGHT", -50, 20)
 		frame:Hide()
-		
+
 		frame.SFAnchor = CreateFrame("Frame", G.uiname.."Raiddebuff Frame"..raidindex.."ScrollAnchor", frame)
 		frame.SFAnchor:SetPoint("TOPLEFT", frame, "TOPLEFT", 0, -3)
 		frame.SFAnchor:SetWidth(frame:GetWidth()-30)
 		frame.SFAnchor:SetHeight(frame:GetHeight()+200)
 		frame.SFAnchor:SetFrameLevel(frame:GetFrameLevel()+1)
-		
+
 		frame:SetScrollChild(frame.SFAnchor)
-		
+
 		F.ReskinScroll(_G[G.uiname.."Raiddebuff Frame"..raidindex.."ScrollBar"])
-		
+
 		CreateEncounterDebuffList(frame.SFAnchor, raidname, bosstable)
-		
+
 		local BossDD = CreateFrame("Frame", G.uiname..raidname.."SelectBossDropdown", frame, "L_UIDropDownMenuTemplate")
 		BossDD:SetPoint("BOTTOMLEFT", frame, "TOPLEFT", 10, 5)
 		F.ReskinDropDown(BossDD)
@@ -1613,12 +1613,12 @@ local function CreateRaidDebuffOptions()
 
 		L_UIDropDownMenu_Initialize(BossDD, function(self, level, menuList)
 			local info = L_UIDropDownMenu_CreateInfo()
-			
+
 			if not G.Raids[raidname] then
 				aCoreCDB["RaidDebuff"][raidname] = nil
 				return
 			end
-			
+
 			for i = 1, #(G.Raids[raidname]) do
 				info.text = G.Raids[raidname][i]
 				info.func = function()
@@ -1628,14 +1628,14 @@ local function CreateRaidDebuffOptions()
 				L_UIDropDownMenu_AddButton(info)
 			end
 		end)
-		
+
 		frame.BossDD = BossDD
-		
+
 		local Spellinput = CreateFrame("EditBox", G.uiname..raidname.."Spell Input", frame)
 		Spellinput:SetSize(60, 20)
 		Spellinput:SetPoint("LEFT", BossDD, "RIGHT", -5, 2)
 		F.CreateBD(Spellinput)
-		
+
 		Spellinput:SetFont(GameFontHighlight:GetFont(), 12, "OUTLINE")
 		Spellinput:SetAutoFocus(false)
 		Spellinput:SetTextInsets(3, 0, 0, 0)
@@ -1644,9 +1644,9 @@ local function CreateRaidDebuffOptions()
 		Spellinput:SetScript("OnEditFocusGained", function(self) self:HighlightText() end)
 		Spellinput:SetScript("OnEscapePressed", function(self) self:ClearFocus() self:SetText(L["输入法术ID"]) end)
 		Spellinput:SetScript("OnEnterPressed", function(self) self:ClearFocus() end)
-		
+
 		frame.Spellinput = Spellinput
-		
+
 		local Levelinput = CreateFrame("EditBox", G.uiname..raidname.."Level Input", frame)
 		Levelinput:SetSize(60, 20)
 		Levelinput:SetPoint("LEFT", Spellinput, "RIGHT", 5, 0)
@@ -1660,9 +1660,9 @@ local function CreateRaidDebuffOptions()
 		Levelinput:SetScript("OnEditFocusGained", function(self) self:HighlightText() end)
 		Levelinput:SetScript("OnEscapePressed", function(self) self:ClearFocus() self:SetText(L["输入层级"]) end)
 		Levelinput:SetScript("OnEnterPressed", function(self) self:ClearFocus() end)
-		
+
 		frame.Levelinput = Levelinput
-		
+
 		local Add = CreateFrame("Button", G.uiname..raidname.."Add Debuff Button", frame, "UIPanelButtonTemplate")
 		Add:SetPoint("LEFT", Levelinput, "RIGHT", 10, 0)
 		Add:SetSize(70, 20)
@@ -1696,15 +1696,15 @@ local function CreateRaidDebuffOptions()
 				end
 			end
 		end)
-		
+
 		frame.Add = Add
-		
+
 		local Back = CreateFrame("Button", nil, frame)
 		Back:SetSize(26, 26)
 		Back:SetNormalTexture("Interface\\BUTTONS\\UI-Panel-CollapseButton-Up")
 		Back:SetPushedTexture("Interface\\BUTTONS\\UI-Panel-CollapseButton-Down")
 		Back:SetPoint("LEFT", Add, "RIGHT", 2, 0)
-		Back:SetScript("OnClick", function() 
+		Back:SetScript("OnClick", function()
 			local children = {RFInnerframe.raiddebuff:GetChildren()}
 			for i = 1, #children do
 				if children[i]:GetName():match(G.uiname.."Raiddebuff Frame") then
@@ -1713,7 +1713,7 @@ local function CreateRaidDebuffOptions()
 			end
 			RFDebuff_InnerFrame:Show()
 		end)
-		
+
 		local Reset = CreateFrame("Button", G.uiname..raidname.."Reset RaidDebuff Button", frame, "UIPanelButtonTemplate")
 		Reset:SetPoint("BOTTOM", ReloadButton, "TOP", 0, 10)
 		Reset:SetSize(100, 25)
@@ -1727,27 +1727,27 @@ local function CreateRaidDebuffOptions()
 			end
 			StaticPopup_Show(G.uiname.."Reset Confirm")
 		end)
-		
+
 		local tab = CreateFrame("Button", G.uiname.."Raiddebuff Tab"..raidindex, RFDebuff_InnerFrame, "UIPanelButtonTemplate")
 		tab:SetFrameLevel(RFDebuff_InnerFrame:GetFrameLevel()+2)
 		tab:SetSize(150, 25)
 		tab:SetText(raidname)
 		F.Reskin(tab)
-	
+
 		tab:HookScript("OnMouseDown", function(self)
 			RFDebuff_InnerFrame:Hide()
 			frame:Show()
 		end)
-	
+
 		if mod(raidindex, 2) == 1 then
 			tab:SetPoint("TOPLEFT", RFDebuff_InnerFrame, "TOPLEFT", 20, -floor(raidindex/2)*35-20)
 		elseif mod(raidindex, 2) == 0 then
 			tab:SetPoint("TOPLEFT", RFDebuff_InnerFrame, "TOPLEFT", 190, -floor(raidindex/2-1)*35-20)
 		end
-		
+
 		RFDebuff_InnerFrame["tab"..raidindex] = tab
 		RFDebuff_InnerFrame["frame"..raidindex] = frame
-		
+
 		raidindex = raidindex +1
 	end
 end
@@ -1779,61 +1779,61 @@ end
 local function CreateCooldownAuraButton(parent, auratype, name, spellID, level)
 	local bu = CreateFrame("Frame", G.uiname.."Cooldown"..auratype..spellID, parent)
 	bu:SetSize(330, 20)
-	
+
 	bu.icon = CreateFrame("Button", nil, bu)
 	bu.icon:SetSize(18, 18)
 	bu.icon:SetNormalTexture(select(3, GetSpellInfo(spellID)))
 	bu.icon:GetNormalTexture():SetTexCoord(0.1,0.9,0.1,0.9)
 	bu.icon:SetPoint"LEFT"
 	F.CreateBG(bu.icon)
-	
+
 	bu.level = T.createtext(bu, "OVERLAY", 12, "OUTLINE", "LEFT")
 	bu.level:SetPoint("LEFT", 40, 0)
 	bu.level:SetTextColor(1, .2, .6)
 	bu.level:SetText(level)
-	
+
 	bu.spellname = T.createtext(bu, "OVERLAY", 12, "OUTLINE", "LEFT")
 	bu.spellname:SetPoint("LEFT", 140, 0)
 	bu.spellname:SetTextColor(1, 1, 0)
 	bu.spellname:SetText(name)
-	
+
 	bu.close = CreateFrame("Button", nil, bu)
 	bu.close:SetSize(22,22)
 	bu.close:SetPoint("LEFT", 310, 0)
 	bu.close.text = T.createtext(bu.close, "OVERLAY", 12, "OUTLINE", "CENTER")
 	bu.close.text:SetPoint("CENTER")
 	bu.close.text:SetText("x")
-	
-	bu.close:SetScript("OnClick", function() 
+
+	bu.close:SetScript("OnClick", function()
 		bu:Hide()
 		aCoreCDB["CooldownAura"][auratype][name] = nil
 		LineUpCooldownAuraList(parent, auratype)
 	end)
-	
+
 	bu:SetScript("OnEnter", function(self)
 		GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
 		GameTooltip:SetSpellByID(spellID)
 		GameTooltip:Show()
 	end)
 	bu:SetScript("OnLeave", function() GameTooltip:Hide() end)
-	
+
 	bu:SetScript("OnMouseDown", function(self)
 		local frame = parent:GetParent():GetParent()
 		if frame.selectdebuff ~= spellID then
 			frame.Spellinput:ClearFocus()
 			frame.Spellinput:SetText(spellID)
 			frame.Levelinput:ClearFocus()
-			frame.Levelinput:SetText(level)	
+			frame.Levelinput:SetText(level)
 			frame.selectdebuff = spellID
 		else
 			frame.Spellinput:ClearFocus()
 			frame.Spellinput:SetText("")
 			frame.Levelinput:ClearFocus()
-			frame.Levelinput:SetText("")		
+			frame.Levelinput:SetText("")
 			frame.selectdebuff = nil
 		end
 	end)
-	
+
 	return bu
 end
 
@@ -1845,7 +1845,7 @@ local function CreateCooldownAuraList(frame, auratype, auratable)
 			else
 				print(spell.." is gone, delete it.")
 				aCoreCDB["CooldownAura"][auratype][spell] = nil
-			end		
+			end
 		end
 	end
 	LineUpCooldownAuraList(frame, auratype)
@@ -1859,17 +1859,17 @@ local function CreateCooldownAuraOptions()
 		if auratype == "Buffs" then
 			frame:Show()
 		end
-		
+
 		frame.SF:SetPoint("TOPLEFT", 10, -40)
 		frame.SF:SetPoint("BOTTOMRIGHT", -30, 20)
-		
+
 		CreateCooldownAuraList(frame.SFAnchor, auratype, auratable)
-		
+
 		local Spellinput = CreateFrame("EditBox", G.uiname..auratype.."Spell Input", frame)
 		Spellinput:SetSize(120, 20)
 		Spellinput:SetPoint("TOPLEFT", frame, "TOPLEFT", 15, -10)
 		F.CreateBD(Spellinput)
-		
+
 		Spellinput:SetFont(GameFontHighlight:GetFont(), 12, "OUTLINE")
 		Spellinput:SetAutoFocus(false)
 		Spellinput:SetTextInsets(3, 0, 0, 0)
@@ -1878,9 +1878,9 @@ local function CreateCooldownAuraOptions()
 		Spellinput:SetScript("OnEditFocusGained", function(self) self:HighlightText() end)
 		Spellinput:SetScript("OnEscapePressed", function(self) self:ClearFocus() self:SetText(L["输入法术ID"]) end)
 		Spellinput:SetScript("OnEnterPressed", function(self) self:ClearFocus() end)
-		
+
 		frame.Spellinput = Spellinput
-		
+
 		local Levelinput = CreateFrame("EditBox", G.uiname..auratype.."Level Input", frame)
 		Levelinput:SetSize(80, 20)
 		Levelinput:SetPoint("LEFT", Spellinput, "RIGHT", 5, 0)
@@ -1894,9 +1894,9 @@ local function CreateCooldownAuraOptions()
 		Levelinput:SetScript("OnEditFocusGained", function(self) self:HighlightText() end)
 		Levelinput:SetScript("OnEscapePressed", function(self) self:ClearFocus() self:SetText(L["输入层级"]) end)
 		Levelinput:SetScript("OnEnterPressed", function(self) self:ClearFocus() end)
-		
+
 		frame.Levelinput = Levelinput
-		
+
 		local Add = CreateFrame("Button", G.uiname..auratype.."Add CooldownAura Button", frame, "UIPanelButtonTemplate")
 		Add:SetPoint("LEFT", Levelinput, "RIGHT", 10, 0)
 		Add:SetSize(70, 20)
@@ -1929,9 +1929,9 @@ local function CreateCooldownAuraOptions()
 				end
 			end
 		end)
-		
+
 		frame.Add = Add
-		
+
 		local Reset = CreateFrame("Button", G.uiname..auratype.."Reset CooldownAura Button", frame, "UIPanelButtonTemplate")
 		Reset:SetPoint("BOTTOM", ReloadButton, "TOP", 0, 10)
 		Reset:SetSize(100, 25)
@@ -1945,11 +1945,11 @@ local function CreateCooldownAuraOptions()
 			end
 			StaticPopup_Show(G.uiname.."Reset Confirm")
 		end)
-		
+
 		cooldownauraframe[auratype.."Options"] = frame
 	end
 end
-	
+
 --====================================================--
 --[[           -- Actionbar Options --              ]]--
 --====================================================--
@@ -2074,11 +2074,11 @@ local function LineUpcooldownflashlist(parent, list)
 		index =  index + 1
 	end
 end
-	
+
 local function CreatecooldownflashlistButton(spellID, parent, list)
 	local bu = CreateFrame("Frame", G.uiname.."caflash_bl"..list..spellID, parent)
 	bu:SetSize(330, 20)
-	
+
 	bu.icon = CreateFrame("Button", nil, bu)
 	bu.icon:SetSize(18, 18)
 	if list == "item" and GetItemInfo(spellID) then
@@ -2091,36 +2091,36 @@ local function CreatecooldownflashlistButton(spellID, parent, list)
 	end
 	bu.icon:SetPoint"LEFT"
 	F.CreateBG(bu.icon)
-	
+
 	bu.spellname = T.createtext(bu, "OVERLAY", 12, "OUTLINE", "LEFT")
 	bu.spellname:SetPoint("LEFT", 140, 0)
 	bu.spellname:SetTextColor(1, 1, 0)
 	if list == "item" then
 		bu.spellname:SetText(GetItemInfo(spellID))
-	elseif list == "spell" then	
+	elseif list == "spell" then
 		bu.spellname:SetText(GetSpellInfo(spellID))
 	end
-	
+
 	bu.close = CreateFrame("Button", nil, bu)
 	bu.close:SetSize(22,22)
 	bu.close:SetPoint("LEFT", 310, 0)
 	bu.close.text = T.createtext(bu.close, "OVERLAY", 12, "OUTLINE", "CENTER")
 	bu.close.text:SetPoint("CENTER")
 	bu.close.text:SetText("x")
-	
-	bu.close:SetScript("OnClick", function() 
+
+	bu.close:SetScript("OnClick", function()
 		bu:Hide()
 		aCoreCDB["ActionbarOptions"]["caflash_bl"][list][spellID] = nil
 		LineUpcooldownflashlist(parent, list)
 	end)
-	
+
 	bu:SetScript("OnEnter", function(self)
 		GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
 		GameTooltip:SetSpellByID(spellID)
 		GameTooltip:Show()
 	end)
 	bu:SetScript("OnLeave", function() GameTooltip:Hide() end)
-	
+
 	return bu
 end
 
@@ -2130,7 +2130,7 @@ local function Createcooldownflashlist(list, parent)
 	end
 	LineUpcooldownflashlist(parent, list)
 end
-	
+
 local function CreateCooldownFlashOptions(name, list)
 	local cooldownflashlist = CreateOptionPage(list.."Options", name, cooldownflashframe, "HORIZONTAL", .3, true)
 	cooldownflashlist.title:Hide()
@@ -2140,35 +2140,35 @@ local function CreateCooldownFlashOptions(name, list)
 	end
 	cooldownflashlist.SF:SetPoint("TOPLEFT", 10, -20)
 	cooldownflashlist.SF:SetPoint("BOTTOMRIGHT", -30, 20)
-	
+
 	Createcooldownflashlist(list, cooldownflashlist.SFAnchor)
-	
+
 	cooldownflashlist.Spellinput = CreateFrame("EditBox", G.uiname.."caflash_bl"..list.."Spell Input", cooldownflashlist)
 	cooldownflashlist.Spellinput:SetSize(120, 20)
 	cooldownflashlist.Spellinput:SetPoint("TOPLEFT", cooldownflashlist, "TOPLEFT", 20, -5)
 	F.CreateBD(cooldownflashlist.Spellinput)
-	
+
 	cooldownflashlist.Spellinput:SetFont(GameFontHighlight:GetFont(), 12, "OUTLINE")
 	cooldownflashlist.Spellinput:SetAutoFocus(false)
 	cooldownflashlist.Spellinput:SetTextInsets(3, 0, 0, 0)
-	
+
 	local inputword
 	if list == "item" then
 		inputword = L["输入物品ID"]
 	elseif list == "spell" then
 		inputword = L["输入法术ID"]
-	end	
+	end
 	cooldownflashlist.Spellinput:SetScript("OnShow", function(self) self:SetText(inputword) end)
 	cooldownflashlist.Spellinput:SetScript("OnEditFocusGained", function(self) self:HighlightText() end)
 	cooldownflashlist.Spellinput:SetScript("OnEscapePressed", function(self) self:ClearFocus() self:SetText(inputword) end)
 	cooldownflashlist.Spellinput:SetScript("OnEnterPressed", function(self) self:ClearFocus() end)
-	
+
 	cooldownflashlist.Add = CreateFrame("Button", G.uiname.."caflash_bl"..list.."Add Button", cooldownflashlist, "UIPanelButtonTemplate")
 	cooldownflashlist.Add:SetPoint("LEFT", cooldownflashlist.Spellinput, "RIGHT", 10, 0)
 	cooldownflashlist.Add:SetSize(70, 20)
 	cooldownflashlist.Add:SetText(ADD)
 	F.Reskin(cooldownflashlist.Add)
-	
+
 	cooldownflashlist.Add:SetScript("OnClick", function(self)
 		local ID = tonumber(cooldownflashlist.Spellinput:GetText())
 		if list == "item" then
@@ -2183,7 +2183,7 @@ local function CreateCooldownFlashOptions(name, list)
 				if _G[G.uiname.."caflash_bl"..list..ID] then
 					_G[G.uiname.."caflash_bl"..list..ID]:Show()
 				else
-					CreatecooldownflashlistButton(ID, cooldownflashlist.SFAnchor, list)	
+					CreatecooldownflashlistButton(ID, cooldownflashlist.SFAnchor, list)
 				end
 				LineUpcooldownflashlist(cooldownflashlist.SFAnchor, list)
 			end
@@ -2199,7 +2199,7 @@ local function CreateCooldownFlashOptions(name, list)
 				if _G[G.uiname.."caflash_bl"..list..ID] then
 					_G[G.uiname.."caflash_bl"..list..ID]:Show()
 				else
-					CreatecooldownflashlistButton(ID, cooldownflashlist.SFAnchor, list)	
+					CreatecooldownflashlistButton(ID, cooldownflashlist.SFAnchor, list)
 				end
 				LineUpcooldownflashlist(cooldownflashlist.SFAnchor, list)
 			end
@@ -2299,7 +2299,7 @@ local function LineUpplateauralist(parent, list)
 		index =  index + 1
 	end
 end
-	
+
 local function CreateplateauralistButton(spellID, parent, list)
 	local bu = CreateFrame("Frame", G.uiname..list..spellID, parent)
 	bu:SetSize(330, 20)
@@ -2310,7 +2310,7 @@ local function CreateplateauralistButton(spellID, parent, list)
 	bu.icon:GetNormalTexture():SetTexCoord(0.1,0.9,0.1,0.9)
 	bu.icon:SetPoint"LEFT"
 	F.CreateBG(bu.icon)
-	
+
 	bu.spellname = T.createtext(bu, "OVERLAY", 12, "OUTLINE", "LEFT")
 	bu.spellname:SetPoint("LEFT", 140, 0)
 	bu.spellname:SetTextColor(1, 1, 0)
@@ -2322,20 +2322,20 @@ local function CreateplateauralistButton(spellID, parent, list)
 	bu.close.text = T.createtext(bu.close, "OVERLAY", 12, "OUTLINE", "CENTER")
 	bu.close.text:SetPoint("CENTER")
 	bu.close.text:SetText("x")
-	
-	bu.close:SetScript("OnClick", function() 
+
+	bu.close:SetScript("OnClick", function()
 		bu:Hide()
 		aCoreCDB["PlateOptions"][list][spellID] = nil
 		LineUpplateauralist(parent, list)
 	end)
-	
+
 	bu:SetScript("OnEnter", function(self)
 		GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
 		GameTooltip:SetSpellByID(spellID)
 		GameTooltip:Show()
 	end)
 	bu:SetScript("OnLeave", function() GameTooltip:Hide() end)
-	
+
 	return bu
 end
 
@@ -2350,7 +2350,7 @@ local function Createplateauralist(list, parent)
 	end
 	LineUpplateauralist(parent, list)
 end
-	
+
 local function CreatePlateAuraOptions(name, flitertype, list)
 	local plateauralist = CreateOptionPage(list.."Options", name, plateauralistframe, "HORIZONTAL", .3, true)
 	plateauralist.title:Hide()
@@ -2358,42 +2358,42 @@ local function CreatePlateAuraOptions(name, flitertype, list)
 	if list == "myplateauralist" then
 		plateauralist:Show()
 	end
-	
+
 	local filtertype_group = {}
 	filtertype_group["whitelist"] = L["白名单"]
 	filtertype_group["none"] = L["全部隐藏"]
-	
+
 	if list == "myplateauralist" then
 		filtertype_group["blacklist"] = L["黑名单"]
 	end
-	
+
 	T.createradiobuttongroup(plateauralist, 10, 0, L["过滤方式"], "PlateOptions", flitertype, filtertype_group)
-	
+
 	plateauralist.SF:SetPoint("TOPLEFT", 10, -50)
 	plateauralist.SF:SetPoint("BOTTOMRIGHT", -30, 20)
-	
+
 	Createplateauralist(list, plateauralist.SFAnchor)
-	
+
 	plateauralist.Spellinput = CreateFrame("EditBox", G.uiname..list.."Spell Input", plateauralist)
 	plateauralist.Spellinput:SetSize(120, 20)
 	plateauralist.Spellinput:SetPoint("TOPLEFT", plateauralist, "TOPLEFT", 20, -30)
 	F.CreateBD(plateauralist.Spellinput)
-	
+
 	plateauralist.Spellinput:SetFont(GameFontHighlight:GetFont(), 12, "OUTLINE")
 	plateauralist.Spellinput:SetAutoFocus(false)
 	plateauralist.Spellinput:SetTextInsets(3, 0, 0, 0)
-	
+
 	plateauralist.Spellinput:SetScript("OnShow", function(self) self:SetText(L["输入法术ID"]) end)
 	plateauralist.Spellinput:SetScript("OnEditFocusGained", function(self) self:HighlightText() end)
 	plateauralist.Spellinput:SetScript("OnEscapePressed", function(self) self:ClearFocus() self:SetText(L["输入法术ID"]) end)
 	plateauralist.Spellinput:SetScript("OnEnterPressed", function(self) self:ClearFocus() end)
-	
+
 	plateauralist.Add = CreateFrame("Button", G.uiname..list.."Add Button", plateauralist, "UIPanelButtonTemplate")
 	plateauralist.Add:SetPoint("LEFT", plateauralist.Spellinput, "RIGHT", 10, 0)
 	plateauralist.Add:SetSize(70, 20)
 	plateauralist.Add:SetText(ADD)
 	F.Reskin(plateauralist.Add)
-	
+
 	plateauralist.Add:SetScript("OnClick", function(self)
 		local spellID = tonumber(plateauralist.Spellinput:GetText())
 
@@ -2411,13 +2411,13 @@ local function CreatePlateAuraOptions(name, flitertype, list)
 			end
 		end
 	end)
-	
+
 	plateauralist.Reset = CreateFrame("Button", G.uiname..list.."Reset Button", plateauralist, "UIPanelButtonTemplate")
 	plateauralist.Reset:SetPoint("BOTTOM", ReloadButton, "TOP", 0, 10)
 	plateauralist.Reset:SetSize(100, 25)
-	plateauralist.Reset:SetText(L["重置"])	
+	plateauralist.Reset:SetText(L["重置"])
 	F.Reskin(plateauralist.Reset)
-	
+
 	plateauralist.Reset:SetScript("OnClick", function(self)
 		StaticPopupDialogs[G.uiname.."Reset Confirm"].text = format(L["重置确认"], name)
 		StaticPopupDialogs[G.uiname.."Reset Confirm"].OnAccept = function()
@@ -2440,33 +2440,33 @@ local function CreateCColoredPlatesButton(parent, index, name, r, g, b)
 	bu:SetPoint("TOPLEFT", parent, "TOPLEFT", 5, 20-index*30)
 	bu:SetSize(360, 28)
 	F.CreateBD(bu, .2)
-	
+
 	bu.index = T.createtext(bu, "OVERLAY", 16, "OUTLINE", "LEFT")
 	bu.index:SetPoint("LEFT", 10, 0)
 	bu.index:SetTextColor(1, 1, 1)
 	bu.index:SetText(index..".")
-	
+
 	bu.name_input = CreateFrame("EditBox", G.uiname.."CColoredPlatesList Button"..index.."NameInput", bu)
 	bu.name_input:SetSize(200, 20)
 	bu.name_input:SetPoint("LEFT", 40, 0)
 	F.CreateBD(bu.name_input, 0)
 	bu.name_input:SetBackdropColor(0, 0, 0, 0)
 	bu.name_input:SetBackdropBorderColor(0, 0, 0, 0)
-	
+
 	bu.name_input:SetFont(GameFontHighlight:GetFont(), 12, "OUTLINE")
 	bu.name_input:SetAutoFocus(false)
 	bu.name_input:SetTextInsets(3, 0, 0, 0)
-	
+
 	bu.name_input:SetScript("OnShow", function(self) self:SetText(aCoreCDB["PlateOptions"]["customcoloredplates"][index].name) end)
-	bu.name_input:SetScript("OnEditFocusGained", function(self) 
+	bu.name_input:SetScript("OnEditFocusGained", function(self)
 		self:SetBackdropColor(0, 1, 1, .3)
 		self:SetBackdropBorderColor(1, 1, 1, 1)
 	end)
-	bu.name_input:SetScript("OnEditFocusLost", function(self) 
+	bu.name_input:SetScript("OnEditFocusLost", function(self)
 		self:SetBackdropColor(0, 0, 0, 0)
 		self:SetBackdropBorderColor(0, 0, 0, 0)
 		self.new_value = self:GetText()
-		self:SetText(aCoreCDB["PlateOptions"]["customcoloredplates"][index].name)	
+		self:SetText(aCoreCDB["PlateOptions"]["customcoloredplates"][index].name)
 	end)
 	bu.name_input:SetScript("OnEscapePressed", function(self)
 		self:ClearFocus()
@@ -2478,48 +2478,48 @@ local function CreateCColoredPlatesButton(parent, index, name, r, g, b)
 		aCoreCDB["PlateOptions"]["customcoloredplates"][index].name = self.new_value
 		self:SetText(self.new_value)
 	end)
-	
+
 	bu.cpb = CreateFrame("Button", G.uiname.."CColoredPlatesList Button"..index.."ColorPickerButton", bu, "UIPanelButtonTemplate")
 	bu.cpb:SetPoint("RIGHT", -60, 0)
 	bu.cpb:SetSize(55, 20)
 	F.Reskin(bu.cpb)
-	
+
 	bu.cpb.ctex = bu.cpb:CreateTexture(nil, "OVERLAY")
 	bu.cpb.ctex:SetTexture(G.media.blank)
 	bu.cpb.ctex:SetPoint"CENTER"
 	bu.cpb.ctex:SetSize(50, 18)
-	
+
 	bu.cpb:SetScript("OnShow", function(self) self.ctex:SetVertexColor(aCoreCDB["PlateOptions"]["customcoloredplates"][index].color.r, aCoreCDB["PlateOptions"]["customcoloredplates"][index].color.g, aCoreCDB["PlateOptions"]["customcoloredplates"][index].color.b) end)
 	bu.cpb:SetScript("OnClick", function(self)
 		local r, g, b = aCoreCDB["PlateOptions"]["customcoloredplates"][index].color.r, aCoreCDB["PlateOptions"]["customcoloredplates"][index].color.g, aCoreCDB["PlateOptions"]["customcoloredplates"][index].color.b
-		
+
 		ColorPickerFrame:ClearAllPoints()
 		ColorPickerFrame:SetPoint("TOPLEFT", self, "TOPRIGHT", 20, 0)
 		ColorPickerFrame.hasOpacity = false
-		
+
 		ColorPickerFrame.func = function()
 			aCoreCDB["PlateOptions"]["customcoloredplates"][index].color.r, aCoreCDB["PlateOptions"]["customcoloredplates"][index].color.g, aCoreCDB["PlateOptions"]["customcoloredplates"][index].color.b = ColorPickerFrame:GetColorRGB()
 			self.ctex:SetVertexColor(ColorPickerFrame:GetColorRGB())
 		end
-		
+
 		ColorPickerFrame.previousValues = {r = r, g = g, b = b}
-		
+
 		ColorPickerFrame.cancelFunc = function()
 			aCoreCDB["PlateOptions"]["customcoloredplates"][index].color.r, aCoreCDB["PlateOptions"]["customcoloredplates"][index].color.g, aCoreCDB["PlateOptions"]["customcoloredplates"][index].color.b = r, g, b
 			self.ctex:SetVertexColor(aCoreCDB["PlateOptions"]["customcoloredplates"][index].color.r, aCoreCDB["PlateOptions"]["customcoloredplates"][index].color.g, aCoreCDB[table][value].b)
 		end
-		
+
 		ColorPickerFrame:SetColorRGB(r, g, b)
 		ColorPickerFrame:Hide()
 		ColorPickerFrame:Show()
 	end)
-	
+
 	bu.reset = CreateFrame("Button", nil, bu, "UIPanelButtonTemplate")
 	bu.reset:SetSize(38,18)
 	bu.reset:SetPoint("RIGHT", -5, 0)
 	F.Reskin(bu.reset)
 	bu.reset:SetText(L["重置"])
-	
+
 	bu.reset:SetScript("OnClick", function(self)
 		table.wipe(aCoreCDB["PlateOptions"]["customcoloredplates"][index])
 		aCoreCDB["PlateOptions"]["customcoloredplates"][index] = {
@@ -2529,7 +2529,7 @@ local function CreateCColoredPlatesButton(parent, index, name, r, g, b)
 		bu.name_input:SetText(L["空"])
 		bu.cpb.ctex:SetVertexColor(1, 1, 1)
 	end)
-	
+
 	return bu
 end
 
@@ -2624,7 +2624,7 @@ T.createcheckbutton(OtherOptions, 30, 240, L["在战斗中隐藏小地图"], "Ot
 T.createcheckbutton(OtherOptions, 30, 270, L["在战斗中隐藏聊天框"], "OtherOptions", "hidechat")
 T.createcheckbutton(OtherOptions, 30, 300, L["在副本中收起任务追踪"], "OtherOptions", "collapseWF", L["在副本中收起任务追踪提示"])
 T.createcheckbutton(OtherOptions, 30, 330, L["自动交接任务"], "OtherOptions", "autoquests", L["自动交接任务提示"])
-T.createcheckbutton(OtherOptions, 30, 360, L["自动接受复活"], "OtherOptions", "acceptres", L["自动接受复活提示"])	
+T.createcheckbutton(OtherOptions, 30, 360, L["自动接受复活"], "OtherOptions", "acceptres", L["自动接受复活提示"])
 T.createcheckbutton(OtherOptions, 30, 390, L["战场自动释放灵魂"], "OtherOptions", "battlegroundres", L["战场自动释放灵魂提示"])
 T.createcheckbutton(OtherOptions, 30, 420, L["大喊被闷了"], "OtherOptions", "saysapped", L["大喊被闷了提示"])
 T.CVartogglebox(OtherOptions, 30, 450, "overrideArchive", "反和谐(大退生效)", "0", "1")
@@ -2632,7 +2632,7 @@ T.CVartogglebox(OtherOptions, 30, 450, "overrideArchive", "反和谐(大退生�
 T.createcheckbutton(OtherOptions, 300, 150, L["成就截图"], "OtherOptions", "autoscreenshot", L["成就截图提示"])
 T.CVartogglebox(OtherOptions, 300, 180, "screenshotQuality", L["提升截图画质"], "10", "1")
 T.CVartogglebox(OtherOptions, 300, 210, "screenshotFormat", L["截图保存为tga格式"], "tga", "jpg", "截图保存为tga提示")
-T.createcheckbutton(OtherOptions, 300, 240, L["隐藏错误提示"], "OtherOptions", "hideerrors", L["隐藏错误提示提示"])	
+T.createcheckbutton(OtherOptions, 300, 240, L["隐藏错误提示"], "OtherOptions", "hideerrors", L["隐藏错误提示提示"])
 T.createcheckbutton(OtherOptions, 300, 270, L["回收内存"], "OtherOptions", "collectgarbage", L["回收内存提示"])
 T.createcheckbutton(OtherOptions, 300, 300, L["显示插件使用小提示"], "OtherOptions", "showAFKtips", L["显示插件使用小提示提示"])
 T.createcheckbutton(OtherOptions, 300, 330, L["任务栏闪动"], "OtherOptions", "flashtaskbar", L["任务栏闪动提示"])
@@ -2651,14 +2651,14 @@ local function CreateApplySettingButton(addon)
 	Button:SetPoint("LEFT", SkinOptions[addon], "RIGHT", 150, 0)
 	Button:SetSize(100, 25)
 	Button:SetText(L["更改设置"])
-	Button:SetScript("OnEnter", function(self) 
+	Button:SetScript("OnEnter", function(self)
 			GameTooltip:SetOwner(self, "ANCHOR_RIGHT",  -20, 10)
 			GameTooltip:AddLine(L["更改设置提示"])
-			GameTooltip:Show() 
+			GameTooltip:Show()
 		end)
 	Button:SetScript("OnLeave", function(self) GameTooltip:Hide() end)
 	F.Reskin(Button)
-	
+
 	SkinOptions[addon]:HookScript("OnClick", function(self)
 		if self:GetChecked() then
 			Button:Enable()
@@ -2666,7 +2666,7 @@ local function CreateApplySettingButton(addon)
 			Button:Disable()
 		end
 	end)
-	
+
 	SkinOptions[addon]:HookScript("OnShow", function(self)
 		if self:GetChecked() then
 			Button:Enable()
@@ -2674,7 +2674,7 @@ local function CreateApplySettingButton(addon)
 			Button:Disable()
 		end
 	end)
-	
+
 	return Button
 end
 
@@ -2732,27 +2732,27 @@ end
 
 function eventframe:PLAYER_ENTERING_WORLD()
 	C_Timer.After(5, function() CreateIB_ButtonsList() end)
-	
+
 	CreateAuraFilterButtonList()
-	
+
 	C_Timer.After(3, function() CreateAutobuyButtonList() end)
-	
+
 	CreateRaidDebuffOptions()
 	CreatehotindAuraOptions()
 	CreateCooldownAuraOptions()
 
 	CreateCooldownFlashOptions(L["忽略法术"], "spell")
 	C_Timer.After(3, function() CreateCooldownFlashOptions(L["忽略物品"], "item") end)
-	
+
 	CreatePlateAuraOptions(L["我的法术"], "myfiltertype", "myplateauralist")
 	CreatePlateAuraOptions(L["其他法术"], "otherfiltertype", "otherplateauralist")
 	CreateCColoredPlatesList()
-	
+
 	SetClassColorButton:SetScript("OnClick", function() T.ResetClasscolors(true) end)
 	SetDBMButton:SetScript("OnClick", function() T.ResetDBM(true) end)
 	SetBWButton:SetScript("OnClick", function() T.ResetBW(true) end)
-	SetSkadaButton:SetScript("OnClick", function() T.ResetSkada(true) end)	
-	
+	SetSkadaButton:SetScript("OnClick", function() T.ResetSkada(true) end)
+
 	eventframe:UnregisterEvent("PLAYER_ENTERING_WORLD")
 end
 

@@ -90,7 +90,7 @@ F.CreateBD = function(f, a)
 	f:SetBackdrop({
 		bgFile = C.media.backdrop,
 		edgeFile = C.media.backdrop,
-		edgeSize = 1.2,
+		edgeSize = 1,
 	})
 	f:SetBackdropColor(0, 0, 0, a or AuroraConfig.alpha)
 	f:SetBackdropBorderColor(0, 0, 0)
@@ -102,8 +102,8 @@ F.CreateBG = function(frame)
 	if frame:GetObjectType() == "Texture" then f = frame:GetParent() end
 
 	local bg = f:CreateTexture(nil, "BACKGROUND")
-	bg:SetPoint("TOPLEFT", frame, -1.2, 1.2)
-	bg:SetPoint("BOTTOMRIGHT", frame, 1.2, -1.2)
+	bg:SetPoint("TOPLEFT", frame, -1, 1)
+	bg:SetPoint("BOTTOMRIGHT", frame, 1, -1)
 	bg:SetTexture(C.media.backdrop)
 	bg:SetVertexColor(0, 0, 0)
 
@@ -588,8 +588,8 @@ F.CreateBDFrame = function(f, a)
 	local lvl = frame:GetFrameLevel()
 
 	local bg = CreateFrame("Frame", nil, frame)
-	bg:SetPoint("TOPLEFT", f, -1.2, 1.2)
-	bg:SetPoint("BOTTOMRIGHT", f, 1.2, -1.2)
+	bg:SetPoint("TOPLEFT", f, -1, 1)
+	bg:SetPoint("BOTTOMRIGHT", f, 1, -1)
 	bg:SetFrameLevel(lvl == 0 and 1 or lvl - 1)
 
 	F.CreateBD(bg, a or .5)
@@ -1982,28 +1982,28 @@ Skin:SetScript("OnEvent", function(self, event, addon)
 
 		do
 			local left = PVPReadyDialogRoleIcon:CreateTexture(nil, "OVERLAY")
-			left:SetWidth(1.2)
+			left:SetWidth(1)
 			left:SetTexture(C.media.backdrop)
 			left:SetVertexColor(0, 0, 0)
 			left:SetPoint("TOPLEFT", 9, -7)
 			left:SetPoint("BOTTOMLEFT", 9, 10)
 
 			local right = PVPReadyDialogRoleIcon:CreateTexture(nil, "OVERLAY")
-			right:SetWidth(1.2)
+			right:SetWidth(1)
 			right:SetTexture(C.media.backdrop)
 			right:SetVertexColor(0, 0, 0)
 			right:SetPoint("TOPRIGHT", -8, -7)
 			right:SetPoint("BOTTOMRIGHT", -8, 10)
 
 			local top = PVPReadyDialogRoleIcon:CreateTexture(nil, "OVERLAY")
-			top:SetHeight(1.2)
+			top:SetHeight(1)
 			top:SetTexture(C.media.backdrop)
 			top:SetVertexColor(0, 0, 0)
 			top:SetPoint("TOPLEFT", 9, -7)
 			top:SetPoint("TOPRIGHT", -8, -7)
 
 			local bottom = PVPReadyDialogRoleIcon:CreateTexture(nil, "OVERLAY")
-			bottom:SetHeight(1.2)
+			bottom:SetHeight(1)
 			bottom:SetTexture(C.media.backdrop)
 			bottom:SetVertexColor(0, 0, 0)
 			bottom:SetPoint("BOTTOMLEFT", 9, 10)
