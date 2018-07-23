@@ -1,9 +1,10 @@
 --[[--------------------------------------------------------------------
 	!ClassColors
 	Change class colors without breaking the Blizzard UI.
-	Copyright (c) 2009-2016 Phanx <addons@phanx.net>. All rights reserved.
-	http://www.wowinterface.com/downloads/info12513-ClassColors.html
-	http://www.curse.com/addons/wow/classcolors
+	Copyright 2009-2018 Phanx <addons@phanx.net>. All rights reserved.
+	https://github.com/phanx-wow/ClassColors
+	https://www.curseforge.com/wow/addons/classcolors
+	https://www.wowinterface.com/downloads/info12513-ClassColors.html
 ----------------------------------------------------------------------]]
 
 local _, ns = ...
@@ -21,10 +22,11 @@ L.TITLE = GetAddOnMetadata("!ClassColors", "Title")
 
 ------------------------------------------------------------------------
 
+local meta = {}
 local callbacks = {}
 local numCallbacks = 0
 
-local function RegisterCallback(self, method, handler)
+function meta:RegisterCallback(method, handler)
 	assert(type(method) == "string" or type(method) == "function", "Bad argument #1 to :RegisterCallback (string or function expected)")
 	if type(method) == "string" then
 		assert(type(handler) == "table", "Bad argument #2 to :RegisterCallback (table expected)")
@@ -36,7 +38,7 @@ local function RegisterCallback(self, method, handler)
 	numCallbacks = numCallbacks + 1
 end
 
-local function UnregisterCallback(self, method, handler)
+function meta:UnregisterCallback(method, handler)
 	assert(type(method) == "string" or type(method) == "function", "Bad argument #1 to :UnregisterCallback (string or function expected)")
 	if type(method) == "string" then
 		assert(type(handler) == "table", "Bad argument #2 to :UnregisterCallback (table expected)")
@@ -75,13 +77,13 @@ for token, class in pairs(LOCALIZED_CLASS_NAMES_FEMALE) do
 	classTokens[class] = token
 end
 
-local function GetClassToken(self, className)
+function meta:GetClassToken(className)
 	return className and classTokens[className]
 end
 
 ------------------------------------------------------------------------
 
-local function NotifyChanges(self)
+function meta:NotifyChanges()
 	--print("CUSTOM_CLASS_COLORS: NotifyChanges")
 	local changed
 
@@ -108,12 +110,7 @@ end
 
 ------------------------------------------------------------------------
 
-setmetatable(CUSTOM_CLASS_COLORS, { __index = function(t, k)
-	if k == "GetClassToken" then return GetClassToken end
-	if k == "NotifyChanges" then return NotifyChanges end
-	if k == "RegisterCallback" then return RegisterCallback end
-	if k == "UnregisterCallback" then return UnregisterCallback end
-end })
+setmetatable(CUSTOM_CLASS_COLORS, { __index = meta })
 
 ------------------------------------------------------------------------
 
@@ -440,35 +437,32 @@ do
 		end
 	end
 
-	local function SetSize(f, x, y)
-		f:SetHeight(y or x)
-		f.swatch:SetWidth(y or x)
-	end
-
 	function f:CreateColorPicker(name)
 		local frame = CreateFrame("Button", nil, self)
-		frame:SetHeight(19)
-		frame:SetWidth(100)
-
-		frame.SetSize = SetSize
-
-		local swatch = frame:CreateTexture(nil, "OVERLAY")
-		swatch:SetTexture("Interface\\ChatFrame\\ChatFrameColorSwatch")
-		swatch:SetPoint("TOPLEFT")
-		swatch:SetPoint("BOTTOMLEFT")
-		swatch:SetWidth(19)
-		frame.swatch = swatch
+		frame:SetSize(26, 26)
 
 		local bg = frame:CreateTexture(nil, "BACKGROUND")
-		bg:SetTexture(1, 1, 1)
-		bg:SetPoint("TOPLEFT", swatch, 1, -1)
-		bg:SetPoint("BOTTOMRIGHT", swatch, -1, 1)
+		bg:SetTexture("Interface\\BUTTONS\\WHITE8X8")
+		bg:SetVertexColor(HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b)
+		bg:SetPoint("LEFT", 5, 1)
+		bg:SetSize(16, 16)
 		frame.bg = bg
 
+		local bgi = frame:CreateTexture(nil, "BORDER")
+		bgi:SetTexture("Interface\\BUTTONS\\WHITE8X8")
+		bgi:SetVertexColor(0, 0, 0)
+		bgi:SetPoint("BOTTOMLEFT", bg, 1, 1)
+		bgi:SetPoint("TOPRIGHT", bg, -1, -1)
+		frame.bgInner = bgi
+
+		local swatch = frame:CreateTexture(nil, "OVERLAY")
+		swatch:SetTexture("Interface\\BUTTONS\\WHITE8X8")
+		swatch:SetPoint("BOTTOMLEFT", bgi, 1, 1)
+		swatch:SetPoint("TOPRIGHT", bgi, -1, -1)
+		frame.swatch = swatch
+
 		local label = frame:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
-		label:SetPoint("TOPLEFT", swatch, "TOPRIGHT", 4, 1)
-		label:SetPoint("BOTTOMLEFT", swatch, "BOTTOMRIGHT", 4, 1)
-		label:SetText(name)
+		label:SetPoint("LEFT", swatch, "RIGHT", 10, 0)
 		frame.label = label
 
 		frame.SetColor = SetColor
@@ -479,10 +473,8 @@ do
 		frame:SetScript("OnEnter", OnEnter)
 		frame:SetScript("OnLeave", OnLeave)
 
-		local width = 19 + 4 + label:GetStringWidth()
-		if width > 100 then
-			frame:SetWidth(width)
-		end
+		label:SetText(name)
+		frame:SetHitRectInsets(0,  -1 * max(100, label:GetStringWidth() + 4), 0, 0)
 
 		return frame
 	end
