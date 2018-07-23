@@ -272,22 +272,22 @@ if classresource_show then
 	}
 	
 	if(G.myClass == 'MONK') then
-		ClassPowerID = SPELL_POWER_CHI
+		ClassPowerID = Enum.PowerType.Chi or 12
 		ClassPowerType = "CHI"
 		RequireSpec = SPEC_MONK_WINDWALKER
 	elseif(G.myClass == 'PALADIN') then
-		ClassPowerID = SPELL_POWER_HOLY_POWER
+		ClassPowerID = Enum.PowerType.HolyPower or 9
 		ClassPowerType = "HOLY_POWER"
 		RequireSpec = SPEC_PALADIN_RETRIBUTION
 	elseif(G.myClass == 'MAGE') then
-		ClassPowerID = SPELL_POWER_ARCANE_CHARGES
+		ClassPowerID = Enum.PowerType.ArcaneCharges or 16
 		ClassPowerType = "ARCANE_CHARGES"
 		RequireSpec = SPEC_MAGE_ARCANE
 	elseif(G.myClass == 'WARLOCK') then
-		ClassPowerID = SPELL_POWER_SOUL_SHARDS
+		ClassPowerID = Enum.PowerType.SoulShards or 7
 		ClassPowerType = "SOUL_SHARDS"
 	elseif(G.myClass == 'ROGUE' or G.myClass == 'DRUID') then
-		ClassPowerID = SPELL_POWER_COMBO_POINTS
+		ClassPowerID = Enum.PowerType.ComboPoints or 4
 		ClassPowerType = "COMBO_POINTS"
 	end
 
