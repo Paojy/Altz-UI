@@ -1,5 +1,5 @@
 ﻿local T, C, L, G = unpack(select(2, ...))
-local F = unpack(Aurora)
+local F = unpack(AuroraClassic)
 
 local hidepanels = aCoreCDB["OtherOptions"]["hidepanels"]
 --====================================================--
@@ -93,6 +93,7 @@ end
 --====================================================--
 --[[                   -- Minimap --                ]]--
 --====================================================--
+
 local minimap_height = aCoreCDB["OtherOptions"]["minimapheight"]
 
 -- 收缩和伸展的按钮
@@ -563,10 +564,10 @@ CurrencyButton.text:SetPoint("LEFT", CurrencyButton.icon, "RIGHT", 5, 0)
 CurrencyButton.text:SetTextColor(1, 1, 1)
 
 CurrencyButton:RegisterEvent("PLAYER_ENTERING_WORLD")
-CurrencyButton:RegisterEvent("WORLD_MAP_UPDATE")
+CurrencyButton:RegisterEvent("ZONE_CHANGED_NEW_AREA")
 CurrencyButton:RegisterEvent("CURRENCY_DISPLAY_UPDATE")
 CurrencyButton:SetScript("OnEvent", function(self, event)
-	local map = GetCurrentMapAreaID()
+	local map = C_Map.GetBestMapForUnit("player")
 	local currency = Currency[map]
 	
 	if map and currency then
@@ -580,7 +581,7 @@ CurrencyButton:SetScript("OnEvent", function(self, event)
 		self:Hide()
 	end
 end)
-
+--[[
 -- 位置
 MinimapZoneTextButton:SetParent(Minimap)
 MinimapZoneTextButton:ClearAllPoints()
@@ -596,14 +597,20 @@ local Coords = T.createtext(Minimap, "OVERLAY", 12, "OUTLINE", "CENTER")
 Coords:SetPoint("CENTER", 0, 0)
 Coords:Hide()
 
-Minimap:HookScript("OnUpdate",function()
-	if select(2, GetInstanceInfo()) == "none" then
-		local x,y=GetPlayerMapPosition("player")
-		if x>0 or y>0 then
-			Coords:SetText(string.format("%d,%d",x*100,y*100));
-		else
-			Coords:SetText("")
+local Coords_update = 0
+
+Minimap:HookScript("OnUpdate",function(s, e)
+	Coords_update = Coords_update + e
+	if Coords_update > 1 then
+		if select(2, GetInstanceInfo()) == "none" then
+			local map = C_Map.GetPlayerMapPosition(C_Map.GetBestMapForUnit("player"), "player")
+			if map.x>0 or map.y>0 then
+				Coords:SetText(string.format("%d,%d",map.x*100,map.y*100));
+			else
+				Coords:SetText("")
+			end
 		end
+		Coords_update = 0
 	end
 end)
 
@@ -613,10 +620,9 @@ Minimap:HookScript("OnEvent",function(self,event,...)
 	end
 end)
 
-WorldMapFrame:HookScript("OnHide",SetMapToCurrentZone)
 Minimap:HookScript("OnEnter", function() MinimapZoneTextButton:Show() Coords:Show() end)
 Minimap:HookScript("OnLeave", function() MinimapZoneTextButton:Hide() Coords:Hide() end)
-
+]]
 -- 新邮件图标
 MiniMapMailFrame:SetParent(Minimap)
 MiniMapMailFrame:ClearAllPoints()
@@ -713,14 +719,6 @@ repbar:SetStatusBarColor(.4, 1, .2)
 repbar:SetFrameLevel(Minimap:GetFrameLevel()+3)
 repbar.border = F.CreateBDFrame(repbar, .8)
 
-local artifactbar = CreateFrame("StatusBar", G.uiname.."ArtifactExperienceBar", Minimap)
-artifactbar:SetWidth(5)
-artifactbar:SetOrientation("VERTICAL")
-artifactbar:SetStatusBarTexture(G.media.blank)
-artifactbar:SetStatusBarColor(.901, .8, .601)
-artifactbar:SetFrameLevel(Minimap:GetFrameLevel()+3)
-artifactbar.border = F.CreateBDFrame(artifactbar, .8)
-
 local function CommaValue(amount)
 	local formatted = amount
 	while true do  
@@ -780,22 +778,10 @@ end)
 repbar:SetScript("OnLeave", function() GameTooltip:Hide() end)
 repbar:SetScript("OnMouseDown", function() ToggleCharacter("ReputationFrame") end)
 
-artifactbar:SetScript("OnEnter", MainMenuBar_ArtifactTick_OnEnter)
-artifactbar:SetScript("OnLeave", function() GameTooltip:Hide() end)
-artifactbar:SetScript("OnMouseDown", function()
-	if not ArtifactFrame or not ArtifactFrame:IsShown() then
-		ShowUIPanel(SocketInventoryItem(16))
-	elseif ArtifactFrame and ArtifactFrame:IsShown() then
-		HideUIPanel(ArtifactFrame)
-	end
-end)
-
 xpbar:SetScript("OnEvent", function(self, event, arg1)
-	local artifactItemID, _, _, _, artifactTotalXP, artifactPointsSpent, _, _, _, _, _, artifactMaxed, artifactTier = C_ArtifactUI.GetEquippedArtifactInfo()
 	local name, reaction, minRep, maxRep, value, factionID = GetWatchedFactionInfo()
 	local newLevel = UnitLevel("player")
 	
-	local showArtifact = artifactItemID and not artifactMaxed
 	local showXP = newLevel < MAX_PLAYER_LEVEL and not IsXPUserDisabled()
 	local showRep = name
 	
@@ -840,41 +826,16 @@ xpbar:SetScript("OnEvent", function(self, event, arg1)
 		end
 	end
 	
-	if event == "PLAYER_LOGIN" or (event == "UNIT_INVENTORY_CHANGED" and arg1 == "player") or event == "ARTIFACT_XP_UPDATE" then
-		if showArtifact then
-			artifactbar:Show()
-			local numPointsAvailableToSpend, xp, xpForNextPoint = MainMenuBar_GetNumArtifactTraitsPurchasableFromXP(artifactPointsSpent, artifactTotalXP, artifactTier)
-			artifactbar:SetMinMaxValues(0, xpForNextPoint)
-			artifactbar:SetValue(xp)
-		else
-			artifactbar:Hide()
-		end
-	end
-	
 	if showXP then
 		xpbar:SetPoint("BOTTOMRIGHT", Minimap, "BOTTOMRIGHT", 0, 0)
 		xpbar:SetPoint("TOPRIGHT", Minimap, "TOPRIGHT", 0, 0)
 		if showRep then
 			repbar:SetPoint("BOTTOMRIGHT", xpbar, "BOTTOMLEFT", -1, 0)
 			repbar:SetPoint("TOPRIGHT", xpbar, "TOPLEFT", -1, 0)
-			if showArtifact then
-				artifactbar:SetPoint("BOTTOMRIGHT", repbar, "BOTTOMLEFT", -1, 0)
-				artifactbar:SetPoint("TOPRIGHT", repbar, "TOPLEFT", -1, 0)
-			end
-		elseif showArtifact then
-			artifactbar:SetPoint("BOTTOMRIGHT", xpbar, "BOTTOMLEFT", -1, 0)
-			artifactbar:SetPoint("TOPRIGHT", xpbar, "TOPLEFT", -1, 0)
 		end
 	elseif showRep then
 		repbar:SetPoint("BOTTOMRIGHT", Minimap, "BOTTOMRIGHT", 0, 0)
 		repbar:SetPoint("TOPRIGHT", Minimap, "TOPRIGHT", 0, 0)
-		if showArtifact then
-			artifactbar:SetPoint("BOTTOMRIGHT", repbar, "BOTTOMLEFT", -1, 0)
-			artifactbar:SetPoint("TOPRIGHT", repbar, "TOPLEFT", -1, 0)
-		end
-	elseif showArtifact then
-		artifactbar:SetPoint("BOTTOMRIGHT", Minimap, "BOTTOMRIGHT", 0, 0)
-		artifactbar:SetPoint("TOPRIGHT", Minimap, "TOPRIGHT", 0, 0)
 	end
 end)
 
@@ -883,7 +844,6 @@ xpbar:RegisterEvent("UPDATE_FACTION")
 xpbar:RegisterEvent("PLAYER_LEVEL_UP")
 xpbar:RegisterEvent("PLAYER_LOGIN")
 xpbar:RegisterEvent("UNIT_INVENTORY_CHANGED")
-xpbar:RegisterEvent("ARTIFACT_XP_UPDATE")
 
 -- 世界频道
 local WorldChannelToggle = CreateFrame("Button", G.uiname.."World Channel Button", ChatFrame1)
@@ -1284,6 +1244,7 @@ local function CreateMicromenuButton(parent, bu, text, original)
 	
 	if original == "System" then
 		Button:SetSize(80, 43)
+		Button:DisableDrawLayer("BACKGROUD")
 	elseif original == "RaidTool" then
 		Button:SetSize(100, 43)
 	elseif original == "Config" then
@@ -1378,6 +1339,14 @@ MicromenuBar.LFR = CreateMicromenuButton(MicromenuBar, LFDMicroButton, LFG_TITLE
 MicromenuBar.Quests = CreateMicromenuButton(MicromenuBar, QuestLogMicroButton, QUESTLOG_BUTTON, "Quests")
 MicromenuBar.Spellbook = CreateMicromenuButton(MicromenuBar, SpellbookMicroButton, SPELLBOOK_ABILITIES_BUTTON, "Spellbook")
 MicromenuBar.Bag = CreateMicromenuButton(MicromenuBar, false, BAGSLOT, "Bag")
+
+function MainMenuMicroButton_PositionAlert(alert)	
+	alert:ClearAllPoints();
+	alert:SetPoint("TOP", UIParent, "TOP", 0, -30);
+	alert.Arrow:ClearAllPoints();
+	alert.Arrow:SetPoint("BOTTOMRIGHT", alert, "TOPRIGHT", -4, 4);
+end
+
 
 for i = 1, #MicromenuButtons do
 	if i == 1 then
@@ -1484,6 +1453,7 @@ MicromenuBar3:RegisterEvent("PLAYER_LOGIN")
 --====================================================--
 --[[          --  Order Hall Command Bar --         ]]--
 --====================================================--
+
 local OrderHall_eframe = CreateFrame("Frame")
 OrderHall_eframe:RegisterEvent("ADDON_LOADED")
 
@@ -1552,6 +1522,7 @@ end)
 --====================================================--
 --[[                 -- Screen --                   ]]--
 --====================================================--
+
 local BOTTOMPANEL = CreateFrame("Frame", G.uiname.."AFK Bottompanel", WorldFrame)
 BOTTOMPANEL:SetFrameStrata("FULLSCREEN")
 BOTTOMPANEL:SetPoint("BOTTOMLEFT",WorldFrame,"BOTTOMLEFT",-5,-5)
