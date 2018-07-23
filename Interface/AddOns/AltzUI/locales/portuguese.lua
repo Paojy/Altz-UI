@@ -166,7 +166,7 @@ L["TIPS"] = {
 	"Use SHIFT+Clique para adicionar o alvo ao foco; está disponível para quadros de unidade.",
 	"Use ALT+Clique para Triturar/Prospectar/Desencantar/Destravar automáticamente.",
 	"Pressione Tab para alternar entre canais de bate-papo quando digitar alguma mensagem no bate-papo.",
-	"Os arquivos de fonte estão localizados em 'Interface\\AddOns\\Aurora\\media\\font.ttf(fonte principal),Interface\\AddOns\\AltzUI\\media\\number.ttf'(fonte para algum texto de tempo)",
+	"Os arquivos de fonte estão localizados em 'Interface\\AddOns\\AuroraClassic\\media\\font.ttf(fonte principal),Interface\\AddOns\\AltzUI\\media\\number.ttf'(fonte para algum texto de tempo)",
 	"Segure Ctrl, Alt ou Shift para rolar o bate-papo para a parte superior/inferior.",
 	"Clicando na borda de algum botão ativara a função de auto-esconder, ex: Menu/Ferramentas de Raide/Configurações.",
  }

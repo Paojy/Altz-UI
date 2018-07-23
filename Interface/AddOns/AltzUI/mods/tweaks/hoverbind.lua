@@ -1,6 +1,6 @@
 ﻿--ncHoverBind
 local T, C, L, G = unpack(select(2, ...))
-local F = unpack(Aurora)
+local F = unpack(AuroraClassic)
 
 local bind, localmacros = CreateFrame("Frame", "ncHoverBind", UIParent), 0
 -- SLASH COMMAND

@@ -17,8 +17,8 @@ G.numFont = "Interface\\AddOns\\AltzUI\\media\\number.ttf"
 G.media = {
 	blank = "Interface\\Buttons\\WHITE8x8",
 	bar = "Interface\\AddOns\\AltzUI\\media\\statusbar",
-	glow = "Interface\\AddOns\\Aurora\\media\\glow",
-	checked = "Interface\\AddOns\\Aurora\\media\\CheckButtonHilight",
+	glow = "Interface\\AddOns\\AuroraClassic\\media\\glow",
+	checked = "Interface\\AddOns\\AuroraClassic\\media\\CheckButtonHilight",
 	left = "Interface\\AddOns\\AltzUI\\media\\left",
 	right = "Interface\\AddOns\\AltzUI\\media\\right",
 }

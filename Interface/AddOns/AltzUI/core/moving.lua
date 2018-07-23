@@ -1,5 +1,5 @@
 ﻿local T, C, L, G = unpack(select(2, ...))
-local F = unpack(Aurora)
+local F = unpack(AuroraClassic)
 
 local CurrentFrame = "NONE"
 local anchors = {"CENTER", "LEFT", "RIGHT", "TOP", "BOTTOM", "TOPLEFT", "TOPRIGHT", "BOTTOMLEFT", "BOTTOMRIGHT"}

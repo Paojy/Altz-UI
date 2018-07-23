@@ -166,7 +166,7 @@ L["TIPS"] = {
 	"Use SHIFT+Click to set your focus; it's available for unit frames",
 	"Use ALT+Click to mill/prospect, disenchant, unlock instantly",
 	"Press Tab to change between available channels when the edit box of the chat frame is activated",
-	"The font files are located at Interface\\AddOns\\Aurora\\media\\font.ttf(main font),Interface\\AddOns\\AltzUI\\media\\number.ttf(font for some time text)",
+	"The font files are located at Interface\\AddOns\\AuroraClassic\\media\\font.ttf(main font),Interface\\AddOns\\AltzUI\\media\\number.ttf(font for some time text)",
 	"Hold Ctrl, Alt or Shift to scroll chat frame to top/bottom.",
 	"Clicking the edge of some button will toggle it's autohidden function, eg MicroMenu/Raidtools/Config.",
 }

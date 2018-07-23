@@ -1,5 +1,5 @@
 -- Dropdown lists
-local F, C = unpack(Aurora)
+local F, C = unpack(AuroraClassic)
 
 local _, class = UnitClass("player")
 local r, g, b = C.classcolours[class].r, C.classcolours[class].g, C.classcolours[class].b

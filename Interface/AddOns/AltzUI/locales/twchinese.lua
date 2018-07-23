@@ -165,7 +165,7 @@ L["TIPS"] = {
 	"SHIFT+左鍵 - 設置焦點。點擊單位框體也可以哦！",
 	"ALT+單擊物品 - 快速分解、研磨、選礦、開鎖",
 	"激活輸入框時點擊Tab可以切換聊天頻道",
-	"字體文件在哪裏？Interface\\AddOns\\Aurora\\media\\font.ttf(主要字體)，Interface\\AddOns\\AltzUI\\media\\number.ttf(壹些時間文本用的字體)",
+	"字體文件在哪裏？Interface\\AddOns\\AuroraClassic\\media\\font.ttf(主要字體)，Interface\\AddOns\\AltzUI\\media\\number.ttf(壹些時間文本用的字體)",
 	"按住Ctrl，Shift或Alt可以快速滾動聊天框。",
 	"點擊一些按鈕的邊緣可以打開/關閉自動隱藏該按鈕的功能，如微型菜單/團隊工具/插件設置。",
  }

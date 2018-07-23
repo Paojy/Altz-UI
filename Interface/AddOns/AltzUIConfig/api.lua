@@ -1,5 +1,5 @@
 ﻿local T, C, L, G = unpack(select(2, ...))
-local F = unpack(Aurora)
+local F = unpack(AuroraClassic)
 
 T.ShortValue = function(v)
 	if v >= 1e6 then
@@ -137,7 +137,7 @@ end
 
 
 T.ResetAurora = function(reload)
-	if IsAddOnLoaded("Aurora") then
+	if IsAddOnLoaded("AuroraClassic") then
 		AuroraConfig["tooltips"] = false
 		AuroraConfig["bags"] = false
 		AuroraConfig["acknowledgedSplashScreen"] = true
@@ -419,14 +419,14 @@ T.ResetDBM =function(reload)
 			DBM_AllSavedOptions["Default"]["WarningIconRight"] = true
 			DBM_AllSavedOptions["Default"]["WarningIconLeft"] = true
 			DBM_AllSavedOptions["Default"]["WarningFontStyle"] = "THICKOUTLINE"
-			DBM_AllSavedOptions["Default"]["WarningFont"] = "Interface\\AddOns\\Aurora\\media\\font.ttf"
+			DBM_AllSavedOptions["Default"]["WarningFont"] = "Interface\\AddOns\\AuroraClassic\\media\\font.ttf"
 			DBM_AllSavedOptions["Default"]["WarningFontShadow"] = true
 			DBM_AllSavedOptions["Default"]["WarningPoint"] = "TOP"
 			DBM_AllSavedOptions["Default"]["WarningY"] = -150
 			DBM_AllSavedOptions["Default"]["WarningX"] = -0
 			-- 特殊警报
 			DBM_AllSavedOptions["Default"]["SpecialWarningFontSize"] = 65
-			DBM_AllSavedOptions["Default"]["SpecialWarningFont"] = "Interface\\AddOns\\Aurora\\media\\font.ttf"
+			DBM_AllSavedOptions["Default"]["SpecialWarningFont"] = "Interface\\AddOns\\AuroraClassic\\media\\font.ttf"
 			DBM_AllSavedOptions["Default"]["SpecialWarningFontStyle"] = "THICKOUTLINE"
 			DBM_AllSavedOptions["Default"]["SpecialWarningFontShadow"] = true
 			DBM_AllSavedOptions["Default"]["SpecialWarningPoint"] = "CENTER"

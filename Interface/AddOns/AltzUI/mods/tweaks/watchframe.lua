@@ -1,6 +1,6 @@
 --Original Author: Nibelheim
 local T, C, L, G = unpack(select(2, ...))
-local F = unpack(Aurora)
+local F = unpack(AuroraClassic)
 local dragFrameList = G.dragFrameList
 
 local anchorframe = CreateFrame("Frame", "Altz_WFanchorframe", UIParent)
