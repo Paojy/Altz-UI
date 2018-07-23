@@ -482,13 +482,15 @@ end
 --[[-----------------------------------------------------------------------------
 LFG Auto Accept Proposal
 -------------------------------------------------------------------------------]]
+--[[
 if croods then
-	WorldMapButton.coordText = WorldMapFrameCloseButton:CreateFontString(nil, "OVERLAY", "GameFontGreen") 
-	WorldMapButton.coordText:SetPoint("BOTTOM", WorldMapScrollFrame, "BOTTOM", 0, 6)
+	WorldMapFrameCloseButton.coordText = WorldMapFrameCloseButton:CreateFontString(nil, "OVERLAY", "GameFontGreen") 
+	WorldMapFrameCloseButton.coordText:SetPoint("BOTTOM", WorldMapFrame.ScrollContainer.Child, "BOTTOM", 0, 6)
 
-	WorldMapButton:HookScript("OnUpdate", function(self)
+	WorldMapFrameCloseButton:HookScript("OnUpdate", function(self)
 	    if select(2, GetInstanceInfo()) == "none" then
-		   local px, py = GetPlayerMapPosition("player") 
+		   local map = C_Map.GetPlayerMapPosition(C_Map.GetBestMapForUnit("player"), "player")
+		   local px, py = map.x, map.y
 		   local x, y = GetCursorPosition() 
 		   local width, height, scale = self:GetWidth(), self:GetHeight(), self:GetEffectiveScale() 
 		   local centerX, centerY = self:GetCenter() 
@@ -504,7 +506,7 @@ if croods then
 		   end
 	    end
 	end) 
-end
+end]]--
 --[[-----------------------------------------------------------------------------
 LFG Auto Accept Proposal
 -------------------------------------------------------------------------------]]
