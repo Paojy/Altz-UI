@@ -34,7 +34,7 @@ C.defaults = {
 	["buttonSolidColour"] = {.2, .2, .2, 1},
 	["useButtonGradientColour"] = true,
 	["chatBubbles"] = true,
-	["enableFont"] = false,
+	["enableFont"] = true,
 	["loot"] = true,
 	["useCustomColour"] = false,
 	["customColour"] = {r = 1, g = 1, b = 1},
