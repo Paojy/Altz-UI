@@ -68,7 +68,7 @@ local function UpdateFlasked()
 		if aCoreCDB["RaidToolOptions"]["onlyactive"] and select(3, GetRaidRosterInfo(id))<=4 or not aCoreCDB["RaidToolOptions"]["onlyactive"] then
 			local value = false
 			for flask, v in pairs(flasks) do
-				if AuraUtil.FindAuraByName(unit, flask, "HELPFUL") then
+				if AuraUtil.FindAuraByName(flask, unit, "HELPFUL") then
 					tinsert(flasked, name)
 					value = true
 					break
@@ -91,7 +91,7 @@ local function UpdateFed()
 		if aCoreCDB["RaidToolOptions"]["onlyactive"] and select(3, GetRaidRosterInfo(id))<=4 or not aCoreCDB["RaidToolOptions"]["onlyactive"] then
 			local value = false
 			for food, v in pairs(foods) do
-				if AuraUtil.FindAuraByName(unit, food, "HELPFUL") then
+				if AuraUtil.FindAuraByName(food, unit, "HELPFUL") then
 					tinsert(fed, name)
 					value = true
 					break
@@ -198,7 +198,7 @@ local function StartCombat()
 	for id =1, n do
 		local uID = ("raid%d"):format(id)
         for buffName, value in pairs(potions) do
-			if AuraUtil.FindAuraByName(uID, buffName, "HELPFUL") then
+			if AuraUtil.FindAuraByName(buffName, uID, "HELPFUL") then
 				prepotion[GetUnitName(uID,true)] = true
 				break
 			end
