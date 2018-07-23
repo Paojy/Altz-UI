@@ -152,38 +152,38 @@ function eventframe:COMBAT_TEXT_UPDATE(spelltype, arg2, arg3)
 	end
 end
 
-function eventframe:COMBAT_LOG_EVENT_UNFILTERED(...)
+function eventframe:COMBAT_LOG_EVENT_UNFILTERED()
 	local icon, spellId, amount, critical, spellSchool
-    local timestamp, eventType, hideCaster, sourceGUID, sourceName, sourceFlags, sourceFlags2, destGUID, destName, destFlags, destFlags2 = select(1, ...)
+    local timestamp, eventType, hideCaster, sourceGUID, sourceName, sourceFlags, sourceFlags2, destGUID, destName, destFlags, destFlags2, arg12, arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20, arg21 = CombatLogGetCurrentEventInfo()
 	if sourceGUID == UnitGUID("player") or (ctshowpet and sourceGUID == UnitGUID("pet")) or sourceFlags == gflags then
 		if eventType == 'SPELL_HEAL' or (showhots and eventType == 'SPELL_PERIODIC_HEAL') then
-			spellId = select(12, ...)
-			amount = select(15, ...)
-			critical = select(18, ...)
+			spellId = arg12
+			amount = arg15
+			critical = arg18
 			icon = GetSpellTextureFormatted(spellId, critical and bigiconsize or iconsize)
 			frames["outputhealing"]:AddMessage(T.ShortValue2(amount)..""..icon, 0, 1, 0)
 		elseif destGUID ~= UnitGUID("player") then
 			if eventType=="SWING_DAMAGE" then
-				amount = select(12, ...)
-				critical = select(18, ...)
+				amount = arg12
+				critical = arg18
 				icon = GetSpellTextureFormatted(6603, critical and bigiconsize or iconsize)
 			elseif eventType == "RANGE_DAMAGE" then
-				spellId = select(12, ...)
-				amount = select(15, ...)
-				critical = select(21, ...)
+				spellId = arg12
+				amount = arg15
+				critical = arg21
 				icon = GetSpellTextureFormatted(spellId, critical and bigiconsize or iconsize)
 			elseif eventType == "SPELL_DAMAGE" or (showdots and eventType == "SPELL_PERIODIC_DAMAGE") then
-				spellId = select(12, ...)
-				spellSchool = select(14, ...)
-				amount = select(15, ...)
-				critical = select(21, ...)
+				spellId = arg12
+				spellSchool = arg14
+				amount = arg15
+				critical = arg21
 				icon = GetSpellTextureFormatted(spellId, critical and bigiconsize or iconsize)
 			elseif eventType == "SWING_MISSED" then
-				amount = select(12, ...) -- misstype
+				amount = arg12 -- misstype
 				icon = GetSpellTextureFormatted(6603, iconsize)
 			elseif eventType == "SPELL_MISSED" or eventType == "RANGE_MISSED" then
-				spellId = select(12, ...)
-				amount = select(15, ...) -- misstype
+				spellId = arg12
+				amount = arg15 -- misstype
 				icon = GetSpellTextureFormatted(spellId, iconsize)
 			end
 			

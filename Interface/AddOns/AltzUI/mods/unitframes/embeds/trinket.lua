@@ -28,7 +28,7 @@ local Update = function(self, event, ...)
 	if(self.Trinket.PreUpdate) then self.Trinket:PreUpdate(event) end
 
 	if event == "COMBAT_LOG_EVENT_UNFILTERED" then
-		local _, eventType, _, sourceGUID, sourceName, _, _, _, _, _, _, spellID = ...
+		local _, eventType, _, sourceGUID, sourceName, _, _, _, _, _, _, spellID = CombatLogGetCurrentEventInfo() 
 		if eventType == "SPELL_CAST_SUCCESS" and sourceGUID == UnitGUID(self.unit) and trinketSpells[spellID] then
 			self.Trinket.cooldownFrame:SetCooldown(GetTime(), trinketSpells[spellID])
 			if self.Trinket.trinketUseAnnounce then

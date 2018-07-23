@@ -145,7 +145,7 @@ T.Update_IB = Update_IB
 IB_Frame:RegisterEvent("PLAYER_REGEN_ENABLED")
 IB_Frame:RegisterEvent("PLAYER_REGEN_DISABLED")
 IB_Frame:RegisterEvent("ADDON_LOADED")
-IB_Frame:RegisterEvent("WORLD_MAP_UPDATE")
+IB_Frame:RegisterEvent("ZONE_CHANGED_NEW_AREA")
 IB_Frame:RegisterEvent("BAG_UPDATE")
 
 IB_Frame:SetScript("OnEvent", function(self, event, arg1)

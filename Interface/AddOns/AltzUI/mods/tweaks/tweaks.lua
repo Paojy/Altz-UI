@@ -1,6 +1,6 @@
 ﻿-- Original Author: Weasoug, etc
 local T, C, L, G = unpack(select(2, ...))
-local F = unpack(Aurora)
+local F = unpack(AuroraClassic)
 
 local collect = aCoreCDB["OtherOptions"]["collectgarbage"]
 local acceptres = aCoreCDB["OtherOptions"]["acceptres"]
@@ -149,12 +149,12 @@ Say Sapped
 -------------------------------------------------------------------------------]]
 if saysapped then
 	eventframe:RegisterEvent('COMBAT_LOG_EVENT_UNFILTERED')
-	function eventframe:COMBAT_LOG_EVENT_UNFILTERED(...)
+	function eventframe:COMBAT_LOG_EVENT_UNFILTERED()
 		local timestamp, etype, hideCaster,
-        sourceGUID, sourceName, sourceFlags, sourceRaidFlags, destGUID, destName, destFlags, destRaidFlags, spellID = ...
+        sourceGUID, sourceName, sourceFlags, sourceRaidFlags, destGUID, destName, destFlags, destRaidFlags, spellID = CombatLogGetCurrentEventInfo()
 		if (etype == "SPELL_AURA_APPLIED" or etype == "SPELL_AURA_REFRESH") and destName == G.PlayerName and spellID == 6770 then
 			SendChatMessage(L["被闷了"], "SAY")
-			DEFAULT_CHAT_FRAME:AddMessage(L["被闷了2"].." "..(select(7,...) or "(unknown)"))
+			DEFAULT_CHAT_FRAME:AddMessage(L["被闷了2"].." ".. sourceName or "(unknown)")
 		end
 	end
 end
@@ -345,8 +345,8 @@ Simple Vignette alert
 local vignettes = {}
 
 if vignettealert then
-	eventframe:RegisterEvent("VIGNETTE_ADDED")
-	function eventframe:VIGNETTE_ADDED(id)
+	eventframe:RegisterEvent("VIGNETTE_MINIMAP_UPDATED")
+	function eventframe:VIGNETTE_MINIMAP_UPDATED(id)
 		if id and not vignettes[id] then
 			local x, y, name, icon = C_Vignettes.GetVignetteInfoFromInstanceID(id)
 			local left, right, top, bottom = GetObjectIconTextureCoords(icon)

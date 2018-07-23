@@ -1,5 +1,5 @@
 local T, C, L, G = unpack(select(2, ...))
-local F = unpack(Aurora)
+local F = unpack(AuroraClassic)
 local oUF = AltzUF or oUF
 
 if not aCoreCDB["PlateOptions"]["enableplate"] then return end
@@ -66,7 +66,7 @@ local function CreateAuraIcon(parent)
 end
 
 local function UpdateAuraIcon(button, unit, index, filter)
-	local name, _, icon, count, debuffType, duration, expirationTime, _, _, _, spellID = UnitAura(unit, index, filter)
+	local name, icon, count, debuffType, duration, expirationTime, _, _, _, spellID = UnitAura(unit, index, filter)
 
 	button.icon:SetTexture(icon)
 	button.expirationTime = expirationTime
@@ -127,7 +127,7 @@ local function UpdateBuffs(unitFrame)
 	
 	for index = 1, 15 do
 		if i <= auranum then			
-			local bname, _, _, _, _, bduration, _, bcaster, _, _, bspellid = UnitAura(unit, index, 'HELPFUL')
+			local bname, _, _, _, bduration, _, bcaster, _, _, bspellid = UnitAura(unit, index, 'HELPFUL')
 			local matchbuff = AuraFilter(bcaster, bspellid)
 				
 			if bname and matchbuff then
@@ -145,7 +145,7 @@ local function UpdateBuffs(unitFrame)
 
 	for index = 1, 20 do
 		if i <= auranum then
-			local dname, _, _, _, _, dduration, _, dcaster, _, _, dspellid = UnitAura(unit, index, 'HARMFUL')
+			local dname, _, _, _, dduration, _, dcaster, _, _, dspellid = UnitAura(unit, index, 'HARMFUL')
 			local matchdebuff = AuraFilter(dcaster, dspellid)
 			
 			if dname and matchdebuff then

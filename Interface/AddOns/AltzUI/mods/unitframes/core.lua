@@ -794,7 +794,6 @@ local CreateAuraTimer = function(self, elapsed)
 
 	if self.elapsed < .2 then return end
 	self.elapsed = 0
-
 	local timeLeft = self.expires - GetTime()
 	if timeLeft <= 0 then
 		self.remaining:SetText(nil)
@@ -808,7 +807,7 @@ local whitelist = {
 }
 
 local PostUpdateIcon = function(icons, unit, icon, index, offset)
-	local name, _, _, _, _, duration, expirationTime, _, _, _, SpellID = UnitAura(unit, index, icon.filter)
+	local name, _, _, _, duration, expirationTime, _, _, _, SpellID = UnitAura(unit, index, icon.filter)
 
 	if icon.isPlayer or UnitIsFriend("player", unit) or not icon.isDebuff or aCoreCDB["UnitframeOptions"]["AuraFilterwhitelist"][tostring(SpellID)] or whitelist[tostring(SpellID)] then
 		icon.icon:SetDesaturated(false)

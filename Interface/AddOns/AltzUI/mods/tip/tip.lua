@@ -1,5 +1,5 @@
 ﻿local T, C, L, G = unpack(select(2, ...))
-local F = unpack(Aurora)
+local F = unpack(AuroraClassic)
 local dragFrameList = G.dragFrameList
 
 local _, ns = ...
@@ -221,11 +221,13 @@ end)
 local styledline = 0
 
 local function style(frame)
-    if not frame.border then
-        F.CreateBD(frame, 0.5)
-		frame.border = true
-    end
 
+	frame:SetBackdrop({
+		edgeFile = G.media.blank,
+		edgeSize = 1,
+		bgFile = G.media.blank,
+		insets = {left = 1, right = 1, top = 1, bottom = 1}
+	})
 	frame:SetScale(scale)
 	frame:SetBackdropColor(0, 0, 0, 0.4)
     frame:SetBackdropBorderColor(0, 0, 0)
@@ -272,12 +274,17 @@ for i, frame in pairs(tooltips) do
     frame:SetScript("OnShow", function(frame) style(frame) end)
 end
 
+hooksecurefunc("GameTooltip_SetBackdropStyle", function(self)
+	style(self)
+end)
+
 local itemrefScripts = {
     "OnTooltipSetItem",
     "OnTooltipSetAchievement",
     "OnTooltipSetQuest",
     "OnTooltipSetSpell",
 }
+
 
 for i, script in ipairs(itemrefScripts) do
     ItemRefTooltip:HookScript(script, function(self)

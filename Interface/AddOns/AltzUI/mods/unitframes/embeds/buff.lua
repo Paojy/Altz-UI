@@ -99,10 +99,10 @@ local Update = function(self, event, unit)
 
     local index = 1
     while true do
-        local name, rank, texture, count, dtype, duration, expires, caster, _, _, spellID = UnitBuff(unit, index)
+        local name, texture, count, dtype, duration, expires, caster, _, _, spellID = UnitBuff(unit, index)
         if not name then break end
         
-        local show = CustomFilter(auras, unit, icon, name, rank, texture, count, dtype, duration, expires, caster, spellID)
+        local show = CustomFilter(auras, unit, icon, name, texture, count, dtype, duration, expires, caster, spellID)
 
         if(show) and icon.buff then
 			--print(name)

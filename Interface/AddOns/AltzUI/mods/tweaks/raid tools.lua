@@ -1,5 +1,5 @@
 ﻿local T, C, L, G = unpack(select(2, ...))
-local F = unpack(Aurora)
+local F = unpack(AuroraClassic)
 local DBM = DBM
 
 --INSTANCE_ENCOUNTER_ENGAGE_UNIT
@@ -68,7 +68,7 @@ local function UpdateFlasked()
 		if aCoreCDB["RaidToolOptions"]["onlyactive"] and select(3, GetRaidRosterInfo(id))<=4 or not aCoreCDB["RaidToolOptions"]["onlyactive"] then
 			local value = false
 			for flask, v in pairs(flasks) do
-				if UnitBuff(unit, flask) then
+				if AuraUtil.FindAuraByName(unit, flask, "HELPFUL") then
 					tinsert(flasked, name)
 					value = true
 					break
@@ -91,7 +91,7 @@ local function UpdateFed()
 		if aCoreCDB["RaidToolOptions"]["onlyactive"] and select(3, GetRaidRosterInfo(id))<=4 or not aCoreCDB["RaidToolOptions"]["onlyactive"] then
 			local value = false
 			for food, v in pairs(foods) do
-				if UnitBuff(unit, food) then
+				if AuraUtil.FindAuraByName(unit, food, "HELPFUL") then
 					tinsert(fed, name)
 					value = true
 					break
@@ -198,7 +198,7 @@ local function StartCombat()
 	for id =1, n do
 		local uID = ("raid%d"):format(id)
         for buffName, value in pairs(potions) do
-			if UnitBuff(uID, buffName) then
+			if AuraUtil.FindAuraByName(uID, buffName, "HELPFUL") then
 				prepotion[GetUnitName(uID,true)] = true
 				break
 			end
@@ -277,7 +277,7 @@ Stats:SetScript("OnEvent", function(self, event, ...)
 	elseif event == "UNIT_AURA" then
 		UpdateStats()
 	elseif event == "COMBAT_LOG_EVENT_UNFILTERED" then
-		OnCombatLogEvent(...)
+		OnCombatLogEvent(CombatLogGetCurrentEventInfo())
 	elseif event == "UNIT_HEALTH" then
 		OnHealth()
 	elseif event == "PLAYER_LOGIN" then
@@ -401,7 +401,7 @@ PullButton:RegisterEvent("PLAYER_LOGIN")
 PullButton:SetScript("OnClick", function()
 	if DBM then
 		local timer = aCoreCDB["RaidToolOptions"]["pulltime"] or 10
-		SendAddonMessage("D4", "PT\t"..timer, "RAID")
+		C_ChatInfo.SendAddonMessage("D4", "PT\t"..timer, "RAID")
 	end
 end)
 
@@ -430,7 +430,7 @@ end)
 LagCheckButton:RegisterEvent("PLAYER_LOGIN")
 LagCheckButton:SetScript("OnClick", function()
 	if DBM then
-		SendAddonMessage("D4", "L\t", "RAID")
+		C_ChatInfo.SendAddonMessage("D4", "L\t", "RAID")
 		DBM:AddMsg(DBM_CORE_LAG_CHECKING)
 		DBM:Schedule(5, function() DBM:ShowLag() end)
 	end

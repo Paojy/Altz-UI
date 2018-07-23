@@ -11,16 +11,16 @@ local timersize = aCoreCDB["UnitframeOptions"]["hotind_size"]-3
 -- Priest 牧师
 local pomCount = {"①","②","③","④","⑤","⑥","⑦","⑧","⑨","⑩","⑪","⑫","⑬","⑭","⑮","⑯","⑰","⑱","⑲","⑳",}
 oUF.Tags.Methods['Mlight:pom'] = function(u) -- 愈合祷言
-    local name, _,_, c, _,_,_, fromwho = UnitBuff(u, GetSpellInfo(41635))
-	if c and fromwho == "player" then
+    local name,_, c = AuraUtil.FindAuraByName(u, GetSpellInfo(41635), "PLAYER")
+	if name and c then
         if c and c ~= 0 then return "|cff66FFFF"..pomCount[c].."|r" end
 	end
 end
 oUF.Tags.Events['Mlight:pom'] = "UNIT_AURA"
 
 oUF.Tags.Methods['Mlight:atonement'] = function(u) -- 救赎
-    local name, _,_,_,_,_, expirationTime, fromwho = UnitBuff(u, GetSpellInfo(194384))
-    if(fromwho == "player") then
+    local name, _,_,_,_, expirationTime = AuraUtil.FindAuraByName(u, GetSpellInfo(194384), "PLAYER")
+    if name then
         local spellTimer = expirationTime - GetTime()
         return "|cffFFE4C4"..T.FormatTime(spellTimer).."|r"
     end
@@ -28,8 +28,8 @@ end
 oUF.Tags.Events['Mlight:atonement'] = "UNIT_AURA"
 
 oUF.Tags.Methods['Mlight:rnw'] = function(u) -- 恢复
-    local name, _,_,_,_,_, expirationTime, fromwho = UnitBuff(u, GetSpellInfo(139))
-    if(fromwho == "player") then
+    local name,_,_,_,_, expirationTime = AuraUtil.FindAuraByName(u, GetSpellInfo(139), "PLAYER")
+    if name then
         local spellTimer = expirationTime - GetTime()
         if spellTimer > 4 then
             return "|cff33FF33"..T.FormatTime(spellTimer).."|r"
@@ -43,14 +43,15 @@ end
 oUF.Tags.Events['Mlight:rnw'] = "UNIT_AURA"
 
 oUF.Tags.Methods['Mlight:pws'] = function(u) -- 盾
-	local pws_time, perc, r, g, b, colorstr
+	local spell, pws_time, perc, r, g, b, colorstr
 	
-	local pws, _,_,_,_,_, pws_expiration = UnitBuff(u, GetSpellInfo(17), nil, "PLAYER")
+	local pws, _,_,_,_, pws_expiration = AuraUtil.FindAuraByName(u, GetSpellInfo(17), "PLAYER")
 	if pws then
 		pws_time = T.FormatTime(pws_expiration-GetTime())
+		spell = Spell:CreateFromSpellID(17) 
 		
-		real_absorb = select(17, UnitBuff(u, GetSpellInfo(17), nil, "PLAYER"))
-		max_absorb = tostring(string.match(gsub(gsub(GetSpellDescription(17), ",", ""),"%d+","",1),"%d+"))
+		real_absorb = select(16, AuraUtil.FindAuraByName(u, GetSpellInfo(17), "PLAYER"))
+		max_absorb = tostring(string.match(gsub(gsub(GetSpellDescription(spell:GetSpellID()), ",", ""),"%d+","",1),"%d+"))
 		
 		perc = real_absorb/max_absorb
 		
@@ -65,12 +66,13 @@ oUF.Tags.Events['Mlight:pws'] = "UNIT_AURA UNIT_ABSORB_AMOUNT_CHANGED"
 oUF.Tags.Methods['Mlight:yzdx'] = function(u) -- 意志洞悉
 	local yzdx_time, perc, r, g, b, colorstr
 	
-	local yzdx, _,_,_,_,_, yzdx_expiration = UnitBuff(u, GetSpellInfo(152118), nil, "PLAYER")
+	local yzdx, _,_,_,_, yzdx_expiration = AuraUtil.FindAuraByName(u, GetSpellInfo(152118), "PLAYER")
 	if yzdx then
 		yzdx_time = T.FormatTime(yzdx_expiration-GetTime())
+		spell = Spell:CreateFromSpellID(152118) 
 		
-		real_absorb = select(17, UnitBuff(u, GetSpellInfo(152118), nil, "PLAYER"))
-		max_absorb = tostring(string.match(gsub(gsub(GetSpellDescription(152118), ",", ""),"%d+","",1),"%d+"))*2.5
+		real_absorb = select(16, AuraUtil.FindAuraByName(u, GetSpellInfo(152118), "PLAYER"))
+		max_absorb = tostring(string.match(gsub(gsub(GetSpellDescription(spell:GetSpellID()), ",", ""),"%d+","",1),"%d+"))*2.5
 		
 		perc = real_absorb/max_absorb
 		r, g, b = T.ColorGradient(perc, 0, 0, 1, 0, 1, 1, 1, 1, 1)
@@ -82,8 +84,8 @@ end
 oUF.Tags.Events['Mlight:yzdx'] = "UNIT_AURA UNIT_ABSORB_AMOUNT_CHANGED" 
 
 oUF.Tags.Methods['Mlight:tlzg'] = function(u)
-	local name, _,_,_,_,_, _, fromwho = UnitBuff(u, GetSpellInfo(208065))
-	if(fromwho == "player") then
+	local name = AuraUtil.FindAuraByName(u, GetSpellInfo(208065), "PLAYER")
+	if name then
 		return "|cff0000FFb|r"
 	end
 end --图雷之光
@@ -91,8 +93,8 @@ oUF.Tags.Events['Mlight:tlzg'] = "UNIT_AURA"
 
 -- Druid 德鲁伊
 oUF.Tags.Methods['Mlight:lb'] = function(u) -- 生命绽放
-    local name, _,_, c,_,_, expirationTime, fromwho = UnitBuff(u, GetSpellInfo(33763))
-    if(fromwho == "player") then
+    local name, _, c,_,_, expirationTime = AuraUtil.FindAuraByName(u, GetSpellInfo(33763), "PLAYER")
+    if name then
 		local spellTimer = (expirationTime-GetTime())
 		local TimeLeft = T.FormatTime(spellTimer)
         if c > 2 then
@@ -107,17 +109,17 @@ end
 oUF.Tags.Events['Mlight:lb'] = "UNIT_AURA"
 
 oUF.Tags.Methods['Mlight:rejuv'] = function(u) -- 回春
-    local name, _,_,_,_,_, expirationTime, fromwho = UnitBuff(u, GetSpellInfo(774))
-	local name2, _,_,_,_,_, expirationTime2, fromwho2 = UnitBuff(u, GetSpellInfo(155777))
+    local name, _,_,_,_, expirationTime = AuraUtil.FindAuraByName(u, GetSpellInfo(774), "PLAYER")
+	local name2, _,_,_,_, expirationTime2 = AuraUtil.FindAuraByName(u, GetSpellInfo(155777), "PLAYER")
 	local text, text2 = "", ""
-    if (fromwho == "player") then
+    if name then
         local spellTimer = (expirationTime-GetTime())
 		local TimeLeft = T.FormatTime(spellTimer)
         if spellTimer > 0 then
             text = "|cffFF00BB"..TimeLeft.."|r"
         end
     end
-	if (fromwho2 == "player") then
+	if name2 then
         local spellTimer2 = (expirationTime2-GetTime())
 		local TimeLeft2 = T.FormatTime(spellTimer2)
         if spellTimer2 > 0 then
@@ -131,8 +133,8 @@ end
 oUF.Tags.Events['Mlight:rejuv'] = "UNIT_AURA"
 
 oUF.Tags.Methods['Mlight:regrow'] = function(u) -- 愈合
-	local name, _,_,_,_,_, expirationTime, fromwho = UnitBuff(u, GetSpellInfo(8936))
-    if(fromwho == "player") then
+	local name, _,_,_,_, expirationTime = AuraUtil.FindAuraByName(u, GetSpellInfo(8936), "PLAYER")
+    if name then
         local spellTimer = (expirationTime-GetTime())
 		local TimeLeft = T.FormatTime(spellTimer)
         if spellTimer > 3 then
@@ -145,8 +147,8 @@ end
 oUF.Tags.Events['Mlight:regrow'] = "UNIT_AURA"
 
 oUF.Tags.Methods['Mlight:wildgrowth'] = function(u) -- 野性成长
-	local name, _,_,_,_,_, expirationTime, fromwho = UnitBuff(u, GetSpellInfo(48438))
-    if(fromwho == "player") then
+	local name, _,_,_,_, expirationTime = AuraUtil.FindAuraByName(u, GetSpellInfo(48438), "PLAYER")
+    if name then
         local spellTimer = (expirationTime-GetTime())
 		local TimeLeft = T.FormatTime(spellTimer)
         return "|cff33FF33"..TimeLeft.."|r"
@@ -155,9 +157,9 @@ end
 oUF.Tags.Events['Mlight:wildgrowth'] = "UNIT_AURA"
 
 oUF.Tags.Methods['Mlight:snla'] = function(u) --塞纳里奥结界
-	local name, _,_,_,_,_, _, fromwho = UnitBuff(u, GetSpellInfo(102351))
-	if(fromwho == "player") then
-		local w = select(11, UnitBuff(u, GetSpellInfo(102351)))
+	local name = AuraUtil.FindAuraByName(u, GetSpellInfo(102351), "PLAYER")
+	if name then
+		local w = select(10, AuraUtil.FindAuraByName(u, GetSpellInfo(102351)), "PLAYER")
 		if w == 102351 then
 			return "|cffFFF8DCY|r"
 		else
@@ -191,8 +193,8 @@ oUF.Tags.Events['Mlight:Mlight:rip40'] = 'UNIT_AURA ACTIONBAR_UPDATE_STATE'
 
 
 oUF.Tags.Methods['Mlight:ripTime'] = function(u) --激流
-    local name, _,_,_,_,_, expirationTime, fromwho = UnitBuff(u, GetSpellInfo(61295))
-    if(fromwho == "player") then
+    local name, _,_,_,_, expirationTime = AuraUtil.FindAuraByName(u, GetSpellInfo(61295), "PLAYER")
+    if name then
         local spellTimer = (expirationTime-GetTime())
 		local TimeLeft = T.FormatTime(spellTimer)
         if spellTimer > 0 then
@@ -204,26 +206,26 @@ oUF.Tags.Events['Mlight:ripTime'] = 'UNIT_AURA'
 
 -- Paladin 骑士
 oUF.Tags.Methods['Mlight:beacon'] = function(u) --道标
-    local name, _,_,_,_,_, expirationTime, fromwho = UnitBuff(u, GetSpellInfo(53563))
-	local name2, _,_,_,_,_, expirationTime2, fromwho2 = UnitBuff(u, GetSpellInfo(156910))
-	local name3, _,_,_,_,_, expirationTime3, fromwho3 = UnitBuff(u, GetSpellInfo(200025))
+    local name, _,_,_,_, expirationTime = AuraUtil.FindAuraByName(u, GetSpellInfo(53563), "PLAYER")
+	local name2, _,_,_,_, expirationTime2 = AuraUtil.FindAuraByName(u, GetSpellInfo(156910), "PLAYER")
+	local name3, _,_,_,_, expirationTime3 = AuraUtil.FindAuraByName(u, GetSpellInfo(200025), "PLAYER")
 	
-    if fromwho == "player" then
+    if name then
         return "|cffFFB90FO|r"
-	elseif fromwho2 == "player" then
+	elseif name2 then
 		return "|cffE0FFFFO|r"
-	elseif fromwho3 == "player" then
+	elseif name3 then
 		return "|cff7CFC00O|r"
     end
 end
 oUF.Tags.Events['Mlight:beacon'] = 'UNIT_AURA'
 
-oUF.Tags.Methods['Mlight:forbearance'] = function(u) if UnitDebuff(u, GetSpellInfo(25771)) then return "|cffFF9900"..x.."|r" end end
+oUF.Tags.Methods['Mlight:forbearance'] = function(u) if AuraUtil.FindAuraByName(u, GetSpellInfo(25771), "HARMFUL") then return "|cffFF9900"..x.."|r" end end
 oUF.Tags.Events['Mlight:forbearance'] = "UNIT_AURA" -- 自律
 
 oUF.Tags.Methods['Mlight:fyxy'] = function(u) -- 赋予信仰
-    local name, _,_,_,_,_, expirationTime, fromwho = UnitAura(u, GetSpellInfo(223306))
-    if(fromwho == "player") then
+    local name, _,_,_,_, expirationTime = AuraUtil.FindAuraByName(u, GetSpellInfo(223306), "PLAYER")
+    if name then
         local spellTimer = (expirationTime-GetTime())
 		local TimeLeft = T.FormatTime(spellTimer)
         if spellTimer > 0 then
@@ -235,8 +237,8 @@ oUF.Tags.Events['Mlight:fyxy'] = 'UNIT_AURA'
 
 -- Monk 武僧
 oUF.Tags.Methods['Mlight:jhzq'] = function(u) -- 精华之泉
-    local name, _,_,_,_,_, expirationTime, fromwho = UnitAura(u, GetSpellInfo(191840))
-    if(fromwho == "player") then
+    local name, _,_,_,_, expirationTime = AuraUtil.FindAuraByName(u, GetSpellInfo(191840), "PLAYER")
+    if name then
         local spellTimer = (expirationTime-GetTime())
 		local TimeLeft = T.FormatTime(spellTimer)
         if spellTimer > 0 then
@@ -247,16 +249,16 @@ end
 oUF.Tags.Events['Mlight:jhzq'] = 'UNIT_AURA'
 
 oUF.Tags.Methods['Mlight:sooth'] = function(u)-- 抚慰之雾
-	local name, _,_,_,_,_, _, fromwho = UnitAura(u, GetSpellInfo(115175))
-	if (fromwho == "player") then
+	local name = AuraUtil.FindAuraByName(u, GetSpellInfo(115175), "PLAYER")
+	if name then
 		return "|cff97FFFF"..x.."|r"
 	end
 end 
 oUF.Tags.Events['Mlight:sooth'] = "UNIT_AURA"
 
 oUF.Tags.Methods['Mlight:mist'] = function(u) -- 氤氲之雾
-    local name, _,_,_,_,_, expirationTime, fromwho = UnitAura(u, GetSpellInfo(124682))
-    if(fromwho == "player") then
+    local name, _,_,_,_, expirationTime = AuraUtil.FindAuraByName(u, GetSpellInfo(124682), "PLAYER")
+    if name then
         local spellTimer = (expirationTime-GetTime())
 		local TimeLeft = T.FormatTime(spellTimer)
         if spellTimer > 0 then
@@ -267,8 +269,8 @@ end
 oUF.Tags.Events['Mlight:mist'] = 'UNIT_AURA'
 
 oUF.Tags.Methods['Mlight:remist'] = function(u) -- 复苏之雾
-    local name, _,_,_,_,_, expirationTime, fromwho = UnitAura(u, GetSpellInfo(115151))
-    if(fromwho == "player") then
+    local name, _,_,_,_, expirationTime = AuraUtil.FindAuraByName(u, GetSpellInfo(115151), "PLAYER")
+    if name then
         local spellTimer = (expirationTime-GetTime())
 		local TimeLeft = T.FormatTime(spellTimer)
         if spellTimer > 0 then
@@ -279,32 +281,31 @@ end
 oUF.Tags.Events['Mlight:remist'] = 'UNIT_AURA'
 
 oUF.Tags.Methods['Mlight:ayj'] = function(u) --暗夜井释放
-    local name, _,_,_,_,_, expirationTime, fromwho = UnitBuff(u, GetSpellInfo(225724))
-	
-    if (fromwho == "player") then
+    local name, _,_,_,_, expirationTime = AuraUtil.FindAuraByName(u, GetSpellInfo(225724), "PLAYER")
+    if name then
         return "|cffAB82FF-|r"
     end
 end
 oUF.Tags.Events['Mlight:ayj'] = 'UNIT_AURA'
 
 oUF.Tags.Methods['Mlight:lt'] = function(u) --基尔加丹的蓝图
-    local name,_,_,_,_,_, expirationTime, fromwho = UnitBuff(u, GetSpellInfo(242622)) -- hot
-	local name2,_,_,_,_,_, expirationTime2, fromwho2 = UnitBuff(u, GetSpellInfo(242623)) -- 吸收盾
-    if (fromwho == "player") then
+    local name, _,_,_,_, expirationTime = AuraUtil.FindAuraByName(u, GetSpellInfo(242622), "PLAYER") -- hot
+	local name2, _,_,_,_, expirationTime2 = AuraUtil.FindAuraByName(u, GetSpellInfo(242623), "PLAYER") -- 吸收盾
+    if name then
         return "|cffFF3030b|r"
-	elseif (fromwho2 == "player") then
+	elseif name2 then
 		return "|cffFF3030z|r"
     end
 end
 oUF.Tags.Events['Mlight:lt'] = 'UNIT_AURA'
 
 oUF.Tags.Methods['Mlight:da'] = function(u) --信仰档案
-    local name,_,_,_,_,_, expirationTime, fromwho = UnitBuff(u, GetSpellInfo(242619)) -- hot
-	local name2,_,_,_,_,_, expirationTime2, fromwho2 = UnitBuff(u, GetSpellInfo(242621)) -- 吸收盾
-    if (fromwho == "player") then
+    local name, _,_,_,_, expirationTime = AuraUtil.FindAuraByName(u, GetSpellInfo(242619), "PLAYER") -- hot
+	local name2, _,_,_,_, expirationTime2 = AuraUtil.FindAuraByName(u, GetSpellInfo(242621), "PLAYER") -- 吸收盾
+    if name then
         return "|cffFFD700b|r"
-	elseif (fromwho2 == "player") then
-		local w = select(11, UnitBuff(u, GetSpellInfo(242621)))
+	elseif name2 then
+		local w = select(10, AuraUtil.FindAuraByName(u, GetSpellInfo(242621), "PLAYER"))
 		if w == 242621 then
 			return "|cffFFD700z|r"
 		end
@@ -313,8 +314,8 @@ end
 oUF.Tags.Events['Mlight:da'] = 'UNIT_AURA'
 
 oUF.Tags.Methods['Mlight:xnhd'] = function(u) --邪能护盾
-    local name,_,_,_,_,_, expirationTime, fromwho = UnitBuff(u, GetSpellInfo(253277))
-    if (fromwho == "player") then
+    local name, _,_,_,_, expirationTime = AuraUtil.FindAuraByName(u, GetSpellInfo(253277), "PLAYER")
+    if name then
         return "|cffC0FF3Ez|r"
     end
 end

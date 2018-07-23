@@ -221,10 +221,10 @@ local Update = function(self, event, unit)
 	
     local index = 1
     while true do
-        local name, rank, texture, count, dtype, duration, expires, caster, _, _, spellID = UnitDebuff(unit, index)
+        local name, texture, count, dtype, duration, expires, caster, _, _, spellID = UnitDebuff(unit, index)
         if not name then break end
 		
-		local priority, asc = CustomFilter(name, rank, texture, count, dtype, duration, expires, caster, spellID)
+		local priority, asc = CustomFilter(name, texture, count, dtype, duration, expires, caster, spellID)
 		
 		if priority > 0 then
 			active_dubuffs[name] = {}

@@ -69,11 +69,11 @@ local function Enable(self, unit)
 		end
 		if(self.FadeHealth) then
 			self:RegisterEvent('UNIT_HEALTH', Update)
-			self:RegisterEvent('UNIT_HEALTHMAX', Update)
+			self:RegisterEvent('UNIT_MAXHEALTH', Update)
 		end
 		if(self.FadePower) then
-			self:RegisterEvent('UNIT_POWER', Update)
-			self:RegisterEvent('UNIT_POWERMAX', Update)
+			self:RegisterEvent('UNIT_POWER_UPDATE', Update)
+			self:RegisterEvent('UNIT_MAXPOWER', Update)
 		end
 
 		if(self.FadeCasting) then
@@ -82,7 +82,7 @@ local function Enable(self, unit)
 			self:RegisterEvent('UNIT_SPELLCAST_STOP', Update)
 			self:RegisterEvent('UNIT_SPELLCAST_INTERRUPTED', Update)
 			self:RegisterEvent('UNIT_SPELLCAST_CHANNEL_START', Update)
-			self:RegisterEvent('UNIT_SPELLCAST_CHANNEL_INTERRUPTED', Update)
+			--self:RegisterEvent('UNIT_SPELLCAST_CHANNEL_INTERRUPTED', Update)
 			self:RegisterEvent('UNIT_SPELLCAST_CHANNEL_STOP', Update)
 		end
 
@@ -110,11 +110,11 @@ local function Disable(self, unit)
 		end
 		if(self.FadeHealth) then
 			self:UnregisterEvent('UNIT_HEALTH', Update)
-			self:UnregisterEvent('UNIT_HEALTHMAX', Update)
+			self:UnregisterEvent('UNIT_MAXHEALTH', Update)
 		end
 		if(self.FadePower) then
-			self:UnregisterEvent('UNIT_POWER', Update)
-			self:UnregisterEvent('UNIT_POWERMAX', Update)
+			self:UnregisterEvent('UNIT_POWER_UPDATE', Update)
+			self:UnregisterEvent('UNIT_MAXPOWER', Update)
 		end
 
 		if(self.FadeCasting) then
@@ -123,7 +123,7 @@ local function Disable(self, unit)
 			self:UnregisterEvent('UNIT_SPELLCAST_STOP', Update)
 			self:UnregisterEvent('UNIT_SPELLCAST_INTERRUPTED', Update)
 			self:UnregisterEvent('UNIT_SPELLCAST_CHANNEL_START', Update)
-			self:UnregisterEvent('UNIT_SPELLCAST_CHANNEL_INTERRUPTED', Update)
+			--self:UnregisterEvent('UNIT_SPELLCAST_CHANNEL_INTERRUPTED', Update)
 			self:UnregisterEvent('UNIT_SPELLCAST_CHANNEL_STOP', Update)
 		end
 	end
