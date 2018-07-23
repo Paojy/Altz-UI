@@ -26,7 +26,7 @@ end
 
 --hide main menu bar frames
 MainMenuBar:SetParent(blizzHider)
-MainMenuBarPageNumber:SetParent(blizzHider)
+MainMenuBarArtFrameBackground:SetParent(blizzHider)
 ActionBarDownButton:SetParent(blizzHider)
 ActionBarUpButton:SetParent(blizzHider)
 
@@ -52,13 +52,9 @@ OverrideActionBarPitchFrame:SetParent(blizzHider) --maybe we can use that frame 
   PossessBackground1:SetTexture(nil)
   PossessBackground2:SetTexture(nil)
 
-    MainMenuBarTexture0:SetTexture(nil)
-    MainMenuBarTexture1:SetTexture(nil)
-    MainMenuBarTexture2:SetTexture(nil)
-    MainMenuBarTexture3:SetTexture(nil)
-    MainMenuBarLeftEndCap:SetTexture(nil)
-    MainMenuBarRightEndCap:SetTexture(nil)
-
+  MainMenuBarArtFrame.LeftEndCap:SetTexture(nil)
+  MainMenuBarArtFrame.RightEndCap:SetTexture(nil)
+  
   --remove OverrideBar textures
 
     local textureList =  {
