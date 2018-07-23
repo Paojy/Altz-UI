@@ -1,5 +1,5 @@
 ﻿local T, C, L, G = unpack(select(2, ...))
-local F = unpack(Aurora)
+local F = unpack(AuroraClassic)
 
 CHAT_FRAME_FADE_OUT_TIME = 1
 CHAT_TAB_HIDE_DELAY = 1
@@ -93,6 +93,17 @@ local function init()
 		for index, value in pairs(TAB_TEXTURES) do
 			local texture = _G['ChatFrame'..i..'Tab'..value]
 			texture:SetTexture(nil)
+		end
+		-- hide scroll bar
+		local button = _G['ChatFrame'..i].ScrollToBottomButton
+		if button then
+			button:Hide()
+			button.Show = button.Hide
+		end
+		local thumbtexture = _G['ChatFrame'..i.."ThumbTexture"]
+		if thumbtexture then
+			thumbtexture:Hide()
+			thumbtexture.Show = thumbtexture.Hide		
 		end
 	end
 end
