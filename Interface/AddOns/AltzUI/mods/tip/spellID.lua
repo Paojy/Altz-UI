@@ -59,8 +59,8 @@ GameTooltip:HookScript("OnTooltipSetSpell", function(self)
 	if parent and parent.nospellid then
 		return
 	end
-	
-	local id = select(3,self:GetSpell())
+
+	local id = select(2,self:GetSpell())
 	if id then
 		self:AddLine(" ")
 		self:AddDoubleLine("SpellID:",format(G.classcolor.."%s|r",id))
