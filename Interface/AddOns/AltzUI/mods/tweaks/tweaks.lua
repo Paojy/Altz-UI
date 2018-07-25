@@ -348,13 +348,10 @@ if vignettealert then
 	eventframe:RegisterEvent("VIGNETTE_MINIMAP_UPDATED")
 	function eventframe:VIGNETTE_MINIMAP_UPDATED(id)
 		if id and not vignettes[id] then
-			local x, y, name, icon = C_Vignettes.GetVignetteInfoFromInstanceID(id)
-			local left, right, top, bottom = GetObjectIconTextureCoords(icon)
-			
+			local info = C_VignetteInfo.GetVignetteInfo(id)
 			PlaySoundFile("Sound\\Interface\\RaidWarning.wav")
-			--local str = "|TInterface\\MINIMAP\\OBJECTICONS:0:0:0:0:256:256:"..(left*256)..":"..(right*256)..":"..(top*256)..":"..(bottom*256).."|t"
-			RaidNotice_AddMessage(RaidWarningFrame, (name or "Unknown").." "..L["出现了！"], ChatTypeInfo["RAID_WARNING"])
-			print(name,L["出现了！"])
+			RaidNotice_AddMessage(RaidWarningFrame, (info.name or "Unknown").." "..L["出现了！"], ChatTypeInfo["RAID_WARNING"])
+			print(info.name,L["出现了！"])
 			vignettes[id] = true
 		end
 	end
