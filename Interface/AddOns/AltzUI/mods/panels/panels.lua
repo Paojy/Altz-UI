@@ -924,11 +924,11 @@ local EquipSetsMenu = CreateFrame("Frame", G.uiname.."EquipSetsMenu", UIParent, 
 local EquipSetsList = {}
 
 local function UpdateEquipSetsList()
-	local count = GetNumEquipmentSets()
+	local count = C_EquipmentSet.GetNumEquipmentSets()
 	if count > 0 then
 		EquipSetsList = {}
 		for index = 1, count do 
-			local name, Icon, setID, isEquipped, totalItems, equippedItems, inventoryItems, missingItems, ignoredSlots = GetEquipmentSetInfo(index)
+			local name, Icon, setID, isEquipped, totalItems, equippedItems, inventoryItems, missingItems, ignoredSlots = C_EquipmentSet.GetEquipmentSetInfo(index)
 			EquipSetsList[index] = {
 				text = name,
 				icon = Icon,
@@ -957,7 +957,7 @@ local function GetLowestDurability()
 end
 
 Durability:SetScript("OnMouseDown", function(self)
-	if not InCombatLockdown() and GetNumEquipmentSets() > 0 then
+	if not InCombatLockdown() and C_EquipmentSet.GetNumEquipmentSets() > 0 then
 		UpdateEquipSetsList()
 		L_EasyMenu(EquipSetsList, EquipSetsMenu, "cursor", 0, 0, "MENU", 2)
 		L_DropDownList1:ClearAllPoints()
