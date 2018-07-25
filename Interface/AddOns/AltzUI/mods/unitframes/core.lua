@@ -881,7 +881,7 @@ local PlayerDebuffFilter = function(icons, unit, icon, ...)
 end
 
 local HealerInd_AuraFilter = function(icons, unit, icon, ...)
-	local SpellID = select(11, ...)
+	local SpellID = select(10, ...)
 	if icon.isPlayer then -- show my buffs
 		if aCoreCDB["UnitframeOptions"]["hotind_filtertype"] == "blacklist" and not aCoreCDB["UnitframeOptions"]["hotind_auralist"][SpellID] then
 			return true
