@@ -28,7 +28,7 @@ local function ShowFinish(text, subtext)
     LevelUpDisplay.blackBg.grow.anim1:SetStartDelay(levelUpTexCoords.gLineDelay)
 	
     LevelUpDisplay.scenarioFrame.newStage:Play()
-    PlaySound(31749)
+    PlaySoundKitID(31749)
 		
     LevelUpDisplay:SetScript("OnShow", script)
 end
