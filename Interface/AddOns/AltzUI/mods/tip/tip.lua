@@ -12,6 +12,7 @@ local hideRealm = aCoreCDB["TooltipOptions"]["hideRealm"]
 local colorborderClass = aCoreCDB["TooltipOptions"]["colorborderClass"]
 local combathide = aCoreCDB["TooltipOptions"]["combathide"]
 local scale = aCoreCDB["TooltipOptions"]["size"]
+local backdropOpacity = aCoreCDB["TooltipOptions"]["backdropOpacity"]
 
 local you = "<You>"
 local boss = "Boss"
@@ -229,7 +230,7 @@ local function style(frame)
 		insets = {left = 1, right = 1, top = 1, bottom = 1}
 	})
 	frame:SetScale(scale)
-	frame:SetBackdropColor(0, 0, 0, 0.4)
+	frame:SetBackdropColor(0, 0, 0, backdropOpacity)
     frame:SetBackdropBorderColor(0, 0, 0)
 	
     if colorborderClass then
