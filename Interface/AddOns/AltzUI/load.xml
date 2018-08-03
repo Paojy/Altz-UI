@@ -54,13 +54,13 @@
 	<Script file="mods\chat\channelreplacements.lua"/>
 	<Script file="mods\chat\playermenu.lua"/>
 	<Script file="mods\chat\easyChannel.lua"/>
-	<Script file="mods\chat\urlcopy.lua"/>
 	<Script file="mods\chat\filter.lua"/>
 	
 	<Script file="mods\loot\lootgroup.lua"/>
 	
+	<Include file="mods\nameplate\nameplates.xml"/>	
 	<Script file="mods\nameplate\nameplates.lua"/>
-		
+	
 	<Script file="mods\tip\spellID.lua"/>
 	<Script file="mods\tip\ItemID.lua"/>
 	<Script file="mods\tip\talent.lua"/>	

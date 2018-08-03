@@ -29,7 +29,6 @@ L["动作条tips"] = "/hb para ativar o modo de vinculação de teclas."
 
 -- 控制台通用
 L["启用"] = "Ativar"
-L["按职业着色"] = "Colorizar pela classe"
 L["图标大小"] = "Tamanho do ícone: "
 L["图标数量"] = "Numero de auras: "
 L["图标间距"] = "Espaço entre ícones: "
@@ -179,7 +178,6 @@ L["通用设置"] = "Geral"
 L["显示宠物"] = "Mostrar ajudantes"
 L["名字长度"] = "Tamanho do nome: "
 L["未进组时显示"] = "Mostrar quando estiver 'solo'"
-L["启用方向箭头"] = "Ativar seta de direção"
 --L["刷新载具"] = "Toggle for vehicle"
 L["切换"] = "Alternância"
 L["禁用自动切换"] = "Desativar alternância automática"
@@ -324,15 +322,6 @@ L["隐藏时间"] = "Tempo para esvanecer: "
 L["隐藏时间提示"] =  "Tempo em segundos no qual o texto de combate fica visível antes de começar a esvanecer."
 L["隐藏浮动战斗信息接受"] = "Esconder texto de combate da BLIZZARD (Texto de cura/dano causado)"
 L["隐藏浮动战斗信息输出"] = "Esconder texto de combate da BLIZZARD (Texto de cura/dano recebido)"
-
--- 团队工具
-L["团队工具"] = "Ferramentas de raide"
-L["1-4队"] = "Disponivel apenas para grupos de 1~4 jogadores"
-L["药水通报"] = "Anúnciar jogadores que não usaram poção depois de cada luta de chefe"
-L["药水通报过滤"] = "Ignorar jogadores abaixo: "
-L["药水通报过滤提示"] = "Inserir nomes dos jogadores por um espaço."
-L["需要启用DBM"] = "Precisa carregar DBM para ativar isso."
-L["倒数时长"] = "Segundos para puxar: "
 
 -- 其他
 L["界面风格"] = "Esquema de cor"

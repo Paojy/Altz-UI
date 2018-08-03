@@ -29,7 +29,6 @@ L["动作条tips"] = "/hb is for enabling key binding mode."
 
 -- 控制台通用
 L["启用"] = "Enable"
-L["按职业着色"] = "Class Colored"
 L["图标大小"] = "Icon Size"
 L["图标数量"] = "Aura Number"
 L["图标间距"] = "Icon Space"
@@ -179,7 +178,6 @@ L["通用设置"] = "Common"
 L["显示宠物"] = "Show Pets"
 L["名字长度"] = "Name Length"
 L["未进组时显示"] = "Show Solo"
-L["启用方向箭头"] = "Enable Direction Arrow"
 L["刷新载具"] = "Toggle for vehicle"
 L["切换"] = "Switch"
 L["禁用自动切换"] = "disable Auto Switch"
@@ -324,15 +322,6 @@ L["隐藏时间"] = "Fade time"
 L["隐藏时间提示"] =  "Amount of time for which combat text remains visible before beginning to fade out"
 L["隐藏浮动战斗信息接受"] = "Hide Blizzard combat text(OutPut Healing/Damage Text)"
 L["隐藏浮动战斗信息输出"] = "Hide Blizzard combat text(Received Healing/Damage Text)"
-
--- 团队工具
-L["团队工具"] = "RaidTools"
-L["1-4队"] = "Only available for party 1-4"
-L["药水通报"] = "Announce players who didn't use potions after boss fights"
-L["药水通报过滤"] = "Ignore players below:"
-L["药水通报过滤提示"] = "Input player names separated by a space"
-L["需要启用DBM"] = "Need to load DBM enable it."
-L["倒数时长"] = "seconds for pull"
 
 -- 其他
 L["界面风格"] = "Color Theme"

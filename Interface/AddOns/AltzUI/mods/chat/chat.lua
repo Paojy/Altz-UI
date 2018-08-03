@@ -1,18 +1,18 @@
 ﻿local T, C, L, G = unpack(select(2, ...))
 local F = unpack(AuroraClassic)
 
-CHAT_FRAME_FADE_OUT_TIME = 1
-CHAT_TAB_HIDE_DELAY = 1
-CHAT_FRAME_TAB_SELECTED_MOUSEOVER_ALPHA = 1
-CHAT_FRAME_TAB_SELECTED_NOMOUSE_ALPHA = 0
-CHAT_FRAME_TAB_NORMAL_MOUSEOVER_ALPHA = 0.5
-CHAT_FRAME_TAB_NORMAL_NOMOUSE_ALPHA = 0
-CHAT_FRAME_TAB_ALERTING_MOUSEOVER_ALPHA = 1
-CHAT_FRAME_TAB_ALERTING_NOMOUSE_ALPHA = 0
+--CHAT_FRAME_FADE_OUT_TIME = 1
+--CHAT_TAB_HIDE_DELAY = 1
+--CHAT_FRAME_TAB_SELECTED_MOUSEOVER_ALPHA = 1
+--CHAT_FRAME_TAB_SELECTED_NOMOUSE_ALPHA = 0
+--CHAT_FRAME_TAB_NORMAL_MOUSEOVER_ALPHA = 0.5
+--CHAT_FRAME_TAB_NORMAL_NOMOUSE_ALPHA = 0
+--CHAT_FRAME_TAB_ALERTING_MOUSEOVER_ALPHA = 1
+--CHAT_FRAME_TAB_ALERTING_NOMOUSE_ALPHA = 0
 
-for i = 1, 23 do
-	CHAT_FONT_HEIGHTS[i] = i+7
-end
+--for i = 1, 23 do
+--	CHAT_FONT_HEIGHTS[i] = i+7
+--end
 
 local _G = _G
 
@@ -97,13 +97,11 @@ local function init()
 		-- hide scroll bar
 		local button = _G['ChatFrame'..i].ScrollToBottomButton
 		if button then
-			button:Hide()
-			button.Show = button.Hide
+			button:SetAlpha(0)
 		end
 		local thumbtexture = _G['ChatFrame'..i.."ThumbTexture"]
 		if thumbtexture then
-			thumbtexture:Hide()
-			thumbtexture.Show = thumbtexture.Hide		
+			thumbtexture:SetTexture(nil)	
 		end
 	end
 end

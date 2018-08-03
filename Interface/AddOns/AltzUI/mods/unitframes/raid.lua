@@ -374,11 +374,7 @@ local func = function(self, unit)
         outsideAlpha = 0.3,
     }
 	
-	if aCoreCDB["UnitframeOptions"]["enablearrow"] then
-		self.freebRange = range
-	else
-		self.Range = range
-	end
+	self.Range = range
 	
 	if aCoreCDB["UnitframeOptions"]["enableClickCast"] then
 		EnableWheelCastOnFrame(self)
@@ -514,11 +510,7 @@ local dfunc = function(self, unit)
         outsideAlpha = 0.3,
     }
 	
-	if aCoreCDB["UnitframeOptions"]["enablearrow"] then
-		self.freebRange = range
-	else
-		self.Range = range
-	end
+	self.Range = range
 	
 	if aCoreCDB["UnitframeOptions"]["enableClickCast"] then
 		EnableWheelCastOnFrame(self)

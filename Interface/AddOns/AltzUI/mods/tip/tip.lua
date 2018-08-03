@@ -9,7 +9,6 @@ if not aCoreCDB["TooltipOptions"]["enabletip"] then return end
 local cursor = aCoreCDB["TooltipOptions"]["cursor"]
 local hideTitles = aCoreCDB["TooltipOptions"]["hideTitles"]
 local hideRealm = aCoreCDB["TooltipOptions"]["hideRealm"]
-local colorborderClass = aCoreCDB["TooltipOptions"]["colorborderClass"]
 local combathide = aCoreCDB["TooltipOptions"]["combathide"]
 local scale = aCoreCDB["TooltipOptions"]["size"]
 
@@ -218,10 +217,17 @@ GameTooltip:HookScript("OnUpdate", function(self, ...)
    end
 end)
 
-local styledline = 0
+GAME_TOOLTIP_BACKDROP_STYLE_DEFAULT = {
+	bgFile = G.media.blank,
+	edgeFile = G.media.blank,
+	edgeSize = 1,
+	insets = { left = 1, right = 1, top = 1, bottom = 1 },
+
+	backdropBorderColor = {GetRGB = function() return 0, 0, 0 end},
+	backdropColor = {GetRGB = function() return 0, 0, 0, .4 end}
+}
 
 local function style(frame)
-
 	frame:SetBackdrop({
 		edgeFile = G.media.blank,
 		edgeSize = 1,
@@ -231,82 +237,7 @@ local function style(frame)
 	frame:SetScale(scale)
 	frame:SetBackdropColor(0, 0, 0, 0.4)
     frame:SetBackdropBorderColor(0, 0, 0)
-	
-    if colorborderClass then
-        local _, unit = GameTooltip:GetUnit()
-        if UnitIsPlayer(unit) then
-            frame:SetBackdropBorderColor(unitColor(unit))
-        end
-    end
-
-    if frame.NumLines then
-        for index = styledline+1, 30 do
-            if index == 1 then
-                _G[frame:GetName()..'TextLeft'..index]:SetFont(G.norFont, 14, "OUTLINE")
-				_G[frame:GetName()..'TextRight'..index]:SetFont(G.norFont, 12, "OUTLINE")
-				styledline = index
-            elseif _G[frame:GetName()..'TextLeft'..index] then
-                _G[frame:GetName()..'TextLeft'..index]:SetFont(G.norFont, 12, "OUTLINE")
-				_G[frame:GetName()..'TextRight'..index]:SetFont(G.norFont, 12, "OUTLINE")
-				styledline = index
-				--print(index.."ok")
-			else
-				--print(index.."break")
-				break
-            end
-        end
-    end
 end
 
-local tooltips = {
-    GameTooltip,
-    ItemRefTooltip,
-    ShoppingTooltip1,
-    ShoppingTooltip2, 
-    ShoppingTooltip3,
-    WorldMapTooltip,
-	WorldMapTooltip.BackdropFrame,
-    DropDownList1MenuBackdrop, 
-    DropDownList2MenuBackdrop,
-}
-
-for i, frame in pairs(tooltips) do
-    frame:SetScript("OnShow", function(frame) style(frame) end)
-end
-
-hooksecurefunc("GameTooltip_SetBackdropStyle", function(self)
-	style(self)
-end)
-
-local itemrefScripts = {
-    "OnTooltipSetItem",
-    "OnTooltipSetAchievement",
-    "OnTooltipSetQuest",
-    "OnTooltipSetSpell",
-}
-
-
-for i, script in ipairs(itemrefScripts) do
-    ItemRefTooltip:HookScript(script, function(self)
-        style(self)
-    end)
-end
-
-if IsAddOnLoaded("ManyItemTooltips") then
-    MIT:AddHook("FreebTip", "OnShow", function(frame) style(frame) end)
-end
-
-local f = CreateFrame"Frame"
-f:SetScript("OnEvent", function(self, event, ...) if ns[event] then return ns[event](ns, event, ...) end end)
-function ns:RegisterEvent(...) for i=1,select("#", ...) do f:RegisterEvent((select(i, ...))) end end
-function ns:UnregisterEvent(...) for i=1,select("#", ...) do f:UnregisterEvent((select(i, ...))) end end
-
-ns:RegisterEvent"PLAYER_LOGIN"
-function ns:PLAYER_LOGIN()
-    for i, frame in ipairs(tooltips) do
-        F.CreateBD(frame, 0.5)
-		frame.border = true
-    end
-
-    ns:UnregisterEvent"PLAYER_LOGIN"
-end
+style(DropDownList1MenuBackdrop)
+style(DropDownList2MenuBackdrop)

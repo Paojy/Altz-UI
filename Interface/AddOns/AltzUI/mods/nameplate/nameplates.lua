@@ -5,7 +5,6 @@ local oUF = AltzUF or oUF
 if not aCoreCDB["PlateOptions"]["enableplate"] then return end
 
 local iconcastbar = "Interface\\AddOns\\AltzUI\\media\\dM3"
-local redarrow = "Interface\\AddOns\\AltzUI\\media\\NeonRedArrow"
 local numberstylefont = "Interface\\AddOns\\AltzUI\\media\\Infinity Gears.ttf"
 local fontsize = 14
 
@@ -35,38 +34,8 @@ local function FormatTime(s)
     return format("%d", math.fmod(s, minute))
 end
 
-local function CreateAuraIcon(parent)
-	local button = CreateFrame("Frame",nil,parent)
-	button:SetSize(auraiconsize, auraiconsize)
-	
-	button.icon = button:CreateTexture(nil, "OVERLAY", nil, 3)
-	button.icon:SetPoint("TOPLEFT",button,"TOPLEFT", 1, -1)
-	button.icon:SetPoint("BOTTOMRIGHT",button,"BOTTOMRIGHT",-1, 1)
-	button.icon:SetTexCoord(.08, .92, 0.08, 0.92)
-	
-	button.overlay = button:CreateTexture(nil, "ARTWORK", nil, 7)
-	button.overlay:SetTexture("Interface\\Buttons\\WHITE8x8")
-	button.overlay:SetAllPoints(button)	
-	
-	button.bd = button:CreateTexture(nil, "ARTWORK", nil, 6)
-	button.bd:SetTexture("Interface\\Buttons\\WHITE8x8")
-	button.bd:SetVertexColor(0, 0, 0)
-	button.bd:SetPoint("TOPLEFT",button,"TOPLEFT", -1, 1)
-	button.bd:SetPoint("BOTTOMRIGHT",button,"BOTTOMRIGHT", 1, -1)
-	
-	button.text = T.createnumber(button, "OVERLAY", auraiconsize-11, "OUTLINE", "CENTER")
-    button.text:SetPoint("BOTTOM", button, "BOTTOM", 0, -2)
-	button.text:SetTextColor(1, 1, 0)
-	
-	button.count = T.createnumber(button, "OVERLAY", auraiconsize-13, "OUTLINE", "RIGHT")
-	button.count:SetPoint("TOPRIGHT", button, "TOPRIGHT", -1, 2)
-	button.count:SetTextColor(.4, .95, 1)
-	
-	return button
-end
-
 local function UpdateAuraIcon(button, unit, index, filter)
-	local name, icon, count, debuffType, duration, expirationTime, _, _, _, spellID = UnitAura(unit, index, filter)
+	local _, icon, count, debuffType, duration, expirationTime, _, _, _, spellID = UnitAura(unit, index, filter)
 
 	button.icon:SetTexture(icon)
 	button.expirationTime = expirationTime
@@ -122,19 +91,20 @@ end
 local function UpdateBuffs(unitFrame)
 	if not unitFrame.icons or not unitFrame.displayedUnit then return end
 	if not plateaura and UnitIsUnit(unitFrame.displayedUnit, "player") then return end
-	local unit = unitFrame.displayedUnit
 	local i = 1
 	
 	for index = 1, 15 do
 		if i <= auranum then			
-			local bname, _, _, _, bduration, _, bcaster, _, _, bspellid = UnitAura(unit, index, 'HELPFUL')
-			local matchbuff = AuraFilter(bcaster, bspellid)
+			local bname, _, _, _, bduration, _, bcaster, _, _, bspellid = UnitAura(unitFrame.displayedUnit, index, 'HELPFUL') 
 				
-			if bname and matchbuff then
-				if not unitFrame.icons[i] then
-					unitFrame.icons[i] = CreateAuraIcon(unitFrame)
+			if bname and AuraFilter(bcaster, bspellid) then
+				if not unitFrame.icons[i] then					
+					unitFrame.icons[i] = unitFrame.Pools:Acquire("AuraIconTemplate")
+					unitFrame.icons[i]:SetSize(auraiconsize, auraiconsize)
+					unitFrame.icons[i].text:SetFont(G.numFont, auraiconsize-11, "OUTLINE")
+					unitFrame.icons[i].count:SetFont(G.numFont, auraiconsize-13, "OUTLINE")
 				end
-				UpdateAuraIcon(unitFrame.icons[i], unit, index, 'HELPFUL')
+				UpdateAuraIcon(unitFrame.icons[i], unitFrame.displayedUnit, index, 'HELPFUL')
 				if i ~= 1 then
 					unitFrame.icons[i]:SetPoint("LEFT", unitFrame.icons[i-1], "RIGHT", 4, 0)
 				end
@@ -145,14 +115,16 @@ local function UpdateBuffs(unitFrame)
 
 	for index = 1, 20 do
 		if i <= auranum then
-			local dname, _, _, _, dduration, _, dcaster, _, _, dspellid = UnitAura(unit, index, 'HARMFUL')
-			local matchdebuff = AuraFilter(dcaster, dspellid)
+			local dname, _, _, _, dduration, _, dcaster, _, _, dspellid = UnitAura(unitFrame.displayedUnit, index, 'HARMFUL')
 			
-			if dname and matchdebuff then
+			if dname and AuraFilter(dcaster, dspellid) then
 				if not unitFrame.icons[i] then
-					unitFrame.icons[i] = CreateAuraIcon(unitFrame)
+					unitFrame.icons[i] = unitFrame.Pools:Acquire("AuraIconTemplate")
+					unitFrame.icons[i]:SetSize(auraiconsize, auraiconsize)
+					unitFrame.icons[i].text:SetFont(G.numFont, auraiconsize-11, "OUTLINE")
+					unitFrame.icons[i].count:SetFont(G.numFont, auraiconsize-13, "OUTLINE")
 				end
-				UpdateAuraIcon(unitFrame.icons[i], unit, index, 'HARMFUL')
+				UpdateAuraIcon(unitFrame.icons[i], unitFrame.displayedUnit, index, 'HARMFUL')
 				if i ~= 1 then
 					unitFrame.icons[i]:SetPoint("LEFT", unitFrame.icons[i-1], "RIGHT", 4, 0)
 				end
@@ -482,19 +454,17 @@ end
 --[[ Unit frame ]]--
 
 local function UpdateName(unitFrame)
-	local name = GetUnitName(unitFrame.displayedUnit, false)
-	if name then
+	if GetUnitName(unitFrame.displayedUnit, false) then
 		if UnitIsUnit(unitFrame.displayedUnit, "player") then
 			unitFrame.name:SetText("")
 		else
-			unitFrame.name:SetText(name)
+			unitFrame.name:SetText(GetUnitName(unitFrame.displayedUnit, false))
 		end
 	end
 end
 
 local function UpdateHealth(unitFrame)
-	local unit = unitFrame.displayedUnit
-	local minHealth, maxHealth = UnitHealth(unit), UnitHealthMax(unit)
+	local minHealth, maxHealth = UnitHealth(unitFrame.displayedUnit), UnitHealthMax(unitFrame.displayedUnit)
 	local perc
 	if maxHealth == 0 then
 		perc = 1
@@ -554,15 +524,14 @@ local function IsTapDenied(unitFrame)
 end
 
 local function UpdateHealthColor(unitFrame)
-	local unit = unitFrame.displayedUnit
 	local r, g, b
 	
-	if ( not UnitIsConnected(unit) ) then
+	if ( not UnitIsConnected(unitFrame.displayedUnit) ) then
 		r, g, b = 0.7, 0.7, 0.7
 	else
 		local iscustomed = false
 		for index, info in pairs(aCoreCDB["PlateOptions"]["customcoloredplates"]) do
-			if GetUnitName(unit, false) == info.name then
+			if GetUnitName(unitFrame.displayedUnit, false) == info.name then
 				r, g, b= info.color.r, info.color.g, info.color.b
 				iscustomed = true
 				break
@@ -570,11 +539,11 @@ local function UpdateHealthColor(unitFrame)
 		end
 		
 		if not iscustomed then
-			local _, englishClass = UnitClass(unit)
+			local _, englishClass = UnitClass(unitFrame.displayedUnit)
 			local classColor = G.Ccolors[englishClass]
-			if UnitIsPlayer(unit) and classColor and firendlyCR and UnitReaction(unit, 'player') >= 5 then
+			if UnitIsPlayer(unitFrame.displayedUnit) and classColor and firendlyCR and UnitReaction(unitFrame.displayedUnit, 'player') >= 5 then
 				r, g, b = classColor.r, classColor.g, classColor.b
-			elseif UnitIsPlayer(unit) and classColor and enemyCR and UnitReaction(unit, 'player') <= 4 then
+			elseif UnitIsPlayer(unitFrame.displayedUnit) and classColor and enemyCR and UnitReaction(unitFrame.displayedUnit, 'player') <= 4 then
 				r, g, b = classColor.r, classColor.g, classColor.b
 			elseif ( IsTapDenied(unitFrame) ) then
 				r, g, b = 0.3, 0.3, 0.3
@@ -582,7 +551,7 @@ local function UpdateHealthColor(unitFrame)
 				if aCoreCDB["PlateOptions"]["threatcolor"] and IsOnThreatList(unitFrame.displayedUnit) then
 					r, g, b = IsOnThreatList(unitFrame.displayedUnit)
 				else
-					r, g, b = UnitSelectionColor(unit, true)
+					r, g, b = UnitSelectionColor(unitFrame.displayedUnit, true)
 				end
 			end
 		end
@@ -600,21 +569,22 @@ local function UpdateHealthColor(unitFrame)
 end
 
 local function UpdateCastBar(unitFrame)
-	local castBar = unitFrame.castBar
-	castBar.startCastColor = CreateColor(0.6, 0.6, 0.6)
-	castBar.startChannelColor = CreateColor(0.6, 0.6, 0.6)
-	castBar.finishedCastColor = CreateColor(0.6, 0.6, 0.6)
-	castBar.failedCastColor = CreateColor(0.5, 0.2, 0.2)
-	castBar.nonInterruptibleColor = CreateColor(0.3, 0.3, 0.3)
-	CastingBarFrame_AddWidgetForFade(castBar, castBar.BorderShield)
+	if not unitFrame.castbar_added then
+		unitFrame.castBar.startCastColor = CreateColor(0.6, 0.6, 0.6)
+		unitFrame.castBar.startChannelColor = CreateColor(0.6, 0.6, 0.6)
+		unitFrame.castBar.finishedCastColor = CreateColor(0.6, 0.6, 0.6)
+		unitFrame.castBar.failedCastColor = CreateColor(0.5, 0.2, 0.2)
+		unitFrame.castBar.nonInterruptibleColor = CreateColor(0.3, 0.3, 0.3)
+		CastingBarFrame_AddWidgetForFade(unitFrame.castBar, unitFrame.castBar.BorderShield)
+		unitFrame.castbar_added = true
+	end
 	if not UnitIsUnit("player", unitFrame.displayedUnit) then  
-		CastingBarFrame_SetUnit(castBar, unitFrame.unit, false, true)
+		CastingBarFrame_SetUnit(unitFrame.castBar, unitFrame.unit, false, true)
 	end
 end
 
 local function UpdateSelectionHighlight(unitFrame)
-	local unit = unitFrame.unit
-	if UnitIsUnit(unit, "target") and not UnitIsUnit(unit, "player") then
+	if UnitIsUnit(unitFrame.displayedUnit, "target") and not UnitIsUnit(unitFrame.displayedUnit, "player") then
 		unitFrame.redarrow:Show()
 	else
 		unitFrame.redarrow:Hide()
@@ -629,7 +599,7 @@ local function UpdateSelectionHighlight(unitFrame)
 	else
 		if unitFrame.iconnumber and unitFrame.iconnumber > 0 then -- 有图标
 			unitFrame.redarrow:SetPoint("BOTTOM", unitFrame.healthperc, "TOP", 0, auraiconsize)
-		elseif UnitHealth(unit) and UnitHealthMax(unit) and UnitHealth(unit) ~= UnitHealthMax(unit) then -- 非满血
+		elseif UnitHealth(unitFrame.displayedUnit) and UnitHealthMax(unitFrame.displayedUnit) and UnitHealth(unitFrame.displayedUnit) ~= UnitHealthMax(unitFrame.displayedUnit) then -- 非满血
 			unitFrame.redarrow:SetPoint("BOTTOM", unitFrame.healthperc, "TOP", 0, 0)
 		else -- 只有名字
 			unitFrame.redarrow:SetPoint("BOTTOM", unitFrame.name, "TOP", 0, 0)
@@ -638,28 +608,21 @@ local function UpdateSelectionHighlight(unitFrame)
 end
 
 local function UpdateRaidTarget(unitFrame)
-	local icon = unitFrame.RaidTargetFrame.RaidTargetIcon
-	local index = GetRaidTargetIndex(unitFrame.displayedUnit)
-	if ( index ) then
+	if GetRaidTargetIndex(unitFrame.displayedUnit) then
 		if not UnitIsUnit(unitFrame.displayedUnit, "player") then
-			SetRaidTargetIconTexture(icon, index)
-			icon:Show()
+			SetRaidTargetIconTexture(unitFrame.RaidTargetFrame.RaidTargetIcon, GetRaidTargetIndex(unitFrame.displayedUnit))
+			unitFrame.RaidTargetFrame.RaidTargetIcon:Show()
 		end
 	else
-		icon:Hide()
+		unitFrame.RaidTargetFrame.RaidTargetIcon:Hide()
 	end
 end
 
 local function UpdateNamePlateEvents(unitFrame)
 	-- These are events affected if unit is in a vehicle
-	local unit = unitFrame.unit
-	local displayedUnit
-	if ( unit ~= unitFrame.displayedUnit ) then
-		displayedUnit = unitFrame.displayedUnit
-	end
-	unitFrame:RegisterUnitEvent("UNIT_HEALTH_FREQUENT", unit, displayedUnit)
-	unitFrame:RegisterUnitEvent("UNIT_AURA", unit, displayedUnit)
-	unitFrame:RegisterUnitEvent("UNIT_THREAT_LIST_UPDATE", unit, displayedUnit)
+	unitFrame:RegisterUnitEvent("UNIT_HEALTH_FREQUENT", unitFrame.unit, unitFrame.unit ~= unitFrame.displayedUnit and unitFrame.displayedUnit )
+	unitFrame:RegisterUnitEvent("UNIT_AURA", unitFrame.unit, unitFrame.unit ~= unitFrame.displayedUnit and unitFrame.displayedUnit)
+	unitFrame:RegisterUnitEvent("UNIT_THREAT_LIST_UPDATE", unitFrame.unit, unitFrame.unit ~= unitFrame.displayedUnit and unitFrame.displayedUnit)
 end
 
 local function UpdateInVehicle(unitFrame)
@@ -704,12 +667,14 @@ local function UpdateAll(unitFrame)
 	
 	if aCoreCDB["PlateOptions"]["blzplates"] then
 		local namePlate = unitFrame:GetParent()
+		if namePlate then
 		if namePlate.NUnitFrame:IsShown() then
 			namePlate.UnitFrame:Hide()
 		elseif aCoreCDB["PlateOptions"]["blzplates_nameonly"] then
 			namePlate.UnitFrame.name:Show()
 		else
 			namePlate.UnitFrame:Show()
+		end
 		end
 	end
 end
@@ -818,201 +783,48 @@ end
 
 function NamePlates_UpdateNamePlateOptions()
 	-- Called at VARIABLES_LOADED and by "Larger Nameplates" interface options checkbox
-	local baseNamePlateWidth = 100
-	local baseNamePlateHeight = 45
-	local horizontalScale = tonumber(GetCVar("NamePlateHorizontalScale"))
-	C_NamePlate.SetNamePlateFriendlySize(baseNamePlateWidth * horizontalScale, baseNamePlateHeight)
-	C_NamePlate.SetNamePlateEnemySize(baseNamePlateWidth, baseNamePlateHeight)
+	C_NamePlate.SetNamePlateFriendlySize(100 * tonumber(GetCVar("NamePlateHorizontalScale")), 45)
+	C_NamePlate.SetNamePlateEnemySize(100, 45)
 
 	for i, namePlate in ipairs(C_NamePlate.GetNamePlates()) do
-		local unitFrame = namePlate.NUnitFrame
-		UpdateAll(unitFrame)
+		UpdateAll(namePlate.NUnitFrame)
 	end
 end
 
 local function OnNamePlateCreated(namePlate)
-	namePlate.NUnitFrame = CreateFrame("Button", "$parentUnitFrame", namePlate)
-	namePlate.NUnitFrame:SetAllPoints(namePlate)
-	namePlate.NUnitFrame:SetFrameLevel(namePlate:GetFrameLevel())
+	namePlate.Pools = CreatePoolCollection() 
 	
 	if numberstyle then -- 数字样式
-		namePlate.NUnitFrame.healthperc = namePlate.NUnitFrame:CreateFontString(nil, "OVERLAY")
-		namePlate.NUnitFrame.healthperc:SetFont(numberstylefont, fontsize*2, "OUTLINE")
-		namePlate.NUnitFrame.healthperc:SetPoint("CENTER")
-		namePlate.NUnitFrame.healthperc:SetTextColor(1,1,1)
-		namePlate.NUnitFrame.healthperc:SetShadowColor(0, 0, 0, 0.4)
-		namePlate.NUnitFrame.healthperc:SetShadowOffset(1, -1)
-		namePlate.NUnitFrame.healthperc:SetText("92")
+		namePlate.Pools:CreatePool("Button", namePlate, "NumberStyleNameplateTemplate")
+		namePlate.NUnitFrame = namePlate.Pools:Acquire("NumberStyleNameplateTemplate")
+		namePlate.NUnitFrame:SetAllPoints(namePlate)
+		namePlate.NUnitFrame:SetFrameLevel(namePlate:GetFrameLevel())
+		namePlate.NUnitFrame:Show()
+		namePlate.NUnitFrame.Pools = CreatePoolCollection() 
+		namePlate.NUnitFrame.Pools:CreatePool("Frame", namePlate, "AuraIconTemplate")
 		
-		namePlate.NUnitFrame.name = T.createtext(namePlate.NUnitFrame, "ARTWORK", fontsize-4, "OUTLINE", "CENTER")
-		namePlate.NUnitFrame.name:SetPoint("TOP", namePlate.NUnitFrame.healthperc, "BOTTOM", 0, -3)
-		namePlate.NUnitFrame.name:SetTextColor(1,1,1)
-		namePlate.NUnitFrame.name:SetText("Name")
-		
-		namePlate.NUnitFrame.castBar = CreateFrame("StatusBar", nil, namePlate.NUnitFrame)
-		namePlate.NUnitFrame.castBar:Hide()
-		namePlate.NUnitFrame.castBar.iconWhenNoninterruptible = false
-		namePlate.NUnitFrame.castBar:SetSize(30,30)
 		if classresource_show and classresource == "target" then
 			namePlate.NUnitFrame.castBar:SetPoint("TOP", namePlate.NUnitFrame.name, "BOTTOM", 0, -7)
 		else
 			namePlate.NUnitFrame.castBar:SetPoint("TOP", namePlate.NUnitFrame.name, "BOTTOM", 0, -3)
-		end
-		namePlate.NUnitFrame.castBar:SetStatusBarTexture(iconcastbar)
-		namePlate.NUnitFrame.castBar:SetStatusBarColor(0.5, 0.5, 0.5)
-		
-		namePlate.NUnitFrame.castBar.border = F.CreateBDFrame(namePlate.NUnitFrame.castBar, 0)
-		T.CreateThinSD(namePlate.NUnitFrame.castBar.border, 1, 0, 0, 0, 1, -2)
-		
-		namePlate.NUnitFrame.castBar.bg = namePlate.NUnitFrame.castBar:CreateTexture(nil, 'BORDER')
-		namePlate.NUnitFrame.castBar.bg:SetAllPoints(namePlate.NUnitFrame.castBar)
-		namePlate.NUnitFrame.castBar.bg:SetTexture(1/3, 1/3, 1/3, .5)
-
-		namePlate.NUnitFrame.castBar.Icon = namePlate.NUnitFrame.castBar:CreateTexture(nil, "OVERLAY", 1)
-		namePlate.NUnitFrame.castBar.Icon:SetPoint("CENTER")
-		namePlate.NUnitFrame.castBar.Icon:SetTexCoord(0.05, 0.95, 0.05, 0.95)
-		namePlate.NUnitFrame.castBar.Icon:SetSize(25, 25)
-		namePlate.NUnitFrame.castBar.iconborder = F.CreateBG(namePlate.NUnitFrame.castBar.Icon)
-		namePlate.NUnitFrame.castBar.iconborder:SetDrawLayer("OVERLAY",-1)
-		
-		namePlate.NUnitFrame.castBar.Text = T.createtext(namePlate.NUnitFrame.castBar, "OVERLAY", fontsize-4, "OUTLINE", "CENTER")
-		namePlate.NUnitFrame.castBar.Text:SetPoint("CENTER")
-
-		namePlate.NUnitFrame.castBar.BorderShield = namePlate.NUnitFrame.castBar:CreateTexture(nil, "OVERLAY", 1)
-		namePlate.NUnitFrame.castBar.BorderShield:SetAtlas("nameplates-InterruptShield")
-		namePlate.NUnitFrame.castBar.BorderShield:SetSize(15, 15)
-		namePlate.NUnitFrame.castBar.BorderShield:SetPoint("CENTER", namePlate.NUnitFrame.castBar, "BOTTOMLEFT")
-		namePlate.NUnitFrame.castBar.BorderShield:SetDrawLayer("OVERLAY",2)
-		
-		namePlate.NUnitFrame.castBar.Spark = namePlate.NUnitFrame.castBar:CreateTexture(nil, "OVERLAY")
-		namePlate.NUnitFrame.castBar.Spark:SetSize(30, 45)
-		namePlate.NUnitFrame.castBar.Spark:SetTexture("Interface\\CastingBar\\UI-CastingBar-Spark")
-		namePlate.NUnitFrame.castBar.Spark:SetBlendMode("ADD")
-		namePlate.NUnitFrame.castBar.Spark:SetPoint("CENTER", 0, 3)
-		
-		namePlate.NUnitFrame.castBar.Flash = namePlate.NUnitFrame.castBar:CreateTexture(nil, "OVERLAY")
-		namePlate.NUnitFrame.castBar.Flash:SetAllPoints()
-		namePlate.NUnitFrame.castBar.Flash:SetTexture(G.media.ufbar)
-		namePlate.NUnitFrame.castBar.Flash:SetBlendMode("ADD")
-		
-		CastingBarFrame_OnLoad(namePlate.NUnitFrame.castBar, nil, false, true)
-		namePlate.NUnitFrame.castBar:SetScript("OnEvent", CastingBarFrame_OnEvent)
-		namePlate.NUnitFrame.castBar:SetScript("OnUpdate", CastingBarFrame_OnUpdate)
-		namePlate.NUnitFrame.castBar:SetScript("OnShow", CastingBarFrame_OnShow)
-
-		namePlate.NUnitFrame.RaidTargetFrame = CreateFrame("Frame", nil, namePlate.NUnitFrame)
-		namePlate.NUnitFrame.RaidTargetFrame:SetSize(30, 30)
-		namePlate.NUnitFrame.RaidTargetFrame:SetPoint("RIGHT", namePlate.NUnitFrame.name, "LEFT")
-
-		namePlate.NUnitFrame.RaidTargetFrame.RaidTargetIcon = namePlate.NUnitFrame.RaidTargetFrame:CreateTexture(nil, "OVERLAY")
-		namePlate.NUnitFrame.RaidTargetFrame.RaidTargetIcon:SetTexture([[Interface\AddOns\AltzUI\media\raidicons.blp]])
-		namePlate.NUnitFrame.RaidTargetFrame.RaidTargetIcon:SetAllPoints()
-		namePlate.NUnitFrame.RaidTargetFrame.RaidTargetIcon:Hide()
-		
-		namePlate.NUnitFrame.redarrow = namePlate.NUnitFrame:CreateTexture(nil, 'OVERLAY')
-		namePlate.NUnitFrame.redarrow:SetSize(50, 50)
-		namePlate.NUnitFrame.redarrow:SetTexture(redarrow)
-		namePlate.NUnitFrame.redarrow:Hide()
-		
-		namePlate.NUnitFrame.icons = CreateFrame("Frame", nil, namePlate.NUnitFrame)
-		namePlate.NUnitFrame.icons:SetPoint("BOTTOM", namePlate.NUnitFrame.healthperc, "TOP", 0, 0)
-		namePlate.NUnitFrame.icons:SetWidth(140)
-		namePlate.NUnitFrame.icons:SetHeight(25)
-		namePlate.NUnitFrame.icons:SetFrameLevel(namePlate.NUnitFrame:GetFrameLevel() + 2)
+		end		
 	else -- 条形样式
-		namePlate.NUnitFrame.healthBar = CreateFrame("StatusBar", nil, namePlate.NUnitFrame)
-		namePlate.NUnitFrame.healthBar:SetHeight(8)
-		namePlate.NUnitFrame.healthBar:SetPoint("LEFT", 0, 0)
-		namePlate.NUnitFrame.healthBar:SetPoint("RIGHT", 0, 0)
-		namePlate.NUnitFrame.healthBar:SetStatusBarTexture(G.media.ufbar)
-		namePlate.NUnitFrame.healthBar:SetMinMaxValues(0, 1)
+		namePlate.Pools:CreatePool("Button", namePlate, "BarStyleNameplateTemplate")
+		namePlate.NUnitFrame = namePlate.Pools:Acquire("BarStyleNameplateTemplate")
+		namePlate.NUnitFrame:SetAllPoints(namePlate)
+		namePlate.NUnitFrame:SetFrameLevel(namePlate:GetFrameLevel())
+		namePlate.NUnitFrame:Show()
+		namePlate.NUnitFrame.Pools = CreatePoolCollection() 
+		namePlate.NUnitFrame.Pools:CreatePool("Frame", namePlate, "AuraIconTemplate")
 		
-		namePlate.NUnitFrame.healthBar.bd = T.createBackdrop(namePlate.NUnitFrame.healthBar, namePlate.NUnitFrame.healthBar, 1)
-		
-		namePlate.NUnitFrame.healthBar.value = T.createtext(namePlate.NUnitFrame.healthBar, "OVERLAY", fontsize-4, "OUTLINE", "CENTER")
-		namePlate.NUnitFrame.healthBar.value:SetPoint("BOTTOMRIGHT", namePlate.NUnitFrame.healthBar, "TOPRIGHT", 0, -fontsize/3)
-		namePlate.NUnitFrame.healthBar.value:SetTextColor(1,1,1)
-		namePlate.NUnitFrame.healthBar.value:SetText("Value")
-		
-		namePlate.NUnitFrame.name = T.createtext(namePlate.NUnitFrame, "OVERLAY", fontsize-4, "OUTLINE", "CENTER")
-		namePlate.NUnitFrame.name:SetPoint("TOPLEFT", namePlate.NUnitFrame, "TOPLEFT", 5, -5)
-		namePlate.NUnitFrame.name:SetPoint("BOTTOMRIGHT", namePlate.NUnitFrame, "TOPRIGHT", -5, -15)
-		namePlate.NUnitFrame.name:SetIndentedWordWrap(false)
-		namePlate.NUnitFrame.name:SetTextColor(1,1,1)
-		namePlate.NUnitFrame.name:SetText("Name")
-		
-		namePlate.NUnitFrame.castBar = CreateFrame("StatusBar", nil, namePlate.NUnitFrame)
-		namePlate.NUnitFrame.castBar:Hide()
-		namePlate.NUnitFrame.castBar.iconWhenNoninterruptible = false
-		namePlate.NUnitFrame.castBar:SetHeight(8)
 		if classresource_show and classresource == "target" then
 			namePlate.NUnitFrame.castBar:SetPoint("TOPLEFT", namePlate.NUnitFrame.healthBar, "BOTTOMLEFT", 0, -7)
 			namePlate.NUnitFrame.castBar:SetPoint("TOPRIGHT", namePlate.NUnitFrame.healthBar, "BOTTOMRIGHT", 0, -7)
+			namePlate.NUnitFrame.castBar.Icon:SetSize(25, 25)
 		else
 			namePlate.NUnitFrame.castBar:SetPoint("TOPLEFT", namePlate.NUnitFrame.healthBar, "BOTTOMLEFT", 0, -3)
 			namePlate.NUnitFrame.castBar:SetPoint("TOPRIGHT", namePlate.NUnitFrame.healthBar, "BOTTOMRIGHT", 0, -3)
 		end
-		namePlate.NUnitFrame.castBar:SetStatusBarTexture(G.media.ufbar)
-		namePlate.NUnitFrame.castBar:SetStatusBarColor(0.5, 0.5, 0.5)
-		
-		T.createBackdrop(namePlate.NUnitFrame.castBar, namePlate.NUnitFrame.castBar, 1)
-		
-		namePlate.NUnitFrame.castBar.Text = T.createtext(namePlate.NUnitFrame.castBar, "OVERLAY", fontsize-4, "OUTLINE", "CENTER")
-		namePlate.NUnitFrame.castBar.Text:SetPoint("CENTER")
-		namePlate.NUnitFrame.castBar.Text:SetText("Spell Name")
-		
-		namePlate.NUnitFrame.castBar.Icon = namePlate.NUnitFrame.castBar:CreateTexture(nil, "OVERLAY", 1)
-		namePlate.NUnitFrame.castBar.Icon:SetPoint("BOTTOMRIGHT", namePlate.NUnitFrame.castBar, "BOTTOMLEFT", -4, -1)
-		namePlate.NUnitFrame.castBar.Icon:SetTexCoord(0.05, 0.95, 0.05, 0.95)
-		if classresource_show and classresource == "target" then
-			namePlate.NUnitFrame.castBar.Icon:SetSize(25, 25)
-		else
-			namePlate.NUnitFrame.castBar.Icon:SetSize(21, 21)
-		end
-		namePlate.NUnitFrame.castBar.Icon.iconborder = F.CreateBG(namePlate.NUnitFrame.castBar.Icon)
-		namePlate.NUnitFrame.castBar.Icon.iconborder:SetDrawLayer("OVERLAY", -1)
-		
-		namePlate.NUnitFrame.castBar.BorderShield = namePlate.NUnitFrame.castBar:CreateTexture(nil, "OVERLAY", 1)
-		namePlate.NUnitFrame.castBar.BorderShield:SetAtlas("nameplates-InterruptShield")
-		namePlate.NUnitFrame.castBar.BorderShield:SetSize(15, 15)
-		namePlate.NUnitFrame.castBar.BorderShield:SetPoint("LEFT", namePlate.NUnitFrame.castBar, "LEFT", 5, -5)
-
-		namePlate.NUnitFrame.castBar.Spark = namePlate.NUnitFrame.castBar:CreateTexture(nil, "OVERLAY")
-		namePlate.NUnitFrame.castBar.Spark:SetSize(30, 25)
-		namePlate.NUnitFrame.castBar.Spark:SetTexture("Interface\\CastingBar\\UI-CastingBar-Spark")
-		namePlate.NUnitFrame.castBar.Spark:SetBlendMode("ADD")
-		namePlate.NUnitFrame.castBar.Spark:SetPoint("CENTER", 0, 3)
-		
-		namePlate.NUnitFrame.castBar.Flash = namePlate.NUnitFrame.castBar:CreateTexture(nil, "OVERLAY")
-		namePlate.NUnitFrame.castBar.Flash:SetAllPoints()
-		namePlate.NUnitFrame.castBar.Flash:SetTexture(G.media.ufbar)
-		namePlate.NUnitFrame.castBar.Flash:SetBlendMode("ADD")
-		
-		CastingBarFrame_OnLoad(namePlate.NUnitFrame.castBar, nil, false, true)
-		namePlate.NUnitFrame.castBar:SetScript("OnEvent", CastingBarFrame_OnEvent)
-		namePlate.NUnitFrame.castBar:SetScript("OnUpdate", CastingBarFrame_OnUpdate)
-		namePlate.NUnitFrame.castBar:SetScript("OnShow", CastingBarFrame_OnShow)
-
-		namePlate.NUnitFrame.RaidTargetFrame = CreateFrame("Frame", nil, namePlate.NUnitFrame)
-		namePlate.NUnitFrame.RaidTargetFrame:SetSize(30, 30)
-		namePlate.NUnitFrame.RaidTargetFrame:SetPoint("RIGHT", namePlate.NUnitFrame.name, "LEFT")
-
-		namePlate.NUnitFrame.RaidTargetFrame.RaidTargetIcon = namePlate.NUnitFrame.RaidTargetFrame:CreateTexture(nil, "OVERLAY")
-		namePlate.NUnitFrame.RaidTargetFrame.RaidTargetIcon:SetTexture([[Interface\AddOns\AltzUI\media\raidicons.blp]])
-		namePlate.NUnitFrame.RaidTargetFrame.RaidTargetIcon:SetAllPoints()
-		namePlate.NUnitFrame.RaidTargetFrame.RaidTargetIcon:Hide()
-		
-		namePlate.NUnitFrame.redarrow = namePlate.NUnitFrame:CreateTexture("$parent_Arrow", 'OVERLAY')
-		namePlate.NUnitFrame.redarrow:SetSize(50, 50)
-		namePlate.NUnitFrame.redarrow:SetTexture(redarrow)
-		namePlate.NUnitFrame.redarrow:SetPoint("CENTER")
-		namePlate.NUnitFrame.redarrow:Hide()
-		
-		namePlate.NUnitFrame.icons = CreateFrame("Frame", nil, namePlate.NUnitFrame)
-		namePlate.NUnitFrame.icons:SetPoint("BOTTOM", namePlate.NUnitFrame, "TOP", 0, 0)
-		namePlate.NUnitFrame.icons:SetWidth(140)
-		namePlate.NUnitFrame.icons:SetHeight(25)
-		namePlate.NUnitFrame.icons:SetFrameLevel(namePlate.NUnitFrame:GetFrameLevel() + 2)
 	end
 	
 	namePlate.NUnitFrame:EnableMouse(false)
@@ -1020,9 +832,8 @@ end
 
 local function OnNamePlateAdded(unit)
 	local namePlate = C_NamePlate.GetNamePlateForUnit(unit)
-	local unitFrame = namePlate.NUnitFrame
-	SetUnit(unitFrame, unit)
-	UpdateAll(unitFrame)
+	SetUnit(namePlate.NUnitFrame, unit)
+	UpdateAll(namePlate.NUnitFrame)
 end
 
 local function OnNamePlateRemoved(unit)

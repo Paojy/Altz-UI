@@ -61,32 +61,33 @@ local function StripTextures(object, text)
 end
 
 local function skin(frame)
-	local f = _G[frame:GetName().."IconTexture"]
-	local q = _G[frame:GetName().."IconQuestTexture"]
-	local r, g, b = frame.IconBorder:GetVertexColor()
-	local tex = frame.IconBorder:GetTexture()
-	
-	frame:SetAlpha(1)
-	frame:SetFrameStrata("HIGH")
-	
-	frame:SetNormalTexture("")
-	frame:SetPushedTexture("")
-	frame.IconBorder:SetAlpha(0)
-	frame:SetBackdrop({bgFile = G.media.blank, edgeFile = G.media.blank, edgeSize = 1})
-	frame:SetBackdropColor(0,0,0,.1)
-	frame:SetBackdropBorderColor(0,0,0,1)
+	if not frame.skin then
+		local f = _G[frame:GetName().."IconTexture"]
+		local q = _G[frame:GetName().."IconQuestTexture"]
+		
+		frame:SetAlpha(1)
+		frame:SetFrameStrata("HIGH")
 
-	f:SetPoint("TOPLEFT", frame, 1, -1)
-	f:SetPoint("BOTTOMRIGHT", frame, -1, 1)
-	f:SetTexCoord(.1, .9, .1, .9)
-	
-	if (q) then
-		q:SetPoint("TOPLEFT", frame, -1, 1)
-		q:SetPoint("BOTTOMRIGHT", frame, 1, -1)
-		q:SetTexture(G.media.blank)
-		q:SetVertexColor(1, 1, 0)
-		q:SetDrawLayer("BACKGROUND")
-		q.SetTexture = T.dummy
+		frame:SetNormalTexture("")
+		frame:SetPushedTexture("")
+		frame.IconBorder:SetAlpha(0)
+		frame:SetBackdrop({bgFile = G.media.blank, edgeFile = G.media.blank, edgeSize = 1})
+		frame:SetBackdropColor(0,0,0,.1)
+		frame:SetBackdropBorderColor(0,0,0,1)
+		
+		f:SetPoint("TOPLEFT", frame, 1, -1)
+		f:SetPoint("BOTTOMRIGHT", frame, -1, 1)
+		f:SetTexCoord(.1, .9, .1, .9)
+		
+		if (q) then
+			q:SetPoint("TOPLEFT", frame, -1, 1)
+			q:SetPoint("BOTTOMRIGHT", frame, 1, -1)
+			q:SetTexture(G.media.blank)
+			q:SetVertexColor(1, 1, 0)
+			q:SetDrawLayer("BACKGROUND")
+			q.SetTexture = T.dummy
+		end
+		frame.skin = true
 	end
 end
 

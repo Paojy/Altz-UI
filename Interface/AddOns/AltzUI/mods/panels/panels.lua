@@ -567,19 +567,19 @@ CurrencyButton:RegisterEvent("PLAYER_ENTERING_WORLD")
 CurrencyButton:RegisterEvent("ZONE_CHANGED_NEW_AREA")
 CurrencyButton:RegisterEvent("CURRENCY_DISPLAY_UPDATE")
 CurrencyButton:SetScript("OnEvent", function(self, event)
-	local map = C_Map.GetBestMapForUnit("player")
-	local currency = Currency[map]
-	
-	if map and currency then
-		name, amount, texturePath, earnedThisWeek, weeklyMax, totalMax, isDiscovered, quality = GetCurrencyInfo(currency)
-		CurrencyButton.text:SetText(amount.."/"..totalMax)
-		if event ~= "CURRENCY_DISPLAY_UPDATE" then
-			CurrencyButton.icon.texture:SetTexture(texturePath)
-		end
-		self:Show()
-	else
-		self:Hide()
-	end
+	--local map = C_Map.GetBestMapForUnit("player")
+	--local currency = Currency[map]
+	--
+	--if map and currency then
+	--	name, amount, texturePath, earnedThisWeek, weeklyMax, totalMax, isDiscovered, quality = GetCurrencyInfo(currency)
+	--	CurrencyButton.text:SetText(amount.."/"..totalMax)
+	--	if event ~= "CURRENCY_DISPLAY_UPDATE" then
+	--		CurrencyButton.icon.texture:SetTexture(texturePath)
+	--	end
+	--	self:Show()
+	--else
+	--	self:Hide()
+	--end
 end)
 --[[
 -- 位置
@@ -924,7 +924,7 @@ local EquipSetsMenu = CreateFrame("Frame", G.uiname.."EquipSetsMenu", UIParent, 
 local EquipSetsList = {}
 
 local function UpdateEquipSetsList()
-	local count = GetNumEquipmentSets()
+	local count = C_EquipmentSet.GetNumEquipmentSets()
 	if count > 0 then
 		EquipSetsList = {}
 		for index = 1, count do 
@@ -957,7 +957,7 @@ local function GetLowestDurability()
 end
 
 Durability:SetScript("OnMouseDown", function(self)
-	if not InCombatLockdown() and GetNumEquipmentSets() > 0 then
+	if not InCombatLockdown() and C_EquipmentSet.GetNumEquipmentSets() > 0 then
 		UpdateEquipSetsList()
 		L_EasyMenu(EquipSetsList, EquipSetsMenu, "cursor", 0, 0, "MENU", 2)
 		L_DropDownList1:ClearAllPoints()
@@ -996,7 +996,7 @@ end
 Net_Stats.t = 0
 Net_Stats:SetScript("OnUpdate", function(self, elapsed)
 	self.t = self.t + elapsed
-	if self.t > 1 then -- 每秒刷新一次
+	if self.t > 3 then -- 每秒刷新一次
 		fps = format("%d"..G.classcolor.."fps|r", GetFramerate())
 		lag = format("%d"..G.classcolor.."ms|r", select(4, GetNetStats()))	
 		self.text:SetText(fps.."  "..lag)
@@ -1004,46 +1004,70 @@ Net_Stats:SetScript("OnUpdate", function(self, elapsed)
 	end
 end)
 
+local NUM_ADDONS_TO_DISPLAY = 20;
+local topAddOns = {}
+for i=1, NUM_ADDONS_TO_DISPLAY do
+	topAddOns[i] = { value = 0, name = "" }
+end
+
 Net_Stats:SetScript("OnEnter", function(self)
-	local addons, total, nr, name = {}, 0, 0
-	local memory, entry
-	local BlizzMem = collectgarbage("count")
-	local bandwidthIn, bandwidthOut, latencyHome, latencyWorld = GetNetStats()
-			
 	GameTooltip:SetOwner(self, "ANCHOR_NONE")
+	
 	if select(2, InfoFrame:GetCenter())/G.screenheight > .5 then -- In the upper part of the screen
 		GameTooltip:SetPoint("TOP", InfoFrame, "BOTTOM", 0, -5)
 	else
 		GameTooltip:SetPoint("BOTTOM", InfoFrame, "TOP", 0, 5)
 	end
-	GameTooltip:AddLine(format(L["占用前 %d 的插件"], 20), G.Ccolor.r, G.Ccolor.g, G.Ccolor.b)
-	GameTooltip:AddLine(" ")	
-	
-	UpdateAddOnMemoryUsage()
-	for i = 1, GetNumAddOns() do
-		if (GetAddOnMemoryUsage(i) > 0 ) then
-			memory = GetAddOnMemoryUsage(i)
-			entry = {name = GetAddOnInfo(i), memory = memory}
-			table.insert(addons, entry)
-			total = total + memory
-		end
+
+	for i=1, NUM_ADDONS_TO_DISPLAY, 1 do
+		topAddOns[i].value = 0
 	end
-	table.sort(addons, function(a, b) return a.memory > b.memory end)
-	for _, entry in pairs(addons) do
-	if nr < 20 then
-			GameTooltip:AddDoubleLine(entry.name, memFormat(entry.memory), 1, 1, 1, T.ColorGradient(entry.memory / 1024, 0, 1, 0, 1, 1, 0, 1, 0, 0))
-			nr = nr+1
+
+	UpdateAddOnMemoryUsage()
+	local totalMem = 0
+
+	for i=1, GetNumAddOns(), 1 do
+		local mem = GetAddOnMemoryUsage(i)
+		totalMem = totalMem + mem
+		for j=1, NUM_ADDONS_TO_DISPLAY, 1 do
+			if( mem > topAddOns[j].value ) then
+				for k= NUM_ADDONS_TO_DISPLAY, 1, -1 do
+					if( k == j ) then
+						topAddOns[k].value = mem
+						topAddOns[k].name = GetAddOnInfo(i)
+						break
+					elseif( k ~= 1 ) then
+						topAddOns[k].value = topAddOns[k-1].value
+						topAddOns[k].name = topAddOns[k-1].name
+					end
+				end
+				break
+			end
 		end
 	end
 
-	GameTooltip:AddLine(" ")
-	GameTooltip:AddDoubleLine(L["自定义插件占用"], memFormat(total), 1, 1, 1, T.ColorGradient(total / (1024*20), 0, 1, 0, 1, 1, 0, 1, 0, 0))
-	GameTooltip:AddDoubleLine(L["所有插件占用"], memFormat(BlizzMem), 1, 1, 1, T.ColorGradient(BlizzMem / (1024*50) , 0, 1, 0, 1, 1, 0, 1, 0, 0))
+	local bandwidthIn, bandwidthOut, latencyHome, latencyWorld = GetNetStats()
 	
-	GameTooltip:AddLine(" ")
-	GameTooltip:AddLine(format(MAINMENUBAR_LATENCY_LABEL, latencyHome, latencyWorld), 1, 1, 1)
-	
-	GameTooltip:Show()
+	if ( totalMem > 0 ) then
+		GameTooltip:AddLine(format(L["占用前 %d 的插件"], min(NUM_ADDONS_TO_DISPLAY,GetNumAddOns())), G.Ccolor.r, G.Ccolor.g, G.Ccolor.b)
+		GameTooltip:AddLine(" ")
+		
+		for i=1, NUM_ADDONS_TO_DISPLAY, 1 do
+			if ( topAddOns[i].value == 0 ) then
+				break
+			end
+			GameTooltip:AddDoubleLine(topAddOns[i].name, memFormat(topAddOns[i].value), 1, 1, 1, T.ColorGradient(topAddOns[i].value / 1024, 0, 1, 0, 1, 1, 0, 1, 0, 0))
+		end
+		
+		GameTooltip:AddLine(" ")
+		GameTooltip:AddDoubleLine(L["自定义插件占用"], memFormat(totalMem), 1, 1, 1, T.ColorGradient(totalMem / (1024*20), 0, 1, 0, 1, 1, 0, 1, 0, 0))
+		GameTooltip:AddDoubleLine(L["所有插件占用"], memFormat(collectgarbage("count")), 1, 1, 1, T.ColorGradient(collectgarbage("count") / (1024*50) , 0, 1, 0, 1, 1, 0, 1, 0, 0))
+		
+		GameTooltip:AddLine(" ")
+		GameTooltip:AddLine(format(MAINMENUBAR_LATENCY_LABEL, latencyHome, latencyWorld), 1, 1, 1)
+		
+		GameTooltip:Show()		
+	end
 end)
  
 Net_Stats:SetScript("OnLeave", function(self) GameTooltip:Hide() end)

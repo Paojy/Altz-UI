@@ -1779,9 +1779,6 @@ local Character_default_Settings = {
 		toggleForVehicle = true,
 		autoswitch = false,
 		raidonly = "healer",
-		
-		enablearrow = true,
-		arrowsacle = 1.0,
 
 		--[[ healer mode ]]--
 		healergroupfilter = '1,2,3,4,5,6',
@@ -1942,7 +1939,6 @@ local Character_default_Settings = {
 		showspellID = true,
 		showitemID = true,
 		showtalent = true,
-		colorborderClass = false,
 		combathide = true,	
 	},
 	CombattextOptions = {

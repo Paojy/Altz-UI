@@ -1035,11 +1035,8 @@ T.createcheckbutton(RFInnerframe.common, 30, 60, L["启用"], "UnitframeOptions"
 T.createcheckbutton(RFInnerframe.common, 30, 90, L["显示宠物"], "UnitframeOptions", "showraidpet")
 T.createcheckbutton(RFInnerframe.common, 30, 120, L["未进组时显示"], "UnitframeOptions", "showsolo")
 T.createslider(RFInnerframe.common, 30, 170, L["名字长度"], "UnitframeOptions", "namelength", 1, 2, 10, 1)
-T.createcheckbutton(RFInnerframe.common, 30, 210, L["启用方向箭头"], "UnitframeOptions", "enablearrow", L["enablearrow2"])
-T.createslider(RFInnerframe.common, 30, 260, L["尺寸"], "UnitframeOptions", "arrowsacle", 100, 50, 200, 5)
-T.createcheckbutton(RFInnerframe.common, 30, 290, L["刷新载具"], "UnitframeOptions", "toggleForVehicle")
-T.createDR(RFInnerframe.common.enablearrow, RFInnerframe.common.arrowsacle)
-T.createDR(RFInnerframe.common.enableraid, RFInnerframe.common.showraidpet, RFInnerframe.common.showsolo, RFInnerframe.common.namelength, RFInnerframe.common.enablearrow, RFInnerframe.common.arrowsacle)
+T.createcheckbutton(RFInnerframe.common, 30, 200, L["刷新载具"], "UnitframeOptions", "toggleForVehicle")
+T.createDR(RFInnerframe.common.enableraid, RFInnerframe.common.showraidpet, RFInnerframe.common.showsolo, RFInnerframe.common.namelength)
 
 RFInnerframe.switch = CreateOptionPage("RF Options switch", L["切换"], RFInnerframe, "VERTICAL", .3)
 
@@ -2553,9 +2550,8 @@ T.createcheckbutton(TooltipOptions, 30, 210, L["隐藏称号"], "TooltipOptions"
 T.createcheckbutton(TooltipOptions, 30, 240, L["显示法术编号"], "TooltipOptions", "showspellID")
 T.createcheckbutton(TooltipOptions, 30, 270, L["显示物品编号"], "TooltipOptions", "showitemID")
 T.createcheckbutton(TooltipOptions, 30, 300, L["显示天赋"], "TooltipOptions", "showtalent")
-T.createcheckbutton(TooltipOptions, 30, 330, L["按职业着色"], "TooltipOptions", "colorborderClass")
-T.createcheckbutton(TooltipOptions, 30, 360, L["战斗中隐藏"], "TooltipOptions", "combathide")
-T.createDR(TooltipOptions.enabletip, TooltipOptions.size, TooltipOptions.cursor, TooltipOptions.hideRealm, TooltipOptions.hideTitles, TooltipOptions.showspellID, TooltipOptions.showitemID, TooltipOptions.showtalent, TooltipOptions.colorborderClass, TooltipOptions.combathide)
+T.createcheckbutton(TooltipOptions, 30, 330, L["战斗中隐藏"], "TooltipOptions", "combathide")
+T.createDR(TooltipOptions.enabletip, TooltipOptions.size, TooltipOptions.cursor, TooltipOptions.hideRealm, TooltipOptions.hideTitles, TooltipOptions.showspellID, TooltipOptions.showitemID, TooltipOptions.showtalent, TooltipOptions.combathide)
 
 --====================================================--
 --[[             -- Combattext Options --              ]]--
@@ -2580,16 +2576,6 @@ T.createcheckbutton(CombattextOptions, 30, 400, L["显示宠物"], "CombattextOp
 T.createslider(CombattextOptions, 30, 450, L["隐藏时间"], "CombattextOptions", "ctfadetime", 10, 20, 100, 5, L["隐藏时间提示"])
 
 T.createDR(CombattextOptions.combattext, CombattextOptions.hidblz_receive, CombattextOptions.hidblz, CombattextOptions.showreceivedct, CombattextOptions.showoutputct, CombattextOptions.formattype, CombattextOptions.cticonsize, CombattextOptions.ctbigiconsize, CombattextOptions.ctshowdots, CombattextOptions.ctshowhots, CombattextOptions.ctshowpet, CombattextOptions.ctfadetime)
-
---====================================================--
---[[              -- RaidTool Options --                ]]--
---====================================================--
-local RaidToolOptions = CreateOptionPage("RaidTool Options", L["团队工具"], GUI, "VERTICAL")
-
-T.createcheckbutton(RaidToolOptions, 30, 60, L["1-4队"], "RaidToolOptions", "onlyactive")
-T.createslider(RaidToolOptions, 30, 110, L["倒数时长"], "RaidToolOptions", "pulltime", 1, 3, 20, 1, L["需要启用DBM"])
-T.createcheckbutton(RaidToolOptions, 30, 150, L["药水通报"], "RaidToolOptions", "potion")
-T.createmultilinebox(RaidToolOptions, 200, 60, 35, 205, L["药水通报过滤"], "RaidToolOptions", "potionblacklist", L["药水通报过滤提示"])
 
 --====================================================--
 --[[              -- Other Options --                ]]--
