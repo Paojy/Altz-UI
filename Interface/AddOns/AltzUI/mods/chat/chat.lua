@@ -88,11 +88,10 @@ local function init()
 			tab.selectedColorTable = { r = G.Ccolor.r, g = G.Ccolor.g, b = G.Ccolor.b };
 			tab:SetAlpha(1)
 			end
-		end
-		-- hide tab texture
-		for index, value in pairs(TAB_TEXTURES) do
-			local texture = _G['ChatFrame'..i..'Tab'..value]
-			texture:SetTexture(nil)
+			for index, value in pairs(TAB_TEXTURES) do
+				local texture = _G['ChatFrame'..i..'Tab'..value]
+				texture:SetTexture(nil)
+			end
 		end
 		-- hide scroll bar
 		local button = _G['ChatFrame'..i].ScrollToBottomButton
@@ -116,6 +115,26 @@ local EventFrame = CreateFrame("Frame")
 EventFrame:RegisterEvent("ADDON_LOADED")
 EventFrame:RegisterEvent("PLAYER_LOGIN")
 EventFrame:RegisterEvent("PET_BATTLE_OPENING_START")
+
+hooksecurefunc("FCF_OpenTemporaryWindow", function()
+	for i = 11, 20 do
+		-- chat tabs
+		local tab = _G['ChatFrame'..i..'Tab']
+		if tab and not tab.skinned then
+			tab.skinned = true
+			tab:GetFontString():SetFont(STANDARD_TEXT_FONT, 13, "THINOUTLINE")
+			tab:GetFontString():SetShadowOffset(0,0)
+			if i ~= 11 then
+			tab.selectedColorTable = { r = G.Ccolor.r, g = G.Ccolor.g, b = G.Ccolor.b };
+			tab:SetAlpha(1)
+			end
+			for index, value in pairs(TAB_TEXTURES) do
+				local texture = _G['ChatFrame'..i..'Tab'..value]
+				texture:SetTexture(nil)
+			end
+		end
+	end
+end)
 
 EventFrame:SetScript("OnEvent", function(self, event, arg1)
 	if event == "ADDON_LOADED" and arg1 == "Blizzard_CombatLog" then
