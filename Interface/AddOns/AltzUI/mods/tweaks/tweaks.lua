@@ -349,10 +349,12 @@ if vignettealert then
 	function eventframe:VIGNETTE_MINIMAP_UPDATED(id)
 		if id and not vignettes[id] then
 			local info = C_VignetteInfo.GetVignetteInfo(id)
-			PlaySoundFile("Sound\\Interface\\RaidWarning.wav")
-			RaidNotice_AddMessage(RaidWarningFrame, (info.name or "Unknown").." "..L["出现了！"], ChatTypeInfo["RAID_WARNING"])
-			print(info.name,L["出现了！"])
-			vignettes[id] = true
+			if info then
+				PlaySoundFile("Sound\\Interface\\RaidWarning.wav")
+				RaidNotice_AddMessage(RaidWarningFrame, (info.name or "Unknown").." "..L["出现了！"], ChatTypeInfo["RAID_WARNING"])
+				print(info.name,L["出现了！"])
+				vignettes[id] = true
+			end
 		end
 	end
 end

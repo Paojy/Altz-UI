@@ -108,9 +108,9 @@ local tbl = {
 	["DAMAGE_CRIT"] = 		{frame = "damagetaken", prefix = "c-", 		arg2 = true, 	r = 1, 		g = 0.1, 	b = 0.1},
 	["SPELL_DAMAGE"] = 		{frame = "damagetaken", prefix =  "-", 		arg2 = true, 	r = 0.79, 	g = 0.3, 	b = 0.85},
 	["SPELL_DAMAGE_CRIT"] = {frame = "damagetaken", prefix = "c-", 		arg2 = true, 	r = 0.79, 	g = 0.3, 	b = 0.85},
-	["HEAL"] = 				{frame = "healingtaken", prefix =  "+", 		arg3 = true, 	r = 0.1, 	g = 1, 		b = 0.1},
-	["HEAL_CRIT"] = 		{frame = "healingtaken", prefix = "c+", 		arg3 = true, 	r = 0.1, 	g = 1, 		b = 0.1},
-	["PERIODIC_HEAL"] = 	{frame = "healingtaken", prefix =  "+", 		arg3 = true, 	r = 0.1, 	g = 1, 		b = 0.1},
+	["HEAL"] = 				{frame = "healingtaken", prefix =  "+", 	arg3 = true, 	r = 0.1, 	g = 1, 		b = 0.1},
+	["HEAL_CRIT"] = 		{frame = "healingtaken", prefix = "c+", 	arg3 = true, 	r = 0.1, 	g = 1, 		b = 0.1},
+	["PERIODIC_HEAL"] = 	{frame = "healingtaken", prefix =  "+", 	arg3 = true, 	r = 0.1, 	g = 1, 		b = 0.1},
 	["MISS"] = 				{frame = "damagetaken", prefix = "Miss", 					r = 1, 		g = 0.1, 	b = 0.1},
 	["SPELL_MISS"] = 		{frame = "damagetaken", prefix = "Miss", 					r = 0.79, 	g = 0.3, 	b = 0.85},
 	["SPELL_REFLECT"] = 	{frame = "damagetaken", prefix = "Reflect", 				r = 1, 		g = 1, 		b = 1},
@@ -136,17 +136,18 @@ if showoutput then
 end
 
 local template = "-%s (%s)"
-function eventframe:COMBAT_TEXT_UPDATE(spelltype, arg2, arg3)
+function eventframe:COMBAT_TEXT_UPDATE(spelltype)
 	local info = tbl[spelltype]
 	if info then
 		local msg = info.prefix
+		local arg2, arg3 = GetCurrentCombatTextEventInfo()
 		if info.spec  then
 			if arg3 then
 				msg = template:format(arg2, arg3)
 			end
 		else
-			if info.arg2 then msg = msg..T.ShortValue2(arg2) end
-			if info.arg3 then msg = msg..T.ShortValue2(arg3) end
+			if info.arg2 and arg2 then msg = msg..T.ShortValue2(arg2) end
+			if info.arg3 and arg3 then msg = msg..T.ShortValue2(arg3) end
 		end
 		frames[info.frame]:AddMessage(msg, info.r, info.g, info.b)
 	end

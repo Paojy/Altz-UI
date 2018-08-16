@@ -159,7 +159,7 @@ oUF.Tags.Events['Mlight:wildgrowth'] = "UNIT_AURA"
 oUF.Tags.Methods['Mlight:snla'] = function(u) --塞纳里奥结界
 	local name = AuraUtil.FindAuraByName(GetSpellInfo(102351), u, "PLAYER")
 	if name then
-		local w = select(10, AuraUtil.FindAuraByName(GetSpellInfo(102351)), u, "PLAYER")
+		local w = select(10, AuraUtil.FindAuraByName(GetSpellInfo(102351), u, "PLAYER"))
 		if w == 102351 then
 			return "|cffFFF8DCY|r"
 		else

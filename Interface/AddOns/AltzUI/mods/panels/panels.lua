@@ -535,11 +535,33 @@ InstanceDifficulty:SetScript("OnEvent", function(self) self.text:SetText(select(
 -- 货币
 
 local Currency = {
-	[1021] = 1342,
-	[1033] = 1155,
-	[1135] = 1508,
-	[1170] = 1508,
-	[1171] = 1508,
+	[646] = 1342,
+	[647] = 1342,
+	[648] = 1342,
+	[680] = 1155,
+	[681] = 1155,
+	[682] = 1155,
+	[683] = 1155,
+	[684] = 1155,
+	[685] = 1155,
+	[686] = 1155,
+	[687] = 1155,
+	[688] = 1155,
+	[689] = 1155,
+	[690] = 1155,
+	[691] = 1155,
+	[692] = 1155,
+	[693] = 1155,
+	[830] = 1508,
+	[831] = 1508,
+	[832] = 1508,
+	[833] = 1508,
+	[882] = 1508,
+	[883] = 1508,
+	[884] = 1508,
+	[885] = 1508,
+	[886] = 1508,
+	[887] = 1508,
 }
 
 local CurrencyButton = CreateFrame("Frame", nil, Minimap)
@@ -567,19 +589,19 @@ CurrencyButton:RegisterEvent("PLAYER_ENTERING_WORLD")
 CurrencyButton:RegisterEvent("ZONE_CHANGED_NEW_AREA")
 CurrencyButton:RegisterEvent("CURRENCY_DISPLAY_UPDATE")
 CurrencyButton:SetScript("OnEvent", function(self, event)
-	--local map = C_Map.GetBestMapForUnit("player")
-	--local currency = Currency[map]
-	--
-	--if map and currency then
-	--	name, amount, texturePath, earnedThisWeek, weeklyMax, totalMax, isDiscovered, quality = GetCurrencyInfo(currency)
-	--	CurrencyButton.text:SetText(amount.."/"..totalMax)
-	--	if event ~= "CURRENCY_DISPLAY_UPDATE" then
-	--		CurrencyButton.icon.texture:SetTexture(texturePath)
-	--	end
-	--	self:Show()
-	--else
-	--	self:Hide()
-	--end
+	local map = C_Map.GetBestMapForUnit("player")
+	local currency = Currency[map]
+	
+	if map and currency then
+		name, amount, texturePath, earnedThisWeek, weeklyMax, totalMax, isDiscovered, quality = GetCurrencyInfo(currency)
+		CurrencyButton.text:SetText(amount.."/"..totalMax)
+		if event ~= "CURRENCY_DISPLAY_UPDATE" then
+			CurrencyButton.icon.texture:SetTexture(texturePath)
+		end
+		self:Show()
+	else
+		self:Hide()
+	end
 end)
 --[[
 -- 位置
@@ -1371,6 +1393,7 @@ function MainMenuMicroButton_PositionAlert(alert)
 	alert.Arrow:SetPoint("BOTTOMRIGHT", alert, "TOPRIGHT", -4, 4);
 end
 
+GuildMicroButton.NotificationOverlay:SetAlpha(0)
 
 for i = 1, #MicromenuButtons do
 	if i == 1 then
