@@ -42,6 +42,14 @@ tinsert(C.themes["AuroraClassic"], function()
 		CHAT_MSG_MONSTER_PARTY = "chatBubblesParty",
 	}
 
+	local channels = {
+		CHAT_MSG_SAY = "SAY",
+		CHAT_MSG_YELL = "YELL",
+		CHAT_MSG_PARTY = "PARTY",
+		CHAT_MSG_PARTY_LEADER = "PARTY_LEADER",
+	}
+	if not AuroraConfig.bubbleColor then channels = {} end
+
 	local bubbleHook = CreateFrame("Frame")
 	for event in next, events do
 		bubbleHook:RegisterEvent(event)
@@ -50,6 +58,13 @@ tinsert(C.themes["AuroraClassic"], function()
 		if GetCVarBool(events[event]) then
 			self.elapsed = 0
 			self.msg = msg
+			local channel = channels[event]
+			if channel then
+				local info = ChatTypeInfo[channel]
+				self.color = {info.r, info.g, info.b}
+			else
+				self.color = nil
+			end
 			self:Show()
 		end
 	end)
@@ -59,9 +74,25 @@ tinsert(C.themes["AuroraClassic"], function()
 		local chatbubble = findChatBubble(self.msg)
 		if chatbubble or self.elapsed > .3 then
 			self:Hide()
-			if chatbubble and not chatbubble.styled then
-				styleBubble(chatbubble)
-				chatbubble.styled = true
+			if chatbubble then
+				if not chatbubble.styled then
+					styleBubble(chatbubble)
+					chatbubble.styled = true
+				end
+
+				if self.color then
+					if chatbubble.Shadow then
+						chatbubble.Shadow:SetBackdropBorderColor(unpack(self.color))
+					else
+						chatbubble:SetBackdropBorderColor(unpack(self.color))
+					end
+				else
+					if chatbubble.Shadow then
+						chatbubble.Shadow:SetBackdropBorderColor(0, 0, 0)
+					else
+						chatbubble:SetBackdropBorderColor(0, 0, 0)
+					end
+				end
 			end
 		end
 	end)

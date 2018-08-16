@@ -14,15 +14,20 @@ C.themes["Blizzard_Communities"] = function()
 	CommunitiesFrameInset:Hide()
 	F.ReskinArrow(CommunitiesFrame.AddToChatButton, "down")
 	F.ReskinDropDown(CommunitiesFrame.CommunitiesListDropDownMenu)
-	CommunitiesFrame.GuildFinderFrame:GetRegions():Hide()
-	CommunitiesFrame.GuildFinderFrame.InsetFrame:Hide()
-	F.Reskin(CommunitiesFrame.GuildFinderFrame.FindAGuildButton)
 
-	F.StripTextures(CommunitiesFrame.InvitationFrame)
-	F.CreateBD(CommunitiesFrame.InvitationFrame, .25)
-	CommunitiesFrame.InvitationFrame.InsetFrame:Hide()
-	F.Reskin(CommunitiesFrame.InvitationFrame.AcceptButton)
-	F.Reskin(CommunitiesFrame.InvitationFrame.DeclineButton)
+	for _, name in next, {"GuildFinderFrame", "InvitationFrame", "TicketFrame"} do
+		local frame = CommunitiesFrame[name]
+		F.StripTextures(frame)
+		F.CreateBD(frame, .25)
+		frame.InsetFrame:Hide()
+		if frame.CircleMask then
+			frame.CircleMask:Hide()
+			F.CreateBG(frame.Icon)
+		end
+		if frame.FindAGuildButton then F.Reskin(frame.FindAGuildButton) end
+		if frame.AcceptButton then F.Reskin(frame.AcceptButton) end
+		if frame.DeclineButton then F.Reskin(frame.DeclineButton) end
+	end
 
 	F.StripTextures(CommunitiesFrameCommunitiesList)
 	CommunitiesFrameCommunitiesList.InsetFrame:Hide()
@@ -182,10 +187,13 @@ C.themes["Blizzard_Communities"] = function()
 	F.ReskinClose(detailFrame.CloseButton)
 	F.Reskin(detailFrame.RemoveButton)
 	F.Reskin(detailFrame.GroupInviteButton)
+	F.ReskinDropDown(detailFrame.RankDropdown)
 	F.StripTextures(detailFrame.NoteBackground)
 	F.CreateBDFrame(detailFrame.NoteBackground, .25)
+	F.StripTextures(detailFrame.OfficerNoteBackground)
+	F.CreateBDFrame(detailFrame.OfficerNoteBackground, .25)
 	detailFrame:ClearAllPoints()
-	detailFrame:SetPoint("LEFT", CommunitiesFrame, "RIGHT", 3, 40)
+	detailFrame:SetPoint("TOPLEFT", CommunitiesFrame, "TOPRIGHT", 34, 0)
 
 	do
 		local dialog = CommunitiesSettingsDialog
@@ -285,10 +293,8 @@ C.themes["Blizzard_Communities"] = function()
 
 	-- Benefits
 	CommunitiesFrame.GuildBenefitsFrame.Perks:GetRegions():SetAlpha(0)
-	CommunitiesFrame.GuildBenefitsFrame.InsetBorderLeft:SetAlpha(0)
-	CommunitiesFrame.GuildBenefitsFrame.InsetBorderLeft2:SetAlpha(0)
-	CommunitiesFrame.GuildBenefitsFrame.InsetBorderRight:SetAlpha(0)
 	CommunitiesFrame.GuildBenefitsFrame.Rewards.Bg:SetAlpha(0)
+	F.StripTextures(CommunitiesFrame.GuildBenefitsFrame)
 	F.ReskinScroll(CommunitiesFrameRewards.scrollBar)
 
 	local factionFrameBar = CommunitiesFrame.GuildBenefitsFrame.FactionFrame.Bar
@@ -339,17 +345,23 @@ C.themes["Blizzard_Communities"] = function()
 	F.ReskinScroll(CommunitiesFrameGuildDetailsFrameInfoMOTDScrollFrameScrollBar)
 	local bg3 = F.CreateBDFrame(CommunitiesFrameGuildDetailsFrameInfoMOTDScrollFrame, .25)
 	bg3:SetPoint("TOPLEFT", 0, 3)
-	bg3:SetPoint("BOTTOMRIGHT", 0, -4)
+	bg3:SetPoint("BOTTOMRIGHT", -5, -4)
+
+	F.StripTextures(CommunitiesGuildTextEditFrame)
+	F.SetBD(CommunitiesGuildTextEditFrame)
+	CommunitiesGuildTextEditFrameBg:Hide()
+	F.StripTextures(CommunitiesGuildTextEditFrame.Container)
+	F.CreateBDFrame(CommunitiesGuildTextEditFrame.Container, .25)
+	F.ReskinScroll(CommunitiesGuildTextEditFrameScrollBar)
+	F.ReskinClose(CommunitiesGuildTextEditFrameCloseButton)
+	F.Reskin(CommunitiesGuildTextEditFrameAcceptButton)
+	local closeButton = select(4, CommunitiesGuildTextEditFrame:GetChildren())
+	F.Reskin(closeButton)
+
 	F.ReskinScroll(CommunitiesFrameGuildDetailsFrameInfoScrollBar)
 	F.CreateBDFrame(CommunitiesFrameGuildDetailsFrameInfo.DetailsFrame, .25)
 	F.ReskinScroll(CommunitiesFrameGuildDetailsFrameNewsContainer.ScrollBar)
-	CommunitiesFrameGuildDetailsFrame.InsetBorderLeft:SetAlpha(0)
-	CommunitiesFrameGuildDetailsFrame.InsetBorderLeft2:SetAlpha(0)
-	CommunitiesFrameGuildDetailsFrame.InsetBorderRight:SetAlpha(0)
-	CommunitiesFrameGuildDetailsFrame.InsetBorderTopLeft:SetAlpha(0)
-	CommunitiesFrameGuildDetailsFrame.InsetBorderTopRight:SetAlpha(0)
-	CommunitiesFrameGuildDetailsFrame.InsetBorderBottomLeft:SetAlpha(0)
-	CommunitiesFrameGuildDetailsFrame.InsetBorderBottomRight:SetAlpha(0)
+	F.StripTextures(CommunitiesFrameGuildDetailsFrame)
 
 	hooksecurefunc("CommunitiesGuildNewsButton_SetNews", function(button)
 		if button.header:IsShown() then

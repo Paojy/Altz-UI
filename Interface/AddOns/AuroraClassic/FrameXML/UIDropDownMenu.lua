@@ -10,6 +10,7 @@ tinsert(C.themes["AuroraClassic"], function()
 			if not backdrop.reskinned then
 				if AuroraConfig.tooltips then
 					F.CreateBD(menu)
+					F.CreateSD(menu)
 				end
 				F.CreateBD(backdrop)
 				F.CreateSD(backdrop)
@@ -23,6 +24,12 @@ tinsert(C.themes["AuroraClassic"], function()
 			bu.bg:Show()
 		else
 			bu.bg:Hide()
+		end
+	end
+
+	local function isCheckTexture(check)
+		if check:GetTexture() == "Interface\\Common\\UI-DropDownRadioChecks" then
+			return true
 		end
 	end
 
@@ -99,29 +106,34 @@ tinsert(C.themes["AuroraClassic"], function()
 					arrow:SetNormalTexture(C.media.arrowRight)
 					arrow:SetSize(8, 8)
 				end
-				_G["DropDownList"..level.."Button"..j.."UnCheck"]:SetTexture("")
 
-				if not bu.notCheckable then
-					toggleBackdrop(bu, true)
+				local uncheck = _G["DropDownList"..level.."Button"..j.."UnCheck"]
+				if isCheckTexture(uncheck) then uncheck:SetTexture("") end
 
-					-- only reliable way to see if button is radio or or check...
-					local _, co = check:GetTexCoord()
+				if isCheckTexture(check) then
+					if not bu.notCheckable then
+						toggleBackdrop(bu, true)
 
-					if co == 0 then
-						check:SetTexture("Interface\\Buttons\\UI-CheckBox-Check")
-						check:SetVertexColor(r, g, b, 1)
-						check:SetSize(20, 20)
-						check:SetDesaturated(true)
+						-- only reliable way to see if button is radio or or check...
+						local _, co = check:GetTexCoord()
+						if co == 0 then
+							check:SetTexture("Interface\\Buttons\\UI-CheckBox-Check")
+							check:SetVertexColor(r, g, b, 1)
+							check:SetSize(20, 20)
+							check:SetDesaturated(true)
+						else
+							check:SetTexture(C.media.backdrop)
+							check:SetVertexColor(r, g, b, .6)
+							check:SetSize(10, 10)
+							check:SetDesaturated(false)
+						end
+
+						check:SetTexCoord(0, 1, 0, 1)
 					else
-						check:SetTexture(C.media.backdrop)
-						check:SetVertexColor(r, g, b, .6)
-						check:SetSize(10, 10)
-						check:SetDesaturated(false)
+						toggleBackdrop(bu, false)
 					end
-
-					check:SetTexCoord(0, 1, 0, 1)
 				else
-					toggleBackdrop(bu, false)
+					check:SetSize(16, 16)
 				end
 			end
 		end

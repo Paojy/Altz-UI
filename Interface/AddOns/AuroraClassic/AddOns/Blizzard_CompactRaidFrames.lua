@@ -1,7 +1,12 @@
 local F, C = unpack(select(2, ...))
 
 tinsert(C.themes["AuroraClassic"], function()
-	if not CompactRaidFrameManagerToggleButton then LoadAddOn("Blizzard_CompactRaidFrames") end		-- just in case
+	if not CompactRaidFrameManagerToggleButton then
+		for _, addon in next, {"Blizzard_CUFProfiles", "Blizzard_CompactRaidFrames"} do
+			EnableAddOn(addon)
+			LoadAddOn(addon)
+		end
+	end
 
 	CompactRaidFrameManagerToggleButton:SetNormalTexture("Interface\\Buttons\\UI-ColorPicker-Buttons")
 	CompactRaidFrameManagerToggleButton:GetNormalTexture():SetTexCoord(.15, .39, 0, 1)
@@ -32,13 +37,13 @@ tinsert(C.themes["AuroraClassic"], function()
 		CompactRaidFrameManagerDisplayFrameHiddenModeToggle,
 		CompactRaidFrameManagerDisplayFrameConvertToRaid
 	}
-	CompactRaidFrameManagerDisplayFrameLeaderOptionsRaidWorldMarkerButton.SetNormalTexture = function() end
 	for _, button in pairs(buttons) do
 		for i = 1, 9 do
 			select(i, button:GetRegions()):SetAlpha(0)
 		end
 		F.Reskin(button)
 	end
+	CompactRaidFrameManagerDisplayFrameLeaderOptionsRaidWorldMarkerButton:SetNormalTexture("Interface\\RaidFrame\\Raid-WorldPing")
 
 	for i = 1, 8 do
 		select(i, CompactRaidFrameManager:GetRegions()):SetAlpha(0)

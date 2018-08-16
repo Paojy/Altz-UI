@@ -207,6 +207,20 @@ local function textureOnLeave(self)
 end
 F.clearArrow = textureOnLeave
 
+local function scrollOnEnter(self)
+	local bu = (self.ThumbTexture or self.thumbTexture) or _G[self:GetName().."ThumbTexture"]
+	if not bu then return end
+	bu.bg:SetBackdropColor(r, g, b, .3)
+	bu.bg:SetBackdropBorderColor(r, g, b)
+end
+
+local function scrollOnLeave(self)
+	local bu = (self.ThumbTexture or self.thumbTexture) or _G[self:GetName().."ThumbTexture"]
+	if not bu then return end
+	bu.bg:SetBackdropColor(0, 0, 0, 0)
+	bu.bg:SetBackdropBorderColor(0, 0, 0)
+end
+
 function F:ReskinScroll()
 	local frame = self:GetName()
 
@@ -267,6 +281,8 @@ function F:ReskinScroll()
 	up:HookScript("OnLeave", textureOnLeave)
 	down:HookScript("OnEnter", textureOnEnter)
 	down:HookScript("OnLeave", textureOnLeave)
+	self:HookScript("OnEnter", scrollOnEnter)
+	self:HookScript("OnLeave", scrollOnLeave)
 end
 
 function F:ReskinDropDown()
@@ -453,7 +469,7 @@ function F:ReskinRadio()
 	self:HookScript("OnLeave", clearRadio)
 end
 
-function F:ReskinSlider()
+function F:ReskinSlider(verticle)
 	self:SetBackdrop(nil)
 	self.SetBackdrop = F.dummy
 
@@ -471,6 +487,7 @@ function F:ReskinSlider()
 		if region:GetObjectType() == "Texture" then
 			region:SetTexture("Interface\\CastingBar\\UI-CastingBar-Spark")
 			region:SetBlendMode("ADD")
+			if verticle then region:SetRotation(math.rad(90)) end
 			return
 		end
 	end
@@ -657,8 +674,7 @@ function F:ReskinGarrisonPortrait()
 	self.PortraitRingQuality:SetTexture("")
 	if self.Highlight then self.Highlight:Hide() end
 
-	self.LevelBorder:Hide()
-	self.LevelBorder.Show = F.dummy
+	self.LevelBorder:SetScale(.0001)
 	self.Level:ClearAllPoints()
 	self.Level:SetPoint("BOTTOM", self, 0, 12)
 
