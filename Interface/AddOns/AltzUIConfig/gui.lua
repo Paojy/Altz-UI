@@ -2609,11 +2609,11 @@ T.createcheckbutton(OtherOptions, 30, 210, L["稀有警报"], "OtherOptions", "v
 T.createcheckbutton(OtherOptions, 30, 240, L["在战斗中隐藏小地图"], "OtherOptions", "hidemap")
 T.createcheckbutton(OtherOptions, 30, 270, L["在战斗中隐藏聊天框"], "OtherOptions", "hidechat")
 T.createcheckbutton(OtherOptions, 30, 300, L["在副本中收起任务追踪"], "OtherOptions", "collapseWF", L["在副本中收起任务追踪提示"])
-T.createcheckbutton(OtherOptions, 30, 330, L["自动交接任务"], "OtherOptions", "autoquests", L["自动交接任务提示"])
-T.createcheckbutton(OtherOptions, 30, 360, L["自动接受复活"], "OtherOptions", "acceptres", L["自动接受复活提示"])	
-T.createcheckbutton(OtherOptions, 30, 390, L["战场自动释放灵魂"], "OtherOptions", "battlegroundres", L["战场自动释放灵魂提示"])
-T.createcheckbutton(OtherOptions, 30, 420, L["大喊被闷了"], "OtherOptions", "saysapped", L["大喊被闷了提示"])
-T.CVartogglebox(OtherOptions, 30, 450, "overrideArchive", "反和谐(大退生效)", "0", "1")
+T.createcheckbutton(OtherOptions, 30, 330, L["COT"], "OtherOptions", "customobjectivetracker", L["COTinfo"])
+T.createcheckbutton(OtherOptions, 30, 360, L["自动交接任务"], "OtherOptions", "autoquests", L["自动交接任务提示"])
+T.createcheckbutton(OtherOptions, 30, 390, L["自动接受复活"], "OtherOptions", "acceptres", L["自动接受复活提示"])	
+T.createcheckbutton(OtherOptions, 30, 420, L["战场自动释放灵魂"], "OtherOptions", "battlegroundres", L["战场自动释放灵魂提示"])
+T.createcheckbutton(OtherOptions, 30, 450, L["大喊被闷了"], "OtherOptions", "saysapped", L["大喊被闷了提示"])
 
 T.createcheckbutton(OtherOptions, 300, 150, L["成就截图"], "OtherOptions", "autoscreenshot", L["成就截图提示"])
 T.CVartogglebox(OtherOptions, 300, 180, "screenshotQuality", L["提升截图画质"], "10", "1")
@@ -2625,8 +2625,9 @@ T.createcheckbutton(OtherOptions, 300, 330, L["任务栏闪动"], "OtherOptions"
 --T.createcheckbutton(OtherOptions, 300, 360, L["大地图坐标"], "OtherOptions", "worldmapcoords")
 T.createcheckbutton(OtherOptions, 300, 360, L["暂离屏幕"], "OtherOptions", "afkscreen", L["暂离屏幕提示"])
 T.createcheckbutton(OtherOptions, 300, 390, L["隐藏边缘装饰"], "OtherOptions", "hidepanels", L["隐藏边缘装饰提示"])
-if G.Client ~= "zhCN" then OtherOptions.overrideArchive:Hide() end
 T.createcheckbutton(OtherOptions, 300, 420, L["快速焦点"], "OtherOptions", "shiftfocus")
+T.CVartogglebox(OtherOptions, 300, 450, "overrideArchive", "反和谐(大退生效)", "0", "1")
+if G.Client ~= "zhCN" then OtherOptions.overrideArchive:Hide() end
 --====================================================--
 --[[               -- Skin Options --               ]]--
 --====================================================--

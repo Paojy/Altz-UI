@@ -1990,6 +1990,7 @@ local Character_default_Settings = {
 		afkscreen = true,
 		hidepanels = false,
 		shiftfocus = false,
+		customobjectivetracker = false,
 	},
 	SkinOptions = {
 		setClassColor = true,
