@@ -308,6 +308,7 @@ L["显示法术编号"] = "Mostrar 'SpellID'"
 L["显示物品编号"] = "Mostrar 'ItemID'"
 L["显示天赋"] = "Mostrar 'Spec'"
 L["战斗中隐藏"] = "Esconder em combate"
+L["BackdropOpacity"] = "Backdrop Opacity"
 
 -- 战斗信息
 L["战斗信息"] = "Texto de combate"

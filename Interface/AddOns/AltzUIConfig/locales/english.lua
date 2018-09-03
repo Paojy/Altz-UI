@@ -308,6 +308,7 @@ L["显示法术编号"] = "Show SpellID"
 L["显示物品编号"] = "Show ItemID"
 L["显示天赋"] = "Show Talent"
 L["战斗中隐藏"] = "Hide in Combat"
+L["BackdropOpacity"] = "Backdrop Opacity"
 
 -- 战斗信息
 L["战斗信息"] = "Combat Text"

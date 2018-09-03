@@ -11,6 +11,7 @@ local hideTitles = aCoreCDB["TooltipOptions"]["hideTitles"]
 local hideRealm = aCoreCDB["TooltipOptions"]["hideRealm"]
 local combathide = aCoreCDB["TooltipOptions"]["combathide"]
 local scale = aCoreCDB["TooltipOptions"]["size"]
+local backdropOpacity = aCoreCDB["TooltipOptions"]["backdropOpacity"]
 
 local you = "<You>"
 local boss = "Boss"
@@ -224,7 +225,7 @@ GAME_TOOLTIP_BACKDROP_STYLE_DEFAULT = {
 	insets = { left = 1, right = 1, top = 1, bottom = 1 },
 
 	backdropBorderColor = {GetRGB = function() return 0, 0, 0 end},
-	backdropColor = {GetRGB = function() return 0, 0, 0, .4 end}
+	backdropColor = {GetRGB = function() return 0, 0, 0, backdropOpacity end}
 }
 
 local function style(frame)
@@ -235,7 +236,7 @@ local function style(frame)
 		insets = {left = 1, right = 1, top = 1, bottom = 1}
 	})
 	frame:SetScale(scale)
-	frame:SetBackdropColor(0, 0, 0, 0.4)
+	frame:SetBackdropColor(0, 0, 0, backdropOpacity) 
     frame:SetBackdropBorderColor(0, 0, 0)
 end
 
