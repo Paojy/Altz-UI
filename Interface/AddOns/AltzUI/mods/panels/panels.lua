@@ -1787,7 +1787,7 @@ BOTTOMPANEL:SetScript("OnMouseDown", function(self)
 end)
 
 BOTTOMPANEL:SetScript("OnEvent",function(self, event) 
-	if event == "PLAYER_ENTERING_WORLD" and aCoreCDB["OtherOptions"]["afkscreen"] then
+	if event == "PLAYER_ENTERING_WORLD" and aCoreCDB["OtherOptions"]["afklogin"] then
 		if aCoreDB.meet then
 			T.fadeout()
 		end
