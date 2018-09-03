@@ -11,6 +11,7 @@ local autoscreenshot = aCoreCDB["OtherOptions"]["autoscreenshot"]
 local acceptfriendlyinvites = aCoreCDB["OtherOptions"]["acceptfriendlyinvites"]
 local autoinvite = aCoreCDB["OtherOptions"]["autoinvite"]
 local vignettealert = aCoreCDB["OtherOptions"]["vignettealert"]
+local vignettealerthide = aCoreCDB["OtherOptions"]["vignettealerthide"]
 local flashtaskbar = aCoreCDB["OtherOptions"]["flashtaskbar"]
 local autopet = aCoreCDB["OtherOptions"]["autopet"]
 local LFGRewards = aCoreCDB["OtherOptions"]["LFGRewards"]
@@ -347,7 +348,7 @@ local vignettes = {}
 if vignettealert then
 	eventframe:RegisterEvent("VIGNETTE_MINIMAP_UPDATED")
 	function eventframe:VIGNETTE_MINIMAP_UPDATED(id)
-		if id and not vignettes[id] then
+		if id and not vignettes[id] and (not vignettealerthide or not UnitOnTaxi("player")) then
 			local info = C_VignetteInfo.GetVignetteInfo(id)
 			if info then
 				PlaySoundFile("Sound\\Interface\\RaidWarning.wav")

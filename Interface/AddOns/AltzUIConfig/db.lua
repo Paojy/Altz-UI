@@ -1980,6 +1980,7 @@ local Character_default_Settings = {
 		saysapped = true,
 		showAFKtips = true,
 		vignettealert = true,
+		vignettealerthide = true,
 		flashtaskbar = true,
 		autopet = true,
 		LFGRewards = true,
