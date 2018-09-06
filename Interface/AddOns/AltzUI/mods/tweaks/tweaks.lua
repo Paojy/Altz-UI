@@ -104,6 +104,9 @@ function eventframe:MERCHANT_SHOW()
 				if gearRepaired then
 					print(format(L["修理花费"].." %.1fg ("..GUILD..")", cost * 0.0001))
 				end
+			elseif aCoreCDB["ItemOptions"]["autorepair_guild_auto"] and GetMoney() > cost then
+				RepairAllItems()
+				print(format(L["修理花费"].." %.1fg", cost * 0.0001))
 			end
 		elseif cost > 0 and GetMoney() > cost then
 			RepairAllItems()

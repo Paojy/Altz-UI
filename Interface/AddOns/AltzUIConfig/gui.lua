@@ -305,9 +305,10 @@ T.createcheckbutton(IInnerframe.common, 30, 180, L["显示物品等级"], "ItemO
 T.createDR(IInnerframe.common.enablebag, IInnerframe.common.showitemlevel)
 T.createcheckbutton(IInnerframe.common, 30, 210, L["已会配方着色"], "ItemOptions", "alreadyknown", L["已会配方着色提示"])
 T.createcheckbutton(IInnerframe.common, 30, 240, L["自动修理"], "ItemOptions", "autorepair", L["自动修理提示"])
-T.createcheckbutton(IInnerframe.common, 230, 240, L["自动公会修理"], "ItemOptions", "autorepair_guild", L["自动公会修理提示"])
-T.createcheckbutton(IInnerframe.common, 30, 270, L["自动售卖"], "ItemOptions", "autosell", L["自动售卖提示"])
-T.createcheckbutton(IInnerframe.common, 230, 270, L["自动购买"], "ItemOptions", "autobuy", L["自动购买提示"])
+T.createcheckbutton(IInnerframe.common, 30, 270, L["自动公会修理"], "ItemOptions", "autorepair_guild", L["自动公会修理提示"])
+T.createcheckbutton(IInnerframe.common, 230, 270, L["灵活公会修理"], "ItemOptions", "autorepair_guild_auto", L["灵活公会修理提示"])
+T.createcheckbutton(IInnerframe.common, 30, 300, L["自动售卖"], "ItemOptions", "autosell", L["自动售卖提示"])
+T.createcheckbutton(IInnerframe.common, 230, 300, L["自动购买"], "ItemOptions", "autobuy", L["自动购买提示"])
 
 IInnerframe.common.SF:ClearAllPoints()
 IInnerframe.common.SF:SetPoint("TOPLEFT", IInnerframe.common, "TOPLEFT", 40, -340)

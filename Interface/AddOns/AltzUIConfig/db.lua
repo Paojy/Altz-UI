@@ -1823,6 +1823,7 @@ local Character_default_Settings = {
 		bagiconperrow = 14,
 		autorepair = true,
 		autorepair_guild = true,
+		autorepair_guild_auto = true,
 		autosell = true,
 		alreadyknown = true,
 		showitemlevel = true,
