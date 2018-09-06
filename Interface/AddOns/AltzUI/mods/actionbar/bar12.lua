@@ -35,6 +35,7 @@ frame:SetHeight(2*buttonssize + buttonspace + 2*padding)
 --move the buttons into position and reparent them
 MainMenuBarArtFrame:SetParent(frame)
 MainMenuBarArtFrame:EnableMouse(false)
+MainMenuBarArtFrame.PageNumber:Hide()
 MultiBarBottomLeft:SetParent(frame)
 MultiBarBottomLeft:EnableMouse(false)
 
