@@ -415,7 +415,9 @@ local ChannelSpells = {
 
 local PostCastStart = function(castbar, unit)
 	if unit == "player" then
-		castbar.IBackdrop:SetBackdropBorderColor(0, 0, 0)
+		if not aCoreCDB["UnitframeOptions"]["hideplayercastbaricon"] then
+			castbar.IBackdrop:SetBackdropBorderColor(0, 0, 0)
+		end
 	else
 		if castbar.notInterruptible then
 			castbar.IBackdrop:SetBackdropBorderColor(uc[1], uc[2], uc[3])
@@ -428,7 +430,9 @@ end
 local PostChannelStart = function(castbar, unit, spell)
 
 	if unit == "player" then
-		castbar.IBackdrop:SetBackdropBorderColor(0, 0, 0)
+		if not aCoreCDB["UnitframeOptions"]["hideplayercastbaricon"] then
+			castbar.IBackdrop:SetBackdropBorderColor(0, 0, 0)
+		end
 	else
 		if castbar.notInterruptible then
 			castbar.IBackdrop:SetBackdropBorderColor(uc[1], uc[2], uc[3])
@@ -556,8 +560,12 @@ local CreateCastbars = function(self, unit)
 		cb.Icon:SetSize(aCoreCDB["UnitframeOptions"]["cbIconsize"], aCoreCDB["UnitframeOptions"]["cbIconsize"])
 		cb.Icon:SetTexCoord(.1, .9, .1, .9)
 		cb.Icon:SetPoint("BOTTOMRIGHT", cb, "BOTTOMLEFT", -7, -aCoreCDB["UnitframeOptions"]["height"]*(1-aCoreCDB["UnitframeOptions"]["hpheight"]))
-
-		cb.IBackdrop = T.createBackdrop(cb, cb.Icon)
+		
+		if unit == "player" and aCoreCDB["UnitframeOptions"]["hideplayercastbaricon"] then
+			cb.Icon:Hide()
+		else
+			cb.IBackdrop = T.createBackdrop(cb, cb.Icon)
+		end
 
 		if multicheck(u, "target", "player", "focus") and aCoreCDB["UnitframeOptions"]["independentcb"] then
 			cb:ClearAllPoints()

@@ -1007,6 +1007,7 @@ local Character_default_Settings = {
 		focus_cbheight = 5,
 		focus_cbwidth = 230,
 		channelticks = false,
+		hideplayercastbaricon = false,
 		
 		-- swing timer
 		swing = false,
