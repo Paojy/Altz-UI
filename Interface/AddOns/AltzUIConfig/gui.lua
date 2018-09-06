@@ -2551,8 +2551,9 @@ T.createcheckbutton(TooltipOptions, 30, 240, L["显示法术编号"], "TooltipOp
 T.createcheckbutton(TooltipOptions, 30, 270, L["显示物品编号"], "TooltipOptions", "showitemID")
 T.createcheckbutton(TooltipOptions, 30, 300, L["显示天赋"], "TooltipOptions", "showtalent")
 T.createcheckbutton(TooltipOptions, 30, 330, L["战斗中隐藏"], "TooltipOptions", "combathide")
-T.createDR(TooltipOptions.enabletip, TooltipOptions.size, TooltipOptions.cursor, TooltipOptions.hideRealm, TooltipOptions.hideTitles, TooltipOptions.showspellID, TooltipOptions.showitemID, TooltipOptions.showtalent, TooltipOptions.combathide)
+T.createslider(TooltipOptions, 30, 380, L["背景透明度"], "TooltipOptions", "backdropOpacity", 100, 1, 100, 1)
 
+T.createDR(TooltipOptions.enabletip, TooltipOptions.size, TooltipOptions.cursor, TooltipOptions.hideRealm, TooltipOptions.hideTitles, TooltipOptions.showspellID, TooltipOptions.showitemID, TooltipOptions.showtalent, TooltipOptions.combathide, TooltipOptions.backdropOpacity)
 --====================================================--
 --[[             -- Combattext Options --              ]]--
 --====================================================--
@@ -2606,11 +2607,12 @@ OtherOptions.DividingLine:SetColorTexture(1, 1, 1, .2)
 T.createcheckbutton(OtherOptions, 30, 150, L["自动召宝宝"], "OtherOptions", "autopet", L["自动召宝宝提示"])
 T.createcheckbutton(OtherOptions, 30, 180, L["随机奖励"], "OtherOptions", "LFGRewards", L["随机奖励提示"])
 T.createcheckbutton(OtherOptions, 30, 210, L["稀有警报"], "OtherOptions", "vignettealert", L["稀有警报提示"])
+
 T.createcheckbutton(OtherOptions, 30, 240, L["Hide Vingette Alert when on taxi"], "OtherOptions", "vignettealerthide", L["Will not display vingette alerts if you are currently on a taxi"])
 T.createcheckbutton(OtherOptions, 30, 270, L["在战斗中隐藏小地图"], "OtherOptions", "hidemap")
 T.createcheckbutton(OtherOptions, 30, 300, L["在战斗中隐藏聊天框"], "OtherOptions", "hidechat")
 T.createcheckbutton(OtherOptions, 30, 330, L["在副本中收起任务追踪"], "OtherOptions", "collapseWF", L["在副本中收起任务追踪提示"])
-T.createcheckbutton(OtherOptions, 30, 360, L["COT"], "OtherOptions", "customobjectivetracker", L["COTinfo"])
+T.createcheckbutton(OtherOptions, 30, 330, L["自定义任务追踪"], "OtherOptions", "customobjectivetracker", L["自定义任务追踪提示"])
 T.createcheckbutton(OtherOptions, 30, 390, L["自动交接任务"], "OtherOptions", "autoquests", L["自动交接任务提示"])
 T.createcheckbutton(OtherOptions, 30, 420, L["自动接受复活"], "OtherOptions", "acceptres", L["自动接受复活提示"])	
 T.createcheckbutton(OtherOptions, 30, 450, L["战场自动释放灵魂"], "OtherOptions", "battlegroundres", L["战场自动释放灵魂提示"])

@@ -1940,6 +1940,7 @@ local Character_default_Settings = {
 		showitemID = true,
 		showtalent = true,
 		combathide = true,	
+		backdropOpacity = 0.8,
 	},
 	CombattextOptions = {
 		combattext = true,

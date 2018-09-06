@@ -308,6 +308,7 @@ L["显示法术编号"] = "Mostrar 'SpellID'"
 L["显示物品编号"] = "Mostrar 'ItemID'"
 L["显示天赋"] = "Mostrar 'Spec'"
 L["战斗中隐藏"] = "Esconder em combate"
+--L["背景透明度"] = "Backdrop Opacity"
 
 -- 战斗信息
 L["战斗信息"] = "Texto de combate"
@@ -374,6 +375,8 @@ L["暂离屏幕提示"]= "Esconde interface quando LDT ou ao logar"
 L["隐藏边缘装饰"] = "Esconder barras decorativas"
 L["隐藏边缘装饰提示"] = "Esconde barras decorativas superior e inferior da tela."
 L["快速焦点"] = "Usar SHIFT + Clique para focar alvo."
+--L["自定义任务追踪"] = "Custom Objective Tracker"
+--L["自定义任务追踪提示"] = "Enable this if you are using a custom objective tracker addon.\n  (ex: Dugi Questing Essential, Kaliel's Tracker)"
 
 -- 插件皮肤
 L["插件皮肤"] = "'Skins' p/ AddOns"

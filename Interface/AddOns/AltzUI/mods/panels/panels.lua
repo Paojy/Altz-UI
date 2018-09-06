@@ -1005,7 +1005,7 @@ local function UpdateEquipSetsList()
 	if count > 0 then
 		EquipSetsList = {}
 		for index = 1, count do 
-			local name, Icon, setID, isEquipped, totalItems, equippedItems, inventoryItems, missingItems, ignoredSlots = GetEquipmentSetInfo(index)
+			local name, Icon, setID, isEquipped, totalItems, equippedItems, inventoryItems, missingItems, ignoredSlots = C_EquipmentSet.GetEquipmentSetInfo(index)
 			EquipSetsList[index] = {
 				text = name,
 				icon = Icon,
@@ -1322,13 +1322,10 @@ local function CreateMicromenuButton(parent, bu, text, original)
 		Button = bu
 		Button:SetParent(parent)
 		Button:ClearAllPoints()
-		Button:SetNormalTexture(nil)
-		Button:SetPushedTexture(nil)
-		Button:SetHighlightTexture(nil)
-		Button:SetDisabledTexture(nil)
-		Button.SetNormalTexture = T.dummy
-		Button.SetPushedTexture = T.dummy
-		Button.SetHighlightTexture = T.dummy
+		Button:GetNormalTexture():SetAlpha(0)
+		Button:GetPushedTexture():SetAlpha(0)
+		Button:GetHighlightTexture():SetAlpha(0)
+		Button:GetDisabledTexture(nil)
 		Button.SetDisabledTexture = T.dummy
 		for j = 1, Button:GetNumRegions() do
 			local region = select(j, Button:GetRegions())
