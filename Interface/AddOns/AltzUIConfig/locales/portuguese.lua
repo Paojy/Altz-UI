@@ -372,6 +372,8 @@ L["暂离屏幕提示"]= "Esconde interface quando LDT ou ao logar"
 L["隐藏边缘装饰"] = "Esconder barras decorativas"
 L["隐藏边缘装饰提示"] = "Esconde barras decorativas superior e inferior da tela."
 L["快速焦点"] = "Usar SHIFT + Clique para focar alvo."
+--L["COT"] = "Custom Objective Tracker"
+--L["COTinfo"] = "Enable this if you are using a custom objective tracker addon.\n  (ex: Dugi Questing Essential, Kaliel's Tracker)"
 
 -- 插件皮肤
 L["插件皮肤"] = "'Skins' p/ AddOns"
