@@ -2625,11 +2625,13 @@ T.createcheckbutton(OtherOptions, 300, 270, L["回收内存"], "OtherOptions", "
 T.createcheckbutton(OtherOptions, 300, 300, L["显示插件使用小提示"], "OtherOptions", "showAFKtips", L["显示插件使用小提示提示"])
 T.createcheckbutton(OtherOptions, 300, 330, L["任务栏闪动"], "OtherOptions", "flashtaskbar", L["任务栏闪动提示"])
 --T.createcheckbutton(OtherOptions, 300, 360, L["大地图坐标"], "OtherOptions", "worldmapcoords")
-T.createcheckbutton(OtherOptions, 300, 360, L["暂离屏幕"], "OtherOptions", "afkscreen", L["暂离屏幕提示"])
-T.createcheckbutton(OtherOptions, 300, 390, L["隐藏边缘装饰"], "OtherOptions", "hidepanels", L["隐藏边缘装饰提示"])
-T.createcheckbutton(OtherOptions, 300, 420, L["快速焦点"], "OtherOptions", "shiftfocus")
-T.CVartogglebox(OtherOptions, 300, 450, "overrideArchive", "反和谐(大退生效)", "0", "1")
+
+T.createcheckbutton(OtherOptions, 300, 360, L["Hide Interface on Login"], "OtherOptions", "afklogin", L["Hide the interface when logging into the game"])
+T.createcheckbutton(OtherOptions, 300, 390, L["暂离屏幕"], "OtherOptions", "afkscreen", L["暂离屏幕"])
+T.createcheckbutton(OtherOptions, 300, 420, L["隐藏边缘装饰"], "OtherOptions", "hidepanels", L["隐藏边缘装饰提示"])
 if G.Client ~= "zhCN" then OtherOptions.overrideArchive:Hide() end
+T.createcheckbutton(OtherOptions, 300, 450, L["快速焦点"], "OtherOptions", "shiftfocus")
+
 --====================================================--
 --[[               -- Skin Options --               ]]--
 --====================================================--

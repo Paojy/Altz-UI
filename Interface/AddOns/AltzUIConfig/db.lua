@@ -1989,6 +1989,7 @@ local Character_default_Settings = {
 		hidemap = false,
 		hidechat = false,
 		worldmapcoords = false,
+		afklogin = false,
 		afkscreen = true,
 		hidepanels = false,
 		shiftfocus = false,
