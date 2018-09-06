@@ -1,9 +1,9 @@
 local T, C, L, G = unpack(select(2, ...))
 local dragFrameList = G.dragFrameList
 
+local growUp = aCoreCDB["ActionbarOptions"]["growup"]
 local buttonssize = aCoreCDB["ActionbarOptions"]["bar12size"]
 local buttonspace = aCoreCDB["ActionbarOptions"]["bar12space"]
-local bar1top = aCoreCDB["ActionbarOptions"]["bar1top"]
 local padding = 4
 local mouseover = {
 	enable= aCoreCDB["ActionbarOptions"]["bar12mfade"],
@@ -44,15 +44,20 @@ for i=1, num do
 	table.insert(buttonList, button) --add the button object to the list
 	button:SetSize(buttonssize, buttonssize)
 	button:ClearAllPoints()
-	if i == 1 then
-		if bar1top then
-			button:SetPoint("TOPLEFT", frame, padding, -padding)
-		else
+	if growUp then
+		if i == 1 then
 			button:SetPoint("BOTTOMLEFT", frame, padding, padding)
+		else
+			local previous = _G["ActionButton"..i-1]
+			button:SetPoint("LEFT", previous, "RIGHT", buttonspace, 0)
 		end
 	else
-		local previous = _G["ActionButton"..i-1]
-		button:SetPoint("LEFT", previous, "RIGHT", buttonspace, 0)
+		if i == 1 then
+			button:SetPoint("TOPLEFT", frame, padding, -padding)
+		else
+			local previous = _G["ActionButton"..i-1]
+			button:SetPoint("LEFT", previous, "RIGHT", buttonspace, 0)
+		end
 	end
 end
 
@@ -62,10 +67,10 @@ for i=1, num do
 	button:SetSize(buttonssize, buttonssize)
 	button:ClearAllPoints()
 	if i == 1 then
-		if bar1top then
-			button:SetPoint("TOPLEFT", frame, padding, -padding -buttonspace -buttonssize)
-		else
+		if growUp then
 			button:SetPoint("BOTTOMLEFT", frame, padding, padding +buttonspace +buttonssize)
+		else
+			button:SetPoint("TOPLEFT", frame, padding, -padding -buttonspace -buttonssize)
 		end
 	else
 		local previous = _G["MultiBarBottomLeftButton"..i-1]

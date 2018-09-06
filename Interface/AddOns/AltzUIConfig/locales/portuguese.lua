@@ -226,6 +226,8 @@ L["数字指示器"] = "Indicador estilo: número"
 L["图标指示器"] = "Indicador estilo: ícone"
 
 -- 动作条
+L["Grow Bar Upwards"] = "Grow Bar Upwards"
+L["This growns the bars upwards when in a horizontal layout"] = "This growns the bars upwards when in a horizontal layout"
 L["显示冷却时间"] = "Mostrar texto de recarga"
 L["冷却时间数字大小"] = "Tamanho do texto de recarga: "
 L["冷却时间数字大小提示"] = "This value only affect cooldown frames which size is bigger than 25*25pixel,\n others have their appropriate sized text.\nNote that the cooldown text won't show if it's too small." --
@@ -244,7 +246,6 @@ L["渐隐透明度"] = "Opacidade do esvanecimento: "
 L["渐隐透明度提示"] = "Opacidade minima do esvanecimento."
 
 L["主动作条"] = "Principal"
-L["更改上下位置"] = "Colocar principal acima da adicional"
 L["额外动作条"] = "Adicional"
 L["额外动作条布局"] = "Estilo da barra de ações adicionais"
 L["布局1"] = "12*1"

@@ -226,6 +226,8 @@ L["数字指示器"] = "數字指示器"
 L["图标指示器"] = "圖標指示器"
 
 -- 动作条
+L["Grow Bar Upwards"] = "Grow Bar Upwards"
+L["This growns the bars upwards when in a horizontal layout"] = "This growns the bars upwards when in a horizontal layout"
 L["显示冷却时间"] = "顯示冷却時間"
 L["显示冷却时间提示"] = "在動作條和物品上顯示冷却時間。"
 L["冷却时间数字大小"] = "冷却時間字體大小"
@@ -244,7 +246,6 @@ L["渐隐透明度"] = "漸隱透明度"
 L["渐隐透明度提示"] = "框體未激活時的透明度"
 
 L["主动作条"] = "主動作條"
-L["更改上下位置"] = "將動作條1放在動作條2上面"
 L["额外动作条"] = "額外動作條"
 L["额外动作条布局"] = "額外動作條布局"
 L["布局1"] = "12*1布局"

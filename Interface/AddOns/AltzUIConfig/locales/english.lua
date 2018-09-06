@@ -226,6 +226,8 @@ L["数字指示器"] = "Number-style Indicators"
 L["图标指示器"] = "Icon-style Indicators"
 
 -- 动作条
+L["Grow Bar Upwards"] = "Grow Bar Upwards"
+L["This growns the bars upwards when in a horizontal layout"] = "This growns the bars upwards when in a horizontal layout"
 L["显示冷却时间"] = "Show Cooldown Text"
 L["冷却时间数字大小"] = "Cooldown Text Size"
 L["冷却时间数字大小提示"] = "This value only affects cooldown frames which size is bigger than 25*25pixel,\n others have their appropriate sized text.\nNote that the cooldown text won't show if it's too small."
@@ -244,7 +246,6 @@ L["渐隐透明度"] = "Fading Alpha"
 L["渐隐透明度提示"] = "Fade-out minimum alpha"
 
 L["主动作条"] = "MainActionbar"
-L["更改上下位置"] = "Place bar1 above bar2"
 L["额外动作条"] = "MultiActionBar"
 L["额外动作条布局"] = "MultiActionBar Layout"
 L["布局1"] = "12*1"
