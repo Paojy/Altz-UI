@@ -4,6 +4,9 @@ local F = unpack(AuroraClassic)
 local dragFrameList = G.dragFrameList
 
 local anchorframe = CreateFrame("Frame", "Altz_WFanchorframe", UIParent)
+local customobjectivetracker = aCoreCDB["OtherOptions"]["customobjectivetracker"]
+if customobjectivetracker then return end
+ 
 anchorframe.movingname = L["任务追踪"]
 anchorframe.point = {
 	healer = {a1 = "TOPRIGHT", parent = "UIParent", a2 = "TOPRIGHT", x = -250, y = -180},

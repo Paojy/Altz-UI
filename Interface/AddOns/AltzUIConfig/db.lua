@@ -1940,6 +1940,7 @@ local Character_default_Settings = {
 		showitemID = true,
 		showtalent = true,
 		combathide = true,	
+		backdropOpacity = 0.8,
 	},
 	CombattextOptions = {
 		combattext = true,
@@ -1980,6 +1981,7 @@ local Character_default_Settings = {
 		saysapped = true,
 		showAFKtips = true,
 		vignettealert = true,
+		vignettealerthide = true,
 		flashtaskbar = true,
 		autopet = true,
 		LFGRewards = true,
@@ -1991,6 +1993,7 @@ local Character_default_Settings = {
 		afkscreen = true,
 		hidepanels = false,
 		shiftfocus = false,
+		customobjectivetracker = false,
 	},
 	SkinOptions = {
 		setClassColor = true,

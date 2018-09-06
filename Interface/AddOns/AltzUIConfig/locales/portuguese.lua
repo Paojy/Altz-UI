@@ -308,6 +308,7 @@ L["显示法术编号"] = "Mostrar 'SpellID'"
 L["显示物品编号"] = "Mostrar 'ItemID'"
 L["显示天赋"] = "Mostrar 'Spec'"
 L["战斗中隐藏"] = "Esconder em combate"
+--L["背景透明度"] = "Backdrop Opacity"
 
 -- 战斗信息
 L["战斗信息"] = "Texto de combate"
@@ -354,6 +355,8 @@ L["显示插件使用小提示"] = "Mostrar dicas quando LDT"
 L["显示插件使用小提示提示"] = "Mostra dicas do addon na tela quando estiver LDT"
 L["稀有警报"] = "Alerta de pontos"
 L["稀有警报提示"] = "Display the vignette-ids introduces with 5.0.4 (chests, rare mobs etc) with name and icon on screen."--
+--L["在飞行中隐藏稀有提示"] = "Hide Vingette Alert when on taxi"
+--L["在飞行中隐藏稀有提示说明"] = "Will not display vingette alerts if you are currently on a taxi"
 L["任务栏闪动"] = "Piscar barra de tarefas"
 L["任务栏闪动提示"] = "Pisca barra de tarefas quando você der 'alt-tab' e o WOW estiver em alguma fila."
 L["自动召宝宝"] = "Auto sumonar ajudante"
@@ -373,6 +376,8 @@ L["暂离屏幕"] = "Esconder interface quando LDT"
 L["隐藏边缘装饰"] = "Esconder barras decorativas"
 L["隐藏边缘装饰提示"] = "Esconde barras decorativas superior e inferior da tela."
 L["快速焦点"] = "Usar SHIFT + Clique para focar alvo."
+--L["自定义任务追踪"] = "Custom Objective Tracker"
+--L["自定义任务追踪提示"] = "Enable this if you are using a custom objective tracker addon.\n  (ex: Dugi Questing Essential, Kaliel's Tracker)"
 
 -- 插件皮肤
 L["插件皮肤"] = "'Skins' p/ AddOns"
