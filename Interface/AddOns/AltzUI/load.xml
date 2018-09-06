@@ -55,6 +55,7 @@
 	<Script file="mods\chat\playermenu.lua"/>
 	<Script file="mods\chat\easyChannel.lua"/>
 	<Script file="mods\chat\filter.lua"/>
+	<Script file="mods\chat\copy.lua"/>
 	
 	<Script file="mods\loot\lootgroup.lua"/>
 	
