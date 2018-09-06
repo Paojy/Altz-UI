@@ -1,7 +1,7 @@
 ﻿## Interface: 80000
 ## Title: |cffEE3A8CAltz|rUI
 ## X-oUF: AltzUF
-## Version: 8.06
+## Version: 8.07
 ## Author: Paopao001
 ## Dependencies: AltzUIConfig
 ## X-DBM-Timer-Skin: 1
