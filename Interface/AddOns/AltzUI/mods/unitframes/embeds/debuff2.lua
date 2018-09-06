@@ -125,7 +125,7 @@ local dispelPriority = {
 --local ascending = { }
 
 local CustomFilter = function(...)
-    local name, _, _, _, dtype, _, _, caster, spellID = ...
+    local name, _, _, dtype, _, _, caster, spellID = ...
 	
     local priority = 0
 	local asc = false
