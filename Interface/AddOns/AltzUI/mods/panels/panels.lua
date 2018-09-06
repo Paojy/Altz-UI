@@ -1005,7 +1005,7 @@ local function UpdateEquipSetsList()
 	if count > 0 then
 		EquipSetsList = {}
 		for index = 1, count do 
-			local name, Icon, setID, isEquipped, totalItems, equippedItems, inventoryItems, missingItems, ignoredSlots = GetEquipmentSetInfo(index)
+			local name, Icon, setID, isEquipped, totalItems, equippedItems, inventoryItems, missingItems, ignoredSlots = C_EquipmentSet.GetEquipmentSetInfo(index)
 			EquipSetsList[index] = {
 				text = name,
 				icon = Icon,
