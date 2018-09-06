@@ -228,8 +228,8 @@ L["数字指示器"] = "数字指示器"
 L["图标指示器"] = "图标指示器"
 
 -- 动作条
-L["Grow Bar Upwards"] = "Grow Bar Upwards"
-L["This growns the bars upwards when in a horizontal layout"] = "This growns the bars upwards when in a horizontal layout"
+L["向上排列"] = "向上排列"
+L["向上排列说明"] = "当动作条有多行时向上排列"
 L["显示冷却时间"] = "显示冷却时间"
 L["冷却时间数字大小"] = "冷却时间数字大小"
 L["冷却时间数字大小提示"] = "只能调整大于25*25象素冷却框体的字号，更小的冷却框体会自动调整到适合的字号。注意如果框体太小则不会显示冷却数字。"

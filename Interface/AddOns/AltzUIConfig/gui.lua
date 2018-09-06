@@ -1968,7 +1968,7 @@ end
 ActionbarInnerframe.common = CreateOptionPage("Actionbar Options common", L["通用设置"], ActionbarInnerframe, "VERTICAL", .3)
 ActionbarInnerframe.common:Show()
 
-T.createcheckbutton(ActionbarInnerframe.common, 30, 60, L["Grow Bar Upwards"], "ActionbarOptions", "growup", L["This growns the bars upwards when in a horizontal layout"])
+T.createcheckbutton(ActionbarInnerframe.common, 30, 60, L["向上排列"], "ActionbarOptions", "growup", L["向上排列说明"])
 T.createcheckbutton(ActionbarInnerframe.common, 30, 110, L["显示冷却时间"], "ActionbarOptions", "cooldown", L["显示冷却时间提示"])
 T.createslider(ActionbarInnerframe.common, 30, 160, L["冷却时间数字大小"], "ActionbarOptions", "cooldownsize", 1, 18, 25, 1, L["冷却时间数字大小提示"])
 T.createcheckbutton(ActionbarInnerframe.common, 30, 210, L["不可用颜色"], "ActionbarOptions", "rangecolor", L["不可用颜色提示"])

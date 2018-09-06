@@ -226,8 +226,8 @@ L["数字指示器"] = "數字指示器"
 L["图标指示器"] = "圖標指示器"
 
 -- 动作条
-L["Grow Bar Upwards"] = "Grow Bar Upwards"
-L["This growns the bars upwards when in a horizontal layout"] = "This growns the bars upwards when in a horizontal layout"
+L["向上排列"] = "向上排列"
+L["向上排列说明"] = "當動作條有多行時向上排列"
 L["显示冷却时间"] = "顯示冷却時間"
 L["显示冷却时间提示"] = "在動作條和物品上顯示冷却時間。"
 L["冷却时间数字大小"] = "冷却時間字體大小"
