@@ -31,7 +31,8 @@ if IsAddOnLoaded("Blizzard_ObjectiveTracker") then
        if vm.MODULES then  
             for i = 1, #vm.MODULES do                               
 		        vm.MODULES[i].Header.Background:SetAtlas(nil)
-		        vm.MODULES[i].Header.Text:SetFont(G.norFont, 12, "OUTLINE")
+		        vm.MODULES[i].Header.Text:SetFont(G.norFont, 14, "OUTLINE")
+				vm.MODULES[i].Header.Text:SetTextColor(G.Ccolor.r, G.Ccolor.g, G.Ccolor.b)
 		        vm.MODULES[i].Header.Text:ClearAllPoints()
 		        vm.MODULES[i].Header.Text:SetPoint("LEFT", vm.MODULES[i].Header, 10, 0)
 		        vm.MODULES[i].Header.Text:SetJustifyH("LEFT")
@@ -43,11 +44,12 @@ end
 hooksecurefunc(QUEST_TRACKER_MODULE, "SetBlockHeader", function(_, block)
 	block.HeaderText:SetFont(G.norFont, 12, "OUTLINE")
     block.HeaderText:SetShadowColor(0, 0, 0, 1)
+	block.HeaderText:SetShadowOffset(0, 0)
     block.HeaderText:SetTextColor(G.Ccolor.r, G.Ccolor.g, G.Ccolor.b)
     block.HeaderText:SetJustifyH("LEFT")
     block.HeaderText:SetWidth(200)
     block.HeaderText:SetHeight(15)
-		local heightcheck = block.HeaderText:GetNumLines()      
+	local heightcheck = block.HeaderText:GetNumLines()      
     if heightcheck==2 then
         local height = block:GetHeight()     
         block:SetHeight(height + 2)
