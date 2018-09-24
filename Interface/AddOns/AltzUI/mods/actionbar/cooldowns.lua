@@ -38,7 +38,7 @@ end
 
 local methods = getmetatable(ActionButton1Cooldown).__index
 hooksecurefunc(methods, "SetCooldown", function(self, start, duration)
-	if self.noshowcd then return end
+	if self.noshowcd or self:IsForbidden() then return end
 	local parent = self:GetParent()
 	if parent then
 		local parent_name = parent:GetName()
