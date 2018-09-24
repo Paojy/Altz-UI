@@ -105,10 +105,6 @@ local function init()
 	end
 end
 
-ChatFrameMenuButton.Show = ChatFrameMenuButton.Hide 
-ChatFrameMenuButton:Hide()
-QuickJoinToastButton.Show = QuickJoinToastButton.Hide 
-QuickJoinToastButton:Hide()
 BNToastFrame:SetClampedToScreen(true)
 
 local EventFrame = CreateFrame("Frame")
@@ -170,3 +166,26 @@ function FloatingChatFrame_OnMouseScroll(self, delta)
 		end
 	end
 end
+
+ChatFrameChannelButton:SetScript("OnMouseDown", function(self, b)
+	if G.Client == "zhCN" and b == "RightButton" then
+		local inchannel = false
+		local channels = {GetChannelList()}
+		for i = 1, #channels do
+			if channels[i] == "大脚世界频道" then
+				inchannel = true
+				break
+			end
+		end
+		if inchannel then
+			LeaveChannelByName("大脚世界频道")
+			print("|cffFF0000离开|r 大脚世界频道")  
+		else
+			JoinPermanentChannel("大脚世界频道",nil,1)
+			ChatFrame_AddChannel(ChatFrame1,"大脚世界频道")
+			ChatFrame_RemoveMessageGroup(ChatFrame1,"CHANNEL")
+			print("|cff7FFF00加入|r 大脚世界频道")
+		end
+	end
+end)
+
