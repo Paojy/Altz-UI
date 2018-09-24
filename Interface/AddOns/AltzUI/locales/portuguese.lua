@@ -54,6 +54,7 @@ L["复制名字"] = "Copiar nome"
 L["玩家详情"] = "Quem"
 L["公会邀请"] = "Convidar para guilda"
 L["添加好友"] = "Adicionar amigo"
+--L["复制聊天"] = "Copy Chat"
 
 L["信息条"] = "Barra de informações"
 L["微型菜单"] = "MicroMenu"
