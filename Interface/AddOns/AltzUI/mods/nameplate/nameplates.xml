@@ -298,6 +298,8 @@
 			</Layer>
 			<Layer level="ARTWORK">
 				<Texture parentKey="overlay" setAllPoints="true" file="Interface\Buttons\WHITE8x8"/>
+			</Layer>
+			<Layer level="BACKGROUND">
 				<Texture parentKey="bd"  file="Interface\Buttons\WHITE8x8">
 					<Color r="0" g="0" b="0" a="1"/>
 					<Anchors>
