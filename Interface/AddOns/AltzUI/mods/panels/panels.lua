@@ -1,7 +1,6 @@
 ﻿local T, C, L, G = unpack(select(2, ...))
 local F = unpack(AuroraClassic)
 
-local hidepanels = aCoreCDB["OtherOptions"]["hidepanels"]
 --====================================================--
 --[[                -- Functions --                    ]]--
 --====================================================--
@@ -43,52 +42,70 @@ PShadow:SetBackdropColor(0, 0, 0, 0.3)
 --====================================================--
 --[[                 -- Panels --                   ]]--
 --====================================================--
-if not hidepanels then
+if aCoreCDB["SkinOptions"]["showtopbar"] then
 	local toppanel = CreateFrame("Frame", G.uiname.."Top Long Panel", UIParent)
 	toppanel:SetFrameStrata("BACKGROUND")
 	toppanel:SetPoint("TOP", 0, 3)
 	toppanel:SetPoint("LEFT", UIParent, "LEFT", -8, 0)
 	toppanel:SetPoint("RIGHT", UIParent, "RIGHT", 8, 0)
 	toppanel:SetHeight(15)
-	toppanel.border = F.CreateBDFrame(toppanel, 0.6)
-	T.CreateSD(toppanel.border, 2, 0, 0, 0, 0, -1)
+	
+	if string.find(aCoreCDB["SkinOptions"]["decorativestyle"], "dark") then
+		toppanel.border = F.CreateBDFrame(toppanel, 1)
+	else
+		toppanel.border = F.CreateBDFrame(toppanel, .2)
+	end
+	
+	if string.find(aCoreCDB["SkinOptions"]["decorativestyle"], "1") then
+		T.CreateSD(toppanel.border, 2, G.Ccolor.r, G.Ccolor.g, G.Ccolor.b, 0, -1)
+	elseif string.find(aCoreCDB["SkinOptions"]["decorativestyle"], "3") then
+		local TLPanel = CreateFrame("Frame", G.uiname.."TLPanel", UIParent)
+		TLPanel:SetFrameStrata("BACKGROUND")
+		TLPanel:SetFrameLevel(2)
+		TLPanel:SetSize(G.screenwidth*2/9, 5)
+		TLPanel:SetPoint("TOPLEFT", UIParent, "TOPLEFT", 15, -10)
+		Skinbar(TLPanel)
 
+		local TRPanel = CreateFrame("Frame", G.uiname.."TRPanel", UIParent)
+		TRPanel:SetFrameStrata("BACKGROUND")
+		TRPanel:SetFrameLevel(2)
+		TRPanel:SetSize(G.screenwidth*2/9, 5)
+		TRPanel:SetPoint("TOPRIGHT", UIParent, "TOPRIGHT", -15, -10)
+		Skinbar(TRPanel)
+	end
+end
+
+if aCoreCDB["SkinOptions"]["showbottombar"] then
 	local bottompanel = CreateFrame("Frame", G.uiname.."Bottom Long Panel", UIParent)
 	bottompanel:SetFrameStrata("BACKGROUND")
 	bottompanel:SetPoint("BOTTOM", 0, -3)
 	bottompanel:SetPoint("LEFT", UIParent, "LEFT", -8, 0)
 	bottompanel:SetPoint("RIGHT", UIParent, "RIGHT", 8, 0)
 	bottompanel:SetHeight(15)
-	bottompanel.border = F.CreateBDFrame(bottompanel, 0.6)
-	T.CreateSD(bottompanel.border, 2, 0, 0, 0, 0, -1)
+	
+	if string.find(aCoreCDB["SkinOptions"]["decorativestyle"], "dark") then
+		bottompanel.border = F.CreateBDFrame(bottompanel, 1)
+	else
+		bottompanel.border = F.CreateBDFrame(bottompanel, .2)
+	end
+	
+	if string.find(aCoreCDB["SkinOptions"]["decorativestyle"], "1") then
+		T.CreateSD(bottompanel.border, 2, G.Ccolor.r, G.Ccolor.g, G.Ccolor.b, 0, -1)
+	elseif string.find(aCoreCDB["SkinOptions"]["decorativestyle"], "3") then
+		local BLPanel = CreateFrame("Frame", G.uiname.."BLPanel", UIParent)
+		BLPanel:SetFrameStrata("BACKGROUND")
+		BLPanel:SetFrameLevel(2)
+		BLPanel:SetSize(G.screenwidth*2/9, 5)
+		BLPanel:SetPoint("BOTTOMLEFT", UIParent, "BOTTOMLEFT", 15, 10)
+		Skinbar(BLPanel)
 
-	local TLPanel = CreateFrame("Frame", G.uiname.."TLPanel", UIParent)
-	TLPanel:SetFrameStrata("BACKGROUND")
-	TLPanel:SetFrameLevel(2)
-	TLPanel:SetSize(G.screenwidth*2/9, 5)
-	TLPanel:SetPoint("TOPLEFT", UIParent, "TOPLEFT", 15, -10)
-	Skinbar(TLPanel)
-
-	local TRPanel = CreateFrame("Frame", G.uiname.."TRPanel", UIParent)
-	TRPanel:SetFrameStrata("BACKGROUND")
-	TRPanel:SetFrameLevel(2)
-	TRPanel:SetSize(G.screenwidth*2/9, 5)
-	TRPanel:SetPoint("TOPRIGHT", UIParent, "TOPRIGHT", -15, -10)
-	Skinbar(TRPanel)
-
-	local BLPanel = CreateFrame("Frame", G.uiname.."BLPanel", UIParent)
-	BLPanel:SetFrameStrata("BACKGROUND")
-	BLPanel:SetFrameLevel(2)
-	BLPanel:SetSize(G.screenwidth*2/9, 5)
-	BLPanel:SetPoint("BOTTOMLEFT", UIParent, "BOTTOMLEFT", 15, 10)
-	Skinbar(BLPanel)
-
-	local BRPanel = CreateFrame("Frame", G.uiname.."BRPanel", UIParent)
-	BRPanel:SetFrameStrata("BACKGROUND")
-	BRPanel:SetFrameLevel(2)
-	BRPanel:SetSize(G.screenwidth*2/9, 5)
-	BRPanel:SetPoint("BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", -15, 10)
-	Skinbar(BRPanel)
+		local BRPanel = CreateFrame("Frame", G.uiname.."BRPanel", UIParent)
+		BRPanel:SetFrameStrata("BACKGROUND")
+		BRPanel:SetFrameLevel(2)
+		BRPanel:SetSize(G.screenwidth*2/9, 5)
+		BRPanel:SetPoint("BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", -15, 10)
+		Skinbar(BRPanel)
+	end
 end
 --====================================================--
 --[[                   -- Minimap --                ]]--
@@ -112,9 +129,9 @@ T.CreateDragFrame(minimap_pullback)
 minimap_pullback.border = F.CreateBDFrame(minimap_pullback, 0.6)
 T.CreateSD(minimap_pullback.border, 2, 0, 0, 0, 0, -1)
 
-minimap_pullback:SetAlpha(.2)
+minimap_pullback:SetAlpha(.05)
 minimap_pullback:HookScript("OnEnter", function(self) T.UIFrameFadeIn(self, .5, self:GetAlpha(), 1) end)
-minimap_pullback:SetScript("OnLeave", function(self) T.UIFrameFadeOut(self, .5, self:GetAlpha(), 0.2) end)
+minimap_pullback:SetScript("OnLeave", function(self) T.UIFrameFadeOut(self, .5, self:GetAlpha(), 0.05) end)
 
 local minimap_anchor = CreateFrame("Frame", nil, UIParent)
 minimap_anchor:SetPoint("BOTTOMRIGHT", minimap_pullback, "BOTTOMLEFT", -5, 0)
@@ -223,9 +240,9 @@ T.CreateDragFrame(chatframe_pullback)
 chatframe_pullback.border = F.CreateBDFrame(chatframe_pullback, 0.6)
 T.CreateSD(chatframe_pullback.border, 2, 0, 0, 0, 0, -1)
 
-chatframe_pullback:SetAlpha(.2)
+chatframe_pullback:SetAlpha(.05)
 chatframe_pullback:HookScript("OnEnter", function(self) T.UIFrameFadeIn(self, .5, self:GetAlpha(), 1) end)
-chatframe_pullback:SetScript("OnLeave", function(self) T.UIFrameFadeOut(self, .5, self:GetAlpha(), 0.2) end)
+chatframe_pullback:SetScript("OnLeave", function(self) T.UIFrameFadeOut(self, .5, self:GetAlpha(), 0.05) end)
 
 local chatframe_anchor = CreateFrame("frame",nil,UIParent)
 chatframe_anchor:SetPoint("BOTTOMLEFT", chatframe_pullback, "BOTTOMRIGHT", 5, 0)
@@ -922,53 +939,6 @@ xpbar:RegisterEvent("PLAYER_LOGIN")
 xpbar:RegisterEvent("UNIT_INVENTORY_CHANGED")
 xpbar:RegisterEvent("AZERITE_ITEM_EXPERIENCE_CHANGED")
 
--- 世界频道
-local WorldChannelToggle = CreateFrame("Button", G.uiname.."World Channel Button", ChatFrame1)
-WorldChannelToggle:SetPoint("TOPLEFT", -20, -5)
-WorldChannelToggle:SetSize(25, 25)
-WorldChannelToggle:SetNormalTexture("Interface\\HELPFRAME\\ReportLagIcon-Chat", "ADD")
-WorldChannelToggle:GetNormalTexture():SetDesaturated(true)
-
-WorldChannelToggle:SetScript("OnClick", function(self)
-	local inchannel = false
-	local channels = {GetChannelList()}
-	for i = 1, #channels do
-		if channels[i] == "大脚世界频道" then
-			inchannel = true
-			break
-		end
-	end
-	if inchannel then
-		LeaveChannelByName("大脚世界频道")
-		print("|cffFF0000离开|r 大脚世界频道")  
-	else
-		JoinPermanentChannel("大脚世界频道",nil,1)
-		ChatFrame_AddChannel(ChatFrame1,"大脚世界频道")
-		ChatFrame_RemoveMessageGroup(ChatFrame1,"CHANNEL")
-		print("|cff7FFF00加入|r 大脚世界频道")
-	end
-end)
-
-WorldChannelToggle:SetScript("OnEvent", function(self, event)
-	local channels = {GetChannelList()}
-	WorldChannelToggle:GetNormalTexture():SetVertexColor(.3, 1, 1)
-	for i = 1, #channels do
-		if channels[i] == "大脚世界频道" then
-			WorldChannelToggle:GetNormalTexture():SetVertexColor(1, 0, 0)
-			break
-		end
-	end
-	
-	if event == "PLAYER_ENTERING_WORLD" then
-		self:UnregisterEvent("PLAYER_ENTERING_WORLD")
-	end
-end)
-
-WorldChannelToggle:RegisterEvent("PLAYER_ENTERING_WORLD")
-WorldChannelToggle:RegisterEvent("CHANNEL_UI_UPDATE")
-
-if G.Client == "zhCN" then WorldChannelToggle:Show() else WorldChannelToggle:Hide() end
-
 --====================================================--
 --[[                --  Info Bar --              ]]--
 --====================================================--
@@ -982,6 +952,10 @@ InfoFrame.point = {
 		dpser = {a1 = "BOTTOM", parent = "UIParent", a2 = "BOTTOM", x = -40, y = 5},
 	}
 T.CreateDragFrame(InfoFrame)
+
+if not aCoreCDB["OtherOptions"]["infobar"] then
+	InfoFrame:Hide()
+end
 
 local function CreateInfoButton(name, parent, width, height, justify, ...)
 	local Button = CreateFrame("Frame", G.uiname..parent:GetName()..name, parent)
@@ -1011,7 +985,7 @@ local function UpdateEquipSetsList()
 				icon = Icon,
 				tCoordLeft = .1, tCoordRight = .9, tCoordTop = .1, tCoordBottom = .9,
 				checked = isEquipped,
-				func = function() UseEquipmentSet(name) end
+				func = function() C_EquipmentSet.UseEquipmentSet(index) end
 			}
 		end
 	end

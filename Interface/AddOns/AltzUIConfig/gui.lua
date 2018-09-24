@@ -262,21 +262,24 @@ end)
 local ChatOptions = CreateOptionPage("Chat Options", SOCIAL_LABEL, GUI, "VERTICAL")
 
 T.createcheckbutton(ChatOptions, 30, 60, L["频道缩写"], "ChatOptions", "channelreplacement")
-T.createcheckbutton(ChatOptions, 30, 90, L["复制聊天"], "ChatOptions", "copychat", L["复制聊天提示"])
-T.createcheckbutton(ChatOptions, 30, 120, L["显示聊天框背景"], "ChatOptions", "showbg")
-T.createcheckbutton(ChatOptions, 30, 150, L["滚动聊天框"], "ChatOptions", "autoscroll", L["滚动聊天框提示"])
-T.CVartogglebox(ChatOptions, 30, 180, "showTimestamps", SHOW_TIMESTAMP, "|cff64C2F5%H:%M|r ", "none")
-T.createcheckbutton(ChatOptions, 30, 210, L["自动接受邀请"], "OtherOptions", "acceptfriendlyinvites", L["自动接受邀请提示"])
-T.createcheckbutton(ChatOptions, 30, 240, L["自动邀请"], "OtherOptions", "autoinvite", L["自动邀请提示"])
-T.createeditbox(ChatOptions, 180, 242, "", "OtherOptions", "autoinvitekeywords", L["关键词输入"])
+T.createcheckbutton(ChatOptions, 30, 90, L["滚动聊天框"], "ChatOptions", "autoscroll", L["滚动聊天框提示"])
+T.createcheckbutton(ChatOptions, 30, 120, L["自动接受邀请"], "OtherOptions", "acceptfriendlyinvites", L["自动接受邀请提示"])
+T.createcheckbutton(ChatOptions, 30, 150, L["自动邀请"], "OtherOptions", "autoinvite", L["自动邀请提示"])
+T.createeditbox(ChatOptions, 40, 180, "", "OtherOptions", "autoinvitekeywords", L["关键词输入"])
 T.createDR(ChatOptions.autoinvite, ChatOptions.autoinvitekeywords)
-T.createcheckbutton(ChatOptions, 30, 275, L["聊天过滤"], "ChatOptions", "nogoldseller", L["聊天过滤提示"])
-T.createslider(ChatOptions, 30, 325, L["过滤阈值"], "ChatOptions", "goldkeywordnum", 1, 1, 5, 1, L["过滤阈值"])
-T.createmultilinebox(ChatOptions, 300, 150, 35, 365, L["关键词"], "ChatOptions", "goldkeywordlist", L["关键词输入"])
+T.createcheckbutton(ChatOptions, 30, 210, L["聊天过滤"], "ChatOptions", "nogoldseller", L["聊天过滤提示"])
+T.createslider(ChatOptions, 30, 260, L["过滤阈值"], "ChatOptions", "goldkeywordnum", 1, 1, 5, 1, L["过滤阈值"])
+T.createmultilinebox(ChatOptions, 300, 150, 35, 305, L["关键词"], "ChatOptions", "goldkeywordlist", L["关键词输入"])
 ChatOptions.goldkeywordlist.edit:SetScript("OnShow", function(self) self:SetText(aCoreDB["goldkeywordlist"]) end)
 ChatOptions.goldkeywordlist.edit:SetScript("OnEscapePressed", function(self) self:SetText(aCoreDB["goldkeywordlist"]) self:ClearFocus() end)
 ChatOptions.goldkeywordlist.edit:SetScript("OnEnterPressed", function(self) self:ClearFocus() aCoreDB["goldkeywordlist"] = self:GetText() end)
 T.createDR(ChatOptions.nogoldseller, ChatOptions.goldkeywordnum)
+
+T.CVartogglebox(ChatOptions, 300, 60, "showTimestamps", SHOW_TIMESTAMP, "|cff64C2F5%H:%M|r ", "none")
+T.createcheckbutton(ChatOptions, 300, 90, L["显示聊天框背景"], "ChatOptions", "showbg")
+T.createcheckbutton(ChatOptions, 300, 120, L["聊天按钮悬停渐隐"], "ChatOptions", "chatbuttons_fade", L["聊天按钮悬停渐隐提示"])
+T.createslider(ChatOptions, 310, 170, L["渐隐透明度"], "ChatOptions", "chatbuttons_fade_alpha", 100, 0, 80, 5, L["渐隐透明度提示"])
+T.createDR(ChatOptions.chatbuttons_fade, ChatOptions.chatbuttons_fade_alpha)
 --====================================================--
 --[[          -- Bag and Items Options --           ]]--
 --====================================================--
@@ -2593,12 +2596,13 @@ OtherOptions.minimapheight:SetWidth(160)
 OtherOptions.micromenuscale:SetWidth(160)
 OtherOptions.infobarscale:SetWidth(160)
 
-T.createcheckbutton(OtherOptions, 30, 110, L["整理小地图图标"], "OtherOptions", "collectminimapbuttons")
+T.createcheckbutton(OtherOptions, 30, 110, L["信息条"], "OtherOptions", "infobar")
+T.createcheckbutton(OtherOptions, 150, 110, L["整理小地图图标"], "OtherOptions", "collectminimapbuttons")
 local MBCFpos_group = {
 	["TOP"] = L["上方"],
 	["BOTTOM"] = L["下方"],
 }
-T.createradiobuttongroup(OtherOptions, 200, 110, L["整理栏位置"], "OtherOptions", "MBCFpos", MBCFpos_group)
+T.createradiobuttongroup(OtherOptions, 300, 110, L["整理栏位置"], "OtherOptions", "MBCFpos", MBCFpos_group)
 T.createDR(OtherOptions.collectminimapbuttons, OtherOptions.MBCFpos)
 
 OtherOptions.DividingLine = OtherOptions:CreateTexture(nil, "ARTWORK")
@@ -2615,10 +2619,9 @@ T.createcheckbutton(OtherOptions, 30, 300, L["在战斗中隐藏聊天框"], "Ot
 T.createcheckbutton(OtherOptions, 30, 330, L["在副本中收起任务追踪"], "OtherOptions", "collapseWF", L["在副本中收起任务追踪提示"])
 T.createcheckbutton(OtherOptions, 30, 360, L["自定义任务追踪"], "OtherOptions", "customobjectivetracker", L["自定义任务追踪提示"])
 T.createcheckbutton(OtherOptions, 30, 390, L["自动交接任务"], "OtherOptions", "autoquests", L["自动交接任务提示"])
-T.createcheckbutton(OtherOptions, 30, 420, L["自动接受复活"], "OtherOptions", "acceptres", L["自动接受复活提示"])	
-T.createcheckbutton(OtherOptions, 30, 450, L["战场自动释放灵魂"], "OtherOptions", "battlegroundres", L["战场自动释放灵魂提示"])
-T.createcheckbutton(OtherOptions, 30, 480, L["大喊被闷了"], "OtherOptions", "saysapped", L["大喊被闷了提示"])
-T.CVartogglebox(OtherOptions, 30, 450, "overrideArchive", "反和谐(大退生效)", "0", "1")
+T.createcheckbutton(OtherOptions, 30, 420, L["战场自动释放灵魂"], "OtherOptions", "battlegroundres", L["战场自动释放灵魂提示"])
+T.createcheckbutton(OtherOptions, 30, 450, L["大喊被闷了"], "OtherOptions", "saysapped", L["大喊被闷了提示"])
+T.CVartogglebox(OtherOptions, 30, 480, "overrideArchive", "反和谐(大退生效)", "0", "1")
 if G.Client ~= "zhCN" then OtherOptions.overrideArchive:Hide() end
 
 T.createcheckbutton(OtherOptions, 300, 150, L["成就截图"], "OtherOptions", "autoscreenshot", L["成就截图提示"])
@@ -2631,8 +2634,8 @@ T.createcheckbutton(OtherOptions, 300, 330, L["任务栏闪动"], "OtherOptions"
 --T.createcheckbutton(OtherOptions, 300, 360, L["大地图坐标"], "OtherOptions", "worldmapcoords")
 T.createcheckbutton(OtherOptions, 300, 360, L["登陆屏幕"], "OtherOptions", "afklogin", L["登陆屏幕"])
 T.createcheckbutton(OtherOptions, 300, 390, L["暂离屏幕"], "OtherOptions", "afkscreen", L["暂离屏幕"])
-T.createcheckbutton(OtherOptions, 300, 420, L["隐藏边缘装饰"], "OtherOptions", "hidepanels", L["隐藏边缘装饰提示"])
-T.createcheckbutton(OtherOptions, 300, 450, L["快速焦点"], "OtherOptions", "shiftfocus")
+T.createcheckbutton(OtherOptions, 300, 420, L["快速焦点"], "OtherOptions", "shiftfocus")
+T.createcheckbutton(OtherOptions, 300, 450, L["自动接受复活"], "OtherOptions", "acceptres", L["自动接受复活提示"])	
 
 --====================================================--
 --[[               -- Skin Options --               ]]--
@@ -2683,6 +2686,26 @@ local SetBWButton = CreateApplySettingButton("setBW")
 T.createcheckbutton(SkinOptions, 30, 150, "Skada", "SkinOptions", "setSkada")
 local SetSkadaButton = CreateApplySettingButton("setSkada")
 
+SkinOptions.title2 = SkinOptions:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
+SkinOptions.title2:SetPoint("TOPLEFT", 35, -203)
+SkinOptions.title2:SetText(L["边缘装饰"])
+
+SkinOptions.DividingLine = SkinOptions:CreateTexture(nil, "ARTWORK")
+SkinOptions.DividingLine:SetSize(SkinOptions:GetWidth()-50, 1)
+SkinOptions.DividingLine:SetPoint("TOP", 0, -230)
+SkinOptions.DividingLine:SetColorTexture(1, 1, 1, .2)
+
+T.createcheckbutton(SkinOptions, 30, 240, L["上方"].." "..L["边缘装饰"], "SkinOptions", "showtopbar")
+T.createcheckbutton(SkinOptions, 30, 270, L["下方"].." "..L["边缘装饰"], "SkinOptions", "showbottombar")
+local decorativestyle_group = {
+	["dark1"] = L["深色一"],
+	["dark2"] = L["深色二"],
+	["dark3"] = L["深色三"],
+	["light1"] = L["浅色一"],
+	["light2"] = L["浅色二"],
+	["light3"] = L["浅色三"],
+}
+T.createradiobuttongroup(SkinOptions, 30, 300, L["样式"], "SkinOptions", "decorativestyle", decorativestyle_group)
 
 --====================================================--
 --[[               -- Commands --               ]]--

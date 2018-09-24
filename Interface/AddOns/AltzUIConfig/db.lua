@@ -1091,7 +1091,8 @@ local Character_default_Settings = {
 		ClickCast = ClickCastDB,
 	},
 	ChatOptions = {
-		copychat = true,
+		chatbuttons_fade = true,
+		chatbuttons_fade_alpha = .3,
 		channelreplacement = true,
 		autoscroll = true,
 		nogoldseller = true,
@@ -1249,6 +1250,7 @@ local Character_default_Settings = {
 		minimapheight = 175,
 		micromenuscale = 1,
 		infobarscale = 1,
+		infobar = true,
 		collectminimapbuttons = true,
 		MBCFpos = "BOTTOM",
 		hideerrors = true,
@@ -1273,7 +1275,6 @@ local Character_default_Settings = {
 		worldmapcoords = false,
 		afklogin = false,
 		afkscreen = true,
-		hidepanels = false,
 		shiftfocus = false,
 		customobjectivetracker = false,
 	},
@@ -1282,6 +1283,9 @@ local Character_default_Settings = {
 		setDBM = true,
 		setSkada = true,
 		setBW = true,
+		showtopbar = true,
+		showbottombar = true,
+		decorativestyle = "light1",
 	},
 	RaidDebuff = G.DebuffList,
 	CooldownAura = AuraList,
@@ -1561,7 +1565,7 @@ T.ImportSettings = function(str)
 										},
 									}
 								end
-							elseif arg1 == "otherplateauralist" then -- 完全复制 4 OptionCategroy.."~"..setting.."~"..id.."~true"
+							elseif setting == "otherplateauralist" then -- 完全复制 4 OptionCategroy.."~"..setting.."~"..id.."~true"
 								aCoreCDB[OptionCategroy][setting][tonumber(arg1)] = true
 							elseif sameclass then
 								aCoreCDB[OptionCategroy][setting][tonumber(arg1)] = true
