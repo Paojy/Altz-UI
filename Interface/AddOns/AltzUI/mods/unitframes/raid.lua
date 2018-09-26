@@ -541,9 +541,96 @@ local initconfig = [[
 	end
 ]]
 
+local groupfilter
+
+if aCoreCDB["UnitframeOptions"]["party_num"] == 2 then
+	groupfilter = "1,2"
+elseif aCoreCDB["UnitframeOptions"]["party_num"] == 4 then
+	groupfilter = "1,2,3,4"
+elseif aCoreCDB["UnitframeOptions"]["party_num"] == 8 then
+	groupfilter = "1,2,3,4,5,6"
+else
+	groupfilter = "1,2,3,4,5,6,7,8"
+end
+
+local anchor = aCoreCDB["UnitframeOptions"]["hor_party"] and "LEFT" or "TOP"
+local party_anchor = aCoreCDB["UnitframeOptions"]["hor_party"] and "TOP" or "LEFT"
+
+local healerraid = CreateFrame("Frame", "Altz_HealerRaid_Holder", UIParent)
+healerraid.movingname = L["治疗模式团队框架"]
+healerraid.point = {
+	healer = {a1 = "CENTER", parent = "UIParent", a2 = "BOTTOM", x = 0, y = 225},
+	dpser = {a1 = "BOTTOMLEFT", parent = "UIParent", a2 = "BOTTOMLEFT", x = 10, y = 250},
+}
+T.CreateDragFrame(healerraid)
+
+local healerpet = CreateFrame("Frame", "Altz_HealerPetRaid_Holder", UIParent)
+healerpet.movingname = L["治疗模式宠物团队框架"]
+healerpet.point = {
+	healer = {a1 = "TOPLEFT", parent = healerraid:GetName(), a2 = "TOPRIGHT", x = 10, y = 0},
+	dpser = {a1 = "TOPLEFT", parent = healerraid:GetName(), a2 = "TOPRIGHT", x = 10, y = 0},
+}
+T.CreateDragFrame(healerpet)
+	
 local function Spawnhealraid()
 	oUF:SetActiveStyle"Altz_Healerraid"
-	healerraid = oUF:SpawnHeader('Altz_HealerRaid', nil, 'raid,party,solo',
+	if not aCoreCDB["UnitframeOptions"]["ind_party"] then -- 小队分离
+		for i = 1, aCoreCDB["UnitframeOptions"]["party_num"] do
+			healerraid[i] = oUF:SpawnHeader('Altz_HealerRaid'..i, nil, 'raid,party,solo',
+				'oUF-initialConfigFunction', initconfig:format(aCoreCDB["UnitframeOptions"]["healerraidwidth"], aCoreCDB["UnitframeOptions"]["healerraidheight"], 1),
+				'showPlayer', true,
+				'showSolo', aCoreCDB["UnitframeOptions"]["showsolo"],
+				'showParty', true,
+				'showRaid', true,
+				'xOffset', 5,
+				'yOffset', -5,
+				'point', anchor,
+				'groupFilter', tostring(i),
+				'groupingOrder', '1,2,3,4,5,6,7,8',
+				'groupBy', 'GROUP',
+				'maxColumns', 1,
+				'unitsPerColumn', 5,
+				'columnSpacing', 5,
+				'columnAnchorPoint', party_anchor
+				)
+		end
+	else -- 小队相连
+		healerraid[1] = oUF:SpawnHeader('Altz_HealerRaid', nil, 'raid,party,solo',
+			'oUF-initialConfigFunction', initconfig:format(aCoreCDB["UnitframeOptions"]["healerraidwidth"], aCoreCDB["UnitframeOptions"]["healerraidheight"], 1),
+			'showPlayer', true,
+			'showSolo', aCoreCDB["UnitframeOptions"]["showsolo"],
+			'showParty', true,
+			'showRaid', true,
+			'xOffset', 5,
+			'yOffset', -5,
+			'point', anchor,
+			'groupFilter', groupfilter,
+			'groupingOrder', '1,2,3,4,5,6,7,8',
+			'groupBy', 'GROUP',
+			'maxColumns', 8,
+			'unitsPerColumn', 5,
+			'columnSpacing', 5,
+			'columnAnchorPoint', party_anchor
+		)
+	end
+	
+	if aCoreCDB["UnitframeOptions"]["hor_party"] then -- 5*8
+		healerraid:SetSize(5*(aCoreCDB["UnitframeOptions"]["healerraidwidth"]+5)-5, aCoreCDB["UnitframeOptions"]["party_num"]*(aCoreCDB["UnitframeOptions"]["healerraidheight"]+5)-5)
+		for i = 1, aCoreCDB["UnitframeOptions"]["party_num"] do
+			if healerraid[i] then
+				healerraid[i]:SetPoint("TOPLEFT", healerraid, "TOPLEFT", 0, -(i-1)*(aCoreCDB["UnitframeOptions"]["healerraidheight"]+5))
+			end
+		end	
+	else -- 8*5
+		healerraid:SetSize(aCoreCDB["UnitframeOptions"]["party_num"]*(aCoreCDB["UnitframeOptions"]["healerraidwidth"]+5)-5, 5*(aCoreCDB["UnitframeOptions"]["healerraidheight"]+5)-5)
+		for i = 1, aCoreCDB["UnitframeOptions"]["party_num"] do
+			if healerraid[i] then
+				healerraid[i]:SetPoint("TOPLEFT", healerraid, "TOPLEFT", (i-1)*(aCoreCDB["UnitframeOptions"]["healerraidwidth"]+5), 0)
+			end
+		end			
+	end
+	
+	healerpet[1] = oUF:SpawnHeader('Altz_HealerPetRaid', 'SecureGroupPetHeaderTemplate', 'raid,party,solo',
 		'oUF-initialConfigFunction', initconfig:format(aCoreCDB["UnitframeOptions"]["healerraidwidth"], aCoreCDB["UnitframeOptions"]["healerraidheight"], 1),
 		'showPlayer', true,
 		'showSolo', aCoreCDB["UnitframeOptions"]["showsolo"],
@@ -551,77 +638,46 @@ local function Spawnhealraid()
 		'showRaid', true,
 		'xOffset', 5,
 		'yOffset', -5,
-		'point', aCoreCDB["UnitframeOptions"]["anchor"],
-		'groupFilter', aCoreCDB["UnitframeOptions"]["healergroupfilter"],
+		'point', anchor,
+		'groupFilter', groupfilter,
 		'groupingOrder', '1,2,3,4,5,6,7,8',
 		'groupBy', 'GROUP',
 		'maxColumns', 8,
 		'unitsPerColumn', 5,
 		'columnSpacing', 5,
-		'columnAnchorPoint', aCoreCDB["UnitframeOptions"]["partyanchor"]
-	)
-	healerraid.movingname = L["治疗模式团队框架"]
-	healerraid.point = {
-		healer = {a1 = "CENTER", parent = "UIParent", a2 = "BOTTOM", x = 0, y = 225},
-		dpser = {a1 = "BOTTOMLEFT", parent = "UIParent", a2 = "BOTTOMLEFT", x = 10, y = 250},
-	}
-	T.CreateDragFrame(healerraid)
-	healerraid.df:ClearAllPoints()
-	local size
-	if aCoreCDB["UnitframeOptions"]["healergroupfilter"] == "1,2,3,4,5,6,7,8" then
-		size = 40
-	elseif aCoreCDB["UnitframeOptions"]["healergroupfilter"] == "1,2,3,4,5,6" then
-		size = 30
-	elseif aCoreCDB["UnitframeOptions"]["healergroupfilter"] == "1,2,3,4" then
-		size = 20
-	else
-		size = 10
-	end
-	if aCoreCDB["UnitframeOptions"]["anchor"] == "LEFT" then
-		if aCoreCDB["UnitframeOptions"]["partyanchor"] == "LEFT" then
-			healerraid.df:SetSize(5*(size/5)*(aCoreCDB["UnitframeOptions"]["healerraidwidth"]+5)-5, aCoreCDB["UnitframeOptions"]["healerraidheight"])
-		else
-			healerraid.df:SetSize(5*(aCoreCDB["UnitframeOptions"]["healerraidwidth"]+5)-5, (size/5)*(aCoreCDB["UnitframeOptions"]["healerraidheight"]+5)-5)
-		end
-	else -- "TOP"
-		if aCoreCDB["UnitframeOptions"]["partyanchor"] == "LEFT" then
-			healerraid.df:SetSize((size/5)*(aCoreCDB["UnitframeOptions"]["healerraidwidth"]+5)-5, 5*(aCoreCDB["UnitframeOptions"]["healerraidheight"]+5)-5)
-		else
-			healerraid.df:SetSize(aCoreCDB["UnitframeOptions"]["healerraidwidth"], 5*(size/5)*(aCoreCDB["UnitframeOptions"]["healerraidheight"]+5)-5)
-		end
-	end
-	healerpet = oUF:SpawnHeader('Altz_HealerPetRaid', 'SecureGroupPetHeaderTemplate', 'raid,party,solo',
-		'oUF-initialConfigFunction', initconfig:format(aCoreCDB["UnitframeOptions"]["healerraidwidth"], aCoreCDB["UnitframeOptions"]["healerraidheight"], 1),
-		'showPlayer', true,
-		'showSolo', aCoreCDB["UnitframeOptions"]["showsolo"],
-		'showParty', true,
-		'showRaid', true,
-		'xOffset', 5,
-		'yOffset', -5,
-		'point', aCoreCDB["UnitframeOptions"]["anchor"],
-		'groupFilter', aCoreCDB["UnitframeOptions"]["healergroupfilter"],
-		'groupingOrder', '1,2,3,4,5,6,7,8',
-		'groupBy', 'GROUP',
-		'maxColumns', 8,
-		'unitsPerColumn', 5,
-		'columnSpacing', 5,
-		'columnAnchorPoint', aCoreCDB["UnitframeOptions"]["partyanchor"],
+		'columnAnchorPoint', party_anchor,
 		--'useOwnerUnit', true,
 		'unitsuffix', 'pet'
 	)
-	healerpet.movingname = L["治疗模式宠物团队框架"]
-	healerpet.point = {
-		healer = {a1 = "TOPLEFT", parent = healerraid:GetName(), a2 = "TOPRIGHT", x = 10, y = 0},
-		dpser = {a1 = "TOPLEFT", parent = healerraid:GetName(), a2 = "TOPRIGHT", x = 10, y = 0},
-	}
-	T.CreateDragFrame(healerpet)
-	healerpet.df:ClearAllPoints()
-	healerpet.df:SetSize(aCoreCDB["UnitframeOptions"]["healerraidwidth"], 5*(aCoreCDB["UnitframeOptions"]["healerraidheight"]+5)-5)
+	
+	if aCoreCDB["UnitframeOptions"]["hor_party"] then -- 5*8
+		healerpet:SetSize(5*(aCoreCDB["UnitframeOptions"]["healerraidwidth"]+5)-5, aCoreCDB["UnitframeOptions"]["healerraidheight"])
+	else -- 8*5
+		healerpet:SetSize(aCoreCDB["UnitframeOptions"]["healerraidwidth"], 5*(aCoreCDB["UnitframeOptions"]["healerraidheight"]+5)-5)
+	end
+	
+	healerpet[1]:SetPoint("TOPLEFT", healerpet, "TOPLEFT")
 end
+
+local dpsraid = CreateFrame("Frame", "Altz_DpsRaid_Holder", UIParent)
+dpsraid.movingname = L["输出模式团队框架"]
+dpsraid.point = {
+	healer = {a1 = "TOPLEFT", parent = "UIParent", a2 = "TOPLEFT", x = 15, y = -146},
+	dpser = {a1 = "TOPLEFT", parent = "UIParent", a2 = "TOPLEFT", x = 15, y = -146},
+}
+T.CreateDragFrame(dpsraid)
+
+local dpspet = CreateFrame("Frame", "Altz_DpsPetRaid_Holder", UIParent)
+dpspet.movingname = L["输出模式宠物团队框架"]
+dpspet.point = {
+	healer = {a1 = "TOPLEFT", parent = dpsraid:GetName(), a2 = "TOPRIGHT", x = 10, y = 0},
+	dpser = {a1 = "TOPLEFT", parent = dpsraid:GetName(), a2 = "TOPRIGHT", x = 10, y = 0},
+}
+T.CreateDragFrame(dpspet)
 
 local function Spawndpsraid()
 	oUF:SetActiveStyle"Altz_DPSraid"
-	dpsraid = oUF:SpawnHeader('Altz_DpsRaid', nil, 'raid,party,solo',
+	dpsraid[1] = oUF:SpawnHeader('Altz_DpsRaid', nil, 'raid,party,solo',
 		'oUF-initialConfigFunction', initconfig:format(aCoreCDB["UnitframeOptions"]["dpsraidwidth"], aCoreCDB["UnitframeOptions"]["dpsraidheight"], 1),
 		'showPlayer', true,
 		'showSolo', aCoreCDB["UnitframeOptions"]["showsolo"],
@@ -630,7 +686,7 @@ local function Spawndpsraid()
 		'xOffset', 5,
 		'yOffset', -5,
 		'point', "TOP",
-		'groupFilter', aCoreCDB["UnitframeOptions"]["dpsgroupfilter"],
+		'groupFilter', groupfilter,
 		'groupingOrder', aCoreCDB["UnitframeOptions"]["dpsraidgroupbyclass"] and "WARRIOR, DEATHKNIGHT, PALADIN, WARLOCK, SHAMAN, MAGE, MONK, HUNTER, PRIEST, ROGUE, DRUID" or "1,2,3,4,5,6,7,8",
 		'groupBy', aCoreCDB["UnitframeOptions"]["dpsraidgroupbyclass"] and "CLASS" or "GROUP",
 		'maxColumns', 8,
@@ -638,31 +694,12 @@ local function Spawndpsraid()
 		'columnSpacing', 5,
 		'columnAnchorPoint', "LEFT"
 	)
-	dpsraid.movingname = L["输出模式团队框架"]
-	dpsraid.point = {
-		healer = {a1 = "TOPLEFT", parent = "UIParent", a2 = "TOPLEFT", x = 15, y = -146},
-		dpser = {a1 = "TOPLEFT", parent = "UIParent", a2 = "TOPLEFT", x = 15, y = -146},
-	}	
-	T.CreateDragFrame(dpsraid)
-	dpsraid.df:ClearAllPoints()
-	local size, more
-	local size
-	if aCoreCDB["UnitframeOptions"]["dpsgroupfilter"] == "1,2,3,4,5,6,7,8" then
-		size = 40
-	elseif aCoreCDB["UnitframeOptions"]["dpsgroupfilter"] == "1,2,3,4,5,6" then
-		size = 30
-	elseif aCoreCDB["UnitframeOptions"]["dpsgroupfilter"] == "1,2,3,4" then
-		size = 20
-	else
-		size = 10
-	end
-	if size%aCoreCDB["UnitframeOptions"]["unitnumperline"] == 0 then
-		more = 0
-	else
-		more = 1
-	end
-	dpsraid.df:SetSize((math.floor(size/aCoreCDB["UnitframeOptions"]["unitnumperline"])+1)*aCoreCDB["UnitframeOptions"]["dpsraidwidth"], aCoreCDB["UnitframeOptions"]["unitnumperline"]*(aCoreCDB["UnitframeOptions"]["dpsraidheight"]+5)-5)
-	dpspet = oUF:SpawnHeader('Altz_DpsPetRaid', 'SecureGroupPetHeaderTemplate', 'raid,party,solo',
+
+	dpsraid:SetSize((math.floor(aCoreCDB["UnitframeOptions"]["party_num"]*5/aCoreCDB["UnitframeOptions"]["unitnumperline"])+1)*aCoreCDB["UnitframeOptions"]["dpsraidwidth"], aCoreCDB["UnitframeOptions"]["unitnumperline"]*(aCoreCDB["UnitframeOptions"]["dpsraidheight"]+5)-5)
+	
+	dpsraid[1]:SetPoint("TOPLEFT", dpsraid, "TOPLEFT")
+	
+	dpspet[1] = oUF:SpawnHeader('Altz_DpsPetRaid', 'SecureGroupPetHeaderTemplate', 'raid,party,solo',
 		'oUF-initialConfigFunction', initconfig:format(aCoreCDB["UnitframeOptions"]["dpsraidwidth"], aCoreCDB["UnitframeOptions"]["dpsraidheight"], 1),
 		'showPlayer', true,
 		'showSolo', aCoreCDB["UnitframeOptions"]["showsolo"],
@@ -679,26 +716,32 @@ local function Spawndpsraid()
 		'columnSpacing', 5,
 		'columnAnchorPoint', "LEFT" 
 	)
-	dpspet.movingname = L["输出模式宠物团队框架"]
-	dpspet.point = {
-		healer = {a1 = "TOPLEFT", parent = dpsraid:GetName(), a2 = "TOPRIGHT", x = 10, y = 0},
-		dpser = {a1 = "TOPLEFT", parent = dpsraid:GetName(), a2 = "TOPRIGHT", x = 10, y = 0},
-	}	
-	T.CreateDragFrame(dpspet)
-	dpspet.df:ClearAllPoints()
-	dpspet.df:SetSize(aCoreCDB["UnitframeOptions"]["dpsraidwidth"], aCoreCDB["UnitframeOptions"]["unitnumperline"]*(aCoreCDB["UnitframeOptions"]["dpsraidheight"]+5)-5)
+
+	dpspet:SetSize(aCoreCDB["UnitframeOptions"]["dpsraidwidth"], aCoreCDB["UnitframeOptions"]["unitnumperline"]*(aCoreCDB["UnitframeOptions"]["dpsraidheight"]+5)-5)
+	
+	dpspet[1]:SetPoint("TOPLEFT", dpspet, "TOPLEFT")
 end
 
 local function hiderf(f)
-	if aCoreCDB["UnitframeOptions"]["showsolo"] and f:GetAttribute("showSolo") then f:SetAttribute("showSolo", false) end
-	if f:GetAttribute("showParty") then f:SetAttribute("showParty", false) end
-	if f:GetAttribute("showRaid") then f:SetAttribute("showRaid", false) end
+	if not f then return end
+	for i = 1, aCoreCDB["UnitframeOptions"]["party_num"] do
+		if f[i] then
+			if aCoreCDB["UnitframeOptions"]["showsolo"] and f[i]:GetAttribute("showSolo") then f[i]:SetAttribute("showSolo", false) end
+			if f[i]:GetAttribute("showParty") then f[i]:SetAttribute("showParty", false) end
+			if f[i]:GetAttribute("showRaid") then f[i]:SetAttribute("showRaid", false) end
+		end
+	end
 end
 
 local function showrf(f)
-	if aCoreCDB["UnitframeOptions"]["showsolo"] and not f:GetAttribute("showSolo") then f:SetAttribute("showSolo", true) end
-	if not f:GetAttribute("showParty") then f:SetAttribute("showParty", true) end
-	if not f:GetAttribute("showRaid") then f:SetAttribute("showRaid", true) end
+	if not f then return end
+	for i = 1, aCoreCDB["UnitframeOptions"]["party_num"] do
+		if f[i] then
+			if aCoreCDB["UnitframeOptions"]["showsolo"] and not f[i]:GetAttribute("showSolo") then f[i]:SetAttribute("showSolo", true) end
+			if not f[i]:GetAttribute("showParty") then f[i]:SetAttribute("showParty", true) end
+			if not f[i]:GetAttribute("showRaid") then f[i]:SetAttribute("showRaid", true) end
+		end
+	end
 end
 
 function togglerf()
@@ -772,22 +815,22 @@ end
 
 -- 加入团队工具中
 T.IsDpsRaidShown = function()
-	if dpsraid:GetAttribute("showRaid") then
+	if dpsraid[1]:GetAttribute("showRaid") then
 		return true
 	end
 end
 
 T.SwitchRaidFrame = function()
-	if dpsraid:GetAttribute("showRaid") then
+	if dpsraid[1]:GetAttribute("showRaid") then
 		hiderf(dpsraid)
 		hiderf(dpspet)
 		showrf(healerraid)
 		if aCoreCDB["UnitframeOptions"]["showraidpet"] then showrf(healerpet) else hiderf(healerpet) end
-    else
+	else
 		hiderf(healerraid)
 		hiderf(healerpet)
 		showrf(dpsraid)
 		if aCoreCDB["UnitframeOptions"]["showraidpet"] then showrf(dpspet) else hiderf(dpspet) end
-    end
+	end
 end
 
