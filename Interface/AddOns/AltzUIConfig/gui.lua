@@ -1037,11 +1037,12 @@ RFInnerframe.common = CreateOptionPage("RF Options common", L["通用设置"], R
 RFInnerframe.common:Show()
 
 T.createcheckbutton(RFInnerframe.common, 30, 60, L["启用"], "UnitframeOptions", "enableraid")
-T.createcheckbutton(RFInnerframe.common, 30, 90, L["显示宠物"], "UnitframeOptions", "showraidpet")
-T.createcheckbutton(RFInnerframe.common, 30, 120, L["未进组时显示"], "UnitframeOptions", "showsolo")
-T.createslider(RFInnerframe.common, 30, 170, L["名字长度"], "UnitframeOptions", "namelength", 1, 2, 10, 1)
-T.createcheckbutton(RFInnerframe.common, 30, 200, L["刷新载具"], "UnitframeOptions", "toggleForVehicle")
-T.createDR(RFInnerframe.common.enableraid, RFInnerframe.common.showraidpet, RFInnerframe.common.showsolo, RFInnerframe.common.namelength)
+T.createslider(RFInnerframe.common, 30, 110, L["团队规模"], "UnitframeOptions", "party_num", 1, 2, 8, 2)
+T.createcheckbutton(RFInnerframe.common, 30, 140, L["显示宠物"], "UnitframeOptions", "showraidpet")
+T.createcheckbutton(RFInnerframe.common, 30, 170, L["未进组时显示"], "UnitframeOptions", "showsolo")
+T.createslider(RFInnerframe.common, 30, 220, L["名字长度"], "UnitframeOptions", "namelength", 1, 2, 10, 1)
+T.createcheckbutton(RFInnerframe.common, 30, 250, L["刷新载具"], "UnitframeOptions", "toggleForVehicle")
+T.createDR(RFInnerframe.common.enableraid, RFInnerframe.common.party_num, RFInnerframe.common.showraidpet, RFInnerframe.common.showsolo, RFInnerframe.common.namelength)
 
 RFInnerframe.switch = CreateOptionPage("RF Options switch", L["切换"], RFInnerframe, "VERTICAL", .3)
 
@@ -1055,28 +1056,17 @@ T.createDR(RFInnerframe.switch.autoswitch, RFInnerframe.switch.raidonly)
 
 RFInnerframe.healer = CreateOptionPage("RF Options healer", L["治疗模式"], RFInnerframe, "VERTICAL", .3)
 
-local groupfilter_group = {
-	["1,2"] = L["10-man"],
-	["1,2,3,4"] = L["20-man"],		
-	["1,2,3,4,5,6"] = L["30-man"],
-	["1,2,3,4,5,6,7,8"] = L["40-man"],
-}
-T.createradiobuttongroup(RFInnerframe.healer, 30, 60, L["团队规模"], "UnitframeOptions", "healergroupfilter", groupfilter_group)
-T.createslider(RFInnerframe.healer, 30, 110, L["高度"], "UnitframeOptions", "healerraidheight", 1, 10, 150, 1)
-T.createslider(RFInnerframe.healer, 30, 150, L["宽度"], "UnitframeOptions", "healerraidwidth", 1, 10, 150, 1)
-T.createcheckbutton(RFInnerframe.healer, 30, 190, L["raidmanabars"], "UnitframeOptions", "raidmanabars")
-T.createslider(RFInnerframe.healer,  30, 240, L["生命条高度比"], "UnitframeOptions", "raidhpheight", 100, 20, 95, 5, L["生命条高度比提示"])
+T.createslider(RFInnerframe.healer, 30, 80, L["高度"], "UnitframeOptions", "healerraidheight", 1, 10, 150, 1)
+T.createslider(RFInnerframe.healer, 30, 120, L["宽度"], "UnitframeOptions", "healerraidwidth", 1, 10, 150, 1)
+T.createcheckbutton(RFInnerframe.healer, 30, 160, L["raidmanabars"], "UnitframeOptions", "raidmanabars")
+T.createslider(RFInnerframe.healer,  30, 210, L["生命条高度比"], "UnitframeOptions", "raidhpheight", 100, 20, 95, 5, L["生命条高度比提示"])
 T.createDR(RFInnerframe.healer.raidmanabars, RFInnerframe.healer.raidhpheight)
-local raidanchor_group = {
-	["LEFT"] = L["LEFT"],
-	["TOP"] = L["TOP"],
-}
-T.createradiobuttongroup(RFInnerframe.healer, 30, 280, L["排列方向"], "UnitframeOptions", "anchor", raidanchor_group)
-T.createradiobuttongroup(RFInnerframe.healer, 30, 310, L["小队排列方向"], "UnitframeOptions", "partyanchor", raidanchor_group)
-T.createcheckbutton(RFInnerframe.healer, 30, 340, L["GCD"], "UnitframeOptions", "showgcd", L["GCD提示"])
-T.createcheckbutton(RFInnerframe.healer, 30, 370, L["显示缺失生命值"], "UnitframeOptions", "showmisshp", L["显示缺失生命值提示"])
-T.createcheckbutton(RFInnerframe.healer, 30, 400, L["治疗和吸收预估"], "UnitframeOptions", "healprediction", L["治疗和吸收预估提示"])
-T.createcheckbutton(RFInnerframe.healer, 30, 430, L["主坦克和主助手"], "UnitframeOptions", "healtank_assisticon", L["主坦克和主助手提示"])
+T.createcheckbutton(RFInnerframe.healer, 30, 250, COMPACT_UNIT_FRAME_PROFILE_HORIZONTALGROUPS, "UnitframeOptions", "hor_party")
+T.createcheckbutton(RFInnerframe.healer, 30, 280, COMPACT_UNIT_FRAME_PROFILE_KEEPGROUPSTOGETHER, "UnitframeOptions", "ind_party")
+T.createcheckbutton(RFInnerframe.healer, 30, 310, L["GCD"], "UnitframeOptions", "showgcd", L["GCD提示"])
+T.createcheckbutton(RFInnerframe.healer, 30, 340, L["显示缺失生命值"], "UnitframeOptions", "showmisshp", L["显示缺失生命值提示"])
+T.createcheckbutton(RFInnerframe.healer, 30, 370, L["治疗和吸收预估"], "UnitframeOptions", "healprediction", L["治疗和吸收预估提示"])
+T.createcheckbutton(RFInnerframe.healer, 30, 400, L["主坦克和主助手"], "UnitframeOptions", "healtank_assisticon", L["主坦克和主助手提示"])
 
 RFInnerframe.ind = CreateOptionPage("RF Options indicators", L["治疗指示器"], RFInnerframe, "VERTICAL", .3, true)
 local indicatorstyle_group = {
@@ -1217,12 +1207,11 @@ end
 
 RFInnerframe.dps = CreateOptionPage("RF Options dps", L["输出/坦克模式"], RFInnerframe, "VERTICAL", .3)
 
-T.createradiobuttongroup(RFInnerframe.dps, 30, 60, L["团队规模"], "UnitframeOptions", "dpsgroupfilter", groupfilter_group)
-T.createslider(RFInnerframe.dps, 30, 110, L["高度"], "UnitframeOptions", "dpsraidheight", 1, 10, 150, 1)
-T.createslider(RFInnerframe.dps, 30, 150, L["宽度"], "UnitframeOptions", "dpsraidwidth", 1, 10, 150, 1)
-T.createcheckbutton(RFInnerframe.dps, 30, 190, L["主坦克和主助手"], "UnitframeOptions", "dpstank_assisticon", L["主坦克和主助手提示"])
-T.createcheckbutton(RFInnerframe.dps, 30, 220, L["职业顺序"], "UnitframeOptions", "dpsraidgroupbyclass")
-T.createslider(RFInnerframe.dps, 30, 270, L["整体高度"], "UnitframeOptions", "unitnumperline", 1, 1, 40, 1, L["整体高度提示"])
+T.createslider(RFInnerframe.dps, 30, 80, L["高度"], "UnitframeOptions", "dpsraidheight", 1, 10, 150, 1)
+T.createslider(RFInnerframe.dps, 30, 120, L["宽度"], "UnitframeOptions", "dpsraidwidth", 1, 10, 150, 1)
+T.createcheckbutton(RFInnerframe.dps, 30, 160, L["主坦克和主助手"], "UnitframeOptions", "dpstank_assisticon", L["主坦克和主助手提示"])
+T.createcheckbutton(RFInnerframe.dps, 30, 190, L["职业顺序"], "UnitframeOptions", "dpsraidgroupbyclass")
+T.createslider(RFInnerframe.dps, 30, 240, L["整体高度"], "UnitframeOptions", "unitnumperline", 1, 1, 40, 1, L["整体高度提示"])
 
 RFInnerframe.clickcast = CreateOptionPage("RF Options clickcast", L["点击施法"], RFInnerframe, "VERTICAL", .3)
 

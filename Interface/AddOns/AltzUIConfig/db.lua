@@ -1053,6 +1053,7 @@ local Character_default_Settings = {
 		
 		--[[ share ]]--
 		enableraid = true,
+		party_num = 4,
 		showraidpet = false,
 		raidfontsize = 10,
 		namelength = 4,
@@ -1062,13 +1063,12 @@ local Character_default_Settings = {
 		raidonly = "healer",
 
 		--[[ healer mode ]]--
-		healergroupfilter = '1,2,3,4,5,6',
 		healerraidheight = 45,
 		healerraidwidth = 70,
 		raidmanabars = true,
 		raidhpheight = 0.85, -- slider
-		anchor = "TOP", -- dropdown
-		partyanchor = "LEFT", -- dropdown
+		ind_party = true,
+		hor_party = false,
 		showgcd = true,
 		showmisshp = true,
 		healprediction = true,
@@ -1079,7 +1079,6 @@ local Character_default_Settings = {
 		hotind_auralist = HealerIndicatorAuraList,
 				
 		--[[ dps/tank mode ]]--
-		dpsgroupfilter = '1,2,3,4,5,6',
 		dpsraidheight = 15,
 		dpsraidwidth = 100,
 		unitnumperline = 25,
