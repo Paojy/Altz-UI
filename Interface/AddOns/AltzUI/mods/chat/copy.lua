@@ -2,9 +2,7 @@ local T, C, L, G = unpack(select(2, ...))
 local F = unpack(AuroraClassic)
 
 -- Custom ChatMenu
-local menu = CreateFrame("Frame", nil, UIParent)
-menu:SetSize(25, 100)
-menu:SetPoint("TOPRIGHT", ChatFrame1, "TOPLEFT", 0, 5)
+local menu = _G[G.uiname.."chatframe_pullback"]
 
 local function HoverShow(bu)
 	if aCoreCDB["ChatOptions"]["chatbuttons_fade"] then
@@ -16,12 +14,11 @@ end
 
 QuickJoinToastButton:ClearAllPoints()
 QuickJoinToastButton:SetPoint("TOP", menu)
-QuickJoinToastButton:SetParent(menu)
+QuickJoinToastButton.SetPoint = function() end
 HoverShow(QuickJoinToastButton)
 
 ChatFrameMenuButton:ClearAllPoints()
 ChatFrameMenuButton:SetPoint("TOP", QuickJoinToastButton, "BOTTOM", 0, -2)
-ChatFrameMenuButton:SetParent(menu)
 HoverShow(ChatFrameMenuButton)
 
 -- Chat Copy
@@ -60,41 +57,36 @@ local function colorReplace(msg, r, g, b)
 end
 
 local function copyFunc(_, btn)
-	if btn == "LeftButton" then
-		if not frame:IsShown() then
-			local chatframe = SELECTED_DOCK_FRAME
-			local _, fontSize = chatframe:GetFont()
-			FCF_SetChatWindowFontSize(chatframe, chatframe, .01)
-			frame:Show()
+	if not frame:IsShown() then
+		local chatframe = SELECTED_DOCK_FRAME
+		local _, fontSize = chatframe:GetFont()
+		FCF_SetChatWindowFontSize(chatframe, chatframe, .01)
+		frame:Show()
 
-			local index = 1
-			for i = 1, chatframe:GetNumMessages() do
-				local message, r, g, b = chatframe:GetMessageInfo(i)
-				r = r or 1
-				g = g or 1
-				b = b or 1
-				message = colorReplace(message, r, g, b)
+		local index = 1
+		for i = 1, chatframe:GetNumMessages() do
+			local message, r, g, b = chatframe:GetMessageInfo(i)
+			r = r or 1
+			g = g or 1
+			b = b or 1
+			message = colorReplace(message, r, g, b)
 
-				lines[index] = tostring(message)
-				index = index + 1
-			end
-
-			local lineCt = index - 1
-			local text = table.concat(lines, "\n", 1, lineCt)
-			FCF_SetChatWindowFontSize(chatframe, chatframe, fontSize)
-			editBox:SetText(text)
-
-			wipe(lines)
-		else
-			frame:Hide()
+			lines[index] = tostring(message)
+			index = index + 1
 		end
-	elseif btn == "RightButton" then
-		ToggleFrame(menu)
-		NDuiDB["Chat"]["ChatMenu"] = menu:IsShown()
+
+		local lineCt = index - 1
+		local text = table.concat(lines, "\n", 1, lineCt)
+		FCF_SetChatWindowFontSize(chatframe, chatframe, fontSize)
+		editBox:SetText(text)
+
+		wipe(lines)
+	else
+		frame:Hide()
 	end
 end
 
-local copy = CreateFrame("Button", nil, menu)
+local copy = CreateFrame("Button", nil, UIParent)
 copy:SetPoint("TOP", ChatFrameMenuButton, "BOTTOM", 0, -2)
 copy:SetSize(20, 20)
 copy.Icon = copy:CreateTexture(nil, "ARTWORK")
@@ -124,15 +116,11 @@ end
 
 ChatFrameChannelButton:ClearAllPoints()
 ChatFrameChannelButton:SetPoint("TOP", copy, "BOTTOM", 0, -2)
-ChatFrameChannelButton:SetParent(menu)
 HoverShow(ChatFrameChannelButton)
 GuildControlUIRankSettingsFrameRosterLabel = CreateFrame("Frame")
 GuildControlUIRankSettingsFrameRosterLabel :Hide()
 
-ChatFrameToggleVoiceDeafenButton:SetParent(menu)
 HoverShow(ChatFrameToggleVoiceDeafenButton)
-
-ChatFrameToggleVoiceMuteButton:SetParent(menu)
 HoverShow(ChatFrameToggleVoiceMuteButton)
 
 ChatAlertFrame:ClearAllPoints()
