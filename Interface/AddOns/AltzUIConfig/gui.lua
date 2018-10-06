@@ -813,9 +813,10 @@ T.createslider(UFInnerframe.size, 30, 80, L["高度"], "UnitframeOptions", "heig
 T.createslider(UFInnerframe.size, 30, 120, L["宽度"], "UnitframeOptions", "width", 1, 50, 500, 1, L["宽度提示"])
 T.createslider(UFInnerframe.size, 30, 160, L["宠物框体宽度"], "UnitframeOptions", "widthpet", 1, 50, 500, 1)
 T.createslider(UFInnerframe.size, 30, 200, L["首领框体和PVP框体的宽度"], "UnitframeOptions", "widthboss", 1, 50, 500, 1)
-T.createslider(UFInnerframe.size, 30, 240, L["尺寸"], "UnitframeOptions", "scale", 100, 50, 300, 5)
-T.createslider(UFInnerframe.size, 30, 280, L["生命条高度比"], "UnitframeOptions", "hpheight", 100, 20, 95, 5, L["生命条高度比提示"])
-T.createslider(UFInnerframe.size, 30, 320, L["数值字号"], "UnitframeOptions", "valuefontsize", 1, 10, 25, 1, L["数值字号提示"])
+T.createslider(UFInnerframe.size, 30, 240, PARTY..L["宽度"], "UnitframeOptions", "widthparty", 1, 50, 500, 1)
+T.createslider(UFInnerframe.size, 30, 280, L["尺寸"], "UnitframeOptions", "scale", 100, 50, 300, 5)
+T.createslider(UFInnerframe.size, 30, 320, L["生命条高度比"], "UnitframeOptions", "hpheight", 100, 20, 95, 5, L["生命条高度比提示"])
+T.createslider(UFInnerframe.size, 30, 360, L["数值字号"], "UnitframeOptions", "valuefontsize", 1, 10, 25, 1, L["数值字号提示"])
 
 UFInnerframe.castbar = CreateOptionPage("UF Options castbar", L["施法条"], UFInnerframe, "VERTICAL", .3)
 
@@ -868,6 +869,7 @@ T.createcheckbutton(UFInnerframe.aura, 30, 180, L["玩家减益"], "UnitframeOpt
 T.createslider(UFInnerframe.aura, 30, 230, L["每一行的图标数量"], "UnitframeOptions", "playerdebuffnum", 1, 4, 20, 1, L["每行的光环数量提示"])
 T.createcheckbutton(UFInnerframe.aura, 30, 270, L["过滤增益"], "UnitframeOptions", "AuraFilterignoreBuff", L["过滤增益提示"])
 T.createcheckbutton(UFInnerframe.aura, 30, 300, L["过滤减益"], "UnitframeOptions", "AuraFilterignoreDebuff", L["过滤减益提示"])
+T.createcheckbutton(UFInnerframe.aura, 30, 330, L["过滤小队增益"], "UnitframeOptions", "usehotfilter", L["过滤小队增益提示"])
 T.createDR(UFInnerframe.aura.auras, UFInnerframe.aura.auraperrow, UFInnerframe.aura.auraborders, UFInnerframe.aura.playerdebuffenable, UFInnerframe.aura.playerdebuffnum, UFInnerframe.aura.AuraFilterignoreBuff, UFInnerframe.aura.AuraFilterignoreDebuff)
 T.createDR(UFInnerframe.aura.playerdebuffenable, UFInnerframe.aura.playerdebuffnum)
 
@@ -1003,18 +1005,20 @@ T.createcheckbutton(UFInnerframe.other, 30, 60, L["启用仇恨条"], "Unitframe
 T.createcheckbutton(UFInnerframe.other, 30, 90, L["显示PvP标记"], "UnitframeOptions", "pvpicon", L["显示PvP标记提示"])
 T.createcheckbutton(UFInnerframe.other, 30, 120, L["启用首领框体"], "UnitframeOptions", "bossframes")
 T.createcheckbutton(UFInnerframe.other, 30, 150, L["启用PVP框体"], "UnitframeOptions", "arenaframes")
+T.createcheckbutton(UFInnerframe.other, 30, 180, L["在小队中显示自己"], "UnitframeOptions", "showplayerinparty")
+T.createcheckbutton(UFInnerframe.other, 30, 210, L["显示小队宠物"], "UnitframeOptions", "showpartypets")
 
 if G.myClass == "DEATHKNIGHT" then
-    T.createcheckbutton(UFInnerframe.other, 30, 180, format(L["显示冷却"], RUNES), "UnitframeOptions", "runecooldown")
+    T.createcheckbutton(UFInnerframe.other, 30, 210, format(L["显示冷却"], RUNES), "UnitframeOptions", "runecooldown")
 	T.createslider(UFInnerframe.other, 30, 230, L["字体大小"], "UnitframeOptions", "valuefs", 1, 8, 16, 1)
 end
 
 if G.myClass == "SHAMAN" or G.myClass == "PRIEST" or G.myClass == "DRUID" then
-    T.createcheckbutton(UFInnerframe.other, 30, 180, L["显示法力条"], "UnitframeOptions", "dpsmana", L["显示法力条提示"])
+    T.createcheckbutton(UFInnerframe.other, 30, 210, L["显示法力条"], "UnitframeOptions", "dpsmana", L["显示法力条提示"])
 end
 
 if G.myClass == "MONK" then
-    T.createcheckbutton(UFInnerframe.other, 30, 180, L["显示醉拳条"], "UnitframeOptions", "stagger")
+    T.createcheckbutton(UFInnerframe.other, 30, 210, L["显示醉拳条"], "UnitframeOptions", "stagger")
 end
 
 --====================================================--
@@ -1040,11 +1044,12 @@ RFInnerframe.common:Show()
 
 T.createcheckbutton(RFInnerframe.common, 30, 60, L["启用"], "UnitframeOptions", "enableraid")
 T.createslider(RFInnerframe.common, 30, 110, L["团队规模"], "UnitframeOptions", "party_num", 1, 2, 8, 2)
-T.createcheckbutton(RFInnerframe.common, 30, 140, L["显示宠物"], "UnitframeOptions", "showraidpet")
-T.createcheckbutton(RFInnerframe.common, 30, 170, L["未进组时显示"], "UnitframeOptions", "showsolo")
-T.createslider(RFInnerframe.common, 30, 220, L["名字长度"], "UnitframeOptions", "namelength", 1, 2, 10, 1)
-T.createcheckbutton(RFInnerframe.common, 30, 250, L["刷新载具"], "UnitframeOptions", "toggleForVehicle")
-T.createDR(RFInnerframe.common.enableraid, RFInnerframe.common.party_num, RFInnerframe.common.showraidpet, RFInnerframe.common.showsolo, RFInnerframe.common.namelength)
+T.createcheckbutton(RFInnerframe.common, 30, 140, USE_RAID_STYLE_PARTY_FRAMES, "UnitframeOptions", "raidframe_inparty")
+T.createcheckbutton(RFInnerframe.common, 30, 170, L["显示宠物"], "UnitframeOptions", "showraidpet")
+T.createcheckbutton(RFInnerframe.common, 30, 200, L["未进组时显示"], "UnitframeOptions", "showsolo")
+T.createslider(RFInnerframe.common, 30, 250, L["名字长度"], "UnitframeOptions", "namelength", 1, 2, 10, 1)
+T.createcheckbutton(RFInnerframe.common, 30, 280, L["刷新载具"], "UnitframeOptions", "toggleForVehicle")
+T.createDR(RFInnerframe.common.enableraid, RFInnerframe.common.raidframe_inparty, RFInnerframe.common.party_num, RFInnerframe.common.showraidpet, RFInnerframe.common.showsolo, RFInnerframe.common.namelength)
 
 RFInnerframe.switch = CreateOptionPage("RF Options switch", L["切换"], RFInnerframe, "VERTICAL", .3)
 

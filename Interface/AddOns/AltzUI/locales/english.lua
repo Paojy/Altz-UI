@@ -89,12 +89,9 @@ L["目标头像"] = "Target Frame"
 L["目标的目标头像"] = "ToT Frame"
 L["焦点头像"] = "Focus Frame"
 L["焦点的目标头像"] = "ToF Frame"
-for i = 1, MAX_BOSS_FRAMES do
-	L["首领头像"..i] = "Boss"..i
-end
-for i = 1, 5 do
-	L["竞技场敌人头像"..i] = "Arena"..i
-end
+L["首领头像"] = "Boss"
+L["竞技场敌人头像"] = "Arena"
+L["小队队友"] = "Party"
 L["玩家施法条"] = "Player Cast Bar"
 L["目标施法条"] = "Target Cast Bar"
 L["焦点施法条"] = "Focus Cast Bar"

@@ -991,6 +991,7 @@ local Character_default_Settings = {
 		width = 230,
 		widthpet = 70,
 		widthboss = 170,
+		widthparty = 200,
 		scale = 1.0, -- slider
 		hpheight = 0.75, -- slider
 
@@ -1023,11 +1024,11 @@ local Character_default_Settings = {
 		auraperrow = 9, -- slider
 		playerdebuffenable = true,
 		playerdebuffnum = 7, -- slider
-
 		AuraFilterignoreBuff = false,
 		AuraFilterignoreDebuff = false,
 		AuraFilterwhitelist = {},
-
+		usehotfilter = true,
+		
 		showthreatbar = true,
 
 		-- show/hide boss
@@ -1035,7 +1036,11 @@ local Character_default_Settings = {
 		
 		-- show/hide arena
 		arenaframes = true,
-		
+
+		-- show player in party
+		showplayerinparty = true,
+		showpartypets = false,
+
 		-- show pvp timer
 		pvpicon = false,
 		
@@ -1053,6 +1058,7 @@ local Character_default_Settings = {
 		
 		--[[ share ]]--
 		enableraid = true,
+		raidframe_inparty = false,
 		party_num = 4,
 		showraidpet = false,
 		raidfontsize = 10,

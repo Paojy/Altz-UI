@@ -89,12 +89,9 @@ L["目标头像"] = "Quadro do alvo"
 L["目标的目标头像"] = "Quadro AdA"
 L["焦点头像"] = "Quadro de foco"
 L["焦点的目标头像"] = "ToF Frame"
-for i = 1, MAX_BOSS_FRAMES do
-	L["首领头像"..i] = "Chefe"..i
-end
-for i = 1, 5 do
-	L["竞技场敌人头像"..i] = "Arena"..i
-end
+L["首领头像"] = "Chefe"
+L["竞技场敌人头像"] = "Arena"
+--L["小队队友"] = "Party"
 L["玩家施法条"] = "Barra de lançamento do jogador"
 L["目标施法条"] = "Barra de lançamento do alvo"
 L["焦点施法条"] = "Barra de lançamento do foco"

@@ -137,6 +137,9 @@ L_UIDropDownMenu_Initialize(Point1dropDown, function(self, level, menuList)
 		info.func = function(self)
 			aCoreCDB["FramePoints"][CurrentFrame][role]["a1"] = anchors[i]
 			PlaceCurrentFrame()
+			if CurrentFrame == "Altz_HealerRaid_Holder" then
+				T.PlaceRaidFrame()
+			end
 			L_UIDropDownMenu_SetSelectedName(Point1dropDown, anchors[i], true)
 			L_UIDropDownMenu_SetText(Point1dropDown, anchors[i])
 			L_CloseDropDownMenus()

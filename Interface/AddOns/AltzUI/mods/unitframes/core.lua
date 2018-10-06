@@ -757,7 +757,7 @@ local PostCreateIcon = function(auras, icon)
 	icon.count:ClearAllPoints()
 	icon.count:SetPoint("BOTTOMRIGHT", 0, -3)
 	icon.count:SetFontObject(nil)
-	icon.count:SetFont(G.numFont, iconsize*.65, "OUTLINE")
+	icon.count:SetFont(G.numFont, iconsize*.4, "OUTLINE")
 	icon.count:SetTextColor(.9, .9, .1)
 
 	icon.overlay:SetTexture(G.media.blank)
@@ -767,7 +767,7 @@ local PostCreateIcon = function(auras, icon)
 
 	icon.bd = T.createBackdrop(icon, icon, 0)
 
-	icon.remaining = T.createnumber(icon, "OVERLAY", iconsize*.55, "OUTLINE", "CENTER")
+	icon.remaining = T.createnumber(icon, "OVERLAY", iconsize*.4, "OUTLINE", "CENTER")
 	icon.remaining:SetPoint("TOPLEFT", 0, 5)
 
 	if aCoreCDB["UnitframeOptions"]["auraborders"] then
@@ -903,7 +903,7 @@ end
 T.CreateAuras = function(self, unit)
 	if not unit then return end
 	local u = unit:match("[^%d]+")
-	if multicheck(u, "target", "focus", "boss", "arena", "player", "pet", "raid") then
+	if multicheck(u, "target", "focus", "boss", "arena", "party", "player", "pet", "raid") then
 		local Auras = CreateFrame("Frame", nil, self)
 		if u == "raid" then
 			Auras:SetHeight(aCoreCDB["UnitframeOptions"]["healerraidheight"])
@@ -922,9 +922,12 @@ T.CreateAuras = function(self, unit)
 			Auras.spacing = 3
 			Auras.PostCreateIcon = PostCreateIcon
 			Auras.PostUpdateIcon = PostUpdateIcon
-
-			Auras.gap = true
-			Auras.PostUpdateGapIcon = PostUpdateGapIcon
+			if u == "party" then
+				Auras.size = 20
+			else
+				Auras.gap = true
+				Auras.PostUpdateGapIcon = PostUpdateGapIcon
+			end
 		end
 
 		if unit == "target" or unit == "focus" then
@@ -979,6 +982,33 @@ T.CreateAuras = function(self, unit)
 			Auras.numDebuffs = 1
 			Auras.numBuffs = 8
 			Auras.CustomFilter = HealerInd_AuraFilter
+		elseif u == "party" or u == "partypet" then
+			Auras:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 1, 14)
+			Auras.initialAnchor = "BOTTOMLEFT"
+			Auras["growth-x"] = "RIGHT"
+			Auras["growth-y"] = "UP"
+			Auras.numDebuffs = 0
+			Auras.numBuffs = 5
+			if aCoreCDB["UnitframeOptions"]["usehotfilter"] then
+				Auras.CustomFilter = HealerInd_AuraFilter
+			else
+				Auras.onlyShowPlayer = true
+			end
+
+			local Debuffs = CreateFrame("Frame", nil, self)
+			Debuffs:SetPoint("BOTTOMLEFT", self.Power, "BOTTOMRIGHT", 8, -8)
+			Debuffs:SetHeight(aCoreCDB["UnitframeOptions"]["height"]*2)
+			Debuffs:SetWidth(aCoreCDB["UnitframeOptions"]["widthparty"]-2)
+			Debuffs.disableCooldown = true
+			Debuffs.size = iconsize
+			Debuffs.spacing = 3
+			Debuffs.PostCreateIcon = PostCreateIcon
+			Debuffs.PostUpdateIcon = PostUpdateIcon
+			Debuffs.initialAnchor = "TOPLEFT"
+			Debuffs["growth-x"] = "RIGHT"
+			Debuffs["growth-y"] = "DOWN"
+			Debuffs.num = 5
+			self.Debuffs = Debuffs
 		end
 		self.Auras = Auras
 	end
@@ -990,8 +1020,16 @@ end
 
 local func = function(self, unit)
 	local u = unit:match("[^%d]+")
-
-	T.OnMouseOver(self)
+	
+	if u == "boss" then
+		T.RaidOnMouseOver(self)
+		if aCoreCDB["UnitframeOptions"]["enableClickCast"] then
+			T.RegisterClicks(self)
+		end
+	else
+		T.OnMouseOver(self)
+	end
+	
 	self:RegisterForClicks"AnyUp"
 	self.mouseovers = {}
 
@@ -1478,10 +1516,10 @@ function EventFrame:ADDON_LOADED(arg1)
 		local bossframes = {}
 		if aCoreCDB["UnitframeOptions"]["bossframes"] then
 			for i = 1, MAX_BOSS_FRAMES do
-				bossframes["boss"..i] = spawnHelper(self,"boss" .. i)
+				bossframes["boss"..i] = spawnHelper(self,"boss"..i)
 			end
 			for i = 1, MAX_BOSS_FRAMES do
-				bossframes["boss"..i].movingname = L["首领头像"..i]
+				bossframes["boss"..i].movingname = L["首领头像"]..i
 				if i == 1 then
 					bossframes["boss"..i].point = {
 						healer = {a1 = "TOPRIGHT", parent = "UIParent", a2 = "TOPRIGHT" , x = -80, y = -300},
@@ -1505,7 +1543,7 @@ function EventFrame:ADDON_LOADED(arg1)
 				arenaframes["arena"..i] = spawnHelper(self,"arena"..i)
 			end
 			for i = 1, 5 do
-				arenaframes["arena"..i].movingname = L["竞技场敌人头像"..i]
+				arenaframes["arena"..i].movingname = L["竞技场敌人头像"]..i
 				if i == 1 then
 					arenaframes["arena"..i].point = {
 						healer = {a1 = "TOPRIGHT", parent = "UIParent", a2 = "TOPRIGHT" , x = -140, y = -340},
