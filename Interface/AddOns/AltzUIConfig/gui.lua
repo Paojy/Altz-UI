@@ -268,7 +268,7 @@ T.createcheckbutton(ChatOptions, 30, 150, L["自动邀请"], "OtherOptions", "au
 T.createeditbox(ChatOptions, 40, 180, "", "OtherOptions", "autoinvitekeywords", L["关键词输入"])
 T.createDR(ChatOptions.autoinvite, ChatOptions.autoinvitekeywords)
 T.createcheckbutton(ChatOptions, 30, 210, L["聊天过滤"], "ChatOptions", "nogoldseller", L["聊天过滤提示"])
-T.createslider(ChatOptions, 30, 260, L["过滤阈值"], "ChatOptions", "goldkeywordnum", 1, 1, 5, 1, L["过滤阈值"])
+T.createslider(ChatOptions, 30, 250, L["过滤阈值"], "ChatOptions", "goldkeywordnum", 1, 1, 5, 1, L["过滤阈值"])
 T.createmultilinebox(ChatOptions, 300, 150, 35, 305, L["关键词"], "ChatOptions", "goldkeywordlist", L["关键词输入"])
 ChatOptions.goldkeywordlist.edit:SetScript("OnShow", function(self) self:SetText(aCoreDB["goldkeywordlist"]) end)
 ChatOptions.goldkeywordlist.edit:SetScript("OnEscapePressed", function(self) self:SetText(aCoreDB["goldkeywordlist"]) self:ClearFocus() end)
@@ -280,6 +280,8 @@ T.createcheckbutton(ChatOptions, 300, 90, L["显示聊天框背景"], "ChatOptio
 T.createcheckbutton(ChatOptions, 300, 120, L["聊天按钮悬停渐隐"], "ChatOptions", "chatbuttons_fade", L["聊天按钮悬停渐隐提示"])
 T.createslider(ChatOptions, 310, 170, L["渐隐透明度"], "ChatOptions", "chatbuttons_fade_alpha", 100, 0, 80, 5, L["渐隐透明度提示"])
 T.createDR(ChatOptions.chatbuttons_fade, ChatOptions.chatbuttons_fade_alpha)
+T.createslider(ChatOptions, 310, 210, L["标签最小透明度"], "ChatOptions", "chattab_fade_minalpha", 100, 0, 100, 5, L["标签最小透明度提示"])
+T.createslider(ChatOptions, 310, 250, L["标签最大透明度"], "ChatOptions", "chattab_fade_maxalpha", 100, 0, 100, 5, L["标签最大透明度提示"])
 --====================================================--
 --[[          -- Bag and Items Options --           ]]--
 --====================================================--
@@ -307,11 +309,11 @@ T.createslider(IInnerframe.common, 30, 150, L["背包每行图标数量"], "Item
 T.createcheckbutton(IInnerframe.common, 30, 180, L["显示物品等级"], "ItemOptions", "showitemlevel", L["显示物品等级提示"])
 T.createDR(IInnerframe.common.enablebag, IInnerframe.common.showitemlevel)
 T.createcheckbutton(IInnerframe.common, 30, 210, L["已会配方着色"], "ItemOptions", "alreadyknown", L["已会配方着色提示"])
-T.createcheckbutton(IInnerframe.common, 30, 240, L["自动修理"], "ItemOptions", "autorepair", L["自动修理提示"])
-T.createcheckbutton(IInnerframe.common, 30, 270, L["自动公会修理"], "ItemOptions", "autorepair_guild", L["自动公会修理提示"])
-T.createcheckbutton(IInnerframe.common, 230, 270, L["灵活公会修理"], "ItemOptions", "autorepair_guild_auto", L["灵活公会修理提示"])
-T.createcheckbutton(IInnerframe.common, 30, 300, L["自动售卖"], "ItemOptions", "autosell", L["自动售卖提示"])
-T.createcheckbutton(IInnerframe.common, 230, 300, L["自动购买"], "ItemOptions", "autobuy", L["自动购买提示"])
+T.createcheckbutton(IInnerframe.common, 230, 210, L["自动修理"], "ItemOptions", "autorepair", L["自动修理提示"])
+T.createcheckbutton(IInnerframe.common, 30, 240, L["自动公会修理"], "ItemOptions", "autorepair_guild", L["自动公会修理提示"])
+T.createcheckbutton(IInnerframe.common, 230, 240, L["灵活公会修理"], "ItemOptions", "autorepair_guild_auto", L["灵活公会修理提示"])
+T.createcheckbutton(IInnerframe.common, 30, 270, L["自动售卖"], "ItemOptions", "autosell", L["自动售卖提示"])
+T.createcheckbutton(IInnerframe.common, 230, 270, L["自动购买"], "ItemOptions", "autobuy", L["自动购买提示"])
 
 IInnerframe.common.SF:ClearAllPoints()
 IInnerframe.common.SF:SetPoint("TOPLEFT", IInnerframe.common, "TOPLEFT", 40, -340)

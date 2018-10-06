@@ -55,7 +55,6 @@ L["水平"] = "Horizontal"
 L["正向"] = "Ascending"
 L["反向"] = "Descending"
 L["显示冷却"] = "Show %s's cooldown."
-L["排列方向"] = "Anchor"
 
 -- 介绍
 L["介绍"] = "Intro"
@@ -244,6 +243,10 @@ L["悬停渐隐"] = "Hover Fading"
 L["悬停渐隐提示"] = "Enble Actionbar Fading when your mouse is not hovering over them."
 L["渐隐透明度"] = "Fading Alpha"
 L["渐隐透明度提示"] = "Fade-out minimum alpha"
+L["标签最大透明度"] = "Chat tab max alpha"
+L["标签最大透明度提示"] = "Chat tab alpha while mouse is hovering over them."
+L["标签最小透明度"] = "Chat tab min alpha"
+L["标签最小透明度提示"] = "Chat tab alpha while mouse is NOT hovering over them."
 
 L["主动作条"] = "MainActionbar"
 L["额外动作条"] = "MultiActionBar"

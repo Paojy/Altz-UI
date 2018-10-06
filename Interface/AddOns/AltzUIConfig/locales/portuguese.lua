@@ -55,7 +55,6 @@ L["水平"] = "Horizontal"
 L["正向"] = "Crescente"
 L["反向"] = "Decrescente"
 L["显示冷却"] = "Mostrar recarga de %s."
-L["排列方向"] = "Âncora"
 
 -- 介绍
 L["介绍"] = "Introdução"
@@ -244,6 +243,10 @@ L["悬停渐隐"] = "Desativar esvanecimento quando mouse passar sobre"
 L["悬停渐隐提示"] = "Desativar esvanecimento da barra de ações quando o mouse passar sobre."
 L["渐隐透明度"] = "Opacidade do esvanecimento: "
 L["渐隐透明度提示"] = "Opacidade minima do esvanecimento."
+--L["标签最大透明度"] = "Chat tab max alpha"
+--L["标签最大透明度提示"] = "Chat tab alpha while mouse is hovering over them."
+--L["标签最小透明度"] = "Chat tab min alpha"
+--L["标签最小透明度提示"] = "Chat tab alpha while mouse is NOT hovering over them."
 
 L["主动作条"] = "Principal"
 L["额外动作条"] = "Adicional"
