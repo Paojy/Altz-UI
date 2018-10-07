@@ -671,7 +671,11 @@ T.createmultilinebox = function(parent, width, height, x, y, name, table, value,
 	scrollBG.edit:SetTextInsets(5, 5, 5, 5)
 	scrollBG.edit:SetFrameLevel(scrollAC:GetFrameLevel()+1)
 	scrollBG.edit:SetAllPoints()
-	scrollBG.edit:SetFontObject(ChatFontNormal)
+	if value == "Import" then
+		scrollBG.edit:SetFont(G.norFont, 10, "NONE")
+	else
+		scrollBG.edit:SetFontObject(ChatFontNormal)
+	end
 	scrollBG.edit:SetMultiLine(true)
 	scrollBG.edit:EnableMouse(true)
 	scrollBG.edit:SetAutoFocus(false)
