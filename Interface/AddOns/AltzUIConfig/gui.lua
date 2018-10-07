@@ -1009,16 +1009,16 @@ T.createcheckbutton(UFInnerframe.other, 30, 180, L["在小队中显示自己"], 
 T.createcheckbutton(UFInnerframe.other, 30, 210, L["显示小队宠物"], "UnitframeOptions", "showpartypets")
 
 if G.myClass == "DEATHKNIGHT" then
-    T.createcheckbutton(UFInnerframe.other, 30, 210, format(L["显示冷却"], RUNES), "UnitframeOptions", "runecooldown")
+    T.createcheckbutton(UFInnerframe.other, 30, 240, format(L["显示冷却"], RUNES), "UnitframeOptions", "runecooldown")
 	T.createslider(UFInnerframe.other, 30, 230, L["字体大小"], "UnitframeOptions", "valuefs", 1, 8, 16, 1)
 end
 
 if G.myClass == "SHAMAN" or G.myClass == "PRIEST" or G.myClass == "DRUID" then
-    T.createcheckbutton(UFInnerframe.other, 30, 210, L["显示法力条"], "UnitframeOptions", "dpsmana", L["显示法力条提示"])
+    T.createcheckbutton(UFInnerframe.other, 30, 240, L["显示法力条"], "UnitframeOptions", "dpsmana", L["显示法力条提示"])
 end
 
 if G.myClass == "MONK" then
-    T.createcheckbutton(UFInnerframe.other, 30, 210, L["显示醉拳条"], "UnitframeOptions", "stagger")
+    T.createcheckbutton(UFInnerframe.other, 30, 240, L["显示醉拳条"], "UnitframeOptions", "stagger")
 end
 
 --====================================================--
