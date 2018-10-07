@@ -9,11 +9,33 @@ if customobjectivetracker then return end
  
 anchorframe.movingname = L["任务追踪"]
 anchorframe.point = {
-	healer = {a1 = "TOPRIGHT", parent = "UIParent", a2 = "TOPRIGHT", x = -250, y = -180},
-	dpser = {a1 = "TOPRIGHT", parent = "UIParent", a2 = "TOPRIGHT", x = -250, y = -180},
+	healer = {a1 = "TOPLEFT", parent = "UIParent", a2 = "TOPLEFT", x = 0, y = -200},
+	dpser = {a1 = "TOPLEFT", parent = "UIParent", a2 = "TOPLEFT", x = 0, y = -200},
 }
 T.CreateDragFrame(anchorframe) --frame, dragFrameList, inset, clamp	
 anchorframe:SetSize(240, 20)
+
+
+OBJECTIVE_TRACKER_COLOR["Normal"]["r"] = 1
+OBJECTIVE_TRACKER_COLOR["Normal"]["g"] = 1
+OBJECTIVE_TRACKER_COLOR["Normal"]["b"] = 1
+
+OBJECTIVE_TRACKER_COLOR["NormalHighlight"]["r"] = 1
+OBJECTIVE_TRACKER_COLOR["NormalHighlight"]["g"] = 1
+OBJECTIVE_TRACKER_COLOR["NormalHighlight"]["b"] = 0
+
+OBJECTIVE_TRACKER_COLOR["Header"]["r"] = G.Ccolor.r
+OBJECTIVE_TRACKER_COLOR["Header"]["g"] = G.Ccolor.g
+OBJECTIVE_TRACKER_COLOR["Header"]["b"] = G.Ccolor.b
+
+OBJECTIVE_TRACKER_COLOR["HeaderHighlight"]["r"] = G.Ccolor.r
+OBJECTIVE_TRACKER_COLOR["HeaderHighlight"]["g"] = G.Ccolor.g
+OBJECTIVE_TRACKER_COLOR["HeaderHighlight"]["b"] = G.Ccolor.b
+
+OBJECTIVE_TRACKER_COLOR["Complete"]["r"] = 1
+OBJECTIVE_TRACKER_COLOR["Complete"]["g"] = 1
+OBJECTIVE_TRACKER_COLOR["Complete"]["b"] = 1
+
 
 local vm = ObjectiveTrackerFrame
 
@@ -29,13 +51,23 @@ vm.SetPoint = function() end
 if IsAddOnLoaded("Blizzard_ObjectiveTracker") then
     hooksecurefunc("ObjectiveTracker_Update", function(reason, id)
        if vm.MODULES then  
-            for i = 1, #vm.MODULES do                               
+            for i = 1, #vm.MODULES do
 		        vm.MODULES[i].Header.Background:SetAtlas(nil)
-		        vm.MODULES[i].Header.Text:SetFont(G.norFont, 14, "OUTLINE")
-				vm.MODULES[i].Header.Text:SetTextColor(G.Ccolor.r, G.Ccolor.g, G.Ccolor.b)
+				
+				vm.MODULES[i].Header.Background = vm.MODULES[i].Header:CreateTexture(nil, "BACKGROUND")
+				vm.MODULES[i].Header.Background:SetPoint("TOPLEFT", 10, 2)
+				vm.MODULES[i].Header.Background:SetPoint("BOTTOMRIGHT", -10, -2)
+				vm.MODULES[i].Header.Background:SetTexture("Interface\\PVPFrame\\PvPMegaQueue")
+				vm.MODULES[i].Header.Background:SetTexCoord(0.00195313,0.63867188,0.76953125,0.83207813)
+				vm.MODULES[i].Header.Background:SetBlendMode("ADD")
+				vm.MODULES[i].Header.Background:SetDesaturated(true)
+				vm.MODULES[i].Header.Background:SetVertexColor(1, .81, 0)
+				
+		        vm.MODULES[i].Header.Text:SetFont(G.norFont, 14, "NONE")
+				vm.MODULES[i].Header.Text:SetTextColor(1, .9, 0)
 		        vm.MODULES[i].Header.Text:ClearAllPoints()
-		        vm.MODULES[i].Header.Text:SetPoint("LEFT", vm.MODULES[i].Header, 10, 0)
-		        vm.MODULES[i].Header.Text:SetJustifyH("LEFT")
+		        vm.MODULES[i].Header.Text:SetPoint("CENTER", vm.MODULES[i].Header, 0, 0)
+		        vm.MODULES[i].Header.Text:SetJustifyH("CENTER")
 	        end
 	    end
 	end)
@@ -45,7 +77,6 @@ hooksecurefunc(QUEST_TRACKER_MODULE, "SetBlockHeader", function(_, block)
 	block.HeaderText:SetFont(G.norFont, 12, "OUTLINE")
     block.HeaderText:SetShadowColor(0, 0, 0, 1)
 	block.HeaderText:SetShadowOffset(0, 0)
-    block.HeaderText:SetTextColor(G.Ccolor.r, G.Ccolor.g, G.Ccolor.b)
     block.HeaderText:SetJustifyH("LEFT")
     block.HeaderText:SetWidth(200)
     block.HeaderText:SetHeight(15)
@@ -56,12 +87,6 @@ hooksecurefunc(QUEST_TRACKER_MODULE, "SetBlockHeader", function(_, block)
     end
 end)
     
-local function hoverquest(_, block)
-	block.HeaderText:SetTextColor(G.Ccolor.r, G.Ccolor.g, G.Ccolor.b)
-end
-hooksecurefunc(QUEST_TRACKER_MODULE, "OnBlockHeaderEnter", hoverquest)  
-hooksecurefunc(QUEST_TRACKER_MODULE, "OnBlockHeaderLeave", hoverquest)
-
 hooksecurefunc(ACHIEVEMENT_TRACKER_MODULE, "SetBlockHeader", function(_, block)
     local trackedAchievements = {GetTrackedAchievements()}
         
@@ -72,19 +97,12 @@ hooksecurefunc(ACHIEVEMENT_TRACKER_MODULE, "SetBlockHeader", function(_, block)
 		if not wasEarnedByMe then
 	        block.HeaderText:SetFont(G.norFont, 12, "OUTLINE")
             block.HeaderText:SetShadowColor(0, 0, 0, 1)
-            block.HeaderText:SetTextColor(G.Ccolor.r, G.Ccolor.g, G.Ccolor.b)
+			block.HeaderText:SetShadowOffset(0, 0)
             block.HeaderText:SetJustifyH("LEFT")
             block.HeaderText:SetWidth(200)
         end
 	end
 end)
-local function hoverachieve(_, block)
-	block.HeaderText:SetTextColor(G.Ccolor.r, G.Ccolor.g, G.Ccolor.b)
-end
-      
-hooksecurefunc(ACHIEVEMENT_TRACKER_MODULE, "OnBlockHeaderEnter", hoverachieve)
-hooksecurefunc(ACHIEVEMENT_TRACKER_MODULE, "OnBlockHeaderLeave", hoverachieve)
-
 
 ScenarioStageBlock:HookScript("OnShow", function()
 	if not ScenarioStageBlock.skinned then
