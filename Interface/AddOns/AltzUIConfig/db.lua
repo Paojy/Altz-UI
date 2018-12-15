@@ -271,9 +271,6 @@ local AuraList = {
         [GetSpellInfo(498)]    = { id = 498,    level = 15,}, -- 圣佑术
 		[GetSpellInfo(642)]    = { id = 642,    level = 15,}, -- 圣盾术
 		[GetSpellInfo(86659)]  = { id = 86659,  level = 15,}, -- 远古列王守卫
-	--武僧
-		[GetSpellInfo(116849)] = { id = 116849, level = 15,}, -- 作茧缚命
-		[GetSpellInfo(115203)] = { id = 115203, level = 15,}, -- 壮胆酒
 	--DK
 		[GetSpellInfo(48707)]  = { id = 48707,  level = 15,}, -- 反魔法护罩
 		[GetSpellInfo(48792)]  = { id = 48792,  level = 15,}, -- 冰封之韧
@@ -296,6 +293,8 @@ local AuraList = {
 	--法师
 		[GetSpellInfo(45438)]  = { id = 45438,  level = 15,}, -- 寒冰屏障
 	--武僧
+		[GetSpellInfo(116849)] = { id = 116849, level = 15,}, -- 作茧缚命
+		[GetSpellInfo(115203)] = { id = 115203, level = 15,}, -- 壮胆酒
 		[GetSpellInfo(122470)]  = { id = 122470,  level = 15,}, -- 业报之触
 		[GetSpellInfo(122783)]  = { id = 122783,  level = 15,}, -- 散魔功
 	--萨满

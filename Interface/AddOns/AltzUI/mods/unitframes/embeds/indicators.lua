@@ -83,14 +83,6 @@ oUF.Tags.Methods['Mlight:yzdx'] = function(u) -- 意志洞悉
 end
 oUF.Tags.Events['Mlight:yzdx'] = "UNIT_AURA UNIT_ABSORB_AMOUNT_CHANGED" 
 
-oUF.Tags.Methods['Mlight:tlzg'] = function(u)
-	local name = AuraUtil.FindAuraByName(GetSpellInfo(208065), u, "PLAYER")
-	if name then
-		return "|cff0000FFb|r"
-	end
-end --图雷之光
-oUF.Tags.Events['Mlight:tlzg'] = "UNIT_AURA"
-
 -- Druid 德鲁伊
 oUF.Tags.Methods['Mlight:lb'] = function(u) -- 生命绽放
     local name, _, c,_,_, expirationTime = AuraUtil.FindAuraByName(GetSpellInfo(33763), u, "PLAYER")
@@ -331,7 +323,7 @@ classIndicators={
     },
     ["PRIEST"] = {
         ["TL"] = "[Mlight:rnw][Mlight:pws]",
-        ["BR"] = "[Mlight:xnhd][Mlight:ayj][Mlight:da][Mlight:lt][Mlight:tlzg]",
+        ["BR"] = "[Mlight:xnhd][Mlight:ayj][Mlight:da][Mlight:lt]",
         ["BL"] = "[Mlight:yzdx]",
         ["TR"] = "[Mlight:pom]",
         ["Cen"] = "[Mlight:atonement]",

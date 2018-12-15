@@ -286,7 +286,7 @@ function BFrame.bags:setUp(frameName, ...)
 		for i = 1, 7 do
 			local bankbag = BankSlotsFrame["Bag"..i]
 			local icon = bankbag.icon
-			local highlight = bankbag.HighlightFrame.HighlightTexture
+			--local highlight = bankbag.HighlightFrame.HighlightTexture
 			
 			bankbag:SetParent(frame.bags)
 			bankbag:GetChildren():Hide()
@@ -314,14 +314,14 @@ function BFrame.bags:setUp(frameName, ...)
 			icon:SetPoint("TOPLEFT", 2, -2)
 			icon:SetPoint("BOTTOMRIGHT", -2, 2)
 			
-			if highlight and not highlight.skinned then
-				highlight:SetTexture(1, 1, 1, 0.3)
-				highlight:SetTexture("")
-				highlight:ClearAllPoints()
-				highlight:SetPoint("TOPLEFT", 2, -2)
-				highlight:SetPoint("BOTTOMRIGHT", -2, 2)
-				highlight.skinned = true
-			end
+			--if highlight and not highlight.skinned then
+			--	highlight:SetTexture(1, 1, 1, 0.3)
+			--	highlight:SetTexture("")
+			--	highlight:ClearAllPoints()
+			--	highlight:SetPoint("TOPLEFT", 2, -2)
+			--	highlight:SetPoint("BOTTOMRIGHT", -2, 2)
+			--	highlight.skinned = true
+			--end
 			
 			frame.bags:SetWidth((24+config.spacing)*(7)+16)
 			frame.bags:SetHeight(40)

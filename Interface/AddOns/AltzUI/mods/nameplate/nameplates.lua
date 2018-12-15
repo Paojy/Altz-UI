@@ -740,10 +740,10 @@ local function HideBlizzard()
 	ClassNameplateManaBarFrame:Hide()
 	SystemFont_NamePlate:SetFont(G.norFont, aCoreCDB["PlateOptions"]["name_fontsize"], "OUTLINE")
 	
-	hooksecurefunc(NamePlateDriverFrame, "SetupClassNameplateBar", function()
-		NamePlateTargetResourceFrame:Hide()
-		NamePlatePlayerResourceFrame:Hide()	
-	end)
+	--hooksecurefunc(NamePlateDriverFrame, "SetupClassNameplateBar", function()
+	--	NamePlateTargetResourceFrame:Hide()
+	--	NamePlatePlayerResourceFrame:Hide()	
+	--end)
 	
 	local checkBox = InterfaceOptionsNamesPanelUnitNameplatesMakeLarger
 	function checkBox.setFunc(value)
