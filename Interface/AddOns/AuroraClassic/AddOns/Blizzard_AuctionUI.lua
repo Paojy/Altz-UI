@@ -149,6 +149,10 @@ C.themes["Blizzard_AuctionUI"] = function()
 	F.CreateBD(AuctionsItemButton, .25)
 	local _, AuctionsItemButtonNameFrame = AuctionsItemButton:GetRegions()
 	AuctionsItemButtonNameFrame:Hide()
+	local hl = AuctionsItemButton:GetHighlightTexture()
+	hl:SetColorTexture(1, 1, 1, .25)
+	hl:SetPoint("TOPLEFT", 1, -1)
+	hl:SetPoint("BOTTOMRIGHT", -1, 1)
 
 	F.ReskinClose(AuctionFrameCloseButton, "TOPRIGHT", AuctionFrame, "TOPRIGHT", -4, -14)
 	F.ReskinScroll(BrowseScrollFrameScrollBar)
@@ -183,12 +187,9 @@ C.themes["Blizzard_AuctionUI"] = function()
 	tex:SetVertexColor(1, 1, 1)
 	BrowseDropDownButton.bgTex = tex
 
-	local bg = CreateFrame("Frame", nil, BrowseDropDown)
+	local bg = F.CreateBDFrame(BrowseDropDown, 0)
 	bg:SetPoint("TOPLEFT", 16, -5)
 	bg:SetPoint("BOTTOMRIGHT", 109, 11)
-	bg:SetFrameLevel(BrowseDropDown:GetFrameLevel()-1)
-	F.CreateBD(bg, 0)
-
 	F.CreateGradient(bg)
 
 	local colourArrow = F.colourArrow

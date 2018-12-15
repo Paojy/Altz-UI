@@ -72,7 +72,8 @@ C.themes["Blizzard_TalentUI"] = function()
 	hooksecurefunc("PlayerTalentFrame_UpdateSpecFrame", function(self, spec)
 		local playerTalentSpec = GetSpecialization(nil, self.isPet, PlayerSpecTab2:GetChecked() and 2 or 1)
 		local shownSpec = spec or playerTalentSpec or 1
-		local id, _, _, icon = GetSpecializationInfo(shownSpec, nil, self.isPet)
+		local sex = self.isPet and UnitSex("pet") or UnitSex("player")
+		local id, _, _, icon = GetSpecializationInfo(shownSpec, nil, self.isPet, nil, sex)
 		local scrollChild = self.spellsScroll.child
 		scrollChild.specIcon:SetTexture(icon)
 
@@ -168,6 +169,7 @@ C.themes["Blizzard_TalentUI"] = function()
 			local ic = _G["PlayerTalentFrameTalentsTalentRow"..i.."Talent"..j.."IconTexture"]
 
 			bu:SetHighlightTexture("")
+			bu.Cover:SetAlpha(0)
 			bu.Slot:SetAlpha(0)
 			bu.knownSelection:SetAlpha(0)
 
@@ -175,11 +177,9 @@ C.themes["Blizzard_TalentUI"] = function()
 			ic:SetTexCoord(.08, .92, .08, .92)
 			F.CreateBG(ic)
 
-			bu.bg = CreateFrame("Frame", nil, bu)
+			bu.bg = F.CreateBDFrame(bu, .25)
 			bu.bg:SetPoint("TOPLEFT", 10, 0)
 			bu.bg:SetPoint("BOTTOMRIGHT")
-			bu.bg:SetFrameLevel(bu:GetFrameLevel()-1)
-			F.CreateBD(bu.bg, .25)
 		end
 	end
 
@@ -202,15 +202,8 @@ C.themes["Blizzard_TalentUI"] = function()
 	for i = 1, 2 do
 		local tab = _G["PlayerSpecTab"..i]
 		_G["PlayerSpecTab"..i.."Background"]:Hide()
-
 		tab:SetCheckedTexture(C.media.checked)
-
-		local bg = CreateFrame("Frame", nil, tab)
-		bg:SetPoint("TOPLEFT", -1, 1)
-		bg:SetPoint("BOTTOMRIGHT", 1, -1)
-		bg:SetFrameLevel(tab:GetFrameLevel()-1)
-		F.CreateBD(bg)
-
+		F.CreateBDFrame(tab)
 		select(2, tab:GetRegions()):SetTexCoord(.08, .92, .08, .92)
 	end
 
@@ -240,12 +233,12 @@ C.themes["Blizzard_TalentUI"] = function()
 	talentList:ClearAllPoints()
 	talentList:SetPoint("LEFT", PlayerTalentFrame, "RIGHT", 2, 0)
 	F.StripTextures(talentList)
+	F.RemoveSlice(talentList)
 	F.CreateBD(talentList)
 	F.CreateSD(talentList)
+	talentList.Inset:Hide()
 
-	PlayerTalentFrameTalentsPvpTalentFrameTalentListInset:SetAlpha(0)
 	F.StripTextures(PlayerTalentFrameTalentsPvpTalentFrame)
-	F.StripTextures(PlayerTalentFrameTalentsPvpTalentFrameTalentListScrollFrameScrollChild)
 	F.ReskinScroll(PlayerTalentFrameTalentsPvpTalentFrameTalentListScrollFrameScrollBar)
 
 	local function updatePVPTalent(self)

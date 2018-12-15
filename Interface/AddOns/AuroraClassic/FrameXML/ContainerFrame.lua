@@ -63,11 +63,10 @@ tinsert(C.themes["AuroraClassic"], function()
 			button:HookScript("OnLeave", onLeave)
 		end
 
-		local f = CreateFrame("Frame", nil, con)
+		local f = F.CreateBDFrame(con)
 		f:SetPoint("TOPLEFT", 8, -4)
 		f:SetPoint("BOTTOMRIGHT", -4, 3)
-		f:SetFrameLevel(con:GetFrameLevel()-1)
-		F.CreateBD(f)
+		F.CreateSD(f)
 
 		F.ReskinClose(_G["ContainerFrame"..i.."CloseButton"], "TOPRIGHT", con, "TOPRIGHT", -6, -6)
 	end
@@ -105,4 +104,8 @@ tinsert(C.themes["AuroraClassic"], function()
 	BagItemAutoSortButton:GetNormalTexture():SetTexCoord(.17, .83, .17, .83)
 	BagItemAutoSortButton:GetPushedTexture():SetTexCoord(.17, .83, .17, .83)
 	F.CreateBG(BagItemAutoSortButton)
+
+	local highlight = BagItemAutoSortButton:GetHighlightTexture()
+	highlight:SetColorTexture(1, 1, 1, .25)
+	highlight:SetAllPoints(BagItemAutoSortButton)
 end)

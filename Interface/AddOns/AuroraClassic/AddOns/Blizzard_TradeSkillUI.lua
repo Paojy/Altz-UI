@@ -3,12 +3,7 @@ local F, C = unpack(select(2, ...))
 C.themes["Blizzard_TradeSkillUI"] = function()
 	local r, g, b = C.r, C.g, C.b
 
-	F.CreateBD(TradeSkillFrame)
-	F.CreateSD(TradeSkillFrame)
-	F.ReskinClose(TradeSkillFrameCloseButton)
-	for i = 1, 17 do
-		select(i, TradeSkillFrame:GetRegions()):Hide()
-	end
+	F.ReskinPortraitFrame(TradeSkillFrame, true)
 	TradeSkillFrameTitleText:Show()
 	TradeSkillFramePortrait:SetAlpha(0)
 
@@ -19,11 +14,7 @@ C.themes["Blizzard_TradeSkillUI"] = function()
 	rankFrame.BorderMid:Hide()
 	rankFrame.BorderLeft:Hide()
 	rankFrame.BorderRight:Hide()
-	local bg = CreateFrame("Frame", nil, rankFrame)
-	bg:SetPoint("TOPLEFT", -1, 1)
-	bg:SetPoint("BOTTOMRIGHT", 1, -1)
-	bg:SetFrameLevel(rankFrame:GetFrameLevel()-1)
-	F.CreateBD(bg, .25)
+	F.CreateBDFrame(rankFrame, .25)
 
 	F.ReskinInput(TradeSkillFrame.SearchBox)
 	TradeSkillFrame.SearchBox:SetWidth(200)
@@ -77,8 +68,7 @@ C.themes["Blizzard_TradeSkillUI"] = function()
 	-- Recipe Details
 
 	local detailsInset = TradeSkillFrame.DetailsInset
-	detailsInset.Bg:Hide()
-	detailsInset:DisableDrawLayer("BORDER")
+	detailsInset:Hide()
 	local details = TradeSkillFrame.DetailsFrame
 	details.Background:Hide()
 	F.ReskinScroll(details.ScrollBar)

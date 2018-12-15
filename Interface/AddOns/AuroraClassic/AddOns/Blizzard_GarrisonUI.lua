@@ -193,10 +193,11 @@ C.themes["Blizzard_GarrisonUI"] = function()
 			for i = 1, 3 do
 				local equip = self.AbilitiesFrame.Equipment[i]
 				if equip and not equip.bg then
-					equip.Border:Hide()
-					equip.BG:Hide()
+					equip.Border:SetAlpha(0)
+					equip.BG:SetAlpha(0)
 					equip.Icon:SetTexCoord(.08, .92, .08, .92)
-					equip.bg = F.CreateBDFrame(equip.Icon, .25)
+					equip.bg = F.CreateBDFrame(equip.Icon)
+					equip.bg:SetBackdropColor(1, 1, 1, .15)
 				end
 			end
 		end
@@ -215,7 +216,6 @@ C.themes["Blizzard_GarrisonUI"] = function()
 		F.ReskinClose(self.CloseButton)
 		self.GarrCorners:Hide()
 		if self.ClassHallIcon then self.ClassHallIcon:Hide() end
-		if self.Topper then self.Topper:SetAtlas(UnitFactionGroup("player").."Frame-Header") end
 		if self.TitleScroll then
 			F.StripTextures(self.TitleScroll)
 			select(4, self.TitleScroll:GetRegions()):SetTextColor(1, .8, 0)
@@ -288,11 +288,9 @@ C.themes["Blizzard_GarrisonUI"] = function()
 
 		tab:GetNormalTexture():SetAlpha(0)
 
-		local bg = CreateFrame("Frame", nil, tab)
+		local bg = F.CreateBDFrame(tab, .25)
 		bg:SetPoint("TOPLEFT", 6, -7)
 		bg:SetPoint("BOTTOMRIGHT", -6, 7)
-		bg:SetFrameLevel(tab:GetFrameLevel()-1)
-		F.CreateBD(bg, .25)
 		tab.bg = bg
 
 		local hl = tab:GetHighlightTexture()
@@ -319,11 +317,9 @@ C.themes["Blizzard_GarrisonUI"] = function()
 
 				F.ReskinIcon(button.Icon)
 
-				local bg = CreateFrame("Frame", nil, button)
+				local bg = F.CreateBDFrame(button, .25)
 				bg:SetPoint("TOPLEFT", 44, -5)
 				bg:SetPoint("BOTTOMRIGHT", 0, 6)
-				bg:SetFrameLevel(button:GetFrameLevel()-1)
-				F.CreateBD(bg, .25)
 
 				button.SelectedBG:SetColorTexture(r, g, b, .2)
 				button.SelectedBG:ClearAllPoints()
@@ -418,9 +414,6 @@ C.themes["Blizzard_GarrisonUI"] = function()
 
 	local GarrisonCapacitiveDisplayFrame = GarrisonCapacitiveDisplayFrame
 
-	GarrisonCapacitiveDisplayFrameLeft:Hide()
-	GarrisonCapacitiveDisplayFrameMiddle:Hide()
-	GarrisonCapacitiveDisplayFrameRight:Hide()
 	F.CreateBD(GarrisonCapacitiveDisplayFrame.Count, .25)
 	GarrisonCapacitiveDisplayFrame.Count:SetWidth(38)
 	GarrisonCapacitiveDisplayFrame.Count:SetTextInsets(3, 0, 0, 0)
@@ -434,7 +427,6 @@ C.themes["Blizzard_GarrisonUI"] = function()
 	-- Capacitive display
 
 	local CapacitiveDisplay = GarrisonCapacitiveDisplayFrame.CapacitiveDisplay
-
 	CapacitiveDisplay.IconBG:SetAlpha(0)
 
 	do
@@ -456,11 +448,9 @@ C.themes["Blizzard_GarrisonUI"] = function()
 			reagent.Icon:SetDrawLayer("BORDER")
 			F.CreateBG(reagent.Icon)
 
-			local bg = CreateFrame("Frame", nil, reagent)
+			local bg = F.CreateBDFrame(reagent, .25)
 			bg:SetPoint("TOPLEFT")
 			bg:SetPoint("BOTTOMRIGHT", 0, 2)
-			bg:SetFrameLevel(reagent:GetFrameLevel() - 1)
-			F.CreateBD(bg, .25)
 
 			reagentIndex = reagentIndex + 1
 			reagent = reagents[reagentIndex]
@@ -471,10 +461,7 @@ C.themes["Blizzard_GarrisonUI"] = function()
 
 	local GarrisonLandingPage = GarrisonLandingPage
 
-	for i = 1, 10 do
-		select(i, GarrisonLandingPage:GetRegions()):Hide()
-	end
-
+	F.StripTextures(GarrisonLandingPage)
 	F.CreateBD(GarrisonLandingPage)
 	F.CreateSD(GarrisonLandingPage)
 	F.ReskinClose(GarrisonLandingPage.CloseButton)
@@ -499,10 +486,9 @@ C.themes["Blizzard_GarrisonUI"] = function()
 	for i = 1, #buttons do
 		local button = buttons[i]
 		button.BG:Hide()
-		local bg = CreateFrame("Frame", nil, button)
+		local bg = F.CreateBDFrame(button, .25)
 		bg:SetPoint("TOPLEFT")
 		bg:SetPoint("BOTTOMRIGHT", 0, 1)
-		bg:SetFrameLevel(button:GetFrameLevel() - 1)
 
 		for _, reward in pairs(button.Rewards) do
 			reward:GetRegions():Hide()
@@ -512,8 +498,6 @@ C.themes["Blizzard_GarrisonUI"] = function()
 			reward:ClearAllPoints()
 			reward:SetPoint("TOPRIGHT", -4, -4)
 		end
-
-		F.CreateBD(bg, .25)
 	end
 
 	for _, tab in pairs({Report.InProgress, Report.Available}) do
@@ -521,9 +505,7 @@ C.themes["Blizzard_GarrisonUI"] = function()
 		tab.Text:ClearAllPoints()
 		tab.Text:SetPoint("CENTER")
 
-		local bg = CreateFrame("Frame", nil, tab)
-		bg:SetFrameLevel(tab:GetFrameLevel() - 1)
-		F.CreateBD(bg, .25)
+		local bg = F.CreateBDFrame(tab, .25)
 		F.CreateGradient(bg)
 
 		local selectedTex = bg:CreateTexture(nil, "BACKGROUND")
@@ -744,11 +726,6 @@ C.themes["Blizzard_GarrisonUI"] = function()
 	-- [[ Recruiter frame ]]
 
 	local GarrisonRecruiterFrame = GarrisonRecruiterFrame
-
-	for i = 18, 22 do
-		select(i, GarrisonRecruiterFrame:GetRegions()):Hide()
-	end
-
 	F.ReskinPortraitFrame(GarrisonRecruiterFrame, true)
 
 	-- Pick
@@ -956,11 +933,10 @@ C.themes["Blizzard_GarrisonUI"] = function()
 	f:RegisterEvent("ADDON_LOADED")
 	f:SetScript("OnEvent", function(_, event, addon)
 		if addon == "GarrisonMissionManager" then
-			hooksecurefunc(GarrisonMissionFrame.MissionTab.MissionList, "Update", buttonOnUpdate)
-			GarrisonMissionFrame.MissionTab.MissionPage:HookScript("OnShow", buttonOnShow)
-
-			hooksecurefunc(OrderHallMissionFrame.MissionTab.MissionList, "Update", buttonOnUpdate)
-			OrderHallMissionFrame.MissionTab.MissionPage:HookScript("OnShow", buttonOnShow)
+			for _, frame in next, {GarrisonMissionFrame, OrderHallMissionFrame, BFAMissionFrame} do
+				hooksecurefunc(frame.MissionTab.MissionList, "Update", buttonOnUpdate)
+				frame.MissionTab.MissionPage:HookScript("OnShow", buttonOnShow)
+			end
 
 			f:UnregisterEvent(event)
 		end

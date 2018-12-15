@@ -31,16 +31,18 @@ C.defaults = {
 	["alpha"] = 0.5,
 	["bags"] = false,
 	["buttonGradientColour"] = {.3, .3, .3, .3},
-	["buttonSolidColour"] = {.2, .2, .2, 1},
+	["buttonSolidColour"] = {.2, .2, .2, .6},
 	["useButtonGradientColour"] = true,
 	["chatBubbles"] = true,
+	["bubbleColor"] = false,
 	["reskinFont"] = true,
 	["loot"] = true,
 	["useCustomColour"] = false,
 	["customColour"] = {r = 1, g = 1, b = 1},
 	["tooltips"] = false,
 	["shadow"] = true,
-	["fontScale"] = .9,
+	["fontScale"] = 1,
+	["objectiveTracker"] = true,
 }
 
 C.frames = {}
@@ -171,11 +173,9 @@ end
 function F:ReskinTab()
 	self:DisableDrawLayer("BACKGROUND")
 
-	local bg = CreateFrame("Frame", nil, self)
+	local bg = F.CreateBDFrame(self)
 	bg:SetPoint("TOPLEFT", 8, -3)
 	bg:SetPoint("BOTTOMRIGHT", -8, 0)
-	bg:SetFrameLevel(self:GetFrameLevel()-1)
-	F.CreateBD(bg)
 
 	self:SetHighlightTexture(C.media.backdrop)
 	local hl = self:GetHighlightTexture()
@@ -224,6 +224,7 @@ end
 
 function F:ReskinScroll()
 	local frame = self:GetName()
+	F.StripTextures(self:GetParent())
 
 	local track = (self.trackBG or self.Background or self.Track) or (_G[frame.."Track"] or _G[frame.."BG"])
 	if track then track:Hide() end
@@ -238,10 +239,9 @@ function F:ReskinScroll()
 	bu:SetAlpha(0)
 	bu:SetWidth(17)
 
-	bu.bg = CreateFrame("Frame", nil, self)
+	bu.bg = F.CreateBDFrame(self, 0)
 	bu.bg:SetPoint("TOPLEFT", bu, 0, -2)
 	bu.bg:SetPoint("BOTTOMRIGHT", bu, 0, 4)
-	F.CreateBD(bu.bg, 0)
 
 	local tex = F.CreateGradient(self)
 	tex:SetPoint("TOPLEFT", bu.bg, 1, -1)
@@ -321,11 +321,9 @@ function F:ReskinDropDown()
 	down:HookScript("OnEnter", textureOnEnter)
 	down:HookScript("OnLeave", textureOnLeave)
 
-	local bg = CreateFrame("Frame", nil, self)
+	local bg = F.CreateBDFrame(self, 0)
 	bg:SetPoint("TOPLEFT", 16, -4)
 	bg:SetPoint("BOTTOMRIGHT", -18, 8)
-	bg:SetFrameLevel(self:GetFrameLevel() - 1)
-	F.CreateBD(bg, 0)
 
 	local gradient = F.CreateGradient(self)
 	gradient:SetPoint("TOPLEFT", bg, 1, -1)
@@ -380,11 +378,9 @@ function F:ReskinInput(height, width)
 	middle:Hide()
 	right:Hide()
 
-	local bd = CreateFrame("Frame", nil, self)
+	local bd = F.CreateBDFrame(self, 0)
 	bd:SetPoint("TOPLEFT", -2, 0)
 	bd:SetPoint("BOTTOMRIGHT")
-	bd:SetFrameLevel(self:GetFrameLevel() - 1)
-	F.CreateBD(bd, 0)
 
 	local gradient = F.CreateGradient(self)
 	gradient:SetPoint("TOPLEFT", bd, 1, -1)
@@ -422,11 +418,9 @@ function F:ReskinCheck()
 	hl:SetPoint("BOTTOMRIGHT", -5, 5)
 	hl:SetVertexColor(r, g, b, .25)
 
-	local bd = CreateFrame("Frame", nil, self)
+	local bd = F.CreateBDFrame(self, 0)
 	bd:SetPoint("TOPLEFT", 4, -4)
 	bd:SetPoint("BOTTOMRIGHT", -4, 4)
-	bd:SetFrameLevel(self:GetFrameLevel() - 1)
-	F.CreateBD(bd, 0)
 
 	local tex = F.CreateGradient(self)
 	tex:SetPoint("TOPLEFT", 5, -5)
@@ -455,11 +449,9 @@ function F:ReskinRadio()
 	ch:SetPoint("BOTTOMRIGHT", -4, 4)
 	ch:SetVertexColor(r, g, b, .6)
 
-	local bd = CreateFrame("Frame", nil, self)
+	local bd = F.CreateBDFrame(self, 0)
 	bd:SetPoint("TOPLEFT", 3, -3)
 	bd:SetPoint("BOTTOMRIGHT", -3, 3)
-	bd:SetFrameLevel(self:GetFrameLevel() - 1)
-	F.CreateBD(bd, 0)
 	self.bd = bd
 
 	local tex = F.CreateGradient(self)
@@ -474,13 +466,10 @@ function F:ReskinSlider(verticle)
 	self:SetBackdrop(nil)
 	self.SetBackdrop = F.dummy
 
-	local bd = CreateFrame("Frame", nil, self)
+	local bd = F.CreateBDFrame(self, 0)
 	bd:SetPoint("TOPLEFT", 14, -2)
 	bd:SetPoint("BOTTOMRIGHT", -15, 3)
 	bd:SetFrameStrata("BACKGROUND")
-	bd:SetFrameLevel(self:GetFrameLevel() - 1)
-	F.CreateBD(bd, 0)
-
 	F.CreateGradient(bd)
 
 	for i = 1, self:GetNumRegions() do
@@ -544,16 +533,11 @@ function F:ReskinExpandOrCollapse()
 end
 
 function F:SetBD(x, y, x2, y2)
-	local bg = CreateFrame("Frame", nil, self)
-	if not x then
-		bg:SetPoint("TOPLEFT")
-		bg:SetPoint("BOTTOMRIGHT")
-	else
+	local bg = F.CreateBDFrame(self)
+	if x then
 		bg:SetPoint("TOPLEFT", x, y)
 		bg:SetPoint("BOTTOMRIGHT", x2, y2)
 	end
-	bg:SetFrameLevel(self:GetFrameLevel() - 1)
-	F.CreateBD(bg)
 	F.CreateSD(bg)
 end
 
@@ -566,35 +550,28 @@ function F:StripTextures()
 	end
 end
 
-function F:ReskinPortraitFrame(isButtonFrame)
-	local name = self:GetName()
-
-	_G[name.."Bg"]:Hide()
-	_G[name.."TitleBg"]:Hide()
-	_G[name.."Portrait"]:Hide()
-	_G[name.."PortraitFrame"]:Hide()
-	_G[name.."TopRightCorner"]:Hide()
-	_G[name.."TopLeftCorner"]:Hide()
-	_G[name.."TopBorder"]:Hide()
-	_G[name.."TopTileStreaks"]:SetTexture("")
-	_G[name.."BotLeftCorner"]:Hide()
-	_G[name.."BotRightCorner"]:Hide()
-	_G[name.."BottomBorder"]:Hide()
-	_G[name.."LeftBorder"]:Hide()
-	_G[name.."RightBorder"]:Hide()
-
-	if isButtonFrame then
-		_G[name.."BtnCornerLeft"]:SetTexture("")
-		_G[name.."BtnCornerRight"]:SetTexture("")
-		_G[name.."ButtonBottomBorder"]:SetTexture("")
-
-		self.Inset.Bg:Hide()
-		self.Inset:DisableDrawLayer("BORDER")
+function F:RemoveSlice()
+	for _, tex in next, self.NineSlice do
+		if type(tex) == "table" then
+			tex:Hide()
+		end
 	end
+end
 
-	F.CreateBD(self)
-	F.CreateSD(self)
-	F.ReskinClose(_G[name.."CloseButton"])
+function F:CleanInset()
+	self.Bg:Hide()
+	F.RemoveSlice(self)
+end
+
+function F:ReskinPortraitFrame(setBG)
+	local name = self:GetName()
+	local insetFrame = name and _G[name.."Inset"] or self.Inset
+	if insetFrame then F.CleanInset(insetFrame) end
+	F.StripTextures(self)
+	F.RemoveSlice(self)
+	self.portrait:SetAlpha(0)
+	F.ReskinClose(self.CloseButton)
+	if setBG then F.SetBD(self) end
 end
 
 function F:CreateBDFrame(a)
@@ -606,7 +583,7 @@ function F:CreateBDFrame(a)
 	bg:SetPoint("TOPLEFT", self, -1.2, 1.2)
 	bg:SetPoint("BOTTOMRIGHT", self, 1.2, -1.2)
 	bg:SetFrameLevel(lvl == 0 and 1 or lvl - 1)
-	F.CreateBD(bg, a or .5)
+	F.CreateBD(bg, a)
 
 	return bg
 end
@@ -737,6 +714,23 @@ function F:ReskinMinMax()
 
 			button:SetScript("OnEnter", textureOnEnter)
 			button:SetScript("OnLeave", textureOnLeave)
+		end
+	end
+end
+
+function F:AffixesSetup()
+	for _, frame in ipairs(self.Affixes) do
+		frame.Border:SetTexture(nil)
+		frame.Portrait:SetTexture(nil)
+		if not frame.bg then
+			frame.bg = F.ReskinIcon(frame.Portrait)
+		end
+
+		if frame.info then
+			frame.Portrait:SetTexture(CHALLENGE_MODE_EXTRA_AFFIX_INFO[frame.info.key].texture)
+		elseif frame.affixID then
+			local _, _, filedataid = C_ChallengeMode.GetAffixInfo(frame.affixID)
+			frame.Portrait:SetTexture(filedataid)
 		end
 	end
 end

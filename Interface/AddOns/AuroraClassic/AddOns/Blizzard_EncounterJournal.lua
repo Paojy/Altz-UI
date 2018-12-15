@@ -4,19 +4,9 @@ C.themes["Blizzard_EncounterJournal"] = function()
 	local r, g, b = C.r, C.g, C.b
 
 	EncounterJournalEncounterFrameInfo:DisableDrawLayer("BACKGROUND")
-	EncounterJournal:DisableDrawLayer("BORDER")
-	EncounterJournalInset:DisableDrawLayer("BORDER")
-	EncounterJournal:DisableDrawLayer("OVERLAY")
-
-	EncounterJournalPortrait:Hide()
 	EncounterJournalInstanceSelectBG:Hide()
-	EncounterJournalBg:Hide()
-	EncounterJournalTitleBg:Hide()
-	EncounterJournalInsetBg:Hide()
 	EncounterJournalEncounterFrameInfoModelFrameShadow:Hide()
 	EncounterJournalEncounterFrameInfoModelFrame.dungeonBG:Hide()
-
-	F.SetBD(EncounterJournal)
 
 	-- [[ Dungeon / raid tabs ]]
 
@@ -255,11 +245,9 @@ C.themes["Blizzard_EncounterJournal"] = function()
 		item.icon:SetDrawLayer("OVERLAY")
 		F.CreateBG(item.icon)
 
-		local bg = CreateFrame("Frame", nil, item)
+		local bg = F.CreateBDFrame(item, .25)
 		bg:SetPoint("TOPLEFT")
 		bg:SetPoint("BOTTOMRIGHT", 0, 1)
-		bg:SetFrameLevel(item:GetFrameLevel() - 1)
-		F.CreateBD(bg, .25)
 	end
 
 	-- [[ Search results ]]
@@ -329,8 +317,8 @@ C.themes["Blizzard_EncounterJournal"] = function()
 
 	-- [[ Various controls ]]
 
+	F.ReskinPortraitFrame(EncounterJournal, true)
 	F.Reskin(EncounterJournalEncounterFrameInfoResetButton)
-	F.ReskinClose(EncounterJournalCloseButton)
 	F.ReskinInput(EncounterJournalSearchBox)
 	F.ReskinScroll(EncounterJournalInstanceSelectScrollFrameScrollBar)
 	F.ReskinScroll(EncounterJournalEncounterFrameInstanceFrameLoreScrollFrameScrollBar)

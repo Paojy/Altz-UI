@@ -5,8 +5,6 @@ tinsert(C.themes["AuroraClassic"], function()
 
 	LootFramePortraitOverlay:Hide()
 
-	select(19, LootFrame:GetRegions()):SetPoint("TOP", LootFrame, "TOP", 0, -7)
-
 	hooksecurefunc("LootFrame_UpdateButton", function(index)
 		local ic = _G["LootButton"..index.."IconTexture"]
 
@@ -21,11 +19,9 @@ tinsert(C.themes["AuroraClassic"], function()
 			bu:GetHighlightTexture():SetColorTexture(1, 1, 1, .25)
 			bu.IconBorder:SetAlpha(0)
 
-			local bd = CreateFrame("Frame", nil, bu)
+			local bd = F.CreateBDFrame(bu, .25)
 			bd:SetPoint("TOPLEFT")
 			bd:SetPoint("BOTTOMRIGHT", 114, 0)
-			bd:SetFrameLevel(bu:GetFrameLevel()-1)
-			F.CreateBD(bd, .25)
 
 			ic:SetTexCoord(.08, .92, .08, .92)
 			ic.bg = F.CreateBG(ic)

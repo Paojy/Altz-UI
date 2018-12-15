@@ -4,24 +4,16 @@ tinsert(C.themes["AuroraClassic"], function()
 	SendMailMoneyInset:DisableDrawLayer("BORDER")
 	InboxFrame:GetRegions():Hide()
 	SendMailMoneyBg:Hide()
-	SendMailMoneyInsetBg:Hide()
+	SendMailMoneyInset:Hide()
 	OpenMailFrameIcon:Hide()
 	OpenMailHorizontalBarLeft:Hide()
-	select(18, MailFrame:GetRegions()):Hide()
-	select(25, OpenMailFrame:GetRegions()):Hide()
-	for i = 4, 7 do
-		select(i, SendMailFrame:GetRegions()):Hide()
-	end
-	select(4, SendMailScrollFrame:GetRegions()):Hide()
-	select(2, OpenMailScrollFrame:GetRegions()):Hide()
+	F.StripTextures(SendMailFrame)
 	OpenStationeryBackgroundLeft:Hide()
 	OpenStationeryBackgroundRight:Hide()
 	SendStationeryBackgroundLeft:Hide()
 	SendStationeryBackgroundRight:Hide()
 	InboxPrevPageButton:GetRegions():Hide()
 	InboxNextPageButton:GetRegions():Hide()
-	SendScrollBarBackgroundTop:Hide()
-	OpenScrollBarBackgroundTop:Hide()
 
 	F.ReskinPortraitFrame(MailFrame, true)
 	F.ReskinPortraitFrame(OpenMailFrame, true)
@@ -54,26 +46,16 @@ tinsert(C.themes["AuroraClassic"], function()
 	OpenMailLetterButton:SetNormalTexture("")
 	OpenMailLetterButton:SetPushedTexture("")
 	OpenMailLetterButtonIconTexture:SetTexCoord(.08, .92, .08, .92)
+	F.CreateBDFrame(OpenMailLetterButton)
 
 	for i = 1, 2 do
 		F.ReskinTab(_G["MailFrameTab"..i])
 	end
 
-	local bgmail = CreateFrame("Frame", nil, OpenMailLetterButton)
-	bgmail:SetPoint("TOPLEFT", -1, 1)
-	bgmail:SetPoint("BOTTOMRIGHT", 1, -1)
-	bgmail:SetFrameLevel(OpenMailLetterButton:GetFrameLevel()-1)
-	F.CreateBD(bgmail)
-
 	OpenMailMoneyButton:SetNormalTexture("")
 	OpenMailMoneyButton:SetPushedTexture("")
 	OpenMailMoneyButtonIconTexture:SetTexCoord(.08, .92, .08, .92)
-
-	local bgmoney = CreateFrame("Frame", nil, OpenMailMoneyButton)
-	bgmoney:SetPoint("TOPLEFT", -1, 1)
-	bgmoney:SetPoint("BOTTOMRIGHT", 1, -1)
-	bgmoney:SetFrameLevel(OpenMailMoneyButton:GetFrameLevel()-1)
-	F.CreateBD(bgmoney)
+	F.CreateBDFrame(OpenMailMoneyButton)
 
 	SendMailSubjectEditBox:SetPoint("TOPLEFT", SendMailNameEditBox, "BOTTOMLEFT", 0, -1)
 

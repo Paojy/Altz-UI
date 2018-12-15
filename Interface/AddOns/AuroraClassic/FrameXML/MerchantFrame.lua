@@ -1,24 +1,18 @@
 local F, C = unpack(select(2, ...))
 
 tinsert(C.themes["AuroraClassic"], function()
-	MerchantMoneyInset:DisableDrawLayer("BORDER")
-	MerchantExtraCurrencyInset:DisableDrawLayer("BORDER")
-	BuybackBG:SetAlpha(0)
-	MerchantMoneyBg:Hide()
-	MerchantMoneyInsetBg:Hide()
-	MerchantFrameBottomLeftBorder:SetAlpha(0)
-	MerchantFrameBottomRightBorder:SetAlpha(0)
-	MerchantExtraCurrencyBg:SetAlpha(0)
-	MerchantExtraCurrencyInsetBg:Hide()
-	MerchantPrevPageButton:GetRegions():Hide()
-	MerchantNextPageButton:GetRegions():Hide()
-	select(2, MerchantPrevPageButton:GetRegions()):Hide()
-	select(2, MerchantNextPageButton:GetRegions()):Hide()
-
 	F.ReskinPortraitFrame(MerchantFrame, true)
 	F.ReskinDropDown(MerchantFrameLootFilter)
+	F.StripTextures(MerchantPrevPageButton)
 	F.ReskinArrow(MerchantPrevPageButton, "left")
+	F.StripTextures(MerchantNextPageButton)
 	F.ReskinArrow(MerchantNextPageButton, "right")
+	MerchantMoneyInset:Hide()
+	MerchantMoneyBg:Hide()
+	MerchantNameText:SetDrawLayer("ARTWORK")
+	MerchantExtraCurrencyBg:SetAlpha(0)
+	MerchantExtraCurrencyInset:SetAlpha(0)
+	BuybackBG:SetAlpha(0)
 
 	MerchantFrameTab1:ClearAllPoints()
 	MerchantFrameTab1:SetPoint("CENTER", MerchantFrame, "BOTTOMLEFT", 50, -14)
@@ -28,15 +22,14 @@ tinsert(C.themes["AuroraClassic"], function()
 		F.ReskinTab(_G["MerchantFrameTab"..i])
 	end
 
-	MerchantNameText:SetDrawLayer("ARTWORK")
-
 	for i = 1, BUYBACK_ITEMS_PER_PAGE do
 		local button = _G["MerchantItem"..i]
 		local bu = _G["MerchantItem"..i.."ItemButton"]
 		local mo = _G["MerchantItem"..i.."MoneyFrame"]
 		local ic = bu.icon
 
-		bu:SetHighlightTexture("")
+		bu:GetHighlightTexture():SetColorTexture(1, 1, 1, .25)
+		bu:GetHighlightTexture():SetAllPoints(ic)
 		bu.IconBorder:SetAlpha(0)
 
 		_G["MerchantItem"..i.."SlotTexture"]:Hide()
@@ -126,6 +119,8 @@ tinsert(C.themes["AuroraClassic"], function()
 	MerchantBuyBackItemNameFrame:Hide()
 	MerchantBuyBackItemItemButton:SetNormalTexture("")
 	MerchantBuyBackItemItemButton:SetPushedTexture("")
+	MerchantBuyBackItemItemButton:GetHighlightTexture():SetColorTexture(1, 1, 1, .25)
+	MerchantBuyBackItemItemButton:GetHighlightTexture():SetAllPoints(MerchantBuyBackItemItemButtonIconTexture)
 	MerchantBuyBackItemItemButton.IconBorder:SetAlpha(0)
 
 	F.CreateBD(MerchantBuyBackItemItemButton, 0)
@@ -141,14 +136,17 @@ tinsert(C.themes["AuroraClassic"], function()
 	MerchantBuyBackItemName:SetPoint("LEFT", MerchantBuyBackItemSlotTexture, "RIGHT", -5, 8)
 
 	MerchantGuildBankRepairButton:SetPushedTexture("")
+	MerchantGuildBankRepairButton:GetHighlightTexture():SetColorTexture(1, 1, 1, .25)
 	F.CreateBG(MerchantGuildBankRepairButton)
 	MerchantGuildBankRepairButtonIcon:SetTexCoord(0.595, 0.8075, 0.05, 0.52)
 
 	MerchantRepairAllButton:SetPushedTexture("")
+	MerchantRepairAllButton:GetHighlightTexture():SetColorTexture(1, 1, 1, .25)
 	F.CreateBG(MerchantRepairAllButton)
 	MerchantRepairAllIcon:SetTexCoord(0.31375, 0.53, 0.06, 0.52)
 
 	MerchantRepairItemButton:SetPushedTexture("")
+	MerchantRepairItemButton:GetHighlightTexture():SetColorTexture(1, 1, 1, .25)
 	F.CreateBG(MerchantRepairItemButton)
 	local ic = MerchantRepairItemButton:GetRegions()
 	ic:SetTexture("Interface\\Icons\\INV_Hammer_20")

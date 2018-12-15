@@ -1,7 +1,6 @@
 local F, C = unpack(select(2, ...))
 
 tinsert(C.themes["AuroraClassic"], function()
-	select(18, ItemTextFrame:GetRegions()):Hide()
 	InboxFrameBg:Hide()
 	ItemTextPrevPageButton:GetRegions():Hide()
 	ItemTextNextPageButton:GetRegions():Hide()
@@ -14,10 +13,6 @@ tinsert(C.themes["AuroraClassic"], function()
 	F.ReskinScroll(ItemTextScrollFrameScrollBar)
 	F.ReskinArrow(ItemTextPrevPageButton, "left")
 	F.ReskinArrow(ItemTextNextPageButton, "right")
-	ItemTextScrollFrameScrollBar.Middle:Hide()
-	ItemTextScrollFrameScrollBar.Background:Hide()
-	ItemTextScrollFrameScrollBar.Top:Hide()
-	ItemTextScrollFrameScrollBar.Bottom:Hide()
 	ItemTextFramePageBg:SetAlpha(0)
 	ItemTextPageText:SetTextColor(1, 1, 1)
 	ItemTextPageText.SetTextColor = F.dummy

@@ -1,12 +1,9 @@
 local F, C = unpack(select(2, ...))
 
 tinsert(C.themes["AuroraClassic"], function()
-	if not CompactRaidFrameManagerToggleButton then
-		for _, addon in next, {"Blizzard_CUFProfiles", "Blizzard_CompactRaidFrames"} do
-			EnableAddOn(addon)
-			LoadAddOn(addon)
-		end
-	end
+	if not IsAddOnLoaded("Blizzard_CUFProfiles") then return end
+	if not IsAddOnLoaded("Blizzard_CompactRaidFrames") then return end
+	if not CompactRaidFrameManagerToggleButton then return end
 
 	CompactRaidFrameManagerToggleButton:SetNormalTexture("Interface\\Buttons\\UI-ColorPicker-Buttons")
 	CompactRaidFrameManagerToggleButton:GetNormalTexture():SetTexCoord(.15, .39, 0, 1)
@@ -52,12 +49,10 @@ tinsert(C.themes["AuroraClassic"], function()
 	select(1, CompactRaidFrameManagerDisplayFrame:GetRegions()):SetAlpha(0)
 	select(4, CompactRaidFrameManagerDisplayFrame:GetRegions()):SetAlpha(0)
 
-	local bd = CreateFrame("Frame", nil, CompactRaidFrameManager)
-	bd:SetFrameLevel(CompactRaidFrameManager:GetFrameLevel() - 1)
-	F.CreateBD(bd)
+	local bd = F.CreateBDFrame(CompactRaidFrameManager)
+	bd:SetPoint("TOPLEFT")
+	bd:SetPoint("BOTTOMRIGHT", -9, 9)
 	F.CreateSD(bd)
-	bd:SetPoint("TOPLEFT", CompactRaidFrameManager, "TOPLEFT")
-	bd:SetPoint("BOTTOMRIGHT", CompactRaidFrameManager, "BOTTOMRIGHT", -9, 9)
 	F.ReskinDropDown(CompactRaidFrameManagerDisplayFrameProfileSelector)
 	F.ReskinCheck(CompactRaidFrameManagerDisplayFrameEveryoneIsAssistButton)
 end)

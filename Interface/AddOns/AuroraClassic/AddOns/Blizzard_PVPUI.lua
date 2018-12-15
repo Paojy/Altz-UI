@@ -59,36 +59,48 @@ C.themes["Blizzard_PVPUI"] = function()
 
 	PVPQueueFrame.CategoryButton1.Background:Show()
 	F.StripTextures(PVPQueueFrame.HonorInset)
+	F.RemoveSlice(PVPQueueFrame.HonorInset)
+
+	local popup = PVPQueueFrame.NewSeasonPopup
+	F.Reskin(popup.Leave)
+	popup.NewSeason:SetTextColor(1, .8, 0)
+	popup.SeasonDescription:SetTextColor(1, 1, 1)
+	popup.SeasonDescription2:SetTextColor(1, 1, 1)
+
+	local SeasonRewardFrame = SeasonRewardFrame
+	SeasonRewardFrame.CircleMask:Hide()
+	SeasonRewardFrame.Ring:Hide()
+	F.ReskinIcon(SeasonRewardFrame.Icon)
+	select(3, SeasonRewardFrame:GetRegions()):SetTextColor(1, .8, 0)
 
 	-- Honor frame
 
-	local Inset = HonorFrame.Inset
 	local BonusFrame = HonorFrame.BonusFrame
-
-	for i = 1, 9 do
-		select(i, Inset:GetRegions()):Hide()
-	end
+	HonorFrame.Inset:Hide()
 	BonusFrame.WorldBattlesTexture:Hide()
 	BonusFrame.ShadowOverlay:Hide()
 
 	for _, bonusButton in pairs({"RandomBGButton", "RandomEpicBGButton", "Arena1Button", "BrawlButton"}) do
 		local bu = BonusFrame[bonusButton]
-		local reward = bu.Reward
-
 		F.Reskin(bu, true)
-
 		bu.SelectedTexture:SetDrawLayer("BACKGROUND")
 		bu.SelectedTexture:SetColorTexture(r, g, b, .25)
 		bu.SelectedTexture:SetAllPoints()
 
+		local reward = bu.Reward
 		if reward then
 			reward.Border:Hide()
 			F.ReskinIcon(reward.Icon)
 		end
 	end
 
-	F.StripTextures(HonorFrame.ConquestBar)
-	F.CreateBDFrame(HonorFrame.ConquestBar, .25)
+	local function reskinConquestBar(bar)
+		F.StripTextures(bar.ConquestBar)
+		F.CreateBDFrame(bar.ConquestBar, .25)
+		bar.ConquestBar:SetStatusBarTexture(C.media.backdrop)
+		bar.ConquestBar:GetStatusBarTexture():SetGradient("VERTICAL", 1, .8, 0, 6, .4, 0)
+	end
+	reskinConquestBar(HonorFrame)
 
 	-- Role buttons
 
@@ -119,11 +131,9 @@ C.themes["Blizzard_PVPUI"] = function()
 		bu:SetNormalTexture("")
 		bu:SetHighlightTexture("")
 
-		local bg = CreateFrame("Frame", nil, bu)
+		local bg = F.CreateBDFrame(bu, 0)
 		bg:SetPoint("TOPLEFT", 2, 0)
 		bg:SetPoint("BOTTOMRIGHT", -1, 2)
-		F.CreateBD(bg, 0)
-		bg:SetFrameLevel(bu:GetFrameLevel()-1)
 
 		bu.tex = F.CreateGradient(bu)
 		bu.tex:SetDrawLayer("BACKGROUND")
@@ -142,9 +152,7 @@ C.themes["Blizzard_PVPUI"] = function()
 
 	-- Conquest Frame
 
-	for i = 1, 9 do
-		select(i, ConquestFrame.Inset:GetRegions()):Hide()
-	end
+	ConquestFrame.Inset:Hide()
 	ConquestFrame.RatedBGTexture:Hide()
 	ConquestFrame.ShadowOverlay:Hide()
 
@@ -175,8 +183,7 @@ C.themes["Blizzard_PVPUI"] = function()
 	end
 
 	ConquestFrame.Arena3v3:SetPoint("TOP", ConquestFrame.Arena2v2, "BOTTOM", 0, -1)
-	F.StripTextures(ConquestFrame.ConquestBar)
-	F.CreateBDFrame(ConquestFrame.ConquestBar, .25)
+	reskinConquestBar(ConquestFrame)
 
 	-- Main style
 
