@@ -186,11 +186,11 @@ local func = function(self, unit)
 	-- target border --
 	self.targetborder = Createpxborder(self, 2)
 	self.targetborder:SetBackdropBorderColor(1, 1, .4)
-	self:RegisterEvent("PLAYER_TARGET_CHANGED", ChangedTarget)
+	self:RegisterEvent("PLAYER_TARGET_CHANGED", ChangedTarget, true)
 
 	-- threat border --
 	self.threatborder = Createpxborder(self, 1)
-	self:RegisterEvent("UNIT_THREAT_SITUATION_UPDATE", UpdateThreat)
+	self:RegisterEvent("UNIT_THREAT_SITUATION_UPDATE", UpdateThreat, true)
 	
 	-- backdrop --
 	self.bg = CreateFrame("Frame", nil, self)
@@ -400,11 +400,11 @@ local dfunc = function(self, unit)
 	-- target border --
 	self.targetborder = Createpxborder(self, 2)
 	self.targetborder:SetBackdropBorderColor(1, 1, .4)
-	self:RegisterEvent("PLAYER_TARGET_CHANGED", ChangedTarget)
+	self:RegisterEvent("PLAYER_TARGET_CHANGED", ChangedTarget, true)
 
 	-- threat border --
 	self.threatborder = Createpxborder(self, 1)
-	self:RegisterEvent("UNIT_THREAT_SITUATION_UPDATE", UpdateThreat)
+	self:RegisterEvent("UNIT_THREAT_SITUATION_UPDATE", UpdateThreat, true)
 	
 	-- backdrop --
 	self.bg = CreateFrame("Frame", nil, self)
@@ -548,6 +548,12 @@ else
 	groupfilter = "1,2,3,4,5,6,7,8"
 end
 
+local groupingOrder = {
+	["GROUP"] = "1,2,3,4,5,6,7,8",
+	["CLASS"] = "WARRIOR, DEATHKNIGHT, PALADIN, WARLOCK, SHAMAN, MAGE, MONK, HUNTER, PRIEST, ROGUE, DRUID",
+	["ROLE"] = "TANK, HEALER, DAMAGER"
+}
+
 local anchor = aCoreCDB["UnitframeOptions"]["hor_party"] and "LEFT" or "TOP"
 local party_anchor = aCoreCDB["UnitframeOptions"]["hor_party"] and "TOP" or "LEFT"
 
@@ -661,8 +667,8 @@ local function Spawnhealraid()
 			'yOffset', -5,
 			'point', anchor,
 			'groupFilter', groupfilter,
-			'groupingOrder', '1,2,3,4,5,6,7,8',
-			'groupBy', 'GROUP',
+			'groupingOrder', groupingOrder[aCoreCDB["UnitframeOptions"]["healerraidgroupby"]],
+			'groupBy', aCoreCDB["UnitframeOptions"]["healerraidgroupby"],
 			'maxColumns', 8,
 			'unitsPerColumn', 5,
 			'columnSpacing', 5,
@@ -767,8 +773,8 @@ local function Spawndpsraid()
 		'yOffset', -5,
 		'point', "TOP",
 		'groupFilter', groupfilter,
-		'groupingOrder', aCoreCDB["UnitframeOptions"]["dpsraidgroupbyclass"] and "WARRIOR, DEATHKNIGHT, PALADIN, WARLOCK, SHAMAN, MAGE, MONK, HUNTER, PRIEST, ROGUE, DRUID" or "1,2,3,4,5,6,7,8",
-		'groupBy', aCoreCDB["UnitframeOptions"]["dpsraidgroupbyclass"] and "CLASS" or "GROUP",
+		'groupingOrder', groupingOrder[aCoreCDB["UnitframeOptions"]["dpsraidgroupby"]],
+		'groupBy', aCoreCDB["UnitframeOptions"]["dpsraidgroupby"],
 		'maxColumns', 8,
 		'unitsPerColumn', aCoreCDB["UnitframeOptions"]["unitnumperline"],
 		'columnSpacing', 5,
@@ -939,13 +945,13 @@ local pfunc = function(self, unit)
 	self.targetborder:SetBackdropBorderColor(1, 1, .4)
 	self.targetborder:SetPoint("TOPLEFT", hp, "TOPLEFT", -3, 3)
 	self.targetborder:SetPoint("BOTTOMRIGHT", pp, "BOTTOMRIGHT", 3, -3)
-	self:RegisterEvent("PLAYER_TARGET_CHANGED", ChangedTarget)
+	self:RegisterEvent("PLAYER_TARGET_CHANGED", ChangedTarget, true)
 
 	-- threat border --
 	self.threatborder = Createpxborder(self, 1)
 	self.threatborder:SetPoint("TOPLEFT", hp, "TOPLEFT", -3, 3)
 	self.threatborder:SetPoint("BOTTOMRIGHT", pp, "BOTTOMRIGHT", 3, -3)
-	self:RegisterEvent("UNIT_THREAT_SITUATION_UPDATE", UpdateThreat)
+	self:RegisterEvent("UNIT_THREAT_SITUATION_UPDATE", UpdateThreat, true)
 	
 	-- little thing around unit frames --
 	local leader = hp:CreateTexture(nil, "OVERLAY")

@@ -1267,12 +1267,13 @@ local Character_default_Settings = {
 		hotind_size = 15,
 		hotind_filtertype = "whitelist", -- "blacklist", "whitelist"
 		hotind_auralist = HealerIndicatorAuraList,
-				
+		healerraidgroupby = "GROUP", -- "CLASS", "ROLE"
+		
 		--[[ dps/tank mode ]]--
 		dpsraidheight = 15,
 		dpsraidwidth = 100,
 		unitnumperline = 25,
-		dpsraidgroupbyclass = true,
+		dpsraidgroupby = "GROUP", -- "CLASS", "ROLE"
 		dpstank_assisticon = true,
 		
 		--[[ click cast ]]--
