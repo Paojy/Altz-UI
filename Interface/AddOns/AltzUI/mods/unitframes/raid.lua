@@ -331,6 +331,13 @@ local func = function(self, unit)
     readycheck:SetSize(16, 16)
     readycheck:SetPoint"CENTER"
     self.ReadyCheckIndicator = readycheck
+
+	local summonIndicator = self:CreateTexture(nil, 'OVERLAY')
+    summonIndicator:SetSize(32, 32)
+    summonIndicator:SetPoint('TOPRIGHT', self)
+	summonIndicator:SetAtlas('Raid-Icon-SummonPending', true)
+	summonIndicator:Show()
+    --self.SummonIndicator = summonIndicator
 	
 	local Auras = CreateFrame("Frame", nil, self)
 	Auras:SetFrameLevel(4)
@@ -502,6 +509,11 @@ local dfunc = function(self, unit)
     readycheck:SetSize(16, 16)
     readycheck:SetPoint"CENTER"
     self.ReadyCheckIndicator = readycheck
+	
+	local summonIndicator = self:CreateTexture(nil, 'OVERLAY')
+    summonIndicator:SetSize(32, 32)
+    summonIndicator:SetPoint('TOPRIGHT', self)
+    self.SummonIndicator = summonIndicator
 	
 	-- Range
     local range = {
@@ -975,6 +987,11 @@ local pfunc = function(self, unit)
 	ricon:SetTexture[[Interface\AddOns\AltzUI\media\raidicons.blp]]
 	self.RaidTargetIndicator = ricon
 
+    local summonIndicator = self:CreateTexture(nil, 'OVERLAY')
+    summonIndicator:SetSize(32, 32)
+    summonIndicator:SetPoint('TOPRIGHT', self)
+    self.SummonIndicator = summonIndicator
+	
 	-- name --
 	local name = T.createtext(self.Health, "OVERLAY", 13, "OUTLINE", "LEFT")
 	name:SetPoint("TOPLEFT", self.Health, "TOPLEFT", 3, 9)
