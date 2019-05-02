@@ -1,17 +1,16 @@
 local F, C = unpack(select(2, ...))
 
 C.themes["Blizzard_ArtifactUI"] = function()
+	F.StripTextures(ArtifactFrame)
 	F.SetBD(ArtifactFrame)
 	F.ReskinTab(ArtifactFrameTab1)
 	F.ReskinTab(ArtifactFrameTab2)
 	ArtifactFrameTab1:ClearAllPoints()
 	ArtifactFrameTab1:SetPoint("TOPLEFT", ArtifactFrame, "BOTTOMLEFT", 10, 0)
 	F.ReskinClose(ArtifactFrame.CloseButton)
-	for i = 1, 7 do
-		select(i, ArtifactFrame.BorderFrame:GetRegions()):Hide()
-	end
 	ArtifactFrame.Background:Hide()
 	ArtifactFrame.PerksTab.BackgroundBack:Hide()
+	ArtifactFrame.PerksTab.Model.BackgroundBackShadow:Hide()
 	ArtifactFrame.PerksTab.HeaderBackground:Hide()
 	ArtifactFrame.PerksTab.TitleContainer.Background:SetAlpha(0)
 	ArtifactFrame.PerksTab.Model:SetAlpha(.5)
@@ -43,8 +42,8 @@ C.themes["Blizzard_ArtifactUI"] = function()
 			slot.Selected:SetDrawLayer("BACKGROUND")
 			slot.Selected:SetTexture(C.media.backdrop)
 			slot.Selected:SetVertexColor(1, 1, 0)
-			slot.Selected:SetPoint("TOPLEFT", -1.2, 1.2)
-			slot.Selected:SetPoint("BOTTOMRIGHT", 1.2, -1.2)
+			slot.Selected:SetPoint("TOPLEFT", -C.mult, C.mult)
+			slot.Selected:SetPoint("BOTTOMRIGHT", C.mult, -C.mult)
 		end
 	end
 end

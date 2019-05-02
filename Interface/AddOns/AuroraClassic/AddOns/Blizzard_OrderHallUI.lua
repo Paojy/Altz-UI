@@ -1,41 +1,25 @@
 local F, C = unpack(select(2, ...))
 
 C.themes["Blizzard_OrderHallUI"] = function()
-	-- Orderhall tooltips
-	if AuroraConfig.tooltips then
-		GarrisonFollowerAbilityWithoutCountersTooltip:DisableDrawLayer("BACKGROUND")
-		F.CreateBDFrame(GarrisonFollowerAbilityWithoutCountersTooltip)
-		F.CreateSD(GarrisonFollowerAbilityWithoutCountersTooltip)
-		GarrisonFollowerMissionAbilityWithoutCountersTooltip:DisableDrawLayer("BACKGROUND")
-		F.CreateBDFrame(GarrisonFollowerMissionAbilityWithoutCountersTooltip)
-		F.CreateSD(GarrisonFollowerMissionAbilityWithoutCountersTooltip)
-	end
-
 	-- Talent Frame
 	local OrderHallTalentFrame = OrderHallTalentFrame
 
-	F.ReskinPortraitFrame(OrderHallTalentFrame, true)
-	OrderHallTalentFrame.Background:SetAlpha(0)
+	F.ReskinPortraitFrame(OrderHallTalentFrame)
 	F.Reskin(OrderHallTalentFrame.BackButton)
 	F.ReskinIcon(OrderHallTalentFrame.Currency.Icon)
-	OrderHallTalentFrame.OverlayElements:Hide()
+	OrderHallTalentFrame.OverlayElements:SetAlpha(0)
 
-	hooksecurefunc(OrderHallTalentFrame, "RefreshAllData", function()
-		OrderHallTalentFrameCloseButton:ClearAllPoints()
-		OrderHallTalentFrameCloseButton:SetPoint("TOPRIGHT", OrderHallTalentFrame)
-		OrderHallTalentFrameCloseButton.Border:SetAlpha(0)
-		OrderHallTalentFrame.CurrencyBG:SetAlpha(0)
+	hooksecurefunc(OrderHallTalentFrame, "RefreshAllData", function(self)
+		if self.CloseButton.Border then self.CloseButton.Border:SetAlpha(0) end
+		if self.CurrencyBG then self.CurrencyBG:SetAlpha(0) end
+		F.StripTextures(self)
 
-		for i = 15, OrderHallTalentFrame:GetNumRegions() do
-			select(i, OrderHallTalentFrame:GetRegions()):SetAlpha(0)
-		end
-
-		for i = 1, OrderHallTalentFrame:GetNumChildren() do
-			local bu = select(i, OrderHallTalentFrame:GetChildren())
+		for i = 1, self:GetNumChildren() do
+			local bu = select(i, self:GetChildren())
 			if bu and bu.talent then
+				bu.Border:SetAlpha(0)
 				if not bu.bg then
 					bu.Icon:SetTexCoord(.08, .92, .08, .92)
-					bu.Border:SetAlpha(0)
 					bu.Highlight:SetColorTexture(1, 1, 1, .25)
 					bu.bg = F.CreateBDFrame(bu.Icon)
 				end

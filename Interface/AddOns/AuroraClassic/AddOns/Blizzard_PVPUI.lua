@@ -9,22 +9,22 @@ C.themes["Blizzard_PVPUI"] = function()
 
 	-- Category buttons
 
+	local iconSize = 60-2*C.mult
 	for i = 1, 3 do
 		local bu = PVPQueueFrame["CategoryButton"..i]
 		local icon = bu.Icon
 		local cu = bu.CurrencyDisplay
 
 		bu.Ring:Hide()
-
-		F.Reskin(bu, true)
-
 		bu.Background:SetAllPoints()
 		bu.Background:SetColorTexture(r, g, b, .25)
 		bu.Background:Hide()
+		F.Reskin(bu, true)
 
 		icon:SetTexCoord(.08, .92, .08, .92)
 		icon:SetPoint("LEFT", bu, "LEFT")
 		icon:SetDrawLayer("OVERLAY")
+		icon:SetSize(iconSize, iconSize)
 		icon.bg = F.CreateBG(icon)
 		icon.bg:SetDrawLayer("ARTWORK")
 
@@ -59,7 +59,6 @@ C.themes["Blizzard_PVPUI"] = function()
 
 	PVPQueueFrame.CategoryButton1.Background:Show()
 	F.StripTextures(PVPQueueFrame.HonorInset)
-	F.RemoveSlice(PVPQueueFrame.HonorInset)
 
 	local popup = PVPQueueFrame.NewSeasonPopup
 	F.Reskin(popup.Leave)
@@ -104,20 +103,12 @@ C.themes["Blizzard_PVPUI"] = function()
 
 	-- Role buttons
 
-	local function styleRole(f)
-		f:DisableDrawLayer("BACKGROUND")
-		f:DisableDrawLayer("BORDER")
-
-		for _, roleButton in pairs({f.HealerIcon, f.TankIcon, f.DPSIcon}) do
-			roleButton.cover:SetTexture(C.media.roleIcons)
-			roleButton:SetNormalTexture(C.media.roleIcons)
-			roleButton.checkButton:SetFrameLevel(roleButton:GetFrameLevel() + 2)
-			local bg = F.CreateBDFrame(roleButton, 1)
-			bg:SetPoint("TOPLEFT", roleButton, 3, -2)
-			bg:SetPoint("BOTTOMRIGHT", roleButton, -3, 4)
-
-			F.ReskinCheck(roleButton.checkButton)
-		end
+	local function styleRole(self)
+		self:DisableDrawLayer("BACKGROUND")
+		self:DisableDrawLayer("BORDER")
+		F.ReskinRole(self.TankIcon, "TANK")
+		F.ReskinRole(self.HealerIcon, "HEALER")
+		F.ReskinRole(self.DPSIcon, "DPS")
 	end
 	styleRole(HonorFrame)
 	styleRole(ConquestFrame)
@@ -137,8 +128,8 @@ C.themes["Blizzard_PVPUI"] = function()
 
 		bu.tex = F.CreateGradient(bu)
 		bu.tex:SetDrawLayer("BACKGROUND")
-		bu.tex:SetPoint("TOPLEFT", bg, 1, -1)
-		bu.tex:SetPoint("BOTTOMRIGHT", bg, -1, 1)
+		bu.tex:SetPoint("TOPLEFT", bg, C.mult, -C.mult)
+		bu.tex:SetPoint("BOTTOMRIGHT", bg, -C.mult, C.mult)
 
 		bu.SelectedTexture:SetDrawLayer("BACKGROUND")
 		bu.SelectedTexture:SetColorTexture(r, g, b, .25)
@@ -157,14 +148,12 @@ C.themes["Blizzard_PVPUI"] = function()
 	ConquestFrame.ShadowOverlay:Hide()
 
 	if AuroraConfig.tooltips then
-		F.CreateBD(ConquestTooltip)
-		F.CreateSD(ConquestTooltip)
+		F.ReskinTooltip(ConquestTooltip)
 	end
 
-	local ConquestFrameButton_OnEnter = function(self)
+	local function ConquestFrameButton_OnEnter(self)
 		ConquestTooltip:SetPoint("TOPLEFT", self, "TOPRIGHT", 1, 0)
 	end
-
 	ConquestFrame.Arena2v2:HookScript("OnEnter", ConquestFrameButton_OnEnter)
 	ConquestFrame.Arena3v3:HookScript("OnEnter", ConquestFrameButton_OnEnter)
 	ConquestFrame.RatedBG:HookScript("OnEnter", ConquestFrameButton_OnEnter)

@@ -75,12 +75,12 @@ C.themes["Blizzard_GuildBankUI"] = function()
 
 			bu.icon:SetTexCoord(.08, .92, .08, .92)
 
-			border:SetPoint("TOPLEFT", -1.2, 1.2)
-			border:SetPoint("BOTTOMRIGHT", 1.2, -1.2)
+			border:SetPoint("TOPLEFT", -C.mult, C.mult)
+			border:SetPoint("BOTTOMRIGHT", C.mult, -C.mult)
 			border:SetDrawLayer("BACKGROUND")
 
-			searchOverlay:SetPoint("TOPLEFT", -1.2, 1.2)
-			searchOverlay:SetPoint("BOTTOMRIGHT", 1.2, -1.2)
+			searchOverlay:SetPoint("TOPLEFT", -C.mult, C.mult)
+			searchOverlay:SetPoint("BOTTOMRIGHT", C.mult, -C.mult)
 			F.CreateBDFrame(bu, .25)
 		end
 	end
@@ -117,14 +117,16 @@ C.themes["Blizzard_GuildBankUI"] = function()
 	GuildBankPopupFrame:HookScript("OnShow", function()
 		for i = 1, NUM_GUILDBANK_ICONS_PER_ROW * NUM_GUILDBANK_ICON_ROWS do
 			local bu = _G["GuildBankPopupButton"..i]
-
+			local icon = _G["GuildBankPopupButton"..i.."Icon"]
 			if not bu.styled then
 				bu:SetCheckedTexture(C.media.checked)
 				select(2, bu:GetRegions()):Hide()
+				icon:SetTexCoord(.08, .92, .08, .92)
+				F.CreateBG(icon)
+				local hl = bu:GetHighlightTexture()
+				hl:SetColorTexture(1, 1, 1, .25)
+				hl:SetAllPoints(icon)
 
-				_G["GuildBankPopupButton"..i.."Icon"]:SetTexCoord(.08, .92, .08, .92)
-
-				F.CreateBG(_G["GuildBankPopupButton"..i.."Icon"])
 				bu.styled = true
 			end
 		end

@@ -20,8 +20,8 @@ C.themes["Blizzard_ItemUpgradeUI"] = function()
 	F.CreateBD(ItemButton, .25)
 	ItemButton:SetHighlightTexture("")
 	ItemButton:SetPushedTexture("")
-	ItemButton.IconTexture:SetPoint("TOPLEFT", 1, -1)
-	ItemButton.IconTexture:SetPoint("BOTTOMRIGHT", -1, 1)
+	ItemButton.IconTexture:SetPoint("TOPLEFT", C.mult, -C.mult)
+	ItemButton.IconTexture:SetPoint("BOTTOMRIGHT", -C.mult, C.mult)
 
 	local bg = F.CreateBDFrame(ItemButton, .25)
 	bg:ClearAllPoints()
@@ -54,6 +54,6 @@ C.themes["Blizzard_ItemUpgradeUI"] = function()
 	F.CreateBG(currency.icon)
 
 	F.CreateBDFrame(ItemUpgradeFrame)
-	F.ReskinPortraitFrame(ItemUpgradeFrame, true)
+	F.ReskinPortraitFrame(ItemUpgradeFrame)
 	F.Reskin(ItemUpgradeFrameUpgradeButton)
 end

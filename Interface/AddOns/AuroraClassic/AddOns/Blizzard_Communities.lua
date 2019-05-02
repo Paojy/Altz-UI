@@ -4,7 +4,8 @@ C.themes["Blizzard_Communities"] = function()
 	local r, g, b = C.r, C.g, C.b
 	local CommunitiesFrame = CommunitiesFrame
 
-	F.ReskinPortraitFrame(CommunitiesFrame, true)
+	F.ReskinPortraitFrame(CommunitiesFrame)
+	CommunitiesFrame.NineSlice:Hide()
 	CommunitiesFrame.PortraitOverlay:SetAlpha(0)
 	F.ReskinDropDown(CommunitiesFrame.StreamDropDownMenu)
 	F.ReskinMinMax(CommunitiesFrame.MaximizeMinimizeFrame)
@@ -18,11 +19,30 @@ C.themes["Blizzard_Communities"] = function()
 		frame.InsetFrame:Hide()
 		if frame.CircleMask then
 			frame.CircleMask:Hide()
+			frame.IconRing:Hide()
 			F.ReskinIcon(frame.Icon)
 		end
 		if frame.FindAGuildButton then F.Reskin(frame.FindAGuildButton) end
 		if frame.AcceptButton then F.Reskin(frame.AcceptButton) end
 		if frame.DeclineButton then F.Reskin(frame.DeclineButton) end
+
+		if C.isNewPatch then
+			local optionsList = frame.OptionsList
+			if optionsList then
+				F.ReskinDropDown(optionsList.ClubFocusDropdown)
+				optionsList.ClubFocusDropdown.GuildFocusDropdownLabel:SetWidth(150)
+				F.ReskinDropDown(optionsList.ClubSizeDropdown)
+				F.ReskinRole(optionsList.TankRoleFrame, "TANK")
+				F.ReskinRole(optionsList.HealerRoleFrame, "HEALER")
+				F.ReskinRole(optionsList.DpsRoleFrame, "DPS")
+				F.ReskinInput(optionsList.SearchBox)
+				optionsList.SearchBox:SetSize(118, 22)
+				F.Reskin(optionsList.Search)
+				optionsList.Search:ClearAllPoints()
+				optionsList.Search:SetPoint("TOPRIGHT", optionsList.SearchBox, "BOTTOMRIGHT", 0, -2)
+				F.Reskin(frame.PendingClubs)
+			end
+		end
 	end
 
 	F.StripTextures(CommunitiesFrameCommunitiesList)
@@ -58,20 +78,23 @@ C.themes["Blizzard_Communities"] = function()
 		tab:GetRegions():Hide()
 		F.ReskinIcon(tab.Icon)
 		tab:SetCheckedTexture(C.media.checked)
-		tab:GetHighlightTexture():SetColorTexture(1, 1, 1, .25)
+		local hl = tab:GetHighlightTexture()
+		hl:SetColorTexture(1, 1, 1, .25)
+		hl:SetAllPoints(tab.Icon)
 	end
 
 	-- ChatTab
 	F.Reskin(CommunitiesFrame.InviteButton)
-	F.RemoveSlice(CommunitiesFrame.Chat.InsetFrame)
+	F.StripTextures(CommunitiesFrame.Chat)
 	F.ReskinScroll(CommunitiesFrame.Chat.MessageFrame.ScrollBar)
-	F.StripTextures(CommunitiesFrame.ChatEditBox)
+	CommunitiesFrame.ChatEditBox:DisableDrawLayer("BACKGROUND")
 	local bg1 = F.CreateBDFrame(CommunitiesFrame.Chat.InsetFrame, .25)
-	bg1:SetPoint("BOTTOMRIGHT", -1, 22)
+	bg1:SetPoint("TOPLEFT", 1, -3)
+	bg1:SetPoint("BOTTOMRIGHT", -3, 22)
 	local bg2 = F.CreateBDFrame(CommunitiesFrame.ChatEditBox, 0)
 	F.CreateGradient(bg2)
-	bg2:SetPoint("TOPLEFT", -2, -5)
-	bg2:SetPoint("BOTTOMRIGHT", 2, 5)
+	bg2:SetPoint("TOPLEFT", -5, -5)
+	bg2:SetPoint("BOTTOMRIGHT", 4, 5)
 
 	do
 		local dialog = CommunitiesFrame.NotificationSettingsDialog
@@ -105,7 +128,7 @@ C.themes["Blizzard_Communities"] = function()
 		local dialog = CommunitiesFrame.EditStreamDialog
 		F.StripTextures(dialog)
 		F.SetBD(dialog)
-		F.StripTextures(dialog.NameEdit)
+		dialog.NameEdit:DisableDrawLayer("BACKGROUND")
 		local bg = F.CreateBDFrame(dialog.NameEdit, .25)
 		bg:SetPoint("TOPLEFT", -3, -3)
 		bg:SetPoint("BOTTOMRIGHT", -4, 3)
@@ -179,7 +202,7 @@ C.themes["Blizzard_Communities"] = function()
 	local detailFrame = CommunitiesFrame.GuildMemberDetailFrame
 	F.StripTextures(detailFrame)
 	F.SetBD(detailFrame)
-	detailFrame.BackBackground:Hide()
+	if not C.isNewPatch then detailFrame.BackBackground:Hide() end
 	F.ReskinClose(detailFrame.CloseButton)
 	F.Reskin(detailFrame.RemoveButton)
 	F.Reskin(detailFrame.GroupInviteButton)

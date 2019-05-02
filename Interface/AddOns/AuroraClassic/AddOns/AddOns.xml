@@ -23,6 +23,7 @@
 	<Script file="Blizzard_EncounterJournal.lua"/>
 	<Script file="Blizzard_FlightMap.lua"/>
 	<Script file="Blizzard_GarrisonUI.lua"/>
+	<Script file="Blizzard_GMChatUI.lua"/>
 	<Script file="Blizzard_GMSurveyUI.lua"/>
 	<Script file="Blizzard_GuildBankUI.lua"/>
 	<Script file="Blizzard_GuildControlUI.lua"/>
@@ -48,6 +49,7 @@
 	<Script file="Blizzard_TokenUI.lua"/>
 	<Script file="Blizzard_TradeSkillUI.lua"/>
 	<Script file="Blizzard_TrainerUI.lua"/>
+	<Script file="Blizzard_Tutorial.lua"/>
 	<Script file="Blizzard_VoidStorageUI.lua"/>
 	<Script file="Blizzard_WarboardUI.lua"/>
 	<Script file="Blizzard_WarfrontsPartyPoseUI.lua"/>

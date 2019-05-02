@@ -140,8 +140,8 @@ C.themes["Blizzard_AuctionUI"] = function()
 		local AuctionsItemButtonIconTexture = AuctionsItemButton:GetNormalTexture()
 		if AuctionsItemButtonIconTexture then
 			AuctionsItemButtonIconTexture:SetTexCoord(.08, .92, .08, .92)
-			AuctionsItemButtonIconTexture:SetPoint("TOPLEFT", 1, -1)
-			AuctionsItemButtonIconTexture:SetPoint("BOTTOMRIGHT", -1, 1)
+			AuctionsItemButtonIconTexture:SetPoint("TOPLEFT", C.mult, -C.mult)
+			AuctionsItemButtonIconTexture:SetPoint("BOTTOMRIGHT", -C.mult, C.mult)
 		end
 		AuctionsItemButton.IconBorder:SetTexture("")
 	end)
@@ -151,8 +151,8 @@ C.themes["Blizzard_AuctionUI"] = function()
 	AuctionsItemButtonNameFrame:Hide()
 	local hl = AuctionsItemButton:GetHighlightTexture()
 	hl:SetColorTexture(1, 1, 1, .25)
-	hl:SetPoint("TOPLEFT", 1, -1)
-	hl:SetPoint("BOTTOMRIGHT", -1, 1)
+	hl:SetPoint("TOPLEFT", C.mult, -C.mult)
+	hl:SetPoint("BOTTOMRIGHT", -C.mult, C.mult)
 
 	F.ReskinClose(AuctionFrameCloseButton, "TOPRIGHT", AuctionFrame, "TOPRIGHT", -4, -14)
 	F.ReskinScroll(BrowseScrollFrameScrollBar)
@@ -208,14 +208,11 @@ C.themes["Blizzard_AuctionUI"] = function()
 	local BrowseWowTokenResults = BrowseWowTokenResults
 
 	F.Reskin(BrowseWowTokenResults.Buyout)
-
-	-- Tutorial
-
-	local WowTokenGameTimeTutorial = WowTokenGameTimeTutorial
-
-	F.ReskinPortraitFrame(WowTokenGameTimeTutorial, true)
+	F.ReskinPortraitFrame(WowTokenGameTimeTutorial)
 	F.Reskin(StoreButton)
+	WowTokenGameTimeTutorial.LeftDisplay.Label:SetTextColor(1, 1, 1)
 	WowTokenGameTimeTutorial.LeftDisplay.Tutorial1:SetTextColor(1, .8, 0)
+	WowTokenGameTimeTutorial.RightDisplay.Label:SetTextColor(1, 1, 1)
 	WowTokenGameTimeTutorial.RightDisplay.Tutorial1:SetTextColor(1, .8, 0)
 
 	-- Token
@@ -228,8 +225,8 @@ C.themes["Blizzard_AuctionUI"] = function()
 		Token.ItemBorder:Hide()
 		iconBorder:SetTexture(C.media.backdrop)
 		iconBorder:SetDrawLayer("BACKGROUND")
-		iconBorder:SetPoint("TOPLEFT", icon, -1, 1)
-		iconBorder:SetPoint("BOTTOMRIGHT", icon, 1, -1)
+		iconBorder:SetPoint("TOPLEFT", icon, -C.mult, C.mult)
+		iconBorder:SetPoint("BOTTOMRIGHT", icon, C.mult, -C.mult)
 		icon:SetTexCoord(.08, .92, .08, .92)
 	end
 end

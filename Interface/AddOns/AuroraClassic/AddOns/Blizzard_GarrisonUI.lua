@@ -3,6 +3,17 @@ local F, C = unpack(select(2, ...))
 C.themes["Blizzard_GarrisonUI"] = function()
 	local r, g, b = C.r, C.g, C.b
 
+	-- tooltips
+	if AuroraConfig.tooltips then
+		F.ReskinTooltip(GarrisonFollowerAbilityWithoutCountersTooltip)
+		F.ReskinTooltip(GarrisonFollowerMissionAbilityWithoutCountersTooltip)
+		F.ReskinTooltip(GarrisonMissionMechanicTooltip)
+		F.ReskinTooltip(GarrisonMissionMechanicFollowerCounterTooltip)
+		F.ReskinTooltip(GarrisonShipyardMapMissionTooltip)
+		F.ReskinTooltip(GarrisonBonusAreaTooltip)
+		F.ReskinTooltip(GarrisonBuildingFrame.BuildingLevelTooltip)
+	end
+
 	-- [[ Shared codes ]]
 
 	function F:ReskinMissionPage()
@@ -43,11 +54,15 @@ C.themes["Blizzard_GarrisonUI"] = function()
 
 		local env = self.Stage.MissionEnvIcon
 		env.Texture:SetDrawLayer("BORDER", 1)
-		F.ReskinIcon(env.Texture)
+		env.bg = F.ReskinIcon(env.Texture)
 
 		local item = self.RewardsFrame.OvermaxItem
 		item.Icon:SetDrawLayer("BORDER", 1)
 		F.ReskinIcon(item.Icon)
+
+		if self.CostFrame then
+			self.CostFrame.CostIcon:SetTexCoord(.08, .92, .08, .92)
+		end
 	end
 
 	function F:ReskinMissionTabs()
@@ -145,8 +160,8 @@ C.themes["Blizzard_GarrisonUI"] = function()
 				local hl = button:GetHighlightTexture()
 				hl:SetColorTexture(r, g, b, .1)
 				hl:ClearAllPoints()
-				hl:SetPoint("TOPLEFT", button, "TOPLEFT", 1, -1)
-				hl:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", -1, 1)
+				hl:SetPoint("TOPLEFT", button, C.mult, -C.mult)
+				hl:SetPoint("BOTTOMRIGHT", button, -C.mult, C.mult)
 
 				if portrait then
 					F.ReskinGarrisonPortrait(portrait)
@@ -215,6 +230,7 @@ C.themes["Blizzard_GarrisonUI"] = function()
 		F.StripTextures(self.CloseButton)
 		F.ReskinClose(self.CloseButton)
 		self.GarrCorners:Hide()
+		if self.OverlayElements then self.OverlayElements:SetAlpha(0) end
 		if self.ClassHallIcon then self.ClassHallIcon:Hide() end
 		if self.TitleScroll then
 			F.StripTextures(self.TitleScroll)
@@ -296,8 +312,8 @@ C.themes["Blizzard_GarrisonUI"] = function()
 		local hl = tab:GetHighlightTexture()
 		hl:SetColorTexture(r, g, b, .1)
 		hl:ClearAllPoints()
-		hl:SetPoint("TOPLEFT", bg, 1, -1)
-		hl:SetPoint("BOTTOMRIGHT", bg, -1, 1)
+		hl:SetPoint("TOPLEFT", bg, C.mult, -C.mult)
+		hl:SetPoint("BOTTOMRIGHT", bg, -C.mult, C.mult)
 	end
 
 	hooksecurefunc("GarrisonBuildingList_SelectTab", function(tab)
@@ -323,31 +339,17 @@ C.themes["Blizzard_GarrisonUI"] = function()
 
 				button.SelectedBG:SetColorTexture(r, g, b, .2)
 				button.SelectedBG:ClearAllPoints()
-				button.SelectedBG:SetPoint("TOPLEFT", bg, 1, -1)
-				button.SelectedBG:SetPoint("BOTTOMRIGHT", bg, -1, 1)
+				button.SelectedBG:SetPoint("TOPLEFT", bg, C.mult, -C.mult)
+				button.SelectedBG:SetPoint("BOTTOMRIGHT", bg, -C.mult, C.mult)
 
 				local hl = button:GetHighlightTexture()
 				hl:SetColorTexture(r, g, b, .1)
-				hl:ClearAllPoints()
-				hl:SetPoint("TOPLEFT", bg, 1, -1)
-				hl:SetPoint("BOTTOMRIGHT", bg, -1, 1)
+				hl:SetAllPoints(button.SelectedBG)
 
 				button.styled = true
 			end
 		end
 	end)
-
-	-- Building level tooltip
-
-	if AuroraConfig.tooltips then
-		local BuildingLevelTooltip = GarrisonBuildingFrame.BuildingLevelTooltip
-
-		for i = 1, 9 do
-			select(i, BuildingLevelTooltip:GetRegions()):Hide()
-		end
-		F.CreateBD(BuildingLevelTooltip)
-		F.CreateSD(BuildingLevelTooltip)
-	end
 
 	-- Follower list
 
@@ -414,11 +416,14 @@ C.themes["Blizzard_GarrisonUI"] = function()
 
 	local GarrisonCapacitiveDisplayFrame = GarrisonCapacitiveDisplayFrame
 
+	GarrisonCapacitiveDisplayFrameLeft:Hide()
+	GarrisonCapacitiveDisplayFrameMiddle:Hide()
+	GarrisonCapacitiveDisplayFrameRight:Hide()
 	F.CreateBD(GarrisonCapacitiveDisplayFrame.Count, .25)
 	GarrisonCapacitiveDisplayFrame.Count:SetWidth(38)
 	GarrisonCapacitiveDisplayFrame.Count:SetTextInsets(3, 0, 0, 0)
 
-	F.ReskinPortraitFrame(GarrisonCapacitiveDisplayFrame, true)
+	F.ReskinPortraitFrame(GarrisonCapacitiveDisplayFrame)
 	F.Reskin(GarrisonCapacitiveDisplayFrame.StartWorkOrderButton, true)
 	F.Reskin(GarrisonCapacitiveDisplayFrame.CreateAllWorkOrdersButton, true)
 	F.ReskinArrow(GarrisonCapacitiveDisplayFrame.DecrementButton, "left")
@@ -712,21 +717,17 @@ C.themes["Blizzard_GarrisonUI"] = function()
 		end
 	end)
 
-	-- Mechanic tooltip
-
-	if AuroraConfig.tooltips then
-		GarrisonMissionMechanicTooltip:SetBackdrop(nil)
-		F.CreateBDFrame(GarrisonMissionMechanicTooltip)
-		F.CreateSD(GarrisonMissionMechanicTooltip)
-		GarrisonMissionMechanicFollowerCounterTooltip:SetBackdrop(nil)
-		F.CreateBDFrame(GarrisonMissionMechanicFollowerCounterTooltip)
-		F.CreateSD(GarrisonMissionMechanicFollowerCounterTooltip)
-	end
+	hooksecurefunc(GarrisonMission, "ShowMission", function(self)
+		local envIcon = self:GetMissionPage().Stage.MissionEnvIcon
+		if envIcon.bg then
+			envIcon.bg:SetShown(envIcon.Texture:GetTexture())
+		end
+	end)
 
 	-- [[ Recruiter frame ]]
 
 	local GarrisonRecruiterFrame = GarrisonRecruiterFrame
-	F.ReskinPortraitFrame(GarrisonRecruiterFrame, true)
+	F.ReskinPortraitFrame(GarrisonRecruiterFrame)
 
 	-- Pick
 
@@ -811,11 +812,6 @@ C.themes["Blizzard_GarrisonUI"] = function()
 	-- [[ Shipyard ]]
 
 	local GarrisonShipyardFrame = GarrisonShipyardFrame
-
-	if AuroraConfig.tooltips then
-		F.CreateBD(GarrisonShipyardMapMissionTooltip)
-		F.CreateSD(GarrisonShipyardMapMissionTooltip)
-	end
 
 	for i = 1, 14 do
 		select(i, GarrisonShipyardFrame.BorderFrame:GetRegions()):Hide()

@@ -36,7 +36,7 @@ C.themes["Blizzard_TalentUI"] = function()
 		PlayerTalentFramePetSpecializationSpellScrollFrameScrollChild.Seperator:SetAlpha(.2)
 
 		for i = 1, GetNumSpecializations(false, true) do
-			local _, _, _, icon = GetSpecializationInfo(i, false, true)
+			local icon = select(4, GetSpecializationInfo(i, false, true))
 			PlayerTalentFramePetSpecialization["specButton"..i].specIcon:SetTexture(icon)
 		end
 	end
@@ -64,18 +64,22 @@ C.themes["Blizzard_TalentUI"] = function()
 
 		local roleIcon = scrollChild.roleIcon
 		roleIcon:SetTexture(C.media.roleIcons)
-		local bg = F.CreateBDFrame(roleIcon, 1)
-		bg:SetPoint("TOPLEFT", roleIcon, 3, -2)
-		bg:SetPoint("BOTTOMRIGHT", roleIcon, -3, 4)
+		F.CreateBDFrame(roleIcon)
 	end
 
 	hooksecurefunc("PlayerTalentFrame_UpdateSpecFrame", function(self, spec)
-		local playerTalentSpec = GetSpecialization(nil, self.isPet, PlayerSpecTab2:GetChecked() and 2 or 1)
+		local playerTalentSpec = GetSpecialization(nil, self.isPet, 1)
 		local shownSpec = spec or playerTalentSpec or 1
+		local numSpecs = GetNumSpecializations(nil, self.isPet)
 		local sex = self.isPet and UnitSex("pet") or UnitSex("player")
 		local id, _, _, icon = GetSpecializationInfo(shownSpec, nil, self.isPet, nil, sex)
+		if not id then return end
 		local scrollChild = self.spellsScroll.child
 		scrollChild.specIcon:SetTexture(icon)
+		local role1 = GetSpecializationRole(shownSpec, nil, self.isPet)
+		if role1 then
+			scrollChild.roleIcon:SetTexCoord(F.GetRoleTexCoord(role1))
+		end
 
 		local index = 1
 		local bonuses
@@ -105,9 +109,8 @@ C.themes["Blizzard_TalentUI"] = function()
 			end
 		end
 
-		for i = 1, GetNumSpecializations(nil, self.isPet) do
+		for i = 1, numSpecs do
 			local bu = self["specButton"..i]
-
 			if bu.disabled then
 				bu.roleName:SetTextColor(.5, .5, .5)
 			else
@@ -122,15 +125,12 @@ C.themes["Blizzard_TalentUI"] = function()
 	end
 
 	local buttons = {"PlayerTalentFrameSpecializationSpecButton", "PlayerTalentFramePetSpecializationSpecButton"}
-
 	for _, name in pairs(buttons) do
 		for i = 1, 4 do
 			local bu = _G[name..i]
-
 			bu.bg:SetAlpha(0)
 			bu.ring:Hide()
 			_G[name..i.."Glow"]:SetTexture("")
-
 			F.Reskin(bu, true)
 
 			bu.learnedTex:SetTexture("")
@@ -148,9 +148,11 @@ C.themes["Blizzard_TalentUI"] = function()
 
 			local roleIcon = bu.roleIcon
 			roleIcon:SetTexture(C.media.roleIcons)
-			local bg = F.CreateBDFrame(roleIcon, 1)
-			bg:SetPoint("TOPLEFT", roleIcon, 2, -1)
-			bg:SetPoint("BOTTOMRIGHT", roleIcon, -3, 3)
+			F.CreateBDFrame(roleIcon)
+			local role = GetSpecializationRole(i, false, bu.isPet)
+			if role then
+				roleIcon:SetTexCoord(F.GetRoleTexCoord(role))
+			end
 		end
 	end
 
@@ -219,7 +221,7 @@ C.themes["Blizzard_TalentUI"] = function()
 	PlayerTalentFramePetSpecializationTutorialButton.Ring:Hide()
 	PlayerTalentFramePetSpecializationTutorialButton:SetPoint("TOPLEFT", PlayerTalentFrame, "TOPLEFT", -12, 12)
 
-	F.ReskinPortraitFrame(PlayerTalentFrame, true)
+	F.ReskinPortraitFrame(PlayerTalentFrame)
 	F.Reskin(PlayerTalentFrameSpecializationLearnButton)
 	F.Reskin(PlayerTalentFrameActivateButton)
 	F.Reskin(PlayerTalentFramePetSpecializationLearnButton)
@@ -233,7 +235,6 @@ C.themes["Blizzard_TalentUI"] = function()
 	talentList:ClearAllPoints()
 	talentList:SetPoint("LEFT", PlayerTalentFrame, "RIGHT", 2, 0)
 	F.StripTextures(talentList)
-	F.RemoveSlice(talentList)
 	F.CreateBD(talentList)
 	F.CreateSD(talentList)
 	talentList.Inset:Hide()

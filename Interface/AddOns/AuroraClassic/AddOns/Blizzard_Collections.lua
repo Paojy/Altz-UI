@@ -5,42 +5,36 @@ C.themes["Blizzard_Collections"] = function()
 
 	-- [[ General ]]
 
-	F.ReskinPortraitFrame(CollectionsJournal, true)
+	F.ReskinPortraitFrame(CollectionsJournal)
 	F.ReskinTab(CollectionsJournalTab1)
-	F.ReskinTab(CollectionsJournalTab2)
-	F.ReskinTab(CollectionsJournalTab3)
-	F.ReskinTab(CollectionsJournalTab4)
-	F.ReskinTab(CollectionsJournalTab5)
-
-	CollectionsJournalTab2:SetPoint("LEFT", CollectionsJournalTab1, "RIGHT", -15, 0)
-	CollectionsJournalTab3:SetPoint("LEFT", CollectionsJournalTab2, "RIGHT", -15, 0)
-	CollectionsJournalTab4:SetPoint("LEFT", CollectionsJournalTab3, "RIGHT", -15, 0)
-	CollectionsJournalTab5:SetPoint("LEFT", CollectionsJournalTab4, "RIGHT", -15, 0)
+	for i = 2, 5 do
+		local tab = _G["CollectionsJournalTab"..i]
+		F.ReskinTab(tab)
+		tab:SetPoint("LEFT", _G["CollectionsJournalTab"..(i-1)], "RIGHT", -15, 0)
+	end
 
 	-- [[ Mounts and pets ]]
 
 	local PetJournal = PetJournal
 	local MountJournal = MountJournal
 
-	for i = 1, 9 do
-		select(i, MountJournal.MountCount:GetRegions()):Hide()
-		select(i, PetJournal.PetCount:GetRegions()):Hide()
-	end
-
 	MountJournal.LeftInset:Hide()
 	MountJournal.RightInset:Hide()
+	MountJournal.MountDisplay.YesMountsTex:SetAlpha(0)
+	MountJournal.MountDisplay.NoMountsTex:SetAlpha(0)
+	MountJournal.MountDisplay.ShadowOverlay:Hide()
 	PetJournal.LeftInset:Hide()
 	PetJournal.RightInset:Hide()
 	PetJournal.PetCardInset:Hide()
 	PetJournal.loadoutBorder:Hide()
-	MountJournal.MountDisplay.YesMountsTex:SetAlpha(0)
-	MountJournal.MountDisplay.NoMountsTex:SetAlpha(0)
-	MountJournal.MountDisplay.ShadowOverlay:Hide()
 	PetJournalTutorialButton.Ring:Hide()
 
+	F.StripTextures(MountJournal.MountCount)
 	F.CreateBD(MountJournal.MountCount, .25)
+	F.StripTextures(PetJournal.PetCount)
 	F.CreateBD(PetJournal.PetCount, .25)
 	F.CreateBD(MountJournal.MountDisplay.ModelScene, .25)
+	F.ReskinIcon(MountJournal.MountDisplay.InfoButton.Icon)
 
 	F.Reskin(MountJournalMountButton)
 	F.Reskin(PetJournalSummonButton)
@@ -53,6 +47,13 @@ C.themes["Blizzard_Collections"] = function()
 	F.ReskinArrow(MountJournal.MountDisplay.ModelScene.RotateRightButton, "right")
 	F.ReskinFilterButton(PetJournalFilterButton)
 	F.ReskinFilterButton(MountJournalFilterButton)
+
+	if C.isNewPatch then
+		F.StripTextures(MountJournal.BottomLeftInset)
+		local bg = F.CreateBDFrame(MountJournal.BottomLeftInset, .25)
+		bg:SetPoint("TOPLEFT", 3, 0)
+		bg:SetPoint("BOTTOMRIGHT", -24, 2)
+	end
 
 	MountJournalFilterButton:SetPoint("TOPRIGHT", MountJournal.LeftInset, -5, -8)
 	PetJournalFilterButton:SetPoint("TOPRIGHT", PetJournalLeftInset, -5, -8)
@@ -163,21 +164,9 @@ C.themes["Blizzard_Collections"] = function()
 	PetJournal.HealPetButton:GetHighlightTexture():SetColorTexture(1, 1, 1, .25)
 	F.CreateBG(PetJournal.HealPetButton)
 
-	do
-		local ic = MountJournal.MountDisplay.InfoButton.Icon
-		ic:SetTexCoord(.08, .92, .08, .92)
-		F.CreateBG(ic)
-	end
-
 	if AuroraConfig.tooltips then
-		for _, f in pairs({PetJournalPrimaryAbilityTooltip, PetJournalSecondaryAbilityTooltip}) do
-			f:DisableDrawLayer("BACKGROUND")
-			local bg = CreateFrame("Frame", nil, f)
-			bg:SetAllPoints()
-			bg:SetFrameLevel(0)
-			F.CreateBD(bg)
-			F.CreateSD(bg)
-		end
+		F.ReskinTooltip(PetJournalPrimaryAbilityTooltip)
+		F.ReskinTooltip(PetJournalSecondaryAbilityTooltip)
 	end
 
 	PetJournalLoadoutBorderSlotHeaderText:SetParent(PetJournal)
@@ -197,15 +186,13 @@ C.themes["Blizzard_Collections"] = function()
 	MountJournalSummonRandomFavoriteButton:GetHighlightTexture():SetColorTexture(1, 1, 1, .25)
 	F.CreateBG(MountJournalSummonRandomFavoriteButton)
 
-	do
-		local movedButton
-		MountJournal:HookScript("OnShow", function()
-			if not InCombatLockdown() and not movedButton then
-				MountJournalSummonRandomFavoriteButton:SetPoint("TOPRIGHT", -7, -32)
-				movedButton = true
-			end
-		end)
-	end
+	local movedButton
+	MountJournal:HookScript("OnShow", function()
+		if not InCombatLockdown() and not movedButton then
+			MountJournalSummonRandomFavoriteButton:SetPoint("TOPRIGHT", -10, -26)
+			movedButton = true
+		end
+	end)
 
 	-- Pet card
 
@@ -347,7 +334,6 @@ C.themes["Blizzard_Collections"] = function()
 	local iconsFrame = ToyBox.iconsFrame
 
 	F.StripTextures(iconsFrame)
-	F.RemoveSlice(iconsFrame)
 	F.ReskinInput(ToyBox.searchBox)
 	F.ReskinFilterButton(ToyBoxFilterButton)
 	F.ReskinArrow(ToyBox.PagingFrame.PrevPageButton, "left")
@@ -400,11 +386,7 @@ C.themes["Blizzard_Collections"] = function()
 		bu.cooldown:SetAllPoints(ic)
 		bu.slotFrameCollected:SetTexture("")
 		bu.slotFrameUncollected:SetTexture("")
-
-		ic:SetTexCoord(.08, .92, .08, .92)
-		local bg = F.CreateBG(bu)
-		bg:SetPoint("TOPLEFT", 2.8, -1.8)
-		bg:SetPoint("BOTTOMRIGHT", -2.8, 3.8)
+		F.ReskinIcon(ic)
 
 		hooksecurefunc(bu.name, "SetTextColor", changeTextColor)
 	end
@@ -415,7 +397,6 @@ C.themes["Blizzard_Collections"] = function()
 	local icons = HeirloomsJournal.iconsFrame
 
 	F.StripTextures(icons)
-	F.RemoveSlice(icons)
 	F.ReskinInput(HeirloomsJournalSearchBox)
 	F.ReskinDropDown(HeirloomsJournalClassDropDown)
 	F.ReskinFilterButton(HeirloomsJournalFilterButton)
@@ -510,7 +491,6 @@ C.themes["Blizzard_Collections"] = function()
 	local ItemsCollectionFrame = WardrobeCollectionFrame.ItemsCollectionFrame
 
 	F.StripTextures(ItemsCollectionFrame)
-	F.RemoveSlice(ItemsCollectionFrame)
 	F.ReskinFilterButton(WardrobeCollectionFrame.FilterButton)
 	F.ReskinDropDown(WardrobeCollectionFrameWeaponDropDown)
 	F.ReskinInput(WardrobeCollectionFrameSearchBox)
@@ -605,36 +585,17 @@ C.themes["Blizzard_Collections"] = function()
 	local WardrobeFrame = WardrobeFrame
 	local WardrobeTransmogFrame = WardrobeTransmogFrame
 
-	WardrobeTransmogFrameBg:Hide()
-	F.CleanInset(WardrobeTransmogFrame.Inset)
-	WardrobeTransmogFrame.MoneyLeft:Hide()
-	WardrobeTransmogFrame.MoneyMiddle:Hide()
-	WardrobeTransmogFrame.MoneyRight:Hide()
-	WardrobeTransmogFrame.SpecButton.Icon:Hide()
-
-	for i = 1, 9 do
-		select(i, WardrobeTransmogFrame.SpecButton:GetRegions()):Hide()
-	end
-
-	F.ReskinPortraitFrame(WardrobeFrame, true)
+	F.StripTextures(WardrobeTransmogFrame)
+	F.ReskinPortraitFrame(WardrobeFrame)
 	F.Reskin(WardrobeTransmogFrame.ApplyButton)
-	F.Reskin(WardrobeOutfitDropDown.SaveButton)
+	F.StripTextures(WardrobeTransmogFrame.SpecButton)
 	F.ReskinArrow(WardrobeTransmogFrame.SpecButton, "down")
-	F.ReskinDropDown(WardrobeOutfitDropDown)
-	WardrobeOutfitDropDown:SetHeight(32)
-	WardrobeOutfitDropDown.SaveButton:SetPoint("LEFT", WardrobeOutfitDropDown, "RIGHT", -13, 2)
-	for i = 1, 9 do
-		select(i, WardrobeOutfitFrame:GetRegions()):Hide()
-	end
-	F.CreateBDFrame(WardrobeOutfitFrame, .25)
-	F.CreateSD(WardrobeOutfitFrame, .25)
+	WardrobeTransmogFrame.SpecButton:SetPoint("RIGHT", WardrobeTransmogFrame.ApplyButton, "LEFT", -3, 0)
 	for i = 1, 10 do
 		select(i, WardrobeTransmogFrame.Model.ClearAllPendingButton:GetRegions()):Hide()
 	end
-	WardrobeTransmogFrame.SpecButton:SetPoint("RIGHT", WardrobeTransmogFrame.ApplyButton, "LEFT", -3, 0)
 
 	local slots = {"Head", "Shoulder", "Chest", "Waist", "Legs", "Feet", "Wrist", "Hands", "Back", "Shirt", "Tabard", "MainHand", "SecondaryHand"}
-
 	for i = 1, #slots do
 		local slot = WardrobeTransmogFrame.Model[slots[i].."Button"]
 		if slot then
@@ -649,17 +610,36 @@ C.themes["Blizzard_Collections"] = function()
 		end
 	end
 
-	-- Edit Frame
-	for i = 1, 11 do
-		select(i, WardrobeOutfitEditFrame:GetRegions()):Hide()
-	end
-	WardrobeOutfitEditFrame.Title:Show()
-	for i = 2, 5 do
-		select(i, WardrobeOutfitEditFrame.EditBox:GetRegions()):Hide()
-	end
+	-- Outfit Frame
+	F.Reskin(WardrobeOutfitDropDown.SaveButton)
+	F.ReskinDropDown(WardrobeOutfitDropDown)
+	WardrobeOutfitDropDown:SetHeight(32)
+	WardrobeOutfitDropDown.SaveButton:SetPoint("LEFT", WardrobeOutfitDropDown, "RIGHT", -13, 2)
+	F.StripTextures(WardrobeOutfitFrame)
+	F.CreateBDFrame(WardrobeOutfitFrame, .7)
+	F.CreateSD(WardrobeOutfitFrame)
+
+	hooksecurefunc(WardrobeOutfitFrame, "Update", function(self)
+		for i = 1, C_TransmogCollection.GetNumMaxOutfits() do
+			local button = self.Buttons[i]
+			if button and button:IsShown() and not button.styled then
+				F.ReskinIcon(button.Icon)
+				button.Selection:SetColorTexture(1, 1, 1, .25)
+				button.Highlight:SetColorTexture(r, g, b, .25)
+
+				button.styled = true
+			end
+		end
+	end)
+
+	F.StripTextures(WardrobeOutfitEditFrame)
+	WardrobeOutfitEditFrame.EditBox:DisableDrawLayer("BACKGROUND")
 	F.CreateBD(WardrobeOutfitEditFrame)
 	F.CreateSD(WardrobeOutfitEditFrame)
-	F.CreateBDFrame(WardrobeOutfitEditFrame.EditBox,.25)
+	local bg = F.CreateBDFrame(WardrobeOutfitEditFrame.EditBox, .25)
+	bg:SetPoint("TOPLEFT", -5, -3)
+	bg:SetPoint("BOTTOMRIGHT", 5, 3)
+	F.CreateGradient(bg)
 	F.Reskin(WardrobeOutfitEditFrame.AcceptButton)
 	F.Reskin(WardrobeOutfitEditFrame.CancelButton)
 	F.Reskin(WardrobeOutfitEditFrame.DeleteButton)

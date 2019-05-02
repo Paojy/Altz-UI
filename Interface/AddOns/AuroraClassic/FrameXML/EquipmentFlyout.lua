@@ -28,8 +28,8 @@ tinsert(C.themes["AuroraClassic"], function()
 
 		border:SetTexture(C.media.backdrop)
 		border.SetTexture = F.dummy
-		border:SetPoint("TOPLEFT", -1.2, 1.2)
-		border:SetPoint("BOTTOMRIGHT", 1.2, -1.2)
+		border:SetPoint("TOPLEFT", -C.mult, C.mult)
+		border:SetPoint("BOTTOMRIGHT", C.mult, -C.mult)
 		border:SetDrawLayer("BACKGROUND", 1)
 
 		bu.icon:SetTexCoord(.08, .92, .08, .92)
@@ -38,9 +38,9 @@ tinsert(C.themes["AuroraClassic"], function()
 	hooksecurefunc("EquipmentFlyout_DisplayButton", function(button)
 		local location = button.location
 		local border = button.IconBorder
-		if not location or location < 0 or not border then return end
+		if not location or not border then return end
 
-		if location == EQUIPMENTFLYOUT_PLACEINBAGS_LOCATION then
+		if location >= EQUIPMENTFLYOUT_FIRST_SPECIAL_LOCATION then
 			border:Hide()
 		else
 			border:Show()

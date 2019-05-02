@@ -43,9 +43,11 @@ C.defaults = {
 	["shadow"] = true,
 	["fontScale"] = 1,
 	["objectiveTracker"] = true,
+	["uiScale"] = 0,
 }
 
 C.frames = {}
+C.isNewPatch = GetBuildInfo() == "8.2.0"
 
 -- [[ Functions ]]
 
@@ -53,6 +55,15 @@ local useButtonGradientColour
 local _, class = UnitClass("player")
 C.classcolours = CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS
 local r, g, b = C.classcolours[class].r, C.classcolours[class].g, C.classcolours[class].b
+
+local function SetupPixelFix()
+	local screenHeight = select(2, GetPhysicalScreenSize())
+	local scale = UIParent:GetScale()
+	local uiScale = AuroraConfig.uiScale
+	if uiScale and uiScale > 0 and uiScale < .64 then scale = uiScale end
+	scale = tonumber(floor(scale*100 + .5)/100)
+	C.mult = 768/screenHeight/scale
+end
 
 function F:dummy()
 end
@@ -83,7 +94,7 @@ function F:CreateBD(a)
 	self:SetBackdrop({
 		bgFile = C.media.backdrop,
 		edgeFile = C.media.backdrop,
-		edgeSize = 1.2,
+		edgeSize = C.mult,
 	})
 	self:SetBackdropColor(0, 0, 0, a or AuroraConfig.alpha)
 	self:SetBackdropBorderColor(0, 0, 0)
@@ -95,8 +106,8 @@ function F:CreateBG()
 	if self:GetObjectType() == "Texture" then f = self:GetParent() end
 
 	local bg = f:CreateTexture(nil, "BACKGROUND")
-	bg:SetPoint("TOPLEFT", self, -1.2, 1.2)
-	bg:SetPoint("BOTTOMRIGHT", self, 1.2, -1.2)
+	bg:SetPoint("TOPLEFT", self, -C.mult, C.mult)
+	bg:SetPoint("BOTTOMRIGHT", self, C.mult, -C.mult)
 	bg:SetTexture(C.media.backdrop)
 	bg:SetVertexColor(0, 0, 0)
 
@@ -109,8 +120,8 @@ local buttonR, buttonG, buttonB, buttonA
 
 function F:CreateGradient()
 	local tex = self:CreateTexture(nil, "BORDER")
-	tex:SetPoint("TOPLEFT", 1, -1)
-	tex:SetPoint("BOTTOMRIGHT", -1, 1)
+	tex:SetPoint("TOPLEFT", C.mult, -C.mult)
+	tex:SetPoint("BOTTOMRIGHT", -C.mult, C.mult)
 	tex:SetTexture(useButtonGradientColour and C.media.gradient or C.media.backdrop)
 	tex:SetVertexColor(buttonR, buttonG, buttonB, buttonA)
 
@@ -244,8 +255,8 @@ function F:ReskinScroll()
 	bu.bg:SetPoint("BOTTOMRIGHT", bu, 0, 4)
 
 	local tex = F.CreateGradient(self)
-	tex:SetPoint("TOPLEFT", bu.bg, 1, -1)
-	tex:SetPoint("BOTTOMRIGHT", bu.bg, -1, 1)
+	tex:SetPoint("TOPLEFT", bu.bg, C.mult, -C.mult)
+	tex:SetPoint("BOTTOMRIGHT", bu.bg, -C.mult, C.mult)
 
 	local up, down = self:GetChildren()
 	up:SetWidth(17)
@@ -326,8 +337,8 @@ function F:ReskinDropDown()
 	bg:SetPoint("BOTTOMRIGHT", -18, 8)
 
 	local gradient = F.CreateGradient(self)
-	gradient:SetPoint("TOPLEFT", bg, 1, -1)
-	gradient:SetPoint("BOTTOMRIGHT", bg, -1, 1)
+	gradient:SetPoint("TOPLEFT", bg, C.mult, -C.mult)
+	gradient:SetPoint("BOTTOMRIGHT", bg, -C.mult, C.mult)
 end
 
 function F:ReskinClose(a1, p, a2, x, y)
@@ -383,8 +394,8 @@ function F:ReskinInput(height, width)
 	bd:SetPoint("BOTTOMRIGHT")
 
 	local gradient = F.CreateGradient(self)
-	gradient:SetPoint("TOPLEFT", bd, 1, -1)
-	gradient:SetPoint("BOTTOMRIGHT", bd, -1, 1)
+	gradient:SetPoint("TOPLEFT", bd, C.mult, -C.mult)
+	gradient:SetPoint("BOTTOMRIGHT", bd, -C.mult, C.mult)
 
 	if height then self:SetHeight(height) end
 	if width then self:SetWidth(width) end
@@ -539,39 +550,72 @@ function F:SetBD(x, y, x2, y2)
 		bg:SetPoint("BOTTOMRIGHT", x2, y2)
 	end
 	F.CreateSD(bg)
+
+	return bg
 end
 
-function F:StripTextures()
-	for i = 1, self:GetNumRegions() do
-		local region = select(i, self:GetRegions())
-		if region and region:GetObjectType() == "Texture" then
-			region:SetTexture("")
+local hiddenFrame = CreateFrame("Frame")
+hiddenFrame:Hide()
+
+function F:HideObject()
+	if self.UnregisterAllEvents then
+		self:UnregisterAllEvents()
+		self:SetParent(hiddenFrame)
+	else
+		self.Show = self.Hide
+	end
+	self:Hide()
+end
+
+local BlizzTextures = {
+	"Inset",
+	"inset",
+	"InsetFrame",
+	"LeftInset",
+	"RightInset",
+	"NineSlice",
+	"BorderFrame",
+	"bottomInset",
+	"BottomInset",
+	"bgLeft",
+	"bgRight",
+	"FilligreeOverlay",
+	"Border",
+}
+
+function F:StripTextures(kill)
+	local frameName = self.GetName and self:GetName()
+	for _, texture in pairs(BlizzTextures) do
+		local blizzFrame = self[texture] or frameName and _G[frameName..texture]
+		if blizzFrame then
+			F.StripTextures(blizzFrame, kill)
+		end
+	end
+
+	if self.GetNumRegions then
+		for i = 1, self:GetNumRegions() do
+			local region = select(i, self:GetRegions())
+			if region and region.IsObjectType and region:IsObjectType("Texture") then
+				if kill and type(kill) == "boolean" then
+					F.HideObject(region)
+				elseif kill == 0 then
+					region:SetAlpha(0)
+				else
+					region:SetTexture("")
+				end
+			end
 		end
 	end
 end
 
-function F:RemoveSlice()
-	for _, tex in next, self.NineSlice do
-		if type(tex) == "table" then
-			tex:Hide()
-		end
-	end
-end
-
-function F:CleanInset()
-	self.Bg:Hide()
-	F.RemoveSlice(self)
-end
-
-function F:ReskinPortraitFrame(setBG)
-	local name = self:GetName()
-	local insetFrame = name and _G[name.."Inset"] or self.Inset
-	if insetFrame then F.CleanInset(insetFrame) end
+function F:ReskinPortraitFrame()
 	F.StripTextures(self)
-	F.RemoveSlice(self)
-	self.portrait:SetAlpha(0)
-	F.ReskinClose(self.CloseButton)
-	if setBG then F.SetBD(self) end
+	F.SetBD(self)
+	local frameName = self.GetName and self:GetName()
+	local portrait = self.portrait or _G[frameName.."Portrait"]
+	portrait:SetAlpha(0)
+	local closeButton = self.CloseButton or _G[frameName.."CloseButton"]
+	F.ReskinClose(closeButton)
 end
 
 function F:CreateBDFrame(a)
@@ -580,8 +624,8 @@ function F:CreateBDFrame(a)
 	local lvl = frame:GetFrameLevel()
 
 	local bg = CreateFrame("Frame", nil, frame)
-	bg:SetPoint("TOPLEFT", self, -1.2, 1.2)
-	bg:SetPoint("BOTTOMRIGHT", self, 1.2, -1.2)
+	bg:SetPoint("TOPLEFT", self, -C.mult, C.mult)
+	bg:SetPoint("BOTTOMRIGHT", self, C.mult, -C.mult)
 	bg:SetFrameLevel(lvl == 0 and 1 or lvl - 1)
 	F.CreateBD(bg, a)
 
@@ -648,6 +692,7 @@ end
 function F:ReskinGarrisonPortrait()
 	self.Portrait:ClearAllPoints()
 	self.Portrait:SetPoint("TOPLEFT", 4, -4)
+	self.Portrait:SetMask("Interface\\Buttons\\WHITE8X8")
 	self.PortraitRing:Hide()
 	self.PortraitRingQuality:SetTexture("")
 	if self.Highlight then self.Highlight:Hide() end
@@ -656,11 +701,8 @@ function F:ReskinGarrisonPortrait()
 	self.Level:ClearAllPoints()
 	self.Level:SetPoint("BOTTOM", self, 0, 12)
 
-	self.squareBG = F.CreateBDFrame(self, 1)
-	self.squareBG:SetFrameLevel(self:GetFrameLevel())
-	self.squareBG:SetPoint("TOPLEFT", 3, -3)
-	self.squareBG:SetPoint("BOTTOMRIGHT", -3, 11)
-	
+	self.squareBG = F.CreateBDFrame(self.Portrait, 1)
+
 	if self.PortraitRingCover then
 		self.PortraitRingCover:SetColorTexture(0, 0, 0)
 		self.PortraitRingCover:SetAllPoints(self.squareBG)
@@ -735,6 +777,68 @@ function F:AffixesSetup()
 	end
 end
 
+function F:StyleSearchButton()
+	F.StripTextures(self)
+	if self.icon then
+		F.ReskinIcon(self.icon)
+	end
+	F.CreateBD(self, .25)
+
+	self:SetHighlightTexture(C.media.backdrop)
+	local hl = self:GetHighlightTexture()
+	hl:SetVertexColor(r, g, b, .25)
+	hl:SetPoint("TOPLEFT", C.mult, -C.mult)
+	hl:SetPoint("BOTTOMRIGHT", -C.mult, C.mult)
+end
+
+function F:GetRoleTexCoord()
+	if self == "TANK" then
+		return .32/9.03, 2.04/9.03, 2.65/9.03, 4.3/9.03
+	elseif self == "DPS" or self == "DAMAGER" then
+		return 2.68/9.03, 4.4/9.03, 2.65/9.03, 4.34/9.03
+	elseif self == "HEALER" then
+		return 2.68/9.03, 4.4/9.03, .28/9.03, 1.98/9.03
+	elseif self == "LEADER" then
+		return .32/9.03, 2.04/9.03, .28/9.03, 1.98/9.03
+	elseif self == "READY" then
+		return 5.1/9.03, 6.76/9.03, .28/9.03, 1.98/9.03
+	elseif self == "PENDING" then
+		return 5.1/9.03, 6.76/9.03, 2.65/9.03, 4.34/9.03
+	elseif self == "REFUSE" then
+		return 2.68/9.03, 4.4/9.03, 5.02/9.03, 6.7/9.03
+	end
+end
+
+function F:ReskinRole(role)
+	if self.background then self.background:SetTexture("") end
+	local cover = self.cover or self.Cover
+	if cover then cover:SetTexture("") end
+	local texture = self.GetNormalTexture and self:GetNormalTexture() or self.texture or self.Texture or (self.SetTexture and self) or (C.isNewPatch and self.Icon)
+	if texture then
+		texture:SetTexture(C.media.roleIcons)
+		texture:SetTexCoord(F.GetRoleTexCoord(role))
+	end
+	self.bg = F.CreateBDFrame(self)
+
+	local checkButton = self.checkButton or self.CheckButton or (C.isNewPatch and self.CheckBox)
+	if checkButton then
+		checkButton:SetFrameLevel(self:GetFrameLevel() + 2)
+		checkButton:SetPoint("BOTTOMLEFT", -2, -2)
+		F.ReskinCheck(checkButton)
+	end
+
+	local shortageBorder = self.shortageBorder
+	if shortageBorder then
+		shortageBorder:SetTexture("")
+		local icon = self.incentiveIcon
+		icon:SetPoint("BOTTOMRIGHT")
+		icon:SetSize(14, 14)
+		icon.texture:SetSize(14, 14)
+		F.ReskinIcon(icon.texture)
+		icon.border:SetTexture("")
+	end
+end
+
 -- [[ Variable and module handling ]]
 
 C.themes = {}
@@ -744,58 +848,65 @@ C.themes["AuroraClassic"] = {}
 
 local Skin = CreateFrame("Frame")
 Skin:RegisterEvent("ADDON_LOADED")
-Skin:SetScript("OnEvent", function(_, _, addon)
-	if addon == "AuroraClassic" then
-		-- [[ Load Variables ]]
+Skin:RegisterEvent("PLAYER_LOGOUT")
+Skin:SetScript("OnEvent", function(_, event, addon)
+	if event == "ADDON_LOADED" then
+		if addon == "AuroraClassic" then
+			SetupPixelFix()
 
-		-- remove deprecated or corrupt variables
-		for key in pairs(AuroraConfig) do
-			if C.defaults[key] == nil then
-				AuroraConfig[key] = nil
+			-- [[ Load Variables ]]
+
+			-- remove deprecated or corrupt variables
+			for key in pairs(AuroraConfig) do
+				if C.defaults[key] == nil then
+					AuroraConfig[key] = nil
+				end
 			end
+
+			-- load or init variables
+			for key, value in pairs(C.defaults) do
+				if AuroraConfig[key] == nil then
+					if type(value) == "table" then
+						AuroraConfig[key] = {}
+						for k in pairs(value) do
+							AuroraConfig[key][k] = value[k]
+						end
+					else
+						AuroraConfig[key] = value
+					end
+				end
+			end
+
+			useButtonGradientColour = AuroraConfig.useButtonGradientColour
+
+			if useButtonGradientColour then
+				buttonR, buttonG, buttonB, buttonA = unpack(C.defaults.buttonGradientColour)
+			else
+				buttonR, buttonG, buttonB, buttonA = unpack(C.defaults.buttonSolidColour)
+			end
+
+			if AuroraConfig.useCustomColour then
+				r, g, b = AuroraConfig.customColour.r, AuroraConfig.customColour.g, AuroraConfig.customColour.b
+			end
+
+			-- for modules
+			C.r, C.g, C.b = r, g, b
 		end
 
-		-- load or init variables
-		for key, value in pairs(C.defaults) do
-			if AuroraConfig[key] == nil then
-				if type(value) == "table" then
-					AuroraConfig[key] = {}
-					for k in pairs(value) do
-						AuroraConfig[key][k] = value[k]
-					end
-				else
-					AuroraConfig[key] = value
+		-- [[ Load modules ]]
+
+		-- check if the addon loaded is supported by Aurora, and if it is, execute its module
+		local addonModule = C.themes[addon]
+		if addonModule then
+			if type(addonModule) == "function" then
+				addonModule()
+			else
+				for _, moduleFunc in pairs(addonModule) do
+					moduleFunc()
 				end
 			end
 		end
-
-		useButtonGradientColour = AuroraConfig.useButtonGradientColour
-
-		if useButtonGradientColour then
-			buttonR, buttonG, buttonB, buttonA = unpack(C.defaults.buttonGradientColour)
-		else
-			buttonR, buttonG, buttonB, buttonA = unpack(C.defaults.buttonSolidColour)
-		end
-
-		if AuroraConfig.useCustomColour then
-			r, g, b = AuroraConfig.customColour.r, AuroraConfig.customColour.g, AuroraConfig.customColour.b
-		end
-
-		-- for modules
-		C.r, C.g, C.b = r, g, b
-	end
-
-	-- [[ Load modules ]]
-
-	-- check if the addon loaded is supported by Aurora, and if it is, execute its module
-	local addonModule = C.themes[addon]
-	if addonModule then
-		if type(addonModule) == "function" then
-			addonModule()
-		else
-			for _, moduleFunc in pairs(addonModule) do
-				moduleFunc()
-			end
-		end
+	else
+		AuroraConfig.uiScale = UIParent:GetScale()
 	end
 end)

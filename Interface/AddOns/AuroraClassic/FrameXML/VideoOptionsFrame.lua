@@ -10,6 +10,7 @@ tinsert(C.themes["AuroraClassic"], function()
 
 	F.CreateBD(VideoOptionsFrame)
 	F.CreateSD(VideoOptionsFrame)
+	if C.isNewPatch then VideoOptionsFrame.Border:Hide() end
 	F.Reskin(VideoOptionsFrameOkay)
 	F.Reskin(VideoOptionsFrameCancel)
 	F.Reskin(VideoOptionsFrameDefaults)
@@ -22,7 +23,7 @@ tinsert(C.themes["AuroraClassic"], function()
 		if styledOptions then return end
 
 		local line = VideoOptionsFrame:CreateTexture(nil, "ARTWORK")
-		line:SetSize(1.2, 512)
+		line:SetSize(C.mult, 512)
 		line:SetPoint("LEFT", 205, 30)
 		line:SetColorTexture(1, 1, 1, .25)
 
@@ -75,7 +76,6 @@ tinsert(C.themes["AuroraClassic"], function()
 			"RaidGraphics_LightingQualityDropDown",
 			"RaidGraphics_OutlineModeDropDown",
 			"Advanced_BufferingDropDown",
-			"Advanced_LagDropDown",
 			"Advanced_MultisampleAntiAliasingDropDown",
 			"Advanced_MultisampleAlphaTest",
 			"Advanced_PostProcessAntiAliasingDropDown",

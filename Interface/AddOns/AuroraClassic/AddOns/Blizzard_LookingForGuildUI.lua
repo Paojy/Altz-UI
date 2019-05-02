@@ -7,7 +7,7 @@ C.themes["Blizzard_LookingForGuildUI"] = function()
 	hooksecurefunc("LookingForGuildFrame_CreateUIElements", function()
 		if styled then return end
 
-		F.ReskinPortraitFrame(LookingForGuildFrame, true)
+		F.ReskinPortraitFrame(LookingForGuildFrame)
 		F.CreateBD(LookingForGuildInterestFrame, .25)
 		LookingForGuildInterestFrameBg:Hide()
 		F.CreateBD(LookingForGuildAvailabilityFrame, .25)
@@ -61,8 +61,8 @@ C.themes["Blizzard_LookingForGuildUI"] = function()
 			-- my client crashes if I put this in a var? :x
 			bu:GetRegions():SetTexture(C.media.backdrop)
 			bu:GetRegions():SetVertexColor(r, g, b, .2)
-			bu:GetRegions():SetPoint("TOPLEFT", 1, -1)
-			bu:GetRegions():SetPoint("BOTTOMRIGHT", -1, 2)
+			bu:GetRegions():SetPoint("TOPLEFT", C.mult, -C.mult)
+			bu:GetRegions():SetPoint("BOTTOMRIGHT", -C.mult, C.mult)
 
 			local bg = F.CreateBDFrame(bu, .25)
 			bg:SetPoint("TOPLEFT")
@@ -70,17 +70,9 @@ C.themes["Blizzard_LookingForGuildUI"] = function()
 		end
 
 		-- [[ Role buttons ]]
-
-		for _, roleButton in pairs({LookingForGuildTankButton, LookingForGuildHealerButton, LookingForGuildDamagerButton}) do
-			roleButton.cover:SetTexture(C.media.roleIcons)
-			roleButton:SetNormalTexture(C.media.roleIcons)
-			local bg = F.CreateBDFrame(roleButton, 1)
-			bg:SetPoint("TOPLEFT", roleButton, 5, -3)
-			bg:SetPoint("BOTTOMRIGHT", roleButton, -5, 6)
-
-			roleButton.checkButton:SetFrameLevel(roleButton:GetFrameLevel() + 2)
-			F.ReskinCheck(roleButton.checkButton)
-		end
+		F.ReskinRole(LookingForGuildTankButton, "TANK")
+		F.ReskinRole(LookingForGuildHealerButton, "HEALER")
+		F.ReskinRole(LookingForGuildDamagerButton, "DPS")
 
 		styled = true
 	end)

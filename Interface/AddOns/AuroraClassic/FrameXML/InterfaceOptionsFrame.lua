@@ -14,13 +14,14 @@ tinsert(C.themes["AuroraClassic"], function()
 		end
 		F.CreateBD(InterfaceOptionsFrame)
 		F.CreateSD(InterfaceOptionsFrame)
+		if C.isNewPatch then InterfaceOptionsFrame.Border:Hide() end
 
 		InterfaceOptionsFrameHeader:SetTexture("")
 		InterfaceOptionsFrameHeader:ClearAllPoints()
 		InterfaceOptionsFrameHeader:SetPoint("TOP", InterfaceOptionsFrame, 0, 0)
 
 		local line = InterfaceOptionsFrame:CreateTexture(nil, "ARTWORK")
-		line:SetSize(1.2, 546)
+		line:SetSize(C.mult, 546)
 		line:SetPoint("LEFT", 205, 10)
 		line:SetColorTexture(1, 1, 1, .25)
 
