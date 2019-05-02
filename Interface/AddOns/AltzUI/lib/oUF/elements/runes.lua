@@ -19,7 +19,8 @@ A default texture will be applied if the sub-widgets are StatusBars and don't ha
 
 .colorSpec - Use `self.colors.runes[specID]` to color the bar based on player's spec. `specID` is defined by the return
              value of [GetSpecialization](http://wowprogramming.com/docs/api/GetSpecialization.html) (boolean)
-.sortOrder - Sorting order (string?)['asc', 'desc']
+.sortOrder - Sorting order. Sorts by the remaining cooldown time, 'asc' - from the least cooldown time remaining (fully
+             charged) to the most (fully depleted), 'desc' - the opposite (string?)['asc', 'desc']
 
 ## Sub-Widgets Options
 
@@ -180,7 +181,7 @@ end
 
 local function Enable(self, unit)
 	local element = self.Runes
-	if(element and unit == 'player') then
+	if(element and UnitIsUnit(unit, 'player')) then
 		element.__owner = self
 		element.ForceUpdate = ForceUpdate
 
@@ -191,7 +192,7 @@ local function Enable(self, unit)
 			end
 		end
 
-		self:RegisterEvent('PLAYER_SPECIALIZATION_CHANGED', Path, true)
+		self:RegisterEvent('PLAYER_SPECIALIZATION_CHANGED', Path)
 		self:RegisterEvent('RUNE_POWER_UPDATE', Path, true)
 
 		return true

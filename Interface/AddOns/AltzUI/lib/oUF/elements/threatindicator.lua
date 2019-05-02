@@ -30,6 +30,9 @@ A default texture will be applied if the widget is a Texture and doesn't have a 
 
 local _, ns = ...
 local oUF = ns.oUF
+local Private = oUF.Private
+
+local unitExists = Private.unitExists
 
 local function Update(self, event, unit)
 	if(unit ~= self.unit) then return end
@@ -48,8 +51,8 @@ local function Update(self, event, unit)
 
 	local status
 	-- BUG: Non-existent '*target' or '*pet' units cause UnitThreatSituation() errors
-	if(UnitExists(unit)) then
-		if(feedbackUnit and feedbackUnit ~= unit and UnitExists(feedbackUnit)) then
+	if(unitExists(unit)) then
+		if(feedbackUnit and feedbackUnit ~= unit and unitExists(feedbackUnit)) then
 			status = UnitThreatSituation(feedbackUnit, unit)
 		else
 			status = UnitThreatSituation(unit)
@@ -109,8 +112,7 @@ local function Enable(self)
 		self:RegisterEvent('UNIT_THREAT_LIST_UPDATE', Path)
 
 		if(element:IsObjectType('Texture') and not element:GetTexture()) then
-			element:SetTexture([[Interface\Minimap\ObjectIcons]])
-			element:SetTexCoord(6/8, 7/8, 1/8, 2/8)
+			element:SetTexture([[Interface\RAIDFRAME\UI-RaidFrame-Threat]])
 		end
 
 		return true

@@ -66,10 +66,10 @@ local Enable = function(self)
 		threatbar.indictator:SetVertexColor(1, 1, 0)
 		threatbar.indictator:SetBlendMode("ADD")
 
-		threatbar:RegisterEvent("PLAYER_REGEN_ENABLED")
+		threatbar:RegisterEvent("PLAYER_REGEN_ENABLED", true)
 		threatbar:SetScript("OnEvent", function() T.UIFrameFadeOut(threatbar, 2, threatbar:GetAlpha(), 0) end)
 
-		self:RegisterEvent("UNIT_THREAT_LIST_UPDATE", Update)
+		self:RegisterEvent("UNIT_THREAT_LIST_UPDATE", Update, true)
 
 		return true
 	end

@@ -132,7 +132,7 @@ local Enable = function(self)
 
     if(auras) then
         auras.button = CreateAuraIcon(auras)
-        self:RegisterEvent("UNIT_AURA", Update)
+        self:RegisterEvent("UNIT_AURA", Update, true)
         return true
     end
 end

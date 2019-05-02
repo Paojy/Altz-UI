@@ -57,7 +57,7 @@ local Enable = function(self)
 		self:HookScript("OnEnter", function(self) self.showgcd = true end)
 		self:HookScript("OnLeave", function(self) self.showgcd = false end)
 
-		self:RegisterEvent('ACTIONBAR_UPDATE_COOLDOWN', Update)
+		self:RegisterEvent('ACTIONBAR_UPDATE_COOLDOWN', Update, true)
 		self.GCD:SetScript('OnHide', OnHideGCD)
 		self.GCD:SetScript('OnShow', OnShowGCD)
 		gcdisshown = nil

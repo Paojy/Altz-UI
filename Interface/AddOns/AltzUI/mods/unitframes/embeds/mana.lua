@@ -56,8 +56,8 @@ local Visibility = function(self, event, unit)
 	else
 		if(not self.Dpsmana:IsShown()) then
 			self.Dpsmana:Show()
-			self:RegisterEvent('UNIT_POWER_FREQUENT', Path)
-			self:RegisterEvent('UNIT_MAXPOWER', Path)
+			self:RegisterEvent('UNIT_POWER_FREQUENT', Path, true)
+			self:RegisterEvent('UNIT_MAXPOWER', Path, true)
 		end
 
 		return Path(self, event, unit)
@@ -79,8 +79,8 @@ local Enable = function(self, unit)
 		dpsmana.ForceUpdate = ForceUpdate
 		dpsmana:Hide()
 		
-		self:RegisterEvent('UNIT_DISPLAYPOWER', VisibilityPath)
-		self:RegisterEvent('PLAYER_TALENT_UPDATE', VisibilityPath)
+		self:RegisterEvent('UNIT_DISPLAYPOWER', VisibilityPath, true)
+		self:RegisterEvent('PLAYER_TALENT_UPDATE', VisibilityPath, true)
 
 		if(dpsmana:IsObjectType'StatusBar' and not dpsmana:GetStatusBarTexture()) then
 			dpsmana:SetStatusBarTexture[[Interface\TargetingFrame\UI-StatusBar]]

@@ -501,17 +501,17 @@ local Enable = function(self, unit)
 		end
 		
 		if not bar.disableRanged then
-			self:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED", Ranged)
-			self:RegisterEvent("UNIT_RANGEDDAMAGE", RangedChange)
+			self:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED", Ranged, true)
+			self:RegisterEvent("UNIT_RANGEDDAMAGE", RangedChange, true)
 		end
 		
 		if not bar.disableMelee then
-			self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED", Melee)
-			self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED", ParryHaste)
-			self:RegisterEvent("UNIT_ATTACK_SPEED", MeleeChange)
+			self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED", Melee, true)
+			self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED", ParryHaste, true)
+			self:RegisterEvent("UNIT_ATTACK_SPEED", MeleeChange, true)
 		end
 		
-		self:RegisterEvent("PLAYER_REGEN_ENABLED", Ooc)
+		self:RegisterEvent("PLAYER_REGEN_ENABLED", Ooc, true)
 		
 		return true
 	end
