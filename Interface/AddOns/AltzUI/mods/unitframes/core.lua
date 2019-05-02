@@ -1355,6 +1355,12 @@ local UnitSpecific = {
 			threatbar.bg:Hide()
 			self.ThreatBar = threatbar
 		end
+		
+		local PvPClassificationIndicator = self:CreateTexture(nil, 'OVERLAY')
+		PvPClassificationIndicator:SetSize(24, 24)
+		PvPClassificationIndicator:SetPoint('CENTER')
+		PvPClassificationIndicator:SetAtlas("nameplates-icon-flag-horde")
+		--self.PvPClassificationIndicator = PvPClassificationIndicator
 	end,
 
 	--========================--
@@ -1430,6 +1436,11 @@ local UnitSpecific = {
 		trinkets.trinketUseAnnounce = true
 		trinkets.trinketUpAnnounce = true
 		self.Trinket = trinkets
+		
+		local PvPClassificationIndicator = self:CreateTexture(nil, 'OVERLAY')
+		PvPClassificationIndicator:SetSize(24, 24)
+		PvPClassificationIndicator:SetPoint('CENTER')
+		self.PvPClassificationIndicator = PvPClassificationIndicator
 	end,
 }
 

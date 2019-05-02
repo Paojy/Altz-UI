@@ -19,6 +19,19 @@ local auraiconsize = aCoreCDB["PlateOptions"]["plateaurasize"]
 local firendlyCR = aCoreCDB["PlateOptions"]["firendlyCR"]
 local enemyCR = aCoreCDB["PlateOptions"]["enemyCR"]
 
+local ICONS = {
+	[Enum.PvpUnitClassification.FlagCarrierHorde or 0] = "nameplates-icon-flag-horde",
+	[Enum.PvpUnitClassification.FlagCarrierAlliance or 1] = "nameplates-icon-flag-alliance",
+	[Enum.PvpUnitClassification.FlagCarrierNeutral or 2] = "nameplates-icon-flag-neutral",
+	[Enum.PvpUnitClassification.CartRunnerHorde or 3] = "nameplates-icon-cart-horde",
+	[Enum.PvpUnitClassification.CartRunnerAlliance or 4] = "nameplates-icon-cart-alliance",
+	[Enum.PvpUnitClassification.AssassinHorde or 5] = "nameplates-icon-bounty-horde",
+	[Enum.PvpUnitClassification.AssassinAlliance or 6] = "nameplates-icon-bounty-alliance",
+	[Enum.PvpUnitClassification.OrbCarrierBlue or 7] = "nameplates-icon-orb-blue",
+	[Enum.PvpUnitClassification.OrbCarrierGreen or 8] = "nameplates-icon-orb-green",
+	[Enum.PvpUnitClassification.OrbCarrierOrange or 9] = "nameplates-icon-orb-orange",
+	[Enum.PvpUnitClassification.OrbCarrierPurple or 10] = "nameplates-icon-orb-purple",
+}
 --[[ Auras ]]-- 
 
 local day, hour, minute = 86400, 3600, 60
@@ -597,7 +610,13 @@ local function UpdateSelectionHighlight(unitFrame)
 			unitFrame.redarrow:SetPoint("BOTTOM", unitFrame.name, "TOP", 0, 0)
 		end
 	else
-		if unitFrame.iconnumber and unitFrame.iconnumber > 0 then -- 有图标
+		if unitFrame.PvPClassificationIndicator:IsShown() then
+			if unitFrame.iconnumber and unitFrame.iconnumber > 0 then -- 有图标
+				unitFrame.redarrow:SetPoint("BOTTOM", unitFrame.healthperc, "TOP", 0, auraiconsize+20)
+			else
+				unitFrame.redarrow:SetPoint("BOTTOM", unitFrame.healthperc, "TOP", 0, 20)
+			end
+		elseif unitFrame.iconnumber and unitFrame.iconnumber > 0 then -- 有图标
 			unitFrame.redarrow:SetPoint("BOTTOM", unitFrame.healthperc, "TOP", 0, auraiconsize)
 		elseif UnitHealth(unitFrame.displayedUnit) and UnitHealthMax(unitFrame.displayedUnit) and UnitHealth(unitFrame.displayedUnit) ~= UnitHealthMax(unitFrame.displayedUnit) then -- 非满血
 			unitFrame.redarrow:SetPoint("BOTTOM", unitFrame.healthperc, "TOP", 0, 0)
@@ -737,7 +756,7 @@ local function HideBlizzard()
 	if not aCoreCDB["PlateOptions"]["blzplates"] then
 		NamePlateDriverFrame:UnregisterAllEvents()
 	end
-	ClassNameplateManaBarFrame:Hide()
+	ClassNameplateManaBarFrame:SetAlpha(0)
 	SystemFont_NamePlate:SetFont(G.norFont, aCoreCDB["PlateOptions"]["name_fontsize"], "OUTLINE")
 	
 	--hooksecurefunc(NamePlateDriverFrame, "SetupClassNameplateBar", function()
@@ -772,6 +791,28 @@ local function OnUnitFactionChanged(unit)
 	if (namePlate) then
 		UpdateName(namePlate.NUnitFrame)
 		UpdateHealthColor(namePlate.NUnitFrame)
+	end
+end
+
+local function OnUnitClassficationChanged(unit)
+	local namePlate = C_NamePlate.GetNamePlateForUnit(unit)
+	if (namePlate) then
+		local class = UnitPvpClassification(unit)
+		local icon = ICONS[class]
+		if(icon) then
+			namePlate.NUnitFrame.PvPClassificationIndicator:SetAtlas(icon)
+			namePlate.NUnitFrame.PvPClassificationIndicator:Show()
+		else
+			namePlate.NUnitFrame.PvPClassificationIndicator:Hide()
+		end
+		
+		if numberstyle then
+			if unitFrame.iconnumber and unitFrame.iconnumber > 0 then -- 有图标
+				namePlate.NUnitFrame.PvPClassificationIndicator:SetPoint("BOTTOM", unitFrame.healthperc, "TOP", 0, auraiconsize)
+			else
+				namePlate.NUnitFrame.PvPClassificationIndicator:SetPoint("BOTTOM", unitFrame.healthperc, "TOP", 0, 0)
+			end
+		end
 	end
 end
 
@@ -870,6 +911,8 @@ local function NamePlates_OnEvent(self, event, ...)
 		NamePlates_UpdateNamePlateOptions()
 	elseif ( event == "UNIT_FACTION" ) then
 		OnUnitFactionChanged(...)
+	elseif ( event == "UNIT_CLASSIFICATION_CHANGED" ) then
+		--OnUnitClassficationChanged(...)
 	end
 end
 
