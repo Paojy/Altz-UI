@@ -824,6 +824,16 @@ T.createradiobuttongroup = function(parent, x, y, name, table, value, group)
 				self:SetChecked(true)
 			end
 		end)
+		
+		frame[k]:SetScript("OnDisable", function(self)
+			local tex = self:GetCheckedTexture()
+			tex:SetVertexColor(.7, .7, .7, .5)
+		end)
+		
+		frame[k]:SetScript("OnEnable", function(self)
+			local tex = self:GetCheckedTexture()
+			tex:SetVertexColor(G.Ccolor.r, G.Ccolor.g, G.Ccolor.b)
+		end)
 	end
 	
 	for k, v in T.pairsByKeys(group) do
@@ -844,13 +854,12 @@ T.createradiobuttongroup = function(parent, x, y, name, table, value, group)
 	local buttons = {frame:GetChildren()}
 	for i = 1, #buttons do
 		if i == 1 then
-			buttons[i]:SetPoint("LEFT", 5, 0)
+			frame.name:SetPoint("LEFT", 5, 0)
+			buttons[i]:SetPoint("LEFT", frame.name, "RIGHT", 10, 1)
 		else
 			buttons[i]:SetPoint("LEFT", _G[buttons[i-1]:GetName() .. "Text"], "RIGHT", 5, 0)
 		end
-		if i == #buttons then
-			frame.name:SetPoint("LEFT", _G[buttons[i]:GetName() .. "Text"], "RIGHT", 10, 1)
-		end
+
 	end
 	
 	parent[value] = frame
