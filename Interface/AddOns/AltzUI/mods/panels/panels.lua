@@ -1,7 +1,6 @@
 ﻿local T, C, L, G = unpack(select(2, ...))
-local F = unpack(Aurora)
+local F = unpack(AuroraClassic)
 
-local hidepanels = aCoreCDB["OtherOptions"]["hidepanels"]
 --====================================================--
 --[[                -- Functions --                    ]]--
 --====================================================--
@@ -43,56 +42,75 @@ PShadow:SetBackdropColor(0, 0, 0, 0.3)
 --====================================================--
 --[[                 -- Panels --                   ]]--
 --====================================================--
-if not hidepanels then
+if aCoreCDB["SkinOptions"]["showtopbar"] then
 	local toppanel = CreateFrame("Frame", G.uiname.."Top Long Panel", UIParent)
 	toppanel:SetFrameStrata("BACKGROUND")
 	toppanel:SetPoint("TOP", 0, 3)
 	toppanel:SetPoint("LEFT", UIParent, "LEFT", -8, 0)
 	toppanel:SetPoint("RIGHT", UIParent, "RIGHT", 8, 0)
 	toppanel:SetHeight(15)
-	toppanel.border = F.CreateBDFrame(toppanel, 0.6)
-	T.CreateSD(toppanel.border, 2, 0, 0, 0, 0, -1)
+	
+	if string.find(aCoreCDB["SkinOptions"]["decorativestyle"], "dark") then
+		toppanel.border = F.CreateBDFrame(toppanel, 1)
+	else
+		toppanel.border = F.CreateBDFrame(toppanel, .2)
+	end
+	
+	if string.find(aCoreCDB["SkinOptions"]["decorativestyle"], "1") then
+		T.CreateSD(toppanel.border, 2, G.Ccolor.r, G.Ccolor.g, G.Ccolor.b, 0, -1)
+	elseif string.find(aCoreCDB["SkinOptions"]["decorativestyle"], "3") then
+		local TLPanel = CreateFrame("Frame", G.uiname.."TLPanel", UIParent)
+		TLPanel:SetFrameStrata("BACKGROUND")
+		TLPanel:SetFrameLevel(2)
+		TLPanel:SetSize(G.screenwidth*2/9, 5)
+		TLPanel:SetPoint("TOPLEFT", UIParent, "TOPLEFT", 15, -10)
+		Skinbar(TLPanel)
 
+		local TRPanel = CreateFrame("Frame", G.uiname.."TRPanel", UIParent)
+		TRPanel:SetFrameStrata("BACKGROUND")
+		TRPanel:SetFrameLevel(2)
+		TRPanel:SetSize(G.screenwidth*2/9, 5)
+		TRPanel:SetPoint("TOPRIGHT", UIParent, "TOPRIGHT", -15, -10)
+		Skinbar(TRPanel)
+	end
+end
+
+if aCoreCDB["SkinOptions"]["showbottombar"] then
 	local bottompanel = CreateFrame("Frame", G.uiname.."Bottom Long Panel", UIParent)
 	bottompanel:SetFrameStrata("BACKGROUND")
 	bottompanel:SetPoint("BOTTOM", 0, -3)
 	bottompanel:SetPoint("LEFT", UIParent, "LEFT", -8, 0)
 	bottompanel:SetPoint("RIGHT", UIParent, "RIGHT", 8, 0)
 	bottompanel:SetHeight(15)
-	bottompanel.border = F.CreateBDFrame(bottompanel, 0.6)
-	T.CreateSD(bottompanel.border, 2, 0, 0, 0, 0, -1)
+	
+	if string.find(aCoreCDB["SkinOptions"]["decorativestyle"], "dark") then
+		bottompanel.border = F.CreateBDFrame(bottompanel, 1)
+	else
+		bottompanel.border = F.CreateBDFrame(bottompanel, .2)
+	end
+	
+	if string.find(aCoreCDB["SkinOptions"]["decorativestyle"], "1") then
+		T.CreateSD(bottompanel.border, 2, G.Ccolor.r, G.Ccolor.g, G.Ccolor.b, 0, -1)
+	elseif string.find(aCoreCDB["SkinOptions"]["decorativestyle"], "3") then
+		local BLPanel = CreateFrame("Frame", G.uiname.."BLPanel", UIParent)
+		BLPanel:SetFrameStrata("BACKGROUND")
+		BLPanel:SetFrameLevel(2)
+		BLPanel:SetSize(G.screenwidth*2/9, 5)
+		BLPanel:SetPoint("BOTTOMLEFT", UIParent, "BOTTOMLEFT", 15, 10)
+		Skinbar(BLPanel)
 
-	local TLPanel = CreateFrame("Frame", G.uiname.."TLPanel", UIParent)
-	TLPanel:SetFrameStrata("BACKGROUND")
-	TLPanel:SetFrameLevel(2)
-	TLPanel:SetSize(G.screenwidth*2/9, 5)
-	TLPanel:SetPoint("TOPLEFT", UIParent, "TOPLEFT", 15, -10)
-	Skinbar(TLPanel)
-
-	local TRPanel = CreateFrame("Frame", G.uiname.."TRPanel", UIParent)
-	TRPanel:SetFrameStrata("BACKGROUND")
-	TRPanel:SetFrameLevel(2)
-	TRPanel:SetSize(G.screenwidth*2/9, 5)
-	TRPanel:SetPoint("TOPRIGHT", UIParent, "TOPRIGHT", -15, -10)
-	Skinbar(TRPanel)
-
-	local BLPanel = CreateFrame("Frame", G.uiname.."BLPanel", UIParent)
-	BLPanel:SetFrameStrata("BACKGROUND")
-	BLPanel:SetFrameLevel(2)
-	BLPanel:SetSize(G.screenwidth*2/9, 5)
-	BLPanel:SetPoint("BOTTOMLEFT", UIParent, "BOTTOMLEFT", 15, 10)
-	Skinbar(BLPanel)
-
-	local BRPanel = CreateFrame("Frame", G.uiname.."BRPanel", UIParent)
-	BRPanel:SetFrameStrata("BACKGROUND")
-	BRPanel:SetFrameLevel(2)
-	BRPanel:SetSize(G.screenwidth*2/9, 5)
-	BRPanel:SetPoint("BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", -15, 10)
-	Skinbar(BRPanel)
+		local BRPanel = CreateFrame("Frame", G.uiname.."BRPanel", UIParent)
+		BRPanel:SetFrameStrata("BACKGROUND")
+		BRPanel:SetFrameLevel(2)
+		BRPanel:SetSize(G.screenwidth*2/9, 5)
+		BRPanel:SetPoint("BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", -15, 10)
+		Skinbar(BRPanel)
+	end
 end
 --====================================================--
 --[[                   -- Minimap --                ]]--
 --====================================================--
+
 local minimap_height = aCoreCDB["OtherOptions"]["minimapheight"]
 
 -- 收缩和伸展的按钮
@@ -111,9 +129,9 @@ T.CreateDragFrame(minimap_pullback)
 minimap_pullback.border = F.CreateBDFrame(minimap_pullback, 0.6)
 T.CreateSD(minimap_pullback.border, 2, 0, 0, 0, 0, -1)
 
-minimap_pullback:SetAlpha(.2)
+minimap_pullback:SetAlpha(.05)
 minimap_pullback:HookScript("OnEnter", function(self) T.UIFrameFadeIn(self, .5, self:GetAlpha(), 1) end)
-minimap_pullback:SetScript("OnLeave", function(self) T.UIFrameFadeOut(self, .5, self:GetAlpha(), 0.2) end)
+minimap_pullback:SetScript("OnLeave", function(self) T.UIFrameFadeOut(self, .5, self:GetAlpha(), 0.05) end)
 
 local minimap_anchor = CreateFrame("Frame", nil, UIParent)
 minimap_anchor:SetPoint("BOTTOMRIGHT", minimap_pullback, "BOTTOMLEFT", -5, 0)
@@ -222,9 +240,9 @@ T.CreateDragFrame(chatframe_pullback)
 chatframe_pullback.border = F.CreateBDFrame(chatframe_pullback, 0.6)
 T.CreateSD(chatframe_pullback.border, 2, 0, 0, 0, 0, -1)
 
-chatframe_pullback:SetAlpha(.2)
+chatframe_pullback:SetAlpha(.05)
 chatframe_pullback:HookScript("OnEnter", function(self) T.UIFrameFadeIn(self, .5, self:GetAlpha(), 1) end)
-chatframe_pullback:SetScript("OnLeave", function(self) T.UIFrameFadeOut(self, .5, self:GetAlpha(), 0.2) end)
+chatframe_pullback:SetScript("OnLeave", function(self) T.UIFrameFadeOut(self, .5, self:GetAlpha(), 0.05) end)
 
 local chatframe_anchor = CreateFrame("frame",nil,UIParent)
 chatframe_anchor:SetPoint("BOTTOMLEFT", chatframe_pullback, "BOTTOMRIGHT", 5, 0)
@@ -534,11 +552,33 @@ InstanceDifficulty:SetScript("OnEvent", function(self) self.text:SetText(select(
 -- 货币
 
 local Currency = {
-	[1021] = 1342,
-	[1033] = 1155,
-	[1135] = 1508,
-	[1170] = 1508,
-	[1171] = 1508,
+	[646] = 1342,
+	[647] = 1342,
+	[648] = 1342,
+	[680] = 1155,
+	[681] = 1155,
+	[682] = 1155,
+	[683] = 1155,
+	[684] = 1155,
+	[685] = 1155,
+	[686] = 1155,
+	[687] = 1155,
+	[688] = 1155,
+	[689] = 1155,
+	[690] = 1155,
+	[691] = 1155,
+	[692] = 1155,
+	[693] = 1155,
+	[830] = 1508,
+	[831] = 1508,
+	[832] = 1508,
+	[833] = 1508,
+	[882] = 1508,
+	[883] = 1508,
+	[884] = 1508,
+	[885] = 1508,
+	[886] = 1508,
+	[887] = 1508,
 }
 
 local CurrencyButton = CreateFrame("Frame", nil, Minimap)
@@ -563,10 +603,10 @@ CurrencyButton.text:SetPoint("LEFT", CurrencyButton.icon, "RIGHT", 5, 0)
 CurrencyButton.text:SetTextColor(1, 1, 1)
 
 CurrencyButton:RegisterEvent("PLAYER_ENTERING_WORLD")
-CurrencyButton:RegisterEvent("WORLD_MAP_UPDATE")
+CurrencyButton:RegisterEvent("ZONE_CHANGED_NEW_AREA")
 CurrencyButton:RegisterEvent("CURRENCY_DISPLAY_UPDATE")
 CurrencyButton:SetScript("OnEvent", function(self, event)
-	local map = GetCurrentMapAreaID()
+	local map = C_Map.GetBestMapForUnit("player")
 	local currency = Currency[map]
 	
 	if map and currency then
@@ -580,7 +620,7 @@ CurrencyButton:SetScript("OnEvent", function(self, event)
 		self:Hide()
 	end
 end)
-
+--[[
 -- 位置
 MinimapZoneTextButton:SetParent(Minimap)
 MinimapZoneTextButton:ClearAllPoints()
@@ -596,14 +636,20 @@ local Coords = T.createtext(Minimap, "OVERLAY", 12, "OUTLINE", "CENTER")
 Coords:SetPoint("CENTER", 0, 0)
 Coords:Hide()
 
-Minimap:HookScript("OnUpdate",function()
-	if select(2, GetInstanceInfo()) == "none" then
-		local x,y=GetPlayerMapPosition("player")
-		if x>0 or y>0 then
-			Coords:SetText(string.format("%d,%d",x*100,y*100));
-		else
-			Coords:SetText("")
+local Coords_update = 0
+
+Minimap:HookScript("OnUpdate",function(s, e)
+	Coords_update = Coords_update + e
+	if Coords_update > 1 then
+		if select(2, GetInstanceInfo()) == "none" then
+			local map = C_Map.GetPlayerMapPosition(C_Map.GetBestMapForUnit("player"), "player")
+			if map.x>0 or map.y>0 then
+				Coords:SetText(string.format("%d,%d",map.x*100,map.y*100));
+			else
+				Coords:SetText("")
+			end
 		end
+		Coords_update = 0
 	end
 end)
 
@@ -613,10 +659,9 @@ Minimap:HookScript("OnEvent",function(self,event,...)
 	end
 end)
 
-WorldMapFrame:HookScript("OnHide",SetMapToCurrentZone)
 Minimap:HookScript("OnEnter", function() MinimapZoneTextButton:Show() Coords:Show() end)
 Minimap:HookScript("OnLeave", function() MinimapZoneTextButton:Hide() Coords:Hide() end)
-
+]]
 -- 新邮件图标
 MiniMapMailFrame:SetParent(Minimap)
 MiniMapMailFrame:ClearAllPoints()
@@ -713,13 +758,13 @@ repbar:SetStatusBarColor(.4, 1, .2)
 repbar:SetFrameLevel(Minimap:GetFrameLevel()+3)
 repbar.border = F.CreateBDFrame(repbar, .8)
 
-local artifactbar = CreateFrame("StatusBar", G.uiname.."ArtifactExperienceBar", Minimap)
-artifactbar:SetWidth(5)
-artifactbar:SetOrientation("VERTICAL")
-artifactbar:SetStatusBarTexture(G.media.blank)
-artifactbar:SetStatusBarColor(.901, .8, .601)
-artifactbar:SetFrameLevel(Minimap:GetFrameLevel()+3)
-artifactbar.border = F.CreateBDFrame(artifactbar, .8)
+local Azeritebar = CreateFrame("StatusBar", G.uiname.."AzeriteExperienceBar", Minimap)
+Azeritebar:SetWidth(5)
+Azeritebar:SetOrientation("VERTICAL")
+Azeritebar:SetStatusBarTexture(G.media.blank)
+Azeritebar:SetStatusBarColor(.901, .8, .601)
+Azeritebar:SetFrameLevel(Minimap:GetFrameLevel()+3)
+Azeritebar.border = F.CreateBDFrame(Azeritebar, .8)
 
 local function CommaValue(amount)
 	local formatted = amount
@@ -780,22 +825,29 @@ end)
 repbar:SetScript("OnLeave", function() GameTooltip:Hide() end)
 repbar:SetScript("OnMouseDown", function() ToggleCharacter("ReputationFrame") end)
 
-artifactbar:SetScript("OnEnter", MainMenuBar_ArtifactTick_OnEnter)
-artifactbar:SetScript("OnLeave", function() GameTooltip:Hide() end)
-artifactbar:SetScript("OnMouseDown", function()
-	if not ArtifactFrame or not ArtifactFrame:IsShown() then
-		ShowUIPanel(SocketInventoryItem(16))
-	elseif ArtifactFrame and ArtifactFrame:IsShown() then
-		HideUIPanel(ArtifactFrame)
-	end
+Azeritebar:SetScript("OnEnter", function(self)
+	local azeriteItemLocation = C_AzeriteItem.FindActiveAzeriteItem(); 
+	local azeriteItem = Item:CreateFromItemLocation(azeriteItemLocation); 
+	
+	self.itemDataLoadedCancelFunc = azeriteItem:ContinueWithCancelOnItemLoad(function()
+		local azeriteItemName = azeriteItem:GetItemName()
+		GameTooltip_SetDefaultAnchor(GameTooltip, UIParent)
+		GameTooltip:AddLine(AZERITE_POWER_BAR:format(FormatPercentage(self.xp / self.totalLevelXP, true)), G.Ccolor.r, G.Ccolor.g, G.Ccolor.b)
+		GameTooltip:AddLine(" ")
+		GameTooltip:AddLine(AZERITE_POWER_TOOLTIP_TITLE:format(self.currentLevel, self.xpToNextLevel), HIGHLIGHT_FONT_COLOR:GetRGB())
+		GameTooltip:AddLine(AZERITE_POWER_TOOLTIP_BODY:format(azeriteItemName), G.Ccolor.r, G.Ccolor.g, G.Ccolor.b)
+		GameTooltip:Show()
+	end)
 end)
 
+Azeritebar:SetScript("OnLeave", function() GameTooltip:Hide() end)
+
 xpbar:SetScript("OnEvent", function(self, event, arg1)
-	local artifactItemID, _, _, _, artifactTotalXP, artifactPointsSpent, _, _, _, _, _, artifactMaxed, artifactTier = C_ArtifactUI.GetEquippedArtifactInfo()
 	local name, reaction, minRep, maxRep, value, factionID = GetWatchedFactionInfo()
+	local azeriteItemLocation = C_AzeriteItem.FindActiveAzeriteItem()
 	local newLevel = UnitLevel("player")
 	
-	local showArtifact = artifactItemID and not artifactMaxed
+	local showAzerite = C_AzeriteItem.HasActiveAzeriteItem()
 	local showXP = newLevel < MAX_PLAYER_LEVEL and not IsXPUserDisabled()
 	local showRep = name
 	
@@ -807,6 +859,19 @@ xpbar:SetScript("OnEvent", function(self, event, arg1)
 			xpbar:SetValue(XP)
 		else
 			xpbar:Hide()
+		end
+	end
+	
+	if event == "PLAYER_LOGIN" or (event == "UNIT_INVENTORY_CHANGED" and arg1 == "player") or event == "AZERITE_ITEM_EXPERIENCE_CHANGED" then
+		if showAzerite then
+			Azeritebar:Show()
+			Azeritebar.xp, Azeritebar.totalLevelXP = C_AzeriteItem.GetAzeriteItemXPInfo(azeriteItemLocation)
+			Azeritebar.currentLevel = C_AzeriteItem.GetPowerLevel(azeriteItemLocation)
+			Azeritebar.xpToNextLevel = Azeritebar.totalLevelXP - Azeritebar.xp
+			Azeritebar:SetMinMaxValues(0, Azeritebar.totalLevelXP)
+			Azeritebar:SetValue(Azeritebar.xp)
+		else
+			Azeritebar:Hide()
 		end
 	end
 	
@@ -840,41 +905,30 @@ xpbar:SetScript("OnEvent", function(self, event, arg1)
 		end
 	end
 	
-	if event == "PLAYER_LOGIN" or (event == "UNIT_INVENTORY_CHANGED" and arg1 == "player") or event == "ARTIFACT_XP_UPDATE" then
-		if showArtifact then
-			artifactbar:Show()
-			local numPointsAvailableToSpend, xp, xpForNextPoint = MainMenuBar_GetNumArtifactTraitsPurchasableFromXP(artifactPointsSpent, artifactTotalXP, artifactTier)
-			artifactbar:SetMinMaxValues(0, xpForNextPoint)
-			artifactbar:SetValue(xp)
-		else
-			artifactbar:Hide()
-		end
-	end
-	
 	if showXP then
 		xpbar:SetPoint("BOTTOMRIGHT", Minimap, "BOTTOMRIGHT", 0, 0)
 		xpbar:SetPoint("TOPRIGHT", Minimap, "TOPRIGHT", 0, 0)
 		if showRep then
 			repbar:SetPoint("BOTTOMRIGHT", xpbar, "BOTTOMLEFT", -1, 0)
 			repbar:SetPoint("TOPRIGHT", xpbar, "TOPLEFT", -1, 0)
-			if showArtifact then
-				artifactbar:SetPoint("BOTTOMRIGHT", repbar, "BOTTOMLEFT", -1, 0)
-				artifactbar:SetPoint("TOPRIGHT", repbar, "TOPLEFT", -1, 0)
+			if showAzerite then
+				Azeritebar:SetPoint("BOTTOMRIGHT", repbar, "BOTTOMLEFT", -1, 0)
+				Azeritebar:SetPoint("TOPRIGHT", repbar, "TOPLEFT", -1, 0)
 			end
-		elseif showArtifact then
-			artifactbar:SetPoint("BOTTOMRIGHT", xpbar, "BOTTOMLEFT", -1, 0)
-			artifactbar:SetPoint("TOPRIGHT", xpbar, "TOPLEFT", -1, 0)
+		elseif showAzerite then
+			Azeritebar:SetPoint("BOTTOMRIGHT", xpbar, "BOTTOMLEFT", -1, 0)
+			Azeritebar:SetPoint("TOPRIGHT", xpbar, "TOPLEFT", -1, 0)
 		end
 	elseif showRep then
 		repbar:SetPoint("BOTTOMRIGHT", Minimap, "BOTTOMRIGHT", 0, 0)
 		repbar:SetPoint("TOPRIGHT", Minimap, "TOPRIGHT", 0, 0)
-		if showArtifact then
-			artifactbar:SetPoint("BOTTOMRIGHT", repbar, "BOTTOMLEFT", -1, 0)
-			artifactbar:SetPoint("TOPRIGHT", repbar, "TOPLEFT", -1, 0)
+		if showAzerite then
+			Azeritebar:SetPoint("BOTTOMRIGHT", repbar, "BOTTOMLEFT", -1, 0)
+			Azeritebar:SetPoint("TOPRIGHT", repbar, "TOPLEFT", -1, 0)
 		end
-	elseif showArtifact then
-		artifactbar:SetPoint("BOTTOMRIGHT", Minimap, "BOTTOMRIGHT", 0, 0)
-		artifactbar:SetPoint("TOPRIGHT", Minimap, "TOPRIGHT", 0, 0)
+	elseif showAzerite then
+		Azeritebar:SetPoint("BOTTOMRIGHT", Minimap, "BOTTOMRIGHT", 0, 0)
+		Azeritebar:SetPoint("TOPRIGHT", Minimap, "TOPRIGHT", 0, 0)
 	end
 end)
 
@@ -883,54 +937,7 @@ xpbar:RegisterEvent("UPDATE_FACTION")
 xpbar:RegisterEvent("PLAYER_LEVEL_UP")
 xpbar:RegisterEvent("PLAYER_LOGIN")
 xpbar:RegisterEvent("UNIT_INVENTORY_CHANGED")
-xpbar:RegisterEvent("ARTIFACT_XP_UPDATE")
-
--- 世界频道
-local WorldChannelToggle = CreateFrame("Button", G.uiname.."World Channel Button", ChatFrame1)
-WorldChannelToggle:SetPoint("TOPLEFT", -20, -5)
-WorldChannelToggle:SetSize(25, 25)
-WorldChannelToggle:SetNormalTexture("Interface\\HELPFRAME\\ReportLagIcon-Chat", "ADD")
-WorldChannelToggle:GetNormalTexture():SetDesaturated(true)
-
-WorldChannelToggle:SetScript("OnClick", function(self)
-	local inchannel = false
-	local channels = {GetChannelList()}
-	for i = 1, #channels do
-		if channels[i] == "大脚世界频道" then
-			inchannel = true
-			break
-		end
-	end
-	if inchannel then
-		LeaveChannelByName("大脚世界频道")
-		print("|cffFF0000离开|r 大脚世界频道")  
-	else
-		JoinPermanentChannel("大脚世界频道",nil,1)
-		ChatFrame_AddChannel(ChatFrame1,"大脚世界频道")
-		ChatFrame_RemoveMessageGroup(ChatFrame1,"CHANNEL")
-		print("|cff7FFF00加入|r 大脚世界频道")
-	end
-end)
-
-WorldChannelToggle:SetScript("OnEvent", function(self, event)
-	local channels = {GetChannelList()}
-	WorldChannelToggle:GetNormalTexture():SetVertexColor(.3, 1, 1)
-	for i = 1, #channels do
-		if channels[i] == "大脚世界频道" then
-			WorldChannelToggle:GetNormalTexture():SetVertexColor(1, 0, 0)
-			break
-		end
-	end
-	
-	if event == "PLAYER_ENTERING_WORLD" then
-		self:UnregisterEvent("PLAYER_ENTERING_WORLD")
-	end
-end)
-
-WorldChannelToggle:RegisterEvent("PLAYER_ENTERING_WORLD")
-WorldChannelToggle:RegisterEvent("CHANNEL_UI_UPDATE")
-
-if G.Client == "zhCN" then WorldChannelToggle:Show() else WorldChannelToggle:Hide() end
+xpbar:RegisterEvent("AZERITE_ITEM_EXPERIENCE_CHANGED")
 
 --====================================================--
 --[[                --  Info Bar --              ]]--
@@ -945,6 +952,10 @@ InfoFrame.point = {
 		dpser = {a1 = "BOTTOM", parent = "UIParent", a2 = "BOTTOM", x = -40, y = 5},
 	}
 T.CreateDragFrame(InfoFrame)
+
+if not aCoreCDB["OtherOptions"]["infobar"] then
+	InfoFrame:Hide()
+end
 
 local function CreateInfoButton(name, parent, width, height, justify, ...)
 	local Button = CreateFrame("Frame", G.uiname..parent:GetName()..name, parent)
@@ -964,17 +975,17 @@ local EquipSetsMenu = CreateFrame("Frame", G.uiname.."EquipSetsMenu", UIParent, 
 local EquipSetsList = {}
 
 local function UpdateEquipSetsList()
-	local count = GetNumEquipmentSets()
+	local count = C_EquipmentSet.GetNumEquipmentSets()
 	if count > 0 then
 		EquipSetsList = {}
 		for index = 1, count do 
-			local name, Icon, setID, isEquipped, totalItems, equippedItems, inventoryItems, missingItems, ignoredSlots = GetEquipmentSetInfo(index)
+			local name, Icon, setID, isEquipped, totalItems, equippedItems, inventoryItems, missingItems, ignoredSlots = C_EquipmentSet.GetEquipmentSetInfo(index)
 			EquipSetsList[index] = {
 				text = name,
 				icon = Icon,
 				tCoordLeft = .1, tCoordRight = .9, tCoordTop = .1, tCoordBottom = .9,
 				checked = isEquipped,
-				func = function() UseEquipmentSet(name) end
+				func = function() C_EquipmentSet.UseEquipmentSet(index) end
 			}
 		end
 	end
@@ -997,7 +1008,7 @@ local function GetLowestDurability()
 end
 
 Durability:SetScript("OnMouseDown", function(self)
-	if not InCombatLockdown() and GetNumEquipmentSets() > 0 then
+	if not InCombatLockdown() and C_EquipmentSet.GetNumEquipmentSets() > 0 then
 		UpdateEquipSetsList()
 		L_EasyMenu(EquipSetsList, EquipSetsMenu, "cursor", 0, 0, "MENU", 2)
 		L_DropDownList1:ClearAllPoints()
@@ -1036,7 +1047,7 @@ end
 Net_Stats.t = 0
 Net_Stats:SetScript("OnUpdate", function(self, elapsed)
 	self.t = self.t + elapsed
-	if self.t > 1 then -- 每秒刷新一次
+	if self.t > 3 then -- 每秒刷新一次
 		fps = format("%d"..G.classcolor.."fps|r", GetFramerate())
 		lag = format("%d"..G.classcolor.."ms|r", select(4, GetNetStats()))	
 		self.text:SetText(fps.."  "..lag)
@@ -1044,46 +1055,70 @@ Net_Stats:SetScript("OnUpdate", function(self, elapsed)
 	end
 end)
 
+local NUM_ADDONS_TO_DISPLAY = 20;
+local topAddOns = {}
+for i=1, NUM_ADDONS_TO_DISPLAY do
+	topAddOns[i] = { value = 0, name = "" }
+end
+
 Net_Stats:SetScript("OnEnter", function(self)
-	local addons, total, nr, name = {}, 0, 0
-	local memory, entry
-	local BlizzMem = collectgarbage("count")
-	local bandwidthIn, bandwidthOut, latencyHome, latencyWorld = GetNetStats()
-			
 	GameTooltip:SetOwner(self, "ANCHOR_NONE")
+	
 	if select(2, InfoFrame:GetCenter())/G.screenheight > .5 then -- In the upper part of the screen
 		GameTooltip:SetPoint("TOP", InfoFrame, "BOTTOM", 0, -5)
 	else
 		GameTooltip:SetPoint("BOTTOM", InfoFrame, "TOP", 0, 5)
 	end
-	GameTooltip:AddLine(format(L["占用前 %d 的插件"], 20), G.Ccolor.r, G.Ccolor.g, G.Ccolor.b)
-	GameTooltip:AddLine(" ")	
-	
-	UpdateAddOnMemoryUsage()
-	for i = 1, GetNumAddOns() do
-		if (GetAddOnMemoryUsage(i) > 0 ) then
-			memory = GetAddOnMemoryUsage(i)
-			entry = {name = GetAddOnInfo(i), memory = memory}
-			table.insert(addons, entry)
-			total = total + memory
-		end
+
+	for i=1, NUM_ADDONS_TO_DISPLAY, 1 do
+		topAddOns[i].value = 0
 	end
-	table.sort(addons, function(a, b) return a.memory > b.memory end)
-	for _, entry in pairs(addons) do
-	if nr < 20 then
-			GameTooltip:AddDoubleLine(entry.name, memFormat(entry.memory), 1, 1, 1, T.ColorGradient(entry.memory / 1024, 0, 1, 0, 1, 1, 0, 1, 0, 0))
-			nr = nr+1
+
+	UpdateAddOnMemoryUsage()
+	local totalMem = 0
+
+	for i=1, GetNumAddOns(), 1 do
+		local mem = GetAddOnMemoryUsage(i)
+		totalMem = totalMem + mem
+		for j=1, NUM_ADDONS_TO_DISPLAY, 1 do
+			if( mem > topAddOns[j].value ) then
+				for k= NUM_ADDONS_TO_DISPLAY, 1, -1 do
+					if( k == j ) then
+						topAddOns[k].value = mem
+						topAddOns[k].name = GetAddOnInfo(i)
+						break
+					elseif( k ~= 1 ) then
+						topAddOns[k].value = topAddOns[k-1].value
+						topAddOns[k].name = topAddOns[k-1].name
+					end
+				end
+				break
+			end
 		end
 	end
 
-	GameTooltip:AddLine(" ")
-	GameTooltip:AddDoubleLine(L["自定义插件占用"], memFormat(total), 1, 1, 1, T.ColorGradient(total / (1024*20), 0, 1, 0, 1, 1, 0, 1, 0, 0))
-	GameTooltip:AddDoubleLine(L["所有插件占用"], memFormat(BlizzMem), 1, 1, 1, T.ColorGradient(BlizzMem / (1024*50) , 0, 1, 0, 1, 1, 0, 1, 0, 0))
+	local bandwidthIn, bandwidthOut, latencyHome, latencyWorld = GetNetStats()
 	
-	GameTooltip:AddLine(" ")
-	GameTooltip:AddLine(format(MAINMENUBAR_LATENCY_LABEL, latencyHome, latencyWorld), 1, 1, 1)
-	
-	GameTooltip:Show()
+	if ( totalMem > 0 ) then
+		GameTooltip:AddLine(format(L["占用前 %d 的插件"], min(NUM_ADDONS_TO_DISPLAY,GetNumAddOns())), G.Ccolor.r, G.Ccolor.g, G.Ccolor.b)
+		GameTooltip:AddLine(" ")
+		
+		for i=1, NUM_ADDONS_TO_DISPLAY, 1 do
+			if ( topAddOns[i].value == 0 ) then
+				break
+			end
+			GameTooltip:AddDoubleLine(topAddOns[i].name, memFormat(topAddOns[i].value), 1, 1, 1, T.ColorGradient(topAddOns[i].value / 1024, 0, 1, 0, 1, 1, 0, 1, 0, 0))
+		end
+		
+		GameTooltip:AddLine(" ")
+		GameTooltip:AddDoubleLine(L["自定义插件占用"], memFormat(totalMem), 1, 1, 1, T.ColorGradient(totalMem / (1024*20), 0, 1, 0, 1, 1, 0, 1, 0, 0))
+		GameTooltip:AddDoubleLine(L["所有插件占用"], memFormat(collectgarbage("count")), 1, 1, 1, T.ColorGradient(collectgarbage("count") / (1024*50) , 0, 1, 0, 1, 1, 0, 1, 0, 0))
+		
+		GameTooltip:AddLine(" ")
+		GameTooltip:AddLine(format(MAINMENUBAR_LATENCY_LABEL, latencyHome, latencyWorld), 1, 1, 1)
+		
+		GameTooltip:Show()		
+	end
 end)
  
 Net_Stats:SetScript("OnLeave", function(self) GameTooltip:Hide() end)
@@ -1261,13 +1296,10 @@ local function CreateMicromenuButton(parent, bu, text, original)
 		Button = bu
 		Button:SetParent(parent)
 		Button:ClearAllPoints()
-		Button:SetNormalTexture(nil)
-		Button:SetPushedTexture(nil)
-		Button:SetHighlightTexture(nil)
-		Button:SetDisabledTexture(nil)
-		Button.SetNormalTexture = T.dummy
-		Button.SetPushedTexture = T.dummy
-		Button.SetHighlightTexture = T.dummy
+		Button:GetNormalTexture():SetAlpha(0)
+		Button:GetPushedTexture():SetAlpha(0)
+		Button:GetHighlightTexture():SetAlpha(0)
+		Button:GetDisabledTexture(nil)
 		Button.SetDisabledTexture = T.dummy
 		for j = 1, Button:GetNumRegions() do
 			local region = select(j, Button:GetRegions())
@@ -1284,6 +1316,7 @@ local function CreateMicromenuButton(parent, bu, text, original)
 	
 	if original == "System" then
 		Button:SetSize(80, 43)
+		Button:DisableDrawLayer("BACKGROUD")
 	elseif original == "RaidTool" then
 		Button:SetSize(100, 43)
 	elseif original == "Config" then
@@ -1378,6 +1411,15 @@ MicromenuBar.LFR = CreateMicromenuButton(MicromenuBar, LFDMicroButton, LFG_TITLE
 MicromenuBar.Quests = CreateMicromenuButton(MicromenuBar, QuestLogMicroButton, QUESTLOG_BUTTON, "Quests")
 MicromenuBar.Spellbook = CreateMicromenuButton(MicromenuBar, SpellbookMicroButton, SPELLBOOK_ABILITIES_BUTTON, "Spellbook")
 MicromenuBar.Bag = CreateMicromenuButton(MicromenuBar, false, BAGSLOT, "Bag")
+
+function MainMenuMicroButton_PositionAlert(alert)	
+	alert:ClearAllPoints();
+	alert:SetPoint("TOP", UIParent, "TOP", 0, -30);
+	alert.Arrow:ClearAllPoints();
+	alert.Arrow:SetPoint("BOTTOMRIGHT", alert, "TOPRIGHT", -4, 4);
+end
+
+GuildMicroButton.NotificationOverlay:SetAlpha(0)
 
 for i = 1, #MicromenuButtons do
 	if i == 1 then
@@ -1484,6 +1526,7 @@ MicromenuBar3:RegisterEvent("PLAYER_LOGIN")
 --====================================================--
 --[[          --  Order Hall Command Bar --         ]]--
 --====================================================--
+
 local OrderHall_eframe = CreateFrame("Frame")
 OrderHall_eframe:RegisterEvent("ADDON_LOADED")
 
@@ -1555,6 +1598,7 @@ end)
 --====================================================--
 --[[                 -- Screen --                   ]]--
 --====================================================--
+
 local BOTTOMPANEL = CreateFrame("Frame", G.uiname.."AFK Bottompanel", WorldFrame)
 BOTTOMPANEL:SetFrameStrata("FULLSCREEN")
 BOTTOMPANEL:SetPoint("BOTTOMLEFT",WorldFrame,"BOTTOMLEFT",-5,-5)
@@ -1714,7 +1758,7 @@ BOTTOMPANEL:SetScript("OnMouseDown", function(self)
 end)
 
 BOTTOMPANEL:SetScript("OnEvent",function(self, event) 
-	if event == "PLAYER_ENTERING_WORLD" and aCoreCDB["OtherOptions"]["afkscreen"] then
+	if event == "PLAYER_ENTERING_WORLD" and aCoreCDB["OtherOptions"]["afklogin"] then
 		if aCoreDB.meet then
 			T.fadeout()
 		end

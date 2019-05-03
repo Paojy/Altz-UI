@@ -1,6 +1,7 @@
 local T, C, L, G = unpack(select(2, ...))
 local dragFrameList = G.dragFrameList
 
+local growUp = aCoreCDB["ActionbarOptions"]["growup"]
 local buttonssize = aCoreCDB["ActionbarOptions"]["bar45size"]
 local buttonspace = aCoreCDB["ActionbarOptions"]["bar45space"]
 local padding = 4
@@ -47,13 +48,24 @@ if Horizontalbar45 then
 			table.insert(buttonList, button) --add the button object to the list
 			button:SetSize(buttonssize, buttonssize)
 			button:ClearAllPoints()
-			if i == 1 then
-				button:SetPoint("TOPLEFT", frame, padding, -padding)
-			elseif  i == 7 then
-				button:SetPoint("TOPLEFT", "MultiBarRightButton1", "BOTTOMLEFT", 0, -buttonspace)
+			if growUp then
+				if i == 1 then
+					button:SetPoint("BOTTOMLEFT", frame, padding, padding)
+				elseif  i == 7 then
+					button:SetPoint("BOTTOMLEFT", "MultiBarRightButton1", "TOPLEFT", 0, buttonspace)
+				else
+					local previous = _G["MultiBarRightButton"..i-1]
+					button:SetPoint("LEFT", previous, "RIGHT", buttonspace, 0)
+				end
 			else
-				local previous = _G["MultiBarRightButton"..i-1]
-				button:SetPoint("LEFT", previous, "RIGHT", buttonspace, 0)
+				if i == 1 then
+					button:SetPoint("TOPLEFT", frame, padding, -padding)
+				elseif  i == 7 then
+					button:SetPoint("TOPLEFT", "MultiBarRightButton1", "BOTTOMLEFT", 0, -buttonspace)
+				else
+					local previous = _G["MultiBarRightButton"..i-1]
+					button:SetPoint("LEFT", previous, "RIGHT", buttonspace, 0)
+				end
 			end
 		end
 		
@@ -62,13 +74,24 @@ if Horizontalbar45 then
 			table.insert(buttonList, button) --add the button object to the list
 			button:SetSize(buttonssize, buttonssize)
 			button:ClearAllPoints()
-			if i == 1 then
-				button:SetPoint("TOPLEFT", "MultiBarRightButton7", "BOTTOMLEFT", 0, -buttonspace)
-			elseif  i == 7 then
-				button:SetPoint("TOPLEFT", "MultiBarLeftButton1", "BOTTOMLEFT", 0, -buttonspace)
+			if growUp then
+				if i == 1 then
+					button:SetPoint("BOTTOMLEFT", "MultiBarRightButton7", "TOPLEFT", 0, buttonspace)
+				elseif  i == 7 then
+					button:SetPoint("BOTTOMLEFT", "MultiBarLeftButton1", "TOPLEFT", 0, buttonspace)
+				else
+					local previous = _G["MultiBarLeftButton"..i-1]
+					button:SetPoint("LEFT", previous, "RIGHT", buttonspace, 0)
+				end
 			else
-				local previous = _G["MultiBarLeftButton"..i-1]
-				button:SetPoint("LEFT", previous, "RIGHT", buttonspace, 0)
+				if i == 1 then
+					button:SetPoint("TOPLEFT", "MultiBarRightButton7", "BOTTOMLEFT", 0, -buttonspace)
+				elseif  i == 7 then
+					button:SetPoint("TOPLEFT", "MultiBarLeftButton1", "BOTTOMLEFT", 0, -buttonspace)
+				else
+					local previous = _G["MultiBarLeftButton"..i-1]
+					button:SetPoint("LEFT", previous, "RIGHT", buttonspace, 0)
+				end
 			end
 		end
 	else
@@ -80,11 +103,20 @@ if Horizontalbar45 then
 			table.insert(buttonList, button) --add the button object to the list
 			button:SetSize(buttonssize, buttonssize)
 			button:ClearAllPoints()
-			if i == 1 then
-				button:SetPoint("TOPLEFT", frame, padding, -padding)
+			if growUp then
+				if i == 1 then
+					button:SetPoint("BOTTOMLEFT", frame, padding, padding)
+				else
+					local previous = _G["MultiBarRightButton"..i-1]
+					button:SetPoint("LEFT", previous, "RIGHT", buttonspace, 0)
+				end
 			else
-				local previous = _G["MultiBarRightButton"..i-1]
-				button:SetPoint("LEFT", previous, "RIGHT", buttonspace, 0)
+				if i == 1 then
+					button:SetPoint("TOPLEFT", frame, padding, -padding)
+				else
+					local previous = _G["MultiBarRightButton"..i-1]
+					button:SetPoint("LEFT", previous, "RIGHT", buttonspace, 0)
+				end
 			end
 		end
 
@@ -93,11 +125,20 @@ if Horizontalbar45 then
 			table.insert(buttonList, button) --add the button object to the list
 			button:SetSize(buttonssize, buttonssize)
 			button:ClearAllPoints()
-			if i == 1 then
-				button:SetPoint("TOPLEFT", frame, padding, -(padding+buttonspace+buttonssize))
+			if growUp then
+				if i == 1 then
+					button:SetPoint("BOTTOMLEFT", frame, padding, (padding+buttonspace+buttonssize))
+				else
+					local previous = _G["MultiBarLeftButton"..i-1]
+					button:SetPoint("LEFT", previous, "RIGHT", buttonspace, 0)
+				end
 			else
-				local previous = _G["MultiBarLeftButton"..i-1]
-				button:SetPoint("LEFT", previous, "RIGHT", buttonspace, 0)
+				if i == 1 then
+					button:SetPoint("TOPLEFT", frame, padding, -(padding+buttonspace+buttonssize))
+				else
+					local previous = _G["MultiBarLeftButton"..i-1]
+					button:SetPoint("LEFT", previous, "RIGHT", buttonspace, 0)
+				end
 			end
 		end
 	end

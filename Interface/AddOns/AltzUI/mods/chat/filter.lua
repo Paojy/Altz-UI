@@ -11,25 +11,53 @@ for _, keyword in pairs(filter) do
 	end
 end
 
-function FilterChat(self, event, message, sender, language, channelString, target, flags, _, channelNumber, channelName, _, counter, guid)
+local recent_msg = {}
+local index = 1
+
+function FilterChat(self, event, message, author, language, channelString, target, flags, _, channelNumber, channelName, _, counter, guid)
+
+	local sender = string.split("-", author)
+	
 	if event == "CHAT_MSG_WHISPER" and flags == "GM" then 
 		return
-	elseif UnitIsInMyGuild(sender) or UnitInRaid(sender) or UnitInParty(sender) then -- 加上自己
+	elseif UnitIsInMyGuild(sender) or UnitInRaid(sender) or UnitInParty(sender) or UnitIsUnit(sender, "player") then
 		return
 	else
-		for index = 1, GetNumFriends() do
-			if GetFriendInfo(index) == sender then
+		for i = 1, GetNumFriends() do
+			if GetFriendInfo(i) == sender then
 				return
 			end
 		end
-		for index = 1, BNGetNumFriends() do
-			local toonName = select(5, BNGetFriendInfo(index))
+		for i = 1, BNGetNumFriends() do
+			local toonName = select(5, BNGetFriendInfo(i))
 			if toonName == sender then
 				return
 			end
 		end
 	end
 	
+	-- 过滤重复信息
+	
+	for i = 1, 4 do
+		if recent_msg[i] and recent_msg[i]["sender"] == sender and recent_msg[i]["msg"] == message then
+			return true
+		end
+	end
+	
+	if index == 5 then
+		index = 1
+	end
+	
+	if not recent_msg[index] then
+		recent_msg[index] = {}
+	end
+	
+	recent_msg[index]["sender"] = sender
+	recent_msg[index]["msg"] = message
+	
+	index = index + 1
+	
+	-- 过滤关键词
 	local msg
 	
 	for _, symbol in ipairs(Symbols) do

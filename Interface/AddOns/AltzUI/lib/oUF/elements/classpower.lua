@@ -5,7 +5,7 @@ Handles the visibility and updating of the player's class resources (like Chi Or
 
 ## Widget
 
-ClassPower - An `table` consisting of as many StatusBars as the theoretical maximum return of [UnitPowerMax](http://wowprogramming.com/docs/api/UnitPowerMax).
+ClassPower - An `table` consisting of as many StatusBars as the theoretical maximum return of [UnitPowerMax](http://wowprogramming.com/docs/api/UnitPowerMax.html).
 
 ## Sub-Widgets
 
@@ -54,15 +54,12 @@ local SPEC_MAGE_ARCANE = SPEC_MAGE_ARCANE or 1
 local SPEC_MONK_WINDWALKER = SPEC_MONK_WINDWALKER or 3
 local SPEC_PALADIN_RETRIBUTION = SPEC_PALADIN_RETRIBUTION or 3
 local SPEC_WARLOCK_DESTRUCTION = SPEC_WARLOCK_DESTRUCTION or 3
-local SPELL_POWER_ENERGY = SPELL_POWER_ENERGY or 3
-local SPELL_POWER_COMBO_POINTS = SPELL_POWER_COMBO_POINTS or 4
-local SPELL_POWER_SOUL_SHARDS = SPELL_POWER_SOUL_SHARDS or 7
-local SPELL_POWER_HOLY_POWER = SPELL_POWER_HOLY_POWER or 9
-local SPELL_POWER_CHI = SPELL_POWER_CHI or 12
-local SPELL_POWER_ARCANE_CHARGES = SPELL_POWER_ARCANE_CHARGES or 16
-
--- sourced from FrameXML/TargetFrame.lua
-local MAX_COMBO_POINTS = MAX_COMBO_POINTS or 5
+local SPELL_POWER_ENERGY = Enum.PowerType.Energy or 3
+local SPELL_POWER_COMBO_POINTS = Enum.PowerType.ComboPoints or 4
+local SPELL_POWER_SOUL_SHARDS = Enum.PowerType.SoulShards or 7
+local SPELL_POWER_HOLY_POWER = Enum.PowerType.HolyPower or 9
+local SPELL_POWER_CHI = Enum.PowerType.Chi or 12
+local SPELL_POWER_ARCANE_CHARGES = Enum.PowerType.ArcaneCharges or 16
 
 -- Holds the class specific stuff.
 local ClassPowerID, ClassPowerType
@@ -85,7 +82,7 @@ local function UpdateColor(element, powerType)
 end
 
 local function Update(self, event, unit, powerType)
-	if(not (self.unit == unit and (unit == 'player' and powerType == ClassPowerType
+	if(not (unit and (UnitIsUnit(unit, 'player') and powerType == ClassPowerType
 		or unit == 'vehicle' and powerType == 'COMBO_POINTS'))) then
 		return
 	end
@@ -103,16 +100,10 @@ local function Update(self, event, unit, powerType)
 
 	local cur, max, mod, oldMax
 	if(event ~= 'ClassPowerDisable') then
-		if(unit == 'vehicle') then
-			-- BUG: UnitPower always returns 0 combo points for vehicles
-			cur = GetComboPoints(unit)
-			max = MAX_COMBO_POINTS
-			mod = 1
-		else
-			cur = UnitPower('player', ClassPowerID, true)
-			max = UnitPowerMax('player', ClassPowerID)
-			mod = UnitPowerDisplayMod(ClassPowerID)
-		end
+		local powerID = unit == 'vehicle' and SPELL_POWER_COMBO_POINTS or ClassPowerID
+		cur = UnitPower(unit, powerID, true)
+		max = UnitPowerMax(unit, powerID)
+		mod = UnitPowerDisplayMod(powerID)
 
 		-- mod should never be 0, but according to Blizz code it can actually happen
 		cur = mod == 0 and 0 or cur / mod
@@ -176,7 +167,7 @@ local function Visibility(self, event, unit)
 	local shouldEnable
 
 	if(UnitHasVehicleUI('player')) then
-		shouldEnable = true
+		shouldEnable = PlayerVehicleHasComboPoints()
 		unit = 'vehicle'
 	elseif(ClassPowerID) then
 		if(not RequireSpec or RequireSpec == GetSpecialization()) then
@@ -284,10 +275,8 @@ do
 end
 
 local function Enable(self, unit)
-	if(unit ~= 'player') then return end
-
 	local element = self.ClassPower
-	if(element) then
+	if(element and UnitIsUnit(unit, 'player')) then
 		element.__owner = self
 		element.__max = #element
 		element.ForceUpdate = ForceUpdate

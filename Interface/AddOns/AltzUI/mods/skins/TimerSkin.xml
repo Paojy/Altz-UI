@@ -2,19 +2,19 @@
 ..\FrameXML\UI.xsd">
     <FontFamily name="AltzUISkinFont" virtual="true">
         <Member alphabet="roman">
-            <Font font="Interface\AddOns\Aurora\media\font.ttf" height="8" outline="NORMAL"/>
+            <Font font="Interface\AddOns\AuroraClassic\media\font.ttf" height="8" outline="NORMAL"/>
         </Member>
         <Member alphabet="korean">
-            <Font font="Interface\AddOns\Aurora\media\font.ttf" height="12" outline="NORMAL"/>
+            <Font font="Interface\AddOns\AuroraClassic\media\font.ttf" height="12" outline="NORMAL"/>
         </Member>
         <Member alphabet="simplifiedchinese">
-            <Font font="Interface\AddOns\Aurora\media\font.ttf" height="12" outline="NORMAL"/>
+            <Font font="Interface\AddOns\AuroraClassic\media\font.ttf" height="12" outline="NORMAL"/>
         </Member>
         <Member alphabet="traditionalchinese">
-            <Font font="Interface\AddOns\Aurora\media\font.ttf" height="10" outline="NORMAL"/>
+            <Font font="Interface\AddOns\AuroraClassic\media\font.ttf" height="10" outline="NORMAL"/>
         </Member>
         <Member alphabet="russian">
-            <Font font="Interface\AddOns\Aurora\media\font.ttf" height="10" outline="NORMAL"/>
+            <Font font="Interface\AddOns\AuroraClassic\media\font.ttf" height="10" outline="NORMAL"/>
         </Member>
     </FontFamily>
 

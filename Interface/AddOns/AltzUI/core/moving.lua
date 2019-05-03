@@ -1,5 +1,5 @@
 ﻿local T, C, L, G = unpack(select(2, ...))
-local F = unpack(Aurora)
+local F = unpack(AuroraClassic)
 
 local CurrentFrame = "NONE"
 local anchors = {"CENTER", "LEFT", "RIGHT", "TOP", "BOTTOM", "TOPLEFT", "TOPRIGHT", "BOTTOMLEFT", "BOTTOMRIGHT"}
@@ -10,14 +10,6 @@ local function PlaceCurrentFrame()
 	local points = aCoreCDB["FramePoints"][CurrentFrame][role]
 	f:ClearAllPoints()
 	f:SetPoint(points.a1, _G[points.parent], points.a2, points.x, points.y)
-	if string.match(CurrentFrame, "Raid") then
-		f.df:ClearAllPoints()
-		if string.match(points.parent, "Raid") then
-			f.df:SetPoint(points.a1, _G[points.parent].df, points.a2, points.x, points.y)
-		else
-			f.df:SetPoint(points.a1, f, points.a1)
-		end
-	end
 end
 
 local function Reskinbox(box, name, value, anchor, x, y)
@@ -145,6 +137,9 @@ L_UIDropDownMenu_Initialize(Point1dropDown, function(self, level, menuList)
 		info.func = function(self)
 			aCoreCDB["FramePoints"][CurrentFrame][role]["a1"] = anchors[i]
 			PlaceCurrentFrame()
+			if CurrentFrame == "Altz_HealerRaid_Holder" then
+				T.PlaceRaidFrame()
+			end
 			L_UIDropDownMenu_SetSelectedName(Point1dropDown, anchors[i], true)
 			L_UIDropDownMenu_SetText(Point1dropDown, anchors[i])
 			L_CloseDropDownMenus()
@@ -273,11 +268,6 @@ function T.CreateDragFrame(frame)
 	frame.df:SetScript("OnDragStart", function(self)
 		frame:StartMoving()
 		self.x, self.y = frame:GetCenter() -- 开始的位置
-		if string.match(fname, "Raid") and string.match(aCoreCDB["FramePoints"][fname][role].parent, "Raid") then
-			local dfx, dfy = self:GetCenter()
-			self:ClearAllPoints()
-			self:SetPoint("CENTER", frame, "CENTER", dfx-self.x, dfy-self.y)
-		end
 	end)
 	frame.df:SetScript("OnDragStop", function(self)
 		frame:StopMovingOrSizing()
@@ -364,14 +354,6 @@ local function OnSpecChanged()
 		local points = aCoreCDB["FramePoints"][name][role]
 		G.dragFrameList[i]:ClearAllPoints()
 		G.dragFrameList[i]:SetPoint(points.a1, _G[points.parent], points.a2, points.x, points.y)
-		if string.match(name, "Raid") then
-			G.dragFrameList[i].df:ClearAllPoints()
-			if string.match(points.parent, "Raid") then
-				G.dragFrameList[i].df:SetPoint(points.a1, _G[points.parent].df, points.a2, points.x, points.y)
-			else
-				G.dragFrameList[i].df:SetPoint(points.a1, G.dragFrameList[i], points.a1)
-			end
-		end
 	end
 end
 

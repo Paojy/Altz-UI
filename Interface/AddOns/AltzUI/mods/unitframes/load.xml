@@ -8,7 +8,6 @@
 	<Script file="embeds\indicators.lua"/>
 	<Script file="embeds\mana.lua"/>	
 	<Script file="embeds\pvpspec.lua"/>	
-	<Script file="embeds\range.lua"/>
 	<Script file="embeds\swing.lua"/>	
 	<Script file="embeds\threatbar.lua"/>
 	<Script file="embeds\trinket.lua"/>

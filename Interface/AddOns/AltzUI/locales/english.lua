@@ -54,6 +54,7 @@ L["复制名字"] = "Copy Name"
 L["玩家详情"] = "Who"
 L["公会邀请"] = "Guild Invite"
 L["添加好友"] = "Add Friend"
+L["复制聊天"] = "Copy Chat"
 
 L["信息条"] = "Info Bar"
 L["微型菜单"] = "MicroMenu"
@@ -88,12 +89,9 @@ L["目标头像"] = "Target Frame"
 L["目标的目标头像"] = "ToT Frame"
 L["焦点头像"] = "Focus Frame"
 L["焦点的目标头像"] = "ToF Frame"
-for i = 1, MAX_BOSS_FRAMES do
-	L["首领头像"..i] = "Boss"..i
-end
-for i = 1, 5 do
-	L["竞技场敌人头像"..i] = "Arena"..i
-end
+L["首领头像"] = "Boss"
+L["竞技场敌人头像"] = "Arena"
+L["小队队友"] = "Party"
 L["玩家施法条"] = "Player Cast Bar"
 L["目标施法条"] = "Target Cast Bar"
 L["焦点施法条"] = "Focus Cast Bar"
@@ -166,7 +164,7 @@ L["TIPS"] = {
 	"Use SHIFT+Click to set your focus; it's available for unit frames",
 	"Use ALT+Click to mill/prospect, disenchant, unlock instantly",
 	"Press Tab to change between available channels when the edit box of the chat frame is activated",
-	"The font files are located at Interface\\AddOns\\Aurora\\media\\font.ttf(main font),Interface\\AddOns\\AltzUI\\media\\number.ttf(font for some time text)",
+	"The font files are located at Interface\\AddOns\\AuroraClassic\\media\\font.ttf(main font),Interface\\AddOns\\AltzUI\\media\\number.ttf(font for some time text)",
 	"Hold Ctrl, Alt or Shift to scroll chat frame to top/bottom.",
 	"Clicking the edge of some button will toggle it's autohidden function, eg MicroMenu/Raidtools/Config.",
 }

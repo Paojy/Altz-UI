@@ -8,13 +8,13 @@ local function Update(self, event, unit, powertype)
 	if(dpsmana.PreUpdate) then dpsmana:PreUpdate(unit) end
 
 	-- Hide the bar if the active power type is mana.
-	if(UnitPowerType('player') == SPELL_POWER_MANA) then
+	if(UnitPowerType('player') == Enum.PowerType.Mana) then
 		return dpsmana:Hide()
 	else
 		dpsmana:Show()
 	end
 
-	local min, max = UnitPower('player', SPELL_POWER_MANA), UnitPowerMax('player', SPELL_POWER_MANA)
+	local min, max = UnitPower('player', Enum.PowerType.Mana), UnitPowerMax('player', Enum.PowerType.Mana)
 	dpsmana:SetMinMaxValues(0, max)
 	dpsmana:SetValue(min)
 
@@ -56,8 +56,8 @@ local Visibility = function(self, event, unit)
 	else
 		if(not self.Dpsmana:IsShown()) then
 			self.Dpsmana:Show()
-			self:RegisterEvent('UNIT_POWER_FREQUENT', Path)
-			self:RegisterEvent('UNIT_MAXPOWER', Path)
+			self:RegisterEvent('UNIT_POWER_FREQUENT', Path, true)
+			self:RegisterEvent('UNIT_MAXPOWER', Path, true)
 		end
 
 		return Path(self, event, unit)
@@ -79,8 +79,8 @@ local Enable = function(self, unit)
 		dpsmana.ForceUpdate = ForceUpdate
 		dpsmana:Hide()
 		
-		self:RegisterEvent('UNIT_DISPLAYPOWER', VisibilityPath)
-		self:RegisterEvent('PLAYER_TALENT_UPDATE', VisibilityPath)
+		self:RegisterEvent('UNIT_DISPLAYPOWER', VisibilityPath, true)
+		self:RegisterEvent('PLAYER_TALENT_UPDATE', VisibilityPath, true)
 
 		if(dpsmana:IsObjectType'StatusBar' and not dpsmana:GetStatusBarTexture()) then
 			dpsmana:SetStatusBarTexture[[Interface\TargetingFrame\UI-StatusBar]]

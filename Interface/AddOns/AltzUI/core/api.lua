@@ -1,5 +1,5 @@
 ﻿local T, C, L, G = unpack(select(2, ...))
-local F = unpack(Aurora)
+local F = unpack(AuroraClassic)
 
 T.ShortValue = function(val)
 	if aCoreCDB["UnitframeOptions"]["tenthousand"] then

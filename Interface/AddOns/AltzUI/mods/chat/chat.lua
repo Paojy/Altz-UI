@@ -1,18 +1,18 @@
 ﻿local T, C, L, G = unpack(select(2, ...))
-local F = unpack(Aurora)
+local F = unpack(AuroraClassic)
 
-CHAT_FRAME_FADE_OUT_TIME = 1
-CHAT_TAB_HIDE_DELAY = 1
-CHAT_FRAME_TAB_SELECTED_MOUSEOVER_ALPHA = 1
-CHAT_FRAME_TAB_SELECTED_NOMOUSE_ALPHA = 0
-CHAT_FRAME_TAB_NORMAL_MOUSEOVER_ALPHA = 0.5
-CHAT_FRAME_TAB_NORMAL_NOMOUSE_ALPHA = 0
-CHAT_FRAME_TAB_ALERTING_MOUSEOVER_ALPHA = 1
-CHAT_FRAME_TAB_ALERTING_NOMOUSE_ALPHA = 0
+--CHAT_FRAME_FADE_OUT_TIME = 1
+--CHAT_TAB_HIDE_DELAY = 1
+CHAT_FRAME_TAB_SELECTED_MOUSEOVER_ALPHA = aCoreCDB["ChatOptions"]["chattab_fade_maxalpha"]
+CHAT_FRAME_TAB_SELECTED_NOMOUSE_ALPHA = aCoreCDB["ChatOptions"]["chattab_fade_minalpha"]
+CHAT_FRAME_TAB_NORMAL_MOUSEOVER_ALPHA = aCoreCDB["ChatOptions"]["chattab_fade_maxalpha"]
+CHAT_FRAME_TAB_NORMAL_NOMOUSE_ALPHA = aCoreCDB["ChatOptions"]["chattab_fade_minalpha"]
+CHAT_FRAME_TAB_ALERTING_MOUSEOVER_ALPHA = aCoreCDB["ChatOptions"]["chattab_fade_maxalpha"]
+CHAT_FRAME_TAB_ALERTING_NOMOUSE_ALPHA = aCoreCDB["ChatOptions"]["chattab_fade_minalpha"]
 
-for i = 1, 23 do
-	CHAT_FONT_HEIGHTS[i] = i+7
-end
+--for i = 1, 23 do
+--	CHAT_FONT_HEIGHTS[i] = i+7
+--end
 
 local _G = _G
 
@@ -88,25 +88,49 @@ local function init()
 			tab.selectedColorTable = { r = G.Ccolor.r, g = G.Ccolor.g, b = G.Ccolor.b };
 			tab:SetAlpha(1)
 			end
+			for index, value in pairs(TAB_TEXTURES) do
+				local texture = _G['ChatFrame'..i..'Tab'..value]
+				texture:SetTexture(nil)
+			end
 		end
-		-- hide tab texture
-		for index, value in pairs(TAB_TEXTURES) do
-			local texture = _G['ChatFrame'..i..'Tab'..value]
-			texture:SetTexture(nil)
+		-- hide scroll bar
+		local button = _G['ChatFrame'..i].ScrollToBottomButton
+		if button then
+			button:SetAlpha(0)
+		end
+		local thumbtexture = _G['ChatFrame'..i.."ThumbTexture"]
+		if thumbtexture then
+			thumbtexture:SetTexture(nil)	
 		end
 	end
 end
 
-ChatFrameMenuButton.Show = ChatFrameMenuButton.Hide 
-ChatFrameMenuButton:Hide()
-QuickJoinToastButton.Show = QuickJoinToastButton.Hide 
-QuickJoinToastButton:Hide()
 BNToastFrame:SetClampedToScreen(true)
 
 local EventFrame = CreateFrame("Frame")
 EventFrame:RegisterEvent("ADDON_LOADED")
 EventFrame:RegisterEvent("PLAYER_LOGIN")
 EventFrame:RegisterEvent("PET_BATTLE_OPENING_START")
+
+hooksecurefunc("FCF_OpenTemporaryWindow", function()
+	for i = 11, 20 do
+		-- chat tabs
+		local tab = _G['ChatFrame'..i..'Tab']
+		if tab and not tab.skinned then
+			tab.skinned = true
+			tab:GetFontString():SetFont(STANDARD_TEXT_FONT, 13, "THINOUTLINE")
+			tab:GetFontString():SetShadowOffset(0,0)
+			if i ~= 11 then
+			tab.selectedColorTable = { r = G.Ccolor.r, g = G.Ccolor.g, b = G.Ccolor.b };
+			tab:SetAlpha(1)
+			end
+			for index, value in pairs(TAB_TEXTURES) do
+				local texture = _G['ChatFrame'..i..'Tab'..value]
+				texture:SetTexture(nil)
+			end
+		end
+	end
+end)
 
 EventFrame:SetScript("OnEvent", function(self, event, arg1)
 	if event == "ADDON_LOADED" and arg1 == "Blizzard_CombatLog" then
@@ -142,3 +166,26 @@ function FloatingChatFrame_OnMouseScroll(self, delta)
 		end
 	end
 end
+
+ChatFrameChannelButton:SetScript("OnMouseDown", function(self, b)
+	if G.Client == "zhCN" and b == "RightButton" then
+		local inchannel = false
+		local channels = {GetChannelList()}
+		for i = 1, #channels do
+			if channels[i] == "大脚世界频道" then
+				inchannel = true
+				break
+			end
+		end
+		if inchannel then
+			LeaveChannelByName("大脚世界频道")
+			print("|cffFF0000离开|r 大脚世界频道")  
+		else
+			JoinPermanentChannel("大脚世界频道",nil,1)
+			ChatFrame_AddChannel(ChatFrame1,"大脚世界频道")
+			ChatFrame_RemoveMessageGroup(ChatFrame1,"CHANNEL")
+			print("|cff7FFF00加入|r 大脚世界频道")
+		end
+	end
+end)
+

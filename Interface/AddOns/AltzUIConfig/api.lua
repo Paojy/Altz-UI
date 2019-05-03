@@ -1,5 +1,5 @@
 ﻿local T, C, L, G = unpack(select(2, ...))
-local F = unpack(Aurora)
+local F = unpack(AuroraClassic)
 
 T.ShortValue = function(v)
 	if v >= 1e6 then
@@ -137,7 +137,7 @@ end
 
 
 T.ResetAurora = function(reload)
-	if IsAddOnLoaded("Aurora") then
+	if IsAddOnLoaded("AuroraClassic") then
 		AuroraConfig["tooltips"] = false
 		AuroraConfig["bags"] = false
 		AuroraConfig["acknowledgedSplashScreen"] = true
@@ -419,14 +419,14 @@ T.ResetDBM =function(reload)
 			DBM_AllSavedOptions["Default"]["WarningIconRight"] = true
 			DBM_AllSavedOptions["Default"]["WarningIconLeft"] = true
 			DBM_AllSavedOptions["Default"]["WarningFontStyle"] = "THICKOUTLINE"
-			DBM_AllSavedOptions["Default"]["WarningFont"] = "Interface\\AddOns\\Aurora\\media\\font.ttf"
+			DBM_AllSavedOptions["Default"]["WarningFont"] = "Interface\\AddOns\\AuroraClassic\\media\\font.ttf"
 			DBM_AllSavedOptions["Default"]["WarningFontShadow"] = true
 			DBM_AllSavedOptions["Default"]["WarningPoint"] = "TOP"
 			DBM_AllSavedOptions["Default"]["WarningY"] = -150
 			DBM_AllSavedOptions["Default"]["WarningX"] = -0
 			-- 特殊警报
 			DBM_AllSavedOptions["Default"]["SpecialWarningFontSize"] = 65
-			DBM_AllSavedOptions["Default"]["SpecialWarningFont"] = "Interface\\AddOns\\Aurora\\media\\font.ttf"
+			DBM_AllSavedOptions["Default"]["SpecialWarningFont"] = "Interface\\AddOns\\AuroraClassic\\media\\font.ttf"
 			DBM_AllSavedOptions["Default"]["SpecialWarningFontStyle"] = "THICKOUTLINE"
 			DBM_AllSavedOptions["Default"]["SpecialWarningFontShadow"] = true
 			DBM_AllSavedOptions["Default"]["SpecialWarningPoint"] = "CENTER"
@@ -671,7 +671,11 @@ T.createmultilinebox = function(parent, width, height, x, y, name, table, value,
 	scrollBG.edit:SetTextInsets(5, 5, 5, 5)
 	scrollBG.edit:SetFrameLevel(scrollAC:GetFrameLevel()+1)
 	scrollBG.edit:SetAllPoints()
-	scrollBG.edit:SetFontObject(ChatFontNormal)
+	if value == "Import" then
+		scrollBG.edit:SetFont(G.norFont, 10, "NONE")
+	else
+		scrollBG.edit:SetFontObject(ChatFontNormal)
+	end
 	scrollBG.edit:SetMultiLine(true)
 	scrollBG.edit:EnableMouse(true)
 	scrollBG.edit:SetAutoFocus(false)
@@ -820,6 +824,16 @@ T.createradiobuttongroup = function(parent, x, y, name, table, value, group)
 				self:SetChecked(true)
 			end
 		end)
+		
+		frame[k]:SetScript("OnDisable", function(self)
+			local tex = self:GetCheckedTexture()
+			tex:SetVertexColor(.7, .7, .7, .5)
+		end)
+		
+		frame[k]:SetScript("OnEnable", function(self)
+			local tex = self:GetCheckedTexture()
+			tex:SetVertexColor(G.Ccolor.r, G.Ccolor.g, G.Ccolor.b)
+		end)
 	end
 	
 	for k, v in T.pairsByKeys(group) do
@@ -840,13 +854,12 @@ T.createradiobuttongroup = function(parent, x, y, name, table, value, group)
 	local buttons = {frame:GetChildren()}
 	for i = 1, #buttons do
 		if i == 1 then
-			buttons[i]:SetPoint("LEFT", 5, 0)
+			frame.name:SetPoint("LEFT", 5, 0)
+			buttons[i]:SetPoint("LEFT", frame.name, "RIGHT", 10, 1)
 		else
 			buttons[i]:SetPoint("LEFT", _G[buttons[i-1]:GetName() .. "Text"], "RIGHT", 5, 0)
 		end
-		if i == #buttons then
-			frame.name:SetPoint("LEFT", _G[buttons[i]:GetName() .. "Text"], "RIGHT", 10, 1)
-		end
+
 	end
 	
 	parent[value] = frame

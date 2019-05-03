@@ -1,5 +1,5 @@
 ﻿local T, C, L, G = unpack(select(2, ...))
-local F = unpack(Aurora)
+local F = unpack(AuroraClassic)
 if not IsAddOnLoaded("Skada") or not aCoreCDB["SkinOptions"]["setSkada"] then return end
 
 local Skada = Skada

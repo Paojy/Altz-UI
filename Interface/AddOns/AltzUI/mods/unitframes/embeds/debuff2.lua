@@ -125,7 +125,7 @@ local dispelPriority = {
 --local ascending = { }
 
 local CustomFilter = function(...)
-    local name, _, _, _, dtype, _, _, caster, spellID = ...
+    local name, _, _, dtype, _, _, caster, spellID = ...
 	
     local priority = 0
 	local asc = false
@@ -221,10 +221,10 @@ local Update = function(self, event, unit)
 	
     local index = 1
     while true do
-        local name, rank, texture, count, dtype, duration, expires, caster, _, _, spellID = UnitDebuff(unit, index)
+        local name, texture, count, dtype, duration, expires, caster, _, _, spellID = UnitDebuff(unit, index)
         if not name then break end
 		
-		local priority, asc = CustomFilter(name, rank, texture, count, dtype, duration, expires, caster, spellID)
+		local priority, asc = CustomFilter(name, texture, count, dtype, duration, expires, caster, spellID)
 		
 		if priority > 0 then
 			active_dubuffs[name] = {}
@@ -277,7 +277,7 @@ local Enable = function(self)
     if(auras) then
         auras.button1 = CreateAuraIcon(auras, auras.sizeA, auras.point1A, self, auras.point2A, auras.xA, auras.yA)
 		auras.button2 = CreateAuraIcon(auras, auras.sizeB, auras.point1B, self, auras.point2B, auras.xB, auras.yB)
-        self:RegisterEvent("UNIT_AURA", Update)
+        self:RegisterEvent("UNIT_AURA", Update, true)
         return true
     end
 end

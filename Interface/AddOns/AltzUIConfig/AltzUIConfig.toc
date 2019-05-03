@@ -1,10 +1,24 @@
-﻿## Interface: 70300
+﻿## Interface: 80200
 ## Title: |cffEE3A8CAltz|rUI Config
-## Version: 7.34
+## Version: 8.11
 ## Author: Paopao001
-## Dependencies: Aurora
+## Dependencies: AuroraClassic
 ## OptionalDeps: !ClassColors, Skada, DBM-Core, BigWigs
 ## SavedVariables: aCoreDB
 ## SavedVariablesPerCharacter: aCoreCDB
- 
-load.xml
+
+init.lua
+
+locales\chinese.lua
+locales\twchinese.lua
+locales\portuguese.lua
+locales\english.lua
+
+lib\LibStub.lua
+lib\UIDropDownMenu\LibUIDropDownMenu.xml
+
+PopupDialogs.lua
+api.lua
+db.lua
+gui.lua
+setup.lua

@@ -1,5 +1,5 @@
 ﻿local T, C, L, G = unpack(select(2, ...))
-local F = unpack(Aurora)
+local F = unpack(AuroraClassic)
 if not IsAddOnLoaded("Recount") or not aCoreCDB["SkinOptions"]["setRecount"] then return end
 
 local _G = _G

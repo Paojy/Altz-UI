@@ -1,5 +1,5 @@
 local T, C, L, G = unpack(select(2, ...))
-local F = unpack(Aurora)
+local F = unpack(AuroraClassic)
 local dragFrameList = G.dragFrameList
 
 local bodercolor = {r = 0.4, g = 0.35, b = 0.35}

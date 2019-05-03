@@ -1,6 +1,6 @@
 ﻿-- Original Author: Weasoug, etc
 local T, C, L, G = unpack(select(2, ...))
-local F = unpack(Aurora)
+local F = unpack(AuroraClassic)
 
 local collect = aCoreCDB["OtherOptions"]["collectgarbage"]
 local acceptres = aCoreCDB["OtherOptions"]["acceptres"]
@@ -11,6 +11,7 @@ local autoscreenshot = aCoreCDB["OtherOptions"]["autoscreenshot"]
 local acceptfriendlyinvites = aCoreCDB["OtherOptions"]["acceptfriendlyinvites"]
 local autoinvite = aCoreCDB["OtherOptions"]["autoinvite"]
 local vignettealert = aCoreCDB["OtherOptions"]["vignettealert"]
+local vignettealerthide = aCoreCDB["OtherOptions"]["vignettealerthide"]
 local flashtaskbar = aCoreCDB["OtherOptions"]["flashtaskbar"]
 local autopet = aCoreCDB["OtherOptions"]["autopet"]
 local LFGRewards = aCoreCDB["OtherOptions"]["LFGRewards"]
@@ -103,6 +104,9 @@ function eventframe:MERCHANT_SHOW()
 				if gearRepaired then
 					print(format(L["修理花费"].." %.1fg ("..GUILD..")", cost * 0.0001))
 				end
+			elseif aCoreCDB["ItemOptions"]["autorepair_guild_auto"] and GetMoney() > cost then
+				RepairAllItems()
+				print(format(L["修理花费"].." %.1fg", cost * 0.0001))
 			end
 		elseif cost > 0 and GetMoney() > cost then
 			RepairAllItems()
@@ -149,12 +153,12 @@ Say Sapped
 -------------------------------------------------------------------------------]]
 if saysapped then
 	eventframe:RegisterEvent('COMBAT_LOG_EVENT_UNFILTERED')
-	function eventframe:COMBAT_LOG_EVENT_UNFILTERED(...)
+	function eventframe:COMBAT_LOG_EVENT_UNFILTERED()
 		local timestamp, etype, hideCaster,
-        sourceGUID, sourceName, sourceFlags, sourceRaidFlags, destGUID, destName, destFlags, destRaidFlags, spellID = ...
+        sourceGUID, sourceName, sourceFlags, sourceRaidFlags, destGUID, destName, destFlags, destRaidFlags, spellID = CombatLogGetCurrentEventInfo()
 		if (etype == "SPELL_AURA_APPLIED" or etype == "SPELL_AURA_REFRESH") and destName == G.PlayerName and spellID == 6770 then
 			SendChatMessage(L["被闷了"], "SAY")
-			DEFAULT_CHAT_FRAME:AddMessage(L["被闷了2"].." "..(select(7,...) or "(unknown)"))
+			DEFAULT_CHAT_FRAME:AddMessage(L["被闷了2"].." ".. sourceName or "(unknown)")
 		end
 	end
 end
@@ -345,17 +349,16 @@ Simple Vignette alert
 local vignettes = {}
 
 if vignettealert then
-	eventframe:RegisterEvent("VIGNETTE_ADDED")
-	function eventframe:VIGNETTE_ADDED(id)
-		if id and not vignettes[id] then
-			local x, y, name, icon = C_Vignettes.GetVignetteInfoFromInstanceID(id)
-			local left, right, top, bottom = GetObjectIconTextureCoords(icon)
-			
-			PlaySoundFile("Sound\\Interface\\RaidWarning.wav")
-			--local str = "|TInterface\\MINIMAP\\OBJECTICONS:0:0:0:0:256:256:"..(left*256)..":"..(right*256)..":"..(top*256)..":"..(bottom*256).."|t"
-			RaidNotice_AddMessage(RaidWarningFrame, (name or "Unknown").." "..L["出现了！"], ChatTypeInfo["RAID_WARNING"])
-			print(name,L["出现了！"])
-			vignettes[id] = true
+	eventframe:RegisterEvent("VIGNETTE_MINIMAP_UPDATED")
+	function eventframe:VIGNETTE_MINIMAP_UPDATED(id)
+		if id and not vignettes[id] and (not vignettealerthide or not UnitOnTaxi("player")) then
+			local info = C_VignetteInfo.GetVignetteInfo(id)
+			if info then
+				PlaySoundFile("Sound\\Interface\\RaidWarning.wav")
+				RaidNotice_AddMessage(RaidWarningFrame, (info.name or "Unknown").." "..L["出现了！"], ChatTypeInfo["RAID_WARNING"])
+				print(info.name,L["出现了！"])
+				vignettes[id] = true
+			end
 		end
 	end
 end
@@ -482,13 +485,15 @@ end
 --[[-----------------------------------------------------------------------------
 LFG Auto Accept Proposal
 -------------------------------------------------------------------------------]]
+--[[
 if croods then
-	WorldMapButton.coordText = WorldMapFrameCloseButton:CreateFontString(nil, "OVERLAY", "GameFontGreen") 
-	WorldMapButton.coordText:SetPoint("BOTTOM", WorldMapScrollFrame, "BOTTOM", 0, 6)
+	WorldMapFrameCloseButton.coordText = WorldMapFrameCloseButton:CreateFontString(nil, "OVERLAY", "GameFontGreen") 
+	WorldMapFrameCloseButton.coordText:SetPoint("BOTTOM", WorldMapFrame.ScrollContainer.Child, "BOTTOM", 0, 6)
 
-	WorldMapButton:HookScript("OnUpdate", function(self)
+	WorldMapFrameCloseButton:HookScript("OnUpdate", function(self)
 	    if select(2, GetInstanceInfo()) == "none" then
-		   local px, py = GetPlayerMapPosition("player") 
+		   local map = C_Map.GetPlayerMapPosition(C_Map.GetBestMapForUnit("player"), "player")
+		   local px, py = map.x, map.y
 		   local x, y = GetCursorPosition() 
 		   local width, height, scale = self:GetWidth(), self:GetHeight(), self:GetEffectiveScale() 
 		   local centerX, centerY = self:GetCenter() 
@@ -504,7 +509,7 @@ if croods then
 		   end
 	    end
 	end) 
-end
+end]]--
 --[[-----------------------------------------------------------------------------
 LFG Auto Accept Proposal
 -------------------------------------------------------------------------------]]

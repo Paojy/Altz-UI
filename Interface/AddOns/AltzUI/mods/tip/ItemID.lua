@@ -1,5 +1,5 @@
 local T, C, L, G = unpack(select(2, ...))
-local F = unpack(Aurora)
+local F = unpack(AuroraClassic)
 
 if not aCoreCDB["TooltipOptions"]["showitemID"] or not aCoreCDB["TooltipOptions"]["enabletip"] then return end
 

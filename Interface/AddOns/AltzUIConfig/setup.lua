@@ -1,5 +1,5 @@
 ﻿local T, C, L, G = unpack(select(2, ...))
-local F = unpack(Aurora)
+local F = unpack(AuroraClassic)
 
 local function ShowFinish(text, subtext)
     local levelUpTexCoords = {
@@ -28,7 +28,7 @@ local function ShowFinish(text, subtext)
     LevelUpDisplay.blackBg.grow.anim1:SetStartDelay(levelUpTexCoords.gLineDelay)
 	
     LevelUpDisplay.scenarioFrame.newStage:Play()
-    PlaySoundKitID(31749)
+    PlaySound(31749)
 		
     LevelUpDisplay:SetScript("OnShow", script)
 end

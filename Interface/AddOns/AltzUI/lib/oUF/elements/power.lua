@@ -17,14 +17,17 @@ A default texture will be applied if the widget is a StatusBar and doesn't have 
 
 ## Options
 
-.frequentUpdates - Indicates whether to use UNIT_POWER_FREQUENT instead UNIT_POWER to update the bar. Only valid for the
-                   player and pet units (boolean)
-.displayAltPower - Use this to let the widget display alternate power if the unit has one. If no alternate power the
-                   display will fall back to primary power (boolean)
-.useAtlas        - Use this to let the widget use an atlas for its texture if `.atlas` is defined on the widget or an
-                   atlas is present in `self.colors.power` for the appropriate power type (boolean)
-.atlas           - A custom atlas (string)
-.smoothGradient  - 9 color values to be used with the .colorSmooth option (table)
+.frequentUpdates                  - Indicates whether to use UNIT_POWER_FREQUENT instead UNIT_POWER_UPDATE to update the
+                                    bar. Only valid for the player and pet units (boolean)
+.displayAltPower                  - Use this to let the widget display alternate power if the unit has one. If no
+                                    alternate power the display will fall back to primary power (boolean)
+.useAtlas                         - Use this to let the widget use an atlas for its texture if `.atlas` is defined on
+                                    the widget or an atlas is present in `self.colors.power` for the appropriate power
+                                    type (boolean)
+.atlas                            - A custom atlas (string)
+.smoothGradient                   - 9 color values to be used with the .colorSmooth option (table)
+.considerSelectionInCombatHostile - Indicates whether selection should be considered hostile while the unit is in
+                                    combat with the player (boolean)
 
 The following options are listed by priority. The first check that returns true decides the color of the bar.
 
@@ -35,16 +38,19 @@ The following options are listed by priority. The first check that returns true 
 .colorPower        - Use `self.colors.power[token]` to color the bar based on the unit's power type. This method will
                      fall-back to `:GetAlternativeColor()` if it can't find a color matching the token. If this function
                      isn't defined, then it will attempt to color based upon the alternative power colors returned by
-                     [UnitPowerType](http://wowprogramming.com/docs/api/UnitPowerType). Finally, if these aren't
+                     [UnitPowerType](http://wowprogramming.com/docs/api/UnitPowerType.html). Finally, if these aren't
                      defined, then it will attempt to color the bar based upon `self.colors.power[type]` (boolean)
 .colorClass        - Use `self.colors.class[class]` to color the bar based on unit class. `class` is defined by the
-                     second return of [UnitClass](http://wowprogramming.com/docs/api/UnitClass) (boolean)
+                     second return of [UnitClass](http://wowprogramming.com/docs/api/UnitClass.html) (boolean)
 .colorClassNPC     - Use `self.colors.class[class]` to color the bar if the unit is a NPC (boolean)
 .colorClassPet     - Use `self.colors.class[class]` to color the bar if the unit is player controlled, but not a player
                      (boolean)
+.colorSelection    - Use `self.colors.selection[selection]` to color the bar based on the unit's selection color.
+                     `selection` is defined by the return value of Private.unitSelectionType, a wrapper function
+                     for [UnitSelectionType](https://wow.gamepedia.com/API_UnitSelectionType) (boolean)
 .colorReaction     - Use `self.colors.reaction[reaction]` to color the bar based on the player's reaction towards the
                      unit. `reaction` is defined by the return value of
-                     [UnitReaction](http://wowprogramming.com/docs/api/UnitReaction) (boolean)
+                     [UnitReaction](http://wowprogramming.com/docs/api/UnitReaction.html) (boolean)
 .colorSmooth       - Use `smoothGradient` if present or `self.colors.smooth` to color the bar with a smooth gradient
                      based on the player's current power percentage (boolean)
 
@@ -90,9 +96,12 @@ The following options are listed by priority. The first check that returns true 
 
 local _, ns = ...
 local oUF = ns.oUF
+local Private = oUF.Private
+
+local unitSelectionType = Private.unitSelectionType
 
 -- sourced from FrameXML/UnitPowerBarAlt.lua
-local ALTERNATE_POWER_INDEX = ALTERNATE_POWER_INDEX or 10
+local ALTERNATE_POWER_INDEX = Enum.PowerType.Alternate or 10
 
 local function getDisplayPower(unit)
 	local _, min, _, _, _, _, showOnRaid = UnitAlternatePowerInfo(unit)
@@ -133,11 +142,13 @@ local function UpdateColor(element, unit, cur, min, max, displayType)
 		(element.colorClassPet and UnitPlayerControlled(unit) and not UnitIsPlayer(unit)) then
 		local _, class = UnitClass(unit)
 		t = parent.colors.class[class]
+	elseif(element.colorSelection and unitSelectionType(unit, element.considerSelectionInCombatHostile)) then
+		t = parent.colors.selection[unitSelectionType(unit, element.considerSelectionInCombatHostile)]
 	elseif(element.colorReaction and UnitReaction(unit, 'player')) then
 		t = parent.colors.reaction[UnitReaction(unit, 'player')]
 	elseif(element.colorSmooth) then
 		local adjust = 0 - (min or 0)
-		r, g, b = parent.ColorGradient(cur + adjust, max + adjust, unpack(element.smoothGradient or parent.colors.smooth))
+		r, g, b = parent:ColorGradient(cur + adjust, max + adjust, unpack(element.smoothGradient or parent.colors.smooth))
 	end
 
 	if(t) then
@@ -215,7 +226,7 @@ local function Update(self, event, unit)
 	* cur         - the unit's current power value (number)
 	* min         - the unit's minimum possible power value (number)
 	* max         - the unit's maximum possible power value (number)
-	* displayType - the alternative power display type if applicable (number?)[ALTERNATE_POWER_INDEX]
+	* displayType - the alternative power display type if applicable (number?)[Enum.PowerType.Alternate]
 	--]]
 	element:UpdateColor(unit, cur, min, max, displayType)
 
@@ -249,16 +260,36 @@ local function ForceUpdate(element)
 	return Path(element.__owner, 'ForceUpdate', element.__owner.unit)
 end
 
-local function Enable(self, unit)
+--[[ Power:SetFrequentUpdates(state)
+Used to toggle frequent updates.
+
+* self  - the Power element
+* state - the desired state of frequent updates (boolean)
+--]]
+local function SetFrequentUpdates(element, state)
+	if(element.frequentUpdates ~= state) then
+		element.frequentUpdates = state
+		if(element.frequentUpdates) then
+			element.__owner:UnregisterEvent('UNIT_POWER_UPDATE', Path)
+			element.__owner:RegisterEvent('UNIT_POWER_FREQUENT', Path)
+		else
+			element.__owner:UnregisterEvent('UNIT_POWER_FREQUENT', Path)
+			element.__owner:RegisterEvent('UNIT_POWER_UPDATE', Path)
+		end
+	end
+end
+
+local function Enable(self)
 	local element = self.Power
 	if(element) then
 		element.__owner = self
 		element.ForceUpdate = ForceUpdate
+		element.SetFrequentUpdates = SetFrequentUpdates
 
-		if(element.frequentUpdates and (unit == 'player' or unit == 'pet')) then
+		if(element.frequentUpdates) then
 			self:RegisterEvent('UNIT_POWER_FREQUENT', Path)
 		else
-			self:RegisterEvent('UNIT_POWER', Path)
+			self:RegisterEvent('UNIT_POWER_UPDATE', Path)
 		end
 
 		self:RegisterEvent('UNIT_POWER_BAR_SHOW', Path)
@@ -267,6 +298,7 @@ local function Enable(self, unit)
 		self:RegisterEvent('UNIT_CONNECTION', Path)
 		self:RegisterEvent('UNIT_MAXPOWER', Path)
 		self:RegisterEvent('UNIT_FACTION', Path) -- For tapping
+		self:RegisterEvent('UNIT_FLAGS', Path) -- For selection
 
 		if(element:IsObjectType('StatusBar')) then
 			element.texture = element:GetStatusBarTexture() and element:GetStatusBarTexture():GetTexture() or [[Interface\TargetingFrame\UI-StatusBar]]
@@ -289,13 +321,14 @@ local function Disable(self)
 		element:Hide()
 
 		self:UnregisterEvent('UNIT_POWER_FREQUENT', Path)
-		self:UnregisterEvent('UNIT_POWER', Path)
+		self:UnregisterEvent('UNIT_POWER_UPDATE', Path)
 		self:UnregisterEvent('UNIT_POWER_BAR_SHOW', Path)
 		self:UnregisterEvent('UNIT_POWER_BAR_HIDE', Path)
 		self:UnregisterEvent('UNIT_DISPLAYPOWER', Path)
 		self:UnregisterEvent('UNIT_CONNECTION', Path)
 		self:UnregisterEvent('UNIT_MAXPOWER', Path)
 		self:UnregisterEvent('UNIT_FACTION', Path)
+		self:UnregisterEvent('UNIT_FLAGS', Path)
 	end
 end
 

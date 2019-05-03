@@ -5,6 +5,7 @@ local oUF = AltzUF or oUF
 --[[               Some update               ]]--
 --=============================================--
 local pxbackdrop = { edgeFile = [=[Interface\ChatFrame\ChatFrameBackground]=],  edgeSize = 2, }
+local role
 
 local function Createpxborder(self, lvl)
 	local pxbd = CreateFrame("Frame", nil, self)
@@ -103,12 +104,13 @@ end
 --=============================================--
 --[[              Click Cast                 ]]--
 --=============================================--
-local OnMouseOver = function(self)
+T.RaidOnMouseOver = function(self)
     self:HookScript("OnEnter", function(self) UnitFrame_OnEnter(self) end)
     self:HookScript("OnLeave", function(self) UnitFrame_OnLeave(self) end)
 end
 
-local function EnableWheelCastOnFrame(object)
+T.RegisterClicks = function(object)
+	-- EnableWheelCastOnFrame
 	local enable = false
 	for i = 6, 13 do
 		if aCoreCDB["UnitframeOptions"]["ClickCast"][tostring(i)]["Click"]["action"] and aCoreCDB["UnitframeOptions"]["ClickCast"][tostring(i)]["Click"]["action"] ~= "NONE" then
@@ -137,9 +139,7 @@ local function EnableWheelCastOnFrame(object)
 			self:ClearBindings()
 		]])
 	end
-end
-
-local function RegisterClicks(object)
+	
 	local action, macrotext, key_tmp
 	local C = aCoreCDB["UnitframeOptions"]["ClickCast"]
 	for id, var in pairs(C) do
@@ -186,11 +186,11 @@ local func = function(self, unit)
 	-- target border --
 	self.targetborder = Createpxborder(self, 2)
 	self.targetborder:SetBackdropBorderColor(1, 1, .4)
-	self:RegisterEvent("PLAYER_TARGET_CHANGED", ChangedTarget)
+	self:RegisterEvent("PLAYER_TARGET_CHANGED", ChangedTarget, true)
 
 	-- threat border --
 	self.threatborder = Createpxborder(self, 1)
-	self:RegisterEvent("UNIT_THREAT_SITUATION_UPDATE", UpdateThreat)
+	self:RegisterEvent("UNIT_THREAT_SITUATION_UPDATE", UpdateThreat, true)
 	
 	-- backdrop --
 	self.bg = CreateFrame("Frame", nil, self)
@@ -331,6 +331,13 @@ local func = function(self, unit)
     readycheck:SetSize(16, 16)
     readycheck:SetPoint"CENTER"
     self.ReadyCheckIndicator = readycheck
+
+	local summonIndicator = self:CreateTexture(nil, 'OVERLAY')
+    summonIndicator:SetSize(32, 32)
+    summonIndicator:SetPoint('TOPRIGHT', self)
+	summonIndicator:SetAtlas('Raid-Icon-SummonPending', true)
+	summonIndicator:Show()
+    --self.SummonIndicator = summonIndicator
 	
 	local Auras = CreateFrame("Frame", nil, self)
 	Auras:SetFrameLevel(4)
@@ -374,20 +381,15 @@ local func = function(self, unit)
         outsideAlpha = 0.3,
     }
 	
-	if aCoreCDB["UnitframeOptions"]["enablearrow"] then
-		self.freebRange = range
-	else
-		self.Range = range
-	end
+	self.Range = range
 	
 	if aCoreCDB["UnitframeOptions"]["enableClickCast"] then
-		EnableWheelCastOnFrame(self)
-		RegisterClicks(self)
+		T.RegisterClicks(self)
 	end
 	
 	self:SetAttribute("toggleForVehicle", aCoreCDB["UnitframeOptions"]["toggleForVehicle"])
 	
-	OnMouseOver(self)
+	T.RaidOnMouseOver(self)
 end
 
 local dfunc = function(self, unit)
@@ -405,11 +407,11 @@ local dfunc = function(self, unit)
 	-- target border --
 	self.targetborder = Createpxborder(self, 2)
 	self.targetborder:SetBackdropBorderColor(1, 1, .4)
-	self:RegisterEvent("PLAYER_TARGET_CHANGED", ChangedTarget)
+	self:RegisterEvent("PLAYER_TARGET_CHANGED", ChangedTarget, true)
 
 	-- threat border --
 	self.threatborder = Createpxborder(self, 1)
-	self:RegisterEvent("UNIT_THREAT_SITUATION_UPDATE", UpdateThreat)
+	self:RegisterEvent("UNIT_THREAT_SITUATION_UPDATE", UpdateThreat, true)
 	
 	-- backdrop --
 	self.bg = CreateFrame("Frame", nil, self)
@@ -508,33 +510,30 @@ local dfunc = function(self, unit)
     readycheck:SetPoint"CENTER"
     self.ReadyCheckIndicator = readycheck
 	
+	local summonIndicator = self:CreateTexture(nil, 'OVERLAY')
+    summonIndicator:SetSize(32, 32)
+    summonIndicator:SetPoint('TOPRIGHT', self)
+    self.SummonIndicator = summonIndicator
+	
 	-- Range
     local range = {
         insideAlpha = 1,
         outsideAlpha = 0.3,
     }
 	
-	if aCoreCDB["UnitframeOptions"]["enablearrow"] then
-		self.freebRange = range
-	else
-		self.Range = range
-	end
+	self.Range = range
 	
 	if aCoreCDB["UnitframeOptions"]["enableClickCast"] then
-		EnableWheelCastOnFrame(self)
-		RegisterClicks(self)
+		T.RegisterClicks(self)
 	end
 	
 	self:SetAttribute("toggleForVehicle", aCoreCDB["UnitframeOptions"]["toggleForVehicle"])
 	
-	OnMouseOver(self)
+	T.RaidOnMouseOver(self)
 end
 
 oUF:RegisterStyle("Altz_Healerraid", func)
 oUF:RegisterStyle("Altz_DPSraid", dfunc)
-
-local healerraid
-local dpsraid
 
 local initconfig = [[
 	self:SetWidth(%d)
@@ -549,9 +548,187 @@ local initconfig = [[
 	end
 ]]
 
+local groupfilter
+
+if aCoreCDB["UnitframeOptions"]["party_num"] == 2 then
+	groupfilter = "1,2"
+elseif aCoreCDB["UnitframeOptions"]["party_num"] == 4 then
+	groupfilter = "1,2,3,4"
+elseif aCoreCDB["UnitframeOptions"]["party_num"] == 8 then
+	groupfilter = "1,2,3,4,5,6"
+else
+	groupfilter = "1,2,3,4,5,6,7,8"
+end
+
+local groupingOrder = {
+	["GROUP"] = "1,2,3,4,5,6,7,8",
+	["CLASS"] = "WARRIOR, DEATHKNIGHT, PALADIN, WARLOCK, SHAMAN, MAGE, MONK, HUNTER, PRIEST, ROGUE, DRUID",
+	["ROLE"] = "TANK, HEALER, DAMAGER"
+}
+
+local anchor = aCoreCDB["UnitframeOptions"]["hor_party"] and "LEFT" or "TOP"
+local party_anchor = aCoreCDB["UnitframeOptions"]["hor_party"] and "TOP" or "LEFT"
+
+local healerraid = CreateFrame("Frame", "Altz_HealerRaid_Holder", UIParent)
+healerraid.movingname = L["治疗模式团队框架"]
+healerraid.point = {
+	healer = {a1 = "CENTER", parent = "UIParent", a2 = "BOTTOM", x = 0, y = 225},
+	dpser = {a1 = "BOTTOMLEFT", parent = "UIParent", a2 = "BOTTOMLEFT", x = 10, y = 250},
+}
+T.CreateDragFrame(healerraid)
+
+local healerpet = CreateFrame("Frame", "Altz_HealerPetRaid_Holder", UIParent)
+healerpet.movingname = L["治疗模式宠物团队框架"]
+healerpet.point = {
+	healer = {a1 = "TOPLEFT", parent = healerraid:GetName(), a2 = "TOPRIGHT", x = 10, y = 0},
+	dpser = {a1 = "TOPLEFT", parent = healerraid:GetName(), a2 = "TOPRIGHT", x = 10, y = 0},
+}
+T.CreateDragFrame(healerpet)
+
+local party_num, old_party_num, old_anchor = 0, 0
+T.PlaceRaidFrame = function()
+	role = T.CheckRole()
+	local anchor = aCoreCDB["FramePoints"]["Altz_HealerRaid_Holder"][role]["a1"]
+	
+	if aCoreCDB["UnitframeOptions"]["ind_party"] then -- 小队相连
+		if (anchor ~= old_anchor) then
+			healerraid[1]:ClearAllPoints()
+			healerraid[1]:SetPoint(anchor, healerraid, anchor, 0, 0)
+			old_anchor = anchor
+		end
+	else
+		if aCoreCDB["UnitframeOptions"]["hor_party"] then -- 5*8 水平小队
+			for i = aCoreCDB["UnitframeOptions"]["party_num"], 1, -1 do
+				if healerraid[i]:GetWidth() > 10 then
+					party_num = i
+					break
+				end
+			end
+			
+			if (party_num ~= 0 and party_num ~= old_party_num) or (anchor ~= old_anchor) then
+
+				healerraid[1]:ClearAllPoints()
+				if string.find(anchor, "TOP") then
+					healerraid[1]:SetPoint("TOPLEFT", healerraid, "TOPLEFT", 0, 0)
+				elseif string.find(anchor, "BOTTOM") then
+					healerraid[1]:SetPoint("TOPLEFT", healerraid, "BOTTOMLEFT", 0, party_num*(aCoreCDB["UnitframeOptions"]["healerraidheight"]+5)-5)
+				else
+					healerraid[1]:SetPoint("TOPLEFT", healerraid, "LEFT", 0, (party_num*(aCoreCDB["UnitframeOptions"]["healerraidheight"]+5)-5)/2)
+				end
+				
+				old_party_num = party_num
+				old_anchor = anchor
+				
+			end
+		else -- 8*5 垂直小队
+			for i = aCoreCDB["UnitframeOptions"]["party_num"], 1, -1 do
+				if healerraid[i]:GetHeight() > 10 then
+					party_num = i
+					break
+				end
+			end
+			
+			if (party_num ~= 0 and party_num ~= old_party_num) or (anchor ~= old_anchor) then
+			
+				healerraid[1]:ClearAllPoints()
+				if string.find(anchor, "LEFT") then
+					healerraid[1]:SetPoint("TOPLEFT", healerraid, "TOPLEFT", 0, 0)
+				elseif string.find(anchor, "RIGHT") then
+					healerraid[1]:SetPoint("TOPLEFT", healerraid, "TOPRIGHT", -party_num*(aCoreCDB["UnitframeOptions"]["healerraidwidth"]+5)+5, 0)
+				else
+					healerraid[1]:SetPoint("TOPLEFT", healerraid, "TOP", (-party_num*(aCoreCDB["UnitframeOptions"]["healerraidwidth"]+5)+5)/2, 0)
+				end
+				
+				old_party_num = party_num
+				old_anchor = anchor
+			end
+		end
+	end
+end
+	
 local function Spawnhealraid()
 	oUF:SetActiveStyle"Altz_Healerraid"
-	healerraid = oUF:SpawnHeader('Altz_HealerRaid', nil, 'raid,party,solo',
+	if not aCoreCDB["UnitframeOptions"]["ind_party"] then -- 小队分离
+		for i = 1, aCoreCDB["UnitframeOptions"]["party_num"] do
+			healerraid[i] = oUF:SpawnHeader(i== 1 and 'Altz_HealerRaid' or 'Altz_HealerRaid'..i, nil, aCoreCDB["UnitframeOptions"]["raidframe_inparty"] and 'raid,party,solo' or 'raid,solo',
+				'oUF-initialConfigFunction', initconfig:format(aCoreCDB["UnitframeOptions"]["healerraidwidth"], aCoreCDB["UnitframeOptions"]["healerraidheight"], 1),
+				'showPlayer', true,
+				'showSolo', aCoreCDB["UnitframeOptions"]["showsolo"],
+				'showParty', true,
+				'showRaid', true,
+				'xOffset', 5,
+				'yOffset', -5,
+				'point', anchor,
+				'groupFilter', tostring(i),
+				'groupingOrder', '1,2,3,4,5,6,7,8',
+				'groupBy', 'GROUP',
+				'maxColumns', 1,
+				'unitsPerColumn', 5,
+				'columnSpacing', 5,
+				'columnAnchorPoint', party_anchor
+				)
+		end
+	else -- 小队相连
+		healerraid[1] = oUF:SpawnHeader('Altz_HealerRaid', nil, aCoreCDB["UnitframeOptions"]["raidframe_inparty"] and 'raid,party,solo' or 'raid,solo',
+			'oUF-initialConfigFunction', initconfig:format(aCoreCDB["UnitframeOptions"]["healerraidwidth"], aCoreCDB["UnitframeOptions"]["healerraidheight"], 1),
+			'showPlayer', true,
+			'showSolo', aCoreCDB["UnitframeOptions"]["showsolo"],
+			'showParty', true,
+			'showRaid', true,
+			'xOffset', 5,
+			'yOffset', -5,
+			'point', anchor,
+			'groupFilter', groupfilter,
+			'groupingOrder', groupingOrder[aCoreCDB["UnitframeOptions"]["healerraidgroupby"]],
+			'groupBy', aCoreCDB["UnitframeOptions"]["healerraidgroupby"],
+			'maxColumns', 8,
+			'unitsPerColumn', 5,
+			'columnSpacing', 5,
+			'columnAnchorPoint', party_anchor
+		)
+	end
+	
+	if aCoreCDB["UnitframeOptions"]["hor_party"] then -- 5*8 水平小队
+		healerraid:SetSize(5*(aCoreCDB["UnitframeOptions"]["healerraidwidth"]+5)-5, aCoreCDB["UnitframeOptions"]["party_num"]*(aCoreCDB["UnitframeOptions"]["healerraidheight"]+5)-5)
+		for i = 1, aCoreCDB["UnitframeOptions"]["party_num"] do
+			if healerraid[i] then
+				if i == 1 then
+					T.PlaceRaidFrame()
+					healerraid[i]:SetScript("OnSizeChanged", function()
+						T.PlaceRaidFrame()
+					end)
+				else
+					healerraid[i]:SetPoint("TOPLEFT", healerraid[i-1], "BOTTOMLEFT", 0, -5)
+					if not aCoreCDB["UnitframeOptions"]["ind_party"] then
+						healerraid[i]:SetScript("OnSizeChanged", function()
+							T.PlaceRaidFrame()
+						end)
+					end
+				end
+			end
+		end	
+	else -- 8*5 垂直小队
+		healerraid:SetSize(aCoreCDB["UnitframeOptions"]["party_num"]*(aCoreCDB["UnitframeOptions"]["healerraidwidth"]+5)-5, 5*(aCoreCDB["UnitframeOptions"]["healerraidheight"]+5)-5)
+		for i = 1, aCoreCDB["UnitframeOptions"]["party_num"] do
+			if healerraid[i] then
+				if i == 1 then
+					T.PlaceRaidFrame()
+					healerraid[i]:SetScript("OnSizeChanged", function()
+						T.PlaceRaidFrame()
+					end)
+				else
+					healerraid[i]:SetPoint("TOPLEFT", healerraid[i-1], "TOPRIGHT", 5, 0)
+					if not aCoreCDB["UnitframeOptions"]["ind_party"] then
+						healerraid[i]:SetScript("OnSizeChanged", function()
+							T.PlaceRaidFrame()
+						end)
+					end
+				end
+			end
+		end			
+	end
+	
+	healerpet[1] = oUF:SpawnHeader('Altz_HealerPetRaid', 'SecureGroupPetHeaderTemplate', aCoreCDB["UnitframeOptions"]["raidframe_inparty"] and 'raid,party,solo' or 'raid,solo',
 		'oUF-initialConfigFunction', initconfig:format(aCoreCDB["UnitframeOptions"]["healerraidwidth"], aCoreCDB["UnitframeOptions"]["healerraidheight"], 1),
 		'showPlayer', true,
 		'showSolo', aCoreCDB["UnitframeOptions"]["showsolo"],
@@ -559,77 +736,46 @@ local function Spawnhealraid()
 		'showRaid', true,
 		'xOffset', 5,
 		'yOffset', -5,
-		'point', aCoreCDB["UnitframeOptions"]["anchor"],
-		'groupFilter', aCoreCDB["UnitframeOptions"]["healergroupfilter"],
+		'point', anchor,
+		'groupFilter', groupfilter,
 		'groupingOrder', '1,2,3,4,5,6,7,8',
 		'groupBy', 'GROUP',
 		'maxColumns', 8,
 		'unitsPerColumn', 5,
 		'columnSpacing', 5,
-		'columnAnchorPoint', aCoreCDB["UnitframeOptions"]["partyanchor"]
-	)
-	healerraid.movingname = L["治疗模式团队框架"]
-	healerraid.point = {
-		healer = {a1 = "CENTER", parent = "UIParent", a2 = "BOTTOM", x = 0, y = 225},
-		dpser = {a1 = "BOTTOMLEFT", parent = "UIParent", a2 = "BOTTOMLEFT", x = 10, y = 250},
-	}
-	T.CreateDragFrame(healerraid)
-	healerraid.df:ClearAllPoints()
-	local size
-	if aCoreCDB["UnitframeOptions"]["healergroupfilter"] == "1,2,3,4,5,6,7,8" then
-		size = 40
-	elseif aCoreCDB["UnitframeOptions"]["healergroupfilter"] == "1,2,3,4,5,6" then
-		size = 30
-	elseif aCoreCDB["UnitframeOptions"]["healergroupfilter"] == "1,2,3,4" then
-		size = 20
-	else
-		size = 10
-	end
-	if aCoreCDB["UnitframeOptions"]["anchor"] == "LEFT" then
-		if aCoreCDB["UnitframeOptions"]["partyanchor"] == "LEFT" then
-			healerraid.df:SetSize(5*(size/5)*(aCoreCDB["UnitframeOptions"]["healerraidwidth"]+5)-5, aCoreCDB["UnitframeOptions"]["healerraidheight"])
-		else
-			healerraid.df:SetSize(5*(aCoreCDB["UnitframeOptions"]["healerraidwidth"]+5)-5, (size/5)*(aCoreCDB["UnitframeOptions"]["healerraidheight"]+5)-5)
-		end
-	else -- "TOP"
-		if aCoreCDB["UnitframeOptions"]["partyanchor"] == "LEFT" then
-			healerraid.df:SetSize((size/5)*(aCoreCDB["UnitframeOptions"]["healerraidwidth"]+5)-5, 5*(aCoreCDB["UnitframeOptions"]["healerraidheight"]+5)-5)
-		else
-			healerraid.df:SetSize(aCoreCDB["UnitframeOptions"]["healerraidwidth"], 5*(size/5)*(aCoreCDB["UnitframeOptions"]["healerraidheight"]+5)-5)
-		end
-	end
-	healerpet = oUF:SpawnHeader('Altz_HealerPetRaid', 'SecureGroupPetHeaderTemplate', 'raid,party,solo',
-		'oUF-initialConfigFunction', initconfig:format(aCoreCDB["UnitframeOptions"]["healerraidwidth"], aCoreCDB["UnitframeOptions"]["healerraidheight"], 1),
-		'showPlayer', true,
-		'showSolo', aCoreCDB["UnitframeOptions"]["showsolo"],
-		'showParty', true,
-		'showRaid', true,
-		'xOffset', 5,
-		'yOffset', -5,
-		'point', aCoreCDB["UnitframeOptions"]["anchor"],
-		'groupFilter', aCoreCDB["UnitframeOptions"]["healergroupfilter"],
-		'groupingOrder', '1,2,3,4,5,6,7,8',
-		'groupBy', 'GROUP',
-		'maxColumns', 8,
-		'unitsPerColumn', 5,
-		'columnSpacing', 5,
-		'columnAnchorPoint', aCoreCDB["UnitframeOptions"]["partyanchor"],
+		'columnAnchorPoint', party_anchor,
 		--'useOwnerUnit', true,
 		'unitsuffix', 'pet'
 	)
-	healerpet.movingname = L["治疗模式宠物团队框架"]
-	healerpet.point = {
-		healer = {a1 = "TOPLEFT", parent = healerraid:GetName(), a2 = "TOPRIGHT", x = 10, y = 0},
-		dpser = {a1 = "TOPLEFT", parent = healerraid:GetName(), a2 = "TOPRIGHT", x = 10, y = 0},
-	}
-	T.CreateDragFrame(healerpet)
-	healerpet.df:ClearAllPoints()
-	healerpet.df:SetSize(aCoreCDB["UnitframeOptions"]["healerraidwidth"], 5*(aCoreCDB["UnitframeOptions"]["healerraidheight"]+5)-5)
+	
+	if aCoreCDB["UnitframeOptions"]["hor_party"] then -- 5*8
+		healerpet:SetSize(5*(aCoreCDB["UnitframeOptions"]["healerraidwidth"]+5)-5, aCoreCDB["UnitframeOptions"]["healerraidheight"])
+	else -- 8*5
+		healerpet:SetSize(aCoreCDB["UnitframeOptions"]["healerraidwidth"], 5*(aCoreCDB["UnitframeOptions"]["healerraidheight"]+5)-5)
+	end
+	
+	healerpet[1]:SetPoint("TOPLEFT", healerpet, "TOPLEFT")
 end
+
+local dpsraid = CreateFrame("Frame", "Altz_DpsRaid_Holder", UIParent)
+dpsraid.movingname = L["输出模式团队框架"]
+dpsraid.point = {
+	healer = {a1 = "TOPLEFT", parent = "UIParent", a2 = "TOPLEFT", x = 15, y = -146},
+	dpser = {a1 = "TOPLEFT", parent = "UIParent", a2 = "TOPLEFT", x = 15, y = -146},
+}
+T.CreateDragFrame(dpsraid)
+
+local dpspet = CreateFrame("Frame", "Altz_DpsPetRaid_Holder", UIParent)
+dpspet.movingname = L["输出模式宠物团队框架"]
+dpspet.point = {
+	healer = {a1 = "TOPLEFT", parent = dpsraid:GetName(), a2 = "TOPRIGHT", x = 10, y = 0},
+	dpser = {a1 = "TOPLEFT", parent = dpsraid:GetName(), a2 = "TOPRIGHT", x = 10, y = 0},
+}
+T.CreateDragFrame(dpspet)
 
 local function Spawndpsraid()
 	oUF:SetActiveStyle"Altz_DPSraid"
-	dpsraid = oUF:SpawnHeader('Altz_DpsRaid', nil, 'raid,party,solo',
+	dpsraid[1] = oUF:SpawnHeader('Altz_DpsRaid', nil, aCoreCDB["UnitframeOptions"]["raidframe_inparty"] and 'raid,party,solo' or 'raid,solo',
 		'oUF-initialConfigFunction', initconfig:format(aCoreCDB["UnitframeOptions"]["dpsraidwidth"], aCoreCDB["UnitframeOptions"]["dpsraidheight"], 1),
 		'showPlayer', true,
 		'showSolo', aCoreCDB["UnitframeOptions"]["showsolo"],
@@ -638,39 +784,20 @@ local function Spawndpsraid()
 		'xOffset', 5,
 		'yOffset', -5,
 		'point', "TOP",
-		'groupFilter', aCoreCDB["UnitframeOptions"]["dpsgroupfilter"],
-		'groupingOrder', aCoreCDB["UnitframeOptions"]["dpsraidgroupbyclass"] and "WARRIOR, DEATHKNIGHT, PALADIN, WARLOCK, SHAMAN, MAGE, MONK, HUNTER, PRIEST, ROGUE, DRUID" or "1,2,3,4,5,6,7,8",
-		'groupBy', aCoreCDB["UnitframeOptions"]["dpsraidgroupbyclass"] and "CLASS" or "GROUP",
+		'groupFilter', groupfilter,
+		'groupingOrder', groupingOrder[aCoreCDB["UnitframeOptions"]["dpsraidgroupby"]],
+		'groupBy', aCoreCDB["UnitframeOptions"]["dpsraidgroupby"],
 		'maxColumns', 8,
 		'unitsPerColumn', aCoreCDB["UnitframeOptions"]["unitnumperline"],
 		'columnSpacing', 5,
 		'columnAnchorPoint', "LEFT"
 	)
-	dpsraid.movingname = L["输出模式团队框架"]
-	dpsraid.point = {
-		healer = {a1 = "TOPLEFT", parent = "UIParent", a2 = "TOPLEFT", x = 15, y = -146},
-		dpser = {a1 = "TOPLEFT", parent = "UIParent", a2 = "TOPLEFT", x = 15, y = -146},
-	}	
-	T.CreateDragFrame(dpsraid)
-	dpsraid.df:ClearAllPoints()
-	local size, more
-	local size
-	if aCoreCDB["UnitframeOptions"]["dpsgroupfilter"] == "1,2,3,4,5,6,7,8" then
-		size = 40
-	elseif aCoreCDB["UnitframeOptions"]["dpsgroupfilter"] == "1,2,3,4,5,6" then
-		size = 30
-	elseif aCoreCDB["UnitframeOptions"]["dpsgroupfilter"] == "1,2,3,4" then
-		size = 20
-	else
-		size = 10
-	end
-	if size%aCoreCDB["UnitframeOptions"]["unitnumperline"] == 0 then
-		more = 0
-	else
-		more = 1
-	end
-	dpsraid.df:SetSize((math.floor(size/aCoreCDB["UnitframeOptions"]["unitnumperline"])+1)*aCoreCDB["UnitframeOptions"]["dpsraidwidth"], aCoreCDB["UnitframeOptions"]["unitnumperline"]*(aCoreCDB["UnitframeOptions"]["dpsraidheight"]+5)-5)
-	dpspet = oUF:SpawnHeader('Altz_DpsPetRaid', 'SecureGroupPetHeaderTemplate', 'raid,party,solo',
+
+	dpsraid:SetSize((math.floor(aCoreCDB["UnitframeOptions"]["party_num"]*5/aCoreCDB["UnitframeOptions"]["unitnumperline"])+1)*aCoreCDB["UnitframeOptions"]["dpsraidwidth"], aCoreCDB["UnitframeOptions"]["unitnumperline"]*(aCoreCDB["UnitframeOptions"]["dpsraidheight"]+5)-5)
+	
+	dpsraid[1]:SetPoint("TOPLEFT", dpsraid, "TOPLEFT")
+	
+	dpspet[1] = oUF:SpawnHeader('Altz_DpsPetRaid', 'SecureGroupPetHeaderTemplate', aCoreCDB["UnitframeOptions"]["raidframe_inparty"] and 'raid,party,solo' or 'raid,solo',
 		'oUF-initialConfigFunction', initconfig:format(aCoreCDB["UnitframeOptions"]["dpsraidwidth"], aCoreCDB["UnitframeOptions"]["dpsraidheight"], 1),
 		'showPlayer', true,
 		'showSolo', aCoreCDB["UnitframeOptions"]["showsolo"],
@@ -687,31 +814,37 @@ local function Spawndpsraid()
 		'columnSpacing', 5,
 		'columnAnchorPoint', "LEFT" 
 	)
-	dpspet.movingname = L["输出模式宠物团队框架"]
-	dpspet.point = {
-		healer = {a1 = "TOPLEFT", parent = dpsraid:GetName(), a2 = "TOPRIGHT", x = 10, y = 0},
-		dpser = {a1 = "TOPLEFT", parent = dpsraid:GetName(), a2 = "TOPRIGHT", x = 10, y = 0},
-	}	
-	T.CreateDragFrame(dpspet)
-	dpspet.df:ClearAllPoints()
-	dpspet.df:SetSize(aCoreCDB["UnitframeOptions"]["dpsraidwidth"], aCoreCDB["UnitframeOptions"]["unitnumperline"]*(aCoreCDB["UnitframeOptions"]["dpsraidheight"]+5)-5)
+
+	dpspet:SetSize(aCoreCDB["UnitframeOptions"]["dpsraidwidth"], aCoreCDB["UnitframeOptions"]["unitnumperline"]*(aCoreCDB["UnitframeOptions"]["dpsraidheight"]+5)-5)
+	
+	dpspet[1]:SetPoint("TOPLEFT", dpspet, "TOPLEFT")
 end
 
 local function hiderf(f)
-	if aCoreCDB["UnitframeOptions"]["showsolo"] and f:GetAttribute("showSolo") then f:SetAttribute("showSolo", false) end
-	if f:GetAttribute("showParty") then f:SetAttribute("showParty", false) end
-	if f:GetAttribute("showRaid") then f:SetAttribute("showRaid", false) end
+	if not f then return end
+	for i = 1, aCoreCDB["UnitframeOptions"]["party_num"] do
+		if f[i] then
+			if aCoreCDB["UnitframeOptions"]["showsolo"] and f[i]:GetAttribute("showSolo") then f[i]:SetAttribute("showSolo", false) end
+			if f[i]:GetAttribute("showParty") then f[i]:SetAttribute("showParty", false) end
+			if f[i]:GetAttribute("showRaid") then f[i]:SetAttribute("showRaid", false) end
+		end
+	end
 end
 
 local function showrf(f)
-	if aCoreCDB["UnitframeOptions"]["showsolo"] and not f:GetAttribute("showSolo") then f:SetAttribute("showSolo", true) end
-	if not f:GetAttribute("showParty") then f:SetAttribute("showParty", true) end
-	if not f:GetAttribute("showRaid") then f:SetAttribute("showRaid", true) end
+	if not f then return end
+	for i = 1, aCoreCDB["UnitframeOptions"]["party_num"] do
+		if f[i] then
+			if aCoreCDB["UnitframeOptions"]["showsolo"] and not f[i]:GetAttribute("showSolo") then f[i]:SetAttribute("showSolo", true) end
+			if aCoreCDB["UnitframeOptions"]["raidframe_inparty"] and not f[i]:GetAttribute("showParty") then f[i]:SetAttribute("showParty", true) end
+			if not f[i]:GetAttribute("showRaid") then f[i]:SetAttribute("showRaid", true) end
+		end
+	end
 end
 
 function togglerf()
-	local Role = T.CheckRole()
-	if Role == "healer" then
+	role = T.CheckRole()
+	if role == "healer" then
 		hiderf(dpsraid)
 		hiderf(dpspet)
 		showrf(healerraid)
@@ -724,7 +857,227 @@ function togglerf()
 	end
 end
 
+--=============================================--
+--[[              Party Frames                ]]--
+--=============================================--
+
+local pfunc = function(self, unit)
+	self:RegisterForClicks"AnyUp"
+	self.mouseovers = {}
+
+	-- highlight --
+	self.hl = self:CreateTexture(nil, "HIGHLIGHT")
+	self.hl:SetAllPoints()
+	self.hl:SetTexture(G.media.barhightlight)
+	self.hl:SetVertexColor( 1, 1, 1, .3)
+	self.hl:SetBlendMode("ADD")
+	
+	-- backdrop --
+	self.bg = CreateFrame("Frame", nil, self)
+	self.bg:SetFrameLevel(0)
+	self.bg:SetAllPoints(self)
+	self.bg.tex = self.bg:CreateTexture(nil, "BACKGROUND")
+    self.bg.tex:SetAllPoints()
+	if aCoreCDB["UnitframeOptions"]["style"] == 1 then
+		self.bg.tex:SetTexture(G.media.blank)
+		self.bg.tex:SetVertexColor(0, 0, 0, 0)	
+	else
+		self.bg.tex:SetTexture(G.media.ufbar)
+		self.bg.tex:SetVertexColor(0, 0, 0)
+	end
+	
+    local hp = T.createStatusbar(self, "ARTWORK", nil, nil, 1, 1, 1, 1)
+	hp:SetFrameLevel(4)
+    hp:SetAllPoints(self)
+	hp:SetPoint("TOPLEFT", self, "TOPLEFT")
+	hp:SetPoint("TOPRIGHT", self, "TOPRIGHT")
+    hp.frequentUpdates = true
+	
+	if aCoreCDB["UnitframeOptions"]["style"] == 1 then
+		hp.bg:SetGradientAlpha("VERTICAL", .5, .5, .5, .5, 0, 0, 0,0)
+	else
+		hp.bg:SetGradientAlpha("VERTICAL", .2,.2,.2,.15,.25,.25,.25,.6)
+	end
+	
+	-- little black line to make the health bar more clear
+	hp.ind = hp:CreateTexture(nil, "OVERLAY", 1)
+    hp.ind:SetTexture("Interface\\Buttons\\WHITE8x8")
+	hp.ind:SetVertexColor(0, 0, 0)
+	hp.ind:SetSize(1, hp:GetHeight())
+	if aCoreCDB["UnitframeOptions"]["style"] ~= 3 then
+		hp.ind:SetPoint("RIGHT", hp:GetStatusBarTexture(), "LEFT", 0, 0)
+	else
+		hp.ind:SetPoint("LEFT", hp:GetStatusBarTexture(), "RIGHT", 0, 0)
+	end
+	
+	if aCoreCDB["UnitframeOptions"]["style"] ~= 3 then
+		hp:SetReverseFill(true)
+	end
+	
+	-- border --
+	self.backdrop = T.createBackdrop(hp, hp, 0)
+	
+	hp.value = T.createnumber(hp, "OVERLAY", aCoreCDB["UnitframeOptions"]["valuefontsize"], "OUTLINE", "RIGHT")
+	hp.value:SetPoint("BOTTOMRIGHT", self, -4, -2)	
+	
+    self.Health = hp
+	self.Health.PostUpdate = T.Updatehealthbar
+	self.Health.Override = T.Overridehealthbar
+	tinsert(self.mouseovers, self.Health)
+	
+	-- portrait 只有样式1和样式2才有肖像
+	if aCoreCDB["UnitframeOptions"]["style"] ~= 3 and aCoreCDB["UnitframeOptions"]["portrait"] then
+		local Portrait = CreateFrame('PlayerModel', nil, self)
+		Portrait:SetFrameLevel(2) -- blow hp
+		Portrait:SetPoint("TOPLEFT", 1, 0)
+		Portrait:SetPoint("BOTTOMRIGHT", -1, 1)
+		Portrait:SetAlpha(aCoreCDB["UnitframeOptions"]["portraitalpha"])
+		self.Portrait = Portrait
+	end
+
+	-- power bar --
+	local pp = T.createStatusbar(self, "ARTWORK", aCoreCDB["UnitframeOptions"]["height"]*-(aCoreCDB["UnitframeOptions"]["hpheight"]-1), nil, 1, 1, 1, 1)
+	pp:SetFrameLevel(4)
+	pp:SetPoint"LEFT"
+	pp:SetPoint"RIGHT"
+	pp:SetPoint("TOP", self, "BOTTOM", 0, -1)
+	pp.frequentUpdates = true
+
+	pp.bg:SetGradientAlpha("VERTICAL", .2,.2,.2,.15,.25,.25,.25,.6)
+
+	-- backdrop for power bar --
+	pp.bd = T.createBackdrop(pp, pp, 1)
+
+	self.Power = pp
+	self.Power.PostUpdate = T.Updatepowerbar
+	tinsert(self.mouseovers, self.Power)
+
+	-- target border --
+	self.targetborder = Createpxborder(self, 2)
+	self.targetborder:SetBackdropBorderColor(1, 1, .4)
+	self.targetborder:SetPoint("TOPLEFT", hp, "TOPLEFT", -3, 3)
+	self.targetborder:SetPoint("BOTTOMRIGHT", pp, "BOTTOMRIGHT", 3, -3)
+	self:RegisterEvent("PLAYER_TARGET_CHANGED", ChangedTarget, true)
+
+	-- threat border --
+	self.threatborder = Createpxborder(self, 1)
+	self.threatborder:SetPoint("TOPLEFT", hp, "TOPLEFT", -3, 3)
+	self.threatborder:SetPoint("BOTTOMRIGHT", pp, "BOTTOMRIGHT", 3, -3)
+	self:RegisterEvent("UNIT_THREAT_SITUATION_UPDATE", UpdateThreat, true)
+	
+	-- little thing around unit frames --
+	local leader = hp:CreateTexture(nil, "OVERLAY")
+	leader:SetSize(12, 12)
+	leader:SetPoint("BOTTOMLEFT", hp, "BOTTOMLEFT", 5, -5)
+	self.LeaderIndicator = leader
+
+	local assistant = hp:CreateTexture(nil, "OVERLAY")
+	assistant:SetSize(12, 12)
+	assistant:SetPoint("BOTTOMLEFT", hp, "BOTTOMLEFT", 5, -5)
+	self.AssistantIndicator = assistant
+
+	local masterlooter = hp:CreateTexture(nil, "OVERLAY")
+	masterlooter:SetSize(12, 12)
+	masterlooter:SetPoint("LEFT", leader, "RIGHT")
+	self.MasterLooterIndicator = masterlooter
+
+	local ricon = hp:CreateTexture(nil, "OVERLAY")
+	ricon:SetPoint("CENTER", hp, "CENTER", 0, 0)
+	ricon:SetSize(40, 40)
+	ricon:SetTexture[[Interface\AddOns\AltzUI\media\raidicons.blp]]
+	self.RaidTargetIndicator = ricon
+
+    local summonIndicator = self:CreateTexture(nil, 'OVERLAY')
+    summonIndicator:SetSize(32, 32)
+    summonIndicator:SetPoint('TOPRIGHT', self)
+    self.SummonIndicator = summonIndicator
+	
+	-- name --
+	local name = T.createtext(self.Health, "OVERLAY", 13, "OUTLINE", "LEFT")
+	name:SetPoint("TOPLEFT", self.Health, "TOPLEFT", 3, 9)
+	if aCoreCDB["UnitframeOptions"]["style"] == 1 or aCoreCDB["UnitframeOptions"]["style"] == 2 then
+		self:Tag(name, "[difficulty][level][shortclassification]|r [Altz:color][name] [status]")
+	else
+		self:Tag(name, "[difficulty][level][shortclassification]|r [name] [status]")
+	end
+	self.Name = name
+	
+	if aCoreCDB["UnitframeOptions"]["auras"] then
+		T.CreateAuras(self, unit)
+	end
+	
+	if aCoreCDB["UnitframeOptions"]["enableClickCast"] then
+		T.RegisterClicks(self)
+	end
+	
+	T.RaidOnMouseOver(self)
+end
+
+oUF:RegisterStyle("Altz_Party", pfunc)
+
+local party = CreateFrame("Frame", "Altz_Party_Holder", UIParent)
+party.movingname = PARTY
+party.point = {
+	healer = {a1 = "TOPLEFT", parent = "UIParent", a2 = "TOPLEFT" , x = 240, y = -340},
+	dpser = {a1 = "TOPLEFT", parent = "UIParent", a2 = "TOPLEFT" , x = 240, y = -340},
+}
+T.CreateDragFrame(party)
 local EventFrame = CreateFrame("Frame")
+
+local partypet = CreateFrame("Frame", "Altz_PartyPet_Holder", UIParent)
+partypet.movingname = PARTY..PET
+partypet.point = {
+	healer = {a1 = "TOPLEFT", parent = "Altz_Party_Holder", a2 = "BOTTOMLEFT" , x = 0, y = -40},
+	dpser = {a1 = "TOPLEFT", parent = "Altz_Party_Holder", a2 = "BOTTOMLEFT" , x = 0, y = -40},
+}
+T.CreateDragFrame(partypet)
+
+local function Spawnparty()
+	oUF:SetActiveStyle"Altz_Party"
+	party[1] = oUF:SpawnHeader('Altz_Party', nil, not aCoreCDB["UnitframeOptions"]["raidframe_inparty"] and 'party',
+		'oUF-initialConfigFunction', initconfig:format(aCoreCDB["UnitframeOptions"]["widthparty"], aCoreCDB["UnitframeOptions"]["height"]),
+		'showPlayer', aCoreCDB["UnitframeOptions"]["showplayerinparty"],
+		'showSolo', false,
+		'showParty', true,
+		'showRaid', false,
+		'xOffset', 0,
+		'yOffset', -50,
+		'point', "TOP",
+		'groupFilter', "1,2,3,4,5,6,7,8",
+		'groupingOrder', "1,2,3,4,5,6,7,8",
+		'groupBy', "GROUP",
+		'maxColumns', 5,
+		'unitsPerColumn', 5,
+		'columnSpacing', 5,
+		'columnAnchorPoint', "LEFT"
+	)
+
+	party:SetSize(aCoreCDB["UnitframeOptions"]["widthparty"], aCoreCDB["UnitframeOptions"]["height"]*5+160)
+	
+	party[1]:SetPoint("TOPLEFT", party, "TOPLEFT")
+	
+	partypet[1] = oUF:SpawnHeader('Altz_PartyPet', 'SecureGroupPetHeaderTemplate', not aCoreCDB["UnitframeOptions"]["raidframe_inparty"] and 'party',
+		'oUF-initialConfigFunction', initconfig:format(aCoreCDB["UnitframeOptions"]["widthparty"], aCoreCDB["UnitframeOptions"]["height"]),
+		'showPlayer', aCoreCDB["UnitframeOptions"]["showplayerinparty"],
+		'showSolo', false,
+		'showParty', aCoreCDB["UnitframeOptions"]["showpartypets"],
+		'showRaid', false,
+		'xOffset', 0,
+		'yOffset', -50,
+		'point', "TOP",
+		'groupFilter', "1,2,3,4,5,6,7,8",
+		'groupingOrder', "1,2,3,4,5,6,7,8",
+		'groupBy', "GROUP",
+		'maxColumns', 5,
+		'unitsPerColumn', 5,
+		'columnSpacing', 5,
+		'columnAnchorPoint', "LEFT"
+	)
+    
+	partypet:SetSize(aCoreCDB["UnitframeOptions"]["widthparty"], aCoreCDB["UnitframeOptions"]["height"]*5+160)
+	
+	partypet[1]:SetPoint("TOPLEFT", partypet, "TOPLEFT")
+end
 
 EventFrame:RegisterEvent("ADDON_LOADED")
 EventFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
@@ -738,6 +1091,7 @@ function EventFrame:ADDON_LOADED(arg1)
 	if arg1 ~= "AltzUI" or not aCoreCDB["UnitframeOptions"]["enableraid"] then return end
 	Spawnhealraid()
 	Spawndpsraid()
+	Spawnparty()
 end
 
 function EventFrame:PLAYER_LOGIN()
@@ -780,22 +1134,21 @@ end
 
 -- 加入团队工具中
 T.IsDpsRaidShown = function()
-	if dpsraid:GetAttribute("showRaid") then
+	if dpsraid[1]:GetAttribute("showRaid") then
 		return true
 	end
 end
 
 T.SwitchRaidFrame = function()
-	if dpsraid:GetAttribute("showRaid") then
+	if dpsraid[1]:GetAttribute("showRaid") then
 		hiderf(dpsraid)
 		hiderf(dpspet)
 		showrf(healerraid)
 		if aCoreCDB["UnitframeOptions"]["showraidpet"] then showrf(healerpet) else hiderf(healerpet) end
-    else
+	else
 		hiderf(healerraid)
 		hiderf(healerpet)
 		showrf(dpsraid)
 		if aCoreCDB["UnitframeOptions"]["showraidpet"] then showrf(dpspet) else hiderf(dpspet) end
-    end
+	end
 end
-

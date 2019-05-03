@@ -1,5 +1,5 @@
 local T, C, L, G = unpack(select(2, ...))
-if G.Client ~= "ptBR" then return end -- AltzUI - Portuguese Language
+if G.Client ~= "ptBR" then return end -- AltzUI - Brazilian Portuguese
 
 L["团队工具"] = "Ferramentas de Raide"
 
@@ -24,7 +24,7 @@ L["角色"] = "Personagem"
 L["重置金币信息"] = "Clique para restaurar."
 
 L["脱装备"] = "Despir-se"
-L["切天赋"] = "Trocar 'Spec' ativa"
+L["切天赋"] = "Alternar especialização ativa"
 
 L["锁定框体"] = "Travar quadros"
 L["解锁框体"] = "Destravar quadros"
@@ -54,6 +54,7 @@ L["复制名字"] = "Copiar nome"
 L["玩家详情"] = "Quem"
 L["公会邀请"] = "Convidar para guilda"
 L["添加好友"] = "Adicionar amigo"
+--L["复制聊天"] = "Copy Chat"
 
 L["信息条"] = "Barra de informações"
 L["微型菜单"] = "MicroMenu"
@@ -88,21 +89,18 @@ L["目标头像"] = "Quadro do alvo"
 L["目标的目标头像"] = "Quadro AdA"
 L["焦点头像"] = "Quadro de foco"
 L["焦点的目标头像"] = "ToF Frame"
-for i = 1, MAX_BOSS_FRAMES do
-	L["首领头像"..i] = "Chefe"..i
-end
-for i = 1, 5 do
-	L["竞技场敌人头像"..i] = "Arena"..i
-end
+L["首领头像"] = "Chefe"
+L["竞技场敌人头像"] = "Arena"
+--L["小队队友"] = "Party"
 L["玩家施法条"] = "Barra de lançamento do jogador"
 L["目标施法条"] = "Barra de lançamento do alvo"
 L["焦点施法条"] = "Barra de lançamento do foco"
 L["玩家平砍计时条"] = "Tempo de balanço do jogador"
 L["冷却提示"] = "Alerta de recarga"
 L["图腾条"] = "Barra de totem"
---L["便捷物品按钮"] = "Convenient Item Buttons"
---L["多人坐骑控制框"] = "Vehicle Seat Indicator"
---L["耐久提示框"] = "Durability Frame"
+L["便捷物品按钮"] = "Botões de itens conveniêntes"
+L["多人坐骑控制框"] = "Indicador de assento do veículo"
+L["耐久提示框"] = "Quadro de durabilidade"
 
 L["无2"] = "|cffFF0000Não|r"
 L["无"] = "Não"
@@ -128,8 +126,8 @@ L["小队满了"] = "grupo está cheio"
 L["团队满了"] = "raide está cheio"
 L["客户端错误"] = "Eu não posso convidar você por palavra-passe agora, sua conta parece aderir à %s."
 
-L["的徽章冷却就绪"] = "'s TrinketPVP is ready"
-L["使用了徽章"] = " uses TrinketPVP"
+L["的徽章冷却就绪"] = "'s BerloquePVP está pronto"
+L["使用了徽章"] = " usou BerloquePVP"
 
 L["界面移动工具"] = "Organizar quadros"
 L["锚点框体"] = "Quadro ancorado"
@@ -153,8 +151,8 @@ L["我不想看到这些提示"] = "Eu não quero vê-los"
 L["隐藏提示的提示"] = "Você pode reativar essas dicas em GUI → Outros"
 
 L["TIPS"] = {
-	"Altz UI pdoe esconder o minimapa e bate-papo quando você entrar e mostrar quando sair de combate. GUI → Outros",
-	--"Click the clock on the minimap to open the calendar; right click changes between local/server time while a modified right click (holding alt, ctrl, or shift) changes 12/24 format.",
+	"Altz UI pode esconder o minimapa e bate-papo quando você entrar e mostrar quando sair de combate. GUI → Outros",
+	"Clique no relógio no minimapa para abrir o calendário; Clique-direito alterna entre horário local/servidor enquanto um clique-direito (pressionando alt, ctrl, ou shift) muda o formato do horário entre 12/24",
 	"Quer ativar cores por classe nos seus quadros de raide? GUI → Quadros de unidade → Estilo → Tema clássico",
 	"Quer mostrar barras de lançamento independentes? GUI → Quadros de unidade → Barra de lançamento → Marque 'Barra de lançamento indenpendente'",
 	"Quer usar o estilo curandeiro nos quadros de raide? GUI → Quadros de raide → Alternância → Marque 'Desativar alternância automática'",
@@ -166,7 +164,7 @@ L["TIPS"] = {
 	"Use SHIFT+Clique para adicionar o alvo ao foco; está disponível para quadros de unidade.",
 	"Use ALT+Clique para Triturar/Prospectar/Desencantar/Destravar automáticamente.",
 	"Pressione Tab para alternar entre canais de bate-papo quando digitar alguma mensagem no bate-papo.",
-	"Os arquivos de fonte estão localizados em 'Interface\\AddOns\\Aurora\\media\\font.ttf(fonte principal),Interface\\AddOns\\AltzUI\\media\\number.ttf'(fonte para algum texto de tempo)",
+	"Os arquivos de fonte estão localizados em 'Interface\\AddOns\\AuroraClassic\\media\\font.ttf(fonte principal),Interface\\AddOns\\AltzUI\\media\\number.ttf'(fonte para algum texto de tempo)",
 	"Segure Ctrl, Alt ou Shift para rolar o bate-papo para a parte superior/inferior.",
 	"Clicando na borda de algum botão ativara a função de auto-esconder, ex: Menu/Ferramentas de Raide/Configurações.",
  }

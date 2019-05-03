@@ -1,5 +1,5 @@
 ﻿local T, C, L, G = unpack(select(2, ...))
-local F = unpack(Aurora)
+local F = unpack(AuroraClassic)
 --[[
 	SortBags
 	GetSortBagsRightToLeft 
@@ -61,32 +61,33 @@ local function StripTextures(object, text)
 end
 
 local function skin(frame)
-	local f = _G[frame:GetName().."IconTexture"]
-	local q = _G[frame:GetName().."IconQuestTexture"]
-	local r, g, b = frame.IconBorder:GetVertexColor()
-	local tex = frame.IconBorder:GetTexture()
-	
-	frame:SetAlpha(1)
-	frame:SetFrameStrata("HIGH")
-	
-	frame:SetNormalTexture("")
-	frame:SetPushedTexture("")
-	frame.IconBorder:SetAlpha(0)
-	frame:SetBackdrop({bgFile = G.media.blank, edgeFile = G.media.blank, edgeSize = 1})
-	frame:SetBackdropColor(0,0,0,.1)
-	frame:SetBackdropBorderColor(0,0,0,1)
+	if not frame.skin then
+		local f = _G[frame:GetName().."IconTexture"]
+		local q = _G[frame:GetName().."IconQuestTexture"]
+		
+		frame:SetAlpha(1)
+		frame:SetFrameStrata("HIGH")
 
-	f:SetPoint("TOPLEFT", frame, 1, -1)
-	f:SetPoint("BOTTOMRIGHT", frame, -1, 1)
-	f:SetTexCoord(.1, .9, .1, .9)
-	
-	if (q) then
-		q:SetPoint("TOPLEFT", frame, -1, 1)
-		q:SetPoint("BOTTOMRIGHT", frame, 1, -1)
-		q:SetTexture(G.media.blank)
-		q:SetVertexColor(1, 1, 0)
-		q:SetDrawLayer("BACKGROUND")
-		q.SetTexture = T.dummy
+		frame:SetNormalTexture("")
+		frame:SetPushedTexture("")
+		frame.IconBorder:SetAlpha(0)
+		frame:SetBackdrop({bgFile = G.media.blank, edgeFile = G.media.blank, edgeSize = 1})
+		frame:SetBackdropColor(0,0,0,.1)
+		frame:SetBackdropBorderColor(0,0,0,1)
+		
+		f:SetPoint("TOPLEFT", frame, 1, -1)
+		f:SetPoint("BOTTOMRIGHT", frame, -1, 1)
+		f:SetTexCoord(.1, .9, .1, .9)
+		
+		if (q) then
+			q:SetPoint("TOPLEFT", frame, -1, 1)
+			q:SetPoint("BOTTOMRIGHT", frame, 1, -1)
+			q:SetTexture(G.media.blank)
+			q:SetVertexColor(1, 1, 0)
+			q:SetDrawLayer("BACKGROUND")
+			q.SetTexture = T.dummy
+		end
+		frame.skin = true
 	end
 end
 
@@ -102,15 +103,17 @@ local function hideCrap()
 	end
 	_G["BackpackTokenFrame"]:GetRegions():SetAlpha(0)
 	
-	BankFrameCloseButton:Hide()
-	BankSlotsFrame:Hide()
-	BankFrameMoneyFrame:Hide()
-	StripTextures(BankFrameMoneyFrameInset)
-	StripTextures(BankFrameMoneyFrameBorder)
-	StripTextures(BankFrameMoneyFrame)
-	StripTextures(BankFrame, true)
-	StripTextures(BankSlotsFrame, true)
-	StripTextures(ReagentBankFrame)
+   	BankFrameCloseButton:Hide()
+   	BankSlotsFrame:Hide()
+ 	BankFrameMoneyFrame:Hide()
+	BankFrame.NineSlice:Hide()
+	BankFrameMoneyFrameInset.NineSlice:Hide()
+   	StripTextures(BankFrameMoneyFrameInset)
+   	StripTextures(BankFrameMoneyFrameBorder)
+   	StripTextures(BankFrameMoneyFrame)
+   	StripTextures(BankFrame, true)
+  	StripTextures(BankSlotsFrame, true)
+    	StripTextures(ReagentBankFrame)
 	ReagentBankFrame:DisableDrawLayer("BACKGROUND")
 	ReagentBankFrame:DisableDrawLayer("ARTWORK")
 end
@@ -285,7 +288,7 @@ function BFrame.bags:setUp(frameName, ...)
 		for i = 1, 7 do
 			local bankbag = BankSlotsFrame["Bag"..i]
 			local icon = bankbag.icon
-			local highlight = bankbag.HighlightFrame.HighlightTexture
+			--local highlight = bankbag.HighlightFrame.HighlightTexture
 			
 			bankbag:SetParent(frame.bags)
 			bankbag:GetChildren():Hide()
@@ -313,14 +316,14 @@ function BFrame.bags:setUp(frameName, ...)
 			icon:SetPoint("TOPLEFT", 2, -2)
 			icon:SetPoint("BOTTOMRIGHT", -2, 2)
 			
-			if highlight and not highlight.skinned then
-				highlight:SetTexture(1, 1, 1, 0.3)
-				highlight:SetTexture("")
-				highlight:ClearAllPoints()
-				highlight:SetPoint("TOPLEFT", 2, -2)
-				highlight:SetPoint("BOTTOMRIGHT", -2, 2)
-				highlight.skinned = true
-			end
+			--if highlight and not highlight.skinned then
+			--	highlight:SetTexture(1, 1, 1, 0.3)
+			--	highlight:SetTexture("")
+			--	highlight:ClearAllPoints()
+			--	highlight:SetPoint("TOPLEFT", 2, -2)
+			--	highlight:SetPoint("BOTTOMRIGHT", -2, 2)
+			--	highlight.skinned = true
+			--end
 			
 			frame.bags:SetWidth((24+config.spacing)*(7)+16)
 			frame.bags:SetHeight(40)

@@ -1,10 +1,10 @@
 ﻿local T, C, L, G = unpack(select(2, ...))
-local F = unpack(Aurora)
+local F = unpack(AuroraClassic)
 
 if not aCoreCDB["TooltipOptions"]["showspellID"] or not aCoreCDB["TooltipOptions"]["enabletip"] then return end
 
 hooksecurefunc(GameTooltip, "SetUnitBuff", function(self,...)
-	local id = select(11,UnitBuff(...))
+	local id = select(10,UnitBuff(...))
 	if id then
 		self:AddLine(" ")
 		self:AddDoubleLine("SpellID:",format(G.classcolor.."%s|r",id))
@@ -13,7 +13,7 @@ hooksecurefunc(GameTooltip, "SetUnitBuff", function(self,...)
 end)
 
 hooksecurefunc(GameTooltip, "SetUnitDebuff", function(self,...)
-	local id = select(11,UnitDebuff(...))
+	local id = select(10,UnitDebuff(...))
 	if id then
 		self:AddLine(" ")
 		self:AddDoubleLine("SpellID:",format(G.classcolor.."%s|r",id))
@@ -22,7 +22,7 @@ hooksecurefunc(GameTooltip, "SetUnitDebuff", function(self,...)
 end)
 
 hooksecurefunc(GameTooltip, "SetUnitAura", function(self,...)
-	local id = select(11,UnitAura(...))
+	local id = select(10,UnitAura(...))
 	if id then
 		self:AddLine(" ")
 		self:AddDoubleLine("SpellID:",format(G.classcolor.."%s|r",id))
@@ -50,14 +50,7 @@ eventframe:SetScript("OnEvent", function(self, event, addon)
 				bu.nospellid = true
 			end
 		end
-		
-		for i = 1, 6 do
-			for j = 1, 3 do
-				local pvpbu = PlayerTalentFramePVPTalents.Talents["Tier"..i]["Talent"..j]
-				pvpbu.nospellid = true
-			end
-		end
-		
+
 	end
 end)
 
@@ -66,8 +59,8 @@ GameTooltip:HookScript("OnTooltipSetSpell", function(self)
 	if parent and parent.nospellid then
 		return
 	end
-	
-	local id = select(3,self:GetSpell())
+
+	local id = select(2,self:GetSpell())
 	if id then
 		self:AddLine(" ")
 		self:AddDoubleLine("SpellID:",format(G.classcolor.."%s|r",id))
