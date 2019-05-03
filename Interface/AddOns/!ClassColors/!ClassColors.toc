@@ -1,4 +1,4 @@
-﻿## Interface: 70300
+﻿## Interface: 80100
 ## Version: @project-version@
 
 ## Title: Class Colors
