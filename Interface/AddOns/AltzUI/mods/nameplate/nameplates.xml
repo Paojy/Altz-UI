@@ -335,11 +335,6 @@
 					<Size>
 						<AbsDimension x = "50" y = "40"/>
 					</Size>
-					<Anchors>
-						<Anchor point="BOTTOM">
-							<Offset x="0" y="0"/>
-						</Anchor>
-					</Anchors>
 				</Texture>
 				<Texture name="$parentPvPClassificationIndicator" parentKey="PvPClassificationIndicator" hidden="true">
 					<Size>
@@ -395,9 +390,6 @@
 					<Size>
 						<AbsDimension x = "50" y = "40"/>
 					</Size>
-					<Anchor point="BOTTOM">
-							<Offset x="0" y="0"/>
-					</Anchor>
 				</Texture>
 				<Texture name="$parentPvPClassificationIndicator" parentKey="PvPClassificationIndicator" hidden="true">
 					<Size>

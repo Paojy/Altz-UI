@@ -603,7 +603,9 @@ local function UpdateSelectionHighlight(unitFrame)
 		unitFrame.redarrow:Hide()
 	end
 	
-	if not numberstyle then
+	unitFrame.redarrow:ClearAllPoints()
+	
+	if not numberstyle then	
 		if unitFrame.iconnumber and unitFrame.iconnumber > 0 then
 			unitFrame.redarrow:SetPoint("BOTTOM", unitFrame.name, "TOP", 0, auraiconsize+3)
 		else
