@@ -1355,12 +1355,6 @@ local UnitSpecific = {
 			threatbar.bg:Hide()
 			self.ThreatBar = threatbar
 		end
-		
-		local PvPClassificationIndicator = self:CreateTexture(nil, 'OVERLAY')
-		PvPClassificationIndicator:SetSize(24, 24)
-		PvPClassificationIndicator:SetPoint('CENTER')
-		PvPClassificationIndicator:SetAtlas("nameplates-icon-flag-horde")
-		--self.PvPClassificationIndicator = PvPClassificationIndicator
 	end,
 
 	--========================--

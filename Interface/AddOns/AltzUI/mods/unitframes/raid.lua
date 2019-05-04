@@ -337,7 +337,7 @@ local func = function(self, unit)
     summonIndicator:SetPoint('TOPRIGHT', self)
 	summonIndicator:SetAtlas('Raid-Icon-SummonPending', true)
 	summonIndicator:Show()
-    --self.SummonIndicator = summonIndicator
+    self.SummonIndicator = summonIndicator
 	
 	local Auras = CreateFrame("Frame", nil, self)
 	Auras:SetFrameLevel(4)
