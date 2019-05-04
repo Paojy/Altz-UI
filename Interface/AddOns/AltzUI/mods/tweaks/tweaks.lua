@@ -459,7 +459,7 @@ end
 local LFG_Timer = 0
 
 function eventframe:LFG_UPDATE_RANDOM_INFO()
-	local eligible, forTank, forHealer, forDamage = GetLFGRoleShortageRewards(1046, LFG_ROLE_SHORTAGE_RARE)
+	local eligible, forTank, forHealer, forDamage = GetLFGRoleShortageRewards(1067, LFG_ROLE_SHORTAGE_RARE)
 	local IsTank, IsHealer, IsDamage = C_LFGList.GetAvailableRoles()
 	
 	local ingroup, tank, healer, damager, result
