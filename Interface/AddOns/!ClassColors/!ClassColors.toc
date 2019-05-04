@@ -1,5 +1,5 @@
-﻿## Interface: 70300
-## Version: @project-version@
+## Interface: 80000
+## Version: 8.0.0.1
 
 ## Title: Class Colors
 ## Notes: Change class colors without breaking parts of the default UI.
@@ -25,4 +25,5 @@
 
 Localization.lua
 ClassColors.lua
-ClassColorsBlizz.lua
+
+

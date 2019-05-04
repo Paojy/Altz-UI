@@ -72,6 +72,58 @@ addonFuncs["Blizzard_Calendar"] = function()
 end
 
 ------------------------------------------------------------------------
+-- Blizzard_ChallengesUI/Blizzard_ChallengesUI.lua
+-- 7.3.0.25021
+-- 204, 218, 675
+
+addonFuncs["Blizzard_ChallengesUI"] = function()
+	local function ChallengesGuildBestMixin_SetUp(self, leaderInfo) -- 204
+		self.CharacterName:SetFormattedText(leaderInfo.isYou and CHALLENGE_MODE_GUILD_BEST_LINE_YOU or CHALLENGE_MODE_GUILD_BEST_LINE,
+			CUSTOM_CLASS_COLORS[leaderInfo.classFileName].colorStr,
+			leaderInfo.name)
+	end
+
+	local function GuildChallengesGuildBestMixin_OnEnter(self) -- 218
+		local leaderInfo = self.leaderInfo
+
+		GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+		local name = C_ChallengeMode.GetMapInfo(leaderInfo.mapChallengeModeID)
+		GameTooltip:SetText(name, 1, 1, 1)
+		GameTooltip:AddLine(CHALLENGE_MODE_POWER_LEVEL:format(leaderInfo.level))
+		for i = 1, #leaderInfo.members do
+			local classColorStr = CUSTOM_CLASS_COLORS[leaderInfo.members[i].classFileName].colorStr
+			GameTooltip:AddLine(CHALLENGE_MODE_GUILD_BEST_LINE:format(classColorStr, leaderInfo.members[i].name))
+		end
+		GameTooltip:Show()
+	end
+
+	hooksecurefunc("ChallengesFrame_Update", function(self)
+		if self.leadersAvailable then
+			local leaders = C_ChallengeMode.GetGuildLeaders()
+			if leaders and #leaders > 0 then
+				for i = 1, #leaders do
+					local frame = self.GuildBest.GuildBests[i]
+					frame:SetScript("OnEnter", GuildChallengesGuildBestMixin_OnEnter)
+					ChallengesGuildBestMixin_SetUp(frame, leaders[i])
+				end
+			end
+		end
+	end)
+
+	-- ChallengeModeBannerPartyMemberMixin:SetUp(unitToken)
+	hooksecurefunc(ChallengeModeCompleteBanner, "PlayBanner", function(self, data) -- 675
+		local sortedUnitTokens = self:GetSortedPartyMembers()
+		for i = 1, #sortedUnitTokens do
+			local unitToken = sortedUnitTokens[i]
+			local name = UnitName(unitToken)
+			local _, classFileName = UnitClass(unitToken)
+			local classColorStr = CUSTOM_CLASS_COLORS[classFileName].colorStr
+			self.PartyMembers[i].Name:SetFormattedText("|c%s%s|r", classColorStr, name)
+		end
+	end)
+end
+
+------------------------------------------------------------------------
 -- Blizzard_CollectionsUI/Blizzard_HeirloomCollection.lua
 -- 7.3.0.25021
 -- 746
@@ -285,23 +337,6 @@ addonFuncs["Blizzard_TradeSkillUI"] = function()
 			end
 		end
 	end)
-end
-
-------------------------------------------------------------------------
--- FrameXML/ChatConfigFrame.xml
--- 7.3.0.25021
--- 134
-
-do
-	local function ColorLegend(self)
-		for i = 1, #self.classStrings do
-			local class = CLASS_SORT_ORDER[i]
-			local color = CUSTOM_CLASS_COLORS[class]
-			self.classStrings[i]:SetFormattedText("|c%s%s|r\n", color.colorStr, LOCALIZED_CLASS_NAMES_MALE[class])
-		end
-	end
-	--ChatConfigChatSettingsClassColorLegend:HookScript("OnShow", ColorLegend)
-	--ChatConfigChannelSettingsClassColorLegend:HookScript("OnShow", ColorLegend)
 end
 
 ------------------------------------------------------------------------
@@ -714,43 +749,6 @@ hooksecurefunc("StaticPopup_OnUpdate", function(self, elapsed)
 		GameTooltipTextLeft1:SetFormattedText("|c%s%s|r", color.colorStr, name)
 	end
 end)
-
-------------------------------------------------------------------------
--- FrameXML/UnitPositionFrameTemplates.lua (via GetClassColor)
--- 7.3.0.25021
--- 185
--- 7.2.0.23835
--- 200
-
--- UnitPositionFrameMixin
--- --> UnitPositionFrameTemplate
---     --> GroupMembersPinTemplate (Blizzard_SharedMapDataProviders/GroupMembersDataProvider.xml)
---     --> BattlefieldMinimapUnitPositionFrame (Blizzard_BattlefieldMinimap/Blizzard_BattlefieldMinimap.xml)
---         --> self:GetMap():SetPinTemplateType("GroupMembersPinTemplate", "UnitPositionFrame")
---     --> WorldMapUnitPositionFrame (FrameXML/WorldMapFrame.xml)
-
-local function UnitPositionFrameMixin_GetUnitColor(self, timeNow, unit, appearanceData)
-	if appearanceData.shouldShow then
-		local r, g, b  = 1, 1, 1
-
-		if appearanceData.useClassColor then
-			local _, class = UnitClass(unit)
-			local color = class and CUSTOM_CLASS_COLORS[class]
-			if color then
-				r, g, b = color.r, color.g, color.b
-				--ChatFrame3:AddMessage(string.join(' ', tostringall('GetUnitColor', unit, class)))
-			end
-		end
-
-		return true, CheckColorOverrideForPVPInactive(unit, timeNow, r, g, b)
-	end
-
-	return false
-end
-
-addonFuncs["Blizzard_BattlefieldMinimap"] = function()
-	BattlefieldMinimapUnitPositionFrame.GetUnitColor = UnitPositionFrameMixin_GetUnitColor
-end
 
 ------------------------------------------------------------------------
 

@@ -79,6 +79,7 @@ return end
 if CURRENT_LOCALE == "frFR" then
 
 L.NOTES = "Modifier les couleurs de classe sans casser l'interface Blizzard."
+L.NOTES_DESC = "Notez que certains addons ne le supportent pas, et vous devrez probablement recharger l'interface pour que les changements soient reconnus par tous les addons compatibles."
 L.RESET_DESC = "Réinitialisez les couleurs des classes par défaut."
 
 return end
@@ -113,7 +114,7 @@ return end
 if CURRENT_LOCALE == "ruRU" then
 
 L.NOTES = "Изменение цветов класса не вмешиваясь в Blizzard UI"
-L.NOTES_DESC = "Обратите внимание, что не все аддоны поддерживают это, и возможно вам потребуется перезагрузить интерфейс, прежде чем изменения вступят в силу на всех совместимых аддонах. "
+L.NOTES_DESC = "Обратите внимание, что не все аддоны поддерживают это, и возможно вам потребуется перезагрузить интерфейс, прежде чем изменения вступят в силу на всех совместимых аддонах."
 L.RESET_DESC = "Сбросить окраску классов на значение по умолчанию."
 
 return end

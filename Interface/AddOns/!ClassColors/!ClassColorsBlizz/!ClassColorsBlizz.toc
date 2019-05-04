@@ -1,0 +1,15 @@
+## Interface: 80000
+## Version: 8.0.0.1
+
+## Title: Class Colors: Blizzard
+## Notes: Applies your custom class colors to the default UI.
+## Notes-deDE: Wendet Ihre benutzerdefinierten Klassenfarben auf das Standard-UI an.
+## Notes-esES: Aplicar tus colores de clases personalizados a la interfaz estandár.
+## Notes-esMX: Aplicar tus colores de clases personalizados a la interfaz estandár.
+
+## Author: Phanx
+## X-Email: addons@phanx.net
+## X-License: All Rights Reserved
+## X-Website: https://github.com/phanx-wow/ClassColors
+
+ClassColorsBlizz.lua
