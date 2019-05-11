@@ -301,7 +301,6 @@ function T.FrameEventFader(frame,fadeIn,fadeOut)
 			frame.eventmode = 1
 			UIFrameFadeIn( frame, fadeIn.time, frame:GetAlpha(), fadeIn.alpha)
 		else
-			print(333)
 			frame.eventmode = 0
 			UIFrameFadeOut(frame, fadeOut.time, frame:GetAlpha(), fadeOut.alpha)
 		end
