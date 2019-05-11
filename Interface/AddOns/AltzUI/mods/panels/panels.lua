@@ -1419,6 +1419,7 @@ function MainMenuMicroButton_PositionAlert(alert)
 	alert.Arrow:SetPoint("BOTTOMRIGHT", alert, "TOPRIGHT", -4, 4);
 end
 
+OverrideActionBar_UpdateMicroButtons = function() end
 GuildMicroButton.NotificationOverlay:SetAlpha(0)
 
 for i = 1, #MicromenuButtons do
