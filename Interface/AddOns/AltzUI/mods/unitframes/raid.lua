@@ -123,7 +123,7 @@ T.RegisterClicks = function(object)
 	end
 	if enable then
 		--print("Enable")
-		object:SetAttribute("_onenter", [[
+		object:SetAttribute("clickcast_onenter", [[
 			self:ClearBindings()
 			self:SetBindingClick(1, "MOUSEWHEELUP", self, "Button6")
 			self:SetBindingClick(1, "SHIFT-MOUSEWHEELUP", self, "Button7")
@@ -135,7 +135,7 @@ T.RegisterClicks = function(object)
 			self:SetBindingClick(1, "ALT-MOUSEWHEELDOWN", self, "Button13")
 		]])
 
-		object:SetAttribute("_onleave", [[
+		object:SetAttribute("clickcast_onleave", [[
 			self:ClearBindings()
 		]])
 	end
