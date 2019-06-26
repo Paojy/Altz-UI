@@ -5,7 +5,7 @@ C.themes["Blizzard_Collections"] = function()
 
 	-- [[ General ]]
 
-	F.ReskinPortraitFrame(CollectionsJournal)
+	CollectionsJournal.bg = F.ReskinPortraitFrame(CollectionsJournal)
 	F.ReskinTab(CollectionsJournalTab1)
 	for i = 2, 5 do
 		local tab = _G["CollectionsJournalTab"..i]
@@ -48,12 +48,10 @@ C.themes["Blizzard_Collections"] = function()
 	F.ReskinFilterButton(PetJournalFilterButton)
 	F.ReskinFilterButton(MountJournalFilterButton)
 
-	if C.isNewPatch then
-		F.StripTextures(MountJournal.BottomLeftInset)
-		local bg = F.CreateBDFrame(MountJournal.BottomLeftInset, .25)
-		bg:SetPoint("TOPLEFT", 3, 0)
-		bg:SetPoint("BOTTOMRIGHT", -24, 2)
-	end
+	F.StripTextures(MountJournal.BottomLeftInset)
+	local bg = F.CreateBDFrame(MountJournal.BottomLeftInset, .25)
+	bg:SetPoint("TOPLEFT", 3, 0)
+	bg:SetPoint("BOTTOMRIGHT", -24, 2)
 
 	MountJournalFilterButton:SetPoint("TOPRIGHT", MountJournal.LeftInset, -5, -8)
 	PetJournalFilterButton:SetPoint("TOPRIGHT", PetJournalLeftInset, -5, -8)
@@ -605,8 +603,7 @@ C.themes["Blizzard_Collections"] = function()
 			slot:SetHighlightTexture(C.media.backdrop)
 			local hl = slot:GetHighlightTexture()
 			hl:SetVertexColor(1, 1, 1, .25)
-			hl:SetPoint("TOPLEFT", 2, -2)
-			hl:SetPoint("BOTTOMRIGHT", -2, 2)
+			hl:SetAllPoints(slot.Icon)
 		end
 	end
 

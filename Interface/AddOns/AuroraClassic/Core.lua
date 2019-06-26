@@ -47,7 +47,6 @@ C.defaults = {
 }
 
 C.frames = {}
-C.isNewPatch = GetBuildInfo() == "8.2.0"
 
 -- [[ Functions ]]
 
@@ -190,8 +189,7 @@ function F:ReskinTab()
 
 	self:SetHighlightTexture(C.media.backdrop)
 	local hl = self:GetHighlightTexture()
-	hl:SetPoint("TOPLEFT", 9, -4)
-	hl:SetPoint("BOTTOMRIGHT", -9, 1)
+	hl:SetAllPoints(bg)
 	hl:SetVertexColor(r, g, b, .25)
 end
 
@@ -236,17 +234,9 @@ end
 function F:ReskinScroll()
 	local frame = self:GetName()
 	F.StripTextures(self:GetParent())
+	F.StripTextures(self)
 
-	local track = (self.trackBG or self.Background or self.Track) or (_G[frame.."Track"] or _G[frame.."BG"])
-	if track then track:Hide() end
-	local top = (self.ScrollBarTop or self.Top or self.ScrollUpBorder) or _G[frame.."Top"]
-	if top then top:Hide() end
-	local middle = (self.ScrollBarMiddle or self.Middle or self.Border) or _G[frame.."Middle"]
-	if middle then middle:Hide() end
-	local bottom = (self.ScrollBarBottom or self.Bottom or self.ScrollDownBorder) or _G[frame.."Bottom"]
-	if bottom then bottom:Hide() end
-
-	local bu = (self.ThumbTexture or self.thumbTexture) or _G[frame.."ThumbTexture"]
+	local bu = (self.ThumbTexture or self.thumbTexture) or frame and _G[frame.."ThumbTexture"]
 	bu:SetAlpha(0)
 	bu:SetWidth(17)
 
@@ -511,9 +501,9 @@ local function SetupTexture(self, texture)
 
 	if texture and texture ~= "" then
 		if texture:find("Plus") then
-			self.expTex:SetTexCoord(0, 0.4375, 0, 0.4375)
+			self.expTex:SetTexCoord(0, .4375, 0, .4375)
 		elseif texture:find("Minus") then
-			self.expTex:SetTexCoord(0.5625, 1, 0, 0.4375)
+			self.expTex:SetTexCoord(.5625, 1, 0, .4375)
 		end
 		self.bg:Show()
 	else
@@ -598,8 +588,12 @@ function F:StripTextures(kill)
 			if region and region.IsObjectType and region:IsObjectType("Texture") then
 				if kill and type(kill) == "boolean" then
 					F.HideObject(region)
-				elseif kill == 0 then
-					region:SetAlpha(0)
+				elseif tonumber(kill) then
+					if kill == 0 then
+						region:SetAlpha(0)
+					elseif i ~= kill then
+						region:SetTexture("")
+					end
 				else
 					region:SetTexture("")
 				end
@@ -610,12 +604,13 @@ end
 
 function F:ReskinPortraitFrame()
 	F.StripTextures(self)
-	F.SetBD(self)
+	local bg = F.SetBD(self)
 	local frameName = self.GetName and self:GetName()
 	local portrait = self.portrait or _G[frameName.."Portrait"]
 	portrait:SetAlpha(0)
 	local closeButton = self.CloseButton or _G[frameName.."CloseButton"]
 	F.ReskinClose(closeButton)
+	return bg
 end
 
 function F:CreateBDFrame(a)
@@ -813,14 +808,14 @@ function F:ReskinRole(role)
 	if self.background then self.background:SetTexture("") end
 	local cover = self.cover or self.Cover
 	if cover then cover:SetTexture("") end
-	local texture = self.GetNormalTexture and self:GetNormalTexture() or self.texture or self.Texture or (self.SetTexture and self) or (C.isNewPatch and self.Icon)
+	local texture = self.GetNormalTexture and self:GetNormalTexture() or self.texture or self.Texture or (self.SetTexture and self) or self.Icon
 	if texture then
 		texture:SetTexture(C.media.roleIcons)
 		texture:SetTexCoord(F.GetRoleTexCoord(role))
 	end
 	self.bg = F.CreateBDFrame(self)
 
-	local checkButton = self.checkButton or self.CheckButton or (C.isNewPatch and self.CheckBox)
+	local checkButton = self.checkButton or self.CheckButton or self.CheckBox
 	if checkButton then
 		checkButton:SetFrameLevel(self:GetFrameLevel() + 2)
 		checkButton:SetPoint("BOTTOMLEFT", -2, -2)

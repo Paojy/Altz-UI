@@ -8,11 +8,7 @@ tinsert(C.themes["AuroraClassic"], function()
 		font:SetFont(C.media.font, fontSize, white and "" or "OUTLINE")
 		font:SetShadowColor(0, 0, 0, 0)
 	end
-	
-	STANDARD_TEXT_FONT = C.media.font
-	UNIT_NAME_FONT     = C.media.font
-	DAMAGE_TEXT_FONT   = C.media.font
-	
+
 	ReskinFont(RaidWarningFrame.slot1, 20)
 	ReskinFont(RaidWarningFrame.slot2, 20)
 	ReskinFont(RaidBossEmoteFrame.slot1, 20)

@@ -51,11 +51,27 @@ tinsert(C.themes["AuroraClassic"], function()
 
 	restyleSpellButton(QuestInfoSpellObjectiveFrame)
 
+	local function QuestInfo_GetQuestID()
+		if QuestInfoFrame.questLog then
+			return select(8, GetQuestLogTitle(GetQuestLogSelection()))
+		else
+			return GetQuestID()
+		end
+	end
+
 	local function colourObjectivesText()
 		if not QuestInfoFrame.questLog then return end
 
+		local questID = QuestInfo_GetQuestID()
 		local objectivesTable = QuestInfoObjectivesFrame.Objectives
 		local numVisibleObjectives = 0
+
+		local waypointText = C_QuestLog.GetNextWaypointText(questID);
+		if waypointText then
+			numVisibleObjectives = numVisibleObjectives + 1;
+			objective = objectivesTable[numVisibleObjectives]
+			objective:SetTextColor(1, 1, 1)
+		end
 
 		for i = 1, GetNumQuestLeaderBoards() do
 			local _, type, finished = GetQuestLogLeaderBoard(i)
@@ -86,15 +102,15 @@ tinsert(C.themes["AuroraClassic"], function()
 
 		bu.Icon:SetTexCoord(.08, .92, .08, .92)
 		bu.Icon:SetDrawLayer("BACKGROUND", 1)
-		local iconBG = F.CreateBG(bu.Icon)
 		if isMapQuestInfo then
 			bu.Icon:SetSize(29, 29)
 		else
-			bu.Icon:SetSize(35, 35)
+			bu.Icon:SetSize(34, 34)
 		end
 
+		local iconBG = F.CreateBG(bu.Icon)
 		local bg = F.CreateBDFrame(bu, .25)
-		bg:SetPoint("TOPLEFT", iconBG, "TOPRIGHT")
+		bg:SetPoint("TOPLEFT", iconBG, "TOPRIGHT", 2, 0)
 		bg:SetPoint("BOTTOMRIGHT", iconBG, 100, 0)
 		bu.bg = bg
 	end

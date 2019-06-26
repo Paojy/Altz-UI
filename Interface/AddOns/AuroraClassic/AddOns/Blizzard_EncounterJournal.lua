@@ -149,8 +149,14 @@ C.themes["Blizzard_EncounterJournal"] = function()
 		header.description:SetTextColor(1, 1, 1)
 		header.button.title:SetTextColor(1, 1, 1)
 		header.button.title.SetTextColor = F.dummy
+		print(header.button.title:GetText())
+		print(header.description:GetText())
 		header.button.expandedIcon:SetTextColor(1, 1, 1)
 		header.button.expandedIcon.SetTextColor = F.dummy
+		header.button:HookScript("OnClick", function()
+			print(header.button.title:GetText())
+			print(header.description:GetText())
+		end)
 	end
 
 	hooksecurefunc("EncounterJournal_ToggleHeaders", function()
