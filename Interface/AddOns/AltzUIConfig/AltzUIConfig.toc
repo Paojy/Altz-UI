@@ -1,6 +1,6 @@
 ﻿## Interface: 80200
 ## Title: |cffEE3A8CAltz|rUI Config
-## Version: 8.15a
+## Version: 8.15b
 ## Author: Paopao001
 ## Dependencies: AuroraClassic
 ## OptionalDeps: !ClassColors, Skada, DBM-Core, BigWigs
