@@ -354,7 +354,6 @@ if vignettealert then
 		if id and not vignettes[id] and (not vignettealerthide or not UnitOnTaxi("player")) then
 			local info = C_VignetteInfo.GetVignetteInfo(id)
 			if info then
-				PlaySoundFile("Sound\\Interface\\RaidWarning.wav")
 				RaidNotice_AddMessage(RaidWarningFrame, (info.name or "Unknown").." "..L["出现了！"], ChatTypeInfo["RAID_WARNING"])
 				print(info.name,L["出现了！"])
 				vignettes[id] = true
@@ -474,7 +473,6 @@ function eventframe:LFG_UPDATE_RANDOM_INFO()
 	
 	if ((IsTank and forTank) or (IsHealer and forHealer) or (IsDamage and forDamage)) and not ingroup then
 		if  GetTime() - LFG_Timer > 20 then -- 不要刷屏！
-			PlaySoundFile("Sound\\Interface\\RaidWarning.wav")
 			RaidNotice_AddMessage(RaidWarningFrame, format(LFG_CALL_TO_ARMS, tank.." "..healer.." "..damager), ChatTypeInfo["RAID_WARNING"])
 			print(format(LFG_CALL_TO_ARMS, tank.." "..healer.." "..damager))
 			LFG_Timer = GetTime()
