@@ -620,7 +620,7 @@ CurrencyButton:SetScript("OnEvent", function(self, event)
 		self:Hide()
 	end
 end)
---[[
+
 -- 位置
 MinimapZoneTextButton:SetParent(Minimap)
 MinimapZoneTextButton:ClearAllPoints()
@@ -632,36 +632,15 @@ MinimapZoneText:SetFont(G.norFont, 12, "OUTLINE")
 MinimapZoneText:SetShadowOffset(0, 0)
 MinimapZoneText:SetJustifyH("CENTER")
 
-local Coords = T.createtext(Minimap, "OVERLAY", 12, "OUTLINE", "CENTER")
-Coords:SetPoint("CENTER", 0, 0)
-Coords:Hide()
-
-local Coords_update = 0
-
-Minimap:HookScript("OnUpdate",function(s, e)
-	Coords_update = Coords_update + e
-	if Coords_update > 1 then
-		if select(2, GetInstanceInfo()) == "none" then
-			local map = C_Map.GetPlayerMapPosition(C_Map.GetBestMapForUnit("player"), "player")
-			if map.x>0 or map.y>0 then
-				Coords:SetText(string.format("%d,%d",map.x*100,map.y*100));
-			else
-				Coords:SetText("")
-			end
-		end
-		Coords_update = 0
-	end
-end)
-
 Minimap:HookScript("OnEvent",function(self,event,...)
 	if event=="ZONE_CHANGED_NEW_AREA" and not WorldMapFrame:IsShown() then
 		SetMapToCurrentZone();
 	end
 end)
 
-Minimap:HookScript("OnEnter", function() MinimapZoneTextButton:Show() Coords:Show() end)
-Minimap:HookScript("OnLeave", function() MinimapZoneTextButton:Hide() Coords:Hide() end)
-]]
+Minimap:HookScript("OnEnter", function() MinimapZoneTextButton:Show() end)
+Minimap:HookScript("OnLeave", function() MinimapZoneTextButton:Hide() end)
+
 -- 新邮件图标
 MiniMapMailFrame:SetParent(Minimap)
 MiniMapMailFrame:ClearAllPoints()
