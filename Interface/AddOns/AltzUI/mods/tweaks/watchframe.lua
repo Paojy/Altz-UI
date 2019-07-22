@@ -9,8 +9,8 @@ if customobjectivetracker then return end
  
 anchorframe.movingname = L["任务追踪"]
 anchorframe.point = {
-	healer = {a1 = "TOPLEFT", parent = "UIParent", a2 = "TOPLEFT", x = 5, y = -200},
-	dpser = {a1 = "TOPLEFT", parent = "UIParent", a2 = "TOPLEFT", x = 5, y = -200},
+	healer = {a1 = "TOPLEFT", parent = "UIParent", a2 = "TOPLEFT", x = 20, y = -200},
+	dpser = {a1 = "TOPLEFT", parent = "UIParent", a2 = "TOPLEFT", x = 20, y = -200},
 }
 T.CreateDragFrame(anchorframe) --frame, dragFrameList, inset, clamp	
 anchorframe:SetSize(240, 20)
