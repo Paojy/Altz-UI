@@ -57,7 +57,7 @@ local GetSpellTextureFormatted = function(spellID, iconSize)
 		if icon then
 			msg = " \124T"..icon..":"..iconSize..":"..iconSize..":0:0:64:64:5:59:5:59\124t"
 		else
-			msg = " \124T"..ct.blank..":"..iconSize..":"..iconSize..":0:0:64:64:5:59:5:59\124t"
+			msg = " \124T134400:"..iconSize..":"..iconSize..":0:0:64:64:5:59:5:59\124t"
 		end
 	end
 	return msg
