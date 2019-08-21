@@ -26,6 +26,8 @@ C.themes["Blizzard_WarboardUI"] = function()
 			self.bg = F.SetBD(self)
 		end
 
+		self.CloseButton:SetPoint("TOPRIGHT", -2, -2)
+
 		for i = 1, self:GetNumOptions() do
 			local option = self.Options[i]
 			if reskinFont then
@@ -41,7 +43,7 @@ C.themes["Blizzard_WarboardUI"] = function()
 
 				if child.Spell then
 					if not child.Spell.bg then
-						child.Spell.Border:Hide()
+						child.Spell.Border:SetTexture("")
 						child.Spell.IconMask:Hide()
 						child.Spell.bg = F.ReskinIcon(child.Spell.Icon)
 					end

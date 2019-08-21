@@ -107,11 +107,14 @@ tinsert(C.themes["AuroraClassic"], function()
 
 	local pane = CharacterStatsPane
 	pane.ClassBackground:Hide()
-	local category = {pane.ItemLevelCategory, pane.AttributesCategory, pane.EnhancementsCategory}
-	for _, v in pairs(category) do
-		v.Background:Hide()
-		F.CreateGradient(v)
-		F.CreateBD(v, 0)
+	local categories = {pane.ItemLevelCategory, pane.AttributesCategory, pane.EnhancementsCategory}
+	for _, category in pairs(categories) do
+		category.Background:Hide()
+		category.Title:SetTextColor(r, g, b)
+		local line = category:CreateTexture(nil, "ARTWORK")
+		line:SetSize(180, C.mult)
+		line:SetPoint("BOTTOM", 0, 5)
+		line:SetColorTexture(1, 1, 1, .25)
 	end
 
 	-- [[ Sidebar tabs ]]
@@ -241,4 +244,15 @@ tinsert(C.themes["AuroraClassic"], function()
 	PaperDollEquipmentManagerPaneEquipSet:SetWidth(PaperDollEquipmentManagerPaneEquipSet:GetWidth()-1)
 	PaperDollEquipmentManagerPaneSaveSet:SetPoint("LEFT", PaperDollEquipmentManagerPaneEquipSet, "RIGHT", 1, 0)
 	GearManagerDialogPopup:SetPoint("LEFT", PaperDollFrame, "RIGHT", 1, 0)
+
+	-- Item alert
+	local closeButton = PaperDollItemsFrame.HelpTipBox.CloseButton
+	F.ReskinClose(closeButton)
+	hooksecurefunc(closeButton, "SetPoint", function(self, _, _, _, x)
+		if x == 6 then
+			self:SetPoint("TOPRIGHT", -3, -3)
+		elseif x == 4 then
+			self:SetPoint("TOPRIGHT", -5, -3)
+		end
+	end)
 end)

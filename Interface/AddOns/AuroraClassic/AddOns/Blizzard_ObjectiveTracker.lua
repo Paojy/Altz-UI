@@ -43,7 +43,7 @@ tinsert(C.themes["AuroraClassic"], function()
 		bg:SetTexture("Interface\\LFGFrame\\UI-LFG-SEPARATOR")
 		bg:SetTexCoord(0, .66, 0, .31)
 		bg:SetVertexColor(r, g, b, .8)
-		bg:SetPoint("BOTTOMLEFT", -30, -4)
+		bg:SetPoint("BOTTOMLEFT", 0, -4)
 		bg:SetSize(250, 30)
 	end
 
@@ -53,6 +53,7 @@ tinsert(C.themes["AuroraClassic"], function()
 		ObjectiveTrackerBlocksFrame.ScenarioHeader,
 		BONUS_OBJECTIVE_TRACKER_MODULE.Header,
 		WORLD_QUEST_TRACKER_MODULE.Header,
+		ObjectiveTrackerFrame.BlocksFrame.UIWidgetsHeader
 	}
 	for _, header in pairs(headers) do reskinHeader(header) end
 

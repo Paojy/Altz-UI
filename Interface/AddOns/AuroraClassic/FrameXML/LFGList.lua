@@ -184,8 +184,7 @@ tinsert(C.themes["AuroraClassic"], function()
 	local ActivityFinder = EntryCreation.ActivityFinder
 
 	ActivityFinder.Background:SetTexture("")
-	ActivityFinder.Dialog.Bg:Hide()
-	F.StripTextures(ActivityFinder.Dialog.BorderFrame)
+	F.StripTextures(ActivityFinder.Dialog)
 	F.CreateBD(ActivityFinder.Dialog)
 	ActivityFinder.Dialog:SetBackdropColor(.2, .2, .2, .9)
 	F.Reskin(ActivityFinder.Dialog.SelectButton)
@@ -197,6 +196,7 @@ tinsert(C.themes["AuroraClassic"], function()
 
 	local LFGListApplicationDialog = LFGListApplicationDialog
 
+	F.StripTextures(LFGListApplicationDialog)
 	F.CreateBD(LFGListApplicationDialog)
 	F.CreateSD(LFGListApplicationDialog)
 	F.StripTextures(LFGListApplicationDialog.Description)
@@ -208,6 +208,7 @@ tinsert(C.themes["AuroraClassic"], function()
 
 	local LFGListInviteDialog = LFGListInviteDialog
 
+	F.StripTextures(LFGListInviteDialog)
 	F.CreateBD(LFGListInviteDialog)
 	F.CreateSD(LFGListInviteDialog)
 	F.Reskin(LFGListInviteDialog.AcceptButton)

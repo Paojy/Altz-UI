@@ -97,7 +97,6 @@ C.themes["Blizzard_Communities"] = function()
 	do
 		local dialog = CommunitiesFrame.NotificationSettingsDialog
 		F.StripTextures(dialog)
-		dialog.BG:Hide()
 		F.SetBD(dialog)
 		F.ReskinDropDown(dialog.CommunitiesListDropDownMenu)
 		F.Reskin(dialog.OkayButton)
@@ -213,6 +212,7 @@ C.themes["Blizzard_Communities"] = function()
 
 	do
 		local dialog = CommunitiesSettingsDialog
+		F.StripTextures(dialog)
 		F.SetBD(dialog)
 		F.Reskin(dialog.ChangeAvatarButton)
 		F.Reskin(dialog.Accept)
