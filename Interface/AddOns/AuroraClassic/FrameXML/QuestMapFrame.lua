@@ -55,11 +55,14 @@ tinsert(C.themes["AuroraClassic"], function()
 	local function UpdateCampaignHeader()
 		campaignHeader.newTex:SetAlpha(0)
 		if campaignHeader:IsShown() then
-			local warCampaignInfo = C_CampaignInfo.GetCampaignInfo(C_CampaignInfo.GetCurrentCampaignID())
-			local textureID = warCampaignInfo.uiTextureKitID
-			if textureID and idToTexture[textureID] then
-				campaignHeader.newTex:SetTexture(idToTexture[textureID])
-				campaignHeader.newTex:SetAlpha(.7)
+			local campaignID = C_CampaignInfo.GetCurrentCampaignID()
+			if campaignID then
+				local warCampaignInfo = C_CampaignInfo.GetCampaignInfo(campaignID)
+				local textureID = warCampaignInfo.uiTextureKitID
+				if textureID and idToTexture[textureID] then
+					campaignHeader.newTex:SetTexture(idToTexture[textureID])
+					campaignHeader.newTex:SetAlpha(.7)
+				end
 			end
 		end
 	end
@@ -163,4 +166,22 @@ tinsert(C.themes["AuroraClassic"], function()
 	QuestLogPopupDetailFrame.ShareButton:ClearAllPoints()
 	QuestLogPopupDetailFrame.ShareButton:SetPoint("LEFT", QuestLogPopupDetailFrame.AbandonButton, "RIGHT", 1, 0)
 	QuestLogPopupDetailFrame.ShareButton:SetPoint("RIGHT", QuestLogPopupDetailFrame.TrackButton, "LEFT", -1, 0)
+
+	-- Sync button
+
+	local sessionManagement = QuestMapFrame.QuestSessionManagement
+	sessionManagement.BG:Hide()
+	F.CreateBDFrame(sessionManagement, .25)
+
+	local names = {"StartDialog", "CheckStartDialog", "CheckStopDialog", "CheckLeavePartyDialog"}
+	for _, name in next, names do
+		local dialog = QuestSessionManager[name]
+		F.StripTextures(dialog)
+		F.SetBD(dialog)
+		F.Reskin(dialog.ButtonContainer.Confirm)
+		F.Reskin(dialog.ButtonContainer.Decline)
+		if dialog.MinimizeButton then
+			F.ReskinArrow(dialog.MinimizeButton, "down")
+		end
+	end
 end)
