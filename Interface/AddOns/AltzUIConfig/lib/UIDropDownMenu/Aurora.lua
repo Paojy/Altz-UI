@@ -1,8 +1,7 @@
 -- Dropdown lists
 local F, C = unpack(AuroraClassic)
 
-local _, class = UnitClass("player")
-local r, g, b = C.classcolours[class].r, C.classcolours[class].g, C.classcolours[class].b
+local r, g, b = C.buttonR, C.buttonG, C.buttonB
 
 hooksecurefunc("L_UIDropDownMenu_CreateFrames", function(level, index)
 	for i = 1, _G.UIDROPDOWNMENU_MAXLEVELS do

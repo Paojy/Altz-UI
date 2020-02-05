@@ -1117,6 +1117,7 @@ end
 function EventFrame:PLAYER_SPECIALIZATION_CHANGED(arg1)
 	if arg1 == "player" then
 		togglerf()
+		T.PlaceRaidFrame()
 	end
 end
 
