@@ -5,12 +5,12 @@ tinsert(C.themes["AuroraClassic"], function()
 	F.CreateBD(RaidInfoFrame)
 	F.CreateSD(RaidInfoFrame)
 	F.ReskinCheck(RaidFrameAllAssistCheckButton)
+	F.StripTextures(RaidInfoFrame.Header)
 
 	RaidInfoFrame:SetPoint("TOPLEFT", RaidFrame, "TOPRIGHT", 1, -28)
 	RaidInfoDetailFooter:Hide()
 	RaidInfoDetailHeader:Hide()
 	RaidInfoDetailCorner:Hide()
-	RaidInfoFrameHeader:Hide()
 
 	F.Reskin(RaidFrameRaidInfoButton)
 	F.Reskin(RaidFrameConvertToRaidButton)

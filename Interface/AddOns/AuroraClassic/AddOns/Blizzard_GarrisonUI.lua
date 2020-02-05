@@ -4,7 +4,7 @@ C.themes["Blizzard_GarrisonUI"] = function()
 	local r, g, b = C.r, C.g, C.b
 
 	-- tooltips
-	if AuroraConfig.tooltips then
+	if AuroraClassicDB.Tooltips then
 		F.ReskinTooltip(GarrisonMissionMechanicTooltip)
 		F.ReskinTooltip(GarrisonMissionMechanicFollowerCounterTooltip)
 		F.ReskinTooltip(GarrisonShipyardMapMissionTooltip)
@@ -53,11 +53,9 @@ C.themes["Blizzard_GarrisonUI"] = function()
 		F.CreateBD(self.RewardsFrame, .25)
 
 		local env = self.Stage.MissionEnvIcon
-		env.Texture:SetDrawLayer("BORDER", 1)
 		env.bg = F.ReskinIcon(env.Texture)
 
 		local item = self.RewardsFrame.OvermaxItem
-		item.Icon:SetDrawLayer("BORDER", 1)
 		F.ReskinIcon(item.Icon)
 
 		if self.CostFrame then
@@ -102,8 +100,9 @@ C.themes["Blizzard_GarrisonUI"] = function()
 				local rareOverlay = button.RareOverlay
 				local rareText = button.RareText
 
+				button.LocBG:SetDrawLayer("BACKGROUND")
 				F.StripTextures(button)
-				F.CreateBD(button, .25)
+				F.CreateBDFrame(button, .25)
 
 				rareText:ClearAllPoints()
 				rareText:SetPoint("BOTTOMLEFT", button, 20, 10)
@@ -195,9 +194,7 @@ C.themes["Blizzard_GarrisonUI"] = function()
 		local ability = abilities[numAbilitiesStyled]
 		while ability do
 			local icon = ability.IconButton.Icon
-			icon:SetTexCoord(.08, .92, .08, .92)
-			icon:SetDrawLayer("BACKGROUND", 1)
-			F.CreateBG(icon)
+			F.ReskinIcon(icon)
 
 			numAbilitiesStyled = numAbilitiesStyled + 1
 			ability = abilities[numAbilitiesStyled]
@@ -251,8 +248,7 @@ C.themes["Blizzard_GarrisonUI"] = function()
 			if item then
 				local icon = item.Icon
 				item.Border:Hide()
-				icon:SetTexCoord(.08, .92, .08, .92)
-				F.CreateBG(icon)
+				F.ReskinIcon(icon)
 
 				local bg = F.CreateBDFrame(item, .25)
 				bg:SetPoint("TOPLEFT", 41, -1)
@@ -434,12 +430,8 @@ C.themes["Blizzard_GarrisonUI"] = function()
 	local CapacitiveDisplay = GarrisonCapacitiveDisplayFrame.CapacitiveDisplay
 	CapacitiveDisplay.IconBG:SetAlpha(0)
 
-	do
-		local icon = CapacitiveDisplay.ShipmentIconFrame.Icon
-		icon:SetTexCoord(.08, .92, .08, .92)
-		F.CreateBG(icon)
-		F.ReskinGarrisonPortrait(CapacitiveDisplay.ShipmentIconFrame.Follower)
-	end
+	F.ReskinIcon(CapacitiveDisplay.ShipmentIconFrame.Icon)
+	F.ReskinGarrisonPortrait(CapacitiveDisplay.ShipmentIconFrame.Follower)
 
 	local reagentIndex = 1
 	hooksecurefunc("GarrisonCapacitiveDisplayFrame_Update", function()
@@ -448,10 +440,7 @@ C.themes["Blizzard_GarrisonUI"] = function()
 		local reagent = reagents[reagentIndex]
 		while reagent do
 			reagent.NameFrame:SetAlpha(0)
-
-			reagent.Icon:SetTexCoord(.08, .92, .08, .92)
-			reagent.Icon:SetDrawLayer("BORDER")
-			F.CreateBG(reagent.Icon)
+			F.ReskinIcon(reagent.Icon)
 
 			local bg = F.CreateBDFrame(reagent, .25)
 			bg:SetPoint("TOPLEFT")
@@ -497,9 +486,8 @@ C.themes["Blizzard_GarrisonUI"] = function()
 
 		for _, reward in pairs(button.Rewards) do
 			reward:GetRegions():Hide()
-			reward.Icon:SetTexCoord(.08, .92, .08, .92)
 			reward.IconBorder:SetAlpha(0)
-			F.CreateBG(reward.Icon)
+			F.ReskinIcon(reward.Icon)
 			reward:ClearAllPoints()
 			reward:SetPoint("TOPRIGHT", -4, -4)
 		end

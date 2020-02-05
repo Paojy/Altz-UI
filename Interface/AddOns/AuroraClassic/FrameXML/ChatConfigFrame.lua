@@ -4,8 +4,9 @@ tinsert(C.themes["AuroraClassic"], function()
 	F.StripTextures(ChatConfigFrame)
 	F.CreateBD(ChatConfigFrame)
 	F.CreateSD(ChatConfigFrame)
-	ChatConfigFrameHeader:SetAlpha(0)
-	ChatConfigFrameHeader:SetPoint("TOP", ChatConfigFrame, 0, 0)
+
+	F.StripTextures(ChatConfigFrame.Header)
+	ChatConfigFrame.Header:SetPoint("TOP", ChatConfigFrame, 0, 0)
 
 	hooksecurefunc("ChatConfig_CreateCheckboxes", function(frame, checkBoxTable)
 		if frame.styled then return end

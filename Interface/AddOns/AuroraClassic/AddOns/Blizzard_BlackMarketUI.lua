@@ -6,7 +6,7 @@ C.themes["Blizzard_BlackMarketUI"] = function()
 	F.StripTextures(BlackMarketFrame)
 	BlackMarketFrame.MoneyFrameBorder:SetAlpha(0)
 	F.StripTextures(BlackMarketFrame.HotDeal)
-	F.CreateBG(BlackMarketFrame.HotDeal.Item)
+	F.CreateBDFrame(BlackMarketFrame.HotDeal.Item)
 	BlackMarketFrame.HotDeal.Item.IconTexture:SetTexCoord(.08, .92, .08, .92)
 
 	local headers = {"ColumnName", "ColumnLevel", "ColumnType", "ColumnDuration", "ColumnHighBidder", "ColumnCurrentBid"}
@@ -37,7 +37,7 @@ C.themes["Blizzard_BlackMarketUI"] = function()
 				bu.Item:SetNormalTexture("")
 				bu.Item:SetPushedTexture("")
 				bu.Item:GetHighlightTexture():SetColorTexture(1, 1, 1, .25)
-				F.CreateBG(bu.Item)
+				F.CreateBDFrame(bu.Item)
 				bu.Item.IconBorder:SetAlpha(0)
 
 				local bg = F.CreateBDFrame(bu, .25)

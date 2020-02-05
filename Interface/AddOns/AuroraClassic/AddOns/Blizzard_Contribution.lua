@@ -29,7 +29,7 @@ C.themes["Blizzard_Contribution"] = function()
 	end)
 
 	-- Tooltips
-	if AuroraConfig.tooltips then
+	if AuroraClassicDB.Tooltips then
 		F.ReskinTooltip(ContributionBuffTooltip)
 		ContributionBuffTooltip.Icon:SetTexCoord(.08, .92, .08, .92)
 		ContributionBuffTooltip.Border:SetAlpha(0)

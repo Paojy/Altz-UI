@@ -22,8 +22,7 @@ tinsert(C.themes["AuroraClassic"], function()
 		bu:SetCheckedTexture("")
 		bu:SetPushedTexture("")
 
-		ic:SetTexCoord(.08, .92, .08, .92)
-		ic.bg = F.CreateBG(bu)
+		ic.bg = F.ReskinIcon(ic)
 	end
 
 	hooksecurefunc("SpellButton_UpdateButton", function(self)
@@ -76,7 +75,7 @@ tinsert(C.themes["AuroraClassic"], function()
 				tab:GetRegions():Hide()
 				tab:SetCheckedTexture(C.media.checked)
 				tab:GetHighlightTexture():SetColorTexture(1, 1, 1, .25)
-				F.CreateBG(tab)
+				F.CreateBDFrame(tab)
 
 				tab.styled = true
 			end
@@ -108,37 +107,45 @@ tinsert(C.themes["AuroraClassic"], function()
 		end
 	end
 
-	local professionbuttons = {"PrimaryProfession1SpellButtonTop", "PrimaryProfession1SpellButtonBottom", "PrimaryProfession2SpellButtonTop", "PrimaryProfession2SpellButtonBottom", "SecondaryProfession1SpellButtonLeft", "SecondaryProfession1SpellButtonRight", "SecondaryProfession2SpellButtonLeft", "SecondaryProfession2SpellButtonRight", "SecondaryProfession3SpellButtonLeft", "SecondaryProfession3SpellButtonRight"}
+	local professionbuttons = {
+		"PrimaryProfession1SpellButtonTop",
+		"PrimaryProfession1SpellButtonBottom",
+		"PrimaryProfession2SpellButtonTop",
+		"PrimaryProfession2SpellButtonBottom",
+		"SecondaryProfession1SpellButtonLeft",
+		"SecondaryProfession1SpellButtonRight",
+		"SecondaryProfession2SpellButtonLeft",
+		"SecondaryProfession2SpellButtonRight",
+		"SecondaryProfession3SpellButtonLeft",
+		"SecondaryProfession3SpellButtonRight",
+	}
 
 	for _, button in pairs(professionbuttons) do
-		local icon = _G[button.."IconTexture"]
 		local bu = _G[button]
-		_G[button.."NameFrame"]:SetAlpha(0)
+		F.StripTextures(bu)
 		bu:SetPushedTexture("")
-		bu:SetCheckedTexture(C.media.checked)
 
-		if icon then
-			icon:SetTexCoord(.08, .92, .08, .92)
-			icon:ClearAllPoints()
-			icon:SetPoint("TOPLEFT", 2, -2)
-			icon:SetPoint("BOTTOMRIGHT", -2, 2)
-			F.CreateBG(icon)
-			bu.highlightTexture:SetAllPoints(icon)
-		end
+		local icon = bu.iconTexture
+		icon:ClearAllPoints()
+		icon:SetPoint("TOPLEFT", 2, -2)
+		icon:SetPoint("BOTTOMRIGHT", -2, 2)
+		F.ReskinIcon(icon)
+
+		bu.highlightTexture:SetAllPoints(icon)
+		local check = bu:GetCheckedTexture()
+		check:SetTexture(C.media.checked)
+		check:SetAllPoints(icon)
 	end
 
 	for i = 1, 2 do
 		local bu = _G["PrimaryProfession"..i]
-
 		_G["PrimaryProfession"..i.."IconBorder"]:Hide()
 
 		bu.professionName:ClearAllPoints()
 		bu.professionName:SetPoint("TOPLEFT", 100, -4)
-
 		bu.icon:SetAlpha(1)
-		bu.icon:SetTexCoord(.08, .92, .08, .92)
 		bu.icon:SetDesaturated(false)
-		F.CreateBG(bu.icon)
+		F.ReskinIcon(bu.icon)
 
 		local bg = F.CreateBDFrame(bu, .25)
 		bg:SetPoint("TOPLEFT")

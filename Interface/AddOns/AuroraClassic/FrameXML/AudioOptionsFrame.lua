@@ -1,9 +1,9 @@
 local F, C = unpack(select(2, ...))
 
 tinsert(C.themes["AuroraClassic"], function()
-	AudioOptionsFrameHeader:SetAlpha(0)
-	AudioOptionsFrameHeader:ClearAllPoints()
-	AudioOptionsFrameHeader:SetPoint("TOP", AudioOptionsFrame, 0, 0)
+	F.StripTextures(AudioOptionsFrame.Header)
+	AudioOptionsFrame.Header:ClearAllPoints()
+	AudioOptionsFrame.Header:SetPoint("TOP", AudioOptionsFrame, 0, 0)
 	F.CreateBD(AudioOptionsFrame)
 	F.CreateSD(AudioOptionsFrame)
 	F.Reskin(AudioOptionsFrameOkay)

@@ -1,4 +1,5 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/">
+	<Script file="AddonList.lua"/>
 	<Script file="AlertFrames.lua"/>
 	<Script file="AudioOptionsFrame.lua"/>
 	<Script file="BankFrame.lua"/>
@@ -9,7 +10,6 @@
 	<Script file="ChatFrame.lua"/>
 	<Script file="CinematicFrame.lua"/>
 	<Script file="ColorPickerFrame.lua"/>
-	<Script file="Constants.lua"/>
 	<Script file="ContainerFrame.lua"/>
 	<Script file="DressUpFrames.lua"/>
 	<Script file="EquipmentFlyout.lua"/>
@@ -35,12 +35,11 @@
 	<Script file="MailFrame.lua"/>
 	<Script file="MainMenuBarMicroButtons.lua"/>
 	<Script file="MerchantFrame.lua"/>
+	<Script file="ModelPreviewFrame.lua"/>
 	<Script file="MovieFrame.lua"/>
 	<Script file="NavigationBar.lua"/>
-	<Script file="PaperDollFrame.lua"/>
 	<Script file="PetitionFrame.lua"/>
 	<Script file="PetStable.lua"/>
-	<Script file="ProductChoiceFrame.lua"/>
 	<Script file="PVEFrame.lua"/>
 	<Script file="PVPHelper.lua"/>
 	<Script file="QuestFrame.lua"/>
@@ -55,6 +54,7 @@
 	<Script file="ReputationFrame.lua"/>
 	<Script file="RolePoll.lua"/>
 	<Script file="ScenarioFinder.lua"/>
+	<Script file="ScriptErrorsFrame.lua"/>
 	<Script file="SpellBookFrame.lua"/>
 	<Script file="SplashFrame.lua"/>
 	<Script file="StackSplitFrame.lua"/>

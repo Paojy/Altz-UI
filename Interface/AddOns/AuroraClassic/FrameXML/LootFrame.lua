@@ -1,7 +1,7 @@
 local F, C = unpack(select(2, ...))
 
 tinsert(C.themes["AuroraClassic"], function()
-	if not AuroraConfig.loot then return end
+	if not AuroraClassicDB.Loot then return end
 
 	LootFramePortraitOverlay:Hide()
 
@@ -24,14 +24,13 @@ tinsert(C.themes["AuroraClassic"], function()
 			bd:SetPoint("TOPLEFT")
 			bd:SetPoint("BOTTOMRIGHT", 114, 0)
 
-			ic:SetTexCoord(.08, .92, .08, .92)
-			ic.bg = F.CreateBG(ic)
+			ic.bg = F.ReskinIcon(ic)
 		end
 
 		if select(7, GetLootSlotInfo(index)) then
-			ic.bg:SetVertexColor(1, 1, 0)
+			ic.bg:SetBackdropBorderColor(1, 1, 0)
 		else
-			ic.bg:SetVertexColor(0, 0, 0)
+			ic.bg:SetBackdropBorderColor(0, 0, 0)
 		end
 	end)
 
@@ -57,7 +56,6 @@ tinsert(C.themes["AuroraClassic"], function()
 		frame.SpecRing:SetAlpha(0)
 		frame.SpecIcon:SetPoint("TOPLEFT", 5, -5)
 		local bg = F.ReskinIcon(frame.SpecIcon)
-		bg:SetDrawLayer("OVERLAY", 1)
 		hooksecurefunc("BonusRollFrame_StartBonusRoll", function()
 			bg:SetShown(frame.SpecIcon:IsShown())
 		end)

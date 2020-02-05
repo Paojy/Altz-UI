@@ -104,7 +104,7 @@ C.themes["Blizzard_GuildBankUI"] = function()
 		nt:SetAlpha(0)
 
 		bu:SetCheckedTexture(C.media.checked)
-		F.CreateBG(bu)
+		F.CreateBDFrame(bu)
 
 		local a1, p, a2, x, y = bu:GetPoint()
 		bu:SetPoint(a1, p, a2, x + 1, y)
@@ -119,8 +119,7 @@ C.themes["Blizzard_GuildBankUI"] = function()
 			if not bu.styled then
 				bu:SetCheckedTexture(C.media.checked)
 				select(2, bu:GetRegions()):Hide()
-				icon:SetTexCoord(.08, .92, .08, .92)
-				F.CreateBG(icon)
+				F.ReskinIcon(icon)
 				local hl = bu:GetHighlightTexture()
 				hl:SetColorTexture(1, 1, 1, .25)
 				hl:SetAllPoints(icon)

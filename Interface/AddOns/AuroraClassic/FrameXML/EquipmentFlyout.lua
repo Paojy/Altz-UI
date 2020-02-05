@@ -17,22 +17,25 @@ tinsert(C.themes["AuroraClassic"], function()
 	navFrame:SetWidth(204)
 	navFrame:SetPoint("TOPLEFT", EquipmentFlyoutFrameButtons, "BOTTOMLEFT", 1, 0)
 
+	local function hook_SetVertexColor(self, r, g, b)
+		self:GetParent().bg:SetBackdropBorderColor(r, g, b)
+	end
+	local function hook_Hide(self)
+		self:GetParent().bg:SetBackdropBorderColor(0, 0, 0)
+	end
+
 	hooksecurefunc("EquipmentFlyout_CreateButton", function()
 		local bu = EquipmentFlyoutFrame.buttons[#EquipmentFlyoutFrame.buttons]
-		local border = bu.IconBorder
 
+		bu.IconBorder:SetAlpha(0)
+		bu.icon:SetTexCoord(.08, .92, .08, .92)
 		bu:SetNormalTexture("")
 		bu:SetPushedTexture("")
 		bu:GetHighlightTexture():SetColorTexture(1, 1, 1, .25)
-		F.CreateBG(bu)
+		bu.bg = F.CreateBDFrame(bu)
 
-		border:SetTexture(C.media.backdrop)
-		border.SetTexture = F.dummy
-		border:SetPoint("TOPLEFT", -C.mult, C.mult)
-		border:SetPoint("BOTTOMRIGHT", C.mult, -C.mult)
-		border:SetDrawLayer("BACKGROUND", 1)
-
-		bu.icon:SetTexCoord(.08, .92, .08, .92)
+		hooksecurefunc(bu.IconBorder, "SetVertexColor", hook_SetVertexColor)
+		hooksecurefunc(bu.IconBorder, "Hide", hook_Hide)
 	end)
 
 	hooksecurefunc("EquipmentFlyout_DisplayButton", function(button)

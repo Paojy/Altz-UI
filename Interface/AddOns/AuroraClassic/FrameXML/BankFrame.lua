@@ -1,9 +1,7 @@
 local F, C = unpack(select(2, ...))
 
 tinsert(C.themes["AuroraClassic"], function()
-	if not AuroraConfig.bags then return end
-
-	local r, g, b = C.r, C.g, C.b
+	if not AuroraClassicDB.Bags then return end
 
 	-- [[ Bank ]]
 
@@ -21,14 +19,6 @@ tinsert(C.themes["AuroraClassic"], function()
 	F.ReskinTab(BankFrameTab1)
 	F.ReskinTab(BankFrameTab2)
 	F.ReskinInput(BankItemSearchBox)
-
-	local function onEnter(self)
-		self.bg:SetBackdropBorderColor(r, g, b)
-	end
-
-	local function onLeave(self)
-		self.bg:SetBackdropBorderColor(0, 0, 0)
-	end
 
 	local function styleBankButton(bu)
 		local border = bu.IconBorder
@@ -52,11 +42,7 @@ tinsert(C.themes["AuroraClassic"], function()
 		bu:GetHighlightTexture():SetColorTexture(1, 1, 1, .25)
 
 		bu.icon:SetTexCoord(.08, .92, .08, .92)
-
-		bu.bg = F.CreateBDFrame(bu, 0)
-
-		bu:HookScript("OnEnter", onEnter)
-		bu:HookScript("OnLeave", onLeave)
+		F.CreateBDFrame(bu, .25)
 	end
 
 	for i = 1, 28 do
@@ -83,16 +69,12 @@ tinsert(C.themes["AuroraClassic"], function()
 		searchOverlay:SetPoint("BOTTOMRIGHT", C.mult, -C.mult)
 
 		bag.icon:SetTexCoord(.08, .92, .08, .92)
-
-		bag.bg = F.CreateBDFrame(bag, 0)
-
-		bag:HookScript("OnEnter", onEnter)
-		bag:HookScript("OnLeave", onLeave)
+		F.CreateBDFrame(bag, .25)
 	end
 
 	BankItemAutoSortButton:GetNormalTexture():SetTexCoord(.17, .83, .17, .83)
 	BankItemAutoSortButton:GetPushedTexture():SetTexCoord(.17, .83, .17, .83)
-	F.CreateBG(BankItemAutoSortButton)
+	F.CreateBDFrame(BankItemAutoSortButton)
 	local highlight = BankItemAutoSortButton:GetHighlightTexture()
 	highlight:SetColorTexture(1, 1, 1, .25)
 	highlight:SetAllPoints(BankItemAutoSortButton)

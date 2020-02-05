@@ -71,8 +71,15 @@ C.themes["Blizzard_ChallengesUI"] = function()
 	noticeFrame.SeasonDescription2:SetTextColor(1, 1, 1)
 	noticeFrame.SeasonDescription3:SetTextColor(1, .8, 0)
 
-	local affix = ChallengesFrame.SeasonChangeNoticeFrame.Affix
+	local affix = noticeFrame.Affix
 	F.StripTextures(affix)
-	F.ReskinIcon(affix.Portrait)
-	--affix.Portrait:SetTexture(2446016) -- for testing
+	local bg = F.ReskinIcon(affix.Portrait)
+	bg:SetFrameLevel(3)
+
+	hooksecurefunc(affix, "SetUp", function(self, affixID)
+		local _, _, texture = C_ChallengeMode.GetAffixInfo(affixID)
+		if texture then
+			affix.Portrait:SetTexture(texture)
+		end
+	end)
 end

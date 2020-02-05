@@ -175,9 +175,7 @@ C.themes["Blizzard_GuildUI"] = function()
 		bg:ClearAllPoints()
 		bg:SetPoint("TOPLEFT", 1, -3)
 		bg:SetPoint("BOTTOMRIGHT", 0, 4)
-
-		bu.icon:SetTexCoord(.08, .92, .08, .92)
-		F.CreateBG(bu.icon)
+		F.ReskinIcon(bu.icon)
 	end
 	GuildPerksContainerButton1:SetPoint("LEFT", -1, 0)
 
@@ -217,7 +215,7 @@ C.themes["Blizzard_GuildUI"] = function()
 				bu:SetHighlightTexture(C.media.backdrop)
 				bu:GetHighlightTexture():SetVertexColor(r, g, b, .2)
 
-				bu.bg = F.CreateBG(bu.icon)
+				bu.bg = F.CreateBDFrame(bu.icon)
 			end
 
 			index = offset + i

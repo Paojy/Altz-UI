@@ -34,6 +34,7 @@ C.themes["Blizzard_Collections"] = function()
 	F.CreateBD(MountJournal.MountCount, .25)
 	F.StripTextures(PetJournal.PetCount)
 	F.CreateBD(PetJournal.PetCount, .25)
+	PetJournal.PetCount:SetWidth(140)
 	F.CreateBD(MountJournal.MountDisplay.ModelScene, .25)
 	F.ReskinIcon(MountJournal.MountDisplay.InfoButton.Icon)
 
@@ -66,7 +67,7 @@ C.themes["Blizzard_Collections"] = function()
 	for _, scrollFrame in pairs(scrollFrames) do
 		for i = 1, #scrollFrame do
 			local bu = scrollFrame[i]
-			local ic = bu.icon
+			local icon = bu.icon
 
 			bu:GetRegions():Hide()
 			bu:SetHighlightTexture("")
@@ -78,22 +79,20 @@ C.themes["Blizzard_Collections"] = function()
 			bg:SetPoint("BOTTOMRIGHT", 0, 1)
 			bu.bg = bg
 
-			ic:SetTexCoord(.08, .92, .08, .92)
-			ic.bg = F.CreateBG(ic)
-
+			icon.bg = F.ReskinIcon(icon)
 			bu.name:SetParent(bg)
 
 			if bu.DragButton then
 				bu.DragButton.ActiveTexture:SetTexture(C.media.checked)
 				bu.DragButton:GetHighlightTexture():SetColorTexture(1, 1, 1, .25)
-				bu.DragButton:GetHighlightTexture():SetAllPoints(ic)
+				bu.DragButton:GetHighlightTexture():SetAllPoints(icon)
 			else
 				bu.dragButton.ActiveTexture:SetTexture(C.media.checked)
 				bu.dragButton.levelBG:SetAlpha(0)
 				bu.dragButton.level:SetFontObject(GameFontNormal)
 				bu.dragButton.level:SetTextColor(1, 1, 1)
 				bu.dragButton:GetHighlightTexture():SetColorTexture(1, 1, 1, .25)
-				bu.dragButton:GetHighlightTexture():SetAllPoints(ic)
+				bu.dragButton:GetHighlightTexture():SetAllPoints(icon)
 			end
 		end
 	end
@@ -161,13 +160,17 @@ C.themes["Blizzard_Collections"] = function()
 	hooksecurefunc("PetJournal_UpdatePetList", updatePetScroll)
 	hooksecurefunc(PetJournalListScrollFrame, "update", updatePetScroll)
 
-	PetJournalHealPetButtonBorder:Hide()
-	PetJournalHealPetButtonIconTexture:SetTexCoord(.08, .92, .08, .92)
-	PetJournal.HealPetButton:SetPushedTexture("")
-	PetJournal.HealPetButton:GetHighlightTexture():SetColorTexture(1, 1, 1, .25)
-	F.CreateBG(PetJournal.HealPetButton)
+	local function reskinToolButton(button)
+		local border = _G[button:GetName().."Border"]
+		if border then border:Hide() end
+		button:SetPushedTexture("")
+		button:GetHighlightTexture():SetColorTexture(1, 1, 1, .25)
+		F.ReskinIcon(button.texture)
+	end
 
-	if AuroraConfig.tooltips then
+	reskinToolButton(PetJournalHealPetButton)
+
+	if AuroraClassicDB.Tooltips then
 		F.ReskinTooltip(PetJournalPrimaryAbilityTooltip)
 		F.ReskinTooltip(PetJournalSecondaryAbilityTooltip)
 	end
@@ -175,19 +178,11 @@ C.themes["Blizzard_Collections"] = function()
 	PetJournalLoadoutBorderSlotHeaderText:SetParent(PetJournal)
 	PetJournalLoadoutBorderSlotHeaderText:SetPoint("CENTER", PetJournalLoadoutBorderTop, "TOP", 0, 4)
 
-	PetJournalSummonRandomFavoritePetButtonBorder:Hide()
-	PetJournalSummonRandomFavoritePetButtonIconTexture:SetTexCoord(.08, .92, .08, .92)
-	PetJournalSummonRandomFavoritePetButton:SetPushedTexture("")
-	PetJournalSummonRandomFavoritePetButton:GetHighlightTexture():SetColorTexture(1, 1, 1, .25)
-	F.CreateBG(PetJournalSummonRandomFavoritePetButton)
+	reskinToolButton(PetJournalSummonRandomFavoritePetButton)
 
 	-- Favourite mount button
 
-	MountJournalSummonRandomFavoriteButtonBorder:Hide()
-	MountJournalSummonRandomFavoriteButtonIconTexture:SetTexCoord(.08, .92, .08, .92)
-	MountJournalSummonRandomFavoriteButton:SetPushedTexture("")
-	MountJournalSummonRandomFavoriteButton:GetHighlightTexture():SetColorTexture(1, 1, 1, .25)
-	F.CreateBG(MountJournalSummonRandomFavoriteButton)
+	reskinToolButton(MountJournalSummonRandomFavoriteButton)
 
 	local movedButton
 	MountJournal:HookScript("OnShow", function()
@@ -211,8 +206,7 @@ C.themes["Blizzard_Collections"] = function()
 	card.PetInfo.level:SetFontObject(GameFontNormal)
 	card.PetInfo.level:SetTextColor(1, 1, 1)
 
-	card.PetInfo.icon:SetTexCoord(.08, .92, .08, .92)
-	card.PetInfo.icon.bg = F.CreateBG(card.PetInfo.icon)
+	card.PetInfo.icon.bg = F.ReskinIcon(card.PetInfo.icon)
 
 	F.CreateBD(card, .25)
 
@@ -246,7 +240,7 @@ C.themes["Blizzard_Collections"] = function()
 			r, g, b = 0, 0, 0
 		end
 
-		self.PetInfo.icon.bg:SetVertexColor(r, g, b)
+		self.PetInfo.icon.bg:SetBackdropBorderColor(r, g, b)
 	end)
 
 	-- Pet loadout
@@ -265,8 +259,7 @@ C.themes["Blizzard_Collections"] = function()
 		bu.level:SetFontObject(GameFontNormal)
 		bu.level:SetTextColor(1, 1, 1)
 
-		bu.icon:SetTexCoord(.08, .92, .08, .92)
-		bu.icon.bg = F.CreateBDFrame(bu.icon, .25)
+		bu.icon.bg = F.ReskinIcon(bu.icon)
 
 		bu.setButton:GetRegions():SetPoint("TOPLEFT", bu.icon, -5, 5)
 		bu.setButton:GetRegions():SetPoint("BOTTOMRIGHT", bu.icon, 5, -5)
@@ -300,8 +293,7 @@ C.themes["Blizzard_Collections"] = function()
 			spell.FlyoutArrow:SetSize(8, 8)
 			spell.FlyoutArrow:SetTexCoord(0, 1, 0, 1)
 
-			spell.icon:SetTexCoord(.08, .92, .08, .92)
-			F.CreateBG(spell.icon)
+			F.ReskinIcon(spell.icon)
 		end
 	end
 
@@ -326,9 +318,7 @@ C.themes["Blizzard_Collections"] = function()
 		bu:SetPushedTexture("")
 		bu:GetHighlightTexture():SetColorTexture(1, 1, 1, .25)
 
-		bu.icon:SetDrawLayer("ARTWORK")
-		bu.icon:SetTexCoord(.08, .92, .08, .92)
-		F.CreateBG(bu.icon)
+		F.ReskinIcon(bu.icon)
 	end
 
 	-- [[ Toy box ]]
@@ -453,11 +443,11 @@ C.themes["Blizzard_Collections"] = function()
 
 		if button.iconTexture:IsShown() then
 			button.name:SetTextColor(1, 1, 1)
-			button.bg:SetVertexColor(0, .8, 1)
+			button.bg:SetBackdropBorderColor(0, .8, 1)
 			button.newLevelBg:Show()
 		else
 			button.name:SetTextColor(.5, .5, .5)
-			button.bg:SetVertexColor(0, 0, 0)
+			button.bg:SetBackdropBorderColor(0, 0, 0)
 			button.newLevelBg:Hide()
 		end
 	end)
@@ -478,11 +468,11 @@ C.themes["Blizzard_Collections"] = function()
 
 			if button.iconTexture:IsShown() then
 				button.name:SetTextColor(1, 1, 1)
-				if button.bg then button.bg:SetVertexColor(0, .8, 1) end
+				if button.bg then button.bg:SetBackdropBorderColor(0, .8, 1) end
 				if button.newLevelBg then button.newLevelBg:Show() end
 			else
 				button.name:SetTextColor(.5, .5, .5)
-				if button.bg then button.bg:SetVertexColor(0, 0, 0) end
+				if button.bg then button.bg:SetBackdropBorderColor(0, 0, 0) end
 				if button.newLevelBg then button.newLevelBg:Hide() end
 			end
 		end
@@ -594,16 +584,15 @@ C.themes["Blizzard_Collections"] = function()
 	F.StripTextures(WardrobeTransmogFrame.SpecButton)
 	F.ReskinArrow(WardrobeTransmogFrame.SpecButton, "down")
 	WardrobeTransmogFrame.SpecButton:SetPoint("RIGHT", WardrobeTransmogFrame.ApplyButton, "LEFT", -3, 0)
-	for i = 1, 10 do
-		select(i, WardrobeTransmogFrame.Model.ClearAllPendingButton:GetRegions()):Hide()
-	end
+
+	local modelScene = WardrobeTransmogFrame.ModelScene
+	modelScene.ClearAllPendingButton:DisableDrawLayer("BACKGROUND")
 
 	local slots = {"Head", "Shoulder", "Chest", "Waist", "Legs", "Feet", "Wrist", "Hands", "Back", "Shirt", "Tabard", "MainHand", "SecondaryHand"}
 	for i = 1, #slots do
-		local slot = WardrobeTransmogFrame.Model[slots[i].."Button"]
+		local slot = modelScene[slots[i].."Button"]
 		if slot then
 			slot.Border:Hide()
-			slot.Icon:SetDrawLayer("BACKGROUND", 1)
 			F.ReskinIcon(slot.Icon)
 			slot:SetHighlightTexture(C.media.backdrop)
 			local hl = slot:GetHighlightTexture()

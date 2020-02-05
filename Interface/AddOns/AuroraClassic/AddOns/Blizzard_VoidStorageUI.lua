@@ -60,7 +60,7 @@ C.themes["Blizzard_VoidStorageUI"] = function()
 		tab:SetCheckedTexture(C.media.checked)
 		tab:GetHighlightTexture():SetColorTexture(1, 1, 1, .25)
 		tab:GetNormalTexture():SetTexCoord(.08, .92, .08, .92)
-		F.CreateBG(tab)
+		F.CreateBDFrame(tab)
 	end
 
 	VoidStorageFrame.Page1:ClearAllPoints()

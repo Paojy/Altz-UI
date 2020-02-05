@@ -10,20 +10,12 @@ tinsert(C.themes["AuroraClassic"], function()
 	F.ReskinDropDown(AddonCharacterDropDown)
 	F.ReskinScroll(AddonListScrollFrameScrollBar)
 
+	AddonListForceLoad:SetSize(26, 26)
 	AddonCharacterDropDown:SetWidth(170)
 
-	local r, g, b = C.r, C.g, C.b
-	hooksecurefunc("AddonList_Update", function()
-		for i = 1, MAX_ADDONS_DISPLAYED do
-			local checkbox = _G["AddonListEntry"..i.."Enabled"]
-			if not checkbox.styled then
-				F.ReskinCheck(checkbox)
-				checkbox.styled = true
-			end
-			local ch = checkbox:GetCheckedTexture()
-			ch:SetDesaturated(true)
-			ch:SetVertexColor(r, g, b)
-			F.Reskin(_G["AddonListEntry"..i.."Load"])
-		end
-	end)
+	for i = 1, MAX_ADDONS_DISPLAYED do
+		local checkbox = _G["AddonListEntry"..i.."Enabled"]
+		F.ReskinCheck(checkbox, true)
+		F.Reskin(_G["AddonListEntry"..i.."Load"])
+	end
 end)

@@ -28,7 +28,7 @@ C.themes["Blizzard_AzeriteEssenceUI"] = function()
 	end
 
 	hooksecurefunc(AzeriteEssenceUI.EssenceList, "Refresh", function(self)
-		for i, button in ipairs(self.buttons) do
+		for _, button in ipairs(self.buttons) do
 			if not button.bg then
 				local bg = F.CreateBDFrame(button, .25)
 				bg:SetPoint("TOPLEFT", 1, 0)

@@ -17,7 +17,6 @@ tinsert(C.themes["AuroraClassic"], function()
 		if border then border:SetAlpha(0) end
 
 		local icbg = F.ReskinIcon(icon)
-		icon:SetDrawLayer("OVERLAY")
 		local bg = F.CreateBDFrame(button, .25)
 		bg:SetPoint("TOPLEFT", icbg, "TOPRIGHT")
 		bg:SetPoint("BOTTOMRIGHT", icbg, "BOTTOMRIGHT", 100, 0)

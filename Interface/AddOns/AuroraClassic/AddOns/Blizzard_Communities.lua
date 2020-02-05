@@ -21,11 +21,41 @@ C.themes["Blizzard_Communities"] = function()
 		hl:SetAllPoints(tab.Icon)
 	end
 
-	for _, name in next, {"GuildFinderFrame", "InvitationFrame", "TicketFrame", "CommunityFinderFrame"} do
+	local function reskinGuildCards(cards)
+		for _, name in pairs({"First", "Second", "Third"}) do
+			local guildCard = cards[name.."Card"]
+			F.StripTextures(guildCard)
+			F.CreateBDFrame(guildCard, .25)
+			F.Reskin(guildCard.RequestJoin)
+		end
+		F.ReskinArrow(cards.PreviousPage, "left")
+		F.ReskinArrow(cards.NextPage, "right")
+	end
+
+	local function reskinCommunityCards(frame)
+		for _, button in next, frame.ListScrollFrame.buttons do
+			button.CircleMask:Hide()
+			button.LogoBorder:Hide()
+			button.Background:Hide()
+			F.ReskinIcon(button.CommunityLogo)
+			F.Reskin(button)
+		end
+		F.ReskinScroll(frame.ListScrollFrame.scrollBar)
+	end
+
+	local function reskinRequestCheckbox(self)
+		for button in self.SpecsPool:EnumerateActive() do
+			if button.CheckBox then
+				F.ReskinCheck(button.CheckBox)
+				button.CheckBox:SetSize(26, 26)
+			end
+		end
+	end
+
+	for _, name in next, {"GuildFinderFrame", "InvitationFrame", "TicketFrame", "CommunityFinderFrame", "ClubFinderInvitationFrame"} do
 		local frame = CommunitiesFrame[name]
 		if frame then
 			F.StripTextures(frame)
-			F.CreateBD(frame, .25)
 			frame.InsetFrame:Hide()
 			if frame.CircleMask then
 				frame.CircleMask:Hide()
@@ -50,11 +80,27 @@ C.themes["Blizzard_Communities"] = function()
 				optionsList.Search:ClearAllPoints()
 				optionsList.Search:SetPoint("TOPRIGHT", optionsList.SearchBox, "BOTTOMRIGHT", 0, -2)
 			end
+
+			local requestFrame = frame.RequestToJoinFrame
+			if requestFrame then
+				F.StripTextures(requestFrame)
+				F.SetBD(requestFrame)
+				F.StripTextures(requestFrame.MessageFrame)
+				F.StripTextures(requestFrame.MessageFrame.MessageScroll)
+				F.CreateBDFrame(requestFrame.MessageFrame.MessageScroll, .25)
+				F.Reskin(requestFrame.Apply)
+				F.Reskin(requestFrame.Cancel)
+				hooksecurefunc(requestFrame, "Initialize", reskinRequestCheckbox)
+			end
+
 			if frame.ClubFinderSearchTab then reskinCommunityTab(frame.ClubFinderSearchTab) end
 			if frame.ClubFinderPendingTab then reskinCommunityTab(frame.ClubFinderPendingTab) end
+			if frame.GuildCards then reskinGuildCards(frame.GuildCards) end
+			if frame.PendingGuildCards then reskinGuildCards(frame.PendingGuildCards) end
+			if frame.CommunityCards then reskinCommunityCards(frame.CommunityCards) end
+			if frame.PendingCommunityCards then reskinCommunityCards(frame.PendingCommunityCards) end
 		end
 	end
-	F.ReskinScroll(ClubFinderCommunityAndGuildFinderFrame.CommunityCards.ListScrollFrame.scrollBar)
 
 	F.StripTextures(CommunitiesFrameCommunitiesList)
 	CommunitiesFrameCommunitiesList.InsetFrame:Hide()
@@ -203,6 +249,7 @@ C.themes["Blizzard_Communities"] = function()
 	F.Reskin(CommunitiesFrame.CommunitiesControlFrame.GuildControlButton)
 	F.Reskin(CommunitiesFrame.CommunitiesControlFrame.GuildRecruitmentButton)
 	F.Reskin(CommunitiesFrame.CommunitiesControlFrame.CommunitiesSettingsButton)
+	F.ReskinDropDown(CommunitiesFrame.CommunityMemberListDropDownMenu)
 
 	local detailFrame = CommunitiesFrame.GuildMemberDetailFrame
 	F.StripTextures(detailFrame)
@@ -232,6 +279,13 @@ C.themes["Blizzard_Communities"] = function()
 		F.CreateBDFrame(dialog.Description, .25)
 		F.StripTextures(dialog.MessageOfTheDay)
 		F.CreateBDFrame(dialog.MessageOfTheDay, .25)
+		F.ReskinCheck(dialog.ShouldListClub.Button)
+		F.ReskinCheck(dialog.AutoAcceptApplications.Button)
+		F.ReskinCheck(dialog.MaxLevelOnly.Button)
+		F.ReskinCheck(dialog.MinIlvlOnly.Button)
+		F.ReskinInput(dialog.MinIlvlOnly.EditBox)
+		F.ReskinDropDown(ClubFinderFocusDropdown)
+		F.ReskinDropDown(ClubFinderLookingForDropdown)
 	end
 
 	do
@@ -257,9 +311,9 @@ C.themes["Blizzard_Communities"] = function()
 					end
 
 					if avatarButton.Selected:IsShown() then
-						avatarButton.bg:SetVertexColor(r, g, b)
+						avatarButton.bg:SetBackdropBorderColor(r, g, b)
 					else
-						avatarButton.bg:SetVertexColor(0, 0, 0)
+						avatarButton.bg:SetBackdropBorderColor(0, 0, 0)
 					end
 				end
 			end
@@ -410,4 +464,22 @@ C.themes["Blizzard_Communities"] = function()
 	F.CreateBDFrame(CommunitiesGuildLogFrame.Container, .25)
 	local closeButton = select(3, CommunitiesGuildLogFrame:GetChildren())
 	F.Reskin(closeButton)
+
+	-- Recruitment dialog
+	do
+		local dialog = CommunitiesFrame.RecruitmentDialog
+		F.StripTextures(dialog)
+		F.SetBD(dialog)
+		F.ReskinCheck(dialog.ShouldListClub.Button)
+		F.ReskinCheck(dialog.MaxLevelOnly.Button)
+		F.ReskinCheck(dialog.MinIlvlOnly.Button)
+		F.ReskinDropDown(dialog.ClubFocusDropdown)
+		F.ReskinDropDown(dialog.LookingForDropdown)
+		F.StripTextures(dialog.RecruitmentMessageFrame)
+		F.StripTextures(dialog.RecruitmentMessageFrame.RecruitmentMessageInput)
+		F.ReskinInput(dialog.RecruitmentMessageFrame)
+		F.ReskinInput(dialog.MinIlvlOnly.EditBox)
+		F.Reskin(dialog.Accept)
+		F.Reskin(dialog.Cancel)
+	end
 end

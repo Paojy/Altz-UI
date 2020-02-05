@@ -7,14 +7,20 @@ tinsert(C.themes["AuroraClassic"], function()
 			frame = frame:GetParent()
 		end
 		if frame.bg then
-			frame.bg:SetBackdropColor(0, 0, 0, AuroraConfig.alpha)
+			frame.bg:SetBackdropColor(0, 0, 0, AuroraClassicDB.Alpha)
+			if frame.bg.Shadow then
+				frame.bg.Shadow:SetBackdropBorderColor(0, 0, 0, .4)
+			end
 		end
 	end
 
 	local function fixParentbg(frame)
 		frame = frame:GetParent():GetParent()
 		if frame.bg then
-			frame.bg:SetBackdropColor(0, 0, 0, AuroraConfig.alpha)
+			frame.bg:SetBackdropColor(0, 0, 0, AuroraClassicDB.Alpha)
+			if frame.bg.Shadow then
+				frame.bg.Shadow:SetBackdropBorderColor(0, 0, 0, .4)
+			end
 		end
 	end
 
@@ -93,7 +99,6 @@ tinsert(C.themes["AuroraClassic"], function()
 				lootItem.SpecRing:SetTexture("")
 				lootItem.SpecIcon:SetPoint("TOPLEFT", lootItem.Icon, -5, 5)
 				lootItem.SpecIcon.bg = F.ReskinIcon(lootItem.SpecIcon)
-				lootItem.SpecIcon.bg:SetDrawLayer("ARTWORK", 1)
 			end
 			frame.glow:SetTexture("")
 			frame.shine:SetTexture("")
@@ -338,11 +343,10 @@ tinsert(C.themes["AuroraClassic"], function()
 				local reward = frame.RewardFrames[i]
 				if not reward.bg then
 					select(2, reward:GetRegions()):SetTexture("")
-					reward.texture:SetTexCoord(.08, .92, .08, .92)
 					reward.texture:ClearAllPoints()
 					reward.texture:SetPoint("TOPLEFT", 6, -6)
 					reward.texture:SetPoint("BOTTOMRIGHT", -6, 6)
-					reward.bg = F.CreateBG(reward.texture)
+					reward.bg = F.ReskinIcon(reward.texture)
 				end
 			end
 		end
@@ -365,7 +369,6 @@ tinsert(C.themes["AuroraClassic"], function()
 			lootItem.SpecRing:SetTexture("")
 			lootItem.SpecIcon:SetPoint("TOPLEFT", lootItem.Icon, -5, 5)
 			lootItem.SpecIcon.bg = F.ReskinIcon(lootItem.SpecIcon)
-			lootItem.SpecIcon.bg:SetDrawLayer("ARTWORK", 1)
 			lootItem.SpecIcon.bg:SetShown(lootItem.SpecIcon:IsShown() and lootItem.SpecIcon:GetTexture() ~= nil)
 		end
 

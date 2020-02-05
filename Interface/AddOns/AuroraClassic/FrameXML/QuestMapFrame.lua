@@ -17,7 +17,7 @@ tinsert(C.themes["AuroraClassic"], function()
 	QuestScrollFrame.DetailFrame.BottomDetail:SetAlpha(0)
 	QuestScrollFrame.Contents.Separator:SetAlpha(0)
 
-	if AuroraConfig.tooltips then
+	if AuroraClassicDB.Tooltips then
 		F.ReskinTooltip(QuestScrollFrame.StoryTooltip)
 		F.ReskinTooltip(QuestScrollFrame.WarCampaignTooltip)
 	end

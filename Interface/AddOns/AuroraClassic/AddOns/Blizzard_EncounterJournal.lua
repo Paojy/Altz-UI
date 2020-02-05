@@ -81,9 +81,8 @@ C.themes["Blizzard_EncounterJournal"] = function()
 			bu:SetNormalTexture("")
 			bu:SetHighlightTexture("")
 			bu:SetPushedTexture("")
-			bu.bgImage:SetDrawLayer("BACKGROUND", 1)
 
-			local bg = F.CreateBG(bu.bgImage)
+			local bg = F.CreateBDFrame(bu.bgImage)
 			bg:SetPoint("TOPLEFT", 3, -3)
 			bg:SetPoint("BOTTOMRIGHT", -4, 2)
 
@@ -123,8 +122,7 @@ C.themes["Blizzard_EncounterJournal"] = function()
 
 				local hl = bossButton:GetHighlightTexture()
 				hl:SetColorTexture(r, g, b, .2)
-				hl:SetPoint("TOPLEFT", 2, -1)
-				hl:SetPoint("BOTTOMRIGHT", 0, 1)
+				hl:SetAllPoints(bossButton.bgTex)
 
 				bossButton.creature:SetPoint("TOPLEFT", 0, -4)
 
@@ -204,9 +202,7 @@ C.themes["Blizzard_EncounterJournal"] = function()
 		item.bosslessTexture:SetAlpha(0)
 		item.IconBorder:SetAlpha(0)
 		item.icon:SetPoint("TOPLEFT", 1, -1)
-		item.icon:SetTexCoord(.08, .92, .08, .92)
-		item.icon:SetDrawLayer("OVERLAY")
-		F.CreateBG(item.icon)
+		F.ReskinIcon(item.icon)
 
 		local bg = F.CreateBDFrame(item, .25)
 		bg:SetPoint("TOPLEFT")
@@ -265,7 +261,7 @@ C.themes["Blizzard_EncounterJournal"] = function()
 
 	-- Tooltip
 
-	if AuroraConfig.tooltips then
+	if AuroraClassicDB.Tooltips then
 		F.ReskinTooltip(EncounterJournalTooltip)
 		F.ReskinIcon(EncounterJournalTooltip.Item1.icon)
 		F.ReskinIcon(EncounterJournalTooltip.Item2.icon)
@@ -280,7 +276,7 @@ C.themes["Blizzard_EncounterJournal"] = function()
 	suggestion.bg:Hide()
 	F.CreateBD(suggestion, .25)
 	suggestion.icon:SetPoint("TOPLEFT", 135, -15)
-	F.CreateBG(suggestion.icon)
+	F.CreateBDFrame(suggestion.icon)
 
 	local centerDisplay = suggestion.centerDisplay
 
@@ -293,7 +289,7 @@ C.themes["Blizzard_EncounterJournal"] = function()
 	reward.text:SetTextColor(.9, .9, .9)
 	reward.iconRing:Hide()
 	reward.iconRingHighlight:SetTexture("")
-	F.CreateBG(reward.icon)
+	F.CreateBDFrame(reward.icon)
 	F.ReskinArrow(suggestion.prevButton, "left")
 	F.ReskinArrow(suggestion.nextButton, "right")
 
@@ -305,7 +301,7 @@ C.themes["Blizzard_EncounterJournal"] = function()
 		suggestion.bg:Hide()
 		F.CreateBD(suggestion, .25)
 		suggestion.icon:SetPoint("TOPLEFT", 10, -10)
-		F.CreateBG(suggestion.icon)
+		F.CreateBDFrame(suggestion.icon)
 
 		local centerDisplay = suggestion.centerDisplay
 
@@ -318,7 +314,7 @@ C.themes["Blizzard_EncounterJournal"] = function()
 		local reward = suggestion.reward
 		reward.iconRing:Hide()
 		reward.iconRingHighlight:SetTexture("")
-		F.CreateBG(reward.icon)
+		F.CreateBDFrame(reward.icon)
 	end
 
 	-- Hook functions

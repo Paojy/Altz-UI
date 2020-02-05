@@ -59,8 +59,7 @@ tinsert(C.themes["AuroraClassic"], function()
 		ic:SetPoint("BOTTOMRIGHT", -C.mult, C.mult)
 
 		for j = 1, 3 do
-			F.CreateBG(_G["MerchantItem"..i.."AltCurrencyFrameItem"..j.."Texture"])
-			_G["MerchantItem"..i.."AltCurrencyFrameItem"..j.."Texture"]:SetTexCoord(.08, .92, .08, .92)
+			F.ReskinIcon(_G["MerchantItem"..i.."AltCurrencyFrameItem"..j.."Texture"])
 		end
 	end
 
@@ -135,19 +134,19 @@ tinsert(C.themes["AuroraClassic"], function()
 	MerchantBuyBackItemName:ClearAllPoints()
 	MerchantBuyBackItemName:SetPoint("LEFT", MerchantBuyBackItemSlotTexture, "RIGHT", -5, 8)
 
-	MerchantGuildBankRepairButton:SetPushedTexture("")
-	MerchantGuildBankRepairButton:GetHighlightTexture():SetColorTexture(1, 1, 1, .25)
-	F.CreateBG(MerchantGuildBankRepairButton)
-	MerchantGuildBankRepairButtonIcon:SetTexCoord(0.595, 0.8075, 0.05, 0.52)
+	local function reskinMerchantInteract(button)
+		button:SetPushedTexture("")
+		button:GetHighlightTexture():SetColorTexture(1, 1, 1, .25)
+		F.CreateBDFrame(button)
+	end
 
-	MerchantRepairAllButton:SetPushedTexture("")
-	MerchantRepairAllButton:GetHighlightTexture():SetColorTexture(1, 1, 1, .25)
-	F.CreateBG(MerchantRepairAllButton)
-	MerchantRepairAllIcon:SetTexCoord(0.31375, 0.53, 0.06, 0.52)
+	reskinMerchantInteract(MerchantGuildBankRepairButton)
+	MerchantGuildBankRepairButtonIcon:SetTexCoord(.595, .8075, .05, .52)
 
-	MerchantRepairItemButton:SetPushedTexture("")
-	MerchantRepairItemButton:GetHighlightTexture():SetColorTexture(1, 1, 1, .25)
-	F.CreateBG(MerchantRepairItemButton)
+	reskinMerchantInteract(MerchantRepairAllButton)
+	MerchantRepairAllIcon:SetTexCoord(.31375, .53, .06, .52)
+
+	reskinMerchantInteract(MerchantRepairItemButton)
 	local ic = MerchantRepairItemButton:GetRegions()
 	ic:SetTexture("Interface\\Icons\\INV_Hammer_20")
 	ic:SetTexCoord(.08, .92, .08, .92)
@@ -155,16 +154,13 @@ tinsert(C.themes["AuroraClassic"], function()
 	hooksecurefunc("MerchantFrame_UpdateCurrencies", function()
 		for i = 1, MAX_MERCHANT_CURRENCIES do
 			local bu = _G["MerchantToken"..i]
-			if bu and not bu.reskinned then
-				local ic = _G["MerchantToken"..i.."Icon"]
-				local co = _G["MerchantToken"..i.."Count"]
+			if bu and not bu.styled then
+				local icon = _G["MerchantToken"..i.."Icon"]
+				local count = _G["MerchantToken"..i.."Count"]
+				count:SetPoint("TOPLEFT", bu, "TOPLEFT", -2, 0)
+				F.ReskinIcon(icon)
 
-				ic:SetTexCoord(.08, .92, .08, .92)
-				ic:SetDrawLayer("OVERLAY")
-				co:SetPoint("TOPLEFT", bu, "TOPLEFT", -2, 0)
-
-				F.CreateBG(ic)
-				bu.reskinned = true
+				bu.styled = true
 			end
 		end
 	end)

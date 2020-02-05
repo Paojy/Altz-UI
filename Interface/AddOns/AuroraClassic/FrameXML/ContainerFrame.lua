@@ -1,19 +1,9 @@
 local F, C = unpack(select(2, ...))
 
 tinsert(C.themes["AuroraClassic"], function()
-	if not AuroraConfig.bags then return end
-
-	local r, g, b = C.r, C.g, C.b
+	if not AuroraClassicDB.Bags then return end
 
 	BackpackTokenFrame:GetRegions():Hide()
-
-	local function onEnter(self)
-		self.bg:SetBackdropBorderColor(r, g, b)
-	end
-
-	local function onLeave(self)
-		self.bg:SetBackdropBorderColor(0, 0, 0)
-	end
 
 	for i = 1, 12 do
 		local con = _G["ContainerFrame"..i]
@@ -45,8 +35,7 @@ tinsert(C.themes["AuroraClassic"], function()
 			button:GetHighlightTexture():SetColorTexture(1, 1, 1, .25)
 
 			button.icon:SetTexCoord(.08, .92, .08, .92)
-
-			button.bg = F.CreateBDFrame(button, 0)
+			F.CreateBDFrame(button, .25)
 
 			-- easiest way to 'hide' it without breaking stuff
 			newItemTexture:SetDrawLayer("BACKGROUND")
@@ -58,9 +47,6 @@ tinsert(C.themes["AuroraClassic"], function()
 
 			searchOverlay:SetPoint("TOPLEFT", -C.mult, C.mult)
 			searchOverlay:SetPoint("BOTTOMRIGHT", C.mult, -C.mult)
-
-			button:HookScript("OnEnter", onEnter)
-			button:HookScript("OnLeave", onLeave)
 		end
 
 		local f = F.CreateBDFrame(con)
@@ -73,9 +59,7 @@ tinsert(C.themes["AuroraClassic"], function()
 
 	for i = 1, 3 do
 		local ic = _G["BackpackTokenFrameToken"..i.."Icon"]
-		ic:SetDrawLayer("OVERLAY")
-		ic:SetTexCoord(.08, .92, .08, .92)
-		F.CreateBG(ic)
+		F.ReskinIcon(ic)
 	end
 
 	F.ReskinInput(BagItemSearchBox)
@@ -103,7 +87,7 @@ tinsert(C.themes["AuroraClassic"], function()
 
 	BagItemAutoSortButton:GetNormalTexture():SetTexCoord(.17, .83, .17, .83)
 	BagItemAutoSortButton:GetPushedTexture():SetTexCoord(.17, .83, .17, .83)
-	F.CreateBG(BagItemAutoSortButton)
+	F.CreateBDFrame(BagItemAutoSortButton)
 
 	local highlight = BagItemAutoSortButton:GetHighlightTexture()
 	highlight:SetColorTexture(1, 1, 1, .25)

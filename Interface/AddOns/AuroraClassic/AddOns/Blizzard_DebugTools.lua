@@ -14,7 +14,7 @@ C.themes["Blizzard_DebugTools"] = function()
 	bu.bg:SetAllPoints(bu)
 	F.CreateGradient(bu.bg)
 
-	if AuroraConfig.tooltips then
+	if AuroraClassicDB.Tooltips then
 		F.ReskinTooltip(FrameStackTooltip)
 		F.ReskinTooltip(EventTraceTooltip)
 		FrameStackTooltip:SetScale(UIParent:GetScale())

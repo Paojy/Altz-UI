@@ -2,7 +2,7 @@ local F, C = unpack(select(2, ...))
 
 tinsert(C.themes["AuroraClassic"], function()
 	local r, g, b = C.r, C.g, C.b
-	local tooltipsEnabled = AuroraConfig.tooltips
+	local tooltipsEnabled = AuroraClassicDB.Tooltips
 
 	local function reskinDropdown()
 		for _, name in next, {"DropDownList", "L_DropDownList", "Lib_DropDownList"} do

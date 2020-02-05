@@ -16,9 +16,9 @@ tinsert(C.themes["AuroraClassic"], function()
 		F.CreateSD(InterfaceOptionsFrame)
 		InterfaceOptionsFrame.Border:Hide()
 
-		InterfaceOptionsFrameHeader:SetTexture("")
-		InterfaceOptionsFrameHeader:ClearAllPoints()
-		InterfaceOptionsFrameHeader:SetPoint("TOP", InterfaceOptionsFrame, 0, 0)
+		F.StripTextures(InterfaceOptionsFrame.Header)
+		InterfaceOptionsFrame.Header:ClearAllPoints()
+		InterfaceOptionsFrame.Header:SetPoint("TOP", InterfaceOptionsFrame, 0, 0)
 
 		local line = InterfaceOptionsFrame:CreateTexture(nil, "ARTWORK")
 		line:SetSize(C.mult, 546)
@@ -136,7 +136,7 @@ tinsert(C.themes["AuroraClassic"], function()
 			F.ReskinSlider(slider)
 		end
 
-		if IsAddOnLoaded("Blizzard_CompactRaidFrames") then
+		if IsAddOnLoaded("Blizzard_CUFProfiles") then
 			CompactUnitFrameProfilesGeneralOptionsFrameAutoActivateBG:Hide()
 
 			local boxes = {

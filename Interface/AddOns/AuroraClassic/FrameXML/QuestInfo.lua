@@ -39,6 +39,7 @@ tinsert(C.themes["AuroraClassic"], function()
 		local questID = QuestInfo_GetQuestID()
 		local objectivesTable = QuestInfoObjectivesFrame.Objectives
 		local numVisibleObjectives = 0
+		local objective
 
 		local waypointText = C_QuestLog.GetNextWaypointText(questID);
 		if waypointText then
@@ -52,7 +53,7 @@ tinsert(C.themes["AuroraClassic"], function()
 
 			if (type ~= "spell" and type ~= "log" and numVisibleObjectives < MAX_OBJECTIVES) then
 				numVisibleObjectives = numVisibleObjectives + 1
-				local objective = objectivesTable[numVisibleObjectives]
+				objective = objectivesTable[numVisibleObjectives]
 
 				if objective then
 					if finished then
@@ -75,15 +76,11 @@ tinsert(C.themes["AuroraClassic"], function()
 		_G[name.."SpellBorder"]:Hide()
 
 		icon:SetPoint("TOPLEFT", 3, -2)
-		icon:SetDrawLayer("ARTWORK")
-		icon:SetTexCoord(.08, .92, .08, .92)
-		F.CreateBG(icon)
+		F.ReskinIcon(icon)
 
-		local bg = CreateFrame("Frame", nil, bu)
+		local bg = F.CreateBDFrame(bu, .25)
 		bg:SetPoint("TOPLEFT", 2, -1)
 		bg:SetPoint("BOTTOMRIGHT", 0, 14)
-		bg:SetFrameLevel(0)
-		F.CreateBD(bg, .25)
 	end
 	restyleSpellButton(QuestInfoSpellObjectiveFrame)
 
@@ -91,20 +88,17 @@ tinsert(C.themes["AuroraClassic"], function()
 		bu.NameFrame:Hide()
 		if bu.IconBorder then bu.IconBorder:SetAlpha(0) end
 
-		bu.Icon:SetTexCoord(.08, .92, .08, .92)
-		bu.Icon:SetDrawLayer("BACKGROUND", 1)
 		if isMapQuestInfo then
 			bu.Icon:SetSize(29, 29)
 		else
 			bu.Icon:SetSize(34, 34)
 		end
 
-		local iconBG = F.CreateBDFrame(bu.Icon)
-		bu.iconBG = iconBG
+		bu.iconBG = F.ReskinIcon(bu.Icon)
 
 		local bg = F.CreateBDFrame(bu, .25)
-		bg:SetPoint("TOPLEFT", iconBG, "TOPRIGHT", 2, 0)
-		bg:SetPoint("BOTTOMRIGHT", iconBG, 100, 0)
+		bg:SetPoint("TOPLEFT", bu.iconBG, "TOPRIGHT", 2, 0)
+		bg:SetPoint("BOTTOMRIGHT", bu.iconBG, 100, 0)
 		bu.bg = bg
 	end
 
@@ -123,11 +117,11 @@ tinsert(C.themes["AuroraClassic"], function()
 	end)
 
 	MapQuestInfoRewardsFrame.XPFrame.Name:SetShadowOffset(0, 0)
-	for _, name in next, {"HonorFrame", "MoneyFrame", "SkillPointFrame", "XPFrame", "ArtifactXPFrame", "TitleFrame"} do
+	for _, name in next, {"HonorFrame", "MoneyFrame", "SkillPointFrame", "XPFrame", "ArtifactXPFrame", "TitleFrame", "WarModeBonusFrame"} do
 		restyleRewardButton(MapQuestInfoRewardsFrame[name], true)
 	end
 
-	for _, name in next, {"HonorFrame", "SkillPointFrame", "ArtifactXPFrame"} do
+	for _, name in next, {"HonorFrame", "SkillPointFrame", "ArtifactXPFrame", "WarModeBonusFrame"} do
 		restyleRewardButton(QuestInfoRewardsFrame[name])
 	end
 

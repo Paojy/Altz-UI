@@ -5,9 +5,8 @@ tinsert(C.themes["AuroraClassic"], function()
 		for i = 1, #self.unlockList do
 			local f = _G["LevelUpDisplaySideUnlockFrame"..i]
 
-			if not f.restyled then
-				f.icon:SetTexCoord(.08, .92, .08, .92)
-				F.CreateBG(f.icon)
+			if not f.bg then
+				f.bg = F.ReskinIcon(f.icon)
 			end
 		end
 	end)

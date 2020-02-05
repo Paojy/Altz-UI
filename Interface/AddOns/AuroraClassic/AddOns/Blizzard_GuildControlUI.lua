@@ -56,10 +56,7 @@ C.themes["Blizzard_GuildControlUI"] = function()
 				local ownedTab = bu.owned
 
 				_G[tab.."Bg"]:Hide()
-
-				ownedTab.tabIcon:SetTexCoord(.08, .92, .08, .92)
-				F.CreateBG(ownedTab.tabIcon)
-
+				F.ReskinIcon(ownedTab.tabIcon)
 				F.CreateBD(bu, .25)
 				F.Reskin(bu.buy.button)
 				F.ReskinInput(ownedTab.editBox)

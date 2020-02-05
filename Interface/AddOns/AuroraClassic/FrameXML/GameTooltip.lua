@@ -5,9 +5,15 @@ tinsert(C.themes["AuroraClassic"], function()
 	F.ReskinClose(FloatingBattlePetTooltip.CloseButton)
 	F.ReskinClose(FloatingPetBattleAbilityTooltip.CloseButton)
 
-	if not AuroraConfig.tooltips then return end
+	if not AuroraClassicDB.Tooltips then return end
 
-	local function getBackdrop(self) return self.bg:GetBackdrop() end
+	local fakeBg = CreateFrame("Frame")
+	fakeBg:SetBackdrop({
+		bgFile = C.media.backdrop,
+		edgeFile = C.media.backdrop,
+		edgeSize = C.mult,
+	})
+	local function getBackdrop() return fakeBg:GetBackdrop() end
 	local function getBackdropColor() return 0, 0, 0, .7 end
 	local function getBackdropBorderColor() return 0, 0, 0 end
 
@@ -104,7 +110,8 @@ tinsert(C.themes["AuroraClassic"], function()
 
 	local function reskinRewardIcon(self)
 		self.Icon:SetTexCoord(.08, .92, .08, .92)
-		self.bg = F.CreateBDFrame(self.Icon)
+		self.bg = F.CreateBDFrame(self, 0)
+		self.bg:SetOutside(self.Icon)
 
 		local iconBorder = self.IconBorder
 		iconBorder:SetAlpha(0)
