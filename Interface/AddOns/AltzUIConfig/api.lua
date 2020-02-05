@@ -135,12 +135,10 @@ function T.SetChatFrame()
 	FCF_FadeInChatFrame(ChatFrame1)
 end
 
-
 T.ResetAurora = function(reload)
 	if IsAddOnLoaded("AuroraClassic") then
-		AuroraConfig["tooltips"] = false
-		AuroraConfig["bags"] = false
-		AuroraConfig["acknowledgedSplashScreen"] = true
+		AuroraClassicDB["Tooltips"] = false
+		AuroraClassicDB["Bags"] = false
 	end
 	if reload then ReloadUI() end
 end
@@ -483,14 +481,6 @@ T.ResetAllAddonSettings = function()
 	T.ResetSkada()
 	T.ResetDBM()
 	T.ResetBW()
-end
-
-local buttonR, buttonG, buttonB, buttonA
-
-if AuroraConfig.useButtonGradientColour then
-	buttonR, buttonG, buttonB, buttonA = unpack(AuroraConfig.buttonGradientColour)
-else
-	buttonR, buttonG, buttonB, buttonA = unpack(AuroraConfig.buttonSolidColour)
 end
 
 T.createcheckbutton = function(parent, x, y, name, table, value, tip)
