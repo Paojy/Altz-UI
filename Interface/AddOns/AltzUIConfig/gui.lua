@@ -578,13 +578,13 @@ local function Create_IB_Button(parent, index, itemID, exactItem, showCount, All
 	end)
 	
 	bu.cb_exact:SetScript("OnDisable", function(self)
-		_G[self:GetName() .. "Text"]:SetTextColor(.5, .5, .5)
-		local tex = select(7, self:GetRegions())
+		local tex = select(6, self:GetRegions())
 		tex:SetVertexColor(.7, .7, .7, .5)
+		_G[self:GetName() .. "Text"]:SetTextColor(.5, .5, .5)
 	end)
 	
 	bu.cb_exact:SetScript("OnEnable", function(self)
-		local tex = select(7, self:GetRegions())
+		local tex = select(6, self:GetRegions())
 		tex:SetVertexColor(buttonR, buttonG, buttonB, buttonA)
 		_G[self:GetName() .. "Text"]:SetTextColor(1, 1, 1)
 	end)
@@ -615,13 +615,13 @@ local function Create_IB_Button(parent, index, itemID, exactItem, showCount, All
 	end)
 	
 	bu.cb_count:SetScript("OnDisable", function(self)
-		local tex = select(7, self:GetRegions())
+		local tex = select(6, self:GetRegions())
 		tex:SetVertexColor(.7, .7, .7, .5)
 		_G[self:GetName() .. "Text"]:SetTextColor(.5, .5, .5)
 	end)
 	
 	bu.cb_count:SetScript("OnEnable", function(self)
-		local tex = select(7, self:GetRegions())
+		local tex = select(6, self:GetRegions())
 		tex:SetVertexColor(buttonR, buttonG, buttonB, buttonA)
 		_G[self:GetName() .. "Text"]:SetTextColor(1, 1, 1)
 	end)
@@ -1978,13 +1978,14 @@ ActionbarInnerframe.common = CreateOptionPage("Actionbar Options common", L["通
 ActionbarInnerframe.common:Show()
 
 T.createcheckbutton(ActionbarInnerframe.common, 30, 60, L["向上排列"], "ActionbarOptions", "growup", L["向上排列说明"])
-T.createcheckbutton(ActionbarInnerframe.common, 30, 110, L["显示冷却时间"], "ActionbarOptions", "cooldown", L["显示冷却时间提示"])
+T.createcheckbutton(ActionbarInnerframe.common, 30, 90, L["显示冷却时间"], "ActionbarOptions", "cooldown", L["显示冷却时间提示"])
+T.createcheckbutton(ActionbarInnerframe.common, 30, 120, L["显示冷却时间"].." (Weakauras)", "ActionbarOptions", "cooldown_wa", L["显示冷却时间提示WA"])
 T.createslider(ActionbarInnerframe.common, 30, 160, L["冷却时间数字大小"], "ActionbarOptions", "cooldownsize", 1, 18, 25, 1, L["冷却时间数字大小提示"])
 T.createcheckbutton(ActionbarInnerframe.common, 30, 210, L["不可用颜色"], "ActionbarOptions", "rangecolor", L["不可用颜色提示"])
 T.createslider(ActionbarInnerframe.common, 30, 250, L["键位字体大小"], "ActionbarOptions", "keybindsize", 1, 8, 20, 1)
 T.createslider(ActionbarInnerframe.common, 30, 290, L["宏名字字体大小"], "ActionbarOptions", "macronamesize", 1, 8, 20, 1)
 T.createslider(ActionbarInnerframe.common, 30, 330, L["可用次数字体大小"], "ActionbarOptions", "countsize", 1, 8, 20, 1)
-T.createDR(ActionbarInnerframe.common.cooldown, ActionbarInnerframe.common.cooldownsize)
+T.createDR(ActionbarInnerframe.common.cooldown, ActionbarInnerframe.common.cooldown_wa, ActionbarInnerframe.common.cooldownsize)
 
 ActionbarInnerframe.bar12 = CreateOptionPage("Actionbar Options bar12", L["主动作条"], ActionbarInnerframe, "VERTICAL", .3)
 
