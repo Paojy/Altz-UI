@@ -236,6 +236,7 @@ L["显示冷却时间"] = "Mostrar texto de recarga"
 L["冷却时间数字大小"] = "Tamanho do texto de recarga: "
 L["冷却时间数字大小提示"] = "This value only affect cooldown frames which size is bigger than 25*25pixel,\n others have their appropriate sized text.\nNote that the cooldown text won't show if it's too small." --
 L["显示冷却时间提示"] = "Mostrar texto de recarga nos botões da barra de ações, itens do inventário, etc."
+--L["显示冷却时间提示WA"] = "Displaying cooldown text on Weakauras displays"
 L["不可用颜色"] = "Descolorizar botões quando inutilizado"
 L["不可用颜色提示"] = "Descoloriza o botão da barra de ações quando eles ficam inutilizados.\nComo: fora de alcance, sem mana, etc."
 L["键位字体大小"] = "Tamanho do texto das teclas de atalho: "
