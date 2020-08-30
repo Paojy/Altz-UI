@@ -68,7 +68,7 @@ C.themes["Blizzard_Communities"] = function()
 
 			local optionsList = frame.OptionsList
 			if optionsList then
-				F.ReskinDropDown(optionsList.ClubFocusDropdown)
+				F.ReskinDropDown(optionsList.ClubFilterDropdown)
 				F.ReskinDropDown(optionsList.ClubSizeDropdown)
 				F.ReskinDropDown(optionsList.SortByDropdown)
 				F.ReskinRole(optionsList.TankRoleFrame, "TANK")
