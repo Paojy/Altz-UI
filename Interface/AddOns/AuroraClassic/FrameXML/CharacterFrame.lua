@@ -43,20 +43,23 @@ tinsert(C.themes["AuroraClassic"], function()
 
 			self.styled = true
 		end
-		self:GetHighlightTexture():SetColorTexture(1, 1, 1, .25)
-		self:GetHighlightTexture():SetAllPoints()
 	end
 
 	local function UpdateAzeriteEmpoweredItem(self)
 		self.AzeriteTexture:SetAtlas("AzeriteIconFrame")
-		self.AzeriteTexture:SetPoint("TOPLEFT", C.mult, -C.mult)
-		self.AzeriteTexture:SetPoint("BOTTOMRIGHT", -C.mult, C.mult)
+		self.AzeriteTexture:SetInside()
 		self.AzeriteTexture:SetDrawLayer("BORDER", 1)
 	end
 
 	local function UpdateCorruption(self)
 		local itemLink = GetInventoryItemLink("player", self:GetID())
 		self.IconOverlay:SetShown(itemLink and IsCorruptedItem(itemLink))
+	end
+
+	local function UpdateHighlight(self)
+		local highlight = self:GetHighlightTexture()
+		highlight:SetColorTexture(1, 1, 1, .25)
+		highlight:SetInside()
 	end
 
 	local slots = {
@@ -68,42 +71,30 @@ tinsert(C.themes["AuroraClassic"], function()
 	for i = 1, #slots do
 		local slot = _G["Character"..slots[i].."Slot"]
 		local cooldown = _G["Character"..slots[i].."SlotCooldown"]
-		local border = slot.IconBorder
 
 		F.StripTextures(slot)
 		slot.icon:SetTexCoord(.08, .92, .08, .92)
-		slot.icon:SetPoint("TOPLEFT", C.mult, -C.mult)
-		slot.icon:SetPoint("BOTTOMRIGHT", -C.mult, C.mult)
-		F.CreateBD(slot, .25)
-		cooldown:SetPoint("TOPLEFT", C.mult, -C.mult)
-		cooldown:SetPoint("BOTTOMRIGHT", -C.mult, C.mult)
+		slot.icon:SetInside()
+		slot.bg = F.CreateBDFrame(slot.icon, .25)
+		cooldown:SetInside()
 
-		slot:GetHighlightTexture():SetColorTexture(1, 1, 1, .25)
-		slot.SetHighlightTexture = F.dummy
 		slot.ignoreTexture:SetTexture("Interface\\PaperDollInfoFrame\\UI-GearManager-LeaveItem-Transparent")
 		slot.CorruptedHighlightTexture:SetAtlas("Nzoth-charactersheet-item-glow")
-
 		slot.IconOverlay:SetAtlas("Nzoth-inventory-icon")
 		slot.IconOverlay:SetInside()
-		slot:HookScript("OnShow", UpdateCorruption)
-		slot:HookScript("OnEvent", UpdateCorruption)
-
-		border:SetAlpha(0)
-		hooksecurefunc(border, "SetVertexColor", function(_, r, g, b) slot:SetBackdropBorderColor(r, g, b) end)
-		hooksecurefunc(border, "Hide", function() slot:SetBackdropBorderColor(0, 0, 0) end)
+		F.HookIconBorderColor(slot.IconBorder)
 
 		local popout = slot.popoutButton
 		popout:SetNormalTexture("")
 		popout:SetHighlightTexture("")
 
 		local arrow = popout:CreateTexture(nil, "OVERLAY")
+		arrow:SetSize(14, 14)
 		if slot.verticalFlyout then
-			arrow:SetSize(13, 8)
-			arrow:SetTexture(C.media.arrowDown)
+			F.SetupArrow(arrow, "down")
 			arrow:SetPoint("TOP", slot, "BOTTOM", 0, 1)
 		else
-			arrow:SetSize(8, 14)
-			arrow:SetTexture(C.media.arrowRight)
+			F.SetupArrow(arrow, "right")
 			arrow:SetPoint("LEFT", slot, "RIGHT", -1, 0)
 		end
 		popout.arrow = arrow
@@ -121,6 +112,8 @@ tinsert(C.themes["AuroraClassic"], function()
 			button.icon:SetShown(GetInventoryItemTexture("player", button:GetID()) ~= nil)
 			colourPopout(button.popoutButton)
 		end
+		UpdateCorruption(button)
+		UpdateHighlight(button)
 	end)
 
 	-- [[ Stats pane ]]
@@ -147,32 +140,21 @@ tinsert(C.themes["AuroraClassic"], function()
 		if i == 1 then
 			for i = 1, 4 do
 				local region = select(i, tab:GetRegions())
-				region:SetTexCoord(0.16, 0.86, 0.16, 0.86)
+				region:SetTexCoord(.16, .86, .16, .86)
 				region.SetTexCoord = F.dummy
 			end
-		end
-
-		tab.Highlight:SetColorTexture(1, 1, 1, .25)
-		tab.Highlight:SetPoint("TOPLEFT", 3, -4)
-		tab.Highlight:SetPoint("BOTTOMRIGHT", -1, 0)
-		tab.Hider:SetColorTexture(.3, .3, .3, .4)
-		tab.TabBg:SetAlpha(0)
-
-		select(2, tab:GetRegions()):ClearAllPoints()
-		if i == 1 then
-			select(2, tab:GetRegions()):SetPoint("TOPLEFT", 3, -4)
-			select(2, tab:GetRegions()):SetPoint("BOTTOMRIGHT", -1, 0)
-		else
-			select(2, tab:GetRegions()):SetPoint("TOPLEFT", 2, -4)
-			select(2, tab:GetRegions()):SetPoint("BOTTOMRIGHT", -1, -1)
 		end
 
 		tab.bg = F.CreateBDFrame(tab)
 		tab.bg:SetPoint("TOPLEFT", 2, -3)
 		tab.bg:SetPoint("BOTTOMRIGHT", 0, -2)
 
-		tab.Hider:SetPoint("TOPLEFT", tab.bg, C.mult, -C.mult)
-		tab.Hider:SetPoint("BOTTOMRIGHT", tab.bg, -C.mult, C.mult)
+		tab.Icon:SetInside(tab.bg)
+		tab.Hider:SetInside(tab.bg)
+		tab.Highlight:SetInside(tab.bg)
+		tab.Highlight:SetColorTexture(1, 1, 1, .25)
+		tab.Hider:SetColorTexture(.3, .3, .3, .4)
+		tab.TabBg:SetAlpha(0)
 	end
 
 	-- [[ Equipment manager ]]
@@ -203,8 +185,7 @@ tinsert(C.themes["AuroraClassic"], function()
 		hl:SetColorTexture(1, 1, 1, .25)
 		hl:SetAllPoints(ic)
 
-		ic:SetPoint("TOPLEFT", C.mult, -C.mult)
-		ic:SetPoint("BOTTOMRIGHT", -C.mult, C.mult)
+		ic:SetInside()
 		ic:SetTexCoord(.08, .92, .08, .92)
 		F.CreateBD(bu, .25)
 	end
@@ -229,24 +210,6 @@ tinsert(C.themes["AuroraClassic"], function()
 				_G["PaperDollTitlesPaneButton"..i]:DisableDrawLayer("BACKGROUND")
 			end
 			titles = true
-		end
-	end)
-
-	hooksecurefunc("PaperDollFrame_SetLevel", function()
-		local primaryTalentTree = GetSpecialization()
-		local classDisplayName, class = UnitClass("player")
-		local classColor = C.ClassColors[class]
-		local classColorString = classColor.colorStr
-		local specName, _
-
-		if primaryTalentTree then
-			_, specName = GetSpecializationInfo(primaryTalentTree, nil, nil, nil, UnitSex("player"))
-		end
-
-		if specName and specName ~= "" then
-			CharacterLevelText:SetFormattedText(PLAYER_LEVEL, UnitLevel("player"), classColorString, specName, classDisplayName)
-		else
-			CharacterLevelText:SetFormattedText(PLAYER_LEVEL_NO_SPEC, UnitLevel("player"), classColorString, classDisplayName)
 		end
 	end)
 

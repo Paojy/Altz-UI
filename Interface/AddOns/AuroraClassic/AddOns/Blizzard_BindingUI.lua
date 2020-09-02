@@ -35,8 +35,7 @@ C.themes["Blizzard_BindingUI"] = function()
 		if not button.styled then
 			local selected = button.selectedHighlight
 			selected:SetTexture(C.media.backdrop)
-			selected:SetPoint("TOPLEFT", C.mult, -C.mult)
-			selected:SetPoint("BOTTOMRIGHT", -C.mult, C.mult)
+			selected:SetInside()
 			selected:SetColorTexture(r, g, b, .25)
 			F.Reskin(button)
 

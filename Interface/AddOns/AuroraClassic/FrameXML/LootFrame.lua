@@ -99,7 +99,7 @@ tinsert(C.themes["AuroraClassic"], function()
 
 			if frame:IsShown() then
 				local _, _, _, quality = GetLootRollItemInfo(frame.rollID)
-				local color = BAG_ITEM_QUALITY_COLORS[quality]
+				local color = C.QualityColors[quality]
 				frame.bg:SetBackdropBorderColor(color.r, color.g, color.b)
 			end
 		end

@@ -65,10 +65,11 @@ C.themes["Blizzard_Communities"] = function()
 			if frame.FindAGuildButton then F.Reskin(frame.FindAGuildButton) end
 			if frame.AcceptButton then F.Reskin(frame.AcceptButton) end
 			if frame.DeclineButton then F.Reskin(frame.DeclineButton) end
+			if frame.ApplyButton then F.Reskin(frame.ApplyButton) end
 
 			local optionsList = frame.OptionsList
 			if optionsList then
-				F.ReskinDropDown(optionsList.ClubFocusDropdown)
+				F.ReskinDropDown(optionsList.ClubFilterDropdown)
 				F.ReskinDropDown(optionsList.ClubSizeDropdown)
 				F.ReskinDropDown(optionsList.SortByDropdown)
 				F.ReskinRole(optionsList.TankRoleFrame, "TANK")
@@ -285,7 +286,7 @@ C.themes["Blizzard_Communities"] = function()
 		F.ReskinCheck(dialog.MinIlvlOnly.Button)
 		F.ReskinInput(dialog.MinIlvlOnly.EditBox)
 		F.ReskinDropDown(ClubFinderFocusDropdown)
-		F.ReskinDropDown(ClubFinderLookingForDropdown)
+		F.ReskinDropDown(ClubFinderLanguageDropdown)
 	end
 
 	do
@@ -376,9 +377,9 @@ C.themes["Blizzard_Communities"] = function()
 
 	local factionFrameBar = CommunitiesFrame.GuildBenefitsFrame.FactionFrame.Bar
 	F.StripTextures(factionFrameBar)
-	F.CreateBDFrame(factionFrameBar, .25)
+	local bg = F.CreateBDFrame(factionFrameBar, .25)
 	factionFrameBar.Progress:SetTexture(C.media.backdrop)
-	factionFrameBar.Progress:SetAllPoints()
+	bg:SetOutside(factionFrameBar.Progress)
 
 	hooksecurefunc("CommunitiesGuildPerks_Update", function(self)
 		local buttons = self.Container.buttons
@@ -465,6 +466,15 @@ C.themes["Blizzard_Communities"] = function()
 	local closeButton = select(3, CommunitiesGuildLogFrame:GetChildren())
 	F.Reskin(closeButton)
 
+	local bossModel = CommunitiesFrameGuildDetailsFrameNews.BossModel
+	F.StripTextures(bossModel)
+	bossModel:ClearAllPoints()
+	bossModel:SetPoint("LEFT", CommunitiesFrame, "RIGHT", 40, 0)
+	local textFrame = bossModel.TextFrame
+	F.StripTextures(textFrame)
+	local bg = F.SetBD(bossModel)
+	bg:SetOutside(bossModel, nil, nil, textFrame)
+
 	-- Recruitment dialog
 	do
 		local dialog = CommunitiesFrame.RecruitmentDialog
@@ -475,11 +485,78 @@ C.themes["Blizzard_Communities"] = function()
 		F.ReskinCheck(dialog.MinIlvlOnly.Button)
 		F.ReskinDropDown(dialog.ClubFocusDropdown)
 		F.ReskinDropDown(dialog.LookingForDropdown)
+		F.ReskinDropDown(dialog.LanguageDropdown)
 		F.StripTextures(dialog.RecruitmentMessageFrame)
 		F.StripTextures(dialog.RecruitmentMessageFrame.RecruitmentMessageInput)
+		F.ReskinScroll(dialog.RecruitmentMessageFrame.RecruitmentMessageInput.ScrollBar)
 		F.ReskinInput(dialog.RecruitmentMessageFrame)
 		F.ReskinInput(dialog.MinIlvlOnly.EditBox)
 		F.Reskin(dialog.Accept)
 		F.Reskin(dialog.Cancel)
 	end
-end
+
+
+	-- ApplicantList
+	local applicantList = CommunitiesFrame.ApplicantList
+	F.StripTextures(applicantList)
+	F.StripTextures(applicantList.ColumnDisplay)
+	F.ReskinScroll(applicantList.ListScrollFrame.scrollBar)
+	local listBG = F.CreateBDFrame(applicantList, .25)
+	listBG:SetPoint("TOPLEFT", 0, 0)
+	listBG:SetPoint("BOTTOMRIGHT", -15, 0)
+
+	local function updateMemberName(self, info)
+		if not info then return end
+
+		local class = self.Class
+		if not class.bg then
+			class.bg = F.CreateBDFrame(class)
+		end
+
+		local classTag = select(2, GetClassInfo(info.classID))
+		if classTag then
+			local tcoords = CLASS_ICON_TCOORDS[classTag]
+			class:SetTexCoord(tcoords[1] + .022, tcoords[2] - .025, tcoords[3] + .022, tcoords[4] - .025)
+		end
+	end
+
+	hooksecurefunc(applicantList, "BuildList", function(self)
+		local columnDisplay = self.ColumnDisplay
+		for i = 1, columnDisplay:GetNumChildren() do
+			local child = select(i, columnDisplay:GetChildren())
+			if not child.styled then
+				F.StripTextures(child)
+
+				local bg = F.CreateBDFrame(child, .25)
+				bg:SetPoint("TOPLEFT", 4, -2)
+				bg:SetPoint("BOTTOMRIGHT", 0, 2)
+
+				child:SetHighlightTexture(C.media.backdrop)
+				local hl = child:GetHighlightTexture()
+				hl:SetVertexColor(r, g, b, .25)
+				hl:SetInside(bg)
+
+				child.styled = true
+			end
+		end
+
+		local buttons = self.ListScrollFrame.buttons
+		for i = 1, #buttons do
+			local button = buttons[i]
+			if not button.styled then
+				button:SetPoint("LEFT", listBG, C.mult, 0)
+				button:SetPoint("RIGHT", listBG, -C.mult, 0)
+				button:SetHighlightTexture(C.media.backdrop)
+				button:GetHighlightTexture():SetVertexColor(r, g, b, .25)
+				button.InviteButton:SetSize(66, 18)
+				button.CancelInvitationButton:SetSize(20, 18)
+
+				F.Reskin(button.InviteButton)
+				F.Reskin(button.CancelInvitationButton)
+				hooksecurefunc(button, "UpdateMemberInfo", updateMemberName)
+
+				button.styled = true
+			end
+		end
+	end)
+end 

@@ -29,12 +29,13 @@ function F:CreateSD()
 	self.Shadow:SetOutside(self, 4, 4)
 	self.Shadow:SetBackdrop({edgeFile = C.media.glowTex, edgeSize = F:Scale(5)})
 	self.Shadow:SetBackdropBorderColor(0, 0, 0, .4)
+	self.Shadow:SetFrameLevel(1)
 
 	return self.Shadow
 end
 
 -- ls, Azil, and Simpy made this to replace Blizzard's SetBackdrop API while the textures can't snap
-local PIXEL_BORDERS = {"TOPLEFT", "TOPRIGHT", "BOTTOMLEFT", "BOTTOMRIGHT", "TOP", "BOTTOM", "LEFT", "RIGHT"}
+local PIXEL_BORDERS = {"TOP", "BOTTOM", "LEFT", "RIGHT"}
 
 function F:SetBackdrop(frame, a)
 	local borders = frame.pixelBorders
@@ -44,11 +45,6 @@ function F:SetBackdrop(frame, a)
 
 	borders.CENTER:SetPoint("TOPLEFT", frame)
 	borders.CENTER:SetPoint("BOTTOMRIGHT", frame)
-
-	borders.TOPLEFT:SetSize(size, size)
-	borders.TOPRIGHT:SetSize(size, size)
-	borders.BOTTOMLEFT:SetSize(size, size)
-	borders.BOTTOMRIGHT:SetSize(size, size)
 
 	borders.TOP:SetHeight(size)
 	borders.BOTTOM:SetHeight(size)
@@ -92,22 +88,17 @@ function F:PixelBorders(frame)
 		borders.CENTER = frame:CreateTexture(nil, "BACKGROUND", nil, -1)
 		borders.CENTER:SetTexture(C.media.backdrop)
 
-		borders.TOPLEFT:Point("BOTTOMRIGHT", borders.CENTER, "TOPLEFT", 1, -1)
-		borders.TOPRIGHT:Point("BOTTOMLEFT", borders.CENTER, "TOPRIGHT", -1, -1)
-		borders.BOTTOMLEFT:Point("TOPRIGHT", borders.CENTER, "BOTTOMLEFT", 1, 1)
-		borders.BOTTOMRIGHT:Point("TOPLEFT", borders.CENTER, "BOTTOMRIGHT", -1, 1)
+		borders.TOP:SetPoint("BOTTOMLEFT", borders.CENTER, "TOPLEFT", C.mult, -C.mult)
+		borders.TOP:SetPoint("BOTTOMRIGHT", borders.CENTER, "TOPRIGHT", -C.mult, -C.mult)
 
-		borders.TOP:Point("TOPLEFT", borders.TOPLEFT, "TOPRIGHT", 0, 0)
-		borders.TOP:Point("TOPRIGHT", borders.TOPRIGHT, "TOPLEFT", 0, 0)
+		borders.BOTTOM:SetPoint("TOPLEFT", borders.CENTER, "BOTTOMLEFT", C.mult, C.mult)
+		borders.BOTTOM:SetPoint("TOPRIGHT", borders.CENTER, "BOTTOMRIGHT", -C.mult, C.mult)
 
-		borders.BOTTOM:Point("BOTTOMLEFT", borders.BOTTOMLEFT, "BOTTOMRIGHT", 0, 0)
-		borders.BOTTOM:Point("BOTTOMRIGHT", borders.BOTTOMRIGHT, "BOTTOMLEFT", 0, 0)
+		borders.LEFT:SetPoint("TOPRIGHT", borders.TOP, "TOPLEFT", 0, 0)
+		borders.LEFT:SetPoint("BOTTOMRIGHT", borders.BOTTOM, "BOTTOMLEFT", 0, 0)
 
-		borders.LEFT:Point("TOPLEFT", borders.TOPLEFT, "BOTTOMLEFT", 0, 0)
-		borders.LEFT:Point("BOTTOMLEFT", borders.BOTTOMLEFT, "TOPLEFT", 0, 0)
-
-		borders.RIGHT:Point("TOPRIGHT", borders.TOPRIGHT, "BOTTOMRIGHT", 0, 0)
-		borders.RIGHT:Point("BOTTOMRIGHT", borders.BOTTOMRIGHT, "TOPRIGHT", 0, 0)
+		borders.RIGHT:SetPoint("TOPLEFT", borders.TOP, "TOPRIGHT", 0, 0)
+		borders.RIGHT:SetPoint("BOTTOMLEFT", borders.BOTTOM, "BOTTOMRIGHT", 0, 0)
 
 		hooksecurefunc(frame, "SetBackdropColor", F.SetBackdropColor_Hook)
 		hooksecurefunc(frame, "SetBackdropBorderColor", F.SetBackdropBorderColor_Hook)
@@ -125,8 +116,7 @@ end
 
 function F:CreateGradient()
 	local tex = self:CreateTexture(nil, "BORDER")
-	tex:SetPoint("TOPLEFT", self, C.mult, -C.mult)
-	tex:SetPoint("BOTTOMRIGHT", self, -C.mult, C.mult)
+	tex:SetInside()
 	tex:SetTexture(AuroraClassicDB.FlatMode and C.media.backdrop or C.media.gradient)
 	tex:SetVertexColor(C.buttonR, C.buttonG, C.buttonB, C.buttonA)
 
@@ -224,8 +214,7 @@ function F:ReskinTab()
 	self:SetHighlightTexture(C.media.backdrop)
 	local hl = self:GetHighlightTexture()
 	hl:ClearAllPoints()
-	hl:SetPoint("TOPLEFT", bg, C.mult, -C.mult)
-	hl:SetPoint("BOTTOMRIGHT", bg, -C.mult, C.mult)
+	hl:SetInside(bg)
 	hl:SetVertexColor(C.r, C.g, C.b, .25)
 end
 
@@ -241,11 +230,7 @@ hooksecurefunc("PanelTemplates_SelectTab", resetTabAnchor)
 function F:Texture_OnEnter()
 	if not self:IsEnabled() then return end
 
-	if self.pixels then
-		for _, pixel in pairs(self.pixels) do
-			pixel:SetVertexColor(C.r, C.g, C.b)
-		end
-	elseif self.bd then
+	if self.bd then
 		self.bd:SetBackdropBorderColor(C.r, C.g, C.b)
 	elseif self.bg then
 		self.bg:SetBackdropColor(C.r, C.g, C.b, .25)
@@ -255,11 +240,7 @@ function F:Texture_OnEnter()
 end
 
 function F:Texture_OnLeave()
-	if self.pixels then
-		for _, pixel in pairs(self.pixels) do
-			pixel:SetVertexColor(1, 1, 1)
-		end
-	elseif self.bd then
+	if self.bd then
 		self.bd:SetBackdropBorderColor(0, 0, 0)
 	elseif self.bg then
 		self.bg:SetBackdropColor(0, 0, 0, .25)
@@ -290,7 +271,7 @@ function F:ReskinScroll()
 	local thumb = frameName and (_G[frameName.."ThumbTexture"] or _G[frameName.."thumbTexture"]) or self.GetThumbTexture and self:GetThumbTexture()
 	if thumb then
 		thumb:SetAlpha(0)
-		thumb:SetWidth(17)
+		thumb:SetWidth(16)
 		self.thumb = thumb
 
 		local bg = F.CreateBDFrame(self, 0)
@@ -314,19 +295,18 @@ function F:ReskinDropDown()
 	local frameName = self.GetName and self:GetName()
 	local down = self.Button or frameName and (_G[frameName.."Button"] or _G[frameName.."_Button"])
 
-	down:ClearAllPoints()
-	down:SetPoint("RIGHT", -18, 2)
-	F.ReskinArrow(down, "down")
-	down:SetSize(20, 20)
-
 	local bg = F.CreateBDFrame(self, 0)
 	bg:SetPoint("TOPLEFT", 16, -4)
 	bg:SetPoint("BOTTOMRIGHT", -18, 8)
 	F.CreateGradient(bg)
+
+	down:ClearAllPoints()
+	down:SetPoint("RIGHT", bg, -2, 0)
+	F.ReskinArrow(down, "down")
 end
 
 function F:ReskinClose(a1, p, a2, x, y)
-	self:SetSize(17, 17)
+	self:SetSize(16, 16)
 
 	if not a1 then
 		self:SetPoint("TOPRIGHT", -6, -6)
@@ -345,15 +325,10 @@ function F:ReskinClose(a1, p, a2, x, y)
 	dis:SetDrawLayer("OVERLAY")
 	dis:SetAllPoints()
 
-	self.pixels = {}
-	for i = 1, 2 do
-		local tex = self:CreateTexture()
-		tex:SetColorTexture(1, 1, 1)
-		tex:SetSize(11, 2)
-		tex:SetPoint("CENTER")
-		tex:SetRotation(math.rad((i-1/2)*90))
-		tinsert(self.pixels, tex)
-	end
+	local tex = self:CreateTexture()
+	tex:SetTexture(C.media.closeTex)
+	tex:SetAllPoints()
+	self.bgTex = tex
 
 	self:HookScript("OnEnter", F.Texture_OnEnter)
  	self:HookScript("OnLeave", F.Texture_OnLeave)
@@ -377,14 +352,18 @@ function F:ReskinInput(height, width)
 	if width then self:SetWidth(width) end
 end
 
-local direcIndex = {
-	["up"] = C.media.arrowUp,
-	["down"] = C.media.arrowDown,
-	["left"] = C.media.arrowLeft,
-	["right"] = C.media.arrowRight,
+local arrowDegree = {
+	["up"] = 0,
+	["down"] = 180,
+	["left"] = 90,
+	["right"] = -90,
 }
+function F:SetupArrow(direction)
+	self:SetTexture(C.media.arrowUp)
+	self:SetRotation(rad(arrowDegree[direction]))
+end
 function F:ReskinArrow(direction)
-	self:SetSize(17, 17)
+	self:SetSize(16, 16)
 	F.Reskin(self, true)
 
 	self:SetDisabledTexture(C.media.backdrop)
@@ -394,9 +373,8 @@ function F:ReskinArrow(direction)
 	dis:SetAllPoints()
 
 	local tex = self:CreateTexture(nil, "ARTWORK")
-	tex:SetTexture(direcIndex[direction])
-	tex:SetSize(8, 8)
-	tex:SetPoint("CENTER")
+	tex:SetAllPoints()
+	F.SetupArrow(tex, direction)
 	self.bgTex = tex
 
 	self:HookScript("OnEnter", F.Texture_OnEnter)
@@ -426,18 +404,6 @@ function F:ReskinCheck(forceSaturation)
 	self.forceSaturation = forceSaturation
 end
 
-hooksecurefunc("TriStateCheckbox_SetState", function(_, checkButton)
-	if checkButton.forceSaturation then
-		local tex = checkButton:GetCheckedTexture()
-		if checkButton.state == 2 then
-			tex:SetDesaturated(true)
-			tex:SetVertexColor(C.r, C.g, C.b)
-		elseif checkButton.state == 1 then
-			tex:SetVertexColor(1, .8, 0, .8)
-		end
-	end
-end)
-
 function F:ReskinRadio()
 	self:SetNormalTexture("")
 	self:SetHighlightTexture("")
@@ -449,8 +415,7 @@ function F:ReskinRadio()
 	ch:SetVertexColor(C.r, C.g, C.b, .6)
 
 	local bd = F.CreateBDFrame(self, 0)
-	bd:SetPoint("TOPLEFT", 3, -3)
-	bd:SetPoint("BOTTOMRIGHT", -3, 3)
+	bd:SetInside(self, 3, 3)
 	F.CreateGradient(bd)
 	self.bd = bd
 
@@ -630,9 +595,9 @@ function F:ReskinFilterButton()
 	F.StripTextures(self)
 	F.Reskin(self)
 	self.Text:SetPoint("CENTER")
-	self.Icon:SetTexture(C.media.arrowRight)
-	self.Icon:SetPoint("RIGHT", self, "RIGHT", -5, 0)
-	self.Icon:SetSize(8, 8)
+	F.SetupArrow(self.Icon, "right")
+	self.Icon:SetPoint("RIGHT")
+	self.Icon:SetSize(14, 14)
 end
 
 function F:ReskinNavBar()
@@ -649,8 +614,8 @@ function F:ReskinNavBar()
 	F.Reskin(overflowButton, true)
 
 	local tex = overflowButton:CreateTexture(nil, "ARTWORK")
-	tex:SetTexture(C.media.arrowLeft)
-	tex:SetSize(8, 8)
+	F.SetupArrow(tex, "left")
+	tex:SetSize(14, 14)
 	tex:SetPoint("CENTER")
 	overflowButton.bgTex = tex
 
@@ -663,7 +628,6 @@ end
 function F:ReskinGarrisonPortrait()
 	self.Portrait:ClearAllPoints()
 	self.Portrait:SetPoint("TOPLEFT", 4, -4)
-	self.Portrait:SetMask("Interface\\Buttons\\WHITE8X8")
 	self.PortraitRing:Hide()
 	self.PortraitRingQuality:SetTexture("")
 	if self.Highlight then self.Highlight:Hide() end
@@ -690,40 +654,61 @@ function F:ReskinIcon()
 	return F.CreateBDFrame(self)
 end
 
+local AtlasToQuality = {
+	["auctionhouse-itemicon-border-gray"] = LE_ITEM_QUALITY_POOR,
+	["auctionhouse-itemicon-border-white"] = LE_ITEM_QUALITY_COMMON,
+	["auctionhouse-itemicon-border-green"] = LE_ITEM_QUALITY_UNCOMMON,
+	["auctionhouse-itemicon-border-blue"] = LE_ITEM_QUALITY_RARE,
+	["auctionhouse-itemicon-border-purple"] = LE_ITEM_QUALITY_EPIC,
+	["auctionhouse-itemicon-border-orange"] = LE_ITEM_QUALITY_LEGENDARY,
+	["auctionhouse-itemicon-border-artifact"] = LE_ITEM_QUALITY_ARTIFACT,
+	["auctionhouse-itemicon-border-account"] = LE_ITEM_QUALITY_HEIRLOOM,
+}
+local function updateIconBorderColorByAtlas(self, atlas)
+	local quality = AtlasToQuality[atlas]
+	local color = C.QualityColors[quality or 1]
+	self.__owner.bg:SetBackdropBorderColor(color.r, color.g, color.b)
+end
+
+local function updateIconBorderColor(self, r, g, b)
+	if r == .65882 then r, g, b = 0, 0, 0 end
+	self.__owner.bg:SetBackdropBorderColor(r, g, b)
+end
+local function resetIconBorderColor(self)
+	self.__owner.bg:SetBackdropBorderColor(0, 0, 0)
+end
+function F:HookIconBorderColor()
+	self:SetAlpha(0)
+	self.__owner = self:GetParent()
+	if not self.__owner.bg then return end
+	if self.__owner.useCircularIconBorder then
+		hooksecurefunc(self, "SetAtlas", updateIconBorderColorByAtlas)
+	else
+		hooksecurefunc(self, "SetVertexColor", updateIconBorderColor)
+	end
+	hooksecurefunc(self, "Hide", resetIconBorderColor)
+end
+
+
+local buttonNames = {"MaximizeButton", "MinimizeButton"}
 function F:ReskinMinMax()
-	for _, name in next, {"MaximizeButton", "MinimizeButton"} do
+	for _, name in next, buttonNames do
 		local button = self[name]
 		if button then
-			button:SetSize(17, 17)
+			button:SetSize(16, 16)
 			button:ClearAllPoints()
 			button:SetPoint("CENTER", -3, 0)
 			F.Reskin(button)
 
-			button.pixels = {}
-
 			local tex = button:CreateTexture()
-			tex:SetColorTexture(1, 1, 1)
-			tex:SetSize(11, 2)
+			tex:SetSize(16, 16)
 			tex:SetPoint("CENTER")
-			tex:SetRotation(math.rad(45))
-			tinsert(button.pixels, tex)
-
-			local hline = button:CreateTexture()
-			hline:SetColorTexture(1, 1, 1)
-			hline:SetSize(7, 2)
-			tinsert(button.pixels, hline)
-
-			local vline = button:CreateTexture()
-			vline:SetColorTexture(1, 1, 1)
-			vline:SetSize(2, 7)
-			tinsert(button.pixels, vline)
+			button.bgTex = tex
 
 			if name == "MaximizeButton" then
-				hline:SetPoint("TOPRIGHT", -4, -4)
-				vline:SetPoint("TOPRIGHT", -4, -4)
+				F.SetupArrow(tex, "up")
 			else
-				hline:SetPoint("BOTTOMLEFT", 4, 4)
-				vline:SetPoint("BOTTOMLEFT", 4, 4)
+				F.SetupArrow(tex, "down")
 			end
 
 			button:SetScript("OnEnter", F.Texture_OnEnter)
@@ -759,25 +744,24 @@ function F:StyleSearchButton()
 	self:SetHighlightTexture(C.media.backdrop)
 	local hl = self:GetHighlightTexture()
 	hl:SetVertexColor(C.r, C.g, C.b, .25)
-	hl:SetPoint("TOPLEFT", C.mult, -C.mult)
-	hl:SetPoint("BOTTOMRIGHT", -C.mult, C.mult)
+	hl:SetInside()
 end
 
 function F:GetRoleTexCoord()
 	if self == "TANK" then
-		return .32/9.03, 2.04/9.03, 2.65/9.03, 4.3/9.03
+		return .34/9.03, 2.86/9.03, 3.16/9.03, 5.68/9.03
 	elseif self == "DPS" or self == "DAMAGER" then
-		return 2.68/9.03, 4.4/9.03, 2.65/9.03, 4.34/9.03
+		return 3.26/9.03, 5.78/9.03, 3.16/9.03, 5.68/9.03
 	elseif self == "HEALER" then
-		return 2.68/9.03, 4.4/9.03, .28/9.03, 1.98/9.03
+		return 3.26/9.03, 5.78/9.03, .28/9.03, 2.78/9.03
 	elseif self == "LEADER" then
-		return .32/9.03, 2.04/9.03, .28/9.03, 1.98/9.03
+		return .34/9.03, 2.86/9.03, .28/9.03, 2.78/9.03
 	elseif self == "READY" then
-		return 5.1/9.03, 6.76/9.03, .28/9.03, 1.98/9.03
+		return 6.17/9.03, 8.75/9.03, .28/9.03, 2.78/9.03
 	elseif self == "PENDING" then
-		return 5.1/9.03, 6.76/9.03, 2.65/9.03, 4.34/9.03
+		return 6.17/9.03, 8.75/9.03, 3.16/9.03, 5.68/9.03
 	elseif self == "REFUSE" then
-		return 2.68/9.03, 4.4/9.03, 5.02/9.03, 6.7/9.03
+		return 3.26/9.03, 5.78/9.03, 6.03/9.03, 8.61/9.03
 	end
 end
 
@@ -835,17 +819,6 @@ local function DisablePixelSnap(frame)
 	end
 end
 
-local function Point(frame, arg1, arg2, arg3, arg4, arg5, ...)
-	if arg2 == nil then arg2 = frame:GetParent() end
-
-	if type(arg2) == "number" then arg2 = F:Scale(arg2) end
-	if type(arg3) == "number" then arg3 = F:Scale(arg3) end
-	if type(arg4) == "number" then arg4 = F:Scale(arg4) end
-	if type(arg5) == "number" then arg5 = F:Scale(arg5) end
-
-	frame:SetPoint(arg1, arg2, arg3, arg4, arg5, ...)
-end
-
 local function SetInside(frame, anchor, xOffset, yOffset, anchor2)
 	xOffset = xOffset or C.mult
 	yOffset = yOffset or C.mult
@@ -853,8 +826,8 @@ local function SetInside(frame, anchor, xOffset, yOffset, anchor2)
 
 	DisablePixelSnap(frame)
 	frame:ClearAllPoints()
-	frame:Point("TOPLEFT", anchor, "TOPLEFT", xOffset, -yOffset)
-	frame:Point("BOTTOMRIGHT", anchor2 or anchor, "BOTTOMRIGHT", -xOffset, yOffset)
+	frame:SetPoint("TOPLEFT", anchor, "TOPLEFT", xOffset, -yOffset)
+	frame:SetPoint("BOTTOMRIGHT", anchor2 or anchor, "BOTTOMRIGHT", -xOffset, yOffset)
 end
 
 local function SetOutside(frame, anchor, xOffset, yOffset, anchor2)
@@ -864,13 +837,12 @@ local function SetOutside(frame, anchor, xOffset, yOffset, anchor2)
 
 	DisablePixelSnap(frame)
 	frame:ClearAllPoints()
-	frame:Point("TOPLEFT", anchor, "TOPLEFT", -xOffset, yOffset)
-	frame:Point("BOTTOMRIGHT", anchor2 or anchor, "BOTTOMRIGHT", xOffset, -yOffset)
+	frame:SetPoint("TOPLEFT", anchor, "TOPLEFT", -xOffset, yOffset)
+	frame:SetPoint("BOTTOMRIGHT", anchor2 or anchor, "BOTTOMRIGHT", xOffset, -yOffset)
 end
 
 local function addapi(object)
 	local mt = getmetatable(object).__index
-	if not object.Point then mt.Point = Point end
 	if not object.SetInside then mt.SetInside = SetInside end
 	if not object.SetOutside then mt.SetOutside = SetOutside end
 	if not object.DisabledPixelSnap then
@@ -908,8 +880,7 @@ function F:CreateBG()
 	if self:GetObjectType() == "Texture" then f = self:GetParent() end
 
 	local bg = f:CreateTexture(nil, "BACKGROUND")
-	bg:SetPoint("TOPLEFT", self, -C.mult, C.mult)
-	bg:SetPoint("BOTTOMRIGHT", self, C.mult, -C.mult)
+	bg:SetOutside(self)
 	bg:SetTexture(C.media.backdrop)
 	bg:SetVertexColor(0, 0, 0)
 

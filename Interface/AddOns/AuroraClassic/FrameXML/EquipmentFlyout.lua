@@ -17,26 +17,38 @@ tinsert(C.themes["AuroraClassic"], function()
 	navFrame:SetWidth(204)
 	navFrame:SetPoint("TOPLEFT", EquipmentFlyoutFrameButtons, "BOTTOMLEFT", 1, 0)
 
-	local function hook_SetVertexColor(self, r, g, b)
-		self:GetParent().bg:SetBackdropBorderColor(r, g, b)
-	end
-	local function hook_Hide(self)
-		self:GetParent().bg:SetBackdropBorderColor(0, 0, 0)
-	end
-
 	hooksecurefunc("EquipmentFlyout_CreateButton", function()
-		local bu = EquipmentFlyoutFrame.buttons[#EquipmentFlyoutFrame.buttons]
+		local button = EquipmentFlyoutFrame.buttons[#EquipmentFlyoutFrame.buttons]
 
-		bu.IconBorder:SetAlpha(0)
-		bu.icon:SetTexCoord(.08, .92, .08, .92)
-		bu:SetNormalTexture("")
-		bu:SetPushedTexture("")
-		bu:GetHighlightTexture():SetColorTexture(1, 1, 1, .25)
-		bu.bg = F.CreateBDFrame(bu)
+		button.icon:SetTexCoord(.08, .92, .08, .92)
+		button:SetNormalTexture("")
+		button:SetPushedTexture("")
+		button:GetHighlightTexture():SetColorTexture(1, 1, 1, .25)
+		button.bg = F.CreateBDFrame(button)
+		F.HookIconBorderColor(button.IconBorder)
 
-		hooksecurefunc(bu.IconBorder, "SetVertexColor", hook_SetVertexColor)
-		hooksecurefunc(bu.IconBorder, "Hide", hook_Hide)
+		if not button.Eye then
+			button.Eye = button:CreateTexture()
+			button.Eye:SetAtlas("Nzoth-inventory-icon")
+			button.Eye:SetInside()
+		end
 	end)
+
+	local function UpdateCorruption(button, location)
+		local _, _, bags, voidStorage, slot, bag = EquipmentManager_UnpackLocation(location)
+		if voidStorage then
+			button.Eye:Hide()
+			return
+		end
+
+		local itemLink
+		if bags then
+			itemLink = GetContainerItemLink(bag, slot)
+		else
+			itemLink = GetInventoryItemLink("player", slot)
+		end
+		button.Eye:SetShown(itemLink and IsCorruptedItem(itemLink))
+	end
 
 	hooksecurefunc("EquipmentFlyout_DisplayButton", function(button)
 		local location = button.location
@@ -48,10 +60,23 @@ tinsert(C.themes["AuroraClassic"], function()
 		else
 			border:Show()
 		end
+
+		UpdateCorruption(button, location)
 	end)
 
-	F.CreateBD(EquipmentFlyoutFrame.NavigationFrame)
-	F.CreateSD(EquipmentFlyoutFrame.NavigationFrame)
-	F.ReskinArrow(EquipmentFlyoutFrame.NavigationFrame.PrevButton, "left")
-	F.ReskinArrow(EquipmentFlyoutFrame.NavigationFrame.NextButton, "right")
+	local function reskinButtonFrame()
+		local frame = EquipmentFlyoutFrame.buttonFrame
+		if not frame.bg then
+			frame.bg = F.SetBD(EquipmentFlyoutFrame.buttonFrame)
+		end
+		frame:SetWidth(frame:GetWidth()+3)
+	end
+	hooksecurefunc("EquipmentFlyout_UpdateItems", reskinButtonFrame)
+
+	local navigationFrame = EquipmentFlyoutFrame.NavigationFrame
+	F.SetBD(navigationFrame)
+	navigationFrame:SetPoint("TOPLEFT", EquipmentFlyoutFrameButtons, "BOTTOMLEFT", 0, -3)
+	navigationFrame:SetPoint("TOPRIGHT", EquipmentFlyoutFrameButtons, "BOTTOMRIGHT", 0, -3)
+	F.ReskinArrow(navigationFrame.PrevButton, "left")
+	F.ReskinArrow(navigationFrame.NextButton, "right")
 end)

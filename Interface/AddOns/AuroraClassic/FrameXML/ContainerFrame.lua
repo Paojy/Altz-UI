@@ -22,8 +22,6 @@ tinsert(C.themes["AuroraClassic"], function()
 		for k = 1, MAX_CONTAINER_ITEMS do
 			local item = "ContainerFrame"..i.."Item"..k
 			local button = _G[item]
-			local border = button.IconBorder
-			local searchOverlay = button.searchOverlay
 			local questTexture = _G[item.."IconQuestTexture"]
 			local newItemTexture = button.NewItemTexture
 
@@ -35,18 +33,14 @@ tinsert(C.themes["AuroraClassic"], function()
 			button:GetHighlightTexture():SetColorTexture(1, 1, 1, .25)
 
 			button.icon:SetTexCoord(.08, .92, .08, .92)
-			F.CreateBDFrame(button, .25)
+			button.bg = F.CreateBDFrame(button.icon, .25)
 
 			-- easiest way to 'hide' it without breaking stuff
 			newItemTexture:SetDrawLayer("BACKGROUND")
 			newItemTexture:SetSize(1, 1)
 
-			border:SetPoint("TOPLEFT", -C.mult, C.mult)
-			border:SetPoint("BOTTOMRIGHT", C.mult, -C.mult)
-			border:SetDrawLayer("BACKGROUND", 1)
-
-			searchOverlay:SetPoint("TOPLEFT", -C.mult, C.mult)
-			searchOverlay:SetPoint("BOTTOMRIGHT", C.mult, -C.mult)
+			button.searchOverlay:SetOutside()
+			F.HookIconBorderColor(button.IconBorder)
 		end
 
 		local f = F.CreateBDFrame(con)
@@ -77,8 +71,6 @@ tinsert(C.themes["AuroraClassic"], function()
 
 		for i = 1, frame.size do
 			local itemButton = _G[name.."Item"..i]
-
-			itemButton.IconBorder:SetTexture(C.media.backdrop)
 			if _G[name.."Item"..i.."IconQuestTexture"]:IsShown() then
 				itemButton.IconBorder:SetVertexColor(1, 1, 0)
 			end

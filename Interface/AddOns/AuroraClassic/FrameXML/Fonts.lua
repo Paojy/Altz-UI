@@ -6,7 +6,7 @@ tinsert(C.themes["AuroraClassic"], function()
 	local function ReskinFont(font, size, white)
 		local oldSize = select(2, font:GetFont())
 		size = size or oldSize
-		local fontSize = floor(size*AuroraClassicDB.FontScale + .5) -- round number
+		local fontSize = size*AuroraClassicDB.FontScale
 		font:SetFont(C.media.font, fontSize, white and "" or "OUTLINE")
 		font:SetShadowColor(0, 0, 0, 0)
 	end
