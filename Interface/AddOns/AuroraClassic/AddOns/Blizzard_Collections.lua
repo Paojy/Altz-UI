@@ -289,9 +289,10 @@ C.themes["Blizzard_Collections"] = function()
 			spell.selected:SetTexture(C.media.checked)
 			spell:GetRegions():Hide()
 
-			spell.FlyoutArrow:SetTexture(C.media.arrowDown)
-			spell.FlyoutArrow:SetSize(8, 8)
-			spell.FlyoutArrow:SetTexCoord(0, 1, 0, 1)
+			local flyoutArrow = spell.FlyoutArrow
+			F.SetupArrow(flyoutArrow, "down")
+			flyoutArrow:SetSize(14, 14)
+			flyoutArrow:SetTexCoord(0, 1, 0, 1)
 
 			F.ReskinIcon(spell.icon)
 		end
@@ -554,14 +555,13 @@ C.themes["Blizzard_Collections"] = function()
 		local ic = itemFrame.Icon
 		if not ic.bg then
 			ic:SetTexCoord(.08, .92, .08, .92)
-			itemFrame.IconBorder:Hide()
-			itemFrame.IconBorder.Show = F.dummy
 			ic.bg = F.CreateBDFrame(ic)
 		end
+		itemFrame.IconBorder:SetTexture("")
 
 		if itemFrame.collected then
 			local quality = C_TransmogCollection.GetSourceInfo(itemFrame.sourceID).quality
-			local color = BAG_ITEM_QUALITY_COLORS[quality or 1]
+			local color = C.QualityColors[quality or 1]
 			ic.bg:SetBackdropBorderColor(color.r, color.g, color.b)
 		else
 			ic.bg:SetBackdropBorderColor(0, 0, 0)

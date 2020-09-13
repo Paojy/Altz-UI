@@ -254,10 +254,7 @@ C.themes["Blizzard_GuildUI"] = function()
 	F.ReskinRadio(GuildRecruitmentLevelMaxButton)
 
 	for i = 1, 3 do
-		for j = 1, 6 do
-			select(j, _G["GuildInfoFrameTab"..i]:GetRegions()):Hide()
-			select(j, _G["GuildInfoFrameTab"..i]:GetRegions()).Show = F.dummy
-		end
+		F.StripTextures(_G["GuildInfoFrameTab"..i])
 	end
 
 	-- Tradeskill View

@@ -129,8 +129,7 @@ C.themes["Blizzard_PVPUI"] = function()
 
 		bu.tex = F.CreateGradient(bu)
 		bu.tex:SetDrawLayer("BACKGROUND")
-		bu.tex:SetPoint("TOPLEFT", bg, C.mult, -C.mult)
-		bu.tex:SetPoint("BOTTOMRIGHT", bg, -C.mult, C.mult)
+		bu.tex:SetInside(bg)
 
 		bu.SelectedTexture:SetDrawLayer("BACKGROUND")
 		bu.SelectedTexture:SetColorTexture(r, g, b, .25)
@@ -198,7 +197,7 @@ C.themes["Blizzard_PVPUI"] = function()
 
 		if rewardTexture then
 			rewardFrame.Icon:SetTexture(rewardTexture)
-			local color = BAG_ITEM_QUALITY_COLORS[rewardQuaility]
+			local color = C.QualityColors[rewardQuaility]
 			rewardFrame.Icon.bg:SetBackdropBorderColor(color.r, color.g, color.b)
 		end
 	end)

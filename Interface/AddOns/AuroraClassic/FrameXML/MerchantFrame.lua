@@ -22,117 +22,46 @@ tinsert(C.themes["AuroraClassic"], function()
 		F.ReskinTab(_G["MerchantFrameTab"..i])
 	end
 
+	local function reskinMerchantItem(item)
+		local name = item.Name
+		local button = item.ItemButton
+		local icon = button.icon
+		local moneyFrame = _G[item:GetName().."MoneyFrame"]
+
+		F.StripTextures(item)
+		F.CreateBDFrame(item, .25)
+
+		F.StripTextures(button)
+		button:ClearAllPoints()
+		button:SetPoint("LEFT", item, 4, 0)
+		local hl = button:GetHighlightTexture()
+		hl:SetColorTexture(1, 1, 1, .25)
+		hl:SetInside()
+
+		icon:SetInside()
+		button.bg = F.ReskinIcon(icon)
+		F.HookIconBorderColor(button.IconBorder)
+		button.IconOverlay:SetInside()
+
+		name:SetFontObject(Number12Font)
+		name:SetPoint("LEFT", button, "RIGHT", 2, 9)
+		moneyFrame:SetPoint("BOTTOMLEFT", button, "BOTTOMRIGHT", 3, 0)
+	end
+
 	for i = 1, BUYBACK_ITEMS_PER_PAGE do
-		local button = _G["MerchantItem"..i]
-		local bu = _G["MerchantItem"..i.."ItemButton"]
-		local mo = _G["MerchantItem"..i.."MoneyFrame"]
-		local ic = bu.icon
-
-		bu:GetHighlightTexture():SetColorTexture(1, 1, 1, .25)
-		bu:GetHighlightTexture():SetAllPoints(ic)
-		bu.IconBorder:SetAlpha(0)
-
-		_G["MerchantItem"..i.."SlotTexture"]:Hide()
-		_G["MerchantItem"..i.."NameFrame"]:Hide()
-		_G["MerchantItem"..i.."Name"]:SetHeight(20)
-
-		local a1, p, a2= bu:GetPoint()
-		bu:SetPoint(a1, p, a2, -2, -2)
-		bu:SetNormalTexture("")
-		bu:SetPushedTexture("")
-		bu:SetSize(40, 40)
-
-		local a3, p2, a4, x, y = mo:GetPoint()
-		mo:SetPoint(a3, p2, a4, x, y+2)
-
-		F.CreateBD(bu, 0)
-
-		button.bd = CreateFrame("Frame", nil, button)
-		button.bd:SetPoint("TOPLEFT", 39, 0)
-		button.bd:SetPoint("BOTTOMRIGHT")
-		button.bd:SetFrameLevel(0)
-		F.CreateBD(button.bd, .25)
-
-		ic:SetTexCoord(.08, .92, .08, .92)
-		ic:ClearAllPoints()
-		ic:SetPoint("TOPLEFT", C.mult, -C.mult)
-		ic:SetPoint("BOTTOMRIGHT", -C.mult, C.mult)
+		local item = _G["MerchantItem"..i]
+		reskinMerchantItem(item)
 
 		for j = 1, 3 do
-			F.ReskinIcon(_G["MerchantItem"..i.."AltCurrencyFrameItem"..j.."Texture"])
+			local currency = _G["MerchantItem"..i.."AltCurrencyFrameItem"..j]
+			local texture = _G["MerchantItem"..i.."AltCurrencyFrameItem"..j.."Texture"]
+			currency:SetPoint("BOTTOMLEFT", item.ItemButton, "BOTTOMRIGHT", 3, 0)
+			F.ReskinIcon(texture)
 		end
 	end
 
-	hooksecurefunc("MerchantFrame_UpdateMerchantInfo", function()
-		local numMerchantItems = GetMerchantNumItems()
-		for i = 1, MERCHANT_ITEMS_PER_PAGE do
-			local index = ((MerchantFrame.page - 1) * MERCHANT_ITEMS_PER_PAGE) + i
-			if index <= numMerchantItems then
-				local _, _, price, _, _, _, extendedCost = GetMerchantItemInfo(index)
-				if extendedCost and (price <= 0) then
-					_G["MerchantItem"..i.."AltCurrencyFrame"]:SetPoint("BOTTOMLEFT", "MerchantItem"..i.."NameFrame", "BOTTOMLEFT", 0, 35)
-				end
-
-				local bu = _G["MerchantItem"..i.."ItemButton"]
-				local name = _G["MerchantItem"..i.."Name"]
-				if bu.link then
-					local _, _, quality = GetItemInfo(bu.link)
-					if quality then
-						local r, g, b = GetItemQualityColor(quality)
-						name:SetTextColor(r, g, b)
-					else
-						name:SetTextColor(1, 1, 1)
-					end
-				else
-					name:SetTextColor(1, 1, 1)
-				end
-			end
-		end
-
-		local name = GetBuybackItemLink(GetNumBuybackItems())
-		if name then
-			local _, _, quality = GetItemInfo(name)
-			local r, g, b = GetItemQualityColor(quality or 1)
-
-			MerchantBuyBackItemName:SetTextColor(r, g, b)
-		end
-	end)
-
-	hooksecurefunc("MerchantFrame_UpdateBuybackInfo", function()
-		for i = 1, BUYBACK_ITEMS_PER_PAGE do
-			local itemLink = GetBuybackItemLink(i)
-			local name = _G["MerchantItem"..i.."Name"]
-
-			if itemLink then
-				local _, _, quality = GetItemInfo(itemLink)
-				local r, g, b = GetItemQualityColor(quality)
-
-				name:SetTextColor(r, g, b)
-			else
-				name:SetTextColor(1, 1, 1)
-			end
-		end
-	end)
-
-	MerchantBuyBackItemSlotTexture:SetAlpha(0)
-	MerchantBuyBackItemNameFrame:Hide()
-	MerchantBuyBackItemItemButton:SetNormalTexture("")
-	MerchantBuyBackItemItemButton:SetPushedTexture("")
-	MerchantBuyBackItemItemButton:GetHighlightTexture():SetColorTexture(1, 1, 1, .25)
-	MerchantBuyBackItemItemButton:GetHighlightTexture():SetAllPoints(MerchantBuyBackItemItemButtonIconTexture)
-	MerchantBuyBackItemItemButton.IconBorder:SetAlpha(0)
-
-	F.CreateBD(MerchantBuyBackItemItemButton, 0)
-	F.CreateBD(MerchantBuyBackItem, .25)
-
-	MerchantBuyBackItemItemButtonIconTexture:SetTexCoord(.08, .92, .08, .92)
-	MerchantBuyBackItemItemButtonIconTexture:ClearAllPoints()
-	MerchantBuyBackItemItemButtonIconTexture:SetPoint("TOPLEFT", C.mult, -C.mult)
-	MerchantBuyBackItemItemButtonIconTexture:SetPoint("BOTTOMRIGHT", -C.mult, C.mult)
-
-	MerchantBuyBackItemName:SetHeight(25)
-	MerchantBuyBackItemName:ClearAllPoints()
-	MerchantBuyBackItemName:SetPoint("LEFT", MerchantBuyBackItemSlotTexture, "RIGHT", -5, 8)
+	MerchantBuyBackItem:SetHeight(44)
+	reskinMerchantItem(MerchantBuyBackItem)
 
 	local function reskinMerchantInteract(button)
 		button:SetPushedTexture("")

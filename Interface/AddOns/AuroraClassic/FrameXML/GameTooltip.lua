@@ -100,23 +100,10 @@ tinsert(C.themes["AuroraClassic"], function()
 	FloatingBattlePetTooltip.Delimiter:SetHeight(1)
 
 	-- Tooltip rewards icon
-	local function updateBackdropColor(self, r, g, b)
-		self:GetParent().bg:SetBackdropBorderColor(r, g, b)
-	end
-
-	local function resetBackdropColor(self)
-		self:GetParent().bg:SetBackdropBorderColor(0, 0, 0)
-	end
-
 	local function reskinRewardIcon(self)
 		self.Icon:SetTexCoord(.08, .92, .08, .92)
-		self.bg = F.CreateBDFrame(self, 0)
-		self.bg:SetOutside(self.Icon)
-
-		local iconBorder = self.IconBorder
-		iconBorder:SetAlpha(0)
-		hooksecurefunc(iconBorder, "SetVertexColor", updateBackdropColor)
-		hooksecurefunc(iconBorder, "Hide", resetBackdropColor)
+		self.bg = F.CreateBDFrame(self.Icon, 0)
+		F.HookIconBorderColor(self.IconBorder)
 	end
 
 	reskinRewardIcon(GameTooltip.ItemTooltip)
@@ -126,12 +113,12 @@ tinsert(C.themes["AuroraClassic"], function()
 	local listener = CreateFrame("Frame")
 	listener:RegisterEvent("ADDON_LOADED")
 	listener:SetScript("OnEvent", function(_, _, addon)
-		if addon == "MethodDungeonTools" then
+		if addon == "MythicDungeonTools" then
 			local styledMDT
-			hooksecurefunc(MethodDungeonTools, "ShowInterface", function()
+			hooksecurefunc(MDT, "ShowInterface", function()
 				if not styledMDT then
-					F.ReskinTooltip(MethodDungeonTools.tooltip)
-					F.ReskinTooltip(MethodDungeonTools.pullTooltip)
+					F.ReskinTooltip(MDT.tooltip)
+					F.ReskinTooltip(MDT.pullTooltip)
 					styledMDT = true
 				end
 			end)

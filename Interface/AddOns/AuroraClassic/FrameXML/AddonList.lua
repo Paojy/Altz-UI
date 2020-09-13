@@ -1,6 +1,8 @@
 local F, C = unpack(select(2, ...))
 
 tinsert(C.themes["AuroraClassic"], function()
+	local r, g, b = C.r, C.g, C.b
+
 	F.ReskinPortraitFrame(AddonList)
 	F.Reskin(AddonListEnableAllButton)
 	F.Reskin(AddonListDisableAllButton)
@@ -18,4 +20,16 @@ tinsert(C.themes["AuroraClassic"], function()
 		F.ReskinCheck(checkbox, true)
 		F.Reskin(_G["AddonListEntry"..i.."Load"])
 	end
+
+	hooksecurefunc("TriStateCheckbox_SetState", function(_, checkButton)
+		if checkButton.forceSaturation then
+			local tex = checkButton:GetCheckedTexture()
+			if checkButton.state == 2 then
+				tex:SetDesaturated(true)
+				tex:SetVertexColor(r, g, b)
+			elseif checkButton.state == 1 then
+				tex:SetVertexColor(1, .8, 0, .8)
+			end
+		end
+	end)
 end)

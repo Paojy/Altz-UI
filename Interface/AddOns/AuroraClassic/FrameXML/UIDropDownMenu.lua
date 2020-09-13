@@ -110,8 +110,8 @@ tinsert(C.themes["AuroraClassic"], function()
 					hl:SetColorTexture(r, g, b, .2)
 
 					local arrow = _G["DropDownList"..level.."Button"..j.."ExpandArrow"]
-					arrow:SetNormalTexture(C.media.arrowRight)
-					arrow:SetSize(8, 8)
+					F.SetupArrow(arrow:GetNormalTexture(), "right")
+					arrow:SetSize(14, 14)
 				end
 
 				local uncheck = _G["DropDownList"..level.."Button"..j.."UnCheck"]

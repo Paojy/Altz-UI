@@ -60,8 +60,7 @@ C.themes["Blizzard_EncounterJournal"] = function()
 		tab:SetDisabledTexture("")
 		local hl = tab:GetHighlightTexture()
 		hl:SetColorTexture(r, g, b, .2)
-		hl:SetPoint("TOPLEFT", C.mult, -C.mult)
-		hl:SetPoint("BOTTOMRIGHT", -C.mult, C.mult)
+		hl:SetInside()
 
 		if name == "overviewTab" then
 			tab:SetPoint("TOPLEFT", EncounterJournalEncounterFrameInfo, "TOPRIGHT", 13, -35)
@@ -235,8 +234,7 @@ C.themes["Blizzard_EncounterJournal"] = function()
 			bu:SetHighlightTexture(C.media.backdrop)
 			local hl = bu:GetHighlightTexture()
 			hl:SetVertexColor(r, g, b, .25)
-			hl:SetPoint("TOPLEFT", C.mult, -C.mult)
-			hl:SetPoint("BOTTOMRIGHT", -C.mult, C.mult)
+			hl:SetInside()
 		end
 	end
 
@@ -397,7 +395,7 @@ C.themes["Blizzard_EncounterJournal"] = function()
 		end
 
 		local quality = select(3, GetItemInfo(button.itemID))
-		local color = BAG_ITEM_QUALITY_COLORS[quality or 1]
+		local color = C.QualityColors[quality or 1]
 		button.bg:SetBackdropBorderColor(color.r, color.g, color.b)
 	end)
 end

@@ -10,11 +10,9 @@ C.media = {
 	glowTex = mediaPath.."glowTex",
 	gradient = mediaPath.."gradient",
 	checked = mediaPath.."CheckButtonHilight",
-	roleIcons = mediaPath.."UI-LFG-ICON-ROLES",
-	arrowUp = mediaPath.."arrow-up-active",
-	arrowDown = mediaPath.."arrow-down-active",
-	arrowLeft = mediaPath.."arrow-left-active",
-	arrowRight = mediaPath.."arrow-right-active",
+	roleIcons = mediaPath.."RoleIcons",
+	arrowUp = mediaPath.."arrow",
+	closeTex = mediaPath.."close",
 	backdrop = "Interface\\ChatFrame\\ChatFrameBackground",
 }
 
@@ -56,9 +54,14 @@ C.g = C.ClassColors[C.MyClass].g
 C.b = C.ClassColors[C.MyClass].b
 
 -- Replace default contants
-BAG_ITEM_QUALITY_COLORS[LE_ITEM_QUALITY_POOR] = {r = .61, g = .61, b = .61}
-BAG_ITEM_QUALITY_COLORS[-1] = {r = 0, g = 0, b = 0}
-BAG_ITEM_QUALITY_COLORS[LE_ITEM_QUALITY_COMMON] = {r = 0, g = 0, b = 0}
+C.QualityColors = {}
+local qualityColors = BAG_ITEM_QUALITY_COLORS
+for index, value in pairs(qualityColors) do
+	C.QualityColors[index] = {r = value.r, g = value.g, b = value.b}
+end
+C.QualityColors[-1] = {r = 0, g = 0, b = 0}
+C.QualityColors[LE_ITEM_QUALITY_POOR] = {r = .61, g = .61, b = .61}
+C.QualityColors[LE_ITEM_QUALITY_COMMON] = {r = 0, g = 0, b = 0}
 
 NORMAL_QUEST_DISPLAY = gsub(NORMAL_QUEST_DISPLAY, "000000", "ffffff")
 TRIVIAL_QUEST_DISPLAY = gsub(TRIVIAL_QUEST_DISPLAY, "000000", "ffffff")
