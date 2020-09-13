@@ -5,11 +5,15 @@ local CurrentFrame = "NONE"
 local anchors = {"CENTER", "LEFT", "RIGHT", "TOP", "BOTTOM", "TOPLEFT", "TOPRIGHT", "BOTTOMLEFT", "BOTTOMRIGHT"}
 local role, selected
 
-local function PlaceCurrentFrame()
+local function PlaceCurrentFrame(df)
 	local f = _G[CurrentFrame]
 	local points = aCoreCDB["FramePoints"][CurrentFrame][role]
 	f:ClearAllPoints()
 	f:SetPoint(points.a1, _G[points.parent], points.a2, points.x, points.y)
+	if df then
+		f.df:ClearAllPoints() -- 拖动框重新连接到锚点
+		f.df:SetPoint(points.a1, _G[points.parent], points.a2, points.x, points.y)
+	end
 end
 
 local function Reskinbox(box, name, value, anchor, x, y)
@@ -220,7 +224,7 @@ ResetButton:SetScript("OnClick", function()
 		aCoreCDB["FramePoints"][CurrentFrame][role].x = frame["point"][role].x
 		aCoreCDB["FramePoints"][CurrentFrame][role].y = frame["point"][role].y
 
-		PlaceCurrentFrame()
+		PlaceCurrentFrame(true)
 		DisplayCurrentFramePoint()
 	end
 end)
@@ -256,27 +260,31 @@ function T.CreateDragFrame(frame)
 
 	table.insert(G.dragFrameList, frame) --add frame object to the list
 
-	frame:SetMovable(true)
-	frame:SetClampedToScreen(true)
-
 	frame.df = CreateFrame("Frame", fname.."DragFrame", UIParent)
-	frame.df:SetAllPoints(frame)
+	frame.df:SetMovable(true)
 	frame.df:SetFrameStrata("HIGH")
 	frame.df:EnableMouse(true)
 	frame.df:RegisterForDrag("LeftButton")
 	frame.df:SetClampedToScreen(true)
-	frame.df:SetScript("OnDragStart", function(self)
-		frame:StartMoving()
-		self.x, self.y = frame:GetCenter() -- 开始的位置
+	
+	frame.df:SetScript("OnShow", function(self, event)
+		frame.df:SetSize(frame:GetWidth(), frame:GetHeight())
+		local points = aCoreCDB["FramePoints"][fname][role]
+		frame.df:SetPoint(points.a1, _G[points.parent], points.a2, points.x, points.y)
 	end)
+	
+	frame.df:SetScript("OnDragStart", function(self)	
+		frame.df:StartMoving()
+	end)
+	
 	frame.df:SetScript("OnDragStop", function(self)
-		frame:StopMovingOrSizing()
-		local x, y = frame:GetCenter() -- 结束的位置
-		local x1, y1 = ("%d"):format(x - self.x), ("%d"):format(y -self.y)
+		local x, y = GetCursorPosition() -- 结束的位置
+		local x1, y1 = ("%d"):format((x - self.x)*GetScreenWidth()/1364.8), ("%d"):format((y -self.y)*GetScreenHeight()/780) -- 计算偏移量
 		aCoreCDB["FramePoints"][fname][role].x = aCoreCDB["FramePoints"][fname][role].x + x1
 		aCoreCDB["FramePoints"][fname][role].y = aCoreCDB["FramePoints"][fname][role].y + y1
-		PlaceCurrentFrame() -- 重新连接到锚点
+		PlaceCurrentFrame(true) -- 重新连接到锚点
 		DisplayCurrentFramePoint()
+		frame.df:StopMovingOrSizing()
 	end)
 	frame.df:Hide()
 
@@ -287,7 +295,8 @@ function T.CreateDragFrame(frame)
 	frame.df.mask.text:SetPoint("TOPLEFT")
 	frame.df.mask.text:SetText(frame.movingname)
 
-	frame.df:SetScript("OnMouseDown", function()
+	frame.df:SetScript("OnMouseDown", function(self)
+		self.x, self.y = GetCursorPosition() -- 开始的位置
 		CurrentFrame = fname
 		SpecMover.curframe:SetText(L["选中的框体"].." "..G.classcolor..gsub(frame.movingname, "\n", "").."|r")
 		DisplayCurrentFramePoint()
