@@ -33,7 +33,7 @@ local function ShowFinish(text, subtext)
     LevelUpDisplay:SetScript("OnShow", script)
 end
 
-local BlackBg = CreateFrame("Frame", G.uiname.."BlackBg", WorldFrame)
+local BlackBg = CreateFrame("Frame", G.uiname.."BlackBg", WorldFrame, "BackdropTemplate")
 BlackBg:SetFrameStrata("FULLSCREEN")
 F.CreateBD(BlackBg, 1)
 BlackBg:SetPoint("TOPLEFT",WorldFrame,"TOPLEFT", -5, 5)

@@ -7,10 +7,14 @@ hooksecurefunc("L_UIDropDownMenu_CreateFrames", function(level, index)
 	for i = 1, _G.UIDROPDOWNMENU_MAXLEVELS do
 		local menu = _G["L_DropDownList"..i.."MenuBackdrop"]
 		local backdrop = _G["L_DropDownList"..i.."Backdrop"]
-		if not backdrop.reskinned then
-			F.CreateBD(menu)
-			F.CreateBD(backdrop)
-			F.CreateSD(backdrop)
+		if not backdrop.reskinned and backdrop and menu then
+			menu.bg = CreateFrame("Frame", nil, menu, "BackdropTemplate")
+			menu.bg:SetAllPoints(menu)
+			F.CreateBD(menu.bg)
+			backdrop.bg = CreateFrame("Frame", nil, backdrop, "BackdropTemplate")
+			backdrop.bg:SetAllPoints(backdrop)
+			F.CreateBD(backdrop.bg)
+			F.CreateSD(backdrop.bg)
 			backdrop.reskinned = true
 		end
 	end

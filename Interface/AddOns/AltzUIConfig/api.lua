@@ -500,12 +500,12 @@ T.createcheckbutton = function(parent, x, y, name, table, value, tip)
 	end)
 	
 	bu:SetScript("OnDisable", function(self)
-		local tex = select(7, bu:GetRegions())
+		local tex = select(6, bu:GetRegions())
 		tex:SetVertexColor(.7, .7, .7, .5)
 	end)
 	
 	bu:SetScript("OnEnable", function(self)
-		local tex = select(7, bu:GetRegions())
+		local tex = select(6, bu:GetRegions())
 		tex:SetVertexColor(buttonR, buttonG, buttonB, buttonA)
 	end)
 	
@@ -590,7 +590,7 @@ T.createeditbox = function(parent, x, y, name, table, value, tip)
 	box:SetSize(180, 20)
 	box:SetPoint("TOPLEFT", x, -y)
 	
-	local bd = CreateFrame("Frame", nil, box)
+	local bd = CreateFrame("Frame", nil, box, "BackdropTemplate")
 	bd:SetPoint("TOPLEFT", -2, 0)
 	bd:SetPoint("BOTTOMRIGHT")
 	bd:SetFrameLevel(box:GetFrameLevel()-1)
@@ -637,7 +637,9 @@ T.createmultilinebox = function(parent, width, height, x, y, name, table, value,
 	scrollBG:SetPoint("TOPLEFT", x, -y)
 	scrollBG:SetSize(width, height)
 	scrollBG:SetFrameLevel(parent:GetFrameLevel()+1)
-	F.CreateBD(scrollBG, 0)
+	scrollBG.bg = CreateFrame("Frame", nil, scrollBG, "BackdropTemplate")
+	scrollBG.bg:SetAllPoints(scrollBG)
+	F.CreateBD(scrollBG.bg, 0)
 	
 	local gradient = F.CreateGradient(scrollBG)
 	gradient:SetPoint("TOPLEFT", scrollBG, 1, -1)
@@ -792,7 +794,7 @@ T.createcolorpickerbu = function(parent, x, y, name, table, value)
 	parent[value] = cpb
 end
 
-T.createradiobuttongroup = function(parent, x, y, name, table, value, group)
+T.createradiobuttongroup = function(parent, x, y, name, table, value, group, newline)
 	local frame = CreateFrame("Frame", G.uiname..value.."RadioButtonGroup", parent)
 	frame:SetPoint("TOPLEFT", x, -y)
 	frame:SetSize(150, 30)
@@ -846,6 +848,8 @@ T.createradiobuttongroup = function(parent, x, y, name, table, value, group)
 		if i == 1 then
 			frame.name:SetPoint("LEFT", 5, 0)
 			buttons[i]:SetPoint("LEFT", frame.name, "RIGHT", 10, 1)
+		elseif newline and i == newline then
+			buttons[i]:SetPoint("TOPLEFT", frame.name, "BOTTOMLEFT", 0, -10)
 		else
 			buttons[i]:SetPoint("LEFT", _G[buttons[i-1]:GetName() .. "Text"], "RIGHT", 5, 0)
 		end

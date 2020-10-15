@@ -42,7 +42,7 @@ ReloadButton:SetScript("OnClick", ReloadUI)
 GUI.tabindex = 1
 GUI.tabnum = 20
 for i = 1, 20 do
-	GUI["tab"..i] = CreateFrame("Frame", G.uiname.."GUI Tab"..i, GUI)
+	GUI["tab"..i] = CreateFrame("Frame", G.uiname.."GUI Tab"..i, GUI, "BackdropTemplate")
 	GUI["tab"..i]:SetScript("OnMouseDown", function() end)
 end
 --====================================================--
@@ -138,7 +138,9 @@ local function CreateOptionPage(name, title, parent, orientation, a, scroll)
 		Options.SF:SetPoint("TOPLEFT", Options, "TOPLEFT", 10, -80)
 		Options.SF:SetPoint("BOTTOMRIGHT", Options, "BOTTOMRIGHT", -45, 35)
 		Options.SF:SetFrameLevel(Options:GetFrameLevel()+1)
-
+		Options.SF.bg = CreateFrame("Frame", nil, Options.SF, "BackdropTemplate")
+		Options.SF.bg:SetAllPoints(Options.SF)
+	
 		Options.SFAnchor = CreateFrame("Frame", G.uiname..name.." ScrollAnchor", Options.SF)
 		Options.SFAnchor:SetPoint("TOPLEFT", Options.SF, "TOPLEFT", 0, -3)
 		Options.SFAnchor:SetWidth(Options.SF:GetWidth()-30)
@@ -287,7 +289,7 @@ T.createslider(ChatOptions, 310, 250, L["标签最大透明度"], "ChatOptions",
 --====================================================--
 local ItemOptions = CreateOptionPage("Item Options", ITEMS, GUI, "VERTICAL")
 
-local IInnerframe = CreateFrame("Frame", G.uiname.."Item Options Innerframe", ItemOptions)
+local IInnerframe = CreateFrame("Frame", G.uiname.."Item Options Innerframe", ItemOptions, "BackdropTemplate")
 IInnerframe:SetPoint("TOPLEFT", 40, -60)
 IInnerframe:SetPoint("BOTTOMLEFT", -20, 20)
 IInnerframe:SetWidth(ItemOptions:GetWidth()-200)
@@ -296,7 +298,7 @@ F.CreateBD(IInnerframe, .3)
 IInnerframe.tabindex = 1
 IInnerframe.tabnum = 20
 for i = 1, 20 do
-	IInnerframe["tab"..i] = CreateFrame("Frame", G.uiname.."IInnerframe Tab"..i, IInnerframe)
+	IInnerframe["tab"..i] = CreateFrame("Frame", G.uiname.."IInnerframe Tab"..i, IInnerframe, "BackdropTemplate")
 	IInnerframe["tab"..i]:SetScript("OnMouseDown", function() end)
 end
 
@@ -318,7 +320,7 @@ T.createcheckbutton(IInnerframe.common, 230, 270, L["自动购买"], "ItemOption
 IInnerframe.common.SF:ClearAllPoints()
 IInnerframe.common.SF:SetPoint("TOPLEFT", IInnerframe.common, "TOPLEFT", 40, -340)
 IInnerframe.common.SF:SetPoint("BOTTOMRIGHT", IInnerframe.common, "BOTTOMRIGHT", -100, 25)
-F.CreateBD(IInnerframe.common.SF, .3)
+F.CreateBD(IInnerframe.common.SF.bg, .3)
 
 local ClearIlvlInfoButton = CreateFrame("Button", G.uiname.."ClearIlvlInfoButton", IInnerframe.common, "UIPanelButtonTemplate")
 ClearIlvlInfoButton:SetPoint("LEFT", _G[IInnerframe.common.showitemlevel:GetName() .. "Text"], "RIGHT", 20, 0)
@@ -341,7 +343,7 @@ local function LineUpAutobuyList()
 end
 
 local function CreateAutobuyButton(itemID, name, icon, quantity)
-	local bu = CreateFrame("Frame", G.uiname.."AutobuyList Button"..itemID, IInnerframe.common.SFAnchor)
+	local bu = CreateFrame("Frame", G.uiname.."AutobuyList Button"..itemID, IInnerframe.common.SFAnchor, "BackdropTemplate")
 	bu:SetSize(300, 28)
 	F.CreateBD(bu, .2)
 	
@@ -350,7 +352,9 @@ local function CreateAutobuyButton(itemID, name, icon, quantity)
 	bu.icon:SetNormalTexture(icon or G.media.blank)
 	bu.icon:GetNormalTexture():SetTexCoord(0.1,0.9,0.1,0.9)
 	bu.icon:SetPoint("LEFT", 5, 0)
-	F.CreateBG(bu.icon)
+	bu.icon.bg = CreateFrame("Frame", nil, bu.icon, "BackdropTemplate")
+	bu.icon.bg:SetAllPoints(bu.icon)
+	F.CreateBD(bu.icon.bg)		
 	
 	bu.name = T.createtext(bu, "OVERLAY", 16, "OUTLINE", "LEFT")
 	bu.name:SetPoint("LEFT", 40, 0)
@@ -396,7 +400,7 @@ local function CreateAutobuyButtonList()
 	LineUpAutobuyList()
 end
 
-local Autobuy_iteminput = CreateFrame("EditBox", G.uiname.."AutobuyList ItemInput", IInnerframe.common)
+local Autobuy_iteminput = CreateFrame("EditBox", G.uiname.."AutobuyList ItemInput", IInnerframe.common, "BackdropTemplate")
 Autobuy_iteminput:SetSize(150, 20)
 Autobuy_iteminput:SetPoint("TOPLEFT", 40, -310)
 F.CreateBD(Autobuy_iteminput)
@@ -410,7 +414,7 @@ Autobuy_iteminput:SetScript("OnEditFocusGained", function(self) self:HighlightTe
 Autobuy_iteminput:SetScript("OnEscapePressed", function(self) self:ClearFocus() self:SetText(L["输入物品ID"]) end)
 Autobuy_iteminput:SetScript("OnEnterPressed", function(self) self:ClearFocus() end)
 
-local Autobuy_quantityinput = CreateFrame("EditBox", G.uiname.."AutobuyList QuantityInput", IInnerframe.common)
+local Autobuy_quantityinput = CreateFrame("EditBox", G.uiname.."AutobuyList QuantityInput", IInnerframe.common, "BackdropTemplate")
 Autobuy_quantityinput:SetSize(80, 20)
 Autobuy_quantityinput:SetPoint("LEFT", Autobuy_iteminput, "RIGHT", 15, 0)
 F.CreateBD(Autobuy_quantityinput)
@@ -485,7 +489,7 @@ T.createradiobuttongroup(IInnerframe.IB, 30, 200, L["垂直"]..L["排列方向"]
 IInnerframe.IB.SF:ClearAllPoints()
 IInnerframe.IB.SF:SetPoint("TOPLEFT", IInnerframe.IB, "TOPLEFT", 25, -240)
 IInnerframe.IB.SF:SetPoint("BOTTOMRIGHT", IInnerframe.IB, "BOTTOMRIGHT", -35, 25)
-F.CreateBD(IInnerframe.IB.SF, .3)
+F.CreateBD(IInnerframe.IB.SF.bg, .3)
 
 local IB_ConditionsMenu = CreateFrame("Frame", G.uiname.."IB_ConditionsMenu", UIParent, "L_UIDropDownMenuTemplate")
 
@@ -531,7 +535,7 @@ local IB_Conditions_List = {
 local function Create_IB_Button(parent, index, itemID, exactItem, showCount, All, OrderHall, Raid, Dungeon, PVP)
 	local AltzUI_T = unpack(AltzUI)
 	
-	local bu = CreateFrame("Frame", G.uiname.."IB Edit Button"..index, parent)
+	local bu = CreateFrame("Frame", G.uiname.."IB Edit Button"..index, parent, "BackdropTemplate")
 	bu:SetPoint("TOPLEFT", parent, "TOPLEFT", 5, 20-index*30)
 	bu:SetSize(380, 24)
 	F.CreateBD(bu, .2)
@@ -541,7 +545,7 @@ local function Create_IB_Button(parent, index, itemID, exactItem, showCount, All
 	bu.index:SetTextColor(1, 1, 1)
 	bu.index:SetText(index..".")
 	
-	bu.name_input = CreateFrame("EditBox", G.uiname.."IB Edit Button"..index.."NameInput", bu)
+	bu.name_input = CreateFrame("EditBox", G.uiname.."IB Edit Button"..index.."NameInput", bu, "BackdropTemplate")
 	bu.name_input:SetSize(100, 18)
 	bu.name_input:SetPoint("LEFT", 25, 0)
 	F.CreateBD(bu.name_input, 0)
@@ -745,7 +749,7 @@ end
 --====================================================--
 local UFOptions = CreateOptionPage("UF Options", L["单位框体"], GUI, "VERTICAL")
 
-local UFInnerframe = CreateFrame("Frame", G.uiname.."UF Options Innerframe", UFOptions)
+local UFInnerframe = CreateFrame("Frame", G.uiname.."UF Options Innerframe", UFOptions, "BackdropTemplate")
 UFInnerframe:SetPoint("TOPLEFT", 40, -60)
 UFInnerframe:SetPoint("BOTTOMLEFT", -20, 20)
 UFInnerframe:SetWidth(UFOptions:GetWidth()-200)
@@ -754,7 +758,7 @@ F.CreateBD(UFInnerframe, .3)
 UFInnerframe.tabindex = 1
 UFInnerframe.tabnum = 20
 for i = 1, 20 do
-	UFInnerframe["tab"..i] = CreateFrame("Frame", G.uiname.."UFInnerframe Tab"..i, UFInnerframe)
+	UFInnerframe["tab"..i] = CreateFrame("Frame", G.uiname.."UFInnerframe Tab"..i, UFInnerframe, "BackdropTemplate")
 	UFInnerframe["tab"..i]:SetScript("OnMouseDown", function() end)
 end
 
@@ -895,7 +899,7 @@ local function CreateAuraFilterButton(name, icon, spellID)
 	bu.icon:SetNormalTexture(icon)
 	bu.icon:GetNormalTexture():SetTexCoord(0.1,0.9,0.1,0.9)
 	bu.icon:SetPoint"LEFT"
-	F.CreateBG(bu.icon)
+	F.CreateBD(bu.icon)
 	
 	bu.spellid = T.createtext(bu, "OVERLAY", 12, "OUTLINE", "LEFT")
 	bu.spellid:SetPoint("LEFT", 40, 0)
@@ -941,7 +945,7 @@ local function CreateAuraFilterButtonList()
 	LineUpAuraFilterList()
 end
 
-local AuraFilter_spellIDinput = CreateFrame("EditBox", G.uiname.."WhiteList Input", UFInnerframe.aurawhitelist)
+local AuraFilter_spellIDinput = CreateFrame("EditBox", G.uiname.."WhiteList Input", UFInnerframe.aurawhitelist, "BackdropTemplate")
 AuraFilter_spellIDinput:SetSize(250, 20)
 AuraFilter_spellIDinput:SetPoint("TOPLEFT", 30, -60)
 F.CreateBD(AuraFilter_spellIDinput)
@@ -1026,7 +1030,7 @@ end
 --====================================================--
 local RFOptions = CreateOptionPage("RF Options", L["团队框架"], GUI, "VERTICAL")
 
-local RFInnerframe = CreateFrame("Frame", G.uiname.."RF Options Innerframe", RFOptions)
+local RFInnerframe = CreateFrame("Frame", G.uiname.."RF Options Innerframe", RFOptions, "BackdropTemplate")
 RFInnerframe:SetPoint("TOPLEFT", 40, -60)
 RFInnerframe:SetPoint("BOTTOMLEFT", -20, 20)
 RFInnerframe:SetWidth(RFOptions:GetWidth()-200)
@@ -1035,7 +1039,7 @@ F.CreateBD(RFInnerframe, .3)
 RFInnerframe.tabindex = 1
 RFInnerframe.tabnum = 20
 for i = 1, 20 do
-	RFInnerframe["tab"..i] = CreateFrame("Frame", G.uiname.."RFInnerframe Tab"..i, RFInnerframe)
+	RFInnerframe["tab"..i] = CreateFrame("Frame", G.uiname.."RFInnerframe Tab"..i, RFInnerframe, "BackdropTemplate")
 	RFInnerframe["tab"..i]:SetScript("OnMouseDown", function() end)
 end
 
@@ -1114,7 +1118,9 @@ local function CreatehotindauralistButton(spellID, parent)
 	bu.icon:SetNormalTexture(select(3, GetSpellInfo(spellID)))
 	bu.icon:GetNormalTexture():SetTexCoord(0.1,0.9,0.1,0.9)
 	bu.icon:SetPoint"LEFT"
-	F.CreateBG(bu.icon)
+	bu.icon.bg = CreateFrame("Frame", nil, bu.icon, "BackdropTemplate")
+	bu.icon.bg:SetAllPoints(bu.icon)
+	F.CreateBD(bu.icon.bg)		
 	
 	bu.spellname = T.createtext(bu, "OVERLAY", 12, "OUTLINE", "LEFT")
 	bu.spellname:SetPoint("LEFT", 140, 0)
@@ -1163,7 +1169,7 @@ local function CreatehotindAuraOptions()
 	
 	Createhotindauralist(RFInnerframe.ind.SFAnchor)
 	
-	RFInnerframe.ind.Spellinput = CreateFrame("EditBox", G.uiname.."hotind_auralist Spell Input", RFInnerframe.ind)
+	RFInnerframe.ind.Spellinput = CreateFrame("EditBox", G.uiname.."hotind_auralist Spell Input", RFInnerframe.ind, "BackdropTemplate")
 	RFInnerframe.ind.Spellinput:SetSize(120, 20)
 	RFInnerframe.ind.Spellinput:SetPoint("TOPLEFT", RFInnerframe.ind, "TOPLEFT", 40, -170)
 	F.CreateBD(RFInnerframe.ind.Spellinput)
@@ -1232,14 +1238,14 @@ RFInnerframe.clickcast = CreateOptionPage("RF Options clickcast", L["点击施�
 
 local enableClickCastbu = T.createcheckbutton(RFInnerframe.clickcast, 30, 60, L["启用"], "UnitframeOptions", "enableClickCast", format(L["点击施法提示"], G.classcolor, G.classcolor, G.classcolor, G.classcolor, G.classcolor, G.classcolor))
 
-local clickcastframe = CreateFrame("Frame", G.uiname.."ClickCast Options", RFInnerframe.clickcast)
+local clickcastframe = CreateFrame("Frame", G.uiname.."ClickCast Options", RFInnerframe.clickcast, "BackdropTemplate")
 clickcastframe:SetPoint("TOPLEFT", 30, -120)
 clickcastframe:SetPoint("BOTTOMRIGHT", -30, 20)
 F.CreateBD(clickcastframe, 0)
 clickcastframe.tabindex = 1
 clickcastframe.tabnum = 20
 for i = 1, 20 do
-	clickcastframe["tab"..i] = CreateFrame("Frame", G.uiname.."clickcastframe Tab"..i, clickcastframe)
+	clickcastframe["tab"..i] = CreateFrame("Frame", G.uiname.."clickcastframe Tab"..i, clickcastframe, "BackdropTemplate")
 	clickcastframe["tab"..i]:SetScript("OnMouseDown", function() end)
 end
 
@@ -1255,7 +1261,9 @@ MacroPop.scrollBG = CreateFrame("ScrollFrame", G.uiname.."give macro MultiLineEd
 MacroPop.scrollBG:SetPoint("TOPLEFT", 10, -30)
 MacroPop.scrollBG:SetSize(330, 80)
 MacroPop.scrollBG:SetFrameLevel(MacroPop:GetFrameLevel()+1)
-F.CreateBD(MacroPop.scrollBG, 0)
+MacroPop.scrollBG.bg = CreateFrame("Frame", nil, MacroPop.scrollBG, "BackdropTemplate")
+MacroPop.scrollBG.bg:SetAllPoints(MacroPop.scrollBG)
+F.CreateBD(MacroPop.scrollBG.bg, 0)
 	
 MacroPop.scrollBG.gradient = F.CreateGradient(MacroPop.scrollBG)
 MacroPop.scrollBG.gradient:SetPoint("TOPLEFT", MacroPop.scrollBG, 1, -1)
@@ -1335,7 +1343,7 @@ for i = 1, 5 do
 		clickcastframe["Button"..index]:Show()
 	end
 	for k, v in pairs(modifier) do
-		local inputbox = CreateFrame("EditBox", "ClickCast Button"..index..v.."EditBox", clickcastframe["Button"..index])
+		local inputbox = CreateFrame("EditBox", "ClickCast Button"..index..v.."EditBox", clickcastframe["Button"..index], "BackdropTemplate")
 		inputbox.id = "frame"..i.."index"..index.."value"..v
 		inputbox:SetSize(150, 20)
 		inputbox:SetPoint("TOPLEFT", 16, 20-k*30)
@@ -1384,7 +1392,7 @@ clickcastframe["MouseUp"] = CreateOptionPage("ClickCast MouseUp", L["MouseUp"], 
 clickcastframe["MouseUp"].title:Hide()
 clickcastframe["MouseUp"].line:Hide()
 for k, v in pairs(modifier) do
-	local inputbox = CreateFrame("EditBox", "ClickCast MouseUp"..v.."EditBox", clickcastframe["MouseUp"])
+	local inputbox = CreateFrame("EditBox", "ClickCast MouseUp"..v.."EditBox", clickcastframe["MouseUp"], "BackdropTemplate")
 	inputbox.id = "MouseUp".."index"..k.."value"..v
 	inputbox:SetSize(150, 20)
 	inputbox:SetPoint("TOPLEFT", 16, 20-k*30)
@@ -1432,7 +1440,7 @@ clickcastframe["MouseDown"] = CreateOptionPage("ClickCast MouseDown", L["MouseDo
 clickcastframe["MouseDown"].title:Hide()
 clickcastframe["MouseDown"].line:Hide()
 for k, v in pairs(modifier) do
-	local inputbox = CreateFrame("EditBox", "ClickCast MouseDown"..v.."EditBox", clickcastframe["MouseDown"])
+	local inputbox = CreateFrame("EditBox", "ClickCast MouseDown"..v.."EditBox", clickcastframe["MouseDown"], "BackdropTemplate")
 	inputbox.id = "MouseDown".."index"..k.."value"..v
 	inputbox:SetSize(150, 20)
 	inputbox:SetPoint("TOPLEFT", 16, 20-k*30)
@@ -1514,12 +1522,12 @@ local function CreateEncounterDebuffButton(parent, raid, boss, name, spellID, le
 	local bu = CreateFrame("Frame", G.uiname.."RaidDebuff"..raid..boss..spellID, parent)
 	bu:SetSize(330, 20)
 	
-	bu.icon = CreateFrame("Button", nil, bu)
+	bu.icon = CreateFrame("Button", nil, bu, "BackdropTemplate")
 	bu.icon:SetSize(18, 18)
 	bu.icon:SetNormalTexture(select(3, GetSpellInfo(spellID)))
 	bu.icon:GetNormalTexture():SetTexCoord(0.1,0.9,0.1,0.9)
 	bu.icon:SetPoint"LEFT"
-	F.CreateBG(bu.icon)
+	F.CreateBD(bu.icon)
 	
 	bu.level = T.createtext(bu, "OVERLAY", 12, "OUTLINE", "LEFT")
 	bu.level:SetPoint("LEFT", 40, 0)
@@ -1637,7 +1645,7 @@ local function CreateRaidDebuffOptions()
 		
 		frame.BossDD = BossDD
 		
-		local Spellinput = CreateFrame("EditBox", G.uiname..raidname.."Spell Input", frame)
+		local Spellinput = CreateFrame("EditBox", G.uiname..raidname.."Spell Input", frame, "BackdropTemplate")
 		Spellinput:SetSize(60, 20)
 		Spellinput:SetPoint("LEFT", BossDD, "RIGHT", -5, 2)
 		F.CreateBD(Spellinput)
@@ -1653,7 +1661,7 @@ local function CreateRaidDebuffOptions()
 		
 		frame.Spellinput = Spellinput
 		
-		local Levelinput = CreateFrame("EditBox", G.uiname..raidname.."Level Input", frame)
+		local Levelinput = CreateFrame("EditBox", G.uiname..raidname.."Level Input", frame, "BackdropTemplate")
 		Levelinput:SetSize(60, 20)
 		Levelinput:SetPoint("LEFT", Spellinput, "RIGHT", 5, 0)
 		F.CreateBD(Levelinput)
@@ -1760,14 +1768,14 @@ end
 
 RFInnerframe.cooldownaura = CreateOptionPage("RF Options Cooldown Aura", L["重要法术"], RFInnerframe, "VERTICAL", .3)
 
-local cooldownauraframe = CreateFrame("Frame", G.uiname.."Cooldown Aura Options", RFInnerframe.cooldownaura)
+local cooldownauraframe = CreateFrame("Frame", G.uiname.."Cooldown Aura Options", RFInnerframe.cooldownaura, "BackdropTemplate")
 cooldownauraframe:SetPoint("TOPLEFT", 30, -85)
 cooldownauraframe:SetPoint("BOTTOMRIGHT", -30, 20)
 F.CreateBD(cooldownauraframe, 0)
 cooldownauraframe.tabindex = 1
 cooldownauraframe.tabnum = 2
 for i = 1, 2 do
-	cooldownauraframe["tab"..i] = CreateFrame("Frame", G.uiname.."cooldownauraframe Tab"..i, cooldownauraframe)
+	cooldownauraframe["tab"..i] = CreateFrame("Frame", G.uiname.."cooldownauraframe Tab"..i, cooldownauraframe, "BackdropTemplate")
 	cooldownauraframe["tab"..i]:SetScript("OnMouseDown", function() end)
 end
 
@@ -1791,7 +1799,9 @@ local function CreateCooldownAuraButton(parent, auratype, name, spellID, level)
 	bu.icon:SetNormalTexture(select(3, GetSpellInfo(spellID)))
 	bu.icon:GetNormalTexture():SetTexCoord(0.1,0.9,0.1,0.9)
 	bu.icon:SetPoint"LEFT"
-	F.CreateBG(bu.icon)
+	bu.icon.bg = CreateFrame("Frame", nil, bu.icon, "BackdropTemplate")
+	bu.icon.bg:SetAllPoints(bu.icon)
+	F.CreateBD(bu.icon.bg)	
 	
 	bu.level = T.createtext(bu, "OVERLAY", 12, "OUTLINE", "LEFT")
 	bu.level:SetPoint("LEFT", 40, 0)
@@ -1871,7 +1881,7 @@ local function CreateCooldownAuraOptions()
 		
 		CreateCooldownAuraList(frame.SFAnchor, auratype, auratable)
 		
-		local Spellinput = CreateFrame("EditBox", G.uiname..auratype.."Spell Input", frame)
+		local Spellinput = CreateFrame("EditBox", G.uiname..auratype.."Spell Input", frame, "BackdropTemplate")
 		Spellinput:SetSize(120, 20)
 		Spellinput:SetPoint("TOPLEFT", frame, "TOPLEFT", 15, -10)
 		F.CreateBD(Spellinput)
@@ -1887,7 +1897,7 @@ local function CreateCooldownAuraOptions()
 		
 		frame.Spellinput = Spellinput
 		
-		local Levelinput = CreateFrame("EditBox", G.uiname..auratype.."Level Input", frame)
+		local Levelinput = CreateFrame("EditBox", G.uiname..auratype.."Level Input", frame, "BackdropTemplate")
 		Levelinput:SetSize(80, 20)
 		Levelinput:SetPoint("LEFT", Spellinput, "RIGHT", 5, 0)
 		F.CreateBD(Levelinput)
@@ -1961,7 +1971,7 @@ end
 --====================================================--
 local ActionbarOptions = CreateOptionPage("Actionbar Options", ACTIONBARS_LABEL, GUI, "VERTICAL")
 
-local ActionbarInnerframe = CreateFrame("Frame", G.uiname.."Actionbar Options Innerframe", ActionbarOptions)
+local ActionbarInnerframe = CreateFrame("Frame", G.uiname.."Actionbar Options Innerframe", ActionbarOptions, "BackdropTemplate")
 ActionbarInnerframe:SetPoint("TOPLEFT", 40, -60)
 ActionbarInnerframe:SetPoint("BOTTOMLEFT", -20, 20)
 ActionbarInnerframe:SetWidth(ActionbarOptions:GetWidth()-200)
@@ -1970,7 +1980,7 @@ F.CreateBD(ActionbarInnerframe, .3)
 ActionbarInnerframe.tabindex = 1
 ActionbarInnerframe.tabnum = 20
 for i = 1, 20 do
-	ActionbarInnerframe["tab"..i] = CreateFrame("Frame", G.uiname.."ActionbarInnerframe Tab"..i, ActionbarInnerframe)
+	ActionbarInnerframe["tab"..i] = CreateFrame("Frame", G.uiname.."ActionbarInnerframe Tab"..i, ActionbarInnerframe, "BackdropTemplate")
 	ActionbarInnerframe["tab"..i]:SetScript("OnMouseDown", function() end)
 end
 
@@ -2004,7 +2014,7 @@ local bar3layout_group = {
 	["layout43"] = L["布局43"],
 	["layout62"] = L["布局62"],
 }
-T.createradiobuttongroup(ActionbarInnerframe.bar3, 30, 90, L["额外动作条布局"], "ActionbarOptions", "bar3layout", bar3layout_group)
+T.createradiobuttongroup(ActionbarInnerframe.bar3, 30, 90, L["额外动作条布局"], "ActionbarOptions", "bar3layout", bar3layout_group, 4)
 _G[G.uiname.."bar3layoutRadioButtonGroup"].name:ClearAllPoints()
 _G[G.uiname.."bar3layoutRadioButtonGroup"].name:SetPoint("BOTTOMLEFT", _G[G.uiname.."bar3layoutRadioButtonGroup"], "TOPLEFT", 0, 5)
 
@@ -2063,14 +2073,14 @@ T.createslider(ActionbarInnerframe.cooldownflash, 30, 100, L["图标大小"], "A
 T.createslider(ActionbarInnerframe.cooldownflash, 30, 140, L["透明度"], "ActionbarOptions", "cdflash_alpha", 1, 30, 100, 1)
 T.createDR(ActionbarInnerframe.cooldownflash.cdflash_enable, ActionbarInnerframe.cooldownflash.cdflash_size, ActionbarInnerframe.cooldownflash.cdflash_alpha)
 
-local cooldownflashframe = CreateFrame("Frame", G.uiname.."Cooldown flash Options", ActionbarInnerframe.cooldownflash)
+local cooldownflashframe = CreateFrame("Frame", G.uiname.."Cooldown flash Options", ActionbarInnerframe.cooldownflash, "BackdropTemplate")
 cooldownflashframe:SetPoint("TOPLEFT", 30, -190)
 cooldownflashframe:SetPoint("BOTTOMRIGHT", -30, 20)
 F.CreateBD(cooldownflashframe, 0)
 cooldownflashframe.tabindex = 1
 cooldownflashframe.tabnum = 2
 for i = 1, 2 do
-	cooldownflashframe["tab"..i] = CreateFrame("Frame", G.uiname.."cooldownflashframe Tab"..i, cooldownflashframe)
+	cooldownflashframe["tab"..i] = CreateFrame("Frame", G.uiname.."cooldownflashframe Tab"..i, cooldownflashframe, "BackdropTemplate")
 	cooldownflashframe["tab"..i]:SetScript("OnMouseDown", function() end)
 end
 
@@ -2097,7 +2107,9 @@ local function CreatecooldownflashlistButton(spellID, parent, list)
 		bu.icon:GetNormalTexture():SetTexCoord(0.1,0.9,0.1,0.9)
 	end
 	bu.icon:SetPoint"LEFT"
-	F.CreateBG(bu.icon)
+	bu.icon.bg = CreateFrame("Frame", nil, bu.icon, "BackdropTemplate")
+	bu.icon.bg:SetAllPoints(bu.icon)
+	F.CreateBD(bu.icon.bg)	
 	
 	bu.spellname = T.createtext(bu, "OVERLAY", 12, "OUTLINE", "LEFT")
 	bu.spellname:SetPoint("LEFT", 140, 0)
@@ -2150,7 +2162,7 @@ local function CreateCooldownFlashOptions(name, list)
 	
 	Createcooldownflashlist(list, cooldownflashlist.SFAnchor)
 	
-	cooldownflashlist.Spellinput = CreateFrame("EditBox", G.uiname.."caflash_bl"..list.."Spell Input", cooldownflashlist)
+	cooldownflashlist.Spellinput = CreateFrame("EditBox", G.uiname.."caflash_bl"..list.."Spell Input", cooldownflashlist, "BackdropTemplate")
 	cooldownflashlist.Spellinput:SetSize(120, 20)
 	cooldownflashlist.Spellinput:SetPoint("TOPLEFT", cooldownflashlist, "TOPLEFT", 20, -5)
 	F.CreateBD(cooldownflashlist.Spellinput)
@@ -2246,7 +2258,7 @@ debufftitle:SetText(L["Debuffs"])
 --====================================================--
 local PlateOptions = CreateOptionPage("Plate Options", UNIT_NAMEPLATES, GUI, "VERTICAL")
 
-local PlateInnerframe = CreateFrame("Frame", G.uiname.."Actionbar Options Innerframe", PlateOptions)
+local PlateInnerframe = CreateFrame("Frame", G.uiname.."Actionbar Options Innerframe", PlateOptions, "BackdropTemplate")
 PlateInnerframe:SetPoint("TOPLEFT", 40, -60)
 PlateInnerframe:SetPoint("BOTTOMLEFT", -20, 20)
 PlateInnerframe:SetWidth(PlateOptions:GetWidth()-200)
@@ -2255,7 +2267,7 @@ F.CreateBD(PlateInnerframe, .3)
 PlateInnerframe.tabindex = 1
 PlateInnerframe.tabnum = 20
 for i = 1, 20 do
-	PlateInnerframe["tab"..i] = CreateFrame("Frame", G.uiname.."PlateInnerframe Tab"..i, PlateInnerframe)
+	PlateInnerframe["tab"..i] = CreateFrame("Frame", G.uiname.."PlateInnerframe Tab"..i, PlateInnerframe, "BackdropTemplate")
 	PlateInnerframe["tab"..i]:SetScript("OnMouseDown", function() end)
 end
 
@@ -2288,14 +2300,14 @@ T.createDR(PlateInnerframe.common.enableplate, PlateInnerframe.common.numberstyl
 
 PlateInnerframe.auralist = CreateOptionPage("Actionbar Options common", L["光环"], PlateInnerframe, "VERTICAL", .3)
 
-local plateauralistframe = CreateFrame("Frame", G.uiname.."Plate Aura List Options", PlateInnerframe.auralist)
+local plateauralistframe = CreateFrame("Frame", G.uiname.."Plate Aura List Options", PlateInnerframe.auralist, "BackdropTemplate")
 plateauralistframe:SetPoint("TOPLEFT", 30, -85)
 plateauralistframe:SetPoint("BOTTOMRIGHT", -30, 20)
 F.CreateBD(plateauralistframe, 0)
 plateauralistframe.tabindex = 1
 plateauralistframe.tabnum = 2
 for i = 1, 2 do
-	plateauralistframe["tab"..i] = CreateFrame("Frame", G.uiname.."plateauralistframe Tab"..i, plateauralistframe)
+	plateauralistframe["tab"..i] = CreateFrame("Frame", G.uiname.."plateauralistframe Tab"..i, plateauralistframe, "BackdropTemplate")
 	plateauralistframe["tab"..i]:SetScript("OnMouseDown", function() end)
 end
 
@@ -2316,7 +2328,9 @@ local function CreateplateauralistButton(spellID, parent, list)
 	bu.icon:SetNormalTexture(select(3, GetSpellInfo(spellID)))
 	bu.icon:GetNormalTexture():SetTexCoord(0.1,0.9,0.1,0.9)
 	bu.icon:SetPoint"LEFT"
-	F.CreateBG(bu.icon)
+	bu.icon.bg = CreateFrame("Frame", nil, bu.icon, "BackdropTemplate")
+	bu.icon.bg:SetAllPoints(bu.icon)
+	F.CreateBD(bu.icon.bg)	
 	
 	bu.spellname = T.createtext(bu, "OVERLAY", 12, "OUTLINE", "LEFT")
 	bu.spellname:SetPoint("LEFT", 140, 0)
@@ -2381,7 +2395,7 @@ local function CreatePlateAuraOptions(name, flitertype, list)
 	
 	Createplateauralist(list, plateauralist.SFAnchor)
 	
-	plateauralist.Spellinput = CreateFrame("EditBox", G.uiname..list.."Spell Input", plateauralist)
+	plateauralist.Spellinput = CreateFrame("EditBox", G.uiname..list.."Spell Input", plateauralist, "BackdropTemplate")
 	plateauralist.Spellinput:SetSize(120, 20)
 	plateauralist.Spellinput:SetPoint("TOPLEFT", plateauralist, "TOPLEFT", 20, -30)
 	F.CreateBD(plateauralist.Spellinput)
@@ -2440,10 +2454,10 @@ PlateInnerframe.customcoloredplates = CreateOptionPage("Actionbar Options common
 PlateInnerframe.customcoloredplates.SF:ClearAllPoints()
 PlateInnerframe.customcoloredplates.SF:SetPoint("TOPLEFT", PlateInnerframe.customcoloredplates, "TOPLEFT", 30, -60)
 PlateInnerframe.customcoloredplates.SF:SetPoint("BOTTOMRIGHT", PlateInnerframe.customcoloredplates, "BOTTOMRIGHT", -50, 30)
-F.CreateBD(PlateInnerframe.customcoloredplates.SF, .3)
+F.CreateBD(PlateInnerframe.customcoloredplates.SF.bg, .3)
 
 local function CreateCColoredPlatesButton(parent, index, name, r, g, b)
-	local bu = CreateFrame("Frame", G.uiname.."CColoredPlatesList Button"..index, parent)
+	local bu = CreateFrame("Frame", G.uiname.."CColoredPlatesList Button"..index, parent, "BackdropTemplate")
 	bu:SetPoint("TOPLEFT", parent, "TOPLEFT", 5, 20-index*30)
 	bu:SetSize(360, 28)
 	F.CreateBD(bu, .2)
@@ -2453,7 +2467,7 @@ local function CreateCColoredPlatesButton(parent, index, name, r, g, b)
 	bu.index:SetTextColor(1, 1, 1)
 	bu.index:SetText(index..".")
 	
-	bu.name_input = CreateFrame("EditBox", G.uiname.."CColoredPlatesList Button"..index.."NameInput", bu)
+	bu.name_input = CreateFrame("EditBox", G.uiname.."CColoredPlatesList Button"..index.."NameInput", bu, "BackdropTemplate")
 	bu.name_input:SetSize(200, 20)
 	bu.name_input:SetPoint("LEFT", 40, 0)
 	F.CreateBD(bu.name_input, 0)
