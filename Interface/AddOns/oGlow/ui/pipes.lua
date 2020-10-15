@@ -119,7 +119,7 @@ do
 			local row = rows[n]
 			while(row) do
 				if(row ~= self.owner.active) then
-					row:SetBackdropBorderColor(.3, .3, .3)
+					row.bg:SetBackdropBorderColor(.3, .3, .3)
 					row:SetHeight(24)
 				end
 
@@ -130,7 +130,7 @@ do
 	end
 
 	local Row_OnEnter = function(self)
-		self:SetBackdropBorderColor(.5, .9, .06)
+		self.bg:SetBackdropBorderColor(.5, .9, .06)
 
 		GameTooltip:SetOwner(self, "ANCHOR_TOPRIGHT")
 		GameTooltip:SetText"Click for additional settings."
@@ -138,7 +138,7 @@ do
 
 	local Row_OnLeave = function(self)
 		if(self ~= self.owner.active) then
-			self:SetBackdropBorderColor(.3, .3, .3)
+			self.bg:SetBackdropBorderColor(.3, .3, .3)
 		end
 
 		GameTooltip_Hide()
@@ -146,10 +146,12 @@ do
 
 	local createRow = function(parent, i)
 		local row = CreateFrame('Button', nil, parent)
-
-		row:SetBackdrop(_BACKDROP)
-		row:SetBackdropColor(.1, .1, .1, .5)
-		row:SetBackdropBorderColor(.3, .3, .3)
+		row.bg = CreateFrame("Frame", nil, row, "BackdropTemplate")
+		row.bg:SetAllPoints(row)
+	
+		row.bg:SetBackdrop(_BACKDROP)
+		row.bg:SetBackdropColor(.1, .1, .1, .5)
+		row.bg:SetBackdropBorderColor(.3, .3, .3)
 
 		if(i == 1) then
 			row:SetPoint('TOP', 0, -8)
@@ -250,7 +252,7 @@ do
 		for pipe, active, name, desc in oGlow.IteratePipes() do
 			local row = sChild.rows[n] or createRow(sChild, n)
 
-			row:SetBackdropBorderColor(.3, .3, .3)
+			row.bg:SetBackdropBorderColor(.3, .3, .3)
 			row:SetHeight(24)
 
 			row.owner = self

@@ -15,11 +15,11 @@ local createBorder = function(self, point)
 
 
 		bc:SetTexture"Interface\\Buttons\\WHITE8x8"
-		--bc:SetBlendMode"ADD"
-		--bc:SetAlpha(.8)
+		bc:SetBlendMode"ADD"
+		bc:SetAlpha(.8)
 
-		bc:SetPoint("TOPLEFT", point or self, -1, 1)
-		bc:SetPoint("BOTTOMRIGHT", point or self, 1, -1)
+		bc:SetPoint("TOPLEFT", point or self, 0, 0)
+		bc:SetPoint("BOTTOMRIGHT", point or self, 0, 0)
 		self.oGlowBorder = bc
 	end
 

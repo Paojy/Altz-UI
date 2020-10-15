@@ -24,7 +24,7 @@ function frame:CreateOptions()
 		insets = {left = 4, right = 4, top = 4, bottom = 4},
 	}
 
-	local box = CreateFrame('Frame', nil, self)
+	local box = CreateFrame('Frame', nil, self, "BackdropTemplate")
 	box:SetBackdrop(backdrop)
 	box:SetBackdropColor(.1, .1, .1, .5)
 	box:SetBackdropBorderColor(.3, .3, .3, 1)
@@ -122,10 +122,12 @@ function frame:CreateOptions()
 	local rows = {}
 	for i=0, 7 do
 		local row = CreateFrame('Button', nil, box)
-
-		row:SetBackdrop(backdrop)
-		row:SetBackdropBorderColor(.3, .3, .3)
-		row:SetBackdropColor(.1, .1, .1, .5)
+		row.bg = CreateFrame("Frame", nil, row, "BackdropTemplate")
+		row.bg:SetAllPoints(row)
+	
+		row.bg:SetBackdrop(backdrop)
+		row.bg:SetBackdropBorderColor(.3, .3, .3)
+		row.bg:SetBackdropColor(.1, .1, .1, .5)
 
 		if(i == 0) then
 			row:SetPoint('TOP', 0, -8)
