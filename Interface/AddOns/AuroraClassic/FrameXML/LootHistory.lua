@@ -1,6 +1,7 @@
-local F, C = unpack(select(2, ...))
+local _, ns = ...
+local F, C = unpack(ns)
 
-tinsert(C.themes["AuroraClassic"], function()
+tinsert(C.defaultThemes, function()
 	local r, g, b = C.r, C.g, C.b
 
 	local LootHistoryFrame = LootHistoryFrame
@@ -15,9 +16,7 @@ tinsert(C.themes["AuroraClassic"], function()
 	LootHistoryFrame.Label:ClearAllPoints()
 	LootHistoryFrame.Label:SetPoint("TOP", LootHistoryFrame, "TOP", 0, -8)
 
-	F.CreateBD(LootHistoryFrame)
-	F.CreateSD(LootHistoryFrame)
-
+	F.SetBD(LootHistoryFrame)
 	F.ReskinClose(LootHistoryFrame.CloseButton)
 	F.ReskinScroll(LootHistoryFrameScrollFrameScrollBar)
 
@@ -28,13 +27,13 @@ tinsert(C.themes["AuroraClassic"], function()
 
 	do
 		local line1 = LootHistoryFrame.ResizeButton:CreateTexture()
-		line1:SetTexture(C.media.backdrop)
+		line1:SetTexture(C.bdTex)
 		line1:SetVertexColor(.7, .7, .7)
 		line1:SetSize(30, 1)
 		line1:SetPoint("TOP")
 
 		local line2 = LootHistoryFrame.ResizeButton:CreateTexture()
-		line2:SetTexture(C.media.backdrop)
+		line2:SetTexture(C.bdTex)
 		line2:SetVertexColor(.7, .7, .7)
 		line2:SetSize(30, 1)
 		line2:SetPoint("TOP", 0, -3)
@@ -67,7 +66,7 @@ tinsert(C.themes["AuroraClassic"], function()
 
 			frame.bg = F.ReskinIcon(frame.Icon)
 
-			F.ReskinExpandOrCollapse(frame.ToggleButton)
+			F.ReskinCollapse(frame.ToggleButton)
 			frame.ToggleButton:GetNormalTexture():SetAlpha(0)
 			frame.ToggleButton:GetPushedTexture():SetAlpha(0)
 			frame.ToggleButton:GetDisabledTexture():SetAlpha(0)

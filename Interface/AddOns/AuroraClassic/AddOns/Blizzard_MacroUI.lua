@@ -1,4 +1,5 @@
-local F, C = unpack(select(2, ...))
+local _, ns = ...
+local F, C = unpack(ns)
 
 C.themes["Blizzard_MacroUI"] = function()
 	MacroHorizontalBarLeft:Hide()
@@ -18,13 +19,13 @@ C.themes["Blizzard_MacroUI"] = function()
 		if button.styled then return end
 
 		button:DisableDrawLayer("BACKGROUND")
-		button:SetCheckedTexture(C.media.checked)
+		button:SetCheckedTexture(C.pushed)
 		local hl = button:GetHighlightTexture()
 		hl:SetColorTexture(1, 1, 1, .25)
 		hl:SetInside()
 
 		local icon = _G[button:GetName().."Icon"]
-		icon:SetTexCoord(.08, .92, .08, .92)
+		icon:SetTexCoord(unpack(C.TexCoord))
 		icon:SetInside()
 		F.CreateBDFrame(icon, .25)
 

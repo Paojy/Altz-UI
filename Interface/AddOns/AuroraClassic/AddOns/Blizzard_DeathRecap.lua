@@ -1,4 +1,5 @@
-local F, C = unpack(select(2, ...))
+local _, ns = ...
+local F, C = unpack(ns)
 
 C.themes["Blizzard_DeathRecap"] = function()
 	local DeathRecapFrame = DeathRecapFrame
@@ -8,8 +9,7 @@ C.themes["Blizzard_DeathRecap"] = function()
 	DeathRecapFrame.BackgroundInnerGlow:Hide()
 	DeathRecapFrame.Divider:Hide()
 
-	F.CreateBD(DeathRecapFrame)
-	F.CreateSD(DeathRecapFrame)
+	F.SetBD(DeathRecapFrame)
 	F.Reskin(select(8, DeathRecapFrame:GetChildren())) -- bottom close button has no parentKey
 	F.ReskinClose(DeathRecapFrame.CloseXButton)
 

@@ -74,7 +74,7 @@ bu:SetScript("OnClick", function()
 	SlashCmdList.AURORA()
 end)
 
-local gui = CreateFrame("Frame", "AuroraOptions", UIParent)
+local gui = CreateFrame("Frame", "AuroraOptions", UIParent, "BackdropTemplate")
 gui.name = "AuroraClassic"
 gui:SetSize(640, 550)
 gui:SetPoint("CENTER")
@@ -120,13 +120,7 @@ appearance:SetPoint("TOPLEFT", features, "BOTTOMLEFT", 0, -110)
 
 createToggleBox(gui, "FlatMode", L["FlatMode"], appearance, 1)
 
-local colourBox = createToggleBox(gui, "UseCustomColor", L["Custom Color"], appearance, 4)
-local colourButton = CreateFrame("Button", nil, gui, "UIPanelButtonTemplate")
-colourButton:SetPoint("LEFT", colourBox.Text, "RIGHT", 20, 0)
-colourButton:SetSize(128, 25)
-colourButton:SetText(L["Change"])
-
-local fontBox = createToggleBox(gui, "FontOutline", L["Replace default game fonts"], appearance, 7)
+local fontBox = createToggleBox(gui, "FontOutline", L["Replace default game fonts"], appearance, 4)
 local fontSlider = CreateFrame("Slider", "AuroraOptionsFontSlider", gui, "OptionsSliderTemplate")
 fontSlider:SetPoint("TOPLEFT", fontBox, "BOTTOMLEFT", 20, -30)
 fontSlider:SetMinMaxValues(.5, 1)
@@ -184,10 +178,6 @@ local function guiRefresh()
 	for i = 1, #checkboxes do
 		checkboxes[i]:SetChecked(AuroraClassicDB[checkboxes[i].value] == true)
 	end
-
-	if not colourBox:GetChecked() then
-		colourButton:Disable()
-	end
 end
 
 gui:RegisterEvent("ADDON_LOADED")
@@ -197,14 +187,12 @@ gui:SetScript("OnEvent", function(self, _, addon)
 	-- fill 'old' table
 	copyTable(AuroraClassicDB, old)
 
-	F.CreateBD(gui)
-	F.CreateSD(gui)
+	F.SetBD(gui)
 	F.Reskin(bu)
 	F.Reskin(okay)
 	F.Reskin(cancel)
 	F.Reskin(default)
 	F.Reskin(reloadButton)
-	F.Reskin(colourButton)
 	F.ReskinSlider(alphaSlider)
 	F.ReskinSlider(fontSlider)
 
@@ -217,8 +205,8 @@ gui:SetScript("OnEvent", function(self, _, addon)
 end)
 
 local function updateFrames()
-	for i = 1, #C.frames do
-		F:SetBackdropColor(C.frames[i], 0, 0, 0, AuroraClassicDB.Alpha)
+	for _, frame in pairs(C.frames) do
+		frame:SetBackdropColor(0, 0, 0, AuroraClassicDB.Alpha)
 	end
 end
 
@@ -268,33 +256,6 @@ fontSlider:SetScript("OnValueChanged", function(_, value)
 	value = tonumber(format("%.1f", value))
 	AuroraClassicDB.FontScale = value
 	fontValue:SetText(value)
-end)
-
-colourBox:SetScript("OnClick", function(self)
-	if self:GetChecked() then
-		AuroraClassicDB.UseCustomColor = true
-		colourButton:Enable()
-	else
-		AuroraClassicDB.UseCustomColor = false
-		colourButton:Disable()
-	end
-end)
-
-local function setColour()
-	AuroraClassicDB.CustomColor.r, AuroraClassicDB.CustomColor.g, AuroraClassicDB.CustomColor.b = ColorPickerFrame:GetColorRGB()
-end
-
-local function resetColour(restore)
-	AuroraClassicDB.CustomColor.r, AuroraClassicDB.CustomColor.g, AuroraClassicDB.CustomColor.b = restore.r, restore.g, restore.b
-end
-
-colourButton:SetScript("OnClick", function()
-	local r, g, b = AuroraClassicDB.CustomColor.r, AuroraClassicDB.CustomColor.g, AuroraClassicDB.CustomColor.b
-	ColorPickerFrame.func = setColour
-	ColorPickerFrame.previousValues = {r = r, g = g, b = b}
-	ColorPickerFrame.cancelFunc = resetColour
-	ColorPickerFrame:SetColorRGB(r, g, b)
-	ColorPickerFrame:Show()
 end)
 
 -- easy slash command

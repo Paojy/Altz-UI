@@ -1,6 +1,7 @@
-local F, C = unpack(select(2, ...))
+local _, ns = ...
+local F, C = unpack(ns)
 
-tinsert(C.themes["AuroraClassic"], function()
+tinsert(C.defaultThemes, function()
 	F.ReskinPortraitFrame(SpellBookFrame)
 	SpellBookFrame:DisableDrawLayer("BACKGROUND")
 	SpellBookFrameTabButton1:ClearAllPoints()
@@ -68,12 +69,12 @@ tinsert(C.themes["AuroraClassic"], function()
 			local tab = _G["SpellBookSkillLineTab"..i]
 			local nt = tab:GetNormalTexture()
 			if nt then
-				nt:SetTexCoord(.08, .92, .08, .92)
+				nt:SetTexCoord(unpack(C.TexCoord))
 			end
 
 			if not tab.styled then
 				tab:GetRegions():Hide()
-				tab:SetCheckedTexture(C.media.checked)
+				tab:SetCheckedTexture(C.pushed)
 				tab:GetHighlightTexture():SetColorTexture(1, 1, 1, .25)
 				F.CreateBDFrame(tab)
 
@@ -97,7 +98,7 @@ tinsert(C.themes["AuroraClassic"], function()
 
 		F.StripTextures(bu.statusBar)
 		bu.statusBar:SetHeight(10)
-		bu.statusBar:SetStatusBarTexture(C.media.backdrop)
+		bu.statusBar:SetStatusBarTexture(C.bdTex)
 		bu.statusBar:GetStatusBarTexture():SetGradient("VERTICAL", 0, .6, 0, 0, .8, 0)
 		bu.statusBar.rankText:SetPoint("CENTER")
 		F.CreateBDFrame(bu.statusBar, .25)
@@ -133,7 +134,7 @@ tinsert(C.themes["AuroraClassic"], function()
 
 		bu.highlightTexture:SetAllPoints(icon)
 		local check = bu:GetCheckedTexture()
-		check:SetTexture(C.media.checked)
+		check:SetTexture(C.pushed)
 		check:SetAllPoints(icon)
 	end
 
@@ -162,9 +163,9 @@ tinsert(C.themes["AuroraClassic"], function()
 		end
 	end)
 
-	F.CreateBD(SecondaryProfession1, .25)
-	F.CreateBD(SecondaryProfession2, .25)
-	F.CreateBD(SecondaryProfession3, .25)
+	F.CreateBDFrame(SecondaryProfession1, .25)
+	F.CreateBDFrame(SecondaryProfession2, .25)
+	F.CreateBDFrame(SecondaryProfession3, .25)
 	F.ReskinArrow(SpellBookPrevPageButton, "left")
 	F.ReskinArrow(SpellBookNextPageButton, "right")
 	SpellBookPageText:SetTextColor(.8, .8, .8)

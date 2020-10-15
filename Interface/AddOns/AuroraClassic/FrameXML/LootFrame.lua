@@ -1,6 +1,7 @@
-local F, C = unpack(select(2, ...))
+local _, ns = ...
+local F, C = unpack(ns)
 
-tinsert(C.themes["AuroraClassic"], function()
+tinsert(C.defaultThemes, function()
 	if not AuroraClassicDB.Loot then return end
 
 	LootFramePortraitOverlay:Hide()
@@ -61,9 +62,8 @@ tinsert(C.themes["AuroraClassic"], function()
 		end)
 
 		F.ReskinIcon(frame.PromptFrame.Icon)
-		frame.PromptFrame.Timer.Bar:SetTexture(C.media.backdrop)
-		F.CreateBD(frame)
-		F.CreateSD(frame)
+		frame.PromptFrame.Timer.Bar:SetTexture(C.normTex)
+		F.SetBD(frame)
 		F.CreateBDFrame(frame.PromptFrame.Timer, .25)
 
 		local from, to = "|T.+|t", "|T%%s:14:14:0:0:64:64:5:59:5:59|t"
@@ -79,10 +79,9 @@ tinsert(C.themes["AuroraClassic"], function()
 			if not frame.styled then
 				frame.Border:SetAlpha(0)
 				frame.Background:SetAlpha(0)
-				frame.bg = F.CreateBDFrame(frame)
-				F.CreateSD(frame)
+				frame.bg = F.SetBD(frame)
 
-				frame.Timer.Bar:SetTexture(C.media.backdrop)
+				frame.Timer.Bar:SetTexture(C.bdTex)
 				frame.Timer.Bar:SetVertexColor(1, .8, 0)
 				frame.Timer.Background:SetAlpha(0)
 				F.CreateBDFrame(frame.Timer, .25)

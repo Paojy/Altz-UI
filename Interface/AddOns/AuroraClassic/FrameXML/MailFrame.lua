@@ -1,6 +1,9 @@
-local F, C = unpack(select(2, ...))
+local _, ns = ...
+local F, C = unpack(ns)
 
-tinsert(C.themes["AuroraClassic"], function()
+tinsert(C.defaultThemes, function()
+	local texL, texR, texT, texB = unpack(C.TexCoord)
+
 	SendMailMoneyInset:DisableDrawLayer("BORDER")
 	InboxFrame:GetRegions():Hide()
 	SendMailMoneyBg:Hide()
@@ -25,8 +28,8 @@ tinsert(C.themes["AuroraClassic"], function()
 	F.Reskin(OpenMailCancelButton)
 	F.Reskin(OpenMailReportSpamButton)
 	F.Reskin(OpenAllMail)
-	F.ReskinInput(SendMailNameEditBox, 20)
-	F.ReskinInput(SendMailSubjectEditBox)
+	F.ReskinInput(SendMailNameEditBox, 20, 85)
+	F.ReskinInput(SendMailSubjectEditBox, nil, 200)
 	F.ReskinInput(SendMailMoneyGold)
 	F.ReskinInput(SendMailMoneySilver)
 	F.ReskinInput(SendMailMoneyCopper)
@@ -55,7 +58,7 @@ tinsert(C.themes["AuroraClassic"], function()
 
 	for _, button in pairs({OpenMailLetterButton, OpenMailMoneyButton}) do
 		F.StripTextures(button)
-		button.icon:SetTexCoord(.08, .92, .08, .92)
+		button.icon:SetTexCoord(texL, texR, texT, texB)
 		button:GetHighlightTexture():SetColorTexture(1, 1, 1, .25)
 		F.CreateBDFrame(button)
 	end
@@ -65,9 +68,9 @@ tinsert(C.themes["AuroraClassic"], function()
 		local button = _G["MailItem"..i.."Button"]
 		F.StripTextures(item)
 		F.StripTextures(button)
-		button:SetCheckedTexture(C.media.checked)
+		button:SetCheckedTexture(C.pushed)
 		button:GetHighlightTexture():SetColorTexture(1, 1, 1, .25)
-		button.Icon:SetTexCoord(.08, .92, .08, .92)
+		button.Icon:SetTexCoord(texL, texR, texT, texB)
 		button.IconBorder:SetAlpha(0)
 		F.CreateBDFrame(button)
 	end
@@ -77,14 +80,14 @@ tinsert(C.themes["AuroraClassic"], function()
 		F.StripTextures(button)
 		button:GetHighlightTexture():SetColorTexture(1, 1, 1, .25)
 		button.bg = F.CreateBDFrame(button, .25)
-		F.HookIconBorderColor(button.IconBorder)
+		F.ReskinIconBorder(button.IconBorder)
 	end
 
 	hooksecurefunc("SendMailFrame_Update", function()
 		for i = 1, ATTACHMENTS_MAX_SEND do
 			local button = SendMailFrame.SendMailAttachments[i]
 			if HasSendMailItem(i) then
-				button:GetNormalTexture():SetTexCoord(.08, .92, .08, .92)
+				button:GetNormalTexture():SetTexCoord(texL, texR, texT, texB)
 			end
 		end
 	end)
@@ -93,9 +96,9 @@ tinsert(C.themes["AuroraClassic"], function()
 		local button = _G["OpenMailAttachmentButton"..i]
 		F.StripTextures(button)
 		button:GetHighlightTexture():SetColorTexture(1, 1, 1, .25)
-		button.icon:SetTexCoord(.08, .92, .08, .92)
+		button.icon:SetTexCoord(texL, texR, texT, texB)
 		button.bg = F.CreateBDFrame(button, .25)
-		F.HookIconBorderColor(button.IconBorder)
+		F.ReskinIconBorder(button.IconBorder)
 	end
 
 	MailFont_Large:SetTextColor(1, 1, 1)

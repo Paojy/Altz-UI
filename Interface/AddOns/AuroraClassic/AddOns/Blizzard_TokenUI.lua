@@ -30,7 +30,8 @@ tinsert(C.themes["AuroraClassic"], function()
 				bu.categoryLeft:SetAlpha(0)
 				bu.categoryRight:SetAlpha(0)
 
-				bu.bg = F.ReskinIcon(bu.icon)
+				bu.icon:SetTexCoord(.08, .92, .08, .92)
+				bu.bg = F.CreateBG(bu.icon)
 
 				if bu.expandIcon then
 					bu.expBg = F.CreateBDFrame(bu.expandIcon, .25)

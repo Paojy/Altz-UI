@@ -1,6 +1,14 @@
-local F, C = unpack(select(2, ...))
+local _, ns = ...
+local F, C = unpack(ns)
 
-tinsert(C.themes["AuroraClassic"], function()
+local MAX_CONTAINER_ITEMS = 36
+
+local function replaceSortTexture(texture)
+	texture:SetTexture("Interface\\Icons\\INV_Pet_Broom") -- HD version
+	texture:SetTexCoord(unpack(C.TexCoord))
+end
+
+tinsert(C.defaultThemes, function()
 	if not AuroraClassicDB.Bags then return end
 
 	BackpackTokenFrame:GetRegions():Hide()
@@ -9,11 +17,7 @@ tinsert(C.themes["AuroraClassic"], function()
 		local con = _G["ContainerFrame"..i]
 		local name = _G["ContainerFrame"..i.."Name"]
 
-		for j = 1, 5 do
-			select(j, con:GetRegions()):SetAlpha(0)
-		end
-		select(7, con:GetRegions()):SetAlpha(0)
-
+		F.StripTextures(con, true)
 		con.PortraitButton.Highlight:SetTexture("")
 
 		name:ClearAllPoints()
@@ -32,7 +36,7 @@ tinsert(C.themes["AuroraClassic"], function()
 			button:SetPushedTexture("")
 			button:GetHighlightTexture():SetColorTexture(1, 1, 1, .25)
 
-			button.icon:SetTexCoord(.08, .92, .08, .92)
+			button.icon:SetTexCoord(unpack(C.TexCoord))
 			button.bg = F.CreateBDFrame(button.icon, .25)
 
 			-- easiest way to 'hide' it without breaking stuff
@@ -40,15 +44,14 @@ tinsert(C.themes["AuroraClassic"], function()
 			newItemTexture:SetSize(1, 1)
 
 			button.searchOverlay:SetOutside()
-			F.HookIconBorderColor(button.IconBorder)
+			F.ReskinIconBorder(button.IconBorder)
 		end
 
-		local f = F.CreateBDFrame(con)
+		local f = F.SetBD(con)
 		f:SetPoint("TOPLEFT", 8, -4)
 		f:SetPoint("BOTTOMRIGHT", -4, 3)
-		F.CreateSD(f)
 
-		F.ReskinClose(_G["ContainerFrame"..i.."CloseButton"], "TOPRIGHT", con, "TOPRIGHT", -6, -6)
+		F.ReskinClose(_G["ContainerFrame"..i.."CloseButton"])
 	end
 
 	for i = 1, 3 do
@@ -77,8 +80,8 @@ tinsert(C.themes["AuroraClassic"], function()
 		end
 	end)
 
-	BagItemAutoSortButton:GetNormalTexture():SetTexCoord(.17, .83, .17, .83)
-	BagItemAutoSortButton:GetPushedTexture():SetTexCoord(.17, .83, .17, .83)
+	replaceSortTexture(BagItemAutoSortButton:GetNormalTexture())
+	replaceSortTexture(BagItemAutoSortButton:GetPushedTexture())
 	F.CreateBDFrame(BagItemAutoSortButton)
 
 	local highlight = BagItemAutoSortButton:GetHighlightTexture()

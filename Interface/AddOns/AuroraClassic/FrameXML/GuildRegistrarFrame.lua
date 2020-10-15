@@ -1,6 +1,8 @@
-local F, C = unpack(select(2, ...))
+local _, ns = ...
+local F, C = unpack(ns)
 
-tinsert(C.themes["AuroraClassic"], function()
+tinsert(C.defaultThemes, function()
+
 	GuildRegistrarFrameEditBox:SetHeight(20)
 	AvailableServicesText:SetTextColor(1, 1, 1)
 	AvailableServicesText:SetShadowColor(0, 0, 0)

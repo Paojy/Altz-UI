@@ -1,6 +1,7 @@
-local F, C = unpack(select(2, ...))
+local _, ns = ...
+local F, C = unpack(ns)
 
-tinsert(C.themes["AuroraClassic"], function()
+tinsert(C.defaultThemes, function()
 	for i = 1, 4 do
 		F.ReskinTab(_G["FriendsFrameTab"..i])
 	end
@@ -12,7 +13,7 @@ tinsert(C.themes["AuroraClassic"], function()
 		local ic = bu.gameIcon
 
 		bu.background:Hide()
-		bu:SetHighlightTexture(C.media.backdrop)
+		bu:SetHighlightTexture(C.bdTex)
 		bu:GetHighlightTexture():SetVertexColor(.24, .56, 1, .2)
 		ic:SetSize(22, 22)
 		ic:SetTexCoord(.17, .83, .17, .83)
@@ -89,7 +90,7 @@ tinsert(C.themes["AuroraClassic"], function()
 
 	for _, button in pairs({FriendsTabHeaderSoRButton, FriendsTabHeaderRecruitAFriendButton}) do
 		button:SetPushedTexture("")
-		button:GetRegions():SetTexCoord(.08, .92, .08, .92)
+		button:GetRegions():SetTexCoord(unpack(C.TexCoord))
 		F.CreateBDFrame(button)
 	end
 
@@ -110,12 +111,11 @@ tinsert(C.themes["AuroraClassic"], function()
 
 	local broadcastFrame = FriendsFrameBattlenetFrame.BroadcastFrame
 	F.StripTextures(broadcastFrame)
-	F.SetBD(broadcastFrame, 10, -10, -10, 10)
+	F.SetBD(broadcastFrame, nil, 10, -10, -10, 10)
 	broadcastFrame.EditBox:DisableDrawLayer("BACKGROUND")
-	local bg = F.CreateBDFrame(broadcastFrame.EditBox, 0)
+	local bg = F.CreateBDFrame(broadcastFrame.EditBox, 0, true)
 	bg:SetPoint("TOPLEFT", -2, -2)
 	bg:SetPoint("BOTTOMRIGHT", 2, 2)
-	F.CreateGradient(bg)
 	F.Reskin(broadcastFrame.UpdateButton)
 	F.Reskin(broadcastFrame.CancelButton)
 	broadcastFrame:ClearAllPoints()
@@ -147,8 +147,7 @@ tinsert(C.themes["AuroraClassic"], function()
 	F.Reskin(FriendsListFrameContinueButton)
 	F.ReskinInput(AddFriendNameEditBox)
 	F.StripTextures(AddFriendFrame)
-	F.CreateBD(AddFriendFrame)
-	F.CreateSD(AddFriendFrame)
+	F.SetBD(AddFriendFrame)
 	F.StripTextures(FriendsFriendsFrame)
 	F.SetBD(FriendsFriendsFrame)
 	F.Reskin(FriendsFriendsFrame.SendRequestButton)
@@ -167,10 +166,9 @@ tinsert(C.themes["AuroraClassic"], function()
 
 	F.StripTextures(WhoFrameListInset)
 	WhoFrameEditBoxInset:Hide()
-	local whoBg = F.CreateBDFrame(WhoFrameEditBox, 0)
+	local whoBg = F.CreateBDFrame(WhoFrameEditBox, 0, true)
 	whoBg:SetPoint("TOPLEFT", WhoFrameEditBoxInset)
 	whoBg:SetPoint("BOTTOMRIGHT", WhoFrameEditBoxInset, -1, 1)
-	F.CreateGradient(whoBg)
 
 	for i = 1, 3 do
 		F.StripTextures(_G["FriendsTabHeaderTab"..i])

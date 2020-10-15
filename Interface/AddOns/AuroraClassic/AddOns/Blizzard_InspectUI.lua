@@ -1,4 +1,5 @@
-local F, C = unpack(select(2, ...))
+local _, ns = ...
+local F, C = unpack(ns)
 
 C.themes["Blizzard_InspectUI"] = function()
 	F.StripTextures(InspectTalentFrame)
@@ -8,12 +9,6 @@ C.themes["Blizzard_InspectUI"] = function()
 	InspectPaperDollFrame.ViewButton:ClearAllPoints()
 	InspectPaperDollFrame.ViewButton:SetPoint("TOP", InspectFrame, 0, -45)
 	InspectPVPFrame.BG:Hide()
-
-	local function UpdateCorruption(self)
-		local unit = InspectFrame.unit
-		local itemLink = unit and GetInventoryItemLink(unit, self:GetID())
-		self.Eye:SetShown(itemLink and IsCorruptedItem(itemLink))
-	end
 
 	-- Character
 	local slots = {
@@ -25,22 +20,15 @@ C.themes["Blizzard_InspectUI"] = function()
 	for i = 1, #slots do
 		local slot = _G["Inspect"..slots[i].."Slot"]
 		F.StripTextures(slot)
-		slot.icon:SetTexCoord(.08, .92, .08, .92)
+		slot.icon:SetTexCoord(unpack(C.TexCoord))
 		slot.icon:SetInside()
 		slot.bg = F.CreateBDFrame(slot.icon, .25)
 		slot:GetHighlightTexture():SetColorTexture(1, 1, 1, .25)
-		F.HookIconBorderColor(slot.IconBorder)
-
-		if not slot.Eye then
-			slot.Eye = slot:CreateTexture()
-			slot.Eye:SetAtlas("Nzoth-inventory-icon")
-			slot.Eye:SetInside()
-		end
+		F.ReskinIconBorder(slot.IconBorder)
 	end
 
 	hooksecurefunc("InspectPaperDollItemSlotButton_Update", function(button)
 		button.icon:SetShown(button.hasItem)
-		UpdateCorruption(button)
 	end)
 
 	-- Talents
@@ -48,7 +36,7 @@ C.themes["Blizzard_InspectUI"] = function()
 
 	inspectSpec.ring:Hide()
 	F.ReskinIcon(inspectSpec.specIcon)
-	inspectSpec.roleIcon:SetTexture(C.media.roleIcons)
+	inspectSpec.roleIcon:SetTexture(C.rolesTex)
 	F.CreateBDFrame(inspectSpec.roleIcon)
 
 	for i = 1, 7 do

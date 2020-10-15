@@ -1,6 +1,8 @@
-local F, C = unpack(select(2, ...))
+local _, ns = ...
+local F, C = unpack(ns)
 
-tinsert(C.themes["AuroraClassic"], function()
+tinsert(C.defaultThemes, function()
+
 	local ModelPreviewFrame = ModelPreviewFrame
 	local Display = ModelPreviewFrame.Display
 

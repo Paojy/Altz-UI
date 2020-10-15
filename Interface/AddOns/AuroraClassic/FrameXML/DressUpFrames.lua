@@ -1,6 +1,7 @@
-local F, C = unpack(select(2, ...))
+local _, ns = ...
+local F, C = unpack(ns)
 
-tinsert(C.themes["AuroraClassic"], function()
+tinsert(C.defaultThemes, function()
 	-- Dressup Frame
 
 	F.ReskinPortraitFrame(DressUpFrame)
@@ -14,6 +15,8 @@ tinsert(C.themes["AuroraClassic"], function()
 	DressUpFrameOutfitDropDown:SetHeight(32)
 	DressUpFrameOutfitDropDown.SaveButton:SetPoint("LEFT", DressUpFrameOutfitDropDown, "RIGHT", -13, 2)
 	DressUpFrameResetButton:SetPoint("RIGHT", DressUpFrameCancelButton, "LEFT", -1, 0)
+
+	F.ReskinCheck(TransmogAndMountDressupFrame.ShowMountCheckButton)
 
 	-- SideDressUp
 

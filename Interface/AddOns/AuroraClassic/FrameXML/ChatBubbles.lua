@@ -1,36 +1,27 @@
-local F, C = unpack(select(2, ...))
+local _, ns = ...
+local F, C = unpack(ns)
 
-tinsert(C.themes["AuroraClassic"], function()
+local C_ChatBubbles_GetAllChatBubbles = C_ChatBubbles.GetAllChatBubbles
+
+local function reskinChatBubble(chatbubble)
+	if chatbubble.styled then return end
+
+	local frame = chatbubble:GetChildren()
+	if frame and not frame:IsForbidden() then
+		local bg = F.SetBD(frame)
+		bg:SetScale(UIParent:GetEffectiveScale())
+		bg:SetInside(frame, 6, 6)
+
+		frame:SetBackdrop(nil)
+		frame.Tail:SetAlpha(0)
+		frame.String:SetFont(C.Font[1], 13, C.Font[3])
+	end
+
+	chatbubble.styled = true
+end
+
+tinsert(C.defaultThemes, function()
 	if not AuroraClassicDB.ChatBubbles then return end
-
-	local function styleBubble(frame)
-		for i = 1, frame:GetNumRegions() do
-			local region = select(i, frame:GetRegions())
-			if region:GetObjectType() == "Texture" then
-				region:SetTexture(nil)
-			elseif region:GetObjectType() == "FontString" then
-				region:SetFont(C.media.font, 16, "OUTLINE")
-				region:SetShadowColor(0, 0, 0, 0)
-			end
-		end
-
-		F.CreateBD(frame)
-		F.CreateSD(frame)
-		frame:SetScale(UIParent:GetScale())
-	end
-
-	local function findChatBubble(msg)
-		local chatbubbles = C_ChatBubbles.GetAllChatBubbles()
-		for index = 1, #chatbubbles do
-			local chatbubble = chatbubbles[index]
-			for i = 1, chatbubble:GetNumRegions() do
-				local region = select(i, chatbubble:GetRegions())
-				if region:GetObjectType() == "FontString" and region:GetText() == msg then
-					return chatbubble
-				end
-			end
-		end
-	end
 
 	local events = {
 		CHAT_MSG_SAY = "chatBubbles",
@@ -46,23 +37,20 @@ tinsert(C.themes["AuroraClassic"], function()
 	for event in next, events do
 		bubbleHook:RegisterEvent(event)
 	end
-	bubbleHook:SetScript("OnEvent", function(self, event, msg)
+	bubbleHook:SetScript("OnEvent", function(self, event)
 		if GetCVarBool(events[event]) then
 			self.elapsed = 0
-			self.msg = msg
 			self:Show()
 		end
 	end)
 
 	bubbleHook:SetScript("OnUpdate", function(self, elapsed)
 		self.elapsed = self.elapsed + elapsed
-		local chatbubble = findChatBubble(self.msg)
-		if chatbubble or self.elapsed > .3 then
-			self:Hide()
-			if chatbubble and not chatbubble.styled then
-				styleBubble(chatbubble)
-				chatbubble.styled = true
+		if self.elapsed > .1 then
+			for _, chatbubble in pairs(C_ChatBubbles_GetAllChatBubbles()) do
+				reskinChatBubble(chatbubble)
 			end
+			self:Hide()
 		end
 	end)
 	bubbleHook:Hide()

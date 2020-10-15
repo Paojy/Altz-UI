@@ -1,4 +1,5 @@
-local F, C = unpack(select(2, ...))
+local _, ns = ...
+local F, C = unpack(ns)
 
 C.themes["Blizzard_AlliedRacesUI"] = function()
 	local AlliedRacesFrame = AlliedRacesFrame

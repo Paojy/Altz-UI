@@ -1,6 +1,8 @@
-local F, C = unpack(select(2, ...))
+local _, ns = ...
+local F, C = unpack(ns)
 
-tinsert(C.themes["AuroraClassic"], function()
+tinsert(C.defaultThemes, function()
+
 	F.ReskinPortraitFrame(PetitionFrame)
 	F.Reskin(PetitionFrameSignButton)
 	F.Reskin(PetitionFrameRequestButton)

@@ -1,6 +1,12 @@
-local F, C = unpack(select(2, ...))
+local _, ns = ...
+local F, C = unpack(ns)
 
-tinsert(C.themes["AuroraClassic"], function()
+tinsert(C.defaultThemes, function()
+	-- Tooltip close buttons
+	F.ReskinClose(ItemRefTooltip.CloseButton)
+	F.ReskinClose(FloatingBattlePetTooltip.CloseButton)
+	F.ReskinClose(FloatingPetBattleAbilityTooltip.CloseButton)
+
 	-- Tooltips
 	function F:ReskinGarrisonTooltip()
 		for i = 1, 9 do
@@ -8,8 +14,6 @@ tinsert(C.themes["AuroraClassic"], function()
 		end
 		if self.Icon then F.ReskinIcon(self.Icon) end
 		if self.CloseButton then F.ReskinClose(self.CloseButton) end
-
-		if AuroraClassicDB.Tooltips then F.ReskinTooltip(self) end
 	end
 
 	F.ReskinGarrisonTooltip(FloatingGarrisonMissionTooltip)

@@ -1,6 +1,21 @@
-local F, C = unpack(select(2, ...))
+local _, ns = ...
+local F, C = unpack(ns)
 
-tinsert(C.themes["AuroraClassic"], function()
+tinsert(C.defaultThemes, function()
+	-- Cinematic
+
+	CinematicFrameCloseDialog:HookScript("OnShow", function(self)
+		self:SetScale(UIParent:GetScale())
+	end)
+
+	F.StripTextures(CinematicFrameCloseDialog)
+	local bg = F.SetBD(CinematicFrameCloseDialog)
+	bg:SetFrameLevel(1)
+	F.Reskin(CinematicFrameCloseDialogConfirmButton)
+	F.Reskin(CinematicFrameCloseDialogResumeButton)
+
+	-- Movie
+
 	local closeDialog = MovieFrame.CloseDialog
 
 	closeDialog:HookScript("OnShow", function(self)
@@ -8,8 +23,8 @@ tinsert(C.themes["AuroraClassic"], function()
 	end)
 
 	F.StripTextures(closeDialog)
-	F.CreateBD(closeDialog)
-	F.CreateSD(closeDialog)
+	local bg = F.SetBD(closeDialog)
+	bg:SetFrameLevel(1)
 	F.Reskin(closeDialog.ConfirmButton)
 	F.Reskin(closeDialog.ResumeButton)
 end)

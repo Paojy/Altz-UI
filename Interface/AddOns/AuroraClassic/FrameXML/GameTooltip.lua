@@ -1,40 +1,71 @@
 local F, C = unpack(select(2, ...))
 
-tinsert(C.themes["AuroraClassic"], function()
-	F.ReskinClose(ItemRefCloseButton)
-	F.ReskinClose(FloatingBattlePetTooltip.CloseButton)
-	F.ReskinClose(FloatingPetBattleAbilityTooltip.CloseButton)
-
+tinsert(C.defaultThemes, function()
 	if not AuroraClassicDB.Tooltips then return end
 
-	local fakeBg = CreateFrame("Frame")
-	fakeBg:SetBackdrop({
-		bgFile = C.media.backdrop,
-		edgeFile = C.media.backdrop,
-		edgeSize = C.mult,
-	})
-	local function getBackdrop() return fakeBg:GetBackdrop() end
-	local function getBackdropColor() return 0, 0, 0, .7 end
-	local function getBackdropBorderColor() return 0, 0, 0 end
+	GameTooltip.StatusBar = GameTooltipStatusBar
+
+	local function ReskinStatusBar(self)
+		self.StatusBar:ClearAllPoints()
+		self.StatusBar:SetPoint("BOTTOMLEFT", self.bg, "TOPLEFT", C.mult, 3)
+		self.StatusBar:SetPoint("BOTTOMRIGHT", self.bg, "TOPRIGHT", -C.mult, 3)
+		self.StatusBar:SetStatusBarTexture(C.normTex)
+		self.StatusBar:SetHeight(5)
+		F.SetBD(self.StatusBar)
+	end
 
 	function F:ReskinTooltip()
-		if not self.auroraTip then
-			self:SetBackdrop(nil)
-			self:DisableDrawLayer("BACKGROUND")
-			local bg = F.CreateBDFrame(self, .7)
-			F.CreateSD(bg)
-			self.bg = bg
+		if self:IsForbidden() then return end
 
-			self.GetBackdrop = getBackdrop
-			self.GetBackdropColor = getBackdropColor
-			self.GetBackdropBorderColor = getBackdropBorderColor
+		if not self.auroraTip then
+			if self.SetBackdrop then self:SetBackdrop(nil) end
+			self:DisableDrawLayer("BACKGROUND")
+			self.bg = F.SetBD(self, .7)
+			self.bg:SetInside(self)
+			self.bg:SetFrameLevel(self:GetFrameLevel())
+			if self.StatusBar then ReskinStatusBar(self) end
+
+			if self.GetBackdrop then
+				self.GetBackdrop = self.bg.GetBackdrop
+				self.GetBackdropColor = self.bg.GetBackdropColor
+				self.GetBackdropBorderColor = self.bg.GetBackdropBorderColor
+			end
+
 			self.auroraTip = true
 		end
 	end
 
-	hooksecurefunc("GameTooltip_SetBackdropStyle", function(self)
+	hooksecurefunc("SharedTooltip_SetBackdropStyle", function(self)
 		if not self.auroraTip then return end
 		self:SetBackdrop(nil)
+	end)
+
+	hooksecurefunc("GameTooltip_ShowStatusBar", function(self)
+		if not self or self:IsForbidden() then return end
+		if not self.statusBarPool then return end
+	
+		local bar = self.statusBarPool:GetNextActive()
+		if bar and not bar.styled then
+			F.StripTextures(bar)
+			F.CreateBDFrame(bar, .25)
+			bar:SetStatusBarTexture(C.normTex)
+	
+			bar.styled = true
+		end
+	end)
+
+	hooksecurefunc("GameTooltip_ShowProgressBar", function(self)
+		if not self or self:IsForbidden() then return end
+		if not self.progressBarPool then return end
+	
+		local bar = self.progressBarPool:GetNextActive()
+		if bar and not bar.styled then
+			F.StripTextures(bar.Bar)
+			F.CreateBDFrame(bar.Bar, .25)
+			bar.Bar:SetStatusBarTexture(C.normTex)
+	
+			bar.styled = true
+		end
 	end)
 
 	local tooltips = {
@@ -51,16 +82,26 @@ tinsert(C.themes["AuroraClassic"], function()
 		ShoppingTooltip2,
 		AutoCompleteBox,
 		FriendsTooltip,
+		QuestScrollFrame.StoryTooltip,
+		QuestScrollFrame.CampaignTooltip,
 		GeneralDockManagerOverflowButtonList,
 		ReputationParagonTooltip,
 		NamePlateTooltip,
 		QueueStatusFrame,
+		FloatingGarrisonFollowerTooltip,
+		FloatingGarrisonFollowerAbilityTooltip,
+		FloatingGarrisonMissionTooltip,
+		GarrisonFollowerAbilityTooltip,
+		GarrisonFollowerTooltip,
+		FloatingGarrisonShipyardFollowerTooltip,
+		GarrisonShipyardFollowerTooltip,
 		BattlePetTooltip,
 		PetBattlePrimaryAbilityTooltip,
 		PetBattlePrimaryUnitTooltip,
 		FloatingBattlePetTooltip,
 		FloatingPetBattleAbilityTooltip,
 		IMECandidatesFrame,
+		QuickKeybindTooltip
 	}
 	for _, tooltip in pairs(tooltips) do
 		F.ReskinTooltip(tooltip)
@@ -71,20 +112,6 @@ tinsert(C.themes["AuroraClassic"], function()
 			F.ReskinTooltip(LibDBIconTooltip)
 		end
 	end)
-
-	local sb = _G["GameTooltipStatusBar"]
-	sb:SetHeight(3)
-	sb:ClearAllPoints()
-	sb:SetPoint("BOTTOMLEFT", GameTooltip, "BOTTOMLEFT", 1, 1)
-	sb:SetPoint("BOTTOMRIGHT", GameTooltip, "BOTTOMRIGHT", -1, 1)
-	sb:SetStatusBarTexture(C.media.backdrop)
-
-	local sep = GameTooltipStatusBar:CreateTexture(nil, "ARTWORK")
-	sep:SetHeight(C.mult)
-	sep:SetPoint("BOTTOMLEFT", 0, 3)
-	sep:SetPoint("BOTTOMRIGHT", 0, 3)
-	sep:SetTexture(C.media.backdrop)
-	sep:SetVertexColor(0, 0, 0)
 
 	PetBattlePrimaryUnitTooltip.Delimiter:SetColorTexture(0, 0, 0)
 	PetBattlePrimaryUnitTooltip.Delimiter:SetHeight(1)
@@ -101,9 +128,9 @@ tinsert(C.themes["AuroraClassic"], function()
 
 	-- Tooltip rewards icon
 	local function reskinRewardIcon(self)
-		self.Icon:SetTexCoord(.08, .92, .08, .92)
+		self.Icon:SetTexCoord(unpack(C.TexCoord))
 		self.bg = F.CreateBDFrame(self.Icon, 0)
-		F.HookIconBorderColor(self.IconBorder)
+		F.ReskinIconBorder(self.IconBorder)
 	end
 
 	reskinRewardIcon(GameTooltip.ItemTooltip)

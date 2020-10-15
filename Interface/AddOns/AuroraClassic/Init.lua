@@ -33,13 +33,6 @@ function F:LoadSkins(event, addon)
 		if not C.mult then F:SetupPixelFix() end
 
 		if addon == "AuroraClassic" then
-			local color = AuroraClassicDB.FlatMode and C.options.FlatColor or C.options.GradientColor
-			C.buttonR, C.buttonG, C.buttonB, C.buttonA = unpack(color)
-
-			if AuroraClassicDB.UseCustomColor then
-				C.r, C.g, C.b = AuroraClassicDB.CustomColor.r, AuroraClassicDB.CustomColor.g, AuroraClassicDB.CustomColor.b
-			end
-
 			for key in pairs(AuroraClassicDB) do
 				if C.options[key] == nil then AuroraClassicDB[key] = nil end
 			end
@@ -57,12 +50,24 @@ function F:LoadSkins(event, addon)
 				end
 			end
 
-			for _, func in pairs(C.themes[addon]) do
+			for _, func in pairs(C.defaultThemes) do
 				func()
+			end
+			wipe(C.defaultThemes)
+
+			for addonName, func in pairs(C.themes) do
+				local isLoaded, isFinished = IsAddOnLoaded(addonName)
+				if isLoaded and isFinished then
+					func()
+					C.themes[addonName] = nil
+				end
 			end
 		else
 			local func = C.themes[addon]
-			if func then func() end
+			if func then
+				func()
+				C.themes[addonName] = nil
+			end
 		end
 	end
 end

@@ -1,4 +1,5 @@
-local F, C = unpack(select(2, ...))
+local _, ns = ...
+local F, C = unpack(ns)
 
 C.themes["Blizzard_GuildBankUI"] = function()
 	GuildBankFrame:DisableDrawLayer("BACKGROUND")
@@ -46,7 +47,7 @@ C.themes["Blizzard_GuildBankUI"] = function()
 	F.StripTextures(GuildBankPopupFrame.BorderBox)
 	GuildBankPopupFrame.BG:Hide()
 	F.SetBD(GuildBankPopupFrame)
-	F.CreateBD(GuildBankPopupEditBox, .25)
+	F.CreateBDFrame(GuildBankPopupEditBox, .25)
 	GuildBankPopupFrame:SetPoint("TOPLEFT", GuildBankFrame, "TOPRIGHT", 2, -30)
 	GuildBankPopupFrame:SetHeight(525)
 
@@ -60,11 +61,11 @@ C.themes["Blizzard_GuildBankUI"] = function()
 			button:SetNormalTexture("")
 			button:SetPushedTexture("")
 			button:GetHighlightTexture():SetColorTexture(1, 1, 1, .25)
-			button.icon:SetTexCoord(.08, .92, .08, .92)
+			button.icon:SetTexCoord(unpack(C.TexCoord))
 			button.bg = F.CreateBDFrame(button, .3)
 			button.bg:SetBackdropColor(.3, .3, .3, .3)
 			button.searchOverlay:SetOutside()
-			F.HookIconBorderColor(button.IconBorder)
+			F.ReskinIconBorder(button.IconBorder)
 		end
 	end
 
@@ -76,9 +77,9 @@ C.themes["Blizzard_GuildBankUI"] = function()
 		F.StripTextures(tab)
 		F.StripTextures(button)
 		button:GetHighlightTexture():SetColorTexture(1, 1, 1, .25)
-		button:SetCheckedTexture(C.media.checked)
+		button:SetCheckedTexture(C.pushed)
 		F.CreateBDFrame(button)
-		icon:SetTexCoord(.08, .92, .08, .92)
+		icon:SetTexCoord(unpack(C.TexCoord))
 
 		local a1, p, a2, x, y = button:GetPoint()
 		button:SetPoint(a1, p, a2, x + C.mult, y)
@@ -89,7 +90,7 @@ C.themes["Blizzard_GuildBankUI"] = function()
 			local button = _G["GuildBankPopupButton"..i]
 			local icon = _G["GuildBankPopupButton"..i.."Icon"]
 			if not button.styled then
-				button:SetCheckedTexture(C.media.checked)
+				button:SetCheckedTexture(C.pushed)
 				select(2, button:GetRegions()):Hide()
 				F.ReskinIcon(icon)
 				local hl = button:GetHighlightTexture()

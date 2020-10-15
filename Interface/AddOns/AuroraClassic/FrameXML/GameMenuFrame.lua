@@ -1,6 +1,8 @@
-local F, C = unpack(select(2, ...))
+local _, ns = ...
+local F, C = unpack(ns)
 
-tinsert(C.themes["AuroraClassic"], function()
+tinsert(C.defaultThemes, function()
+
 	F.StripTextures(GameMenuFrame.Header)
 	GameMenuFrame.Header:ClearAllPoints()
 	GameMenuFrame.Header:SetPoint("TOP", GameMenuFrame, 0, 7)

@@ -1,6 +1,7 @@
-local F, C = unpack(select(2, ...))
+local _, ns = ...
+local F, C = unpack(ns)
 
-tinsert(C.themes["AuroraClassic"], function()
+tinsert(C.defaultThemes, function()
 	F.ReskinPortraitFrame(QuestFrame)
 
 	QuestFrameDetailPanel:DisableDrawLayer("BACKGROUND")
@@ -31,21 +32,13 @@ tinsert(C.themes["AuroraClassic"], function()
 	end)
 
 	for i = 1, MAX_REQUIRED_ITEMS do
-		local bu = _G["QuestProgressItem"..i]
 		local ic = _G["QuestProgressItem"..i.."IconTexture"]
 		local na = _G["QuestProgressItem"..i.."NameFrame"]
 		local co = _G["QuestProgressItem"..i.."Count"]
 		ic:SetSize(40, 40)
-		ic:SetTexCoord(.08, .92, .08, .92)
-		ic:SetDrawLayer("OVERLAY")
-		F.CreateBD(bu, .25)
+		F.ReskinIcon(ic)
 		na:Hide()
 		co:SetDrawLayer("OVERLAY")
-
-		local line = CreateFrame("Frame", nil, bu)
-		line:SetSize(1, 40)
-		line:SetPoint("RIGHT", ic, 1, 0)
-		F.CreateBD(line)
 	end
 
 	QuestDetailScrollFrame:SetWidth(302) -- else these buttons get cut off
@@ -72,16 +65,16 @@ tinsert(C.themes["AuroraClassic"], function()
 	QuestProgressRequiredItemsText:SetShadowColor(0, 0, 0)
 	QuestProgressTitleText:SetTextColor(1, 1, 1)
 	QuestProgressTitleText:SetShadowColor(0, 0, 0)
-	QuestProgressTitleText.SetTextColor = F.dummy
+	QuestProgressTitleText.SetTextColor = F.Dummy
 	QuestProgressText:SetTextColor(1, 1, 1)
-	QuestProgressText.SetTextColor = F.dummy
+	QuestProgressText.SetTextColor = F.Dummy
 	GreetingText:SetTextColor(1, 1, 1)
-	GreetingText.SetTextColor = F.dummy
+	GreetingText.SetTextColor = F.Dummy
 	AvailableQuestsText:SetTextColor(1, 1, 1)
-	AvailableQuestsText.SetTextColor = F.dummy
+	AvailableQuestsText.SetTextColor = F.Dummy
 	AvailableQuestsText:SetShadowColor(0, 0, 0)
 	CurrentQuestsText:SetTextColor(1, 1, 1)
-	CurrentQuestsText.SetTextColor = F.dummy
+	CurrentQuestsText.SetTextColor = F.Dummy
 	CurrentQuestsText:SetShadowColor(0, 0, 0)
 
 	-- Quest NPC model

@@ -1,6 +1,7 @@
-local F, C = unpack(select(2, ...))
+local _, ns = ...
+local F, C = unpack(ns)
 
-tinsert(C.themes["AuroraClassic"], function()
+tinsert(C.defaultThemes, function()
 	TradePlayerEnchantInset:Hide()
 	TradePlayerItemsInset:Hide()
 	TradeRecipientEnchantInset:Hide()
@@ -31,11 +32,12 @@ tinsert(C.themes["AuroraClassic"], function()
 		local hl = bu:GetHighlightTexture()
 		hl:SetColorTexture(1, 1, 1, .25)
 		hl:SetInside()
-		bu.icon:SetTexCoord(.08, .92, .08, .92)
+		bu.icon:SetTexCoord(unpack(C.TexCoord))
 		bu.icon:SetInside()
 		bu.IconOverlay:SetInside()
+		bu.IconOverlay2:SetInside()
 		bu.bg = F.CreateBDFrame(bu.icon, .25)
-		F.HookIconBorderColor(bu.IconBorder)
+		F.ReskinIconBorder(bu.IconBorder)
 	end
 
 	for i = 1, MAX_TRADE_ITEMS do

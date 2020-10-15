@@ -1,6 +1,8 @@
-local F, C = unpack(select(2, ...))
+local _, ns = ...
+local F, C = unpack(ns)
 
-tinsert(C.themes["AuroraClassic"], function()
+tinsert(C.defaultThemes, function()
+
 	LevelUpDisplaySide:HookScript("OnShow", function(self)
 		for i = 1, #self.unlockList do
 			local f = _G["LevelUpDisplaySideUnlockFrame"..i]
