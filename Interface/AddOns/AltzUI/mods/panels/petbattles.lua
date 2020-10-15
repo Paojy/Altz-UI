@@ -17,7 +17,7 @@ frame:SetPoint("TOPLEFT", parent, "TOPLEFT", 0, -40)
 local tooltips = {PetBattlePrimaryAbilityTooltip, PetBattlePrimaryUnitTooltip, FloatingBattlePetTooltip, BattlePetTooltip, FloatingPetBattleAbilityTooltip}
 for _, f in pairs(tooltips) do
 	f:DisableDrawLayer("BACKGROUND")
-	local bg = CreateFrame("Frame", nil, f)
+	local bg = CreateFrame("Frame", nil, f, "BackdropTemplate")
 	bg:SetAllPoints()
 	bg:SetFrameLevel(0)
 	F.CreateBD(bg)
@@ -76,7 +76,7 @@ for index, unit in pairs(units) do
 	unit.Level:SetFont(G.norFont, 16)
 	unit.Level:SetTextColor(1, 1, 1)
 
-	local bg = CreateFrame("Frame", nil, unit)
+	local bg = CreateFrame("Frame", nil, unit, "BackdropTemplate")
 	bg:SetWidth(unit.healthBarWidth + 2)
 	bg:SetFrameLevel(unit:GetFrameLevel()-1)
 	T.CreateSD(bg, 3, 0, 0, 0, 0, -2)
@@ -118,8 +118,9 @@ for index, unit in pairs(units) do
 	end
 
 	unit.Icon:SetDrawLayer("ARTWORK", 2)
-
-	F.CreateBG(unit.Icon)
+	unit.Iconbg = CreateFrame("Frame", nil, unit, "BackdropTemplate")
+	unit.Iconbg:SetAllPoints(unit.Icon)
+	F.CreateBD(unit.Iconbg)
 end
 
 local extraUnits = {
@@ -148,7 +149,7 @@ for index, unit in pairs(extraUnits) do
 	unit.BorderAlive:SetPoint("TOPLEFT", unit.Icon, -1, 1)
 	unit.BorderAlive:SetPoint("BOTTOMRIGHT", unit.Icon, 1, -1)
 
-	unit.bg = CreateFrame("Frame", nil, unit)
+	unit.bg = CreateFrame("Frame", nil, unit, "BackdropTemplate")
 	unit.bg:SetPoint("TOPLEFT", -1, 1)
 	unit.bg:SetPoint("BOTTOMRIGHT", 1, -1)
 	unit.bg:SetFrameLevel(unit:GetFrameLevel()-1)
@@ -166,7 +167,7 @@ end
 for i = 1, NUM_BATTLE_PETS_IN_BATTLE  do
 	local unit = bf.PetSelectionFrame["Pet"..i]
 	local icon = unit.Icon
-
+	
 	unit.HealthBarBG:Hide()
 	unit.Framing:Hide()
 	unit.HealthDivider:Hide()
@@ -175,8 +176,10 @@ for i = 1, NUM_BATTLE_PETS_IN_BATTLE  do
 	unit.ActualHealthBar:SetPoint("BOTToMLEFT", icon, "BOTTOMRIGHT", 3, 0)
 
 	icon:SetTexCoord(.08, .92, .08, .92)
-	F.CreateBG(icon)
-
+	unit.Iconbg = CreateFrame("Frame", nil, unit, "BackdropTemplate")
+	unit.Iconbg:SetAllPoints(unit.Icon)
+	F.CreateBD(unit.Iconbg)
+	
 	unit.ActualHealthBar:SetTexture(G.media.blank)
 	F.CreateBDFrame(unit.ActualHealthBar)
 end
@@ -225,7 +228,7 @@ hooksecurefunc("PetBattleAuraHolder_Update", function(self)
 
 			if not frame.reskinned then
 				frame.Icon:SetTexCoord(.08, .92, .08, .92)
-				frame.bg = F.CreateBG(frame.Icon)
+				frame.bg = F.CreateBD(frame.Icon)
 			end
 
 			frame.Duration:SetFont(G.norFont, 8, "OUTLINEMONOCHROME")

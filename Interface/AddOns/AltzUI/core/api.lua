@@ -92,7 +92,7 @@ T.createnumber = function(f, layer, fontsize, flag, justifyh)
 end
 
 T.CreateSD = function(parent, size, r, g, b, alpha, offset)
-	local sd = CreateFrame("Frame", nil, parent)
+	local sd = CreateFrame("Frame", nil, parent, "BackdropTemplate")
 	sd.size = size or 5
 	sd.offset = offset or 0
 	sd:SetBackdrop({
@@ -109,7 +109,7 @@ T.CreateSD = function(parent, size, r, g, b, alpha, offset)
 end
 
 T.CreateThinSD = function(parent, size, r, g, b, alpha, offset)
-	local sd = CreateFrame("Frame", nil, parent)
+	local sd = CreateFrame("Frame", nil, parent, "BackdropTemplate")
 	sd.size = size or 1
 	sd.offset = offset or 0
 	sd:SetBackdrop({
@@ -211,7 +211,7 @@ local frameBD_thin = {
 }
 
 T.createBackdrop = function(parent, anchor, a, BD_thin)
-	local frame = CreateFrame("Frame", nil, parent)
+	local frame = CreateFrame("Frame", nil, parent, "BackdropTemplate")
 
 	local flvl = parent:GetFrameLevel()
 	if flvl - 1 >= 0 then frame:SetFrameLevel(flvl-1) end

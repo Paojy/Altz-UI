@@ -146,4 +146,4 @@ for i, frame in pairs(ActionBarButtonEventsFrame.frames) do
 	actionButton_Register(frame)
 end
 
-hooksecurefunc('ActionBarButtonEventsFrame_RegisterFrame', actionButton_Register)
+--hooksecurefunc('ActionBarButtonEventsFrame_RegisterFrame', actionButton_Register)

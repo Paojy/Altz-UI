@@ -22,7 +22,7 @@ local CreateAuraIcon = function(auras)
     count:SetPoint("TOPLEFT", -2, 2)
 	count:SetJustifyH("LEFT")
 	
-    local border = CreateFrame("Frame", nil, button)
+    local border = CreateFrame("Frame", nil, button, "BackdropTemplate")
     border:SetPoint("TOPLEFT", button, "TOPLEFT", -1, 1)
     border:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", 1, -1)
     border:SetFrameLevel(4)

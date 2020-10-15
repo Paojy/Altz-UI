@@ -52,7 +52,7 @@ ZoneAbilityFrame:SetPoint("CENTER", 0, 0)
 ZoneAbilityFrame.ignoreFramePositionManager = true
 
 --the extra button
-local button2 = ZoneAbilityFrame.SpellButton
+local button2 = ZoneAbilityFrame.SpellButtonContainer
 table.insert(buttonList, button2) --add the button object to the list
 button2:SetSize(buttonssize,buttonssize)
 

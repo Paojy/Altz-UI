@@ -80,7 +80,7 @@ local function Update_IB()
 	if InCombatLockdown() or G.bag_sorting then return end
 	
 	for k, bu in pairs(IB_Buttons) do
-		local orderhall = C_Garrison.IsPlayerInGarrison(LE_GARRISON_TYPE_7_0)
+		local orderhall = false -- C_Garrison.IsPlayerInGarrison(LE_GARRISON_TYPE_7_0)
 		local instanceType = select(2, GetInstanceInfo())
 		
 		local hasitem = false

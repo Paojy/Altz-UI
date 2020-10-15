@@ -23,7 +23,7 @@ local function Reskinbox(box, name, value, anchor, x, y)
 	box.name:SetPoint("BOTTOMLEFT", box, "TOPLEFT", 5, 8)
 	box.name:SetText(G.classcolor..name.."|r")
 
-	local bd = CreateFrame("Frame", nil, box)
+	local bd = CreateFrame("Frame", nil, box, "BackdropTemplate")
 	bd:SetPoint("TOPLEFT", -2, 0)
 	bd:SetPoint("BOTTOMRIGHT")
 	bd:SetFrameLevel(box:GetFrameLevel()-1)
@@ -57,7 +57,7 @@ local function Reskinbox(box, name, value, anchor, x, y)
 	box:SetScript("OnEnterPressed", function(self)
 		if CurrentFrame ~= "NONE" then
 			aCoreCDB["FramePoints"][CurrentFrame][role][value] = self:GetText()
-			PlaceCurrentFrame()
+			PlaceCurrentFrame(true)
 		else
 			self:SetText("")
 		end
@@ -65,7 +65,7 @@ local function Reskinbox(box, name, value, anchor, x, y)
 	end)
 end
 
-local SpecMover = CreateFrame("Frame", G.uiname.."SpecMover", UIParent)
+local SpecMover = CreateFrame("Frame", G.uiname.."SpecMover", UIParent, "BackdropTemplate")
 SpecMover:SetPoint("CENTER", 0, -300)
 SpecMover:SetSize(540, 140)
 SpecMover:SetFrameStrata("HIGH")
@@ -267,9 +267,10 @@ function T.CreateDragFrame(frame)
 	frame.df:RegisterForDrag("LeftButton")
 	frame.df:SetClampedToScreen(true)
 	
-	frame.df:SetScript("OnShow", function(self, event)
+	frame.df:SetScript("OnShow", function(self, event)		
 		frame.df:SetSize(frame:GetWidth(), frame:GetHeight())
 		local points = aCoreCDB["FramePoints"][fname][role]
+		frame.df:ClearAllPoints()
 		frame.df:SetPoint(points.a1, _G[points.parent], points.a2, points.x, points.y)
 	end)
 	
@@ -348,7 +349,7 @@ local function LockAll()
 	selected = false
 
 	for i = 1, #G.dragFrameList do
-		G.dragFrameList[i].df.mask:SetBackdropBorderColor(0, 0, 0)
+		G.dragFrameList[i].df.mask.SetBackdropBorderColor(0, 0, 0)
 		G.dragFrameList[i].df:Hide()
 	end
 	SpecMover:Hide()

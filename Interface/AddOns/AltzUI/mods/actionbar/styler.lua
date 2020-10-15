@@ -36,7 +36,7 @@ local backdrop2 = {
 local function applyBackground(bu)
 if bu:GetFrameLevel() < 2 then bu:SetFrameLevel(2) end
 	-- glow + background
-	bu.bg = CreateFrame("Frame", nil, bu)
+	bu.bg = CreateFrame("Frame", nil, bu, "BackdropTemplate")
 	bu.bg:SetAllPoints(bu)
 	bu.bg:SetPoint("TOPLEFT", bu, "TOPLEFT", -3, 3)
 	bu.bg:SetPoint("BOTTOMRIGHT", bu, "BOTTOMRIGHT", 3, -3)
@@ -45,7 +45,7 @@ if bu:GetFrameLevel() < 2 then bu:SetFrameLevel(2) end
 	bu.bg:SetBackdropColor(0.05, 0.05, 0.05, 0.7)
 	bu.bg:SetBackdropBorderColor(0,0,0)
 	-- border
-	bu.border = CreateFrame("Frame", nil, bu)
+	bu.border = CreateFrame("Frame", nil, bu, "BackdropTemplate")
 	bu.border:SetAllPoints(bu)
 	bu.border:SetPoint("TOPLEFT", bu, "TOPLEFT", -1, 1)
 	bu.border:SetPoint("BOTTOMRIGHT", bu, "BOTTOMRIGHT", 1, -1)

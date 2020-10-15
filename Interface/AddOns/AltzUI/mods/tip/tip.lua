@@ -170,7 +170,9 @@ GameTooltip:HookScript("OnTooltipSetUnit", function(self)
         GameTooltipStatusBar:SetHeight(8)
 		GameTooltipStatusBar:SetPoint("BOTTOMLEFT", GameTooltipStatusBar:GetParent(), "TOPLEFT", 0, 4)
 		GameTooltipStatusBar:SetPoint("BOTTOMRIGHT", GameTooltipStatusBar:GetParent(), "TOPRIGHT", 0, 4)
-		F.CreateBG(GameTooltipStatusBar)		
+		GameTooltipStatusBar.bg = CreateFrame("Frame", nil, GameTooltipStatusBar, "BackdropTemplate")
+		GameTooltipStatusBar.bg:SetAllPoints(GameTooltipStatusBar)
+		F.CreateBD(GameTooltipStatusBar.bg)		
     end
 end)
 
@@ -229,15 +231,16 @@ GAME_TOOLTIP_BACKDROP_STYLE_DEFAULT = {
 }
 
 local function style(frame)
-	frame:SetBackdrop({
+	frame.bg = CreateFrame("Frame", nil, frame, "BackdropTemplate")
+	frame.bg:SetBackdrop({
 		edgeFile = G.media.blank,
 		edgeSize = 1,
 		bgFile = G.media.blank,
 		insets = {left = 1, right = 1, top = 1, bottom = 1}
 	})
-	frame:SetScale(scale)
-	frame:SetBackdropColor(0, 0, 0, backdropOpacity) 
-    frame:SetBackdropBorderColor(0, 0, 0)
+	frame.bg:SetScale(scale)
+	frame.bg:SetBackdropColor(0, 0, 0, backdropOpacity) 
+    frame.bg:SetBackdropBorderColor(0, 0, 0)
 end
 
 style(DropDownList1MenuBackdrop)

@@ -20,17 +20,17 @@ local firendlyCR = aCoreCDB["PlateOptions"]["firendlyCR"]
 local enemyCR = aCoreCDB["PlateOptions"]["enemyCR"]
 
 local ICONS = {
-	[Enum.PvpUnitClassification.FlagCarrierHorde or 0] = "nameplates-icon-flag-horde",
-	[Enum.PvpUnitClassification.FlagCarrierAlliance or 1] = "nameplates-icon-flag-alliance",
-	[Enum.PvpUnitClassification.FlagCarrierNeutral or 2] = "nameplates-icon-flag-neutral",
-	[Enum.PvpUnitClassification.CartRunnerHorde or 3] = "nameplates-icon-cart-horde",
-	[Enum.PvpUnitClassification.CartRunnerAlliance or 4] = "nameplates-icon-cart-alliance",
-	[Enum.PvpUnitClassification.AssassinHorde or 5] = "nameplates-icon-bounty-horde",
-	[Enum.PvpUnitClassification.AssassinAlliance or 6] = "nameplates-icon-bounty-alliance",
-	[Enum.PvpUnitClassification.OrbCarrierBlue or 7] = "nameplates-icon-orb-blue",
-	[Enum.PvpUnitClassification.OrbCarrierGreen or 8] = "nameplates-icon-orb-green",
-	[Enum.PvpUnitClassification.OrbCarrierOrange or 9] = "nameplates-icon-orb-orange",
-	[Enum.PvpUnitClassification.OrbCarrierPurple or 10] = "nameplates-icon-orb-purple",
+	[Enum.PvPUnitClassification.FlagCarrierHorde or 0] = "nameplates-icon-flag-horde",
+	[Enum.PvPUnitClassification.FlagCarrierAlliance or 1] = "nameplates-icon-flag-alliance",
+	[Enum.PvPUnitClassification.FlagCarrierNeutral or 2] = "nameplates-icon-flag-neutral",
+	[Enum.PvPUnitClassification.CartRunnerHorde or 3] = "nameplates-icon-cart-horde",
+	[Enum.PvPUnitClassification.CartRunnerAlliance or 4] = "nameplates-icon-cart-alliance",
+	[Enum.PvPUnitClassification.AssassinHorde or 5] = "nameplates-icon-bounty-horde",
+	[Enum.PvPUnitClassification.AssassinAlliance or 6] = "nameplates-icon-bounty-alliance",
+	[Enum.PvPUnitClassification.OrbCarrierBlue or 7] = "nameplates-icon-orb-blue",
+	[Enum.PvPUnitClassification.OrbCarrierGreen or 8] = "nameplates-icon-orb-green",
+	[Enum.PvPUnitClassification.OrbCarrierOrange or 9] = "nameplates-icon-orb-orange",
+	[Enum.PvPUnitClassification.OrbCarrierPurple or 10] = "nameplates-icon-orb-purple",
 }
 --[[ Auras ]]-- 
 
@@ -641,7 +641,7 @@ end
 
 local function UpdateNamePlateEvents(unitFrame)
 	-- These are events affected if unit is in a vehicle
-	unitFrame:RegisterUnitEvent("UNIT_HEALTH_FREQUENT", unitFrame.unit, unitFrame.unit ~= unitFrame.displayedUnit and unitFrame.displayedUnit )
+	unitFrame:RegisterUnitEvent("UNIT_HEALTH", unitFrame.unit, unitFrame.unit ~= unitFrame.displayedUnit and unitFrame.displayedUnit )
 	unitFrame:RegisterUnitEvent("UNIT_AURA", unitFrame.unit, unitFrame.unit ~= unitFrame.displayedUnit and unitFrame.displayedUnit)
 	unitFrame:RegisterUnitEvent("UNIT_THREAT_LIST_UPDATE", unitFrame.unit, unitFrame.unit ~= unitFrame.displayedUnit and unitFrame.displayedUnit)
 end
@@ -708,7 +708,7 @@ local function NamePlate_OnEvent(self, event, ...)
 	elseif ( event == "PLAYER_ENTERING_WORLD" ) then
 		UpdateAll(self)
 	elseif ( arg1 == self.unit or arg1 == self.displayedUnit ) then
-		if ( event == "UNIT_HEALTH_FREQUENT" ) then
+		if ( event == "UNIT_HEALTH" ) then
 			UpdateHealth(self)
 			UpdateSelectionHighlight(self)
 		elseif ( event == "UNIT_AURA" ) then
@@ -835,7 +835,7 @@ function NamePlates_UpdateNamePlateOptions()
 end
 
 local function OnNamePlateCreated(namePlate)
-	namePlate.Pools = CreatePoolCollection() 
+	namePlate.Pools = CreateFramePoolCollection() 
 	
 	if numberstyle then -- 数字样式
 		namePlate.Pools:CreatePool("Button", namePlate, "NumberStyleNameplateTemplate")
@@ -843,7 +843,7 @@ local function OnNamePlateCreated(namePlate)
 		namePlate.NUnitFrame:SetAllPoints(namePlate)
 		namePlate.NUnitFrame:SetFrameLevel(namePlate:GetFrameLevel())
 		namePlate.NUnitFrame:Show()
-		namePlate.NUnitFrame.Pools = CreatePoolCollection() 
+		namePlate.NUnitFrame.Pools = CreateFramePoolCollection() 
 		namePlate.NUnitFrame.Pools:CreatePool("Frame", namePlate, "AuraIconTemplate")
 		
 		if classresource_show and classresource == "target" then
@@ -857,7 +857,7 @@ local function OnNamePlateCreated(namePlate)
 		namePlate.NUnitFrame:SetAllPoints(namePlate)
 		namePlate.NUnitFrame:SetFrameLevel(namePlate:GetFrameLevel())
 		namePlate.NUnitFrame:Show()
-		namePlate.NUnitFrame.Pools = CreatePoolCollection() 
+		namePlate.NUnitFrame.Pools = CreateFramePoolCollection() 
 		namePlate.NUnitFrame.Pools:CreatePool("Frame", namePlate, "AuraIconTemplate")
 		
 		if classresource_show and classresource == "target" then

@@ -33,7 +33,7 @@ end
 --====================================================--
 --[[                -- Shadow --                    ]]--
 --====================================================--	
-local PShadow = CreateFrame("Frame", G.uiname.."Backgroud Shadow", UIParent)
+local PShadow = CreateFrame("Frame", G.uiname.."Backgroud Shadow", UIParent, "BackdropTemplate")
 PShadow:SetFrameStrata("BACKGROUND")
 PShadow:SetAllPoints()
 PShadow:SetBackdrop({bgFile = "Interface\\AddOns\\AltzUI\\media\\shadow"})
@@ -1228,7 +1228,7 @@ Talent:RegisterEvent("PLAYER_ENTERING_WORLD")
 --[[                  -- Micromenu --               ]]--
 --====================================================--
 
-local MicromenuBar = CreateFrame("Frame", G.uiname.."MicromenuBar", UIParent)
+local MicromenuBar = CreateFrame("Frame", G.uiname.."MicromenuBar", UIParent, "BackdropTemplate")
 MicromenuBar:SetScale(aCoreCDB["OtherOptions"]["micromenuscale"])
 MicromenuBar:SetFrameLevel(4)
 MicromenuBar:SetSize(388, 24)
@@ -1242,7 +1242,7 @@ Skinbg(MicromenuBar)
 
 local MicromenuButtons = {}
 
-local MicromenuBar2 = CreateFrame("Frame", G.uiname.."MicromenuBar2", UIParent)
+local MicromenuBar2 = CreateFrame("Frame", G.uiname.."MicromenuBar2", UIParent, "BackdropTemplate")
 MicromenuBar2:SetScale(aCoreCDB["OtherOptions"]["micromenuscale"])
 MicromenuBar2:SetFrameLevel(4)
 MicromenuBar2:SetSize(128, 24)
@@ -1254,7 +1254,7 @@ MicromenuBar2.point = {
 T.CreateDragFrame(MicromenuBar2)
 Skinbg(MicromenuBar2)
 
-local MicromenuBar3 = CreateFrame("Frame", G.uiname.."MicromenuBar3", UIParent)
+local MicromenuBar3 = CreateFrame("Frame", G.uiname.."MicromenuBar3", UIParent, "BackdropTemplate")
 MicromenuBar3:SetScale(aCoreCDB["OtherOptions"]["micromenuscale"])
 MicromenuBar3:SetFrameLevel(4)
 MicromenuBar3:SetSize(128, 24)

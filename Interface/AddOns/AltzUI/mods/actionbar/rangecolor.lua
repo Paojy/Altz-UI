@@ -48,6 +48,6 @@ function EventFrame:RangeUpdate()
 	end
 end
 
-hooksecurefunc("ActionButton_OnUpdate", EventFrame.RangeOnUpdate)
-hooksecurefunc("ActionButton_Update", EventFrame.RangeUpdate)
-hooksecurefunc("ActionButton_UpdateUsable", EventFrame.RangeUpdate)
+--hooksecurefunc("ActionButton_OnUpdate", EventFrame.RangeOnUpdate)
+--hooksecurefunc("ActionButton_Update", EventFrame.RangeUpdate)
+--hooksecurefunc("ActionButton_UpdateUsable", EventFrame.RangeUpdate)

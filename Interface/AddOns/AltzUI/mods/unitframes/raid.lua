@@ -8,7 +8,7 @@ local pxbackdrop = { edgeFile = [=[Interface\ChatFrame\ChatFrameBackground]=],  
 local role
 
 local function Createpxborder(self, lvl)
-	local pxbd = CreateFrame("Frame", nil, self)
+	local pxbd = CreateFrame("Frame", nil, self, "BackdropTemplate")
 	pxbd:SetPoint("TOPLEFT", self, "TOPLEFT", -3, 3)
 	pxbd:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", 3, -3)
 	pxbd:SetBackdrop(pxbackdrop)

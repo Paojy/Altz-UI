@@ -11,7 +11,7 @@ local backdrop = {
 	  insets = { left = 3, right = 3, top = 3, bottom = 3}
 }
 	
-local flash = CreateFrame("Frame", G.uiname.."Cooldown Flash", UIParent)
+local flash = CreateFrame("Frame", G.uiname.."Cooldown Flash", UIParent, "BackdropTemplate")
 
 flash:SetSize(size,size)
 flash:SetBackdrop(backdrop)

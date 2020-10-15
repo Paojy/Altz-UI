@@ -6,7 +6,12 @@
 			<AbsDimension x = "50" y = "8"/>
 		</Size>
 		<Frames>
-			<Frame parentKey="bd">
+			<Frame parentKey="bd" inherits="BackdropTemplate">
+				<KeyValues>
+					<KeyValue key="backdropInfo" value="BACKDROP_ALTZ_3" type="global"/>
+					<KeyValue key="backdropColor" value="BACKDROP_ALTZ_COLOR_15" type="global"/>
+					<KeyValue key="backdropBorderColor" value="BACKDROP_ALTZ_COLOR_0" type="global"/>
+				</KeyValues>
 				<Anchors>
 					<Anchor point="TOPLEFT">
 						<Offset x="-3" y="3"/>
@@ -15,14 +20,6 @@
 						<Offset x="3" y="-3"/>
 					</Anchor>
 				</Anchors>
-				<Backdrop bgFile="Interface\ChatFrame\ChatFrameBackground" edgeFile="Interface\AddOns\AltzUI\media\glow">
-					<EdgeSize>
-						<AbsValue val="3"/>
-					</EdgeSize>
-					<BackgroundInsets>
-						<AbsInset left="3" right="3" top="3" bottom="3"/>
-					</BackgroundInsets>
-				</Backdrop>
 			</Frame>
 		</Frames>
 		<Layers>
@@ -43,8 +40,6 @@
 				self:SetMinMaxValues(0, 1)
 				self.value:SetPoint("BOTTOMRIGHT", self, "TOPRIGHT", 0, -5)
 				self.bd:SetFrameLevel(self:GetParent():GetFrameLevel() == 0 and 1 or self:GetParent():GetFrameLevel() - 1)
-				self.bd:SetBackdropColor(0.15, 0.15, 0.15)
-				self.bd:SetBackdropBorderColor(0, 0, 0)
 			</OnLoad>
 		</Scripts>
 	</StatusBar>
@@ -77,7 +72,12 @@
 			<AbsDimension x = "50" y = "8"/>
 		</Size>
 		<Frames>
-			<Frame parentKey="border">
+			<Frame parentKey="border" inherits="BackdropTemplate">
+				<KeyValues>
+					<KeyValue key="backdropInfo" value="BACKDROP_ALTZ_3" type="global"/>
+					<KeyValue key="backdropColor" value="BACKDROP_ALTZ_COLOR_15" type="global"/>
+					<KeyValue key="backdropBorderColor" value="BACKDROP_ALTZ_COLOR_0" type="global"/>
+				</KeyValues>
 				<Anchors>
 					<Anchor point="TOPLEFT">
 						<Offset x="-3" y="3"/>
@@ -86,14 +86,6 @@
 						<Offset x="3" y="-3"/>
 					</Anchor>
 				</Anchors>
-				<Backdrop bgFile="Interface\ChatFrame\ChatFrameBackground" edgeFile="Interface\AddOns\AltzUI\media\glow">
-					<EdgeSize>
-						<AbsValue val="3"/>
-					</EdgeSize>
-					<BackgroundInsets>
-						<AbsInset left="3" right="3" top="3" bottom="3"/>
-					</BackgroundInsets>
-				</Backdrop>
 			</Frame>
 		</Frames>
 		<Layers>
@@ -137,8 +129,6 @@
 		<Scripts>
 			<OnLoad>
 				self.border:SetFrameLevel(self:GetParent():GetFrameLevel() == 0 and 1 or self:GetParent():GetFrameLevel() - 1)
-				self.border:SetBackdropColor(0.15, 0.15, 0.15)
-				self.border:SetBackdropBorderColor(0, 0, 0)
 				
 				self.Icon:SetDrawLayer("OVERLAY",1)
 				self.IconBG:SetDrawLayer("OVERLAY",-1)
@@ -160,7 +150,12 @@
 			<AbsDimension x = "30" y = "30"/>
 		</Size>
 		<Frames>
-			<Frame parentKey="border">
+			<Frame parentKey="border" inherits="BackdropTemplate">
+				<KeyValues>
+					<KeyValue key="backdropInfo" value="BACKDROP_ALTZ_3" type="global"/>
+					<KeyValue key="backdropColor" value="BACKDROP_ALTZ_COLOR_15" type="global"/>
+					<KeyValue key="backdropBorderColor" value="BACKDROP_ALTZ_COLOR_0" type="global"/>
+				</KeyValues>
 				<Anchors>
 					<Anchor point="TOPLEFT">
 						<Offset x="-1.2" y="1.2"/>
@@ -169,14 +164,6 @@
 						<Offset x="1.2" y="-1.2"/>
 					</Anchor>
 				</Anchors>
-				<Backdrop bgFile="Interface\ChatFrame\ChatFrameBackground" edgeFile="Interface\ChatFrame\ChatFrameBackground">
-					<EdgeSize>
-						<AbsValue val="1.2"/>
-					</EdgeSize>
-					<BackgroundInsets>
-						<AbsInset left="1.2" right="1.2" top="1.2" bottom="1.2"/>
-					</BackgroundInsets>
-				</Backdrop>
 			</Frame>
 		</Frames>
 		<Layers>
@@ -225,9 +212,7 @@
 		<Scripts>
 			<OnLoad>
 				self.border:SetFrameLevel(self:GetParent():GetFrameLevel() == 0 and 1 or self:GetParent():GetFrameLevel() - 1)
-				self.border:SetBackdropColor(0.15, 0.15, 0.15)
-				self.border:SetBackdropBorderColor(0, 0, 0)
-				
+
 				self.Icon:SetDrawLayer("OVERLAY",1)
 				self.IconBG:SetDrawLayer("OVERLAY",-1)
 				self.IconBG:SetPoint("TOPLEFT", self.Icon, "TOPLEFT", -1.2, 1.2)

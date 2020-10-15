@@ -71,17 +71,20 @@ local function skin(frame)
 		frame:SetNormalTexture("")
 		frame:SetPushedTexture("")
 		frame.IconBorder:SetAlpha(0)
-		frame:SetBackdrop({bgFile = G.media.blank, edgeFile = G.media.blank, edgeSize = 1})
-		frame:SetBackdropColor(0,0,0,.1)
-		frame:SetBackdropBorderColor(0,0,0,1)
+		
+		frame.bg = CreateFrame("Frame", nil, frame, "BackdropTemplate")
+		frame.bg:SetAllPoints(frame)
+		frame.bg:SetBackdrop({bgFile = G.media.blank, edgeFile = G.media.blank, edgeSize = 1})
+		frame.bg:SetBackdropColor(0,0,0,.1)
+		frame.bg:SetBackdropBorderColor(0,0,0,1)
 		
 		f:SetPoint("TOPLEFT", frame, 1, -1)
 		f:SetPoint("BOTTOMRIGHT", frame, -1, 1)
 		f:SetTexCoord(.1, .9, .1, .9)
 		
 		if (q) then
-			q:SetPoint("TOPLEFT", frame, -1, 1)
-			q:SetPoint("BOTTOMRIGHT", frame, 1, -1)
+			q:SetPoint("TOPLEFT", frame, 0, 0)
+			q:SetPoint("BOTTOMRIGHT", frame, 0, 0)
 			q:SetTexture(G.media.blank)
 			q:SetVertexColor(1, 1, 0)
 			q:SetDrawLayer("BACKGROUND")
@@ -144,7 +147,7 @@ function BFrame.bags:setUp(frameName, ...)
 	frame.bg:SetFrameLevel(99)
 	frame:Hide()
 	
-	frame.bags = CreateFrame('Frame', nil, frame)
+	frame.bags = CreateFrame('Frame', nil, frame, "BackdropTemplate")
 	F.CreateBD(frame.bags, 0.3)
 	frame.bags:Hide()
 
@@ -505,9 +508,9 @@ local function OpenOneBag(id)
 		if ( not containerShowing ) then
 			ContainerFrame_GenerateFrame(ContainerFrame_GetOpenFrame(), size, id);
 		end
-		if (not ContainerFrame1.allBags) then
-			CheckBagSettingsTutorial();
-		end
+		--if (not ContainerFrame1.allBags) then
+			--CheckBagSettingsTutorial();
+		--end
 	end
 end
 
@@ -670,7 +673,7 @@ function SkinEditBox(frame)
 	frame.Middle:Hide()
 	frame:GetChildren():SetAlpha(0)
 	frame:SetWidth(200)
-	frame.bg = CreateFrame('frame', nil, frame)
+	frame.bg = CreateFrame('frame', nil, frame, "BackdropTemplate")
 	frame.bg:SetPoint("TOPLEFT", frame, "TOPLEFT", -4, 0)
 	frame.bg:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", 0, 0)
     frame.bg:SetBackdrop({bgFile = G.media.blank, edgeFile = G.media.blank, edgeSize = 1, insets = {top = 1, left = 1, bottom = 1, right = 1}})

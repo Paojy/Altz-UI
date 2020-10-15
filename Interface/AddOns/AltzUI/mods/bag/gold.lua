@@ -92,7 +92,7 @@ local function ShowMoneyTooltip()
 	GameTooltip:AddLine(L["服务器"]..": ", G.Ccolor.r, G.Ccolor.g, G.Ccolor.b)
 	GameTooltip:AddDoubleLine(TOTAL..": ", FormatTooltipMoney(totalGold), 1, 1, 1, 1, 1, 1)
 	for i = 1, MAX_WATCHED_TOKENS do
-		local name, count, extraCurrencyType, icon, itemID = GetBackpackCurrencyInfo(i)
+		local name, count, extraCurrencyType, icon, itemID = C_CurrencyInfo.GetBackpackCurrencyInfo(i)
 		if name and i == 1 then
 			GameTooltip:AddLine(" ")
 			GameTooltip:AddLine(CURRENCY, G.Ccolor.r, G.Ccolor.g, G.Ccolor.b)

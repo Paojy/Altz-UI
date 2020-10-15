@@ -65,3 +65,13 @@ else
 end
 
 G.classcolor = ('|cff%02x%02x%02x'):format(G.Ccolor.r * 255, G.Ccolor.g * 255, G.Ccolor.b * 255)
+
+BACKDROP_ALTZ_3 = {
+	bgFile = "Interface\\ChatFrame\\ChatFrameBackground",
+	edgeFile = "Interface\\AddOns\\AltzUI\\media\\glow",
+	edgeSize = 3,
+	insets = { left = 3, right = 3, top = 3, bottom = 3 },
+}
+
+BACKDROP_ALTZ_COLOR_0	= CreateColor(0, 0, 0)
+BACKDROP_ALTZ_COLOR_15	= CreateColor(.15, .15, .15)
