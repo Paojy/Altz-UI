@@ -23,7 +23,7 @@ local function Timer_OnUpdate(self, elapsed)
 	if self.text:IsShown() then
 		if self.nextUpdate>0 then
 			self.nextUpdate = self.nextUpdate - elapsed
-		else
+		elseif self.duration then
 			local remain = self.duration - (GetTime() - self.start)
 			if floor(remain + 0.5) > 0 then
 				local time, nextUpdate = GetFormattedTime(remain)
@@ -146,4 +146,4 @@ for i, frame in pairs(ActionBarButtonEventsFrame.frames) do
 	actionButton_Register(frame)
 end
 
---hooksecurefunc('ActionBarButtonEventsFrame_RegisterFrame', actionButton_Register)
+hooksecurefunc(ActionBarButtonEventsFrame, 'RegisterFrame', actionButton_Register)

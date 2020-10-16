@@ -228,7 +228,7 @@ if acceptfriendlyinvites then
 		if QueueStatusMinimapButton:IsShown() then return end
         if IsInGroup() then return end
 		local accept = false
-		for index = 1, GetNumFriends() do
+		for index = 1, C_FriendList.GetNumFriends() do
 			if GetFriendInfo(index) == arg1 then
 				accept = true
 				break
@@ -244,11 +244,14 @@ if acceptfriendlyinvites then
 			end
 		end
 		if not accept then
-			for index = 1, BNGetNumFriends() do
-				local toonName = select(5, BNGetFriendInfo(index))
-				if toonName == arg1 then
-					accept = true
-					break
+			for i = 1, BNGetNumFriends() do
+				local account_num = C_BattleNet.GetFriendNumGameAccounts(i)
+				for j = 1, account_num do
+					local toonName = select(4, C_BattleNet.GetFriendGameAccountInfo(i, j))
+					if toonName == arg1 then
+						accept = true
+						break
+					end
 				end
 			end
 		end

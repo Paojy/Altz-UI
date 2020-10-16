@@ -171,6 +171,7 @@ GameTooltip:HookScript("OnTooltipSetUnit", function(self)
 		GameTooltipStatusBar:SetPoint("BOTTOMLEFT", GameTooltipStatusBar:GetParent(), "TOPLEFT", 0, 4)
 		GameTooltipStatusBar:SetPoint("BOTTOMRIGHT", GameTooltipStatusBar:GetParent(), "TOPRIGHT", 0, 4)
 		GameTooltipStatusBar.bg = CreateFrame("Frame", nil, GameTooltipStatusBar, "BackdropTemplate")
+		GameTooltipStatusBar.bg:SetFrameLevel(GameTooltipStatusBar:GetFrameLevel()-1)
 		GameTooltipStatusBar.bg:SetAllPoints(GameTooltipStatusBar)
 		F.CreateBD(GameTooltipStatusBar.bg)		
     end
@@ -232,6 +233,7 @@ GAME_TOOLTIP_BACKDROP_STYLE_DEFAULT = {
 
 local function style(frame)
 	frame.bg = CreateFrame("Frame", nil, frame, "BackdropTemplate")
+	frame.bg:SetFrameLevel(frame:GetFrameLevel()-1)
 	frame.bg:SetBackdrop({
 		edgeFile = G.media.blank,
 		edgeSize = 1,

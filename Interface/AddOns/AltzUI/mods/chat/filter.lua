@@ -23,15 +23,18 @@ function FilterChat(self, event, message, author, language, channelString, targe
 	elseif UnitIsInMyGuild(sender) or UnitInRaid(sender) or UnitInParty(sender) or UnitIsUnit(sender, "player") then
 		return
 	else
-		for i = 1, GetNumFriends() do
+		for i = 1, C_FriendList.GetNumFriends() do
 			if GetFriendInfo(i) == sender then
 				return
 			end
 		end
 		for i = 1, BNGetNumFriends() do
-			local toonName = select(5, BNGetFriendInfo(i))
-			if toonName == sender then
-				return
+			local account_num = C_BattleNet.GetFriendNumGameAccounts(i)
+			for j = 1, account_num do
+				local toonName = select(4, C_BattleNet.GetFriendGameAccountInfo(i, j))
+				if toonName == sender then
+					return
+				end
 			end
 		end
 	end

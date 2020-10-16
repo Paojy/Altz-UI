@@ -24,10 +24,10 @@ function EventFrame:RangeUpdate()
 	local Icon = self.icon
 	local NormalTexture = self.NormalTexture
     local ID = self.action
-
+	
 	if not ID then return end
 
-	local IsUsable, NotEnoughMana = IsUsableAction(ID)
+	local IsUsable = IsUsableAction(ID)
 	local HasRange = ActionHasRange(ID)
 	local InRange = IsActionInRange(ID)
 
@@ -39,15 +39,7 @@ function EventFrame:RangeUpdate()
 			Icon:SetVertexColor(1.0, 1.0, 1.0)
 			NormalTexture:SetVertexColor(1.0, 1.0, 1.0)
 		end
-	elseif NotEnoughMana then -- Not enough power
-		Icon:SetVertexColor(0.1, 0.3, 1.0)
-		NormalTexture:SetVertexColor(0.1, 0.3, 1.0)
-	else -- Not usable
-		Icon:SetVertexColor(0.3, 0.3, 0.3)
-		NormalTexture:SetVertexColor(0.3, 0.3, 0.3)
 	end
 end
 
---hooksecurefunc("ActionButton_OnUpdate", EventFrame.RangeOnUpdate)
---hooksecurefunc("ActionButton_Update", EventFrame.RangeUpdate)
---hooksecurefunc("ActionButton_UpdateUsable", EventFrame.RangeUpdate)
+hooksecurefunc("ActionButton_UpdateRangeIndicator", EventFrame.RangeUpdate)

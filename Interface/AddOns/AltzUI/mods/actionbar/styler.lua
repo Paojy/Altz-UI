@@ -127,7 +127,7 @@ local function styleActionButton(bu)
 	if fobs then fobs:SetTexture(nil) end
 	bo:SetTexture(nil) --hide the border (plain ugly, sry blizz)
 	--hotkey
-	ho:SetFont(G.numFont, aCoreCDB["ActionbarOptions"]["keybindsize"], "OUTLINE")
+	ho:SetFont(G.norFont, aCoreCDB["ActionbarOptions"]["keybindsize"], "OUTLINE")
 	ho:ClearAllPoints()
 	ho:SetJustifyH("RIGHT")
 	ho:SetPoint("LEFT", bu, "TOPLEFT")
