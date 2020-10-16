@@ -5,27 +5,116 @@ local F = unpack(AuroraClassic)
 local autoquests = aCoreCDB["OtherOptions"]["autoquests"]
 
 --显示任务等级
-local function questlevel()
-	local buttons = QuestLogScrollFrame.buttons
-	local numButtons = #buttons
-	local scrollOffset = HybridScrollFrame_GetOffset(QuestLogScrollFrame)
-	local numEntries, numQuests = GetNumQuestLogEntries()
 
-	for i = 1, numButtons do
-		local questIndex = i + scrollOffset
-		local questLogTitle = buttons[i]
-		if questIndex <= numEntries then
-			local title, level, questTag, suggestedGroup, isHeader, isCollapsed, isComplete, isDaily = GetQuestLogTitle(questIndex)
-			if not isHeader then
-				questLogTitle:SetText("[" .. level .. "] " .. title)
-				QuestLogTitleButton_Resize(questLogTitle)
+local function QuestLogQuests_GetTitle(displayState, info)
+	local title = info.title;
+
+	if displayState.displayQuestID then
+		title = info.questID.." - "..title;
+	end
+
+	if displayState.showReadyToRecord then
+		if info.readyForTranslation ~= nil then
+			if info.readyForTranslation == false then
+				title = "<Not Ready for Translation> " .. title;
 			end
 		end
 	end
+
+	title = "["..info.difficultyLevel.."] "..title;
+
+	-- If not a header see if any nearby group mates are on this quest
+	local partyMembersOnQuest = QuestUtils_GetNumPartyMembersOnQuest(info.questID);
+
+	if partyMembersOnQuest > 0 then
+		title = "["..partyMembersOnQuest.."] "..title;
+	end
+
+	return title;
 end
---hooksecurefunc("QuestLog_Update", questlevel)
---QuestLogScrollFrameScrollBar:HookScript("OnValueChanged", questlevel)
+
+local function QuestLogQuests_ShouldShowQuestButton(info)
+	-- If it's not a quest, then it shouldn't show as a quest button
+	if info.isHeader then
+		return false;
+	end
+
+	-- If it is a quest, but its header is collapsed, then it shouldn't show
+	if info.header and info.header.isCollapsed then
+		return false;
+	end
+
+	-- Normal rules about quest visibility.
+	-- NOTE: IsComplete checks should be cached if possible...coming soon...
+	return not info.isTask and not info.isHidden and (not info.isBounty or C_QuestLog.IsComplete(info.questID));
+end
+
+local function QuestLogQuests_BuildSingleQuestInfo(questLogIndex, questInfoContainer, lastHeader)
+	local info = C_QuestLog.GetInfo(questLogIndex);
+	if not info then return end
+
+	questInfoContainer[questLogIndex] = info;
+
+	-- Precompute whether or not the headers should display so that it's easier to add them later.
+	-- We don't care about collapsed states, we only care about the fact that there are any quests
+	-- to display under the header.
+	-- Caveat: Campaign headers will always display, otherwise they wouldn't be added to the quest log!
+	if info.isHeader then
+		lastHeader = info;
+
+		local isCampaign = info.campaignID ~= nil;
+		info.shouldDisplay = isCampaign; -- Always display campaign headers, the rest start as hidden
+	else
+		info.isCalling = C_QuestLog.IsQuestCalling(info.questID);  -- TOOD: Do this in QuestLog? Either way, cached for later use
+
+		if lastHeader and not lastHeader.shouldDisplay then
+			lastHeader.shouldDisplay = info.isCalling or QuestLogQuests_ShouldShowQuestButton(info);
+		end
+
+		-- Make it easy for a quest to look up its header
+		info.header = lastHeader;
+
+		-- Might as well just keep this in Lua
+		if info.isCalling and info.header then
+			info.header.isCalling = true;
+		end
+	end
+
+	return lastHeader;
+end
+
+local function QuestLogQuests_BuildQuestInfoContainer()
+	local questInfoContainer = {};
+	local numEntries = C_QuestLog.GetNumQuestLogEntries();
+	local lastHeader;
+
+	for questLogIndex = 1, numEntries do
+		lastHeader = QuestLogQuests_BuildSingleQuestInfo(questLogIndex, questInfoContainer, lastHeader);
+	end
+
+	return questInfoContainer;
+end
+
+local function QuestLogQuests_BuildInitialDisplayState(poiTable, questInfoContainer)
+	return {
+		questInfoContainer = questInfoContainer,
+		poiTable = poiTable,
+		displayQuestID = GetCVarBool("displayQuestID"),
+		showReadyToRecord = GetCVarBool("showReadyToRecord"),
+		questPOI = GetCVarBool("questPOI"),
+	};
+end
+
+hooksecurefunc("QuestLogQuests_Update", function(poiTable)
+	local questInfoContainer = QuestLogQuests_BuildQuestInfoContainer()
+	local displayState = QuestLogQuests_BuildInitialDisplayState(poiTable, questInfoContainer)
 	
+	for button in QuestScrollFrame.titleFramePool:EnumerateActive() do
+		local t = QuestLogQuests_GetTitle(displayState, button.info)
+		button.Text:SetText(QuestUtils_DecorateQuestText(button.questID, t, false, false, true))
+	end
+end)
+
 if autoquests then
   local Monomyth = CreateFrame("Frame")
     Monomyth:SetScript("OnEvent", function(self, event, ...) self[event](...) end)
