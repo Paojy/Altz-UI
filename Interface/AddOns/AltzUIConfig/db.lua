@@ -303,19 +303,22 @@ local AuraList = {
 		[GetSpellInfo(122783)]  = { id = 122783,  level = 15,}, -- 散魔功
 	--萨满
 		[GetSpellInfo(108271)]  = { id = 108271,  level = 15,}, -- 星界转移
+	--通用
+		[GetSpellInfo(296230)]  = { id = 296230,  level = 6,}, -- 活力导管精华
 
 	},
 	["Debuffs"] = {
-		[GetSpellInfo(243237)]  = { id = 243237,  level = 6,}, -- 爆裂
-		[GetSpellInfo(240559)]  = { id = 240559,  level = 6,}, -- 重伤
-		[GetSpellInfo(209858)]  = { id = 209858,  level = 4,}, -- 死疽
-		[GetSpellInfo(124273)]  = { id = 124273,  level = 15,}, -- 个人添加：重度醉拳
+		[GetSpellInfo(243237)]  = { id = 243237,  level = 6,},  -- 爆裂
+		[GetSpellInfo(240559)]  = { id = 240559,  level = 6,},  -- 重伤
+		[GetSpellInfo(209858)]  = { id = 209858,  level = 4,},  -- 死疽
+		[GetSpellInfo(124273)]  = { id = 124273,  level = 4,},  -- 个人添加：重度醉拳
 --		[GetSpellInfo(288694)]  = { id = 288694,  level = 10,}, -- 个人添加：暗影碎击
 --		[GetSpellInfo(288388)]  = { id = 288388,  level = 15,}, -- 个人添加：夺魂
 --		[GetSpellInfo(290085)]  = { id = 290085,  level = 10,}, -- 个人添加：驱逐灵魂
-		[GetSpellInfo(314406)]  = { id = 314406,  level = 10,}, -- 个人添加：致残疫病
-		[GetSpellInfo(314531)]  = { id = 314531,  level = 10,}, -- 个人添加：撕扯血肉
-		[GetSpellInfo(314478)]  = { id = 314478,  level = 10,}, -- 个人添加：倾泻恐惧
+		[GetSpellInfo(314406)]  = { id = 314406,  level = 6,},  -- 个人添加：致残疫病
+		[GetSpellInfo(314531)]  = { id = 314531,  level = 6,},  -- 个人添加：撕扯血肉
+		[GetSpellInfo(314478)]  = { id = 314478,  level = 6,},  -- 个人添加：倾泻恐惧
+		[GetSpellInfo(314308)]  = { id = 314308,  level = 4,},  -- 个人添加：灵魂毁灭
 	},
 }
 
@@ -492,6 +495,7 @@ G.DebuffList = {
 		[EJ_GetEncounterInfo(2082)] = { --> Prêtresse Alun'za
 			[GetSpellInfo(255582)] = {id = 255582, level = 8,}, 
 			[GetSpellInfo(255558)] = {id = 255558, level = 8,}, 
+			[GetSpellInfo(277072)] = {id = 277072, level = 4,}, 	-- 腐化的黄金
 		},
 		[EJ_GetEncounterInfo(2036)] = { --> Vol'kaal
 			[GetSpellInfo(250371)] = {id = 250371, level = 8,}, 
@@ -685,6 +689,7 @@ G.DebuffList = {
 		},
 		[EJ_GetEncounterInfo(2172)] = { --> Dazar le premier roi
 			[GetSpellInfo(268796)] = {id = 268796, level = 8,},
+			[GetSpellInfo(268419)] = {id = 268419, level = 8,},
 		},
 		["Trash"] = {
 			[GetSpellInfo(270492)] = {id = 270492, level = 8,},
@@ -701,6 +706,7 @@ G.DebuffList = {
 			[GetSpellInfo(271640)] = {id = 271640, level = 8,},
 			[GetSpellInfo(270499)] = {id = 270499, level = 8,},
 			[GetSpellInfo(269369)] = {id = 269369, level = 8,},
+			[GetSpellInfo(270289)] = {id = 270289, level = 8,},		-- 净化光线
 		},
 	},
 	
@@ -767,6 +773,7 @@ G.DebuffList = {
 			[GetSpellInfo(257169)] = {id = 257169, level = 8,},
 			[GetSpellInfo(272713)] = {id = 272713, level = 8,},
 			[GetSpellInfo(257036)] = {id = 257036, level = 8,},			--个人添加：狂野冲锋
+			[GetSpellInfo(275836)] = {id = 275836, level = 6,},			--个人添加：钉刺之毒
 		},
 	},
 
@@ -786,6 +793,7 @@ G.DebuffList = {
 			[GetSpellInfo(303885)] = {id = 303885, level = 8,},		--爆裂喷发
 		},
 		[EJ_GetEncounterInfo(2336)] = { --> 坦克大战
+			[GetSpellInfo(318587)] = {id = 318587, level = 8,},		--烈焰喷射
 		},
 		[EJ_GetEncounterInfo(2339)] = { --> 狂犬
 			[GetSpellInfo(294929)] = {id = 294929, level = 8,},		--烈焰撕咬
@@ -795,6 +803,7 @@ G.DebuffList = {
 		},
 		[EJ_GetEncounterInfo(2331)] = { --> 麦卡贡国王
 			[GetSpellInfo(292267)] = {id = 292267, level = 8,},		--超荷电磁炮
+			[GetSpellInfo(291928)] = {id = 291928, level = 8,},		--超荷电磁炮
 		},		
 		["Trash"] = {
 			[GetSpellInfo(300659)] = {id = 300659, level = 8,},		--疾病
@@ -802,6 +811,7 @@ G.DebuffList = {
 			[GetSpellInfo(298602)] = {id = 298602, level = 7,},		--烟雾弹
 			[GetSpellInfo(301712)] = {id = 301712, level = 7,},		--突袭
 			[GetSpellInfo(299475)] = {id = 299475, level = 7,},		--音速咆哮
+			[GetSpellInfo(293670)] = {id = 293670, level = 7,},		--链刃
 		},
 	},
 	
@@ -1230,12 +1240,12 @@ G.DebuffList = {
 			[GetSpellInfo(314347)] = {id = 314347, level = 6,}, -- 毒扼，昏迷
 			[GetSpellInfo(309733)] = {id = 309733, level = 7,}, -- 疯狂燃烧，工具人
 			[GetSpellInfo(307053)] = {id = 307053, level = 6,}, -- 岩浆池，别踩
-			[GetSpellInfo(311362)] = {id = 311362, level = 6,}, -- 升温，待定是否注释掉
-			[GetSpellInfo(313250)] = {id = 313250, level = 6,}, -- 蠕行疯狂，史诗，待定是否注释掉
+--			[GetSpellInfo(311362)] = {id = 311362, level = 6,}, -- 升温，环境效果，注释掉
+--			[GetSpellInfo(313250)] = {id = 313250, level = 6,}, -- 蠕行疯狂，史诗，自己解决不用监视
 			
 		},
 		[EJ_GetEncounterInfo(2365)] = {  --> 玛乌特
-			[GetSpellInfo(307399)] = {id = 307399, level = 6,}, -- 暗影之伤，换坦技
+			[GetSpellInfo(307399)] = {id = 307399, level = 7,}, -- 暗影之伤，换坦技
 			[GetSpellInfo(307806)] = {id = 307806, level = 7,}, -- 吞噬魔法，点名放圈
 			[GetSpellInfo(307586)] = {id = 307586, level = 6,}, -- 噬魔深渊，踩圈
 --			[GetSpellInfo(306301)] = {id = 306301, level = 6,}, -- 禁忌法力，玩家buff，无需关注
@@ -1252,7 +1262,7 @@ G.DebuffList = {
 			[GetSpellInfo(313215)] = {id = 313215, level = 6,}, -- 颤涌镜像，别靠近，可能能删除
 		},
 		[EJ_GetEncounterInfo(2377)] = {  --> 黑暗审判官夏奈什
-			[GetSpellInfo(311551)] = {id = 311551, level = 6,}, -- 深渊打击，换坦技
+			[GetSpellInfo(311551)] = {id = 311551, level = 7,}, -- 深渊打击，换坦技
 			[GetSpellInfo(312406)] = {id = 312406, level = 7,}, -- 虚空觉醒，踢球
 			[GetSpellInfo(314298)] = {id = 314298, level = 6,}, -- 末日迫近，3层死
 			[GetSpellInfo(306311)] = {id = 306311, level = 6,}, -- 灵魂鞭笞，远离
@@ -1268,45 +1278,46 @@ G.DebuffList = {
 			[GetSpellInfo(310402)] = {id = 310402, level = 6,}, -- 吞食狂热，可能为全屏效果
 		},
 		[EJ_GetEncounterInfo(2367)] = {  --> 无厌者夏德哈
-			[GetSpellInfo(307471)] = {id = 307471, level = 6,}, -- 碾压，坦克
-			[GetSpellInfo(307472)] = {id = 307472, level = 6,}, -- 融解，坦克
+			[GetSpellInfo(307471)] = {id = 307471, level = 7,}, -- 碾压，坦克
+			[GetSpellInfo(307472)] = {id = 307472, level = 7,}, -- 融解，坦克
 			[GetSpellInfo(307358)] = {id = 307358, level = 8,}, -- 衰弱唾液，传染
 			[GetSpellInfo(306928)] = {id = 306928, level = 6,}, -- 幽影吐息，恐惧
 			[GetSpellInfo(308177)] = {id = 308177, level = 6,}, -- 熵能聚合，吃球
-			[GetSpellInfo(306930)] = {id = 306930, level = 6,}, -- 熵能暗息，减少治疗
+--			[GetSpellInfo(306930)] = {id = 306930, level = 6,}, -- 熵能暗息，减少治疗
 			[GetSpellInfo(314736)] = {id = 314736, level = 6,}, -- 毒泡流溢，3秒死
 			[GetSpellInfo(306929)] = {id = 306929, level = 6,}, -- 翻滚毒息，dot
 			[GetSpellInfo(318078)] = {id = 318078, level = 8,}, -- 锁定，需查证
 			[GetSpellInfo(309704)] = {id = 309704, level = 6,}, -- 腐蚀涂层，需查证
-			[GetSpellInfo(312099)] = {id = 312099, level = 6,}, -- 史诗，美味狗粮，去喂
-			[GetSpellInfo(312332)] = {id = 312332, level = 6,}, -- 史诗，粘液残留，喂过了
+			[GetSpellInfo(312099)] = {id = 312099, level = 5,}, -- 史诗，美味狗粮，去喂
+			[GetSpellInfo(312332)] = {id = 312332, level = 4,}, -- 史诗，粘液残留，喂过了
 		},
 		[EJ_GetEncounterInfo(2373)] = {  --> 德雷阿佳丝
 			[GetSpellInfo(310246)] = {id = 310246, level = 6,}, -- 虚空之握，抓人
-			[GetSpellInfo(310277)] = {id = 310277, level = 6,}, -- 动荡之种，坦克
+			[GetSpellInfo(310277)] = {id = 310277, level = 7,}, -- 动荡之种，坦克
 			[GetSpellInfo(310309)] = {id = 310309, level = 6,}, -- 动荡易伤，爆炸易伤
 			[GetSpellInfo(310358)] = {id = 310358, level = 6,}, -- 狂乱低语，减速
 			[GetSpellInfo(310361)] = {id = 310361, level = 6,}, -- 不羁狂乱，炸昏
 			[GetSpellInfo(310406)] = {id = 310406, level = 6,}, -- 虚空闪耀，可能能删除
-			[GetSpellInfo(308377)] = {id = 308377, level = 6,}, -- 虚化脓液，踩水打王
+--			[GetSpellInfo(308377)] = {id = 308377, level = 6,}, -- 虚化脓液，踩水打王，dps自己监控
 --			[GetSpellInfo(317001)] = {id = 317001, level = 5,}, -- 暗影排异，不能踩水，无需关注
 			[GetSpellInfo(310552)] = {id = 310552, level = 6,}, -- 精神鞭笞
 			[GetSpellInfo(310563)] = {id = 310563, level = 6,}, -- 背叛低语，4层心控
 			[GetSpellInfo(310567)] = {id = 310567, level = 6,}, -- 背叛者，心控
+			[GetSpellInfo(310499)] = {id = 310499, level = 6,}, -- 烟雾弹
 		},
 		[EJ_GetEncounterInfo(2374)] = {  --> 伊格诺斯，重生之蚀
-			[GetSpellInfo(309961)] = {id = 309961, level = 6,}, -- 恩佐斯之眼，坦克
-			[GetSpellInfo(311367)] = {id = 311367, level = 6,}, -- 腐蚀者之触，心控
+			[GetSpellInfo(309961)] = {id = 309961, level = 7,}, -- 恩佐斯之眼，坦克
+			[GetSpellInfo(311367)] = {id = 311367, level = 7,}, -- 腐蚀者之触，心控
 			[GetSpellInfo(310322)] = {id = 310322, level = 6,}, -- 腐蚀沼泽，别踩
-			[GetSpellInfo(312486)] = {id = 312486, level = 6,}, -- 轮回噩梦，被咬
+			[GetSpellInfo(312486)] = {id = 312486, level = 8,}, -- 轮回噩梦，被咬
 			[GetSpellInfo(311159)] = {id = 311159, level = 6,}, -- 诅咒之血，11码圈
-			[GetSpellInfo(315094)] = {id = 315094, level = 6,}, -- 锁定
+			[GetSpellInfo(315094)] = {id = 315094, level = 7,}, -- 锁定
 			[GetSpellInfo(313759)] = {id = 313759, level = 6,}, -- 史诗，诅咒之血，变小驱散
 		},
 		[EJ_GetEncounterInfo(2370)] = {  --> 维克修娜
-			[GetSpellInfo(307359)] = {id = 307359, level = 7,}, -- 绝望，坦克，加满血
+			[GetSpellInfo(307359)] = {id = 307359, level = 8,}, -- 绝望，坦克，加满血
 			[GetSpellInfo(307020)] = {id = 307020, level = 6,}, -- 暮光之息
-			[GetSpellInfo(307019)] = {id = 307019, level = 6,}, -- 虚空腐蚀
+--			[GetSpellInfo(307019)] = {id = 307019, level = 6,}, -- 虚空腐蚀，全屏不消，自己用wa监控
 			[GetSpellInfo(306981)] = {id = 306981, level = 6,}, -- 虚空之赐
 			[GetSpellInfo(310224)] = {id = 310224, level = 8,}, -- 毁灭，接力驱散
 			[GetSpellInfo(307314)] = {id = 307314, level = 7,}, -- 渗透暗影，点名出去
@@ -1319,38 +1330,42 @@ G.DebuffList = {
 			[GetSpellInfo(315932)] = {id = 315932, level = 6,}, -- 史诗，蛮力重击
 		},
 		[EJ_GetEncounterInfo(2364)] = {  --> 虚无者莱登
-			[GetSpellInfo(306819)] = {id = 306819, level = 6,}, -- 虚化重击，坦克
---			[GetSpellInfo(306279)] = {id = 306279, level = 4,}, -- 动荡暴露，易伤。死了活该，不用监控
-			[GetSpellInfo(306273)] = {id = 306273, level = 6,}, -- 不稳定的生命
+			[GetSpellInfo(306819)] = {id = 306819, level = 6,}, -- 虚化重击，坦克		
+			[GetSpellInfo(306279)] = {id = 306279, level = 4,}, -- 动荡暴露，易伤。死了活该，不用监控
+			[GetSpellInfo(306273)] = {id = 306273, level = 7,}, -- 不稳定的生命
+			[GetSpellInfo(313077)] = {id = 313077, level = 7,}, -- 不稳定的梦魇
 			[GetSpellInfo(306637)] = {id = 306637, level = 6,}, -- 不稳定的虚空爆发，沉默
-			[GetSpellInfo(309777)] = {id = 309777, level = 6,}, -- 虚空污秽，接圈
-			[GetSpellInfo(313227)] = {id = 313227, level = 6,}, -- 腐坏伤口，坦克
+			[GetSpellInfo(309777)] = {id = 309777, level = 5,}, -- 虚空污秽，接圈
+			[GetSpellInfo(313227)] = {id = 313227, level = 7,}, -- 腐坏伤口，坦克
 			[GetSpellInfo(310019)] = {id = 310019, level = 8,}, -- 充能锁链，拉断
 			[GetSpellInfo(310022)] = {id = 310022, level = 8,}, -- 充能锁链，拉断
 			[GetSpellInfo(306184)] = {id = 306184, level = 5,}, -- 施放的虚空，治疗破盾
 			[GetSpellInfo(315252)] = {id = 315252, level = 6,}, -- 史诗，恐怖炼狱，被火追
+			[GetSpellInfo(316065)] = {id = 316065, level = 8,}, -- 史诗，腐化存续，满血暴毙
 		},
 		[EJ_GetEncounterInfo(2366)] = {  --> 恩佐斯的外壳
 			[GetSpellInfo(307832)] = {id = 307832, level = 6,}, -- 恩佐斯的仆从，心控
 			[GetSpellInfo(313334)] = {id = 313334, level = 6,}, -- 恩佐斯之赐，超神
 			[GetSpellInfo(306973)] = {id = 306973, level = 6,}, -- 疯狂炸弹，群恐
-			[GetSpellInfo(313364)] = {id = 313364, level = 6,}, -- 精神腐烂
-			[GetSpellInfo(315954)] = {id = 315954, level = 6,}, -- 漆黑伤疤，坦克
-			[GetSpellInfo(307044)] = {id = 307044, level = 6,}, -- 梦魇抗原，被咬
-			[GetSpellInfo(307011)] = {id = 307011, level = 6,}, -- 疯狂繁衍
-			[GetSpellInfo(307008)] = {id = 307008, level = 6,}, -- 疯狂繁衍
-			[GetSpellInfo(307061)] = {id = 307061, level = 6,}, -- 菌丝生长，减速
+			[GetSpellInfo(313364)] = {id = 313364, level = 5,}, -- 精神腐烂
+			[GetSpellInfo(315954)] = {id = 315954, level = 7,}, -- 漆黑伤疤，坦克
+			[GetSpellInfo(307044)] = {id = 307044, level = 5,}, -- 梦魇抗原，被咬
+			[GetSpellInfo(307011)] = {id = 307012, level = 7,}, -- 疯狂繁衍
+			[GetSpellInfo(306985)] = {id = 306985, level = 6,}, -- 狂乱炸弹
+			[GetSpellInfo(317627)] = {id = 317627, level = 6,}, -- 无尽虚空			
+			[GetSpellInfo(307061)] = {id = 307061, level = 4,}, -- 菌丝生长，减速
+			[GetSpellInfo(316848)] = {id = 316848, level = 8,}, -- 外膜
 		},
 		[EJ_GetEncounterInfo(2375)] = {  --> 腐蚀者恩佐斯
 			[GetSpellInfo(314889)] = {id = 314889, level = 6,}, -- 探视心智
-			[GetSpellInfo(315624)] = {id = 315624, level = 6,}, -- 心智受限
+--			[GetSpellInfo(315624)] = {id = 315624, level = 6,}, -- 心智受限，无需监控
 			[GetSpellInfo(309991)] = {id = 309991, level = 6,}, -- 痛楚
 			[GetSpellInfo(313609)] = {id = 313609, level = 6,}, -- 恩佐斯之赐
 			[GetSpellInfo(308996)] = {id = 308996, level = 6,}, -- 恩佐斯的仆从
 			[GetSpellInfo(316711)] = {id = 316711, level = 6,}, -- 意志摧毁
-			[GetSpellInfo(313400)] = {id = 313400, level = 6,}, -- 堕落心灵
-			[GetSpellInfo(316542)] = {id = 316542, level = 8,}, -- 妄念
-			[GetSpellInfo(316541)] = {id = 316541, level = 8,}, -- 妄念
+			[GetSpellInfo(313400)] = {id = 313400, level = 8,}, -- 堕落心灵
+			[GetSpellInfo(316542)] = {id = 316542, level = 7,}, -- 妄念
+			[GetSpellInfo(316541)] = {id = 316541, level = 7,}, -- 妄念
 			[GetSpellInfo(310042)] = {id = 310042, level = 6,}, -- 混乱爆发
 			[GetSpellInfo(313793)] = {id = 313793, level = 6,}, -- 狂乱之火
 			[GetSpellInfo(313610)] = {id = 313610, level = 6,}, -- 精神腐烂
@@ -1365,9 +1380,11 @@ G.DebuffList = {
 			[GetSpellInfo(310134)] = {id = 310134, level = 6,}, -- 疯狂聚现
 			[GetSpellInfo(312866)] = {id = 312866, level = 6,}, -- 灾变烈焰
 			[GetSpellInfo(315772)] = {id = 315772, level = 6,}, -- 心灵之握
+			[GetSpellInfo(318459)] = {id = 318459, level = 8,}, -- 生灵俱灭
+			[GetSpellInfo(318196)] = {id = 318196, level = 8,}, -- 事件视界
 		},
 		["Trash"] = {
-		
+			[GetSpellInfo(316513)] = {id = 316513, level = 8,}, -- 穿心毒液
 		},
 	},
 
@@ -1464,12 +1481,14 @@ local default_HealerIndicatorAuraList = {
 	},
 	SHAMAN = { 
 		[61295] = true,		-- 激流
+		[974] = true,		-- 大地之盾
 	},
 	PALADIN = {
 	    [53563] = true,		-- 圣光道标
         [156910] = true,	-- 信仰道标
 		[25771] = true,		-- 自律
 		[223306] = true,	-- 赋予信仰
+		[287280] = true,	-- 圣光闪烁
 	},
 	WARRIOR = { 
 		[12975] = true,		-- 援护

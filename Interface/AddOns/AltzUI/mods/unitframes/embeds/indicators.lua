@@ -196,6 +196,15 @@ oUF.Tags.Methods['Mlight:ripTime'] = function(u) --激流
 end
 oUF.Tags.Events['Mlight:ripTime'] = 'UNIT_AURA'
 
+local pomCount = {"①","②","③","④","⑤","⑥","⑦","⑧","⑨","⑩","⑪","⑫","⑬","⑭","⑮","⑯","⑰","⑱","⑲","⑳",}
+oUF.Tags.Methods['Mlight:ddzd'] = function(u) -- 大地之盾
+    local name,_, c = AuraUtil.FindAuraByName(GetSpellInfo(974), u, "PLAYER|HELPFUL")
+	if name and c then
+        if c and c ~= 0 then return "|cff66FFFF"..pomCount[c].."|r" end
+	end
+end
+oUF.Tags.Events['Mlight:ddzd'] = "UNIT_AURA"
+
 -- Paladin 骑士
 oUF.Tags.Methods['Mlight:beacon'] = function(u) --道标
     local name, _,_,_,_, expirationTime = AuraUtil.FindAuraByName(GetSpellInfo(53563), u, "PLAYER|HELPFUL")
@@ -226,6 +235,20 @@ oUF.Tags.Methods['Mlight:fyxy'] = function(u) -- 赋予信仰
     end
 end
 oUF.Tags.Events['Mlight:fyxy'] = 'UNIT_AURA'
+
+oUF.Tags.Methods['Mlight:sgss'] = function(u) -- 圣光闪烁
+    local name, _,_,_,_, expirationTime = AuraUtil.FindAuraByName(GetSpellInfo(287280), u, "PLAYER|HELPFUL")
+    if name then
+        local spellTimer = (expirationTime-GetTime())
+		local TimeLeft = T.FormatTime(spellTimer)
+        if spellTimer > 0 then
+            return "|cff97FFFF"..TimeLeft.."|r"
+        end
+    end
+end
+oUF.Tags.Events['Mlight:sgss'] = 'UNIT_AURA'
+
+
 
 -- Monk 武僧
 oUF.Tags.Methods['Mlight:jhzq'] = function(u) -- 精华之泉
@@ -315,11 +338,11 @@ oUF.Tags.Events['Mlight:xnhd'] = 'UNIT_AURA'
 
 classIndicators={
     ["DRUID"] = {
-        ["TL"] = "[Mlight:regrow]",
+        ["TL"] = "[Mlight:lb]",
         ["BR"] = "[Mlight:xnhd][Mlight:ayj][Mlight:da][Mlight:lt][Mlight:snla]",
         ["BL"] = "[Mlight:wildgrowth]",
         ["TR"] = "[Mlight:rejuv]",
-        ["Cen"] = "[Mlight:lb]",
+--        ["Cen"] = "[Mlight:lb]",
     },
     ["PRIEST"] = {
         ["TL"] = "[Mlight:rnw][Mlight:pws]",
@@ -329,9 +352,9 @@ classIndicators={
         ["Cen"] = "[Mlight:atonement]",
     },
     ["PALADIN"] = {
-        ["TL"] = "[Mlight:fyxy]",
+        ["TL"] = "[Mlight:sgss]",
         ["BR"] = "[Mlight:xnhd][Mlight:ayj][Mlight:da][Mlight:lt]",
-        ["BL"] = "",
+        ["BL"] = "[Mlight:fyxy]",
         ["TR"] = "[Mlight:beacon]",
         ["Cen"] = "[Mlight:forbearance]",
     },
@@ -357,10 +380,10 @@ classIndicators={
         ["Cen"] = "",
     },
     ["SHAMAN"] = {
-        ["TL"] = "",
+        ["TL"] = "[Mlight:ripTime]",
         ["BR"] = "[Mlight:xnhd][Mlight:ayj][Mlight:da][Mlight:lt][Mlight:rip40]",
         ["BL"] = "",
-        ["TR"] = "[Mlight:ripTime]",
+        ["TR"] = "[Mlight:ddzd]",
         ["Cen"] = "",
     },
     ["HUNTER"] = {
