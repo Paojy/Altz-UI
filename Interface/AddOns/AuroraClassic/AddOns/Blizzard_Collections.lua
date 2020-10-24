@@ -642,10 +642,12 @@ C.themes["Blizzard_Collections"] = function()
 	CollectionsJournal:HookScript("OnShow", function()
 		if not IsAddOnLoaded("HPetBattleAny") then return end
 		if not reskinHPet then
-			F.Reskin(HPetInitOpenButton)
-			F.Reskin(HPetAllInfoButton)
-			for i = 1, 9 do
-				select(i, HPetAllInfoButton:GetRegions()):Hide()
+			if HPetInitOpenButton then
+				F.Reskin(HPetInitOpenButton)
+			end
+			if HPetAllInfoButton then
+				F.StripTextures(HPetAllInfoButton)
+				F.Reskin(HPetAllInfoButton)
 			end
 
 			if PetJournalBandageButton then

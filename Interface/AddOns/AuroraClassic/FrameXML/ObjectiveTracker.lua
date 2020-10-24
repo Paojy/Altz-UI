@@ -5,17 +5,25 @@ local r, g, b = C.r, C.g, C.b
 local select, pairs = select, pairs
 
 local function reskinQuestIcon(button)
-	if not button or button.styled then return end
+	if not button then return end
 
-	button:SetNormalTexture("")
-	button:SetPushedTexture("")
-	button:GetHighlightTexture():SetColorTexture(1, 1, 1, .25)
-	local icon = button.icon or button.Icon
-	if icon then
-		F.ReskinIcon(icon, true)
+	if not button.styled then
+		button:SetSize(24, 24)
+		button:SetNormalTexture("")
+		button:SetPushedTexture("")
+		button:GetHighlightTexture():SetColorTexture(1, 1, 1, .25)
+		local icon = button.icon or button.Icon
+		if icon then
+			button.bg = F.ReskinIcon(icon, true)
+			icon:SetInside()
+		end
+
+		button.styled = true
 	end
 
-	button.styled = true
+	if button.bg then
+		button.bg:SetFrameLevel(0)
+	end
 end
 
 local function reskinQuestIcons(_, block)
@@ -41,7 +49,6 @@ local function reskinBarTemplate(bar)
 	bar:SetStatusBarTexture(C.normTex)
 	bar:SetStatusBarColor(r, g, b)
 	bar.bg = F.SetBD(bar)
-	F:SmoothBar(bar)
 end
 
 local function reskinProgressbar(_, _, line)
@@ -86,10 +93,16 @@ local function reskinTimerBar(_, _, line)
 	end
 end
 
+local function updateMinimizeButton(button, collapsed)
+	button.__texture:DoCollapse(collapsed)
+end
+
 local function reskinMinimizeButton(button)
 	F.ReskinCollapse(button)
 	button:GetNormalTexture():SetAlpha(0)
 	button:GetPushedTexture():SetAlpha(0)
+	button.__texture:DoCollapse(false)
+	hooksecurefunc(button, "SetCollapsed", updateMinimizeButton)
 end
 
 local atlasToQuality = {
@@ -104,7 +117,7 @@ local function updateMawBuffQuality(button, spellID)
 
 	local atlas = C_Spell.GetMawPowerBorderAtlasBySpellID(spellID)
 	local quality = atlasToQuality[atlas]
-	local color = DB.QualityColors[quality or 1]
+	local color = C.QualityColors[quality or 1]
 	if button.bg then
 		button.bg:SetBackdropBorderColor(color.r, color.g, color.b)
 	end

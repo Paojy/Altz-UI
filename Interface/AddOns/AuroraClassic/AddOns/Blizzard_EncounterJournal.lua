@@ -270,7 +270,7 @@ C.themes["Blizzard_EncounterJournal"] = function()
 	reward.text:SetTextColor(.9, .9, .9)
 	reward.iconRing:Hide()
 	reward.iconRingHighlight:SetTexture("")
-	F.CreateBDFrame(reward.icon)
+	F.CreateBDFrame(reward.icon):SetFrameLevel(3)
 	F.ReskinArrow(suggestion.prevButton, "left")
 	F.ReskinArrow(suggestion.nextButton, "right")
 
@@ -294,7 +294,7 @@ C.themes["Blizzard_EncounterJournal"] = function()
 		local reward = suggestion.reward
 		reward.iconRing:Hide()
 		reward.iconRingHighlight:SetTexture("")
-		F.CreateBDFrame(reward.icon)
+		F.CreateBDFrame(reward.icon):SetFrameLevel(3)
 	end
 
 	-- Hook functions

@@ -660,7 +660,7 @@ C.themes["Blizzard_GarrisonUI"] = function()
 		if not frame.bg then
 			frame:GetRegions():Hide()
 			frame.bg = F.ReskinIcon(frame.Icon)
-			F.ReskinIconBorder(frame.IconBorder)
+			F.ReskinIconBorder(frame.IconBorder, true)
 		end
 	end)
 
@@ -950,7 +950,7 @@ C.themes["Blizzard_GarrisonUI"] = function()
 	CovenantMissionFrame.FollowerTab.HealFollowerFrame.ButtonFrame:SetAlpha(0)
 	CovenantMissionFrameFollowers.ElevatedFrame:SetAlpha(0)
 	if CovenantMissionFrameFollowers.HealAllButton then
-		B.Reskin(CovenantMissionFrameFollowers.HealAllButton) -- not in ptr
+		F.Reskin(CovenantMissionFrameFollowers.HealAllButton) -- not in ptr
 	end
 	CovenantMissionFrame.MapTab:SetAlpha(0) -- not sure what does this for, need reviewed
 	F.ReskinIcon(CovenantMissionFrame.FollowerTab.HealFollowerFrame.CostFrame.CostIcon)
@@ -1013,6 +1013,53 @@ C.themes["Blizzard_GarrisonUI"] = function()
 			f:UnregisterEvent(event)
 		end
 	end)
+
+	-- WarPlan
+	if IsAddOnLoaded("WarPlan") then
+		local function reskinWarPlanFont(font, r, g, b)
+			if not AuroraClassicDB.FontOutline then return end
+			if not font then return end
+			font:SetTextColor(r, g, b)
+		end
+
+		C_Timer.After(.1, function()
+			local WarPlanFrame = _G.WarPlanFrame
+			if not WarPlanFrame then return end
+
+			F.StripTextures(WarPlanFrame)
+			F.SetBD(WarPlanFrame)
+			F.StripTextures(WarPlanFrame.ArtFrame)
+			F.ReskinClose(WarPlanFrame.ArtFrame.CloseButton)
+			reskinWarPlanFont(WarPlanFrame.ArtFrame.TitleText, 1, .8, 0)
+
+			F.Reskin(WarPlanFrame.TaskBoard.AllPurposeButton)
+			local missions = WarPlanFrame.TaskBoard.Missions
+			for i = 1, #missions do
+				local button = missions[i]
+				reskinWarPlanFont(button.XPReward, 1, 1, 1)
+				reskinWarPlanFont(button.Description, .8, .8, .8)
+				reskinWarPlanFont(button.CDTDisplay, 1, 1, 1)
+
+				local groups = button.Groups
+				if groups then
+					for j = 1, #groups do
+						local group = groups[j]
+						F.Reskin(group)
+						reskinWarPlanFont(group.Features, 1, .8, 0)
+					end
+				end
+			end
+
+			local entries = WarPlanFrame.HistoryFrame.Entries
+			for i = 1, #entries do
+				local entry = entries[i]
+				entry:DisableDrawLayer("BACKGROUND")
+				F.ReskinIcon(entry.Icon)
+				entry.Name:SetFontObject("Number12Font")
+				entry.Detail:SetFontObject("Number12Font")
+			end
+		end)
+	end
 end
 
 C.themes["Blizzard_OrderHallUI"] = function()

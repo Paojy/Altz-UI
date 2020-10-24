@@ -29,7 +29,7 @@ C.rolesTex = mediaPath.."RoleIcons"
 C.bdTex = "Interface\\ChatFrame\\ChatFrameBackground"
 C.sparkTex = "Interface\\CastingBar\\UI-CastingBar-Spark"
 C.TexCoord = {.08, .92, .08, .92}
-C.Font = {mediaPath.."font.ttf", 12, "OUTLINE"}
+C.Font = {mediaPath.."font.TTF", 12, "OUTLINE"}
 
 C.defaultThemes = {}
 C.themes = {}

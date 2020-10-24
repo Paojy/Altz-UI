@@ -2,20 +2,13 @@ local _, ns = ...
 local F, C = unpack(ns)
 
 tinsert(C.defaultThemes, function()
-	local navFrame = EquipmentFlyoutFrame.NavigationFrame
-	EquipmentFlyoutFrameButtons.bg1:SetAlpha(0)
-	EquipmentFlyoutFrameButtons:DisableDrawLayer("ARTWORK")
-	navFrame:SetWidth(204)
-	navFrame:SetPoint("TOPLEFT", EquipmentFlyoutFrameButtons, "BOTTOMLEFT", 1, 0)
-
 	hooksecurefunc("EquipmentFlyout_CreateButton", function()
 		local button = EquipmentFlyoutFrame.buttons[#EquipmentFlyoutFrame.buttons]
 
-		button.icon:SetTexCoord(unpack(C.TexCoord))
 		button:SetNormalTexture("")
 		button:SetPushedTexture("")
 		button:GetHighlightTexture():SetColorTexture(1, 1, 1, .25)
-		button.bg = F.CreateBDFrame(button)
+		button.bg = F.ReskinIcon(button.icon)
 		F.ReskinIconBorder(button.IconBorder)
 	end)
 
@@ -27,14 +20,16 @@ tinsert(C.defaultThemes, function()
 		border:SetShown(location < EQUIPMENTFLYOUT_FIRST_SPECIAL_LOCATION)
 	end)
 
-	local function reskinButtonFrame()
+	hooksecurefunc("EquipmentFlyout_UpdateItems", function()
 		local frame = EquipmentFlyoutFrame.buttonFrame
 		if not frame.bg then
 			frame.bg = F.SetBD(EquipmentFlyoutFrame.buttonFrame)
 		end
 		frame:SetWidth(frame:GetWidth()+3)
-	end
-	hooksecurefunc("EquipmentFlyout_UpdateItems", reskinButtonFrame)
+	end)
+
+	EquipmentFlyoutFrameButtons.bg1:SetAlpha(0)
+	EquipmentFlyoutFrameButtons:DisableDrawLayer("ARTWORK")
 
 	local navigationFrame = EquipmentFlyoutFrame.NavigationFrame
 	F.SetBD(navigationFrame)

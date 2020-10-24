@@ -48,6 +48,8 @@ do
 		"Portrait",
 		"portrait",
 		"ScrollFrameBorder",
+		"ScrollUpBorder",
+		"ScrollDownBorder",
 	}
 	function F:StripTextures(kill)
 		local frameName = self.GetName and self:GetName()
@@ -82,17 +84,19 @@ end
 -- UI widgets
 do
 	function F:CreateTex()
-		if self.Tex then return end
+		if self.__bgTex then return end
 
 		local frame = self
 		if self:GetObjectType() == "Texture" then frame = self:GetParent() end
 
-		self.Tex = frame:CreateTexture(nil, "BACKGROUND", nil, 1)
-		self.Tex:SetAllPoints(self)
-		self.Tex:SetTexture(C.bgTex, true, true)
-		self.Tex:SetHorizTile(true)
-		self.Tex:SetVertTile(true)
-		self.Tex:SetBlendMode("ADD")
+		local tex = frame:CreateTexture(nil, "BACKGROUND", nil, 1)
+		tex:SetAllPoints(self)
+		tex:SetTexture(C.bgTex, true, true)
+		tex:SetHorizTile(true)
+		tex:SetVertTile(true)
+		tex:SetBlendMode("ADD")
+
+		self.__bgTex = tex
 	end
 
 	local shadowBackdrop = {edgeFile = C.glowTex}
@@ -200,7 +204,7 @@ do
 	local function resetIconBorderColor(self)
 		self.__owner.bg:SetBackdropBorderColor(0, 0, 0)
 	end
-	function F:ReskinIconBorder()
+	function F:ReskinIconBorder(needInit)
 		self:SetAlpha(0)
 		self.__owner = self:GetParent()
 		if not self.__owner.bg then return end
@@ -208,6 +212,9 @@ do
 			hooksecurefunc(self, "SetAtlas", updateIconBorderColorByAtlas)
 		else
 			hooksecurefunc(self, "SetVertexColor", updateIconBorderColor)
+			if needInit then
+				self:SetVertexColor(self:GetVertexColor()) -- for border with color before hook
+			end
 		end
 		hooksecurefunc(self, "Hide", resetIconBorderColor)
 	end
@@ -730,6 +737,7 @@ do
 			local roleIcon = self.HealthBar.RoleIcon
 			roleIcon:ClearAllPoints()
 			roleIcon:SetPoint("CENTER", self.squareBG, "TOPRIGHT")
+			replaceFollowerRole(roleIcon, roleIcon:GetAtlas())
 			hooksecurefunc(roleIcon, "SetAtlas", replaceFollowerRole)
 
 			local background = self.HealthBar.Background

@@ -1,6 +1,7 @@
 local _, ns = ...
 local F, C = unpack(ns)
 
+local pairs, GetCVarBool = pairs, GetCVarBool
 local C_ChatBubbles_GetAllChatBubbles = C_ChatBubbles.GetAllChatBubbles
 
 local function reskinChatBubble(chatbubble)
@@ -12,7 +13,11 @@ local function reskinChatBubble(chatbubble)
 		bg:SetScale(UIParent:GetEffectiveScale())
 		bg:SetInside(frame, 6, 6)
 
-		frame:SetBackdrop(nil)
+		if C.isNewPatch then
+			frame:DisableDrawLayer("BORDER")
+		else
+			frame:SetBackdrop(nil)
+		end
 		frame.Tail:SetAlpha(0)
 		frame.String:SetFont(C.Font[1], 13, C.Font[3])
 	end

@@ -34,6 +34,7 @@
 	<Script file="Blizzard_ItemUpgradeUI.lua"/>
 	<Script file="Blizzard_LookingForGuildUI.lua"/>
 	<Script file="Blizzard_MacroUI.lua"/>
+	<Script file="Blizzard_NewPlayerExperienceGuide.lua"/>
 	<Script file="Blizzard_ObliterumUI.lua"/>
 	<Script file="Blizzard_PartyPoseUI.lua"/>
 	<Script file="Blizzard_PlayerChoiceUI.lua"/>
@@ -42,6 +43,7 @@
 	<Script file="Blizzard_RuneforgeUI.lua"/>
 	<Script file="Blizzard_ScrappingMachineUI.lua"/>
 	<Script file="Blizzard_Soulbinds.lua"/>
+	<Script file="Blizzard_SubscriptionInterstitialUI.lua"/>
 	<Script file="Blizzard_TalentUI.lua"/>
 	<Script file="Blizzard_TalkingHeadUI.lua"/>
 	<Script file="Blizzard_TorghastLevelPicker.lua"/>
