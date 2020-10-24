@@ -24,7 +24,7 @@ function FilterChat(self, event, message, author, language, channelString, targe
 		return
 	else
 		for i = 1, C_FriendList.GetNumFriends() do
-			if GetFriendInfo(i) == sender then
+			if C_FriendList.GetFriendInfoByIndex(i) == sender then
 				return
 			end
 		end

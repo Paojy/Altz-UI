@@ -229,7 +229,7 @@ if acceptfriendlyinvites then
         if IsInGroup() then return end
 		local accept = false
 		for index = 1, C_FriendList.GetNumFriends() do
-			if GetFriendInfo(index) == arg1 then
+			if C_FriendList.GetFriendInfoByIndex(index) == arg1 then
 				accept = true
 				break
 			end
@@ -289,7 +289,7 @@ local function InvitePlayer(name)
 			end
 			if partyMemberCount == 4 then
 				if aCoreCDB["OtherOptions"]["autoinviteautoconvert"] then
-					ConvertToRaid()
+					C_PartyInfo.ConvertToRaid()
 				else
 					return false, L["小队满了"]
 				end

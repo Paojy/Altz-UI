@@ -206,38 +206,38 @@ if autoquests then
 
     -- This should be part of the API, really
     local function IsGossipQuestCompleted(index)
-        return not not select(((index * 5) - 5) + 4, GetGossipActiveQuests())
+        return not not select(((index * 5) - 5) + 4, C_GossipInfo.GetGossipActiveQuests())
     end
 
     local function IsGossipQuestTrivial(index)
-        return not not select(((index * 6) - 6) + 3, GetGossipAvailableQuests())
+        return not not select(((index * 6) - 6) + 3, C_GossipInfo.GetGossipAvailableQuests())
     end
 
     Monomyth:Register("GOSSIP_SHOW", function()
-        local active = GetNumGossipActiveQuests()
+        local active = C_GossipInfo.GetNumActiveQuests()
         if(active > 0) then
             for index = 1, active do
                 if(IsGossipQuestCompleted(index)) then
-                    SelectGossipActiveQuest(index)
+                    C_GossipInfo.SelectActiveQuest(index)
                 end
             end
         end
 
-        local available = GetNumGossipAvailableQuests()
+        local available = C_GossipInfo.GetNumAvailableQuests()
         if(available > 0) then
             for index = 1, available do
                 if(not IsGossipQuestTrivial(index) or IsTrackingTrivial()) then
-                    SelectGossipAvailableQuest(index)
+                    C_GossipInfo.SelectAvailableQuest(index)
                 end
             end
         end
 
-		if(available == 0 and active == 0 and GetNumGossipOptions() == 1) then
+		if(available == 0 and active == 0 and C_GossipInfo.GetNumOptions() == 1) then
 			local _, instance = GetInstanceInfo()
 			if instance ~= "raid" then
-				local _, type = GetGossipOptions()
+				local _, type = C_GossipInfo.GetOptions()
 				if(type == "gossip") then
-					SelectGossipOption(1)
+					C_GossipInfo.SelectOption(1)
 					return
 				end
 			end
@@ -272,7 +272,7 @@ if autoquests then
         local creatureID = tonumber(string.sub(GUID, -12, -9), 16)
 
         if(creatureID and darkmoonNPC[creatureID]) then
-            SelectGossipOption(index, "", true)
+            C_GossipInfo.SelectOption(index, "", true)
             StaticPopup_Hide("GOSSIP_CONFIRM")
         end
     end)
@@ -293,8 +293,8 @@ if autoquests then
     Monomyth:Register("QUEST_ACCEPTED", function(id)
         if(not GetCVarBool("autoQuestWatch")) then return end
 
-        if(not IsQuestWatched(id) and GetNumQuestWatches() < MAX_WATCHABLE_QUESTS) then
-            AddQuestWatch(id)
+        if(not QuestUtils_IsQuestWatched(id) and C_QuestLog.GetNumQuestWatches() < Constants.QuestWatchConsts.MAX_QUEST_WATCHES) then
+            C_QuestLog.AddQuestWatch(id)
         end
     end)
 

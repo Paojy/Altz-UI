@@ -501,8 +501,8 @@ GarrisonLandingPageMinimapButton:ClearAllPoints()
 GarrisonLandingPageMinimapButton:SetParent(Minimap)
 GarrisonLandingPageMinimapButton:SetPoint("TOPRIGHT", Minimap, "TOPRIGHT", -8, 2)
 GarrisonLandingPageMinimapButton:SetClampedToScreen(true)
-GarrisonLandingPageMinimapButton:SetSize(30, 30)
-GarrisonLandingPageMinimapButton:HookScript("OnEvent", function(self)
+GarrisonLandingPageMinimapButton:SetSize(35, 35)
+GarrisonLandingPageMinimapButton:HookScript("OnEvent", function(self, event)
 	self:GetNormalTexture():SetAtlas(nil)
 	self:SetNormalTexture("Interface\\AddOns\\AltzUI\\media\\icons\\Guild")
 	self:GetNormalTexture():SetBlendMode("ADD")
@@ -517,6 +517,11 @@ GarrisonLandingPageMinimapButton:HookScript("OnEvent", function(self)
 	self:GetPushedTexture():ClearAllPoints()
 	self:GetPushedTexture():SetPoint("CENTER", 1, 0)
 	self:GetPushedTexture():SetVertexColor(G.Ccolor.r, G.Ccolor.g, G.Ccolor.b)
+	
+	GarrisonLandingPageMinimapButton:ClearAllPoints()
+	GarrisonLandingPageMinimapButton:SetPoint("TOPRIGHT", Minimap, "TOPRIGHT", -8, 2)
+	
+	--print(event)
 end)
 
 
@@ -605,17 +610,22 @@ CurrencyButton.text:SetTextColor(1, 1, 1)
 CurrencyButton:RegisterEvent("PLAYER_ENTERING_WORLD")
 CurrencyButton:RegisterEvent("ZONE_CHANGED_NEW_AREA")
 CurrencyButton:RegisterEvent("CURRENCY_DISPLAY_UPDATE")
+
 CurrencyButton:SetScript("OnEvent", function(self, event)
 	local map = C_Map.GetBestMapForUnit("player")
 	local currency = Currency[map]
 	
 	if map and currency then
-		name, amount, texturePath, earnedThisWeek, weeklyMax, totalMax, isDiscovered, quality = GetCurrencyInfo(currency)
-		CurrencyButton.text:SetText(amount.."/"..totalMax)
-		if event ~= "CURRENCY_DISPLAY_UPDATE" then
-			CurrencyButton.icon.texture:SetTexture(texturePath)
+		local info = C_CurrencyInfo.GetCurrencyInfo(currency)
+		if info.quantity and info.maxQuantity then
+			CurrencyButton.text:SetText(info.quantity.."/"..info.maxQuantity)
+			if event ~= "CURRENCY_DISPLAY_UPDATE" then
+				CurrencyButton.icon.texture:SetTexture(info.iconFileID)
+			end
+			self:Show()
+		else
+			self:Hide()
 		end
-		self:Show()
 	else
 		self:Hide()
 	end

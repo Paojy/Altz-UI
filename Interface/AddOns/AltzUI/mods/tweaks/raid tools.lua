@@ -181,7 +181,7 @@ ConvertGroupButton.text:SetPoint("CENTER")
 F.Reskin(ConvertGroupButton)
 
 ConvertGroupButton:SetScript("OnEvent", function(self, event, arg1)
-	if not IsInGroup() then
+	if not IsInGroup() or GetNumGroupMembers() > 1 then
 		self:Hide()
 	else
 		if IsInRaid() then
@@ -198,9 +198,9 @@ ConvertGroupButton:RegisterEvent("PLAYER_ENTERING_WORLD")
 
 ConvertGroupButton:SetScript("OnClick", function(self)
 	if IsInRaid() then
-		ConvertToParty()
+		C_PartyInfo.ConvertToParty()
 	else
-		ConvertToRaid()
+		C_PartyInfo.ConvertToRaid()
 	end
 end)
 
