@@ -21,11 +21,11 @@ frame:SetWidth(num*buttonssize + 2*padding)
 frame:SetHeight(buttonssize + 2*padding)
 
 --move the buttons into position and reparent them
-ExtraActionBarFrame:SetParent(frame)
-ExtraActionBarFrame:EnableMouse(false)
-ExtraActionBarFrame:ClearAllPoints()
-ExtraActionBarFrame:SetPoint("CENTER", 0, 0)
-ExtraActionBarFrame.ignoreFramePositionManager = true
+ExtraAbilityContainer:SetParent(frame)
+ExtraAbilityContainer:EnableMouse(false)
+ExtraAbilityContainer:ClearAllPoints()
+ExtraAbilityContainer:SetPoint("CENTER", 0, 0)
+ExtraAbilityContainer.ignoreFramePositionManager = true
 
 --the extra button
 local button = ExtraActionButton1
