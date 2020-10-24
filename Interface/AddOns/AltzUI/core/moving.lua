@@ -349,7 +349,7 @@ local function LockAll()
 	selected = false
 
 	for i = 1, #G.dragFrameList do
-		G.dragFrameList[i].df.mask.SetBackdropBorderColor(0, 0, 0)
+		G.dragFrameList[i].df.mask:SetBackdropBorderColor(0, 0, 0)
 		G.dragFrameList[i].df:Hide()
 	end
 	SpecMover:Hide()
