@@ -960,7 +960,23 @@ end
 -- 耐久
 local Durability = CreateInfoButton("Durability", InfoFrame, 40, 20, "CENTER", "CENTER", InfoFrame, "CENTER", 20, 0)
 
-local EquipSetsMenu = CreateFrame("Frame", G.uiname.."EquipSetsMenu", UIParent, "L_UIDropDownMenuTemplate")
+local SLOTS = {}
+for _,slot in pairs({"Head", "Shoulder", "Chest", "Waist", "Legs", "Feet", "Wrist", "Hands", "MainHand", "SecondaryHand"}) do 
+	SLOTS[slot] = GetInventorySlotInfo(slot .. "Slot")
+end
+
+local function GetLowestDurability()
+	local l = 1
+	for slot,id in pairs(SLOTS) do
+		local d, md = GetInventoryItemDurability(id)
+		if d and md and md ~= 0 then
+			l = math.min(d/md, l)
+		end
+	end
+	return l
+end
+
+local EquipSetsMenu = CreateFrame("Frame", G.uiname.."EquipSetsMenu", UIParent, "UIDropDownMenuTemplate")
 local EquipSetsList = {}
 
 local function UpdateEquipSetsList()
@@ -980,42 +996,24 @@ local function UpdateEquipSetsList()
 	end
 end
 
-local SLOTS = {}
-for _,slot in pairs({"Head", "Shoulder", "Chest", "Waist", "Legs", "Feet", "Wrist", "Hands", "MainHand", "SecondaryHand"}) do 
-	SLOTS[slot] = GetInventorySlotInfo(slot .. "Slot")
-end
-
-local function GetLowestDurability()
-	local l = 1
-	for slot,id in pairs(SLOTS) do
-		local d, md = GetInventoryItemDurability(id)
-		if d and md and md ~= 0 then
-			l = math.min(d/md, l)
-		end
-	end
-	return l
-end
-
 Durability:SetScript("OnMouseDown", function(self)
 	if not InCombatLockdown() and C_EquipmentSet.GetNumEquipmentSets() > 0 then
 		UpdateEquipSetsList()
-		L_EasyMenu(EquipSetsList, EquipSetsMenu, "cursor", 0, 0, "MENU", 2)
-		L_DropDownList1:ClearAllPoints()
+		EasyMenu(EquipSetsList, EquipSetsMenu, "cursor", 0, 0, "MENU", 2)
+		DropDownList1:ClearAllPoints()
 		if select(2, InfoFrame:GetCenter())/G.screenheight > .5 then -- In the upper part of the screen
-			L_DropDownList1:SetPoint("TOPLEFT", self, "BOTTOMLEFT", -5, -5)
+			DropDownList1:SetPoint("TOPLEFT", self, "BOTTOMLEFT", -5, -5)
 		else
-			L_DropDownList1:SetPoint("BOTTOMLEFT", self, "TOPLEFT", -5, 5)
+			DropDownList1:SetPoint("BOTTOMLEFT", self, "TOPLEFT", -5, 5)
 		end
 	end
 end)
 
 Durability:SetScript("OnEvent", function(self, event)
 	if event == "PLAYER_ENTERING_WORLD" then
-		self.text:SetText(format("%d"..G.classcolor.."dur|r", GetLowestDurability()*100))
 		self:UnregisterEvent("PLAYER_ENTERING_WORLD")
-	elseif event == "UPDATE_INVENTORY_DURABILITY" then
-		self.text:SetText(format("%d"..G.classcolor.."dur|r", GetLowestDurability()*100))
 	end
+		self.text:SetText(format("%d"..G.classcolor.."dur|r", GetLowestDurability()*100))
 end)
 
 Durability:RegisterEvent("UPDATE_INVENTORY_DURABILITY")
@@ -1113,9 +1111,9 @@ end)
 Net_Stats:SetScript("OnLeave", function(self) GameTooltip:Hide() end)
 
 -- 天赋
-local Talent = CreateInfoButton("Talent", InfoFrame, 40, 20, "LEFT", "LEFT", Durability, "RIGHT", 5, 0)
+local Talent = CreateInfoButton("Talent", InfoFrame, 40, 20, "LEFT", "LEFT", Durability, "RIGHT", 10, 0)
 
-local LootSpecMenu = CreateFrame("Frame", G.uiname.."LootSpecMenu", UIParent, "L_UIDropDownMenuTemplate")
+local LootSpecMenu = CreateFrame("Frame", G.uiname.."LootSpecMenu", UIParent, "UIDropDownMenuTemplate")
 
 local SpecList = {
 	{ text = TALENTS_BUTTON, notCheckable = true, func = function() ToggleTalentFrame() end},
@@ -1147,12 +1145,12 @@ end
 
 local function TalentOnClick(self, button)
 	if UnitLevel("player")>=10 then -- 10 级别后有天赋
-		L_EasyMenu(SpecList, LootSpecMenu, "cursor", 0, 0, "MENU", 2)
-		L_DropDownList1:ClearAllPoints()
+		EasyMenu(SpecList, LootSpecMenu, "cursor", 0, 0, "MENU", 2)
+		DropDownList1:ClearAllPoints()
 		if select(2, InfoFrame:GetCenter())/G.screenheight > .5 then -- In the upper part of the screen
-			L_DropDownList1:SetPoint("TOPLEFT", self, "BOTTOMLEFT", -5, -5)
+			DropDownList1:SetPoint("TOPLEFT", self, "BOTTOMLEFT", -5, -5)
 		else
-			L_DropDownList1:SetPoint("BOTTOMLEFT", self, "TOPLEFT", -5, 5)
+			DropDownList1:SetPoint("BOTTOMLEFT", self, "TOPLEFT", -5, 5)
 		end
 	end
 end
@@ -1762,9 +1760,9 @@ BOTTOMPANEL:SetScript("OnEvent",function(self, event)
 			self.petmodelbutton:SetCreature(53623) -- 塞纳里奥角鹰兽宝宝
 		end
 		
-		hooksecurefunc("L_ToggleDropDownMenu", function(level, value, dropDownFrame, anchorName)
+		hooksecurefunc("ToggleDropDownMenu", function(level, value, dropDownFrame, anchorName)
 			if level == 2 and value == SELECT_LOOT_SPECIALIZATION then
-				local listFrame = _G["L_DropDownList"..level]
+				local listFrame = _G["DropDownList"..level]
 				local point, anchor, relPoint, _, y = listFrame:GetPoint()
 				listFrame:SetPoint(point, anchor, relPoint, 16, y)
 			end

@@ -6,9 +6,6 @@
 	<Script file="locales\portuguese.lua"/>
 	<Script file="locales\english.lua"/>
 
-	<Script file="lib\LibStub.lua"/>
-	<Include file="lib\UIDropDownMenu\LibUIDropDownMenu.xml"/>
-
 	<Script file="PopupDialogs.lua"/>
 	<Script file="api.lua"/>
 	<Script file="db.lua"/>

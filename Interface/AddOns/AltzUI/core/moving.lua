@@ -118,7 +118,7 @@ for i = 0, w do
 end
 
 -- a1
-local Point1dropDown = CreateFrame("Frame", G.uiname.."SpecMoverPoint1DropDown", SpecMover, "L_UIDropDownMenuTemplate")
+local Point1dropDown = CreateFrame("Frame", G.uiname.."SpecMoverPoint1DropDown", SpecMover, "UIDropDownMenuTemplate")
 Point1dropDown:SetPoint("TOPLEFT", SpecMover, "TOPLEFT", 0, -70)
 F.ReskinDropDown(Point1dropDown)
 
@@ -126,11 +126,11 @@ Point1dropDown.name = T.createtext(Point1dropDown, "OVERLAY", 12, "OUTLINE", "LE
 Point1dropDown.name:SetPoint("BOTTOMLEFT", Point1dropDown, "TOPLEFT", 15, 5)
 Point1dropDown.name:SetText(G.classcolor.."Point1|r")
 
-L_UIDropDownMenu_SetWidth(Point1dropDown, 100)
-L_UIDropDownMenu_SetText(Point1dropDown, "")
+UIDropDownMenu_SetWidth(Point1dropDown, 100)
+UIDropDownMenu_SetText(Point1dropDown, "")
 
-L_UIDropDownMenu_Initialize(Point1dropDown, function(self, level, menuList)
-	local info = L_UIDropDownMenu_CreateInfo()
+UIDropDownMenu_Initialize(Point1dropDown, function(self, level, menuList)
+	local info = UIDropDownMenu_CreateInfo()
 	for i = 1, #anchors do
 		info.text = anchors[i]
 		info.checked = function()
@@ -144,11 +144,11 @@ L_UIDropDownMenu_Initialize(Point1dropDown, function(self, level, menuList)
 			if CurrentFrame == "Altz_HealerRaid_Holder" then
 				T.PlaceRaidFrame()
 			end
-			L_UIDropDownMenu_SetSelectedName(Point1dropDown, anchors[i], true)
-			L_UIDropDownMenu_SetText(Point1dropDown, anchors[i])
+			UIDropDownMenu_SetSelectedName(Point1dropDown, anchors[i], true)
+			UIDropDownMenu_SetText(Point1dropDown, anchors[i])
 			L_CloseDropDownMenus()
 		end
-		L_UIDropDownMenu_AddButton(info)
+		UIDropDownMenu_AddButton(info)
 	end
 end)
 
@@ -158,7 +158,7 @@ ParentBox:SetSize(120, 20)
 Reskinbox(ParentBox, L["锚点框体"], "parent", Point1dropDown, -2, 2)
 
 -- a2
-local Point2dropDown = CreateFrame("Frame", G.uiname.."SpecMoverPoint2dropDown", SpecMover, "L_UIDropDownMenuTemplate")
+local Point2dropDown = CreateFrame("Frame", G.uiname.."SpecMoverPoint2dropDown", SpecMover, "UIDropDownMenuTemplate")
 Point2dropDown:SetPoint("LEFT", ParentBox, "RIGHT", -4, -2)
 F.ReskinDropDown(Point2dropDown)
 
@@ -166,11 +166,11 @@ Point2dropDown.name = T.createtext(Point2dropDown, "OVERLAY", 12, "OUTLINE", "LE
 Point2dropDown.name:SetPoint("BOTTOMLEFT", Point2dropDown, "TOPLEFT", 15, 5)
 Point2dropDown.name:SetText(G.classcolor.."Point2|r")
 
-L_UIDropDownMenu_SetWidth(Point2dropDown, 100)
-L_UIDropDownMenu_SetText(Point2dropDown, "")
+UIDropDownMenu_SetWidth(Point2dropDown, 100)
+UIDropDownMenu_SetText(Point2dropDown, "")
 
-L_UIDropDownMenu_Initialize(Point2dropDown, function(self, level, menuList)
-	local info = L_UIDropDownMenu_CreateInfo()
+UIDropDownMenu_Initialize(Point2dropDown, function(self, level, menuList)
+	local info = UIDropDownMenu_CreateInfo()
 	for i = 1, #anchors do
 		info.text = anchors[i]
 		info.checked = function()
@@ -181,11 +181,11 @@ L_UIDropDownMenu_Initialize(Point2dropDown, function(self, level, menuList)
 		info.func = function(self)
 			aCoreCDB["FramePoints"][CurrentFrame][role]["a2"] = anchors[i]
 			PlaceCurrentFrame()
-			L_UIDropDownMenu_SetSelectedName(Point2dropDown, anchors[i], true)
-			L_UIDropDownMenu_SetText(Point2dropDown, anchors[i])
+			UIDropDownMenu_SetSelectedName(Point2dropDown, anchors[i], true)
+			UIDropDownMenu_SetText(Point2dropDown, anchors[i])
 			L_CloseDropDownMenus()
 		end
-		L_UIDropDownMenu_AddButton(info)
+		UIDropDownMenu_AddButton(info)
 	end
 end)
 
@@ -201,9 +201,9 @@ Reskinbox(YBox, "Y", "y", XBox, 10, 0)
 
 local function DisplayCurrentFramePoint()
 	local points = aCoreCDB["FramePoints"][CurrentFrame][role]
-	L_UIDropDownMenu_SetText(Point1dropDown, points.a1)
+	UIDropDownMenu_SetText(Point1dropDown, points.a1)
 	ParentBox:SetText(points.parent)
-	L_UIDropDownMenu_SetText(Point2dropDown, points.a2)
+	UIDropDownMenu_SetText(Point2dropDown, points.a2)
 	XBox:SetText(points.x)
 	YBox:SetText(points.y)
 end
@@ -302,8 +302,8 @@ function T.CreateDragFrame(frame)
 		SpecMover.curframe:SetText(L["选中的框体"].." "..G.classcolor..gsub(frame.movingname, "\n", "").."|r")
 		DisplayCurrentFramePoint()
 		if not selected then
-			L_UIDropDownMenu_EnableDropDown(Point1dropDown)
-			L_UIDropDownMenu_EnableDropDown(Point2dropDown)
+			UIDropDownMenu_EnableDropDown(Point1dropDown)
+			UIDropDownMenu_EnableDropDown(Point2dropDown)
 			ParentBox:Enable()
 			XBox:Enable()
 			YBox:Enable()
@@ -339,10 +339,10 @@ end
 local function LockAll()
 	-- reset
 	CurrentFrame = "NONE"
-	L_UIDropDownMenu_SetText(Point1dropDown, "")
-	L_UIDropDownMenu_SetText(Point2dropDown, "")
-	L_UIDropDownMenu_DisableDropDown(Point1dropDown)
-	L_UIDropDownMenu_DisableDropDown(Point2dropDown)
+	UIDropDownMenu_SetText(Point1dropDown, "")
+	UIDropDownMenu_SetText(Point2dropDown, "")
+	UIDropDownMenu_DisableDropDown(Point1dropDown)
+	UIDropDownMenu_DisableDropDown(Point2dropDown)
 	ParentBox:Disable()
 	XBox:Disable()
 	YBox:Disable()

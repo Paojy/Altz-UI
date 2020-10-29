@@ -491,43 +491,28 @@ IInnerframe.IB.SF:SetPoint("TOPLEFT", IInnerframe.IB, "TOPLEFT", 25, -240)
 IInnerframe.IB.SF:SetPoint("BOTTOMRIGHT", IInnerframe.IB, "BOTTOMRIGHT", -35, 25)
 F.CreateBD(IInnerframe.IB.SF.bg, .3)
 
-local IB_ConditionsMenu = CreateFrame("Frame", G.uiname.."IB_ConditionsMenu", UIParent, "L_UIDropDownMenuTemplate")
+local IB_ConditionsMenu = CreateFrame("Frame", G.uiname.."IB_ConditionsMenu", UIParent, "UIDropDownMenuTemplate")
 
 local IB_Conditions_List = {
 	{ 
 		text = L["总是显示"],
-		isNotRadio = true,
-		keepShownOnClick = true,
 		arg1 = "All",
 	},
 	{
 		text = L["在职业大厅显示"],
-		isNotRadio = true,
-		keepShownOnClick = true,
 		arg1 = "OrderHall",
 	},
 	{
 		text = L["在团队副本中显示"],
-		isNotRadio = true,
-		keepShownOnClick = true,
 		arg1 = "Raid",
 	},
 	{
 		text = L["在地下城中显示"],
-		isNotRadio = true,
-		keepShownOnClick = true,
 		arg1 = "Dungeon",
 	},
 	{
 		text = L["在战场中显示"],
-		isNotRadio = true,
-		keepShownOnClick = true,
 		arg1 = "PVP",
-	},
-	{
-		text = CLOSE,
-		notCheckable = true,
-		func = L_CloseDropDownMenus(1),
 	},
 }
 
@@ -601,7 +586,7 @@ local function Create_IB_Button(parent, index, itemID, exactItem, showCount, All
 	bu.cb_exact:SetScript("OnLeave", function(self) GameTooltip:Hide() end)
 	
 	bu.cb_count = CreateFrame("CheckButton", G.uiname.."IB Edit Button"..index.."ShowCount Check Button", bu, "InterfaceOptionsSmallCheckButtonTemplate")
-	bu.cb_count:SetPoint("LEFT", bu.cb_exact, "RIGHT", 60, 0)
+	bu.cb_count:SetPoint("LEFT", bu.cb_exact, "RIGHT", 45, 0)
 	bu.cb_count:SetHitRectInsets(0, -50, 0, 0)
 	F.ReskinCheck(bu.cb_count)
 	
@@ -638,29 +623,36 @@ local function Create_IB_Button(parent, index, itemID, exactItem, showCount, All
 	bu.cb_count:SetScript("OnLeave", function(self) GameTooltip:Hide() end)
 	
 	bu.condi = CreateFrame("Button", G.uiname.."IB Edit Button"..index.."Select Condition Button", bu, "UIPanelButtonTemplate")
-	bu.condi:SetSize(50,18)
-	bu.condi:SetPoint("LEFT", bu.cb_count, "RIGHT", 60, 0)
+	bu.condi:SetSize(80,18)
+	bu.condi:SetPoint("LEFT", bu.cb_count, "RIGHT", 45, 0)
 	F.Reskin(bu.condi)
 	_G[bu.condi:GetName() .. "Text"]:SetFont(G.norFont, 10, "NONE")
-	bu.condi:SetText(L["条件"])
+	_G[bu.condi:GetName() .. "Text"]:SetWidth(80)
+	_G[bu.condi:GetName() .. "Text"]:SetHeight(18)
 	
-	bu.condi:SetScript("OnMouseDown", function()
-		for i = 1, 5 do
-			IB_Conditions_List[i].checked = function()
-				if aCoreCDB["ItemOptions"]["itembuttons_table"][index][IB_Conditions_List[i].arg1] then
-					return true
-				end
-			end
-			IB_Conditions_List[i].func = function(self, arg1, arg2, checked)
-				if checked then
-					aCoreCDB["ItemOptions"]["itembuttons_table"][index][IB_Conditions_List[i].arg1] = true
-				else
-					aCoreCDB["ItemOptions"]["itembuttons_table"][index][IB_Conditions_List[i].arg1] = false
-				end
-				AltzUI_T.Update_IB()
+	bu.condi:SetScript("OnShow", function()
+		for i = 1, #IB_Conditions_List do
+			if aCoreCDB["ItemOptions"]["itembuttons_table"][index][IB_Conditions_List[i].arg1] then
+				bu.condi:SetText(IB_Conditions_List[i].text)
+				break
 			end
 		end
-		L_EasyMenu(IB_Conditions_List, IB_ConditionsMenu, bu.condi, 0, 0, "MENU", 2)
+	end)
+	
+	bu.condi:SetScript("OnMouseDown", function()
+		for i = 1, #IB_Conditions_List do
+			if aCoreCDB["ItemOptions"]["itembuttons_table"][index][IB_Conditions_List[i].arg1] then
+				aCoreCDB["ItemOptions"]["itembuttons_table"][index][IB_Conditions_List[i].arg1] = false
+				if i == #IB_Conditions_List then
+					aCoreCDB["ItemOptions"]["itembuttons_table"][index][IB_Conditions_List[1].arg1] = true
+					bu.condi:SetText(IB_Conditions_List[1].text)
+				else
+					aCoreCDB["ItemOptions"]["itembuttons_table"][index][IB_Conditions_List[i+1].arg1] = true
+					bu.condi:SetText(IB_Conditions_List[i+1].text)
+				end
+				break
+			end
+		end
 	end)
 
 	local itemName = GetItemInfo(aCoreCDB["ItemOptions"]["itembuttons_table"][index].itemID)
@@ -669,11 +661,13 @@ local function Create_IB_Button(parent, index, itemID, exactItem, showCount, All
 		bu.cb_exact:Enable()
 		bu.cb_count:Enable()
 		bu.condi:Enable()
+		bu.condi:EnableMouse(true)
 	else
 		bu.name_input:SetText("")
 		bu.cb_exact:Disable()
 		bu.cb_count:Disable()
 		bu.condi:Disable()
+		bu.condi:EnableMouse(false)
 	end
 
 	bu.name_input:SetScript("OnEditFocusGained", function(self) 
@@ -690,11 +684,13 @@ local function Create_IB_Button(parent, index, itemID, exactItem, showCount, All
 			bu.cb_exact:Enable()
 			bu.cb_count:Enable()
 			bu.condi:Enable()
+			bu.condi:EnableMouse(true)
 		else
 			self:SetText("")
 			bu.cb_exact:Disable()
 			bu.cb_count:Disable()
 			bu.condi:Disable()
+			bu.condi:EnableMouse(false)
 		end
 	end)
 	bu.name_input:SetScript("OnEscapePressed", function(self)
@@ -710,7 +706,7 @@ local function Create_IB_Button(parent, index, itemID, exactItem, showCount, All
 	end)
 	
 	bu.reset = CreateFrame("Button", nil, bu, "UIPanelButtonTemplate")
-	bu.reset:SetSize(18,18)
+	bu.reset:SetSize(15,15)
 	bu.reset:SetPoint("RIGHT", -5, 0)
 	F.Reskin(bu.reset)
 	bu.reset:SetText("X")
@@ -731,7 +727,9 @@ local function Create_IB_Button(parent, index, itemID, exactItem, showCount, All
 		bu.cb_exact:SetChecked(false)
 		bu.cb_count:Disable()
 		bu.cb_count:SetChecked(false)
+		bu.condi:SetText(IB_Conditions_List[1].text)
 		bu.condi:Disable()
+		bu.condi:EnableMouse(false)
 		AltzUI_T.Update_IB()
 		
 	end)
@@ -1484,6 +1482,42 @@ for k, v in pairs(modifier) do
 	end)
 end
 
+RFInnerframe.Icon_Display = CreateOptionPage("RF Options Icon Display", L["光环"]..L["图标"], RFInnerframe, "VERTICAL", .3)
+
+local raidicon_debufftitle = T.createtext(RFInnerframe.Icon_Display, "OVERLAY", 18, "OUTLINE", "CENTER")
+raidicon_debufftitle:SetPoint("BOTTOM", RFInnerframe.Icon_Display, "TOPLEFT", 80, -80)
+raidicon_debufftitle:SetTextColor(1, .5, .3)
+raidicon_debufftitle:SetText(L["Debuffs"])
+
+T.createslider(RFInnerframe.Icon_Display, 60, 100, "X", "UnitframeOptions", "healerraid_debuff_anchor_x", 1, -50, 50, 1)
+T.createslider(RFInnerframe.Icon_Display, 260, 100, "Y", "UnitframeOptions", "healerraid_debuff_anchor_y", 1, -50, 50, 1)
+T.createslider(RFInnerframe.Icon_Display, 60, 140, L["图标数量"], "UnitframeOptions", "healerraid_debuff_num", 1, 1, 5, 1)
+T.createslider(RFInnerframe.Icon_Display, 260, 140, L["图标大小"], "UnitframeOptions", "healerraid_debuff_icon_size", 1, 10, 40, 1)
+T.createslider(RFInnerframe.Icon_Display, 60, 180, L["字体大小"], "UnitframeOptions", "healerraid_debuff_icon_fontsize", 1, 5, 20, 1)
+
+RFInnerframe.Icon_Display.healerraid_debuff_num:SetWidth(160)
+RFInnerframe.Icon_Display.healerraid_debuff_icon_size:SetWidth(160)
+RFInnerframe.Icon_Display.healerraid_debuff_icon_fontsize:SetWidth(160)
+RFInnerframe.Icon_Display.healerraid_debuff_anchor_x:SetWidth(160)
+RFInnerframe.Icon_Display.healerraid_debuff_anchor_y:SetWidth(160)
+
+local raidicon_bufftitle = T.createtext(RFInnerframe.Icon_Display, "OVERLAY", 18, "OUTLINE", "CENTER")
+raidicon_bufftitle:SetPoint("BOTTOM", RFInnerframe.Icon_Display, "TOPLEFT", 80, -240)
+raidicon_bufftitle:SetTextColor(.3, 1, .5)
+raidicon_bufftitle:SetText(L["Buffs"])
+
+T.createslider(RFInnerframe.Icon_Display, 60, 260, "X", "UnitframeOptions", "healerraid_buff_anchor_x", 1, -50, 50, 1)
+T.createslider(RFInnerframe.Icon_Display, 260, 260, "Y", "UnitframeOptions", "healerraid_buff_anchor_y", 1, -50, 50, 1)
+T.createslider(RFInnerframe.Icon_Display, 60, 300, L["图标数量"], "UnitframeOptions", "healerraid_buff_num", 1, 1, 5, 1)
+T.createslider(RFInnerframe.Icon_Display, 260, 300, L["图标大小"], "UnitframeOptions", "healerraid_buff_icon_size", 1, 10, 40, 1)
+T.createslider(RFInnerframe.Icon_Display, 60, 340, L["字体大小"], "UnitframeOptions", "healerraid_buff_icon_fontsize", 1, 5, 20, 1)
+
+RFInnerframe.Icon_Display.healerraid_buff_num:SetWidth(160)
+RFInnerframe.Icon_Display.healerraid_buff_icon_size:SetWidth(160)
+RFInnerframe.Icon_Display.healerraid_buff_icon_fontsize:SetWidth(160)
+RFInnerframe.Icon_Display.healerraid_buff_anchor_x:SetWidth(160)
+RFInnerframe.Icon_Display.healerraid_buff_anchor_y:SetWidth(160)
+
 RFInnerframe.raiddebuff = CreateOptionPage("RF Options Raid Debuff", L["团队减益"], RFInnerframe, "VERTICAL", .3)
 
 local RFDebuff_InnerFrame = CreateFrame("Frame", G.uiname.."RF Debuff Innerframe", RFInnerframe.raiddebuff)
@@ -1562,14 +1596,14 @@ local function CreateEncounterDebuffButton(parent, raid, boss, name, spellID, le
 	bu:SetScript("OnMouseDown", function(self)
 		local frame = parent:GetParent()
 		if frame.selectdebuff ~= spellID then
-			L_UIDropDownMenu_SetText(frame.BossDD, boss)
+			UIDropDownMenu_SetText(frame.BossDD, boss)
 			frame.Spellinput:ClearFocus()
 			frame.Spellinput:SetText(spellID)
 			frame.Levelinput:ClearFocus()
 			frame.Levelinput:SetText(level)	
 			frame.selectdebuff = spellID
 		else
-			L_UIDropDownMenu_SetText(frame.BossDD, "")
+			UIDropDownMenu_SetText(frame.BossDD, "")
 			frame.Spellinput:ClearFocus()
 			frame.Spellinput:SetText("")
 			frame.Levelinput:ClearFocus()
@@ -1614,7 +1648,7 @@ local function CreateRaidDebuffOptions()
 		
 		CreateEncounterDebuffList(frame.SFAnchor, raidname, bosstable)
 		
-		local BossDD = CreateFrame("Frame", G.uiname..raidname.."SelectBossDropdown", frame, "L_UIDropDownMenuTemplate")
+		local BossDD = CreateFrame("Frame", G.uiname..raidname.."SelectBossDropdown", frame, "UIDropDownMenuTemplate")
 		BossDD:SetPoint("BOTTOMLEFT", frame, "TOPLEFT", 10, 5)
 		F.ReskinDropDown(BossDD)
 
@@ -1622,11 +1656,11 @@ local function CreateRaidDebuffOptions()
 		BossDD.name:SetPoint("BOTTOMRIGHT", BossDD, "BOTTOMLEFT", 15, 12)
 		BossDD.name:SetText("BOSS")
 
-		L_UIDropDownMenu_SetWidth(BossDD, 100)
-		L_UIDropDownMenu_SetText(BossDD, "")
+		UIDropDownMenu_SetWidth(BossDD, 100)
+		UIDropDownMenu_SetText(BossDD, "")
 
-		L_UIDropDownMenu_Initialize(BossDD, function(self, level, menuList)
-			local info = L_UIDropDownMenu_CreateInfo()
+		UIDropDownMenu_Initialize(BossDD, function(self, level, menuList)
+			local info = UIDropDownMenu_CreateInfo()
 			
 			if not G.Raids[raidname] then
 				aCoreCDB["RaidDebuff"][raidname] = nil
@@ -1636,10 +1670,10 @@ local function CreateRaidDebuffOptions()
 			for i = 1, #(G.Raids[raidname]) do
 				info.text = G.Raids[raidname][i]
 				info.func = function()
-					L_UIDropDownMenu_SetText(BossDD, G.Raids[raidname][i])
+					UIDropDownMenu_SetText(BossDD, G.Raids[raidname][i])
 					L_CloseDropDownMenus()
 				end
-				L_UIDropDownMenu_AddButton(info)
+				UIDropDownMenu_AddButton(info)
 			end
 		end)
 		
@@ -1683,7 +1717,7 @@ local function CreateRaidDebuffOptions()
 		Add:SetText(ADD)
 		F.Reskin(Add)
 		Add:SetScript("OnClick", function(self)
-			local boss = L_UIDropDownMenu_GetText(BossDD)
+			local boss = UIDropDownMenu_GetText(BossDD)
 			local spellID = tonumber(Spellinput:GetText())
 			local level = tonumber(Levelinput:GetText())
 			if not spellID or not GetSpellInfo(spellID) then
@@ -1990,8 +2024,8 @@ ActionbarInnerframe.common:Show()
 T.createcheckbutton(ActionbarInnerframe.common, 30, 60, L["向上排列"], "ActionbarOptions", "growup", L["向上排列说明"])
 T.createcheckbutton(ActionbarInnerframe.common, 30, 90, L["显示冷却时间"], "ActionbarOptions", "cooldown", L["显示冷却时间提示"])
 T.createcheckbutton(ActionbarInnerframe.common, 30, 120, L["显示冷却时间"].." (Weakauras)", "ActionbarOptions", "cooldown_wa", L["显示冷却时间提示WA"])
-T.createslider(ActionbarInnerframe.common, 30, 160, L["冷却时间数字大小"], "ActionbarOptions", "cooldownsize", 1, 18, 25, 1, L["冷却时间数字大小提示"])
-T.createcheckbutton(ActionbarInnerframe.common, 30, 210, L["不可用颜色"], "ActionbarOptions", "rangecolor", L["不可用颜色提示"])
+T.createslider(ActionbarInnerframe.common, 30, 170, L["冷却时间数字大小"], "ActionbarOptions", "cooldownsize", 1, 18, 25, 1, L["冷却时间数字大小提示"])
+T.createcheckbutton(ActionbarInnerframe.common, 30, 200, L["不可用颜色"], "ActionbarOptions", "rangecolor", L["不可用颜色提示"])
 T.createslider(ActionbarInnerframe.common, 30, 250, L["键位字体大小"], "ActionbarOptions", "keybindsize", 1, 8, 20, 1)
 T.createslider(ActionbarInnerframe.common, 30, 290, L["宏名字字体大小"], "ActionbarOptions", "macronamesize", 1, 8, 20, 1)
 T.createslider(ActionbarInnerframe.common, 30, 330, L["可用次数字体大小"], "ActionbarOptions", "countsize", 1, 8, 20, 1)

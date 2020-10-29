@@ -158,6 +158,7 @@ IB_Frame:SetScript("OnEvent", function(self, event, arg1)
 			for index, info in pairs(aCoreCDB["ItemOptions"]["itembuttons_table"]) do
 				Create_IB(info.itemID, index, info.exactItem, info.showCount, info.All, info.OrderHall, info.Raid, info.Dungeon, info.PVP)
 			end
+			Update_IB()
 		end
 	else
 		Update_IB()

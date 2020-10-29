@@ -47,6 +47,18 @@ T.pairsByKeys = function(t)
     return iter
 end
 
+T.CreateOptionSwitchButton = function(parent, width, height, ...)
+	local bu = CreateFrame("Button", nil, bu, "UIPanelButtonTemplate")
+	bu:SetSize(width, height)
+	bu:SetPoint(...)
+	F.Reskin(bu)
+	_G[bu:GetName() .. "Text"]:SetFont(G.norFont, 10, "NONE")
+	_G[bu:GetName() .. "Text"]:SetWidth(80)
+	_G[bu:GetName() .. "Text"]:SetHeight(18)
+	
+	return bu
+end
+
 T.hex = function(r, g, b)
     if not r then return "|cffFFFFFF" end
 
