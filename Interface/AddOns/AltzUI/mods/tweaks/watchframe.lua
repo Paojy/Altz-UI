@@ -63,6 +63,9 @@ if IsAddOnLoaded("Blizzard_ObjectiveTracker") then
 				vm.MODULES[i].Header.Background:SetDesaturated(true)
 				vm.MODULES[i].Header.Background:SetVertexColor(1, .81, 0)
 				
+				local bg = select(7, vm.MODULES[i].Header:GetRegions()) -- 隐藏Aurora加的bg
+				bg:Hide()
+				
 		        vm.MODULES[i].Header.Text:SetFont(G.norFont, 14, "NONE")
 				vm.MODULES[i].Header.Text:SetTextColor(1, .9, 0)
 		        vm.MODULES[i].Header.Text:ClearAllPoints()
