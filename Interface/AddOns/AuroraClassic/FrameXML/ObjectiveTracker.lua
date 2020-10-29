@@ -93,16 +93,10 @@ local function reskinTimerBar(_, _, line)
 	end
 end
 
-local function updateMinimizeButton(button, collapsed)
-	button.__texture:DoCollapse(collapsed)
-end
-
 local function reskinMinimizeButton(button)
 	F.ReskinCollapse(button)
 	button:GetNormalTexture():SetAlpha(0)
 	button:GetPushedTexture():SetAlpha(0)
-	button.__texture:DoCollapse(false)
-	hooksecurefunc(button, "SetCollapsed", updateMinimizeButton)
 end
 
 local atlasToQuality = {
