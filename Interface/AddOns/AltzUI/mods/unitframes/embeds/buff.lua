@@ -7,20 +7,22 @@ local glowBorder = {
     insets = {left = 1, right = 1, top = 1, bottom = 1}
 }
 
-local CreateAuraIcon = function(auras)
+local CreateAuraIcon = function(auras, size, ...)
     local button = CreateFrame("Button", nil, auras)
     button:EnableMouse(false)
-    button:SetAllPoints(auras)
+	button:SetSize(size, size)
+    button:SetPoint(...)
 
     local icon = button:CreateTexture(nil, "ARTWORK")
     icon:SetAllPoints(button)
     icon:SetTexCoord(.07, .93, .07, .93)
 
     local count = button:CreateFontString(nil, "OVERLAY")
-    count:SetFont(G.norFont, auras.cfontsize, "THINOUTLINE")
+    count:SetFont(G.norFont, auras.cfontsize+2, "THINOUTLINE")
 	count:ClearAllPoints()
-    count:SetPoint("TOPLEFT", -2, 2)
+    count:SetPoint("TOPLEFT", -4, 4)
 	count:SetJustifyH("LEFT")
+	count:SetTextColor(1, .5, .8)
 	
     local border = CreateFrame("Frame", nil, button, "BackdropTemplate")
     border:SetPoint("TOPLEFT", button, "TOPLEFT", -1, 1)
@@ -47,16 +49,37 @@ local CreateAuraIcon = function(auras)
     return button
 end
 
-local CustomFilter = function(icons, ...)
-    local _, icon, name, _, _, _, dtype, _, _, caster, spellID = ...
-
-    icon.priority = 0
+local CustomFilter = function(...)
+    local name, _, _, _, _, caster, spellID = ...
+	
+    local priority = 0
+	local asc = false
+	
+    --if ascending[name] then
+        --asc = true
+    --end
 
 	if aCoreCDB["CooldownAura"]["Buffs"][name] then
-		icon.priority = aCoreCDB["CooldownAura"]["Buffs"][name].level
-		icon.buff = true
-		return true
-	end
+		priority = aCoreCDB["CooldownAura"]["Buffs"][name].level
+    end
+
+	return priority, asc
+end
+
+
+local AuraTimerAsc = function(self, elapsed)
+    self.elapsed = (self.elapsed or 0) + elapsed
+
+    if self.elapsed < .2 then return end
+    self.elapsed = 0
+
+    local timeLeft = self.expires - GetTime()
+    if timeLeft <= 0 then
+        self.remaining:SetText(nil)
+    else
+        local duration = self.duration - timeLeft
+        self.remaining:SetText(T.FormatTime(duration))
+    end
 end
 
 local AuraTimer = function(self, elapsed)
@@ -74,7 +97,7 @@ local AuraTimer = function(self, elapsed)
 end
 
 local buffcolor = { r = 0.5, g = 1.0, b = 1.0 }
-local updateBuff = function(icon, texture, count, dtype, duration, expires, buff)
+local updateBuff = function(icon, texture, count, dtype, duration, expires)
     local color = buffcolor
 
     icon.border:SetBackdropBorderColor(color.r, color.g, color.b)
@@ -84,46 +107,77 @@ local updateBuff = function(icon, texture, count, dtype, duration, expires, buff
 
     icon.expires = expires
     icon.duration = duration
-
-    icon:SetScript("OnUpdate", AuraTimer)
+	
+    if icon.asc then
+        icon:SetScript("OnUpdate", AuraTimerAsc)
+    else
+        icon:SetScript("OnUpdate", AuraTimer)
+    end
 end
 
 local Update = function(self, event, unit)
     if(self.unit ~= unit) then
 	return end
 
-    local cur
-    local hide = true
-    local auras = self.AltzTankbuff
-    local icon = auras.button
-
+	local active_buffs = {}
+	local auras = self.AltzTankbuff
+	local numBuffs = auras.numBuffs
+	local Icon_size = auras.Icon_size
+	local anchor_x = auras.anchor_x
+	local anchor_y = auras.anchor_y
+	
     local index = 1
     while true do
         local name, texture, count, dtype, duration, expires, caster, _, _, spellID = UnitBuff(unit, index)
         if not name then break end
         
-        local show = CustomFilter(auras, unit, icon, name, texture, count, dtype, duration, expires, caster, spellID)
+        local priority, asc = CustomFilter(name, texture, count, duration, expires, caster, spellID)
 
-        if(show) and icon.buff then
-			--print(name)
-            if not cur then
-                cur = icon.priority
-                updateBuff(icon, texture, count, dtype, duration, expires, true)
-            else
-                if icon.priority > cur then
-                    updateBuff(icon, texture, count, dtype, duration, expires, true)
-                end
-            end
-
-            icon:Show()
-            hide = false
-        end
-
-        index = index + 1
+		if priority > 0 then
+			active_buffs[name] = {}
+			active_buffs[name]["priority"] = priority
+			active_buffs[name]["spellID"] = spellID
+			active_buffs[name]["asc"] = asc
+			active_buffs[name]["texture"] = texture
+			active_buffs[name]["count"] = count
+			active_buffs[name]["duration"] = duration
+			active_buffs[name]["expires"] = expires
+		end
+		
+		index = index + 1
     end
 
-    if hide then
-        icon:Hide()
+	if index > 1 then
+		local t = {}
+		for name, info in pairs(active_buffs) do
+			table.insert(t, info)
+		end
+		
+		sort(t, function(a,b) return a.priority > b.priority or (a.priority == b.priority and a.spellID > b.spellID) end)
+		
+		for k, info in pairs(t) do
+			if k <= numBuffs then
+				if not auras["button"..k] then
+					if k == 1 then
+						auras["button"..k] = CreateAuraIcon(auras, Icon_size, "LEFT", self, "CENTER", anchor_x, anchor_y)
+					else
+						auras["button"..k] = CreateAuraIcon(auras, Icon_size, "LEFT", auras["button"..(k-1)], "RIGHT", 3, 0)
+					end
+				end
+				updateBuff(auras["button"..k], info["texture"], info["count"], info["dtype"], info["duration"], info["expires"])
+				auras["button"..k]:Show()
+			end
+		end
+		
+		auras.num_shown = #t
+	end
+	
+    if auras.num_shown < numBuffs then
+        for i = numBuffs-1, auras.num_shown+1, -1 do
+			if auras["button"..i] and auras["button"..i]:IsShown() then
+				auras["button"..i]:Hide()
+			end
+		end
     end
 end
 
@@ -131,7 +185,7 @@ local Enable = function(self)
     local auras = self.AltzTankbuff
 
     if(auras) then
-        auras.button = CreateAuraIcon(auras)
+		auras.num_shown = auras.num_shown or 0
         self:RegisterEvent("UNIT_AURA", Update, true)
         return true
     end

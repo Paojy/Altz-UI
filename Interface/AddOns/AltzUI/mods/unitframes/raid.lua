@@ -339,34 +339,27 @@ local func = function(self, unit)
 	summonIndicator:Show()
     self.SummonIndicator = summonIndicator
 	
+	-- Debuffs
 	local Auras = CreateFrame("Frame", nil, self)
 	Auras:SetFrameLevel(4)
-    Auras:SetSize(20, 20)
-    Auras:SetPoint("LEFT", hp, "LEFT", 15, 0)
-	Auras.tfontsize = 10
-	Auras.cfontsize = 10
-	
-	Auras.sizeA = 20
-	Auras.point1A = "CENTER"
-	Auras.point2A = "CENTER"
-	Auras.xA = 0
-	Auras.yA = 0
-	
-	Auras.sizeB = 15
-	Auras.point1B = "BOTTOMLEFT"
-	Auras.point2B = "BOTTOMLEFT"
-	Auras.xB = 2
-	Auras.yB = 3
+	Auras.tfontsize = aCoreCDB["UnitframeOptions"]["healerraid_debuff_icon_fontsize"]
+	Auras.cfontsize = aCoreCDB["UnitframeOptions"]["healerraid_debuff_icon_fontsize"]
+	Auras.Icon_size = aCoreCDB["UnitframeOptions"]["healerraid_debuff_icon_size"]
+	Auras.anchor_x = aCoreCDB["UnitframeOptions"]["healerraid_debuff_anchor_x"]
+	Auras.anchor_y = aCoreCDB["UnitframeOptions"]["healerraid_debuff_anchor_y"]
+	Auras.numDebuffs = aCoreCDB["UnitframeOptions"]["healerraid_debuff_num"]
 	self.AltzAuras2 = Auras
 	
 	-- Tankbuff
-    local tankbuff = CreateFrame("Frame", nil, self)
-	tankbuff:SetFrameLevel(4)
-    tankbuff:SetSize(15, 15)
-    tankbuff:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", -2, 3)
-	tankbuff.tfontsize = 10
-	tankbuff.cfontsize = 10
-	self.AltzTankbuff = tankbuff
+    local Tankbuff = CreateFrame("Frame", nil, self)
+	Tankbuff:SetFrameLevel(4)
+	Tankbuff.tfontsize = aCoreCDB["UnitframeOptions"]["healerraid_buff_icon_fontsize"]
+	Tankbuff.cfontsize = aCoreCDB["UnitframeOptions"]["healerraid_buff_icon_fontsize"]
+	Tankbuff.Icon_size = aCoreCDB["UnitframeOptions"]["healerraid_buff_icon_size"]
+	Tankbuff.anchor_x = aCoreCDB["UnitframeOptions"]["healerraid_buff_anchor_x"]
+	Tankbuff.anchor_y = aCoreCDB["UnitframeOptions"]["healerraid_buff_anchor_y"]
+	Tankbuff.numBuffs = aCoreCDB["UnitframeOptions"]["healerraid_buff_num"]
+	self.AltzTankbuff = Tankbuff
 	
 	-- Indicators
 	if aCoreCDB["UnitframeOptions"]["hotind_style"] == "number_ind" then

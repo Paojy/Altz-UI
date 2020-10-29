@@ -212,11 +212,11 @@ local Update = function(self, event, unit)
 	return end
 
 	local active_dubuffs = {}
-    local hide1, hide2 = true, true
     local auras = self.AltzAuras2
-    local icon1 = auras.button1
-	local icon2 = auras.button2
-	
+	local numDebuffs = auras.numDebuffs
+	local Icon_size = auras.Icon_size
+	local anchor_x = auras.anchor_x
+	local anchor_y = auras.anchor_y
 	local backdrop = self.backdrop
 	
     local index = 1
@@ -246,37 +246,47 @@ local Update = function(self, event, unit)
 		for name, info in pairs(active_dubuffs) do
 			table.insert(t, info)
 		end
+		
 		sort(t, function(a,b) return a.priority > b.priority or (a.priority == b.priority and a.spellID > b.spellID) end)
 		
-		if t[1] then
-			updateDebuff(backdrop, icon1, t[1]["texture"], t[1]["count"], t[1]["dtype"], t[1]["duration"], t[1]["expires"])
-			icon1:Show()
-			hide1 = false
+		for k, info in pairs(t) do
+			if k <= numDebuffs then
+				if not auras["button"..k] then
+					if k == 1 then
+						auras["button"..k] = CreateAuraIcon(auras, Icon_size, "LEFT", self, "CENTER", anchor_x, anchor_y)
+					else
+						auras["button"..k] = CreateAuraIcon(auras, Icon_size, "LEFT", auras["button"..(k-1)], "RIGHT", 3, 0)
+					end
+				end
+				if k == 1 then
+					updateDebuff(backdrop, auras["button"..k], info["texture"], info["count"], info["dtype"], info["duration"], info["expires"])
+				else
+					updateDebuff(nil, auras["button"..k], info["texture"], info["count"], info["dtype"], info["duration"], info["expires"])
+				end
+				auras["button"..k]:Show()
+			end
 		end
 		
-		if t[2] then
-			updateDebuff(nil, icon2, t[2]["texture"], t[2]["count"], t[2]["dtype"], t[2]["duration"], t[2]["expires"])
-			icon2:Show()
-			hide2 = false
-		end
+		auras.num_shown = #t
 	end
 	
-    if hide1 then
-        icon1:Hide()
-		backdrop:SetBackdropBorderColor(0, 0, 0)
-    end
-	
-	if hide2 then
-        icon2:Hide()
+    if auras.num_shown < numDebuffs then
+        for i = numDebuffs-1, auras.num_shown+1, -1 do
+			if auras["button"..i] and auras["button"..i]:IsShown() then
+				auras["button"..i]:Hide()
+				if i == 1 then
+					backdrop:SetBackdropBorderColor(0, 0, 0)
+				end
+			end
+		end
     end
 end
 
 local Enable = function(self)
     local auras = self.AltzAuras2
 
-    if(auras) then
-        auras.button1 = CreateAuraIcon(auras, auras.sizeA, auras.point1A, self, auras.point2A, auras.xA, auras.yA)
-		auras.button2 = CreateAuraIcon(auras, auras.sizeB, auras.point1B, self, auras.point2B, auras.xB, auras.yB)
+    if auras then
+		auras.num_shown = auras.num_shown or 0
         self:RegisterEvent("UNIT_AURA", Update, true)
         return true
     end
@@ -285,7 +295,8 @@ end
 local Disable = function(self)
     local auras = self.AltzAuras2
 
-    if(auras) then
+    if auras then
+		self.auras:Hide()
         self:UnregisterEvent("UNIT_AURA", Update)
     end
 end

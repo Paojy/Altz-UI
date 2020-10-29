@@ -2,7 +2,7 @@
 	<Script file="tags.lua"/>
 
 	<Script file="embeds\buff.lua"/>
-	<Script file="embeds\debuff2.lua"/>	
+	<Script file="embeds\debuff.lua"/>	
 	<Script file="embeds\fader.lua"/>
 	<Script file="embeds\gcd.lua"/>	
 	<Script file="embeds\indicators.lua"/>

@@ -1631,8 +1631,8 @@ local Character_default_Settings = {
 		raidonly = "healer",
 
 		--[[ healer mode ]]--
-		healerraidheight = 45,
-		healerraidwidth = 70,
+		healerraidheight = 50,
+		healerraidwidth = 100,
 		raidmanabars = true,
 		raidhpheight = 0.85, -- slider
 		ind_party = true,
@@ -1646,6 +1646,16 @@ local Character_default_Settings = {
 		hotind_filtertype = "whitelist", -- "blacklist", "whitelist"
 		hotind_auralist = HealerIndicatorAuraList,
 		healerraidgroupby = "GROUP", -- "CLASS", "ROLE"
+		healerraid_debuff_num = 3,
+		healerraid_debuff_anchor_x = -20,
+		healerraid_debuff_anchor_y = 10,
+		healerraid_debuff_icon_size = 25,
+		healerraid_debuff_icon_fontsize = 8,
+		healerraid_buff_num = 3,
+		healerraid_buff_anchor_x = -20,
+		healerraid_buff_anchor_y = -10,
+		healerraid_buff_icon_size = 20,
+		healerraid_buff_icon_fontsize = 8,
 		
 		--[[ dps/tank mode ]]--
 		dpsraidheight = 15,
