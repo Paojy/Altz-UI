@@ -14,9 +14,6 @@ locales\twchinese.lua
 locales\portuguese.lua
 locales\english.lua
 
-lib\LibStub.lua
-lib\UIDropDownMenu\LibUIDropDownMenu.xml
-
 PopupDialogs.lua
 api.lua
 db.lua
