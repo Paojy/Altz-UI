@@ -1538,7 +1538,6 @@ local Character_default_Settings = {
 		valuefontsize = 16,
 		
 		-- health/power
-		tenthousand = false,
 		alwayshp = false,
 		alwayspp = false,
 		classcolormode = false,
@@ -1571,6 +1570,8 @@ local Character_default_Settings = {
 		focus_cbwidth = 230,
 		channelticks = false,
 		hideplayercastbaricon = false,
+		Interruptible_color = {r = 0, g = 0, b = 0},
+		notInterruptible_color = {r = 1, g = 0, b = 0},	
 		
 		-- swing timer
 		swing = false,
@@ -1793,6 +1794,8 @@ local Character_default_Settings = {
 		myfiltertype = "blacklist", -- "blacklist", "whitelist", "none"
 		otherfiltertype = "none", -- "whitelist", "none"
 		customcoloredplates = Customcoloredplates,
+		Interruptible_color = {r = 1, g = 1, b = 0},
+		notInterruptible_color = {r = 1, g = 0, b = 0},
 	},
 	TooltipOptions = {
 		enabletip = true,
@@ -1812,7 +1815,6 @@ local Character_default_Settings = {
 		hidblz_receive = false,
 		showreceivedct = true,
 		showoutputct = true,
-		formattype = "k",
 		cticonsize = 13,
 		ctbigiconsize = 25,
 		ctshowdots = false,
@@ -1828,12 +1830,6 @@ local Character_default_Settings = {
 		pulltime = 8,
 	},
 	OtherOptions = {
-		minimapheight = 175,
-		micromenuscale = 1,
-		infobarscale = 1,
-		infobar = true,
-		collectminimapbuttons = true,
-		MBCFpos = "BOTTOM",
 		hideerrors = true,
 		autoscreenshot = true,
 		collectgarbage = false,	
@@ -1850,14 +1846,8 @@ local Character_default_Settings = {
 		flashtaskbar = true,
 		autopet = true,
 		LFGRewards = true,
-		autoacceptproposal = true,
-		hidemap = false,
-		hidechat = false,
-		worldmapcoords = false,
-		afklogin = false,
-		afkscreen = true,
-		shiftfocus = false,
-		customobjectivetracker = false,
+		autoacceptproposal = true,	
+		shiftfocus = false,		
 	},
 	SkinOptions = {
 		setClassColor = true,
@@ -1867,6 +1857,21 @@ local Character_default_Settings = {
 		showtopbar = true,
 		showbottombar = true,
 		decorativestyle = "light1",
+		formattype = "k", -- w, w_chinese, none
+		
+		guiscale = .8,
+		micromenuscale = 1,		
+		infobar = true,
+		infobarscale = 1,
+		minimapheight = 175,
+		collectminimapbuttons = true,
+		MBCFpos = "BOTTOM",
+		hidemap = false,
+		hidechat = false,
+		collapseWF = true,
+		customobjectivetracker = false,
+		afklogin = false,
+		afkscreen = true,
 	},
 	RaidDebuff = G.DebuffList,
 	CooldownAura = AuraList,

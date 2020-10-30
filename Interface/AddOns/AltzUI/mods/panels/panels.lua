@@ -111,7 +111,7 @@ end
 --[[                   -- Minimap --                ]]--
 --====================================================--
 
-local minimap_height = aCoreCDB["OtherOptions"]["minimapheight"]
+local minimap_height = aCoreCDB["SkinOptions"]["minimapheight"]
 
 -- 收缩和伸展的按钮
 local minimap_pullback = CreateFrame("Frame", G.uiname.."minimap_pullback", UIParent) 
@@ -206,7 +206,7 @@ local minimap_toggle = function()
 end
 
 Updater:SetScript("OnEvent", function(self, event)
-	if aCoreCDB["OtherOptions"]["hidemap"] then
+	if aCoreCDB["SkinOptions"]["hidemap"] then
 		if event == "PLAYER_REGEN_DISABLED" then
 			minimap_moveout()
 		elseif event == "PLAYER_REGEN_ENABLED" then
@@ -321,7 +321,7 @@ local chatframe_toggle = function()
 end
 
 Updater2:SetScript("OnEvent", function(self, event)
-	if aCoreCDB["OtherOptions"]["hidechat"] then
+	if aCoreCDB["SkinOptions"]["hidechat"] then
 		if event == "PLAYER_REGEN_DISABLED" then
 			chatframe_moveout()
 		elseif event == "PLAYER_REGEN_ENABLED" then
@@ -385,7 +385,7 @@ local BlackList = {
 local MBCF = CreateFrame("Frame", "MinimapButtonCollectFrame", Minimap)
 MBCF:SetFrameStrata("HIGH")
 
-if aCoreCDB["OtherOptions"]["MBCFpos"] == "TOP" then
+if aCoreCDB["SkinOptions"]["MBCFpos"] == "TOP" then
 	MBCF:SetPoint("BOTTOMLEFT", Minimap, "TOPLEFT", 0, 5)
 	MBCF:SetPoint("BOTTOMRIGHT", Minimap, "TOPRIGHT", 0, 5)
 else
@@ -426,7 +426,7 @@ T.ArrangeMinimapButtons = function(parent)
 end
 
 T.CollectMinimapButtons = function(parent)
-	if aCoreCDB["OtherOptions"]["collectminimapbuttons"] then
+	if aCoreCDB["SkinOptions"]["collectminimapbuttons"] then
 		for i, child in ipairs({Minimap:GetChildren()}) do
 			if child:GetName() and not BlackList[child:GetName()] then
 				if child:GetObjectType() == "Button" or strupper(child:GetName()):match("BUTTON") then
@@ -932,17 +932,17 @@ xpbar:RegisterEvent("AZERITE_ITEM_EXPERIENCE_CHANGED")
 --[[                --  Info Bar --              ]]--
 --====================================================--
 local InfoFrame = CreateFrame("Frame", G.uiname.."Info Frame", UIParent)
-InfoFrame:SetScale(aCoreCDB["OtherOptions"]["infobarscale"])
+InfoFrame:SetScale(aCoreCDB["SkinOptions"]["infobarscale"])
 InfoFrame:SetFrameLevel(4)
 InfoFrame:SetSize(260, 20)
 InfoFrame.movingname = L["信息条"]
 InfoFrame.point = {
-		healer = {a1 = "BOTTOM", parent = "UIParent", a2 = "BOTTOM", x = -40, y = 5},
-		dpser = {a1 = "BOTTOM", parent = "UIParent", a2 = "BOTTOM", x = -40, y = 5},
+		healer = {a1 = "BOTTOM", parent = "UIParent", a2 = "BOTTOM", x = 0, y = 5},
+		dpser = {a1 = "BOTTOM", parent = "UIParent", a2 = "BOTTOM", x = 0, y = 5},
 	}
 T.CreateDragFrame(InfoFrame)
 
-if not aCoreCDB["OtherOptions"]["infobar"] then
+if not aCoreCDB["SkinOptions"]["infobar"] then
 	InfoFrame:Hide()
 end
 
@@ -1237,7 +1237,7 @@ Talent:RegisterEvent("PLAYER_ENTERING_WORLD")
 --====================================================--
 
 local MicromenuBar = CreateFrame("Frame", G.uiname.."MicromenuBar", UIParent, "BackdropTemplate")
-MicromenuBar:SetScale(aCoreCDB["OtherOptions"]["micromenuscale"])
+MicromenuBar:SetScale(aCoreCDB["SkinOptions"]["micromenuscale"])
 MicromenuBar:SetFrameLevel(4)
 MicromenuBar:SetSize(388, 24)
 MicromenuBar.movingname = L["微型菜单"]
@@ -1251,7 +1251,7 @@ Skinbg(MicromenuBar)
 local MicromenuButtons = {}
 
 local MicromenuBar2 = CreateFrame("Frame", G.uiname.."MicromenuBar2", UIParent, "BackdropTemplate")
-MicromenuBar2:SetScale(aCoreCDB["OtherOptions"]["micromenuscale"])
+MicromenuBar2:SetScale(aCoreCDB["SkinOptions"]["micromenuscale"])
 MicromenuBar2:SetFrameLevel(4)
 MicromenuBar2:SetSize(128, 24)
 MicromenuBar2.movingname = L["团队工具"]
@@ -1263,7 +1263,7 @@ T.CreateDragFrame(MicromenuBar2)
 Skinbg(MicromenuBar2)
 
 local MicromenuBar3 = CreateFrame("Frame", G.uiname.."MicromenuBar3", UIParent, "BackdropTemplate")
-MicromenuBar3:SetScale(aCoreCDB["OtherOptions"]["micromenuscale"])
+MicromenuBar3:SetScale(aCoreCDB["SkinOptions"]["micromenuscale"])
 MicromenuBar3:SetFrameLevel(4)
 MicromenuBar3:SetSize(128, 24)
 MicromenuBar3.movingname = L["控制台"]
@@ -1435,21 +1435,44 @@ local function OnLeave(button)
 	end
 end
 
+MicromenuBar2.Raidtool = CreateMicromenuButton(MicromenuBar2, false, G.classcolor..L["团队工具"].."|r", "RaidTool")
+MicromenuBar2.Raidtool:SetPoint("BOTTOM", MicromenuBar2, "BOTTOM")
+
+MicromenuBar3.Config = CreateMicromenuButton(MicromenuBar3, false, G.classcolor..L["控制台"].."|r", "Config")
+MicromenuBar3.Config:SetPoint("BOTTOM", MicromenuBar3, "BOTTOM")
+
 local function UpdateFade(frame, children, dbvalue)
 	if aCoreCDB["OtherOptions"][dbvalue] then
 		frame:SetAlpha(0)
-		frame:SetScript("OnEnter", function(self) T.UIFrameFadeIn(self, .5, self:GetAlpha(), 1) end)
-		frame:SetScript("OnLeave", function(self) T.UIFrameFadeOut(self, .5, self:GetAlpha(), 0) end)
+		frame:SetScript("OnEnter", function(self) 
+			GameTooltip:SetOwner(frame, "ANCHOR_BOTTOM")
+			GameTooltip:AddLine(L["关闭自动隐藏"])
+			GameTooltip:Show()
+			T.UIFrameFadeIn(self, .5, self:GetAlpha(), 1)
+		end)
+		frame:SetScript("OnLeave", function(self)
+			GameTooltip:Hide()
+			T.UIFrameFadeOut(self, .5, self:GetAlpha(), 0)
+		end)
 		if children then
 			for i = 1, #children do
-				children[i]:SetScript("OnEnter", function(self) OnHover(self) T.UIFrameFadeIn(frame, .5, frame:GetAlpha(), 1) end)
+				children[i]:SetScript("OnEnter", function(self) 
+					OnHover(self) 
+					T.UIFrameFadeIn(frame, .5, frame:GetAlpha(), 1)
+				end)
 				children[i]:SetScript("OnLeave", function(self) OnLeave(self) T.UIFrameFadeOut(frame, .5, frame:GetAlpha(), 0) end)
 			end
 		end
 		T.UIFrameFadeOut(frame, .5, frame:GetAlpha(), 0)
 	else
-		frame:SetScript("OnEnter", nil)
-		frame:SetScript("OnLeave", nil)
+		frame:SetScript("OnEnter", function(self) 
+			GameTooltip:SetOwner(frame, "ANCHOR_BOTTOM")
+			GameTooltip:AddLine(L["打开自动隐藏"])
+			GameTooltip:Show()
+		end)
+		frame:SetScript("OnLeave", function(self)
+			GameTooltip:Hide()
+		end)
 		if children then
 			for i = 1, #children do
 				children[i]:SetScript("OnEnter", function(self) OnHover(self) end)
@@ -1459,57 +1482,27 @@ local function UpdateFade(frame, children, dbvalue)
 		T.UIFrameFadeIn(frame, .5, frame:GetAlpha(), 1)
 	end
 end
+	
+local function FadeBar(frame, buttons, dbvalue)
+	frame:SetScript("OnMouseDown", function(self)
+		if aCoreCDB["OtherOptions"][dbvalue] then
+			aCoreCDB["OtherOptions"][dbvalue] = false
+		else
+			aCoreCDB["OtherOptions"][dbvalue] = true
+		end
+		UpdateFade(self, buttons, dbvalue)
+	end)
 
-MicromenuBar:SetScript("OnMouseDown", function(self)
-	if aCoreCDB["OtherOptions"]["fademicromenu"] then
-		aCoreCDB["OtherOptions"]["fademicromenu"] = false
-	else
-		aCoreCDB["OtherOptions"]["fademicromenu"] = true
-	end
-	UpdateFade(self, MicromenuButtons, "fademicromenu")
-end)
+	frame:SetScript("OnEvent", function(self) 
+		UpdateFade(self, buttons, dbvalue) 
+	end)
+	
+	frame:RegisterEvent("PLAYER_LOGIN")
+end
 
-MicromenuBar:SetScript("OnEvent", function(self) 
-	UpdateFade(self, MicromenuButtons, "fademicromenu") 
-end)
-
-MicromenuBar:RegisterEvent("PLAYER_LOGIN")
-
-MicromenuBar2.Raidtool = CreateMicromenuButton(MicromenuBar2, false, G.classcolor..L["团队工具"].."|r", "RaidTool")
-MicromenuBar2.Raidtool:SetPoint("BOTTOM", MicromenuBar2, "BOTTOM")
-
-MicromenuBar2:SetScript("OnMouseDown", function(self)
-	if aCoreCDB["OtherOptions"]["fademicromenu2"] then
-		aCoreCDB["OtherOptions"]["fademicromenu2"] = false
-	else
-		aCoreCDB["OtherOptions"]["fademicromenu2"] = true
-	end
-	UpdateFade(self, Micromenu2Buttons, "fademicromenu2")
-end)
-
-MicromenuBar2:SetScript("OnEvent", function(self) 
-	UpdateFade(self, Micromenu2Buttons, "fademicromenu2") 
-end)
-
-MicromenuBar2:RegisterEvent("PLAYER_LOGIN")
-
-MicromenuBar3.Config = CreateMicromenuButton(MicromenuBar3, false, G.classcolor..L["控制台"].."|r", "Config")
-MicromenuBar3.Config:SetPoint("BOTTOM", MicromenuBar3, "BOTTOM")
-
-MicromenuBar3:SetScript("OnMouseDown", function(self)
-	if aCoreCDB["OtherOptions"]["fademicromenu3"] then
-		aCoreCDB["OtherOptions"]["fademicromenu3"] = false
-	else
-		aCoreCDB["OtherOptions"]["fademicromenu3"] = true
-	end
-	UpdateFade(self, Micromenu3Buttons, "fademicromenu3")
-end)
-
-MicromenuBar3:SetScript("OnEvent", function(self) 
-	UpdateFade(self, Micromenu3Buttons, "fademicromenu3") 
-end)
-
-MicromenuBar3:RegisterEvent("PLAYER_LOGIN")
+FadeBar(MicromenuBar, MicromenuButtons, "fademicromenu")
+FadeBar(MicromenuBar2, Micromenu2Buttons, "fademicromenu2")
+FadeBar(MicromenuBar3, Micromenu3Buttons, "fademicromenu3")
 
 --====================================================--
 --[[          --  Order Hall Command Bar --         ]]--
@@ -1746,7 +1739,7 @@ BOTTOMPANEL:SetScript("OnMouseDown", function(self)
 end)
 
 BOTTOMPANEL:SetScript("OnEvent",function(self, event) 
-	if event == "PLAYER_ENTERING_WORLD" and aCoreCDB["OtherOptions"]["afklogin"] then
+	if event == "PLAYER_ENTERING_WORLD" and aCoreCDB["SkinOptions"]["afklogin"] then
 		if aCoreDB.meet then
 			T.fadeout()
 		end
@@ -1769,7 +1762,7 @@ BOTTOMPANEL:SetScript("OnEvent",function(self, event)
 		end)
 		
 		self:UnregisterEvent("PLAYER_ENTERING_WORLD")
-	elseif event == "PLAYER_FLAGS_CHANGED" and aCoreCDB["OtherOptions"]["afkscreen"] then
+	elseif event == "PLAYER_FLAGS_CHANGED" and aCoreCDB["SkinOptions"]["afkscreen"] then
 		if UnitIsAFK("player") then
 			T.fadeout()
 		end
