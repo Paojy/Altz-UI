@@ -146,8 +146,8 @@ function eventframe:COMBAT_TEXT_UPDATE(spelltype)
 				msg = template:format(arg2, arg3)
 			end
 		else
-			if info.arg2 and arg2 then msg = msg..T.ShortValue2(arg2) end
-			if info.arg3 and arg3 then msg = msg..T.ShortValue2(arg3) end
+			if info.arg2 and arg2 then msg = msg..T.ShortValue(arg2) end
+			if info.arg3 and arg3 then msg = msg..T.ShortValue(arg3) end
 		end
 		frames[info.frame]:AddMessage(msg, info.r, info.g, info.b)
 	end
@@ -162,7 +162,7 @@ function eventframe:COMBAT_LOG_EVENT_UNFILTERED()
 			amount = arg15
 			critical = arg18
 			icon = GetSpellTextureFormatted(spellId, critical and bigiconsize or iconsize)
-			frames["outputhealing"]:AddMessage(T.ShortValue2(amount)..""..icon, 0, 1, 0)
+			frames["outputhealing"]:AddMessage(T.ShortValue(amount)..""..icon, 0, 1, 0)
 		elseif destGUID ~= UnitGUID("player") then
 			if eventType=="SWING_DAMAGE" then
 				amount = arg12
@@ -191,15 +191,15 @@ function eventframe:COMBAT_LOG_EVENT_UNFILTERED()
 			if amount and icon then
 				if critical then
 					if dmgcolor[spellSchool] then
-						frames["outputdamage"]:AddMessage("+"..T.ShortValue2(amount)..""..icon, dmgcolor[spellSchool][1], dmgcolor[spellSchool][2], dmgcolor[spellSchool][3])
+						frames["outputdamage"]:AddMessage("+"..T.ShortValue(amount)..""..icon, dmgcolor[spellSchool][1], dmgcolor[spellSchool][2], dmgcolor[spellSchool][3])
 					else
-						frames["outputdamage"]:AddMessage("+"..T.ShortValue2(amount)..""..icon, dmgcolor[1][1], dmgcolor[1][2], dmgcolor[1][3])
+						frames["outputdamage"]:AddMessage("+"..T.ShortValue(amount)..""..icon, dmgcolor[1][1], dmgcolor[1][2], dmgcolor[1][3])
 					end
 				else
 					if dmgcolor[spellSchool] then
-						frames["outputdamage"]:AddMessage(T.ShortValue2(amount)..""..icon, dmgcolor[spellSchool][1], dmgcolor[spellSchool][2], dmgcolor[spellSchool][3])
+						frames["outputdamage"]:AddMessage(T.ShortValue(amount)..""..icon, dmgcolor[spellSchool][1], dmgcolor[spellSchool][2], dmgcolor[spellSchool][3])
 					else
-						frames["outputdamage"]:AddMessage(T.ShortValue2(amount)..""..icon, dmgcolor[1][1], dmgcolor[1][2], dmgcolor[1][3])
+						frames["outputdamage"]:AddMessage(T.ShortValue(amount)..""..icon, dmgcolor[1][1], dmgcolor[1][2], dmgcolor[1][3])
 					end
 				end
 			end

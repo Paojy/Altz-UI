@@ -2,28 +2,8 @@
 local F = unpack(AuroraClassic)
 
 T.ShortValue = function(val)
-	if aCoreCDB["UnitframeOptions"]["tenthousand"] then
-		if (val >= 1e7) then
-			return ("%.1fkw"):format(val / 1e7)
-		elseif (val >= 1e4) then
-			return ("%.1fw"):format(val / 1e4)
-		else
-			return ("%d"):format(val)
-		end
-	else
-		if (val >= 1e6) then
-			return ("%.1fm"):format(val / 1e6)
-		elseif (val >= 1e3) then
-			return ("%.1fk"):format(val / 1e3)
-		else
-			return ("%d"):format(val)
-		end
-	end
-end
-
-T.ShortValue2 = function(val)
 	if type(val) == "number" then
-		if aCoreCDB["CombattextOptions"]["formattype"] == "w" then
+		if aCoreCDB["SkinOptions"]["formattype"] == "w" then
 			if (val >= 1e7) then
 				return ("%.1fkw"):format(val / 1e7)
 			elseif (val >= 1e4) then
@@ -31,7 +11,15 @@ T.ShortValue2 = function(val)
 			else
 				return ("%d"):format(val)
 			end
-		else
+		elseif aCoreCDB["SkinOptions"]["formattype"] == "w_chinese" then
+			if (val >= 1e7) then
+				return ("%.1f千万"):format(val / 1e7)
+			elseif (val >= 1e4) then
+				return ("%.1f万"):format(val / 1e4)
+			else
+				return ("%d"):format(val)
+			end
+		elseif aCoreCDB["SkinOptions"]["formattype"] == "k" then
 			if (val >= 1e6) then
 				return ("%.1fm"):format(val / 1e6)
 			elseif (val >= 1e3) then
@@ -39,6 +27,8 @@ T.ShortValue2 = function(val)
 			else
 				return ("%d"):format(val)
 			end
+		else
+			return ("%d"):format(val)
 		end
 	else
 		return val
