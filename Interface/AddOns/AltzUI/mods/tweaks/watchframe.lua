@@ -3,8 +3,20 @@ local T, C, L, G = unpack(select(2, ...))
 local F = unpack(AuroraClassic)
 local dragFrameList = G.dragFrameList
 
+local eventframe = CreateFrame("Frame")
+eventframe:RegisterEvent("PLAYER_ENTERING_WORLD")
+eventframe:SetScript("OnEvent", function()
+	if aCoreCDB["SkinOptions"]["collapseWF"] then
+		if IsInInstance() then
+			ObjectiveTracker_Collapse()
+		else
+			ObjectiveTracker_Expand()
+		end
+	end
+end)
+
 local anchorframe = CreateFrame("Frame", "Altz_WFanchorframe", UIParent)
-local customobjectivetracker = aCoreCDB["OtherOptions"]["customobjectivetracker"]
+local customobjectivetracker = aCoreCDB["SkinOptions"]["customobjectivetracker"]
 if customobjectivetracker then return end
  
 anchorframe.movingname = L["任务追踪"]
@@ -126,15 +138,3 @@ end)
 
 --ScenarioChallengeModeBlock
 --ScenarioProvingGroundsBlock
-
-local eventframe = CreateFrame("Frame")
-eventframe:RegisterEvent("PLAYER_ENTERING_WORLD")
-eventframe:SetScript("OnEvent", function()
-	if aCoreCDB["OtherOptions"]["collapseWF"] then
-		if IsInInstance() then
-			ObjectiveTracker_Collapse()
-		else
-			ObjectiveTracker_Expand()
-		end
-	end
-end)
