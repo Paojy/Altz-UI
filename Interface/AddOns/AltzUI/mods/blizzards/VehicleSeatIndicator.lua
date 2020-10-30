@@ -12,8 +12,10 @@ frame.point = {
 T.CreateDragFrame(frame)
 
 hooksecurefunc("UIParent_ManageFramePositions", function()
-	local role = T.CheckRole()
-	local points = aCoreCDB["FramePoints"][name][role]
-	frame:ClearAllPoints()
-	frame:SetPoint(points.a1, _G[points.parent], points.a2, points.x, points.y)
+	if aCoreCDB["FramePoints"] then
+		local role = T.CheckRole()
+		local points = aCoreCDB["FramePoints"][name][role]
+		frame:ClearAllPoints()
+		frame:SetPoint(points.a1, _G[points.parent], points.a2, points.x, points.y)
+	end
 end)
