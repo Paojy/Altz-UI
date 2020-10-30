@@ -405,25 +405,29 @@ resetposbutton:SetSize(130, 25)
 resetposbutton:SetText(L["重置框体位置"])
 F.Reskin(resetposbutton)
 resetposbutton:SetScript("OnClick", function()
-	for i = 1, #G.dragFrameList do
-		local f = G.dragFrameList[i]
-		aCoreCDB["FramePoints"][f:GetName()] = {}
-		for role, points in pairs (f.point) do
-			aCoreCDB["FramePoints"][f:GetName()][role] = {}
-			for k, v in pairs (points) do
-				aCoreCDB["FramePoints"][f:GetName()][role][k] = v
+	StaticPopupDialogs[G.uiname.."Reset Confirm"].text = L["重置确认"]
+	StaticPopupDialogs[G.uiname.."Reset Confirm"].OnAccept = function()
+		for i = 1, #G.dragFrameList do
+			local f = G.dragFrameList[i]
+			aCoreCDB["FramePoints"][f:GetName()] = {}
+			for role, points in pairs (f.point) do
+				aCoreCDB["FramePoints"][f:GetName()][role] = {}
+				for k, v in pairs (points) do
+					aCoreCDB["FramePoints"][f:GetName()][role][k] = v
+				end
 			end
+			CurrentFrame = f:GetName()
+			PlaceCurrentFrame()
 		end
-		CurrentFrame = f:GetName()
-		PlaceCurrentFrame()
+		FCF_SetLocked(ChatFrame1, nil)
+		ChatFrame1:ClearAllPoints()
+		ChatFrame1:SetSize(300, 130)
+		ChatFrame1:SetPoint("BOTTOMLEFT", _G[G.uiname.."chatframe_pullback"],"BOTTOMLEFT", 3, 5)
+	
+		FCF_SavePositionAndDimensions(ChatFrame1)
+		CurrentFrame = "NONE"
 	end
-	FCF_SetLocked(ChatFrame1, nil)
-	ChatFrame1:ClearAllPoints()
-	ChatFrame1:SetSize(300, 130)
-	ChatFrame1:SetPoint("BOTTOMLEFT", _G[G.uiname.."chatframe_pullback"],"BOTTOMLEFT", 3, 5)
-
-	FCF_SavePositionAndDimensions(ChatFrame1)
-	CurrentFrame = "NONE"
+	StaticPopup_Show(G.uiname.."Reset Confirm")
 end)
 
 local unlockbutton = CreateFrame("Button", G.uiname.."UnlockAllFramesButton", IntroOptions, "UIPanelButtonTemplate")
