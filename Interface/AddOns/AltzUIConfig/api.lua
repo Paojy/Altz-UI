@@ -149,7 +149,6 @@ end
 
 T.ResetAurora = function(reload)
 	if IsAddOnLoaded("AuroraClassic") then
-		AuroraClassicDB["Tooltips"] = false
 		AuroraClassicDB["Bags"] = false
 	end
 	if reload then ReloadUI() end
@@ -518,7 +517,7 @@ T.createcheckbutton = function(parent, x, y, name, table, value, tip)
 	
 	bu:SetScript("OnEnable", function(self)
 		local tex = select(6, bu:GetRegions())
-		tex:SetVertexColor(buttonR, buttonG, buttonB, buttonA)
+		tex:SetVertexColor(1, 1, 1, 1)
 	end)
 	
 	if tip then
@@ -607,10 +606,10 @@ T.createeditbox = function(parent, x, y, name, table, value, tip)
 	bd:SetPoint("BOTTOMRIGHT")
 	bd:SetFrameLevel(box:GetFrameLevel()-1)
 	F.CreateBD(bd, 0)
-
+	
 	local gradient = F.CreateGradient(box)
-	gradient:SetPoint("TOPLEFT", bd, 1, -1)
-	gradient:SetPoint("BOTTOMRIGHT", bd, -1, 1)
+	gradient:SetPoint("TOPLEFT", bd, 0, 0)
+	gradient:SetPoint("BOTTOMRIGHT", bd, 0, 0)
 	
 	box.name = box:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
 	box.name:SetPoint("LEFT", box, "RIGHT", 10, 1)
@@ -624,12 +623,16 @@ T.createeditbox = function(parent, x, y, name, table, value, tip)
 	box:SetScript("OnEscapePressed", function(self) self:SetText(aCoreCDB[table][value]) self:ClearFocus() end)
 	box:SetScript("OnEnterPressed", function(self) self:ClearFocus() aCoreCDB[table][value] = self:GetText() end)
 	
-	box:SetScript("OnDisable", function(self)
-		gradient:SetVertexColor(.7, .7, .7, .5)
+	box:SetScript("OnEnable", function(self)
+		self.name:SetTextColor(1, 1, 1, 1)
+		self:SetTextColor(1, 1, 1, 1)
+		gradient:SetGradientAlpha("Vertical", 0, 0, 0, .5, .3, .3, .3, .3)
 	end)
 	
-	box:SetScript("OnEnable", function(self)
-		gradient:SetVertexColor(buttonR, buttonG, buttonB, buttonA)
+	box:SetScript("OnDisable", function(self)
+		self.name:SetTextColor(0.7, 0.7, 0.7, 0.5)
+		self:SetTextColor(.7, .7, .7, .5)
+		gradient:SetVertexColor(.5, .5, .5, .3)
 	end)
 	
 	if tip then
@@ -653,9 +656,9 @@ T.createmultilinebox = function(parent, width, height, x, y, name, table, value,
 	scrollBG.bg:SetAllPoints(scrollBG)
 	F.CreateBD(scrollBG.bg, 0)
 	
-	local gradient = F.CreateGradient(scrollBG)
-	gradient:SetPoint("TOPLEFT", scrollBG, 1, -1)
-	gradient:SetPoint("BOTTOMRIGHT", scrollBG, -1, 1)
+	local gradient = F.CreateGradient(scrollBG.bg)
+	gradient:SetPoint("TOPLEFT", scrollBG.bg, 0, 0)
+	gradient:SetPoint("BOTTOMRIGHT", scrollBG.bg, 0, 0)
 	
 	if name then
 		scrollBG.name = scrollBG:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
@@ -701,6 +704,24 @@ T.createmultilinebox = function(parent, width, height, x, y, name, table, value,
 		scrollBG.edit:SetScript("OnLeave", function(self) GameTooltip:Hide() end)
 	end
 	
+	scrollBG.Enable = function()
+		if name then
+			scrollBG.name:SetTextColor(1, 1, 1, 1)
+		end
+		gradient:SetGradientAlpha("Vertical", 0, 0, 0, .5, .3, .3, .3, .3)
+		scrollBG.edit:SetTextColor(1, 1, 1, 1)
+		scrollBG.edit:Enable()
+	end
+	
+	scrollBG.Disable = function()	
+		if name then
+			scrollBG.name:SetTextColor(0.7, 0.7, 0.7, 0.5)
+		end
+		gradient:SetVertexColor(.5, .5, .5, .3)
+		scrollBG.edit:SetTextColor(0.7, 0.7, 0.7, 0.5)
+		scrollBG.edit:Disable()
+	end
+	
 	parent[value] = scrollBG
 end
 
@@ -716,22 +737,27 @@ local function TestSlider_OnValueChanged(self, value)
 T.createslider = function(parent, x, y, name, table, value, divisor, min, max, step, tip)
 	local slider = CreateFrame("Slider", G.uiname..value.."Slider", parent, "OptionsSliderTemplate")
 	slider:SetPoint("TOPLEFT", x, -y)
-	slider:SetWidth(220)
+	slider:SetSize(220, 8)
 	F.ReskinSlider(slider)
-	
 	BlizzardOptionsPanel_Slider_Enable(slider)
-	
 	slider:SetMinMaxValues(min, max)
-	_G[slider:GetName()..'Low']:SetText(min/divisor)
-	_G[slider:GetName()..'Low']:ClearAllPoints()
-	_G[slider:GetName()..'Low']:SetPoint("RIGHT", slider, "LEFT", 10, 0)
-	_G[slider:GetName()..'High']:SetText(max/divisor)
-	_G[slider:GetName()..'High']:ClearAllPoints()
-	_G[slider:GetName()..'High']:SetPoint("LEFT", slider, "RIGHT", -10, 0)
 	
-	_G[slider:GetName()..'Text']:ClearAllPoints()
-	_G[slider:GetName()..'Text']:SetPoint("BOTTOM", slider, "TOP", 0, 3)
-	_G[slider:GetName()..'Text']:SetFontObject(GameFontHighlight)
+	slider.Low:SetText(min/divisor)
+	slider.Low:ClearAllPoints()
+	slider.Low:SetPoint("RIGHT", slider, "LEFT", 15, 0)
+	slider.Low:SetFont(G.norFont, 10, "OUTLINE")
+	
+	slider.High:SetText(max/divisor)
+	slider.High:ClearAllPoints()
+	slider.High:SetPoint("LEFT", slider, "RIGHT", -15, 0)
+	slider.High:SetFont(G.norFont, 10, "OUTLINE")
+	
+	slider.Text:ClearAllPoints()
+	slider.Text:SetPoint("BOTTOM", slider, "TOP", 0, 3)
+	slider.Text:SetFontObject(GameFontHighlight)
+	
+	slider.Thumb:SetSize(25, 16)
+	
 	--slider:SetStepsPerPage(step)
 	slider:SetValueStep(step)
 	
@@ -747,19 +773,27 @@ T.createslider = function(parent, x, y, name, table, value, divisor, min, max, s
 	
 	if tip then slider.tooltipText = tip end
 	
+	slider.Enable = function()
+		BlizzardOptionsPanel_Slider_Enable(slider)
+	end
+	
+	slider.Disable = function()
+		BlizzardOptionsPanel_Slider_Disable(slider)
+	end
+	
 	parent[value] = slider
 end
 
 T.createcolorpickerbu = function(parent, x, y, name, table, value)
 	local cpb = CreateFrame("Button", G.uiname..value.."ColorPickerButton", parent, "UIPanelButtonTemplate")
-	cpb:SetPoint("TOPLEFT", x, -y)
-	cpb:SetSize(25, 25)
+	cpb:SetPoint("TOPLEFT", x+3, -y)
+	cpb:SetSize(20, 20)
 	F.Reskin(cpb)
 	
 	cpb.ctex = cpb:CreateTexture(nil, "OVERLAY")
 	cpb.ctex:SetTexture(G.media.blank)
 	cpb.ctex:SetPoint"CENTER"
-	cpb.ctex:SetSize(20, 20)
+	cpb.ctex:SetSize(15, 15)
 
 	cpb.name = cpb:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
 	cpb.name:SetPoint("LEFT", cpb, "RIGHT", 10, 1)
@@ -794,6 +828,14 @@ T.createcolorpickerbu = function(parent, x, y, name, table, value)
 		ColorPickerFrame:Show()
 	end)
 	
+	cpb:SetScript("OnDisable", function(self)
+		self.name:SetTextColor(0.7, 0.7, 0.7, 0.5)
+	end)
+	
+	cpb:SetScript("OnEnable", function(self)
+		self.name:SetTextColor(1, 1, 1, 1)
+	end)
+	
 	if tip then
 		cpb:SetScript("OnEnter", function(self) 
 			GameTooltip:SetOwner(self, "ANCHOR_RIGHT", 10, 10)
@@ -806,13 +848,15 @@ T.createcolorpickerbu = function(parent, x, y, name, table, value)
 	parent[value] = cpb
 end
 
-T.createradiobuttongroup = function(parent, x, y, name, table, value, group, newline)
+T.createradiobuttongroup = function(parent, x, y, name, table, value, group, newline, order)
 	local frame = CreateFrame("Frame", G.uiname..value.."RadioButtonGroup", parent)
 	frame:SetPoint("TOPLEFT", x, -y)
 	frame:SetSize(150, 30)
 	
+	local key = 1
 	for k, v in T.pairsByKeys(group) do
 		frame[k] = CreateFrame("CheckButton", G.uiname..value..k.."RadioButtonGroup", frame, "UIRadioButtonTemplate")
+		frame[k].order = order and order[k] or key
 		F.ReskinRadio(frame[k])
 		
 		_G[frame[k]:GetName() .. "Text"]:SetText(v)
@@ -832,12 +876,16 @@ T.createradiobuttongroup = function(parent, x, y, name, table, value, group, new
 		frame[k]:SetScript("OnDisable", function(self)
 			local tex = self:GetCheckedTexture()
 			tex:SetVertexColor(.7, .7, .7, .5)
+			_G[frame[k]:GetName() .. "Text"]:SetTextColor(.7, .7, .7, .5)
 		end)
 		
 		frame[k]:SetScript("OnEnable", function(self)
 			local tex = self:GetCheckedTexture()
 			tex:SetVertexColor(G.Ccolor.r, G.Ccolor.g, G.Ccolor.b)
+			_G[frame[k]:GetName() .. "Text"]:SetTextColor(1, .82, 0, 1)
 		end)
+		
+		key = key + 1
 	end
 	
 	for k, v in T.pairsByKeys(group) do
@@ -856,16 +904,35 @@ T.createradiobuttongroup = function(parent, x, y, name, table, value, group, new
 	frame.name:SetText(name)
 	
 	local buttons = {frame:GetChildren()}
+	
+	if order then
+		sort(buttons, function(a,b) return a.order < b.order end)
+	end
+	
 	for i = 1, #buttons do
 		if i == 1 then
 			frame.name:SetPoint("LEFT", 5, 0)
 			buttons[i]:SetPoint("LEFT", frame.name, "RIGHT", 10, 1)
 		elseif newline and i == newline then
-			buttons[i]:SetPoint("TOPLEFT", frame.name, "BOTTOMLEFT", 0, -10)
+			buttons[i]:SetPoint("TOPLEFT", frame.name, "BOTTOMRIGHT", 10, -10)
 		else
 			buttons[i]:SetPoint("LEFT", _G[buttons[i-1]:GetName() .. "Text"], "RIGHT", 5, 0)
 		end
 
+	end
+	
+	frame.Enable = function()
+		for i = 1, #buttons do
+			buttons[i]:Enable()
+		end
+		frame.name:SetTextColor(1, 1, 1, 1)
+	end
+	
+	frame.Disable = function()
+		for i = 1, #buttons do
+			buttons[i]:Disable()
+		end
+		frame.name:SetTextColor(0.7, 0.7, 0.7, 0.5)
 	end
 	
 	parent[value] = frame
@@ -875,62 +942,19 @@ end
 T.createDR = function(parent, ...)
     for i=1, select("#", ...) do
 		local object = select(i, ...)
-		if object:GetObjectType() == "Slider" then
-			parent:HookScript("OnShow", function(self)
-				if self:GetChecked() and self:IsEnabled() then
-					BlizzardOptionsPanel_Slider_Enable(object)
-				else
-					BlizzardOptionsPanel_Slider_Disable(object)
-				end
-			end)
-			parent:HookScript("OnClick", function(self)
-				if self:GetChecked() and self:IsEnabled() then
-					BlizzardOptionsPanel_Slider_Enable(object)
-				else
-					BlizzardOptionsPanel_Slider_Disable(object)
-				end
-			end)
-		elseif object:GetObjectType() == "Frame" and object:GetName() then
-			if object:GetName():match("RadioButtonGroup") then
-				local children = {object:GetChildren()}
-				parent:HookScript("OnShow", function(self)
-					if self:GetChecked() and self:IsEnabled() then
-						for i = 1, #children do
-							children[i]:Enable()
-						end
-					else
-						for i = 1, #children do
-							children[i]:Disable()
-						end
-					end
-				end)
-				parent:HookScript("OnClick", function(self)
-					if self:GetChecked() and self:IsEnabled() then
-						for i = 1, #children do
-							children[i]:Enable()
-						end
-					else
-						for i = 1, #children do
-							children[i]:Disable()
-						end
-					end
-				end)
+		parent:HookScript("OnShow", function(self)
+			if self:GetChecked() and self:IsEnabled() then
+				object:Enable()
+			else
+				object:Disable()
 			end
-		else
-			parent:HookScript("OnShow", function(self)
-				if self:GetChecked() and self:IsEnabled() then
-					object:Enable()
-				else
-					object:Disable()
-				end
-			end)
-			parent:HookScript("OnClick", function(self)
-				if self:GetChecked() and self:IsEnabled() then
-					object:Enable()
-				else
-					object:Disable()
-				end
-			end)
-		end
-    end
+		end)
+		parent:HookScript("OnClick", function(self)
+			if self:GetChecked() and self:IsEnabled() then
+				object:Enable()
+			else
+				object:Disable()
+			end
+		end)
+	end
 end
