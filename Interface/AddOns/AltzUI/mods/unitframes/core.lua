@@ -389,9 +389,9 @@ end
 --=============================================--
 --[[ Castbars ]]--
 --=============================================--
-
-local uc = {1, 0, 0}
-local tk
+local Interruptible_color = {aCoreCDB["UnitframeOptions"]["Interruptible_color"].r, aCoreCDB["UnitframeOptions"]["Interruptible_color"].g, aCoreCDB["UnitframeOptions"]["Interruptible_color"].b} -- 玩家以及可打断的颜色
+local notInterruptible_color = {aCoreCDB["UnitframeOptions"]["notInterruptible_color"].r, aCoreCDB["UnitframeOptions"]["notInterruptible_color"].g, aCoreCDB["UnitframeOptions"]["notInterruptible_color"].b} -- 不可打断的颜色
+local tk -- 引导法术的分段竖线颜色
 if aCoreCDB["UnitframeOptions"]["independentcb"] then -- 独立施法条
 	tk = {0, 0, 0}
 elseif aCoreCDB["UnitframeOptions"]["style"] == 1 or aCoreCDB["UnitframeOptions"]["style"] == 3 then -- 透明或者经典主题
@@ -416,13 +416,13 @@ local ChannelSpells = {
 local PostCastStart = function(castbar, unit)
 	if unit == "player" then
 		if not aCoreCDB["UnitframeOptions"]["hideplayercastbaricon"] then
-			castbar.IBackdrop:SetBackdropBorderColor(0, 0, 0)
+			castbar.IBackdrop:SetBackdropBorderColor(Interruptible_color[1], Interruptible_color[2], Interruptible_color[3])
 		end
 	else
 		if castbar.notInterruptible then
-			castbar.IBackdrop:SetBackdropBorderColor(uc[1], uc[2], uc[3])
+			castbar.IBackdrop:SetBackdropBorderColor(notInterruptible_color[1], notInterruptible_color[2], notInterruptible_color[3])
 		else
-			castbar.IBackdrop:SetBackdropBorderColor(0, 0, 0)
+			castbar.IBackdrop:SetBackdropBorderColor(Interruptible_color[1], Interruptible_color[2], Interruptible_color[3])
 		end
 	end
 end
@@ -431,13 +431,13 @@ local PostChannelStart = function(castbar, unit, spell)
 
 	if unit == "player" then
 		if not aCoreCDB["UnitframeOptions"]["hideplayercastbaricon"] then
-			castbar.IBackdrop:SetBackdropBorderColor(0, 0, 0)
+			castbar.IBackdrop:SetBackdropBorderColor(Interruptible_color[1], Interruptible_color[2], Interruptible_color[3])
 		end
 	else
 		if castbar.notInterruptible then
-			castbar.IBackdrop:SetBackdropBorderColor(uc[1], uc[2], uc[3])
+			castbar.IBackdrop:SetBackdropBorderColor(notInterruptible_color[1], notInterruptible_color[2], notInterruptible_color[3])
 		else
-			castbar.IBackdrop:SetBackdropBorderColor(0, 0, 0)
+			castbar.IBackdrop:SetBackdropBorderColor(Interruptible_color[1], Interruptible_color[2], Interruptible_color[3])
 		end
 	end
 
@@ -532,13 +532,14 @@ local CreateCastbars = function(self, unit)
 		cb:SetStatusBarColor(0, 0, 0, 0)
 		cb:SetAllPoints(self)
 		cb:SetFrameLevel(2)
-
+		
 		cb.Spark = cb:CreateTexture(nil, "OVERLAY")
-		cb.Spark:SetTexture("Interface\\UnitPowerBarAlt\\Generic1Player_Pill_Flash")
+		cb.Spark:SetTexture("Interface\\CastingBar\\UI-CastingBar-Spark")
 		cb.Spark:SetBlendMode("ADD")
 		cb.Spark:SetAlpha(1)
 		cb.Spark:SetSize(8, aCoreCDB["UnitframeOptions"]["height"]*2)
-
+		cb.Spark:SetPoint('CENTER', cb:GetStatusBarTexture(), 'RIGHT', 0, 0)
+		
 		cb.Time = T.createnumber(cb, "OVERLAY", 14, "OUTLINE", "CENTER")
 		if unit == "player" then
 			cb.Time:SetFont(G.norFont, 15, "OUTLINE")
@@ -676,10 +677,11 @@ local CreateSwingTimer = function(self, unit) -- only for player
 	bar.Twohand.Spark = bar.Twohand:CreateTexture(nil, "OVERLAY")
 	bar.Twohand.Spark:SetSize(8, aCoreCDB["UnitframeOptions"]["swheight"]*2)
 	bar.Twohand.Spark:SetPoint("CENTER", bar.Twohand:GetStatusBarTexture(), "RIGHT")
-	bar.Twohand.Spark:SetTexture("Interface\\UnitPowerBarAlt\\Generic1Player_Pill_Flash")
+	bar.Twohand.Spark:SetTexture([[Interface\CastingBar\UI-CastingBar-Spark]])
 	bar.Twohand.Spark:SetVertexColor(1, 1, .2)
 	bar.Twohand.Spark:SetBlendMode("ADD")
-
+	bar.Twohand.Spark:SetPoint('CENTER', bar.Twohand:GetStatusBarTexture(), 'RIGHT', 0, 0)
+	
 	bar.Twohand:Hide()
 
 	-- 主手
@@ -698,10 +700,11 @@ local CreateSwingTimer = function(self, unit) -- only for player
 	bar.Mainhand.Spark:SetSize(8, aCoreCDB["UnitframeOptions"]["swheight"]*2)
 
 	bar.Mainhand.Spark:SetPoint("CENTER", bar.Mainhand:GetStatusBarTexture(), "RIGHT")
-	bar.Mainhand.Spark:SetTexture("Interface\\UnitPowerBarAlt\\Generic1Player_Pill_Flash")
+	bar.Mainhand.Spark:SetTexture([[Interface\CastingBar\UI-CastingBar-Spark]])
 	bar.Mainhand.Spark:SetVertexColor(1, 1, .2)
 	bar.Mainhand.Spark:SetBlendMode("ADD")
-
+	bar.Mainhand.Spark:SetPoint('CENTER', bar.Mainhand:GetStatusBarTexture(), 'RIGHT', 0, 0)
+	
 	bar.Mainhand:Hide()
 
 	-- 副手
@@ -721,10 +724,11 @@ local CreateSwingTimer = function(self, unit) -- only for player
 	bar.Offhand.Spark = bar.Offhand:CreateTexture(nil, "OVERLAY")
 	bar.Offhand.Spark:SetSize(8, aCoreCDB["UnitframeOptions"]["swheight"])
 	bar.Offhand.Spark:SetPoint("CENTER", bar.Offhand:GetStatusBarTexture(), "RIGHT")
-	bar.Offhand.Spark:SetTexture("Interface\\UnitPowerBarAlt\\Generic1Player_Pill_Flash")
+	bar.Offhand.Spark:SetTexture([[Interface\CastingBar\UI-CastingBar-Spark]])
 	bar.Offhand.Spark:SetVertexColor(.2, 1, 1)
 	bar.Offhand.Spark:SetBlendMode("ADD")
-
+	bar.Offhand.Spark:SetPoint('CENTER', bar.Offhand:GetStatusBarTexture(), 'RIGHT', 0, 0)
+	
 	bar.Offhand:Hide()
 
 	if not aCoreCDB["UnitframeOptions"]["swoffhand"] then
@@ -1105,12 +1109,16 @@ local func = function(self, unit)
 	self.Health.PostUpdate = T.Updatehealthbar
 	tinsert(self.mouseovers, self.Health)
 
-	-- portrait 只有样式1和样式2才有肖像
-	if aCoreCDB["UnitframeOptions"]["style"] ~= 3 and aCoreCDB["UnitframeOptions"]["portrait"] and multicheck(u, "player", "target", "focus", "boss", "arena") then
+	-- portrait 肖像
+	if aCoreCDB["UnitframeOptions"]["portrait"] and multicheck(u, "player", "target", "focus", "boss", "arena") then
 		local Portrait = CreateFrame('PlayerModel', nil, self)
-		Portrait:SetFrameLevel(1) -- blow hp
+		if aCoreCDB["UnitframeOptions"]["style"] ~= 3 then
+			Portrait:SetFrameLevel(1) -- blow hp
+		else
+			Portrait:SetFrameLevel(2) -- above hp
+		end
 		Portrait:SetPoint("TOPLEFT", 1, 0)
-		Portrait:SetPoint("BOTTOMRIGHT", -1, 1)
+		Portrait:SetPoint("BOTTOMRIGHT", -1, 0)
 		Portrait:SetAlpha(aCoreCDB["UnitframeOptions"]["portraitalpha"])
 		self.Portrait = Portrait
 	end

@@ -13,6 +13,8 @@ local playerplate = aCoreCDB["PlateOptions"]["playerplate"]
 local classresource_show = aCoreCDB["PlateOptions"]["classresource_show"]
 local classresource = aCoreCDB["PlateOptions"]["classresource"] -- "player"  "target"
 local plateaura =  aCoreCDB["PlateOptions"]["plateaura"]
+local InterruptibleColor = aCoreCDB["PlateOptions"]["Interruptible_color"]
+local notInterruptibleColor = aCoreCDB["PlateOptions"]["notInterruptible_color"]
 
 local auranum = aCoreCDB["PlateOptions"]["plateauranum"]
 local auraiconsize = aCoreCDB["PlateOptions"]["plateaurasize"]
@@ -217,7 +219,7 @@ if playerplate then
 					PowerFrame.powerBar:SetPoint("TOPRIGHT", namePlatePlayer.NUnitFrame.healthBar, "BOTTOMRIGHT", 0, -3)
 				else
 					PowerFrame.powerperc:ClearAllPoints()
-					PowerFrame.powerperc:SetPoint("TOP", namePlatePlayer.NUnitFrame.healthperc, "BOTTOM", 0, 0)
+					PowerFrame.powerperc:SetPoint("TOP", namePlatePlayer.NUnitFrame.healthperc, "BOTTOM", 0, -5)
 					PowerFrame.powerperc:SetJustifyH("CENTER")
 					PowerFrame.powerperc:SetJustifyV("TOP")
 				end
@@ -241,7 +243,6 @@ if classresource_show then
 		return false
 	end
 
-	local ClassPowerID, ClassPowerType, RequireSpec
 	local classicon_colors = { --monk/paladin/preist
 		{.6, 0, .1},
 		{.9, .1, .2},
@@ -256,6 +257,21 @@ if classresource_show then
 		{1, 1, 0},
 	}
 	
+	local SPEC_MAGE_ARCANE = SPEC_MAGE_ARCANE or 1
+	local SPEC_MONK_WINDWALKER = SPEC_MONK_WINDWALKER or 3
+	local SPEC_PALADIN_RETRIBUTION = SPEC_PALADIN_RETRIBUTION or 3
+	local SPEC_WARLOCK_DESTRUCTION = SPEC_WARLOCK_DESTRUCTION or 3
+	local SPELL_POWER_ENERGY = Enum.PowerType.Energy or 3
+	local SPELL_POWER_COMBO_POINTS = Enum.PowerType.ComboPoints or 4
+	local SPELL_POWER_SOUL_SHARDS = Enum.PowerType.SoulShards or 7
+	local SPELL_POWER_HOLY_POWER = Enum.PowerType.HolyPower or 9
+	local SPELL_POWER_CHI = Enum.PowerType.Chi or 12
+	local SPELL_POWER_ARCANE_CHARGES = Enum.PowerType.ArcaneCharges or 16
+	
+	-- Holds the class specific stuff.
+	local ClassPowerID, ClassPowerType
+	local RequireSpec
+	
 	if(G.myClass == 'MONK') then
 		ClassPowerID = Enum.PowerType.Chi or 12
 		ClassPowerType = "CHI"
@@ -263,7 +279,6 @@ if classresource_show then
 	elseif(G.myClass == 'PALADIN') then
 		ClassPowerID = Enum.PowerType.HolyPower or 9
 		ClassPowerType = "HOLY_POWER"
-		RequireSpec = SPEC_PALADIN_RETRIBUTION
 	elseif(G.myClass == 'MAGE') then
 		ClassPowerID = Enum.PowerType.ArcaneCharges or 16
 		ClassPowerType = "ARCANE_CHARGES"
@@ -282,16 +297,16 @@ if classresource_show then
 	Resourcebar.maxbar = 6
 	
 	for i = 1, 6 do
-		Resourcebar[i] = CreateFrame("Frame", G.uiname.."plateresource"..i, Resourcebar)
+		Resourcebar[i] = CreateFrame("StatusBar", G.uiname.."plateresource"..i, Resourcebar)
+		Resourcebar[i]:SetMinMaxValues(0, 1)
+		Resourcebar[i]:SetStatusBarTexture(G.media.ufbar)
 		Resourcebar[i]:SetFrameLevel(1)
 		Resourcebar[i]:SetSize(15, 3)
 		Resourcebar[i].bd = T.createBackdrop(Resourcebar[i], Resourcebar[i], 1)
-		Resourcebar[i].tex = Resourcebar[i]:CreateTexture(nil, "OVERLAY")
-		Resourcebar[i].tex:SetAllPoints(Resourcebar[i])
 		if G.myClass == "DEATHKNIGHT" then
 			Resourcebar[i].value = T.createtext(Resourcebar[i], "OVERLAY", fontsize-2, "OUTLINE", "CENTER")
 			Resourcebar[i].value:SetPoint("CENTER")
-			Resourcebar[i].tex:SetColorTexture(.7, .7, 1)
+			Resourcebar[i]:SetStatusBarColor(.7, .7, 1)
 		end
 		
 		if i == 1 then
@@ -323,35 +338,55 @@ if classresource_show then
 			end
 		elseif event == "PLAYER_ENTERING_WORLD" or (event == "UNIT_POWER_FREQUENT" and unit == "player" and powerType == ClassPowerType) then
 			if multicheck(G.myClass, "WARLOCK", "PALADIN", "MONK", "MAGE", "ROGUE", "DRUID") then
-				local cur, max, oldMax
 				
-				cur = UnitPower('player', ClassPowerID)
-				max = UnitPowerMax('player', ClassPowerID)
+				local cur, max, mod, oldMax, chargedIndex
+				cur = UnitPower("player", ClassPowerID, true)
+				max = UnitPowerMax("player", ClassPowerID)
+				mod = UnitPowerDisplayMod(ClassPowerID)
+				
+				-- mod should never be 0, but according to Blizz code it can actually happen
+				cur = mod == 0 and 0 or cur / mod
+
+				-- BUG: Destruction is supposed to show partial soulshards, but Affliction and Demonology should only show full ones
+				if(ClassPowerType == 'SOUL_SHARDS' and GetSpecialization() ~= SPEC_WARLOCK_DESTRUCTION) then
+					cur = cur - cur % 1
+				end
+		
+				if(PlayerClass == 'ROGUE') then
+					local chargedPoints = GetUnitChargedPowerPoints(unit)
+					-- according to Blizzard there will only be one
+					chargedIndex = chargedPoints and chargedPoints[1]
+				end
 				
 				if multicheck(G.myClass, "WARLOCK", "PALADIN", "MONK", "MAGE") then
+					local numActive = cur + 0.9
 					for i = 1, max do
-						if(i <= cur) then
-							self[i]:Show()
-						else
+						if(i > numActive) then
 							self[i]:Hide()
+							self[i]:SetValue(0)
+						else
+							self[i]:Show()
+							self[i]:SetValue(cur - i + 1)
 						end
 						if cur == max then
-							self[i].tex:SetColorTexture(unpack(classicon_colors[max]))
+							self[i]:SetStatusBarColor(unpack(classicon_colors[max]))
 						else
-							self[i].tex:SetColorTexture(unpack(classicon_colors[i]))
+							self[i]:SetStatusBarColor(unpack(classicon_colors[i]))
 						end
 					end
-					
+			
 					oldMax = self.maxbar
 					if(max ~= oldMax) then
 						if(max < oldMax) then
 							for i = max + 1, oldMax do
 								self[i]:Hide()
+								self[i]:SetValue(0)
+							end
+							for i = 1, 6 do
+								self[i]:SetWidth(102/max-2)
 							end
 						end
-						for i = 1, 6 do
-							self[i]:SetWidth(102/max-2)
-						end
+			
 						self.maxbar = max
 					end
 				else -- 连击点
@@ -362,7 +397,7 @@ if classresource_show then
 							else
 								self[i]:Hide()
 							end
-							self[i].tex:SetColorTexture(unpack(cpoints_colors[1]))
+							self[i]:SetStatusBarColor(unpack(cpoints_colors[1]))
 						end
 					else
 						if cur <= 5 then
@@ -372,17 +407,17 @@ if classresource_show then
 								else
 									self[i]:Hide()
 								end
-								self[i].tex:SetColorTexture(unpack(cpoints_colors[1]))
+								self[i]:SetStatusBarColor(unpack(cpoints_colors[1]))
 							end
 						else
 							for i = 1, 5 do
 								self[i]:Show()
 							end
 							for i = 1, cur - 5 do
-								self[i].tex:SetColorTexture(unpack(cpoints_colors[2]))
+								self[i]:SetStatusBarColor(unpack(cpoints_colors[2]))
 							end
 							for i = cur - 4, 5 do
-								self[i].tex:SetColorTexture(unpack(cpoints_colors[1]))
+								self[i]:SetStatusBarColor(unpack(cpoints_colors[1]))
 							end
 						end
 					end
@@ -411,12 +446,12 @@ if classresource_show then
 			local start, duration, runeReady = GetRuneCooldown(rid)
 			if runeReady then
 				self[rid]:SetAlpha(1)
-				self[rid].tex:SetColorTexture(.7, .7, 1)
+				self[rid]:SetStatusBarColor(.7, .7, 1)
 				self[rid]:SetScript("OnUpdate", nil)
 				self[rid].value:SetText("")
 			elseif start then
 				self[rid]:SetAlpha(.7)
-				self[rid].tex:SetColorTexture(.3, .3, .3)
+				self[rid]:SetStatusBarColor(.3, .3, .3)
 				self[rid].max = duration
 				self[rid].duration = GetTime() - start
 				self[rid]:SetScript("OnUpdate", function(self, elapsed)
@@ -583,11 +618,11 @@ end
 
 local function UpdateCastBar(unitFrame)
 	if not unitFrame.castbar_added then
-		unitFrame.castBar.startCastColor = CreateColor(0.6, 0.6, 0.6)
-		unitFrame.castBar.startChannelColor = CreateColor(0.6, 0.6, 0.6)
-		unitFrame.castBar.finishedCastColor = CreateColor(0.6, 0.6, 0.6)
+		unitFrame.castBar.startCastColor = CreateColor(InterruptibleColor.r, InterruptibleColor.g, InterruptibleColor.b)
+		unitFrame.castBar.startChannelColor = CreateColor(InterruptibleColor.r, InterruptibleColor.g, InterruptibleColor.b)
+		unitFrame.castBar.finishedCastColor = CreateColor(InterruptibleColor.r, InterruptibleColor.g, InterruptibleColor.b)
 		unitFrame.castBar.failedCastColor = CreateColor(0.5, 0.2, 0.2)
-		unitFrame.castBar.nonInterruptibleColor = CreateColor(0.3, 0.3, 0.3)
+		unitFrame.castBar.notInterruptibleColor = CreateColor(notInterruptibleColor.r, notInterruptibleColor.g, notInterruptibleColor.b)
 		CastingBarFrame_AddWidgetForFade(unitFrame.castBar, unitFrame.castBar.BorderShield)
 		unitFrame.castbar_added = true
 	end
@@ -759,6 +794,14 @@ local function HideBlizzard()
 		NamePlateDriverFrame:UnregisterAllEvents()
 	end
 	ClassNameplateManaBarFrame:SetAlpha(0)
+	
+	DeathKnightResourceOverlayFrame:SetAlpha(0)
+	ClassNameplateBarMageFrame:SetAlpha(0)
+	ClassNameplateBarWindwalkerMonkFrame:SetAlpha(0)
+	ClassNameplateBarPaladinFrame:SetAlpha(0)
+	ClassNameplateBarRogueDruidFrame:SetAlpha(0)
+	ClassNameplateBarWarlockFrame:SetAlpha(0)
+	
 	SystemFont_NamePlate:SetFont(G.norFont, aCoreCDB["PlateOptions"]["name_fontsize"], "OUTLINE")
 	
 	--hooksecurefunc(NamePlateDriverFrame, "SetupClassNameplateBar", function()
