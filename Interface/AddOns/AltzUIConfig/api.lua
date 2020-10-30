@@ -33,6 +33,14 @@ T.createnumber = function(f, layer, fontsize, flag, justifyh)
 	return text
 end
 
+T.resize_font = function(t, size)
+	if not size then
+		t:SetFont(G.norFont, 12, "OUTLINE")
+	else
+		t:SetFont(G.norFont, size, "OUTLINE")
+	end
+end
+
 T.pairsByKeys = function(t)
     local a = {}
     for n in pairs(t) do table.insert(a, n) end
@@ -499,7 +507,8 @@ T.createcheckbutton = function(parent, x, y, name, table, value, tip)
 	bu:SetPoint("TOPLEFT", x, -y)
 	F.ReskinCheck(bu)
 	
-	_G[bu:GetName() .. "Text"]:SetText(name)
+	bu.Text:SetText(name)
+	T.resize_font(bu.Text)
 	
 	bu:SetScript("OnShow", function(self) self:SetChecked(aCoreCDB[table][value]) end)
 	bu:SetScript("OnClick", function(self)
@@ -537,7 +546,8 @@ T.ABtogglebox = function(parent, x, y, id, name)
 	bu:SetPoint("TOPLEFT", x, -y)
 	F.ReskinCheck(bu)
 	
-	_G[bu:GetName() .. "Text"]:SetText(name)
+	bu.Text:SetText(name)
+	T.resize_font(bu.Text)
 	
 	bu:SetScript("OnShow", function(self)
 		if select(id, GetActionBarToggles())== 1 then
@@ -568,7 +578,9 @@ T.CVartogglebox = function(parent, x, y, value, name, arg1, arg2, tip)
 	bu:SetPoint("TOPLEFT", x, -y)
 	F.ReskinCheck(bu)
 	
-	_G[bu:GetName() .. "Text"]:SetText(name)
+	bu.Text:SetText(name)
+	T.resize_font(bu.Text)
+	
 	bu:SetScript("OnShow", function(self)
 		if GetCVar(value) == arg1 then
 			self:SetChecked(true)
@@ -614,6 +626,7 @@ T.createeditbox = function(parent, x, y, name, table, value, tip)
 	box.name = box:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
 	box.name:SetPoint("LEFT", box, "RIGHT", 10, 1)
 	box.name:SetText(name)
+	T.resize_font(box.name)
 	
 	box:SetFont(GameFontHighlight:GetFont(), 12, "OUTLINE")
 	box:SetAutoFocus(false)
@@ -665,6 +678,7 @@ T.createmultilinebox = function(parent, width, height, x, y, name, table, value,
 		scrollBG.name:SetPoint("BOTTOMLEFT", scrollBG, "TOPLEFT", 5, 8)
 		scrollBG.name:SetJustifyH("LEFT")
 		scrollBG.name:SetText(name)
+		T.resize_font(scrollBG.name)
 	end
 	
 	local scrollAC = CreateFrame("Frame", G.uiname..value.."MultiLineEditBox_ScrollAC", scrollBG)
@@ -755,6 +769,7 @@ T.createslider = function(parent, x, y, name, table, value, divisor, min, max, s
 	slider.Text:ClearAllPoints()
 	slider.Text:SetPoint("BOTTOM", slider, "TOP", 0, 3)
 	slider.Text:SetFontObject(GameFontHighlight)
+	T.resize_font(slider.Text)
 	
 	slider.Thumb:SetSize(25, 16)
 	
@@ -798,6 +813,7 @@ T.createcolorpickerbu = function(parent, x, y, name, table, value)
 	cpb.name = cpb:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
 	cpb.name:SetPoint("LEFT", cpb, "RIGHT", 10, 1)
 	cpb.name:SetText(name)
+	T.resize_font(cpb.name)
 	
 	cpb:SetScript("OnShow", function(self) self.ctex:SetVertexColor(aCoreCDB[table][value].r, aCoreCDB[table][value].g, aCoreCDB[table][value].b) end)
 	cpb:SetScript("OnClick", function(self)
@@ -859,7 +875,8 @@ T.createradiobuttongroup = function(parent, x, y, name, table, value, group, new
 		frame[k].order = order and order[k] or key
 		F.ReskinRadio(frame[k])
 		
-		_G[frame[k]:GetName() .. "Text"]:SetText(v)
+		frame[k].text:SetText(v)
+		T.resize_font(frame[k].text)
 		
 		frame[k]:SetScript("OnShow", function(self)
 			self:SetChecked(aCoreCDB[table][value] == k)
@@ -876,13 +893,13 @@ T.createradiobuttongroup = function(parent, x, y, name, table, value, group, new
 		frame[k]:SetScript("OnDisable", function(self)
 			local tex = self:GetCheckedTexture()
 			tex:SetVertexColor(.7, .7, .7, .5)
-			_G[frame[k]:GetName() .. "Text"]:SetTextColor(.7, .7, .7, .5)
+			frame[k].text:SetTextColor(.7, .7, .7, .5)
 		end)
 		
 		frame[k]:SetScript("OnEnable", function(self)
 			local tex = self:GetCheckedTexture()
 			tex:SetVertexColor(G.Ccolor.r, G.Ccolor.g, G.Ccolor.b)
-			_G[frame[k]:GetName() .. "Text"]:SetTextColor(1, .82, 0, 1)
+			frame[k].text:SetTextColor(1, .82, 0, 1)
 		end)
 		
 		key = key + 1
@@ -902,6 +919,7 @@ T.createradiobuttongroup = function(parent, x, y, name, table, value, group, new
 	
 	frame.name = frame:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
 	frame.name:SetText(name)
+	T.resize_font(frame.name)
 	
 	local buttons = {frame:GetChildren()}
 	
@@ -916,7 +934,7 @@ T.createradiobuttongroup = function(parent, x, y, name, table, value, group, new
 		elseif newline and i == newline then
 			buttons[i]:SetPoint("TOPLEFT", frame.name, "BOTTOMRIGHT", 10, -10)
 		else
-			buttons[i]:SetPoint("LEFT", _G[buttons[i-1]:GetName() .. "Text"], "RIGHT", 5, 0)
+			buttons[i]:SetPoint("LEFT", buttons[i-1].text, "RIGHT", 5, 0)
 		end
 
 	end

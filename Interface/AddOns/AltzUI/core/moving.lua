@@ -403,6 +403,7 @@ local resetposbutton = CreateFrame("Button", G.uiname.."ResetPosButton", IntroOp
 resetposbutton:SetPoint("BOTTOMRIGHT", IntroOptions, "BOTTOM", -145, 80)
 resetposbutton:SetSize(130, 25)
 resetposbutton:SetText(L["重置框体位置"])
+T.resize_font(resetposbutton.Text)
 F.Reskin(resetposbutton)
 resetposbutton:SetScript("OnClick", function()
 	StaticPopupDialogs[G.uiname.."Reset Confirm"].text = L["重置确认"]
@@ -434,6 +435,7 @@ local unlockbutton = CreateFrame("Button", G.uiname.."UnlockAllFramesButton", In
 unlockbutton:SetPoint("BOTTOMRIGHT", IntroOptions, "BOTTOM", -5, 80)
 unlockbutton:SetSize(130, 25)
 unlockbutton:SetText(L["解锁框体"])
+T.resize_font(unlockbutton.Text)
 F.Reskin(unlockbutton)
 unlockbutton:SetScript("OnClick", function()
 	UnlockAll()

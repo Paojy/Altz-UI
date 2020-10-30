@@ -81,6 +81,14 @@ T.createnumber = function(f, layer, fontsize, flag, justifyh)
 	return text
 end
 
+T.resize_font = function(t, size)
+	if not size then
+		t:SetFont(G.norFont, 12, "OUTLINE")
+	else
+		t:SetFont(G.norFont, size, "OUTLINE")
+	end
+end
+
 T.CreateSD = function(parent, size, r, g, b, alpha, offset)
 	local sd = CreateFrame("Frame", nil, parent, "BackdropTemplate")
 	sd.size = size or 5
