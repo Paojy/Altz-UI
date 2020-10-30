@@ -29,6 +29,7 @@ L["切天赋"] = "Change Active Spec"
 L["锁定框体"] = "Lock all frames"
 L["解锁框体"] = "Unlock all frames"
 L["重置框体位置"] = "Reset Positions"
+L["重置确认"] = "Do you want to reset all frame positions？"
 
 L["你不能在战斗中绑定按键"] = "You can't bind keys in combat."
 L["按键绑定解除"] = "Keybinding reset to defaults"
@@ -144,7 +145,6 @@ L["货物不足"] = "The merchant don't have enough"
 L["光标"] = "cursor"
 L["当前"] = "current"
 
-
 L["上一条"] = "Previous"
 L["下一条"] = "Next"
 L["我不想看到这些提示"] = "I don't want to see them"
@@ -153,12 +153,9 @@ L["隐藏提示的提示"] = "You can re-enable these tips in GUI → Other"
 L["TIPS"] = {
 	"Altz UI can hide the minimap and chat frame when you enter combat and show them when you leave. GUI → Other",
 	"Click the clock on the minimap to open the calendar; right click changes between local/server time while a modified right click (holding alt, ctrl, or shift) changes 12/24 format.",
-	"Want to enable class colors on your raid frames? GUI → UnitFrames → Style → Classic Theme",
 	"Want to display the independent castbar? GUI → Unit Frames → Castbar → Independent player castbar",
 	"Want to use the healer-style raid frame? GUI → Raid Frames → Switch → click Disable Auto Switch and Healer",
-	"Want to switch the positions of the first and second action bar? GUI → Actionbars → MainActionbar → Place bar1 above bar2",
 	"Want to use a custom color of the nameplate of a specific unit? GUI → Unit Nameplates → Custom Color",
-	"Want to change the size of the mini-map? GUI → Other → Togglebutton Height",
 	"/rl - reload UI",
 	"/hb - Key Binding Mode",
 	"Use SHIFT+Click to set your focus; it's available for unit frames",
@@ -166,7 +163,9 @@ L["TIPS"] = {
 	"Press Tab to change between available channels when the edit box of the chat frame is activated",
 	"The font files are located at Interface\\AddOns\\AuroraClassic\\media\\font.ttf(main font),Interface\\AddOns\\AltzUI\\media\\number.ttf(font for some time text)",
 	"Hold Ctrl, Alt or Shift to scroll chat frame to top/bottom.",
-	"Clicking the edge of some button will toggle it's autohidden function, eg MicroMenu/Raidtools/Config.",
 }
 
 L["出现了！"] = "spotted!"
+
+L["打开自动隐藏"] = "Click - auto-hide on"
+L["关闭自动隐藏"] = "Click - auto-hide off"

@@ -29,6 +29,7 @@ L["切天赋"] = "Alternar especialização ativa"
 L["锁定框体"] = "Travar quadros"
 L["解锁框体"] = "Destravar quadros"
 L["重置框体位置"] = "Restaurar posições"
+--L["重置确认"] = "Do you want to reset all frame positions？"
 
 L["你不能在战斗中绑定按键"] = "Você não pode vincular teclas em combate."
 L["按键绑定解除"] = "Vinculações de teclas retauradas ao padrão"
@@ -144,7 +145,6 @@ L["货物不足"] = "O mercador não tem o bastante"
 L["光标"] = "Mouse"
 L["当前"] = "Jogador"
 
-
 L["上一条"] = "Anterior"
 L["下一条"] = "Próximo"
 L["我不想看到这些提示"] = "Eu não quero vê-los"
@@ -153,12 +153,9 @@ L["隐藏提示的提示"] = "Você pode reativar essas dicas em GUI → Outros"
 L["TIPS"] = {
 	"Altz UI pode esconder o minimapa e bate-papo quando você entrar e mostrar quando sair de combate. GUI → Outros",
 	"Clique no relógio no minimapa para abrir o calendário; Clique-direito alterna entre horário local/servidor enquanto um clique-direito (pressionando alt, ctrl, ou shift) muda o formato do horário entre 12/24",
-	"Quer ativar cores por classe nos seus quadros de raide? GUI → Quadros de unidade → Estilo → Tema clássico",
 	"Quer mostrar barras de lançamento independentes? GUI → Quadros de unidade → Barra de lançamento → Marque 'Barra de lançamento indenpendente'",
 	"Quer usar o estilo curandeiro nos quadros de raide? GUI → Quadros de raide → Alternância → Marque 'Desativar alternância automática'",
-	"Quer alternar posições da barra de ações principal e adicional? GUI → Barra de ações → Principal → Marque 'Colocar principal acima da adicional'",
 	"Quer usar uma cor personalizada para as placas de nomes de uma unidade especifica? GUI → Placas de identificação → Cor personalizada",
-	"Quer mudar o tamanho do minimapa? GUI → Outros → Altura da alternância",
 	"/rl - Reinicia UI",
 	"/hb - Modo vinculação de teclas",
 	"Use SHIFT+Clique para adicionar o alvo ao foco; está disponível para quadros de unidade.",
@@ -166,7 +163,9 @@ L["TIPS"] = {
 	"Pressione Tab para alternar entre canais de bate-papo quando digitar alguma mensagem no bate-papo.",
 	"Os arquivos de fonte estão localizados em 'Interface\\AddOns\\AuroraClassic\\media\\font.ttf(fonte principal),Interface\\AddOns\\AltzUI\\media\\number.ttf'(fonte para algum texto de tempo)",
 	"Segure Ctrl, Alt ou Shift para rolar o bate-papo para a parte superior/inferior.",
-	"Clicando na borda de algum botão ativara a função de auto-esconder, ex: Menu/Ferramentas de Raide/Configurações.",
  }
 
 L["出现了！"] = " visto!"
+
+--L["打开自动隐藏"] = "Click - auto-hide on"
+--L["关闭自动隐藏"] = "Click - auto-hide off"
