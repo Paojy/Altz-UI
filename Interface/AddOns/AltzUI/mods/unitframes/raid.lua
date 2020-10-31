@@ -310,7 +310,6 @@ local func = function(self, unit)
 			self:Tag(raidname, '[Altz:raidname]')
 		end
 	end
-	self.Name = raidname
 	
     local ricon = hp:CreateTexture(nil, "OVERLAY", 1)
 	ricon:SetSize(18 ,18)
@@ -486,7 +485,6 @@ local dfunc = function(self, unit)
 	else
 		self:Tag(raidname, '[Altz:raidname]')
 	end
-	self.Name = raidname
 	
     local ricon = hp:CreateTexture(nil, "OVERLAY", 1)
 	ricon:SetSize(13 ,13)
@@ -993,8 +991,7 @@ local pfunc = function(self, unit)
 	else
 		self:Tag(name, "[difficulty][level][shortclassification]|r [name] [status]")
 	end
-	self.Name = name
-	
+
 	if aCoreCDB["UnitframeOptions"]["auras"] then
 		T.CreateAuras(self, unit)
 	end

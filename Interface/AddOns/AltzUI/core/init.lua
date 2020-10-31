@@ -1,6 +1,5 @@
 
 -- local T, C, L, G = unpack(select(2, ...))
-
 local addon, ns = ...
 ns[1] = {} -- T, functions, constants, variables
 ns[2] = {} -- C, config
@@ -18,7 +17,7 @@ G.uiname = "AltzUI_"
 
 G.dragFrameList = {}
 
-G.norFont = GameFontNormal:GetFont()
+G.norFont = "Interface\\AddOns\\AltzUI\\media\\font.ttf"
 G.numFont = "Interface\\AddOns\\AltzUI\\media\\number.ttf"
 G.symbols = "Interface\\Addons\\AltzUI\\media\\PIZZADUDEBULLETS.ttf"
 
@@ -27,9 +26,7 @@ G.media = {
 	bar = "Interface\\AddOns\\AltzUI\\media\\statusbar",
 	ufbar = "Interface\\AddOns\\AltzUI\\media\\ufbar",
 	glow = "Interface\\AddOns\\AltzUI\\media\\glow",
-	checked = "Interface\\AddOns\\AuroraClassic\\media\\CheckButtonHilight",
-	left = "Interface\\AddOns\\AltzUI\\media\\left",
-	right = "Interface\\AddOns\\AltzUI\\media\\right",
+	checked = "Interface\\AddOns\\AltzUI\\media\\CheckButtonHilight",
 	barhightlight = "Interface\\AddOns\\AltzUI\\media\\highlight",
 	buttonhighlight = "Interface\\AddOns\\AltzUI\\media\\highlight2",
 	reseting = "Interface\\AddOns\\AltzUI\\media\\resting",

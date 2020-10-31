@@ -11,16 +11,14 @@ local T, C, L, G = unpack(select(2, ...))
 
 G.uiname = "AltzUI_"
 
-G.norFont = GameFontHighlight:GetFont()
+G.norFont = "Interface\\AddOns\\AltzUI\\media\\font.ttf"
 G.numFont = "Interface\\AddOns\\AltzUI\\media\\number.ttf"
 
 G.media = {
 	blank = "Interface\\Buttons\\WHITE8x8",
 	bar = "Interface\\AddOns\\AltzUI\\media\\statusbar",
-	glow = "Interface\\AddOns\\AuroraClassic\\media\\glow",
-	checked = "Interface\\AddOns\\AuroraClassic\\media\\CheckButtonHilight",
-	left = "Interface\\AddOns\\AltzUI\\media\\left",
-	right = "Interface\\AddOns\\AltzUI\\media\\right",
+	glow = "Interface\\AddOns\\AltzUI\\media\\glow",
+	checked = "Interface\\AddOns\\AltzUI\\media\\CheckButtonHilight",
 }
 
 G.Iconpath = "Interface\\AddOns\\AltzUI\\media\\icons\\"

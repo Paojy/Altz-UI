@@ -338,11 +338,11 @@ oUF.Tags.Events['Mlight:xnhd'] = 'UNIT_AURA'
 
 classIndicators={
     ["DRUID"] = {
-        ["TL"] = "[Mlight:lb]",
+        ["TL"] = "[Mlight:regrow]",
         ["BR"] = "[Mlight:xnhd][Mlight:ayj][Mlight:da][Mlight:lt][Mlight:snla]",
         ["BL"] = "[Mlight:wildgrowth]",
         ["TR"] = "[Mlight:rejuv]",
---        ["Cen"] = "[Mlight:lb]",
+        ["Cen"] = "[Mlight:lb]",
     },
     ["PRIEST"] = {
         ["TL"] = "[Mlight:rnw][Mlight:pws]",

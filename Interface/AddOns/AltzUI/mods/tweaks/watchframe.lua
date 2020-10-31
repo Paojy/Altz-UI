@@ -1,6 +1,5 @@
 --Original Author: Nibelheim
 local T, C, L, G = unpack(select(2, ...))
-local F = unpack(AuroraClassic)
 local dragFrameList = G.dragFrameList
 
 local eventframe = CreateFrame("Frame")
@@ -51,7 +50,6 @@ OBJECTIVE_TRACKER_COLOR["Complete"]["b"] = 1
 
 local vm = ObjectiveTrackerFrame
 
-F.ReskinArrow(vm.HeaderMenu.MinimizeButton, "down")
 vm:SetFrameStrata("MEDIUM")
 vm:SetFrameLevel(15) -- higher than multiright actionbar
 vm:ClearAllPoints()
