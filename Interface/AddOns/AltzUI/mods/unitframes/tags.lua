@@ -79,3 +79,16 @@ oUF.Tags.Methods['Altz:DDG'] = function(u)
 	end
 end
 oUF.Tags.Events['Altz:DDG'] = 'UNIT_HEALTH UNIT_CONNECTION'
+
+-- name plate --
+
+oUF.Tags.Methods["Altz:platename"] = function(u, r)
+	if not UnitIsUnit(u, "player") then
+		local color = _TAGS['threatcolor'](u)
+		local class = _TAGS['shortclassification'](u) or ""
+        local name = _TAGS['name'](u, r)
+
+		return string.format('%s%s|r %s', color, class, name)
+	end
+end
+oUF.Tags.Events["Altz:platename"] = "UNIT_CLASSIFICATION_CHANGED UNIT_FACTION UNIT_NAME_UPDATE"

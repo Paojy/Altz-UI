@@ -37,6 +37,48 @@ local cpoints_colors = { -- combat points
 	{1, 1, 0},
 }
 
+local plate_c = {
+	color_unit = {},
+	power_unit = {},
+}
+
+-- 姓名板自定义颜色
+local function UpdateNameplateColors(refresh)
+	plate_c.color_unit = {}
+	for _, info in pairs(aCoreCDB["PlateOptions"]["customcoloredplates"]) do
+		if info.name ~= L["空"] then
+			plate_c.color_unit[info.name] = {
+				r = info.color.r,
+				g = info.color.g, 
+				b = info.color.b,
+			}
+		end
+	end
+	if refresh then
+		for i, plate in ipairs(C_NamePlate.GetNamePlates(issecure())) do
+			if plate.unitFrame then
+				plate.unitFrame.Health:ForceUpdate()
+			end
+		end
+	end
+end
+
+-- 姓名板自定义能量
+local function UpdateNameplatePowerbars(refresh)
+	plate_c.power_unit = {}
+	for _, info in pairs(aCoreCDB["PlateOptions"]["custompowerplates"]) do
+		if info.name ~= L["空"] then
+			plate_c.power_unit[info.name] = true
+		end
+	end
+	if refresh then
+		for i, plate in ipairs(C_NamePlate.GetNamePlates(issecure())) do
+			if plate.unitFrame then
+				plate.unitFrame.Power:ForceUpdate()
+			end
+		end
+	end
+end
 --=============================================--
 --[[ Functions ]]--
 --=============================================--
@@ -155,24 +197,43 @@ T.Updatehealthbar = function(self, unit, min, max)
 	if max ~= 0 then perc = min/max else perc = 1 end
 
 	if self.value then
-		if min > 0 and min < max then
-			self.value:SetText(T.ShortValue(min).." "..T.hex(1, 1, 0)..math.floor(min/max*100+.5).."|r")
-		elseif min > 0 and self.__owner.isMouseOver and UnitIsConnected(unit) then
-			self.value:SetText(T.ShortValue(min))
-		elseif aCoreCDB["UnitframeOptions"]["alwayshp"] then
-			self.value:SetText(T.ShortValue(min))
-		else
-			self.value:SetText(nil)
+		if self.plate_element then -- 姓名板
+			if min > 0 and min < max then
+				if aCoreCDB["PlateOptions"]["bar_hp_perc"] == "perc" then
+					self.value:SetText(T.hex(1, 1, 0)..math.floor(min/max*100+.5).."|r")
+				else
+					self.value:SetText(T.ShortValue(min).." "..T.hex(1, 1, 0)..math.floor(min/max*100+.5).."|r")
+				end
+			elseif min > 0 and self.__owner.isMouseOver and UnitIsConnected(unit) then
+				self.value:SetText(T.ShortValue(min))
+			elseif aCoreCDB["PlateOptions"]["bar_alwayshp"] then
+				self.value:SetText(T.ShortValue(min))
+			else
+				self.value:SetText(nil)
+			end
+		else -- 其他框架
+			if min > 0 and min < max then
+				self.value:SetText(T.ShortValue(min).." "..T.hex(1, 1, 0)..math.floor(min/max*100+.5).."|r")
+			elseif min > 0 and self.__owner.isMouseOver and UnitIsConnected(unit) then
+				self.value:SetText(T.ShortValue(min))
+			elseif aCoreCDB["UnitframeOptions"]["alwayshp"] then
+				self.value:SetText(T.ShortValue(min))
+			else
+				self.value:SetText(nil)
+			end
 		end
 	end
-
+	
 	if min > 0 and min < max then
 		self.ind:Show()
 	else
 		self.ind:Hide()
 	end
-
-	if UnitIsTapDenied(unit) then
+	
+	local name = GetUnitName(unit, false)
+	if self.plate_element and aCoreCDB["PlateOptions"]["theme"] ~= "dark" and plate_c.color_unit[name] then -- 自定义颜色
+		r, g, b= plate_c.color_unit[name].r, plate_c.color_unit[name].g, plate_c.color_unit[name].b
+	elseif UnitIsTapDenied(unit) then
 		r, g, b = .6, .6, .6
 	elseif not UnitIsConnected(unit) then
 		r, g, b = .3, .3, .3
@@ -180,37 +241,100 @@ T.Updatehealthbar = function(self, unit, min, max)
 		r, g, b = .6, .6, .6
 	elseif UnitIsDead(unit) then
 		r, g, b = 1, 0, 0
-	elseif (unit == "pet") then
-		local _, playerclass = UnitClass("player")
-		if aCoreCDB["UnitframeOptions"]["style"] == 3 then
-			r, g, b = unpack(oUF.colors.class[playerclass])
-		else
-			r, g, b = oUF.ColorGradient(perc, 1, unpack(oUF.colors.smooth))
-		end
-	elseif(UnitIsPlayer(unit)) then
-		local _, unitclass = UnitClass(unit)
-		if aCoreCDB["UnitframeOptions"]["style"] == 3 then
-			if unitclass then r, g, b = unpack(oUF.colors.class[unitclass]) else r, g, b = 1, 1, 1 end
-		else
-			r, g, b = oUF.ColorGradient(perc, 1, unpack(oUF.colors.smooth))
-		end
-	elseif unit then
-		if aCoreCDB["UnitframeOptions"]["style"] == 3 then
-			r, g, b = unpack(oUF.colors.reaction[UnitReaction(unit, "player") or 5])
-		else
-			r, g, b = oUF.ColorGradient(perc, 1, unpack(oUF.colors.smooth))
-		end
-	end
-
-	if aCoreCDB["UnitframeOptions"]["style"] == 1 then
-		self:GetStatusBarTexture():SetGradient("VERTICAL", r, g, b, r/3, g/3, b/3)
 	else
-		self:SetStatusBarColor(r, g, b)
+		if self.plate_element then -- 姓名板	
+			if (unit == "pet") then
+				local _, playerclass = UnitClass("player")
+				if aCoreCDB["PlateOptions"]["theme"] == "class" then
+					r, g, b = unpack(oUF.colors.class[playerclass])
+				else
+					r, g, b = oUF.ColorGradient(perc, 1, unpack(oUF.colors.smooth))
+				end
+			elseif(UnitIsPlayer(unit)) then
+				local _, unitclass = UnitClass(unit)
+				if aCoreCDB["PlateOptions"]["theme"] == "class" then
+					if unitclass then r, g, b = unpack(oUF.colors.class[unitclass]) else r, g, b = 1, 1, 1 end
+				else
+					r, g, b = oUF.ColorGradient(perc, 1, unpack(oUF.colors.smooth))
+				end
+			elseif aCoreCDB["PlateOptions"]["threatcolor"] then
+				local _, threatStatus = UnitDetailedThreatSituation("player", unit)
+				if threatStatus == 3 then
+					r, g, b = .9, .1, .4
+				elseif threatStatus == 2 then
+					r, g, b = .9, .1, .9
+				elseif threatStatus == 1 then
+					r, g, b = .4, .1, .9
+				elseif threatStatus == 0 then
+					r, g, b = .1, .7, .9
+				elseif unit then
+					if aCoreCDB["PlateOptions"]["theme"] == "class" then
+						r, g, b = unpack(oUF.colors.reaction[UnitReaction(unit, "player") or 5])
+					else
+						r, g, b = oUF.ColorGradient(perc, 1, unpack(oUF.colors.smooth))
+					end		
+				end
+			elseif unit then
+				if aCoreCDB["PlateOptions"]["theme"] == "class" then
+					r, g, b = unpack(oUF.colors.reaction[UnitReaction(unit, "player") or 5])
+				else
+					r, g, b = oUF.ColorGradient(perc, 1, unpack(oUF.colors.smooth))
+				end	
+			end
+		else
+			if (unit == "pet") then
+				local _, playerclass = UnitClass("player")
+				if aCoreCDB["UnitframeOptions"]["style"] == 3 then
+					r, g, b = unpack(oUF.colors.class[playerclass])
+				else
+					r, g, b = oUF.ColorGradient(perc, 1, unpack(oUF.colors.smooth))
+				end
+			elseif(UnitIsPlayer(unit)) then
+				local _, unitclass = UnitClass(unit)
+				if aCoreCDB["UnitframeOptions"]["style"] == 3 then
+					if unitclass then r, g, b = unpack(oUF.colors.class[unitclass]) else r, g, b = 1, 1, 1 end
+				else
+					r, g, b = oUF.ColorGradient(perc, 1, unpack(oUF.colors.smooth))
+				end
+			elseif unit then
+				if aCoreCDB["UnitframeOptions"]["style"] == 3 then
+					r, g, b = unpack(oUF.colors.reaction[UnitReaction(unit, "player") or 5])
+				else
+					r, g, b = oUF.ColorGradient(perc, 1, unpack(oUF.colors.smooth))
+				end
+			end
+		end
 	end
-
-	if aCoreCDB["UnitframeOptions"]["style"] ~= 3 then
-		self:SetValue(max - self:GetValue())
-	end
+	
+	if self.plate_element then
+		if aCoreCDB["PlateOptions"]["theme"] == "dark" then
+			self:GetStatusBarTexture():SetGradient("VERTICAL", r, g, b, r/3, g/3, b/3)
+			self:SetValue(max - self:GetValue())
+			if plate_c.color_unit[name] then
+				local bg_r, bg_g, bg_b = plate_c.color_unit[name].r, plate_c.color_unit[name].g, plate_c.color_unit[name].b
+				self.bg:SetGradientAlpha("VERTICAL", bg_r*.8, bg_g*.8, bg_b*.8, 1, bg_r, bg_g, bg_b, 1)
+			else
+				self.bg:SetGradientAlpha("VERTICAL", .2,.2,.2,.15,.25,.25,.25,.6)
+			end
+		else
+			self:SetStatusBarColor(r, g, b)
+		end
+		if aCoreCDB["PlateOptions"]["playerplate"] or not UnitIsUnit(unit, 'player') then
+			self:Show()
+		else
+			self:Hide()
+		end
+	else
+		if aCoreCDB["UnitframeOptions"]["style"] == 1 then
+			self:GetStatusBarTexture():SetGradient("VERTICAL", r, g, b, r/3, g/3, b/3)
+		else
+			self:SetStatusBarColor(r, g, b)
+		end
+		
+		if  aCoreCDB["UnitframeOptions"]["style"] ~= 3 then
+			self:SetValue(max - self:GetValue())
+		end
+	end	
 end
 
 T.Updatepowerbar = function(self, unit, cur, min, max)
@@ -231,20 +355,44 @@ T.Updatepowerbar = function(self, unit, cur, min, max)
 			self.value:SetText(nil)
 		end
 	end
-
-	if aCoreCDB["UnitframeOptions"]["style"] == 3 then
-		r, g, b = unpack(powercolor)
-	elseif UnitIsPlayer(unit) then
-		local _, unitclass = UnitClass(unit)
-		if unitclass then r, g, b = unpack(oUF.colors.class[unitclass]) else r, g, b = 1, 1, 1 end
+	
+	if self.plate_element then
+		if aCoreCDB["PlateOptions"]["theme"] == "class" then -- 职业
+			r, g, b = unpack(powercolor)
+		elseif UnitIsPlayer(unit) then -- 深色
+			local _, unitclass = UnitClass(unit)
+			if unitclass then r, g, b = unpack(oUF.colors.class[unitclass]) else r, g, b = 1, 1, 1 end
+		else
+			r, g, b = unpack(oUF.colors.reaction[UnitReaction(unit, 'player') or 5])
+		end
 	else
-		r, g, b = unpack(oUF.colors.reaction[UnitReaction(unit, 'player') or 5])
+		if aCoreCDB["UnitframeOptions"]["style"] == 3 then -- 职业
+			r, g, b = unpack(powercolor)
+		elseif UnitIsPlayer(unit) then -- 深色或透明
+			local _, unitclass = UnitClass(unit)
+			if unitclass then r, g, b = unpack(oUF.colors.class[unitclass]) else r, g, b = 1, 1, 1 end
+		else
+			r, g, b = unpack(oUF.colors.reaction[UnitReaction(unit, 'player') or 5])
+		end	
 	end
-
-	if aCoreCDB["UnitframeOptions"]["style"] == 1 then
-		self:GetStatusBarTexture():SetGradient("VERTICAL", r, g, b, r/3, g/3, b/3)
+	
+	if self.plate_element then
+		if aCoreCDB["PlateOptions"]["theme"] == "class" then -- 职业
+			self:SetStatusBarColor(r, g, b)
+		else
+			self:GetStatusBarTexture():SetGradient("VERTICAL", r, g, b, r/3, g/3, b/3)
+		end
+		if plate_c.power_unit[UnitName(unit)] or (aCoreCDB["PlateOptions"]["playerplate"] and UnitIsUnit(unit, 'player')) then
+			self:Show()
+		else
+			self:Hide()
+		end
 	else
-		self:SetStatusBarColor(r, g, b)
+		if aCoreCDB["UnitframeOptions"]["style"] ~= 1 then
+			self:SetStatusBarColor(r, g, b)
+		else
+			self:GetStatusBarTexture():SetGradient("VERTICAL", r, g, b, r/3, g/3, b/3)
+		end
 	end
 end
 
@@ -253,7 +401,10 @@ local PostAltUpdate = function(altpp, unit, cur, min, max)
 end
 
 local CpointsUpdate = function(self, event, unit, powerType)
-	if (unit ~= 'player' and unit ~= 'vehicle') or powerType ~= 'COMBO_POINTS' and event ~= "PLAYER_ENTERING_WORLD" then return end
+	if(not (unit and (UnitIsUnit(unit, 'player') and (not powerType or powerType == 'COMBO_POINTS')
+		or unit == 'vehicle' and powerType == 'COMBO_POINTS'))) then
+		return
+	end
 
 	local element = self.ClassPower
 
@@ -300,12 +451,12 @@ local CpointsUpdate = function(self, event, unit, powerType)
 	if(max ~= oldMax) then
 		for i = 1, 6 do
 			if max == 5 or max == 10 then
-				element[i]:SetWidth((aCoreCDB["UnitframeOptions"]["width"]+3)/5-3)
+				element[i]:SetWidth((element.width+3)/5-3)
 				if i == 6 then
 					element[i]:Hide()
 				end
 			else
-				element[i]:SetWidth((aCoreCDB["UnitframeOptions"]["width"]+3)/max-3)
+				element[i]:SetWidth((element.width+3)/max-3)
 				if i > max then
 					element[i]:Hide()
 				end
@@ -324,7 +475,7 @@ local ClassIconsPostUpdate = function(element, cur, max, maxchange)
 			element[i]:SetStatusBarColor(unpack(classicon_colors[i]))
 		end
 		if maxchange then
-			element[i]:SetWidth((aCoreCDB["UnitframeOptions"]["width"]+3)/max-3)
+			element[i]:SetWidth((element.width+3)/max-3)
 		end
 	end
 end
@@ -386,6 +537,22 @@ local function UpdatePrep()
 		end
 	end
 end
+
+local function RaidTargetIconPostUpdate(self)
+	if UnitIsUnit(self.__owner.unit, "player") then
+		self:Hide()
+	end
+end
+
+local function TargetRedArrowupdate(self, event, unit)
+	if event == "UNIT_AURA" and unit ~= self.unit then return end
+	if UnitIsUnit('target', self.unit) and not UnitIsUnit('player', self.unit) then
+		self.RedArrow:Show()
+	else
+		self.RedArrow:Hide()
+	end
+end
+
 --=============================================--
 --[[ Castbars ]]--
 --=============================================--
@@ -414,33 +581,56 @@ local ChannelSpells = {
 }
 
 local PostCastStart = function(castbar, unit)
-	if unit == "player" then
-		if not aCoreCDB["UnitframeOptions"]["hideplayercastbaricon"] then
-			castbar.IBackdrop:SetBackdropBorderColor(Interruptible_color[1], Interruptible_color[2], Interruptible_color[3])
+	local u = unit:match("[^%d]+")
+	if u == "nameplate" then
+		if UnitIsUnit(unit, "player") then
+			if aCoreCDB["PlateOptions"]["playerplate"] then
+				castbar.Spark:Show()
+				castbar:ClearAllPoints()
+				castbar:SetAllPoints(castbar.__owner)
+				castbar:SetStatusBarColor(0, 0, 0, 0)
+				castbar.Text:ClearAllPoints()
+				castbar.Text:SetPoint("BOTTOM", castbar, "BOTTOM", 0, -3)				
+			else
+				castbar:Hide()
+			end
+		else
+			castbar.Spark:Hide()
+			castbar:ClearAllPoints()
+			if plate_c.power_unit[UnitName(unit)] then
+				castbar:SetPoint("TOPLEFT", castbar.__owner, "BOTTOMLEFT", 0, -7)
+				castbar:SetPoint("TOPRIGHT", castbar.__owner, "BOTTOMRIGHT", 0, -7)
+			else
+				castbar:SetPoint("TOPLEFT", castbar.__owner, "BOTTOMLEFT", 0, -3)
+				castbar:SetPoint("TOPRIGHT", castbar.__owner, "BOTTOMRIGHT", 0, -3)
+			end
+			if castbar.notInterruptible then
+				castbar:SetStatusBarColor(aCoreCDB["PlateOptions"]["notInterruptible_color"].r, aCoreCDB["PlateOptions"]["notInterruptible_color"].g, aCoreCDB["PlateOptions"]["notInterruptible_color"].b)
+			else
+				castbar:SetStatusBarColor(aCoreCDB["PlateOptions"]["Interruptible_color"].r, aCoreCDB["PlateOptions"]["Interruptible_color"].g, aCoreCDB["PlateOptions"]["Interruptible_color"].b)
+			end
+			castbar.Text:ClearAllPoints()
+			castbar.Text:SetPoint("TOP", castbar, "BOTTOM", 0, -3)
 		end
 	else
-		if castbar.notInterruptible then
-			castbar.IBackdrop:SetBackdropBorderColor(notInterruptible_color[1], notInterruptible_color[2], notInterruptible_color[3])
+		if unit == "player" then
+			if not aCoreCDB["UnitframeOptions"]["hideplayercastbaricon"] then
+				castbar.IBackdrop:SetBackdropBorderColor(Interruptible_color[1], Interruptible_color[2], Interruptible_color[3])
+			end
 		else
-			castbar.IBackdrop:SetBackdropBorderColor(Interruptible_color[1], Interruptible_color[2], Interruptible_color[3])
+			if castbar.notInterruptible then
+				castbar.IBackdrop:SetBackdropBorderColor(notInterruptible_color[1], notInterruptible_color[2], notInterruptible_color[3])
+			else
+				castbar.IBackdrop:SetBackdropBorderColor(Interruptible_color[1], Interruptible_color[2], Interruptible_color[3])
+			end
 		end
 	end
 end
 
 local PostChannelStart = function(castbar, unit, spell)
 
-	if unit == "player" then
-		if not aCoreCDB["UnitframeOptions"]["hideplayercastbaricon"] then
-			castbar.IBackdrop:SetBackdropBorderColor(Interruptible_color[1], Interruptible_color[2], Interruptible_color[3])
-		end
-	else
-		if castbar.notInterruptible then
-			castbar.IBackdrop:SetBackdropBorderColor(notInterruptible_color[1], notInterruptible_color[2], notInterruptible_color[3])
-		else
-			castbar.IBackdrop:SetBackdropBorderColor(Interruptible_color[1], Interruptible_color[2], Interruptible_color[3])
-		end
-	end
-
+	PostCastStart(castbar, unit)
+	
 	if aCoreCDB["UnitframeOptions"]["channelticks"] then
 		if unit == "player" and ChannelSpells[spell] then
 			if #castbar.Ticks ~= 0 then
@@ -522,52 +712,73 @@ end
 
 local CreateCastbars = function(self, unit)
 	local u = unit:match("[^%d]+")
-	if multicheck(u, "target", "player", "focus", "boss") then
+	if multicheck(u, "target", "player", "focus", "boss", "nameplate") then
 		local cb = CreateFrame("StatusBar", G.uiname..unit.."Castbar", self)
-		if aCoreCDB["UnitframeOptions"]["style"] == 1 then
-			cb:SetStatusBarTexture(G.media.blank)
-		else
+		if u == "nameplate" then
 			cb:SetStatusBarTexture(G.media.ufbar)
+			cb.bd = T.createBackdrop(cb, cb, 1)
+			cb:SetSize(aCoreCDB["PlateOptions"]["bar_width"], aCoreCDB["PlateOptions"]["bar_height"]/4)
+		else
+			if aCoreCDB["UnitframeOptions"]["style"] == 1 then
+				cb:SetStatusBarTexture(G.media.blank)
+			else
+				cb:SetStatusBarTexture(G.media.ufbar)
+			end
+			cb:SetStatusBarColor(0, 0, 0, 0)
+			cb:SetAllPoints(self)
+			cb:SetFrameLevel(2)
 		end
-		cb:SetStatusBarColor(0, 0, 0, 0)
-		cb:SetAllPoints(self)
-		cb:SetFrameLevel(2)
 		
+		-- 光标
 		cb.Spark = cb:CreateTexture(nil, "OVERLAY")
 		cb.Spark:SetTexture("Interface\\CastingBar\\UI-CastingBar-Spark")
 		cb.Spark:SetBlendMode("ADD")
 		cb.Spark:SetAlpha(1)
-		cb.Spark:SetSize(8, aCoreCDB["UnitframeOptions"]["height"]*2)
+		if u == "nameplate" then
+			cb.Spark:SetSize(8, aCoreCDB["PlateOptions"]["bar_height"]*2)
+		else
+			cb.Spark:SetSize(8, aCoreCDB["UnitframeOptions"]["height"]*2)
+		end
 		cb.Spark:SetPoint('CENTER', cb:GetStatusBarTexture(), 'RIGHT', 0, 0)
 		
-		cb.Time = T.createnumber(cb, "OVERLAY", 14, "OUTLINE", "CENTER")
-		if unit == "player" then
-			cb.Time:SetFont(G.norFont, 15, "OUTLINE")
-			cb.Time:SetPoint("TOP", cb, "BOTTOM", 0, -10)
-		else
-			cb.Time:SetPoint("BOTTOMRIGHT", cb, "TOPRIGHT", -3, -3)
+		-- 时间
+		if u ~= "nameplate" then
+			cb.Time = T.createnumber(cb, "OVERLAY", 14, "OUTLINE", "CENTER")
+			if unit == "player" then
+				cb.Time:SetFont(G.norFont, 15, "OUTLINE")
+				cb.Time:SetPoint("TOP", cb, "BOTTOM", 0, -10)
+			else
+				cb.Time:SetPoint("BOTTOMRIGHT", cb, "TOPRIGHT", -3, -3)
+			end
+			cb.CustomTimeText = CustomTimeText
+			cb.CustomDelayText = CustomDelayText
 		end
-		cb.CustomTimeText = CustomTimeText
-		cb.CustomDelayText = CustomDelayText
-
-		cb.Text = T.createtext(cb, "OVERLAY", 14, "OUTLINE", "CENTER")
+		
+		-- 法术名字
+		cb.Text = T.createtext(cb, "OVERLAY", u == "nameplate" and 8 or 14, "OUTLINE", "CENTER")
 		if u == "boss" then
 			cb.Text:SetPoint("BOTTOMLEFT", 3, -3)
 		else
 			cb.Text:SetPoint("BOTTOM", 0, -3)
 		end
-
-		cb.Icon = cb:CreateTexture(nil, "ARTWORK")
-		cb.Icon:SetSize(aCoreCDB["UnitframeOptions"]["cbIconsize"], aCoreCDB["UnitframeOptions"]["cbIconsize"])
-		cb.Icon:SetTexCoord(.1, .9, .1, .9)
-		cb.Icon:SetPoint("BOTTOMRIGHT", cb, "BOTTOMLEFT", -7, -aCoreCDB["UnitframeOptions"]["height"]*(1-aCoreCDB["UnitframeOptions"]["hpheight"]))
 		
+		-- 图标
+		cb.Icon = cb:CreateTexture(nil, "ARTWORK")
+		cb.Icon:SetTexCoord(.1, .9, .1, .9)
+		if u == "nameplate" then
+			cb.Icon:SetSize(aCoreCDB["PlateOptions"]["bar_height"]*1.5+6, aCoreCDB["PlateOptions"]["bar_height"]*1.5+6)
+			cb.Icon:SetPoint("RIGHT", self, "LEFT", -5, 0)
+		else
+			cb.Icon:SetSize(aCoreCDB["UnitframeOptions"]["cbIconsize"], aCoreCDB["UnitframeOptions"]["cbIconsize"])	
+			cb.Icon:SetPoint("BOTTOMRIGHT", cb, "BOTTOMLEFT", -7, -aCoreCDB["UnitframeOptions"]["height"]*(1-aCoreCDB["UnitframeOptions"]["hpheight"]))
+		end
 		if unit == "player" and aCoreCDB["UnitframeOptions"]["hideplayercastbaricon"] then
 			cb.Icon:Hide()
 		else
-			cb.IBackdrop = T.createBackdrop(cb, cb.Icon)
+			cb.IBackdrop = T.createBackdrop(cb, cb.Icon, 1)
 		end
-
+		
+		-- 独立施法条
 		if multicheck(u, "target", "player", "focus") and aCoreCDB["UnitframeOptions"]["independentcb"] then
 			cb:ClearAllPoints()
 
@@ -603,7 +814,6 @@ local CreateCastbars = function(self, unit)
 
 			T.CreateDragFrame(cb)
 
-			cb:SetStatusBarColor( .35, .65, 1, 1)
 			cb.bd = T.createBackdrop(cb, cb, 1)
 			cb.Icon:SetPoint("BOTTOMRIGHT", cb, "BOTTOMLEFT", -7, 0)
 
@@ -849,6 +1059,31 @@ local PostUpdateGapIcon = function(auras, unit, icon, visibleBuffs)
 	icon.remaining:Hide()
 end
 
+local OverrideAurasSetPosition = function(auras, from, to)
+	auras.iconnum = 1
+	for i = from, to do
+		local button = auras[i]
+		
+		if not button or not button:IsShown() then break end
+		
+		auras.iconnum = i
+		button:ClearAllPoints()
+		if i ~= 1 then
+			button:SetPoint("LEFT", auras[i-1], "RIGHT", 4, 0)		
+		end
+	end
+	
+	if auras[1] then
+		auras[1]:SetPoint("LEFT", auras, "CENTER", -((aCoreCDB["PlateOptions"]["plateaurasize"]+4)*auras.iconnum-4)/2, 0)
+	end
+	
+	if auras[1] and auras[1]:IsShown() then
+		auras.__owner.RedArrow:SetPoint('BOTTOM', auras.__owner, 'TOP', 0, 15+aCoreCDB["PlateOptions"]["plateaurasize"]) -- 有光环
+	else
+		auras.__owner.RedArrow:SetPoint('BOTTOM', auras.__owner, 'TOP', 0, 15)
+	end
+end
+
 local CustomFilter = function(icons, unit, icon, ...)
 	local SpellID = select(11, ...)
 	if icon.isPlayer then -- show all my auras
@@ -903,11 +1138,33 @@ local HealerInd_AuraFilter = function(icons, unit, icon, ...)
 	end
 end
 
+local NamePlate_AuraFilter = function(icons, unit, icon, ...)
+	local SpellID = select(11, ...)
+	if UnitIsUnit(unit, "player") then
+		if not aCoreCDB["PlateOptions"]["plateaura"] or not aCoreCDB["PlateOptions"]["playerplate"] then
+			return false
+		end
+	elseif icon.isPlayer then
+		if aCoreCDB["PlateOptions"]["myfiltertype"] == "none" then
+			return false
+		elseif aCoreCDB["PlateOptions"]["myfiltertype"] == "whitelist" and aCoreCDB["PlateOptions"]["myplateauralist"][SpellID] then
+			return true
+		elseif aCoreCDB["PlateOptions"]["myfiltertype"] == "blacklist" and not aCoreCDB["PlateOptions"]["myplateauralist"][SpellID] then
+			return true
+		end
+	else
+		if aCoreCDB["PlateOptions"]["otherfiltertype"] == "none" then
+			return false
+		elseif aCoreCDB["PlateOptions"]["otherfiltertype"] == "whitelist" and aCoreCDB["PlateOptions"]["otherplateauralist"][SpellID] then
+			return true
+		end
+	end
+end
 
 T.CreateAuras = function(self, unit)
 	if not unit then return end
 	local u = unit:match("[^%d]+")
-	if multicheck(u, "target", "focus", "boss", "arena", "party", "player", "pet", "raid") then
+	if multicheck(u, "target", "focus", "boss", "arena", "party", "player", "pet", "raid", "nameplate") then
 		local Auras = CreateFrame("Frame", nil, self)
 		if u == "raid" then
 			Auras:SetHeight(aCoreCDB["UnitframeOptions"]["healerraidheight"])
@@ -1013,11 +1270,88 @@ T.CreateAuras = function(self, unit)
 			Debuffs["growth-y"] = "DOWN"
 			Debuffs.num = 5
 			self.Debuffs = Debuffs
+		elseif u == "nameplate" then
+			Auras:SetWidth(aCoreCDB["PlateOptions"]["bar_width"])
+			Auras:SetPoint("BOTTOM", self, "TOP", 0, 6)
+			Auras.initialAnchor = "BOTTOMLEFT"
+			Auras["growth-x"] = "RIGHT"
+			Auras["growth-y"] = "UP"
+			Auras.numDebuffs = aCoreCDB["PlateOptions"]["plateauranum"]
+			Auras.numBuffs = aCoreCDB["PlateOptions"]["plateauranum"]
+			Auras.size = aCoreCDB["PlateOptions"]["plateaurasize"]
+			Auras.SetPosition = OverrideAurasSetPosition
+			Auras.CustomFilter = NamePlate_AuraFilter
+			
+			self:HookScript("OnEvent", function(self, event)
+				if event == "UNIT_AURA" then
+					self.Auras:ForceUpdate() -- 更新光环居中对齐
+				end
+			end)
 		end
 		self.Auras = Auras
 	end
 end
 
+T.CreateClassResources = function(self, plate)
+	if multicheck(G.myClass, "DEATHKNIGHT", "WARLOCK", "PALADIN", "MONK", "MAGE", "ROGUE", "DRUID") then
+		local count = 6
+		
+		local bars = CreateFrame("Frame", self:GetName().."SpecOrbs", self)
+		bars:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 0, 3)
+		
+		if plate then
+			if  aCoreCDB["PlateOptions"]["classresource_pos"] == "target" then
+				bars.width = aCoreCDB["PlateOptions"]["bar_width"]*GetCVar("nameplateSelectedScale")
+			else
+				bars.width = aCoreCDB["PlateOptions"]["bar_width"]
+			end
+			bars.height = aCoreCDB["PlateOptions"]["bar_height"]/4
+		else
+			bars.width = aCoreCDB["UnitframeOptions"]["width"]
+			bars.height = aCoreCDB["UnitframeOptions"]["height"]*-(aCoreCDB["UnitframeOptions"]["hpheight"]-1)
+		end
+		bars:SetSize(bars.width, bars.height)
+		
+		for i = 1, count do
+			bars[i] = T.createStatusbar(bars, "ARTWORK", bars.height, (bars.width+2)/count-3, 1, 1, 1, 1, self:GetName().."SpecOrbs"..i)
+
+			if i == 1 then
+				bars[i]:SetPoint("BOTTOMLEFT", bars, "BOTTOMLEFT")
+			else
+				bars[i]:SetPoint("LEFT", bars[i-1], "RIGHT", 3, 0)
+			end
+
+			bars[i].bg:Hide()
+			bars[i].bd = T.createBackdrop(bars[i], bars[i], 1)
+		end
+
+		if G.myClass == "DEATHKNIGHT" then
+			if aCoreCDB["UnitframeOptions"]["runecooldown"] then
+				for i = 1, 6 do
+					bars[i].value = T.createtext(bars[i], "OVERLAY", aCoreCDB["UnitframeOptions"]["valuefs"], "OUTLINE", "CENTER")
+					bars[i].value:SetPoint("CENTER")
+					bars[i]:SetStatusBarColor(.7, .7, 1)
+				end
+			end
+			self.Runes = bars
+			self.Runes.PostUpdateRune = PostUpdateRunes
+		elseif G.myClass == "PALADIN" or G.myClass == "MONK" or G.myClass == "WARLOCK" or G.myClass == "MAGE" then
+			self.ClassPower = bars
+			self.ClassPower.PostUpdate = ClassIconsPostUpdate
+		elseif G.myClass == "ROGUE" or G.myClass == "DRUID" then
+			if not plate and G.myClass == "DRUID" and aCoreCDB["UnitframeOptions"]["dpsmana"] then
+				bars:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 0, 8)
+			end
+			self.ClassPower = bars
+			self.ClassPower.Override = CpointsUpdate
+		end
+		
+		if plate then
+			bars.plate_element = true
+		end
+	end
+end
+	
 --=============================================--
 --[[ Unit Frames ]]--
 --=============================================--
@@ -1207,7 +1541,6 @@ local func = function(self, unit)
 	else
 		self:Tag(name, "[difficulty][level][shortclassification]|r [name] [status]")
 	end
-	self.Name = name
 
 	if aCoreCDB["UnitframeOptions"]["castbars"] then
 		CreateCastbars(self, unit)
@@ -1241,48 +1574,7 @@ local UnitSpecific = {
 		func(self, ...)
 
 		-- Runes, Shards, HolyPower and so on --
-		if multicheck(G.myClass, "DEATHKNIGHT", "WARLOCK", "PALADIN", "MONK", "MAGE", "ROGUE", "DRUID") then
-			local count = 6
-
-			local bars = CreateFrame("Frame", G.uiname.."SpecOrbs", self)
-			bars:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 0, 3)
-			bars:SetSize(aCoreCDB["UnitframeOptions"]["width"], 10)
-
-			for i = 1, count do
-				bars[i] = T.createStatusbar(bars, "ARTWORK", aCoreCDB["UnitframeOptions"]["height"]*-(aCoreCDB["UnitframeOptions"]["hpheight"]-1), (aCoreCDB["UnitframeOptions"]["width"]+2)/count-3, 1, 1, 1, 1, G.uiname.."SpecOrbs"..i)
-
-				if i == 1 then
-					bars[i]:SetPoint("BOTTOMLEFT", bars, "BOTTOMLEFT")
-				else
-					bars[i]:SetPoint("LEFT", bars[i-1], "RIGHT", 3, 0)
-				end
-
-				bars[i].bg:Hide()
-				bars[i].bd = T.createBackdrop(bars[i], bars[i], 1)
-			end
-
-			if G.myClass == "DEATHKNIGHT" then
-				if aCoreCDB["UnitframeOptions"]["runecooldown"] then
-					for i = 1, 6 do
-						bars[i].value = T.createtext(bars[i], "OVERLAY", aCoreCDB["UnitframeOptions"]["valuefs"], "OUTLINE", "CENTER")
-						bars[i].value:SetPoint("CENTER")
-						bars[i]:SetStatusBarColor(.7, .7, 1)
-					end
-				end
-				self.Runes = bars
-				self.Runes.PostUpdateRune = PostUpdateRunes
-			elseif G.myClass == "PALADIN" or G.myClass == "MONK" or G.myClass == "WARLOCK" or G.myClass == "MAGE" then
-				self.ClassPower = bars
-				self.ClassPower.UpdateTexture = function() end
-				self.ClassPower.PostUpdate = ClassIconsPostUpdate
-			elseif G.myClass == "ROGUE" or G.myClass == "DRUID" then
-				if G.myClass == "DRUID" and aCoreCDB["UnitframeOptions"]["dpsmana"] then
-					bars:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 0, 8)
-				end
-				self.ClassPower = bars
-				self.ClassPower.Override = CpointsUpdate
-			end
-		end
+		T.CreateClassResources(self)
 
 		-- Stagger
 		if G.myClass == "MONK" and aCoreCDB["UnitframeOptions"]["stagger"] then
@@ -1446,6 +1738,178 @@ local UnitSpecific = {
 	end,
 }
 
+--=============================================--
+--[[ Nameplates ]]--
+--=============================================--
+local plate_func = function(self, unit)
+	T.OnMouseOver(self)
+	self.mouseovers = {}
+	
+	self:SetSize(aCoreCDB["PlateOptions"]["bar_width"], aCoreCDB["PlateOptions"]["bar_height"])
+	self:SetPoint("CENTER")
+	
+	-- 生命
+	local hp = T.createStatusbar(self, "ARTWORK")
+	hp:SetAllPoints()
+	hp:SetStatusBarTexture("Interface\\AddOns\\AltzUI\\media\\ufbar")
+	hp.bd = T.createBackdrop(hp, hp, 1)
+	hp.bg:SetGradientAlpha("VERTICAL", .2,.2,.2,.15,.25,.25,.25,.6)
+
+	hp.value = T.createnumber(hp, "OVERLAY", aCoreCDB["PlateOptions"]["fontsize"], "OUTLINE", "RIGHT")
+	hp.value:ClearAllPoints()
+	hp.value:SetPoint("BOTTOMRIGHT", hp, "TOPRIGHT", -5, -3)
+	
+	-- little black line to make the health bar more clear
+	hp.ind = hp:CreateTexture(nil, "OVERLAY", 1)
+	hp.ind:SetTexture("Interface\\Buttons\\WHITE8x8")
+	hp.ind:SetVertexColor(0, 0, 0)
+	hp.ind:SetSize(1, hp:GetHeight())
+	if aCoreCDB["PlateOptions"]["theme"] == "dark" then
+		hp.ind:SetPoint("RIGHT", hp:GetStatusBarTexture(), "LEFT", 0, 0)
+	else
+		hp.ind:SetPoint("LEFT", hp:GetStatusBarTexture(), "RIGHT", 0, 0)
+	end
+	
+	-- reverse fill health --
+	if aCoreCDB["PlateOptions"]["theme"] == "dark" then
+		hp:SetReverseFill(true)
+	end
+	
+	self.Health = hp
+	self.Health.plate_element = true
+	self.Health.PostUpdate = T.Updatehealthbar
+	tinsert(self.mouseovers, self.Health)
+	
+	-- 能量
+	local pp = T.createStatusbar(self, "ARTWORK")
+	pp:SetHeight(aCoreCDB["PlateOptions"]["bar_height"]/4)
+	pp:SetPoint("TOPLEFT", hp, "BOTTOMLEFT", 0, -3)
+	pp:SetPoint("TOPRIGHT", hp, "BOTTOMRIGHT", 0, -3)
+	pp:SetStatusBarTexture("Interface\\AddOns\\AltzUI\\media\\ufbar")
+	pp.bd = T.createBackdrop(pp, pp, 1)
+	pp.bg:SetGradientAlpha("VERTICAL", .2,.2,.2,.15,.25,.25,.25,.6)
+	
+	pp.value = T.createnumber(pp, "OVERLAY", aCoreCDB["PlateOptions"]["fontsize"], "OUTLINE", "LEFT")
+	pp.value:SetPoint("BOTTOMLEFT", self, 4, -2)
+	
+	self.Power = pp
+	self.Power.plate_element = true
+	self.Power.PostUpdate = T.Updatepowerbar
+	tinsert(self.mouseovers, self.Power)
+	
+	-- 光环
+	T.CreateAuras(self, unit)
+	
+	-- 施法条
+	CreateCastbars(self, unit)
+	
+	-- 个人资源
+	if aCoreCDB["PlateOptions"]["classresource_show"] then
+		T.CreateClassResources(self, true)
+	end
+	
+	local ricon = hp:CreateTexture(nil, "OVERLAY")
+	ricon:SetPoint("LEFT", self, "TOPLEFT", 5, 0)
+	ricon:SetSize(20, 20)
+	ricon:SetTexture[[Interface\AddOns\AltzUI\media\raidicons.blp]]
+	self.RaidTargetIndicator = ricon
+	self.RaidTargetIndicator.PostUpdate = RaidTargetIconPostUpdate
+	
+	local name = T.createtext(hp, "OVERLAY", aCoreCDB["PlateOptions"]["fontsize"], "OUTLINE", "CENTER")
+	name:SetPoint("TOPLEFT", hp, "TOPLEFT", 5, 15)
+	name:SetPoint("BOTTOMRIGHT", hp, "TOPRIGHT", -5, 5)
+	self:Tag(name, "[Altz:platename]")
+	
+	local PvPClassificationIndicator = hp:CreateTexture(nil, 'OVERLAY')
+	PvPClassificationIndicator:SetSize(24, 24)
+	PvPClassificationIndicator:SetPoint('CENTER')
+	self.PvPClassificationIndicator = PvPClassificationIndicator
+	
+	-- target RedArrow --
+	local RedArrow = self:CreateTexture(nil, 'OVERLAY')
+	RedArrow:SetTexture([[Interface\AddOns\AltzUI\media\NeonRedArrow]])
+    RedArrow:SetSize(50, 40)
+    RedArrow:SetPoint('BOTTOM', self, 'TOP', 0, 15)
+	RedArrow:Hide()
+	self.RedArrow = RedArrow
+	self:RegisterEvent("PLAYER_TARGET_CHANGED", TargetRedArrowupdate, true)
+	self:RegisterEvent("UNIT_AURA", TargetRedArrowupdate, true)
+	
+end
+
+local function PlacePlateClassSource()
+	if multicheck(G.myClass, "DEATHKNIGHT", "WARLOCK", "PALADIN", "MONK", "MAGE", "ROGUE", "DRUID") then
+		if aCoreCDB["PlateOptions"]["classresource_show"] and aCoreCDB["PlateOptions"]["classresource_pos"] == "target" then -- 个人资源
+			local playerPlate = C_NamePlate.GetNamePlateForUnit("player")
+			if playerPlate and playerPlate.unitFrame then
+				if G.myClass == "DEATHKNIGHT" then
+					playerPlate.unitFrame.Runes:ClearAllPoints()
+					playerPlate.unitFrame.Runes:Hide()
+				else
+					playerPlate.unitFrame.ClassPower:ClearAllPoints()
+					playerPlate.unitFrame.ClassPower:Hide()
+				end
+				local targetPlate = C_NamePlate.GetNamePlateForUnit("target")	
+				if targetPlate and targetPlate.unitFrame and not UnitIsUnit("player", "target") then
+					if G.myClass == "DEATHKNIGHT" then
+						playerPlate.unitFrame.Runes:SetPoint("BOTTOMLEFT", targetPlate.unitFrame, "TOPLEFT", 0, 3)	
+						playerPlate.unitFrame.Runes:Show()
+					else
+						playerPlate.unitFrame.ClassPower:SetPoint("BOTTOMLEFT", targetPlate.unitFrame, "TOPLEFT", 0, 3)	
+						playerPlate.unitFrame.ClassPower:Show()
+					end
+				end		
+			end
+		end
+	end
+end
+
+function PostUpdatePlates(self, event, unit)
+	if not self then return end
+	
+	if event == "NAME_PLATE_UNIT_ADDED" then
+	
+		if not aCoreCDB["PlateOptions"]["playerplate"] then -- 血条和能量条
+			if UnitIsUnit(unit, 'player') then
+				self.Health:Hide()		
+			else
+				self.Health:Show()
+			end
+		end
+		
+		if aCoreCDB["PlateOptions"]["classresource_show"] then -- 个人资源
+			if G.myClass == "DEATHKNIGHT" then
+				if UnitIsUnit(unit, 'player') then
+					self:EnableElement('Runes')
+					PlacePlateClassSource()
+					self.Runes:Show()
+				else
+					self:DisableElement('Runes')
+					self.Runes:Hide()
+				end
+			elseif multicheck(G.myClass, "WARLOCK", "PALADIN", "MONK", "MAGE", "ROGUE", "DRUID") then
+				if UnitIsUnit(unit, 'player') then
+					self:EnableElement('ClassPower')
+					PlacePlateClassSource()
+					self.ClassPower:Show()
+				else
+					self:DisableElement('ClassPower')
+					self.ClassPower:Hide()
+				end
+			else
+				self:DisableElement('ClassPower')
+				self.ClassPower:Hide()
+			end
+		end
+	end
+end
+
+local PlacePlateTargetElementEventFrame = CreateFrame("Frame", nil, UIParent)
+PlacePlateTargetElementEventFrame:SetScript("OnEvent", PlacePlateClassSource)
+PlacePlateTargetElementEventFrame:RegisterEvent('PLAYER_TARGET_CHANGED')
+------------------------
+
+
 local EventFrame = CreateFrame("Frame", nil, UIParent)
 RegisterStateDriver(EventFrame, "visibility", "[petbattle] hide; show")
 
@@ -1571,8 +2035,31 @@ function EventFrame:ADDON_LOADED(arg1)
 				T.CreateDragFrame(arenaframes["arena"..i])
 			end
 		end
+		
+		if aCoreCDB["PlateOptions"]["enableplate"] then
+			oUF:RegisterStyle("Altz_Nameplates", plate_func)
+			oUF:SetActiveStyle("Altz_Nameplates")
+			oUF:SpawnNamePlates("Altz_Nameplates", PostUpdatePlates)
+		end
 	end)
-
+	
+	if aCoreCDB["PlateOptions"]["playerplate"] or aCoreCDB["PlateOptions"]["classresource_show"] then
+		SetCVar("nameplateShowSelf", 1)
+	else
+		SetCVar("nameplateShowSelf", 0)
+	end
+	
+	UpdateNameplateColors()
+	UpdateNameplatePowerbars()
+	
+	ClassNameplateManaBarFrame:SetAlpha(0)
+	DeathKnightResourceOverlayFrame:SetAlpha(0)
+	ClassNameplateBarMageFrame:SetAlpha(0)
+	ClassNameplateBarWindwalkerMonkFrame:SetAlpha(0)
+	ClassNameplateBarPaladinFrame:SetAlpha(0)
+	ClassNameplateBarRogueDruidFrame:SetAlpha(0)
+	ClassNameplateBarWarlockFrame:SetAlpha(0)
+	
 	EventFrame:RegisterEvent("ARENA_PREP_OPPONENT_SPECIALIZATIONS")
 	EventFrame:RegisterEvent("ARENA_OPPONENT_UPDATE")
 	EventFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
@@ -1595,3 +2082,179 @@ end
 
 PetCastingBarFrame:Hide()
 PetCastingBarFrame:UnregisterAllEvents()
+
+-- From NDui
+local function CheckCPower(target_name)
+	local full, found_index, target_index
+	for index, info in pairs(aCoreCDB["PlateOptions"]["custompowerplates"]) do
+		if info.name == target_name then
+			found_index = index
+			break
+		end
+	end
+	
+	for index, info in pairs(aCoreCDB["PlateOptions"]["custompowerplates"]) do
+		if info.name == L["空"] then
+			target_index = index 
+			break
+		end
+	end
+	
+	if not target_index then
+		full = true
+	end
+	
+	return full, found_index, target_index
+end
+
+local function RemovefromCPower(target_index, target_name)
+	aCoreCDB["PlateOptions"]["custompowerplates"][target_index]["name"] = L["空"]
+	print(string.format(L["已从列表移除"], 255, 255, 0, target_name, L["自定义能量"]))
+	UpdateNameplatePowerbars(true)
+end
+
+local function AddtoCPower(target_index, target_name)
+	aCoreCDB["PlateOptions"]["custompowerplates"][target_index]["name"] = target_name
+	print(string.format(L["已加入列表"], 255, 255, 0, target_name, L["自定义能量"]))
+	UpdateNameplatePowerbars(true)
+end
+
+local function SetCColor(index, name, replace)
+	local r, g, b = aCoreCDB["PlateOptions"]["customcoloredplates"][index].color.r, aCoreCDB["PlateOptions"]["customcoloredplates"][index].color.g, aCoreCDB["PlateOptions"]["customcoloredplates"][index].color.b	
+	ColorPickerFrame:ClearAllPoints()
+	ColorPickerFrame:SetPoint("CENTER", UIParent, "CENTER")
+	ColorPickerFrame.hasOpacity = false
+	
+	ColorPickerFrame.func = function()
+		aCoreCDB["PlateOptions"]["customcoloredplates"][index].color.r, aCoreCDB["PlateOptions"]["customcoloredplates"][index].color.g, aCoreCDB["PlateOptions"]["customcoloredplates"][index].color.b = ColorPickerFrame:GetColorRGB()
+		if not replace then
+			aCoreCDB["PlateOptions"]["customcoloredplates"][index]["name"] = name
+		end	
+	end
+	
+	ColorPickerOkayButton:HookScript("OnClick", function()
+		local new_r, new_g, new_b = ColorPickerFrame:GetColorRGB()
+		print(string.format(L["已加入列表"], new_r*255, new_g*255, new_b*255, name, L["自定义颜色"]))
+		UpdateNameplateColors(true)
+	end)
+	
+	ColorPickerFrame.previousValues = {r = r, g = g, b = b}
+	
+	ColorPickerFrame.cancelFunc = function()
+		aCoreCDB["PlateOptions"]["customcoloredplates"][index].color.r, aCoreCDB["PlateOptions"]["customcoloredplates"][index].color.g, aCoreCDB["PlateOptions"]["customcoloredplates"][index].color.b = r, g, b
+	end
+	
+	ColorPickerFrame:SetColorRGB(r, g, b)
+	ColorPickerFrame:Hide()
+	ColorPickerFrame:Show()
+end
+
+local function CheckCColor(target_name)
+	local full, found_index, target_index, r, g, b
+	for index, info in pairs(aCoreCDB["PlateOptions"]["customcoloredplates"]) do
+		if info.name == target_name then
+			found_index = index
+			r, g, b = info.color.r, info.color.g, info.color.b
+			break
+		end
+	end
+	
+	for index, info in pairs(aCoreCDB["PlateOptions"]["customcoloredplates"]) do
+		if info.name == L["空"] and info.color.r == 1 and info.color.g == 1 and info.color.b == 1 then
+			target_index = index 
+			break
+		end
+	end
+	
+	if not target_index then
+		full = true
+	end
+	
+	return full, found_index, target_index, r, g, b
+end
+
+local function RemovefromCColor(target_index, target_name)
+	table.wipe(aCoreCDB["PlateOptions"]["customcoloredplates"][target_index])
+	aCoreCDB["PlateOptions"]["customcoloredplates"][target_index] = {
+		name = L["空"],
+		color = {r = 1, g = 1, b = 1},
+	}
+	print(string.format(L["已从列表移除"], 255, 255, 0, target_name, L["自定义颜色"]))
+	UpdateNameplateColors(true)
+end
+
+local function AddtoCColor(target_index, target_name)
+	SetCColor(target_index, target_name)
+end
+
+local function ReplaceCColor(target_index, target_name)
+	SetCColor(target_index, target_name, true)	
+end
+
+local menuFrame = CreateFrame("Frame", "NDui_EastMarking", UIParent, "UIDropDownMenuTemplate")
+local menuList = {
+	{text = RAID_TARGET_NONE, func = function() SetRaidTarget("target", 0) end},
+	{text = T.hex(1, .92, 0)..RAID_TARGET_1.." "..ICON_LIST[1].."12|t", func = function() SetRaidTarget("target", 1) end},
+	{text = T.hex(.98, .57, 0)..RAID_TARGET_2.." "..ICON_LIST[2].."12|t", func = function() SetRaidTarget("target", 2) end},
+	{text = T.hex(.83, .22, .9)..RAID_TARGET_3.." "..ICON_LIST[3].."12|t", func = function() SetRaidTarget("target", 3) end},
+	{text = T.hex(.04, .95, 0)..RAID_TARGET_4.." "..ICON_LIST[4].."12|t", func = function() SetRaidTarget("target", 4) end},
+	{text = T.hex(.7, .82, .875)..RAID_TARGET_5.." "..ICON_LIST[5].."12|t", func = function() SetRaidTarget("target", 5) end},
+	{text = T.hex(0, .71, 1)..RAID_TARGET_6.." "..ICON_LIST[6].."12|t", func = function() SetRaidTarget("target", 6) end},
+	{text = T.hex(1, .24, .168)..RAID_TARGET_7.." "..ICON_LIST[7].."12|t", func = function() SetRaidTarget("target", 7) end},
+	{text = T.hex(.98, .98, .98)..RAID_TARGET_8.." "..ICON_LIST[8].."12|t", func = function() SetRaidTarget("target", 8) end},
+	{text = ""}, -- 10
+	{text = L["添加自定义能量"]},
+	{text = L["添加自定义颜色"]},
+	{text = L["添加自定义颜色"]},
+}
+
+WorldFrame:HookScript("OnMouseDown", function(_, btn)
+	C_Timer.After(0.3, function()
+		if btn == "LeftButton" and IsControlKeyDown() and UnitExists("target") then
+			if not IsInGroup() or (IsInGroup() and not IsInRaid()) or UnitIsGroupLeader("player") or UnitIsGroupAssistant("player") then
+				local ricon = GetRaidTargetIndex("target")
+				for i = 1, 8 do
+					if ricon == i then
+						menuList[i+1].checked = true
+					else
+						menuList[i+1].checked = false
+					end
+				end
+				local target_name = GetUnitName("target", false)
+				
+				local power_full, power_found_index, power_target_index = CheckCPower(target_name)
+				if power_full then	-- 自定义能量已满
+					menuList[11].text = string.format(L["列表已满"], L["自定义能量"])
+				elseif power_found_index then -- 已经有了
+					menuList[11].text = string.format(L["移除自定义能量"], target_name)
+					menuList[11].func = function() RemovefromCPower(power_found_index, target_name) end
+				elseif power_target_index then -- 可以添加
+					menuList[11].text = string.format(L["添加自定义能量"], target_name)
+					menuList[11].func = function() AddtoCPower(power_target_index, target_name) end
+				end
+				
+				local color_full, color_found_index, color_target_index, r, g, b = CheckCColor(target_name)
+				if color_full then	-- 自定义颜色已满
+					menuList[12].text = string.format(L["列表已满"], L["自定义颜色"])
+					
+					menuList[13] = {}
+				elseif color_found_index then -- 已经有了
+				
+					menuList[12].text = string.format(L["替换自定义颜色"], r*255, g*255, b*255, target_name)
+					menuList[12].func = function() ReplaceCColor(color_found_index, target_name) end
+					
+					menuList[13].text = string.format(L["移除自定义颜色"], r*255, g*255, b*255, target_name)
+					menuList[13].func = function() RemovefromCColor(color_found_index, target_name) end
+					
+				elseif color_target_index then -- 可以添加
+					menuList[12].text = string.format(L["添加自定义颜色"], target_name)
+					menuList[12].func = function() AddtoCColor(color_target_index, target_name) end
+					
+					menuList[13] = {}
+				end
+				
+				EasyMenu(menuList, menuFrame, "cursor", 0, 0, "MENU", 1)
+			end
+		end
+	end)
+end)

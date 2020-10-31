@@ -169,3 +169,5 @@ L["出现了！"] = "spotted!"
 
 L["打开自动隐藏"] = "Click - auto-hide on"
 L["关闭自动隐藏"] = "Click - auto-hide off"
+
+L["空"] = "Empty"

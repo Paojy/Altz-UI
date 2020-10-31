@@ -1460,6 +1460,14 @@ for i = 1, 50 do
 	}
 end
 
+local Custompowerplates = {}
+
+for i = 1, 50 do
+	Custompowerplates[i] = {
+		name = L["空"],
+	}
+end
+
 local default_HealerIndicatorAuraList = {
 	PRIEST = { 
         [17] = true,		-- 真言术盾
@@ -1774,28 +1782,41 @@ local Character_default_Settings = {
 		debuffsPerRow = 10,
 	},
 	PlateOptions = {
+		-- 通用
 		enableplate = true,
-		blzplates = true,
-		blzplates_nameonly = true,
-		name_fontsize = 18,
-		autotoggleplates = true,
-		plateauranum = 5,
-		plateaurasize = 25,
-		numberstyle = true,
+		theme = "class", -- "dark" "class" "number"	
+		fontsize = 8,
 		threatcolor = true,
-		firendlyCR = true,
-		enemyCR = true,
+		plateaura = false,
+		plateauranum = 5,
+		plateaurasize = 15,	
+		Interruptible_color = {r = 1, g = 1, b = 0},
+		notInterruptible_color = {r = 1, g = 0, b = 0},	
+		
+		bar_width = 100,-- 条形
+		bar_height = 8,
+		bar_hp_perc = "perc", -- 数值样式  "perc" "value_perc"
+		bar_alwayshp = false, -- 满血显示生命值
+		
+		number_size = 30,-- 数字型
+		number_alwayshp = false, -- 满血显示生命值	
+		
+		-- 玩家姓名板
 		playerplate = true,
 		classresource_show = true,
-		classresource = "player", --"player", "target"
-		plateaura = false,
+		classresource_pos = "player", --"player", "target"		
+		
+		-- 光环列表 OK
 		myplateauralist = G.BlackList,		
 		otherplateauralist = G.WhiteList,
 		myfiltertype = "blacklist", -- "blacklist", "whitelist", "none"
 		otherfiltertype = "none", -- "whitelist", "none"
+		
+		-- 染色列表 1
 		customcoloredplates = Customcoloredplates,
-		Interruptible_color = {r = 1, g = 1, b = 0},
-		notInterruptible_color = {r = 1, g = 0, b = 0},
+		
+		-- 能量列表 1
+		custompowerplates = Custompowerplates,
 	},
 	TooltipOptions = {
 		enabletip = true,
@@ -1977,7 +1998,12 @@ T.ExportSettings = function(editbox)
 									str = str.."^"..OptionCategroy.."~"..setting.."~"..index.."~"..t.name.."~"..t.color.r.."~"..t.color.g.."~"..t.color.b
 								end
 							end
-						
+						elseif setting == "custompowerplates" then -- 非空则复制 4
+							for index, t in pairs(aCoreCDB["PlateOptions"]["custompowerplates"]) do
+								if t.name ~= L["空"] then
+									str = str.."^"..OptionCategroy.."~"..setting.."~"..index..t.name
+								end
+							end
 						else -- 完全复制 4
 							for id, _ in pairs(aCoreCDB["PlateOptions"][setting]) do
 								str = str.."^"..OptionCategroy.."~"..setting.."~"..id.."~true"
@@ -2149,6 +2175,12 @@ T.ImportSettings = function(str)
 											g = tonumber(arg4),
 											b = tonumber(arg5),
 										},
+									}
+								end
+							elseif setting == "custompowerplates" then -- 非空则复制 4
+								if sameclient then
+									aCoreCDB[OptionCategroy][setting][tonumber(arg1)] = {
+										name = arg2,
 									}
 								end
 							elseif setting == "otherplateauralist" then -- 完全复制 4 OptionCategroy.."~"..setting.."~"..id.."~true"

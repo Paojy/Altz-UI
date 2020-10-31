@@ -1039,12 +1039,15 @@ local function CreateAuraFilterButton(name, icon, spellID)
 	local bu = CreateFrame("Frame", G.uiname.."WhiteList Button"..spellID, UFInnerframe.aurawhitelist.SF)
 	bu:SetSize(350, 20)
 
-	bu.icon = CreateFrame("Button", nil, bu)
+	bu.icon = CreateFrame("Frame", nil, bu, "BackdropTemplate")
 	bu.icon:SetSize(18, 18)
-	bu.icon:SetNormalTexture(icon)
-	bu.icon:GetNormalTexture():SetTexCoord(0.1,0.9,0.1,0.9)
 	bu.icon:SetPoint"LEFT"
 	F.CreateBD(bu.icon)
+	
+	bu.icon.tex = bu.icon:CreateTexture(nil, "OVERLAY")
+	bu.icon.tex:SetAllPoints(bu.icon)
+	bu.icon.tex:SetTexture(icon)
+	bu.icon.tex:SetTexCoord(0.1,0.9,0.1,0.9)
 	
 	bu.spellid = T.createtext(bu, "OVERLAY", 12, "OUTLINE", "LEFT")
 	bu.spellid:SetPoint("LEFT", 40, 0)
@@ -1986,6 +1989,7 @@ local function CreateCooldownAuraButton(parent, auratype, name, spellID, level)
 	bu.icon:GetNormalTexture():SetTexCoord(0.1,0.9,0.1,0.9)
 	bu.icon:SetPoint"LEFT"
 	bu.icon.bg = CreateFrame("Frame", nil, bu.icon, "BackdropTemplate")
+	bu.icon.bg:SetFrameLevel(bu.icon:GetFrameLevel()-1)
 	bu.icon.bg:SetAllPoints(bu.icon)
 	F.CreateBD(bu.icon.bg)	
 	
@@ -2297,6 +2301,7 @@ local function CreatecooldownflashlistButton(spellID, parent, list)
 	bu.icon:SetPoint"LEFT"
 	bu.icon.bg = CreateFrame("Frame", nil, bu.icon, "BackdropTemplate")
 	bu.icon.bg:SetAllPoints(bu.icon)
+	bu.icon.bg:SetFrameLevel(bu.icon:GetFrameLevel()-1)
 	F.CreateBD(bu.icon.bg)	
 	
 	bu.spellname = T.createtext(bu, "OVERLAY", 12, "OUTLINE", "LEFT")
@@ -2459,28 +2464,66 @@ for i = 1, 20 do
 	PlateInnerframe["tab"..i] = CreateFrame("Frame", G.uiname.."PlateInnerframe Tab"..i, PlateInnerframe, "BackdropTemplate")
 	PlateInnerframe["tab"..i]:SetScript("OnMouseDown", function() end)
 end
-
-PlateInnerframe.common = CreateOptionPage("Actionbar Options common", L["通用设置"], PlateInnerframe, "VERTICAL", .3)
+-- 通用 --
+PlateInnerframe.common = CreateOptionPage("Nameplates Options common", L["通用设置"], PlateInnerframe, "VERTICAL", .3)
 PlateInnerframe.common:Show()
 
 T.createcheckbutton(PlateInnerframe.common, 30, 60, L["启用"], "PlateOptions", "enableplate")
 T.CVartogglebox(PlateInnerframe.common, 120, 60, "nameplateShowAll", UNIT_NAMEPLATES_AUTOMODE, "1", "0")
-T.createcheckbutton(PlateInnerframe.common, 260, 60, L["数字样式"], "PlateOptions", "numberstyle")
-T.createcheckbutton(PlateInnerframe.common, 30, 90, L["副本友方姓名板"], "PlateOptions", "blzplates", L["副本友方姓名板说明"])
-T.createcheckbutton(PlateInnerframe.common, 220, 90, L["只显示名字"], "PlateOptions", "blzplates_nameonly")
-T.createslider(PlateInnerframe.common, 30, 140, L["名字字体大小"], "PlateOptions", "name_fontsize", 1, 10, 30, 1)
-T.createcheckbutton(PlateInnerframe.common, 30, 170, L["友善职业染色"], "PlateOptions", "firendlyCR")
-T.createcheckbutton(PlateInnerframe.common, 30, 200, L["敌对职业染色"], "PlateOptions", "enemyCR")
-T.createcheckbutton(PlateInnerframe.common, 30, 230, L["仇恨染色"], "PlateOptions", "threatcolor")
-T.createslider(PlateInnerframe.common, 30, 280, L["光环"].." "..L["图标数量"], "PlateOptions", "plateauranum", 1, 3, 10, 1)
-T.createslider(PlateInnerframe.common, 30, 320, L["光环"].." "..L["图标大小"], "PlateOptions", "plateaurasize", 1, 20, 40, 2)
-T.createcolorpickerbu(PlateInnerframe.common, 30, 350, L["可打断施法条颜色"], "PlateOptions", "Interruptible_color")
-T.createcolorpickerbu(PlateInnerframe.common, 30, 380, L["不可打断施法条颜色"], "PlateOptions", "notInterruptible_color")
+T.createcheckbutton(PlateInnerframe.common, 260, 60, L["仇恨染色"], "PlateOptions", "threatcolor")
+local plate_theme_group = {
+	["class"] = L["职业色-条形"],
+	["dark"] =  L["深色-条形"],
+	["number"] =  L["数字样式"],
+}
+T.createradiobuttongroup(PlateInnerframe.common, 30, 90, L["样式"], "PlateOptions", "theme", plate_theme_group)
+T.createslider(PlateInnerframe.common, 30, 140, L["字体大小"], "PlateOptions", "fontsize", 1, 5, 25, 1)
+T.createslider(PlateInnerframe.common, 30, 180, L["光环"].." "..L["图标数量"], "PlateOptions", "plateauranum", 1, 3, 10, 1)
+T.createslider(PlateInnerframe.common, 230, 180, L["光环"].." "..L["图标大小"], "PlateOptions", "plateaurasize", 1, 10, 30, 2)
+PlateInnerframe.common.fontsize:SetWidth(160)
+PlateInnerframe.common.plateauranum:SetWidth(160)
+PlateInnerframe.common.plateaurasize:SetWidth(160)
+T.createcolorpickerbu(PlateInnerframe.common, 30, 200, L["可打断施法条颜色"], "PlateOptions", "Interruptible_color")
+T.createcolorpickerbu(PlateInnerframe.common, 230, 200, L["不可打断施法条颜色"], "PlateOptions", "notInterruptible_color")
 
-T.createDR(PlateInnerframe.common.blzplates, PlateInnerframe.common.blzplates_nameonly, PlateInnerframe.common.name_fontsize)
-T.createDR(PlateInnerframe.common.enableplate, PlateInnerframe.common.numberstyle, PlateInnerframe.common.firendlyCR, PlateInnerframe.common.enemyCR, PlateInnerframe.common.threatcolor, PlateInnerframe.common.plateauranum, PlateInnerframe.common.plateaurasize, PlateInnerframe.common.blzplates, PlateInnerframe.common.blzplates_nameonly, PlateInnerframe.common.name_fontsize,
+PlateInnerframe.common.title = PlateInnerframe.common:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
+PlateInnerframe.common.title:SetPoint("TOPLEFT", 35, -240)
+PlateInnerframe.common.title:SetText(L["条形样式"])
+
+PlateInnerframe.common.DividingLine = PlateInnerframe.common:CreateTexture(nil, "ARTWORK")
+PlateInnerframe.common.DividingLine:SetSize(PlateInnerframe.common:GetWidth()-50, 1)
+PlateInnerframe.common.DividingLine:SetPoint("TOP", 0, -265)
+PlateInnerframe.common.DividingLine:SetColorTexture(1, 1, 1, .2)
+
+T.createslider(PlateInnerframe.common, 30, 290, L["宽度"], "PlateOptions", "bar_width", 1, 70, 150, 5)
+T.createslider(PlateInnerframe.common, 230, 290, L["高度"], "PlateOptions", "bar_height", 1, 5, 25, 1)
+PlateInnerframe.common.bar_width:SetWidth(160)
+PlateInnerframe.common.bar_height:SetWidth(160)
+local plate_bar_hp_perc_group = {
+	["perc"] = L["百分比"],
+	["value_perc"] =  L["数值和百分比"],
+}
+T.createradiobuttongroup(PlateInnerframe.common, 30, 310, L["数值样式"], "PlateOptions", "bar_hp_perc", plate_bar_hp_perc_group)
+T.createcheckbutton(PlateInnerframe.common, 280, 310, L["总是显示生命值"], "PlateOptions", "bar_alwayshp", L["总是显示生命值提示"])
+
+PlateInnerframe.common.title2 = PlateInnerframe.common:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
+PlateInnerframe.common.title2:SetPoint("TOPLEFT", 35, -360)
+PlateInnerframe.common.title2:SetText(L["数值样式"])
+
+PlateInnerframe.common.DividingLine2 = PlateInnerframe.common:CreateTexture(nil, "ARTWORK")
+PlateInnerframe.common.DividingLine2:SetSize(PlateInnerframe.common:GetWidth()-50, 1)
+PlateInnerframe.common.DividingLine2:SetPoint("TOP", 0, -385)
+PlateInnerframe.common.DividingLine2:SetColorTexture(1, 1, 1, .2)
+
+T.createslider(PlateInnerframe.common, 30, 420, string.format("%s(%s)", L["字体大小"], L["数字样式"]), "PlateOptions", "number_size", 1, 15, 35, 1)
+PlateInnerframe.common.number_size:SetWidth(160)
+T.createcheckbutton(PlateInnerframe.common, 230, 410, string.format("%s(%s)", L["总是显示生命值"],L["数字样式"]), "PlateOptions", "number_alwayshp", L["总是显示生命值提示"])
+
+T.createDR(PlateInnerframe.common.enableplate, PlateInnerframe.common.theme, PlateInnerframe.common.fontsize, 
+PlateInnerframe.common.threatcolor, PlateInnerframe.common.plateauranum, PlateInnerframe.common.plateaurasize,
 PlateInnerframe.common.Interruptible_color, PlateInnerframe.common.notInterruptible_color)
 
+-- 玩家姓名板 --
 PlateInnerframe.playerresource = CreateOptionPage("Player Resource Bar Options", L["玩家姓名板"], PlateInnerframe, "VERTICAL", .3)
 
 T.createcheckbutton(PlateInnerframe.playerresource, 30, 60, L["显示玩家姓名板"], "PlateOptions", "playerplate")
@@ -2490,12 +2533,13 @@ local classresource_group = {
 	["target"] = L["目标姓名板"],
 	["player"] = L["玩家姓名板"],
 }
-T.createradiobuttongroup(PlateInnerframe.playerresource, 70, 150, L["姓名板资源位置"], "PlateOptions", "classresource", classresource_group)
+T.createradiobuttongroup(PlateInnerframe.playerresource, 70, 150, L["姓名板资源位置"], "PlateOptions", "classresource_pos", classresource_group)
 
 T.createDR(PlateInnerframe.playerresource.playerplate, PlateInnerframe.playerresource.plateaura)
 T.createDR(PlateInnerframe.playerresource.classresource_show, PlateInnerframe.playerresource.classresource)
 
-PlateInnerframe.auralist = CreateOptionPage("Actionbar Options common", L["光环"], PlateInnerframe, "VERTICAL", .3)
+-- 光环过滤列表 --
+PlateInnerframe.auralist = CreateOptionPage("Plate Options Aura", L["光环"], PlateInnerframe, "VERTICAL", .3)
 
 local plateauralistframe = CreateFrame("Frame", G.uiname.."Plate Aura List Options", PlateInnerframe.auralist, "BackdropTemplate")
 plateauralistframe:SetPoint("TOPLEFT", 30, -85)
@@ -2654,12 +2698,12 @@ local function CreatePlateAuraOptions(name, flitertype, list)
 	end)
 end
 
-PlateInnerframe.customcoloredplates = CreateOptionPage("Actionbar Options common", L["自定义颜色"], PlateInnerframe, "VERTICAL", .3, true)
+-- 自定义颜色 --
+PlateInnerframe.customcoloredplates = CreateOptionPage("Plate Options CColor", L["自定义颜色"], PlateInnerframe, "VERTICAL", .3, true)
 
 PlateInnerframe.customcoloredplates.SF:ClearAllPoints()
 PlateInnerframe.customcoloredplates.SF:SetPoint("TOPLEFT", PlateInnerframe.customcoloredplates, "TOPLEFT", 30, -60)
 PlateInnerframe.customcoloredplates.SF:SetPoint("BOTTOMRIGHT", PlateInnerframe.customcoloredplates, "BOTTOMRIGHT", -50, 30)
-F.CreateBD(PlateInnerframe.customcoloredplates.SF.bg, .3)
 
 local function CreateCColoredPlatesButton(parent, index, name, r, g, b)
 	local bu = CreateFrame("Frame", G.uiname.."CColoredPlatesList Button"..index, parent, "BackdropTemplate")
@@ -2767,6 +2811,83 @@ local function CreateCColoredPlatesList()
 		CreateCColoredPlatesButton(PlateInnerframe.customcoloredplates.SFAnchor, index, name, r, g, b)
 	end
 end
+
+-- 自定义能量 --
+PlateInnerframe.custompowerplates = CreateOptionPage("Plate Options CPower", L["自定义能量"], PlateInnerframe, "VERTICAL", .3, true)
+
+PlateInnerframe.custompowerplates.SF:ClearAllPoints()
+PlateInnerframe.custompowerplates.SF:SetPoint("TOPLEFT", PlateInnerframe.custompowerplates, "TOPLEFT", 30, -60)
+PlateInnerframe.custompowerplates.SF:SetPoint("BOTTOMRIGHT", PlateInnerframe.custompowerplates, "BOTTOMRIGHT", -50, 30)
+
+local function CreateCPowerPlatesButton(parent, index, name)
+	local bu = CreateFrame("Frame", G.uiname.."CPowerPlatesList Button"..index, parent, "BackdropTemplate")
+	bu:SetPoint("TOPLEFT", parent, "TOPLEFT", 5, 20-index*30)
+	bu:SetSize(360, 28)
+	F.CreateBD(bu, .2)
+	
+	bu.index = T.createtext(bu, "OVERLAY", 16, "OUTLINE", "LEFT")
+	bu.index:SetPoint("LEFT", 10, 0)
+	bu.index:SetTextColor(1, 1, 1)
+	bu.index:SetText(index..".")
+	
+	bu.name_input = CreateFrame("EditBox", G.uiname.."CPowerPlatesList Button"..index.."NameInput", bu, "BackdropTemplate")
+	bu.name_input:SetSize(200, 20)
+	bu.name_input:SetPoint("LEFT", 40, 0)
+	F.CreateBD(bu.name_input, 0)
+	bu.name_input:SetBackdropColor(0, 0, 0, 0)
+	bu.name_input:SetBackdropBorderColor(0, 0, 0, 0)
+	
+	bu.name_input:SetFont(GameFontHighlight:GetFont(), 12, "OUTLINE")
+	bu.name_input:SetAutoFocus(false)
+	bu.name_input:SetTextInsets(3, 0, 0, 0)
+	
+	bu.name_input:SetScript("OnShow", function(self) self:SetText(aCoreCDB["PlateOptions"]["custompowerplates"][index].name) end)
+	bu.name_input:SetScript("OnEditFocusGained", function(self) 
+		self:SetBackdropColor(0, 1, 1, .3)
+		self:SetBackdropBorderColor(1, 1, 1, 1)
+	end)
+	bu.name_input:SetScript("OnEditFocusLost", function(self) 
+		self:SetBackdropColor(0, 0, 0, 0)
+		self:SetBackdropBorderColor(0, 0, 0, 0)
+		self.new_value = self:GetText()
+		self:SetText(aCoreCDB["PlateOptions"]["custompowerplates"][index].name)	
+	end)
+	bu.name_input:SetScript("OnEscapePressed", function(self)
+		self:ClearFocus()
+	end)
+	bu.name_input:SetScript("OnEnterPressed", function(self)
+		self:ClearFocus()
+		self:SetBackdropColor(0, 0, 0, 0)
+		self:SetBackdropBorderColor(0, 0, 0, 0)
+		aCoreCDB["PlateOptions"]["custompowerplates"][index].name = self.new_value
+		self:SetText(self.new_value)
+	end)
+	
+	bu.reset = CreateFrame("Button", nil, bu, "UIPanelButtonTemplate")
+	bu.reset:SetSize(38,18)
+	bu.reset:SetPoint("RIGHT", -5, 0)
+	F.Reskin(bu.reset)
+	bu.reset:SetText(L["重置"])
+	T.resize_font(bu.reset.Text)
+	
+	bu.reset:SetScript("OnClick", function(self)
+		table.wipe(aCoreCDB["PlateOptions"]["custompowerplates"][index])
+		aCoreCDB["PlateOptions"]["custompowerplates"][index] = {
+			name = L["空"],
+		}
+		bu.name_input:SetText(L["空"])
+	end)
+	
+	return bu
+end
+
+local function CreateCPowerPlatesList()
+	for index, info in pairs(aCoreCDB["PlateOptions"]["custompowerplates"]) do
+		local name = info.name
+		CreateCPowerPlatesButton(PlateInnerframe.custompowerplates.SFAnchor, index, name)
+	end
+end
+
 --====================================================--
 --[[             -- Tooltip Options --              ]]--
 --====================================================--
@@ -2896,6 +3017,7 @@ function eventframe:PLAYER_ENTERING_WORLD()
 	CreatePlateAuraOptions(L["我的法术"], "myfiltertype", "myplateauralist")
 	CreatePlateAuraOptions(L["其他法术"], "otherfiltertype", "otherplateauralist")
 	CreateCColoredPlatesList()
+	CreateCPowerPlatesList()
 	
 	SetClassColorButton:SetScript("OnClick", function() T.ResetClasscolors(true) end)
 	SetDBMButton:SetScript("OnClick", function() T.ResetDBM(true) end)

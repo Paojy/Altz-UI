@@ -59,9 +59,6 @@
 	
 	<Script file="mods\loot\lootgroup.lua"/>
 	
-	<Include file="mods\nameplate\nameplates.xml"/>	
-	<Script file="mods\nameplate\nameplates.lua"/>
-	
 	<Script file="mods\tip\spellID.lua"/>
 	<Script file="mods\tip\ItemID.lua"/>
 	<Script file="mods\tip\talent.lua"/>	

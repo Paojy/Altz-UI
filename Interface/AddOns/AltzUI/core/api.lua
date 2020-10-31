@@ -245,9 +245,11 @@ T.createStatusbar = function(parent, layer, height, width, r, g, b, alpha, name)
 	else
 		bar:SetStatusBarTexture(G.media.ufbar)
 	end
-
-	bar:SetStatusBarColor(r, g, b, alpha)
-
+	
+	if r then
+		bar:SetStatusBarColor(r, g, b, alpha)
+	end
+	
 	bar.bg = bar:CreateTexture(nil, "BACKGROUND")
 	if aCoreCDB["UnitframeOptions"]["style"] == 1 then
 		bar.bg:SetTexture(G.media.blank)
