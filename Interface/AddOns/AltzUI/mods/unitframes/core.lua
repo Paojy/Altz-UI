@@ -634,6 +634,9 @@ local PostCastStart = function(castbar, unit)
 					castbar.IBackdrop:Hide()
 				else
 					castbar.Spark:Hide()
+					castbar.bd:Show() -- 防止bug
+					castbar.Icon:Show() -- 防止bug
+					castbar.IBackdrop:Show() -- 防止bug
 					castbar:ClearAllPoints()
 					if plate_c.power_unit[UnitName(unit)] then
 						castbar:SetPoint("TOPLEFT", castbar.__owner, "BOTTOMLEFT", 0, -7)
