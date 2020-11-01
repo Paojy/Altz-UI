@@ -1347,7 +1347,7 @@ T.CreateAuras = function(self, unit)
 			if aCoreCDB["PlateOptions"]["theme"] == "number" then
 				Auras:SetPoint("BOTTOM", self.Health.value, "TOP", 0, -5)
 			else
-				Auras:SetPoint("BOTTOM", self, "TOP", 0, aCoreCDB["PlateOptions"]["fontsize"])
+				Auras:SetPoint("BOTTOM", self, "TOP", 0, aCoreCDB["PlateOptions"]["plateaurasize"]*.45)
 			end
 			Auras.initialAnchor = "BOTTOMLEFT"
 			Auras["growth-x"] = "RIGHT"

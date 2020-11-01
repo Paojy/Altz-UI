@@ -268,6 +268,8 @@ local Update = function(self, event, unit)
 		end
 		
 		auras.num_shown = #t
+	else
+		auras.num_shown = 0
 	end
 	
     if auras.num_shown < numDebuffs then
