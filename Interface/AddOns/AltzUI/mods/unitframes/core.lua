@@ -1831,6 +1831,7 @@ local plate_func = function(self, unit)
 	
 	-- 生命
 	local hp = T.createStatusbar(self, "ARTWORK")
+	hp:SetFrameLevel(self:GetFrameLevel())
 	hp:SetAllPoints()
 	hp:SetStatusBarTexture("Interface\\AddOns\\AltzUI\\media\\ufbar")
 	hp.bd = T.createBackdrop(hp, hp, 1)
@@ -1862,6 +1863,7 @@ local plate_func = function(self, unit)
 	
 	-- 能量
 	local pp = T.createStatusbar(self, "ARTWORK")
+	pp:SetFrameLevel(self:GetFrameLevel())
 	pp:SetHeight(aCoreCDB["PlateOptions"]["bar_height"]/4)
 	pp:SetPoint("TOPLEFT", hp, "BOTTOMLEFT", 0, -3)
 	pp:SetPoint("TOPRIGHT", hp, "BOTTOMRIGHT", 0, -3)
@@ -2025,7 +2027,6 @@ function PostUpdatePlates(self, event, unit)
 	if not self then return end
 	
 	if event == "NAME_PLATE_UNIT_ADDED" then
-	
 		if UnitIsUnit(unit, 'player') then -- 血条和能量条
 			if not aCoreCDB["PlateOptions"]["playerplate"] then
 				self.Health:Hide()
