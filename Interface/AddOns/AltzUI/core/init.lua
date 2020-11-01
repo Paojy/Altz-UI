@@ -22,6 +22,12 @@ G.numFont = "Interface\\AddOns\\AltzUI\\media\\number.ttf"
 G.symbols = "Interface\\Addons\\AltzUI\\media\\PIZZADUDEBULLETS.ttf"
 G.plateFont = "Interface\\AddOns\\AltzUI\\media\\Infinity Gears.ttf"
 
+G.combatFont = {}
+for i = 1, 3 do
+	G.combatFont["combat"..i] = "Interface\\AddOns\\AltzUI\\media\\combat"..i..".ttf"
+end
+
+
 G.media = {
 	blank = "Interface\\Buttons\\WHITE8x8",
 	bar = "Interface\\AddOns\\AltzUI\\media\\statusbar",

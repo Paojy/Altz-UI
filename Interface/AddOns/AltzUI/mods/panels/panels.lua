@@ -1,6 +1,12 @@
 ﻿local T, C, L, G = unpack(select(2, ...))
 local F = unpack(AuroraClassic)
 
+
+local font = aCoreCDB["SkinOptions"]["combattext"]
+if font ~= "none" then
+	DAMAGE_TEXT_FONT = G.combatFont[font]
+end
+
 --====================================================--
 --[[                -- Functions --                    ]]--
 --====================================================--
