@@ -316,6 +316,7 @@ L["数值样式"] = "Value form"
 L["百分比"] = "Perc"
 L["数值和百分比"] = "Value+Perc"
 L["条形样式"] = "Bar"
+L["友方只显示名字"] = "Name-only on friendly units"
 
 -- 鼠标提示
 L["跟随光标"] = "Show at Mouse"
@@ -404,6 +405,7 @@ L["深色三"] = "Dark 3"
 L["浅色一"] = "Light 1"
 L["浅色二"] = "Light 2"
 L["浅色三"] = "Light 3"
+L["战斗字体"] = "Combat Text"
 
 -- 命令
 L["命令"] = "Commands"
