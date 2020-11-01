@@ -25,25 +25,14 @@ C.themes["Blizzard_AnimaDiversionUI"] = function()
 		F.ReskinIcon(currencyFrame.CurrencyIcon)
 	end
 
-	local infoFrame = frame.SelectPinInfoFrame
-	F.StripTextures(infoFrame)
-	local bg = F.SetBD(infoFrame)
-	bg.__shadow:SetFrameLevel(infoFrame:GetFrameLevel()-1)
-	F.Reskin(infoFrame.SelectButton)
-	F.ReskinClose(infoFrame.CloseButton)
+	if not C.isNewPatch then
+		local infoFrame = frame.SelectPinInfoFrame
+		F.StripTextures(infoFrame)
+		local bg = F.SetBD(infoFrame)
+		bg.__shadow:SetFrameLevel(infoFrame:GetFrameLevel()-1)
+		F.Reskin(infoFrame.SelectButton)
+		F.ReskinClose(infoFrame.CloseButton)
 
-	if C.isNewPatch then
-		hooksecurefunc(infoFrame, "SetupCosts", function(self)
-			for currency in self.currencyPool:EnumerateActive() do
-				if not currency.hooked then
-					replaceIconString(currency.Quantity)
-					hooksecurefunc(currency.Quantity, "SetText", replaceIconString)
-
-					currency.hooked = true
-				end
-			end
-		end)
-	else
 		hooksecurefunc(infoFrame, "SetupCosts", function(self)
 			for currency in self.currencyPool:EnumerateActive() do
 				if not currency.bg then
