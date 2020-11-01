@@ -150,6 +150,7 @@ anchor.point = {
 T.CreateDragFrame(anchor) --frame, dragFrameList, inset, clamp
 anchor:SetWidth(width)
 anchor:SetHeight(20)
+anchor:EnableMouse(false)
 
 local frames = {}
 
