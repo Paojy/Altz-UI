@@ -199,15 +199,19 @@ T.Updatehealthbar = function(self, unit, min, max)
 	if self.value then
 		if self.plate_element then -- 姓名板
 			if min > 0 and min < max then
-				if aCoreCDB["PlateOptions"]["bar_hp_perc"] == "perc" then
+				if aCoreCDB["PlateOptions"]["theme"] == "number" then
+					self.value:SetText(math.floor(min/max*100+.5))
+				elseif aCoreCDB["PlateOptions"]["bar_hp_perc"] == "perc" then
 					self.value:SetText(T.hex(1, 1, 0)..math.floor(min/max*100+.5).."|r")
 				else
 					self.value:SetText(T.ShortValue(min).." "..T.hex(1, 1, 0)..math.floor(min/max*100+.5).."|r")
 				end
-			elseif min > 0 and self.__owner.isMouseOver and UnitIsConnected(unit) then
+			elseif aCoreCDB["PlateOptions"]["theme"] ~= "number" and min > 0 and self.__owner.isMouseOver and UnitIsConnected(unit) then
 				self.value:SetText(T.ShortValue(min))
-			elseif aCoreCDB["PlateOptions"]["bar_alwayshp"] then
+			elseif aCoreCDB["PlateOptions"]["theme"] ~= "number" and aCoreCDB["PlateOptions"]["bar_alwayshp"] then
 				self.value:SetText(T.ShortValue(min))
+			elseif aCoreCDB["PlateOptions"]["theme"] == "number" and aCoreCDB["PlateOptions"]["number_alwayshp"] then
+				self.value:SetText(math.floor(min/max*100+.5))
 			else
 				self.value:SetText(nil)
 			end
@@ -224,10 +228,12 @@ T.Updatehealthbar = function(self, unit, min, max)
 		end
 	end
 	
-	if min > 0 and min < max then
-		self.ind:Show()
-	else
-		self.ind:Hide()
+	if not self.plate_element or aCoreCDB["PlateOptions"]["theme"] ~= "number" then
+		if min > 0 and min < max then
+			self.ind:Show()
+		else
+			self.ind:Hide()
+		end
 	end
 	
 	local name = GetUnitName(unit, false)
@@ -245,14 +251,14 @@ T.Updatehealthbar = function(self, unit, min, max)
 		if self.plate_element then -- 姓名板	
 			if (unit == "pet") then
 				local _, playerclass = UnitClass("player")
-				if aCoreCDB["PlateOptions"]["theme"] == "class" then
+				if aCoreCDB["PlateOptions"]["theme"] ~= "dark" then
 					r, g, b = unpack(oUF.colors.class[playerclass])
 				else
 					r, g, b = oUF.ColorGradient(perc, 1, unpack(oUF.colors.smooth))
 				end
 			elseif(UnitIsPlayer(unit)) then
 				local _, unitclass = UnitClass(unit)
-				if aCoreCDB["PlateOptions"]["theme"] == "class" then
+				if aCoreCDB["PlateOptions"]["theme"] ~= "dark" then
 					if unitclass then r, g, b = unpack(oUF.colors.class[unitclass]) else r, g, b = 1, 1, 1 end
 				else
 					r, g, b = oUF.ColorGradient(perc, 1, unpack(oUF.colors.smooth))
@@ -268,14 +274,14 @@ T.Updatehealthbar = function(self, unit, min, max)
 				elseif threatStatus == 0 then
 					r, g, b = .1, .7, .9
 				elseif unit then
-					if aCoreCDB["PlateOptions"]["theme"] == "class" then
+					if aCoreCDB["PlateOptions"]["theme"] ~= "dark" then
 						r, g, b = unpack(oUF.colors.reaction[UnitReaction(unit, "player") or 5])
 					else
 						r, g, b = oUF.ColorGradient(perc, 1, unpack(oUF.colors.smooth))
 					end		
 				end
 			elseif unit then
-				if aCoreCDB["PlateOptions"]["theme"] == "class" then
+				if aCoreCDB["PlateOptions"]["theme"] ~= "dark" then
 					r, g, b = unpack(oUF.colors.reaction[UnitReaction(unit, "player") or 5])
 				else
 					r, g, b = oUF.ColorGradient(perc, 1, unpack(oUF.colors.smooth))
@@ -316,8 +322,10 @@ T.Updatehealthbar = function(self, unit, min, max)
 			else
 				self.bg:SetGradientAlpha("VERTICAL", .2,.2,.2,.15,.25,.25,.25,.6)
 			end
-		else
+		elseif aCoreCDB["PlateOptions"]["theme"] == "class" then
 			self:SetStatusBarColor(r, g, b)
+		else
+			self.__owner.Name:SetTextColor(r, g, b)
 		end
 		if aCoreCDB["PlateOptions"]["playerplate"] or not UnitIsUnit(unit, 'player') then
 			self:Show()
@@ -345,7 +353,7 @@ T.Updatepowerbar = function(self, unit, cur, min, max)
 	if self.value then
 		if self.__owner.isMouseOver and type == 'MANA' and UnitIsConnected(unit) then
 			self.value:SetText(T.hex(unpack(powercolor))..T.ShortValue(cur)..'|r')
-		elseif (cur > 0 and cur < max) or aCoreCDB["UnitframeOptions"]["alwayspp"] then
+		elseif (cur > 0 and cur < max) or aCoreCDB["UnitframeOptions"]["alwayspp"] or self.plate_element then
 			if type == 'MANA' then
 				self.value:SetText(T.hex(1, 1, 1)..math.floor(cur/max*100+.5)..'|r'..T.hex(1, .4, 1)..'%|r')
 			else
@@ -357,7 +365,7 @@ T.Updatepowerbar = function(self, unit, cur, min, max)
 	end
 	
 	if self.plate_element then
-		if aCoreCDB["PlateOptions"]["theme"] == "class" then -- 职业
+		if aCoreCDB["PlateOptions"]["theme"] ~= "dark" then -- 职业、数字
 			r, g, b = unpack(powercolor)
 		elseif UnitIsPlayer(unit) then -- 深色
 			local _, unitclass = UnitClass(unit)
@@ -379,13 +387,21 @@ T.Updatepowerbar = function(self, unit, cur, min, max)
 	if self.plate_element then
 		if aCoreCDB["PlateOptions"]["theme"] == "class" then -- 职业
 			self:SetStatusBarColor(r, g, b)
-		else
+		elseif aCoreCDB["PlateOptions"]["theme"] == "dark" then -- 深色
 			self:GetStatusBarTexture():SetGradient("VERTICAL", r, g, b, r/3, g/3, b/3)
 		end
-		if plate_c.power_unit[UnitName(unit)] or (aCoreCDB["PlateOptions"]["playerplate"] and UnitIsUnit(unit, 'player')) then
-			self:Show()
+		if plate_c.power_unit[UnitName(unit)] or (aCoreCDB["PlateOptions"]["playerplate"] and UnitIsUnit(unit, 'player')) then		
+			if aCoreCDB["PlateOptions"]["theme"] == "number" then
+				self.value:Show()
+			 else
+				self:Show()
+			 end
 		else
-			self:Hide()
+			if aCoreCDB["PlateOptions"]["theme"] == "number" then
+				self.value:Hide()
+			else
+				self:Hide()
+			end
 		end
 	else
 		if aCoreCDB["UnitframeOptions"]["style"] ~= 1 then
@@ -586,31 +602,37 @@ local PostCastStart = function(castbar, unit)
 		if UnitIsUnit(unit, "player") then
 			if aCoreCDB["PlateOptions"]["playerplate"] then
 				castbar.Spark:Show()
-				castbar:ClearAllPoints()
-				castbar:SetAllPoints(castbar.__owner)
-				castbar:SetStatusBarColor(0, 0, 0, 0)
-				castbar.Text:ClearAllPoints()
-				castbar.Text:SetPoint("BOTTOM", castbar, "BOTTOM", 0, -3)				
+				if aCoreCDB["PlateOptions"]["theme"] ~= "number" then
+					castbar:ClearAllPoints()
+					castbar:SetAllPoints(castbar.__owner)
+					castbar:SetStatusBarColor(0, 0, 0, 0)
+					castbar.Text:ClearAllPoints()
+					castbar.Text:SetPoint("BOTTOM", castbar, "BOTTOM", 0, -3)			
+				end	
 			else
 				castbar:Hide()
 			end
 		else
-			castbar.Spark:Hide()
-			castbar:ClearAllPoints()
-			if plate_c.power_unit[UnitName(unit)] then
-				castbar:SetPoint("TOPLEFT", castbar.__owner, "BOTTOMLEFT", 0, -7)
-				castbar:SetPoint("TOPRIGHT", castbar.__owner, "BOTTOMRIGHT", 0, -7)
+			if aCoreCDB["PlateOptions"]["theme"] ~= "number" then
+				castbar.Spark:Hide()
+				castbar:ClearAllPoints()
+				if plate_c.power_unit[UnitName(unit)] then
+					castbar:SetPoint("TOPLEFT", castbar.__owner, "BOTTOMLEFT", 0, -7)
+					castbar:SetPoint("TOPRIGHT", castbar.__owner, "BOTTOMRIGHT", 0, -7)
+				else
+					castbar:SetPoint("TOPLEFT", castbar.__owner, "BOTTOMLEFT", 0, -3)
+					castbar:SetPoint("TOPRIGHT", castbar.__owner, "BOTTOMRIGHT", 0, -3)
+				end
+				castbar.Text:ClearAllPoints()
+				castbar.Text:SetPoint("TOP", castbar, "BOTTOM", 0, -3)
 			else
-				castbar:SetPoint("TOPLEFT", castbar.__owner, "BOTTOMLEFT", 0, -3)
-				castbar:SetPoint("TOPRIGHT", castbar.__owner, "BOTTOMRIGHT", 0, -3)
+				castbar.Spark:Show()
 			end
 			if castbar.notInterruptible then
 				castbar:SetStatusBarColor(aCoreCDB["PlateOptions"]["notInterruptible_color"].r, aCoreCDB["PlateOptions"]["notInterruptible_color"].g, aCoreCDB["PlateOptions"]["notInterruptible_color"].b)
 			else
 				castbar:SetStatusBarColor(aCoreCDB["PlateOptions"]["Interruptible_color"].r, aCoreCDB["PlateOptions"]["Interruptible_color"].g, aCoreCDB["PlateOptions"]["Interruptible_color"].b)
 			end
-			castbar.Text:ClearAllPoints()
-			castbar.Text:SetPoint("TOP", castbar, "BOTTOM", 0, -3)
 		end
 	else
 		if unit == "player" then
@@ -715,9 +737,16 @@ local CreateCastbars = function(self, unit)
 	if multicheck(u, "target", "player", "focus", "boss", "nameplate") then
 		local cb = CreateFrame("StatusBar", G.uiname..unit.."Castbar", self)
 		if u == "nameplate" then
-			cb:SetStatusBarTexture(G.media.ufbar)
-			cb.bd = T.createBackdrop(cb, cb, 1)
-			cb:SetSize(aCoreCDB["PlateOptions"]["bar_width"], aCoreCDB["PlateOptions"]["bar_height"]/4)
+			if aCoreCDB["PlateOptions"]["theme"] == "number" then
+				cb:SetStatusBarTexture(G.media.iconcastbar)
+				cb.bd = T.createBackdrop(cb, cb, 1)
+				cb:SetSize(25, 25)
+				cb:SetPoint("TOP", self, "BOTTOM", 0, -aCoreCDB["PlateOptions"]["fontsize"]-3)
+			else
+				cb:SetStatusBarTexture(G.media.ufbar)
+				cb.bd = T.createBackdrop(cb, cb, 1)
+				cb:SetSize(aCoreCDB["PlateOptions"]["bar_width"], aCoreCDB["PlateOptions"]["bar_height"]/4)
+			end
 		else
 			if aCoreCDB["UnitframeOptions"]["style"] == 1 then
 				cb:SetStatusBarTexture(G.media.blank)
@@ -735,7 +764,11 @@ local CreateCastbars = function(self, unit)
 		cb.Spark:SetBlendMode("ADD")
 		cb.Spark:SetAlpha(1)
 		if u == "nameplate" then
-			cb.Spark:SetSize(8, aCoreCDB["PlateOptions"]["bar_height"]*2)
+			if aCoreCDB["PlateOptions"]["theme"] == "number" then
+				cb.Spark:SetSize(8, 35)
+			else
+				cb.Spark:SetSize(8, aCoreCDB["PlateOptions"]["bar_height"]*2)
+			end
 		else
 			cb.Spark:SetSize(8, aCoreCDB["UnitframeOptions"]["height"]*2)
 		end
@@ -757,23 +790,36 @@ local CreateCastbars = function(self, unit)
 		-- 法术名字
 		cb.Text = T.createtext(cb, "OVERLAY", u == "nameplate" and 8 or 14, "OUTLINE", "CENTER")
 		if u == "boss" then
-			cb.Text:SetPoint("BOTTOMLEFT", 3, -3)
+			cb.Text:SetPoint("BOTTOMLEFT", cb, "BOTTOMLEFT", 3, -3)
+		elseif u == "nameplate" then
+			cb.Text:SetPoint("TOP", cb, "BOTTOM", 0, -3)	
 		else
-			cb.Text:SetPoint("BOTTOM", 0, -3)
+			cb.Text:SetPoint("BOTTOM", cb, "BOTTOM", 0, -3)
 		end
 		
 		-- 图标
-		cb.Icon = cb:CreateTexture(nil, "ARTWORK")
+		cb.Icon = cb:CreateTexture(nil, "OVERLAY", 3)
 		cb.Icon:SetTexCoord(.1, .9, .1, .9)
 		if u == "nameplate" then
-			cb.Icon:SetSize(aCoreCDB["PlateOptions"]["bar_height"]*1.5+6, aCoreCDB["PlateOptions"]["bar_height"]*1.5+6)
-			cb.Icon:SetPoint("RIGHT", self, "LEFT", -5, 0)
+			if aCoreCDB["PlateOptions"]["theme"] == "number" then
+				cb.Icon:SetSize(20, 20)
+				cb.Icon:SetPoint("CENTER")
+			else
+				cb.Icon:SetSize(aCoreCDB["PlateOptions"]["bar_height"]*1.5+6, aCoreCDB["PlateOptions"]["bar_height"]*1.5+6)
+				cb.Icon:SetPoint("RIGHT", self, "LEFT", -5, 0)
+			end
 		else
 			cb.Icon:SetSize(aCoreCDB["UnitframeOptions"]["cbIconsize"], aCoreCDB["UnitframeOptions"]["cbIconsize"])	
 			cb.Icon:SetPoint("BOTTOMRIGHT", cb, "BOTTOMLEFT", -7, -aCoreCDB["UnitframeOptions"]["height"]*(1-aCoreCDB["UnitframeOptions"]["hpheight"]))
 		end
 		if unit == "player" and aCoreCDB["UnitframeOptions"]["hideplayercastbaricon"] then
 			cb.Icon:Hide()
+		elseif u == "nameplate" and aCoreCDB["PlateOptions"]["theme"] == "number" then
+			cb.IBackdrop = cb:CreateTexture(nil, "ARTWORK", 3)
+			cb.IBackdrop:SetPoint("TOPLEFT", cb.Icon, "TOPLEFT", -1, 1)
+			cb.IBackdrop:SetPoint("BOTTOMRIGHT", cb.Icon, "BOTTOMRIGHT", 1, -1)
+			cb.IBackdrop:SetVertexColor(0, 0, 0)
+			cb.IBackdrop:SetTexture(G.media.blank)
 		else
 			cb.IBackdrop = T.createBackdrop(cb, cb.Icon, 1)
 		end
@@ -1272,7 +1318,11 @@ T.CreateAuras = function(self, unit)
 			self.Debuffs = Debuffs
 		elseif u == "nameplate" then
 			Auras:SetWidth(aCoreCDB["PlateOptions"]["bar_width"])
-			Auras:SetPoint("BOTTOM", self, "TOP", 0, 6)
+			if aCoreCDB["PlateOptions"]["theme"] == "number" then
+				Auras:SetPoint("BOTTOM", self.Health.value, "TOP", 0, -5)
+			else
+				Auras:SetPoint("BOTTOM", self, "TOP", 0, aCoreCDB["PlateOptions"]["fontsize"])
+			end
 			Auras.initialAnchor = "BOTTOMLEFT"
 			Auras["growth-x"] = "RIGHT"
 			Auras["growth-y"] = "UP"
@@ -1297,15 +1347,20 @@ T.CreateClassResources = function(self, plate)
 		local count = 6
 		
 		local bars = CreateFrame("Frame", self:GetName().."SpecOrbs", self)
-		bars:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 0, 3)
+		bars:SetPoint("BOTTOM", self, "TOP", 0, 3)
 		
 		if plate then
-			if  aCoreCDB["PlateOptions"]["classresource_pos"] == "target" then
-				bars.width = aCoreCDB["PlateOptions"]["bar_width"]*GetCVar("nameplateSelectedScale")
+			if aCoreCDB["PlateOptions"]["theme"] == "number" then
+				bars.width = aCoreCDB["PlateOptions"]["number_cpwidth"]*5
+				bars.height = 2
 			else
-				bars.width = aCoreCDB["PlateOptions"]["bar_width"]
+				if aCoreCDB["PlateOptions"]["classresource_pos"] == "target" then
+					bars.width = aCoreCDB["PlateOptions"]["bar_width"]*GetCVar("nameplateSelectedScale")
+				else
+					bars.width = aCoreCDB["PlateOptions"]["bar_width"]
+				end
+				bars.height = aCoreCDB["PlateOptions"]["bar_height"]/4
 			end
-			bars.height = aCoreCDB["PlateOptions"]["bar_height"]/4
 		else
 			bars.width = aCoreCDB["UnitframeOptions"]["width"]
 			bars.height = aCoreCDB["UnitframeOptions"]["height"]*-(aCoreCDB["UnitframeOptions"]["hpheight"]-1)
@@ -1314,17 +1369,17 @@ T.CreateClassResources = function(self, plate)
 		
 		for i = 1, count do
 			bars[i] = T.createStatusbar(bars, "ARTWORK", bars.height, (bars.width+2)/count-3, 1, 1, 1, 1, self:GetName().."SpecOrbs"..i)
-
+	
 			if i == 1 then
-				bars[i]:SetPoint("BOTTOMLEFT", bars, "BOTTOMLEFT")
+				bars[i]:SetPoint("BOTTOMLEFT", bars, "BOTTOMLEFT", 0, 0)
 			else
 				bars[i]:SetPoint("LEFT", bars[i-1], "RIGHT", 3, 0)
 			end
-
+	
 			bars[i].bg:Hide()
 			bars[i].bd = T.createBackdrop(bars[i], bars[i], 1)
 		end
-
+		
 		if G.myClass == "DEATHKNIGHT" then
 			if aCoreCDB["UnitframeOptions"]["runecooldown"] then
 				for i = 1, 6 do
@@ -1340,7 +1395,7 @@ T.CreateClassResources = function(self, plate)
 			self.ClassPower.PostUpdate = ClassIconsPostUpdate
 		elseif G.myClass == "ROGUE" or G.myClass == "DRUID" then
 			if not plate and G.myClass == "DRUID" and aCoreCDB["UnitframeOptions"]["dpsmana"] then
-				bars:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 0, 8)
+				bars:SetPoint("BOTTOM", self, "TOP", 0, 8)
 			end
 			self.ClassPower = bars
 			self.ClassPower.Override = CpointsUpdate
@@ -1756,7 +1811,6 @@ local plate_func = function(self, unit)
 	hp.bg:SetGradientAlpha("VERTICAL", .2,.2,.2,.15,.25,.25,.25,.6)
 
 	hp.value = T.createnumber(hp, "OVERLAY", aCoreCDB["PlateOptions"]["fontsize"], "OUTLINE", "RIGHT")
-	hp.value:ClearAllPoints()
 	hp.value:SetPoint("BOTTOMRIGHT", hp, "TOPRIGHT", -5, -3)
 	
 	-- little black line to make the health bar more clear
@@ -1821,8 +1875,8 @@ local plate_func = function(self, unit)
 	self:Tag(name, "[Altz:platename]")
 	
 	local PvPClassificationIndicator = hp:CreateTexture(nil, 'OVERLAY')
-	PvPClassificationIndicator:SetSize(24, 24)
-	PvPClassificationIndicator:SetPoint('CENTER')
+	PvPClassificationIndicator:SetSize(12, 12)
+	PvPClassificationIndicator:SetPoint("LEFT", hp, "RIGHT", -8, 2)
 	self.PvPClassificationIndicator = PvPClassificationIndicator
 	
 	-- target RedArrow --
@@ -1835,6 +1889,74 @@ local plate_func = function(self, unit)
 	self:RegisterEvent("PLAYER_TARGET_CHANGED", TargetRedArrowupdate, true)
 	self:RegisterEvent("UNIT_AURA", TargetRedArrowupdate, true)
 	
+end
+
+-- 数字样式
+local plate_number_func = function(self, unit)
+	self:SetSize(aCoreCDB["PlateOptions"]["number_size"], aCoreCDB["PlateOptions"]["number_size"])
+	self:SetPoint("CENTER")
+	
+	-- 生命
+	local hp = T.createStatusbar(self, "ARTWORK")
+
+	hp.value = self:CreateFontString(nil, "OVERLAY")
+	hp.value:SetFont(G.plateFont, aCoreCDB["PlateOptions"]["number_size"], "OUTLINE")
+	hp.value:SetJustifyH("CENTER")
+	hp.value:SetPoint("BOTTOM")
+	
+	self.Health = hp
+	self.Health.plate_element = true
+	self.Health.PostUpdate = T.Updatehealthbar
+	
+	-- 能量
+	local pp = T.createStatusbar(self, "ARTWORK")
+	
+	pp.value = self:CreateFontString(nil, "OVERLAY")
+	pp.value:SetFont(G.plateFont, aCoreCDB["PlateOptions"]["number_size"]/2, "OUTLINE")
+	pp.value:SetJustifyH("LEFT")
+	pp.value:SetPoint("BOTTOMLEFT", hp.value, "BOTTOMRIGHT")
+	
+	self.Power = pp
+	self.Power.plate_element = true
+	self.Power.PostUpdate = T.Updatepowerbar
+	
+	-- 光环
+	T.CreateAuras(self, unit)
+	
+	-- 施法条
+	CreateCastbars(self, unit)
+	
+	-- 个人资源
+	if aCoreCDB["PlateOptions"]["classresource_show"] then
+		T.CreateClassResources(self, true)
+	end
+
+	local name = T.createtext(self, "OVERLAY", aCoreCDB["PlateOptions"]["fontsize"], "OUTLINE", "CENTER")
+	name:SetPoint("TOP", self, "BOTTOM")
+	self:Tag(name, "[Altz:platename]")
+	self.Name = name
+	
+	local ricon = hp:CreateTexture(nil, "OVERLAY")
+	ricon:SetPoint("RIGHT", name, "LEFT")
+	ricon:SetSize(20, 20)
+	ricon:SetTexture[[Interface\AddOns\AltzUI\media\raidicons.blp]]
+	self.RaidTargetIndicator = ricon
+	self.RaidTargetIndicator.PostUpdate = RaidTargetIconPostUpdate
+		
+	local PvPClassificationIndicator = self:CreateTexture(nil, 'OVERLAY')
+	PvPClassificationIndicator:SetSize(12, 12)
+	PvPClassificationIndicator:SetPoint("LEFT", name, "RIGHT")
+	self.PvPClassificationIndicator = PvPClassificationIndicator
+	
+	-- target RedArrow --
+	local RedArrow = self:CreateTexture(nil, 'OVERLAY')
+	RedArrow:SetTexture([[Interface\AddOns\AltzUI\media\NeonRedArrow]])
+    RedArrow:SetSize(50, 40)
+    RedArrow:SetPoint('BOTTOM', self, 'TOP', 0, 15)
+	RedArrow:Hide()
+	self.RedArrow = RedArrow
+	self:RegisterEvent("PLAYER_TARGET_CHANGED", TargetRedArrowupdate, true)
+	self:RegisterEvent("UNIT_AURA", TargetRedArrowupdate, true)
 end
 
 local function PlacePlateClassSource()
@@ -1852,10 +1974,18 @@ local function PlacePlateClassSource()
 				local targetPlate = C_NamePlate.GetNamePlateForUnit("target")	
 				if targetPlate and targetPlate.unitFrame and not UnitIsUnit("player", "target") then
 					if G.myClass == "DEATHKNIGHT" then
-						playerPlate.unitFrame.Runes:SetPoint("BOTTOMLEFT", targetPlate.unitFrame, "TOPLEFT", 0, 3)	
+						if aCoreCDB["PlateOptions"]["theme"] == "number" then
+							playerPlate.unitFrame.Runes:SetPoint("BOTTOM", targetPlate.unitFrame.Health.value, "TOP", 0, 0)
+						else
+							playerPlate.unitFrame.Runes:SetPoint("BOTTOM", targetPlate.unitFrame, "TOP", 0, 3)
+						end
 						playerPlate.unitFrame.Runes:Show()
 					else
-						playerPlate.unitFrame.ClassPower:SetPoint("BOTTOMLEFT", targetPlate.unitFrame, "TOPLEFT", 0, 3)	
+						if aCoreCDB["PlateOptions"]["theme"] == "number" then
+							playerPlate.unitFrame.ClassPower:SetPoint("BOTTOM", targetPlate.unitFrame.Health.value, "TOP", 0, 0)
+						else
+							playerPlate.unitFrame.ClassPower:SetPoint("BOTTOM", targetPlate.unitFrame, "TOP", 0, 3)
+						end
 						playerPlate.unitFrame.ClassPower:Show()
 					end
 				end		
@@ -1907,9 +2037,9 @@ end
 local PlacePlateTargetElementEventFrame = CreateFrame("Frame", nil, UIParent)
 PlacePlateTargetElementEventFrame:SetScript("OnEvent", PlacePlateClassSource)
 PlacePlateTargetElementEventFrame:RegisterEvent('PLAYER_TARGET_CHANGED')
-------------------------
-
-
+--=============================================--
+--[[ Init ]]--
+--=============================================--
 local EventFrame = CreateFrame("Frame", nil, UIParent)
 RegisterStateDriver(EventFrame, "visibility", "[petbattle] hide; show")
 
@@ -2037,9 +2167,13 @@ function EventFrame:ADDON_LOADED(arg1)
 		end
 		
 		if aCoreCDB["PlateOptions"]["enableplate"] then
-			oUF:RegisterStyle("Altz_Nameplates", plate_func)
-			oUF:SetActiveStyle("Altz_Nameplates")
-			oUF:SpawnNamePlates("Altz_Nameplates", PostUpdatePlates)
+			if aCoreCDB["PlateOptions"]["theme"] == "number" then
+				oUF:RegisterStyle("Altz_Nameplates", plate_number_func)
+			else
+				oUF:RegisterStyle("Altz_Nameplates", plate_func)
+			end
+				oUF:SetActiveStyle("Altz_Nameplates")
+				oUF:SpawnNamePlates("Altz_Nameplates", PostUpdatePlates)			
 		end
 	end)
 	
@@ -2083,6 +2217,9 @@ end
 PetCastingBarFrame:Hide()
 PetCastingBarFrame:UnregisterAllEvents()
 
+--=============================================--
+--[[ Ctrl+Click EasyMenu ]]--
+--=============================================--
 -- From NDui
 local function CheckCPower(target_name)
 	local full, found_index, target_index

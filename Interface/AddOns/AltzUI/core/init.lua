@@ -20,6 +20,7 @@ G.dragFrameList = {}
 G.norFont = "Interface\\AddOns\\AltzUI\\media\\font.ttf"
 G.numFont = "Interface\\AddOns\\AltzUI\\media\\number.ttf"
 G.symbols = "Interface\\Addons\\AltzUI\\media\\PIZZADUDEBULLETS.ttf"
+G.plateFont = "Interface\\AddOns\\AltzUI\\media\\Infinity Gears.ttf"
 
 G.media = {
 	blank = "Interface\\Buttons\\WHITE8x8",
@@ -31,6 +32,7 @@ G.media = {
 	buttonhighlight = "Interface\\AddOns\\AltzUI\\media\\highlight2",
 	reseting = "Interface\\AddOns\\AltzUI\\media\\resting",
 	combat = "Interface\\AddOns\\AltzUI\\media\\combat",
+	iconcastbar = "Interface\\AddOns\\AltzUI\\media\\dM3",
 }
 
 G.Iconpath = "Interface\\AddOns\\AltzUI\\media\\icons\\"

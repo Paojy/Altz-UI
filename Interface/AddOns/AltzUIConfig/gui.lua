@@ -2515,9 +2515,11 @@ PlateInnerframe.common.DividingLine2:SetSize(PlateInnerframe.common:GetWidth()-5
 PlateInnerframe.common.DividingLine2:SetPoint("TOP", 0, -385)
 PlateInnerframe.common.DividingLine2:SetColorTexture(1, 1, 1, .2)
 
-T.createslider(PlateInnerframe.common, 30, 420, string.format("%s(%s)", L["字体大小"], L["数字样式"]), "PlateOptions", "number_size", 1, 15, 35, 1)
+T.createslider(PlateInnerframe.common, 30, 410, string.format("%s(%s)", L["字体大小"], L["数字样式"]), "PlateOptions", "number_size", 1, 15, 35, 1)
 PlateInnerframe.common.number_size:SetWidth(160)
-T.createcheckbutton(PlateInnerframe.common, 230, 410, string.format("%s(%s)", L["总是显示生命值"],L["数字样式"]), "PlateOptions", "number_alwayshp", L["总是显示生命值提示"])
+T.createslider(PlateInnerframe.common, 230, 410, string.format("%s(%s)", L["姓名板资源尺寸"], L["数字样式"]), "PlateOptions", "number_cpwidth", 1, 5, 30, 1)
+PlateInnerframe.common.number_cpwidth:SetWidth(160)
+T.createcheckbutton(PlateInnerframe.common, 30, 430, string.format("%s(%s)", L["总是显示生命值"],L["数字样式"]), "PlateOptions", "number_alwayshp", L["总是显示生命值提示"])
 
 T.createDR(PlateInnerframe.common.enableplate, PlateInnerframe.common.theme, PlateInnerframe.common.fontsize, 
 PlateInnerframe.common.threatcolor, PlateInnerframe.common.plateauranum, PlateInnerframe.common.plateaurasize,

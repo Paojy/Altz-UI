@@ -84,11 +84,16 @@ oUF.Tags.Events['Altz:DDG'] = 'UNIT_HEALTH UNIT_CONNECTION'
 
 oUF.Tags.Methods["Altz:platename"] = function(u, r)
 	if not UnitIsUnit(u, "player") then
+		local class = ""
+		local c = UnitClassification(u)
+		if c == 'rare' then
+			class = 'R '
+		elseif c == 'rareelite' then
+			class = 'R+ '
+		end
 		local color = _TAGS['threatcolor'](u)
-		local class = _TAGS['shortclassification'](u) or ""
-        local name = _TAGS['name'](u, r)
-
-		return string.format('%s%s|r %s', color, class, name)
+        local name = UnitName(r or u)
+		return string.format('%s%s|r%s', color, class, name)
 	end
 end
 oUF.Tags.Events["Altz:platename"] = "UNIT_CLASSIFICATION_CHANGED UNIT_FACTION UNIT_NAME_UPDATE"
