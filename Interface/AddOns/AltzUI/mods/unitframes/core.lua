@@ -2298,8 +2298,9 @@ local function SetCColor(index, name, replace)
 		end	
 	end
 	
-	ColorPickerOkayButton:HookScript("OnClick", function()
+	ColorPickerOkayButton:SetScript("OnClick", function()
 		local new_r, new_g, new_b = ColorPickerFrame:GetColorRGB()
+		ColorPickerFrame:Hide()
 		print(string.format(L["已加入列表"], new_r*255, new_g*255, new_b*255, name, L["自定义颜色"]))
 		UpdateNameplateColors(true)
 	end)
