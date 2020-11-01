@@ -1,0 +1,7 @@
+## Interface: 90001
+## Title: |cffEE3A8CAltz|rUI Font
+## Version: 9.00
+## Author: Paopao001
+
+core.lua
+
