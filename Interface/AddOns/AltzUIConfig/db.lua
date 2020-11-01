@@ -1791,32 +1791,33 @@ local Character_default_Settings = {
 		plateauranum = 5,
 		plateaurasize = 15,	
 		Interruptible_color = {r = 1, g = 1, b = 0},
-		notInterruptible_color = {r = 1, g = 0, b = 0},	
+		notInterruptible_color = {r =.9 , g = 0, b = 1},	
 		
 		bar_width = 100,-- 条形
 		bar_height = 8,
 		bar_hp_perc = "perc", -- 数值样式  "perc" "value_perc"
 		bar_alwayshp = false, -- 满血显示生命值
+		bar_onlyname = false, -- 友方只显示名字
 		
 		number_size = 23,-- 数字型
 		number_alwayshp = false, -- 满血显示生命值	
 		number_cpwidth = 15, -- 职业能量长度
 		
 		-- 玩家姓名板
-		playerplate = true,
-		classresource_show = true,
+		playerplate = false,
+		classresource_show = false,
 		classresource_pos = "player", --"player", "target"		
 		
-		-- 光环列表 OK
+		-- 光环列表
 		myplateauralist = G.BlackList,		
 		otherplateauralist = G.WhiteList,
 		myfiltertype = "blacklist", -- "blacklist", "whitelist", "none"
 		otherfiltertype = "none", -- "whitelist", "none"
 		
-		-- 染色列表 1
+		-- 染色列表
 		customcoloredplates = Customcoloredplates,
 		
-		-- 能量列表 1
+		-- 能量列表
 		custompowerplates = Custompowerplates,
 	},
 	TooltipOptions = {
@@ -1872,6 +1873,7 @@ local Character_default_Settings = {
 		shiftfocus = false,		
 	},
 	SkinOptions = {
+		combattext = "none",
 		setClassColor = true,
 		setDBM = true,
 		setSkada = true,
