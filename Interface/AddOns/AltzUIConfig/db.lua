@@ -1540,7 +1540,7 @@ local Account_default_Settings = {
 local Character_default_Settings = {
 	FramePoints = {},
 	UnitframeOptions = {
-		style = 1, -- 1: tansparent , 2:dark bg reverse, 3:dark bg normal -- 加入
+		style = 1, 
 		enablefade = true,
 		fadingalpha = 0.2,
 		valuefontsize = 16,
@@ -1792,6 +1792,8 @@ local Character_default_Settings = {
 		plateaurasize = 15,	
 		Interruptible_color = {r = 1, g = 1, b = 0},
 		notInterruptible_color = {r =.9 , g = 0, b = 1},	
+		focuscolored = true,
+		focus_color = {r = .5, g = .4, b = .9},
 		
 		bar_width = 100,-- 条形
 		bar_height = 8,
@@ -1802,6 +1804,7 @@ local Character_default_Settings = {
 		number_size = 23,-- 数字型
 		number_alwayshp = false, -- 满血显示生命值	
 		number_cpwidth = 15, -- 职业能量长度
+		number_colorheperc = false,
 		
 		-- 玩家姓名板
 		playerplate = false,
@@ -1870,7 +1873,8 @@ local Character_default_Settings = {
 		autopet = true,
 		LFGRewards = true,
 		autoacceptproposal = true,	
-		shiftfocus = false,		
+		shiftfocus = false,	
+		ctrlmenu = true,
 	},
 	SkinOptions = {
 		combattext = "none",

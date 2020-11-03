@@ -317,6 +317,9 @@ L["名字字体大小"] = "Tamanho da fonte do nome"
 --L["数值和百分比"] = "Value+Perc"
 --L["条形样式"] = "Bar"
 --L["友方只显示名字"] = "Name-only on friendly units"
+--L["根据血量染色"] = "Color according to hp perc"
+--L["焦点染色"] = "Color focus target"
+--L["焦点颜色"] = "Focus color"
 
 -- 鼠标提示
 L["跟随光标"] = "Mostrar no mouse"
@@ -392,6 +395,7 @@ L["暂离屏幕"] = "Esconder interface quando LDT"
 L["快速焦点"] = "Usar SHIFT + Clique para focar alvo."
 --L["自定义任务追踪"] = "Custom Objective Tracker"
 --L["自定义任务追踪提示"] = "Enable this if you are using a custom objective tracker addon.\n  (ex: Dugi Questing Essential, Kaliel's Tracker)"
+--L["快速标记"] = "Use Ctrl+Click to add raid mark."
 
 -- 插件皮肤
 --L["界面布局"] = "Layout"

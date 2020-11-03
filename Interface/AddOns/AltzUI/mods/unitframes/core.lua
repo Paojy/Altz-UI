@@ -22,6 +22,7 @@ oUF.colors.reaction[7] = {0.26, 1, 0.22}
 oUF.colors.reaction[8] = {0.26, 1, 0.22}
 
 oUF.colors.smooth = {1,0,0, 1,1,0, 1,1,0}
+oUF.colors.np_smooth = {1,0,0, 1,1,0, 1,1,1}
 
 local classicon_colors = { --monk/paladin/preist
 	{.6, 0, .1},
@@ -74,7 +75,15 @@ local function UpdateNameplatePowerbars(refresh)
 	if refresh then
 		for i, plate in ipairs(C_NamePlate.GetNamePlates(issecure())) do
 			if plate.unitFrame then
-				plate.unitFrame.Power:ForceUpdate()
+				local unit = plate.unitFrame.unit
+				if plate_c.power_unit[UnitName(unit)] then		
+					plate.unitFrame:EnableElement('Power')
+					plate.unitFrame.Power:ForceUpdate()
+					plate.unitFrame.Power:Show()
+				else
+					plate.unitFrame:DisableElement('Power')
+					plate.unitFrame.Power:Hide()
+				end
 			end
 		end
 	end
@@ -191,7 +200,7 @@ T.Overridehealthbar = function(self, event, unit)
 end
 
 T.Updatehealthbar = function(self, unit, min, max)
-	local r, g, b
+	local r, g, b, r1, g1, b1, r2, g2, b2
 	local perc
 
 	if max ~= 0 then perc = min/max else perc = 1 end
@@ -237,115 +246,102 @@ T.Updatehealthbar = function(self, unit, min, max)
 	end
 	
 	local name = GetUnitName(unit, false)
-	if self.plate_element and aCoreCDB["PlateOptions"]["theme"] ~= "dark" and plate_c.color_unit[name] then -- 自定义颜色
-		r, g, b= plate_c.color_unit[name].r, plate_c.color_unit[name].g, plate_c.color_unit[name].b
-	elseif UnitIsTapDenied(unit) then
-		r, g, b = .6, .6, .6
-	elseif not UnitIsConnected(unit) then
-		r, g, b = .3, .3, .3
-	elseif UnitIsGhost(unit) then
-		r, g, b = .6, .6, .6
-	elseif UnitIsDead(unit) then
-		r, g, b = 1, 0, 0
+	if self.plate_element then -- 姓名板	
+		if aCoreCDB["PlateOptions"]["focuscolored"] and UnitIsUnit(unit, "focus") then -- 焦点颜色
+			r, g, b = aCoreCDB["PlateOptions"]["focus_color"].r, aCoreCDB["PlateOptions"]["focus_color"].g, aCoreCDB["PlateOptions"]["focus_color"].b
+			r1, g1, b1 = r, g, b
+		elseif plate_c.color_unit[name] then -- 自定义颜色
+			r, g, b = plate_c.color_unit[name].r, plate_c.color_unit[name].g, plate_c.color_unit[name].b
+			r1, g1, b1 = r, g, b
+		elseif UnitIsTapDenied(unit) then
+			r, g, b = .6, .6, .6
+		elseif not UnitIsConnected(unit) then
+			r, g, b = .3, .3, .3
+		elseif UnitIsGhost(unit) then
+			r, g, b = .6, .6, .6
+		elseif UnitIsDead(unit) then
+			r, g, b = 1, 0, 0
+		elseif UnitIsUnit(unit, "pet") then
+			local _, playerclass = UnitClass("player")
+			r, g, b = unpack(oUF.colors.class[playerclass])
+		elseif UnitIsPlayer(unit) then
+			local _, unitclass = UnitClass(unit)
+			if unitclass then r, g, b = unpack(oUF.colors.class[unitclass]) else r, g, b = 1, 1, 1 end
+		elseif aCoreCDB["PlateOptions"]["threatcolor"] then
+			local _, threatStatus = UnitDetailedThreatSituation("player", unit)
+			if threatStatus == 3 then
+				r, g, b = .9, .1, .4
+				r1, g1, b1 = r, g, b
+			elseif threatStatus == 2 then
+				r, g, b = .9, .1, .9
+				r1, g1, b1 = r, g, b
+			elseif threatStatus == 1 then
+				r, g, b = .4, .1, .9
+				r1, g1, b1 = r, g, b
+			elseif threatStatus == 0 then
+				r, g, b = .1, .7, .9
+				r1, g1, b1 = r, g, b
+			elseif unit then
+				r, g, b = unpack(oUF.colors.reaction[UnitReaction(unit, "player") or 5])	
+			end
+		elseif unit then
+			r, g, b = unpack(oUF.colors.reaction[UnitReaction(unit, "player") or 5])
+		end
 	else
-		if self.plate_element then -- 姓名板	
-			if (unit == "pet") then
-				local _, playerclass = UnitClass("player")
-				if aCoreCDB["PlateOptions"]["theme"] ~= "dark" then
-					r, g, b = unpack(oUF.colors.class[playerclass])
-				else
-					r, g, b = oUF.ColorGradient(perc, 1, unpack(oUF.colors.smooth))
-				end
-			elseif(UnitIsPlayer(unit)) then
-				local _, unitclass = UnitClass(unit)
-				if aCoreCDB["PlateOptions"]["theme"] ~= "dark" then
-					if unitclass then r, g, b = unpack(oUF.colors.class[unitclass]) else r, g, b = 1, 1, 1 end
-				else
-					r, g, b = oUF.ColorGradient(perc, 1, unpack(oUF.colors.smooth))
-				end
-			elseif aCoreCDB["PlateOptions"]["threatcolor"] then
-				local _, threatStatus = UnitDetailedThreatSituation("player", unit)
-				if threatStatus == 3 then
-					r, g, b = .9, .1, .4
-				elseif threatStatus == 2 then
-					r, g, b = .9, .1, .9
-				elseif threatStatus == 1 then
-					r, g, b = .4, .1, .9
-				elseif threatStatus == 0 then
-					r, g, b = .1, .7, .9
-				elseif unit then
-					if aCoreCDB["PlateOptions"]["theme"] ~= "dark" then
-						r, g, b = unpack(oUF.colors.reaction[UnitReaction(unit, "player") or 5])
-					else
-						r, g, b = oUF.ColorGradient(perc, 1, unpack(oUF.colors.smooth))
-					end		
-				end
-			elseif unit then
-				if aCoreCDB["PlateOptions"]["theme"] ~= "dark" then
-					r, g, b = unpack(oUF.colors.reaction[UnitReaction(unit, "player") or 5])
-				else
-					r, g, b = oUF.ColorGradient(perc, 1, unpack(oUF.colors.smooth))
-				end	
-			end
-		else
-			if (unit == "pet") then
-				local _, playerclass = UnitClass("player")
-				if aCoreCDB["UnitframeOptions"]["style"] == 3 then
-					r, g, b = unpack(oUF.colors.class[playerclass])
-				else
-					r, g, b = oUF.ColorGradient(perc, 1, unpack(oUF.colors.smooth))
-				end
-			elseif(UnitIsPlayer(unit)) then
-				local _, unitclass = UnitClass(unit)
-				if aCoreCDB["UnitframeOptions"]["style"] == 3 then
-					if unitclass then r, g, b = unpack(oUF.colors.class[unitclass]) else r, g, b = 1, 1, 1 end
-				else
-					r, g, b = oUF.ColorGradient(perc, 1, unpack(oUF.colors.smooth))
-				end
-			elseif unit then
-				if aCoreCDB["UnitframeOptions"]["style"] == 3 then
-					r, g, b = unpack(oUF.colors.reaction[UnitReaction(unit, "player") or 5])
-				else
-					r, g, b = oUF.ColorGradient(perc, 1, unpack(oUF.colors.smooth))
-				end
-			end
+		if UnitIsTapDenied(unit) then
+			r, g, b = .6, .6, .6
+		elseif not UnitIsConnected(unit) then
+			r, g, b = .3, .3, .3
+		elseif UnitIsGhost(unit) then
+			r, g, b = .6, .6, .6
+		elseif UnitIsDead(unit) then
+			r, g, b = 1, 0, 0
+		elseif unit == "pet" then
+			local _, playerclass = UnitClass("player")
+			r, g, b = unpack(oUF.colors.class[playerclass])
+		elseif(UnitIsPlayer(unit)) then
+			local _, unitclass = UnitClass(unit)
+			if unitclass then r, g, b = unpack(oUF.colors.class[unitclass]) else r, g, b = 1, 1, 1 end
+		elseif unit then
+			r, g, b = unpack(oUF.colors.reaction[UnitReaction(unit, "player") or 5])
 		end
 	end
 	
 	if self.plate_element then
+		-- 给血条染色
 		if aCoreCDB["PlateOptions"]["theme"] == "dark" then
-			self:GetStatusBarTexture():SetGradient("VERTICAL", r, g, b, r/3, g/3, b/3)
+			-- 底层
+			r2, g2, b2 = oUF.ColorGradient(perc, 1, unpack(oUF.colors.smooth))
+			self:GetStatusBarTexture():SetGradient("VERTICAL", r2, g2, b2, r2/3, g2/3, b2/3)
 			self:SetValue(max - self:GetValue())
-			if plate_c.color_unit[name] then
-				local bg_r, bg_g, bg_b = plate_c.color_unit[name].r, plate_c.color_unit[name].g, plate_c.color_unit[name].b
-				self.bg:SetGradientAlpha("VERTICAL", bg_r*.8, bg_g*.8, bg_b*.8, 1, bg_r, bg_g, bg_b, 1)
+			
+			-- 表层
+			if r1 then
+				self.bg:SetGradientAlpha("VERTICAL", r1*.8, g1*.8, b1*.8, 1, r1, g1, b1, 1)
 			else
 				self.bg:SetGradientAlpha("VERTICAL", .2,.2,.2,.15,.25,.25,.25,.6)
-			end	
-		else
+			end
+		elseif aCoreCDB["PlateOptions"]["theme"] == "class" then
 			self:SetStatusBarColor(r, g, b)
 		end
 		
-		if  aCoreCDB["PlateOptions"]["theme"] == "number" then
+		-- 给血量数值染色（数字样式）
+		if aCoreCDB["PlateOptions"]["theme"] == "number" and aCoreCDB["PlateOptions"]["number_colorheperc"] then
+			self.value:SetTextColor(oUF.ColorGradient(perc, 1, unpack(oUF.colors.np_smooth)))
+		end
+		
+		-- 给名字染色
+		if aCoreCDB["PlateOptions"]["theme"] == "number" then
 			self.__owner.Name:SetTextColor(r, g, b)
 		elseif aCoreCDB["PlateOptions"]["bar_onlyname"] and UnitIsPlayer(unit) and UnitReaction(unit, 'player') >= 5 then -- 友方只显示名字,给名字染色
 			self.__owner.Name:SetTextColor(r, g, b)
 		else
 			self.__owner.Name:SetTextColor(1, 1, 1)
 		end
-		
-		if UnitIsUnit(unit, 'player') then
-			if not aCoreCDB["PlateOptions"]["playerplate"] then
-				self:Hide()
-			end
-		elseif aCoreCDB["PlateOptions"]["theme"] ~= "number" and aCoreCDB["PlateOptions"]["bar_onlyname"] and UnitIsPlayer(unit) and UnitReaction(unit, 'player') >= 5 then
-			self:Hide()
-		else
-			self:Show()
-		end
 	else
 		if aCoreCDB["UnitframeOptions"]["style"] == 1 then
-			self:GetStatusBarTexture():SetGradient("VERTICAL", r, g, b, r/3, g/3, b/3)
+			r2, g2, b2 = oUF.ColorGradient(perc, 1, unpack(oUF.colors.smooth))
+			self:GetStatusBarTexture():SetGradient("VERTICAL", r2, g2, b2, r2/3, g2/3, b2/3)
 		else
 			self:SetStatusBarColor(r, g, b)
 		end
@@ -400,19 +396,6 @@ T.Updatepowerbar = function(self, unit, cur, min, max)
 			self:SetStatusBarColor(r, g, b)
 		elseif aCoreCDB["PlateOptions"]["theme"] == "dark" then -- 深色
 			self:GetStatusBarTexture():SetGradient("VERTICAL", r, g, b, r/3, g/3, b/3)
-		end
-		if plate_c.power_unit[UnitName(unit)] or (aCoreCDB["PlateOptions"]["playerplate"] and UnitIsUnit(unit, 'player')) then		
-			if aCoreCDB["PlateOptions"]["theme"] == "number" then
-				self.value:Show()
-			 else
-				self:Show()
-			 end
-		else
-			if aCoreCDB["PlateOptions"]["theme"] == "number" then
-				self.value:Hide()
-			else
-				self:Hide()
-			end
 		end
 	else
 		if aCoreCDB["UnitframeOptions"]["style"] ~= 1 then
@@ -611,47 +594,12 @@ local PostCastStart = function(castbar, unit)
 	local u = unit:match("[^%d]+")
 	if u == "nameplate" then
 		if UnitIsUnit(unit, "player") then -- 玩家
-			if aCoreCDB["PlateOptions"]["playerplate"] then
-				castbar.Spark:Show()
-				if aCoreCDB["PlateOptions"]["theme"] ~= "number" then
-					castbar:ClearAllPoints()
-					castbar:SetAllPoints(castbar.__owner)
-					castbar:SetStatusBarColor(0, 0, 0, 0)
-					castbar.bd:Hide()
-					castbar.Text:ClearAllPoints()
-					castbar.Text:SetPoint("BOTTOM", castbar, "BOTTOM", 0, -3)			
-				end	
+			if aCoreCDB["PlateOptions"]["theme"] == "number" then
+				castbar:SetStatusBarColor(aCoreCDB["PlateOptions"]["Interruptible_color"].r, aCoreCDB["PlateOptions"]["Interruptible_color"].g, aCoreCDB["PlateOptions"]["Interruptible_color"].b)
 			else
-				castbar:Hide()
-				castbar.Icon:Hide()
-				castbar.IBackdrop:Hide()
+				castbar:SetStatusBarColor(0,0,0,0) -- 透明
 			end
-		else -- 非玩家单位
-			if aCoreCDB["PlateOptions"]["theme"] ~= "number" then -- 条形
-				if aCoreCDB["PlateOptions"]["bar_onlyname"] and UnitIsPlayer(unit) and UnitReaction(unit, 'player') >= 5 then -- 友方只显示名字
-					castbar:Hide()
-					castbar.Icon:Hide()
-					castbar.IBackdrop:Hide()
-				else
-					castbar.Spark:Hide()
-					castbar.bd:Show() -- 防止bug
-					castbar.Icon:Show() -- 防止bug
-					castbar.IBackdrop:Show() -- 防止bug
-					castbar:ClearAllPoints()
-					if plate_c.power_unit[UnitName(unit)] then
-						castbar:SetPoint("TOPLEFT", castbar.__owner, "BOTTOMLEFT", 0, -7)
-						castbar:SetPoint("TOPRIGHT", castbar.__owner, "BOTTOMRIGHT", 0, -7)
-					else
-						castbar:SetPoint("TOPLEFT", castbar.__owner, "BOTTOMLEFT", 0, -3)
-						castbar:SetPoint("TOPRIGHT", castbar.__owner, "BOTTOMRIGHT", 0, -3)
-					end
-					castbar.Text:ClearAllPoints()
-					castbar.Text:SetPoint("TOP", castbar, "BOTTOM", 0, -3)
-				end
-			else -- 数字型
-				castbar.Spark:Show()
-			end
-			
+		else
 			-- 染色
 			if castbar.notInterruptible then
 				castbar:SetStatusBarColor(aCoreCDB["PlateOptions"]["notInterruptible_color"].r, aCoreCDB["PlateOptions"]["notInterruptible_color"].g, aCoreCDB["PlateOptions"]["notInterruptible_color"].b)
@@ -662,13 +610,25 @@ local PostCastStart = function(castbar, unit)
 	else
 		if unit == "player" then
 			if not aCoreCDB["UnitframeOptions"]["hideplayercastbaricon"] then
-				castbar.IBackdrop:SetBackdropBorderColor(Interruptible_color[1], Interruptible_color[2], Interruptible_color[3])
+				if aCoreCDB["UnitframeOptions"]["independentcb"] then
+					castbar:SetStatusBarColor(aCoreCDB["UnitframeOptions"]["Interruptible_color"]["r"], aCoreCDB["UnitframeOptions"]["Interruptible_color"]["g"], aCoreCDB["UnitframeOptions"]["Interruptible_color"]["b"])
+				else
+					castbar.IBackdrop:SetBackdropBorderColor(aCoreCDB["UnitframeOptions"]["Interruptible_color"]["r"], aCoreCDB["UnitframeOptions"]["Interruptible_color"]["g"], aCoreCDB["UnitframeOptions"]["Interruptible_color"]["b"])
+				end
 			end
 		else
 			if castbar.notInterruptible then
-				castbar.IBackdrop:SetBackdropBorderColor(notInterruptible_color[1], notInterruptible_color[2], notInterruptible_color[3])
+				if aCoreCDB["UnitframeOptions"]["independentcb"] then
+					castbar:SetStatusBarColor(aCoreCDB["UnitframeOptions"]["notInterruptible_color"]["r"], aCoreCDB["UnitframeOptions"]["notInterruptible_color"]["g"], aCoreCDB["UnitframeOptions"]["notInterruptible_color"]["b"])
+				else
+					castbar.IBackdrop:SetBackdropBorderColor(aCoreCDB["UnitframeOptions"]["notInterruptible_color"]["r"], aCoreCDB["UnitframeOptions"]["notInterruptible_color"]["g"], aCoreCDB["UnitframeOptions"]["notInterruptible_color"]["b"])
+				end
 			else
-				castbar.IBackdrop:SetBackdropBorderColor(Interruptible_color[1], Interruptible_color[2], Interruptible_color[3])
+				if aCoreCDB["UnitframeOptions"]["independentcb"] then
+					castbar:SetStatusBarColor(aCoreCDB["UnitframeOptions"]["Interruptible_color"]["r"], aCoreCDB["UnitframeOptions"]["Interruptible_color"]["g"], aCoreCDB["UnitframeOptions"]["Interruptible_color"]["b"])
+				else
+					castbar.IBackdrop:SetBackdropBorderColor(aCoreCDB["UnitframeOptions"]["Interruptible_color"]["r"], aCoreCDB["UnitframeOptions"]["Interruptible_color"]["g"], aCoreCDB["UnitframeOptions"]["Interruptible_color"]["b"])
+				end
 			end
 		end
 	end
@@ -1211,15 +1171,7 @@ end
 
 local NamePlate_AuraFilter = function(icons, unit, icon, ...)
 	local SpellID = select(11, ...)
-	if UnitIsUnit(unit, "player") then
-		if aCoreCDB["PlateOptions"]["plateaura"] and aCoreCDB["PlateOptions"]["playerplate"] then
-			return true
-		else
-			return false
-		end
-	elseif aCoreCDB["PlateOptions"]["theme"] ~= "number" and aCoreCDB["PlateOptions"]["bar_onlyname"] and UnitIsPlayer(unit) and UnitReaction(unit, 'player') >= 5 then -- 友方只显示名字
-		return false
-	elseif icon.isPlayer then
+	if icon.isPlayer then
 		if aCoreCDB["PlateOptions"]["myfiltertype"] == "none" then
 			return false
 		elseif aCoreCDB["PlateOptions"]["myfiltertype"] == "whitelist" and aCoreCDB["PlateOptions"]["myplateauralist"][SpellID] then
@@ -1920,7 +1872,7 @@ local plate_func = function(self, unit)
 	self.RedArrow = RedArrow
 	self:RegisterEvent("PLAYER_TARGET_CHANGED", TargetRedArrowupdate, true)
 	self:RegisterEvent("UNIT_AURA", TargetRedArrowupdate, true)
-	
+	self:RegisterEvent('PLAYER_FOCUS_CHANGED', function() self.Health:ForceUpdate() end, true)
 end
 
 -- 数字样式
@@ -1938,7 +1890,7 @@ local plate_number_func = function(self, unit)
 	
 	self.Health = hp
 	self.Health.plate_element = true
-	self.Health.PostUpdate = T.Updatehealthbar
+	self.Health.PostUpdate = T.Updatehealthbar	
 	
 	-- 能量
 	local pp = T.createStatusbar(self, "ARTWORK")
@@ -1989,6 +1941,7 @@ local plate_number_func = function(self, unit)
 	self.RedArrow = RedArrow
 	self:RegisterEvent("PLAYER_TARGET_CHANGED", TargetRedArrowupdate, true)
 	self:RegisterEvent("UNIT_AURA", TargetRedArrowupdate, true)
+	self:RegisterEvent('PLAYER_FOCUS_CHANGED', function() self.Health:ForceUpdate() end, true)
 end
 
 local function PlacePlateClassSource()
@@ -2030,23 +1983,110 @@ function PostUpdatePlates(self, event, unit)
 	if not self then return end
 	
 	if event == "NAME_PLATE_UNIT_ADDED" then
-		if UnitIsUnit(unit, 'player') then -- 血条和能量条
-			if not aCoreCDB["PlateOptions"]["playerplate"] then
-				self.Health:Hide()
-			else
-				self.Health:Show()
+		if UnitIsUnit(unit, 'player') then -- 玩家姓名板
+			if not aCoreCDB["PlateOptions"]["playerplate"] then --  不显示玩家姓名板
+				self:DisableElement('Health')		
+				self:DisableElement('Power')
+				self:DisableElement('Castbar')
+				self:DisableElement('Aura')
+				
+				if aCoreCDB["PlateOptions"]["theme"] == "number" then
+					self.Power.value:Hide()
+					self.Health.value:Hide()
+				else
+					self.Power:Hide()
+					self.Health:Hide()
+				end
+				self.Castbar:Hide()
+				self.Auras:Hide()
+			else  --  显示玩家姓名板
+				self:EnableElement('Health')		
+				self:EnableElement('Power')
+				self:EnableElement('Castbar')
+				
+				self.Health:ForceUpdate()
+				self.Power:ForceUpdate()
+				
+				if aCoreCDB["PlateOptions"]["theme"] == "number" then
+					self.Power.value:Show()
+					self.Health.value:Show()
+				else
+					self.Power:Show()
+					self.Health:Show()
+					self.Castbar.bd:Hide()
+					self.Castbar:ClearAllPoints()
+					self.Castbar:SetAllPoints(self)
+					self.Castbar.Text:ClearAllPoints()
+					self.Castbar.Text:SetPoint("BOTTOM", castbar, "BOTTOM", 0, -3)		
+				end
+				self.Castbar.Spark:Show()
+				
+				if aCoreCDB["PlateOptions"]["plateaura"] then
+					self:EnableElement('Aura')
+					self.Auras:Show()
+				else
+					self:DisableElement('Aura')
+					self.Auras:Hide()
+				end
 			end
-		elseif aCoreCDB["PlateOptions"]["theme"] ~= "number" and aCoreCDB["PlateOptions"]["bar_onlyname"] and UnitIsPlayer(unit) and UnitReaction(unit, 'player') >= 5 then -- 友方只显示名字
-			self.Health:Hide()
-		else
-			self.Health:Show()
+		else -- 其他姓名板
+			if aCoreCDB["PlateOptions"]["theme"] == "number" then -- 数字样式
+				self.Health:Hide()
+				if plate_c.power_unit[UnitName(unit)] then
+					self:EnableElement('Power')
+					self.Power:ForceUpdate()
+					self.Power.value:Show()
+				else
+					self:DisableElement('Power')
+					self.Power.value:Hide()
+				end
+			elseif aCoreCDB["PlateOptions"]["bar_onlyname"] and UnitIsPlayer(unit) and UnitReaction(unit, 'player') >= 5 then  -- 友方只显示名字		
+				self.Health:ForceUpdate() -- 给名字染色
+				self:DisableElement('Health')				
+				self:DisableElement('Power')
+				self:DisableElement('Castbar')
+				self:DisableElement('Aura')
+				
+				self.Health:Hide()
+				self.Power:Hide()
+				self.Castbar:Hide()
+				self.Auras:Hide()
+			else
+				self:EnableElement('Health')
+				self.Health:ForceUpdate()
+				self.Health:Show()
+				
+				if plate_c.power_unit[UnitName(unit)] then		
+					self:EnableElement('Power')
+					self.Power:ForceUpdate()
+					self.Power:Show()
+				else
+					self:DisableElement('Power')
+					self.Power:Hide()
+				end
+				
+				self:EnableElement('Castbar')
+				self.Castbar.bd:Show()				
+				self.Castbar:ClearAllPoints()
+				if plate_c.power_unit[UnitName(unit)] then
+					self.Castbar:SetPoint("TOPLEFT", self, "BOTTOMLEFT", 0, -7)
+					self.Castbar:SetPoint("TOPRIGHT", self, "BOTTOMRIGHT", 0, -7)
+				else
+					self.Castbar:SetPoint("TOPLEFT", self, "BOTTOMLEFT", 0, -3)
+					self.Castbar:SetPoint("TOPRIGHT", self, "BOTTOMRIGHT", 0, -3)
+				end
+				self.Castbar.Text:ClearAllPoints()
+				self.Castbar.Text:SetPoint("TOP", castbar, "BOTTOM", 0, -3)
+				self.Castbar.Spark:Hide()
+			end
 		end
 		
 		if aCoreCDB["PlateOptions"]["classresource_show"] then -- 个人资源
 			if G.myClass == "DEATHKNIGHT" then
-				if UnitIsUnit(unit, 'player') then
+				if UnitIsUnit(unit, 'player') then					
 					self:EnableElement('Runes')
 					PlacePlateClassSource()
+					self.Runes:ForceUpdate()
 					self.Runes:Show()
 				else
 					self:DisableElement('Runes')
@@ -2056,6 +2096,7 @@ function PostUpdatePlates(self, event, unit)
 				if UnitIsUnit(unit, 'player') then
 					self:EnableElement('ClassPower')
 					PlacePlateClassSource()
+					self.ClassPower:ForceUpdate()
 					self.ClassPower:Show()
 				else
 					self:DisableElement('ClassPower')
@@ -2378,53 +2419,55 @@ local menuList = {
 	{text = L["添加自定义颜色"]},
 }
 
-WorldFrame:HookScript("OnMouseDown", function(_, btn)
-	C_Timer.After(0.3, function()
-		if btn == "LeftButton" and IsControlKeyDown() and UnitExists("target") then
-			if not IsInGroup() or (IsInGroup() and not IsInRaid()) or UnitIsGroupLeader("player") or UnitIsGroupAssistant("player") then
-				local ricon = GetRaidTargetIndex("target")
-				for i = 1, 8 do
-					if ricon == i then
-						menuList[i+1].checked = true
-					else
-						menuList[i+1].checked = false
+if aCoreCDB["OtherOptions"]["ctrlmenu"] then
+	WorldFrame:HookScript("OnMouseDown", function(_, btn)
+		C_Timer.After(0.3, function()
+			if btn == "LeftButton" and IsControlKeyDown() and UnitExists("target") then
+				if not IsInGroup() or (IsInGroup() and not IsInRaid()) or UnitIsGroupLeader("player") or UnitIsGroupAssistant("player") then
+					local ricon = GetRaidTargetIndex("target")
+					for i = 1, 8 do
+						if ricon == i then
+							menuList[i+1].checked = true
+						else
+							menuList[i+1].checked = false
+						end
 					end
+					local target_name = GetUnitName("target", false)
+					
+					local power_full, power_found_index, power_target_index = CheckCPower(target_name)
+					if power_full then	-- 自定义能量已满
+						menuList[11].text = string.format(L["列表已满"], L["自定义能量"])
+					elseif power_found_index then -- 已经有了
+						menuList[11].text = string.format(L["移除自定义能量"], target_name)
+						menuList[11].func = function() RemovefromCPower(power_found_index, target_name) end
+					elseif power_target_index then -- 可以添加
+						menuList[11].text = string.format(L["添加自定义能量"], target_name)
+						menuList[11].func = function() AddtoCPower(power_target_index, target_name) end
+					end
+					
+					local color_full, color_found_index, color_target_index, r, g, b = CheckCColor(target_name)
+					if color_full then	-- 自定义颜色已满
+						menuList[12].text = string.format(L["列表已满"], L["自定义颜色"])
+						
+						menuList[13] = {}
+					elseif color_found_index then -- 已经有了
+					
+						menuList[12].text = string.format(L["替换自定义颜色"], r*255, g*255, b*255, target_name)
+						menuList[12].func = function() ReplaceCColor(color_found_index, target_name) end
+						
+						menuList[13].text = string.format(L["移除自定义颜色"], r*255, g*255, b*255, target_name)
+						menuList[13].func = function() RemovefromCColor(color_found_index, target_name) end
+						
+					elseif color_target_index then -- 可以添加
+						menuList[12].text = string.format(L["添加自定义颜色"], target_name)
+						menuList[12].func = function() AddtoCColor(color_target_index, target_name) end
+						
+						menuList[13] = {}
+					end
+					
+					EasyMenu(menuList, menuFrame, "cursor", 0, 0, "MENU", 1)
 				end
-				local target_name = GetUnitName("target", false)
-				
-				local power_full, power_found_index, power_target_index = CheckCPower(target_name)
-				if power_full then	-- 自定义能量已满
-					menuList[11].text = string.format(L["列表已满"], L["自定义能量"])
-				elseif power_found_index then -- 已经有了
-					menuList[11].text = string.format(L["移除自定义能量"], target_name)
-					menuList[11].func = function() RemovefromCPower(power_found_index, target_name) end
-				elseif power_target_index then -- 可以添加
-					menuList[11].text = string.format(L["添加自定义能量"], target_name)
-					menuList[11].func = function() AddtoCPower(power_target_index, target_name) end
-				end
-				
-				local color_full, color_found_index, color_target_index, r, g, b = CheckCColor(target_name)
-				if color_full then	-- 自定义颜色已满
-					menuList[12].text = string.format(L["列表已满"], L["自定义颜色"])
-					
-					menuList[13] = {}
-				elseif color_found_index then -- 已经有了
-				
-					menuList[12].text = string.format(L["替换自定义颜色"], r*255, g*255, b*255, target_name)
-					menuList[12].func = function() ReplaceCColor(color_found_index, target_name) end
-					
-					menuList[13].text = string.format(L["移除自定义颜色"], r*255, g*255, b*255, target_name)
-					menuList[13].func = function() RemovefromCColor(color_found_index, target_name) end
-					
-				elseif color_target_index then -- 可以添加
-					menuList[12].text = string.format(L["添加自定义颜色"], target_name)
-					menuList[12].func = function() AddtoCColor(color_target_index, target_name) end
-					
-					menuList[13] = {}
-				end
-				
-				EasyMenu(menuList, menuFrame, "cursor", 0, 0, "MENU", 1)
 			end
-		end
+		end)
 	end)
-end)
+end

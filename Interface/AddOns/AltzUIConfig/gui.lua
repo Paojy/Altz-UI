@@ -2489,62 +2489,62 @@ PlateInnerframe.common = CreateOptionPage("Nameplates Options common", L["通用
 PlateInnerframe.common:Show()
 
 T.createcheckbutton(PlateInnerframe.common, 30, 60, L["启用"], "PlateOptions", "enableplate")
-T.CVartogglebox(PlateInnerframe.common, 120, 60, "nameplateShowAll", UNIT_NAMEPLATES_AUTOMODE, "1", "0")
-T.createcheckbutton(PlateInnerframe.common, 260, 60, L["仇恨染色"], "PlateOptions", "threatcolor")
+T.CVartogglebox(PlateInnerframe.common, 160, 60, "nameplateShowAll", UNIT_NAMEPLATES_AUTOMODE, "1", "0")
+
 local plate_theme_group = {
 	["class"] = L["职业色-条形"],
 	["dark"] =  L["深色-条形"],
 	["number"] =  L["数字样式"],
 }
-T.createradiobuttongroup(PlateInnerframe.common, 30, 90, L["样式"], "PlateOptions", "theme", plate_theme_group)
-T.createslider(PlateInnerframe.common, 30, 140, L["字体大小"], "PlateOptions", "fontsize", 1, 5, 25, 1)
-T.createslider(PlateInnerframe.common, 30, 170, L["光环"].." "..L["图标数量"], "PlateOptions", "plateauranum", 1, 3, 10, 1)
-T.createslider(PlateInnerframe.common, 230, 170, L["光环"].." "..L["图标大小"], "PlateOptions", "plateaurasize", 1, 10, 30, 2)
+T.createradiobuttongroup(PlateInnerframe.common, 30, 100, L["样式"], "PlateOptions", "theme", plate_theme_group)
+T.createslider(PlateInnerframe.common, 30, 150, L["字体大小"], "PlateOptions", "fontsize", 1, 5, 25, 1)
+T.createslider(PlateInnerframe.common, 30, 190, L["光环"].." "..L["图标数量"], "PlateOptions", "plateauranum", 1, 3, 10, 1)
+T.createslider(PlateInnerframe.common, 230, 190, L["光环"].." "..L["图标大小"], "PlateOptions", "plateaurasize", 1, 10, 30, 2)
 PlateInnerframe.common.fontsize:SetWidth(160)
 PlateInnerframe.common.plateauranum:SetWidth(160)
 PlateInnerframe.common.plateaurasize:SetWidth(160)
-T.createcolorpickerbu(PlateInnerframe.common, 30, 190, L["可打断施法条颜色"], "PlateOptions", "Interruptible_color")
-T.createcolorpickerbu(PlateInnerframe.common, 230, 190, L["不可打断施法条颜色"], "PlateOptions", "notInterruptible_color")
+T.createcolorpickerbu(PlateInnerframe.common, 30, 220, L["可打断施法条颜色"], "PlateOptions", "Interruptible_color")
+T.createcolorpickerbu(PlateInnerframe.common, 230, 220, L["不可打断施法条颜色"], "PlateOptions", "notInterruptible_color")
 
-PlateInnerframe.common.title = PlateInnerframe.common:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
-PlateInnerframe.common.title:SetPoint("TOPLEFT", 35, -220)
-PlateInnerframe.common.title:SetText(L["条形样式"])
-
-PlateInnerframe.common.DividingLine = PlateInnerframe.common:CreateTexture(nil, "ARTWORK")
-PlateInnerframe.common.DividingLine:SetSize(PlateInnerframe.common:GetWidth()-50, 1)
-PlateInnerframe.common.DividingLine:SetPoint("TOP", 0, -245)
-PlateInnerframe.common.DividingLine:SetColorTexture(1, 1, 1, .2)
-
-T.createslider(PlateInnerframe.common, 30, 270, L["宽度"], "PlateOptions", "bar_width", 1, 70, 150, 5)
-T.createslider(PlateInnerframe.common, 230, 270, L["高度"], "PlateOptions", "bar_height", 1, 5, 25, 1)
-PlateInnerframe.common.bar_width:SetWidth(160)
-PlateInnerframe.common.bar_height:SetWidth(160)
-local plate_bar_hp_perc_group = {
-	["perc"] = L["百分比"],
-	["value_perc"] =  L["数值和百分比"],
-}
-T.createradiobuttongroup(PlateInnerframe.common, 30, 290, L["数值样式"], "PlateOptions", "bar_hp_perc", plate_bar_hp_perc_group)
-T.createcheckbutton(PlateInnerframe.common, 30, 320, L["总是显示生命值"], "PlateOptions", "bar_alwayshp", L["总是显示生命值提示"])
-T.createcheckbutton(PlateInnerframe.common, 230, 320, L["友方只显示名字"], "PlateOptions", "bar_onlyname")
-
-PlateInnerframe.common.title2 = PlateInnerframe.common:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
-PlateInnerframe.common.title2:SetPoint("TOPLEFT", 35, -360)
-PlateInnerframe.common.title2:SetText(L["数值样式"])
-
-PlateInnerframe.common.DividingLine2 = PlateInnerframe.common:CreateTexture(nil, "ARTWORK")
-PlateInnerframe.common.DividingLine2:SetSize(PlateInnerframe.common:GetWidth()-50, 1)
-PlateInnerframe.common.DividingLine2:SetPoint("TOP", 0, -385)
-PlateInnerframe.common.DividingLine2:SetColorTexture(1, 1, 1, .2)
-
-T.createslider(PlateInnerframe.common, 30, 410, string.format("%s(%s)", L["字体大小"], L["数字样式"]), "PlateOptions", "number_size", 1, 15, 35, 1)
-PlateInnerframe.common.number_size:SetWidth(160)
-T.createslider(PlateInnerframe.common, 230, 410, string.format("%s(%s)", L["姓名板资源尺寸"], L["数字样式"]), "PlateOptions", "number_cpwidth", 1, 5, 30, 1)
-PlateInnerframe.common.number_cpwidth:SetWidth(160)
-T.createcheckbutton(PlateInnerframe.common, 30, 430, string.format("%s(%s)", L["总是显示生命值"],L["数字样式"]), "PlateOptions", "number_alwayshp", L["总是显示生命值提示"])
+T.createcheckbutton(PlateInnerframe.common, 30, 250, L["焦点染色"], "PlateOptions", "focuscolored")
+T.createcolorpickerbu(PlateInnerframe.common, 230, 250, L["焦点颜色"], "PlateOptions", "focus_color")
+T.createcheckbutton(PlateInnerframe.common, 30, 280, L["仇恨染色"], "PlateOptions", "threatcolor")
 
 T.createDR(PlateInnerframe.common.enableplate, PlateInnerframe.common.theme, PlateInnerframe.common.fontsize, 
 PlateInnerframe.common.threatcolor, PlateInnerframe.common.plateauranum, PlateInnerframe.common.plateaurasize,
 PlateInnerframe.common.Interruptible_color, PlateInnerframe.common.notInterruptible_color)
+
+-- 样式 --
+PlateInnerframe.style = CreateOptionPage("Nameplates Options common", L["样式"], PlateInnerframe, "VERTICAL", .3)
+PlateInnerframe.style.title:SetText(L["条形样式"])
+
+T.createslider(PlateInnerframe.style, 30, 80, L["宽度"], "PlateOptions", "bar_width", 1, 70, 150, 5)
+T.createslider(PlateInnerframe.style, 230, 80, L["高度"], "PlateOptions", "bar_height", 1, 5, 25, 1)
+PlateInnerframe.style.bar_width:SetWidth(160)
+PlateInnerframe.style.bar_height:SetWidth(160)
+local plate_bar_hp_perc_group = {
+	["perc"] = L["百分比"],
+	["value_perc"] =  L["数值和百分比"],
+}
+T.createradiobuttongroup(PlateInnerframe.style, 30, 100, L["数值样式"], "PlateOptions", "bar_hp_perc", plate_bar_hp_perc_group)
+T.createcheckbutton(PlateInnerframe.style, 30, 140, L["总是显示生命值"], "PlateOptions", "bar_alwayshp", L["总是显示生命值提示"])
+T.createcheckbutton(PlateInnerframe.style, 30, 170, L["友方只显示名字"], "PlateOptions", "bar_onlyname")
+
+PlateInnerframe.style.title2 = PlateInnerframe.style:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
+PlateInnerframe.style.title2:SetPoint("TOPLEFT", 35, -220)
+PlateInnerframe.style.title2:SetText(L["数值样式"])
+
+PlateInnerframe.style.DividingLine2 = PlateInnerframe.style:CreateTexture(nil, "ARTWORK")
+PlateInnerframe.style.DividingLine2:SetSize(PlateInnerframe.style:GetWidth()-50, 1)
+PlateInnerframe.style.DividingLine2:SetPoint("TOP", 0, -245)
+PlateInnerframe.style.DividingLine2:SetColorTexture(1, 1, 1, .2)
+
+T.createslider(PlateInnerframe.style, 30, 280, string.format("%s(%s)", L["字体大小"], L["数字样式"]), "PlateOptions", "number_size", 1, 15, 35, 1)
+PlateInnerframe.style.number_size:SetWidth(160)
+T.createslider(PlateInnerframe.style, 230, 280, string.format("%s(%s)", L["姓名板资源尺寸"], L["数字样式"]), "PlateOptions", "number_cpwidth", 1, 5, 30, 1)
+PlateInnerframe.style.number_cpwidth:SetWidth(160)
+T.createcheckbutton(PlateInnerframe.style, 30, 310, string.format("%s(%s)", L["总是显示生命值"],L["数字样式"]), "PlateOptions", "number_alwayshp", L["总是显示生命值提示"])
+T.createcheckbutton(PlateInnerframe.style, 30, 340, string.format("%s(%s)", L["根据血量染色"],L["数字样式"]), "PlateOptions", "number_colorheperc")
 
 -- 玩家姓名板 --
 PlateInnerframe.playerresource = CreateOptionPage("Player Resource Bar Options", L["玩家姓名板"], PlateInnerframe, "VERTICAL", .3)
@@ -2961,6 +2961,7 @@ T.createcheckbutton(OtherOptions, 300, 120, L["战场自动释放灵魂"], "Othe
 T.createcheckbutton(OtherOptions, 30, 150, L["自动接受复活"], "OtherOptions", "acceptres", L["自动接受复活提示"])
 T.createcheckbutton(OtherOptions, 300, 150, L["大喊被闷了"], "OtherOptions", "saysapped", L["大喊被闷了提示"])
 T.createcheckbutton(OtherOptions, 30, 180, L["快速焦点"], "OtherOptions", "shiftfocus")
+T.createcheckbutton(OtherOptions, 300, 180, L["快速标记"], "OtherOptions", "ctrlmenu")
 
 OtherOptions.DividingLine = OtherOptions:CreateTexture(nil, "ARTWORK")
 OtherOptions.DividingLine:SetSize(OtherOptions:GetWidth()-50, 1)
