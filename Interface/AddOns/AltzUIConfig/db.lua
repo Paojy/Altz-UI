@@ -1874,7 +1874,7 @@ local Character_default_Settings = {
 		LFGRewards = true,
 		autoacceptproposal = true,	
 		shiftfocus = false,	
-		ctrlmenu = true,
+		ctrlmenu = false,
 	},
 	SkinOptions = {
 		combattext = "none",
