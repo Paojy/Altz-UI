@@ -106,7 +106,7 @@ local function start(id, starttime, duration, class)
 	for _, func in next, startcalls do
 		func(id, duration, class)
 	end
-	
+
 	update()
 end
 
@@ -116,17 +116,19 @@ local function parsespellbook(spellbook)
 	i = 1
 	while true do
 		skilltype, id = GetSpellBookItemInfo(i, spellbook)
-		name = GetSpellBookItemName(i, spellbook)
+		name = GetSpellBookItemName(i, spellbook)		
+		cd_id = FindSpellOverrideByID(id)
+
 		if name and skilltype == "SPELL" and spellbook == BOOKTYPE_SPELL and not IsPassiveSpell(i, spellbook) then
-			spells[id] = true
+			spells[id] = cd_id
 		end
 		i = i + 1
 		if i >= totalspellnum then i = 1 break end
 		
-		if (id == 88625 or id == 88625 or id == 88625) and (skilltype == "SPELL" and spellbook == BOOKTYPE_SPELL) then
-		   spells[88625] = true
-		   spells[88684] = true
-		   spells[88685] = true
+		if (id == 88625 or id == 88684 or id == 88685) and (skilltype == "SPELL" and spellbook == BOOKTYPE_SPELL) then
+		   spells[88625] = cd_id
+		   spells[88684] = cd_id
+		   spells[88685] = cd_id
 		end
 	end
 end
@@ -145,17 +147,18 @@ end
 function addon:SPELL_UPDATE_COOLDOWN()
 	now = GetTime()
 
-	for id in next, spells do
-		local starttime, duration, enabled = GetSpellCooldown(id)
+	for id, cd_id in pairs(spells) do
+
+		local starttime, duration, enabled = GetSpellCooldown(cd_id)
 		
 		if starttime == nil then
 			watched[id] = nil
 		elseif starttime == 0 and watched[id] then
 			stop(id, "spell")
-		elseif starttime ~= 0 then
+		elseif starttime ~= 0 then		
 			local timeleft = starttime + duration - now
-		
 			if enabled == 1 and timeleft > 1.51 then
+
 				if not watched[id] or watched[id].start ~= starttime then
 					start(id, starttime, timeleft, "spell")
 				end
