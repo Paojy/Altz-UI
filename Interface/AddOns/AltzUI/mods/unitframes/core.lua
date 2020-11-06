@@ -175,20 +175,20 @@ T.Overridehealthbar = function(self, event, unit)
 		if aCoreCDB["UnitframeOptions"]["style"] == 3 then
 			r, g, b = unpack(oUF.colors.class[playerclass])
 		else
-			r, g, b = oUF.ColorGradient(perc, 1, unpack(oUF.colors.smooth))
+			r, g, b = oUF:RGBColorGradient(perc, 1, unpack(oUF.colors.smooth))
 		end
 	elseif(UnitIsPlayer(unit)) then
 		local _, unitclass = UnitClass(unit)
 		if aCoreCDB["UnitframeOptions"]["style"] == 3 then
 			if unitclass then r, g, b = unpack(oUF.colors.class[unitclass]) else r, g, b = 1, 1, 1 end
 		else
-			r, g, b = oUF.ColorGradient(perc, 1, unpack(oUF.colors.smooth))
+			r, g, b = oUF:RGBColorGradient(perc, 1, unpack(oUF.colors.smooth))
 		end
 	elseif unit then
 		if aCoreCDB["UnitframeOptions"]["style"] == 3 then
 			r, g, b = unpack(oUF.colors.reaction[UnitReaction(unit, "player") or 5])
 		else
-			r, g, b = oUF.ColorGradient(perc, 1, unpack(oUF.colors.smooth))
+			r, g, b = oUF:RGBColorGradient(perc, 1, unpack(oUF.colors.smooth))
 		end
 	end
 
@@ -311,7 +311,7 @@ T.Updatehealthbar = function(self, unit, min, max)
 		-- 给血条染色
 		if aCoreCDB["PlateOptions"]["theme"] == "dark" then
 			-- 底层
-			r2, g2, b2 = oUF.ColorGradient(perc, 1, unpack(oUF.colors.smooth))
+			r2, g2, b2 = oUF:RGBColorGradient(perc, 1, unpack(oUF.colors.smooth))
 			self:GetStatusBarTexture():SetGradient("VERTICAL", r2, g2, b2, r2/3, g2/3, b2/3)
 			self:SetValue(max - self:GetValue())
 			
@@ -327,7 +327,7 @@ T.Updatehealthbar = function(self, unit, min, max)
 		
 		-- 给血量数值染色（数字样式）
 		if aCoreCDB["PlateOptions"]["theme"] == "number" and aCoreCDB["PlateOptions"]["number_colorheperc"] then
-			self.value:SetTextColor(oUF.ColorGradient(perc, 1, unpack(oUF.colors.np_smooth)))
+			self.value:SetTextColor(oUF:RGBColorGradient(perc, 1, unpack(oUF.colors.np_smooth)))
 		end
 		
 		-- 给名字染色
@@ -340,7 +340,7 @@ T.Updatehealthbar = function(self, unit, min, max)
 		end
 	else
 		if aCoreCDB["UnitframeOptions"]["style"] == 1 then
-			r2, g2, b2 = oUF.ColorGradient(perc, 1, unpack(oUF.colors.smooth))
+			r2, g2, b2 = oUF:RGBColorGradient(perc, 1, unpack(oUF.colors.smooth))
 			self:GetStatusBarTexture():SetGradient("VERTICAL", r2, g2, b2, r2/3, g2/3, b2/3)
 		else
 			self:SetStatusBarColor(r, g, b)
