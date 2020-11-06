@@ -777,7 +777,7 @@ local CreateCastbars = function(self, unit)
 		if u == "boss" then
 			cb.Text:SetPoint("BOTTOMLEFT", cb, "BOTTOMLEFT", 3, -3)
 		elseif u == "nameplate" then
-			cb.Text:SetPoint("TOP", cb, "BOTTOM", 0, -3)	
+			cb.Text:SetPoint("TOP", cb, "BOTTOM", 0, -3)
 		else
 			cb.Text:SetPoint("BOTTOM", cb, "BOTTOM", 0, -3)
 		end
@@ -2075,8 +2075,6 @@ function PostUpdatePlates(self, event, unit)
 					self.Castbar:SetPoint("TOPLEFT", self, "BOTTOMLEFT", 0, -3)
 					self.Castbar:SetPoint("TOPRIGHT", self, "BOTTOMRIGHT", 0, -3)
 				end
-				self.Castbar.Text:ClearAllPoints()
-				self.Castbar.Text:SetPoint("TOP", castbar, "BOTTOM", 0, -3)
 				self.Castbar.Spark:Hide()
 			end
 		end
