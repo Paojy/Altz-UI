@@ -1,6 +1,7 @@
-local F, C = unpack(select(2, ...))
+local _, ns = ...
+local F, C = unpack(ns)
 
-tinsert(C.themes["AuroraClassic"], function()
+tinsert(C.defaultThemes, function()
 	TradePlayerEnchantInset:Hide()
 	TradePlayerItemsInset:Hide()
 	TradeRecipientEnchantInset:Hide()
@@ -28,10 +29,15 @@ tinsert(C.themes["AuroraClassic"], function()
 	local function reskinButton(bu)
 		bu:SetNormalTexture("")
 		bu:SetPushedTexture("")
-		bu.icon:SetTexCoord(.08, .92, .08, .92)
-		bu.IconBorder:SetAlpha(0)
-		bu:GetHighlightTexture():SetColorTexture(1, 1, 1, .25)
-		F.CreateBDFrame(bu, .25)
+		local hl = bu:GetHighlightTexture()
+		hl:SetColorTexture(1, 1, 1, .25)
+		hl:SetInside()
+		bu.icon:SetTexCoord(unpack(C.TexCoord))
+		bu.icon:SetInside()
+		bu.IconOverlay:SetInside()
+		bu.IconOverlay2:SetInside()
+		bu.bg = F.CreateBDFrame(bu.icon, .25)
+		F.ReskinIconBorder(bu.IconBorder)
 	end
 
 	for i = 1, MAX_TRADE_ITEMS do
@@ -42,5 +48,18 @@ tinsert(C.themes["AuroraClassic"], function()
 
 		reskinButton(_G["TradePlayerItem"..i.."ItemButton"])
 		reskinButton(_G["TradeRecipientItem"..i.."ItemButton"])
+	end
+
+	local tradeHighlights = {
+		TradeHighlightPlayer,
+		TradeHighlightPlayerEnchant,
+		TradeHighlightRecipient,
+		TradeHighlightRecipientEnchant,
+	}
+	for _, highlight in pairs(tradeHighlights) do
+		F.StripTextures(highlight)
+		highlight:SetFrameStrata("HIGH")
+		local bg = F.CreateBDFrame(highlight, 1)
+		bg:SetBackdropColor(0, 1, 0, .15)
 	end
 end)

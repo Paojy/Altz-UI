@@ -1,6 +1,7 @@
-local F, C = unpack(select(2, ...))
+local _, ns = ...
+local F, C = unpack(ns)
 
-tinsert(C.themes["AuroraClassic"], function()
+tinsert(C.defaultThemes, function()
 	local r, g, b = C.r, C.g, C.b
 
 	PVEFrameLeftInset:SetAlpha(0)
@@ -15,26 +16,23 @@ tinsert(C.themes["AuroraClassic"], function()
 	GroupFinderFrameGroupButton3.icon:SetTexture("Interface\\Icons\\inv_helmet_06")
 
 	local iconSize = 60-2*C.mult
-	for i = 1, 4 do
+	for i = 1, 3 do
 		local bu = GroupFinderFrame["groupButton"..i]
 
 		bu.ring:Hide()
-		bu.bg:SetTexture(C.media.backdrop)
-		bu.bg:SetVertexColor(r, g, b, .2)
-		bu.bg:SetAllPoints()
 		F.Reskin(bu, true)
+		bu.bg:SetTexture(C.bdTex)
+		bu.bg:SetVertexColor(r, g, b, .2)
+		bu.bg:SetInside(bu.__bg)
 
-		bu.icon:SetTexCoord(.08, .92, .08, .92)
 		bu.icon:SetPoint("LEFT", bu, "LEFT")
-		bu.icon:SetDrawLayer("OVERLAY")
 		bu.icon:SetSize(iconSize, iconSize)
-		bu.icon.bg = F.CreateBG(bu.icon)
-		bu.icon.bg:SetDrawLayer("ARTWORK")
+		F.ReskinIcon(bu.icon)
 	end
 
 	hooksecurefunc("GroupFinderFrame_SelectGroupButton", function(index)
 		local self = GroupFinderFrame
-		for i = 1, 4 do
+		for i = 1, 3 do
 			local button = self["groupButton"..i]
 			if i == index then
 				button.bg:Show()
@@ -48,5 +46,4 @@ tinsert(C.themes["AuroraClassic"], function()
 	F.ReskinTab(PVEFrameTab1)
 	F.ReskinTab(PVEFrameTab2)
 	F.ReskinTab(PVEFrameTab3)
-	F.ReskinClose(PremadeGroupsPvETutorialAlert.CloseButton)
 end)

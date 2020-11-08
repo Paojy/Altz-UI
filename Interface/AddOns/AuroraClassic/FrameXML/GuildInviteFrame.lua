@@ -1,8 +1,9 @@
-local F, C = unpack(select(2, ...))
+local _, ns = ...
+local F, C = unpack(ns)
 
-tinsert(C.themes["AuroraClassic"], function()
-	F.CreateBD(GuildInviteFrame)
-	F.CreateSD(GuildInviteFrame)
+tinsert(C.defaultThemes, function()
+
+	F.SetBD(GuildInviteFrame)
 	for i = 1, 10 do
 		select(i, GuildInviteFrame:GetRegions()):Hide()
 	end

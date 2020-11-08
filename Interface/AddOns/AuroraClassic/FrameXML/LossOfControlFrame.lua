@@ -1,12 +1,12 @@
-local F, C = unpack(select(2, ...))
+local _, ns = ...
+local F, C = unpack(ns)
 
-tinsert(C.themes["AuroraClassic"], function()
+tinsert(C.defaultThemes, function()
+
 	local styled
 	hooksecurefunc("LossOfControlFrame_SetUpDisplay", function(self)
 		if not styled then
-			self.Icon:SetTexCoord(.08, .92, .08, .92)
-			local bg = F.CreateBDFrame(self.Icon)
-			F.CreateSD(bg)
+			F.ReskinIcon(self.Icon, true)
 
 			styled = true
 		end

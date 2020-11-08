@@ -1,16 +1,18 @@
-local F, C = unpack(select(2, ...))
+local _, ns = ...
+local F, C = unpack(ns)
 
-tinsert(C.themes["AuroraClassic"], function()
+tinsert(C.defaultThemes, function()
+
 	F.ReskinPortraitFrame(PetitionFrame)
 	F.Reskin(PetitionFrameSignButton)
 	F.Reskin(PetitionFrameRequestButton)
 	F.Reskin(PetitionFrameRenameButton)
 	F.Reskin(PetitionFrameCancelButton)
 
-	PetitionFrameCharterTitle:SetTextColor(1, 1, 1)
+	PetitionFrameCharterTitle:SetTextColor(1, .8, 0)
 	PetitionFrameCharterTitle:SetShadowColor(0, 0, 0)
-	PetitionFrameMasterTitle:SetTextColor(1, 1, 1)
+	PetitionFrameMasterTitle:SetTextColor(1, .8, 0)
 	PetitionFrameMasterTitle:SetShadowColor(0, 0, 0)
-	PetitionFrameMemberTitle:SetTextColor(1, 1, 1)
+	PetitionFrameMemberTitle:SetTextColor(1, .8, 0)
 	PetitionFrameMemberTitle:SetShadowColor(0, 0, 0)
 end)

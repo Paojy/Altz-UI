@@ -1,6 +1,9 @@
-local F, C = unpack(select(2, ...))
+local _, ns = ...
+local F, C = unpack(ns)
 
-tinsert(C.themes["AuroraClassic"], function()
+tinsert(C.defaultThemes, function()
+	local texL, texR, texT, texB = unpack(C.TexCoord)
+
 	SendMailMoneyInset:DisableDrawLayer("BORDER")
 	InboxFrame:GetRegions():Hide()
 	SendMailMoneyBg:Hide()
@@ -25,8 +28,8 @@ tinsert(C.themes["AuroraClassic"], function()
 	F.Reskin(OpenMailCancelButton)
 	F.Reskin(OpenMailReportSpamButton)
 	F.Reskin(OpenAllMail)
-	F.ReskinInput(SendMailNameEditBox, 20)
-	F.ReskinInput(SendMailSubjectEditBox)
+	F.ReskinInput(SendMailNameEditBox, 20, 85)
+	F.ReskinInput(SendMailSubjectEditBox, nil, 200)
 	F.ReskinInput(SendMailMoneyGold)
 	F.ReskinInput(SendMailMoneySilver)
 	F.ReskinInput(SendMailMoneyCopper)
@@ -37,6 +40,10 @@ tinsert(C.themes["AuroraClassic"], function()
 	F.ReskinArrow(InboxPrevPageButton, "left")
 	F.ReskinArrow(InboxNextPageButton, "right")
 
+	F.CreateBDFrame(OpenMailScrollFrame, .25)
+	local bg = F.CreateBDFrame(SendMailScrollFrame, .25)
+	bg:SetPoint("TOPLEFT", 6, 0)
+
 	SendMailMailButton:SetPoint("RIGHT", SendMailCancelButton, "LEFT", -1, 0)
 	OpenMailDeleteButton:SetPoint("RIGHT", OpenMailCancelButton, "LEFT", -1, 0)
 	OpenMailReplyButton:SetPoint("RIGHT", OpenMailDeleteButton, "LEFT", -1, 0)
@@ -44,102 +51,61 @@ tinsert(C.themes["AuroraClassic"], function()
 	SendMailMoneySilver:SetPoint("LEFT", SendMailMoneyGold, "RIGHT", 1, 0)
 	SendMailMoneyCopper:SetPoint("LEFT", SendMailMoneySilver, "RIGHT", 1, 0)
 
-	OpenMailLetterButton:SetNormalTexture("")
-	OpenMailLetterButton:SetPushedTexture("")
-	OpenMailLetterButtonIconTexture:SetTexCoord(.08, .92, .08, .92)
-	F.CreateBDFrame(OpenMailLetterButton)
+	SendMailSubjectEditBox:SetPoint("TOPLEFT", SendMailNameEditBox, "BOTTOMLEFT", 0, -1)
 
 	for i = 1, 2 do
 		F.ReskinTab(_G["MailFrameTab"..i])
 	end
 
-	OpenMailMoneyButton:SetNormalTexture("")
-	OpenMailMoneyButton:SetPushedTexture("")
-	OpenMailMoneyButtonIconTexture:SetTexCoord(.08, .92, .08, .92)
-	F.CreateBDFrame(OpenMailMoneyButton)
-
-	SendMailSubjectEditBox:SetPoint("TOPLEFT", SendMailNameEditBox, "BOTTOMLEFT", 0, -1)
+	for _, button in pairs({OpenMailLetterButton, OpenMailMoneyButton}) do
+		F.StripTextures(button)
+		button.icon:SetTexCoord(texL, texR, texT, texB)
+		button:GetHighlightTexture():SetColorTexture(1, 1, 1, .25)
+		F.CreateBDFrame(button)
+	end
 
 	for i = 1, INBOXITEMS_TO_DISPLAY do
-		local it = _G["MailItem"..i]
-		local bu = _G["MailItem"..i.."Button"]
-		local st = _G["MailItem"..i.."ButtonSlot"]
-		local ic = _G["MailItem"..i.."Button".."Icon"]
-		local bd = _G["MailItem"..i.."Button".."IconBorder"]
-		local line = select(3, _G["MailItem"..i]:GetRegions())
-
-		local a, b = it:GetRegions()
-		a:Hide()
-		b:Hide()
-		bu:SetCheckedTexture(C.media.checked)
-		bu:GetHighlightTexture():SetColorTexture(1, 1, 1, .25)
-
-		st:Hide()
-		line:Hide()
-		ic:SetTexCoord(.08, .92, .08, .92)
-		bd:SetAlpha(0)
-		F.CreateBDFrame(bu)
+		local item = _G["MailItem"..i]
+		local button = _G["MailItem"..i.."Button"]
+		F.StripTextures(item)
+		F.StripTextures(button)
+		button:SetCheckedTexture(C.pushed)
+		button:GetHighlightTexture():SetColorTexture(1, 1, 1, .25)
+		button.Icon:SetTexCoord(texL, texR, texT, texB)
+		button.IconBorder:SetAlpha(0)
+		F.CreateBDFrame(button)
 	end
 
 	for i = 1, ATTACHMENTS_MAX_SEND do
-		local bu = _G["SendMailAttachment"..i]
-		local border = bu.IconBorder
-
-		bu:GetRegions():Hide()
-		bu:GetHighlightTexture():SetColorTexture(1, 1, 1, .25)
-
-		border:SetPoint("TOPLEFT", -C.mult, C.mult)
-		border:SetPoint("BOTTOMRIGHT", C.mult, -C.mult)
-		border:SetDrawLayer("BACKGROUND")
-		F.CreateBDFrame(bu, .25)
+		local button = _G["SendMailAttachment"..i]
+		F.StripTextures(button)
+		button:GetHighlightTexture():SetColorTexture(1, 1, 1, .25)
+		button.bg = F.CreateBDFrame(button, .25)
+		F.ReskinIconBorder(button.IconBorder)
 	end
 
-	-- sigh
-	-- we mess with quality colour numbers, so we have to fix this
 	hooksecurefunc("SendMailFrame_Update", function()
 		for i = 1, ATTACHMENTS_MAX_SEND do
-			local bu = _G["SendMailAttachment"..i]
-
-			if bu:GetNormalTexture() == nil and bu.IconBorder:IsShown() then
-				bu.IconBorder:Hide()
+			local button = SendMailFrame.SendMailAttachments[i]
+			if HasSendMailItem(i) then
+				button:GetNormalTexture():SetTexCoord(texL, texR, texT, texB)
 			end
 		end
 	end)
 
 	for i = 1, ATTACHMENTS_MAX_RECEIVE do
-		local bu = _G["OpenMailAttachmentButton"..i]
-		local ic = _G["OpenMailAttachmentButton"..i.."IconTexture"]
-		local border = bu.IconBorder
-
-		bu:SetNormalTexture("")
-		bu:SetPushedTexture("")
-		bu:GetHighlightTexture():SetColorTexture(1, 1, 1, .25)
-		ic:SetTexCoord(.08, .92, .08, .92)
-
-		border:SetTexture(C.media.backdrop)
-		border.SetTexture = F.dummy
-		border:SetPoint("TOPLEFT", -C.mult, C.mult)
-		border:SetPoint("BOTTOMRIGHT", C.mult, -C.mult)
-		border:SetDrawLayer("BACKGROUND")
-		F.CreateBDFrame(bu, .25)
+		local button = _G["OpenMailAttachmentButton"..i]
+		F.StripTextures(button)
+		button:GetHighlightTexture():SetColorTexture(1, 1, 1, .25)
+		button.icon:SetTexCoord(texL, texR, texT, texB)
+		button.bg = F.CreateBDFrame(button, .25)
+		F.ReskinIconBorder(button.IconBorder)
 	end
 
-	hooksecurefunc("SendMailFrame_Update", function()
-		for i = 1, ATTACHMENTS_MAX_SEND do
-			local button = _G["SendMailAttachment"..i]
-			button.IconBorder:SetTexture(C.media.backdrop)
-			if button:GetNormalTexture() then
-				button:GetNormalTexture():SetTexCoord(.08, .92, .08, .92)
-			end
-		end
-	end)
-
 	MailFont_Large:SetTextColor(1, 1, 1)
-	MailFont_Large:SetShadowColor(0, 0, 0)
-	MailFont_Large:SetShadowOffset(1, -1)
+	MailFont_Large:SetShadowColor(0, 0, 0, 0)
 	MailTextFontNormal:SetTextColor(1, 1, 1)
-	MailTextFontNormal:SetShadowOffset(1, -1)
-	MailTextFontNormal:SetShadowColor(0, 0, 0)
+	MailTextFontNormal:SetShadowColor(0, 0, 0, 0)
 	InvoiceTextFontNormal:SetTextColor(1, 1, 1)
 	InvoiceTextFontSmall:SetTextColor(1, 1, 1)
 end)
