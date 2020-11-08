@@ -2021,7 +2021,7 @@ function PostUpdatePlates(self, event, unit)
 				end
 				self.Castbar.Spark:Show()
 				
-				if aCoreCDB["PlateOptions"]["plateaura"] then
+				if aCoreCDB["PlateOptions"]["plateaura"] then -- 显示玩家姓名板光环
 					self:EnableElement('Aura')
 					self.Auras:Show()
 				else
@@ -2040,6 +2040,10 @@ function PostUpdatePlates(self, event, unit)
 					self:DisableElement('Power')
 					self.Power.value:Hide()
 				end
+				
+				self:EnableElement('Aura')
+				self.Auras:Show()
+
 			elseif aCoreCDB["PlateOptions"]["bar_onlyname"] and UnitIsPlayer(unit) and UnitReaction(unit, 'player') >= 5 then  -- 友方只显示名字		
 				self.Health:ForceUpdate() -- 给名字染色
 				self:DisableElement('Health')				
@@ -2050,6 +2054,7 @@ function PostUpdatePlates(self, event, unit)
 				self.Health:Hide()
 				self.Power:Hide()
 				self.Castbar:Hide()
+				self:DisableElement('Aura')
 				self.Auras:Hide()
 			else
 				self:EnableElement('Health')
@@ -2076,6 +2081,9 @@ function PostUpdatePlates(self, event, unit)
 					self.Castbar:SetPoint("TOPRIGHT", self, "BOTTOMRIGHT", 0, -3)
 				end
 				self.Castbar.Spark:Hide()
+				
+				self:EnableElement('Aura')
+				self.Auras:Show()
 			end
 		end
 		
