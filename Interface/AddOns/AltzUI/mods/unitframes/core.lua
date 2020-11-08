@@ -2080,6 +2080,8 @@ function PostUpdatePlates(self, event, unit)
 					self.Castbar:SetPoint("TOPLEFT", self, "BOTTOMLEFT", 0, -3)
 					self.Castbar:SetPoint("TOPRIGHT", self, "BOTTOMRIGHT", 0, -3)
 				end
+				self.Castbar.Text:ClearAllPoints()
+				self.Castbar.Text:SetPoint("TOP", castbar, "BOTTOM", 0, -3)	
 				self.Castbar.Spark:Hide()
 				
 				self:EnableElement('Aura')
