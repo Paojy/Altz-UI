@@ -1,77 +1,34 @@
 local F, C = unpack(select(2, ...))
 
-tinsert(C.defaultThemes, function()
-	if not AuroraClassicDB.Tooltips then return end
+tinsert(C.themes["AuroraClassic"], function()
+	F.ReskinClose(ItemRefCloseButton)
+	F.ReskinClose(FloatingBattlePetTooltip.CloseButton)
+	F.ReskinClose(FloatingPetBattleAbilityTooltip.CloseButton)
 
-	GameTooltip.StatusBar = GameTooltipStatusBar
+	if not AuroraConfig.tooltips then return end
 
-	local function ReskinStatusBar(self)
-		self.StatusBar:ClearAllPoints()
-		self.StatusBar:SetPoint("BOTTOMLEFT", self.bg, "TOPLEFT", C.mult, 3)
-		self.StatusBar:SetPoint("BOTTOMRIGHT", self.bg, "TOPRIGHT", -C.mult, 3)
-		self.StatusBar:SetStatusBarTexture(C.normTex)
-		self.StatusBar:SetHeight(5)
-		F.SetBD(self.StatusBar)
-	end
-
-	local fakeBg = CreateFrame("Frame", nil, UIParent, "BackdropTemplate")
-	fakeBg:SetBackdrop({ bgFile = C.bdTex, edgeFile = C.bdTex, edgeSize = 1 })
-	local function __GetBackdrop() return fakeBg:GetBackdrop() end
-	local function __GetBackdropColor() return 0, 0, 0, .7 end
-	local function __GetBackdropBorderColor() return 0, 0, 0 end
+	local function getBackdrop(self) return self.bg:GetBackdrop() end
+	local function getBackdropColor() return 0, 0, 0, .7 end
+	local function getBackdropBorderColor() return 0, 0, 0 end
 
 	function F:ReskinTooltip()
-		if self:IsForbidden() then return end
-
 		if not self.auroraTip then
-			if self.SetBackdrop then self:SetBackdrop(nil) end
+			self:SetBackdrop(nil)
 			self:DisableDrawLayer("BACKGROUND")
-			self.bg = F.SetBD(self, .7)
-			self.bg:SetInside(self)
-			self.bg:SetFrameLevel(self:GetFrameLevel())
-			if self.StatusBar then ReskinStatusBar(self) end
+			local bg = F.CreateBDFrame(self, .7)
+			F.CreateSD(bg)
+			self.bg = bg
 
-			if self.GetBackdrop then
-				self.GetBackdrop = __GetBackdrop
-				self.GetBackdropColor = __GetBackdropColor
-				self.GetBackdropBorderColor = __GetBackdropBorderColor
-			end
-
+			self.GetBackdrop = getBackdrop
+			self.GetBackdropColor = getBackdropColor
+			self.GetBackdropBorderColor = getBackdropBorderColor
 			self.auroraTip = true
 		end
 	end
 
-	hooksecurefunc("SharedTooltip_SetBackdropStyle", function(self)
+	hooksecurefunc("GameTooltip_SetBackdropStyle", function(self)
 		if not self.auroraTip then return end
 		self:SetBackdrop(nil)
-	end)
-
-	hooksecurefunc("GameTooltip_ShowStatusBar", function(self)
-		if not self or self:IsForbidden() then return end
-		if not self.statusBarPool then return end
-	
-		local bar = self.statusBarPool:GetNextActive()
-		if bar and not bar.styled then
-			F.StripTextures(bar)
-			F.CreateBDFrame(bar, .25)
-			bar:SetStatusBarTexture(C.normTex)
-	
-			bar.styled = true
-		end
-	end)
-
-	hooksecurefunc("GameTooltip_ShowProgressBar", function(self)
-		if not self or self:IsForbidden() then return end
-		if not self.progressBarPool then return end
-	
-		local bar = self.progressBarPool:GetNextActive()
-		if bar and not bar.styled then
-			F.StripTextures(bar.Bar)
-			F.CreateBDFrame(bar.Bar, .25)
-			bar.Bar:SetStatusBarTexture(C.normTex)
-	
-			bar.styled = true
-		end
 	end)
 
 	local tooltips = {
@@ -88,26 +45,16 @@ tinsert(C.defaultThemes, function()
 		ShoppingTooltip2,
 		AutoCompleteBox,
 		FriendsTooltip,
-		QuestScrollFrame.StoryTooltip,
-		QuestScrollFrame.CampaignTooltip,
 		GeneralDockManagerOverflowButtonList,
 		ReputationParagonTooltip,
 		NamePlateTooltip,
 		QueueStatusFrame,
-		FloatingGarrisonFollowerTooltip,
-		FloatingGarrisonFollowerAbilityTooltip,
-		FloatingGarrisonMissionTooltip,
-		GarrisonFollowerAbilityTooltip,
-		GarrisonFollowerTooltip,
-		FloatingGarrisonShipyardFollowerTooltip,
-		GarrisonShipyardFollowerTooltip,
 		BattlePetTooltip,
 		PetBattlePrimaryAbilityTooltip,
 		PetBattlePrimaryUnitTooltip,
 		FloatingBattlePetTooltip,
 		FloatingPetBattleAbilityTooltip,
 		IMECandidatesFrame,
-		QuickKeybindTooltip
 	}
 	for _, tooltip in pairs(tooltips) do
 		F.ReskinTooltip(tooltip)
@@ -118,6 +65,20 @@ tinsert(C.defaultThemes, function()
 			F.ReskinTooltip(LibDBIconTooltip)
 		end
 	end)
+
+	local sb = _G["GameTooltipStatusBar"]
+	sb:SetHeight(3)
+	sb:ClearAllPoints()
+	sb:SetPoint("BOTTOMLEFT", GameTooltip, "BOTTOMLEFT", 1, 1)
+	sb:SetPoint("BOTTOMRIGHT", GameTooltip, "BOTTOMRIGHT", -1, 1)
+	sb:SetStatusBarTexture(C.media.backdrop)
+
+	local sep = GameTooltipStatusBar:CreateTexture(nil, "ARTWORK")
+	sep:SetHeight(C.mult)
+	sep:SetPoint("BOTTOMLEFT", 0, 3)
+	sep:SetPoint("BOTTOMRIGHT", 0, 3)
+	sep:SetTexture(C.media.backdrop)
+	sep:SetVertexColor(0, 0, 0)
 
 	PetBattlePrimaryUnitTooltip.Delimiter:SetColorTexture(0, 0, 0)
 	PetBattlePrimaryUnitTooltip.Delimiter:SetHeight(1)
@@ -133,10 +94,22 @@ tinsert(C.defaultThemes, function()
 	FloatingBattlePetTooltip.Delimiter:SetHeight(1)
 
 	-- Tooltip rewards icon
+	local function updateBackdropColor(self, r, g, b)
+		self:GetParent().bg:SetBackdropBorderColor(r, g, b)
+	end
+
+	local function resetBackdropColor(self)
+		self:GetParent().bg:SetBackdropBorderColor(0, 0, 0)
+	end
+
 	local function reskinRewardIcon(self)
-		self.Icon:SetTexCoord(unpack(C.TexCoord))
-		self.bg = F.CreateBDFrame(self.Icon, 0)
-		F.ReskinIconBorder(self.IconBorder)
+		self.Icon:SetTexCoord(.08, .92, .08, .92)
+		self.bg = F.CreateBDFrame(self.Icon)
+
+		local iconBorder = self.IconBorder
+		iconBorder:SetAlpha(0)
+		hooksecurefunc(iconBorder, "SetVertexColor", updateBackdropColor)
+		hooksecurefunc(iconBorder, "Hide", resetBackdropColor)
 	end
 
 	reskinRewardIcon(GameTooltip.ItemTooltip)
@@ -146,12 +119,12 @@ tinsert(C.defaultThemes, function()
 	local listener = CreateFrame("Frame")
 	listener:RegisterEvent("ADDON_LOADED")
 	listener:SetScript("OnEvent", function(_, _, addon)
-		if addon == "MythicDungeonTools" then
+		if addon == "MethodDungeonTools" then
 			local styledMDT
-			hooksecurefunc(MDT, "ShowInterface", function()
+			hooksecurefunc(MethodDungeonTools, "ShowInterface", function()
 				if not styledMDT then
-					F.ReskinTooltip(MDT.tooltip)
-					F.ReskinTooltip(MDT.pullTooltip)
+					F.ReskinTooltip(MethodDungeonTools.tooltip)
+					F.ReskinTooltip(MethodDungeonTools.pullTooltip)
 					styledMDT = true
 				end
 			end)

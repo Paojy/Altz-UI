@@ -1,7 +1,6 @@
-local _, ns = ...
-local F, C = unpack(ns)
+local F, C = unpack(select(2, ...))
 
-tinsert(C.defaultThemes, function()
+tinsert(C.themes["AuroraClassic"], function()
 	local r, g, b = C.r, C.g, C.b
 
 	local function moveNavButtons(self)
@@ -56,7 +55,6 @@ tinsert(C.defaultThemes, function()
 			navButton.arrowDown:SetAlpha(0)
 			navButton.selected:SetDrawLayer("BACKGROUND", 1)
 			navButton.selected:SetColorTexture(r, g, b, .25)
-			navButton.selected:SetInside(navButton.__bg)
 
 			navButton:HookScript("OnClick", function()
 				moveNavButtons(self)
@@ -68,13 +66,14 @@ tinsert(C.defaultThemes, function()
 			arrowButton:SetHighlightTexture("")
 
 			local tex = arrowButton:CreateTexture(nil, "ARTWORK")
-			F.SetupArrow(tex, "down")
-			tex:SetSize(14, 14)
+			tex:SetTexture(C.media.arrowDown)
+			tex:SetSize(8, 8)
 			tex:SetPoint("CENTER")
-			arrowButton.__texture = tex
+			arrowButton.bgTex = tex
 
-			arrowButton:SetScript("OnEnter", F.Texture_OnEnter)
-			arrowButton:SetScript("OnLeave", F.Texture_OnLeave)
+			local colourArrow, clearArrow = F.colourArrow, F.clearArrow
+			arrowButton:SetScript("OnEnter", colourArrow)
+			arrowButton:SetScript("OnLeave", clearArrow)
 
 			navButton.restyled = true
 		end

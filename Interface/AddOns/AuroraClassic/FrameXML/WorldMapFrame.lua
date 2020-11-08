@@ -1,7 +1,6 @@
-local _, ns = ...
-local F, C = unpack(ns)
+local F, C = unpack(select(2, ...))
 
-tinsert(C.defaultThemes, function()
+tinsert(C.themes["AuroraClassic"], function()
 	local WorldMapFrame = WorldMapFrame
 	local BorderFrame = WorldMapFrame.BorderFrame
 
@@ -12,12 +11,10 @@ tinsert(C.defaultThemes, function()
 
 	local overlayFrames = WorldMapFrame.overlayFrames
 	F.ReskinDropDown(overlayFrames[1])
-	F.StripTextures(overlayFrames[2], 3)
-	F.StripTextures(overlayFrames[3], 3)
-	overlayFrames[3].ActiveTexture:SetTexture("Interface\\Minimap\\UI-Minimap-ZoomButton-Toggle")
+	overlayFrames[2]:DisableDrawLayer("BACKGROUND")
+	overlayFrames[2]:DisableDrawLayer("OVERLAY")
 
 	local sideToggle = WorldMapFrame.SidePanelToggle
-	sideToggle:SetFrameLevel(3)
 	sideToggle.OpenButton:GetRegions():Hide()
 	F.ReskinArrow(sideToggle.OpenButton, "right")
 	sideToggle.CloseButton:GetRegions():Hide()

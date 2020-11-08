@@ -1,5 +1,4 @@
-local _, ns = ...
-local F, C = unpack(ns)
+local F, C = unpack(select(2, ...))
 
 C.themes["Blizzard_IslandsQueueUI"] = function()
 	F.ReskinPortraitFrame(IslandsQueueFrame)
@@ -14,10 +13,10 @@ C.themes["Blizzard_IslandsQueueUI"] = function()
 	F.Reskin(closeButton)
 	tutorial.TutorialText:SetTextColor(1, 1, 1)
 
-	if F.ReskinTooltip then
+	if AuroraConfig.tooltips then
 		local tooltip = IslandsQueueFrameTooltip:GetParent()
 		tooltip.IconBorder:SetAlpha(0)
-		tooltip.Icon:SetTexCoord(unpack(C.TexCoord))
+		tooltip.Icon:SetTexCoord(.08, .92, .08, .92)
 		F.ReskinTooltip(tooltip:GetParent())
 	end
 end

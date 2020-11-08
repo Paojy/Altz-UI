@@ -1,12 +1,6 @@
-local _, ns = ...
-local F, C = unpack(ns)
+local F, C = unpack(select(2, ...))
 
-tinsert(C.defaultThemes, function()
-	-- Tooltip close buttons
-	F.ReskinClose(ItemRefTooltip.CloseButton)
-	F.ReskinClose(FloatingBattlePetTooltip.CloseButton)
-	F.ReskinClose(FloatingPetBattleAbilityTooltip.CloseButton)
-
+tinsert(C.themes["AuroraClassic"], function()
 	-- Tooltips
 	function F:ReskinGarrisonTooltip()
 		for i = 1, 9 do
@@ -14,6 +8,8 @@ tinsert(C.defaultThemes, function()
 		end
 		if self.Icon then F.ReskinIcon(self.Icon) end
 		if self.CloseButton then F.ReskinClose(self.CloseButton) end
+
+		if AuroraConfig.tooltips then F.ReskinTooltip(self) end
 	end
 
 	F.ReskinGarrisonTooltip(FloatingGarrisonMissionTooltip)
@@ -34,7 +30,10 @@ tinsert(C.defaultThemes, function()
 		local abilities = tooltipFrame.Abilities
 		local ability = abilities[numAbilitiesStyled]
 		while ability do
-			F.ReskinIcon(ability.Icon)
+			local icon = ability.Icon
+
+			icon:SetTexCoord(.08, .92, .08, .92)
+			F.CreateBG(icon)
 
 			numAbilitiesStyled = numAbilitiesStyled + 1
 			ability = abilities[numAbilitiesStyled]
@@ -51,7 +50,10 @@ tinsert(C.defaultThemes, function()
 		local traits = tooltipFrame.Traits
 		local trait = traits[numTraitsStyled]
 		while trait do
-			F.ReskinIcon(trait.Icon)
+			local icon = trait.Icon
+
+			icon:SetTexCoord(.08, .92, .08, .92)
+			F.CreateBG(icon)
 
 			numTraitsStyled = numTraitsStyled + 1
 			trait = traits[numTraitsStyled]

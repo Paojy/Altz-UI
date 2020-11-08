@@ -1,5 +1,4 @@
-local _, ns = ...
-local F, C = unpack(ns)
+local F, C = unpack(select(2, ...))
 
 C.themes["Blizzard_LookingForGuildUI"] = function()
 	local r, g, b = C.r, C.g, C.b
@@ -9,19 +8,28 @@ C.themes["Blizzard_LookingForGuildUI"] = function()
 		if styled then return end
 
 		F.ReskinPortraitFrame(LookingForGuildFrame)
-		F.CreateBDFrame(LookingForGuildInterestFrame, .25)
+		F.CreateBD(LookingForGuildInterestFrame, .25)
 		LookingForGuildInterestFrameBg:Hide()
-		F.CreateBDFrame(LookingForGuildAvailabilityFrame, .25)
+		F.CreateBD(LookingForGuildAvailabilityFrame, .25)
 		LookingForGuildAvailabilityFrameBg:Hide()
-		F.CreateBDFrame(LookingForGuildRolesFrame, .25)
+		F.CreateBD(LookingForGuildRolesFrame, .25)
 		LookingForGuildRolesFrameBg:Hide()
-		F.CreateBDFrame(LookingForGuildCommentFrame, .25)
+		F.CreateBD(LookingForGuildCommentFrame, .25)
 		LookingForGuildCommentFrameBg:Hide()
-		F.StripTextures(LookingForGuildCommentInputFrame)
-		F.CreateBDFrame(LookingForGuildCommentInputFrame, .12)
-		F.SetBD(GuildFinderRequestMembershipFrame)
+		F.CreateBD(LookingForGuildCommentInputFrame, .12)
+		F.CreateBD(GuildFinderRequestMembershipFrame)
+		F.CreateSD(GuildFinderRequestMembershipFrame)
+		for i = 1, 9 do
+			select(i, LookingForGuildCommentInputFrame:GetRegions()):Hide()
+		end
 		for i = 1, 3 do
-			F.StripTextures(_G["LookingForGuildFrameTab"..i])
+			for j = 1, 6 do
+				select(j, _G["LookingForGuildFrameTab"..i]:GetRegions()):Hide()
+				select(j, _G["LookingForGuildFrameTab"..i]:GetRegions()).Show = F.dummy
+			end
+		end
+		for i = 1, 6 do
+			select(i, GuildFinderRequestMembershipFrameInputFrame:GetRegions()):Hide()
 		end
 		LookingForGuildFrameTabardBackground:Hide()
 		LookingForGuildFrameTabardEmblem:Hide()
@@ -37,7 +45,6 @@ C.themes["Blizzard_LookingForGuildUI"] = function()
 		F.ReskinCheck(LookingForGuildRPButton)
 		F.ReskinCheck(LookingForGuildWeekdaysButton)
 		F.ReskinCheck(LookingForGuildWeekendsButton)
-		F.StripTextures(GuildFinderRequestMembershipFrameInputFrame)
 		F.ReskinInput(GuildFinderRequestMembershipFrameInputFrame)
 
 		-- [[ Browse frame ]]
@@ -52,9 +59,10 @@ C.themes["Blizzard_LookingForGuildUI"] = function()
 			bu:SetHighlightTexture("")
 
 			-- my client crashes if I put this in a var? :x
-			bu:GetRegions():SetTexture(C.bdTex)
+			bu:GetRegions():SetTexture(C.media.backdrop)
 			bu:GetRegions():SetVertexColor(r, g, b, .2)
-			bu:GetRegions():SetInside()
+			bu:GetRegions():SetPoint("TOPLEFT", C.mult, -C.mult)
+			bu:GetRegions():SetPoint("BOTTOMRIGHT", -C.mult, C.mult)
 
 			local bg = F.CreateBDFrame(bu, .25)
 			bg:SetPoint("TOPLEFT")

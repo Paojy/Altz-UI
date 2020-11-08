@@ -1,11 +1,13 @@
-local _, ns = ...
-local F, C = unpack(ns)
+local F, C = unpack(select(2, ...))
 
 C.themes["Blizzard_AdventureMap"] = function()
 	local dialog = AdventureMapQuestChoiceDialog
 
-	F.StripTextures(dialog)
-	F.SetBD(dialog)
+	for i = 1, 4 do
+		select(i, dialog:GetRegions()):SetAlpha(0)
+	end
+	F.CreateBD(dialog)
+	F.CreateSD(dialog)
 	F.Reskin(dialog.AcceptButton)
 	F.Reskin(dialog.DeclineButton)
 	F.ReskinClose(dialog.CloseButton)
@@ -17,7 +19,8 @@ C.themes["Blizzard_AdventureMap"] = function()
 		for i = 6, 7 do
 			local bu = select(i, dialog:GetChildren())
 			if bu then
-				F.ReskinIcon(bu.Icon)
+				bu.Icon:SetTexCoord(.08, .92, .08, .92)
+				F.CreateBDFrame(bu.Icon)
 				local bg = F.CreateBDFrame(bu.Icon, .25)
 				bg:SetPoint("BOTTOMRIGHT")
 				bu.ItemNameBG:Hide()

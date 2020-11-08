@@ -1,8 +1,6 @@
-local _, ns = ...
-local F, C = unpack(ns)
+local F, C = unpack(select(2, ...))
 
-tinsert(C.defaultThemes, function()
-
+tinsert(C.themes["AuroraClassic"], function()
 	local LFD_NUM_ROLES = LFD_NUM_ROLES
 
 	local function SkinEntry(self)
@@ -14,7 +12,7 @@ tinsert(C.defaultThemes, function()
 
 		for i = 1, LFD_NUM_ROLES do
 			local roleIcon = self["RoleIcon"..i]
-			roleIcon:SetTexture(C.rolesTex)
+			roleIcon:SetTexture(C.media.roleIcons)
 			roleIcon.bg = F.CreateBDFrame(roleIcon)
 			if i > 1 then
 				roleIcon:SetPoint("RIGHT", self["RoleIcon"..(i-1)], "LEFT", -4, 0)

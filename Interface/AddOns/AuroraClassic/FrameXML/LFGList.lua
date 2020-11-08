@@ -1,7 +1,6 @@
-local _, ns = ...
-local F, C = unpack(ns)
+local F, C = unpack(select(2, ...))
 
-tinsert(C.defaultThemes, function()
+tinsert(C.themes["AuroraClassic"], function()
 	local r, g, b = C.r, C.g, C.b
 
 	local LFGListFrame = LFGListFrame
@@ -78,13 +77,14 @@ tinsert(C.defaultThemes, function()
 			result:SetPushedTexture("")
 			result:SetHighlightTexture("")
 
-			local bg = F.CreateBDFrame(result, .5)
 			local hl = result:CreateTexture(nil, "BACKGROUND")
-			hl:SetInside(bg)
-			hl:SetTexture(C.bdTex)
+			hl:SetAllPoints()
+			hl:SetTexture(C.media.backdrop)
 			hl:SetVertexColor(r, g, b, .25)
 			hl:Hide()
 			result.hl = hl
+
+			F.CreateBD(result, .5)
 
 			result:HookScript("OnEnter", resultOnEnter)
 			result:HookScript("OnLeave", resultOnLeave)
@@ -110,17 +110,18 @@ tinsert(C.defaultThemes, function()
 	for _, headerName in pairs({"NameColumnHeader", "RoleColumnHeader", "ItemLevelColumnHeader"}) do
 		local header = ApplicationViewer[headerName]
 		F.StripTextures(header)
-		header.Label:SetFont(C.Font[1], 14, C.Font[3])
+		header.Label:SetFont(C.media.font, 14, "OUTLINE")
 		header.Label:SetShadowColor(0, 0, 0, 0)
 		header:SetHighlightTexture("")
 
-		local bg = F.CreateBDFrame(header, .25)
 		local hl = header:CreateTexture(nil, "BACKGROUND")
-		hl:SetInside(bg)
-		hl:SetTexture(C.bdTex)
+		hl:SetAllPoints()
+		hl:SetTexture(C.media.backdrop)
 		hl:SetVertexColor(r, g, b, .25)
 		hl:Hide()
 		header.hl = hl
+
+		F.CreateBD(header, .25)
 
 		header:HookScript("OnEnter", headerOnEnter)
 		header:HookScript("OnLeave", headerOnLeave)
@@ -153,7 +154,8 @@ tinsert(C.defaultThemes, function()
 	F.StripTextures(EntryCreation.Description)
 	F.Reskin(EntryCreation.ListGroupButton)
 	F.Reskin(EntryCreation.CancelButton)
-	F.ReskinInput(EntryCreation.Description)
+	F.CreateBD(EntryCreation.Description, 0)
+	F.CreateGradient(EntryCreation.Description)
 	F.ReskinInput(EntryCreation.Name)
 	F.ReskinInput(EntryCreation.ItemLevel.EditBox)
 	F.ReskinInput(EntryCreation.VoiceChat.EditBox)
@@ -183,7 +185,8 @@ tinsert(C.defaultThemes, function()
 
 	ActivityFinder.Background:SetTexture("")
 	F.StripTextures(ActivityFinder.Dialog)
-	F.ReskinInput(ActivityFinder.Dialog)
+	F.CreateBD(ActivityFinder.Dialog)
+	ActivityFinder.Dialog:SetBackdropColor(.2, .2, .2, .9)
 	F.Reskin(ActivityFinder.Dialog.SelectButton)
 	F.Reskin(ActivityFinder.Dialog.CancelButton)
 	F.ReskinInput(ActivityFinder.Dialog.EntryBox)
@@ -194,7 +197,8 @@ tinsert(C.defaultThemes, function()
 	local LFGListApplicationDialog = LFGListApplicationDialog
 
 	F.StripTextures(LFGListApplicationDialog)
-	F.SetBD(LFGListApplicationDialog)
+	F.CreateBD(LFGListApplicationDialog)
+	F.CreateSD(LFGListApplicationDialog)
 	F.StripTextures(LFGListApplicationDialog.Description)
 	F.CreateBDFrame(LFGListApplicationDialog.Description, .25)
 	F.Reskin(LFGListApplicationDialog.SignUpButton)
@@ -205,13 +209,14 @@ tinsert(C.defaultThemes, function()
 	local LFGListInviteDialog = LFGListInviteDialog
 
 	F.StripTextures(LFGListInviteDialog)
-	F.SetBD(LFGListInviteDialog)
+	F.CreateBD(LFGListInviteDialog)
+	F.CreateSD(LFGListInviteDialog)
 	F.Reskin(LFGListInviteDialog.AcceptButton)
 	F.Reskin(LFGListInviteDialog.DeclineButton)
 	F.Reskin(LFGListInviteDialog.AcknowledgeButton)
 
 	local roleIcon = LFGListInviteDialog.RoleIcon
-	roleIcon:SetTexture(C.rolesTex)
+	roleIcon:SetTexture(C.media.roleIcons)
 	F.CreateBDFrame(roleIcon)
 
 	hooksecurefunc("LFGListInviteDialog_Show", function(self, resultID)

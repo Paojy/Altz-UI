@@ -1,8 +1,6 @@
-local _, ns = ...
-local F, C = unpack(ns)
+local F, C = unpack(select(2, ...))
 
-tinsert(C.defaultThemes, function()
-
+tinsert(C.themes["AuroraClassic"], function()
 	local class = select(2, UnitClass("player"))
 	if class ~= "HUNTER" then return end
 
@@ -18,7 +16,9 @@ tinsert(C.defaultThemes, function()
 	F.ReskinPortraitFrame(PetStableFrame)
 	F.ReskinArrow(PetStablePrevPageButton, "left")
 	F.ReskinArrow(PetStableNextPageButton, "right")
-	F.ReskinIcon(PetStableSelectedPetIcon)
+
+	PetStableSelectedPetIcon:SetTexCoord(.08, .92, .08, .92)
+	F.CreateBG(PetStableSelectedPetIcon)
 
 	for i = 1, NUM_PET_ACTIVE_SLOTS do
 		local bu = _G["PetStableActivePet"..i]
@@ -26,10 +26,10 @@ tinsert(C.defaultThemes, function()
 		bu.Border:Hide()
 		bu:SetNormalTexture("")
 		bu:SetPushedTexture("")
-		bu.Checked:SetTexture(C.pushed)
+		bu.Checked:SetTexture(C.media.checked)
 		bu:GetHighlightTexture():SetColorTexture(1, 1, 1, .25)
 
-		_G["PetStableActivePet"..i.."IconTexture"]:SetTexCoord(unpack(C.TexCoord))
+		_G["PetStableActivePet"..i.."IconTexture"]:SetTexCoord(.08, .92, .08, .92)
 		F.CreateBDFrame(bu, .25)
 	end
 
@@ -37,11 +37,11 @@ tinsert(C.defaultThemes, function()
 		local bu = _G["PetStableStabledPet"..i]
 		bu:SetNormalTexture("")
 		bu:SetPushedTexture("")
-		bu.Checked:SetTexture(C.pushed)
+		bu.Checked:SetTexture(C.media.checked)
 		bu:GetHighlightTexture():SetColorTexture(1, 1, 1, .25)
 		bu:DisableDrawLayer("BACKGROUND")
 
-		_G["PetStableStabledPet"..i.."IconTexture"]:SetTexCoord(unpack(C.TexCoord))
+		_G["PetStableStabledPet"..i.."IconTexture"]:SetTexCoord(.08, .92, .08, .92)
 		F.CreateBDFrame(bu, .25)
 	end
 end)

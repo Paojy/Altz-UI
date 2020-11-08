@@ -1,10 +1,8 @@
-local _, ns = ...
-local F, C = unpack(ns)
+local F, C = unpack(select(2, ...))
 
-tinsert(C.defaultThemes, function()
-
-	-- Ready check
-	F.SetBD(ReadyCheckFrame)
+tinsert(C.themes["AuroraClassic"], function()
+	F.CreateBD(ReadyCheckFrame)
+	F.CreateSD(ReadyCheckFrame)
 	ReadyCheckPortrait:SetAlpha(0)
 	select(2, ReadyCheckListenerFrame:GetRegions()):Hide()
 
@@ -16,14 +14,4 @@ tinsert(C.defaultThemes, function()
 
 	F.Reskin(ReadyCheckFrameYesButton)
 	F.Reskin(ReadyCheckFrameNoButton)
-
-	-- Role poll
-	F.StripTextures(RolePollPopup)
-	F.SetBD(RolePollPopup)
-	F.Reskin(RolePollPopupAcceptButton)
-	F.ReskinClose(RolePollPopupCloseButton)
-
-	F.ReskinRole(RolePollPopupRoleButtonTank, "TANK")
-	F.ReskinRole(RolePollPopupRoleButtonHealer, "HEALER")
-	F.ReskinRole(RolePollPopupRoleButtonDPS, "DPS")
 end)

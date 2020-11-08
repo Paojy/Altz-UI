@@ -1,5 +1,4 @@
-local _, ns = ...
-local F, C = unpack(ns)
+local F, C = unpack(select(2, ...))
 
 C.themes["Blizzard_GuildBankUI"] = function()
 	GuildBankFrame:DisableDrawLayer("BACKGROUND")
@@ -21,6 +20,13 @@ C.themes["Blizzard_GuildBankUI"] = function()
 	GuildBankPopupNameLeft:Hide()
 	GuildBankPopupNameMiddle:Hide()
 	GuildBankPopupNameRight:Hide()
+	for i = 1, 3 do
+		select(i, GuildBankPopupScrollFrame:GetRegions()):Hide()
+	end
+	for i = 1, 2 do
+		select(i, GuildBankTransactionsScrollFrame:GetRegions()):Hide()
+		select(i, GuildBankInfoScrollFrame:GetRegions()):Hide()
+	end
 
 	F.SetBD(GuildBankFrame)
 	F.Reskin(GuildBankFrameWithdrawButton)
@@ -46,8 +52,9 @@ C.themes["Blizzard_GuildBankUI"] = function()
 
 	F.StripTextures(GuildBankPopupFrame.BorderBox)
 	GuildBankPopupFrame.BG:Hide()
-	F.SetBD(GuildBankPopupFrame)
-	F.CreateBDFrame(GuildBankPopupEditBox, .25)
+	F.CreateBD(GuildBankPopupFrame)
+	F.CreateSD(GuildBankPopupFrame)
+	F.CreateBD(GuildBankPopupEditBox, .25)
 	GuildBankPopupFrame:SetPoint("TOPLEFT", GuildBankFrame, "TOPRIGHT", 2, -30)
 	GuildBankPopupFrame:SetHeight(525)
 
@@ -55,49 +62,70 @@ C.themes["Blizzard_GuildBankUI"] = function()
 
 	for i = 1, NUM_GUILDBANK_COLUMNS do
 		_G["GuildBankColumn"..i]:GetRegions():Hide()
-
 		for j = 1, NUM_SLOTS_PER_GUILDBANK_GROUP do
-			local button = _G["GuildBankColumn"..i.."Button"..j]
-			button:SetNormalTexture("")
-			button:SetPushedTexture("")
-			button:GetHighlightTexture():SetColorTexture(1, 1, 1, .25)
-			button.icon:SetTexCoord(unpack(C.TexCoord))
-			button.bg = F.CreateBDFrame(button, .3)
-			button.bg:SetBackdropColor(.3, .3, .3, .3)
-			button.searchOverlay:SetOutside()
-			F.ReskinIconBorder(button.IconBorder)
+			local bu = _G["GuildBankColumn"..i.."Button"..j]
+			local border = bu.IconBorder
+			local searchOverlay = bu.searchOverlay
+
+			bu:SetNormalTexture("")
+			bu:SetPushedTexture("")
+			bu:GetHighlightTexture():SetColorTexture(1, 1, 1, .25)
+
+			bu.icon:SetTexCoord(.08, .92, .08, .92)
+
+			border:SetPoint("TOPLEFT", -C.mult, C.mult)
+			border:SetPoint("BOTTOMRIGHT", C.mult, -C.mult)
+			border:SetDrawLayer("BACKGROUND")
+
+			searchOverlay:SetPoint("TOPLEFT", -C.mult, C.mult)
+			searchOverlay:SetPoint("BOTTOMRIGHT", C.mult, -C.mult)
+			F.CreateBDFrame(bu, .25)
 		end
 	end
 
+	hooksecurefunc("GuildBankFrame_Update", function()
+		for i = 1, NUM_GUILDBANK_COLUMNS do
+			for j = 1, NUM_SLOTS_PER_GUILDBANK_GROUP do
+				local bu = _G["GuildBankColumn"..i.."Button"..j]
+				bu.IconBorder:SetTexture(C.media.backdrop)
+			end
+		end
+	end)
+
 	for i = 1, 8 do
-		local tab = _G["GuildBankTab"..i]
-		local button = _G["GuildBankTab"..i.."Button"]
-		local icon = _G["GuildBankTab"..i.."ButtonIconTexture"]
+		local tb = _G["GuildBankTab"..i]
+		local bu = _G["GuildBankTab"..i.."Button"]
+		local ic = _G["GuildBankTab"..i.."ButtonIconTexture"]
+		local nt = _G["GuildBankTab"..i.."ButtonNormalTexture"]
 
-		F.StripTextures(tab)
-		F.StripTextures(button)
-		button:GetHighlightTexture():SetColorTexture(1, 1, 1, .25)
-		button:SetCheckedTexture(C.pushed)
-		F.CreateBDFrame(button)
-		icon:SetTexCoord(unpack(C.TexCoord))
+		bu:SetPushedTexture("")
+		bu:GetHighlightTexture():SetColorTexture(1, 1, 1, .25)
+		tb:GetRegions():Hide()
+		nt:SetAlpha(0)
 
-		local a1, p, a2, x, y = button:GetPoint()
-		button:SetPoint(a1, p, a2, x + C.mult, y)
+		bu:SetCheckedTexture(C.media.checked)
+		F.CreateBG(bu)
+
+		local a1, p, a2, x, y = bu:GetPoint()
+		bu:SetPoint(a1, p, a2, x + 1, y)
+
+		ic:SetTexCoord(.08, .92, .08, .92)
 	end
 
 	GuildBankPopupFrame:HookScript("OnShow", function()
 		for i = 1, NUM_GUILDBANK_ICONS_PER_ROW * NUM_GUILDBANK_ICON_ROWS do
-			local button = _G["GuildBankPopupButton"..i]
+			local bu = _G["GuildBankPopupButton"..i]
 			local icon = _G["GuildBankPopupButton"..i.."Icon"]
-			if not button.styled then
-				button:SetCheckedTexture(C.pushed)
-				select(2, button:GetRegions()):Hide()
-				F.ReskinIcon(icon)
-				local hl = button:GetHighlightTexture()
+			if not bu.styled then
+				bu:SetCheckedTexture(C.media.checked)
+				select(2, bu:GetRegions()):Hide()
+				icon:SetTexCoord(.08, .92, .08, .92)
+				F.CreateBG(icon)
+				local hl = bu:GetHighlightTexture()
 				hl:SetColorTexture(1, 1, 1, .25)
 				hl:SetAllPoints(icon)
 
-				button.styled = true
+				bu.styled = true
 			end
 		end
 	end)

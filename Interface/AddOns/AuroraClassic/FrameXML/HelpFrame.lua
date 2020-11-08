@@ -1,13 +1,12 @@
-local _, ns = ...
-local F, C = unpack(ns)
+local F, C = unpack(select(2, ...))
 
-local function LoadPrepatchHelpFrame()
-	local r, g, b = C.r, C.g, C.b
+tinsert(C.themes["AuroraClassic"], function()
+    local r, g, b = C.r, C.g, C.b
 
 	F.StripTextures(HelpFrame)
 	F.SetBD(HelpFrame)
-	F.StripTextures(HelpFrame.Header)
-	F.ReskinClose(HelpFrameCloseButton)
+	HelpFrameHeader:Hide()
+    F.ReskinClose(HelpFrameCloseButton)
 
 	F.StripTextures(HelpFrameMainInset)
 	F.StripTextures(HelpFrameLeftInset)
@@ -61,7 +60,8 @@ local function LoadPrepatchHelpFrame()
 	for i = 1, 15 do
 		local bu = _G["HelpFrameKnowledgebaseScrollFrameButton"..i]
 		bu:DisableDrawLayer("ARTWORK")
-		F.CreateBDFrame(bu, 0, true)
+		F.CreateBD(bu, 0)
+		F.CreateGradient(bu)
 	end
 
 	local function colourTab(f)
@@ -75,7 +75,7 @@ local function LoadPrepatchHelpFrame()
 	local function styleTab(bu)
 		bu.selected:SetColorTexture(r, g, b, .2)
 		bu.selected:SetDrawLayer("BACKGROUND")
-		bu.text:SetFont(C.Font[1], 14, C.Font[3])
+		bu.text:SetFont(C.media.font, 14, "OUTLINE")
 		F.Reskin(bu, true)
 		bu:SetScript("OnEnter", colourTab)
 		bu:SetScript("OnLeave", clearTab)
@@ -86,11 +86,12 @@ local function LoadPrepatchHelpFrame()
 	end
 	styleTab(HelpFrameButton16)
 
-	HelpFrameAccountSecurityOpenTicket.text:SetFont(C.Font[1], 14, C.Font[3])
-	HelpFrameOpenTicketHelpOpenTicket.text:SetFont(C.Font[1], 14, C.Font[3])
+	HelpFrameAccountSecurityOpenTicket.text:SetFont(C.media.font, 14, "OUTLINE")
+	HelpFrameOpenTicketHelpOpenTicket.text:SetFont(C.media.font, 14, "OUTLINE")
 
 	HelpFrameCharacterStuckHearthstone:SetSize(56, 56)
-	F.ReskinIcon(HelpFrameCharacterStuckHearthstone.IconTexture)
+	F.CreateBG(HelpFrameCharacterStuckHearthstone)
+	HelpFrameCharacterStuckHearthstoneIconTexture:SetTexCoord(.08, .92, .08, .92)
 
 	F.Reskin(HelpBrowserNavHome)
 	F.Reskin(HelpBrowserNavReload)
@@ -110,39 +111,16 @@ local function LoadPrepatchHelpFrame()
 	LoadingIcon:SetPoint("LEFT", HelpBrowserNavStop, "RIGHT")
 
 	F.StripTextures(BrowserSettingsTooltip)
-	F.SetBD(BrowserSettingsTooltip)
+	F.CreateBD(BrowserSettingsTooltip)
+	F.CreateSD(BrowserSettingsTooltip)
+	F.Reskin(BrowserSettingsTooltip.CacheButton)
 	F.Reskin(BrowserSettingsTooltip.CookiesButton)
 	F.Reskin(ReportCheatingDialogReportButton)
 	F.Reskin(ReportCheatingDialogCancelButton)
 
-	F.StripTextures(TicketStatusFrameButton)
-	F.SetBD(TicketStatusFrameButton)
-	F.SetBD(ReportCheatingDialog)
+	F.CreateBD(TicketStatusFrameButton)
+	F.CreateSD(TicketStatusFrameButton)
+	F.CreateBD(ReportCheatingDialog)
+	F.CreateSD(ReportCheatingDialog)
 	ReportCheatingDialog.Border:Hide()
-end
-
-tinsert(C.defaultThemes, function()
-	if not C.isNewPatch then
-		LoadPrepatchHelpFrame()
-		return
-	end
-
-	F.StripTextures(HelpFrame)
-	F.SetBD(HelpFrame)
-	F.ReskinClose(HelpFrameCloseButton)
-	F.StripTextures(HelpBrowser.BrowserInset)
-
-	F.StripTextures(BrowserSettingsTooltip)
-	F.SetBD(BrowserSettingsTooltip)
-	F.Reskin(BrowserSettingsTooltip.CookiesButton)
-
-	F.StripTextures(TicketStatusFrameButton)
-	F.SetBD(TicketStatusFrameButton)
-
-	F.SetBD(ReportCheatingDialog)
-	ReportCheatingDialog.Border:Hide()
-	F.Reskin(ReportCheatingDialogReportButton)
-	F.Reskin(ReportCheatingDialogCancelButton)
-	F.StripTextures(ReportCheatingDialogCommentFrame)
-	F.CreateBDFrame(ReportCheatingDialogCommentFrame, .25)
 end)

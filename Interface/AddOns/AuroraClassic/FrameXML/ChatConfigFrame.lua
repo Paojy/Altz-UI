@@ -1,42 +1,66 @@
-local _, ns = ...
-local F, C = unpack(ns)
+local F, C = unpack(select(2, ...))
 
-tinsert(C.defaultThemes, function()
+tinsert(C.themes["AuroraClassic"], function()
 	F.StripTextures(ChatConfigFrame)
-	F.SetBD(ChatConfigFrame)
-	F.StripTextures(ChatConfigFrame.Header)
+	F.CreateBD(ChatConfigFrame)
+	F.CreateSD(ChatConfigFrame)
+	ChatConfigFrameHeader:SetAlpha(0)
+	ChatConfigFrameHeader:SetPoint("TOP", ChatConfigFrame, 0, 0)
 
-	hooksecurefunc("ChatConfig_UpdateCheckboxes", function(frame)
-		if not FCF_GetCurrentChatFrame() then return end
+	hooksecurefunc("ChatConfig_CreateCheckboxes", function(frame, checkBoxTable)
+		if frame.styled then return end
 
-		local nameString = frame:GetName().."CheckBox"
-		for index in ipairs(frame.checkBoxTable) do
-			local checkBoxName = nameString..index
+		frame:SetBackdrop(nil)
+		for index in ipairs(checkBoxTable) do
+			local checkBoxName = frame:GetName().."CheckBox"..index
 			local checkbox = _G[checkBoxName]
-			if checkbox and not checkbox.styled then
-				checkbox:SetBackdrop(nil)
-				local bg = F.CreateBDFrame(checkbox, .25)
-				bg:SetInside()
-				F.ReskinCheck(_G[checkBoxName.."Check"])
 
-				checkbox.styled = true
+			checkbox:SetBackdrop(nil)
+			local bg = F.CreateBDFrame(checkbox, .25)
+			bg:SetPoint("TOPLEFT")
+			bg:SetPoint("BOTTOMRIGHT", 0, 1)
+
+			local swatch = _G[checkBoxName.."ColorSwatch"]
+			if swatch then
+				F.ReskinColourSwatch(_G[checkBoxName.."ColorSwatch"])
 			end
+			F.ReskinCheck(_G[checkBoxName.."Check"])
 		end
+
+		frame.styled = true
 	end)
 
 	hooksecurefunc("ChatConfig_CreateTieredCheckboxes", function(frame, checkBoxTable)
 		if frame.styled then return end
 
-		local nameString = frame:GetName().."CheckBox"
 		for index, value in ipairs(checkBoxTable) do
-			local checkBoxName = nameString..index
+			local checkBoxName = frame:GetName().."CheckBox"..index
 			F.ReskinCheck(_G[checkBoxName])
 
 			if value.subTypes then
-				for i in ipairs(value.subTypes) do
-					F.ReskinCheck(_G[checkBoxName.."_"..i])
+				for k in ipairs(value.subTypes) do
+					F.ReskinCheck(_G[checkBoxName.."_"..k])
 				end
 			end
+		end
+
+		frame.styled = true
+	end)
+
+	hooksecurefunc("ChatConfig_CreateColorSwatches", function(frame, swatchTable)
+		if frame.styled then return end
+
+		frame:SetBackdrop(nil)
+		for index in ipairs(swatchTable) do
+			local swatchName = frame:GetName().."Swatch"..index
+			local swatch = _G[swatchName]
+
+			swatch:SetBackdrop(nil)
+			local bg = F.CreateBDFrame(swatch, .25)
+			bg:SetPoint("TOPLEFT")
+			bg:SetPoint("BOTTOMRIGHT", 0, 1)
+
+			F.ReskinColourSwatch(_G[swatchName.."ColorSwatch"])
 		end
 
 		frame.styled = true
@@ -53,37 +77,25 @@ tinsert(C.defaultThemes, function()
 	end)
 
 	for i = 1, 5 do
-		F.StripTextures(_G["CombatConfigTab"..i])
+		_G["CombatConfigTab"..i.."Left"]:Hide()
+		_G["CombatConfigTab"..i.."Middle"]:Hide()
+		_G["CombatConfigTab"..i.."Right"]:Hide()
 	end
 
 	local line = ChatConfigFrame:CreateTexture()
-	line:SetSize(C.mult, 460)
+	line:SetSize(1, 460)
 	line:SetPoint("TOPLEFT", ChatConfigCategoryFrame, "TOPRIGHT")
-	line:SetColorTexture(1, 1, 1, .25)
+	line:SetColorTexture(1, 1, 1, .2)
 
-	local backdrops = {
-		ChatConfigCategoryFrame,
-		ChatConfigBackgroundFrame,
-		ChatConfigCombatSettingsFilters,
-		CombatConfigColorsHighlighting,
-		CombatConfigColorsColorizeUnitName,
-		CombatConfigColorsColorizeSpellNames,
-		CombatConfigColorsColorizeDamageNumber,
-		CombatConfigColorsColorizeDamageSchool,
-		CombatConfigColorsColorizeEntireLine,
-		ChatConfigChatSettingsLeft,
-		ChatConfigOtherSettingsCombat,
-		ChatConfigOtherSettingsPVP,
-		ChatConfigOtherSettingsSystem,
-		ChatConfigOtherSettingsCreature,
-		ChatConfigChannelSettingsLeft,
-		CombatConfigMessageSourcesDoneBy,
-		CombatConfigColorsUnitColors,
-		CombatConfigMessageSourcesDoneTo,
-	}
-	for _, frame in pairs(backdrops) do
-		F.StripTextures(frame)
-	end
+	ChatConfigCategoryFrame:SetBackdrop(nil)
+	ChatConfigBackgroundFrame:SetBackdrop(nil)
+	ChatConfigCombatSettingsFilters:SetBackdrop(nil)
+	CombatConfigColorsHighlighting:SetBackdrop(nil)
+	CombatConfigColorsColorizeUnitName:SetBackdrop(nil)
+	CombatConfigColorsColorizeSpellNames:SetBackdrop(nil)
+	CombatConfigColorsColorizeDamageNumber:SetBackdrop(nil)
+	CombatConfigColorsColorizeDamageSchool:SetBackdrop(nil)
+	CombatConfigColorsColorizeEntireLine:SetBackdrop(nil)
 
 	local combatBoxes = {
 		CombatConfigColorsHighlightingLine,
@@ -108,7 +120,8 @@ tinsert(C.defaultThemes, function()
 		CombatConfigSettingsParty,
 		CombatConfigSettingsRaid
 	}
-	for _, box in pairs(combatBoxes) do
+
+	for _, box in next, combatBoxes do
 		F.ReskinCheck(box)
 	end
 
@@ -129,12 +142,13 @@ tinsert(C.defaultThemes, function()
 	F.ReskinInput(CombatConfigSettingsNameEditBox)
 	F.ReskinRadio(CombatConfigColorsColorizeEntireLineBySource)
 	F.ReskinRadio(CombatConfigColorsColorizeEntireLineByTarget)
-	F.ReskinColorSwatch(CombatConfigColorsColorizeSpellNamesColorSwatch)
-	F.ReskinColorSwatch(CombatConfigColorsColorizeDamageNumberColorSwatch)
+	F.ReskinColourSwatch(CombatConfigColorsColorizeSpellNamesColorSwatch)
+	F.ReskinColourSwatch(CombatConfigColorsColorizeDamageNumberColorSwatch)
 	F.ReskinScroll(ChatConfigCombatSettingsFiltersScrollFrameScrollBar)
+	ChatConfigCombatSettingsFiltersScrollFrameScrollBarBorder:Hide()
 
-	ChatConfigMoveFilterUpButton:SetSize(22, 22)
-	ChatConfigMoveFilterDownButton:SetSize(22, 22)
+	ChatConfigMoveFilterUpButton:SetSize(28, 28)
+	ChatConfigMoveFilterDownButton:SetSize(28, 28)
 
 	ChatConfigCombatSettingsFiltersAddFilterButton:SetPoint("RIGHT", ChatConfigCombatSettingsFiltersDeleteButton, "LEFT", -1, 0)
 	ChatConfigCombatSettingsFiltersCopyFilterButton:SetPoint("RIGHT", ChatConfigCombatSettingsFiltersAddFilterButton, "LEFT", -1, 0)

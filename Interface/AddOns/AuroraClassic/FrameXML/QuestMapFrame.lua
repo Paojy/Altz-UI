@@ -1,72 +1,85 @@
-local _, ns = ...
-local F, C = unpack(ns)
+local F, C = unpack(select(2, ...))
 
-local function ReskinQuestHeader(header, isCalling)
-	if header.styled then return end
-
-	header.Background:SetAlpha(.7)
-	if header.Divider then header.Divider:Hide() end
-	if header.TopFiligree then header.TopFiligree:Hide() end
-
-	local collapseButton = isCalling and header or header.CollapseButton
-	if collapseButton then
-		collapseButton:GetPushedTexture():SetAlpha(0)
-		collapseButton:GetHighlightTexture():SetAlpha(0)
-		F.ReskinCollapse(collapseButton, true)
-		collapseButton.bg:SetFrameLevel(6)
-	end
-
-	header.styled = true
-end
-
-local function ReskinSessionDialog(_, dialog)
-	if not dialog.styled then
-		F.StripTextures(dialog)
-		F.SetBD(dialog)
-		F.Reskin(dialog.ButtonContainer.Confirm)
-		F.Reskin(dialog.ButtonContainer.Decline)
-		if dialog.MinimizeButton then
-			F.ReskinArrow(dialog.MinimizeButton, "down")
-		end
-
-		dialog.styled = true
-	end
-end
-
-tinsert(C.defaultThemes, function()
-	-- Quest frame
+tinsert(C.themes["AuroraClassic"], function()
+	local r, g, b = C.r, C.g, C.b
 
 	local QuestMapFrame = QuestMapFrame
-	QuestMapFrame.VerticalSeparator:SetAlpha(0)
-	QuestMapFrame.Background:SetAlpha(0)
+
+	-- [[ Quest scroll frame ]]
 
 	local QuestScrollFrame = QuestScrollFrame
+	local campaignHeader = QuestScrollFrame.Contents.WarCampaignHeader
+	local StoryHeader = QuestScrollFrame.Contents.StoryHeader
+
+	QuestMapFrame.VerticalSeparator:SetAlpha(0)
+	QuestScrollFrame.Background:SetAlpha(0)
 	QuestScrollFrame.DetailFrame.TopDetail:SetAlpha(0)
 	QuestScrollFrame.DetailFrame.BottomDetail:SetAlpha(0)
 	QuestScrollFrame.Contents.Separator:SetAlpha(0)
-	ReskinQuestHeader(QuestScrollFrame.Contents.StoryHeader)
+
+	if AuroraConfig.tooltips then
+		F.ReskinTooltip(QuestScrollFrame.StoryTooltip)
+		F.ReskinTooltip(QuestScrollFrame.WarCampaignTooltip)
+	end
 	F.ReskinScroll(QuestScrollFrame.ScrollBar)
 
-	local campaignOverview = QuestMapFrame.CampaignOverview
-	campaignOverview.BG:SetAlpha(0)
-	ReskinQuestHeader(campaignOverview.Header)
-	F.ReskinScroll(campaignOverview.ScrollFrame.ScrollBar)
+	for _, header in next, {campaignHeader, StoryHeader} do
+		header.Background:SetAlpha(0)
+		header.HighlightTexture:Hide()
+		header.Text:SetPoint("TOPLEFT", 15, -20)
 
-	-- Quest details
+		local bg = F.CreateBDFrame(header, .25)
+		bg:SetPoint("TOPLEFT", 0, -14)
+		bg:SetPoint("BOTTOMRIGHT", -4, 5)
+		if header == campaignHeader then
+			local newTex = bg:CreateTexture(nil, "OVERLAY")
+			newTex:SetPoint("TOPRIGHT", -25, 3)
+			newTex:SetSize(50, 50)
+			newTex:SetBlendMode("ADD")
+			newTex:SetAlpha(0)
+			header.newTex = newTex
+		end
+
+		header:HookScript("OnEnter", function()
+			bg:SetBackdropColor(r, g, b, .25)
+		end)
+		header:HookScript("OnLeave", function()
+			bg:SetBackdropColor(0, 0, 0, .25)
+		end)
+	end
+
+	local idToTexture = {
+		[261] = "Interface\\Timer\\Alliance-Logo",
+		[262] = "Interface\\Timer\\Horde-Logo",
+	}
+	local function UpdateCampaignHeader()
+		campaignHeader.newTex:SetAlpha(0)
+		if campaignHeader:IsShown() then
+			local warCampaignInfo = C_CampaignInfo.GetCampaignInfo(C_CampaignInfo.GetCurrentCampaignID())
+			local textureID = warCampaignInfo.uiTextureKitID
+			if textureID and idToTexture[textureID] then
+				campaignHeader.newTex:SetTexture(idToTexture[textureID])
+				campaignHeader.newTex:SetAlpha(.7)
+			end
+		end
+	end
+
+	-- [[ Quest details ]]
 
 	local DetailsFrame = QuestMapFrame.DetailsFrame
+	local RewardsFrame = DetailsFrame.RewardsFrame
 	local CompleteQuestFrame = DetailsFrame.CompleteQuestFrame
 
 	F.StripTextures(DetailsFrame)
-	F.StripTextures(DetailsFrame.RewardsFrame)
-	F.StripTextures(DetailsFrame.ShareButton)
+	select(6, DetailsFrame.ShareButton:GetRegions()):SetAlpha(0)
+	select(7, DetailsFrame.ShareButton:GetRegions()):SetAlpha(0)
 	DetailsFrame.SealMaterialBG:SetAlpha(0)
 
 	F.Reskin(DetailsFrame.BackButton)
 	F.Reskin(DetailsFrame.AbandonButton)
 	F.Reskin(DetailsFrame.ShareButton)
 	F.Reskin(DetailsFrame.TrackButton)
-	F.ReskinScroll(QuestMapDetailsScrollFrame.ScrollBar)
+	F.ReskinScroll(QuestMapDetailsScrollFrameScrollBar)
 
 	DetailsFrame.AbandonButton:ClearAllPoints()
 	DetailsFrame.AbandonButton:SetPoint("BOTTOMLEFT", DetailsFrame, -1, 0)
@@ -80,33 +93,34 @@ tinsert(C.defaultThemes, function()
 	DetailsFrame.TrackButton:SetPoint("LEFT", DetailsFrame.ShareButton, "RIGHT", 1, 0)
 	DetailsFrame.TrackButton:SetWidth(96)
 
+	-- Rewards frame
+
+	RewardsFrame.Background:SetAlpha(0)
+	select(2, RewardsFrame:GetRegions()):SetAlpha(0)
+
 	-- Scroll frame
 
 	hooksecurefunc("QuestLogQuests_Update", function()
-		for button in QuestScrollFrame.headerFramePool:EnumerateActive() do
-			if button.ButtonText then
-				if not button.styled then
-					F.ReskinCollapse(button, true)
-					button:GetPushedTexture():SetAlpha(0)
-					button:GetHighlightTexture():SetAlpha(0)
+		UpdateCampaignHeader()
 
-					button.styled = true
+		for i = 6, QuestMapFrame.QuestsFrame.Contents:GetNumChildren() do
+			local child = select(i, QuestMapFrame.QuestsFrame.Contents:GetChildren())
+			if child.ButtonText then
+				if not child.styled then
+					F.ReskinExpandOrCollapse(child)
+					child.styled = true
 				end
+				child:SetHighlightTexture("")
 			end
-		end
-
-		for header in QuestScrollFrame.campaignHeaderFramePool:EnumerateActive() do
-			ReskinQuestHeader(header)
-		end
-
-		for header in QuestScrollFrame.covenantCallingsHeaderFramePool:EnumerateActive() do
-			ReskinQuestHeader(header, true)
 		end
 	end)
 
 	-- Complete quest frame
-	F.StripTextures(CompleteQuestFrame)
-	F.StripTextures(CompleteQuestFrame.CompleteButton)
+	CompleteQuestFrame:GetRegions():SetAlpha(0)
+	select(2, CompleteQuestFrame:GetRegions()):SetAlpha(0)
+	select(6, CompleteQuestFrame.CompleteButton:GetRegions()):SetAlpha(0)
+	select(7, CompleteQuestFrame.CompleteButton:GetRegions()):SetAlpha(0)
+
 	F.Reskin(CompleteQuestFrame.CompleteButton)
 
 	-- [[ Quest log popup detail frame ]]
@@ -137,11 +151,11 @@ tinsert(C.defaultThemes, function()
 	F.Reskin(ShowMapButton)
 
 	ShowMapButton:HookScript("OnEnter", function(self)
-		self.Text:SetTextColor(1, 1, 1)
+		self.Text:SetTextColor(GameFontHighlight:GetTextColor())
 	end)
 
 	ShowMapButton:HookScript("OnLeave", function(self)
-		self.Text:SetTextColor(1, .8, 0)
+		self.Text:SetTextColor(GameFontNormal:GetTextColor())
 	end)
 
 	-- Bottom buttons
@@ -149,35 +163,4 @@ tinsert(C.defaultThemes, function()
 	QuestLogPopupDetailFrame.ShareButton:ClearAllPoints()
 	QuestLogPopupDetailFrame.ShareButton:SetPoint("LEFT", QuestLogPopupDetailFrame.AbandonButton, "RIGHT", 1, 0)
 	QuestLogPopupDetailFrame.ShareButton:SetPoint("RIGHT", QuestLogPopupDetailFrame.TrackButton, "LEFT", -1, 0)
-
-	-- Party Sync button
-
-	local sessionManagement = QuestMapFrame.QuestSessionManagement
-	sessionManagement.BG:Hide()
-	F.CreateBDFrame(sessionManagement, .25)
-
-	hooksecurefunc(QuestSessionManager, "NotifyDialogShow", ReskinSessionDialog)
-
-	local executeSessionCommand = sessionManagement.ExecuteSessionCommand
-	F.Reskin(executeSessionCommand)
-
-	local icon = executeSessionCommand:CreateTexture(nil, "ARTWORK")
-	icon:SetInside()
-	executeSessionCommand.normalIcon = icon
-
-	local sessionCommandToButtonAtlas = {
-		[_G.Enum.QuestSessionCommand.Start] = "QuestSharing-DialogIcon",
-		[_G.Enum.QuestSessionCommand.Stop] = "QuestSharing-Stop-DialogIcon"
-	}
-
-	hooksecurefunc(QuestMapFrame.QuestSessionManagement, "UpdateExecuteCommandAtlases", function(self, command)
-		self.ExecuteSessionCommand:SetNormalTexture("")
-		self.ExecuteSessionCommand:SetPushedTexture("")
-		self.ExecuteSessionCommand:SetDisabledTexture("")
-
-		local atlas = sessionCommandToButtonAtlas[command]
-		if atlas then
-			self.ExecuteSessionCommand.normalIcon:SetAtlas(atlas)
-		end
-	end)
 end)

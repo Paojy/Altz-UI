@@ -1,5 +1,4 @@
-local _, ns = ...
-local F, C = unpack(ns)
+local F, C = unpack(select(2, ...))
 
 C.themes["Blizzard_InspectUI"] = function()
 	F.StripTextures(InspectTalentFrame)
@@ -19,15 +18,22 @@ C.themes["Blizzard_InspectUI"] = function()
 
 	for i = 1, #slots do
 		local slot = _G["Inspect"..slots[i].."Slot"]
+		local border = slot.IconBorder
+
 		F.StripTextures(slot)
-		slot.icon:SetTexCoord(unpack(C.TexCoord))
-		slot.icon:SetInside()
-		slot.bg = F.CreateBDFrame(slot.icon, .25)
+		slot:SetNormalTexture("")
+		slot:SetPushedTexture("")
 		slot:GetHighlightTexture():SetColorTexture(1, 1, 1, .25)
-		F.ReskinIconBorder(slot.IconBorder)
+
+		border:SetPoint("TOPLEFT", -C.mult, C.mult)
+		border:SetPoint("BOTTOMRIGHT", C.mult, -C.mult)
+		border:SetDrawLayer("BACKGROUND")
+		F.CreateBDFrame(slot, .25)
+		slot.icon:SetTexCoord(.08, .92, .08, .92)
 	end
 
 	hooksecurefunc("InspectPaperDollItemSlotButton_Update", function(button)
+		button.IconBorder:SetTexture(C.media.backdrop)
 		button.icon:SetShown(button.hasItem)
 	end)
 
@@ -36,7 +42,7 @@ C.themes["Blizzard_InspectUI"] = function()
 
 	inspectSpec.ring:Hide()
 	F.ReskinIcon(inspectSpec.specIcon)
-	inspectSpec.roleIcon:SetTexture(C.rolesTex)
+	inspectSpec.roleIcon:SetTexture(C.media.roleIcons)
 	F.CreateBDFrame(inspectSpec.roleIcon)
 
 	for i = 1, 7 do
@@ -45,6 +51,7 @@ C.themes["Blizzard_InspectUI"] = function()
 			local bu = row["talent"..j]
 			bu.Slot:Hide()
 			bu.border:SetTexture("")
+			bu.icon:SetDrawLayer("ARTWORK")
 			F.ReskinIcon(bu.icon)
 		end
 	end

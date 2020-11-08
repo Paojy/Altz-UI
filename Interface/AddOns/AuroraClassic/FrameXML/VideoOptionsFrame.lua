@@ -1,14 +1,15 @@
-local _, ns = ...
-local F, C = unpack(ns)
+local F, C = unpack(select(2, ...))
 
-tinsert(C.defaultThemes, function()
+tinsert(C.themes["AuroraClassic"], function()
 	F.StripTextures(VideoOptionsFrameCategoryFrame)
 	F.StripTextures(VideoOptionsFramePanelContainer)
-	F.StripTextures(VideoOptionsFrame.Header)
-	VideoOptionsFrame.Header:ClearAllPoints()
-	VideoOptionsFrame.Header:SetPoint("TOP", VideoOptionsFrame, 0, 0)
 
-	F.SetBD(VideoOptionsFrame)
+	VideoOptionsFrameHeader:SetTexture("")
+	VideoOptionsFrameHeader:ClearAllPoints()
+	VideoOptionsFrameHeader:SetPoint("TOP", VideoOptionsFrame, 0, 0)
+
+	F.CreateBD(VideoOptionsFrame)
+	F.CreateSD(VideoOptionsFrame)
 	VideoOptionsFrame.Border:Hide()
 	F.Reskin(VideoOptionsFrameOkay)
 	F.Reskin(VideoOptionsFrameCancel)
@@ -34,16 +35,13 @@ tinsert(C.defaultThemes, function()
 		RaidButton:DisableDrawLayer("BACKGROUND")
 
 		local hline = Display_:CreateTexture(nil, "ARTWORK")
-		hline:SetSize(580, C.mult)
+		hline:SetSize(580, 1)
 		hline:SetPoint("TOPLEFT", GraphicsButton, "BOTTOMLEFT", 14, -4)
 		hline:SetColorTexture(1, 1, 1, .2)
 
-		F.StripTextures(AudioOptionsSoundPanelPlayback)
-		F.CreateBDFrame(AudioOptionsSoundPanelPlayback, .25)
-		F.StripTextures(AudioOptionsSoundPanelHardware)
-		F.CreateBDFrame(AudioOptionsSoundPanelHardware, .25)
-		F.StripTextures(AudioOptionsSoundPanelVolume)
-		F.CreateBDFrame(AudioOptionsSoundPanelVolume, .25)
+		F.CreateBD(AudioOptionsSoundPanelPlayback, .25)
+		F.CreateBD(AudioOptionsSoundPanelHardware, .25)
+		F.CreateBD(AudioOptionsSoundPanelVolume, .25)
 
 		AudioOptionsSoundPanelPlaybackTitle:SetPoint("BOTTOMLEFT", AudioOptionsSoundPanelPlayback, "TOPLEFT", 5, 2)
 		AudioOptionsSoundPanelHardwareTitle:SetPoint("BOTTOMLEFT", AudioOptionsSoundPanelHardware, "TOPLEFT", 5, 2)
@@ -56,7 +54,7 @@ tinsert(C.defaultThemes, function()
 			"Display_AntiAliasingDropDown",
 			"Display_VerticalSyncDropDown",
 			"Graphics_TextureResolutionDropDown",
-			"Graphics_SpellDensityDropDown",
+			"Graphics_FilteringDropDown",
 			"Graphics_ProjectedTexturesDropDown",
 			"Graphics_ShadowsDropDown",
 			"Graphics_LiquidDetailDropDown",
@@ -66,7 +64,7 @@ tinsert(C.defaultThemes, function()
 			"Graphics_DepthEffectsDropDown",
 			"Graphics_OutlineModeDropDown",
 			"RaidGraphics_TextureResolutionDropDown",
-			"RaidGraphics_SpellDensityDropDown",
+			"RaidGraphics_FilteringDropDown",
 			"RaidGraphics_ProjectedTexturesDropDown",
 			"RaidGraphics_ShadowsDropDown",
 			"RaidGraphics_LiquidDetailDropDown",
@@ -76,9 +74,6 @@ tinsert(C.defaultThemes, function()
 			"RaidGraphics_DepthEffectsDropDown",
 			"RaidGraphics_OutlineModeDropDown",
 			"Advanced_BufferingDropDown",
-			"Advanced_FilteringDropDown",
-			"Advanced_RTShadowQualityDropDown",
-			--"Advanced_SSAOTypeDropDown", -- not in ptr yet
 			"Advanced_MultisampleAntiAliasingDropDown",
 			"Advanced_MultisampleAlphaTest",
 			"Advanced_PostProcessAntiAliasingDropDown",
@@ -106,7 +101,6 @@ tinsert(C.defaultThemes, function()
 
 		local sliders = {
 			"Display_RenderScaleSlider",
-			"Display_UIScaleSlider",
 			"Graphics_Quality",
 			"Graphics_ViewDistanceSlider",
 			"Graphics_EnvironmentalDetailSlider",
@@ -115,9 +109,9 @@ tinsert(C.defaultThemes, function()
 			"RaidGraphics_ViewDistanceSlider",
 			"RaidGraphics_EnvironmentalDetailSlider",
 			"RaidGraphics_GroundClutterSlider",
+			"Advanced_UIScaleSlider",
 			"Advanced_MaxFPSSlider",
 			"Advanced_MaxFPSBKSlider",
-			"Advanced_TargetFPSSlider",
 			"Advanced_GammaSlider",
 			"Advanced_ContrastSlider",
 			"Advanced_BrightnessSlider",
@@ -141,11 +135,10 @@ tinsert(C.defaultThemes, function()
 		end
 
 		local checkboxes = {
-			"Display_UseUIScale",
 			"Display_RaidSettingsEnabledCheckBox",
+			"Advanced_UseUIScale",
 			"Advanced_MaxFPSCheckBox",
 			"Advanced_MaxFPSBKCheckBox",
-			"Advanced_TargetFPSCheckBox",
 			"NetworkOptionsPanelOptimizeSpeed",
 			"NetworkOptionsPanelUseIPv6",
 			"NetworkOptionsPanelAdvancedCombatLogging",
@@ -175,7 +168,7 @@ tinsert(C.defaultThemes, function()
 		local testInputDevie = AudioOptionsVoicePanelTestInputDevice
 		F.Reskin(testInputDevie.ToggleTest)
 		F.StripTextures(testInputDevie.VUMeter)
-		testInputDevie.VUMeter.Status:SetStatusBarTexture(C.bdTex)
+		testInputDevie.VUMeter.Status:SetStatusBarTexture(C.media.backdrop)
 		local bg = F.CreateBDFrame(testInputDevie.VUMeter, .3)
 		bg:SetPoint("TOPLEFT", 4, -4)
 		bg:SetPoint("BOTTOMRIGHT", -4, 4)
@@ -189,13 +182,4 @@ tinsert(C.defaultThemes, function()
 			self.styled = true
 		end
 	end)
-
-	-- Deprecated
-	F.StripTextures(AudioOptionsFrame.Header)
-	AudioOptionsFrame.Header:ClearAllPoints()
-	AudioOptionsFrame.Header:SetPoint("TOP", AudioOptionsFrame, 0, 0)
-	F.SetBD(AudioOptionsFrame)
-	F.Reskin(AudioOptionsFrameOkay)
-	F.Reskin(AudioOptionsFrameCancel)
-	F.Reskin(AudioOptionsFrameDefaults)
 end)

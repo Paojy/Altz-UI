@@ -1,7 +1,6 @@
-local _, ns = ...
-local F, C = unpack(ns)
+local F, C = unpack(select(2, ...))
 
-tinsert(C.defaultThemes, function()
+tinsert(C.themes["AuroraClassic"], function()
 	F.ReskinPortraitFrame(SpellBookFrame)
 	SpellBookFrame:DisableDrawLayer("BACKGROUND")
 	SpellBookFrameTabButton1:ClearAllPoints()
@@ -23,7 +22,8 @@ tinsert(C.defaultThemes, function()
 		bu:SetCheckedTexture("")
 		bu:SetPushedTexture("")
 
-		ic.bg = F.ReskinIcon(ic)
+		ic:SetTexCoord(.08, .92, .08, .92)
+		ic.bg = F.CreateBG(bu)
 	end
 
 	hooksecurefunc("SpellButton_UpdateButton", function(self)
@@ -69,14 +69,14 @@ tinsert(C.defaultThemes, function()
 			local tab = _G["SpellBookSkillLineTab"..i]
 			local nt = tab:GetNormalTexture()
 			if nt then
-				nt:SetTexCoord(unpack(C.TexCoord))
+				nt:SetTexCoord(.08, .92, .08, .92)
 			end
 
 			if not tab.styled then
 				tab:GetRegions():Hide()
-				tab:SetCheckedTexture(C.pushed)
+				tab:SetCheckedTexture(C.media.checked)
 				tab:GetHighlightTexture():SetColorTexture(1, 1, 1, .25)
-				F.CreateBDFrame(tab)
+				F.CreateBG(tab)
 
 				tab.styled = true
 			end
@@ -98,7 +98,7 @@ tinsert(C.defaultThemes, function()
 
 		F.StripTextures(bu.statusBar)
 		bu.statusBar:SetHeight(10)
-		bu.statusBar:SetStatusBarTexture(C.bdTex)
+		bu.statusBar:SetStatusBarTexture(C.media.backdrop)
 		bu.statusBar:GetStatusBarTexture():SetGradient("VERTICAL", 0, .6, 0, 0, .8, 0)
 		bu.statusBar.rankText:SetPoint("CENTER")
 		F.CreateBDFrame(bu.statusBar, .25)
@@ -108,45 +108,37 @@ tinsert(C.defaultThemes, function()
 		end
 	end
 
-	local professionbuttons = {
-		"PrimaryProfession1SpellButtonTop",
-		"PrimaryProfession1SpellButtonBottom",
-		"PrimaryProfession2SpellButtonTop",
-		"PrimaryProfession2SpellButtonBottom",
-		"SecondaryProfession1SpellButtonLeft",
-		"SecondaryProfession1SpellButtonRight",
-		"SecondaryProfession2SpellButtonLeft",
-		"SecondaryProfession2SpellButtonRight",
-		"SecondaryProfession3SpellButtonLeft",
-		"SecondaryProfession3SpellButtonRight",
-	}
+	local professionbuttons = {"PrimaryProfession1SpellButtonTop", "PrimaryProfession1SpellButtonBottom", "PrimaryProfession2SpellButtonTop", "PrimaryProfession2SpellButtonBottom", "SecondaryProfession1SpellButtonLeft", "SecondaryProfession1SpellButtonRight", "SecondaryProfession2SpellButtonLeft", "SecondaryProfession2SpellButtonRight", "SecondaryProfession3SpellButtonLeft", "SecondaryProfession3SpellButtonRight"}
 
 	for _, button in pairs(professionbuttons) do
+		local icon = _G[button.."IconTexture"]
 		local bu = _G[button]
-		F.StripTextures(bu)
+		_G[button.."NameFrame"]:SetAlpha(0)
 		bu:SetPushedTexture("")
+		bu:SetCheckedTexture(C.media.checked)
 
-		local icon = bu.iconTexture
-		icon:ClearAllPoints()
-		icon:SetPoint("TOPLEFT", 2, -2)
-		icon:SetPoint("BOTTOMRIGHT", -2, 2)
-		F.ReskinIcon(icon)
-
-		bu.highlightTexture:SetAllPoints(icon)
-		local check = bu:GetCheckedTexture()
-		check:SetTexture(C.pushed)
-		check:SetAllPoints(icon)
+		if icon then
+			icon:SetTexCoord(.08, .92, .08, .92)
+			icon:ClearAllPoints()
+			icon:SetPoint("TOPLEFT", 2, -2)
+			icon:SetPoint("BOTTOMRIGHT", -2, 2)
+			F.CreateBG(icon)
+			bu.highlightTexture:SetAllPoints(icon)
+		end
 	end
 
 	for i = 1, 2 do
 		local bu = _G["PrimaryProfession"..i]
+
 		_G["PrimaryProfession"..i.."IconBorder"]:Hide()
 
 		bu.professionName:ClearAllPoints()
 		bu.professionName:SetPoint("TOPLEFT", 100, -4)
+
 		bu.icon:SetAlpha(1)
+		bu.icon:SetTexCoord(.08, .92, .08, .92)
 		bu.icon:SetDesaturated(false)
-		F.ReskinIcon(bu.icon)
+		F.CreateBG(bu.icon)
 
 		local bg = F.CreateBDFrame(bu, .25)
 		bg:SetPoint("TOPLEFT")
@@ -163,9 +155,9 @@ tinsert(C.defaultThemes, function()
 		end
 	end)
 
-	F.CreateBDFrame(SecondaryProfession1, .25)
-	F.CreateBDFrame(SecondaryProfession2, .25)
-	F.CreateBDFrame(SecondaryProfession3, .25)
+	F.CreateBD(SecondaryProfession1, .25)
+	F.CreateBD(SecondaryProfession2, .25)
+	F.CreateBD(SecondaryProfession3, .25)
 	F.ReskinArrow(SpellBookPrevPageButton, "left")
 	F.ReskinArrow(SpellBookNextPageButton, "right")
 	SpellBookPageText:SetTextColor(.8, .8, .8)

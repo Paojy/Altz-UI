@@ -1,11 +1,11 @@
-local _, ns = ...
-local F, C = unpack(ns)
+local F, C = unpack(select(2, ...))
 
-tinsert(C.defaultThemes, function()
-	F.SetBD(TutorialFrame)
+tinsert(C.themes["AuroraClassic"], function()
+	F.CreateBD(TutorialFrame)
+	F.CreateSD(TutorialFrame)
 
 	TutorialFrameBackground:Hide()
-	TutorialFrameBackground.Show = F.Dummy
+	TutorialFrameBackground.Show = F.dummy
 	TutorialFrame:DisableDrawLayer("BORDER")
 
 	F.Reskin(TutorialFrameOkayButton, true)
@@ -26,7 +26,7 @@ tinsert(C.defaultThemes, function()
 	end
 	TutorialFramePrevButton:SetScript("OnEnter", nil)
 	TutorialFrameNextButton:SetScript("OnEnter", nil)
-	TutorialFrameOkayButton.__bg:SetBackdropColor(0, 0, 0, .25)
-	TutorialFramePrevButton.__bg:SetBackdropColor(0, 0, 0, .25)
-	TutorialFrameNextButton.__bg:SetBackdropColor(0, 0, 0, .25)
+	TutorialFrameOkayButton:SetBackdropColor(0, 0, 0, .25)
+	TutorialFramePrevButton:SetBackdropColor(0, 0, 0, .25)
+	TutorialFrameNextButton:SetBackdropColor(0, 0, 0, .25)
 end)

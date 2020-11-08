@@ -1,5 +1,4 @@
-local _, ns = ...
-local F, C = unpack(ns)
+local F, C = unpack(select(2, ...))
 
 C.themes["Blizzard_ChallengesUI"] = function()
 	ChallengesFrameInset:Hide()
@@ -13,32 +12,32 @@ C.themes["Blizzard_ChallengesUI"] = function()
 			local bu = self.DungeonIcons[i]
 			if bu and not bu.styled then
 				bu:GetRegions():SetAlpha(0)
-				bu.Icon:SetTexCoord(unpack(C.TexCoord))
-				bu.Icon:SetInside()
-				F.CreateBDFrame(bu.Icon, 0)
+				bu.Icon:SetTexCoord(.08, .92, .08, .92)
+				F.CreateBD(bu, 0)
 
 				bu.styled = true
 			end
 			if i == 1 then
 				self.WeeklyInfo.Child.SeasonBest:ClearAllPoints()
-				self.WeeklyInfo.Child.SeasonBest:SetPoint("BOTTOMLEFT", self.DungeonIcons[i], "TOPLEFT", 0, 2)
+				self.WeeklyInfo.Child.SeasonBest:SetPoint("TOPLEFT", self.DungeonIcons[i], "TOPLEFT", 5, 20)
 			end
 		end
 
 		if IsAddOnLoaded("AngryKeystones") and not angryStyle then
-			local mod = AngryKeystones.Modules.Schedule
-			local scheduel = mod.AffixFrame
-			local party = mod.PartyFrame
+			local scheduel, party = select(5, self:GetChildren())
 
-			F.StripTextures(scheduel)
-			F.CreateBDFrame(scheduel, .25)
+			scheduel:GetRegions():SetAlpha(0)
+			select(3, scheduel:GetRegions()):SetAlpha(0)
+			F.CreateBD(scheduel, .3)
 			if scheduel.Entries then
 				for i = 1, 3 do
 					F.AffixesSetup(scheduel.Entries[i])
 				end
 			end
-			F.StripTextures(party)
-			F.CreateBDFrame(party, .25)
+
+			party:GetRegions():SetAlpha(0)
+			select(3, party:GetRegions()):SetAlpha(0)
+			F.CreateBD(party, .3)
 
 			angryStyle = true
 		end
@@ -67,21 +66,13 @@ C.themes["Blizzard_ChallengesUI"] = function()
 	-- New season
 	local noticeFrame = ChallengesFrame.SeasonChangeNoticeFrame
 	F.Reskin(noticeFrame.Leave)
-	noticeFrame.Leave.__bg:SetFrameLevel(noticeFrame:GetFrameLevel() + 1)
 	noticeFrame.NewSeason:SetTextColor(1, .8, 0)
 	noticeFrame.SeasonDescription:SetTextColor(1, 1, 1)
 	noticeFrame.SeasonDescription2:SetTextColor(1, 1, 1)
 	noticeFrame.SeasonDescription3:SetTextColor(1, .8, 0)
 
-	local affix = noticeFrame.Affix
+	local affix = ChallengesFrame.SeasonChangeNoticeFrame.Affix
 	F.StripTextures(affix)
-	local bg = F.ReskinIcon(affix.Portrait)
-	bg:SetFrameLevel(3)
-
-	hooksecurefunc(affix, "SetUp", function(_, affixID)
-		local _, _, texture = C_ChallengeMode.GetAffixInfo(affixID)
-		if texture then
-			affix.Portrait:SetTexture(texture)
-		end
-	end)
+	F.ReskinIcon(affix.Portrait)
+	--affix.Portrait:SetTexture(2446016) -- for testing
 end

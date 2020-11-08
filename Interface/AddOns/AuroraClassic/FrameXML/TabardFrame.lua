@@ -1,11 +1,10 @@
-local _, ns = ...
-local F, C = unpack(ns)
+local F, C = unpack(select(2, ...))
 
-tinsert(C.defaultThemes, function()
+tinsert(C.themes["AuroraClassic"], function()
 	F.ReskinPortraitFrame(TabardFrame)
 	TabardFrameMoneyInset:Hide()
 	TabardFrameMoneyBg:Hide()
-	F.CreateBDFrame(TabardFrameCostFrame, .25)
+	F.CreateBD(TabardFrameCostFrame, .25)
 	F.Reskin(TabardFrameAcceptButton)
 	F.Reskin(TabardFrameCancelButton)
 	F.ReskinArrow(TabardCharacterModelRotateLeftButton, "left")

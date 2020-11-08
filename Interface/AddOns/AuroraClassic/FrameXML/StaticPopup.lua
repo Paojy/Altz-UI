@@ -1,22 +1,21 @@
-local _, ns = ...
-local F, C = unpack(ns)
-local r, g, b = C.r, C.g, C.b
+local F, C = unpack(select(2, ...))
 
-local function colorMinimize(f)
-	if f:IsEnabled() then
-		f.minimize:SetVertexColor(r, g, b)
+tinsert(C.themes["AuroraClassic"], function()
+	local r, g, b = C.r, C.g, C.b
+
+	local function colourMinimize(f)
+		if f:IsEnabled() then
+			f.minimize:SetVertexColor(r, g, b)
+		end
 	end
-end
 
-local function clearMinimize(f)
-	f.minimize:SetVertexColor(1, 1, 1)
-end
+	local function clearMinimize(f)
+		f.minimize:SetVertexColor(1, 1, 1)
+	end
 
-tinsert(C.defaultThemes, function()
 	for i = 1, 4 do
 		local frame = _G["StaticPopup"..i]
 		local bu = _G["StaticPopup"..i.."ItemFrame"]
-		local icon = _G["StaticPopup"..i.."ItemFrameIconTexture"]
 		local close = _G["StaticPopup"..i.."CloseButton"]
 
 		local gold = _G["StaticPopup"..i.."MoneyInputFrameGold"]
@@ -24,30 +23,32 @@ tinsert(C.defaultThemes, function()
 		local copper = _G["StaticPopup"..i.."MoneyInputFrameCopper"]
 
 		_G["StaticPopup"..i.."ItemFrameNameFrame"]:Hide()
+		_G["StaticPopup"..i.."ItemFrameIconTexture"]:SetTexCoord(.08, .92, .08, .92)
 
 		bu:SetNormalTexture("")
 		bu:SetHighlightTexture("")
 		bu:SetPushedTexture("")
-		bu.bg = F.ReskinIcon(icon)
-		F.ReskinIconBorder(bu.IconBorder)
+		F.CreateBG(bu)
+		bu.IconBorder:SetAlpha(0)
+		frame["Border"]:Hide()
 
 		silver:SetPoint("LEFT", gold, "RIGHT", 1, 0)
 		copper:SetPoint("LEFT", silver, "RIGHT", 1, 0)
 
-		frame.Border:Hide()
-		F.SetBD(frame)
+		F.CreateBD(frame)
+		F.CreateSD(frame)
 		for j = 1, 4 do
 			F.Reskin(frame["button"..j])
 		end
-		F.Reskin(frame.extraButton)
+		F.Reskin(frame["extraButton"])
 		F.ReskinClose(close)
 
 		close.minimize = close:CreateTexture(nil, "OVERLAY")
-		close.minimize:SetSize(9, C.mult)
+		close.minimize:SetSize(9, 1)
 		close.minimize:SetPoint("CENTER")
-		close.minimize:SetTexture(C.bdTex)
+		close.minimize:SetTexture(C.media.backdrop)
 		close.minimize:SetVertexColor(1, 1, 1)
-		close:HookScript("OnEnter", colorMinimize)
+		close:HookScript("OnEnter", colourMinimize)
 		close:HookScript("OnLeave", clearMinimize)
 
 		F.ReskinInput(_G["StaticPopup"..i.."EditBox"], 20)
@@ -97,10 +98,14 @@ tinsert(C.defaultThemes, function()
 			closeButton:SetPushedTexture("")
 
 			if info.closeButtonIsHide then
-				closeButton.__texture:Hide()
+				for _, pixel in pairs(closeButton.pixels) do
+					pixel:Hide()
+				end
 				closeButton.minimize:Show()
 			else
-				closeButton.__texture:Show()
+				for _, pixel in pairs(closeButton.pixels) do
+					pixel:Show()
+				end
 				closeButton.minimize:Hide()
 			end
 		end
@@ -108,8 +113,9 @@ tinsert(C.defaultThemes, function()
 
 	-- Pet battle queue popup
 
-	F.SetBD(PetBattleQueueReadyFrame)
-	F.CreateBDFrame(PetBattleQueueReadyFrame.Art)
+	F.CreateBD(PetBattleQueueReadyFrame)
+	F.CreateSD(PetBattleQueueReadyFrame)
+	F.CreateBG(PetBattleQueueReadyFrame.Art)
 	PetBattleQueueReadyFrame.Border:Hide()
 	F.Reskin(PetBattleQueueReadyFrame.AcceptButton)
 	F.Reskin(PetBattleQueueReadyFrame.DeclineButton)

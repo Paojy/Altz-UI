@@ -1,17 +1,16 @@
-local _, ns = ...
-local F, C = unpack(ns)
+local F, C = unpack(select(2, ...))
 
-tinsert(C.defaultThemes, function()
-
+tinsert(C.themes["AuroraClassic"], function()
 	F.StripTextures(RaidInfoFrame)
-	F.SetBD(RaidInfoFrame)
+	F.CreateBD(RaidInfoFrame)
+	F.CreateSD(RaidInfoFrame)
 	F.ReskinCheck(RaidFrameAllAssistCheckButton)
-	F.StripTextures(RaidInfoFrame.Header)
 
 	RaidInfoFrame:SetPoint("TOPLEFT", RaidFrame, "TOPRIGHT", 1, -28)
 	RaidInfoDetailFooter:Hide()
 	RaidInfoDetailHeader:Hide()
 	RaidInfoDetailCorner:Hide()
+	RaidInfoFrameHeader:Hide()
 
 	F.Reskin(RaidFrameRaidInfoButton)
 	F.Reskin(RaidFrameConvertToRaidButton)

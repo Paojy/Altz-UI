@@ -1,5 +1,4 @@
-local _, ns = ...
-local F, C = unpack(ns)
+local F, C = unpack(select(2, ...))
 
 C.themes["Blizzard_AlliedRacesUI"] = function()
 	local AlliedRacesFrame = AlliedRacesFrame
@@ -8,8 +7,6 @@ C.themes["Blizzard_AlliedRacesUI"] = function()
 
 	local scrollFrame = AlliedRacesFrame.RaceInfoFrame.ScrollFrame
 	F.ReskinScroll(scrollFrame.ScrollBar)
-	scrollFrame.ScrollBar.ScrollUpBorder:Hide()
-	scrollFrame.ScrollBar.ScrollDownBorder:Hide()
 	AlliedRacesFrame.RaceInfoFrame.AlliedRacesRaceName:SetTextColor(1, .8, 0)
 	scrollFrame.Child.RaceDescriptionText:SetTextColor(1, 1, 1)
 	scrollFrame.Child.RacialTraitsLabel:SetTextColor(1, .8, 0)
@@ -20,8 +17,9 @@ C.themes["Blizzard_AlliedRacesUI"] = function()
 			local bu = select(i, parent:GetChildren())
 
 			if bu.Icon and not bu.styled then
+				bu.Icon:SetTexCoord(.08, .92, .08, .92)
 				select(3, bu:GetRegions()):Hide()
-				F.ReskinIcon(bu.Icon)
+				F.CreateBG(bu.Icon)
 				bu.Text:SetTextColor(1, 1, 1)
 
 				bu.styled = true

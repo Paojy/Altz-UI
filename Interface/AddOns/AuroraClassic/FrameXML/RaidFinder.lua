@@ -1,8 +1,6 @@
-local _, ns = ...
-local F, C = unpack(ns)
+local F, C = unpack(select(2, ...))
 
-tinsert(C.defaultThemes, function()
-
+tinsert(C.themes["AuroraClassic"], function()
 	RaidFinderFrameBottomInset:Hide()
 	RaidFinderFrameRoleBackground:Hide()
 	RaidFinderFrameRoleInset:Hide()

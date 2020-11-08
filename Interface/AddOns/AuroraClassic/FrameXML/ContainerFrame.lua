@@ -1,23 +1,29 @@
-local _, ns = ...
-local F, C = unpack(ns)
+local F, C = unpack(select(2, ...))
 
-local MAX_CONTAINER_ITEMS = 36
+tinsert(C.themes["AuroraClassic"], function()
+	if not AuroraConfig.bags then return end
 
-local function replaceSortTexture(texture)
-	texture:SetTexture("Interface\\Icons\\INV_Pet_Broom") -- HD version
-	texture:SetTexCoord(unpack(C.TexCoord))
-end
-
-tinsert(C.defaultThemes, function()
-	if not AuroraClassicDB.Bags then return end
+	local r, g, b = C.r, C.g, C.b
 
 	BackpackTokenFrame:GetRegions():Hide()
+
+	local function onEnter(self)
+		self.bg:SetBackdropBorderColor(r, g, b)
+	end
+
+	local function onLeave(self)
+		self.bg:SetBackdropBorderColor(0, 0, 0)
+	end
 
 	for i = 1, 12 do
 		local con = _G["ContainerFrame"..i]
 		local name = _G["ContainerFrame"..i.."Name"]
 
-		F.StripTextures(con, true)
+		for j = 1, 5 do
+			select(j, con:GetRegions()):SetAlpha(0)
+		end
+		select(7, con:GetRegions()):SetAlpha(0)
+
 		con.PortraitButton.Highlight:SetTexture("")
 
 		name:ClearAllPoints()
@@ -26,6 +32,8 @@ tinsert(C.defaultThemes, function()
 		for k = 1, MAX_CONTAINER_ITEMS do
 			local item = "ContainerFrame"..i.."Item"..k
 			local button = _G[item]
+			local border = button.IconBorder
+			local searchOverlay = button.searchOverlay
 			local questTexture = _G[item.."IconQuestTexture"]
 			local newItemTexture = button.NewItemTexture
 
@@ -36,27 +44,38 @@ tinsert(C.defaultThemes, function()
 			button:SetPushedTexture("")
 			button:GetHighlightTexture():SetColorTexture(1, 1, 1, .25)
 
-			button.icon:SetTexCoord(unpack(C.TexCoord))
-			button.bg = F.CreateBDFrame(button.icon, .25)
+			button.icon:SetTexCoord(.08, .92, .08, .92)
+
+			button.bg = F.CreateBDFrame(button, 0)
 
 			-- easiest way to 'hide' it without breaking stuff
 			newItemTexture:SetDrawLayer("BACKGROUND")
 			newItemTexture:SetSize(1, 1)
 
-			button.searchOverlay:SetOutside()
-			F.ReskinIconBorder(button.IconBorder)
+			border:SetPoint("TOPLEFT", -C.mult, C.mult)
+			border:SetPoint("BOTTOMRIGHT", C.mult, -C.mult)
+			border:SetDrawLayer("BACKGROUND", 1)
+
+			searchOverlay:SetPoint("TOPLEFT", -C.mult, C.mult)
+			searchOverlay:SetPoint("BOTTOMRIGHT", C.mult, -C.mult)
+
+			button:HookScript("OnEnter", onEnter)
+			button:HookScript("OnLeave", onLeave)
 		end
 
-		local f = F.SetBD(con)
+		local f = F.CreateBDFrame(con)
 		f:SetPoint("TOPLEFT", 8, -4)
 		f:SetPoint("BOTTOMRIGHT", -4, 3)
+		F.CreateSD(f)
 
-		F.ReskinClose(_G["ContainerFrame"..i.."CloseButton"])
+		F.ReskinClose(_G["ContainerFrame"..i.."CloseButton"], "TOPRIGHT", con, "TOPRIGHT", -6, -6)
 	end
 
 	for i = 1, 3 do
 		local ic = _G["BackpackTokenFrameToken"..i.."Icon"]
-		F.ReskinIcon(ic)
+		ic:SetDrawLayer("OVERLAY")
+		ic:SetTexCoord(.08, .92, .08, .92)
+		F.CreateBG(ic)
 	end
 
 	F.ReskinInput(BagItemSearchBox)
@@ -74,15 +93,17 @@ tinsert(C.defaultThemes, function()
 
 		for i = 1, frame.size do
 			local itemButton = _G[name.."Item"..i]
+
+			itemButton.IconBorder:SetTexture(C.media.backdrop)
 			if _G[name.."Item"..i.."IconQuestTexture"]:IsShown() then
 				itemButton.IconBorder:SetVertexColor(1, 1, 0)
 			end
 		end
 	end)
 
-	replaceSortTexture(BagItemAutoSortButton:GetNormalTexture())
-	replaceSortTexture(BagItemAutoSortButton:GetPushedTexture())
-	F.CreateBDFrame(BagItemAutoSortButton)
+	BagItemAutoSortButton:GetNormalTexture():SetTexCoord(.17, .83, .17, .83)
+	BagItemAutoSortButton:GetPushedTexture():SetTexCoord(.17, .83, .17, .83)
+	F.CreateBG(BagItemAutoSortButton)
 
 	local highlight = BagItemAutoSortButton:GetHighlightTexture()
 	highlight:SetColorTexture(1, 1, 1, .25)

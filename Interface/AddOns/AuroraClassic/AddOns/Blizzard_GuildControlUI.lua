@@ -1,10 +1,10 @@
-local _, ns = ...
-local F, C = unpack(ns)
+local F, C = unpack(select(2, ...))
 
 C.themes["Blizzard_GuildControlUI"] = function()
 	local r, g, b = C.r, C.g, C.b
 
-	F.SetBD(GuildControlUI)
+	F.CreateBD(GuildControlUI)
+	F.CreateSD(GuildControlUI)
 
 	for i = 1, 9 do
 		select(i, GuildControlUI:GetRegions()):Hide()
@@ -56,8 +56,11 @@ C.themes["Blizzard_GuildControlUI"] = function()
 				local ownedTab = bu.owned
 
 				_G[tab.."Bg"]:Hide()
-				F.ReskinIcon(ownedTab.tabIcon)
-				F.CreateBDFrame(bu, .25)
+
+				ownedTab.tabIcon:SetTexCoord(.08, .92, .08, .92)
+				F.CreateBG(ownedTab.tabIcon)
+
+				F.CreateBD(bu, .25)
 				F.Reskin(bu.buy.button)
 				F.ReskinInput(ownedTab.editBox)
 
@@ -65,18 +68,24 @@ C.themes["Blizzard_GuildControlUI"] = function()
 					-- can't get a backdrop frame to appear behind the checked texture for some reason
 					ch:SetNormalTexture("")
 					ch:SetPushedTexture("")
-					ch:SetHighlightTexture(C.bdTex)
+					ch:SetHighlightTexture(C.media.backdrop)
+
+					local hl = ch:GetHighlightTexture()
+					hl:SetPoint("TOPLEFT", 5, -5)
+					hl:SetPoint("BOTTOMRIGHT", -5, 5)
+					hl:SetVertexColor(r, g, b, .2)
 
 					local check = ch:GetCheckedTexture()
 					check:SetDesaturated(true)
 					check:SetVertexColor(r, g, b)
 
-					local bg = F.CreateBDFrame(ch, 0, true)
-					bg:SetInside(ch, 4, 4)
+					local tex = F.CreateGradient(ch)
+					tex:SetPoint("TOPLEFT", 5, -5)
+					tex:SetPoint("BOTTOMRIGHT", -5, 5)
 
-					local hl = ch:GetHighlightTexture()
-					hl:SetInside(bg)
-					hl:SetVertexColor(r, g, b, .25)
+					local bg = F.CreateBDFrame(ch, 1)
+					bg:SetPoint("TOPLEFT", tex, -C.mult, C.mult)
+					bg:SetPoint("BOTTOMRIGHT", tex, C.mult, -C.mult)
 				end
 
 				bu.styled = true

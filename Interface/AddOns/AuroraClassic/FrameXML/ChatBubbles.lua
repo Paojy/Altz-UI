@@ -1,32 +1,36 @@
-local _, ns = ...
-local F, C = unpack(ns)
+local F, C = unpack(select(2, ...))
 
-local pairs, GetCVarBool = pairs, GetCVarBool
-local C_ChatBubbles_GetAllChatBubbles = C_ChatBubbles.GetAllChatBubbles
+tinsert(C.themes["AuroraClassic"], function()
+	if not AuroraConfig.chatBubbles then return end
 
-local function reskinChatBubble(chatbubble)
-	if chatbubble.styled then return end
-
-	local frame = chatbubble:GetChildren()
-	if frame and not frame:IsForbidden() then
-		local bg = F.SetBD(frame)
-		bg:SetScale(UIParent:GetEffectiveScale())
-		bg:SetInside(frame, 6, 6)
-
-		if C.isNewPatch then
-			frame:DisableDrawLayer("BORDER")
-		else
-			frame:SetBackdrop(nil)
+	local function styleBubble(frame)
+		for i = 1, frame:GetNumRegions() do
+			local region = select(i, frame:GetRegions())
+			if region:GetObjectType() == "Texture" then
+				region:SetTexture(nil)
+			elseif region:GetObjectType() == "FontString" then
+				region:SetFont(C.media.font, 16, "OUTLINE")
+				region:SetShadowColor(0, 0, 0, 0)
+			end
 		end
-		frame.Tail:SetAlpha(0)
-		frame.String:SetFont(C.Font[1], 13, C.Font[3])
+
+		F.CreateBD(frame)
+		F.CreateSD(frame)
+		frame:SetScale(UIParent:GetScale())
 	end
 
-	chatbubble.styled = true
-end
-
-tinsert(C.defaultThemes, function()
-	if not AuroraClassicDB.ChatBubbles then return end
+	local function findChatBubble(msg)
+		local chatbubbles = C_ChatBubbles.GetAllChatBubbles()
+		for index = 1, #chatbubbles do
+			local chatbubble = chatbubbles[index]
+			for i = 1, chatbubble:GetNumRegions() do
+				local region = select(i, chatbubble:GetRegions())
+				if region:GetObjectType() == "FontString" and region:GetText() == msg then
+					return chatbubble
+				end
+			end
+		end
+	end
 
 	local events = {
 		CHAT_MSG_SAY = "chatBubbles",
@@ -38,24 +42,58 @@ tinsert(C.defaultThemes, function()
 		CHAT_MSG_MONSTER_PARTY = "chatBubblesParty",
 	}
 
+	local channels = {
+		CHAT_MSG_SAY = "SAY",
+		CHAT_MSG_YELL = "YELL",
+		CHAT_MSG_PARTY = "PARTY",
+		CHAT_MSG_PARTY_LEADER = "PARTY_LEADER",
+	}
+	if not AuroraConfig.bubbleColor then channels = {} end
+
 	local bubbleHook = CreateFrame("Frame")
 	for event in next, events do
 		bubbleHook:RegisterEvent(event)
 	end
-	bubbleHook:SetScript("OnEvent", function(self, event)
+	bubbleHook:SetScript("OnEvent", function(self, event, msg)
 		if GetCVarBool(events[event]) then
 			self.elapsed = 0
+			self.msg = msg
+			local channel = channels[event]
+			if channel then
+				local info = ChatTypeInfo[channel]
+				self.color = {info.r, info.g, info.b}
+			else
+				self.color = nil
+			end
 			self:Show()
 		end
 	end)
 
 	bubbleHook:SetScript("OnUpdate", function(self, elapsed)
 		self.elapsed = self.elapsed + elapsed
-		if self.elapsed > .1 then
-			for _, chatbubble in pairs(C_ChatBubbles_GetAllChatBubbles()) do
-				reskinChatBubble(chatbubble)
-			end
+		local chatbubble = findChatBubble(self.msg)
+		if chatbubble or self.elapsed > .3 then
 			self:Hide()
+			if chatbubble then
+				if not chatbubble.styled then
+					styleBubble(chatbubble)
+					chatbubble.styled = true
+				end
+
+				if self.color then
+					if chatbubble.Shadow then
+						chatbubble.Shadow:SetBackdropBorderColor(unpack(self.color))
+					else
+						chatbubble:SetBackdropBorderColor(unpack(self.color))
+					end
+				else
+					if chatbubble.Shadow then
+						chatbubble.Shadow:SetBackdropBorderColor(0, 0, 0)
+					else
+						chatbubble:SetBackdropBorderColor(0, 0, 0)
+					end
+				end
+			end
 		end
 	end)
 	bubbleHook:Hide()

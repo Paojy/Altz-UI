@@ -1,5 +1,4 @@
-local _, ns = ...
-local F, C = unpack(ns)
+local F, C = unpack(select(2, ...))
 
 C.themes["Blizzard_ItemSocketingUI"] = function()
 	local GemTypeInfo = {
@@ -25,7 +24,7 @@ C.themes["Blizzard_ItemSocketingUI"] = function()
 
 		bu:SetPushedTexture("")
 		bu:GetHighlightTexture():SetColorTexture(1, 1, 1, .25)
-		bu.icon:SetTexCoord(unpack(C.TexCoord))
+		bu.icon:SetTexCoord(.08, .92, .08, .92)
 
 		shine:ClearAllPoints()
 		shine:SetPoint("TOPLEFT", bu)
@@ -45,7 +44,7 @@ C.themes["Blizzard_ItemSocketingUI"] = function()
 
 	F.ReskinPortraitFrame(ItemSocketingFrame)
 	ItemSocketingFrame.BackgroundColor:SetAlpha(0)
-	F.CreateBDFrame(ItemSocketingScrollFrame, .25)
+	F.CreateBD(ItemSocketingScrollFrame, .25)
 	F.Reskin(ItemSocketingSocketButton)
 	F.ReskinScroll(ItemSocketingScrollFrameScrollBar)
 end

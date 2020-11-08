@@ -1,7 +1,6 @@
-local _, ns = ...
-local F, C = unpack(ns)
+local F, C = unpack(select(2, ...))
 
-tinsert(C.defaultThemes, function()
+tinsert(C.themes["AuroraClassic"], function()
 	local restyled = false
 
 	InterfaceOptionsFrame:HookScript("OnShow", function()
@@ -13,11 +12,13 @@ tinsert(C.defaultThemes, function()
 		for i = 1, 2 do
 			F.StripTextures(_G["InterfaceOptionsFrameTab"..i])
 		end
-		F.SetBD(InterfaceOptionsFrame)
+		F.CreateBD(InterfaceOptionsFrame)
+		F.CreateSD(InterfaceOptionsFrame)
 		InterfaceOptionsFrame.Border:Hide()
-		F.StripTextures(InterfaceOptionsFrame.Header)
-		InterfaceOptionsFrame.Header:ClearAllPoints()
-		InterfaceOptionsFrame.Header:SetPoint("TOP", InterfaceOptionsFrame, 0, 0)
+
+		InterfaceOptionsFrameHeader:SetTexture("")
+		InterfaceOptionsFrameHeader:ClearAllPoints()
+		InterfaceOptionsFrameHeader:SetPoint("TOP", InterfaceOptionsFrame, 0, 0)
 
 		local line = InterfaceOptionsFrame:CreateTexture(nil, "ARTWORK")
 		line:SetSize(C.mult, 546)
@@ -50,7 +51,6 @@ tinsert(C.defaultThemes, function()
 			InterfaceOptionsCombatPanelAutoSelfCast,
 			InterfaceOptionsDisplayPanelRotateMinimap,
 			InterfaceOptionsDisplayPanelAJAlerts,
-			InterfaceOptionsDisplayPanelShowInGameNavigation,
 			InterfaceOptionsDisplayPanelShowTutorials,
 			InterfaceOptionsSocialPanelProfanityFilter,
 			InterfaceOptionsSocialPanelSpamFilter,
@@ -97,7 +97,6 @@ tinsert(C.defaultThemes, function()
 			InterfaceOptionsMousePanelLockCursorToScreen,
 			InterfaceOptionsAccessibilityPanelMovePad,
 			InterfaceOptionsAccessibilityPanelCinematicSubtitles,
-			InterfaceOptionsAccessibilityPanelOverrideFadeOut,
 			InterfaceOptionsAccessibilityPanelColorblindMode
 		}
 		for _, checkbox in next, checkboxes do
@@ -120,9 +119,7 @@ tinsert(C.defaultThemes, function()
 			InterfaceOptionsNamesPanelUnitNameplatesMotionDropDown,
 			InterfaceOptionsCameraPanelStyleDropDown,
 			InterfaceOptionsMousePanelClickMoveStyleDropDown,
-			InterfaceOptionsAccessibilityPanelColorFilterDropDown,
-			InterfaceOptionsAccessibilityPanelMotionSicknessDropdown,
-			InterfaceOptionsAccessibilityPanelShakeIntensityDropdown,
+			InterfaceOptionsAccessibilityPanelColorFilterDropDown
 		}
 		for _, dropdown in next, dropdowns do
 			F.ReskinDropDown(dropdown)
@@ -139,7 +136,7 @@ tinsert(C.defaultThemes, function()
 			F.ReskinSlider(slider)
 		end
 
-		if IsAddOnLoaded("Blizzard_CUFProfiles") then
+		if IsAddOnLoaded("Blizzard_CompactRaidFrames") then
 			CompactUnitFrameProfilesGeneralOptionsFrameAutoActivateBG:Hide()
 
 			local boxes = {
@@ -192,9 +189,9 @@ tinsert(C.defaultThemes, function()
 		for i = 1, num do
 			local bu = _G["InterfaceOptionsFrameAddOnsButton"..i.."Toggle"]
 			if bu and not bu.reskinned then
-				F.ReskinCollapse(bu)
+				F.ReskinExpandOrCollapse(bu)
 				bu:SetPushedTexture("")
-				bu.SetPushedTexture = F.Dummy
+				bu.SetPushedTexture = F.dummy
 				bu.reskinned = true
 			end
 		end

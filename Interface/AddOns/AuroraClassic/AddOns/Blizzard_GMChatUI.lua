@@ -1,13 +1,10 @@
-local _, ns = ...
-local F, C = unpack(ns)
+local F, C = unpack(select(2, ...))
 
--- /run LoadAddOn'Blizzard_GMChatUI' GMChatFrame:Show()
 C.themes["Blizzard_GMChatUI"] = function()
 	local frame = _G["GMChatFrame"]
 	frame:SetClampRectInsets(0, 0, 0, 0)
 	F.StripTextures(frame)
-	local bg = F.SetBD(frame)
-	bg:SetPoint("BOTTOMRIGHT", C.mult, -5)
+	F.SetBD(frame):SetPoint("BOTTOMRIGHT", C.mult, -5)
 
 	local eb = frame.editBox
 	eb:SetAltArrowKeyMode(false)
@@ -35,8 +32,7 @@ C.themes["Blizzard_GMChatUI"] = function()
 
 	local tab = _G["GMChatTab"]
 	F.StripTextures(tab)
-	local bg = F.SetBD(tab)
-	bg:SetBackdropColor(0, .6, 1, .3)
+	F.SetBD(tab):SetBackdropColor(0, .6, 1, .3)
 	tab:SetPoint("BOTTOMLEFT", frame, "TOPLEFT", 0, 3)
 	tab:SetPoint("TOPRIGHT", frame, "TOPRIGHT", 0, 28)
 	GMChatTabIcon:SetTexture("Interface\\ChatFrame\\UI-ChatIcon-Blizz")

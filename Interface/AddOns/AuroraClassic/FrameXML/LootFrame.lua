@@ -1,8 +1,7 @@
-local _, ns = ...
-local F, C = unpack(ns)
+local F, C = unpack(select(2, ...))
 
-tinsert(C.defaultThemes, function()
-	if not AuroraClassicDB.Loot then return end
+tinsert(C.themes["AuroraClassic"], function()
+	if not AuroraConfig.loot then return end
 
 	LootFramePortraitOverlay:Hide()
 
@@ -25,13 +24,14 @@ tinsert(C.defaultThemes, function()
 			bd:SetPoint("TOPLEFT")
 			bd:SetPoint("BOTTOMRIGHT", 114, 0)
 
-			ic.bg = F.ReskinIcon(ic)
+			ic:SetTexCoord(.08, .92, .08, .92)
+			ic.bg = F.CreateBG(ic)
 		end
 
 		if select(7, GetLootSlotInfo(index)) then
-			ic.bg:SetBackdropBorderColor(1, 1, 0)
+			ic.bg:SetVertexColor(1, 1, 0)
 		else
-			ic.bg:SetBackdropBorderColor(0, 0, 0)
+			ic.bg:SetVertexColor(0, 0, 0)
 		end
 	end)
 
@@ -55,18 +55,17 @@ tinsert(C.defaultThemes, function()
 		frame.IconBorder:Hide()
 		frame.BlackBackgroundHoist.Background:Hide()
 		frame.SpecRing:SetAlpha(0)
-
-		local specIcon = frame.SpecIcon
-		specIcon:ClearAllPoints()
-		specIcon:SetPoint("TOPRIGHT", -90, -18)
-		local bg = F.ReskinIcon(specIcon)
+		frame.SpecIcon:SetPoint("TOPLEFT", 5, -5)
+		local bg = F.ReskinIcon(frame.SpecIcon)
+		bg:SetDrawLayer("OVERLAY", 1)
 		hooksecurefunc("BonusRollFrame_StartBonusRoll", function()
-			bg:SetShown(specIcon:IsShown())
+			bg:SetShown(frame.SpecIcon:IsShown())
 		end)
 
 		F.ReskinIcon(frame.PromptFrame.Icon)
-		frame.PromptFrame.Timer.Bar:SetTexture(C.normTex)
-		F.SetBD(frame)
+		frame.PromptFrame.Timer.Bar:SetTexture(C.media.backdrop)
+		F.CreateBD(frame)
+		F.CreateSD(frame)
 		F.CreateBDFrame(frame.PromptFrame.Timer, .25)
 
 		local from, to = "|T.+|t", "|T%%s:14:14:0:0:64:64:5:59:5:59|t"
@@ -82,9 +81,10 @@ tinsert(C.defaultThemes, function()
 			if not frame.styled then
 				frame.Border:SetAlpha(0)
 				frame.Background:SetAlpha(0)
-				frame.bg = F.SetBD(frame)
+				frame.bg = F.CreateBDFrame(frame)
+				F.CreateSD(frame)
 
-				frame.Timer.Bar:SetTexture(C.bdTex)
+				frame.Timer.Bar:SetTexture(C.media.backdrop)
 				frame.Timer.Bar:SetVertexColor(1, .8, 0)
 				frame.Timer.Background:SetAlpha(0)
 				F.CreateBDFrame(frame.Timer, .25)
@@ -101,7 +101,7 @@ tinsert(C.defaultThemes, function()
 
 			if frame:IsShown() then
 				local _, _, _, quality = GetLootRollItemInfo(frame.rollID)
-				local color = C.QualityColors[quality]
+				local color = BAG_ITEM_QUALITY_COLORS[quality]
 				frame.bg:SetBackdropBorderColor(color.r, color.g, color.b)
 			end
 		end

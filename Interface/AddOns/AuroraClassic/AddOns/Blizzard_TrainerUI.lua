@@ -1,5 +1,4 @@
-local _, ns = ...
-local F, C = unpack(ns)
+local F, C = unpack(select(2, ...))
 
 C.themes["Blizzard_TrainerUI"] = function()
 	local r, g, b = C.r, C.g, C.b
@@ -35,7 +34,7 @@ C.themes["Blizzard_TrainerUI"] = function()
 				bu:SetNormalTexture("")
 				bu:SetHighlightTexture("")
 				bu.disabledBG:Hide()
-				bu.disabledBG.Show = F.Dummy
+				bu.disabledBG.Show = F.dummy
 				bu.selectedTex:SetAllPoints(bg)
 				bu.selectedTex:SetColorTexture(r, g, b, .25)
 
@@ -46,7 +45,7 @@ C.themes["Blizzard_TrainerUI"] = function()
 
 	F.StripTextures(ClassTrainerStatusBar)
 	ClassTrainerStatusBar:SetPoint("TOPLEFT", ClassTrainerFrame, "TOPLEFT", 64, -35)
-	ClassTrainerStatusBar:SetStatusBarTexture(C.bdTex)
+	ClassTrainerStatusBar:SetStatusBarTexture(C.media.backdrop)
 	ClassTrainerStatusBar:GetStatusBarTexture():SetGradient("VERTICAL", .1, .3, .9, .2, .4, 1)
 	F.CreateBDFrame(ClassTrainerStatusBar, .25)
 

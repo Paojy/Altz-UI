@@ -1,12 +1,11 @@
-local _, ns = ...
-local F, C = unpack(ns)
+local F, C = unpack(select(2, ...))
 
-tinsert(C.defaultThemes, function()
-
-	F.StripTextures(GameMenuFrame.Header)
-	GameMenuFrame.Header:ClearAllPoints()
-	GameMenuFrame.Header:SetPoint("TOP", GameMenuFrame, 0, 7)
-	F.SetBD(GameMenuFrame)
+tinsert(C.themes["AuroraClassic"], function()
+	GameMenuFrameHeader:SetAlpha(0)
+	GameMenuFrameHeader:ClearAllPoints()
+	GameMenuFrameHeader:SetPoint("TOP", GameMenuFrame, 0, 7)
+	F.CreateBD(GameMenuFrame)
+	F.CreateSD(GameMenuFrame)
 	GameMenuFrame.Border:Hide()
 
 	local buttons = {

@@ -1,8 +1,6 @@
-local _, ns = ...
-local F, C = unpack(ns)
+local F, C = unpack(select(2, ...))
 
-tinsert(C.defaultThemes, function()
-
+tinsert(C.themes["AuroraClassic"], function()
 	InboxFrameBg:Hide()
 	ItemTextPrevPageButton:GetRegions():Hide()
 	ItemTextNextPageButton:GetRegions():Hide()
@@ -17,5 +15,5 @@ tinsert(C.defaultThemes, function()
 	F.ReskinArrow(ItemTextNextPageButton, "right")
 	ItemTextFramePageBg:SetAlpha(0)
 	ItemTextPageText:SetTextColor(1, 1, 1)
-	ItemTextPageText.SetTextColor = F.Dummy
+	ItemTextPageText.SetTextColor = F.dummy
 end)

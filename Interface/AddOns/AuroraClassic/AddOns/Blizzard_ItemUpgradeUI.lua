@@ -1,5 +1,4 @@
-local _, ns = ...
-local F, C = unpack(ns)
+local F, C = unpack(select(2, ...))
 
 C.themes["Blizzard_ItemUpgradeUI"] = function()
 	local ItemUpgradeFrame = ItemUpgradeFrame
@@ -15,8 +14,8 @@ C.themes["Blizzard_ItemUpgradeUI"] = function()
 	hooksecurefunc("ItemUpgradeFrame_Update", function()
 		local icon, _, quality = GetItemUpgradeItemInfo()
 		if icon then
-			itemButton.IconTexture:SetTexCoord(unpack(C.TexCoord))
-			local color = C.QualityColors[quality or 1]
+			itemButton.IconTexture:SetTexCoord(.08, .92, .08, .92)
+			local color = BAG_ITEM_QUALITY_COLORS[quality or 1]
 			itemButton.bg:SetBackdropBorderColor(color.r, color.g, color.b)
 		else
 			itemButton.IconTexture:SetTexture("")

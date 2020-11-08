@@ -1,5 +1,4 @@
-local _, ns = ...
-local F, C = unpack(ns)
+local F, C = unpack(select(2, ...))
 
 C.themes["Blizzard_ArtifactUI"] = function()
 	F.StripTextures(ArtifactFrame)
@@ -26,7 +25,7 @@ C.themes["Blizzard_ArtifactUI"] = function()
 	for i = 1, 6 do
 		local set = ArtifactFrame.AppearancesTab.appearanceSetPool:Acquire()
 		set.Background:Hide()
-		local bg = F.CreateBDFrame(set, 0, true)
+		local bg = F.CreateGradient(set)
 		bg:SetPoint("TOPLEFT", 10, -5)
 		bg:SetPoint("BOTTOMRIGHT", -10, 5)
 		for j = 1, 4 do
@@ -41,9 +40,10 @@ C.themes["Blizzard_ArtifactUI"] = function()
 			slot.HighlightTexture:SetAllPoints()
 
 			slot.Selected:SetDrawLayer("BACKGROUND")
-			slot.Selected:SetTexture(C.bdTex)
+			slot.Selected:SetTexture(C.media.backdrop)
 			slot.Selected:SetVertexColor(1, 1, 0)
-			slot.Selected:SetOutside()
+			slot.Selected:SetPoint("TOPLEFT", -C.mult, C.mult)
+			slot.Selected:SetPoint("BOTTOMRIGHT", C.mult, -C.mult)
 		end
 	end
 end

@@ -1,7 +1,6 @@
-local _, ns = ...
-local F, C = unpack(ns)
+local F, C = unpack(select(2, ...))
 
-tinsert(C.defaultThemes, function()
+tinsert(C.themes["AuroraClassic"], function()
 	local r, g, b = C.r, C.g, C.b
 
 	for i = 1, 6 do
@@ -9,8 +8,9 @@ tinsert(C.defaultThemes, function()
 	end
 	F.ReskinIcon(GhostFrameContentsFrameIcon)
 
-	local bg = F.SetBD(GhostFrame, 0)
-	F.CreateGradient(bg)
-	GhostFrame:SetHighlightTexture(C.bdTex)
+	F.CreateBD(GhostFrame, .25)
+	F.CreateSD(GhostFrame)
+	F.CreateGradient(GhostFrame)
+	GhostFrame:SetHighlightTexture(C.media.backdrop)
 	GhostFrame:GetHighlightTexture():SetVertexColor(r, g, b, .25)
 end)
