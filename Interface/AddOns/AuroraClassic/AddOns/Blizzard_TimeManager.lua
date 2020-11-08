@@ -1,10 +1,12 @@
-local F, C = unpack(select(2, ...))
+local _, ns = ...
+local F, C = unpack(ns)
 
 C.themes["Blizzard_TimeManager"] = function()
 	TimeManagerGlobe:Hide()
-	TimeManagerStopwatchCheck:GetNormalTexture():SetTexCoord(.08, .92, .08, .92)
-	TimeManagerStopwatchCheck:SetCheckedTexture(C.media.checked)
-	F.CreateBG(TimeManagerStopwatchCheck)
+	TimeManagerStopwatchCheck:GetNormalTexture():SetTexCoord(unpack(C.TexCoord))
+	TimeManagerStopwatchCheck:GetHighlightTexture():SetColorTexture(1, 1, 1, .25)
+	TimeManagerStopwatchCheck:SetCheckedTexture(C.pushed)
+	F.CreateBDFrame(TimeManagerStopwatchCheck)
 
 	TimeManagerAlarmHourDropDown:SetWidth(80)
 	TimeManagerAlarmMinuteDropDown:SetWidth(80)
@@ -22,7 +24,7 @@ C.themes["Blizzard_TimeManager"] = function()
 	F.StripTextures(StopwatchFrame)
 	F.StripTextures(StopwatchTabFrame)
 	F.SetBD(StopwatchFrame)
-	F.ReskinClose(StopwatchCloseButton, "TOPRIGHT", StopwatchFrame, "TOPRIGHT", -2, -2)
+	F.ReskinClose(StopwatchCloseButton, StopwatchFrame, -2, -2)
 
 	local reset = StopwatchResetButton
 	reset:GetNormalTexture():SetTexCoord(.25, .75, .27, .75)

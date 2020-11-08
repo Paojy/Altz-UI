@@ -1,13 +1,14 @@
-local F, C = unpack(select(2, ...))
+local _, ns = ...
+local F, C = unpack(ns)
 
-tinsert(C.themes["AuroraClassic"], function()
+tinsert(C.defaultThemes, function()
+
 	LevelUpDisplaySide:HookScript("OnShow", function(self)
 		for i = 1, #self.unlockList do
 			local f = _G["LevelUpDisplaySideUnlockFrame"..i]
 
-			if not f.restyled then
-				f.icon:SetTexCoord(.08, .92, .08, .92)
-				F.CreateBG(f.icon)
+			if not f.bg then
+				f.bg = F.ReskinIcon(f.icon)
 			end
 		end
 	end)

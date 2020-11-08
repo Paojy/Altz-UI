@@ -1,4 +1,5 @@
-local F, C = unpack(select(2, ...))
+local _, ns = ...
+local F, C = unpack(ns)
 
 C.themes["Blizzard_Contribution"] = function()
 	local frame = ContributionCollectionFrame
@@ -19,19 +20,17 @@ C.themes["Blizzard_Contribution"] = function()
 	hooksecurefunc(ContributionRewardMixin, "Setup", function(self)
 		if not self.styled then
 			self.RewardName:SetTextColor(1, 1, 1)
-			self.Icon:SetTexCoord(.08, .92, .08, .92)
 			self.Border:Hide()
 			self:GetRegions():Hide()
-			F.CreateBDFrame(self.Icon)
+			F.ReskinIcon(self.Icon)
 
 			self.styled = true
 		end
 	end)
 
-	-- Tooltips
-	if AuroraConfig.tooltips then
+	if F.ReskinTooltip then
 		F.ReskinTooltip(ContributionBuffTooltip)
-		ContributionBuffTooltip.Icon:SetTexCoord(.08, .92, .08, .92)
+		ContributionBuffTooltip.Icon:SetTexCoord(unpack(C.TexCoord))
 		ContributionBuffTooltip.Border:SetAlpha(0)
 	end
 end

@@ -1,6 +1,7 @@
-local F, C = unpack(select(2, ...))
+local _, ns = ...
+local F, C = unpack(ns)
 
-tinsert(C.themes["AuroraClassic"], function()
+tinsert(C.defaultThemes, function()
 	local restyled = false
 
 	InterfaceOptionsFrame:HookScript("OnShow", function()
@@ -12,13 +13,11 @@ tinsert(C.themes["AuroraClassic"], function()
 		for i = 1, 2 do
 			F.StripTextures(_G["InterfaceOptionsFrameTab"..i])
 		end
-		F.CreateBD(InterfaceOptionsFrame)
-		F.CreateSD(InterfaceOptionsFrame)
+		F.SetBD(InterfaceOptionsFrame)
 		InterfaceOptionsFrame.Border:Hide()
-
-		InterfaceOptionsFrameHeader:SetTexture("")
-		InterfaceOptionsFrameHeader:ClearAllPoints()
-		InterfaceOptionsFrameHeader:SetPoint("TOP", InterfaceOptionsFrame, 0, 0)
+		F.StripTextures(InterfaceOptionsFrame.Header)
+		InterfaceOptionsFrame.Header:ClearAllPoints()
+		InterfaceOptionsFrame.Header:SetPoint("TOP", InterfaceOptionsFrame, 0, 0)
 
 		local line = InterfaceOptionsFrame:CreateTexture(nil, "ARTWORK")
 		line:SetSize(C.mult, 546)
@@ -51,6 +50,7 @@ tinsert(C.themes["AuroraClassic"], function()
 			InterfaceOptionsCombatPanelAutoSelfCast,
 			InterfaceOptionsDisplayPanelRotateMinimap,
 			InterfaceOptionsDisplayPanelAJAlerts,
+			InterfaceOptionsDisplayPanelShowInGameNavigation,
 			InterfaceOptionsDisplayPanelShowTutorials,
 			InterfaceOptionsSocialPanelProfanityFilter,
 			InterfaceOptionsSocialPanelSpamFilter,
@@ -97,6 +97,7 @@ tinsert(C.themes["AuroraClassic"], function()
 			InterfaceOptionsMousePanelLockCursorToScreen,
 			InterfaceOptionsAccessibilityPanelMovePad,
 			InterfaceOptionsAccessibilityPanelCinematicSubtitles,
+			InterfaceOptionsAccessibilityPanelOverrideFadeOut,
 			InterfaceOptionsAccessibilityPanelColorblindMode
 		}
 		for _, checkbox in next, checkboxes do
@@ -119,7 +120,9 @@ tinsert(C.themes["AuroraClassic"], function()
 			InterfaceOptionsNamesPanelUnitNameplatesMotionDropDown,
 			InterfaceOptionsCameraPanelStyleDropDown,
 			InterfaceOptionsMousePanelClickMoveStyleDropDown,
-			InterfaceOptionsAccessibilityPanelColorFilterDropDown
+			InterfaceOptionsAccessibilityPanelColorFilterDropDown,
+			InterfaceOptionsAccessibilityPanelMotionSicknessDropdown,
+			InterfaceOptionsAccessibilityPanelShakeIntensityDropdown,
 		}
 		for _, dropdown in next, dropdowns do
 			F.ReskinDropDown(dropdown)
@@ -136,7 +139,7 @@ tinsert(C.themes["AuroraClassic"], function()
 			F.ReskinSlider(slider)
 		end
 
-		if IsAddOnLoaded("Blizzard_CompactRaidFrames") then
+		if IsAddOnLoaded("Blizzard_CUFProfiles") then
 			CompactUnitFrameProfilesGeneralOptionsFrameAutoActivateBG:Hide()
 
 			local boxes = {
@@ -189,9 +192,9 @@ tinsert(C.themes["AuroraClassic"], function()
 		for i = 1, num do
 			local bu = _G["InterfaceOptionsFrameAddOnsButton"..i.."Toggle"]
 			if bu and not bu.reskinned then
-				F.ReskinExpandOrCollapse(bu)
+				F.ReskinCollapse(bu)
 				bu:SetPushedTexture("")
-				bu.SetPushedTexture = F.dummy
+				bu.SetPushedTexture = F.Dummy
 				bu.reskinned = true
 			end
 		end

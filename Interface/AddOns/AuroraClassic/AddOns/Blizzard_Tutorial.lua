@@ -1,4 +1,5 @@
-local F, C = unpack(select(2, ...))
+local _, ns = ...
+local F, C = unpack(ns)
 
 C.themes["Blizzard_Tutorial"] = function()
 	local tutorialFrame = NPE_TutorialKeyboardMouseFrame_Frame
