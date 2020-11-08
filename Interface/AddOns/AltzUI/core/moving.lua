@@ -146,7 +146,6 @@ UIDropDownMenu_Initialize(Point1dropDown, function(self, level, menuList)
 			end
 			UIDropDownMenu_SetSelectedName(Point1dropDown, anchors[i], true)
 			UIDropDownMenu_SetText(Point1dropDown, anchors[i])
-			L_CloseDropDownMenus()
 		end
 		UIDropDownMenu_AddButton(info)
 	end
@@ -183,7 +182,6 @@ UIDropDownMenu_Initialize(Point2dropDown, function(self, level, menuList)
 			PlaceCurrentFrame()
 			UIDropDownMenu_SetSelectedName(Point2dropDown, anchors[i], true)
 			UIDropDownMenu_SetText(Point2dropDown, anchors[i])
-			L_CloseDropDownMenus()
 		end
 		UIDropDownMenu_AddButton(info)
 	end

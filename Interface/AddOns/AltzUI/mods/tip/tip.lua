@@ -164,17 +164,6 @@ GameTooltip:HookScript("OnTooltipSetUnit", function(self)
         GameTooltipStatusBar:SetStatusBarColor(0, .9, 0)
 		end
 	end
-
-    if GameTooltipStatusBar:IsShown() then
-		GameTooltipStatusBar:ClearAllPoints()
-        GameTooltipStatusBar:SetHeight(8)
-		GameTooltipStatusBar:SetPoint("BOTTOMLEFT", GameTooltipStatusBar:GetParent(), "TOPLEFT", 0, 4)
-		GameTooltipStatusBar:SetPoint("BOTTOMRIGHT", GameTooltipStatusBar:GetParent(), "TOPRIGHT", 0, 4)
-		GameTooltipStatusBar.bg = CreateFrame("Frame", nil, GameTooltipStatusBar, "BackdropTemplate")
-		GameTooltipStatusBar.bg:SetFrameLevel(GameTooltipStatusBar:GetFrameLevel()-1)
-		GameTooltipStatusBar.bg:SetAllPoints(GameTooltipStatusBar)
-		F.CreateBD(GameTooltipStatusBar.bg)		
-    end
 end)
 
 GameTooltipStatusBar:SetStatusBarTexture("Interface\\Buttons\\WHITE8x8")
@@ -230,20 +219,3 @@ GAME_TOOLTIP_BACKDROP_STYLE_DEFAULT = {
 	backdropBorderColor = {GetRGB = function() return 0, 0, 0 end},
 	backdropColor = {GetRGB = function() return 0, 0, 0, backdropOpacity end}
 }
-
-local function style(frame)
-	frame.bg = CreateFrame("Frame", nil, frame, "BackdropTemplate")
-	frame.bg:SetFrameLevel(frame:GetFrameLevel()-1)
-	frame.bg:SetBackdrop({
-		edgeFile = G.media.blank,
-		edgeSize = 1,
-		bgFile = G.media.blank,
-		insets = {left = 1, right = 1, top = 1, bottom = 1}
-	})
-	frame.bg:SetScale(scale)
-	frame.bg:SetBackdropColor(0, 0, 0, backdropOpacity) 
-    frame.bg:SetBackdropBorderColor(0, 0, 0)
-end
-
-style(DropDownList1MenuBackdrop)
-style(DropDownList2MenuBackdrop)

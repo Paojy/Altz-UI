@@ -273,7 +273,7 @@ local Update = function(self, event, unit)
 	end
 	
     if auras.num_shown < numDebuffs then
-        for i = numDebuffs-1, auras.num_shown+1, -1 do
+        for i = numDebuffs+1, auras.num_shown+1, -1 do
 			if auras["button"..i] and auras["button"..i]:IsShown() then
 				auras["button"..i]:Hide()
 				if i == 1 then

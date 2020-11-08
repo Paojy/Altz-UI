@@ -1578,8 +1578,8 @@ local Character_default_Settings = {
 		focus_cbwidth = 230,
 		channelticks = false,
 		hideplayercastbaricon = false,
-		Interruptible_color = {r = 0, g = 0, b = 0},
-		notInterruptible_color = {r = 1, g = 0, b = 0},	
+		Interruptible_color = {r =.6 , g = .4, b = .8},	
+		notInterruptible_color = {r =.9 , g = 0, b = 1},	
 		
 		-- swing timer
 		swing = false,
@@ -1790,7 +1790,7 @@ local Character_default_Settings = {
 		plateaura = false,
 		plateauranum = 5,
 		plateaurasize = 15,	
-		Interruptible_color = {r = 1, g = 1, b = 0},
+		Interruptible_color = {r =.6 , g = .4, b = .8},	
 		notInterruptible_color = {r =.9 , g = 0, b = 1},	
 		focuscolored = true,
 		focus_color = {r = .5, g = .4, b = .9},
