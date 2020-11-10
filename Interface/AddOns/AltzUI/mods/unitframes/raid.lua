@@ -1070,7 +1070,6 @@ local function Spawnparty()
 end
 
 EventFrame:RegisterEvent("ADDON_LOADED")
-EventFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
 EventFrame:RegisterEvent("PLAYER_LOGIN")
 
 EventFrame:SetScript("OnEvent", function(self, event, ...)
@@ -1109,18 +1108,6 @@ function EventFrame:PLAYER_SPECIALIZATION_CHANGED(arg1)
 		togglerf()
 		T.PlaceRaidFrame()
 	end
-end
-
-function EventFrame:PLAYER_ENTERING_WORLD()
-	if aCoreCDB["UnitframeOptions"] == nil or not aCoreCDB["UnitframeOptions"]["enableraid"] then return end
-	CompactRaidFrameManager:Hide()
-	CompactRaidFrameContainer:Hide()
-	PartyMemberBackground:Hide()
-	CompactRaidFrameManager.Show = CompactRaidFrameManager.Hide
-	CompactRaidFrameContainer.Show = CompactRaidFrameContainer.Hide
-	PartyMemberBackground.Show = PartyMemberBackground.Hide
-
-	EventFrame:UnregisterEvent("PLAYER_ENTERING_WORLD")
 end
 
 -- 加入团队工具中

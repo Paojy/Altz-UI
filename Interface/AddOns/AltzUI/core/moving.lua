@@ -353,21 +353,24 @@ local function LockAll()
 	SpecMover:Hide()
 end
 
-local function OnSpecChanged()
+local function OnSpecChanged(event)
 	role = T.CheckRole()
 	SpecMover.curmode:SetText(L["当前模式"].." "..L[role])
 
 	for i = 1, #G.dragFrameList do
 		local name = G.dragFrameList[i]:GetName()
 		local points = aCoreCDB["FramePoints"][name][role]
-		G.dragFrameList[i]:ClearAllPoints()
+		
+		if event == "PLAYER_SPECIALIZATION_CHANGED" then
+			G.dragFrameList[i]:ClearAllPoints()
+		end
 		G.dragFrameList[i]:SetPoint(points.a1, _G[points.parent], points.a2, points.x, points.y)
 	end
 end
 
 SpecMover:SetScript("OnEvent", function(self, event, arg1)
 	if event == "PLAYER_SPECIALIZATION_CHANGED" and arg1 == "player" then
-		OnSpecChanged()
+		OnSpecChanged(event)
 	elseif event == "PLAYER_REGEN_DISABLED" then
 		if SpecMover:IsShown() then
 			LockAll()
@@ -377,7 +380,7 @@ SpecMover:SetScript("OnEvent", function(self, event, arg1)
 		UnlockAll()
 		self:UnregisterEvent("PLAYER_REGEN_ENABLED")
 	elseif event == "PLAYER_LOGIN" then
-		OnSpecChanged()
+		OnSpecChanged(event)
 		self:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED")
 		self:RegisterEvent("PLAYER_REGEN_DISABLED")
 	end

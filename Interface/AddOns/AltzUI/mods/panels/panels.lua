@@ -534,7 +534,7 @@ end)
 -- 排队的眼睛
 QueueStatusMinimapButton:ClearAllPoints()
 QueueStatusMinimapButton:SetParent(Minimap)
-QueueStatusMinimapButton:SetPoint("BOTTOMRIGHT", Minimap, "BOTTOMRIGHT", 0, 0)
+QueueStatusMinimapButton:SetPoint("BOTTOMRIGHT", Minimap, "BOTTOMRIGHT", -10, 0)
 QueueStatusMinimapButtonBorder:Hide()
 QueueStatusFrame:SetClampedToScreen(true)
 QueueStatusFrame:ClearAllPoints()
@@ -1239,6 +1239,63 @@ end)
 Talent:RegisterEvent("PLAYER_ENTERING_WORLD")
 
 --====================================================--
+--[[                  -- Game menu --               ]]--
+--====================================================--
+
+local GameMenuButton = CreateFrame("Button", G.uiname.."GameMenuButton", GameMenuFrame, "GameMenuButtonTemplate")
+GameMenuButton:SetPoint("TOP", GameMenuButtonAddons, "BOTTOM", 0, -1)
+GameMenuButton:SetScript("OnClick", function()
+	_G[G.uiname.."GUI Main Frame"]:Show()
+	HideUIPanel(GameMenuFrame)
+end)
+GameMenuButton:SetText(GetAddOnMetadata("AltzUI", "Title"))
+F.Reskin(GameMenuButton)
+
+GameMenuFrame:HookScript("OnShow", function()
+	_G[G.uiname.."GUI Main Frame"]:Hide()
+end)
+
+GameMenuButtonRatings:SetPoint("TOP", GameMenuButton, "BOTTOM", 0, -1)
+
+function GameMenuFrame_UpdateVisibleButtons(self)
+	local height = 332;
+	GameMenuButtonUIOptions:SetPoint("TOP", GameMenuButtonOptions, "BOTTOM", 0, -1);
+
+	local buttonToReanchor = GameMenuButtonWhatsNew;
+	local reanchorYOffset = -1;
+
+	if IsCharacterNewlyBoosted() or not C_SplashScreen.CanViewSplashScreen()  then
+		GameMenuButtonWhatsNew:Hide();
+		height = height - 20;
+		buttonToReanchor = GameMenuButtonOptions;
+		reanchorYOffset = -16;
+	else
+		GameMenuButtonWhatsNew:Show();
+		GameMenuButtonOptions:SetPoint("TOP", GameMenuButtonWhatsNew, "BOTTOM", 0, -16);
+	end
+
+	if ( C_StorePublic.IsEnabled() ) then
+		height = height + 20;
+		GameMenuButtonStore:Show();
+		buttonToReanchor:SetPoint("TOP", GameMenuButtonStore, "BOTTOM", 0, reanchorYOffset);
+	else
+		GameMenuButtonStore:Hide();
+		buttonToReanchor:SetPoint("TOP", GameMenuButtonHelp, "BOTTOM", 0, reanchorYOffset);
+	end
+	
+	
+	if ( GameMenuButtonRatings:IsShown() ) then
+		height = height + 20;
+		GameMenuButtonLogout:SetPoint("TOP", GameMenuButtonRatings, "BOTTOM", 0, -16);
+	else
+		GameMenuButtonLogout:SetPoint("TOP", GameMenuButton, "BOTTOM", 0, -16)
+	end
+
+	self:SetHeight(height);
+end
+
+
+--====================================================--
 --[[                  -- Micromenu --               ]]--
 --====================================================--
 
@@ -1255,33 +1312,6 @@ T.CreateDragFrame(MicromenuBar)
 Skinbg(MicromenuBar)
 
 local MicromenuButtons = {}
-
-local MicromenuBar2 = CreateFrame("Frame", G.uiname.."MicromenuBar2", UIParent, "BackdropTemplate")
-MicromenuBar2:SetScale(aCoreCDB["SkinOptions"]["micromenuscale"])
-MicromenuBar2:SetFrameLevel(4)
-MicromenuBar2:SetSize(128, 24)
-MicromenuBar2.movingname = L["团队工具"]
-MicromenuBar2.point = {
-		healer = {a1 = "RIGHT", parent = MicromenuBar:GetName(), a2 = "LEFT", x = -10, y = 0},
-		dpser = {a1 = "RIGHT", parent = MicromenuBar:GetName(), a2 = "LEFT", x = -10, y = 0},
-	}
-T.CreateDragFrame(MicromenuBar2)
-Skinbg(MicromenuBar2)
-
-local MicromenuBar3 = CreateFrame("Frame", G.uiname.."MicromenuBar3", UIParent, "BackdropTemplate")
-MicromenuBar3:SetScale(aCoreCDB["SkinOptions"]["micromenuscale"])
-MicromenuBar3:SetFrameLevel(4)
-MicromenuBar3:SetSize(128, 24)
-MicromenuBar3.movingname = L["控制台"]
-MicromenuBar3.point = {
-		healer = {a1 = "LEFT", parent = MicromenuBar:GetName(), a2 = "RIGHT", x = 10, y = 0},
-		dpser = {a1 = "LEFT", parent = MicromenuBar:GetName(), a2 = "RIGHT", x = 10, y = 0},
-	}
-T.CreateDragFrame(MicromenuBar3)
-Skinbg(MicromenuBar3)
-
-local Micromenu2Buttons = {}
-local Micromenu3Buttons = {}
 
 local function CreateMicromenuButton(parent, bu, text, original)
 	local Button
@@ -1310,10 +1340,6 @@ local function CreateMicromenuButton(parent, bu, text, original)
 	if original == "System" then
 		Button:SetSize(80, 43)
 		Button:DisableDrawLayer("BACKGROUD")
-	elseif original == "RaidTool" then
-		Button:SetSize(100, 43)
-	elseif original == "Config" then
-		Button:SetSize(100, 43)
 	else
 		Button:SetSize(24, 43)
 	end
@@ -1324,7 +1350,7 @@ local function CreateMicromenuButton(parent, bu, text, original)
 	Button.normal:SetPoint("BOTTOMRIGHT")
 	Button.normal:SetHeight(24)
 	
-	if original == "System" or original == "RaidTool" or original == "Config" then
+	if original == "System" then
 		Button.name = T.createtext(Button, "OVERLAY", 14, "OUTLINE", "CENTER")
 		Button.name:SetText(text)
 		Button.name:SetPoint("BOTTOM", 0, 4)
@@ -1355,19 +1381,7 @@ local function CreateMicromenuButton(parent, bu, text, original)
 	
 	if not bu then
 		Button:SetScript("OnClick", function()
-			if original == "RaidTool" then
-				if _G[G.uiname.."RaidToolFrame"]:IsShown() then
-					_G[G.uiname.."RaidToolFrame"]:Hide()
-				else
-					_G[G.uiname.."RaidToolFrame"]:Show()
-				end
-			elseif original == "Config" then
-				if _G[G.uiname.."GUI Main Frame"]:IsShown() then
-					_G[G.uiname.."GUI Main Frame"]:Hide()
-				else
-					_G[G.uiname.."GUI Main Frame"]:Show()
-				end
-			elseif original == "Friends" then
+			if original == "Friends" then
 				ToggleFriendsFrame(1)
 			elseif original == "Bag" then
 				if GameMenuFrame:IsShown() then
@@ -1379,14 +1393,8 @@ local function CreateMicromenuButton(parent, bu, text, original)
 			end
 		end)
 	end
-	if original == "RaidTool" then
-		tinsert(Micromenu2Buttons, Button)
-	elseif original == "Config" then
-		tinsert(Micromenu3Buttons, Button)
-	else
-		tinsert(MicromenuButtons, Button)
-	end
-	
+
+	tinsert(MicromenuButtons, Button)
 	return Button
 end
 
@@ -1440,12 +1448,6 @@ local function OnLeave(button)
 		button.normal:SetVertexColor(.6, .6, .6)
 	end
 end
-
-MicromenuBar2.Raidtool = CreateMicromenuButton(MicromenuBar2, false, G.classcolor..L["团队工具"].."|r", "RaidTool")
-MicromenuBar2.Raidtool:SetPoint("BOTTOM", MicromenuBar2, "BOTTOM")
-
-MicromenuBar3.Config = CreateMicromenuButton(MicromenuBar3, false, G.classcolor..L["控制台"].."|r", "Config")
-MicromenuBar3.Config:SetPoint("BOTTOM", MicromenuBar3, "BOTTOM")
 
 local function UpdateFade(frame, children, dbvalue)
 	if aCoreCDB["OtherOptions"][dbvalue] then
@@ -1507,9 +1509,6 @@ local function FadeBar(frame, buttons, dbvalue)
 end
 
 FadeBar(MicromenuBar, MicromenuButtons, "fademicromenu")
-FadeBar(MicromenuBar2, Micromenu2Buttons, "fademicromenu2")
-FadeBar(MicromenuBar3, Micromenu3Buttons, "fademicromenu3")
-
 --====================================================--
 --[[          --  Order Hall Command Bar --         ]]--
 --====================================================--
