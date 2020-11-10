@@ -2,7 +2,6 @@
 local T, C, L, G = unpack(select(2, ...))
 local F = unpack(AuroraClassic)
 
-local collect = aCoreCDB["OtherOptions"]["collectgarbage"]
 local acceptres = aCoreCDB["OtherOptions"]["acceptres"]
 local battlegroundres = aCoreCDB["OtherOptions"]["battlegroundres"]
 local hideerrors = aCoreCDB["OtherOptions"]["hideerrors"]
@@ -28,22 +27,7 @@ Reload Cmd
 -------------------------------------------------------------------------------]]
 SLASH_ALTZRL1 = "/rl"
 SlashCmdList["ALTZRL"] = ReloadUI
---[[-----------------------------------------------------------------------------
-Collect Garbage
--------------------------------------------------------------------------------]]
-if collect then
-	local eventcount = 0 
-	local a = CreateFrame("Frame") 
-	a:RegisterAllEvents() 
-	a:SetScript("OnEvent", function(self, event) 
-		eventcount = eventcount + 1 
-		if InCombatLockdown() then return end 
-		if eventcount > 6000 or event == "PLAYER_ENTERING_WORLD" then 
-			collectgarbage("collect") 
-			eventcount = 0
-		end 
-	end)
-end
+
 --[[-----------------------------------------------------------------------------
 Auto Screenshot
 -------------------------------------------------------------------------------]]
