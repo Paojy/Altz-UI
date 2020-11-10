@@ -53,8 +53,19 @@ local function DisableBlizzard()
 	ButtonEventsRegisterFrame()
 	
 	-- this would taint along with the same path as the SetNoopers: ValidateActionBarTransition
-	_G.VerticalMultiBarsContainer:Size(10, 10) -- dummy values so GetTop etc doesnt fail without replacing
+	_G.VerticalMultiBarsContainer:SetSize(10, 10) -- dummy values so GetTop etc doesnt fail without replacing
 	SetNoopsi(_G.VerticalMultiBarsContainer)
+	
+	-- hide some interface options we dont use
+	_G.InterfaceOptionsActionBarsPanelStackRightBars:SetScale(0.5)
+	_G.InterfaceOptionsActionBarsPanelStackRightBars:SetAlpha(0)
+	_G.InterfaceOptionsActionBarsPanelStackRightBarsText:Hide() -- hides the !
+	_G.InterfaceOptionsActionBarsPanelRightTwoText:SetTextColor(1,1,1) -- no yellow
+	_G.InterfaceOptionsActionBarsPanelRightTwoText.SetTextColor = noop -- i said no yellow
+	_G.InterfaceOptionsActionBarsPanelAlwaysShowActionBars:SetScale(0.0001)
+	_G.InterfaceOptionsActionBarsPanelAlwaysShowActionBars:SetAlpha(0)
+	_G.InterfaceOptionsActionBarsPanelLockActionBars:SetScale(0.0001)
+	_G.InterfaceOptionsActionBarsPanelLockActionBars:SetAlpha(0)
 end
 
 local blizzHider = CreateFrame("Frame", "Altz_BizzardHider")
