@@ -34,7 +34,7 @@ local backdrop2 = {
 }
 
 local function applyBackground(bu)
-if bu:GetFrameLevel() < 2 then bu:SetFrameLevel(2) end
+	if bu:GetFrameLevel() < 2 then bu:SetFrameLevel(2) end
 	-- glow + background
 	bu.bg = CreateFrame("Frame", nil, bu, "BackdropTemplate")
 	bu.bg:SetAllPoints(bu)
@@ -196,6 +196,15 @@ local function styleActionButton(bu)
 	end)
 	--apply background
 	if not bu.bg then applyBackground(bu) end
+	
+	if aCoreCDB["ActionbarOptions"]["show_bg"] then
+		bu:SetAttribute('showgrid', 1)
+		bu:ShowGrid(2)
+	else
+		bu:SetAttribute('showgrid', 0)
+		bu:HideGrid(2)
+	end
+	
 	bu.rabs_styled = true
 end
 
@@ -289,7 +298,6 @@ end
 ---------------------------------------
 -- INIT
 ---------------------------------------
-
 local function init()
 	--style the actionbar buttons
 	if evnet == "PLAYER_ENTERING_WORLD" then
@@ -333,7 +341,7 @@ local function init()
 				styleActionButton(_G["SpellFlyoutButton"..i])
 			end
 		end
-		SpellFlyout:HookScript("OnShow",checkForFlyoutButtons)		
+		SpellFlyout:HookScript("OnShow",checkForFlyoutButtons)
 	end
 end
 
