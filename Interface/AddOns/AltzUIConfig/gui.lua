@@ -2200,13 +2200,14 @@ ActionbarInnerframe.common = CreateOptionPage("Actionbar Options common", L["通
 ActionbarInnerframe.common:Show()
 
 T.createcheckbutton(ActionbarInnerframe.common, 30, 60, L["向上排列"], "ActionbarOptions", "growup", L["向上排列说明"])
-T.createcheckbutton(ActionbarInnerframe.common, 30, 90, L["显示冷却时间"], "ActionbarOptions", "cooldown", L["显示冷却时间提示"])
-T.createcheckbutton(ActionbarInnerframe.common, 30, 120, L["显示冷却时间"].." (Weakauras)", "ActionbarOptions", "cooldown_wa", L["显示冷却时间提示WA"])
-T.createslider(ActionbarInnerframe.common, 30, 170, L["冷却时间数字大小"], "ActionbarOptions", "cooldownsize", 1, 18, 25, 1, L["冷却时间数字大小提示"])
-T.createcheckbutton(ActionbarInnerframe.common, 30, 200, L["不可用颜色"], "ActionbarOptions", "rangecolor", L["不可用颜色提示"])
-T.createslider(ActionbarInnerframe.common, 30, 250, L["键位字体大小"], "ActionbarOptions", "keybindsize", 1, 8, 20, 1)
-T.createslider(ActionbarInnerframe.common, 30, 290, L["宏名字字体大小"], "ActionbarOptions", "macronamesize", 1, 8, 20, 1)
-T.createslider(ActionbarInnerframe.common, 30, 330, L["可用次数字体大小"], "ActionbarOptions", "countsize", 1, 8, 20, 1)
+T.createcheckbutton(ActionbarInnerframe.common, 30, 90, ALWAYS_SHOW_MULTIBARS_TEXT, "ActionbarOptions", "show_bg")
+T.createcheckbutton(ActionbarInnerframe.common, 30, 120, L["显示冷却时间"], "ActionbarOptions", "cooldown", L["显示冷却时间提示"])
+T.createcheckbutton(ActionbarInnerframe.common, 30, 150, L["显示冷却时间"].." (Weakauras)", "ActionbarOptions", "cooldown_wa", L["显示冷却时间提示WA"])
+T.createslider(ActionbarInnerframe.common, 30, 200, L["冷却时间数字大小"], "ActionbarOptions", "cooldownsize", 1, 18, 25, 1, L["冷却时间数字大小提示"])
+T.createcheckbutton(ActionbarInnerframe.common, 30, 230, L["不可用颜色"], "ActionbarOptions", "rangecolor", L["不可用颜色提示"])
+T.createslider(ActionbarInnerframe.common, 30, 280, L["键位字体大小"], "ActionbarOptions", "keybindsize", 1, 8, 20, 1)
+T.createslider(ActionbarInnerframe.common, 30, 320, L["宏名字字体大小"], "ActionbarOptions", "macronamesize", 1, 8, 20, 1)
+T.createslider(ActionbarInnerframe.common, 30, 360, L["可用次数字体大小"], "ActionbarOptions", "countsize", 1, 8, 20, 1)
 T.createDR(ActionbarInnerframe.common.cooldown, ActionbarInnerframe.common.cooldown_wa, ActionbarInnerframe.common.cooldownsize)
 
 ActionbarInnerframe.bar12 = CreateOptionPage("Actionbar Options bar12", L["主动作条"], ActionbarInnerframe, "VERTICAL", .3)
@@ -2551,12 +2552,13 @@ PlateInnerframe.playerresource = CreateOptionPage("Player Resource Bar Options",
 
 T.createcheckbutton(PlateInnerframe.playerresource, 30, 60, L["显示玩家姓名板"], "PlateOptions", "playerplate")
 T.createcheckbutton(PlateInnerframe.playerresource, 70, 90, L["显示玩家姓名板光环"], "PlateOptions", "plateaura")
-T.createcheckbutton(PlateInnerframe.playerresource, 30, 120, DISPLAY_PERSONAL_RESOURCE, "PlateOptions", "classresource_show")
+T.createcheckbutton(PlateInnerframe.playerresource, 70, 120, L["显示玩家施法条"], "PlateOptions", "platecastbar")
+T.createcheckbutton(PlateInnerframe.playerresource, 30, 150, DISPLAY_PERSONAL_RESOURCE, "PlateOptions", "classresource_show")
 local classresource_group = {
 	["target"] = L["目标姓名板"],
 	["player"] = L["玩家姓名板"],
 }
-T.createradiobuttongroup(PlateInnerframe.playerresource, 70, 150, L["姓名板资源位置"], "PlateOptions", "classresource_pos", classresource_group)
+T.createradiobuttongroup(PlateInnerframe.playerresource, 70, 180, L["姓名板资源位置"], "PlateOptions", "classresource_pos", classresource_group)
 
 T.createDR(PlateInnerframe.playerresource.playerplate, PlateInnerframe.playerresource.plateaura)
 T.createDR(PlateInnerframe.playerresource.classresource_show, PlateInnerframe.playerresource.classresource_pos)
@@ -2969,12 +2971,11 @@ OtherOptions.DividingLine:SetPoint("TOP", 0, -225)
 OtherOptions.DividingLine:SetColorTexture(1, 1, 1, .2)
 
 T.createcheckbutton(OtherOptions, 30, 240, L["任务栏闪动"], "OtherOptions", "flashtaskbar", L["任务栏闪动提示"])
-T.createcheckbutton(OtherOptions, 300, 240, L["回收内存"], "OtherOptions", "collectgarbage", L["回收内存提示"])
-T.createcheckbutton(OtherOptions, 30, 270, L["隐藏错误提示"], "OtherOptions", "hideerrors", L["隐藏错误提示提示"])	
-T.createcheckbutton(OtherOptions, 300, 270, L["显示插件使用小提示"], "OtherOptions", "showAFKtips", L["显示插件使用小提示提示"])
-T.createcheckbutton(OtherOptions, 30, 300, L["成就截图"], "OtherOptions", "autoscreenshot", L["成就截图提示"])
-T.CVartogglebox(OtherOptions, 300, 300, "screenshotQuality", L["提升截图画质"], "10", "1")
-T.CVartogglebox(OtherOptions, 30, 330, "screenshotFormat", L["截图保存为tga格式"], "tga", "jpg", "截图保存为tga提示")
+T.createcheckbutton(OtherOptions, 300, 240, L["隐藏错误提示"], "OtherOptions", "hideerrors", L["隐藏错误提示提示"])	
+T.createcheckbutton(OtherOptions, 30, 270, L["显示插件使用小提示"], "OtherOptions", "showAFKtips", L["显示插件使用小提示提示"])
+T.createcheckbutton(OtherOptions, 300, 270, L["成就截图"], "OtherOptions", "autoscreenshot", L["成就截图提示"])
+T.CVartogglebox(OtherOptions, 30, 300, "screenshotQuality", L["提升截图画质"], "10", "1")
+T.CVartogglebox(OtherOptions, 300, 300, "screenshotFormat", L["截图保存为tga格式"], "tga", "jpg", "截图保存为tga提示")
 
 if G.Client == "zhCN" then
 	OtherOptions.DividingLine2 = OtherOptions:CreateTexture(nil, "ARTWORK")

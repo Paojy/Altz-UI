@@ -1711,6 +1711,7 @@ local Character_default_Settings = {
 		itembuttons_table = Customitembuttons,
 	},
 	ActionbarOptions = {
+		show_bg = true,
 		growup = true,
 		cooldown = true,
 		cooldown_wa = true,
@@ -1786,8 +1787,7 @@ local Character_default_Settings = {
 		enableplate = true,
 		theme = "class", -- "dark" "class" "number"	
 		fontsize = 8,
-		threatcolor = true,
-		plateaura = false,
+		threatcolor = true,		
 		plateauranum = 5,
 		plateaurasize = 15,	
 		Interruptible_color = {r =.6 , g = .4, b = .8},	
@@ -1808,6 +1808,8 @@ local Character_default_Settings = {
 		
 		-- 玩家姓名板
 		playerplate = false,
+		plateaura = false,
+		platecastbar = false,
 		classresource_show = false,
 		classresource_pos = "player", --"player", "target"		
 		
@@ -1858,7 +1860,6 @@ local Character_default_Settings = {
 	OtherOptions = {
 		hideerrors = true,
 		autoscreenshot = true,
-		collectgarbage = false,	
 		acceptres = true,
 		battlegroundres = true,
 		acceptfriendlyinvites = false,
