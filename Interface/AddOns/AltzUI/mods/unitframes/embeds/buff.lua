@@ -175,7 +175,7 @@ local Update = function(self, event, unit)
 	end
 	
     if auras.num_shown < numBuffs then
-        for i = numBuffs-1, auras.num_shown+1, -1 do
+        for i = numBuffs, auras.num_shown+1, -1 do
 			if auras["button"..i] and auras["button"..i]:IsShown() then
 				auras["button"..i]:Hide()
 			end
