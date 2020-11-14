@@ -10,24 +10,6 @@ local function SetNoopsi(frame)
 	end
 end
 
-
-local function ButtonEventsRegisterFrame(added)
-	local frames = _G.ActionBarButtonEventsFrame.frames
-	for index = #frames, 1, -1 do
-		local frame = frames[index]
-		local wasAdded = frame == added
-		if not added or wasAdded then
-			if not strmatch(frame:GetName(), 'ExtraActionButton%d') then
-				_G.ActionBarButtonEventsFrame.frames[index] = nil
-			end
-
-			if wasAdded then
-				break
-			end
-		end
-	end
-end
-
 local function DisableBlizzard()
 	-- Spellbook open in combat taint, only happens sometimes
 	_G.MultiActionBar_HideAllGrids = function() end
@@ -47,10 +29,9 @@ local function DisableBlizzard()
 	_G.ActionBarActionEventsFrame:UnregisterAllEvents()
 	_G.ActionBarController:UnregisterAllEvents()
 	_G.ActionBarController:RegisterEvent('UPDATE_EXTRA_ACTIONBAR') -- this is needed to let the ExtraActionBar show
-	
-	-- lets only keep ExtraActionButtons in here
-	hooksecurefunc(_G.ActionBarButtonEventsFrame, 'RegisterFrame', ButtonEventsRegisterFrame)
-	ButtonEventsRegisterFrame()
+	_G.ActionBarController:RegisterEvent('UPDATE_SHAPESHIFT_FORM') -- 小德形态
+	_G.ActionBarController:RegisterEvent('UPDATE_BONUS_ACTIONBAR') -- 小德形态
+	_G.ActionBarController:RegisterEvent('UPDATE_OVERRIDE_ACTIONBAR')
 	
 	-- this would taint along with the same path as the SetNoopers: ValidateActionBarTransition
 	_G.VerticalMultiBarsContainer:SetSize(10, 10) -- dummy values so GetTop etc doesnt fail without replacing
