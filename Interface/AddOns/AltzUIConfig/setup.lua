@@ -557,8 +557,24 @@ end
 --====================================================--
 CreateTutorialsStepFrame(L["团队框架"], L["团队框架tip"])
 CreateOptions(TutorialsFrame[5], "check", L["禁用自动切换"], "UnitframeOptions", "autoswitch")
-CreateOptions(TutorialsFrame[5], "group", true, "UnitframeOptions", "raidonly", {["healer"] = L["治疗模式"],["dps"] = L["输出/坦克模式"]})
+
+local raidonly_group = {
+	["healer"] = L["治疗模式"],
+	["dps"] = L["输出/坦克模式"],
+}
+CreateOptions(TutorialsFrame[5], "group", true, "UnitframeOptions", "raidonly", raidonly_group)
 T.createDR(TutorialsFrame[5]["autoswitch"], TutorialsFrame[5]["raidonly"]["healer"], TutorialsFrame[5]["raidonly"]["dps"])
+
+for k, text in pairs(raidonly_group) do
+	TutorialsFrame[5]["raidonly"][k]:HookScript("OnClick", function()
+		local dps_shown = Altz_T.IsDpsRaidShown()
+		if k == "dps" and not dps_shown then
+			Altz_T.SwitchRaidFrame()
+		elseif k == "healer" and dps_shown then
+			Altz_T.SwitchRaidFrame()
+		end
+	end)
+end
 
 --====================================================--
 --[[               -- 姓名板 --                   ]]--
