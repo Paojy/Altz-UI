@@ -11,29 +11,25 @@ end
 --[[                -- Functions --                    ]]--
 --====================================================--
 local function Skinbar(bar)
-	if aCoreCDB["UnitframeOptions"]["style"] == 1 then
-		bar.tex = bar:CreateTexture(nil, "ARTWORK")
-		bar.tex:SetAllPoints()
+	if aCoreCDB["UnitframeOptions"]["style"] == 1 then	
 		bar.tex:SetTexture(G.media.blank)
-		bar.tex:SetGradient("VERTICAL", G.Ccolor.r, G.Ccolor.g, G.Ccolor.b, G.Ccolor.r/3, G.Ccolor.g/3, G.Ccolor.b/3)
-		T.CreateSD(bar, 2, 0, 0, 0, 0, -1)
+		bar.tex:SetGradient("VERTICAL", G.Ccolor.r, G.Ccolor.g, G.Ccolor.b, G.Ccolor.r/3, G.Ccolor.g/3, G.Ccolor.b/3)	
 	else
-		bar.tex = bar:CreateTexture(nil, "ARTWORK")
-		bar.tex:SetAllPoints()
 		bar.tex:SetTexture(G.media.ufbar)
 		bar.tex:SetVertexColor(G.Ccolor.r, G.Ccolor.g, G.Ccolor.b)
-		T.CreateSD(bar, 2, 0, 0, 0, 0, -1)
 	end
 end
 
 local function Skinbg(bar)
-	if aCoreCDB["UnitframeOptions"]["style"] ~= 1 then
-		bar.tex = bar:CreateTexture(nil, "ARTWORK")
-		bar.tex:SetAllPoints()
+	if aCoreCDB["UnitframeOptions"]["style"] == 1 then
+		bar:SetBackdropColor(0, 0, 0, 0)
+		bar:SetBackdropBorderColor(0, 0, 0, 0)
+		bar.tex:SetTexture(nil)	
+	else
+		bar:SetBackdropColor(0, 0, 0, 1)
+		bar:SetBackdropBorderColor(0, 0, 0, 1)
 		bar.tex:SetTexture(G.media.blank)
 		bar.tex:SetGradientAlpha("VERTICAL", .2,.2,.2,.15,.25,.25,.25,.6)
-		F.CreateBD(bar, 1)
-		T.CreateSD(bar, 2, 0, 0, 0, 0, -1)	
 	end
 end
 --====================================================--
@@ -48,71 +44,118 @@ PShadow:SetBackdropColor(0, 0, 0, 0.3)
 --====================================================--
 --[[                 -- Panels --                   ]]--
 --====================================================--
-if aCoreCDB["SkinOptions"]["showtopbar"] then
-	local toppanel = CreateFrame("Frame", G.uiname.."Top Long Panel", UIParent)
-	toppanel:SetFrameStrata("BACKGROUND")
-	toppanel:SetPoint("TOP", 0, 3)
-	toppanel:SetPoint("LEFT", UIParent, "LEFT", -8, 0)
-	toppanel:SetPoint("RIGHT", UIParent, "RIGHT", 8, 0)
-	toppanel:SetHeight(15)
-	
-	if string.find(aCoreCDB["SkinOptions"]["decorativestyle"], "dark") then
-		toppanel.border = F.CreateBDFrame(toppanel, 1)
-	else
-		toppanel.border = F.CreateBDFrame(toppanel, .2)
-	end
-	
-	if string.find(aCoreCDB["SkinOptions"]["decorativestyle"], "1") then
-		T.CreateSD(toppanel.border, 2, G.Ccolor.r, G.Ccolor.g, G.Ccolor.b, 0, -1)
-	elseif string.find(aCoreCDB["SkinOptions"]["decorativestyle"], "3") then
-		local TLPanel = CreateFrame("Frame", G.uiname.."TLPanel", UIParent)
-		TLPanel:SetFrameStrata("BACKGROUND")
-		TLPanel:SetFrameLevel(2)
-		TLPanel:SetSize(G.screenwidth*2/9, 5)
-		TLPanel:SetPoint("TOPLEFT", UIParent, "TOPLEFT", 15, -10)
-		Skinbar(TLPanel)
 
-		local TRPanel = CreateFrame("Frame", G.uiname.."TRPanel", UIParent)
-		TRPanel:SetFrameStrata("BACKGROUND")
-		TRPanel:SetFrameLevel(2)
-		TRPanel:SetSize(G.screenwidth*2/9, 5)
-		TRPanel:SetPoint("TOPRIGHT", UIParent, "TOPRIGHT", -15, -10)
-		Skinbar(TRPanel)
-	end
+local toppanel = CreateFrame("Frame", G.uiname.."Top Long Panel", UIParent, "BackdropTemplate")
+toppanel:SetFrameStrata("BACKGROUND")
+toppanel:SetPoint("TOP", 0, 3)
+toppanel:SetPoint("LEFT", UIParent, "LEFT", -8, 0)
+toppanel:SetPoint("RIGHT", UIParent, "RIGHT", 8, 0)
+toppanel:SetHeight(15)
+toppanel.tex = toppanel:CreateTexture(nil, "ARTWORK")
+toppanel.tex:SetAllPoints()
+F.CreateBD(toppanel, 1)
+T.CreateSD(toppanel, 2, 0, 0, 0, 0, -1)
+
+if string.find(aCoreCDB["SkinOptions"]["decorativestyle"], "dark") then
+	toppanel.border = F.CreateBDFrame(toppanel, 1)
+else
+	toppanel.border = F.CreateBDFrame(toppanel, .2)
 end
 
-if aCoreCDB["SkinOptions"]["showbottombar"] then
-	local bottompanel = CreateFrame("Frame", G.uiname.."Bottom Long Panel", UIParent)
-	bottompanel:SetFrameStrata("BACKGROUND")
-	bottompanel:SetPoint("BOTTOM", 0, -3)
-	bottompanel:SetPoint("LEFT", UIParent, "LEFT", -8, 0)
-	bottompanel:SetPoint("RIGHT", UIParent, "RIGHT", 8, 0)
-	bottompanel:SetHeight(15)
+if string.find(aCoreCDB["SkinOptions"]["decorativestyle"], "1") then
+	T.CreateSD(toppanel.border, 2, G.Ccolor.r, G.Ccolor.g, G.Ccolor.b, 0, -1)
+elseif string.find(aCoreCDB["SkinOptions"]["decorativestyle"], "3") then
+	local TLPanel = CreateFrame("Frame", G.uiname.."TLPanel", UIParent)
+	TLPanel:SetFrameStrata("BACKGROUND")
+	TLPanel:SetFrameLevel(2)
+	TLPanel:SetSize(G.screenwidth*2/9, 5)
+	TLPanel:SetPoint("TOPLEFT", UIParent, "TOPLEFT", 15, -10)
+	T.CreateSD(TLPanel, 2, 0, 0, 0, 0, -1)
+	TLPanel.tex = TLPanel:CreateTexture(nil, "ARTWORK")
+	TLPanel.tex:SetAllPoints()
+	TLPanel.apply = function(self) Skinbar(self) end
+	TLPanel.apply()
+	G.TLPanel = TLPanel
 	
-	if string.find(aCoreCDB["SkinOptions"]["decorativestyle"], "dark") then
-		bottompanel.border = F.CreateBDFrame(bottompanel, 1)
-	else
-		bottompanel.border = F.CreateBDFrame(bottompanel, .2)
-	end
-	
-	if string.find(aCoreCDB["SkinOptions"]["decorativestyle"], "1") then
-		T.CreateSD(bottompanel.border, 2, G.Ccolor.r, G.Ccolor.g, G.Ccolor.b, 0, -1)
-	elseif string.find(aCoreCDB["SkinOptions"]["decorativestyle"], "3") then
-		local BLPanel = CreateFrame("Frame", G.uiname.."BLPanel", UIParent)
-		BLPanel:SetFrameStrata("BACKGROUND")
-		BLPanel:SetFrameLevel(2)
-		BLPanel:SetSize(G.screenwidth*2/9, 5)
-		BLPanel:SetPoint("BOTTOMLEFT", UIParent, "BOTTOMLEFT", 15, 10)
-		Skinbar(BLPanel)
-
-		local BRPanel = CreateFrame("Frame", G.uiname.."BRPanel", UIParent)
-		BRPanel:SetFrameStrata("BACKGROUND")
-		BRPanel:SetFrameLevel(2)
-		BRPanel:SetSize(G.screenwidth*2/9, 5)
-		BRPanel:SetPoint("BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", -15, 10)
-		Skinbar(BRPanel)
-	end
+	local TRPanel = CreateFrame("Frame", G.uiname.."TRPanel", UIParent)
+	TRPanel:SetFrameStrata("BACKGROUND")
+	TRPanel:SetFrameLevel(2)
+	TRPanel:SetSize(G.screenwidth*2/9, 5)
+	TRPanel:SetPoint("TOPRIGHT", UIParent, "TOPRIGHT", -15, -10)
+	T.CreateSD(TRPanel, 2, 0, 0, 0, 0, -1)
+	TRPanel.tex = TRPanel:CreateTexture(nil, "ARTWORK")
+	TRPanel.tex:SetAllPoints()
+	TRPanel.apply = function(self) Skinbar(self) end
+	TRPanel.apply()
+	G.TRPanel = TRPanel
 end
+
+toppanel.Apply = function()
+	if aCoreCDB["SkinOptions"]["showtopbar"] then
+		toppanel:Show()
+	else
+		toppanel:Hide()
+	end
+	Skinbg(toppanel)
+end
+toppanel.Apply()
+G.toppanel = toppanel
+
+local bottompanel = CreateFrame("Frame", G.uiname.."Bottom Long Panel", UIParent, "BackdropTemplate")
+bottompanel:SetFrameStrata("BACKGROUND")
+bottompanel:SetPoint("BOTTOM", 0, -3)
+bottompanel:SetPoint("LEFT", UIParent, "LEFT", -8, 0)
+bottompanel:SetPoint("RIGHT", UIParent, "RIGHT", 8, 0)
+bottompanel:SetHeight(15)
+bottompanel.tex = bottompanel:CreateTexture(nil, "ARTWORK")
+bottompanel.tex:SetAllPoints()
+F.CreateBD(bottompanel, 1)
+T.CreateSD(bottompanel, 2, 0, 0, 0, 0, -1)
+
+if string.find(aCoreCDB["SkinOptions"]["decorativestyle"], "dark") then
+	bottompanel.border = F.CreateBDFrame(bottompanel, 1)
+else
+	bottompanel.border = F.CreateBDFrame(bottompanel, .2)
+end
+
+if string.find(aCoreCDB["SkinOptions"]["decorativestyle"], "1") then
+	T.CreateSD(bottompanel.border, 2, G.Ccolor.r, G.Ccolor.g, G.Ccolor.b, 0, -1)
+elseif string.find(aCoreCDB["SkinOptions"]["decorativestyle"], "3") then
+	local BLPanel = CreateFrame("Frame", G.uiname.."BLPanel", UIParent)
+	BLPanel:SetFrameStrata("BACKGROUND")
+	BLPanel:SetFrameLevel(2)
+	BLPanel:SetSize(G.screenwidth*2/9, 5)
+	BLPanel:SetPoint("BOTTOMLEFT", UIParent, "BOTTOMLEFT", 15, 10)
+	T.CreateSD(BLPanel, 2, 0, 0, 0, 0, -1)
+	BLPanel.tex = BLPanel:CreateTexture(nil, "ARTWORK")
+	BLPanel.tex:SetAllPoints()
+	BLPanel.apply = function(self) Skinbar(self) end
+	BLPanel.apply()
+	G.BLPanel = BLPanel
+
+	local BRPanel = CreateFrame("Frame", G.uiname.."BRPanel", UIParent)
+	BRPanel:SetFrameStrata("BACKGROUND")
+	BRPanel:SetFrameLevel(2)
+	BRPanel:SetSize(G.screenwidth*2/9, 5)
+	BRPanel:SetPoint("BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", -15, 10)
+	T.CreateSD(BRPanel, 2, 0, 0, 0, 0, -1)
+	BRPanel.tex = BRPanel:CreateTexture(nil, "ARTWORK")
+	BRPanel.tex:SetAllPoints()
+	BRPanel.apply = function(self) Skinbar(self) end
+	BRPanel.apply()
+	G.BRPanel = BRPanel
+end
+
+bottompanel.Apply = function()
+	if aCoreCDB["SkinOptions"]["showbottombar"] then
+		bottompanel:Show()
+	else
+		bottompanel:Hide()
+	end
+	Skinbg(bottompanel)
+end
+bottompanel.Apply()
+G.bottompanel = bottompanel
 --====================================================--
 --[[                   -- Minimap --                ]]--
 --====================================================--
@@ -195,10 +238,10 @@ end
 
 local minimap_moveout = function()
 	if Updater.mode == "IN" then
-	nowwidth, allwidth, all = 0, minimap_height, 1
-	T.UIFrameFadeOut(minimap_anchor, 1, minimap_anchor:GetAlpha(), 0)
-	T.UIFrameFadeOut(Minimap, 1, Minimap:GetAlpha(), 0)
-	Updater:Show()
+		nowwidth, allwidth, all = 0, minimap_height, 1
+		T.UIFrameFadeOut(minimap_anchor, 1, minimap_anchor:GetAlpha(), 0)
+		T.UIFrameFadeOut(Minimap, 1, Minimap:GetAlpha(), 0)
+		Updater:Show()
 	end
 end
 
@@ -211,7 +254,7 @@ local minimap_toggle = function()
 	Updater:Show()
 end
 
-Updater:SetScript("OnEvent", function(self, event)
+T.HideMap = function(self, event)
 	if aCoreCDB["SkinOptions"]["hidemap"] then
 		if event == "PLAYER_REGEN_DISABLED" then
 			minimap_moveout()
@@ -223,8 +266,18 @@ Updater:SetScript("OnEvent", function(self, event)
 			end
 			self:RegisterEvent("PLAYER_REGEN_ENABLED")
 			self:RegisterEvent("PLAYER_REGEN_DISABLED")
+		else
+			if not InCombatLockdown() then
+				minimap_moveout()
+			end
 		end
+	else
+		minimap_movein()
 	end
+end
+
+Updater:SetScript("OnEvent", function(self, event)
+	T.HideMap(self, event)
 end)
 
 Updater:RegisterEvent("PLAYER_LOGIN")
@@ -326,7 +379,7 @@ local chatframe_toggle = function()
 	Updater2:Show()
 end
 
-Updater2:SetScript("OnEvent", function(self, event)
+T.HideChat = function(self, event)
 	if aCoreCDB["SkinOptions"]["hidechat"] then
 		if event == "PLAYER_REGEN_DISABLED" then
 			chatframe_moveout()
@@ -338,8 +391,18 @@ Updater2:SetScript("OnEvent", function(self, event)
 			end
 			self:RegisterEvent("PLAYER_REGEN_ENABLED")
 			self:RegisterEvent("PLAYER_REGEN_DISABLED")
+		else
+			if not InCombatLockdown() then
+				chatframe_moveout()
+			end
 		end
+	else
+		chatframe_movein()
 	end
+end
+
+Updater2:SetScript("OnEvent", function(self, event)
+	T.HideChat(self, event)
 end)
 
 Updater2:RegisterEvent("PLAYER_LOGIN")
@@ -1309,7 +1372,14 @@ MicromenuBar.point = {
 		dpser = {a1 = "TOP", parent = "UIParent", a2 = "TOP", x = 0, y = -5},
 	}
 T.CreateDragFrame(MicromenuBar)
-Skinbg(MicromenuBar)
+MicromenuBar.tex = MicromenuBar:CreateTexture(nil, "ARTWORK")
+MicromenuBar.tex:SetAllPoints()
+MicromenuBar.Apply = function()
+	Skinbg(MicromenuBar)
+end
+MicromenuBar.Apply()
+G.MicromenuBar = MicromenuBar
+
 
 local MicromenuButtons = {}
 
@@ -1398,7 +1468,6 @@ local function CreateMicromenuButton(parent, bu, text, original)
 	return Button
 end
 
---MicromenuBar.UI = CreateMicromenuButton(MicromenuBar, false, UIOPTIONS_MENU, "anc")
 MicromenuBar.Charcter = CreateMicromenuButton(MicromenuBar, CharacterMicroButton, CHARACTER_BUTTON, "Charcter")
 MicromenuBar.Friends = CreateMicromenuButton(MicromenuBar, false, SOCIAL_BUTTON, "Friends")
 MicromenuBar.Guild = CreateMicromenuButton(MicromenuBar, GuildMicroButton, GUILD, "Guild")

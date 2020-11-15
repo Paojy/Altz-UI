@@ -1,200 +1,680 @@
 ﻿local T, C, L, G = unpack(select(2, ...))
+local Altz_T, Altz_C, Altz_L, Altz_G
 local F = unpack(AuroraClassic)
 
-local function ShowFinish(text, subtext)
-    local levelUpTexCoords = {
-        gLine = { 0.00195313, 0.81835938, 0.00195313, 0.01562500 },
-        tint = {1, 0.996, 0.745},
-        gLineDelay = 0,
-    }
+local TutorialsFrame = CreateFrame("Frame", G.uiname.."TutorialsFrame", UIParent, "BackdropTemplate")
+TutorialsFrame:SetFrameStrata("FULLSCREEN")
+TutorialsFrame:SetSize(700, 200)
+TutorialsFrame:SetPoint("CENTER")
+F.CreateBD(TutorialsFrame)
 
-    local script = LevelUpDisplay:GetScript("OnShow")
-    LevelUpDisplay.type = LEVEL_UP_TYPE_SCENARIO
-    LevelUpDisplay:SetScript("OnShow", nil)
-    LevelUpDisplay:Show()
+TutorialsFrame.step = 1
+TutorialsFrame:Hide()
 
-    LevelUpDisplay.scenarioFrame.level:SetText(text)
-    LevelUpDisplay.scenarioFrame.name:SetText(subtext)
-    LevelUpDisplay.scenarioFrame.description:SetText("")
-    LevelUpDisplay:SetPoint("TOP", 0, -250)
+Model = {
+	{
+		height = TutorialsFrame:GetHeight(),
+		width = TutorialsFrame:GetWidth(),
+		points = {"CENTER", TutorialsFrame, "CENTER"},
+		displayinfo = 41039,
+		position = {-12.5, 0, -6.2},
+		camdistancescale = 0.7,
+	},
+	{
+		height = 400,
+		width = 400,
+		points = {"RIGHT", TutorialsFrame, "CENTER"},
+		displayinfo = 42522,
+		position = {-2, 0, 0},
+		camdistancescale = 0.7,
+	},
+	{
+		height = 400,
+		width = 400,
+		points = {"RIGHT", TutorialsFrame, "CENTER"},
+		displayinfo = 42522,
+		position = {-2, 0, 0},
+		camdistancescale = 0.7,
+	},
+	{
+		height = 400,
+		width = 400,
+		points = {"RIGHT", TutorialsFrame, "CENTER"},
+		displayinfo = 42522,
+		position = {-2, 0, 0},
+		camdistancescale = 0.7,
+	},
+	{
+		height = 400,
+		width = 400,
+		points = {"RIGHT", TutorialsFrame, "CENTER"},
+		displayinfo = 42522,
+		position = {-2, 0, 0},
+		camdistancescale = 0.7,
+	},
+	{
+		height = 400,
+		width = 400,
+		points = {"RIGHT", TutorialsFrame, "CENTER"},
+		displayinfo = 42522,
+		position = {-2, 0, 0},
+		camdistancescale = 0.7,
+	},
+	{
+		height = 400,
+		width = 400,
+		points = {"RIGHT", TutorialsFrame, "CENTER"},
+		displayinfo = 42522,
+		position = {-2, 0, 0},
+		camdistancescale = 0.7,
+	},
+	{
+		height = 400,
+		width = 400,
+		points = {"RIGHT", TutorialsFrame, "CENTER"},
+		displayinfo = 42522,
+		position = {-2, 0, 0},
+		camdistancescale = 0.7,
+	},
+}
 
-    LevelUpDisplay.gLine:SetTexCoord(unpack(levelUpTexCoords.gLine))
-    LevelUpDisplay.gLine2:SetTexCoord(unpack(levelUpTexCoords.gLine))
-    LevelUpDisplay.gLine:SetVertexColor(unpack(levelUpTexCoords.tint))
-    LevelUpDisplay.gLine2:SetVertexColor(unpack(levelUpTexCoords.tint))
-    LevelUpDisplay.levelFrame.levelText:SetTextColor(NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b)
-    LevelUpDisplay.gLine.grow.anim1:SetStartDelay(levelUpTexCoords.gLineDelay)
-    LevelUpDisplay.gLine2.grow.anim1:SetStartDelay(levelUpTexCoords.gLineDelay)
-    LevelUpDisplay.blackBg.grow.anim1:SetStartDelay(levelUpTexCoords.gLineDelay)
+local function CreateTutorialsStepFrame(title, text)
+	local step = TutorialsFrame.step
+	local frame = CreateFrame("Frame", G.uiname.."TutorialsStepFrame"..step, TutorialsFrame)
+	frame:SetAllPoints(TutorialsFrame)
+	frame:SetFrameLevel(2)
+	frame:Hide()
 	
-    LevelUpDisplay.scenarioFrame.newStage:Play()
-    PlaySound(31749)
+	frame.model = CreateFrame("PlayerModel", G.uiname.."TutorialsStepFrameModel"..step, frame)
+	frame.model:SetPoint(unpack(Model[step]["points"]))
+	frame.model:SetSize(Model[step]["width"], Model[step]["height"])
+	frame.model:SetFrameLevel(1)
+	frame.model:SetDisplayInfo(Model[step]["displayinfo"])
+	frame.model:SetCamDistanceScale(Model[step]["camdistancescale"])
+	frame.model:SetPosition(unpack(Model[step]["position"]))
+	
+	if step == 1 then
+		frame.title = T.createtext(frame, "OVERLAY", 35, "NONE", "CENTER")
+		frame.title:SetPoint("BOTTOM", frame, "CENTER", 0, 50)
+
+		frame.text = T.createtext(frame, "OVERLAY", 15, "NONE", "CENTER")
+		frame.text:SetPoint("TOP", frame.title, "BOTTOM", 0, -10)
 		
-    LevelUpDisplay:SetScript("OnShow", script)
-end
-
-local BlackBg = CreateFrame("Frame", G.uiname.."BlackBg", UIParent, "BackdropTemplate")
-BlackBg:SetFrameStrata("FULLSCREEN")
-BlackBg:SetSize(700, 200)
-BlackBg:SetPoint("CENTER")
-F.CreateBD(BlackBg)
-BlackBg:Hide()
-
-BlackBg.titleframe = CreateFrame("Frame", G.uiname.."BlackBg Title", BlackBg)
-BlackBg.titleframe:SetAllPoints(BlackBg)
-BlackBg.titleframe:SetFrameLevel(2)
-
-BlackBg.titleframe.model = CreateFrame("PlayerModel", G.uiname.."BlackBg Title Model", BlackBg.titleframe)
-BlackBg.titleframe.model:SetAllPoints(BlackBg.titleframe)
-BlackBg.titleframe.model:SetFrameLevel(1)
-BlackBg.titleframe.model:SetDisplayInfo(41039)
-BlackBg.titleframe.model:SetCamDistanceScale(.7)
-BlackBg.titleframe.model:SetPosition(-12.5, 0, -6.2)
-
-BlackBg.titleframe.uiname = T.createtext(BlackBg.titleframe, "OVERLAY", 35, "NONE", "CENTER")
-BlackBg.titleframe.uiname:SetPoint("BOTTOM", BlackBg.titleframe, "CENTER", 0, 50)
-BlackBg.titleframe.uiname:SetTextColor(1, 1, 1)
-BlackBg.titleframe.uiname:SetText(L["欢迎使用"])
-
-BlackBg.titleframe.author = T.createtext(BlackBg.titleframe, "OVERLAY", 15, "NONE", "CENTER")
-BlackBg.titleframe.author:SetPoint("TOP", BlackBg.titleframe.uiname, "BOTTOM", 0, -10)
-BlackBg.titleframe.author:SetTextColor(1, 1, 1)
-BlackBg.titleframe.author:SetText("ver"..G.Version.." "..L["小泡泡"])
-
-BlackBg.introframe = CreateFrame("Button", G.uiname.."BlackBg Intro", BlackBg)
-BlackBg.introframe:SetSize(400, 400)
-BlackBg.introframe:SetFrameLevel(2)
-BlackBg.introframe:SetPoint("CENTER")
-BlackBg.introframe:Hide()
-
-BlackBg.introframe.model = CreateFrame("PlayerModel", G.uiname.."BlackBg Title Model", BlackBg.introframe)
-BlackBg.introframe.model:SetSize(400, 400)
-BlackBg.introframe.model:SetFrameLevel(1)
-BlackBg.introframe.model:SetPoint("RIGHT", BlackBg, "CENTER", 0, 0)
-BlackBg.introframe.model:SetDisplayInfo(42522)
-BlackBg.introframe.model:SetCamDistanceScale(.7)
-BlackBg.introframe.model:SetPosition(-2,0,0)
-
-BlackBg.introframe.text = T.createtext(BlackBg.introframe, "OVERLAY", 15, "NONE", "LEFT")
-BlackBg.introframe.text:SetWidth(400)
-BlackBg.introframe.text:SetPoint("LEFT", BlackBg, "CENTER", -100, 0)
-BlackBg.introframe.text:SetText(L["简介"])
-
-local FullStep, Curstep = 0, 0
-local index = 0
-local Instructions = {}
-
-local function CreateInstruction(parent, button, title, text, anchor)
-	index = index + 1
-	
-	local bu = CreateFrame("Button", nil, parent)
-	
-	if title == L["动作条"] then
-		bu:SetParent(UIParent)
-	end
-	
-	bu:SetSize(40, 40)
-	bu:SetFrameStrata("FULLSCREEN")
-	bu:SetFrameLevel(2)
-	if not button then
-		bu:SetPoint("CENTER", parent, "CENTER")
+		frame:SetScript("OnMouseDown", function()
+			frame:Hide()
+			TutorialsFrame[step+1]:Show()
+		end)
 	else
-		bu:SetPoint("CENTER", button, "CENTER")
+		frame.title = T.createtext(frame, "OVERLAY", 15, "NONE", "CENTER")
+		frame.title:SetPoint("TOP", frame, "TOP", 80, -5)
+
+		frame.text = T.createtext(frame, "OVERLAY", 15, "NONE", "LEFT")
+		frame.text:SetPoint("TOPLEFT", frame, "TOP", -150, -45)
+		frame.text:SetSize(480, 150)
+		frame.text:SetJustifyV("TOP")
+		
+		local p_bu = CreateFrame("Button", G.uiname.."TutorialsStepFramePrevious", frame, "UIPanelButtonTemplate")
+		p_bu:SetPoint("BOTTOMLEFT", frame, "BOTTOMLEFT", 15, 5)
+		p_bu:SetSize(100, 25)
+		p_bu:SetText(L["上一步"])
+		T.resize_font(p_bu.Text)
+		F.Reskin(p_bu)
+		p_bu:SetScript("OnClick", function() 
+			frame:Hide()
+			TutorialsFrame[step-1]:Show()
+		end)
+		frame.p = p_bu
+		
+		local n_bu = CreateFrame("Button", G.uiname.."TutorialsStepFrameNext", frame, "UIPanelButtonTemplate")
+		n_bu:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -15, 5)
+		n_bu:SetSize(100, 25)
+		n_bu:SetText(L["下一步"])
+		T.resize_font(n_bu.Text)
+		F.Reskin(n_bu)
+		n_bu:SetScript("OnClick", function()
+			frame:Hide()
+			TutorialsFrame[step+1]:Show()
+		end)
+		frame.n = n_bu
 	end
 	
-	local frame = CreateFrame("Button", nil, bu, "GlowBorderTemplate")
-	frame:SetAllPoints(parent)
-	frame:SetFrameLevel(1)
+	frame.title:SetText(title)
+	frame.text:SetText(text)
 	
-	bu:SetNormalTexture("Interface\\common\\help-i")
-	bu:SetHighlightTexture("Interface\\Minimap\\UI-Minimap-ZoomButton-Highlight")
-	
-	bu:SetScript("OnEnter", function(self)
-		GameTooltip:SetOwner(self, anchor)
-		GameTooltip:AddLine(title, G.Ccolor.r, G.Ccolor.g, G.Ccolor.b)
-		GameTooltip:AddLine(text, G.Ccolor.r, G.Ccolor.g, G.Ccolor.b, true)
-		GameTooltip:Show()
-	end)
-	
-	bu:SetScript("OnLeave", function(self)
-		GameTooltip:Hide()
-	end)
-	
-	bu:SetScript("OnMouseDown", function(self)
-		self:Hide()
-		Curstep = Curstep + 1
-		if Curstep ~= FullStep then
-			ActionStatus_DisplayMessage(format(L["已完成"], Curstep, FullStep), true)
-		else
-			ShowFinish(L["恭喜"], L["设置完成"])
-		end
-	end)
-
-	bu:Hide()
-	
-	table.insert(Instructions, bu)
+	frame.index = 1
+	TutorialsFrame[TutorialsFrame.step] = frame
+	TutorialsFrame.step = TutorialsFrame.step + 1
 end
 
-local function CreateInstructions()
-	CreateInstruction(ChatFrame1, nil, L["聊天框"], L["聊天框tips"], "ANCHOR_TOPLEFT")
-	CreateInstruction(_G[G.uiname.."Info Frame"], nil, L["信息栏"], L["信息栏tips"], "ANCHOR_RIGHT")
-	CreateInstruction(Minimap, nil,L["小地图"], L["小地图tips"], "ANCHOR_LEFT")
-	CreateInstruction(_G[G.uiname.."MicromenuBar"], nil, L["微型菜单"], L["微型菜单tips"], "ANCHOR_BOTTOMLEFT")
-	CreateInstruction(_G[G.uiname.."GameMenuButton"], nil, L["控制台"], L["控制台tips"], "ANCHOR_RIGHT")
-	CreateInstruction(_G[G.uiname.."UnlockAllFramesButton"], nil, L["解锁按钮"], L["解锁按钮tips"], "ANCHOR_RIGHT")
-	CreateInstruction(_G[G.uiname.."SpecMover"], nil, L["布局模式"], L["布局模式tips"], "ANCHOR_RIGHT")
-	CreateInstruction(_G[G.uiname.."SpecMoverLockButton"], nil, L["锁定按钮"], L["锁定按钮tips"], "ANCHOR_RIGHT")
-	CreateInstruction(_G["Altz_Bar1&2"], nil, L["动作条"], L["动作条tips"], "ANCHOR_RIGHT")
-	
-	FullStep = index
-	Curstep = 0
-	
-	for i = 1, #Instructions do
-		if i == 1 then
-			Instructions[i]:Show()
-		end
-		if i ~= #Instructions then
-			if i == (#Instructions-1) then
-				_G[G.uiname.."SpecMover"]:SetScript("OnHide" ,function()
-					Instructions[i+1]:Show()
-				end)
-			else
-				Instructions[i]:SetScript("OnHide" ,function()
-					Instructions[i+1]:Show()
-				end)
+local function CreateOptions(parent, type, text, table, value, group, order)
+	if type == "check" then
+		T.createcheckbutton(parent, 200, 30+parent.index*40, text, table, value)
+	elseif type == "group" then
+		T.createboxgroup(parent, 450, 200, 30+parent.index*40, text, table, value, group, order)
+	end
+	parent.index = parent.index + 1
+end
+
+--====================================================--
+--[[           -- 欢迎使用 和 简介 --               ]]--
+--====================================================--
+
+CreateTutorialsStepFrame(L["欢迎使用"], "ver"..G.Version.." "..L["小泡泡"])
+CreateTutorialsStepFrame(L["欢迎使用"], L["简介"])
+
+--====================================================--
+--[[               -- 界面风格 --                   ]]--
+--====================================================--
+
+CreateTutorialsStepFrame(L["界面风格"], L["界面风格tip"])
+CreateOptions(TutorialsFrame[3], "group", true, "UnitframeOptions", "style", {L["透明样式"],L["深色样式"],L["普通样式"]})
+
+local function ApplyUFSettings(elements)
+	local oUF = AltzUF or oUF
+		for _, obj in next, oUF.objects do
+		obj:UpdateAllElements('OnUpdate')
+		for k, e in pairs(elements) do
+			if obj[e] and obj[e].ApplySettings then
+				obj[e].ApplySettings()
 			end
 		end
 	end
 end
 
-BlackBg.titleframe:SetScript("OnMouseDown", function(self)
-	UIFrameFadeOut(self, 2, self:GetAlpha(), 0)
-	self:EnableMouse(false)
-	UIFrameFadeIn(BlackBg.introframe, 2, 0, 1)
-end)
+for i = 1, 3 do
+	TutorialsFrame[3]["style"][i]:HookScript("OnClick", function()
+		for i, f in pairs({"toppanel", "bottompanel"}) do
+			Altz_G[f].Apply()
+		end
+		ApplyUFSettings({"Castbar", "Swing", "Portrait", "Health", "Power", "HealthPrediction"})
+	end)
+end
 
-BlackBg.introframe:SetScript("OnClick", function(self)
-	aCoreDB.meet = 1
-	ReloadUI()
-end)
 
-local eventframe = CreateFrame("Frame")
-eventframe:RegisterEvent("PLAYER_ENTERING_WORLD")
-eventframe:SetScript("OnEvent", function() 
-	if not aCoreDB.meet then
-		T.SetChatFrame()
-		T.ResetAllAddonSettings()
-		SetCVar("useUiScale", 0)
-		BlackBg:Show()
-	elseif aCoreDB.meet == 1 then
-		CreateInstructions()
-		aCoreDB.meet = 2
+--====================================================--
+--[[               -- 界面布局 --                   ]]--
+--====================================================--
+
+CreateTutorialsStepFrame(L["界面布局"], L["界面布局tip"])
+CreateOptions(TutorialsFrame[4], "group", false, nil, "layout", {L["默认布局"],L["极简布局"],L["聚合布局"]})
+
+Default_Layout = {
+	frames = {
+		{
+		f = "oUF_AltzPlayer",
+		a1 = "TOPRIGHT",	
+		parent = "UIParent",	
+		a2 = "BOTTOM",
+		x = -250,
+		y = 350,		
+		},
+		{
+		f = "oUF_AltzTarget",
+		a1 = "TOPLEFT",	
+		parent = "UIParent",	
+		a2 = "BOTTOM",
+		x = 250,
+		y = 350,		
+		},
+		{
+		f = "Altz_HealerRaid_Holder",
+		a1 = "TOP",	
+		parent = "UIParent",	
+		a2 = "BOTTOM",
+		x = 0,
+		y = 350,
+		},
+	},
+	options = {
+		{
+		db_t = "SkinOptions", 
+		db_v = "showtopbar",
+		value = true,
+		apply = function()
+			Altz_G.toppanel.Apply()
+		end
+		},
+		{
+		db_t = "SkinOptions", 
+		db_v = "showbottombar",
+		value = true,
+		apply = function()
+			Altz_G.bottompanel.Apply()
+		end
+		},
+		{
+		db_t = "SkinOptions", 
+		db_v = "showbottombar",
+		value = true,
+		apply = function() 
+			Altz_G.bottompanel.Apply()
+		end
+		},
+		{
+		db_t = "UnitframeOptions", 
+		db_v = "width",
+		value = 230,
+		apply = function() 
+			ApplyUFSettings({"Health", "Auras", "ClassPower", "Runes"})
+		end
+		},
+		{
+		db_t = "UnitframeOptions", 
+		db_v = "height",
+		value = 18,
+		apply = function() 
+			ApplyUFSettings({"Health", "Power", "Castbar", "Auras", "ClassPower", "Runes", "Stagger", "Dpsmana", "PVPSpecIcon"})
+		end
+		},
+		{
+		db_t = "UnitframeOptions", 
+		db_v = "hpheight",
+		value = .75,
+		apply = function() 
+			ApplyUFSettings({"Health", "Power", "Castbar", "Auras", "ClassPower", "Runes", "Stagger", "Dpsmana", "PVPSpecIcon"})
+		end
+		},
+		{
+		db_t = "UnitframeOptions", 
+		db_v = "raidmanabars",
+		value = true,
+		apply = function() 
+			ApplyUFSettings({"Health"})
+		end
+		},
+		{
+		db_t = "SkinOptions", 
+		db_v = "hidemap",
+		value = false,
+		apply = function() 
+			Altz_T.HideMap()
+		end
+		},
+		{
+		db_t = "SkinOptions", 
+		db_v = "hidechat",
+		value = false,
+		apply = function() 
+			Altz_T.HideChat()
+		end
+		},
+	},
+}
+
+Simplicity_Layout = {
+	frames = {
+		{
+		f = "oUF_AltzPlayer",
+		a1 = "TOPRIGHT",	
+		parent = "UIParent",	
+		a2 = "BOTTOM",
+		x = -250,
+		y = 520,		
+		},
+		{
+		f = "oUF_AltzTarget",
+		a1 = "TOPLEFT",	
+		parent = "UIParent",	
+		a2 = "BOTTOM",
+		x = 250,
+		y = 520,		
+		},
+		{
+		f = "Altz_HealerRaid_Holder",
+		a1 = "TOPLEFT",	
+		parent = "UIParent",	
+		a2 = "BOTTOM",
+		x = 250,
+		y = 500,
+		},
+	},
+	options = {
+		{
+		db_t = "SkinOptions", 
+		db_v = "showtopbar",
+		value = false,
+		apply = function()
+			Altz_G.toppanel.Apply()
+		end
+		},
+		{
+		db_t = "SkinOptions", 
+		db_v = "showbottombar",
+		value = false,
+		apply = function() 
+			Altz_G.bottompanel.Apply()
+		end
+		},
+		{
+		db_t = "UnitframeOptions", 
+		db_v = "width",
+		value = 180,
+		apply = function() 
+			ApplyUFSettings({"Health", "Auras", "ClassPower", "Runes"})
+		end
+		},
+		{
+		db_t = "UnitframeOptions", 
+		db_v = "height",
+		value = 5,
+		apply = function() 
+			ApplyUFSettings({"Health", "Power", "Castbar", "Auras", "ClassPower", "Runes", "Stagger", "Dpsmana", "PVPSpecIcon"})
+		end
+		},
+		{
+		db_t = "UnitframeOptions", 
+		db_v = "hpheight",
+		value = .5,
+		apply = function() 
+			ApplyUFSettings({"Health", "Power", "Castbar", "Auras", "ClassPower", "Runes", "Stagger", "Dpsmana", "PVPSpecIcon"})
+		end
+		},
+		{
+		db_t = "UnitframeOptions", 
+		db_v = "raidmanabars",
+		value = false,
+		apply = function() 
+			ApplyUFSettings({"Health"})
+		end
+		},
+		{
+		db_t = "SkinOptions", 
+		db_v = "hidemap",
+		value = true,
+		apply = function() 
+			Altz_T.HideMap()
+		end
+		},
+		{
+		db_t = "SkinOptions", 
+		db_v = "hidechat",
+		value = true,
+		apply = function() 
+			Altz_T.HideChat()
+		end
+		},
+	},
+}
+
+Centralized_Layout = {
+	frames = {
+		{
+		f = "oUF_AltzPlayer",
+		a1 = "TOP",	
+		parent = "UIParent",	
+		a2 = "CENTER",
+		x = 0,
+		y = -200,		
+		},
+		{
+		f = "oUF_AltzTarget",
+		a1 = "TOPLEFT",	
+		parent = "UIParent",	
+		a2 = "CENTER",
+		x = 250,
+		y = -100,
+		},
+		{
+		f = "Altz_HealerRaid_Holder",
+		a1 = "TOPLEFT",	
+		parent = "UIParent",	
+		a2 = "CENTER",
+		x = 250,
+		y = -130,
+		},
+	},
+	options = {
+		{
+		db_t = "SkinOptions", 
+		db_v = "showtopbar",
+		value = true,
+		apply = function()
+			Altz_G.toppanel.Apply()
+		end
+		},
+		{
+		db_t = "SkinOptions", 
+		db_v = "showbottombar",
+		value = true,
+		apply = function() 
+			Altz_G.bottompanel.Apply()
+		end
+		},
+		{
+		db_t = "UnitframeOptions", 
+		db_v = "width",
+		value = 230,
+		apply = function() 
+			ApplyUFSettings({"Health", "Auras", "ClassPower", "Runes"})
+		end
+		},
+		{
+		db_t = "UnitframeOptions", 
+		db_v = "height",
+		value = 18,
+		apply = function() 
+			ApplyUFSettings({"Health", "Power", "Castbar", "Auras", "ClassPower", "Runes", "Stagger", "Dpsmana", "PVPSpecIcon"})
+		end
+		},
+		{
+		db_t = "UnitframeOptions", 
+		db_v = "hpheight",
+		value = .75,
+		apply = function() 
+			ApplyUFSettings({"Health", "Power", "Castbar", "Auras", "ClassPower", "Runes", "Stagger", "Dpsmana", "PVPSpecIcon"})
+		end
+		},
+		{
+		db_t = "UnitframeOptions", 
+		db_v = "raidmanabars",
+		value = true,
+		apply = function() 
+			ApplyUFSettings({"Health"})
+		end
+		},
+		{
+		db_t = "SkinOptions", 
+		db_v = "hidemap",
+		value = false,
+		apply = function() 
+			Altz_T.HideMap()
+		end
+		},
+		{
+		db_t = "SkinOptions", 
+		db_v = "hidechat",
+		value = false,
+		apply = function() 
+			Altz_T.HideChat()
+		end
+		},
+	},
+}
+
+local ApplySizeAndPostions = function(group)
+	local role = Altz_T.CheckRole()
+	for i, t in pairs(group.frames) do
+		aCoreCDB["FramePoints"][t.f][role]["a1"] = t.a1
+		aCoreCDB["FramePoints"][t.f][role]["parent"] = t.parent
+		aCoreCDB["FramePoints"][t.f][role]["a2"] = t.a2
+		aCoreCDB["FramePoints"][t.f][role]["x"] = t.x
+		aCoreCDB["FramePoints"][t.f][role]["y"] = t.y
+		Altz_T.PlaceCurrentFrame(true, t.f)
+	end
+	for i, t in pairs(group.options) do
+		aCoreCDB[t.db_t][t.db_v] = t.value
+		t.apply()
+	end
+end
+
+TutorialsFrame[4]["layout"][1]:SetScript("OnClick", function() ApplySizeAndPostions(Default_Layout) end)
+TutorialsFrame[4]["layout"][2]:SetScript("OnClick", function() ApplySizeAndPostions(Simplicity_Layout) end)
+TutorialsFrame[4]["layout"][3]:SetScript("OnClick", function() ApplySizeAndPostions(Centralized_Layout) end)
+
+local toggle_spec = {
+	dpser = {
+		["MONK"] = 2,
+		["PRIEST"] = 1,
+		["PALADIN"] = 1,
+		["DRUID"] = 4,
+		["SHAMAN"] = 3,
+	},
+	healer = {
+		["MONK"] = 1,
+		["PRIEST"] = 3,
+		["PALADIN"] = 2,
+		["DRUID"] = 1,
+		["SHAMAN"] = 1,
+	},
+}
+
+if toggle_spec.dpser[G.myClass] then -- 可治疗的职业才显示
+	CreateOptions(TutorialsFrame[4], "group", false, nil, "layout_spec", {"spec"})
+	TutorialsFrame[4]["layout_spec"][1]:SetScript("OnEvent", function(self, event, arg1)
+		if event == "PLAYER_LOGIN" then
+			self:SetText(Altz_L["当前模式"].." "..Altz_L[ Altz_T.CheckRole()])
+			self:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED")
+			self:RegisterEvent("PLAYER_REGEN_ENABLED")
+			self:RegisterEvent("PLAYER_REGEN_DISABLED")
+		elseif event == "PLAYER_SPECIALIZATION_CHANGED" and arg1 == "player" then
+			self:SetText(Altz_L["当前模式"].." "..Altz_L[Altz_T.CheckRole()])
+		elseif event == "PLAYER_REGEN_ENABLED" then
+			self:Enable()
+		elseif event == "PLAYER_REGEN_DISABLED" then
+			self:Disable()
+		end
+	end)
+	TutorialsFrame[4]["layout_spec"][1]:RegisterEvent("PLAYER_LOGIN")
+	
+	TutorialsFrame[4]["layout_spec"][1]:SetScript("OnClick", function(self)
+		local role = Altz_T.CheckRole()
+		SetSpecialization(toggle_spec[role][G.myClass])
+	end)
+end
+
+--====================================================--
+--[[               -- 团队框架 --                   ]]--
+--====================================================--
+CreateTutorialsStepFrame(L["团队框架"], L["团队框架tip"])
+CreateOptions(TutorialsFrame[5], "check", L["禁用自动切换"], "UnitframeOptions", "autoswitch")
+CreateOptions(TutorialsFrame[5], "group", true, "UnitframeOptions", "raidonly", {["healer"] = L["治疗模式"],["dps"] = L["输出/坦克模式"]})
+T.createDR(TutorialsFrame[5]["autoswitch"], TutorialsFrame[5]["raidonly"]["healer"], TutorialsFrame[5]["raidonly"]["dps"])
+
+--====================================================--
+--[[               -- 姓名板 --                   ]]--
+--====================================================--
+CreateTutorialsStepFrame(UNIT_NAMEPLATES, L["姓名板tip"])
+local plate_theme_group = {
+	["class"] = L["职业色-条形"],
+	["dark"] =  L["深色-条形"],
+	["number"] =  L["数字样式"],
+}
+CreateOptions(TutorialsFrame[6], "group", true, "PlateOptions", "theme", plate_theme_group)
+for k, text in pairs(plate_theme_group) do
+	TutorialsFrame[6]["theme"][k]:HookScript("OnClick", function()
+		for i, plate in ipairs(C_NamePlate.GetNamePlates(issecure())) do
+			if plate.unitFrame then	
+				for k, e in pairs({"Health", "Power", "Castbar", "Auras", "ClassPower", "Runes", "RaidTargetIndicator", "Name", "PvPClassificationIndicator"}) do
+					if plate.unitFrame[e] and plate.unitFrame[e].ApplySettings then
+						plate.unitFrame[e].ApplySettings()
+					end
+				end
+				plate.unitFrame:UpdateAllElements('OnUpdate')
+				Altz_T.PostUpdatePlates(plate.unitFrame, "NAME_PLATE_UNIT_ADDED", plate.unitFrame.unit)
+			end
+		end
+		Altz_T.PlacePlateClassSource()
+	end)
+	TutorialsFrame[6]["theme"][k]:SetScript("OnEvent", function(self, event)
+		if event == "PLAYER_REGEN_ENABLED" then
+			self:Enable()
+		elseif event == "PLAYER_REGEN_DISABLED" then
+			self:Disable()
+		end
+	end)
+	TutorialsFrame[6]["theme"][k]:RegisterEvent("PLAYER_REGEN_ENABLED")
+	TutorialsFrame[6]["theme"][k]:RegisterEvent("PLAYER_REGEN_DISABLED")
+end
+
+CreateOptions(TutorialsFrame[6], "check", L["显示玩家姓名板"], "PlateOptions", "playerplate")
+TutorialsFrame[6]["playerplate"]:HookScript("OnClick", function()
+	if aCoreCDB["PlateOptions"]["playerplate"] or aCoreCDB["PlateOptions"]["classresource_show"] then
+		SetCVar("nameplateShowSelf", 1)
+	else
+		SetCVar("nameplateShowSelf", 0)
+	end
+	local playerPlate = C_NamePlate.GetNamePlateForUnit("player")
+	if playerPlate and playerPlate.unitFrame then
+		Altz_T.PostUpdatePlates(playerPlate.unitFrame, "NAME_PLATE_UNIT_ADDED", "player")
 	end
 end)
 
-SlashCmdList['Tutorials'] = function()
-	CreateInstructions()
+--====================================================--
+--[[               -- 快捷指令 --                   ]]--
+--====================================================--
+CreateTutorialsStepFrame(L["命令"], format(L["指令"], G.classcolor, G.classcolor, G.classcolor, G.classcolor, G.classcolor, G.classcolor))
+
+--====================================================--
+--[[               -- 更新日志 --                   ]]--
+--====================================================--
+CreateTutorialsStepFrame(G.Version.." "..L["更新日志"], L["更新日志tip"])
+
+
+--====================================================--
+--[[                 -- INIT --                     ]]--
+--====================================================--
+function TutorialsFrame:ShowFrame(page, reload)
+	TutorialsFrame:Show()
+	TutorialsFrame[page]:Show()
+	local last = TutorialsFrame.step-1
+	if page == last then
+		TutorialsFrame[last].p:Hide()
+		TutorialsFrame[last].n:Hide()
+		TutorialsFrame[last]:SetScript("OnMouseDown", function(self)
+			TutorialsFrame[last]:Hide()
+			TutorialsFrame:Hide()
+		end)
+	else
+		TutorialsFrame[last].p:Show()
+		TutorialsFrame[last].n:Show()
+		TutorialsFrame[last]:SetScript("OnMouseDown", nil)
+		TutorialsFrame[last].n:SetText(L["完成"])
+		if reload then
+			TutorialsFrame[last].n:SetScript("OnClick", ReloadUI)
+		else
+			TutorialsFrame[last].n:SetScript("OnClick", function()
+				TutorialsFrame[last]:Hide()
+				TutorialsFrame:Hide()
+			end)
+		end
+	end
 end
 
-SLASH_Tutorials1 = "/Tutorials"
-SLASH_Tutorials2 = "/Tut"
+local eventframe = CreateFrame("Frame")
+eventframe:RegisterEvent("PLAYER_ENTERING_WORLD")
+eventframe:RegisterEvent("ADDON_LOADED")
+eventframe:SetScript("OnEvent", function(self, event, arg1) 
+	if event == "ADDON_LOADED" then
+		if arg1 == "AltzUI" then
+			Altz_T, Altz_C, Altz_L, Altz_G = unpack(AltzUI)
+		end
+	elseif not aCoreCDB.meet then
+		if not aCoreDB.meet then
+			T.ResetAllAddonSettings()
+			SetCVar("useUiScale", 0)
+			aCoreDB.meet = true
+		end
+		T.SetChatFrame()
+		TutorialsFrame:ShowFrame(1, true)
+		aCoreCDB.meet = true
+	elseif aCoreDB.ver ~= G.Version then
+		TutorialsFrame:ShowFrame(8)
+		aCoreDB.ver = G.Version
+	end
+end)
+
+SlashCmdList['Setup'] = function()
+	TutorialsFrame:ShowFrame(1)
+end
+
+SLASH_Setup1 = "/Setup"

@@ -956,6 +956,131 @@ T.createradiobuttongroup = function(parent, x, y, name, table, value, group, new
 	parent[value] = frame
 end
 
+T.createboxgroup = function(parent, width, x, y, hasvalue, table, value, group, order)
+	local frame = CreateFrame("Frame", G.uiname..value.."BoxGroup", parent)
+	frame:SetPoint("TOPLEFT", x, -y)
+	frame:SetSize(width, 25)
+	
+	local num = 0
+	for key, value in pairs(group) do
+		num = num + 1
+	end
+	button_width = (width+10)/num-10
+	
+	local key = 1
+	for k, v in T.pairsByKeys(group) do
+		frame[k] = CreateFrame("Button", G.uiname..value..k.."BoxGroup", frame, "UIPanelButtonTemplate")
+		frame[k]:SetSize(button_width, 25)
+		frame[k].order = order and order[k] or key
+		F.Reskin(frame[k], true)
+		
+		frame[k].Text:SetText(v)
+		frame[k].Text:SetTextColor(1, 1, 1)
+		T.resize_font(frame[k].Text)
+		
+		if hasvalue then
+			frame[k]:SetScript("OnShow", function(self)
+				if self:IsEnabled() then 
+					if aCoreCDB[table][value] == k then
+						frame[k].Text:SetTextColor(1, 1, 0)
+					else
+						frame[k].Text:SetTextColor(1, 1, 1)
+					end
+				end
+			end)
+			
+			frame[k]:SetScript("OnClick", function(self)
+				aCoreCDB[table][value] = k
+				frame[k].Text:SetTextColor(1, 1, 0)
+			end)
+		end
+		
+		local function Button_OnEnter(self)
+			if not self:IsEnabled() then return end
+	
+			if AuroraClassicDB.FlatMode then
+				self.__gradient:SetVertexColor(G.Ccolor.r / 4, G.Ccolor.g / 4, G.Ccolor.b / 4)
+			else
+				self.__bg:SetBackdropColor(G.Ccolor.r, G.Ccolor.g, G.Ccolor.b, .25)
+			end
+			self.__bg:SetBackdropBorderColor(G.Ccolor.r, G.Ccolor.g, G.Ccolor.b)
+		end
+		local function Button_OnLeave(self)
+			if not self:IsEnabled() then return end
+			
+			if AuroraClassicDB.FlatMode then
+				self.__gradient:SetVertexColor(.3, .3, .3, .25)
+			else
+				self.__bg:SetBackdropColor(0, 0, 0, 0)
+			end
+			self.__bg:SetBackdropBorderColor(0, 0, 0)
+		end
+	
+		frame[k]:HookScript("OnEnable", function(self)
+			if self:IsMouseOver() then
+				Button_OnEnter(self)
+			else
+				Button_OnLeave(self)
+			end
+			if hasvalue then
+				if aCoreCDB[table][value] == k then
+					self.Text:SetTextColor(1, 1, 0)
+				else
+					self.Text:SetTextColor(1, 1, 1)
+				end
+			else
+				self.Text:SetTextColor(1, 1, 1)
+			end
+		end)
+		
+		frame[k]:HookScript("OnDisable", function(self)
+			if AuroraClassicDB.FlatMode then
+				self.__gradient:SetVertexColor(.3, .3, .3, .25)
+			else
+				self.__bg:SetBackdropColor(.3, .3, .3, .5)
+			end
+			self.__bg:SetBackdropBorderColor(.3, .3, .3)
+			self.Text:SetTextColor(.3, .3, .3)
+		end)
+		
+		frame[k]:HookScript("OnEnter", Button_OnEnter)		
+		frame[k]:HookScript("OnLeave", Button_OnLeave)
+		
+		key = key + 1
+	end
+	
+	if hasvalue then
+		for k, v in T.pairsByKeys(group) do
+			frame[k]:HookScript("OnClick", function(self)
+				if aCoreCDB[table][value] == k then
+					for key, value in T.pairsByKeys(group) do
+						if key ~= k then
+							frame[key].Text:SetTextColor(1, 1, 1)
+						end
+					end
+				end
+			end)
+		end
+	end
+	
+	local buttons = {frame:GetChildren()}
+	
+	if order then
+		sort(buttons, function(a,b) return a.order < b.order end)
+	end
+	
+	for i = 1, #buttons do
+		if i == 1 then
+			buttons[i]:SetPoint("LEFT", frame, "LEFT", 0, 0)
+		else
+			buttons[i]:SetPoint("LEFT", buttons[i-1], "RIGHT", 10, 0)
+		end
+
+	end
+	
+	parent[value] = frame
+end
+
 -- dependency relationship
 T.createDR = function(parent, ...)
     for i=1, select("#", ...) do

@@ -49,11 +49,6 @@ local function healpreditionbar(self, ...)
 	hpb:SetPoint('TOP')
 	hpb:SetPoint('BOTTOM')
 	
-	if aCoreCDB["UnitframeOptions"]["style"] ~= 3 then
-		hpb:SetPoint('LEFT', self.Health:GetStatusBarTexture(), 'LEFT')
-	else
-		hpb:SetPoint('LEFT', self.Health:GetStatusBarTexture(), 'RIGHT')
-	end
 	hpb:SetWidth(aCoreCDB["UnitframeOptions"]["healerraidwidth"])
 	return hpb
 end
@@ -69,6 +64,18 @@ local function CreateHealPredition(self)
 		absorbBar = absorbBar,
 		maxOverflow = 1.2,
 	}
+	self.HealthPrediction.ApplySettings = function()
+		if aCoreCDB["UnitframeOptions"]["style"] ~= 3 then
+			self.HealthPrediction.myBar:SetPoint('LEFT', self.Health:GetStatusBarTexture(), 'LEFT')
+			self.HealthPrediction.otherBar:SetPoint('LEFT', self.Health:GetStatusBarTexture(), 'LEFT')
+			self.HealthPrediction.absorbBar:SetPoint('LEFT', self.Health:GetStatusBarTexture(), 'LEFT')
+		else
+			self.HealthPrediction.myBar:SetPoint('LEFT', self.Health:GetStatusBarTexture(), 'RIGHT')
+			self.HealthPrediction.otherBar:SetPoint('LEFT', self.Health:GetStatusBarTexture(), 'RIGHT')
+			self.HealthPrediction.absorbBar:SetPoint('LEFT', self.Health:GetStatusBarTexture(), 'RIGHT')
+		end
+	end
+	self.HealthPrediction.ApplySettings()
 end
 
 local function CreateGCDframe(self)
@@ -83,9 +90,8 @@ end
 local function UpdateRaidMana(pp, unit, cur, min, max)
 	local _, ptype = UnitPowerType(unit)
 	local self = pp:GetParent()
-    if ptype == 'MANA' then
-		pp:SetHeight(aCoreCDB["UnitframeOptions"]["healerraidheight"]*-(aCoreCDB["UnitframeOptions"]["raidhpheight"]-1))
-		self.Health:SetPoint("BOTTOM", pp, "TOP", 0, 3)
+    if aCoreCDB["UnitframeOptions"]["raidmanabars"] and ptype == 'MANA' then
+		pp:SetHeight(aCoreCDB["UnitframeOptions"]["healerraidheight"]*(1-aCoreCDB["UnitframeOptions"]["raidhpheight"]))
 		if cur/max > 0.2 then
 			pp.backdrop:SetBackdropColor(.15, .15, .15)
 		elseif UnitIsDead(unit) or UnitIsGhost(unit) or not UnitIsConnected(unit) then
@@ -96,7 +102,6 @@ local function UpdateRaidMana(pp, unit, cur, min, max)
 		pp.backdrop:SetBackdropBorderColor(0, 0, 0)
 	else
 		pp:SetHeight(0.0000001)
-		self.Health:SetPoint("BOTTOM", self, "BOTTOM")
 		pp.backdrop:SetBackdropBorderColor(0, 0, 0, 0)
 	end
 	T.Updatepowerbar(pp, unit, cur, min, max)
@@ -198,41 +203,19 @@ local func = function(self, unit)
 	self.bg:SetAllPoints(self)
 	self.bg.tex = self.bg:CreateTexture(nil, "BACKGROUND")
     self.bg.tex:SetAllPoints()
-	if aCoreCDB["UnitframeOptions"]["style"] == 1 then
-		self.bg.tex:SetTexture(G.media.blank)
-		self.bg.tex:SetVertexColor(0, 0, 0, 0)	
-	else
-		self.bg.tex:SetTexture(G.media.ufbar)
-		self.bg.tex:SetVertexColor(0, 0, 0)
-	end
+	self.bg.tex:SetTexture(G.media.ufbar)
+	self.bg.tex:SetVertexColor(0, 0, 0)
 	
     local hp = T.createStatusbar(self, "ARTWORK", nil, nil, 1, 1, 1, 1)
 	hp:SetFrameLevel(3)
-    hp:SetAllPoints(self)
-	hp:SetPoint("TOPLEFT", self, "TOPLEFT")
-	hp:SetPoint("TOPRIGHT", self, "TOPRIGHT")
+	hp:SetAllPoints(self)
     hp.frequentUpdates = true
-	
-	if aCoreCDB["UnitframeOptions"]["style"] == 1 then
-		hp.bg:SetGradientAlpha("VERTICAL", .5, .5, .5, .5, 0, 0, 0,0)
-	else
-		hp.bg:SetGradientAlpha("VERTICAL", .2,.2,.2,.15,.25,.25,.25,.6)
-	end
 	
 	-- little black line to make the health bar more clear
 	hp.ind = hp:CreateTexture(nil, "OVERLAY", 1)
     hp.ind:SetTexture("Interface\\Buttons\\WHITE8x8")
 	hp.ind:SetVertexColor(0, 0, 0)
 	hp.ind:SetSize(1, hp:GetHeight())
-	if aCoreCDB["UnitframeOptions"]["style"] ~= 3 then
-		hp.ind:SetPoint("RIGHT", hp:GetStatusBarTexture(), "LEFT", 0, 0)
-	else
-		hp.ind:SetPoint("LEFT", hp:GetStatusBarTexture(), "RIGHT", 0, 0)
-	end
-	
-	if aCoreCDB["UnitframeOptions"]["style"] ~= 3 then
-		hp:SetReverseFill(true)
-	end
 	
 	-- border --
 	self.backdrop = T.createBackdrop(hp, hp, 0)
@@ -242,21 +225,24 @@ local func = function(self, unit)
 	self.Health.Override = T.Overridehealthbar
 	
 	-- raid manabars --
-	if aCoreCDB["UnitframeOptions"]["raidmanabars"] then
-		local pp = T.createStatusbar(self, "ARTWORK", nil, nil, 1, 1, 1, 1)
-		pp:SetFrameLevel(3)
-		pp:SetPoint("BOTTOMLEFT", self, "BOTTOMLEFT")
-		pp:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT")
-		
-		pp.bg:SetGradientAlpha("VERTICAL", .2,.2,.2,.15,.25,.25,.25,.6)
-		
-		pp.backdrop = T.createBackdrop(pp, pp, 1)
-		
-		self.Power = pp
-		self.Power.PostUpdate = UpdateRaidMana
-	else
-		self.Health:SetPoint("BOTTOM", self, "BOTTOM")
+	local pp = T.createStatusbar(self, "ARTWORK", nil, nil, 1, 1, 1, 1)
+	pp:SetFrameLevel(3)
+	pp:SetPoint("BOTTOMLEFT", self, "BOTTOMLEFT")
+	pp:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT")	
+	pp.bg:SetGradientAlpha("VERTICAL", .2,.2,.2,.15,.25,.25,.25,.6)
+	pp.backdrop = T.createBackdrop(pp, pp, 0)
+	pp.ApplySettings = function()			
+		if aCoreCDB["UnitframeOptions"]["style"] == 1 then
+			pp:SetStatusBarTexture(G.media.blank)
+		else
+			pp:SetStatusBarTexture(G.media.ufbar)
+		end
 	end
+	
+	hp:SetPoint("BOTTOM", pp, "TOP", 0, 1)
+	self.Power = pp
+	self.Power.ApplySettings()
+	self.Power.PostUpdate = UpdateRaidMana
 	
 	-- gcd frane --
 	if aCoreCDB["UnitframeOptions"]["showgcd"] then
@@ -298,17 +284,9 @@ local func = function(self, unit)
 	local raidname = T.createtext(hp, "ARTWORK", aCoreCDB["UnitframeOptions"]["raidfontsize"], "OUTLINE", "RIGHT")
 	raidname:SetPoint("BOTTOMRIGHT", hp, "BOTTOMRIGHT", -1, 5)
 	if aCoreCDB["UnitframeOptions"]["showmisshp"] then
-		if aCoreCDB["UnitframeOptions"]["style"] == 1 or aCoreCDB["UnitframeOptions"]["style"] == 2 then
-			self:Tag(raidname, '[Altz:color][Altz:hpraidname]')
-		else
-			self:Tag(raidname, '[Altz:hpraidname]')
-		end
+		self:Tag(raidname, '[Altz:hpraidname]')
 	else
-		if aCoreCDB["UnitframeOptions"]["style"] == 1 or aCoreCDB["UnitframeOptions"]["style"] == 2 then
-			self:Tag(raidname, '[Altz:color][Altz:raidname]')
-		else
-			self:Tag(raidname, '[Altz:raidname]')
-		end
+		self:Tag(raidname, '[Altz:raidname]')
 	end
 	
     local ricon = hp:CreateTexture(nil, "OVERLAY", 1)
@@ -382,6 +360,35 @@ local func = function(self, unit)
 	self:SetAttribute("toggleForVehicle", aCoreCDB["UnitframeOptions"]["toggleForVehicle"])
 	
 	T.RaidOnMouseOver(self)
+	
+	self.Health.ApplySettings = function()
+		if aCoreCDB["UnitframeOptions"]["style"] == 1 then
+			self.bg.tex:SetAlpha(0)
+			hp:SetStatusBarTexture(G.media.blank)
+			hp.bg:SetTexture(G.media.blank)
+			hp.bg:SetGradientAlpha("VERTICAL", .5, .5, .5, .5, 0, 0, 0,0)
+			hp.ind:ClearAllPoints()
+			hp.ind:SetPoint("RIGHT", hp:GetStatusBarTexture(), "LEFT", 0, 0)
+			hp:SetReverseFill(true)
+		elseif aCoreCDB["UnitframeOptions"]["style"] == 2 then
+			self.bg.tex:SetAlpha(1)
+			hp:SetStatusBarTexture(G.media.ufbar)
+			hp.bg:SetTexture(G.media.ufbar)
+			hp.bg:SetGradientAlpha("VERTICAL", .2,.2,.2,.15,.25,.25,.25,.6)
+			hp.ind:ClearAllPoints()
+			hp.ind:SetPoint("RIGHT", hp:GetStatusBarTexture(), "LEFT", 0, 0)
+			hp:SetReverseFill(true)
+		else
+			self.bg.tex:SetAlpha(1)
+			hp:SetStatusBarTexture(G.media.ufbar)
+			hp.bg:SetTexture(G.media.ufbar)
+			hp.bg:SetGradientAlpha("VERTICAL", .2,.2,.2,.15,.25,.25,.25,.6)
+			hp.ind:ClearAllPoints()
+			hp.ind:SetPoint("LEFT", hp:GetStatusBarTexture(), "RIGHT", 0, 0)
+			hp:SetReverseFill(false)
+		end
+	end
+	self.Health.ApplySettings()
 end
 
 local dfunc = function(self, unit)
@@ -411,13 +418,8 @@ local dfunc = function(self, unit)
 	self.bg:SetAllPoints(self)
 	self.bg.tex = self.bg:CreateTexture(nil, "BACKGROUND")
     self.bg.tex:SetAllPoints()
-	if aCoreCDB["UnitframeOptions"]["style"] == 1 then
-		self.bg.tex:SetTexture(G.media.blank)
-		self.bg.tex:SetVertexColor(0, 0, 0, 0)	
-	else
-		self.bg.tex:SetTexture(G.media.ufbar)
-		self.bg.tex:SetVertexColor(0, 0, 0)
-	end
+	self.bg.tex:SetTexture(G.media.ufbar)
+	self.bg.tex:SetVertexColor(0, 0, 0)
 	
 	-- border --
 	self.backdrop = T.createBackdrop(self, self, 0)
@@ -427,27 +429,12 @@ local dfunc = function(self, unit)
     hp:SetAllPoints(self)
     hp.frequentUpdates = true
 	
-	if aCoreCDB["UnitframeOptions"]["style"] == 1 then
-		hp.bg:SetGradientAlpha("VERTICAL", .5, .5, .5, .5, 0, 0, 0,0)
-	else
-		hp.bg:SetGradientAlpha("VERTICAL", .2,.2,.2,.15,.25,.25,.25,.6)
-	end
-	
 	-- little black line to make the health bar more clear
 	hp.ind = hp:CreateTexture(nil, "OVERLAY", 1)
     hp.ind:SetTexture("Interface\\Buttons\\WHITE8x8")
 	hp.ind:SetVertexColor(0, 0, 0)
 	hp.ind:SetSize(1, self:GetHeight())
-	if aCoreCDB["UnitframeOptions"]["style"] ~= 3 then
-		hp.ind:SetPoint("RIGHT", hp:GetStatusBarTexture(), "LEFT", 0, 0)
-	else
-		hp.ind:SetPoint("LEFT", hp:GetStatusBarTexture(), "RIGHT", 0, 0)
-	end
-	
-	if aCoreCDB["UnitframeOptions"]["style"] ~= 3 then
-		hp:SetReverseFill(true)
-	end
-	
+
     self.Health = hp
 	self.Health.PostUpdate = T.Updatehealthbar
 	
@@ -480,12 +467,8 @@ local dfunc = function(self, unit)
 		
 	local raidname = T.createtext(hp, "ARTWORK", aCoreCDB["UnitframeOptions"]["raidfontsize"], "OUTLINE", "RIGHT")
 	raidname:SetPoint"CENTER"
-	if aCoreCDB["UnitframeOptions"]["style"] == 1 or aCoreCDB["UnitframeOptions"]["style"] == 2 then
-		self:Tag(raidname, '[Altz:color][Altz:raidname]')
-	else
-		self:Tag(raidname, '[Altz:raidname]')
-	end
-	
+	self:Tag(raidname, '[Altz:raidname]')
+
     local ricon = hp:CreateTexture(nil, "OVERLAY", 1)
 	ricon:SetSize(13 ,13)
     ricon:SetPoint("TOP", hp, "TOP", 0 , 5)
@@ -521,6 +504,35 @@ local dfunc = function(self, unit)
 	self:SetAttribute("toggleForVehicle", aCoreCDB["UnitframeOptions"]["toggleForVehicle"])
 	
 	T.RaidOnMouseOver(self)
+	
+	self.Health.ApplySettings = function()
+		if aCoreCDB["UnitframeOptions"]["style"] == 1 then
+			self.bg.tex:SetAlpha(0)
+			hp:SetStatusBarTexture(G.media.blank)
+			hp.bg:SetTexture(G.media.blank)
+			hp.bg:SetGradientAlpha("VERTICAL", .5, .5, .5, .5, 0, 0, 0,0)
+			hp.ind:ClearAllPoints()
+			hp.ind:SetPoint("RIGHT", hp:GetStatusBarTexture(), "LEFT", 0, 0)
+			hp:SetReverseFill(true)
+		elseif aCoreCDB["UnitframeOptions"]["style"] == 2 then
+			self.bg.tex:SetAlpha(1)
+			hp:SetStatusBarTexture(G.media.ufbar)
+			hp.bg:SetTexture(G.media.ufbar)
+			hp.bg:SetGradientAlpha("VERTICAL", .2,.2,.2,.15,.25,.25,.25,.6)
+			hp.ind:ClearAllPoints()
+			hp.ind:SetPoint("RIGHT", hp:GetStatusBarTexture(), "LEFT", 0, 0)
+			hp:SetReverseFill(true)
+		else
+			self.bg.tex:SetAlpha(1)
+			hp:SetStatusBarTexture(G.media.ufbar)
+			hp.bg:SetTexture(G.media.ufbar)
+			hp.bg:SetGradientAlpha("VERTICAL", .2,.2,.2,.15,.25,.25,.25,.6)
+			hp.ind:ClearAllPoints()
+			hp.ind:SetPoint("LEFT", hp:GetStatusBarTexture(), "RIGHT", 0, 0)
+			hp:SetReverseFill(false)
+		end
+	end
+	self.Health.ApplySettings()
 end
 
 oUF:RegisterStyle("Altz_Healerraid", func)
@@ -869,13 +881,8 @@ local pfunc = function(self, unit)
 	self.bg:SetAllPoints(self)
 	self.bg.tex = self.bg:CreateTexture(nil, "BACKGROUND")
     self.bg.tex:SetAllPoints()
-	if aCoreCDB["UnitframeOptions"]["style"] == 1 then
-		self.bg.tex:SetTexture(G.media.blank)
-		self.bg.tex:SetVertexColor(0, 0, 0, 0)	
-	else
-		self.bg.tex:SetTexture(G.media.ufbar)
-		self.bg.tex:SetVertexColor(0, 0, 0)
-	end
+	self.bg.tex:SetTexture(G.media.ufbar)
+	self.bg.tex:SetVertexColor(0, 0, 0)
 	
     local hp = T.createStatusbar(self, "ARTWORK", nil, nil, 1, 1, 1, 1)
 	hp:SetFrameLevel(4)
@@ -884,26 +891,11 @@ local pfunc = function(self, unit)
 	hp:SetPoint("TOPRIGHT", self, "TOPRIGHT")
     hp.frequentUpdates = true
 	
-	if aCoreCDB["UnitframeOptions"]["style"] == 1 then
-		hp.bg:SetGradientAlpha("VERTICAL", .5, .5, .5, .5, 0, 0, 0,0)
-	else
-		hp.bg:SetGradientAlpha("VERTICAL", .2,.2,.2,.15,.25,.25,.25,.6)
-	end
-	
 	-- little black line to make the health bar more clear
 	hp.ind = hp:CreateTexture(nil, "OVERLAY", 1)
     hp.ind:SetTexture("Interface\\Buttons\\WHITE8x8")
 	hp.ind:SetVertexColor(0, 0, 0)
 	hp.ind:SetSize(1, hp:GetHeight())
-	if aCoreCDB["UnitframeOptions"]["style"] ~= 3 then
-		hp.ind:SetPoint("RIGHT", hp:GetStatusBarTexture(), "LEFT", 0, 0)
-	else
-		hp.ind:SetPoint("LEFT", hp:GetStatusBarTexture(), "RIGHT", 0, 0)
-	end
-	
-	if aCoreCDB["UnitframeOptions"]["style"] ~= 3 then
-		hp:SetReverseFill(true)
-	end
 	
 	-- border --
 	self.backdrop = T.createBackdrop(hp, hp, 0)
@@ -917,17 +909,28 @@ local pfunc = function(self, unit)
 	tinsert(self.mouseovers, self.Health)
 	
 	-- portrait 只有样式1和样式2才有肖像
-	if aCoreCDB["UnitframeOptions"]["style"] ~= 3 and aCoreCDB["UnitframeOptions"]["portrait"] then
+	if aCoreCDB["UnitframeOptions"]["portrait"] then
 		local Portrait = CreateFrame('PlayerModel', nil, self)
-		Portrait:SetFrameLevel(2) -- blow hp
+		if aCoreCDB["UnitframeOptions"]["style"] ~= 3 then
+			Portrait:SetFrameLevel(1) -- blow hp
+		else
+			Portrait:SetFrameLevel(2) -- above hp
+		end
 		Portrait:SetPoint("TOPLEFT", 1, 0)
 		Portrait:SetPoint("BOTTOMRIGHT", -1, 1)
 		Portrait:SetAlpha(aCoreCDB["UnitframeOptions"]["portraitalpha"])
 		self.Portrait = Portrait
+		self.Portrait.ApplySettings = function()
+			if aCoreCDB["UnitframeOptions"]["style"] ~= 3 then
+				self.Portrait:SetFrameLevel(1) -- blow hp
+			else
+				self.Portrait:SetFrameLevel(2) -- above hp
+			end
+		end
 	end
 
 	-- power bar --
-	local pp = T.createStatusbar(self, "ARTWORK", aCoreCDB["UnitframeOptions"]["height"]*-(aCoreCDB["UnitframeOptions"]["hpheight"]-1), nil, 1, 1, 1, 1)
+	local pp = T.createStatusbar(self, "ARTWORK", aCoreCDB["UnitframeOptions"]["height"]*(1-aCoreCDB["UnitframeOptions"]["hpheight"]), nil, 1, 1, 1, 1)
 	pp:SetFrameLevel(4)
 	pp:SetPoint"LEFT"
 	pp:SetPoint"RIGHT"
@@ -939,6 +942,15 @@ local pfunc = function(self, unit)
 	-- backdrop for power bar --
 	pp.bd = T.createBackdrop(pp, pp, 1)
 
+	pp.ApplySettings = function()			
+		if aCoreCDB["UnitframeOptions"]["style"] == 1 then
+			pp:SetStatusBarTexture(G.media.blank)
+		else
+			pp:SetStatusBarTexture(G.media.ufbar)
+		end
+		pp:SetHeight(aCoreCDB["UnitframeOptions"]["height"]*(1-aCoreCDB["UnitframeOptions"]["hpheight"]))
+	end
+	
 	self.Power = pp
 	self.Power.PostUpdate = T.Updatepowerbar
 	tinsert(self.mouseovers, self.Power)
@@ -986,11 +998,7 @@ local pfunc = function(self, unit)
 	-- name --
 	local name = T.createtext(self.Health, "OVERLAY", 13, "OUTLINE", "LEFT")
 	name:SetPoint("TOPLEFT", self.Health, "TOPLEFT", 3, 9)
-	if aCoreCDB["UnitframeOptions"]["style"] == 1 or aCoreCDB["UnitframeOptions"]["style"] == 2 then
-		self:Tag(name, "[difficulty][level][shortclassification]|r [Altz:color][name] [status]")
-	else
-		self:Tag(name, "[difficulty][level][shortclassification]|r [name] [status]")
-	end
+	self:Tag(name, "[Altz:longname]")
 
 	if aCoreCDB["UnitframeOptions"]["auras"] then
 		T.CreateAuras(self, unit)
@@ -1001,6 +1009,35 @@ local pfunc = function(self, unit)
 	end
 	
 	T.RaidOnMouseOver(self)
+	
+	self.Health.ApplySettings = function()
+		if aCoreCDB["UnitframeOptions"]["style"] == 1 then
+			self.bg.tex:SetAlpha(0)
+			hp:SetStatusBarTexture(G.media.blank)
+			hp.bg:SetTexture(G.media.blank)
+			hp.bg:SetGradientAlpha("VERTICAL", .5, .5, .5, .5, 0, 0, 0,0)
+			hp.ind:ClearAllPoints()
+			hp.ind:SetPoint("RIGHT", hp:GetStatusBarTexture(), "LEFT", 0, 0)
+			hp:SetReverseFill(true)
+		elseif aCoreCDB["UnitframeOptions"]["style"] == 2 then
+			self.bg.tex:SetAlpha(1)
+			hp:SetStatusBarTexture(G.media.ufbar)
+			hp.bg:SetTexture(G.media.ufbar)
+			hp.bg:SetGradientAlpha("VERTICAL", .2,.2,.2,.15,.25,.25,.25,.6)
+			hp.ind:ClearAllPoints()
+			hp.ind:SetPoint("RIGHT", hp:GetStatusBarTexture(), "LEFT", 0, 0)
+			hp:SetReverseFill(true)
+		else
+			self.bg.tex:SetAlpha(1)
+			hp:SetStatusBarTexture(G.media.ufbar)
+			hp.bg:SetTexture(G.media.ufbar)
+			hp.bg:SetGradientAlpha("VERTICAL", .2,.2,.2,.15,.25,.25,.25,.6)
+			hp.ind:ClearAllPoints()
+			hp.ind:SetPoint("LEFT", hp:GetStatusBarTexture(), "RIGHT", 0, 0)
+			hp:SetReverseFill(false)
+		end
+	end
+	self.Health.ApplySettings()
 end
 
 oUF:RegisterStyle("Altz_Party", pfunc)

@@ -339,15 +339,19 @@ T.Updatehealthbar = function(self, unit, min, max)
 			self.__owner.Name:SetTextColor(1, 1, 1)
 		end
 	else
+		r2, g2, b2 = oUF:RGBColorGradient(perc, 1, unpack(oUF.colors.smooth))
 		if aCoreCDB["UnitframeOptions"]["style"] == 1 then
-			r2, g2, b2 = oUF:RGBColorGradient(perc, 1, unpack(oUF.colors.smooth))
 			self:GetStatusBarTexture():SetGradient("VERTICAL", r2, g2, b2, r2/3, g2/3, b2/3)
+		elseif aCoreCDB["UnitframeOptions"]["style"] == 2 then
+			self:SetStatusBarColor(r2, g2, b2)
 		else
 			self:SetStatusBarColor(r, g, b)
 		end
 		
 		if  aCoreCDB["UnitframeOptions"]["style"] ~= 3 then
-			self:SetValue(max - self:GetValue())
+			self:SetValue(max - min)	
+		else
+			self:SetValue(min)
 		end
 	end	
 end
@@ -568,23 +572,7 @@ end
 --=============================================--
 local Interruptible_color = {aCoreCDB["UnitframeOptions"]["Interruptible_color"].r, aCoreCDB["UnitframeOptions"]["Interruptible_color"].g, aCoreCDB["UnitframeOptions"]["Interruptible_color"].b} -- 玩家以及可打断的颜色
 local notInterruptible_color = {aCoreCDB["UnitframeOptions"]["notInterruptible_color"].r, aCoreCDB["UnitframeOptions"]["notInterruptible_color"].g, aCoreCDB["UnitframeOptions"]["notInterruptible_color"].b} -- 不可打断的颜色
-local tk -- 引导法术的分段竖线颜色
-if aCoreCDB["UnitframeOptions"]["independentcb"] then -- 独立施法条
-	tk = {0, 0, 0}
-elseif aCoreCDB["UnitframeOptions"]["style"] == 1 or aCoreCDB["UnitframeOptions"]["style"] == 3 then -- 透明或者经典主题
-	tk = {0, 0, 0}
-else -- 深色主题
-	tk = {1, 1, 1}
-end
-
-local cbwidth, cbheight
-if aCoreCDB["UnitframeOptions"]["independentcb"] then
-	cbheight = aCoreCDB["UnitframeOptions"]["cbheight"]
-	cbwidth = aCoreCDB["UnitframeOptions"]["cbwidth"]
-else
-	cbheight = aCoreCDB["UnitframeOptions"]["height"]
-	cbwidth = aCoreCDB["UnitframeOptions"]["width"]
-end
+local tk = {} -- 引导法术的分段竖线颜色
 
 local ChannelSpells = {
 	[GetSpellInfo(15407)] = 3, --精神鞭笞
@@ -609,25 +597,23 @@ local PostCastStart = function(castbar, unit)
 		end
 	else
 		if unit == "player" then
-			if not aCoreCDB["UnitframeOptions"]["hideplayercastbaricon"] then
-				if aCoreCDB["UnitframeOptions"]["independentcb"] then
-					castbar:SetStatusBarColor(aCoreCDB["UnitframeOptions"]["Interruptible_color"]["r"], aCoreCDB["UnitframeOptions"]["Interruptible_color"]["g"], aCoreCDB["UnitframeOptions"]["Interruptible_color"]["b"])
-				else
-					castbar.IBackdrop:SetBackdropBorderColor(aCoreCDB["UnitframeOptions"]["Interruptible_color"]["r"], aCoreCDB["UnitframeOptions"]["Interruptible_color"]["g"], aCoreCDB["UnitframeOptions"]["Interruptible_color"]["b"])
-				end
+			if aCoreCDB["UnitframeOptions"]["independentcb"] then
+				castbar:SetStatusBarColor(aCoreCDB["UnitframeOptions"]["Interruptible_color"]["r"], aCoreCDB["UnitframeOptions"]["Interruptible_color"]["g"], aCoreCDB["UnitframeOptions"]["Interruptible_color"]["b"])
+			else
+				castbar.IBackdrop_1:SetBackdropBorderColor(aCoreCDB["UnitframeOptions"]["Interruptible_color"]["r"], aCoreCDB["UnitframeOptions"]["Interruptible_color"]["g"], aCoreCDB["UnitframeOptions"]["Interruptible_color"]["b"])			
 			end
 		else
 			if castbar.notInterruptible then
 				if aCoreCDB["UnitframeOptions"]["independentcb"] then
 					castbar:SetStatusBarColor(aCoreCDB["UnitframeOptions"]["notInterruptible_color"]["r"], aCoreCDB["UnitframeOptions"]["notInterruptible_color"]["g"], aCoreCDB["UnitframeOptions"]["notInterruptible_color"]["b"])
 				else
-					castbar.IBackdrop:SetBackdropBorderColor(aCoreCDB["UnitframeOptions"]["notInterruptible_color"]["r"], aCoreCDB["UnitframeOptions"]["notInterruptible_color"]["g"], aCoreCDB["UnitframeOptions"]["notInterruptible_color"]["b"])
+					castbar.IBackdrop_1:SetBackdropBorderColor(aCoreCDB["UnitframeOptions"]["notInterruptible_color"]["r"], aCoreCDB["UnitframeOptions"]["notInterruptible_color"]["g"], aCoreCDB["UnitframeOptions"]["notInterruptible_color"]["b"])
 				end
 			else
 				if aCoreCDB["UnitframeOptions"]["independentcb"] then
 					castbar:SetStatusBarColor(aCoreCDB["UnitframeOptions"]["Interruptible_color"]["r"], aCoreCDB["UnitframeOptions"]["Interruptible_color"]["g"], aCoreCDB["UnitframeOptions"]["Interruptible_color"]["b"])
 				else
-					castbar.IBackdrop:SetBackdropBorderColor(aCoreCDB["UnitframeOptions"]["Interruptible_color"]["r"], aCoreCDB["UnitframeOptions"]["Interruptible_color"]["g"], aCoreCDB["UnitframeOptions"]["Interruptible_color"]["b"])
+					castbar.IBackdrop_1:SetBackdropBorderColor(aCoreCDB["UnitframeOptions"]["Interruptible_color"]["r"], aCoreCDB["UnitframeOptions"]["Interruptible_color"]["g"], aCoreCDB["UnitframeOptions"]["Interruptible_color"]["b"])
 				end
 			end
 		end
@@ -635,7 +621,6 @@ local PostCastStart = function(castbar, unit)
 end
 
 local PostChannelStart = function(castbar, unit, spell)
-
 	PostCastStart(castbar, unit)
 	
 	if aCoreCDB["UnitframeOptions"]["channelticks"] then
@@ -650,11 +635,11 @@ local PostChannelStart = function(castbar, unit, spell)
 				if not castbar.Ticks[i] then
 					castbar.Ticks[i] = castbar:CreateTexture(nil, "OVERLAY")
 					castbar.Ticks[i]:SetColorTexture(tk[1], tk[2], tk[3])
-					castbar.Ticks[i]:SetSize(2, cbheight)
+					castbar.Ticks[i]:SetSize(2, aCoreCDB["UnitframeOptions"]["independentcb"] and aCoreCDB["UnitframeOptions"]["cbheight"] or aCoreCDB["UnitframeOptions"]["height"])
 				else
 					castbar.Ticks[i]:Show()
 				end
-				castbar.Ticks[i]:SetPoint("RIGHT", castbar, "RIGHT", -cbwidth/castbar.tick*i, 0)
+				castbar.Ticks[i]:SetPoint("RIGHT", castbar, "RIGHT", -(aCoreCDB["UnitframeOptions"]["independentcb"] and aCoreCDB["UnitframeOptions"]["cbwidth"] or aCoreCDB["UnitframeOptions"]["width"])/castbar.tick*i, 0)
 			end
 			--print("start")
 		end
@@ -674,14 +659,14 @@ local PostChannelUpdate = function(castbar, unit, spell)
 				if not castbar.Ticks[i] then
 					castbar.Ticks[i] = castbar:CreateTexture(nil, "OVERLAY")
 					castbar.Ticks[i]:SetColorTexture(tk[1], tk[2], tk[3])
-					castbar.Ticks[i]:SetSize(2, cbheight)
+					castbar.Ticks[i]:SetSize(2, aCoreCDB["UnitframeOptions"]["independentcb"] and aCoreCDB["UnitframeOptions"]["cbheight"] or aCoreCDB["UnitframeOptions"]["height"])
 				else
 					castbar.Ticks[i]:Show()
 				end
 				if i == 1 then
-					castbar.Ticks[i]:SetPoint("RIGHT", castbar, "RIGHT", cbwidth*castbar.delay/castbar.max, 0)
+					castbar.Ticks[i]:SetPoint("RIGHT", castbar, "RIGHT", (aCoreCDB["UnitframeOptions"]["independentcb"] and aCoreCDB["UnitframeOptions"]["cbwidth"] or aCoreCDB["UnitframeOptions"]["width"])*castbar.delay/castbar.max, 0)
 				else
-					castbar.Ticks[i]:SetPoint("RIGHT", castbar, "RIGHT", cbwidth*(castbar.delay/castbar.max-(1+castbar.delay/castbar.max)/(castbar.tick-1)*(i-1)), 0)
+					castbar.Ticks[i]:SetPoint("RIGHT", castbar, "RIGHT", (aCoreCDB["UnitframeOptions"]["independentcb"] and aCoreCDB["UnitframeOptions"]["cbwidth"] or aCoreCDB["UnitframeOptions"]["width"])*(castbar.delay/castbar.max-(1+castbar.delay/castbar.max)/(castbar.tick-1)*(i-1)), 0)
 				end
 			end
 			--print("update")
@@ -724,23 +709,22 @@ local CreateCastbars = function(self, unit)
 		if u == "nameplate" then
 			if aCoreCDB["PlateOptions"]["theme"] == "number" then
 				cb:SetStatusBarTexture(G.media.iconcastbar)
-				cb.bd = T.createBackdrop(cb, cb, 1)
 				cb:SetSize(25, 25)
 				cb:SetPoint("TOP", self, "BOTTOM", 0, -aCoreCDB["PlateOptions"]["fontsize"]-3)
 			else
 				cb:SetStatusBarTexture(G.media.ufbar)
-				cb.bd = T.createBackdrop(cb, cb, 1)
 				cb:SetSize(aCoreCDB["PlateOptions"]["bar_width"], aCoreCDB["PlateOptions"]["bar_height"]/3)
 			end
+			cb.bd = T.createBackdrop(cb, cb, 1)
 		else
+			cb:SetAllPoints(self)
+			cb:SetFrameLevel(2)
 			if aCoreCDB["UnitframeOptions"]["style"] == 1 then
 				cb:SetStatusBarTexture(G.media.blank)
 			else
 				cb:SetStatusBarTexture(G.media.ufbar)
 			end
 			cb:SetStatusBarColor(0, 0, 0, 0)
-			cb:SetAllPoints(self)
-			cb:SetFrameLevel(2)
 		end
 		
 		-- 光标
@@ -748,15 +732,6 @@ local CreateCastbars = function(self, unit)
 		cb.Spark:SetTexture("Interface\\CastingBar\\UI-CastingBar-Spark")
 		cb.Spark:SetBlendMode("ADD")
 		cb.Spark:SetAlpha(1)
-		if u == "nameplate" then
-			if aCoreCDB["PlateOptions"]["theme"] == "number" then
-				cb.Spark:SetSize(8, 35)
-			else
-				cb.Spark:SetSize(8, aCoreCDB["PlateOptions"]["bar_height"]*2)
-			end
-		else
-			cb.Spark:SetSize(8, aCoreCDB["UnitframeOptions"]["height"]*2)
-		end
 		cb.Spark:SetPoint('CENTER', cb:GetStatusBarTexture(), 'RIGHT', 0, 0)
 		
 		-- 时间
@@ -785,28 +760,16 @@ local CreateCastbars = function(self, unit)
 		-- 图标
 		cb.Icon = cb:CreateTexture(nil, "OVERLAY", 3)
 		cb.Icon:SetTexCoord(.1, .9, .1, .9)
-		if u == "nameplate" then
-			if aCoreCDB["PlateOptions"]["theme"] == "number" then
-				cb.Icon:SetSize(20, 20)
-				cb.Icon:SetPoint("CENTER")
-			else
-				cb.Icon:SetSize(aCoreCDB["PlateOptions"]["bar_height"]*1.5+6, aCoreCDB["PlateOptions"]["bar_height"]*1.5+6)
-				cb.Icon:SetPoint("RIGHT", self, "LEFT", -5, 0)
-			end
-		else
-			cb.Icon:SetSize(aCoreCDB["UnitframeOptions"]["cbIconsize"], aCoreCDB["UnitframeOptions"]["cbIconsize"])	
-			cb.Icon:SetPoint("BOTTOMRIGHT", cb, "BOTTOMLEFT", -7, -aCoreCDB["UnitframeOptions"]["height"]*(1-aCoreCDB["UnitframeOptions"]["hpheight"]))
-		end
 		if unit == "player" and aCoreCDB["UnitframeOptions"]["hideplayercastbaricon"] then
 			cb.Icon:Hide()
-		elseif u == "nameplate" and aCoreCDB["PlateOptions"]["theme"] == "number" then
-			cb.IBackdrop = cb:CreateTexture(nil, "ARTWORK", 3)
-			cb.IBackdrop:SetPoint("TOPLEFT", cb.Icon, "TOPLEFT", -1, 1)
-			cb.IBackdrop:SetPoint("BOTTOMRIGHT", cb.Icon, "BOTTOMRIGHT", 1, -1)
-			cb.IBackdrop:SetVertexColor(0, 0, 0)
-			cb.IBackdrop:SetTexture(G.media.blank)
 		else
-			cb.IBackdrop = T.createBackdrop(cb, cb.Icon, 1)
+			cb.IBackdrop_1 = T.createBackdrop(cb, cb.Icon, 1)
+			
+			cb.IBackdrop_2 = cb:CreateTexture(nil, "ARTWORK", 3)
+			cb.IBackdrop_2:SetPoint("TOPLEFT", cb.Icon, "TOPLEFT", -1, 1)
+			cb.IBackdrop_2:SetPoint("BOTTOMRIGHT", cb.Icon, "BOTTOMRIGHT", 1, -1)
+			cb.IBackdrop_2:SetVertexColor(0, 0, 0)
+			cb.IBackdrop_2:SetTexture(G.media.blank)
 		end
 		
 		-- 独立施法条
@@ -877,6 +840,8 @@ local CreateCastbars = function(self, unit)
 				cb.Text:SetPoint("RIGHT", cb, "RIGHT", 0, 0)
 				cb.Text:SetJustifyH("RIGHT")
 			end
+		else
+			cb.Spark:SetSize(8, aCoreCDB["UnitframeOptions"]["height"]*2)
 		end
 
 		cb.Ticks = {}
@@ -884,6 +849,57 @@ local CreateCastbars = function(self, unit)
 		cb.PostChannelStart = PostChannelStart
 		cb.PostChannelUpdate = PostChannelUpdate
 		cb.PostChannelStop = PostChannelStop
+		cb.ApplySettings = function()
+			if u == "nameplate" then
+				if aCoreCDB["PlateOptions"]["theme"] == "number" then
+					cb:SetStatusBarTexture(G.media.iconcastbar)
+					cb:SetSize(25, 25)
+					
+					cb.Spark:SetSize(8, 35)
+					
+					cb.Icon:SetSize(20, 20)
+					cb.Icon:ClearAllPoints()
+					cb.Icon:SetPoint("CENTER", cb, "CENTER")
+					
+					cb.IBackdrop_1:Hide()
+					cb.IBackdrop_2:Show()
+				else
+					cb:SetStatusBarTexture(G.media.ufbar)
+					cb:SetSize(aCoreCDB["PlateOptions"]["bar_width"], aCoreCDB["PlateOptions"]["bar_height"]/3)
+					
+					cb.Spark:SetSize(8, aCoreCDB["PlateOptions"]["bar_height"]*2)
+					
+					cb.Icon:SetSize(aCoreCDB["PlateOptions"]["bar_height"]*1.5+6, aCoreCDB["PlateOptions"]["bar_height"]*1.5+6)
+					cb.Icon:ClearAllPoints()
+					cb.Icon:SetPoint("RIGHT", self, "LEFT", -5, 0)
+					
+					cb.IBackdrop_1:Show()
+					cb.IBackdrop_2:Hide()
+				end
+			else
+				table.wipe(tk)
+				if aCoreCDB["UnitframeOptions"]["independentcb"] then -- 独立施法条
+					tk = {0, 0, 0}
+				elseif aCoreCDB["UnitframeOptions"]["style"] == 1 or aCoreCDB["UnitframeOptions"]["style"] == 3 then -- 透明或者经典主题
+					tk = {0, 0, 0}
+				else -- 深色主题
+					tk = {1, 1, 1}
+				end
+				
+				cb.Icon:SetSize(aCoreCDB["UnitframeOptions"]["cbIconsize"], aCoreCDB["UnitframeOptions"]["cbIconsize"])	
+				cb.Icon:SetPoint("BOTTOMRIGHT", cb, "BOTTOMLEFT", -7, -aCoreCDB["UnitframeOptions"]["height"]*(1-aCoreCDB["UnitframeOptions"]["hpheight"]))
+				
+				cb.IBackdrop_1:Show()
+				cb.IBackdrop_2:Hide()
+				
+				if aCoreCDB["UnitframeOptions"]["style"] == 1 then
+					cb:SetStatusBarTexture(G.media.blank)
+				else
+					cb:SetStatusBarTexture(G.media.ufbar)
+				end
+			end
+		end
+		cb.ApplySettings()
 
 		self.Castbar = cb
 	end
@@ -906,11 +922,6 @@ local CreateSwingTimer = function(self, unit) -- only for player
 	-- 双手
 	bar.Twohand = CreateFrame("StatusBar", nil, bar)
 	bar.Twohand:SetAllPoints(bar)
-	if aCoreCDB["UnitframeOptions"]["style"] == 1 then
-		bar.Twohand:SetStatusBarTexture(G.media.blank)
-	else
-		bar.Twohand:SetStatusBarTexture(G.media.ufbar)
-	end
 	bar.Twohand:SetStatusBarColor(1, 1, .2)
 	bar.Twohand.bd = T.createBackdrop(bar.Twohand, bar.Twohand, 1)
 	bar.Twohand:SetFrameLevel(20)
@@ -928,11 +939,6 @@ local CreateSwingTimer = function(self, unit) -- only for player
 	-- 主手
 	bar.Mainhand = CreateFrame("StatusBar", nil, bar)
 	bar.Mainhand:SetAllPoints(bar)
-	if aCoreCDB["UnitframeOptions"]["style"] == 1 then
-		bar.Mainhand:SetStatusBarTexture(G.media.blank)
-	else
-		bar.Mainhand:SetStatusBarTexture(G.media.ufbar)
-	end
 	bar.Mainhand:SetStatusBarColor(1, 1, .2)
 	bar.Mainhand.bd = T.createBackdrop(bar.Mainhand, bar.Mainhand, 1)
 	bar.Mainhand:SetFrameLevel(20)
@@ -953,11 +959,6 @@ local CreateSwingTimer = function(self, unit) -- only for player
 	bar.Offhand:SetPoint("TOPLEFT", bar, "BOTTOMLEFT", 0, -3)
 	bar.Offhand:SetPoint("TOPRIGHT", bar, "BOTTOMRIGHT", 0, -3)
 	bar.Offhand:SetHeight(aCoreCDB["UnitframeOptions"]["swheight"]/2)
-	if aCoreCDB["UnitframeOptions"]["style"] == 1 then
-		bar.Offhand:SetStatusBarTexture(G.media.blank)
-	else
-		bar.Offhand:SetStatusBarTexture(G.media.ufbar)
-	end
 	bar.Offhand:SetStatusBarColor(.2, 1, 1)
 	bar.Offhand.bd = T.createBackdrop(bar.Offhand, bar.Offhand, 1)
 	bar.Offhand:SetFrameLevel(20)
@@ -989,20 +990,31 @@ local CreateSwingTimer = function(self, unit) -- only for player
 
 	bar.hideOoc = true
 
+	bar.ApplySettings = function()
+		if aCoreCDB["UnitframeOptions"]["style"] == 1 then
+			bar.Twohand:SetStatusBarTexture(G.media.blank)
+			bar.Mainhand:SetStatusBarTexture(G.media.blank)
+			bar.Offhand:SetStatusBarTexture(G.media.blank)
+		else
+			bar.Twohand:SetStatusBarTexture(G.media.ufbar)
+			bar.Mainhand:SetStatusBarTexture(G.media.ufbar)
+			bar.Offhand:SetStatusBarTexture(G.media.ufbar)
+		end
+	end
+	bar.ApplySettings()
 	self.Swing = bar
 end
 
 --=============================================--
 --[[ Auras ]]--
 --=============================================--
-local iconsize = (aCoreCDB["UnitframeOptions"]["width"]+3)/aCoreCDB["UnitframeOptions"]["auraperrow"]-3
 local PostCreateIcon = function(auras, icon)
 	icon.icon:SetTexCoord(.07, .93, .07, .93)
 
 	icon.count:ClearAllPoints()
 	icon.count:SetPoint("BOTTOMRIGHT", 0, -3)
 	icon.count:SetFontObject(nil)
-	icon.count:SetFont(G.numFont, iconsize*.4, "OUTLINE")
+	icon.count:SetFont(G.numFont, ((aCoreCDB["UnitframeOptions"]["width"]+3)/aCoreCDB["UnitframeOptions"]["auraperrow"]-3)*.4, "OUTLINE")
 	icon.count:SetTextColor(.9, .9, .1)
 
 	icon.overlay:SetTexture(G.media.blank)
@@ -1012,7 +1024,7 @@ local PostCreateIcon = function(auras, icon)
 
 	icon.bd = T.createBackdrop(icon, icon, 0)
 
-	icon.remaining = T.createnumber(icon, "OVERLAY", iconsize*.4, "OUTLINE", "CENTER")
+	icon.remaining = T.createnumber(icon, "OVERLAY", ((aCoreCDB["UnitframeOptions"]["width"]+3)/aCoreCDB["UnitframeOptions"]["auraperrow"]-3)*.4, "OUTLINE", "CENTER")
 	icon.remaining:SetPoint("TOPLEFT", 0, 5)
 
 	if aCoreCDB["UnitframeOptions"]["auraborders"] then
@@ -1194,19 +1206,13 @@ T.CreateAuras = function(self, unit)
 	if multicheck(u, "target", "focus", "boss", "arena", "party", "player", "pet", "raid", "nameplate") then
 		local Auras = CreateFrame("Frame", nil, self)
 		if u == "raid" then
-			Auras:SetHeight(aCoreCDB["UnitframeOptions"]["healerraidheight"])
-			Auras:SetWidth(aCoreCDB["UnitframeOptions"]["healerraidwidth"]-2)
-			Auras.size = aCoreCDB["UnitframeOptions"]["hotind_size"]
 			Auras.spacing = 1
 			Auras.PostCreateIcon = PostCreateIndicatorIcon
 		else
-			Auras:SetHeight(aCoreCDB["UnitframeOptions"]["height"]*2)
-			Auras:SetWidth(aCoreCDB["UnitframeOptions"]["width"]-2)
 			Auras.disableCooldown = true
 			if G.myClass == "MAGE" then
 				Auras.showStealableBuffs = true
 			end
-			Auras.size = iconsize
 			Auras.spacing = 3
 			Auras.PostCreateIcon = PostCreateIcon
 			Auras.PostUpdateIcon = PostUpdateIcon
@@ -1223,22 +1229,16 @@ T.CreateAuras = function(self, unit)
 			Auras.initialAnchor = "BOTTOMLEFT"
 			Auras["growth-x"] = "RIGHT"
 			Auras["growth-y"] = "UP"
-			Auras.numDebuffs = aCoreCDB["UnitframeOptions"]["auraperrow"]
-			Auras.numBuffs = aCoreCDB["UnitframeOptions"]["auraperrow"]
 			if unit == "target" and (aCoreCDB["UnitframeOptions"]["AuraFilterignoreBuff"] or aCoreCDB["UnitframeOptions"]["AuraFilterignoreDebuff"]) then
 				Auras.CustomFilter = CustomFilter
 			end
-		elseif aCoreCDB["UnitframeOptions"]["playerdebuffenable"] and unit == "player" then
-			Auras:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 1, aCoreCDB["UnitframeOptions"]["height"]*-(aCoreCDB["UnitframeOptions"]["hpheight"]-1)+8)
+		elseif aCoreCDB["UnitframeOptions"]["playerdebuffenable"] and unit == "player" then		
 			Auras.initialAnchor = "BOTTOMLEFT"
 			Auras["growth-x"] = "RIGHT"
 			Auras["growth-y"] = "UP"
-			Auras.numDebuffs = aCoreCDB["UnitframeOptions"]["playerdebuffnum"]
 			Auras.numBuffs = 0
-			Auras.size = (aCoreCDB["UnitframeOptions"]["width"]+3)/aCoreCDB["UnitframeOptions"]["playerdebuffnum"]-3
 			Auras.CustomFilter = PlayerDebuffFilter
 		elseif unit == "pet" then
-			Auras:SetWidth(aCoreCDB["UnitframeOptions"]["widthpet"]-2)
 			Auras:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 1, 5)
 			Auras.initialAnchor = "BOTTOMLEFT"
 			Auras["growth-x"] = "RIGHT"
@@ -1246,7 +1246,6 @@ T.CreateAuras = function(self, unit)
 			Auras.numDebuffs = 5
 			Auras.numBuffs = 0
 		elseif u == "boss" then -- boss 1-5
-			Auras:SetWidth(aCoreCDB["UnitframeOptions"]["widthboss"]-2)
 			Auras:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 1, 14)
 			Auras.initialAnchor = "BOTTOMLEFT"
 			Auras["growth-x"] = "RIGHT"
@@ -1255,13 +1254,10 @@ T.CreateAuras = function(self, unit)
 			Auras.numBuffs = 3
 			Auras.CustomFilter = BossAuraFilter
 		elseif u == "arena" then
-			Auras:SetWidth(aCoreCDB["UnitframeOptions"]["widthboss"]-2)
 			Auras:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 1, 14)
 			Auras.initialAnchor = "BOTTOMLEFT"
 			Auras["growth-x"] = "RIGHT"
 			Auras["growth-y"] = "UP"
-			Auras.numDebuffs = ceil(aCoreCDB["UnitframeOptions"]["widthboss"]/((aCoreCDB["UnitframeOptions"]["width"]+3)/aCoreCDB["UnitframeOptions"]["auraperrow"]-3))-1
-			Auras.numBuffs = ceil(aCoreCDB["UnitframeOptions"]["widthboss"]/((aCoreCDB["UnitframeOptions"]["width"]+3)/aCoreCDB["UnitframeOptions"]["auraperrow"]-3))-1
 		elseif u == "raid" then
 			Auras:SetPoint("TOPRIGHT", self, "TOPRIGHT", -1, -1)
 			Auras.initialAnchor = "TOPRIGHT"
@@ -1285,10 +1281,7 @@ T.CreateAuras = function(self, unit)
 
 			local Debuffs = CreateFrame("Frame", nil, self)
 			Debuffs:SetPoint("BOTTOMLEFT", self.Power, "BOTTOMRIGHT", 8, -8)
-			Debuffs:SetHeight(aCoreCDB["UnitframeOptions"]["height"]*2)
-			Debuffs:SetWidth(aCoreCDB["UnitframeOptions"]["widthparty"]-2)
 			Debuffs.disableCooldown = true
-			Debuffs.size = iconsize
 			Debuffs.spacing = 3
 			Debuffs.PostCreateIcon = PostCreateIcon
 			Debuffs.PostUpdateIcon = PostUpdateIcon
@@ -1299,11 +1292,6 @@ T.CreateAuras = function(self, unit)
 			self.Debuffs = Debuffs
 		elseif u == "nameplate" then
 			Auras:SetWidth(aCoreCDB["PlateOptions"]["bar_width"])
-			if aCoreCDB["PlateOptions"]["theme"] == "number" then
-				Auras:SetPoint("BOTTOM", self.Health.value, "TOP", 0, -5)
-			else
-				Auras:SetPoint("BOTTOM", self, "TOP", 0, aCoreCDB["PlateOptions"]["plateaurasize"]*.45)
-			end
 			Auras.initialAnchor = "BOTTOMLEFT"
 			Auras["growth-x"] = "RIGHT"
 			Auras["growth-y"] = "UP"
@@ -1319,6 +1307,48 @@ T.CreateAuras = function(self, unit)
 				end
 			end)
 		end
+		
+		Auras.ApplySettings =  function()
+			if u == "raid" then
+				Auras:SetHeight(aCoreCDB["UnitframeOptions"]["healerraidheight"])
+				Auras:SetWidth(aCoreCDB["UnitframeOptions"]["healerraidwidth"]-2)
+				Auras.size = aCoreCDB["UnitframeOptions"]["hotind_size"]
+			else
+				Auras:SetHeight(aCoreCDB["UnitframeOptions"]["height"]*2)
+				Auras:SetWidth(aCoreCDB["UnitframeOptions"]["width"]-2)		
+				Auras.size = (aCoreCDB["UnitframeOptions"]["width"]+3)/aCoreCDB["UnitframeOptions"]["auraperrow"]-3				
+			end
+			
+			if unit == "target" or unit == "focus" then				
+				Auras.numDebuffs = aCoreCDB["UnitframeOptions"]["auraperrow"]
+				Auras.numBuffs = aCoreCDB["UnitframeOptions"]["auraperrow"]
+			elseif aCoreCDB["UnitframeOptions"]["playerdebuffenable"] and unit == "player" then
+				Auras:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 1, aCoreCDB["UnitframeOptions"]["height"]*-(aCoreCDB["UnitframeOptions"]["hpheight"]-1)+8)				
+				Auras.numDebuffs = aCoreCDB["UnitframeOptions"]["playerdebuffnum"]				
+			elseif unit == "pet" then
+				Auras:SetWidth(aCoreCDB["UnitframeOptions"]["widthpet"]-2)
+			elseif u == "boss" then -- boss 1-5
+				Auras:SetWidth(aCoreCDB["UnitframeOptions"]["widthboss"]-2)
+			elseif u == "arena" then
+				Auras:SetWidth(aCoreCDB["UnitframeOptions"]["widthboss"]-2)
+				Auras.numDebuffs = ceil(aCoreCDB["UnitframeOptions"]["widthboss"]/((aCoreCDB["UnitframeOptions"]["width"]+3)/aCoreCDB["UnitframeOptions"]["auraperrow"]-3))-1
+				Auras.numBuffs = ceil(aCoreCDB["UnitframeOptions"]["widthboss"]/((aCoreCDB["UnitframeOptions"]["width"]+3)/aCoreCDB["UnitframeOptions"]["auraperrow"]-3))-1
+			elseif u == "party" or u == "partypet" then			
+				self.Debuffs:SetHeight(aCoreCDB["UnitframeOptions"]["height"]*2)
+				self.Debuffs:SetWidth(aCoreCDB["UnitframeOptions"]["widthparty"]-2)				
+				self.Debuffs.size = (aCoreCDB["UnitframeOptions"]["width"]+3)/aCoreCDB["UnitframeOptions"]["auraperrow"]-3
+			elseif u == "nameplate" then
+				if aCoreCDB["PlateOptions"]["theme"] == "number" then
+					Auras:SetPoint("BOTTOM", self.Health.value, "TOP", 0, -5)
+				else
+					Auras:SetPoint("BOTTOM", self, "TOP", 0, aCoreCDB["PlateOptions"]["fontsize"]+7)
+				end
+				Auras:SetHeight(aCoreCDB["PlateOptions"]["plateaurasize"])
+				Auras:SetWidth(aCoreCDB["PlateOptions"]["bar_width"])
+				Auras.size = aCoreCDB["PlateOptions"]["plateaurasize"]
+			end
+		end
+		Auras.ApplySettings()
 		self.Auras = Auras
 	end
 end
@@ -1329,24 +1359,27 @@ T.CreateClassResources = function(self, plate)
 		
 		local bars = CreateFrame("Frame", self:GetName().."SpecOrbs", self)
 		bars:SetPoint("BOTTOM", self, "TOP", 0, 3)
-		
-		if plate then
-			if aCoreCDB["PlateOptions"]["theme"] == "number" then
-				bars.width = aCoreCDB["PlateOptions"]["number_cpwidth"]*5
-				bars.height = 2
-			else
-				if aCoreCDB["PlateOptions"]["classresource_pos"] == "target" then
-					bars.width = aCoreCDB["PlateOptions"]["bar_width"]*GetCVar("nameplateSelectedScale")
+
+		bars.ApplySettings = function()
+			if plate then
+				if aCoreCDB["PlateOptions"]["theme"] == "number" then
+					bars.width = aCoreCDB["PlateOptions"]["number_cpwidth"]*5
+					bars.height = 2
 				else
-					bars.width = aCoreCDB["PlateOptions"]["bar_width"]
+					if aCoreCDB["PlateOptions"]["classresource_pos"] == "target" then
+						bars.width = aCoreCDB["PlateOptions"]["bar_width"]*GetCVar("nameplateSelectedScale")
+					else
+						bars.width = aCoreCDB["PlateOptions"]["bar_width"]
+					end
+					bars.height = aCoreCDB["PlateOptions"]["bar_height"]/4
 				end
-				bars.height = aCoreCDB["PlateOptions"]["bar_height"]/4
+			else
+				bars.width = aCoreCDB["UnitframeOptions"]["width"]
+				bars.height = aCoreCDB["UnitframeOptions"]["height"]*(1-aCoreCDB["UnitframeOptions"]["hpheight"])
 			end
-		else
-			bars.width = aCoreCDB["UnitframeOptions"]["width"]
-			bars.height = aCoreCDB["UnitframeOptions"]["height"]*-(aCoreCDB["UnitframeOptions"]["hpheight"]-1)
+			bars:SetSize(bars.width, bars.height)
 		end
-		bars:SetSize(bars.width, bars.height)
+		bars.ApplySettings()
 		
 		for i = 1, count do
 			bars[i] = T.createStatusbar(bars, "ARTWORK", bars.height, (bars.width+2)/count-3, 1, 1, 1, 1, self:GetName().."SpecOrbs"..i)
@@ -1419,24 +1452,9 @@ local func = function(self, unit)
 	self.bg:SetFrameLevel(0)
 	self.bg:SetAllPoints(self)
 	self.bg.tex = self.bg:CreateTexture(nil, "BACKGROUND")
-	self.bg.tex:SetAllPoints()
-	if aCoreCDB["UnitframeOptions"]["style"] == 1 then
-		self.bg.tex:SetTexture(G.media.blank)
-		self.bg.tex:SetVertexColor(0, 0, 0, 0)
-	else
-		self.bg.tex:SetTexture(G.media.ufbar)
-		self.bg.tex:SetVertexColor(0, 0, 0)
-	end
-
-	-- height, width and scale --
-	if multicheck(u, "targettarget", "focustarget", "pet") then
-		self:SetSize(aCoreCDB["UnitframeOptions"]["widthpet"], aCoreCDB["UnitframeOptions"]["height"])
-	elseif u == "boss" or u == "arena" then
-		self:SetSize(aCoreCDB["UnitframeOptions"]["widthboss"], aCoreCDB["UnitframeOptions"]["height"])
-	else
-		self:SetSize(aCoreCDB["UnitframeOptions"]["width"], aCoreCDB["UnitframeOptions"]["height"])
-	end
-	self:SetScale(aCoreCDB["UnitframeOptions"]["scale"])
+	self.bg.tex:SetAllPoints(self)
+	self.bg.tex:SetVertexColor(0, 0, 0)
+	self.bg.tex:SetTexture(G.media.ufbar)
 
 	-- shadow border for health bar --
 	self.backdrop = T.createBackdrop(self, self, 0) -- this also use for dispel border
@@ -1447,16 +1465,9 @@ local func = function(self, unit)
 	hp:SetAllPoints(self)
 	hp.frequentUpdates = true
 
-	if aCoreCDB["UnitframeOptions"]["style"] == 1 then
-		hp.bg:SetGradientAlpha("VERTICAL", .5, .5, .5, .5, 0, 0, 0,0)
-	else
-		hp.bg:SetGradientAlpha("VERTICAL", .2,.2,.2,.15,.25,.25,.25,.6)
-	end
-
 	-- health text --
 	if not (unit == "targettarget" or unit == "focustarget" or unit == "pet") then
 		hp.value = T.createnumber(hp, "OVERLAY", aCoreCDB["UnitframeOptions"]["valuefontsize"], "OUTLINE", "RIGHT")
-		hp.value:SetPoint("BOTTOMRIGHT", self, -4, -2)
 	end
 
 	-- little black line to make the health bar more clear
@@ -1464,16 +1475,6 @@ local func = function(self, unit)
 	hp.ind:SetTexture("Interface\\Buttons\\WHITE8x8")
 	hp.ind:SetVertexColor(0, 0, 0)
 	hp.ind:SetSize(1, self:GetHeight())
-	if aCoreCDB["UnitframeOptions"]["style"] ~= 3 then
-		hp.ind:SetPoint("RIGHT", hp:GetStatusBarTexture(), "LEFT", 0, 0)
-	else
-		hp.ind:SetPoint("LEFT", hp:GetStatusBarTexture(), "RIGHT", 0, 0)
-	end
-
-	-- reverse fill health --
-	if aCoreCDB["UnitframeOptions"]["style"] ~= 3 then
-		hp:SetReverseFill(true)
-	end
 
 	self.Health = hp
 	self.Health.PostUpdate = T.Updatehealthbar
@@ -1482,20 +1483,23 @@ local func = function(self, unit)
 	-- portrait 肖像
 	if aCoreCDB["UnitframeOptions"]["portrait"] and multicheck(u, "player", "target", "focus", "boss", "arena") then
 		local Portrait = CreateFrame('PlayerModel', nil, self)
-		if aCoreCDB["UnitframeOptions"]["style"] ~= 3 then
-			Portrait:SetFrameLevel(1) -- blow hp
-		else
-			Portrait:SetFrameLevel(2) -- above hp
-		end
 		Portrait:SetPoint("TOPLEFT", 1, 0)
 		Portrait:SetPoint("BOTTOMRIGHT", -1, 0)
 		Portrait:SetAlpha(aCoreCDB["UnitframeOptions"]["portraitalpha"])
 		self.Portrait = Portrait
+		self.Portrait.ApplySettings = function()
+			if aCoreCDB["UnitframeOptions"]["style"] ~= 3 then
+				self.Portrait:SetFrameLevel(1) -- blow hp
+			else
+				self.Portrait:SetFrameLevel(2) -- above hp
+			end
+		end
+		self.Portrait.ApplySettings()
 	end
 
 	-- power bar --
 	if not (unit == "targettarget" or unit == "focustarget") then
-		local pp = T.createStatusbar(self, "ARTWORK", aCoreCDB["UnitframeOptions"]["height"]*-(aCoreCDB["UnitframeOptions"]["hpheight"]-1), nil, 1, 1, 1, 1)
+		local pp = T.createStatusbar(self, "ARTWORK", nil, nil, 1, 1, 1, 1)
 		pp:SetFrameLevel(2)
 		pp:SetPoint"LEFT"
 		pp:SetPoint"RIGHT"
@@ -1510,11 +1514,28 @@ local func = function(self, unit)
 		-- power text --
 		if not multicheck(u, "pet", "boss", "arena") then
 			pp.value = T.createnumber(pp, "OVERLAY", aCoreCDB["UnitframeOptions"]["valuefontsize"], "OUTLINE", "LEFT")
-			pp.value:SetPoint("BOTTOMLEFT", self, 4, -2)
+		end
+
+		pp.ApplySettings = function()			
+			if aCoreCDB["UnitframeOptions"]["style"] == 1 then
+				pp:SetStatusBarTexture(G.media.blank)
+			else
+				pp:SetStatusBarTexture(G.media.ufbar)
+			end
+			pp:SetHeight(aCoreCDB["UnitframeOptions"]["height"]*(1-aCoreCDB["UnitframeOptions"]["hpheight"]))
+			if pp.value then
+				pp.value:ClearAllPoints()
+				if aCoreCDB["UnitframeOptions"]["height"] >= aCoreCDB["UnitframeOptions"]["valuefontsize"] then
+					pp.value:SetPoint("BOTTOMLEFT", self, 4, -2)
+				else
+					pp.value:SetPoint("TOPLEFT", self, "BOTTOMLEFT", 4, -2-(aCoreCDB["UnitframeOptions"]["height"]*(1-aCoreCDB["UnitframeOptions"]["hpheight"])))
+				end
+			end
 		end
 
 		self.Power = pp
 		self.Power.PostUpdate = T.Updatepowerbar
+		self.Power.ApplySettings()
 		tinsert(self.mouseovers, self.Power)
 	end
 
@@ -1567,15 +1588,9 @@ local func = function(self, unit)
 	if unit == "player" or unit == "pet" then
 		name:Hide()
 	elseif multicheck(u, "targettarget", "focustarget", "boss", "arena") then
-		if aCoreCDB["UnitframeOptions"]["style"] == 1 or aCoreCDB["UnitframeOptions"]["style"] == 2 then
-			self:Tag(name, "[Altz:color][Altz:shortname]")
-		else
-			self:Tag(name, "[Altz:shortname]")
-		end
-	elseif aCoreCDB["UnitframeOptions"]["style"] == 1 or aCoreCDB["UnitframeOptions"]["style"] == 2 then
-		self:Tag(name, "[difficulty][level][shortclassification]|r [Altz:color][name] [status]")
+		self:Tag(name, "[Altz:shortname]")
 	else
-		self:Tag(name, "[difficulty][level][shortclassification]|r [name] [status]")
+		self:Tag(name, "[Altz:longname]")
 	end
 
 	if aCoreCDB["UnitframeOptions"]["castbars"] then
@@ -1599,6 +1614,53 @@ local func = function(self, unit)
 	self.FadeHealth = true
 	self.FadePower = true
 	self.FadeHover = true
+	
+	self.Health.ApplySettings = function()
+		if aCoreCDB["UnitframeOptions"]["style"] == 1 then
+			self.bg.tex:SetAlpha(0)
+			hp:SetStatusBarTexture(G.media.blank)
+			hp.bg:SetTexture(G.media.blank)
+			hp.bg:SetGradientAlpha("VERTICAL", .5, .5, .5, .5, 0, 0, 0,0)
+			hp.ind:ClearAllPoints()
+			hp.ind:SetPoint("RIGHT", hp:GetStatusBarTexture(), "LEFT", 0, 0)
+			hp:SetReverseFill(true)
+		elseif aCoreCDB["UnitframeOptions"]["style"] == 2 then
+			self.bg.tex:SetAlpha(1)
+			hp:SetStatusBarTexture(G.media.ufbar)
+			hp.bg:SetTexture(G.media.ufbar)
+			hp.bg:SetGradientAlpha("VERTICAL", .2,.2,.2,.15,.25,.25,.25,.6)
+			hp.ind:ClearAllPoints()
+			hp.ind:SetPoint("RIGHT", hp:GetStatusBarTexture(), "LEFT", 0, 0)
+			hp:SetReverseFill(true)
+		else
+			self.bg.tex:SetAlpha(1)
+			hp:SetStatusBarTexture(G.media.ufbar)
+			hp.bg:SetTexture(G.media.ufbar)
+			hp.bg:SetGradientAlpha("VERTICAL", .2,.2,.2,.15,.25,.25,.25,.6)
+			hp.ind:ClearAllPoints()
+			hp.ind:SetPoint("LEFT", hp:GetStatusBarTexture(), "RIGHT", 0, 0)
+			hp:SetReverseFill(false)
+		end
+		-- height, width and scale --
+		if multicheck(u, "targettarget", "focustarget", "pet") then
+			self:SetSize(aCoreCDB["UnitframeOptions"]["widthpet"], aCoreCDB["UnitframeOptions"]["height"])
+		elseif u == "boss" or u == "arena" then
+			self:SetSize(aCoreCDB["UnitframeOptions"]["widthboss"], aCoreCDB["UnitframeOptions"]["height"])
+		else
+			self:SetSize(aCoreCDB["UnitframeOptions"]["width"], aCoreCDB["UnitframeOptions"]["height"])
+		end
+		self:SetScale(aCoreCDB["UnitframeOptions"]["scale"])
+		if self.Health.value then
+			self.Health.value:ClearAllPoints()
+			if aCoreCDB["UnitframeOptions"]["height"] >= aCoreCDB["UnitframeOptions"]["valuefontsize"] then
+				self.Health.value:SetPoint("BOTTOMRIGHT", self, -4, -2)
+			else
+				self.Health.value:SetPoint("TOPRIGHT", self, "BOTTOMRIGHT", -4, -2-(aCoreCDB["UnitframeOptions"]["height"]*(1-aCoreCDB["UnitframeOptions"]["hpheight"])))
+			end
+		end		
+	end
+
+	self.Health.ApplySettings()
 end
 
 local UnitSpecific = {
@@ -1614,7 +1676,7 @@ local UnitSpecific = {
 
 		-- Stagger
 		if G.myClass == "MONK" and aCoreCDB["UnitframeOptions"]["stagger"] then
-			local stagger = T.createStatusbar(self, "ARTWORK", aCoreCDB["UnitframeOptions"]["height"]*-(aCoreCDB["UnitframeOptions"]["hpheight"]-1), nil, 1, 1, 1, 1)
+			local stagger = T.createStatusbar(self, "ARTWORK", nil, nil, 1, 1, 1, 1)
 			stagger:SetFrameLevel(2)
 			stagger:SetPoint"LEFT"
 			stagger:SetPoint"RIGHT"
@@ -1625,13 +1687,17 @@ local UnitSpecific = {
 
 			-- backdrop --
 			stagger.bd = T.createBackdrop(stagger, stagger, 1)
-
+			
+			stagger.ApplySettings = function()
+				stagger:SetHeight(aCoreCDB["UnitframeOptions"]["height"]*(1-aCoreCDB["UnitframeOptions"]["hpheight"]))
+			end
+			stagger.ApplySettings()
 			self.Stagger = stagger
 		end
 
 		-- Shaman mana
 		if multicheck(G.myClass, "SHAMAN", "PRIEST", "DRUID") and aCoreCDB["UnitframeOptions"]["dpsmana"] then
-			local dpsmana = T.createStatusbar(self, "ARTWORK", aCoreCDB["UnitframeOptions"]["height"]*-(aCoreCDB["UnitframeOptions"]["hpheight"]-1), nil, 1, 1, 1, 1)
+			local dpsmana = T.createStatusbar(self, "ARTWORK", nil, nil, 1, 1, 1, 1)
 			dpsmana:SetFrameLevel(2)
 			dpsmana:SetPoint"LEFT"
 			dpsmana:SetPoint"RIGHT"
@@ -1646,6 +1712,10 @@ local UnitSpecific = {
 			-- backdrop --
 			dpsmana.bd = T.createBackdrop(dpsmana, dpsmana, 1)
 
+			dpsmana.ApplySettings = function()
+				dpsmana:SetHeight(aCoreCDB["UnitframeOptions"]["height"]*(1-aCoreCDB["UnitframeOptions"]["hpheight"]))
+			end
+			dpsmana.ApplySettings()
 			self.Dpsmana = dpsmana
 		end
 
@@ -1745,7 +1815,6 @@ local UnitSpecific = {
 
 			self.prepFrame.Icon = self.prepFrame:CreateTexture(nil, "OVERLAY")
 			self.prepFrame.Icon:SetPoint("LEFT", self.prepFrame, "RIGHT", 5, 0)
-			self.prepFrame.Icon:SetSize(aCoreCDB["UnitframeOptions"]["height"], aCoreCDB["UnitframeOptions"]["height"])
 			self.prepFrame.Icon:SetTexCoord(.08, .92, .08, .92)
 			self.prepFrame.Icon.bd = T.createBackdrop(self.prepFrame, self.prepFrame.Icon, 0)
 
@@ -1754,13 +1823,11 @@ local UnitSpecific = {
 		end
 
 		local specIcon = CreateFrame("Frame", nil, self)
-		specIcon:SetSize(aCoreCDB["UnitframeOptions"]["height"], aCoreCDB["UnitframeOptions"]["height"])
 		specIcon:SetPoint("LEFT", self, "RIGHT", 5, 0)
 		specIcon.bd = T.createBackdrop(specIcon, specIcon, 0)
 		self.PVPSpecIcon = specIcon
 
 		local trinkets = CreateFrame("Frame", nil, self)
-		trinkets:SetSize(aCoreCDB["UnitframeOptions"]["height"], aCoreCDB["UnitframeOptions"]["height"])
 		trinkets:SetPoint("LEFT", specIcon, "RIGHT", 5, 0)
 		trinkets.bd = T.createBackdrop(trinkets, trinkets, 0)
 		trinkets.trinketUseAnnounce = true
@@ -1771,6 +1838,13 @@ local UnitSpecific = {
 		PvPClassificationIndicator:SetSize(24, 24)
 		PvPClassificationIndicator:SetPoint('CENTER')
 		self.PvPClassificationIndicator = PvPClassificationIndicator
+		
+		self.PVPSpecIcon.ApplySettings = function()
+			self.prepFrame.Icon:SetSize(aCoreCDB["UnitframeOptions"]["height"], aCoreCDB["UnitframeOptions"]["height"])
+			self.PVPSpecIcon:SetSize(aCoreCDB["UnitframeOptions"]["height"], aCoreCDB["UnitframeOptions"]["height"])
+			self.Trinket:SetSize(aCoreCDB["UnitframeOptions"]["height"], aCoreCDB["UnitframeOptions"]["height"])
+		end
+		self.PVPSpecIcon.ApplySettings()
 	end,
 }
 
@@ -1781,35 +1855,65 @@ local plate_func = function(self, unit)
 	T.OnMouseOver(self)
 	self.mouseovers = {}
 	
-	self:SetSize(aCoreCDB["PlateOptions"]["bar_width"], aCoreCDB["PlateOptions"]["bar_height"])
 	self:SetPoint("CENTER")
 	
 	-- 生命
 	local hp = T.createStatusbar(self, "ARTWORK")
 	hp:SetFrameLevel(self:GetFrameLevel())
-	hp:SetAllPoints()
 	hp:SetStatusBarTexture("Interface\\AddOns\\AltzUI\\media\\ufbar")
 	hp.bd = T.createBackdrop(hp, hp, 1)
 	hp.bg:SetGradientAlpha("VERTICAL", .2,.2,.2,.15,.25,.25,.25,.6)
-
-	hp.value = T.createnumber(hp, "OVERLAY", aCoreCDB["PlateOptions"]["fontsize"], "OUTLINE", "RIGHT")
-	hp.value:SetPoint("BOTTOMRIGHT", hp, "TOPRIGHT", -5, -3)
+	
+	hp.value = self:CreateFontString(nil, "OVERLAY")
 	
 	-- little black line to make the health bar more clear
 	hp.ind = hp:CreateTexture(nil, "OVERLAY", 1)
 	hp.ind:SetTexture("Interface\\Buttons\\WHITE8x8")
 	hp.ind:SetVertexColor(0, 0, 0)
 	hp.ind:SetSize(1, hp:GetHeight())
-	if aCoreCDB["PlateOptions"]["theme"] == "dark" then
-		hp.ind:SetPoint("RIGHT", hp:GetStatusBarTexture(), "LEFT", 0, 0)
-	else
-		hp.ind:SetPoint("LEFT", hp:GetStatusBarTexture(), "RIGHT", 0, 0)
+
+	hp.ApplySettings = function()
+		if aCoreCDB["PlateOptions"]["theme"] == "number" then
+			self:SetSize(aCoreCDB["PlateOptions"]["number_size"], aCoreCDB["PlateOptions"]["number_size"])
+			hp:ClearAllPoints()
+			
+			hp.value:SetFont(G.plateFont, aCoreCDB["PlateOptions"]["number_size"], "OUTLINE")
+			hp.value:ClearAllPoints()
+			hp.value:SetPoint("BOTTOM")
+			hp.value:SetJustifyH("CENTER")
+
+			hp.ind:ClearAllPoints()
+			
+			hp:SetReverseFill(false)
+		elseif aCoreCDB["PlateOptions"]["theme"] == "dark" then
+			self:SetSize(aCoreCDB["PlateOptions"]["bar_width"], aCoreCDB["PlateOptions"]["bar_height"])
+			hp:SetAllPoints(self)
+			
+			hp.value:SetFont(G.numFont, aCoreCDB["PlateOptions"]["fontsize"], "OUTLINE")			
+			hp.value:ClearAllPoints()
+			hp.value:SetPoint("BOTTOMRIGHT", hp, "TOPRIGHT", -5, -3)
+			hp.value:SetJustifyH("RIGHT")
+
+			hp.ind:ClearAllPoints()
+			hp.ind:SetPoint("RIGHT", hp:GetStatusBarTexture(), "LEFT", 0, 0)
+			
+			hp:SetReverseFill(true)
+		else
+			self:SetSize(aCoreCDB["PlateOptions"]["bar_width"], aCoreCDB["PlateOptions"]["bar_height"])
+			hp:SetAllPoints(self)
+			
+			hp.value:SetFont(G.numFont, aCoreCDB["PlateOptions"]["fontsize"], "OUTLINE")
+			hp.value:ClearAllPoints()			
+			hp.value:SetPoint("BOTTOMRIGHT", hp, "TOPRIGHT", -5, -3)
+			hp.value:SetJustifyH("RIGHT")			
+			
+			hp.ind:ClearAllPoints()
+			hp.ind:SetPoint("LEFT", hp:GetStatusBarTexture(), "RIGHT", 0, 0)
+			
+			hp:SetReverseFill(false)	
+		end
 	end
-	
-	-- reverse fill health --
-	if aCoreCDB["PlateOptions"]["theme"] == "dark" then
-		hp:SetReverseFill(true)
-	end
+	hp.ApplySettings()
 	
 	self.Health = hp
 	self.Health.plate_element = true
@@ -1820,14 +1924,32 @@ local plate_func = function(self, unit)
 	local pp = T.createStatusbar(self, "ARTWORK")
 	pp:SetFrameLevel(self:GetFrameLevel())
 	pp:SetHeight(aCoreCDB["PlateOptions"]["bar_height"]/4)
-	pp:SetPoint("TOPLEFT", hp, "BOTTOMLEFT", 0, -3)
-	pp:SetPoint("TOPRIGHT", hp, "BOTTOMRIGHT", 0, -3)
 	pp:SetStatusBarTexture("Interface\\AddOns\\AltzUI\\media\\ufbar")
 	pp.bd = T.createBackdrop(pp, pp, 1)
 	pp.bg:SetGradientAlpha("VERTICAL", .2,.2,.2,.15,.25,.25,.25,.6)
 	
-	pp.value = T.createnumber(pp, "OVERLAY", aCoreCDB["PlateOptions"]["fontsize"], "OUTLINE", "LEFT")
-	pp.value:SetPoint("BOTTOMLEFT", self, 4, -2)
+	pp.value = self:CreateFontString(nil, "OVERLAY")
+	
+	pp.ApplySettings = function()
+		if aCoreCDB["PlateOptions"]["theme"] == "number" then
+			pp:ClearAllPoints()
+			
+			pp.value:SetFont(G.plateFont, aCoreCDB["PlateOptions"]["number_size"]/2, "OUTLINE")
+			pp.value:ClearAllPoints()
+			pp.value:SetPoint("BOTTOMLEFT", hp.value, "BOTTOMRIGHT")
+			pp.value:SetJustifyH("LEFT")
+		else
+			pp:ClearAllPoints()
+			pp:SetPoint("TOPLEFT", hp, "BOTTOMLEFT", 0, -3)
+			pp:SetPoint("TOPRIGHT", hp, "BOTTOMRIGHT", 0, -3)
+			
+			pp.value:SetFont(G.numFont, aCoreCDB["PlateOptions"]["fontsize"], "OUTLINE")
+			pp.value:ClearAllPoints()			
+			pp.value:SetPoint("BOTTOMLEFT", self, 4, -2)
+			pp.value:SetJustifyH("LEFT")		
+		end
+	end
+	pp.ApplySettings()
 	
 	self.Power = pp
 	self.Power.plate_element = true
@@ -1845,99 +1967,60 @@ local plate_func = function(self, unit)
 		T.CreateClassResources(self, true)
 	end
 	
+	-- 团队标记
 	local ricon = self:CreateTexture(nil, "OVERLAY")
-	ricon:SetPoint("LEFT", self, "TOPLEFT", 5, 0)
 	ricon:SetSize(20, 20)
 	ricon:SetTexture[[Interface\AddOns\AltzUI\media\raidicons.blp]]
-	self.RaidTargetIndicator = ricon
-	self.RaidTargetIndicator.PostUpdate = RaidTargetIconPostUpdate
-	
-	local name = T.createtext(self, "OVERLAY", aCoreCDB["PlateOptions"]["fontsize"], "OUTLINE", "CENTER")
-	name:SetPoint("TOPLEFT", self, "TOPLEFT", 5, 15)
-	name:SetPoint("BOTTOMRIGHT", self, "TOPRIGHT", -5, 5)
-	self:Tag(name, "[Altz:platename]")
-	self.Name = name
-	
-	local PvPClassificationIndicator = self:CreateTexture(nil, 'OVERLAY')
-	PvPClassificationIndicator:SetSize(12, 12)
-	PvPClassificationIndicator:SetPoint("LEFT", self, "RIGHT", -8, 2)
-	self.PvPClassificationIndicator = PvPClassificationIndicator
-	
-	-- target RedArrow --
-	local RedArrow = self:CreateTexture(nil, 'OVERLAY')
-	RedArrow:SetTexture([[Interface\AddOns\AltzUI\media\NeonRedArrow]])
-    RedArrow:SetSize(50, 40)
-    RedArrow:SetPoint('BOTTOM', self, 'TOP', 0, 15)
-	RedArrow:Hide()
-	self.RedArrow = RedArrow
-	self:RegisterEvent("PLAYER_TARGET_CHANGED", TargetRedArrowupdate, true)
-	self:RegisterEvent("UNIT_AURA", TargetRedArrowupdate, true)
-	self:RegisterEvent('PLAYER_FOCUS_CHANGED', function() self.Health:ForceUpdate() end, true)
-end
-
--- 数字样式
-local plate_number_func = function(self, unit)
-	self:SetSize(aCoreCDB["PlateOptions"]["number_size"], aCoreCDB["PlateOptions"]["number_size"])
-	self:SetPoint("CENTER")
-	
-	-- 生命
-	local hp = T.createStatusbar(self, "ARTWORK")
-
-	hp.value = self:CreateFontString(nil, "OVERLAY")
-	hp.value:SetFont(G.plateFont, aCoreCDB["PlateOptions"]["number_size"], "OUTLINE")
-	hp.value:SetJustifyH("CENTER")
-	hp.value:SetPoint("BOTTOM")
-	
-	self.Health = hp
-	self.Health.plate_element = true
-	self.Health.PostUpdate = T.Updatehealthbar	
-	
-	-- 能量
-	local pp = T.createStatusbar(self, "ARTWORK")
-	
-	pp.value = self:CreateFontString(nil, "OVERLAY")
-	pp.value:SetFont(G.plateFont, aCoreCDB["PlateOptions"]["number_size"]/2, "OUTLINE")
-	pp.value:SetJustifyH("LEFT")
-	pp.value:SetPoint("BOTTOMLEFT", hp.value, "BOTTOMRIGHT")
-	
-	self.Power = pp
-	self.Power.plate_element = true
-	self.Power.PostUpdate = T.Updatepowerbar
-	
-	-- 光环
-	T.CreateAuras(self, unit)
-	
-	-- 施法条
-	CreateCastbars(self, unit)
-	
-	-- 个人资源
-	if aCoreCDB["PlateOptions"]["classresource_show"] then
-		T.CreateClassResources(self, true)
+	ricon.ApplySettings = function()	
+		if aCoreCDB["PlateOptions"]["theme"] == "number" then
+			ricon:ClearAllPoints()
+			ricon:SetPoint("RIGHT", self, "LEFT")
+		else
+			ricon:ClearAllPoints()
+			ricon:SetPoint("LEFT", self, "TOPLEFT", 5, 0)
+		end
 	end
-
-	local name = T.createtext(self, "OVERLAY", aCoreCDB["PlateOptions"]["fontsize"], "OUTLINE", "CENTER")
-	name:SetPoint("TOP", self, "BOTTOM")
-	self:Tag(name, "[Altz:platename]")
-	self.Name = name
-	
-	local ricon = hp:CreateTexture(nil, "OVERLAY")
-	ricon:SetPoint("RIGHT", name, "LEFT")
-	ricon:SetSize(20, 20)
-	ricon:SetTexture[[Interface\AddOns\AltzUI\media\raidicons.blp]]
+	ricon.ApplySettings()
 	self.RaidTargetIndicator = ricon
 	self.RaidTargetIndicator.PostUpdate = RaidTargetIconPostUpdate
-		
-	local PvPClassificationIndicator = self:CreateTexture(nil, 'OVERLAY')
-	PvPClassificationIndicator:SetSize(12, 12)
-	PvPClassificationIndicator:SetPoint("LEFT", name, "RIGHT")
-	self.PvPClassificationIndicator = PvPClassificationIndicator
+	
+	-- 名字
+	local name = T.createtext(self, "OVERLAY", aCoreCDB["PlateOptions"]["fontsize"], "OUTLINE", "CENTER")	
+	self:Tag(name, "[Altz:platename]")
+	name.ApplySettings = function()
+		if aCoreCDB["PlateOptions"]["theme"] == "number" then
+			name:ClearAllPoints()
+			name:SetPoint("TOP", self, "BOTTOM")
+		else
+			name:ClearAllPoints()
+			name:SetPoint("TOPLEFT", self, "TOPLEFT", 5, aCoreCDB["PlateOptions"]["fontsize"])
+			name:SetPoint("BOTTOMRIGHT", self, "TOPRIGHT", -5, 5)
+		end
+	end
+	name.ApplySettings()
+	self.Name = name
+	
+	-- PVP标记
+	local PvP = self:CreateTexture(nil, 'OVERLAY')
+	PvP:SetSize(12, 12)
+	PvP.ApplySettings = function()
+		if aCoreCDB["PlateOptions"]["theme"] == "number" then
+			PvP:ClearAllPoints()
+			PvP:SetPoint("LEFT", name, "RIGHT")
+		else
+			PvP:ClearAllPoints()
+			PvP:SetPoint("LEFT", self, "RIGHT", -8, 2)
+		end
+	end
+	PvP.ApplySettings()
+	self.PvPClassificationIndicator = PvP
 	
 	-- target RedArrow --
 	local RedArrow = self:CreateTexture(nil, 'OVERLAY')
 	RedArrow:SetTexture([[Interface\AddOns\AltzUI\media\NeonRedArrow]])
     RedArrow:SetSize(50, 40)
     RedArrow:SetPoint('BOTTOM', self, 'TOP', 0, 15)
-	RedArrow:Hide()
+	RedArrow:Hide()	
 	self.RedArrow = RedArrow
 	self:RegisterEvent("PLAYER_TARGET_CHANGED", TargetRedArrowupdate, true)
 	self:RegisterEvent("UNIT_AURA", TargetRedArrowupdate, true)
@@ -1978,6 +2061,7 @@ local function PlacePlateClassSource()
 		end
 	end
 end
+T.PlacePlateClassSource = PlacePlateClassSource
 
 function PostUpdatePlates(self, event, unit)
 	if not self then return end
@@ -1990,35 +2074,39 @@ function PostUpdatePlates(self, event, unit)
 				self:DisableElement('Castbar')
 				self:DisableElement('Aura')
 				
-				if aCoreCDB["PlateOptions"]["theme"] == "number" then
-					self.Power.value:Hide()
-					self.Health.value:Hide()
-				else
-					self.Power:Hide()
-					self.Health:Hide()
-				end
+				self.Power.value:Hide()
+				self.Health.value:Hide()
+				self.Power:Hide()
+				self.Health:Hide()
+				
 				self.Castbar:Hide()
 				self.Auras:Hide()
 			else  --  显示玩家姓名板
-				self:EnableElement('Health')		
-				self:EnableElement('Power')			
-				self.Health:ForceUpdate()
-				self.Power:ForceUpdate()
-				
-				if aCoreCDB["PlateOptions"]["theme"] == "number" then
-					self.Power.value:Show()
-					self.Health.value:Show()
+				self:EnableElement('Health')
+				self:EnableElement('Power')
+				self.Power.value:Show()
+				self.Health.value:Show()				
+	
+				if aCoreCDB["PlateOptions"]["theme"] == "number" then -- 数字样式
+					self.Power:Hide()
+					self.Health:Hide()
 				else
 					self.Power:Show()
 					self.Health:Show()
 				end
-				
+				self.Health:ForceUpdate()
+				self.Power:ForceUpdate()
+					
 				if aCoreCDB["PlateOptions"]["platecastbar"] then -- 显示玩家姓名板施法条
 					self:EnableElement('Castbar')
-					if aCoreCDB["PlateOptions"]["theme"] ~= "number" then
+					if aCoreCDB["PlateOptions"]["theme"] == "number" then
+						self.Castbar.bd:Show()
+						self.Castbar:ClearAllPoints()
+						self.Castbar:SetPoint("TOPLEFT", self, "BOTTOMLEFT", 0, -3)					
+					else
 						self.Castbar.bd:Hide()
 						self.Castbar:ClearAllPoints()
-						self.Castbar:SetAllPoints(self)	
+						self.Castbar:SetAllPoints(self)
 					end
 					self.Castbar.Text:ClearAllPoints()
 					self.Castbar.Spark:Show()
@@ -2038,6 +2126,9 @@ function PostUpdatePlates(self, event, unit)
 		else -- 其他姓名板
 			if aCoreCDB["PlateOptions"]["theme"] == "number" then -- 数字样式
 				self.Health:Hide()
+				self.Health:ForceUpdate()
+				self.Power:Hide()
+				
 				if plate_c.power_unit[UnitName(unit)] then
 					self:EnableElement('Power')
 					self.Power:ForceUpdate()
@@ -2047,10 +2138,16 @@ function PostUpdatePlates(self, event, unit)
 					self.Power.value:Hide()
 				end
 				
-				self:EnableElement('Aura')
-				self.Auras:Show()
 				self:EnableElement('Castbar')
+				self.Castbar.bd:Show()
+				self.Castbar:ClearAllPoints()
+				self.Castbar:SetPoint("TOP", self, "BOTTOM", 0, -aCoreCDB["PlateOptions"]["fontsize"]-3)
+				self.Castbar.Text:ClearAllPoints()
+				self.Castbar.Text:SetPoint("TOP", self.Castbar, "BOTTOM", 0, -3)	
+				self.Castbar.Spark:Show()
 				
+				self:EnableElement('Aura')
+				self.Auras:Show()				
 			elseif aCoreCDB["PlateOptions"]["bar_onlyname"] and UnitIsPlayer(unit) and UnitReaction(unit, 'player') >= 5 then  -- 友方只显示名字		
 				self.Health:ForceUpdate() -- 给名字染色
 				self:DisableElement('Health')				
@@ -2072,13 +2169,15 @@ function PostUpdatePlates(self, event, unit)
 					self:EnableElement('Power')
 					self.Power:ForceUpdate()
 					self.Power:Show()
+					self.Power.value:Show()
 				else
 					self:DisableElement('Power')
 					self.Power:Hide()
+					self.Power.value:Hide()
 				end
 				
 				self:EnableElement('Castbar')
-				self.Castbar.bd:Show()				
+				self.Castbar.bd:Show()
 				self.Castbar:ClearAllPoints()
 				if plate_c.power_unit[UnitName(unit)] then
 					self.Castbar:SetPoint("TOPLEFT", self, "BOTTOMLEFT", 0, -7)
@@ -2121,6 +2220,7 @@ function PostUpdatePlates(self, event, unit)
 		end
 	end
 end
+T.PostUpdatePlates = PostUpdatePlates
 
 local PlacePlateTargetElementEventFrame = CreateFrame("Frame", nil, UIParent)
 PlacePlateTargetElementEventFrame:SetScript("OnEvent", PlacePlateClassSource)
@@ -2163,7 +2263,7 @@ function EventFrame:ADDON_LOADED(arg1)
 		local playerframe = spawnHelper(self, "player")
 		playerframe.movingname = L["玩家头像"]
 		playerframe.point = {
-			healer = {a1 = "TOPRIGHT", parent = "UIParent", a2 = "BOTTOM", x = -230, y = 350},
+			healer = {a1 = "TOPRIGHT", parent = "UIParent", a2 = "BOTTOM", x = -250, y = 350},
 			dpser = {a1 = "TOP", parent = "UIParent", a2 = "BOTTOM", x = 0, y = 280},
 		}
 		T.CreateDragFrame(playerframe)
@@ -2179,7 +2279,7 @@ function EventFrame:ADDON_LOADED(arg1)
 		local targetframe = spawnHelper(self, "target")
 		targetframe.movingname = L["目标头像"]
 		targetframe.point = {
-			healer = {a1 = "TOPLEFT", parent = "UIParent", a2 = "BOTTOM", x = 230, y = 350},
+			healer = {a1 = "TOPLEFT", parent = "UIParent", a2 = "BOTTOM", x = 250, y = 350},
 			dpser = {a1 = "TOPLEFT", parent = "UIParent", a2 = "BOTTOM", x = 150, y = 350},
 		}
 		T.CreateDragFrame(targetframe)
@@ -2255,13 +2355,9 @@ function EventFrame:ADDON_LOADED(arg1)
 		end
 		
 		if aCoreCDB["PlateOptions"]["enableplate"] then
-			if aCoreCDB["PlateOptions"]["theme"] == "number" then
-				oUF:RegisterStyle("Altz_Nameplates", plate_number_func)
-			else
-				oUF:RegisterStyle("Altz_Nameplates", plate_func)
-			end
-				oUF:SetActiveStyle("Altz_Nameplates")
-				oUF:SpawnNamePlates("Altz_Nameplates", PostUpdatePlates)			
+			oUF:RegisterStyle("Altz_Nameplates", plate_func)
+			oUF:SetActiveStyle("Altz_Nameplates")
+			oUF:SpawnNamePlates("Altz_Nameplates", PostUpdatePlates)			
 		end
 	end)
 	

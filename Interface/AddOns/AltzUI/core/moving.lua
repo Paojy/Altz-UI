@@ -5,16 +5,29 @@ local CurrentFrame = "NONE"
 local anchors = {"CENTER", "LEFT", "RIGHT", "TOP", "BOTTOM", "TOPLEFT", "TOPRIGHT", "BOTTOMLEFT", "BOTTOMRIGHT"}
 local role, selected
 
-local function PlaceCurrentFrame(df)
-	local f = _G[CurrentFrame]
-	local points = aCoreCDB["FramePoints"][CurrentFrame][role]
+local function PlaceCurrentFrame(df, frame)
+	local f 
+	local points 
+	if frame then
+		f = _G[frame]
+		points = aCoreCDB["FramePoints"][frame][role]
+	else
+		f = _G[CurrentFrame]
+		points = aCoreCDB["FramePoints"][CurrentFrame][role]
+	end
 	f:ClearAllPoints()
 	f:SetPoint(points.a1, _G[points.parent], points.a2, points.x, points.y)
+	
+	if frame == "Altz_HealerRaid_Holder" then
+		T.PlaceRaidFrame()
+	end
+	
 	if df then
 		f.df:ClearAllPoints() -- 拖动框重新连接到锚点
 		f.df:SetPoint(points.a1, _G[points.parent], points.a2, points.x, points.y)
 	end
 end
+T.PlaceCurrentFrame = PlaceCurrentFrame
 
 local function Reskinbox(box, name, value, anchor, x, y)
 	box:SetPoint("LEFT", anchor, "RIGHT", x, y)
@@ -140,7 +153,7 @@ UIDropDownMenu_Initialize(Point1dropDown, function(self, level, menuList)
 		end
 		info.func = function(self)
 			aCoreCDB["FramePoints"][CurrentFrame][role]["a1"] = anchors[i]
-			PlaceCurrentFrame()
+			PlaceCurrentFrame(true)
 			if CurrentFrame == "Altz_HealerRaid_Holder" then
 				T.PlaceRaidFrame()
 			end
@@ -179,7 +192,7 @@ UIDropDownMenu_Initialize(Point2dropDown, function(self, level, menuList)
 		end
 		info.func = function(self)
 			aCoreCDB["FramePoints"][CurrentFrame][role]["a2"] = anchors[i]
-			PlaceCurrentFrame()
+			PlaceCurrentFrame(true)
 			UIDropDownMenu_SetSelectedName(Point2dropDown, anchors[i], true)
 			UIDropDownMenu_SetText(Point2dropDown, anchors[i])
 		end
@@ -356,7 +369,7 @@ end
 local function OnSpecChanged(event)
 	role = T.CheckRole()
 	SpecMover.curmode:SetText(L["当前模式"].." "..L[role])
-
+	
 	for i = 1, #G.dragFrameList do
 		local name = G.dragFrameList[i]:GetName()
 		local points = aCoreCDB["FramePoints"][name][role]
@@ -367,6 +380,7 @@ local function OnSpecChanged(event)
 		G.dragFrameList[i]:SetPoint(points.a1, _G[points.parent], points.a2, points.x, points.y)
 	end
 end
+T.OnSpecChanged = OnSpecChanged
 
 SpecMover:SetScript("OnEvent", function(self, event, arg1)
 	if event == "PLAYER_SPECIALIZATION_CHANGED" and arg1 == "player" then

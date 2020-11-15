@@ -256,7 +256,7 @@ T.createStatusbar = function(parent, layer, height, width, r, g, b, alpha, name)
 	else
 		bar.bg:SetTexture(G.media.ufbar)
 	end
-	bar.bg:SetAllPoints(true)
+	bar.bg:SetAllPoints(bar)
 
 	bar:GetStatusBarTexture():SetHorizTile(false)
 	bar:GetStatusBarTexture():SetVertTile(false)

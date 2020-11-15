@@ -20,29 +20,87 @@ oUF.Tags.Events['Altz:color'] = 'UNIT_FACTION' -- for tapping
 
 oUF.Tags.Methods['Altz:shortname'] = function(u, r)
 	local name = UnitName(r or u)
-	return T.utf8sub(name, 8)
+	local color = _TAGS['Altz:color'](u)
+	if aCoreCDB["UnitframeOptions"]["style"] ~= 3 then
+		return color..T.utf8sub(name, 8)
+	else
+		return T.utf8sub(name, 8)
+	end
 end
 oUF.Tags.Events["Altz:shortname"] = "UNIT_NAME_UPDATE"
 
+oUF.Tags.Methods['Altz:longname'] = function(u, r)
+	local difficulty = ""
+	if UnitCanAttack('player', u) then
+		local l = UnitEffectiveLevel(u)
+		difficulty = T.hex(GetCreatureDifficultyColor((l > 0) and l or 999))
+	end
+	
+	local level = UnitLevel(u)
+	if UnitIsWildBattlePet(u) or UnitIsBattlePetCompanion(u) then
+		level = UnitBattlePetLevel(u)
+	end
+	if level <= 0 then
+		level = '??'
+	end
+
+	local shortclassification = ""
+	local c = UnitClassification(u)
+	if(c == 'rare') then
+		shortclassification = 'R'
+	elseif(c == 'rareelite') then
+		shortclassification = 'R+'
+	elseif(c == 'elite') then
+		shortclassification = '+'
+	elseif(c == 'worldboss') then
+		shortclassification = 'B'
+	elseif(c == 'minus') then
+		shortclassification = '-'
+	end
+	
+	
+	local color = _TAGS['Altz:color'](u)
+	local name = UnitName(r or u)
+	local status = _TAGS['status'](u) or ""
+	
+	if aCoreCDB["UnitframeOptions"]["style"] ~= 3 then
+		return difficulty..level..shortclassification.."|r "..color..name.." "..status
+	else
+		return difficulty..level..shortclassification.."|r "..name.." "..status
+	end
+end
+oUF.Tags.Events["Altz:longname"] = "UNIT_NAME_UPDATE"
+
 oUF.Tags.Methods["Altz:raidname"] = function(u, r)
 	local name = UnitName(r or u)
-	return T.utf8sub(name, aCoreCDB["UnitframeOptions"]["namelength"])
+	local color = _TAGS['Altz:color'](u)
+	if aCoreCDB["UnitframeOptions"]["style"] ~= 3 then
+		return color..T.utf8sub(name, aCoreCDB["UnitframeOptions"]["namelength"])
+	else
+		return T.utf8sub(name, aCoreCDB["UnitframeOptions"]["namelength"])
+	end
 end
 oUF.Tags.Events["Altz:raidname"] = "UNIT_NAME_UPDATE"
 
 oUF.Tags.Methods["Altz:hpraidname"] = function(u, r)
-	local perc
+	local perc, result
 	local name = UnitName(r or u)
+	local color = _TAGS['Altz:color'](u)
 	if UnitHealthMax(u) ~= 0 then
 		perc = UnitHealth(u)/UnitHealthMax(u)
 	else
 		perc = 1
 	end
 	if perc > .9 or UnitIsDead(u) then
-		return T.utf8sub(name, aCoreCDB["UnitframeOptions"]["namelength"])
+		result = T.utf8sub(name, aCoreCDB["UnitframeOptions"]["namelength"])
 	else
-		return T.ShortValue(UnitHealthMax(u) - UnitHealth(u))
+		result = T.ShortValue(UnitHealthMax(u) - UnitHealth(u))
 	end
+	if aCoreCDB["UnitframeOptions"]["style"] ~= 3 then
+		return color..result
+	else
+		return result
+	end	
 end
 oUF.Tags.Events["Altz:hpraidname"] = "UNIT_HEALTH UNIT_NAME_UPDATE"
 
