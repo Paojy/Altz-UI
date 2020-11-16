@@ -2,7 +2,7 @@ local T, C, L, G = unpack(select(2, ...))
 if G.Client ~= "ptBR" then return end -- AltzUIConfig - Portuguese Language
 
 --
-L["小泡泡"] = "Paopao <Sliver Hand>"
+L["小泡泡"] = "Paopao"
 L["欢迎使用"] = "Bem-vindo às configurações do AltzUI"
 L["简介"] = "AltzUI é uma compilação minimalista com suporte à configuração em jogo. Eu queria fazer uma UI que desse as pessoas o sentimento de esconder quase todos os elementos da interface, como pressionar 'Alt-Z', e foi dai que veio o nome da compilação. O primeiro 'release' foi em 11 de Novembro de 2011. O tema de AltzUI é simplicidade. Isso mostra apenas os elementos necessários quando você desejar vê-los. O uso de memória e CPU é bem baixo, com apenas 2 ~ 3mb é capaz de completar todas as funcionabilidade que você precisa. Por favor leia todas as dicas no tutorial a seguir, ele o introduz rápidamente. Se você tem alguma dúvida ou quer reportar algum erro, porfavor comente-o nos comentarios da página do addon em wowinterface.com. Porfavor recomende essa UI aos que não a conhecem. Obrigado!"
 L["已完成"] = "Tutorial：%s/%s Concluído."
@@ -416,4 +416,4 @@ L["指令"] = " %s/rl|r - Recarregar UI \n \n %s/hb|r - Modo vinculação de tec
 
 -- 制作
 L["制作"] = "Creditos"
-L["制作说明"] = "AltzUI ver. %s \n \n \n \n Paopao <Sliver Hand> zhCN  \n \n \n \n %s Obrigado a \n \n %s \n e todos que me ajudaram com essa compilação.|r"
+L["制作说明"] = "AltzUI ver. %s \n \n \n \n Paopao zhCN  \n \n \n \n %s Obrigado a \n \n %s \n e todos que me ajudaram com essa compilação.|r"

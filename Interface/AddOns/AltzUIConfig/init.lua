@@ -60,3 +60,7 @@ for i = 1, GetNumClasses() do
 	local color = G.Ccolors[classTag]
 	G.ClassInfo[classTag] =  ('|cff%02x%02x%02x'..classDisplayName.."|r"):format(color.r * 255, color.g * 255, color.b * 255)
 end
+
+G.Discord = "discord.gg/bt2jQ7kPBd"
+G.Nga = "bbs.nga.cn/read.php?tid=4729675&_ff=200"
+G.WoWInterface = "www.wowinterface.com/downloads/info21263-AltzUIforShadowlands.html"

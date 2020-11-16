@@ -76,6 +76,14 @@ Model = {
 		position = {-2, 0, 0},
 		camdistancescale = 0.7,
 	},
+	{
+		height = 400,
+		width = 400,
+		points = {"RIGHT", TutorialsFrame, "CENTER"},
+		displayinfo = 42522,
+		position = {-2, 0, 0},
+		camdistancescale = 0.7,
+	},
 }
 
 local function CreateTutorialsStepFrame(title, text)
@@ -109,7 +117,7 @@ local function CreateTutorialsStepFrame(title, text)
 		frame.title:SetPoint("TOP", frame, "TOP", 80, -5)
 
 		frame.text = T.createtext(frame, "OVERLAY", 15, "NONE", "LEFT")
-		frame.text:SetPoint("TOPLEFT", frame, "TOP", -150, -45)
+		frame.text:SetPoint("TOPLEFT", frame, "TOP", -150, -40)
 		frame.text:SetSize(480, 150)
 		frame.text:SetJustifyV("TOP")
 		
@@ -148,9 +156,20 @@ end
 
 local function CreateOptions(parent, type, text, table, value, group, order)
 	if type == "check" then
-		T.createcheckbutton(parent, 200, 30+parent.index*40, text, table, value)
+		T.createcheckbutton(parent, 200, 30+parent.index*30, text, table, value)
 	elseif type == "group" then
-		T.createboxgroup(parent, 450, 200, 30+parent.index*40, text, table, value, group, order)
+		T.createboxgroup(parent, 450, 200, 30+parent.index*30, text, table, value, group, order)
+	elseif type == "editbox" then
+		T.createeditbox(parent, 200, 30+parent.index*30, text, table, value)
+		parent[value]:SetText(G[text])
+		parent[value]:SetWidth(400)
+		parent[value]:SetScript("OnEditFocusGained", function(self)
+			self:HighlightText()
+		end)
+		parent[value]:SetScript("OnEditFocusLost", function(self)
+			self:HighlightText(0,0)
+		end)
+		parent[value].name:SetTextColor(G.Ccolor.r, G.Ccolor.g, G.Ccolor.b)
 	end
 	parent.index = parent.index + 1
 end
@@ -511,6 +530,17 @@ TutorialsFrame[4]["layout"][1]:SetScript("OnClick", function() ApplySizeAndPosti
 TutorialsFrame[4]["layout"][2]:SetScript("OnClick", function() ApplySizeAndPostions(Simplicity_Layout) end)
 TutorialsFrame[4]["layout"][3]:SetScript("OnClick", function() ApplySizeAndPostions(Centralized_Layout) end)
 
+CreateOptions(TutorialsFrame[4], "group", false, nil, "unlock", {"unlock"})
+TutorialsFrame[4]["unlock"][1]:SetScript("OnClick", function(self)
+	Altz_G.SpecMover:SetScript("OnHide", function()
+		TutorialsFrame:Show()
+		Altz_G.SpecMover:SetScript("OnHide", nil)
+	end)
+	TutorialsFrame:Hide()
+	Altz_T.UnlockAll()
+end)
+TutorialsFrame[4]["unlock"][1]:SetScript("OnShow", function(self) self:SetText(Altz_L["解锁框体"]) end)
+
 local toggle_spec = {
 	dpser = {
 		["MONK"] = 2,
@@ -631,10 +661,17 @@ end)
 CreateTutorialsStepFrame(L["命令"], format(L["指令"], G.classcolor, G.classcolor, G.classcolor, G.classcolor, G.classcolor, G.classcolor))
 
 --====================================================--
+--[[               -- 联系方式 --                   ]]--
+--====================================================--
+CreateTutorialsStepFrame(L["寻求帮助"], L["粘贴"])
+
+CreateOptions(TutorialsFrame[8], "editbox", "Discord", nil, "Discord")
+CreateOptions(TutorialsFrame[8], "editbox", "Nga", nil, "Nga")
+CreateOptions(TutorialsFrame[8], "editbox", "WoWInterface", nil, "WoWInterface")
+--====================================================--
 --[[               -- 更新日志 --                   ]]--
 --====================================================--
 CreateTutorialsStepFrame(G.Version.." "..L["更新日志"], L["更新日志tip"])
-
 
 --====================================================--
 --[[                 -- INIT --                     ]]--
@@ -682,6 +719,7 @@ eventframe:SetScript("OnEvent", function(self, event, arg1)
 		end
 		T.SetChatFrame()
 		TutorialsFrame:ShowFrame(1, true)
+		aCoreDB.ver = G.Version
 		aCoreCDB.meet = true
 	elseif aCoreDB.ver ~= G.Version then
 		TutorialsFrame:ShowFrame(8)

@@ -84,6 +84,7 @@ SpecMover:SetSize(540, 140)
 SpecMover:SetFrameStrata("HIGH")
 SpecMover:SetFrameLevel(30)
 SpecMover:Hide()
+G.SpecMover = SpecMover
 
 SpecMover:RegisterForDrag("LeftButton")
 SpecMover:SetScript("OnDragStart", function(self) self:StartMoving() end)
@@ -346,6 +347,7 @@ local function UnlockAll()
 		print(G.classcolor..L["进入战斗锁定"].."|r")
 	end
 end
+T.UnlockAll = UnlockAll
 
 local function LockAll()
 	-- reset
