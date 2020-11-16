@@ -1885,7 +1885,8 @@ local Character_default_Settings = {
 		setBW = true,
 		showtopbar = true,
 		showbottombar = true,
-		decorativestyle = "light1",
+		showtopconerbar = true,
+		showbottomconerbar = true,
 		formattype = "k", -- w, w_chinese, none
 		
 		guiscale = .8,

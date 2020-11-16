@@ -394,24 +394,17 @@ local textformattype_order = {
 T.createradiobuttongroup(SInnerframe.theme, 30, 120, L["数字缩写样式"], "SkinOptions", "formattype", textformattype_group, nil, textformattype_order)
 
 T.createcheckbutton(SInnerframe.theme, 30, 150, L["上方"].." "..L["边缘装饰"], "SkinOptions", "showtopbar")
+T.createcheckbutton(SInnerframe.theme, 200, 150, L["上方"].." "..L["两侧装饰"], "SkinOptions", "showtopconerbar")
 T.createcheckbutton(SInnerframe.theme, 30, 180, L["下方"].." "..L["边缘装饰"], "SkinOptions", "showbottombar")
-local decorativestyle_group = {
-	["dark1"] = L["深色一"],
-	["dark2"] = L["深色二"],
-	["dark3"] = L["深色三"],
-	["light1"] = L["浅色一"],
-	["light2"] = L["浅色二"],
-	["light3"] = L["浅色三"],
-}
-T.createradiobuttongroup(SInnerframe.theme, 30, 210, L["样式"], "SkinOptions", "decorativestyle", decorativestyle_group, 4)
+T.createcheckbutton(SInnerframe.theme, 200, 180, L["下方"].." "..L["两侧装饰"], "SkinOptions", "showbottomconerbar")
 
 SInnerframe.theme.title = SInnerframe.theme:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
-SInnerframe.theme.title:SetPoint("TOPLEFT", 35, -273)
+SInnerframe.theme.title:SetPoint("TOPLEFT", 35, -213)
 SInnerframe.theme.title:SetText(L["插件皮肤"])
 
 SInnerframe.theme.DividingLine = SInnerframe.theme:CreateTexture(nil, "ARTWORK")
 SInnerframe.theme.DividingLine:SetSize(SInnerframe.theme:GetWidth()-50, 1)
-SInnerframe.theme.DividingLine:SetPoint("TOP", 0, -300)
+SInnerframe.theme.DividingLine:SetPoint("TOP", 0, -240)
 SInnerframe.theme.DividingLine:SetColorTexture(1, 1, 1, .2)
 
 local function CreateApplySettingButton(addon)
@@ -447,16 +440,16 @@ local function CreateApplySettingButton(addon)
 	return Button
 end
 
-T.createcheckbutton(SInnerframe.theme, 30, 310, "ClassColor", "SkinOptions", "setClassColor")
+T.createcheckbutton(SInnerframe.theme, 30, 250, "ClassColor", "SkinOptions", "setClassColor")
 local SetClassColorButton = CreateApplySettingButton("setClassColor")
 
-T.createcheckbutton(SInnerframe.theme, 30, 340, "DBM", "SkinOptions", "setDBM")
+T.createcheckbutton(SInnerframe.theme, 30, 280, "DBM", "SkinOptions", "setDBM")
 local SetDBMButton = CreateApplySettingButton("setDBM")
 
-T.createcheckbutton(SInnerframe.theme, 30, 370, "BigWigs", "SkinOptions", "setBW")
+T.createcheckbutton(SInnerframe.theme, 30, 310, "BigWigs", "SkinOptions", "setBW")
 local SetBWButton = CreateApplySettingButton("setBW")
 
-T.createcheckbutton(SInnerframe.theme, 30, 400, "Skada", "SkinOptions", "setSkada")
+T.createcheckbutton(SInnerframe.theme, 30, 340, "Skada", "SkinOptions", "setSkada")
 local SetSkadaButton = CreateApplySettingButton("setSkada")
 
 -- 布局

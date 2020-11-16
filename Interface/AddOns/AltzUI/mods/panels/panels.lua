@@ -22,14 +22,9 @@ end
 
 local function Skinbg(bar)
 	if aCoreCDB["UnitframeOptions"]["style"] == 1 then
-		bar:SetBackdropColor(0, 0, 0, 0)
-		bar:SetBackdropBorderColor(0, 0, 0, 0)
-		bar.tex:SetTexture(nil)	
+		bar.sd:SetBackdropColor(0, 0, 0, 0)
 	else
-		bar:SetBackdropColor(0, 0, 0, 1)
-		bar:SetBackdropBorderColor(0, 0, 0, 1)
-		bar.tex:SetTexture(G.media.blank)
-		bar.tex:SetGradientAlpha("VERTICAL", .2,.2,.2,.15,.25,.25,.25,.6)
+		bar.sd:SetBackdropColor(0, 0, 0, 1)
 	end
 end
 --====================================================--
@@ -51,50 +46,62 @@ toppanel:SetPoint("TOP", 0, 3)
 toppanel:SetPoint("LEFT", UIParent, "LEFT", -8, 0)
 toppanel:SetPoint("RIGHT", UIParent, "RIGHT", 8, 0)
 toppanel:SetHeight(15)
+
 toppanel.tex = toppanel:CreateTexture(nil, "ARTWORK")
 toppanel.tex:SetAllPoints()
-F.CreateBD(toppanel, 1)
-T.CreateSD(toppanel, 2, 0, 0, 0, 0, -1)
+toppanel.tex:SetTexture(G.media.blank)
+toppanel.tex:SetGradientAlpha("VERTICAL", .2,.2,.2,.15,.25,.25,.25,.6)
 
-if string.find(aCoreCDB["SkinOptions"]["decorativestyle"], "dark") then
-	toppanel.border = F.CreateBDFrame(toppanel, 1)
-else
-	toppanel.border = F.CreateBDFrame(toppanel, .2)
-end
+toppanel.sd = T.createBackdrop(toppanel, toppanel, 1)
 
-if string.find(aCoreCDB["SkinOptions"]["decorativestyle"], "1") then
-	T.CreateSD(toppanel.border, 2, G.Ccolor.r, G.Ccolor.g, G.Ccolor.b, 0, -1)
-elseif string.find(aCoreCDB["SkinOptions"]["decorativestyle"], "3") then
-	local TLPanel = CreateFrame("Frame", G.uiname.."TLPanel", UIParent)
-	TLPanel:SetFrameStrata("BACKGROUND")
-	TLPanel:SetFrameLevel(2)
-	TLPanel:SetSize(G.screenwidth*2/9, 5)
-	TLPanel:SetPoint("TOPLEFT", UIParent, "TOPLEFT", 15, -10)
-	T.CreateSD(TLPanel, 2, 0, 0, 0, 0, -1)
-	TLPanel.tex = TLPanel:CreateTexture(nil, "ARTWORK")
-	TLPanel.tex:SetAllPoints()
-	TLPanel.apply = function(self) Skinbar(self) end
-	TLPanel.apply()
-	G.TLPanel = TLPanel
-	
-	local TRPanel = CreateFrame("Frame", G.uiname.."TRPanel", UIParent)
-	TRPanel:SetFrameStrata("BACKGROUND")
-	TRPanel:SetFrameLevel(2)
-	TRPanel:SetSize(G.screenwidth*2/9, 5)
-	TRPanel:SetPoint("TOPRIGHT", UIParent, "TOPRIGHT", -15, -10)
-	T.CreateSD(TRPanel, 2, 0, 0, 0, 0, -1)
-	TRPanel.tex = TRPanel:CreateTexture(nil, "ARTWORK")
-	TRPanel.tex:SetAllPoints()
-	TRPanel.apply = function(self) Skinbar(self) end
-	TRPanel.apply()
-	G.TRPanel = TRPanel
+local TLPanel = CreateFrame("Frame", G.uiname.."TLPanel", UIParent)
+TLPanel:SetFrameStrata("BACKGROUND")
+TLPanel:SetFrameLevel(2)
+TLPanel:SetSize(G.screenwidth*2/9, 5)
+TLPanel:SetPoint("TOPLEFT", UIParent, "TOPLEFT", 15, -10)
+T.CreateSD(TLPanel, 2, 0, 0, 0, 0, -1)
+TLPanel.tex = TLPanel:CreateTexture(nil, "ARTWORK")
+TLPanel.tex:SetAllPoints()
+TLPanel.Apply = function()
+	if aCoreCDB["SkinOptions"]["showtopconerbar"] then
+		TLPanel:Show()
+	else
+		TLPanel:Hide()
+	end
+	Skinbar(TLPanel) 
 end
+TLPanel.Apply()
+G.TLPanel = TLPanel
+
+local TRPanel = CreateFrame("Frame", G.uiname.."TRPanel", UIParent)
+TRPanel:SetFrameStrata("BACKGROUND")
+TRPanel:SetFrameLevel(2)
+TRPanel:SetSize(G.screenwidth*2/9, 5)
+TRPanel:SetPoint("TOPRIGHT", UIParent, "TOPRIGHT", -15, -10)
+T.CreateSD(TRPanel, 2, 0, 0, 0, 0, -1)
+TRPanel.tex = TRPanel:CreateTexture(nil, "ARTWORK")
+TRPanel.tex:SetAllPoints()
+TRPanel.Apply = function()
+	if aCoreCDB["SkinOptions"]["showtopconerbar"] then
+		TRPanel:Show()
+	else
+		TRPanel:Hide()
+	end
+	Skinbar(TRPanel)
+end
+TRPanel.Apply()
+G.TRPanel = TRPanel
 
 toppanel.Apply = function()
 	if aCoreCDB["SkinOptions"]["showtopbar"] then
 		toppanel:Show()
 	else
 		toppanel:Hide()
+	end
+	if aCoreCDB["SkinOptions"]["showtopconerbar"] then
+		toppanel.sd:SetBackdropBorderColor(0, 0, 0)
+	else
+		toppanel.sd:SetBackdropBorderColor(G.Ccolor.r, G.Ccolor.g, G.Ccolor.b)
 	end
 	Skinbg(toppanel)
 end
@@ -107,50 +114,62 @@ bottompanel:SetPoint("BOTTOM", 0, -3)
 bottompanel:SetPoint("LEFT", UIParent, "LEFT", -8, 0)
 bottompanel:SetPoint("RIGHT", UIParent, "RIGHT", 8, 0)
 bottompanel:SetHeight(15)
+
 bottompanel.tex = bottompanel:CreateTexture(nil, "ARTWORK")
 bottompanel.tex:SetAllPoints()
-F.CreateBD(bottompanel, 1)
-T.CreateSD(bottompanel, 2, 0, 0, 0, 0, -1)
+bottompanel.tex:SetTexture(G.media.blank)
+bottompanel.tex:SetGradientAlpha("VERTICAL", .2,.2,.2,.15,.25,.25,.25,.6)
 
-if string.find(aCoreCDB["SkinOptions"]["decorativestyle"], "dark") then
-	bottompanel.border = F.CreateBDFrame(bottompanel, 1)
-else
-	bottompanel.border = F.CreateBDFrame(bottompanel, .2)
+bottompanel.sd = T.createBackdrop(bottompanel, bottompanel, 1)
+
+local BLPanel = CreateFrame("Frame", G.uiname.."BLPanel", UIParent)
+BLPanel:SetFrameStrata("BACKGROUND")
+BLPanel:SetFrameLevel(2)
+BLPanel:SetSize(G.screenwidth*2/9, 5)
+BLPanel:SetPoint("BOTTOMLEFT", UIParent, "BOTTOMLEFT", 15, 10)
+T.CreateSD(BLPanel, 2, 0, 0, 0, 0, -1)
+BLPanel.tex = BLPanel:CreateTexture(nil, "ARTWORK")
+BLPanel.tex:SetAllPoints()
+BLPanel.Apply = function()
+	if aCoreCDB["SkinOptions"]["showbottomconerbar"] then
+		BLPanel:Show()
+	else
+		BLPanel:Hide()
+	end
+	Skinbar(BLPanel)
 end
+BLPanel.Apply()
+G.BLPanel = BLPanel
 
-if string.find(aCoreCDB["SkinOptions"]["decorativestyle"], "1") then
-	T.CreateSD(bottompanel.border, 2, G.Ccolor.r, G.Ccolor.g, G.Ccolor.b, 0, -1)
-elseif string.find(aCoreCDB["SkinOptions"]["decorativestyle"], "3") then
-	local BLPanel = CreateFrame("Frame", G.uiname.."BLPanel", UIParent)
-	BLPanel:SetFrameStrata("BACKGROUND")
-	BLPanel:SetFrameLevel(2)
-	BLPanel:SetSize(G.screenwidth*2/9, 5)
-	BLPanel:SetPoint("BOTTOMLEFT", UIParent, "BOTTOMLEFT", 15, 10)
-	T.CreateSD(BLPanel, 2, 0, 0, 0, 0, -1)
-	BLPanel.tex = BLPanel:CreateTexture(nil, "ARTWORK")
-	BLPanel.tex:SetAllPoints()
-	BLPanel.apply = function(self) Skinbar(self) end
-	BLPanel.apply()
-	G.BLPanel = BLPanel
-
-	local BRPanel = CreateFrame("Frame", G.uiname.."BRPanel", UIParent)
-	BRPanel:SetFrameStrata("BACKGROUND")
-	BRPanel:SetFrameLevel(2)
-	BRPanel:SetSize(G.screenwidth*2/9, 5)
-	BRPanel:SetPoint("BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", -15, 10)
-	T.CreateSD(BRPanel, 2, 0, 0, 0, 0, -1)
-	BRPanel.tex = BRPanel:CreateTexture(nil, "ARTWORK")
-	BRPanel.tex:SetAllPoints()
-	BRPanel.apply = function(self) Skinbar(self) end
-	BRPanel.apply()
-	G.BRPanel = BRPanel
+local BRPanel = CreateFrame("Frame", G.uiname.."BRPanel", UIParent)
+BRPanel:SetFrameStrata("BACKGROUND")
+BRPanel:SetFrameLevel(2)
+BRPanel:SetSize(G.screenwidth*2/9, 5)
+BRPanel:SetPoint("BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", -15, 10)
+T.CreateSD(BRPanel, 2, 0, 0, 0, 0, -1)
+BRPanel.tex = BRPanel:CreateTexture(nil, "ARTWORK")
+BRPanel.tex:SetAllPoints()
+BRPanel.Apply = function()
+	if aCoreCDB["SkinOptions"]["showbottomconerbar"] then
+		BRPanel:Show()
+	else
+		BRPanel:Hide()
+	end
+	Skinbar(BRPanel)
 end
+BRPanel.Apply()
+G.BRPanel = BRPanel
 
 bottompanel.Apply = function()
 	if aCoreCDB["SkinOptions"]["showbottombar"] then
 		bottompanel:Show()
 	else
 		bottompanel:Hide()
+	end
+	if aCoreCDB["SkinOptions"]["showbottomconerbar"] then
+		bottompanel.sd:SetBackdropBorderColor(0, 0, 0)
+	else
+		bottompanel.sd:SetBackdropBorderColor(G.Ccolor.r, G.Ccolor.g, G.Ccolor.b)
 	end
 	Skinbg(bottompanel)
 end
@@ -1366,20 +1385,22 @@ local MicromenuBar = CreateFrame("Frame", G.uiname.."MicromenuBar", UIParent, "B
 MicromenuBar:SetScale(aCoreCDB["SkinOptions"]["micromenuscale"])
 MicromenuBar:SetFrameLevel(4)
 MicromenuBar:SetSize(388, 24)
+
+MicromenuBar.tex = MicromenuBar:CreateTexture(nil, "ARTWORK")
+MicromenuBar.tex:SetAllPoints()
+MicromenuBar.tex:SetTexture(G.media.blank)
+MicromenuBar.tex:SetGradientAlpha("VERTICAL", .2,.2,.2,.15,.25,.25,.25,.6)
+
+MicromenuBar.sd = T.createBackdrop(MicromenuBar, MicromenuBar, 1)
+
 MicromenuBar.movingname = L["微型菜单"]
 MicromenuBar.point = {
 		healer = {a1 = "TOP", parent = "UIParent", a2 = "TOP", x = 0, y = -5},
 		dpser = {a1 = "TOP", parent = "UIParent", a2 = "TOP", x = 0, y = -5},
 	}
 T.CreateDragFrame(MicromenuBar)
-MicromenuBar.tex = MicromenuBar:CreateTexture(nil, "ARTWORK")
-MicromenuBar.tex:SetAllPoints()
-MicromenuBar.Apply = function()
-	Skinbg(MicromenuBar)
-end
-MicromenuBar.Apply()
-G.MicromenuBar = MicromenuBar
 
+G.MicromenuBar = MicromenuBar
 
 local MicromenuButtons = {}
 
@@ -1523,7 +1544,7 @@ local function UpdateFade(frame, children, dbvalue)
 		frame:SetAlpha(0)
 		frame:SetScript("OnEnter", function(self) 
 			GameTooltip:SetOwner(frame, "ANCHOR_BOTTOM")
-			GameTooltip:AddLine(L["关闭自动隐藏"])
+			GameTooltip:AddLine(L["关闭自动隐藏"].." "..(aCoreCDB["OtherOptions"]["micromenubg"] and L["隐藏背景"] or L["显示背景"]))
 			GameTooltip:Show()
 			T.UIFrameFadeIn(self, .5, self:GetAlpha(), 1)
 		end)
@@ -1544,7 +1565,7 @@ local function UpdateFade(frame, children, dbvalue)
 	else
 		frame:SetScript("OnEnter", function(self) 
 			GameTooltip:SetOwner(frame, "ANCHOR_BOTTOM")
-			GameTooltip:AddLine(L["打开自动隐藏"])
+			GameTooltip:AddLine(L["打开自动隐藏"].." "..(aCoreCDB["OtherOptions"]["micromenubg"] and L["隐藏背景"] or L["显示背景"]))
 			GameTooltip:Show()
 		end)
 		frame:SetScript("OnLeave", function(self)
@@ -1559,25 +1580,43 @@ local function UpdateFade(frame, children, dbvalue)
 		T.UIFrameFadeIn(frame, .5, frame:GetAlpha(), 1)
 	end
 end
-	
-local function FadeBar(frame, buttons, dbvalue)
-	frame:SetScript("OnMouseDown", function(self)
-		if aCoreCDB["OtherOptions"][dbvalue] then
-			aCoreCDB["OtherOptions"][dbvalue] = false
-		else
-			aCoreCDB["OtherOptions"][dbvalue] = true
-		end
-		UpdateFade(self, buttons, dbvalue)
-	end)
 
-	frame:SetScript("OnEvent", function(self) 
-		UpdateFade(self, buttons, dbvalue) 
-	end)
-	
-	frame:RegisterEvent("PLAYER_LOGIN")
+local function UpdateBg(frame, dbvalue)
+	if aCoreCDB["OtherOptions"][dbvalue] then
+		frame.tex:SetTexture(G.media.blank)
+		frame.sd:SetBackdropColor(0, 0, 0, 1)
+		frame.sd:SetBackdropBorderColor(0, 0, 0, 1)
+	else
+		frame.tex:SetTexture(nil)
+		frame.sd:SetBackdropColor(0, 0, 0, 0)
+		frame.sd:SetBackdropBorderColor(0, 0, 0, 0)
+	end
 end
 
-FadeBar(MicromenuBar, MicromenuButtons, "fademicromenu")
+MicromenuBar:SetScript("OnMouseDown", function(self, bu)
+	if bu == "LeftButton" then
+		if aCoreCDB["OtherOptions"]["fademicromenu"] then
+			aCoreCDB["OtherOptions"]["fademicromenu"] = false
+		else
+			aCoreCDB["OtherOptions"]["fademicromenu"] = true
+		end
+		UpdateFade(self, MicromenuButtons, "fademicromenu")
+	elseif bu == "RightButton" then
+		if aCoreCDB["OtherOptions"]["micromenubg"] then
+			aCoreCDB["OtherOptions"]["micromenubg"] = false
+		else
+			aCoreCDB["OtherOptions"]["micromenubg"] = true
+		end
+		UpdateBg(self, "micromenubg")
+	end
+end)
+
+MicromenuBar:SetScript("OnEvent", function(self) 
+	UpdateFade(self, MicromenuButtons, "fademicromenu")
+	UpdateBg(self, "micromenubg")
+end)
+	
+MicromenuBar:RegisterEvent("PLAYER_LOGIN")
 --====================================================--
 --[[          --  Order Hall Command Bar --         ]]--
 --====================================================--

@@ -402,12 +402,6 @@ L["插件皮肤"] = "'Skins' p/ AddOns"
 L["更改设置"] = "Restaurar 'Skin' do AddOn"
 L["更改设置提示"] = "Restaura configurações padrões para esse AddOn"
 --L["边缘装饰"] = "Decorative Bar"
---L["深色一"] = "Dark 1"
---L["深色二"] = "Dark 2"
---L["深色三"] = "Dark 3"
---L["浅色一"] = "Light 1"
---L["浅色二"] = "Light 2"
---L["浅色三"] = "Light 3"
 --L["战斗字体"] = "Combat Text"
 
 -- 命令

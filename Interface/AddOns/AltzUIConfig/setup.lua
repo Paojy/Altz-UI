@@ -179,8 +179,20 @@ end
 --====================================================--
 
 CreateTutorialsStepFrame(L["欢迎使用"], "ver"..G.Version.." "..L["小泡泡"])
-CreateTutorialsStepFrame(L["欢迎使用"], L["简介"])
 
+CreateTutorialsStepFrame(L["欢迎使用"], L["简介"])
+local skip = CreateFrame("Button", G.uiname.."TutorialsSkip", TutorialsFrame[2], "UIPanelButtonTemplate")
+skip:SetPoint("BOTTOM", TutorialsFrame[2], "BOTTOM", 0, 5)
+skip:SetSize(120, 25)
+skip:SetText(L["跳过"])
+T.resize_font(skip.Text)
+F.Reskin(skip)
+skip:SetScript("OnClick", function()
+	TutorialsFrame[2]:Hide()
+	TutorialsFrame:Hide()
+	StaticPopup_Show(G.uiname.."Run Setup")
+end)
+		
 --====================================================--
 --[[               -- 界面风格 --                   ]]--
 --====================================================--
@@ -259,6 +271,26 @@ Default_Layout = {
 		value = true,
 		apply = function()
 			Altz_G.bottompanel.Apply()
+		end
+		},
+		{
+		db_t = "SkinOptions", 
+		db_v = "showtopconerbar",
+		value = true,
+		apply = function()
+			Altz_G.toppanel.Apply()
+			Altz_G.TLPanel.Apply()
+			Altz_G.TRPanel.Apply()
+		end
+		},
+		{
+		db_t = "SkinOptions", 
+		db_v = "showbottomconerbar",
+		value = true,
+		apply = function()
+			Altz_G.bottompanel.Apply()
+			Altz_G.BLPanel.Apply()
+			Altz_G.BRPanel.Apply()
 		end
 		},
 		{
@@ -365,6 +397,26 @@ Simplicity_Layout = {
 		end
 		},
 		{
+		db_t = "SkinOptions", 
+		db_v = "showtopconerbar",
+		value = false,
+		apply = function()
+			Altz_G.toppanel.Apply()
+			Altz_G.TLPanel.Apply()
+			Altz_G.TRPanel.Apply()
+		end
+		},
+		{
+		db_t = "SkinOptions", 
+		db_v = "showbottomconerbar",
+		value = false,
+		apply = function()
+			Altz_G.bottompanel.Apply()
+			Altz_G.BLPanel.Apply()
+			Altz_G.BRPanel.Apply()
+		end
+		},
+		{
 		db_t = "UnitframeOptions", 
 		db_v = "width",
 		value = 180,
@@ -457,6 +509,26 @@ Centralized_Layout = {
 		value = true,
 		apply = function() 
 			Altz_G.bottompanel.Apply()
+		end
+		},
+		{
+		db_t = "SkinOptions", 
+		db_v = "showtopconerbar",
+		value = false,
+		apply = function()
+			Altz_G.toppanel.Apply()
+			Altz_G.TLPanel.Apply()
+			Altz_G.TRPanel.Apply()
+		end
+		},
+		{
+		db_t = "SkinOptions", 
+		db_v = "showbottomconerbar",
+		value = false,
+		apply = function()
+			Altz_G.bottompanel.Apply()
+			Altz_G.BLPanel.Apply()
+			Altz_G.BRPanel.Apply()
 		end
 		},
 		{

@@ -65,3 +65,11 @@ StaticPopupDialogs[G.uiname.."Cannot Import"] = {
 	whileDead = true,
 	preferredIndex = 3,
 }
+
+StaticPopupDialogs[G.uiname.."Run Setup"] = {
+	text = L["打开设置向导"],
+	button1 = ACCEPT,
+	hideOnEscape = 1, 
+	whileDead = true,
+	preferredIndex = 3,
+}
