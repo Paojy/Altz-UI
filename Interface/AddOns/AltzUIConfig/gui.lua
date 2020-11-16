@@ -175,15 +175,80 @@ logo:SetPosition(-2,0,0)
 logo:SetRotation(-0.3)
 logo.rotation = -0.3
 
-IntroOptions.text = T.createtext(IntroOptions, "OVERLAY", 12, "NONE", "LEFT")
-IntroOptions.text:SetPoint("BOTTOMLEFT", 17, 10)
-IntroOptions.text:SetTextColor(.5, .5, .5)
-IntroOptions.text:SetText(L["小泡泡"].."\nbbs.ngacn.cc/read.php?tid=4729675\nwww.wowinterface.com/downloads/info21263-AltzUIforMoP")
-
 IntroOptions.line = IntroOptions:CreateTexture(nil, "ARTWORK")
 IntroOptions.line:SetSize(IntroOptions:GetWidth()-30, 1)
-IntroOptions.line:SetPoint("BOTTOM", 0, 50)
+IntroOptions.line:SetPoint("BOTTOM", 0, 45)
 IntroOptions.line:SetColorTexture(1, 1, 1, .2)
+
+IntroOptions.editbox = CreateFrame("EditBox", G.uiname.."LinkButtonEditBox", IntroOptions)
+IntroOptions.editbox:SetPoint("TOPLEFT", IntroOptions.line, "BOTTOMLEFT", 2, -2)
+IntroOptions.editbox:SetSize(400, 25)
+
+IntroOptions.editbox.bd = CreateFrame("Frame", nil, IntroOptions.editbox, "BackdropTemplate")
+IntroOptions.editbox.bd:SetPoint("TOPLEFT", -2, 0)
+IntroOptions.editbox.bd:SetPoint("BOTTOMRIGHT")
+IntroOptions.editbox.bd:SetFrameLevel(IntroOptions.editbox:GetFrameLevel()-1)
+F.CreateBD(IntroOptions.editbox.bd, 0)
+	
+IntroOptions.editbox.gradient = F.CreateGradient(IntroOptions.editbox)
+IntroOptions.editbox.gradient:SetPoint("TOPLEFT", IntroOptions.editbox.bd, 0, 0)
+IntroOptions.editbox.gradient:SetPoint("BOTTOMRIGHT", IntroOptions.editbox.bd, 0, 0)
+
+IntroOptions.editbox.t = T.createtext(IntroOptions.editbox, "OVERLAY", 12, "OUTLINE", "LEFT")
+IntroOptions.editbox.t:SetPoint("LEFT", IntroOptions.editbox, "RIGHT", 10, 1)
+IntroOptions.editbox.t:SetText(L["粘贴"])
+T.resize_font(IntroOptions.editbox.t)
+
+IntroOptions.editbox:SetFont(GameFontHighlight:GetFont(), 12, "OUTLINE")
+IntroOptions.editbox:SetAutoFocus(false)
+IntroOptions.editbox:SetTextInsets(3, 0, 0, 0)
+IntroOptions.editbox:Hide()
+
+IntroOptions.editbox:SetScript("OnEditFocusGained", function(self)
+	self:HighlightText()
+end)
+
+IntroOptions.editbox:SetScript("OnEditFocusLost", function(self)
+	self:HighlightText(0,0)
+end)
+		
+local function CreateLinkButton(text, ...)
+	local bu = CreateFrame("Button", G.uiname..text.."LinkButton", IntroOptions)
+	bu:SetPoint(...)
+	
+	bu.tex = bu:CreateTexture(nil, "OVERLAY")
+	bu.tex:SetPoint("LEFT", bu, "LEFT")
+	bu.tex:SetSize(20, 20)
+	bu.tex:SetTexture("Interface\\AddOns\\AltzUI\\media\\icons\\Guild")
+	bu.tex:SetVertexColor(.6, .6, .6)
+	bu.tex:SetBlendMode("ADD")
+	
+	bu.text = T.createtext(bu, "OVERLAY", 12, "OUTLINE", "LEFT")
+	bu.text:SetPoint("LEFT", bu.tex, "RIGHT", 0, 0)
+	bu.text:SetText(text)
+	bu.text:SetTextColor(.6, .6, .6)
+	
+	bu:SetHeight(20)
+	bu:SetWidth(20+bu.text:GetWidth())
+	
+	bu:SetScript("OnClick", function()
+		if IntroOptions.editbox.type ~= text then
+			if not IntroOptions.editbox:IsShown() then
+				IntroOptions.editbox:Show()
+			end
+			IntroOptions.editbox:SetText(G[text])
+			IntroOptions.editbox.type = text
+		else
+			IntroOptions.editbox:Hide()
+			IntroOptions.editbox.type = ""
+		end
+	end)
+	return bu
+end
+
+local discord = CreateLinkButton("Discord", "BOTTOMLEFT", IntroOptions.line, "TOPLEFT", 0, 0)
+local nga = CreateLinkButton("Nga", "LEFT", discord, "RIGHT", 5, 0)
+local wowi = CreateLinkButton("WoWInterface", "LEFT", nga, "RIGHT", 5, 0)
 
 local function RotateModel(self, button)
     local rotationIncrement = 0.2
@@ -3000,7 +3065,7 @@ local Credits = CreateOptionPage("Credits", L["制作"], GUI, "VERTICAL")
 
 Credits.text = T.createtext(Credits, "OVERLAY", 12, "OUTLINE", "CENTER")
 Credits.text:SetPoint("CENTER")
-Credits.text:SetText(format(L["制作说明"], G.Version, G.classcolor, "fgprodigal susnow Zork Haste Tukz Haleth Qulight Freebaser Monolit warbaby"))
+Credits.text:SetText(format(L["制作说明"], G.Version, G.classcolor, "fgprodigal susnow Zork Haste Tukz Haleth Qulight Freebaser Monolit warbaby siweia"))
 
 --====================================================--
 --[[                -- Init --                      ]]--
