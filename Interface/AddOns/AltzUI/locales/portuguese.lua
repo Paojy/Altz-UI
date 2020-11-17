@@ -167,8 +167,10 @@ L["TIPS"] = {
 
 L["出现了！"] = " visto!"
 
---L["打开自动隐藏"] = "Click - auto-hide on"
---L["关闭自动隐藏"] = "Click - auto-hide off"
+--L["打开自动隐藏"] = "LeftButton Click - auto-hide on"
+--L["关闭自动隐藏"] = "LeftButton Click - auto-hide off"
+--L["显示背景"] = "RightButton Click - backdrop on"
+--L["隐藏背景"] = "RightButton Click - backdrop off"
 
 L["空"] = "Vazio"
 --L["自定义能量"] = "Custom Nameplate Power List"

@@ -1,35 +1,25 @@
 local T, C, L, G = unpack(select(2, ...))
 if G.Client ~= "ptBR" then return end -- AltzUIConfig - Portuguese Language
 
---
+-- 安装
 L["小泡泡"] = "Paopao"
 L["欢迎使用"] = "Bem-vindo às configurações do AltzUI"
-L["简介"] = "AltzUI é uma compilação minimalista com suporte à configuração em jogo. Eu queria fazer uma UI que desse as pessoas o sentimento de esconder quase todos os elementos da interface, como pressionar 'Alt-Z', e foi dai que veio o nome da compilação. O primeiro 'release' foi em 11 de Novembro de 2011. O tema de AltzUI é simplicidade. Isso mostra apenas os elementos necessários quando você desejar vê-los. O uso de memória e CPU é bem baixo, com apenas 2 ~ 3mb é capaz de completar todas as funcionabilidade que você precisa. Por favor leia todas as dicas no tutorial a seguir, ele o introduz rápidamente. Se você tem alguma dúvida ou quer reportar algum erro, porfavor comente-o nos comentarios da página do addon em wowinterface.com. Porfavor recomende essa UI aos que não a conhecem. Obrigado!"
-L["已完成"] = "Tutorial：%s/%s Concluído."
-L["恭喜"] = "Parabéns!"
-L["设置完成"] = "Todos os tutoriais concluídos."
-L["小地图"] = "Minimapa"
-L["小地图tips"] = "Clique direito para alternar menu de rastreamento do minimapa. Clique no botão do lado direito do minimapa para esconde-lo/mostra-lo (apenas fora de combate)."
-L["聊天框"] = "Chatframe"
-L["聊天框tips"] = "Pressione Tab para navegar através dos canais disponíveis. Clique no botão do lado esquerdo do bate-papo para esconde-lo/mostra-lo o minimapa (apenas fora de combate)."
-L["微型菜单"] = "Micro Menu"
-L["微型菜单tips"] = "Pressione ESC ou clique em AltzUI para abrir o menu do jogo. Você pode achar o botão GUI aqui."
-L["控制台"] = "GUI"
-L["控制台tips"] = "Abra GUI aqui!"
-L["信息栏"] = "Quadro de informações"
-L["信息栏tips"] = "Todos os valores no quadro de informações são clicáveis."
-L["解锁按钮"] = "Destravar Botão"
-L["解锁按钮tips"] = "Clique aqui para destravar todos os elementos móveis."
-L["布局模式"] = "Estilo"
-L["布局模式tips"] = "AltzUI tem dois estilos, um para curandeiros e outro para dps/tanque, que se alternam de acordo com sua 'Spec'. "
-L["锁定按钮"] = "Travar Botão"
-L["锁定按钮tips"] = "Clique aqui para travar todos os elementos móveis."
-L["动作条"] = "Barra de ações"
-L["动作条tips"] = "/hb para ativar o modo de vinculação de teclas."
+L["简介"] = "AltzUI é uma compilação minimalista com suporte à configuração em jogo. Eu queria fazer uma UI que desse as pessoas o sentimento de esconder quase todos os elementos da interface, como pressionar 'Alt-Z', e foi dai que veio o nome da compilação. O primeiro 'release' foi em 11 de Novembro de 2011. O tema de AltzUI é simplicidade. Isso mostra apenas os elementos necessários quando você desejar vê-los. O uso de memória e CPU é bem baixo, com apenas 2 ~ 3mb é capaz de completar todas as funcionabilidade que você precisa. Porfavor recomende essa UI aos que não a conhecem. Obrigado!"
+
+--L["上一步"] = "Previous"
+--L["下一步"] = "Next"
+--L["跳过"] = "Skip Setup Wizard"
+--L["打开设置向导"] = "/Setup Open Setup Wizard"
+--L["完成"] = "Finish"
+--L["更新日志"] = "Update Log"
+--L["更新日志tip"] = "New setup wizard.\nFix various errors."
+--L["寻求帮助"] = "Help"
+--L["粘贴"] = "Press Ctrl + c to copy the link"
 
 -- 控制台通用
 --L["界面"] = "Interface"
 L["启用"] = "Ativar"
+L["控制台"] = "GUI"
 L["图标大小"] = "Tamanho do ícone: "
 L["图标数量"] = "Numero de auras: "
 L["图标间距"] = "Espaço entre ícones: "
@@ -186,6 +176,7 @@ L["显示醉拳条"] = "Mostrar barra de atordoamento"
 
 -- 团队框架
 L["团队框架"] = "Quadros de raide"
+--L["团队框架tip"] = "Does the Raid Frames change with specialization?"
 L["通用设置"] = "Geral"
 L["显示宠物"] = "Mostrar ajudantes"
 L["名字长度"] = "Tamanho do nome: "
@@ -248,7 +239,7 @@ L["宏名字字体大小"] = "Tamanho do texto do nome do macro: "
 L["可用次数字体大小"] = "Tamanho do texto de contagem: "
 
 L["条件渐隐"] = "Esvanecimento condicional"
-L["条件渐隐提示"] = "Desvanece a barra de ação quando você não está lançando feitiço, não está em combate,\nnão tem um alvo ou está com vida/poder cheia/vazio, etc."
+--L["条件渐隐提示"] = "Enable Fading when you are not casting, not in combat,\ndon't have a target and got max health or max/min power, etc."
 L["悬停渐隐"] = "Desativar esvanecimento quando mouse passar sobre"
 L["悬停渐隐提示"] = "Desativar esvanecimento da barra de ações quando o mouse passar sobre."
 L["渐隐透明度"] = "Opacidade do esvanecimento: "
@@ -291,6 +282,7 @@ L["堆叠数字大小"] = "Tamanho da fonte de contagem: "
 L["分离Buff和Debuff"] = "Separar 'Buffs' de 'Debuffs'"
 
 -- 姓名板
+--L["姓名板tip"] = "How do you want to display the nameplates?"
 L["数字样式"] = "Estilo númerico"
 --L["职业色-条形"] = "Class Color Bar"
 --L["深色-条形"] = "Dark Color Bar"
@@ -348,6 +340,7 @@ L["隐藏浮动战斗信息输出"] = "Esconder texto de combate da BLIZZARD (Te
 
 -- 其他
 L["界面风格"] = "Esquema de cor"
+--L["界面风格tip"] = "How do you want to display the UnitFrames?"
 L["透明样式"] = "Tema transparente"
 L["深色样式"] = "Tema escuro"
 L["普通样式"] = "Tema clássico"
@@ -398,16 +391,21 @@ L["快速焦点"] = "Usar SHIFT + Clique para focar alvo."
 
 -- 插件皮肤
 --L["界面布局"] = "Layout"
+--L["界面布局tip"] = "How do you want to layout the Interface?"
+--L["默认布局"] = "Default Layout"
+--L["极简布局"] = "Minimal Layout"
+--L["聚合布局"] = "Centralized layout"
 L["插件皮肤"] = "'Skins' p/ AddOns"
 L["更改设置"] = "Restaurar 'Skin' do AddOn"
 L["更改设置提示"] = "Restaura configurações padrões para esse AddOn"
---L["边缘装饰"] = "Decorative Bar"
+--L["边缘装饰"] = "Strip Decoration"
+--L["两侧装饰"] = "Decoration on both sides"
 --L["战斗字体"] = "Combat Text"
 
 -- 命令
 L["命令"] = "Comandos"
-L["指令"] = " %s/rl|r - Recarregar UI \n \n %s/hb|r - Modo vinculação de teclas \n \n %sALT+Click|r - Triturar/Prospectar/Desencantar/Destravar automáticamente \n \n %sTab|r - Alterne entre canais de bate-papo. \n \n %s/Tutorials|r - Tutoriais \n \n %sDivirta-se!|r"
+--L["指令"] = " %s/rl|r - Reload UI \n \n %s/hb|r - Key Binding Mode \n \n %sALT+Click|r - Mill/Prospect/Disenchant/Unlock instantly \n \n %sTab|r - Change between available channels. \n \n %s/Setup|r-Run the setup wizard"
 
 -- 制作
 L["制作"] = "Creditos"
-L["制作说明"] = "AltzUI ver. %s \n \n \n \n Paopao zhCN  \n \n \n \n %s Obrigado a \n \n %s \n e todos que me ajudaram com essa compilação.|r"
+L["制作说明"] = "AltzUI ver. %s \n \n \n \n Paopao zhCN \n \n \n \n %s Obrigado a \n \n %s \n e todos que me ajudaram com essa compilação.|r"
