@@ -192,7 +192,6 @@ minimap_pullback.point = {
 	healer = {a1 = "BOTTOMRIGHT", parent = "UIParent", a2 = "BOTTOMRIGHT", x = -5, y = 48},
 	dpser = {a1 = "BOTTOMRIGHT", parent = "UIParent", a2 = "BOTTOMRIGHT", x = -5, y = 48},
 }
-minimap_pullback:SetPoint("BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", -10, 40)
 T.CreateDragFrame(minimap_pullback)
 minimap_pullback.border = F.CreateBDFrame(minimap_pullback, 0.6)
 T.CreateSD(minimap_pullback.border, 2, 0, 0, 0, 0, -1)
@@ -313,7 +312,6 @@ chatframe_pullback.point = {
 	healer = {a1 = "BOTTOMLEFT", parent = "UIParent", a2 = "BOTTOMLEFT", x = 10, y = 48},
 	dpser = {a1 = "BOTTOMLEFT", parent = "UIParent", a2 = "BOTTOMLEFT", x = 10, y = 48},
 }
-chatframe_pullback:SetPoint("BOTTOMLEFT", UIParent, "BOTTOMLEFT", 10, 40)
 T.CreateDragFrame(chatframe_pullback)
 chatframe_pullback.border = F.CreateBDFrame(chatframe_pullback, 0.6)
 T.CreateSD(chatframe_pullback.border, 2, 0, 0, 0, 0, -1)
