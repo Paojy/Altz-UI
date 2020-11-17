@@ -117,6 +117,9 @@ tinsert(C.defaultThemes, function()
 		if LibDBIconTooltip then
 			F.ReskinTooltip(LibDBIconTooltip)
 		end
+		if AceConfigDialogTooltip then
+			F.ReskinTooltip(AceConfigDialogTooltip)
+		end
 	end)
 
 	PetBattlePrimaryUnitTooltip.Delimiter:SetColorTexture(0, 0, 0)
