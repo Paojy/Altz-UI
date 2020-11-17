@@ -101,22 +101,20 @@ end
 --[[ MouseOn update ]]--
 --=============================================--
 T.OnMouseOver = function(self)
-	local OnEnter = function(self)
+	self:SetScript("OnEnter", function(self)
 		UnitFrame_OnEnter(self)
 		self.isMouseOver = true
 		for _, element in ipairs(self.mouseovers) do
 			element:ForceUpdate()
 		end
-	end
-	local OnLeave = function(self)
+	end)
+	self:SetScript("OnLeave", function(self)
 		UnitFrame_OnLeave(self)
 		self.isMouseOver = false
 		for _, element in ipairs(self.mouseovers) do
 			element:ForceUpdate()
 		end
-	end
-	self:SetScript("OnEnter", OnEnter)
-	self:SetScript("OnLeave", OnLeave)
+	end)
 end
 --=============================================--
 --[[ Some update ]]--
@@ -1858,6 +1856,7 @@ local UnitSpecific = {
 --=============================================--
 local plate_func = function(self, unit)
 	T.OnMouseOver(self)
+	self:SetMouseClickEnabled(false)
 	self.mouseovers = {}
 	
 	self:SetPoint("CENTER")
