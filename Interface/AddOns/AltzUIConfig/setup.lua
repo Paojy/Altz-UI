@@ -4,7 +4,7 @@ local F = unpack(AuroraClassic)
 
 local TutorialsFrame = CreateFrame("Frame", G.uiname.."TutorialsFrame", UIParent, "BackdropTemplate")
 TutorialsFrame:SetFrameStrata("FULLSCREEN")
-TutorialsFrame:SetSize(700, 200)
+TutorialsFrame:SetSize(700, 230)
 TutorialsFrame:SetPoint("CENTER")
 F.CreateBD(TutorialsFrame)
 
@@ -327,10 +327,90 @@ Default_Layout = {
 		},
 		{
 		db_t = "UnitframeOptions", 
+		db_v = "hideplayercastbaricon",
+		value = false,
+		apply = function() 
+			ApplyUFSettings({"Castbar"})
+		end
+		},
+		{
+		db_t = "UnitframeOptions", 
+		db_v = "independentcb",
+		value = true,
+		apply = function() 
+			ApplyUFSettings({"Castbar"})
+		end
+		},
+		{
+		db_t = "UnitframeOptions", 
+		db_v = "cbheight",
+		value = 16,
+		apply = function() 
+			ApplyUFSettings({"Castbar"})
+		end
+		},
+		{
+		db_t = "UnitframeOptions", 
+		db_v = "cbwidth",
+		value = 230,
+		apply = function() 
+			ApplyUFSettings({"Castbar"})
+		end
+		},
+		{
+		db_t = "UnitframeOptions", 
+		db_v = "target_cbheight",
+		value = 6,
+		apply = function() 
+			ApplyUFSettings({"Castbar"})
+		end
+		},
+		{
+		db_t = "UnitframeOptions", 
+		db_v = "target_cbwidth",
+		value = 230,
+		apply = function() 
+			ApplyUFSettings({"Castbar"})
+		end
+		},
+		{
+		db_t = "UnitframeOptions", 
+		db_v = "focus_cbheight",
+		value = 6,
+		apply = function() 
+			ApplyUFSettings({"Castbar"})
+		end
+		},
+		{
+		db_t = "UnitframeOptions", 
+		db_v = "focus_cbwidth",
+		value = 230,
+		apply = function() 
+			ApplyUFSettings({"Castbar"})
+		end
+		},
+		{
+		db_t = "UnitframeOptions", 
 		db_v = "raidmanabars",
 		value = true,
 		apply = function() 
 			ApplyUFSettings({"Health"})
+		end
+		},
+		{
+		db_t = "UnitframeOptions", 
+		db_v = "auraperrow",
+		value = 8,
+		apply = function() 
+			ApplyUFSettings({"Auras"})
+		end
+		},
+		{
+		db_t = "UnitframeOptions", 
+		db_v = "playerdebuffnum",
+		value = 8,
+		apply = function() 
+			ApplyUFSettings({"Auras"})
 		end
 		},
 		{
@@ -442,10 +522,90 @@ Simplicity_Layout = {
 		},
 		{
 		db_t = "UnitframeOptions", 
+		db_v = "hideplayercastbaricon",
+		value = false,
+		apply = function() 
+			ApplyUFSettings({"Castbar"})
+		end
+		},
+		{
+		db_t = "UnitframeOptions", 
+		db_v = "independentcb",
+		value = false,
+		apply = function() 
+			ApplyUFSettings({"Castbar"})
+		end
+		},
+		{
+		db_t = "UnitframeOptions", 
+		db_v = "cbheight",
+		value = 5,
+		apply = function() 
+			ApplyUFSettings({"Castbar"})
+		end
+		},
+		{
+		db_t = "UnitframeOptions", 
+		db_v = "cbwidth",
+		value = 180,
+		apply = function() 
+			ApplyUFSettings({"Castbar"})
+		end
+		},
+		{
+		db_t = "UnitframeOptions", 
+		db_v = "target_cbheight",
+		value = 5,
+		apply = function() 
+			ApplyUFSettings({"Castbar"})
+		end
+		},
+		{
+		db_t = "UnitframeOptions", 
+		db_v = "target_cbwidth",
+		value = 180,
+		apply = function() 
+			ApplyUFSettings({"Castbar"})
+		end
+		},
+		{
+		db_t = "UnitframeOptions", 
+		db_v = "focus_cbheight",
+		value = 5,
+		apply = function() 
+			ApplyUFSettings({"Castbar"})
+		end
+		},
+		{
+		db_t = "UnitframeOptions", 
+		db_v = "focus_cbwidth",
+		value = 190,
+		apply = function() 
+			ApplyUFSettings({"Castbar"})
+		end
+		},
+		{
+		db_t = "UnitframeOptions", 
 		db_v = "raidmanabars",
 		value = false,
 		apply = function() 
 			ApplyUFSettings({"Health"})
+		end
+		},
+		{
+		db_t = "UnitframeOptions", 
+		db_v = "auraperrow",
+		value = 6,
+		apply = function() 
+			ApplyUFSettings({"Auras"})
+		end
+		},
+		{
+		db_t = "UnitframeOptions", 
+		db_v = "playerdebuffnum",
+		value = 6,
+		apply = function() 
+			ApplyUFSettings({"Auras"})
 		end
 		},
 		{
@@ -557,10 +717,90 @@ Centralized_Layout = {
 		},
 		{
 		db_t = "UnitframeOptions", 
+		db_v = "hideplayercastbaricon",
+		value = false,
+		apply = function() 
+			ApplyUFSettings({"Castbar"})
+		end
+		},
+		{
+		db_t = "UnitframeOptions", 
+		db_v = "independentcb",
+		value = true,
+		apply = function() 
+			ApplyUFSettings({"Castbar"})
+		end
+		},
+		{
+		db_t = "UnitframeOptions", 
+		db_v = "cbheight",
+		value = 16,
+		apply = function() 
+			ApplyUFSettings({"Castbar"})
+		end
+		},
+		{
+		db_t = "UnitframeOptions", 
+		db_v = "cbwidth",
+		value = 230,
+		apply = function() 
+			ApplyUFSettings({"Castbar"})
+		end
+		},
+		{
+		db_t = "UnitframeOptions", 
+		db_v = "target_cbheight",
+		value = 6,
+		apply = function() 
+			ApplyUFSettings({"Castbar"})
+		end
+		},
+		{
+		db_t = "UnitframeOptions", 
+		db_v = "target_cbwidth",
+		value = 230,
+		apply = function() 
+			ApplyUFSettings({"Castbar"})
+		end
+		},
+		{
+		db_t = "UnitframeOptions", 
+		db_v = "focus_cbheight",
+		value = 6,
+		apply = function() 
+			ApplyUFSettings({"Castbar"})
+		end
+		},
+		{
+		db_t = "UnitframeOptions", 
+		db_v = "focus_cbwidth",
+		value = 230,
+		apply = function() 
+			ApplyUFSettings({"Castbar"})
+		end
+		},
+		{
+		db_t = "UnitframeOptions", 
 		db_v = "raidmanabars",
 		value = true,
 		apply = function() 
 			ApplyUFSettings({"Health"})
+		end
+		},
+		{
+		db_t = "UnitframeOptions", 
+		db_v = "auraperrow",
+		value = 8,
+		apply = function() 
+			ApplyUFSettings({"Auras"})
+		end
+		},
+		{
+		db_t = "UnitframeOptions", 
+		db_v = "playerdebuffnum",
+		value = 8,
+		apply = function() 
+			ApplyUFSettings({"Auras"})
 		end
 		},
 		{

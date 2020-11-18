@@ -1592,9 +1592,9 @@ local Character_default_Settings = {
 		-- auras
 		auras = true,
 		auraborders = true,
-		auraperrow = 9, -- slider
+		auraperrow = 8, -- slider
 		playerdebuffenable = true,
-		playerdebuffnum = 7, -- slider
+		playerdebuffnum = 8, -- slider
 		AuraFilterignoreBuff = false,
 		AuraFilterignoreDebuff = false,
 		AuraFilterwhitelist = {},

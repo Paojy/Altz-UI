@@ -5,9 +5,11 @@ local CurrentFrame = "NONE"
 local anchors = {"CENTER", "LEFT", "RIGHT", "TOP", "BOTTOM", "TOPLEFT", "TOPRIGHT", "BOTTOMLEFT", "BOTTOMRIGHT"}
 local role, selected
 
-local function PlaceCurrentFrame(df, frame)
+local function PlaceCurrentFrame(df, frame, unlock)
 	local f 
-	local points 
+	local points
+	if not role then role = T.CheckRole() end
+	
 	if frame then
 		f = _G[frame]
 		points = aCoreCDB["FramePoints"][frame][role]
@@ -15,6 +17,9 @@ local function PlaceCurrentFrame(df, frame)
 		f = _G[CurrentFrame]
 		points = aCoreCDB["FramePoints"][CurrentFrame][role]
 	end
+	
+	if unlock then f.moving_locked = false end
+	if f.moving_locked then return end
 	f:ClearAllPoints()
 	f:SetPoint(points.a1, _G[points.parent], points.a2, points.x, points.y)
 	
@@ -28,6 +33,13 @@ local function PlaceCurrentFrame(df, frame)
 	end
 end
 T.PlaceCurrentFrame = PlaceCurrentFrame
+
+local function ReleaseFrame(frame)
+	local f = _G[frame]
+	f.moving_locked = true
+	f:ClearAllPoints()
+end
+T.ReleaseFrame = ReleaseFrame
 
 local function Reskinbox(box, name, value, anchor, x, y)
 	box:SetPoint("LEFT", anchor, "RIGHT", x, y)
@@ -339,7 +351,9 @@ local function UnlockAll()
 			SpecMover.curframe:SetText(L["选中的框体"].." "..G.classcolor..CurrentFrame.."|r")
 		end
 		for i = 1, #G.dragFrameList do
-			G.dragFrameList[i].df:Show()
+			if not G.dragFrameList[i].moving_locked then 
+				G.dragFrameList[i].df:Show()
+			end
 		end
 		SpecMover:Show()
 	else
@@ -379,7 +393,9 @@ local function OnSpecChanged(event)
 		if event == "PLAYER_SPECIALIZATION_CHANGED" then
 			G.dragFrameList[i]:ClearAllPoints()
 		end
-		G.dragFrameList[i]:SetPoint(points.a1, _G[points.parent], points.a2, points.x, points.y)
+		if not G.dragFrameList[i].moving_locked then 
+			G.dragFrameList[i]:SetPoint(points.a1, _G[points.parent], points.a2, points.x, points.y)
+		end		
 	end
 end
 T.OnSpecChanged = OnSpecChanged
