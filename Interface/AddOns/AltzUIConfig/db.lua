@@ -1711,7 +1711,6 @@ local Character_default_Settings = {
 		itembuttons_table = Customitembuttons,
 	},
 	ActionbarOptions = {
-		show_bg = true,
 		growup = true,
 		cooldown = true,
 		cooldown_wa = true,

@@ -79,7 +79,7 @@ for i=1, num do
 end
 
 --hide the frame when in a vehicle!
-RegisterStateDriver(frame, "visibility", "[petbattle][overridebar][vehicleui][possessbar,@vehicle,exists] hide; show")
+RegisterStateDriver(frame, "visibility", "[petbattle] hide; show")
 
 --create the mouseover functionality
 if mouseover.enable then
@@ -90,3 +90,42 @@ end
 if eventfader.enable then
 	T.ActionbarEventFader(frame, buttonList, eventfader.fadeIn, eventfader.fadeOut) --frame, fadeIn, fadeOut
 end
+
+local actionPage = "[bar:6]6;[bar:5]5;[bar:4]4;[bar:3]3;[bar:2]2;[overridebar]14;[shapeshift]13;[vehicleui]12;[possessbar]12;[bonusbar:5]11;[bonusbar:4]10;[bonusbar:3]9;[bonusbar:2]8;[bonusbar:1]7;1"
+local buttonName = "ActionButton"
+for i, button in next, buttonList do
+	frame:SetFrameRef(buttonName..i, button)
+end
+
+frame:Execute(([[
+	buttons = table.new()
+	for i = 1, %d do
+		tinsert(buttons, self:GetFrameRef("%s"..i))
+	end
+]]):format(num, buttonName))
+
+frame:SetAttribute("_onstate-page", [[
+	for _, button in next, buttons do
+		button:SetAttribute("actionpage", newstate)
+	end
+]])
+RegisterStateDriver(frame, "page", actionPage)
+
+-- Fix button texture, need reviewed
+local function FixActionBarTexture()
+	for _, button in next, buttonList do
+		local icon = button.icon
+		local texture = GetActionTexture(button.action)
+		if texture then
+			icon:SetTexture(texture)
+			icon:Show()
+		else
+			icon:Hide()
+		end
+		button:UpdateUsable()
+	end
+end
+local eframe = CreateFrame("Frame")
+eframe:RegisterEvent("SPELL_UPDATE_ICON", FixActionBarTexture)
+eframe:RegisterEvent("UPDATE_VEHICLE_ACTIONBAR", FixActionBarTexture)
+eframe:RegisterEvent("UPDATE_OVERRIDE_ACTIONBAR", FixActionBarTexture)

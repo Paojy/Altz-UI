@@ -197,14 +197,6 @@ local function styleActionButton(bu)
 	--apply background
 	if not bu.bg then applyBackground(bu) end
 	
-	if aCoreCDB["ActionbarOptions"]["show_bg"] then
-		bu:SetAttribute('showgrid', 1)
-		bu:ShowGrid(2)
-	else
-		bu:SetAttribute('showgrid', 0)
-		bu:HideGrid(2)
-	end
-	
 	bu.rabs_styled = true
 end
 
