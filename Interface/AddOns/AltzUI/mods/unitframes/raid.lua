@@ -106,6 +106,9 @@ local function UpdateRaidMana(pp, unit, cur, min, max)
 	end
 	T.Updatepowerbar(pp, unit, cur, min, max)
 end
+
+local EventFrame = CreateFrame("Frame")
+
 --=============================================--
 --[[              Click Cast                 ]]--
 --=============================================--
@@ -114,7 +117,7 @@ T.RaidOnMouseOver = function(self)
     self:HookScript("OnLeave", function(self) UnitFrame_OnLeave(self) end)
 end
 
-T.RegisterClicks = function(object)
+local RegisterClicks = function(object)
 	-- EnableWheelCastOnFrame
 	local enable = false
 	for i = 6, 13 do
@@ -171,6 +174,49 @@ T.RegisterClicks = function(object)
 			end				
 		end
 		object:RegisterForClicks("AnyDown")
+	end
+end
+
+local clickcast_pendingFrames = {}
+
+local function CreateClickSets(self)
+	if not aCoreCDB["UnitframeOptions"]["enableClickCast"] then return end
+
+	if InCombatLockdown() then
+		clickcast_pendingFrames[self] = true
+	else
+		RegisterClicks(self)
+		clickcast_pendingFrames[self] = nil
+	end
+end
+T.CreateClickSets = CreateClickSets
+
+local function DelayClickSets()
+	if not next(clickcast_pendingFrames) then return end
+
+	for frame in next, clickcast_pendingFrames do
+		CreateClickSets(frame)
+	end
+end
+
+local vehicle_pendingFrames = {}
+
+local function CreateVehicleToggle(self)
+	if not aCoreCDB["UnitframeOptions"]["toggleForVehicle"] then return end
+	
+	if InCombatLockdown() then
+		vehicle_pendingFrames[self] = true
+	else
+		self:SetAttribute("toggleForVehicle", true)
+		vehicle_pendingFrames[self] = nil
+	end
+end
+
+local function DelayVehicleSets()
+	if not next(vehicle_pendingFrames) then return end
+
+	for frame in next, vehicle_pendingFrames do
+		frame:SetAttribute("toggleForVehicle", true)
 	end
 end
 --=============================================--
@@ -354,10 +400,10 @@ local func = function(self, unit)
 	self.Range = range
 	
 	if aCoreCDB["UnitframeOptions"]["enableClickCast"] then
-		T.RegisterClicks(self)
+		T.CreateClickSets(self)
 	end
 	
-	self:SetAttribute("toggleForVehicle", aCoreCDB["UnitframeOptions"]["toggleForVehicle"])
+	CreateVehicleToggle(self)
 	
 	T.RaidOnMouseOver(self)
 	
@@ -498,10 +544,10 @@ local dfunc = function(self, unit)
 	self.Range = range
 	
 	if aCoreCDB["UnitframeOptions"]["enableClickCast"] then
-		T.RegisterClicks(self)
+		T.CreateClickSets(self)
 	end
 	
-	self:SetAttribute("toggleForVehicle", aCoreCDB["UnitframeOptions"]["toggleForVehicle"])
+	CreateVehicleToggle(self)
 	
 	T.RaidOnMouseOver(self)
 	
@@ -777,6 +823,15 @@ dpspet.point = {
 T.CreateDragFrame(dpspet)
 
 local function Spawndpsraid()
+
+	-- Hide Default RaidFrame
+	if CompactRaidFrameManager_SetSetting then
+		CompactRaidFrameManager_SetSetting("IsShown", "0")
+		UIParent:UnregisterEvent("GROUP_ROSTER_UPDATE")
+		CompactRaidFrameManager:UnregisterAllEvents()
+		CompactRaidFrameManager:SetParent(T.blizzHider)
+	end
+		
 	oUF:SetActiveStyle"Altz_DPSraid"
 	dpsraid[1] = oUF:SpawnHeader('Altz_DpsRaid', nil, aCoreCDB["UnitframeOptions"]["raidframe_inparty"] and 'raid,party,solo' or 'raid,solo',
 		'oUF-initialConfigFunction', initconfig:format(aCoreCDB["UnitframeOptions"]["dpsraidwidth"], aCoreCDB["UnitframeOptions"]["dpsraidheight"], 1),
@@ -1005,7 +1060,7 @@ local pfunc = function(self, unit)
 	end
 	
 	if aCoreCDB["UnitframeOptions"]["enableClickCast"] then
-		T.RegisterClicks(self)
+		T.CreateClickSets(self)
 	end
 	
 	T.RaidOnMouseOver(self)
@@ -1049,7 +1104,6 @@ party.point = {
 	dpser = {a1 = "TOPLEFT", parent = "UIParent", a2 = "TOPLEFT" , x = 240, y = -340},
 }
 T.CreateDragFrame(party)
-local EventFrame = CreateFrame("Frame")
 
 local partypet = CreateFrame("Frame", "Altz_PartyPet_Holder", UIParent)
 partypet.movingname = PARTY..PET
@@ -1106,18 +1160,13 @@ local function Spawnparty()
 	partypet[1]:SetPoint("TOPLEFT", partypet, "TOPLEFT")
 end
 
-EventFrame:RegisterEvent("ADDON_LOADED")
-EventFrame:RegisterEvent("PLAYER_LOGIN")
-
-EventFrame:SetScript("OnEvent", function(self, event, ...)
-    self[event](self, ...)
-end)
-
 function EventFrame:ADDON_LOADED(arg1)
-	if arg1 ~= "AltzUI" or not aCoreCDB["UnitframeOptions"]["enableraid"] then return end
+	if arg1 ~= "AltzUI" or not aCoreCDB["UnitframeOptions"]["enableraid"] then return end	
 	Spawnhealraid()
 	Spawndpsraid()
 	Spawnparty()
+	
+	EventFrame:RegisterEvent("PLAYER_REGEN_ENABLED")
 end
 
 function EventFrame:PLAYER_LOGIN()
@@ -1146,6 +1195,20 @@ function EventFrame:PLAYER_SPECIALIZATION_CHANGED(arg1)
 		T.PlaceRaidFrame()
 	end
 end
+
+function EventFrame:PLAYER_REGEN_ENABLED()
+	if aCoreCDB["UnitframeOptions"]["enableClickCast"] then
+		DelayClickSets()
+	end
+	DelayVehicleSets()
+end
+
+EventFrame:RegisterEvent("ADDON_LOADED")
+EventFrame:RegisterEvent("PLAYER_LOGIN")
+
+EventFrame:SetScript("OnEvent", function(self, event, ...)
+	self[event](self, ...)
+end)
 
 -- 加入团队工具中
 T.IsDpsRaidShown = function()

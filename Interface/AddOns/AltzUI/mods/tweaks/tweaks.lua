@@ -208,31 +208,24 @@ Accept Friendly Invites
 -------------------------------------------------------------------------------]]
 if acceptfriendlyinvites then
 	eventframe:RegisterEvent('PARTY_INVITE_REQUEST')
-	function eventframe:PARTY_INVITE_REQUEST(arg1)
+	function eventframe:PARTY_INVITE_REQUEST(name, isTank, isHealer, isDamage, isNativeRealm, allowMultipleRoles, inviterGUID, questSessionActive)
 		if QueueStatusMinimapButton:IsShown() then return end
         if IsInGroup() then return end
+		local real_name, realm = string.split("-", name)
 		local accept = false
-		for index = 1, C_FriendList.GetNumFriends() do
-			if C_FriendList.GetFriendInfoByIndex(index) == arg1 then
-				accept = true
-				break
-			end
-		end
-		if not accept and IsInGuild() then
-			GuildRoster()
-			for index = 1, GetNumGuildMembers() do
-				if GetGuildRosterInfo(index) == arg1 then
-					accept = true
-					break
-				end
-			end
+		if (not realm or realm == G.PlayerRealm) and C_FriendList.GetFriendInfo(real_name) then
+			accept = true
+		elseif IsInGuild() and IsGuildMember(inviterGUID) then
+			accept = true
+		elseif IsRecruitAFriendLinked(inviterGUID) then
+			accept = true
 		end
 		if not accept then
 			for i = 1, BNGetNumFriends() do
 				local account_num = C_BattleNet.GetFriendNumGameAccounts(i)
 				for j = 1, account_num do
 					local toonName = select(4, C_BattleNet.GetFriendGameAccountInfo(i, j))
-					if toonName == arg1 then
+					if toonName == name then
 						accept = true
 						break
 					end

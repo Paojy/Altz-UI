@@ -81,6 +81,8 @@ blizzHider:RegisterEvent("PLAYER_LOGIN")
 blizzHider:RegisterEvent("CURRENCY_DISPLAY_UPDATE")
 blizzHider:RegisterEvent("ADDON_LOADED")
 blizzHider:Hide()
+T.blizzHider = blizzHider
+
 blizzHider:SetScript("OnEvent", function(self, event, ...)
     self[event](self, ...)
 end)

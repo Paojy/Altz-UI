@@ -1850,7 +1850,7 @@ BOTTOMPANEL:SetScript("OnMouseDown", function(self)
 end)
 
 BOTTOMPANEL:SetScript("OnEvent",function(self, event) 
-	if event == "PLAYER_ENTERING_WORLD" and aCoreCDB["SkinOptions"]["afklogin"] then
+	if event == "PLAYER_ENTERING_WORLD" and aCoreCDB["SkinOptions"]["afklogin"] and not InCombatLockdown() then
 		if aCoreDB.meet then
 			T.fadeout()
 		end
@@ -1874,7 +1874,7 @@ BOTTOMPANEL:SetScript("OnEvent",function(self, event)
 		
 		self:UnregisterEvent("PLAYER_ENTERING_WORLD")
 	elseif event == "PLAYER_FLAGS_CHANGED" and aCoreCDB["SkinOptions"]["afkscreen"] then
-		if UnitIsAFK("player") then
+		if UnitIsAFK("player") and not InCombatLockdown() then
 			T.fadeout()
 		end
 	end
