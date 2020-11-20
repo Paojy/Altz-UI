@@ -90,7 +90,6 @@ function blizzHider:PLAYER_LOGIN()
 	MainMenuBar:SetUserPlaced(true)
 	MainMenuBar.ignoreFramePositionManager = true
 	MainMenuBar:SetAttribute("ignoreFramePositionManager", true)
-	MainMenuBar.SetPositionForStatusBars = function() end -- MainMenuBar:ClearAllPoints taint during combat
 
 	for _, frame in next, framesToHide do
 		frame:SetParent(blizzHider)
@@ -107,10 +106,6 @@ function blizzHider:PLAYER_LOGIN()
 	
 	-- Update button grid
 	hooksecurefunc("MultiActionBar_UpdateGridVisibility", toggleButtonGrid)
-	
-	-- this would taint along with the same path as the SetNoopers: ValidateActionBarTransition
-	VerticalMultiBarsContainer:SetSize(10, 10) -- dummy values so GetTop etc doesnt fail without replacing
-	SetNoopsi(VerticalMultiBarsContainer)
 	
 	-- hide some interface options we dont use
 	_G.InterfaceOptionsActionBarsPanelStackRightBars:SetScale(0.5)
