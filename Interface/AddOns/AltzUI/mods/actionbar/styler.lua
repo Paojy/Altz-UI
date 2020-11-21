@@ -90,31 +90,28 @@ end
 
 local function styleExtraActionButton2(bu)
 	if not bu or (bu and bu.rabs_styled) then return end
-	local name = bu:GetName()
-	--remove the style background theme
-	bu.parent = bu:GetParent()
-	bu.parent.Style:Hide()
-	bu.frame = bu:GetChildren()
 	
-	if bu.frame then
-		bu.frame.Icon:SetTexCoord(0.1,0.9,0.1,0.9)
-		bu.frame.Icon:SetAllPoints(bu)
-		
-		--cooldown
-		bu.frame.Cooldown:SetAllPoints(bu.frame.Icon)
-		
-		--add button normaltexture
-		bu.frame:SetNormalTexture(textures.normal)
-		
-		local nt = bu.frame:GetNormalTexture()
-		nt:SetVertexColor(color.normal.r,color.normal.g,color.normal.b,1)
-		nt:SetAllPoints(bu)
-
-		--apply background
-		if not bu.bg then applyBackground(bu) end
-		bu.rabs_styled = true
-	end
-end--floating
+	hooksecurefunc(ZoneAbilityFrame, "UpdateDisplayedZoneAbilities", function(self)
+		for spellButton in self.SpellButtonContainer:EnumerateActive() do
+			if spellButton and not spellButton.styled then
+				spellButton.NormalTexture:SetVertexColor(color.normal.r,color.normal.g,color.normal.b,1)
+				spellButton.NormalTexture:SetAllPoints(spellButton)
+				spellButton:SetNormalTexture(textures.normal)
+				spellButton:SetPushedTexture(textures.pushed) --force it to gain a texture
+				spellButton:GetHighlightTexture():SetColorTexture(1, 1, 1, .25)
+				spellButton:GetHighlightTexture():SetTexCoord(0.1,0.9,0.1,0.9)
+				spellButton.Icon:SetTexCoord(0.1,0.9,0.1,0.9)
+				spellButton.Icon:SetAllPoints(spellButton)
+				spellButton.Cooldown:SetAllPoints(spellButton.Icon)
+				
+				if not spellButton.bg then applyBackground(spellButton) end
+				spellButton.styled = true
+			end
+		end
+	end)
+	
+	bu.rabs_styled = true
+end
 
 --initial style func
 local function styleActionButton(bu)
@@ -291,54 +288,47 @@ end
 -- INIT
 ---------------------------------------
 local function init()
-	--style the actionbar buttons
-	if evnet == "PLAYER_ENTERING_WORLD" then
-		styleExtraActionButton(ExtraActionButton1)
-		styleExtraActionButton2(ZoneAbilityFrame.SpellButtonContainer)
-	else
-		for i = 1, NUM_ACTIONBAR_BUTTONS do
-			styleActionButton(_G["ActionButton"..i])
-			styleActionButton(_G["MultiBarBottomLeftButton"..i])
-			styleActionButton(_G["MultiBarBottomRightButton"..i])
-			styleActionButton(_G["MultiBarRightButton"..i])
-			styleActionButton(_G["MultiBarLeftButton"..i])
-		end
-		for i = 1, 6 do
-			styleActionButton(_G["OverrideActionBarButton"..i])
-		end
-		--style leave button
-		styleLeaveButton(OverrideActionBarLeaveFrameLeaveButton)
-		--petbar buttons
-		for i=1, NUM_PET_ACTION_SLOTS do
-		stylePetButton(_G["PetActionButton"..i])
-		end
-		--stancebar buttons
-		for i=1, NUM_STANCE_SLOTS do
-			styleStanceButton(_G["StanceButton"..i])
-		end
-		--possess buttons
-		for i=1, NUM_POSSESS_SLOTS do
-			stylePossessButton(_G["PossessButton"..i])
-		end
-		--extraactionbutton
-		styleExtraActionButton(ExtraActionButton1)
-		styleExtraActionButton2(ZoneAbilityFrame.SpellButtonContainer)
-		--spell flyout
-		SpellFlyoutBackgroundEnd:SetTexture(nil)
-		SpellFlyoutHorizontalBackground:SetTexture(nil)
-		SpellFlyoutVerticalBackground:SetTexture(nil)
-		local function checkForFlyoutButtons(self)
-			local NUM_FLYOUT_BUTTONS = 10
-			for i = 1, NUM_FLYOUT_BUTTONS do
-				styleActionButton(_G["SpellFlyoutButton"..i])
-			end
-		end
-		SpellFlyout:HookScript("OnShow",checkForFlyoutButtons)
+	for i = 1, NUM_ACTIONBAR_BUTTONS do
+		styleActionButton(_G["ActionButton"..i])
+		styleActionButton(_G["MultiBarBottomLeftButton"..i])
+		styleActionButton(_G["MultiBarBottomRightButton"..i])
+		styleActionButton(_G["MultiBarRightButton"..i])
+		styleActionButton(_G["MultiBarLeftButton"..i])
 	end
+	for i = 1, 6 do
+		styleActionButton(_G["OverrideActionBarButton"..i])
+	end
+	--style leave button
+	styleLeaveButton(OverrideActionBarLeaveFrameLeaveButton)
+	--petbar buttons
+	for i=1, NUM_PET_ACTION_SLOTS do
+	stylePetButton(_G["PetActionButton"..i])
+	end
+	--stancebar buttons
+	for i=1, NUM_STANCE_SLOTS do
+		styleStanceButton(_G["StanceButton"..i])
+	end
+	--possess buttons
+	for i=1, NUM_POSSESS_SLOTS do
+		stylePossessButton(_G["PossessButton"..i])
+	end
+	--extraactionbutton
+	styleExtraActionButton(ExtraActionButton1)
+	styleExtraActionButton2(ZoneAbilityFrame)
+	--spell flyout
+	SpellFlyoutBackgroundEnd:SetTexture(nil)
+	SpellFlyoutHorizontalBackground:SetTexture(nil)
+	SpellFlyoutVerticalBackground:SetTexture(nil)
+	local function checkForFlyoutButtons(self)
+		local NUM_FLYOUT_BUTTONS = 10
+		for i = 1, NUM_FLYOUT_BUTTONS do
+			styleActionButton(_G["SpellFlyoutButton"..i])
+		end
+	end
+	SpellFlyout:HookScript("OnShow",checkForFlyoutButtons)
 end
 
 -- CALL
 local a = CreateFrame("Frame")
 a:RegisterEvent("PLAYER_LOGIN")
-a:RegisterEvent("PLAYER_ENTERING_WORLD")
 a:SetScript("OnEvent", init)

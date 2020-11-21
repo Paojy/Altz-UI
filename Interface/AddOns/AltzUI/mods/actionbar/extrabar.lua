@@ -50,7 +50,15 @@ ZoneAbilityFrame:EnableMouse(false)
 ZoneAbilityFrame:ClearAllPoints()
 ZoneAbilityFrame:SetPoint("CENTER", 0, 0)
 ZoneAbilityFrame.ignoreFramePositionManager = true
+ZoneAbilityFrame.Style:SetAlpha(0)
 
+-- Fix button visibility
+hooksecurefunc(ZoneAbilityFrame, "SetParent", function(self, parent)
+	if parent == ExtraAbilityContainer then
+		self:SetParent(frame2)
+	end
+end)
+	
 --the extra button
 local button2 = ZoneAbilityFrame.SpellButtonContainer
 table.insert(buttonList, button2) --add the button object to the list
