@@ -160,9 +160,7 @@ T.Overridehealthbar = function(self, event, unit)
 		health.ind:Hide()
 	end
 
-	if UnitIsTapDenied(unit) then
-		r, g, b = .6, .6, .6
-	elseif not UnitIsConnected(unit) then
+	if not UnitIsConnected(unit) then
 		r, g, b = .3, .3, .3
 	elseif UnitIsGhost(unit) then
 		r, g, b = .6, .6, .6
