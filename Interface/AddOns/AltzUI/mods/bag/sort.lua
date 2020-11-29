@@ -37,6 +37,7 @@ local function BS_clearData()
 end
 
 local function BS_OnUpdate(parentFrame, tElapsed)
+	if InCombatLockdown() then return end
 	if not BS_sorting then return end
 	
 	BS_pauseRemaining = BS_pauseRemaining - tElapsed
