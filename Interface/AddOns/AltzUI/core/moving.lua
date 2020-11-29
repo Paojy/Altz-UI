@@ -20,6 +20,7 @@ local function PlaceCurrentFrame(df, frame, unlock)
 	
 	if unlock then f.moving_locked = false end
 	if f.moving_locked then return end
+	
 	f:ClearAllPoints()
 	f:SetPoint(points.a1, _G[points.parent], points.a2, points.x, points.y)
 	
@@ -390,10 +391,10 @@ local function OnSpecChanged(event)
 		local name = G.dragFrameList[i]:GetName()
 		local points = aCoreCDB["FramePoints"][name][role]
 		
-		if event == "PLAYER_SPECIALIZATION_CHANGED" then
-			G.dragFrameList[i]:ClearAllPoints()
-		end
-		if not G.dragFrameList[i].moving_locked then 
+		if not G.dragFrameList[i].moving_locked then
+			if event == "PLAYER_SPECIALIZATION_CHANGED" then
+				G.dragFrameList[i]:ClearAllPoints()
+			end
 			G.dragFrameList[i]:SetPoint(points.a1, _G[points.parent], points.a2, points.x, points.y)
 		end		
 	end
