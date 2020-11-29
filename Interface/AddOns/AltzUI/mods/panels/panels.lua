@@ -220,6 +220,7 @@ Updater.mode = "IN"
 Updater:Hide()
 
 Updater:SetScript("OnUpdate",function(self,elapsed)
+	if InCombatLockdown() then return end
 	if self.mode == "IN" then
 		if nowwidth < allwidth then
 			nowwidth = nowwidth+allwidth/(all/0.2)/3
@@ -833,14 +834,6 @@ repbar:SetStatusBarColor(.4, 1, .2)
 repbar:SetFrameLevel(Minimap:GetFrameLevel()+3)
 repbar.border = F.CreateBDFrame(repbar, .8)
 
-local Azeritebar = CreateFrame("StatusBar", G.uiname.."AzeriteExperienceBar", Minimap)
-Azeritebar:SetWidth(5)
-Azeritebar:SetOrientation("VERTICAL")
-Azeritebar:SetStatusBarTexture(G.media.blank)
-Azeritebar:SetStatusBarColor(.901, .8, .601)
-Azeritebar:SetFrameLevel(Minimap:GetFrameLevel()+3)
-Azeritebar.border = F.CreateBDFrame(Azeritebar, .8)
-
 local function CommaValue(amount)
 	local formatted = amount
 	while true do  
@@ -900,23 +893,6 @@ end)
 repbar:SetScript("OnLeave", function() GameTooltip:Hide() end)
 repbar:SetScript("OnMouseDown", function() ToggleCharacter("ReputationFrame") end)
 
-Azeritebar:SetScript("OnEnter", function(self)
-	local azeriteItemLocation = C_AzeriteItem.FindActiveAzeriteItem(); 
-	local azeriteItem = Item:CreateFromItemLocation(azeriteItemLocation); 
-	
-	self.itemDataLoadedCancelFunc = azeriteItem:ContinueWithCancelOnItemLoad(function()
-		local azeriteItemName = azeriteItem:GetItemName()
-		GameTooltip_SetDefaultAnchor(GameTooltip, UIParent)
-		GameTooltip:AddLine(AZERITE_POWER_BAR:format(FormatPercentage(self.xp / self.totalLevelXP, true)), G.Ccolor.r, G.Ccolor.g, G.Ccolor.b)
-		GameTooltip:AddLine(" ")
-		GameTooltip:AddLine(AZERITE_POWER_TOOLTIP_TITLE:format(self.currentLevel, self.xpToNextLevel), HIGHLIGHT_FONT_COLOR:GetRGB())
-		GameTooltip:AddLine(AZERITE_POWER_TOOLTIP_BODY:format(azeriteItemName), G.Ccolor.r, G.Ccolor.g, G.Ccolor.b)
-		GameTooltip:Show()
-	end)
-end)
-
-Azeritebar:SetScript("OnLeave", function() GameTooltip:Hide() end)
-
 xpbar:SetScript("OnEvent", function(self, event, arg1)
 	local name, reaction, minRep, maxRep, value, factionID = GetWatchedFactionInfo()
 	local azeriteItemLocation = C_AzeriteItem.FindActiveAzeriteItem()
@@ -934,19 +910,6 @@ xpbar:SetScript("OnEvent", function(self, event, arg1)
 			xpbar:SetValue(XP)
 		else
 			xpbar:Hide()
-		end
-	end
-	
-	if event == "PLAYER_LOGIN" or (event == "UNIT_INVENTORY_CHANGED" and arg1 == "player") or event == "AZERITE_ITEM_EXPERIENCE_CHANGED" then
-		if showAzerite then
-			Azeritebar:Show()
-			Azeritebar.xp, Azeritebar.totalLevelXP = C_AzeriteItem.GetAzeriteItemXPInfo(azeriteItemLocation)
-			Azeritebar.currentLevel = C_AzeriteItem.GetPowerLevel(azeriteItemLocation)
-			Azeritebar.xpToNextLevel = Azeritebar.totalLevelXP - Azeritebar.xp
-			Azeritebar:SetMinMaxValues(0, Azeritebar.totalLevelXP)
-			Azeritebar:SetValue(Azeritebar.xp)
-		else
-			Azeritebar:Hide()
 		end
 	end
 	
@@ -986,24 +949,10 @@ xpbar:SetScript("OnEvent", function(self, event, arg1)
 		if showRep then
 			repbar:SetPoint("BOTTOMRIGHT", xpbar, "BOTTOMLEFT", -1, 0)
 			repbar:SetPoint("TOPRIGHT", xpbar, "TOPLEFT", -1, 0)
-			if showAzerite then
-				Azeritebar:SetPoint("BOTTOMRIGHT", repbar, "BOTTOMLEFT", -1, 0)
-				Azeritebar:SetPoint("TOPRIGHT", repbar, "TOPLEFT", -1, 0)
-			end
-		elseif showAzerite then
-			Azeritebar:SetPoint("BOTTOMRIGHT", xpbar, "BOTTOMLEFT", -1, 0)
-			Azeritebar:SetPoint("TOPRIGHT", xpbar, "TOPLEFT", -1, 0)
 		end
 	elseif showRep then
 		repbar:SetPoint("BOTTOMRIGHT", Minimap, "BOTTOMRIGHT", 0, 0)
 		repbar:SetPoint("TOPRIGHT", Minimap, "TOPRIGHT", 0, 0)
-		if showAzerite then
-			Azeritebar:SetPoint("BOTTOMRIGHT", repbar, "BOTTOMLEFT", -1, 0)
-			Azeritebar:SetPoint("TOPRIGHT", repbar, "TOPLEFT", -1, 0)
-		end
-	elseif showAzerite then
-		Azeritebar:SetPoint("BOTTOMRIGHT", Minimap, "BOTTOMRIGHT", 0, 0)
-		Azeritebar:SetPoint("TOPRIGHT", Minimap, "TOPRIGHT", 0, 0)
 	end
 end)
 
