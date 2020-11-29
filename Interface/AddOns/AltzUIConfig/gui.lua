@@ -742,11 +742,34 @@ local growdirection_v_group = {
 }
 T.createradiobuttongroup(IInnerframe.IB, 30, 200, L["垂直"]..L["排列方向"], "ItemOptions", "growdirection_v", growdirection_v_group)
 
+T.createDR(IInnerframe.IB.itembuttons, IInnerframe.IB.itembuttons_size, IInnerframe.IB.itembuttons_fsize, IInnerframe.IB.number_perline, IInnerframe.IB.button_space, IInnerframe.IB.growdirection_h, IInnerframe.IB.growdirection_v)
+
 IInnerframe.IB.SF:ClearAllPoints()
 IInnerframe.IB.SF:SetPoint("TOPLEFT", IInnerframe.IB, "TOPLEFT", 25, -240)
 IInnerframe.IB.SF:SetPoint("BOTTOMRIGHT", IInnerframe.IB, "BOTTOMRIGHT", -35, 25)
-F.CreateBD(IInnerframe.IB.SF.bg, .3)
 
+IInnerframe.IB.Mask = CreateFrame("Frame", nil, IInnerframe.IB, "BackdropTemplate")
+IInnerframe.IB.Mask:EnableMouse(true)
+IInnerframe.IB.Mask:SetFrameLevel(IInnerframe.IB.SF:GetFrameLevel()+3)
+IInnerframe.IB.Mask:SetPoint("TOPLEFT", IInnerframe.IB, "TOPLEFT", 25, -240)
+IInnerframe.IB.Mask:SetPoint("BOTTOMRIGHT", IInnerframe.IB, "BOTTOMRIGHT", -35, 25)
+F.CreateBD(IInnerframe.IB.Mask, .3)
+
+IInnerframe.IB.itembuttons:HookScript("OnShow", function(self)
+	if self:GetChecked() and self:IsEnabled() then
+		IInnerframe.IB.Mask:Hide()
+	else
+		IInnerframe.IB.Mask:Show()
+	end
+end)
+IInnerframe.IB.itembuttons:HookScript("OnClick", function(self)
+	if self:GetChecked() and self:IsEnabled() then
+		IInnerframe.IB.Mask:Hide()
+	else
+		IInnerframe.IB.Mask:Show()
+	end
+end)
+		
 local IB_ConditionsMenu = CreateFrame("Frame", G.uiname.."IB_ConditionsMenu", UIParent, "UIDropDownMenuTemplate")
 
 local IB_Conditions_List = {
@@ -1344,9 +1367,12 @@ local function CreatehotindauralistButton(spellID, parent)
 	bu.icon:SetNormalTexture(select(3, GetSpellInfo(spellID)))
 	bu.icon:GetNormalTexture():SetTexCoord(0.1,0.9,0.1,0.9)
 	bu.icon:SetPoint"LEFT"
-	bu.icon.bg = CreateFrame("Frame", nil, bu.icon, "BackdropTemplate")
-	bu.icon.bg:SetAllPoints(bu.icon)
-	F.CreateBD(bu.icon.bg)		
+	
+	bu.icon.bg = bu.icon:CreateTexture(nil, "BACKGROUND")
+	bu.icon.bg:SetPoint("TOPLEFT", -1, 1)
+	bu.icon.bg:SetPoint("BOTTOMRIGHT", 1, -1)
+	bu.icon.bg:SetTexture(G.media.blank)
+	bu.icon.bg:SetVertexColor(0, 0, 0)
 	
 	bu.spellname = T.createtext(bu, "OVERLAY", 12, "OUTLINE", "LEFT")
 	bu.spellname:SetPoint("LEFT", 140, 0)
@@ -1714,8 +1740,8 @@ end
 
 RFInnerframe.Icon_Display = CreateOptionPage("RF Options Icon Display", L["光环"]..L["图标"], RFInnerframe, "VERTICAL", .3)
 
-local raidicon_debufftitle = T.createtext(RFInnerframe.Icon_Display, "OVERLAY", 18, "OUTLINE", "CENTER")
-raidicon_debufftitle:SetPoint("BOTTOM", RFInnerframe.Icon_Display, "TOPLEFT", 80, -80)
+local raidicon_debufftitle = T.createtext(RFInnerframe.Icon_Display, "OVERLAY", 18, "OUTLINE", "LEFT")
+raidicon_debufftitle:SetPoint("LEFT", RFInnerframe.Icon_Display, "TOPLEFT", 50, -75)
 raidicon_debufftitle:SetTextColor(1, .5, .3)
 raidicon_debufftitle:SetText(L["Debuffs"])
 
@@ -1731,22 +1757,30 @@ RFInnerframe.Icon_Display.healerraid_debuff_icon_fontsize:SetWidth(160)
 RFInnerframe.Icon_Display.healerraid_debuff_anchor_x:SetWidth(160)
 RFInnerframe.Icon_Display.healerraid_debuff_anchor_y:SetWidth(160)
 
-local raidicon_bufftitle = T.createtext(RFInnerframe.Icon_Display, "OVERLAY", 18, "OUTLINE", "CENTER")
-raidicon_bufftitle:SetPoint("BOTTOM", RFInnerframe.Icon_Display, "TOPLEFT", 80, -240)
+local raidicon_bufftitle = T.createtext(RFInnerframe.Icon_Display, "OVERLAY", 18, "OUTLINE", "LEFT")
+raidicon_bufftitle:SetPoint("LEFT", RFInnerframe.Icon_Display, "TOPLEFT", 50, -225)
 raidicon_bufftitle:SetTextColor(.3, 1, .5)
 raidicon_bufftitle:SetText(L["Buffs"])
 
-T.createslider(RFInnerframe.Icon_Display, 60, 260, "X", "UnitframeOptions", "healerraid_buff_anchor_x", 1, -50, 50, 1)
-T.createslider(RFInnerframe.Icon_Display, 260, 260, "Y", "UnitframeOptions", "healerraid_buff_anchor_y", 1, -50, 50, 1)
-T.createslider(RFInnerframe.Icon_Display, 60, 300, L["图标数量"], "UnitframeOptions", "healerraid_buff_num", 1, 1, 5, 1)
-T.createslider(RFInnerframe.Icon_Display, 260, 300, L["图标大小"], "UnitframeOptions", "healerraid_buff_icon_size", 1, 10, 40, 1)
-T.createslider(RFInnerframe.Icon_Display, 60, 340, L["字体大小"], "UnitframeOptions", "healerraid_buff_icon_fontsize", 1, 5, 20, 1)
+T.createslider(RFInnerframe.Icon_Display, 60, 250, "X", "UnitframeOptions", "healerraid_buff_anchor_x", 1, -50, 50, 1)
+T.createslider(RFInnerframe.Icon_Display, 260, 250, "Y", "UnitframeOptions", "healerraid_buff_anchor_y", 1, -50, 50, 1)
+T.createslider(RFInnerframe.Icon_Display, 60, 290, L["图标数量"], "UnitframeOptions", "healerraid_buff_num", 1, 1, 5, 1)
+T.createslider(RFInnerframe.Icon_Display, 260, 290, L["图标大小"], "UnitframeOptions", "healerraid_buff_icon_size", 1, 10, 40, 1)
+T.createslider(RFInnerframe.Icon_Display, 60, 330, L["字体大小"], "UnitframeOptions", "healerraid_buff_icon_fontsize", 1, 5, 20, 1)
 
 RFInnerframe.Icon_Display.healerraid_buff_num:SetWidth(160)
 RFInnerframe.Icon_Display.healerraid_buff_icon_size:SetWidth(160)
 RFInnerframe.Icon_Display.healerraid_buff_icon_fontsize:SetWidth(160)
 RFInnerframe.Icon_Display.healerraid_buff_anchor_x:SetWidth(160)
 RFInnerframe.Icon_Display.healerraid_buff_anchor_y:SetWidth(160)
+
+RFInnerframe.Icon_Display.DividingLine = RFInnerframe.Icon_Display:CreateTexture(nil, "ARTWORK")
+RFInnerframe.Icon_Display.DividingLine:SetSize(RFInnerframe.Icon_Display:GetWidth()-50, 1)
+RFInnerframe.Icon_Display.DividingLine:SetPoint("TOP", 0, -360)
+RFInnerframe.Icon_Display.DividingLine:SetColorTexture(1, 1, 1, .2)
+
+T.createcheckbutton(RFInnerframe.Icon_Display, 60, 380, L["自动添加团队减益"], "UnitframeOptions", "raiddebuff_enabledefaultlist", L["自动添加团队减益提示"])
+T.createslider(RFInnerframe.Icon_Display, 60, 430, L["自动添加的图标层级"], "UnitframeOptions", "debuff_auto_add_level", 1, 1, 20, 1)
 
 RFInnerframe.raiddebuff = CreateOptionPage("RF Options Raid Debuff", L["团队减益"], RFInnerframe, "VERTICAL", .3)
 
@@ -1773,7 +1807,11 @@ local function LineUpRaidDebuffList(parent, raidname)
 			end
 			sort(t, function(a,b) return a.level > b.level or (a.level == b.level and a.id > b.id) end)
 			for a = 1, #t do
-				_G[G.uiname.."RaidDebuff"..raidname..boss..t[a].id]:SetPoint("TOPLEFT", parent, "TOPLEFT", 10, -10-i*30)
+				if _G[G.uiname.."RaidDebuff"..raidname..boss..t[a].id] then
+					_G[G.uiname.."RaidDebuff"..raidname..boss..t[a].id]:SetPoint("TOPLEFT", parent, "TOPLEFT", 10, -10-i*30)
+				else
+					print(G.uiname.."RaidDebuff"..raidname..boss..GetSpellInfo(t[a].id))
+				end
 				i = i + 1
 			end
 		else
@@ -1783,7 +1821,9 @@ local function LineUpRaidDebuffList(parent, raidname)
 end
 
 local function CreateEncounterDebuffButton(parent, raid, boss, name, spellID, level)
+	if parent["icon"..boss..spellID] then return end
 	local bu = CreateFrame("Frame", G.uiname.."RaidDebuff"..raid..boss..spellID, parent)
+	
 	bu:SetSize(330, 20)
 	
 	bu.icon = CreateFrame("Button", nil, bu, "BackdropTemplate")
@@ -1791,7 +1831,12 @@ local function CreateEncounterDebuffButton(parent, raid, boss, name, spellID, le
 	bu.icon:SetNormalTexture(select(3, GetSpellInfo(spellID)))
 	bu.icon:GetNormalTexture():SetTexCoord(0.1,0.9,0.1,0.9)
 	bu.icon:SetPoint"LEFT"
-	F.CreateBD(bu.icon)
+	
+	bu.icon.bg = bu.icon:CreateTexture(nil, "BACKGROUND")
+	bu.icon.bg:SetPoint("TOPLEFT", -1, 1)
+	bu.icon.bg:SetPoint("BOTTOMRIGHT", 1, -1)
+	bu.icon.bg:SetTexture(G.media.blank)
+	bu.icon.bg:SetVertexColor(0, 0, 0)
 	
 	bu.level = T.createtext(bu, "OVERLAY", 12, "OUTLINE", "LEFT")
 	bu.level:SetPoint("LEFT", 40, 0)
@@ -1842,6 +1887,7 @@ local function CreateEncounterDebuffButton(parent, raid, boss, name, spellID, le
 		end
 	end)
 	
+	parent["icon"..boss..spellID] = true
 	return bu
 end
 
@@ -1876,7 +1922,9 @@ local function CreateRaidDebuffOptions()
 		
 		F.ReskinScroll(_G[G.uiname.."Raiddebuff Frame"..raidindex.."ScrollBar"])
 		
-		CreateEncounterDebuffList(frame.SFAnchor, raidname, bosstable)
+		frame:SetScript("OnShow", function()
+			CreateEncounterDebuffList(frame.SFAnchor, raidname, bosstable)
+		end)
 		
 		local BossDD = CreateFrame("Frame", G.uiname..raidname.."SelectBossDropdown", frame, "UIDropDownMenuTemplate")
 		BossDD:SetPoint("BOTTOMLEFT", frame, "TOPLEFT", 10, 5)
@@ -1901,7 +1949,7 @@ local function CreateRaidDebuffOptions()
 				info.text = G.Raids[raidname][i]
 				info.func = function()
 					UIDropDownMenu_SetText(BossDD, G.Raids[raidname][i])
-					L_CloseDropDownMenus()
+					CloseDropDownMenus()
 				end
 				UIDropDownMenu_AddButton(info)
 			end
@@ -1952,7 +2000,7 @@ local function CreateRaidDebuffOptions()
 			local spellID = tonumber(Spellinput:GetText())
 			local level = tonumber(Levelinput:GetText())
 			if not spellID or not GetSpellInfo(spellID) then
-				StaticPopupDialogs[G.uiname.."incorrect spellid"].text = "|cff7FFF00"..spellID.." |r"..L["不是一个有效的法术ID"]
+				StaticPopupDialogs[G.uiname.."incorrect spellid"].text = "|cff7FFF00"..spellID or "/".." |r"..L["不是一个有效的法术ID"]
 				StaticPopup_Show(G.uiname.."incorrect spellid")
 			elseif not level then
 				StaticPopupDialogs[G.uiname.."incorrect level"].text = "|cff7FFF00"..Levelinput:GetText().." |r"..L["必须是一个数字"]
@@ -2033,27 +2081,18 @@ local function CreateRaidDebuffOptions()
 	end
 end
 
-RFInnerframe.cooldownaura = CreateOptionPage("RF Options Cooldown Aura", L["重要法术"], RFInnerframe, "VERTICAL", .3)
-
-local cooldownauraframe = CreateFrame("Frame", G.uiname.."Cooldown Aura Options", RFInnerframe.cooldownaura, "BackdropTemplate")
-cooldownauraframe:SetPoint("TOPLEFT", 30, -85)
-cooldownauraframe:SetPoint("BOTTOMRIGHT", -30, 20)
-F.CreateBD(cooldownauraframe, 0)
-cooldownauraframe.tabindex = 1
-cooldownauraframe.tabnum = 2
-for i = 1, 2 do
-	cooldownauraframe["tab"..i] = CreateFrame("Frame", G.uiname.."cooldownauraframe Tab"..i, cooldownauraframe, "BackdropTemplate")
-	cooldownauraframe["tab"..i]:SetScript("OnMouseDown", function() end)
-end
-
 local function LineUpCooldownAuraList(parent, auratype)
 	local t = {}
 	for spell, info in pairs(aCoreCDB["CooldownAura"][auratype]) do
 		table.insert(t, info)
 	end
-	sort(t, function(a,b) return a.level > b.level or (a.level == b.level and a.id > b.id) end)
+	if auratype == "Buffs" or auratype == "Debuffs" then
+		sort(t, function(a,b) return a.level > b.level or (a.level == b.level and a.id > b.id) end)
+	else
+		sort(t, function(a,b) return a.id > b.id end)
+	end
 	for i = 1, #t do
-		_G[G.uiname.."Cooldown"..auratype..t[i].id]:SetPoint("TOPLEFT", parent, "TOPLEFT", 10, 20-i*30)
+		_G[G.uiname.."Cooldown"..auratype..t[i].id]:SetPoint("TOPLEFT", parent, "TOPLEFT", auratype == "Buffs" and 16 or 10, 20-i*30)
 	end
 end
 
@@ -2064,17 +2103,22 @@ local function CreateCooldownAuraButton(parent, auratype, name, spellID, level)
 	bu.icon = CreateFrame("Button", nil, bu)
 	bu.icon:SetSize(18, 18)
 	bu.icon:SetNormalTexture(select(3, GetSpellInfo(spellID)))
-	bu.icon:GetNormalTexture():SetTexCoord(0.1,0.9,0.1,0.9)
+	if bu.icon:GetNormalTexture() then
+		bu.icon:GetNormalTexture():SetTexCoord(0.1,0.9,0.1,0.9)
+	end
 	bu.icon:SetPoint"LEFT"
-	bu.icon.bg = CreateFrame("Frame", nil, bu.icon, "BackdropTemplate")
-	bu.icon.bg:SetFrameLevel(bu.icon:GetFrameLevel()-1)
-	bu.icon.bg:SetAllPoints(bu.icon)
-	F.CreateBD(bu.icon.bg)	
+	bu.icon.bg = bu.icon:CreateTexture(nil, "BACKGROUND")
+	bu.icon.bg:SetPoint("TOPLEFT", -1, 1)
+	bu.icon.bg:SetPoint("BOTTOMRIGHT", 1, -1)
+	bu.icon.bg:SetTexture(G.media.blank)
+	bu.icon.bg:SetVertexColor(0, 0, 0)
 	
-	bu.level = T.createtext(bu, "OVERLAY", 12, "OUTLINE", "LEFT")
-	bu.level:SetPoint("LEFT", 40, 0)
-	bu.level:SetTextColor(1, .2, .6)
-	bu.level:SetText(level)
+	if auratype == "Buffs" or auratype == "Debuffs" then
+		bu.level = T.createtext(bu, "OVERLAY", 12, "OUTLINE", "LEFT")
+		bu.level:SetPoint("LEFT", 40, 0)
+		bu.level:SetTextColor(1, .2, .6)
+		bu.level:SetText(level)
+	end
 	
 	bu.spellname = T.createtext(bu, "OVERLAY", 12, "OUTLINE", "LEFT")
 	bu.spellname:SetPoint("LEFT", 140, 0)
@@ -2106,14 +2150,18 @@ local function CreateCooldownAuraButton(parent, auratype, name, spellID, level)
 		if frame.selectdebuff ~= spellID then
 			frame.Spellinput:ClearFocus()
 			frame.Spellinput:SetText(spellID)
-			frame.Levelinput:ClearFocus()
-			frame.Levelinput:SetText(level)	
+			if auratype == "Buffs" or auratype == "Debuffs" then
+				frame.Levelinput:ClearFocus()
+				frame.Levelinput:SetText(level)	
+			end
 			frame.selectdebuff = spellID
 		else
 			frame.Spellinput:ClearFocus()
 			frame.Spellinput:SetText("")
-			frame.Levelinput:ClearFocus()
-			frame.Levelinput:SetText("")		
+			if auratype == "Buffs" or auratype == "Debuffs" then
+				frame.Levelinput:ClearFocus()
+				frame.Levelinput:SetText("")	
+			end
 			frame.selectdebuff = nil
 		end
 	end)
@@ -2135,61 +2183,75 @@ local function CreateCooldownAuraList(frame, auratype, auratable)
 	LineUpCooldownAuraList(frame, auratype)
 end
 
-local function CreateCooldownAuraOptions()
-	for auratype, auratable in T.pairsByKeys(aCoreCDB["CooldownAura"]) do
-		local frame = CreateOptionPage("Cooldown "..auratype.." Options", L[auratype], cooldownauraframe, "HORIZONTAL", .3, true)
+local function CreateCooldownAuraOption(auratype, auratable, name, parent, show)
+	local frame
+	
+	if name then
+		frame = CreateOptionPage("Cooldown "..auratype.." Options", name, parent, "HORIZONTAL", .3, true)
 		frame.title:Hide()
 		frame.line:Hide()
-		if auratype == "Buffs" then
+		if show then
 			frame:Show()
 		end
 		
 		frame.SF:SetPoint("TOPLEFT", 10, -40)
 		frame.SF:SetPoint("BOTTOMRIGHT", -30, 20)
-		
-		CreateCooldownAuraList(frame.SFAnchor, auratype, auratable)
-		
-		local Spellinput = CreateFrame("EditBox", G.uiname..auratype.."Spell Input", frame, "BackdropTemplate")
-		Spellinput:SetSize(120, 20)
-		Spellinput:SetPoint("TOPLEFT", frame, "TOPLEFT", 15, -10)
-		F.CreateBD(Spellinput)
-		
-		Spellinput:SetFont(GameFontHighlight:GetFont(), 12, "OUTLINE")
-		Spellinput:SetAutoFocus(false)
-		Spellinput:SetTextInsets(3, 0, 0, 0)
+	else
+		frame = parent
+	end
+	
+	CreateCooldownAuraList(frame.SFAnchor, auratype, auratable)
+	
+	local Spellinput = CreateFrame("EditBox", G.uiname..auratype.."Spell Input", frame, "BackdropTemplate")
+	Spellinput:SetSize(120, 20)
+	Spellinput:SetPoint("TOPLEFT", frame, "TOPLEFT", name and 15 or 25,  name and -10 or -60)
+	F.CreateBD(Spellinput)
+	
+	Spellinput:SetFont(GameFontHighlight:GetFont(), 12, "OUTLINE")
+	Spellinput:SetAutoFocus(false)
+	Spellinput:SetTextInsets(3, 0, 0, 0)
 
-		Spellinput:SetScript("OnShow", function(self) self:SetText(L["输入法术ID"]) end)
-		Spellinput:SetScript("OnEditFocusGained", function(self) self:HighlightText() end)
-		Spellinput:SetScript("OnEscapePressed", function(self) self:ClearFocus() self:SetText(L["输入法术ID"]) end)
-		Spellinput:SetScript("OnEnterPressed", function(self) self:ClearFocus() end)
-		
-		frame.Spellinput = Spellinput
-		
-		local Levelinput = CreateFrame("EditBox", G.uiname..auratype.."Level Input", frame, "BackdropTemplate")
+	Spellinput:SetScript("OnShow", function(self) self:SetText(L["输入法术ID"]) end)
+	Spellinput:SetScript("OnEditFocusGained", function(self) self:HighlightText() end)
+	Spellinput:SetScript("OnEscapePressed", function(self) self:ClearFocus() self:SetText(L["输入法术ID"]) end)
+	Spellinput:SetScript("OnEnterPressed", function(self) self:ClearFocus() end)
+	
+	frame.Spellinput = Spellinput
+	
+	local Levelinput
+	if auratype == "Buffs" or auratype == "Debuffs" then
+		Levelinput = CreateFrame("EditBox", G.uiname..auratype.."Level Input", frame, "BackdropTemplate")
 		Levelinput:SetSize(80, 20)
 		Levelinput:SetPoint("LEFT", Spellinput, "RIGHT", 5, 0)
 		F.CreateBD(Levelinput)
-
+	
 		Levelinput:SetFont(GameFontHighlight:GetFont(), 12, "OUTLINE")
 		Levelinput:SetAutoFocus(false)
 		Levelinput:SetTextInsets(3, 0, 0, 0)
-
+	
 		Levelinput:SetScript("OnShow", function(self) self:SetText(L["输入层级"]) end)
 		Levelinput:SetScript("OnEditFocusGained", function(self) self:HighlightText() end)
 		Levelinput:SetScript("OnEscapePressed", function(self) self:ClearFocus() self:SetText(L["输入层级"]) end)
 		Levelinput:SetScript("OnEnterPressed", function(self) self:ClearFocus() end)
 		
 		frame.Levelinput = Levelinput
-		
-		local Add = CreateFrame("Button", G.uiname..auratype.."Add CooldownAura Button", frame, "UIPanelButtonTemplate")
+	end
+	
+	local Add = CreateFrame("Button", G.uiname..auratype.."Add CooldownAura Button", frame, "UIPanelButtonTemplate")
+	if auratype == "Buffs" or auratype == "Debuffs" then
 		Add:SetPoint("LEFT", Levelinput, "RIGHT", 10, 0)
-		Add:SetSize(70, 20)
-		Add:SetText(ADD)
-		T.resize_font(Add.Text)
-		F.Reskin(Add)
-		Add:SetScript("OnClick", function(self)
-			local spellID = tonumber(Spellinput:GetText())
-			local level = tonumber(Levelinput:GetText())
+	else
+		Add:SetPoint("LEFT", Spellinput, "RIGHT", 10, 0)
+	end
+	Add:SetSize(70, 20)
+	Add:SetText(ADD)
+	T.resize_font(Add.Text)
+	F.Reskin(Add)
+	Add:SetScript("OnClick", function(self)
+		local spellID, level, name
+		if auratype == "Buffs" or auratype == "Debuffs" then
+			spellID = tonumber(Spellinput:GetText())
+			level = tonumber(Levelinput:GetText())
 			if not spellID or not GetSpellInfo(spellID) then
 				StaticPopupDialogs[G.uiname.."incorrect spellid"].text = "|cff7FFF00"..spellID.." |r"..L["不是一个有效的法术ID"]
 				StaticPopup_Show(G.uiname.."incorrect spellid")
@@ -2197,7 +2259,7 @@ local function CreateCooldownAuraOptions()
 				StaticPopupDialogs[G.uiname.."incorrect level"].text = "|cff7FFF00"..Levelinput:GetText().." |r"..L["必须是一个数字"]
 				StaticPopup_Show(G.uiname.."incorrect level")
 			else
-				local name = GetSpellInfo(spellID)
+				name = GetSpellInfo(spellID)
 				if aCoreCDB["CooldownAura"][auratype][name] then -- 已经有这个ID ，改一下层级
 					aCoreCDB["CooldownAura"][auratype][name]["level"] = level
 					_G[G.uiname.."Cooldown"..auratype..spellID].level:SetText(level)
@@ -2213,29 +2275,67 @@ local function CreateCooldownAuraOptions()
 					LineUpCooldownAuraList(frame.SFAnchor, auratype)
 				end
 			end
-		end)
-		
-		frame.Add = Add
-		
-		local Reset = CreateFrame("Button", G.uiname..auratype.."Reset CooldownAura Button", frame, "UIPanelButtonTemplate")
-		Reset:SetPoint("BOTTOM", ReloadButton, "TOP", 0, 10)
-		Reset:SetSize(100, 25)
-		Reset:SetText(L["重置"])
-		T.resize_font(Reset.Text)
-		F.Reskin(Reset)
-		Reset:SetScript("OnClick", function(self)
-			StaticPopupDialogs[G.uiname.."Reset Confirm"].text = format(L["重置确认"], L[auratype])
-			StaticPopupDialogs[G.uiname.."Reset Confirm"].OnAccept = function()
-				aCoreCDB["CooldownAura"][auratype] = nil
-				ReloadUI()
+		else
+			spellID = tonumber(Spellinput:GetText())
+			if not spellID or not GetSpellInfo(spellID) then
+				StaticPopupDialogs[G.uiname.."incorrect spellid"].text = "|cff7FFF00"..spellID.." |r"..L["不是一个有效的法术ID"]
+				StaticPopup_Show(G.uiname.."incorrect spellid")
+			else
+				name = GetSpellInfo(spellID)
+				if _G[G.uiname.."Cooldown"..auratype..spellID] then -- 已经有这个框体
+					aCoreCDB["CooldownAura"][auratype][name] = {id = spellID}		
+					_G[G.uiname.."Cooldown"..auratype..spellID]:Show()
+					LineUpCooldownAuraList(frame.SFAnchor, auratype)
+				else
+					aCoreCDB["CooldownAura"][auratype][name] = {id = spellID}
+					CreateCooldownAuraButton(frame.SFAnchor, auratype, name, spellID)
+					LineUpCooldownAuraList(frame.SFAnchor, auratype)
+				end
 			end
-			StaticPopup_Show(G.uiname.."Reset Confirm")
-		end)
-		
-		cooldownauraframe[auratype.."Options"] = frame
-	end
-end
+		end
+	end)
 	
+	frame.Add = Add
+	
+	local Reset = CreateFrame("Button", G.uiname..auratype.."Reset CooldownAura Button", frame, "UIPanelButtonTemplate")
+	Reset:SetPoint("BOTTOM", ReloadButton, "TOP", 0, 10)
+	Reset:SetSize(100, 25)
+	Reset:SetText(L["重置"])
+	T.resize_font(Reset.Text)
+	F.Reskin(Reset)
+	Reset:SetScript("OnClick", function(self)
+		StaticPopupDialogs[G.uiname.."Reset Confirm"].text = format(L["重置确认"], L[auratype])
+		StaticPopupDialogs[G.uiname.."Reset Confirm"].OnAccept = function()
+			aCoreCDB["CooldownAura"][auratype] = nil
+			ReloadUI()
+		end
+		StaticPopup_Show(G.uiname.."Reset Confirm")
+	end)
+	
+	parent[auratype.."Options"] = frame
+end
+
+RFInnerframe.raiddebuff_fliter = CreateOptionPage("RF Options Raid Debuff Fliter List", L["减益过滤"], RFInnerframe, "VERTICAL", .3)
+
+local raiddebuff_fliterframe = CreateFrame("Frame", G.uiname.."Raid Debuff Fliter Options", RFInnerframe.raiddebuff_fliter, "BackdropTemplate")
+raiddebuff_fliterframe:SetPoint("TOPLEFT", 30, -85)
+raiddebuff_fliterframe:SetPoint("BOTTOMRIGHT", -30, 20)
+F.CreateBD(raiddebuff_fliterframe, 0)
+raiddebuff_fliterframe.tabindex = 1
+raiddebuff_fliterframe.tabnum = 2
+for i = 1, 2 do
+	raiddebuff_fliterframe["tab"..i] = CreateFrame("Frame", G.uiname.."raiddebuff_fliterframe Tab"..i, raiddebuff_fliterframe, "BackdropTemplate")
+	raiddebuff_fliterframe["tab"..i]:SetScript("OnMouseDown", function() end)
+end
+
+RFInnerframe.cooldownaura = CreateOptionPage("RF Options Cooldown Aura", L["团队增益"], RFInnerframe, "VERTICAL", .3, true)
+
+local function CreateCooldownAuraOptions()
+	CreateCooldownAuraOption("Debuffs", aCoreCDB["CooldownAura"]["Debuffs"], L["白名单"], raiddebuff_fliterframe, true)
+	CreateCooldownAuraOption("Debuffs_Black", aCoreCDB["CooldownAura"]["Debuffs_Black"], L["黑名单"], raiddebuff_fliterframe)
+
+	CreateCooldownAuraOption("Buffs", aCoreCDB["CooldownAura"]["Buffs"], nil, RFInnerframe.cooldownaura, true)
+end
 --====================================================--
 --[[           -- Actionbar Options --              ]]--
 --====================================================--
@@ -2377,10 +2477,12 @@ local function CreatecooldownflashlistButton(spellID, parent, list)
 		bu.icon:GetNormalTexture():SetTexCoord(0.1,0.9,0.1,0.9)
 	end
 	bu.icon:SetPoint"LEFT"
-	bu.icon.bg = CreateFrame("Frame", nil, bu.icon, "BackdropTemplate")
-	bu.icon.bg:SetAllPoints(bu.icon)
-	bu.icon.bg:SetFrameLevel(bu.icon:GetFrameLevel()-1)
-	F.CreateBD(bu.icon.bg)	
+	
+	bu.icon.bg = bu.icon:CreateTexture(nil, "BACKGROUND")
+	bu.icon.bg:SetPoint("TOPLEFT", -1, 1)
+	bu.icon.bg:SetPoint("BOTTOMRIGHT", 1, -1)
+	bu.icon.bg:SetTexture(G.media.blank)
+	bu.icon.bg:SetVertexColor(0, 0, 0)
 	
 	bu.spellname = T.createtext(bu, "OVERLAY", 12, "OUTLINE", "LEFT")
 	bu.spellname:SetPoint("LEFT", 140, 0)
@@ -2651,10 +2753,12 @@ local function CreateplateauralistButton(spellID, parent, list)
 	bu.icon:SetNormalTexture(select(3, GetSpellInfo(spellID)))
 	bu.icon:GetNormalTexture():SetTexCoord(0.1,0.9,0.1,0.9)
 	bu.icon:SetPoint"LEFT"
-	bu.icon.bg = CreateFrame("Frame", nil, bu.icon, "BackdropTemplate")
-	bu.icon.bg:SetFrameLevel(bu.icon:GetFrameLevel()-1)
-	bu.icon.bg:SetAllPoints(bu.icon)
-	F.CreateBD(bu.icon.bg)	
+	
+	bu.icon.bg = bu.icon:CreateTexture(nil, "BACKGROUND")
+	bu.icon.bg:SetPoint("TOPLEFT", -1, 1)
+	bu.icon.bg:SetPoint("BOTTOMRIGHT", 1, -1)
+	bu.icon.bg:SetTexture(G.media.blank)
+	bu.icon.bg:SetVertexColor(0, 0, 0)	
 	
 	bu.spellname = T.createtext(bu, "OVERLAY", 12, "OUTLINE", "LEFT")
 	bu.spellname:SetPoint("LEFT", 140, 0)

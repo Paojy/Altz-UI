@@ -124,8 +124,22 @@ local dispelPriority = {
 
 --local ascending = { }
 
+local current_encounter
+local checkEncounter = CreateFrame"Frame"
+checkEncounter:RegisterEvent("ENCOUNTER_START")
+checkEncounter:RegisterEvent("ENCOUNTER_END")
+checkEncounter:RegisterEvent("PLAYER_ENTERING_WORLD")
+checkEncounter:SetScript("OnEvent", function(self, event, ...)
+	local encounterID, encounterName = ...
+	if event == "ENCOUNTER_START" then
+		current_encounter = encounterName
+	else
+		current_encounter = ""
+	end
+end)
+
 local CustomFilter = function(...)
-    local name, _, _, dtype, _, _, caster, spellID = ...
+    local name, _, _, dtype, _, _, caster, spellID, isBossDebuff, castByPlayer = ...
 	
     local priority = 0
 	local asc = false
@@ -133,13 +147,40 @@ local CustomFilter = function(...)
     --if ascending[name] then
         --asc = true
     --end
-
-	if aCoreCDB["CooldownAura"]["Debuffs"][name] then
+	if aCoreCDB["CooldownAura"]["Debuffs_Black"][name] then -- 黑名单不显示
+		return 0, false
+	elseif aCoreCDB["UnitframeOptions"]["debuff_auto_add"] then
+		local ins = EJ_GetInstanceInfo(EJ_GetInstanceForMap(C_Map.GetBestMapForUnit("player")))
+		if aCoreCDB["RaidDebuff"][ins] then	
+			--print(name, caster and UnitName(caster) or "/", isBossDebuff, castByPlayer)
+			if isBossDebuff then -- BOSS
+				if aCoreCDB["RaidDebuff"][ins][current_encounter] then
+					if not aCoreCDB["RaidDebuff"][ins][current_encounter][name] then
+						print(name, caster and UnitName(caster) or "/", isBossDebuff, castByPlayer)
+						aCoreCDB["RaidDebuff"][ins][current_encounter][name] = {id = spellID, level = aCoreCDB["UnitframeOptions"]["debuff_auto_add_level"]}
+						print(current_encounter.."成功添加法术"..name.."  显示层级"..aCoreCDB["UnitframeOptions"]["debuff_auto_add_level"])	
+					end
+				else
+					print("未找到，当前boss"..current_encounter)
+				end	
+				priority = aCoreCDB["UnitframeOptions"]["debuff_auto_add_level"]				
+			elseif not castByPlayer then --小怪
+				if aCoreCDB["RaidDebuff"][ins]["Trash"] then
+					if not aCoreCDB["RaidDebuff"][ins]["Trash"][name] then
+						print(name, caster and UnitName(caster) or "/", isBossDebuff, castByPlayer)
+						aCoreCDB["RaidDebuff"][ins]["Trash"][name] = {id = spellID, level = aCoreCDB["UnitframeOptions"]["debuff_auto_add_level"]}
+						print("Trash".."成功添加法术"..name.."  显示层级"..aCoreCDB["UnitframeOptions"]["debuff_auto_add_level"])
+					end
+				end
+				priority = aCoreCDB["UnitframeOptions"]["debuff_auto_add_level"]
+			end
+		end
+	elseif aCoreCDB["CooldownAura"]["Debuffs"][name] then -- 白名单显示
 		priority = aCoreCDB["CooldownAura"]["Debuffs"][name].level
-	elseif dispellist[dtype] then
+	elseif dispellist[dtype] then -- 可驱散
         priority = dispelPriority[dtype]
-	elseif IsInInstance() then
-        local ins = GetInstanceInfo()
+	elseif IsInInstance() then -- 副本列表中
+        local ins = EJ_GetInstanceInfo(EJ_GetInstanceForMap(C_Map.GetBestMapForUnit("player")))
         if aCoreCDB["RaidDebuff"][ins] then
 			for boss, debufflist in pairs(aCoreCDB["RaidDebuff"][ins]) do
 				if debufflist[name] then
@@ -221,10 +262,10 @@ local Update = function(self, event, unit)
 	
     local index = 1
     while true do
-        local name, texture, count, dtype, duration, expires, caster, _, _, spellID = UnitDebuff(unit, index)
+        local name, texture, count, dtype, duration, expires, caster, _, _, spellID, _, isBossDebuff, castByPlayer = UnitDebuff(unit, index)
         if not name then break end
 		
-		local priority, asc = CustomFilter(name, texture, count, dtype, duration, expires, caster, spellID)
+		local priority, asc = CustomFilter(name, texture, count, dtype, duration, expires, caster, spellID, isBossDebuff, castByPlayer)
 		
 		if priority > 0 then
 			active_dubuffs[name] = {}
