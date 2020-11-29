@@ -1034,7 +1034,7 @@ eventframe:SetScript("OnEvent", function(self, event, arg1)
 		aCoreDB.ver = G.Version
 		aCoreCDB.meet = true
 	elseif aCoreDB.ver ~= G.Version then
-		TutorialsFrame:ShowFrame(8)
+		TutorialsFrame:ShowFrame(9)
 		aCoreDB.ver = G.Version
 	end
 end)
