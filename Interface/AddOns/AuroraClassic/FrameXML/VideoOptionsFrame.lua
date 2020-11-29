@@ -78,7 +78,7 @@ tinsert(C.defaultThemes, function()
 			"Advanced_BufferingDropDown",
 			"Advanced_FilteringDropDown",
 			"Advanced_RTShadowQualityDropDown",
-			--"Advanced_SSAOTypeDropDown", -- not in ptr yet
+			"Advanced_SSAOTypeDropDown",
 			"Advanced_MultisampleAntiAliasingDropDown",
 			"Advanced_MultisampleAlphaTest",
 			"Advanced_PostProcessAntiAliasingDropDown",

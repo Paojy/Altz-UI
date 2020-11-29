@@ -75,7 +75,8 @@ C.themes["Blizzard_GuildBankUI"] = function()
 		local icon = _G["GuildBankTab"..i.."ButtonIconTexture"]
 
 		F.StripTextures(tab)
-		F.StripTextures(button)
+		button:SetNormalTexture("")
+		button:SetPushedTexture("")
 		button:GetHighlightTexture():SetColorTexture(1, 1, 1, .25)
 		button:SetCheckedTexture(C.pushed)
 		F.CreateBDFrame(button)

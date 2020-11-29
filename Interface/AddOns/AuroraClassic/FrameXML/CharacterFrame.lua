@@ -59,8 +59,6 @@ tinsert(C.defaultThemes, function()
 	end
 
 	local function UpdateCosmetic(self)
-		if not IsCosmeticItem then return end
-
 		local itemLink = GetInventoryItemLink("player", self:GetID())
 		self.IconOverlay:SetShown(itemLink and IsCosmeticItem(itemLink))
 	end
@@ -82,9 +80,7 @@ tinsert(C.defaultThemes, function()
 		cooldown:SetInside()
 
 		slot.ignoreTexture:SetTexture("Interface\\PaperDollInfoFrame\\UI-GearManager-LeaveItem-Transparent")
-		if IsCosmeticItem then
-			slot.IconOverlay:SetAtlas("CosmeticIconFrame")
-		end
+		slot.IconOverlay:SetAtlas("CosmeticIconFrame")
 		slot.IconOverlay:SetInside()
 		F.ReskinIconBorder(slot.IconBorder)
 

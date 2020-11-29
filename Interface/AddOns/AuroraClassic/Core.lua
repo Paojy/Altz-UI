@@ -87,7 +87,7 @@ do
 		if self.__bgTex then return end
 
 		local frame = self
-		if self:GetObjectType() == "Texture" then frame = self:GetParent() end
+		if self:IsObjectType("Texture") then frame = self:GetParent() end
 
 		local tex = frame:CreateTexture(nil, "BACKGROUND", nil, 1)
 		tex:SetAllPoints(self)
@@ -105,7 +105,7 @@ do
 		if self.__shadow then return end
 
 		local frame = self
-		if self:GetObjectType() == "Texture" then frame = self:GetParent() end
+		if self:IsObjectType("Texture") then frame = self:GetParent() end
 
 		shadowBackdrop.edgeSize = size or 5
 		self.__shadow = CreateFrame("Frame", nil, frame, "BackdropTemplate")
@@ -148,7 +148,7 @@ do
 	-- Handle frame
 	function F:CreateBDFrame(a, gradient)
 		local frame = self
-		if self:GetObjectType() == "Texture" then frame = self:GetParent() end
+		if self:IsObjectType("Texture") then frame = self:GetParent() end
 		local lvl = frame:GetFrameLevel()
 
 		local bg = CreateFrame("Frame", nil, frame, "BackdropTemplate")

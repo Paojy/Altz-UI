@@ -952,10 +952,7 @@ C.themes["Blizzard_GarrisonUI"] = function()
 	CovenantMissionFrame.FollowerTab.RaisedFrameEdges:SetAlpha(0)
 	CovenantMissionFrame.FollowerTab.HealFollowerFrame.ButtonFrame:SetAlpha(0)
 	CovenantMissionFrameFollowers.ElevatedFrame:SetAlpha(0)
-	if CovenantMissionFrameFollowers.HealAllButton then
-		F.Reskin(CovenantMissionFrameFollowers.HealAllButton) -- not in ptr
-	end
-	CovenantMissionFrame.MapTab:SetAlpha(0) -- not sure what does this for, need reviewed
+	F.Reskin(CovenantMissionFrameFollowers.HealAllButton)
 	F.ReskinIcon(CovenantMissionFrame.FollowerTab.HealFollowerFrame.CostFrame.CostIcon)
 
 	CovenantMissionFrame.MissionTab.MissionPage.Board:HookScript("OnShow", ReskinMissionBoards)
@@ -983,7 +980,7 @@ C.themes["Blizzard_GarrisonUI"] = function()
 		local buttons = MissionList.listScroll.buttons
 		for i = 1, #buttons do
 			local bu = select(3, buttons[i]:GetChildren())
-			if bu and bu:GetObjectType() == "Button" and not bu.styled then
+			if bu and bu:IsObjectType("Button") and not bu.styled then
 				F.Reskin(bu)
 				bu:SetSize(60, 45)
 				bu.styled = true
@@ -992,9 +989,9 @@ C.themes["Blizzard_GarrisonUI"] = function()
 	end
 
 	local function buttonOnShow(MissionPage)
-		for i = 18, 26 do
+		for i = 18, 27 do
 			local bu = select(i, MissionPage:GetChildren())
-			if bu and bu:GetObjectType() == "Button" and not bu.styled then
+			if bu and bu:IsObjectType("Button") and not bu.styled then
 				F.Reskin(bu)
 				bu:SetSize(50, 45)
 				bu.styled = true
