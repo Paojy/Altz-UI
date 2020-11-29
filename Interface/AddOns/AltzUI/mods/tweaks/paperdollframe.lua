@@ -6,6 +6,7 @@ local F = unpack(AuroraClassic)
 	undress:SetSize(80, 20)
 	undress:SetPoint("TOPLEFT", CharacterWristSlot, "BOTTOMLEFT", 0, -5)
 	undress:SetScript("OnClick", function()
+		if InCombatLockdown() then return end
 	    E = {16,17,1,3,5,6,7,8,9,10}
 		Z = {}
 		n = Z[1] and #Z+1 or 1
