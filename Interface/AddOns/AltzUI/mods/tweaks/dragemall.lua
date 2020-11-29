@@ -60,7 +60,6 @@ local lodFrames = {
 	Blizzard_AzeriteEssenceUI	= { ["AzeriteEssenceUI"] = false },
 	Blizzard_AzeriteRespecUI	= { ["AzeriteRespecFrame"] = false },
 	Blizzard_AzeriteUI			= { ["AzeriteEmpoweredItemUI"] = false },
-	Blizzard_BarbershopUI		= { ["BarberShopFrame"] = false },
 	Blizzard_BindingUI			= { ["KeyBindingFrame"] = false },
 	Blizzard_BlackMarketUI		= { ["BlackMarketFrame"] = false },
 	Blizzard_Calendar			= { ["CalendarFrame"] = false, ["CalendarCreateEventFrame"] = true },

@@ -68,7 +68,6 @@ local function toggleButtonGrid()
 		local showgrid = tonumber(GetCVar("alwaysShowActionBars"))
 		buttonShowGrid("ActionButton", showgrid)
 		buttonShowGrid("MultiBarBottomRightButton", showgrid)
-		buttonShowGrid("NDui_CustomBarButton", showgrid)
 		if updateAfterCombat then
 			eframe:UnregisterEvent("PLAYER_REGEN_ENABLED", toggleButtonGrid)
 			updateAfterCombat = false
@@ -115,8 +114,6 @@ function blizzHider:PLAYER_LOGIN()
 	_G.InterfaceOptionsActionBarsPanelStackRightBarsText:Hide() -- hides the !
 	_G.InterfaceOptionsActionBarsPanelRightTwoText:SetTextColor(1,1,1) -- no yellow
 	_G.InterfaceOptionsActionBarsPanelRightTwoText.SetTextColor = noop -- i said no yellow
-	_G.InterfaceOptionsActionBarsPanelAlwaysShowActionBars:SetScale(0.0001)
-	_G.InterfaceOptionsActionBarsPanelAlwaysShowActionBars:SetAlpha(0)
 	_G.InterfaceOptionsActionBarsPanelLockActionBars:SetScale(0.0001)
 	_G.InterfaceOptionsActionBarsPanelLockActionBars:SetAlpha(0)
 end
