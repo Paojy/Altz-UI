@@ -12,7 +12,7 @@ L["跳过"] = "Skip Setup Wizard"
 L["打开设置向导"] = "/Setup Open Setup Wizard"
 L["完成"] = "Finish"
 L["更新日志"] = "Update Log"
-L["更新日志tip"] = "New feature: Update 9.0 Raid&Dungeon debuff list\nNew feature: Automatically add newly discovered Raid&Dungeon debuffs to the list\nNew feature: Raid&Dungeon debuff blacklist filtering\nDelete Azerite Bar\nUpdate Aurora"
+L["更新日志tip"] = "New feature: Update 9.0 Raid&Dungeon debuff list\nNew feature: Automatically add newly discovered Raid&Dungeon debuffs to the list\nNew feature: Raid&Dungeon debuff blacklist filtering\nNew feature: Quickly delete macros\nDelete Azerite Bar\nUpdate Aurora"
 L["寻求帮助"] = "Help"
 L["粘贴"] = "Press Ctrl + c to copy the link"
 
