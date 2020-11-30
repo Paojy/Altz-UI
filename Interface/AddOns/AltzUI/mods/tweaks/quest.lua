@@ -424,7 +424,7 @@ if autoquests then
 
         for slot = 1, GetContainerNumSlots(bag) do
             local _, id, active = GetContainerItemQuestInfo(bag, slot)
-            if(id and not active and not IsQuestFlaggedCompleted(id) and not ignoredItems[id]) then
+            if(id and not active and not C_QuestLog.IsQuestFlaggedCompleted(id) and not ignoredItems[id]) then
                 questTip:SetOwner(UIParent, "ANCHOR_NONE")
                 questTip:ClearLines()
                 questTip:SetBagItem(bag, slot)
