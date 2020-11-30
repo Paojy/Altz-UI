@@ -274,3 +274,13 @@ T.CheckRole = function()
 	end
 	return role
 end
+
+T.GetIconLink = function(spellID)
+	local icon = select(3, GetSpellInfo(spellID))
+	return "|T"..icon..":12:12:0:0:64:64:4:60:4:60|t"..GetSpellLink(spellID)
+end
+
+local function Click(b)
+	local func = b:GetScript("OnMouseDown")
+	func(b)
+end

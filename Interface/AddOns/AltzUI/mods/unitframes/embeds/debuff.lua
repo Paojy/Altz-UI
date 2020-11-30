@@ -138,6 +138,9 @@ checkEncounter:SetScript("OnEvent", function(self, event, ...)
 	end
 end)
 
+local gold_str = "|Hgarrmission:altz_config_altz::%s::%s::%s::%s|h|cFFFFD700[%s]|r|h"
+local red_str = "|Hgarrmission:altz_delete_altz::%s::%s::%s::%s|h|cFFDC143C[%s]|r|h"
+
 local CustomFilter = function(...)
     local name, _, _, dtype, _, _, caster, spellID, isBossDebuff, castByPlayer = ...
 	
@@ -156,20 +159,20 @@ local CustomFilter = function(...)
 			if isBossDebuff then -- BOSS
 				if aCoreCDB["RaidDebuff"][ins][current_encounter] then
 					if not aCoreCDB["RaidDebuff"][ins][current_encounter][name] then
-						print(name, caster and UnitName(caster) or "/", isBossDebuff, castByPlayer)
+						--print(name, caster and UnitName(caster) or "/", isBossDebuff, castByPlayer)
 						aCoreCDB["RaidDebuff"][ins][current_encounter][name] = {id = spellID, level = aCoreCDB["UnitframeOptions"]["debuff_auto_add_level"]}
-						print(current_encounter.."成功添加法术"..name.."  显示层级"..aCoreCDB["UnitframeOptions"]["debuff_auto_add_level"])	
+						print(format(L["添加团队减益"], current_encounter, T.GetIconLink(spellID)), format(gold_str, ins, current_encounter, name, spellID, L["设置"]), format(red_str, ins, current_encounter, name, spellID, L["删除并加入黑名单"]))
 					end
 				else
-					print("未找到，当前boss"..current_encounter)
+					print(format(L["添加团队减益失败"], name, spellID), format(gold_str, ins, current_encounter, name, spellID, L["设置"]))
 				end	
 				priority = aCoreCDB["UnitframeOptions"]["debuff_auto_add_level"]				
 			elseif not castByPlayer then --小怪
 				if aCoreCDB["RaidDebuff"][ins]["Trash"] then
 					if not aCoreCDB["RaidDebuff"][ins]["Trash"][name] then
-						print(name, caster and UnitName(caster) or "/", isBossDebuff, castByPlayer)
+						--print(name, caster and UnitName(caster) or "/", isBossDebuff, castByPlayer)
 						aCoreCDB["RaidDebuff"][ins]["Trash"][name] = {id = spellID, level = aCoreCDB["UnitframeOptions"]["debuff_auto_add_level"]}
-						print("Trash".."成功添加法术"..name.."  显示层级"..aCoreCDB["UnitframeOptions"]["debuff_auto_add_level"])
+						print(format(L["添加团队减益"], L["杂兵"], T.GetIconLink(spellID)), format(gold_str, ins, "Trash", name, spellID, L["设置"]), format(red_str, ins, "Trash", name, spellID, L["删除并加入黑名单"]))
 					end
 				end
 				priority = aCoreCDB["UnitframeOptions"]["debuff_auto_add_level"]

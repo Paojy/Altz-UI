@@ -70,6 +70,7 @@
 	<Script file="mods\tweaks\focus.lua"/>
 	<Script file="mods\tweaks\hoverbind.lua"/>
 	<Script file="mods\tweaks\inspectfix.lua"/>
+	<Script file="mods\tweaks\macroframe.lua"/>
 	<Script file="mods\tweaks\paperdollframe.lua"/>
 	<Script file="mods\tweaks\tweaks.lua"/>
 	<Script file="mods\tweaks\watchframe.lua"/>

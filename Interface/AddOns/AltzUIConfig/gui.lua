@@ -4,7 +4,7 @@ local F = unpack(AuroraClassic)
 --====================================================--
 --[[             -- GUI Main Frame --               ]]--
 --====================================================--
-GUI = CreateFrame("Frame", G.uiname.."GUI Main Frame")
+local GUI = CreateFrame("Frame", G.uiname.."GUI Main Frame")
 GUI:SetSize(650, 550)
 GUI:SetPoint("CENTER", UIParent, "CENTER")
 GUI:SetFrameStrata("HIGH")
@@ -1808,6 +1808,7 @@ local function LineUpRaidDebuffList(parent, raidname)
 			sort(t, function(a,b) return a.level > b.level or (a.level == b.level and a.id > b.id) end)
 			for a = 1, #t do
 				if _G[G.uiname.."RaidDebuff"..raidname..boss..t[a].id] then
+					_G[G.uiname.."RaidDebuff"..raidname..boss..t[a].id]:Show()
 					_G[G.uiname.."RaidDebuff"..raidname..boss..t[a].id]:SetPoint("TOPLEFT", parent, "TOPLEFT", 10, -10-i*30)
 				else
 					print(G.uiname.."RaidDebuff"..raidname..boss..GetSpellInfo(t[a].id))
@@ -1907,179 +1908,225 @@ end
 local raidindex = 1
 local function CreateRaidDebuffOptions()
 	for raidname, bosstable in pairs (aCoreCDB["RaidDebuff"]) do
-		local frame = CreateFrame("ScrollFrame", G.uiname.."Raiddebuff Frame"..raidindex, RFInnerframe.raiddebuff, "UIPanelScrollFrameTemplate")
-		frame:SetPoint("TOPLEFT", 40, -95)
-		frame:SetPoint("BOTTOMRIGHT", -50, 20)
-		frame:Hide()
-		
-		frame.SFAnchor = CreateFrame("Frame", G.uiname.."Raiddebuff Frame"..raidindex.."ScrollAnchor", frame)
-		frame.SFAnchor:SetPoint("TOPLEFT", frame, "TOPLEFT", 0, -3)
-		frame.SFAnchor:SetWidth(frame:GetWidth()-30)
-		frame.SFAnchor:SetHeight(frame:GetHeight()+200)
-		frame.SFAnchor:SetFrameLevel(frame:GetFrameLevel()+1)
-		
-		frame:SetScrollChild(frame.SFAnchor)
-		
-		F.ReskinScroll(_G[G.uiname.."Raiddebuff Frame"..raidindex.."ScrollBar"])
-		
-		frame:SetScript("OnShow", function()
-			CreateEncounterDebuffList(frame.SFAnchor, raidname, bosstable)
-		end)
-		
-		local BossDD = CreateFrame("Frame", G.uiname..raidname.."SelectBossDropdown", frame, "UIDropDownMenuTemplate")
-		BossDD:SetPoint("BOTTOMLEFT", frame, "TOPLEFT", 10, 5)
-		F.ReskinDropDown(BossDD)
-
-		BossDD.name = T.createtext(BossDD, "OVERLAY", 13, "OUTLINE", "LEFT")
-		BossDD.name:SetPoint("BOTTOMRIGHT", BossDD, "BOTTOMLEFT", 15, 12)
-		BossDD.name:SetText("BOSS")
-
-		UIDropDownMenu_SetWidth(BossDD, 100)
-		UIDropDownMenu_SetText(BossDD, "")
-
-		UIDropDownMenu_Initialize(BossDD, function(self, level, menuList)
-			local info = UIDropDownMenu_CreateInfo()
+		if G.Raids[raidname] then
+			local frame = CreateFrame("ScrollFrame", G.uiname.."Raiddebuff Frame"..raidindex, RFInnerframe.raiddebuff, "UIPanelScrollFrameTemplate")
+			frame:SetPoint("TOPLEFT", 40, -95)
+			frame:SetPoint("BOTTOMRIGHT", -50, 20)
+			frame:Hide()
 			
-			if not G.Raids[raidname] then
-				aCoreCDB["RaidDebuff"][raidname] = nil
-				return
+			frame.SFAnchor = CreateFrame("Frame", G.uiname.."Raiddebuff Frame"..raidindex.."ScrollAnchor", frame)
+			frame.SFAnchor:SetPoint("TOPLEFT", frame, "TOPLEFT", 0, -3)
+			frame.SFAnchor:SetWidth(frame:GetWidth()-30)
+			frame.SFAnchor:SetHeight(frame:GetHeight()+200)
+			frame.SFAnchor:SetFrameLevel(frame:GetFrameLevel()+1)
+			
+			frame:SetScrollChild(frame.SFAnchor)
+			
+			F.ReskinScroll(_G[G.uiname.."Raiddebuff Frame"..raidindex.."ScrollBar"])
+			
+			frame:SetScript("OnShow", function()
+				CreateEncounterDebuffList(frame.SFAnchor, raidname, bosstable)
+			end)
+			
+			local BossDD = CreateFrame("Frame", G.uiname..raidname.."SelectBossDropdown", frame, "UIDropDownMenuTemplate")
+			BossDD:SetPoint("BOTTOMLEFT", frame, "TOPLEFT", 10, 5)
+			F.ReskinDropDown(BossDD)
+	
+			BossDD.name = T.createtext(BossDD, "OVERLAY", 13, "OUTLINE", "LEFT")
+			BossDD.name:SetPoint("BOTTOMRIGHT", BossDD, "BOTTOMLEFT", 15, 12)
+			BossDD.name:SetText("BOSS")
+	
+			UIDropDownMenu_SetWidth(BossDD, 100)
+			UIDropDownMenu_SetText(BossDD, G.Raids[raidname][1])
+	
+			UIDropDownMenu_Initialize(BossDD, function(self, level, menuList)
+				local info = UIDropDownMenu_CreateInfo()
+				
+				if not G.Raids[raidname] then
+					aCoreCDB["RaidDebuff"][raidname] = nil
+					return
+				end
+				
+				for i = 1, #(G.Raids[raidname]) do
+					info.text = G.Raids[raidname][i]
+					info.func = function()
+						UIDropDownMenu_SetText(BossDD, G.Raids[raidname][i])
+						CloseDropDownMenus()
+					end
+					UIDropDownMenu_AddButton(info)
+				end
+			end)
+			
+			frame.BossDD = BossDD
+			
+			local Spellinput = CreateFrame("EditBox", G.uiname..raidname.."Spell Input", frame, "BackdropTemplate")
+			Spellinput:SetSize(60, 20)
+			Spellinput:SetPoint("LEFT", BossDD, "RIGHT", -5, 2)
+			F.CreateBD(Spellinput)
+			
+			Spellinput:SetFont(GameFontHighlight:GetFont(), 12, "OUTLINE")
+			Spellinput:SetAutoFocus(false)
+			Spellinput:SetTextInsets(3, 0, 0, 0)
+	
+			Spellinput:SetScript("OnShow", function(self) self:SetText(L["输入法术ID"]) end)
+			Spellinput:SetScript("OnEditFocusGained", function(self) self:HighlightText() end)
+			Spellinput:SetScript("OnEscapePressed", function(self) self:ClearFocus() self:SetText(L["输入法术ID"]) end)
+			Spellinput:SetScript("OnEnterPressed", function(self) self:ClearFocus() end)
+			
+			frame.Spellinput = Spellinput
+			
+			local Levelinput = CreateFrame("EditBox", G.uiname..raidname.."Level Input", frame, "BackdropTemplate")
+			Levelinput:SetSize(60, 20)
+			Levelinput:SetPoint("LEFT", Spellinput, "RIGHT", 5, 0)
+			F.CreateBD(Levelinput)
+	
+			Levelinput:SetFont(GameFontHighlight:GetFont(), 12, "OUTLINE")
+			Levelinput:SetAutoFocus(false)
+			Levelinput:SetTextInsets(3, 0, 0, 0)
+	
+			Levelinput:SetScript("OnShow", function(self) self:SetText(L["输入层级"]) end)
+			Levelinput:SetScript("OnEditFocusGained", function(self) self:HighlightText() end)
+			Levelinput:SetScript("OnEscapePressed", function(self) self:ClearFocus() self:SetText(L["输入层级"]) end)
+			Levelinput:SetScript("OnEnterPressed", function(self) self:ClearFocus() end)
+			
+			frame.Levelinput = Levelinput
+			
+			local Add = CreateFrame("Button", G.uiname..raidname.."Add Debuff Button", frame, "UIPanelButtonTemplate")
+			Add:SetPoint("LEFT", Levelinput, "RIGHT", 10, 0)
+			Add:SetSize(70, 20)
+			Add:SetText(ADD)
+			T.resize_font(Add.Text)
+			F.Reskin(Add)
+			Add:SetScript("OnClick", function(self)
+				local boss = UIDropDownMenu_GetText(BossDD)
+				local spellID = tonumber(Spellinput:GetText())
+				local level = tonumber(Levelinput:GetText())
+				if not spellID then
+					StaticPopupDialogs[G.uiname.."incorrect spellid"].text = "|cff7FFF00".."/".." |r"..L["不是一个有效的法术ID"]
+					StaticPopup_Show(G.uiname.."incorrect spellid")
+				elseif not GetSpellInfo(spellID) then
+					StaticPopupDialogs[G.uiname.."incorrect spellid"].text = "|cff7FFF00"..spellID.." |r"..L["不是一个有效的法术ID"]
+					StaticPopup_Show(G.uiname.."incorrect spellid")
+				elseif not level then
+					StaticPopupDialogs[G.uiname.."incorrect level"].text = "|cff7FFF00"..Levelinput:GetText().." |r"..L["必须是一个数字"]
+					StaticPopup_Show(G.uiname.."incorrect level")
+				elseif bosstable[boss] then
+					local name = GetSpellInfo(spellID)
+					if aCoreCDB["RaidDebuff"][raidname][boss][name] then -- 已经有这个ID ，改一下层级
+						aCoreCDB["RaidDebuff"][raidname][boss][name]["level"] = level
+						_G[G.uiname.."RaidDebuff"..raidname..boss..spellID].level:SetText(level)
+						LineUpRaidDebuffList(frame.SFAnchor, raidname)
+					elseif _G[G.uiname.."RaidDebuff"..raidname..boss..spellID] then -- 已经有这个框体
+						aCoreCDB["RaidDebuff"][raidname][boss][name] = {id = spellID, level = level,}
+						_G[G.uiname.."RaidDebuff"..raidname..boss..spellID].level:SetText(level)
+						_G[G.uiname.."RaidDebuff"..raidname..boss..spellID]:Show()
+						LineUpRaidDebuffList(frame.SFAnchor, raidname)
+					else
+						aCoreCDB["RaidDebuff"][raidname][boss][name] = {id = spellID, level = level,}
+						CreateEncounterDebuffButton(frame.SFAnchor, raidname, boss, name, spellID, level)
+						LineUpRaidDebuffList(frame.SFAnchor, raidname)
+					end
+				end
+			end)
+			
+			frame.Add = Add
+			
+			local Back = CreateFrame("Button", nil, frame)
+			Back:SetSize(26, 26)
+			Back:SetNormalTexture("Interface\\BUTTONS\\UI-Panel-CollapseButton-Up")
+			Back:SetPushedTexture("Interface\\BUTTONS\\UI-Panel-CollapseButton-Down")
+			Back:SetPoint("LEFT", Add, "RIGHT", 2, 0)
+			Back:SetScript("OnClick", function() 
+				local children = {RFInnerframe.raiddebuff:GetChildren()}
+				for i = 1, #children do
+					if children[i]:GetName():match(G.uiname.."Raiddebuff Frame") then
+						children[i]:Hide()
+					end
+				end
+				RFDebuff_InnerFrame:Show()
+			end)
+			
+			local Reset = CreateFrame("Button", G.uiname..raidname.."Reset RaidDebuff Button", frame, "UIPanelButtonTemplate")
+			Reset:SetPoint("BOTTOM", ReloadButton, "TOP", 0, 10)
+			Reset:SetSize(100, 25)
+			Reset:SetText(L["重置"])
+			T.resize_font(Reset.Text)
+			F.Reskin(Reset)
+			Reset:SetScript("OnClick", function(self)
+				StaticPopupDialogs[G.uiname.."Reset Confirm"].text = format(L["重置确认"], raidname)
+				StaticPopupDialogs[G.uiname.."Reset Confirm"].OnAccept = function()
+					aCoreCDB["RaidDebuff"][raidname] = nil
+					ReloadUI()
+				end
+				StaticPopup_Show(G.uiname.."Reset Confirm")
+			end)
+			
+			local tab = CreateFrame("Button", G.uiname.."Raiddebuff Tab"..raidindex, RFDebuff_InnerFrame, "UIPanelButtonTemplate")
+			tab:SetFrameLevel(RFDebuff_InnerFrame:GetFrameLevel()+2)
+			tab:SetSize(150, 25)
+			tab:SetText(raidname)
+			T.resize_font(tab.Text)
+			F.Reskin(tab)
+		
+			tab:HookScript("OnMouseDown", function(self)
+				RFDebuff_InnerFrame:Hide()
+				frame:Show()
+			end)
+		
+			if mod(raidindex, 2) == 1 then
+				tab:SetPoint("TOPLEFT", RFDebuff_InnerFrame, "TOPLEFT", 20, -floor(raidindex/2)*35-20)
+			elseif mod(raidindex, 2) == 0 then
+				tab:SetPoint("TOPLEFT", RFDebuff_InnerFrame, "TOPLEFT", 190, -floor(raidindex/2-1)*35-20)
 			end
 			
-			for i = 1, #(G.Raids[raidname]) do
-				info.text = G.Raids[raidname][i]
-				info.func = function()
-					UIDropDownMenu_SetText(BossDD, G.Raids[raidname][i])
-					CloseDropDownMenus()
-				end
-				UIDropDownMenu_AddButton(info)
-			end
-		end)
-		
-		frame.BossDD = BossDD
-		
-		local Spellinput = CreateFrame("EditBox", G.uiname..raidname.."Spell Input", frame, "BackdropTemplate")
-		Spellinput:SetSize(60, 20)
-		Spellinput:SetPoint("LEFT", BossDD, "RIGHT", -5, 2)
-		F.CreateBD(Spellinput)
-		
-		Spellinput:SetFont(GameFontHighlight:GetFont(), 12, "OUTLINE")
-		Spellinput:SetAutoFocus(false)
-		Spellinput:SetTextInsets(3, 0, 0, 0)
-
-		Spellinput:SetScript("OnShow", function(self) self:SetText(L["输入法术ID"]) end)
-		Spellinput:SetScript("OnEditFocusGained", function(self) self:HighlightText() end)
-		Spellinput:SetScript("OnEscapePressed", function(self) self:ClearFocus() self:SetText(L["输入法术ID"]) end)
-		Spellinput:SetScript("OnEnterPressed", function(self) self:ClearFocus() end)
-		
-		frame.Spellinput = Spellinput
-		
-		local Levelinput = CreateFrame("EditBox", G.uiname..raidname.."Level Input", frame, "BackdropTemplate")
-		Levelinput:SetSize(60, 20)
-		Levelinput:SetPoint("LEFT", Spellinput, "RIGHT", 5, 0)
-		F.CreateBD(Levelinput)
-
-		Levelinput:SetFont(GameFontHighlight:GetFont(), 12, "OUTLINE")
-		Levelinput:SetAutoFocus(false)
-		Levelinput:SetTextInsets(3, 0, 0, 0)
-
-		Levelinput:SetScript("OnShow", function(self) self:SetText(L["输入层级"]) end)
-		Levelinput:SetScript("OnEditFocusGained", function(self) self:HighlightText() end)
-		Levelinput:SetScript("OnEscapePressed", function(self) self:ClearFocus() self:SetText(L["输入层级"]) end)
-		Levelinput:SetScript("OnEnterPressed", function(self) self:ClearFocus() end)
-		
-		frame.Levelinput = Levelinput
-		
-		local Add = CreateFrame("Button", G.uiname..raidname.."Add Debuff Button", frame, "UIPanelButtonTemplate")
-		Add:SetPoint("LEFT", Levelinput, "RIGHT", 10, 0)
-		Add:SetSize(70, 20)
-		Add:SetText(ADD)
-		T.resize_font(Add.Text)
-		F.Reskin(Add)
-		Add:SetScript("OnClick", function(self)
-			local boss = UIDropDownMenu_GetText(BossDD)
-			local spellID = tonumber(Spellinput:GetText())
-			local level = tonumber(Levelinput:GetText())
-			if not spellID or not GetSpellInfo(spellID) then
-				StaticPopupDialogs[G.uiname.."incorrect spellid"].text = "|cff7FFF00"..spellID or "/".." |r"..L["不是一个有效的法术ID"]
-				StaticPopup_Show(G.uiname.."incorrect spellid")
-			elseif not level then
-				StaticPopupDialogs[G.uiname.."incorrect level"].text = "|cff7FFF00"..Levelinput:GetText().." |r"..L["必须是一个数字"]
-				StaticPopup_Show(G.uiname.."incorrect level")
-			elseif bosstable[boss] then
-				local name = GetSpellInfo(spellID)
-				if aCoreCDB["RaidDebuff"][raidname][boss][name] then -- 已经有这个ID ，改一下层级
-					aCoreCDB["RaidDebuff"][raidname][boss][name]["level"] = level
-					_G[G.uiname.."RaidDebuff"..raidname..boss..spellID].level:SetText(level)
-					LineUpRaidDebuffList(frame.SFAnchor, raidname)
-				elseif _G[G.uiname.."RaidDebuff"..raidname..boss..spellID] then -- 已经有这个框体
-					aCoreCDB["RaidDebuff"][raidname][boss][name] = {id = spellID, level = level,}
-					_G[G.uiname.."RaidDebuff"..raidname..boss..spellID].level:SetText(level)
-					_G[G.uiname.."RaidDebuff"..raidname..boss..spellID]:Show()
-					LineUpRaidDebuffList(frame.SFAnchor, raidname)
-				else
-					aCoreCDB["RaidDebuff"][raidname][boss][name] = {id = spellID, level = level,}
-					CreateEncounterDebuffButton(frame.SFAnchor, raidname, boss, name, spellID, level)
-					LineUpRaidDebuffList(frame.SFAnchor, raidname)
-				end
-			end
-		end)
-		
-		frame.Add = Add
-		
-		local Back = CreateFrame("Button", nil, frame)
-		Back:SetSize(26, 26)
-		Back:SetNormalTexture("Interface\\BUTTONS\\UI-Panel-CollapseButton-Up")
-		Back:SetPushedTexture("Interface\\BUTTONS\\UI-Panel-CollapseButton-Down")
-		Back:SetPoint("LEFT", Add, "RIGHT", 2, 0)
-		Back:SetScript("OnClick", function() 
-			local children = {RFInnerframe.raiddebuff:GetChildren()}
-			for i = 1, #children do
-				if children[i]:GetName():match(G.uiname.."Raiddebuff Frame") then
-					children[i]:Hide()
-				end
-			end
-			RFDebuff_InnerFrame:Show()
-		end)
-		
-		local Reset = CreateFrame("Button", G.uiname..raidname.."Reset RaidDebuff Button", frame, "UIPanelButtonTemplate")
-		Reset:SetPoint("BOTTOM", ReloadButton, "TOP", 0, 10)
-		Reset:SetSize(100, 25)
-		Reset:SetText(L["重置"])
-		T.resize_font(Reset.Text)
-		F.Reskin(Reset)
-		Reset:SetScript("OnClick", function(self)
-			StaticPopupDialogs[G.uiname.."Reset Confirm"].text = format(L["重置确认"], raidname)
-			StaticPopupDialogs[G.uiname.."Reset Confirm"].OnAccept = function()
-				aCoreCDB["RaidDebuff"][raidname] = nil
-				ReloadUI()
-			end
-			StaticPopup_Show(G.uiname.."Reset Confirm")
-		end)
-		
-		local tab = CreateFrame("Button", G.uiname.."Raiddebuff Tab"..raidindex, RFDebuff_InnerFrame, "UIPanelButtonTemplate")
-		tab:SetFrameLevel(RFDebuff_InnerFrame:GetFrameLevel()+2)
-		tab:SetSize(150, 25)
-		tab:SetText(raidname)
-		T.resize_font(tab.Text)
-		F.Reskin(tab)
-	
-		tab:HookScript("OnMouseDown", function(self)
-			RFDebuff_InnerFrame:Hide()
-			frame:Show()
-		end)
-	
-		if mod(raidindex, 2) == 1 then
-			tab:SetPoint("TOPLEFT", RFDebuff_InnerFrame, "TOPLEFT", 20, -floor(raidindex/2)*35-20)
-		elseif mod(raidindex, 2) == 0 then
-			tab:SetPoint("TOPLEFT", RFDebuff_InnerFrame, "TOPLEFT", 190, -floor(raidindex/2-1)*35-20)
+			RFDebuff_InnerFrame["tab"..raidindex] = tab
+			RFDebuff_InnerFrame["frame"..raidindex] = frame
+			
+			raidindex = raidindex +1
 		end
-		
-		RFDebuff_InnerFrame["tab"..raidindex] = tab
-		RFDebuff_InnerFrame["frame"..raidindex] = frame
-		
-		raidindex = raidindex +1
 	end
 end
+
+local function Click(b)
+	local func = b:GetScript("OnMouseDown") or b:GetScript("OnClick")
+	func(b)
+end
+
+hooksecurefunc("SetItemRef", function(link, text)
+  if link:find("garrmission:altz") then
+	local _, _, ins, boss, spell, spellID = string.find(text, "altz::([^%]]+)%::([^%]]+)%::([^%]]+)%::([^%]]+)%|h|c")
+	if string.find(text, "config") then	
+		Click(GUI.tab6)
+		Click(RFInnerframe.tab8)
+		if ins and aCoreCDB["RaidDebuff"][ins] then
+			for i = 1, RFDebuff_InnerFrame:GetNumChildren() do
+				if RFDebuff_InnerFrame["tab"..i] and RFDebuff_InnerFrame["tab"..i]:GetText() == ins then
+					Click(RFDebuff_InnerFrame["tab"..i])
+					if aCoreCDB["RaidDebuff"][ins][boss] then
+						UIDropDownMenu_SetText(RFDebuff_InnerFrame["frame"..i].BossDD, boss)
+					else
+						UIDropDownMenu_SetText(RFDebuff_InnerFrame["frame"..i].BossDD, G.Raids[ins][1])
+					end
+					RFDebuff_InnerFrame["frame"..i].Spellinput:SetText(spellID)
+					RFDebuff_InnerFrame["frame"..i].Levelinput:SetText(aCoreCDB["UnitframeOptions"]["debuff_auto_add_level"])
+				end
+			end
+		end
+		GUI:Show()
+	elseif string.find(text, "delete") then
+		aCoreCDB["RaidDebuff"][ins][boss][spell] = nil
+		if ins and aCoreCDB["RaidDebuff"][ins] then
+			for i = 1, RFDebuff_InnerFrame:GetNumChildren() do
+				if RFDebuff_InnerFrame["tab"..i] and RFDebuff_InnerFrame["tab"..i]:GetText() == ins and _G[G.uiname.."RaidDebuff"..ins..boss..spellID] then
+					Click(_G[G.uiname.."RaidDebuff"..ins..boss..spellID].close)
+				end
+			end
+		end
+		aCoreCDB["CooldownAura"]["Debuffs_Black"][spell] = {}
+		aCoreCDB["CooldownAura"]["Debuffs_Black"][spell]["id"] = spellID
+	end
+  end
+end)
 
 local function LineUpCooldownAuraList(parent, auratype)
 	local t = {}
@@ -2092,6 +2139,7 @@ local function LineUpCooldownAuraList(parent, auratype)
 		sort(t, function(a,b) return a.id > b.id end)
 	end
 	for i = 1, #t do
+		_G[G.uiname.."Cooldown"..auratype..t[i].id]:Show()
 		_G[G.uiname.."Cooldown"..auratype..t[i].id]:SetPoint("TOPLEFT", parent, "TOPLEFT", auratype == "Buffs" and 16 or 10, 20-i*30)
 	end
 end
@@ -2200,7 +2248,9 @@ local function CreateCooldownAuraOption(auratype, auratable, name, parent, show)
 		frame = parent
 	end
 	
-	CreateCooldownAuraList(frame.SFAnchor, auratype, auratable)
+	frame:SetScript("OnShow", function()
+		CreateCooldownAuraList(frame.SFAnchor, auratype, auratable)
+	end)
 	
 	local Spellinput = CreateFrame("EditBox", G.uiname..auratype.."Spell Input", frame, "BackdropTemplate")
 	Spellinput:SetSize(120, 20)
@@ -2275,7 +2325,7 @@ local function CreateCooldownAuraOption(auratype, auratable, name, parent, show)
 					LineUpCooldownAuraList(frame.SFAnchor, auratype)
 				end
 			end
-		else
+		else -- 黑名单
 			spellID = tonumber(Spellinput:GetText())
 			if not spellID or not GetSpellInfo(spellID) then
 				StaticPopupDialogs[G.uiname.."incorrect spellid"].text = "|cff7FFF00"..spellID.." |r"..L["不是一个有效的法术ID"]
