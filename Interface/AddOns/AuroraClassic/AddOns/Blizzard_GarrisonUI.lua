@@ -226,9 +226,8 @@ local function UpdateSpellAbilities(self, followerInfo)
 		local abilityFrame = self.autoSpellPool:Acquire()
 		if not abilityFrame.styled then
 			F.ReskinIcon(abilityFrame.Icon)
-			if abilityFrame.SpellBorder then
-				abilityFrame.SpellBorder:Hide()
-			end
+			if abilityFrame.IconMask then abilityFrame.IconMask:Hide() end
+			if abilityFrame.SpellBorder then abilityFrame.SpellBorder:Hide() end
 
 			abilityFrame.styled = true
 		end
@@ -939,6 +938,10 @@ C.themes["Blizzard_GarrisonUI"] = function()
 	end
 	CovenantMissionFrameMissions.RaisedFrameEdges:SetAlpha(0)
 
+	hooksecurefunc(CovenantMissionFrame, "SetupTabs", function(self)
+		self.MapTab:SetShown(not self.Tab2:IsShown())
+	end)
+
 	CombatLog:DisableDrawLayer("BACKGROUND")
 	CombatLog.ElevatedFrame:SetAlpha(0)
 	F.StripTextures(CombatLog.CombatLogMessageFrame)
@@ -1003,7 +1006,7 @@ C.themes["Blizzard_GarrisonUI"] = function()
 	f:RegisterEvent("ADDON_LOADED")
 	f:SetScript("OnEvent", function(_, event, addon)
 		if addon == "GarrisonMissionManager" then
-			for _, frame in next, {GarrisonMissionFrame, OrderHallMissionFrame, BFAMissionFrame, CovenantMissionFrame} do
+			for _, frame in next, {GarrisonMissionFrame, OrderHallMissionFrame, BFAMissionFrame} do
 				if frame then
 					hooksecurefunc(frame.MissionTab.MissionList, "Update", buttonOnUpdate)
 					frame.MissionTab.MissionPage:HookScript("OnShow", buttonOnShow)
@@ -1014,29 +1017,29 @@ C.themes["Blizzard_GarrisonUI"] = function()
 		end
 	end)
 
+	local function reskinWidgetFont(font, r, g, b)
+		if not AuroraClassicDB.FontOutline then return end
+		if not font then return end
+		font:SetTextColor(r, g, b)
+	end
+
 	-- WarPlan
 	if IsAddOnLoaded("WarPlan") then
-		local function reskinWarPlanFont(font, r, g, b)
-			if not AuroraClassicDB.FontOutline then return end
-			if not font then return end
-			font:SetTextColor(r, g, b)
-		end
-
 		local function reskinWarPlanMissions(self)
 			local missions = self.TaskBoard.Missions
 			for i = 1, #missions do
 				local button = missions[i]
 				if not button.styled then
-					reskinWarPlanFont(button.XPReward, 1, 1, 1)
-					reskinWarPlanFont(button.Description, .8, .8, .8)
-					reskinWarPlanFont(button.CDTDisplay, 1, 1, 1)
+					reskinWidgetFont(button.XPReward, 1, 1, 1)
+					reskinWidgetFont(button.Description, .8, .8, .8)
+					reskinWidgetFont(button.CDTDisplay, 1, 1, 1)
 
 					local groups = button.Groups
 					if groups then
 						for j = 1, #groups do
 							local group = groups[j]
 							F.Reskin(group)
-							reskinWarPlanFont(group.Features, 1, .8, 0)
+							reskinWidgetFont(group.Features, 1, .8, 0)
 						end
 					end
 
@@ -1053,7 +1056,7 @@ C.themes["Blizzard_GarrisonUI"] = function()
 			F.SetBD(WarPlanFrame)
 			F.StripTextures(WarPlanFrame.ArtFrame)
 			F.ReskinClose(WarPlanFrame.ArtFrame.CloseButton)
-			reskinWarPlanFont(WarPlanFrame.ArtFrame.TitleText, 1, .8, 0)
+			reskinWidgetFont(WarPlanFrame.ArtFrame.TitleText, 1, .8, 0)
 
 			reskinWarPlanMissions(WarPlanFrame)
 			WarPlanFrame:HookScript("OnShow", reskinWarPlanMissions)
@@ -1066,6 +1069,62 @@ C.themes["Blizzard_GarrisonUI"] = function()
 				F.ReskinIcon(entry.Icon)
 				entry.Name:SetFontObject("Number12Font")
 				entry.Detail:SetFontObject("Number12Font")
+			end
+		end)
+	end
+
+	-- VenturePlan
+	if IsAddOnLoaded("VenturePlan") then
+		local VenturePlanFrame
+
+		local function reskinVenturePlan(self)
+			local missions = self.MissionList.Missions
+			for i = 1, #missions do
+				local mission = missions[i]
+				if not mission.styled then
+					reskinWidgetFont(mission.Description, .8, .8, .8)
+					reskinWidgetFont(mission.CDTDisplay, 1, .8, 0)
+					F.Reskin(mission.ViewButton)
+
+					for j = 1, mission.statLine:GetNumRegions() do
+						local stat = select(j, mission.statLine:GetRegions())
+						if stat and stat:IsObjectType("FontString") then
+							reskinWidgetFont(stat, 1, 1, 1)
+						end
+					end
+
+					mission.styled = true
+				end
+			end
+		end
+
+		C_Timer.After(.1, function()
+			local missionTab = CovenantMissionFrame.MissionTab
+			for i = 1, missionTab:GetNumChildren() do
+				local child = select(i, missionTab:GetChildren())
+				if child and child.MissionList then
+					VenturePlanFrame = child
+				end
+			end
+			if not VenturePlanFrame then return end
+
+			reskinVenturePlan(VenturePlanFrame)
+			VenturePlanFrame:HookScript("OnShow", reskinVenturePlan)
+			F.Reskin(VenturePlanFrame.CopyBox.ResetButton)
+			F.ReskinClose(VenturePlanFrame.CopyBox.CloseButton2)
+
+			local missionBoard = CovenantMissionFrame.MissionTab.MissionPage.Board
+			for i = 1, missionBoard:GetNumChildren() do
+				local child = select(i, missionBoard:GetChildren())
+				if child and child:IsObjectType("Button") then
+					F.ReskinIcon(child:GetNormalTexture())
+					child:SetHighlightTexture(nil)
+					child:SetPushedTexture(C.pushed)
+					local texture = select(4, child:GetRegions())
+					if texture then
+						texture:SetTexCoord(unpack(C.TexCoord))
+					end
+				end
 			end
 		end)
 	end

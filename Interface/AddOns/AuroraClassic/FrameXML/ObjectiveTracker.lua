@@ -29,7 +29,7 @@ end
 
 local function reskinQuestIcons(_, block)
 	reskinQuestIcon(block.itemButton)
-	reskinQuestIcon(block.rightButton)
+	reskinQuestIcon(block.groupFinderButton)
 end
 
 local function reskinHeader(header)
@@ -106,6 +106,15 @@ local function reskinMinimizeButton(button)
 	hooksecurefunc(button, "SetCollapsed", updateMinimizeButton)
 end
 
+local function GetMawBuffsAnchor(frame)
+	local center = frame:GetCenter()
+	if center and center < GetScreenWidth()/2 then
+		return "LEFT"
+	else
+		return "RIGHT"
+	end
+end
+
 tinsert(C.defaultThemes, function()
 	if not AuroraClassicDB.ObjectiveTracker then return end
 
@@ -142,11 +151,13 @@ tinsert(C.defaultThemes, function()
 		if widgetFrame and widgetFrame.Frame then
 			widgetFrame.Frame:SetAlpha(0)
 
-			for i = 1, widgetFrame.CurrencyContainer:GetNumChildren() do
-				local bu = select(i, widgetFrame.CurrencyContainer:GetChildren())
-				if bu and bu.Icon and not bu.styled then
-					F.ReskinIcon(bu.Icon)
-					bu.styled = true
+			if widgetFrame.CurrencyContainer then -- this may be removed, needs review
+				for i = 1, widgetFrame.CurrencyContainer:GetNumChildren() do
+					local bu = select(i, widgetFrame.CurrencyContainer:GetChildren())
+					if bu and bu.Icon and not bu.styled then
+						F.ReskinIcon(bu.Icon)
+						bu.styled = true
+					end
 				end
 			end
 		end
@@ -197,4 +208,18 @@ tinsert(C.defaultThemes, function()
 			reskinMinimizeButton(minimize)
 		end
 	end
+
+	-- MawBuffsBlock
+	ScenarioBlocksFrame.MawBuffsBlock.Container:HookScript("OnClick", function(container)
+		local direc = GetMawBuffsAnchor(container)
+		if not container.lastDirec or container.lastDirec ~= direc then
+			container.List:ClearAllPoints()
+			if direc == "LEFT" then
+				container.List:SetPoint("TOPLEFT", container, "TOPRIGHT", 15, 1)
+			else
+				container.List:SetPoint("TOPRIGHT", container, "TOPLEFT", 15, 1)
+			end
+			container.lastDirec = direc
+		end
+	end)
 end)
