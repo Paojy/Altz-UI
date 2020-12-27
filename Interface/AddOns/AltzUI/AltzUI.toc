@@ -1,7 +1,7 @@
 ﻿## Interface: 90002
 ## Title: |cffEE3A8CAltz|rUI
 ## X-oUF: AltzUF
-## Version: 9.07
+## Version: 9.08
 ## Author: Paopao001
 ## Dependencies: AltzUIConfig
 ## X-DBM-Timer-Skin: 1
