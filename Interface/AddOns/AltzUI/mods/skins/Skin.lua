@@ -92,15 +92,15 @@ local function registerBWStyle()
             bar.candyBarIconFrameBackdrop:Hide()
         end
 
-        local shadow = bar:Get("bigwigs:restoreShadow")
+        --local shadow = bar:Get("bigwigs:restoreShadow")
         local label = bar.candyBarLabel
-        label:SetShadowOffset(shadow[1], shadow[2])
+        --label:SetShadowOffset(shadow[1], shadow[2])
         label:ClearAllPoints()
         label:SetPoint("TOPLEFT", bar.candyBarBar, "TOPLEFT", 2, 0)
         label:SetPoint("BOTTOMRIGHT", bar.candyBarBar, "BOTTOMRIGHT", -2, 0)
 
         local timer = bar.candyBarDuration
-        timer:SetShadowOffset(shadow[1], shadow[2])
+       -- timer:SetShadowOffset(shadow[1], shadow[2])
         timer:ClearAllPoints()
         timer:SetPoint("RIGHT", bar.candyBarBar, "RIGHT", -2, 0)
 

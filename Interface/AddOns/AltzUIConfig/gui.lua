@@ -1779,7 +1779,7 @@ RFInnerframe.Icon_Display.DividingLine:SetSize(RFInnerframe.Icon_Display:GetWidt
 RFInnerframe.Icon_Display.DividingLine:SetPoint("TOP", 0, -360)
 RFInnerframe.Icon_Display.DividingLine:SetColorTexture(1, 1, 1, .2)
 
-T.createcheckbutton(RFInnerframe.Icon_Display, 60, 380, L["自动添加团队减益"], "UnitframeOptions", "raiddebuff_enabledefaultlist", L["自动添加团队减益提示"])
+T.createcheckbutton(RFInnerframe.Icon_Display, 60, 380, L["自动添加团队减益"], "UnitframeOptions", "debuff_auto_add", L["自动添加团队减益提示"])
 T.createslider(RFInnerframe.Icon_Display, 60, 430, L["自动添加的图标层级"], "UnitframeOptions", "debuff_auto_add_level", 1, 1, 20, 1)
 
 RFInnerframe.raiddebuff = CreateOptionPage("RF Options Raid Debuff", L["团队减益"], RFInnerframe, "VERTICAL", .3)
