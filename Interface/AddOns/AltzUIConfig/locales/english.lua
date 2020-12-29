@@ -15,6 +15,9 @@ L["更新日志"] = "Update Log"
 L["更新日志tip"] = "New feature: Update 9.0 Raid&Dungeon debuff list\nNew feature: Automatically add newly discovered Raid&Dungeon debuffs to the list\nNew feature: Raid&Dungeon debuff blacklist filtering\nNew feature: Quickly delete macros\nDelete Azerite Bar\nUpdate Aurora"
 L["寻求帮助"] = "Help"
 L["粘贴"] = "Press Ctrl + c to copy the link"
+L["Buffs"] = "Buffs"
+L["Debuffs_Black"] = "Debuffs"
+L["Debuffs"] = "Debuffs"
 
 -- 控制台通用
 L["界面"] = "Interface"
