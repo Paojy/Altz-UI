@@ -2328,7 +2328,7 @@ local function CreateCooldownAuraOption(auratype, auratable, name, parent, show)
 		else -- 黑名单
 			spellID = tonumber(Spellinput:GetText())
 			if not spellID or not GetSpellInfo(spellID) then
-				StaticPopupDialogs[G.uiname.."incorrect spellid"].text = "|cff7FFF00"..spellID.." |r"..L["不是一个有效的法术ID"]
+				StaticPopupDialogs[G.uiname.."incorrect spellid"].text = "|cff7FFF00"..spellID or "?".." |r"..L["不是一个有效的法术ID"]
 				StaticPopup_Show(G.uiname.."incorrect spellid")
 			else
 				name = GetSpellInfo(spellID)
@@ -2354,6 +2354,7 @@ local function CreateCooldownAuraOption(auratype, auratable, name, parent, show)
 	T.resize_font(Reset.Text)
 	F.Reskin(Reset)
 	Reset:SetScript("OnClick", function(self)
+		print(L[auratype])
 		StaticPopupDialogs[G.uiname.."Reset Confirm"].text = format(L["重置确认"], L[auratype])
 		StaticPopupDialogs[G.uiname.."Reset Confirm"].OnAccept = function()
 			aCoreCDB["CooldownAura"][auratype] = nil

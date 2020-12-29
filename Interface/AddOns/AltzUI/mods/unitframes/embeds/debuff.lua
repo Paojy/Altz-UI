@@ -152,8 +152,13 @@ local CustomFilter = function(...)
     --end
 	if aCoreCDB["CooldownAura"]["Debuffs_Black"][name] then -- 黑名单不显示
 		return 0, false
-	elseif IsInInstance() and aCoreCDB["UnitframeOptions"]["debuff_auto_add"] then
-		local ins = EJ_GetInstanceInfo(EJ_GetInstanceForMap(C_Map.GetBestMapForUnit("player")))
+	elseif IsInInstance() and aCoreCDB["UnitframeOptions"]["debuff_auto_add"] then 
+		local ins
+		
+		if C_Map.GetBestMapForUnit("player") then
+			ins = EJ_GetInstanceInfo(EJ_GetInstanceForMap(C_Map.GetBestMapForUnit("player")))
+		end
+		
 		if ins and aCoreCDB["RaidDebuff"][ins] then	
 			if not castByPlayer then --小怪
 				if aCoreCDB["RaidDebuff"][ins]["Trash"] and not aCoreCDB["RaidDebuff"][ins]["Trash"][name] then
