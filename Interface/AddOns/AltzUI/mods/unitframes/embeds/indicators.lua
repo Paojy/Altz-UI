@@ -329,7 +329,7 @@ end
 oUF.Tags.Events['Mlight:da'] = 'UNIT_AURA'
 
 oUF.Tags.Methods['Mlight:xnhd'] = function(u) --邪能护盾
-    local name, _,_,_,_, expirationTime = AuraUtil.FindAuraByName(GetSpellInfo(253277), u, "PLAYER|HELPFUL")
+    local name, _,_,_,_, expirationTime = AuraUtil.FindAuraByName(GetSpellInfo(344916), u, "PLAYER|HELPFUL")
     if name then
         return "|cffC0FF3Ez|r"
     end
