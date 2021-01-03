@@ -23,8 +23,8 @@ local function Timer_OnUpdate(self, elapsed)
 	if self.text:IsShown() then
 		if self.nextUpdate>0 then
 			self.nextUpdate = self.nextUpdate - elapsed
-		elseif self.duration then
-			local remain = self.duration - (GetTime() - self.start)
+		elseif self.Duration then
+			local remain = self.Duration - (GetTime() - self.start)
 			if floor(remain + 0.5) > 0 then
 				local time, nextUpdate = GetFormattedTime(remain)
 				self.text:SetText(time)
@@ -37,7 +37,7 @@ local function Timer_OnUpdate(self, elapsed)
 end
 
 local methods = getmetatable(ActionButton1Cooldown).__index
-hooksecurefunc(methods, "SetCooldown", function(self, start, duration)
+hooksecurefunc(methods, "SetCooldown", function(self, start, Duration)
 	if self.noshowcd or self:IsForbidden() then
 		return
 	elseif not aCoreCDB["ActionbarOptions"]["cooldown_wa"] then
@@ -55,11 +55,11 @@ hooksecurefunc(methods, "SetCooldown", function(self, start, duration)
 	end
 	
 	if (self:GetWidth() >= 15) and (self:GetHeight() >= 15) then
-		local s, d = tonumber(start), tonumber(duration)
+		local s, d = tonumber(start), tonumber(Duration)
 		if s and d then
 			if s > 0 and d > 2.5 then	
 				self.start = s
-				self.duration = d
+				self.Duration = d
 				self.nextUpdate = 0
 		
 				if (self:GetWidth() >= 25) and (self:GetHeight() >= 25) then
@@ -91,9 +91,9 @@ hooksecurefunc(methods, "SetCooldown", function(self, start, duration)
 			end
 		end
 	elseif self.text then
-		if start>0 and duration>2.5 then
+		if start>0 and Duration>2.5 then
 			self.start = start
-			self.duration = duration
+			self.Duration = Duration
 			self.nextUpdate = 0
 			if not self:GetScript("OnUpdate") then
 				self:SetScript("OnUpdate", Timer_OnUpdate)
@@ -114,8 +114,8 @@ abEventWatcher:SetScript('OnEvent', function(self, event)
 	if event == 'ACTIONBAR_UPDATE_COOLDOWN' then
 		for cooldown in pairs(active) do
 			local button = cooldown:GetParent()
-			local start, duration, enable = GetActionCooldown(button.action)
-			cooldown:SetCooldown(start, duration)
+			local start, Duration, enable = GetActionCooldown(button.action)
+			cooldown:SetCooldown(start, Duration)
 		end
 	else
 		SetCVar("countdownForCooldowns", 0)

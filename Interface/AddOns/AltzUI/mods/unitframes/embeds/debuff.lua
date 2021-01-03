@@ -150,37 +150,33 @@ local CustomFilter = function(...)
     --if ascending[name] then
         --asc = true
     --end
+	
 	if aCoreCDB["CooldownAura"]["Debuffs_Black"][name] then -- 黑名单不显示
 		return 0, false
-	elseif IsInInstance() and aCoreCDB["UnitframeOptions"]["debuff_auto_add"] then 
-		local ins
-		
-		if C_Map.GetBestMapForUnit("player") then
-			ins = EJ_GetInstanceInfo(EJ_GetInstanceForMap(C_Map.GetBestMapForUnit("player")))
-		end
-		
-		if ins and aCoreCDB["RaidDebuff"][ins] then	
-			if not castByPlayer then --小怪
-				if aCoreCDB["RaidDebuff"][ins]["Trash"] and not aCoreCDB["RaidDebuff"][ins]["Trash"][name] then
-					aCoreCDB["RaidDebuff"][ins]["Trash"][name] = {id = spellID, level = aCoreCDB["UnitframeOptions"]["debuff_auto_add_level"]}
-					print(format(L["添加团队减益"], L["杂兵"], T.GetIconLink(spellID)), format(gold_str, ins, "Trash", name, spellID, L["设置"]), format(red_str, ins, "Trash", name, spellID, L["删除并加入黑名单"]))
-					priority = aCoreCDB["UnitframeOptions"]["debuff_auto_add_level"]
-				end				
-			end
-		end
 	elseif aCoreCDB["CooldownAura"]["Debuffs"][name] then -- 白名单显示
 		priority = aCoreCDB["CooldownAura"]["Debuffs"][name].level
 	elseif dispellist[dtype] then -- 可驱散
         priority = dispelPriority[dtype]
-	elseif IsInInstance() then -- 副本列表中
-        local ins = EJ_GetInstanceInfo(EJ_GetInstanceForMap(C_Map.GetBestMapForUnit("player")))
-        if aCoreCDB["RaidDebuff"][ins] then
-			for boss, debufflist in pairs(aCoreCDB["RaidDebuff"][ins]) do
-				if debufflist[name] then
-					priority = debufflist[name].level
+	elseif IsInInstance() then -- 副本
+		local map, ins
+		map = C_Map.GetBestMapForUnit("player")
+		if map then
+			ins = EJ_GetInstanceInfo(EJ_GetInstanceForMap(map))
+			if ins and aCoreCDB["RaidDebuff"][ins] then
+				for boss, debufflist in pairs(aCoreCDB["RaidDebuff"][ins]) do
+					if debufflist[name] then
+						priority = debufflist[name].level
+						return priority, asc
+					end
+				end
+				-- 没有找到
+				if aCoreCDB["UnitframeOptions"]["debuff_auto_add"] and not castByPlayer and aCoreCDB["RaidDebuff"][ins]["Trash"] then
+					aCoreCDB["RaidDebuff"][ins]["Trash"][name] = {id = spellID, level = aCoreCDB["UnitframeOptions"]["debuff_auto_add_level"]}
+					print(format(L["添加团队减益"], L["杂兵"], T.GetIconLink(spellID)), format(gold_str, ins, "Trash", name, spellID, L["设置"]), format(red_str, ins, "Trash", name, spellID, L["删除并加入黑名单"]))
+					priority = aCoreCDB["UnitframeOptions"]["debuff_auto_add_level"]
 				end
 			end
-        end
+		end
     end
 	
 	return priority, asc
