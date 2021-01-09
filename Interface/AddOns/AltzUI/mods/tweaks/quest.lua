@@ -206,7 +206,7 @@ if autoquests then
 
     -- This should be part of the API, really
     local function IsGossipQuestCompleted(index)
-        return not not select(((index * 5) - 5) + 4, C_GossipInfo.GetGossipActiveQuests())
+        return not not select(((index * 5) - 5) + 4, C_GossipInfo.GetActiveQuests())
     end
 
     local function IsGossipQuestTrivial(index)
