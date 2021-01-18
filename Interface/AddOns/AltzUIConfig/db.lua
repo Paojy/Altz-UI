@@ -1097,6 +1097,7 @@ local Character_default_Settings = {
 		enableplate = true,
 		theme = "class", -- "dark" "class" "number"	
 		fontsize = 8,
+		numfontsize = 10,
 		threatcolor = true,		
 		plateauranum = 5,
 		plateaurasize = 15,	

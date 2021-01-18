@@ -320,6 +320,7 @@ L["名字字体大小"] = "Tamanho da fonte do nome"
 --L["根据血量染色"] = "Color according to hp perc"
 --L["焦点染色"] = "Color focus target"
 --L["焦点颜色"] = "Focus color"
+--L["图标数字大小"] = "Icon number size"
 
 -- 鼠标提示
 L["跟随光标"] = "Mostrar no mouse"

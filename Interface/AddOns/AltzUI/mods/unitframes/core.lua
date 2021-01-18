@@ -1030,8 +1030,7 @@ local PostCreateIcon = function(auras, icon)
 
 	icon.count:ClearAllPoints()
 	icon.count:SetPoint("BOTTOMRIGHT", 0, -3)
-	icon.count:SetFontObject(nil)
-	icon.count:SetFont(G.numFont, ((aCoreCDB["UnitframeOptions"]["width"]+3)/aCoreCDB["UnitframeOptions"]["auraperrow"]-3)*.4, "OUTLINE")
+	icon.count:SetFontObject(nil)	
 	icon.count:SetTextColor(.9, .9, .1)
 
 	icon.overlay:SetTexture(G.media.blank)
@@ -1040,8 +1039,15 @@ local PostCreateIcon = function(auras, icon)
 	icon.overlay:SetPoint("BOTTOMRIGHT", icon, "BOTTOMRIGHT", 1, -1)
 
 	icon.bd = T.createBackdrop(icon, icon, 0)
-
-	icon.remaining = T.createnumber(icon, "OVERLAY", ((aCoreCDB["UnitframeOptions"]["width"]+3)/aCoreCDB["UnitframeOptions"]["auraperrow"]-3)*.4, "OUTLINE", "CENTER")
+	
+	if auras.plate_element then
+		icon.count:SetFont(G.numFont, aCoreCDB["PlateOptions"]["numfontsize"], "OUTLINE")
+		icon.remaining = T.createnumber(icon, "OVERLAY", aCoreCDB["PlateOptions"]["numfontsize"], "OUTLINE", "CENTER")
+	else
+		icon.count:SetFont(G.numFont, ((aCoreCDB["UnitframeOptions"]["width"]+3)/aCoreCDB["UnitframeOptions"]["auraperrow"]-3)*.4, "OUTLINE")
+		icon.remaining = T.createnumber(icon, "OVERLAY", ((aCoreCDB["UnitframeOptions"]["width"]+3)/aCoreCDB["UnitframeOptions"]["auraperrow"]-3)*.4, "OUTLINE", "CENTER")
+	end
+	
 	icon.remaining:SetPoint("TOPLEFT", 0, 5)
 
 	if aCoreCDB["UnitframeOptions"]["auraborders"] then
@@ -1318,6 +1324,7 @@ T.CreateAuras = function(self, unit)
 			Auras.SetPosition = OverrideAurasSetPosition
 			Auras.CustomFilter = NamePlate_AuraFilter
 			Auras.disableMouse = true
+			Auras.plate_element = true
 			
 			self:HookScript("OnEvent", function(self, event)
 				if event == "UNIT_AURA" then
