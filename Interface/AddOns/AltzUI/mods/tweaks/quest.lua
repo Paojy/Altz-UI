@@ -210,7 +210,7 @@ if autoquests then
     end
 
     local function IsGossipQuestTrivial(index)
-        return not not select(((index * 6) - 6) + 3, C_GossipInfo.GetGossipAvailableQuests())
+        return not not select(((index * 6) - 6) + 3, C_GossipInfo.GetActiveQuests())
     end
 
     Monomyth:Register("GOSSIP_SHOW", function()

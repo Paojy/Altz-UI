@@ -1504,7 +1504,7 @@ T.ImportSettings = function(str)
 								end
 							elseif setting == "otherplateauralist" then -- 完全复制 4 OptionCategroy.."~"..setting.."~"..id.."~true"
 								aCoreCDB[OptionCategroy][setting][tonumber(arg1)] = true
-							elseif sameclass then
+							elseif sameclass and setting then
 								aCoreCDB[OptionCategroy][setting][tonumber(arg1)] = true
 							end
 						elseif OptionCategroy == "FramePoints" then -- 5 ^FramePoints~"..frame.."~"..mode.."~"..key.."~"..xy[key]

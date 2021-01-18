@@ -75,7 +75,9 @@ local function Create_IB(ItemID, index, exactItem, showCount, All, OrderHall, Ra
 	table.insert(IB_Buttons, bu)
 end
 
-local function Update_IB()
+local updateTime = {}
+
+local function Update_IB(bagID)
 	
 	if InCombatLockdown() or G.bag_sorting then return end
 	
@@ -88,48 +90,100 @@ local function Update_IB()
 		
 		if info.All or (info.OrderHall and orderhall) or (info.Raid and instanceType == "raid") or (info.Dungeon and instanceType == "party") or (info.PVP and instanceType == "pvp") then
 			
-			for bag = 0, NUM_BAG_SLOTS do
-				for slot = 1, GetContainerNumSlots(bag) do
-			
-					local itemID = GetContainerItemID(bag, slot)            
-					local itemSpell = GetItemSpell(itemID)
+			if bagID then
+				
+				if (not updateTime[bagID]) or (GetTime() - updateTime[bagID] > 1) then
 					
-					if (itemID == info.itemID) or (not info.exactItem and itemSpell and itemSpell == GetItemSpell(info.itemID)) then
+					for slot = 1, GetContainerNumSlots(bagID) do
+					
+						local itemID = GetContainerItemID(bagID, slot)            
+						local itemSpell = GetItemSpell(itemID)
 						
-						local icon = GetItemIcon(itemID)                
-						bu.icon:SetTexture(icon)              
+						if (itemID == info.itemID) or (not info.exactItem and itemSpell and itemSpell == GetItemSpell(info.itemID)) then
 						
-						if info.showCount then
-							bu.text:SetText(GetItemCount(itemID))
-						else
-							bu.text:SetText("")
+							local icon = GetItemIcon(itemID)                
+							bu.icon:SetTexture(icon)              
+							
+							if info.showCount then
+								bu.text:SetText(GetItemCount(itemID))
+							else
+								bu.text:SetText("")
+							end
+							
+							bu:Show()
+							if GetMouseFocus() == bu then
+								GameTooltip:SetBagItem(bagID, slot)
+							end
+							bu:SetAttribute("type", "item")                
+							bu:SetAttribute("item", "item:"..itemID)               
+							
+							bu:SetScript("OnEnter", function()
+								GameTooltip:SetOwner(bu, "ANCHOR_TOPRIGHT")	
+								GameTooltip:SetBagItem(bagID, slot)
+								GameTooltip:Show()
+							end)
+							bu:SetScript("OnLeave", function()
+								GameTooltip:Hide()
+							end)
+							
+							hasitem = true
+							
+							updateTime[bagID] = GetTime()
 						end
-						
-						bu:Show()
-						if GetMouseFocus() == bu then
-							GameTooltip:SetBagItem(bag, slot)
-						end
-						bu:SetAttribute("type", "item")                
-						bu:SetAttribute("item", "item:"..itemID)               
-						
-						bu:SetScript("OnEnter", function()
-							GameTooltip:SetOwner(bu, "ANCHOR_TOPRIGHT")	
-							GameTooltip:SetBagItem(bag, slot)
-							GameTooltip:Show()
-						end)
-						bu:SetScript("OnLeave", function()
-							GameTooltip:Hide()
-						end)
-						
-						hasitem = true
 						
 					end
 					
+				end				
+			else
+				for bag = 0, NUM_BAG_SLOTS do
+					if (not updateTime[bagID]) or (GetTime() - updateTime[bagID] > 1) then
+					
+						for slot = 1, GetContainerNumSlots(bag) do
+						
+							local itemID = GetContainerItemID(bag, slot)            
+							local itemSpell = GetItemSpell(itemID)
+							
+							if (itemID == info.itemID) or (not info.exactItem and itemSpell and itemSpell == GetItemSpell(info.itemID)) then
+							
+								local icon = GetItemIcon(itemID)                
+								bu.icon:SetTexture(icon)              
+								
+								if info.showCount then
+									bu.text:SetText(GetItemCount(itemID))
+								else
+									bu.text:SetText("")
+								end
+								
+								bu:Show()
+								if GetMouseFocus() == bu then
+									GameTooltip:SetBagItem(bag, slot)
+								end
+								bu:SetAttribute("type", "item")                
+								bu:SetAttribute("item", "item:"..itemID)               
+								
+								bu:SetScript("OnEnter", function()
+									GameTooltip:SetOwner(bu, "ANCHOR_TOPRIGHT")	
+									GameTooltip:SetBagItem(bag, slot)
+									GameTooltip:Show()
+								end)
+								bu:SetScript("OnLeave", function()
+									GameTooltip:Hide()
+								end)
+								
+								hasitem = true
+								
+								updateTime[bag] = GetTime()
+							end
+							
+						end
+					
+					end
 				end
 			end
+			
 		end	
-	
-		if not hasitem then
+
+		if not hasitem then			
 			bu:SetAttribute("type", nil)
 			bu:SetAttribute("item", nil) 
 			bu:Hide()
@@ -161,6 +215,6 @@ IB_Frame:SetScript("OnEvent", function(self, event, arg1)
 			Update_IB()
 		end
 	else
-		Update_IB()
+		Update_IB(arg1)
 	end
 end)

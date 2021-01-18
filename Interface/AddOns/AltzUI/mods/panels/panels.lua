@@ -296,10 +296,22 @@ T.HideMap = function(self, event)
 end
 
 Updater:SetScript("OnEvent", function(self, event)
-	T.HideMap(self, event)
+	if event == "PLAYER_LOGIN" then
+		T.HideMap(self, event)
+	else
+		if C_Minimap.ShouldUseHybridMinimap() then
+			if not HybridMinimap then
+				UIParentLoadAddOn("Blizzard_HybridMinimap");
+			end
+			HybridMinimap:Enable()
+			HybridMinimap.CircleMask:SetTexture("Interface\\Buttons\\WHITE8x8")
+			HybridMinimap.PlayerTexture:SetTexture("Interface\\Minimap\\Vehicle-SilvershardMines-Arrow")
+		end
+	end
 end)
 
 Updater:RegisterEvent("PLAYER_LOGIN")
+Updater:RegisterEvent("PLAYER_ENTERING_WORLD")
 
 minimap_pullback:SetScript("OnMouseDown", minimap_toggle)
 
@@ -470,7 +482,7 @@ local BlackList = {
 }
 
 local MBCF = CreateFrame("Frame", "MinimapButtonCollectFrame", Minimap)
-MBCF:SetFrameStrata("HIGH")
+MBCF:SetFrameStrata("MEDIUM")
 
 if aCoreCDB["SkinOptions"]["MBCFpos"] == "TOP" then
 	MBCF:SetPoint("BOTTOMLEFT", Minimap, "TOPLEFT", 0, 5)
@@ -491,13 +503,6 @@ T.ArrangeMinimapButtons = function(parent)
 		return
 	end
 
-	local space
-	if #buttons > 5 then
-		space = -5
-	else
-		space = 0
-	end
-	
 	local lastbutton
 	for k, button in pairs(buttons) do
 		button:ClearAllPoints()
@@ -505,7 +510,7 @@ T.ArrangeMinimapButtons = function(parent)
 			if not lastbutton then
 				button:SetPoint("LEFT", parent, "LEFT", 0, 0)
 			else
-				button:SetPoint("LEFT", lastbutton, "RIGHT", space, 0)
+				button:SetPoint("LEFT", lastbutton, "RIGHT", 5, 0)
 			end
 			lastbutton = button
 		end

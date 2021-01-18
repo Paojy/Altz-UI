@@ -1199,7 +1199,7 @@ local HealerInd_AuraFilter = function(icons, unit, icon, ...)
 end
 
 local NamePlate_AuraFilter = function(icons, unit, icon, ...)
-	local SpellID = select(11, ...)
+	local SpellID = select(10, ...)
 	if icon.isPlayer then
 		if aCoreCDB["PlateOptions"]["myfiltertype"] == "none" then
 			return false
@@ -1317,6 +1317,7 @@ T.CreateAuras = function(self, unit)
 			Auras.size = aCoreCDB["PlateOptions"]["plateaurasize"]
 			Auras.SetPosition = OverrideAurasSetPosition
 			Auras.CustomFilter = NamePlate_AuraFilter
+			Auras.disableMouse = true
 			
 			self:HookScript("OnEvent", function(self, event)
 				if event == "UNIT_AURA" then
