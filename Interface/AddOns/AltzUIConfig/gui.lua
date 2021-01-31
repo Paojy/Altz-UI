@@ -2709,10 +2709,11 @@ local plate_theme_group = {
 }
 T.createradiobuttongroup(PlateInnerframe.common, 30, 100, L["样式"], "PlateOptions", "theme", plate_theme_group)
 T.createslider(PlateInnerframe.common, 30, 150, L["字体大小"], "PlateOptions", "fontsize", 1, 5, 25, 1)
-T.createslider(PlateInnerframe.common, 230, 150, L["数字字体大小"], "PlateOptions", "numfontsize", 1, 5, 25, 1)
+T.createslider(PlateInnerframe.common, 230, 150, L["图标数字大小"], "PlateOptions", "numfontsize", 1, 5, 25, 1)
 T.createslider(PlateInnerframe.common, 30, 190, L["光环"].." "..L["图标数量"], "PlateOptions", "plateauranum", 1, 3, 10, 1)
 T.createslider(PlateInnerframe.common, 230, 190, L["光环"].." "..L["图标大小"], "PlateOptions", "plateaurasize", 1, 10, 30, 1)
 PlateInnerframe.common.fontsize:SetWidth(160)
+PlateInnerframe.common.numfontsize:SetWidth(160)
 PlateInnerframe.common.plateauranum:SetWidth(160)
 PlateInnerframe.common.plateaurasize:SetWidth(160)
 T.createcolorpickerbu(PlateInnerframe.common, 30, 220, L["可打断施法条颜色"], "PlateOptions", "Interruptible_color")
