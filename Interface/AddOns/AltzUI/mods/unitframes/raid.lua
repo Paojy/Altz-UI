@@ -255,13 +255,15 @@ local func = function(self, unit)
     local hp = T.createStatusbar(self, "ARTWORK", nil, nil, 1, 1, 1, 1)
 	hp:SetFrameLevel(3)
 	hp:SetAllPoints(self)
+	hp:SetReverseFill(true)
     hp.frequentUpdates = true
 	
 	-- little black line to make the health bar more clear
 	hp.ind = hp:CreateTexture(nil, "OVERLAY", 1)
     hp.ind:SetTexture("Interface\\Buttons\\WHITE8x8")
 	hp.ind:SetVertexColor(0, 0, 0)
-	hp.ind:SetSize(1, hp:GetHeight())
+	hp.ind:SetSize(1, aCoreCDB["UnitframeOptions"]["healerraidheight"])
+	hp.ind:SetPoint("RIGHT", hp:GetStatusBarTexture(), "LEFT", 0, 0)
 	
 	-- border --
 	self.backdrop = T.createBackdrop(hp, hp, 0)
@@ -413,25 +415,16 @@ local func = function(self, unit)
 			hp:SetStatusBarTexture(G.media.blank)
 			hp.bg:SetTexture(G.media.blank)
 			hp.bg:SetGradientAlpha("VERTICAL", .5, .5, .5, .5, 0, 0, 0,0)
-			hp.ind:ClearAllPoints()
-			hp.ind:SetPoint("RIGHT", hp:GetStatusBarTexture(), "LEFT", 0, 0)
-			hp:SetReverseFill(true)
 		elseif aCoreCDB["UnitframeOptions"]["style"] == 2 then
 			self.bg.tex:SetAlpha(1)
 			hp:SetStatusBarTexture(G.media.ufbar)
 			hp.bg:SetTexture(G.media.ufbar)
 			hp.bg:SetGradientAlpha("VERTICAL", .2,.2,.2,.15,.25,.25,.25,.6)
-			hp.ind:ClearAllPoints()
-			hp.ind:SetPoint("RIGHT", hp:GetStatusBarTexture(), "LEFT", 0, 0)
-			hp:SetReverseFill(true)
 		else
 			self.bg.tex:SetAlpha(1)
 			hp:SetStatusBarTexture(G.media.ufbar)
 			hp.bg:SetTexture(G.media.ufbar)
-			hp.bg:SetGradientAlpha("VERTICAL", .2,.2,.2,.15,.25,.25,.25,.6)
-			hp.ind:ClearAllPoints()
-			hp.ind:SetPoint("LEFT", hp:GetStatusBarTexture(), "RIGHT", 0, 0)
-			hp:SetReverseFill(false)
+			hp.bg:SetAlpha(0)
 		end
 	end
 	self.Health.ApplySettings()
@@ -473,15 +466,17 @@ local dfunc = function(self, unit)
     local hp = T.createStatusbar(self, "ARTWORK", nil, nil, 1, 1, 1, 1)
 	hp:SetFrameLevel(3)
     hp:SetAllPoints(self)
+	hp:SetReverseFill(true)
     hp.frequentUpdates = true
 	
 	-- little black line to make the health bar more clear
 	hp.ind = hp:CreateTexture(nil, "OVERLAY", 1)
     hp.ind:SetTexture("Interface\\Buttons\\WHITE8x8")
 	hp.ind:SetVertexColor(0, 0, 0)
-	hp.ind:SetSize(1, self:GetHeight())
-
-    self.Health = hp
+	hp.ind:SetSize(1, aCoreCDB["UnitframeOptions"]["dpsraidheight"])
+	hp.ind:SetPoint("RIGHT", hp:GetStatusBarTexture(), "LEFT", 0, 0)
+   
+   self.Health = hp
 	self.Health.PostUpdate = T.Updatehealthbar
 	
 	local leader = hp:CreateTexture(nil, "OVERLAY", 1)
@@ -557,25 +552,16 @@ local dfunc = function(self, unit)
 			hp:SetStatusBarTexture(G.media.blank)
 			hp.bg:SetTexture(G.media.blank)
 			hp.bg:SetGradientAlpha("VERTICAL", .5, .5, .5, .5, 0, 0, 0,0)
-			hp.ind:ClearAllPoints()
-			hp.ind:SetPoint("RIGHT", hp:GetStatusBarTexture(), "LEFT", 0, 0)
-			hp:SetReverseFill(true)
 		elseif aCoreCDB["UnitframeOptions"]["style"] == 2 then
 			self.bg.tex:SetAlpha(1)
 			hp:SetStatusBarTexture(G.media.ufbar)
 			hp.bg:SetTexture(G.media.ufbar)
 			hp.bg:SetGradientAlpha("VERTICAL", .2,.2,.2,.15,.25,.25,.25,.6)
-			hp.ind:ClearAllPoints()
-			hp.ind:SetPoint("RIGHT", hp:GetStatusBarTexture(), "LEFT", 0, 0)
-			hp:SetReverseFill(true)
 		else
 			self.bg.tex:SetAlpha(1)
 			hp:SetStatusBarTexture(G.media.ufbar)
 			hp.bg:SetTexture(G.media.ufbar)
-			hp.bg:SetGradientAlpha("VERTICAL", .2,.2,.2,.15,.25,.25,.25,.6)
-			hp.ind:ClearAllPoints()
-			hp.ind:SetPoint("LEFT", hp:GetStatusBarTexture(), "RIGHT", 0, 0)
-			hp:SetReverseFill(false)
+			hp.bg:SetAlpha(0)
 		end
 	end
 	self.Health.ApplySettings()
@@ -944,13 +930,15 @@ local pfunc = function(self, unit)
     hp:SetAllPoints(self)
 	hp:SetPoint("TOPLEFT", self, "TOPLEFT")
 	hp:SetPoint("TOPRIGHT", self, "TOPRIGHT")
+	hp:SetReverseFill(true)
     hp.frequentUpdates = true
 	
 	-- little black line to make the health bar more clear
 	hp.ind = hp:CreateTexture(nil, "OVERLAY", 1)
     hp.ind:SetTexture("Interface\\Buttons\\WHITE8x8")
 	hp.ind:SetVertexColor(0, 0, 0)
-	hp.ind:SetSize(1, hp:GetHeight())
+	hp.ind:SetSize(1, aCoreCDB["UnitframeOptions"]["height"])
+	hp.ind:SetPoint("RIGHT", hp:GetStatusBarTexture(), "LEFT", 0, 0)
 	
 	-- border --
 	self.backdrop = T.createBackdrop(hp, hp, 0)
@@ -966,22 +954,11 @@ local pfunc = function(self, unit)
 	-- portrait 只有样式1和样式2才有肖像
 	if aCoreCDB["UnitframeOptions"]["portrait"] then
 		local Portrait = CreateFrame('PlayerModel', nil, self)
-		if aCoreCDB["UnitframeOptions"]["style"] ~= 3 then
-			Portrait:SetFrameLevel(1) -- blow hp
-		else
-			Portrait:SetFrameLevel(2) -- above hp
-		end
-		Portrait:SetPoint("TOPLEFT", 1, 0)
-		Portrait:SetPoint("BOTTOMRIGHT", -1, 1)
+		Portrait:SetFrameLevel(1)
+		Portrait:SetPoint("TOPLEFT", 0, 0)
+		Portrait:SetPoint("BOTTOMRIGHT", 0, 0)
 		Portrait:SetAlpha(aCoreCDB["UnitframeOptions"]["portraitalpha"])
-		self.Portrait = Portrait
-		self.Portrait.ApplySettings = function()
-			if aCoreCDB["UnitframeOptions"]["style"] ~= 3 then
-				self.Portrait:SetFrameLevel(1) -- blow hp
-			else
-				self.Portrait:SetFrameLevel(2) -- above hp
-			end
-		end
+		self.Portrait = Portrait		
 	end
 
 	-- power bar --
@@ -1071,25 +1048,16 @@ local pfunc = function(self, unit)
 			hp:SetStatusBarTexture(G.media.blank)
 			hp.bg:SetTexture(G.media.blank)
 			hp.bg:SetGradientAlpha("VERTICAL", .5, .5, .5, .5, 0, 0, 0,0)
-			hp.ind:ClearAllPoints()
-			hp.ind:SetPoint("RIGHT", hp:GetStatusBarTexture(), "LEFT", 0, 0)
-			hp:SetReverseFill(true)
 		elseif aCoreCDB["UnitframeOptions"]["style"] == 2 then
 			self.bg.tex:SetAlpha(1)
 			hp:SetStatusBarTexture(G.media.ufbar)
 			hp.bg:SetTexture(G.media.ufbar)
 			hp.bg:SetGradientAlpha("VERTICAL", .2,.2,.2,.15,.25,.25,.25,.6)
-			hp.ind:ClearAllPoints()
-			hp.ind:SetPoint("RIGHT", hp:GetStatusBarTexture(), "LEFT", 0, 0)
-			hp:SetReverseFill(true)
 		else
 			self.bg.tex:SetAlpha(1)
 			hp:SetStatusBarTexture(G.media.ufbar)
 			hp.bg:SetTexture(G.media.ufbar)
-			hp.bg:SetGradientAlpha("VERTICAL", .2,.2,.2,.15,.25,.25,.25,.6)
-			hp.ind:ClearAllPoints()
-			hp.ind:SetPoint("LEFT", hp:GetStatusBarTexture(), "RIGHT", 0, 0)
-			hp:SetReverseFill(false)
+			hp.bg:SetAlpha(0)
 		end
 	end
 	self.Health.ApplySettings()
