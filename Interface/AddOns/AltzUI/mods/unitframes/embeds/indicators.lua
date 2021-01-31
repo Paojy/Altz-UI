@@ -42,6 +42,15 @@ oUF.Tags.Methods['Mlight:rnw'] = function(u) -- 恢复
 end
 oUF.Tags.Events['Mlight:rnw'] = "UNIT_AURA"
 
+oUF.Tags.Methods['Mlight:xrlh'] = function(u) -- 虚弱灵魂
+    local name,_,_,_,_, expirationTime = AuraUtil.FindAuraByName(GetSpellInfo(6788), u, "HARMFUL")
+    if name then
+        local spellTimer = expirationTime - GetTime()
+        return "|cffDAA520"..T.FormatTime(spellTimer).."|r"
+    end
+end
+oUF.Tags.Events['Mlight:xrlh'] = "UNIT_AURA"
+
 oUF.Tags.Methods['Mlight:pws'] = function(u) -- 盾
 	local spell, pws_time, perc, r, g, b, colorstr
 	
@@ -347,7 +356,7 @@ classIndicators={
     ["PRIEST"] = {
         ["TL"] = "[Mlight:rnw][Mlight:pws]",
         ["BR"] = "[Mlight:xnhd][Mlight:ayj][Mlight:da][Mlight:lt]",
-        ["BL"] = "[Mlight:yzdx]",
+        ["BL"] = "[Mlight:xrlh]",
         ["TR"] = "[Mlight:pom]",
         ["Cen"] = "[Mlight:atonement]",
     },
