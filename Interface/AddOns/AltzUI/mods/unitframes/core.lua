@@ -179,8 +179,10 @@ T.Overridehealthbar = function(self, event, unit)
 
 	if aCoreCDB["UnitframeOptions"]["style"] == 1 then
 		health:GetStatusBarTexture():SetGradient("VERTICAL", r, g, b, r/3, g/3, b/3)
-	else
+	elseif aCoreCDB["UnitframeOptions"]["style"] == 2 then
 		health:SetStatusBarColor(r, g, b)
+	else
+		health:SetStatusBarColor(0, 0, 0)
 	end
 	
 	if aCoreCDB["UnitframeOptions"]["style"] == 3 then
@@ -333,8 +335,10 @@ T.Updatehealthbar = function(self, unit, min, max)
 		r2, g2, b2 = oUF:RGBColorGradient(perc, 1, unpack(oUF.colors.smooth))
 		if aCoreCDB["UnitframeOptions"]["style"] == 1 then
 			self:GetStatusBarTexture():SetGradient("VERTICAL", r2, g2, b2, r2/3, g2/3, b2/3)
+		elseif aCoreCDB["UnitframeOptions"]["style"] == 2 then
+			self:SetStatusBarColor(r2, g2, b2)
 		else
-			self:SetStatusBarColor(r2, g2, b2)	
+			self:SetStatusBarColor(0, 0, 0)
 		end
 		
 		if aCoreCDB["UnitframeOptions"]["style"] == 3 then
