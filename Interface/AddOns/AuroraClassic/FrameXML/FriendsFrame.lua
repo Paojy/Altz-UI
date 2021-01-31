@@ -2,9 +2,19 @@ local _, ns = ...
 local F, C = unpack(ns)
 
 tinsert(C.defaultThemes, function()
-	for i = 1, 4 do
-		F.ReskinTab(_G["FriendsFrameTab"..i])
-	end
+	local loadInit
+	FriendsFrame:HookScript("OnShow", function()
+		if loadInit then return end
+		for i = 1, 4 do
+			local tab = _G["FriendsFrameTab"..i]
+			if tab then
+				F.ReskinTab(tab)
+				F.ResetTabAnchor(tab)
+			end
+		end
+		loadInit = true
+	end)
+
 	FriendsFrameIcon:Hide()
 	F.StripTextures(IgnoreListFrame)
 

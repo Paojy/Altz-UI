@@ -1,7 +1,7 @@
 local _, ns = ...
 local F, C = unpack(ns)
 
-local function replaceIconString(self, text)
+function F:ReplaceIconString(text)
 	if not text then text = self:GetText() end
 	if not text or text == "" then return end
 
@@ -18,8 +18,8 @@ C.themes["Blizzard_AnimaDiversionUI"] = function()
 	frame.AnimaDiversionCurrencyFrame.Background:SetAlpha(0)
 
 	local currencyFrame = frame.AnimaDiversionCurrencyFrame.CurrencyFrame
-	replaceIconString(currencyFrame.Quantity)
-	hooksecurefunc(currencyFrame.Quantity, "SetText", replaceIconString)
+	F.ReplaceIconString(currencyFrame.Quantity)
+	hooksecurefunc(currencyFrame.Quantity, "SetText", F.ReplaceIconString)
 
 	F.Reskin(frame.ReinforceInfoFrame.AnimaNodeReinforceButton)
 end

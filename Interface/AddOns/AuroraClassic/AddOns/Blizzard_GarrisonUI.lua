@@ -1019,8 +1019,9 @@ C.themes["Blizzard_GarrisonUI"] = function()
 
 	local function reskinWidgetFont(font, r, g, b)
 		if not AuroraClassicDB.FontOutline then return end
-		if not font then return end
-		font:SetTextColor(r, g, b)
+		if font and font.SetTextColor then
+			font:SetTextColor(r, g, b)
+		end
 	end
 
 	-- WarPlan
@@ -1083,7 +1084,11 @@ C.themes["Blizzard_GarrisonUI"] = function()
 				local mission = missions[i]
 				if not mission.styled then
 					reskinWidgetFont(mission.Description, .8, .8, .8)
-					reskinWidgetFont(mission.CDTDisplay, 1, .8, 0)
+					if mission.CDTDisplay.GetFontString then
+						reskinWidgetFont(mission.CDTDisplay:GetFontString(), 1, .8, 0)
+					else
+						reskinWidgetFont(mission.CDTDisplay, 1, .8, 0)
+					end
 					F.Reskin(mission.ViewButton)
 
 					for j = 1, mission.statLine:GetNumRegions() do
@@ -1098,20 +1103,27 @@ C.themes["Blizzard_GarrisonUI"] = function()
 			end
 		end
 
-		C_Timer.After(.1, function()
+		local function SearchMissionBoard()
 			local missionTab = CovenantMissionFrame.MissionTab
 			for i = 1, missionTab:GetNumChildren() do
 				local child = select(i, missionTab:GetChildren())
 				if child and child.MissionList then
 					VenturePlanFrame = child
+					break
 				end
 			end
 			if not VenturePlanFrame then return end
 
 			reskinVenturePlan(VenturePlanFrame)
 			VenturePlanFrame:HookScript("OnShow", reskinVenturePlan)
-			F.Reskin(VenturePlanFrame.CopyBox.ResetButton)
-			F.ReskinClose(VenturePlanFrame.CopyBox.CloseButton2)
+
+			local copyBox = VenturePlanFrame.CopyBox
+			F.Reskin(copyBox.ResetButton)
+			F.ReskinClose(copyBox.CloseButton2)
+			reskinWidgetFont(copyBox.Intro, 1, 1, 1)
+			reskinWidgetFont(copyBox.FirstInputBoxLabel, 1, .8, 0)
+			reskinWidgetFont(copyBox.SecondInputBoxLabel, 1, .8, 0)
+			reskinWidgetFont(copyBox.VersionText, 1, 1, 1)
 
 			local missionBoard = CovenantMissionFrame.MissionTab.MissionPage.Board
 			for i = 1, missionBoard:GetNumChildren() do
@@ -1124,7 +1136,14 @@ C.themes["Blizzard_GarrisonUI"] = function()
 					if texture then
 						texture:SetTexCoord(unpack(C.TexCoord))
 					end
+					break
 				end
+			end
+		end
+
+		CovenantMissionFrame:HookScript("OnShow", function()
+			if not VenturePlanFrame then
+				C_Timer.After(.1, SearchMissionBoard)
 			end
 		end)
 	end

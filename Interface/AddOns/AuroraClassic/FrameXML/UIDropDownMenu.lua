@@ -3,11 +3,7 @@ local F, C = unpack(ns)
 local r, g, b = C.r, C.g, C.b
 
 local function toggleBackdrop(bu, show)
-	if show then
-		bu.bg:Show()
-	else
-		bu.bg:Hide()
-	end
+	bu.bg:SetShown(show)
 end
 
 local function isCheckTexture(check)
@@ -64,6 +60,7 @@ tinsert(C.defaultThemes, function()
 					F.SetupArrow(arrow:GetNormalTexture(), "right")
 					arrow:SetSize(14, 14)
 				end
+				toggleBackdrop(bu, false)
 
 				local uncheck = _G["DropDownList"..level.."Button"..i.."UnCheck"]
 				if isCheckTexture(uncheck) then uncheck:SetTexture("") end
@@ -87,8 +84,6 @@ tinsert(C.defaultThemes, function()
 						end
 
 						check:SetTexCoord(0, 1, 0, 1)
-					else
-						toggleBackdrop(bu, false)
 					end
 				else
 					check:SetSize(16, 16)

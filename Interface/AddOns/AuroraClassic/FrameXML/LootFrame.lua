@@ -1,10 +1,16 @@
 local _, ns = ...
 local F, C = unpack(ns)
 
+local function HideIconBG(anim)
+	anim.__owner.IconHitBox.bg:SetAlpha(0)
+end
+
+local function ShowIconBG(anim)
+	anim.__owner.IconHitBox.bg:SetAlpha(1)
+end
+
 tinsert(C.defaultThemes, function()
 	if not AuroraClassicDB.Loot then return end
-
-	LootFramePortraitOverlay:Hide()
 
 	hooksecurefunc("LootFrame_UpdateButton", function(index)
 		local ic = _G["LootButton"..index.."IconTexture"]
@@ -45,37 +51,33 @@ tinsert(C.defaultThemes, function()
 	F.ReskinPortraitFrame(LootFrame)
 	F.ReskinArrow(LootFrameUpButton, "up")
 	F.ReskinArrow(LootFrameDownButton, "down")
+	LootFramePortraitOverlay:Hide()
 
 	-- Bonus roll
+	BonusRollFrame.Background:SetAlpha(0)
+	BonusRollFrame.IconBorder:Hide()
+	BonusRollFrame.BlackBackgroundHoist.Background:Hide()
+	BonusRollFrame.SpecRing:SetAlpha(0)
+	F.SetBD(BonusRollFrame)
 
-	do
-		local frame = BonusRollFrame
+	local specIcon = BonusRollFrame.SpecIcon
+	specIcon:ClearAllPoints()
+	specIcon:SetPoint("TOPRIGHT", -90, -18)
+	local bg = F.ReskinIcon(specIcon)
+	hooksecurefunc("BonusRollFrame_StartBonusRoll", function()
+		bg:SetShown(specIcon:IsShown())
+	end)
 
-		frame.Background:SetAlpha(0)
-		frame.IconBorder:Hide()
-		frame.BlackBackgroundHoist.Background:Hide()
-		frame.SpecRing:SetAlpha(0)
+	local promptFrame = BonusRollFrame.PromptFrame
+	F.ReskinIcon(promptFrame.Icon)
+	promptFrame.Timer.Bar:SetTexture(C.normTex)
+	F.CreateBDFrame(promptFrame.Timer, .25)
 
-		local specIcon = frame.SpecIcon
-		specIcon:ClearAllPoints()
-		specIcon:SetPoint("TOPRIGHT", -90, -18)
-		local bg = F.ReskinIcon(specIcon)
-		hooksecurefunc("BonusRollFrame_StartBonusRoll", function()
-			bg:SetShown(specIcon:IsShown())
-		end)
-
-		F.ReskinIcon(frame.PromptFrame.Icon)
-		frame.PromptFrame.Timer.Bar:SetTexture(C.normTex)
-		F.SetBD(frame)
-		F.CreateBDFrame(frame.PromptFrame.Timer, .25)
-
-		local from, to = "|T.+|t", "|T%%s:14:14:0:0:64:64:5:59:5:59|t"
-		BONUS_ROLL_COST = BONUS_ROLL_COST:gsub(from, to)
-		BONUS_ROLL_CURRENT_COUNT = BONUS_ROLL_CURRENT_COUNT:gsub(from, to)
-	end
+	local from, to = "|T.+|t", "|T%%s:14:14:0:0:64:64:5:59:5:59|t"
+	BONUS_ROLL_COST = BONUS_ROLL_COST:gsub(from, to)
+	BONUS_ROLL_CURRENT_COUNT = BONUS_ROLL_CURRENT_COUNT:gsub(from, to)
 
 	-- Loot Roll Frame
-
 	hooksecurefunc("GroupLootFrame_OpenNewFrame", function()
 		for i = 1, NUM_GROUP_LOOT_FRAMES do
 			local frame = _G["GroupLootFrame"..i]
@@ -104,6 +106,21 @@ tinsert(C.defaultThemes, function()
 				local color = C.QualityColors[quality]
 				frame.bg:SetBackdropBorderColor(color.r, color.g, color.b)
 			end
+		end
+	end)
+
+	-- Bossbanner
+	hooksecurefunc("BossBanner_ConfigureLootFrame", function(lootFrame)
+		if not lootFrame.bg then
+			local iconHitBox = lootFrame.IconHitBox
+			iconHitBox.bg = F.ReskinIcon(lootFrame.Icon)
+			iconHitBox.bg:SetAlpha(0)
+			iconHitBox.IconBorder:SetTexture(nil)
+			F.ReskinIconBorder(iconHitBox.IconBorder, true)
+
+			lootFrame.Anim.__owner = lootFrame
+			lootFrame.Anim:HookScript("OnPlay", HideIconBG)
+			lootFrame.Anim:HookScript("OnFinished", ShowIconBG)
 		end
 	end)
 end)
