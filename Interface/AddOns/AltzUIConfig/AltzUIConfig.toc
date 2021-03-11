@@ -1,6 +1,6 @@
 ﻿## Interface: 90002
 ## Title: |cffEE3A8CAltz|rUI Config
-## Version: 9.11
+## Version: 9.12
 ## Author: Paopao001
 ## Dependencies: AuroraClassic
 ## OptionalDeps: !ClassColors, Skada, DBM-Core, BigWigs
