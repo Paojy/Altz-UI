@@ -341,6 +341,7 @@ local AuraList = {
 		[GetSpellInfo(45181)] = { id = 45181,  level = 6,}, -- 装死，盗贼假死
 		[GetSpellInfo(320227)]  = { id = 320227,  level = 6,}, -- 枯竭外壳，法夜诈尸
 		[GetSpellInfo(340556)] = { id = 340556,  level = 6,}, -- 精确本能，导灵器
+		[GetSpellInfo(344907)] = { id = 344907,  level = 6,}, -- 奥的裂解之心
 		[GetSpellInfo(348254)] = { id = 348254,  level = 6,}, -- 典狱长之眼
 		[GetSpellInfo(338606)] = { id = 338906,  level = 6,}, -- 典狱长之链
 		[GetSpellInfo(26013)] = { id = 26013,  level = 6,}, -- 逃亡者
@@ -354,6 +355,9 @@ local AuraList = {
 		[GetSpellInfo(346939)] = { id = 346939,  level = 6,}, -- 扭曲痛苦，议会全屏debuff
 		[GetSpellInfo(332443)] = { id = 332443,  level = 6,}, -- 泥拳，震动的地基，全屏aoe
 		[GetSpellInfo(343063)] = { id = 343063,  level = 6,}, -- 干将，大地之刺减速
+		[GetSpellInfo(328276)] = { id = 328276,  level = 6,}, -- 悔悟之行，尾王没用debuff
+		[GetSpellInfo(334228)] = { id = 334228,  level = 6,}, -- 不稳定的喷发，3号无需监控
+		[GetSpellInfo(329725)] = { id = 329725,  level = 6,}, -- 根除，3号无需监控
 	},
 }
 
@@ -486,7 +490,6 @@ G.DebuffList = {
 			[GetSpellInfo(333861)] = {id = 333861, level = 8,}, -- 回旋利刃
 			[GetSpellInfo(333845)] = {id = 333845, level = 8,}, -- 失衡重击
 			[GetSpellInfo(333708)] = {id = 333708, level = 8,}, -- 灵魂腐蚀
-			[GetSpellInfo(333231)] = {id = 333231, level = 8,}, -- 灼热之陨
 			[GetSpellInfo(332836)] = {id = 332836, level = 8,}, -- 劈砍
 			[GetSpellInfo(332708)] = {id = 332708, level = 8,}, -- 大地猛击
 			[GetSpellInfo(331288)] = {id = 331288, level = 8,}, -- 巨人打击
@@ -755,7 +758,6 @@ G.DebuffList = {
 			[GetSpellInfo(334653)] = {id = 334653, level = 8,}, -- 饱餐
 			[GetSpellInfo(325119)] = {id = 325119, level = 8,}, -- 英勇烈焰
 			[GetSpellInfo(322429)] = {id = 322429, level = 8,}, -- 撕裂切割
-			[GetSpellInfo(323551)] = {id = 323551, level = 8,}, -- 残渣
 			[GetSpellInfo(322212)] = {id = 322212, level = 8,}, -- 滋长猜忌
 			[GetSpellInfo(326826)] = {id = 326826, level = 8,}, -- 压制气场
 		},
@@ -872,9 +874,8 @@ G.DebuffList = {
 			[GetSpellInfo(340533)] = {id = 340533, level = 8,}, -- 奥术易伤
 		},
 		[EJ_GetEncounterInfo(2428)] = {  --> 饥饿的毁灭者
-			[GetSpellInfo(334228)] = {id = 334228, level = 8,}, -- 不稳定的喷发
 			[GetSpellInfo(329298)] = {id = 329298, level = 8,}, -- 暴食瘴气
-			[GetSpellInfo(329298)] = {id = 329298, level = 8,}, -- 
+			[GetSpellInfo(334755)] = {id = 334755, level = 8,}, -- 精华液滴
 		},
 		[EJ_GetEncounterInfo(2420)] = {  --> 伊涅瓦·暗脉女勋爵
 			[GetSpellInfo(325936)] = {id = 325936, level = 8,}, -- 共享认知Tank
@@ -900,7 +901,6 @@ G.DebuffList = {
 			[GetSpellInfo(331706)] = {id = 331706, level = 8,}, -- 红字
 			[GetSpellInfo(331636)] = {id = 331636, level = 8,}, -- 黑暗伴舞
 			[GetSpellInfo(331637)] = {id = 331637, level = 8,}, -- 黑暗伴舞
-			[GetSpellInfo(328334)] = {id = 328334, level = 8,}, -- 战术冲锋
 			[GetSpellInfo(346945)] = {id = 346945, level = 8,}, -- 痛苦具象
 			[GetSpellInfo(346690)] = {id = 346690, level = 8,}, -- 决斗者的还击
 			[GetSpellInfo(346681)] = {id = 346681, level = 8,}, -- 灵魂尖刺
@@ -939,14 +939,19 @@ G.DebuffList = {
 		[EJ_GetEncounterInfo(2424)] = {  --> 德纳修斯大帝
 			[GetSpellInfo(326851)] = {id = 326851, level = 8,}, -- 血债
 			[GetSpellInfo(327992)] = {id = 327992, level = 8,}, -- 荒芜
-			[GetSpellInfo(328276)] = {id = 328276, level = 8,}, -- 悔悟之行
 			[GetSpellInfo(326699)] = {id = 326699, level = 8,}, -- 罪孽烦扰
-			[GetSpellInfo(332797)] = {id = 332797, level = 8,}, -- 致命灵巧
+			[GetSpellInfo(332797)] = {id = 332797, level = 8,}, -- 致命灵巧1
+			[GetSpellInfo(332794)] = {id = 332794, level = 8,}, -- 致命灵巧2
 			[GetSpellInfo(334016)] = {id = 334016, level = 8,}, -- 落选者
 			[GetSpellInfo(327039)] = {id = 327039, level = 8,}, -- 喂食时间
+			[GetSpellInfo(329181)] = {id = 329181, level = 8,}, -- 毁灭痛苦
+			[GetSpellInfo(329906)] = {id = 329906, level = 8,}, -- 屠戮
+			[GetSpellInfo(329951)] = {id = 329951, level = 8,}, -- 穿刺
+			[GetSpellInfo(315043)] = {id = 315043, level = 8,}, -- 猎物
+			[GetSpellInfo(327796)] = {id = 327796, level = 8,}, -- 午夜猎手
+			[GetSpellInfo(327842)] = {id = 327842, level = 8,}, -- 黑夜之触
 		},
 		["Trash"] = {
-			[GetSpellInfo(341651)] = {id = 341651, level = 8,}, -- 恒影，易伤
 			[GetSpellInfo(338687)] = {id = 338687, level = 8,}, -- 暮虚，易伤
 			[GetSpellInfo(345811)] = {id = 345811, level = 8,}, -- 偿罪
 			[GetSpellInfo(343322)] = {id = 343322, level = 8,}, -- 摩多瓦克的诅咒
