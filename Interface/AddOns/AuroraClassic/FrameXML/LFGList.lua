@@ -42,7 +42,7 @@ tinsert(C.defaultThemes, function()
 	F.Reskin(SearchPanel.RefreshButton)
 	F.Reskin(SearchPanel.BackButton)
 	F.Reskin(SearchPanel.SignUpButton)
-	F.Reskin(SearchPanel.ScrollFrame.StartGroupButton)
+	F.Reskin(SearchPanel.ScrollFrame.ScrollChild.StartGroupButton)
 	F.ReskinInput(SearchPanel.SearchBox)
 	F.ReskinScroll(SearchPanel.ScrollFrame.scrollBar)
 
