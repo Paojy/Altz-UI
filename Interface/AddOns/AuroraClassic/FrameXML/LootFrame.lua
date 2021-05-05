@@ -1,14 +1,6 @@
 local _, ns = ...
 local F, C = unpack(ns)
 
-local function HideIconBG(anim)
-	anim.__owner.IconHitBox.bg:SetAlpha(0)
-end
-
-local function ShowIconBG(anim)
-	anim.__owner.IconHitBox.bg:SetAlpha(1)
-end
-
 tinsert(C.defaultThemes, function()
 	if not AuroraClassicDB.Loot then return end
 
@@ -111,16 +103,14 @@ tinsert(C.defaultThemes, function()
 
 	-- Bossbanner
 	hooksecurefunc("BossBanner_ConfigureLootFrame", function(lootFrame)
-		if not lootFrame.bg then
-			local iconHitBox = lootFrame.IconHitBox
-			iconHitBox.bg = F.ReskinIcon(lootFrame.Icon)
-			iconHitBox.bg:SetAlpha(0)
-			iconHitBox.IconBorder:SetTexture(nil)
+		local iconHitBox = lootFrame.IconHitBox
+		if not iconHitBox.bg then
+			iconHitBox.bg = F.CreateBDFrame(iconHitBox)
+			iconHitBox.bg:SetOutside(lootFrame.Icon)
+			lootFrame.Icon:SetTexCoord(unpack(C.TexCoord))
 			F.ReskinIconBorder(iconHitBox.IconBorder, true)
-
-			lootFrame.Anim.__owner = lootFrame
-			lootFrame.Anim:HookScript("OnPlay", HideIconBG)
-			lootFrame.Anim:HookScript("OnFinished", ShowIconBG)
 		end
+
+		iconHitBox.IconBorder:SetTexture(nil)
 	end)
 end)

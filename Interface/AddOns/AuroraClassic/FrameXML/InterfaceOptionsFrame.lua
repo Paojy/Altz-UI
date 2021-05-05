@@ -100,6 +100,11 @@ tinsert(C.defaultThemes, function()
 			InterfaceOptionsAccessibilityPanelOverrideFadeOut,
 			InterfaceOptionsAccessibilityPanelColorblindMode
 		}
+		if C.isNewPatch then
+			tinsert(checkboxes, InterfaceOptionsAccessibilityPanelSpeechToText)
+			tinsert(checkboxes, InterfaceOptionsAccessibilityPanelTextToSpeech)
+			tinsert(checkboxes, InterfaceOptionsAccessibilityPanelRemoteTextToSpeech)
+		end
 		for _, checkbox in next, checkboxes do
 			F.ReskinCheck(checkbox)
 		end

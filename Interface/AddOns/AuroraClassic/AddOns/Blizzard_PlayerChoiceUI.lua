@@ -22,6 +22,7 @@ local function ReskinSecondOptionButton(self)
 	F.Reskin(self, nil, true)
 end
 
+-- Note: isNewPatch, PlayerChoiceUI rename to PlayerChoice
 C.themes["Blizzard_PlayerChoiceUI"] = function()
 	hooksecurefunc(PlayerChoiceFrame, "Update", function(self)
 		if not self.bg then
@@ -34,7 +35,6 @@ C.themes["Blizzard_PlayerChoiceUI"] = function()
 			self.BorderFrame.Header:SetAlpha(0)
 			F.CreateBDFrame(self.Title, .25)
 			F.ReskinClose(self.CloseButton)
-			self.CloseButton.Border:SetAlpha(0)
 			self.bg = F.SetBD(self)
 		end
 
@@ -54,11 +54,11 @@ C.themes["Blizzard_PlayerChoiceUI"] = function()
 
 				if child.Spell then
 					if not child.Spell.bg then
-						child.Spell.Border:SetTexture("")
-						child.Spell.IconMask:Hide()
+						child.Spell.Border:SetAlpha(0)
 						child.Spell.bg = F.ReskinIcon(child.Spell.Icon)
 					end
 
+					child.Spell.IconMask:Hide()
 					child.Spell.Text:SetTextColor(1, 1, 1)
 				end
 

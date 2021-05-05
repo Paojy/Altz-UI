@@ -21,6 +21,7 @@
 	<Script file="Blizzard_DeathRecap.lua"/>
 	<Script file="Blizzard_DebugTools.lua"/>
 	<Script file="Blizzard_EncounterJournal.lua"/>
+	<Script file="Blizzard_EventTrace.lua"/>
 	<Script file="Blizzard_FlightMap.lua"/>
 	<Script file="Blizzard_GarrisonUI.lua"/>
 	<Script file="Blizzard_GMChatUI.lua"/>
@@ -37,6 +38,7 @@
 	<Script file="Blizzard_NewPlayerExperienceGuide.lua"/>
 	<Script file="Blizzard_ObliterumUI.lua"/>
 	<Script file="Blizzard_PartyPoseUI.lua"/>
+	<Script file="Blizzard_PlayerChoice.lua"/>
 	<Script file="Blizzard_PlayerChoiceUI.lua"/>
 	<Script file="Blizzard_PVPUI.lua"/>
 	<Script file="Blizzard_RaidUI.lua"/>
