@@ -19,28 +19,16 @@ frame.point = {
 T.CreateDragFrame(frame) --frame, dragFrameList, inset, clamp
 frame:SetWidth(num*buttonssize + 2*padding)
 frame:SetHeight(buttonssize + 2*padding)
+frame:Show()
 
-MainMenuBarVehicleLeaveButton:SetParent(frame)
-MainMenuBarVehicleLeaveButton:ClearAllPoints()
-MainMenuBarVehicleLeaveButton:SetPoint("CENTER", 0, 0)
-MainMenuBarVehicleLeaveButton:SetScript("OnEvent", function(self,event)
-	if ( CanExitVehicle() and ActionBarController_GetCurrentActionBarState() == LE_ACTIONBAR_STATE_MAIN ) then
-		MainMenuBarVehicleLeaveButton:Show()
-		MainMenuBarVehicleLeaveButton:Enable()
-	else
-		MainMenuBarVehicleLeaveButton:SetHighlightTexture([[Interface\Buttons\ButtonHilight-Square]], "ADD")
-		MainMenuBarVehicleLeaveButton:UnlockHighlight()
-		MainMenuBarVehicleLeaveButton:Hide()
-	end
-end)
-
---the button
-local button = CreateFrame("BUTTON", "rABS_LeaveVehicleButton", frame, "SecureHandlerClickTemplate, SecureHandlerStateTemplate");
+-- 载具
+local button = CreateFrame("BUTTON", "Altz_LeaveVehicleButton", frame, "SecureHandlerClickTemplate, SecureHandlerStateTemplate");
 table.insert(buttonList, button) --add the button object to the list
 button:SetSize(buttonssize, buttonssize)
 button:SetPoint("BOTTOMLEFT", frame, padding, padding)
 button:RegisterForClicks("AnyUp")
 button:SetScript("OnClick", function(self) VehicleExit() end)
+T.CreateSD(button, 3, 0, 0, 0, 0, -1)
 
 button:SetNormalTexture("INTERFACE\\PLAYERACTIONBARALT\\NATURAL")
 button:SetPushedTexture("INTERFACE\\PLAYERACTIONBARALT\\NATURAL")
@@ -53,6 +41,40 @@ pu:SetTexCoord(0.001953125,0.08398438,0.359375,0.4414063)
 hi:SetTexCoord(0.6152344,0.6972656,0.359375,0.4414063)
 hi:SetBlendMode("ADD")
 
---[possessbar][overridebar]
+--[possessbar][overridebar][vehicleui]
 --the button will spawn if a vehicle exists, but no vehicle ui is in place (the vehicle ui has its own exit button)
-RegisterStateDriver(button, "visibility", "[vehicleui][petbattle] hide; [@vehicle,exists] show; hide")
+RegisterStateDriver(button, "visibility", "[petbattle] hide; [@vehicle,exists] show; hide")
+
+-- 中止飞行按钮
+MainMenuBarVehicleLeaveButton:SetParent(frame)
+MainMenuBarVehicleLeaveButton:SetSize(buttonssize, buttonssize)
+MainMenuBarVehicleLeaveButton:ClearAllPoints()
+MainMenuBarVehicleLeaveButton:SetPoint("BOTTOMLEFT", frame, padding, padding)
+T.CreateSD(MainMenuBarVehicleLeaveButton, 3, 0, 0, 0, 0, -1)
+
+MainMenuBarVehicleLeaveButton:SetNormalTexture("INTERFACE\\PLAYERACTIONBARALT\\NATURAL")
+MainMenuBarVehicleLeaveButton:SetPushedTexture("INTERFACE\\PLAYERACTIONBARALT\\NATURAL")
+MainMenuBarVehicleLeaveButton:SetHighlightTexture("INTERFACE\\PLAYERACTIONBARALT\\NATURAL")
+MainMenuBarVehicleLeaveButton:SetDisabledTexture("INTERFACE\\PLAYERACTIONBARALT\\NATURAL")
+local nt = MainMenuBarVehicleLeaveButton:GetNormalTexture()
+local pu = MainMenuBarVehicleLeaveButton:GetPushedTexture()
+local da = MainMenuBarVehicleLeaveButton:GetDisabledTexture()
+local hi = MainMenuBarVehicleLeaveButton:GetHighlightTexture()
+nt:SetTexCoord(0.0859375,0.1679688,0.359375,0.4414063)
+pu:SetTexCoord(0.001953125,0.08398438,0.359375,0.4414063)
+da:SetTexCoord(0.001953125,0.08398438,0.359375,0.4414063)
+da:SetDesaturated(true)
+hi:SetTexCoord(0.6152344,0.6972656,0.359375,0.4414063)
+
+hi:SetBlendMode("ADD")
+
+function MainMenuBarVehicleLeaveButton_Update()
+	if ( CanExitVehicle() and ActionBarController_GetCurrentActionBarState() == LE_ACTIONBAR_STATE_MAIN ) then	
+		MainMenuBarVehicleLeaveButton:Show()
+		MainMenuBarVehicleLeaveButton:Enable()
+	else
+		MainMenuBarVehicleLeaveButton:SetHighlightTexture([[Interface\Buttons\ButtonHilight-Square]], "ADD");
+		MainMenuBarVehicleLeaveButton:UnlockHighlight()
+		MainMenuBarVehicleLeaveButton:Hide()
+	end
+end
