@@ -2234,6 +2234,14 @@ end
 local function CreateCooldownAuraOption(auratype, auratable, name, parent, show)
 	local frame
 	
+	for spell, info in pairs(aCoreCDB["CooldownAura"][auratype]) do
+		if tonumber(info.id) then
+			aCoreCDB["CooldownAura"][auratype][spell]["id"] = tonumber(info.id)
+		else
+			aCoreCDB["CooldownAura"][auratype][spell] = nil
+		end	
+	end
+	
 	if name then
 		frame = CreateOptionPage("Cooldown "..auratype.." Options", name, parent, "HORIZONTAL", .3, true)
 		frame.title:Hide()

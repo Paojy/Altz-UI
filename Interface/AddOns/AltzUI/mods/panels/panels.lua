@@ -305,7 +305,6 @@ Updater:SetScript("OnEvent", function(self, event)
 			end
 			HybridMinimap:Enable()
 			HybridMinimap.CircleMask:SetTexture("Interface\\Buttons\\WHITE8x8")
-			HybridMinimap.PlayerTexture:SetTexture("Interface\\Minimap\\Vehicle-SilvershardMines-Arrow")
 		end
 	end
 end)

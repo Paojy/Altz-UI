@@ -160,10 +160,5 @@ f:SetScript("OnEvent", function(self, event, addon)
 		if IsAddOnLoaded("DBM-Core") then
 			registerDBMStyle()
 		end
-	elseif event == "ADDON_LOADED" then
-		if not reason then reason = (select(6, GetAddOnInfo("BigWigs_Plugins"))) end
-		if (reason == "MISSING" and addon == "BigWigs") or addon == "BigWigs_Plugins" then
-			registerBWStyle()
-		end
 	end
 end)
