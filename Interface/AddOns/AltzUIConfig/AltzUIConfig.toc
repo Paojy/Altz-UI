@@ -1,6 +1,6 @@
 ﻿## Interface: 90002
 ## Title: |cffEE3A8CAltz|rUI Config
-## Version: 9.13
+## Version: 9.14
 ## Author: Paopao001
 ## Dependencies: AuroraClassic
 ## OptionalDeps: !ClassColors, Skada, DBM-Core, BigWigs
@@ -9,10 +9,10 @@
 
 init.lua
 
-locales\chinese.lua
-locales\twchinese.lua
-locales\portuguese.lua
-locales\english.lua
+locals\chinese.lua
+locals\twchinese.lua
+locals\portuguese.lua
+locals\english.lua
 
 PopupDialogs.lua
 api.lua
