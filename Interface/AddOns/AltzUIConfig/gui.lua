@@ -1303,6 +1303,7 @@ T.createcheckbutton(RFInnerframe.common, 30, 200, L["未进组时显示"], "Unit
 T.createslider(RFInnerframe.common, 30, 250, L["名字长度"], "UnitframeOptions", "namelength", 1, 2, 10, 1)
 T.createslider(RFInnerframe.common, 30, 300, L["字体大小"], "UnitframeOptions", "raidfontsize", 1, 1, 25, 1)
 T.createcheckbutton(RFInnerframe.common, 30, 330, L["刷新载具"], "UnitframeOptions", "toggleForVehicle")
+T.createcheckbutton(RFInnerframe.common, 30, 360, L["团队工具"], "UnitframeOptions", "raidtool")
 T.createDR(RFInnerframe.common.enableraid, RFInnerframe.common.raidframe_inparty, RFInnerframe.common.party_num, RFInnerframe.common.showraidpet, RFInnerframe.common.showsolo, RFInnerframe.common.namelength, RFInnerframe.common.raidfontsize)
 
 RFInnerframe.switch = CreateOptionPage("RF Options switch", L["切换"], RFInnerframe, "VERTICAL", .3)

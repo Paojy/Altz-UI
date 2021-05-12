@@ -1237,7 +1237,9 @@ local Character_default_Settings = {
 		toggleForVehicle = true,
 		autoswitch = false,
 		raidonly = "healer",
-
+		raidtool = true,
+		raidtool_show = true,
+		
 		--[[ healer mode ]]--
 		healerraidheight = 45,
 		healerraidwidth = 120,

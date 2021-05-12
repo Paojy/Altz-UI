@@ -30,7 +30,7 @@ end
 --====================================================--
 --[[                -- Shadow --                    ]]--
 --====================================================--	
-local PShadow = CreateFrame("Frame", G.uiname.."Backgroud Shadow", UIParent, "BackdropTemplate")
+local PShadow = CreateFrame("Frame", G.uiname.."Background Shadow", UIParent, "BackdropTemplate")
 PShadow:SetFrameStrata("BACKGROUND")
 PShadow:SetAllPoints()
 PShadow:SetBackdrop({bgFile = "Interface\\AddOns\\AltzUI\\media\\shadow"})
@@ -1381,7 +1381,7 @@ local function CreateMicromenuButton(parent, bu, text, original)
 	
 	if original == "System" then
 		Button:SetSize(80, 43)
-		Button:DisableDrawLayer("BACKGROUD")
+		Button:DisableDrawLayer("BACKGROUND")
 	else
 		Button:SetSize(24, 43)
 	end
@@ -1835,3 +1835,252 @@ end)
 
 BOTTOMPANEL:RegisterEvent("PLAYER_ENTERING_WORLD")
 BOTTOMPANEL:RegisterEvent("PLAYER_FLAGS_CHANGED")
+
+--====================================================--
+--[[                -- 团队标记 --                  ]]--
+--====================================================--
+if aCoreCDB["UnitframeOptions"]["raidtool"] then
+	
+	local raidmark = CreateFrame("Frame", G.uiname.."Raid Mark Frame", UIParent)
+	
+	raidmark.movingname = L["团队工具"]
+	raidmark.point = {
+			healer = {a1 = "TOP", parent = "UIParent", a2 = "TOP", x = 0, y = -50},
+			dpser = {a1 = "TOP", parent = "UIParent", a2 = "TOP", x = 0, y = -50},
+		}
+	T.CreateDragFrame(raidmark) --frame, dragFrameList, inset, clamp
+	raidmark:SetWidth(290)
+	raidmark:SetHeight(25)
+	
+	local rm_colors = {
+		{1, 1, 0},
+		{1, .5, 0},
+		{1, 0, 1},
+		{0, 1, 0},
+		{.8, .8, .8},
+		{.1, .5, 1},
+		{1, 0, 0},
+		{1, 1, 1},
+	}
+	
+	for i = 1, 9 do
+		local bu = CreateFrame("Button", G.uiname.."Raid Mark Button"..i, raidmark, "SecureActionButtonTemplate")     
+		bu:SetPoint("TOPLEFT", raidmark, "TOPLEFT", (i-1)*33, 0) 	
+		bu:SetSize(25, 25)
+		
+		bu.bg = T.CreateSD(bu, 3)
+		bu.bg:SetFrameLevel(0)
+		
+		bu.bgtex = bu:CreateTexture(nil, "BACKGROUND")
+		bu.bgtex:SetAllPoints(bu)
+		bu.bgtex:SetTexture(G.media.blank)
+		bu.bgtex:SetVertexColor(0, 0, 0, .3)
+		
+		bu.tex = bu:CreateTexture(nil, "ARTWORK")
+		bu.tex:SetAllPoints(bu)
+		
+		if i == 9 then
+			bu:SetNormalTexture("Interface\\BUTTONS\\UI-GroupLoot-Pass-Up")
+			bu:SetHighlightTexture("Interface\\BUTTONS\\UI-GroupLoot-Pass-Highlight")
+			bu:SetPushedTexture("Interface\\BUTTONS\\UI-GroupLoot-Pass-Down")
+			bu:SetPushedTextOffset(3, 3)
+			bu:RegisterForClicks("LeftButtonDown")
+			bu:SetAttribute("type", "macro") 
+			bu:SetAttribute("macrotext1", "/script SetRaidTarget(\"target\",0)")
+		else
+			bu.tex:SetTexture("Interface\\TargetingFrame\\UI-RaidTargetingIcon_"..i)	
+			bu:RegisterForClicks("LeftButtonDown")
+			bu:SetAttribute("type", "macro")
+			bu:SetAttribute("macrotext1", "/script SetRaidTarget(\"target\","..i..")")
+			bu:SetScript("OnEnter", function()
+				bu.bg:SetBackdropBorderColor(rm_colors[i][1], rm_colors[i][2], rm_colors[i][3])
+			end)
+			bu:SetScript("OnLeave", function()
+				bu.bg:SetBackdropBorderColor(0, 0, 0)
+			end)		
+		end
+		raidmark["mark"..i] = bu	
+	end
+	
+	local wm_index = {5, 6, 3, 2, 7, 1, 4, 8}
+	
+	for i = 1, 9 do
+		local bu = CreateFrame("Button", G.uiname.."Raid WorldMark Button"..i, raidmark, "SecureActionButtonTemplate")     
+		bu:SetPoint("TOPLEFT", raidmark, "TOPLEFT", (i-1)*33, -33) 	
+		bu:SetSize(25, 25)
+		
+		bu.bg = T.CreateSD(bu, 3)
+		bu.bg:SetFrameLevel(0)
+		
+		bu.bgtex = bu:CreateTexture(nil, "BACKGROUND")
+		bu.bgtex:SetAllPoints(bu)
+		bu.bgtex:SetTexture(G.media.blank)
+		bu.bgtex:SetVertexColor(0, 0, 0, .3)
+		
+		bu.tex = bu:CreateTexture(nil, "ARTWORK")
+		bu.tex:SetAllPoints(bu)
+		
+		if i == 9 then
+			bu:SetNormalTexture("Interface\\BUTTONS\\UI-GroupLoot-Pass-Up")
+			bu:SetHighlightTexture("Interface\\BUTTONS\\UI-GroupLoot-Pass-Highlight")
+			bu:SetPushedTexture("Interface\\BUTTONS\\UI-GroupLoot-Pass-Down")
+			bu:SetPushedTextOffset(3, 3)
+			bu:RegisterForClicks("LeftButtonDown")
+			bu:SetAttribute("type", "macro") 
+			bu:SetAttribute("macrotext1", "/cwm 0")
+		else
+			bu.bgtex:SetVertexColor(rm_colors[i][1], rm_colors[i][2], rm_colors[i][3], .5)
+			bu.tex:SetTexture("Interface\\TargetingFrame\\UI-RaidTargetingIcon_"..i)	
+			bu:RegisterForClicks("LeftButtonDown","RightButtonDown")
+			bu:SetAttribute("type", "macro") 
+			bu:SetAttribute("macrotext1", "/wm "..wm_index[i])
+			bu:SetAttribute("type2", "macro") 
+			bu:SetAttribute("macrotext2", "/cwm "..wm_index[i])
+			bu:SetScript("OnEnter", function()
+				bu.bg:SetBackdropBorderColor(rm_colors[i][1], rm_colors[i][2], rm_colors[i][3])
+			end)
+			bu:SetScript("OnLeave", function()
+				bu.bg:SetBackdropBorderColor(0, 0, 0)
+			end)
+		end
+		
+		bu:SetScript("OnEvent", function(self, event)
+			if ((UnitInParty("player") or UnitInRaid("player")) and UnitIsGroupLeader("player"))
+			or (UnitInRaid("player") and UnitIsGroupAssistant("player") and not UnitIsGroupLeader("player"))
+			then
+				self:Show()
+			else
+				self:Hide()
+			end
+		end)
+		bu:RegisterEvent("GROUP_ROSTER_UPDATE")
+		bu:RegisterEvent("PLAYER_ENTERING_WORLD")
+		
+		raidmark["wm"..i] = bu
+	end
+	
+	local raid_tool_buttons = {
+		{"readycheck", READY_CHECK},
+		{"rolecheck", ROLE_POLL},
+		{"convertgroup", CONVERT_TO_RAID},
+		{"pull", PLAYER_COUNTDOWN_BUTTON},
+	}
+	
+	for i = 1, 4 do
+		local tag = raid_tool_buttons[i][1]
+		local bu = CreateFrame("Button", G.uiname..tag.."Button", raidmark)
+		bu:SetPoint("TOPLEFT", raidmark, "TOPLEFT", math.fmod((i-1), 2)*149, -66-math.floor((i-1)/2)*30) 	
+		bu:SetSize(140, 20)
+		
+		bu.text = T.createtext(bu, "OVERLAY", 13, "OUTLINE", "CENTER")
+		bu.text:SetAllPoints(bu)
+		bu.text:SetText(raid_tool_buttons[i][2])
+		
+		bu.bg = T.CreateSD(bu, 3)
+		bu.bg:SetFrameLevel(0)
+		
+		bu.bgtex = bu:CreateTexture(nil, "BACKGROUND")
+		bu.bgtex:SetAllPoints(bu)
+		bu.bgtex:SetTexture(G.media.blank)
+		bu.bgtex:SetVertexColor(0, 0, 0, .3)
+		
+		bu:SetScript("OnEnter", function(self)
+			self.bg:SetBackdropBorderColor(1, 1, 1)
+		end)
+		bu:SetScript("OnLeave", function(self)
+			self.bg:SetBackdropBorderColor(0, 0, 0)
+		end)
+			
+		bu:SetScript("OnEvent", function(self, event)
+			if ((UnitInParty("player") or UnitInRaid("player")) and UnitIsGroupLeader("player"))
+			or (UnitInRaid("player") and UnitIsGroupAssistant("player") and not UnitIsGroupLeader("player"))
+			then
+				self:Show()
+			else
+				self:Hide()
+			end
+			
+			if tag == "convertgroup" then
+				if IsInRaid() then
+					bu.text:SetText(CONVERT_TO_PARTY)
+				else
+					bu.text:SetText(CONVERT_TO_RAID)
+				end
+			end
+		end)
+		bu:RegisterEvent("GROUP_ROSTER_UPDATE")
+		bu:RegisterEvent("PLAYER_ENTERING_WORLD")
+	
+		bu:SetScript("OnClick", function()
+			if tag == "readycheck" then
+				PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
+				DoReadyCheck()
+			elseif tag == "rolecheck" then
+				PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
+				InitiateRolePoll()
+			elseif tag == "convertgroup" then
+				PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)	
+				if IsInRaid() then
+					C_PartyInfo.ConvertToParty()
+				else
+					C_PartyInfo.ConvertToRaid()
+				end				
+			elseif tag == "pull" then
+				PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
+				C_PartyInfo.DoCountdown(10)
+			end
+		end)
+		raidmark[tag] = bu
+	end
+	
+	local raidmark_toggle = CreateFrame("Button", G.uiname.."Raid Mark Toggle", UIParent)
+	raidmark_toggle:SetPoint("TOPRIGHT", raidmark, "TOPLEFT", -7, 0)
+	
+	raidmark_toggle:SetSize(10, 10)
+	raidmark_toggle.bg = T.CreateSD(raidmark_toggle, 3)
+	raidmark_toggle.bg:SetFrameLevel(0)
+		
+	raidmark_toggle.bgtex = raidmark_toggle:CreateTexture(nil, "BACKGROUND")
+	raidmark_toggle.bgtex:SetAllPoints(raidmark_toggle)
+	raidmark_toggle.bgtex:SetTexture(G.media.blank)
+	raidmark_toggle.bgtex:SetVertexColor(0, 0, 0, .3)
+	
+	raidmark_toggle:SetScript("OnEnter", function(self)
+		self.bg:SetBackdropBorderColor(1, 1, 1)
+	end)
+	raidmark_toggle:SetScript("OnLeave", function(self)
+		self.bg:SetBackdropBorderColor(0, 0, 0)
+	end)
+		
+	raidmark_toggle.text = T.createtext(raidmark_toggle, "OVERLAY", 13, "OUTLINE", "CENTER")
+	raidmark_toggle.text:SetPoint("LEFT", raidmark_toggle, "RIGHT", 5, 0)
+	raidmark_toggle.text:SetText(L["团队工具"])
+	
+	raidmark_toggle:SetScript("OnClick", function()
+		if not aCoreCDB["UnitframeOptions"]["raidtool"] then return end
+		if aCoreCDB["UnitframeOptions"]["raidtool_show"] then
+			aCoreCDB["UnitframeOptions"]["raidtool_show"] = false
+			raidmark:Hide()
+			raidmark_toggle.text:Show()
+			raidmark_toggle:SetAlpha(1)
+		else
+			aCoreCDB["UnitframeOptions"]["raidtool_show"] = true
+			raidmark:Show()
+			raidmark_toggle.text:Hide()
+			raidmark_toggle:SetAlpha(.3)
+		end
+	end)
+	
+	raidmark_toggle:SetScript("OnEvent", function()
+		if aCoreCDB["UnitframeOptions"]["raidtool_show"] then
+			raidmark:Show()
+			raidmark_toggle.text:Hide()
+			raidmark_toggle:SetAlpha(.3)
+		else
+			raidmark:Hide()
+			raidmark_toggle.text:Show()
+			raidmark_toggle:SetAlpha(1)
+		end
+	end)
+	raidmark_toggle:RegisterEvent("PLAYER_LOGIN")
+end
