@@ -97,19 +97,20 @@ local function styleBar(bar)
 	bar:SetTexture(bgTex)
 end
 
-BigWigsAPI:RegisterBarStyle("AltzUI", {
-	apiVersion = 1,
-	version = 11,
-	barSpacing = 24,
-	barHeight = 24,	
-	fontSizeNormal = 22,
-	fontSizeEmphasized = 22,
-	fontOutline = "OUTLINE",
-	ApplyStyle = styleBar,
-	BarStopped = removeStyle,
-	GetStyleName = function() return "AltzUI" end,
-})
-
+if BigWigsAPI then
+	BigWigsAPI:RegisterBarStyle("AltzUI", {
+		apiVersion = 1,
+		version = 11,
+		barSpacing = 24,
+		barHeight = 24,	
+		fontSizeNormal = 22,
+		fontSizeEmphasized = 22,
+		fontOutline = "OUTLINE",
+		ApplyStyle = styleBar,
+		BarStopped = removeStyle,
+		GetStyleName = function() return "AltzUI" end,
+	})
+end
 
 local f = CreateFrame("Frame")
 
