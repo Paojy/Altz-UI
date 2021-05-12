@@ -1,10 +1,10 @@
 ﻿<Ui xmlns="http://www.blizzard.com/wow/ui/">
 	<Script file="core\init.lua"/>
 	
-	<Script file="locales\chinese.lua"/>	
-	<Script file="locales\twchinese.lua"/>
-	<Script file="locales\portuguese.lua"/>
-	<Script file="locales\english.lua"/>
+	<Script file="locals\chinese.lua"/>	
+	<Script file="locals\twchinese.lua"/>
+	<Script file="locals\portuguese.lua"/>
+	<Script file="locals\english.lua"/>
 
 	<Include file="lib\oUF\oUF.xml"/>
 	

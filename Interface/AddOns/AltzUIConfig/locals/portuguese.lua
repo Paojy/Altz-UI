@@ -12,7 +12,7 @@ L["简介"] = "AltzUI é uma compilação minimalista com suporte à configuraç
 --L["打开设置向导"] = "/Setup Open Setup Wizard"
 --L["完成"] = "Finish"
 --L["更新日志"] = "Update Log"
---L["更新日志tip"] = "New feature: Update 9.0 Raid&Dungeon debuff list\nNew feature: Automatically add newly discovered Raid&Dungeon debuffs to the list\nNew feature: Raid&Dungeon debuff blacklist filtering\nNew feature: Quickly delete macros\nDelete Azerite Bar\nUpdate Aurora"
+--L["更新日志tip"] = "New feature:Raid Tools\nUpdate Aurora"
 --L["寻求帮助"] = "Help"
 --L["粘贴"] = "Press Ctrl + c to copy the link"
 --L["Buffs"] = "Buffs"
@@ -230,6 +230,7 @@ L["图标指示器"] = "Indicador estilo: ícone"
 --L["自动添加团队减益"] = "Automatically add newly discovered Raid&Dungeon debuffs to the list"
 --L["自动添加团队减益提示"] = "The newly-discovered Raid&Dungeon debuffs are automatically added to the list. You can delete the newly added debuffs from the debuff list, or disable them from being displayed through the debuff blacklist filter."
 --L["自动添加的图标层级"] = "Icon Priority"
+L["团队工具"] = "Ferramentas de Raide"
 
 -- 动作条
 --L["向上排列"] = "Grow Bar Upwards"
