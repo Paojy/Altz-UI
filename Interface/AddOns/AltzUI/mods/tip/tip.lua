@@ -60,6 +60,13 @@ local function getTarget(unit)
     end
 end
 
+anchor:SetScript("OnEvent", function(self, event, btn)
+	if btn == "LSHIFT" and UnitExists("mouseover") then
+		GameTooltip:SetUnit("mouseover")
+	end
+end)
+anchor:RegisterEvent("MODIFIER_STATE_CHANGED")
+
 GameTooltip:HookScript("OnTooltipSetUnit", function(self)
     local name, unit = self:GetUnit()
 
@@ -106,6 +113,26 @@ GameTooltip:HookScript("OnTooltipSetUnit", function(self)
                --tmp2=tmp2+1
                GameTooltipTextLeft2:SetText("<"..text..">  "..tmp.."  ("..tmp2..")")
             end
+			
+			if IsShiftKeyDown() then
+			local summary = C_PlayerInfo.GetPlayerMythicPlusRatingSummary(unit)
+			
+			local score = summary and summary.currentSeasonScore
+			if score and score > 0 then
+				local color = C_ChallengeMode.GetDungeonScoreRarityColor(score) or HIGHLIGHT_FONT_COLOR
+				GameTooltip:AddDoubleLine(L["大秘境评分"], score, 1, 1, 1, color.r, color.g, color.b)
+			end
+			
+			local runs = summary and summary.runs
+			if runs then
+				GameTooltip:AddLine("     ")
+				GameTooltip:AddDoubleLine(L["副本"], L["评分层数"], 1, 1, 1, 1, 1, 1)
+				for i, info in pairs(runs) do
+					local map = C_ChallengeMode.GetMapUIInfo(info.challengeModeID)
+					GameTooltip:AddDoubleLine(map, info.mapScore.."("..info.bestRunLevel..")", 1, 1, 1, 1, 1, 1)
+				end
+			end
+			end
         end
 
 
