@@ -1,4 +1,4 @@
-## Interface: 90002
+## Interface: 90105
 ## Title: |cffEE3A8CAltz|rUI Font
 ## Version: 9.00
 ## Author: Paopao001
