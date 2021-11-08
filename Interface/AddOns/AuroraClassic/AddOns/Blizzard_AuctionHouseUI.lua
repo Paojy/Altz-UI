@@ -138,7 +138,7 @@ C.themes["Blizzard_AuctionHouseUI"] = function()
 	F.CreateBDFrame(AuctionHouseFrame.MoneyFrameBorder, .25)
 	F.StripTextures(AuctionHouseFrame.MoneyFrameInset)
 	F.ReskinTab(AuctionHouseFrameBuyTab)
-	AuctionHouseFrameBuyTab:SetPoint("BOTTOMLEFT", 20, -31)
+	AuctionHouseFrameBuyTab:SetPoint("BOTTOMLEFT", 20, -30)
 	F.ReskinTab(AuctionHouseFrameSellTab)
 	F.ReskinTab(AuctionHouseFrameAuctionsTab)
 

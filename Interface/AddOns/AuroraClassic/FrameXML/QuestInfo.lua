@@ -73,20 +73,24 @@ local function restyleSpellButton(bu)
 	bg:SetPoint("BOTTOMRIGHT", 0, 14)
 end
 
-local function restyleRewardButton(bu, isMapQuestInfo)
+local function ReskinRewardButton(bu)
 	bu.NameFrame:Hide()
-
-	if isMapQuestInfo then
-		bu.Icon:SetSize(29, 29)
-	else
-		bu.Icon:SetSize(34, 34)
-	end
 	bu.bg = F.ReskinIcon(bu.Icon)
 
 	local bg = F.CreateBDFrame(bu, .25)
 	bg:SetPoint("TOPLEFT", bu.bg, "TOPRIGHT", 2, 0)
 	bg:SetPoint("BOTTOMRIGHT", bu.bg, 100, 0)
 	bu.textBg = bg
+end
+
+local function ReskinRewardButtonWithSize(bu, isMapQuestInfo)
+	ReskinRewardButton(bu)
+
+	if isMapQuestInfo then
+		bu.Icon:SetSize(29, 29)
+	else
+		bu.Icon:SetSize(34, 34)
+	end
 end
 
 local function HookTextColor_Yellow(self, r, g, b)
@@ -124,12 +128,12 @@ tinsert(C.defaultThemes, function()
 	hooksecurefunc("QuestMapFrame_ShowQuestDetails", colorObjectivesText)
 
 	-- Reskin rewards
-	restyleSpellButton(QuestInfoSpellObjectiveFrame)
+	restyleSpellButton(QuestInfoSpellObjectiveFrame) -- needs review
 
 	hooksecurefunc("QuestInfo_GetRewardButton", function(rewardsFrame, index)
 		local bu = rewardsFrame.RewardButtons[index]
 		if not bu.restyled then
-			restyleRewardButton(bu, rewardsFrame == MapQuestInfoRewardsFrame)
+			ReskinRewardButtonWithSize(bu, rewardsFrame == MapQuestInfoRewardsFrame)
 			F.ReskinIconBorder(bu.IconBorder)
 
 			bu.restyled = true
@@ -138,14 +142,14 @@ tinsert(C.defaultThemes, function()
 
 	MapQuestInfoRewardsFrame.XPFrame.Name:SetShadowOffset(0, 0)
 	for _, name in next, {"HonorFrame", "MoneyFrame", "SkillPointFrame", "XPFrame", "ArtifactXPFrame", "TitleFrame", "WarModeBonusFrame"} do
-		restyleRewardButton(MapQuestInfoRewardsFrame[name], true)
+		ReskinRewardButtonWithSize(MapQuestInfoRewardsFrame[name], true)
 	end
 
 	for _, name in next, {"HonorFrame", "SkillPointFrame", "ArtifactXPFrame", "WarModeBonusFrame"} do
-		restyleRewardButton(QuestInfoRewardsFrame[name])
+		ReskinRewardButtonWithSize(QuestInfoRewardsFrame[name])
 	end
 
-	-- Title Reward
+	-- Title Reward, needs review
 	do
 		local frame = QuestInfoPlayerTitleFrame
 		local icon = frame.Icon
@@ -199,13 +203,7 @@ tinsert(C.defaultThemes, function()
 			-- Spell Rewards
 			for spellReward in rewardsFrame.spellRewardPool:EnumerateActive() do
 				if not spellReward.styled then
-					local icon = spellReward.Icon
-					local nameFrame = spellReward.NameFrame
-					F.ReskinIcon(icon)
-					nameFrame:Hide()
-					local bg = F.CreateBDFrame(nameFrame, .25)
-					bg:SetPoint("TOPLEFT", icon, "TOPRIGHT", 0, 2)
-					bg:SetPoint("BOTTOMRIGHT", icon, "BOTTOMRIGHT", 101, -1)
+					ReskinRewardButton(spellReward)
 
 					spellReward.styled = true
 				end

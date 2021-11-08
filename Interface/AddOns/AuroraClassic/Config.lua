@@ -33,7 +33,7 @@ C.Font = {STANDARD_TEXT_FONT, 12, "OUTLINE"}
 
 C.defaultThemes = {}
 C.themes = {}
-C.isNewPatch = select(4, GetBuildInfo()) >= 90100 -- 9.1.0
+C.isNewPatch = select(4, GetBuildInfo()) >= 90105 -- 9.1.5
 C.MyClass = select(2, UnitClass("player"))
 C.ClassColors = {}
 
@@ -67,6 +67,7 @@ end
 C.QualityColors[-1] = {r = 0, g = 0, b = 0}
 C.QualityColors[LE_ITEM_QUALITY_POOR] = {r = .61, g = .61, b = .61}
 C.QualityColors[LE_ITEM_QUALITY_COMMON] = {r = 0, g = 0, b = 0}
+C.QualityColors[99] = {r = 1, g = 0, b = 0}
 
 NORMAL_QUEST_DISPLAY = gsub(NORMAL_QUEST_DISPLAY, "000000", "ffffff")
 TRIVIAL_QUEST_DISPLAY = gsub(TRIVIAL_QUEST_DISPLAY, "000000", "ffffff")

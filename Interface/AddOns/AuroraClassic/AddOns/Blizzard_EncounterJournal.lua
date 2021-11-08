@@ -184,7 +184,7 @@ C.themes["Blizzard_EncounterJournal"] = function()
 
 	local items = EncounterJournal.encounter.info.lootScroll.buttons
 	for i = 1, #items do
-		local item = items[i]
+		local item = items[i].lootFrame
 		item.boss:SetTextColor(1, 1, 1)
 		item.slot:SetTextColor(1, 1, 1)
 		item.armorType:SetTextColor(1, 1, 1)
@@ -352,6 +352,8 @@ C.themes["Blizzard_EncounterJournal"] = function()
 			local button = self.elements[i]
 			if button and not button.bg then
 				button.Background:SetAlpha(0)
+				button.BackgroundOverlay:SetAlpha(0)
+				button.UnavailableOverlay:SetAlpha(0)
 				button.UnavailableBackground:SetAlpha(0)
 				button.CircleMask:Hide()
 				button.bg = F.ReskinIcon(button.Icon)

@@ -13,34 +13,34 @@ C.themes["Blizzard_ItemSocketingUI"] = function()
 		PunchcardRed = {r=1, g=0.47, b=0.47},
 		PunchcardYellow = {r=0.97, g=0.82, b=0.29},
 		PunchcardBlue = {r=0.47, g=0.67, b=1},
+		Domination = {r=.24, g=.5, b=.7},
 	}
 
 	for i = 1, MAX_NUM_SOCKETS do
-		local bu = _G["ItemSocketingSocket"..i]
+		local socket = _G["ItemSocketingSocket"..i]
 		local shine = _G["ItemSocketingSocket"..i.."Shine"]
 
-		_G["ItemSocketingSocket"..i.."BracketFrame"]:Hide()
-		_G["ItemSocketingSocket"..i.."Background"]:SetAlpha(0)
-		F.StripTextures(bu)
-
-		bu:SetPushedTexture("")
-		bu:GetHighlightTexture():SetColorTexture(1, 1, 1, .25)
-		bu.icon:SetTexCoord(unpack(C.TexCoord))
+		F.StripTextures(socket)
+		socket:SetPushedTexture("")
+		socket:GetHighlightTexture():SetColorTexture(1, 1, 1, .25)
+		socket.icon:SetTexCoord(unpack(C.TexCoord))
+		socket.bg = F.ReskinIcon(socket.icon)
 
 		shine:ClearAllPoints()
-		shine:SetPoint("TOPLEFT", bu)
-		shine:SetPoint("BOTTOMRIGHT", bu, 1, 0)
-
-		bu.bg = F.CreateBDFrame(bu, .25)
+		shine:SetOutside()
+		socket.BracketFrame:Hide()
+		socket.Background:SetAlpha(0)
 	end
 
 	hooksecurefunc("ItemSocketingFrame_Update", function()
-		for i = 1, MAX_NUM_SOCKETS do
-			local color = GemTypeInfo[GetSocketTypes(i)]
-			_G["ItemSocketingSocket"..i].bg:SetBackdropBorderColor(color.r, color.g, color.b)
+		for i, socket in ipairs(ItemSocketingFrame.Sockets) do
+			if not socket:IsShown() then break end
+
+			local color = GemTypeInfo[GetSocketTypes(i)] or GemTypeInfo.Cogwheel
+			socket.bg:SetBackdropBorderColor(color.r, color.g, color.b)
 		end
 
-		ItemSocketingDescription:SetBackdrop(nil)
+		ItemSocketingDescription:HideBackdrop()
 	end)
 
 	F.ReskinPortraitFrame(ItemSocketingFrame)

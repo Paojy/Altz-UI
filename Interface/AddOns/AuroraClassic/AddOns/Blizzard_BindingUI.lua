@@ -8,7 +8,7 @@ C.themes["Blizzard_BindingUI"] = function()
 
 	F.StripTextures(KeyBindingFrame.Header)
 	F.StripTextures(KeyBindingFrame.categoryList)
-	KeyBindingFrame.bindingsContainer:SetBackdrop(nil)
+	KeyBindingFrame.bindingsContainer:HideBackdrop()
 
 	F.StripTextures(KeyBindingFrame)
 	F.SetBD(KeyBindingFrame)

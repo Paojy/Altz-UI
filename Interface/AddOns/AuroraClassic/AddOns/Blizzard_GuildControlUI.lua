@@ -1,6 +1,24 @@
 local _, ns = ...
 local F, C = unpack(ns)
 
+local function updateGuildRanks()
+	for i = 1, GuildControlGetNumRanks() do
+		local rank = _G["GuildControlUIRankOrderFrameRank"..i]
+		if not rank.styled then
+			rank.upButton.icon:Hide()
+			rank.downButton.icon:Hide()
+			rank.deleteButton.icon:Hide()
+
+			F.ReskinArrow(rank.upButton, "up")
+			F.ReskinArrow(rank.downButton, "down")
+			F.ReskinClose(rank.deleteButton)
+			F.ReskinInput(rank.nameBox, 20)
+
+			rank.styled = true
+		end
+	end
+end
+
 C.themes["Blizzard_GuildControlUI"] = function()
 	local r, g, b = C.r, C.g, C.b
 
@@ -22,32 +40,14 @@ C.themes["Blizzard_GuildControlUI"] = function()
 	GuildControlUIRankBankFrameInsetScrollFrameTop:SetAlpha(0)
 	GuildControlUIRankBankFrameInsetScrollFrameBottom:SetAlpha(0)
 
-	do
-		local function updateGuildRanks()
-			for i = 1, GuildControlGetNumRanks() do
-				local rank = _G["GuildControlUIRankOrderFrameRank"..i]
-				if not rank.styled then
-					rank.upButton.icon:Hide()
-					rank.downButton.icon:Hide()
-					rank.deleteButton.icon:Hide()
+	-- Guild ranks
+	local f = CreateFrame("Frame")
+	f:RegisterEvent("GUILD_RANKS_UPDATE")
+	f:SetScript("OnEvent", updateGuildRanks)
+	hooksecurefunc("GuildControlUI_RankOrder_Update", updateGuildRanks)
 
-					F.ReskinArrow(rank.upButton, "up")
-					F.ReskinArrow(rank.downButton, "down")
-					F.ReskinClose(rank.deleteButton)
-
-					F.ReskinInput(rank.nameBox, 20)
-
-					rank.styled = true
-				end
-			end
-		end
-
-		local f = CreateFrame("Frame")
-		f:RegisterEvent("GUILD_RANKS_UPDATE")
-		f:SetScript("OnEvent", updateGuildRanks)
-		hooksecurefunc("GuildControlUI_RankOrder_Update", updateGuildRanks)
-	end
-
+	-- Guild tabs
+	local checkboxes = {"viewCB", "depositCB"}
 	hooksecurefunc("GuildControlUI_BankTabPermissions_Update", function()
 		for i = 1, GetNumGuildBankTabs() + 1 do
 			local tab = "GuildControlBankTab"..i
@@ -61,20 +61,20 @@ C.themes["Blizzard_GuildControlUI"] = function()
 				F.Reskin(bu.buy.button)
 				F.ReskinInput(ownedTab.editBox)
 
-				for _, ch in pairs({ownedTab.viewCB, ownedTab.depositCB, ownedTab.infoCB}) do
-					-- can't get a backdrop frame to appear behind the checked texture for some reason
-					ch:SetNormalTexture("")
-					ch:SetPushedTexture("")
-					ch:SetHighlightTexture(C.bdTex)
+				for _, name in pairs(checkboxes) do
+					local box = ownedTab[name]
+					box:SetNormalTexture("")
+					box:SetPushedTexture("")
+					box:SetHighlightTexture(C.bdTex)
 
-					local check = ch:GetCheckedTexture()
+					local check = box:GetCheckedTexture()
 					check:SetDesaturated(true)
 					check:SetVertexColor(r, g, b)
 
-					local bg = F.CreateBDFrame(ch, 0, true)
-					bg:SetInside(ch, 4, 4)
+					local bg = F.CreateBDFrame(box, 0, true)
+					bg:SetInside(box, 4, 4)
 
-					local hl = ch:GetHighlightTexture()
+					local hl = box:GetHighlightTexture()
 					hl:SetInside(bg)
 					hl:SetVertexColor(r, g, b, .25)
 				end

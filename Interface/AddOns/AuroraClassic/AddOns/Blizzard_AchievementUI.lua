@@ -6,7 +6,7 @@ C.themes["Blizzard_AchievementUI"] = function()
 
 	F.StripTextures(AchievementFrame, true)
 	F.SetBD(AchievementFrame)
-	AchievementFrameCategories:SetBackdrop(nil)
+	AchievementFrameCategories:HideBackdrop()
 	AchievementFrameSummaryBackground:Hide()
 	AchievementFrameSummary:GetChildren():Hide()
 	AchievementFrameCategoriesContainerScrollBarBG:SetAlpha(0)
@@ -163,6 +163,7 @@ C.themes["Blizzard_AchievementUI"] = function()
 
 			if not bu.styled then
 				bu:DisableDrawLayer("BORDER")
+				bu:HideBackdrop()
 
 				local bd = bu.background
 				bd:SetTexture(C.bdTex)
@@ -214,7 +215,7 @@ C.themes["Blizzard_AchievementUI"] = function()
 
 	local summaries = {AchievementFrameComparisonSummaryPlayer, AchievementFrameComparisonSummaryFriend}
 	for _, frame in pairs(summaries) do
-		frame:SetBackdrop(nil)
+		frame:HideBackdrop()
 		local bg = F.CreateBDFrame(frame, .25)
 		bg:SetPoint("TOPLEFT", 2, -2)
 		bg:SetPoint("BOTTOMRIGHT", -2, 0)
@@ -235,6 +236,7 @@ C.themes["Blizzard_AchievementUI"] = function()
 		for i = 1, 9 do
 			local button = _G["AchievementFrameComparisonContainerButton"..i..name]
 			button:DisableDrawLayer("BORDER")
+			button:HideBackdrop()
 			button.background:Hide()
 			local bg = F.CreateBDFrame(button, .25)
 			bg:SetPoint("TOPLEFT", 2, -1)

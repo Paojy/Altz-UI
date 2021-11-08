@@ -1,5 +1,34 @@
 local _, ns = ...
 local F, C = unpack(ns)
+local r, g, b = C.r, C.g, C.b
+
+local function reskinPickerOptions(self)
+	local scrollTarget = self.ScrollBox.ScrollTarget
+	if scrollTarget then
+		for i = 1, scrollTarget:GetNumChildren() do
+			local child = select(i, scrollTarget:GetChildren())
+			if not child.styled then
+				child.UnCheck:SetTexture(nil)
+				child.Highlight:SetColorTexture(r, g, b, .25)
+
+				local check = child.Check
+				check:SetColorTexture(r, g, b, .6)
+				check:SetSize(10, 10)
+				check:SetPoint("LEFT", 2, 0)
+				F.CreateBDFrame(check, .25)
+
+				child.styled = true
+			end
+		end
+	end
+end
+
+local function ReskinVoicePicker(voicePicker)
+	local customFrame = voicePicker:GetChildren()
+	F.StripTextures(customFrame)
+	F.SetBD(customFrame, .7)
+	voicePicker:HookScript("OnShow", reskinPickerOptions)
+end
 
 tinsert(C.defaultThemes, function()
 	F.StripTextures(ChatConfigFrame)
@@ -14,7 +43,7 @@ tinsert(C.defaultThemes, function()
 			local checkBoxName = nameString..index
 			local checkbox = _G[checkBoxName]
 			if checkbox and not checkbox.styled then
-				checkbox:SetBackdrop(nil)
+				checkbox:HideBackdrop()
 				local bg = F.CreateBDFrame(checkbox, .25)
 				bg:SetInside()
 				F.ReskinCheck(_G[checkBoxName.."Check"])
@@ -124,6 +153,7 @@ tinsert(C.defaultThemes, function()
 	F.Reskin(ChatConfigFrameOkayButton)
 	F.Reskin(ChatConfigFrameDefaultButton)
 	F.Reskin(ChatConfigFrameRedockButton)
+	F.Reskin(ChatConfigFrame.ToggleChatButton)
 	F.ReskinArrow(ChatConfigMoveFilterUpButton, "up")
 	F.ReskinArrow(ChatConfigMoveFilterDownButton, "down")
 	F.ReskinInput(CombatConfigSettingsNameEditBox)
@@ -140,4 +170,50 @@ tinsert(C.defaultThemes, function()
 	ChatConfigCombatSettingsFiltersCopyFilterButton:SetPoint("RIGHT", ChatConfigCombatSettingsFiltersAddFilterButton, "LEFT", -1, 0)
 	ChatConfigMoveFilterUpButton:SetPoint("TOPLEFT", ChatConfigCombatSettingsFilters, "BOTTOMLEFT", 3, 0)
 	ChatConfigMoveFilterDownButton:SetPoint("LEFT", ChatConfigMoveFilterUpButton, "RIGHT", 1, 0)
+
+	-- TextToSpeech
+	F.StripTextures(TextToSpeechButton, 5)
+
+	F.Reskin(TextToSpeechFramePlaySampleButton)
+	F.Reskin(TextToSpeechFramePlaySampleAlternateButton)
+	F.Reskin(TextToSpeechDefaultButton)
+	F.ReskinCheck(TextToSpeechCharacterSpecificButton)
+
+	F.ReskinDropDown(TextToSpeechFrameTtsVoiceDropdown)
+	F.ReskinDropDown(TextToSpeechFrameTtsVoiceAlternateDropdown)
+	F.ReskinSlider(TextToSpeechFrameAdjustRateSlider)
+	F.ReskinSlider(TextToSpeechFrameAdjustVolumeSlider)
+
+	local checkboxes = {
+		"PlayActivitySoundWhenNotFocusedCheckButton",
+		"PlaySoundSeparatingChatLinesCheckButton",
+		"AddCharacterNameToSpeechCheckButton",
+		"NarrateMyMessagesCheckButton",
+		"UseAlternateVoiceForSystemMessagesCheckButton",
+	}
+	for _, checkbox in pairs(checkboxes) do
+		F.ReskinCheck(TextToSpeechFramePanelContainer[checkbox])
+	end
+
+	hooksecurefunc("TextToSpeechFrame_UpdateMessageCheckboxes", function(frame)
+		local checkBoxTable = frame.checkBoxTable
+		if checkBoxTable then
+			local checkBoxNameString = frame:GetName().."CheckBox"
+			local checkBoxName, checkBox
+			for index, value in ipairs(checkBoxTable) do
+				checkBoxName = checkBoxNameString..index
+				checkBox = _G[checkBoxName]
+				if checkBox and not checkBox.styled then
+					F.ReskinCheck(checkBox)
+					checkBox.styled = true
+				end
+			end
+		end
+	end)
+
+	-- voice pickers
+	ReskinVoicePicker(TextToSpeechFrameTtsVoicePicker)
+	ReskinVoicePicker(TextToSpeechFrameTtsVoiceAlternatePicker)
+
+	F.StripTextures(ChatConfigTextToSpeechChannelSettingsLeft)
 end)

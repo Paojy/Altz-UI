@@ -280,6 +280,18 @@ local function UpdateFollowerAbilities(followerList)
 	end
 end
 
+local function reskinFollowerItem(item)
+	if not item then return end
+
+	local icon = item.Icon
+	item.Border:Hide()
+	F.ReskinIcon(icon)
+
+	local bg = F.CreateBDFrame(item, .25)
+	bg:SetPoint("TOPLEFT", 41, -1)
+	bg:SetPoint("BOTTOMRIGHT", 0, 1)
+end
+
 local function ReskinMissionFrame(self)
 	F.StripTextures(self)
 	F.SetBD(self)
@@ -304,17 +316,8 @@ local function ReskinMissionFrame(self)
 	ReskinXPBar(self.FollowerTab)
 	hooksecurefunc(self.FollowerTab, "UpdateCombatantStats", UpdateSpellAbilities)
 
-	for _, item in pairs({self.FollowerTab.ItemWeapon, self.FollowerTab.ItemArmor}) do
-		if item then
-			local icon = item.Icon
-			item.Border:Hide()
-			F.ReskinIcon(icon)
-
-			local bg = F.CreateBDFrame(item, .25)
-			bg:SetPoint("TOPLEFT", 41, -1)
-			bg:SetPoint("BOTTOMRIGHT", 0, 1)
-		end
-	end
+	reskinFollowerItem(self.FollowerTab.ItemWeapon)
+	reskinFollowerItem(self.FollowerTab.ItemArmor)
 
 	local missionList = self.MissionTab.MissionList
 	F.StripTextures(missionList)
@@ -568,8 +571,6 @@ C.themes["Blizzard_GarrisonUI"] = function()
 			reward:GetRegions():Hide()
 			reward.bg = F.ReskinIcon(reward.Icon)
 			F.ReskinIconBorder(reward.IconBorder)
-			reward:ClearAllPoints()
-			reward:SetPoint("TOPRIGHT", -4, -4)
 		end
 	end
 
@@ -1081,6 +1082,103 @@ C.themes["Blizzard_GarrisonUI"] = function()
 
 	-- VenturePlan
 	if IsAddOnLoaded("VenturePlan") then
+		local ANIMA_TEXTURE = 3528288
+		local ANIMA_SPELLID = {[347555] = 3, [345706] = 5, [336327] = 35, [336456] = 250}
+		local function GetAnimaMultiplier(itemID)
+			local _, spellID = GetItemSpell(itemID)
+			return ANIMA_SPELLID[spellID]
+		end
+		local function SetAnimaActualCount(self, text)
+			local mult = GetAnimaMultiplier(self.__owner.itemID)
+			if mult then
+				if text == "" then text = 1 end
+				text = text * mult
+				self:SetFormattedText("%s", text)
+				self.__owner.Icon:SetTexture(ANIMA_TEXTURE)
+			end
+		end
+		local function AdjustFollowerList(self)
+			if self.isSetting then return end
+			self.isSetting = true
+
+			local numFollowers = #C_Garrison.GetFollowers(123)
+			self:SetHeight(135 + 60*ceil(numFollowers/5)) -- 5 follower per row, support up to 35 followers in the future
+
+			self.isSetting = nil
+		end
+
+		local ReplacedRoleTex = {
+			["adventures-tank"] = "Soulbinds_Tree_Conduit_Icon_Protect",
+			["adventures-healer"] = "ui_adv_health",
+			["adventures-dps"] = "ui_adv_atk",
+			["adventures-dps-ranged"] = "Soulbinds_Tree_Conduit_Icon_Utility",
+		}
+		local function replaceFollowerRole(roleIcon, atlas)
+			local newAtlas = ReplacedRoleTex[atlas]
+			if newAtlas then
+				roleIcon:SetAtlas(newAtlas)
+			end
+		end
+
+		local function updateSelectedBorder(portrait, show)
+			if show then
+				portrait.__owner.bg:SetBackdropBorderColor(.6, 0, 0)
+			else
+				portrait.__owner.bg:SetBackdropBorderColor(0, 0, 0)
+			end
+		end
+
+		local function updateActiveGlow(border, show)
+			border.__shadow:SetShown(show)
+		end
+
+		local abilityIndex1, abilityIndex2
+		local function GetAbilitiesIndex(frame)
+			if not abilityIndex1 then
+				for i = 1, frame:GetNumRegions() do
+					local region = select(i, frame:GetRegions())
+					if region then
+						local width, height = region:GetSize()
+						if width == 17 and height == 17 then
+							if abilityIndex1 then
+								abilityIndex2 = i
+							else
+								abilityIndex1 = i
+							end
+						end
+					end
+				end
+			end
+			return abilityIndex1, abilityIndex2
+		end
+
+		local function reskinFollowerAbility(frame, index, first)
+			local ability = select(index, frame:GetRegions())
+			ability:SetMask(nil)
+			ability:SetSize(14, 14)
+			ability.bg = F.ReskinIcon(ability)
+			ability.bg:SetFrameLevel(4)
+			tinsert(frame.__abilities, ability)
+			select(2, ability:GetPoint()):SetAlpha(0)
+			ability:SetPoint("CENTER", frame, "LEFT", 11, first and 15 or 0)
+		end
+
+		local function updateVisibleAbilities(self)
+			local showHealth = self.__owner.__health:IsShown()
+			for _, ability in pairs(self.__owner.__abilities) do
+				ability:SetDesaturated(not showHealth)
+				ability.bg:SetShown(ability:IsShown())
+			end
+			self.__owner.__role:SetDesaturated(not showHealth)
+		end
+
+		local function fixAnchorForModVP(self, _, x, y)
+			if x == 5 and y == -18 then
+				self:SetPoint("CENTER", self.__owner, 1, 0)
+			end
+		end
+
+		local VPFollowers, VPTroops, VPBooks = {}, {}, {}
 		function VPEX_OnUIObjectCreated(otype, widget, peek)
 			if widget:IsObjectType("Frame") then
 				if otype == "MissionButton" then
@@ -1110,6 +1208,10 @@ C.themes["Blizzard_GarrisonUI"] = function()
 				elseif otype == "MissionPage" then
 					F.StripTextures(widget)
 					F.Reskin(peek("UnButton"))
+					F.Reskin(peek("StartButton"))
+					if peek("StartButton"):GetWidth() < 50 then -- only adjust the unmodified VP
+						peek("StartButton"):SetText("|T"..C.ArrowUp..":16|t")
+					end
 				elseif otype == "ILButton" then
 					widget:DisableDrawLayer("BACKGROUND")
 					local bg = F.CreateBDFrame(widget, .25)
@@ -1118,26 +1220,113 @@ C.themes["Blizzard_GarrisonUI"] = function()
 					F.CreateBDFrame(widget.Icon, .25)
 				elseif otype == "IconButton" then
 					F.ReskinIcon(widget:GetNormalTexture())
-					widget:SetHighlightTexture(nil)
-					widget:SetPushedTexture(C.pushed)
+					widget:GetHighlightTexture():SetColorTexture(1, 1, 1, .25)
+					widget:SetPushedTexture(nil)
 					widget.Icon:SetTexCoord(unpack(C.TexCoord))
+					widget:SetSize(46, 46)
+					tinsert(VPBooks, widget)
 				elseif otype == "FollowerList" then
 					F.StripTextures(widget)
 					F.CreateBDFrame(widget, .25)
+					hooksecurefunc(widget, "SetHeight", AdjustFollowerList)
+
+					for i, troop in pairs(VPTroops) do
+						troop:ClearAllPoints()
+						troop:SetPoint("TOPLEFT", (i-1)*60+5, -35)
+					end
+					for i, follower in pairs(VPFollowers) do
+						follower:ClearAllPoints()
+						follower:SetPoint("TOPLEFT", ((i-1)%5)*60+5, -floor((i-1)/5)*60-130)
+					end
+					for i, book in pairs(VPBooks) do
+						book:ClearAllPoints()
+						book:SetPoint("BOTTOMLEFT", 24, -46 + i*50)
+					end
 				elseif otype == "FollowerListButton" then
+					widget.bg = F.CreateBDFrame(peek("Portrait"), 1)
+					peek("Hi"):SetColorTexture(1, 1, 1, .25)
+					peek("Hi"):SetInside(widget.bg)
+					peek("PortraitR"):Hide()
+					peek("PortraitT"):SetTexture(nil)
+					peek("PortraitT").__owner = widget
+					hooksecurefunc(peek("PortraitT"), "SetShown", updateSelectedBorder)
+
+					if peek("EC") then
+						peek("EC"):SetTexture(nil)
+						peek("EC").__shadow = F.CreateSD(peek("Portrait"), 5, true)
+						peek("EC").__shadow:SetBackdropBorderColor(peek("EC"):GetVertexColor())
+						hooksecurefunc(peek("EC"), "SetShown", updateActiveGlow)
+						tinsert(VPFollowers, widget)
+					else
+						tinsert(VPTroops, widget)
+					end
+
+					peek("HealthBG"):ClearAllPoints()
+					peek("HealthBG"):SetPoint("TOPLEFT", peek("Portrait"), "BOTTOMLEFT", 0, 10)
+					peek("HealthBG"):SetPoint("BOTTOMRIGHT", peek("Portrait"), "BOTTOMRIGHT")
+					local line = widget:CreateTexture(nil, "ARTWORK")
+					line:SetColorTexture(0, 0, 0)
+					line:SetSize(peek("HealthBG"):GetWidth(), C.mult)
+					line:SetPoint("BOTTOM", peek("HealthBG"), "TOP")
+
+					peek("Health"):SetHeight(10)
+					peek("HealthFrameR"):Hide()
 					peek("TextLabel"):SetFontObject("Game12Font")
+					peek("TextLabel"):ClearAllPoints()
+					peek("TextLabel"):SetPoint("CENTER", peek("HealthBG"), 1, 0)
+					peek("TextLabel").__owner = peek("HealthBG")
+					hooksecurefunc(peek("TextLabel"), "SetPoint", fixAnchorForModVP)
+
+					peek("Favorite"):ClearAllPoints()
+					peek("Favorite"):SetPoint("TOPLEFT", -2, 2)
+					peek("Favorite"):SetSize(30, 30)
+					peek("Blip"):SetSize(18, 20)
+					peek("Blip"):SetPoint("BOTTOMRIGHT", -8, 12)
+					peek("RoleB"):Hide()
+					peek("Role"):ClearAllPoints()
+					peek("Role"):SetPoint("CENTER", widget.bg, "TOPRIGHT", -2, -2)
+					hooksecurefunc(peek("Role"), "SetAtlas", replaceFollowerRole)
+
+					local frame = peek("Health"):GetParent()
+					if frame then
+						frame.__abilities = {}
+						frame.__health = peek("Health")
+						frame.__role = peek("Role")
+						local index1, index2 = GetAbilitiesIndex(frame)
+						reskinFollowerAbility(frame, index1, true)
+						reskinFollowerAbility(frame, index2)
+						peek("HealthBG").__owner = frame
+						hooksecurefunc(peek("HealthBG"), "SetGradient", updateVisibleAbilities)
+					end
 				elseif otype == "ProgressBar" then
 					F.StripTextures(widget)
 					F.CreateBDFrame(widget, 1)
 				elseif otype == "MissionToast" then
 					F.SetBD(widget)
-					if widget.Icon then widget.Icon:Show() end
 					if widget.Background then widget.Background:Hide() end
 					if widget.Detail then widget.Detail:SetFontObject("Game13Font") end
-					if widget.Outcome then widget.Outcome:SetFontObject("Game13Font") end
+				elseif otype == "RewardFrame" then
+					widget.Quantity.__owner = widget
+					hooksecurefunc(widget.Quantity, "SetText", SetAnimaActualCount)
 				end
 			end
 		end
+	end
+end
+
+local atlasToColor = {
+	["none"] = {0, 0, 0},
+	["orderhalltalents-spellborder"] = {0, 0, 0},
+	["orderhalltalents-spellborder-green"] = {.08, .7, 0},
+	["orderhalltalents-spellborder-yellow"] = {1, .8, 0},
+}
+
+local function updateTalentBorder(bu, atlas)
+	if not bu.bg then return end
+
+	local color = atlasToColor[atlas] or atlasToColor["none"]
+	if color then
+		bu.bg:SetBackdropBorderColor(color[1], color[2], color[3])
 	end
 end
 
@@ -1155,19 +1344,16 @@ C.themes["Blizzard_OrderHallUI"] = function()
 		if self.CurrencyBG then self.CurrencyBG:SetAlpha(0) end
 		F.StripTextures(self)
 
-		for i = 1, self:GetNumChildren() do
-			local bu = select(i, self:GetChildren())
-			if bu and bu.talent then
+		if self.buttonPool then
+			for bu in self.buttonPool:EnumerateActive() do
 				bu.Border:SetAlpha(0)
+
 				if not bu.bg then
 					bu.Highlight:SetColorTexture(1, 1, 1, .25)
 					bu.bg = F.ReskinIcon(bu.Icon)
-				end
 
-				if bu.talent.selected then
-					bu.bg:SetBackdropBorderColor(1, 1, 0)
-				else
-					bu.bg:SetBackdropBorderColor(0, 0, 0)
+					updateTalentBorder(bu, bu.Border:GetAtlas())
+					hooksecurefunc(bu, "SetBorder", updateTalentBorder)
 				end
 			end
 		end

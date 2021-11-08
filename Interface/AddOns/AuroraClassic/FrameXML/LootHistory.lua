@@ -6,16 +6,10 @@ tinsert(C.defaultThemes, function()
 
 	local LootHistoryFrame = LootHistoryFrame
 
-	for i = 1, 9 do
-		select(i, LootHistoryFrame:GetRegions()):Hide()
-	end
-	LootHistoryFrame.LootIcon:Hide()
-	LootHistoryFrame.Divider:SetAlpha(0)
-	LootHistoryFrameScrollFrame:GetRegions():Hide()
-
 	LootHistoryFrame.Label:ClearAllPoints()
 	LootHistoryFrame.Label:SetPoint("TOP", LootHistoryFrame, "TOP", 0, -8)
 
+	F.StripTextures(LootHistoryFrame)
 	F.SetBD(LootHistoryFrame)
 	F.ReskinClose(LootHistoryFrame.CloseButton)
 	F.ReskinScroll(LootHistoryFrameScrollFrameScrollBar)

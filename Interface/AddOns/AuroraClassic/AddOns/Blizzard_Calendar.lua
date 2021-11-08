@@ -114,9 +114,7 @@ C.themes["Blizzard_Calendar"] = function()
 		bu:GetRegions():Hide()
 		F.CreateBDFrame(bu)
 
-		local tcoords = CLASS_ICON_TCOORDS[class]
-		local ic = bu:GetNormalTexture()
-		ic:SetTexCoord(tcoords[1] + 0.015, tcoords[2] - 0.02, tcoords[3] + 0.018, tcoords[4] - 0.02)
+		F.ClassIconTexCoord(bu:GetNormalTexture(), class)
 	end
 
 	F.StripTextures(CalendarFilterFrame)

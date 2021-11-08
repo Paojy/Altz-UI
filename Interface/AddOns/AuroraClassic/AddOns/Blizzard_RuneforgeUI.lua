@@ -29,6 +29,7 @@ local function SetCurrenciesHook(self)
 		end
 	end
 end
+F.SetCurrenciesHook = SetCurrenciesHook
 
 C.themes["Blizzard_RuneforgeUI"] = function()
 	local frame = RuneforgeFrame
@@ -36,13 +37,8 @@ C.themes["Blizzard_RuneforgeUI"] = function()
 
 	local createFrame = frame.CreateFrame
 	F.Reskin(createFrame.CraftItemButton)
-	if not C.isNewPatch then
-		F.ReplaceIconString(createFrame.Cost.Text)
-		hooksecurefunc(createFrame.Cost.Text, "SetText", F.ReplaceIconString)
-	else
-		hooksecurefunc(frame.CurrencyDisplay, "SetCurrencies", SetCurrenciesHook)
-		hooksecurefunc(createFrame.Cost.Currencies, "SetCurrencies", SetCurrenciesHook)
-	end
+	hooksecurefunc(frame.CurrencyDisplay, "SetCurrencies", SetCurrenciesHook)
+	hooksecurefunc(createFrame.Cost.Currencies, "SetCurrencies", SetCurrenciesHook)
 
 	local powerFrame = frame.CraftingFrame.PowerFrame
 	F.StripTextures(powerFrame)

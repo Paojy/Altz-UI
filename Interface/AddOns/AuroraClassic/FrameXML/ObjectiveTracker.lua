@@ -115,6 +115,50 @@ local function GetMawBuffsAnchor(frame)
 	end
 end
 
+local function container_OnClick(container)
+	local direc = GetMawBuffsAnchor(container)
+	if not container.lastDirec or container.lastDirec ~= direc then
+		container.List:ClearAllPoints()
+		if direc == "LEFT" then
+			container.List:SetPoint("TOPLEFT", container, "TOPRIGHT", 15, 1)
+		else
+			container.List:SetPoint("TOPRIGHT", container, "TOPLEFT", 15, 1)
+		end
+		container.lastDirec = direc
+	end
+end
+
+local function blockList_Show(self)
+	self.button:SetWidth(253)
+	self.button:SetButtonState("NORMAL")
+	self.button:SetPushedTextOffset(1.25, -1)
+	self.button:SetButtonState("PUSHED", true)
+	self.__bg:SetBackdropBorderColor(1, .8, 0, .7)
+end
+
+local function blockList_Hide(self)
+	self.__bg:SetBackdropBorderColor(0, 0, 0, 1)
+end
+
+local function ReskinMawBuffsContainer(container)
+	F.StripTextures(container)
+	container:GetPushedTexture():SetAlpha(0)
+	container:GetHighlightTexture():SetAlpha(0)
+	local bg = F.SetBD(container, 0, 13, -11, -3, 11)
+	F.CreateGradient(bg)
+	container:HookScript("OnClick", container_OnClick)
+
+	local blockList = container.List
+	F.StripTextures(blockList)
+	blockList.__bg = bg
+	local bg = F.SetBD(blockList)
+	bg:SetPoint("TOPLEFT", 7, -12)
+	bg:SetPoint("BOTTOMRIGHT", -7, 12)
+
+	blockList:HookScript("OnShow", blockList_Show)
+	blockList:HookScript("OnHide", blockList_Hide)
+end
+
 tinsert(C.defaultThemes, function()
 	if not AuroraClassicDB.ObjectiveTracker then return end
 
@@ -202,6 +246,10 @@ tinsert(C.defaultThemes, function()
 
 	hooksecurefunc("Scenario_ChallengeMode_SetUpAffixes", F.AffixesSetup)
 
+	-- Maw buffs container
+	ReskinMawBuffsContainer(ScenarioBlocksFrame.MawBuffsBlock.Container)
+	ReskinMawBuffsContainer(MawBuffsBelowMinimapFrame.Container)
+
 	-- Reskin Headers
 	local headers = {
 		ObjectiveTrackerBlocksFrame.QuestHeader,
@@ -227,18 +275,4 @@ tinsert(C.defaultThemes, function()
 			reskinMinimizeButton(minimize)
 		end
 	end
-
-	-- MawBuffsBlock
-	ScenarioBlocksFrame.MawBuffsBlock.Container:HookScript("OnClick", function(container)
-		local direc = GetMawBuffsAnchor(container)
-		if not container.lastDirec or container.lastDirec ~= direc then
-			container.List:ClearAllPoints()
-			if direc == "LEFT" then
-				container.List:SetPoint("TOPLEFT", container, "TOPRIGHT", 15, 1)
-			else
-				container.List:SetPoint("TOPRIGHT", container, "TOPLEFT", 15, 1)
-			end
-			container.lastDirec = direc
-		end
-	end)
 end)

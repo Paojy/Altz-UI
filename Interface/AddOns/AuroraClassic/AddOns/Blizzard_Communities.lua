@@ -10,8 +10,9 @@ local function reskinCommunityTab(tab)
 	hl:SetAllPoints(tab.Icon)
 end
 
+local cardGroup = {"First", "Second", "Third"}
 local function reskinGuildCards(cards)
-	for _, name in pairs({"First", "Second", "Third"}) do
+	for _, name in pairs(cardGroup) do
 		local guildCard = cards[name.."Card"]
 		F.StripTextures(guildCard)
 		F.CreateBDFrame(guildCard, .25)
@@ -63,8 +64,7 @@ local function updateNameFrame(self)
 	if memberInfo and memberInfo.classID then
 		local classInfo = C_CreatureInfo.GetClassInfo(memberInfo.classID)
 		if classInfo then
-			local tcoords = CLASS_ICON_TCOORDS[classInfo.classFile]
-			self.Class:SetTexCoord(tcoords[1] + .022, tcoords[2] - .025, tcoords[3] + .022, tcoords[4] - .025)
+			F.ClassIconTexCoord(self.Class, classInfo.classFile)
 		end
 	end
 end
@@ -79,8 +79,7 @@ local function updateMemberName(self, info)
 
 	local classTag = select(2, GetClassInfo(info.classID))
 	if classTag then
-		local tcoords = CLASS_ICON_TCOORDS[classTag]
-		class:SetTexCoord(tcoords[1] + .022, tcoords[2] - .025, tcoords[3] + .022, tcoords[4] - .025)
+		F.ClassIconTexCoord(class, classTag)
 	end
 end
 

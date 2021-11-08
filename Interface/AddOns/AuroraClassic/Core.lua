@@ -177,23 +177,26 @@ do
 	-- Handle icons
 	function F:ReskinIcon(shadow)
 		self:SetTexCoord(unpack(C.TexCoord))
-		local bg = F.CreateBDFrame(self)
+		local bg = F.CreateBDFrame(self, .25) -- exclude from opacity control
 		if shadow then F.CreateSD(bg) end
 		return bg
 	end
 
 	local AtlasToQuality = {
-		["auctionhouse-itemicon-border-gray"] = LE_ITEM_QUALITY_POOR,
-		["auctionhouse-itemicon-border-white"] = LE_ITEM_QUALITY_COMMON,
-		["auctionhouse-itemicon-border-green"] = LE_ITEM_QUALITY_UNCOMMON,
-		["auctionhouse-itemicon-border-blue"] = LE_ITEM_QUALITY_RARE,
-		["auctionhouse-itemicon-border-purple"] = LE_ITEM_QUALITY_EPIC,
-		["auctionhouse-itemicon-border-orange"] = LE_ITEM_QUALITY_LEGENDARY,
-		["auctionhouse-itemicon-border-artifact"] = LE_ITEM_QUALITY_ARTIFACT,
-		["auctionhouse-itemicon-border-account"] = LE_ITEM_QUALITY_HEIRLOOM,
+		["error"] = 99,
+		["uncollected"] = LE_ITEM_QUALITY_POOR,
+		["gray"] = LE_ITEM_QUALITY_POOR,
+		["white"] = LE_ITEM_QUALITY_COMMON,
+		["green"] = LE_ITEM_QUALITY_UNCOMMON,
+		["blue"] = LE_ITEM_QUALITY_RARE,
+		["purple"] = LE_ITEM_QUALITY_EPIC,
+		["orange"] = LE_ITEM_QUALITY_LEGENDARY,
+		["artifact"] = LE_ITEM_QUALITY_ARTIFACT,
+		["account"] = LE_ITEM_QUALITY_HEIRLOOM,
 	}
 	local function updateIconBorderColorByAtlas(self, atlas)
-		local quality = AtlasToQuality[atlas]
+		local atlasAbbr = atlas and strmatch(atlas, "%-(%w+)$")
+		local quality = atlasAbbr and AtlasToQuality[atlasAbbr]
 		local color = C.QualityColors[quality or 1]
 		self.__owner.bg:SetBackdropBorderColor(color.r, color.g, color.b)
 	end
@@ -203,15 +206,21 @@ do
 		end
 		self.__owner.bg:SetBackdropBorderColor(r, g, b)
 	end
-	local function resetIconBorderColor(self)
-		self.__owner.bg:SetBackdropBorderColor(0, 0, 0)
+	local function resetIconBorderColor(self, texture)
+		if not texture then
+			self.__owner.bg:SetBackdropBorderColor(0, 0, 0)
+		end
 	end
-	function F:ReskinIconBorder(needInit)
+	function F:ReskinIconBorder(needInit, useAtlas)
 		self:SetAlpha(0)
 		self.__owner = self:GetParent()
 		if not self.__owner.bg then return end
-		if self.__owner.useCircularIconBorder then -- for auction item display
+		if useAtlas or self.__owner.useCircularIconBorder then -- for auction item display
 			hooksecurefunc(self, "SetAtlas", updateIconBorderColorByAtlas)
+			hooksecurefunc(self, "SetTexture", resetIconBorderColor)
+			if needInit then
+				self:SetAtlas(self:GetAtlas()) -- for border with color before hook
+			end
 		else
 			hooksecurefunc(self, "SetVertexColor", updateIconBorderColor)
 			if needInit then
@@ -219,6 +228,12 @@ do
 			end
 		end
 		hooksecurefunc(self, "Hide", resetIconBorderColor)
+	end
+
+	local CLASS_ICON_TCOORDS = CLASS_ICON_TCOORDS
+	function F:ClassIconTexCoord(class)
+		local tcoords = CLASS_ICON_TCOORDS[class]
+		self:SetTexCoord(tcoords[1] + .022, tcoords[2] - .025, tcoords[3] + .022, tcoords[4] - .025)
 	end
 
 	-- Handle button
@@ -684,6 +699,7 @@ do
 	function F:ReskinPortraitFrame()
 		F.StripTextures(self)
 		local bg = F.SetBD(self)
+		bg:SetAllPoints(self)
 		local frameName = self.GetName and self:GetName()
 		local portrait = self.PortraitTexture or self.portrait or (frameName and _G[frameName.."Portrait"])
 		if portrait then
@@ -741,7 +757,7 @@ do
 
 			local roleIcon = self.HealthBar.RoleIcon
 			roleIcon:ClearAllPoints()
-			roleIcon:SetPoint("CENTER", self.squareBG, "TOPRIGHT")
+			roleIcon:SetPoint("CENTER", self.squareBG, "TOPRIGHT", -2, -2)
 			replaceFollowerRole(roleIcon, roleIcon:GetAtlas())
 			hooksecurefunc(roleIcon, "SetAtlas", replaceFollowerRole)
 
@@ -879,10 +895,16 @@ do
 		frame:SetPoint("BOTTOMRIGHT", anchor2 or anchor, "BOTTOMRIGHT", xOffset, -yOffset)
 	end
 
+	local function HideBackdrop(frame)
+		if frame.NineSlice then frame.NineSlice:SetAlpha(0) end
+		if frame.SetBackdrop then frame:SetBackdrop(nil) end
+	end
+
 	local function addapi(object)
 		local mt = getmetatable(object).__index
 		if not object.SetInside then mt.SetInside = SetInside end
 		if not object.SetOutside then mt.SetOutside = SetOutside end
+		if not object.HideBackdrop then mt.HideBackdrop = HideBackdrop end
 		if not object.DisabledPixelSnap then
 			if mt.SetTexture then hooksecurefunc(mt, "SetTexture", DisablePixelSnap) end
 			if mt.SetTexCoord then hooksecurefunc(mt, "SetTexCoord", DisablePixelSnap) end

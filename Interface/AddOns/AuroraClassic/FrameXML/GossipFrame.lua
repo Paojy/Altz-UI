@@ -35,12 +35,12 @@ tinsert(C.defaultThemes, function()
 	GossipGreetingText:SetTextColor(1, 1, 1)
 
 	NPCFriendshipStatusBar.icon:SetPoint("TOPLEFT", -30, 7)
-	F.StripTextures(NPCFriendshipStatusBar)
+	F.StripTextures(NPCFriendshipStatusBar, 4)
 	NPCFriendshipStatusBar:SetStatusBarTexture(C.normTex)
 	F.CreateBDFrame(NPCFriendshipStatusBar, .25)
 
 	for i = 1, 4 do
-		local notch = _G["NPCFriendshipStatusBarNotch"..i]
+		local notch = NPCFriendshipStatusBar["Notch"..i]
 		if notch then
 			notch:SetColorTexture(0, 0, 0)
 			notch:SetSize(C.mult, 16)

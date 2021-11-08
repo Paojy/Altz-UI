@@ -73,6 +73,7 @@ tinsert(C.defaultThemes, function()
 	F.StripTextures(DetailsFrame)
 	F.StripTextures(DetailsFrame.RewardsFrame)
 	F.StripTextures(DetailsFrame.ShareButton)
+	DetailsFrame.Bg:SetAlpha(0)
 	DetailsFrame.SealMaterialBG:SetAlpha(0)
 
 	F.Reskin(DetailsFrame.BackButton)
@@ -133,6 +134,7 @@ tinsert(C.defaultThemes, function()
 	F.Reskin(QuestLogPopupDetailFrame.AbandonButton)
 	F.Reskin(QuestLogPopupDetailFrame.TrackButton)
 	F.Reskin(QuestLogPopupDetailFrame.ShareButton)
+	QuestLogPopupDetailFrame.SealMaterialBG:SetAlpha(0)
 
 	-- Show map button
 

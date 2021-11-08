@@ -44,6 +44,7 @@ C.themes["Blizzard_PVPUI"] = function()
 		F.Reskin(bu, true)
 		bu.Background:SetInside(bu.__bg)
 		bu.Background:SetColorTexture(r, g, b, .25)
+		bu.Background:SetAlpha(1)
 
 		icon:SetPoint("LEFT", bu, "LEFT")
 		icon:SetSize(iconSize, iconSize)
@@ -64,13 +65,12 @@ C.themes["Blizzard_PVPUI"] = function()
 	PVPQueueFrame.CategoryButton3.Icon:SetTexture("Interface\\Icons\\ability_warrior_offensivestance")
 
 	hooksecurefunc("PVPQueueFrame_SelectButton", function(index)
-		local self = PVPQueueFrame
 		for i = 1, 3 do
-			local bu = self["CategoryButton"..i]
+			local bu = PVPQueueFrame["CategoryButton"..i]
 			if i == index then
-				bu.Background:SetAlpha(1)
+				bu.Background:Show()
 			else
-				bu.Background:SetAlpha(0)
+				bu.Background:Hide()
 			end
 		end
 	end)
@@ -83,8 +83,13 @@ C.themes["Blizzard_PVPUI"] = function()
 	popup.Leave.__bg:SetFrameLevel(popup:GetFrameLevel() + 1)
 	popup.NewSeason:SetTextColor(1, .8, 0)
 	popup.SeasonRewardText:SetTextColor(1, .8, 0)
-	popup.SeasonDescription:SetTextColor(1, 1, 1)
-	popup.SeasonDescription2:SetTextColor(1, 1, 1)
+	popup.SeasonDescriptionHeader:SetTextColor(1, 1, 1)
+
+	popup:HookScript("OnShow", function(self)
+		for _, description in pairs(self.SeasonDescriptions) do
+			description:SetTextColor(1, 1, 1)
+		end
+	end)
 
 	local SeasonRewardFrame = popup.SeasonRewardFrame
 	SeasonRewardFrame.CircleMask:Hide()

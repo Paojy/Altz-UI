@@ -578,6 +578,7 @@ C.themes["Blizzard_Collections"] = function()
 	F.StripTextures(WardrobeTransmogFrame.SpecButton)
 	F.ReskinArrow(WardrobeTransmogFrame.SpecButton, "down")
 	WardrobeTransmogFrame.SpecButton:SetPoint("RIGHT", WardrobeTransmogFrame.ApplyButton, "LEFT", -3, 0)
+	F.ReskinCheck(WardrobeTransmogFrame.ToggleSecondaryAppearanceCheckbox)
 
 	local modelScene = WardrobeTransmogFrame.ModelScene
 	modelScene.ClearAllPendingButton:DisableDrawLayer("BACKGROUND")
