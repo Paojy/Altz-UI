@@ -98,8 +98,8 @@ T.CreateSD = function(parent, size, r, g, b, alpha, offset)
 		edgeFile = G.media.glow,
 		edgeSize = sd.size,
 	})
-	sd:SetPoint("TOPLEFT", parent, -sd.size - 1 - sd.offset, sd.size + 1 + sd.offset)
-	sd:SetPoint("BOTTOMRIGHT", parent, sd.size + 1 + sd.offset, -sd.size - 1 - sd.offset)
+	sd:SetPoint("TOPLEFT", parent, -sd.size - sd.offset, sd.size + sd.offset)
+	sd:SetPoint("BOTTOMRIGHT", parent, sd.size + sd.offset, -sd.size - sd.offset)
 	sd:SetBackdropBorderColor(r or 0, g or 0, b or 0)
 	sd:SetBackdropColor(r or 0, g or 0, b or 0, alpha or 0)
 
