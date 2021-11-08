@@ -188,3 +188,7 @@ L["空"] = "Vazio"
 --L["杂兵"] = "Trash"
 --L["设置"] = "Edit"
 --L["删除并加入黑名单"] = "Delete and add to blacklist"
+
+--L["大秘境评分"] = "Challenge Mode Score"
+--L["副本"] = "Instance"
+--L["评分层数"] = "Score（Highest Level）"
