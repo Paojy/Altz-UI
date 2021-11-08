@@ -33,7 +33,7 @@ table.insert(buttonList, button) --add the button object to the list
 button:SetSize(buttonssize,buttonssize)
 
 --hide the frame when in a vehicle!
-RegisterStateDriver(frame, "visibility", "[petbattle][overridebar][vehicleui] hide; show")
+RegisterStateDriver(frame, "visibility", "[petbattle] hide; show")
 
 local frame2 = CreateFrame("Frame", "Altz_DraenorZoneAbilitybutton", UIParent, "SecureHandlerStateTemplate")
 frame2.movingname = L["额外特殊按钮"].."2"
@@ -65,5 +65,5 @@ table.insert(buttonList, button2) --add the button object to the list
 button2:SetSize(buttonssize,buttonssize)
 
 --hide the frame when in a vehicle!
-RegisterStateDriver(frame2, "visibility", "[petbattle][overridebar][vehicleui] hide; show")
+RegisterStateDriver(frame2, "visibility", "[petbattle] hide; show")
 

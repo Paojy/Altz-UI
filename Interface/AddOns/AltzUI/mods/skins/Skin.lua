@@ -116,6 +116,8 @@ local f = CreateFrame("Frame")
 
 local function registerDBMStyle()
     if not DBM or not aCoreCDB["SkinOptions"]["setDBM"] then return end
+	local skins = DBT:GetSkins()
+	if skins["AltzUI"] then return end
     local skin = DBT:RegisterSkin("AltzUI")
 
     skin.defaults = {
@@ -142,11 +144,11 @@ local function registerDBMStyle()
 		HugeBarYOffset = 3,
     }
 	
-    if DBM.Bars.options.Texture:find("DBM") then
+    if DBM.Bars and DBM.Bars.options.Texture:find("DBM") then
         DBM.Bars.options.Texture = skin.defaults.Texture
     end
 
-    if DBM.Bars.options.Template ~= skin.defaults.Template then
+    if DBM.Bars and DBM.Bars.options.Template ~= skin.defaults.Template then
         --only set the skin if it isn't already set.
        DBM.Bars:SetSkin("AltzUI")
 	end

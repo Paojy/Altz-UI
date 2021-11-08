@@ -126,14 +126,16 @@ end
 
 function blizzHider:ADDON_LOADED(addon)
 	if addon == "Blizzard_BindingUI" then
-		if QuickKeybindFrame.phantomExtraActionButton.UnregisterAllEvents then
-			QuickKeybindFrame.phantomExtraActionButton:UnregisterAllEvents()
-			QuickKeybindFrame.phantomExtraActionButton:SetParent(blizzHider)
-		else
-			QuickKeybindFrame.phantomExtraActionButton.Show = QuickKeybindFrame.phantomExtraActionButton.Hide
+		if QuickKeybindFrame.phantomExtraActionButton then
+			if QuickKeybindFrame.phantomExtraActionButton.UnregisterAllEvents then
+				QuickKeybindFrame.phantomExtraActionButton:UnregisterAllEvents()
+				QuickKeybindFrame.phantomExtraActionButton:SetParent(blizzHider)
+			else
+				QuickKeybindFrame.phantomExtraActionButton.Show = QuickKeybindFrame.phantomExtraActionButton.Hide
+			end
+			QuickKeybindFrame.phantomExtraActionButton:Hide()
+			blizzHider:UnregisterEvent("ADDON_LOADED")
 		end
-		QuickKeybindFrame.phantomExtraActionButton:Hide()
-		blizzHider:UnregisterEvent("ADDON_LOADED")
 	end
 end
 

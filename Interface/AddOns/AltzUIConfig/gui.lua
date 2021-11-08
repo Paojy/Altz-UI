@@ -577,7 +577,7 @@ IInnerframe.common.SF:SetPoint("BOTTOMRIGHT", IInnerframe.common, "BOTTOMRIGHT",
 F.CreateBD(IInnerframe.common.SF.bg, .3)
 
 local ClearIlvlInfoButton = CreateFrame("Button", G.uiname.."ClearIlvlInfoButton", IInnerframe.common, "UIPanelButtonTemplate")
-ClearIlvlInfoButton:SetPoint("LEFT", _G[IInnerframe.common.showitemlevel:GetName() .. "Text"], "RIGHT", 20, 0)
+ClearIlvlInfoButton:SetPoint("TOPLEFT", IInnerframe.common, "TOPLEFT", 235, -180)
 ClearIlvlInfoButton:SetSize(100, 25)
 ClearIlvlInfoButton:SetText(L["重置"])
 T.resize_font(ClearIlvlInfoButton.Text)

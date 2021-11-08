@@ -402,7 +402,7 @@ end
 T.ResetDBM =function(reload)
 	if aCoreCDB["SkinOptions"]["setDBM"] and IsAddOnLoaded("DBM-Core") then
 		if DBM_AllSavedOptions then
-			DBM.Bars:SetSkin("AltzUI")		
+			--DBM.Bars:SetSkin("AltzUI")		
 			DBM_AllSavedOptions["Default"]["ShowMinimapButton"] = false
 			-- BOSS血条
 			DBM_AllSavedOptions["Default"]["HPFramePoint"] = "BOTTOM"			

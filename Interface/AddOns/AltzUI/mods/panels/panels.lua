@@ -1200,7 +1200,6 @@ Talent:SetScript("OnEvent", function(self, event)
 	if event == "PLAYER_ENTERING_WORLD" then
 		self:RegisterEvent("PLAYER_LOOT_SPEC_UPDATED")
 		self:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED")
-		self:RegisterEvent("PLAYER_LOOT_SPEC_UPDATED")
 		self:UnregisterEvent("PLAYER_ENTERING_WORLD")
 	end
 	
@@ -1877,7 +1876,9 @@ if aCoreCDB["UnitframeOptions"]["raidtool"] then
 		bu.bgtex:SetVertexColor(0, 0, 0, .3)
 		
 		bu.tex = bu:CreateTexture(nil, "ARTWORK")
-		bu.tex:SetAllPoints(bu)
+		
+		bu.tex:SetPoint("TOPLEFT", 1, -1)
+		bu.tex:SetPoint("BOTTOMRIGHT", -1, 1)
 		
 		if i == 9 then
 			bu:SetNormalTexture("Interface\\BUTTONS\\UI-GroupLoot-Pass-Up")

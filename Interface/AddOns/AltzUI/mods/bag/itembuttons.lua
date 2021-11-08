@@ -75,123 +75,90 @@ local function Create_IB(ItemID, index, exactItem, showCount, All, OrderHall, Ra
 	table.insert(IB_Buttons, bu)
 end
 
-local updateTime = {}
+local updateTime = 0
 
-local function Update_IB(bagID)
+local function Update_IB()
 	
 	if InCombatLockdown() or G.bag_sorting then return end
 	
-	for k, bu in pairs(IB_Buttons) do
-		local orderhall = false -- C_Garrison.IsPlayerInGarrison(LE_GARRISON_TYPE_7_0)
-		local instanceType = select(2, GetInstanceInfo())
+	if GetTime() - updateTime > 1.5 then
+		updateTime = GetTime()
+		print("Update", updateTime)
+		for k, bu in pairs(IB_Buttons) do
+			bu.has_item = false
+		end
 		
-		local hasitem = false
-		local info = aCoreCDB["ItemOptions"]["itembuttons_table"][bu.ind]
-		
-		if info.All or (info.OrderHall and orderhall) or (info.Raid and instanceType == "raid") or (info.Dungeon and instanceType == "party") or (info.PVP and instanceType == "pvp") then
+		for bag = 0, NUM_BAG_SLOTS do
 			
-			if bagID then
+			for slot = 1, GetContainerNumSlots(bag) do
 				
-				if (not updateTime[bagID]) or (GetTime() - updateTime[bagID] > 1) then
-					
-					for slot = 1, GetContainerNumSlots(bagID) do
-					
-						local itemID = GetContainerItemID(bagID, slot)            
-						local itemSpell = GetItemSpell(itemID)
-						
-						if (itemID == info.itemID) or (not info.exactItem and itemSpell and itemSpell == GetItemSpell(info.itemID)) then
-						
-							local icon = GetItemIcon(itemID)                
-							bu.icon:SetTexture(icon)              
-							
-							if info.showCount then
-								bu.text:SetText(GetItemCount(itemID))
-							else
-								bu.text:SetText("")
-							end
-							
-							bu:Show()
-							if GetMouseFocus() == bu then
-								GameTooltip:SetBagItem(bagID, slot)
-							end
-							bu:SetAttribute("type", "item")                
-							bu:SetAttribute("item", "item:"..itemID)               
-							
-							bu:SetScript("OnEnter", function()
-								GameTooltip:SetOwner(bu, "ANCHOR_TOPRIGHT")	
-								GameTooltip:SetBagItem(bagID, slot)
-								GameTooltip:Show()
-							end)
-							bu:SetScript("OnLeave", function()
-								GameTooltip:Hide()
-							end)
-							
-							hasitem = true
-							
-							updateTime[bagID] = GetTime()
-						end
-						
-					end
-					
-				end				
-			else
-				for bag = 0, NUM_BAG_SLOTS do
-					if (not updateTime[bagID]) or (GetTime() - updateTime[bagID] > 1) then
-					
-						for slot = 1, GetContainerNumSlots(bag) do
-						
-							local itemID = GetContainerItemID(bag, slot)            
-							local itemSpell = GetItemSpell(itemID)
-							
-							if (itemID == info.itemID) or (not info.exactItem and itemSpell and itemSpell == GetItemSpell(info.itemID)) then
-							
-								local icon = GetItemIcon(itemID)                
-								bu.icon:SetTexture(icon)              
+				for k, bu in pairs(IB_Buttons) do
+
+					local info = aCoreCDB["ItemOptions"]["itembuttons_table"][bu.ind]
+			
+					if GetItemInfo(info.itemID) then
+						if not bu.has_item then
+							local orderhall = C_Garrison.IsPlayerInGarrison(Enum.GarrisonType.Type_7_0)
+							local instanceType = select(2, GetInstanceInfo())
+				
+							if info.All or (info.OrderHall and orderhall) or (info.Raid and instanceType == "raid") or (info.Dungeon and instanceType == "party") or (info.PVP and instanceType == "pvp") then
+											
+								--print(GetItemInfo(info.itemID), bag, slot)
 								
-								if info.showCount then
-									bu.text:SetText(GetItemCount(itemID))
-								else
-									bu.text:SetText("")
+								local itemID = GetContainerItemID(bag, slot) 
+								local itemSpell = GetItemSpell(itemID)
+							
+								if (itemID == info.itemID) or (not info.exactItem and itemSpell and itemSpell == GetItemSpell(info.itemID)) then
+	
+									local icon = GetItemIcon(itemID)                
+									bu.icon:SetTexture(icon)              
+									
+									if info.showCount then
+										bu.text:SetText(GetItemCount(itemID))
+									else
+										bu.text:SetText("")
+									end
+									
+									if GetMouseFocus() == bu then
+										GameTooltip:SetBagItem(bag, slot)
+									end
+									
+									bu:SetAttribute("type", "item")                
+									bu:SetAttribute("item", "item:"..itemID)               
+									bu:Show()
+									
+									bu:SetScript("OnEnter", function()
+										GameTooltip:SetOwner(bu, "ANCHOR_TOPRIGHT")	
+										GameTooltip:SetBagItem(bag, slot)
+										GameTooltip:Show()
+									end)
+									
+									bu:SetScript("OnLeave", function()
+										GameTooltip:Hide()
+									end)
+									
+									bu.has_item = true
+									break
 								end
-								
-								bu:Show()
-								if GetMouseFocus() == bu then
-									GameTooltip:SetBagItem(bag, slot)
+		
+								if not bu.has_item then			
+									bu:SetAttribute("type", nil)
+									bu:SetAttribute("item", nil) 
+									bu:Hide()
 								end
-								bu:SetAttribute("type", "item")                
-								bu:SetAttribute("item", "item:"..itemID)               
-								
-								bu:SetScript("OnEnter", function()
-									GameTooltip:SetOwner(bu, "ANCHOR_TOPRIGHT")	
-									GameTooltip:SetBagItem(bag, slot)
-									GameTooltip:Show()
-								end)
-								bu:SetScript("OnLeave", function()
-									GameTooltip:Hide()
-								end)
-								
-								hasitem = true
-								
-								updateTime[bag] = GetTime()
 							end
-							
 						end
-					
+					else
+						bu:SetAttribute("type", nil)
+						bu:SetAttribute("item", nil) 
+						bu:Hide()
 					end
 				end
 			end
-			
-		end	
-
-		if not hasitem then			
-			bu:SetAttribute("type", nil)
-			bu:SetAttribute("item", nil) 
-			bu:Hide()
 		end
-		
 	end
 	
-	Lineup_IB()
+	Lineup_IB()	
 end
 
 T.Update_IB = Update_IB
@@ -215,6 +182,6 @@ IB_Frame:SetScript("OnEvent", function(self, event, arg1)
 			Update_IB()
 		end
 	else
-		Update_IB(arg1)
+		Update_IB()
 	end
 end)
