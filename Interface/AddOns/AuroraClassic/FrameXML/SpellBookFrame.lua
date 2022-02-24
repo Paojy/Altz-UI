@@ -60,6 +60,10 @@ tinsert(C.defaultThemes, function()
 		if ic.bg then
 			ic.bg:SetShown(ic:IsShown())
 		end
+
+		if self.ClickBindingIconCover and self.ClickBindingIconCover:IsShown() then
+			self.SpellName:SetTextColor(.7, .7, .7)
+		end
 	end)
 
 	SpellBookSkillLineTab1:SetPoint("TOPLEFT", SpellBookSideTabsFrame, "TOPRIGHT", 2, -36)

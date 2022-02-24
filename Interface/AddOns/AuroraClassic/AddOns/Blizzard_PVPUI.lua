@@ -114,7 +114,7 @@ C.themes["Blizzard_PVPUI"] = function()
 	bonusFrame.WorldBattlesTexture:Hide()
 	bonusFrame.ShadowOverlay:Hide()
 
-	for _, bonusButton in pairs({"RandomBGButton", "RandomEpicBGButton", "Arena1Button", "BrawlButton", "SpecialEventButton"}) do
+	for _, bonusButton in pairs({"RandomBGButton", "RandomEpicBGButton", "Arena1Button", "BrawlButton", "BrawlButton2"}) do
 		local bu = bonusFrame[bonusButton]
 		F.Reskin(bu, true)
 		bu.SelectedTexture:SetDrawLayer("BACKGROUND")

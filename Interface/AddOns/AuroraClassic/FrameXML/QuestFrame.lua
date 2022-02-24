@@ -83,7 +83,7 @@ tinsert(C.defaultThemes, function()
 	AvailableQuestsText:SetTextColor(1, .8, 0)
 	AvailableQuestsText.SetTextColor = F.Dummy
 	AvailableQuestsText:SetShadowColor(0, 0, 0)
-	CurrentQuestsText:SetTextColor(1, 1, 1)
+	CurrentQuestsText:SetTextColor(1, .8, 0)
 	CurrentQuestsText.SetTextColor = F.Dummy
 	CurrentQuestsText:SetShadowColor(0, 0, 0)
 

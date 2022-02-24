@@ -26,6 +26,12 @@ do
 		self:SetScale(.0001)
 	end
 
+	function F:Round(number, idp)
+		idp = idp or 0
+		local mult = 10 ^ idp
+		return floor(number * mult + .5) / mult
+	end
+
 	local blizzTextures = {
 		"Inset",
 		"inset",
@@ -236,6 +242,29 @@ do
 		self:SetTexCoord(tcoords[1] + .022, tcoords[2] - .025, tcoords[3] + .022, tcoords[4] - .025)
 	end
 
+	function F:CreateAndUpdateBarTicks(bar, ticks, numTicks)
+		for i = 1, #ticks do
+			ticks[i]:Hide()
+		end
+
+		if numTicks and numTicks > 0 then
+			local width, height = bar:GetSize()
+			local delta = width / numTicks
+			for i = 1, numTicks-1 do
+				if not ticks[i] then
+					ticks[i] = bar:CreateTexture(nil, "OVERLAY")
+					ticks[i]:SetTexture(DB.normTex)
+					ticks[i]:SetVertexColor(0, 0, 0, .7)
+					ticks[i]:SetWidth(C.mult)
+					ticks[i]:SetHeight(height)
+				end
+				ticks[i]:ClearAllPoints()
+				ticks[i]:SetPoint("RIGHT", bar, "LEFT", delta * i, 0 )
+				ticks[i]:Show()
+			end
+		end
+	end
+
 	-- Handle button
 	local function Button_OnEnter(self)
 		if not self:IsEnabled() then return end
@@ -364,20 +393,6 @@ do
 	hooksecurefunc("PanelTemplates_DeselectTab", F.ResetTabAnchor)
 
 	-- Handle scrollframe
-	local function Scroll_OnEnter(self)
-		local thumb = self.thumb
-		if not thumb then return end
-		thumb.bg:SetBackdropColor(cr, cg, cb, .25)
-		thumb.bg:SetBackdropBorderColor(cr, cg, cb)
-	end
-
-	local function Scroll_OnLeave(self)
-		local thumb = self.thumb
-		if not thumb then return end
-		thumb.bg:SetBackdropColor(0, 0, 0, 0)
-		thumb.bg:SetBackdropBorderColor(0, 0, 0)
-	end
-
 	local function GrabScrollBarElement(frame, element)
 		local frameName = frame:GetDebugName()
 		return frame[element] or frameName and (_G[frameName..element] or strfind(frameName, element)) or nil
@@ -391,20 +406,57 @@ do
 		if thumb then
 			thumb:SetAlpha(0)
 			thumb:SetWidth(16)
-			self.thumb = thumb
-
 			local bg = F.CreateBDFrame(self, 0, true)
 			bg:SetPoint("TOPLEFT", thumb, 0, -2)
 			bg:SetPoint("BOTTOMRIGHT", thumb, 0, 4)
-			thumb.bg = bg
+			bg:SetBackdropColor(cr, cg, cb, .75)
 		end
 
 		local up, down = self:GetChildren()
 		F.ReskinArrow(up, "up")
 		F.ReskinArrow(down, "down")
+	end
 
-		self:HookScript("OnEnter", Scroll_OnEnter)
-		self:HookScript("OnLeave", Scroll_OnLeave)
+	-- WowTrimScrollBar
+	local function updateTrimScrollArrow(self, atlas)
+		local arrow = self.__owner
+		if not arrow.__texture then return end
+	
+		if atlas == arrow.disabledTexture then
+			arrow.__texture:SetVertexColor(.5, .5, .5)
+		else
+			arrow.__texture:SetVertexColor(1, 1, 1)
+		end
+	end
+
+	local function reskinTrimScrollArrow(self, direction)
+		if not self then return end
+
+		self.Texture:SetAlpha(0)
+		self.Overlay:SetAlpha(0)
+		local tex = self:CreateTexture(nil, "ARTWORK")
+		tex:SetAllPoints()
+		F.CreateBDFrame(tex, .25)
+		F.SetupArrow(tex, direction)
+		self.__texture = tex
+	
+		self:HookScript("OnEnter", F.Texture_OnEnter)
+		self:HookScript("OnLeave", F.Texture_OnLeave)
+		self.Texture.__owner = self
+		hooksecurefunc(self.Texture, "SetAtlas", updateTrimScrollArrow)
+		self.Texture:SetAtlas(self.Texture:GetAtlas())
+	end
+
+	function F:ReskinTrimScroll()
+		F.StripTextures(self)
+		reskinTrimScrollArrow(self.Back, "up")
+		reskinTrimScrollArrow(self.Forward, "down")
+
+		local thumb = self:GetThumb()
+		if thumb then
+			F.StripTextures(thumb, 0)
+			F.CreateBDFrame(thumb, 0, true):SetBackdropColor(cr, cg, cb, .75)
+		end
 	end
 
 	-- Handle dropdown

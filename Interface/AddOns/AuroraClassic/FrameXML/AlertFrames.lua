@@ -14,8 +14,8 @@ local function fixBg(frame)
 	end
 end
 
-local function fixParentbg(frame)
-	frame = frame:GetParent():GetParent()
+local function fixParentbg(anim)
+	local frame = anim.__owner
 	if frame.bg then
 		frame.bg:SetBackdropColor(0, 0, 0, AuroraClassicDB.Alpha)
 		if frame.bg.__shadow then
@@ -35,6 +35,7 @@ local function fixAnim(frame)
 		frame.animArrows:HookScript("OnFinished", fixBg)
 	end
 	if frame.Arrows and frame.Arrows.ArrowsAnim then
+		frame.Arrows.ArrowsAnim.__owner = frame
 		frame.Arrows.ArrowsAnim:HookScript("OnPlay", fixParentbg)
 		frame.Arrows.ArrowsAnim:HookScript("OnFinished", fixParentbg)
 	end
@@ -126,8 +127,8 @@ tinsert(C.defaultThemes, function()
 		elseif frame.queue == LootUpgradeAlertSystem then
 			if not frame.bg then
 				frame.bg = F.SetBD(frame)
-				frame.bg:SetPoint("TOPLEFT", 10, -13)
-				frame.bg:SetPoint("BOTTOMRIGHT", -12, 11)
+				frame.bg:SetPoint("TOPLEFT", 10, -14)
+				frame.bg:SetPoint("BOTTOMRIGHT", -10, 12)
 
 				F.ReskinIcon(frame.Icon)
 				frame.Icon:ClearAllPoints()
@@ -146,8 +147,7 @@ tinsert(C.defaultThemes, function()
 		elseif frame.queue == MoneyWonAlertSystem or frame.queue == HonorAwardedAlertSystem then
 			if not frame.bg then
 				frame.bg = F.SetBD(frame)
-				frame.bg:SetPoint("TOPLEFT", 7, -7)
-				frame.bg:SetPoint("BOTTOMRIGHT", -7, 7)
+				frame.bg:SetInside(frame, 7, 7)
 
 				F.ReskinIcon(frame.Icon)
 				frame.Background:SetTexture("")
@@ -177,11 +177,11 @@ tinsert(C.defaultThemes, function()
 				frame:DisableDrawLayer("BORDER")
 				frame.ToastText:SetFontObject(NumberFont_GameNormal)
 			end
-		elseif frame.queue == GarrisonTalentAlertSystem then
+		elseif frame.queue == GarrisonTalentAlertSystem or frame.queue == GarrisonBuildingAlertSystem then
 			if not frame.bg then
 				frame.bg = F.SetBD(frame)
-				frame.bg:SetPoint("TOPLEFT", 8, -8)
-				frame.bg:SetPoint("BOTTOMRIGHT", -8, 11)
+				frame.bg:SetPoint("TOPLEFT", 10, -10)
+				frame.bg:SetPoint("BOTTOMRIGHT", -10, 13)
 
 				F.ReskinIcon(frame.Icon)
 				frame:GetRegions():Hide()
@@ -233,22 +233,10 @@ tinsert(C.defaultThemes, function()
 					frame.Level:SetPoint("TOP", frame, "TOP", -115, -28)
 				end
 			end
-		elseif frame.queue == GarrisonBuildingAlertSystem then
-			if not frame.bg then
-				frame.bg = F.SetBD(frame)
-				frame.bg:SetPoint("TOPLEFT", 9, -9)
-				frame.bg:SetPoint("BOTTOMRIGHT", -9, 11)
-
-				F.ReskinIcon(frame.Icon)
-				frame:GetRegions():Hide()
-				frame.glow:SetTexture("")
-				frame.shine:SetTexture("")
-			end
 		elseif frame.queue == DigsiteCompleteAlertSystem then
 			if not frame.bg then
 				frame.bg = F.SetBD(frame)
-				frame.bg:SetPoint("TOPLEFT", 8, -8)
-				frame.bg:SetPoint("BOTTOMRIGHT", -8, 8)
+				frame.bg:SetInside(frame, 8, 8)
 
 				frame:GetRegions():Hide()
 				frame.glow:SetTexture("")
@@ -257,7 +245,7 @@ tinsert(C.defaultThemes, function()
 		elseif frame.queue == GuildChallengeAlertSystem then
 			if not frame.bg then
 				frame.bg = F.SetBD(frame)
-				frame.bg:SetPoint("TOPLEFT", 8, -12)
+				frame.bg:SetPoint("TOPLEFT", 8, -13)
 				frame.bg:SetPoint("BOTTOMRIGHT", -8, 13)
 
 				select(2, frame:GetRegions()):SetTexture("")
@@ -279,8 +267,7 @@ tinsert(C.defaultThemes, function()
 		elseif frame.queue == ScenarioAlertSystem then
 			if not frame.bg then
 				frame.bg = F.SetBD(frame)
-				frame.bg:SetPoint("TOPLEFT", 5, -5)
-				frame.bg:SetPoint("BOTTOMRIGHT", -5, 5)
+				frame.bg:SetInside(frame, 5, 5)
 
 				F.ReskinIcon(frame.dungeonTexture)
 				frame:GetRegions():Hide()
@@ -292,12 +279,12 @@ tinsert(C.defaultThemes, function()
 			if not frame.bg then
 				frame.bg = F.SetBD(frame)
 				frame.bg:SetPoint("TOPLEFT", 25, -22)
-				frame.bg:SetPoint("BOTTOMRIGHT", -25, 22)
+				frame.bg:SetPoint("BOTTOMRIGHT", -25, 24)
 				frame:HookScript("OnUpdate", fixBg)
 
 				F.ReskinIcon(frame.Icon)
 				frame.Icon:ClearAllPoints()
-				frame.Icon:SetPoint("TOPLEFT", frame.bg, 12, -12)
+				frame.Icon:SetPoint("TOPLEFT", frame.bg, 10, -10)
 
 				frame.Background:SetTexture("")
 				frame.Background2:SetTexture("")
@@ -314,17 +301,33 @@ tinsert(C.defaultThemes, function()
 				frame.IconBorder:Hide()
 				frame.Background:SetTexture("")
 				frame.shine:SetTexture("")
-				frame.glow:SetTexture("")
 			end
 		elseif frame.queue == InvasionAlertSystem then
 			if not frame.bg then
 				frame.bg = F.SetBD(frame)
-				frame.bg:SetPoint("TOPLEFT", 6, -6)
-				frame.bg:SetPoint("BOTTOMRIGHT", -6, 6)
+				frame.bg:SetInside(frame, 5, 5)
 
 				local bg, icon = frame:GetRegions()
 				bg:Hide()
 				F.ReskinIcon(icon)
+			end
+		elseif frame.queue == EntitlementDeliveredAlertSystem then
+			if not frame.bg then
+				frame.bg = F.SetBD(frame)
+				frame.bg:SetInside(frame, 12, 12)
+
+				F.ReskinIcon(frame.Icon)
+				frame.Title:SetTextColor(0, .6, 1)
+				frame.Background:Hide()
+			end
+		elseif frame.queue == RafRewardDeliveredAlertSystem then
+			if not frame.bg then
+				frame.bg = F.SetBD(frame)
+				frame.bg:SetPoint("TOPLEFT", 24, -14)
+				frame.bg:SetPoint("BOTTOMRIGHT", -24, 8)
+
+				F.ReskinIcon(frame.Icon)
+				frame.StandardBackground:SetTexture("")
 			end
 		end
 
