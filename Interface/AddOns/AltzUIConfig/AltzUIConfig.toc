@@ -1,6 +1,6 @@
-﻿## Interface: 90105
+﻿## Interface: 90200
 ## Title: |cffEE3A8CAltz|rUI Config
-## Version: 9.16
+## Version: 9.20
 ## Author: Paopao001
 ## Dependencies: AuroraClassic
 ## OptionalDeps: !ClassColors, Skada, DBM-Core, BigWigs

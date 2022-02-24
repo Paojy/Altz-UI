@@ -83,7 +83,7 @@ local function Update_IB()
 	
 	if GetTime() - updateTime > 1.5 then
 		updateTime = GetTime()
-		--print("Update", updateTime)
+
 		for k, bu in pairs(IB_Buttons) do
 			bu.has_item = false
 		end
