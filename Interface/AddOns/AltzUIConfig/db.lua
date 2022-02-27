@@ -447,7 +447,33 @@ G.Raids = {
 		EJ_GetEncounterInfo(2394),
 		EJ_GetEncounterInfo(2425),
 		EJ_GetEncounterInfo(2424),
-		"Trash",
+	},
+	
+	[EJ_GetInstanceInfo(1193)] = { -- 统御圣所
+		EJ_GetEncounterInfo(2435),
+		EJ_GetEncounterInfo(2442),
+		EJ_GetEncounterInfo(2439),
+		EJ_GetEncounterInfo(2444),
+		EJ_GetEncounterInfo(2445),
+		EJ_GetEncounterInfo(2443),
+		EJ_GetEncounterInfo(2446),
+		EJ_GetEncounterInfo(2447),
+		EJ_GetEncounterInfo(2440),
+		EJ_GetEncounterInfo(2441),
+	},
+	
+	[EJ_GetInstanceInfo(1195)] = { -- 初诞者圣墓
+		EJ_GetEncounterInfo(2458),
+		EJ_GetEncounterInfo(2465),
+		EJ_GetEncounterInfo(2470),
+		EJ_GetEncounterInfo(2459),
+		EJ_GetEncounterInfo(2460),
+		EJ_GetEncounterInfo(2461),
+		EJ_GetEncounterInfo(2463),
+		EJ_GetEncounterInfo(2469),
+		EJ_GetEncounterInfo(2457),
+		EJ_GetEncounterInfo(2467),
+		EJ_GetEncounterInfo(2464),
 	},
 }
 
@@ -987,6 +1013,74 @@ G.DebuffList = {
 		},
 	},
 
+	[EJ_GetInstanceInfo(1193)] = { -- 统御圣所
+		[EJ_GetEncounterInfo(2435)] = { 
+			
+		},
+		[EJ_GetEncounterInfo(2442)] = { 
+			
+		},
+		[EJ_GetEncounterInfo(2439)] = { 
+			
+		},
+		[EJ_GetEncounterInfo(2444)] = { 
+			
+		},
+		[EJ_GetEncounterInfo(2445)] = { 
+			
+		},
+		[EJ_GetEncounterInfo(2443)] = { 
+			
+		},
+		[EJ_GetEncounterInfo(2446)] = { 
+			
+		},
+		[EJ_GetEncounterInfo(2447)] = { 
+			
+		},
+		[EJ_GetEncounterInfo(2440)] = { 
+			
+		},
+		[EJ_GetEncounterInfo(2441)] = { 
+			
+		},
+	},
+	
+	[EJ_GetInstanceInfo(1195)] = { -- 初诞者圣墓
+		[EJ_GetEncounterInfo(2458)] = { 
+			
+		},
+		[EJ_GetEncounterInfo(2465)] = { 
+			
+		},
+		[EJ_GetEncounterInfo(2470)] = { 
+			
+		},
+		[EJ_GetEncounterInfo(2459)] = { 
+			
+		},
+		[EJ_GetEncounterInfo(2460)] = { 
+			
+		},
+		[EJ_GetEncounterInfo(2461)] = { 
+			
+		},
+		[EJ_GetEncounterInfo(2463)] = { 
+			
+		},
+		[EJ_GetEncounterInfo(2469)] = { 
+			
+		},
+		[EJ_GetEncounterInfo(2457)] = { 
+			
+		},
+		[EJ_GetEncounterInfo(2467)] = { 
+			
+		},
+		[EJ_GetEncounterInfo(2464)] = { 
+			
+		},
+	},
 }
 
 --[[
