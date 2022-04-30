@@ -1813,6 +1813,7 @@ T.ImportSettings = function(str)
 				aCoreCDB.CooldownAura = {}
 				aCoreCDB.CooldownAura.Buffs = {}
 				aCoreCDB.CooldownAura.Debuffs = {}
+				aCoreCDB.CooldownAura.Debuffs_Black = {}
 			end
 			
 			if sameclass then
