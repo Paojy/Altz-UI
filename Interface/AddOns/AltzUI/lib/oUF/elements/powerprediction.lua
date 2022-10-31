@@ -44,8 +44,8 @@ local _, ns = ...
 local oUF = ns.oUF
 
 -- sourced from FrameXML/AlternatePowerBar.lua
-local ADDITIONAL_POWER_BAR_INDEX = ADDITIONAL_POWER_BAR_INDEX or 0
-local ALT_MANA_BAR_PAIR_DISPLAY_INFO = ALT_MANA_BAR_PAIR_DISPLAY_INFO
+local ADDITIONAL_POWER_BAR_INDEX = _G.ADDITIONAL_POWER_BAR_INDEX or 0
+local ALT_MANA_BAR_PAIR_DISPLAY_INFO = _G.ALT_MANA_BAR_PAIR_DISPLAY_INFO
 
 local _, playerClass = UnitClass('player')
 
@@ -66,31 +66,38 @@ local function Update(self, event, unit)
 
 	local _, _, _, startTime, endTime, _, _, _, spellID = UnitCastingInfo(unit)
 	local mainPowerType = UnitPowerType(unit)
-	local hasAltManaBar = ALT_MANA_BAR_PAIR_DISPLAY_INFO[playerClass] and ALT_MANA_BAR_PAIR_DISPLAY_INFO[playerClass][mainPowerType]
+	local hasAltManaBar = ALT_MANA_BAR_PAIR_DISPLAY_INFO[playerClass]
+		and ALT_MANA_BAR_PAIR_DISPLAY_INFO[playerClass][mainPowerType]
 	local mainCost, altCost = 0, 0
 
 	if(event == 'UNIT_SPELLCAST_START' and startTime ~= endTime) then
 		local costTable = GetSpellPowerCost(spellID)
+		-- hasRequiredAura is always false if there's only 1 subtable
+		local checkRequiredAura = #costTable > 1
+
 		for _, costInfo in next, costTable do
-			-- costInfo content:
-			-- - name: string (powerToken)
-			-- - type: number (powerType)
-			-- - cost: number
-			-- - costPercent: number
-			-- - costPerSec: number
-			-- - minCost: number
-			-- - hasRequiredAura: boolean
-			-- - requiredAuraID: number
-			if(costInfo.type == mainPowerType) then
-				mainCost = costInfo.cost
+			if(not checkRequiredAura or costInfo.hasRequiredAura) then
+				if(costInfo.type == mainPowerType) then
+					mainCost = costInfo.cost
+					element.mainCost = mainCost
 
-				break
-			elseif(costInfo.type == ADDITIONAL_POWER_BAR_INDEX) then
-				altCost = costInfo.cost
+					break
+				elseif(costInfo.type == ADDITIONAL_POWER_BAR_INDEX) then
+					altCost = costInfo.cost
+					element.altCost = altCost
 
-				break
+					break
+				end
 			end
 		end
+	elseif(spellID) then
+		-- if we try to cast a spell while casting another one we need to avoid
+		-- resetting the element
+		mainCost = element.mainCost or 0
+		altCost = element.altCost or 0
+	else
+		element.mainCost = mainCost
+		element.altCost = altCost
 	end
 
 	if(element.mainBar) then
@@ -135,9 +142,9 @@ local function ForceUpdate(element)
 	return Path(element.__owner, 'ForceUpdate', element.__owner.unit)
 end
 
-local function Enable(self)
+local function Enable(self, unit)
 	local element = self.PowerPrediction
-	if(element) then
+	if(element and UnitIsUnit(unit, 'player')) then
 		element.__owner = self
 		element.ForceUpdate = ForceUpdate
 
@@ -148,15 +155,13 @@ local function Enable(self)
 		self:RegisterEvent('UNIT_DISPLAYPOWER', Path)
 
 		if(element.mainBar) then
-			if(element.mainBar:IsObjectType('StatusBar')
-				and not (element.mainBar:GetStatusBarTexture() or element.mainBar:GetStatusBarAtlas())) then
+			if(element.mainBar:IsObjectType('StatusBar') and not element.mainBar:GetStatusBarTexture()) then
 				element.mainBar:SetStatusBarTexture([[Interface\TargetingFrame\UI-StatusBar]])
 			end
 		end
 
 		if(element.altBar) then
-			if(element.altBar:IsObjectType('StatusBar')
-				and not (element.altBar:GetStatusBarTexture() or element.altBar:GetStatusBarAtlas())) then
+			if(element.altBar:IsObjectType('StatusBar') and not element.altBar:GetStatusBarTexture()) then
 				element.altBar:SetStatusBarTexture([[Interface\TargetingFrame\UI-StatusBar]])
 			end
 		end

@@ -1,8 +1,59 @@
-local parent, ns = ...
+local _, ns = ...
 local oUF = ns.oUF
 local Private = oUF.Private
 
 local frame_metatable = Private.frame_metatable
+
+local colorMixin = {
+	SetRGBA = function(self, r, g, b, a)
+		if(r > 1 or g > 1 or b > 1) then
+			r, g, b = r / 255, g / 255, b / 255
+		end
+
+		self.r = r
+		self[1] = r
+		self.g = g
+		self[2] = g
+		self.b = b
+		self[3] = b
+		self.a = a
+
+		-- pre-generate the hex color, there's no point to this being generated on the fly
+		self.hex = string.format('ff%02x%02x%02x', self:GetRGBAsBytes())
+	end,
+	SetAtlas = function(self, atlas)
+		self.atlas = atlas
+	end,
+	GetAtlas = function(self)
+		return self.atlas
+	end,
+	GenerateHexColor = function(self)
+		return self.hex
+	end,
+}
+
+--[[ Colors: oUF:CreateColor(r, g, b[, a])
+Wrapper for [SharedXML\Color.lua's ColorMixin](https://wowpedia.fandom.com/wiki/ColorMixin), extended to support indexed colors used in oUF, as
+well as extra methods for dealing with atlases.
+
+The rgb values can be either normalized (0-1) or bytes (0-255).
+
+* self - the global oUF object
+* r    - value used as represent the red color (number)
+* g    - value used to represent the green color (number)
+* b    - value used to represent the blue color (number)
+* a    - value used to represent the opacity (number, optional)
+
+## Returns
+
+* color - the ColorMixin-based object
+--]]
+function oUF:CreateColor(r, g, b, a)
+	local color = Mixin({}, ColorMixin, colorMixin)
+	color:SetRGBA(r, g, b, a)
+
+	return color
+end
 
 local colors = {
 	smooth = {
@@ -10,29 +61,29 @@ local colors = {
 		1, 1, 0,
 		0, 1, 0
 	},
-	health = {49 / 255, 207 / 255, 37 / 255},
-	disconnected = {0.6, 0.6, 0.6},
-	tapped = {0.6, 0.6, 0.6},
+	health = oUF:CreateColor(49, 207, 37),
+	disconnected = oUF:CreateColor(0.6, 0.6, 0.6),
+	tapped = oUF:CreateColor(0.6, 0.6, 0.6),
 	runes = {
-		{247 / 255, 65 / 255, 57 / 255}, -- blood
-		{148 / 255, 203 / 255, 247 / 255}, -- frost
-		{173 / 255, 235 / 255, 66 / 255}, -- unholy
+		oUF:CreateColor(247, 65, 57), -- blood
+		oUF:CreateColor(148, 203, 247), -- frost
+		oUF:CreateColor(173, 235, 66), -- unholy
 	},
 	selection = {
-		[ 0] = {255 / 255, 0 / 255, 0 / 255}, -- HOSTILE
-		[ 1] = {255 / 255, 129 / 255, 0 / 255}, -- UNFRIENDLY
-		[ 2] = {255 / 255, 255 / 255, 0 / 255}, -- NEUTRAL
-		[ 3] = {0 / 255, 255 / 255, 0 / 255}, -- FRIENDLY
-		[ 4] = {0 / 255, 0 / 255, 255 / 255}, -- PLAYER_SIMPLE
-		[ 5] = {96 / 255, 96 / 255, 255 / 255}, -- PLAYER_EXTENDED
-		[ 6] = {170 / 255, 170 / 255, 255 / 255}, -- PARTY
-		[ 7] = {170 / 255, 255 / 255, 170 / 255}, -- PARTY_PVP
-		[ 8] = {83 / 255, 201 / 255, 255 / 255}, -- FRIEND
-		[ 9] = {128 / 255, 128 / 255, 128 / 255}, -- DEAD
+		[ 0] = oUF:CreateColor(255, 0, 0), -- HOSTILE
+		[ 1] = oUF:CreateColor(255, 129, 0), -- UNFRIENDLY
+		[ 2] = oUF:CreateColor(255, 255, 0), -- NEUTRAL
+		[ 3] = oUF:CreateColor(0, 255, 0), -- FRIENDLY
+		[ 4] = oUF:CreateColor(0, 0, 255), -- PLAYER_SIMPLE
+		[ 5] = oUF:CreateColor(96, 96, 255), -- PLAYER_EXTENDED
+		[ 6] = oUF:CreateColor(170, 170, 255), -- PARTY
+		[ 7] = oUF:CreateColor(170, 255, 170), -- PARTY_PVP
+		[ 8] = oUF:CreateColor(83, 201, 255), -- FRIEND
+		[ 9] = oUF:CreateColor(128, 128, 128), -- DEAD
 		-- [10] = {}, -- COMMENTATOR_TEAM_1, unavailable to players
 		-- [11] = {}, -- COMMENTATOR_TEAM_2, unavailable to players
-		[12] = {255 / 255, 255 / 255, 139 / 255}, -- SELF, buggy
-		[13] = {0 / 255, 153 / 255, 0 / 255}, -- BATTLEGROUND_FRIENDLY_PVP
+		[12] = oUF:CreateColor(255, 255, 139), -- SELF, buggy
+		[13] = oUF:CreateColor(0, 153, 0), -- BATTLEGROUND_FRIENDLY_PVP
 	},
 	class = {},
 	debuff = {},
@@ -44,10 +95,10 @@ local colors = {
 -- We do this because people edit the vars directly, and changing the default
 -- globals makes SPICE FLOW!
 local function customClassColors()
-	if(CUSTOM_CLASS_COLORS) then
+	if(_G.CUSTOM_CLASS_COLORS) then
 		local function updateColors()
-			for classToken, color in next, CUSTOM_CLASS_COLORS do
-				colors.class[classToken] = {color.r, color.g, color.b}
+			for classToken, color in next, _G.CUSTOM_CLASS_COLORS do
+				colors.class[classToken] = oUF:CreateColor(color.r, color.g, color.b)
 			end
 
 			for _, obj in next, oUF.objects do
@@ -56,15 +107,15 @@ local function customClassColors()
 		end
 
 		updateColors()
-		CUSTOM_CLASS_COLORS:RegisterCallback(updateColors)
+		_G.CUSTOM_CLASS_COLORS:RegisterCallback(updateColors)
 
 		return true
 	end
 end
 
 if(not customClassColors()) then
-	for classToken, color in next, RAID_CLASS_COLORS do
-		colors.class[classToken] = {color.r, color.g, color.b}
+	for classToken, color in next, _G.RAID_CLASS_COLORS do
+		colors.class[classToken] = oUF:CreateColor(color.r, color.g, color.b)
 	end
 
 	local eventHandler = CreateFrame('Frame')
@@ -77,12 +128,12 @@ if(not customClassColors()) then
 	end)
 end
 
-for debuffType, color in next, DebuffTypeColor do
-	colors.debuff[debuffType] = {color.r, color.g, color.b}
+for debuffType, color in next, _G.DebuffTypeColor do
+	colors.debuff[debuffType] = oUF:CreateColor(color.r, color.g, color.b)
 end
 
-for eclass, color in next, FACTION_BAR_COLORS do
-	colors.reaction[eclass] = {color.r, color.g, color.b}
+for eclass, color in next, _G.FACTION_BAR_COLORS do
+	colors.reaction[eclass] = oUF:CreateColor(color.r, color.g, color.b)
 end
 
 for power, color in next, PowerBarColor do
@@ -90,11 +141,15 @@ for power, color in next, PowerBarColor do
 		if(type(select(2, next(color))) == 'table') then
 			colors.power[power] = {}
 
-			for index, color in next, color do
-				colors.power[power][index] = {color.r, color.g, color.b}
+			for index, color_ in next, color do
+				colors.power[power][index] = oUF:CreateColor(color_.r, color_.g, color_.b)
 			end
 		else
-			colors.power[power] = {color.r, color.g, color.b, atlas = color.atlas}
+			colors.power[power] = oUF:CreateColor(color.r, color.g, color.b)
+
+			if(color.atlas) then
+				colors.power[power]:SetAtlas(color.atlas)
+			end
 		end
 	end
 end
@@ -117,12 +172,17 @@ colors.power[16] = colors.power.ARCANE_CHARGES
 colors.power[17] = colors.power.FURY
 colors.power[18] = colors.power.PAIN
 
+-- there's no official colour for evoker's essence
+-- use the average colour of the essence texture instead
+colors.power.ESSENCE = oUF:CreateColor(100, 173, 206)
+colors.power[19] = colors.power.ESSENCE
+
 -- alternate power, sourced from FrameXML/CompactUnitFrame.lua
-colors.power.ALTERNATE = {0.7, 0.7, 0.6}
+colors.power.ALTERNATE = oUF:CreateColor(0.7, 0.7, 0.6)
 colors.power[10] = colors.power.ALTERNATE
 
 for i = 0, 3 do
-	colors.threat[i] = {GetThreatStatusColor(i)}
+	colors.threat[i] = oUF:CreateColor(GetThreatStatusColor(i))
 end
 
 local function colorsAndPercent(a, b, ...)

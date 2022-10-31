@@ -35,19 +35,19 @@ local _, ns = ...
 local oUF = ns.oUF
 
 -- sourced from FrameXML/Constants.lua
-local SPEC_MONK_BREWMASTER = SPEC_MONK_BREWMASTER or 1
+local SPEC_MONK_BREWMASTER = _G.SPEC_MONK_BREWMASTER or 1
 
 -- sourced from FrameXML/MonkStaggerBar.lua
-local BREWMASTER_POWER_BAR_NAME = BREWMASTER_POWER_BAR_NAME or 'STAGGER'
+local BREWMASTER_POWER_BAR_NAME = _G.BREWMASTER_POWER_BAR_NAME or 'STAGGER'
 
 -- percentages at which bar should change color
-local STAGGER_YELLOW_TRANSITION =  STAGGER_YELLOW_TRANSITION or 0.3
-local STAGGER_RED_TRANSITION = STAGGER_RED_TRANSITION or 0.6
+local STAGGER_YELLOW_TRANSITION =  _G.STAGGER_YELLOW_TRANSITION or 0.3
+local STAGGER_RED_TRANSITION = _G.STAGGER_RED_TRANSITION or 0.6
 
 -- table indices of bar colors
-local STAGGER_GREEN_INDEX = STAGGER_GREEN_INDEX or 1
-local STAGGER_YELLOW_INDEX = STAGGER_YELLOW_INDEX or 2
-local STAGGER_RED_INDEX = STAGGER_RED_INDEX or 3
+local STAGGER_GREEN_INDEX = _G.STAGGER_GREEN_INDEX or 1
+local STAGGER_YELLOW_INDEX = _G.STAGGER_YELLOW_INDEX or 2
+local STAGGER_RED_INDEX = _G.STAGGER_RED_INDEX or 3
 
 local function UpdateColor(self, event, unit)
 	if(unit and unit ~= self.unit) then return end
@@ -56,18 +56,18 @@ local function UpdateColor(self, event, unit)
 	local colors = self.colors.power[BREWMASTER_POWER_BAR_NAME]
 	local perc = (element.cur or 0) / (element.max or 1)
 
-	local t
+	local color
 	if(perc >= STAGGER_RED_TRANSITION) then
-		t = colors and colors[STAGGER_RED_INDEX]
+		color = colors and colors[STAGGER_RED_INDEX]
 	elseif(perc > STAGGER_YELLOW_TRANSITION) then
-		t = colors and colors[STAGGER_YELLOW_INDEX]
+		color = colors and colors[STAGGER_YELLOW_INDEX]
 	else
-		t = colors and colors[STAGGER_GREEN_INDEX]
+		color = colors and colors[STAGGER_GREEN_INDEX]
 	end
 
 	local r, g, b
-	if(t) then
-		r, g, b = t[1], t[2], t[3]
+	if(color) then
+		r, g, b = color[1], color[2], color[3]
 		if(b) then
 			element:SetStatusBarColor(r, g, b)
 
@@ -188,7 +188,7 @@ local function Enable(self, unit)
 		self:RegisterEvent('UNIT_DISPLAYPOWER', VisibilityPath)
 		self:RegisterEvent('PLAYER_TALENT_UPDATE', VisibilityPath, true)
 
-		if(element:IsObjectType('StatusBar') and not (element:GetStatusBarTexture() or element:GetStatusBarAtlas())) then
+		if(element:IsObjectType('StatusBar') and not element:GetStatusBarTexture()) then
 			element:SetStatusBarTexture([[Interface\TargetingFrame\UI-StatusBar]])
 		end
 
@@ -197,6 +197,9 @@ local function Enable(self, unit)
 		MonkStaggerBar:UnregisterEvent('UNIT_DISPLAYPOWER')
 		MonkStaggerBar:UnregisterEvent('UNIT_EXITED_VEHICLE')
 		MonkStaggerBar:UnregisterEvent('UPDATE_VEHICLE_ACTIONBAR')
+
+		-- do not change this without taking Visibility into account
+		element:Hide()
 
 		return true
 	end

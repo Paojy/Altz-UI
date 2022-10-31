@@ -50,16 +50,16 @@ local oUF = ns.oUF
 local _, PlayerClass = UnitClass('player')
 
 -- sourced from FrameXML/Constants.lua
-local SPEC_MAGE_ARCANE = SPEC_MAGE_ARCANE or 1
-local SPEC_MONK_WINDWALKER = SPEC_MONK_WINDWALKER or 3
-local SPEC_PALADIN_RETRIBUTION = SPEC_PALADIN_RETRIBUTION or 3
-local SPEC_WARLOCK_DESTRUCTION = SPEC_WARLOCK_DESTRUCTION or 3
+local SPEC_MAGE_ARCANE = _G.SPEC_MAGE_ARCANE or 1
+local SPEC_MONK_WINDWALKER = _G.SPEC_MONK_WINDWALKER or 3
+local SPEC_WARLOCK_DESTRUCTION = _G.SPEC_WARLOCK_DESTRUCTION or 3
 local SPELL_POWER_ENERGY = Enum.PowerType.Energy or 3
 local SPELL_POWER_COMBO_POINTS = Enum.PowerType.ComboPoints or 4
 local SPELL_POWER_SOUL_SHARDS = Enum.PowerType.SoulShards or 7
 local SPELL_POWER_HOLY_POWER = Enum.PowerType.HolyPower or 9
 local SPELL_POWER_CHI = Enum.PowerType.Chi or 12
 local SPELL_POWER_ARCANE_CHARGES = Enum.PowerType.ArcaneCharges or 16
+local SPELL_POWER_ESSENCE = Enum.PowerType.Essence or 19
 
 -- Holds the class specific stuff.
 local ClassPowerID, ClassPowerType
@@ -110,7 +110,7 @@ local function Update(self, event, unit, powerType)
 		element:PreUpdate()
 	end
 
-	local cur, max, mod, oldMax, chargedIndex
+	local cur, max, mod, oldMax, chargedPoints
 	if(event ~= 'ClassPowerDisable') then
 		local powerID = unit == 'vehicle' and SPELL_POWER_COMBO_POINTS or ClassPowerID
 		cur = UnitPower(unit, powerID, true)
@@ -126,9 +126,10 @@ local function Update(self, event, unit, powerType)
 		end
 
 		if(PlayerClass == 'ROGUE') then
-			local chargedPoints = GetUnitChargedPowerPoints(unit)
-			-- according to Blizzard there will only be one
-			chargedIndex = chargedPoints and chargedPoints[1]
+			chargedPoints = GetUnitChargedPowerPoints(unit)
+
+			-- UNIT_POWER_POINT_CHARGE doesn't provide a power type
+			powerType = powerType or ClassPowerType
 		end
 
 		local numActive = cur + 0.9
@@ -162,10 +163,10 @@ local function Update(self, event, unit, powerType)
 	* max           - the maximum amount of power (number)
 	* hasMaxChanged - indicates whether the maximum amount has changed since the last update (boolean)
 	* powerType     - the active power type (string)
-	* chargedIndex  - the index of the currently charged power point (number?)
+	* ...           - the indices of currently charged power points, if any
 	--]]
 	if(element.PostUpdate) then
-		return element:PostUpdate(cur, max, oldMax ~= max, powerType, chargedIndex)
+		return element:PostUpdate(cur, max, oldMax ~= max, powerType, unpack(chargedPoints or {}))
 	end
 end
 
@@ -308,6 +309,9 @@ do
 		ClassPowerID = SPELL_POWER_ARCANE_CHARGES
 		ClassPowerType = 'ARCANE_CHARGES'
 		RequireSpec = SPEC_MAGE_ARCANE
+	elseif(PlayerClass == 'EVOKER') then
+		ClassPowerID = SPELL_POWER_ESSENCE
+		ClassPowerType = 'ESSENCE'
 	end
 end
 
@@ -332,7 +336,7 @@ local function Enable(self, unit)
 		for i = 1, #element do
 			local bar = element[i]
 			if(bar:IsObjectType('StatusBar')) then
-				if(not (bar:GetStatusBarTexture() or bar:GetStatusBarAtlas())) then
+				if(not bar:GetStatusBarTexture()) then
 					bar:SetStatusBarTexture([[Interface\TargetingFrame\UI-StatusBar]])
 				end
 
