@@ -216,6 +216,13 @@ local default_ClassClick = {
 							},
 		},
 	},
+	EVOKER = {
+		["1"] = {
+			["Click"]			= {
+				["action"]	= "target",
+							},
+		},
+	},
 }
 
 local classClickdb = default_ClassClick[G.myClass]
@@ -344,7 +351,7 @@ local AuraList = {
 		[GetSpellInfo(348254)] = { id = 348254,  level = 6,}, -- 典狱长之眼
 		[GetSpellInfo(338606)] = { id = 338906,  level = 6,}, -- 典狱长之链
 		[GetSpellInfo(26013)] = { id = 26013,  level = 6,}, -- 逃亡者
-		[GetSpellInfo(187464)] = { id = 187464,  level = 6,}, -- 暗影愈合
+		--[GetSpellInfo(187464)] = { id = 187464,  level = 6,}, -- 暗影愈合
 		[GetSpellInfo(124275)] = { id = 124275,  level = 6,}, -- 轻度醉拳
 		[GetSpellInfo(124274)] = { id = 124274,  level = 6,}, -- 中度醉拳
 		[GetSpellInfo(25771)]  = { id = 25771,  level = 6,}, -- 自律
@@ -426,6 +433,18 @@ G.Raids = {
 		EJ_GetEncounterInfo(2391),
 		EJ_GetEncounterInfo(2392),
 		EJ_GetEncounterInfo(2396),
+		"Trash",
+	},
+	
+	[EJ_GetInstanceInfo(1194)] = { -- 集市
+		EJ_GetEncounterInfo(2437),
+		EJ_GetEncounterInfo(2452),
+		EJ_GetEncounterInfo(2436),
+		EJ_GetEncounterInfo(2454),
+		EJ_GetEncounterInfo(2451),
+		EJ_GetEncounterInfo(2448),
+		EJ_GetEncounterInfo(2449),
+		EJ_GetEncounterInfo(2455),		
 		"Trash",
 	},
 	
@@ -840,6 +859,36 @@ G.DebuffList = {
 		},
 	},
 	
+	[EJ_GetInstanceInfo(1194)] = { -- 集市
+		[EJ_GetEncounterInfo(2437)] = { --> 
+			
+		},
+		[EJ_GetEncounterInfo(2452)] = { --> 
+			
+		},
+		[EJ_GetEncounterInfo(2436)] = { --> 
+			
+		},
+		[EJ_GetEncounterInfo(2454)] = { --> 
+			
+		},
+		[EJ_GetEncounterInfo(2451)] = { --> 
+			
+		},
+		[EJ_GetEncounterInfo(2448)] = { --> 
+			
+		},
+		[EJ_GetEncounterInfo(2449)] = { --> 
+			
+		},
+		[EJ_GetEncounterInfo(2455)] = { --> 
+			
+		},		
+		["Trash"] = { --> 
+			
+		},
+	},
+	
 	[EJ_GetInstanceInfo(1192)] = { -- 世界Boss
 		[EJ_GetEncounterInfo(2430)] = { --> 瓦里诺
 			
@@ -1220,6 +1269,9 @@ local default_HealerIndicatorAuraList = {
 	DEMONHUNTER = {
 	
 	},
+	EVOKER = {
+	
+	},
 }
 
 local HealerIndicatorAuraList = default_HealerIndicatorAuraList[G.myClass]
@@ -1465,21 +1517,7 @@ local Character_default_Settings = {
 			},
 		},
 	},
-	BuffFrameOptions = {
-		seperate = true,
-		buffsize = 30,
-		debuffsize = 35,
-		buffrowspace = 10,
-		debuffrowspace = 10, -- 上下间距
-		buffcolspace = 5,
-		debuffcolspace = 5, -- 左右间距
-		bufftimesize = 13,
-		debufftimesize = 16,
-		buffcountsize = 14,
-		debuffcountsize = 18,
-		buffsPerRow = 14,
-		debuffsPerRow = 10,
-	},
+	
 	PlateOptions = {
 		-- 通用
 		enableplate = true,

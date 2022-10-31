@@ -282,13 +282,6 @@ L["透明度"] = "Opacidade: "
 L["忽略法术"] = "Ignorar feitiços"
 L["忽略物品"] = "Ignorar itens"
 
--- 增益和减益
-L["行距"] = "Espaços na linha: "
-L["图标左右间隙"] = "Espaço entre os ícones: "
-L["持续时间大小"] = "Tamanho da fonte da duração: "
-L["堆叠数字大小"] = "Tamanho da fonte de contagem: "
-L["分离Buff和Debuff"] = "Separar 'Buffs' de 'Debuffs'"
-
 -- 姓名板
 --L["姓名板tip"] = "How do you want to display the nameplates?"
 L["数字样式"] = "Estilo númerico"

@@ -430,6 +430,13 @@ classIndicators={
         ["TR"] = "",
         ["Cen"] = "",
     },
+	["EVOKER"] = {
+        ["TL"] = "",
+        ["BR"] = "",
+        ["BL"] = "",
+        ["TR"] = "",
+        ["Cen"] = "",
+    },
 }
 
 local update = .25
@@ -497,4 +504,8 @@ local Enable = function(self)
     end
 end
 
-oUF:AddElement('AltzIndicators', nil, Enable, nil)
+local Disable = function(self)
+
+end
+
+oUF:AddElement('AltzIndicators', nil, Enable, Disable)

@@ -178,7 +178,7 @@ T.Overridehealthbar = function(self, event, unit)
 	end
 
 	if aCoreCDB["UnitframeOptions"]["style"] == 1 then
-		health:GetStatusBarTexture():SetGradient("VERTICAL", r, g, b, r/3, g/3, b/3)
+		health:GetStatusBarTexture():SetGradient("VERTICAL", CreateColor(r, g, b, 1), CreateColor(r/3, g/3, b/3, 1))
 	elseif aCoreCDB["UnitframeOptions"]["style"] == 2 then
 		health:SetStatusBarColor(r, g, b)
 	else
@@ -305,14 +305,14 @@ T.Updatehealthbar = function(self, unit, min, max)
 		if aCoreCDB["PlateOptions"]["theme"] == "dark" then
 			-- 底层
 			r2, g2, b2 = oUF:RGBColorGradient(perc, 1, unpack(oUF.colors.smooth))
-			self:GetStatusBarTexture():SetGradient("VERTICAL", r2, g2, b2, r2/3, g2/3, b2/3)
+			self:GetStatusBarTexture():SetGradient("VERTICAL", CreateColor(r2, g2, b2,1),CreateColor(r2/3, g2/3, b2/3,1))
 			self:SetValue(max - self:GetValue())
 			
 			-- 表层
 			if r1 then
-				self.bg:SetGradientAlpha("VERTICAL", r1*.8, g1*.8, b1*.8, 1, r1, g1, b1, 1)
+				self.bg:SetGradient("VERTICAL", CreateColor(r1*.8, g1*.8, b1*.8, 1), CreateColor(r1, g1, b1, 1))
 			else
-				self.bg:SetGradientAlpha("VERTICAL", .2,.2,.2,.15,.25,.25,.25,.6)
+				self.bg:SetGradient("VERTICAL", CreateColor(.2,.2,.2,.15),CreateColor(.25,.25,.25,.6))
 			end
 		elseif aCoreCDB["PlateOptions"]["theme"] == "class" then
 			self:SetStatusBarColor(r, g, b)
@@ -334,7 +334,7 @@ T.Updatehealthbar = function(self, unit, min, max)
 	else
 		r2, g2, b2 = oUF:RGBColorGradient(perc, 1, unpack(oUF.colors.smooth))
 		if aCoreCDB["UnitframeOptions"]["style"] == 1 then
-			self:GetStatusBarTexture():SetGradient("VERTICAL", r2, g2, b2, r2/3, g2/3, b2/3)
+			self:GetStatusBarTexture():SetGradient("VERTICAL", CreateColor(r2, g2, b2, 1),CreateColor(r2/3, g2/3, b2/3, 1))
 		elseif aCoreCDB["UnitframeOptions"]["style"] == 2 then
 			self:SetStatusBarColor(r2, g2, b2)
 		else
@@ -394,13 +394,13 @@ T.Updatepowerbar = function(self, unit, cur, min, max)
 		if aCoreCDB["PlateOptions"]["theme"] == "class" then -- 职业
 			self:SetStatusBarColor(r, g, b)
 		elseif aCoreCDB["PlateOptions"]["theme"] == "dark" then -- 深色
-			self:GetStatusBarTexture():SetGradient("VERTICAL", r, g, b, r/3, g/3, b/3)
+			self:GetStatusBarTexture():SetGradient("VERTICAL", CreateColor(r, g, b, 1),CreateColor(r/3, g/3, b/3, 1))
 		end
 	else
 		if aCoreCDB["UnitframeOptions"]["style"] ~= 1 then
 			self:SetStatusBarColor(r, g, b)
 		else
-			self:GetStatusBarTexture():SetGradient("VERTICAL", r, g, b, r/3, g/3, b/3)
+			self:GetStatusBarTexture():SetGradient("VERTICAL", CreateColor(r, g, b, 1),CreateColor(r/3, g/3, b/3, 1))
 		end
 	end
 end
@@ -736,10 +736,10 @@ local CreateCastbars = function(self, unit)
 		cb.Text = T.createtext(cb, "OVERLAY", u == "nameplate" and 8 or 14, "OUTLINE", "CENTER")
 		
 		-- 图标
-		cb.Icon = cb:CreateTexture(nil, "OVERLAY", 3)
+		cb.Icon = cb:CreateTexture(nil, "OVERLAY", nil, 3)
 		cb.Icon:SetTexCoord(.1, .9, .1, .9)
 		cb.IBackdrop_1 = T.createBackdrop(cb, cb.Icon, 1)
-		cb.IBackdrop_2 = cb:CreateTexture(nil, "ARTWORK", 3)
+		cb.IBackdrop_2 = cb:CreateTexture(nil, "ARTWORK", nil, 3)
 		cb.IBackdrop_2:SetPoint("TOPLEFT", cb.Icon, "TOPLEFT", -1, 1)
 		cb.IBackdrop_2:SetPoint("BOTTOMRIGHT", cb.Icon, "BOTTOMRIGHT", 1, -1)
 		cb.IBackdrop_2:SetVertexColor(0, 0, 0)
@@ -1025,30 +1025,30 @@ end
 --[[ Auras ]]--
 --=============================================--
 local PostCreateIcon = function(auras, icon)
-	icon.icon:SetTexCoord(.07, .93, .07, .93)
-
-	icon.count:ClearAllPoints()
-	icon.count:SetPoint("BOTTOMRIGHT", 0, -3)
-	icon.count:SetFontObject(nil)	
-	icon.count:SetTextColor(.9, .9, .1)
-
-	icon.overlay:SetTexture(G.media.blank)
-	icon.overlay:SetDrawLayer("BACKGROUND")
-	icon.overlay:SetPoint("TOPLEFT", icon, "TOPLEFT", -1, 1)
-	icon.overlay:SetPoint("BOTTOMRIGHT", icon, "BOTTOMRIGHT", 1, -1)
-
-	icon.bd = T.createBackdrop(icon, icon, 0)
+	icon.Icon:SetTexCoord(.2, .8, .2, .8)
 	
+	icon.Count:ClearAllPoints()
+	icon.Count:SetPoint("BOTTOMRIGHT", 0, -3)
+	icon.Count:SetFontObject(nil)	
+	icon.Count:SetTextColor(.9, .9, .1)
+	
+	icon.Overlay:SetTexture(G.media.blank)
+	icon.Overlay:SetDrawLayer("BACKGROUND")
+	icon.Overlay:SetPoint("TOPLEFT", icon, "TOPLEFT", -1, 1)
+	icon.Overlay:SetPoint("BOTTOMRIGHT", icon, "BOTTOMRIGHT", 1, -1)
+	
+	icon.bd = T.createBackdrop(icon, icon, 0)
+
 	if auras.plate_element then
-		icon.count:SetFont(G.numFont, aCoreCDB["PlateOptions"]["numfontsize"], "OUTLINE")
+		icon.Count:SetFont(G.numFont, aCoreCDB["PlateOptions"]["numfontsize"], "OUTLINE")
 		icon.remaining = T.createnumber(icon, "OVERLAY", aCoreCDB["PlateOptions"]["numfontsize"], "OUTLINE", "CENTER")
 	else
-		icon.count:SetFont(G.numFont, ((aCoreCDB["UnitframeOptions"]["width"]+3)/aCoreCDB["UnitframeOptions"]["auraperrow"]-3)*.4, "OUTLINE")
+		icon.Count:SetFont(G.numFont, ((aCoreCDB["UnitframeOptions"]["width"]+3)/aCoreCDB["UnitframeOptions"]["auraperrow"]-3)*.4, "OUTLINE")
 		icon.remaining = T.createnumber(icon, "OVERLAY", ((aCoreCDB["UnitframeOptions"]["width"]+3)/aCoreCDB["UnitframeOptions"]["auraperrow"]-3)*.4, "OUTLINE", "CENTER")
 	end
 	
 	icon.remaining:SetPoint("TOPLEFT", 0, 5)
-
+	
 	if aCoreCDB["UnitframeOptions"]["auraborders"] then
 		auras.showDebuffType = true
 	else
@@ -1057,23 +1057,23 @@ local PostCreateIcon = function(auras, icon)
 end
 
 local PostCreateIndicatorIcon = function(auras, icon)
-	icon.icon:SetTexCoord(.07, .93, .07, .93)
+	icon.Icon:SetTexCoord(.07, .93, .07, .93)
 
-	icon.count:ClearAllPoints()
-	icon.count:SetPoint("BOTTOM", 0, -3)
-	icon.count:SetFontObject(nil)
-	icon.count:SetFont(G.numFont, aCoreCDB["UnitframeOptions"]["hotind_size"]*.8, "OUTLINE")
-	icon.count:SetTextColor(.9, .9, .1)
+	icon.Count:ClearAllPoints()
+	icon.Count:SetPoint("BOTTOM", 0, -3)
+	icon.Count:SetFontObject(nil)
+	icon.Count:SetFont(G.numFont, aCoreCDB["UnitframeOptions"]["hotind_size"]*.8, "OUTLINE")
+	icon.Count:SetTextColor(.9, .9, .1)
 
-	icon.overlay:SetTexture(G.media.blank)
-	icon.overlay:SetDrawLayer("BACKGROUND")
-	icon.overlay:SetPoint("TOPLEFT", icon, "TOPLEFT", -1, 1)
-	icon.overlay:SetPoint("BOTTOMRIGHT", icon, "BOTTOMRIGHT", 1, -1)
+	icon.Overlay:SetTexture(G.media.blank)
+	icon.Overlay:SetDrawLayer("BACKGROUND")
+	icon.Overlay:SetPoint("TOPLEFT", icon, "TOPLEFT", -1, 1)
+	icon.Overlay:SetPoint("BOTTOMRIGHT", icon, "BOTTOMRIGHT", 1, -1)
 
 	icon.bd = T.createBackdrop(icon, icon, 0, true)
 
-	icon.cd.noshowcd = true
-	icon.cd:SetReverse(true)
+	icon.Cooldown.noshowcd = true
+	icon.Cooldown:SetReverse(true)
 end
 
 local CreateAuraTimer = function(self, elapsed)
@@ -1093,29 +1093,27 @@ local whitelist = {
 	["123059"] = true, -- 动摇意志
 }
 
-local PostUpdateIcon = function(icons, unit, icon, index, offset)
-	local name, _, _, _, duration, expirationTime, _, _, _, SpellID = UnitAura(unit, index, icon.filter)
-
+local PostUpdateIcon = function(icons, icon, unit, data, position)
 	if icon.isPlayer or UnitIsFriend("player", unit) or not icon.isDebuff or aCoreCDB["UnitframeOptions"]["AuraFilterwhitelist"][tostring(SpellID)] or whitelist[tostring(SpellID)] then
-		icon.icon:SetDesaturated(false)
-		if duration and duration > 0 then
+		icon.Icon:SetDesaturated(false)
+		if data.duration and data.duration > 0 then
 			icon.remaining:Show()
 		else
 			icon.remaining:Hide()
 		end
-		icon.count:Show()
+		icon.Count:Show()
 	else
-		icon.icon:SetDesaturated(true) -- grey other's debuff casted on enemy.
+		icon.Icon:SetDesaturated(true) -- grey other's debuff casted on enemy.
 		icon.overlay:Hide()
 		icon.remaining:Hide()
-		icon.count:Hide()
+		icon.Count:Hide()
 	end
-
-	if duration then
+	
+	if data.duration then
 		icon.bd:Show() -- if the aura is not a gap icon show it"s bd
 	end
-
-	icon.expires = expirationTime
+	
+	icon.expires = data.expirationTime
 	icon:SetScript("OnUpdate", CreateAuraTimer)
 end
 
@@ -1139,7 +1137,7 @@ local OverrideAurasSetPosition = function(auras, from, to)
 	end
 	
 	if auras[1] then
-		auras[1]:SetPoint("LEFT", auras, "CENTER", -((aCoreCDB["PlateOptions"]["plateaurasize"]+4)*auras.iconnum-4)/2, 0)
+		auras[1]:SetPoint("LEFT", auras, "CENTER", -((aCoreCDB["PlateOptions"]["plateaurasize"]+4)*auras.iconnum-4)/2, 5)
 	end
 	
 	if auras[1] and auras[1]:IsShown() then
@@ -1229,15 +1227,15 @@ T.CreateAuras = function(self, unit)
 		local Auras = CreateFrame("Frame", nil, self)
 		if u == "raid" then
 			Auras.spacing = 1
-			Auras.PostCreateIcon = PostCreateIndicatorIcon
+			Auras.PostCreateButton = PostCreateIndicatorIcon
 		else
 			Auras.disableCooldown = true
 			if G.myClass == "MAGE" then
 				Auras.showStealableBuffs = true
 			end
 			Auras.spacing = 3
-			Auras.PostCreateIcon = PostCreateIcon
-			Auras.PostUpdateIcon = PostUpdateIcon
+			Auras.PostCreateButton = PostCreateIcon
+			Auras.PostUpdateButton = PostUpdateIcon
 			if u == "party" then
 				Auras.size = 20
 			else
@@ -1305,8 +1303,8 @@ T.CreateAuras = function(self, unit)
 			Debuffs:SetPoint("BOTTOMLEFT", self.Power, "BOTTOMRIGHT", 8, -8)
 			Debuffs.disableCooldown = true
 			Debuffs.spacing = 3
-			Debuffs.PostCreateIcon = PostCreateIcon
-			Debuffs.PostUpdateIcon = PostUpdateIcon
+			Debuffs.PostCreateButton = PostCreateIcon
+			Debuffs.PostUpdateButton = PostUpdateIcon
 			Debuffs.initialAnchor = "TOPLEFT"
 			Debuffs["growth-x"] = "RIGHT"
 			Debuffs["growth-y"] = "DOWN"
@@ -1496,7 +1494,7 @@ local func = function(self, unit)
 	end
 
 	-- little black line to make the health bar more clear
-	hp.ind = hp:CreateTexture(nil, "OVERLAY", 1)
+	hp.ind = hp:CreateTexture(nil, "OVERLAY", nil, 1)
 	hp.ind:SetTexture("Interface\\Buttons\\WHITE8x8")
 	hp.ind:SetVertexColor(0, 0, 0)
 	hp.ind:SetSize(1, aCoreCDB["UnitframeOptions"]["height"])
@@ -1513,6 +1511,16 @@ local func = function(self, unit)
 		Portrait:SetPoint("TOPLEFT", 0, 0)
 		Portrait:SetPoint("BOTTOMRIGHT", -1, 0)
 		Portrait:SetAlpha(aCoreCDB["UnitframeOptions"]["portraitalpha"])
+		Portrait:RegisterEvent("PLAYER_FLAGS_CHANGED")
+		Portrait:SetScript("OnEvent",function(self, event) 
+			if event == "PLAYER_FLAGS_CHANGED" and aCoreCDB["SkinOptions"]["afkscreen"] then
+				if UnitIsAFK("player") then
+					self:Hide()
+				else
+					self:Show()
+				end
+			end
+		end)
 		self.Portrait = Portrait
 	end
 
@@ -1525,7 +1533,7 @@ local func = function(self, unit)
 		pp:SetPoint("TOP", self, "BOTTOM", 0, -1)
 		pp.frequentUpdates = true
 
-		pp.bg:SetGradientAlpha("VERTICAL", .2,.2,.2,.15,.25,.25,.25,.6)
+		pp.bg:SetGradient("VERTICAL", CreateColor(.2,.2,.2,.15),CreateColor(.25,.25,.25,.6))
 
 		-- backdrop for power bar --
 		pp.bd = T.createBackdrop(pp, pp, 1)
@@ -1569,7 +1577,7 @@ local func = function(self, unit)
 			altpp:SetPoint("TOPRIGHT", _G["oUF_AltzPlayer"].Power, "BOTTOMRIGHT", 0, -5)
 		end
 
-		altpp.bg:SetGradientAlpha("VERTICAL", .2,.2,.2,.15,.25,.25,.25,.6)
+		altpp.bg:SetGradient("VERTICAL", CreateColor(.2,.2,.2,.15),CreateColor(.25,.25,.25,.6))
 		altpp.bd = T.createBackdrop(altpp, altpp, 1)
 
 		altpp.value = T.createtext(altpp, "OVERLAY", 11, "OUTLINE", "CENTER")
@@ -1639,12 +1647,12 @@ local func = function(self, unit)
 			self.bg.tex:SetAlpha(0)
 			hp:SetStatusBarTexture(G.media.blank)
 			hp.bg:SetTexture(G.media.blank)
-			hp.bg:SetGradientAlpha("VERTICAL", .5, .5, .5, .5, 0, 0, 0,0)
+			hp.bg:SetGradient("VERTICAL", CreateColor(.5, .5, .5, .5), CreateColor(0, 0, 0,0))
 		elseif aCoreCDB["UnitframeOptions"]["style"] == 2 then
 			self.bg.tex:SetAlpha(1)
 			hp:SetStatusBarTexture(G.media.ufbar)
 			hp.bg:SetTexture(G.media.ufbar)
-			hp.bg:SetGradientAlpha("VERTICAL", .2,.2,.2,.15,.25,.25,.25,.6)			
+			hp.bg:SetGradient("VERTICAL", CreateColor(.2,.2,.2,.15), CreateColor(.25,.25,.25,.6))	
 		else
 			self.bg.tex:SetAlpha(1)
 			hp:SetStatusBarTexture(G.media.ufbar)
@@ -1692,7 +1700,7 @@ local UnitSpecific = {
 			stagger:SetPoint"RIGHT"
 			stagger:SetPoint("BOTTOM", self, "TOP", 0, 1)
 
-			stagger.bg:SetGradientAlpha("VERTICAL", .2,.2,.2,.15,.25,.25,.25,.6)
+			stagger.bg:SetGradient("VERTICAL", CreateColor(.2,.2,.2,.15),CreateColor(.25,.25,.25,.6))
 			stagger.bg.multiplier =.20
 
 			-- backdrop --
@@ -1716,7 +1724,7 @@ local UnitSpecific = {
 			dpsmana:SetMinMaxValues(0, 2)
 			dpsmana:SetValue(1)
 
-			dpsmana.bg:SetGradientAlpha("VERTICAL", .2,.2,.2,.15,.25,.25,.25,.6)
+			dpsmana.bg:SetGradient("VERTICAL", CreateColor(.2,.2,.2,.15),CreateColor(.25,.25,.25,.6))
 			dpsmana.bg.multiplier =.20
 
 			-- backdrop --
@@ -1873,12 +1881,12 @@ local plate_func = function(self, unit)
 	hp:SetFrameLevel(self:GetFrameLevel())
 	hp:SetStatusBarTexture("Interface\\AddOns\\AltzUI\\media\\ufbar")
 	hp.bd = T.createBackdrop(hp, hp, 1)
-	hp.bg:SetGradientAlpha("VERTICAL", .2,.2,.2,.15,.25,.25,.25,.6)
+	hp.bg:SetGradient("VERTICAL", CreateColor(.2,.2,.2,.15),CreateColor(.25,.25,.25,.6))
 	
 	hp.value = self:CreateFontString(nil, "OVERLAY")
 	
 	-- little black line to make the health bar more clear
-	hp.ind = hp:CreateTexture(nil, "OVERLAY", 1)
+	hp.ind = hp:CreateTexture(nil, "OVERLAY", nil, 1)
 	hp.ind:SetTexture("Interface\\Buttons\\WHITE8x8")
 	hp.ind:SetVertexColor(0, 0, 0)
 	hp.ind:SetSize(1, hp:GetHeight())
@@ -1937,7 +1945,7 @@ local plate_func = function(self, unit)
 	pp:SetHeight(aCoreCDB["PlateOptions"]["bar_height"]/4)
 	pp:SetStatusBarTexture("Interface\\AddOns\\AltzUI\\media\\ufbar")
 	pp.bd = T.createBackdrop(pp, pp, 1)
-	pp.bg:SetGradientAlpha("VERTICAL", .2,.2,.2,.15,.25,.25,.25,.6)
+	pp.bg:SetGradient("VERTICAL", CreateColor(.2,.2,.2,.15),CreateColor(.25,.25,.25,.6))
 	
 	pp.value = self:CreateFontString(nil, "OVERLAY")
 	
@@ -2386,7 +2394,6 @@ function EventFrame:ADDON_LOADED(arg1)
 	ClassNameplateBarMageFrame:SetAlpha(0)
 	ClassNameplateBarWindwalkerMonkFrame:SetAlpha(0)
 	ClassNameplateBarPaladinFrame:SetAlpha(0)
-	ClassNameplateBarRogueDruidFrame:SetAlpha(0)
 	ClassNameplateBarWarlockFrame:SetAlpha(0)
 	
 	EventFrame:RegisterEvent("ARENA_PREP_OPPONENT_SPECIALIZATIONS")

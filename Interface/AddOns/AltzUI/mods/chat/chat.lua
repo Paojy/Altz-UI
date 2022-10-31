@@ -75,8 +75,13 @@ local function init()
 			cf:SetClampedToScreen(false)
 			eb:SetAltArrowKeyMode(false)
 			eb:ClearAllPoints()
-			eb:SetPoint("TOPLEFT",cf,"TOPLEFT", 10, 55)
-			eb:SetPoint("BOTTOMRIGHT",cf,"TOPRIGHT", -3, 32)
+			if i ~= 2 then
+				eb:SetPoint("TOPLEFT",cf,"TOPLEFT", 10, 55)
+				eb:SetPoint("BOTTOMRIGHT",cf,"TOPRIGHT", -3, 32)
+			else
+				eb:SetPoint("TOPLEFT",CombatLogQuickButtonFrame_Custom,"TOPLEFT", 10, 52)
+				eb:SetPoint("BOTTOMRIGHT",CombatLogQuickButtonFrame_Custom,"TOPRIGHT", -3, 29)	
+			end
 			eb:Hide()
 		end
 		-- chat tabs
@@ -85,13 +90,18 @@ local function init()
 			tab:GetFontString():SetFont(G.norFont, 13, "THINOUTLINE")
 			tab:GetFontString():SetShadowOffset(0,0)
 			if i ~= 11 then
-			tab.selectedColorTable = { r = G.Ccolor.r, g = G.Ccolor.g, b = G.Ccolor.b };
-			tab:SetAlpha(1)
+				tab.selectedColorTable = { r = G.Ccolor.r, g = G.Ccolor.g, b = G.Ccolor.b };
+				tab:SetAlpha(1)
 			end
-			for index, value in pairs(TAB_TEXTURES) do
-				local texture = _G['ChatFrame'..i..'Tab'..value]
-				texture:SetTexture(nil)
-			end
+			tab.Middle:SetTexture(nil)
+			tab.Left:SetTexture(nil)
+			tab.Right:SetTexture(nil)
+			tab.ActiveLeft:SetTexture(nil)
+			tab.ActiveMiddle:SetTexture(nil)
+			tab.ActiveRight:SetTexture(nil)
+			tab.HighlightLeft:SetTexture(nil)
+			tab.HighlightMiddle:SetTexture(nil)
+			tab.HighlightRight:SetTexture(nil)
 		end
 		-- hide scroll bar
 		local button = _G['ChatFrame'..i].ScrollToBottomButton
@@ -121,13 +131,24 @@ hooksecurefunc("FCF_OpenTemporaryWindow", function()
 			tab:GetFontString():SetFont(G.norFont, 13, "THINOUTLINE")
 			tab:GetFontString():SetShadowOffset(0,0)
 			if i ~= 11 then
-			tab.selectedColorTable = { r = G.Ccolor.r, g = G.Ccolor.g, b = G.Ccolor.b };
-			tab:SetAlpha(1)
+				tab.selectedColorTable = { r = G.Ccolor.r, g = G.Ccolor.g, b = G.Ccolor.b };
+				tab:SetAlpha(1)
 			end
+			
 			for index, value in pairs(TAB_TEXTURES) do
 				local texture = _G['ChatFrame'..i..'Tab'..value]
 				texture:SetTexture(nil)
 			end
+			
+			tab.Middle:SetTexture(nil)
+			tab.Left:SetTexture(nil)
+			tab.Right:SetTexture(nil)
+			tab.ActiveLeft:SetTexture(nil)
+			tab.ActiveMiddle:SetTexture(nil)
+			tab.ActiveRight:SetTexture(nil)
+			tab.HighlightLeft:SetTexture(nil)
+			tab.HighlightMiddle:SetTexture(nil)
+			tab.HighlightRight:SetTexture(nil)
 		end
 	end
 end)

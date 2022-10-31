@@ -79,5 +79,5 @@ BACKDROP_ALTZ_3 = {
 	insets = { left = 3, right = 3, top = 3, bottom = 3 },
 }
 
-BACKDROP_ALTZ_COLOR_0	= CreateColor(0, 0, 0)
-BACKDROP_ALTZ_COLOR_15	= CreateColor(.15, .15, .15)
+BACKDROP_ALTZ_COLOR_0	= CreateColor(0, 0, 0, 1)
+BACKDROP_ALTZ_COLOR_15	= CreateColor(.15, .15, .15, 1)

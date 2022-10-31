@@ -282,13 +282,6 @@ L["透明度"] = "Alpha"
 L["忽略法术"] = "Ignore Spells"
 L["忽略物品"] = "Ignore Items"
 
--- 增益和减益
-L["行距"] = "Row Space"
-L["图标左右间隙"] = "Icon Space"
-L["持续时间大小"] = "Duration font size"
-L["堆叠数字大小"] = "Stack font size"
-L["分离Buff和Debuff"] = "Seperate Buffs and Debuffs."
-
 -- 姓名板
 L["姓名板tip"] = "How do you want to display the nameplates?"
 L["数字样式"] = "Numberic Style"

@@ -1,25 +1,13 @@
 local T, C, L, G = unpack(select(2, ...))
 local F = unpack(AuroraClassic)
 
--- Custom ChatMenu
-local menu = _G[G.uiname.."chatframe_pullback"]
-
-local function HoverShow(bu)
-	if aCoreCDB["ChatOptions"]["chatbuttons_fade"] then
-		bu:SetAlpha(aCoreCDB["ChatOptions"]["chatbuttons_fade_alpha"])
-		bu:HookScript("OnEnter", function(self) T.UIFrameFadeIn(self, .5, self:GetAlpha(), 1) end)
-		bu:HookScript("OnLeave", function(self) T.UIFrameFadeOut(self, .5, self:GetAlpha(), aCoreCDB["ChatOptions"]["chatbuttons_fade_alpha"]) end)
-	end
-end
 
 QuickJoinToastButton:ClearAllPoints()
-QuickJoinToastButton:SetPoint("TOP", menu)
+QuickJoinToastButton:SetPoint("BOTTOMLEFT", ChatFrame1Tab, "TOPLEFT", 5, 5)
 QuickJoinToastButton.SetPoint = function() end
-HoverShow(QuickJoinToastButton)
 
-ChatFrameMenuButton:ClearAllPoints()
-ChatFrameMenuButton:SetPoint("TOP", QuickJoinToastButton, "BOTTOM", 0, -2)
-HoverShow(ChatFrameMenuButton)
+ChatAlertFrame:ClearAllPoints()
+ChatAlertFrame:SetPoint("BOTTOMLEFT", QuickJoinToastButton, "TOPLEFT", 0, 20)
 
 -- Chat Copy
 local lines = {}
@@ -41,7 +29,7 @@ editBox:SetMultiLine(true)
 editBox:SetMaxLetters(99999)
 editBox:EnableMouse(true)
 editBox:SetAutoFocus(false)
-editBox:SetFont(G.norFont, 10, "NONE")
+editBox:SetFont(G.norFont, 10, "OUTLINE")
 editBox:SetWidth(scrollArea:GetWidth())
 editBox:SetHeight(270)
 editBox:SetScript("OnEscapePressed", function(f) f:GetParent():GetParent():Hide() f:SetText("") end)
@@ -87,7 +75,7 @@ local function copyFunc(_, btn)
 end
 
 local copy = CreateFrame("Button", nil, UIParent)
-copy:SetPoint("TOP", ChatFrameMenuButton, "BOTTOM", 0, -2)
+copy:SetPoint("LEFT", QuickJoinToastButton, "RIGHT", 5, 0)
 copy:SetSize(20, 20)
 copy.Icon = copy:CreateTexture(nil, "ARTWORK")
 copy.Icon:SetAllPoints()
@@ -105,7 +93,6 @@ end)
 copy:HookScript("OnLeave", function(self)
 	GameTooltip:Hide()
 end)
-HoverShow(copy)
 
 -- Aurora Reskin
 if IsAddOnLoaded("AuroraClassic") then
@@ -113,15 +100,3 @@ if IsAddOnLoaded("AuroraClassic") then
 	F.ReskinClose(frame.close)
 	F.ReskinScroll(ChatCopyScrollFrameScrollBar)
 end
-
-ChatFrameChannelButton:ClearAllPoints()
-ChatFrameChannelButton:SetPoint("TOP", copy, "BOTTOM", 0, -2)
-HoverShow(ChatFrameChannelButton)
-GuildControlUIRankSettingsFrameRosterLabel = CreateFrame("Frame")
-GuildControlUIRankSettingsFrameRosterLabel :Hide()
-
-HoverShow(ChatFrameToggleVoiceDeafenButton)
-HoverShow(ChatFrameToggleVoiceMuteButton)
-
-ChatAlertFrame:ClearAllPoints()
-ChatAlertFrame:SetPoint("BOTTOMLEFT", ChatFrame1Tab, "TOPLEFT", 5, 25)

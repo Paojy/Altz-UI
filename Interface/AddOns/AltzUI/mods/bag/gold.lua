@@ -57,11 +57,11 @@ eventframe:RegisterEvent("PLAYER_TRADE_MONEY")
 eventframe:RegisterEvent("TRADE_MONEY_CHANGED")
 eventframe:RegisterEvent("PLAYER_ENTERING_WORLD")
 
-local Gold = ContainerFrame1MoneyFrame
+local Gold = ContainerFrameCombinedBags.MoneyFrame
 
 local ResetButton = CreateFrame("Button", "Reset_Statistics", Gold)
 ResetButton:SetSize(15, 15)
-ResetButton:SetPoint("LEFT", Gold, "RIGHT", -5, 0)
+ResetButton:SetPoint("LEFT", Gold, "RIGHT", 55, 0)
 ResetButton:SetFrameLevel(Gold:GetFrameLevel()+2)
 ResetButton:SetAlpha(0)
 
@@ -71,7 +71,7 @@ ResetButton.tex:SetTexture("Interface\\Buttons\\UI-RefreshButton")
 ResetButton:RegisterForClicks("AnyDown")
 
 local function ShowMoneyTooltip()
-	GameTooltip:SetOwner(Gold, "ANCHOR_NONE")
+	GameTooltip:SetOwner(Gold, "ANCHOR_TOPLEFT")
 	GameTooltip:SetPoint("BOTTOMLEFT", _G[G.uiname.."bag"], "TOPLEFT", -1, 2)
 	GameTooltip:AddLine(L["本次登陆"]..": ", G.Ccolor.r, G.Ccolor.g, G.Ccolor.b)
 	GameTooltip:AddDoubleLine(L["赚得"], formatMoney(Profit), 1, 1, 1, 1, 1, 1)
@@ -91,7 +91,7 @@ local function ShowMoneyTooltip()
 	GameTooltip:AddLine(" ")
 	GameTooltip:AddLine(L["服务器"]..": ", G.Ccolor.r, G.Ccolor.g, G.Ccolor.b)
 	GameTooltip:AddDoubleLine(TOTAL..": ", FormatTooltipMoney(totalGold), 1, 1, 1, 1, 1, 1)
-	for i = 1, MAX_WATCHED_TOKENS do
+	for i = 1, 3 do
 		local name, count, extraCurrencyType, icon, itemID = C_CurrencyInfo.GetBackpackCurrencyInfo(i)
 		if name and i == 1 then
 			GameTooltip:AddLine(" ")

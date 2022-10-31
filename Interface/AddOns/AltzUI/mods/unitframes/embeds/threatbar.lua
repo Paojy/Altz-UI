@@ -1,21 +1,13 @@
 local T, C, L, G = unpack(select(2, ...))
 local oUF = AltzUF or oUF
 
-local horizontalgradient = {
-	{ .29, .09, .33, .31, .94, .99},
-	{ .48, .28, .02, 1, 0, 0},
-	{ .48, .39, .04, 1, .41, .05},
-	{ .27, .17, .12, .92, .68, .31,},
-}
-
 local Update = function(self, event, unit)
 	if unit ~= self.unit or not InCombatLockdown() then return end
 	
 	local threatbar = self.ThreatBar
 	local ind = self.ThreatBar.indictator
 	local orientation = "HORIZONTAL"
-	local colors = horizontalgradient
-	
+
 	unit = unit or self.unit
 
 	local isTanking, status, overtauntedprec, rawthreatprec = UnitDetailedThreatSituation("player", unit)
@@ -36,18 +28,18 @@ local Update = function(self, event, unit)
 			Tankthreat = overtauntedprec/rawthreatprec*100
 		end
 		if rawthreatprec < 70 then -- safely threat
-			threatbar:GetStatusBarTexture():SetGradient(orientation, unpack(colors[1]))
+			threatbar:GetStatusBarTexture():SetGradient(orientation, CreateColor(.29, .09, .33, 1), CreateColor(.31, .94, .99, 1))
 		elseif status == 1 then -- ot
-			threatbar:GetStatusBarTexture():SetGradient(orientation, unpack(colors[2]))
+			threatbar:GetStatusBarTexture():SetGradient(orientation, CreateColor(.48, .28, .02, 1), CreateColor(1, 0, 0, 1))
 		else -- about to ot
-			threatbar:GetStatusBarTexture():SetGradient(orientation, unpack(colors[3]))
+			threatbar:GetStatusBarTexture():SetGradient(orientation, CreateColor(.48, .39, .04, 1), CreateColor(1, .41, .05, 1))
 		end
 	else -- unit is not tanking
 		Tankthreat = overtauntedprec
 		if status == 2 then -- about to lose threat
-			threatbar:GetStatusBarTexture():SetGradient(orientation, unpack(colors[3]))
+			threatbar:GetStatusBarTexture():SetGradient(orientation, CreateColor(.48, .39, .04, 1), CreateColor(1, .41, .05, 1))
 		else -- safely tanking
-			threatbar:GetStatusBarTexture():SetGradient(orientation, unpack(colors[4]))
+			threatbar:GetStatusBarTexture():SetGradient(orientation, CreateColor(.27, .17, .12, 1), CreateColor(.92, .68, .31, 1))
 		end
 	end
 

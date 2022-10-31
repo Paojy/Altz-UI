@@ -249,6 +249,12 @@ T.ResetClasscolors = function(reload)
 				["g"] = 0.1,
 				["b"] = 0.78,
 			},
+			["EVOKER"] = {
+				["r"] = 0.12,
+				["colorStr"] = "ff20b2aa",
+				["g"] = 0.7,
+				["b"] = 0.66,
+			},
 		}
 	end
 	if reload then ReloadUI() end
@@ -641,7 +647,7 @@ T.createeditbox = function(parent, x, y, name, table, value, tip)
 	box:SetScript("OnEnable", function(self)
 		self.name:SetTextColor(1, 1, 1, 1)
 		self:SetTextColor(1, 1, 1, 1)
-		gradient:SetGradientAlpha("Vertical", 0, 0, 0, .5, .3, .3, .3, .3)
+		gradient:SetGradient("Vertical", CreateColor(0, 0, 0, .5), CreateColor(.3, .3, .3, .3))
 	end)
 	
 	box:SetScript("OnDisable", function(self)
@@ -695,7 +701,7 @@ T.createmultilinebox = function(parent, width, height, x, y, name, table, value,
 	scrollBG.edit:SetFrameLevel(scrollAC:GetFrameLevel()+1)
 	scrollBG.edit:SetAllPoints()
 	if value == "Import" then
-		scrollBG.edit:SetFont(G.norFont, 10, "NONE")
+		scrollBG.edit:SetFont(G.norFont, 10, "OUTLINE")
 	else
 		scrollBG.edit:SetFontObject(ChatFontNormal)
 	end
@@ -724,7 +730,7 @@ T.createmultilinebox = function(parent, width, height, x, y, name, table, value,
 		if name then
 			scrollBG.name:SetTextColor(1, 1, 1, 1)
 		end
-		gradient:SetGradientAlpha("Vertical", 0, 0, 0, .5, .3, .3, .3, .3)
+		gradient:SetGradient("Vertical", CreateColor(0, 0, 0, .5), CreateColor(.3, .3, .3, .3))
 		scrollBG.edit:SetTextColor(1, 1, 1, 1)
 		scrollBG.edit:Enable()
 	end
@@ -755,7 +761,7 @@ T.createslider = function(parent, x, y, name, table, value, divisor, min, max, s
 	slider:SetPoint("TOPLEFT", x, -y)
 	slider:SetSize(220, 8)
 	F.ReskinSlider(slider)
-	BlizzardOptionsPanel_Slider_Enable(slider)
+	getmetatable(slider).__index.Enable(slider)
 	slider:SetMinMaxValues(min, max)
 	
 	slider.Low:SetText(min/divisor)

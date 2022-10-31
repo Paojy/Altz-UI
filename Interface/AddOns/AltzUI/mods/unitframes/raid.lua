@@ -92,7 +92,9 @@ local function UpdateRaidMana(pp, unit, cur, min, max)
 	local self = pp:GetParent()
     if aCoreCDB["UnitframeOptions"]["raidmanabars"] and ptype == 'MANA' then
 		pp:SetHeight(aCoreCDB["UnitframeOptions"]["healerraidheight"]*(1-aCoreCDB["UnitframeOptions"]["raidhpheight"]))
-		if cur/max > 0.2 then
+		if max == 0 then
+			pp.backdrop:SetBackdropColor(0, 0, 0.7)
+		elseif cur/max > 0.2 then
 			pp.backdrop:SetBackdropColor(.15, .15, .15)
 		elseif UnitIsDead(unit) or UnitIsGhost(unit) or not UnitIsConnected(unit) then
 			pp.backdrop:SetBackdropColor(.5, .5, .5)
@@ -259,7 +261,7 @@ local func = function(self, unit)
     hp.frequentUpdates = true
 	
 	-- little black line to make the health bar more clear
-	hp.ind = hp:CreateTexture(nil, "OVERLAY", 1)
+	hp.ind = hp:CreateTexture(nil, "OVERLAY", nil, 1)
     hp.ind:SetTexture("Interface\\Buttons\\WHITE8x8")
 	hp.ind:SetVertexColor(0, 0, 0)
 	hp.ind:SetSize(1, aCoreCDB["UnitframeOptions"]["healerraidheight"])
@@ -277,7 +279,7 @@ local func = function(self, unit)
 	pp:SetFrameLevel(3)
 	pp:SetPoint("BOTTOMLEFT", self, "BOTTOMLEFT")
 	pp:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT")	
-	pp.bg:SetGradientAlpha("VERTICAL", .2,.2,.2,.15,.25,.25,.25,.6)
+	pp.bg:SetGradient("VERTICAL", CreateColor(.2,.2,.2,.15), CreateColor(.25,.25,.25,.6))
 	pp.backdrop = T.createBackdrop(pp, pp, 0)
 	pp.ApplySettings = function()			
 		if aCoreCDB["UnitframeOptions"]["style"] == 1 then
@@ -302,23 +304,23 @@ local func = function(self, unit)
 		CreateHealPredition(self)
 	end
 	
-	local leader = hp:CreateTexture(nil, "OVERLAY", 1)
+	local leader = hp:CreateTexture(nil, "OVERLAY", nil, 1)
     leader:SetSize(10, 10)
     leader:SetPoint("BOTTOMLEFT", hp, "BOTTOMLEFT", 0, -5)
     self.LeaderIndicator = leader
 
-	local assistant = hp:CreateTexture(nil, "OVERLAY", 1)
+	local assistant = hp:CreateTexture(nil, "OVERLAY", nil, 1)
     assistant:SetSize(10, 10)
     assistant:SetPoint("BOTTOMLEFT", hp, "BOTTOMLEFT", 0, -5)
 	self.AssistantIndicator = assistant
 	
-    local masterlooter = hp:CreateTexture(nil, 'OVERLAY', 1)
+    local masterlooter = hp:CreateTexture(nil, 'OVERLAY', nil, 1)
     masterlooter:SetSize(10, 10)
     masterlooter:SetPoint('LEFT', leader, 'RIGHT', 0, 1)
     self.MasterLooterIndicator = masterlooter
 	
 	if aCoreCDB["UnitframeOptions"]["healtank_assisticon"] then
-		local raidrole = hp:CreateTexture(nil, 'OVERLAY', 1)
+		local raidrole = hp:CreateTexture(nil, 'OVERLAY', nil, 1)
 		raidrole:SetSize(10, 10)
 		raidrole:SetPoint('LEFT', masterlooter, 'RIGHT')
 		self.RaidRoleIndicator = raidrole
@@ -337,7 +339,7 @@ local func = function(self, unit)
 		self:Tag(raidname, '[Altz:raidname]')
 	end
 	
-    local ricon = hp:CreateTexture(nil, "OVERLAY", 1)
+    local ricon = hp:CreateTexture(nil, "OVERLAY", nil, 1)
 	ricon:SetSize(18 ,18)
     ricon:SetPoint("RIGHT", hp, "TOP", -8 , 0)
 	ricon:SetTexture[[Interface\AddOns\AltzUI\media\raidicons.blp]]
@@ -352,7 +354,7 @@ local func = function(self, unit)
     resurrecticon:SetPoint"CENTER"
     self.ResurrectIndicator = resurrecticon
 	
-    local readycheck = hp:CreateTexture(nil, 'OVERLAY', 3)
+    local readycheck = hp:CreateTexture(nil, 'OVERLAY', nil, 3)
     readycheck:SetSize(16, 16)
     readycheck:SetPoint"CENTER"
     self.ReadyCheckIndicator = readycheck
@@ -414,12 +416,12 @@ local func = function(self, unit)
 			self.bg.tex:SetAlpha(0)
 			hp:SetStatusBarTexture(G.media.blank)
 			hp.bg:SetTexture(G.media.blank)
-			hp.bg:SetGradientAlpha("VERTICAL", .5, .5, .5, .5, 0, 0, 0,0)
+			hp.bg:SetGradient("VERTICAL", CreateColor(.5, .5, .5, .5), CreateColor(0, 0, 0, 0))
 		elseif aCoreCDB["UnitframeOptions"]["style"] == 2 then
 			self.bg.tex:SetAlpha(1)
 			hp:SetStatusBarTexture(G.media.ufbar)
 			hp.bg:SetTexture(G.media.ufbar)
-			hp.bg:SetGradientAlpha("VERTICAL", .2,.2,.2,.15,.25,.25,.25,.6)
+			hp.bg:SetGradient("VERTICAL", CreateColor(.2,.2,.2,.15), CreateColor(.25,.25,.25,.6))
 		else
 			self.bg.tex:SetAlpha(1)
 			hp:SetStatusBarTexture(G.media.ufbar)
@@ -470,7 +472,7 @@ local dfunc = function(self, unit)
     hp.frequentUpdates = true
 	
 	-- little black line to make the health bar more clear
-	hp.ind = hp:CreateTexture(nil, "OVERLAY", 1)
+	hp.ind = hp:CreateTexture(nil, "OVERLAY", nil, 1)
     hp.ind:SetTexture("Interface\\Buttons\\WHITE8x8")
 	hp.ind:SetVertexColor(0, 0, 0)
 	hp.ind:SetSize(1, aCoreCDB["UnitframeOptions"]["dpsraidheight"])
@@ -479,23 +481,23 @@ local dfunc = function(self, unit)
    self.Health = hp
 	self.Health.PostUpdate = T.Updatehealthbar
 	
-	local leader = hp:CreateTexture(nil, "OVERLAY", 1)
+	local leader = hp:CreateTexture(nil, "OVERLAY", nil, 1)
     leader:SetSize(10, 10)
     leader:SetPoint("BOTTOMLEFT", hp, "BOTTOMLEFT", 0, -3)
     self.LeaderIndicator = leader
 
-	local assistant = hp:CreateTexture(nil, "OVERLAY", 1)
+	local assistant = hp:CreateTexture(nil, "OVERLAY", nil, 1)
     assistant:SetSize(10, 10)
     assistant:SetPoint("BOTTOMLEFT", hp, "BOTTOMLEFT", 0, -3)
 	self.AssistantIndicator = assistant
 	
-    local masterlooter = hp:CreateTexture(nil, 'OVERLAY', 1)
+    local masterlooter = hp:CreateTexture(nil, 'OVERLAY', nil, 1)
     masterlooter:SetSize(10, 10)
     masterlooter:SetPoint('LEFT', leader, 'RIGHT', 0, 1)
     self.MasterLooterIndicator = masterlooter
 	
 	if aCoreCDB["UnitframeOptions"]["dpstank_assisticon"] then
-		local raidrole = hp:CreateTexture(nil, 'OVERLAY', 1)
+		local raidrole = hp:CreateTexture(nil, 'OVERLAY', nil, 1)
 		raidrole:SetSize(10, 10)
 		raidrole:SetPoint('LEFT', masterlooter, 'RIGHT')
 		self.RaidRoleIndicator = raidrole
@@ -510,7 +512,7 @@ local dfunc = function(self, unit)
 	raidname:SetPoint"CENTER"
 	self:Tag(raidname, '[Altz:raidname]')
 
-    local ricon = hp:CreateTexture(nil, "OVERLAY", 1)
+    local ricon = hp:CreateTexture(nil, "OVERLAY", nil, 1)
 	ricon:SetSize(13 ,13)
     ricon:SetPoint("TOP", hp, "TOP", 0 , 5)
 	ricon:SetTexture[[Interface\AddOns\AltzUI\media\raidicons.blp]]
@@ -520,7 +522,7 @@ local dfunc = function(self, unit)
     status:SetPoint"TOPLEFT"
 	self:Tag(status, '[Altz:AfkDnd][Altz:DDG]')
 	
-	local readycheck = hp:CreateTexture(nil, 'OVERLAY', 3)
+	local readycheck = hp:CreateTexture(nil, 'OVERLAY', nil, 3)
     readycheck:SetSize(16, 16)
     readycheck:SetPoint"CENTER"
     self.ReadyCheckIndicator = readycheck
@@ -551,12 +553,12 @@ local dfunc = function(self, unit)
 			self.bg.tex:SetAlpha(0)
 			hp:SetStatusBarTexture(G.media.blank)
 			hp.bg:SetTexture(G.media.blank)
-			hp.bg:SetGradientAlpha("VERTICAL", .5, .5, .5, .5, 0, 0, 0,0)
+			hp.bg:SetGradient("VERTICAL", CreateColor(.5, .5, .5, .5), CreateColor(0, 0, 0, 0))
 		elseif aCoreCDB["UnitframeOptions"]["style"] == 2 then
 			self.bg.tex:SetAlpha(1)
 			hp:SetStatusBarTexture(G.media.ufbar)
 			hp.bg:SetTexture(G.media.ufbar)
-			hp.bg:SetGradientAlpha("VERTICAL", .2,.2,.2,.15,.25,.25,.25,.6)
+			hp.bg:SetGradient("VERTICAL", CreateColor(.2,.2,.2,.15),CreateColor(.25,.25,.25,.6))
 		else
 			self.bg.tex:SetAlpha(1)
 			hp:SetStatusBarTexture(G.media.ufbar)
@@ -934,7 +936,7 @@ local pfunc = function(self, unit)
     hp.frequentUpdates = true
 	
 	-- little black line to make the health bar more clear
-	hp.ind = hp:CreateTexture(nil, "OVERLAY", 1)
+	hp.ind = hp:CreateTexture(nil, "OVERLAY", nil, 1)
     hp.ind:SetTexture("Interface\\Buttons\\WHITE8x8")
 	hp.ind:SetVertexColor(0, 0, 0)
 	hp.ind:SetSize(1, aCoreCDB["UnitframeOptions"]["height"])
@@ -969,7 +971,7 @@ local pfunc = function(self, unit)
 	pp:SetPoint("TOP", self, "BOTTOM", 0, -1)
 	pp.frequentUpdates = true
 
-	pp.bg:SetGradientAlpha("VERTICAL", .2,.2,.2,.15,.25,.25,.25,.6)
+	pp.bg:SetGradient("VERTICAL", CreateColor(.2,.2,.2,.15), CreateColor(.25,.25,.25,.6))
 
 	-- backdrop for power bar --
 	pp.bd = T.createBackdrop(pp, pp, 1)
@@ -1047,12 +1049,12 @@ local pfunc = function(self, unit)
 			self.bg.tex:SetAlpha(0)
 			hp:SetStatusBarTexture(G.media.blank)
 			hp.bg:SetTexture(G.media.blank)
-			hp.bg:SetGradientAlpha("VERTICAL", .5, .5, .5, .5, 0, 0, 0,0)
+			hp.bg:SetGradient("VERTICAL", CreateColor(.5, .5, .5, .5), CreateColor(0, 0, 0, 0))
 		elseif aCoreCDB["UnitframeOptions"]["style"] == 2 then
 			self.bg.tex:SetAlpha(1)
 			hp:SetStatusBarTexture(G.media.ufbar)
 			hp.bg:SetTexture(G.media.ufbar)
-			hp.bg:SetGradientAlpha("VERTICAL", .2,.2,.2,.15,.25,.25,.25,.6)
+			hp.bg:SetGradient("VERTICAL", CreateColor(.2,.2,.2,.15), CreateColor(.25,.25,.25,.6))
 		else
 			self.bg.tex:SetAlpha(1)
 			hp:SetStatusBarTexture(G.media.ufbar)

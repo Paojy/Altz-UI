@@ -97,7 +97,7 @@
                                     <Anchor point="TOPLEFT" x="-2" y="2"/>
                                     <Anchor point="BOTTOMRIGHT" x="2" y="-2"/>
 							</Anchors>
-							<Backdrop bgFile="Interface\AddOns\AltzUI\media\statusbar" edgeFile="Interface\AddOns\AltzUI\media\glow">
+							<!--Backdrop bgFile="Interface\AddOns\AltzUI\media\statusbar" edgeFile="Interface\AddOns\AltzUI\media\glow">
 								<Color r="0" g="0" b="0" a="0"/>
 								<BorderColor r="0" g="0" b="0" a="1"/>
 								<EdgeSize>
@@ -109,7 +109,7 @@
 								<BackgroundInsets>
 									<AbsInset left="0" right="0" top="0" bottom="0"/>
 								</BackgroundInsets>
-							</Backdrop>
+							</Backdrop-->
 							</Frame>	
 						</Frames>
                     </Frame>
@@ -124,7 +124,7 @@
                                 </Offset>
                             </Anchor>
                         </Anchors>
-						<Backdrop bgFile="Interface\AddOns\AltzUI\media\statusbar" edgeFile="Interface\AddOns\AltzUI\media\glow">
+						<!--Backdrop bgFile="Interface\AddOns\AltzUI\media\statusbar" edgeFile="Interface\AddOns\AltzUI\media\glow">
 							<Color r="0" g="0" b="0" a="0.5"/>
 							<BorderColor r="0" g="0" b="0" a="1"/>
 							<EdgeSize>
@@ -136,7 +136,7 @@
 							<BackgroundInsets>
 								<AbsInset left="3" right="3" top="3" bottom="3"/>
 							</BackgroundInsets>
-						</Backdrop>
+						</Backdrop-->
                         <Layers>
                             <Layer level="OVERLAY">
                                 <Texture parentKey="icon">
@@ -154,7 +154,7 @@
                                     <Anchor point="TOPLEFT" x="-2" y="2"/>
                                     <Anchor point="BOTTOMRIGHT" x="2" y="-2"/>
 							</Anchors>
-							<Backdrop bgFile="Interface\AddOns\AltzUI\media\statusbar" edgeFile="Interface\AddOns\AltzUI\media\glow">
+							<!--Backdrop bgFile="Interface\AddOns\AltzUI\media\statusbar" edgeFile="Interface\AddOns\AltzUI\media\glow">
 								<Color r="0" g="0" b="0" a="0"/>
 								<BorderColor r="0" g="0" b="0" a="1"/>
 								<EdgeSize>
@@ -166,7 +166,7 @@
 								<BackgroundInsets>
 									<AbsInset left="0" right="0" top="0" bottom="0"/>
 								</BackgroundInsets>
-							</Backdrop>
+							</Backdrop-->
 							</Frame>	
 						</Frames>
                     </Frame>
@@ -179,7 +179,7 @@
                     <Anchor point="TOPLEFT" relativeTo="$parentBar" x="-3" y="3"/>
                     <Anchor point="BOTTOMRIGHT" relativeTo="$parentBar" x="3" y="-3"/>
                 </Anchors>
-                <Backdrop bgFile="Interface\AddOns\AltzUI\media\statusbar" edgeFile="Interface\AddOns\AltzUI\media\glow">
+                <!--Backdrop bgFile="Interface\AddOns\AltzUI\media\statusbar" edgeFile="Interface\AddOns\AltzUI\media\glow">
                     <Color r="0" g="0" b="0" a="0.5"/>
                     <BorderColor r="0" g="0" b="0" a="1"/>
                     <EdgeSize>
@@ -188,7 +188,7 @@
                     <BackgroundInsets>
                         <AbsInset left="3" right="3" top="3" bottom="3"/>
                     </BackgroundInsets>
-                </Backdrop>
+                </Backdrop-->
             </Frame>
         </Frames>
         <Scripts>

@@ -6,20 +6,15 @@ if not aCoreCDB["UnitframeOptions"]["totems"] then return end
 local TotemBar = CreateFrame("Frame", "AltzUI_TotemBar", UIParent)
 TotemBar.movingname = L["图腾条"]
 TotemBar.point = {
-	healer = {a1 = "BOTTOMLEFT", parent = "UIParent", a2 = "BOTTOMLEFT", x = 5, y = 223},
-	dpser = {a1 = "BOTTOMLEFT", parent = "UIParent", a2 = "BOTTOMLEFT", x = 5, y = 223},
+	healer = {a1 = "BOTTOMLEFT", parent = "UIParent", a2 = "BOTTOMLEFT", x = 10, y = 270},
+	dpser = {a1 = "BOTTOMLEFT", parent = "UIParent", a2 = "BOTTOMLEFT", x = 10, y = 270},
 }
 T.CreateDragFrame(TotemBar) --frame, dragFrameList, inset, clamp
 
 for i=1, MAX_TOTEMS do
 	local TotemBu = CreateFrame("Button", TotemBar:GetName().."Totem"..i, TotemBar)
-	TotemBu:SetID(i)
 	T.CreateSD(TotemBu, 2, 0, 0, 0, 0, -1)
 	TotemBu:Hide()
-
-	TotemBu.holder = CreateFrame("Frame", nil, TotemBu)
-	TotemBu.holder:SetAlpha(0)
-	TotemBu.holder:SetAllPoints()
 
 	TotemBu.iconTexture = TotemBu:CreateTexture(nil, "ARTWORK")
 	TotemBu.iconTexture:SetAllPoints()
@@ -29,7 +24,6 @@ for i=1, MAX_TOTEMS do
 	TotemBu.cooldown:SetReverse(true)
 	TotemBu.cooldown:SetAllPoints()
 	TotemBar[i] = TotemBu
-	
 end
 
 for i=1, MAX_TOTEMS do
@@ -74,22 +68,35 @@ else
 	TotemBar:SetWidth(aCoreCDB["UnitframeOptions"]["totemsize"] + 5*2)
 end
 
-TotemBar:SetScript("OnEvent", function()
+TotemBar:SetScript("OnEvent", function(self)
 	local totemName, button, startTime, duration, icon
 	for i=1, MAX_TOTEMS do
-		button = _G["TotemFrameTotem"..i];
-		haveTotem, totemName, startTime, duration, icon = GetTotemInfo(button.slot)
+		local _, class = UnitClass("player")
+		local priorities = STANDARD_TOTEM_PRIORITIES
+		if (class == "SHAMAN") then
+			priorities = SHAMAN_TOTEM_PRIORITIES
+		end	
+	
+		local haveTotem, name, startTime, duration, icon
+		local slot
+		self.activeTotems = 0
 		
-		if button:IsShown() then
-			TotemBar[i]:Show()
-			TotemBar[i].iconTexture:SetTexture(icon)
-			CooldownFrame_Set(TotemBar[i].cooldown, startTime, duration, 1)
-
-			button:ClearAllPoints();
-			button:SetParent(TotemBar[i].holder);
-			button:SetAllPoints(TotemBar[i].holder);
+		for i=1, MAX_TOTEMS do
+			slot = priorities[i]
+			haveTotem, name, startTime, duration, icon = GetTotemInfo(slot)
+			if ( haveTotem ) then
+				TotemBar[i]:Show()
+				TotemBar[i].iconTexture:SetTexture(icon)
+				CooldownFrame_Set(TotemBar[i].cooldown, startTime, duration, 1)
+				self.activeTotems = self.activeTotems + 1
+			else
+				TotemBar[i]:Hide()
+			end
+		end
+		if ( self.activeTotems > 0 ) then
+			self:Show();
 		else
-			TotemBar[i]:Hide()
+			self:Hide();
 		end
 	end
 end)

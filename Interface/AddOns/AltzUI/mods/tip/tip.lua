@@ -1,17 +1,13 @@
 ﻿local T, C, L, G = unpack(select(2, ...))
 local F = unpack(AuroraClassic)
-local dragFrameList = G.dragFrameList
-
-local _, ns = ...
 
 if not aCoreCDB["TooltipOptions"]["enabletip"] then return end
 
-local cursor = aCoreCDB["TooltipOptions"]["cursor"]
+local spellID = aCoreCDB["TooltipOptions"]["showspellID"]
+local spellID = aCoreCDB["TooltipOptions"]["showitemID"]
+local combathide = aCoreCDB["TooltipOptions"]["combathide"]
 local hideTitles = aCoreCDB["TooltipOptions"]["hideTitles"]
 local hideRealm = aCoreCDB["TooltipOptions"]["hideRealm"]
-local combathide = aCoreCDB["TooltipOptions"]["combathide"]
-local scale = aCoreCDB["TooltipOptions"]["size"]
-local backdropOpacity = aCoreCDB["TooltipOptions"]["backdropOpacity"]
 
 local you = "<You>"
 local boss = "Boss"
@@ -20,10 +16,8 @@ local classification = {
     elite = "+",
     rare = " Rare",
     rareelite = " Rare+",
-	}
+}
 
-local find = string.find
-local format = string.format
 local hex = function(r, g, b)
     return format('|cff%02x%02x%02x', r * 255, g * 255, b * 255)
 end
@@ -42,16 +36,6 @@ local function unitColor(unit)
     return r, g, b
 end
 
-local anchor = CreateFrame("Button", "Altz_tooltip", UIParent)
-anchor.movingname = L["鼠标提示"]
-anchor.point = {
-		healer = {a1 = "BOTTOMRIGHT", parent = "Minimap", a2 = "TOPRIGHT", x = 0, y = 40 },
-		dpser = {a1 = "BOTTOMRIGHT", parent = "Minimap", a2 = "TOPRIGHT", x = 0, y = 40},
-	}
-T.CreateDragFrame(anchor)
-anchor:SetWidth(120)
-anchor:SetHeight(70)
-
 local function getTarget(unit)
     if UnitIsUnit(unit, "player") then
         return ("|cffff0000%s|r"):format(you)
@@ -60,141 +44,228 @@ local function getTarget(unit)
     end
 end
 
-anchor:SetScript("OnEvent", function(self, event, btn)
-	if btn == "LSHIFT" and UnitExists("mouseover") then
-		GameTooltip:SetUnit("mouseover")
+hooksecurefunc(GameTooltip, "SetUnitAura", function(self,...)		
+	local spellID = select(10,UnitAura(...))
+	if id then
+		self:AddLine(" ")
+		self:AddDoubleLine("SpellID:",format(G.classcolor.."%s|r",id))
+		self:Show()
 	end
 end)
-anchor:RegisterEvent("MODIFIER_STATE_CHANGED")
 
-GameTooltip:HookScript("OnTooltipSetUnit", function(self)
-    local name, unit = self:GetUnit()
+local isSpells = {
+	["GetSpellByID"] = true,
+	["GetSpellBookItem"] = true, -- taint in 46092
+	["GetSpellByID"] = true,
+	["GetTraitEntry"] = true,
+	["GetMountBySpellID"] = true,
+}
 
-    if unit then
-        if combathide and InCombatLockdown() then
-            return self:Hide()
-        end
+local isItems = {
+	["GetBagItem"] = true,
+	["GetInventoryItem"] = true,
+	["GetMerchantItem"] = true,
+	["GetBuybackItem"] = true,
+	["GetItemByID"] = true,
+	["GetRecipeResultItem"] = true,
+	["GetRecipeReagentItem"] = true,
+	["GetToyByItemID"] = true,
+	["GetHeirloomByItemID"] = true,
+	["GetHyperlink"] = true,
+	["GetItemKey"] = true,
+}
 
-        local r, g, b = unitColor(unit)
-        local ricon = GetRaidTargetIndex(unit)
+local isUnit = {
+	["GetUnit"] = true,
+	["GetWorldCursor"] = true,
+}
 
-        if ricon then
-            local text = GameTooltipTextLeft1:GetText()
-            GameTooltipTextLeft1:SetText(("%s %s"):format(ICON_LIST[ricon].."18|t", text))
-        end
-
-        if UnitIsPlayer(unit) then
-            self:AppendText((" |cff00cc00%s|r"):format(UnitIsAFK(unit) and CHAT_FLAG_AFK or 
-            UnitIsDND(unit) and CHAT_FLAG_DND or 
-            not UnitIsConnected(unit) and "<DC>" or ""))
-
-            if hideTitles then
-                local title = UnitPVPName(unit)
-                if title then
-                    local text = GameTooltipTextLeft1:GetText()
-                    title = title:gsub(name, "")
-                    text = text:gsub(title, "")
-                    if text then GameTooltipTextLeft1:SetText(text) end
-                end
-            end
-
-            if hideRealm then
-                local _, realm = UnitName(unit)
-                if realm then
-                    local text = GameTooltipTextLeft1:GetText()
-                    text = text:gsub("- "..realm, "")
-                    if text then GameTooltipTextLeft1:SetText(text) end
-                end
-            end
-
-            local unitGuild, tmp,tmp2 = GetGuildInfo(unit)
-            local text = GameTooltipTextLeft2:GetText()
-            if tmp then
-               --tmp2=tmp2+1
-               GameTooltipTextLeft2:SetText("<"..text..">  "..tmp.."  ("..tmp2..")")
-            end
+hooksecurefunc(GameTooltip, "ProcessLines", function(self)
+	local getterName = self.info and self.info.getterName
+	if isSpells[getterName] then
+		local spellID = select(2, self:GetSpell())
+		if spellID then
+			self:AddLine(" ")
+			self:AddDoubleLine("SpellID:", format(G.classcolor.."%s|r", spellID))
+			self:Show()
+		end
+	elseif isItems[getterName] then
+		local link = select(2, self:GetItem())
+		if link then
+			local itemId = GetItemInfoFromHyperlink(link)
+			local keystone = strmatch(link, "|Hkeystone:([0-9]+):")
+			if keystone then itemId = tonumber(keystone) end
 			
-			if IsShiftKeyDown() then
-			local summary = C_PlayerInfo.GetPlayerMythicPlusRatingSummary(unit)
-			
-			local score = summary and summary.currentSeasonScore
-			if score and score > 0 then
-				local color = C_ChallengeMode.GetDungeonScoreRarityColor(score) or HIGHLIGHT_FONT_COLOR
-				GameTooltip:AddDoubleLine(L["大秘境评分"], score, 1, 1, 1, color.r, color.g, color.b)
+			self:AddLine(" ")
+			self:AddDoubleLine("ItemID:", format(G.classcolor.."%s|r", itemId))
+			self:Show()
+		end
+	elseif isUnit[getterName] then
+		local name, unit = self:GetUnit()
+		if unit then
+			if combathide and InCombatLockdown() then
+				return self:Hide()
 			end
 			
-			local runs = summary and summary.runs
-			if runs then
-				GameTooltip:AddLine("     ")
-				GameTooltip:AddDoubleLine(L["副本"], L["评分层数"], 1, 1, 1, 1, 1, 1)
-				for i, info in pairs(runs) do
-					local map = C_ChallengeMode.GetMapUIInfo(info.challengeModeID)
-					GameTooltip:AddDoubleLine(map, info.mapScore.."("..info.bestRunLevel..")", 1, 1, 1, 1, 1, 1)
+			local r, g, b = unitColor(unit)
+			local ricon = GetRaidTargetIndex(unit)
+			
+			if ricon then
+				local text = GameTooltipTextLeft1:GetText()
+				GameTooltipTextLeft1:SetText(("%s %s"):format(ICON_LIST[ricon].."18|t", text))
+			end
+			
+			if UnitIsPlayer(unit) then
+				self:AppendText((" |cff00cc00%s|r"):format(UnitIsAFK(unit) and CHAT_FLAG_AFK or UnitIsDND(unit) and CHAT_FLAG_DND or not UnitIsConnected(unit) and "<DC>" or ""))
+				
+				if hideTitles then
+					local title = UnitPVPName(unit)
+					if title then
+						local text = GameTooltipTextLeft1:GetText()
+						title = title:gsub(name, "")
+						text = text:gsub(title, "")
+						if text then GameTooltipTextLeft1:SetText(text) end
+					end
 				end
-			end
-			end
-        end
-
-
-        local alive = not UnitIsDeadOrGhost(unit)
-        local level = UnitLevel(unit)
-
-        if level and unit then
-			if not UnitIsWildBattlePet(unit) then
-				local unitClass = UnitIsPlayer(unit) and hex(r, g, b)..UnitClass(unit).."|r" or ""
-				local creature = not UnitIsPlayer(unit) and UnitCreatureType(unit) or ""
-				local diff = GetQuestDifficultyColor(level)
-
-				if level == -1 then
-					level = "|cffff0000"..boss
+		
+				if hideRealm then
+					local _, realm = UnitName(unit)
+					if realm then
+						local text = GameTooltipTextLeft1:GetText()
+						text = text:gsub("- "..realm, "")
+						if text then GameTooltipTextLeft1:SetText(text) end
+					end
 				end
-
-				local classify = UnitClassification(unit)
-				local textLevel = ("%s%s%s|r"):format(hex(diff.r, diff.g, diff.b), tostring(level), classification[classify] or "")
-
-				for i=2, self:NumLines() do
-					local tiptext = _G["GameTooltipTextLeft"..i]
-					if tiptext:GetText():find(LEVEL) then
-						if alive then
-							tiptext:SetText(("%s %s%s %s"):format(textLevel, creature, UnitRace(unit) or "", unitClass):trim())
-						else
-							tiptext:SetText(("%s %s"):format(textLevel, "|cffCCCCCC"..DEAD.."|r"):trim())
+				
+				local unitGuild, tmp,tmp2 = GetGuildInfo(unit)
+				local text = GameTooltipTextLeft2:GetText()
+				if tmp then
+				--tmp2=tmp2+1
+				GameTooltipTextLeft2:SetText("<"..text..">  "..tmp.."  ("..tmp2..")")
+				end
+				
+				if IsShiftKeyDown() then
+					local summary = C_PlayerInfo.GetPlayerMythicPlusRatingSummary(unit)
+					
+					local score = summary and summary.currentSeasonScore
+					if score and score > 0 then
+						local color = C_ChallengeMode.GetDungeonScoreRarityColor(score) or HIGHLIGHT_FONT_COLOR
+						GameTooltip:AddDoubleLine(L["大秘境评分"], score, 1, 1, 1, color.r, color.g, color.b)
+					end
+					
+					local runs = summary and summary.runs
+					if runs then
+						GameTooltip:AddLine("     ")
+						GameTooltip:AddDoubleLine(L["副本"], L["评分层数"], 1, 1, 1, 1, 1, 1)
+						for i, info in pairs(runs) do
+							local map = C_ChallengeMode.GetMapUIInfo(info.challengeModeID)
+							GameTooltip:AddDoubleLine(map, info.mapScore.."("..info.bestRunLevel..")", 1, 1, 1, 1, 1, 1)
 						end
 					end
-
-					if tiptext:GetText():find(PVP) then
-						tiptext:SetText(nil)
-					end	
+				end
+			end			
+			
+			local alive = not UnitIsDeadOrGhost(unit)
+			local level = UnitLevel(unit)
+	
+			if level and unit then
+				if not UnitIsWildBattlePet(unit) then
+					local unitClass = UnitIsPlayer(unit) and hex(r, g, b)..UnitClass(unit).."|r" or ""
+					local creature = not UnitIsPlayer(unit) and UnitCreatureType(unit) or ""
+					local diff = GetQuestDifficultyColor(level)
+	
+					if level == -1 then
+						level = "|cffff0000"..boss
+					end
+	
+					local classify = UnitClassification(unit)
+					local textLevel = ("%s%s%s|r"):format(hex(diff.r, diff.g, diff.b), tostring(level), classification[classify] or "")
+	
+					for i=2, self:NumLines() do
+						local tiptext = _G["GameTooltipTextLeft"..i]
+						if tiptext:GetText():find(LEVEL) then
+							if alive then
+								tiptext:SetText(("%s %s%s %s"):format(textLevel, creature, UnitRace(unit) or "", unitClass):trim())
+							else
+								tiptext:SetText(("%s %s"):format(textLevel, "|cffCCCCCC"..DEAD.."|r"):trim())
+							end
+						end
+	
+						if tiptext:GetText():find(PVP) then
+							tiptext:SetText(nil)
+						end	
+					end
 				end
 			end
-        end
-
-        if not alive then
-            GameTooltipStatusBar:Hide()
-        end
-
-        if UnitExists(unit.."target") then
-            local tartext = ("%s: %s"):format(TARGET, getTarget(unit.."target"))
-            self:AddLine(tartext)
-        end
-		
-		GameTooltipStatusBar:SetStatusBarTexture("Interface\\Buttons\\WHITE8x8")
-		GameTooltipStatusBar:GetStatusBarTexture():SetGradient("VERTICAL",  r, g, b, r/3, g/3, b/3)
-    else
-        for i=2, self:NumLines() do
-            local tiptext = _G["GameTooltipTextLeft"..i]
-
-            if tiptext:GetText():find(PVP) then
-                tiptext:SetText(nil)
+	
+			if not alive then
+				GameTooltipStatusBar:Hide()
 			end
+			
+			if UnitExists(unit.."target") then
+				local tartext = ("%s: %s"):format(TARGET, getTarget(unit.."target"))
+				self:AddLine(tartext)
+			end
+			
+			GameTooltipStatusBar:SetStatusBarColor(r, g, b)
+		 else
+			for i=2, self:NumLines() do
+				local tiptext = _G["GameTooltipTextLeft"..i]
+		
+				if tiptext:GetText():find(PVP) then
+					tiptext:SetText(nil)
+				end
+		
+				GameTooltipStatusBar:SetStatusBarColor(0, .9, 0)
+			end
+		end
+	else
+	--	print(getterName)
+	end
+	
+	self.NineSlice:SetAlpha(0)
+	self.TopOverlay:SetAlpha(0)
+	self.BottomOverlay:SetAlpha(0)
+	
+	if not self.bg then
+		self.bg = CreateFrame("Frame", nil, self, "BackdropTemplate")
+	
+		local flvl = self:GetFrameLevel()
+		if flvl - 1 >= 0 then self.bg:SetFrameLevel(flvl-1) end
+		
+		self.bg:SetPoint("TOPLEFT", self, "TOPLEFT", 0, 0)
+		self.bg:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", 0, 0)
+		self.bg:SetBackdrop({
+			edgeFile = G.media.glow, edgeSize = 3,
+			bgFile = G.media.blank,
+			insets = {left = 3, right = 3, top = 3, bottom = 3}
+		})
 
-        GameTooltipStatusBar:SetStatusBarColor(0, .9, 0)
+		self.bg:SetBackdropColor(.15, .15, .15, .7)
+		self.bg:SetBackdropBorderColor(0, 0, 0)
+	end
+end)
+
+hooksecurefunc(GameTooltip, "SetAction", function(self, action)
+	local actionType, actionID = GetActionInfo(action)
+	if actionType == "spell" or actionType == "companion" then
+		if actionID then
+			self:AddLine(" ")
+			self:AddDoubleLine("SpellID:", format(G.classcolor.."%s|r", actionID))
+			self:Show()
+		end
+	elseif actionType == "item" then
+		if actionID then
+			self:AddLine(" ")
+			self:AddDoubleLine("ItemID:", format(G.classcolor.."%s|r", actionID))
+			self:Show()
 		end
 	end
 end)
 
 GameTooltipStatusBar:SetStatusBarTexture("Interface\\Buttons\\WHITE8x8")
-
+T.createBackdrop(GameTooltipStatusBar, GameTooltipStatusBar, 1)
+ 
 GameTooltipStatusBar:SetScript("OnValueChanged", function(self, value)
     if not value then
         return
@@ -215,34 +286,3 @@ GameTooltipStatusBar:SetScript("OnValueChanged", function(self, value)
         self.text:SetText(hp)
     end
 end)
-
-hooksecurefunc("GameTooltip_SetDefaultAnchor", function(tooltip, parent)
-    local frame = GetMouseFocus()
-    if cursor then
-        tooltip:SetOwner(parent, "ANCHOR_CURSOR_RIGHT")
-    else
-        tooltip:SetOwner(parent, "ANCHOR_NONE")	
-        tooltip:SetPoint("BOTTOMRIGHT",  anchor, "BOTTOMRIGHT")
-    end
-    tooltip.default = 1
-end)
-
-GameTooltip:HookScript("OnUpdate", function(self, ...)
-   if self:GetAnchorType() == "ANCHOR_CURSOR" then
-	  local x, y = GetCursorPosition()
-	  local effScale = self:GetEffectiveScale()
-	  local width = self:GetWidth() or 0
-	  self:ClearAllPoints()
-	  self:SetPoint("BOTTOMLEFT", UIParent, "BOTTOMLEFT", x / effScale +5, y / effScale + 20)
-   end
-end)
-
-GAME_TOOLTIP_BACKDROP_STYLE_DEFAULT = {
-	bgFile = G.media.blank,
-	edgeFile = G.media.blank,
-	edgeSize = 1,
-	insets = { left = 1, right = 1, top = 1, bottom = 1 },
-
-	backdropBorderColor = {GetRGB = function() return 0, 0, 0 end},
-	backdropColor = {GetRGB = function() return 0, 0, 0, backdropOpacity end}
-}

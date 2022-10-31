@@ -17,6 +17,7 @@ flash:SetSize(size,size)
 flash:SetBackdrop(backdrop)
 flash:SetBackdropColor( 0, 0, 0)
 flash:SetBackdropBorderColor(0, 0, 0)
+flash.e = 0
 
 flash.movingname = L["冷却提示"]
 flash.point = {
@@ -39,7 +40,7 @@ flash:SetScript("OnUpdate", function(self, e)
 	elseif flash.e < .25 then
 		flash:SetAlpha(flash.e*4*minalpha/100)
 	elseif flash.e > .5 then
-		flash:SetAlpha((1-(flash.e*2))*minalpha/100)
+		flash:SetAlpha((1.5-(flash.e*2))*minalpha/100)
 	end
 end)
 
@@ -194,7 +195,7 @@ hooksecurefunc("UseInventoryItem", function(slot)
 	end
 end)
 
-hooksecurefunc("UseContainerItem", function(bag, slot)
+hooksecurefunc(C_Container, "UseContainerItem", function(bag, slot)
 	local link = GetContainerItemLink(bag, slot) or ""
 	local id = string.match(link, ":(%w+).*|h%[(.+)%]|h")
 	if id and not items[id] then

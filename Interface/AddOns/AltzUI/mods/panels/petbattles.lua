@@ -156,9 +156,9 @@ for index, unit in pairs(extraUnits) do
 	F.CreateBD(unit.bg)
 
 	if index < 3 then
-		unit.ActualHealthBar:SetGradient("VERTICAL", .26, 1, .22, .13, .5, .11)
+		unit.ActualHealthBar:SetGradient("VERTICAL", CreateColor(.26, 1, .22, 1), CreateColor(.13, .5, .11, 1))
 	else
-		unit.ActualHealthBar:SetGradient("VERTICAL", 1, .12, .24, .5, .06, .12)
+		unit.ActualHealthBar:SetGradient("VERTICAL", CreateColor(1, .12, .24, 1), CreateColor(.5, .06, .12, 1))
 	end
 	
 	unit.Icon:SetDrawLayer("OVERLAY", 2)

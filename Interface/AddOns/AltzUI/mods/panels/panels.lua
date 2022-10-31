@@ -13,7 +13,7 @@ end
 local function Skinbar(bar)
 	if aCoreCDB["UnitframeOptions"]["style"] == 1 then	
 		bar.tex:SetTexture(G.media.blank)
-		bar.tex:SetGradient("VERTICAL", G.Ccolor.r, G.Ccolor.g, G.Ccolor.b, G.Ccolor.r/3, G.Ccolor.g/3, G.Ccolor.b/3)	
+		bar.tex:SetGradient("VERTICAL", CreateColor(G.Ccolor.r, G.Ccolor.g, G.Ccolor.b, 1), CreateColor(G.Ccolor.r/3, G.Ccolor.g/3, G.Ccolor.b/3, 1))
 	else
 		bar.tex:SetTexture(G.media.ufbar)
 		bar.tex:SetVertexColor(G.Ccolor.r, G.Ccolor.g, G.Ccolor.b)
@@ -50,7 +50,7 @@ toppanel:SetHeight(15)
 toppanel.tex = toppanel:CreateTexture(nil, "ARTWORK")
 toppanel.tex:SetAllPoints()
 toppanel.tex:SetTexture(G.media.blank)
-toppanel.tex:SetGradientAlpha("VERTICAL", .2,.2,.2,.15,.25,.25,.25,.6)
+toppanel.tex:SetGradient("VERTICAL", CreateColor(.2,.2,.2,.15),CreateColor(.25,.25,.25,.6))
 
 toppanel.sd = T.createBackdrop(toppanel, toppanel, 1)
 
@@ -118,7 +118,7 @@ bottompanel:SetHeight(15)
 bottompanel.tex = bottompanel:CreateTexture(nil, "ARTWORK")
 bottompanel.tex:SetAllPoints()
 bottompanel.tex:SetTexture(G.media.blank)
-bottompanel.tex:SetGradientAlpha("VERTICAL", .2,.2,.2,.15,.25,.25,.25,.6)
+bottompanel.tex:SetGradient("VERTICAL", CreateColor(.2,.2,.2,.15), CreateColor(.25,.25,.25,.6))
 
 bottompanel.sd = T.createBackdrop(bottompanel, bottompanel, 1)
 
@@ -181,307 +181,59 @@ G.bottompanel = bottompanel
 
 local minimap_height = aCoreCDB["SkinOptions"]["minimapheight"]
 
--- 收缩和伸展的按钮
-local minimap_pullback = CreateFrame("Frame", G.uiname.."minimap_pullback", UIParent) 
-minimap_pullback:SetWidth(8)
-minimap_pullback:SetHeight(minimap_height)
-minimap_pullback:SetFrameStrata("BACKGROUND")
-minimap_pullback:SetFrameLevel(5)
-minimap_pullback.movingname = L["小地图缩放按钮"]
-minimap_pullback.point = {
-	healer = {a1 = "BOTTOMRIGHT", parent = "UIParent", a2 = "BOTTOMRIGHT", x = -5, y = 48},
-	dpser = {a1 = "BOTTOMRIGHT", parent = "UIParent", a2 = "BOTTOMRIGHT", x = -5, y = 48},
-}
-T.CreateDragFrame(minimap_pullback)
-minimap_pullback.border = F.CreateBDFrame(minimap_pullback, 0.6)
-T.CreateSD(minimap_pullback.border, 2, 0, 0, 0, 0, -1)
-
-minimap_pullback:SetAlpha(.05)
-minimap_pullback:HookScript("OnEnter", function(self) T.UIFrameFadeIn(self, .5, self:GetAlpha(), 1) end)
-minimap_pullback:SetScript("OnLeave", function(self) T.UIFrameFadeOut(self, .5, self:GetAlpha(), 0.05) end)
-
-local minimap_anchor = CreateFrame("Frame", nil, UIParent)
-minimap_anchor:SetPoint("BOTTOMRIGHT", minimap_pullback, "BOTTOMLEFT", -5, 0)
+local minimap_anchor = CreateFrame("Frame", G.uiname.."minimap_anchor", UIParent)
 minimap_anchor:SetWidth(minimap_height)
 minimap_anchor:SetHeight(minimap_height)
 minimap_anchor:SetFrameStrata("BACKGROUND")
 minimap_anchor.border = F.CreateBDFrame(minimap_anchor, 0.6)
 T.CreateSD(minimap_anchor.border, 2, 0, 0, 0, 0, -1)
 
-Minimap:SetParent(minimap_anchor)
-Minimap:SetPoint("CENTER")
-Minimap:SetSize(minimap_height, minimap_height)
-Minimap:SetFrameLevel(1)
-Minimap:SetMaskTexture("Interface\\Buttons\\WHITE8x8")
-
-local nowwidth, allwidth, all
-local Updater = CreateFrame("Frame")
-Updater.mode = "IN"
-Updater:Hide()
-
-Updater:SetScript("OnUpdate",function(self,elapsed)
-	if InCombatLockdown() then return end
-	if self.mode == "IN" then
-		if nowwidth < allwidth then
-			nowwidth = nowwidth+allwidth/(all/0.2)/3
-			minimap_anchor:SetPoint("BOTTOMRIGHT", minimap_pullback, "BOTTOMLEFT", nowwidth, 0)
-		else
-			minimap_anchor:SetPoint("BOTTOMRIGHT", minimap_pullback, "BOTTOMLEFT", allwidth, 0)
-			minimap_pullback.border:SetBackdropColor(G.Ccolor.r, G.Ccolor.g, G.Ccolor.b)
-			Updater:Hide()
-			Updater.mode = "OUT"
-			Minimap:Hide()
-		end
-	elseif self.mode == "OUT" then
-		if nowwidth >0 then
-			nowwidth = nowwidth-allwidth/(all/0.2)/3
-			minimap_anchor:SetPoint("BOTTOMRIGHT", minimap_pullback, "BOTTOMLEFT", nowwidth, 0);	
-		else
-			minimap_anchor:SetPoint("BOTTOMRIGHT", minimap_pullback, "BOTTOMLEFT", -5, 0)
-			minimap_pullback.border:SetBackdropColor(0, 0, 0, .6)
-			Updater:Hide()
-			Updater.mode = "IN"
-		end		
-	end
-end)
-
-local minimap_movein = function()
-	if Updater.mode == "OUT" then
-		Minimap:Show()
-		nowwidth, allwidth, all = minimap_height, minimap_height, 1
-		T.UIFrameFadeIn(minimap_anchor, 1, minimap_anchor:GetAlpha(), 1)
-		T.UIFrameFadeIn(Minimap, 1, Minimap:GetAlpha(), 1)
-		Updater:Show()
-	end
-end
-
-local minimap_moveout = function()
-	if Updater.mode == "IN" then
-		nowwidth, allwidth, all = 0, minimap_height, 1
-		T.UIFrameFadeOut(minimap_anchor, 1, minimap_anchor:GetAlpha(), 0)
-		T.UIFrameFadeOut(Minimap, 1, Minimap:GetAlpha(), 0)
-		Updater:Show()
-	end
-end
-
-local minimap_toggle = function()
-	if Updater.mode == "IN" then
-		minimap_moveout()
-	else
-		minimap_movein()
-	end
-	Updater:Show()
-end
-
-T.HideMap = function(self, event)
-	if aCoreCDB["SkinOptions"]["hidemap"] then
-		if event == "PLAYER_REGEN_DISABLED" then
-			minimap_moveout()
-		elseif event == "PLAYER_REGEN_ENABLED" then
-			minimap_movein()
-		elseif event == "PLAYER_LOGIN" then
-			if InCombatLockdown() then
-				minimap_moveout()
-			end
-			self:RegisterEvent("PLAYER_REGEN_ENABLED")
-			self:RegisterEvent("PLAYER_REGEN_DISABLED")
-		else
-			if not InCombatLockdown() then
-				minimap_moveout()
-			end
-		end
-	else
-		minimap_movein()
-	end
-end
-
-Updater:SetScript("OnEvent", function(self, event)
-	if event == "PLAYER_LOGIN" then
-		T.HideMap(self, event)
-	else
-		if C_Minimap.ShouldUseHybridMinimap() then
-			if not HybridMinimap then
-				UIParentLoadAddOn("Blizzard_HybridMinimap");
-			end
-			HybridMinimap:Enable()
-			HybridMinimap.CircleMask:SetTexture("Interface\\Buttons\\WHITE8x8")
-		end
-	end
-end)
-
-Updater:RegisterEvent("PLAYER_LOGIN")
-Updater:RegisterEvent("PLAYER_ENTERING_WORLD")
-
-minimap_pullback:SetScript("OnMouseDown", minimap_toggle)
-
-local chatframe_pullback = CreateFrame("Frame", G.uiname.."chatframe_pullback", UIParent) 
-chatframe_pullback:SetWidth(8)
-chatframe_pullback:SetHeight(minimap_height)
-chatframe_pullback:SetFrameStrata("BACKGROUND")
-chatframe_pullback:SetFrameLevel(3)
-chatframe_pullback.movingname = L["聊天框缩放按钮"]
-chatframe_pullback.point = {
-	healer = {a1 = "BOTTOMLEFT", parent = "UIParent", a2 = "BOTTOMLEFT", x = 10, y = 48},
-	dpser = {a1 = "BOTTOMLEFT", parent = "UIParent", a2 = "BOTTOMLEFT", x = 10, y = 48},
+minimap_anchor.movingname = L["小地图"]
+minimap_anchor.point = {
+	healer = {a1 = "BOTTOMRIGHT", parent = "UIParent", a2 = "BOTTOMRIGHT", x = -10, y = 88},
+	dpser = {a1 = "BOTTOMRIGHT", parent = "UIParent", a2 = "BOTTOMRIGHT", x = -10, y = 88},
 }
-T.CreateDragFrame(chatframe_pullback)
-chatframe_pullback.border = F.CreateBDFrame(chatframe_pullback, 0.6)
-T.CreateSD(chatframe_pullback.border, 2, 0, 0, 0, 0, -1)
+T.CreateDragFrame(minimap_anchor)
 
-chatframe_pullback:SetAlpha(.05)
-chatframe_pullback:HookScript("OnEnter", function(self) T.UIFrameFadeIn(self, .5, self:GetAlpha(), 1) end)
-chatframe_pullback:SetScript("OnLeave", function(self) T.UIFrameFadeOut(self, .5, self:GetAlpha(), 0.05) end)
-
-local chatframe_anchor = CreateFrame("frame",nil,UIParent)
-chatframe_anchor:SetPoint("BOTTOMLEFT", chatframe_pullback, "BOTTOMRIGHT", 5, 0)
-chatframe_anchor:SetWidth(300)
-chatframe_anchor:SetHeight(minimap_height)
-chatframe_anchor:SetFrameStrata("BACKGROUND")
-
-local cf = _G['ChatFrame1']
-local dm = _G['GeneralDockManager']
-
---move chat
-local MoveChat = function()
-    FCF_SetLocked(cf, nil) 
-    cf:ClearAllPoints()
-    cf:SetPoint("BOTTOMLEFT", chatframe_anchor ,"BOTTOMLEFT", 3, 5)
-    FCF_SavePositionAndDimensions(cf)
-	FCF_SetLocked(cf, 1)
-end
-
-local nowwidth, allwidth, all
-local Updater2 = CreateFrame("Frame")
-Updater2.mode = "OUT"
-Updater2:Hide()
-
-Updater2:SetScript("OnUpdate",function(self,elapsed)
-	if self.mode == "IN" then
-		if nowwidth > -375 then
-			nowwidth = nowwidth-allwidth/(all/0.2)/4
-			chatframe_anchor:SetPoint("BOTTOMLEFT", chatframe_pullback, "BOTTOMRIGHT", nowwidth, 0)
-			MoveChat()
-		else
-			chatframe_anchor:SetPoint("BOTTOMLEFT", chatframe_pullback, "BOTTOMRIGHT", -375, 0)
-			chatframe_pullback.border:SetBackdropColor(G.Ccolor.r, G.Ccolor.g, G.Ccolor.b)
-			self:Hide()
-			self.mode = "OUT"
-		end
-	elseif self.mode == "OUT" then
-		if nowwidth <0 then
-			nowwidth = nowwidth+allwidth/(all/0.2)/4
-			chatframe_anchor:SetPoint("BOTTOMLEFT", chatframe_pullback, "BOTTOMRIGHT", nowwidth, 0)
-			MoveChat()			
-		else
-			chatframe_anchor:SetPoint("BOTTOMLEFT", chatframe_pullback, "BOTTOMRIGHT", 5, 0)
-			chatframe_pullback.border:SetBackdropColor(0, 0, 0, .6)			
-			self:Hide()
-			self.mode = "IN"
-		end		
-	end
+-- 小地图
+Minimap:SetParent(minimap_anchor)
+Minimap:SetWidth(minimap_height)
+Minimap:SetHeight(minimap_height)
+Minimap:SetMaskTexture("Interface\\Buttons\\WHITE8x8")
+function GetMinimapShape() return 'SQUARE' end
+MinimapBackdrop:SetAlpha(0)
+hooksecurefunc(MinimapCluster, "SetHeaderUnderneath", function()
+	Minimap:ClearAllPoints()
+	Minimap:SetPoint("CENTER", minimap_anchor, "CENTER")
 end)
 
-local chatframe_movein = function()
-	if Updater2.mode == "OUT" then
-		nowwidth, allwidth, all = -375, 375, 1
-		T.UIFrameFadeIn(cf, 1, cf:GetAlpha(), 1)
-		T.UIFrameFadeIn(dm, 1, dm:GetAlpha(), 1)
-		Updater2:Show()
-	end
-end
-
-local chatframe_moveout = function()
-	if Updater2.mode == "IN" then
-		nowwidth, allwidth, all = 0, 375, 1
-		T.UIFrameFadeOut(cf, 1, cf:GetAlpha(), 0)
-		T.UIFrameFadeOut(dm, 1, dm:GetAlpha(), 0)
-		Updater2:Show()
-	end
-end
-
-local chatframe_toggle = function()
-	if Updater2.mode == "IN" then
-		chatframe_moveout()
-	else
-		chatframe_movein()
-	end
-	Updater2:Show()
-end
-
-T.HideChat = function(self, event)
-	if aCoreCDB["SkinOptions"]["hidechat"] then
-		if event == "PLAYER_REGEN_DISABLED" then
-			chatframe_moveout()
-		elseif event == "PLAYER_REGEN_ENABLED" then
-			chatframe_movein()
-		elseif event == "PLAYER_LOGIN" then
-			if InCombatLockdown() then
-				chatframe_moveout()
-			end
-			self:RegisterEvent("PLAYER_REGEN_ENABLED")
-			self:RegisterEvent("PLAYER_REGEN_DISABLED")
+-- 右键打开追踪
+MinimapCluster.Tracking:Hide()
+MinimapCluster.Tracking.Show = function() MinimapCluster.Tracking:Hide() end
+Minimap:SetScript('OnMouseUp', function (self, button)
+	if button == 'RightButton' then
+		GameTooltip:Hide()
+		ToggleDropDownMenu(1, nil, MinimapCluster.Tracking.DropDown, Minimap, (Minimap:GetWidth()+8), (Minimap:GetHeight()))
+		DropDownList1:ClearAllPoints()
+		if select(2, Minimap:GetCenter())/G.screenheight > .5 then -- In the upper part of the screen
+			DropDownList1:SetPoint("TOPRIGHT", Minimap, "BOTTOMRIGHT", 0, -8)
 		else
-			if not InCombatLockdown() then
-				chatframe_moveout()
-			end
+			DropDownList1:SetPoint("BOTTOMRIGHT", Minimap, "TOPRIGHT", 0, 8)
 		end
-	else
-		chatframe_movein()
 	end
-end
-
-Updater2:SetScript("OnEvent", function(self, event)
-	T.HideChat(self, event)
 end)
-
-Updater2:RegisterEvent("PLAYER_LOGIN")
-
-chatframe_pullback:SetScript("OnMouseDown", chatframe_toggle)
-
-for i = 1, NUM_CHAT_WINDOWS do
-	_G['ChatFrame'..i..'EditBox']:HookScript("OnEditFocusGained", function(self)
-		if Updater2.mode == "OUT" then
-			nowwidth, allwidth, all = -375, 375, 1
-			T.UIFrameFadeIn(cf, 1, cf:GetAlpha(), 1)
-			T.UIFrameFadeIn(dm, 1, dm:GetAlpha(), 1)
-			Updater2:Show()
-		end
-	end)
-end
-
--- 隐藏按钮
-for _, hide in next,
-	{MinimapBorder, MinimapBorderTop, MinimapZoomIn, MinimapZoomOut, MiniMapVoiceChatFrame, MiniMapTracking,  
-	MiniMapWorldMapButton, MinimapBackdrop, MinimapCluster, GameTimeFrame, MiniMapInstanceDifficulty,} do
-	hide:Hide()
-end
-MinimapNorthTag:SetAlpha(0)
 
 -- 整合按钮
 local buttons = {}
 local BlackList = { 
-	["MiniMapTracking"] = true,
-	["MiniMapVoiceChatFrame"] = true,
-	["MiniMapWorldMapButton"] = true,
-	["MiniMapLFGFrame"] = true,
 	["MinimapZoomIn"] = true,
 	["MinimapZoomOut"] = true,
-	["MiniMapMailFrame"] = true,
-	["BattlefieldMinimap"] = true,
 	["MinimapBackdrop"] = true,
-	["GameTimeFrame"] = true,
-	["TimeManagerClockButton"] = true,
-	["FeedbackUIButton"] = true,
-	["HelpOpenTicketButton"] = true,
-	["MiniMapBattlefieldFrame"] = true,
-	["QueueStatusMinimapButton"] = true,
 	["MinimapButtonCollectFrame"] = true,
-	["GarrisonLandingPageMinimapButton"] = true,
-	["MinimapZoneTextButton"] = true,
+	["MinimapButtonCollectFrame_Toggle"] = true,
 }
 
 local MBCF = CreateFrame("Frame", "MinimapButtonCollectFrame", Minimap)
-MBCF:SetFrameStrata("MEDIUM")
 
 if aCoreCDB["SkinOptions"]["MBCFpos"] == "TOP" then
 	MBCF:SetPoint("BOTTOMLEFT", Minimap, "TOPLEFT", 0, 5)
@@ -490,11 +242,28 @@ else
 	MBCF:SetPoint("TOPLEFT", Minimap, "BOTTOMLEFT", 0, -5)
 	MBCF:SetPoint("TOPRIGHT", Minimap, "BOTTOMRIGHT", 0, -5)
 end
+
 MBCF:SetHeight(20)
 MBCF.bg = MBCF:CreateTexture(nil, "BACKGROUND")
 MBCF.bg:SetTexture(G.media.blank)
 MBCF.bg:SetAllPoints(MBCF)
-MBCF.bg:SetGradientAlpha("HORIZONTAL", 0, 0, 0, .8, 0, 0, 0, 0)
+MBCF.bg:SetGradient("HORIZONTAL", CreateColor(0, 0, 0, .8), CreateColor(0, 0, 0, 0))
+
+MBCF_Toggle = CreateFrame("Frame", "MinimapButtonCollectFrame_Toggle", Minimap)
+MBCF_Toggle:SetFrameStrata("MEDIUM")
+MBCF_Toggle:SetSize(20,20)
+MBCF_Toggle:SetPoint("TOPLEFT", Minimap, "TOPLEFT", 5, -5)
+MBCF_Toggle.tex = MBCF_Toggle:CreateTexture(nil, "ARTWORK")
+MBCF_Toggle.tex:SetTexture(516768)
+MBCF_Toggle.tex:SetAllPoints(MBCF_Toggle)
+
+MBCF_Toggle:SetScript("OnMouseDown", function(self)
+	if MBCF:IsShown() then
+		MBCF:Hide()
+	else
+		MBCF:Show()
+	end
+end)
 
 T.ArrangeMinimapButtons = function(parent)
 	if #buttons == 0 then 
@@ -522,6 +291,7 @@ T.CollectMinimapButtons = function(parent)
 			if child:GetName() and not BlackList[child:GetName()] then
 				if child:GetObjectType() == "Button" or strupper(child:GetName()):match("BUTTON") then
 					child:SetParent(parent)
+					child:SetSize(25, 25)
 					for j = 1, child:GetNumRegions() do
 						local region = select(j, child:GetRegions())
 						if region:GetObjectType() == "Texture" then
@@ -539,17 +309,8 @@ T.CollectMinimapButtons = function(parent)
 					child:HookScript("OnShow", function() 
 						T.ArrangeMinimapButtons(parent)
 					end)
-					child:HookScript("OnShow", function() 
-						T.ArrangeMinimapButtons(parent)
-					end)
 					child:HookScript("OnHide", function() 
 						T.ArrangeMinimapButtons(parent)
-					end)
-					child:HookScript("OnEnter", function()
-						T.UIFrameFadeIn(parent, .5, parent:GetAlpha(), 1)
-					end)
-					child:HookScript("OnLeave", function()
-						T.UIFrameFadeOut(parent, .5, parent:GetAlpha(), 0)
 					end)
 					child:SetScript("OnDragStart", nil)
 					child:SetScript("OnDragStop", nil)
@@ -565,170 +326,23 @@ MBCF:SetScript("OnEvent", function(self)
 		T.CollectMinimapButtons(MBCF)
 		T.ArrangeMinimapButtons(MBCF)
 	end)
-	self:SetAlpha(0)
+	self:Hide()
 	self:UnregisterEvent("PLAYER_ENTERING_WORLD")
 end)
 
 MBCF:RegisterEvent("PLAYER_ENTERING_WORLD")
 
-MBCF:SetScript("OnEnter", function(self)
-	T.UIFrameFadeIn(self, .5, self:GetAlpha(), 1)
-end)
+-- 缩放按钮
+Minimap.ZoomIn:Hide()
+Minimap.ZoomIn.Show = function() Minimap.ZoomIn:Hide() end
+Minimap.ZoomOut:Hide()
+Minimap.ZoomOut.Show = function() Minimap.ZoomOut:Hide() end
 
-Minimap:HookScript("OnEnter", function()
-	T.UIFrameFadeIn(MBCF, .5, MBCF:GetAlpha(), 1)
-end)
-
-MBCF:SetScript("OnLeave", function(self)
-	T.UIFrameFadeOut(self, .5, self:GetAlpha(), 0)
-end)
-
-Minimap:HookScript("OnLeave", function()
-	T.UIFrameFadeOut(MBCF, .5, MBCF:GetAlpha(), 0)
-end)
-
---要塞
-GarrisonLandingPageMinimapButton:ClearAllPoints()
-GarrisonLandingPageMinimapButton:SetParent(Minimap)
-GarrisonLandingPageMinimapButton:SetPoint("TOPRIGHT", Minimap, "TOPRIGHT", -8, 2)
-GarrisonLandingPageMinimapButton:SetClampedToScreen(true)
-GarrisonLandingPageMinimapButton:SetSize(35, 35)
-GarrisonLandingPageMinimapButton:HookScript("OnEvent", function(self, event)
-	self:GetNormalTexture():SetAtlas(nil)
-	self:SetNormalTexture("Interface\\AddOns\\AltzUI\\media\\icons\\Guild")
-	self:GetNormalTexture():SetBlendMode("ADD")
-	self:GetNormalTexture():SetSize(20, 20)
-	self:GetNormalTexture():ClearAllPoints()
-	self:GetNormalTexture():SetPoint("CENTER", 0, 1)
-	
-	self:GetPushedTexture():SetAtlas(nil)
-	self:SetPushedTexture("Interface\\AddOns\\AltzUI\\media\\icons\\Guild")
-	self:GetPushedTexture():SetBlendMode("ADD")
-	self:GetPushedTexture():SetSize(20, 20)
-	self:GetPushedTexture():ClearAllPoints()
-	self:GetPushedTexture():SetPoint("CENTER", 1, 0)
-	self:GetPushedTexture():SetVertexColor(G.Ccolor.r, G.Ccolor.g, G.Ccolor.b)
-	
-	GarrisonLandingPageMinimapButton:ClearAllPoints()
-	GarrisonLandingPageMinimapButton:SetPoint("TOPRIGHT", Minimap, "TOPRIGHT", -8, 2)
-	
-	--print(event)
-end)
-
-
--- 排队的眼睛
-QueueStatusMinimapButton:ClearAllPoints()
-QueueStatusMinimapButton:SetParent(Minimap)
-QueueStatusMinimapButton:SetPoint("BOTTOMRIGHT", Minimap, "BOTTOMRIGHT", -10, 0)
-QueueStatusMinimapButtonBorder:Hide()
-QueueStatusFrame:SetClampedToScreen(true)
-QueueStatusFrame:ClearAllPoints()
-QueueStatusFrame:SetPoint("TOPLEFT", Minimap, "TOPRIGHT", 9, -2)
-
--- 公会副本队伍
-GuildInstanceDifficulty:ClearAllPoints()
-GuildInstanceDifficulty:SetScale(.5)
-GuildInstanceDifficulty:SetPoint("BOTTOMLEFT", Minimap, "BOTTOMLEFT", 2, 1)
-GuildInstanceDifficulty:SetFrameStrata("HIGH")
-
--- 副本难度
-local InstanceDifficulty = CreateFrame("Frame", nil, Minimap)
-InstanceDifficulty:SetPoint("TOPLEFT", 8, -8)
-InstanceDifficulty:SetSize(80, 20)
-
-InstanceDifficulty.text = T.createtext(InstanceDifficulty, "OVERLAY", 12, "OUTLINE", "LEFT")
-InstanceDifficulty.text:SetPoint"LEFT"
-InstanceDifficulty.text:SetTextColor(G.Ccolor.r, G.Ccolor.g, G.Ccolor.b)
-
-InstanceDifficulty:RegisterEvent("PLAYER_ENTERING_WORLD")
-InstanceDifficulty:RegisterEvent("PLAYER_DIFFICULTY_CHANGED")
-InstanceDifficulty:RegisterEvent("GROUP_ROSTER_UPDATE")
-InstanceDifficulty:SetScript("OnEvent", function(self) self.text:SetText(select(4, GetInstanceInfo())) end)
-
--- 货币
-
-local Currency = {
-	[646] = 1342,
-	[647] = 1342,
-	[648] = 1342,
-	[680] = 1155,
-	[681] = 1155,
-	[682] = 1155,
-	[683] = 1155,
-	[684] = 1155,
-	[685] = 1155,
-	[686] = 1155,
-	[687] = 1155,
-	[688] = 1155,
-	[689] = 1155,
-	[690] = 1155,
-	[691] = 1155,
-	[692] = 1155,
-	[693] = 1155,
-	[830] = 1508,
-	[831] = 1508,
-	[832] = 1508,
-	[833] = 1508,
-	[882] = 1508,
-	[883] = 1508,
-	[884] = 1508,
-	[885] = 1508,
-	[886] = 1508,
-	[887] = 1508,
-}
-
-local CurrencyButton = CreateFrame("Frame", nil, Minimap)
-CurrencyButton:SetPoint("TOPLEFT", 5, -5)
-CurrencyButton:SetSize(200, 20)
-
-CurrencyButton.icon = CreateFrame("Frame", nil, CurrencyButton)
-CurrencyButton.icon:SetSize(15, 15)
-CurrencyButton.icon:SetPoint"TOPLEFT"
-
-CurrencyButton.icon.texture = CurrencyButton.icon:CreateTexture(nil, "OVERLAY")
-CurrencyButton.icon.texture:SetAllPoints()
-CurrencyButton.icon.texture:SetTexCoord(0.1,0.9,0.1,0.9)
-
-CurrencyButton.icon.bg = CurrencyButton.icon:CreateTexture(nil, "BORDER")
-CurrencyButton.icon.bg:SetPoint("TOPLEFT", -1, 1)
-CurrencyButton.icon.bg:SetPoint("BOTTOMRIGHT", 1, -1)
-CurrencyButton.icon.bg:SetColorTexture(0, 0, 0)
-
-CurrencyButton.text = T.createtext(CurrencyButton, "OVERLAY", 12, "OUTLINE", "LEFT")
-CurrencyButton.text:SetPoint("LEFT", CurrencyButton.icon, "RIGHT", 5, 0)
-CurrencyButton.text:SetTextColor(1, 1, 1)
-
-CurrencyButton:RegisterEvent("PLAYER_ENTERING_WORLD")
-CurrencyButton:RegisterEvent("ZONE_CHANGED_NEW_AREA")
-CurrencyButton:RegisterEvent("CURRENCY_DISPLAY_UPDATE")
-
-CurrencyButton:SetScript("OnEvent", function(self, event)
-	local map = C_Map.GetBestMapForUnit("player")
-	local currency = Currency[map]
-	
-	if map and currency then
-		local info = C_CurrencyInfo.GetCurrencyInfo(currency)
-		if info.quantity and info.maxQuantity then
-			CurrencyButton.text:SetText(info.quantity.."/"..info.maxQuantity)
-			if event ~= "CURRENCY_DISPLAY_UPDATE" then
-				CurrencyButton.icon.texture:SetTexture(info.iconFileID)
-			end
-			self:Show()
-		else
-			self:Hide()
-		end
-	else
-		self:Hide()
-	end
-end)
-
--- 位置
-MinimapZoneTextButton:SetParent(Minimap)
-MinimapZoneTextButton:ClearAllPoints()
-MinimapZoneTextButton:SetPoint("CENTER", 0, 20)
-MinimapZoneTextButton:EnableMouse(false)
-MinimapZoneTextButton:Hide()
-MinimapZoneText:SetAllPoints(MinimapZoneTextButton)
+-- 地图
+MinimapCluster.ZoneTextButton:ClearAllPoints()
+MinimapCluster.ZoneTextButton:SetPoint("CENTER", Minimap, "CENTER", 0, 20)
+MinimapCluster.ZoneTextButton:EnableMouse(false)
+MinimapCluster.ZoneTextButton:Hide()
 MinimapZoneText:SetFont(G.norFont, 12, "OUTLINE") 
 MinimapZoneText:SetShadowOffset(0, 0)
 MinimapZoneText:SetJustifyH("CENTER")
@@ -739,87 +353,28 @@ Minimap:HookScript("OnEvent",function(self,event,...)
 	end
 end)
 
-Minimap:HookScript("OnEnter", function() MinimapZoneTextButton:Show() end)
-Minimap:HookScript("OnLeave", function() MinimapZoneTextButton:Hide() end)
+Minimap:HookScript("OnEnter", function() MinimapCluster.ZoneTextButton:Show() end)
+Minimap:HookScript("OnLeave", function() MinimapCluster.ZoneTextButton:Hide() end)
 
--- 新邮件图标
-MiniMapMailFrame:SetParent(Minimap)
-MiniMapMailFrame:ClearAllPoints()
-MiniMapMailFrame:SetSize(16, 16)
-MiniMapMailFrame:SetPoint("TOP", Minimap, "TOP", 0, -5)
-MiniMapMailFrame:HookScript('OnEnter', function(self)
-	GameTooltip:ClearAllPoints()
-	GameTooltip:SetPoint("BOTTOM", MiniMapMailFrame, "TOP", 0, 5)
-end)
-MiniMapMailIcon:SetTexture('Interface\\Minimap\\TRACKING\\Mailbox')
-MiniMapMailIcon:SetAllPoints(MiniMapMailFrame)
-MiniMapMailBorder:Hide()
+-- 邮件
+MinimapCluster.MailFrame:ClearAllPoints()
+MinimapCluster.MailFrame:SetPoint("TOP", Minimap, "TOP", 0, -5)
+MinimapCluster.MailFrame:SetHitRectInsets(-5, -5, -5, -5)	
+
+-- 日历
+GameTimeFrame:ClearAllPoints()
+GameTimeFrame:SetPoint("BOTTOMRIGHT", Minimap, "BOTTOMRIGHT", -5, 5)
 
 -- 时间
 if not IsAddOnLoaded("Blizzard_TimeManager") then LoadAddOn("Blizzard_TimeManager") end
-local clockFrame, clockTime = TimeManagerClockButton:GetRegions()
-clockFrame:Hide()
-clockTime:Hide()
-TimeManagerClockButton:EnableMouse(false)
+TimeManagerClockButton:ClearAllPoints()
+TimeManagerClockButton:SetPoint("RIGHT", GameTimeFrame, "LEFT", -5, -1)
+TimeManagerClockTicker:SetFont(G.norFont, 12, "OUTLINE") 
+TimeManagerClockTicker:SetShadowOffset(0, 0)
+TimeManagerClockTicker:SetJustifyH("RIGHT")
 
-local clockframe = CreateFrame("Frame", G.uiname.."Clock", Minimap)
-clockframe:SetPoint("BOTTOM", 0, 5)
-clockframe:SetSize(40, 20)
-
-clockframe.text = T.createtext(clockframe, "OVERLAY", 12, "OUTLINE", "CENTER")
-clockframe.text:SetPoint("BOTTOM")
-
-function clockframe:Update()
-    clockframe.text:SetText(GameTime_GetTime())
-end
-
-clockframe.t = 5
-clockframe:SetScript("OnUpdate", function(self, e)
-	self.t =  self.t + e
-	if self.t > 5 then
-		self.Update()
-		self.t = 0
-	end
-end)
-
-clockframe:SetScript("OnMouseDown", function(self, bu)
-    if bu == "LeftButton" then
-        ToggleCalendar()
-    elseif IsModifierKeyDown() then
-        TimeManager_ToggleTimeFormat()
-    else
-        TimeManager_ToggleLocalTime()
-    end
-    self.Update()
-end)
-
--- 缩放小地图比例
-Minimap:EnableMouseWheel(true)
-Minimap:SetScript('OnMouseWheel', function(self, delta)
-    if delta > 0 then
-        MinimapZoomIn:Click()
-    elseif delta < 0 then
-        MinimapZoomOut:Click()
-    end
-end)
-
--- 右键打开追踪
-Minimap:SetScript('OnMouseUp', function (self, button)
-	if button == 'RightButton' then
-		GameTooltip:Hide()
-		ToggleDropDownMenu(1, nil, MiniMapTrackingDropDown, Minimap, (Minimap:GetWidth()+8), (Minimap:GetHeight()))
-		DropDownList1:ClearAllPoints()
-		if select(2, Minimap:GetCenter())/G.screenheight > .5 then -- In the upper part of the screen
-			DropDownList1:SetPoint("TOPRIGHT", Minimap, "BOTTOMRIGHT", 0, -8)
-		else
-			DropDownList1:SetPoint("BOTTOMRIGHT", Minimap, "TOPRIGHT", 0, 8)
-		end
-	else
-		Minimap_OnClick(self)
-	end
-end)
-
-function GetMinimapShape() return 'SQUARE' end
+-- 附加按钮
+ExpansionLandingPageMinimapButton:SetParent(Minimap)
 
 -- 经验条
 local xpbar = CreateFrame("StatusBar", G.uiname.."ExperienceBar", Minimap)
@@ -848,7 +403,7 @@ local function CommaValue(amount)
 	end
 	return formatted
 end
-
+		
 xpbar:SetScript("OnEnter", function()
 	GameTooltip_SetDefaultAnchor(GameTooltip, UIParent)
 	
@@ -1291,7 +846,6 @@ GameMenuButtonRatings:SetPoint("TOP", GameMenuButton, "BOTTOM", 0, -1)
 
 function GameMenuFrame_UpdateVisibleButtons(self)
 	local height = 332;
-	GameMenuButtonUIOptions:SetPoint("TOP", GameMenuButtonOptions, "BOTTOM", 0, -1);
 
 	local buttonToReanchor = GameMenuButtonWhatsNew;
 	local reanchorYOffset = -1;
@@ -1303,7 +857,6 @@ function GameMenuFrame_UpdateVisibleButtons(self)
 		reanchorYOffset = -16;
 	else
 		GameMenuButtonWhatsNew:Show();
-		GameMenuButtonOptions:SetPoint("TOP", GameMenuButtonWhatsNew, "BOTTOM", 0, -16);
 	end
 
 	if ( C_StorePublic.IsEnabled() ) then
@@ -1315,7 +868,6 @@ function GameMenuFrame_UpdateVisibleButtons(self)
 		buttonToReanchor:SetPoint("TOP", GameMenuButtonHelp, "BOTTOM", 0, reanchorYOffset);
 	end
 	
-	
 	if ( GameMenuButtonRatings:IsShown() ) then
 		height = height + 20;
 		GameMenuButtonLogout:SetPoint("TOP", GameMenuButtonRatings, "BOTTOM", 0, -16);
@@ -1326,247 +878,6 @@ function GameMenuFrame_UpdateVisibleButtons(self)
 	self:SetHeight(height);
 end
 
-
---====================================================--
---[[                  -- Micromenu --               ]]--
---====================================================--
-
-local MicromenuBar = CreateFrame("Frame", G.uiname.."MicromenuBar", UIParent, "BackdropTemplate")
-MicromenuBar:SetScale(aCoreCDB["SkinOptions"]["micromenuscale"])
-MicromenuBar:SetFrameLevel(4)
-MicromenuBar:SetSize(388, 24)
-
-MicromenuBar.tex = MicromenuBar:CreateTexture(nil, "ARTWORK")
-MicromenuBar.tex:SetAllPoints()
-MicromenuBar.tex:SetTexture(G.media.blank)
-MicromenuBar.tex:SetGradientAlpha("VERTICAL", .2,.2,.2,.15,.25,.25,.25,.6)
-
-MicromenuBar.sd = T.createBackdrop(MicromenuBar, MicromenuBar, 1)
-
-MicromenuBar.movingname = L["微型菜单"]
-MicromenuBar.point = {
-		healer = {a1 = "TOP", parent = "UIParent", a2 = "TOP", x = 0, y = -5},
-		dpser = {a1 = "TOP", parent = "UIParent", a2 = "TOP", x = 0, y = -5},
-	}
-T.CreateDragFrame(MicromenuBar)
-
-G.MicromenuBar = MicromenuBar
-
-local MicromenuButtons = {}
-
-local function CreateMicromenuButton(parent, bu, text, original)
-	local Button
-	if bu then
-		Button = bu
-		Button:SetParent(parent)
-		Button:ClearAllPoints()
-		Button:GetNormalTexture():SetAlpha(0)
-		Button:GetPushedTexture():SetAlpha(0)
-		Button:GetHighlightTexture():SetAlpha(0)
-		Button:GetDisabledTexture(nil)
-		Button.SetDisabledTexture = T.dummy
-		for j = 1, Button:GetNumRegions() do
-			local region = select(j, Button:GetRegions())
-			region:Hide()
-			region.Show = T.dummy
-		end
-		for i, child in ipairs({Button:GetChildren()}) do
-			child:Hide()
-			child.Show = T.dummy
-		end
-	else
-		Button = CreateFrame("Button", nil, parent)
-	end
-	
-	if original == "System" then
-		Button:SetSize(80, 43)
-		Button:DisableDrawLayer("BACKGROUND")
-	else
-		Button:SetSize(24, 43)
-	end
-	
-	Button:SetFrameLevel(5)
-	Button.normal = Button:CreateTexture(nil, "OVERLAY")
-	Button.normal:SetPoint("BOTTOMLEFT")
-	Button.normal:SetPoint("BOTTOMRIGHT")
-	Button.normal:SetHeight(24)
-	
-	if original == "System" then
-		Button.name = T.createtext(Button, "OVERLAY", 14, "OUTLINE", "CENTER")
-		Button.name:SetText(text)
-		Button.name:SetPoint("BOTTOM", 0, 4)
-	else
-		Button.normal:SetTexture("Interface\\AddOns\\AltzUI\\media\\icons\\"..original)
-		Button.normal:SetVertexColor(.6, .6, .6)
-		Button.normal:SetBlendMode("ADD")
-		
-		Button.text = T.createtext(Button, "HIGHLIGHT", 12, "OUTLINE", "CENTER")
-		Button.text:SetText(text)
-		Button.text:SetTextColor(G.Ccolor.r, G.Ccolor.g, G.Ccolor.b)
-	end
-	
-	Button.highlight = Button:CreateTexture(nil, "HIGHLIGHT")
-	Button.highlight:SetPoint("TOPLEFT", Button.normal, "TOPLEFT", -12, 1)
-	Button.highlight:SetPoint("BOTTOMRIGHT", Button.normal, "BOTTOMRIGHT", 12, -1)
-	Button.highlight:SetVertexColor(G.Ccolor.r, G.Ccolor.g, G.Ccolor.b, .8)
-	Button.highlight:SetTexture(G.media.buttonhighlight)
-	Button.highlight:SetBlendMode("ADD")
-	
-	Button.highlight2 = Button:CreateTexture(nil, "HIGHLIGHT")
-	Button.highlight2:SetPoint("TOPLEFT", Button.normal, "BOTTOMLEFT", -15, 1)
-	Button.highlight2:SetPoint("TOPRIGHT", Button.normal, "BOTTOMRIGHT", 15, 1)
-	Button.highlight2:SetHeight(20)
-	Button.highlight2:SetVertexColor(G.Ccolor.r, G.Ccolor.g, G.Ccolor.b, .6)
-	Button.highlight2:SetTexture(G.media.barhightlight)
-	Button.highlight2:SetBlendMode("ADD")
-	
-	if not bu then
-		Button:SetScript("OnClick", function()
-			if original == "Friends" then
-				ToggleFriendsFrame(1)
-			elseif original == "Bag" then
-				if GameMenuFrame:IsShown() then
-					HideUIPanel(GameMenuFrame)
-				end
-				ToggleAllBags()	
-			else
-				print(original)
-			end
-		end)
-	end
-
-	tinsert(MicromenuButtons, Button)
-	return Button
-end
-
-MicromenuBar.Charcter = CreateMicromenuButton(MicromenuBar, CharacterMicroButton, CHARACTER_BUTTON, "Charcter")
-MicromenuBar.Friends = CreateMicromenuButton(MicromenuBar, false, SOCIAL_BUTTON, "Friends")
-MicromenuBar.Guild = CreateMicromenuButton(MicromenuBar, GuildMicroButton, GUILD, "Guild")
-MicromenuBar.Achievement = CreateMicromenuButton(MicromenuBar, AchievementMicroButton, ACHIEVEMENT_BUTTON, "Achievement")
-MicromenuBar.EJ = CreateMicromenuButton(MicromenuBar, EJMicroButton, ENCOUNTER_JOURNAL, "EJ")
-MicromenuBar.Store = CreateMicromenuButton(MicromenuBar, StoreMicroButton, BLIZZARD_STORE, "Store") 
-MicromenuBar.System = CreateMicromenuButton(MicromenuBar, MainMenuMicroButton, G.classcolor.." AltzUI "..G.Version.."|r", "System")
-MicromenuBar.Pet = CreateMicromenuButton(MicromenuBar, CollectionsMicroButton, MOUNTS_AND_PETS, "Pet")
-MicromenuBar.Talent = CreateMicromenuButton(MicromenuBar, TalentMicroButton, TALENTS_BUTTON, "Talent")
-MicromenuBar.LFR = CreateMicromenuButton(MicromenuBar, LFDMicroButton, LFG_TITLE, "LFR")
-MicromenuBar.Quests = CreateMicromenuButton(MicromenuBar, QuestLogMicroButton, QUESTLOG_BUTTON, "Quests")
-MicromenuBar.Spellbook = CreateMicromenuButton(MicromenuBar, SpellbookMicroButton, SPELLBOOK_ABILITIES_BUTTON, "Spellbook")
-MicromenuBar.Bag = CreateMicromenuButton(MicromenuBar, false, BAGSLOT, "Bag")
-
-function MainMenuMicroButton_PositionAlert(alert)	
-	alert:ClearAllPoints();
-	alert:SetPoint("TOP", UIParent, "TOP", 0, -30);
-	alert.Arrow:ClearAllPoints();
-	alert.Arrow:SetPoint("BOTTOMRIGHT", alert, "TOPRIGHT", -4, 4);
-end
-
-OverrideActionBar_UpdateMicroButtons = function() end
-GuildMicroButton.NotificationOverlay:SetAlpha(0)
-
-for i = 1, #MicromenuButtons do
-	if i == 1 then
-		MicromenuButtons[i]:SetPoint("BOTTOMLEFT", MicromenuBar, "BOTTOMLEFT", 10, 0)
-	else
-		MicromenuButtons[i]:SetPoint("BOTTOMLEFT", MicromenuButtons[i-1], "BOTTOMRIGHT", 0, 0)
-	end
-end
-
-local function OnHover(button)
-	if button:IsEnabled() and button.text then
-		button.normal:SetVertexColor(G.Ccolor.r, G.Ccolor.g, G.Ccolor.b)
-		button.text:ClearAllPoints()
-		if select(2, MicromenuBar:GetCenter())/G.screenheight > .5 then -- In the upper part of the screen
-			button.text:SetPoint("TOP", button.normal, "BOTTOM", 0, -4)
-		else
-			button.text:SetPoint("BOTTOM", button.normal, "TOP", 0, 4)
-		end
-	end
-end
-
-local function OnLeave(button)
-	if button:IsEnabled() and button.text then
-		button.normal:SetVertexColor(.6, .6, .6)
-	end
-end
-
-local function UpdateFade(frame, children, dbvalue)
-	if aCoreCDB["OtherOptions"][dbvalue] then
-		frame:SetAlpha(0)
-		frame:SetScript("OnEnter", function(self) 
-			GameTooltip:SetOwner(frame, "ANCHOR_BOTTOM")
-			GameTooltip:AddLine(L["关闭自动隐藏"].." "..(aCoreCDB["OtherOptions"]["micromenubg"] and L["隐藏背景"] or L["显示背景"]))
-			GameTooltip:Show()
-			T.UIFrameFadeIn(self, .5, self:GetAlpha(), 1)
-		end)
-		frame:SetScript("OnLeave", function(self)
-			GameTooltip:Hide()
-			T.UIFrameFadeOut(self, .5, self:GetAlpha(), 0)
-		end)
-		if children then
-			for i = 1, #children do
-				children[i]:SetScript("OnEnter", function(self) 
-					OnHover(self) 
-					T.UIFrameFadeIn(frame, .5, frame:GetAlpha(), 1)
-				end)
-				children[i]:SetScript("OnLeave", function(self) OnLeave(self) T.UIFrameFadeOut(frame, .5, frame:GetAlpha(), 0) end)
-			end
-		end
-		T.UIFrameFadeOut(frame, .5, frame:GetAlpha(), 0)
-	else
-		frame:SetScript("OnEnter", function(self) 
-			GameTooltip:SetOwner(frame, "ANCHOR_BOTTOM")
-			GameTooltip:AddLine(L["打开自动隐藏"].." "..(aCoreCDB["OtherOptions"]["micromenubg"] and L["隐藏背景"] or L["显示背景"]))
-			GameTooltip:Show()
-		end)
-		frame:SetScript("OnLeave", function(self)
-			GameTooltip:Hide()
-		end)
-		if children then
-			for i = 1, #children do
-				children[i]:SetScript("OnEnter", function(self) OnHover(self) end)
-				children[i]:SetScript("OnLeave", function(self) OnLeave(self) end)
-			end
-		end
-		T.UIFrameFadeIn(frame, .5, frame:GetAlpha(), 1)
-	end
-end
-
-local function UpdateBg(frame, dbvalue)
-	if aCoreCDB["OtherOptions"][dbvalue] then
-		frame.tex:SetTexture(G.media.blank)
-		frame.sd:SetBackdropColor(0, 0, 0, 1)
-		frame.sd:SetBackdropBorderColor(0, 0, 0, 1)
-	else
-		frame.tex:SetTexture(nil)
-		frame.sd:SetBackdropColor(0, 0, 0, 0)
-		frame.sd:SetBackdropBorderColor(0, 0, 0, 0)
-	end
-end
-
-MicromenuBar:SetScript("OnMouseDown", function(self, bu)
-	if bu == "LeftButton" then
-		if aCoreCDB["OtherOptions"]["fademicromenu"] then
-			aCoreCDB["OtherOptions"]["fademicromenu"] = false
-		else
-			aCoreCDB["OtherOptions"]["fademicromenu"] = true
-		end
-		UpdateFade(self, MicromenuButtons, "fademicromenu")
-	elseif bu == "RightButton" then
-		if aCoreCDB["OtherOptions"]["micromenubg"] then
-			aCoreCDB["OtherOptions"]["micromenubg"] = false
-		else
-			aCoreCDB["OtherOptions"]["micromenubg"] = true
-		end
-		UpdateBg(self, "micromenubg")
-	end
-end)
-
-MicromenuBar:SetScript("OnEvent", function(self) 
-	UpdateFade(self, MicromenuButtons, "fademicromenu")
-	UpdateBg(self, "micromenubg")
-end)
-	
-MicromenuBar:RegisterEvent("PLAYER_LOGIN")
 --====================================================--
 --[[          --  Order Hall Command Bar --         ]]--
 --====================================================--
@@ -1863,7 +1174,7 @@ if aCoreCDB["UnitframeOptions"]["raidtool"] then
 	}
 	
 	for i = 1, 9 do
-		local bu = CreateFrame("Button", G.uiname.."Raid Mark Button"..i, raidmark, "SecureActionButtonTemplate")     
+		local bu = CreateFrame("Button", G.uiname.."Raid Mark Button"..i, raidmark)     
 		bu:SetPoint("TOPLEFT", raidmark, "TOPLEFT", (i-1)*33, 0) 	
 		bu:SetSize(25, 25)
 		
@@ -1885,14 +1196,14 @@ if aCoreCDB["UnitframeOptions"]["raidtool"] then
 			bu:SetHighlightTexture("Interface\\BUTTONS\\UI-GroupLoot-Pass-Highlight")
 			bu:SetPushedTexture("Interface\\BUTTONS\\UI-GroupLoot-Pass-Down")
 			bu:SetPushedTextOffset(3, 3)
-			bu:RegisterForClicks("LeftButtonDown")
-			bu:SetAttribute("type", "macro") 
-			bu:SetAttribute("macrotext1", "/script SetRaidTarget(\"target\",0)")
+			bu:SetScript("OnClick", function()
+				SetRaidTarget("target", 0)
+			end)
 		else
 			bu.tex:SetTexture("Interface\\TargetingFrame\\UI-RaidTargetingIcon_"..i)	
-			bu:RegisterForClicks("LeftButtonDown")
-			bu:SetAttribute("type", "macro")
-			bu:SetAttribute("macrotext1", "/script SetRaidTarget(\"target\","..i..")")
+			bu:SetScript("OnClick", function()
+				SetRaidTarget("target", i)
+			end)
 			bu:SetScript("OnEnter", function()
 				bu.bg:SetBackdropBorderColor(rm_colors[i][1], rm_colors[i][2], rm_colors[i][3])
 			end)
@@ -1926,17 +1237,13 @@ if aCoreCDB["UnitframeOptions"]["raidtool"] then
 			bu:SetHighlightTexture("Interface\\BUTTONS\\UI-GroupLoot-Pass-Highlight")
 			bu:SetPushedTexture("Interface\\BUTTONS\\UI-GroupLoot-Pass-Down")
 			bu:SetPushedTextOffset(3, 3)
-			bu:RegisterForClicks("LeftButtonDown")
 			bu:SetAttribute("type", "macro") 
 			bu:SetAttribute("macrotext1", "/cwm 0")
 		else
 			bu.bgtex:SetVertexColor(rm_colors[i][1], rm_colors[i][2], rm_colors[i][3], .5)
 			bu.tex:SetTexture("Interface\\TargetingFrame\\UI-RaidTargetingIcon_"..i)	
-			bu:RegisterForClicks("LeftButtonDown","RightButtonDown")
 			bu:SetAttribute("type", "macro") 
-			bu:SetAttribute("macrotext1", "/wm "..wm_index[i])
-			bu:SetAttribute("type2", "macro") 
-			bu:SetAttribute("macrotext2", "/cwm "..wm_index[i])
+			bu:SetAttribute("macrotext", "/wm "..wm_index[i])
 			bu:SetScript("OnEnter", function()
 				bu.bg:SetBackdropBorderColor(rm_colors[i][1], rm_colors[i][2], rm_colors[i][3])
 			end)
