@@ -1,21 +1,21 @@
 local _, ns = ...
-local F, C = unpack(ns)
+local B, C, L, DB = unpack(ns)
 
 local function reskinTableAttribute(frame)
 	if frame.styled then return end
 
-	F.StripTextures(frame)
-	F.SetBD(frame)
-	F.ReskinClose(frame.CloseButton)
-	F.ReskinCheck(frame.VisibilityButton)
-	F.ReskinCheck(frame.HighlightButton)
-	F.ReskinCheck(frame.DynamicUpdateButton)
-	F.ReskinInput(frame.FilterBox)
+	B.StripTextures(frame)
+	B.SetBD(frame)
+	B.ReskinClose(frame.CloseButton)
+	B.ReskinCheck(frame.VisibilityButton)
+	B.ReskinCheck(frame.HighlightButton)
+	B.ReskinCheck(frame.DynamicUpdateButton)
+	B.ReskinInput(frame.FilterBox)
 
-	F.ReskinArrow(frame.OpenParentButton, "up")
-	F.ReskinArrow(frame.NavigateBackwardButton, "left")
-	F.ReskinArrow(frame.NavigateForwardButton, "right")
-	F.ReskinArrow(frame.DuplicateButton, "up")
+	B.ReskinArrow(frame.OpenParentButton, "up")
+	B.ReskinArrow(frame.NavigateBackwardButton, "left")
+	B.ReskinArrow(frame.NavigateForwardButton, "right")
+	B.ReskinArrow(frame.DuplicateButton, "up")
 
 	frame.NavigateBackwardButton:ClearAllPoints()
 	frame.NavigateBackwardButton:SetPoint("LEFT", frame.OpenParentButton, "RIGHT")
@@ -24,9 +24,9 @@ local function reskinTableAttribute(frame)
 	frame.DuplicateButton:ClearAllPoints()
 	frame.DuplicateButton:SetPoint("LEFT", frame.NavigateForwardButton, "RIGHT")
 
-	F.StripTextures(frame.ScrollFrameArt)
-	F.CreateBDFrame(frame.ScrollFrameArt, .25)
-	F.ReskinScroll(frame.LinesScrollFrame.ScrollBar)
+	B.StripTextures(frame.ScrollFrameArt)
+	B.CreateBDFrame(frame.ScrollFrameArt, .25)
+	B.ReskinScroll(frame.LinesScrollFrame.ScrollBar)
 
 	frame.styled = true
 end
@@ -35,10 +35,4 @@ C.themes["Blizzard_DebugTools"] = function()
 	-- Table Attribute Display
 	reskinTableAttribute(TableAttributeDisplay)
 	hooksecurefunc(TableInspectorMixin, "InspectTable", reskinTableAttribute)
-
-	-- Tooltips
-	if F.ReskinTooltip then
-		F.ReskinTooltip(FrameStackTooltip)
-		FrameStackTooltip:SetScale(UIParent:GetScale())
-	end
 end

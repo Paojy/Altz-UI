@@ -1,23 +1,23 @@
 local _, ns = ...
-local F, C = unpack(ns)
+local B, C, L, DB = unpack(ns)
 
 C.themes["Blizzard_AzeriteUI"] = function()
-	F.ReskinPortraitFrame(AzeriteEmpoweredItemUI)
+	B.ReskinPortraitFrame(AzeriteEmpoweredItemUI)
 	AzeriteEmpoweredItemUIBg:Hide()
 	AzeriteEmpoweredItemUI.ClipFrame.BackgroundFrame.Bg:Hide()
 end
 
 C.themes["Blizzard_AzeriteEssenceUI"] = function()
-	local r, g, b = C.r, C.g, C.b
+	local r, g, b = DB.r, DB.g, DB.b
 
-	F.ReskinPortraitFrame(AzeriteEssenceUI)
-	F.StripTextures(AzeriteEssenceUI.PowerLevelBadgeFrame)
-	F.ReskinScroll(AzeriteEssenceUI.EssenceList.ScrollBar)
+	B.ReskinPortraitFrame(AzeriteEssenceUI)
+	B.StripTextures(AzeriteEssenceUI.PowerLevelBadgeFrame)
+	B.ReskinScroll(AzeriteEssenceUI.EssenceList.ScrollBar)
 
 	local headerButton = AzeriteEssenceUI.EssenceList.HeaderButton
 	headerButton:DisableDrawLayer("BORDER")
 	headerButton:DisableDrawLayer("BACKGROUND")
-	local bg = F.CreateBDFrame(headerButton, 0, true)
+	local bg = B.CreateBDFrame(headerButton, 0, true)
 	bg:SetPoint("TOPLEFT", headerButton.ExpandedIcon, -4, 6)
 	bg:SetPoint("BOTTOMRIGHT", headerButton.ExpandedIcon, 4, -6)
 	headerButton:SetScript("OnEnter", function()
@@ -30,18 +30,18 @@ C.themes["Blizzard_AzeriteEssenceUI"] = function()
 	for _, milestoneFrame in pairs(AzeriteEssenceUI.Milestones) do
 		if milestoneFrame.LockedState then
 			milestoneFrame.LockedState.UnlockLevelText:SetTextColor(.6, .8, 1)
-			milestoneFrame.LockedState.UnlockLevelText.SetTextColor = F.Dummy
+			milestoneFrame.LockedState.UnlockLevelText.SetTextColor = B.Dummy
 		end
 	end
 
 	hooksecurefunc(AzeriteEssenceUI.EssenceList, "Refresh", function(self)
 		for _, button in ipairs(self.buttons) do
 			if not button.bg then
-				local bg = F.CreateBDFrame(button, .25)
+				local bg = B.CreateBDFrame(button, .25)
 				bg:SetPoint("TOPLEFT", 1, 0)
 				bg:SetPoint("BOTTOMRIGHT", 0, 2)
 
-				F.ReskinIcon(button.Icon)
+				B.ReskinIcon(button.Icon)
 				button.PendingGlow:SetTexture("")
 				local hl = button:GetHighlightTexture()
 				hl:SetColorTexture(r, g, b, .25)
@@ -63,24 +63,24 @@ C.themes["Blizzard_AzeriteEssenceUI"] = function()
 end
 
 local function reskinReforgeUI(frame, index)
-	F.StripTextures(frame, index)
-	F.CreateBDFrame(frame.Background)
-	F.SetBD(frame)
-	F.ReskinClose(frame.CloseButton)
-	F.ReskinIcon(frame.ItemSlot.Icon)
+	B.StripTextures(frame, index)
+	B.CreateBDFrame(frame.Background)
+	B.SetBD(frame)
+	B.ReskinClose(frame.CloseButton)
+	B.ReskinIcon(frame.ItemSlot.Icon)
 
 	local buttonFrame = frame.ButtonFrame
-	F.StripTextures(buttonFrame)
+	B.StripTextures(buttonFrame)
 	buttonFrame.MoneyFrameEdge:SetAlpha(0)
-	local bg = F.CreateBDFrame(buttonFrame, .25)
+	local bg = B.CreateBDFrame(buttonFrame, .25)
 	bg:SetPoint("TOPLEFT", buttonFrame.MoneyFrameEdge, 3, 0)
 	bg:SetPoint("BOTTOMRIGHT", buttonFrame.MoneyFrameEdge, 0, 2)
-	if buttonFrame.AzeriteRespecButton then F.Reskin(buttonFrame.AzeriteRespecButton) end
-	if buttonFrame.ActionButton then F.Reskin(buttonFrame.ActionButton) end
-	if buttonFrame.Currency then F.ReskinIcon(buttonFrame.Currency.icon) end
+	if buttonFrame.AzeriteRespecButton then B.Reskin(buttonFrame.AzeriteRespecButton) end
+	if buttonFrame.ActionButton then B.Reskin(buttonFrame.ActionButton) end
+	if buttonFrame.Currency then B.ReskinIcon(buttonFrame.Currency.Icon) end
 
 	if frame.DescriptionCurrencies then
-		hooksecurefunc(frame.DescriptionCurrencies, "SetCurrencies", F.SetCurrenciesHook)
+		hooksecurefunc(frame.DescriptionCurrencies, "SetCurrencies", B.SetCurrenciesHook)
 	end
 end
 

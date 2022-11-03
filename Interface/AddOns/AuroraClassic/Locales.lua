@@ -1,4 +1,4 @@
-local F, C, L = unpack(select(2, ...))
+local B, C, L = unpack(select(2, ...))
 
 local locale = GetLocale()
 

@@ -1,33 +1,33 @@
 local _, ns = ...
-local F, C = unpack(ns)
+local B, C, L, DB = unpack(ns)
 
-C.themes["Blizzard_TalkingHeadUI"] = function()
+tinsert(C.defaultThemes, function()
 	local TalkingHeadFrame = TalkingHeadFrame
 	TalkingHeadFrame:SetScale(.9)
 
 	local portraitFrame = TalkingHeadFrame.PortraitFrame
-	F.StripTextures(portraitFrame)
+	B.StripTextures(portraitFrame)
 	portraitFrame.Portrait:SetAtlas(nil)
-	portraitFrame.Portrait.SetAtlas = F.Dummy
+	portraitFrame.Portrait.SetAtlas = B.Dummy
 
 	local model = TalkingHeadFrame.MainFrame.Model
 	model:SetPoint("TOPLEFT", 30, -27)
 	model:SetSize(100, 100)
 	model.PortraitBg:SetAtlas(nil)
-	model.PortraitBg.SetAtlas = F.Dummy
+	model.PortraitBg.SetAtlas = B.Dummy
 
 	local name = TalkingHeadFrame.NameFrame.Name
 	name:SetTextColor(1, .8, 0)
-	name.SetTextColor = F.Dummy
+	name.SetTextColor = B.Dummy
 	name:SetShadowColor(0, 0, 0, 0)
 
 	local text = TalkingHeadFrame.TextFrame.Text
 	text:SetTextColor(1, 1, 1)
-	text.SetTextColor = F.Dummy
+	text.SetTextColor = B.Dummy
 	text:SetShadowColor(0, 0, 0, 0)
 
 	local closeButton = TalkingHeadFrame.MainFrame.CloseButton
-	F.ReskinClose(closeButton)
+	B.ReskinClose(closeButton)
 	closeButton:ClearAllPoints()
 	closeButton:SetPoint("TOPRIGHT", -25, -25)
-end
+end)

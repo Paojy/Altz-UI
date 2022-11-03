@@ -1,5 +1,5 @@
 local _, ns = ...
-local F, C = unpack(ns)
+local B, C, L, DB = unpack(ns)
 
 local function updateGuildRanks()
 	for i = 1, GuildControlGetNumRanks() do
@@ -9,10 +9,10 @@ local function updateGuildRanks()
 			rank.downButton.icon:Hide()
 			rank.deleteButton.icon:Hide()
 
-			F.ReskinArrow(rank.upButton, "up")
-			F.ReskinArrow(rank.downButton, "down")
-			F.ReskinClose(rank.deleteButton)
-			F.ReskinInput(rank.nameBox, 20)
+			B.ReskinArrow(rank.upButton, "up")
+			B.ReskinArrow(rank.downButton, "down")
+			B.ReskinClose(rank.deleteButton)
+			B.ReskinInput(rank.nameBox, 20)
 
 			rank.styled = true
 		end
@@ -20,9 +20,9 @@ local function updateGuildRanks()
 end
 
 C.themes["Blizzard_GuildControlUI"] = function()
-	local r, g, b = C.r, C.g, C.b
+	local r, g, b = DB.r, DB.g, DB.b
 
-	F.SetBD(GuildControlUI)
+	B.SetBD(GuildControlUI)
 
 	for i = 1, 9 do
 		select(i, GuildControlUI:GetRegions()):Hide()
@@ -56,22 +56,22 @@ C.themes["Blizzard_GuildControlUI"] = function()
 				local ownedTab = bu.owned
 
 				_G[tab.."Bg"]:Hide()
-				F.ReskinIcon(ownedTab.tabIcon)
-				F.CreateBDFrame(bu, .25)
-				F.Reskin(bu.buy.button)
-				F.ReskinInput(ownedTab.editBox)
+				B.ReskinIcon(ownedTab.tabIcon)
+				B.CreateBDFrame(bu, .25)
+				B.Reskin(bu.buy.button)
+				B.ReskinInput(ownedTab.editBox)
 
 				for _, name in pairs(checkboxes) do
 					local box = ownedTab[name]
-					box:SetNormalTexture("")
-					box:SetPushedTexture("")
-					box:SetHighlightTexture(C.bdTex)
+					box:SetNormalTexture(0)
+					box:SetPushedTexture(0)
+					box:SetHighlightTexture(DB.bdTex)
 
 					local check = box:GetCheckedTexture()
 					check:SetDesaturated(true)
 					check:SetVertexColor(r, g, b)
 
-					local bg = F.CreateBDFrame(box, 0, true)
+					local bg = B.CreateBDFrame(box, 0, true)
 					bg:SetInside(box, 4, 4)
 
 					local hl = box:GetHighlightTexture()
@@ -84,19 +84,19 @@ C.themes["Blizzard_GuildControlUI"] = function()
 		end
 	end)
 
-	F.ReskinCheck(GuildControlUIRankSettingsFrameOfficerCheckbox)
+	B.ReskinCheck(GuildControlUIRankSettingsFrameOfficerCheckbox)
 	for i = 1, 20 do
 		local checbox = _G["GuildControlUIRankSettingsFrameCheckbox"..i]
 		if checbox then
-			F.ReskinCheck(checbox)
+			B.ReskinCheck(checbox)
 		end
 	end
 
-	F.Reskin(GuildControlUIRankOrderFrameNewButton)
-	F.ReskinClose(GuildControlUICloseButton)
-	F.ReskinScroll(GuildControlUIRankBankFrameInsetScrollFrameScrollBar)
-	F.ReskinDropDown(GuildControlUINavigationDropDown)
-	F.ReskinDropDown(GuildControlUIRankSettingsFrameRankDropDown)
-	F.ReskinDropDown(GuildControlUIRankBankFrameRankDropDown)
-	F.ReskinInput(GuildControlUIRankSettingsFrameGoldBox, 20)
+	B.Reskin(GuildControlUIRankOrderFrameNewButton)
+	B.ReskinClose(GuildControlUICloseButton)
+	B.ReskinScroll(GuildControlUIRankBankFrameInsetScrollFrameScrollBar)
+	B.ReskinDropDown(GuildControlUINavigationDropDown)
+	B.ReskinDropDown(GuildControlUIRankSettingsFrameRankDropDown)
+	B.ReskinDropDown(GuildControlUIRankBankFrameRankDropDown)
+	B.ReskinInput(GuildControlUIRankSettingsFrameGoldBox, 20)
 end

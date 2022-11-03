@@ -1,42 +1,42 @@
 local _, ns = ...
-local F, C = unpack(ns)
-local r, g, b = C.r, C.g, C.b
-local x1, x2, y1, y2 = unpack(C.TexCoord)
+local B, C, L, DB = unpack(ns)
 
 local function ResetToggleTexture(button, texture)
-	button:GetNormalTexture():SetTexCoord(x1, x2, y1, y2)
+	button:GetNormalTexture():SetTexCoord(unpack(DB.TexCoord))
 	button:GetNormalTexture():SetInside()
 	button:SetNormalTexture(texture)
-	button:GetPushedTexture():SetTexCoord(x1, x2, y1, y2)
+	button:GetPushedTexture():SetTexCoord(unpack(DB.TexCoord))
 	button:GetPushedTexture():SetInside()
 	button:SetPushedTexture(texture)
 end
 
 tinsert(C.defaultThemes, function()
+	local r, g, b = DB.r, DB.g, DB.b
+
 	-- Dressup Frame
 
-	F.ReskinPortraitFrame(DressUpFrame)
-	F.Reskin(DressUpFrameOutfitDropDown.SaveButton)
-	F.Reskin(DressUpFrameCancelButton)
-	F.Reskin(DressUpFrameResetButton)
-	F.StripTextures(DressUpFrameOutfitDropDown)
-	F.ReskinDropDown(DressUpFrameOutfitDropDown)
-	F.ReskinMinMax(DressUpFrame.MaximizeMinimizeFrame)
+	B.ReskinPortraitFrame(DressUpFrame)
+	B.Reskin(DressUpFrameOutfitDropDown.SaveButton)
+	B.Reskin(DressUpFrameCancelButton)
+	B.Reskin(DressUpFrameResetButton)
+	B.StripTextures(DressUpFrameOutfitDropDown)
+	B.ReskinDropDown(DressUpFrameOutfitDropDown)
+	B.ReskinMinMax(DressUpFrame.MaximizeMinimizeFrame)
 
-	F.Reskin(DressUpFrame.LinkButton)
-	F.Reskin(DressUpFrame.ToggleOutfitDetailsButton)
+	B.Reskin(DressUpFrame.LinkButton)
+	B.Reskin(DressUpFrame.ToggleOutfitDetailsButton)
 	ResetToggleTexture(DressUpFrame.ToggleOutfitDetailsButton, 1392954) -- 70_professions_scroll_01
 
-	F.StripTextures(DressUpFrame.OutfitDetailsPanel)
-	local bg = F.SetBD(DressUpFrame.OutfitDetailsPanel)
+	B.StripTextures(DressUpFrame.OutfitDetailsPanel)
+	local bg = B.SetBD(DressUpFrame.OutfitDetailsPanel)
 	bg:SetInside(nil, 11, 11)
 
 	hooksecurefunc(DressUpFrame.OutfitDetailsPanel, "Refresh", function(self)
 		if self.slotPool then
 			for slot in self.slotPool:EnumerateActive() do
 				if not slot.bg then
-					slot.bg = F.ReskinIcon(slot.Icon)
-					F.ReskinIconBorder(slot.IconBorder, true, true)
+					slot.bg = B.ReskinIcon(slot.Icon)
+					B.ReskinIconBorder(slot.IconBorder, true, true)
 				end
 			end
 		end
@@ -46,14 +46,14 @@ tinsert(C.defaultThemes, function()
 	DressUpFrameOutfitDropDown.SaveButton:SetPoint("LEFT", DressUpFrameOutfitDropDown, "RIGHT", -13, 2)
 	DressUpFrameResetButton:SetPoint("RIGHT", DressUpFrameCancelButton, "LEFT", -1, 0)
 
-	F.ReskinCheck(TransmogAndMountDressupFrame.ShowMountCheckButton)
+	B.ReskinCheck(TransmogAndMountDressupFrame.ShowMountCheckButton)
 
 	-- SideDressUp
 
-	F.StripTextures(SideDressUpFrame, 0)
-	F.SetBD(SideDressUpFrame)
-	F.Reskin(SideDressUpFrame.ResetButton)
-	F.ReskinClose(SideDressUpFrameCloseButton)
+	B.StripTextures(SideDressUpFrame, 0)
+	B.SetBD(SideDressUpFrame)
+	B.Reskin(SideDressUpFrame.ResetButton)
+	B.ReskinClose(SideDressUpFrameCloseButton)
 
 	SideDressUpFrame:HookScript("OnShow", function(self)
 		SideDressUpFrame:ClearAllPoints()
@@ -62,14 +62,14 @@ tinsert(C.defaultThemes, function()
 
 	-- Outfit frame
 
-	F.StripTextures(WardrobeOutfitFrame)
-	F.SetBD(WardrobeOutfitFrame, .7)
+	B.StripTextures(WardrobeOutfitFrame)
+	B.SetBD(WardrobeOutfitFrame, .7)
 
 	hooksecurefunc(WardrobeOutfitFrame, "Update", function(self)
 		for i = 1, C_TransmogCollection.GetNumMaxOutfits() do
 			local button = self.Buttons[i]
 			if button and button:IsShown() and not button.styled then
-				F.ReskinIcon(button.Icon)
+				B.ReskinIcon(button.Icon)
 				button.Selection:SetColorTexture(1, 1, 1, .25)
 				button.Highlight:SetColorTexture(r, g, b, .25)
 
@@ -78,13 +78,13 @@ tinsert(C.defaultThemes, function()
 		end
 	end)
 
-	F.StripTextures(WardrobeOutfitEditFrame)
+	B.StripTextures(WardrobeOutfitEditFrame)
 	WardrobeOutfitEditFrame.EditBox:DisableDrawLayer("BACKGROUND")
-	F.SetBD(WardrobeOutfitEditFrame)
-	local bg = F.CreateBDFrame(WardrobeOutfitEditFrame.EditBox, .25, true)
+	B.SetBD(WardrobeOutfitEditFrame)
+	local bg = B.CreateBDFrame(WardrobeOutfitEditFrame.EditBox, .25, true)
 	bg:SetPoint("TOPLEFT", -5, -3)
 	bg:SetPoint("BOTTOMRIGHT", 5, 3)
-	F.Reskin(WardrobeOutfitEditFrame.AcceptButton)
-	F.Reskin(WardrobeOutfitEditFrame.CancelButton)
-	F.Reskin(WardrobeOutfitEditFrame.DeleteButton)
+	B.Reskin(WardrobeOutfitEditFrame.AcceptButton)
+	B.Reskin(WardrobeOutfitEditFrame.CancelButton)
+	B.Reskin(WardrobeOutfitEditFrame.DeleteButton)
 end)

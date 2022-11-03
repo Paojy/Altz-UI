@@ -1,14 +1,15 @@
 local _, ns = ...
-local F, C = unpack(ns)
+local B, C, L, DB = unpack(ns)
 
 C.themes["Blizzard_InspectUI"] = function()
-	F.StripTextures(InspectTalentFrame)
-	F.StripTextures(InspectModelFrame, true)
+	B.StripTextures(InspectTalentFrame)
+	B.StripTextures(InspectModelFrame, true)
 	InspectGuildFrameBG:Hide()
-	F.Reskin(InspectPaperDollFrame.ViewButton)
+	B.Reskin(InspectPaperDollFrame.ViewButton)
 	InspectPaperDollFrame.ViewButton:ClearAllPoints()
 	InspectPaperDollFrame.ViewButton:SetPoint("TOP", InspectFrame, 0, -45)
 	InspectPVPFrame.BG:Hide()
+	B.Reskin(InspectPaperDollItemsFrame.InspectTalents)
 
 	-- Character
 	local slots = {
@@ -19,12 +20,12 @@ C.themes["Blizzard_InspectUI"] = function()
 
 	for i = 1, #slots do
 		local slot = _G["Inspect"..slots[i].."Slot"]
-		F.StripTextures(slot)
-		slot.icon:SetTexCoord(unpack(C.TexCoord))
+		B.StripTextures(slot)
+		slot.icon:SetTexCoord(unpack(DB.TexCoord))
 		slot.icon:SetInside()
-		slot.bg = F.CreateBDFrame(slot.icon, .25)
+		slot.bg = B.CreateBDFrame(slot.icon, .25)
 		slot:GetHighlightTexture():SetColorTexture(1, 1, 1, .25)
-		F.ReskinIconBorder(slot.IconBorder)
+		B.ReskinIconBorder(slot.IconBorder)
 		slot.IconOverlay:SetAtlas("CosmeticIconFrame")
 		slot.IconOverlay:SetInside()
 	end
@@ -44,9 +45,9 @@ C.themes["Blizzard_InspectUI"] = function()
 	local inspectSpec = InspectTalentFrame.InspectSpec
 
 	inspectSpec.ring:Hide()
-	F.ReskinIcon(inspectSpec.specIcon)
-	inspectSpec.roleIcon:SetTexture(C.rolesTex)
-	F.CreateBDFrame(inspectSpec.roleIcon)
+	B.ReskinIcon(inspectSpec.specIcon)
+	inspectSpec.roleIcon:SetTexture(DB.rolesTex)
+	B.CreateBDFrame(inspectSpec.roleIcon)
 
 	for i = 1, 7 do
 		local row = InspectTalentFrame.InspectTalents["tier"..i]
@@ -54,7 +55,7 @@ C.themes["Blizzard_InspectUI"] = function()
 			local bu = row["talent"..j]
 			bu.Slot:Hide()
 			bu.border:SetTexture("")
-			F.ReskinIcon(bu.icon)
+			B.ReskinIcon(bu.icon)
 		end
 	end
 
@@ -68,7 +69,7 @@ C.themes["Blizzard_InspectUI"] = function()
 			if role1 ~= nil then
 				local _, _, _, icon = GetSpecializationInfoByID(spec)
 				self.specIcon:SetTexture(icon)
-				self.roleIcon:SetTexCoord(F.GetRoleTexCoord(role1))
+				self.roleIcon:SetTexCoord(B.GetRoleTexCoord(role1))
 			end
 		end
 	end
@@ -83,11 +84,13 @@ C.themes["Blizzard_InspectUI"] = function()
 
 	for i = 1, 4 do
 		local tab = _G["InspectFrameTab"..i]
-		F.ReskinTab(tab)
-		if i ~= 1 then
-			tab:SetPoint("LEFT", _G["InspectFrameTab"..i-1], "RIGHT", -15, 0)
+		if tab then
+			B.ReskinTab(tab)
+			if i ~= 1 then
+				tab:SetPoint("LEFT", _G["InspectFrameTab"..i-1], "RIGHT", -15, 0)
+			end
 		end
 	end
 
-	F.ReskinPortraitFrame(InspectFrame)
+	B.ReskinPortraitFrame(InspectFrame)
 end

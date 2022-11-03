@@ -1,24 +1,23 @@
 local _, ns = ...
-local F, C = unpack(ns)
+local B, C, L, DB = unpack(ns)
 
 tinsert(C.defaultThemes, function()
-
 	local ModelPreviewFrame = ModelPreviewFrame
 	local Display = ModelPreviewFrame.Display
 
 	Display.YesMountsTex:Hide()
 	Display.ShadowOverlay:Hide()
 
-	F.StripTextures(ModelPreviewFrame)
-	F.SetBD(ModelPreviewFrame)
-	F.ReskinArrow(Display.ModelScene.RotateLeftButton, "left")
-	F.ReskinArrow(Display.ModelScene.RotateRightButton, "right")
-	F.ReskinArrow(Display.ModelScene.CarouselLeftButton, "left")
-	F.ReskinArrow(Display.ModelScene.CarouselRightButton, "right")
-	F.ReskinClose(ModelPreviewFrameCloseButton)
-	F.Reskin(ModelPreviewFrame.CloseButton)
+	B.StripTextures(ModelPreviewFrame)
+	B.SetBD(ModelPreviewFrame)
+	B.ReskinArrow(Display.ModelScene.RotateLeftButton, "left")
+	B.ReskinArrow(Display.ModelScene.RotateRightButton, "right")
+	B.ReskinArrow(Display.ModelScene.CarouselLeftButton, "left")
+	B.ReskinArrow(Display.ModelScene.CarouselRightButton, "right")
+	B.ReskinClose(ModelPreviewFrameCloseButton)
+	B.Reskin(ModelPreviewFrame.CloseButton)
 
-	local bg = F.CreateBDFrame(Display.ModelScene, .25)
+	local bg = B.CreateBDFrame(Display.ModelScene, .25)
 	bg:SetPoint("TOPLEFT", -1, 0)
 	bg:SetPoint("BOTTOMRIGHT", 2, -2)
 end)

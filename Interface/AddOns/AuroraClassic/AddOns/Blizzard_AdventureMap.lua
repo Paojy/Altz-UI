@@ -1,15 +1,15 @@
 local _, ns = ...
-local F, C = unpack(ns)
+local B, C, L, DB = unpack(ns)
 
 C.themes["Blizzard_AdventureMap"] = function()
 	local dialog = AdventureMapQuestChoiceDialog
 
-	F.StripTextures(dialog)
-	F.SetBD(dialog)
-	F.Reskin(dialog.AcceptButton)
-	F.Reskin(dialog.DeclineButton)
-	F.ReskinClose(dialog.CloseButton)
-	F.ReskinScroll(dialog.Details.ScrollBar)
+	B.StripTextures(dialog)
+	B.SetBD(dialog)
+	B.Reskin(dialog.AcceptButton)
+	B.Reskin(dialog.DeclineButton)
+	B.ReskinClose(dialog.CloseButton)
+	B.ReskinScroll(dialog.Details.ScrollBar)
 
 	dialog:HookScript("OnShow", function(self)
 		if self.styled then return end
@@ -17,8 +17,8 @@ C.themes["Blizzard_AdventureMap"] = function()
 		for i = 6, 7 do
 			local bu = select(i, dialog:GetChildren())
 			if bu then
-				F.ReskinIcon(bu.Icon)
-				local bg = F.CreateBDFrame(bu.Icon, .25)
+				B.ReskinIcon(bu.Icon)
+				local bg = B.CreateBDFrame(bu.Icon, .25)
 				bg:SetPoint("BOTTOMRIGHT")
 				bu.ItemNameBG:Hide()
 			end

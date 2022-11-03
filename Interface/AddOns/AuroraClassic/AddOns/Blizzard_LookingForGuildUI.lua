@@ -1,69 +1,69 @@
 local _, ns = ...
-local F, C = unpack(ns)
+local B, C, L, DB = unpack(ns)
 
 C.themes["Blizzard_LookingForGuildUI"] = function()
-	local r, g, b = C.r, C.g, C.b
+	local r, g, b = DB.r, DB.g, DB.b
 
 	local styled
 	hooksecurefunc("LookingForGuildFrame_CreateUIElements", function()
 		if styled then return end
 
-		F.ReskinPortraitFrame(LookingForGuildFrame)
-		F.CreateBDFrame(LookingForGuildInterestFrame, .25)
+		B.ReskinPortraitFrame(LookingForGuildFrame)
+		B.CreateBDFrame(LookingForGuildInterestFrame, .25)
 		LookingForGuildInterestFrameBg:Hide()
-		F.CreateBDFrame(LookingForGuildAvailabilityFrame, .25)
+		B.CreateBDFrame(LookingForGuildAvailabilityFrame, .25)
 		LookingForGuildAvailabilityFrameBg:Hide()
-		F.CreateBDFrame(LookingForGuildRolesFrame, .25)
+		B.CreateBDFrame(LookingForGuildRolesFrame, .25)
 		LookingForGuildRolesFrameBg:Hide()
-		F.CreateBDFrame(LookingForGuildCommentFrame, .25)
+		B.CreateBDFrame(LookingForGuildCommentFrame, .25)
 		LookingForGuildCommentFrameBg:Hide()
-		F.StripTextures(LookingForGuildCommentInputFrame)
-		F.CreateBDFrame(LookingForGuildCommentInputFrame, .12)
-		F.SetBD(GuildFinderRequestMembershipFrame)
+		B.StripTextures(LookingForGuildCommentInputFrame)
+		B.CreateBDFrame(LookingForGuildCommentInputFrame, .12)
+		B.SetBD(GuildFinderRequestMembershipFrame)
 		for i = 1, 3 do
-			F.StripTextures(_G["LookingForGuildFrameTab"..i])
+			B.StripTextures(_G["LookingForGuildFrameTab"..i])
 		end
 		LookingForGuildFrameTabardBackground:Hide()
 		LookingForGuildFrameTabardEmblem:Hide()
 		LookingForGuildFrameTabardBorder:Hide()
 
-		F.Reskin(LookingForGuildBrowseButton)
-		F.Reskin(GuildFinderRequestMembershipFrameAcceptButton)
-		F.Reskin(GuildFinderRequestMembershipFrameCancelButton)
-		F.ReskinCheck(LookingForGuildQuestButton)
-		F.ReskinCheck(LookingForGuildDungeonButton)
-		F.ReskinCheck(LookingForGuildRaidButton)
-		F.ReskinCheck(LookingForGuildPvPButton)
-		F.ReskinCheck(LookingForGuildRPButton)
-		F.ReskinCheck(LookingForGuildWeekdaysButton)
-		F.ReskinCheck(LookingForGuildWeekendsButton)
-		F.StripTextures(GuildFinderRequestMembershipFrameInputFrame)
-		F.ReskinInput(GuildFinderRequestMembershipFrameInputFrame)
+		B.Reskin(LookingForGuildBrowseButton)
+		B.Reskin(GuildFinderRequestMembershipFrameAcceptButton)
+		B.Reskin(GuildFinderRequestMembershipFrameCancelButton)
+		B.ReskinCheck(LookingForGuildQuestButton)
+		B.ReskinCheck(LookingForGuildDungeonButton)
+		B.ReskinCheck(LookingForGuildRaidButton)
+		B.ReskinCheck(LookingForGuildPvPButton)
+		B.ReskinCheck(LookingForGuildRPButton)
+		B.ReskinCheck(LookingForGuildWeekdaysButton)
+		B.ReskinCheck(LookingForGuildWeekendsButton)
+		B.StripTextures(GuildFinderRequestMembershipFrameInputFrame)
+		B.ReskinInput(GuildFinderRequestMembershipFrameInputFrame)
 
 		-- [[ Browse frame ]]
 
-		F.Reskin(LookingForGuildRequestButton)
-		F.ReskinScroll(LookingForGuildBrowseFrameContainerScrollBar)
+		B.Reskin(LookingForGuildRequestButton)
+		B.ReskinScroll(LookingForGuildBrowseFrameContainerScrollBar)
 
 		for i = 1, 5 do
 			local bu = _G["LookingForGuildBrowseFrameContainerButton"..i]
 			bu:HideBackdrop()
-			bu:SetHighlightTexture("")
+			bu:SetHighlightTexture(0)
 
 			-- my client crashes if I put this in a var? :x
-			bu:GetRegions():SetTexture(C.bdTex)
+			bu:GetRegions():SetTexture(DB.bdTex)
 			bu:GetRegions():SetVertexColor(r, g, b, .2)
 			bu:GetRegions():SetInside()
 
-			local bg = F.CreateBDFrame(bu, .25)
+			local bg = B.CreateBDFrame(bu, .25)
 			bg:SetPoint("TOPLEFT")
 			bg:SetPoint("BOTTOMRIGHT", 0, 1)
 		end
 
 		-- [[ Role buttons ]]
-		F.ReskinRole(LookingForGuildTankButton, "TANK")
-		F.ReskinRole(LookingForGuildHealerButton, "HEALER")
-		F.ReskinRole(LookingForGuildDamagerButton, "DPS")
+		B.ReskinRole(LookingForGuildTankButton, "TANK")
+		B.ReskinRole(LookingForGuildHealerButton, "HEALER")
+		B.ReskinRole(LookingForGuildDamagerButton, "DPS")
 
 		styled = true
 	end)

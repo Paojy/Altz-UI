@@ -1,32 +1,34 @@
-local F, C = unpack(select(2, ...))
+local B, C, L, DB = unpack(select(2, ...))
 
 tinsert(C.defaultThemes, function()
 	if not AuroraClassicDB.Tooltips then return end
 
-	GameTooltip.StatusBar = GameTooltipStatusBar
+	if not GameTooltip.StatusBar then
+		GameTooltip.StatusBar = GameTooltipStatusBar
+	end
 
 	local function ReskinStatusBar(self)
 		self.StatusBar:ClearAllPoints()
 		self.StatusBar:SetPoint("BOTTOMLEFT", self.bg, "TOPLEFT", C.mult, 3)
 		self.StatusBar:SetPoint("BOTTOMRIGHT", self.bg, "TOPRIGHT", -C.mult, 3)
-		self.StatusBar:SetStatusBarTexture(C.normTex)
+		self.StatusBar:SetStatusBarTexture(DB.normTex)
 		self.StatusBar:SetHeight(5)
-		F.SetBD(self.StatusBar)
+		B.SetBD(self.StatusBar)
 	end
 
 	local fakeBg = CreateFrame("Frame", nil, UIParent, "BackdropTemplate")
-	fakeBg:SetBackdrop({ bgFile = C.bdTex, edgeFile = C.bdTex, edgeSize = 1 })
+	fakeBg:SetBackdrop({ bgFile = DB.bdTex, edgeFile = DB.bdTex, edgeSize = 1 })
 	local function __GetBackdrop() return fakeBg:GetBackdrop() end
 	local function __GetBackdropColor() return 0, 0, 0, .7 end
 	local function __GetBackdropBorderColor() return 0, 0, 0 end
 
-	function F:ReskinTooltip()
+	function B:ReskinTooltip()
 		if self:IsForbidden() then return end
 
 		if not self.auroraTip then
 			self:HideBackdrop()
 			self:DisableDrawLayer("BACKGROUND")
-			self.bg = F.SetBD(self, .7)
+			self.bg = B.SetBD(self, .7)
 			self.bg:SetInside(self)
 			self.bg:SetFrameLevel(self:GetFrameLevel())
 			if self.StatusBar then ReskinStatusBar(self) end
@@ -47,9 +49,9 @@ tinsert(C.defaultThemes, function()
 	
 		local bar = self.statusBarPool:GetNextActive()
 		if bar and not bar.styled then
-			F.StripTextures(bar)
-			F.CreateBDFrame(bar, .25)
-			bar:SetStatusBarTexture(C.normTex)
+			B.StripTextures(bar)
+			B.CreateBDFrame(bar, .25)
+			bar:SetStatusBarTexture(DB.normTex)
 	
 			bar.styled = true
 		end
@@ -61,9 +63,9 @@ tinsert(C.defaultThemes, function()
 	
 		local bar = self.progressBarPool:GetNextActive()
 		if bar and not bar.styled then
-			F.StripTextures(bar.Bar)
-			F.CreateBDFrame(bar.Bar, .25)
-			bar.Bar:SetStatusBarTexture(C.normTex)
+			B.StripTextures(bar.Bar)
+			B.CreateBDFrame(bar.Bar, .25)
+			bar.Bar:SetStatusBarTexture(DB.normTex)
 	
 			bar.styled = true
 		end
@@ -102,18 +104,43 @@ tinsert(C.defaultThemes, function()
 		FloatingBattlePetTooltip,
 		FloatingPetBattleAbilityTooltip,
 		IMECandidatesFrame,
-		QuickKeybindTooltip
+		QuickKeybindTooltip,
+		SettingsTooltip,
 	}
 	for _, tooltip in pairs(tooltips) do
-		F.ReskinTooltip(tooltip)
+		B.ReskinTooltip(tooltip)
 	end
 
 	C_Timer.After(5, function()
+		-- BagSync
+		if BSYC_EventAlertTooltip then
+			B.ReskinTooltip(BSYC_EventAlertTooltip)
+		end
+		-- Libs
 		if LibDBIconTooltip then
-			F.ReskinTooltip(LibDBIconTooltip)
+			B.ReskinTooltip(LibDBIconTooltip)
 		end
 		if AceConfigDialogTooltip then
-			F.ReskinTooltip(AceConfigDialogTooltip)
+			B.ReskinTooltip(AceConfigDialogTooltip)
+		end
+		-- TomTom
+		if TomTomTooltip then
+			B.ReskinTooltip(TomTomTooltip)
+		end
+		-- RareScanner
+		if RSMapItemToolTip then
+			B.ReskinTooltip(RSMapItemToolTip)
+		end
+		if LootBarToolTip then
+			B.ReskinTooltip(LootBarToolTip)
+		end
+		-- Narcissus
+		if NarciGameTooltip then
+			B.ReskinTooltip(NarciGameTooltip)
+		end
+		-- Altoholic
+		if AltoTooltip then
+			B.ReskinTooltip(AltoTooltip)
 		end
 	end)
 
@@ -132,9 +159,9 @@ tinsert(C.defaultThemes, function()
 
 	-- Tooltip rewards icon
 	local function reskinRewardIcon(self)
-		self.Icon:SetTexCoord(unpack(C.TexCoord))
-		self.bg = F.CreateBDFrame(self.Icon, 0)
-		F.ReskinIconBorder(self.IconBorder)
+		self.Icon:SetTexCoord(unpack(DB.TexCoord))
+		self.bg = B.CreateBDFrame(self.Icon, 0)
+		B.ReskinIconBorder(self.IconBorder)
 	end
 
 	reskinRewardIcon(GameTooltip.ItemTooltip)
@@ -148,17 +175,17 @@ tinsert(C.defaultThemes, function()
 			local styledMDT
 			hooksecurefunc(MDT, "ShowInterface", function()
 				if not styledMDT then
-					F.ReskinTooltip(MDT.tooltip)
-					F.ReskinTooltip(MDT.pullTooltip)
+					B.ReskinTooltip(MDT.tooltip)
+					B.ReskinTooltip(MDT.pullTooltip)
 					styledMDT = true
 				end
 			end)
 		elseif addon == "BattlePetBreedID" then
 			hooksecurefunc("BPBID_SetBreedTooltip", function(parent)
 				if parent == FloatingBattlePetTooltip then
-					F.ReskinTooltip(BPBID_BreedTooltip2)
+					B.ReskinTooltip(BPBID_BreedTooltip2)
 				else
-					F.ReskinTooltip(BPBID_BreedTooltip)
+					B.ReskinTooltip(BPBID_BreedTooltip)
 				end
 			end)
 		end

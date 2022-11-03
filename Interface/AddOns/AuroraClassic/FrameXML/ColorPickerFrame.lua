@@ -1,17 +1,16 @@
 local _, ns = ...
-local F, C = unpack(ns)
+local B, C, L, DB = unpack(ns)
 
 tinsert(C.defaultThemes, function()
-
-	F.StripTextures(ColorPickerFrame.Header)
+	B.StripTextures(ColorPickerFrame.Header)
 	ColorPickerFrame.Header:ClearAllPoints()
 	ColorPickerFrame.Header:SetPoint("TOP", ColorPickerFrame, 0, 10)
 	ColorPickerFrame.Border:Hide()
 
-	F.SetBD(ColorPickerFrame)
-	F.Reskin(ColorPickerOkayButton)
-	F.Reskin(ColorPickerCancelButton)
-	F.ReskinSlider(OpacitySliderFrame, true)
+	B.SetBD(ColorPickerFrame)
+	B.Reskin(ColorPickerOkayButton)
+	B.Reskin(ColorPickerCancelButton)
+	B.ReskinSlider(OpacitySliderFrame, true)
 
 	ColorPickerCancelButton:ClearAllPoints()
 	ColorPickerCancelButton:SetPoint("BOTTOMLEFT", ColorPickerFrame, "BOTTOM", 1, 6)

@@ -1,8 +1,8 @@
 local _, ns = ...
-local F, C = unpack(ns)
+local B, C, L, DB = unpack(ns)
 
 tinsert(C.defaultThemes, function()
-	local r, g, b = C.r, C.g, C.b
+	local r, g, b = DB.r, DB.g, DB.b
 
 	PVEFrameLeftInset:SetAlpha(0)
 	PVEFrameBlueBg:SetAlpha(0)
@@ -20,13 +20,13 @@ tinsert(C.defaultThemes, function()
 		local bu = GroupFinderFrame["groupButton"..i]
 
 		bu.ring:Hide()
-		F.Reskin(bu, true)
+		B.Reskin(bu, true)
 		bu.bg:SetColorTexture(r, g, b, .25)
 		bu.bg:SetInside(bu.__bg)
 
 		bu.icon:SetPoint("LEFT", bu, "LEFT")
 		bu.icon:SetSize(iconSize, iconSize)
-		F.ReskinIcon(bu.icon)
+		B.ReskinIcon(bu.icon)
 	end
 
 	hooksecurefunc("GroupFinderFrame_SelectGroupButton", function(index)
@@ -40,8 +40,16 @@ tinsert(C.defaultThemes, function()
 		end
 	end)
 
-	F.ReskinPortraitFrame(PVEFrame)
-	F.ReskinTab(PVEFrameTab1)
-	F.ReskinTab(PVEFrameTab2)
-	F.ReskinTab(PVEFrameTab3)
+	B.ReskinPortraitFrame(PVEFrame)
+
+	for i = 1, 3 do
+		local tab = _G["PVEFrameTab"..i]
+		if tab then
+			B.ReskinTab(tab)
+			if i ~= 1 then
+				tab:ClearAllPoints()
+				tab:SetPoint("TOPLEFT", _G["PVEFrameTab"..(i-1)], "TOPRIGHT", -15, 0)
+			end
+		end
+	end
 end)

@@ -1,7 +1,7 @@
 local _, ns = ...
-local F, C = unpack(ns)
+local B, C, L, DB = unpack(ns)
 
-local r, g, b = C.r, C.g, C.b
+local r, g, b = DB.r, DB.g, DB.b
 local select, pairs = select, pairs
 
 local function reskinQuestIcon(button)
@@ -10,12 +10,12 @@ local function reskinQuestIcon(button)
 
 	if not button.styled then
 		button:SetSize(24, 24)
-		button:SetNormalTexture("")
-		button:SetPushedTexture("")
+		button:SetNormalTexture(0)
+		button:SetPushedTexture(0)
 		button:GetHighlightTexture():SetColorTexture(1, 1, 1, .25)
 		local icon = button.icon or button.Icon
 		if icon then
-			button.bg = F.ReskinIcon(icon, true)
+			button.bg = B.ReskinIcon(icon, true)
 			icon:SetInside()
 		end
 
@@ -47,10 +47,11 @@ end
 local function reskinBarTemplate(bar)
 	if bar.bg then return end
 
-	F.StripTextures(bar)
-	bar:SetStatusBarTexture(C.normTex)
+	B.StripTextures(bar)
+	bar:SetStatusBarTexture(DB.normTex)
 	bar:SetStatusBarColor(r, g, b)
-	bar.bg = F.SetBD(bar)
+	bar.bg = B.SetBD(bar)
+	B:SmoothBar(bar)
 end
 
 local function reskinProgressbar(_, _, line)
@@ -73,8 +74,8 @@ local function reskinProgressbarWithIcon(_, _, line)
 		bar:SetPoint("LEFT", 22, 0)
 		reskinBarTemplate(bar)
 
-		icon:SetMask(nil)
-		icon.bg = F.ReskinIcon(icon, true)
+		icon:SetMask("")
+		icon.bg = B.ReskinIcon(icon, true)
 		icon:ClearAllPoints()
 		icon:SetPoint("TOPLEFT", bar, "TOPRIGHT", 5, 0)
 		icon:SetPoint("BOTTOMRIGHT", bar, "BOTTOMRIGHT", 25, 0)
@@ -99,7 +100,7 @@ local function updateMinimizeButton(button, collapsed)
 end
 
 local function reskinMinimizeButton(button)
-	F.ReskinCollapse(button)
+	B.ReskinCollapse(button)
 	button:GetNormalTexture():SetAlpha(0)
 	button:GetPushedTexture():SetAlpha(0)
 	button.__texture:DoCollapse(false)
@@ -141,17 +142,17 @@ local function blockList_Hide(self)
 end
 
 local function ReskinMawBuffsContainer(container)
-	F.StripTextures(container)
+	B.StripTextures(container)
 	container:GetPushedTexture():SetAlpha(0)
 	container:GetHighlightTexture():SetAlpha(0)
-	local bg = F.SetBD(container, 0, 13, -11, -3, 11)
-	F.CreateGradient(bg)
+	local bg = B.SetBD(container, 0, 13, -11, -3, 11)
+	B.CreateGradient(bg)
 	container:HookScript("OnClick", container_OnClick)
 
 	local blockList = container.List
-	F.StripTextures(blockList)
+	B.StripTextures(blockList)
 	blockList.__bg = bg
-	local bg = F.SetBD(blockList)
+	local bg = B.SetBD(blockList)
 	bg:SetPoint("TOPLEFT", 7, -12)
 	bg:SetPoint("BOTTOMRIGHT", -7, 12)
 
@@ -160,7 +161,7 @@ local function ReskinMawBuffsContainer(container)
 end
 
 tinsert(C.defaultThemes, function()
-	if not AuroraClassicDB.ObjectiveTracker then return end
+	if IsAddOnLoaded("!KalielsTracker") then return end
 
 	-- QuestIcons
 	hooksecurefunc(QUEST_TRACKER_MODULE, "SetBlockHeader", reskinQuestIcons)
@@ -169,7 +170,7 @@ tinsert(C.defaultThemes, function()
 	hooksecurefunc(BONUS_OBJECTIVE_TRACKER_MODULE, "AddObjective", reskinQuestIcons)
 
 	-- Reskin Progressbars
-	BonusObjectiveTrackerProgressBar_PlayFlareAnim = F.Dummy
+	BonusObjectiveTrackerProgressBar_PlayFlareAnim = B.Dummy
 
 	hooksecurefunc(QUEST_TRACKER_MODULE, "AddProgressBar", reskinProgressbar)
 	hooksecurefunc(CAMPAIGN_QUEST_TRACKER_MODULE, "AddProgressBar", reskinProgressbar)
@@ -186,7 +187,7 @@ tinsert(C.defaultThemes, function()
 	hooksecurefunc("ScenarioStage_CustomizeBlock", function(block)
 		block.NormalBG:SetTexture("")
 		if not block.bg then
-			block.bg = F.SetBD(block.GlowTexture, nil, 4, -2, -4, 2)
+			block.bg = B.SetBD(block.GlowTexture, nil, 4, -2, -4, 2)
 		end
 	end)
 
@@ -198,14 +199,14 @@ tinsert(C.defaultThemes, function()
 
 				local bar = widgetFrame.TimerBar
 				if bar and not bar.bg then
-					hooksecurefunc(bar, "SetStatusBarAtlas", F.ReplaceWidgetBarTexture)
-					bar.bg = F.CreateBDFrame(bar, .25)
+					hooksecurefunc(bar, "SetStatusBarAtlas", B.ReplaceWidgetBarTexture)
+					bar.bg = B.CreateBDFrame(bar, .25)
 				end
 
 				if widgetFrame.CurrencyContainer then
 					for currencyFrame in widgetFrame.currencyPool:EnumerateActive() do
 						if not currencyFrame.bg then
-							currencyFrame.bg = F.ReskinIcon(currencyFrame.Icon)
+							currencyFrame.bg = B.ReskinIcon(currencyFrame.Icon)
 						end
 					end
 				end
@@ -215,9 +216,9 @@ tinsert(C.defaultThemes, function()
 
 	hooksecurefunc("ScenarioSpellButton_UpdateCooldown", function(spellButton)
 		if not spellButton.styled then
-			local bg = F.ReskinIcon(spellButton.Icon)
-			spellButton:SetNormalTexture(nil)
-			spellButton:SetPushedTexture(nil)
+			local bg = B.ReskinIcon(spellButton.Icon)
+			spellButton:SetNormalTexture(0)
+			spellButton:SetPushedTexture(0)
 			local hl = spellButton:GetHighlightTexture()
 			hl:SetColorTexture(1, 1, 1, .25)
 			hl:SetInside(bg)
@@ -231,20 +232,20 @@ tinsert(C.defaultThemes, function()
 		if not block.bg then
 			block.TimerBG:Hide()
 			block.TimerBGBack:Hide()
-			block.timerbg = F.CreateBDFrame(block.TimerBGBack, .3)
+			block.timerbg = B.CreateBDFrame(block.TimerBGBack, .3)
 			block.timerbg:SetPoint("TOPLEFT", block.TimerBGBack, 6, -2)
 			block.timerbg:SetPoint("BOTTOMRIGHT", block.TimerBGBack, -6, -5)
 
-			block.StatusBar:SetStatusBarTexture(C.normTex)
+			block.StatusBar:SetStatusBarTexture(DB.normTex)
 			block.StatusBar:SetStatusBarColor(r, g, b)
 			block.StatusBar:SetHeight(10)
 
 			select(3, block:GetRegions()):Hide()
-			block.bg = F.SetBD(block, nil, 4, -2, -4, 0)
+			block.bg = B.SetBD(block, nil, 4, -2, -4, 0)
 		end
 	end)
 
-	hooksecurefunc("Scenario_ChallengeMode_SetUpAffixes", F.AffixesSetup)
+	hooksecurefunc("Scenario_ChallengeMode_SetUpAffixes", B.AffixesSetup)
 
 	-- Maw buffs container
 	ReskinMawBuffsContainer(ScenarioBlocksFrame.MawBuffsBlock.Container)
@@ -256,9 +257,10 @@ tinsert(C.defaultThemes, function()
 		ObjectiveTrackerBlocksFrame.AchievementHeader,
 		ObjectiveTrackerBlocksFrame.ScenarioHeader,
 		ObjectiveTrackerBlocksFrame.CampaignQuestHeader,
+		ObjectiveTrackerBlocksFrame.ProfessionHeader,
 		BONUS_OBJECTIVE_TRACKER_MODULE.Header,
 		WORLD_QUEST_TRACKER_MODULE.Header,
-		ObjectiveTrackerFrame.BlocksFrame.UIWidgetsHeader
+		ObjectiveTrackerFrame.BlocksFrame.UIWidgetsHeader,
 	}
 	for _, header in pairs(headers) do
 		reskinHeader(header)

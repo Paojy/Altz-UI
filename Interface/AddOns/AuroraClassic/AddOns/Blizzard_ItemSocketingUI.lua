@@ -1,5 +1,5 @@
 local _, ns = ...
-local F, C = unpack(ns)
+local B, C, L, DB = unpack(ns)
 
 C.themes["Blizzard_ItemSocketingUI"] = function()
 	local GemTypeInfo = {
@@ -20,11 +20,11 @@ C.themes["Blizzard_ItemSocketingUI"] = function()
 		local socket = _G["ItemSocketingSocket"..i]
 		local shine = _G["ItemSocketingSocket"..i.."Shine"]
 
-		F.StripTextures(socket)
-		socket:SetPushedTexture("")
+		B.StripTextures(socket)
+		socket:SetPushedTexture(0)
 		socket:GetHighlightTexture():SetColorTexture(1, 1, 1, .25)
-		socket.icon:SetTexCoord(unpack(C.TexCoord))
-		socket.bg = F.ReskinIcon(socket.icon)
+		socket.icon:SetTexCoord(unpack(DB.TexCoord))
+		socket.bg = B.ReskinIcon(socket.icon)
 
 		shine:ClearAllPoints()
 		shine:SetOutside()
@@ -43,9 +43,9 @@ C.themes["Blizzard_ItemSocketingUI"] = function()
 		ItemSocketingDescription:HideBackdrop()
 	end)
 
-	F.ReskinPortraitFrame(ItemSocketingFrame)
+	B.ReskinPortraitFrame(ItemSocketingFrame)
 	ItemSocketingFrame.BackgroundColor:SetAlpha(0)
-	F.CreateBDFrame(ItemSocketingScrollFrame, .25)
-	F.Reskin(ItemSocketingSocketButton)
-	F.ReskinScroll(ItemSocketingScrollFrameScrollBar)
+	B.CreateBDFrame(ItemSocketingScrollFrame, .25)
+	B.Reskin(ItemSocketingSocketButton)
+	B.ReskinScroll(ItemSocketingScrollFrameScrollBar)
 end

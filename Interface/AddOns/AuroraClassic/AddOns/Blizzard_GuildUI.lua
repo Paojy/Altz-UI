@@ -1,6 +1,6 @@
 local _, ns = ...
-local F, C = unpack(ns)
-local r, g, b = C.r, C.g, C.b
+local B, C, L, DB = unpack(ns)
+local r, g, b = DB.r, DB.g, DB.b
 
 local function updateClassIcons()
 	local index
@@ -16,16 +16,16 @@ local function updateClassIcons()
 		local bu = GuildRosterContainer.buttons[i]
 
 		if not bu.bg then
-			bu:SetHighlightTexture(C.bdTex)
+			bu:SetHighlightTexture(DB.bdTex)
 			bu:GetHighlightTexture():SetVertexColor(r, g, b, .2)
 
-			bu.bg = F.CreateBDFrame(bu.icon)
+			bu.bg = B.CreateBDFrame(bu.icon)
 		end
 
 		index = offset + i
 		local name, _, _, _, _, _, _, _, _, _, classFileName = GetGuildRosterInfo(index)
 		if name and index <= visibleMembers and bu.icon:IsShown() then
-			F.ClassIconTexCoord(bu.icon, classFileName)
+			B.ClassIconTexCoord(bu.icon, classFileName)
 			bu.bg:Show()
 		else
 			bu.bg:Hide()
@@ -53,36 +53,40 @@ local function updateLevelString(view)
 end
 
 C.themes["Blizzard_GuildUI"] = function()
-	F.ReskinPortraitFrame(GuildFrame)
-	F.StripTextures(GuildMemberDetailFrame)
-	F.SetBD(GuildMemberDetailFrame)
+	B.ReskinPortraitFrame(GuildFrame)
+	B.StripTextures(GuildMemberDetailFrame)
+	B.SetBD(GuildMemberDetailFrame)
 	GuildMemberNoteBackground:HideBackdrop()
-	F.CreateBDFrame(GuildMemberNoteBackground, .25)
+	B.CreateBDFrame(GuildMemberNoteBackground, .25)
 	GuildMemberOfficerNoteBackground:HideBackdrop()
-	F.CreateBDFrame(GuildMemberOfficerNoteBackground, .25)
-	F.SetBD(GuildLogFrame)
-	F.CreateBDFrame(GuildLogContainer, .25)
-	F.SetBD(GuildNewsFiltersFrame)
-	F.SetBD(GuildTextEditFrame)
-	F.StripTextures(GuildTextEditContainer)
-	F.CreateBDFrame(GuildTextEditContainer, .25)
+	B.CreateBDFrame(GuildMemberOfficerNoteBackground, .25)
+	B.SetBD(GuildLogFrame)
+	B.CreateBDFrame(GuildLogContainer, .25)
+	B.SetBD(GuildNewsFiltersFrame)
+	B.SetBD(GuildTextEditFrame)
+	B.StripTextures(GuildTextEditContainer)
+	B.CreateBDFrame(GuildTextEditContainer, .25)
 	for i = 1, 5 do
-		F.ReskinTab(_G["GuildFrameTab"..i])
+		local tab = _G["GuildFrameTab"..i]
+		if tab then
+			B.ReskinTab(tab)
+			if i ~= 1 then
+				tab:ClearAllPoints()
+				tab:SetPoint("LEFT", _G["GuildFrameTab"..(i-1)], "RIGHT", -15, 0)
+			end
+		end
 	end
-	if GetLocale() == "zhTW" then
-		GuildFrameTab1:ClearAllPoints()
-		GuildFrameTab1:SetPoint("TOPLEFT", GuildFrame, "BOTTOMLEFT", -7, 2)
-	end
+
 	GuildFrameTabardBackground:Hide()
 	GuildFrameTabardEmblem:Hide()
 	GuildFrameTabardBorder:Hide()
-	F.StripTextures(GuildInfoFrameInfo)
-	F.StripTextures(GuildInfoFrameTab1)
+	B.StripTextures(GuildInfoFrameInfo)
+	B.StripTextures(GuildInfoFrameTab1)
 	GuildMemberDetailCorner:Hide()
-	F.StripTextures(GuildLogFrame)
-	F.StripTextures(GuildLogContainer)
-	F.StripTextures(GuildNewsFiltersFrame)
-	F.StripTextures(GuildTextEditFrame)
+	B.StripTextures(GuildLogFrame)
+	B.StripTextures(GuildLogContainer)
+	B.StripTextures(GuildNewsFiltersFrame)
+	B.StripTextures(GuildTextEditFrame)
 	GuildAllPerksFrame:GetRegions():Hide()
 	GuildNewsFrame:GetRegions():Hide()
 	GuildRewardsFrame:GetRegions():Hide()
@@ -99,7 +103,7 @@ C.themes["Blizzard_GuildUI"] = function()
 	GuildNewsBossModel:DisableDrawLayer("BACKGROUND")
 	GuildNewsBossModel:DisableDrawLayer("OVERLAY")
 	GuildNewsBossNameText:SetDrawLayer("ARTWORK")
-	F.StripTextures(GuildNewsBossModelTextFrame)
+	B.StripTextures(GuildNewsBossModelTextFrame)
 
 	GuildMemberRankDropdown:HookScript("OnShow", function()
 		GuildMemberDetailRankText:Hide()
@@ -115,31 +119,31 @@ C.themes["Blizzard_GuildUI"] = function()
 		end
 	end)
 
-	F.ReskinClose(GuildNewsFiltersFrameCloseButton)
-	F.ReskinClose(GuildLogFrameCloseButton)
-	F.ReskinClose(GuildMemberDetailCloseButton)
-	F.ReskinClose(GuildTextEditFrameCloseButton)
-	F.ReskinScroll(GuildPerksContainerScrollBar)
-	F.ReskinScroll(GuildRosterContainerScrollBar)
-	F.ReskinScroll(GuildNewsContainerScrollBar)
-	F.ReskinScroll(GuildRewardsContainerScrollBar)
-	F.ReskinScroll(GuildInfoFrameInfoMOTDScrollFrameScrollBar)
-	F.ReskinScroll(GuildInfoDetailsFrameScrollBar)
-	F.ReskinScroll(GuildLogScrollFrameScrollBar)
-	F.ReskinScroll(GuildTextEditScrollFrameScrollBar)
-	F.ReskinDropDown(GuildRosterViewDropdown)
-	F.ReskinDropDown(GuildMemberRankDropdown)
+	B.ReskinClose(GuildNewsFiltersFrameCloseButton)
+	B.ReskinClose(GuildLogFrameCloseButton)
+	B.ReskinClose(GuildMemberDetailCloseButton)
+	B.ReskinClose(GuildTextEditFrameCloseButton)
+	B.ReskinScroll(GuildPerksContainerScrollBar)
+	B.ReskinScroll(GuildRosterContainerScrollBar)
+	B.ReskinScroll(GuildNewsContainerScrollBar)
+	B.ReskinScroll(GuildRewardsContainerScrollBar)
+	B.ReskinScroll(GuildInfoFrameInfoMOTDScrollFrameScrollBar)
+	B.ReskinScroll(GuildInfoDetailsFrameScrollBar)
+	B.ReskinScroll(GuildLogScrollFrameScrollBar)
+	B.ReskinScroll(GuildTextEditScrollFrameScrollBar)
+	B.ReskinDropDown(GuildRosterViewDropdown)
+	B.ReskinDropDown(GuildMemberRankDropdown)
 
-	F.ReskinCheck(GuildRosterShowOfflineButton)
+	B.ReskinCheck(GuildRosterShowOfflineButton)
 	for i = 1, 7 do
-		F.ReskinCheck(GuildNewsFiltersFrame.GuildNewsFilterButtons[i])
+		B.ReskinCheck(GuildNewsFiltersFrame.GuildNewsFilterButtons[i])
 	end
 
 	local a1, p, a2, x, y = GuildNewsBossModel:GetPoint()
 	GuildNewsBossModel:ClearAllPoints()
 	GuildNewsBossModel:SetPoint(a1, p, a2, x + 7, y)
 
-	local f = F.SetBD(GuildNewsBossModel)
+	local f = B.SetBD(GuildNewsBossModel)
 	f:SetPoint("BOTTOMRIGHT", 2, -52)
 
 	GuildNewsFiltersFrame:SetWidth(224)
@@ -148,22 +152,22 @@ C.themes["Blizzard_GuildUI"] = function()
 	GuildLogFrame:SetPoint("TOPLEFT", GuildFrame, "TOPRIGHT", 3, 0)
 	GuildTextEditFrame:SetPoint("TOPLEFT", GuildFrame, "TOPRIGHT", 3, 0)
 
-	GuildFactionBarProgress:SetTexture(C.bdTex)
+	GuildFactionBarProgress:SetTexture(DB.bdTex)
 	GuildFactionBarLeft:Hide()
 	GuildFactionBarMiddle:Hide()
 	GuildFactionBarRight:Hide()
 	GuildFactionBarShadow:SetAlpha(0)
 	GuildFactionBarBG:Hide()
 	GuildFactionBarCap:SetAlpha(0)
-	local bg = F.CreateBDFrame(GuildFactionFrame, .25)
+	local bg = B.CreateBDFrame(GuildFactionFrame, .25)
 	bg:SetPoint("TOPLEFT", GuildFactionFrame, -1, -1)
 	bg:SetPoint("BOTTOMRIGHT", GuildFactionFrame, -3, 0)
 	bg:SetFrameLevel(0)
 
 	for _, button in pairs(GuildPerksContainer.buttons) do
-		F.ReskinIcon(button.icon)
-		F.StripTextures(button)
-		button.bg = F.CreateBDFrame(button, .25)
+		B.ReskinIcon(button.icon)
+		B.StripTextures(button)
+		button.bg = B.CreateBDFrame(button, .25)
 		button.bg:ClearAllPoints()
 		button.bg:SetPoint("TOPLEFT", button.icon, 0, C.mult)
 		button.bg:SetPoint("BOTTOMLEFT", button.icon, 0, -C.mult)
@@ -176,16 +180,14 @@ C.themes["Blizzard_GuildUI"] = function()
 		for i = 1, #buttons do
 			local bu = buttons[i]
 			if not bu.bg then
-				bu:SetNormalTexture("")
-				bu:SetHighlightTexture("")
-				F.ReskinIcon(bu.icon)
+				bu:SetNormalTexture(0)
+				bu:SetHighlightTexture(0)
+				B.ReskinIcon(bu.icon)
 				bu.disabledBG:Hide()
-				bu.disabledBG.Show = F.Dummy
+				bu.disabledBG.Show = B.Dummy
 
-				bu.bg = F.CreateBDFrame(bu, .25)
-				bu.bg:ClearAllPoints()
-				bu.bg:SetPoint("TOPLEFT", 1, -1)
-				bu.bg:SetPoint("BOTTOMRIGHT", 0, 0)
+				bu.bg = B.CreateBDFrame(bu, .25)
+				bu.bg:SetInside()
 			end
 		end
 	end)
@@ -193,8 +195,8 @@ C.themes["Blizzard_GuildUI"] = function()
 	hooksecurefunc("GuildRoster_Update", updateClassIcons)
 	hooksecurefunc(GuildRosterContainer, "update", updateClassIcons)
 
-	F.Reskin(select(4, GuildTextEditFrame:GetChildren()))
-	F.Reskin(select(3, GuildLogFrame:GetChildren()))
+	B.Reskin(select(4, GuildTextEditFrame:GetChildren()))
+	B.Reskin(select(3, GuildLogFrame:GetChildren()))
 
 	local gbuttons = {
 		"GuildAddMemberButton",
@@ -205,7 +207,7 @@ C.themes["Blizzard_GuildUI"] = function()
 		"GuildMemberRemoveButton",
 	}
 	for i = 1, #gbuttons do
-		F.Reskin(_G[gbuttons[i]])
+		B.Reskin(_G[gbuttons[i]])
 	end
 
 	-- Tradeskill View
@@ -224,11 +226,11 @@ C.themes["Blizzard_GuildUI"] = function()
 				end
 
 				if not header.bg then
-					F.StripTextures(header, 5)
-					header.bg = F.CreateBDFrame(header, .25)
+					B.StripTextures(header, 5)
+					header.bg = B.CreateBDFrame(header, .25)
 					header.bg:SetAllPoints()
 
-					header:SetHighlightTexture(C.bdTex)
+					header:SetHighlightTexture(DB.bdTex)
 					local hl = header:GetHighlightTexture()
 					hl:SetVertexColor(r, g, b, .25)
 					hl:SetInside()

@@ -1,10 +1,10 @@
 local _, ns = ...
-local F, C = unpack(ns)
+local B, C, L, DB = unpack(ns)
 
 C.themes["Blizzard_ObliterumUI"] = function()
 	local obliterum = ObliterumForgeFrame
 
-	F.ReskinPortraitFrame(obliterum)
-	F.Reskin(obliterum.ObliterateButton)
-	F.ReskinIcon(obliterum.ItemSlot.Icon)
+	B.ReskinPortraitFrame(obliterum)
+	B.Reskin(obliterum.ObliterateButton)
+	B.ReskinIcon(obliterum.ItemSlot.Icon)
 end

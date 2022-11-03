@@ -1,5 +1,5 @@
 local _, ns = ...
-local F, C = unpack(ns)
+local B, C, L, DB = unpack(ns)
 
 local function Highlight_OnEnter(self)
 	self.hl:Show()
@@ -23,13 +23,13 @@ local atlasToRole = {
 local function ReplaceApplicantRoles(texture, atlas)
 	local role = atlasToRole[atlas]
 	if role then
-		texture:SetTexture(C.rolesTex)
-		texture:SetTexCoord(F.GetRoleTexCoord(role))
+		texture:SetTexture(DB.rolesTex)
+		texture:SetTexCoord(B.GetRoleTexCoord(role))
 	end
 end
 
 tinsert(C.defaultThemes, function()
-	local r, g, b = C.r, C.g, C.b
+	local r, g, b = DB.r, DB.g, DB.b
 
 	local LFGListFrame = LFGListFrame
 	LFGListFrame.NothingAvailable.Inset:Hide()
@@ -38,8 +38,8 @@ tinsert(C.defaultThemes, function()
 
 	local categorySelection = LFGListFrame.CategorySelection
 
-	F.Reskin(categorySelection.FindGroupButton)
-	F.Reskin(categorySelection.StartGroupButton)
+	B.Reskin(categorySelection.FindGroupButton)
+	B.Reskin(categorySelection.StartGroupButton)
 	categorySelection.Inset:Hide()
 	categorySelection.CategoryButtons[1]:SetNormalFontObject(GameFontNormal)
 
@@ -48,7 +48,7 @@ tinsert(C.defaultThemes, function()
 		if bu and not bu.styled then
 			bu.Cover:Hide()
 			bu.Icon:SetTexCoord(.01, .99, .01, .99)
-			F.CreateBDFrame(bu.Icon)
+			B.CreateBDFrame(bu.Icon)
 
 			bu.styled = true
 		end
@@ -57,7 +57,7 @@ tinsert(C.defaultThemes, function()
 	hooksecurefunc("LFGListSearchEntry_Update", function(self)
 		local cancelButton = self.CancelButton
 		if not cancelButton.styled then
-			F.Reskin(cancelButton)
+			B.Reskin(cancelButton)
 			cancelButton.styled = true
 		end
 	end)
@@ -74,18 +74,18 @@ tinsert(C.defaultThemes, function()
 
 	local searchPanel = LFGListFrame.SearchPanel
 
-	F.Reskin(searchPanel.RefreshButton)
-	F.Reskin(searchPanel.BackButton)
-	F.Reskin(searchPanel.BackToGroupButton)
-	F.Reskin(searchPanel.SignUpButton)
-	F.Reskin(searchPanel.ScrollFrame.ScrollChild.StartGroupButton)
-	F.ReskinInput(searchPanel.SearchBox)
-	F.ReskinScroll(searchPanel.ScrollFrame.scrollBar)
+	B.Reskin(searchPanel.RefreshButton)
+	B.Reskin(searchPanel.BackButton)
+	B.Reskin(searchPanel.BackToGroupButton)
+	B.Reskin(searchPanel.SignUpButton)
+	B.Reskin(searchPanel.ScrollBox.StartGroupButton)
+	B.ReskinTrimScroll(searchPanel.ScrollBar)
+	B.ReskinInput(searchPanel.SearchBox)
 
 	searchPanel.RefreshButton:SetSize(24, 24)
 	searchPanel.RefreshButton.Icon:SetPoint("CENTER")
 	searchPanel.ResultsInset:Hide()
-	F.StripTextures(searchPanel.AutoCompleteFrame)
+	B.StripTextures(searchPanel.AutoCompleteFrame)
 
 	local numResults = 1
 	hooksecurefunc("LFGListSearchPanel_UpdateAutoComplete", function(self)
@@ -102,14 +102,14 @@ tinsert(C.defaultThemes, function()
 				result:SetPoint("TOPRIGHT", AutoCompleteFrame.Results[i-1], "BOTTOMRIGHT", 0, 1)
 			end
 
-			result:SetNormalTexture("")
-			result:SetPushedTexture("")
-			result:SetHighlightTexture("")
+			result:SetNormalTexture(0)
+			result:SetPushedTexture(0)
+			result:SetHighlightTexture(0)
 
-			local bg = F.CreateBDFrame(result, .5)
+			local bg = B.CreateBDFrame(result, .5)
 			local hl = result:CreateTexture(nil, "BACKGROUND")
 			hl:SetInside(bg)
-			hl:SetTexture(C.bdTex)
+			hl:SetTexture(DB.bdTex)
 			hl:SetVertexColor(r, g, b, .25)
 			hl:Hide()
 			result.hl = hl
@@ -131,15 +131,15 @@ tinsert(C.defaultThemes, function()
 	for _, headerName in pairs({"NameColumnHeader", "RoleColumnHeader", "ItemLevelColumnHeader", "RatingColumnHeader"}) do
 		local header = applicationViewer[headerName]
 
-		F.StripTextures(header)
-		header.Label:SetFont(C.Font[1], 14, C.Font[3])
+		B.StripTextures(header)
+		B.SetFontSize(header.Label, 14)
 		header.Label:SetShadowColor(0, 0, 0, 0)
-		header:SetHighlightTexture("")
+		header:SetHighlightTexture(0)
 
-		local bg = F.CreateBDFrame(header, .25)
+		local bg = B.CreateBDFrame(header, .25)
 		local hl = header:CreateTexture(nil, "BACKGROUND")
 		hl:SetInside(bg)
-		hl:SetTexture(C.bdTex)
+		hl:SetTexture(DB.bdTex)
 		hl:SetVertexColor(r, g, b, .25)
 		hl:Hide()
 		header.hl = hl
@@ -153,21 +153,21 @@ tinsert(C.defaultThemes, function()
 		prevHeader = header
 	end
 
-	F.Reskin(applicationViewer.RefreshButton)
-	F.Reskin(applicationViewer.RemoveEntryButton)
-	F.Reskin(applicationViewer.EditButton)
-	F.Reskin(applicationViewer.BrowseGroupsButton)
-	F.ReskinCheck(applicationViewer.AutoAcceptButton)
-	F.ReskinScroll(LFGListApplicationViewerScrollFrameScrollBar)
+	B.Reskin(applicationViewer.RefreshButton)
+	B.Reskin(applicationViewer.RemoveEntryButton)
+	B.Reskin(applicationViewer.EditButton)
+	B.Reskin(applicationViewer.BrowseGroupsButton)
+	B.ReskinCheck(applicationViewer.AutoAcceptButton)
+	B.ReskinTrimScroll(applicationViewer.ScrollBar)
 
 	applicationViewer.RefreshButton:SetSize(24, 24)
 	applicationViewer.RefreshButton.Icon:SetPoint("CENTER")
 
 	hooksecurefunc("LFGListApplicationViewer_UpdateApplicant", function(button)
 		if not button.styled then
-			F.Reskin(button.DeclineButton)
-			F.Reskin(button.InviteButton)
-			F.Reskin(button.InviteButtonSmall)
+			B.Reskin(button.DeclineButton)
+			B.Reskin(button.InviteButton)
+			B.Reskin(button.InviteButtonSmall)
 
 			button.styled = true
 		end
@@ -180,7 +180,7 @@ tinsert(C.defaultThemes, function()
 				local texture = button:GetNormalTexture()
 				ReplaceApplicantRoles(texture, LFG_LIST_GROUP_DATA_ATLASES[button.role])
 				hooksecurefunc(texture, "SetAtlas", ReplaceApplicantRoles)
-				F.CreateBDFrame(button)
+				B.CreateBDFrame(button)
 			end
 
 			member.styled = true
@@ -191,35 +191,36 @@ tinsert(C.defaultThemes, function()
 
 	local entryCreation = LFGListFrame.EntryCreation
 	entryCreation.Inset:Hide()
-	F.StripTextures(entryCreation.Description)
-	F.Reskin(entryCreation.ListGroupButton)
-	F.Reskin(entryCreation.CancelButton)
-	F.ReskinInput(entryCreation.Description)
-	F.ReskinInput(entryCreation.Name)
-	F.ReskinInput(entryCreation.ItemLevel.EditBox)
-	F.ReskinInput(entryCreation.VoiceChat.EditBox)
-	F.ReskinDropDown(entryCreation.GroupDropDown)
-	F.ReskinDropDown(entryCreation.ActivityDropDown)
-	F.ReskinDropDown(entryCreation.PlayStyleDropdown)
-	F.ReskinCheck(entryCreation.MythicPlusRating.CheckButton)
-	F.ReskinInput(entryCreation.MythicPlusRating.EditBox)
-	F.ReskinCheck(entryCreation.PVPRating.CheckButton)
-	F.ReskinInput(entryCreation.PVPRating.EditBox)
+	B.StripTextures(entryCreation.Description)
+	B.Reskin(entryCreation.ListGroupButton)
+	B.Reskin(entryCreation.CancelButton)
+	B.ReskinInput(entryCreation.Description)
+	B.ReskinInput(entryCreation.Name)
+	B.ReskinInput(entryCreation.ItemLevel.EditBox)
+	B.ReskinInput(entryCreation.VoiceChat.EditBox)
+	B.ReskinDropDown(entryCreation.GroupDropDown)
+	B.ReskinDropDown(entryCreation.ActivityDropDown)
+	B.ReskinDropDown(entryCreation.PlayStyleDropdown)
+	B.ReskinCheck(entryCreation.MythicPlusRating.CheckButton)
+	B.ReskinInput(entryCreation.MythicPlusRating.EditBox)
+	B.ReskinCheck(entryCreation.PVPRating.CheckButton)
+	B.ReskinInput(entryCreation.PVPRating.EditBox)
 	if entryCreation.PvpItemLevel then -- I do believe blizz will rename Pvp into PvP in future build
-		F.ReskinCheck(entryCreation.PvpItemLevel.CheckButton)
-		F.ReskinInput(entryCreation.PvpItemLevel.EditBox)
+		B.ReskinCheck(entryCreation.PvpItemLevel.CheckButton)
+		B.ReskinInput(entryCreation.PvpItemLevel.EditBox)
 	end
-	F.ReskinCheck(entryCreation.ItemLevel.CheckButton)
-	F.ReskinCheck(entryCreation.VoiceChat.CheckButton)
-	F.ReskinCheck(entryCreation.PrivateGroup.CheckButton)
+	B.ReskinCheck(entryCreation.ItemLevel.CheckButton)
+	B.ReskinCheck(entryCreation.VoiceChat.CheckButton)
+	B.ReskinCheck(entryCreation.PrivateGroup.CheckButton)
+	B.ReskinCheck(entryCreation.CrossFactionGroup.CheckButton)
 
 	-- [[ Role count ]]
 
 	hooksecurefunc("LFGListGroupDataDisplayRoleCount_Update", function(self)
 		if not self.styled then
-			F.ReskinRole(self.TankIcon, "TANK")
-			F.ReskinRole(self.HealerIcon, "HEALER")
-			F.ReskinRole(self.DamagerIcon, "DPS")
+			B.ReskinSmallRole(self.TankIcon, "TANK")
+			B.ReskinSmallRole(self.HealerIcon, "HEALER")
+			B.ReskinSmallRole(self.DamagerIcon, "DPS")
 
 			self.HealerIcon:SetPoint("RIGHT", self.DamagerIcon, "LEFT", -22, 0)
 			self.TankIcon:SetPoint("RIGHT", self.HealerIcon, "LEFT", -22, 0)
@@ -246,40 +247,40 @@ tinsert(C.defaultThemes, function()
 	activityFinder.Background:SetTexture("")
 
 	local finderDialog = activityFinder.Dialog
-	F.StripTextures(finderDialog)
-	F.SetBD(finderDialog)
-	F.Reskin(finderDialog.SelectButton)
-	F.Reskin(finderDialog.CancelButton)
-	F.ReskinInput(finderDialog.EntryBox)
-	F.ReskinScroll(finderDialog.ScrollFrame.scrollBar)
+	B.StripTextures(finderDialog)
+	B.SetBD(finderDialog)
+	B.Reskin(finderDialog.SelectButton)
+	B.Reskin(finderDialog.CancelButton)
+	B.ReskinInput(finderDialog.EntryBox)
+	B.ReskinTrimScroll(finderDialog.ScrollBar)
 
 	-- [[ Application dialog ]]
 
 	local LFGListApplicationDialog = LFGListApplicationDialog
 
-	F.StripTextures(LFGListApplicationDialog)
-	F.SetBD(LFGListApplicationDialog)
-	F.StripTextures(LFGListApplicationDialog.Description)
-	F.CreateBDFrame(LFGListApplicationDialog.Description, .25)
-	F.Reskin(LFGListApplicationDialog.SignUpButton)
-	F.Reskin(LFGListApplicationDialog.CancelButton)
+	B.StripTextures(LFGListApplicationDialog)
+	B.SetBD(LFGListApplicationDialog)
+	B.StripTextures(LFGListApplicationDialog.Description)
+	B.CreateBDFrame(LFGListApplicationDialog.Description, .25)
+	B.Reskin(LFGListApplicationDialog.SignUpButton)
+	B.Reskin(LFGListApplicationDialog.CancelButton)
 
 	-- [[ Invite dialog ]]
 
 	local LFGListInviteDialog = LFGListInviteDialog
 
-	F.StripTextures(LFGListInviteDialog)
-	F.SetBD(LFGListInviteDialog)
-	F.Reskin(LFGListInviteDialog.AcceptButton)
-	F.Reskin(LFGListInviteDialog.DeclineButton)
-	F.Reskin(LFGListInviteDialog.AcknowledgeButton)
+	B.StripTextures(LFGListInviteDialog)
+	B.SetBD(LFGListInviteDialog)
+	B.Reskin(LFGListInviteDialog.AcceptButton)
+	B.Reskin(LFGListInviteDialog.DeclineButton)
+	B.Reskin(LFGListInviteDialog.AcknowledgeButton)
 
 	local roleIcon = LFGListInviteDialog.RoleIcon
-	roleIcon:SetTexture(C.rolesTex)
-	F.CreateBDFrame(roleIcon)
+	roleIcon:SetTexture(DB.rolesTex)
+	B.CreateBDFrame(roleIcon)
 
 	hooksecurefunc("LFGListInviteDialog_Show", function(self, resultID)
 		local role = select(5, C_LFGList.GetApplicationInfo(resultID))
-		self.RoleIcon:SetTexCoord(F.GetRoleTexCoord(role))
+		self.RoleIcon:SetTexCoord(B.GetRoleTexCoord(role))
 	end)
 end)

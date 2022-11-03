@@ -1,26 +1,26 @@
 local _, ns = ...
-local F, C = unpack(ns)
+local B, C, L, DB = unpack(ns)
 
 local function reskinPartyPose(frame)
-	F.StripTextures(frame)
+	B.StripTextures(frame)
 	if frame.Border then
 		frame.Border:SetAlpha(0)
 	end
 	if frame.OverlayElements then
 		frame.OverlayElements.Topper:SetAlpha(0)
 	end
-	F.SetBD(frame)
-	F.Reskin(frame.LeaveButton)
-	F.StripTextures(frame.ModelScene)
-	F.CreateBDFrame(frame.ModelScene, .25)
+	B.SetBD(frame)
+	B.Reskin(frame.LeaveButton)
+	B.StripTextures(frame.ModelScene)
+	B.CreateBDFrame(frame.ModelScene, .25)
 
 	local rewardFrame = frame.RewardAnimations.RewardFrame
-	local bg = F.SetBD(rewardFrame)
+	local bg = B.SetBD(rewardFrame)
 	bg:SetPoint("TOPLEFT", -5, 5)
 	bg:SetPoint("BOTTOMRIGHT", rewardFrame.NameFrame, 0, -5)
 	rewardFrame.NameFrame:SetAlpha(0)
 	rewardFrame.IconBorder:SetAlpha(0)
-	F.ReskinIcon(rewardFrame.Icon)
+	B.ReskinIcon(rewardFrame.Icon)
 end
 
 C.themes["Blizzard_IslandsPartyPoseUI"] = function()

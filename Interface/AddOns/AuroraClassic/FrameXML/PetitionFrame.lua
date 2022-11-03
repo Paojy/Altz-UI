@@ -1,13 +1,12 @@
 local _, ns = ...
-local F, C = unpack(ns)
+local B, C, L, DB = unpack(ns)
 
 tinsert(C.defaultThemes, function()
-
-	F.ReskinPortraitFrame(PetitionFrame)
-	F.Reskin(PetitionFrameSignButton)
-	F.Reskin(PetitionFrameRequestButton)
-	F.Reskin(PetitionFrameRenameButton)
-	F.Reskin(PetitionFrameCancelButton)
+	B.ReskinPortraitFrame(PetitionFrame)
+	B.Reskin(PetitionFrameSignButton)
+	B.Reskin(PetitionFrameRequestButton)
+	B.Reskin(PetitionFrameRenameButton)
+	B.Reskin(PetitionFrameCancelButton)
 
 	PetitionFrameCharterTitle:SetTextColor(1, .8, 0)
 	PetitionFrameCharterTitle:SetShadowColor(0, 0, 0)

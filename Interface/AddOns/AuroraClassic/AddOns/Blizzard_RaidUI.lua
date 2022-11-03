@@ -1,8 +1,8 @@
 local _, ns = ...
-local F, C = unpack(ns)
+local B, C, L, DB = unpack(ns)
 
 C.themes["Blizzard_RaidUI"] = function()
-	local r, g, b = C.r, C.g, C.b
+	local r, g, b = DB.r, DB.g, DB.b
 
 	for i = 1, NUM_RAID_GROUPS do
 		local group = _G["RaidGroup"..i]
@@ -11,7 +11,7 @@ C.themes["Blizzard_RaidUI"] = function()
 			local slot = _G["RaidGroup"..i.."Slot"..j]
 			select(1, slot:GetRegions()):SetAlpha(0)
 			select(2, slot:GetRegions()):SetColorTexture(r, g, b, .25)
-			F.CreateBDFrame(slot, .2)
+			B.CreateBDFrame(slot, .2)
 		end
 	end
 
@@ -19,6 +19,6 @@ C.themes["Blizzard_RaidUI"] = function()
 		local bu = _G["RaidGroupButton"..i]
 		select(4, bu:GetRegions()):SetAlpha(0)
 		select(5, bu:GetRegions()):SetColorTexture(r, g, b, .2)
-		F.CreateBDFrame(bu)
+		B.CreateBDFrame(bu)
 	end
 end

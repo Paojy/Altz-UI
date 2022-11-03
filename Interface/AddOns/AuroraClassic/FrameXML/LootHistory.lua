@@ -1,33 +1,33 @@
 local _, ns = ...
-local F, C = unpack(ns)
+local B, C, L, DB = unpack(ns)
 
 tinsert(C.defaultThemes, function()
-	local r, g, b = C.r, C.g, C.b
+	local r, g, b = DB.r, DB.g, DB.b
 
 	local LootHistoryFrame = LootHistoryFrame
 
 	LootHistoryFrame.Label:ClearAllPoints()
 	LootHistoryFrame.Label:SetPoint("TOP", LootHistoryFrame, "TOP", 0, -8)
 
-	F.StripTextures(LootHistoryFrame)
-	F.SetBD(LootHistoryFrame)
-	F.ReskinClose(LootHistoryFrame.CloseButton)
-	F.ReskinScroll(LootHistoryFrameScrollFrameScrollBar)
+	B.StripTextures(LootHistoryFrame)
+	B.SetBD(LootHistoryFrame)
+	B.ReskinClose(LootHistoryFrame.CloseButton)
+	B.ReskinScroll(LootHistoryFrameScrollFrameScrollBar)
 
 	-- [[ Resize button ]]
 
-	LootHistoryFrame.ResizeButton:SetNormalTexture("")
+	LootHistoryFrame.ResizeButton:SetNormalTexture(0)
 	LootHistoryFrame.ResizeButton:SetHeight(8)
 
 	do
 		local line1 = LootHistoryFrame.ResizeButton:CreateTexture()
-		line1:SetTexture(C.bdTex)
+		line1:SetTexture(DB.bdTex)
 		line1:SetVertexColor(.7, .7, .7)
 		line1:SetSize(30, 1)
 		line1:SetPoint("TOP")
 
 		local line2 = LootHistoryFrame.ResizeButton:CreateTexture()
-		line2:SetTexture(C.bdTex)
+		line2:SetTexture(DB.bdTex)
 		line2:SetVertexColor(.7, .7, .7)
 		line2:SetSize(30, 1)
 		line2:SetPoint("TOP", 0, -3)
@@ -56,10 +56,10 @@ tinsert(C.defaultThemes, function()
 			frame.NameBorderMid:Hide()
 			frame.WinnerRoll:SetTextColor(.9, .9, .9)
 
-			frame.bg = F.ReskinIcon(frame.Icon)
-			F.ReskinIconBorder(frame.IconBorder)
+			frame.bg = B.ReskinIcon(frame.Icon)
+			B.ReskinIconBorder(frame.IconBorder)
 
-			F.ReskinCollapse(frame.ToggleButton)
+			B.ReskinCollapse(frame.ToggleButton)
 			frame.ToggleButton:GetNormalTexture():SetAlpha(0)
 			frame.ToggleButton:GetPushedTexture():SetAlpha(0)
 			frame.ToggleButton:GetDisabledTexture():SetAlpha(0)
@@ -70,7 +70,7 @@ tinsert(C.defaultThemes, function()
 		if isDone and not expanded and winnerIdx then
 			local name, class = C_LootHistory.GetPlayerInfo(frame.itemIdx, winnerIdx)
 			if name then
-				local color = C.ClassColors[class]
+				local color = DB.ClassColors[class]
 				frame.WinnerName:SetVertexColor(color.r, color.g, color.b)
 			end
 		end
@@ -90,7 +90,7 @@ tinsert(C.defaultThemes, function()
 			local name, class, _, _, isWinner = C_LootHistory.GetPlayerInfo(playerFrame.itemIdx, playerFrame.playerIdx)
 
 			if name then
-				local color = C.ClassColors[class]
+				local color = DB.ClassColors[class]
 				playerFrame.PlayerName:SetTextColor(color.r, color.g, color.b)
 
 				if isWinner then
@@ -113,7 +113,7 @@ tinsert(C.defaultThemes, function()
 		info = UIDropDownMenu_CreateInfo();
 		info.notCheckable = 1;
 		local name, class = C_LootHistory.GetPlayerInfo(self.itemIdx, self.playerIdx);
-		local classColor = C.ClassColors[class];
+		local classColor = DB.ClassColors[class];
 		local colorCode = classColor.colorStr
 		info.text = string.format(MASTER_LOOTER_GIVE_TO, colorCode..name.."|r");
 		info.func = LootHistoryDropDown_OnClick;

@@ -1,15 +1,80 @@
 local _, ns = ...
-local F, C = unpack(ns)
+local B, C, L, DB = unpack(ns)
+
+local function handleSpellButton(self)
+	if SpellBookFrame.bookType == BOOKTYPE_PROFESSION then return end
+
+	local slot, slotType = SpellBook_GetSpellBookSlot(self)
+	local isPassive = IsPassiveSpell(slot, SpellBookFrame.bookType)
+	local name = self:GetName()
+	local highlightTexture = _G[name.."Highlight"]
+	if isPassive then
+		highlightTexture:SetColorTexture(1, 1, 1, 0)
+	else
+		highlightTexture:SetColorTexture(1, 1, 1, .25)
+	end
+
+	local subSpellString = _G[name.."SubSpellName"]
+	local isOffSpec = self.offSpecID ~= 0 and SpellBookFrame.bookType == BOOKTYPE_SPELL
+	subSpellString:SetTextColor(1, 1, 1)
+
+	if slotType == "FUTURESPELL" then
+		local level = GetSpellAvailableLevel(slot, SpellBookFrame.bookType)
+		if level and level > UnitLevel("player") then
+			self.SpellName:SetTextColor(.7, .7, .7)
+			subSpellString:SetTextColor(.7, .7, .7)
+		end
+	else
+		if slotType == "SPELL" and isOffSpec then
+			subSpellString:SetTextColor(.7, .7, .7)
+		end
+	end
+	self.RequiredLevelString:SetTextColor(.7, .7, .7)
+
+	local ic = _G[name.."IconTexture"]
+	if ic.bg then
+		ic.bg:SetShown(ic:IsShown())
+	end
+
+	if self.ClickBindingIconCover and self.ClickBindingIconCover:IsShown() then
+		self.SpellName:SetTextColor(.7, .7, .7)
+	end
+end
+
+local function handleSkillButton(button)
+	if not button then return end
+	button:SetCheckedTexture(0)
+	button:SetPushedTexture(0)
+	button.IconTexture:SetInside()
+	button.bg = B.ReskinIcon(button.IconTexture)
+	button.highlightTexture:SetInside(bg)
+
+	local nameFrame = _G[button:GetName().."NameFrame"]
+	if nameFrame then nameFrame:Hide() end
+end
 
 tinsert(C.defaultThemes, function()
-	F.ReskinPortraitFrame(SpellBookFrame)
+	B.ReskinPortraitFrame(SpellBookFrame)
 	SpellBookFrame:DisableDrawLayer("BACKGROUND")
 	SpellBookFrameTabButton1:ClearAllPoints()
 	SpellBookFrameTabButton1:SetPoint("TOPLEFT", SpellBookFrame, "BOTTOMLEFT", 0, 2)
 
 	for i = 1, 5 do
-		F.ReskinTab(_G["SpellBookFrameTabButton"..i])
+		local tab = _G["SpellBookFrameTabButton"..i]
+		if tab then
+			B.ReskinTab(tab)
+		end
 	end
+
+	hooksecurefunc("SpellBookFrame_Update", function()
+		for i = 2, 5 do
+			local tab = _G["SpellBookFrameTabButton"..i]
+			if tab then
+				tab:ClearAllPoints()
+				tab:SetPoint("TOPLEFT", _G["SpellBookFrameTabButton"..(i-1)], "TOPRIGHT", -15, 0)
+			end
+		end
+	end)
 
 	for i = 1, SPELLS_PER_PAGE do
 		local bu = _G["SpellButton"..i]
@@ -20,51 +85,12 @@ tinsert(C.defaultThemes, function()
 		bu.TextBackground:Hide()
 		bu.TextBackground2:Hide()
 		bu.UnlearnedFrame:SetAlpha(0)
-		bu:SetCheckedTexture("")
-		bu:SetPushedTexture("")
+		bu:SetCheckedTexture(0)
+		bu:SetPushedTexture(0)
 
-		ic.bg = F.ReskinIcon(ic)
+		ic.bg = B.ReskinIcon(ic)
+		hooksecurefunc(bu, "UpdateButton", handleSpellButton)
 	end
-
-	hooksecurefunc("SpellButton_UpdateButton", function(self)
-		if SpellBookFrame.bookType == BOOKTYPE_PROFESSION then return end
-
-		local slot, slotType = SpellBook_GetSpellBookSlot(self)
-		local isPassive = IsPassiveSpell(slot, SpellBookFrame.bookType)
-		local name = self:GetName()
-		local highlightTexture = _G[name.."Highlight"]
-		if isPassive then
-			highlightTexture:SetColorTexture(1, 1, 1, 0)
-		else
-			highlightTexture:SetColorTexture(1, 1, 1, .25)
-		end
-
-		local subSpellString = _G[name.."SubSpellName"]
-		local isOffSpec = self.offSpecID ~= 0 and SpellBookFrame.bookType == BOOKTYPE_SPELL
-		subSpellString:SetTextColor(1, 1, 1)
-
-		if slotType == "FUTURESPELL" then
-			local level = GetSpellAvailableLevel(slot, SpellBookFrame.bookType)
-			if level and level > UnitLevel("player") then
-				self.SpellName:SetTextColor(.7, .7, .7)
-				subSpellString:SetTextColor(.7, .7, .7)
-			end
-		else
-			if slotType == "SPELL" and isOffSpec then
-				subSpellString:SetTextColor(.7, .7, .7)
-			end
-		end
-		self.RequiredLevelString:SetTextColor(.7, .7, .7)
-
-		local ic = _G[name.."IconTexture"]
-		if ic.bg then
-			ic.bg:SetShown(ic:IsShown())
-		end
-
-		if self.ClickBindingIconCover and self.ClickBindingIconCover:IsShown() then
-			self.SpellName:SetTextColor(.7, .7, .7)
-		end
-	end)
 
 	SpellBookSkillLineTab1:SetPoint("TOPLEFT", SpellBookSideTabsFrame, "TOPRIGHT", 2, -36)
 
@@ -73,14 +99,14 @@ tinsert(C.defaultThemes, function()
 			local tab = _G["SpellBookSkillLineTab"..i]
 			local nt = tab:GetNormalTexture()
 			if nt then
-				nt:SetTexCoord(unpack(C.TexCoord))
+				nt:SetTexCoord(unpack(DB.TexCoord))
 			end
 
 			if not tab.styled then
 				tab:GetRegions():Hide()
-				tab:SetCheckedTexture(C.pushed)
+				tab:SetCheckedTexture(DB.pushed)
 				tab:GetHighlightTexture():SetColorTexture(1, 1, 1, .25)
-				F.CreateBDFrame(tab)
+				B.CreateBDFrame(tab)
 
 				tab.styled = true
 			end
@@ -100,46 +126,19 @@ tinsert(C.defaultThemes, function()
 		bu.missingHeader:SetTextColor(1, 1, 1)
 		bu.missingText:SetTextColor(1, 1, 1)
 
-		F.StripTextures(bu.statusBar)
+		B.StripTextures(bu.statusBar)
 		bu.statusBar:SetHeight(10)
-		bu.statusBar:SetStatusBarTexture(C.bdTex)
-		bu.statusBar:GetStatusBarTexture():SetGradient("VERTICAL", 0, .6, 0, 0, .8, 0)
+		bu.statusBar:SetStatusBarTexture(DB.bdTex)
+		bu.statusBar:GetStatusBarTexture():SetGradient("VERTICAL", CreateColor(0, .6, 0, 1), CreateColor(0, .8, 0, 1))
 		bu.statusBar.rankText:SetPoint("CENTER")
-		F.CreateBDFrame(bu.statusBar, .25)
+		B.CreateBDFrame(bu.statusBar, .25)
 		if i > 2 then
 			bu.statusBar:ClearAllPoints()
 			bu.statusBar:SetPoint("BOTTOMLEFT", 16, 3)
 		end
-	end
 
-	local professionbuttons = {
-		"PrimaryProfession1SpellButtonTop",
-		"PrimaryProfession1SpellButtonBottom",
-		"PrimaryProfession2SpellButtonTop",
-		"PrimaryProfession2SpellButtonBottom",
-		"SecondaryProfession1SpellButtonLeft",
-		"SecondaryProfession1SpellButtonRight",
-		"SecondaryProfession2SpellButtonLeft",
-		"SecondaryProfession2SpellButtonRight",
-		"SecondaryProfession3SpellButtonLeft",
-		"SecondaryProfession3SpellButtonRight",
-	}
-
-	for _, button in pairs(professionbuttons) do
-		local bu = _G[button]
-		F.StripTextures(bu)
-		bu:SetPushedTexture("")
-
-		local icon = bu.iconTexture
-		icon:ClearAllPoints()
-		icon:SetPoint("TOPLEFT", 2, -2)
-		icon:SetPoint("BOTTOMRIGHT", -2, 2)
-		F.ReskinIcon(icon)
-
-		bu.highlightTexture:SetAllPoints(icon)
-		local check = bu:GetCheckedTexture()
-		check:SetTexture(C.pushed)
-		check:SetAllPoints(icon)
+		handleSkillButton(bu.SpellButton1)
+		handleSkillButton(bu.SpellButton2)
 	end
 
 	for i = 1, 2 do
@@ -150,9 +149,9 @@ tinsert(C.defaultThemes, function()
 		bu.professionName:SetPoint("TOPLEFT", 100, -4)
 		bu.icon:SetAlpha(1)
 		bu.icon:SetDesaturated(false)
-		F.ReskinIcon(bu.icon)
+		B.ReskinIcon(bu.icon)
 
-		local bg = F.CreateBDFrame(bu, .25)
+		local bg = B.CreateBDFrame(bu, .25)
 		bg:SetPoint("TOPLEFT")
 		bg:SetPoint("BOTTOMRIGHT", 0, -5)
 	end
@@ -167,13 +166,14 @@ tinsert(C.defaultThemes, function()
 		end
 	end)
 
-	F.CreateBDFrame(SecondaryProfession1, .25)
-	F.CreateBDFrame(SecondaryProfession2, .25)
-	F.CreateBDFrame(SecondaryProfession3, .25)
-	F.ReskinArrow(SpellBookPrevPageButton, "left")
-	F.ReskinArrow(SpellBookNextPageButton, "right")
+	B.CreateBDFrame(SecondaryProfession1, .25)
+	B.CreateBDFrame(SecondaryProfession2, .25)
+	B.CreateBDFrame(SecondaryProfession3, .25)
+	B.ReskinArrow(SpellBookPrevPageButton, "left")
+	B.ReskinArrow(SpellBookNextPageButton, "right")
 	SpellBookPageText:SetTextColor(.8, .8, .8)
 
+	-- todo: some elements might be removed in beta
 	hooksecurefunc("UpdateProfessionButton", function(self)
 		local spellIndex = self:GetID() + self:GetParent().spellOffset
 		local isPassive = IsPassiveSpell(spellIndex, SpellBookFrame.bookType)
@@ -182,7 +182,17 @@ tinsert(C.defaultThemes, function()
 		else
 			self.highlightTexture:SetColorTexture(1, 1, 1, .25)
 		end
-		self.spellString:SetTextColor(1, 1, 1);
-		self.subSpellString:SetTextColor(1, 1, 1)
+		if self.spellString then
+			self.spellString:SetTextColor(1, 1, 1)
+		end
+		if self.subSpellString then
+			self.subSpellString:SetTextColor(1, 1, 1)
+		end
+		if self.SpellName then
+			self.SpellName:SetTextColor(1, 1, 1)
+		end
+		if self.SpellSubName then
+			self.SpellSubName:SetTextColor(1, 1, 1)
+		end
 	end)
 end)

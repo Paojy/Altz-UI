@@ -1,7 +1,8 @@
 local _, ns = ...
-local F, C = unpack(ns)
+local B, C, L, DB = unpack(ns)
 
 tinsert(C.defaultThemes, function()
+
 	if not CompactRaidFrameManagerToggleButton then return end
 
 	CompactRaidFrameManagerToggleButton:SetNormalTexture("Interface\\Buttons\\UI-ColorPicker-Buttons")
@@ -32,13 +33,14 @@ tinsert(C.defaultThemes, function()
 		CompactRaidFrameManagerDisplayFrameLeaderOptionsRaidWorldMarkerButton,
 		CompactRaidFrameManagerDisplayFrameLockedModeToggle,
 		CompactRaidFrameManagerDisplayFrameHiddenModeToggle,
-		CompactRaidFrameManagerDisplayFrameConvertToRaid
+		CompactRaidFrameManagerDisplayFrameConvertToRaid,
+		CompactRaidFrameManagerDisplayFrameEditMode,
 	}
 	for _, button in pairs(buttons) do
 		for i = 1, 9 do
 			select(i, button:GetRegions()):SetAlpha(0)
 		end
-		F.Reskin(button)
+		B.Reskin(button)
 	end
 	CompactRaidFrameManagerDisplayFrameLeaderOptionsRaidWorldMarkerButton:SetNormalTexture("Interface\\RaidFrame\\Raid-WorldPing")
 
@@ -49,9 +51,8 @@ tinsert(C.defaultThemes, function()
 	select(1, CompactRaidFrameManagerDisplayFrame:GetRegions()):SetAlpha(0)
 	select(4, CompactRaidFrameManagerDisplayFrame:GetRegions()):SetAlpha(0)
 
-	local bd = F.SetBD(CompactRaidFrameManager)
+	local bd = B.SetBD(CompactRaidFrameManager)
 	bd:SetPoint("TOPLEFT")
 	bd:SetPoint("BOTTOMRIGHT", -9, 9)
-	F.ReskinDropDown(CompactRaidFrameManagerDisplayFrameProfileSelector)
-	F.ReskinCheck(CompactRaidFrameManagerDisplayFrameEveryoneIsAssistButton)
+	B.ReskinCheck(CompactRaidFrameManagerDisplayFrameEveryoneIsAssistButton)
 end)

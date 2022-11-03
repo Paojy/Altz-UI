@@ -1,18 +1,18 @@
 local _, ns = ...
-local F, C = unpack(ns)
+local B, C, L, DB = unpack(ns)
 
 C.themes["Blizzard_ScrappingMachineUI"] = function()
-	F.ReskinPortraitFrame(ScrappingMachineFrame)
-	F.Reskin(ScrappingMachineFrame.ScrapButton)
+	B.ReskinPortraitFrame(ScrappingMachineFrame)
+	B.Reskin(ScrappingMachineFrame.ScrapButton)
 
 	local ItemSlots = ScrappingMachineFrame.ItemSlots
-	F.StripTextures(ItemSlots)
+	B.StripTextures(ItemSlots)
 
 	for button in pairs(ItemSlots.scrapButtons.activeObjects) do
-		F.StripTextures(button)
-		button.Icon:SetTexCoord(unpack(C.TexCoord))
-		button.bg = F.CreateBDFrame(button.Icon, .25)
-		F.ReskinIconBorder(button.IconBorder)
+		B.StripTextures(button)
+		button.Icon:SetTexCoord(unpack(DB.TexCoord))
+		button.bg = B.CreateBDFrame(button.Icon, .25)
+		B.ReskinIconBorder(button.IconBorder)
 		local hl = button:GetHighlightTexture()
 		hl:SetColorTexture(1, 1, 1, .25)
 		hl:SetAllPoints(button.Icon)

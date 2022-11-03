@@ -1,5 +1,5 @@
 local _, ns = ...
-local F, C = unpack(ns)
+local B, C, L, DB = unpack(ns)
 
 local function reskinMerchantItem(item)
 	local name = item.Name
@@ -7,10 +7,10 @@ local function reskinMerchantItem(item)
 	local icon = button.icon
 	local moneyFrame = _G[item:GetName().."MoneyFrame"]
 
-	F.StripTextures(item)
-	F.CreateBDFrame(item, .25)
+	B.StripTextures(item)
+	B.CreateBDFrame(item, .25)
 
-	F.StripTextures(button)
+	B.StripTextures(button)
 	button:ClearAllPoints()
 	button:SetPoint("LEFT", item, 4, 0)
 	local hl = button:GetHighlightTexture()
@@ -18,8 +18,8 @@ local function reskinMerchantItem(item)
 	hl:SetInside()
 
 	icon:SetInside()
-	button.bg = F.ReskinIcon(icon)
-	F.ReskinIconBorder(button.IconBorder)
+	button.bg = B.ReskinIcon(icon)
+	B.ReskinIconBorder(button.IconBorder)
 	button.IconOverlay:SetInside()
 	button.IconOverlay2:SetInside()
 
@@ -29,18 +29,18 @@ local function reskinMerchantItem(item)
 end
 
 local function reskinMerchantInteract(button)
-	button:SetPushedTexture("")
+	button:SetPushedTexture(0)
 	button:GetHighlightTexture():SetColorTexture(1, 1, 1, .25)
-	F.CreateBDFrame(button)
+	B.CreateBDFrame(button)
 end
 
 tinsert(C.defaultThemes, function()
-	F.ReskinPortraitFrame(MerchantFrame)
-	F.ReskinDropDown(MerchantFrameLootFilter)
-	F.StripTextures(MerchantPrevPageButton)
-	F.ReskinArrow(MerchantPrevPageButton, "left")
-	F.StripTextures(MerchantNextPageButton)
-	F.ReskinArrow(MerchantNextPageButton, "right")
+	B.ReskinPortraitFrame(MerchantFrame)
+	B.ReskinDropDown(MerchantFrameLootFilter)
+	B.StripTextures(MerchantPrevPageButton)
+	B.ReskinArrow(MerchantPrevPageButton, "left")
+	B.StripTextures(MerchantNextPageButton)
+	B.ReskinArrow(MerchantNextPageButton, "right")
 	MerchantMoneyInset:Hide()
 	MerchantMoneyBg:Hide()
 	MerchantNameText:SetDrawLayer("ARTWORK")
@@ -53,7 +53,7 @@ tinsert(C.defaultThemes, function()
 	MerchantFrameTab2:SetPoint("LEFT", MerchantFrameTab1, "RIGHT", -15, 0)
 
 	for i = 1, 2 do
-		F.ReskinTab(_G["MerchantFrameTab"..i])
+		B.ReskinTab(_G["MerchantFrameTab"..i])
 	end
 
 	for i = 1, BUYBACK_ITEMS_PER_PAGE do
@@ -64,7 +64,7 @@ tinsert(C.defaultThemes, function()
 			local currency = _G["MerchantItem"..i.."AltCurrencyFrameItem"..j]
 			local texture = _G["MerchantItem"..i.."AltCurrencyFrameItem"..j.."Texture"]
 			currency:SetPoint("BOTTOMLEFT", item.ItemButton, "BOTTOMRIGHT", 3, 0)
-			F.ReskinIcon(texture)
+			B.ReskinIcon(texture)
 		end
 	end
 
@@ -80,16 +80,20 @@ tinsert(C.defaultThemes, function()
 	reskinMerchantInteract(MerchantRepairItemButton)
 	local ic = MerchantRepairItemButton:GetRegions()
 	ic:SetTexture("Interface\\Icons\\INV_Hammer_20")
-	ic:SetTexCoord(unpack(C.TexCoord))
+	ic:SetTexCoord(unpack(DB.TexCoord))
 
 	hooksecurefunc("MerchantFrame_UpdateCurrencies", function()
 		for i = 1, MAX_MERCHANT_CURRENCIES do
 			local bu = _G["MerchantToken"..i]
 			if bu and not bu.styled then
 				local icon = _G["MerchantToken"..i.."Icon"]
+				if icon then
+					B.ReskinIcon(icon)
+				end
 				local count = _G["MerchantToken"..i.."Count"]
-				count:SetPoint("TOPLEFT", bu, "TOPLEFT", -2, 0)
-				F.ReskinIcon(icon)
+				if count then
+					count:SetPoint("TOPLEFT", bu, "TOPLEFT", -2, 0) -- needs reveiw
+				end
 
 				bu.styled = true
 			end
@@ -105,10 +109,10 @@ tinsert(C.defaultThemes, function()
 	-- StackSplitFrame
 
 	local StackSplitFrame = StackSplitFrame
-	F.StripTextures(StackSplitFrame)
-	F.SetBD(StackSplitFrame)
-	F.Reskin(StackSplitFrame.OkayButton)
-	F.Reskin(StackSplitFrame.CancelButton)
-	F.ReskinArrow(StackSplitFrame.LeftButton, "left")
-	F.ReskinArrow(StackSplitFrame.RightButton, "right")
+	B.StripTextures(StackSplitFrame)
+	B.SetBD(StackSplitFrame)
+	B.Reskin(StackSplitFrame.OkayButton)
+	B.Reskin(StackSplitFrame.CancelButton)
+	B.ReskinArrow(StackSplitFrame.LeftButton, "left")
+	B.ReskinArrow(StackSplitFrame.RightButton, "right")
 end)

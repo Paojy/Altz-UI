@@ -1,12 +1,13 @@
 local addonName, ns = ...
 
-ns[1] = {} -- F, functions
+ns[1] = {} -- B, functions
 ns[2] = {} -- C, config
 ns[3] = {} -- L, locales
+ns[4] = {} -- DB, database
 
 AuroraClassicDB = {} -- Saved Variables
 
-local F, C, L = unpack(ns)
+local B, C, L, DB = unpack(ns)
 
 local function GetCurrentScale()
 	local mult = 1e5
@@ -14,7 +15,7 @@ local function GetCurrentScale()
 	return floor(scale * mult + .5) / mult
 end
 
-function F:SetupPixelFix()
+function B:SetupPixelFix()
 	local screenHeight = select(2, GetPhysicalScreenSize())
 	local scale = GetCurrentScale()
 	local uiScale = AuroraClassicDB.UIScale
@@ -24,13 +25,13 @@ function F:SetupPixelFix()
 	C.mult = (pixel / scale) - ((pixel - ratio) / scale)
 end
 
-function F:LoadSkins(event, addon)
+function B:LoadSkins(event, addon)
 	if event == "UI_SCALE_CHANGED" then
-		F:SetupPixelFix()
+		B:SetupPixelFix()
 	elseif event == "PLAYER_LOGOUT" then
 		AuroraClassicDB.UIScale = GetCurrentScale()
 	else
-		if not C.mult then F:SetupPixelFix() end
+		if not C.mult then B:SetupPixelFix() end
 
 		if addon == "AuroraClassic" then
 			for key in pairs(AuroraClassicDB) do
@@ -76,6 +77,6 @@ local host = CreateFrame("Frame")
 host:RegisterEvent("ADDON_LOADED")
 host:RegisterEvent("PLAYER_LOGOUT")
 host:RegisterEvent("UI_SCALE_CHANGED")
-host:SetScript("OnEvent", F.LoadSkins)
+host:SetScript("OnEvent", B.LoadSkins)
 
 _G[addonName] = ns

@@ -1,5 +1,5 @@
 local _, ns = ...
-local F, C = unpack(ns)
+local B, C, L, DB = unpack(ns)
 
 local function UpdateProgressItemQuality(self)
 	local button = self.__owner
@@ -14,17 +14,17 @@ local function UpdateProgressItemQuality(self)
 		quality = select(4, GetQuestCurrencyInfo(buttonType, index))
 	end
 
-	local color = C.QualityColors[quality or 1]
+	local color = DB.QualityColors[quality or 1]
 	button.bg:SetBackdropBorderColor(color.r, color.g, color.b)
 end
 
 tinsert(C.defaultThemes, function()
-	F.ReskinPortraitFrame(QuestFrame)
+	B.ReskinPortraitFrame(QuestFrame)
 
-	F.StripTextures(QuestFrameDetailPanel, 0)
-	F.StripTextures(QuestFrameRewardPanel, 0)
-	F.StripTextures(QuestFrameProgressPanel, 0)
-	F.StripTextures(QuestFrameGreetingPanel, 0)
+	B.StripTextures(QuestFrameDetailPanel, 0)
+	B.StripTextures(QuestFrameRewardPanel, 0)
+	B.StripTextures(QuestFrameProgressPanel, 0)
+	B.StripTextures(QuestFrameGreetingPanel, 0)
 
 	local line = QuestFrameGreetingPanel:CreateTexture()
 	line:SetColorTexture(1, 1, 1, .25)
@@ -38,11 +38,11 @@ tinsert(C.defaultThemes, function()
 	for i = 1, MAX_REQUIRED_ITEMS do
 		local button = _G["QuestProgressItem"..i]
 		button.NameFrame:Hide()
-		button.bg = F.ReskinIcon(button.Icon)
+		button.bg = B.ReskinIcon(button.Icon)
 		button.Icon.__owner = button
 		hooksecurefunc(button.Icon, "SetTexture", UpdateProgressItemQuality)
 
-		local bg = F.CreateBDFrame(button, .25)
+		local bg = B.CreateBDFrame(button, .25)
 		bg:SetPoint("TOPLEFT", button.bg, "TOPRIGHT", 2, 0)
 		bg:SetPoint("BOTTOMRIGHT", button.bg, 100, 0)
 	end
@@ -57,17 +57,17 @@ tinsert(C.defaultThemes, function()
 		end
 	end)
 
-	F.Reskin(QuestFrameAcceptButton)
-	F.Reskin(QuestFrameDeclineButton)
-	F.Reskin(QuestFrameCompleteQuestButton)
-	F.Reskin(QuestFrameCompleteButton)
-	F.Reskin(QuestFrameGoodbyeButton)
-	F.Reskin(QuestFrameGreetingGoodbyeButton)
+	B.Reskin(QuestFrameAcceptButton)
+	B.Reskin(QuestFrameDeclineButton)
+	B.Reskin(QuestFrameCompleteQuestButton)
+	B.Reskin(QuestFrameCompleteButton)
+	B.Reskin(QuestFrameGoodbyeButton)
+	B.Reskin(QuestFrameGreetingGoodbyeButton)
 
-	F.ReskinScroll(QuestProgressScrollFrameScrollBar)
-	F.ReskinScroll(QuestRewardScrollFrameScrollBar)
-	F.ReskinScroll(QuestDetailScrollFrameScrollBar)
-	F.ReskinScroll(QuestGreetingScrollFrameScrollBar)
+	B.ReskinScroll(QuestProgressScrollFrameScrollBar)
+	B.ReskinScroll(QuestRewardScrollFrameScrollBar)
+	B.ReskinScroll(QuestDetailScrollFrameScrollBar)
+	B.ReskinScroll(QuestGreetingScrollFrameScrollBar)
 
 	-- Text colour stuff
 
@@ -75,23 +75,23 @@ tinsert(C.defaultThemes, function()
 	QuestProgressRequiredItemsText:SetShadowColor(0, 0, 0)
 	QuestProgressTitleText:SetTextColor(1, .8, 0)
 	QuestProgressTitleText:SetShadowColor(0, 0, 0)
-	QuestProgressTitleText.SetTextColor = F.Dummy
+	QuestProgressTitleText.SetTextColor = B.Dummy
 	QuestProgressText:SetTextColor(1, 1, 1)
-	QuestProgressText.SetTextColor = F.Dummy
+	QuestProgressText.SetTextColor = B.Dummy
 	GreetingText:SetTextColor(1, 1, 1)
-	GreetingText.SetTextColor = F.Dummy
+	GreetingText.SetTextColor = B.Dummy
 	AvailableQuestsText:SetTextColor(1, .8, 0)
-	AvailableQuestsText.SetTextColor = F.Dummy
+	AvailableQuestsText.SetTextColor = B.Dummy
 	AvailableQuestsText:SetShadowColor(0, 0, 0)
 	CurrentQuestsText:SetTextColor(1, .8, 0)
-	CurrentQuestsText.SetTextColor = F.Dummy
+	CurrentQuestsText.SetTextColor = B.Dummy
 	CurrentQuestsText:SetShadowColor(0, 0, 0)
 
 	-- Quest NPC model
 
-	F.StripTextures(QuestModelScene)
-	F.StripTextures(QuestNPCModelTextFrame)
-	local bg = F.SetBD(QuestModelScene)
+	B.StripTextures(QuestModelScene)
+	B.StripTextures(QuestNPCModelTextFrame)
+	local bg = B.SetBD(QuestModelScene)
 	bg:SetOutside(nil, nil, nil, QuestNPCModelTextFrame)
 
 	hooksecurefunc("QuestFrame_ShowQuestPortrait", function(parentFrame, _, _, _, _, _, x, y)

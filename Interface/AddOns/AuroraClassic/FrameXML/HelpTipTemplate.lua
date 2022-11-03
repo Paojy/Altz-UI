@@ -1,12 +1,12 @@
 local _, ns = ...
-local F, C = unpack(ns)
+local B, C, L, DB = unpack(ns)
 
 local function reskinHelpTips(self)
 	for frame in self.framePool:EnumerateActive() do
 		if not frame.styled then
-			if frame.OkayButton then F.Reskin(frame.OkayButton) end
-			if frame.CloseButton then F.ReskinClose(frame.CloseButton) end
-	
+			if frame.OkayButton then B.Reskin(frame.OkayButton) end
+			if frame.CloseButton then B.ReskinClose(frame.CloseButton) end
+
 			frame.styled = true
 		end
 	end

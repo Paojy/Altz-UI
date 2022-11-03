@@ -1,41 +1,36 @@
 local _, ns = ...
-local F, C = unpack(ns)
+local B, C, L, DB = unpack(ns)
 
 tinsert(C.defaultThemes, function()
-	local cr, cg, cb = C.r, C.g, C.b
+	local cr, cg, cb = DB.r, DB.g, DB.b
 
-	F.ReskinPortraitFrame(AddonList)
-	F.Reskin(AddonListEnableAllButton)
-	F.Reskin(AddonListDisableAllButton)
-	F.Reskin(AddonListCancelButton)
-	F.Reskin(AddonListOkayButton)
-	F.ReskinCheck(AddonListForceLoad)
-	F.ReskinDropDown(AddonCharacterDropDown)
-	F.ReskinScroll(AddonListScrollFrameScrollBar)
+	B.ReskinPortraitFrame(AddonList)
+	B.Reskin(AddonListEnableAllButton)
+	B.Reskin(AddonListDisableAllButton)
+	B.Reskin(AddonListCancelButton)
+	B.Reskin(AddonListOkayButton)
+	B.ReskinCheck(AddonListForceLoad)
+	B.ReskinDropDown(AddonCharacterDropDown)
+	B.ReskinTrimScroll(AddonList.ScrollBar)
 
 	AddonListForceLoad:SetSize(26, 26)
 	AddonCharacterDropDown:SetWidth(170)
 
-	for i = 1, MAX_ADDONS_DISPLAYED do
-		local checkbox = _G["AddonListEntry"..i.."Enabled"]
-		F.ReskinCheck(checkbox, true)
-		F.Reskin(_G["AddonListEntry"..i.."Load"])
+	local function forceSaturation(self, _, force)
+		if force then return end
+		self:SetVertexColor(cr, cg, cb)
+		self:SetDesaturated(true, true)
 	end
 
-	hooksecurefunc("AddonList_Update", function()
-		for i = 1, MAX_ADDONS_DISPLAYED do
-			local entry = _G["AddonListEntry"..i]
-			if entry and entry:IsShown() then
-				local checkbox = _G["AddonListEntry"..i.."Enabled"]
-				if checkbox.forceSaturation then
-					local tex = checkbox:GetCheckedTexture()
-					if checkbox.state == 2 then
-						tex:SetDesaturated(true)
-						tex:SetVertexColor(cr, cg, cb)
-					elseif checkbox.state == 1 then
-						tex:SetVertexColor(1, .8, 0, .8)
-					end
-				end
+	hooksecurefunc(AddonList.ScrollBox, "Update", function(self)
+		for i = 1, self.ScrollTarget:GetNumChildren() do
+			local child = select(i, self.ScrollTarget:GetChildren())
+			if not child.styled then
+				B.ReskinCheck(child.Enabled, true)
+				B.Reskin(child.LoadAddonButton)
+				hooksecurefunc(child.Enabled:GetCheckedTexture(), "SetDesaturated", forceSaturation)
+
+				child.styled = true
 			end
 		end
 	end)

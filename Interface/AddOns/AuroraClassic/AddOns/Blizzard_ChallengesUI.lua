@@ -1,5 +1,5 @@
 local _, ns = ...
-local F, C = unpack(ns)
+local B, C, L, DB = unpack(ns)
 
 C.themes["Blizzard_ChallengesUI"] = function()
 	ChallengesFrameInset:Hide()
@@ -13,9 +13,9 @@ C.themes["Blizzard_ChallengesUI"] = function()
 			local bu = self.DungeonIcons[i]
 			if bu and not bu.styled then
 				bu:GetRegions():SetAlpha(0)
-				bu.Icon:SetTexCoord(unpack(C.TexCoord))
+				bu.Icon:SetTexCoord(unpack(DB.TexCoord))
 				bu.Icon:SetInside()
-				F.CreateBDFrame(bu.Icon, 0)
+				B.CreateBDFrame(bu.Icon, 0)
 
 				bu.styled = true
 			end
@@ -30,43 +30,43 @@ C.themes["Blizzard_ChallengesUI"] = function()
 			local scheduel = mod.AffixFrame
 			local party = mod.PartyFrame
 
-			F.StripTextures(scheduel)
-			F.CreateBDFrame(scheduel, .25)
+			B.StripTextures(scheduel)
+			B.CreateBDFrame(scheduel, .25)
 			if scheduel.Entries then
 				for i = 1, 3 do
-					F.AffixesSetup(scheduel.Entries[i])
+					B.AffixesSetup(scheduel.Entries[i])
 				end
 			end
-			F.StripTextures(party)
-			F.CreateBDFrame(party, .25)
+			B.StripTextures(party)
+			B.CreateBDFrame(party, .25)
 
 			angryStyle = true
 		end
 	end
-	hooksecurefunc("ChallengesFrame_Update", UpdateIcons)
+	hooksecurefunc(ChallengesFrame, "Update", UpdateIcons)
 
 	hooksecurefunc(ChallengesFrame.WeeklyInfo, "SetUp", function(self)
 		local affixes = C_MythicPlus.GetCurrentAffixes()
 		if affixes then
-			F.AffixesSetup(self.Child)
+			B.AffixesSetup(self.Child)
 		end
 	end)
 
 	local keystone = ChallengesKeystoneFrame
-	F.SetBD(keystone)
-	F.ReskinClose(keystone.CloseButton)
-	F.Reskin(keystone.StartButton)
+	B.SetBD(keystone)
+	B.ReskinClose(keystone.CloseButton)
+	B.Reskin(keystone.StartButton)
 
 	hooksecurefunc(keystone, "Reset", function(self)
 		self:GetRegions():SetAlpha(0)
 		self.InstructionBackground:SetAlpha(0)
 	end)
 
-	hooksecurefunc(keystone, "OnKeystoneSlotted", F.AffixesSetup)
+	hooksecurefunc(keystone, "OnKeystoneSlotted", B.AffixesSetup)
 
 	-- New season
 	local noticeFrame = ChallengesFrame.SeasonChangeNoticeFrame
-	F.Reskin(noticeFrame.Leave)
+	B.Reskin(noticeFrame.Leave)
 	noticeFrame.Leave.__bg:SetFrameLevel(noticeFrame:GetFrameLevel() + 1)
 	noticeFrame.NewSeason:SetTextColor(1, .8, 0)
 	noticeFrame.SeasonDescription:SetTextColor(1, 1, 1)
@@ -74,8 +74,8 @@ C.themes["Blizzard_ChallengesUI"] = function()
 	noticeFrame.SeasonDescription3:SetTextColor(1, .8, 0)
 
 	local affix = noticeFrame.Affix
-	F.StripTextures(affix)
-	local bg = F.ReskinIcon(affix.Portrait)
+	B.StripTextures(affix)
+	local bg = B.ReskinIcon(affix.Portrait)
 	bg:SetFrameLevel(3)
 
 	hooksecurefunc(affix, "SetUp", function(_, affixID)

@@ -1,4 +1,4 @@
-local F, C, L = unpack(select(2, ...))
+local B, C, L = unpack(select(2, ...))
 
 -- [[ Options UI ]]
 
@@ -187,17 +187,17 @@ gui:SetScript("OnEvent", function(self, _, addon)
 	-- fill 'old' table
 	copyTable(AuroraClassicDB, old)
 
-	F.SetBD(gui)
-	F.Reskin(bu)
-	F.Reskin(okay)
-	F.Reskin(cancel)
-	F.Reskin(default)
-	F.Reskin(reloadButton)
-	F.ReskinSlider(alphaSlider)
-	F.ReskinSlider(fontSlider)
+	B.SetBD(gui)
+	B.Reskin(bu)
+	B.Reskin(okay)
+	B.Reskin(cancel)
+	B.Reskin(default)
+	B.Reskin(reloadButton)
+	B.ReskinSlider(alphaSlider)
+	B.ReskinSlider(fontSlider)
 
 	for i = 1, #checkboxes do
-		F.ReskinCheck(checkboxes[i])
+		B.ReskinCheck(checkboxes[i])
 	end
 
 	guiRefresh()

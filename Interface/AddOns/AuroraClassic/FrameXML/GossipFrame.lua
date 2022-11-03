@@ -1,5 +1,5 @@
 local _, ns = ...
-local F, C = unpack(ns)
+local B, C, L, DB = unpack(ns)
 
 local gsub, strmatch = gsub, strmatch
 
@@ -32,38 +32,38 @@ end
 
 tinsert(C.defaultThemes, function()
 	QuestFont:SetTextColor(1, 1, 1)
-	GossipGreetingText:SetTextColor(1, 1, 1)
 
-	NPCFriendshipStatusBar.icon:SetPoint("TOPLEFT", -30, 7)
-	F.StripTextures(NPCFriendshipStatusBar, 4)
-	NPCFriendshipStatusBar:SetStatusBarTexture(C.normTex)
-	F.CreateBDFrame(NPCFriendshipStatusBar, .25)
+	B.Reskin(GossipFrame.GreetingPanel.GoodbyeButton)
+	B.ReskinTrimScroll(GossipFrame.GreetingPanel.ScrollBar)
 
-	for i = 1, 4 do
-		local notch = NPCFriendshipStatusBar["Notch"..i]
-		if notch then
-			notch:SetColorTexture(0, 0, 0)
-			notch:SetSize(C.mult, 16)
-		end
-	end
-
-	GossipFrameInset:Hide()
-	if GossipFrame.Background then GossipFrame.Background:Hide() end
-	F.ReskinPortraitFrame(GossipFrame)
-	F.Reskin(GossipFrameGreetingGoodbyeButton)
-	F.ReskinScroll(GossipGreetingScrollFrameScrollBar)
-
-	hooksecurefunc("GossipFrameUpdate", function()
-		for button in GossipFrame.titleButtonPool:EnumerateActive() do
+	hooksecurefunc(GossipFrame.GreetingPanel.ScrollBox, "Update", function(self)
+		for i = 1, self.ScrollTarget:GetNumChildren() do
+			local button = select(i, self.ScrollTarget:GetChildren())
 			if not button.styled then
-				replaceGossipText(button, button:GetText())
-				hooksecurefunc(button, "SetText", replaceGossipText)
-				hooksecurefunc(button, "SetFormattedText", replaceGossipFormat)
+				local buttonText = select(3, button:GetRegions()) -- no parentKey atm
+				if buttonText and buttonText:IsObjectType("FontString") then
+					replaceGossipText(button, button:GetText())
+					hooksecurefunc(button, "SetText", replaceGossipText)
+					hooksecurefunc(button, "SetFormattedText", replaceGossipFormat)
+				end
 
 				button.styled = true
 			end
 		end
 	end)
+
+	for i = 1, 4 do
+		local notch = GossipFrame.FriendshipStatusBar["Notch"..i]
+		if notch then
+			notch:SetColorTexture(0, 0, 0)
+			notch:SetSize(C.mult, 16)
+		end
+	end
+	GossipFrame.FriendshipStatusBar.BarBorder:Hide()
+
+	GossipFrameInset:Hide()
+	if GossipFrame.Background then GossipFrame.Background:Hide() end
+	B.ReskinPortraitFrame(GossipFrame)
 
 	-- Text on QuestFrame
 	QuestFrameGreetingPanel:HookScript("OnShow", function(self)

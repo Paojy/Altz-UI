@@ -1,32 +1,32 @@
 local _, ns = ...
-local F, C = unpack(ns)
+local B, C, L, DB = unpack(ns)
 
 C.themes["Blizzard_VoidStorageUI"] = function()
-	F.SetBD(VoidStorageFrame, nil, 20, 0, 0, 20)
-	F.CreateBDFrame(VoidStoragePurchaseFrame)
-	F.StripTextures(VoidStorageBorderFrame)
-	F.StripTextures(VoidStorageDepositFrame)
-	F.StripTextures(VoidStorageWithdrawFrame)
-	F.StripTextures(VoidStorageCostFrame)
-	F.StripTextures(VoidStorageStorageFrame)
+	B.SetBD(VoidStorageFrame, nil, 20, 0, 0, 20)
+	B.CreateBDFrame(VoidStoragePurchaseFrame)
+	B.StripTextures(VoidStorageBorderFrame)
+	B.StripTextures(VoidStorageDepositFrame)
+	B.StripTextures(VoidStorageWithdrawFrame)
+	B.StripTextures(VoidStorageCostFrame)
+	B.StripTextures(VoidStorageStorageFrame)
 	VoidStorageFrameMarbleBg:Hide()
 	VoidStorageFrameLines:Hide()
 	select(2, VoidStorageFrame:GetRegions()):Hide()
 
 	local function reskinIcons(bu, quality)
 		if not bu.bg then
-			bu:SetPushedTexture("")
+			bu:SetPushedTexture(0)
 			bu:GetHighlightTexture():SetColorTexture(1, 1, 1, .25)
 			bu.IconBorder:SetAlpha(0)
-			bu.bg = F.CreateBDFrame(bu, .25)
+			bu.bg = B.CreateBDFrame(bu, .25)
 			bu.bg:SetBackdropColor(.3, .3, .3, .3)
 			local bg, icon, _, search = bu:GetRegions()
 			bg:Hide()
-			icon:SetTexCoord(unpack(C.TexCoord))
+			icon:SetTexCoord(unpack(DB.TexCoord))
 			search:SetAllPoints(bu.bg)
 		end
 
-		local color = C.QualityColors[quality or 1]
+		local color = DB.QualityColors[quality or 1]
 		bu.bg:SetBackdropBorderColor(color.r, color.g, color.b)
 	end
 
@@ -59,17 +59,17 @@ C.themes["Blizzard_VoidStorageUI"] = function()
 	for i = 1, 2 do
 		local tab = VoidStorageFrame["Page"..i]
 		tab:GetRegions():Hide()
-		tab:SetCheckedTexture(C.pushed)
+		tab:SetCheckedTexture(DB.pushed)
 		tab:GetHighlightTexture():SetColorTexture(1, 1, 1, .25)
-		tab:GetNormalTexture():SetTexCoord(unpack(C.TexCoord))
-		F.CreateBDFrame(tab)
+		tab:GetNormalTexture():SetTexCoord(unpack(DB.TexCoord))
+		B.CreateBDFrame(tab)
 	end
 
 	VoidStorageFrame.Page1:ClearAllPoints()
 	VoidStorageFrame.Page1:SetPoint("LEFT", VoidStorageFrame, "TOPRIGHT", 2, -60)
 
-	F.Reskin(VoidStoragePurchaseButton)
-	F.Reskin(VoidStorageTransferButton)
-	F.ReskinClose(VoidStorageBorderFrame.CloseButton)
-	F.ReskinInput(VoidItemSearchBox)
+	B.Reskin(VoidStoragePurchaseButton)
+	B.Reskin(VoidStorageTransferButton)
+	B.ReskinClose(VoidStorageBorderFrame.CloseButton)
+	B.ReskinInput(VoidItemSearchBox)
 end

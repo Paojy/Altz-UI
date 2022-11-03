@@ -1,10 +1,9 @@
 local _, ns = ...
-local F, C = unpack(ns)
+local B, C, L, DB = unpack(ns)
 
 tinsert(C.defaultThemes, function()
-
 	-- Ready check
-	F.SetBD(ReadyCheckFrame)
+	B.SetBD(ReadyCheckFrame)
 	ReadyCheckPortrait:SetAlpha(0)
 	select(2, ReadyCheckListenerFrame:GetRegions()):Hide()
 
@@ -14,16 +13,16 @@ tinsert(C.defaultThemes, function()
 		end
 	end)
 
-	F.Reskin(ReadyCheckFrameYesButton)
-	F.Reskin(ReadyCheckFrameNoButton)
+	B.Reskin(ReadyCheckFrameYesButton)
+	B.Reskin(ReadyCheckFrameNoButton)
 
 	-- Role poll
-	F.StripTextures(RolePollPopup)
-	F.SetBD(RolePollPopup)
-	F.Reskin(RolePollPopupAcceptButton)
-	F.ReskinClose(RolePollPopupCloseButton)
+	B.StripTextures(RolePollPopup)
+	B.SetBD(RolePollPopup)
+	B.Reskin(RolePollPopupAcceptButton)
+	B.ReskinClose(RolePollPopupCloseButton)
 
-	F.ReskinRole(RolePollPopupRoleButtonTank, "TANK")
-	F.ReskinRole(RolePollPopupRoleButtonHealer, "HEALER")
-	F.ReskinRole(RolePollPopupRoleButtonDPS, "DPS")
+	B.ReskinRole(RolePollPopupRoleButtonTank, "TANK")
+	B.ReskinRole(RolePollPopupRoleButtonHealer, "HEALER")
+	B.ReskinRole(RolePollPopupRoleButtonDPS, "DPS")
 end)

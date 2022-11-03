@@ -1,5 +1,5 @@
 local _, ns = ...
-local F, C = unpack(ns)
+local B, C, L, DB = unpack(ns)
 
 local Type_StatusBar = _G.Enum.UIWidgetVisualizationType.StatusBar
 local Type_CaptureBar = _G.Enum.UIWidgetVisualizationType.CaptureBar
@@ -15,10 +15,16 @@ local atlasColors = {
 	["EmberCourtScenario-Tracker-barfill"] = {.9, .2, .2},
 }
 
-function F:ReplaceWidgetBarTexture(atlas)
+function B:ReplaceWidgetBarTexture(atlas)
 	if atlasColors[atlas] then
-		self:SetStatusBarTexture(C.normTex)
+		self:SetStatusBarTexture(DB.normTex)
 		self:SetStatusBarColor(unpack(atlasColors[atlas]))
+	end
+end
+
+local function ResetLabelColor(text, _, _, _, _, force)
+	if not force then
+		text:SetTextColor(1, 1, 1, 1, true)
 	end
 end
 
@@ -37,10 +43,14 @@ local function ReskinWidgetStatusBar(bar)
 		if bar.Label then
 			bar.Label:SetPoint("CENTER", 0, -5)
 			bar.Label:SetFontObject(Game12Font)
+			ResetLabelColor(bar.Label)
+			hooksecurefunc(bar.Label, "SetTextColor", ResetLabelColor)
 		end
-		F.SetBD(bar)
-		F.ReplaceWidgetBarTexture(bar, bar:GetStatusBarAtlas())
-		hooksecurefunc(bar, "SetStatusBarAtlas", F.ReplaceWidgetBarTexture)
+		B.SetBD(bar)
+		if bar.GetStatusBarAtlas then
+			B.ReplaceWidgetBarTexture(bar, bar:GetStatusBarAtlas())
+			hooksecurefunc(bar, "SetStatusBarAtlas", B.ReplaceWidgetBarTexture)
+		end
 
 		bar.styled = true
 	end
@@ -56,9 +66,9 @@ local function ReskinDoubleStatusBarWidget(self)
 end
 
 local function ReskinPVPCaptureBar(self)
-	self.LeftBar:SetTexture(C.normTex)
-	self.NeutralBar:SetTexture(C.normTex)
-	self.RightBar:SetTexture(C.normTex)
+	self.LeftBar:SetTexture(DB.normTex)
+	self.NeutralBar:SetTexture(DB.normTex)
+	self.RightBar:SetTexture(DB.normTex)
 
 	self.LeftBar:SetVertexColor(.2, .6, 1)
 	self.NeutralBar:SetVertexColor(.8, .8, .8)
@@ -72,7 +82,7 @@ local function ReskinPVPCaptureBar(self)
 	self.Glow3:SetAlpha(0)
 
 	if not self.bg then
-		self.bg = F.SetBD(self)
+		self.bg = B.SetBD(self)
 		self.bg:SetPoint("TOPLEFT", self.LeftBar, -2, 2)
 		self.bg:SetPoint("BOTTOMRIGHT", self.RightBar, 2, -2)
 	end
@@ -82,14 +92,24 @@ local function ReskinSpellDisplayWidget(spell)
 	if not spell.bg then
 		spell.Border:SetAlpha(0)
 		spell.DebuffBorder:SetAlpha(0)
-		spell.bg = F.ReskinIcon(spell.Icon)
+		spell.bg = B.ReskinIcon(spell.Icon)
 	end
 	spell.IconMask:Hide()
 end
 
-tinsert(C.defaultThemes, function()
-	hooksecurefunc(_G.UIWidgetTopCenterContainerFrame, "UpdateWidgetLayout", function(self)
-		for _, widgetFrame in pairs(self.widgetFrames) do
+local function ReskinPowerBarWidget(self)
+	for _, widgetFrame in pairs(self.widgetFrames) do
+		if widgetFrame.widgetType == Type_StatusBar then
+			if not widgetFrame:IsForbidden() then
+				ReskinWidgetStatusBar(widgetFrame.Bar)
+			end
+		end
+	end
+end
+
+local function ReskinWidgetGroups(self)
+	for _, widgetFrame in pairs(self.widgetFrames) do
+		if not widgetFrame:IsForbidden() then
 			local widgetType = widgetFrame.widgetType
 			if widgetType == Type_DoubleStatusBar then
 				ReskinDoubleStatusBarWidget(widgetFrame)
@@ -99,36 +119,34 @@ tinsert(C.defaultThemes, function()
 				ReskinWidgetStatusBar(widgetFrame.Bar)
 			end
 		end
-	end)
+	end
+end
+
+tinsert(C.defaultThemes, function()
+	hooksecurefunc(_G.UIWidgetTopCenterContainerFrame, "UpdateWidgetLayout", ReskinWidgetGroups)
+	ReskinWidgetGroups(_G.UIWidgetTopCenterContainerFrame)
 
 	hooksecurefunc(_G.UIWidgetBelowMinimapContainerFrame, "UpdateWidgetLayout", function(self)
 		for _, widgetFrame in pairs(self.widgetFrames) do
 			if widgetFrame.widgetType == Type_CaptureBar then
-				ReskinPVPCaptureBar(widgetFrame)
+				if not widgetFrame:IsForbidden() then
+					ReskinPVPCaptureBar(widgetFrame)
+				end
 			end
 		end
 	end)
 
-	hooksecurefunc(_G.UIWidgetPowerBarContainerFrame, "UpdateWidgetLayout", function(self)
-		for _, widgetFrame in pairs(self.widgetFrames) do
-			if widgetFrame.widgetType == Type_StatusBar then
-				ReskinWidgetStatusBar(widgetFrame.Bar)
-			end
-		end
-	end)
+	hooksecurefunc(_G.UIWidgetPowerBarContainerFrame, "UpdateWidgetLayout", ReskinPowerBarWidget)
+	ReskinPowerBarWidget(_G.UIWidgetPowerBarContainerFrame)
 
-	hooksecurefunc(_G.TopScenarioWidgetContainerBlock.WidgetContainer, "UpdateWidgetLayout", function(self)
-		for _, widgetFrame in pairs(self.widgetFrames) do
-			if widgetFrame.widgetType == Type_StatusBar then
-				ReskinWidgetStatusBar(widgetFrame.Bar)
-			end
-		end
-	end)
+	hooksecurefunc(_G.TopScenarioWidgetContainerBlock.WidgetContainer, "UpdateWidgetLayout", ReskinPowerBarWidget)
 
 	hooksecurefunc(_G.BottomScenarioWidgetContainerBlock.WidgetContainer, "UpdateWidgetLayout", function(self)
 		for _, widgetFrame in pairs(self.widgetFrames) do
 			if widgetFrame.widgetType == Type_SpellDisplay then
-				ReskinSpellDisplayWidget(widgetFrame.Spell)
+				if not widgetFrame:IsForbidden() then
+					ReskinSpellDisplayWidget(widgetFrame.Spell)
+				end
 			end
 		end
 	end)
@@ -140,6 +158,7 @@ tinsert(C.defaultThemes, function()
 
 	-- needs review, might remove this in the future
 	hooksecurefunc(_G.UIWidgetTemplateStatusBarMixin, "Setup", function(self)
+		if self:IsForbidden() then return end
 		ReskinWidgetStatusBar(self.Bar)
 	end)
 end)

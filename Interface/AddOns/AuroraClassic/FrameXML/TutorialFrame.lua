@@ -1,17 +1,17 @@
 local _, ns = ...
-local F, C = unpack(ns)
+local B, C, L, DB = unpack(ns)
 
 tinsert(C.defaultThemes, function()
-	F.SetBD(TutorialFrame)
+	B.SetBD(TutorialFrame)
 
 	TutorialFrameBackground:Hide()
-	TutorialFrameBackground.Show = F.Dummy
+	TutorialFrameBackground.Show = B.Dummy
 	TutorialFrame:DisableDrawLayer("BORDER")
 
-	F.Reskin(TutorialFrameOkayButton, true)
-	F.ReskinClose(TutorialFrameCloseButton)
-	F.ReskinArrow(TutorialFramePrevButton, "left")
-	F.ReskinArrow(TutorialFrameNextButton, "right")
+	B.Reskin(TutorialFrameOkayButton, true)
+	B.ReskinClose(TutorialFrameCloseButton)
+	B.ReskinArrow(TutorialFramePrevButton, "left")
+	B.ReskinArrow(TutorialFrameNextButton, "right")
 
 	TutorialFrameOkayButton:ClearAllPoints()
 	TutorialFrameOkayButton:SetPoint("BOTTOMLEFT", TutorialFrameNextButton, "BOTTOMRIGHT", 10, 0)

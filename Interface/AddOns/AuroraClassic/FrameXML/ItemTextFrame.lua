@@ -1,8 +1,7 @@
 local _, ns = ...
-local F, C = unpack(ns)
+local B, C, L, DB = unpack(ns)
 
 tinsert(C.defaultThemes, function()
-
 	InboxFrameBg:Hide()
 	ItemTextPrevPageButton:GetRegions():Hide()
 	ItemTextNextPageButton:GetRegions():Hide()
@@ -11,11 +10,11 @@ tinsert(C.defaultThemes, function()
 	ItemTextMaterialBotLeft:SetAlpha(0)
 	ItemTextMaterialBotRight:SetAlpha(0)
 
-	F.ReskinPortraitFrame(ItemTextFrame)
-	F.ReskinScroll(ItemTextScrollFrameScrollBar)
-	F.ReskinArrow(ItemTextPrevPageButton, "left")
-	F.ReskinArrow(ItemTextNextPageButton, "right")
+	B.ReskinPortraitFrame(ItemTextFrame)
+	B.ReskinScroll(ItemTextScrollFrameScrollBar)
+	B.ReskinArrow(ItemTextPrevPageButton, "left")
+	B.ReskinArrow(ItemTextNextPageButton, "right")
 	ItemTextFramePageBg:SetAlpha(0)
-	ItemTextPageText:SetTextColor(1, 1, 1)
-	ItemTextPageText.SetTextColor = F.Dummy
+	ItemTextPageText:SetTextColor("P", 1, 1, 1)
+	ItemTextPageText.SetTextColor = B.Dummy
 end)

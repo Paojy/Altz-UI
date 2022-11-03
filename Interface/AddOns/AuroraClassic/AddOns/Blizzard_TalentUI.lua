@@ -1,6 +1,6 @@
 local _, ns = ...
-local F, C = unpack(ns)
-local r, g, b = C.r, C.g, C.b
+local B, C, L, DB = unpack(ns)
+local r, g, b = DB.r, DB.g, DB.b
 
 local function ReanchorTutorial(button)
 	button.Ring:Hide()
@@ -9,8 +9,8 @@ end
 
 local function ReskinPvPTalent(self)
 	if not self.styled then
-		F.ReskinIcon(self.Icon)
-		local bg = F.CreateBDFrame(self, .25)
+		B.ReskinIcon(self.Icon)
+		local bg = B.CreateBDFrame(self, .25)
 		bg:SetPoint("TOPLEFT", self.Icon, "TOPRIGHT", 0, C.mult)
 		bg:SetPoint("BOTTOMRIGHT", -1, C.mult)
 		local hl = self:GetHighlightTexture()
@@ -48,15 +48,15 @@ C.themes["Blizzard_TalentUI"] = function()
 	end)
 
 	for i = 1, NUM_TALENT_FRAME_TABS do
-		F.ReskinTab(_G["PlayerTalentFrameTab"..i])
+		B.ReskinTab(_G["PlayerTalentFrameTab"..i])
 	end
 
 	for _, frame in pairs({PlayerTalentFrameSpecialization, PlayerTalentFramePetSpecialization}) do
-		F.StripTextures(frame)
+		B.StripTextures(frame)
 		for i = 1, frame:GetNumChildren() do
 			local child = select(i, frame:GetChildren())
 			if child:IsObjectType("Frame") and not child:GetName() then
-				F.StripTextures(child)
+				B.StripTextures(child)
 			end
 		end
 		ReanchorTutorial(_G[frame:GetName().."TutorialButton"])
@@ -64,8 +64,8 @@ C.themes["Blizzard_TalentUI"] = function()
 		for i = 1, 4 do
 			local bu = frame["specButton"..i]
 			local _, _, _, icon, role = GetSpecializationInfo(i, false, frame.isPet)
-			F.StripTextures(bu)
-			F.Reskin(bu, true)
+			B.StripTextures(bu)
+			B.Reskin(bu, true)
 
 			bu.selectedTex:SetColorTexture(r, g, b, .25)
 			bu.selectedTex:SetDrawLayer("BACKGROUND")
@@ -74,23 +74,23 @@ C.themes["Blizzard_TalentUI"] = function()
 			bu.specIcon:SetTexture(icon)
 			bu.specIcon:SetSize(58, 58)
 			bu.specIcon:SetPoint("LEFT", bu, "LEFT")
-			F.ReskinIcon(bu.specIcon)
+			B.ReskinIcon(bu.specIcon)
 
 			local roleIcon = bu.roleIcon
-			roleIcon:SetTexture(C.rolesTex)
-			F.CreateBDFrame(roleIcon):SetFrameLevel(2)
+			roleIcon:SetTexture(DB.rolesTex)
+			B.CreateBDFrame(roleIcon):SetFrameLevel(2)
 			if role then
-				roleIcon:SetTexCoord(F.GetRoleTexCoord(role))
+				roleIcon:SetTexCoord(B.GetRoleTexCoord(role))
 			end
 		end
 
 		local scrollChild = frame.spellsScroll.child
-		F.StripTextures(scrollChild)
-		F.ReskinIcon(scrollChild.specIcon)
+		B.StripTextures(scrollChild)
+		B.ReskinIcon(scrollChild.specIcon)
 
 		local roleIcon = scrollChild.roleIcon
-		roleIcon:SetTexture(C.rolesTex)
-		F.CreateBDFrame(roleIcon)
+		roleIcon:SetTexture(DB.rolesTex)
+		B.CreateBDFrame(roleIcon)
 	end
 
 	hooksecurefunc("PlayerTalentFrame_UpdateSpecFrame", function(self, spec)
@@ -104,7 +104,7 @@ C.themes["Blizzard_TalentUI"] = function()
 		local scrollChild = self.spellsScroll.child
 		scrollChild.specIcon:SetTexture(icon)
 		if role then
-			scrollChild.roleIcon:SetTexCoord(F.GetRoleTexCoord(role))
+			scrollChild.roleIcon:SetTexCoord(B.GetRoleTexCoord(role))
 		end
 
 		local index = 1
@@ -126,7 +126,7 @@ C.themes["Blizzard_TalentUI"] = function()
 
 				if not frame.styled then
 					frame.ring:Hide()
-					F.ReskinIcon(frame.icon)
+					B.ReskinIcon(frame.icon)
 
 					frame.styled = true
 				end
@@ -163,9 +163,9 @@ C.themes["Blizzard_TalentUI"] = function()
 			bu.Slot:SetAlpha(0)
 			bu.knownSelection:SetAlpha(0)
 
-			F.ReskinIcon(ic)
+			B.ReskinIcon(ic)
 
-			bu.bg = F.CreateBDFrame(bu, .25)
+			bu.bg = B.CreateBDFrame(bu, .25)
 			bu.bg:SetPoint("TOPLEFT", 10, 0)
 			bu.bg:SetPoint("BOTTOMRIGHT")
 		end
@@ -187,26 +187,26 @@ C.themes["Blizzard_TalentUI"] = function()
 		end
 	end)
 
-	F.ReskinPortraitFrame(PlayerTalentFrame)
-	F.Reskin(PlayerTalentFrameSpecializationLearnButton)
-	F.Reskin(PlayerTalentFrameActivateButton)
-	F.Reskin(PlayerTalentFramePetSpecializationLearnButton)
+	B.ReskinPortraitFrame(PlayerTalentFrame)
+	B.Reskin(PlayerTalentFrameSpecializationLearnButton)
+	B.Reskin(PlayerTalentFrameActivateButton)
+	B.Reskin(PlayerTalentFramePetSpecializationLearnButton)
 
 	-- PVP Talents
 
-	F.Reskin(PlayerTalentFrameTalentsPvpTalentButton)
+	B.Reskin(PlayerTalentFrameTalentsPvpTalentButton)
 	PlayerTalentFrameTalentsPvpTalentButton:SetSize(20, 20)
 
 	local talentList = PlayerTalentFrameTalentsPvpTalentFrameTalentList
 	talentList:ClearAllPoints()
 	talentList:SetPoint("LEFT", PlayerTalentFrame, "RIGHT", 3, 0)
-	F.StripTextures(talentList)
-	F.SetBD(talentList)
+	B.StripTextures(talentList)
+	B.SetBD(talentList)
 	talentList.Inset:Hide()
-	F.Reskin(select(4, talentList:GetChildren()), nil)
+	B.Reskin(select(4, talentList:GetChildren()), nil)
 
-	F.StripTextures(PlayerTalentFrameTalentsPvpTalentFrame)
-	F.ReskinScroll(PlayerTalentFrameTalentsPvpTalentFrameTalentListScrollFrameScrollBar)
+	B.StripTextures(PlayerTalentFrameTalentsPvpTalentFrame)
+	B.ReskinScroll(PlayerTalentFrameTalentsPvpTalentFrameTalentListScrollFrameScrollBar)
 
 	for i = 1, 10 do
 		local bu = _G["PlayerTalentFrameTalentsPvpTalentFrameTalentListScrollFrameButton"..i]

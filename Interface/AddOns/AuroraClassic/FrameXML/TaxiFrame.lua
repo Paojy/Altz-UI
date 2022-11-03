@@ -1,5 +1,5 @@
 local _, ns = ...
-local F, C = unpack(ns)
+local B, C, L, DB = unpack(ns)
 
 tinsert(C.defaultThemes, function()
 	TaxiFrame:DisableDrawLayer("BORDER")
@@ -8,6 +8,6 @@ tinsert(C.defaultThemes, function()
 	TaxiFrame.TitleBg:Hide()
 	TaxiFrame.TopTileStreaks:Hide()
 
-	F.SetBD(TaxiFrame, nil, 3, -23, -5, 3)
-	F.ReskinClose(TaxiFrame.CloseButton, TaxiRouteMap)
+	B.SetBD(TaxiFrame, nil, 3, -23, -5, 3)
+	B.ReskinClose(TaxiFrame.CloseButton, TaxiRouteMap)
 end)

@@ -1,5 +1,5 @@
 local _, ns = ...
-local F, C, L = unpack(ns)
+local B, C, L, DB = unpack(ns)
 
 -- Default settings
 C.options = {
@@ -16,59 +16,49 @@ C.options = {
 	UIScale = 0,
 }
 
--- Media
-local mediaPath = "Interface\\AddOns\\AuroraClassic\\media\\"
-
-C.bgTex = mediaPath.."bgTex"
-C.pushed = mediaPath.."pushed"
-C.ArrowUp = mediaPath.."arrow"
-C.closeTex = mediaPath.."close"
-C.normTex = mediaPath.."normTex"
-C.glowTex = mediaPath.."glowTex"
-C.rolesTex = mediaPath.."RoleIcons"
-C.bdTex = "Interface\\ChatFrame\\ChatFrameBackground"
-C.sparkTex = "Interface\\CastingBar\\UI-CastingBar-Spark"
-C.TexCoord = {.08, .92, .08, .92}
-C.Font = {STANDARD_TEXT_FONT, 12, "OUTLINE"}
-
 C.defaultThemes = {}
 C.themes = {}
-C.isNewPatch = select(4, GetBuildInfo()) >= 90200 -- 9.2.0
-C.MyClass = select(2, UnitClass("player"))
-C.ClassColors = {}
+
+-- Data
+DB.isNewPatch = select(4, GetBuildInfo()) >= 90205 -- 9.2.5
+DB.MyClass = select(2, UnitClass("player"))
+DB.ClassColors = {}
 
 local colors = CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS
 for class, value in pairs(colors) do
-	C.ClassColors[class] = {}
-	C.ClassColors[class].r = value.r
-	C.ClassColors[class].g = value.g
-	C.ClassColors[class].b = value.b
-	C.ClassColors[class].colorStr = value.colorStr
+	DB.ClassColors[class] = {}
+	DB.ClassColors[class].r = value.r
+	DB.ClassColors[class].g = value.g
+	DB.ClassColors[class].b = value.b
+	DB.ClassColors[class].colorStr = value.colorStr
 end
-C.r = C.ClassColors[C.MyClass].r
-C.g = C.ClassColors[C.MyClass].g
-C.b = C.ClassColors[C.MyClass].b
+DB.r = DB.ClassColors[DB.MyClass].r
+DB.g = DB.ClassColors[DB.MyClass].g
+DB.b = DB.ClassColors[DB.MyClass].b
 
--- Replace default contants
-LE_ITEM_QUALITY_POOR = Enum.ItemQuality.Poor
-LE_ITEM_QUALITY_COMMON = Enum.ItemQuality.Common
-LE_ITEM_QUALITY_UNCOMMON = Enum.ItemQuality.Uncommon
-LE_ITEM_QUALITY_RARE = Enum.ItemQuality.Rare
-LE_ITEM_QUALITY_EPIC = Enum.ItemQuality.Epic
-LE_ITEM_QUALITY_LEGENDARY = Enum.ItemQuality.Legendary
-LE_ITEM_QUALITY_ARTIFACT = Enum.ItemQuality.Artifact
-LE_ITEM_QUALITY_HEIRLOOM = Enum.ItemQuality.Heirloom
-
-C.QualityColors = {}
+DB.QualityColors = {}
 local qualityColors = BAG_ITEM_QUALITY_COLORS
 for index, value in pairs(qualityColors) do
-	C.QualityColors[index] = {r = value.r, g = value.g, b = value.b}
+	DB.QualityColors[index] = {r = value.r, g = value.g, b = value.b}
 end
-C.QualityColors[-1] = {r = 0, g = 0, b = 0}
-C.QualityColors[LE_ITEM_QUALITY_POOR] = {r = .61, g = .61, b = .61}
-C.QualityColors[LE_ITEM_QUALITY_COMMON] = {r = 0, g = 0, b = 0}
-C.QualityColors[99] = {r = 1, g = 0, b = 0}
+DB.QualityColors[-1] = {r = 0, g = 0, b = 0}
+DB.QualityColors[Enum.ItemQuality.Poor] = {r = COMMON_GRAY_COLOR.r, g = COMMON_GRAY_COLOR.g, b = COMMON_GRAY_COLOR.b}
+DB.QualityColors[Enum.ItemQuality.Common] = {r = 0, g = 0, b = 0}
+DB.QualityColors[99] = {r = 1, g = 0, b = 0}
 
-NORMAL_QUEST_DISPLAY = gsub(NORMAL_QUEST_DISPLAY, "000000", "ffffff")
-TRIVIAL_QUEST_DISPLAY = gsub(TRIVIAL_QUEST_DISPLAY, "000000", "ffffff")
-IGNORED_QUEST_DISPLAY = gsub(IGNORED_QUEST_DISPLAY, "000000", "ffffff")
+-- Media
+local mediaPath = "Interface\\AddOns\\AuroraClassic\\media\\"
+DB.bdTex = "Interface\\ChatFrame\\ChatFrameBackground"
+DB.glowTex = mediaPath.."glowTex"
+DB.normTex = mediaPath.."normTex"
+DB.bgTex = mediaPath.."bgTex"
+DB.pushed = mediaPath.."pushed"
+DB.ArrowUp = mediaPath.."arrow"
+DB.closeTex = mediaPath.."close"
+DB.rolesTex = mediaPath.."RoleIcons"
+DB.tankTex = mediaPath.."Tank"
+DB.healTex = mediaPath.."Healer"
+DB.dpsTex = mediaPath.."DPS"
+DB.sparkTex = "Interface\\CastingBar\\UI-CastingBar-Spark"
+DB.TexCoord = {.08, .92, .08, .92}
+DB.Font = {STANDARD_TEXT_FONT, 12, "OUTLINE"}

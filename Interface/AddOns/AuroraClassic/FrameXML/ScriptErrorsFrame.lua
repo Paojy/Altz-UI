@@ -1,16 +1,15 @@
 local _, ns = ...
-local F, C = unpack(ns)
+local B, C, L, DB = unpack(ns)
 
 tinsert(C.defaultThemes, function()
-
 	ScriptErrorsFrame:SetScale(UIParent:GetScale())
-	F.StripTextures(ScriptErrorsFrame)
-	F.SetBD(ScriptErrorsFrame)
+	B.StripTextures(ScriptErrorsFrame)
+	B.SetBD(ScriptErrorsFrame)
 
-	F.ReskinArrow(ScriptErrorsFrame.PreviousError, "left")
-	F.ReskinArrow(ScriptErrorsFrame.NextError, "right")
-	F.Reskin(ScriptErrorsFrame.Reload)
-	F.Reskin(ScriptErrorsFrame.Close)
-	F.ReskinScroll(ScriptErrorsFrameScrollBar)
-	F.ReskinClose(ScriptErrorsFrameClose)
+	B.ReskinArrow(ScriptErrorsFrame.PreviousError, "left")
+	B.ReskinArrow(ScriptErrorsFrame.NextError, "right")
+	B.Reskin(ScriptErrorsFrame.Reload)
+	B.Reskin(ScriptErrorsFrame.Close)
+	B.ReskinScroll(ScriptErrorsFrameScrollBar)
+	B.ReskinClose(ScriptErrorsFrameClose)
 end)

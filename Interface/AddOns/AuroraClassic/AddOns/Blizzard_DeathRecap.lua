@@ -1,5 +1,5 @@
 local _, ns = ...
-local F, C = unpack(ns)
+local B, C, L, DB = unpack(ns)
 
 C.themes["Blizzard_DeathRecap"] = function()
 	local DeathRecapFrame = DeathRecapFrame
@@ -9,13 +9,13 @@ C.themes["Blizzard_DeathRecap"] = function()
 	DeathRecapFrame.BackgroundInnerGlow:Hide()
 	DeathRecapFrame.Divider:Hide()
 
-	F.SetBD(DeathRecapFrame)
-	F.Reskin(select(8, DeathRecapFrame:GetChildren())) -- bottom close button has no parentKey
-	F.ReskinClose(DeathRecapFrame.CloseXButton)
+	B.SetBD(DeathRecapFrame)
+	B.Reskin(select(8, DeathRecapFrame:GetChildren())) -- bottom close button has no parentKey
+	B.ReskinClose(DeathRecapFrame.CloseXButton)
 
 	for i = 1, NUM_DEATH_RECAP_EVENTS do
 		local recap = DeathRecapFrame["Recap"..i].SpellInfo
 		recap.IconBorder:Hide()
-		F.ReskinIcon(recap.Icon)
+		B.ReskinIcon(recap.Icon)
 	end
 end

@@ -1,6 +1,6 @@
 local _, ns = ...
-local F, C = unpack(ns)
-local r, g, b = C.r, C.g, C.b
+local B, C, L, DB = unpack(ns)
+local r, g, b = DB.r, DB.g, DB.b
 
 local function scrollOnEnter(self)
 	self.thumbBG:SetBackdropColor(r, g, b, .25)
@@ -16,9 +16,9 @@ local function ReskinChatScroll(self)
 	local bu = _G[self:GetName().."ThumbTexture"]
 	bu:SetAlpha(0)
 	bu:SetWidth(16)
-	local bg = F.CreateBDFrame(bu, 0, true)
+	local bg = B.CreateBDFrame(bu, 0, true)
 	local down = self.ScrollToBottomButton
-	F.ReskinArrow(down, "down")
+	B.ReskinArrow(down, "down")
 	down:SetPoint("BOTTOMRIGHT", _G[self:GetName().."ResizeButton"], "TOPRIGHT", -4, -2)
 
 	self.ScrollBar.thumbBG = bg
@@ -29,19 +29,19 @@ end
 tinsert(C.defaultThemes, function()
 	-- Battlenet toast frame
 	BNToastFrame:SetBackdrop(nil)
-	F.SetBD(BNToastFrame)
+	B.SetBD(BNToastFrame)
 	BNToastFrame.TooltipFrame:HideBackdrop()
-	F.SetBD(BNToastFrame.TooltipFrame)
+	B.SetBD(BNToastFrame.TooltipFrame)
 
 	TimeAlertFrame:SetBackdrop(nil)
-	F.SetBD(TimeAlertFrame)
+	B.SetBD(TimeAlertFrame)
 
 	-- Battletag invite frame
 	local border, send, cancel = BattleTagInviteFrame:GetChildren()
 	border:Hide()
-	F.Reskin(send)
-	F.Reskin(cancel)
-	F.SetBD(BattleTagInviteFrame)
+	B.Reskin(send)
+	B.Reskin(cancel)
+	B.SetBD(BattleTagInviteFrame)
 
 	local friendTex = "Interface\\HELPFRAME\\ReportLagIcon-Chat"
 	local queueTex = "Interface\\HELPFRAME\\HelpIcon-ItemRestoration"
@@ -49,7 +49,7 @@ tinsert(C.defaultThemes, function()
 
 	QuickJoinToastButton.FriendsButton:SetTexture(friendTex)
 	QuickJoinToastButton.QueueButton:SetTexture(queueTex)
-	QuickJoinToastButton:SetHighlightTexture("")
+	QuickJoinToastButton:SetHighlightTexture(0)
 	hooksecurefunc(QuickJoinToastButton, "ToastToFriendFinished", function(self)
 		self.FriendsButton:SetShown(not self.displayedToast)
 	end)
@@ -66,7 +66,7 @@ tinsert(C.defaultThemes, function()
 		self.FriendsButton:SetTexture(friendTex)
 	end)
 	QuickJoinToastButton.Toast.Background:SetTexture("")
-	local bg = F.SetBD(QuickJoinToastButton.Toast)
+	local bg = B.SetBD(QuickJoinToastButton.Toast)
 	bg:SetPoint("TOPLEFT", 10, -1)
 	bg:SetPoint("BOTTOMRIGHT", 0, 3)
 	bg:Hide()
@@ -74,13 +74,13 @@ tinsert(C.defaultThemes, function()
 	hooksecurefunc(QuickJoinToastButton, "HideToast", function() bg:Hide() end)
 
 	-- ChatFrame
-	F.Reskin(ChatFrameChannelButton)
+	B.Reskin(ChatFrameChannelButton)
 	ChatFrameChannelButton:SetSize(20, 20)
-	F.Reskin(ChatFrameToggleVoiceDeafenButton)
+	B.Reskin(ChatFrameToggleVoiceDeafenButton)
 	ChatFrameToggleVoiceDeafenButton:SetSize(20, 20)
-	F.Reskin(ChatFrameToggleVoiceMuteButton)
+	B.Reskin(ChatFrameToggleVoiceMuteButton)
 	ChatFrameToggleVoiceMuteButton:SetSize(20, 20)
-	F.Reskin(ChatFrameMenuButton)
+	B.Reskin(ChatFrameMenuButton)
 	ChatFrameMenuButton:SetSize(20, 20)
 	ChatFrameMenuButton:SetNormalTexture(homeTex)
 	ChatFrameMenuButton:SetPushedTexture(homeTex)
@@ -90,18 +90,18 @@ tinsert(C.defaultThemes, function()
 	end
 
 	-- ChannelFrame
-	F.ReskinPortraitFrame(ChannelFrame)
-	F.Reskin(ChannelFrame.NewButton)
-	F.Reskin(ChannelFrame.SettingsButton)
-	F.ReskinScroll(ChannelFrame.ChannelList.ScrollBar)
-	F.ReskinScroll(ChannelFrame.ChannelRoster.ScrollFrame.scrollBar)
+	B.ReskinPortraitFrame(ChannelFrame)
+	B.Reskin(ChannelFrame.NewButton)
+	B.Reskin(ChannelFrame.SettingsButton)
+	B.ReskinScroll(ChannelFrame.ChannelList.ScrollBar)
+	B.ReskinTrimScroll(ChannelFrame.ChannelRoster.ScrollBar)
 
 	hooksecurefunc(ChannelFrame.ChannelList, "Update", function(self)
 		for i = 1, self.Child:GetNumChildren() do
 			local tab = select(i, self.Child:GetChildren())
 			if not tab.styled and tab:IsHeader() then
-				tab:SetNormalTexture("")
-				tab.bg = F.CreateBDFrame(tab, .25)
+				tab:SetNormalTexture(0)
+				tab.bg = B.CreateBDFrame(tab, .25)
 				tab.bg:SetAllPoints()
 
 				tab.styled = true
@@ -109,27 +109,27 @@ tinsert(C.defaultThemes, function()
 		end
 	end)
 
-	F.StripTextures(CreateChannelPopup)
-	F.SetBD(CreateChannelPopup)
-	F.Reskin(CreateChannelPopup.OKButton)
-	F.Reskin(CreateChannelPopup.CancelButton)
-	F.ReskinClose(CreateChannelPopup.CloseButton)
-	F.ReskinInput(CreateChannelPopup.Name)
-	F.ReskinInput(CreateChannelPopup.Password)
+	B.StripTextures(CreateChannelPopup)
+	B.SetBD(CreateChannelPopup)
+	B.Reskin(CreateChannelPopup.OKButton)
+	B.Reskin(CreateChannelPopup.CancelButton)
+	B.ReskinClose(CreateChannelPopup.CloseButton)
+	B.ReskinInput(CreateChannelPopup.Name)
+	B.ReskinInput(CreateChannelPopup.Password)
 
-	F.SetBD(VoiceChatPromptActivateChannel)
-	F.Reskin(VoiceChatPromptActivateChannel.AcceptButton)
+	B.SetBD(VoiceChatPromptActivateChannel)
+	B.Reskin(VoiceChatPromptActivateChannel.AcceptButton)
 	VoiceChatChannelActivatedNotification:SetBackdrop(nil)
-	F.SetBD(VoiceChatChannelActivatedNotification)
+	B.SetBD(VoiceChatChannelActivatedNotification)
 
-	F.ReskinSlider(UnitPopupVoiceMicrophoneVolume.Slider)
-	F.ReskinSlider(UnitPopupVoiceSpeakerVolume.Slider)
+	B.ReskinSlider(UnitPopupVoiceMicrophoneVolume.Slider)
+	B.ReskinSlider(UnitPopupVoiceSpeakerVolume.Slider)
 
 	-- VoiceActivityManager
 	hooksecurefunc(VoiceActivityManager, "LinkFrameNotificationAndGuid", function(_, _, notification, guid)
 		local class = select(2, GetPlayerInfoByGUID(guid))
 		if class then
-			local color = C.ClassColors[class]
+			local color = DB.ClassColors[class]
 			if notification.Name then
 				notification.Name:SetTextColor(color.r, color.g, color.b)
 			end

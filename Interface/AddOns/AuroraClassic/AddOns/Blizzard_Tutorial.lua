@@ -1,12 +1,12 @@
 local _, ns = ...
-local F, C = unpack(ns)
+local B, C, L, DB = unpack(ns)
 
 C.themes["Blizzard_Tutorial"] = function()
 	local tutorialFrame = NPE_TutorialKeyboardMouseFrame_Frame
 	tutorialFrame.NineSlice:Hide()
-	F.SetBD(tutorialFrame)
+	B.SetBD(tutorialFrame)
 	tutorialFrame.TitleBg:Hide()
 	tutorialFrame.portrait:SetAlpha(0)
-	F.ReskinClose(tutorialFrame.CloseButton)
+	B.ReskinClose(tutorialFrame.CloseButton)
 	NPE_TutorialKeyString:SetTextColor(1, 1, 1)
 end

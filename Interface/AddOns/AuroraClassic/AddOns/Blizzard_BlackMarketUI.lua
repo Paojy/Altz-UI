@@ -1,60 +1,59 @@
 local _, ns = ...
-local F, C = unpack(ns)
+local B, C, L, DB = unpack(ns)
 
 C.themes["Blizzard_BlackMarketUI"] = function()
-	local r, g, b = C.r, C.g, C.b
+	local r, g, b = DB.r, DB.g, DB.b
 
-	F.StripTextures(BlackMarketFrame)
+	B.StripTextures(BlackMarketFrame)
 	BlackMarketFrame.MoneyFrameBorder:SetAlpha(0)
-	F.StripTextures(BlackMarketFrame.HotDeal)
-	F.CreateBDFrame(BlackMarketFrame.HotDeal.Item)
-	BlackMarketFrame.HotDeal.Item.IconTexture:SetTexCoord(unpack(C.TexCoord))
+	B.StripTextures(BlackMarketFrame.HotDeal)
+	B.CreateBDFrame(BlackMarketFrame.HotDeal.Item)
+	BlackMarketFrame.HotDeal.Item.IconTexture:SetTexCoord(unpack(DB.TexCoord))
 
 	local headers = {"ColumnName", "ColumnLevel", "ColumnType", "ColumnDuration", "ColumnHighBidder", "ColumnCurrentBid"}
 	for _, header in pairs(headers) do
 		local header = BlackMarketFrame[header]
-		F.StripTextures(header)
-		local bg = F.CreateBDFrame(header, .25)
+		B.StripTextures(header)
+		local bg = B.CreateBDFrame(header, .25)
 		bg:SetPoint("TOPLEFT", 2, 0)
 		bg:SetPoint("BOTTOMRIGHT", -1, 0)
 	end
 
-	F.SetBD(BlackMarketFrame)
-	F.CreateBDFrame(BlackMarketFrame.HotDeal, .25)
-	F.Reskin(BlackMarketFrame.BidButton)
-	F.ReskinClose(BlackMarketFrame.CloseButton)
-	F.ReskinInput(BlackMarketBidPriceGold)
-	F.ReskinScroll(BlackMarketScrollFrameScrollBar)
+	B.SetBD(BlackMarketFrame)
+	B.CreateBDFrame(BlackMarketFrame.HotDeal, .25)
+	B.Reskin(BlackMarketFrame.BidButton)
+	B.ReskinClose(BlackMarketFrame.CloseButton)
+	B.ReskinInput(BlackMarketBidPriceGold)
+	B.ReskinTrimScroll(BlackMarketFrame.ScrollBar)
 
-	hooksecurefunc("BlackMarketScrollFrame_Update", function()
-		local buttons = BlackMarketScrollFrame.buttons
-		for i = 1, #buttons do
-			local bu = buttons[i]
+	hooksecurefunc(BlackMarketFrame.ScrollBox, "Update", function(self)
+		for i = 1, self.ScrollTarget:GetNumChildren() do
+			local bu = select(i, self.ScrollTarget:GetChildren())
 
-			bu.Item.IconTexture:SetTexCoord(unpack(C.TexCoord))
+			bu.Item.IconTexture:SetTexCoord(unpack(DB.TexCoord))
 			if not bu.reskinned then
-				F.StripTextures(bu)
+				B.StripTextures(bu)
 
-				bu.Item:SetNormalTexture("")
-				bu.Item:SetPushedTexture("")
+				bu.Item:SetNormalTexture(0)
+				bu.Item:SetPushedTexture(0)
 				bu.Item:GetHighlightTexture():SetColorTexture(1, 1, 1, .25)
-				F.CreateBDFrame(bu.Item)
+				B.CreateBDFrame(bu.Item)
 				bu.Item.IconBorder:SetAlpha(0)
 
-				local bg = F.CreateBDFrame(bu, .25)
+				local bg = B.CreateBDFrame(bu, .25)
 				bg:SetPoint("TOPLEFT", bu.Item, "TOPRIGHT", 3, C.mult)
 				bg:SetPoint("BOTTOMRIGHT", 0, 4)
 
-				bu:SetHighlightTexture(C.bdTex)
+				bu:SetHighlightTexture(DB.bdTex)
 				local hl = bu:GetHighlightTexture()
 				hl:SetVertexColor(r, g, b, .2)
-				hl.SetAlpha = F.Dummy
+				hl.SetAlpha = B.Dummy
 				hl:ClearAllPoints()
 				hl:SetAllPoints(bg)
 
 				bu.Selection:ClearAllPoints()
 				bu.Selection:SetAllPoints(bg)
-				bu.Selection:SetTexture(C.bdTex)
+				bu.Selection:SetTexture(DB.bdTex)
 				bu.Selection:SetVertexColor(r, g, b, .1)
 
 				bu.reskinned = true
@@ -62,7 +61,8 @@ C.themes["Blizzard_BlackMarketUI"] = function()
 
 			if bu:IsShown() and bu.itemLink then
 				local _, _, quality = GetItemInfo(bu.itemLink)
-				bu.Name:SetTextColor(GetItemQualityColor(quality))
+				local r, g, b = GetItemQualityColor(quality or 1)
+				bu.Name:SetTextColor(r, g, b)
 			end
 		end
 	end)
@@ -71,7 +71,8 @@ C.themes["Blizzard_BlackMarketUI"] = function()
 		local hotDeal = self.HotDeal
 		if hotDeal:IsShown() and hotDeal.itemLink then
 			local _, _, quality = GetItemInfo(hotDeal.itemLink)
-			hotDeal.Name:SetTextColor(GetItemQualityColor(quality))
+			local r, g, b = GetItemQualityColor(quality or 1)
+			hotDeal.Name:SetTextColor(r, g, b)
 		end
 		hotDeal.Item.IconBorder:Hide()
 	end)

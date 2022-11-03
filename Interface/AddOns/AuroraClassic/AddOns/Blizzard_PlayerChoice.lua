@@ -1,5 +1,5 @@
 local _, ns = ...
-local F, C = unpack(ns)
+local B, C, L, DB = unpack(ns)
 
 local function ReskinOptionText(text, r, g, b)
 	if text then
@@ -11,20 +11,24 @@ end
 local function ReskinOptionButton(self)
 	if not self or self.__bg then return end
 
-	F.StripTextures(self, true)
-	F.Reskin(self)
+	B.StripTextures(self, true)
+	B.Reskin(self)
 end
 
 local function ReskinSpellWidget(spell)
 	if not spell.bg then
 		spell.Border:SetAlpha(0)
-		spell.bg = F.ReskinIcon(spell.Icon)
+		spell.bg = B.ReskinIcon(spell.Icon)
 	end
 
 	spell.IconMask:Hide()
 	spell.Text:SetTextColor(1, 1, 1)
 end
 
+local ignoredTextureKit = {
+	["jailerstower"] = true,
+	["cypherchoice"] = true,
+}
 C.themes["Blizzard_PlayerChoice"] = function()
 	hooksecurefunc(PlayerChoiceFrame, "TryShow", function(self)
 		if not self.bg then
@@ -34,14 +38,17 @@ C.themes["Blizzard_PlayerChoice"] = function()
 			self.Title:DisableDrawLayer("BACKGROUND")
 			self.Title.Text:SetTextColor(1, .8, 0)
 			self.Title.Text:SetFontObject(SystemFont_Huge1)
-			F.CreateBDFrame(self.Title, .25)
-			F.ReskinClose(self.CloseButton)
-			self.bg = F.SetBD(self)
+			B.CreateBDFrame(self.Title, .25)
+			B.ReskinClose(self.CloseButton)
+			self.bg = B.SetBD(self)
 		end
 
 		self.CloseButton:SetPoint("TOPRIGHT", self.bg, -4, -4)
 		if self.CloseButton.Border then self.CloseButton.Border:SetAlpha(0) end -- no border for some templates
-		self.bg:SetShown(self.uiTextureKit ~= "jailerstower")
+
+		self.bg:SetShown(not ignoredTextureKit[self.uiTextureKit])
+
+		if not self.optionFrameTemplate then return end
 
 		for optionFrame in self.optionPools:EnumerateActiveByTemplate(self.optionFrameTemplate) do
 			local header = optionFrame.Header
@@ -50,7 +57,7 @@ C.themes["Blizzard_PlayerChoice"] = function()
 				if header.Contents then ReskinOptionText(header.Contents.Text, 1, .8, 0) end
 			end
 			ReskinOptionText(optionFrame.OptionText, 1, 1, 1)
-			F.ReplaceIconString(optionFrame.OptionText.String)
+			B.ReplaceIconString(optionFrame.OptionText.String)
 
 			local optionButtonsContainer = optionFrame.OptionButtonsContainer
 			if optionButtonsContainer and optionButtonsContainer.buttonPool then
@@ -65,9 +72,9 @@ C.themes["Blizzard_PlayerChoice"] = function()
 					ReskinOptionText(rewardFrame.Name, .9, .8, .5)
 					if not rewardFrame.styled then
 						local itemButton = rewardFrame.itemButton
-						F.StripTextures(itemButton, 1)
-						itemButton.bg = F.ReskinIcon(itemButton:GetRegions(), nil)
-						F.ReskinIconBorder(itemButton.IconBorder, true)
+						B.StripTextures(itemButton, 1)
+						itemButton.bg = B.ReskinIcon(itemButton:GetRegions(), nil)
+						B.ReskinIconBorder(itemButton.IconBorder, true)
 
 						rewardFrame.styled = true
 					end

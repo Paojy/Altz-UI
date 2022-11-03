@@ -1,43 +1,42 @@
 local _, ns = ...
-local F, C = unpack(ns)
+local B, C, L, DB = unpack(ns)
 
 tinsert(C.defaultThemes, function()
-
 	local RecruitAFriendFrame = RecruitAFriendFrame
 
 	RecruitAFriendFrame.SplashFrame.Description:SetTextColor(1, 1, 1)
-	F.Reskin(RecruitAFriendFrame.SplashFrame.OKButton)
-	F.StripTextures(RecruitAFriendFrame.RewardClaiming)
-	F.Reskin(RecruitAFriendFrame.RewardClaiming.ClaimOrViewRewardButton)
-	F.Reskin(RecruitAFriendFrame.RecruitmentButton)
+	B.Reskin(RecruitAFriendFrame.SplashFrame.OKButton)
+	B.StripTextures(RecruitAFriendFrame.RewardClaiming)
+	B.Reskin(RecruitAFriendFrame.RewardClaiming.ClaimOrViewRewardButton)
+	B.Reskin(RecruitAFriendFrame.RecruitmentButton)
 
 	local recruitList = RecruitAFriendFrame.RecruitList
-	F.StripTextures(recruitList.Header)
-	F.CreateBDFrame(recruitList.Header, .25)
+	B.StripTextures(recruitList.Header)
+	B.CreateBDFrame(recruitList.Header, .25)
 	recruitList.ScrollFrameInset:Hide()
-	F.ReskinScroll(recruitList.ScrollFrame.scrollBar)
+	B.ReskinTrimScroll(recruitList.ScrollBar)
 
 	local recruitmentFrame = RecruitAFriendRecruitmentFrame
-	F.StripTextures(recruitmentFrame)
-	F.ReskinClose(recruitmentFrame.CloseButton)
-	F.SetBD(recruitmentFrame)
-	F.StripTextures(recruitmentFrame.EditBox)
-	local bg = F.CreateBDFrame(recruitmentFrame.EditBox, .25)
+	B.StripTextures(recruitmentFrame)
+	B.ReskinClose(recruitmentFrame.CloseButton)
+	B.SetBD(recruitmentFrame)
+	B.StripTextures(recruitmentFrame.EditBox)
+	local bg = B.CreateBDFrame(recruitmentFrame.EditBox, .25)
 	bg:SetPoint("TOPLEFT", -3, -3)
 	bg:SetPoint("BOTTOMRIGHT", 0, 3)
-	F.Reskin(recruitmentFrame.GenerateOrCopyLinkButton)
+	B.Reskin(recruitmentFrame.GenerateOrCopyLinkButton)
 
 	local rewardsFrame = RecruitAFriendRewardsFrame
-	F.StripTextures(rewardsFrame)
-	F.ReskinClose(rewardsFrame.CloseButton)
-	F.SetBD(rewardsFrame)
+	B.StripTextures(rewardsFrame)
+	B.ReskinClose(rewardsFrame.CloseButton)
+	B.SetBD(rewardsFrame)
 
 	rewardsFrame:HookScript("OnShow", function(self)
 		for i = 1, self:GetNumChildren() do
 			local child = select(i, self:GetChildren())
 			local button = child and child.Button
 			if button and not button.styled then
-				F.ReskinIcon(button.Icon)
+				B.ReskinIcon(button.Icon)
 				button.IconBorder:Hide()
 				button:GetHighlightTexture():SetColorTexture(1, 1, 1, .25)
 

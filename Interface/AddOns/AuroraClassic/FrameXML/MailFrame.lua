@@ -1,8 +1,8 @@
 local _, ns = ...
-local F, C = unpack(ns)
+local B, C, L, DB = unpack(ns)
 
 tinsert(C.defaultThemes, function()
-	local texL, texR, texT, texB = unpack(C.TexCoord)
+	local texL, texR, texT, texB = unpack(DB.TexCoord)
 
 	SendMailMoneyInset:DisableDrawLayer("BORDER")
 	InboxFrame:GetRegions():Hide()
@@ -10,38 +10,37 @@ tinsert(C.defaultThemes, function()
 	SendMailMoneyInset:Hide()
 	OpenMailFrameIcon:Hide()
 	OpenMailHorizontalBarLeft:Hide()
-	F.StripTextures(SendMailFrame)
+	B.StripTextures(SendMailFrame)
 	OpenStationeryBackgroundLeft:Hide()
 	OpenStationeryBackgroundRight:Hide()
 	SendStationeryBackgroundLeft:Hide()
 	SendStationeryBackgroundRight:Hide()
 	InboxPrevPageButton:GetRegions():Hide()
 	InboxNextPageButton:GetRegions():Hide()
-	InboxTitleText:SetPoint("CENTER", MailFrame, 0, 195)
 
-	F.ReskinPortraitFrame(MailFrame)
-	F.ReskinPortraitFrame(OpenMailFrame)
-	F.Reskin(SendMailMailButton)
-	F.Reskin(SendMailCancelButton)
-	F.Reskin(OpenMailReplyButton)
-	F.Reskin(OpenMailDeleteButton)
-	F.Reskin(OpenMailCancelButton)
-	F.Reskin(OpenMailReportSpamButton)
-	F.Reskin(OpenAllMail)
-	F.ReskinInput(SendMailNameEditBox, 20, 85)
-	F.ReskinInput(SendMailSubjectEditBox, nil, 200)
-	F.ReskinInput(SendMailMoneyGold)
-	F.ReskinInput(SendMailMoneySilver)
-	F.ReskinInput(SendMailMoneyCopper)
-	F.ReskinScroll(SendMailScrollFrameScrollBar)
-	F.ReskinScroll(OpenMailScrollFrameScrollBar)
-	F.ReskinRadio(SendMailSendMoneyButton)
-	F.ReskinRadio(SendMailCODButton)
-	F.ReskinArrow(InboxPrevPageButton, "left")
-	F.ReskinArrow(InboxNextPageButton, "right")
+	B.ReskinPortraitFrame(MailFrame)
+	B.ReskinPortraitFrame(OpenMailFrame)
+	B.Reskin(SendMailMailButton)
+	B.Reskin(SendMailCancelButton)
+	B.Reskin(OpenMailReplyButton)
+	B.Reskin(OpenMailDeleteButton)
+	B.Reskin(OpenMailCancelButton)
+	B.Reskin(OpenMailReportSpamButton)
+	B.Reskin(OpenAllMail)
+	B.ReskinInput(SendMailNameEditBox, 20, 85)
+	B.ReskinInput(SendMailSubjectEditBox, nil, 200)
+	B.ReskinInput(SendMailMoneyGold)
+	B.ReskinInput(SendMailMoneySilver)
+	B.ReskinInput(SendMailMoneyCopper)
+	B.ReskinScroll(SendMailScrollFrameScrollBar)
+	B.ReskinScroll(OpenMailScrollFrameScrollBar)
+	B.ReskinRadio(SendMailSendMoneyButton)
+	B.ReskinRadio(SendMailCODButton)
+	B.ReskinArrow(InboxPrevPageButton, "left")
+	B.ReskinArrow(InboxNextPageButton, "right")
 
-	F.CreateBDFrame(OpenMailScrollFrame, .25)
-	local bg = F.CreateBDFrame(SendMailScrollFrame, .25)
+	B.CreateBDFrame(OpenMailScrollFrame, .25)
+	local bg = B.CreateBDFrame(SendMailScrollFrame, .25)
 	bg:SetPoint("TOPLEFT", 6, 0)
 
 	SendMailMailButton:SetPoint("RIGHT", SendMailCancelButton, "LEFT", -1, 0)
@@ -54,34 +53,36 @@ tinsert(C.defaultThemes, function()
 	SendMailSubjectEditBox:SetPoint("TOPLEFT", SendMailNameEditBox, "BOTTOMLEFT", 0, -1)
 
 	for i = 1, 2 do
-		F.ReskinTab(_G["MailFrameTab"..i])
+		B.ReskinTab(_G["MailFrameTab"..i])
 	end
+	MailFrameTab2:ClearAllPoints()
+	MailFrameTab2:SetPoint("TOPLEFT", MailFrameTab1, "TOPRIGHT", -15, 0)
 
 	for _, button in pairs({OpenMailLetterButton, OpenMailMoneyButton}) do
-		F.StripTextures(button)
+		B.StripTextures(button)
 		button.icon:SetTexCoord(texL, texR, texT, texB)
 		button:GetHighlightTexture():SetColorTexture(1, 1, 1, .25)
-		F.CreateBDFrame(button)
+		B.CreateBDFrame(button)
 	end
 
 	for i = 1, INBOXITEMS_TO_DISPLAY do
 		local item = _G["MailItem"..i]
 		local button = _G["MailItem"..i.."Button"]
-		F.StripTextures(item)
-		F.StripTextures(button)
-		button:SetCheckedTexture(C.pushed)
+		B.StripTextures(item)
+		B.StripTextures(button)
+		button:SetCheckedTexture(DB.pushed)
 		button:GetHighlightTexture():SetColorTexture(1, 1, 1, .25)
 		button.Icon:SetTexCoord(texL, texR, texT, texB)
 		button.IconBorder:SetAlpha(0)
-		F.CreateBDFrame(button)
+		B.CreateBDFrame(button)
 	end
 
 	for i = 1, ATTACHMENTS_MAX_SEND do
 		local button = _G["SendMailAttachment"..i]
-		F.StripTextures(button)
+		B.StripTextures(button)
 		button:GetHighlightTexture():SetColorTexture(1, 1, 1, .25)
-		button.bg = F.CreateBDFrame(button, .25)
-		F.ReskinIconBorder(button.IconBorder)
+		button.bg = B.CreateBDFrame(button, .25)
+		B.ReskinIconBorder(button.IconBorder)
 	end
 
 	hooksecurefunc("SendMailFrame_Update", function()
@@ -95,11 +96,11 @@ tinsert(C.defaultThemes, function()
 
 	for i = 1, ATTACHMENTS_MAX_RECEIVE do
 		local button = _G["OpenMailAttachmentButton"..i]
-		F.StripTextures(button)
+		B.StripTextures(button)
 		button:GetHighlightTexture():SetColorTexture(1, 1, 1, .25)
 		button.icon:SetTexCoord(texL, texR, texT, texB)
-		button.bg = F.CreateBDFrame(button, .25)
-		F.ReskinIconBorder(button.IconBorder)
+		button.bg = B.CreateBDFrame(button, .25)
+		B.ReskinIconBorder(button.IconBorder)
 	end
 
 	MailFont_Large:SetTextColor(1, 1, 1)

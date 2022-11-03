@@ -1,25 +1,25 @@
 local _, ns = ...
-local F, C = unpack(ns)
+local B, C, L, DB = unpack(ns)
 
 tinsert(C.defaultThemes, function()
 	-- Tooltip close buttons
-	F.ReskinClose(ItemRefTooltip.CloseButton)
-	F.ReskinClose(FloatingBattlePetTooltip.CloseButton)
-	F.ReskinClose(FloatingPetBattleAbilityTooltip.CloseButton)
+	B.ReskinClose(ItemRefTooltip.CloseButton)
+	B.ReskinClose(FloatingBattlePetTooltip.CloseButton)
+	B.ReskinClose(FloatingPetBattleAbilityTooltip.CloseButton)
 
 	-- Tooltips
-	function F:ReskinGarrisonTooltip()
-		if self.Icon then F.ReskinIcon(self.Icon) end
-		if self.CloseButton then F.ReskinClose(self.CloseButton) end
+	function B:ReskinGarrisonTooltip()
+		if self.Icon then B.ReskinIcon(self.Icon) end
+		if self.CloseButton then B.ReskinClose(self.CloseButton) end
 	end
 
-	F.ReskinGarrisonTooltip(FloatingGarrisonMissionTooltip)
-	F.ReskinGarrisonTooltip(GarrisonFollowerTooltip)
-	F.ReskinGarrisonTooltip(FloatingGarrisonFollowerTooltip)
-	F.ReskinGarrisonTooltip(GarrisonFollowerAbilityTooltip)
-	F.ReskinGarrisonTooltip(FloatingGarrisonFollowerAbilityTooltip)
-	F.ReskinGarrisonTooltip(GarrisonShipyardFollowerTooltip)
-	F.ReskinGarrisonTooltip(FloatingGarrisonShipyardFollowerTooltip)
+	B.ReskinGarrisonTooltip(FloatingGarrisonMissionTooltip)
+	B.ReskinGarrisonTooltip(GarrisonFollowerTooltip)
+	B.ReskinGarrisonTooltip(FloatingGarrisonFollowerTooltip)
+	B.ReskinGarrisonTooltip(GarrisonFollowerAbilityTooltip)
+	B.ReskinGarrisonTooltip(FloatingGarrisonFollowerAbilityTooltip)
+	B.ReskinGarrisonTooltip(GarrisonShipyardFollowerTooltip)
+	B.ReskinGarrisonTooltip(FloatingGarrisonShipyardFollowerTooltip)
 
 	hooksecurefunc("GarrisonFollowerTooltipTemplate_SetGarrisonFollower", function(tooltipFrame)
 		-- Abilities
@@ -31,7 +31,7 @@ tinsert(C.defaultThemes, function()
 		local abilities = tooltipFrame.Abilities
 		local ability = abilities[numAbilitiesStyled]
 		while ability do
-			F.ReskinIcon(ability.Icon)
+			B.ReskinIcon(ability.Icon)
 
 			numAbilitiesStyled = numAbilitiesStyled + 1
 			ability = abilities[numAbilitiesStyled]
@@ -48,7 +48,7 @@ tinsert(C.defaultThemes, function()
 		local traits = tooltipFrame.Traits
 		local trait = traits[numTraitsStyled]
 		while trait do
-			F.ReskinIcon(trait.Icon)
+			B.ReskinIcon(trait.Icon)
 
 			numTraitsStyled = numTraitsStyled + 1
 			trait = traits[numTraitsStyled]

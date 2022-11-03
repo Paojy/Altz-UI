@@ -1,6 +1,6 @@
 local _, ns = ...
-local F, C = unpack(ns)
-local r, g, b = C.r, C.g, C.b
+local B, C, L, DB = unpack(ns)
+local r, g, b = DB.r, DB.g, DB.b
 
 -- /run UIParent_OnEvent({}, "WEEKLY_REWARDS_SHOW")
 
@@ -14,12 +14,12 @@ local function updateSelection(frame)
 	end
 end
 
-local iconColor = C.QualityColors[LE_ITEM_QUALITY_EPIC or 4] -- epic color only
+local iconColor = DB.QualityColors[Enum.ItemQuality.Epic or 4] -- epic color only
 local function reskinRewardIcon(itemFrame)
 	if not itemFrame.bg then
 		itemFrame:DisableDrawLayer("BORDER")
 		itemFrame.Icon:SetPoint("LEFT", 6, 0)
-		itemFrame.bg = F.ReskinIcon(itemFrame.Icon)
+		itemFrame.bg = B.ReskinIcon(itemFrame.Icon)
 		itemFrame.bg:SetBackdropBorderColor(iconColor.r, iconColor.g, iconColor.b)
 	end
 end
@@ -40,7 +40,7 @@ local function ReskinActivityFrame(frame, isObject)
 			hooksecurefunc(frame.ItemFrame, "SetDisplayedItem", reskinRewardIcon)
 
 			if frame.SheenAnim then
-				frame.SheenAnim.bg = F.CreateBDFrame(frame.ItemFrame, .25)
+				frame.SheenAnim.bg = B.CreateBDFrame(frame.ItemFrame, .25)
 				frame.SheenAnim:HookScript("OnFinished", fixBg)
 			end
 		else
@@ -51,7 +51,7 @@ local function ReskinActivityFrame(frame, isObject)
 	end
 
 	if frame.Background then
-		frame.bg = F.CreateBDFrame(frame.Background, 1)
+		frame.bg = B.CreateBDFrame(frame.Background, 1)
 	end
 end
 
@@ -65,22 +65,22 @@ end
 
 local function reskinConfirmIcon(frame)
 	if frame.bg then return end
-	frame.bg = F.ReskinIcon(frame.Icon)
-	F.ReskinIconBorder(frame.IconBorder, true)
+	frame.bg = B.ReskinIcon(frame.Icon)
+	B.ReskinIconBorder(frame.IconBorder, true)
 end
 
 C.themes["Blizzard_WeeklyRewards"] = function()
 	local WeeklyRewardsFrame = WeeklyRewardsFrame
 
-	F.StripTextures(WeeklyRewardsFrame)
-	F.SetBD(WeeklyRewardsFrame)
-	F.ReskinClose(WeeklyRewardsFrame.CloseButton)
-	F.StripTextures(WeeklyRewardsFrame.SelectRewardButton)
-	F.Reskin(WeeklyRewardsFrame.SelectRewardButton)
+	B.StripTextures(WeeklyRewardsFrame)
+	B.SetBD(WeeklyRewardsFrame)
+	B.ReskinClose(WeeklyRewardsFrame.CloseButton)
+	B.StripTextures(WeeklyRewardsFrame.SelectRewardButton)
+	B.Reskin(WeeklyRewardsFrame.SelectRewardButton)
 
 	local headerFrame = WeeklyRewardsFrame.HeaderFrame
-	F.StripTextures(headerFrame)
-	F.CreateBDFrame(headerFrame, .25)
+	B.StripTextures(headerFrame)
+	B.CreateBDFrame(headerFrame, .25)
 	headerFrame:SetPoint("TOP", 1, -42)
 	headerFrame.Text:SetFontObject(SystemFont_Huge1)
 

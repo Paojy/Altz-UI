@@ -1,16 +1,16 @@
 local _, ns = ...
-local F, C = unpack(ns)
+local B, C, L, DB = unpack(ns)
 
 C.themes["Blizzard_GuildRecruitmentUI"] = function()
-	local r, g, b = C.r, C.g, C.b
+	local r, g, b = DB.r, DB.g, DB.b
 
-	F.StripTextures(CommunitiesGuildRecruitmentFrame)
-	F.SetBD(CommunitiesGuildRecruitmentFrame)
-	F.StripTextures(CommunitiesGuildRecruitmentFrameTab1)
-	F.StripTextures(CommunitiesGuildRecruitmentFrameTab2)
-	F.ReskinClose(CommunitiesGuildRecruitmentFrameCloseButton)
-	F.Reskin(CommunitiesGuildRecruitmentFrameRecruitment.ListGuildButton)
-	F.StripTextures(CommunitiesGuildRecruitmentFrame)
+	B.StripTextures(CommunitiesGuildRecruitmentFrame)
+	B.SetBD(CommunitiesGuildRecruitmentFrame)
+	B.StripTextures(CommunitiesGuildRecruitmentFrameTab1)
+	B.StripTextures(CommunitiesGuildRecruitmentFrameTab2)
+	B.ReskinClose(CommunitiesGuildRecruitmentFrameCloseButton)
+	B.Reskin(CommunitiesGuildRecruitmentFrameRecruitment.ListGuildButton)
+	B.StripTextures(CommunitiesGuildRecruitmentFrame)
 	CommunitiesGuildRecruitmentFrameInset:Hide()
 
 	for _, name in next, {"InterestFrame", "AvailabilityFrame", "RolesFrame", "LevelFrame", "CommentFrame"} do
@@ -20,26 +20,26 @@ C.themes["Blizzard_GuildRecruitmentUI"] = function()
 
 	for _, name in next, {"QuestButton", "DungeonButton", "RaidButton", "PvPButton", "RPButton"} do
 		local button = CommunitiesGuildRecruitmentFrameRecruitment.InterestFrame[name]
-		F.ReskinCheck(button)
+		B.ReskinCheck(button)
 	end
 
 	local rolesFrame = CommunitiesGuildRecruitmentFrameRecruitment.RolesFrame
-	F.ReskinRole(rolesFrame.TankButton, "TANK")
-	F.ReskinRole(rolesFrame.HealerButton, "HEALER")
-	F.ReskinRole(rolesFrame.DamagerButton, "DPS")
+	B.ReskinRole(rolesFrame.TankButton, "TANK")
+	B.ReskinRole(rolesFrame.HealerButton, "HEALER")
+	B.ReskinRole(rolesFrame.DamagerButton, "DPS")
 
-	F.ReskinCheck(CommunitiesGuildRecruitmentFrameRecruitment.AvailabilityFrame.WeekdaysButton)
-	F.ReskinCheck(CommunitiesGuildRecruitmentFrameRecruitment.AvailabilityFrame.WeekendsButton)
-	F.ReskinRadio(CommunitiesGuildRecruitmentFrameRecruitment.LevelFrame.LevelAnyButton)
-	F.ReskinRadio(CommunitiesGuildRecruitmentFrameRecruitment.LevelFrame.LevelMaxButton)
-	F.StripTextures(CommunitiesGuildRecruitmentFrameRecruitment.CommentFrame.CommentInputFrame)
-	F.CreateBDFrame(CommunitiesGuildRecruitmentFrameRecruitment.CommentFrame.CommentInputFrame, .25)
-	F.ReskinScroll(CommunitiesGuildRecruitmentFrameRecruitmentScrollFrameScrollBar)
+	B.ReskinCheck(CommunitiesGuildRecruitmentFrameRecruitment.AvailabilityFrame.WeekdaysButton)
+	B.ReskinCheck(CommunitiesGuildRecruitmentFrameRecruitment.AvailabilityFrame.WeekendsButton)
+	B.ReskinRadio(CommunitiesGuildRecruitmentFrameRecruitment.LevelFrame.LevelAnyButton)
+	B.ReskinRadio(CommunitiesGuildRecruitmentFrameRecruitment.LevelFrame.LevelMaxButton)
+	B.StripTextures(CommunitiesGuildRecruitmentFrameRecruitment.CommentFrame.CommentInputFrame)
+	B.CreateBDFrame(CommunitiesGuildRecruitmentFrameRecruitment.CommentFrame.CommentInputFrame, .25)
+	B.ReskinScroll(CommunitiesGuildRecruitmentFrameRecruitmentScrollFrameScrollBar)
 
-	F.ReskinScroll(CommunitiesGuildRecruitmentFrameApplicantsContainer.scrollBar)
-	F.Reskin(CommunitiesGuildRecruitmentFrameApplicants.InviteButton)
-	F.Reskin(CommunitiesGuildRecruitmentFrameApplicants.MessageButton)
-	F.Reskin(CommunitiesGuildRecruitmentFrameApplicants.DeclineButton)
+	B.ReskinScroll(CommunitiesGuildRecruitmentFrameApplicantsContainer.scrollBar)
+	B.Reskin(CommunitiesGuildRecruitmentFrameApplicants.InviteButton)
+	B.Reskin(CommunitiesGuildRecruitmentFrameApplicants.MessageButton)
+	B.Reskin(CommunitiesGuildRecruitmentFrameApplicants.DeclineButton)
 
 	hooksecurefunc("CommunitiesGuildRecruitmentFrameApplicants_Update", function(self)
 		local buttons = self.Container.buttons
@@ -50,8 +50,8 @@ C.themes["Blizzard_GuildRecruitmentUI"] = function()
 					select(i, button:GetRegions()):Hide()
 				end
 				button.selectedTex:SetTexture("")
-				button:SetHighlightTexture("")
-				button.bg = F.CreateBDFrame(button, .25)
+				button:SetHighlightTexture(0)
+				button.bg = B.CreateBDFrame(button, .25)
 				button.bg:SetPoint("TOPLEFT", 3, -3)
 				button.bg:SetPoint("BOTTOMRIGHT", -3, 3)
 			end

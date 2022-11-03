@@ -1,6 +1,6 @@
 local _, ns = ...
-local F, C = unpack(ns)
-local r, g, b = C.r, C.g, C.b
+local B, C, L, DB = unpack(ns)
+local r, g, b = DB.r, DB.g, DB.b
 
 local function clearHighlight()
 	for _, button in pairs(QuestInfoRewardsFrame.RewardButtons) do
@@ -66,18 +66,18 @@ local function restyleSpellButton(bu)
 	_G[name.."SpellBorder"]:Hide()
 
 	icon:SetPoint("TOPLEFT", 3, -2)
-	F.ReskinIcon(icon)
+	B.ReskinIcon(icon)
 
-	local bg = F.CreateBDFrame(bu, .25)
+	local bg = B.CreateBDFrame(bu, .25)
 	bg:SetPoint("TOPLEFT", 2, -1)
 	bg:SetPoint("BOTTOMRIGHT", 0, 14)
 end
 
 local function ReskinRewardButton(bu)
 	bu.NameFrame:Hide()
-	bu.bg = F.ReskinIcon(bu.Icon)
+	bu.bg = B.ReskinIcon(bu.Icon)
 
-	local bg = F.CreateBDFrame(bu, .25)
+	local bg = B.CreateBDFrame(bu, .25)
 	bg:SetPoint("TOPLEFT", bu.bg, "TOPRIGHT", 2, 0)
 	bg:SetPoint("BOTTOMRIGHT", bu.bg, 100, 0)
 	bu.textBg = bg
@@ -134,7 +134,7 @@ tinsert(C.defaultThemes, function()
 		local bu = rewardsFrame.RewardButtons[index]
 		if not bu.restyled then
 			ReskinRewardButtonWithSize(bu, rewardsFrame == MapQuestInfoRewardsFrame)
-			F.ReskinIconBorder(bu.IconBorder)
+			B.ReskinIconBorder(bu.IconBorder)
 
 			bu.restyled = true
 		end
@@ -154,11 +154,11 @@ tinsert(C.defaultThemes, function()
 		local frame = QuestInfoPlayerTitleFrame
 		local icon = frame.Icon
 
-		F.ReskinIcon(icon)
+		B.ReskinIcon(icon)
 		for i = 2, 4 do
 			select(i, frame:GetRegions()):Hide()
 		end
-		local bg = F.CreateBDFrame(frame, .25)
+		local bg = B.CreateBDFrame(frame, .25)
 		bg:SetPoint("TOPLEFT", icon, "TOPRIGHT", 0, 2)
 		bg:SetPoint("BOTTOMRIGHT", icon, "BOTTOMRIGHT", 220, -1)
 	end
@@ -167,8 +167,8 @@ tinsert(C.defaultThemes, function()
 	hooksecurefunc("QuestInfo_Display", function()
 		colorObjectivesText()
 
-        local rewardsFrame = QuestInfoFrame.rewardsFrame
-        local isQuestLog = QuestInfoFrame.questLog ~= nil
+		local rewardsFrame = QuestInfoFrame.rewardsFrame
+		local isQuestLog = QuestInfoFrame.questLog ~= nil
 		local numSpellRewards = isQuestLog and GetNumQuestLogRewardSpells() or GetNumRewardSpells()
 
 		if numSpellRewards > 0 then
@@ -180,9 +180,9 @@ tinsert(C.defaultThemes, function()
 			for reward in rewardsFrame.followerRewardPool:EnumerateActive() do
 				local portrait = reward.PortraitFrame
 				if not reward.textBg then
-					F.ReskinGarrisonPortrait(portrait)
+					B.ReskinGarrisonPortrait(portrait)
 					reward.BG:Hide()
-					reward.textBg = F.CreateBDFrame(reward, .25)
+					reward.textBg = B.CreateBDFrame(reward, .25)
 				end
 
 				if isQuestLog then
@@ -196,7 +196,7 @@ tinsert(C.defaultThemes, function()
 				end
 
 				if portrait then
-					local color = C.QualityColors[portrait.quality or 1]
+					local color = DB.QualityColors[portrait.quality or 1]
 					portrait.squareBG:SetBackdropBorderColor(color.r, color.g, color.b)
 				end
 			end

@@ -1,12 +1,11 @@
 local _, ns = ...
-local F, C = unpack(ns)
+local B, C, L, DB = unpack(ns)
 
 tinsert(C.defaultThemes, function()
-
 	local styled
 	hooksecurefunc("LossOfControlFrame_SetUpDisplay", function(self)
 		if not styled then
-			F.ReskinIcon(self.Icon, true)
+			B.ReskinIcon(self.Icon, true)
 
 			styled = true
 		end

@@ -1,22 +1,24 @@
 local _, ns = ...
-local F, C = unpack(ns)
+local B, C, L, DB = unpack(ns)
 
 C.themes["Blizzard_BarbershopUI"] = function()
 	local frame = BarberShopFrame
 
-	F.Reskin(frame.AcceptButton)
-	F.Reskin(frame.CancelButton)
-	F.Reskin(frame.ResetButton)
+	B.Reskin(frame.AcceptButton)
+	B.Reskin(frame.CancelButton)
+	B.Reskin(frame.ResetButton)
 end
 
 local function ReskinCustomizeButton(button)
-	F.Reskin(button)
+	B.Reskin(button)
 	button.__bg:SetInside(nil, 5, 5)
 end
 
 local function ReskinCustomizeTooltip(tooltip)
-	if F.ReskinTooltip then F.ReskinTooltip(tooltip) end
-	tooltip:SetScale(UIParent:GetScale())
+	if B.ReskinTooltip then
+		B.ReskinTooltip(tooltip)
+		tooltip:SetScale(UIParent:GetScale())
+	end
 end
 
 C.themes["Blizzard_CharacterCustomize"] = function()
@@ -29,18 +31,18 @@ C.themes["Blizzard_CharacterCustomize"] = function()
 	ReskinCustomizeButton(frame.SmallButtons.RotateRightButton)
 	ReskinCustomizeButton(frame.RandomizeAppearanceButton)
 
-	hooksecurefunc(frame, "SetSelectedCatgory", function(self)
+	hooksecurefunc(frame, "UpdateOptionButtons", function(self)
 		for button in self.selectionPopoutPool:EnumerateActive() do
 			if not button.styled then
-				F.ReskinArrow(button.DecrementButton, "left")
-				F.ReskinArrow(button.IncrementButton, "right")
+				B.ReskinArrow(button.DecrementButton, "left")
+				B.ReskinArrow(button.IncrementButton, "right")
 
-				local popoutButton = button.SelectionPopoutButton
+				local popoutButton = button.Button
 				popoutButton.HighlightTexture:SetAlpha(0)
 				popoutButton.NormalTexture:SetAlpha(0)
 				ReskinCustomizeButton(popoutButton)
-				F.StripTextures(popoutButton.Popout)
-				local bg = F.SetBD(popoutButton.Popout, 1)
+				B.StripTextures(popoutButton.Popout)
+				local bg = B.SetBD(popoutButton.Popout, 1)
 				bg:SetFrameLevel(popoutButton.Popout:GetFrameLevel())
 
 				button.styled = true
@@ -50,7 +52,7 @@ C.themes["Blizzard_CharacterCustomize"] = function()
 		local optionPool = self.pools:GetPool("CharCustomizeOptionCheckButtonTemplate")
 		for button in optionPool:EnumerateActive() do
 			if not button.styled then
-				F.ReskinCheck(button.Button)
+				B.ReskinCheck(button.Button)
 				button.styled = true
 			end
 		end

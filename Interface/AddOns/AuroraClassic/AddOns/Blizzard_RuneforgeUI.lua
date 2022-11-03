@@ -1,5 +1,5 @@
 local _, ns = ...
-local F, C = unpack(ns)
+local B, C, L, DB = unpack(ns)
 
 local function updateSelectedTexture(texture, shown)
 	local button = texture.__owner
@@ -29,20 +29,21 @@ local function SetCurrenciesHook(self)
 		end
 	end
 end
-F.SetCurrenciesHook = SetCurrenciesHook
+B.SetCurrenciesHook = SetCurrenciesHook
 
 C.themes["Blizzard_RuneforgeUI"] = function()
 	local frame = RuneforgeFrame
-	F.ReskinClose(frame.CloseButton, nil, -70, -70)
+	B.ReskinClose(frame.CloseButton, nil, -70, -70)
 
 	local createFrame = frame.CreateFrame
-	F.Reskin(createFrame.CraftItemButton)
+	B.Reskin(createFrame.CraftItemButton)
+
 	hooksecurefunc(frame.CurrencyDisplay, "SetCurrencies", SetCurrenciesHook)
 	hooksecurefunc(createFrame.Cost.Currencies, "SetCurrencies", SetCurrenciesHook)
 
 	local powerFrame = frame.CraftingFrame.PowerFrame
-	F.StripTextures(powerFrame)
-	F.SetBD(powerFrame, 1)
+	B.StripTextures(powerFrame)
+	B.SetBD(powerFrame, 1)
 
 	hooksecurefunc(powerFrame.PowerList, "RefreshListDisplay", function(self)
 		if not self.elements then return end
@@ -52,7 +53,7 @@ C.themes["Blizzard_RuneforgeUI"] = function()
 			if button and not button.bg then
 				button.Border:SetAlpha(0)
 				button.CircleMask:Hide()
-				button.bg = F.ReskinIcon(button.Icon)
+				button.bg = B.ReskinIcon(button.Icon)
 				button.SelectedTexture:SetTexture("")
 				button.SelectedTexture.__owner = button
 				hooksecurefunc(button.SelectedTexture, "SetShown", updateSelectedTexture)
@@ -61,8 +62,9 @@ C.themes["Blizzard_RuneforgeUI"] = function()
 	end)
 
 	local pageControl = powerFrame.PageControl
-	F.ReskinArrow(pageControl.BackwardButton, "left")
-	F.ReskinArrow(pageControl.ForwardButton, "right")
+	B.ReskinArrow(pageControl.BackwardButton, "left")
+	B.ReskinArrow(pageControl.ForwardButton, "right")
 
-	if F.ReskinTooltip then F.ReskinTooltip(frame.ResultTooltip) end
+	local TT = B:GetModule("Tooltip")
+	TT.ReskinTooltip(frame.ResultTooltip)
 end

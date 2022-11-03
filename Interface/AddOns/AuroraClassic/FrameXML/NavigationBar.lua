@@ -1,8 +1,8 @@
 local _, ns = ...
-local F, C = unpack(ns)
+local B, C, L, DB = unpack(ns)
 
 tinsert(C.defaultThemes, function()
-	local r, g, b = C.r, C.g, C.b
+	local r, g, b = DB.r, DB.g, DB.b
 
 	local function moveNavButtons(self)
 		local width = 0
@@ -44,14 +44,14 @@ tinsert(C.defaultThemes, function()
 		end
 	end
 
-	hooksecurefunc("NavBar_Initialize", F.ReskinNavBar)
+	hooksecurefunc("NavBar_Initialize", B.ReskinNavBar)
 
 	hooksecurefunc("NavBar_AddButton", function(self)
-		F.ReskinNavBar(self)
+		B.ReskinNavBar(self)
 
 		local navButton = self.navList[#self.navList]
 		if not navButton.restyled then
-			F.Reskin(navButton)
+			B.Reskin(navButton)
 			navButton.arrowUp:SetAlpha(0)
 			navButton.arrowDown:SetAlpha(0)
 			navButton.selected:SetDrawLayer("BACKGROUND", 1)
@@ -65,16 +65,16 @@ tinsert(C.defaultThemes, function()
 			-- arrow button
 			local arrowButton = navButton.MenuArrowButton
 			arrowButton.Art:Hide()
-			arrowButton:SetHighlightTexture("")
+			arrowButton:SetHighlightTexture(0)
 
 			local tex = arrowButton:CreateTexture(nil, "ARTWORK")
-			F.SetupArrow(tex, "down")
+			B.SetupArrow(tex, "down")
 			tex:SetSize(14, 14)
 			tex:SetPoint("CENTER")
 			arrowButton.__texture = tex
 
-			arrowButton:SetScript("OnEnter", F.Texture_OnEnter)
-			arrowButton:SetScript("OnLeave", F.Texture_OnLeave)
+			arrowButton:SetScript("OnEnter", B.Texture_OnEnter)
+			arrowButton:SetScript("OnLeave", B.Texture_OnLeave)
 
 			navButton.restyled = true
 		end

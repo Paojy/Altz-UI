@@ -1,11 +1,11 @@
 local _, ns = ...
-local F, C = unpack(ns)
+local B, C, L, DB = unpack(ns)
 
 local function ReskinConduitList(frame)
 	local header = frame.CategoryButton.Container
 	if header and not header.styled then
 		header:DisableDrawLayer("BACKGROUND")
-		local bg = F.CreateBDFrame(header, .25)
+		local bg = B.CreateBDFrame(header, .25)
 		bg:SetPoint("TOPLEFT", 2, 0)
 		bg:SetPoint("BOTTOMRIGHT", 15, 0)
 
@@ -15,7 +15,7 @@ local function ReskinConduitList(frame)
 	for button in frame.pool:EnumerateActive() do
 		if button and not button.styled then
 			button.Spec.IconOverlay:Hide()
-			F.ReskinIcon(button.Spec.Icon):SetFrameLevel(8)
+			B.ReskinIcon(button.Spec.Icon):SetFrameLevel(8)
 
 			button.styled = true
 		end
@@ -25,12 +25,12 @@ end
 C.themes["Blizzard_Soulbinds"] = function()
 	local SoulbindViewer = SoulbindViewer
 
-	F.StripTextures(SoulbindViewer)
+	B.StripTextures(SoulbindViewer)
 	SoulbindViewer.Background:SetAlpha(0)
-	F.SetBD(SoulbindViewer)
-	F.ReskinClose(SoulbindViewer.CloseButton)
-	F.Reskin(SoulbindViewer.CommitConduitsButton)
-	F.Reskin(SoulbindViewer.ActivateSoulbindButton)
+	B.SetBD(SoulbindViewer)
+	B.ReskinClose(SoulbindViewer.CloseButton)
+	B.Reskin(SoulbindViewer.CommitConduitsButton)
+	B.Reskin(SoulbindViewer.ActivateSoulbindButton)
 
 	local numChildrenStyled = 0
 	hooksecurefunc(SoulbindViewer.ConduitList.ScrollBox, "Update", function(self)

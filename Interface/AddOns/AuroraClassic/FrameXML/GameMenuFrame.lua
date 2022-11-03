@@ -1,29 +1,29 @@
 local _, ns = ...
-local F, C = unpack(ns)
+local B, C, L, DB = unpack(ns)
 
 tinsert(C.defaultThemes, function()
-
-	F.StripTextures(GameMenuFrame.Header)
+	B.StripTextures(GameMenuFrame.Header)
 	GameMenuFrame.Header:ClearAllPoints()
 	GameMenuFrame.Header:SetPoint("TOP", GameMenuFrame, 0, 7)
-	F.SetBD(GameMenuFrame)
+	B.SetBD(GameMenuFrame)
 	GameMenuFrame.Border:Hide()
 
 	local buttons = {
-		GameMenuButtonHelp,
-		GameMenuButtonWhatsNew,
-		GameMenuButtonStore,
-		GameMenuButtonOptions,
-		GameMenuButtonUIOptions,
-		GameMenuButtonKeybindings,
-		GameMenuButtonMacros,
-		GameMenuButtonAddons,
-		GameMenuButtonLogout,
-		GameMenuButtonQuit,
-		GameMenuButtonContinue
+		"GameMenuButtonHelp",
+		"GameMenuButtonWhatsNew",
+		"GameMenuButtonStore",
+		"GameMenuButtonMacros",
+		"GameMenuButtonAddons",
+		"GameMenuButtonLogout",
+		"GameMenuButtonQuit",
+		"GameMenuButtonContinue",
+		"GameMenuButtonSettings",
+		"GameMenuButtonEditMode",
 	}
-
-	for _, button in next, buttons do
-		F.Reskin(button)
+	for _, buttonName in next, buttons do
+		local button = _G[buttonName]
+		if button then
+			B.Reskin(button)
+		end
 	end
 end)

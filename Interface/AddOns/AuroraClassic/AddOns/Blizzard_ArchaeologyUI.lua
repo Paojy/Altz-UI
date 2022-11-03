@@ -1,11 +1,11 @@
 local _, ns = ...
-local F, C = unpack(ns)
+local B, C, L, DB = unpack(ns)
 
 C.themes["Blizzard_ArchaeologyUI"] = function()
-	F.ReskinPortraitFrame(ArchaeologyFrame)
+	B.ReskinPortraitFrame(ArchaeologyFrame)
 	ArchaeologyFrame:DisableDrawLayer("BACKGROUND")
-	F.Reskin(ArchaeologyFrameArtifactPageSolveFrameSolveButton)
-	F.Reskin(ArchaeologyFrameArtifactPageBackButton)
+	B.Reskin(ArchaeologyFrameArtifactPageSolveFrameSolveButton)
+	B.Reskin(ArchaeologyFrameArtifactPageBackButton)
 
 	ArchaeologyFrameSummaryPageTitle:SetTextColor(1, 1, 1)
 	ArchaeologyFrameArtifactPageHistoryTitle:SetTextColor(1, .8, 0)
@@ -30,11 +30,11 @@ C.themes["Blizzard_ArchaeologyUI"] = function()
 		local icon = _G[buttonName.."Icon"]
 		local name = _G[buttonName.."ArtifactName"]
 		local subText = _G[buttonName.."ArtifactSubText"]
-		F.StripTextures(button)
-		F.ReskinIcon(icon)
+		B.StripTextures(button)
+		B.ReskinIcon(icon)
 		name:SetTextColor(1, .8, 0)
 		subText:SetTextColor(1, 1, 1)
-		local bg = F.CreateBDFrame(button, .25)
+		local bg = B.CreateBDFrame(button, .25)
 		bg:SetPoint("TOPLEFT", -4, 4)
 		bg:SetPoint("BOTTOMRIGHT", 4, -4)
 	end
@@ -45,40 +45,40 @@ C.themes["Blizzard_ArchaeologyUI"] = function()
 	ArchaeologyFrameCompletedButton:SetPoint("TOPLEFT", ArchaeologyFrame, "TOPRIGHT", 1, -120)
 	ArchaeologyFrameCompletedButton:SetFrameLevel(ArchaeologyFrame:GetFrameLevel() - 1)
 
-	F.ReskinDropDown(ArchaeologyFrameRaceFilter)
-	F.ReskinScroll(ArchaeologyFrameArtifactPageHistoryScrollScrollBar)
-	F.ReskinArrow(ArchaeologyFrameCompletedPagePrevPageButton, "left")
-	F.ReskinArrow(ArchaeologyFrameCompletedPageNextPageButton, "right")
+	B.ReskinDropDown(ArchaeologyFrameRaceFilter)
+	B.ReskinScroll(ArchaeologyFrameArtifactPageHistoryScrollScrollBar)
+	B.ReskinArrow(ArchaeologyFrameCompletedPagePrevPageButton, "left")
+	B.ReskinArrow(ArchaeologyFrameCompletedPageNextPageButton, "right")
 	ArchaeologyFrameCompletedPagePrevPageButtonIcon:Hide()
 	ArchaeologyFrameCompletedPageNextPageButtonIcon:Hide()
-	F.ReskinArrow(ArchaeologyFrameSummaryPagePrevPageButton, "left")
-	F.ReskinArrow(ArchaeologyFrameSummaryPageNextPageButton, "right")
+	B.ReskinArrow(ArchaeologyFrameSummaryPagePrevPageButton, "left")
+	B.ReskinArrow(ArchaeologyFrameSummaryPageNextPageButton, "right")
 	ArchaeologyFrameSummaryPagePrevPageButtonIcon:Hide()
 	ArchaeologyFrameSummaryPageNextPageButtonIcon:Hide()
 
-	F.StripTextures(ArchaeologyFrameRankBar)
-	ArchaeologyFrameRankBarBar:SetTexture(C.bdTex)
-	ArchaeologyFrameRankBarBar:SetGradient("VERTICAL", 0, .65, 0, 0, .75, 0)
+	B.StripTextures(ArchaeologyFrameRankBar)
+	ArchaeologyFrameRankBarBar:SetTexture(DB.bdTex)
+	ArchaeologyFrameRankBarBar:SetGradient("VERTICAL", CreateColor(0, .65, 0, 1), CreateColor(0, .75, 0, 1))
 	ArchaeologyFrameRankBar:SetHeight(14)
-	F.CreateBDFrame(ArchaeologyFrameRankBar, .25)
-	F.ReskinIcon(ArchaeologyFrameArtifactPageIcon)
+	B.CreateBDFrame(ArchaeologyFrameRankBar, .25)
+	B.ReskinIcon(ArchaeologyFrameArtifactPageIcon)
 
-	F.StripTextures(ArchaeologyFrameArtifactPageSolveFrameStatusBar)
-	F.CreateBDFrame(ArchaeologyFrameArtifactPageSolveFrameStatusBar, .25)
+	B.StripTextures(ArchaeologyFrameArtifactPageSolveFrameStatusBar)
+	B.CreateBDFrame(ArchaeologyFrameArtifactPageSolveFrameStatusBar, .25)
 	local barTexture = ArchaeologyFrameArtifactPageSolveFrameStatusBar:GetStatusBarTexture()
-	barTexture:SetTexture(C.bdTex)
-	barTexture:SetGradient("VERTICAL", .65, .25, 0, .75, .35, .1)
+	barTexture:SetTexture(DB.bdTex)
+	barTexture:SetGradient("VERTICAL", CreateColor(.65, .25, 0, 1), CreateColor(.75, .35, .1, 1))
 
 	-- ArcheologyDigsiteProgressBar
-	F.StripTextures(ArcheologyDigsiteProgressBar)
-	F.SetBD(ArcheologyDigsiteProgressBar.FillBar)
-	ArcheologyDigsiteProgressBar.FillBar:SetStatusBarTexture(C.bdTex)
+	B.StripTextures(ArcheologyDigsiteProgressBar)
+	B.SetBD(ArcheologyDigsiteProgressBar.FillBar)
+	ArcheologyDigsiteProgressBar.FillBar:SetStatusBarTexture(DB.bdTex)
 	ArcheologyDigsiteProgressBar.FillBar:SetStatusBarColor(.7, .3, .2)
 
 	local ticks = {}
 	ArcheologyDigsiteProgressBar:HookScript("OnShow", function(self)
 		local bar = self.FillBar
 		if not bar then return end
-		F:CreateAndUpdateBarTicks(bar, ticks, bar.fillBarMax)
+		B:CreateAndUpdateBarTicks(bar, ticks, bar.fillBarMax)
 	end)
 end

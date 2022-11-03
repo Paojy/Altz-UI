@@ -1,5 +1,5 @@
 local _, ns = ...
-local F, C = unpack(ns)
+local B, C, L, DB = unpack(ns)
 
 tinsert(C.defaultThemes, function()
 	-- Cinematic
@@ -8,11 +8,11 @@ tinsert(C.defaultThemes, function()
 		self:SetScale(UIParent:GetScale())
 	end)
 
-	F.StripTextures(CinematicFrameCloseDialog)
-	local bg = F.SetBD(CinematicFrameCloseDialog)
+	B.StripTextures(CinematicFrameCloseDialog)
+	local bg = B.SetBD(CinematicFrameCloseDialog)
 	bg:SetFrameLevel(1)
-	F.Reskin(CinematicFrameCloseDialogConfirmButton)
-	F.Reskin(CinematicFrameCloseDialogResumeButton)
+	B.Reskin(CinematicFrameCloseDialogConfirmButton)
+	B.Reskin(CinematicFrameCloseDialogResumeButton)
 
 	-- Movie
 
@@ -22,9 +22,9 @@ tinsert(C.defaultThemes, function()
 		self:SetScale(UIParent:GetScale())
 	end)
 
-	F.StripTextures(closeDialog)
-	local bg = F.SetBD(closeDialog)
+	B.StripTextures(closeDialog)
+	local bg = B.SetBD(closeDialog)
 	bg:SetFrameLevel(1)
-	F.Reskin(closeDialog.ConfirmButton)
-	F.Reskin(closeDialog.ResumeButton)
+	B.Reskin(closeDialog.ConfirmButton)
+	B.Reskin(closeDialog.ResumeButton)
 end)
