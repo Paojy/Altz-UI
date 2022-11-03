@@ -190,8 +190,8 @@ T.CreateSD(minimap_anchor.border, 2, 0, 0, 0, 0, -1)
 
 minimap_anchor.movingname = L["小地图"]
 minimap_anchor.point = {
-	healer = {a1 = "BOTTOMRIGHT", parent = "UIParent", a2 = "BOTTOMRIGHT", x = -10, y = 88},
-	dpser = {a1 = "BOTTOMRIGHT", parent = "UIParent", a2 = "BOTTOMRIGHT", x = -10, y = 88},
+	healer = {a1 = "BOTTOMRIGHT", parent = "UIParent", a2 = "BOTTOMRIGHT", x = -10, y = 95},
+	dpser = {a1 = "BOTTOMRIGHT", parent = "UIParent", a2 = "BOTTOMRIGHT", x = -10, y = 95},
 }
 T.CreateDragFrame(minimap_anchor)
 
