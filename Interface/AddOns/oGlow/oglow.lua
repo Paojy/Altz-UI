@@ -1,7 +1,7 @@
 local _, ns = ...
 local oGlow = ns.oGlow
 
-local _VERSION = GetAddOnMetadata('oGlow', 'version')
+local _VERSION = C_AddOns.GetAddOnMetadata('oGlow', 'version')
 
 local argcheck = oGlow.argcheck
 
