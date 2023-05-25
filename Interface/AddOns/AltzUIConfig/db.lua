@@ -1429,8 +1429,6 @@ local Character_default_Settings = {
 		debuff_auto_add_level = 6,
 	},
 	ChatOptions = {
-		chatbuttons_fade = true,
-		chatbuttons_fade_alpha = .3,
 		chattab_fade_minalpha = .3,
 		chattab_fade_maxalpha = 1,
 		channelreplacement = true,
@@ -1440,9 +1438,6 @@ local Character_default_Settings = {
 		showbg = false,
 	},
 	ItemOptions = {
-		enablebag = true,
-		bagiconsize = 30,
-		bagiconperrow = 14,
 		autorepair = true,
 		autorepair_guild = true,
 		autorepair_guild_auto = true,

@@ -1,6 +1,13 @@
 ﻿local T, C, L, G = unpack(select(2, ...))
 local F = unpack(AuroraClassic)
 
+local function CreateDividingLine(frame, y, width)
+	local tex = frame:CreateTexture(nil, "ARTWORK")
+	tex:SetSize(width or frame:GetWidth()-50, 1)
+	tex:SetPoint("TOP", 0, y)
+	tex:SetColorTexture(1, 1, 1, .2)
+end
+
 --====================================================--
 --[[             -- GUI Main Frame --               ]]--
 --====================================================--
@@ -506,15 +513,8 @@ T.createcheckbutton(CInnerframe.chat, 30, 60, L["频道缩写"], "ChatOptions", 
 T.CVartogglebox(CInnerframe.chat, 230, 60, "showTimestamps", SHOW_TIMESTAMP, "|cff64C2F5%H:%M|r ", "none")
 T.createcheckbutton(CInnerframe.chat, 30, 90, L["滚动聊天框"], "ChatOptions", "autoscroll", L["滚动聊天框提示"])
 T.createcheckbutton(CInnerframe.chat, 230, 90, L["显示聊天框背景"], "ChatOptions", "showbg")
-T.createcheckbutton(CInnerframe.chat, 30, 135, L["聊天按钮悬停渐隐"], "ChatOptions", "chatbuttons_fade", L["聊天按钮悬停渐隐提示"])
-T.createslider(CInnerframe.chat, 230, 140, L["渐隐透明度"], "ChatOptions", "chatbuttons_fade_alpha", 100, 0, 80, 5, L["渐隐透明度提示"])
-T.createDR(CInnerframe.chat.chatbuttons_fade, CInnerframe.chat.chatbuttons_fade_alpha)
-T.createslider(CInnerframe.chat, 30, 190, L["标签最小透明度"], "ChatOptions", "chattab_fade_minalpha", 100, 0, 100, 5, L["标签最小透明度提示"])
-T.createslider(CInnerframe.chat, 230, 190, L["标签最大透明度"], "ChatOptions", "chattab_fade_maxalpha", 100, 0, 100, 5, L["标签最大透明度提示"])
-
-CInnerframe.chat.chatbuttons_fade_alpha:SetWidth(170)
-CInnerframe.chat.chattab_fade_minalpha:SetWidth(170)
-CInnerframe.chat.chattab_fade_maxalpha:SetWidth(170)
+T.createslider(CInnerframe.chat, 30, 140, L["标签最小透明度"], "ChatOptions", "chattab_fade_minalpha", 100, 0, 100, 5, L["标签最小透明度提示"])
+T.createslider(CInnerframe.chat, 30, 190, L["标签最大透明度"], "ChatOptions", "chattab_fade_maxalpha", 100, 0, 100, 5, L["标签最大透明度提示"])
 
 T.createcheckbutton(CInnerframe.chat, 30, 230, L["聊天过滤"], "ChatOptions", "nogoldseller", L["聊天过滤提示"])
 T.createslider(CInnerframe.chat, 30, 280, L["过滤阈值"], "ChatOptions", "goldkeywordnum", 1, 1, 5, 1, L["过滤阈值"])
@@ -534,64 +534,33 @@ T.createDR(CInnerframe.invite.autoinvite, CInnerframe.invite.autoinvitekeywords)
 --====================================================--
 --[[          -- Bag and Items Options --           ]]--
 --====================================================--
-local ItemOptions = CreateOptionPage("Item Options", ITEMS, GUI, "VERTICAL")
+local ItemOptions = CreateOptionPage("Item Options", ITEMS, GUI, "VERTICAL", nil, true)
 
-local IInnerframe = CreateFrame("Frame", G.uiname.."Item Options Innerframe", ItemOptions, "BackdropTemplate")
-IInnerframe:SetPoint("TOPLEFT", 40, -60)
-IInnerframe:SetPoint("BOTTOMLEFT", -20, 20)
-IInnerframe:SetWidth(ItemOptions:GetWidth()-200)
-F.CreateBD(IInnerframe, .3)
+T.createcheckbutton(ItemOptions, 30, 60, L["已会配方着色"], "ItemOptions", "alreadyknown", L["已会配方着色提示"])
 
-IInnerframe.tabindex = 1
-IInnerframe.tabnum = 20
-for i = 1, 20 do
-	IInnerframe["tab"..i] = CreateFrame("Frame", G.uiname.."IInnerframe Tab"..i, IInnerframe, "BackdropTemplate")
-	IInnerframe["tab"..i]:SetScript("OnMouseDown", function() end)
-end
+CreateDividingLine(ItemOptions, -110)
 
-IInnerframe.common = CreateOptionPage("Item Options common", L["通用设置"], IInnerframe, "VERTICAL", .3, true)
-IInnerframe.common:Show()
+T.createcheckbutton(ItemOptions, 30, 120, L["自动修理"], "ItemOptions", "autorepair", L["自动修理提示"])
+T.createcheckbutton(ItemOptions, 30, 150, L["自动公会修理"], "ItemOptions", "autorepair_guild", L["自动公会修理提示"])
+T.createcheckbutton(ItemOptions, 230, 150, L["灵活公会修理"], "ItemOptions", "autorepair_guild_auto", L["灵活公会修理提示"])
 
-T.createcheckbutton(IInnerframe.common, 30, 60, L["启用背包模块"], "ItemOptions", "enablebag")
-T.createslider(IInnerframe.common, 30, 110, L["背包图标大小"], "ItemOptions", "bagiconsize", 1, 20, 40, 1)
-T.createslider(IInnerframe.common, 30, 150, L["背包每行图标数量"], "ItemOptions", "bagiconperrow", 1, 10, 25, 1)
-T.createcheckbutton(IInnerframe.common, 30, 180, L["显示物品等级"], "ItemOptions", "showitemlevel", L["显示物品等级提示"])
-T.createDR(IInnerframe.common.enablebag, IInnerframe.common.showitemlevel)
-T.createcheckbutton(IInnerframe.common, 30, 210, L["已会配方着色"], "ItemOptions", "alreadyknown", L["已会配方着色提示"])
-T.createcheckbutton(IInnerframe.common, 230, 210, L["自动修理"], "ItemOptions", "autorepair", L["自动修理提示"])
-T.createcheckbutton(IInnerframe.common, 30, 240, L["自动公会修理"], "ItemOptions", "autorepair_guild", L["自动公会修理提示"])
-T.createcheckbutton(IInnerframe.common, 230, 240, L["灵活公会修理"], "ItemOptions", "autorepair_guild_auto", L["灵活公会修理提示"])
-T.createcheckbutton(IInnerframe.common, 30, 270, L["自动售卖"], "ItemOptions", "autosell", L["自动售卖提示"])
-T.createcheckbutton(IInnerframe.common, 230, 270, L["自动购买"], "ItemOptions", "autobuy", L["自动购买提示"])
+CreateDividingLine(ItemOptions, -200)
 
-IInnerframe.common.SF:ClearAllPoints()
-IInnerframe.common.SF:SetPoint("TOPLEFT", IInnerframe.common, "TOPLEFT", 40, -340)
-IInnerframe.common.SF:SetPoint("BOTTOMRIGHT", IInnerframe.common, "BOTTOMRIGHT", -100, 25)
-F.CreateBD(IInnerframe.common.SF.bg, .3)
-
-local ClearIlvlInfoButton = CreateFrame("Button", G.uiname.."ClearIlvlInfoButton", IInnerframe.common, "UIPanelButtonTemplate")
-ClearIlvlInfoButton:SetPoint("TOPLEFT", IInnerframe.common, "TOPLEFT", 235, -180)
-ClearIlvlInfoButton:SetSize(100, 25)
-ClearIlvlInfoButton:SetText(L["重置"])
-T.resize_font(ClearIlvlInfoButton.Text)
-F.Reskin(ClearIlvlInfoButton)
-ClearIlvlInfoButton:SetScript("OnClick", function()
-	aCoreCDB["ItemOptions"]["itemlevels"] = {}
-	ReloadUI()
-end)
+T.createcheckbutton(ItemOptions, 30, 210, L["自动售卖"], "ItemOptions", "autosell", L["自动售卖提示"])
+T.createcheckbutton(ItemOptions, 30, 240, L["自动购买"], "ItemOptions", "autobuy", L["自动购买提示"])
 
 local function LineUpAutobuyList()
 	sort(aCoreCDB["ItemOptions"]["autobuylist"])
 	local index = 1
 	for itemID, quantity in pairs(aCoreCDB["ItemOptions"]["autobuylist"]) do
 		if not itemID then return end
-		_G[G.uiname.."AutobuyList Button"..itemID]:SetPoint("TOPLEFT", IInnerframe.common.SFAnchor, "TOPLEFT", 5, 20-index*30)
+		_G[G.uiname.."AutobuyList Button"..itemID]:SetPoint("TOPLEFT", ItemOptions.SFAnchor, "TOPLEFT", 5, 20-index*30)
 		index = index + 1
 	end
 end
 
 local function CreateAutobuyButton(itemID, name, icon, quantity)
-	local bu = CreateFrame("Frame", G.uiname.."AutobuyList Button"..itemID, IInnerframe.common.SFAnchor, "BackdropTemplate")
+	local bu = CreateFrame("Frame", G.uiname.."AutobuyList Button"..itemID, ItemOptions.SFAnchor, "BackdropTemplate")
 	bu:SetSize(300, 28)
 	F.CreateBD(bu, .2)
 	
@@ -648,9 +617,9 @@ local function CreateAutobuyButtonList()
 	LineUpAutobuyList()
 end
 
-local Autobuy_iteminput = CreateFrame("EditBox", G.uiname.."AutobuyList ItemInput", IInnerframe.common, "BackdropTemplate")
+local Autobuy_iteminput = CreateFrame("EditBox", G.uiname.."AutobuyList ItemInput", ItemOptions, "BackdropTemplate")
 Autobuy_iteminput:SetSize(150, 20)
-Autobuy_iteminput:SetPoint("TOPLEFT", 40, -310)
+Autobuy_iteminput:SetPoint("TOPLEFT", 40, -280)
 F.CreateBD(Autobuy_iteminput)
 
 Autobuy_iteminput:SetFont(GameFontHighlight:GetFont(), 12, "OUTLINE")
@@ -662,7 +631,7 @@ Autobuy_iteminput:SetScript("OnEditFocusGained", function(self) self:HighlightTe
 Autobuy_iteminput:SetScript("OnEscapePressed", function(self) self:ClearFocus() self:SetText(L["输入物品ID"]) end)
 Autobuy_iteminput:SetScript("OnEnterPressed", function(self) self:ClearFocus() end)
 
-local Autobuy_quantityinput = CreateFrame("EditBox", G.uiname.."AutobuyList QuantityInput", IInnerframe.common, "BackdropTemplate")
+local Autobuy_quantityinput = CreateFrame("EditBox", G.uiname.."AutobuyList QuantityInput", ItemOptions, "BackdropTemplate")
 Autobuy_quantityinput:SetSize(80, 20)
 Autobuy_quantityinput:SetPoint("LEFT", Autobuy_iteminput, "RIGHT", 15, 0)
 F.CreateBD(Autobuy_quantityinput)
@@ -676,7 +645,7 @@ Autobuy_quantityinput:SetScript("OnEditFocusGained", function(self) self:Highlig
 Autobuy_quantityinput:SetScript("OnEscapePressed", function(self) self:ClearFocus() self:SetText(L["输入数量"]) end)
 Autobuy_quantityinput:SetScript("OnEnterPressed", function(self) self:ClearFocus() end)
 
-local Autobuy_additembutton = CreateFrame("Button", G.uiname.."Autobuy Add Item Button", IInnerframe.common, "UIPanelButtonTemplate")
+local Autobuy_additembutton = CreateFrame("Button", G.uiname.."Autobuy Add Item Button", ItemOptions, "UIPanelButtonTemplate")
 Autobuy_additembutton:SetPoint("LEFT", Autobuy_quantityinput, "RIGHT", 15, 0)
 Autobuy_additembutton:SetSize(50, 20)
 Autobuy_additembutton:SetText(ADD)
@@ -711,6 +680,11 @@ Autobuy_additembutton:SetScript("OnClick", function(self)
 		end
 	end
 end)
+
+ItemOptions.SF:ClearAllPoints()
+ItemOptions.SF:SetPoint("TOPLEFT", ItemOptions, "TOPLEFT", 40, -310)
+ItemOptions.SF:SetPoint("BOTTOMRIGHT", ItemOptions, "TOPLEFT", 330, -500)
+F.CreateBD(ItemOptions.SF.bg, .3)
 --====================================================--
 --[[               -- Unit Frames --                ]]--
 --====================================================--
@@ -2779,10 +2753,7 @@ T.createcheckbutton(OtherOptions, 300, 150, L["大喊被闷了"], "OtherOptions"
 T.createcheckbutton(OtherOptions, 30, 180, L["快速焦点"], "OtherOptions", "shiftfocus")
 T.createcheckbutton(OtherOptions, 300, 180, L["快速标记"], "OtherOptions", "ctrlmenu")
 
-OtherOptions.DividingLine = OtherOptions:CreateTexture(nil, "ARTWORK")
-OtherOptions.DividingLine:SetSize(OtherOptions:GetWidth()-50, 1)
-OtherOptions.DividingLine:SetPoint("TOP", 0, -225)
-OtherOptions.DividingLine:SetColorTexture(1, 1, 1, .2)
+CreateDividingLine(OtherOptions, -230)
 
 T.createcheckbutton(OtherOptions, 30, 240, L["任务栏闪动"], "OtherOptions", "flashtaskbar", L["任务栏闪动提示"])
 T.createcheckbutton(OtherOptions, 300, 240, L["隐藏错误提示"], "OtherOptions", "hideerrors", L["隐藏错误提示提示"])	
@@ -2792,10 +2763,7 @@ T.CVartogglebox(OtherOptions, 30, 300, "screenshotQuality", L["提升截图画�
 T.CVartogglebox(OtherOptions, 300, 300, "screenshotFormat", L["截图保存为tga格式"], "tga", "jpg", "截图保存为tga提示")
 
 if G.Client == "zhCN" then
-	OtherOptions.DividingLine2 = OtherOptions:CreateTexture(nil, "ARTWORK")
-	OtherOptions.DividingLine2:SetSize(OtherOptions:GetWidth()-50, 1)
-	OtherOptions.DividingLine2:SetPoint("TOP", 0, -375)
-	OtherOptions.DividingLine2:SetColorTexture(1, 1, 1, .2)
+	CreateDividingLine(OtherOptions, -350)
 	T.CVartogglebox(OtherOptions, 30, 390, "overrideArchive", "反和谐(大退生效)", "0", "1")
 end
 --====================================================--
