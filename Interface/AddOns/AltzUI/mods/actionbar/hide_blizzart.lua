@@ -9,6 +9,7 @@ local framesToHide = {
 	MainMenuBar.BorderArt,
 	MainMenuBar.EndCaps,
 	MainMenuBar.Background,
+	StatusTrackingBarManager,
 }
 
 local framesToDisable = {
@@ -16,6 +17,7 @@ local framesToDisable = {
 	MainMenuBar.BorderArt,
 	MainMenuBar.EndCaps,
 	MainMenuBar.Background,
+	StatusTrackingBarManager,
 }
 
 local textureToHide = {
