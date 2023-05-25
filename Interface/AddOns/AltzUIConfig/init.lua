@@ -28,7 +28,7 @@ G.media = {
 
 G.Iconpath = "Interface\\AddOns\\AltzUI\\media\\icons\\"
 
-G.Version = GetAddOnMetadata("AltzUIConfig", "Version")
+G.Version = C_AddOns.GetAddOnMetadata("AltzUIConfig", "Version")
 G.Client = GetLocale()
 
 G.resolution = GetCVar("gxFullscreenResolution")

@@ -797,11 +797,11 @@ T.createslider = function(parent, x, y, name, table, value, divisor, min, max, s
 	if tip then slider.tooltipText = tip end
 	
 	slider.Enable = function()
-		BlizzardOptionsPanel_Slider_Enable(slider)
+		getmetatable(slider).__index.Enable(slider)
 	end
 	
 	slider.Disable = function()
-		BlizzardOptionsPanel_Slider_Disable(slider)
+		getmetatable(slider).__index.Disable(slider)
 	end
 	
 	parent[value] = slider
