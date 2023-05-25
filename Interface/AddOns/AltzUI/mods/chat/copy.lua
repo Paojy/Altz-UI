@@ -1,14 +1,6 @@
 local T, C, L, G = unpack(select(2, ...))
 local F = unpack(AuroraClassic)
 
-
-QuickJoinToastButton:ClearAllPoints()
-QuickJoinToastButton:SetPoint("BOTTOMLEFT", ChatFrame1Tab, "TOPLEFT", 5, 5)
-QuickJoinToastButton.SetPoint = function() end
-
-ChatAlertFrame:ClearAllPoints()
-ChatAlertFrame:SetPoint("BOTTOMLEFT", QuickJoinToastButton, "TOPLEFT", 0, 20)
-
 -- Chat Copy
 local lines = {}
 local frame = CreateFrame("Frame", "NDuiChatCopy", UIParent)
@@ -81,6 +73,7 @@ copy.Icon = copy:CreateTexture(nil, "ARTWORK")
 copy.Icon:SetAllPoints()
 copy.Icon:SetTexture("Interface\\Buttons\\UI-GuildButton-PublicNote-Up")
 F.Reskin(copy)
+T.FrameFader(copy)
 
 copy:RegisterForClicks("AnyUp")
 copy:SetScript("OnClick", copyFunc)
