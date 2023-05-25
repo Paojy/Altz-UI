@@ -1,8 +1,6 @@
 local T, C, L, G = unpack(select(2, ...))
 local F, C = unpack(AuroraClassic)
 
-if not aCoreCDB["ItemOptions"]["enablebag"] then return end
-
 local Profit, Spent, OldMoney = 0, 0, 0
 
 local function formatMoney(money)
