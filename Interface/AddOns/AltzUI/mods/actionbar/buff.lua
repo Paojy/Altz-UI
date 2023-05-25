@@ -7,18 +7,18 @@ local F = unpack(AuroraClassic)
 
   --apply aura frame texture func
 local function applySkin(aura)
-	if not aura.styled then
+	if not aura.isAuraAnchor and not aura.styled then
 		aura.Icon:SetTexCoord(0.1,0.9,0.1,0.9)
 		aura.Icon:SetDrawLayer("BACKGROUND",-7)
 		
-		aura.duration:SetFont(G.numFont, 14, "THINOUTLINE")
-		aura.duration:SetShadowOffset(0, 0)
+		aura.Duration:SetFont(G.norFont, 10, "THINOUTLINE")
+		aura.Duration:SetShadowOffset(0, 0)
 		
-		if aura.count then
-			aura.count:SetFont(G.numFont, 14, "THINOUTLINE")
-			aura.count:SetShadowOffset(0, 0)
-			aura.count:ClearAllPoints()
-			aura.count:SetPoint("TOPRIGHT", 2, 2)
+		if aura.Count then
+			aura.Count:SetFont(G.norFont, 10, "THINOUTLINE")
+			aura.Count:SetShadowOffset(0, 0)
+			aura.Count:ClearAllPoints()
+			aura.Count:SetPoint("TOPRIGHT", 2, 2)
 		end
 		
 		aura.bd = T.createBackdrop(aura, aura.Icon, 0)
