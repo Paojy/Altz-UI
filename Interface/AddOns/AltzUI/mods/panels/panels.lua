@@ -339,6 +339,7 @@ Minimap.ZoomOut:Hide()
 Minimap.ZoomOut.Show = function() Minimap.ZoomOut:Hide() end
 
 -- 地图
+MinimapCluster.BorderTop:Hide()
 MinimapCluster.ZoneTextButton:ClearAllPoints()
 MinimapCluster.ZoneTextButton:SetPoint("CENTER", Minimap, "CENTER", 0, 20)
 MinimapCluster.ZoneTextButton:EnableMouse(false)
@@ -357,24 +358,26 @@ Minimap:HookScript("OnEnter", function() MinimapCluster.ZoneTextButton:Show() en
 Minimap:HookScript("OnLeave", function() MinimapCluster.ZoneTextButton:Hide() end)
 
 -- 邮件
-MinimapCluster.MailFrame:ClearAllPoints()
-MinimapCluster.MailFrame:SetPoint("TOP", Minimap, "TOP", 0, -5)
-MinimapCluster.MailFrame:SetHitRectInsets(-5, -5, -5, -5)	
+MinimapCluster.IndicatorFrame.MailFrame:ClearAllPoints()
+MinimapCluster.IndicatorFrame.MailFrame:SetPoint("TOP", Minimap, "TOP", 0, -5)
+MinimapCluster.IndicatorFrame.MailFrame.SetPoint = function() end
+MinimapCluster.IndicatorFrame.MailFrame:SetHitRectInsets(-5, -5, -5, -5)	
 
 -- 日历
-GameTimeFrame:ClearAllPoints()
-GameTimeFrame:SetPoint("BOTTOMRIGHT", Minimap, "BOTTOMRIGHT", -5, 5)
+--GameTimeFrame:ClearAllPoints()
+--GameTimeFrame:SetPoint("BOTTOMRIGHT", Minimap, "BOTTOMRIGHT", -5, 5)
+--GameTimeFrame.SetPoint = function() end
 
 -- 时间
-if not IsAddOnLoaded("Blizzard_TimeManager") then LoadAddOn("Blizzard_TimeManager") end
-TimeManagerClockButton:ClearAllPoints()
-TimeManagerClockButton:SetPoint("RIGHT", GameTimeFrame, "LEFT", -5, -1)
-TimeManagerClockTicker:SetFont(G.norFont, 12, "OUTLINE") 
-TimeManagerClockTicker:SetShadowOffset(0, 0)
-TimeManagerClockTicker:SetJustifyH("RIGHT")
+--if not IsAddOnLoaded("Blizzard_TimeManager") then LoadAddOn("Blizzard_TimeManager") end
+--TimeManagerClockButton:ClearAllPoints()
+--TimeManagerClockButton:SetPoint("RIGHT", GameTimeFrame, "LEFT", -5, -1)
+--TimeManagerClockTicker:SetFont(G.norFont, 12, "OUTLINE") 
+--TimeManagerClockTicker:SetShadowOffset(0, 0)
+--TimeManagerClockTicker:SetJustifyH("RIGHT")
 
 -- 附加按钮
-ExpansionLandingPageMinimapButton:SetParent(Minimap)
+--ExpansionLandingPageMinimapButton:SetParent(Minimap)
 
 -- 经验条
 local xpbar = CreateFrame("StatusBar", G.uiname.."ExperienceBar", Minimap)
@@ -428,10 +431,10 @@ repbar:SetScript("OnEnter", function()
 	
 	if name then
 		local minrep, maxrep, valuerep
-		if GetFriendshipReputation(factionID) then
-			local friendID, friendRep, friendMaxRep, friendName, friendText, friendTexture, friendTextLevel, friendThreshold, nextFriendThreshold = GetFriendshipReputation(factionID)
+		if C_GossipInfo.GetFriendshipReputation(factionID) then
+			local friendID, friendRep, friendMaxRep, friendName, friendText, friendTexture, friendTextLevel, friendThreshold, nextFriendThreshold = C_GossipInfo.GetFriendshipReputation(factionID)
 			minrep, maxrep, valuerep = friendThreshold, nextFriendThreshold, friendRep
-			ranktext = friendTextLevel
+			ranktext = friendTextLevel and string.format(" (%s)", friendTextLevel) or ""
 		elseif C_Reputation.IsFactionParagon(factionID) then
 			local currentValue, threshold = C_Reputation.GetFactionParagonInfo(factionID)
 			minrep, maxrep, valuerep = 0, threshold, mod(currentValue, threshold)
@@ -439,7 +442,7 @@ repbar:SetScript("OnEnter", function()
 			minrep, maxrep, valuerep = minRep, maxRep, value
 		end
 		
-		GameTooltip:AddLine(name.."  ("..ranktext..")", G.Ccolor.r, G.Ccolor.g, G.Ccolor.b)
+		GameTooltip:AddLine(name..ranktext, G.Ccolor.r, G.Ccolor.g, G.Ccolor.b)
 		
 		if maxrep and maxrep > valuerep then
 			GameTooltip:AddDoubleLine(L["声望"], string.format("%s/%s (%d%%)", CommaValue(valuerep-minrep), CommaValue(maxrep-minrep), (valuerep-minrep)/(maxrep-minrep)*100), G.Ccolor.r, G.Ccolor.g, G.Ccolor.b, 1, 1, 1)
@@ -477,8 +480,8 @@ xpbar:SetScript("OnEvent", function(self, event, arg1)
 			repbar:Show()
 			local name, rank, minRep, maxRep, value = GetWatchedFactionInfo()
 			
-			if GetFriendshipReputation(factionID) then
-				local friendID, friendRep, friendMaxRep, friendName, friendText, friendTexture, friendTextLevel, friendThreshold, nextFriendThreshold = GetFriendshipReputation(factionID)
+			if C_GossipInfo.GetFriendshipReputation(factionID) then
+				local friendID, friendRep, friendMaxRep, friendName, friendText, friendTexture, friendTextLevel, friendThreshold, nextFriendThreshold = C_GossipInfo.GetFriendshipReputation(factionID)
 				if ( nextFriendThreshold ) then
 					repbar:SetMinMaxValues(friendThreshold, nextFriendThreshold)
 					repbar:SetValue(friendRep)
@@ -835,7 +838,7 @@ GameMenuButton:SetScript("OnClick", function()
 	_G[G.uiname.."GUI Main Frame"]:Show()
 	HideUIPanel(GameMenuFrame)
 end)
-GameMenuButton:SetText(GetAddOnMetadata("AltzUI", "Title"))
+GameMenuButton:SetText(C_AddOns.GetAddOnMetadata("AltzUI", "Title"))
 F.Reskin(GameMenuButton)
 
 GameMenuFrame:HookScript("OnShow", function()
