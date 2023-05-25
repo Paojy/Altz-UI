@@ -46,6 +46,7 @@ local frames = {
 	["TradeFrame"] = false,
 	["TutorialFrame"] = false,
 	["VideoOptionsFrame"] = false,
+	["EncounterJournal"] = false,
 }
 
 -- Frames provided by load on demand addons, hooked when the addon is loaded.
@@ -82,7 +83,8 @@ local lodFrames = {
 	Blizzard_ObliterumUI		= { ["ObliterumForgeFrame"] = false },
 	Blizzard_OrderHallUI		= { ["OrderHallTalentFrame"] = false, },
 	Blizzard_ScrappingMachineUI = { ["ScrappingMachineFrame"] = false },
-	Blizzard_TalentUI			= { ["PlayerTalentFrame"] = false, ["PVPTalentPrestigeLevelDialog"] = false}
+	Blizzard_TalentUI			= { ["PlayerTalentFrame"] = false, ["PVPTalentPrestigeLevelDialog"] = false},
+	Blizzard_EncounterJournal   = { ["EncounterJournal"] = false },
 }
 
 local parentFrame = {}
