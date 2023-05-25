@@ -209,40 +209,41 @@ do
 			-- Hopefully I'll get use for this later in some obscure scenario!
 			split = math.floor(numFilters / 2) + (numFilters % 2) + 1
 		end
-
-		for i=1, numFilters do
-			local filter = filters[i]
-			local check = filterFrame[i]
-			if(not check) then
-				check = createCheckBox(filterFrame)
+		
+		if filterFrame then
+			for i=1, numFilters do
+				local filter = filters[i]
+				local check = filterFrame[i]
+				if(not check) then
+					check = createCheckBox(filterFrame)
+					filterFrame[i] = check
+				end
+	
+				check:ClearAllPoints()
+				if(i == 1) then
+					check:SetPoint('TOPLEFT', 16, -2)
+				elseif(i == split) then
+					check:SetPoint('TOP', 16, -2)
+				else
+					check:SetPoint('TOP', filterFrame[i - 1], 'BOTTOM')
+				end
+	
+				check:SetScript('OnClick', Filter_OnClick)
+	
+				local label = check.label
+				if(not label) then
+					label =  ns.createFontString(check)
+					label:SetPoint('LEFT', check, 'RIGHT', 5, -1)
+					check.label = label
+				end
+				label:SetText(filter.name)
+	
+				check.name = filter.name
+				check.desc = filter.desc
+				check.type = filter.type
 				filterFrame[i] = check
 			end
-
-			check:ClearAllPoints()
-			if(i == 1) then
-				check:SetPoint('TOPLEFT', 16, -2)
-			elseif(i == split) then
-				check:SetPoint('TOP', 16, -2)
-			else
-				check:SetPoint('TOP', filterFrame[i - 1], 'BOTTOM')
-			end
-
-			check:SetScript('OnClick', Filter_OnClick)
-
-			local label = check.label
-			if(not label) then
-				label =  ns.createFontString(check)
-				label:SetPoint('LEFT', check, 'RIGHT', 5, -1)
-				check.label = label
-			end
-			label:SetText(filter.name)
-
-			check.name = filter.name
-			check.desc = filter.desc
-			check.type = filter.type
-			filterFrame[i] = check
 		end
-
 		-- We set split to 2 above (which makes this work correctly for
 		-- numFilters == 1.
 		filterFrame:SetHeight(((split-1) * 16) + 28)
