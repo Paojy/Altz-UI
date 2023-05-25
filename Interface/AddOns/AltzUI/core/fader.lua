@@ -41,6 +41,9 @@ local function UIFrameFadeIn(frame, timeToFade, startAlpha, endAlpha)
 	fadeInfo.startAlpha = startAlpha
 	fadeInfo.endAlpha = endAlpha
 	UIFrameFade(frame, fadeInfo)
+	if frame.Portrait then
+		UIFrameFade(frame.Portrait, fadeInfo)
+	end
 end
 T.UIFrameFadeIn = UIFrameFadeIn
 
@@ -52,6 +55,9 @@ local function UIFrameFadeOut(frame, timeToFade, startAlpha, endAlpha)
 	fadeInfo.startAlpha = startAlpha
 	fadeInfo.endAlpha = endAlpha
 	UIFrameFade(frame, fadeInfo)
+	if frame.Portrait then
+		UIFrameFade(frame.Portrait, fadeInfo)
+	end
 end
 T.UIFrameFadeOut = UIFrameFadeOut
 --==================================================================--
