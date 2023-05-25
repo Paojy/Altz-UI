@@ -4,7 +4,7 @@ local B, C, L, DB = unpack(ns)
 local function ReskinQuestHeader(header, isCalling)
 	if header.styled then return end
 
-	header.Background:SetAlpha(.7)
+	if header.Background then header.Background:SetAlpha(.7) end
 	if header.Divider then header.Divider:Hide() end
 	if header.TopFiligree then header.TopFiligree:Hide() end
 
@@ -58,12 +58,19 @@ tinsert(C.defaultThemes, function()
 	QuestScrollFrame.DetailFrame.BottomDetail:SetAlpha(0)
 	QuestScrollFrame.Contents.Separator:SetAlpha(0)
 	ReskinQuestHeader(QuestScrollFrame.Contents.StoryHeader)
-	B.ReskinScroll(QuestScrollFrame.ScrollBar)
 
 	local campaignOverview = QuestMapFrame.CampaignOverview
 	campaignOverview.BG:SetAlpha(0)
 	ReskinQuestHeader(campaignOverview.Header)
-	B.ReskinScroll(campaignOverview.ScrollFrame.ScrollBar)
+
+	if DB.isPatch10_1 then
+		QuestScrollFrame.Edge:Hide()
+		B.ReskinTrimScroll(QuestScrollFrame.ScrollBar)
+		B.ReskinTrimScroll(campaignOverview.ScrollFrame.ScrollBar)
+	else
+		B.ReskinScroll(QuestScrollFrame.ScrollBar)
+		B.ReskinScroll(campaignOverview.ScrollFrame.ScrollBar)
+	end
 
 	-- Quest details
 
@@ -80,7 +87,11 @@ tinsert(C.defaultThemes, function()
 	B.Reskin(DetailsFrame.AbandonButton)
 	B.Reskin(DetailsFrame.ShareButton)
 	B.Reskin(DetailsFrame.TrackButton)
-	B.ReskinScroll(QuestMapDetailsScrollFrame.ScrollBar)
+	if DB.isPatch10_1 then
+		B.ReskinTrimScroll(QuestMapDetailsScrollFrame.ScrollBar)
+	else
+		B.ReskinScroll(QuestMapDetailsScrollFrame.ScrollBar)
+	end
 
 	DetailsFrame.AbandonButton:ClearAllPoints()
 	DetailsFrame.AbandonButton:SetPoint("BOTTOMLEFT", DetailsFrame, -1, 0)
@@ -109,7 +120,18 @@ tinsert(C.defaultThemes, function()
 			end
 		end
 
+		for button in QuestScrollFrame.titleFramePool:EnumerateActive() do
+			if not button.styled then
+				button.Check:SetAtlas("checkmark-minimal")
+				button.styled = true
+			end
+		end
+
 		for header in QuestScrollFrame.campaignHeaderFramePool:EnumerateActive() do
+			ReskinQuestHeader(header)
+		end
+
+		for header in QuestScrollFrame.campaignHeaderMinimalFramePool:EnumerateActive() do
 			ReskinQuestHeader(header)
 		end
 
@@ -130,11 +152,15 @@ tinsert(C.defaultThemes, function()
 	local QuestLogPopupDetailFrame = QuestLogPopupDetailFrame
 
 	B.ReskinPortraitFrame(QuestLogPopupDetailFrame)
-	B.ReskinScroll(QuestLogPopupDetailFrameScrollFrameScrollBar)
 	B.Reskin(QuestLogPopupDetailFrame.AbandonButton)
 	B.Reskin(QuestLogPopupDetailFrame.TrackButton)
 	B.Reskin(QuestLogPopupDetailFrame.ShareButton)
 	QuestLogPopupDetailFrame.SealMaterialBG:SetAlpha(0)
+	if DB.isPatch10_1 then
+		B.ReskinTrimScroll(QuestLogPopupDetailFrameScrollFrame.ScrollBar)
+	else
+		B.ReskinScroll(QuestLogPopupDetailFrameScrollFrameScrollBar)
+	end
 
 	-- Show map button
 

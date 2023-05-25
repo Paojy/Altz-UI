@@ -37,8 +37,10 @@ C.themes["Blizzard_GuildControlUI"] = function()
 	GuildControlUIRankSettingsFrameBankBg:SetAlpha(0)
 	GuildControlUITopBg:Hide()
 	GuildControlUIHbar:Hide()
-	GuildControlUIRankBankFrameInsetScrollFrameTop:SetAlpha(0)
-	GuildControlUIRankBankFrameInsetScrollFrameBottom:SetAlpha(0)
+	if not DB.isPatch10_1 then
+		GuildControlUIRankBankFrameInsetScrollFrameTop:SetAlpha(0)
+		GuildControlUIRankBankFrameInsetScrollFrameBottom:SetAlpha(0)
+	end
 
 	-- Guild ranks
 	local f = CreateFrame("Frame")
@@ -94,7 +96,11 @@ C.themes["Blizzard_GuildControlUI"] = function()
 
 	B.Reskin(GuildControlUIRankOrderFrameNewButton)
 	B.ReskinClose(GuildControlUICloseButton)
-	B.ReskinScroll(GuildControlUIRankBankFrameInsetScrollFrameScrollBar)
+	if DB.isPatch10_1 then
+		B.ReskinTrimScroll(GuildControlUIRankBankFrameInsetScrollFrame.ScrollBar)
+	else
+		B.ReskinScroll(GuildControlUIRankBankFrameInsetScrollFrameScrollBar)
+	end
 	B.ReskinDropDown(GuildControlUINavigationDropDown)
 	B.ReskinDropDown(GuildControlUIRankSettingsFrameRankDropDown)
 	B.ReskinDropDown(GuildControlUIRankBankFrameRankDropDown)

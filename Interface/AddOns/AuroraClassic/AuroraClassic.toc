@@ -1,11 +1,12 @@
-## Interface: 100000
+## Interface: 100007
 ## Title: |cff0080ffAuroraClassic|r
 ## Title-zhCN: |cff0080ffAuroraClassic|r 材质美化
 ## Title-zhTW: |cff0080ffAuroraClassic|r 材質美化
 ## Notes: Classical UI Style for WoW UIs.
 ## Author: Siweia
 ## X-Credits: Haleth, Gethe
-## Version: 6.0.0
+## X-Curse-Project-ID: 776149
+## Version: 6.7.0
 ## X-Website: https://github.com/siweia/AuroraClassic
 ## SavedVariables: AuroraClassicDB
 

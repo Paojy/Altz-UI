@@ -64,15 +64,23 @@ tinsert(C.defaultThemes, function()
 	B.Reskin(QuestFrameGoodbyeButton)
 	B.Reskin(QuestFrameGreetingGoodbyeButton)
 
-	B.ReskinScroll(QuestProgressScrollFrameScrollBar)
-	B.ReskinScroll(QuestRewardScrollFrameScrollBar)
-	B.ReskinScroll(QuestDetailScrollFrameScrollBar)
-	B.ReskinScroll(QuestGreetingScrollFrameScrollBar)
+	if DB.isPatch10_1 then
+		B.ReskinTrimScroll(QuestProgressScrollFrame.ScrollBar)
+		B.ReskinTrimScroll(QuestRewardScrollFrame.ScrollBar)
+		B.ReskinTrimScroll(QuestDetailScrollFrame.ScrollBar)
+		B.ReskinTrimScroll(QuestGreetingScrollFrame.ScrollBar)
+	else
+		B.ReskinScroll(QuestProgressScrollFrameScrollBar)
+		B.ReskinScroll(QuestRewardScrollFrameScrollBar)
+		B.ReskinScroll(QuestDetailScrollFrameScrollBar)
+		B.ReskinScroll(QuestGreetingScrollFrameScrollBar)
+	end
 
 	-- Text colour stuff
 
 	QuestProgressRequiredItemsText:SetTextColor(1, .8, 0)
 	QuestProgressRequiredItemsText:SetShadowColor(0, 0, 0)
+	QuestProgressRequiredItemsText.SetTextColor = B.Dummy
 	QuestProgressTitleText:SetTextColor(1, .8, 0)
 	QuestProgressTitleText:SetShadowColor(0, 0, 0)
 	QuestProgressTitleText.SetTextColor = B.Dummy
@@ -98,4 +106,14 @@ tinsert(C.defaultThemes, function()
 		x = x + 6
 		QuestModelScene:SetPoint("TOPLEFT", parentFrame, "TOPRIGHT", x, y)
 	end)
+
+	-- Friendship
+	for i = 1, 4 do
+		local notch = QuestFrame.FriendshipStatusBar["Notch"..i]
+		if notch then
+			notch:SetColorTexture(0, 0, 0)
+			notch:SetSize(C.mult, 16)
+		end
+	end
+	QuestFrame.FriendshipStatusBar.BarBorder:Hide()
 end)

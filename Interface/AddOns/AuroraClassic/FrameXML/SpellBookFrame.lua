@@ -104,9 +104,9 @@ tinsert(C.defaultThemes, function()
 
 			if not tab.styled then
 				tab:GetRegions():Hide()
-				tab:SetCheckedTexture(DB.pushed)
+				tab:SetCheckedTexture(DB.pushedTex)
 				tab:GetHighlightTexture():SetColorTexture(1, 1, 1, .25)
-				B.CreateBDFrame(tab)
+				B.CreateBDFrame(tab, .25)
 
 				tab.styled = true
 			end
@@ -173,7 +173,6 @@ tinsert(C.defaultThemes, function()
 	B.ReskinArrow(SpellBookNextPageButton, "right")
 	SpellBookPageText:SetTextColor(.8, .8, .8)
 
-	-- todo: some elements might be removed in beta
 	hooksecurefunc("UpdateProfessionButton", function(self)
 		local spellIndex = self:GetID() + self:GetParent().spellOffset
 		local isPassive = IsPassiveSpell(spellIndex, SpellBookFrame.bookType)
@@ -187,12 +186,6 @@ tinsert(C.defaultThemes, function()
 		end
 		if self.subSpellString then
 			self.subSpellString:SetTextColor(1, 1, 1)
-		end
-		if self.SpellName then
-			self.SpellName:SetTextColor(1, 1, 1)
-		end
-		if self.SpellSubName then
-			self.SpellSubName:SetTextColor(1, 1, 1)
 		end
 	end)
 end)

@@ -20,7 +20,8 @@ C.defaultThemes = {}
 C.themes = {}
 
 -- Data
-DB.isNewPatch = select(4, GetBuildInfo()) >= 90205 -- 9.2.5
+DB.isNewPatch = select(4, GetBuildInfo()) >= 100007 -- 10.0.7
+DB.isPatch10_1 = select(4, GetBuildInfo()) >= 100100 -- 10.1.0
 DB.MyClass = select(2, UnitClass("player"))
 DB.ClassColors = {}
 
@@ -52,7 +53,7 @@ DB.bdTex = "Interface\\ChatFrame\\ChatFrameBackground"
 DB.glowTex = mediaPath.."glowTex"
 DB.normTex = mediaPath.."normTex"
 DB.bgTex = mediaPath.."bgTex"
-DB.pushed = mediaPath.."pushed"
+DB.pushedTex = mediaPath.."pushed"
 DB.ArrowUp = mediaPath.."arrow"
 DB.closeTex = mediaPath.."close"
 DB.rolesTex = mediaPath.."RoleIcons"

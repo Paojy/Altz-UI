@@ -7,6 +7,7 @@ tinsert(C.defaultThemes, function()
 	B.ReskinClose(LootFrame.ClosePanelButton)
 	B.StripTextures(LootFrame)
 	B.SetBD(LootFrame)
+	B.ReskinTrimScroll(LootFrame.ScrollBar)
 
 	local function updateHighlight(self)
 		local button = self.__owner
@@ -26,37 +27,42 @@ tinsert(C.defaultThemes, function()
 		end
 	end
 
+	local function onHide(self)
+		self.__owner.bg:SetBackdropBorderColor(0, 0, 0)
+	end
+
 	hooksecurefunc(LootFrame.ScrollBox, "Update", function(self)
 		for i = 1, self.ScrollTarget:GetNumChildren() do
 			local button = select(i, self.ScrollTarget:GetChildren())
 			local item = button.Item
 			local questTexture = button.IconQuestTexture
+			local pushedFrame = button.PushedNameFrame
 			if item and not button.styled then
 				B.StripTextures(item, 1)
 				item.bg = B.ReskinIcon(item.icon)
+				item.bg:SetFrameLevel(item.bg:GetFrameLevel() + 1)
 				B.ReskinIconBorder(item.IconBorder, true)
 
+				pushedFrame:SetAlpha(0)
 				questTexture:SetAlpha(0)
+				button.NameFrame:SetAlpha(0)
 				button.BorderFrame:SetAlpha(0)
 				button.HighlightNameFrame:SetAlpha(0)
-				button.PushedNameFrame:SetAlpha(0)
 				button.bg = B.CreateBDFrame(button.HighlightNameFrame, .25)
+				button.bg:SetAllPoints()
 				item.__owner = button
 				item:HookScript("OnMouseUp", updatePushed)
 				item:HookScript("OnMouseDown", updatePushed)
 				item:HookScript("OnEnter", updateHighlight)
 				item:HookScript("OnLeave", updateHighlight)
+				item:HookScript("OnHide", onHide)
 
 				button.styled = true
 			end
 
 			local itemBG = item and item.bg
-			if itemBG then
-				if questTexture:IsShown() then
-					itemBG:SetBackdropBorderColor(1, .8, 0)
-				else
-					itemBG:SetBackdropBorderColor(0, 0, 0)
-				end
+			if itemBG and questTexture:IsShown() then
+				itemBG:SetBackdropBorderColor(1, .8, 0)
 			end
 		end
 	end)

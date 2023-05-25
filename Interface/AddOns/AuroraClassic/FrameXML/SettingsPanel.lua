@@ -24,7 +24,9 @@ tinsert(C.defaultThemes, function()
 	reskinSettingsTab(frame.GameTab)
 	reskinSettingsTab(frame.AddOnsTab)
 
-	B.CreateBDFrame(frame.CategoryList, .25):SetInside()
+	local bg = B.CreateBDFrame(frame.CategoryList, .25)
+	bg:SetInside()
+	bg:SetPoint("TOPLEFT", 1, 6)
 	hooksecurefunc(frame.CategoryList.ScrollBox, "Update", function(self)
 		for i = 1, self.ScrollTarget:GetNumChildren() do
 			local child = select(i, self.ScrollTarget:GetChildren())
@@ -50,9 +52,11 @@ tinsert(C.defaultThemes, function()
 		end
 	end)
 
-	B.CreateBDFrame(frame.Container, .25):SetInside()
+	local bg = B.CreateBDFrame(frame.Container, .25)
+	bg:SetInside()
+	bg:SetPoint("TOPLEFT", 1, 6)
 	B.Reskin(frame.Container.SettingsList.Header.DefaultsButton)
-	B.ReskinTrimScroll(frame.Container.SettingsList.ScrollBar, true)
+	B.ReskinTrimScroll(frame.Container.SettingsList.ScrollBar)
 
 	local function ReskinDropDownArrow(button, direction)
 		button.NormalTexture:SetAlpha(0)
@@ -107,10 +111,33 @@ tinsert(C.defaultThemes, function()
 		self.CheckBox:DesaturateHierarchy(1)
 	end
 
+	local function ReskinControlsGroup(controls)
+		for i = 1, controls:GetNumChildren() do
+			local element = select(i, controls:GetChildren())
+			if element.SliderWithSteppers then
+				B.ReskinStepperSlider(element.SliderWithSteppers)
+			end
+			if element.DropDown then
+				ReskinOptionDropDown(element.DropDown)
+			end
+			if element.CheckBox then
+				B.ReskinCheck(element.CheckBox)
+				element.CheckBox.bg:SetInside(nil, 6, 6)
+				hooksecurefunc(element, "DesaturateHierarchy", forceSaturation)
+			end
+		end
+	end
+
 	hooksecurefunc(frame.Container.SettingsList.ScrollBox, "Update", function(self)
 		for i = 1, self.ScrollTarget:GetNumChildren() do
 			local child = select(i, self.ScrollTarget:GetChildren())
 			if not child.styled then
+				if child.NineSlice then
+					child.NineSlice:SetAlpha(0)
+					local bg = B.CreateBDFrame(child, .25)
+					bg:SetPoint("TOPLEFT", 15, -30)
+					bg:SetPoint("BOTTOMRIGHT", -30, -5)
+				end
 				if child.CheckBox then
 					B.ReskinCheck(child.CheckBox)
 					child.CheckBox.bg:SetInside(nil, 6, 6)
@@ -167,6 +194,26 @@ tinsert(C.defaultThemes, function()
 				if child.Button1 and child.Button2 then
 					B.Reskin(child.Button1)
 					B.Reskin(child.Button2)
+				end
+				if child.Controls then
+					for i = 1, #child.Controls do
+						local control = child.Controls[i]
+						if control.SliderWithSteppers then
+							B.ReskinStepperSlider(control.SliderWithSteppers)
+						end
+					end
+				end
+				if child.BaseTab then
+					B.StripTextures(child.BaseTab, 0)
+				end
+				if child.RaidTab then
+					B.StripTextures(child.RaidTab, 0)
+				end
+				if child.BaseQualityControls then
+					ReskinControlsGroup(child.BaseQualityControls)
+				end
+				if child.RaidQualityControls then
+					ReskinControlsGroup(child.RaidQualityControls)
 				end
 
 				child.styled = true

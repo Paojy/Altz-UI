@@ -78,9 +78,8 @@ tinsert(C.defaultThemes, function()
 	B.Reskin(searchPanel.BackButton)
 	B.Reskin(searchPanel.BackToGroupButton)
 	B.Reskin(searchPanel.SignUpButton)
-	B.Reskin(searchPanel.ScrollBox.StartGroupButton)
-	B.ReskinTrimScroll(searchPanel.ScrollBar)
 	B.ReskinInput(searchPanel.SearchBox)
+	B.ReskinFilterButton(searchPanel.FilterButton)
 
 	searchPanel.RefreshButton:SetSize(24, 24)
 	searchPanel.RefreshButton.Icon:SetPoint("CENTER")
@@ -119,6 +118,24 @@ tinsert(C.defaultThemes, function()
 
 			numResults = numResults + 1
 		end
+	end)
+
+	local function skinCreateButton(button)
+		local child = button:GetChildren()
+		if not child.styled and child:IsObjectType("Button") then
+			B.Reskin(child)
+			child.styled = true
+		end
+	end
+
+	local delayStyled -- otherwise it taints while listing
+	hooksecurefunc(searchPanel.ScrollBox, "Update", function(self)
+		if not delayStyled then
+			B.Reskin(self.StartGroupButton)
+			B.ReskinTrimScroll(searchPanel.ScrollBar)
+			delayStyled = true
+		end
+		self:ForEachFrame(skinCreateButton)
 	end)
 
 	-- [[ Application viewer ]]
@@ -222,6 +239,7 @@ tinsert(C.defaultThemes, function()
 			B.ReskinSmallRole(self.HealerIcon, "HEALER")
 			B.ReskinSmallRole(self.DamagerIcon, "DPS")
 
+			self.DamagerIcon:ClearAllPoints() -- fix for PGFinder
 			self.HealerIcon:SetPoint("RIGHT", self.DamagerIcon, "LEFT", -22, 0)
 			self.TankIcon:SetPoint("RIGHT", self.HealerIcon, "LEFT", -22, 0)
 

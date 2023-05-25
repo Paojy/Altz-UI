@@ -30,6 +30,14 @@ end
 local function reskinQuestIcons(_, block)
 	reskinQuestIcon(block.itemButton)
 	reskinQuestIcon(block.groupFinderButton)
+
+	local check = block.currentLine and block.currentLine.Check
+	if check and not check.styled then
+		check:SetAtlas("checkmark-minimal")
+		check:SetDesaturated(true)
+		check:SetVertexColor(0, 1, 0)
+		check.styled = true
+	end
 end
 
 local function reskinHeader(header)
@@ -51,7 +59,6 @@ local function reskinBarTemplate(bar)
 	bar:SetStatusBarTexture(DB.normTex)
 	bar:SetStatusBarColor(r, g, b)
 	bar.bg = B.SetBD(bar)
-	B:SmoothBar(bar)
 end
 
 local function reskinProgressbar(_, _, line)
@@ -199,7 +206,6 @@ tinsert(C.defaultThemes, function()
 
 				local bar = widgetFrame.TimerBar
 				if bar and not bar.bg then
-					hooksecurefunc(bar, "SetStatusBarAtlas", B.ReplaceWidgetBarTexture)
 					bar.bg = B.CreateBDFrame(bar, .25)
 				end
 
@@ -247,9 +253,25 @@ tinsert(C.defaultThemes, function()
 
 	hooksecurefunc("Scenario_ChallengeMode_SetUpAffixes", B.AffixesSetup)
 
+	-- Rewards on bonus tracker
+	hooksecurefunc("BonusObjectiveTracker_AnimateReward", function(block)
+		local rewardsFrame = block.module.rewardsFrame
+		local rewards = rewardsFrame.Rewards
+		for i = #rewards, 1, -1 do
+			local reward = rewards[i]
+			if reward.styled then break end
+			B.ReskinIcon(reward.ItemIcon)
+			reward.ItemBorder:SetTexture("")
+
+			reward.styled = true
+		end
+	end)
+
 	-- Maw buffs container
 	ReskinMawBuffsContainer(ScenarioBlocksFrame.MawBuffsBlock.Container)
-	ReskinMawBuffsContainer(MawBuffsBelowMinimapFrame.Container)
+	if not DB.isPatch10_1 then
+		ReskinMawBuffsContainer(MawBuffsBelowMinimapFrame.Container)
+	end
 
 	-- Reskin Headers
 	local headers = {
@@ -260,6 +282,7 @@ tinsert(C.defaultThemes, function()
 		ObjectiveTrackerBlocksFrame.ProfessionHeader,
 		BONUS_OBJECTIVE_TRACKER_MODULE.Header,
 		WORLD_QUEST_TRACKER_MODULE.Header,
+		MONTHLY_ACTIVITIES_TRACKER_MODULE.Header,
 		ObjectiveTrackerFrame.BlocksFrame.UIWidgetsHeader,
 	}
 	for _, header in pairs(headers) do

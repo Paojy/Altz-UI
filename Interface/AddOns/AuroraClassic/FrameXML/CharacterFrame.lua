@@ -171,6 +171,9 @@ tinsert(C.defaultThemes, function()
 	end
 
 	-- [[ Sidebar tabs ]]
+	if PaperDollSidebarTabs.DecorRight then
+		PaperDollSidebarTabs.DecorRight:Hide()
+	end
 
 	for i = 1, #PAPERDOLL_SIDEBARS do
 		local tab = _G["PaperDollSidebarTab"..i]
@@ -209,11 +212,12 @@ tinsert(C.defaultThemes, function()
 				child.BgMiddle:SetTexture("")
 				child.BgBottom:SetTexture("")
 				B.ReskinIcon(child.icon)
-		
+
 				child.HighlightBar:SetColorTexture(1, 1, 1, .25)
 				child.HighlightBar:SetDrawLayer("BACKGROUND")
 				child.SelectedBar:SetColorTexture(r, g, b, .25)
 				child.SelectedBar:SetDrawLayer("BACKGROUND")
+				child.Check:SetAtlas("checkmark-minimal")
 
 				child.styled = true
 			end
@@ -230,39 +234,15 @@ tinsert(C.defaultThemes, function()
 			local child = select(i, self.ScrollTarget:GetChildren())
 			if not child.styled then
 				child:DisableDrawLayer("BACKGROUND")
+				child.Check:SetAtlas("checkmark-minimal")
+
 				child.styled = true
 			end
 		end
 	end)
 
 	-- Reputation Frame
-	ReputationDetailCorner:Hide()
-	ReputationDetailDivider:Hide()
 	ReputationDetailFrame:SetPoint("TOPLEFT", ReputationFrame, "TOPRIGHT", 3, -28)
-
-	local function UpdateFactionSkins()
-		for i = 1, GetNumFactions() do
-			local statusbar = _G["ReputationBar"..i.."ReputationBar"]
-			if statusbar then
-				statusbar:SetStatusBarTexture(DB.bdTex)
-
-				if not statusbar.reskinned then
-					B.CreateBDFrame(statusbar, .25)
-					statusbar.reskinned = true
-				end
-
-				_G["ReputationBar"..i.."Background"]:SetTexture(nil)
-				_G["ReputationBar"..i.."ReputationBarHighlight1"]:SetTexture(nil)
-				_G["ReputationBar"..i.."ReputationBarHighlight2"]:SetTexture(nil)
-				_G["ReputationBar"..i.."ReputationBarAtWarHighlight1"]:SetTexture(nil)
-				_G["ReputationBar"..i.."ReputationBarAtWarHighlight2"]:SetTexture(nil)
-				_G["ReputationBar"..i.."ReputationBarLeftTexture"]:SetTexture(nil)
-				_G["ReputationBar"..i.."ReputationBarRightTexture"]:SetTexture(nil)
-			end
-		end
-	end
-	ReputationFrame:HookScript("OnShow", UpdateFactionSkins)
-	ReputationFrame:HookScript("OnEvent", UpdateFactionSkins)
 
 	local function updateReputationBars(self)
 		for i = 1, self.ScrollTarget:GetNumChildren() do
@@ -279,7 +259,7 @@ tinsert(C.defaultThemes, function()
 					container.ReputationBar:SetStatusBarTexture(DB.bdTex)
 					B.CreateBDFrame(container.ReputationBar, .25)
 				end
-	
+
 				container.styled = true
 			end
 		end
@@ -293,6 +273,7 @@ tinsert(C.defaultThemes, function()
 	B.ReskinClose(ReputationDetailCloseButton)
 	B.ReskinCheck(ReputationDetailInactiveCheckBox)
 	B.ReskinCheck(ReputationDetailMainScreenCheckBox)
+	B.Reskin(ReputationDetailViewRenownButton)
 
 	local atWarCheck = ReputationDetailAtWarCheckBox
 	B.ReskinCheck(atWarCheck)
@@ -324,9 +305,9 @@ tinsert(C.defaultThemes, function()
 					child.Highlight.SetPoint = B.Dummy
 					child.Highlight:SetColorTexture(1, 1, 1, .25)
 					child.Highlight.SetTexture = B.Dummy
-	
+
 					child.bg = B.ReskinIcon(child.Icon)
-	
+
 					if child.ExpandIcon then
 						child.expBg = B.CreateBDFrame(child.ExpandIcon, 0, true)
 						child.expBg:SetInside(child.ExpandIcon, 3, 3)

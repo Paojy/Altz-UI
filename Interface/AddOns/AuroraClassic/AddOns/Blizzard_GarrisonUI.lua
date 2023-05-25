@@ -12,9 +12,8 @@ local function ReskinMissionPage(self)
 	if self.StartMissionFrame then B.StripTextures(self.StartMissionFrame) end
 	self.StartMissionButton.Flash:SetTexture("")
 	B.Reskin(self.StartMissionButton)
-	B.ReskinClose(self.CloseButton)
-	self.CloseButton:ClearAllPoints()
-	self.CloseButton:SetPoint("TOPRIGHT", -10, -5)
+	B.ReskinClose(self.CloseButton, nil, -10, -5)
+
 	if self.EnemyBackground then self.EnemyBackground:Hide() end
 	if self.FollowerBackground then self.FollowerBackground:Hide() end
 
@@ -297,9 +296,9 @@ local function reskinFollowerItem(item)
 end
 
 local function ReskinMissionFrame(self)
-	B.StripTextures(self)
+	B.StripTextures(self, 0)
 	B.SetBD(self)
-	B.StripTextures(self.CloseButton)
+	B.StripTextures(self.CloseButton, 0)
 	B.ReskinClose(self.CloseButton)
 	self.GarrCorners:Hide()
 	if self.OverlayElements then self.OverlayElements:SetAlpha(0) end
@@ -569,7 +568,7 @@ C.themes["Blizzard_GarrisonUI"] = function()
 				local bg = B.CreateBDFrame(button, .25)
 				bg:SetPoint("TOPLEFT")
 				bg:SetPoint("BOTTOMRIGHT", 0, 1)
-		
+
 				for _, reward in pairs(button.Rewards) do
 					reward:GetRegions():Hide()
 					reward.bg = B.ReskinIcon(reward.Icon)
@@ -947,6 +946,7 @@ C.themes["Blizzard_GarrisonUI"] = function()
 	local CovenantMissionFrame = CovenantMissionFrame
 	ReskinMissionFrame(CovenantMissionFrame)
 	CovenantMissionFrame.RaisedBorder:SetAlpha(0)
+	B.StripTextures(CovenantMissionFrameMissions, 0)
 	CovenantMissionFrameMissions.RaisedFrameEdges:SetAlpha(0)
 
 	hooksecurefunc(CovenantMissionFrame, "SetupTabs", function(self)
@@ -957,12 +957,17 @@ C.themes["Blizzard_GarrisonUI"] = function()
 	CombatLog.ElevatedFrame:SetAlpha(0)
 	B.StripTextures(CombatLog.CombatLogMessageFrame)
 	B.CreateBDFrame(CombatLog.CombatLogMessageFrame, .25)
-	B.ReskinScroll(CombatLog.CombatLogMessageFrame.ScrollBar)
+	if DB.isPatch10_1 then
+		-- todo
+	else
+		B.ReskinScroll(CombatLog.CombatLogMessageFrame.ScrollBar)
+	end
 
 	B.Reskin(HealFollowerButtonTemplate)
 	local bg = B.CreateBDFrame(CovenantMissionFrame.FollowerTab, .25)
 	bg:SetPoint("TOPLEFT", 3, 2)
 	bg:SetPoint("BOTTOMRIGHT", -3, -10)
+	B.StripTextures(CovenantMissionFrame.FollowerTab, 0)
 	CovenantMissionFrame.FollowerTab.RaisedFrameEdges:SetAlpha(0)
 	CovenantMissionFrame.FollowerTab.HealFollowerFrame.ButtonFrame:SetAlpha(0)
 	CovenantMissionFrameFollowers.ElevatedFrame:SetAlpha(0)
@@ -973,44 +978,6 @@ C.themes["Blizzard_GarrisonUI"] = function()
 	CovenantMissionFrame.MissionComplete.Board:HookScript("OnShow", ReskinMissionBoards)
 
 	-- Addon supports
-
-	local function buttonOnUpdate(MissionList)
-		local buttons = MissionList.listScroll.buttons
-		for i = 1, #buttons do
-			local bu = select(3, buttons[i]:GetChildren())
-			if bu and bu:IsObjectType("Button") and not bu.styled then
-				B.Reskin(bu)
-				bu:SetSize(60, 45)
-				bu.styled = true
-			end
-		end
-	end
-
-	local function buttonOnShow(MissionPage)
-		for i = 18, 27 do
-			local bu = select(i, MissionPage:GetChildren())
-			if bu and bu:IsObjectType("Button") and not bu.styled then
-				B.Reskin(bu)
-				bu:SetSize(50, 45)
-				bu.styled = true
-			end
-		end
-	end
-
-	local f = CreateFrame("Frame")
-	f:RegisterEvent("ADDON_LOADED")
-	f:SetScript("OnEvent", function(_, event, addon)
-		if addon == "GarrisonMissionManager" then
-			for _, frame in next, {GarrisonMissionFrame, OrderHallMissionFrame, BFAMissionFrame} do
-				if frame then
-					hooksecurefunc(frame.MissionTab.MissionList, "Update", buttonOnUpdate)
-					frame.MissionTab.MissionPage:HookScript("OnShow", buttonOnShow)
-				end
-			end
-
-			f:UnregisterEvent(event)
-		end
-	end)
 
 	local function reskinWidgetFont(font, r, g, b)
 		if not AuroraClassicDB.FontOutline then return end

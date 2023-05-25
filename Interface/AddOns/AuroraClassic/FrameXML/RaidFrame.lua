@@ -10,7 +10,6 @@ tinsert(C.defaultThemes, function()
 	RaidInfoFrame:SetPoint("TOPLEFT", RaidFrame, "TOPRIGHT", 1, -28)
 	RaidInfoDetailFooter:Hide()
 	RaidInfoDetailHeader:Hide()
-	RaidInfoDetailCorner:Hide()
 
 	B.Reskin(RaidFrameRaidInfoButton)
 	B.Reskin(RaidFrameConvertToRaidButton)

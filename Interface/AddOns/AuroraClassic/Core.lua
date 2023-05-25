@@ -210,28 +210,34 @@ do
 		["artifact"] = LE_ITEM_QUALITY_ARTIFACT,
 		["account"] = LE_ITEM_QUALITY_HEIRLOOM,
 	}
-	local function updateIconBorderColorByAtlas(self, atlas)
+	local function updateIconBorderColorByAtlas(border, atlas)
 		local atlasAbbr = atlas and strmatch(atlas, "%-(%w+)$")
 		local quality = atlasAbbr and AtlasToQuality[atlasAbbr]
 		local color = DB.QualityColors[quality or 1]
-		self.__owner.bg:SetBackdropBorderColor(color.r, color.g, color.b)
+		border.__owner.bg:SetBackdropBorderColor(color.r, color.g, color.b)
 	end
 
 	local greyRGB = DB.QualityColors[0].r
-	local function updateIconBorderColor(self, r, g, b)
+	local function updateIconBorderColor(border, r, g, b)
 		if not r or r == greyRGB or (r>.99 and g>.99 and b>.99) then
 			r, g, b = 0, 0, 0
 		end
-		self.__owner.bg:SetBackdropBorderColor(r, g, b)
+		border.__owner.bg:SetBackdropBorderColor(r, g, b)
+		border:Hide(true) -- fix icon border
 	end
-	local function resetIconBorderColor(self, texture)
+	local function resetIconBorderColor(border, texture)
 		if not texture then
-			self.__owner.bg:SetBackdropBorderColor(0, 0, 0)
+			border.__owner.bg:SetBackdropBorderColor(0, 0, 0)
 		end
 	end
 	local function resetIconBorder(button, quality)
 		if not quality then
 			button.IconBorder:Hide()
+		end
+	end
+	local function iconBorderShown(border, show)
+		if not show then
+			resetIconBorderColor(border)
 		end
 	end
 	function B:ReskinIconBorder(needInit, useAtlas)
@@ -251,10 +257,12 @@ do
 			end
 		end
 		hooksecurefunc(self, "Hide", resetIconBorderColor)
+		hooksecurefunc(self, "SetShown", iconBorderShown)
 
-		if self.__owner.SetItemButtonQuality then
-			hooksecurefunc(self.__owner, "SetItemButtonQuality", resetIconBorder)
-		end
+		-- disable this and see how it goes, needs review
+		--if self.__owner.SetItemButtonQuality then
+		--	hooksecurefunc(self.__owner, "SetItemButtonQuality", resetIconBorder)
+		--end
 	end
 
 	local CLASS_ICON_TCOORDS = CLASS_ICON_TCOORDS
@@ -519,7 +527,9 @@ do
 	end
 
 	-- WowTrimScrollBar
-	function B:ReskinTrimScroll(minimal)
+	function B:ReskinTrimScroll()
+		local minimal = self:GetWidth() < 10
+
 		B.StripTextures(self)
 		reskinScrollArrow(self.Back, "up", minimal)
 		reskinScrollArrow(self.Forward, "down", minimal)
@@ -529,6 +539,7 @@ do
 
 		local thumb = self:GetThumb()
 		if thumb then
+			thumb:DisableDrawLayer("ARTWORK")
 			thumb:DisableDrawLayer("BACKGROUND")
 			thumb.bg = B.CreateBDFrame(thumb, .25)
 			thumb.bg:SetBackdropColor(cr, cg, cb, .25)
@@ -536,7 +547,6 @@ do
 				thumb.bg:SetPoint("TOPLEFT", 4, -1)
 				thumb.bg:SetPoint("BOTTOMRIGHT", -4, 1)
 			end
-			self.thumb = thumb
 
 			thumb:HookScript("OnEnter", Thumb_OnEnter)
 			thumb:HookScript("OnLeave", Thumb_OnLeave)
@@ -580,14 +590,27 @@ do
 		end
 	end
 
-	function B:ReskinClose(parent, xOffset, yOffset)
+	local function resetCloseButtonAnchor(button)
+		if button.isSetting then return end
+		button.isSetting = true
+		button:ClearAllPoints()
+		button:SetPoint("TOPRIGHT", button.__owner, "TOPRIGHT", button.__xOffset, button.__yOffset)
+		button.isSetting = nil
+	end
+	function B:ReskinClose(parent, xOffset, yOffset, override)
 		parent = parent or self:GetParent()
 		xOffset = xOffset or -6
 		yOffset = yOffset or -6
 
 		self:SetSize(16, 16)
-		self:ClearAllPoints()
-		self:SetPoint("TOPRIGHT", parent, "TOPRIGHT", xOffset, yOffset)
+		if not override then
+			self:ClearAllPoints()
+			self:SetPoint("TOPRIGHT", parent, "TOPRIGHT", xOffset, yOffset)
+			self.__owner = parent
+			self.__xOffset = xOffset
+			self.__yOffset = yOffset
+			hooksecurefunc(self, "SetPoint", resetCloseButtonAnchor)
+		end
 
 		B.StripTextures(self)
 		if self.Border then self.Border:SetAlpha(0) end
@@ -980,7 +1003,8 @@ do
 
 	function B:StyleSearchButton()
 		B.StripTextures(self)
-		B.CreateBDFrame(self, .25)
+		local bg = B.CreateBDFrame(self, .25)
+		bg:SetInside()
 		local icon = self.icon or self.Icon
 		if icon then
 			B.ReskinIcon(icon)
@@ -989,7 +1013,7 @@ do
 		self:SetHighlightTexture(DB.bdTex)
 		local hl = self:GetHighlightTexture()
 		hl:SetVertexColor(cr, cg, cb, .25)
-		hl:SetInside()
+		hl:SetInside(bg)
 	end
 
 	function B:AffixesSetup()

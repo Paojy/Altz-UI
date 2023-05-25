@@ -24,7 +24,7 @@ tinsert(C.defaultThemes, function()
 		bu.Border:Hide()
 		bu:SetNormalTexture(0)
 		bu:SetPushedTexture(0)
-		bu.Checked:SetTexture(DB.pushed)
+		bu.Checked:SetTexture(DB.pushedTex)
 		bu:GetHighlightTexture():SetColorTexture(1, 1, 1, .25)
 
 		_G["PetStableActivePet"..i.."IconTexture"]:SetTexCoord(unpack(DB.TexCoord))
@@ -35,7 +35,7 @@ tinsert(C.defaultThemes, function()
 		local bu = _G["PetStableStabledPet"..i]
 		bu:SetNormalTexture(0)
 		bu:SetPushedTexture(0)
-		bu.Checked:SetTexture(DB.pushed)
+		bu.Checked:SetTexture(DB.pushedTex)
 		bu:GetHighlightTexture():SetColorTexture(1, 1, 1, .25)
 		bu:DisableDrawLayer("BACKGROUND")
 

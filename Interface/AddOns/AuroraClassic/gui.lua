@@ -1,4 +1,6 @@
-local B, C, L = unpack(select(2, ...))
+local _, ns = ...
+local B, C, L, DB = unpack(ns)
+local GetAddOnMetadata = GetAddOnMetadata or C_AddOns.GetAddOnMetadata -- isPatch10_1
 
 -- [[ Options UI ]]
 

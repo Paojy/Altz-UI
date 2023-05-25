@@ -9,8 +9,13 @@ C.themes["Blizzard_GuildBankUI"] = function()
 	GuildBankFrame.MoneyFrameBG:Hide()
 	B.Reskin(GuildBankFrame.WithdrawButton)
 	B.Reskin(GuildBankFrame.DepositButton)
-	B.ReskinScroll(GuildBankTransactionsScrollFrameScrollBar)
-	B.ReskinScroll(GuildBankInfoScrollFrameScrollBar)
+	if DB.isPatch10_1 then
+		-- todo
+		B.ReskinTrimScroll(GuildBankInfoScrollFrame.ScrollBar)
+	else
+		B.ReskinScroll(GuildBankTransactionsScrollFrameScrollBar)
+		B.ReskinScroll(GuildBankInfoScrollFrameScrollBar)
+	end
 	B.Reskin(GuildBankFrame.BuyInfo.PurchaseButton)
 	B.Reskin(GuildBankFrame.Info.SaveButton)
 	B.ReskinInput(GuildItemSearchBox)
@@ -52,7 +57,7 @@ C.themes["Blizzard_GuildBankUI"] = function()
 		button:SetNormalTexture(0)
 		button:SetPushedTexture(0)
 		button:GetHighlightTexture():SetColorTexture(1, 1, 1, .25)
-		button:SetCheckedTexture(DB.pushed)
+		button:SetCheckedTexture(DB.pushedTex)
 		B.CreateBDFrame(button)
 		icon:SetTexCoord(unpack(DB.TexCoord))
 

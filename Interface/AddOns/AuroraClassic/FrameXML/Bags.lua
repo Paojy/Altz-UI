@@ -3,7 +3,6 @@ local B, C, L, DB = unpack(ns)
 
 local MAX_CONTAINER_ITEMS = 36
 local backpackTexture = "Interface\\Buttons\\Button-Backpack-Up"
-local ContainerIDToInventoryID = DB.isBeta and C_Container.ContainerIDToInventoryID or ContainerIDToInventoryID
 
 local function handleMoneyFrame(frame)
 	if frame.MoneyFrame then
@@ -81,7 +80,7 @@ local function updateContainer(frame)
 	end
 
 	if frame.bagIcon and id ~= 0 then
-		local invID = ContainerIDToInventoryID(id)
+		local invID = C_Container.ContainerIDToInventoryID(id)
 		if invID then
 			local icon = GetInventoryItemTexture("player", invID)
 			frame.bagIcon:SetTexture(icon or backpackTexture)
@@ -98,7 +97,7 @@ end
 tinsert(C.defaultThemes, function()
 	if not AuroraClassicDB.Bags then return end
 
-	for i = 1, 12 do
+	for i = 1, 13 do
 		local frameName = "ContainerFrame"..i
 		local frame = _G[frameName]
 		local name = frame.TitleText or _G[frameName.."TitleText"]
@@ -110,6 +109,7 @@ tinsert(C.defaultThemes, function()
 		B.StripTextures(frame)
 		B.SetBD(frame)
 		frame.PortraitContainer:Hide()
+		if frame.Bg then frame.Bg:Hide() end
 		createBagIcon(frame, i)
 		hooksecurefunc(frame, "Update", updateContainer)
 
@@ -147,7 +147,6 @@ tinsert(C.defaultThemes, function()
 	-- [[ Bank ]]
 
 	BankSlotsFrame:DisableDrawLayer("BORDER")
-	BankPortraitTexture:Hide()
 	BankFrameMoneyFrameInset:Hide()
 	BankFrameMoneyFrameBorder:Hide()
 
