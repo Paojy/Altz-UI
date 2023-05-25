@@ -44,7 +44,7 @@ G.media = {
 G.Iconpath = "Interface\\AddOns\\AltzUI\\media\\icons\\"
 
 G.Client = GetLocale()
-G.Version = GetAddOnMetadata("AltzUIConfig", "Version")
+G.Version = C_AddOns.GetAddOnMetadata("AltzUIConfig", "Version")
 
 G.PlayerRealm = GetRealmName()
 G.PlayerName = UnitName("player");
