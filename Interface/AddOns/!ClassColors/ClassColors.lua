@@ -18,7 +18,7 @@ CUSTOM_CLASS_COLORS = {}
 ------------------------------------------------------------------------
 
 local L = ns.L 
-L.TITLE = GetAddOnMetadata("!ClassColors", "Title")
+L.TITLE = C_AddOns.GetAddOnMetadata("!ClassColors", "Title")
 
 ------------------------------------------------------------------------
 

@@ -11,8 +11,8 @@ local ADDON, ns = ...
 local L = {}
 ns.L = L
 
-L.TITLE = GetAddOnMetadata(ADDON, "Title")
-L.NOTES = GetAddOnMetadata(ADDON, "Notes")
+L.TITLE = C_AddOns.GetAddOnMetadata(ADDON, "Title")
+L.NOTES = C_AddOns.GetAddOnMetadata(ADDON, "Notes")
 
 FillLocalizedClassList(L, false)
 
