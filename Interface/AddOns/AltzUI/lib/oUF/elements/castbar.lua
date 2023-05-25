@@ -550,7 +550,7 @@ local function Disable(self)
 
 		if(self.unit == 'player' and not (self.hasChildren or self.isChild or self.isNamePlate)) then
 			PlayerCastingBarFrame:OnLoad()
-			PetCastingBarFrame:PetCastingBar_OnLoad()
+			PetCastingBarFrame_OnLoad(PetCastingBarFrame)
 		end
 	end
 end
