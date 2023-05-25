@@ -456,37 +456,30 @@ local SetSkadaButton = CreateApplySettingButton("setSkada")
 SInnerframe.layout = CreateOptionPage("Interface Options Layout", L["界面布局"], SInnerframe, "VERTICAL", .3)
 T.createcheckbutton(SInnerframe.layout, 30, 60, L["信息条"], "SkinOptions", "infobar")
 T.createslider(SInnerframe.layout, 30, 110, L["信息条尺寸"], "SkinOptions", "infobarscale", 100, 50, 200, 5)
-T.createslider(SInnerframe.layout, 240, 110, L["系统菜单尺寸"], "SkinOptions", "micromenuscale", 100, 50, 200, 5)
 T.createslider(SInnerframe.layout, 30, 150, L["控制台"]..L["尺寸"], "SkinOptions", "guiscale", 100, 50, 150, 5)
-T.createslider(SInnerframe.layout, 240, 150, L["小地图尺寸"], "SkinOptions", "minimapheight", 1, 100, 300, 5)
+T.createslider(SInnerframe.layout, 30, 190, L["小地图尺寸"], "SkinOptions", "minimapheight", 1, 100, 300, 5)
 T.createDR(SInnerframe.layout.infobar, SInnerframe.layout.infobarscale)
 
 SInnerframe.layout.guiscale:SetWidth(170)
 SInnerframe.layout.minimapheight:SetWidth(170)
-SInnerframe.layout.micromenuscale:SetWidth(170)
 SInnerframe.layout.infobarscale:SetWidth(170)
 
 SInnerframe.layout.DividingLine = SInnerframe.layout:CreateTexture(nil, "ARTWORK")
 SInnerframe.layout.DividingLine:SetSize(SInnerframe.layout:GetWidth()-50, 1)
-SInnerframe.layout.DividingLine:SetPoint("TOP", 0, -190)
+SInnerframe.layout.DividingLine:SetPoint("TOP", 0, -230)
 SInnerframe.layout.DividingLine:SetColorTexture(1, 1, 1, .2)
 
-T.createcheckbutton(SInnerframe.layout, 30, 210, L["整理小地图图标"], "SkinOptions", "collectminimapbuttons")
+T.createcheckbutton(SInnerframe.layout, 30, 250, L["整理小地图图标"], "SkinOptions", "collectminimapbuttons")
 local MBCFpos_group = {
 	["TOP"] = L["上方"],
 	["BOTTOM"] = L["下方"],
 }
-T.createradiobuttongroup(SInnerframe.layout, 220, 205, L["整理栏位置"], "SkinOptions", "MBCFpos", MBCFpos_group)
+T.createradiobuttongroup(SInnerframe.layout, 220, 245, L["整理栏位置"], "SkinOptions", "MBCFpos", MBCFpos_group)
 T.createDR(SInnerframe.layout.collectminimapbuttons, SInnerframe.layout.MBCFpos)
 
-T.createcheckbutton(SInnerframe.layout, 30, 240, L["在战斗中隐藏小地图"], "SkinOptions", "hidemap")
-T.createcheckbutton(SInnerframe.layout, 230, 240, L["在战斗中隐藏聊天框"], "SkinOptions", "hidechat")
-
-T.createcheckbutton(SInnerframe.layout, 30, 270, L["在副本中收起任务追踪"], "SkinOptions", "collapseWF", L["在副本中收起任务追踪提示"])
-T.createcheckbutton(SInnerframe.layout, 230, 270, L["自定义任务追踪"], "SkinOptions", "customobjectivetracker", L["自定义任务追踪提示"])
-
-T.createcheckbutton(SInnerframe.layout, 30, 300, L["登陆屏幕"], "SkinOptions", "afklogin", L["登陆屏幕"])
-T.createcheckbutton(SInnerframe.layout, 230, 300, L["暂离屏幕"], "SkinOptions", "afkscreen", L["暂离屏幕"])
+T.createcheckbutton(SInnerframe.layout, 30, 280, L["在副本中收起任务追踪"], "SkinOptions", "collapseWF", L["在副本中收起任务追踪提示"])
+T.createcheckbutton(SInnerframe.layout, 30, 310, L["登陆屏幕"], "SkinOptions", "afklogin", L["登陆屏幕"])
+T.createcheckbutton(SInnerframe.layout, 30, 340, L["暂离屏幕"], "SkinOptions", "afkscreen", L["暂离屏幕"])
 
 --====================================================--
 --[[              -- Chat Options --                ]]--
@@ -2113,85 +2106,14 @@ end
 ActionbarInnerframe.common = CreateOptionPage("Actionbar Options common", L["通用设置"], ActionbarInnerframe, "VERTICAL", .3)
 ActionbarInnerframe.common:Show()
 
-T.createcheckbutton(ActionbarInnerframe.common, 30, 60, L["向上排列"], "ActionbarOptions", "growup", L["向上排列说明"])
-T.createcheckbutton(ActionbarInnerframe.common, 30, 90, L["显示冷却时间"], "ActionbarOptions", "cooldown", L["显示冷却时间提示"])
-T.createcheckbutton(ActionbarInnerframe.common, 30, 120, L["显示冷却时间"].." (Weakauras)", "ActionbarOptions", "cooldown_wa", L["显示冷却时间提示WA"])
-T.createslider(ActionbarInnerframe.common, 30, 170, L["冷却时间数字大小"], "ActionbarOptions", "cooldownsize", 1, 18, 25, 1, L["冷却时间数字大小提示"])
-T.createcheckbutton(ActionbarInnerframe.common, 30, 200, L["不可用颜色"], "ActionbarOptions", "rangecolor", L["不可用颜色提示"])
-T.createslider(ActionbarInnerframe.common, 30, 250, L["键位字体大小"], "ActionbarOptions", "keybindsize", 1, 8, 20, 1)
-T.createslider(ActionbarInnerframe.common, 30, 290, L["宏名字字体大小"], "ActionbarOptions", "macronamesize", 1, 8, 20, 1)
-T.createslider(ActionbarInnerframe.common, 30, 330, L["可用次数字体大小"], "ActionbarOptions", "countsize", 1, 8, 20, 1)
+T.createcheckbutton(ActionbarInnerframe.common, 30, 60, L["显示冷却时间"], "ActionbarOptions", "cooldown", L["显示冷却时间提示"])
+T.createcheckbutton(ActionbarInnerframe.common, 30, 90, L["显示冷却时间"].." (Weakauras)", "ActionbarOptions", "cooldown_wa", L["显示冷却时间提示WA"])
+T.createslider(ActionbarInnerframe.common, 30, 140, L["冷却时间数字大小"], "ActionbarOptions", "cooldownsize", 1, 18, 25, 1, L["冷却时间数字大小提示"])
+T.createcheckbutton(ActionbarInnerframe.common, 30, 170, L["不可用颜色"], "ActionbarOptions", "rangecolor", L["不可用颜色提示"])
+T.createslider(ActionbarInnerframe.common, 30, 220, L["键位字体大小"], "ActionbarOptions", "keybindsize", 1, 8, 20, 1)
+T.createslider(ActionbarInnerframe.common, 30, 260, L["宏名字字体大小"], "ActionbarOptions", "macronamesize", 1, 8, 20, 1)
+T.createslider(ActionbarInnerframe.common, 30, 300, L["可用次数字体大小"], "ActionbarOptions", "countsize", 1, 8, 20, 1)
 T.createDR(ActionbarInnerframe.common.cooldown, ActionbarInnerframe.common.cooldown_wa, ActionbarInnerframe.common.cooldownsize)
-
-ActionbarInnerframe.bar12 = CreateOptionPage("Actionbar Options bar12", L["主动作条"], ActionbarInnerframe, "VERTICAL", .3)
-
-T.createslider(ActionbarInnerframe.bar12, 30, 90, L["图标大小"], "ActionbarOptions", "bar12size", 1, 15, 40, 1)
-T.createslider(ActionbarInnerframe.bar12, 30, 130, L["图标间距"], "ActionbarOptions", "bar12space", 1, 0, 10, 1)
-T.createcheckbutton(ActionbarInnerframe.bar12, 30, 160, L["悬停渐隐"], "ActionbarOptions", "bar12mfade", L["悬停渐隐提示"])
-T.createcheckbutton(ActionbarInnerframe.bar12, 30, 190, L["条件渐隐"], "ActionbarOptions", "bar12efade", L["条件渐隐提示"])
-T.createslider(ActionbarInnerframe.bar12, 30, 240, L["渐隐透明度"], "ActionbarOptions", "bar12fademinaplha", 100, 0, 80, 5, L["渐隐透明度提示"])
-
-ActionbarInnerframe.bar3 = CreateOptionPage("Actionbar Options bar3", L["额外动作条"], ActionbarInnerframe, "VERTICAL", .3)
-
-local bar3layout_group = {
-	["layout1"] = L["布局1"],
-	["layout232"] = L["布局232"],
-	["layout322"] = L["布局322"],
-	["layout43"] = L["布局43"],
-	["layout62"] = L["布局62"],
-}
-T.createradiobuttongroup(ActionbarInnerframe.bar3, 30, 90, L["额外动作条布局"], "ActionbarOptions", "bar3layout", bar3layout_group, 3)
-_G[G.uiname.."bar3layoutRadioButtonGroup"].name:ClearAllPoints()
-_G[G.uiname.."bar3layoutRadioButtonGroup"].name:SetPoint("BOTTOMLEFT", _G[G.uiname.."bar3layoutRadioButtonGroup"], "TOPLEFT", 0, 5)
-
-T.createslider(ActionbarInnerframe.bar3, 30, 140, L["额外动作条间距"], "ActionbarOptions", "space1", 1, -300, 150, 1, L["额外动作条间距提示"])
-T.createslider(ActionbarInnerframe.bar3, 30, 180, L["图标大小"], "ActionbarOptions", "bar3size", 1, 15, 40, 1)
-T.createslider(ActionbarInnerframe.bar3, 30, 220, L["图标间距"], "ActionbarOptions", "bar3space", 1, 0, 10, 1)
-T.createcheckbutton(ActionbarInnerframe.bar3, 30, 260, L["悬停渐隐"], "ActionbarOptions", "bar3mfade", L["悬停渐隐提示"])
-T.createcheckbutton(ActionbarInnerframe.bar3, 30, 290, L["条件渐隐"], "ActionbarOptions", "bar3efade", L["条件渐隐提示"])
-T.createslider(ActionbarInnerframe.bar3, 30, 340, L["渐隐透明度"], "ActionbarOptions", "bar3fademinaplha", 100, 0, 80, 5, L["渐隐透明度提示"])
-
-ActionbarInnerframe.bar45 = CreateOptionPage("Actionbar Options bar45", L["右侧额外动作条"], ActionbarInnerframe, "VERTICAL", .3)
-
-T.createcheckbutton(ActionbarInnerframe.bar45, 30, 60, L["横向动作条"], "ActionbarOptions", "Horizontalbar45")
-T.createcheckbutton(ActionbarInnerframe.bar45, 30, 90, L["6*4布局"], "ActionbarOptions", "bar45uselayout64")
-T.createslider(ActionbarInnerframe.bar45, 30, 140, L["图标大小"], "ActionbarOptions", "bar45size", 1, 15, 40, 1)
-T.createslider(ActionbarInnerframe.bar45, 30, 180, L["图标间距"], "ActionbarOptions", "bar45space", 1, 0, 10, 1)
-T.createcheckbutton(ActionbarInnerframe.bar45, 30, 230, L["悬停渐隐"], "ActionbarOptions", "bar45mfade", L["悬停渐隐提示"])
-T.createcheckbutton(ActionbarInnerframe.bar45, 30, 260, L["条件渐隐"], "ActionbarOptions", "bar45efade", L["条件渐隐提示"])
-T.createslider(ActionbarInnerframe.bar45, 30, 310, L["渐隐透明度"], "ActionbarOptions", "bar45fademinaplha", 100, 0, 80, 5, L["渐隐透明度提示"])
-
-ActionbarInnerframe.petbar = CreateOptionPage("Actionbar Options petbar", L["宠物动作条"], ActionbarInnerframe, "VERTICAL", .3)
-
-T.createcheckbutton(ActionbarInnerframe.petbar, 30, 60, L["5*2布局"], "ActionbarOptions", "petbaruselayout5x2", L["5*2布局提示"])
-T.createslider(ActionbarInnerframe.petbar, 30, 110, L["缩放尺寸"], "ActionbarOptions", "petbarscale", 10, 5, 25, 1)
-T.createslider(ActionbarInnerframe.petbar, 30, 150, L["图标间距"], "ActionbarOptions", "petbuttonspace", 1, 0, 5, 1)
-T.createcheckbutton(ActionbarInnerframe.petbar, 30, 190, L["悬停渐隐"], "ActionbarOptions", "petbarmfade", L["悬停渐隐提示"])
-T.createcheckbutton(ActionbarInnerframe.petbar, 30, 220, L["条件渐隐"], "ActionbarOptions", "petbarefade", L["条件渐隐提示"])
-T.createslider(ActionbarInnerframe.petbar, 30, 270, L["渐隐透明度"], "ActionbarOptions", "petbarfademinaplha", 100, 0, 80, 5, L["渐隐透明度提示"])
-
-ActionbarInnerframe.other = CreateOptionPage("Actionbar Options bar12", OTHER, ActionbarInnerframe, "VERTICAL", .3)
-
-local stancebartitle = ActionbarInnerframe.other:CreateFontString(nil, "ARTWORK", "GameFontNormalLeftYellow")
-stancebartitle:SetPoint("TOPLEFT", 36, -65)
-stancebartitle:SetText(L["姿态/形态条"])
-local stancebarinneranchor_group = {
-	["LEFT"] = L["左"],
-	["RIGHT"] = L["右"],
-}
-T.createradiobuttongroup(ActionbarInnerframe.other, 30, 90, L["排列方向"], "ActionbarOptions", "stancebarinneranchor", stancebarinneranchor_group)
-T.createslider(ActionbarInnerframe.other, 30, 140, L["图标大小"], "ActionbarOptions", "stancebarbuttonszie", 1, 15, 40, 1)
-T.createslider(ActionbarInnerframe.other, 30, 180, L["图标间距"], "ActionbarOptions", "stancebarbuttonspace", 1, 0, 5, 1)
-T.createcheckbutton(ActionbarInnerframe.other, 30, 215, L["悬停渐隐"], "ActionbarOptions", "stancebarmfade", L["悬停渐隐提示"])
-T.createslider(ActionbarInnerframe.other, 30, 260, L["渐隐透明度"], "ActionbarOptions", "stancebarfademinaplha", 100, 0, 80, 5, L["渐隐透明度提示"])
-local leave_vehicletitle = ActionbarInnerframe.other:CreateFontString(nil, "ARTWORK", "GameFontNormalLeftYellow")
-leave_vehicletitle:SetPoint("TOPLEFT", 36, -285)
-leave_vehicletitle:SetText(L["离开载具按钮"])
-T.createslider(ActionbarInnerframe.other, 30, 330, L["图标大小"], "ActionbarOptions", "leave_vehiclebuttonsize", 1, 15, 50, 1)
-local extrabartitle = ActionbarInnerframe.other:CreateFontString(nil, "ARTWORK", "GameFontNormalLeftYellow")
-extrabartitle:SetPoint("TOPLEFT", 36, -365)
-extrabartitle:SetText(L["额外特殊按钮"])
-T.createslider(ActionbarInnerframe.other, 30, 410, L["图标大小"], "ActionbarOptions", "extrabarbuttonsize", 1, 15, 50, 1)
 
 ActionbarInnerframe.cooldownflash = CreateOptionPage("Actionbar Options cooldownflash", L["冷却提示"], ActionbarInnerframe, "VERTICAL", .3)
 T.createcheckbutton(ActionbarInnerframe.cooldownflash, 30, 60, L["启用"], "ActionbarOptions", "cdflash_enable")
