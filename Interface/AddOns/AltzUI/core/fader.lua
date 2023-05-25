@@ -130,68 +130,15 @@ function T.FrameFader(frame,fadeIn,fadeOut)
 	if not frame then return end
 	if not fadeIn then fadeIn = defaultFadeIn end
 	if not fadeOut then fadeOut = defaultFadeOut end
+	
+	frame:SetAlpha(fadeOut.alpha) -- 初始透明度
 	frame:EnableMouse(true)
-
-	frame:SetScript("OnEnter", function(self) if frame.eventmode ~= 1 then UIFrameFadeIn(frame, fadeIn.time, frame:GetAlpha(), fadeIn.alpha) end end)
-	frame:SetScript("OnLeave", function(self) if frame.eventmode ~= 1 then UIFrameFadeOut(frame, fadeOut.time, frame:GetAlpha(), fadeOut.alpha) end end)
+	frame:HookScript("OnEnter", function(self) if frame.eventmode ~= 1 then UIFrameFadeIn(frame, fadeIn.time, frame:GetAlpha(), fadeIn.alpha) end end)
+	frame:HookScript("OnLeave", function(self) if frame.eventmode ~= 1 then UIFrameFadeOut(frame, fadeOut.time, frame:GetAlpha(), fadeOut.alpha) end end)
 
 	UIFrameFadeOut(frame, fadeOut.time, frame:GetAlpha(), fadeOut.alpha)
 end
 
---the flyout is special, when hovering the flyout the parented bar must not fade out
-function T.SpellFlyoutFader(frame,buttonList,fadeIn,fadeOut)
-	if not frame or not buttonList then return end
-	if not fadeIn then fadeIn = defaultFadeIn end
-	if not fadeOut then fadeOut = defaultFadeOut end
-
-	SpellFlyout:HookScript("OnEnter", function()
-		if frame.eventmode ~= 1 then
-			UIFrameFadeIn(frame, fadeIn.time, frame:GetAlpha(), fadeIn.alpha)
-			for _, bu in pairs(buttonList) do
-				local name = bu:GetName()
-				local cd= _G[name.."Cooldown"]
-				cd:SetDrawBling(true)
-			end
-		end
-	end)
-
-	SpellFlyout:HookScript("OnLeave", function()
-		if frame.eventmode ~= 1 then
-			UIFrameFadeOut(frame, fadeOut.time, frame:GetAlpha(), fadeOut.alpha)
-			for _, bu in pairs(buttonList) do
-				local name = bu:GetName()
-				local cd= _G[name.."Cooldown"]
-				cd:SetDrawBling(false)
-			end
-		end
-	end)
-
-	for _, button in pairs(buttonList) do
-		if button then
-			button:HookScript("OnEnter", function()
-				if frame.eventmode ~= 1 then
-					UIFrameFadeIn(frame, fadeIn.time, frame:GetAlpha(), fadeIn.alpha)
-					for _, bu in pairs(buttonList) do
-						local name = bu:GetName()
-						local cd= _G[name.."Cooldown"]
-						cd:SetDrawBling(false)
-					end
-				end
-			end)
-
-			button:HookScript("OnLeave", function()
-				if frame.eventmode ~= 1 then
-					UIFrameFadeOut(frame, fadeOut.time, frame:GetAlpha(), fadeOut.alpha)
-					for _, bu in pairs(buttonList) do
-						local name = bu:GetName()
-						local cd= _G[name.."Cooldown"]
-						cd:SetDrawBling(false)
-					end
-				end
-			end)
-		end
-	end
-end
 --==================================================================--
 -- fade-in when center conditions meets --
 --==================================================================--
