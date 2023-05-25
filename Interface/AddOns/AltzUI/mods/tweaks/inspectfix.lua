@@ -269,20 +269,10 @@ InspectFix:RegisterEvent("ADDON_LOADED")
 function InspectFix:Load()
   InspectFix:tryhook()
   loaded = true
-  local revstr 
-  revstr = GetAddOnMetadata("InspectFix", "X-Curse-Packaged-Version")
-  if not revstr then
-  revstr = GetAddOnMetadata("InspectFix", "Version")
-  end
-  if not revstr or string.find(revstr, "@") then
-    revstr = "r"..tostring(revision)
-  end
-  --print("InspectFix "..revstr.." loaded.")
 end
 
 function InspectFix:Unload()
   loaded = false
-  --print("InspectFix unloaded.")
 end
 
 InspectFix:Load()
