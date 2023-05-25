@@ -46,9 +46,10 @@ end
 
 hooksecurefunc(GameTooltip, "SetUnitAura", function(self,...)		
 	local spellID = select(10,UnitAura(...))
-	if id then
+	
+	if spellID then
 		self:AddLine(" ")
-		self:AddDoubleLine("SpellID:",format(G.classcolor.."%s|r",id))
+		self:AddDoubleLine("SpellID:",format(G.classcolor.."%s|r", spellID))
 		self:Show()
 	end
 end)
