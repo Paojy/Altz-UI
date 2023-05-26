@@ -175,39 +175,43 @@ bottompanel.Apply = function()
 end
 bottompanel.Apply()
 G.bottompanel = bottompanel
+
+
 --====================================================--
 --[[                   -- Minimap --                ]]--
 --====================================================--
-
-local minimap_height = aCoreCDB["SkinOptions"]["minimapheight"]
-
-local minimap_anchor = CreateFrame("Frame", G.uiname.."minimap_anchor", UIParent)
-minimap_anchor:SetWidth(minimap_height)
-minimap_anchor:SetHeight(minimap_height)
-minimap_anchor:SetFrameStrata("BACKGROUND")
-minimap_anchor.border = F.CreateBDFrame(minimap_anchor, 0.6)
-T.CreateSD(minimap_anchor.border, 2, 0, 0, 0, 0, -1)
-
-minimap_anchor.movingname = L["小地图"]
-minimap_anchor.point = {
-	healer = {a1 = "BOTTOMRIGHT", parent = "UIParent", a2 = "BOTTOMRIGHT", x = -10, y = 95},
-	dpser = {a1 = "BOTTOMRIGHT", parent = "UIParent", a2 = "BOTTOMRIGHT", x = -10, y = 95},
-}
-T.CreateDragFrame(minimap_anchor)
-
--- 小地图
-Minimap:SetParent(minimap_anchor)
-Minimap:SetWidth(minimap_height)
-Minimap:SetHeight(minimap_height)
-Minimap:SetMaskTexture("Interface\\Buttons\\WHITE8x8")
+Minimap:SetMaskTexture(G.media.blank)
+T.CreateSD(Minimap, 3)
 function GetMinimapShape() return 'SQUARE' end
-MinimapBackdrop:SetAlpha(0)
-hooksecurefunc(MinimapCluster, "SetHeaderUnderneath", function()
-	Minimap:ClearAllPoints()
-	Minimap:SetPoint("CENTER", minimap_anchor, "CENTER")
-end)
 
--- 右键打开追踪
+-- 背景
+MinimapCompassTexture:SetAlpha(0)
+
+-- 巨龙群岛概要
+ExpansionLandingPageMinimapButton:SetScale(.5)
+ExpansionLandingPageMinimapButton:GetNormalTexture():SetTexCoord(.2, .8, .2, .8)
+ExpansionLandingPageMinimapButton:GetPushedTexture():SetTexCoord(.2, .8, .2, .8)
+ExpansionLandingPageMinimapButton:GetHighlightTexture():SetTexCoord(.2, .8, .2, .8)
+T.CreateSD(ExpansionLandingPageMinimapButton, 3)
+
+-- 副本难度
+--T.CreateSD(MinimapCluster.InstanceDifficulty, 2)
+MinimapCluster.InstanceDifficulty:SetScale(.7)
+
+-- 缩放
+Minimap.ZoomIn:SetAlpha(0)
+Minimap.ZoomOut:SetAlpha(0)
+Minimap.ZoomIn:EnableMouse(false)
+Minimap.ZoomOut:EnableMouse(false)
+
+-- 状态栏
+MinimapCluster.BorderTop:SetWidth(160)
+local BorderTopTextures = {"Center", "TopEdge", "LeftEdge", "RightEdge", "BottomEdge", "BottomLeftCorner", "BottomRightCorner", "TopLeftCorner", "TopRightCorner"}
+for i, key in pairs(BorderTopTextures) do
+	MinimapCluster.BorderTop[key]:SetAlpha(0)
+end
+
+-- 追踪
 MinimapCluster.Tracking:Hide()
 MinimapCluster.Tracking.Show = function() MinimapCluster.Tracking:Hide() end
 Minimap:SetScript('OnMouseUp', function (self, button)
@@ -223,6 +227,49 @@ Minimap:SetScript('OnMouseUp', function (self, button)
 	end
 end)
 
+-- 地名
+MinimapCluster.ZoneTextButton:SetFrameLevel(Minimap:GetFrameLevel()+1)
+MinimapCluster.ZoneTextButton:SetWidth(100)
+MinimapZoneText:ClearAllPoints()
+MinimapZoneText:SetPoint("LEFT", MinimapCluster.ZoneTextButton, "LEFT", 0, 0)
+
+-- 时钟
+if not IsAddOnLoaded("Blizzard_TimeManager") then LoadAddOn("Blizzard_TimeManager") end
+TimeManagerClockTicker:ClearAllPoints()
+TimeManagerClockTicker:SetPoint("RIGHT", 0, 0)
+TimeManagerClockTicker:SetFont(G.norFont, 12, "OUTLINE")
+TimeManagerClockTicker:SetJustifyH("RIGHT")
+TimeManagerClockTicker:SetJustifyV("CENTER")
+TimeManagerClockButton:SetHeight(18)
+
+-- 日历
+GameTimeFrame:SetSize(35,18)
+GameTimeFrame:GetNormalTexture():SetAlpha(0)
+GameTimeFrame:GetPushedTexture():SetAlpha(0)
+GameTimeFrame:GetHighlightTexture():SetAlpha(0)
+GameTimeFrame.Text = T.createtext(GameTimeFrame, "OVERLAY", 12, "OUTLINE", "RIGHT")
+GameTimeFrame.Text:SetPoint("RIGHT", 0, 0)
+GameTimeFrame.Text:SetJustifyV("CENTER")
+
+function GameTimeFrame_SetDate()
+	local currentCalendarTime = C_DateAndTime.GetCurrentCalendarTime();
+	local presentMonth = currentCalendarTime.month;
+	local presentDay = currentCalendarTime.monthDay;
+	GameTimeFrame.Text:SetText(string.format("%s/%s", presentMonth, presentDay))
+end
+
+-- 邮件和制造订单
+--MinimapCluster.IndicatorFrame.MailFrame:Show()
+--MinimapCluster.IndicatorFrame.MailFrame.Hide = function() end
+--MinimapCluster.IndicatorFrame.CraftingOrderFrame:Show()
+--MinimapCluster.IndicatorFrame.CraftingOrderFrame.Hide = function() end
+
+-- 插件按钮
+AddonCompartmentFrame:SetFrameLevel(Minimap:GetFrameLevel()+1)
+AddonCompartmentFrame:GetNormalTexture():SetAlpha(0)
+AddonCompartmentFrame:GetPushedTexture():SetAlpha(0)
+AddonCompartmentFrame:GetHighlightTexture():SetAlpha(0)
+
 -- 整合按钮
 local buttons = {}
 local BlackList = { 
@@ -235,12 +282,15 @@ local BlackList = {
 
 local MBCF = CreateFrame("Frame", "MinimapButtonCollectFrame", Minimap)
 
-if aCoreCDB["SkinOptions"]["MBCFpos"] == "TOP" then
-	MBCF:SetPoint("BOTTOMLEFT", Minimap, "TOPLEFT", 0, 5)
-	MBCF:SetPoint("BOTTOMRIGHT", Minimap, "TOPRIGHT", 0, 5)
-else
-	MBCF:SetPoint("TOPLEFT", Minimap, "BOTTOMLEFT", 0, -5)
-	MBCF:SetPoint("TOPRIGHT", Minimap, "BOTTOMRIGHT", 0, -5)
+function MBCF:UpdatePoints()
+	self:ClearAllPoints()
+	if aCoreCDB["SkinOptions"]["MBCFpos"] == "TOP" then
+		self:SetPoint("BOTTOMLEFT", Minimap, "TOPLEFT", 0, 5)
+		self:SetPoint("BOTTOMRIGHT", Minimap, "TOPRIGHT", 0, 5)
+	else
+		self:SetPoint("TOPLEFT", Minimap, "BOTTOMLEFT", 0, -5)
+		self:SetPoint("TOPRIGHT", Minimap, "BOTTOMRIGHT", 0, -5)
+	end
 end
 
 MBCF:SetHeight(20)
@@ -251,17 +301,41 @@ MBCF.bg:SetGradient("HORIZONTAL", CreateColor(0, 0, 0, .8), CreateColor(0, 0, 0,
 
 MBCF_Toggle = CreateFrame("Frame", "MinimapButtonCollectFrame_Toggle", Minimap)
 MBCF_Toggle:SetFrameStrata("MEDIUM")
-MBCF_Toggle:SetSize(20,20)
+MBCF_Toggle:SetSize(15,15)
 MBCF_Toggle:SetPoint("TOPLEFT", Minimap, "TOPLEFT", 5, -5)
 MBCF_Toggle.tex = MBCF_Toggle:CreateTexture(nil, "ARTWORK")
 MBCF_Toggle.tex:SetTexture(516768)
+MBCF_Toggle.tex:SetTexCoord(.2, .8, .2, .8)
 MBCF_Toggle.tex:SetAllPoints(MBCF_Toggle)
 
-MBCF_Toggle:SetScript("OnMouseDown", function(self)
-	if MBCF:IsShown() then
-		MBCF:Hide()
+local MBCF_PosMenu = CreateFrame("Frame", G.uiname.."MBCF_PosMenu", UIParent, "UIDropDownMenuTemplate")
+local MBCF_PosList = {
+	{ text = L["上方"], func = function()
+		aCoreCDB["SkinOptions"]["MBCFpos"] = "TOP"
+		MBCF:UpdatePoints()
+	end},
+	{ text = L["下方"], func = function()
+		aCoreCDB["SkinOptions"]["MBCFpos"] = "BOTTOM"
+		MBCF:UpdatePoints()
+	end},
+}
+
+MBCF_Toggle:SetScript("OnMouseDown", function(self, button)
+	if button == "LeftButton" then
+		if MBCF:IsShown() then
+			MBCF:Hide()
+		else
+			MBCF:Show()
+		end
 	else
-		MBCF:Show()
+		if aCoreCDB["SkinOptions"]["MBCFpos"] == "TOP" then
+			MBCF_PosList[1].checked = true
+			MBCF_PosList[2].checked = false
+		else
+			MBCF_PosList[1].checked = false
+			MBCF_PosList[2].checked = true		
+		end
+		EasyMenu(MBCF_PosList, MBCF_PosMenu, "cursor", 0, 0, "MENU")
 	end
 end)
 
@@ -326,71 +400,74 @@ MBCF:SetScript("OnEvent", function(self)
 		T.CollectMinimapButtons(MBCF)
 		T.ArrangeMinimapButtons(MBCF)
 	end)
+	self:UpdatePoints()
 	self:Hide()
 	self:UnregisterEvent("PLAYER_ENTERING_WORLD")
 end)
 
 MBCF:RegisterEvent("PLAYER_ENTERING_WORLD")
 
--- 缩放按钮
-Minimap.ZoomIn:Hide()
-Minimap.ZoomIn.Show = function() Minimap.ZoomIn:Hide() end
-Minimap.ZoomOut:Hide()
-Minimap.ZoomOut.Show = function() Minimap.ZoomOut:Hide() end
+-- 位置
+hooksecurefunc(MinimapCluster, "SetHeaderUnderneath", function(self, headerUnderneath)
+	if (headerUnderneath) then		
+		local scale = self.MinimapContainer:GetScale()	
+		self.MinimapContainer:ClearAllPoints()
+		self.MinimapContainer:SetPoint("BOTTOM", self, "BOTTOM", 10 / scale, 5 / scale)
+		
+		self.BorderTop:ClearAllPoints();
+		self.BorderTop:SetPoint("BOTTOMLEFT", Minimap, "BOTTOMLEFT", 0, 2)
+			
+		ExpansionLandingPageMinimapButton:ClearAllPoints()
+		ExpansionLandingPageMinimapButton:SetPoint("TOPRIGHT", Minimap, "TOPRIGHT", -40, 0)
+		
+		self.InstanceDifficulty:ClearAllPoints();
+		self.InstanceDifficulty:SetPoint("TOPRIGHT", ExpansionLandingPageMinimapButton, "TOPLEFT", -5, 0)
+		
+		MBCF_Toggle:ClearAllPoints()
+		MBCF_Toggle:SetPoint("TOPLEFT", Minimap, "TOPLEFT", 2, -2)
+		
+		AddonCompartmentFrame:ClearAllPoints()
+		AddonCompartmentFrame:SetPoint("LEFT", MBCF_Toggle, "RIGHT", 0, 0)
+		
+		self.IndicatorFrame:ClearAllPoints()
+		self.IndicatorFrame:SetPoint("LEFT", AddonCompartmentFrame, "RIGHT", 3, 0)
+	else
+		local scale = self.MinimapContainer:GetScale()
+		self.MinimapContainer:ClearAllPoints()
+		self.MinimapContainer:SetPoint("TOP", self, "TOP", 10 / scale, -5 / scale)
+		
+		self.BorderTop:ClearAllPoints();
+		self.BorderTop:SetPoint("TOPLEFT", Minimap, "TOPLEFT", 0, -2)
+		
+		ExpansionLandingPageMinimapButton:ClearAllPoints()
+		ExpansionLandingPageMinimapButton:SetPoint("BOTTOMRIGHT", Minimap, "BOTTOMRIGHT", -40, 0)
 
--- 地图
-MinimapCluster.BorderTop:Hide()
-MinimapCluster.ZoneTextButton:ClearAllPoints()
-MinimapCluster.ZoneTextButton:SetPoint("CENTER", Minimap, "CENTER", 0, 20)
-MinimapCluster.ZoneTextButton:EnableMouse(false)
-MinimapCluster.ZoneTextButton:Hide()
-MinimapZoneText:SetFont(G.norFont, 12, "OUTLINE") 
-MinimapZoneText:SetShadowOffset(0, 0)
-MinimapZoneText:SetJustifyH("CENTER")
-
-Minimap:HookScript("OnEvent",function(self,event,...)
-	if event=="ZONE_CHANGED_NEW_AREA" and not WorldMapFrame:IsShown() then
-		SetMapToCurrentZone();
+		self.InstanceDifficulty:ClearAllPoints();
+		self.InstanceDifficulty:SetPoint("BOTTOMRIGHT", ExpansionLandingPageMinimapButton, "BOTTOMLEFT", -5, 0)
+		
+		MBCF_Toggle:ClearAllPoints()
+		MBCF_Toggle:SetPoint("BOTTOMLEFT", Minimap, "BOTTOMLEFT", 2, 2)
+		
+		AddonCompartmentFrame:ClearAllPoints()
+		AddonCompartmentFrame:SetPoint("LEFT", MBCF_Toggle, "RIGHT", 0, 0)
+		
+		self.IndicatorFrame:ClearAllPoints()
+		self.IndicatorFrame:SetPoint("LEFT", AddonCompartmentFrame, "RIGHT", 3, 0)
 	end
 end)
 
-Minimap:HookScript("OnEnter", function() MinimapCluster.ZoneTextButton:Show() end)
-Minimap:HookScript("OnLeave", function() MinimapCluster.ZoneTextButton:Hide() end)
-
--- 邮件
-MinimapCluster.IndicatorFrame.MailFrame:ClearAllPoints()
-MinimapCluster.IndicatorFrame.MailFrame:SetPoint("TOP", Minimap, "TOP", 0, -5)
-MinimapCluster.IndicatorFrame.MailFrame.SetPoint = function() end
-MinimapCluster.IndicatorFrame.MailFrame:SetHitRectInsets(-5, -5, -5, -5)	
-
--- 日历
---GameTimeFrame:ClearAllPoints()
---GameTimeFrame:SetPoint("BOTTOMRIGHT", Minimap, "BOTTOMRIGHT", -5, 5)
---GameTimeFrame.SetPoint = function() end
-
--- 时间
---if not IsAddOnLoaded("Blizzard_TimeManager") then LoadAddOn("Blizzard_TimeManager") end
---TimeManagerClockButton:ClearAllPoints()
---TimeManagerClockButton:SetPoint("RIGHT", GameTimeFrame, "LEFT", -5, -1)
---TimeManagerClockTicker:SetFont(G.norFont, 12, "OUTLINE") 
---TimeManagerClockTicker:SetShadowOffset(0, 0)
---TimeManagerClockTicker:SetJustifyH("RIGHT")
-
--- 附加按钮
---ExpansionLandingPageMinimapButton:SetParent(Minimap)
+T.ParentFader(Minimap, {MinimapCluster.ZoneTextButton, TimeManagerClockButton, GameTimeFrame, AddonCompartmentFrame, MBCF_Toggle}, fadeIn, fadeOut)
 
 -- 经验条
 local xpbar = CreateFrame("StatusBar", G.uiname.."ExperienceBar", Minimap)
-xpbar:SetWidth(5)
-xpbar:SetOrientation("VERTICAL")
+xpbar:SetHeight(5)
 xpbar:SetStatusBarTexture(G.media.blank)
 xpbar:SetStatusBarColor(.3, .4, 1)
 xpbar:SetFrameLevel(Minimap:GetFrameLevel()+3)
 xpbar.border = F.CreateBDFrame(xpbar, .8)
 
 local repbar = CreateFrame("StatusBar", G.uiname.."WatchedFactionBar", Minimap)
-repbar:SetWidth(5)
-repbar:SetOrientation("VERTICAL")
+repbar:SetHeight(5)
 repbar:SetStatusBarTexture(G.media.blank)
 repbar:SetStatusBarColor(.4, 1, .2)
 repbar:SetFrameLevel(Minimap:GetFrameLevel()+3)
@@ -408,7 +485,7 @@ local function CommaValue(amount)
 end
 		
 xpbar:SetScript("OnEnter", function()
-	GameTooltip_SetDefaultAnchor(GameTooltip, UIParent)
+	GameTooltip:SetOwner(xpbar, "ANCHOR_TOPRIGHT")
 	
 	local XP, maxXP = UnitXP("player"), UnitXPMax("player")
 	local restXP = GetXPExhaustion()
@@ -424,20 +501,24 @@ end)
 xpbar:SetScript("OnLeave", function() GameTooltip:Hide() end)
 
 repbar:SetScript("OnEnter", function()
-	GameTooltip_SetDefaultAnchor(GameTooltip, UIParent)
+	GameTooltip:SetOwner(repbar, "ANCHOR_TOPRIGHT")
 	
 	local name, rank, minRep, maxRep, value, factionID = GetWatchedFactionInfo()
 	local ranktext = _G["FACTION_STANDING_LABEL"..rank]
 	
 	if name then
 		local minrep, maxrep, valuerep
-		if C_GossipInfo.GetFriendshipReputation(factionID) then
-			local friendID, friendRep, friendMaxRep, friendName, friendText, friendTexture, friendTextLevel, friendThreshold, nextFriendThreshold = C_GossipInfo.GetFriendshipReputation(factionID)
-			minrep, maxrep, valuerep = friendThreshold, nextFriendThreshold, friendRep
-			ranktext = friendTextLevel and string.format(" (%s)", friendTextLevel) or ""
+		local reputationInfo = C_GossipInfo.GetFriendshipReputation(factionID)
+		if reputationInfo and reputationInfo.friendshipFactionID ~= 0 then
+			minrep, maxrep, valuerep = 0, reputationInfo.nextThreshold, reputationInfo.standing
+			ranktext = string.format(" (%s)", reputationInfo.reaction)
 		elseif C_Reputation.IsFactionParagon(factionID) then
 			local currentValue, threshold = C_Reputation.GetFactionParagonInfo(factionID)
 			minrep, maxrep, valuerep = 0, threshold, mod(currentValue, threshold)
+		elseif C_Reputation.IsMajorFaction(factionID) then
+			local majorFactionData = C_MajorFactions.GetMajorFactionData(factionID)
+			minrep, maxrep, valuerep = 0, majorFactionData.renownLevelThreshold, value
+			ranktext = majorFactionData.renownLevel
 		else
 			minrep, maxrep, valuerep = minRep, maxRep, value
 		end
@@ -477,14 +558,15 @@ xpbar:SetScript("OnEvent", function(self, event, arg1)
 	
 	if event == "PLAYER_LOGIN" or event == "UPDATE_FACTION" then
 		if showRep then
+		
 			repbar:Show()
-			local name, rank, minRep, maxRep, value = GetWatchedFactionInfo()
+			local name, rank, minRep, maxRep, value, factionID = GetWatchedFactionInfo()
 			
-			if C_GossipInfo.GetFriendshipReputation(factionID) then
-				local friendID, friendRep, friendMaxRep, friendName, friendText, friendTexture, friendTextLevel, friendThreshold, nextFriendThreshold = C_GossipInfo.GetFriendshipReputation(factionID)
-				if ( nextFriendThreshold ) then
-					repbar:SetMinMaxValues(friendThreshold, nextFriendThreshold)
-					repbar:SetValue(friendRep)
+			local reputationInfo = C_GossipInfo.GetFriendshipReputation(factionID)
+			if reputationInfo and reputationInfo.friendshipFactionID ~= 0 then
+				if reputationInfo.nextThreshold then
+					repbar:SetMinMaxValues(0, reputationInfo.nextThreshold)
+					repbar:SetValue(reputationInfo.standing)
 				else
 					repbar:SetMinMaxValues(0, 1)
 					repbar:SetValue(1)
@@ -493,12 +575,18 @@ xpbar:SetScript("OnEvent", function(self, event, arg1)
 				local currentValue, threshold = C_Reputation.GetFactionParagonInfo(factionID)
 				repbar:SetMinMaxValues(0, threshold)
 				repbar:SetValue(mod(currentValue, threshold))
-			elseif reaction == MAX_REPUTATION_REACTION then
-				repbar:SetMinMaxValues(0, 1)
-				repbar:SetValue(1)
-			else
-				repbar:SetMinMaxValues(minRep, maxRep)
+			elseif C_Reputation.IsMajorFaction(factionID) then
+				local majorFactionData = C_MajorFactions.GetMajorFactionData(factionID)
+				repbar:SetMinMaxValues(0, majorFactionData.renownLevelThreshold)
 				repbar:SetValue(value)
+			else
+				if reaction == MAX_REPUTATION_REACTION then
+					repbar:SetMinMaxValues(0, 1)
+					repbar:SetValue(1)
+				else
+					repbar:SetMinMaxValues(minRep, maxRep)
+					repbar:SetValue(value)
+				end
 			end
 		else
 			repbar:Hide()
@@ -506,15 +594,15 @@ xpbar:SetScript("OnEvent", function(self, event, arg1)
 	end
 	
 	if showXP then
-		xpbar:SetPoint("BOTTOMRIGHT", Minimap, "BOTTOMRIGHT", 0, 0)
-		xpbar:SetPoint("TOPRIGHT", Minimap, "TOPRIGHT", 0, 0)
+		xpbar:SetPoint("TOPRIGHT", Minimap, "BOTTOMRIGHT", 0, 0)
+		xpbar:SetPoint("TOPLEFT", Minimap, "BOTTOMLEFT", 0, 0)
 		if showRep then
-			repbar:SetPoint("BOTTOMRIGHT", xpbar, "BOTTOMLEFT", -1, 0)
-			repbar:SetPoint("TOPRIGHT", xpbar, "TOPLEFT", -1, 0)
+			repbar:SetPoint("TOPLEFT", xpbar, "BOTTOMLEFT", 0, -1)
+			repbar:SetPoint("TOPRIGHT", xpbar, "BOTTOMRIGHT", 0, -1)
 		end
 	elseif showRep then
-		repbar:SetPoint("BOTTOMRIGHT", Minimap, "BOTTOMRIGHT", 0, 0)
-		repbar:SetPoint("TOPRIGHT", Minimap, "TOPRIGHT", 0, 0)
+		repbar:SetPoint("TOPRIGHT", Minimap, "BOTTOMRIGHT", 0, 0)
+		repbar:SetPoint("TOPLEFT", Minimap, "BOTTOMLEFT", 0, 0)
 	end
 end)
 

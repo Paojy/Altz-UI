@@ -178,3 +178,6 @@ L["空"] = "Vazio"
 --L["大秘境评分"] = "Challenge Mode Score"
 --L["副本"] = "Instance"
 --L["评分层数"] = "Score（Highest Level）"
+
+--L["上方"] = "Up"
+--L["下方"] = "Down"
