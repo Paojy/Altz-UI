@@ -49,12 +49,11 @@ local function init()
 		_G['ChatFrame'..i..'EditBoxLanguage'].Show = _G['ChatFrame'..i..'EditBoxLanguage'].Hide 
 		_G['ChatFrame'..i..'EditBoxLanguage']:Hide()
 		local tex = ({_G['ChatFrame'..i..'EditBox']:GetRegions()})
-		tex[6]:SetAlpha(0) tex[7]:SetAlpha(0) tex[8]:SetAlpha(0) tex[9]:SetAlpha(0) tex[10]:SetAlpha(0)
+		tex[6]:SetAlpha(0)
+		tex[7]:SetAlpha(0)
+		tex[8]:SetAlpha(0)
 		-- make a new backdrop on edit box
 		F.SetBD(_G['ChatFrame'..i..'EditBox'])
-		-- control the aplha
-		_G['ChatFrame'..i..'EditBox']:HookScript("OnEditFocusGained", function(self) self:Show() end)
-		_G['ChatFrame'..i..'EditBox']:HookScript("OnEditFocusLost", function(self) self:Hide() end)
 		-- chat font
 		local cf = _G['ChatFrame'..i]
 		if cf then 
@@ -122,7 +121,7 @@ EventFrame:RegisterEvent("ADDON_LOADED")
 EventFrame:RegisterEvent("PLAYER_LOGIN")
 EventFrame:RegisterEvent("PET_BATTLE_OPENING_START")
 
-hooksecurefunc("FCF_OpenTemporaryWindow", function()
+local function SetChatTabs()
 	for i = 11, 20 do
 		-- chat tabs
 		local tab = _G['ChatFrame'..i..'Tab']
@@ -151,7 +150,9 @@ hooksecurefunc("FCF_OpenTemporaryWindow", function()
 			tab.HighlightRight:SetTexture(nil)
 		end
 	end
-end)
+end
+
+hooksecurefunc("FCF_OpenTemporaryWindow", SetChatTabs)
 
 EventFrame:SetScript("OnEvent", function(self, event, arg1)
 	if event == "ADDON_LOADED" and arg1 == "Blizzard_CombatLog" then
@@ -162,6 +163,8 @@ EventFrame:SetScript("OnEvent", function(self, event, arg1)
 		--topbar:SetHeight(0)
 	elseif event == "PLAYER_LOGIN" then
 		init()
+		FCF_SelectDockFrame(_G['ChatFrame1'])
+		FCF_FadeInChatFrame(_G['ChatFrame1'])
 	elseif event == "PET_BATTLE_OPENING_START" then
 		chatwindownum = 11
 		init()
