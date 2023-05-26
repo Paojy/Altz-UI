@@ -1,6 +1,6 @@
 local T, C, L, G = unpack(select(2, ...))
 
-if not aCoreCDB["TooltipOptions"]["showtalent"] or not aCoreCDB["TooltipOptions"]["enabletip"] then return end
+if not aCoreCDB["TooltipOptions"]["enabletip"] then return end
 
 -- String Constants
 local TALENTS_PREFIX = TALENTS..":|cffffffff ";	-- MoP: Could be changed from TALENTS to SPECIALIZATION
@@ -113,7 +113,7 @@ local isUnit = {
 
 -- HOOK: OnTooltipSetUnit
 hooksecurefunc(GameTooltip, "ProcessLines", function(self, ...)
-	local getterName = self.info and self.info.getterName
+	local getterName = self.processingInfo and self.processingInfo.getterName
 	if isUnit[getterName] then
 		-- Check the UnitFrame unit if this tip is from a concated unit, such as "targettarget".
 		local _, unit = self:GetUnit();

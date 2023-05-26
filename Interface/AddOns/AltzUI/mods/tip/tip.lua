@@ -3,11 +3,7 @@ local F = unpack(AuroraClassic)
 
 if not aCoreCDB["TooltipOptions"]["enabletip"] then return end
 
-local spellID = aCoreCDB["TooltipOptions"]["showspellID"]
-local spellID = aCoreCDB["TooltipOptions"]["showitemID"]
 local combathide = aCoreCDB["TooltipOptions"]["combathide"]
-local hideTitles = aCoreCDB["TooltipOptions"]["hideTitles"]
-local hideRealm = aCoreCDB["TooltipOptions"]["hideRealm"]
 
 local you = "<You>"
 local boss = "Boss"
@@ -54,10 +50,26 @@ hooksecurefunc(GameTooltip, "SetUnitAura", function(self,...)
 	end
 end)
 
+hooksecurefunc(GameTooltip, "SetAction", function(self, action)
+	local actionType, actionID = GetActionInfo(action)
+	if actionType == "spell" or actionType == "companion" then
+		if actionID then
+			self:AddLine(" ")
+			self:AddDoubleLine("SpellID:", format(G.classcolor.."%s|r", actionID))
+			self:Show()
+		end
+	elseif actionType == "item" then
+		if actionID then
+			self:AddLine(" ")
+			self:AddDoubleLine("ItemID:", format(G.classcolor.."%s|r", actionID))
+			self:Show()
+		end
+	end
+end)
+
 local isSpells = {
 	["GetSpellByID"] = true,
 	["GetSpellBookItem"] = true, -- taint in 46092
-	["GetSpellByID"] = true,
 	["GetTraitEntry"] = true,
 	["GetMountBySpellID"] = true,
 }
@@ -82,7 +94,8 @@ local isUnit = {
 }
 
 hooksecurefunc(GameTooltip, "ProcessLines", function(self)
-	local getterName = self.info and self.info.getterName
+	local getterName = self.processingInfo and self.processingInfo.getterName
+	--print(getterName)
 	if isSpells[getterName] then
 		local spellID = select(2, self:GetSpell())
 		if spellID then
@@ -107,42 +120,41 @@ hooksecurefunc(GameTooltip, "ProcessLines", function(self)
 			if combathide and InCombatLockdown() then
 				return self:Hide()
 			end
-			
+				
 			local r, g, b = unitColor(unit)
 			local ricon = GetRaidTargetIndex(unit)
-			
+
 			if ricon then
 				local text = GameTooltipTextLeft1:GetText()
 				GameTooltipTextLeft1:SetText(("%s %s"):format(ICON_LIST[ricon].."18|t", text))
 			end
-			
+				
 			if UnitIsPlayer(unit) then
 				self:AppendText((" |cff00cc00%s|r"):format(UnitIsAFK(unit) and CHAT_FLAG_AFK or UnitIsDND(unit) and CHAT_FLAG_DND or not UnitIsConnected(unit) and "<DC>" or ""))
 				
-				if hideTitles then
-					local title = UnitPVPName(unit)
-					if title then
-						local text = GameTooltipTextLeft1:GetText()
-						title = title:gsub(name, "")
-						text = text:gsub(title, "")
-						if text then GameTooltipTextLeft1:SetText(text) end
-					end
-				end
-		
-				if hideRealm then
-					local _, realm = UnitName(unit)
-					if realm then
-						local text = GameTooltipTextLeft1:GetText()
-						text = text:gsub("- "..realm, "")
-						if text then GameTooltipTextLeft1:SetText(text) end
-					end
+				-- 服务器
+				local _, realm = UnitName(unit)
+				if realm then
+					local text = GameTooltipTextLeft1:GetText()
+					text = text:gsub("- "..realm, "")
+					if text then GameTooltipTextLeft1:SetText(text) end
 				end
 				
-				local unitGuild, tmp,tmp2 = GetGuildInfo(unit)
+				-- 头衔
+				local title = UnitPVPName(unit)
+				if title then
+					local text = GameTooltipTextLeft1:GetText()
+					title = title:gsub(name, "")
+					text = text:gsub(title, "")
+					if text then GameTooltipTextLeft1:SetText(text) end
+				end
+				
+				-- 公会
+				local unitGuild, tmp, tmp2 = GetGuildInfo(unit)
 				local text = GameTooltipTextLeft2:GetText()
 				if tmp then
-				--tmp2=tmp2+1
-				GameTooltipTextLeft2:SetText("<"..text..">  "..tmp.."  ("..tmp2..")")
+					--tmp2=tmp2+1
+					GameTooltipTextLeft2:SetText("<"..text..">  "..tmp.."  ("..tmp2..")")
 				end
 				
 				if IsShiftKeyDown() then
@@ -168,20 +180,20 @@ hooksecurefunc(GameTooltip, "ProcessLines", function(self)
 			
 			local alive = not UnitIsDeadOrGhost(unit)
 			local level = UnitLevel(unit)
-	
-			if level and unit then
+		
+			if level then
 				if not UnitIsWildBattlePet(unit) then
 					local unitClass = UnitIsPlayer(unit) and hex(r, g, b)..UnitClass(unit).."|r" or ""
 					local creature = not UnitIsPlayer(unit) and UnitCreatureType(unit) or ""
 					local diff = GetQuestDifficultyColor(level)
-	
+		
 					if level == -1 then
 						level = "|cffff0000"..boss
 					end
-	
+		
 					local classify = UnitClassification(unit)
 					local textLevel = ("%s%s%s|r"):format(hex(diff.r, diff.g, diff.b), tostring(level), classification[classify] or "")
-	
+		
 					for i=2, self:NumLines() do
 						local tiptext = _G["GameTooltipTextLeft"..i]
 						if tiptext:GetText():find(LEVEL) then
@@ -191,14 +203,14 @@ hooksecurefunc(GameTooltip, "ProcessLines", function(self)
 								tiptext:SetText(("%s %s"):format(textLevel, "|cffCCCCCC"..DEAD.."|r"):trim())
 							end
 						end
-	
+		
 						if tiptext:GetText():find(PVP) then
 							tiptext:SetText(nil)
 						end	
 					end
 				end
 			end
-	
+		
 			if not alive then
 				GameTooltipStatusBar:Hide()
 			end
@@ -209,7 +221,7 @@ hooksecurefunc(GameTooltip, "ProcessLines", function(self)
 			end
 			
 			GameTooltipStatusBar:SetStatusBarColor(r, g, b)
-		 else
+		else
 			for i=2, self:NumLines() do
 				local tiptext = _G["GameTooltipTextLeft"..i]
 		
@@ -220,49 +232,10 @@ hooksecurefunc(GameTooltip, "ProcessLines", function(self)
 				GameTooltipStatusBar:SetStatusBarColor(0, .9, 0)
 			end
 		end
-	else
-	--	print(getterName)
-	end
-	
-	self.NineSlice:SetAlpha(0)
-	self.TopOverlay:SetAlpha(0)
-	self.BottomOverlay:SetAlpha(0)
-	
-	if not self.bg then
-		self.bg = CreateFrame("Frame", nil, self, "BackdropTemplate")
-	
-		local flvl = self:GetFrameLevel()
-		if flvl - 1 >= 0 then self.bg:SetFrameLevel(flvl-1) end
-		
-		self.bg:SetPoint("TOPLEFT", self, "TOPLEFT", 0, 0)
-		self.bg:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", 0, 0)
-		self.bg:SetBackdrop({
-			edgeFile = G.media.glow, edgeSize = 3,
-			bgFile = G.media.blank,
-			insets = {left = 3, right = 3, top = 3, bottom = 3}
-		})
-
-		self.bg:SetBackdropColor(.15, .15, .15, .7)
-		self.bg:SetBackdropBorderColor(0, 0, 0)
 	end
 end)
 
-hooksecurefunc(GameTooltip, "SetAction", function(self, action)
-	local actionType, actionID = GetActionInfo(action)
-	if actionType == "spell" or actionType == "companion" then
-		if actionID then
-			self:AddLine(" ")
-			self:AddDoubleLine("SpellID:", format(G.classcolor.."%s|r", actionID))
-			self:Show()
-		end
-	elseif actionType == "item" then
-		if actionID then
-			self:AddLine(" ")
-			self:AddDoubleLine("ItemID:", format(G.classcolor.."%s|r", actionID))
-			self:Show()
-		end
-	end
-end)
+-- GameTooltipStatusBar
 
 GameTooltipStatusBar:SetStatusBarTexture("Interface\\Buttons\\WHITE8x8")
 T.createBackdrop(GameTooltipStatusBar, GameTooltipStatusBar, 1)
