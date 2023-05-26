@@ -126,7 +126,7 @@ function T.ActionbarFader(frame, buttonList, fadeIn, fadeOut)
 	end
 end
 
-function T.FrameFader(frame,fadeIn,fadeOut)
+function T.FrameFader(frame, fadeIn, fadeOut)
 	if not frame then return end
 	if not fadeIn then fadeIn = defaultFadeIn end
 	if not fadeOut then fadeOut = defaultFadeOut end
@@ -137,6 +137,43 @@ function T.FrameFader(frame,fadeIn,fadeOut)
 	frame:HookScript("OnLeave", function(self) if frame.eventmode ~= 1 then UIFrameFadeOut(frame, fadeOut.time, frame:GetAlpha(), fadeOut.alpha) end end)
 
 	UIFrameFadeOut(frame, fadeOut.time, frame:GetAlpha(), fadeOut.alpha)
+end
+
+function T.ParentFader(parent, children, fadeIn, fadeOut)
+	if not parent or not children then return end
+	if not fadeIn then fadeIn = defaultFadeIn end
+	if not fadeOut then fadeOut = defaultFadeOut end
+	
+	for i, f in pairs(children) do
+		f:SetAlpha(fadeOut.alpha) -- 初始透明度
+		f:EnableMouse(true)
+	end
+	
+	parent:HookScript("OnEnter", function(self)
+		for i, f in pairs(children) do
+			if f.eventmode ~= 1 then
+				UIFrameFadeIn(f, fadeIn.time, f:GetAlpha(), fadeIn.alpha) 
+			end
+		end	
+	end)
+	
+	parent:HookScript("OnLeave", function(self)
+		local hovered
+		
+		for i, f in pairs(children) do
+			if f:IsMouseOver() then
+				hovered = true
+			end
+		end
+		
+		if not hovered then
+			for i, f in pairs(children) do
+				if f.eventmode ~= 1 then
+					UIFrameFadeOut(f, fadeOut.time, f:GetAlpha(), fadeOut.alpha)
+				end
+			end
+		end
+	end)	
 end
 
 --==================================================================--
