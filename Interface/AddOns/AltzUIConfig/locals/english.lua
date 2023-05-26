@@ -401,7 +401,7 @@ L["战斗字体"] = "Combat Text"
 
 -- 命令
 L["命令"] = "Commands"
-L["指令"] = " %s/rl|r - Reload UI \n \n %s/hb|r - Key Binding Mode \n \n %sALT+Click|r - Mill/Prospect/Disenchant/Unlock instantly \n \n %sTab|r - Change between available channels. \n \n %s/Setup|r-Run the setup wizard"
+L["指令"] = " %s/rl|r - Reload UI \n \n %sALT+Click|r - Mill/Prospect/Disenchant/Unlock instantly \n \n %sTab|r - Change between available channels. \n \n %s/Setup|r-Run the setup wizard"
 
 -- 制作
 L["制作"] = "Credits"

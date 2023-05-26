@@ -496,7 +496,6 @@ G.Raids = {
 	},
 }
 
-
 G.DebuffList = {
 	[EJ_GetInstanceInfo(1187)] = { -- 伤逝剧场
 		[EJ_GetEncounterInfo(2397)] = { --> 狭路相逢
@@ -1587,7 +1586,6 @@ local Character_default_Settings = {
 		micromenuscale = 1,		
 		infobar = true,
 		infobarscale = 1,
-		minimapheight = 175,
 		collectminimapbuttons = true,
 		MBCFpos = "TOP",
 		hidemap = false,

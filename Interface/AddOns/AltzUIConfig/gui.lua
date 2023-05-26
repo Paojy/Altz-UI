@@ -464,29 +464,13 @@ SInnerframe.layout = CreateOptionPage("Interface Options Layout", L["界面布�
 T.createcheckbutton(SInnerframe.layout, 30, 60, L["信息条"], "SkinOptions", "infobar")
 T.createslider(SInnerframe.layout, 30, 110, L["信息条尺寸"], "SkinOptions", "infobarscale", 100, 50, 200, 5)
 T.createslider(SInnerframe.layout, 30, 150, L["控制台"]..L["尺寸"], "SkinOptions", "guiscale", 100, 50, 150, 5)
-T.createslider(SInnerframe.layout, 30, 190, L["小地图尺寸"], "SkinOptions", "minimapheight", 1, 100, 300, 5)
 T.createDR(SInnerframe.layout.infobar, SInnerframe.layout.infobarscale)
 
-SInnerframe.layout.guiscale:SetWidth(170)
-SInnerframe.layout.minimapheight:SetWidth(170)
-SInnerframe.layout.infobarscale:SetWidth(170)
+CreateDividingLine(SInnerframe.layout, -190)
 
-SInnerframe.layout.DividingLine = SInnerframe.layout:CreateTexture(nil, "ARTWORK")
-SInnerframe.layout.DividingLine:SetSize(SInnerframe.layout:GetWidth()-50, 1)
-SInnerframe.layout.DividingLine:SetPoint("TOP", 0, -230)
-SInnerframe.layout.DividingLine:SetColorTexture(1, 1, 1, .2)
-
-T.createcheckbutton(SInnerframe.layout, 30, 250, L["整理小地图图标"], "SkinOptions", "collectminimapbuttons")
-local MBCFpos_group = {
-	["TOP"] = L["上方"],
-	["BOTTOM"] = L["下方"],
-}
-T.createradiobuttongroup(SInnerframe.layout, 220, 245, L["整理栏位置"], "SkinOptions", "MBCFpos", MBCFpos_group)
-T.createDR(SInnerframe.layout.collectminimapbuttons, SInnerframe.layout.MBCFpos)
-
-T.createcheckbutton(SInnerframe.layout, 30, 280, L["在副本中收起任务追踪"], "SkinOptions", "collapseWF", L["在副本中收起任务追踪提示"])
-T.createcheckbutton(SInnerframe.layout, 30, 310, L["登陆屏幕"], "SkinOptions", "afklogin", L["登陆屏幕"])
-T.createcheckbutton(SInnerframe.layout, 30, 340, L["暂离屏幕"], "SkinOptions", "afkscreen", L["暂离屏幕"])
+T.createcheckbutton(SInnerframe.layout, 30, 210, L["在副本中收起任务追踪"], "SkinOptions", "collapseWF", L["在副本中收起任务追踪提示"])
+T.createcheckbutton(SInnerframe.layout, 30, 240, L["登陆屏幕"], "SkinOptions", "afklogin", L["登陆屏幕"])
+T.createcheckbutton(SInnerframe.layout, 30, 270, L["暂离屏幕"], "SkinOptions", "afkscreen", L["暂离屏幕"])
 
 --====================================================--
 --[[              -- Chat Options --                ]]--
@@ -513,12 +497,12 @@ T.createcheckbutton(CInnerframe.chat, 30, 60, L["频道缩写"], "ChatOptions", 
 T.CVartogglebox(CInnerframe.chat, 230, 60, "showTimestamps", SHOW_TIMESTAMP, "|cff64C2F5%H:%M|r ", "none")
 T.createcheckbutton(CInnerframe.chat, 30, 90, L["滚动聊天框"], "ChatOptions", "autoscroll", L["滚动聊天框提示"])
 T.createcheckbutton(CInnerframe.chat, 230, 90, L["显示聊天框背景"], "ChatOptions", "showbg")
-T.createslider(CInnerframe.chat, 30, 140, L["标签最小透明度"], "ChatOptions", "chattab_fade_minalpha", 100, 0, 100, 5, L["标签最小透明度提示"])
+T.createslider(CInnerframe.chat, 30, 150, L["标签最小透明度"], "ChatOptions", "chattab_fade_minalpha", 100, 0, 100, 5, L["标签最小透明度提示"])
 T.createslider(CInnerframe.chat, 30, 190, L["标签最大透明度"], "ChatOptions", "chattab_fade_maxalpha", 100, 0, 100, 5, L["标签最大透明度提示"])
 
 T.createcheckbutton(CInnerframe.chat, 30, 230, L["聊天过滤"], "ChatOptions", "nogoldseller", L["聊天过滤提示"])
 T.createslider(CInnerframe.chat, 30, 280, L["过滤阈值"], "ChatOptions", "goldkeywordnum", 1, 1, 5, 1, L["过滤阈值"])
-CInnerframe.chat.goldkeywordnum:SetWidth(170)
+
 T.createmultilinebox(CInnerframe.chat, 200, 100, 35, 325, L["关键词"], "ChatOptions", "goldkeywordlist", L["关键词输入"])
 CInnerframe.chat.goldkeywordlist.edit:SetScript("OnShow", function(self) self:SetText(aCoreDB["goldkeywordlist"]) end)
 CInnerframe.chat.goldkeywordlist.edit:SetScript("OnEscapePressed", function(self) self:SetText(aCoreDB["goldkeywordlist"]) self:ClearFocus() end)
@@ -2707,7 +2691,7 @@ T.createcheckbutton(TooltipOptions, 30, 60, L["启用"], "TooltipOptions", "enab
 T.createcheckbutton(TooltipOptions, 30, 90, L["跟随光标"], "TooltipOptions", "cursor")
 T.createcheckbutton(TooltipOptions, 30, 120, L["战斗中隐藏"], "TooltipOptions", "combathide")
 
-T.createDR(TooltipOptions.enabletip, TooltipOptions.size, TooltipOptions.cursor, TooltipOptions.combathide)
+T.createDR(TooltipOptions.enabletip, TooltipOptions.cursor, TooltipOptions.combathide)
 --====================================================--
 --[[             -- Combattext Options --              ]]--
 --====================================================--

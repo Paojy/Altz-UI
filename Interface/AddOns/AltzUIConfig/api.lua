@@ -157,7 +157,7 @@ end
 
 T.ResetAurora = function(reload)
 	if IsAddOnLoaded("AuroraClassic") then
-		AuroraClassicDB["Bags"] = false
+		AuroraClassicDB["Bags"] = true
 	end
 	if reload then ReloadUI() end
 end
