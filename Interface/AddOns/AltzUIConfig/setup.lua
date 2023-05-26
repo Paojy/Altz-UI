@@ -413,22 +413,6 @@ Default_Layout = {
 			ApplyUFSettings({"Auras"})
 		end
 		},
-		{
-		db_t = "SkinOptions", 
-		db_v = "hidemap",
-		value = false,
-		apply = function() 
-			Altz_T.HideMap()
-		end
-		},
-		{
-		db_t = "SkinOptions", 
-		db_v = "hidechat",
-		value = false,
-		apply = function() 
-			Altz_T.HideChat()
-		end
-		},
 	},
 }
 
@@ -608,22 +592,6 @@ Simplicity_Layout = {
 			ApplyUFSettings({"Auras"})
 		end
 		},
-		{
-		db_t = "SkinOptions", 
-		db_v = "hidemap",
-		value = true,
-		apply = function() 
-			Altz_T.HideMap()
-		end
-		},
-		{
-		db_t = "SkinOptions", 
-		db_v = "hidechat",
-		value = true,
-		apply = function() 
-			Altz_T.HideChat()
-		end
-		},
 	},
 }
 
@@ -801,22 +769,6 @@ Centralized_Layout = {
 		value = 8,
 		apply = function() 
 			ApplyUFSettings({"Auras"})
-		end
-		},
-		{
-		db_t = "SkinOptions", 
-		db_v = "hidemap",
-		value = false,
-		apply = function() 
-			Altz_T.HideMap()
-		end
-		},
-		{
-		db_t = "SkinOptions", 
-		db_v = "hidechat",
-		value = false,
-		apply = function() 
-			Altz_T.HideChat()
 		end
 		},
 	},
