@@ -176,6 +176,42 @@ function T.ParentFader(parent, children, fadeIn, fadeOut)
 	end)	
 end
 
+function T.GroupFader(framegroup, fadeIn, fadeOut)
+	if not framegroup then return end
+	if not fadeIn then fadeIn = defaultFadeIn end
+	if not fadeOut then fadeOut = defaultFadeOut end
+	
+	for i, frame in pairs(framegroup) do
+		frame:SetAlpha(fadeOut.alpha) -- 初始透明度
+		frame:EnableMouse(true)
+		frame:HookScript("OnEnter", function(self)
+			for i, f in pairs(framegroup) do
+				if f.eventmode ~= 1 then
+					UIFrameFadeIn(f, fadeIn.time, f:GetAlpha(), fadeIn.alpha) 
+				end
+			end	
+		end)
+		
+		frame:HookScript("OnLeave", function(self)
+			local hovered
+			
+			for i, f in pairs(framegroup) do
+				if f:IsMouseOver() then
+					hovered = true
+				end
+			end
+			
+			if not hovered then
+				for i, f in pairs(framegroup) do
+					if f.eventmode ~= 1 then
+						UIFrameFadeOut(f, fadeOut.time, f:GetAlpha(), fadeOut.alpha)
+					end
+				end
+			end
+		end)
+	end
+end
+
 --==================================================================--
 -- fade-in when center conditions meets --
 --==================================================================--
