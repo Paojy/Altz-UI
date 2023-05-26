@@ -35,7 +35,8 @@
 	<Script file="mods\actionbar\cooldownflash.lua"/>
 	
 	<Script file="mods\bag\gold.lua"/>
-	
+	<Script file="mods\bag\craft.lua"/>
+		
 	<Script file="mods\chat\chat.lua"/>
 	<Script file="mods\chat\autoscroll.lua"/>
 	<Script file="mods\chat\channelreplacements.lua"/>
