@@ -47,6 +47,7 @@ local frames = {
 	["TutorialFrame"] = false,
 	["VideoOptionsFrame"] = false,
 	["EncounterJournal"] = false,
+	["ContainerFrameCombinedBags"] = false,
 }
 
 -- Frames provided by load on demand addons, hooked when the addon is loaded.
