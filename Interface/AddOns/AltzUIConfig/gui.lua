@@ -526,9 +526,8 @@ CInnerframe.chat.goldkeywordlist.edit:SetScript("OnEnterPressed", function(self)
 T.createDR(CInnerframe.chat.nogoldseller, CInnerframe.chat.goldkeywordnum, CInnerframe.chat.goldkeywordlist)
 
 CInnerframe.invite = CreateOptionPage("Chat Options invite", INVITE, CInnerframe, "VERTICAL", .3)
-T.createcheckbutton(CInnerframe.invite, 30, 60, L["自动接受邀请"], "OtherOptions", "acceptfriendlyinvites", L["自动接受邀请提示"])
-T.createcheckbutton(CInnerframe.invite, 30, 90, L["自动邀请"], "OtherOptions", "autoinvite", L["自动邀请提示"])
-T.createeditbox(CInnerframe.invite, 40, 120, "", "OtherOptions", "autoinvitekeywords", L["关键词输入"])
+T.createcheckbutton(CInnerframe.invite, 30, 60, L["自动邀请"], "OtherOptions", "autoinvite", L["自动邀请提示"])
+T.createeditbox(CInnerframe.invite, 40, 90, "", "OtherOptions", "autoinvitekeywords", L["关键词输入"])
 T.createDR(CInnerframe.invite.autoinvite, CInnerframe.invite.autoinvitekeywords)
 
 --====================================================--
@@ -548,6 +547,11 @@ CreateDividingLine(ItemOptions, -200)
 
 T.createcheckbutton(ItemOptions, 30, 210, L["自动售卖"], "ItemOptions", "autosell", L["自动售卖提示"])
 T.createcheckbutton(ItemOptions, 30, 240, L["自动购买"], "ItemOptions", "autobuy", L["自动购买提示"])
+
+ItemOptions.SF:ClearAllPoints()
+ItemOptions.SF:SetPoint("TOPLEFT", ItemOptions, "TOPLEFT", 40, -310)
+ItemOptions.SF:SetPoint("BOTTOMRIGHT", ItemOptions, "TOPLEFT", 350, -500)
+F.CreateBD(ItemOptions.SF.bg, .3)
 
 local function LineUpAutobuyList()
 	sort(aCoreCDB["ItemOptions"]["autobuylist"])
@@ -569,10 +573,7 @@ local function CreateAutobuyButton(itemID, name, icon, quantity)
 	bu.icon:SetNormalTexture(icon or G.media.blank)
 	bu.icon:GetNormalTexture():SetTexCoord(0.1,0.9,0.1,0.9)
 	bu.icon:SetPoint("LEFT", 5, 0)
-	bu.icon.bg = CreateFrame("Frame", nil, bu.icon, "BackdropTemplate")
-	bu.icon.bg:SetAllPoints(bu.icon)
-	F.CreateBD(bu.icon.bg)		
-	
+
 	bu.name = T.createtext(bu, "OVERLAY", 16, "OUTLINE", "LEFT")
 	bu.name:SetPoint("LEFT", 40, 0)
 	bu.name:SetTextColor(1, .2, .6)
@@ -681,10 +682,6 @@ Autobuy_additembutton:SetScript("OnClick", function(self)
 	end
 end)
 
-ItemOptions.SF:ClearAllPoints()
-ItemOptions.SF:SetPoint("TOPLEFT", ItemOptions, "TOPLEFT", 40, -310)
-ItemOptions.SF:SetPoint("BOTTOMRIGHT", ItemOptions, "TOPLEFT", 330, -500)
-F.CreateBD(ItemOptions.SF.bg, .3)
 --====================================================--
 --[[               -- Unit Frames --                ]]--
 --====================================================--
@@ -2707,17 +2704,10 @@ end
 local TooltipOptions = CreateOptionPage("Tooltip Options", USE_UBERTOOLTIPS, GUI, "VERTICAL")
 
 T.createcheckbutton(TooltipOptions, 30, 60, L["启用"], "TooltipOptions", "enabletip")
-T.createslider(TooltipOptions, 30, 110, L["尺寸"], "TooltipOptions", "size", 10, 5, 15, 1)
-T.createcheckbutton(TooltipOptions, 30, 150, L["跟随光标"], "TooltipOptions", "cursor")
-T.createcheckbutton(TooltipOptions, 30, 180, L["隐藏服务器名称"], "TooltipOptions", "hideRealm")
-T.createcheckbutton(TooltipOptions, 30, 210, L["隐藏称号"], "TooltipOptions", "hideTitles")
-T.createcheckbutton(TooltipOptions, 30, 240, L["显示法术编号"], "TooltipOptions", "showspellID")
-T.createcheckbutton(TooltipOptions, 30, 270, L["显示物品编号"], "TooltipOptions", "showitemID")
-T.createcheckbutton(TooltipOptions, 30, 300, L["显示天赋"], "TooltipOptions", "showtalent")
-T.createcheckbutton(TooltipOptions, 30, 330, L["战斗中隐藏"], "TooltipOptions", "combathide")
-T.createslider(TooltipOptions, 30, 380, L["背景透明度"], "TooltipOptions", "backdropOpacity", 100, 1, 100, 1)
+T.createcheckbutton(TooltipOptions, 30, 90, L["跟随光标"], "TooltipOptions", "cursor")
+T.createcheckbutton(TooltipOptions, 30, 120, L["战斗中隐藏"], "TooltipOptions", "combathide")
 
-T.createDR(TooltipOptions.enabletip, TooltipOptions.size, TooltipOptions.cursor, TooltipOptions.hideRealm, TooltipOptions.hideTitles, TooltipOptions.showspellID, TooltipOptions.showitemID, TooltipOptions.showtalent, TooltipOptions.combathide, TooltipOptions.backdropOpacity)
+T.createDR(TooltipOptions.enabletip, TooltipOptions.size, TooltipOptions.cursor, TooltipOptions.combathide)
 --====================================================--
 --[[             -- Combattext Options --              ]]--
 --====================================================--
