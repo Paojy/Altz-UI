@@ -34,6 +34,7 @@
 	<Script file="mods\actionbar\buff.lua"/>
 	<Script file="mods\actionbar\cooldownflash.lua"/>
 	
+	<Script file="mods\bag\bag.lua"/>
 	<Script file="mods\bag\gold.lua"/>
 	<Script file="mods\bag\craft.lua"/>
 		
