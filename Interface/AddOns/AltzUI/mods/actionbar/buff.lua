@@ -5,6 +5,7 @@ local F = unpack(AuroraClassic)
   -- FUNCTIONS
   ---------------------------------------
 
+
   --apply aura frame texture func
 local function applySkin(aura)
 	if not aura.isAuraAnchor and not aura.styled then
@@ -20,15 +21,21 @@ local function applySkin(aura)
 			aura.Count:ClearAllPoints()
 			aura.Count:SetPoint("TOPRIGHT", 2, 2)
 		end
-		
+				
 		aura.bd = T.createBackdrop(aura, aura.Icon, 0)
 		
-		if aura.GetFilter and aura:GetFilter() == "HARMFUL" then
-			aura.Border:SetTexture(G.media.blank)
-			aura.Border:SetDrawLayer("BACKGROUND",-8)
-			aura.bd:SetPoint("TOPLEFT", aura.Icon, "TOPLEFT", -4, 4)
-			aura.bd:SetPoint("BOTTOMRIGHT", aura.Icon, "BOTTOMRIGHT", 4, -4)
-		end
+		hooksecurefunc(aura, "UpdateAuraType", function(self, auraType)
+			self.DebuffBorder:Hide()
+			self.TempEnchantBorder:Hide()		
+			if self.auraType == "Buff" then
+				self.bd:SetBackdropBorderColor(0, 0, 0)
+			elseif self.auraType == "Debuff" or self.auraType == "DeadlyDebuff" then
+				local color = DebuffTypeColor["none"]
+				self.bd:SetBackdropBorderColor(color.r, color.g, color.b)
+			elseif self.auraType == "TempEnchant" then
+				self.bd:SetBackdropBorderColor(.5, 0, 1)
+			end
+		end)
 		
 		aura.styled = true
 	end
