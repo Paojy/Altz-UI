@@ -11,8 +11,8 @@ local F = unpack(AuroraClassic)
 		Z = {}
 		n = Z[1] and #Z+1 or 1
 		for i= 0,4 do 
-			for j= 1, GetContainerNumSlots(i) do 
-				if not GetContainerItemLink(i,j) and E[n] then 
+			for j= 1, C_Container.GetContainerNumSlots(i) do 
+				if not C_Container.GetContainerItemLink(i,j) and E[n] then 
 					Z[n]= {i,j}
 					PickupInventoryItem(E[n])
 					PickupContainerItem(i,j)

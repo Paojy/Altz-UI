@@ -7,7 +7,6 @@ local battlegroundres = aCoreCDB["OtherOptions"]["battlegroundres"]
 local hideerrors = aCoreCDB["OtherOptions"]["hideerrors"]
 local saysapped = aCoreCDB["OtherOptions"]["saysapped"]
 local autoscreenshot = aCoreCDB["OtherOptions"]["autoscreenshot"]
-local acceptfriendlyinvites = aCoreCDB["OtherOptions"]["acceptfriendlyinvites"]
 local autoinvite = aCoreCDB["OtherOptions"]["autoinvite"]
 local vignettealert = aCoreCDB["OtherOptions"]["vignettealert"]
 local vignettealerthide = aCoreCDB["OtherOptions"]["vignettealerthide"]
@@ -99,9 +98,9 @@ function eventframe:MERCHANT_SHOW()
 	end
 	if aCoreCDB["ItemOptions"]["autosell"] then
 		for bag = 0, 4 do
-			for slot = 0, GetContainerNumSlots(bag) do
-				local link = GetContainerItemLink(bag, slot)
-				local id = GetContainerItemID(bag, slot)
+			for slot = 0, C_Container.GetContainerNumSlots(bag) do
+				local link = C_Container.GetContainerItemLink(bag, slot)
+				local id = C_Container.GetContainerItemID(bag, slot)
 				if link and (select(3, GetItemInfo(link))==0) and not greylist[id] then
 					UseContainerItem(bag, slot)
 				end
@@ -204,44 +203,7 @@ if hideerrors then
 
 	UIErrorsFrame:UnregisterEvent('UI_ERROR_MESSAGE')
 end
---[[-----------------------------------------------------------------------------
-Accept Friendly Invites
--------------------------------------------------------------------------------]]
-if acceptfriendlyinvites then
-	eventframe:RegisterEvent('PARTY_INVITE_REQUEST')
-	function eventframe:PARTY_INVITE_REQUEST(name, isTank, isHealer, isDamage, isNativeRealm, allowMultipleRoles, inviterGUID, questSessionActive)
-		if QueueStatusMinimapButton:IsShown() then return end
-        if IsInGroup() then return end
-		local real_name, realm = string.split("-", name)
-		local accept = false
-		if (not realm or realm == G.PlayerRealm) and C_FriendList.GetFriendInfo(real_name) then
-			accept = true
-		elseif IsInGuild() and IsGuildMember(inviterGUID) then
-			accept = true
-		elseif IsRecruitAFriendLinked(inviterGUID) then
-			accept = true
-		end
-		if not accept then
-			for i = 1, BNGetNumFriends() do
-				local account_num = C_BattleNet.GetFriendNumGameAccounts(i)
-				for j = 1, account_num do
-					local toonName = select(4, C_BattleNet.GetFriendGameAccountInfo(i, j))
-					if toonName == name then
-						accept = true
-						break
-					end
-				end
-			end
-		end
-		if accept then
-			local pop = StaticPopup_Visible('PARTY_INVITE')
-			if pop then
-				StaticPopup_OnClick(_G[pop], 1)
-				return
-			end
-		end
-	end
-end
+
 --[[-----------------------------------------------------------------------------
 Key Word Invite
 -------------------------------------------------------------------------------]]
@@ -427,11 +389,12 @@ end
 
 --[[-----------------------------------------------------------------------------
 LFG Call to Arms rewards
--------------------------------------------------------------------------------]]
 
---744 Random Timewalker Dungeon 
---788 Random Warlords of Draenor Dungeon 
---789 Random Warlords of Draenor Heroic 
+for i = 1, GetNumRandomDungeons() do
+  local id, name = GetLFGRandomDungeonInfo(i)
+  print(id .. ": " .. name)
+end
+-------------------------------------------------------------------------------]]
 
 if LFGRewards then
 	eventframe:RegisterEvent("LFG_UPDATE_RANDOM_INFO")
@@ -440,7 +403,7 @@ end
 local LFG_Timer = 0
 
 function eventframe:LFG_UPDATE_RANDOM_INFO()
-	local eligible, forTank, forHealer, forDamage = GetLFGRoleShortageRewards(1671, LFG_ROLE_SHORTAGE_RARE)
+	local eligible, forTank, forHealer, forDamage = GetLFGRoleShortageRewards(2351, LFG_ROLE_SHORTAGE_RARE)
 	local IsTank, IsHealer, IsDamage = C_LFGList.GetAvailableRoles()
 	
 	local ingroup, tank, healer, damager, result

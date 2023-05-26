@@ -422,8 +422,8 @@ if autoquests then
 	local function BagUpdate(bag)
 		if(atBank or atMail or atMerchant) then return end
 
-        for slot = 1, GetContainerNumSlots(bag) do
-            local _, id, active = GetContainerItemQuestInfo(bag, slot)
+        for slot = 1, C_Container.GetContainerNumSlots(bag) do
+            local _, id, active = C_Container.GetContainerItemQuestInfo(bag, slot)
             if(id and not active and not C_QuestLog.IsQuestFlaggedCompleted(id) and not ignoredItems[id]) then
                 questTip:SetOwner(UIParent, "ANCHOR_NONE")
                 questTip:ClearLines()

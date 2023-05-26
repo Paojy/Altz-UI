@@ -196,7 +196,7 @@ hooksecurefunc("UseInventoryItem", function(slot)
 end)
 
 hooksecurefunc(C_Container, "UseContainerItem", function(bag, slot)
-	local link = GetContainerItemLink(bag, slot) or ""
+	local link = C_Container.GetContainerItemLink(bag, slot) or ""
 	local id = string.match(link, ":(%w+).*|h%[(.+)%]|h")
 	if id and not items[id] then
 		items[id] = true
