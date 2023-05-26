@@ -59,7 +59,7 @@ TLPanel:SetFrameStrata("BACKGROUND")
 TLPanel:SetFrameLevel(2)
 TLPanel:SetSize(G.screenwidth*2/9, 5)
 TLPanel:SetPoint("TOPLEFT", UIParent, "TOPLEFT", 15, -10)
-T.CreateSD(TLPanel, 2, 0, 0, 0, 0, -1)
+T.CreateSD(TLPanel, 2)
 TLPanel.tex = TLPanel:CreateTexture(nil, "ARTWORK")
 TLPanel.tex:SetAllPoints()
 TLPanel.Apply = function()
@@ -78,7 +78,7 @@ TRPanel:SetFrameStrata("BACKGROUND")
 TRPanel:SetFrameLevel(2)
 TRPanel:SetSize(G.screenwidth*2/9, 5)
 TRPanel:SetPoint("TOPRIGHT", UIParent, "TOPRIGHT", -15, -10)
-T.CreateSD(TRPanel, 2, 0, 0, 0, 0, -1)
+T.CreateSD(TRPanel, 2)
 TRPanel.tex = TRPanel:CreateTexture(nil, "ARTWORK")
 TRPanel.tex:SetAllPoints()
 TRPanel.Apply = function()
@@ -127,7 +127,7 @@ BLPanel:SetFrameStrata("BACKGROUND")
 BLPanel:SetFrameLevel(2)
 BLPanel:SetSize(G.screenwidth*2/9, 5)
 BLPanel:SetPoint("BOTTOMLEFT", UIParent, "BOTTOMLEFT", 15, 10)
-T.CreateSD(BLPanel, 2, 0, 0, 0, 0, -1)
+T.CreateSD(BLPanel, 2)
 BLPanel.tex = BLPanel:CreateTexture(nil, "ARTWORK")
 BLPanel.tex:SetAllPoints()
 BLPanel.Apply = function()
@@ -146,7 +146,7 @@ BRPanel:SetFrameStrata("BACKGROUND")
 BRPanel:SetFrameLevel(2)
 BRPanel:SetSize(G.screenwidth*2/9, 5)
 BRPanel:SetPoint("BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", -15, 10)
-T.CreateSD(BRPanel, 2, 0, 0, 0, 0, -1)
+T.CreateSD(BRPanel, 2)
 BRPanel.tex = BRPanel:CreateTexture(nil, "ARTWORK")
 BRPanel.tex:SetAllPoints()
 BRPanel.Apply = function()
@@ -205,7 +205,6 @@ Minimap.ZoomIn:EnableMouse(false)
 Minimap.ZoomOut:EnableMouse(false)
 
 -- 状态栏
-MinimapCluster.BorderTop:SetWidth(160)
 local BorderTopTextures = {"Center", "TopEdge", "LeftEdge", "RightEdge", "BottomEdge", "BottomLeftCorner", "BottomRightCorner", "TopLeftCorner", "TopRightCorner"}
 for i, key in pairs(BorderTopTextures) do
 	MinimapCluster.BorderTop[key]:SetAlpha(0)
@@ -229,7 +228,6 @@ end)
 
 -- 地名
 MinimapCluster.ZoneTextButton:SetFrameLevel(Minimap:GetFrameLevel()+1)
-MinimapCluster.ZoneTextButton:SetWidth(100)
 MinimapZoneText:ClearAllPoints()
 MinimapZoneText:SetPoint("LEFT", MinimapCluster.ZoneTextButton, "LEFT", 0, 0)
 
@@ -409,14 +407,20 @@ MBCF:RegisterEvent("PLAYER_ENTERING_WORLD")
 
 -- 位置
 hooksecurefunc(MinimapCluster, "SetHeaderUnderneath", function(self, headerUnderneath)
-	if (headerUnderneath) then		
+	if (headerUnderneath) then
 		local scale = self.MinimapContainer:GetScale()	
 		self.MinimapContainer:ClearAllPoints()
 		self.MinimapContainer:SetPoint("BOTTOM", self, "BOTTOM", 10 / scale, 5 / scale)
-		
-		self.BorderTop:ClearAllPoints();
+
+		self.BorderTop:ClearAllPoints()
 		self.BorderTop:SetPoint("BOTTOMLEFT", Minimap, "BOTTOMLEFT", 0, 2)
-			
+		
+		GameTimeFrame:ClearAllPoints()
+		GameTimeFrame:SetPoint("BOTTOMRIGHT", Minimap, "BOTTOMRIGHT", 0, 2)
+		
+		TimeManagerClockButton:ClearAllPoints()
+		TimeManagerClockButton:SetPoint("RIGHT", GameTimeFrame, "LEFT", 0, 0)
+		
 		ExpansionLandingPageMinimapButton:ClearAllPoints()
 		ExpansionLandingPageMinimapButton:SetPoint("TOPRIGHT", Minimap, "TOPRIGHT", -40, 0)
 		
@@ -436,8 +440,14 @@ hooksecurefunc(MinimapCluster, "SetHeaderUnderneath", function(self, headerUnder
 		self.MinimapContainer:ClearAllPoints()
 		self.MinimapContainer:SetPoint("TOP", self, "TOP", 10 / scale, -5 / scale)
 		
-		self.BorderTop:ClearAllPoints();
+		self.BorderTop:ClearAllPoints()
 		self.BorderTop:SetPoint("TOPLEFT", Minimap, "TOPLEFT", 0, -2)
+		
+		GameTimeFrame:ClearAllPoints()
+		GameTimeFrame:SetPoint("TOPRIGHT", Minimap, "TOPRIGHT", 0, -2)
+		
+		TimeManagerClockButton:ClearAllPoints()
+		TimeManagerClockButton:SetPoint("RIGHT", GameTimeFrame, "LEFT", 0, 0)
 		
 		ExpansionLandingPageMinimapButton:ClearAllPoints()
 		ExpansionLandingPageMinimapButton:SetPoint("BOTTOMRIGHT", Minimap, "BOTTOMRIGHT", -40, 0)
@@ -456,7 +466,8 @@ hooksecurefunc(MinimapCluster, "SetHeaderUnderneath", function(self, headerUnder
 	end
 end)
 
-T.ParentFader(Minimap, {MinimapCluster.ZoneTextButton, TimeManagerClockButton, GameTimeFrame, AddonCompartmentFrame, MBCF_Toggle}, fadeIn, fadeOut)
+-- 渐隐
+T.ParentFader(Minimap, {MinimapCluster.ZoneTextButton, TimeManagerClockButton, GameTimeFrame, AddonCompartmentFrame, MBCF_Toggle})
 
 -- 经验条
 local xpbar = CreateFrame("StatusBar", G.uiname.."ExperienceBar", Minimap)
@@ -613,6 +624,77 @@ xpbar:RegisterEvent("PLAYER_LOGIN")
 xpbar:RegisterEvent("UNIT_INVENTORY_CHANGED")
 xpbar:RegisterEvent("AZERITE_ITEM_EXPERIENCE_CHANGED")
 
+--====================================================--
+--[[            --  MicroMenu and Bag --            ]]--
+--====================================================--
+local microbuttons = {}
+for i, name in pairs(MICRO_BUTTONS) do
+	local tex = {}
+	local bu = _G[name]
+	table.insert(microbuttons, bu)
+	bu:SetHeight(19)
+	
+	tex.normal = bu:GetNormalTexture()
+	tex.pushed = bu:GetPushedTexture()
+	tex.highlight = bu:GetHighlightTexture()
+	
+	tex.normal:SetTexCoord(.1, .8, .1, .8)
+	tex.pushed:SetTexCoord(.1, .8, .1, .8)
+	tex.highlight:SetTexCoord(.1, .8, .1, .8)
+	tex.normal:SetDesaturated(true)
+	tex.normal:SetVertexColor(G.Ccolor.r, G.Ccolor.g, G.Ccolor.b)
+end
+
+T.GroupFader(microbuttons)
+
+local textures = {
+	normal= "Interface\\AddOns\\AltzUI\\media\\gloss",
+	hover = "Interface\\AddOns\\AltzUI\\media\\hover",
+	pushed= "Interface\\AddOns\\AltzUI\\media\\pushed",
+	checked = "Interface\\AddOns\\AltzUI\\media\\checked",
+}
+
+MainMenuBarBackpackButton.Icon = MainMenuBarBackpackButton:CreateTexture(nil, "ARTWORK")
+MainMenuBarBackpackButton.Icon:SetAllPoints(MainMenuBarBackpackButton)
+MainMenuBarBackpackButton.Icon:SetTexture(133633)
+MainMenuBarBackpackButton.Icon:SetTexCoord(.2, .8, .2, .8)
+
+MainMenuBarBackpackButton:SetSize(30, 30)
+MainMenuBarBackpackButton:SetNormalTexture(textures.normal)
+MainMenuBarBackpackButton:SetPushedTexture(textures.pushed)
+MainMenuBarBackpackButton:SetHighlightTexture(textures.hover)
+MainMenuBarBackpackButton.SlotHighlightTexture:SetTexture(textures.checked)
+T.CreateSD(MainMenuBarBackpackButton, 2)
+
+hooksecurefunc(MainMenuBarBackpackButton, "UpdateFreeSlots", function(self)
+	self.Count:SetText(self.freeSlots)
+end)
+
+local bagbuttons = {
+	CharacterBag0Slot, CharacterBag1Slot, CharacterBag2Slot, CharacterBag3Slot, CharacterReagentBag0Slot
+}
+
+local fadebagbuttons = {BagsBar, MainMenuBarBackpackButton}
+
+for i, bu in pairs(bagbuttons) do
+	hooksecurefunc(bu, "UpdateTextures", function(self)
+		bu.CircleMask:Hide()
+		bu:SetNormalTexture(textures.normal)
+		bu:SetPushedTexture(textures.pushed)
+		bu:SetHighlightTexture(textures.hover)
+		bu.SlotHighlightTexture:SetTexture(textures.checked)
+		local icon = _G[bu:GetName().."IconTexture"]
+		if icon then
+			icon:SetTexCoord(.2, .8, .2, .8)
+		end
+		if not bu.bg then
+			bu.bg = T.CreateSD(bu, 2)
+		end
+	end)
+	table.insert(fadebagbuttons, bu)
+end
+
+T.GroupFader(fadebagbuttons)
 --====================================================--
 --[[                --  Info Bar --              ]]--
 --====================================================--
