@@ -103,7 +103,11 @@ local updateBuff = function(icon, texture, count, dtype, duration, expires)
     icon.border:SetBackdropBorderColor(color.r, color.g, color.b)
 
     icon.icon:SetTexture(texture)
-    icon.count:SetText((count > 1 and count))
+	if count and count > 1 then
+		icon.count:SetText(count)
+	else
+		icon.count:SetText("")
+	end
 
     icon.expires = expires
     icon.duration = duration

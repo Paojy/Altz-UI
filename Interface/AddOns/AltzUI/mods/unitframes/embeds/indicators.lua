@@ -42,15 +42,6 @@ oUF.Tags.Methods['Mlight:rnw'] = function(u) -- 恢复
 end
 oUF.Tags.Events['Mlight:rnw'] = "UNIT_AURA"
 
-oUF.Tags.Methods['Mlight:xrlh'] = function(u) -- 虚弱灵魂
-    local name,_,_,_,_, expirationTime = AuraUtil.FindAuraByName(GetSpellInfo(6788), u, "HARMFUL")
-    if name then
-        local spellTimer = expirationTime - GetTime()
-        return "|cffDAA520"..T.FormatTime(spellTimer).."|r"
-    end
-end
-oUF.Tags.Events['Mlight:xrlh'] = "UNIT_AURA"
-
 oUF.Tags.Methods['Mlight:pws'] = function(u) -- 盾
 	local spell, pws_time, perc, r, g, b, colorstr
 	
@@ -71,26 +62,6 @@ oUF.Tags.Methods['Mlight:pws'] = function(u) -- 盾
 	end
 end
 oUF.Tags.Events['Mlight:pws'] = "UNIT_AURA UNIT_ABSORB_AMOUNT_CHANGED"
-
-oUF.Tags.Methods['Mlight:yzdx'] = function(u) -- 意志洞悉
-	local yzdx_time, perc, r, g, b, colorstr
-	
-	local yzdx, _,_,_,_, yzdx_expiration = AuraUtil.FindAuraByName(GetSpellInfo(152118), u, "PLAYER|HELPFUL")
-	if yzdx then
-		yzdx_time = T.FormatTime(yzdx_expiration-GetTime())
-		spell = Spell:CreateFromSpellID(152118) 
-		
-		real_absorb = select(16, AuraUtil.FindAuraByName(GetSpellInfo(152118), u, "PLAYER|HELPFUL"))
-		max_absorb = tostring(string.match(gsub(gsub(GetSpellDescription(spell:GetSpellID()), ",", ""),"%d+","",1),"%d+"))*2.5
-		
-		perc = real_absorb/max_absorb
-		r, g, b = T.ColorGradient(perc, 0, 0, 1, 0, 1, 1, 1, 1, 1)
-		colorstr = ('|cff%02x%02x%02x'):format(r * 255, g * 255, b * 255)
-
-		return colorstr..yzdx_time.."|r"
-	end
-end
-oUF.Tags.Events['Mlight:yzdx'] = "UNIT_AURA UNIT_ABSORB_AMOUNT_CHANGED" 
 
 -- Druid 德鲁伊
 oUF.Tags.Methods['Mlight:lb'] = function(u) -- 生命绽放
@@ -354,9 +325,9 @@ classIndicators={
         ["Cen"] = "[Mlight:lb]",
     },
     ["PRIEST"] = {
-        ["TL"] = "[Mlight:rnw][Mlight:pws]",
+        ["TL"] = "[Mlight:pws]",
         ["BR"] = "[Mlight:xnhd][Mlight:ayj][Mlight:da][Mlight:lt]",
-        ["BL"] = "[Mlight:xrlh]",
+        ["BL"] = "[Mlight:rnw]",
         ["TR"] = "[Mlight:pom]",
         ["Cen"] = "[Mlight:atonement]",
     },

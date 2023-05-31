@@ -243,11 +243,12 @@ do
 				check.type = filter.type
 				filterFrame[i] = check
 			end
+			
+			-- We set split to 2 above (which makes this work correctly for
+			-- numFilters == 1.
+			filterFrame:SetHeight(((split-1) * 16) + 28)
+			filterFrame:Hide()			
 		end
-		-- We set split to 2 above (which makes this work correctly for
-		-- numFilters == 1.
-		filterFrame:SetHeight(((split-1) * 16) + 28)
-		filterFrame:Hide()
 
 		local n = 1
 		for pipe, active, name, desc in oGlow.IteratePipes() do

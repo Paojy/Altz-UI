@@ -1147,24 +1147,22 @@ local OverrideAurasSetPosition = function(auras, from, to)
 	end
 end
 
-local CustomFilter = function(icons, unit, icon, ...)
-	local SpellID = select(11, ...)
-	if icon.isPlayer then -- show all my auras
+local CustomFilter = function(icons, unit, data)
+	if data.isFromPlayerOrPlayerPet then -- show all my auras
 		return true
-	elseif UnitIsFriend("player", unit) and (not aCoreCDB["UnitframeOptions"]["AuraFilterignoreBuff"] or icon.isDebuff) then
+	elseif UnitIsFriend("player", unit) and (not aCoreCDB["UnitframeOptions"]["AuraFilterignoreBuff"] or data.isHarmful) then
 		return true
-	elseif not UnitIsFriend("player", unit) and (not aCoreCDB["UnitframeOptions"]["AuraFilterignoreDebuff"] or not icon.isDebuff) then
+	elseif not UnitIsFriend("player", unit) and (not aCoreCDB["UnitframeOptions"]["AuraFilterignoreDebuff"] or data.isHelpful) then
 		return true
-	elseif aCoreCDB["UnitframeOptions"]["AuraFilterwhitelist"][tostring(SpellID)] then
+	elseif aCoreCDB["UnitframeOptions"]["AuraFilterwhitelist"][tostring(data.spellId)] then
 		return true
 	end
 end
 
-local BossAuraFilter = function(icons, unit, icon, ...)
-	local SpellID = select(11, ...)
-	if icon.isPlayer or not icon.isDebuff then -- show buff and my auras
+local BossAuraFilter = function(icons, unit, data)
+	if data.isFromPlayerOrPlayerPet or data.isHelpful then -- show buff and my auras
 		return true
-	elseif whitelist[tostring(SpellID)] then
+	elseif whitelist[tostring(data.spellId)] then
 		return true
 	end
 end
@@ -1181,40 +1179,37 @@ blacklist ={
 	--["124273"] = true, --心满意足
 }
 
-local PlayerDebuffFilter = function(icons, unit, icon, ...)
-	local SpellID = select(11, ...)
-	if blacklist[tostring(SpellID)] then
+local PlayerDebuffFilter = function(icons, unit, data)
+	if blacklist[tostring(data.spellId)] then
 		return false
 	else
 		return true
 	end
 end
 
-local HealerInd_AuraFilter = function(icons, unit, icon, ...)
-	local SpellID = select(10, ...)
-	if icon.isPlayer then -- show my buffs
-		if aCoreCDB["UnitframeOptions"]["hotind_filtertype"] == "blacklist" and not aCoreCDB["UnitframeOptions"]["hotind_auralist"][SpellID] then
+local HealerInd_AuraFilter = function(icons, unit, data)
+	if data.isFromPlayerOrPlayerPet then -- show my buffs
+		if aCoreCDB["UnitframeOptions"]["hotind_filtertype"] == "blacklist" and not aCoreCDB["UnitframeOptions"]["hotind_auralist"][data.spellId] then
 			return true
-		elseif aCoreCDB["UnitframeOptions"]["hotind_filtertype"] == "whitelist"	and aCoreCDB["UnitframeOptions"]["hotind_auralist"][SpellID] then
+		elseif aCoreCDB["UnitframeOptions"]["hotind_filtertype"] == "whitelist"	and aCoreCDB["UnitframeOptions"]["hotind_auralist"][data.spellId] then
 			return true
 		end
 	end
 end
 
-local NamePlate_AuraFilter = function(icons, unit, icon, ...)
-	local SpellID = select(10, ...)
-	if icon.isPlayer then
+local NamePlate_AuraFilter = function(icons, unit, data)
+	if data.isFromPlayerOrPlayerPet then
 		if aCoreCDB["PlateOptions"]["myfiltertype"] == "none" then
 			return false
-		elseif aCoreCDB["PlateOptions"]["myfiltertype"] == "whitelist" and aCoreCDB["PlateOptions"]["myplateauralist"][SpellID] then
+		elseif aCoreCDB["PlateOptions"]["myfiltertype"] == "whitelist" and aCoreCDB["PlateOptions"]["myplateauralist"][data.spellId] then
 			return true
-		elseif aCoreCDB["PlateOptions"]["myfiltertype"] == "blacklist" and not aCoreCDB["PlateOptions"]["myplateauralist"][SpellID] then
+		elseif aCoreCDB["PlateOptions"]["myfiltertype"] == "blacklist" and not aCoreCDB["PlateOptions"]["myplateauralist"][data.spellId] then
 			return true
 		end
 	else
 		if aCoreCDB["PlateOptions"]["otherfiltertype"] == "none" then
 			return false
-		elseif aCoreCDB["PlateOptions"]["otherfiltertype"] == "whitelist" and aCoreCDB["PlateOptions"]["otherplateauralist"][SpellID] then
+		elseif aCoreCDB["PlateOptions"]["otherfiltertype"] == "whitelist" and aCoreCDB["PlateOptions"]["otherplateauralist"][data.spellId] then
 			return true
 		end
 	end
@@ -1250,14 +1245,14 @@ T.CreateAuras = function(self, unit)
 			Auras["growth-x"] = "RIGHT"
 			Auras["growth-y"] = "UP"
 			if unit == "target" and (aCoreCDB["UnitframeOptions"]["AuraFilterignoreBuff"] or aCoreCDB["UnitframeOptions"]["AuraFilterignoreDebuff"]) then
-				Auras.CustomFilter = CustomFilter
+				Auras.FilterAura = CustomFilter
 			end
 		elseif aCoreCDB["UnitframeOptions"]["playerdebuffenable"] and unit == "player" then		
 			Auras.initialAnchor = "BOTTOMLEFT"
 			Auras["growth-x"] = "RIGHT"
 			Auras["growth-y"] = "UP"
 			Auras.numBuffs = 0
-			Auras.CustomFilter = PlayerDebuffFilter
+			Auras.FilterAura = PlayerDebuffFilter
 		elseif unit == "pet" then
 			Auras:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 1, 5)
 			Auras.initialAnchor = "BOTTOMLEFT"
@@ -1272,7 +1267,7 @@ T.CreateAuras = function(self, unit)
 			Auras["growth-y"] = "UP"
 			Auras.numDebuffs = 6
 			Auras.numBuffs = 3
-			Auras.CustomFilter = BossAuraFilter
+			Auras.FilterAura = BossAuraFilter
 		elseif u == "arena" then
 			Auras:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 1, 14)
 			Auras.initialAnchor = "BOTTOMLEFT"
@@ -1285,7 +1280,7 @@ T.CreateAuras = function(self, unit)
 			Auras["growth-y"] = "DOWN"
 			Auras.numDebuffs = 1
 			Auras.numBuffs = 8
-			Auras.CustomFilter = HealerInd_AuraFilter
+			Auras.FilterAura = HealerInd_AuraFilter
 		elseif u == "party" or u == "partypet" then
 			Auras:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 1, 14)
 			Auras.initialAnchor = "BOTTOMLEFT"
@@ -1294,7 +1289,7 @@ T.CreateAuras = function(self, unit)
 			Auras.numDebuffs = 0
 			Auras.numBuffs = 5
 			if aCoreCDB["UnitframeOptions"]["usehotfilter"] then
-				Auras.CustomFilter = HealerInd_AuraFilter
+				Auras.FilterAura = HealerInd_AuraFilter
 			else
 				Auras.onlyShowPlayer = true
 			end
@@ -1319,7 +1314,7 @@ T.CreateAuras = function(self, unit)
 			Auras.numBuffs = aCoreCDB["PlateOptions"]["plateauranum"]
 			Auras.size = aCoreCDB["PlateOptions"]["plateaurasize"]
 			Auras.SetPosition = OverrideAurasSetPosition
-			Auras.CustomFilter = NamePlate_AuraFilter
+			Auras.FilterAura = NamePlate_AuraFilter
 			Auras.disableMouse = true
 			Auras.plate_element = true
 			

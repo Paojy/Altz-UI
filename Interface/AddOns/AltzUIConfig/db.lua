@@ -1215,8 +1215,6 @@ local default_HealerIndicatorAuraList = {
         [139] = true,		-- 恢复
         [41635] = true,		-- 愈合祷言
         [194384] = true,	-- 救赎
-        [152118] = true,	-- 意志洞悉
-	    [208065] = true,	-- 图雷之光	
 	},
 	DRUID = { 
 	    [774] = true,		-- 回春

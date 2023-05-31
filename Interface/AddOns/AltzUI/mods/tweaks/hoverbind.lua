@@ -2,21 +2,22 @@
 local T, C, L, G = unpack(select(2, ...))
 local F = unpack(AuroraClassic)
 
-local hide
+local hooked
 -- SLASH COMMAND
 SlashCmdList.MOUSEOVERBIND = function()
-	LoadAddOn("Blizzard_BindingUI")
-	KeyBindingFrame.keyID = 1; 
-	KeyBindingFrame:EnterQuickKeybind();
+	EditModeManagerFrame:ClearSelectedSystem();
+	EditModeManagerFrame:SetEditModeLockState("hideSelections");
+	HideUIPanel(EditModeManagerFrame);
+	QuickKeybindFrame:Show()
 	
-	if not hide then
+	if not hooked then
 		QuickKeybindFrame:HookScript("OnHide", function()
-			HideUIPanel(KeyBindingFrame)
+			HideUIPanel(SettingsPanel)
 		end)
-		KeyBindingFrame:HookScript("OnHide", function()
+		SettingsPanel:HookScript("OnHide", function()
 			HideUIPanel(GameMenuFrame)
 		end)
-		hide = true
+		hooked = true
 	end
 end
 

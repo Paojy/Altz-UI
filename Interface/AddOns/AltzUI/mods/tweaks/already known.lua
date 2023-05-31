@@ -36,8 +36,10 @@ do
 		end
 
 		tooltip:ClearLines()
-		tooltip:SetHyperlink(itemLink)
-
+		if tooltip.SetHyperlink then
+			tooltip:SetHyperlink(itemLink)
+		end
+		
 		for i = 1, tooltip:NumLines() do
 			if ( lines[i]:GetText() == ITEM_SPELL_KNOWN ) then
 				knowns[itemID] = true

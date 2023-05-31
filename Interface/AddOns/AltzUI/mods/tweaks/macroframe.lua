@@ -20,7 +20,7 @@ eframe:SetScript("OnEvent", function(self, event, arg1)
 		MacroDeleteButton:HookScript("OnClick", function()
 			if bu:GetChecked() then
 				StaticPopup_Hide("CONFIRM_DELETE_SELECTED_MACRO")
-				MacroFrame_DeleteMacro()
+				MacroFrame:DeleteMacro()
 			end
 		end)
 	end
