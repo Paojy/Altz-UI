@@ -53,6 +53,20 @@ for i = 1, 20 do
 	GUI["tab"..i] = CreateFrame("Frame", G.uiname.."GUI Tab"..i, GUI, "BackdropTemplate")
 	GUI["tab"..i]:SetScript("OnMouseDown", function() end)
 end
+
+AddonCompartmentFrame:RegisterAddon({
+	text = C_AddOns.GetAddOnMetadata("AltzUI", "Title"),
+	icon = C_AddOns.GetAddOnMetadata("AltzUI", "IconTexture"),
+	registerForAnyClick = true,
+	notCheckable = true,
+	func = function(btn, arg1, arg2, checked, mouseButton)
+		if GUI:IsShown() then
+			GUI:Hide()
+		else
+			GUI:Show()
+		end
+	end,
+})
 --====================================================--
 --[[                   -- TABS --                   ]]--
 --====================================================--
