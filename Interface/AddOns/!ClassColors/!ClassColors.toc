@@ -1,7 +1,8 @@
-## Interface: 80200
+## Interface: 100100
 ## Version: 8.0.0.1
 
 ## Title: Class Colors
+## IconTexture: 348547
 ## Notes: Change class colors without breaking parts of the default UI.
 ## Notes-deDE: Ändert die Klassenfarben ohne Interferenzen mit dem Standard-UI.
 ## Notes-esES: Cambiar los colores de clases, sin interferir con la interfaz estandár.

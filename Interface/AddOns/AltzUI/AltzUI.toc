@@ -1,7 +1,8 @@
-﻿## Interface: 100000
+﻿## Interface: 100100
 ## Title: |cffEE3A8CAltz|rUI
+## IconTexture: 348547
 ## X-oUF: AltzUF
-## Version: 10.01
+## Version: 10.02
 ## Author: Paopao001
 ## Dependencies: AltzUIConfig
 ## X-DBM-Timer-Skin: 1

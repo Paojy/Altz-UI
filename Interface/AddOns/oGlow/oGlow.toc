@@ -1,5 +1,6 @@
-## Interface: 80200
+## Interface: 100100
 ## Title: oGlow
+## IconTexture: 348547
 ## Author: Haste
 ## Version: 2.2.5
 ## SavedVariables: oGlowDB

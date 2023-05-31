@@ -1,6 +1,7 @@
-﻿## Interface: 100000
+﻿## Interface: 100100
 ## Title: |cffEE3A8CAltz|rUI Config
-## Version: 10.01
+## IconTexture: 348547
+## Version: 10.02
 ## Author: Paopao001
 ## Dependencies: AuroraClassic
 ## OptionalDeps: !ClassColors, Skada, DBM-Core, BigWigs

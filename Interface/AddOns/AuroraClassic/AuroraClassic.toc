@@ -1,5 +1,6 @@
 ## Interface: 100007
 ## Title: |cff0080ffAuroraClassic|r
+## IconTexture: 348547
 ## Title-zhCN: |cff0080ffAuroraClassic|r 材质美化
 ## Title-zhTW: |cff0080ffAuroraClassic|r 材質美化
 ## Notes: Classical UI Style for WoW UIs.
