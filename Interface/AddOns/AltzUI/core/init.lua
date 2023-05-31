@@ -27,7 +27,6 @@ for i = 1, 3 do
 	G.combatFont["combat"..i] = "Interface\\AddOns\\AltzUI\\media\\combat"..i..".ttf"
 end
 
-
 G.media = {
 	blank = "Interface\\Buttons\\WHITE8x8",
 	bar = "Interface\\AddOns\\AltzUI\\media\\statusbar",
@@ -40,6 +39,14 @@ G.media = {
 	combat = "Interface\\AddOns\\AltzUI\\media\\combat",
 	iconcastbar = "Interface\\AddOns\\AltzUI\\media\\dM3",
 }
+
+local LSM = LibStub("LibSharedMedia-3.0")
+
+LSM.MediaTable.font["AltzUI"]							= [[Interface\AddOns\AltzUI\media\font.ttf]]
+LSM.MediaTable.font["AltzUI_number"]					= [[Interface\AddOns\AltzUI\media\number.ttf]]
+LSM.MediaTable.border["AltzUI_glow"]					= [[Interface\AddOns\AltzUI\media\glow]]
+LSM.MediaTable.statusbar["AltzUI_bar"]					= [[Interface\AddOns\AltzUI\media\statusbar]]
+LSM.MediaTable.statusbar["AltzUI_ufbar"]				= [[Interface\AddOns\AltzUI\media\ufbar]]
 
 G.Iconpath = "Interface\\AddOns\\AltzUI\\media\\icons\\"
 
@@ -81,3 +88,5 @@ BACKDROP_ALTZ_3 = {
 
 BACKDROP_ALTZ_COLOR_0	= CreateColor(0, 0, 0, 1)
 BACKDROP_ALTZ_COLOR_15	= CreateColor(.15, .15, .15, 1)
+
+

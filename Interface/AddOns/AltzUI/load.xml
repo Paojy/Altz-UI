@@ -1,4 +1,9 @@
 ﻿<Ui xmlns="http://www.blizzard.com/wow/ui/">
+	<Include file="lib\oUF\oUF.xml"/>
+	<Script file= "lib\LibStub\LibStub.lua"/>
+	<Script file="lib\CallbackHandler-1.0\CallbackHandler-1.0.lua"/>	
+	<Include file="lib\LibSharedMedia-3.0\lib.xml"/>
+	
 	<Script file="core\init.lua"/>
 	
 	<Script file="locals\chinese.lua"/>	
@@ -6,8 +11,6 @@
 	<Script file="locals\portuguese.lua"/>
 	<Script file="locals\english.lua"/>
 
-	<Include file="lib\oUF\oUF.xml"/>
-	
 	<Script file="core\api.lua"/>
 	<Script file="core\moving.lua"/>
 	<Script file="core\fader.lua"/>
