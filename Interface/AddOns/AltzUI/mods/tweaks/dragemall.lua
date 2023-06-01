@@ -48,6 +48,7 @@ local frames = {
 	["VideoOptionsFrame"] = false,
 	["EncounterJournal"] = false,
 	["ContainerFrameCombinedBags"] = false,
+	["WorldMapFrame"] = false,
 }
 
 -- Frames provided by load on demand addons, hooked when the addon is loaded.
@@ -90,10 +91,6 @@ local lodFrames = {
 
 local parentFrame = {}
 local hooked = {}
-
-local function print(msg)
-  DEFAULT_CHAT_FRAME:AddMessage("DragEmAll: " .. msg)
-end
 
 function addon:PLAYER_LOGIN()
   self:HookFrames(frames)
