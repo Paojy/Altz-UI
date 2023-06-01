@@ -9,11 +9,10 @@ local timersize = aCoreCDB["UnitframeOptions"]["hotind_size"]-3
 -- [[ Healers' indicators ]] -- 
 
 -- Priest 牧师
-local pomCount = {"①","②","③","④","⑤","⑥","⑦","⑧","⑨","⑩","⑪","⑫","⑬","⑭","⑮","⑯","⑰","⑱","⑲","⑳",}
 oUF.Tags.Methods['Mlight:pom'] = function(u) -- 愈合祷言
     local name,_, c = AuraUtil.FindAuraByName(GetSpellInfo(41635), u, "PLAYER|HELPFUL")
 	if name and c then
-        if c and c ~= 0 then return "|cff66FFFF"..pomCount[c].."|r" end
+        if c and c ~= 0 then return "|cff66FFFF["..c.."]|r" end
 	end
 end
 oUF.Tags.Events['Mlight:pom'] = "UNIT_AURA"
@@ -176,11 +175,10 @@ oUF.Tags.Methods['Mlight:ripTime'] = function(u) --激流
 end
 oUF.Tags.Events['Mlight:ripTime'] = 'UNIT_AURA'
 
-local pomCount = {"①","②","③","④","⑤","⑥","⑦","⑧","⑨","⑩","⑪","⑫","⑬","⑭","⑮","⑯","⑰","⑱","⑲","⑳",}
 oUF.Tags.Methods['Mlight:ddzd'] = function(u) -- 大地之盾
     local name,_, c = AuraUtil.FindAuraByName(GetSpellInfo(974), u, "PLAYER|HELPFUL")
 	if name and c then
-        if c and c ~= 0 then return "|cff66FFFF"..pomCount[c].."|r" end
+        if c and c ~= 0 then return "|cff66FFFF["..c.."]|r" end
 	end
 end
 oUF.Tags.Events['Mlight:ddzd'] = "UNIT_AURA"
@@ -445,10 +443,10 @@ local Enable = function(self)
         self.AuraStatusTR = self.Health:CreateFontString(nil, "OVERLAY")
         self.AuraStatusTR:ClearAllPoints()
         
-		if G.myClass == "DRUID" or G.myClass == "MONK" or G.myClass == "SHAMAN" then
+		if G.myClass == "DRUID" or G.myClass == "MONK" then
 			self.AuraStatusTR:SetPoint("TOPRIGHT", 0, 0)
 			self.AuraStatusTR:SetFont(G.norFont, timersize, "OUTLINE") -- 数字
-		elseif G.myClass == "PRIEST" then
+		elseif G.myClass == "PRIEST" or G.myClass == "SHAMAN" then
 			self.AuraStatusTR:SetPoint("TOPRIGHT", 0, 0)
 			self.AuraStatusTR:SetFont(G.norFont, timersize+3, "OUTLINE") -- 大数字
 		else
