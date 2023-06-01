@@ -1020,24 +1020,24 @@ GameMenuButtonRatings:SetPoint("TOP", GameMenuButton, "BOTTOM", 0, -1)
 function GameMenuFrame_UpdateVisibleButtons(self)
 	local height = 332;
 
-	local buttonToReanchor = GameMenuButtonWhatsNew;
-	local reanchorYOffset = -1;
+	local buttonToReanchor = GameMenuButtonWhatsNew
+	local reanchorYOffset = -1
 
 	if IsCharacterNewlyBoosted() or not C_SplashScreen.CanViewSplashScreen()  then
-		GameMenuButtonWhatsNew:Hide();
-		height = height - 20;
-		buttonToReanchor = GameMenuButtonOptions;
-		reanchorYOffset = -16;
+		GameMenuButtonWhatsNew:Hide()
+		height = height - 20
+		buttonToReanchor = GameMenuButtonSettings
+		reanchorYOffset = -16
 	else
-		GameMenuButtonWhatsNew:Show();
+		GameMenuButtonWhatsNew:Show()
 	end
 
 	if ( C_StorePublic.IsEnabled() ) then
 		height = height + 20;
-		GameMenuButtonStore:Show();
+		GameMenuButtonStore:Show()
 		buttonToReanchor:SetPoint("TOP", GameMenuButtonStore, "BOTTOM", 0, reanchorYOffset);
 	else
-		GameMenuButtonStore:Hide();
+		GameMenuButtonStore:Hide()
 		buttonToReanchor:SetPoint("TOP", GameMenuButtonHelp, "BOTTOM", 0, reanchorYOffset);
 	end
 	
