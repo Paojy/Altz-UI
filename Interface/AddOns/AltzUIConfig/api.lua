@@ -103,6 +103,10 @@ end
 
 T.dummy = function() end
 
+T.GetIconLink = function(spellID)
+	local icon = select(3, GetSpellInfo(spellID))
+	return "|T"..icon..":12:12:0:0:64:64:4:60:4:60|t"..GetSpellLink(spellID)
+end
 --====================================================--
 --[[           -- GUI Functions --                  ]]--
 --====================================================--

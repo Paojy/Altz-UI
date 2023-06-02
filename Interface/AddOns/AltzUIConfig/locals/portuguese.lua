@@ -231,6 +231,8 @@ L["图标指示器"] = "Indicador estilo: ícone"
 --L["自动添加团队减益提示"] = "The newly-discovered Raid&Dungeon debuffs are automatically added to the list. You can delete the newly added debuffs from the debuff list, or disable them from being displayed through the debuff blacklist filter."
 --L["自动添加的图标层级"] = "Icon Priority"
 L["团队工具"] = "Ferramentas de Raide"
+--L["杂兵"] = "Trash"
+--L["已删除并加入黑名单"] = "|cff7FFF00Deleted and added to blacklist:%s|r"
 
 -- 动作条
 --L["向上排列"] = "Grow Bar Upwards"

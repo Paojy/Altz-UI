@@ -130,27 +130,24 @@ checkEncounter:RegisterEvent("ENCOUNTER_START")
 checkEncounter:RegisterEvent("ENCOUNTER_END")
 checkEncounter:RegisterEvent("PLAYER_ENTERING_WORLD")
 checkEncounter:SetScript("OnEvent", function(self, event, ...)
-	local encounterID, encounterName = ...
+	local encounterID = ...
 	if event == "ENCOUNTER_START" then
-		current_encounter = encounterName
+		current_encounter = encounterID
 	else
-		current_encounter = ""
+		current_encounter = 1
 	end
 end)
 
-local gold_str = "|Hgarrmission:altz_config_altz::%s::%s::%s::%s|h|cFFFFD700[%s]|r|h"
-local red_str = "|Hgarrmission:altz_delete_altz::%s::%s::%s::%s|h|cFFDC143C[%s]|r|h"
+local gold_str = "|Hgarrmission:altz_config_altz::%s::%s::%s|h|cFFFFD700[%s]|r|h"
+local red_str = "|Hgarrmission:altz_delete_altz::%s::%s::%s|h|cFFDC143C[%s]|r|h"
 
-local CustomFilter = function(...)
-    local name, _, _, dtype, _, _, caster, spellID, _, castByPlayer = ...
-	
+local CustomFilter = function(name, dtype, spellID, castByPlayer)
     local priority = 0
 	local asc = false
-	
+
     --if ascending[name] then
         --asc = true
     --end
-	
 	if aCoreCDB["CooldownAura"]["Debuffs_Black"][name] then -- 黑名单不显示
 		return 0, false
 	elseif aCoreCDB["CooldownAura"]["Debuffs"][name] then -- 白名单显示
@@ -158,22 +155,46 @@ local CustomFilter = function(...)
 	elseif dispellist[dtype] then -- 可驱散
         priority = dispelPriority[dtype]
 	elseif IsInInstance() then -- 副本
-		local map, ins
-		map = C_Map.GetBestMapForUnit("player")
-		if map then
-			ins = EJ_GetInstanceInfo(EJ_GetInstanceForMap(map))
-			if ins and aCoreCDB["RaidDebuff"][ins] then
-				for boss, debufflist in pairs(aCoreCDB["RaidDebuff"][ins]) do
-					if debufflist[name] then
-						priority = debufflist[name].level
-						return priority, asc
-					end
+	
+		local map = C_Map.GetBestMapForUnit("player")
+		local InstanceID = map and EJ_GetInstanceForMap(map)
+		if map and InstanceID then
+			if not aCoreCDB["RaidDebuff"][InstanceID] then
+				aCoreCDB["RaidDebuff"][InstanceID] = {}
+			end
+			if current_encounter == 1 then
+				if not aCoreCDB["RaidDebuff"][InstanceID][1] then
+					aCoreCDB["RaidDebuff"][InstanceID][1] = {}
 				end
-				-- 没有找到
-				if aCoreCDB["UnitframeOptions"]["debuff_auto_add"] and not castByPlayer and aCoreCDB["RaidDebuff"][ins]["Trash"] then
-					aCoreCDB["RaidDebuff"][ins]["Trash"][name] = {id = spellID, level = aCoreCDB["UnitframeOptions"]["debuff_auto_add_level"]}
-					print(format(L["添加团队减益"], L["杂兵"], T.GetIconLink(spellID)), format(gold_str, ins, "Trash", name, spellID, L["设置"]), format(red_str, ins, "Trash", name, spellID, L["删除并加入黑名单"]))
+				
+				if aCoreCDB["RaidDebuff"][InstanceID][1][spellID] then -- 找到了
+					priority = aCoreCDB["RaidDebuff"][InstanceID][1][spellID]
+				elseif aCoreCDB["UnitframeOptions"]["debuff_auto_add"] and not castByPlayer then -- 没有找到，可以添加
+					aCoreCDB["RaidDebuff"][InstanceID][1][spellID] = aCoreCDB["UnitframeOptions"]["debuff_auto_add_level"]
+					print(format(L["添加团队减益"], L["杂兵"], T.GetIconLink(spellID)), format(gold_str, InstanceID, 1, spellID, L["设置"]), format(red_str, InstanceID, 1, spellID, L["删除并加入黑名单"]))
 					priority = aCoreCDB["UnitframeOptions"]["debuff_auto_add_level"]
+				end
+			elseif current_encounter then -- BOSS战斗中
+				local dataIndex = 1
+				EJ_SelectInstance(InstanceID)
+				local encounterName, _, encounterID, _, _, _, dungeonEncounterID = EJ_GetEncounterInfoByIndex(dataIndex, InstanceID)
+				while encounterName ~= nil do
+					if dungeonEncounterID == current_encounter then
+						if not aCoreCDB["RaidDebuff"][InstanceID][encounterID] then
+							aCoreCDB["RaidDebuff"][InstanceID][encounterID] = {}
+						end
+						if aCoreCDB["RaidDebuff"][InstanceID][encounterID][spellID] then -- 找到了
+							priority = aCoreCDB["RaidDebuff"][InstanceID][encounterID][spellID]
+						elseif aCoreCDB["UnitframeOptions"]["debuff_auto_add"] and not castByPlayer then -- 没有找到，可以添加
+							aCoreCDB["RaidDebuff"][InstanceID][encounterID][spellID] = aCoreCDB["UnitframeOptions"]["debuff_auto_add_level"]
+							print(format(L["添加团队减益"], encounterName, T.GetIconLink(spellID)), format(gold_str, InstanceID, encounterID, spellID, L["设置"]), format(red_str, InstanceID, encounterID, spellID, L["删除并加入黑名单"]))
+							priority = aCoreCDB["UnitframeOptions"]["debuff_auto_add_level"]
+						end
+						break
+					end
+					dataIndex = dataIndex + 1
+					EJ_SelectInstance(InstanceID)
+					encounterName, _, encounterID, _, _, _, dungeonEncounterID = EJ_GetEncounterInfoByIndex(dataIndex, InstanceID)
 				end
 			end
 		end
@@ -211,21 +232,26 @@ local AuraTimer = function(self, elapsed)
     end
 end
 
-local updateDebuff = function(backdrop, icon, texture, count, dtype, duration, expires)
+local updateDispelBorderColor = function(backdrop, dispel_type)
+	if dispel_type then
+		local color = DebuffTypeColor[dispel_type]
+		backdrop:SetBackdropBorderColor(color.r, color.g, color.b)
+	else
+		backdrop:SetBackdropBorderColor(0, 0, 0)
+	end
+end
+
+local updateDebuff = function(icon, texture, count, dtype, duration, expires)
     local color = DebuffTypeColor[dtype] or DebuffTypeColor.none
 
     icon.border:SetBackdropBorderColor(color.r, color.g, color.b)
-	
-	if backdrop then
-		if dispellist[dtype] then
-			backdrop:SetBackdropBorderColor(color.r, color.g, color.b)
-		else
-			backdrop:SetBackdropBorderColor(0, 0, 0)
-		end
-	end
-	
     icon.icon:SetTexture(texture)
-    icon.count:SetText((count > 1 and count))
+	
+	if count and count> 1 then
+		icon.count:SetText()
+	else
+		icon.count:SetText("")
+	end
 
     icon.expires = expires
     icon.duration = duration
@@ -250,11 +276,12 @@ local Update = function(self, event, unit)
 	local backdrop = self.backdrop
 	
     local index = 1
+	local dispel_type
     while true do
         local name, texture, count, dtype, duration, expires, caster, _, _, spellID, _, isBossDebuff, castByPlayer = UnitDebuff(unit, index)
         if not name then break end
 		
-		local priority, asc = CustomFilter(name, texture, count, dtype, duration, expires, caster, spellID, isBossDebuff, castByPlayer)
+		local priority, asc = CustomFilter(name, dtype, spellID, castByPlayer)
 		
 		if priority > 0 then
 			active_dubuffs[name] = {}
@@ -268,8 +295,14 @@ local Update = function(self, event, unit)
 			active_dubuffs[name]["expires"] = expires
 		end
 		
+		if not dispel_type and dispellist[dtype] then -- 可驱散，只取第一个
+			dispel_type = dtype
+		end
+		
 		index = index + 1
     end
+	
+	updateDispelBorderColor(backdrop, dispel_type)
 	
 	if index > 1 then
 		local t = {}
@@ -288,11 +321,7 @@ local Update = function(self, event, unit)
 						auras["button"..k] = CreateAuraIcon(auras, Icon_size, "LEFT", auras["button"..(k-1)], "RIGHT", 3, 0)
 					end
 				end
-				if k == 1 then
-					updateDebuff(backdrop, auras["button"..k], info["texture"], info["count"], info["dtype"], info["duration"], info["expires"])
-				else
-					updateDebuff(nil, auras["button"..k], info["texture"], info["count"], info["dtype"], info["duration"], info["expires"])
-				end
+				updateDebuff(auras["button"..k], info["texture"], info["count"], info["dtype"], info["duration"], info["expires"])
 				auras["button"..k]:Show()
 			end
 		end
