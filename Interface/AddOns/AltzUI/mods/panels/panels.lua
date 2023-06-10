@@ -228,6 +228,7 @@ end)
 
 -- 地名
 MinimapCluster.ZoneTextButton:SetFrameLevel(Minimap:GetFrameLevel()+1)
+MinimapCluster.ZoneTextButton:SetWidth(80)
 MinimapZoneText:ClearAllPoints()
 MinimapZoneText:SetPoint("LEFT", MinimapCluster.ZoneTextButton, "LEFT", 0, 0)
 
