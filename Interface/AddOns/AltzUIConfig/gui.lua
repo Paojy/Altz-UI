@@ -1796,6 +1796,10 @@ local function CreateRaidDebuffOptions()
 				frame.debufflist:Show()
 			end)
 			
+			if not aCoreCDB["RaidDebuff"][instanceID] then
+				aCoreCDB["RaidDebuff"][instanceID] = {}
+			end
+			
 			dataIndex = dataIndex + 1
 			instanceID, name = EJ_GetInstanceByIndex(dataIndex, false)
 		end
@@ -1825,6 +1829,10 @@ local function CreateRaidDebuffOptions()
 					frame.debufflist:Show()
 				end)
 				
+				if not aCoreCDB["RaidDebuff"][instanceID] then
+					aCoreCDB["RaidDebuff"][instanceID] = {}
+				end
+			
 				dataIndex = dataIndex + 1
 				instanceID, name = EJ_GetInstanceByIndex(dataIndex, true)
 			end

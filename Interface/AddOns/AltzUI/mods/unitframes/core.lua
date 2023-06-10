@@ -1148,7 +1148,7 @@ local OverrideAurasSetPosition = function(auras, from, to)
 end
 
 local CustomFilter = function(icons, unit, data)
-	if data.isFromPlayerOrPlayerPet then -- show all my auras
+	if data.sourceUnit == "player" then -- show all my auras
 		return true
 	elseif UnitIsFriend("player", unit) and (not aCoreCDB["UnitframeOptions"]["AuraFilterignoreBuff"] or data.isHarmful) then
 		return true
@@ -1160,7 +1160,7 @@ local CustomFilter = function(icons, unit, data)
 end
 
 local BossAuraFilter = function(icons, unit, data)
-	if data.isFromPlayerOrPlayerPet or data.isHelpful then -- show buff and my auras
+	if data.sourceUnit == "player" or data.isHelpful then -- show buff and my auras
 		return true
 	elseif whitelist[tostring(data.spellId)] then
 		return true
@@ -1188,7 +1188,7 @@ local PlayerDebuffFilter = function(icons, unit, data)
 end
 
 local HealerInd_AuraFilter = function(icons, unit, data)
-	if data.isFromPlayerOrPlayerPet then -- show my buffs
+	if data.sourceUnit == "player" then -- show my buffs
 		if aCoreCDB["UnitframeOptions"]["hotind_filtertype"] == "blacklist" and not aCoreCDB["UnitframeOptions"]["hotind_auralist"][data.spellId] then
 			return true
 		elseif aCoreCDB["UnitframeOptions"]["hotind_filtertype"] == "whitelist"	and aCoreCDB["UnitframeOptions"]["hotind_auralist"][data.spellId] then
@@ -1198,7 +1198,7 @@ local HealerInd_AuraFilter = function(icons, unit, data)
 end
 
 local NamePlate_AuraFilter = function(icons, unit, data)
-	if data.isFromPlayerOrPlayerPet then
+	if data.sourceUnit == "player" then
 		if aCoreCDB["PlateOptions"]["myfiltertype"] == "none" then
 			return false
 		elseif aCoreCDB["PlateOptions"]["myfiltertype"] == "whitelist" and aCoreCDB["PlateOptions"]["myplateauralist"][data.spellId] then
@@ -1207,9 +1207,7 @@ local NamePlate_AuraFilter = function(icons, unit, data)
 			return true
 		end
 	else
-		if aCoreCDB["PlateOptions"]["otherfiltertype"] == "none" then
-			return false
-		elseif aCoreCDB["PlateOptions"]["otherfiltertype"] == "whitelist" and aCoreCDB["PlateOptions"]["otherplateauralist"][data.spellId] then
+		if aCoreCDB["PlateOptions"]["otherfiltertype"] == "whitelist" and aCoreCDB["PlateOptions"]["otherplateauralist"][data.spellId] then
 			return true
 		end
 	end

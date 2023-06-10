@@ -158,10 +158,7 @@ local CustomFilter = function(name, dtype, spellID, castByPlayer)
 	
 		local map = C_Map.GetBestMapForUnit("player")
 		local InstanceID = map and EJ_GetInstanceForMap(map)
-		if map and InstanceID then
-			if not aCoreCDB["RaidDebuff"][InstanceID] then
-				aCoreCDB["RaidDebuff"][InstanceID] = {}
-			end
+		if map and InstanceID and aCoreCDB["RaidDebuff"][InstanceID] then -- 排除非手册副本、如场景战役
 			if current_encounter == 1 then
 				if not aCoreCDB["RaidDebuff"][InstanceID][1] then
 					aCoreCDB["RaidDebuff"][InstanceID][1] = {}

@@ -875,8 +875,14 @@ T.ExportSettings = function(editbox)
 							end
 						end
 					elseif OptionCategroy == "CooldownAura" then -- 完全复制 5
-						for auraname, aurainfo in pairs (aCoreCDB["CooldownAura"][setting]) do
-							str = str.."^"..OptionCategroy.."~"..setting.."~"..auraname.."~"..aurainfo.id.."~"..aurainfo.level
+						if setting == "Debuffs_Black" then
+							for auraname, aurainfo in pairs (aCoreCDB["CooldownAura"][setting]) do
+								str = str.."^"..OptionCategroy.."~"..setting.."~"..auraname.."~"..aurainfo.id
+							end
+						else
+							for auraname, aurainfo in pairs (aCoreCDB["CooldownAura"][setting]) do
+								str = str.."^"..OptionCategroy.."~"..setting.."~"..auraname.."~"..aurainfo.id.."~"..aurainfo.level
+							end
 						end
 					elseif OptionCategroy == "ItemOptions" then
 						if setting == "autobuylist" then -- 完全复制 4
@@ -989,6 +995,7 @@ T.ImportSettings = function(str)
 				aCoreCDB.CooldownAura = {}
 				aCoreCDB.CooldownAura.Buffs = {}
 				aCoreCDB.CooldownAura.Debuffs = {}
+				aCoreCDB.CooldownAura.Debuffs_Black = {}
 			end
 			
 			if sameclass then
@@ -1030,7 +1037,9 @@ T.ImportSettings = function(str)
 								if aCoreCDB[OptionCategroy][setting][arg1] == nil then
 									aCoreCDB[OptionCategroy][setting][arg1] = {}
 									aCoreCDB[OptionCategroy][setting][arg1]["id"] = tonumber(arg2)
-									aCoreCDB[OptionCategroy][setting][arg1]["level"] = tonumber(arg3)
+									if setting ~= "Debuffs_Black" then
+										aCoreCDB[OptionCategroy][setting][arg1]["level"] = tonumber(arg3)
+									end
 								end
 							end
 						elseif OptionCategroy == "ItemOptions" then
