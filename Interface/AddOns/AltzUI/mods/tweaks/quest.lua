@@ -433,7 +433,7 @@ if autoquests then
 				local level = GetQuestItemLevel()
 				questTip:Hide()
 				if(not level or level <= UnitLevel("player")) then
-					UseContainerItem(bag, slot)
+					C_Container.UseContainerItem(bag, slot)
 				end
             end
         end

@@ -102,7 +102,7 @@ function eventframe:MERCHANT_SHOW()
 				local link = C_Container.GetContainerItemLink(bag, slot)
 				local id = C_Container.GetContainerItemID(bag, slot)
 				if link and (select(3, GetItemInfo(link))==0) and not greylist[id] then
-					UseContainerItem(bag, slot)
+					C_Container.UseContainerItem(bag, slot)
 				end
 			end
 		end
