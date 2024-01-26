@@ -7,24 +7,6 @@ local function ReanchorTutorial(button)
 	button:SetPoint("TOPLEFT", PlayerTalentFrame, "TOPLEFT", -12, 12)
 end
 
-local function ReskinPvPTalent(self)
-	if not self.styled then
-		B.ReskinIcon(self.Icon)
-		local bg = B.CreateBDFrame(self, .25)
-		bg:SetPoint("TOPLEFT", self.Icon, "TOPRIGHT", 0, C.mult)
-		bg:SetPoint("BOTTOMRIGHT", -1, C.mult)
-		local hl = self:GetHighlightTexture()
-		hl:SetColorTexture(1, 1, 1, .1)
-		hl:SetInside(bg)
-		self:GetRegions():SetAlpha(0)
-		self.Selected:SetColorTexture(r, g, b, .25)
-		self.Selected:SetDrawLayer("BACKGROUND")
-		self.Selected:SetInside(bg)
-
-		self.styled = true
-	end
-end
-
 C.themes["Blizzard_TalentUI"] = function()
 	PlayerTalentFrameTalents:DisableDrawLayer("BORDER")
 	PlayerTalentFrameTalentsBg:Hide()
@@ -75,22 +57,11 @@ C.themes["Blizzard_TalentUI"] = function()
 			bu.specIcon:SetSize(58, 58)
 			bu.specIcon:SetPoint("LEFT", bu, "LEFT")
 			B.ReskinIcon(bu.specIcon)
-
-			local roleIcon = bu.roleIcon
-			roleIcon:SetTexture(DB.rolesTex)
-			B.CreateBDFrame(roleIcon):SetFrameLevel(2)
-			if role then
-				roleIcon:SetTexCoord(B.GetRoleTexCoord(role))
-			end
 		end
 
 		local scrollChild = frame.spellsScroll.child
 		B.StripTextures(scrollChild)
 		B.ReskinIcon(scrollChild.specIcon)
-
-		local roleIcon = scrollChild.roleIcon
-		roleIcon:SetTexture(DB.rolesTex)
-		B.CreateBDFrame(roleIcon)
 	end
 
 	hooksecurefunc("PlayerTalentFrame_UpdateSpecFrame", function(self, spec)
@@ -103,9 +74,6 @@ C.themes["Blizzard_TalentUI"] = function()
 
 		local scrollChild = self.spellsScroll.child
 		scrollChild.specIcon:SetTexture(icon)
-		if role then
-			scrollChild.roleIcon:SetTexCoord(B.GetRoleTexCoord(role))
-		end
 
 		local index = 1
 		local bonuses
@@ -206,15 +174,5 @@ C.themes["Blizzard_TalentUI"] = function()
 	B.Reskin(select(4, talentList:GetChildren()), nil)
 
 	B.StripTextures(PlayerTalentFrameTalentsPvpTalentFrame)
-	if DB.isPatch10_1 then
-		B.ReskinTrimScroll(talentList.ScrollBar)
-		-- todo, might removed in the future build
-	else
-		B.ReskinScroll(PlayerTalentFrameTalentsPvpTalentFrameTalentListScrollFrameScrollBar)
-
-		for i = 1, 10 do
-			local bu = _G["PlayerTalentFrameTalentsPvpTalentFrameTalentListScrollFrameButton"..i]
-			hooksecurefunc(bu, "Update", ReskinPvPTalent)
-		end
-	end
+	B.ReskinTrimScroll(talentList.ScrollBar)
 end

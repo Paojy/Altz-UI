@@ -1,6 +1,6 @@
 local _, ns = ...
 local B, C, L, DB = unpack(ns)
-local GetAddOnMetadata = GetAddOnMetadata or C_AddOns.GetAddOnMetadata -- isPatch10_1
+local GetAddOnMetadata = C_AddOns.GetAddOnMetadata
 
 -- [[ Options UI ]]
 

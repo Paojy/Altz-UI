@@ -3,15 +3,9 @@ local B, C, L, DB = unpack(ns)
 
 tinsert(C.defaultThemes, function()
 	-- Ready check
-	B.SetBD(ReadyCheckFrame)
+	B.StripTextures(ReadyCheckListenerFrame)
+	B.SetBD(ReadyCheckListenerFrame, nil, 30, -1, 1, -1)
 	ReadyCheckPortrait:SetAlpha(0)
-	select(2, ReadyCheckListenerFrame:GetRegions()):Hide()
-
-	ReadyCheckFrame:HookScript("OnShow", function(self)
-		if self.initiator and UnitIsUnit("player", self.initiator) then
-			self:Hide()
-		end
-	end)
 
 	B.Reskin(ReadyCheckFrameYesButton)
 	B.Reskin(ReadyCheckFrameNoButton)

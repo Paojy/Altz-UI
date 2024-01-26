@@ -4,7 +4,6 @@ local B, C, L, DB = unpack(ns)
 local r, g, b = DB.r, DB.g, DB.b
 
 local function reskinHeader(header)
-	header.flashAnim.Play = B.Dummy
 	for i = 4, 18 do
 		select(i, header.button:GetRegions()):SetTexture("")
 	end
@@ -13,7 +12,6 @@ local function reskinHeader(header)
 	header.descriptionBGBottom:SetAlpha(0)
 	header.description:SetTextColor(1, 1, 1)
 	header.button.title:SetTextColor(1, 1, 1)
-	header.button.title.SetTextColor = B.Dummy
 	header.button.expandedIcon:SetWidth(20) -- don't wrap the text
 end
 
@@ -125,7 +123,6 @@ C.themes["Blizzard_EncounterJournal"] = function()
 				hl:SetInside(child.__bg)
 
 				child.text:SetTextColor(1, 1, 1)
-				child.text.SetTextColor = B.Dummy
 				child.creature:SetPoint("TOPLEFT", 0, -4)
 
 				child.styled = true
@@ -185,16 +182,10 @@ C.themes["Blizzard_EncounterJournal"] = function()
 	bg:SetPoint("TOPLEFT", -3, 3)
 	bg:SetPoint("BOTTOMRIGHT", showAllResults, 3, -3)
 
-	if DB.isPatch10_1 then
-		for i = 1, EncounterJournalSearchBox:GetNumChildren() do
-			local child = select(i, EncounterJournalSearchBox:GetChildren())
-			if child.iconFrame then
-				B.StyleSearchButton(child)
-			end
-		end
-	else
-		for i = 1, 5 do
-			B.StyleSearchButton(EncounterJournalSearchBox["sbutton"..i])
+	for i = 1, EncounterJournalSearchBox:GetNumChildren() do
+		local child = select(i, EncounterJournalSearchBox:GetChildren())
+		if child.iconFrame then
+			B.StyleSearchButton(child)
 		end
 	end
 	B.StyleSearchButton(showAllResults)
@@ -237,13 +228,8 @@ C.themes["Blizzard_EncounterJournal"] = function()
 	B.ReskinTrimScroll(EncounterJournal.encounter.instance.LoreScrollBar)
 	B.ReskinTrimScroll(EncounterJournal.encounter.info.BossesScrollBar)
 	B.ReskinTrimScroll(EncounterJournal.encounter.info.LootContainer.ScrollBar)
-	if DB.isPatch10_1 then
-		B.ReskinTrimScroll(EncounterJournal.encounter.info.overviewScroll.ScrollBar)
-		B.ReskinTrimScroll(EncounterJournal.encounter.info.detailsScroll.ScrollBar)
-	else
-		B.ReskinScroll(EncounterJournal.encounter.info.overviewScroll.ScrollBar)
-		B.ReskinScroll(EncounterJournal.encounter.info.detailsScroll.ScrollBar)
-	end
+	B.ReskinTrimScroll(EncounterJournal.encounter.info.overviewScroll.ScrollBar)
+	B.ReskinTrimScroll(EncounterJournal.encounter.info.detailsScroll.ScrollBar)
 
 	local buttons = {
 		EncounterJournalEncounterFrameInfoDifficulty,
@@ -395,22 +381,11 @@ C.themes["Blizzard_EncounterJournal"] = function()
 		end
 
 		local itemSetsFrame = EncounterJournal.LootJournalItems.ItemSetsFrame
-		if DB.isPatch10_1 then
-			B.ReskinTrimScroll(itemSetsFrame.ScrollBar)
+		B.ReskinTrimScroll(itemSetsFrame.ScrollBar)
 
-			hooksecurefunc(itemSetsFrame.ScrollBox, "Update", function(self)
-				self:ForEachFrame(reskinBar)
-			end)
-		else
-			B.ReskinScroll(itemSetsFrame.scrollBar)
-
-			hooksecurefunc(itemSetsFrame, "UpdateList", function(self)
-				local buttons = self.buttons
-				for i = 1, #buttons do
-					reskinBar(buttons[i])
-				end
-			end)
-		end
+		hooksecurefunc(itemSetsFrame.ScrollBox, "Update", function(self)
+			self:ForEachFrame(reskinBar)
+		end)
 		reskinFilterToggle(itemSetsFrame.ClassButton)
 	end
 
@@ -419,5 +394,22 @@ C.themes["Blizzard_EncounterJournal"] = function()
 	if frame then
 		B.StripTextures(frame)
 		B.ReskinTrimScroll(frame.ScrollBar)
+
+		local function replaceTextColor(container)
+			container.NameText:SetTextColor(1, 1, 1)
+		end
+
+		local function handleText(button)
+			local container = button.TextContainer
+			if container and not container.styled then
+				replaceTextColor(container)
+				hooksecurefunc(container, "UpdateTextColor", replaceTextColor)
+				container.styled = true
+			end
+		end
+
+		hooksecurefunc(frame.ScrollBox, "Update", function(self)
+			self:ForEachFrame(handleText)
+		end)
 	end
 end

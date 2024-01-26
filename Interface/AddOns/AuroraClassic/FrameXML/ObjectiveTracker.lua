@@ -253,7 +253,8 @@ tinsert(C.defaultThemes, function()
 
 	hooksecurefunc("Scenario_ChallengeMode_SetUpAffixes", B.AffixesSetup)
 
-	-- Rewards on bonus tracker
+	--[=[ Rewards on bonus tracker, todo
+
 	hooksecurefunc("BonusObjectiveTracker_AnimateReward", function(block)
 		local rewardsFrame = block.module.rewardsFrame
 		local rewards = rewardsFrame.Rewards
@@ -266,12 +267,10 @@ tinsert(C.defaultThemes, function()
 			reward.styled = true
 		end
 	end)
+	]=]
 
 	-- Maw buffs container
 	ReskinMawBuffsContainer(ScenarioBlocksFrame.MawBuffsBlock.Container)
-	if not DB.isPatch10_1 then
-		ReskinMawBuffsContainer(MawBuffsBelowMinimapFrame.Container)
-	end
 
 	-- Reskin Headers
 	local headers = {
@@ -283,6 +282,7 @@ tinsert(C.defaultThemes, function()
 		BONUS_OBJECTIVE_TRACKER_MODULE.Header,
 		WORLD_QUEST_TRACKER_MODULE.Header,
 		MONTHLY_ACTIVITIES_TRACKER_MODULE.Header,
+		ADVENTURE_TRACKER_MODULE.Header,
 		ObjectiveTrackerFrame.BlocksFrame.UIWidgetsHeader,
 	}
 	for _, header in pairs(headers) do

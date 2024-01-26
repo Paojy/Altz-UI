@@ -20,8 +20,7 @@ C.defaultThemes = {}
 C.themes = {}
 
 -- Data
-DB.isNewPatch = select(4, GetBuildInfo()) >= 100007 -- 10.0.7
-DB.isPatch10_1 = select(4, GetBuildInfo()) >= 100100 -- 10.1.0
+DB.isNewPatch = select(4, GetBuildInfo()) >= 100200 -- 10.2.0
 DB.MyClass = select(2, UnitClass("player"))
 DB.ClassColors = {}
 
@@ -56,7 +55,6 @@ DB.bgTex = mediaPath.."bgTex"
 DB.pushedTex = mediaPath.."pushed"
 DB.ArrowUp = mediaPath.."arrow"
 DB.closeTex = mediaPath.."close"
-DB.rolesTex = mediaPath.."RoleIcons"
 DB.tankTex = mediaPath.."Tank"
 DB.healTex = mediaPath.."Healer"
 DB.dpsTex = mediaPath.."DPS"
