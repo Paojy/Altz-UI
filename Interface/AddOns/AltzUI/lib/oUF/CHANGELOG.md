@@ -1,3 +1,30 @@
+**Changes in 11.2.3:**
+
+- _Adrian L Lange (2):_
+    1. Update Interface version ([#663](https://github.com/oUF-wow/oUF/issues/663))
+    2. colors: Update stagger logic to upstream ([#660](https://github.com/oUF-wow/oUF/issues/660))
+- 2 files changed, 13 insertions(+), 3 deletions(-)
+
+**Changes in 11.2.2:**
+
+- _Adrian L Lange (5):_
+    1. core: Fix contextual ping on header children ([#661](https://github.com/oUF-wow/oUF/issues/661))
+    2. core: Fix contextual ping on suffix units ([#659](https://github.com/oUF-wow/oUF/issues/659))
+    3. Update Interface version ([#657](https://github.com/oUF-wow/oUF/issues/657))
+    4. core: Support contextual pings ([#656](https://github.com/oUF-wow/oUF/issues/656))
+    5. blizzard: Hide the new compact arena frames ([#653](https://github.com/oUF-wow/oUF/issues/653))
+- _Val Voronov (6):_
+    1. castbar: Improve empowered cast handling ([#654](https://github.com/oUF-wow/oUF/issues/654))
+    2. readycheckindicator: Hardcode icon textures
+    3. Update Interface version
+    4. powerprediction: Update vars
+    5. additionalpower: Update vars
+    6. Make linter happy
+- _dependabot[bot] (2):_
+    1. build(deps): bump actions/checkout from 3 to 4 ([#658](https://github.com/oUF-wow/oUF/issues/658))
+    2. build(deps): bump actions/checkout from 2 to 3
+- 12 files changed, 97 insertions(+), 35 deletions(-)
+
 **Changes in 11.2.1:**
 
 - _Val Voronov (1):_
