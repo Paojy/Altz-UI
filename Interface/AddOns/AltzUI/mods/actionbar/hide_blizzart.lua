@@ -48,7 +48,7 @@ function blizzHider:PLAYER_LOGIN()
 	end
 
 	for _, frame in next, framesToDisable do
-		frame:UnregisterAllEvents()
+		--frame:UnregisterAllEvents()
 		DisableAllScripts(frame)
 	end
 	
@@ -60,12 +60,7 @@ end
 function blizzHider:ADDON_LOADED(addon)
 	if addon == "Blizzard_BindingUI" then
 		if QuickKeybindFrame.phantomExtraActionButton then
-			if QuickKeybindFrame.phantomExtraActionButton.UnregisterAllEvents then
-				QuickKeybindFrame.phantomExtraActionButton:UnregisterAllEvents()
-				QuickKeybindFrame.phantomExtraActionButton:SetParent(blizzHider)
-			else
-				QuickKeybindFrame.phantomExtraActionButton.Show = QuickKeybindFrame.phantomExtraActionButton.Hide
-			end
+			QuickKeybindFrame.phantomExtraActionButton.Show = QuickKeybindFrame.phantomExtraActionButton.Hide
 			QuickKeybindFrame.phantomExtraActionButton:Hide()
 			blizzHider:UnregisterEvent("ADDON_LOADED")
 		end

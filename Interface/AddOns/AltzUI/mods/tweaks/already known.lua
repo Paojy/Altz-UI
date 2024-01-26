@@ -1,7 +1,5 @@
 local T, C, L, G = unpack(select(2, ...))
 
-if not aCoreCDB["ItemOptions"]["alreadyknown"] then return end
-
 local knowncolor = { r = 0.1, g = 1.0, b = 0.2 }
 local tooltip = CreateFrame('GameTooltip')
 tooltip:SetOwner(WorldFrame, 'ANCHOR_NONE')
@@ -21,6 +19,7 @@ do
 	end
 
 	function IsAlreadyKnown (itemLink)
+		if not aCoreCDB["ItemOptions"]["alreadyknown"] then return end
 		if ( not itemLink ) then
 			return
 		end

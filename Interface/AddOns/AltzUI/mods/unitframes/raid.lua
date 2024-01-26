@@ -585,16 +585,16 @@ local initconfig = [[
 	end
 ]]
 
-local groupfilter
-
-if aCoreCDB["UnitframeOptions"]["party_num"] == 2 then
-	groupfilter = "1,2"
-elseif aCoreCDB["UnitframeOptions"]["party_num"] == 4 then
-	groupfilter = "1,2,3,4"
-elseif aCoreCDB["UnitframeOptions"]["party_num"] == 8 then
-	groupfilter = "1,2,3,4,5,6"
-else
-	groupfilter = "1,2,3,4,5,6,7,8"
+local GetGroupfilter = function()
+	if aCoreCDB["UnitframeOptions"]["party_num"] == 2 then
+		return "1,2"
+	elseif aCoreCDB["UnitframeOptions"]["party_num"] == 4 then
+		return "1,2,3,4"
+	elseif aCoreCDB["UnitframeOptions"]["party_num"] == 8 then
+		return "1,2,3,4,5,6"
+	else
+		return "1,2,3,4,5,6,7,8"
+	end
 end
 
 local groupingOrder = {
@@ -602,9 +602,6 @@ local groupingOrder = {
 	["CLASS"] = "WARRIOR, DEATHKNIGHT, PALADIN, WARLOCK, SHAMAN, MAGE, MONK, HUNTER, PRIEST, ROGUE, DRUID",
 	["ROLE"] = "TANK, HEALER, DAMAGER"
 }
-
-local anchor = aCoreCDB["UnitframeOptions"]["hor_party"] and "LEFT" or "TOP"
-local party_anchor = aCoreCDB["UnitframeOptions"]["hor_party"] and "TOP" or "LEFT"
 
 local healerraid = CreateFrame("Frame", "Altz_HealerRaid_Holder", UIParent)
 healerraid.movingname = L["治疗模式团队框架"]
@@ -695,14 +692,14 @@ local function Spawnhealraid()
 				'showRaid', true,
 				'xOffset', 5,
 				'yOffset', -5,
-				'point', anchor,
+				'point', aCoreCDB["UnitframeOptions"]["hor_party"] and "LEFT" or "TOP",
 				'groupFilter', tostring(i),
 				'groupingOrder', '1,2,3,4,5,6,7,8',
 				'groupBy', 'GROUP',
 				'maxColumns', 1,
 				'unitsPerColumn', 5,
 				'columnSpacing', 5,
-				'columnAnchorPoint', party_anchor
+				'columnAnchorPoint', aCoreCDB["UnitframeOptions"]["hor_party"] and "TOP" or "LEFT"
 				)
 		end
 	else -- 小队相连
@@ -714,14 +711,14 @@ local function Spawnhealraid()
 			'showRaid', true,
 			'xOffset', 5,
 			'yOffset', -5,
-			'point', anchor,
-			'groupFilter', groupfilter,
+			'point', aCoreCDB["UnitframeOptions"]["hor_party"] and "LEFT" or "TOP",
+			'groupFilter', GetGroupfilter(),
 			'groupingOrder', groupingOrder[aCoreCDB["UnitframeOptions"]["healerraidgroupby"]],
 			'groupBy', aCoreCDB["UnitframeOptions"]["healerraidgroupby"],
 			'maxColumns', 8,
 			'unitsPerColumn', 5,
 			'columnSpacing', 5,
-			'columnAnchorPoint', party_anchor
+			'columnAnchorPoint', aCoreCDB["UnitframeOptions"]["hor_party"] and "TOP" or "LEFT"
 		)
 	end
 	
@@ -773,14 +770,14 @@ local function Spawnhealraid()
 		'showRaid', true,
 		'xOffset', 5,
 		'yOffset', -5,
-		'point', anchor,
-		'groupFilter', groupfilter,
+		'point', aCoreCDB["UnitframeOptions"]["hor_party"] and "LEFT" or "TOP",
+		'groupFilter', GetGroupfilter(),
 		'groupingOrder', '1,2,3,4,5,6,7,8',
 		'groupBy', 'GROUP',
 		'maxColumns', 8,
 		'unitsPerColumn', 5,
 		'columnSpacing', 5,
-		'columnAnchorPoint', party_anchor,
+		'columnAnchorPoint', aCoreCDB["UnitframeOptions"]["hor_party"] and "TOP" or "LEFT",
 		--'useOwnerUnit', true,
 		'unitsuffix', 'pet'
 	)
@@ -830,7 +827,7 @@ local function Spawndpsraid()
 		'xOffset', 5,
 		'yOffset', -5,
 		'point', "TOP",
-		'groupFilter', groupfilter,
+		'groupFilter', GetGroupfilter(),
 		'groupingOrder', groupingOrder[aCoreCDB["UnitframeOptions"]["dpsraidgroupby"]],
 		'groupBy', aCoreCDB["UnitframeOptions"]["dpsraidgroupby"],
 		'maxColumns', 8,

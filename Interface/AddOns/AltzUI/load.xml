@@ -11,15 +11,14 @@
 	<Script file="locals\portuguese.lua"/>
 	<Script file="locals\english.lua"/>
 
+	<Script file="core\PopupDialogs.lua"/>
 	<Script file="core\api.lua"/>
+	<Script file="core\db.lua"/>
+	<Script file="core\gui.lua"/>
 	<Script file="core\moving.lua"/>
 	<Script file="core\fader.lua"/>
-	
-	<Script file="mods\blizzards\DurabilityFrame.lua"/>
-	<Script file="mods\blizzards\VehicleSeatIndicator.lua"/>
-	<Script file="mods\blizzards\death.lua"/>
-	<Script file="mods\blizzards\MicroButtonAndBagsBar.lua"/>
-	
+	<Script file="core\setup.lua"/>
+
 	<Script file="mods\skins\Skada.lua"/>
 	<Script file="mods\skins\Mirrortimer.lua"/>
 	<Include file="mods\skins\TimerSkin.xml"/>	

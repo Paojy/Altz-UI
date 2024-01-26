@@ -2,9 +2,6 @@
 local oUF = AltzUF or oUF
 
 local x = "8"
-local bigmark = aCoreCDB["UnitframeOptions"]["hotind_size"]
-local smallmark = aCoreCDB["UnitframeOptions"]["hotind_size"]/2
-local timersize = aCoreCDB["UnitframeOptions"]["hotind_size"]-3
 
 -- [[ Healers' indicators ]] -- 
 
@@ -417,7 +414,7 @@ local Enable = function(self)
         self.AuraStatusBL:ClearAllPoints()
         self.AuraStatusBL:SetPoint("LEFT", 1, 0)
 		self.AuraStatusBL:SetJustifyH("LEFT")
-        self.AuraStatusBL:SetFont(G.norFont, timersize, "OUTLINE")
+        self.AuraStatusBL:SetFont(G.norFont, aCoreCDB["UnitframeOptions"]["hotind_size"], "OUTLINE")
         self.AuraStatusBL.frequentUpdates = update
         self:Tag(self.AuraStatusBL, classIndicators[G.myClass]["BL"])	
 		
@@ -426,7 +423,7 @@ local Enable = function(self)
         self.AuraStatusBR:ClearAllPoints()
         self.AuraStatusBR:SetPoint("RIGHT", -1, 0)
 		self.AuraStatusBR:SetJustifyH("RIGHT")
-        self.AuraStatusBR:SetFont(G.symbols, bigmark, "OUTLINE")
+        self.AuraStatusBR:SetFont(G.symbols, aCoreCDB["UnitframeOptions"]["hotind_size"], "OUTLINE")
         self.AuraStatusBR.frequentUpdates = update
         self:Tag(self.AuraStatusBR, classIndicators[G.myClass]["BR"])
 		
@@ -435,7 +432,7 @@ local Enable = function(self)
         self.AuraStatusTL:ClearAllPoints()
         self.AuraStatusTL:SetPoint("TOPLEFT", 1, 0)
 		self.AuraStatusTL:SetJustifyH("LEFT")
-        self.AuraStatusTL:SetFont(G.norFont, timersize, "OUTLINE")
+        self.AuraStatusTL:SetFont(G.norFont, aCoreCDB["UnitframeOptions"]["hotind_size"], "OUTLINE")
         self.AuraStatusTL.frequentUpdates = update
         self:Tag(self.AuraStatusTL, classIndicators[G.myClass]["TL"])
 			
@@ -443,15 +440,12 @@ local Enable = function(self)
         self.AuraStatusTR = self.Health:CreateFontString(nil, "OVERLAY")
         self.AuraStatusTR:ClearAllPoints()
         
-		if G.myClass == "DRUID" or G.myClass == "MONK" then
+		if G.myClass == "DRUID" or G.myClass == "MONK" or G.myClass == "PRIEST" or G.myClass == "SHAMAN" then
 			self.AuraStatusTR:SetPoint("TOPRIGHT", 0, 0)
-			self.AuraStatusTR:SetFont(G.norFont, timersize, "OUTLINE") -- 数字
-		elseif G.myClass == "PRIEST" or G.myClass == "SHAMAN" then
-			self.AuraStatusTR:SetPoint("TOPRIGHT", 0, 0)
-			self.AuraStatusTR:SetFont(G.norFont, timersize+3, "OUTLINE") -- 大数字
+			self.AuraStatusTR:SetFont(G.norFont, aCoreCDB["UnitframeOptions"]["hotind_size"], "OUTLINE") -- 数字
 		else
 			self.AuraStatusTR:SetPoint("CENTER", self.Health, "TOPRIGHT", -4, -4) -- 符号
-			self.AuraStatusTR:SetFont(G.symbols, bigmark, "OUTLINE")
+			self.AuraStatusTR:SetFont(G.symbols, aCoreCDB["UnitframeOptions"]["hotind_size"], "OUTLINE")
 		end
         self.AuraStatusTR.frequentUpdates = update
         self:Tag(self.AuraStatusTR, classIndicators[G.myClass]["TR"])
@@ -461,10 +455,10 @@ local Enable = function(self)
        
         self.AuraStatusCen:SetJustifyH("CENTER")
 		if G.myClass == "DRUID" or G.myClass == "PRIEST" then
-			self.AuraStatusCen:SetFont(ChatFrame1:GetFont(), timersize, "OUTLINE") -- 文字
+			self.AuraStatusCen:SetFont(G.norFont, aCoreCDB["UnitframeOptions"]["hotind_size"], "OUTLINE") -- 文字
 			self.AuraStatusCen:SetPoint("TOP", 0, 0)
 		else
-			self.AuraStatusCen:SetFont(G.symbols, smallmark, "OUTLINE") -- 符号
+			self.AuraStatusCen:SetFont(G.symbols, aCoreCDB["UnitframeOptions"]["hotind_size"]/2, "OUTLINE") -- 符号
 			self.AuraStatusCen:SetPoint("TOP", 0, 2)
 		end
         self.AuraStatusCen:SetWidth(0)

@@ -42,4 +42,4 @@ local function Skin(timer, value, maxvalue, scale, paused, label)
 	end
 end
 
-hooksecurefunc("MirrorTimer_Show", Skin)
+hooksecurefunc(MirrorTimerContainer, "SetupTimer", Skin)

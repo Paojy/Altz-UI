@@ -1,43 +1,39 @@
 ﻿local T, C, L, G = unpack(select(2, ...))
-if not aCoreCDB["OtherOptions"]["shiftfocus"] then return end
+
+local default_uf = { 
+	oUF_AltzPlayer, 
+	oUF_AltzPet,
+	oUF_AltzTarget, 
+	oUF_AltzTargetTarget, 
+}
 
 local modifier = "shift" --- "alt" "ctrl"
 local mouseButton = "1" --- 1 = leftbutton, 2 = tightbutton, 3 = middle button(mouse wheel)
 
-local function SetFocusHotkey(frame) 
-	frame:SetAttribute(modifier.."-type"..mouseButton,"focus") 
-end 
+local function Init()
+	if not aCoreCDB["OtherOptions"]["shiftfocus"] then return end
+	
+	-- Keybinding override so that models can be shift/alt/ctrl+clicked 
+	local f = CreateFrame("CheckButton", "FocuserButton", UIParent, "SecureActionButtonTemplate") 
+	f:SetAttribute("type1","macro") 
+	f:SetAttribute("macrotext","/focus mouseover") 
+	SetOverrideBindingClick(FocuserButton, true, modifier.."-BUTTON"..mouseButton, "FocuserButton") 
+	
+	-- Set the keybindings on the default unit frames
+	for i, frame in pairs(default_uf) do
+		frame:SetAttribute(modifier.."-type"..mouseButton,"focus") 
+	end
+end
 
-local function CreateFrame_Hook(type, name, parent, template) 
-	if name and template == "SecureUnitButtonTemplate" then
-		SetFocusHotkey(_G[name])
-	end 
-end 
+local EventFrame = CreateFrame('Frame')
+EventFrame:SetScript('OnEvent', function(self, event, arg)
+	if arg ~= "AltzUI" then return end
+	Init()	
+end)
 
-hooksecurefunc("CreateFrame", CreateFrame_Hook) 
+EventFrame:RegisterEvent('ADDON_LOADED')
 
--- Keybinding override so that models can be shift/alt/ctrl+clicked 
-local f = CreateFrame("CheckButton", "FocuserButton", UIParent, "SecureActionButtonTemplate") 
-f:SetAttribute("type1","macro") 
-f:SetAttribute("macrotext","/focus mouseover") 
-SetOverrideBindingClick(FocuserButton,true,modifier.."-BUTTON"..mouseButton,"FocuserButton") 
 
--- Set the keybindings on the default unit frames since we won't get any CreateFrame notification about them 
-local duf = { 
-	PlayerFrame, 
-	PetFrame, 
-	PartyMemberFrame1, 
-	PartyMemberFrame2, 
-	PartyMemberFrame3, 
-	PartyMemberFrame4, 
-	PartyMemberFrame1PetFrame, 
-	PartyMemberFrame2PetFrame, 
-	PartyMemberFrame3PetFrame, 
-	PartyMemberFrame4PetFrame, 
-	TargetFrame, 
-	TargetofTargetFrame, 
-	} 
 
-for i,frame in pairs(duf) do 
-	SetFocusHotkey(frame) 
-end 
+
+

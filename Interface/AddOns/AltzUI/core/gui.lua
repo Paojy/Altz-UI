@@ -350,6 +350,42 @@ IntroOptions.Import:SetScript("OnHide", function()
 	StaticPopup_Hide(G.uiname.."Import Confirm")
 end)
 
+local resetposbutton = CreateFrame("Button", G.uiname.."ResetPosButton", IntroOptions, "UIPanelButtonTemplate")
+resetposbutton:SetPoint("BOTTOMRIGHT", IntroOptions, "BOTTOM", -145, 80)
+resetposbutton:SetSize(130, 25)
+resetposbutton:SetText(L["重置框体位置"])
+T.resize_font(resetposbutton.Text)
+F.Reskin(resetposbutton)
+resetposbutton:SetScript("OnClick", function()
+	StaticPopupDialogs[G.uiname.."Reset Confirm"].text = L["重置确认"]
+	StaticPopupDialogs[G.uiname.."Reset Confirm"].OnAccept = function()
+		for i = 1, #G.dragFrameList do
+			local f = G.dragFrameList[i]
+			local name = f:GetName()
+			aCoreCDB["FramePoints"][name] = {}
+			for role, points in pairs (f.point) do
+				aCoreCDB["FramePoints"][name][role] = {}
+				for k, v in pairs (points) do
+					aCoreCDB["FramePoints"][name][role][k] = v
+				end
+			end
+			T.PlaceFrame(name)
+		end
+		CurrentFrame = "NONE"
+	end
+	StaticPopup_Show(G.uiname.."Reset Confirm")
+end)
+
+local unlockbutton = CreateFrame("Button", G.uiname.."UnlockAllFramesButton", IntroOptions, "UIPanelButtonTemplate")
+unlockbutton:SetPoint("BOTTOMRIGHT", IntroOptions, "BOTTOM", -5, 80)
+unlockbutton:SetSize(130, 25)
+unlockbutton:SetText(L["解锁框体"])
+T.resize_font(unlockbutton.Text)
+F.Reskin(unlockbutton)
+unlockbutton:SetScript("OnClick", function()
+	T.UnlockAll()
+	GUI:Hide()
+end)
 --====================================================--
 --[[            -- Interface Options --            ]]--
 --====================================================--
@@ -2825,13 +2861,11 @@ local OtherOptions = CreateOptionPage("Other Options", OTHER, GUI, "VERTICAL")
 T.createcheckbutton(OtherOptions, 30, 60, L["自动召宝宝"], "OtherOptions", "autopet", L["自动召宝宝提示"])
 T.createcheckbutton(OtherOptions, 300, 60, L["随机奖励"], "OtherOptions", "LFGRewards", L["随机奖励提示"])
 T.createcheckbutton(OtherOptions, 30, 90, L["稀有警报"], "OtherOptions", "vignettealert", L["稀有警报提示"])
-T.createcheckbutton(OtherOptions, 300, 90, L["在飞行中隐藏稀有提示"], "OtherOptions", "vignettealerthide", L["在飞行中隐藏稀有提示说明"])
-T.createcheckbutton(OtherOptions, 30, 120, L["自动交接任务"], "OtherOptions", "autoquests", L["自动交接任务提示"])
-T.createcheckbutton(OtherOptions, 300, 120, L["战场自动释放灵魂"], "OtherOptions", "battlegroundres", L["战场自动释放灵魂提示"])
-T.createcheckbutton(OtherOptions, 30, 150, L["自动接受复活"], "OtherOptions", "acceptres", L["自动接受复活提示"])
-T.createcheckbutton(OtherOptions, 300, 150, L["大喊被闷了"], "OtherOptions", "saysapped", L["大喊被闷了提示"])
-T.createcheckbutton(OtherOptions, 30, 180, L["快速焦点"], "OtherOptions", "shiftfocus")
-T.createcheckbutton(OtherOptions, 300, 180, L["快速标记"], "OtherOptions", "ctrlmenu")
+T.createcheckbutton(OtherOptions, 300, 90, L["自动交接任务"], "OtherOptions", "autoquests", L["自动交接任务提示"])
+T.createcheckbutton(OtherOptions, 30, 120, L["战场自动释放灵魂"], "OtherOptions", "battlegroundres", L["战场自动释放灵魂提示"])
+T.createcheckbutton(OtherOptions, 300, 120, L["自动接受复活"], "OtherOptions", "acceptres", L["自动接受复活提示"])
+T.createcheckbutton(OtherOptions, 30, 150, L["快速焦点"], "OtherOptions", "shiftfocus")
+T.createcheckbutton(OtherOptions, 300, 150, L["快速标记"], "OtherOptions", "ctrlmenu")
 
 CreateDividingLine(OtherOptions, -230)
 
@@ -2873,7 +2907,7 @@ eventframe:RegisterEvent("PLAYER_ENTERING_WORLD")
 eventframe:SetScript("OnEvent", function(self, event, ...) self[event](self, ...) end)
 
 function eventframe:ADDON_LOADED(arg1)
-	if arg1 ~= "AltzUIConfig" then return end
+	if arg1 ~= "AltzUI" then return end
 	if aCoreDB == nil then
 		aCoreDB = {}
 	end

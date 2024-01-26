@@ -1,46 +1,8 @@
 ﻿local T, C, L, G = unpack(select(2, ...))
 local F = unpack(AuroraClassic)
 
-local CurrentFrame = "NONE"
+local CurrentFrame, CurrentRole = "NONE"
 local anchors = {"CENTER", "LEFT", "RIGHT", "TOP", "BOTTOM", "TOPLEFT", "TOPRIGHT", "BOTTOMLEFT", "BOTTOMRIGHT"}
-local role, selected
-
-local function PlaceCurrentFrame(df, frame, unlock)
-	local f 
-	local points
-	if not role then role = T.CheckRole() end
-	
-	if frame then
-		f = _G[frame]
-		points = aCoreCDB["FramePoints"][frame][role]
-	else
-		f = _G[CurrentFrame]
-		points = aCoreCDB["FramePoints"][CurrentFrame][role]
-	end
-	
-	if unlock then f.moving_locked = false end
-	if f.moving_locked then return end
-	
-	f:ClearAllPoints()
-	f:SetPoint(points.a1, _G[points.parent], points.a2, points.x, points.y)
-	
-	if frame == "Altz_HealerRaid_Holder" then
-		T.PlaceRaidFrame()
-	end
-	
-	if df then
-		f.df:ClearAllPoints() -- 拖动框重新连接到锚点
-		f.df:SetPoint(points.a1, _G[points.parent], points.a2, points.x, points.y)
-	end
-end
-T.PlaceCurrentFrame = PlaceCurrentFrame
-
-local function ReleaseFrame(frame)
-	local f = _G[frame]
-	f.moving_locked = true
-	f:ClearAllPoints()
-end
-T.ReleaseFrame = ReleaseFrame
 
 local function Reskinbox(box, name, value, anchor, x, y)
 	box:SetPoint("LEFT", anchor, "RIGHT", x, y)
@@ -65,7 +27,7 @@ local function Reskinbox(box, name, value, anchor, x, y)
 
 	box:SetScript("OnShow", function(self)
 		if CurrentFrame ~= "NONE" then
-			self:SetText(aCoreCDB["FramePoints"][CurrentFrame][role][value])
+			self:SetText(aCoreCDB["FramePoints"][CurrentFrame][CurrentRole][value])
 		else
 			self:SetText("")
 		end
@@ -73,7 +35,7 @@ local function Reskinbox(box, name, value, anchor, x, y)
 
 	box:SetScript("OnEscapePressed", function(self)
 		if CurrentFrame ~= "NONE" then
-			self:SetText(aCoreCDB["FramePoints"][CurrentFrame][role][value])
+			self:SetText(aCoreCDB["FramePoints"][CurrentFrame][CurrentRole][value])
 		else
 			self:SetText("")
 		end
@@ -82,8 +44,8 @@ local function Reskinbox(box, name, value, anchor, x, y)
 
 	box:SetScript("OnEnterPressed", function(self)
 		if CurrentFrame ~= "NONE" then
-			aCoreCDB["FramePoints"][CurrentFrame][role][value] = self:GetText()
-			PlaceCurrentFrame(true)
+			aCoreCDB["FramePoints"][CurrentFrame][CurrentRole][value] = self:GetText()
+			T.PlaceFrame(CurrentFrame)
 		else
 			self:SetText("")
 		end
@@ -91,6 +53,9 @@ local function Reskinbox(box, name, value, anchor, x, y)
 	end)
 end
 
+------------------
+-- 移动控制面板 --
+------------------
 local SpecMover = CreateFrame("Frame", G.uiname.."SpecMover", UIParent, "BackdropTemplate")
 SpecMover:SetPoint("CENTER", 0, -300)
 SpecMover:SetSize(540, 140)
@@ -120,30 +85,6 @@ SpecMover.curmode:SetPoint("TOPLEFT", SpecMover, "TOPLEFT", 10, -15)
 SpecMover.curframe = T.createtext(SpecMover, "OVERLAY", 12, "OUTLINE", "LEFT")
 SpecMover.curframe:SetPoint("TOPLEFT", SpecMover, "TOPLEFT", 10, -30)
 
--- align
-SpecMover.align = CreateFrame('Frame', G.uiname.."Align", SpecMover)
-SpecMover.align:SetAllPoints(UIParent)
-
-local width = G.screenwidth/10
-if width > 200 then width = G.screenwidth/20 end
-
-local h = math.floor(G.screenheight/width)
-local w = math.floor(G.screenwidth/width)
-
-for i = 0, h do
-	SpecMover.align["vertical"..i] = SpecMover.align:CreateTexture(nil, 'BACKGROUND')
-	SpecMover.align["vertical"..i]:SetTexture(0, 0.8, 1, 0.5)
-	SpecMover.align["vertical"..i]:SetPoint("TOPLEFT", UIParent, "TOPLEFT", 0, -width*i + 1)
-	SpecMover.align["vertical"..i]:SetPoint('BOTTOMRIGHT', UIParent, 'TOPRIGHT', 0, -width*i - 1)
-end
-
-for i = 0, w do
-	SpecMover.align["horizontal"..i] = SpecMover.align:CreateTexture(nil, 'BACKGROUND')
-	SpecMover.align["horizontal"..i]:SetTexture(0, 0.8, 1, 0.5)
-	SpecMover.align["horizontal"..i]:SetPoint("TOPLEFT", UIParent, "TOPLEFT", width*i -1, 0)
-	SpecMover.align["horizontal"..i]:SetPoint('BOTTOMRIGHT', UIParent, 'BOTTOMLEFT', width*i + 1, 0)
-end
-
 -- a1
 local Point1dropDown = CreateFrame("Frame", G.uiname.."SpecMoverPoint1DropDown", SpecMover, "UIDropDownMenuTemplate")
 Point1dropDown:SetPoint("TOPLEFT", SpecMover, "TOPLEFT", 0, -70)
@@ -162,12 +103,12 @@ UIDropDownMenu_Initialize(Point1dropDown, function(self, level, menuList)
 		info.text = anchors[i]
 		info.checked = function()
 			if CurrentFrame ~= "NONE" then
-				return (aCoreCDB["FramePoints"][CurrentFrame][role]["a1"] == info.text)
+				return (aCoreCDB["FramePoints"][CurrentFrame][CurrentRole]["a1"] == info.text)
 			end
 		end
 		info.func = function(self)
-			aCoreCDB["FramePoints"][CurrentFrame][role]["a1"] = anchors[i]
-			PlaceCurrentFrame(true)
+			aCoreCDB["FramePoints"][CurrentFrame][CurrentRole]["a1"] = anchors[i]
+			T.PlaceFrame(CurrentFrame)
 			if CurrentFrame == "Altz_HealerRaid_Holder" then
 				T.PlaceRaidFrame()
 			end
@@ -201,12 +142,12 @@ UIDropDownMenu_Initialize(Point2dropDown, function(self, level, menuList)
 		info.text = anchors[i]
 		info.checked = function()
 			if CurrentFrame ~= "NONE" then
-				return (aCoreCDB["FramePoints"][CurrentFrame][role]["a2"] == info.text)
+				return (aCoreCDB["FramePoints"][CurrentFrame][CurrentRole]["a2"] == info.text)
 			end
 		end
 		info.func = function(self)
-			aCoreCDB["FramePoints"][CurrentFrame][role]["a2"] = anchors[i]
-			PlaceCurrentFrame(true)
+			aCoreCDB["FramePoints"][CurrentFrame][CurrentRole]["a2"] = anchors[i]
+			T.PlaceFrame(CurrentFrame)
 			UIDropDownMenu_SetSelectedName(Point2dropDown, anchors[i], true)
 			UIDropDownMenu_SetText(Point2dropDown, anchors[i])
 		end
@@ -225,7 +166,7 @@ YBox:SetSize(50, 20)
 Reskinbox(YBox, "Y", "y", XBox, 10, 0)
 
 local function DisplayCurrentFramePoint()
-	local points = aCoreCDB["FramePoints"][CurrentFrame][role]
+	local points = aCoreCDB["FramePoints"][CurrentFrame][CurrentRole]
 	UIDropDownMenu_SetText(Point1dropDown, points.a1)
 	ParentBox:SetText(points.parent)
 	UIDropDownMenu_SetText(Point2dropDown, points.a2)
@@ -243,49 +184,64 @@ ResetButton:SetScript("OnClick", function()
 	if CurrentFrame ~= "NONE" then
 		local frame = _G[CurrentFrame]
 
-		aCoreCDB["FramePoints"][CurrentFrame][role].a1 = frame["point"][role].a1
-		aCoreCDB["FramePoints"][CurrentFrame][role].parent = frame["point"][role].parent
-		aCoreCDB["FramePoints"][CurrentFrame][role].a2 = frame["point"][role].a2
-		aCoreCDB["FramePoints"][CurrentFrame][role].x = frame["point"][role].x
-		aCoreCDB["FramePoints"][CurrentFrame][role].y = frame["point"][role].y
+		aCoreCDB["FramePoints"][CurrentFrame][CurrentRole].a1 = frame["point"][CurrentRole].a1
+		aCoreCDB["FramePoints"][CurrentFrame][CurrentRole].parent = frame["point"][CurrentRole].parent
+		aCoreCDB["FramePoints"][CurrentFrame][CurrentRole].a2 = frame["point"][CurrentRole].a2
+		aCoreCDB["FramePoints"][CurrentFrame][CurrentRole].x = frame["point"][CurrentRole].x
+		aCoreCDB["FramePoints"][CurrentFrame][CurrentRole].y = frame["point"][CurrentRole].y
 
-		PlaceCurrentFrame(true)
+		T.PlaceFrame(CurrentFrame)
 		DisplayCurrentFramePoint()
 	end
 end)
 
-function T.CreateDragFrame(frame)
-	local fname = frame:GetName()
-
-	if aCoreCDB["FramePoints"][fname] == nil then
-		aCoreCDB["FramePoints"][fname] = frame.point
+-- lock
+local LockButton = CreateFrame("Button", G.uiname.."SpecMoverLockButton", SpecMover, "UIPanelButtonTemplate")
+LockButton:SetPoint("LEFT", ResetButton, "RIGHT", 10, 0)
+LockButton:SetSize(250, 25)
+LockButton:SetText(L["锁定框体"])
+F.Reskin(LockButton)
+LockButton:SetScript("OnClick", function()
+	T.LockAll()
+end)
+------------------
+--     API      --
+------------------
+local function GetDefaultPositions(frame)
+	local name = frame:GetName()
+	
+	if aCoreCDB["FramePoints"][name] == nil then
+		aCoreCDB["FramePoints"][name] = frame.point
 	else
 		for role, points in pairs(frame.point) do
-			if aCoreCDB["FramePoints"][fname][role] == nil then
-				aCoreCDB["FramePoints"][fname][role] = frame.point[role]
+			if aCoreCDB["FramePoints"][name][role] == nil then
+				aCoreCDB["FramePoints"][name][role] = frame.point[role]
 			else
-				if aCoreCDB["FramePoints"][fname][role]["a1"] == nil then
-					aCoreCDB["FramePoints"][fname][role]["a1"] = frame.point[role].a1
+				if aCoreCDB["FramePoints"][name][role]["a1"] == nil then
+					aCoreCDB["FramePoints"][name][role]["a1"] = frame.point[role].a1
 				end
-				if aCoreCDB["FramePoints"][fname][role]["a2"] == nil then
-					aCoreCDB["FramePoints"][fname][role]["a2"] = frame.point[role].a2
+				if aCoreCDB["FramePoints"][name][role]["a2"] == nil then
+					aCoreCDB["FramePoints"][name][role]["a2"] = frame.point[role].a2
 				end
-				if aCoreCDB["FramePoints"][fname][role]["parent"] == nil then
-					aCoreCDB["FramePoints"][fname][role]["parent"] = frame.point[role].parent
+				if aCoreCDB["FramePoints"][name][role]["parent"] == nil then
+					aCoreCDB["FramePoints"][name][role]["parent"] = frame.point[role].parent
 				end
-				if aCoreCDB["FramePoints"][fname][role]["x"] == nil then
-					aCoreCDB["FramePoints"][fname][role]["x"] = frame.point[role].x
+				if aCoreCDB["FramePoints"][name][role]["x"] == nil then
+					aCoreCDB["FramePoints"][name][role]["x"] = frame.point[role].x
 				end
-				if aCoreCDB["FramePoints"][fname][role]["y"] == nil then
-					aCoreCDB["FramePoints"][fname][role]["y"] = frame.point[role].y
+				if aCoreCDB["FramePoints"][name][role]["y"] == nil then
+					aCoreCDB["FramePoints"][name][role]["y"] = frame.point[role].y
 				end
 			end
 		end
 	end
+end
 
+T.CreateDragFrame = function(frame)
+	local name = frame:GetName()	
 	table.insert(G.dragFrameList, frame) --add frame object to the list
-
-	frame.df = CreateFrame("Frame", fname.."DragFrame", UIParent)
+	
+	frame.df = CreateFrame("Frame", name.."DragFrame", UIParent)
 	frame.df:SetMovable(true)
 	frame.df:SetFrameStrata("HIGH")
 	frame.df:EnableMouse(true)
@@ -294,7 +250,7 @@ function T.CreateDragFrame(frame)
 	
 	frame.df:SetScript("OnShow", function(self, event)		
 		frame.df:SetSize(frame:GetWidth(), frame:GetHeight())
-		local points = aCoreCDB["FramePoints"][fname][role]
+		local points = aCoreCDB["FramePoints"][name][CurrentRole]
 		frame.df:ClearAllPoints()
 		frame.df:SetPoint(points.a1, _G[points.parent], points.a2, points.x, points.y)
 	end)
@@ -306,9 +262,9 @@ function T.CreateDragFrame(frame)
 	frame.df:SetScript("OnDragStop", function(self)
 		local x, y = GetCursorPosition() -- 结束的位置
 		local x1, y1 = ("%d"):format((x - self.x)*GetScreenWidth()/1364.8), ("%d"):format((y -self.y)*GetScreenHeight()/780) -- 计算偏移量
-		aCoreCDB["FramePoints"][fname][role].x = aCoreCDB["FramePoints"][fname][role].x + x1
-		aCoreCDB["FramePoints"][fname][role].y = aCoreCDB["FramePoints"][fname][role].y + y1
-		PlaceCurrentFrame(true) -- 重新连接到锚点
+		aCoreCDB["FramePoints"][name][CurrentRole].x = aCoreCDB["FramePoints"][name][CurrentRole].x + x1
+		aCoreCDB["FramePoints"][name][CurrentRole].y = aCoreCDB["FramePoints"][name][CurrentRole].y + y1
+		T.PlaceFrame(CurrentFrame) -- 重新连接到锚点
 		DisplayCurrentFramePoint()
 		frame.df:StopMovingOrSizing()
 	end)
@@ -323,19 +279,19 @@ function T.CreateDragFrame(frame)
 
 	frame.df:SetScript("OnMouseDown", function(self)
 		self.x, self.y = GetCursorPosition() -- 开始的位置
-		CurrentFrame = fname
-		SpecMover.curframe:SetText(L["选中的框体"].." "..G.classcolor..gsub(frame.movingname, "\n", "").."|r")
-		DisplayCurrentFramePoint()
-		if not selected then
+		if CurrentFrame == "NONE" then
 			UIDropDownMenu_EnableDropDown(Point1dropDown)
 			UIDropDownMenu_EnableDropDown(Point2dropDown)
 			ParentBox:Enable()
 			XBox:Enable()
 			YBox:Enable()
-			selected = true
 		end
+		CurrentFrame = name
+		SpecMover.curframe:SetText(L["选中的框体"].." "..G.classcolor..gsub(frame.movingname, "\n", "").."|r")
+		DisplayCurrentFramePoint()
+		
 		for i = 1, #G.dragFrameList do
-			if G.dragFrameList[i]:GetName() == fname then
+			if G.dragFrameList[i]:GetName() == name then
 				G.dragFrameList[i].df.mask:SetBackdropBorderColor(0, 1, 1)
 			else
 				G.dragFrameList[i].df.mask:SetBackdropBorderColor(0, 0, 0)
@@ -344,7 +300,40 @@ function T.CreateDragFrame(frame)
 	end)
 end
 
-local function UnlockAll()
+T.PlaceFrame = function(name, force)
+	local frame = _G[name]	
+	if not frame then return end
+	
+	GetDefaultPositions(frame)
+	local role = CurrentRole or T.CheckRole()
+	local points = aCoreCDB["FramePoints"][name][role]
+	
+	if force then 
+		frame.moving_locked = false
+	end
+	
+	if frame.moving_locked then
+		return
+	end
+	
+	frame:ClearAllPoints()
+	frame:SetPoint(points.a1, _G[points.parent], points.a2, points.x, points.y)
+	
+	if name == "Altz_HealerRaid_Holder" then
+		T.PlaceRaidFrame()
+	end
+	
+	frame.df:ClearAllPoints() -- 拖动框重新连接到锚点
+	frame.df:SetPoint(points.a1, _G[points.parent], points.a2, points.x, points.y)
+end
+
+T.ReleaseFrame = function(name)
+	local frame = _G[name]
+	frame.moving_locked = true
+	frame:ClearAllPoints()
+end
+
+T.UnlockAll = function()
 	if not InCombatLockdown() then
 		if CurrentFrame ~= "NONE" then
 			SpecMover.curframe:SetText(L["选中的框体"].." "..G.classcolor..gsub(_G[CurrentFrame].movingname, "\n", "").."|r")
@@ -362,9 +351,8 @@ local function UnlockAll()
 		print(G.classcolor..L["进入战斗锁定"].."|r")
 	end
 end
-T.UnlockAll = UnlockAll
 
-local function LockAll()
+T.LockAll = function()
 	-- reset
 	CurrentFrame = "NONE"
 	UIDropDownMenu_SetText(Point1dropDown, "")
@@ -374,7 +362,6 @@ local function LockAll()
 	ParentBox:Disable()
 	XBox:Disable()
 	YBox:Disable()
-	selected = false
 
 	for i = 1, #G.dragFrameList do
 		G.dragFrameList[i].df.mask:SetBackdropBorderColor(0, 0, 0)
@@ -383,105 +370,48 @@ local function LockAll()
 	SpecMover:Hide()
 end
 
-local function OnSpecChanged(event)
-	role = T.CheckRole()
-	SpecMover.curmode:SetText(L["当前模式"].." "..L[role])
+T.OnSpecChanged = function(event)
+	CurrentRole = T.CheckRole()
+	SpecMover.curmode:SetText(L["当前模式"].." "..L[CurrentRole])
 	
 	for i = 1, #G.dragFrameList do
 		local name = G.dragFrameList[i]:GetName()
-		local points = aCoreCDB["FramePoints"][name][role]
 		
-		if not G.dragFrameList[i].moving_locked then
-			if event == "PLAYER_SPECIALIZATION_CHANGED" then
-				G.dragFrameList[i]:ClearAllPoints()
+		if not aCoreCDB["FramePoints"][name] then
+			GetDefaultPositions(G.dragFrameList[i])
+		end
+		
+		if aCoreCDB and name and CurrentRole and aCoreCDB["FramePoints"][name] and aCoreCDB["FramePoints"][name][CurrentRole] then
+			local points = aCoreCDB["FramePoints"][name][CurrentRole]
+			
+			if not G.dragFrameList[i].moving_locked then
+				if event == "PLAYER_SPECIALIZATION_CHANGED" then
+					G.dragFrameList[i]:ClearAllPoints()
+				end
+				G.dragFrameList[i]:SetPoint(points.a1, _G[points.parent], points.a2, points.x, points.y)
 			end
-			G.dragFrameList[i]:SetPoint(points.a1, _G[points.parent], points.a2, points.x, points.y)
-		end		
+			--print(">", i, name, "OK")
+		else
+			--print(i, name, aCoreCDB["FramePoints"][name])
+		end
 	end
 end
-T.OnSpecChanged = OnSpecChanged
 
 SpecMover:SetScript("OnEvent", function(self, event, arg1)
 	if event == "PLAYER_SPECIALIZATION_CHANGED" and arg1 == "player" then
-		OnSpecChanged(event)
+		T.OnSpecChanged(event)
 	elseif event == "PLAYER_REGEN_DISABLED" then
 		if SpecMover:IsShown() then
-			LockAll()
+			T.LockAll()
 			print(G.classcolor..L["进入战斗锁定"].."|r")
 		end
 	elseif event == "PLAYER_REGEN_ENABLED" then
-		UnlockAll()
+		T.UnlockAll()
 		self:UnregisterEvent("PLAYER_REGEN_ENABLED")
 	elseif event == "PLAYER_LOGIN" then
-		OnSpecChanged(event)
+		T.OnSpecChanged(event)
 		self:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED")
 		self:RegisterEvent("PLAYER_REGEN_DISABLED")
 	end
 end)
-
 SpecMover:RegisterEvent("PLAYER_LOGIN")
-
--- lock
-local LockButton = CreateFrame("Button", G.uiname.."SpecMoverLockButton", SpecMover, "UIPanelButtonTemplate")
-LockButton:SetPoint("LEFT", ResetButton, "RIGHT", 10, 0)
-LockButton:SetSize(250, 25)
-LockButton:SetText(L["锁定框体"])
-F.Reskin(LockButton)
-LockButton:SetScript("OnClick", function()
-	LockAll()
-end)
-
--- place buttons to GUI
-local IntroOptions = _G[G.uiname.."Intro Frame"]
-local resetposbutton = CreateFrame("Button", G.uiname.."ResetPosButton", IntroOptions, "UIPanelButtonTemplate")
-resetposbutton:SetPoint("BOTTOMRIGHT", IntroOptions, "BOTTOM", -145, 80)
-resetposbutton:SetSize(130, 25)
-resetposbutton:SetText(L["重置框体位置"])
-T.resize_font(resetposbutton.Text)
-F.Reskin(resetposbutton)
-resetposbutton:SetScript("OnClick", function()
-	StaticPopupDialogs[G.uiname.."Reset Confirm"].text = L["重置确认"]
-	StaticPopupDialogs[G.uiname.."Reset Confirm"].OnAccept = function()
-		for i = 1, #G.dragFrameList do
-			local f = G.dragFrameList[i]
-			aCoreCDB["FramePoints"][f:GetName()] = {}
-			for role, points in pairs (f.point) do
-				aCoreCDB["FramePoints"][f:GetName()][role] = {}
-				for k, v in pairs (points) do
-					aCoreCDB["FramePoints"][f:GetName()][role][k] = v
-				end
-			end
-			CurrentFrame = f:GetName()
-			PlaceCurrentFrame()
-		end
-		FCF_SetLocked(ChatFrame1, nil)
-		ChatFrame1:ClearAllPoints()
-		ChatFrame1:SetSize(300, 130)
-		ChatFrame1:SetPoint("BOTTOMLEFT", _G[G.uiname.."chatframe_pullback"],"BOTTOMLEFT", 3, 5)
-	
-		FCF_SavePositionAndDimensions(ChatFrame1)
-		CurrentFrame = "NONE"
-	end
-	StaticPopup_Show(G.uiname.."Reset Confirm")
-end)
-
-local unlockbutton = CreateFrame("Button", G.uiname.."UnlockAllFramesButton", IntroOptions, "UIPanelButtonTemplate")
-unlockbutton:SetPoint("BOTTOMRIGHT", IntroOptions, "BOTTOM", -5, 80)
-unlockbutton:SetSize(130, 25)
-unlockbutton:SetText(L["解锁框体"])
-T.resize_font(unlockbutton.Text)
-F.Reskin(unlockbutton)
-unlockbutton:SetScript("OnClick", function()
-	UnlockAll()
-	_G[G.uiname.."GUI Main Frame"]:Hide()
-end)
-
-local function slashCmdFunction(msg)
-	local msg = string.lower(msg)
-	if msg == "unlock" then
-		UnlockAll()
-	end
-end
-
-SlashCmdList["AltzUI"] = slashCmdFunction
-AltzUI1 = "/altz"

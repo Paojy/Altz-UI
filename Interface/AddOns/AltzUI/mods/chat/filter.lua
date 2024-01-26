@@ -1,21 +1,12 @@
 ﻿local T, C, L, G = unpack(select(2, ...))
-if not aCoreCDB["ChatOptions"]["nogoldseller"] then return end
-
 local Symbols = {" ","`","~","@","#","^","*","=","|"," ","，","。","、","？","！","：","；","’","‘","“","”","【","】","『","』","《","》","<",">","（","）"} 
 
-local filter = {string.split(" ", aCoreDB["goldkeywordlist"])}
 local blacklist = {}
-for _, keyword in pairs(filter) do
-	if keyword ~= "" then
-		blacklist[keyword] = true
-	end
-end
-
 local recent_msg = {}
 local index = 1
 
 function FilterChat(self, event, message, author, language, channelString, target, flags, _, channelNumber, channelName, _, counter, guid)
-
+	if not aCoreCDB["ChatOptions"]["nogoldseller"] then return end
 	local sender = string.split("-", author)
 	
 	if event == "CHAT_MSG_WHISPER" and flags == "GM" then 
@@ -68,7 +59,7 @@ function FilterChat(self, event, message, author, language, channelString, targe
 	end
 	
 	local match = 0
-
+	
 	for keyword, value in pairs(blacklist) do
 		if string.match(msg, keyword) then
 			match = match +1
@@ -83,4 +74,17 @@ end
 ChatFrame_AddMessageEventFilter("CHAT_MSG_CHANNEL",FilterChat)
 ChatFrame_AddMessageEventFilter("CHAT_MSG_SAY", FilterChat) 
 ChatFrame_AddMessageEventFilter("CHAT_MSG_YELL", FilterChat) 
-ChatFrame_AddMessageEventFilter("CHAT_MSG_WHISPER", FilterChat) 
+ChatFrame_AddMessageEventFilter("CHAT_MSG_WHISPER", FilterChat)
+
+local EventFrame = CreateFrame('Frame')
+EventFrame:SetScript('OnEvent', function(self, event, arg)
+	if arg == "AltzUI" then	
+		local filter = {string.split(" ", aCoreDB["goldkeywordlist"])}
+		for _, keyword in pairs(filter) do
+			if keyword ~= "" then
+				blacklist[keyword] = true
+			end
+		end
+	end
+end)
+EventFrame:RegisterEvent('ADDON_LOADED')

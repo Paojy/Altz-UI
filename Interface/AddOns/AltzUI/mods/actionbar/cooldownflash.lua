@@ -1,22 +1,9 @@
 local T, C, L, G = unpack(select(2, ...))
-if not aCoreCDB["ActionbarOptions"]["cdflash_enable"] then return end
 
-local minalpha = aCoreCDB["ActionbarOptions"]["cdflash_alpha"]
-local size = aCoreCDB["ActionbarOptions"]["cdflash_size"]
-
-local backdrop = {
-	  bgFile = G.media.blank, 
-	  edgeFile = G.media.glow, 
-	  tile = false, tileSize = 0, edgeSize = 3, 
-	  insets = { left = 3, right = 3, top = 3, bottom = 3}
-}
-	
 local flash = CreateFrame("Frame", G.uiname.."Cooldown Flash", UIParent, "BackdropTemplate")
-
-flash:SetSize(size,size)
-flash:SetBackdrop(backdrop)
-flash:SetBackdropColor( 0, 0, 0)
-flash:SetBackdropBorderColor(0, 0, 0)
+T.CreateSD(flash)
+flash:SetSize(50,50)
+flash:Hide()
 flash.e = 0
 
 flash.movingname = L["冷却提示"]
@@ -30,17 +17,15 @@ flash.icon = flash:CreateTexture(nil, "OVERLAY")
 flash.icon:SetPoint("TOPLEFT", 3, -3)
 flash.icon:SetPoint("BOTTOMRIGHT", -3, 3)
 flash.icon:SetTexCoord(.08, .92, .08, .92)
-	
-flash:Hide()
-	
+
 flash:SetScript("OnUpdate", function(self, e)
 	flash.e = flash.e + e
 	if flash.e > .75 then
 		flash:Hide()
 	elseif flash.e < .25 then
-		flash:SetAlpha(flash.e*4*minalpha/100)
+		flash:SetAlpha(flash.e*4*aCoreCDB["ActionbarOptions"]["cdflash_alpha"]/100)
 	elseif flash.e > .5 then
-		flash:SetAlpha((1.5-(flash.e*2))*minalpha/100)
+		flash:SetAlpha((1.5-(flash.e*2))*aCoreCDB["ActionbarOptions"]["cdflash_alpha"]/100)
 	end
 end)
 
@@ -56,8 +41,6 @@ local function RegisterCallback(event, func)
 end
 
 local addon = CreateFrame("Frame")
-local band = bit.band
-local mine = COMBATLOG_OBJECT_AFFILIATION_MINE
 local spells = {}
 local items = {}
 local watched = {}
@@ -187,6 +170,11 @@ function addon:PLAYER_ENTERING_WORLD()
 	addon:SPELL_UPDATE_COOLDOWN()
 end
 
+function addon:ADDON_LOADED(self, arg)
+	if arg ~= "AltzUI" then return end
+	flash:SetSize(aCoreCDB["ActionbarOptions"]["cdflash_size"],aCoreCDB["ActionbarOptions"]["cdflash_size"])
+end
+
 hooksecurefunc("UseInventoryItem", function(slot)
 	local link = GetInventoryItemLink("player", slot) or ""
 	local id = string.match(link, ":(%w+).*|h%[(.+)%]|h")
@@ -227,9 +215,13 @@ end
 
 addon:Hide()
 addon:SetScript("OnUpdate", onupdate)
-addon:SetScript("OnEvent", function(self, event, ...) self[event](self, ...) end)
+addon:SetScript("OnEvent", function(self, event, ...)
+	if not aCoreCDB["ActionbarOptions"]["cdflash_enable"] then return end
+	self[event](self, ...) 
+end)
 
 addon:RegisterEvent("LEARNED_SPELL_IN_TAB")
 addon:RegisterEvent("SPELL_UPDATE_COOLDOWN")
 addon:RegisterEvent("BAG_UPDATE_COOLDOWN")
 addon:RegisterEvent("PLAYER_ENTERING_WORLD")
+addon:RegisterEvent("ADDON_LOADED")

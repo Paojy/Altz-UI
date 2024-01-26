@@ -1,10 +1,6 @@
 ﻿local T, C, L, G = unpack(select(2, ...))
 local F = unpack(AuroraClassic)
 
-if not aCoreCDB["TooltipOptions"]["enabletip"] then return end
-
-local combathide = aCoreCDB["TooltipOptions"]["combathide"]
-
 local you = "<You>"
 local boss = "Boss"
 
@@ -41,6 +37,7 @@ local function getTarget(unit)
 end
 
 hooksecurefunc(GameTooltip, "SetUnitAura", function(self,...)		
+	if not aCoreCDB["TooltipOptions"]["enabletip"] then return end
 	local spellID = select(10,UnitAura(...))
 	
 	if spellID then
@@ -51,6 +48,7 @@ hooksecurefunc(GameTooltip, "SetUnitAura", function(self,...)
 end)
 
 hooksecurefunc(GameTooltip, "SetAction", function(self, action)
+	if not aCoreCDB["TooltipOptions"]["enabletip"] then return end
 	local actionType, actionID = GetActionInfo(action)
 	if actionType == "spell" or actionType == "companion" then
 		if actionID then
@@ -94,6 +92,7 @@ local isUnit = {
 }
 
 hooksecurefunc(GameTooltip, "ProcessLines", function(self)
+	if not aCoreCDB["TooltipOptions"]["enabletip"] then return end
 	local getterName = self.processingInfo and self.processingInfo.getterName
 	--print(getterName)
 	if isSpells[getterName] then
@@ -117,7 +116,7 @@ hooksecurefunc(GameTooltip, "ProcessLines", function(self)
 	elseif isUnit[getterName] then
 		local name, unit = self:GetUnit()
 		if unit then
-			if combathide and InCombatLockdown() then
+			if aCoreCDB["TooltipOptions"]["combathide"] and InCombatLockdown() then
 				return self:Hide()
 			end
 				
@@ -236,27 +235,34 @@ hooksecurefunc(GameTooltip, "ProcessLines", function(self)
 end)
 
 -- GameTooltipStatusBar
-
-GameTooltipStatusBar:SetStatusBarTexture("Interface\\Buttons\\WHITE8x8")
-T.createBackdrop(GameTooltipStatusBar, GameTooltipStatusBar, 1)
- 
-GameTooltipStatusBar:SetScript("OnValueChanged", function(self, value)
-    if not value then
-        return
-    end
-    local min, max = self:GetMinMaxValues()
-    if (value < min) or (value > max) then
-        return
-    end
-    local _, unit = GameTooltip:GetUnit()
-    if unit then
-        min, max = UnitHealth(unit), UnitHealthMax(unit)
-        if not self.text then
-            self.text = T.createtext(self, "OVERLAY", 12, "OUTLINE", "CENTER")
-			self.text:SetPoint"BOTTOM"
-        end
-        self.text:Show()
-        local hp = T.ShortValue(min).." / "..T.ShortValue(max)
-        self.text:SetText(hp)
-    end
+local EventFrame = CreateFrame('Frame')
+EventFrame:SetScript('OnEvent', function(self, event, arg)
+	if arg == "AltzUI" then 
+		if not aCoreCDB["TooltipOptions"]["enabletip"] then return end
+		GameTooltipStatusBar:SetStatusBarTexture("Interface\\Buttons\\WHITE8x8")
+		T.createBackdrop(GameTooltipStatusBar, GameTooltipStatusBar, 1)
+		
+		GameTooltipStatusBar:SetScript("OnValueChanged", function(self, value)
+			if not value then
+				return
+			end
+			local min, max = self:GetMinMaxValues()
+			if (value < min) or (value > max) then
+				return
+			end
+			local _, unit = GameTooltip:GetUnit()
+			if unit then
+				min, max = UnitHealth(unit), UnitHealthMax(unit)
+				if not self.text then
+					self.text = T.createtext(self, "OVERLAY", 12, "OUTLINE", "CENTER")
+					self.text:SetPoint"BOTTOM"
+				end
+				self.text:Show()
+				local hp = T.ShortValue(min).." / "..T.ShortValue(max)
+				self.text:SetText(hp)
+			end
+		end)
+	end
 end)
+
+EventFrame:RegisterEvent('ADDON_LOADED')

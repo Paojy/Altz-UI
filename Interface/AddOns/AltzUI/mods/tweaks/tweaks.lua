@@ -2,23 +2,16 @@
 local T, C, L, G = unpack(select(2, ...))
 local F = unpack(AuroraClassic)
 
-local acceptres = aCoreCDB["OtherOptions"]["acceptres"]
-local battlegroundres = aCoreCDB["OtherOptions"]["battlegroundres"]
-local hideerrors = aCoreCDB["OtherOptions"]["hideerrors"]
-local saysapped = aCoreCDB["OtherOptions"]["saysapped"]
-local autoscreenshot = aCoreCDB["OtherOptions"]["autoscreenshot"]
-local autoinvite = aCoreCDB["OtherOptions"]["autoinvite"]
-local vignettealert = aCoreCDB["OtherOptions"]["vignettealert"]
-local vignettealerthide = aCoreCDB["OtherOptions"]["vignettealerthide"]
-local flashtaskbar = aCoreCDB["OtherOptions"]["flashtaskbar"]
-local autopet = aCoreCDB["OtherOptions"]["autopet"]
-local LFGRewards = aCoreCDB["OtherOptions"]["LFGRewards"]
-local autoacceptproposal = aCoreCDB["OtherOptions"]["autoacceptproposal"]
-local croods = aCoreCDB["OtherOptions"]["worldmapcoords"]
-
 local eventframe = CreateFrame('Frame')
+eventframe:RegisterEvent('ADDON_LOADED')
 eventframe:SetScript('OnEvent', function(self, event, ...)
-	eventframe[event](self, ...)
+	if event == "ADDON_LOADED" then
+		if aCoreCDB["OtherOptions"]["hideerrors"] then
+			UIErrorsFrame:UnregisterEvent('UI_ERROR_MESSAGE')
+		end
+	else
+		eventframe[event](self, ...)
+	end
 end)
 
 --[[-----------------------------------------------------------------------------
@@ -52,10 +45,11 @@ local function TakeScreen(delay, func, ...)
 	end) 
 	tinsert(waitTable, {delay, func, {...} }) 
 end
-if autoscreenshot then
-	eventframe:RegisterEvent('ACHIEVEMENT_EARNED')
-	function eventframe:ACHIEVEMENT_EARNED()
-		TakeScreen(1, Screenshot) 
+
+eventframe:RegisterEvent('ACHIEVEMENT_EARNED')
+function eventframe:ACHIEVEMENT_EARNED()
+	if aCoreCDB["OtherOptions"]["autoscreenshot"] then
+		TakeScreen(1, Screenshot)
 	end
 end
 --[[-----------------------------------------------------------------------------
@@ -133,25 +127,11 @@ function eventframe:MERCHANT_SHOW()
 	end
 end
 --[[-----------------------------------------------------------------------------
-Say Sapped
--------------------------------------------------------------------------------]]
-if saysapped then
-	eventframe:RegisterEvent('COMBAT_LOG_EVENT_UNFILTERED')
-	function eventframe:COMBAT_LOG_EVENT_UNFILTERED()
-		local timestamp, etype, hideCaster,
-        sourceGUID, sourceName, sourceFlags, sourceRaidFlags, destGUID, destName, destFlags, destRaidFlags, spellID = CombatLogGetCurrentEventInfo()
-		if (etype == "SPELL_AURA_APPLIED" or etype == "SPELL_AURA_REFRESH") and destName == G.PlayerName and spellID == 6770 then
-			SendChatMessage(L["被闷了"], "SAY")
-			DEFAULT_CHAT_FRAME:AddMessage(L["被闷了2"].." ".. sourceName or "(unknown)")
-		end
-	end
-end
---[[-----------------------------------------------------------------------------
 Accept Res
 -------------------------------------------------------------------------------]]
-if acceptres then
-	eventframe:RegisterEvent('RESURRECT_REQUEST')
-	function eventframe:RESURRECT_REQUEST(name)
+eventframe:RegisterEvent('RESURRECT_REQUEST')
+function eventframe:RESURRECT_REQUEST(name)
+	if aCoreCDB["OtherOptions"]["acceptres"] then
 		if UnitAffectingCombat('player') then return end
 		if IsInGroup() then
 			if IsInRaid() then
@@ -180,28 +160,26 @@ end
 --[[-----------------------------------------------------------------------------
 Battleground Res
 -------------------------------------------------------------------------------]]
-if battlegroundres then
-	eventframe:RegisterEvent('PLAYER_DEAD')
-	function eventframe:PLAYER_DEAD()
+eventframe:RegisterEvent('PLAYER_DEAD')
+function eventframe:PLAYER_DEAD()
+	if aCoreCDB["OtherOptions"]["battlegroundres"] then
 		if ( select(2, GetInstanceInfo()) =='pvp' ) or (GetRealZoneText()=='Wintergrasp') or (GetRealZoneText()=='TolBarad') then
 			RepopMe()
 		end
 	end
 end
+
 --[[-----------------------------------------------------------------------------
 Hide Errors
 -------------------------------------------------------------------------------]]
-if hideerrors then
-	local allowedErrors = { }
-	
-	eventframe:RegisterEvent('UI_ERROR_MESSAGE')
-	function eventframe:UI_ERROR_MESSAGE(message)
+local allowedErrors = { }
+eventframe:RegisterEvent('UI_ERROR_MESSAGE')
+function eventframe:UI_ERROR_MESSAGE(message)
+	if aCoreCDB["OtherOptions"]["hideerrors"] then
 		if allowedErrors[message] then
 			UIErrorsFrame:AddMessage(message, 1, .1, .1)
 		end
 	end
-
-	UIErrorsFrame:UnregisterEvent('UI_ERROR_MESSAGE')
 end
 
 --[[-----------------------------------------------------------------------------
@@ -251,50 +229,50 @@ local function InvitePlayer(name)
 end
 
 local errAlreadyInGroup = string.gsub(ERR_ALREADY_IN_GROUP_S, "%%s", "(%%a*)")
-if autoinvite then
-    eventframe:RegisterEvent("CHAT_MSG_WHISPER")
-    eventframe:RegisterEvent("CHAT_MSG_BN_WHISPER")
-	local function AutoInvite(event, arg1, arg2, ...)
-		local keywords = {string.split(" ", aCoreCDB["OtherOptions"]["autoinvitekeywords"])}
-		local success, reason
-		for _, keyword in pairs(keywords) do
-			if keyword:lower() == arg1:lower() then
-				if event == "CHAT_MSG_WHISPER" then
-					success, reason = InvitePlayer(arg2)
+eventframe:RegisterEvent("CHAT_MSG_WHISPER")
+eventframe:RegisterEvent("CHAT_MSG_BN_WHISPER")
+
+local function AutoInvite(event, arg1, arg2, ...)
+	if not aCoreCDB["OtherOptions"]["autoinvite"] then return end
+	local keywords = {string.split(" ", aCoreCDB["OtherOptions"]["autoinvitekeywords"])}
+	local success, reason
+	for _, keyword in pairs(keywords) do
+		if keyword:lower() == arg1:lower() then
+			if event == "CHAT_MSG_WHISPER" then
+				success, reason = InvitePlayer(arg2)
+				if not success then
+					SendChatMessage(L["无法自动邀请进组:"]..reason, "WHISPER", nil, arg2)
+				end
+			elseif event == "CHAT_MSG_BN_WHISPER" then
+				local _, toonName, client, realmName = BNGetToonInfo(select(11, ...))
+				if client == "WoW" then
+					success, reason = InvitePlayer(toonName.."-"..realmName)
 					if not success then
-						SendChatMessage(L["无法自动邀请进组:"]..reason, "WHISPER", nil, arg2)
+						BNSendWhisper(select(11, ...), L["无法自动邀请进组:"]..reason)
 					end
-				elseif event == "CHAT_MSG_BN_WHISPER" then
-					local _, toonName, client, realmName = BNGetToonInfo(select(11, ...))
-					if client == "WoW" then
-						success, reason = InvitePlayer(toonName.."-"..realmName)
-						if not success then
-							BNSendWhisper(select(11, ...), L["无法自动邀请进组:"]..reason)
-						end
-					else
-						BNSendWhisper(select(11, ...), L["无法自动邀请进组:"]..string.format(L["客户端错误"], BlzGames[client]))
-					end
+				else
+					BNSendWhisper(select(11, ...), L["无法自动邀请进组:"]..string.format(L["客户端错误"], BlzGames[client]))
 				end
 			end
 		end
 	end
-	function eventframe:CHAT_MSG_WHISPER(arg1, arg2, ...)
-		AutoInvite("CHAT_MSG_WHISPER", arg1, arg2, ...)
-	end
-	function eventframe:CHAT_MSG_BN_WHISPER(arg1, arg2, ...)
-		AutoInvite("CHAT_MSG_BN_WHISPER", arg1, arg2, ...)
-	end
+end
+
+function eventframe:CHAT_MSG_WHISPER(arg1, arg2, ...)
+	AutoInvite("CHAT_MSG_WHISPER", arg1, arg2, ...)
+end
+function eventframe:CHAT_MSG_BN_WHISPER(arg1, arg2, ...)
+	AutoInvite("CHAT_MSG_BN_WHISPER", arg1, arg2, ...)
 end
 
 --[[-----------------------------------------------------------------------------
 Simple Vignette alert
 -------------------------------------------------------------------------------]]
 local vignettes = {}
-
-if vignettealert then
-	eventframe:RegisterEvent("VIGNETTE_MINIMAP_UPDATED")
-	function eventframe:VIGNETTE_MINIMAP_UPDATED(id)
-		if id and not vignettes[id] and (not vignettealerthide or not UnitOnTaxi("player")) then
+eventframe:RegisterEvent("VIGNETTE_MINIMAP_UPDATED")
+function eventframe:VIGNETTE_MINIMAP_UPDATED(id)
+	if aCoreCDB["OtherOptions"]["vignettealert"] then
+		if id and not vignettes[id] and not UnitOnTaxi("player") then
 			local info = C_VignetteInfo.GetVignetteInfo(id)
 			if info then
 				RaidNotice_AddMessage(RaidWarningFrame, (info.name or "Unknown").." "..L["出现了！"], ChatTypeInfo["RAID_WARNING"])
@@ -305,86 +283,86 @@ if vignettealert then
 	end
 end
 
-
 --[[-----------------------------------------------------------------------------
 Flash Taskbar
 -------------------------------------------------------------------------------]]
 local flashtimer = 0
 
 local function DoFlash()
-	if (flashtimer + 5 < GetTime()) then
-		FlashClientIcon()
-		flashtimer = GetTime()
-	end
-end
-
-if flashtaskbar then
-	local DF = _G ["DetailsFramework"]
-	if DF then
-		hooksecurefunc ("LFGDungeonReadyStatus_ResetReadyStates", function()
-			DoFlash()
-		end)
-
-		hooksecurefunc ("PVPReadyDialog_Display", function()
-			DoFlash()
-		end)
-		
-		eventframe:RegisterEvent("READY_CHECK")
-		eventframe:RegisterEvent("CHAT_MSG_ADDON")
-
-		function eventframe:READY_CHECK()
-			DoFlash()
-		end
-		
-		function eventframe:CHAT_MSG_ADDON(prefix, msg)
-			if prefix == "BigWigs" and msg:find("BWPull") then
-				DoFlash()
-			elseif prefix == "D4" and msg:find("PT") then
-				DoFlash()
-			end		
+	if aCoreCDB["OtherOptions"]["flashtaskbar"] then
+		if (flashtimer + 5 < GetTime()) then
+			FlashClientIcon()
+			flashtimer = GetTime()
 		end
 	end
 end
+
+local DF = _G ["DetailsFramework"]
+if DF then
+	hooksecurefunc ("LFGDungeonReadyStatus_ResetReadyStates", function()
+		DoFlash()
+	end)
+
+	hooksecurefunc ("PVPReadyDialog_Display", function()
+		DoFlash()
+	end)
+	
+	eventframe:RegisterEvent("READY_CHECK")
+	eventframe:RegisterEvent("CHAT_MSG_ADDON")
+
+	function eventframe:READY_CHECK()
+		DoFlash()
+	end
+	
+	function eventframe:CHAT_MSG_ADDON(prefix, msg)
+		if prefix == "BigWigs" and msg:find("BWPull") then
+			DoFlash()
+		elseif prefix == "D4" and msg:find("PT") then
+			DoFlash()
+		end		
+	end
+end
+
 
 --[[-----------------------------------------------------------------------------
 Random Pet
 -------------------------------------------------------------------------------]]
 
 local function SummonPet(fav)
-	C_Timer.After(3, function()
-		if InCombatLockdown() then return end
-		local active = C_PetJournal.GetSummonedPetGUID()
-		if not active and not UnitOnTaxi("player") then		
-			if fav then
-				C_PetJournal.SummonRandomPet(false)
-			else
-				C_PetJournal.SummonRandomPet(true)
-			end
-		end		
-	end)
+	if aCoreCDB["OtherOptions"]["autopet"] then
+		C_Timer.After(3, function()
+			if InCombatLockdown() then return end
+			local active = C_PetJournal.GetSummonedPetGUID()
+			if not active and not UnitOnTaxi("player") then		
+				if fav then
+					C_PetJournal.SummonRandomPet(false)
+				else
+					C_PetJournal.SummonRandomPet(true)
+				end
+			end		
+		end)
+	end
 end
 
-if autopet then
-	eventframe:RegisterEvent("PLAYER_ENTERING_WORLD")
-	eventframe:RegisterEvent("PLAYER_CONTROL_GAINED")
-	eventframe:RegisterEvent("UNIT_EXITED_VEHICLE")
-	eventframe:RegisterEvent("PLAYER_ALIVE")
+eventframe:RegisterEvent("PLAYER_ENTERING_WORLD")
+eventframe:RegisterEvent("PLAYER_CONTROL_GAINED")
+eventframe:RegisterEvent("UNIT_EXITED_VEHICLE")
+eventframe:RegisterEvent("PLAYER_ALIVE")
 
-	function eventframe:PLAYER_ENTERING_WORLD()
-		SummonPet()
-	end
+function eventframe:PLAYER_ENTERING_WORLD()
+	SummonPet()
+end
 
-	function eventframe:PLAYER_CONTROL_GAINED()
-		SummonPet()
-	end
+function eventframe:PLAYER_CONTROL_GAINED()
+	SummonPet()
+end
 
-	function eventframe:UNIT_EXITED_VEHICLE()
-		SummonPet()
-	end
+function eventframe:UNIT_EXITED_VEHICLE()
+	SummonPet()
+end
 
-	function eventframe:PLAYER_ALIVE()
-		SummonPet()
-	end
+function eventframe:PLAYER_ALIVE()
+	SummonPet()
 end
 
 --[[-----------------------------------------------------------------------------
@@ -396,31 +374,29 @@ for i = 1, GetNumRandomDungeons() do
 end
 -------------------------------------------------------------------------------]]
 
-if LFGRewards then
-	eventframe:RegisterEvent("LFG_UPDATE_RANDOM_INFO")
-end
-
+eventframe:RegisterEvent("LFG_UPDATE_RANDOM_INFO")
 local LFG_Timer = 0
-
 function eventframe:LFG_UPDATE_RANDOM_INFO()
-	local eligible, forTank, forHealer, forDamage = GetLFGRoleShortageRewards(2351, LFG_ROLE_SHORTAGE_RARE)
-	local IsTank, IsHealer, IsDamage = C_LFGList.GetAvailableRoles()
-	
-	local ingroup, tank, healer, damager, result
-	
-	tank = IsTank and forTank and "|cff00B2EE"..TANK.."|r" or ""
-	healer = IsHealer and forHealer and "|cff00EE00"..HEALER.."|r" or ""
-	damager = IsDamage and forDamage and "|cff00EE00"..DAMAGER.."|r" or ""
-	
-	if IsInGroup(LE_PARTY_CATEGORY) or IsInGroup(LE_PARTY_CATEGORY_INSTANCE) then
-		ingroup = true
-	end
-	
-	if ((IsTank and forTank) or (IsHealer and forHealer) or (IsDamage and forDamage)) and not ingroup then
-		if  GetTime() - LFG_Timer > 20 then -- 不要刷屏！
-			RaidNotice_AddMessage(RaidWarningFrame, format(LFG_CALL_TO_ARMS, tank.." "..healer.." "..damager), ChatTypeInfo["RAID_WARNING"])
-			print(format(LFG_CALL_TO_ARMS, tank.." "..healer.." "..damager))
-			LFG_Timer = GetTime()
+	if aCoreCDB["OtherOptions"]["LFGRewards"] then
+		local eligible, forTank, forHealer, forDamage = GetLFGRoleShortageRewards(2351, LFG_ROLE_SHORTAGE_RARE)
+		local IsTank, IsHealer, IsDamage = C_LFGList.GetAvailableRoles()
+		
+		local ingroup, tank, healer, damager, result
+		
+		tank = IsTank and forTank and "|cff00B2EE"..TANK.."|r" or ""
+		healer = IsHealer and forHealer and "|cff00EE00"..HEALER.."|r" or ""
+		damager = IsDamage and forDamage and "|cff00EE00"..DAMAGER.."|r" or ""
+		
+		if IsInGroup(LE_PARTY_CATEGORY) or IsInGroup(LE_PARTY_CATEGORY_INSTANCE) then
+			ingroup = true
+		end
+		
+		if ((IsTank and forTank) or (IsHealer and forHealer) or (IsDamage and forDamage)) and not ingroup then
+			if  GetTime() - LFG_Timer > 20 then -- 不要刷屏！
+				RaidNotice_AddMessage(RaidWarningFrame, format(LFG_CALL_TO_ARMS, tank.." "..healer.." "..damager), ChatTypeInfo["RAID_WARNING"])
+				print(format(LFG_CALL_TO_ARMS, tank.." "..healer.." "..damager))
+				LFG_Timer = GetTime()
+			end
 		end
 	end
 end
@@ -429,43 +405,15 @@ end
 LFG Auto Accept Proposal
 -------------------------------------------------------------------------------]]
 --[[
-if croods then
-	WorldMapFrameCloseButton.coordText = WorldMapFrameCloseButton:CreateFontString(nil, "OVERLAY", "GameFontGreen") 
-	WorldMapFrameCloseButton.coordText:SetPoint("BOTTOM", WorldMapFrame.ScrollContainer.Child, "BOTTOM", 0, 6)
-
-	WorldMapFrameCloseButton:HookScript("OnUpdate", function(self)
-	    if select(2, GetInstanceInfo()) == "none" then
-		   local map = C_Map.GetPlayerMapPosition(C_Map.GetBestMapForUnit("player"), "player")
-		   local px, py = map.x, map.y
-		   local x, y = GetCursorPosition() 
-		   local width, height, scale = self:GetWidth(), self:GetHeight(), self:GetEffectiveScale() 
-		   local centerX, centerY = self:GetCenter() 
-		   x, y = (x/scale - (centerX - (width/2))) / width, (centerY + (height/2) - y/scale) / height 
-		   if px == 0 and py == 0 and (x > 1 or y > 1 or x < 0 or y < 0) then 
-			  self.coordText:SetText("") 
-		   elseif px == 0 and py == 0 then 
-			  self.coordText:SetText(format(L["光标"].." %d, %d", x*100, y*100)) 
-		   elseif x > 1 or y > 1 or x < 0 or y < 0 then 
-			  self.coordText:SetText(format(L["当前"].." %d, %d", px*100, py*100)) 
-		   else 
-			  self.coordText:SetText(format(L["当前"].." %d, %d   "..L["光标"].." %d, %d", px*100, py*100, x*100, y*100)) 
-		   end
-	    end
-	end) 
-end]]--
---[[-----------------------------------------------------------------------------
-LFG Auto Accept Proposal
--------------------------------------------------------------------------------]]
---[[
-if autoacceptproposal then
-	eventframe:RegisterEvent("LFG_PROPOSAL_SHOW")
-end
+eventframe:RegisterEvent("LFG_PROPOSAL_SHOW")
 
 function eventframe:LFG_PROPOSAL_SHOW()
-	C_Timer.After(25, function()
-		if LFGDungeonReadyDialogEnterDungeonButton:IsShown() then
-			PlaySoundFile("Sound\\Interface\\RaidWarning.wav")
-		end
-	end)
+	if aCoreCDB["OtherOptions"]["autoacceptproposal"] then
+		C_Timer.After(25, function()
+			if LFGDungeonReadyDialogEnterDungeonButton:IsShown() then
+				PlaySoundFile("Sound\\Interface\\RaidWarning.wav")
+			end
+		end)
+	end
 end
 ]]--

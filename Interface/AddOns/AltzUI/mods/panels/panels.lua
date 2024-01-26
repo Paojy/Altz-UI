@@ -1,14 +1,8 @@
 ﻿local T, C, L, G = unpack(select(2, ...))
 local F = unpack(AuroraClassic)
 
-
-local font = aCoreCDB["SkinOptions"]["combattext"]
-if font ~= "none" then
-	DAMAGE_TEXT_FONT = G.combatFont[font]
-end
-
 --====================================================--
---[[                -- Functions --                    ]]--
+--[[                -- Functions --                 ]]--
 --====================================================--
 local function Skinbar(bar)
 	if aCoreCDB["UnitframeOptions"]["style"] == 1 then	
@@ -70,7 +64,6 @@ TLPanel.Apply = function()
 	end
 	Skinbar(TLPanel) 
 end
-TLPanel.Apply()
 G.TLPanel = TLPanel
 
 local TRPanel = CreateFrame("Frame", G.uiname.."TRPanel", UIParent)
@@ -89,7 +82,6 @@ TRPanel.Apply = function()
 	end
 	Skinbar(TRPanel)
 end
-TRPanel.Apply()
 G.TRPanel = TRPanel
 
 toppanel.Apply = function()
@@ -105,7 +97,6 @@ toppanel.Apply = function()
 	end
 	Skinbg(toppanel)
 end
-toppanel.Apply()
 G.toppanel = toppanel
 
 local bottompanel = CreateFrame("Frame", G.uiname.."Bottom Long Panel", UIParent, "BackdropTemplate")
@@ -138,7 +129,6 @@ BLPanel.Apply = function()
 	end
 	Skinbar(BLPanel)
 end
-BLPanel.Apply()
 G.BLPanel = BLPanel
 
 local BRPanel = CreateFrame("Frame", G.uiname.."BRPanel", UIParent)
@@ -157,7 +147,6 @@ BRPanel.Apply = function()
 	end
 	Skinbar(BRPanel)
 end
-BRPanel.Apply()
 G.BRPanel = BRPanel
 
 bottompanel.Apply = function()
@@ -173,9 +162,7 @@ bottompanel.Apply = function()
 	end
 	Skinbg(bottompanel)
 end
-bottompanel.Apply()
 G.bottompanel = bottompanel
-
 
 --====================================================--
 --[[                   -- Minimap --                ]]--
@@ -633,17 +620,13 @@ for i, name in pairs(MICRO_BUTTONS) do
 	local tex = {}
 	local bu = _G[name]
 	table.insert(microbuttons, bu)
-	bu:SetHeight(19)
-	
+
 	tex.normal = bu:GetNormalTexture()
-	tex.pushed = bu:GetPushedTexture()
-	tex.highlight = bu:GetHighlightTexture()
 	
-	tex.normal:SetTexCoord(.1, .8, .1, .8)
-	tex.pushed:SetTexCoord(.1, .8, .1, .8)
-	tex.highlight:SetTexCoord(.1, .8, .1, .8)
-	tex.normal:SetDesaturated(true)
-	tex.normal:SetVertexColor(G.Ccolor.r, G.Ccolor.g, G.Ccolor.b)
+	if tex.normal then
+		tex.normal:SetDesaturated(true)
+		tex.normal:SetVertexColor(G.Ccolor.r, G.Ccolor.g, G.Ccolor.b)	
+	end
 end
 
 T.GroupFader(microbuttons)
@@ -700,19 +683,9 @@ T.GroupFader(fadebagbuttons)
 --[[                --  Info Bar --              ]]--
 --====================================================--
 local InfoFrame = CreateFrame("Frame", G.uiname.."Info Frame", UIParent)
-InfoFrame:SetScale(aCoreCDB["SkinOptions"]["infobarscale"])
 InfoFrame:SetFrameLevel(4)
 InfoFrame:SetSize(260, 20)
-InfoFrame.movingname = L["信息条"]
-InfoFrame.point = {
-		healer = {a1 = "BOTTOM", parent = "UIParent", a2 = "BOTTOM", x = 0, y = 5},
-		dpser = {a1 = "BOTTOM", parent = "UIParent", a2 = "BOTTOM", x = 0, y = 5},
-	}
-T.CreateDragFrame(InfoFrame)
-
-if not aCoreCDB["SkinOptions"]["infobar"] then
-	InfoFrame:Hide()
-end
+InfoFrame:SetPoint("BOTTOM", UIParent, "BOTTOM", 0, 0)
 
 local function CreateInfoButton(name, parent, width, height, justify, ...)
 	local Button = CreateFrame("Frame", G.uiname..parent:GetName()..name, parent)
@@ -1323,8 +1296,7 @@ BOTTOMPANEL:RegisterEvent("PLAYER_FLAGS_CHANGED")
 --====================================================--
 --[[                -- 团队标记 --                  ]]--
 --====================================================--
-if aCoreCDB["UnitframeOptions"]["raidtool"] then
-	
+local function CreateRaidTools()
 	local raidmark = CreateFrame("Frame", G.uiname.."Raid Mark Frame", UIParent)
 	
 	raidmark.movingname = L["团队工具"]
@@ -1538,8 +1510,7 @@ if aCoreCDB["UnitframeOptions"]["raidtool"] then
 	raidmark_toggle.text:SetPoint("LEFT", raidmark_toggle, "RIGHT", 5, 0)
 	raidmark_toggle.text:SetText(L["团队工具"])
 	
-	raidmark_toggle:SetScript("OnClick", function()
-		if not aCoreCDB["UnitframeOptions"]["raidtool"] then return end
+	function raidmark_toggle:UpdateAlpha()
 		if aCoreCDB["UnitframeOptions"]["raidtool_show"] then
 			aCoreCDB["UnitframeOptions"]["raidtool_show"] = false
 			raidmark:Hide()
@@ -1551,18 +1522,45 @@ if aCoreCDB["UnitframeOptions"]["raidtool"] then
 			raidmark_toggle.text:Hide()
 			raidmark_toggle:SetAlpha(.3)
 		end
+	end
+	
+	raidmark_toggle:SetScript("OnClick", function()
+		raidmark_toggle:UpdateAlpha()
 	end)
 	
 	raidmark_toggle:SetScript("OnEvent", function()
-		if aCoreCDB["UnitframeOptions"]["raidtool_show"] then
-			raidmark:Show()
-			raidmark_toggle.text:Hide()
-			raidmark_toggle:SetAlpha(.3)
-		else
-			raidmark:Hide()
-			raidmark_toggle.text:Show()
-			raidmark_toggle:SetAlpha(1)
-		end
+		raidmark_toggle:UpdateAlpha()
 	end)
 	raidmark_toggle:RegisterEvent("PLAYER_LOGIN")
 end
+
+--====================================================--
+--[[           	 -- Event Frame --     	            ]]--
+--====================================================--
+local panels_eventframe = CreateFrame("Frame")
+panels_eventframe:RegisterEvent("ADDON_LOADED")
+panels_eventframe:SetScript("OnEvent", function(event, arg)
+	if event == "ADDON_LOADED" and arg == "AltzUI" then
+		-- 战斗文字字体
+		local font = aCoreCDB["SkinOptions"]["combattext"]
+		if font ~= "none" then
+			DAMAGE_TEXT_FONT = G.combatFont[font]
+		end
+		
+		toppanel.Apply()
+		bottompanel.Apply()
+		TLPanel.Apply()
+		TRPanel.Apply()
+		BLPanel.Apply()
+		BRPanel.Apply()
+		
+		InfoFrame:SetScale(aCoreCDB["SkinOptions"]["infobarscale"])
+		if not aCoreCDB["SkinOptions"]["infobar"] then
+			InfoFrame:Hide()
+		end
+		
+		if aCoreCDB["UnitframeOptions"]["raidtool"] then
+			CreateRaidTools()
+		end
+	end
+end)

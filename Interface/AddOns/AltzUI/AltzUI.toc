@@ -1,10 +1,13 @@
-﻿## Interface: 100100
+﻿## Interface: 100105
 ## Title: |cffEE3A8CAltz|rUI
 ## IconTexture: 348547
 ## X-oUF: AltzUF
 ## Version: 10.02
 ## Author: Paopao001
-## Dependencies: AltzUIConfig
+## Dependencies: AuroraClassic
+## OptionalDeps: !ClassColors, Skada, DBM-Core, BigWigs
+## SavedVariables: aCoreDB
+## SavedVariablesPerCharacter: aCoreCDB
 ## X-DBM-Timer-Skin: 1
 ## X-DBM-Timer-Skin: 1
 ## X-DBM-Timer-Skin-Name: AltzUI

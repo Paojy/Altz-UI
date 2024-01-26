@@ -1,5 +1,4 @@
 ﻿local T, C, L, G = unpack(select(2, ...))
-local Altz_T, Altz_C, Altz_L, Altz_G
 local F = unpack(AuroraClassic)
 
 local TutorialsFrame = CreateFrame("Frame", G.uiname.."TutorialsFrame", UIParent, "BackdropTemplate")
@@ -215,7 +214,7 @@ end
 for i = 1, 3 do
 	TutorialsFrame[3]["style"][i]:HookScript("OnClick", function()
 		for i, f in pairs({"toppanel", "bottompanel"}) do
-			Altz_G[f].Apply()
+			G[f].Apply()
 		end
 		ApplyUFSettings({"Castbar", "Swing", "Portrait", "Health", "Power", "HealthPrediction"})
 	end)
@@ -262,7 +261,7 @@ Default_Layout = {
 		db_v = "showtopbar",
 		value = true,
 		apply = function()
-			Altz_G.toppanel.Apply()
+			G.toppanel.Apply()
 		end
 		},
 		{
@@ -270,7 +269,7 @@ Default_Layout = {
 		db_v = "showbottombar",
 		value = true,
 		apply = function()
-			Altz_G.bottompanel.Apply()
+			G.bottompanel.Apply()
 		end
 		},
 		{
@@ -278,9 +277,9 @@ Default_Layout = {
 		db_v = "showtopconerbar",
 		value = true,
 		apply = function()
-			Altz_G.toppanel.Apply()
-			Altz_G.TLPanel.Apply()
-			Altz_G.TRPanel.Apply()
+			G.toppanel.Apply()
+			G.TLPanel.Apply()
+			G.TRPanel.Apply()
 		end
 		},
 		{
@@ -288,9 +287,9 @@ Default_Layout = {
 		db_v = "showbottomconerbar",
 		value = true,
 		apply = function()
-			Altz_G.bottompanel.Apply()
-			Altz_G.BLPanel.Apply()
-			Altz_G.BRPanel.Apply()
+			G.bottompanel.Apply()
+			G.BLPanel.Apply()
+			G.BRPanel.Apply()
 		end
 		},
 		{
@@ -298,7 +297,7 @@ Default_Layout = {
 		db_v = "showbottombar",
 		value = true,
 		apply = function() 
-			Altz_G.bottompanel.Apply()
+			G.bottompanel.Apply()
 		end
 		},
 		{
@@ -449,7 +448,7 @@ Simplicity_Layout = {
 		db_v = "showtopbar",
 		value = false,
 		apply = function()
-			Altz_G.toppanel.Apply()
+			G.toppanel.Apply()
 		end
 		},
 		{
@@ -457,7 +456,7 @@ Simplicity_Layout = {
 		db_v = "showbottombar",
 		value = false,
 		apply = function() 
-			Altz_G.bottompanel.Apply()
+			G.bottompanel.Apply()
 		end
 		},
 		{
@@ -465,9 +464,9 @@ Simplicity_Layout = {
 		db_v = "showtopconerbar",
 		value = false,
 		apply = function()
-			Altz_G.toppanel.Apply()
-			Altz_G.TLPanel.Apply()
-			Altz_G.TRPanel.Apply()
+			G.toppanel.Apply()
+			G.TLPanel.Apply()
+			G.TRPanel.Apply()
 		end
 		},
 		{
@@ -475,9 +474,9 @@ Simplicity_Layout = {
 		db_v = "showbottomconerbar",
 		value = false,
 		apply = function()
-			Altz_G.bottompanel.Apply()
-			Altz_G.BLPanel.Apply()
-			Altz_G.BRPanel.Apply()
+			G.bottompanel.Apply()
+			G.BLPanel.Apply()
+			G.BRPanel.Apply()
 		end
 		},
 		{
@@ -628,7 +627,7 @@ Centralized_Layout = {
 		db_v = "showtopbar",
 		value = true,
 		apply = function()
-			Altz_G.toppanel.Apply()
+			G.toppanel.Apply()
 		end
 		},
 		{
@@ -636,7 +635,7 @@ Centralized_Layout = {
 		db_v = "showbottombar",
 		value = true,
 		apply = function() 
-			Altz_G.bottompanel.Apply()
+			G.bottompanel.Apply()
 		end
 		},
 		{
@@ -644,9 +643,9 @@ Centralized_Layout = {
 		db_v = "showtopconerbar",
 		value = false,
 		apply = function()
-			Altz_G.toppanel.Apply()
-			Altz_G.TLPanel.Apply()
-			Altz_G.TRPanel.Apply()
+			G.toppanel.Apply()
+			G.TLPanel.Apply()
+			G.TRPanel.Apply()
 		end
 		},
 		{
@@ -654,9 +653,9 @@ Centralized_Layout = {
 		db_v = "showbottomconerbar",
 		value = false,
 		apply = function()
-			Altz_G.bottompanel.Apply()
-			Altz_G.BLPanel.Apply()
-			Altz_G.BRPanel.Apply()
+			G.bottompanel.Apply()
+			G.BLPanel.Apply()
+			G.BRPanel.Apply()
 		end
 		},
 		{
@@ -775,14 +774,14 @@ Centralized_Layout = {
 }
 
 local ApplySizeAndPostions = function(group)
-	local role = Altz_T.CheckRole()
+	local role = T.CheckRole()
 	for i, t in pairs(group.frames) do
 		aCoreCDB["FramePoints"][t.f][role]["a1"] = t.a1
 		aCoreCDB["FramePoints"][t.f][role]["parent"] = t.parent
 		aCoreCDB["FramePoints"][t.f][role]["a2"] = t.a2
 		aCoreCDB["FramePoints"][t.f][role]["x"] = t.x
 		aCoreCDB["FramePoints"][t.f][role]["y"] = t.y
-		Altz_T.PlaceCurrentFrame(true, t.f)
+		T.PlaceFrame(t.f)
 	end
 	for i, t in pairs(group.options) do
 		aCoreCDB[t.db_t][t.db_v] = t.value
@@ -796,14 +795,14 @@ TutorialsFrame[4]["layout"][3]:SetScript("OnClick", function() ApplySizeAndPosti
 
 CreateOptions(TutorialsFrame[4], "group", false, nil, "unlock", {"unlock"})
 TutorialsFrame[4]["unlock"][1]:SetScript("OnClick", function(self)
-	Altz_G.SpecMover:SetScript("OnHide", function()
+	G.SpecMover:SetScript("OnHide", function()
 		TutorialsFrame:Show()
-		Altz_G.SpecMover:SetScript("OnHide", nil)
+		G.SpecMover:SetScript("OnHide", nil)
 	end)
 	TutorialsFrame:Hide()
-	Altz_T.UnlockAll()
+	T.UnlockAll()
 end)
-TutorialsFrame[4]["unlock"][1]:SetScript("OnShow", function(self) self:SetText(Altz_L["解锁框体"]) end)
+TutorialsFrame[4]["unlock"][1]:SetScript("OnShow", function(self) self:SetText(L["解锁框体"]) end)
 
 local toggle_spec = {
 	dpser = {
@@ -826,12 +825,12 @@ if toggle_spec.dpser[G.myClass] then -- 可治疗的职业才显示
 	CreateOptions(TutorialsFrame[4], "group", false, nil, "layout_spec", {"spec"})
 	TutorialsFrame[4]["layout_spec"][1]:SetScript("OnEvent", function(self, event, arg1)
 		if event == "PLAYER_LOGIN" then
-			self:SetText(Altz_L["当前模式"].." "..Altz_L[ Altz_T.CheckRole()])
+			self:SetText(L["当前模式"].." "..L[ T.CheckRole()])
 			self:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED")
 			self:RegisterEvent("PLAYER_REGEN_ENABLED")
 			self:RegisterEvent("PLAYER_REGEN_DISABLED")
 		elseif event == "PLAYER_SPECIALIZATION_CHANGED" and arg1 == "player" then
-			self:SetText(Altz_L["当前模式"].." "..Altz_L[Altz_T.CheckRole()])
+			self:SetText(L["当前模式"].." "..L[T.CheckRole()])
 		elseif event == "PLAYER_REGEN_ENABLED" then
 			self:Enable()
 		elseif event == "PLAYER_REGEN_DISABLED" then
@@ -841,7 +840,7 @@ if toggle_spec.dpser[G.myClass] then -- 可治疗的职业才显示
 	TutorialsFrame[4]["layout_spec"][1]:RegisterEvent("PLAYER_LOGIN")
 	
 	TutorialsFrame[4]["layout_spec"][1]:SetScript("OnClick", function(self)
-		local role = Altz_T.CheckRole()
+		local role = T.CheckRole()
 		SetSpecialization(toggle_spec[role][G.myClass])
 	end)
 end
@@ -861,11 +860,11 @@ T.createDR(TutorialsFrame[5]["autoswitch"], TutorialsFrame[5]["raidonly"]["heale
 
 for k, text in pairs(raidonly_group) do
 	TutorialsFrame[5]["raidonly"][k]:HookScript("OnClick", function()
-		local dps_shown = Altz_T.IsDpsRaidShown()
+		local dps_shown = T.IsDpsRaidShown()
 		if k == "dps" and not dps_shown then
-			Altz_T.SwitchRaidFrame()
+			T.SwitchRaidFrame()
 		elseif k == "healer" and dps_shown then
-			Altz_T.SwitchRaidFrame()
+			T.SwitchRaidFrame()
 		end
 	end)
 end
@@ -890,10 +889,10 @@ for k, text in pairs(plate_theme_group) do
 					end
 				end
 				plate.unitFrame:UpdateAllElements('OnUpdate')
-				Altz_T.PostUpdatePlates(plate.unitFrame, "NAME_PLATE_UNIT_ADDED", plate.unitFrame.unit)
+				T.PostUpdatePlates(plate.unitFrame, "NAME_PLATE_UNIT_ADDED", plate.unitFrame.unit)
 			end
 		end
-		Altz_T.PlacePlateClassSource()
+		T.PlacePlateClassSource()
 	end)
 	TutorialsFrame[6]["theme"][k]:SetScript("OnEvent", function(self, event)
 		if event == "PLAYER_REGEN_ENABLED" then
@@ -915,7 +914,7 @@ TutorialsFrame[6]["playerplate"]:HookScript("OnClick", function()
 	end
 	local playerPlate = C_NamePlate.GetNamePlateForUnit("player")
 	if playerPlate and playerPlate.unitFrame then
-		Altz_T.PostUpdatePlates(playerPlate.unitFrame, "NAME_PLATE_UNIT_ADDED", "player")
+		T.PostUpdatePlates(playerPlate.unitFrame, "NAME_PLATE_UNIT_ADDED", "player")
 	end
 end)
 
@@ -969,13 +968,8 @@ end
 
 local eventframe = CreateFrame("Frame")
 eventframe:RegisterEvent("PLAYER_ENTERING_WORLD")
-eventframe:RegisterEvent("ADDON_LOADED")
 eventframe:SetScript("OnEvent", function(self, event, arg1) 
-	if event == "ADDON_LOADED" then
-		if arg1 == "AltzUI" then
-			Altz_T, Altz_C, Altz_L, Altz_G = unpack(AltzUI)
-		end
-	elseif not aCoreCDB.meet then
+	if not aCoreCDB.meet then
 		if not aCoreDB.meet then
 			T.ResetAllAddonSettings()
 			SetCVar("useUiScale", 0)

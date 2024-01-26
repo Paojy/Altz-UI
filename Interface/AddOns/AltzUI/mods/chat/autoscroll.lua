@@ -1,15 +1,13 @@
 local T, C, L, G = unpack(select(2, ...))
-if not aCoreCDB["ChatOptions"]["autoscroll"] then return end
 
-local frame = CreateFrame("Frame")
 local handlers = {}
 local running = {}
 
-frame.name = "TheLowDown"
+local frame = CreateFrame("Frame")
 frame:Hide()
-
 frame:SetScript("OnUpdate", function (frame, elapsed)   
-    for name,v in pairs(handlers) do      
+    if not aCoreCDB["ChatOptions"]["autoscroll"] then return end
+	for name,v in pairs(handlers) do      
         if running[name] then
             v.elapsed = v.elapsed + elapsed
             if v.elapsed >= v.rate then
@@ -45,17 +43,20 @@ local function ResetFrame(name, frame)
 end
 
 local function ScrollOnce(name, frame)
-if frame:AtBottom() then Stop(name.."DownTick")
-else scrolldowns[name](frame) end
+	if frame:AtBottom() then
+		Stop(name.."DownTick")
+	else 
+		scrolldowns[name](frame)
+	end
 end
 
 local funcs = {"ScrollUp", "ScrollDown", "ScrollToTop", "PageUp", "PageDown"}
 for i = 1, NUM_CHAT_WINDOWS do
-local name = 'ChatFrame'..i 
-local frame = _G[name]  
-scrolldowns[name] = frame.ScrollDown   
-Register(name.."DownTick", ScrollOnce, 0, name, frame)   
-Register(name.."DownTimeout", ResetFrame, delay, name, frame)
+	local name = 'ChatFrame'..i 
+	local frame = _G[name]  
+	scrolldowns[name] = frame.ScrollDown   
+	Register(name.."DownTick", ScrollOnce, 0, name, frame)   
+	Register(name.."DownTimeout", ResetFrame, delay, name, frame)
     for _,func in ipairs(funcs) do      
         local orig = frame[func]      
         frame[func] = function(...)         

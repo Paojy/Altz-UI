@@ -565,8 +565,6 @@ end
 --=============================================--
 --[[ Castbars ]]--
 --=============================================--
-local Interruptible_color = {aCoreCDB["UnitframeOptions"]["Interruptible_color"].r, aCoreCDB["UnitframeOptions"]["Interruptible_color"].g, aCoreCDB["UnitframeOptions"]["Interruptible_color"].b} -- 玩家以及可打断的颜色
-local notInterruptible_color = {aCoreCDB["UnitframeOptions"]["notInterruptible_color"].r, aCoreCDB["UnitframeOptions"]["notInterruptible_color"].g, aCoreCDB["UnitframeOptions"]["notInterruptible_color"].b} -- 不可打断的颜色
 local tk = {} -- 引导法术的分段竖线颜色
 
 local ChannelSpells = {
@@ -835,15 +833,15 @@ local CreateCastbars = function(self, unit)
 				if multicheck(u, "target", "player", "focus") and aCoreCDB["UnitframeOptions"]["independentcb"] then -- 独立施法条	
 					if unit == "player" then
 						cb:SetSize(aCoreCDB["UnitframeOptions"]["cbwidth"], aCoreCDB["UnitframeOptions"]["cbheight"])
-						T.PlaceCurrentFrame(true, "AltzUI_playerCastbar", true)
+						T.PlaceFrame("AltzUI_playerCastbar", true)
 						cb.Spark:SetSize(8, aCoreCDB["UnitframeOptions"]["cbheight"]*2)
 					elseif unit == "target" then
 						cb:SetSize(aCoreCDB["UnitframeOptions"]["target_cbwidth"], aCoreCDB["UnitframeOptions"]["target_cbheight"])
-						T.PlaceCurrentFrame(true, "AltzUI_targetCastbar", true)
+						T.PlaceFrame("AltzUI_targetCastbar", true)
 						cb.Spark:SetSize(8, aCoreCDB["UnitframeOptions"]["target_cbheight"]*2)
 					elseif unit == "focus" then
 						cb:SetSize(aCoreCDB["UnitframeOptions"]["focus_cbwidth"], aCoreCDB["UnitframeOptions"]["focus_cbheight"])
-						T.PlaceCurrentFrame(true, "AltzUI_focusCastbar", true)
+						T.PlaceFrame("AltzUI_focusCastbar", true)
 						cb.Spark:SetSize(8, aCoreCDB["UnitframeOptions"]["focus_cbheight"]*2)
 					end
 					cb.Icon:SetPoint("BOTTOMRIGHT", cb, "BOTTOMLEFT", -7, 0)
@@ -2237,6 +2235,189 @@ T.PostUpdatePlates = PostUpdatePlates
 local PlacePlateTargetElementEventFrame = CreateFrame("Frame", nil, UIParent)
 PlacePlateTargetElementEventFrame:SetScript("OnEvent", PlacePlateClassSource)
 PlacePlateTargetElementEventFrame:RegisterEvent('PLAYER_TARGET_CHANGED')
+
+--=============================================--
+--[[ Ctrl+Click EasyMenu ]]--
+--=============================================--
+-- From NDui
+local function CheckCPower(target_name)
+	local full, found_index, target_index
+	for index, info in pairs(aCoreCDB["PlateOptions"]["custompowerplates"]) do
+		if info.name == target_name then
+			found_index = index
+			break
+		end
+	end
+	
+	for index, info in pairs(aCoreCDB["PlateOptions"]["custompowerplates"]) do
+		if info.name == L["空"] then
+			target_index = index 
+			break
+		end
+	end
+	
+	if not target_index then
+		full = true
+	end
+	
+	return full, found_index, target_index
+end
+
+local function RemovefromCPower(target_index, target_name)
+	aCoreCDB["PlateOptions"]["custompowerplates"][target_index]["name"] = L["空"]
+	print(string.format(L["已从列表移除"], 255, 255, 0, target_name, L["自定义能量"]))
+	UpdateNameplatePowerbars(true)
+end
+
+local function AddtoCPower(target_index, target_name)
+	aCoreCDB["PlateOptions"]["custompowerplates"][target_index]["name"] = target_name
+	print(string.format(L["已加入列表"], 255, 255, 0, target_name, L["自定义能量"]))
+	UpdateNameplatePowerbars(true)
+end
+
+local function SetCColor(index, name, replace)
+	local r, g, b = aCoreCDB["PlateOptions"]["customcoloredplates"][index].color.r, aCoreCDB["PlateOptions"]["customcoloredplates"][index].color.g, aCoreCDB["PlateOptions"]["customcoloredplates"][index].color.b	
+	ColorPickerFrame:ClearAllPoints()
+	ColorPickerFrame:SetPoint("CENTER", UIParent, "CENTER")
+	ColorPickerFrame.hasOpacity = false
+	
+	ColorPickerFrame.func = function()
+		aCoreCDB["PlateOptions"]["customcoloredplates"][index].color.r, aCoreCDB["PlateOptions"]["customcoloredplates"][index].color.g, aCoreCDB["PlateOptions"]["customcoloredplates"][index].color.b = ColorPickerFrame:GetColorRGB()
+		if not replace then
+			aCoreCDB["PlateOptions"]["customcoloredplates"][index]["name"] = name
+		end	
+	end
+	
+	ColorPickerOkayButton:SetScript("OnClick", function()
+		local new_r, new_g, new_b = ColorPickerFrame:GetColorRGB()
+		ColorPickerFrame:Hide()
+		print(string.format(L["已加入列表"], new_r*255, new_g*255, new_b*255, name, L["自定义颜色"]))
+		UpdateNameplateColors(true)
+	end)
+	
+	ColorPickerFrame.previousValues = {r = r, g = g, b = b}
+	
+	ColorPickerFrame.cancelFunc = function()
+		aCoreCDB["PlateOptions"]["customcoloredplates"][index].color.r, aCoreCDB["PlateOptions"]["customcoloredplates"][index].color.g, aCoreCDB["PlateOptions"]["customcoloredplates"][index].color.b = r, g, b
+	end
+	
+	ColorPickerFrame:SetColorRGB(r, g, b)
+	ColorPickerFrame:Hide()
+	ColorPickerFrame:Show()
+end
+
+local function CheckCColor(target_name)
+	local full, found_index, target_index, r, g, b
+	for index, info in pairs(aCoreCDB["PlateOptions"]["customcoloredplates"]) do
+		if info.name == target_name then
+			found_index = index
+			r, g, b = info.color.r, info.color.g, info.color.b
+			break
+		end
+	end
+	
+	for index, info in pairs(aCoreCDB["PlateOptions"]["customcoloredplates"]) do
+		if info.name == L["空"] and info.color.r == 1 and info.color.g == 1 and info.color.b == 1 then
+			target_index = index 
+			break
+		end
+	end
+	
+	if not target_index then
+		full = true
+	end
+	
+	return full, found_index, target_index, r, g, b
+end
+
+local function RemovefromCColor(target_index, target_name)
+	table.wipe(aCoreCDB["PlateOptions"]["customcoloredplates"][target_index])
+	aCoreCDB["PlateOptions"]["customcoloredplates"][target_index] = {
+		name = L["空"],
+		color = {r = 1, g = 1, b = 1},
+	}
+	print(string.format(L["已从列表移除"], 255, 255, 0, target_name, L["自定义颜色"]))
+	UpdateNameplateColors(true)
+end
+
+local function AddtoCColor(target_index, target_name)
+	SetCColor(target_index, target_name)
+end
+
+local function ReplaceCColor(target_index, target_name)
+	SetCColor(target_index, target_name, true)	
+end
+
+local menuFrame = CreateFrame("Frame", "NDui_EastMarking", UIParent, "UIDropDownMenuTemplate")
+local menuList = {
+	{text = RAID_TARGET_NONE, func = function() SetRaidTarget("target", 0) end},
+	{text = T.hex(1, .92, 0)..RAID_TARGET_1.." "..ICON_LIST[1].."12|t", func = function() SetRaidTarget("target", 1) end},
+	{text = T.hex(.98, .57, 0)..RAID_TARGET_2.." "..ICON_LIST[2].."12|t", func = function() SetRaidTarget("target", 2) end},
+	{text = T.hex(.83, .22, .9)..RAID_TARGET_3.." "..ICON_LIST[3].."12|t", func = function() SetRaidTarget("target", 3) end},
+	{text = T.hex(.04, .95, 0)..RAID_TARGET_4.." "..ICON_LIST[4].."12|t", func = function() SetRaidTarget("target", 4) end},
+	{text = T.hex(.7, .82, .875)..RAID_TARGET_5.." "..ICON_LIST[5].."12|t", func = function() SetRaidTarget("target", 5) end},
+	{text = T.hex(0, .71, 1)..RAID_TARGET_6.." "..ICON_LIST[6].."12|t", func = function() SetRaidTarget("target", 6) end},
+	{text = T.hex(1, .24, .168)..RAID_TARGET_7.." "..ICON_LIST[7].."12|t", func = function() SetRaidTarget("target", 7) end},
+	{text = T.hex(.98, .98, .98)..RAID_TARGET_8.." "..ICON_LIST[8].."12|t", func = function() SetRaidTarget("target", 8) end},
+	{text = ""}, -- 10
+	{text = L["添加自定义能量"]},
+	{text = L["添加自定义颜色"]},
+	{text = L["添加自定义颜色"]},
+}
+
+local function HookNameplateCtrlMenu()
+	if not aCoreCDB["OtherOptions"]["ctrlmenu"] then return end
+	WorldFrame:HookScript("OnMouseDown", function(_, btn)
+		C_Timer.After(0.3, function()
+			if btn == "LeftButton" and IsControlKeyDown() and UnitExists("target") then
+				if not IsInGroup() or (IsInGroup() and not IsInRaid()) or UnitIsGroupLeader("player") or UnitIsGroupAssistant("player") then
+					local ricon = GetRaidTargetIndex("target")
+					for i = 1, 8 do
+						if ricon == i then
+							menuList[i+1].checked = true
+						else
+							menuList[i+1].checked = false
+						end
+					end
+					local target_name = GetUnitName("target", false)
+					
+					local power_full, power_found_index, power_target_index = CheckCPower(target_name)
+					if power_full then	-- 自定义能量已满
+						menuList[11].text = string.format(L["列表已满"], L["自定义能量"])
+					elseif power_found_index then -- 已经有了
+						menuList[11].text = string.format(L["移除自定义能量"], target_name)
+						menuList[11].func = function() RemovefromCPower(power_found_index, target_name) end
+					elseif power_target_index then -- 可以添加
+						menuList[11].text = string.format(L["添加自定义能量"], target_name)
+						menuList[11].func = function() AddtoCPower(power_target_index, target_name) end
+					end
+					
+					local color_full, color_found_index, color_target_index, r, g, b = CheckCColor(target_name)
+					if color_full then	-- 自定义颜色已满
+						menuList[12].text = string.format(L["列表已满"], L["自定义颜色"])
+						
+						menuList[13] = {}
+					elseif color_found_index then -- 已经有了
+					
+						menuList[12].text = string.format(L["替换自定义颜色"], r*255, g*255, b*255, target_name)
+						menuList[12].func = function() ReplaceCColor(color_found_index, target_name) end
+						
+						menuList[13].text = string.format(L["移除自定义颜色"], r*255, g*255, b*255, target_name)
+						menuList[13].func = function() RemovefromCColor(color_found_index, target_name) end
+						
+					elseif color_target_index then -- 可以添加
+						menuList[12].text = string.format(L["添加自定义颜色"], target_name)
+						menuList[12].func = function() AddtoCColor(color_target_index, target_name) end
+						
+						menuList[13] = {}
+					end
+					
+					EasyMenu(menuList, menuFrame, "cursor", 0, 0, "MENU", 1)
+				end
+			end
+		end)
+	end)
+end
 --=============================================--
 --[[ Init ]]--
 --=============================================--
@@ -2389,6 +2570,8 @@ function EventFrame:ADDON_LOADED(arg1)
 	ClassNameplateBarPaladinFrame:SetAlpha(0)
 	ClassNameplateBarWarlockFrame:SetAlpha(0)
 	
+	HookNameplateCtrlMenu()
+	
 	EventFrame:RegisterEvent("ARENA_PREP_OPPONENT_SPECIALIZATIONS")
 	EventFrame:RegisterEvent("ARENA_OPPONENT_UPDATE")
 	EventFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
@@ -2411,185 +2594,3 @@ end
 
 PetCastingBarFrame:Hide()
 PetCastingBarFrame:UnregisterAllEvents()
-
---=============================================--
---[[ Ctrl+Click EasyMenu ]]--
---=============================================--
--- From NDui
-local function CheckCPower(target_name)
-	local full, found_index, target_index
-	for index, info in pairs(aCoreCDB["PlateOptions"]["custompowerplates"]) do
-		if info.name == target_name then
-			found_index = index
-			break
-		end
-	end
-	
-	for index, info in pairs(aCoreCDB["PlateOptions"]["custompowerplates"]) do
-		if info.name == L["空"] then
-			target_index = index 
-			break
-		end
-	end
-	
-	if not target_index then
-		full = true
-	end
-	
-	return full, found_index, target_index
-end
-
-local function RemovefromCPower(target_index, target_name)
-	aCoreCDB["PlateOptions"]["custompowerplates"][target_index]["name"] = L["空"]
-	print(string.format(L["已从列表移除"], 255, 255, 0, target_name, L["自定义能量"]))
-	UpdateNameplatePowerbars(true)
-end
-
-local function AddtoCPower(target_index, target_name)
-	aCoreCDB["PlateOptions"]["custompowerplates"][target_index]["name"] = target_name
-	print(string.format(L["已加入列表"], 255, 255, 0, target_name, L["自定义能量"]))
-	UpdateNameplatePowerbars(true)
-end
-
-local function SetCColor(index, name, replace)
-	local r, g, b = aCoreCDB["PlateOptions"]["customcoloredplates"][index].color.r, aCoreCDB["PlateOptions"]["customcoloredplates"][index].color.g, aCoreCDB["PlateOptions"]["customcoloredplates"][index].color.b	
-	ColorPickerFrame:ClearAllPoints()
-	ColorPickerFrame:SetPoint("CENTER", UIParent, "CENTER")
-	ColorPickerFrame.hasOpacity = false
-	
-	ColorPickerFrame.func = function()
-		aCoreCDB["PlateOptions"]["customcoloredplates"][index].color.r, aCoreCDB["PlateOptions"]["customcoloredplates"][index].color.g, aCoreCDB["PlateOptions"]["customcoloredplates"][index].color.b = ColorPickerFrame:GetColorRGB()
-		if not replace then
-			aCoreCDB["PlateOptions"]["customcoloredplates"][index]["name"] = name
-		end	
-	end
-	
-	ColorPickerOkayButton:SetScript("OnClick", function()
-		local new_r, new_g, new_b = ColorPickerFrame:GetColorRGB()
-		ColorPickerFrame:Hide()
-		print(string.format(L["已加入列表"], new_r*255, new_g*255, new_b*255, name, L["自定义颜色"]))
-		UpdateNameplateColors(true)
-	end)
-	
-	ColorPickerFrame.previousValues = {r = r, g = g, b = b}
-	
-	ColorPickerFrame.cancelFunc = function()
-		aCoreCDB["PlateOptions"]["customcoloredplates"][index].color.r, aCoreCDB["PlateOptions"]["customcoloredplates"][index].color.g, aCoreCDB["PlateOptions"]["customcoloredplates"][index].color.b = r, g, b
-	end
-	
-	ColorPickerFrame:SetColorRGB(r, g, b)
-	ColorPickerFrame:Hide()
-	ColorPickerFrame:Show()
-end
-
-local function CheckCColor(target_name)
-	local full, found_index, target_index, r, g, b
-	for index, info in pairs(aCoreCDB["PlateOptions"]["customcoloredplates"]) do
-		if info.name == target_name then
-			found_index = index
-			r, g, b = info.color.r, info.color.g, info.color.b
-			break
-		end
-	end
-	
-	for index, info in pairs(aCoreCDB["PlateOptions"]["customcoloredplates"]) do
-		if info.name == L["空"] and info.color.r == 1 and info.color.g == 1 and info.color.b == 1 then
-			target_index = index 
-			break
-		end
-	end
-	
-	if not target_index then
-		full = true
-	end
-	
-	return full, found_index, target_index, r, g, b
-end
-
-local function RemovefromCColor(target_index, target_name)
-	table.wipe(aCoreCDB["PlateOptions"]["customcoloredplates"][target_index])
-	aCoreCDB["PlateOptions"]["customcoloredplates"][target_index] = {
-		name = L["空"],
-		color = {r = 1, g = 1, b = 1},
-	}
-	print(string.format(L["已从列表移除"], 255, 255, 0, target_name, L["自定义颜色"]))
-	UpdateNameplateColors(true)
-end
-
-local function AddtoCColor(target_index, target_name)
-	SetCColor(target_index, target_name)
-end
-
-local function ReplaceCColor(target_index, target_name)
-	SetCColor(target_index, target_name, true)	
-end
-
-local menuFrame = CreateFrame("Frame", "NDui_EastMarking", UIParent, "UIDropDownMenuTemplate")
-local menuList = {
-	{text = RAID_TARGET_NONE, func = function() SetRaidTarget("target", 0) end},
-	{text = T.hex(1, .92, 0)..RAID_TARGET_1.." "..ICON_LIST[1].."12|t", func = function() SetRaidTarget("target", 1) end},
-	{text = T.hex(.98, .57, 0)..RAID_TARGET_2.." "..ICON_LIST[2].."12|t", func = function() SetRaidTarget("target", 2) end},
-	{text = T.hex(.83, .22, .9)..RAID_TARGET_3.." "..ICON_LIST[3].."12|t", func = function() SetRaidTarget("target", 3) end},
-	{text = T.hex(.04, .95, 0)..RAID_TARGET_4.." "..ICON_LIST[4].."12|t", func = function() SetRaidTarget("target", 4) end},
-	{text = T.hex(.7, .82, .875)..RAID_TARGET_5.." "..ICON_LIST[5].."12|t", func = function() SetRaidTarget("target", 5) end},
-	{text = T.hex(0, .71, 1)..RAID_TARGET_6.." "..ICON_LIST[6].."12|t", func = function() SetRaidTarget("target", 6) end},
-	{text = T.hex(1, .24, .168)..RAID_TARGET_7.." "..ICON_LIST[7].."12|t", func = function() SetRaidTarget("target", 7) end},
-	{text = T.hex(.98, .98, .98)..RAID_TARGET_8.." "..ICON_LIST[8].."12|t", func = function() SetRaidTarget("target", 8) end},
-	{text = ""}, -- 10
-	{text = L["添加自定义能量"]},
-	{text = L["添加自定义颜色"]},
-	{text = L["添加自定义颜色"]},
-}
-
-if aCoreCDB["OtherOptions"]["ctrlmenu"] then
-	WorldFrame:HookScript("OnMouseDown", function(_, btn)
-		C_Timer.After(0.3, function()
-			if btn == "LeftButton" and IsControlKeyDown() and UnitExists("target") then
-				if not IsInGroup() or (IsInGroup() and not IsInRaid()) or UnitIsGroupLeader("player") or UnitIsGroupAssistant("player") then
-					local ricon = GetRaidTargetIndex("target")
-					for i = 1, 8 do
-						if ricon == i then
-							menuList[i+1].checked = true
-						else
-							menuList[i+1].checked = false
-						end
-					end
-					local target_name = GetUnitName("target", false)
-					
-					local power_full, power_found_index, power_target_index = CheckCPower(target_name)
-					if power_full then	-- 自定义能量已满
-						menuList[11].text = string.format(L["列表已满"], L["自定义能量"])
-					elseif power_found_index then -- 已经有了
-						menuList[11].text = string.format(L["移除自定义能量"], target_name)
-						menuList[11].func = function() RemovefromCPower(power_found_index, target_name) end
-					elseif power_target_index then -- 可以添加
-						menuList[11].text = string.format(L["添加自定义能量"], target_name)
-						menuList[11].func = function() AddtoCPower(power_target_index, target_name) end
-					end
-					
-					local color_full, color_found_index, color_target_index, r, g, b = CheckCColor(target_name)
-					if color_full then	-- 自定义颜色已满
-						menuList[12].text = string.format(L["列表已满"], L["自定义颜色"])
-						
-						menuList[13] = {}
-					elseif color_found_index then -- 已经有了
-					
-						menuList[12].text = string.format(L["替换自定义颜色"], r*255, g*255, b*255, target_name)
-						menuList[12].func = function() ReplaceCColor(color_found_index, target_name) end
-						
-						menuList[13].text = string.format(L["移除自定义颜色"], r*255, g*255, b*255, target_name)
-						menuList[13].func = function() RemovefromCColor(color_found_index, target_name) end
-						
-					elseif color_target_index then -- 可以添加
-						menuList[12].text = string.format(L["添加自定义颜色"], target_name)
-						menuList[12].func = function() AddtoCColor(color_target_index, target_name) end
-						
-						menuList[13] = {}
-					end
-					
-					EasyMenu(menuList, menuFrame, "cursor", 0, 0, "MENU", 1)
-				end
-			end
-		end)
-	end)
-end

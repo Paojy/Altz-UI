@@ -1,21 +1,6 @@
 ﻿local T, C, L, G = unpack(select(2, ...))
 local F = unpack(AuroraClassic)
 
---CHAT_FRAME_FADE_OUT_TIME = 1
---CHAT_TAB_HIDE_DELAY = 1
-CHAT_FRAME_TAB_SELECTED_MOUSEOVER_ALPHA = aCoreCDB["ChatOptions"]["chattab_fade_maxalpha"]
-CHAT_FRAME_TAB_SELECTED_NOMOUSE_ALPHA = aCoreCDB["ChatOptions"]["chattab_fade_minalpha"]
-CHAT_FRAME_TAB_NORMAL_MOUSEOVER_ALPHA = aCoreCDB["ChatOptions"]["chattab_fade_maxalpha"]
-CHAT_FRAME_TAB_NORMAL_NOMOUSE_ALPHA = aCoreCDB["ChatOptions"]["chattab_fade_minalpha"]
-CHAT_FRAME_TAB_ALERTING_MOUSEOVER_ALPHA = aCoreCDB["ChatOptions"]["chattab_fade_maxalpha"]
-CHAT_FRAME_TAB_ALERTING_NOMOUSE_ALPHA = aCoreCDB["ChatOptions"]["chattab_fade_minalpha"]
-
---for i = 1, 23 do
---	CHAT_FONT_HEIGHTS[i] = i+7
---end
-
-local _G = _G
-
 local TAB_TEXTURES = {
 	"Left",
 	"Middle",
@@ -27,7 +12,7 @@ local TAB_TEXTURES = {
 	"HighlightLeft",
 	"HighlightMiddle",
 	"HighlightRight",
-	}
+}
 
 local chatwindownum = NUM_CHAT_WINDOWS
 
@@ -136,7 +121,9 @@ local function SetChatTabs()
 			
 			for index, value in pairs(TAB_TEXTURES) do
 				local texture = _G['ChatFrame'..i..'Tab'..value]
-				texture:SetTexture(nil)
+				if texture then
+					texture:SetTexture(nil)
+				end
 			end
 			
 			tab.Middle:SetTexture(nil)
@@ -162,6 +149,15 @@ EventFrame:SetScript("OnEvent", function(self, event, arg1)
 		--topbar:HookScript("OnShow", function(self) topbar:Hide() end)
 		--topbar:SetHeight(0)
 	elseif event == "PLAYER_LOGIN" then
+		--CHAT_FRAME_FADE_OUT_TIME = 1
+		--CHAT_TAB_HIDE_DELAY = 1
+		CHAT_FRAME_TAB_SELECTED_MOUSEOVER_ALPHA = aCoreCDB["ChatOptions"]["chattab_fade_maxalpha"]
+		CHAT_FRAME_TAB_SELECTED_NOMOUSE_ALPHA = aCoreCDB["ChatOptions"]["chattab_fade_minalpha"]
+		CHAT_FRAME_TAB_NORMAL_MOUSEOVER_ALPHA = aCoreCDB["ChatOptions"]["chattab_fade_maxalpha"]
+		CHAT_FRAME_TAB_NORMAL_NOMOUSE_ALPHA = aCoreCDB["ChatOptions"]["chattab_fade_minalpha"]
+		CHAT_FRAME_TAB_ALERTING_MOUSEOVER_ALPHA = aCoreCDB["ChatOptions"]["chattab_fade_maxalpha"]
+		CHAT_FRAME_TAB_ALERTING_NOMOUSE_ALPHA = aCoreCDB["ChatOptions"]["chattab_fade_minalpha"]
+		
 		init()
 		FCF_SelectDockFrame(_G['ChatFrame1'])
 		FCF_FadeInChatFrame(_G['ChatFrame1'])
