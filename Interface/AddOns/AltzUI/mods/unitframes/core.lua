@@ -831,17 +831,18 @@ local CreateCastbars = function(self, unit)
 				cb.Icon:SetSize(aCoreCDB["UnitframeOptions"]["cbIconsize"], aCoreCDB["UnitframeOptions"]["cbIconsize"])
 				
 				if multicheck(u, "target", "player", "focus") and aCoreCDB["UnitframeOptions"]["independentcb"] then -- 独立施法条	
+					if u == "player" or u == "target" or u == "focus" then
+						T.RestoreDragFrame(cb)
+					end
+					
 					if unit == "player" then
 						cb:SetSize(aCoreCDB["UnitframeOptions"]["cbwidth"], aCoreCDB["UnitframeOptions"]["cbheight"])
-						T.PlaceFrame("AltzUI_playerCastbar", true)
 						cb.Spark:SetSize(8, aCoreCDB["UnitframeOptions"]["cbheight"]*2)
 					elseif unit == "target" then
 						cb:SetSize(aCoreCDB["UnitframeOptions"]["target_cbwidth"], aCoreCDB["UnitframeOptions"]["target_cbheight"])
-						T.PlaceFrame("AltzUI_targetCastbar", true)
 						cb.Spark:SetSize(8, aCoreCDB["UnitframeOptions"]["target_cbheight"]*2)
 					elseif unit == "focus" then
-						cb:SetSize(aCoreCDB["UnitframeOptions"]["focus_cbwidth"], aCoreCDB["UnitframeOptions"]["focus_cbheight"])
-						T.PlaceFrame("AltzUI_focusCastbar", true)
+						cb:SetSize(aCoreCDB["UnitframeOptions"]["focus_cbwidth"], aCoreCDB["UnitframeOptions"]["focus_cbheight"])	
 						cb.Spark:SetSize(8, aCoreCDB["UnitframeOptions"]["focus_cbheight"]*2)
 					end
 					cb.Icon:SetPoint("BOTTOMRIGHT", cb, "BOTTOMLEFT", -7, 0)
@@ -882,16 +883,12 @@ local CreateCastbars = function(self, unit)
 						cb:SetStatusBarTexture(G.media.ufbar)
 					end
 					cb.bd:Show()
-				else -- 重叠施法条
-					if u == "player" then
-						T.ReleaseFrame("AltzUI_playerCastbar")
-					elseif u == "target" then
-						T.ReleaseFrame("AltzUI_targetCastbar")
-					elseif u == "focus" then
-						T.ReleaseFrame("AltzUI_focusCastbar")
+				else -- 附着施法条
+					if u == "player" or u == "target" or u == "focus" then
+						T.ReleaseDragFrame(cb)
+						cb:ClearAllPoints()
+						cb:SetAllPoints(self)
 					end
-					
-					cb:SetAllPoints(self)
 					
 					cb.Spark:SetSize(8, aCoreCDB["UnitframeOptions"]["height"]*2)
 					cb.Icon:SetPoint("BOTTOMRIGHT", cb, "BOTTOMLEFT", -7, -aCoreCDB["UnitframeOptions"]["height"]*(1-aCoreCDB["UnitframeOptions"]["hpheight"]))

@@ -776,12 +776,7 @@ Centralized_Layout = {
 local ApplySizeAndPostions = function(group)
 	local role = T.CheckRole()
 	for i, t in pairs(group.frames) do
-		aCoreCDB["FramePoints"][t.f][role]["a1"] = t.a1
-		aCoreCDB["FramePoints"][t.f][role]["parent"] = t.parent
-		aCoreCDB["FramePoints"][t.f][role]["a2"] = t.a2
-		aCoreCDB["FramePoints"][t.f][role]["x"] = t.x
-		aCoreCDB["FramePoints"][t.f][role]["y"] = t.y
-		T.PlaceFrame(t.f)
+		T.ResetFramePoint(t)
 	end
 	for i, t in pairs(group.options) do
 		aCoreCDB[t.db_t][t.db_v] = t.value

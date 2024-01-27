@@ -358,21 +358,7 @@ T.resize_font(resetposbutton.Text)
 F.Reskin(resetposbutton)
 resetposbutton:SetScript("OnClick", function()
 	StaticPopupDialogs[G.uiname.."Reset Confirm"].text = L["重置确认"]
-	StaticPopupDialogs[G.uiname.."Reset Confirm"].OnAccept = function()
-		for i = 1, #G.dragFrameList do
-			local f = G.dragFrameList[i]
-			local name = f:GetName()
-			aCoreCDB["FramePoints"][name] = {}
-			for role, points in pairs (f.point) do
-				aCoreCDB["FramePoints"][name][role] = {}
-				for k, v in pairs (points) do
-					aCoreCDB["FramePoints"][name][role][k] = v
-				end
-			end
-			T.PlaceFrame(name)
-		end
-		CurrentFrame = "NONE"
-	end
+	StaticPopupDialogs[G.uiname.."Reset Confirm"].OnAccept = T.PlaceAllFramesPoint
 	StaticPopup_Show(G.uiname.."Reset Confirm")
 end)
 
