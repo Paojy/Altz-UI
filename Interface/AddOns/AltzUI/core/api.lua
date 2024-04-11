@@ -275,8 +275,10 @@ T.createBackdrop = function(parent, anchor, a, BD_thin)
 	return frame
 end
 
-T.createStatusbar = function(parent, layer, height, width, r, g, b, alpha, name)
+G.ThemeStatusbars = {}
+T.createStatusbar = function(parent, height, width, r, g, b, alpha, name)
 	local bar = CreateFrame("StatusBar", name, parent)
+	
 	if height then
 		bar:SetHeight(height)
 	end
@@ -284,27 +286,30 @@ T.createStatusbar = function(parent, layer, height, width, r, g, b, alpha, name)
 		bar:SetWidth(width)
 	end
 
-	if aCoreCDB["UnitframeOptions"]["style"] == 1 then
-		bar:SetStatusBarTexture(G.media.blank)
-	else
-		bar:SetStatusBarTexture(G.media.ufbar)
-	end
-	
 	if r then
 		bar:SetStatusBarColor(r, g, b, alpha)
 	end
 	
 	bar.bg = bar:CreateTexture(nil, "BACKGROUND")
 	if aCoreCDB["UnitframeOptions"]["style"] == 1 then
-		bar.bg:SetTexture(G.media.blank)
+		bar:SetStatusBarTexture(G.media.blank)
 	else
-		bar.bg:SetTexture(G.media.ufbar)
+		bar:SetStatusBarTexture(G.media.ufbar)
 	end
+	
 	bar.bg:SetAllPoints(bar)
 
 	bar:GetStatusBarTexture():SetHorizTile(false)
 	bar:GetStatusBarTexture():SetVertTile(false)
-
+	
+	if aCoreCDB["UnitframeOptions"]["style"] == 1 then		
+		bar.bg:SetTexture(G.media.blank)
+	else	
+		bar.bg:SetTexture(G.media.ufbar)
+	end
+	
+	table.insert(G.ThemeStatusbars, bar)
+	
 	return bar
 end
 
@@ -742,6 +747,9 @@ T.createcheckbutton = function(parent, x, y, name, table, value, tip)
 		else
 			aCoreCDB[table][value] = false
 		end
+		if self.apply then
+			self.apply()
+		end
 	end)
 	
 	bu:SetScript("OnDisable", function(self)
@@ -974,7 +982,8 @@ local function TestSlider_OnValueChanged(self, value)
      self._onsetting = false
    else return end               -- ignore recursion for actual event handler
  end
- 
+T.TestSlider_OnValueChanged = TestSlider_OnValueChanged
+
 T.createslider = function(parent, x, y, name, table, value, divisor, min, max, step, tip)
 	local slider = CreateFrame("Slider", G.uiname..value.."Slider", parent, "OptionsSliderTemplate")
 	slider:SetPoint("TOPLEFT", x, -y)
@@ -1005,12 +1014,15 @@ T.createslider = function(parent, x, y, name, table, value, divisor, min, max, s
 	
 	slider:SetScript("OnShow", function(self)
 		self:SetValue((aCoreCDB[table][value])*divisor)
-		_G[slider:GetName()..'Text']:SetText(name.." |cFF00FFFF"..aCoreCDB[table][value].."|r")
+		_G[self:GetName()..'Text']:SetText(name.." |cFF00FFFF"..aCoreCDB[table][value].."|r")
 	end)
 	slider:SetScript("OnValueChanged", function(self, getvalue)
 		aCoreCDB[table][value] = getvalue/divisor
 		TestSlider_OnValueChanged(self, getvalue)
-		_G[slider:GetName()..'Text']:SetText(name.." |cFF00FFFF"..aCoreCDB[table][value].."|r")
+		_G[self:GetName()..'Text']:SetText(name.." |cFF00FFFF"..aCoreCDB[table][value].."|r")
+		if self.apply then
+			self.apply()
+		end
 	end)
 	
 	if tip then slider.tooltipText = tip end
@@ -1112,6 +1124,9 @@ T.createradiobuttongroup = function(parent, x, y, name, table, value, group, new
 		frame[k]:SetScript("OnClick", function(self)
 			if self:GetChecked() then
 				aCoreCDB[table][value] = k
+				if frame.apply then
+					frame.apply()
+				end
 			else
 				self:SetChecked(true)
 			end

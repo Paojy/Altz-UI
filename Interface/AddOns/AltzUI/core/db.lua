@@ -571,7 +571,6 @@ local Character_default_Settings = {
 
 		-- show player in party
 		showplayerinparty = true,
-		showpartypets = false,
 
 		-- show pvp timer
 		pvpicon = false,
@@ -790,12 +789,13 @@ local Character_default_Settings = {
 		showtopconerbar = true,
 		showbottomconerbar = true,
 		formattype = "k", -- w, w_chinese, none
-		
-		guiscale = .8,		
+		gui_x = 300,
+		gui_y = 300,
+		gui_scale = 100,		
 		infobar = true,
 		infobarscale = 1,
 		collectminimapbuttons = true,
-		MBCFpos = "TOP",
+		MBCFpos = "BOTTOM",
 		collapseWF = true,
 		customobjectivetracker = false,
 		afklogin = false,

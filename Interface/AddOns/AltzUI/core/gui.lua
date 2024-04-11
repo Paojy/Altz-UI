@@ -11,21 +11,43 @@ end
 --====================================================--
 --[[             -- GUI Main Frame --               ]]--
 --====================================================--
-local GUI = CreateFrame("Frame", G.uiname.."GUI Main Frame")
+local GUI = CreateFrame("Frame", G.uiname.."GUI Main Frame", UIParent)
 GUI:SetSize(650, 550)
-GUI:SetPoint("CENTER", UIParent, "CENTER")
+GUI:SetPoint("TOPRIGHT", UIParent, "CENTER", 300, 300)
 GUI:SetFrameStrata("HIGH")
-GUI:SetFrameLevel(4)
+GUI:SetFrameLevel(2)
 GUI:Hide()
+F.SetBD(GUI)
+G.GUI = GUI
 
-GUI:RegisterForDrag("LeftButton")
-GUI:SetScript("OnDragStart", function(self) self:StartMoving() self:SetUserPlaced(false) end)
-GUI:SetScript("OnDragStop", function(self) self:StopMovingOrSizing() end)
 GUI:SetClampedToScreen(true)
 GUI:SetMovable(true)
-GUI:EnableMouse(true)
 
-F.SetBD(GUI)
+GUI.df = CreateFrame("Frame", G.uiname.."_GUIDragFrame", UIParent)
+GUI.df:SetAllPoints(GUI)
+GUI.df:EnableMouse(true)
+GUI.df:RegisterForDrag("LeftButton")
+GUI.df:SetClampedToScreen(true)
+GUI.df:Hide()
+
+GUI.df:SetScript("OnDragStart", function(self)
+	GUI:StartMoving()
+	GUI.scale:Hide()
+	self.x, self.y = GUI:GetCenter() -- 开始的位置
+end)
+
+GUI.df:SetScript("OnDragStop", function(self) 
+	GUI:StopMovingOrSizing()
+	local x, y = GUI:GetCenter() -- 结束的位置
+	local x1, y1 = ("%d"):format(x - self.x), ("%d"):format(y -self.y)
+	aCoreCDB["SkinOptions"]["gui_x"] = aCoreCDB["SkinOptions"]["gui_x"] + x1
+	aCoreCDB["SkinOptions"]["gui_y"] = aCoreCDB["SkinOptions"]["gui_y"] + y1
+	local scale = aCoreCDB["SkinOptions"]["gui_scale"]/100
+	GUI:ClearAllPoints()
+	GUI:SetPoint("TOPRIGHT", UIParent, "CENTER", aCoreCDB["SkinOptions"]["gui_x"]/scale, aCoreCDB["SkinOptions"]["gui_y"]/scale)
+	GUI.scale:Show()
+	GUI.scale.pointself()
+end)
 
 GUI.title = T.createtext(GUI, "OVERLAY", 25, "OUTLINE", "CENTER")
 GUI.title:SetPoint("BOTTOM", GUI, "TOP", 0, -8)
@@ -37,15 +59,66 @@ GUI.close:SetSize(20, 20)
 T.SkinButton(GUI.close, G.Iconpath.."exit", true)
 GUI.close:SetScript("OnClick", function()
 	GUI:Hide()
+	GUI.df:Hide()
+	GUI.scale:Hide()
 end)
 
-local ReloadButton = CreateFrame("Button", G.uiname.."ReloadButton", GUI, "UIPanelButtonTemplate")
-ReloadButton:SetPoint("RIGHT", GUI.close, "LEFT", -15, 0)
-ReloadButton:SetSize(100, 25)
-ReloadButton:SetText(APPLY)
-T.resize_font(ReloadButton.Text)
-F.Reskin(ReloadButton)
-ReloadButton:SetScript("OnClick", ReloadUI)
+GUI.reload = CreateFrame("Button", G.uiname.."ReloadButton", GUI, "UIPanelButtonTemplate")
+GUI.reload:SetPoint("RIGHT", GUI.close, "LEFT", -15, 0)
+GUI.reload:SetSize(100, 25)
+GUI.reload:SetText(APPLY)
+T.resize_font(GUI.reload.Text)
+F.Reskin(GUI.reload)
+GUI.reload:SetScript("OnClick", ReloadUI)
+
+-- 控制台尺寸
+GUI.scale = CreateFrame("Slider", G.uiname.."GUIScaleSlider", UIParent, "OptionsSliderTemplate")
+GUI.scale:SetFrameLevel(20)
+F.ReskinSlider(GUI.scale)
+getmetatable(GUI.scale).__index.Enable(GUI.scale)
+GUI.scale:SetMinMaxValues(50, 120)
+GUI.scale:SetValueStep(5)
+GUI.scale:SetFrameStrata("HIGH")
+GUI.scale:SetMovable(true)
+GUI.scale:SetClampedToScreen(true)
+GUI.scale:Hide()
+GUI.scale:SetSize(160, 12)
+
+GUI.scale.Thumb:SetSize(25, 16)
+
+GUI.scale.Text:ClearAllPoints()
+GUI.scale.Text:SetPoint("RIGHT", GUI.scale, "LEFT", 0, 0)
+GUI.scale.Text:SetFontObject(GameFontHighlight)
+T.resize_font(GUI.scale.Text)
+
+GUI.scale.High:SetAlpha(0)
+GUI.scale.Low:SetAlpha(0)
+
+GUI.scale:SetScript("OnShow", function(self)
+	self:SetValue((aCoreCDB["SkinOptions"]["gui_scale"]))
+	self.Text:SetText(L["控制台"]..L["尺寸"].." |cFF00FFFF"..aCoreCDB["SkinOptions"]["gui_scale"].."|r")
+end)
+
+GUI.scale:SetScript("OnValueChanged", function(self, getvalue)
+	aCoreCDB["SkinOptions"]["gui_scale"] = getvalue
+	T.TestSlider_OnValueChanged(self, getvalue)
+
+	self.Text:SetText(L["控制台"]..L["尺寸"].." |cFF00FFFF"..aCoreCDB["SkinOptions"]["gui_scale"].."|r")
+	
+	local scale = aCoreCDB["SkinOptions"]["gui_scale"]/100
+	GUI:ClearAllPoints()
+	GUI:SetPoint("TOPRIGHT", UIParent, "CENTER", aCoreCDB["SkinOptions"]["gui_x"]/scale, aCoreCDB["SkinOptions"]["gui_y"]/scale)
+	GUI:SetScale(scale)
+end)
+	
+GUI.scale.pointself = function()
+	local scale = aCoreCDB["SkinOptions"]["gui_scale"]/100
+	--GUI.scale:SetClampRectInsets(-650*scale+160, 0, 0, -550*scale+20)	
+	GUI.scale:ClearAllPoints()
+	GUI.scale:SetPoint("TOPRIGHT", UIParent, "CENTER", aCoreCDB["SkinOptions"]["gui_x"]-3, aCoreCDB["SkinOptions"]["gui_y"]-5)	
+end
+
+GUI.scale:SetScript("OnMouseUp", GUI.scale.pointself)
 
 GUI.tabindex = 1
 GUI.tabnum = 20
@@ -62,8 +135,12 @@ AddonCompartmentFrame:RegisterAddon({
 	func = function(btn, arg1, arg2, checked, mouseButton)
 		if GUI:IsShown() then
 			GUI:Hide()
+			GUI.df:Hide()
+			GUI.scale:Hide()
 		else
 			GUI:Show()
+			GUI.df:Show()
+			GUI.scale:Show()
 		end
 	end,
 })
@@ -183,8 +260,8 @@ local IntroOptions = CreateFrame("Frame", G.uiname.."Intro Frame", GUI)
 IntroOptions:SetAllPoints(GUI)
 CreateTab(L["介绍"], IntroOptions, GUI, "VERTICAL")
 
-IntroOptions:SetScript("OnShow", function() ReloadButton:Hide() end)
-IntroOptions:SetScript("OnHide", function() ReloadButton:Show() end)
+IntroOptions:SetScript("OnShow", function() GUI.reload:Hide() end)
+IntroOptions:SetScript("OnHide", function() GUI.reload:Show() end)
 
 local logo = CreateFrame("PlayerModel", G.uiname.."Logo", IntroOptions)
 logo:SetSize(500, 300)
@@ -267,8 +344,7 @@ local function CreateLinkButton(text, ...)
 	return bu
 end
 
-local discord = CreateLinkButton("Discord", "BOTTOMLEFT", IntroOptions.line, "TOPLEFT", 0, 0)
-local nga = CreateLinkButton("Nga", "LEFT", discord, "RIGHT", 5, 0)
+local nga = CreateLinkButton("Nga", "BOTTOMLEFT", IntroOptions.line, "TOPLEFT", 0, 0)
 local wowi = CreateLinkButton("WoWInterface", "LEFT", nga, "RIGHT", 5, 0)
 
 local function RotateModel(self, button)
@@ -371,6 +447,8 @@ F.Reskin(unlockbutton)
 unlockbutton:SetScript("OnClick", function()
 	T.UnlockAll()
 	GUI:Hide()
+	GUI.df:Hide()
+	GUI.scale:Hide()
 end)
 --====================================================--
 --[[            -- Interface Options --            ]]--
@@ -399,6 +477,36 @@ local style_group = {
 	[3] = L["普通样式"],
 }
 T.createradiobuttongroup(SInnerframe.theme, 30, 60, L["样式"], "UnitframeOptions", "style", style_group)
+SInnerframe.theme.style.apply = function()
+	G.BGFrame.Apply()
+	
+	for i, bar in pairs(G.ThemeStatusbars) do
+		if aCoreCDB["UnitframeOptions"]["style"] == 1 then
+			bar:SetStatusBarTexture(G.media.blank)
+			bar.bg:SetTexture(G.media.blank)
+		else
+			bar:SetStatusBarTexture(G.media.ufbar)
+			bar.bg:SetTexture(G.media.ufbar)
+		end
+	end
+	
+	for k, uf in pairs(AltzUF.objects) do
+		if uf.Health then
+			uf.Health:ForceUpdate()
+			uf.Health.ApplySettings()
+		end
+		
+		if uf.Power then
+			uf.Power:ForceUpdate()
+			uf.Power.ApplySettings()
+		end
+		
+		if uf.Castbar then
+			uf.Castbar:ForceUpdate()
+			uf.Castbar.ApplySettings()
+		end
+	end
+end
 
 local combattextfont_group = {
 	["none"] = DEFAULT,
@@ -437,9 +545,13 @@ local textformattype_order = {
 T.createradiobuttongroup(SInnerframe.theme, 30, 120, L["数字缩写样式"], "SkinOptions", "formattype", textformattype_group, nil, textformattype_order)
 
 T.createcheckbutton(SInnerframe.theme, 30, 150, L["上方"].." "..L["边缘装饰"], "SkinOptions", "showtopbar")
+SInnerframe.theme.showtopbar.apply = G.BGFrame.Apply
 T.createcheckbutton(SInnerframe.theme, 200, 150, L["上方"].." "..L["两侧装饰"], "SkinOptions", "showtopconerbar")
+SInnerframe.theme.showtopconerbar.apply = G.BGFrame.Apply
 T.createcheckbutton(SInnerframe.theme, 30, 180, L["下方"].." "..L["边缘装饰"], "SkinOptions", "showbottombar")
+SInnerframe.theme.showbottombar.apply = G.BGFrame.Apply
 T.createcheckbutton(SInnerframe.theme, 200, 180, L["下方"].." "..L["两侧装饰"], "SkinOptions", "showbottomconerbar")
+SInnerframe.theme.showbottomconerbar.apply = G.BGFrame.Apply
 
 SInnerframe.theme.title = SInnerframe.theme:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
 SInnerframe.theme.title:SetPoint("TOPLEFT", 35, -213)
@@ -498,15 +610,18 @@ local SetSkadaButton = CreateApplySettingButton("setSkada")
 -- 布局
 SInnerframe.layout = CreateOptionPage("Interface Options Layout", L["界面布局"], SInnerframe, "VERTICAL", .3)
 T.createcheckbutton(SInnerframe.layout, 30, 60, L["信息条"], "SkinOptions", "infobar")
+SInnerframe.layout.infobar.apply = G.InfoFrame.Apply
+
 T.createslider(SInnerframe.layout, 30, 110, L["信息条尺寸"], "SkinOptions", "infobarscale", 100, 50, 200, 5)
-T.createslider(SInnerframe.layout, 30, 150, L["控制台"]..L["尺寸"], "SkinOptions", "guiscale", 100, 50, 150, 5)
+SInnerframe.layout.infobarscale.apply = G.InfoFrame.Apply
+
 T.createDR(SInnerframe.layout.infobar, SInnerframe.layout.infobarscale)
 
-CreateDividingLine(SInnerframe.layout, -190)
+CreateDividingLine(SInnerframe.layout, -150)
 
-T.createcheckbutton(SInnerframe.layout, 30, 210, L["在副本中收起任务追踪"], "SkinOptions", "collapseWF", L["在副本中收起任务追踪提示"])
-T.createcheckbutton(SInnerframe.layout, 30, 240, L["登陆屏幕"], "SkinOptions", "afklogin", L["登陆屏幕"])
-T.createcheckbutton(SInnerframe.layout, 30, 270, L["暂离屏幕"], "SkinOptions", "afkscreen", L["暂离屏幕"])
+T.createcheckbutton(SInnerframe.layout, 30, 170, L["在副本中收起任务追踪"], "SkinOptions", "collapseWF", L["在副本中收起任务追踪提示"])
+T.createcheckbutton(SInnerframe.layout, 30, 200, L["登陆屏幕"], "SkinOptions", "afklogin", L["登陆屏幕"])
+T.createcheckbutton(SInnerframe.layout, 30, 230, L["暂离屏幕"], "SkinOptions", "afkscreen", L["暂离屏幕"])
 
 --====================================================--
 --[[              -- Chat Options --                ]]--
@@ -939,7 +1054,6 @@ T.createcheckbutton(UFInnerframe.other, 30, 90, L["显示PvP标记"], "Unitframe
 T.createcheckbutton(UFInnerframe.other, 30, 120, L["启用首领框体"], "UnitframeOptions", "bossframes")
 T.createcheckbutton(UFInnerframe.other, 30, 150, L["启用PVP框体"], "UnitframeOptions", "arenaframes")
 T.createcheckbutton(UFInnerframe.other, 30, 180, L["在小队中显示自己"], "UnitframeOptions", "showplayerinparty")
-T.createcheckbutton(UFInnerframe.other, 30, 210, L["显示小队宠物"], "UnitframeOptions", "showpartypets")
 
 if G.myClass == "DEATHKNIGHT" then
     T.createcheckbutton(UFInnerframe.other, 30, 240, format(L["显示冷却"], RUNES), "UnitframeOptions", "runecooldown")
@@ -1142,7 +1256,7 @@ local function CreatehotindAuraOptions()
 	end)
 	
 	RFInnerframe.ind.Reset = CreateFrame("Button", G.uiname.."hotind_auralist Reset Button", RFInnerframe.ind, "UIPanelButtonTemplate")
-	RFInnerframe.ind.Reset:SetPoint("BOTTOM", ReloadButton, "TOP", 0, 10)
+	RFInnerframe.ind.Reset:SetPoint("BOTTOM", GUI.reload, "TOP", 0, 10)
 	RFInnerframe.ind.Reset:SetSize(100, 25)
 	RFInnerframe.ind.Reset:SetText(L["重置"])	
 	T.resize_font(RFInnerframe.ind.Reset.Text)
@@ -1764,7 +1878,7 @@ local function CreateRaidDebuffOptions()
 	
 	-- 重置按钮
 	local Reset = CreateFrame("Button", nil, frame.debufflist, "UIPanelButtonTemplate")
-	Reset:SetPoint("BOTTOM", ReloadButton, "TOP", 0, 10)
+	Reset:SetPoint("BOTTOM", GUI.reload, "TOP", 0, 10)
 	Reset:SetSize(100, 25)
 	Reset:SetText(L["重置"])
 	T.resize_font(Reset.Text)
@@ -1879,6 +1993,9 @@ hooksecurefunc("SetItemRef", function(link, text)
 		Click(RFInnerframe.tab8)
 		Click(_G[G.uiname.."Raiddebuff Tab"..InstanceID])
 		GUI:Show()
+		GUI.df:Show()
+		GUI.scale:Show()
+			
 		local frame = RFInnerframe.raiddebuff.debufflist
 		if encounterID == 1 then
 			UIDropDownMenu_SetText(frame.BossDD, L["杂兵"])
@@ -2129,7 +2246,7 @@ local function CreateCooldownAuraOption(auratype, auratable, name, parent, show)
 	frame.Add = Add
 	
 	local Reset = CreateFrame("Button", G.uiname..auratype.."Reset CooldownAura Button", frame, "UIPanelButtonTemplate")
-	Reset:SetPoint("BOTTOM", ReloadButton, "TOP", 0, 10)
+	Reset:SetPoint("BOTTOM", GUI.reload, "TOP", 0, 10)
 	Reset:SetSize(100, 25)
 	Reset:SetText(L["重置"])
 	T.resize_font(Reset.Text)
@@ -2604,7 +2721,7 @@ local function CreatePlateAuraOptions(name, flitertype, list)
 	end)
 	
 	plateauralist.Reset = CreateFrame("Button", G.uiname..list.."Reset Button", plateauralist, "UIPanelButtonTemplate")
-	plateauralist.Reset:SetPoint("BOTTOM", ReloadButton, "TOP", 0, 10)
+	plateauralist.Reset:SetPoint("BOTTOM", GUI.reload, "TOP", 0, 10)
 	plateauralist.Reset:SetSize(100, 25)
 	plateauralist.Reset:SetText(L["重置"])	
 	T.resize_font(plateauralist.Reset.Text)
@@ -2902,11 +3019,15 @@ function eventframe:ADDON_LOADED(arg1)
 	end
 	T.LoadAccountVariables()
 	T.LoadVariables()
+
+	local scale = aCoreCDB["SkinOptions"]["gui_scale"]/100
+	GUI:ClearAllPoints()
+	GUI:SetPoint("TOPRIGHT", UIParent, "CENTER", aCoreCDB["SkinOptions"]["gui_x"]/scale, aCoreCDB["SkinOptions"]["gui_y"]/scale)
+	GUI:SetScale(scale)
+	GUI.scale.pointself()
 end
 
 function eventframe:PLAYER_ENTERING_WORLD()
-	GUI:SetScale(aCoreCDB["SkinOptions"]["guiscale"])
-
 	CreateAuraFilterButtonList()
 	
 	C_Timer.After(3, function() CreateAutobuyButtonList() end)
