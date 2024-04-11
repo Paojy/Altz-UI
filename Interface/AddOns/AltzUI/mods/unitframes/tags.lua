@@ -149,9 +149,8 @@ oUF.Tags.Methods["Altz:platename"] = function(u, r)
 		elseif c == 'rareelite' then
 			class = 'R+ '
 		end
-		local color = _TAGS['threatcolor'](u)
         local name = UnitName(r or u)
-		return string.format('%s%s|r%s', color, class, name)
+		return string.format('%s%s', class, name)
 	end
 end
 oUF.Tags.Events["Altz:platename"] = "UNIT_CLASSIFICATION_CHANGED UNIT_FACTION UNIT_NAME_UPDATE"
