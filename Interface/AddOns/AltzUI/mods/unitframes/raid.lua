@@ -254,7 +254,7 @@ local func = function(self, unit)
 	self.bg.tex:SetTexture(G.media.ufbar)
 	self.bg.tex:SetVertexColor(0, 0, 0)
 	
-    local hp = T.createStatusbar(self, "ARTWORK", nil, nil, 1, 1, 1, 1)
+    local hp = T.createStatusbar(self, nil, nil, 1, 1, 1, 1)
 	hp:SetFrameLevel(3)
 	hp:SetAllPoints(self)
 	hp:SetReverseFill(true)
@@ -275,7 +275,7 @@ local func = function(self, unit)
 	self.Health.Override = T.Overridehealthbar
 	
 	-- raid manabars --
-	local pp = T.createStatusbar(self, "ARTWORK", nil, nil, 1, 1, 1, 1)
+	local pp = T.createStatusbar(self, nil, nil, 1, 1, 1, 1)
 	pp:SetFrameLevel(3)
 	pp:SetPoint("BOTTOMLEFT", self, "BOTTOMLEFT")
 	pp:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT")	
@@ -426,7 +426,7 @@ local func = function(self, unit)
 			self.bg.tex:SetAlpha(1)
 			hp:SetStatusBarTexture(G.media.ufbar)
 			hp.bg:SetTexture(G.media.ufbar)
-			hp.bg:SetAlpha(0)
+			hp.bg:SetGradient("VERTICAL", CreateColor(.2,.2,.2,0), CreateColor(.25,.25,.25,0))
 		end
 	end
 	self.Health.ApplySettings()
@@ -465,7 +465,7 @@ local dfunc = function(self, unit)
 	-- border --
 	self.backdrop = T.createBackdrop(self, self, 0)
 	
-    local hp = T.createStatusbar(self, "ARTWORK", nil, nil, 1, 1, 1, 1)
+    local hp = T.createStatusbar(self, nil, nil, 1, 1, 1, 1)
 	hp:SetFrameLevel(3)
     hp:SetAllPoints(self)
 	hp:SetReverseFill(true)
@@ -563,7 +563,7 @@ local dfunc = function(self, unit)
 			self.bg.tex:SetAlpha(1)
 			hp:SetStatusBarTexture(G.media.ufbar)
 			hp.bg:SetTexture(G.media.ufbar)
-			hp.bg:SetAlpha(0)
+			hp.bg:SetGradient("VERTICAL", CreateColor(.2,.2,.2,0), CreateColor(.25,.25,.25,0))
 		end
 	end
 	self.Health.ApplySettings()
@@ -622,6 +622,8 @@ T.CreateDragFrame(healerpet)
 local party_num, old_party_num, old_anchor = 0, 0
 T.PlaceRaidFrame = function()
 	role = T.CheckRole()
+	if not aCoreCDB["FramePoints"]["Altz_HealerRaid_Holder"] then return end
+	
 	local anchor = aCoreCDB["FramePoints"]["Altz_HealerRaid_Holder"][role]["a1"]
 	
 	if aCoreCDB["UnitframeOptions"]["ind_party"] then -- 小队相连
@@ -924,7 +926,7 @@ local pfunc = function(self, unit)
 	self.bg.tex:SetTexture(G.media.ufbar)
 	self.bg.tex:SetVertexColor(0, 0, 0)
 	
-    local hp = T.createStatusbar(self, "ARTWORK", nil, nil, 1, 1, 1, 1)
+    local hp = T.createStatusbar(self, nil, nil, 1, 1, 1, 1)
 	hp:SetFrameLevel(4)
     hp:SetAllPoints(self)
 	hp:SetPoint("TOPLEFT", self, "TOPLEFT")
@@ -961,7 +963,7 @@ local pfunc = function(self, unit)
 	end
 
 	-- power bar --
-	local pp = T.createStatusbar(self, "ARTWORK", aCoreCDB["UnitframeOptions"]["height"]*(1-aCoreCDB["UnitframeOptions"]["hpheight"]), nil, 1, 1, 1, 1)
+	local pp = T.createStatusbar(self, aCoreCDB["UnitframeOptions"]["height"]*(1-aCoreCDB["UnitframeOptions"]["hpheight"]), nil, 1, 1, 1, 1)
 	pp:SetFrameLevel(4)
 	pp:SetPoint"LEFT"
 	pp:SetPoint"RIGHT"
@@ -1056,7 +1058,7 @@ local pfunc = function(self, unit)
 			self.bg.tex:SetAlpha(1)
 			hp:SetStatusBarTexture(G.media.ufbar)
 			hp.bg:SetTexture(G.media.ufbar)
-			hp.bg:SetAlpha(0)
+			hp.bg:SetGradient("VERTICAL", CreateColor(.2,.2,.2,0), CreateColor(.25,.25,.25,0))
 		end
 	end
 	self.Health.ApplySettings()
@@ -1108,7 +1110,7 @@ local function Spawnparty()
 		'oUF-initialConfigFunction', initconfig:format(aCoreCDB["UnitframeOptions"]["widthparty"], aCoreCDB["UnitframeOptions"]["height"]),
 		'showPlayer', aCoreCDB["UnitframeOptions"]["showplayerinparty"],
 		'showSolo', false,
-		'showParty', aCoreCDB["UnitframeOptions"]["showpartypets"],
+		'showParty', true,
 		'showRaid', false,
 		'xOffset', 0,
 		'yOffset', -50,

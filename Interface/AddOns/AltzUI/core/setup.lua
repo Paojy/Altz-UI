@@ -213,9 +213,7 @@ end
 
 for i = 1, 3 do
 	TutorialsFrame[3]["style"][i]:HookScript("OnClick", function()
-		for i, f in pairs({"toppanel", "bottompanel"}) do
-			G[f].Apply()
-		end
+		G.BGFrame.Apply()
 		ApplyUFSettings({"Castbar", "Swing", "Portrait", "Health", "Power", "HealthPrediction"})
 	end)
 end
@@ -261,7 +259,7 @@ Default_Layout = {
 		db_v = "showtopbar",
 		value = true,
 		apply = function()
-			G.toppanel.Apply()
+			G.BGFrame.Apply()
 		end
 		},
 		{
@@ -269,7 +267,7 @@ Default_Layout = {
 		db_v = "showbottombar",
 		value = true,
 		apply = function()
-			G.bottompanel.Apply()
+			G.BGFrame.Apply()
 		end
 		},
 		{
@@ -277,9 +275,7 @@ Default_Layout = {
 		db_v = "showtopconerbar",
 		value = true,
 		apply = function()
-			G.toppanel.Apply()
-			G.TLPanel.Apply()
-			G.TRPanel.Apply()
+			G.BGFrame.Apply()
 		end
 		},
 		{
@@ -287,17 +283,7 @@ Default_Layout = {
 		db_v = "showbottomconerbar",
 		value = true,
 		apply = function()
-			G.bottompanel.Apply()
-			G.BLPanel.Apply()
-			G.BRPanel.Apply()
-		end
-		},
-		{
-		db_t = "SkinOptions", 
-		db_v = "showbottombar",
-		value = true,
-		apply = function() 
-			G.bottompanel.Apply()
+			G.BGFrame.Apply()
 		end
 		},
 		{
@@ -448,7 +434,7 @@ Simplicity_Layout = {
 		db_v = "showtopbar",
 		value = false,
 		apply = function()
-			G.toppanel.Apply()
+			G.BGFrame.Apply()
 		end
 		},
 		{
@@ -456,7 +442,7 @@ Simplicity_Layout = {
 		db_v = "showbottombar",
 		value = false,
 		apply = function() 
-			G.bottompanel.Apply()
+			G.BGFrame.Apply()
 		end
 		},
 		{
@@ -464,9 +450,7 @@ Simplicity_Layout = {
 		db_v = "showtopconerbar",
 		value = false,
 		apply = function()
-			G.toppanel.Apply()
-			G.TLPanel.Apply()
-			G.TRPanel.Apply()
+			G.BGFrame.Apply()
 		end
 		},
 		{
@@ -474,9 +458,7 @@ Simplicity_Layout = {
 		db_v = "showbottomconerbar",
 		value = false,
 		apply = function()
-			G.bottompanel.Apply()
-			G.BLPanel.Apply()
-			G.BRPanel.Apply()
+			G.BGFrame.Apply()
 		end
 		},
 		{
@@ -627,7 +609,7 @@ Centralized_Layout = {
 		db_v = "showtopbar",
 		value = true,
 		apply = function()
-			G.toppanel.Apply()
+			G.BGFrame.Apply()
 		end
 		},
 		{
@@ -635,7 +617,7 @@ Centralized_Layout = {
 		db_v = "showbottombar",
 		value = true,
 		apply = function() 
-			G.bottompanel.Apply()
+			G.BGFrame.Apply()
 		end
 		},
 		{
@@ -643,9 +625,7 @@ Centralized_Layout = {
 		db_v = "showtopconerbar",
 		value = false,
 		apply = function()
-			G.toppanel.Apply()
-			G.TLPanel.Apply()
-			G.TRPanel.Apply()
+			G.BGFrame.Apply()
 		end
 		},
 		{
@@ -653,9 +633,7 @@ Centralized_Layout = {
 		db_v = "showbottomconerbar",
 		value = false,
 		apply = function()
-			G.bottompanel.Apply()
-			G.BLPanel.Apply()
-			G.BRPanel.Apply()
+			G.BGFrame.Apply()
 		end
 		},
 		{

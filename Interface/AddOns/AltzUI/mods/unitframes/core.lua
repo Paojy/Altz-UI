@@ -160,10 +160,13 @@ T.Overridehealthbar = function(self, event, unit)
 
 	if not UnitIsConnected(unit) then
 		r, g, b = .3, .3, .3
+		r1, g1, b1 = 0, 0, 0		
 	elseif UnitIsGhost(unit) then
 		r, g, b = .6, .6, .6
+		r1, g1, b1 = 0, 0, 0
 	elseif UnitIsDead(unit) then
 		r, g, b = 1, 0, 0
+		r1, g1, b1 = 0, 0, 0
 	elseif (unit == "pet") then
 		local _, playerclass = UnitClass("player")
 		r, g, b = oUF:RGBColorGradient(perc, 1, unpack(oUF.colors.smooth))
@@ -177,18 +180,22 @@ T.Overridehealthbar = function(self, event, unit)
 		r1, g1, b1 = unpack(oUF.colors.reaction[UnitReaction(unit, "player") or 5])
 	end
 
-	if aCoreCDB["UnitframeOptions"]["style"] == 1 then
-		health:GetStatusBarTexture():SetGradient("VERTICAL", CreateColor(r, g, b, 1), CreateColor(r/3, g/3, b/3, 1))
-	elseif aCoreCDB["UnitframeOptions"]["style"] == 2 then
-		health:SetStatusBarColor(r, g, b)
-	else
-		health:SetStatusBarColor(0, 0, 0)
+	if r and g and b then
+		if aCoreCDB["UnitframeOptions"]["style"] == 1 then
+			health:GetStatusBarTexture():SetGradient("VERTICAL", CreateColor(r, g, b, 1), CreateColor(r/3, g/3, b/3, 1))
+		elseif aCoreCDB["UnitframeOptions"]["style"] == 2 then
+			health:SetStatusBarColor(r, g, b)
+		else
+			health:SetStatusBarColor(0, 0, 0)
+		end
 	end
 	
-	if aCoreCDB["UnitframeOptions"]["style"] == 3 then
-		self.bg.tex:SetVertexColor(r1, g1, b1)
-	else
-		self.bg.tex:SetVertexColor(0, 0, 0)
+	if r1 and g1 and b1 then
+		if aCoreCDB["UnitframeOptions"]["style"] == 3 then
+			self.bg.tex:SetVertexColor(r1, g1, b1)
+		else
+			self.bg.tex:SetVertexColor(0, 0, 0)
+		end
 	end
 end
 
@@ -931,9 +938,8 @@ local CreateSwingTimer = function(self, unit) -- only for player
 	T.CreateDragFrame(bar)
 
 	-- 双手
-	bar.Twohand = CreateFrame("StatusBar", nil, bar)
+	bar.Twohand = T.createStatusbar(bar, nil, nil, 1, 1, .2)
 	bar.Twohand:SetAllPoints(bar)
-	bar.Twohand:SetStatusBarColor(1, 1, .2)
 	bar.Twohand.bd = T.createBackdrop(bar.Twohand, bar.Twohand, 1)
 	bar.Twohand:SetFrameLevel(20)
 
@@ -948,9 +954,8 @@ local CreateSwingTimer = function(self, unit) -- only for player
 	bar.Twohand:Hide()
 
 	-- 主手
-	bar.Mainhand = CreateFrame("StatusBar", nil, bar)
+	bar.Mainhand = T.createStatusbar(bar, nil, nil, 1, 1, .2)
 	bar.Mainhand:SetAllPoints(bar)
-	bar.Mainhand:SetStatusBarColor(1, 1, .2)
 	bar.Mainhand.bd = T.createBackdrop(bar.Mainhand, bar.Mainhand, 1)
 	bar.Mainhand:SetFrameLevel(20)
 
@@ -966,11 +971,10 @@ local CreateSwingTimer = function(self, unit) -- only for player
 	bar.Mainhand:Hide()
 
 	-- 副手
-	bar.Offhand = CreateFrame("StatusBar", nil, bar)
+	bar.Offhand = T.createStatusbar(bar, nil, nil, .2, 1, 1)
 	bar.Offhand:SetPoint("TOPLEFT", bar, "BOTTOMLEFT", 0, -3)
 	bar.Offhand:SetPoint("TOPRIGHT", bar, "BOTTOMRIGHT", 0, -3)
 	bar.Offhand:SetHeight(aCoreCDB["UnitframeOptions"]["swheight"]/2)
-	bar.Offhand:SetStatusBarColor(.2, 1, 1)
 	bar.Offhand.bd = T.createBackdrop(bar.Offhand, bar.Offhand, 1)
 	bar.Offhand:SetFrameLevel(20)
 
@@ -1392,7 +1396,7 @@ T.CreateClassResources = function(self, plate)
 		bars.ApplySettings()
 		
 		for i = 1, count do
-			bars[i] = T.createStatusbar(bars, "ARTWORK", bars.height, (bars.width+2)/count-3, 1, 1, 1, 1, self:GetName().."SpecOrbs"..i)
+			bars[i] = T.createStatusbar(bars, bars.height, (bars.width+2)/count-3, 1, 1, 1, 1, self:GetName().."SpecOrbs"..i)
 	
 			if i == 1 then
 				bars[i]:SetPoint("BOTTOMLEFT", bars, "BOTTOMLEFT", 0, 0)
@@ -1470,7 +1474,7 @@ local func = function(self, unit)
 	self.backdrop = T.createBackdrop(self, self, 0) -- this also use for dispel border
 
 	-- health bar --
-	local hp = T.createStatusbar(self, "ARTWORK", nil, nil, 1, 1, 1, 1)
+	local hp = T.createStatusbar(self, nil, nil, 1, 1, 1, 1)
 	hp:SetFrameLevel(2)
 	hp:SetAllPoints(self)
 	hp:SetReverseFill(true)
@@ -1514,7 +1518,7 @@ local func = function(self, unit)
 
 	-- power bar --
 	if not (unit == "targettarget" or unit == "focustarget") then
-		local pp = T.createStatusbar(self, "ARTWORK", nil, nil, 1, 1, 1, 1)
+		local pp = T.createStatusbar(self, nil, nil, 1, 1, 1, 1)
 		pp:SetFrameLevel(2)
 		pp:SetPoint"LEFT"
 		pp:SetPoint"RIGHT"
@@ -1556,7 +1560,7 @@ local func = function(self, unit)
 
 	-- altpower bar --
 	if multicheck(u, "player", "boss", "pet") then
-		local altpp = T.createStatusbar(self, "ARTWORK", 5, nil, 1, 1, 0, 1)
+		local altpp = T.createStatusbar(self, 5, nil, 1, 1, 0, 1)
 		if unit == "pet" then
 			altpp:SetPoint("TOPLEFT", self.Power, "BOTTOMLEFT", 0, -5)
 			altpp:SetPoint("TOPRIGHT", self.Power, "BOTTOMRIGHT", 0, -5)
@@ -1640,12 +1644,12 @@ local func = function(self, unit)
 			self.bg.tex:SetAlpha(1)
 			hp:SetStatusBarTexture(G.media.ufbar)
 			hp.bg:SetTexture(G.media.ufbar)
-			hp.bg:SetGradient("VERTICAL", CreateColor(.2,.2,.2,.15), CreateColor(.25,.25,.25,.6))	
+			hp.bg:SetGradient("VERTICAL", CreateColor(.2,.2,.2,.15), CreateColor(.25,.25,.25,.6))
 		else
 			self.bg.tex:SetAlpha(1)
 			hp:SetStatusBarTexture(G.media.ufbar)
 			hp.bg:SetTexture(G.media.ufbar)
-			hp.bg:SetAlpha(0)
+			hp.bg:SetGradient("VERTICAL", CreateColor(.2,.2,.2,0), CreateColor(.25,.25,.25,0))
 		end
 		-- height, width and scale --
 		if multicheck(u, "targettarget", "focustarget", "pet") then
@@ -1682,7 +1686,7 @@ local UnitSpecific = {
 
 		-- Stagger
 		if G.myClass == "MONK" and aCoreCDB["UnitframeOptions"]["stagger"] then
-			local stagger = T.createStatusbar(self, "ARTWORK", nil, nil, 1, 1, 1, 1)
+			local stagger = T.createStatusbar(self, nil, nil, 1, 1, 1, 1)
 			stagger:SetFrameLevel(2)
 			stagger:SetPoint"LEFT"
 			stagger:SetPoint"RIGHT"
@@ -1703,7 +1707,7 @@ local UnitSpecific = {
 
 		-- Shaman mana
 		if multicheck(G.myClass, "SHAMAN", "PRIEST", "DRUID") and aCoreCDB["UnitframeOptions"]["dpsmana"] then
-			local dpsmana = T.createStatusbar(self, "ARTWORK", nil, nil, 1, 1, 1, 1)
+			local dpsmana = T.createStatusbar(self, nil, nil, 1, 1, 1, 1)
 			dpsmana:SetFrameLevel(2)
 			dpsmana:SetPoint"LEFT"
 			dpsmana:SetPoint"RIGHT"
@@ -1760,7 +1764,7 @@ local UnitSpecific = {
 		func(self, ...)
 		-- threat bar --
 		if aCoreCDB["UnitframeOptions"]["showthreatbar"] then
-			local threatbar = T.createStatusbar(UIParent, "ARTWORK", nil, nil, 0.25, 0.25, 0.25, 1)
+			local threatbar = T.createStatusbar(UIParent, nil, nil, 0.25, 0.25, 0.25, 1)
 			threatbar:SetPoint("TOPLEFT", self.Power, "BOTTOMLEFT", 0, -3)
 			threatbar:SetPoint("BOTTOMRIGHT", self.Power, "BOTTOMRIGHT", 0, -5)
 			threatbar.bd = T.createBackdrop(threatbar, threatbar, 1)
@@ -1814,7 +1818,7 @@ local UnitSpecific = {
 			self.prepFrame = CreateFrame("Frame", self:GetName().."PrepFrame", UIParent)
 			self.prepFrame:SetFrameStrata("BACKGROUND")
 			self.prepFrame:SetAllPoints(self)
-			self.prepFrame.Health = T.createStatusbar(self.prepFrame, "MEDIUM", nil, nil, 1, 1, 1, 1)
+			self.prepFrame.Health = T.createStatusbar(self.prepFrame, nil, nil, 1, 1, 1, 1)
 			self.prepFrame.Health.bg:Hide()
 			self.prepFrame.Health:SetAllPoints(self.prepFrame)
 			self.prepFrame.Health.bd = T.createBackdrop(self.prepFrame.Health, self.prepFrame.Health, 0)
@@ -1865,7 +1869,7 @@ local plate_func = function(self, unit)
 	self:SetPoint("CENTER")
 	
 	-- 生命
-	local hp = T.createStatusbar(self, "ARTWORK")
+	local hp = T.createStatusbar(self)
 	hp:SetFrameLevel(self:GetFrameLevel())
 	hp:SetStatusBarTexture("Interface\\AddOns\\AltzUI\\media\\ufbar")
 	hp.bd = T.createBackdrop(hp, hp, 1)
@@ -1928,7 +1932,7 @@ local plate_func = function(self, unit)
 	tinsert(self.mouseovers, self.Health)
 	
 	-- 能量
-	local pp = T.createStatusbar(self, "ARTWORK")
+	local pp = T.createStatusbar(self)
 	pp:SetFrameLevel(self:GetFrameLevel())
 	pp:SetHeight(aCoreCDB["PlateOptions"]["bar_height"]/4)
 	pp:SetStatusBarTexture("Interface\\AddOns\\AltzUI\\media\\ufbar")
