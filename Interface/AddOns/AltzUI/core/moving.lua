@@ -40,7 +40,7 @@ end
 
 local function DisplayCurrentFramePoint()
 	if CurrentFrame == "NONE" then
-		SpecMover.curframe:SetText(L["选中的框体"].." "..G.addon_c.."NONE|r")
+		SpecMover.curframe:SetText(L["选中的框体"].." "..G.classcolor.."NONE|r")
 		
 		UIDropDownMenu_DisableDropDown(SpecMover.a1box)
 		UIDropDownMenu_DisableDropDown(SpecMover.a2box)
@@ -56,7 +56,7 @@ local function DisplayCurrentFramePoint()
 		SpecMover.ybox:SetText("")
 	else
 		local frame = _G[CurrentFrame]
-		SpecMover.curframe:SetText(L["选中的框体"].." "..G.addon_c..gsub(frame.movingname, "\n", "").."|r")
+		SpecMover.curframe:SetText(L["选中的框体"].." "..G.classcolor..gsub(frame.movingname, "\n", "").."|r")
 		
 		UIDropDownMenu_EnableDropDown(SpecMover.a1box)
 		UIDropDownMenu_EnableDropDown(SpecMover.a2box)
