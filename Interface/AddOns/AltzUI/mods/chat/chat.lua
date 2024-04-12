@@ -16,59 +16,93 @@ local TAB_TEXTURES = {
 
 local chatwindownum = NUM_CHAT_WINDOWS
 
+local ChatFrameTexturesDefualt = {}
+local function BackupChatFrameBg()
+	for i = 1, chatwindownum do
+		if not ChatFrameTexturesDefualt[i] then
+			ChatFrameTexturesDefualt[i] = {}
+		end
+		for g = 1, #CHAT_FRAME_TEXTURES do
+			ChatFrameTexturesDefualt[i][g] = _G["ChatFrame"..i..CHAT_FRAME_TEXTURES[g]]:GetTexture()
+		end
+	end
+end
+
+local function UpdateChatFrameBg()
+	if aCoreCDB["ChatOptions"]["showbg"] then
+		for i = 1, chatwindownum do
+			for g = 1, #CHAT_FRAME_TEXTURES do
+				_G["ChatFrame"..i..CHAT_FRAME_TEXTURES[g]]:SetTexture(ChatFrameTexturesDefualt[i][g])
+			end
+		end
+	else
+		for i = 1, chatwindownum do
+			for g = 1, #CHAT_FRAME_TEXTURES do
+				_G["ChatFrame"..i..CHAT_FRAME_TEXTURES[g]]:SetTexture(nil)
+			end
+		end
+	end
+end
+T.UpdateChatFrameBg = UpdateChatFrameBg
+
 local function init()
 	for i = 1, chatwindownum do
-		-- hide button on the left
-		local bf = _G['ChatFrame'..i..'ButtonFrame']
+		local cf = _G['ChatFrame'..i]
+
+		-- 隐藏按钮
+		local bf = cf.buttonFrame
 		if bf then 
 			bf:Hide() 
 			bf:HookScript("OnShow", function(s) s:Hide(); end)
 		end
-		-- hide things on edit box
+		
+		-- 输入框样式
+		local eb = cf.editBox
+		
 		local ebtl = _G['ChatFrame'..i..'EditBoxLeft']
 		if ebtl then ebtl:Hide() end
 		local ebtm = _G['ChatFrame'..i..'EditBoxMid']
 		if ebtm then ebtm:Hide() end
 		local ebtr = _G['ChatFrame'..i..'EditBoxRight']
 		if ebtr then ebtr:Hide() end
+		
 		_G['ChatFrame'..i..'EditBoxLanguage'].Show = _G['ChatFrame'..i..'EditBoxLanguage'].Hide 
 		_G['ChatFrame'..i..'EditBoxLanguage']:Hide()
-		local tex = ({_G['ChatFrame'..i..'EditBox']:GetRegions()})
+		
+		local tex = {eb:GetRegions()}
 		tex[6]:SetAlpha(0)
 		tex[7]:SetAlpha(0)
 		tex[8]:SetAlpha(0)
-		-- make a new backdrop on edit box
-		F.SetBD(_G['ChatFrame'..i..'EditBox'])
-		-- chat font
-		local cf = _G['ChatFrame'..i]
+		
+		F.SetBD(eb)
+		
+		eb:SetScript("OnEditFocusLost", function(self)
+			self:SetAlpha(0)
+		end)
+
+		-- 输入框位置
+		if eb and cf then
+			cf:SetClampedToScreen(false)
+			eb:SetAltArrowKeyMode(false)
+			eb:ClearAllPoints()
+			if i ~= 2 then
+				eb:SetPoint("TOPLEFT",cf,"TOPLEFT", -2, 55)
+				eb:SetPoint("BOTTOMRIGHT",cf,"TOPRIGHT", 14, 32)
+			else
+				eb:SetPoint("TOPLEFT",CombatLogQuickButtonFrame_Custom,"TOPLEFT", -2, 52)
+				eb:SetPoint("BOTTOMRIGHT",CombatLogQuickButtonFrame_Custom,"TOPRIGHT", 6, 29)	
+			end
+		end
+		
+		-- 聊天字体
 		if cf then 
 			cf:SetFont(G.norFont, select(2, cf:GetFont()), "OUTLINE") 
 			cf:SetShadowOffset(0,0)
 			cf:SetFrameStrata("LOW")
 			cf:SetFrameLevel(2)
 		end
-		-- remove chat frame backdrop
-		if not aCoreCDB["ChatOptions"]["showbg"] then
-			for g = 1, #CHAT_FRAME_TEXTURES do
-				_G["ChatFrame"..i..CHAT_FRAME_TEXTURES[g]]:SetTexture(nil)
-			end
-		end
-		-- place edit box
-		local eb = _G['ChatFrame'..i..'EditBox']
-		if eb and cf then
-			cf:SetClampedToScreen(false)
-			eb:SetAltArrowKeyMode(false)
-			eb:ClearAllPoints()
-			if i ~= 2 then
-				eb:SetPoint("TOPLEFT",cf,"TOPLEFT", 10, 55)
-				eb:SetPoint("BOTTOMRIGHT",cf,"TOPRIGHT", -3, 32)
-			else
-				eb:SetPoint("TOPLEFT",CombatLogQuickButtonFrame_Custom,"TOPLEFT", 10, 52)
-				eb:SetPoint("BOTTOMRIGHT",CombatLogQuickButtonFrame_Custom,"TOPRIGHT", -3, 29)	
-			end
-			eb:Hide()
-		end
-		-- chat tabs
+		
+		-- 标签
 		local tab = _G['ChatFrame'..i..'Tab']
 		if tab then
 			tab:GetFontString():SetFont(G.norFont, 13, "THINOUTLINE")
@@ -87,22 +121,17 @@ local function init()
 			tab.HighlightMiddle:SetTexture(nil)
 			tab.HighlightRight:SetTexture(nil)
 		end
-		-- hide scroll bar
-		local button = _G['ChatFrame'..i].ScrollToBottomButton
-		if button then
-			button:SetAlpha(0)
-		end
-		local thumbtexture = _G['ChatFrame'..i.."ThumbTexture"]
-		if thumbtexture then
-			thumbtexture:SetTexture(nil)	
-		end
+		tab:SetScript("OnClick", function(self)
+			eb:SetAlpha(0)
+		end)
 	end
+	UpdateChatFrameBg()
 end
 
 BNToastFrame:SetClampedToScreen(true)
 
 local EventFrame = CreateFrame("Frame")
-EventFrame:RegisterEvent("ADDON_LOADED")
+
 EventFrame:RegisterEvent("PLAYER_LOGIN")
 EventFrame:RegisterEvent("PET_BATTLE_OPENING_START")
 
@@ -142,22 +171,17 @@ end
 hooksecurefunc("FCF_OpenTemporaryWindow", SetChatTabs)
 
 EventFrame:SetScript("OnEvent", function(self, event, arg1)
-	if event == "ADDON_LOADED" and arg1 == "Blizzard_CombatLog" then
-		--local topbar = _G["CombatLogQuickButtonFrame_Custom"]
-		--if not topbar then return end
-		--topbar:Hide()
-		--topbar:HookScript("OnShow", function(self) topbar:Hide() end)
-		--topbar:SetHeight(0)
-	elseif event == "PLAYER_LOGIN" then
-		--CHAT_FRAME_FADE_OUT_TIME = 1
-		--CHAT_TAB_HIDE_DELAY = 1
-		CHAT_FRAME_TAB_SELECTED_MOUSEOVER_ALPHA = aCoreCDB["ChatOptions"]["chattab_fade_maxalpha"]
-		CHAT_FRAME_TAB_SELECTED_NOMOUSE_ALPHA = aCoreCDB["ChatOptions"]["chattab_fade_minalpha"]
-		CHAT_FRAME_TAB_NORMAL_MOUSEOVER_ALPHA = aCoreCDB["ChatOptions"]["chattab_fade_maxalpha"]
-		CHAT_FRAME_TAB_NORMAL_NOMOUSE_ALPHA = aCoreCDB["ChatOptions"]["chattab_fade_minalpha"]
-		CHAT_FRAME_TAB_ALERTING_MOUSEOVER_ALPHA = aCoreCDB["ChatOptions"]["chattab_fade_maxalpha"]
-		CHAT_FRAME_TAB_ALERTING_NOMOUSE_ALPHA = aCoreCDB["ChatOptions"]["chattab_fade_minalpha"]
+	if event == "PLAYER_LOGIN" then
+		CHAT_FRAME_FADE_OUT_TIME = 1
+		CHAT_TAB_HIDE_DELAY = 1
+		CHAT_FRAME_TAB_SELECTED_MOUSEOVER_ALPHA = 1
+		CHAT_FRAME_TAB_SELECTED_NOMOUSE_ALPHA = .3
+		CHAT_FRAME_TAB_NORMAL_MOUSEOVER_ALPHA = 1
+		CHAT_FRAME_TAB_NORMAL_NOMOUSE_ALPHA = .3
+		CHAT_FRAME_TAB_ALERTING_MOUSEOVER_ALPHA = 1
+		CHAT_FRAME_TAB_ALERTING_NOMOUSE_ALPHA = .3
 		
+		BackupChatFrameBg()
 		init()
 		FCF_SelectDockFrame(_G['ChatFrame1'])
 		FCF_FadeInChatFrame(_G['ChatFrame1'])
@@ -187,7 +211,7 @@ function FloatingChatFrame_OnMouseScroll(self, delta)
 end
 
 QuickJoinToastButton:ClearAllPoints()
-QuickJoinToastButton:SetPoint("BOTTOMLEFT", ChatFrame1Tab, "TOPLEFT", 5, 5)
+QuickJoinToastButton:SetPoint("BOTTOMLEFT", ChatFrame1.editBox, "TOPLEFT", 5, 5)
 QuickJoinToastButton.SetPoint = function() end
 T.FrameFader(QuickJoinToastButton)
 
