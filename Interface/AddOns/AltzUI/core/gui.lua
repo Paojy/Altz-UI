@@ -66,7 +66,7 @@ end)
 GUI.reload = CreateFrame("Button", G.uiname.."ReloadButton", GUI, "UIPanelButtonTemplate")
 GUI.reload:SetPoint("RIGHT", GUI.close, "LEFT", -15, 0)
 GUI.reload:SetSize(100, 25)
-GUI.reload:SetText(APPLY)
+GUI.reload:SetText(RELOADUI)
 T.resize_font(GUI.reload.Text)
 F.Reskin(GUI.reload)
 GUI.reload:SetScript("OnClick", ReloadUI)
@@ -82,7 +82,7 @@ GUI.scale:SetFrameStrata("HIGH")
 GUI.scale:SetMovable(true)
 GUI.scale:SetClampedToScreen(true)
 GUI.scale:Hide()
-GUI.scale:SetSize(160, 12)
+GUI.scale:SetSize(100, 12)
 
 GUI.scale.Thumb:SetSize(25, 16)
 
@@ -479,33 +479,7 @@ local style_group = {
 T.createradiobuttongroup(SInnerframe.theme, 30, 60, L["样式"], "UnitframeOptions", "style", style_group)
 SInnerframe.theme.style.apply = function()
 	G.BGFrame.Apply()
-	
-	for i, bar in pairs(G.ThemeStatusbars) do
-		if aCoreCDB["UnitframeOptions"]["style"] == 1 then
-			bar:SetStatusBarTexture(G.media.blank)
-			bar.bg:SetTexture(G.media.blank)
-		else
-			bar:SetStatusBarTexture(G.media.ufbar)
-			bar.bg:SetTexture(G.media.ufbar)
-		end
-	end
-	
-	for k, uf in pairs(AltzUF.objects) do
-		if uf.Health then
-			uf.Health:ForceUpdate()
-			uf.Health.ApplySettings()
-		end
-		
-		if uf.Power then
-			uf.Power:ForceUpdate()
-			uf.Power.ApplySettings()
-		end
-		
-		if uf.Castbar then
-			uf.Castbar:ForceUpdate()
-			uf.Castbar.ApplySettings()
-		end
-	end
+	T.ApplyUFSettings({"Castbar", "Swing", "Portrait", "Health", "Power", "HealthPrediction"})
 end
 
 local combattextfont_group = {
@@ -628,42 +602,29 @@ T.createcheckbutton(SInnerframe.layout, 30, 230, L["暂离屏幕"], "SkinOptions
 --====================================================--
 local ChatOptions = CreateOptionPage("Chat Options", SOCIAL_LABEL, GUI, "VERTICAL")
 
-local CInnerframe = CreateFrame("Frame", G.uiname.."Chat Options Innerframe", ChatOptions, "BackdropTemplate")
-CInnerframe:SetPoint("TOPLEFT", 40, -60)
-CInnerframe:SetPoint("BOTTOMLEFT", -20, 20)
-CInnerframe:SetWidth(SkinOptions:GetWidth()-200)
-F.CreateBD(CInnerframe, .3)
+T.createcheckbutton(ChatOptions, 30, 60, L["频道缩写"], "ChatOptions", "channelreplacement")
+ChatOptions.channelreplacement.apply = T.UpdateChannelReplacement
+T.CVartogglebox(ChatOptions, 230, 60, "showTimestamps", SHOW_TIMESTAMP, "|cff64C2F5%H:%M|r ", "none")
+T.createcheckbutton(ChatOptions, 30, 90, L["滚动聊天框"], "ChatOptions", "autoscroll", L["滚动聊天框提示"])
+T.createcheckbutton(ChatOptions, 230, 90, L["显示聊天框背景"], "ChatOptions", "showbg")
+ChatOptions.showbg.apply = T.UpdateChatFrameBg
 
-CInnerframe.tabindex = 1
-CInnerframe.tabnum = 20
-for i = 1, 20 do
-	CInnerframe["tab"..i] = CreateFrame("Frame", G.uiname.."CInnerframe Tab"..i, CInnerframe, "BackdropTemplate")
-	CInnerframe["tab"..i]:SetScript("OnMouseDown", function() end)
-end
+CreateDividingLine(ChatOptions, -130)
 
-CInnerframe.chat = CreateOptionPage("Chat Options chat", CHAT, CInnerframe, "VERTICAL", .3)
-CInnerframe.chat:Show()
+T.createcheckbutton(ChatOptions, 30, 140, L["聊天过滤"], "ChatOptions", "nogoldseller", L["聊天过滤提示"])
+T.createslider(ChatOptions, 30, 190, L["过滤阈值"], "ChatOptions", "goldkeywordnum", 1, 1, 5, 1, L["过滤阈值"])
 
-T.createcheckbutton(CInnerframe.chat, 30, 60, L["频道缩写"], "ChatOptions", "channelreplacement")
-T.CVartogglebox(CInnerframe.chat, 230, 60, "showTimestamps", SHOW_TIMESTAMP, "|cff64C2F5%H:%M|r ", "none")
-T.createcheckbutton(CInnerframe.chat, 30, 90, L["滚动聊天框"], "ChatOptions", "autoscroll", L["滚动聊天框提示"])
-T.createcheckbutton(CInnerframe.chat, 230, 90, L["显示聊天框背景"], "ChatOptions", "showbg")
-T.createslider(CInnerframe.chat, 30, 150, L["标签最小透明度"], "ChatOptions", "chattab_fade_minalpha", 100, 0, 100, 5, L["标签最小透明度提示"])
-T.createslider(CInnerframe.chat, 30, 190, L["标签最大透明度"], "ChatOptions", "chattab_fade_maxalpha", 100, 0, 100, 5, L["标签最大透明度提示"])
+T.createmultilinebox(ChatOptions, 200, 100, 35, 235, L["关键词"], "ChatOptions", "goldkeywordlist", L["关键词输入"])
+ChatOptions.goldkeywordlist.edit:SetScript("OnShow", function(self) self:SetText(aCoreDB["goldkeywordlist"]) end)
+ChatOptions.goldkeywordlist.edit:SetScript("OnEscapePressed", function(self) self:SetText(aCoreDB["goldkeywordlist"]) self:ClearFocus() end)
+ChatOptions.goldkeywordlist.edit:SetScript("OnEnterPressed", function(self) self:ClearFocus() aCoreDB["goldkeywordlist"] = self:GetText() end)
+T.createDR(ChatOptions.nogoldseller, ChatOptions.goldkeywordnum, ChatOptions.goldkeywordlist)
 
-T.createcheckbutton(CInnerframe.chat, 30, 230, L["聊天过滤"], "ChatOptions", "nogoldseller", L["聊天过滤提示"])
-T.createslider(CInnerframe.chat, 30, 280, L["过滤阈值"], "ChatOptions", "goldkeywordnum", 1, 1, 5, 1, L["过滤阈值"])
+CreateDividingLine(ChatOptions, -360)
 
-T.createmultilinebox(CInnerframe.chat, 200, 100, 35, 325, L["关键词"], "ChatOptions", "goldkeywordlist", L["关键词输入"])
-CInnerframe.chat.goldkeywordlist.edit:SetScript("OnShow", function(self) self:SetText(aCoreDB["goldkeywordlist"]) end)
-CInnerframe.chat.goldkeywordlist.edit:SetScript("OnEscapePressed", function(self) self:SetText(aCoreDB["goldkeywordlist"]) self:ClearFocus() end)
-CInnerframe.chat.goldkeywordlist.edit:SetScript("OnEnterPressed", function(self) self:ClearFocus() aCoreDB["goldkeywordlist"] = self:GetText() end)
-T.createDR(CInnerframe.chat.nogoldseller, CInnerframe.chat.goldkeywordnum, CInnerframe.chat.goldkeywordlist)
-
-CInnerframe.invite = CreateOptionPage("Chat Options invite", INVITE, CInnerframe, "VERTICAL", .3)
-T.createcheckbutton(CInnerframe.invite, 30, 60, L["自动邀请"], "OtherOptions", "autoinvite", L["自动邀请提示"])
-T.createeditbox(CInnerframe.invite, 40, 90, "", "OtherOptions", "autoinvitekeywords", L["关键词输入"])
-T.createDR(CInnerframe.invite.autoinvite, CInnerframe.invite.autoinvitekeywords)
+T.createcheckbutton(ChatOptions, 30, 370, L["自动邀请"], "OtherOptions", "autoinvite", L["自动邀请提示"])
+T.createeditbox(ChatOptions, 40, 400, "", "OtherOptions", "autoinvitekeywords", L["关键词输入"])
+T.createDR(ChatOptions.autoinvite, ChatOptions.autoinvitekeywords)
 
 --====================================================--
 --[[          -- Bag and Items Options --           ]]--
