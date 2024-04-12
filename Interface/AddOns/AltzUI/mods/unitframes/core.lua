@@ -88,18 +88,22 @@ local function UpdateNameplatePowerbars(refresh)
 		end
 	end
 end
+
 --=============================================--
 --[[ Functions ]]--
 --=============================================--
+
 local function multicheck(check, ...)
 	for i=1, select("#", ...) do
 		if check == select(i, ...) then return true end
 	end
 	return false
 end
+
 --=============================================--
 --[[ MouseOn update ]]--
 --=============================================--
+
 T.OnMouseOver = function(self)
 	self:SetScript("OnEnter", function(self)
 		UnitFrame_OnEnter(self)
@@ -116,6 +120,7 @@ T.OnMouseOver = function(self)
 		end
 	end)
 end
+
 --=============================================--
 --[[ Some update ]]--
 --=============================================--
@@ -2595,3 +2600,20 @@ end
 
 PetCastingBarFrame:Hide()
 PetCastingBarFrame:UnregisterAllEvents()
+
+--=============================================--
+--[[ API ]]--
+--=============================================--
+
+local function ApplyUFSettings(elements)
+	local oUF = AltzUF or oUF
+		for _, obj in next, oUF.objects do
+		obj:UpdateAllElements('OnUpdate')
+		for k, e in pairs(elements) do
+			if obj[e] and obj[e].ApplySettings then
+				obj[e].ApplySettings()
+			end
+		end
+	end
+end
+T.ApplyUFSettings = ApplyUFSettings

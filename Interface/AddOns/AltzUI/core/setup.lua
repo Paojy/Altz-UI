@@ -199,22 +199,10 @@ end)
 CreateTutorialsStepFrame(L["界面风格"], L["界面风格tip"])
 CreateOptions(TutorialsFrame[3], "group", true, "UnitframeOptions", "style", {L["透明样式"],L["深色样式"],L["普通样式"]})
 
-local function ApplyUFSettings(elements)
-	local oUF = AltzUF or oUF
-		for _, obj in next, oUF.objects do
-		obj:UpdateAllElements('OnUpdate')
-		for k, e in pairs(elements) do
-			if obj[e] and obj[e].ApplySettings then
-				obj[e].ApplySettings()
-			end
-		end
-	end
-end
-
 for i = 1, 3 do
 	TutorialsFrame[3]["style"][i]:HookScript("OnClick", function()
 		G.BGFrame.Apply()
-		ApplyUFSettings({"Castbar", "Swing", "Portrait", "Health", "Power", "HealthPrediction"})
+		T.ApplyUFSettings({"Castbar", "Swing", "Portrait", "Health", "Power", "HealthPrediction"})
 	end)
 end
 
@@ -255,148 +243,94 @@ Default_Layout = {
 	},
 	options = {
 		{
-		db_t = "SkinOptions", 
-		db_v = "showtopbar",
-		value = true,
-		apply = function()
-			G.BGFrame.Apply()
-		end
+			db_t = "SkinOptions", 
+			db_v = "showtopbar",
+			value = true,	
 		},
 		{
-		db_t = "SkinOptions", 
-		db_v = "showbottombar",
-		value = true,
-		apply = function()
-			G.BGFrame.Apply()
-		end
+			db_t = "SkinOptions", 
+			db_v = "showbottombar",
+			value = true,
 		},
 		{
-		db_t = "SkinOptions", 
-		db_v = "showtopconerbar",
-		value = true,
-		apply = function()
-			G.BGFrame.Apply()
-		end
+			db_t = "SkinOptions", 
+			db_v = "showtopconerbar",
+			value = true,
 		},
 		{
-		db_t = "SkinOptions", 
-		db_v = "showbottomconerbar",
-		value = true,
-		apply = function()
-			G.BGFrame.Apply()
-		end
+			db_t = "SkinOptions", 
+			db_v = "showbottomconerbar",
+			value = true,
 		},
 		{
-		db_t = "UnitframeOptions", 
-		db_v = "width",
-		value = 230,
-		apply = function() 
-			ApplyUFSettings({"Health", "Auras", "ClassPower", "Runes"})
-		end
+			db_t = "UnitframeOptions", 
+			db_v = "width",
+			value = 230,			
 		},
 		{
-		db_t = "UnitframeOptions", 
-		db_v = "height",
-		value = 18,
-		apply = function() 
-			ApplyUFSettings({"Health", "Power", "Castbar", "Auras", "ClassPower", "Runes", "Stagger", "Dpsmana", "PVPSpecIcon"})
-		end
+			db_t = "UnitframeOptions", 
+			db_v = "height",
+			value = 18,		
 		},
 		{
-		db_t = "UnitframeOptions", 
-		db_v = "hpheight",
-		value = .75,
-		apply = function() 
-			ApplyUFSettings({"Health", "Power", "Castbar", "Auras", "ClassPower", "Runes", "Stagger", "Dpsmana", "PVPSpecIcon"})
-		end
+			db_t = "UnitframeOptions", 
+			db_v = "hpheight",
+			value = .75,			
 		},
 		{
-		db_t = "UnitframeOptions", 
-		db_v = "hideplayercastbaricon",
-		value = false,
-		apply = function() 
-			ApplyUFSettings({"Castbar"})
-		end
+			db_t = "UnitframeOptions", 
+			db_v = "hideplayercastbaricon",
+			value = false,	
 		},
 		{
-		db_t = "UnitframeOptions", 
-		db_v = "independentcb",
-		value = true,
-		apply = function() 
-			ApplyUFSettings({"Castbar"})
-		end
+			db_t = "UnitframeOptions", 
+			db_v = "independentcb",
+			value = true,			
 		},
 		{
-		db_t = "UnitframeOptions", 
-		db_v = "cbheight",
-		value = 16,
-		apply = function() 
-			ApplyUFSettings({"Castbar"})
-		end
+			db_t = "UnitframeOptions", 
+			db_v = "cbheight",
+			value = 16,			
 		},
 		{
-		db_t = "UnitframeOptions", 
-		db_v = "cbwidth",
-		value = 230,
-		apply = function() 
-			ApplyUFSettings({"Castbar"})
-		end
+			db_t = "UnitframeOptions", 
+			db_v = "cbwidth",
+			value = 230,		
 		},
 		{
-		db_t = "UnitframeOptions", 
-		db_v = "target_cbheight",
-		value = 6,
-		apply = function() 
-			ApplyUFSettings({"Castbar"})
-		end
+			db_t = "UnitframeOptions", 
+			db_v = "target_cbheight",
+			value = 6,	
 		},
 		{
-		db_t = "UnitframeOptions", 
-		db_v = "target_cbwidth",
-		value = 230,
-		apply = function() 
-			ApplyUFSettings({"Castbar"})
-		end
+			db_t = "UnitframeOptions", 
+			db_v = "target_cbwidth",
+			value = 230,		
 		},
 		{
-		db_t = "UnitframeOptions", 
-		db_v = "focus_cbheight",
-		value = 6,
-		apply = function() 
-			ApplyUFSettings({"Castbar"})
-		end
+			db_t = "UnitframeOptions", 
+			db_v = "focus_cbheight",
+			value = 6,		
 		},
 		{
-		db_t = "UnitframeOptions", 
-		db_v = "focus_cbwidth",
-		value = 230,
-		apply = function() 
-			ApplyUFSettings({"Castbar"})
-		end
+			db_t = "UnitframeOptions", 
+			db_v = "focus_cbwidth",
+			value = 230,	
 		},
 		{
-		db_t = "UnitframeOptions", 
-		db_v = "raidmanabars",
-		value = true,
-		apply = function() 
-			ApplyUFSettings({"Health"})
-		end
+			db_t = "UnitframeOptions", 
+			db_v = "raidmanabars",
+			value = true,	
 		},
 		{
-		db_t = "UnitframeOptions", 
-		db_v = "auraperrow",
-		value = 8,
-		apply = function() 
-			ApplyUFSettings({"Auras"})
-		end
+			db_t = "UnitframeOptions", 
+			db_v = "auraperrow",
+			value = 8,		
 		},
 		{
-		db_t = "UnitframeOptions", 
-		db_v = "playerdebuffnum",
-		value = 8,
-		apply = function() 
-			ApplyUFSettings({"Auras"})
-		end
+			db_t = "UnitframeOptions", 
+			db_v = "playerdebuffnum",
+			value = 8,
 		},
 	},
 }
@@ -430,148 +364,94 @@ Simplicity_Layout = {
 	},
 	options = {
 		{
-		db_t = "SkinOptions", 
-		db_v = "showtopbar",
-		value = false,
-		apply = function()
-			G.BGFrame.Apply()
-		end
+			db_t = "SkinOptions", 
+			db_v = "showtopbar",
+			value = false,		
 		},
 		{
-		db_t = "SkinOptions", 
-		db_v = "showbottombar",
-		value = false,
-		apply = function() 
-			G.BGFrame.Apply()
-		end
+			db_t = "SkinOptions", 
+			db_v = "showbottombar",
+			value = false,
 		},
 		{
-		db_t = "SkinOptions", 
-		db_v = "showtopconerbar",
-		value = false,
-		apply = function()
-			G.BGFrame.Apply()
-		end
+			db_t = "SkinOptions", 
+			db_v = "showtopconerbar",
+			value = false,
 		},
 		{
-		db_t = "SkinOptions", 
-		db_v = "showbottomconerbar",
-		value = false,
-		apply = function()
-			G.BGFrame.Apply()
-		end
+			db_t = "SkinOptions", 
+			db_v = "showbottomconerbar",
+			value = false,
 		},
 		{
-		db_t = "UnitframeOptions", 
-		db_v = "width",
-		value = 180,
-		apply = function() 
-			ApplyUFSettings({"Health", "Auras", "ClassPower", "Runes"})
-		end
+			db_t = "UnitframeOptions", 
+			db_v = "width",
+			value = 180,
 		},
 		{
-		db_t = "UnitframeOptions", 
-		db_v = "height",
-		value = 5,
-		apply = function() 
-			ApplyUFSettings({"Health", "Power", "Castbar", "Auras", "ClassPower", "Runes", "Stagger", "Dpsmana", "PVPSpecIcon"})
-		end
+			db_t = "UnitframeOptions", 
+			db_v = "height",
+			value = 5,
 		},
 		{
-		db_t = "UnitframeOptions", 
-		db_v = "hpheight",
-		value = .5,
-		apply = function() 
-			ApplyUFSettings({"Health", "Power", "Castbar", "Auras", "ClassPower", "Runes", "Stagger", "Dpsmana", "PVPSpecIcon"})
-		end
+			db_t = "UnitframeOptions", 
+			db_v = "hpheight",
+			value = .5,
 		},
 		{
-		db_t = "UnitframeOptions", 
-		db_v = "hideplayercastbaricon",
-		value = false,
-		apply = function() 
-			ApplyUFSettings({"Castbar"})
-		end
+			db_t = "UnitframeOptions", 
+			db_v = "hideplayercastbaricon",
+			value = false,
 		},
 		{
-		db_t = "UnitframeOptions", 
-		db_v = "independentcb",
-		value = false,
-		apply = function() 
-			ApplyUFSettings({"Castbar"})
-		end
+			db_t = "UnitframeOptions", 
+			db_v = "independentcb",
+			value = false,
 		},
 		{
-		db_t = "UnitframeOptions", 
-		db_v = "cbheight",
-		value = 5,
-		apply = function() 
-			ApplyUFSettings({"Castbar"})
-		end
+			db_t = "UnitframeOptions", 
+			db_v = "cbheight",
+			value = 5,
 		},
 		{
-		db_t = "UnitframeOptions", 
-		db_v = "cbwidth",
-		value = 180,
-		apply = function() 
-			ApplyUFSettings({"Castbar"})
-		end
+			db_t = "UnitframeOptions", 
+			db_v = "cbwidth",
+			value = 180,
 		},
 		{
-		db_t = "UnitframeOptions", 
-		db_v = "target_cbheight",
-		value = 5,
-		apply = function() 
-			ApplyUFSettings({"Castbar"})
-		end
+			db_t = "UnitframeOptions", 
+			db_v = "target_cbheight",
+			value = 5,
 		},
 		{
-		db_t = "UnitframeOptions", 
-		db_v = "target_cbwidth",
-		value = 180,
-		apply = function() 
-			ApplyUFSettings({"Castbar"})
-		end
+			db_t = "UnitframeOptions", 
+			db_v = "target_cbwidth",
+			value = 180,
 		},
 		{
-		db_t = "UnitframeOptions", 
-		db_v = "focus_cbheight",
-		value = 5,
-		apply = function() 
-			ApplyUFSettings({"Castbar"})
-		end
+			db_t = "UnitframeOptions", 
+			db_v = "focus_cbheight",
+			value = 5,
 		},
 		{
-		db_t = "UnitframeOptions", 
-		db_v = "focus_cbwidth",
-		value = 190,
-		apply = function() 
-			ApplyUFSettings({"Castbar"})
-		end
+			db_t = "UnitframeOptions", 
+			db_v = "focus_cbwidth",
+			value = 190,
 		},
 		{
-		db_t = "UnitframeOptions", 
-		db_v = "raidmanabars",
-		value = false,
-		apply = function() 
-			ApplyUFSettings({"Health"})
-		end
+			db_t = "UnitframeOptions", 
+			db_v = "raidmanabars",
+			value = false,
 		},
 		{
-		db_t = "UnitframeOptions", 
-		db_v = "auraperrow",
-		value = 6,
-		apply = function() 
-			ApplyUFSettings({"Auras"})
-		end
+			db_t = "UnitframeOptions", 
+			db_v = "auraperrow",
+			value = 6,
 		},
 		{
-		db_t = "UnitframeOptions", 
-		db_v = "playerdebuffnum",
-		value = 6,
-		apply = function() 
-			ApplyUFSettings({"Auras"})
-		end
+			db_t = "UnitframeOptions", 
+			db_v = "playerdebuffnum",
+			value = 6,
 		},
 	},
 }
@@ -605,153 +485,100 @@ Centralized_Layout = {
 	},
 	options = {
 		{
-		db_t = "SkinOptions", 
-		db_v = "showtopbar",
-		value = true,
-		apply = function()
-			G.BGFrame.Apply()
-		end
+			db_t = "SkinOptions", 
+			db_v = "showtopbar",
+			value = true,	
 		},
 		{
-		db_t = "SkinOptions", 
-		db_v = "showbottombar",
-		value = true,
-		apply = function() 
-			G.BGFrame.Apply()
-		end
+			db_t = "SkinOptions", 
+			db_v = "showbottombar",
+			value = true,
 		},
 		{
-		db_t = "SkinOptions", 
-		db_v = "showtopconerbar",
-		value = false,
-		apply = function()
-			G.BGFrame.Apply()
-		end
+			db_t = "SkinOptions", 
+			db_v = "showtopconerbar",
+			value = false,
 		},
 		{
-		db_t = "SkinOptions", 
-		db_v = "showbottomconerbar",
-		value = false,
-		apply = function()
-			G.BGFrame.Apply()
-		end
+			db_t = "SkinOptions", 
+			db_v = "showbottomconerbar",
+			value = false,
 		},
 		{
-		db_t = "UnitframeOptions", 
-		db_v = "width",
-		value = 230,
-		apply = function() 
-			ApplyUFSettings({"Health", "Auras", "ClassPower", "Runes"})
-		end
+			db_t = "UnitframeOptions", 
+			db_v = "width",
+			value = 230,
 		},
 		{
-		db_t = "UnitframeOptions", 
-		db_v = "height",
-		value = 18,
-		apply = function() 
-			ApplyUFSettings({"Health", "Power", "Castbar", "Auras", "ClassPower", "Runes", "Stagger", "Dpsmana", "PVPSpecIcon"})
-		end
+			db_t = "UnitframeOptions", 
+			db_v = "height",
+			value = 18,
 		},
 		{
-		db_t = "UnitframeOptions", 
-		db_v = "hpheight",
-		value = .75,
-		apply = function() 
-			ApplyUFSettings({"Health", "Power", "Castbar", "Auras", "ClassPower", "Runes", "Stagger", "Dpsmana", "PVPSpecIcon"})
-		end
+			db_t = "UnitframeOptions", 
+			db_v = "hpheight",
+			value = .75,
 		},
 		{
-		db_t = "UnitframeOptions", 
-		db_v = "hideplayercastbaricon",
-		value = false,
-		apply = function() 
-			ApplyUFSettings({"Castbar"})
-		end
+			db_t = "UnitframeOptions", 
+			db_v = "hideplayercastbaricon",
+			value = false,
 		},
 		{
-		db_t = "UnitframeOptions", 
-		db_v = "independentcb",
-		value = true,
-		apply = function() 
-			ApplyUFSettings({"Castbar"})
-		end
+			db_t = "UnitframeOptions", 
+			db_v = "independentcb",
+			value = true,
 		},
 		{
-		db_t = "UnitframeOptions", 
-		db_v = "cbheight",
-		value = 16,
-		apply = function() 
-			ApplyUFSettings({"Castbar"})
-		end
+			db_t = "UnitframeOptions", 
+			db_v = "cbheight",
+			value = 16,
 		},
 		{
-		db_t = "UnitframeOptions", 
-		db_v = "cbwidth",
-		value = 230,
-		apply = function() 
-			ApplyUFSettings({"Castbar"})
-		end
+			db_t = "UnitframeOptions", 
+			db_v = "cbwidth",
+			value = 230,
 		},
 		{
-		db_t = "UnitframeOptions", 
-		db_v = "target_cbheight",
-		value = 6,
-		apply = function() 
-			ApplyUFSettings({"Castbar"})
-		end
+			db_t = "UnitframeOptions", 
+			db_v = "target_cbheight",
+			value = 6,
 		},
 		{
-		db_t = "UnitframeOptions", 
-		db_v = "target_cbwidth",
-		value = 230,
-		apply = function() 
-			ApplyUFSettings({"Castbar"})
-		end
+			db_t = "UnitframeOptions", 
+			db_v = "target_cbwidth",
+			value = 230,
 		},
 		{
-		db_t = "UnitframeOptions", 
-		db_v = "focus_cbheight",
-		value = 6,
-		apply = function() 
-			ApplyUFSettings({"Castbar"})
-		end
+			db_t = "UnitframeOptions", 
+			db_v = "focus_cbheight",
+			value = 6,
 		},
 		{
-		db_t = "UnitframeOptions", 
-		db_v = "focus_cbwidth",
-		value = 230,
-		apply = function() 
-			ApplyUFSettings({"Castbar"})
-		end
+			db_t = "UnitframeOptions", 
+			db_v = "focus_cbwidth",
+			value = 230,
 		},
 		{
-		db_t = "UnitframeOptions", 
-		db_v = "raidmanabars",
-		value = true,
-		apply = function() 
-			ApplyUFSettings({"Health"})
-		end
+			db_t = "UnitframeOptions", 
+			db_v = "raidmanabars",
+			value = true,
 		},
 		{
-		db_t = "UnitframeOptions", 
-		db_v = "auraperrow",
-		value = 8,
-		apply = function() 
-			ApplyUFSettings({"Auras"})
-		end
+			db_t = "UnitframeOptions", 
+			db_v = "auraperrow",
+			value = 8,
 		},
 		{
-		db_t = "UnitframeOptions", 
-		db_v = "playerdebuffnum",
-		value = 8,
-		apply = function() 
-			ApplyUFSettings({"Auras"})
-		end
+			db_t = "UnitframeOptions", 
+			db_v = "playerdebuffnum",
+			value = 8,
 		},
 	},
 }
 
 local ApplySizeAndPostions = function(group)
+	-- 位置
 	local role = T.CheckRole()
 	for i, t in pairs(group.frames) do
 		aCoreCDB["FramePoints"][t.f][role]["a1"] = t.a1
@@ -762,10 +589,12 @@ local ApplySizeAndPostions = function(group)
 		
 		T.PlaceFrame(_G[t.f])
 	end
+	-- 选项
 	for i, t in pairs(group.options) do
 		aCoreCDB[t.db_t][t.db_v] = t.value
-		t.apply()
 	end
+	G.BGFrame.Apply()
+	T.ApplyUFSettings({"Health", "Power", "Auras", "ClassPower", "Runes", "Castbar", "Stagger", "Dpsmana", "PVPSpecIcon"})
 end
 
 TutorialsFrame[4]["layout"][1]:SetScript("OnClick", function() ApplySizeAndPostions(Default_Layout) end)
