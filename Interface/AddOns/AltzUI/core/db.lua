@@ -635,8 +635,6 @@ local Character_default_Settings = {
 		debuff_auto_add_level = 6,
 	},
 	ChatOptions = {
-		chattab_fade_minalpha = .3,
-		chattab_fade_maxalpha = 1,
 		channelreplacement = true,
 		autoscroll = true,
 		nogoldseller = true,
