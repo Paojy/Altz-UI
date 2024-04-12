@@ -1016,6 +1016,7 @@ T.createslider = function(parent, x, y, name, table, value, divisor, min, max, s
 		self:SetValue((aCoreCDB[table][value])*divisor)
 		_G[self:GetName()..'Text']:SetText(name.." |cFF00FFFF"..aCoreCDB[table][value].."|r")
 	end)
+	
 	slider:SetScript("OnValueChanged", function(self, getvalue)
 		aCoreCDB[table][value] = getvalue/divisor
 		TestSlider_OnValueChanged(self, getvalue)
@@ -1029,10 +1030,18 @@ T.createslider = function(parent, x, y, name, table, value, divisor, min, max, s
 	
 	slider.Enable = function()
 		getmetatable(slider).__index.Enable(slider)
+		slider.Text:SetTextColor(1, 1, 1, 1)
+		slider.Low:SetTextColor(1, 1, 1, 1)
+		slider.High:SetTextColor(1, 1, 1, 1)
+		slider.Thumb:Show()
 	end
 	
 	slider.Disable = function()
 		getmetatable(slider).__index.Disable(slider)
+		slider.Text:SetTextColor(0.7, 0.7, 0.7, 0.5)
+		slider.Low:SetTextColor(0.7, 0.7, 0.7, 0.5)
+		slider.High:SetTextColor(0.7, 0.7, 0.7, 0.5)
+		slider.Thumb:Hide()
 	end
 	
 	parent[value] = slider
