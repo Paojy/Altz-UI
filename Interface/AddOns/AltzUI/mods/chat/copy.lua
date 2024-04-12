@@ -87,9 +87,6 @@ copy:HookScript("OnLeave", function(self)
 	GameTooltip:Hide()
 end)
 
--- Aurora Reskin
-if IsAddOnLoaded("AuroraClassic") then
-	local F = unpack(AuroraClassic)
-	F.ReskinClose(frame.close)
-	F.ReskinScroll(ChatCopyScrollFrameScrollBar)
-end
+F.ReskinClose(frame.close)
+F.ReskinScroll(ChatCopyScrollFrameScrollBar)
+
