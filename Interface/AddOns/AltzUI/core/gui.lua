@@ -1059,7 +1059,7 @@ T.createslider(RFInnerframe.common, 30, 250, L["名字长度"], "UnitframeOption
 T.createslider(RFInnerframe.common, 30, 300, L["字体大小"], "UnitframeOptions", "raidfontsize", 1, 1, 25, 1)
 T.createcheckbutton(RFInnerframe.common, 30, 330, L["刷新载具"], "UnitframeOptions", "toggleForVehicle")
 T.createcheckbutton(RFInnerframe.common, 30, 360, L["团队工具"], "UnitframeOptions", "raidtool")
-T.createDR(RFInnerframe.common.enableraid, RFInnerframe.common.raidframe_inparty, RFInnerframe.common.party_num, RFInnerframe.common.showraidpet, RFInnerframe.common.showsolo, RFInnerframe.common.namelength, RFInnerframe.common.raidfontsize)
+T.createDR(RFInnerframe.common.enableraid, RFInnerframe.common.raidframe_inparty, RFInnerframe.common.party_num, RFInnerframe.common.showraidpet, RFInnerframe.common.showsolo, RFInnerframe.common.namelength, RFInnerframe.common.raidfontsize, RFInnerframe.common.toggleForVehicle)
 
 RFInnerframe.healer = CreateOptionPage("RF Options healer", L["样式"], RFInnerframe, "VERTICAL", .3)
 

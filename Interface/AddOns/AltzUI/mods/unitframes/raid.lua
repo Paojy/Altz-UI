@@ -817,7 +817,7 @@ local pfunc = function(self, unit)
 	self.Health.ApplySettings()
 end
 
-oUF:RegisterStyle("Altz_Party", pfunc)
+oUF:RegisterStyle("Altz_party", pfunc)
 
 local PartyFrame = CreateFrame("Frame", "Altz_Party_Holder", UIParent)
 PartyFrame.movingname = PARTY
@@ -836,9 +836,9 @@ PartyPetFrame.point = {
 T.CreateDragFrame(PartyPetFrame)
 
 local function Spawnparty()
-	oUF:SetActiveStyle"Altz_Party"
+	oUF:SetActiveStyle"Altz_party"
 	
-	PartyFrame[1] = oUF:SpawnHeader('Altz_Party', nil, not aCoreCDB["UnitframeOptions"]["raidframe_inparty"] and 'PartyFrame',
+	PartyFrame[1] = oUF:SpawnHeader('Altz_Party', nil, not aCoreCDB["UnitframeOptions"]["raidframe_inparty"] and 'party',
 		'oUF-initialConfigFunction', initconfig:format(aCoreCDB["UnitframeOptions"]["widthparty"], aCoreCDB["UnitframeOptions"]["height"]),
 		'showPlayer', aCoreCDB["UnitframeOptions"]["showplayerinparty"],
 		'showSolo', false,
@@ -860,7 +860,7 @@ local function Spawnparty()
 	
 	PartyFrame[1]:SetPoint("TOPLEFT", PartyFrame, "TOPLEFT")
 	
-	PartyPetFrame[1] = oUF:SpawnHeader('Altz_PartyPet', 'SecureGroupPetHeaderTemplate', not aCoreCDB["UnitframeOptions"]["raidframe_inparty"] and 'PartyFrame',
+	PartyPetFrame[1] = oUF:SpawnHeader('Altz_PartyPet', 'SecureGroupPetHeaderTemplate', not aCoreCDB["UnitframeOptions"]["raidframe_inparty"] and 'party',
 		'oUF-initialConfigFunction', initconfig:format(aCoreCDB["UnitframeOptions"]["widthparty"], aCoreCDB["UnitframeOptions"]["height"]),
 		'showPlayer', aCoreCDB["UnitframeOptions"]["showplayerinparty"],
 		'showSolo', false,
