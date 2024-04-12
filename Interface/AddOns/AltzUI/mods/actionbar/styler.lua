@@ -190,6 +190,14 @@ local function init()
 		styleActionButton(_G["OverrideActionBarButton"..i])
 	end
 	
+	MainMenuBar.HorizontalDividersPool:ReleaseAll()
+	MainMenuBar.VerticalDividersPool:ReleaseAll()
+	
+	hooksecurefunc(MainMenuBar, "UpdateDividers", function(self)
+		self.HorizontalDividersPool:ReleaseAll()
+		self.VerticalDividersPool:ReleaseAll()
+	end)
+
 	--petbar buttons
 	for i=1, NUM_PET_ACTION_SLOTS do
 		styleActionButton(_G["PetActionButton"..i])
