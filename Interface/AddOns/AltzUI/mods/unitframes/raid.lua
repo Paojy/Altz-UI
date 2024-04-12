@@ -656,7 +656,7 @@ local function Spawnhealraid()
 end
 
 --=============================================--
---[[              Party Frames                ]]--
+--[[             Party Frames                ]]--
 --=============================================--
 
 local pfunc = function(self, unit)
@@ -883,15 +883,20 @@ local function Spawnparty()
 	PartyPetFrame[1]:SetPoint("TOPLEFT", PartyPetFrame, "TOPLEFT")
 end
 
+--=============================================--
+--[[                Events                   ]]--
+--=============================================--
+
 function EventFrame:ADDON_LOADED(arg1)
 	if arg1 ~= "AltzUI" or not aCoreCDB["UnitframeOptions"]["enableraid"] then return end	
 	
 	-- Hide Default RaidFrame
 	if CompactRaidFrameManager_SetSetting then
 		CompactRaidFrameManager_SetSetting("IsShown", "0")
-		UIParent:UnregisterEvent("GROUP_ROSTER_UPDATE")
 		CompactRaidFrameManager:UnregisterAllEvents()
-		CompactRaidFrameManager:SetParent(T.blizzHider)
+		CompactRaidFrameManager:HookScript("OnShow", function()
+			CompactRaidFrameManager_SetSetting("IsShown", "0")
+		end)
 	end
 
 	Spawnhealraid()
