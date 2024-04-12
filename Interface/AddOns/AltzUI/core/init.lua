@@ -89,7 +89,6 @@ BACKDROP_ALTZ_3 = {
 BACKDROP_ALTZ_COLOR_0	= CreateColor(0, 0, 0, 1)
 BACKDROP_ALTZ_COLOR_15	= CreateColor(.15, .15, .15, 1)
 
-G.Discord = "discord.gg/bt2jQ7kPBd"
 G.Nga = "bbs.nga.cn/read.php?tid=4729675&_ff=200"
 G.WoWInterface = "www.wowinterface.com/downloads/info21263-AltzUIforShadowlands.html"
 

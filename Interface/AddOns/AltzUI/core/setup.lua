@@ -229,28 +229,28 @@ CreateOptions(TutorialsFrame[4], "group", false, nil, "layout", {L["默认布局
 Default_Layout = {
 	frames = {
 		{
-		f = "oUF_AltzPlayer",
-		a1 = "TOPRIGHT",	
-		parent = "UIParent",	
-		a2 = "BOTTOM",
-		x = -250,
-		y = 350,		
+			f = "oUF_AltzPlayer",
+			a1 = "TOPRIGHT",	
+			parent = "UIParent",	
+			a2 = "BOTTOM",
+			x = -250,
+			y = 350,		
 		},
 		{
-		f = "oUF_AltzTarget",
-		a1 = "TOPLEFT",	
-		parent = "UIParent",	
-		a2 = "BOTTOM",
-		x = 250,
-		y = 350,		
+			f = "oUF_AltzTarget",
+			a1 = "TOPLEFT",	
+			parent = "UIParent",	
+			a2 = "BOTTOM",
+			x = 250,
+			y = 350,		
 		},
 		{
-		f = "Altz_HealerRaid_Holder",
-		a1 = "TOP",	
-		parent = "UIParent",	
-		a2 = "BOTTOM",
-		x = 0,
-		y = 350,
+			f = "Altz_Raid_Holder",
+			a1 = "TOP",	
+			parent = "UIParent",	
+			a2 = "BOTTOM",
+			x = 0,
+			y = 350,
 		},
 	},
 	options = {
@@ -404,28 +404,28 @@ Default_Layout = {
 Simplicity_Layout = {
 	frames = {
 		{
-		f = "oUF_AltzPlayer",
-		a1 = "TOPRIGHT",	
-		parent = "UIParent",	
-		a2 = "BOTTOM",
-		x = -250,
-		y = 520,		
+			f = "oUF_AltzPlayer",
+			a1 = "TOPRIGHT",	
+			parent = "UIParent",	
+			a2 = "BOTTOM",
+			x = -250,
+			y = 520,		
 		},
 		{
-		f = "oUF_AltzTarget",
-		a1 = "TOPLEFT",	
-		parent = "UIParent",	
-		a2 = "BOTTOM",
-		x = 250,
-		y = 520,		
+			f = "oUF_AltzTarget",
+			a1 = "TOPLEFT",	
+			parent = "UIParent",	
+			a2 = "BOTTOM",
+			x = 250,
+			y = 520,		
 		},
 		{
-		f = "Altz_HealerRaid_Holder",
-		a1 = "TOPLEFT",	
-		parent = "UIParent",	
-		a2 = "BOTTOM",
-		x = 250,
-		y = 500,
+			f = "Altz_Raid_Holder",
+			a1 = "TOPLEFT",	
+			parent = "UIParent",	
+			a2 = "BOTTOM",
+			x = 250,
+			y = 500,
 		},
 	},
 	options = {
@@ -579,28 +579,28 @@ Simplicity_Layout = {
 Centralized_Layout = {
 	frames = {
 		{
-		f = "oUF_AltzPlayer",
-		a1 = "TOP",	
-		parent = "UIParent",	
-		a2 = "CENTER",
-		x = 0,
-		y = -200,		
+			f = "oUF_AltzPlayer",
+			a1 = "TOP",	
+			parent = "UIParent",	
+			a2 = "CENTER",
+			x = 0,
+			y = -200,		
 		},
 		{
-		f = "oUF_AltzTarget",
-		a1 = "TOPLEFT",	
-		parent = "UIParent",	
-		a2 = "CENTER",
-		x = 250,
-		y = -100,
+			f = "oUF_AltzTarget",
+			a1 = "TOPLEFT",	
+			parent = "UIParent",	
+			a2 = "CENTER",
+			x = 250,
+			y = -100,
 		},
 		{
-		f = "Altz_HealerRaid_Holder",
-		a1 = "TOPLEFT",	
-		parent = "UIParent",	
-		a2 = "CENTER",
-		x = 250,
-		y = -130,
+			f = "Altz_Raid_Holder",
+			a1 = "TOPLEFT",	
+			parent = "UIParent",	
+			a2 = "CENTER",
+			x = 250,
+			y = -130,
 		},
 	},
 	options = {
@@ -754,7 +754,13 @@ Centralized_Layout = {
 local ApplySizeAndPostions = function(group)
 	local role = T.CheckRole()
 	for i, t in pairs(group.frames) do
-		T.ResetFramePoint(t)
+		aCoreCDB["FramePoints"][t.f][role]["a1"] = t.a1
+		aCoreCDB["FramePoints"][t.f][role]["parent"] = t.parent
+		aCoreCDB["FramePoints"][t.f][role]["a2"] = t.a2
+		aCoreCDB["FramePoints"][t.f][role]["x"] = t.x
+		aCoreCDB["FramePoints"][t.f][role]["y"] = t.y
+		
+		T.PlaceFrame(_G[t.f])
 	end
 	for i, t in pairs(group.options) do
 		aCoreCDB[t.db_t][t.db_v] = t.value
@@ -819,30 +825,6 @@ if toggle_spec.dpser[G.myClass] then -- 可治疗的职业才显示
 end
 
 --====================================================--
---[[               -- 团队框架 --                   ]]--
---====================================================--
-CreateTutorialsStepFrame(L["团队框架"], L["团队框架tip"])
-CreateOptions(TutorialsFrame[5], "check", L["禁用自动切换"], "UnitframeOptions", "autoswitch")
-
-local raidonly_group = {
-	["healer"] = L["治疗模式"],
-	["dps"] = L["输出/坦克模式"],
-}
-CreateOptions(TutorialsFrame[5], "group", true, "UnitframeOptions", "raidonly", raidonly_group)
-T.createDR(TutorialsFrame[5]["autoswitch"], TutorialsFrame[5]["raidonly"]["healer"], TutorialsFrame[5]["raidonly"]["dps"])
-
-for k, text in pairs(raidonly_group) do
-	TutorialsFrame[5]["raidonly"][k]:HookScript("OnClick", function()
-		local dps_shown = T.IsDpsRaidShown()
-		if k == "dps" and not dps_shown then
-			T.SwitchRaidFrame()
-		elseif k == "healer" and dps_shown then
-			T.SwitchRaidFrame()
-		end
-	end)
-end
-
---====================================================--
 --[[               -- 姓名板 --                   ]]--
 --====================================================--
 CreateTutorialsStepFrame(UNIT_NAMEPLATES, L["姓名板tip"])
@@ -851,9 +833,9 @@ local plate_theme_group = {
 	["dark"] =  L["深色-条形"],
 	["number"] =  L["数字样式"],
 }
-CreateOptions(TutorialsFrame[6], "group", true, "PlateOptions", "theme", plate_theme_group)
+CreateOptions(TutorialsFrame[5], "group", true, "PlateOptions", "theme", plate_theme_group)
 for k, text in pairs(plate_theme_group) do
-	TutorialsFrame[6]["theme"][k]:HookScript("OnClick", function()
+	TutorialsFrame[5]["theme"][k]:HookScript("OnClick", function()
 		for i, plate in ipairs(C_NamePlate.GetNamePlates(issecure())) do
 			if plate.unitFrame then	
 				for k, e in pairs({"Health", "Power", "Castbar", "Auras", "ClassPower", "Runes", "RaidTargetIndicator", "Name", "PvPClassificationIndicator"}) do
@@ -867,19 +849,19 @@ for k, text in pairs(plate_theme_group) do
 		end
 		T.PlacePlateClassSource()
 	end)
-	TutorialsFrame[6]["theme"][k]:SetScript("OnEvent", function(self, event)
+	TutorialsFrame[5]["theme"][k]:SetScript("OnEvent", function(self, event)
 		if event == "PLAYER_REGEN_ENABLED" then
 			self:Enable()
 		elseif event == "PLAYER_REGEN_DISABLED" then
 			self:Disable()
 		end
 	end)
-	TutorialsFrame[6]["theme"][k]:RegisterEvent("PLAYER_REGEN_ENABLED")
-	TutorialsFrame[6]["theme"][k]:RegisterEvent("PLAYER_REGEN_DISABLED")
+	TutorialsFrame[5]["theme"][k]:RegisterEvent("PLAYER_REGEN_ENABLED")
+	TutorialsFrame[5]["theme"][k]:RegisterEvent("PLAYER_REGEN_DISABLED")
 end
 
-CreateOptions(TutorialsFrame[6], "check", L["显示玩家姓名板"], "PlateOptions", "playerplate")
-TutorialsFrame[6]["playerplate"]:HookScript("OnClick", function()
+CreateOptions(TutorialsFrame[5], "check", L["显示玩家姓名板"], "PlateOptions", "playerplate")
+TutorialsFrame[5]["playerplate"]:HookScript("OnClick", function()
 	if aCoreCDB["PlateOptions"]["playerplate"] or aCoreCDB["PlateOptions"]["classresource_show"] then
 		SetCVar("nameplateShowSelf", 1)
 	else
@@ -901,9 +883,8 @@ CreateTutorialsStepFrame(L["命令"], format(L["指令"], G.classcolor, G.classc
 --====================================================--
 CreateTutorialsStepFrame(L["寻求帮助"], L["粘贴"])
 
-CreateOptions(TutorialsFrame[8], "editbox", "Discord", nil, "Discord")
-CreateOptions(TutorialsFrame[8], "editbox", "Nga", nil, "Nga")
-CreateOptions(TutorialsFrame[8], "editbox", "WoWInterface", nil, "WoWInterface")
+CreateOptions(TutorialsFrame[7], "editbox", "Nga", nil, "Nga")
+CreateOptions(TutorialsFrame[7], "editbox", "WoWInterface", nil, "WoWInterface")
 --====================================================--
 --[[               -- 更新日志 --                   ]]--
 --====================================================--
