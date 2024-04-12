@@ -1086,7 +1086,7 @@ for i = 1, 20 do
 	RFInnerframe["tab"..i]:SetScript("OnMouseDown", function() end)
 end
 
-RFInnerframe.common = CreateOptionPage("RF Options common", L["通用设置"], RFInnerframe, "VERTICAL", .3)
+RFInnerframe.common = CreateOptionPage("RF Options common", L["启用"], RFInnerframe, "VERTICAL", .3)
 RFInnerframe.common:Show()
 
 T.createcheckbutton(RFInnerframe.common, 30, 60, L["启用"], "UnitframeOptions", "enableraid")
@@ -1100,17 +1100,7 @@ T.createcheckbutton(RFInnerframe.common, 30, 330, L["刷新载具"], "UnitframeO
 T.createcheckbutton(RFInnerframe.common, 30, 360, L["团队工具"], "UnitframeOptions", "raidtool")
 T.createDR(RFInnerframe.common.enableraid, RFInnerframe.common.raidframe_inparty, RFInnerframe.common.party_num, RFInnerframe.common.showraidpet, RFInnerframe.common.showsolo, RFInnerframe.common.namelength, RFInnerframe.common.raidfontsize)
 
-RFInnerframe.switch = CreateOptionPage("RF Options switch", L["切换"], RFInnerframe, "VERTICAL", .3)
-
-T.createcheckbutton(RFInnerframe.switch, 30, 60, L["禁用自动切换"], "UnitframeOptions", "autoswitch", L["禁用自动切换提示"])
-local raidonly_group = {
-	["healer"] = L["治疗模式"],
-	["dps"] = L["输出/坦克模式"],
-}
-T.createradiobuttongroup(RFInnerframe.switch, 30, 90, L["团队模式"], "UnitframeOptions", "raidonly", raidonly_group)
-T.createDR(RFInnerframe.switch.autoswitch, RFInnerframe.switch.raidonly)
-
-RFInnerframe.healer = CreateOptionPage("RF Options healer", L["治疗模式"], RFInnerframe, "VERTICAL", .3)
+RFInnerframe.healer = CreateOptionPage("RF Options healer", L["样式"], RFInnerframe, "VERTICAL", .3)
 
 T.createslider(RFInnerframe.healer, 30, 80, L["高度"], "UnitframeOptions", "healerraidheight", 1, 10, 150, 1)
 T.createslider(RFInnerframe.healer, 30, 120, L["宽度"], "UnitframeOptions", "healerraidwidth", 1, 10, 150, 1)
@@ -1274,14 +1264,6 @@ local function CreatehotindAuraOptions()
 		StaticPopup_Show(G.uiname.."Reset Confirm")
 	end)
 end
-
-RFInnerframe.dps = CreateOptionPage("RF Options dps", L["输出/坦克模式"], RFInnerframe, "VERTICAL", .3)
-
-T.createslider(RFInnerframe.dps, 30, 80, L["高度"], "UnitframeOptions", "dpsraidheight", 1, 10, 150, 1)
-T.createslider(RFInnerframe.dps, 30, 120, L["宽度"], "UnitframeOptions", "dpsraidwidth", 1, 10, 150, 1)
-T.createcheckbutton(RFInnerframe.dps, 30, 160, L["主坦克和主助手"], "UnitframeOptions", "dpstank_assisticon", L["主坦克和主助手提示"])
-T.createradiobuttongroup(RFInnerframe.dps, 30, 190, COMPACT_UNIT_FRAME_PROFILE_SORTBY, "UnitframeOptions", "dpsraidgroupby", raidgroupby_group)
-T.createslider(RFInnerframe.dps, 30, 240, L["整体高度"], "UnitframeOptions", "unitnumperline", 1, 1, 40, 1, L["整体高度提示"])
 
 RFInnerframe.clickcast = CreateOptionPage("RF Options clickcast", L["点击施法"], RFInnerframe, "VERTICAL", .3)
 

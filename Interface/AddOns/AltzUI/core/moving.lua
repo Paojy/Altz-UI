@@ -121,7 +121,7 @@ local function PlaceFrame(frame)
 	if points and frame.df.enable then
 		frame:ClearAllPoints()
 		frame:SetPoint(points.a1, _G[points.parent], points.a2, points.x, points.y)
-		if name == "Altz_HealerRaid_Holder" then
+		if name == "Altz_Raid_Holder" then
 			T.PlaceRaidFrame()
 		end		
 	end
@@ -308,7 +308,7 @@ local function ReskinDropDown(frame, name, value, ...)
 				aCoreCDB["FramePoints"][CurrentFrame][CurrentRole][value] = anchors[i]
 				local frame = _G[CurrentFrame]
 				PlaceFrame(frame)
-				if CurrentFrame == "Altz_HealerRaid_Holder" then
+				if CurrentFrame == "Altz_Raid_Holder" then
 					T.PlaceRaidFrame()
 				end
 				UIDropDownMenu_SetSelectedName(frame, anchors[i], true)

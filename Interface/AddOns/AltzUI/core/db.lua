@@ -596,8 +596,6 @@ local Character_default_Settings = {
 		namelength = 4,
 		showsolo = false,
 		toggleForVehicle = true,
-		autoswitch = false,
-		raidonly = "healer",
 		raidtool = true,
 		raidtool_show = true,
 		
@@ -627,13 +625,6 @@ local Character_default_Settings = {
 		healerraid_buff_anchor_y = -5,
 		healerraid_buff_icon_size = 22,
 		healerraid_buff_icon_fontsize = 8,
-		
-		--[[ dps/tank mode ]]--
-		dpsraidheight = 15,
-		dpsraidwidth = 100,
-		unitnumperline = 25,
-		dpsraidgroupby = "GROUP", -- "CLASS", "ROLE"
-		dpstank_assisticon = true,
 		
 		--[[ click cast ]]--
 		enableClickCast = false,
