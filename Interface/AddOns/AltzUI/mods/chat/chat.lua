@@ -121,7 +121,7 @@ local function init()
 			tab.HighlightMiddle:SetTexture(nil)
 			tab.HighlightRight:SetTexture(nil)
 		end
-		tab:SetScript("OnClick", function(self)
+		tab:HookScript("OnClick", function(self)
 			eb:SetAlpha(0)
 		end)
 	end

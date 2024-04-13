@@ -548,7 +548,7 @@ local function Spawnhealraid()
 	
 	if not aCoreCDB["UnitframeOptions"]["ind_party"] then -- 小队分离
 		for i = 1, aCoreCDB["UnitframeOptions"]["party_num"] do
-			RaidFrame[i] = oUF:SpawnHeader(i== 1 and 'Altz_HealerRaid' or 'Altz_HealerRaid'..i, nil, aCoreCDB["UnitframeOptions"]["raidframe_inparty"] and 'raid,PartyFrame,solo' or 'raid,solo',
+			RaidFrame[i] = oUF:SpawnHeader(i== 1 and 'Altz_HealerRaid' or 'Altz_HealerRaid'..i, nil, aCoreCDB["UnitframeOptions"]["raidframe_inparty"] and 'raid,party,solo' or 'raid,solo',
 				'oUF-initialConfigFunction', initconfig:format(aCoreCDB["UnitframeOptions"]["healerraidwidth"], aCoreCDB["UnitframeOptions"]["healerraidheight"], 1),
 				'showPlayer', true,
 				'showSolo', aCoreCDB["UnitframeOptions"]["showsolo"],
@@ -567,7 +567,7 @@ local function Spawnhealraid()
 				)
 		end
 	else -- 小队相连
-		RaidFrame[1] = oUF:SpawnHeader('Altz_HealerRaid', nil, aCoreCDB["UnitframeOptions"]["raidframe_inparty"] and 'raid,PartyFrame,solo' or 'raid,solo',
+		RaidFrame[1] = oUF:SpawnHeader('Altz_HealerRaid', nil, aCoreCDB["UnitframeOptions"]["raidframe_inparty"] and 'raid,party,solo' or 'raid,solo',
 			'oUF-initialConfigFunction', initconfig:format(aCoreCDB["UnitframeOptions"]["healerraidwidth"], aCoreCDB["UnitframeOptions"]["healerraidheight"], 1),
 			'showPlayer', true,
 			'showSolo', aCoreCDB["UnitframeOptions"]["showsolo"],
