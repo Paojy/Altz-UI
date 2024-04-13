@@ -112,7 +112,7 @@ function GetMinimapShape() return 'SQUARE' end
 MinimapCompassTexture:SetAlpha(0)
 
 -- 巨龙群岛概要
-ExpansionLandingPageMinimapButton:SetScale(.5)
+ExpansionLandingPageMinimapButton:SetScale(.7)
 ExpansionLandingPageMinimapButton:GetNormalTexture():SetTexCoord(.2, .8, .2, .8)
 ExpansionLandingPageMinimapButton:GetPushedTexture():SetTexCoord(.2, .8, .2, .8)
 ExpansionLandingPageMinimapButton:GetHighlightTexture():SetTexCoord(.2, .8, .2, .8)
@@ -822,19 +822,13 @@ if G.myClass ~= "DRUID" then
 	numspec = 3
 end
 
-local function TalentOnClick(self, button)
+Talent:SetScript("OnMouseDown", function(self)
 	if UnitLevel("player")>=10 then -- 10 级别后有天赋
 		EasyMenu(SpecList, LootSpecMenu, "cursor", 0, 0, "MENU", 2)
 		DropDownList1:ClearAllPoints()
-		if select(2, InfoFrame:GetCenter())/G.screenheight > .5 then -- In the upper part of the screen
-			DropDownList1:SetPoint("TOPLEFT", self, "BOTTOMLEFT", -5, -5)
-		else
-			DropDownList1:SetPoint("BOTTOMLEFT", self, "TOPLEFT", -5, 5)
-		end
+		DropDownList1:SetPoint("BOTTOMLEFT", self, "TOPLEFT", -5, 5)
 	end
-end
-
-Talent:SetScript("OnMouseDown", TalentOnClick)
+end)
 
 Talent:SetScript("OnEvent", function(self, event)
 	if event == "PLAYER_ENTERING_WORLD" then
