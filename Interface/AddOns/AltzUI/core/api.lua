@@ -866,9 +866,20 @@ T.createeditbox = function(parent, x, y, name, table, value, tip)
 	box:SetTextInsets(3, 0, 0, 0)
 	
 	if table and value then
-		box:SetScript("OnShow", function(self) self:SetText(aCoreCDB[table][value]) end)
-		box:SetScript("OnEscapePressed", function(self) self:SetText(aCoreCDB[table][value]) self:ClearFocus() end)
-		box:SetScript("OnEnterPressed", function(self) self:ClearFocus() aCoreCDB[table][value] = self:GetText() end)
+		box:SetScript("OnShow", function(self) 
+			self:SetText(aCoreCDB[table][value])
+		end)
+		box:SetScript("OnEscapePressed", function(self)
+			self:SetText(aCoreCDB[table][value])
+			self:ClearFocus()
+		end)
+		box:SetScript("OnEnterPressed", function(self)
+			self:ClearFocus()
+			aCoreCDB[table][value] = self:GetText()
+			if self.apply then
+				self.apply()
+			end
+		end)
 	end
 	
 	box:SetScript("OnEnable", function(self)
