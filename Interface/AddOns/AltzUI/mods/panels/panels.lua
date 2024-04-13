@@ -1048,7 +1048,7 @@ OrderHall_eframe:SetScript("OnEvent", function(self, event, arg1)
 end)
 
 --====================================================--
---[[                 -- Screen --                   ]]--
+--[[              -- AFK Screen --                  ]]--
 --====================================================--
 
 local BOTTOMPANEL = CreateFrame("Frame", G.uiname.."AFK Bottompanel", WorldFrame)
