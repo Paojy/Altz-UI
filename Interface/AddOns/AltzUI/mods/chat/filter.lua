@@ -76,15 +76,21 @@ ChatFrame_AddMessageEventFilter("CHAT_MSG_SAY", FilterChat)
 ChatFrame_AddMessageEventFilter("CHAT_MSG_YELL", FilterChat) 
 ChatFrame_AddMessageEventFilter("CHAT_MSG_WHISPER", FilterChat)
 
-local EventFrame = CreateFrame('Frame')
-EventFrame:SetScript('OnEvent', function(self, event, arg)
-	if arg == "AltzUI" then	
-		local filter = {string.split(" ", aCoreDB["goldkeywordlist"])}
-		for _, keyword in pairs(filter) do
-			if keyword ~= "" then
-				blacklist[keyword] = true
-			end
+T.Update_Chat_Filter = function()
+	local filter = {string.split(" ", aCoreDB["goldkeywordlist"])}
+	for _, keyword in pairs(filter) do
+		if keyword ~= "" then
+			blacklist[keyword] = true
 		end
 	end
+end
+
+local EventFrame = CreateFrame('Frame')
+EventFrame:SetScript('OnEvent', function(self, event, arg)
+	if arg == "AltzUI" then
+		T.Update_Chat_Filter()
+		self:UnregisterEvent('ADDON_LOADED')
+	end
 end)
+
 EventFrame:RegisterEvent('ADDON_LOADED')

@@ -43,6 +43,7 @@
 	<Script file="mods\chat\easyChannel.lua"/>
 	<Script file="mods\chat\filter.lua"/>
 	<Script file="mods\chat\copy.lua"/>
+	<Script file="mods\chat\autoinvite.lua"/>
 	
 	<Script file="mods\tip\tip.lua"/>
 	<Script file="mods\tip\talent.lua"/>

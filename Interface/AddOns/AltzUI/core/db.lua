@@ -678,8 +678,7 @@ local Character_default_Settings = {
 			
 			},
 		},
-	},
-	
+	},	
 	PlateOptions = {
 		-- 通用
 		enableplate = true,
@@ -789,6 +788,10 @@ local Character_default_Settings = {
 		customobjectivetracker = false,
 		afklogin = false,
 		afkscreen = true,
+		
+		hide_minimap = false,
+		IconMiniMapLeft = 12,
+		IconMiniMapTop = -80,
 	},
 	RaidDebuff = {},
 	CooldownAura = AuraList,

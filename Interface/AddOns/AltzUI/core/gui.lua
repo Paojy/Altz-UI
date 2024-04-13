@@ -127,23 +127,6 @@ for i = 1, 20 do
 	GUI["tab"..i]:SetScript("OnMouseDown", function() end)
 end
 
-AddonCompartmentFrame:RegisterAddon({
-	text = C_AddOns.GetAddOnMetadata("AltzUI", "Title"),
-	icon = C_AddOns.GetAddOnMetadata("AltzUI", "IconTexture"),
-	registerForAnyClick = true,
-	notCheckable = true,
-	func = function(btn, arg1, arg2, checked, mouseButton)
-		if GUI:IsShown() then
-			GUI:Hide()
-			GUI.df:Hide()
-			GUI.scale:Hide()
-		else
-			GUI:Show()
-			GUI.df:Show()
-			GUI.scale:Show()
-		end
-	end,
-})
 --====================================================--
 --[[                   -- TABS --                   ]]--
 --====================================================--
@@ -615,15 +598,25 @@ T.createcheckbutton(ChatOptions, 30, 140, L["聊天过滤"], "ChatOptions", "nog
 T.createslider(ChatOptions, 30, 190, L["过滤阈值"], "ChatOptions", "goldkeywordnum", 1, 1, 5, 1, L["过滤阈值"])
 
 T.createmultilinebox(ChatOptions, 200, 100, 35, 235, L["关键词"], "ChatOptions", "goldkeywordlist", L["关键词输入"])
-ChatOptions.goldkeywordlist.edit:SetScript("OnShow", function(self) self:SetText(aCoreDB["goldkeywordlist"]) end)
-ChatOptions.goldkeywordlist.edit:SetScript("OnEscapePressed", function(self) self:SetText(aCoreDB["goldkeywordlist"]) self:ClearFocus() end)
-ChatOptions.goldkeywordlist.edit:SetScript("OnEnterPressed", function(self) self:ClearFocus() aCoreDB["goldkeywordlist"] = self:GetText() end)
+ChatOptions.goldkeywordlist.edit:SetScript("OnShow", function(self) 
+	self:SetText(aCoreDB["goldkeywordlist"])
+end)
+ChatOptions.goldkeywordlist.edit:SetScript("OnEscapePressed", function(self)
+	self:SetText(aCoreDB["goldkeywordlist"])
+	self:ClearFocus()
+end)
+ChatOptions.goldkeywordlist.edit:SetScript("OnEnterPressed", function(self) 
+	self:ClearFocus() 
+	aCoreDB["goldkeywordlist"] = self:GetText()
+	T.Update_Chat_Filter()
+end)
 T.createDR(ChatOptions.nogoldseller, ChatOptions.goldkeywordnum, ChatOptions.goldkeywordlist)
 
 CreateDividingLine(ChatOptions, -360)
 
 T.createcheckbutton(ChatOptions, 30, 370, L["自动邀请"], "OtherOptions", "autoinvite", L["自动邀请提示"])
 T.createeditbox(ChatOptions, 40, 400, "", "OtherOptions", "autoinvitekeywords", L["关键词输入"])
+ChatOptions.autoinvitekeywords.apply = T.Update_Invite_Keyword
 T.createDR(ChatOptions.autoinvite, ChatOptions.autoinvitekeywords)
 
 --====================================================--
@@ -2943,6 +2936,109 @@ local Credits = CreateOptionPage("Credits", L["制作"], GUI, "VERTICAL")
 Credits.text = T.createtext(Credits, "OVERLAY", 12, "OUTLINE", "CENTER")
 Credits.text:SetPoint("CENTER")
 Credits.text:SetText(format(L["制作说明"], G.Version, G.classcolor, "fgprodigal susnow Zork Haste Tukz Haleth Qulight Freebaser Monolit warbaby siweia"))
+
+--====================================================--
+--[[       -- 插件按钮和小地图按钮 --               ]]--
+--====================================================--
+
+AddonCompartmentFrame:RegisterAddon({
+	text = C_AddOns.GetAddOnMetadata("AltzUI", "Title"),
+	icon = C_AddOns.GetAddOnMetadata("AltzUI", "IconTexture"),
+	registerForAnyClick = true,
+	notCheckable = true,
+	func = function(btn, arg1, arg2, checked, mouseButton)
+		if GUI:IsShown() then
+			GUI:Hide()
+			GUI.df:Hide()
+			GUI.scale:Hide()
+		else
+			GUI:Show()
+			GUI.df:Show()
+			GUI.scale:Show()
+		end
+	end,
+})
+
+local MinimapButton = CreateFrame("Button", "AltzUI_MinimapButton", Minimap)
+MinimapButton:SetSize(32,32)
+MinimapButton:SetHighlightTexture("Interface\\Minimap\\UI-Minimap-ZoomButton-Highlight") 
+MinimapButton:SetFrameStrata("MEDIUM")
+MinimapButton:SetFrameLevel(8)
+MinimapButton:SetPoint("CENTER", 12, -105)
+MinimapButton:SetDontSavePosition(true)
+MinimapButton:RegisterForDrag("LeftButton")
+
+MinimapButton.icon = MinimapButton:CreateTexture(nil, "BORDER")
+MinimapButton.icon:SetTexture(348547)
+MinimapButton.icon:SetSize(20,20)
+MinimapButton.icon:SetPoint("CENTER")
+MinimapButton.icon:SetTexCoord(.1, .8, .95, .3)
+
+MinimapButton.icon2 = MinimapButton:CreateTexture(nil, "BORDER")
+MinimapButton.icon2:SetTexture(348547)
+MinimapButton.icon2:SetSize(20,20)
+MinimapButton.icon2:SetPoint("CENTER")
+MinimapButton.icon2:SetTexCoord(.1, .8, .95, .3)
+MinimapButton.icon2:SetVertexColor(1,.5,.5,1)
+MinimapButton.icon2:Hide()
+
+MinimapButton.border = MinimapButton:CreateTexture(nil, "ARTWORK")
+MinimapButton.border:SetTexture("Interface\\Minimap\\MiniMap-TrackingBorder")
+MinimapButton.border:SetTexCoord(0,0.6,0,0.6)
+MinimapButton.border:SetAllPoints()
+
+MinimapButton.bg = MinimapButton:CreateTexture(nil, "BACKGROUND")
+MinimapButton.bg:SetTexture(G.media.blank)
+MinimapButton.bg:SetVertexColor(1, 1, 1)
+MinimapButton.bg:SetSize(20,20)
+MinimapButton.bg:SetPoint("CENTER",0,0)
+
+MinimapButton.anim = MinimapButton:CreateAnimationGroup()
+MinimapButton.anim:SetLooping("BOUNCE")
+MinimapButton.timer = MinimapButton.anim:CreateAnimation()
+MinimapButton.timer:SetDuration(2)
+
+MinimapButton:SetScript("OnEnter",function(self) 
+	GameTooltip:SetOwner(self, "ANCHOR_LEFT") 
+	GameTooltip:AddLine(G.addon_cname)
+	GameTooltip:Show()
+	
+	self.timer:SetScript("OnUpdate", function(s,elapsed) 
+		self.icon2:SetAlpha(s:GetProgress())
+	end)
+	self.anim:Play()
+	self.icon:Hide()
+	self.icon2:Show()
+end)
+
+MinimapButton:SetScript("OnLeave", function(self)    
+	GameTooltip:Hide()
+	
+	self.timer:SetScript("OnUpdate", nil)
+	self.anim:Stop()
+	self.icon:Show()
+	self.icon2:Hide()
+end)
+
+MinimapButton:SetScript("OnClick", function(self, btn)
+	if GUI:IsShown() then
+		GUI:Hide()
+		GUI.df:Hide()
+		GUI.scale:Hide()
+	else
+		GUI:Show()
+		GUI.df:Show()
+		GUI.scale:Show()
+	end
+end)
+
+T.ToggleMinimapButton = function()
+	if aCoreDB["SkinOptions"]["hide_minimap"] then
+		MinimapButton:Hide()
+	else
+		MinimapButton:Show()
+	end
+end
 
 --====================================================--
 --[[                -- Init --                      ]]--
