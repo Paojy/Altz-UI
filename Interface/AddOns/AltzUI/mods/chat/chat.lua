@@ -183,8 +183,6 @@ EventFrame:SetScript("OnEvent", function(self, event, arg1)
 		
 		BackupChatFrameBg()
 		init()
-		FCF_SelectDockFrame(_G['ChatFrame1'])
-		FCF_FadeInChatFrame(_G['ChatFrame1'])
 	elseif event == "PET_BATTLE_OPENING_START" then
 		chatwindownum = 11
 		init()
