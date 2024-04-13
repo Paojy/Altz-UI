@@ -231,6 +231,18 @@ MBCF_Toggle.tex:SetTexture(516768)
 MBCF_Toggle.tex:SetTexCoord(.2, .8, .2, .8)
 MBCF_Toggle.tex:SetAllPoints(MBCF_Toggle)
 
+function MBCF:Toggle(v)
+	if aCoreCDB["SkinOptions"]["MBCFalwaysshow"] then
+		MBCF:Show()
+	elseif v then
+		if MBCF:IsShown() then
+			MBCF:Hide()
+		else
+			MBCF:Show()
+		end
+	end
+end
+
 local MBCF_PosMenu = CreateFrame("Frame", G.uiname.."MBCF_PosMenu", UIParent, "UIDropDownMenuTemplate")
 local MBCF_PosList = {
 	{ text = L["上方"], func = function()
@@ -241,23 +253,24 @@ local MBCF_PosList = {
 		aCoreCDB["SkinOptions"]["MBCFpos"] = "BOTTOM"
 		MBCF:UpdatePoints()
 	end},
+	{ text = "------------------",  disabled = true},
+	{ text = "一直显示插件按钮", func = function(self, arg1, arg2, checked)
+		if not aCoreCDB["SkinOptions"]["MBCFalwaysshow"] then
+			aCoreCDB["SkinOptions"]["MBCFalwaysshow"] = true
+		else
+			aCoreCDB["SkinOptions"]["MBCFalwaysshow"] = false
+		end
+		MBCF:Toggle()
+	end},
 }
 
 MBCF_Toggle:SetScript("OnMouseDown", function(self, button)
 	if button == "LeftButton" then
-		if MBCF:IsShown() then
-			MBCF:Hide()
-		else
-			MBCF:Show()
-		end
+		MBCF:Toggle(true)
 	else
-		if aCoreCDB["SkinOptions"]["MBCFpos"] == "TOP" then
-			MBCF_PosList[1].checked = true
-			MBCF_PosList[2].checked = false
-		else
-			MBCF_PosList[1].checked = false
-			MBCF_PosList[2].checked = true		
-		end
+		MBCF_PosList[1].checked = (aCoreCDB["SkinOptions"]["MBCFpos"] == "TOP")
+		MBCF_PosList[2].checked = (aCoreCDB["SkinOptions"]["MBCFpos"] == "BOTTOM")
+		MBCF_PosList[4].checked = aCoreCDB["SkinOptions"]["MBCFalwaysshow"]
 		EasyMenu(MBCF_PosList, MBCF_PosMenu, "cursor", 0, 0, "MENU")
 	end
 end)

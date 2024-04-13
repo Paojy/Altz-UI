@@ -424,6 +424,7 @@ L["自定义插件占用"] = "Memória usada na UI"
 L["所有插件占用"] = "Total incl. Blizzard UI"
 L["团队工具"] = "Ferramentas de Raide"
 L["脱装备"] = "Despir-se"
+--L["一直显示插件按钮"] = "Always show addon buttons"
 
 -- 插件提示
 L["上一条"] = "Anterior"

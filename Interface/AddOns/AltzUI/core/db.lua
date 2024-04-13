@@ -783,6 +783,7 @@ local Character_default_Settings = {
 		infobar = true,
 		infobarscale = 1,
 		collectminimapbuttons = true,
+		MBCFalwaysshow = false,
 		MBCFpos = "BOTTOM",
 		collapseWF = true,
 		customobjectivetracker = false,
