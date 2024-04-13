@@ -768,8 +768,10 @@ eventframe:SetScript("OnEvent", function(self, event, arg1)
 	end
 end)
 
-SlashCmdList['Setup'] = function()
+T.RunSetup = function()
 	TutorialsFrame:ShowFrame(1)
 end
+
+SlashCmdList['Setup'] = T.RunSetup
 
 SLASH_Setup1 = "/Setup"

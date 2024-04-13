@@ -2961,37 +2961,23 @@ AddonCompartmentFrame:RegisterAddon({
 
 local MinimapButton = CreateFrame("Button", "AltzUI_MinimapButton", Minimap)
 MinimapButton:SetSize(32,32)
-MinimapButton:SetHighlightTexture("Interface\\Minimap\\UI-Minimap-ZoomButton-Highlight") 
-MinimapButton:SetFrameStrata("MEDIUM")
 MinimapButton:SetFrameLevel(8)
-MinimapButton:SetPoint("CENTER", 12, -105)
-MinimapButton:SetDontSavePosition(true)
-MinimapButton:RegisterForDrag("LeftButton")
+MinimapButton:SetPoint("BOTTOMLEFT", 0, 0)
+MinimapButton:RegisterForClicks("AnyDown")
 
 MinimapButton.icon = MinimapButton:CreateTexture(nil, "BORDER")
 MinimapButton.icon:SetTexture(348547)
 MinimapButton.icon:SetSize(20,20)
 MinimapButton.icon:SetPoint("CENTER")
-MinimapButton.icon:SetTexCoord(.1, .8, .95, .3)
+MinimapButton.icon:SetTexCoord(.1, .9, .1, .9)
 
 MinimapButton.icon2 = MinimapButton:CreateTexture(nil, "BORDER")
 MinimapButton.icon2:SetTexture(348547)
 MinimapButton.icon2:SetSize(20,20)
 MinimapButton.icon2:SetPoint("CENTER")
-MinimapButton.icon2:SetTexCoord(.1, .8, .95, .3)
-MinimapButton.icon2:SetVertexColor(1,.5,.5,1)
+MinimapButton.icon2:SetTexCoord(.1, .9, .1, .9)
+MinimapButton.icon2:SetVertexColor(1, .5, .5, 1)
 MinimapButton.icon2:Hide()
-
-MinimapButton.border = MinimapButton:CreateTexture(nil, "ARTWORK")
-MinimapButton.border:SetTexture("Interface\\Minimap\\MiniMap-TrackingBorder")
-MinimapButton.border:SetTexCoord(0,0.6,0,0.6)
-MinimapButton.border:SetAllPoints()
-
-MinimapButton.bg = MinimapButton:CreateTexture(nil, "BACKGROUND")
-MinimapButton.bg:SetTexture(G.media.blank)
-MinimapButton.bg:SetVertexColor(1, 1, 1)
-MinimapButton.bg:SetSize(20,20)
-MinimapButton.bg:SetPoint("CENTER",0,0)
 
 MinimapButton.anim = MinimapButton:CreateAnimationGroup()
 MinimapButton.anim:SetLooping("BOUNCE")
@@ -3003,8 +2989,9 @@ MinimapButton:SetScript("OnEnter",function(self)
 	GameTooltip:AddLine(G.addon_cname)
 	GameTooltip:Show()
 	
-	self.timer:SetScript("OnUpdate", function(s,elapsed) 
-		self.icon2:SetAlpha(s:GetProgress())
+	self.timer:SetScript("OnUpdate", function(s, elapsed) 
+		local v = s:GetProgress()
+		self.icon2:SetVertexColor(v, .5, 1-v)
 	end)
 	self.anim:Play()
 	self.icon:Hide()
@@ -3020,15 +3007,25 @@ MinimapButton:SetScript("OnLeave", function(self)
 	self.icon2:Hide()
 end)
 
+local AddonConfigMenu = CreateFrame("Frame", G.uiname.."AddonConfigMenu", UIParent, "UIDropDownMenuTemplate")
+
+local AddonConfigMenuList = {
+	{ text = L["设置向导"], notCheckable = true, func = function() T.RunSetup() end},
+}
+
 MinimapButton:SetScript("OnClick", function(self, btn)
-	if GUI:IsShown() then
-		GUI:Hide()
-		GUI.df:Hide()
-		GUI.scale:Hide()
+	if btn == "LeftButton" then
+		if GUI:IsShown() then
+			GUI:Hide()
+			GUI.df:Hide()
+			GUI.scale:Hide()
+		else
+			GUI:Show()
+			GUI.df:Show()
+			GUI.scale:Show()
+		end
 	else
-		GUI:Show()
-		GUI.df:Show()
-		GUI.scale:Show()
+		EasyMenu(AddonConfigMenuList, AddonConfigMenu, "cursor", 0, 0, "MENU", 2)
 	end
 end)
 
