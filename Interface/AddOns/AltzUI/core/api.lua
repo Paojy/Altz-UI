@@ -162,11 +162,6 @@ T.resize_font = function(t, size)
 	end
 end
 
-T.update_fontsize = function(t, size)
-	local fontName, _, fontFlags = t:GetFont()
-	t:SetFont(fontName, size, fontFlags)
-end
-
 T.GetIconLink = function(spellID)
 	local icon = select(3, GetSpellInfo(spellID))
 	return "|T"..icon..":12:12:0:0:64:64:4:60:4:60|t"..GetSpellLink(spellID)
@@ -182,6 +177,7 @@ T.CheckRole = function()
 	end
 	return role
 end
+
 ----------------------------
 -- 			皮肤		  --
 ----------------------------
