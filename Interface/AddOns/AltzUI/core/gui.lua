@@ -417,7 +417,7 @@ T.resize_font(resetposbutton.Text)
 F.Reskin(resetposbutton)
 resetposbutton:SetScript("OnClick", function()
 	StaticPopupDialogs[G.uiname.."Reset Confirm"].text = L["重置确认"]
-	StaticPopupDialogs[G.uiname.."Reset Confirm"].OnAccept = T.PlaceAllFramesPoint
+	StaticPopupDialogs[G.uiname.."Reset Confirm"].OnAccept = T.ResetAllFramesPoint
 	StaticPopup_Show(G.uiname.."Reset Confirm")
 end)
 
@@ -831,6 +831,7 @@ UFInnerframe.size = CreateOptionPage("UF Options size", L["尺寸"], UFInnerfram
 T.createslider(UFInnerframe.size, 30, 80, L["高度"], "UnitframeOptions", "height", 1, 5, 50, 1)
 UFInnerframe.size.height.apply = function()
 	T.ApplyUFSettings({"Health", "PVPSpecIcon"})
+	T.UpdatePartySize()
 end
 
 T.createslider(UFInnerframe.size, 30, 120, L["宽度"], "UnitframeOptions", "width", 1, 50, 500, 1, L["宽度提示"])
@@ -983,37 +984,19 @@ end
 
 T.createcheckbutton(UFInnerframe.aura, 30, 100, L["玩家减益"], "UnitframeOptions", "playerdebuffenable", L["玩家减益提示"])
 UFInnerframe.aura.playerdebuffenable.apply = function()
-	local oUF = AltzUF or oUF
-	for _, obj in next, oUF.objects do	
-		if obj.unit == "player" then
-			obj.Auras.ApplySettings()
-			obj.Auras:ForceUpdate()
-		end
-	end
+	T.ApplyUFSettings({"Auras"})
 end
 
 CreateDividingLine(UFInnerframe.aura, -140)
 
 T.createcheckbutton(UFInnerframe.aura, 30, 150, L["过滤增益"], "UnitframeOptions", "AuraFilterignoreBuff", L["过滤增益提示"])
 UFInnerframe.aura.AuraFilterignoreBuff.apply = function()
-	local oUF = AltzUF or oUF
-	for _, obj in next, oUF.objects do	
-		if obj.unit == "target" then
-			obj.Auras.ApplySettings()
-			obj.Auras:ForceUpdate()
-		end
-	end
+	T.ApplyUFSettings({"Auras"})
 end
 
 T.createcheckbutton(UFInnerframe.aura, 30, 180, L["过滤减益"], "UnitframeOptions", "AuraFilterignoreDebuff", L["过滤减益提示"])
 UFInnerframe.aura.AuraFilterignoreDebuff.apply = function()
-	local oUF = AltzUF or oUF
-	for _, obj in next, oUF.objects do	
-		if obj.unit == "target" then
-			obj.Auras.ApplySettings()
-			obj.Auras:ForceUpdate()
-		end
-	end
+	T.ApplyUFSettings({"Auras"})
 end
 
 UFInnerframe.aura.aurafliter_title = T.createtext(UFInnerframe.aura, "OVERLAY", 14, "OUTLINE", "LEFT")
@@ -1165,16 +1148,17 @@ UFInnerframe.party = CreateOptionPage("UF Options party", PARTY, UFInnerframe, "
 T.createslider(UFInnerframe.party, 30, 80, PARTY..L["宽度"], "UnitframeOptions", "widthparty", 1, 50, 500, 1)
 UFInnerframe.party.widthparty.apply = function()
 	T.ApplyUFSettings({"Health", "Auras"})
+	T.UpdatePartySize()
 end
 
-T.createcheckbutton(UFInnerframe.party, 30, 100, L["在小队中显示自己"], "UnitframeOptions", "showplayerinparty")
+T.createcheckbutton(UFInnerframe.party, 30, 130, L["在小队中显示自己"], "UnitframeOptions", "showplayerinparty")
 UFInnerframe.party.showplayerinparty.apply = function()
-	local oUF = AltzUF or oUF
-	for _, header in next, oUF.headers do
-		if header.style == "Altz_party" then
-			header:SetAttribute("showPlayer", aCoreCDB["UnitframeOptions"]["showplayerinparty"])
-		end
-	end
+	T.UpdatePartyfilter()
+end
+
+T.createcheckbutton(UFInnerframe.party, 30, 160, L["显示宠物"], "UnitframeOptions", "showpartypet")
+UFInnerframe.party.showpartypet.apply = function()
+	T.UpdatePartyfilter()
 end
 
 -- 其他
@@ -1248,41 +1232,72 @@ for i = 1, 20 do
 	RFInnerframe["tab"..i]:SetScript("OnMouseDown", function() end)
 end
 
+-- 通用
 RFInnerframe.common = CreateOptionPage("RF Options common", L["启用"], RFInnerframe, "VERTICAL", .3)
 RFInnerframe.common:Show()
 
 T.createcheckbutton(RFInnerframe.common, 30, 60, L["启用"], "UnitframeOptions", "enableraid")
+RFInnerframe.common.enableraid.apply = function()
+	StaticPopup_Show(G.uiname.."Reload Alert")
+end
+
 T.createslider(RFInnerframe.common, 30, 110, L["团队规模"], "UnitframeOptions", "party_num", 1, 2, 8, 2)
-T.createcheckbutton(RFInnerframe.common, 30, 140, USE_RAID_STYLE_PARTY_FRAMES, "UnitframeOptions", "raidframe_inparty")
-T.createcheckbutton(RFInnerframe.common, 30, 170, L["显示宠物"], "UnitframeOptions", "showraidpet")
-T.createcheckbutton(RFInnerframe.common, 30, 200, L["未进组时显示"], "UnitframeOptions", "showsolo")
-T.createslider(RFInnerframe.common, 30, 250, L["名字长度"], "UnitframeOptions", "namelength", 1, 2, 10, 1)
-T.createslider(RFInnerframe.common, 30, 300, L["字体大小"], "UnitframeOptions", "raidfontsize", 1, 1, 25, 1)
-T.createcheckbutton(RFInnerframe.common, 30, 330, L["刷新载具"], "UnitframeOptions", "toggleForVehicle")
-T.createcheckbutton(RFInnerframe.common, 30, 360, L["团队工具"], "UnitframeOptions", "raidtool")
-T.createDR(RFInnerframe.common.enableraid, RFInnerframe.common.raidframe_inparty, RFInnerframe.common.party_num, RFInnerframe.common.showraidpet, RFInnerframe.common.showsolo, RFInnerframe.common.namelength, RFInnerframe.common.raidfontsize, RFInnerframe.common.toggleForVehicle)
+RFInnerframe.common.party_num.apply = function()
+	T.UpdateGroupSize()
+	T.UpdateGroupfilter()
+end
 
-RFInnerframe.healer = CreateOptionPage("RF Options healer", L["样式"], RFInnerframe, "VERTICAL", .3)
+T.createcheckbutton(RFInnerframe.common, 30, 150, COMPACT_UNIT_FRAME_PROFILE_HORIZONTALGROUPS, "UnitframeOptions", "hor_party")
+RFInnerframe.common.hor_party.apply = function()
+	T.UpdateGroupAnchor()
+	T.UpdateGroupSize()
+end
 
-T.createslider(RFInnerframe.healer, 30, 80, L["高度"], "UnitframeOptions", "healerraidheight", 1, 10, 150, 1)
-T.createslider(RFInnerframe.healer, 30, 120, L["宽度"], "UnitframeOptions", "healerraidwidth", 1, 10, 150, 1)
-T.createcheckbutton(RFInnerframe.healer, 30, 160, L["raidmanabars"], "UnitframeOptions", "raidmanabars")
-T.createslider(RFInnerframe.healer,  30, 210, L["能量条高度"], "UnitframeOptions", "raidppheight", 100, 5, 100, 5)
-T.createDR(RFInnerframe.healer.raidmanabars, RFInnerframe.healer.raidppheight)
-T.createcheckbutton(RFInnerframe.healer, 30, 250, COMPACT_UNIT_FRAME_PROFILE_HORIZONTALGROUPS, "UnitframeOptions", "hor_party")
-T.createcheckbutton(RFInnerframe.healer, 30, 280, COMPACT_UNIT_FRAME_PROFILE_KEEPGROUPSTOGETHER, "UnitframeOptions", "ind_party")
-local raidgroupby_group = {
-	["GROUP"] = PARTY,
-	["ROLE"] = ROLE,
-	["CLASS"] = CLASS,
-}
-T.createradiobuttongroup(RFInnerframe.healer, 30, 310, COMPACT_UNIT_FRAME_PROFILE_SORTBY, "UnitframeOptions", "healerraidgroupby", raidgroupby_group)
-T.createDR(RFInnerframe.healer.ind_party, RFInnerframe.healer.healerraidgroupby)
-T.createcheckbutton(RFInnerframe.healer, 30, 340, L["GCD"], "UnitframeOptions", "showgcd", L["GCD提示"])
-T.createcheckbutton(RFInnerframe.healer, 30, 370, L["显示缺失生命值"], "UnitframeOptions", "showmisshp", L["显示缺失生命值提示"])
-T.createcheckbutton(RFInnerframe.healer, 30, 400, L["治疗和吸收预估"], "UnitframeOptions", "healprediction", L["治疗和吸收预估提示"])
-T.createcheckbutton(RFInnerframe.healer, 30, 430, L["主坦克和主助手"], "UnitframeOptions", "healtank_assisticon", L["主坦克和主助手提示"])
+T.createcheckbutton(RFInnerframe.common, 30, 180, COMPACT_UNIT_FRAME_PROFILE_KEEPGROUPSTOGETHER, "UnitframeOptions", "party_connected")
+RFInnerframe.common.party_connected.apply = function()
+	T.UpdateGroupfilter()
+end
 
+T.createcheckbutton(RFInnerframe.common, 30, 210, L["未进组时显示"], "UnitframeOptions", "showsolo")
+RFInnerframe.common.showsolo.apply = function()
+	T.UpdateGroupfilter()
+end
+
+T.createcheckbutton(RFInnerframe.common, 30, 240, USE_RAID_STYLE_PARTY_FRAMES, "UnitframeOptions", "raidframe_inparty")
+RFInnerframe.common.raidframe_inparty.apply = function()
+	StaticPopup_Show(G.uiname.."Reload Alert")
+end
+
+T.createcheckbutton(RFInnerframe.common, 30, 270, L["显示宠物"], "UnitframeOptions", "showraidpet")
+RFInnerframe.common.showraidpet.apply = function()
+	T.UpdateGroupfilter()
+end
+
+T.createcheckbutton(RFInnerframe.common, 30, 300, L["团队工具"], "UnitframeOptions", "raidtool")
+RFInnerframe.common.raidtool.apply = function()
+	T.UpdateRaidTools()
+end
+
+-- 样式
+RFInnerframe.style = CreateOptionPage("RF Options style", L["样式"], RFInnerframe, "VERTICAL", .3)
+
+T.createslider(RFInnerframe.style, 30, 80, L["高度"], "UnitframeOptions", "healerraidheight", 1, 10, 150, 1)
+T.createslider(RFInnerframe.style, 30, 120, L["宽度"], "UnitframeOptions", "healerraidwidth", 1, 10, 150, 1)
+T.createcheckbutton(RFInnerframe.style, 30, 140, L["raidmanabars"], "UnitframeOptions", "raidmanabars")
+T.createslider(RFInnerframe.style,  30, 190, L["能量条高度"], "UnitframeOptions", "raidppheight", 100, 5, 100, 5)
+T.createDR(RFInnerframe.style.raidmanabars, RFInnerframe.style.raidppheight)
+
+T.createslider(RFInnerframe.style, 30, 230, L["名字长度"], "UnitframeOptions", "namelength", 1, 2, 10, 1)
+T.createslider(RFInnerframe.style, 30, 270, L["字体大小"], "UnitframeOptions", "raidfontsize", 1, 1, 25, 1)
+
+T.createcheckbutton(RFInnerframe.style, 30, 310, L["GCD"], "UnitframeOptions", "showgcd", L["GCD提示"])
+T.createcheckbutton(RFInnerframe.style, 200, 310, L["主坦克和主助手"], "UnitframeOptions", "healtank_assisticon", L["主坦克和主助手提示"])
+T.createcheckbutton(RFInnerframe.style, 30, 340, L["显示缺失生命值"], "UnitframeOptions", "showmisshp", L["显示缺失生命值提示"])
+T.createcheckbutton(RFInnerframe.style, 200, 340, L["治疗和吸收预估"], "UnitframeOptions", "healprediction", L["治疗和吸收预估提示"])
+T.createcheckbutton(RFInnerframe.style, 30, 370, L["刷新载具"], "UnitframeOptions", "toggleForVehicle")
+
+
+-- 治疗指示器
 RFInnerframe.ind = CreateOptionPage("RF Options indicators", L["治疗指示器"], RFInnerframe, "VERTICAL", .3, true)
 local indicatorstyle_group = {
 	["number_ind"] = L["数字指示器"],

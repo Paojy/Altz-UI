@@ -451,7 +451,7 @@ local GetGroupfilter = function()
 		return "1,2"
 	elseif aCoreCDB["UnitframeOptions"]["party_num"] == 4 then
 		return "1,2,3,4"
-	elseif aCoreCDB["UnitframeOptions"]["party_num"] == 8 then
+	elseif aCoreCDB["UnitframeOptions"]["party_num"] == 6 then
 		return "1,2,3,4,5,6"
 	else
 		return "1,2,3,4,5,6,7,8"
@@ -472,189 +472,114 @@ RaidFrame.point = {
 }
 T.CreateDragFrame(RaidFrame)
 
-local RaidPetFrame = CreateFrame("Frame", "Altz_HealerPetRaid_Holder", UIParent)
+local RaidPetFrame = CreateFrame("Frame", "Altz_RaidPet_Holder", UIParent)
 RaidPetFrame.movingname = L["宠物团队框架"]
 RaidPetFrame.point = {
-	healer = {a1 = "TOPLEFT", parent = RaidFrame:GetName(), a2 = "TOPRIGHT", x = 10, y = 0},
-	dpser = {a1 = "TOPLEFT", parent = RaidFrame:GetName(), a2 = "TOPRIGHT", x = 10, y = 0},
+	healer = {a1 = "TOPLEFT", parent = "Altz_Raid_Holder", a2 = "TOPRIGHT", x = 10, y = 0},
+	dpser = {a1 = "TOPLEFT", parent = "Altz_Raid_Holder", a2 = "TOPRIGHT", x = 10, y = 0},
 }
 T.CreateDragFrame(RaidPetFrame)
 
-local party_num, old_party_num, old_anchor = 0, 0
-T.PlaceRaidFrame = function()
-	if not aCoreCDB["FramePoints"]["Altz_Raid_Holder"] or not RaidFrame[1] then return end
-	
-	local CurrentRole = T.CheckRole()
-	local anchor = aCoreCDB["FramePoints"]["Altz_Raid_Holder"][CurrentRole]["a1"]
-	
-	if aCoreCDB["UnitframeOptions"]["ind_party"] then -- 小队相连
-		if (anchor ~= old_anchor) then
-			RaidFrame[1]:ClearAllPoints()
-			RaidFrame[1]:SetPoint(anchor, RaidFrame, anchor, 0, 0)
-			old_anchor = anchor
-		end
-	else
-		if aCoreCDB["UnitframeOptions"]["hor_party"] then -- 5*8 水平小队
-			for i = aCoreCDB["UnitframeOptions"]["party_num"], 1, -1 do
-				if RaidFrame[i]:GetWidth() > 10 then
-					party_num = i
-					break
-				end
-			end
-			
-			if (party_num ~= 0 and party_num ~= old_party_num) or (anchor ~= old_anchor) then
-
-				RaidFrame[1]:ClearAllPoints()
-				if string.find(anchor, "TOP") then
-					RaidFrame[1]:SetPoint("TOPLEFT", RaidFrame, "TOPLEFT", 0, 0)
-				elseif string.find(anchor, "BOTTOM") then
-					RaidFrame[1]:SetPoint("TOPLEFT", RaidFrame, "BOTTOMLEFT", 0, party_num*(aCoreCDB["UnitframeOptions"]["healerraidheight"]+5)-5)
-				else
-					RaidFrame[1]:SetPoint("TOPLEFT", RaidFrame, "LEFT", 0, (party_num*(aCoreCDB["UnitframeOptions"]["healerraidheight"]+5)-5)/2)
-				end
-				
-				old_party_num = party_num
-				old_anchor = anchor
-				
-			end
-		else -- 8*5 垂直小队
-			for i = aCoreCDB["UnitframeOptions"]["party_num"], 1, -1 do
-				if RaidFrame[i]:GetHeight() > 10 then
-					party_num = i
-					break
-				end
-			end
-			
-			if (party_num ~= 0 and party_num ~= old_party_num) or (anchor ~= old_anchor) then
-			
-				RaidFrame[1]:ClearAllPoints()
-				if string.find(anchor, "LEFT") then
-					RaidFrame[1]:SetPoint("TOPLEFT", RaidFrame, "TOPLEFT", 0, 0)
-				elseif string.find(anchor, "RIGHT") then
-					RaidFrame[1]:SetPoint("TOPLEFT", RaidFrame, "TOPRIGHT", -party_num*(aCoreCDB["UnitframeOptions"]["healerraidwidth"]+5)+5, 0)
-				else
-					RaidFrame[1]:SetPoint("TOPLEFT", RaidFrame, "TOP", (-party_num*(aCoreCDB["UnitframeOptions"]["healerraidwidth"]+5)+5)/2, 0)
-				end
-				
-				old_party_num = party_num
-				old_anchor = anchor
-			end
-		end
-	end
-end
-	
 local function Spawnhealraid()
 	oUF:SetActiveStyle"Altz_Healerraid"
 	
-	if not aCoreCDB["UnitframeOptions"]["ind_party"] then -- 小队分离
-		for i = 1, aCoreCDB["UnitframeOptions"]["party_num"] do
-			RaidFrame[i] = oUF:SpawnHeader(i== 1 and 'Altz_HealerRaid' or 'Altz_HealerRaid'..i, nil, aCoreCDB["UnitframeOptions"]["raidframe_inparty"] and 'raid,party,solo' or 'raid,solo',
-				'oUF-initialConfigFunction', initconfig:format(aCoreCDB["UnitframeOptions"]["healerraidwidth"], aCoreCDB["UnitframeOptions"]["healerraidheight"], 1),
-				'showPlayer', true,
-				'showSolo', aCoreCDB["UnitframeOptions"]["showsolo"],
-				'showParty', true,
-				'showRaid', true,
-				'xOffset', 5,
-				'yOffset', -5,
-				'point', aCoreCDB["UnitframeOptions"]["hor_party"] and "LEFT" or "TOP",
-				'groupFilter', tostring(i),
-				'groupingOrder', '1,2,3,4,5,6,7,8',
-				'groupBy', 'GROUP',
-				'maxColumns', 1,
-				'unitsPerColumn', 5,
-				'columnSpacing', 5,
-				'columnAnchorPoint', aCoreCDB["UnitframeOptions"]["hor_party"] and "TOP" or "LEFT"
-				)
-		end
-	else -- 小队相连
-		RaidFrame[1] = oUF:SpawnHeader('Altz_HealerRaid', nil, aCoreCDB["UnitframeOptions"]["raidframe_inparty"] and 'raid,party,solo' or 'raid,solo',
-			'oUF-initialConfigFunction', initconfig:format(aCoreCDB["UnitframeOptions"]["healerraidwidth"], aCoreCDB["UnitframeOptions"]["healerraidheight"], 1),
+	for i = 1, 8 do
+		RaidFrame[i] = oUF:SpawnHeader(i== 1 and 'Altz_HealerRaid' or 'Altz_HealerRaid'..i, nil, aCoreCDB["UnitframeOptions"]["raidframe_inparty"] and 'raid,party,solo' or 'raid,solo',
+			'oUF-initialConfigFunction', initconfig:format(aCoreCDB["UnitframeOptions"]["healerraidwidth"], aCoreCDB["UnitframeOptions"]["healerraidheight"]),
 			'showPlayer', true,
-			'showSolo', aCoreCDB["UnitframeOptions"]["showsolo"],
+			'showSolo', true,
 			'showParty', true,
 			'showRaid', true,
 			'xOffset', 5,
 			'yOffset', -5,
-			'point', aCoreCDB["UnitframeOptions"]["hor_party"] and "LEFT" or "TOP",
-			'groupFilter', GetGroupfilter(),
-			'groupingOrder', groupingOrder[aCoreCDB["UnitframeOptions"]["healerraidgroupby"]],
-			'groupBy', aCoreCDB["UnitframeOptions"]["healerraidgroupby"],
-			'maxColumns', 8,
+			'point', "LEFT",
+			'groupFilter', '1,2,3,4,5,6,7,8',
+			'groupingOrder', '1,2,3,4,5,6,7,8',
+			'groupBy', 'GROUP',
+			'maxColumns', 1,
 			'unitsPerColumn', 5,
 			'columnSpacing', 5,
-			'columnAnchorPoint', aCoreCDB["UnitframeOptions"]["hor_party"] and "TOP" or "LEFT"
+			'columnAnchorPoint', "TOP"
 		)
 	end
-	
-	if aCoreCDB["UnitframeOptions"]["hor_party"] then -- 5*8 水平小队
-		RaidFrame:SetSize(5*(aCoreCDB["UnitframeOptions"]["healerraidwidth"]+5)-5, aCoreCDB["UnitframeOptions"]["party_num"]*(aCoreCDB["UnitframeOptions"]["healerraidheight"]+5)-5)
-		for i = 1, aCoreCDB["UnitframeOptions"]["party_num"] do
-			if RaidFrame[i] then
-				if i == 1 then
-					T.PlaceRaidFrame()
-					RaidFrame[i]:SetScript("OnSizeChanged", function()
-						T.PlaceRaidFrame()
-					end)
-				else
-					RaidFrame[i]:SetPoint("TOPLEFT", RaidFrame[i-1], "BOTTOMLEFT", 0, -5)
-					if not aCoreCDB["UnitframeOptions"]["ind_party"] then
-						RaidFrame[i]:SetScript("OnSizeChanged", function()
-							T.PlaceRaidFrame()
-						end)
-					end
-				end
-			end
-		end	
-	else -- 8*5 垂直小队
-		RaidFrame:SetSize(aCoreCDB["UnitframeOptions"]["party_num"]*(aCoreCDB["UnitframeOptions"]["healerraidwidth"]+5)-5, 5*(aCoreCDB["UnitframeOptions"]["healerraidheight"]+5)-5)
-		for i = 1, aCoreCDB["UnitframeOptions"]["party_num"] do
-			if RaidFrame[i] then
-				if i == 1 then
-					T.PlaceRaidFrame()
-					RaidFrame[i]:SetScript("OnSizeChanged", function()
-						T.PlaceRaidFrame()
-					end)
-				else
-					RaidFrame[i]:SetPoint("TOPLEFT", RaidFrame[i-1], "TOPRIGHT", 5, 0)
-					if not aCoreCDB["UnitframeOptions"]["ind_party"] then
-						RaidFrame[i]:SetScript("OnSizeChanged", function()
-							T.PlaceRaidFrame()
-						end)
-					end
-				end
-			end
-		end			
-	end
-	
+
 	RaidPetFrame[1] = oUF:SpawnHeader('Altz_HealerPetRaid', 'SecureGroupPetHeaderTemplate', aCoreCDB["UnitframeOptions"]["raidframe_inparty"] and 'raid,PartyFrame,solo' or 'raid,solo',
-		'oUF-initialConfigFunction', initconfig:format(aCoreCDB["UnitframeOptions"]["healerraidwidth"], aCoreCDB["UnitframeOptions"]["healerraidheight"], 1),
+		'oUF-initialConfigFunction', initconfig:format(aCoreCDB["UnitframeOptions"]["healerraidwidth"], aCoreCDB["UnitframeOptions"]["healerraidheight"]),
 		'showPlayer', true,
-		'showSolo', aCoreCDB["UnitframeOptions"]["showsolo"],
+		'showSolo', true,
 		'showParty', true,
 		'showRaid', true,
 		'xOffset', 5,
 		'yOffset', -5,
-		'point', aCoreCDB["UnitframeOptions"]["hor_party"] and "LEFT" or "TOP",
+		'point', "LEFT",
 		'groupFilter', GetGroupfilter(),
 		'groupingOrder', '1,2,3,4,5,6,7,8',
 		'groupBy', 'GROUP',
 		'maxColumns', 8,
 		'unitsPerColumn', 5,
 		'columnSpacing', 5,
-		'columnAnchorPoint', aCoreCDB["UnitframeOptions"]["hor_party"] and "TOP" or "LEFT",
+		'columnAnchorPoint', "TOP",
 		--'useOwnerUnit', true,
 		'unitsuffix', 'pet'
 	)
-	
-	if aCoreCDB["UnitframeOptions"]["hor_party"] then -- 5*8
-		RaidPetFrame:SetSize(5*(aCoreCDB["UnitframeOptions"]["healerraidwidth"]+5)-5, aCoreCDB["UnitframeOptions"]["healerraidheight"])
-	else -- 8*5
-		RaidPetFrame:SetSize(aCoreCDB["UnitframeOptions"]["healerraidwidth"], 5*(aCoreCDB["UnitframeOptions"]["healerraidheight"]+5)-5)
-	end
-	
-	RaidPetFrame[1]:SetPoint("TOPLEFT", RaidPetFrame, "TOPLEFT")
 end
 
+T.UpdateGroupAnchor = function()
+	local oUF = AltzUF or oUF
+	for _, obj in next, oUF.objects do	
+		if obj.style == 'Altz_Healerraid' then
+			obj:ClearAllPoints()
+		end
+	end
+	
+	for i = 1, 8 do
+		RaidFrame[i]:ClearAllPoints()
+		if i == 1 then
+			RaidFrame[i]:SetPoint("TOPLEFT", RaidFrame, "TOPLEFT", 0, 0)
+		elseif aCoreCDB["UnitframeOptions"]["hor_party"] then -- 水平小队
+			RaidFrame[i]:SetPoint("TOPLEFT", RaidFrame[i-1], "BOTTOMLEFT", 0, -5)
+		else -- 垂直小队
+			RaidFrame[i]:SetPoint("TOPLEFT", RaidFrame[i-1], "TOPRIGHT", 5, 0)
+		end
+		RaidFrame[i]:SetAttribute('point', aCoreCDB["UnitframeOptions"]["hor_party"] and "LEFT" or "TOP")
+		RaidFrame[i]:SetAttribute('columnAnchorPoint', aCoreCDB["UnitframeOptions"]["hor_party"] and "TOP" or "LEFT")
+	end
+	
+	RaidPetFrame[1]:ClearAllPoints()
+	RaidPetFrame[1]:SetPoint("TOPLEFT", RaidPetFrame, "TOPLEFT")
+	RaidPetFrame[1]:SetAttribute('point', aCoreCDB["UnitframeOptions"]["hor_party"] and "LEFT" or "TOP")
+	RaidPetFrame[1]:SetAttribute('columnAnchorPoint', aCoreCDB["UnitframeOptions"]["hor_party"] and "TOP" or "LEFT")
+end
+
+T.UpdateGroupSize = function()
+	if aCoreCDB["UnitframeOptions"]["hor_party"] then -- 水平小队
+		RaidFrame:SetSize(5*(aCoreCDB["UnitframeOptions"]["healerraidwidth"]+5)-5, aCoreCDB["UnitframeOptions"]["party_num"]*(aCoreCDB["UnitframeOptions"]["healerraidheight"]+5)-5)
+		RaidPetFrame:SetSize(5*(aCoreCDB["UnitframeOptions"]["healerraidwidth"]+5)-5, aCoreCDB["UnitframeOptions"]["healerraidheight"])
+	else
+		RaidFrame:SetSize(aCoreCDB["UnitframeOptions"]["party_num"]*(aCoreCDB["UnitframeOptions"]["healerraidwidth"]+5)-5, 5*(aCoreCDB["UnitframeOptions"]["healerraidheight"]+5)-5)
+		RaidPetFrame:SetSize(aCoreCDB["UnitframeOptions"]["healerraidwidth"], 5*(aCoreCDB["UnitframeOptions"]["healerraidheight"]+5)-5)
+	end
+end
+	
+T.UpdateGroupfilter = function()
+	for i = 1, 8 do
+		if not aCoreCDB["UnitframeOptions"]["party_connected"] then -- 小队分离
+			RaidFrame[i]:SetAttribute("groupFilter", (i <= aCoreCDB["UnitframeOptions"]["party_num"]) and tostring(i) or '')
+		else
+			RaidFrame[i]:SetAttribute("groupFilter", (i == 1) and GetGroupfilter() or '')
+		end
+		RaidFrame[i]:SetAttribute("showSolo", aCoreCDB["UnitframeOptions"]["showsolo"])
+	end
+	
+	if aCoreCDB["UnitframeOptions"]["showraidpet"] then
+		RaidPetFrame[1]:SetAttribute("groupFilter", GetGroupfilter())
+		T.RestoreDragFrame(RaidPetFrame)
+	else
+		RaidPetFrame[1]:SetAttribute("groupFilter", '')
+		T.ReleaseDragFrame(RaidPetFrame)
+	end
+end
+	
 --=============================================--
 --[[             Party Frames                ]]--
 --=============================================--
@@ -872,7 +797,7 @@ local function Spawnparty()
 	
 	PartyFrame[1] = oUF:SpawnHeader('Altz_Party', nil, not aCoreCDB["UnitframeOptions"]["raidframe_inparty"] and 'party',
 		'oUF-initialConfigFunction', initconfig:format(aCoreCDB["UnitframeOptions"]["widthparty"], aCoreCDB["UnitframeOptions"]["height"]),
-		'showPlayer', aCoreCDB["UnitframeOptions"]["showplayerinparty"],
+		'showPlayer', true,
 		'showSolo', false,
 		'showParty', true,
 		'showRaid', false,
@@ -888,13 +813,11 @@ local function Spawnparty()
 		'columnAnchorPoint', "LEFT"
 	)
 
-	PartyFrame:SetSize(aCoreCDB["UnitframeOptions"]["widthparty"], aCoreCDB["UnitframeOptions"]["height"]*5+160)
-	
 	PartyFrame[1]:SetPoint("TOPLEFT", PartyFrame, "TOPLEFT")
 	
 	PartyPetFrame[1] = oUF:SpawnHeader('Altz_PartyPet', 'SecureGroupPetHeaderTemplate', not aCoreCDB["UnitframeOptions"]["raidframe_inparty"] and 'party',
 		'oUF-initialConfigFunction', initconfig:format(aCoreCDB["UnitframeOptions"]["widthparty"], aCoreCDB["UnitframeOptions"]["height"]),
-		'showPlayer', aCoreCDB["UnitframeOptions"]["showplayerinparty"],
+		'showPlayer', true,
 		'showSolo', false,
 		'showParty', true,
 		'showRaid', false,
@@ -910,9 +833,32 @@ local function Spawnparty()
 		'columnAnchorPoint', "LEFT"
 	)
     
-	PartyPetFrame:SetSize(aCoreCDB["UnitframeOptions"]["widthparty"], aCoreCDB["UnitframeOptions"]["height"]*5+160)
-	
 	PartyPetFrame[1]:SetPoint("TOPLEFT", PartyPetFrame, "TOPLEFT")
+end
+
+T.UpdatePartySize = function()
+	PartyFrame:SetSize(aCoreCDB["UnitframeOptions"]["widthparty"], aCoreCDB["UnitframeOptions"]["height"]*5+160)
+	PartyPetFrame:SetSize(aCoreCDB["UnitframeOptions"]["widthparty"], aCoreCDB["UnitframeOptions"]["height"]*5+160)
+end
+
+T.UpdatePartyfilter = function()
+	PartyFrame[1]:SetAttribute("showPlayer", aCoreCDB["UnitframeOptions"]["showplayerinparty"])
+	PartyPetFrame[1]:SetAttribute("showPlayer", aCoreCDB["UnitframeOptions"]["showplayerinparty"])
+	
+	if aCoreCDB["UnitframeOptions"]["raidframe_inparty"] then	
+		T.ReleaseDragFrame(PartyFrame)
+		T.ReleaseDragFrame(PartyPetFrame)
+	else
+		T.RestoreDragFrame(PartyFrame)
+		
+		if aCoreCDB["UnitframeOptions"]["showpartypet"] then
+			PartyPetFrame[1]:SetAttribute("groupFilter", "1,2,3,4,5,6,7,8")
+			T.RestoreDragFrame(PartyPetFrame)
+		else
+			PartyPetFrame[1]:SetAttribute("groupFilter", "")
+			T.ReleaseDragFrame(PartyPetFrame)
+		end		
+	end
 end
 
 --=============================================--
@@ -940,7 +886,13 @@ T.RegisterInitCallback(function()
 	end
 
 	Spawnhealraid()
+	T.UpdateGroupAnchor()
+	T.UpdateGroupSize()
+	T.UpdateGroupfilter()
+	
 	Spawnparty()
-
+	T.UpdatePartySize()
+	T.UpdatePartyfilter()
+	
 	EventFrame:RegisterEvent("PLAYER_REGEN_ENABLED")
 end)
