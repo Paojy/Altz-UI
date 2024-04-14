@@ -514,16 +514,14 @@ local Character_default_Settings = {
 		
 		-- portrait
 		portrait = true,
-		portraitalpha = 0.8,
-		
+	
 		-- size
 		height	= 18,
 		width = 230,
 		widthpet = 70,
 		widthboss = 170,
 		widthparty = 200,
-		scale = 1.0, -- slider
-		hpheight = 0.75, -- slider
+		ppheight = 0.25, -- slider
 
 		-- castbar
 		castbars = true,
@@ -546,20 +544,15 @@ local Character_default_Settings = {
 		swing = false,
 		swheight = 12,
 		swwidth = 230,
-		swoffhand = false,
 		swtimer = true,
 		swtimersize = 12,
 		
 		-- auras
-		auras = true,
-		auraborders = true,
-		auraperrow = 8, -- slider
+		aura_size = 20,
 		playerdebuffenable = true,
-		playerdebuffnum = 8, -- slider
 		AuraFilterignoreBuff = false,
 		AuraFilterignoreDebuff = false,
 		AuraFilterwhitelist = {},
-		usehotfilter = true,
 		
 		showthreatbar = true,
 
@@ -603,7 +596,7 @@ local Character_default_Settings = {
 		healerraidheight = 45,
 		healerraidwidth = 120,
 		raidmanabars = true,
-		raidhpheight = 0.9, -- slider
+		raidppheight = 0.1, -- slider
 		ind_party = true,
 		hor_party = false,
 		showgcd = true,
@@ -789,10 +782,7 @@ local Character_default_Settings = {
 		customobjectivetracker = false,
 		afklogin = false,
 		afkscreen = true,
-		
-		hide_minimap = false,
-		IconMiniMapLeft = 12,
-		IconMiniMapTop = -80,
+		minimapbutton = true,
 	},
 	RaidDebuff = {},
 	CooldownAura = AuraList,
