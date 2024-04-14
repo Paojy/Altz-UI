@@ -47,7 +47,7 @@ end
 
 local Visibility = function(self, event, unit)
 	local spec = GetSpecialization()
-	if UnitHasVehiclePlayerFrameUI('player') or (G.myClass == "SHAMAN" and spec == 3) or (G.myClass == "PRIEST" and spec ~= 3) then
+	if not self:IsElementEnabled('Dpsmana') or UnitHasVehiclePlayerFrameUI('player') or (G.myClass == "SHAMAN" and spec == 3) or (G.myClass == "PRIEST" and spec ~= 3) then
 		if self.Dpsmana:IsShown() then
 			self.Dpsmana:Hide()
 			self:UnregisterEvent('UNIT_POWER_FREQUENT', Path)
@@ -85,7 +85,9 @@ local Enable = function(self, unit)
 		if(dpsmana:IsObjectType'StatusBar' and not dpsmana:GetStatusBarTexture()) then
 			dpsmana:SetStatusBarTexture[[Interface\TargetingFrame\UI-StatusBar]]
 		end
-
+		
+		dpsmana:ForceUpdate()
+		
 		return true
 	end
 end
@@ -95,6 +97,8 @@ local Disable = function(self)
 	if(dpsmana) then	
 		self:UnregisterEvent('UNIT_DISPLAYPOWER', VisibilityPath)
 		self:UnregisterEvent('PLAYER_TALENT_UPDATE', VisibilityPath)
+		
+		dpsmana:ForceUpdate()
 	end
 end
 

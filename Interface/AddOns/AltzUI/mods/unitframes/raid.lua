@@ -90,7 +90,7 @@ local function UpdateRaidMana(pp, unit, cur, min, max)
 	local _, ptype = UnitPowerType(unit)
 	local self = pp:GetParent()
     if aCoreCDB["UnitframeOptions"]["raidmanabars"] and ptype == 'MANA' then
-		pp:SetHeight(aCoreCDB["UnitframeOptions"]["healerraidheight"]*(1-aCoreCDB["UnitframeOptions"]["raidhpheight"]))
+		pp:SetHeight(aCoreCDB["UnitframeOptions"]["healerraidheight"]*aCoreCDB["UnitframeOptions"]["raidppheight"])
 		if max == 0 then
 			pp.backdrop:SetBackdropColor(0, 0, 0.7)
 		elseif cur/max > 0.2 then
@@ -703,20 +703,74 @@ local pfunc = function(self, unit)
     self.Health = hp
 	self.Health.PostUpdate = T.Updatehealthbar
 	self.Health.Override = T.Overridehealthbar
+	
+	self.Health.ApplySettings = function()
+		if aCoreCDB["UnitframeOptions"]["style"] == 1 then
+			self.bg.tex:SetAlpha(0)
+			hp:SetStatusBarTexture(G.media.blank)
+			hp.bg:SetTexture(G.media.blank)
+			hp.bg:SetGradient("VERTICAL", CreateColor(.5, .5, .5, .5), CreateColor(0, 0, 0, 0))
+		elseif aCoreCDB["UnitframeOptions"]["style"] == 2 then
+			self.bg.tex:SetAlpha(1)
+			hp:SetStatusBarTexture(G.media.ufbar)
+			hp.bg:SetTexture(G.media.ufbar)
+			hp.bg:SetGradient("VERTICAL", CreateColor(.2,.2,.2,.15), CreateColor(.25,.25,.25,.6))
+		else
+			self.bg.tex:SetAlpha(1)
+			hp:SetStatusBarTexture(G.media.ufbar)
+			hp.bg:SetTexture(G.media.ufbar)
+			hp.bg:SetGradient("VERTICAL", CreateColor(.2,.2,.2,0), CreateColor(.25,.25,.25,0))
+		end
+		
+		self:SetSize(aCoreCDB["UnitframeOptions"]["widthparty"], aCoreCDB["UnitframeOptions"]["height"])
+		
+		if hp.value then
+			hp.value:SetFont(G.numFont, aCoreCDB["UnitframeOptions"]["valuefontsize"], "OUTLINE")
+			hp.value:ClearAllPoints()
+			if aCoreCDB["UnitframeOptions"]["height"] >= aCoreCDB["UnitframeOptions"]["valuefontsize"] then
+				hp.value:SetPoint("BOTTOMRIGHT", self, -4, -2)
+			else
+				hp.value:SetPoint("TOPRIGHT", self, "BOTTOMRIGHT", -4, -2-(aCoreCDB["UnitframeOptions"]["height"]*aCoreCDB["UnitframeOptions"]["ppheight"]))
+			end
+		end
+	end
+	
+	self.Health.ApplySettings()
+	
 	tinsert(self.mouseovers, self.Health)
 	
-	-- portrait 只有样式1和样式2才有肖像
-	if aCoreCDB["UnitframeOptions"]["portrait"] then
-		local Portrait = CreateFrame('PlayerModel', nil, self)
-		Portrait:SetFrameLevel(1)
-		Portrait:SetPoint("TOPLEFT", 0, 0)
-		Portrait:SetPoint("BOTTOMRIGHT", 0, 0)
-		Portrait:SetAlpha(aCoreCDB["UnitframeOptions"]["portraitalpha"])
-		self.Portrait = Portrait		
+	-- portrait
+	local portrait = CreateFrame('PlayerModel', nil, self)
+	portrait:SetFrameLevel(1)
+	portrait:SetPoint("TOPLEFT", 0, 0)
+	portrait:SetPoint("BOTTOMRIGHT", -1, 0)
+	
+	portrait:RegisterEvent("PLAYER_FLAGS_CHANGED")
+	portrait:SetScript("OnEvent",function(self, event) 
+		if event == "PLAYER_FLAGS_CHANGED" and aCoreCDB["SkinOptions"]["afkscreen"] then
+			if UnitIsAFK("player") then
+				self:Hide()
+			else
+				self:Show()
+			end
+		end
+	end)
+	
+	portrait.EnableSettings = function(object)
+		if not object or object == self then	
+			if aCoreCDB["UnitframeOptions"]["portrait"] then
+				self:EnableElement("Portrait")
+			else
+				self:DisableElement("Portrait")
+			end
+		end
 	end
-
+	oUF:RegisterInitCallback(portrait.EnableSettings)
+	
+	self.Portrait = portrait
+		
 	-- power bar --
-	local pp = T.createStatusbar(self, aCoreCDB["UnitframeOptions"]["height"]*(1-aCoreCDB["UnitframeOptions"]["hpheight"]), nil, 1, 1, 1, 1)
+	local pp = T.createStatusbar(self, aCoreCDB["UnitframeOptions"]["height"]*aCoreCDB["UnitframeOptions"]["ppheight"], nil, 1, 1, 1, 1)
 	pp:SetFrameLevel(4)
 	pp:SetPoint"LEFT"
 	pp:SetPoint"RIGHT"
@@ -734,7 +788,7 @@ local pfunc = function(self, unit)
 		else
 			pp:SetStatusBarTexture(G.media.ufbar)
 		end
-		pp:SetHeight(aCoreCDB["UnitframeOptions"]["height"]*(1-aCoreCDB["UnitframeOptions"]["hpheight"]))
+		pp:SetHeight(aCoreCDB["UnitframeOptions"]["height"]*aCoreCDB["UnitframeOptions"]["ppheight"])
 	end
 	
 	self.Power = pp
@@ -786,35 +840,13 @@ local pfunc = function(self, unit)
 	name:SetPoint("TOPLEFT", self.Health, "TOPLEFT", 3, 9)
 	self:Tag(name, "[Altz:longname]")
 
-	if aCoreCDB["UnitframeOptions"]["auras"] then
-		T.CreateAuras(self, unit)
-	end
-	
+	T.CreateAuras(self, unit)
+
 	if aCoreCDB["UnitframeOptions"]["enableClickCast"] then
 		T.CreateClickSets(self)
 	end
 	
 	T.RaidOnMouseOver(self)
-	
-	self.Health.ApplySettings = function()
-		if aCoreCDB["UnitframeOptions"]["style"] == 1 then
-			self.bg.tex:SetAlpha(0)
-			hp:SetStatusBarTexture(G.media.blank)
-			hp.bg:SetTexture(G.media.blank)
-			hp.bg:SetGradient("VERTICAL", CreateColor(.5, .5, .5, .5), CreateColor(0, 0, 0, 0))
-		elseif aCoreCDB["UnitframeOptions"]["style"] == 2 then
-			self.bg.tex:SetAlpha(1)
-			hp:SetStatusBarTexture(G.media.ufbar)
-			hp.bg:SetTexture(G.media.ufbar)
-			hp.bg:SetGradient("VERTICAL", CreateColor(.2,.2,.2,.15), CreateColor(.25,.25,.25,.6))
-		else
-			self.bg.tex:SetAlpha(1)
-			hp:SetStatusBarTexture(G.media.ufbar)
-			hp.bg:SetTexture(G.media.ufbar)
-			hp.bg:SetGradient("VERTICAL", CreateColor(.2,.2,.2,0), CreateColor(.25,.25,.25,0))
-		end
-	end
-	self.Health.ApplySettings()
 end
 
 oUF:RegisterStyle("Altz_party", pfunc)

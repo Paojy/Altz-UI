@@ -47,9 +47,16 @@ local Update = function(self, event, unit)
 	ind:SetPoint("CENTER", threatbar, "LEFT", Tankthreat/100*(threatbar:GetWidth()), 0)
 end
 
+local function ForceUpdate(element)
+	return Update(element.__owner)
+end
+
 local Enable = function(self)
 	local threatbar = self.ThreatBar
 	if threatbar then
+		threatbar.__owner = self
+		threatbar.ForceUpdate = ForceUpdate
+		
 		threatbar:SetMinMaxValues(0, 100)
 		threatbar:SetAlpha(0)
 		threatbar.indictator = threatbar:CreateTexture(nil, "OVERLAY")
@@ -60,9 +67,11 @@ local Enable = function(self)
 
 		threatbar:RegisterEvent("PLAYER_REGEN_ENABLED", true)
 		threatbar:SetScript("OnEvent", function() T.UIFrameFadeOut(threatbar, 2, threatbar:GetAlpha(), 0) end)
-
+		
 		self:RegisterEvent("UNIT_THREAT_LIST_UPDATE", Update, true)
-
+		
+		Update(self)
+		
 		return true
 	end
 end
@@ -72,7 +81,8 @@ local Disable = function(self)
 	if threatbar then
 		threatbar:UnregisterEvent("PLAYER_REGEN_ENABLED")
 		self:UnregisterEvent("UNIT_THREAT_LIST_UPDATE", Update)
-		threatbar:Hide()
+		
+		T.UIFrameFadeOut(threatbar, 2, threatbar:GetAlpha(), 0)
 	end
 end
 
