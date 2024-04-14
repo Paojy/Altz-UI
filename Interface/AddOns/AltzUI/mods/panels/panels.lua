@@ -240,6 +240,8 @@ function MBCF:Toggle(v)
 		else
 			MBCF:Show()
 		end
+	else
+		MBCF:Hide()
 	end
 end
 
@@ -254,13 +256,21 @@ local MBCF_PosList = {
 		MBCF:UpdatePoints()
 	end},
 	{ text = "------------------",  disabled = true},
-	{ text = "一直显示插件按钮", func = function(self, arg1, arg2, checked)
+	{ text = L["一直显示插件按钮"], func = function()
 		if not aCoreCDB["SkinOptions"]["MBCFalwaysshow"] then
 			aCoreCDB["SkinOptions"]["MBCFalwaysshow"] = true
 		else
 			aCoreCDB["SkinOptions"]["MBCFalwaysshow"] = false
 		end
 		MBCF:Toggle()
+	end},
+	{ text = L["小地图按钮"].." |T348547:12:12:0:0:64:64:4:60:4:60|t", func = function()
+		if not aCoreCDB["SkinOptions"]["minimapbutton"] then
+			aCoreCDB["SkinOptions"]["minimapbutton"] = true
+		else
+			aCoreCDB["SkinOptions"]["minimapbutton"] = false
+		end
+		T.ToggleMinimapButton()
 	end},
 }
 
@@ -271,6 +281,7 @@ MBCF_Toggle:SetScript("OnMouseDown", function(self, button)
 		MBCF_PosList[1].checked = (aCoreCDB["SkinOptions"]["MBCFpos"] == "TOP")
 		MBCF_PosList[2].checked = (aCoreCDB["SkinOptions"]["MBCFpos"] == "BOTTOM")
 		MBCF_PosList[4].checked = aCoreCDB["SkinOptions"]["MBCFalwaysshow"]
+		MBCF_PosList[5].checked = aCoreCDB["SkinOptions"]["minimapbutton"]
 		EasyMenu(MBCF_PosList, MBCF_PosMenu, "cursor", 0, 0, "MENU")
 	end
 end)
@@ -337,7 +348,7 @@ MBCF:SetScript("OnEvent", function(self)
 		T.ArrangeMinimapButtons(MBCF)
 	end)
 	self:UpdatePoints()
-	self:Hide()
+	self:Toggle()
 	self:UnregisterEvent("PLAYER_ENTERING_WORLD")
 end)
 
