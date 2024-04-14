@@ -564,7 +564,8 @@ local Character_default_Settings = {
 
 		-- show player in party
 		showplayerinparty = true,
-
+		showpartypet = false,
+		
 		-- show pvp timer
 		pvpicon = false,
 		
@@ -597,7 +598,7 @@ local Character_default_Settings = {
 		healerraidwidth = 120,
 		raidmanabars = true,
 		raidppheight = 0.1, -- slider
-		ind_party = true,
+		party_connected = true,
 		hor_party = false,
 		showgcd = true,
 		showmisshp = true,
@@ -607,7 +608,6 @@ local Character_default_Settings = {
 		hotind_size = 15,
 		hotind_filtertype = "whitelist", -- "blacklist", "whitelist"
 		hotind_auralist = HealerIndicatorAuraList,
-		healerraidgroupby = "GROUP", -- "CLASS", "ROLE"
 		healerraid_debuff_num = 2,
 		healerraid_debuff_anchor_x = -50,
 		healerraid_debuff_anchor_y = -5,
