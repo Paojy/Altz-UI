@@ -202,7 +202,7 @@ CreateOptions(TutorialsFrame[3], "group", true, "UnitframeOptions", "style", {L[
 for i = 1, 3 do
 	TutorialsFrame[3]["style"][i]:HookScript("OnClick", function()
 		G.BGFrame.Apply()
-		T.ApplyUFSettings({"Castbar", "Swing", "Portrait", "Health", "Power", "HealthPrediction"})
+		T.ApplyUFSettings({"Castbar", "Swing", "Health", "Power", "HealthPrediction"})
 	end)
 end
 
@@ -274,8 +274,8 @@ Default_Layout = {
 		},
 		{
 			db_t = "UnitframeOptions", 
-			db_v = "hpheight",
-			value = .75,			
+			db_v = "ppheight",
+			value = .25,			
 		},
 		{
 			db_t = "UnitframeOptions", 
@@ -321,16 +321,6 @@ Default_Layout = {
 			db_t = "UnitframeOptions", 
 			db_v = "raidmanabars",
 			value = true,	
-		},
-		{
-			db_t = "UnitframeOptions", 
-			db_v = "auraperrow",
-			value = 8,		
-		},
-		{
-			db_t = "UnitframeOptions", 
-			db_v = "playerdebuffnum",
-			value = 8,
 		},
 	},
 }
@@ -395,7 +385,7 @@ Simplicity_Layout = {
 		},
 		{
 			db_t = "UnitframeOptions", 
-			db_v = "hpheight",
+			db_v = "ppheight",
 			value = .5,
 		},
 		{
@@ -442,16 +432,6 @@ Simplicity_Layout = {
 			db_t = "UnitframeOptions", 
 			db_v = "raidmanabars",
 			value = false,
-		},
-		{
-			db_t = "UnitframeOptions", 
-			db_v = "auraperrow",
-			value = 6,
-		},
-		{
-			db_t = "UnitframeOptions", 
-			db_v = "playerdebuffnum",
-			value = 6,
 		},
 	},
 }
@@ -516,8 +496,8 @@ Centralized_Layout = {
 		},
 		{
 			db_t = "UnitframeOptions", 
-			db_v = "hpheight",
-			value = .75,
+			db_v = "ppheight",
+			value = .25,
 		},
 		{
 			db_t = "UnitframeOptions", 
@@ -564,16 +544,6 @@ Centralized_Layout = {
 			db_v = "raidmanabars",
 			value = true,
 		},
-		{
-			db_t = "UnitframeOptions", 
-			db_v = "auraperrow",
-			value = 8,
-		},
-		{
-			db_t = "UnitframeOptions", 
-			db_v = "playerdebuffnum",
-			value = 8,
-		},
 	},
 }
 
@@ -594,7 +564,7 @@ local ApplySizeAndPostions = function(group)
 		aCoreCDB[t.db_t][t.db_v] = t.value
 	end
 	G.BGFrame.Apply()
-	T.ApplyUFSettings({"Health", "Power", "Auras", "ClassPower", "Runes", "Castbar", "Stagger", "Dpsmana", "PVPSpecIcon"})
+	T.ApplyUFSettings({"Health", "Power", "Auras", "Castbar", "ClassPower", "Runes", "Stagger", "Dpsmana", "PVPSpecIcon"})
 end
 
 TutorialsFrame[4]["layout"][1]:SetScript("OnClick", function() ApplySizeAndPostions(Default_Layout) end)
