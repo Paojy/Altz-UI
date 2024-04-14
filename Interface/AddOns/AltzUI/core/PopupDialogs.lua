@@ -73,3 +73,11 @@ StaticPopupDialogs[G.uiname.."Run Setup"] = {
 	whileDead = true,
 	preferredIndex = 3,
 }
+
+StaticPopupDialogs[G.uiname.."Reload Alert"] = {
+	text = RELOADUI..L["生效"],
+	button1 = RELOADUI,
+	button2 = L["稍后重载"],
+	OnAccept = ReloadUI,
+	showAlert = 1,
+}
