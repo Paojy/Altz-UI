@@ -857,7 +857,7 @@ local CreateCastbars = function(self, unit)
 				end
 				
 				cb.Icon:SetSize(aCoreCDB["UnitframeOptions"]["cbIconsize"], aCoreCDB["UnitframeOptions"]["cbIconsize"])
-				T.update_fontsize(cb.Time, aCoreCDB["UnitframeOptions"]["valuefontsize"])
+				cb.Time:SetFont(G.numFont, aCoreCDB["UnitframeOptions"]["valuefontsize"], "OUTLINE")
 				
 				if multicheck(u, "target", "player", "focus") and aCoreCDB["UnitframeOptions"]["independentcb"] then -- 独立施法条	
 					if u == "player" or u == "target" or u == "focus" then
@@ -1465,7 +1465,7 @@ T.CreateClassResources = function(self, plate)
 					else
 						bars[i].value:Hide()
 					end
-					T.update_fontsize(bars[i].value, aCoreCDB["UnitframeOptions"]["valuefs"])
+					bars[i].value:SetFont(G.norFont, aCoreCDB["UnitframeOptions"]["valuefs"], "OUTLINE")
 				end
 			end
 			
@@ -2583,7 +2583,6 @@ local spawnHelper = function(self, unit)
 end
 
 T.RegisterInitCallback(function()
-	
 	oUF:Factory(function(self)
 		local playerframe = spawnHelper(self, "player")
 		playerframe.movingname = L["玩家头像"]

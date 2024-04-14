@@ -120,15 +120,12 @@ local function PlaceFrame(frame)
 	
 	if points and frame.df.enable then
 		frame:ClearAllPoints()
-		frame:SetPoint(points.a1, _G[points.parent], points.a2, points.x, points.y)
-		if name == "Altz_Raid_Holder" then
-			T.PlaceRaidFrame()
-		end		
+		frame:SetPoint(points.a1, _G[points.parent], points.a2, points.x, points.y)	
 	end
 end
 T.PlaceFrame = PlaceFrame
 
-local PlaceAllFrames = function(event)
+local PlaceAllFrames = function()
 	CurrentRole = CurrentRole or T.CheckRole()
 	SpecMover.curmode:SetText(L["当前模式"].." "..L[CurrentRole])
 	
@@ -148,14 +145,14 @@ local ResetFramePoint = function(frame)
 end
 T.ResetFramePoint = ResetFramePoint
 
-local PlaceAllFramesPoint = function()
+local ResetAllFramesPoint = function()
 	for i = 1, #G.dragFrameList do
 		local frame = G.dragFrameList[i]
 		ResetFramePoint(frame)
 	end
 	CurrentFrame = "NONE"
 end
-T.PlaceAllFramesPoint = PlaceAllFramesPoint
+T.ResetAllFramesPoint = ResetAllFramesPoint
 
 -- 创建移动框
 T.CreateDragFrame = function(frame)
@@ -308,9 +305,6 @@ local function ReskinDropDown(frame, name, value, ...)
 				aCoreCDB["FramePoints"][CurrentFrame][CurrentRole][value] = anchors[i]
 				local frame = _G[CurrentFrame]
 				PlaceFrame(frame)
-				if CurrentFrame == "Altz_Raid_Holder" then
-					T.PlaceRaidFrame()
-				end
 				UIDropDownMenu_SetSelectedName(frame, anchors[i], true)
 				UIDropDownMenu_SetText(frame, anchors[i])
 			end
@@ -394,7 +388,7 @@ SpecMover.LockButton:SetScript("OnClick", LockAll)
 
 SpecMover:SetScript("OnEvent", function(self, event, arg1)
 	if event == "PLAYER_SPECIALIZATION_CHANGED" and arg1 == "player" then
-		PlaceAllFrames(event)
+		PlaceAllFrames()
 	elseif event == "PLAYER_REGEN_DISABLED" then
 		if SpecMover:IsShown() then
 			LockAll()
@@ -403,11 +397,11 @@ SpecMover:SetScript("OnEvent", function(self, event, arg1)
 	elseif event == "PLAYER_REGEN_ENABLED" then
 		UnlockAll()
 		self:UnregisterEvent("PLAYER_REGEN_ENABLED")
+	elseif event == "PLAYER_LOGIN" then
+		PlaceAllFrames()
+		self:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED")
+		self:RegisterEvent("PLAYER_REGEN_DISABLED")
 	end
 end)
 
-T.RegisterInitCallback(function()
-	PlaceAllFrames(event)
-	SpecMover:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED")
-	SpecMover:RegisterEvent("PLAYER_REGEN_DISABLED")
-end)
+SpecMover:RegisterEvent("PLAYER_LOGIN")
