@@ -232,17 +232,6 @@ Monomyth:Register("GOSSIP_SHOW", function()
             end
         end
     end
-
-	if(available == 0 and active == 0 and C_GossipInfo.GetNumOptions() == 1) then
-		local _, instance = GetInstanceInfo()
-		if instance ~= "raid" then
-			local _, type = C_GossipInfo.GetOptions()
-			if(type == "gossip") then
-				C_GossipInfo.SelectOption(1)
-				return
-			end
-		end
-	end
 end)
 
 local ignoredItems = {
