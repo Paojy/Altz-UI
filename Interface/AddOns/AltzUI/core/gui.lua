@@ -462,7 +462,7 @@ local style_group = {
 T.createradiobuttongroup(SInnerframe.theme, 30, 60, L["样式"], "UnitframeOptions", "style", style_group)
 SInnerframe.theme.style.apply = function()
 	G.BGFrame.Apply()
-	T.ApplyUFSettings({"Castbar", "Swing", "Portrait", "Health", "Power", "HealthPrediction"})
+	T.ApplyUFSettings({"Castbar", "Swing", "Health", "Power", "HealthPrediction"})
 end
 
 local combattextfont_group = {
@@ -789,46 +789,126 @@ for i = 1, 20 do
 	UFInnerframe["tab"..i]:SetScript("OnMouseDown", function() end)
 end
 
+-- 样式
 UFInnerframe.style = CreateOptionPage("UF Options style", L["样式"], UFInnerframe, "VERTICAL", .3)
 UFInnerframe.style:Show()
 
 T.createcheckbutton(UFInnerframe.style, 30, 60, L["条件渐隐"], "UnitframeOptions", "enablefade", L["条件渐隐提示"])
+UFInnerframe.style.enablefade.apply = function()
+	T.EnableUFSettings({"Fader"})
+end
+
 T.createslider(UFInnerframe.style, 30, 110, L["渐隐透明度"], "UnitframeOptions", "fadingalpha", 100, 0, 80, 5, L["渐隐透明度提示"])
 T.createDR(UFInnerframe.style.enablefade, UFInnerframe.style.fadingalpha)
-T.createcheckbutton(UFInnerframe.style, 30, 140, L["显示肖像"], "UnitframeOptions", "portrait")
-T.createslider(UFInnerframe.style, 30, 190, L["肖像透明度"], "UnitframeOptions", "portraitalpha", 100, 10, 100, 5)
-T.createDR(UFInnerframe.style.portrait, UFInnerframe.style.portraitalpha)
-T.createcheckbutton(UFInnerframe.style, 30, 230, L["总是显示生命值"], "UnitframeOptions", "alwayshp", L["总是显示生命值提示"])
-T.createcheckbutton(UFInnerframe.style, 30, 260, L["总是显示能量值"], "UnitframeOptions", "alwayspp", L["总是显示能量值提示"])
 
+CreateDividingLine(UFInnerframe.style, -140)
+
+T.createcheckbutton(UFInnerframe.style, 30, 150, L["显示肖像"], "UnitframeOptions", "portrait")
+UFInnerframe.style.portrait.apply = function()
+	T.EnableUFSettings({"Portrait"})
+end
+
+CreateDividingLine(UFInnerframe.style, -180)
+
+T.createcheckbutton(UFInnerframe.style, 30, 190, L["总是显示生命值"], "UnitframeOptions", "alwayshp", L["总是显示生命值提示"])
+UFInnerframe.style.alwayshp.apply = function()
+	T.ApplyUFSettings({"Health"})
+end
+
+T.createcheckbutton(UFInnerframe.style, 30, 220, L["总是显示能量值"], "UnitframeOptions", "alwayspp", L["总是显示能量值提示"])
+UFInnerframe.style.alwayspp.apply = function()
+	T.ApplyUFSettings({"Power"})
+end
+
+T.createslider(UFInnerframe.style, 30, 270, L["数值字号"], "UnitframeOptions", "valuefontsize", 1, 10, 25, 1, L["数值字号提示"])
+UFInnerframe.style.valuefontsize.apply = function()
+	T.ApplyUFSettings({"Health", "Power", "Castbar"})
+end
+
+-- 尺寸
 UFInnerframe.size = CreateOptionPage("UF Options size", L["尺寸"], UFInnerframe, "VERTICAL", .3)
 
 T.createslider(UFInnerframe.size, 30, 80, L["高度"], "UnitframeOptions", "height", 1, 5, 50, 1)
-T.createslider(UFInnerframe.size, 30, 120, L["宽度"], "UnitframeOptions", "width", 1, 50, 500, 1, L["宽度提示"])
-T.createslider(UFInnerframe.size, 30, 160, L["宠物框体宽度"], "UnitframeOptions", "widthpet", 1, 50, 500, 1)
-T.createslider(UFInnerframe.size, 30, 200, L["首领框体和PVP框体的宽度"], "UnitframeOptions", "widthboss", 1, 50, 500, 1)
-T.createslider(UFInnerframe.size, 30, 240, PARTY..L["宽度"], "UnitframeOptions", "widthparty", 1, 50, 500, 1)
-T.createslider(UFInnerframe.size, 30, 280, L["尺寸"], "UnitframeOptions", "scale", 100, 50, 300, 5)
-T.createslider(UFInnerframe.size, 30, 320, L["生命条高度比"], "UnitframeOptions", "hpheight", 100, 20, 95, 5, L["生命条高度比提示"])
-T.createslider(UFInnerframe.size, 30, 360, L["数值字号"], "UnitframeOptions", "valuefontsize", 1, 10, 25, 1, L["数值字号提示"])
+UFInnerframe.size.height.apply = function()
+	T.ApplyUFSettings({"Health", "PVPSpecIcon"})
+end
 
+T.createslider(UFInnerframe.size, 30, 120, L["宽度"], "UnitframeOptions", "width", 1, 50, 500, 1, L["宽度提示"])
+UFInnerframe.size.width.apply = function()
+	T.ApplyUFSettings({"Health", "Auras"})
+end
+
+T.createslider(UFInnerframe.size, 30, 160, L["能量条高度"], "UnitframeOptions", "ppheight", 100, 5, 100, 5)
+UFInnerframe.size.ppheight.apply = function()
+	T.ApplyUFSettings({"Health", "Power", "Auras", "Castbar", "ClassPower", "Runes", "Stagger", "Dpsmana"})
+end
+
+CreateDividingLine(UFInnerframe.size, -190)
+
+T.createslider(UFInnerframe.size, 30, 220, L["宠物框体宽度"], "UnitframeOptions", "widthpet", 1, 50, 500, 1)
+UFInnerframe.size.widthpet.apply = function()
+	T.ApplyUFSettings({"Health", "Auras"})
+end
+
+T.createslider(UFInnerframe.size, 30, 260, L["首领框体和PVP框体的宽度"], "UnitframeOptions", "widthboss", 1, 50, 500, 1)
+UFInnerframe.size.widthboss.apply = function()
+	T.ApplyUFSettings({"Health", "Auras"})
+end
+
+
+-- 施法条
 UFInnerframe.castbar = CreateOptionPage("UF Options castbar", L["施法条"], UFInnerframe, "VERTICAL", .3)
 
 T.createcheckbutton(UFInnerframe.castbar, 30, 60, L["启用"], "UnitframeOptions", "castbars")
+UFInnerframe.castbar.castbars.apply = function()
+	T.EnableUFSettings({"Castbar"})
+end
+
 T.createslider(UFInnerframe.castbar, 30, 100, L["图标大小"], "UnitframeOptions", "cbIconsize", 1, 10, 50, 1)
+UFInnerframe.castbar.cbIconsize.apply = function()
+	T.ApplyUFSettings({"Castbar"})
+end
+
 T.createcheckbutton(UFInnerframe.castbar, 30, 130, L["独立施法条"], "UnitframeOptions", "independentcb")
+UFInnerframe.castbar.independentcb.apply = function()
+	T.ApplyUFSettings({"Castbar"})
+end
+
 T.createslider(UFInnerframe.castbar, 30, 180, L["玩家施法条"]..L["高度"], "UnitframeOptions", "cbheight", 1, 5, 30, 1)
-T.createslider(UFInnerframe.castbar, 230, 180, L["玩家施法条"]..L["宽度"], "UnitframeOptions", "cbwidth", 1, 50, 500, 5)
 UFInnerframe.castbar.cbheight:SetWidth(170)
+UFInnerframe.castbar.cbheight.apply = function()
+	T.ApplyUFSettings({"Castbar"})
+end
+
+T.createslider(UFInnerframe.castbar, 230, 180, L["玩家施法条"]..L["宽度"], "UnitframeOptions", "cbwidth", 1, 50, 500, 5)
 UFInnerframe.castbar.cbwidth:SetWidth(170)
+UFInnerframe.castbar.cbwidth.apply = function()
+	T.ApplyUFSettings({"Castbar"})
+end
+
 T.createslider(UFInnerframe.castbar, 30, 220, L["目标施法条"]..L["高度"], "UnitframeOptions", "target_cbheight", 1, 5, 30, 1)
-T.createslider(UFInnerframe.castbar, 230, 220, L["目标施法条"]..L["宽度"], "UnitframeOptions", "target_cbwidth", 1, 50, 500, 5)
 UFInnerframe.castbar.target_cbheight:SetWidth(170)
+UFInnerframe.castbar.target_cbheight.apply = function()
+	T.ApplyUFSettings({"Castbar"})
+end
+
+T.createslider(UFInnerframe.castbar, 230, 220, L["目标施法条"]..L["宽度"], "UnitframeOptions", "target_cbwidth", 1, 50, 500, 5)
 UFInnerframe.castbar.target_cbwidth:SetWidth(170)
+UFInnerframe.castbar.target_cbwidth.apply = function()
+	T.ApplyUFSettings({"Castbar"})
+end
+
 T.createslider(UFInnerframe.castbar, 30, 260, L["焦点施法条"]..L["高度"], "UnitframeOptions", "focus_cbheight", 1, 5, 30, 1)
-T.createslider(UFInnerframe.castbar, 230, 260, L["焦点施法条"]..L["宽度"], "UnitframeOptions", "focus_cbwidth", 1, 50, 500, 5)
 UFInnerframe.castbar.focus_cbheight:SetWidth(170)
+UFInnerframe.castbar.focus_cbheight.apply = function()
+	T.ApplyUFSettings({"Castbar"})
+end
+
+T.createslider(UFInnerframe.castbar, 230, 260, L["焦点施法条"]..L["宽度"], "UnitframeOptions", "focus_cbwidth", 1, 50, 500, 5)
 UFInnerframe.castbar.focus_cbwidth:SetWidth(170)
+UFInnerframe.castbar.focus_cbwidth.apply = function()
+	T.ApplyUFSettings({"Castbar"})
+end
 
 local CBtextpos_group = {
 	["LEFT"] = L["左"],
@@ -837,57 +917,127 @@ local CBtextpos_group = {
 	["TOPRIGHT"] = L["右上"],
 }
 T.createradiobuttongroup(UFInnerframe.castbar, 30, 290, L["法术名称位置"], "UnitframeOptions", "namepos", CBtextpos_group)
+UFInnerframe.castbar.namepos.apply = function()
+	T.ApplyUFSettings({"Castbar"})
+end
+
 T.createradiobuttongroup(UFInnerframe.castbar, 30, 320, L["施法时间位置"], "UnitframeOptions", "timepos", CBtextpos_group)
+UFInnerframe.castbar.timepos.apply = function()
+	T.ApplyUFSettings({"Castbar"})
+end
+
 T.createDR(UFInnerframe.castbar.independentcb, UFInnerframe.castbar.cbheight, UFInnerframe.castbar.cbwidth, UFInnerframe.castbar.target_cbheight, UFInnerframe.castbar.target_cbwidth, UFInnerframe.castbar.focus_cbheight, UFInnerframe.castbar.focus_cbwidth, UFInnerframe.castbar.namepos, UFInnerframe.castbar.timepos)
+
 T.createcolorpickerbu(UFInnerframe.castbar, 30, 355, L["可打断施法条图标颜色"], "UnitframeOptions", "Interruptible_color")
 T.createcolorpickerbu(UFInnerframe.castbar, 230, 355, L["不可打断施法条图标颜色"], "UnitframeOptions", "notInterruptible_color")
-T.createcheckbutton(UFInnerframe.castbar, 30, 380, L["引导法术分段"], "UnitframeOptions", "channelticks")
-T.createcheckbutton(UFInnerframe.castbar, 30, 410, L["隐藏玩家施法条图标"], "UnitframeOptions", "hideplayercastbaricon")
+T.createcheckbutton(UFInnerframe.castbar, 30, 390, L["引导法术分段"], "UnitframeOptions", "channelticks")
+T.createcheckbutton(UFInnerframe.castbar, 30, 420, L["隐藏玩家施法条图标"], "UnitframeOptions", "hideplayercastbaricon")
+UFInnerframe.castbar.hideplayercastbaricon.apply = function()
+	T.ApplyUFSettings({"Castbar"})
+end
 
 T.createDR(UFInnerframe.castbar.castbars, UFInnerframe.castbar.cbIconsize, UFInnerframe.castbar.independentcb, UFInnerframe.castbar.cbheight, UFInnerframe.castbar.cbwidth, 
 UFInnerframe.castbar.target_cbheight, UFInnerframe.castbar.target_cbwidth, UFInnerframe.castbar.focus_cbheight, UFInnerframe.castbar.focus_cbwidth, UFInnerframe.castbar.namepos, 
 UFInnerframe.castbar.timepos, UFInnerframe.castbar.channelticks, UFInnerframe.castbar.hideplayercastbaricon, UFInnerframe.castbar.Interruptible_color, UFInnerframe.castbar.notInterruptible_color)
 
+-- 平砍计时条
 UFInnerframe.swingtimer = CreateOptionPage("UF Options swingtimer", L["平砍计时条"], UFInnerframe, "VERTICAL", .3)
 
 T.createcheckbutton(UFInnerframe.swingtimer, 30, 60, L["启用"], "UnitframeOptions", "swing")
+UFInnerframe.swingtimer.swing.apply = function()
+	T.EnableUFSettings({"Swing"})
+end
+
 T.createslider(UFInnerframe.swingtimer, 30, 110, L["高度"], "UnitframeOptions", "swheight", 1, 5, 30, 1)
+UFInnerframe.swingtimer.swheight.apply = function()
+	T.ApplyUFSettings({"Swing"})
+end
+
 T.createslider(UFInnerframe.swingtimer, 30, 150, L["宽度"], "UnitframeOptions", "swwidth", 1, 50, 500, 5)
-T.createcheckbutton(UFInnerframe.swingtimer, 30, 190, L["显示副手"], "UnitframeOptions", "swoffhand")
-T.createcheckbutton(UFInnerframe.swingtimer, 30, 220, L["显示平砍计时"], "UnitframeOptions", "swtimer")
-T.createslider(UFInnerframe.swingtimer, 30, 270, L["字体大小"], "UnitframeOptions", "swtimersize", 1, 8, 20, 1)
-T.createDR(UFInnerframe.swingtimer.swing, UFInnerframe.swingtimer.swheight, UFInnerframe.swingtimer.swwidth, UFInnerframe.swingtimer.swoffhand, UFInnerframe.swingtimer.swtimer, UFInnerframe.swingtimer.swtimersize)
+UFInnerframe.swingtimer.swwidth.apply = function()
+	T.ApplyUFSettings({"Swing"})
+end
+
+CreateDividingLine(UFInnerframe.swingtimer, -180)
+
+T.createcheckbutton(UFInnerframe.swingtimer, 30, 200, L["显示平砍计时"], "UnitframeOptions", "swtimer")
+UFInnerframe.swingtimer.swtimer.apply = function()
+	T.ApplyUFSettings({"Swing"})
+end
+
+T.createslider(UFInnerframe.swingtimer, 30, 240, L["字体大小"], "UnitframeOptions", "swtimersize", 1, 8, 20, 1)
+UFInnerframe.swingtimer.swtimersize.apply = function()
+	T.ApplyUFSettings({"Swing"})
+end
+
+T.createDR(UFInnerframe.swingtimer.swing, UFInnerframe.swingtimer.swheight, UFInnerframe.swingtimer.swwidth, UFInnerframe.swingtimer.swtimer, UFInnerframe.swingtimer.swtimersize)
 T.createDR(UFInnerframe.swingtimer.swtimer, UFInnerframe.swingtimer.swtimersize)
 
-UFInnerframe.aura = CreateOptionPage("UF Options aura", AURAS, UFInnerframe, "VERTICAL", .3)
+-- 光环
+UFInnerframe.aura = CreateOptionPage("UF Options aura", AURAS, UFInnerframe, "VERTICAL", .3, true)
 
-T.createcheckbutton(UFInnerframe.aura, 30, 60, L["启用"], "UnitframeOptions", "auras")
-T.createcheckbutton(UFInnerframe.aura, 30, 90, L["减益边框"], "UnitframeOptions", "auraborders", L["减益边框提示"])
-T.createslider(UFInnerframe.aura, 30, 140, L["每一行的图标数量"], "UnitframeOptions", "auraperrow", 1, 4, 20, 1, L["每行的光环数量提示"])
-T.createcheckbutton(UFInnerframe.aura, 30, 180, L["玩家减益"], "UnitframeOptions", "playerdebuffenable", L["玩家减益提示"])
-T.createslider(UFInnerframe.aura, 30, 230, L["每一行的图标数量"], "UnitframeOptions", "playerdebuffnum", 1, 4, 20, 1, L["每行的光环数量提示"])
-T.createcheckbutton(UFInnerframe.aura, 30, 270, L["过滤增益"], "UnitframeOptions", "AuraFilterignoreBuff", L["过滤增益提示"])
-T.createcheckbutton(UFInnerframe.aura, 30, 300, L["过滤减益"], "UnitframeOptions", "AuraFilterignoreDebuff", L["过滤减益提示"])
-T.createcheckbutton(UFInnerframe.aura, 30, 330, L["过滤小队增益"], "UnitframeOptions", "usehotfilter", L["过滤小队增益提示"])
-T.createDR(UFInnerframe.aura.auras, UFInnerframe.aura.auraperrow, UFInnerframe.aura.auraborders, UFInnerframe.aura.playerdebuffenable, UFInnerframe.aura.playerdebuffnum, UFInnerframe.aura.AuraFilterignoreBuff, UFInnerframe.aura.AuraFilterignoreDebuff)
-T.createDR(UFInnerframe.aura.playerdebuffenable, UFInnerframe.aura.playerdebuffnum)
+T.createslider(UFInnerframe.aura, 30, 80, L["图标大小"], "UnitframeOptions", "aura_size", 1, 15, 30, 1)
+UFInnerframe.aura.aura_size.apply = function()
+	T.ApplyUFSettings({"Auras"})
+end
 
-UFInnerframe.aurawhitelist = CreateOptionPage("UF Options aurawhitelist", L["白名单"], UFInnerframe, "VERTICAL", .3, true)
-UFInnerframe.aurawhitelist.SF:SetPoint("TOPLEFT", 26, -80)
+T.createcheckbutton(UFInnerframe.aura, 30, 100, L["玩家减益"], "UnitframeOptions", "playerdebuffenable", L["玩家减益提示"])
+UFInnerframe.aura.playerdebuffenable.apply = function()
+	local oUF = AltzUF or oUF
+	for _, obj in next, oUF.objects do	
+		if obj.unit == "player" then
+			obj.Auras.ApplySettings()
+			obj.Auras:ForceUpdate()
+		end
+	end
+end
+
+CreateDividingLine(UFInnerframe.aura, -140)
+
+T.createcheckbutton(UFInnerframe.aura, 30, 150, L["过滤增益"], "UnitframeOptions", "AuraFilterignoreBuff", L["过滤增益提示"])
+UFInnerframe.aura.AuraFilterignoreBuff.apply = function()
+	local oUF = AltzUF or oUF
+	for _, obj in next, oUF.objects do	
+		if obj.unit == "target" then
+			obj.Auras.ApplySettings()
+			obj.Auras:ForceUpdate()
+		end
+	end
+end
+
+T.createcheckbutton(UFInnerframe.aura, 30, 180, L["过滤减益"], "UnitframeOptions", "AuraFilterignoreDebuff", L["过滤减益提示"])
+UFInnerframe.aura.AuraFilterignoreDebuff.apply = function()
+	local oUF = AltzUF or oUF
+	for _, obj in next, oUF.objects do	
+		if obj.unit == "target" then
+			obj.Auras.ApplySettings()
+			obj.Auras:ForceUpdate()
+		end
+	end
+end
+
+UFInnerframe.aura.aurafliter_title = T.createtext(UFInnerframe.aura, "OVERLAY", 14, "OUTLINE", "LEFT")
+UFInnerframe.aura.aurafliter_title:SetPoint("TOPLEFT", UFInnerframe.aura, "TOPLEFT", 30, -215)
+UFInnerframe.aura.aurafliter_title:SetText(AURAS..L["白名单"])
+
+UFInnerframe.aura.SF:ClearAllPoints()
+UFInnerframe.aura.SF:SetPoint("TOPLEFT", UFInnerframe.aura, "TOPLEFT", 30, -265)
+UFInnerframe.aura.SF:SetPoint("BOTTOMRIGHT", UFInnerframe.aura, "TOPLEFT", 350, -425)
+F.CreateBD(UFInnerframe.aura.SF.bg, .3)
 
 local function LineUpAuraFilterList()
 	sort(aCoreCDB["UnitframeOptions"]["AuraFilterwhitelist"])
 	local index = 1
 	for spellID, name in pairs(aCoreCDB["UnitframeOptions"]["AuraFilterwhitelist"]) do
 		if not spellID then return end
-		_G[G.uiname.."WhiteList Button"..spellID]:SetPoint("TOPLEFT", UFInnerframe.aurawhitelist.SF, "TOPLEFT", 10, 20-index*30)
+		_G[G.uiname.."WhiteList Button"..spellID]:SetPoint("TOPLEFT", UFInnerframe.aura.SF, "TOPLEFT", 10, 20-index*30)
 		index = index + 1
 	end
 end
 
 local function CreateAuraFilterButton(name, icon, spellID)
-	local bu = CreateFrame("Frame", G.uiname.."WhiteList Button"..spellID, UFInnerframe.aurawhitelist.SF)
-	bu:SetSize(350, 20)
+	local bu = CreateFrame("Frame", G.uiname.."WhiteList Button"..spellID, UFInnerframe.aura.SF)
+	bu:SetSize(300, 20)
 
 	bu.icon = CreateFrame("Frame", nil, bu, "BackdropTemplate")
 	bu.icon:SetSize(18, 18)
@@ -943,9 +1093,9 @@ local function CreateAuraFilterButtonList()
 	LineUpAuraFilterList()
 end
 
-local AuraFilter_spellIDinput = CreateFrame("EditBox", G.uiname.."WhiteList Input", UFInnerframe.aurawhitelist, "BackdropTemplate")
-AuraFilter_spellIDinput:SetSize(250, 20)
-AuraFilter_spellIDinput:SetPoint("TOPLEFT", 30, -60)
+local AuraFilter_spellIDinput = CreateFrame("EditBox", G.uiname.."WhiteList Input", UFInnerframe.aura, "BackdropTemplate")
+AuraFilter_spellIDinput:SetSize(320, 20)
+AuraFilter_spellIDinput:SetPoint("TOPLEFT", 30, -235)
 F.CreateBD(AuraFilter_spellIDinput)
 
 AuraFilter_spellIDinput:SetFont(GameFontHighlight:GetFont(), 12, "OUTLINE")
@@ -986,40 +1136,98 @@ AuraFilter_spellIDinput:SetScript("OnEnter", function(self)
 end)
 AuraFilter_spellIDinput:SetScript("OnLeave", function(self) GameTooltip:Hide() end)
 
+-- 图腾
 UFInnerframe.totembar = CreateOptionPage("UF Options totembar", L["图腾条"], UFInnerframe, "VERTICAL", .3)
 
 T.createcheckbutton(UFInnerframe.totembar, 30, 60, L["启用"], "UnitframeOptions", "totems")
+UFInnerframe.totembar.totems.apply = T.ApplyTotemsBarSettings
+
 T.createslider(UFInnerframe.totembar, 30, 110, L["图标大小"], "UnitframeOptions", "totemsize", 1, 15, 40, 1)
+UFInnerframe.totembar.totemsize.apply = T.ApplyTotemsBarSettings
+
 local totembargrowthdirection_group = {
 	["HORIZONTAL"] = L["水平"],
 	["VERTICAL"] = L["垂直"],
 }
 T.createradiobuttongroup(UFInnerframe.totembar, 30, 140, L["排列方向"], "UnitframeOptions", "growthDirection", totembargrowthdirection_group)
+UFInnerframe.totembar.growthDirection.apply = T.ApplyTotemsBarSettings
+
 local totembarinneranchor_group = {
 	["ASCENDING"] = L["正向"],
 	["DESCENDING"] = L["反向"],
 }
 T.createradiobuttongroup(UFInnerframe.totembar, 30, 170, L["排列方向"], "UnitframeOptions", "sortDirection", totembarinneranchor_group)
+UFInnerframe.totembar.sortDirection.apply = T.ApplyTotemsBarSettings
 
+-- 小队
+UFInnerframe.party = CreateOptionPage("UF Options party", PARTY, UFInnerframe, "VERTICAL", .3)
+
+T.createslider(UFInnerframe.party, 30, 80, PARTY..L["宽度"], "UnitframeOptions", "widthparty", 1, 50, 500, 1)
+UFInnerframe.party.widthparty.apply = function()
+	T.ApplyUFSettings({"Health", "Auras"})
+end
+
+T.createcheckbutton(UFInnerframe.party, 30, 100, L["在小队中显示自己"], "UnitframeOptions", "showplayerinparty")
+UFInnerframe.party.showplayerinparty.apply = function()
+	local oUF = AltzUF or oUF
+	for _, header in next, oUF.headers do
+		if header.style == "Altz_party" then
+			header:SetAttribute("showPlayer", aCoreCDB["UnitframeOptions"]["showplayerinparty"])
+		end
+	end
+end
+
+-- 其他
 UFInnerframe.other = CreateOptionPage("UF Options other", OTHER, UFInnerframe, "VERTICAL", .3)
 
 T.createcheckbutton(UFInnerframe.other, 30, 60, L["启用仇恨条"], "UnitframeOptions", "showthreatbar")
+UFInnerframe.other.showthreatbar.apply = function()
+	T.EnableUFSettings({"ThreatBar"})
+end
+
 T.createcheckbutton(UFInnerframe.other, 30, 90, L["显示PvP标记"], "UnitframeOptions", "pvpicon", L["显示PvP标记提示"])
+UFInnerframe.other.showthreatbar.apply = function()
+	T.EnableUFSettings({"PvPIndicator"})
+end
+
 T.createcheckbutton(UFInnerframe.other, 30, 120, L["启用首领框体"], "UnitframeOptions", "bossframes")
+UFInnerframe.other.bossframes.apply = function()
+	StaticPopup_Show(G.uiname.."Reload Alert")
+end
+
 T.createcheckbutton(UFInnerframe.other, 30, 150, L["启用PVP框体"], "UnitframeOptions", "arenaframes")
-T.createcheckbutton(UFInnerframe.other, 30, 180, L["在小队中显示自己"], "UnitframeOptions", "showplayerinparty")
+UFInnerframe.other.arenaframes.apply = function()
+	StaticPopup_Show(G.uiname.."Reload Alert")
+end
 
 if G.myClass == "DEATHKNIGHT" then
-    T.createcheckbutton(UFInnerframe.other, 30, 240, format(L["显示冷却"], RUNES), "UnitframeOptions", "runecooldown")
-	T.createslider(UFInnerframe.other, 30, 230, L["字体大小"], "UnitframeOptions", "valuefs", 1, 8, 16, 1)
+    CreateDividingLine(UFInnerframe.other, -180)
+	T.createcheckbutton(UFInnerframe.other, 30, 190, format(L["显示冷却"], RUNES), "UnitframeOptions", "runecooldown")
+	UFInnerframe.other.runecooldown.apply = function()
+		T.ApplyUFSettings({"Runes"})
+	end
+
+	T.createslider(UFInnerframe.other, 30, 240, L["字体大小"], "UnitframeOptions", "valuefs", 1, 8, 16, 1)
+	UFInnerframe.other.valuefs.apply = function()
+		T.ApplyUFSettings({"Runes"})
+	end
 end
 
 if G.myClass == "SHAMAN" or G.myClass == "PRIEST" or G.myClass == "DRUID" then
-    T.createcheckbutton(UFInnerframe.other, 30, 240, L["显示法力条"], "UnitframeOptions", "dpsmana", L["显示法力条提示"])
+	CreateDividingLine(UFInnerframe.other, -180)
+    T.createcheckbutton(UFInnerframe.other, 30, 190, L["显示法力条"], "UnitframeOptions", "dpsmana", L["显示法力条提示"])
+	UFInnerframe.other.dpsmana.apply = function()
+		T.EnableUFSettings({"Dpsmana"})
+		T.ApplyUFSettings({"ClassPower"})
+	end
 end
 
 if G.myClass == "MONK" then
-    T.createcheckbutton(UFInnerframe.other, 30, 240, L["显示醉拳条"], "UnitframeOptions", "stagger")
+	CreateDividingLine(UFInnerframe.other, -180)
+    T.createcheckbutton(UFInnerframe.other, 30, 190, L["显示醉拳条"], "UnitframeOptions", "stagger")
+	UFInnerframe.other.dpsmana.apply = function()
+		T.EnableUFSettings({"Stagger"})
+	end
 end
 
 --====================================================--
@@ -1059,8 +1267,8 @@ RFInnerframe.healer = CreateOptionPage("RF Options healer", L["样式"], RFInner
 T.createslider(RFInnerframe.healer, 30, 80, L["高度"], "UnitframeOptions", "healerraidheight", 1, 10, 150, 1)
 T.createslider(RFInnerframe.healer, 30, 120, L["宽度"], "UnitframeOptions", "healerraidwidth", 1, 10, 150, 1)
 T.createcheckbutton(RFInnerframe.healer, 30, 160, L["raidmanabars"], "UnitframeOptions", "raidmanabars")
-T.createslider(RFInnerframe.healer,  30, 210, L["生命条高度比"], "UnitframeOptions", "raidhpheight", 100, 20, 95, 5, L["生命条高度比提示"])
-T.createDR(RFInnerframe.healer.raidmanabars, RFInnerframe.healer.raidhpheight)
+T.createslider(RFInnerframe.healer,  30, 210, L["能量条高度"], "UnitframeOptions", "raidppheight", 100, 5, 100, 5)
+T.createDR(RFInnerframe.healer.raidmanabars, RFInnerframe.healer.raidppheight)
 T.createcheckbutton(RFInnerframe.healer, 30, 250, COMPACT_UNIT_FRAME_PROFILE_HORIZONTALGROUPS, "UnitframeOptions", "hor_party")
 T.createcheckbutton(RFInnerframe.healer, 30, 280, COMPACT_UNIT_FRAME_PROFILE_KEEPGROUPSTOGETHER, "UnitframeOptions", "ind_party")
 local raidgroupby_group = {
@@ -3030,10 +3238,10 @@ MinimapButton:SetScript("OnClick", function(self, btn)
 end)
 
 T.ToggleMinimapButton = function()
-	if aCoreDB["SkinOptions"]["hide_minimap"] then
-		MinimapButton:Hide()
-	else
+	if aCoreCDB["SkinOptions"]["minimapbutton"] then
 		MinimapButton:Show()
+	else
+		MinimapButton:Hide()
 	end
 end
 
@@ -3055,12 +3263,13 @@ function eventframe:ADDON_LOADED(arg1)
 	end
 	T.LoadAccountVariables()
 	T.LoadVariables()
-
+	
 	local scale = aCoreCDB["SkinOptions"]["gui_scale"]/100
 	GUI:ClearAllPoints()
 	GUI:SetPoint("TOPRIGHT", UIParent, "CENTER", aCoreCDB["SkinOptions"]["gui_x"]/scale, aCoreCDB["SkinOptions"]["gui_y"]/scale)
 	GUI:SetScale(scale)
 	GUI.scale.pointself()
+	T.ToggleMinimapButton()
 end
 
 function eventframe:PLAYER_ENTERING_WORLD()
