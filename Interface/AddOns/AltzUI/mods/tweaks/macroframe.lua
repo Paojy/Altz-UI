@@ -1,9 +1,9 @@
 local T, C, L, G = unpack(select(2, ...))
 local F = unpack(AuroraClassic)
 
+local EventFrame = CreateFrame("Frame")
 
-local eframe = CreateFrame("Frame")
-eframe:SetScript("OnEvent", function(self, event, arg1)
+EventFrame:SetScript("OnEvent", function(self, event, arg1)
 	if arg1 == "Blizzard_MacroUI" then
 		MacroFrame:SetHeight(MacroFrame:GetHeight()+15)
 		MacroFrameCharLimitText:ClearAllPoints()
@@ -25,4 +25,5 @@ eframe:SetScript("OnEvent", function(self, event, arg1)
 		end)
 	end
 end)
-eframe:RegisterEvent("ADDON_LOADED")
+
+EventFrame:RegisterEvent("ADDON_LOADED")

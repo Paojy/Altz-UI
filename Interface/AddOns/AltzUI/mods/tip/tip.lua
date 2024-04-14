@@ -235,34 +235,32 @@ hooksecurefunc(GameTooltip, "ProcessLines", function(self)
 end)
 
 -- GameTooltipStatusBar
-local EventFrame = CreateFrame('Frame')
-EventFrame:SetScript('OnEvent', function(self, event, arg)
-	if arg == "AltzUI" then 
-		if not aCoreCDB["TooltipOptions"]["enabletip"] then return end
-		GameTooltipStatusBar:SetStatusBarTexture("Interface\\Buttons\\WHITE8x8")
-		T.createBackdrop(GameTooltipStatusBar, GameTooltipStatusBar, 1)
-		
-		GameTooltipStatusBar:SetScript("OnValueChanged", function(self, value)
-			if not value then
-				return
+local function UpdateGameTooltipStatusBar()
+	if not aCoreCDB["TooltipOptions"]["enabletip"] then return end
+	
+	GameTooltipStatusBar:SetStatusBarTexture("Interface\\Buttons\\WHITE8x8")
+	T.createBackdrop(GameTooltipStatusBar, GameTooltipStatusBar, 1)
+	
+	GameTooltipStatusBar:SetScript("OnValueChanged", function(self, value)
+		if not value then
+			return
+		end
+		local min, max = self:GetMinMaxValues()
+		if (value < min) or (value > max) then
+			return
+		end
+		local _, unit = GameTooltip:GetUnit()
+		if unit then
+			min, max = UnitHealth(unit), UnitHealthMax(unit)
+			if not self.text then
+				self.text = T.createtext(self, "OVERLAY", 12, "OUTLINE", "CENTER")
+				self.text:SetPoint"BOTTOM"
 			end
-			local min, max = self:GetMinMaxValues()
-			if (value < min) or (value > max) then
-				return
-			end
-			local _, unit = GameTooltip:GetUnit()
-			if unit then
-				min, max = UnitHealth(unit), UnitHealthMax(unit)
-				if not self.text then
-					self.text = T.createtext(self, "OVERLAY", 12, "OUTLINE", "CENTER")
-					self.text:SetPoint"BOTTOM"
-				end
-				self.text:Show()
-				local hp = T.ShortValue(min).." / "..T.ShortValue(max)
-				self.text:SetText(hp)
-			end
-		end)
-	end
-end)
+			self.text:Show()
+			local hp = T.ShortValue(min).." / "..T.ShortValue(max)
+			self.text:SetText(hp)
+		end
+	end)
+end
 
-EventFrame:RegisterEvent('ADDON_LOADED')
+T.RegisterInitCallback(UpdateGameTooltipStatusBar)

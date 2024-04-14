@@ -482,7 +482,7 @@ T.CreateDragFrame(RaidPetFrame)
 
 local party_num, old_party_num, old_anchor = 0, 0
 T.PlaceRaidFrame = function()
-	if not aCoreCDB["FramePoints"]["Altz_Raid_Holder"] then return end
+	if not aCoreCDB["FramePoints"]["Altz_Raid_Holder"] or not RaidFrame[1] then return end
 	
 	local CurrentRole = T.CheckRole()
 	local anchor = aCoreCDB["FramePoints"]["Altz_Raid_Holder"][CurrentRole]["a1"]
@@ -918,9 +918,17 @@ end
 --=============================================--
 --[[                Events                   ]]--
 --=============================================--
+EventFrame:SetScript("OnEvent", function(self, event, ...)
+	if event == "PLAYER_REGEN_ENABLED" then
+		if aCoreCDB["UnitframeOptions"]["enableClickCast"] then
+			DelayClickSets()
+		end
+		DelayVehicleSets()
+	end
+end)
 
-function EventFrame:ADDON_LOADED(arg1)
-	if arg1 ~= "AltzUI" or not aCoreCDB["UnitframeOptions"]["enableraid"] then return end	
+T.RegisterInitCallback(function()
+	if not aCoreCDB["UnitframeOptions"]["enableraid"] then return end	
 	
 	-- Hide Default RaidFrame
 	if CompactRaidFrameManager_SetSetting then
@@ -935,17 +943,4 @@ function EventFrame:ADDON_LOADED(arg1)
 	Spawnparty()
 
 	EventFrame:RegisterEvent("PLAYER_REGEN_ENABLED")
-end
-
-function EventFrame:PLAYER_REGEN_ENABLED()
-	if aCoreCDB["UnitframeOptions"]["enableClickCast"] then
-		DelayClickSets()
-	end
-	DelayVehicleSets()
-end
-
-EventFrame:RegisterEvent("ADDON_LOADED")
-
-EventFrame:SetScript("OnEvent", function(self, event, ...)
-	self[event](self, ...)
 end)

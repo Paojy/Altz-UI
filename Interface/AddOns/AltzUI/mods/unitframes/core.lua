@@ -2582,15 +2582,8 @@ local spawnHelper = function(self, unit)
 	return object
 end
 
-EventFrame:RegisterEvent("ADDON_LOADED")
-
-EventFrame:SetScript("OnEvent", function(self, event, ...)
-	self[event](self, ...)
-end)
-
-function EventFrame:ADDON_LOADED(arg1)
-	if arg1 ~= "AltzUI" then return end
-
+T.RegisterInitCallback(function()
+	
 	oUF:Factory(function(self)
 		local playerframe = spawnHelper(self, "player")
 		playerframe.movingname = L["玩家头像"]
@@ -2714,7 +2707,12 @@ function EventFrame:ADDON_LOADED(arg1)
 	EventFrame:RegisterEvent("ARENA_PREP_OPPONENT_SPECIALIZATIONS")
 	EventFrame:RegisterEvent("ARENA_OPPONENT_UPDATE")
 	EventFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
-end
+	
+end)
+
+EventFrame:SetScript("OnEvent", function(self, event, ...)
+	self[event](self, ...)
+end)
 
 function EventFrame:ARENA_OPPONENT_UPDATE()
 	for i=1, 5 do

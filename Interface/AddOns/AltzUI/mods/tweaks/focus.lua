@@ -25,14 +25,7 @@ local function Init()
 	end
 end
 
-local EventFrame = CreateFrame('Frame')
-EventFrame:SetScript('OnEvent', function(self, event, arg)
-	if arg ~= "AltzUI" then return end
-	Init()	
-end)
-
-EventFrame:RegisterEvent('ADDON_LOADED')
-
+T.RegisterInitCallback(Init)
 
 
 

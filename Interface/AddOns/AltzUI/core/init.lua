@@ -92,3 +92,7 @@ BACKDROP_ALTZ_COLOR_15	= CreateColor(.15, .15, .15, 1)
 G.Nga = "bbs.nga.cn/read.php?tid=4729675&_ff=200"
 G.WoWInterface = "www.wowinterface.com/downloads/info21263-AltzUIforShadowlands.html"
 
+G.Init_callbacks = {}
+T.RegisterInitCallback = function(func)
+	table.insert(G.Init_callbacks, func)
+end

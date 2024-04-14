@@ -403,11 +403,11 @@ SpecMover:SetScript("OnEvent", function(self, event, arg1)
 	elseif event == "PLAYER_REGEN_ENABLED" then
 		UnlockAll()
 		self:UnregisterEvent("PLAYER_REGEN_ENABLED")
-	elseif event == "PLAYER_LOGIN" then
-		PlaceAllFrames(event)
-		self:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED")
-		self:RegisterEvent("PLAYER_REGEN_DISABLED")
 	end
 end)
 
-SpecMover:RegisterEvent("PLAYER_LOGIN")
+T.RegisterInitCallback(function()
+	PlaceAllFrames(event)
+	SpecMover:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED")
+	SpecMover:RegisterEvent("PLAYER_REGEN_DISABLED")
+end)

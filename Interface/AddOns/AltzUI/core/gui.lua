@@ -3261,8 +3261,10 @@ function eventframe:ADDON_LOADED(arg1)
 	if aCoreCDB == nil then
 		aCoreCDB = {}
 	end
+	
 	T.LoadAccountVariables()
 	T.LoadVariables()
+	
 	
 	local scale = aCoreCDB["SkinOptions"]["gui_scale"]/100
 	GUI:ClearAllPoints()
@@ -3270,6 +3272,10 @@ function eventframe:ADDON_LOADED(arg1)
 	GUI:SetScale(scale)
 	GUI.scale.pointself()
 	T.ToggleMinimapButton()
+	
+	for _, func in next, G.Init_callbacks do
+		func()
+	end
 end
 
 function eventframe:PLAYER_ENTERING_WORLD()

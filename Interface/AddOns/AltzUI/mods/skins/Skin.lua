@@ -155,9 +155,6 @@ local function registerDBMStyle()
 end
 
 f:RegisterEvent("PLAYER_ENTERING_WORLD")
-f:RegisterEvent("ADDON_LOADED")
-local reason
-
 f:SetScript("OnEvent", function(self, event, addon)
 	if event == "PLAYER_ENTERING_WORLD" then
 		if IsAddOnLoaded("DBM-Core") then

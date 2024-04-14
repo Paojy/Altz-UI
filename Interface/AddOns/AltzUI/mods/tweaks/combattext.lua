@@ -91,34 +91,6 @@ eventframe:SetScript("OnEvent", function(self, event, ...)
 	if not aCoreCDB["CombattextOptions"]["combattext"] then return end
 	self[event](self, ...)
 end)
-eventframe:RegisterEvent("ADDON_LOADED")
-
-function eventframe:ADDON_LOADED(self, arg)
-	if arg ~= "AltzUI" then return end
-	SetCVar("floatingCombatTextCombatDamage", 1)
-	SetCVar("floatingCombatTextCombatHealing", 1)
-	if aCoreCDB["CombattextOptions"]["hidblz_receive"] then
-		SetCVar("floatingCombatTextCombatDamage", 0)
-		SetCVar("floatingCombatTextCombatHealing", 0)
-	end
-	if aCoreCDB["CombattextOptions"]["hidblz"] then
-		SetCVar("enableFloatingCombatText", 0)
-	else
-		SetCVar("enableFloatingCombatText", 1)
-	end
-	
-	if aCoreCDB["CombattextOptions"]["showreceivedct"] then
-		frames["damagetaken"] = CreateCTFrame("damagetaken", L["承受伤害"], "LEFT", "RIGHT", UIParent, "CENTER", -485, 0)
-		frames["healingtaken"] = CreateCTFrame("healingtaken", L["承受治疗"], "RIGHT", "LEFT", UIParent, "CENTER", -665, 0)
-		eventframe:RegisterEvent("COMBAT_TEXT_UPDATE")
-	end
-	
-	if aCoreCDB["CombattextOptions"]["showoutputct"] then
-		frames["outputdamage"] = CreateCTFrame("outputdamage", L["输出伤害"], "RIGHT", "LEFT", UIParent, "CENTER", 485, 80)
-		frames["outputhealing"] = CreateCTFrame("outputhealing", L["输出治疗"], "LEFT", "RIGHT", UIParent, "CENTER", 665, 80)	
-		eventframe:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
-	end
-end
 
 function eventframe:COMBAT_TEXT_UPDATE(spelltype)
 	local info = tbl[spelltype]
@@ -190,3 +162,39 @@ function eventframe:COMBAT_LOG_EVENT_UNFILTERED()
 		end
 	end
 end
+
+local function Init()
+	SetCVar("floatingCombatTextCombatDamage", 1)
+	SetCVar("floatingCombatTextCombatHealing", 1)
+	
+	if aCoreCDB["CombattextOptions"]["hidblz_receive"] then
+		SetCVar("floatingCombatTextCombatDamage", 0)
+		SetCVar("floatingCombatTextCombatHealing", 0)
+	end
+	
+	if aCoreCDB["CombattextOptions"]["hidblz"] then
+		SetCVar("enableFloatingCombatText", 0)
+	else
+		SetCVar("enableFloatingCombatText", 1)
+	end
+	
+	if aCoreCDB["CombattextOptions"]["showreceivedct"] then
+		frames["damagetaken"] = CreateCTFrame("damagetaken", L["承受伤害"], "LEFT", "RIGHT", UIParent, "CENTER", -485, 0)
+		frames["healingtaken"] = CreateCTFrame("healingtaken", L["承受治疗"], "RIGHT", "LEFT", UIParent, "CENTER", -665, 0)
+		eventframe:RegisterEvent("COMBAT_TEXT_UPDATE")
+	end
+	
+	if aCoreCDB["CombattextOptions"]["showoutputct"] then
+		frames["outputdamage"] = CreateCTFrame("outputdamage", L["输出伤害"], "RIGHT", "LEFT", UIParent, "CENTER", 485, 80)
+		frames["outputhealing"] = CreateCTFrame("outputhealing", L["输出治疗"], "LEFT", "RIGHT", UIParent, "CENTER", 665, 80)	
+		eventframe:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
+	end
+	
+	-- 战斗文字字体
+	local font = aCoreCDB["SkinOptions"]["combattext"]
+	if font ~= "none" then
+		DAMAGE_TEXT_FONT = G.combatFont[font]
+	end
+end
+
+T.RegisterInitCallback(Init)

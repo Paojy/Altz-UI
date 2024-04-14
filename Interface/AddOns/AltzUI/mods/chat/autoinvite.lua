@@ -45,22 +45,9 @@ local function InvitePlayer(name)
 	end
 end
 
-T.Update_Invite_Keyword = function()
-	local filter = {string.split(" ", aCoreDB["goldkeywordlist"])}
-	for _, keyword in pairs(filter) do
-		if keyword ~= "" then
-			keywords[keyword] = true
-		end
-	end
-end
-
 local EventFrame = CreateFrame('Frame')
-
 EventFrame:SetScript('OnEvent', function(self, event, arg1, arg2, ...)
-	if event == "ADDON_LOADED" then
-		T.Update_Invite_Keyword()
-		self:UnregisterEvent('ADDON_LOADED')
-	elseif aCoreCDB["OtherOptions"]["autoinvite"] then		
+	if aCoreCDB["OtherOptions"]["autoinvite"] then		
 		local success, reason
 		for _, keyword in pairs(keywords) do
 			if keyword:lower() == arg1:lower() then
@@ -85,6 +72,17 @@ EventFrame:SetScript('OnEvent', function(self, event, arg1, arg2, ...)
 	end
 end)
 
-EventFrame:RegisterEvent("ADDON_LOADED")
 EventFrame:RegisterEvent("CHAT_MSG_WHISPER")
 EventFrame:RegisterEvent("CHAT_MSG_BN_WHISPER")
+
+local Update_Invite_Keyword = function()
+	local filter = {string.split(" ", aCoreDB["goldkeywordlist"])}
+	for _, keyword in pairs(filter) do
+		if keyword ~= "" then
+			keywords[keyword] = true
+		end
+	end
+end
+T.Update_Invite_Keyword = T.Update_Invite_Keyword
+
+T.RegisterInitCallback(Update_Invite_Keyword)

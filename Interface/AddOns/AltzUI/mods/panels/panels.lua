@@ -1505,22 +1505,11 @@ end
 --====================================================--
 --[[           	 -- Event Frame --     	            ]]--
 --====================================================--
-local panels_eventframe = CreateFrame("Frame")
-panels_eventframe:RegisterEvent("ADDON_LOADED")
-
-panels_eventframe:SetScript("OnEvent", function(self, event, arg)
-	if event == "ADDON_LOADED" and arg == "AltzUI" then
-		-- 战斗文字字体
-		local font = aCoreCDB["SkinOptions"]["combattext"]
-		if font ~= "none" then
-			DAMAGE_TEXT_FONT = G.combatFont[font]
-		end
-		
-		BGFrame.Apply()
-		InfoFrame.Apply()
-		
-		if aCoreCDB["UnitframeOptions"]["raidtool"] then
-			CreateRaidTools()
-		end
+T.RegisterInitCallback(function()
+	BGFrame.Apply()
+	InfoFrame.Apply()
+	
+	if aCoreCDB["UnitframeOptions"]["raidtool"] then
+		CreateRaidTools()
 	end
 end)

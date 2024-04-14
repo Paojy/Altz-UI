@@ -3,14 +3,16 @@ local T, C, L, G = unpack(select(2, ...))
 local F = unpack(AuroraClassic)
 
 local eventframe = CreateFrame('Frame')
-eventframe:RegisterEvent('ADDON_LOADED')
 eventframe:SetScript('OnEvent', function(self, event, ...)
-	if event == "ADDON_LOADED" then
-		if aCoreCDB["OtherOptions"]["hideerrors"] then
-			UIErrorsFrame:UnregisterEvent('UI_ERROR_MESSAGE')
-		end
-	else
-		eventframe[event](self, ...)
+	eventframe[event](self, ...)
+end)
+
+--[[-----------------------------------------------------------------------------
+Hide Errors
+-------------------------------------------------------------------------------]]
+T.RegisterInitCallback(function()
+	if aCoreCDB["OtherOptions"]["hideerrors"] then
+		UIErrorsFrame:UnregisterEvent('UI_ERROR_MESSAGE')
 	end
 end)
 

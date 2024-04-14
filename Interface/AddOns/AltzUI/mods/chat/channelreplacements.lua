@@ -1,7 +1,5 @@
 local T, C, L, G = unpack(select(2, ...))
 
-local EventFrame = CreateFrame('Frame')
-
 local Defaults = {}
 local EditData = {
 	--guild
@@ -59,9 +57,7 @@ local UpdateChannelReplacement = function()
 end
 T.UpdateChannelReplacement = UpdateChannelReplacement
 
-EventFrame:SetScript('OnEvent', function(self, event, arg)
-	if arg ~= "AltzUI" then return end
-	
+T.RegisterInitCallback(function()
 	BackupChannelReplacement()
 	UpdateChannelReplacement()
 	
@@ -75,5 +71,3 @@ EventFrame:SetScript('OnEvent', function(self, event, arg)
 		end
 	end
 end)
-
-EventFrame:RegisterEvent('ADDON_LOADED')

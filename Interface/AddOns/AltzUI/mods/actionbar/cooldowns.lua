@@ -124,8 +124,10 @@ local Init = function()
 	hooksecurefunc(ActionBarButtonEventsFrame, 'RegisterFrame', actionButton_Register)
 end
 
+T.RegisterInitCallback(Init)
+
 local EventFrame = CreateFrame('Frame')
-EventFrame:SetScript('OnEvent', function(self, event, arg)
+EventFrame:SetScript('OnEvent', function(self, event)
 	if not aCoreCDB["ActionbarOptions"]["cooldown"] then return end
 	if event == 'ACTIONBAR_UPDATE_COOLDOWN' then
 		for cooldown in pairs(active) do
@@ -135,13 +137,8 @@ EventFrame:SetScript('OnEvent', function(self, event, arg)
 		end
 	elseif event == "PLAYER_LOGIN" then
 		SetCVar("countdownForCooldowns", 0)
-	elseif event == "ADDON_LOADED" then
-		if arg == "AltzUI" then
-			Init()
-		end
 	end
 end)
 
 EventFrame:RegisterEvent('ACTIONBAR_UPDATE_COOLDOWN')
 EventFrame:RegisterEvent('PLAYER_LOGIN')
-EventFrame:RegisterEvent('ADDON_LOADED')

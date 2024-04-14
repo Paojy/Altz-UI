@@ -170,11 +170,6 @@ function addon:PLAYER_ENTERING_WORLD()
 	addon:SPELL_UPDATE_COOLDOWN()
 end
 
-function addon:ADDON_LOADED(self, arg)
-	if arg ~= "AltzUI" then return end
-	flash:SetSize(aCoreCDB["ActionbarOptions"]["cdflash_size"],aCoreCDB["ActionbarOptions"]["cdflash_size"])
-end
-
 hooksecurefunc("UseInventoryItem", function(slot)
 	local link = GetInventoryItemLink("player", slot) or ""
 	local id = string.match(link, ":(%w+).*|h%[(.+)%]|h")
@@ -224,4 +219,7 @@ addon:RegisterEvent("LEARNED_SPELL_IN_TAB")
 addon:RegisterEvent("SPELL_UPDATE_COOLDOWN")
 addon:RegisterEvent("BAG_UPDATE_COOLDOWN")
 addon:RegisterEvent("PLAYER_ENTERING_WORLD")
-addon:RegisterEvent("ADDON_LOADED")
+
+T.RegisterInitCallback(function()
+	flash:SetSize(aCoreCDB["ActionbarOptions"]["cdflash_size"],aCoreCDB["ActionbarOptions"]["cdflash_size"])
+end)
