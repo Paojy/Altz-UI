@@ -162,6 +162,11 @@ T.resize_font = function(t, size)
 	end
 end
 
+T.update_fontsize = function(t, size)
+	local fontName, _, fontFlags = t:GetFont()
+	t:SetFont(fontName, size, fontFlags)
+end
+
 T.GetIconLink = function(spellID)
 	local icon = select(3, GetSpellInfo(spellID))
 	return "|T"..icon..":12:12:0:0:64:64:4:60:4:60|t"..GetSpellLink(spellID)
@@ -1082,13 +1087,13 @@ T.createcolorpickerbu = function(parent, x, y, name, table, value)
 		ColorPickerFrame:SetPoint("TOPLEFT", self, "TOPRIGHT", 20, 0)
 		ColorPickerFrame.hasOpacity, ColorPickerFrame.opacity = aCoreCDB[table]["transparentmode"], a -- Opacity slider only available for reverse filling
 		
-		ColorPickerFrame.func = function()
+		ColorPickerFrame.swatchFunc = function()
 			aCoreCDB[table][value].r, aCoreCDB[table][value].g, aCoreCDB[table][value].b = ColorPickerFrame:GetColorRGB()
 			self.ctex:SetVertexColor(ColorPickerFrame:GetColorRGB())
 		end
 		
 		ColorPickerFrame.opacityFunc = function()
-			aCoreCDB[table][value].a = OpacitySliderFrame:GetValue()
+			aCoreCDB[table][value].a = ColorPickerFrame:GetColorAlpha()
 		end
 		
 		ColorPickerFrame.previousValues = {r = r, g = g, b = b, opacity = a}
@@ -1098,7 +1103,7 @@ T.createcolorpickerbu = function(parent, x, y, name, table, value)
 			self.ctex:SetVertexColor(aCoreCDB[table][value].r, aCoreCDB[table][value].g, aCoreCDB[table][value].b)
 		end
 		
-		ColorPickerFrame:SetColorRGB(r, g, b)
+		ColorPickerFrame.Content.ColorPicker:SetColorRGB(r, g, b)
 		ColorPickerFrame:Hide()
 		ColorPickerFrame:Show()
 	end)
