@@ -842,6 +842,32 @@ T.CVartogglebox = function(parent, x, y, value, name, arg1, arg2, tip)
 	parent[value] = bu
 end
 
+T.createinputbox = function(parent, width, points, text)
+	local box = CreateFrame("EditBox", nil, parent, "BackdropTemplate")
+	box:SetSize(width or 100, 20)
+	box:SetPoint(unpack(points))
+	F.CreateBD(box)
+	
+	box:SetFont(GameFontHighlight:GetFont(), 12, "OUTLINE")
+	box:SetAutoFocus(false)
+	box:SetTextInsets(3, 0, 0, 0)
+	
+	box:SetScript("OnShow", function(self) self:SetText(text) end)
+	box:SetScript("OnEditFocusGained", function(self) self:HighlightText() end)
+	box:SetScript("OnEscapePressed", function(self) self:ClearFocus() self:SetText(text) end)
+	box:SetScript("OnEnterPressed", function(self) self:ClearFocus() end)
+	
+	box:SetScript("OnEnable", function(self)	
+		self:SetTextColor(1, 1, 1, 1)	
+	end)
+	
+	box:SetScript("OnDisable", function(self)	
+		self:SetTextColor(.7, .7, .7, .5)
+	end)
+	
+	return box
+end
+
 T.createeditbox = function(parent, x, y, name, table, value, tip)
 	local box = CreateFrame("EditBox", G.uiname..value.."EditBox", parent)
 	box:SetSize(180, 20)
