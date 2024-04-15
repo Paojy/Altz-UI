@@ -810,6 +810,7 @@ local CreateCastbars = function(self, unit)
 			if not object or object == self then	
 				if aCoreCDB["UnitframeOptions"]["castbars"] then
 					self:EnableElement("Castbar")
+					self.Castbar:ForceUpdate()
 				else
 					self:DisableElement("Castbar")
 				end
@@ -1077,26 +1078,6 @@ local PostCreateIcon = function(auras, icon)
 	auras.showDebuffType = true
 end
 
-local PostCreateIndicatorIcon = function(auras, icon)
-	icon.Icon:SetTexCoord(.07, .93, .07, .93)
-
-	icon.Count:ClearAllPoints()
-	icon.Count:SetPoint("BOTTOM", 0, -3)
-	icon.Count:SetFontObject(nil)
-	icon.Count:SetFont(G.numFont, aCoreCDB["UnitframeOptions"]["hotind_size"]*.8, "OUTLINE")
-	icon.Count:SetTextColor(.9, .9, .1)
-
-	icon.Overlay:SetTexture(G.media.blank)
-	icon.Overlay:SetDrawLayer("BACKGROUND")
-	icon.Overlay:SetPoint("TOPLEFT", icon, "TOPLEFT", -1, 1)
-	icon.Overlay:SetPoint("BOTTOMRIGHT", icon, "BOTTOMRIGHT", 1, -1)
-
-	icon.bd = T.createBackdrop(icon, icon, 0, true)
-
-	icon.Cooldown.noshowcd = true
-	icon.Cooldown:SetReverse(true)
-end
-
 local CreateAuraTimer = function(self, elapsed)
 	self.elapsed = (self.elapsed or 0) + elapsed
 
@@ -1205,16 +1186,6 @@ local PlayerDebuffFilter = function(icons, unit, data)
 		return false
 	else
 		return true
-	end
-end
-
-local HealerInd_AuraFilter = function(icons, unit, data)
-	if data.sourceUnit == "player" then -- show my buffs
-		if aCoreCDB["UnitframeOptions"]["hotind_filtertype"] == "blacklist" and not aCoreCDB["UnitframeOptions"]["hotind_auralist"][data.spellId] then
-			return true
-		elseif aCoreCDB["UnitframeOptions"]["hotind_filtertype"] == "whitelist"	and aCoreCDB["UnitframeOptions"]["hotind_auralist"][data.spellId] then
-			return true
-		end
 	end
 end
 
@@ -1342,27 +1313,6 @@ T.CreateAuras = function(self, unit)
 			end
 		end
 
-		self.Auras = Auras
-		Auras.ApplySettings()
-		
-	elseif u == "raid" then -- 团队框架的光环
-		local Auras = CreateFrame("Frame", nil, self)
-		Auras.spacing = 1
-		Auras:SetPoint("TOPRIGHT", self, "TOPRIGHT", -1, -1)
-		Auras.initialAnchor = "TOPRIGHT"
-		Auras["growth-x"] = "LEFT"
-		Auras["growth-y"] = "DOWN"
-		Auras.numDebuffs = 1
-		Auras.numBuffs = 8
-		Auras.FilterAura = HealerInd_AuraFilter
-		Auras.PostCreateButton = PostCreateIndicatorIcon
-		
-		Auras.ApplySettings =  function()
-			Auras:SetHeight(aCoreCDB["UnitframeOptions"]["healerraidheight"])
-			Auras:SetWidth(aCoreCDB["UnitframeOptions"]["healerraidwidth"]-2)
-			Auras.size = aCoreCDB["UnitframeOptions"]["hotind_size"]
-		end
-		
 		self.Auras = Auras
 		Auras.ApplySettings()
 		
@@ -1552,7 +1502,7 @@ local func = function(self, unit)
 	hp.ind = hp:CreateTexture(nil, "OVERLAY", nil, 1)
 	hp.ind:SetTexture("Interface\\Buttons\\WHITE8x8")
 	hp.ind:SetVertexColor(0, 0, 0)
-	hp.ind:SetSize(1, aCoreCDB["UnitframeOptions"]["height"])
+	hp.ind:SetSize(1, 18)
 	hp.ind:SetPoint("RIGHT", hp:GetStatusBarTexture(), "LEFT", 0, 0)
 	
 	self.Health = hp
@@ -1576,6 +1526,8 @@ local func = function(self, unit)
 			hp.bg:SetTexture(G.media.ufbar)
 			hp.bg:SetGradient("VERTICAL", CreateColor(.2,.2,.2,0), CreateColor(.25,.25,.25,0))
 		end
+		
+		hp.ind:SetSize(1, aCoreCDB["UnitframeOptions"]["height"])
 		
 		-- height, width --
 		if multicheck(u, "targettarget", "focustarget", "pet") then
@@ -1622,6 +1574,7 @@ local func = function(self, unit)
 			if not object or object == self then	
 				if aCoreCDB["UnitframeOptions"]["portrait"] then
 					self:EnableElement("Portrait")
+					self.Portrait:ForceUpdate()
 				else
 					self:DisableElement("Portrait")
 				end
@@ -1751,7 +1704,8 @@ local func = function(self, unit)
 		fader.EnableSettings = function(object)
 			if not object or object == self then	
 				if aCoreCDB["UnitframeOptions"]["enablefade"] then
-					self:EnableElement("Fader")					
+					self:EnableElement("Fader")
+					self.Fader:ForceUpdate()
 				else
 					self:DisableElement("Fader")
 					if self.Portrait then self.Portrait:SetAlpha(1) end
@@ -1793,6 +1747,7 @@ local UnitSpecific = {
 				if not object or object == self then
 					if aCoreCDB["UnitframeOptions"]["stagger"] then
 						self:EnableElement("Stagger")
+						self.Stagger:ForceUpdate()
 					else
 						self:DisableElement("Stagger")
 					end
@@ -1830,6 +1785,7 @@ local UnitSpecific = {
 				if not object or object == self then
 					if aCoreCDB["UnitframeOptions"]["dpsmana"] then
 						self:EnableElement("Dpsmana")
+						self.Dpsmana:ForceUpdate()
 					else
 						self:DisableElement("Dpsmana")
 					end
@@ -1874,6 +1830,7 @@ local UnitSpecific = {
 			if not object or object == self then	
 				if aCoreCDB["UnitframeOptions"]["pvpicon"] then
 					self:EnableElement("PvPIndicator")
+					self.PvPIndicator:ForceUpdate()
 				else
 					self:DisableElement("PvPIndicator")
 				end
@@ -1901,6 +1858,7 @@ local UnitSpecific = {
 			if not object or object == self then
 				if aCoreCDB["UnitframeOptions"]["showthreatbar"] then
 					self:EnableElement("ThreatBar")
+					self.ThreatBar:ForceUpdate()
 				else
 					self:DisableElement("ThreatBar")
 				end
@@ -2741,9 +2699,6 @@ local function EnableUFSettings(elements)
 			if obj[e] then
 				if obj[e].EnableSettings then
 					obj[e].EnableSettings()
-				end
-				if obj[e].ForceUpdate then
-					obj[e]:ForceUpdate()
 				end
 			end
 		end

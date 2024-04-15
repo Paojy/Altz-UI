@@ -232,6 +232,23 @@ local function CreateOptionPage(name, title, parent, orientation, a, scroll)
 		Options.SF:SetScrollChild(Options.SFAnchor)
 		
 		F.ReskinScroll(_G[G.uiname..name.." ScrollFrameScrollBar"])
+		
+		Options.SF.Cover = CreateFrame("Frame", nil, Options.SF)
+		Options.SF.Cover:SetAllPoints()
+		Options.SF.Cover:SetFrameLevel(Options.SFAnchor:GetFrameLevel()+10)
+		Options.SF.Cover.tex = Options.SF.Cover:CreateTexture(nil, "OVERLAY")
+		Options.SF.Cover.tex:SetAllPoints()
+		Options.SF.Cover.tex:SetColorTexture(.3, .3, .3, .7)
+		Options.SF.Cover:EnableMouse(true)
+		Options.SF.Cover:Hide()
+		
+		Options.SF.Enable = function()
+			Options.SF.Cover:Hide()
+		end
+		
+		Options.SF.Disable = function()
+			Options.SF.Cover:Show()
+		end
 	end
 	
 	return Options
@@ -637,6 +654,7 @@ CreateDividingLine(ItemOptions, -200)
 T.createcheckbutton(ItemOptions, 30, 210, L["自动售卖"], "ItemOptions", "autosell", L["自动售卖提示"])
 T.createcheckbutton(ItemOptions, 30, 240, L["自动购买"], "ItemOptions", "autobuy", L["自动购买提示"])
 
+
 ItemOptions.SF:ClearAllPoints()
 ItemOptions.SF:SetPoint("TOPLEFT", ItemOptions, "TOPLEFT", 40, -310)
 ItemOptions.SF:SetPoint("BOTTOMRIGHT", ItemOptions, "TOPLEFT", 350, -500)
@@ -707,33 +725,9 @@ local function CreateAutobuyButtonList()
 	LineUpAutobuyList()
 end
 
-local Autobuy_iteminput = CreateFrame("EditBox", G.uiname.."AutobuyList ItemInput", ItemOptions, "BackdropTemplate")
-Autobuy_iteminput:SetSize(150, 20)
-Autobuy_iteminput:SetPoint("TOPLEFT", 40, -280)
-F.CreateBD(Autobuy_iteminput)
+local Autobuy_iteminput = T.createinputbox(ItemOptions, 150, {"TOPLEFT", 40, -280}, L["输入自动购买的物品ID"])
 
-Autobuy_iteminput:SetFont(GameFontHighlight:GetFont(), 12, "OUTLINE")
-Autobuy_iteminput:SetAutoFocus(false)
-Autobuy_iteminput:SetTextInsets(3, 0, 0, 0)
-
-Autobuy_iteminput:SetScript("OnShow", function(self) self:SetText(L["输入自动购买的物品ID"]) end)
-Autobuy_iteminput:SetScript("OnEditFocusGained", function(self) self:HighlightText() end)
-Autobuy_iteminput:SetScript("OnEscapePressed", function(self) self:ClearFocus() self:SetText(L["输入物品ID"]) end)
-Autobuy_iteminput:SetScript("OnEnterPressed", function(self) self:ClearFocus() end)
-
-local Autobuy_quantityinput = CreateFrame("EditBox", G.uiname.."AutobuyList QuantityInput", ItemOptions, "BackdropTemplate")
-Autobuy_quantityinput:SetSize(80, 20)
-Autobuy_quantityinput:SetPoint("LEFT", Autobuy_iteminput, "RIGHT", 15, 0)
-F.CreateBD(Autobuy_quantityinput)
-
-Autobuy_quantityinput:SetFont(GameFontHighlight:GetFont(), 12, "OUTLINE")
-Autobuy_quantityinput:SetAutoFocus(false)
-Autobuy_quantityinput:SetTextInsets(3, 0, 0, 0)
-
-Autobuy_quantityinput:SetScript("OnShow", function(self) self:SetText(L["输入数量"]) end)
-Autobuy_quantityinput:SetScript("OnEditFocusGained", function(self) self:HighlightText() end)
-Autobuy_quantityinput:SetScript("OnEscapePressed", function(self) self:ClearFocus() self:SetText(L["输入数量"]) end)
-Autobuy_quantityinput:SetScript("OnEnterPressed", function(self) self:ClearFocus() end)
+local Autobuy_quantityinput = T.createinputbox(ItemOptions, 80, {"LEFT", Autobuy_iteminput, "RIGHT", 15, 0}, L["输入数量"])
 
 local Autobuy_additembutton = CreateFrame("Button", G.uiname.."Autobuy Add Item Button", ItemOptions, "UIPanelButtonTemplate")
 Autobuy_additembutton:SetPoint("LEFT", Autobuy_quantityinput, "RIGHT", 15, 0)
@@ -771,6 +765,7 @@ Autobuy_additembutton:SetScript("OnClick", function(self)
 	end
 end)
 
+T.createDR(ItemOptions.autobuy, ItemOptions.SF, Autobuy_iteminput, Autobuy_quantityinput, Autobuy_additembutton)
 --====================================================--
 --[[               -- Unit Frames --                ]]--
 --====================================================--
@@ -830,13 +825,13 @@ UFInnerframe.size = CreateOptionPage("UF Options size", L["尺寸"], UFInnerfram
 
 T.createslider(UFInnerframe.size, 30, 80, L["高度"], "UnitframeOptions", "height", 1, 5, 50, 1)
 UFInnerframe.size.height.apply = function()
-	T.ApplyUFSettings({"Health", "PVPSpecIcon"})
+	T.ApplyUFSettings({"Health", "Power", "Auras", "Castbar", "ClassPower", "Runes", "Stagger", "Dpsmana", "PVPSpecIcon"})
 	T.UpdatePartySize()
 end
 
 T.createslider(UFInnerframe.size, 30, 120, L["宽度"], "UnitframeOptions", "width", 1, 50, 500, 1, L["宽度提示"])
 UFInnerframe.size.width.apply = function()
-	T.ApplyUFSettings({"Health", "Auras"})
+	T.ApplyUFSettings({"Health", "Auras", "ClassPower", "Runes", "Stagger", "Dpsmana"})
 end
 
 T.createslider(UFInnerframe.size, 30, 160, L["能量条高度"], "UnitframeOptions", "ppheight", 100, 5, 100, 5)
@@ -1281,36 +1276,107 @@ end
 -- 样式
 RFInnerframe.style = CreateOptionPage("RF Options style", L["样式"], RFInnerframe, "VERTICAL", .3)
 
-T.createslider(RFInnerframe.style, 30, 80, L["高度"], "UnitframeOptions", "healerraidheight", 1, 10, 150, 1)
-T.createslider(RFInnerframe.style, 30, 120, L["宽度"], "UnitframeOptions", "healerraidwidth", 1, 10, 150, 1)
-T.createcheckbutton(RFInnerframe.style, 30, 140, L["raidmanabars"], "UnitframeOptions", "raidmanabars")
-T.createslider(RFInnerframe.style,  30, 190, L["能量条高度"], "UnitframeOptions", "raidppheight", 100, 5, 100, 5)
+T.createslider(RFInnerframe.style, 30, 80, L["高度"], "UnitframeOptions", "raidheight", 1, 10, 150, 1)
+RFInnerframe.style.raidheight.apply = function()
+	T.ApplyUFSettings({"Health", "Auras"})
+	T.UpdateGroupSize()
+end
+
+T.createslider(RFInnerframe.style, 30, 120, L["宽度"], "UnitframeOptions", "raidwidth", 1, 10, 150, 1)
+RFInnerframe.style.raidwidth.apply = function()
+	T.ApplyUFSettings({"Health", "Auras"})
+	T.UpdateGroupSize()
+end
+
+T.createcheckbutton(RFInnerframe.style, 30, 140, L["治疗法力条"], "UnitframeOptions", "raidmanabars")
+RFInnerframe.style.raidmanabars.apply = function()
+	T.EnableUFSettings({"Power"})
+end
+
+T.createslider(RFInnerframe.style,  30, 190, L["治疗法力条高度"], "UnitframeOptions", "raidppheight", 100, 5, 100, 5)
+RFInnerframe.style.raidppheight.apply = function()
+	T.ApplyUFSettings({"Power"})
+end
+
 T.createDR(RFInnerframe.style.raidmanabars, RFInnerframe.style.raidppheight)
 
 T.createslider(RFInnerframe.style, 30, 230, L["名字长度"], "UnitframeOptions", "namelength", 1, 2, 10, 1)
-T.createslider(RFInnerframe.style, 30, 270, L["字体大小"], "UnitframeOptions", "raidfontsize", 1, 1, 25, 1)
+RFInnerframe.style.namelength.apply = function()
+	T.UpdateGroupTag("update")
+end
+
+T.createslider(RFInnerframe.style, 30, 270, L["字体大小"], "UnitframeOptions", "raidfontsize", 1, 8, 20, 1)
+RFInnerframe.style.raidfontsize.apply = function()
+	T.UpdateGroupTag("fontsize")
+end
 
 T.createcheckbutton(RFInnerframe.style, 30, 310, L["GCD"], "UnitframeOptions", "showgcd", L["GCD提示"])
-T.createcheckbutton(RFInnerframe.style, 200, 310, L["主坦克和主助手"], "UnitframeOptions", "healtank_assisticon", L["主坦克和主助手提示"])
-T.createcheckbutton(RFInnerframe.style, 30, 340, L["显示缺失生命值"], "UnitframeOptions", "showmisshp", L["显示缺失生命值提示"])
-T.createcheckbutton(RFInnerframe.style, 200, 340, L["治疗和吸收预估"], "UnitframeOptions", "healprediction", L["治疗和吸收预估提示"])
-T.createcheckbutton(RFInnerframe.style, 30, 370, L["刷新载具"], "UnitframeOptions", "toggleForVehicle")
+RFInnerframe.style.showgcd.apply = function()
+	T.EnableUFSettings({"GCD"})
+end
 
+T.createcheckbutton(RFInnerframe.style, 200, 310, L["主坦克和主助手"], "UnitframeOptions", "raidrole_icon", L["主坦克和主助手提示"])
+RFInnerframe.style.raidrole_icon.apply = function()
+	T.EnableUFSettings({"RaidRoleIndicator"})
+end
+
+T.createcheckbutton(RFInnerframe.style, 30, 340, L["显示缺失生命值"], "UnitframeOptions", "showmisshp", L["显示缺失生命值提示"])
+RFInnerframe.style.showmisshp.apply = function()
+	T.UpdateGroupTag("update")
+end
+
+T.createcheckbutton(RFInnerframe.style, 200, 340, L["治疗和吸收预估"], "UnitframeOptions", "healprediction", L["治疗和吸收预估提示"])
+RFInnerframe.style.healprediction.apply = function()
+	T.EnableUFSettings({"HealthPrediction"})
+end
 
 -- 治疗指示器
 RFInnerframe.ind = CreateOptionPage("RF Options indicators", L["治疗指示器"], RFInnerframe, "VERTICAL", .3, true)
+
+T.createslider(RFInnerframe.ind, 30, 80, L["尺寸"], "UnitframeOptions", "hotind_size", 1, 10, 25, 1)
+RFInnerframe.ind.hotind_size.apply = function()
+	T.ApplyUFSettings({"AltzIndicators", "Auras"})
+end
+
 local indicatorstyle_group = {
 	["number_ind"] = L["数字指示器"],
 	["icon_ind"] = L["图标指示器"],
 }
-T.createradiobuttongroup(RFInnerframe.ind, 30, 60, L["样式"], "UnitframeOptions", "hotind_style", indicatorstyle_group)
-T.createslider(RFInnerframe.ind, 30, 110, L["尺寸"], "UnitframeOptions", "hotind_size", 1, 10, 40, 1)
+T.createradiobuttongroup(RFInnerframe.ind, 30, 100, L["样式"], "UnitframeOptions", "hotind_style", indicatorstyle_group)
+
+local function Updateindsettings()
+	if aCoreCDB["UnitframeOptions"]["hotind_style"] == "icon_ind" then
+		RFInnerframe.ind.aurafliter_title:SetTextColor(1, 1, 1)	
+		RFInnerframe.ind.hotind_filtertype:Enable()
+		RFInnerframe.ind.Spellinput:Enable()
+		RFInnerframe.ind.Add:Enable()
+		RFInnerframe.ind.SF:Enable()
+	else
+		RFInnerframe.ind.aurafliter_title:SetTextColor(.5, .5, .5)
+		RFInnerframe.ind.hotind_filtertype:Disable()
+		RFInnerframe.ind.Spellinput:Disable()
+		RFInnerframe.ind.Add:Disable()
+		RFInnerframe.ind.SF:Disable()
+	end
+end
+
+RFInnerframe.ind.hotind_style.apply = function()
+	T.EnableUFSettings({"AltzIndicators", "Auras"})
+	Updateindsettings()
+end
+RFInnerframe.ind.hotind_style:HookScript("OnShow", Updateindsettings)
+
+CreateDividingLine(RFInnerframe.ind, -135)
+
+RFInnerframe.ind.aurafliter_title = T.createtext(RFInnerframe.ind, "OVERLAY", 14, "OUTLINE", "LEFT")
+RFInnerframe.ind.aurafliter_title:SetPoint("TOPLEFT", RFInnerframe.ind, "TOPLEFT", 30, -150)
+RFInnerframe.ind.aurafliter_title:SetText(L["图标指示器"]..L["设置"])
 
 local indicatorfiltertype_group = {
 	["whitelist"] = L["白名单"],
 	["blacklist"] = L["黑名单"],
 }
-T.createradiobuttongroup(RFInnerframe.ind, 30, 140, L["过滤方式"], "UnitframeOptions", "hotind_filtertype", indicatorfiltertype_group)
+T.createradiobuttongroup(RFInnerframe.ind, 25, 165, L["过滤方式"], "UnitframeOptions", "hotind_filtertype", indicatorfiltertype_group)
 	
 local function LineUphotindauralist(parent)
 	local index = 1
@@ -1322,7 +1388,7 @@ end
 	
 local function CreatehotindauralistButton(spellID, parent)
 	local bu = CreateFrame("Frame", G.uiname.."hotind"..spellID, parent)
-	bu:SetSize(330, 20)
+	bu:SetSize(360, 20)
 
 	bu.icon = CreateFrame("Button", nil, bu)
 	bu.icon:SetSize(18, 18)
@@ -1343,7 +1409,7 @@ local function CreatehotindauralistButton(spellID, parent)
 
 	bu.close = CreateFrame("Button", nil, bu)
 	bu.close:SetSize(22,22)
-	bu.close:SetPoint("LEFT", 310, 0)
+	bu.close:SetPoint("RIGHT", -5, 0)
 	bu.close.text = T.createtext(bu.close, "OVERLAY", 12, "OUTLINE", "CENTER")
 	bu.close.text:SetPoint("CENTER")
 	bu.close.text:SetText("x")
@@ -1378,24 +1444,12 @@ end
 	
 local function CreatehotindAuraOptions()
 
-	RFInnerframe.ind.SF:SetPoint("TOPLEFT", 30, -190)
-	RFInnerframe.ind.SF:SetPoint("BOTTOMRIGHT", -30, 20)
+	RFInnerframe.ind.SF:SetPoint("TOPLEFT", 30, -220)
+	RFInnerframe.ind.SF:SetPoint("BOTTOMRIGHT", -50, 20)
 	
 	Createhotindauralist(RFInnerframe.ind.SFAnchor)
 	
-	RFInnerframe.ind.Spellinput = CreateFrame("EditBox", G.uiname.."hotind_auralist Spell Input", RFInnerframe.ind, "BackdropTemplate")
-	RFInnerframe.ind.Spellinput:SetSize(120, 20)
-	RFInnerframe.ind.Spellinput:SetPoint("TOPLEFT", RFInnerframe.ind, "TOPLEFT", 40, -170)
-	F.CreateBD(RFInnerframe.ind.Spellinput)
-	
-	RFInnerframe.ind.Spellinput:SetFont(GameFontHighlight:GetFont(), 12, "OUTLINE")
-	RFInnerframe.ind.Spellinput:SetAutoFocus(false)
-	RFInnerframe.ind.Spellinput:SetTextInsets(3, 0, 0, 0)
-	
-	RFInnerframe.ind.Spellinput:SetScript("OnShow", function(self) self:SetText(L["输入法术ID"]) end)
-	RFInnerframe.ind.Spellinput:SetScript("OnEditFocusGained", function(self) self:HighlightText() end)
-	RFInnerframe.ind.Spellinput:SetScript("OnEscapePressed", function(self) self:ClearFocus() self:SetText(L["输入法术ID"]) end)
-	RFInnerframe.ind.Spellinput:SetScript("OnEnterPressed", function(self) self:ClearFocus() end)
+	RFInnerframe.ind.Spellinput = T.createinputbox(RFInnerframe.ind, 120, {"TOPLEFT", RFInnerframe.ind, "TOPLEFT", 30, -195}, L["输入法术ID"])
 	
 	RFInnerframe.ind.Add = CreateFrame("Button", G.uiname.."hotind_auralist Add Button", RFInnerframe.ind, "UIPanelButtonTemplate")
 	RFInnerframe.ind.Add:SetPoint("LEFT", RFInnerframe.ind.Spellinput, "RIGHT", 10, 0)
@@ -1442,6 +1496,7 @@ local function CreatehotindAuraOptions()
 	end)
 end
 
+-- 点击施法
 RFInnerframe.clickcast = CreateOptionPage("RF Options clickcast", L["点击施法"], RFInnerframe, "VERTICAL", .3)
 
 local enableClickCastbu = T.createcheckbutton(RFInnerframe.clickcast, 30, 60, L["启用"], "UnitframeOptions", "enableClickCast", format(L["点击施法提示"], G.classcolor, G.classcolor, G.classcolor, G.classcolor, G.classcolor, G.classcolor))
@@ -1699,34 +1754,34 @@ raidicon_debufftitle:SetPoint("LEFT", RFInnerframe.Icon_Display, "TOPLEFT", 50, 
 raidicon_debufftitle:SetTextColor(1, .5, .3)
 raidicon_debufftitle:SetText(L["Debuffs"])
 
-T.createslider(RFInnerframe.Icon_Display, 60, 100, "X", "UnitframeOptions", "healerraid_debuff_anchor_x", 1, -50, 50, 1)
-T.createslider(RFInnerframe.Icon_Display, 260, 100, "Y", "UnitframeOptions", "healerraid_debuff_anchor_y", 1, -50, 50, 1)
-T.createslider(RFInnerframe.Icon_Display, 60, 140, L["图标数量"], "UnitframeOptions", "healerraid_debuff_num", 1, 1, 5, 1)
-T.createslider(RFInnerframe.Icon_Display, 260, 140, L["图标大小"], "UnitframeOptions", "healerraid_debuff_icon_size", 1, 10, 40, 1)
-T.createslider(RFInnerframe.Icon_Display, 60, 180, L["字体大小"], "UnitframeOptions", "healerraid_debuff_icon_fontsize", 1, 5, 20, 1)
+T.createslider(RFInnerframe.Icon_Display, 60, 100, "X", "UnitframeOptions", "raid_debuff_anchor_x", 1, -50, 50, 1)
+T.createslider(RFInnerframe.Icon_Display, 260, 100, "Y", "UnitframeOptions", "raid_debuff_anchor_y", 1, -50, 50, 1)
+T.createslider(RFInnerframe.Icon_Display, 60, 140, L["图标数量"], "UnitframeOptions", "raid_debuff_num", 1, 1, 5, 1)
+T.createslider(RFInnerframe.Icon_Display, 260, 140, L["图标大小"], "UnitframeOptions", "raid_debuff_icon_size", 1, 10, 40, 1)
+T.createslider(RFInnerframe.Icon_Display, 60, 180, L["字体大小"], "UnitframeOptions", "raid_debuff_icon_fontsize", 1, 5, 20, 1)
 
-RFInnerframe.Icon_Display.healerraid_debuff_num:SetWidth(160)
-RFInnerframe.Icon_Display.healerraid_debuff_icon_size:SetWidth(160)
-RFInnerframe.Icon_Display.healerraid_debuff_icon_fontsize:SetWidth(160)
-RFInnerframe.Icon_Display.healerraid_debuff_anchor_x:SetWidth(160)
-RFInnerframe.Icon_Display.healerraid_debuff_anchor_y:SetWidth(160)
+RFInnerframe.Icon_Display.raid_debuff_num:SetWidth(160)
+RFInnerframe.Icon_Display.raid_debuff_icon_size:SetWidth(160)
+RFInnerframe.Icon_Display.raid_debuff_icon_fontsize:SetWidth(160)
+RFInnerframe.Icon_Display.raid_debuff_anchor_x:SetWidth(160)
+RFInnerframe.Icon_Display.raid_debuff_anchor_y:SetWidth(160)
 
 local raidicon_bufftitle = T.createtext(RFInnerframe.Icon_Display, "OVERLAY", 18, "OUTLINE", "LEFT")
 raidicon_bufftitle:SetPoint("LEFT", RFInnerframe.Icon_Display, "TOPLEFT", 50, -225)
 raidicon_bufftitle:SetTextColor(.3, 1, .5)
 raidicon_bufftitle:SetText(L["Buffs"])
 
-T.createslider(RFInnerframe.Icon_Display, 60, 250, "X", "UnitframeOptions", "healerraid_buff_anchor_x", 1, -50, 50, 1)
-T.createslider(RFInnerframe.Icon_Display, 260, 250, "Y", "UnitframeOptions", "healerraid_buff_anchor_y", 1, -50, 50, 1)
-T.createslider(RFInnerframe.Icon_Display, 60, 290, L["图标数量"], "UnitframeOptions", "healerraid_buff_num", 1, 1, 5, 1)
-T.createslider(RFInnerframe.Icon_Display, 260, 290, L["图标大小"], "UnitframeOptions", "healerraid_buff_icon_size", 1, 10, 40, 1)
-T.createslider(RFInnerframe.Icon_Display, 60, 330, L["字体大小"], "UnitframeOptions", "healerraid_buff_icon_fontsize", 1, 5, 20, 1)
+T.createslider(RFInnerframe.Icon_Display, 60, 250, "X", "UnitframeOptions", "raid_buff_anchor_x", 1, -50, 50, 1)
+T.createslider(RFInnerframe.Icon_Display, 260, 250, "Y", "UnitframeOptions", "raid_buff_anchor_y", 1, -50, 50, 1)
+T.createslider(RFInnerframe.Icon_Display, 60, 290, L["图标数量"], "UnitframeOptions", "raid_buff_num", 1, 1, 5, 1)
+T.createslider(RFInnerframe.Icon_Display, 260, 290, L["图标大小"], "UnitframeOptions", "raid_buff_icon_size", 1, 10, 40, 1)
+T.createslider(RFInnerframe.Icon_Display, 60, 330, L["字体大小"], "UnitframeOptions", "raid_buff_icon_fontsize", 1, 5, 20, 1)
 
-RFInnerframe.Icon_Display.healerraid_buff_num:SetWidth(160)
-RFInnerframe.Icon_Display.healerraid_buff_icon_size:SetWidth(160)
-RFInnerframe.Icon_Display.healerraid_buff_icon_fontsize:SetWidth(160)
-RFInnerframe.Icon_Display.healerraid_buff_anchor_x:SetWidth(160)
-RFInnerframe.Icon_Display.healerraid_buff_anchor_y:SetWidth(160)
+RFInnerframe.Icon_Display.raid_buff_num:SetWidth(160)
+RFInnerframe.Icon_Display.raid_buff_icon_size:SetWidth(160)
+RFInnerframe.Icon_Display.raid_buff_icon_fontsize:SetWidth(160)
+RFInnerframe.Icon_Display.raid_buff_anchor_x:SetWidth(160)
+RFInnerframe.Icon_Display.raid_buff_anchor_y:SetWidth(160)
 
 RFInnerframe.Icon_Display.DividingLine = RFInnerframe.Icon_Display:CreateTexture(nil, "ARTWORK")
 RFInnerframe.Icon_Display.DividingLine:SetSize(RFInnerframe.Icon_Display:GetWidth()-50, 1)

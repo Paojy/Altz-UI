@@ -48,49 +48,13 @@ local function healpreditionbar(self, ...)
 	hpb:SetPoint('TOP')
 	hpb:SetPoint('BOTTOM')
 	
-	hpb:SetWidth(aCoreCDB["UnitframeOptions"]["healerraidwidth"])
+	hpb:SetWidth(aCoreCDB["UnitframeOptions"]["raidwidth"])
 	return hpb
-end
-
-local function CreateHealPredition(self)
-	local myBar = healpreditionbar(self, .4, .8, 0, .5)
-	local otherBar = healpreditionbar(self, 0, .4, 0, .5)
-	local absorbBar = healpreditionbar(self, .2, 1, 1, .7)
-	
-	self.HealthPrediction = {
-		myBar = myBar,
-		otherBar = otherBar,
-		absorbBar = absorbBar,
-		maxOverflow = 1.2,
-	}
-	self.HealthPrediction.ApplySettings = function()
-		if aCoreCDB["UnitframeOptions"]["style"] ~= 3 then
-			self.HealthPrediction.myBar:SetPoint('LEFT', self.Health:GetStatusBarTexture(), 'LEFT')
-			self.HealthPrediction.otherBar:SetPoint('LEFT', self.Health:GetStatusBarTexture(), 'LEFT')
-			self.HealthPrediction.absorbBar:SetPoint('LEFT', self.Health:GetStatusBarTexture(), 'LEFT')
-		else
-			self.HealthPrediction.myBar:SetPoint('LEFT', self.Health:GetStatusBarTexture(), 'RIGHT')
-			self.HealthPrediction.otherBar:SetPoint('LEFT', self.Health:GetStatusBarTexture(), 'RIGHT')
-			self.HealthPrediction.absorbBar:SetPoint('LEFT', self.Health:GetStatusBarTexture(), 'RIGHT')
-		end
-	end
-	self.HealthPrediction.ApplySettings()
-end
-
-local function CreateGCDframe(self)
-    local Gcd = CreateFrame("StatusBar", nil, self)
-    Gcd:SetAllPoints(self)
-    Gcd:SetStatusBarTexture(G.media.blank)
-    Gcd:SetStatusBarColor(1, 1, 1, .4)
-    Gcd:SetFrameLevel(5)
-    self.GCD = Gcd
 end
 
 local function UpdateRaidMana(pp, unit, cur, min, max)
 	local _, ptype = UnitPowerType(unit)
-	local self = pp:GetParent()
-    if aCoreCDB["UnitframeOptions"]["raidmanabars"] and ptype == 'MANA' then
-		pp:SetHeight(aCoreCDB["UnitframeOptions"]["healerraidheight"]*aCoreCDB["UnitframeOptions"]["raidppheight"])
+    if ptype == 'MANA' then		
 		if max == 0 then
 			pp.backdrop:SetBackdropColor(0, 0, 0.7)
 		elseif cur/max > 0.2 then
@@ -100,16 +64,39 @@ local function UpdateRaidMana(pp, unit, cur, min, max)
 		else
 			pp.backdrop:SetBackdropColor(0, 0, 0.7)
 		end
-		pp.backdrop:SetBackdropBorderColor(0, 0, 0)
-	else
-		pp:SetHeight(0.0000001)
-		pp.backdrop:SetBackdropBorderColor(0, 0, 0, 0)
 	end
 	T.Updatepowerbar(pp, unit, cur, min, max)
 end
 
-local EventFrame = CreateFrame("Frame")
+local HealerInd_AuraFilter = function(icons, unit, data)
+	if data.sourceUnit == "player" then -- show my buffs
+		if aCoreCDB["UnitframeOptions"]["hotind_filtertype"] == "blacklist" and not aCoreCDB["UnitframeOptions"]["hotind_auralist"][data.spellId] then
+			return true
+		elseif aCoreCDB["UnitframeOptions"]["hotind_filtertype"] == "whitelist"	and aCoreCDB["UnitframeOptions"]["hotind_auralist"][data.spellId] then
+			return true
+		end
+	end
+end
 
+local PostCreateIndicatorIcon = function(auras, icon)
+	icon.Icon:SetTexCoord(.07, .93, .07, .93)
+
+	icon.Count:ClearAllPoints()
+	icon.Count:SetPoint("BOTTOM", 0, -3)
+	icon.Count:SetFontObject(nil)
+	icon.Count:SetFont(G.numFont, aCoreCDB["UnitframeOptions"]["hotind_size"]*.8, "OUTLINE")
+	icon.Count:SetTextColor(.9, .9, .1)
+
+	icon.Overlay:SetTexture(G.media.blank)
+	icon.Overlay:SetDrawLayer("BACKGROUND")
+	icon.Overlay:SetPoint("TOPLEFT", icon, "TOPLEFT", -1, 1)
+	icon.Overlay:SetPoint("BOTTOMRIGHT", icon, "BOTTOMRIGHT", 1, -1)
+
+	icon.bd = T.createBackdrop(icon, icon, 0, true)
+
+	icon.Cooldown.noshowcd = true
+	icon.Cooldown:SetReverse(true)
+end
 --=============================================--
 --[[              Click Cast                 ]]--
 --=============================================--
@@ -200,29 +187,10 @@ local function DelayClickSets()
 	end
 end
 
-local vehicle_pendingFrames = {}
-
-local function CreateVehicleToggle(self)
-	if not aCoreCDB["UnitframeOptions"]["toggleForVehicle"] then return end
-	
-	if InCombatLockdown() then
-		vehicle_pendingFrames[self] = true
-	else
-		self:SetAttribute("toggleForVehicle", true)
-		vehicle_pendingFrames[self] = nil
-	end
-end
-
-local function DelayVehicleSets()
-	if not next(vehicle_pendingFrames) then return end
-
-	for frame in next, vehicle_pendingFrames do
-		frame:SetAttribute("toggleForVehicle", true)
-	end
-end
 --=============================================--
 --[[              Raid Frames                ]]--
 --=============================================--
+
 local func = function(self, unit)
 
     self:RegisterForClicks"AnyUp"
@@ -253,6 +221,7 @@ local func = function(self, unit)
 	self.bg.tex:SetTexture(G.media.ufbar)
 	self.bg.tex:SetVertexColor(0, 0, 0)
 	
+	-- health --
     local hp = T.createStatusbar(self, nil, nil, 1, 1, 1, 1)
 	hp:SetFrameLevel(3)
 	hp:SetAllPoints(self)
@@ -263,45 +232,127 @@ local func = function(self, unit)
 	hp.ind = hp:CreateTexture(nil, "OVERLAY", nil, 1)
     hp.ind:SetTexture("Interface\\Buttons\\WHITE8x8")
 	hp.ind:SetVertexColor(0, 0, 0)
-	hp.ind:SetSize(1, aCoreCDB["UnitframeOptions"]["healerraidheight"])
+	hp.ind:SetSize(1, 45)
 	hp.ind:SetPoint("RIGHT", hp:GetStatusBarTexture(), "LEFT", 0, 0)
 	
 	-- border --
 	self.backdrop = T.createBackdrop(hp, hp, 0)
 	
+	hp.ApplySettings = function()
+		hp.ind:SetSize(1, aCoreCDB["UnitframeOptions"]["raidheight"])
+		
+		if aCoreCDB["UnitframeOptions"]["style"] == 1 then
+			self.bg.tex:SetAlpha(0)
+			hp:SetStatusBarTexture(G.media.blank)
+			hp.bg:SetTexture(G.media.blank)
+			hp.bg:SetGradient("VERTICAL", CreateColor(.5, .5, .5, .5), CreateColor(0, 0, 0, 0))
+		elseif aCoreCDB["UnitframeOptions"]["style"] == 2 then
+			self.bg.tex:SetAlpha(1)
+			hp:SetStatusBarTexture(G.media.ufbar)
+			hp.bg:SetTexture(G.media.ufbar)
+			hp.bg:SetGradient("VERTICAL", CreateColor(.2,.2,.2,.15), CreateColor(.25,.25,.25,.6))
+		else
+			self.bg.tex:SetAlpha(1)
+			hp:SetStatusBarTexture(G.media.ufbar)
+			hp.bg:SetTexture(G.media.ufbar)
+			hp.bg:SetGradient("VERTICAL", CreateColor(.2,.2,.2,0), CreateColor(.25,.25,.25,0))
+		end
+	end
+	
     self.Health = hp
 	self.Health.PostUpdate = T.Updatehealthbar
 	self.Health.Override = T.Overridehealthbar
+	self.Health.ApplySettings()
 	
 	-- raid manabars --
 	local pp = T.createStatusbar(self, nil, nil, 1, 1, 1, 1)
 	pp:SetFrameLevel(3)
 	pp:SetPoint("BOTTOMLEFT", self, "BOTTOMLEFT")
-	pp:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT")	
+	pp:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT")
+	
 	pp.bg:SetGradient("VERTICAL", CreateColor(.2,.2,.2,.15), CreateColor(.25,.25,.25,.6))
 	pp.backdrop = T.createBackdrop(pp, pp, 0)
-	pp.ApplySettings = function()			
+
+	pp.EnableSettings = function(object)
+		if not object or object == self then	
+			if aCoreCDB["UnitframeOptions"]["raidmanabars"] then			
+				self:EnableElement("Power")
+				self.Power:ForceUpdate()
+			else
+				self:DisableElement("Power")
+			end
+		end
+	end
+	oUF:RegisterInitCallback(pp.EnableSettings)
+	
+	pp.ApplySettings = function()		
 		if aCoreCDB["UnitframeOptions"]["style"] == 1 then
 			pp:SetStatusBarTexture(G.media.blank)
 		else
 			pp:SetStatusBarTexture(G.media.ufbar)
 		end
-	end
+		
+		pp:SetHeight(aCoreCDB["UnitframeOptions"]["raidheight"]*aCoreCDB["UnitframeOptions"]["raidppheight"])
+	end	
 	
-	hp:SetPoint("BOTTOM", pp, "TOP", 0, 1)
 	self.Power = pp
-	self.Power.ApplySettings()
 	self.Power.PostUpdate = UpdateRaidMana
+	self.Power.ApplySettings()
 	
 	-- gcd frane --
-	if aCoreCDB["UnitframeOptions"]["showgcd"] then
-		CreateGCDframe(self)
+	local gcd = CreateFrame("StatusBar", nil, self)
+    gcd:SetAllPoints(self)
+    gcd:SetStatusBarTexture(G.media.blank)
+    gcd:SetStatusBarColor(1, 1, 1, .4)
+    gcd:SetFrameLevel(5)
+	
+	gcd.EnableSettings = function(object)
+		if not object or object == self then	
+			if aCoreCDB["UnitframeOptions"]["showgcd"] then
+				self:EnableElement("GCD")
+			else
+				self:DisableElement("GCD")
+			end
+		end
 	end
+	oUF:RegisterInitCallback(gcd.EnableSettings)
+	
+    self.GCD = gcd
 	
 	-- heal prediction --
-	if aCoreCDB["UnitframeOptions"]["healprediction"] then
-		CreateHealPredition(self)
+	local hp_predict = {
+		myBar = healpreditionbar(self, .4, .8, 0, .5),
+		otherBar = healpreditionbar(self, 0, .4, 0, .5),
+		absorbBar = healpreditionbar(self, .2, 1, 1, .7),
+		maxOverflow = 1.2,
+	}
+	
+	hp_predict.ApplySettings = function()
+		if aCoreCDB["UnitframeOptions"]["style"] ~= 3 then
+			hp_predict.myBar:SetPoint('LEFT', self.Health:GetStatusBarTexture(), 'LEFT')
+			hp_predict.otherBar:SetPoint('LEFT', self.Health:GetStatusBarTexture(), 'LEFT')
+			hp_predict.absorbBar:SetPoint('LEFT', self.Health:GetStatusBarTexture(), 'LEFT')
+		else
+			hp_predict.myBar:SetPoint('LEFT', self.Health:GetStatusBarTexture(), 'RIGHT')
+			hp_predict.otherBar:SetPoint('LEFT', self.Health:GetStatusBarTexture(), 'RIGHT')
+			hp_predict.absorbBar:SetPoint('LEFT', self.Health:GetStatusBarTexture(), 'RIGHT')
+		end
 	end
+	
+	hp_predict.EnableSettings = function(object)
+		if not object or object == self then	
+			if aCoreCDB["UnitframeOptions"]["healprediction"] then
+				self:EnableElement("HealthPrediction")				
+			else
+				self:DisableElement("HealthPrediction")
+			end
+		end
+	end
+	oUF:RegisterInitCallback(hp_predict.EnableSettings)
+	
+	self.HealthPrediction = hp_predict
+	self.HealthPrediction.ApplySettings()
+	
 	
 	local leader = hp:CreateTexture(nil, "OVERLAY", nil, 1)
     leader:SetSize(10, 10)
@@ -318,25 +369,34 @@ local func = function(self, unit)
     masterlooter:SetPoint('LEFT', leader, 'RIGHT', 0, 1)
     self.MasterLooterIndicator = masterlooter
 	
-	if aCoreCDB["UnitframeOptions"]["healtank_assisticon"] then
-		local raidrole = hp:CreateTexture(nil, 'OVERLAY', nil, 1)
-		raidrole:SetSize(10, 10)
-		raidrole:SetPoint('LEFT', masterlooter, 'RIGHT')
-		self.RaidRoleIndicator = raidrole
+	local raidrole = hp:CreateTexture(nil, 'OVERLAY', nil, 1)
+	raidrole:SetSize(10, 10)
+	raidrole:SetPoint('LEFT', masterlooter, 'RIGHT')
+	
+	raidrole.EnableSettings = function(object)
+		if not object or object == self then	
+			if aCoreCDB["UnitframeOptions"]["raidrole_icon"] then
+				self:EnableElement("RaidRoleIndicator")
+				self.RaidRoleIndicator:ForceUpdate()
+			else
+				self:DisableElement("RaidRoleIndicator")
+			end
+		end
 	end
+	oUF:RegisterInitCallback(raidrole.EnableSettings)
+	
+	self.RaidRoleIndicator = raidrole
 	
 	local lfd =  T.createtext(hp, "OVERLAY", 13, "OUTLINE", "CENTER")
 	lfd:SetFont(G.symbols, aCoreCDB["UnitframeOptions"]["raidfontsize"]-3, "OUTLINE")
 	lfd:SetPoint("BOTTOM", hp, 0, -1)
+	self.tag_lfd = lfd
 	self:Tag(lfd, '[Altz:LFD]')
 	
 	local raidname = T.createtext(hp, "ARTWORK", aCoreCDB["UnitframeOptions"]["raidfontsize"], "OUTLINE", "RIGHT")
 	raidname:SetPoint("BOTTOMRIGHT", hp, "BOTTOMRIGHT", -1, 5)
-	if aCoreCDB["UnitframeOptions"]["showmisshp"] then
-		self:Tag(raidname, '[Altz:hpraidname]')
-	else
-		self:Tag(raidname, '[Altz:raidname]')
-	end
+	self.tag_raidname = raidname
+	self:Tag(raidname, '[Altz:hpraidname]')
 	
     local ricon = hp:CreateTexture(nil, "OVERLAY", nil, 1)
 	ricon:SetSize(18 ,18)
@@ -346,6 +406,7 @@ local func = function(self, unit)
 	
 	local status = T.createtext(hp, "OVERLAY", aCoreCDB["UnitframeOptions"]["raidfontsize"]-2, "OUTLINE", "LEFT")
     status:SetPoint"TOPLEFT"
+	self.tag_status = status
 	self:Tag(status, '[Altz:AfkDnd][Altz:DDG]')
 	
 	local resurrecticon = hp:CreateTexture(nil, "OVERLAY")
@@ -368,32 +429,92 @@ local func = function(self, unit)
 	-- Debuffs
 	local Auras = CreateFrame("Frame", nil, self)
 	Auras:SetFrameLevel(4)
-	Auras.tfontsize = aCoreCDB["UnitframeOptions"]["healerraid_debuff_icon_fontsize"]
-	Auras.cfontsize = aCoreCDB["UnitframeOptions"]["healerraid_debuff_icon_fontsize"]
-	Auras.Icon_size = aCoreCDB["UnitframeOptions"]["healerraid_debuff_icon_size"]
-	Auras.anchor_x = aCoreCDB["UnitframeOptions"]["healerraid_debuff_anchor_x"]
-	Auras.anchor_y = aCoreCDB["UnitframeOptions"]["healerraid_debuff_anchor_y"]
-	Auras.numDebuffs = aCoreCDB["UnitframeOptions"]["healerraid_debuff_num"]
+	Auras.tfontsize = aCoreCDB["UnitframeOptions"]["raid_debuff_icon_fontsize"]
+	Auras.cfontsize = aCoreCDB["UnitframeOptions"]["raid_debuff_icon_fontsize"]
+	Auras.Icon_size = aCoreCDB["UnitframeOptions"]["raid_debuff_icon_size"]
+	Auras.anchor_x = aCoreCDB["UnitframeOptions"]["raid_debuff_anchor_x"]
+	Auras.anchor_y = aCoreCDB["UnitframeOptions"]["raid_debuff_anchor_y"]
+	Auras.numDebuffs = aCoreCDB["UnitframeOptions"]["raid_debuff_num"]
 	self.AltzAuras2 = Auras
 	
 	-- Tankbuff
     local Tankbuff = CreateFrame("Frame", nil, self)
 	Tankbuff:SetFrameLevel(4)
-	Tankbuff.tfontsize = aCoreCDB["UnitframeOptions"]["healerraid_buff_icon_fontsize"]
-	Tankbuff.cfontsize = aCoreCDB["UnitframeOptions"]["healerraid_buff_icon_fontsize"]
-	Tankbuff.Icon_size = aCoreCDB["UnitframeOptions"]["healerraid_buff_icon_size"]
-	Tankbuff.anchor_x = aCoreCDB["UnitframeOptions"]["healerraid_buff_anchor_x"]
-	Tankbuff.anchor_y = aCoreCDB["UnitframeOptions"]["healerraid_buff_anchor_y"]
-	Tankbuff.numBuffs = aCoreCDB["UnitframeOptions"]["healerraid_buff_num"]
+	Tankbuff.tfontsize = aCoreCDB["UnitframeOptions"]["raid_buff_icon_fontsize"]
+	Tankbuff.cfontsize = aCoreCDB["UnitframeOptions"]["raid_buff_icon_fontsize"]
+	Tankbuff.Icon_size = aCoreCDB["UnitframeOptions"]["raid_buff_icon_size"]
+	Tankbuff.anchor_x = aCoreCDB["UnitframeOptions"]["raid_buff_anchor_x"]
+	Tankbuff.anchor_y = aCoreCDB["UnitframeOptions"]["raid_buff_anchor_y"]
+	Tankbuff.numBuffs = aCoreCDB["UnitframeOptions"]["raid_buff_num"]
 	self.AltzTankbuff = Tankbuff
 	
-	-- Indicators
-	if aCoreCDB["UnitframeOptions"]["hotind_style"] == "number_ind" then
-		self.AltzIndicators = true
-	else
-		T.CreateAuras(self, unit)
+	-- 治疗边角指示器（数字）
+	local ind_number = CreateFrame("Frame", nil, self)
+	ind_number:SetAllPoints()
+	
+	ind_number.ApplySettings = function()
+		ind_number.AuraStatusBL:SetFont(G.norFont, aCoreCDB["UnitframeOptions"]["hotind_size"], "OUTLINE")
+		ind_number.AuraStatusBR:SetFont(G.symbols, aCoreCDB["UnitframeOptions"]["hotind_size"], "OUTLINE")
+		ind_number.AuraStatusTL:SetFont(G.norFont, aCoreCDB["UnitframeOptions"]["hotind_size"], "OUTLINE")
+		if G.myClass == "DRUID" or G.myClass == "MONK" or G.myClass == "PRIEST" or G.myClass == "SHAMAN" then
+			ind_number.AuraStatusTR:SetFont(G.norFont, aCoreCDB["UnitframeOptions"]["hotind_size"], "OUTLINE") -- 数字
+		else
+			ind_number.AuraStatusTR:SetFont(G.symbols, aCoreCDB["UnitframeOptions"]["hotind_size"], "OUTLINE") -- 符号
+		end
+		if G.myClass == "DRUID" or G.myClass == "PRIEST" then
+			ind_number.AuraStatusCen:SetFont(G.norFont, aCoreCDB["UnitframeOptions"]["hotind_size"], "OUTLINE") -- 文字
+		else
+			ind_number.AuraStatusCen:SetFont(G.symbols, aCoreCDB["UnitframeOptions"]["hotind_size"]/2, "OUTLINE") -- 符号
+		end
 	end
 	
+	ind_number.EnableSettings = function(object)
+		if not object or object == self then	
+			if aCoreCDB["UnitframeOptions"]["hotind_style"] == "number_ind" then
+				self:EnableElement("AltzIndicators")
+				self:UpdateTags()
+			else
+				self:DisableElement("AltzIndicators")
+			end
+		end
+	end
+	oUF:RegisterInitCallback(ind_number.EnableSettings)
+	
+	self.AltzIndicators = ind_number	
+	
+	-- 治疗边角指示器（图标）
+	local ind_icon = CreateFrame("Frame", nil, self)
+	ind_icon.spacing = 1
+	ind_icon:SetPoint("TOPRIGHT", self, "TOPRIGHT", -1, -1)
+	ind_icon.initialAnchor = "TOPRIGHT"
+	ind_icon["growth-x"] = "LEFT"
+	ind_icon["growth-y"] = "DOWN"
+	ind_icon.numDebuffs = 1
+	ind_icon.numBuffs = 8
+	ind_icon.FilterAura = HealerInd_AuraFilter
+	ind_icon.PostCreateButton = PostCreateIndicatorIcon
+	
+	ind_icon.EnableSettings = function(object)
+		if not object or object == self then	
+			if aCoreCDB["UnitframeOptions"]["hotind_style"] == "icon_ind" then
+				self:EnableElement("Auras")
+				self.Auras:ForceUpdate()
+			else
+				self:DisableElement("Auras")
+			end
+		end
+	end
+	oUF:RegisterInitCallback(ind_icon.EnableSettings)
+	
+	ind_icon.ApplySettings =  function()
+		ind_icon:SetHeight(aCoreCDB["UnitframeOptions"]["raidheight"])
+		ind_icon:SetWidth(aCoreCDB["UnitframeOptions"]["raidwidth"]-2)
+		ind_icon.size = aCoreCDB["UnitframeOptions"]["hotind_size"]
+	end
+	
+	self.Auras = ind_icon
+	self.Auras.ApplySettings()
+
 	-- Range
     local range = {
         insideAlpha = 1,
@@ -406,29 +527,7 @@ local func = function(self, unit)
 		T.CreateClickSets(self)
 	end
 	
-	CreateVehicleToggle(self)
-	
 	T.RaidOnMouseOver(self)
-	
-	self.Health.ApplySettings = function()
-		if aCoreCDB["UnitframeOptions"]["style"] == 1 then
-			self.bg.tex:SetAlpha(0)
-			hp:SetStatusBarTexture(G.media.blank)
-			hp.bg:SetTexture(G.media.blank)
-			hp.bg:SetGradient("VERTICAL", CreateColor(.5, .5, .5, .5), CreateColor(0, 0, 0, 0))
-		elseif aCoreCDB["UnitframeOptions"]["style"] == 2 then
-			self.bg.tex:SetAlpha(1)
-			hp:SetStatusBarTexture(G.media.ufbar)
-			hp.bg:SetTexture(G.media.ufbar)
-			hp.bg:SetGradient("VERTICAL", CreateColor(.2,.2,.2,.15), CreateColor(.25,.25,.25,.6))
-		else
-			self.bg.tex:SetAlpha(1)
-			hp:SetStatusBarTexture(G.media.ufbar)
-			hp.bg:SetTexture(G.media.ufbar)
-			hp.bg:SetGradient("VERTICAL", CreateColor(.2,.2,.2,0), CreateColor(.25,.25,.25,0))
-		end
-	end
-	self.Health.ApplySettings()
 end
 
 oUF:RegisterStyle("Altz_Healerraid", func)
@@ -480,12 +579,12 @@ RaidPetFrame.point = {
 }
 T.CreateDragFrame(RaidPetFrame)
 
-local function Spawnhealraid()
+local function Spawnraid()
 	oUF:SetActiveStyle"Altz_Healerraid"
 	
 	for i = 1, 8 do
 		RaidFrame[i] = oUF:SpawnHeader(i== 1 and 'Altz_HealerRaid' or 'Altz_HealerRaid'..i, nil, aCoreCDB["UnitframeOptions"]["raidframe_inparty"] and 'raid,party,solo' or 'raid,solo',
-			'oUF-initialConfigFunction', initconfig:format(aCoreCDB["UnitframeOptions"]["healerraidwidth"], aCoreCDB["UnitframeOptions"]["healerraidheight"]),
+			'oUF-initialConfigFunction', initconfig:format(aCoreCDB["UnitframeOptions"]["raidwidth"], aCoreCDB["UnitframeOptions"]["raidheight"]),
 			'showPlayer', true,
 			'showSolo', true,
 			'showParty', true,
@@ -504,7 +603,7 @@ local function Spawnhealraid()
 	end
 
 	RaidPetFrame[1] = oUF:SpawnHeader('Altz_HealerPetRaid', 'SecureGroupPetHeaderTemplate', aCoreCDB["UnitframeOptions"]["raidframe_inparty"] and 'raid,PartyFrame,solo' or 'raid,solo',
-		'oUF-initialConfigFunction', initconfig:format(aCoreCDB["UnitframeOptions"]["healerraidwidth"], aCoreCDB["UnitframeOptions"]["healerraidheight"]),
+		'oUF-initialConfigFunction', initconfig:format(aCoreCDB["UnitframeOptions"]["raidwidth"], aCoreCDB["UnitframeOptions"]["raidheight"]),
 		'showPlayer', true,
 		'showSolo', true,
 		'showParty', true,
@@ -552,12 +651,19 @@ T.UpdateGroupAnchor = function()
 end
 
 T.UpdateGroupSize = function()
+	local oUF = AltzUF or oUF
+	for _, obj in next, oUF.objects do	
+		if obj.style == 'Altz_Healerraid' then
+			obj:SetSize(aCoreCDB["UnitframeOptions"]["raidwidth"], aCoreCDB["UnitframeOptions"]["raidheight"])
+		end
+	end
+	
 	if aCoreCDB["UnitframeOptions"]["hor_party"] then -- 水平小队
-		RaidFrame:SetSize(5*(aCoreCDB["UnitframeOptions"]["healerraidwidth"]+5)-5, aCoreCDB["UnitframeOptions"]["party_num"]*(aCoreCDB["UnitframeOptions"]["healerraidheight"]+5)-5)
-		RaidPetFrame:SetSize(5*(aCoreCDB["UnitframeOptions"]["healerraidwidth"]+5)-5, aCoreCDB["UnitframeOptions"]["healerraidheight"])
+		RaidFrame:SetSize(5*(aCoreCDB["UnitframeOptions"]["raidwidth"]+5)-5, aCoreCDB["UnitframeOptions"]["party_num"]*(aCoreCDB["UnitframeOptions"]["raidheight"]+5)-5)
+		RaidPetFrame:SetSize(5*(aCoreCDB["UnitframeOptions"]["raidwidth"]+5)-5, aCoreCDB["UnitframeOptions"]["raidheight"])
 	else
-		RaidFrame:SetSize(aCoreCDB["UnitframeOptions"]["party_num"]*(aCoreCDB["UnitframeOptions"]["healerraidwidth"]+5)-5, 5*(aCoreCDB["UnitframeOptions"]["healerraidheight"]+5)-5)
-		RaidPetFrame:SetSize(aCoreCDB["UnitframeOptions"]["healerraidwidth"], 5*(aCoreCDB["UnitframeOptions"]["healerraidheight"]+5)-5)
+		RaidFrame:SetSize(aCoreCDB["UnitframeOptions"]["party_num"]*(aCoreCDB["UnitframeOptions"]["raidwidth"]+5)-5, 5*(aCoreCDB["UnitframeOptions"]["raidheight"]+5)-5)
+		RaidPetFrame:SetSize(aCoreCDB["UnitframeOptions"]["raidwidth"], 5*(aCoreCDB["UnitframeOptions"]["raidheight"]+5)-5)
 	end
 end
 	
@@ -567,9 +673,10 @@ T.UpdateGroupfilter = function()
 			RaidFrame[i]:SetAttribute("groupFilter", (i <= aCoreCDB["UnitframeOptions"]["party_num"]) and tostring(i) or '')
 		else
 			RaidFrame[i]:SetAttribute("groupFilter", (i == 1) and GetGroupfilter() or '')
-		end
-		RaidFrame[i]:SetAttribute("showSolo", aCoreCDB["UnitframeOptions"]["showsolo"])
+		end		
 	end
+	
+	RaidFrame[1]:SetAttribute("showSolo", aCoreCDB["UnitframeOptions"]["showsolo"])
 	
 	if aCoreCDB["UnitframeOptions"]["showraidpet"] then
 		RaidPetFrame[1]:SetAttribute("groupFilter", GetGroupfilter())
@@ -579,7 +686,39 @@ T.UpdateGroupfilter = function()
 		T.ReleaseDragFrame(RaidPetFrame)
 	end
 end
-	
+
+T.UpdateGroupTag = function(t)
+	local oUF = AltzUF or oUF
+	for _, obj in next, oUF.objects do	
+		if obj.style == 'Altz_Healerraid' then
+			if t == "update" then
+				obj:UpdateTags()
+			elseif t == "fontsize" then
+				obj.tag_lfd:SetFont(G.symbols, aCoreCDB["UnitframeOptions"]["raidfontsize"]-3, "OUTLINE")
+				obj.tag_raidname:SetFont(G.norFont, aCoreCDB["UnitframeOptions"]["raidfontsize"], "OUTLINE")
+				obj.tag_status:SetFont(G.norFont, aCoreCDB["UnitframeOptions"]["raidfontsize"]-2, "OUTLINE")
+			end
+		end
+	end
+end
+
+RaidHealerManaBarUpdater = CreateFrame("Frame")
+RaidHealerManaBarUpdater:RegisterEvent('GROUP_ROSTER_UPDATE')
+RaidHealerManaBarUpdater:RegisterEvent('PLAYER_ENTERING_WORLD')
+RaidHealerManaBarUpdater:SetScript("OnEvent", function()
+	local oUF = AltzUF or oUF
+	for _, obj in next, oUF.objects do	
+		if obj.style == 'Altz_Healerraid' and obj.Power then
+			local role = UnitGroupRolesAssigned(obj.unit)
+			if role == 'HEALER' then
+				obj.Power:SetAlpha(1)
+			else
+				obj.Power:SetAlpha(0)
+			end
+		end
+	end
+end)
+
 --=============================================--
 --[[             Party Frames                ]]--
 --=============================================--
@@ -616,7 +755,7 @@ local pfunc = function(self, unit)
 	hp.ind = hp:CreateTexture(nil, "OVERLAY", nil, 1)
     hp.ind:SetTexture("Interface\\Buttons\\WHITE8x8")
 	hp.ind:SetVertexColor(0, 0, 0)
-	hp.ind:SetSize(1, aCoreCDB["UnitframeOptions"]["height"])
+	hp.ind:SetSize(1, 18)
 	hp.ind:SetPoint("RIGHT", hp:GetStatusBarTexture(), "LEFT", 0, 0)
 	
 	-- border --
@@ -647,6 +786,7 @@ local pfunc = function(self, unit)
 			hp.bg:SetGradient("VERTICAL", CreateColor(.2,.2,.2,0), CreateColor(.25,.25,.25,0))
 		end
 		
+		hp.ind:SetSize(1, aCoreCDB["UnitframeOptions"]["height"])
 		self:SetSize(aCoreCDB["UnitframeOptions"]["widthparty"], aCoreCDB["UnitframeOptions"]["height"])
 		
 		if hp.value then
@@ -685,6 +825,7 @@ local pfunc = function(self, unit)
 		if not object or object == self then	
 			if aCoreCDB["UnitframeOptions"]["portrait"] then
 				self:EnableElement("Portrait")
+				self.Portrait:ForceUpdate()
 			else
 				self:DisableElement("Portrait")
 			end
@@ -864,12 +1005,13 @@ end
 --=============================================--
 --[[                Events                   ]]--
 --=============================================--
+local EventFrame = CreateFrame("Frame")
+
 EventFrame:SetScript("OnEvent", function(self, event, ...)
 	if event == "PLAYER_REGEN_ENABLED" then
 		if aCoreCDB["UnitframeOptions"]["enableClickCast"] then
 			DelayClickSets()
 		end
-		DelayVehicleSets()
 	end
 end)
 
@@ -885,7 +1027,7 @@ T.RegisterInitCallback(function()
 		end)
 	end
 
-	Spawnhealraid()
+	Spawnraid()
 	T.UpdateGroupAnchor()
 	T.UpdateGroupSize()
 	T.UpdateGroupfilter()
