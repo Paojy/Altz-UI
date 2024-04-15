@@ -120,7 +120,7 @@ local function PlaceFrame(frame)
 	
 	if points and frame.df.enable then
 		frame:ClearAllPoints()
-		frame:SetPoint(points.a1, _G[points.parent], points.a2, points.x, points.y)	
+		frame:SetPoint(points.a1, _G[points.parent], points.a2, points.x, points.y)
 	end
 end
 T.PlaceFrame = PlaceFrame

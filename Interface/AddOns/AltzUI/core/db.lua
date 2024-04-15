@@ -589,13 +589,12 @@ local Character_default_Settings = {
 		raidfontsize = 10,
 		namelength = 4,
 		showsolo = false,
-		toggleForVehicle = true,
 		raidtool = true,
 		raidtool_show = true,
 		
-		--[[ healer mode ]]--
-		healerraidheight = 45,
-		healerraidwidth = 120,
+		--[[ style ]]--
+		raidheight = 45,
+		raidwidth = 120,
 		raidmanabars = true,
 		raidppheight = 0.1, -- slider
 		party_connected = true,
@@ -603,21 +602,21 @@ local Character_default_Settings = {
 		showgcd = true,
 		showmisshp = true,
 		healprediction = true,
-		healtank_assisticon = false,
+		raidrole_icon = false,
 		hotind_style = "icon_ind",-- "icon_ind", "number_ind"
 		hotind_size = 15,
 		hotind_filtertype = "whitelist", -- "blacklist", "whitelist"
 		hotind_auralist = HealerIndicatorAuraList,
-		healerraid_debuff_num = 2,
-		healerraid_debuff_anchor_x = -50,
-		healerraid_debuff_anchor_y = -5,
-		healerraid_debuff_icon_size = 22,
-		healerraid_debuff_icon_fontsize = 8,
-		healerraid_buff_num = 1,
-		healerraid_buff_anchor_x = 5,
-		healerraid_buff_anchor_y = -5,
-		healerraid_buff_icon_size = 22,
-		healerraid_buff_icon_fontsize = 8,
+		raid_debuff_num = 2,
+		raid_debuff_anchor_x = -50,
+		raid_debuff_anchor_y = -5,
+		raid_debuff_icon_size = 22,
+		raid_debuff_icon_fontsize = 8,
+		raid_buff_num = 1,
+		raid_buff_anchor_x = 5,
+		raid_buff_anchor_y = -5,
+		raid_buff_icon_size = 22,
+		raid_buff_icon_fontsize = 8,
 		
 		--[[ click cast ]]--
 		enableClickCast = false,
