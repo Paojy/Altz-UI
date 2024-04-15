@@ -223,8 +223,6 @@ oUF.Tags.Methods['Mlight:sgss'] = function(u) -- 圣光闪烁
 end
 oUF.Tags.Events['Mlight:sgss'] = 'UNIT_AURA'
 
-
-
 -- Monk 武僧
 oUF.Tags.Methods['Mlight:jhzq'] = function(u) -- 精华之泉
     local name, _,_,_,_, expirationTime = AuraUtil.FindAuraByName(GetSpellInfo(191840), u, "PLAYER|HELPFUL")
@@ -408,67 +406,97 @@ classIndicators={
 local update = .25
 
 local Enable = function(self)
-    if(self.AltzIndicators) then
+	local ind = self.AltzIndicators
+    if ind then
+		ind.__owner = self
+		
 		-- 左中 数字
-        self.AuraStatusBL = self.Health:CreateFontString(nil, "OVERLAY")
-        self.AuraStatusBL:ClearAllPoints()
-        self.AuraStatusBL:SetPoint("LEFT", 1, 0)
-		self.AuraStatusBL:SetJustifyH("LEFT")
-        self.AuraStatusBL:SetFont(G.norFont, aCoreCDB["UnitframeOptions"]["hotind_size"], "OUTLINE")
-        self.AuraStatusBL.frequentUpdates = update
-        self:Tag(self.AuraStatusBL, classIndicators[G.myClass]["BL"])	
+		if not ind.AuraStatusBL then
+			ind.AuraStatusBL = ind:CreateFontString(nil, "OVERLAY")
+			ind.AuraStatusBL:SetPoint("LEFT", 1, 0)
+			ind.AuraStatusBL:SetJustifyH("LEFT")
+			ind.AuraStatusBL:SetFont(G.norFont, aCoreCDB["UnitframeOptions"]["hotind_size"], "OUTLINE")
+			ind.AuraStatusBL.frequentUpdates = update	
+		end
+		self:Tag(ind.AuraStatusBL, classIndicators[G.myClass]["BL"])
+		ind.AuraStatusBL:Show()
 		
 		-- 右中 符号
-		self.AuraStatusBR = self.Health:CreateFontString(nil, "OVERLAY")
-        self.AuraStatusBR:ClearAllPoints()
-        self.AuraStatusBR:SetPoint("RIGHT", -1, 0)
-		self.AuraStatusBR:SetJustifyH("RIGHT")
-        self.AuraStatusBR:SetFont(G.symbols, aCoreCDB["UnitframeOptions"]["hotind_size"], "OUTLINE")
-        self.AuraStatusBR.frequentUpdates = update
-        self:Tag(self.AuraStatusBR, classIndicators[G.myClass]["BR"])
+		if not ind.AuraStatusBR then
+			ind.AuraStatusBR = ind:CreateFontString(nil, "OVERLAY")
+			ind.AuraStatusBR:SetPoint("RIGHT", -1, 0)
+			ind.AuraStatusBR:SetJustifyH("RIGHT")
+			ind.AuraStatusBR:SetFont(G.symbols, aCoreCDB["UnitframeOptions"]["hotind_size"], "OUTLINE")
+			ind.AuraStatusBR.frequentUpdates = update
+		end
+		self:Tag(ind.AuraStatusBR, classIndicators[G.myClass]["BR"])
+		ind.AuraStatusBR:Show()
 		
 		-- 左上 数字
-        self.AuraStatusTL = self.Health:CreateFontString(nil, "OVERLAY")
-        self.AuraStatusTL:ClearAllPoints()
-        self.AuraStatusTL:SetPoint("TOPLEFT", 1, 0)
-		self.AuraStatusTL:SetJustifyH("LEFT")
-        self.AuraStatusTL:SetFont(G.norFont, aCoreCDB["UnitframeOptions"]["hotind_size"], "OUTLINE")
-        self.AuraStatusTL.frequentUpdates = update
-        self:Tag(self.AuraStatusTL, classIndicators[G.myClass]["TL"])
-			
-		-- 右上
-        self.AuraStatusTR = self.Health:CreateFontString(nil, "OVERLAY")
-        self.AuraStatusTR:ClearAllPoints()
-        
-		if G.myClass == "DRUID" or G.myClass == "MONK" or G.myClass == "PRIEST" or G.myClass == "SHAMAN" then
-			self.AuraStatusTR:SetPoint("TOPRIGHT", 0, 0)
-			self.AuraStatusTR:SetFont(G.norFont, aCoreCDB["UnitframeOptions"]["hotind_size"], "OUTLINE") -- 数字
-		else
-			self.AuraStatusTR:SetPoint("CENTER", self.Health, "TOPRIGHT", -4, -4) -- 符号
-			self.AuraStatusTR:SetFont(G.symbols, aCoreCDB["UnitframeOptions"]["hotind_size"], "OUTLINE")
+		if not ind.AuraStatusTL then
+			ind.AuraStatusTL = ind:CreateFontString(nil, "OVERLAY")
+			ind.AuraStatusTL:SetPoint("TOPLEFT", 1, 0)
+			ind.AuraStatusTL:SetJustifyH("LEFT")
+			ind.AuraStatusTL:SetFont(G.norFont, aCoreCDB["UnitframeOptions"]["hotind_size"], "OUTLINE")
+			ind.AuraStatusTL.frequentUpdates = update
 		end
-        self.AuraStatusTR.frequentUpdates = update
-        self:Tag(self.AuraStatusTR, classIndicators[G.myClass]["TR"])
+		self:Tag(ind.AuraStatusTL, classIndicators[G.myClass]["TL"])
+		ind.AuraStatusTL:Show()
+		
+		-- 右上
+		if not ind.AuraStatusTR then
+			ind.AuraStatusTR = ind:CreateFontString(nil, "OVERLAY")
+			if G.myClass == "DRUID" or G.myClass == "MONK" or G.myClass == "PRIEST" or G.myClass == "SHAMAN" then
+				ind.AuraStatusTR:SetPoint("TOPRIGHT", 0, 0)
+				ind.AuraStatusTR:SetFont(G.norFont, aCoreCDB["UnitframeOptions"]["hotind_size"], "OUTLINE") -- 数字
+			else
+				ind.AuraStatusTR:SetPoint("CENTER", ind, "TOPRIGHT", -4, -4)
+				ind.AuraStatusTR:SetFont(G.symbols, aCoreCDB["UnitframeOptions"]["hotind_size"], "OUTLINE") -- 符号
+			end
+			ind.AuraStatusTR.frequentUpdates = update			
+		end
+		self:Tag(ind.AuraStatusTR, classIndicators[G.myClass]["TR"])
+		ind.AuraStatusTR:Show()
 		
 		-- 中上
-        self.AuraStatusCen = self.Health:CreateFontString(nil, "OVERLAY")
-       
-        self.AuraStatusCen:SetJustifyH("CENTER")
-		if G.myClass == "DRUID" or G.myClass == "PRIEST" then
-			self.AuraStatusCen:SetFont(G.norFont, aCoreCDB["UnitframeOptions"]["hotind_size"], "OUTLINE") -- 文字
-			self.AuraStatusCen:SetPoint("TOP", 0, 0)
-		else
-			self.AuraStatusCen:SetFont(G.symbols, aCoreCDB["UnitframeOptions"]["hotind_size"]/2, "OUTLINE") -- 符号
-			self.AuraStatusCen:SetPoint("TOP", 0, 2)
+		if not ind.AuraStatusCen then
+			ind.AuraStatusCen = ind:CreateFontString(nil, "OVERLAY")
+			ind.AuraStatusCen:SetJustifyH("CENTER")
+			if G.myClass == "DRUID" or G.myClass == "PRIEST" then
+				ind.AuraStatusCen:SetFont(G.norFont, aCoreCDB["UnitframeOptions"]["hotind_size"], "OUTLINE") -- 文字
+				ind.AuraStatusCen:SetPoint("TOP", 0, 0)
+			else
+				ind.AuraStatusCen:SetFont(G.symbols, aCoreCDB["UnitframeOptions"]["hotind_size"]/2, "OUTLINE") -- 符号
+				ind.AuraStatusCen:SetPoint("TOP", 0, 2)
+			end
+			ind.AuraStatusCen:SetWidth(0)
+			ind.AuraStatusCen.frequentUpdates = update
 		end
-        self.AuraStatusCen:SetWidth(0)
-        self.AuraStatusCen.frequentUpdates = update
-        self:Tag(self.AuraStatusCen, classIndicators[G.myClass]["Cen"])
+		self:Tag(ind.AuraStatusCen, classIndicators[G.myClass]["Cen"])
+		ind.AuraStatusCen:Show()
+		
+		return true
     end
 end
 
 local Disable = function(self)
-
+	local ind = self.AltzIndicators
+    if ind then
+		ind.AuraStatusBL:Hide()
+		self:Untag(ind.AuraStatusBL)
+		
+		ind.AuraStatusBR:Hide()
+		self:Untag(ind.AuraStatusBR)
+		
+		ind.AuraStatusTL:Hide()
+		self:Untag(ind.AuraStatusTL)
+		
+		ind.AuraStatusTR:Hide()
+		self:Untag(ind.AuraStatusTR)
+		
+		ind.AuraStatusCen:Hide()
+		self:Untag(ind.AuraStatusCen)
+	end
 end
 
 oUF:AddElement('AltzIndicators', nil, Enable, Disable)

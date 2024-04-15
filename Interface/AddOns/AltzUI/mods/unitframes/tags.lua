@@ -71,36 +71,29 @@ oUF.Tags.Methods['Altz:longname'] = function(u, r)
 end
 oUF.Tags.Events["Altz:longname"] = "UNIT_NAME_UPDATE"
 
-oUF.Tags.Methods["Altz:raidname"] = function(u, r)
-	local name = UnitName(r or u)
-	local color = _TAGS['Altz:color'](u)
-	if aCoreCDB["UnitframeOptions"]["style"] ~= 3 then
-		return color..T.utf8sub(name, aCoreCDB["UnitframeOptions"]["namelength"])
-	else
-		return T.utf8sub(name, aCoreCDB["UnitframeOptions"]["namelength"])
-	end
-end
-oUF.Tags.Events["Altz:raidname"] = "UNIT_NAME_UPDATE"
-
 oUF.Tags.Methods["Altz:hpraidname"] = function(u, r)
-	local perc, result
 	local name = UnitName(r or u)
+	if not name then return end
 	local color = _TAGS['Altz:color'](u)
-	if UnitHealthMax(u) ~= 0 then
-		perc = UnitHealth(u)/UnitHealthMax(u)
+	local result
+	if aCoreCDB["UnitframeOptions"]["showmisshp"] then
+		local perc
+		if UnitHealthMax(u) and UnitHealthMax(u) ~= 0 then
+			perc = UnitHealth(u)/UnitHealthMax(u)
+		else
+			perc = 1
+		end
+		if perc > .9 or UnitIsDead(u) then
+			result = T.utf8sub(name, aCoreCDB["UnitframeOptions"]["namelength"])
+		else
+			result = T.ShortValue(UnitHealthMax(u) - UnitHealth(u))
+		end
 	else
-		perc = 1
-	end
-	if perc > .9 or UnitIsDead(u) then
 		result = T.utf8sub(name, aCoreCDB["UnitframeOptions"]["namelength"])
-	else
-		result = T.ShortValue(UnitHealthMax(u) - UnitHealth(u))
 	end
-	if aCoreCDB["UnitframeOptions"]["style"] ~= 3 then
-		return color..result
-	else
-		return result
-	end	
+	if result then
+		return (aCoreCDB["UnitframeOptions"]["style"] ~= 3 and color)..result
+	end
 end
 oUF.Tags.Events["Altz:hpraidname"] = "UNIT_HEALTH UNIT_NAME_UPDATE"
 

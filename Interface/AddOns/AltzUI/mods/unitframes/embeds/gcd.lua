@@ -27,47 +27,54 @@ local OnShowGCD = function(self)
 end
 
 local Update = function(self, event, unit)
-
 	if not self.showgcd or gcdisshown then return end
 	
-	if self.GCD then
+	local gcd = self.GCD
+	
+	if gcd then
 		local start, dur = GetSpellCooldown(spellid)
 
 		if (not start) then return end
 		if (not dur) then dur = 0 end
 
 		if dur == 0 then
-			self.GCD:Hide() 
+			gcd:Hide() 
 		else
-			self.GCD.starttime = start
-			self.GCD.duration = dur
-			self.GCD:Show()
+			gcd.starttime = start
+			gcd.duration = dur
+			gcd:Show()
 		end
 	end
 end
 
 local Enable = function(self)
-	if (self.GCD) then
-		self.GCD:SetMinMaxValues(0, 1)
-		self.GCD:SetValue(0)
-		self.GCD:Hide()
-		self.GCD.starttime = 0
-		self.GCD.duration = 0
+	local gcd = self.GCD
+	if gcd then	
+		gcd:SetMinMaxValues(0, 1)
+		gcd:SetValue(0)
+		gcd:Hide()
+		gcd.starttime = 0
+		gcd.duration = 0
 	
 		self:HookScript("OnEnter", function(self) self.showgcd = true end)
 		self:HookScript("OnLeave", function(self) self.showgcd = false end)
 
 		self:RegisterEvent('ACTIONBAR_UPDATE_COOLDOWN', Update, true)
-		self.GCD:SetScript('OnHide', OnHideGCD)
-		self.GCD:SetScript('OnShow', OnShowGCD)
+		gcd:SetScript('OnHide', OnHideGCD)
+		gcd:SetScript('OnShow', OnShowGCD)
 		gcdisshown = nil
+		
+		return true
 	end
 end
 
-local Disable = function(self)
-	if (self.GCD) then
-		self:UnregisterEvent('ACTIONBAR_UPDATE_COOLDOWN')
-		self.GCD:Hide()  
+
+local function Disable(self)
+	local gcd = self.GCD
+	if gcd then
+		self:UnregisterEvent('ACTIONBAR_UPDATE_COOLDOWN', Update)
+		
+		gcd:Hide()
 	end
 end
 
