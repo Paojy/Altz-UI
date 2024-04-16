@@ -1092,11 +1092,11 @@ local CreateAuraTimer = function(self, elapsed)
 end
 
 local whitelist = {
-	["123059"] = true, -- 动摇意志
+	[123059] = true, -- 动摇意志
 }
 
 local PostUpdateIcon = function(icons, icon, unit, data, position)
-	if icon.isPlayer or UnitIsFriend("player", unit) or not icon.isDebuff or aCoreCDB["UnitframeOptions"]["AuraFilterwhitelist"][tostring(SpellID)] or whitelist[tostring(SpellID)] then
+	if icon.isPlayer or UnitIsFriend("player", unit) or not icon.isDebuff or aCoreCDB["UnitframeOptions"]["AuraFilterwhitelist"][data.spellId] or whitelist[data.spellId] then
 		icon.Icon:SetDesaturated(false)
 		if data.duration and data.duration > 0 then
 			icon.remaining:Show()
@@ -1156,7 +1156,7 @@ local CustomFilter = function(icons, unit, data)
 		return true
 	elseif not UnitIsFriend("player", unit) and (not aCoreCDB["UnitframeOptions"]["AuraFilterignoreDebuff"] or data.isHelpful) then
 		return true
-	elseif aCoreCDB["UnitframeOptions"]["AuraFilterwhitelist"][tostring(data.spellId)] then
+	elseif aCoreCDB["UnitframeOptions"]["AuraFilterwhitelist"][data.spellId] then
 		return true
 	end
 end

@@ -157,7 +157,7 @@ local function CreateOptions(parent, type, text, table, value, group, order)
 	if type == "check" then
 		T.createcheckbutton(parent, 200, 30+parent.index*30, text, table, value)
 	elseif type == "group" then
-		T.createboxgroup(parent, 450, 200, 30+parent.index*30, text, table, value, group, order)
+		T.createbuttongroup(parent, 450, 200, 30+parent.index*30, text, table, value, group, order)
 	elseif type == "editbox" then
 		T.createeditbox(parent, 200, 30+parent.index*30, text, table, value)
 		parent[value]:SetText(G[text])

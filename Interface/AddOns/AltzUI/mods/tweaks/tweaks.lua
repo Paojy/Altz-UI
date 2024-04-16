@@ -104,16 +104,14 @@ function eventframe:MERCHANT_SHOW()
 		end
 	end
 	if aCoreCDB["ItemOptions"]["autobuy"] then
-		for ItemID, Need in pairs(aCoreCDB["ItemOptions"]["autobuylist"]) do
-			local ItemCount = GetItemCount(tonumber(ItemID))
-			if ItemCount < tonumber(Need) then			
-				local ItemName = GetItemInfo(tonumber(ItemID))
-				
+		for ItemName, Need in pairs(aCoreCDB["ItemOptions"]["autobuylist"]) do
+			local ItemCount = GetItemCount(ItemName)
+			if ItemCount < Need then			
 				local numMerchantItems = GetMerchantNumItems()
 				for index = 1, numMerchantItems do
 					local name, texture, price, quantity, numAvailable, isUsable, extendedCost = GetMerchantItemInfo(index)
 					if ItemName == name then-- 有卖的嘛？
-						local needbuy = tonumber(Need) - ItemCount
+						local needbuy = Need - ItemCount
 						if numAvailable >1 and needbuy > numAvailable then -- 数量够不够
 							print(L["货物不足"]..G.classcolor.." "..ItemName.."|r")
 						elseif needbuy/quantity*price > GetMoney() then -- 钱够不够

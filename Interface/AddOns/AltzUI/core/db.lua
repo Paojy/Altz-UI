@@ -899,8 +899,8 @@ T.ExportSettings = function(editbox)
 							end
 						end
 					elseif setting == "AuraFilterwhitelist" then -- 完全复制 4
-						for id, spellname in pairs(aCoreCDB["UnitframeOptions"]["AuraFilterwhitelist"]) do -- 默认是空的
-							str = str.."^"..OptionCategroy.."~"..setting.."~"..id.."~"..spellname
+						for id, _ in pairs(aCoreCDB["UnitframeOptions"]["AuraFilterwhitelist"]) do -- 默认是空的
+							str = str.."^"..OptionCategroy.."~"..setting.."~"..id.."~true"
 						end
 					elseif setting == "caflash_bl" then -- 完全复制 5
 						for cdtpye, cdtable in pairs(aCoreCDB["ActionbarOptions"]["caflash_bl"]) do
@@ -1066,9 +1066,9 @@ T.ImportSettings = function(str)
 								aCoreCDB[OptionCategroy][setting][tostring(arg1)][arg2]["action"] = arg3
 								aCoreCDB[OptionCategroy][setting][tostring(arg1)][arg2]["macro"] = arg4
 							end
-						elseif setting == "AuraFilterwhitelist" then -- 完全复制 4 OptionCategroy.."~"..setting.."~"..id.."~"..spellname
+						elseif setting == "AuraFilterwhitelist" then -- 完全复制 4 OptionCategroy.."~"..setting.."~"..id.."~true"
 							if sameclient then
-								aCoreCDB[OptionCategroy][setting][arg1] = arg2
+								aCoreCDB[OptionCategroy][setting][arg1] = true
 							end
 						elseif setting == "caflash_bl" then -- 完全复制 5 OptionCategroy.."~"..setting.."~"..cdtpye.."~"..id.."~true"
 							if arg1 == "item" then
