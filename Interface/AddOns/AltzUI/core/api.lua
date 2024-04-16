@@ -321,11 +321,6 @@ end
 T.SetChatFrame = function ()
 	FCF_ResetChatWindows()
 	
-    FCF_SetLocked(ChatFrame1, nil)
-    ChatFrame1:ClearAllPoints()
-	ChatFrame1:SetSize(300, 150)
-    ChatFrame1:SetPoint("BOTTOMLEFT", _G[G.uiname.."chatframe_pullback"], "BOTTOMLEFT", 5, 0)
-	
 	FCF_SavePositionAndDimensions(ChatFrame1)
 	FCF_RestorePositionAndDimensions(ChatFrame1)
 	
@@ -721,16 +716,25 @@ end
 ----------------------------
 -- 			控制台		  --
 ----------------------------
-T.CreateOptionSwitchButton = function(parent, width, height, ...)
-	local bu = CreateFrame("Button", nil, bu, "UIPanelButtonTemplate")
-	bu:SetSize(width, height)
-	bu:SetPoint(...)
-	F.Reskin(bu)
-	_G[bu:GetName() .. "Text"]:SetFont(G.norFont, 10, "NONE")
-	_G[bu:GetName() .. "Text"]:SetWidth(80)
-	_G[bu:GetName() .. "Text"]:SetHeight(18)
-	
-	return bu
+-- dependency relationship
+T.createDR = function(parent, ...)
+    for i=1, select("#", ...) do
+		local object = select(i, ...)
+		parent:HookScript("OnShow", function(self)
+			if self:GetChecked() and self:IsEnabled() then
+				object:Enable()
+			else
+				object:Disable()
+			end
+		end)
+		parent:HookScript("OnClick", function(self)
+			if self:GetChecked() and self:IsEnabled() then
+				object:Enable()
+			else
+				object:Disable()
+			end
+		end)
+	end
 end
 
 T.createcheckbutton = function(parent, x, y, name, table, value, tip)
@@ -775,38 +779,6 @@ T.createcheckbutton = function(parent, x, y, name, table, value, tip)
 	parent[value] = bu
 end
 
-T.ABtogglebox = function(parent, x, y, id, name)
-	local bu = CreateFrame("CheckButton", G.uiname.."Actionbar"..id.."Toggle", parent, "InterfaceOptionsCheckButtonTemplate")
-	bu:SetPoint("TOPLEFT", x, -y)
-	F.ReskinCheck(bu)
-	
-	bu.Text:SetText(name)
-	T.resize_font(bu.Text)
-	
-	bu:SetScript("OnShow", function(self)
-		if select(id, GetActionBarToggles())== 1 then
-			self:SetChecked(true)
-		else
-			self:SetChecked(false)
-		end
-	end)
-	
-	bu:SetScript("OnClick", function(self)
-		if id == 1 then
-			SHOW_MULTI_ACTIONBAR_1 = self:GetChecked()
-		elseif id == 2 then
-			SHOW_MULTI_ACTIONBAR_2 = self:GetChecked()
-		elseif id == 3 then
-			SHOW_MULTI_ACTIONBAR_3 = self:GetChecked()
-		elseif id == 4 then
-			SHOW_MULTI_ACTIONBAR_4 = self:GetChecked()
-		end
-		--InterfaceOptions_UpdateMultiActionBars()
-	end)
-	
-	return bu
-end
-
 T.CVartogglebox = function(parent, x, y, value, name, arg1, arg2, tip)
 	local bu = CreateFrame("CheckButton", G.uiname..value.."Button", parent, "InterfaceOptionsCheckButtonTemplate")
 	bu:SetPoint("TOPLEFT", x, -y)
@@ -842,7 +814,35 @@ T.CVartogglebox = function(parent, x, y, value, name, arg1, arg2, tip)
 	parent[value] = bu
 end
 
-T.createinputbox = function(parent, width, points, text)
+local inputbox = {}
+
+if not AltzUIEditBoxInsertLink then
+  hooksecurefunc("ChatEdit_InsertLink", function(...) return AltzUIEditBoxInsertLink(...) end)
+end
+
+function AltzUIEditBoxInsertLink(text)
+	for k, editbox in pairs(inputbox) do
+		if editbox and editbox:IsVisible() and editbox:HasFocus() then
+			editbox:Insert(text)
+			return true
+		end
+	end
+end
+
+if not AltzUIStackSplitHook then
+  hooksecurefunc(StackSplitFrame, "OpenStackSplitFrame", function(...) return AltzUIStackSplitHook(...) end)
+end
+
+function AltzUIStackSplitHook(text)
+	for k, editbox in pairs(inputbox) do
+		if editbox and editbox:IsVisible() and editbox:HasFocus() then
+			StackSplitCancelButton_OnClick()
+			return true
+		end
+	end
+end
+
+T.createinputbox = function(parent, points, text, width, link)
 	local box = CreateFrame("EditBox", nil, parent, "BackdropTemplate")
 	box:SetSize(width or 100, 20)
 	box:SetPoint(unpack(points))
@@ -852,10 +852,36 @@ T.createinputbox = function(parent, width, points, text)
 	box:SetAutoFocus(false)
 	box:SetTextInsets(3, 0, 0, 0)
 	
-	box:SetScript("OnShow", function(self) self:SetText(text) end)
-	box:SetScript("OnEditFocusGained", function(self) self:HighlightText() end)
-	box:SetScript("OnEscapePressed", function(self) self:ClearFocus() self:SetText(text) end)
-	box:SetScript("OnEnterPressed", function(self) self:ClearFocus() end)
+	box:SetScript("OnShow", function(self)
+		self:SetText(text)
+	end)
+	
+	box:SetScript("OnChar", function(self) 
+		self.button:Show()		
+	end)
+	
+	box:SetScript("OnEscapePressed", function(self)
+		self:SetText(text)
+		self:ClearFocus()
+	end)
+	
+	box:SetScript("OnEnterPressed", function(self) 			
+		if self.apply then
+			self:apply()
+		end
+		self:ClearFocus()
+		self.button:Hide()
+	end)
+	
+	box.button = T.createclickbutton(box, {"RIGHT", box, "RIGHT", -2, 0}, OKAY, 30, 20)
+	box.button:Hide()
+	box.button:SetScript("OnClick", function()		
+		if box.apply then
+			box:apply()
+		end
+		box:ClearFocus()
+		box.button:Hide()
+	end)
 	
 	box:SetScript("OnEnable", function(self)	
 		self:SetTextColor(1, 1, 1, 1)	
@@ -864,6 +890,10 @@ T.createinputbox = function(parent, width, points, text)
 	box:SetScript("OnDisable", function(self)	
 		self:SetTextColor(.7, .7, .7, .5)
 	end)
+	
+	if link then
+		table.insert(inputbox, box) -- 支持链接/文字/数字
+	end
 	
 	return box
 end
@@ -980,8 +1010,8 @@ T.createmultilinebox = function(parent, width, height, x, y, name, table, value,
 		scrollBG.edit:SetScript("OnEnterPressed", function(self) self:ClearFocus() aCoreCDB[table][value] = self:GetText() end)
 	end
 	
-	F.ReskinScroll(_G[G.uiname..value.."MultiLineEditBox_BGScrollBar"])
-		
+	F.ReskinScroll(scrollBG.ScrollBar)
+
 	if tip then
 		scrollBG.edit:SetScript("OnEnter", function(self) 
 			GameTooltip:SetOwner(self, "ANCHOR_RIGHT", -20, 10)
@@ -1052,13 +1082,13 @@ T.createslider = function(parent, x, y, name, table, value, divisor, min, max, s
 	
 	slider:SetScript("OnShow", function(self)
 		self:SetValue((aCoreCDB[table][value])*divisor)
-		_G[self:GetName()..'Text']:SetText(name.." |cFF00FFFF"..aCoreCDB[table][value].."|r")
+		self.Text:SetText(name.." |cFF00FFFF"..aCoreCDB[table][value].."|r")
 	end)
 	
 	slider:SetScript("OnValueChanged", function(self, getvalue)
 		aCoreCDB[table][value] = getvalue/divisor
 		TestSlider_OnValueChanged(self, getvalue)
-		_G[self:GetName()..'Text']:SetText(name.." |cFF00FFFF"..aCoreCDB[table][value].."|r")
+		self.Text:SetText(name.." |cFF00FFFF"..aCoreCDB[table][value].."|r")
 		if self.apply then
 			self.apply()
 		end
@@ -1245,7 +1275,7 @@ T.createradiobuttongroup = function(parent, x, y, name, table, value, group, new
 	parent[value] = frame
 end
 
-T.createboxgroup = function(parent, width, x, y, hasvalue, table, value, group, order)
+T.createbuttongroup = function(parent, width, x, y, hasvalue, table, value, group, order)
 	local frame = CreateFrame("Frame", G.uiname..value.."BoxGroup", parent)
 	frame:SetPoint("TOPLEFT", x, -y)
 	frame:SetSize(width, 25)
@@ -1370,23 +1400,156 @@ T.createboxgroup = function(parent, width, x, y, hasvalue, table, value, group, 
 	parent[value] = frame
 end
 
--- dependency relationship
-T.createDR = function(parent, ...)
-    for i=1, select("#", ...) do
-		local object = select(i, ...)
-		parent:HookScript("OnShow", function(self)
-			if self:GetChecked() and self:IsEnabled() then
-				object:Enable()
-			else
-				object:Disable()
-			end
-		end)
-		parent:HookScript("OnClick", function(self)
-			if self:GetChecked() and self:IsEnabled() then
-				object:Enable()
-			else
-				object:Disable()
-			end
-		end)
+T.createclickbutton = function(parent, points, text, width, height)
+	local w = width or 80
+	local h = height or 20
+	
+	local bu = CreateFrame("Button", nil, parent, "UIPanelButtonTemplate")
+	bu:SetPoint(unpack(points))
+	bu:SetSize(w, h)
+	bu:SetText(text)
+	
+	T.resize_font(bu.Text)
+	F.Reskin(bu)
+	
+	return bu
+end
+
+T.createclicktexbutton = function(parent, points, tex, width, height)
+	local w = width or 20
+	local h = height or 20
+	
+	local bu = CreateFrame("Button", nil, parent)
+	bu:SetPoint(unpack(points))
+	bu:SetSize(w, h)
+	
+	bu.tex = bu:CreateTexture(nil, "ARTWORK")
+	bu.tex:SetAllPoints()
+	bu.tex:SetTexture(tex)
+	
+	bu:EnableMouse(true)
+	
+	return bu
+end
+
+T.createlistbutton = function(parent, width)
+	local bu = CreateFrame("Frame", nil, parent, "BackdropTemplate")
+	bu:SetSize(width or 300, 28)
+	F.CreateBD(bu, .2)
+	
+	bu.icon = bu:CreateTexture(nil, "ARTWORK")
+	bu.icon:SetSize(20, 20)
+	bu.icon:SetTexCoord(0.1,0.9,0.1,0.9)
+	bu.icon:SetPoint("LEFT", 5, 0)
+	
+	bu.iconbg = bu:CreateTexture(nil, "BORDER")
+	bu.iconbg:SetPoint("TOPLEFT", bu.icon, "TOPLEFT", -1, 1)
+	bu.iconbg:SetPoint("BOTTOMRIGHT", bu.icon, "BOTTOMRIGHT", -1, 1)
+	bu.iconbg:SetColorTexture(0, 0, 0, 1)
+	
+	bu.left = T.createtext(bu, "OVERLAY", 12, "OUTLINE", "LEFT")
+	bu.left:SetPoint("LEFT", bu.icon, "RIGHT", 5, 0)
+	bu.left:SetTextColor(1, .2, .6)
+	
+	bu.mid = T.createtext(bu, "OVERLAY", 12, "OUTLINE", "LEFT")
+	bu.mid:SetPoint("LEFT", bu, "CENTER", -40, 0)
+	
+	bu.right = T.createtext(bu, "OVERLAY", 12, "OUTLINE", "LEFT")
+	bu.right:SetTextColor(1, 1, 0)
+	bu.right:SetPoint("LEFT", bu, "RIGHT", -80, 0)
+	
+	bu.close = CreateFrame("Button", nil, bu, "UIPanelButtonTemplate")
+	bu.close:SetSize(18,18)
+	bu.close:SetPoint("RIGHT", -5, 0)
+	F.Reskin(bu.close)
+	bu.close:SetText("x")
+	bu.close:SetScript("OnClick", function() 
+		bu:Hide()
+		bu.on_delete()
+	end)
+	
+	bu.display = function(icon, text1, text2, text3)
+		if icon then
+			bu.icon:SetTexture(icon)
+		end
+		
+		if text1 then
+			bu.left:SetText(text1)
+		end
+		
+		if text2 then
+			bu.mid:SetText(text2)
+		end
+		
+		if text3 then
+			bu.right:SetText(text3)
+		end
+	end
+	
+	return bu
+end
+
+T.lineuplist = function(list, button_list, parent)
+	local t = {}
+	
+	for key, _ in pairs(list) do
+		table.insert(t, key)		
+	end
+	
+	table.sort(t)
+	
+	for i, key in pairs(t) do
+		local bu = button_list[key]
+		bu:ClearAllPoints()
+		bu:SetPoint("TOPLEFT", parent, "TOPLEFT", 5, 20-i*30)
 	end
 end
+
+T.createscrolllist = function(parent, points, bg, width, height)
+	local w = width or 320
+	local h = height or 220
+	
+	local sf = CreateFrame("ScrollFrame", nil, parent, "UIPanelScrollFrameTemplate")
+	if points then sf:SetPoint(unpack(points)) end	
+	sf:SetSize(w, h)
+	sf:SetFrameLevel(parent:GetFrameLevel()+1)
+
+	sf.anchor = CreateFrame("Frame", nil, sf)
+	sf.anchor:SetPoint("TOPLEFT", sf, "TOPLEFT", 0, -3)
+	sf.anchor:SetWidth(sf:GetWidth()-30)
+	sf.anchor:SetHeight(sf:GetHeight()+200)
+	sf.anchor:SetFrameLevel(sf:GetFrameLevel()+1)
+	sf:SetScrollChild(sf.anchor)
+	
+	if bg then
+		sf.bg = CreateFrame("Frame", nil, sf, "BackdropTemplate")
+		sf.bg:SetAllPoints(sf)
+		sf.bg:SetFrameLevel(sf:GetFrameLevel()-1)
+		F.CreateBD(sf.bg, .3)
+	end
+	
+	F.ReskinScroll(sf.ScrollBar)
+	
+	sf.cover = CreateFrame("Frame", nil, sf)
+	sf.cover:SetAllPoints()
+	sf.cover:SetFrameLevel(sf.anchor:GetFrameLevel()+5)
+	
+	sf.cover.tex = sf.cover:CreateTexture(nil, "OVERLAY")
+	sf.cover.tex:SetAllPoints()
+	sf.cover.tex:SetColorTexture(.3, .3, .3, .7)
+	sf.cover:EnableMouse(true)
+	sf.cover:Hide()
+	
+	sf.Enable = function()
+		sf.cover:Hide()
+	end
+	
+	sf.Disable = function()
+		sf.cover:Show()
+	end
+	
+	sf.list = {}
+	
+	return sf
+end
+
