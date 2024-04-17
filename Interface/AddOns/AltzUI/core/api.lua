@@ -216,31 +216,6 @@ T.CreateThinSD = function(parent, size, r, g, b, alpha, offset)
 	return sd
 end
 
-T.SkinButton = function(button, tex, blend)
-	local texture = button:CreateTexture(nil, "OVERLAY")
-	texture:SetAllPoints(button)
-	texture:SetTexture(tex)
-	texture:SetVertexColor(1, 1, 1)
-
-	if blend then
-		texture:SetBlendMode("ADD")
-	end
-
-	if button:GetScript("OnEnter") then
-		button:HookScript("OnEnter", function() texture:SetVertexColor(G.Ccolor.r, G.Ccolor.g, G.Ccolor.b) end)
-	else
-		button:SetScript("OnEnter", function() texture:SetVertexColor(G.Ccolor.r, G.Ccolor.g, G.Ccolor.b) end)
-	end
-
-	if button:GetScript("OnLeave") then
-		button:HookScript("OnLeave", function() texture:SetVertexColor(1, 1, 1) end)
-	else
-		button:SetScript("OnLeave", function() texture:SetVertexColor(1, 1, 1) end)
-	end
-
-	return texture
-end
-
 local frameBD = {
 	edgeFile = G.media.glow, edgeSize = 3,
 	bgFile = G.media.blank,
@@ -845,7 +820,7 @@ end
 T.createinputbox = function(parent, points, text, width, link)
 	local box = CreateFrame("EditBox", nil, parent, "BackdropTemplate")
 	box:SetSize(width or 100, 20)
-	box:SetPoint(unpack(points))
+	if points then box:SetPoint(unpack(points)) end
 	F.CreateBD(box)
 	
 	box:SetFont(GameFontHighlight:GetFont(), 12, "OUTLINE")
@@ -873,7 +848,7 @@ T.createinputbox = function(parent, points, text, width, link)
 		self.button:Hide()
 	end)
 	
-	box.button = T.createclickbutton(box, {"RIGHT", box, "RIGHT", -2, 0}, OKAY, 30, 20)
+	box.button = T.createclickbutton(box, {"RIGHT", box, "RIGHT", -2, 0}, OKAY)
 	box.button:Hide()
 	box.button:SetScript("OnClick", function()		
 		if box.apply then
@@ -898,10 +873,13 @@ T.createinputbox = function(parent, points, text, width, link)
 	return box
 end
 
+-- 需要修改
 T.createeditbox = function(parent, x, y, name, table, value, tip)
-	local box = CreateFrame("EditBox", G.uiname..value.."EditBox", parent)
+	local box = CreateFrame("EditBox", nil, parent)
 	box:SetSize(180, 20)
-	box:SetPoint("TOPLEFT", x, -y)
+	if x and y then
+		box:SetPoint("TOPLEFT", x, -y)
+	end
 	
 	local bd = CreateFrame("Frame", nil, box, "BackdropTemplate")
 	bd:SetPoint("TOPLEFT", -2, 0)
@@ -915,7 +893,7 @@ T.createeditbox = function(parent, x, y, name, table, value, tip)
 	
 	box.name = box:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
 	box.name:SetPoint("LEFT", box, "RIGHT", 10, 1)
-	box.name:SetText(name)
+	box.name:SetText(name or "")
 	T.resize_font(box.name)
 	
 	box:SetFont(GameFontHighlight:GetFont(), 12, "OUTLINE")
@@ -959,8 +937,10 @@ T.createeditbox = function(parent, x, y, name, table, value, tip)
 		end)
 		box:SetScript("OnLeave", function(self) GameTooltip:Hide() end)
 	end
-	
-	parent[value] = box
+	if value then
+		parent[value] = box
+	end
+	return box
 end
 
 T.createmultilinebox = function(parent, width, height, x, y, name, table, value, tip)
@@ -1400,32 +1380,40 @@ T.createbuttongroup = function(parent, width, x, y, hasvalue, table, value, grou
 	parent[value] = frame
 end
 
-T.createclickbutton = function(parent, points, text, width, height)
-	local w = width or 80
-	local h = height or 20
-	
+T.createclickbutton = function(parent, points, text)
 	local bu = CreateFrame("Button", nil, parent, "UIPanelButtonTemplate")
 	bu:SetPoint(unpack(points))
-	bu:SetSize(w, h)
-	bu:SetText(text)
+	bu:SetText(text or "")
 	
 	T.resize_font(bu.Text)
+	bu:SetSize(bu.Text:GetWidth() + 5, 20)
 	F.Reskin(bu)
-	
+
 	return bu
 end
 
-T.createclicktexbutton = function(parent, points, tex, width, height)
-	local w = width or 20
-	local h = height or 20
-	
+T.createclicktexbutton = function(parent, points, tex, text, tex_size)
 	local bu = CreateFrame("Button", nil, parent)
 	bu:SetPoint(unpack(points))
-	bu:SetSize(w, h)
 	
 	bu.tex = bu:CreateTexture(nil, "ARTWORK")
-	bu.tex:SetAllPoints()
+	bu.tex:SetPoint("LEFT", bu, "LEFT", 3, 0)
 	bu.tex:SetTexture(tex)
+	bu.tex:SetSize(tex_size or 15, tex_size or 15)
+	bu.tex:SetVertexColor(.5, .5, .5)
+	bu.tex:SetBlendMode("ADD")
+	
+	bu.hl_tex = bu:CreateTexture(nil, "HIGHLIGHT")
+	bu.hl_tex:SetAllPoints()
+	bu.hl_tex:SetColorTexture(.7, .7, .7, .2)
+	
+	bu.text = T.createtext(bu, "OVERLAY", 12, "OUTLINE", "LEFT")
+	bu.text:SetPoint("LEFT", tex and bu.tex or bu,  tex and "RIGHT" or "LEFT", 2, 0)
+	bu.text:SetTextColor(.5, .5, .5)
+	bu.text:SetText(text)
+	
+	bu:SetHeight(20)
+	bu:SetWidth((tex and 22) + bu.text:GetWidth() + (text and 2 or 0))
 	
 	bu:EnableMouse(true)
 	
