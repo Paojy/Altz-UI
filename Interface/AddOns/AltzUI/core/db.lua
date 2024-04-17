@@ -262,107 +262,104 @@ end
 local AuraList = {
 	["Buffs"] = {
 	--牧师
-		[GetSpellInfo(33206)]  = { id = 33206,  level = 15,}, -- 痛苦压制
-        [GetSpellInfo(47788)]  = { id = 47788,  level = 15,}, -- 守护之魂
-		[GetSpellInfo(47585)]  = { id = 47585,  level = 15,}, -- 消散		
-	--小德
-        [GetSpellInfo(102342)] = { id = 102342, level = 15,}, -- 铁木树皮
-		[GetSpellInfo(22812)]  = { id = 22812,  level = 15,}, -- 树皮术
-		[GetSpellInfo(61336)]  = { id = 61336,  level = 15,}, -- 生存本能
-		[GetSpellInfo(22842)]  = { id = 22842,  level = 15,}, -- 狂暴回复
-	--骑士
-		[GetSpellInfo(1022)]   = { id = 1022,   level = 15,}, -- 保护之手
-		[GetSpellInfo(31850)]  = { id = 31850,  level = 15,}, -- 炽热防御者
-        [GetSpellInfo(498)]    = { id = 498,    level = 15,}, -- 圣佑术
-		[GetSpellInfo(642)]    = { id = 642,    level = 15,}, -- 圣盾术
-		[GetSpellInfo(86659)]  = { id = 86659,  level = 15,}, -- 远古列王守卫
-		[GetSpellInfo(132403)] = { id = 132403, level = 13,}, -- 个人添加：正义盾击
-		[GetSpellInfo(204018)] = { id = 204018, level = 15,}, -- 个人添加：破咒祝福
-		[GetSpellInfo(6940)]   = { id = 6940,   level = 15,}, -- 个人添加：牺牲祝福
-	--DK
-		[GetSpellInfo(48707)]  = { id = 48707,  level = 15,}, -- 反魔法护罩
-		[GetSpellInfo(48792)]  = { id = 48792,  level = 15,}, -- 冰封之韧
-		[GetSpellInfo(49028)]  = { id = 49028,  level = 15,}, -- 吸血鬼之血
-		[GetSpellInfo(55233)]  = { id = 55233,  level = 15,}, -- 符文刃舞
-		[GetSpellInfo(194844)] = { id = 194844, level = 15,}, -- 个人添加：白骨风暴
-	--战士
-		[GetSpellInfo(12975)]  = { id = 12975,  level = 15,}, -- 破釜沉舟
-		[GetSpellInfo(871)]    = { id = 871,    level = 15,}, -- 盾墙
-		[GetSpellInfo(184364)]  = { id = 184364,  level = 15,}, -- 狂怒回复
-		[GetSpellInfo(118038)]  = { id = 118038,  level = 15,}, -- 剑在人在
-	--DH
-		[GetSpellInfo(196555)]  = { id = 196555,  level = 15,}, -- 虚空行走 浩劫
-		[GetSpellInfo(187827)]  = { id = 187827,  level = 15,}, -- 恶魔变形
-		[GetSpellInfo(212084)]  = { id = 212084,  level = 15,}, -- 邪能毁灭
-		[GetSpellInfo(204021)]  = { id = 204021,  level = 15,}, -- 烈火烙印
-		[GetSpellInfo(203720)]  = { id = 203720,  level = 15,}, -- 恶魔尖刺
+		[33206]   = 15, -- 痛苦压制
+        [47788]   = 15, -- 守护之魂
+		[47585]   = 15, -- 消散		
+	--小德        
+        [102342]  = 15, -- 铁木树皮
+		[22812]   = 15, -- 树皮术
+		[61336]   = 15, -- 生存本能
+		[22842]   = 15, -- 狂暴回复
+	--骑士        
+		[1022]    = 15, -- 保护之手
+		[31850]   = 15, -- 炽热防御者
+        [498]     = 15, -- 圣佑术
+		[642]     = 15, -- 圣盾术
+		[86659]   = 15, -- 远古列王守卫
+		[132403]  = 13, -- 个人添加：正义盾击
+		[204018]  = 15, -- 个人添加：破咒祝福
+		[6940]    = 15, -- 个人添加：牺牲祝福
+	--DK          
+		[48707]   = 15, -- 反魔法护罩
+		[48792]   = 15, -- 冰封之韧
+		[49028]   = 15, -- 吸血鬼之血
+		[55233]   = 15, -- 符文刃舞
+		[194844]  = 15, -- 个人添加：白骨风暴
+	--战士        
+		[12975]   = 15, -- 破釜沉舟
+		[871]     = 15, -- 盾墙
+		[184364]  = 15, -- 狂怒回复
+		[118038]  = 15, -- 剑在人在
+	--DH            
+		[196555]  = 15, -- 虚空行走 浩劫
+		[187827]  = 15, -- 恶魔变形
+		[212084]  = 15, -- 邪能毁灭
+		[204021]  = 15, -- 烈火烙印
+		[203720]  = 15, -- 恶魔尖刺
 	--猎人
-		[GetSpellInfo(186265)]  = { id = 186265,  level = 15,}, -- 灵龟守护
+		[186265]  = 15, -- 灵龟守护
 	--盗贼
-		[GetSpellInfo(31224)]  = { id = 31224,  level = 15,}, -- 暗影斗篷
-		[GetSpellInfo(1966)]  = { id = 1966,  level = 15,}, -- 佯攻
-	--术士
-		[GetSpellInfo(104773)]  = { id = 104773,  level = 15,}, -- 不灭决心
-	--法师
-		[GetSpellInfo(45438)]  = { id = 45438,  level = 15,}, -- 寒冰屏障
-	--武僧
-		[GetSpellInfo(116849)] = { id = 116849, level = 15,}, -- 作茧缚命
-		[GetSpellInfo(115203)] = { id = 115203, level = 15,}, -- 壮胆酒
-		[GetSpellInfo(122470)]  = { id = 122470,  level = 15,}, -- 业报之触
-		[GetSpellInfo(122783)]  = { id = 122783,  level = 15,}, -- 散魔功
-	--萨满
-		[GetSpellInfo(108271)]  = { id = 108271,  level = 15,}, -- 星界转移
-	--通用
-		[GetSpellInfo(324867)]  = { id = 324867,  level = 6,}, -- 血肉铸造
-
+		[31224]   = 15, -- 暗影斗篷
+		[1966]    = 15, -- 佯攻
+	--术士       
+		[104773]  = 15, -- 不灭决心
+	--法师       
+		[45438]   = 15, -- 寒冰屏障
+	--武僧       
+		[116849]  = 15, -- 作茧缚命
+		[115203]  = 15, -- 壮胆酒
+		[122470]  = 15, -- 业报之触
+		[122783]  = 15, -- 散魔功
+	--萨满       
+		[108271]  = 15, -- 星界转移
+	--通用       
+		[324867]  = 6, -- 血肉铸造
 	},
 	["Debuffs"] = {
-		[GetSpellInfo(240559)]  = { id = 240559,  level = 6,},  -- 重伤
-		[GetSpellInfo(209858)]  = { id = 209858,  level = 6,},  -- 死疽
-		
-		--9.0
-		[GetSpellInfo(240443)]  = { id = 240443,  level = 8,}, -- 爆裂词缀
-		[GetSpellInfo(240447)]  = { id = 240447,  level = 8,}, -- 践踏，地震词缀
-		[GetSpellInfo(342494)]  = { id = 342494,  level = 8,}, -- 狂妄吹嘘，昏迷
-		[GetSpellInfo(342466)]  = { id = 342466,  level = 8,}, -- 狂妄吹嘘，点名
-		[GetSpellInfo(225080)]  = { id = 225080,  level = 8,}, -- 萨满重生，可诈尸
-		[GetSpellInfo(160029)]  = { id = 160029,  level = 6,}, -- 正在复活
-		[GetSpellInfo(292910)]  = { id = 292910,  level = 8,}, -- 镣铐，爬塔
-		[GetSpellInfo(1604)]  = { id = 1604,  level = 6,}, -- 眩晕
+		[240559]  = 6,  -- 重伤
+		[209858]  = 6,  -- 死疽
+					
+		--9.0       
+		[240443]  = 8, -- 爆裂词缀
+		[240447]  = 8, -- 践踏，地震词缀
+		[342494]  = 8, -- 狂妄吹嘘，昏迷
+		[342466]  = 8, -- 狂妄吹嘘，点名
+		[225080]  = 8, -- 萨满重生，可诈尸
+		[160029]  = 6, -- 正在复活
+		[292910]  = 8, -- 镣铐，爬塔
+		[1604]    = 6, -- 眩晕
 	},
 	["Debuffs_Black"] = {
-		[GetSpellInfo(57723)]  = { id = 57723,  level = 6,}, -- 筋疲力尽
-		[GetSpellInfo(80354)]  = { id = 80354,  level = 6,}, -- 时空错位
-		[GetSpellInfo(264689)] = { id = 264689,  level = 6,}, -- 疲倦
-		[GetSpellInfo(340880)] = { id = 340880,  level = 6,}, -- 傲慢
-		[GetSpellInfo(206151)] = { id = 206151,  level = 6,}, -- 挑战者的负担
-		[GetSpellInfo(15007)] = { id = 15007,  level = 6,}, -- 复活虚弱
-		[GetSpellInfo(113942)] = { id = 113942,  level = 6,}, -- 无法再用恶魔传送门
-		[GetSpellInfo(209261)] = { id = 209261,  level = 6,}, -- 未被污染的邪能，DH假死
-		[GetSpellInfo(87024)] = { id = 87024,  level = 6,}, -- 灸灼，法师假死
-		[GetSpellInfo(41425)] = { id = 41425,  level = 6,}, -- 低温，法师不能再用冰箱
-		[GetSpellInfo(326809)] = { id = 326809,  level = 6,}, -- 餍足，DK假死
-		[GetSpellInfo(45181)] = { id = 45181,  level = 6,}, -- 装死，盗贼假死
-		[GetSpellInfo(320227)]  = { id = 320227,  level = 6,}, -- 枯竭外壳，法夜诈尸
-		[GetSpellInfo(340556)] = { id = 340556,  level = 6,}, -- 精确本能，导灵器
-		[GetSpellInfo(348254)] = { id = 348254,  level = 6,}, -- 典狱长之眼
-		[GetSpellInfo(338606)] = { id = 338906,  level = 6,}, -- 典狱长之链
-		[GetSpellInfo(26013)] = { id = 26013,  level = 6,}, -- 逃亡者
-		--[GetSpellInfo(187464)] = { id = 187464,  level = 6,}, -- 暗影愈合
-		[GetSpellInfo(124275)] = { id = 124275,  level = 6,}, -- 轻度醉拳
-		[GetSpellInfo(124274)] = { id = 124274,  level = 6,}, -- 中度醉拳
-		[GetSpellInfo(25771)]  = { id = 25771,  level = 6,}, -- 自律
-		[GetSpellInfo(340870)] = { id = 340870,  level = 6,}, -- 恐怖光环，圣物匠全屏aoe
-		[GetSpellInfo(325184)] = { id = 325184,  level = 6,}, -- 自由心能，女勋爵全屏debuff
-		[GetSpellInfo(334909)] = { id = 334909,  level = 6,}, -- 压制气场，议会全屏debuff
-		[GetSpellInfo(346939)] = { id = 346939,  level = 6,}, -- 扭曲痛苦，议会全屏debuff
-		[GetSpellInfo(332443)] = { id = 332443,  level = 6,}, -- 泥拳，震动的地基，全屏aoe
-		[GetSpellInfo(343063)] = { id = 343063,  level = 6,}, -- 干将，大地之刺减速
+		[57723]   = 6, -- 筋疲力尽
+		[80354]   = 6, -- 时空错位
+		[264689]  = 6, -- 疲倦
+		[340880]  = 6, -- 傲慢
+		[206151]  = 6, -- 挑战者的负担
+		[15007]   = 6, -- 复活虚弱
+		[113942]  = 6, -- 无法再用恶魔传送门
+		[209261]  = 6, -- 未被污染的邪能，DH假死
+		[87024]   = 6, -- 灸灼，法师假死
+		[41425]   = 6, -- 低温，法师不能再用冰箱
+		[326809]  = 6, -- 餍足，DK假死
+		[45181]   = 6, -- 装死，盗贼假死
+		[320227]  = 6, -- 枯竭外壳，法夜诈尸
+		[340556]  = 6, -- 精确本能，导灵器
+		[348254]  = 6, -- 典狱长之眼
+		[338606]  = 6, -- 典狱长之链
+		[26013]   = 6, -- 逃亡者
+		[124275]  = 6, -- 轻度醉拳
+		[124274]  = 6, -- 中度醉拳
+		[340870]  = 6, -- 恐怖光环，圣物匠全屏aoe
+		[325184]  = 6, -- 自由心能，女勋爵全屏debuff
+		[334909]  = 6, -- 压制气场，议会全屏debuff
+		[346939]  = 6, -- 扭曲痛苦，议会全屏debuff
+		[332443]  = 6, -- 泥拳，震动的地基，全屏aoe
+		[343063]  = 6, -- 干将，大地之刺减速
 	},
 }
 
 if G.myClass == "PALADIN"  then
-	AuraList["Debuffs"][GetSpellInfo(25771)] = {id = 25771,  level = 6}  -- 自律
+	AuraList["Debuffs"][25771] = 6  -- 自律
 end
 
 -- 姓名板光环
@@ -662,15 +659,11 @@ local Character_default_Settings = {
 		cdflash_enable = true,
 		cdflash_alpha = 100,
 		cdflash_size = 60,
-		caflash_bl = {
-			item = {
-				[6948] = true,
-			},
-			spell = {
-			
-			},
+		cdflash_ignorespells = {},
+		cdflash_ignoreitems = {
+			[6948] = true,
 		},
-	},	
+	},
 	PlateOptions = {
 		-- 通用
 		enableplate = true,
@@ -856,12 +849,12 @@ T.ExportSettings = function(editbox)
 						end
 					elseif OptionCategroy == "CooldownAura" then -- 完全复制 5
 						if setting == "Debuffs_Black" then
-							for auraname, aurainfo in pairs (aCoreCDB["CooldownAura"][setting]) do
-								str = str.."^"..OptionCategroy.."~"..setting.."~"..auraname.."~"..aurainfo.id
+							for spellID, bool in pairs (aCoreCDB["CooldownAura"][setting]) do
+								str = str.."^"..OptionCategroy.."~"..setting.."~"..spellID
 							end
 						else
-							for auraname, aurainfo in pairs (aCoreCDB["CooldownAura"][setting]) do
-								str = str.."^"..OptionCategroy.."~"..setting.."~"..auraname.."~"..aurainfo.id.."~"..aurainfo.level
+							for spellID, level in pairs (aCoreCDB["CooldownAura"][setting]) do
+								str = str.."^"..OptionCategroy.."~"..setting.."~"..spellID.."~"..level
 							end
 						end
 					elseif OptionCategroy == "ItemOptions" then
@@ -902,12 +895,14 @@ T.ExportSettings = function(editbox)
 						for id, _ in pairs(aCoreCDB["UnitframeOptions"]["AuraFilterwhitelist"]) do -- 默认是空的
 							str = str.."^"..OptionCategroy.."~"..setting.."~"..id.."~true"
 						end
-					elseif setting == "caflash_bl" then -- 完全复制 5
-						for cdtpye, cdtable in pairs(aCoreCDB["ActionbarOptions"]["caflash_bl"]) do
-							for id, _ in pairs(cdtable) do
-								str = str.."^"..OptionCategroy.."~"..setting.."~"..cdtpye.."~"..id.."~true"
-							end
+					elseif setting == "cdflash_ignorespells" then -- 完全复制 4
+						for spellID, _ in pairs(aCoreCDB["ActionbarOptions"]["cdflash_ignorespells"]) do
+							str = str.."^"..OptionCategroy.."~"..setting.."~"..spellID.."~true"
 						end
+					elseif setting == "cdflash_ignoreitems" then -- 完全复制 4
+						for itemID, _ in pairs(aCoreCDB["ActionbarOptions"]["cdflash_ignoreitems"]) do
+							str = str.."^"..OptionCategroy.."~"..setting.."~"..itemID.."~true"
+						end	
 					end
 				end
 			end
@@ -980,10 +975,10 @@ T.ImportSettings = function(str)
 			
 			if sameclass then
 				aCoreCDB.PlateOptions.myplateauralist = {}
-				aCoreCDB.ActionbarOptions.caflash_bl.spell = {}
+				aCoreCDB.ActionbarOptions.cdflash_ignorespells = {}
 			end
 			
-			aCoreCDB.ActionbarOptions.caflash_bl.item = {}
+			aCoreCDB.ActionbarOptions.cdflash_ignoreitems = {}
 			aCoreCDB.PlateOptions.otherplateauralist = {}
 			
 			for index, v in pairs(optionlines) do
@@ -1012,15 +1007,11 @@ T.ImportSettings = function(str)
 								aCoreCDB[OptionCategroy][tonumber(setting)][tonumber(arg1)] = {}
 							end
 							aCoreCDB[OptionCategroy][tonumber(setting)][tonumber(arg1)][tonumber(arg2)] = tonumber(arg3)
-						elseif OptionCategroy == "CooldownAura" then -- 完全复制 5 OptionCategroy.."~"..setting.."~"..auraname.."~"..aurainfo.id.."~"..aurainfo.level
-							if sameclient then
-								if aCoreCDB[OptionCategroy][setting][arg1] == nil then
-									aCoreCDB[OptionCategroy][setting][arg1] = {}
-									aCoreCDB[OptionCategroy][setting][arg1]["id"] = tonumber(arg2)
-									if setting ~= "Debuffs_Black" then
-										aCoreCDB[OptionCategroy][setting][arg1]["level"] = tonumber(arg3)
-									end
-								end
+						elseif OptionCategroy == "CooldownAura" then -- 完全复制 5 OptionCategroy.."~"..setting.."~"..spellID.."~"..level
+							if setting ~= "Debuffs_Black" then
+								aCoreCDB[OptionCategroy][setting][arg1] = tonumber(arg2)
+							else 
+								aCoreCDB[OptionCategroy][setting][arg1] = true
 							end
 						elseif OptionCategroy == "ItemOptions" then
 							if setting == "autobuylist" then -- 完全复制 4 OptionCategroy.."~"..setting.."~"..id.."~"..count
@@ -1070,12 +1061,10 @@ T.ImportSettings = function(str)
 							if sameclient then
 								aCoreCDB[OptionCategroy][setting][arg1] = true
 							end
-						elseif setting == "caflash_bl" then -- 完全复制 5 OptionCategroy.."~"..setting.."~"..cdtpye.."~"..id.."~true"
-							if arg1 == "item" then
-								aCoreCDB[OptionCategroy][setting][arg1][tonumber(arg2)] = true
-							elseif sameclass then
-								aCoreCDB[OptionCategroy][setting][arg1][tonumber(arg2)] = true
-							end
+						elseif setting == "cdflash_ignorespells" and sameclass then -- 完全复制 4 OptionCategroy.."~"..setting.."~"..spellID.."~true"	
+							aCoreCDB[OptionCategroy][setting][tonumber(arg1)] = true
+						elseif setting == "cdflash_ignoreitems" then -- 完全复制 4 OptionCategroy.."~"..setting.."~"..spellID.."~true"	
+							aCoreCDB[OptionCategroy][setting][tonumber(arg1)] = true
 						end
 					end
 
