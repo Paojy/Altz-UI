@@ -160,7 +160,7 @@ local function CreateOptions(parent, type, text, table, value, group, order)
 		T.createbuttongroup(parent, 450, 200, 30+parent.index*30, text, table, value, group, order)
 	elseif type == "editbox" then
 		T.createeditbox(parent, 200, 30+parent.index*30, text, table, value)
-		parent[value]:SetText(G[text])
+		parent[value]:SetText(G.links[text])
 		parent[value]:SetWidth(400)
 		parent[value]:SetScript("OnEditFocusGained", function(self)
 			self:HighlightText()
@@ -677,13 +677,6 @@ end)
 --====================================================--
 CreateTutorialsStepFrame(L["命令"], format(L["指令"], G.classcolor, G.classcolor, G.classcolor, G.classcolor, G.classcolor, G.classcolor))
 
---====================================================--
---[[               -- 联系方式 --                   ]]--
---====================================================--
-CreateTutorialsStepFrame(L["寻求帮助"], L["粘贴"])
-
-CreateOptions(TutorialsFrame[7], "editbox", "Nga", nil, "Nga")
-CreateOptions(TutorialsFrame[7], "editbox", "WoWInterface", nil, "WoWInterface")
 --====================================================--
 --[[               -- 更新日志 --                   ]]--
 --====================================================--

@@ -44,6 +44,7 @@ StaticPopupDialogs[G.uiname.."Reset Confirm"] = {
 	text = L["重置确认"],
 	button1 = ACCEPT,
 	button2 = CANCEL,
+	showAlert = true,
 	hideOnEscape = 1, 
 	whileDead = true,
 	preferredIndex = 3,

@@ -334,6 +334,13 @@ F.CreateBD(SpecMover, 1)
 T.CreateSD(SpecMover, 2, 0, 0, 0, 0, -1)
 SpecMover:SetBackdropColor(.05, .05, .05)
 
+SpecMover.reset_all = T.createclicktexbutton(SpecMover, {"TOPRIGHT", SpecMover, "TOPRIGHT", -3, -3}, [["Interface\AddOns\AltzUI\media\refresh.tga"]], L["重置"])
+SpecMover.reset_all:SetScript("OnClick", function()
+	StaticPopupDialogs[G.uiname.."Reset Confirm"].text = string.format(L["重置确认"], L["框体位置"])
+	StaticPopupDialogs[G.uiname.."Reset Confirm"].OnAccept = T.ResetAllFramesPoint
+	StaticPopup_Show(G.uiname.."Reset Confirm")
+end)
+
 SpecMover.title = T.createtext(SpecMover, "OVERLAY", 16, "OUTLINE", "CENTER")
 SpecMover.title:SetPoint("TOP", SpecMover, "TOP", 0, -2)
 SpecMover.title:SetText(G.classcolor..L["界面移动工具"].."|r")

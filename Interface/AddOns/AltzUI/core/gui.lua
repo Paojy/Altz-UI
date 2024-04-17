@@ -20,6 +20,7 @@ GUI:Hide()
 F.SetBD(GUI)
 G.GUI = GUI
 
+-- 移动
 GUI:SetClampedToScreen(true)
 GUI:SetMovable(true)
 
@@ -48,28 +49,6 @@ GUI.df:SetScript("OnDragStop", function(self)
 	GUI.scale:Show()
 	GUI.scale.pointself()
 end)
-
-GUI.title = T.createtext(GUI, "OVERLAY", 25, "OUTLINE", "CENTER")
-GUI.title:SetPoint("BOTTOM", GUI, "TOP", 0, -8)
-GUI.title:SetText(G.classcolor.."Altz UI  "..G.Version.."|r")
-
-GUI.close = CreateFrame("Button", nil, GUI)
-GUI.close:SetPoint("BOTTOMRIGHT", -10, 10)
-GUI.close:SetSize(20, 20)
-T.SkinButton(GUI.close, G.Iconpath.."exit", true)
-GUI.close:SetScript("OnClick", function()
-	GUI:Hide()
-	GUI.df:Hide()
-	GUI.scale:Hide()
-end)
-
-GUI.reload = CreateFrame("Button", G.uiname.."ReloadButton", GUI, "UIPanelButtonTemplate")
-GUI.reload:SetPoint("RIGHT", GUI.close, "LEFT", -15, 0)
-GUI.reload:SetSize(100, 25)
-GUI.reload:SetText(RELOADUI)
-T.resize_font(GUI.reload.Text)
-F.Reskin(GUI.reload)
-GUI.reload:SetScript("OnClick", ReloadUI)
 
 -- 控制台尺寸
 GUI.scale = CreateFrame("Slider", G.uiname.."GUIScaleSlider", UIParent, "OptionsSliderTemplate")
@@ -120,12 +99,139 @@ end
 
 GUI.scale:SetScript("OnMouseUp", GUI.scale.pointself)
 
+-- 标题
+GUI.title = T.createtext(GUI, "OVERLAY", 25, "OUTLINE", "CENTER")
+GUI.title:SetPoint("BOTTOM", GUI, "TOP", 0, -8)
+GUI.title:SetText(G.classcolor.."Altz UI  "..G.Version.."|r")
+
+-- 控制台标签
 GUI.tabindex = 1
 GUI.tabnum = 20
 for i = 1, 20 do
 	GUI["tab"..i] = CreateFrame("Frame", G.uiname.."GUI Tab"..i, GUI, "BackdropTemplate")
 	GUI["tab"..i]:SetScript("OnMouseDown", function() end)
 end
+
+-- 输入框和按钮
+GUI.editbox = T.createeditbox(GUI, nil, nil, L["复制粘贴"])
+GUI.editbox:SetPoint("TOPLEFT", GUI, "BOTTOMLEFT", 155, -8)
+GUI.editbox:SetPoint("BOTTOMRIGHT", GUI, "BOTTOMRIGHT", -5, -28)
+GUI.editbox:Hide()
+
+GUI.editbox.name:ClearAllPoints()
+GUI.editbox.name:SetPoint("RIGHT", GUI.editbox, "LEFT", -5, 1)
+
+GUI.editbox:SetScript("OnEditFocusGained", function(self) self:HighlightText() end)
+GUI.editbox:SetScript("OnEditFocusLost", function(self) self:HighlightText(0,0) end)
+GUI.editbox:SetScript("OnHide", function(self) self.button:Hide() end)
+
+GUI.editbox.bg = CreateFrame("Frame", nil, GUI.editbox, "BackdropTemplate")
+GUI.editbox.bg:SetPoint("TOPLEFT", GUI, "BOTTOMLEFT", 0, -3)
+GUI.editbox.bg:SetPoint("BOTTOMRIGHT", GUI, "BOTTOMRIGHT", 0, -31)
+GUI.editbox.bg:SetFrameLevel(GUI:GetFrameLevel()-1)
+F.SetBD(GUI.editbox.bg)
+
+GUI.editbox.button = T.createclickbutton(GUI.editbox, {"RIGHT", GUI.editbox, "RIGHT", -2, 0}, OKAY)
+GUI.editbox.button:Hide()
+	
+GUI.GitHub = T.createclicktexbutton(GUI, {"BOTTOMLEFT", GUI, "BOTTOMLEFT", 5, 0}, [[Interface\AddOns\AltzUI\media\icons\GitHub.tga]], "GitHub")
+GUI.GitHub:SetScript("OnClick", function()
+	if GUI.editbox.type ~= "GitHub" then
+		GUI.editbox:Show()
+		GUI.editbox.button:Hide()
+		GUI.editbox:SetText(G.links["GitHub"])
+		GUI.editbox.type = "GitHub"
+	else
+		GUI.editbox:Hide()
+		GUI.editbox.type = nil
+	end
+end)
+
+GUI.wowi = T.createclicktexbutton(GUI, {"LEFT", GUI.GitHub, "RIGHT", 2, 0}, [[Interface\AddOns\AltzUI\media\icons\Guild.tga]], "WoWInterface", 20)
+GUI.wowi:SetScript("OnClick", function()
+	if GUI.editbox.type ~= "WoWInterface" then
+		GUI.editbox:Show()
+		GUI.editbox.button:Hide()
+		GUI.editbox:SetText(G.links["WoWInterface"])
+		GUI.editbox.type = "WoWInterface"
+	else
+		GUI.editbox:Hide()
+		GUI.editbox.type = nil
+	end
+end)
+
+GUI.export = T.createclicktexbutton(GUI, {"LEFT", GUI.wowi, "RIGHT", 2, 0}, [[Interface\AddOns\AltzUI\media\icons\refresh.tga]], L["导出"])
+GUI.export:SetScript("OnClick", function()	
+	if GUI.editbox.type ~= "export" then
+		GUI.editbox:Show()
+		GUI.editbox.button:Hide()
+		T.ExportSettings(GUI.editbox)
+		GUI.editbox.type = "export"
+	else
+		GUI.editbox:Hide()
+		GUI.editbox.type = nil
+	end
+end)
+
+GUI.import = T.createclicktexbutton(GUI, {"LEFT", GUI.export, "RIGHT", 2, 0}, [[Interface\AddOns\AltzUI\media\icons\refresh.tga]], L["导入"])
+GUI.import:SetScript("OnClick", function()	
+	if GUI.editbox.type ~= "import" then
+		GUI.editbox:Show()
+		GUI.editbox.button:Show()
+		GUI.editbox.button:SetScript("OnClick", function()
+			T.ImportSettings(GUI.editbox:GetText())
+		end)
+		GUI.editbox:SetText("")
+		GUI.editbox.type = "import"
+	else
+		GUI.editbox:Hide()
+		GUI.editbox.type = nil
+	end
+end)
+
+GUI.reset = T.createclicktexbutton(GUI, {"LEFT", GUI.import, "RIGHT", 2, 0}, [[Interface\AddOns\AltzUI\media\icons\refresh.tga]], L["重置"])
+GUI.reset:SetScript("OnClick", function()
+	GUI.editbox:Hide()
+	GUI.editbox.type = nil
+	
+	StaticPopupDialogs[G.uiname.."Reset Confirm"].text = format(L["重置确认"], "Altz UI")
+	StaticPopupDialogs[G.uiname.."Reset Confirm"].OnAccept = function()
+		aCoreCDB = {}
+		T.SetChatFrame()
+		T.LoadVariables()
+		T.ResetAllAddonSettings()
+		ReloadUI()
+	end
+	StaticPopup_Show(G.uiname.."Reset Confirm")
+end)
+
+GUI.unlock = T.createclicktexbutton(GUI, {"LEFT", GUI.reset, "RIGHT", 2, 0}, [[Interface\AddOns\AltzUI\media\icons\refresh.tga]], L["解锁框体"])
+GUI.unlock:SetScript("OnClick", function()	
+	GUI.editbox:Hide()
+	GUI.editbox.type = nil
+	
+	T.UnlockAll()
+	GUI:Hide()
+	GUI.df:Hide()
+	GUI.scale:Hide()
+end)
+
+GUI.reload = T.createclicktexbutton(GUI, {"LEFT", GUI.unlock, "RIGHT", 2, 0}, [[Interface\AddOns\AltzUI\media\icons\refresh.tga]], RELOADUI)
+GUI.reload:SetScript("OnClick", ReloadUI)
+
+GUI.close = T.createclicktexbutton(GUI, {"BOTTOMRIGHT", GUI, "BOTTOMRIGHT", -5, 0}, [[Interface\AddOns\AltzUI\media\icons\exit.tga]])
+GUI.close:SetScript("OnClick", function()
+	GUI:Hide()
+	GUI.df:Hide()
+	GUI.scale:Hide()
+end)
+
+GUI:HookScript("OnHide", function()
+	StaticPopup_Hide(G.uiname.."Import Confirm")
+	StaticPopup_Hide(G.uiname.."Reset Confirm")
+	GUI.editbox:Hide()
+	GUI.editbox.type = nil
+end)
 
 --====================================================--
 --[[                   -- TABS --                   ]]--
@@ -215,7 +321,7 @@ local function CreateOptionPage(name, title, parent, orientation, a, scroll)
 	Options.line:SetPoint("TOP", 0, -50)
 	Options.line:SetColorTexture(1, 1, 1, .2)
 	
-	if scroll then
+	if scroll then -- 需要修改
 		--print(name)
 		Options.SF = CreateFrame("ScrollFrame", G.uiname..name.." ScrollFrame", Options, "UIPanelScrollFrameTemplate")
 		Options.SF:SetPoint("TOPLEFT", Options, "TOPLEFT", 10, -80)
@@ -254,211 +360,16 @@ local function CreateOptionPage(name, title, parent, orientation, a, scroll)
 	
 	return Options
 end
---====================================================--
---[[                -- Intro --                   ]]--
---====================================================--
-local IntroOptions = CreateFrame("Frame", G.uiname.."Intro Frame", GUI)
-IntroOptions:SetAllPoints(GUI)
-CreateTab(L["介绍"], IntroOptions, GUI, "VERTICAL")
 
-IntroOptions:SetScript("OnShow", function() GUI.reload:Hide() end)
-IntroOptions:SetScript("OnHide", function() GUI.reload:Show() end)
-
-local logo = CreateFrame("PlayerModel", G.uiname.."Logo", IntroOptions)
-logo:SetSize(500, 300)
-logo:SetPoint("CENTER")
-logo:SetDisplayInfo(40795)
-
-logo:SetCamDistanceScale(.7)
-logo:SetPosition(-2,0,0)
-logo:SetRotation(-0.3)
-logo.rotation = -0.3
-
-IntroOptions.line = IntroOptions:CreateTexture(nil, "ARTWORK")
-IntroOptions.line:SetSize(IntroOptions:GetWidth()-30, 1)
-IntroOptions.line:SetPoint("BOTTOM", 0, 45)
-IntroOptions.line:SetColorTexture(1, 1, 1, .2)
-
-IntroOptions.editbox = CreateFrame("EditBox", G.uiname.."LinkButtonEditBox", IntroOptions)
-IntroOptions.editbox:SetPoint("TOPLEFT", IntroOptions.line, "BOTTOMLEFT", 2, -2)
-IntroOptions.editbox:SetSize(400, 25)
-
-IntroOptions.editbox.bd = CreateFrame("Frame", nil, IntroOptions.editbox, "BackdropTemplate")
-IntroOptions.editbox.bd:SetPoint("TOPLEFT", -2, 0)
-IntroOptions.editbox.bd:SetPoint("BOTTOMRIGHT")
-IntroOptions.editbox.bd:SetFrameLevel(IntroOptions.editbox:GetFrameLevel()-1)
-F.CreateBD(IntroOptions.editbox.bd, 0)
-	
-IntroOptions.editbox.gradient = F.CreateGradient(IntroOptions.editbox)
-IntroOptions.editbox.gradient:SetPoint("TOPLEFT", IntroOptions.editbox.bd, 0, 0)
-IntroOptions.editbox.gradient:SetPoint("BOTTOMRIGHT", IntroOptions.editbox.bd, 0, 0)
-
-IntroOptions.editbox.t = T.createtext(IntroOptions.editbox, "OVERLAY", 12, "OUTLINE", "LEFT")
-IntroOptions.editbox.t:SetPoint("LEFT", IntroOptions.editbox, "RIGHT", 10, 1)
-IntroOptions.editbox.t:SetText(L["粘贴"])
-T.resize_font(IntroOptions.editbox.t)
-
-IntroOptions.editbox:SetFont(GameFontHighlight:GetFont(), 12, "OUTLINE")
-IntroOptions.editbox:SetAutoFocus(false)
-IntroOptions.editbox:SetTextInsets(3, 0, 0, 0)
-IntroOptions.editbox:Hide()
-
-IntroOptions.editbox:SetScript("OnEditFocusGained", function(self)
-	self:HighlightText()
-end)
-
-IntroOptions.editbox:SetScript("OnEditFocusLost", function(self)
-	self:HighlightText(0,0)
-end)
-		
-local function CreateLinkButton(text, ...)
-	local bu = CreateFrame("Button", G.uiname..text.."LinkButton", IntroOptions)
-	bu:SetPoint(...)
-	
-	bu.tex = bu:CreateTexture(nil, "OVERLAY")
-	bu.tex:SetPoint("LEFT", bu, "LEFT")
-	bu.tex:SetSize(20, 20)
-	bu.tex:SetTexture("Interface\\AddOns\\AltzUI\\media\\icons\\Guild")
-	bu.tex:SetVertexColor(.6, .6, .6)
-	bu.tex:SetBlendMode("ADD")
-	
-	bu.text = T.createtext(bu, "OVERLAY", 12, "OUTLINE", "LEFT")
-	bu.text:SetPoint("LEFT", bu.tex, "RIGHT", 0, 0)
-	bu.text:SetText(text)
-	bu.text:SetTextColor(.6, .6, .6)
-	
-	bu:SetHeight(20)
-	bu:SetWidth(20+bu.text:GetWidth())
-	
-	bu:SetScript("OnClick", function()
-		if IntroOptions.editbox.type ~= text then
-			if not IntroOptions.editbox:IsShown() then
-				IntroOptions.editbox:Show()
-			end
-			IntroOptions.editbox:SetText(G[text])
-			IntroOptions.editbox.type = text
-		else
-			IntroOptions.editbox:Hide()
-			IntroOptions.editbox.type = ""
-		end
-	end)
-	return bu
-end
-
-local nga = CreateLinkButton("Nga", "BOTTOMLEFT", IntroOptions.line, "TOPLEFT", 0, 0)
-local wowi = CreateLinkButton("WoWInterface", "LEFT", nga, "RIGHT", 5, 0)
-
-local function RotateModel(self, button)
-    local rotationIncrement = 0.2
-    if button == "LeftButton" then
-		self.rotation = self.rotation - rotationIncrement
-    else
-		self.rotation = self.rotation + rotationIncrement
-    end
-    self.rotation = floor((self.rotation)*10)/10
-    self:SetRotation(self.rotation)
-end
-
-logo:SetScript("OnMouseDown", function(self, button) RotateModel(self, button) end)
-
-local resetbu = CreateFrame("Button", G.uiname.."ResetButton", IntroOptions, "UIPanelButtonTemplate")
-resetbu:SetPoint("BOTTOMLEFT", IntroOptions, "BOTTOM", 5, 80)
-resetbu:SetSize(130, 25)
-resetbu:SetText(L["重置"])
-T.resize_font(resetbu.Text)
-F.Reskin(resetbu)
-resetbu:SetScript("OnClick", function(self)
-	StaticPopupDialogs[G.uiname.."Reset Confirm"].text = format(L["重置确认"], "Altz UI")
-	StaticPopupDialogs[G.uiname.."Reset Confirm"].OnAccept = function()
-		aCoreCDB = {}
-		T.SetChatFrame()
-		T.LoadVariables()
-		T.ResetAllAddonSettings()
-		ReloadUI()
-	end
-	StaticPopup_Show(G.uiname.."Reset Confirm")
-end)
-
-T.createmultilinebox(IntroOptions, 550, 390, 50, 20, nil, nil, "Import")
-IntroOptions.Import:Hide()
-
-local import = CreateFrame("Button", G.uiname.."importbutton",  IntroOptions.Import, "UIPanelButtonTemplate")
-import:SetPoint("BOTTOMLEFT", IntroOptions, "BOTTOM", 5, 110)
-import:SetSize(270, 25)
-import:SetText(L["导入"])
-T.resize_font(import.Text)
-F.Reskin(import)
-import:SetScript("OnClick", function(self)
-	T.ImportSettings(IntroOptions.Import.edit:GetText())
-end)
-
-local export = CreateFrame("Button", G.uiname.."exportbutton",  IntroOptions.Import, "UIPanelButtonTemplate")
-export:SetPoint("BOTTOMRIGHT", IntroOptions, "BOTTOM", -5, 110)
-export:SetSize(270, 25)
-export:SetText(L["导出"])
-T.resize_font(export.Text)
-F.Reskin(export)
-export:SetScript("OnClick", function(self)
-	T.ExportSettings(IntroOptions.Import.edit)
-end)
-
-local settingcopybu = CreateFrame("Button", G.uiname.."settingcopybutton",  IntroOptions, "UIPanelButtonTemplate")
-settingcopybu:SetPoint("BOTTOMLEFT", IntroOptions, "BOTTOM", 145, 80)
-settingcopybu:SetSize(130, 25)
-settingcopybu:SetText(L["导入/导出配置"])
-T.resize_font(settingcopybu.Text)
-F.Reskin(settingcopybu)
-settingcopybu:SetScript("OnClick", function(self)
-	if not IntroOptions.Import:IsShown() then
-		IntroOptions.Import:Show()
-		logo:Hide()
-	else
-		IntroOptions.Import:Hide()
-		logo:Show()
-	end
-end)
-
-settingcopybu:SetScript("OnHide", function()
-	IntroOptions.Import:Hide()
-	logo:Show()
-end)
-
-IntroOptions.Import:SetScript("OnHide", function()
-	StaticPopup_Hide(G.uiname.."Import Confirm")
-end)
-
-local resetposbutton = CreateFrame("Button", G.uiname.."ResetPosButton", IntroOptions, "UIPanelButtonTemplate")
-resetposbutton:SetPoint("BOTTOMRIGHT", IntroOptions, "BOTTOM", -145, 80)
-resetposbutton:SetSize(130, 25)
-resetposbutton:SetText(L["重置框体位置"])
-T.resize_font(resetposbutton.Text)
-F.Reskin(resetposbutton)
-resetposbutton:SetScript("OnClick", function()
-	StaticPopupDialogs[G.uiname.."Reset Confirm"].text = L["重置确认"]
-	StaticPopupDialogs[G.uiname.."Reset Confirm"].OnAccept = T.ResetAllFramesPoint
-	StaticPopup_Show(G.uiname.."Reset Confirm")
-end)
-
-local unlockbutton = CreateFrame("Button", G.uiname.."UnlockAllFramesButton", IntroOptions, "UIPanelButtonTemplate")
-unlockbutton:SetPoint("BOTTOMRIGHT", IntroOptions, "BOTTOM", -5, 80)
-unlockbutton:SetSize(130, 25)
-unlockbutton:SetText(L["解锁框体"])
-T.resize_font(unlockbutton.Text)
-F.Reskin(unlockbutton)
-unlockbutton:SetScript("OnClick", function()
-	T.UnlockAll()
-	GUI:Hide()
-	GUI.df:Hide()
-	GUI.scale:Hide()
-end)
 --====================================================--
 --[[            -- Interface Options --            ]]--
 --====================================================--
 local SkinOptions = CreateOptionPage("Interface Options", L["界面"], GUI, "VERTICAL")
+SkinOptions:Show()
 
 local SInnerframe = CreateFrame("Frame", G.uiname.."Interface Options Innerframe", SkinOptions, "BackdropTemplate")
 SInnerframe:SetPoint("TOPLEFT", 40, -60)
-SInnerframe:SetPoint("BOTTOMLEFT", -20, 20)
+SInnerframe:SetPoint("BOTTOMLEFT", -20, 25)
 SInnerframe:SetWidth(SkinOptions:GetWidth()-200)
 F.CreateBD(SInnerframe, .3)
 
@@ -655,7 +566,7 @@ CreateDividingLine(ItemOptions, -200)
 T.createcheckbutton(ItemOptions, 30, 210, L["自动售卖"], "ItemOptions", "autosell", L["自动售卖提示"])
 T.createcheckbutton(ItemOptions, 30, 240, L["自动购买"], "ItemOptions", "autobuy", L["自动购买提示"])
 
-ItemOptions.autobuy_list = T.createscrolllist(ItemOptions, {"TOPLEFT", ItemOptions, "TOPLEFT", 40, -310}, true, nil, 220)
+ItemOptions.autobuy_list = T.createscrolllist(ItemOptions, {"TOPLEFT", ItemOptions, "TOPLEFT", 40, -310}, true, nil, 215)
 
 local CreateAutobuyButton = function(itemID)
 	local bu = T.createlistbutton(ItemOptions.autobuy_list.anchor)
@@ -716,7 +627,7 @@ function ItemOptions.autobuy_quantityinput:apply()
 	end
 end
 
-ItemOptions.autobuy_additembutton = T.createclickbutton(ItemOptions, {"LEFT", ItemOptions.autobuy_quantityinput, "RIGHT", 15, 0}, ADD, 50, 20)
+ItemOptions.autobuy_additembutton = T.createclickbutton(ItemOptions, {"LEFT", ItemOptions.autobuy_quantityinput, "RIGHT", 15, 0}, ADD)
 ItemOptions.autobuy_additembutton:SetScript("OnClick", function(self)
 	local text = ItemOptions.autobuy_iteminput:GetText()
 	local quantity = ItemOptions.autobuy_quantityinput:GetText()
@@ -752,7 +663,7 @@ local UFOptions = CreateOptionPage("UF Options", L["单位框体"], GUI, "VERTIC
 
 local UFInnerframe = CreateFrame("Frame", G.uiname.."UF Options Innerframe", UFOptions, "BackdropTemplate")
 UFInnerframe:SetPoint("TOPLEFT", 40, -60)
-UFInnerframe:SetPoint("BOTTOMLEFT", -20, 20)
+UFInnerframe:SetPoint("BOTTOMLEFT", -20, 25)
 UFInnerframe:SetWidth(UFOptions:GetWidth()-200)
 F.CreateBD(UFInnerframe, .3)
 
@@ -1139,7 +1050,7 @@ local RFOptions = CreateOptionPage("RF Options", L["团队框架"], GUI, "VERTIC
 
 local RFInnerframe = CreateFrame("Frame", G.uiname.."RF Options Innerframe", RFOptions, "BackdropTemplate")
 RFInnerframe:SetPoint("TOPLEFT", 40, -60)
-RFInnerframe:SetPoint("BOTTOMLEFT", -20, 20)
+RFInnerframe:SetPoint("BOTTOMLEFT", -20, 25)
 RFInnerframe:SetWidth(RFOptions:GetWidth()-200)
 F.CreateBD(RFInnerframe, .3)
 
@@ -1293,10 +1204,9 @@ RFInnerframe.ind.aurafliter_title = T.createtext(RFInnerframe.ind, "OVERLAY", 14
 RFInnerframe.ind.aurafliter_title:SetPoint("TOPLEFT", RFInnerframe.ind, "TOPLEFT", 30, -150)
 RFInnerframe.ind.aurafliter_title:SetText(L["图标指示器"]..L["设置"])
 
--- 需要检查
-RFInnerframe.ind.reset = T.createclicktexbutton(RFInnerframe.ind, {"LEFT", GUI.reload, "TOP", 10, 0}, G.media.blank, 20, 20)
+RFInnerframe.ind.reset = T.createclicktexbutton(RFInnerframe.ind, {"LEFT", RFInnerframe.ind.aurafliter_title, "RIGHT", 10, 0}, [[Interface\AddOns\AltzUI\media\icons\refresh.tga]], L["重置"])
 RFInnerframe.ind.reset:SetScript("OnClick", function(self)
-	StaticPopupDialogs[G.uiname.."Reset Confirm"].text = format(L["重置确认"], L["治疗指示器"])
+	StaticPopupDialogs[G.uiname.."Reset Confirm"].text = string.format(L["重置确认"], L["治疗指示器"])
 	StaticPopupDialogs[G.uiname.."Reset Confirm"].OnAccept = function()
 		aCoreCDB["UnitframeOptions"]["hotind_style"] = "icon_ind"
 		aCoreCDB["UnitframeOptions"]["hotind_size"] = 15
@@ -2391,7 +2301,7 @@ local ActionbarOptions = CreateOptionPage("Actionbar Options", ACTIONBARS_LABEL,
 
 local ActionbarInnerframe = CreateFrame("Frame", G.uiname.."Actionbar Options Innerframe", ActionbarOptions, "BackdropTemplate")
 ActionbarInnerframe:SetPoint("TOPLEFT", 40, -60)
-ActionbarInnerframe:SetPoint("BOTTOMLEFT", -20, 20)
+ActionbarInnerframe:SetPoint("BOTTOMLEFT", -20, 25)
 ActionbarInnerframe:SetWidth(ActionbarOptions:GetWidth()-200)
 F.CreateBD(ActionbarInnerframe, .3)
 
@@ -2584,7 +2494,7 @@ local PlateOptions = CreateOptionPage("Plate Options", UNIT_NAMEPLATES, GUI, "VE
 
 local PlateInnerframe = CreateFrame("Frame", G.uiname.."Actionbar Options Innerframe", PlateOptions, "BackdropTemplate")
 PlateInnerframe:SetPoint("TOPLEFT", 40, -60)
-PlateInnerframe:SetPoint("BOTTOMLEFT", -20, 20)
+PlateInnerframe:SetPoint("BOTTOMLEFT", -20, 25)
 PlateInnerframe:SetWidth(PlateOptions:GetWidth()-200)
 F.CreateBD(PlateInnerframe, .3)
 
