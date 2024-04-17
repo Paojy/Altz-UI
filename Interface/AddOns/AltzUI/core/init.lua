@@ -14,6 +14,7 @@ AltzUI = ns
 local T, C, L, G = unpack(select(2, ...))
 
 G.uiname = "AltzUI_"
+G.addon_c = "|cffff0000"
 
 G.dragFrameList = {}
 
@@ -91,7 +92,8 @@ BACKDROP_ALTZ_COLOR_15	= CreateColor(.15, .15, .15, 1)
 
 G.links = {
 	GitHub = "github.com/Paojy/Altz-UI",
-	WoWInterface = "www.wowinterface.com/downloads/info21263-AltzUIforShadowlands.html"
+	WoWInterface = "www.wowinterface.com/downloads/info21263-AltzUIforShadowlands.html",
+	Curse = "www.curseforge.com/wow/addons",
 }
 
 -------------------------------------------------
