@@ -179,6 +179,12 @@ T.CheckRole = function()
 end
 
 ----------------------------
+-- 			文本		  --
+----------------------------
+T.color_text = function(text)
+	return string.format(G.addon_c.."%s|r", text)
+end
+----------------------------
 -- 			皮肤		  --
 ----------------------------
 
@@ -873,60 +879,68 @@ T.createinputbox = function(parent, points, text, width, link)
 	return box
 end
 
--- 需要修改
 T.createeditbox = function(parent, x, y, name, table, value, tip)
-	local box = CreateFrame("EditBox", nil, parent)
-	box:SetSize(180, 20)
-	if x and y then
-		box:SetPoint("TOPLEFT", x, -y)
-	end
-	
-	local bd = CreateFrame("Frame", nil, box, "BackdropTemplate")
-	bd:SetPoint("TOPLEFT", -2, 0)
-	bd:SetPoint("BOTTOMRIGHT")
-	bd:SetFrameLevel(box:GetFrameLevel()-1)
-	F.CreateBD(bd, 0)
-	
-	local gradient = F.CreateGradient(box)
-	gradient:SetPoint("TOPLEFT", bd, 0, 0)
-	gradient:SetPoint("BOTTOMRIGHT", bd, 0, 0)
-	
-	box.name = box:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
-	box.name:SetPoint("LEFT", box, "RIGHT", 10, 1)
-	box.name:SetText(name or "")
-	T.resize_font(box.name)
+	local box = CreateFrame("EditBox", nil, parent, "BackdropTemplate")
+	box:SetSize(200, 20)
+	F.CreateBD(box)
 	
 	box:SetFont(GameFontHighlight:GetFont(), 12, "OUTLINE")
 	box:SetAutoFocus(false)
 	box:SetTextInsets(3, 0, 0, 0)
+		
+	box.name = box:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
+	box.name:SetPoint("LEFT", box, "RIGHT", 10, 1)
+	box.name:SetText(name or "")	
+	T.resize_font(box.name)
+	
+	box.button = T.createclickbutton(box, {"RIGHT", box, "RIGHT", -2, 0}, OKAY)
+	box.button:Hide()
+	
+	if x and y then
+		box.name:SetPoint("TOPLEFT", parent, "TOPLEFT", x, -y)
+		box:SetPoint("TOPLEFT", parent, "TOPLEFT", x+box.name:GetWidth()+5, -y+4)
+	end
 	
 	if table and value then
 		box:SetScript("OnShow", function(self) 
 			self:SetText(aCoreCDB[table][value])
 		end)
+		
 		box:SetScript("OnEscapePressed", function(self)
 			self:SetText(aCoreCDB[table][value])
 			self:ClearFocus()
 		end)
+		
 		box:SetScript("OnEnterPressed", function(self)
 			self:ClearFocus()
 			aCoreCDB[table][value] = self:GetText()
 			if self.apply then
 				self.apply()
 			end
+			self.button:Hide()
 		end)
+		
+		box.button:SetScript("OnClick", function()
+			box:ClearFocus()
+			aCoreCDB[table][value] = box:GetText()
+			if box.apply then
+				box:apply()
+			end
+			box.button:Hide()
+		end)
+		
+		parent[value] = box
 	end
 	
 	box:SetScript("OnEnable", function(self)
 		self.name:SetTextColor(1, 1, 1, 1)
 		self:SetTextColor(1, 1, 1, 1)
-		gradient:SetGradient("Vertical", CreateColor(0, 0, 0, .5), CreateColor(.3, .3, .3, .3))
+		
 	end)
 	
 	box:SetScript("OnDisable", function(self)
 		self.name:SetTextColor(0.7, 0.7, 0.7, 0.5)
 		self:SetTextColor(.7, .7, .7, .5)
-		gradient:SetVertexColor(.5, .5, .5, .3)
 	end)
 	
 	if tip then
@@ -937,16 +951,14 @@ T.createeditbox = function(parent, x, y, name, table, value, tip)
 		end)
 		box:SetScript("OnLeave", function(self) GameTooltip:Hide() end)
 	end
-	if value then
-		parent[value] = box
-	end
+	
 	return box
 end
 
 T.createmultilinebox = function(parent, width, height, x, y, name, table, value, tip)
 	local scrollBG = CreateFrame("ScrollFrame", G.uiname..value.."MultiLineEditBox_BG", parent, "UIPanelScrollFrameTemplate")
 	scrollBG:SetPoint("TOPLEFT", x, -y)
-	scrollBG:SetSize(width, height)
+	scrollBG:SetSize(width or 200, height or 100)
 	scrollBG:SetFrameLevel(parent:GetFrameLevel()+1)
 	scrollBG.bg = CreateFrame("Frame", nil, scrollBG, "BackdropTemplate")
 	scrollBG.bg:SetAllPoints(scrollBG)
@@ -1420,7 +1432,71 @@ T.createclicktexbutton = function(parent, points, tex, text, tex_size)
 	return bu
 end
 
-T.createlistbutton = function(parent, width)
+T.lineuplist = function(list, button_list, parent)
+	local t = {}
+	
+	for key, _ in pairs(list) do
+		table.insert(t, key)		
+	end
+	
+	table.sort(t)
+	
+	for i, key in pairs(t) do
+		local bu = button_list[key]
+		bu:ClearAllPoints()
+		bu:SetPoint("TOPLEFT", parent, "TOPLEFT", 5, 25-i*30)
+	end
+end
+
+T.createscrolllist = function(parent, points, bg, width, height)
+	local w = width or 320
+	local h = height or 220
+	
+	local sf = CreateFrame("ScrollFrame", nil, parent, "UIPanelScrollFrameTemplate")
+	if points then sf:SetPoint(unpack(points)) end	
+	sf:SetSize(w, h)
+	sf:SetFrameLevel(parent:GetFrameLevel()+1)
+
+	sf.anchor = CreateFrame("Frame", nil, sf)
+	sf.anchor:SetPoint("TOPLEFT", sf, "TOPLEFT", 0, -3)
+	sf.anchor:SetWidth(sf:GetWidth()-30)
+	sf.anchor:SetHeight(sf:GetHeight()+200)
+	sf.anchor:SetFrameLevel(sf:GetFrameLevel()+1)
+	sf:SetScrollChild(sf.anchor)
+	
+	if bg then
+		sf.bg = CreateFrame("Frame", nil, sf, "BackdropTemplate")
+		sf.bg:SetAllPoints(sf)
+		sf.bg:SetFrameLevel(sf:GetFrameLevel()-1)
+		F.CreateBD(sf.bg, .3)
+	end
+	
+	F.ReskinScroll(sf.ScrollBar)
+	
+	sf.cover = CreateFrame("Frame", nil, sf)
+	sf.cover:SetAllPoints()
+	sf.cover:SetFrameLevel(sf.anchor:GetFrameLevel()+5)
+	
+	sf.cover.tex = sf.cover:CreateTexture(nil, "OVERLAY")
+	sf.cover.tex:SetAllPoints()
+	sf.cover.tex:SetColorTexture(.3, .3, .3, .7)
+	sf.cover:EnableMouse(true)
+	sf.cover:Hide()
+	
+	sf.Enable = function()
+		sf.cover:Hide()
+	end
+	
+	sf.Disable = function()
+		sf.cover:Show()
+	end
+	
+	sf.list = {}
+	
+	return sf
+end
+
+local createlistbutton = function(parent, width)
 	local bu = CreateFrame("Frame", nil, parent, "BackdropTemplate")
 	bu:SetSize(width or 300, 28)
 	F.CreateBD(bu, .2)
@@ -1477,67 +1553,29 @@ T.createlistbutton = function(parent, width)
 	return bu
 end
 
-T.lineuplist = function(list, button_list, parent)
-	local t = {}
+T.createscrollbutton = function(type, list, table, value, key)
+	local bu = createlistbutton(list.anchor)
 	
-	for key, _ in pairs(list) do
-		table.insert(t, key)		
+	bu:SetScript("OnEnter", function(self)	
+		GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+		if type == "spell" then
+			GameTooltip:SetSpellByID(key)
+		elseif type == "item" then
+			GameTooltip:SetItemByID(key)
+		end
+		GameTooltip:Show()
+	end)
+	
+	bu:SetScript("OnLeave", function()
+		GameTooltip:Hide()
+	end)
+	
+	bu.on_delete = function()		
+		aCoreCDB[table][value][key] = nil
+		T.lineuplist(aCoreCDB[table][value], list.list, list.anchor)
 	end
 	
-	table.sort(t)
+	list.list[key] = bu
 	
-	for i, key in pairs(t) do
-		local bu = button_list[key]
-		bu:ClearAllPoints()
-		bu:SetPoint("TOPLEFT", parent, "TOPLEFT", 5, 20-i*30)
-	end
+	return bu
 end
-
-T.createscrolllist = function(parent, points, bg, width, height)
-	local w = width or 320
-	local h = height or 220
-	
-	local sf = CreateFrame("ScrollFrame", nil, parent, "UIPanelScrollFrameTemplate")
-	if points then sf:SetPoint(unpack(points)) end	
-	sf:SetSize(w, h)
-	sf:SetFrameLevel(parent:GetFrameLevel()+1)
-
-	sf.anchor = CreateFrame("Frame", nil, sf)
-	sf.anchor:SetPoint("TOPLEFT", sf, "TOPLEFT", 0, -3)
-	sf.anchor:SetWidth(sf:GetWidth()-30)
-	sf.anchor:SetHeight(sf:GetHeight()+200)
-	sf.anchor:SetFrameLevel(sf:GetFrameLevel()+1)
-	sf:SetScrollChild(sf.anchor)
-	
-	if bg then
-		sf.bg = CreateFrame("Frame", nil, sf, "BackdropTemplate")
-		sf.bg:SetAllPoints(sf)
-		sf.bg:SetFrameLevel(sf:GetFrameLevel()-1)
-		F.CreateBD(sf.bg, .3)
-	end
-	
-	F.ReskinScroll(sf.ScrollBar)
-	
-	sf.cover = CreateFrame("Frame", nil, sf)
-	sf.cover:SetAllPoints()
-	sf.cover:SetFrameLevel(sf.anchor:GetFrameLevel()+5)
-	
-	sf.cover.tex = sf.cover:CreateTexture(nil, "OVERLAY")
-	sf.cover.tex:SetAllPoints()
-	sf.cover.tex:SetColorTexture(.3, .3, .3, .7)
-	sf.cover:EnableMouse(true)
-	sf.cover:Hide()
-	
-	sf.Enable = function()
-		sf.cover:Hide()
-	end
-	
-	sf.Disable = function()
-		sf.cover:Show()
-	end
-	
-	sf.list = {}
-	
-	return sf
-end
-
