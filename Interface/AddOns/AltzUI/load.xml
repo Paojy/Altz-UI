@@ -8,7 +8,6 @@
 	
 	<Script file="locals\chinese.lua"/>	
 	<Script file="locals\twchinese.lua"/>
-	<Script file="locals\portuguese.lua"/>
 	<Script file="locals\english.lua"/>
 
 	<Script file="core\PopupDialogs.lua"/>
