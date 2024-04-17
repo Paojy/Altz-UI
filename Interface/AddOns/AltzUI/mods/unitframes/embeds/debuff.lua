@@ -148,10 +148,10 @@ local CustomFilter = function(name, dtype, spellID, castByPlayer)
     --if ascending[name] then
         --asc = true
     --end
-	if aCoreCDB["CooldownAura"]["Debuffs_Black"][name] then -- 黑名单不显示
+	if aCoreCDB["CooldownAura"]["Debuffs_Black"][spellID] then -- 黑名单不显示
 		return 0, false
-	elseif aCoreCDB["CooldownAura"]["Debuffs"][name] then -- 白名单显示
-		priority = aCoreCDB["CooldownAura"]["Debuffs"][name].level
+	elseif aCoreCDB["CooldownAura"]["Debuffs"][spellID] then -- 白名单显示
+		priority = aCoreCDB["CooldownAura"]["Debuffs"][spellID]
 	elseif dispellist[dtype] then -- 可驱散
         priority = dispelPriority[dtype]
 	elseif IsInInstance() then -- 副本

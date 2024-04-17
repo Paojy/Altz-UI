@@ -59,8 +59,8 @@ local CustomFilter = function(...)
         --asc = true
     --end
 
-	if aCoreCDB["CooldownAura"]["Buffs"][name] then
-		priority = aCoreCDB["CooldownAura"]["Buffs"][name].level
+	if aCoreCDB["CooldownAura"]["Buffs"][spellID] then
+		priority = aCoreCDB["CooldownAura"]["Buffs"][spellID]
     end
 
 	return priority, asc

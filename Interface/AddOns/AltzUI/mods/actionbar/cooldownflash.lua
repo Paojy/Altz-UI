@@ -52,8 +52,12 @@ local function stop(id, class)
 	for _, func in next, stopcalls do
 		func(id, class)
 	end
-
-	if aCoreCDB["ActionbarOptions"]["caflash_bl"][class][id] then return end
+	
+	if class == "spell" and aCoreCDB["ActionbarOptions"]["cdflash_ignorespells"][id] then
+		return
+	elseif class == "item" and aCoreCDB["ActionbarOptions"]["cdflash_ignoreitems"][id] then
+		return
+	end
 	
 	flash.icon:SetTexture(class=="item" and GetItemIcon(id) or select(3, GetSpellInfo(id)))
 	flash.e = 0
