@@ -402,25 +402,6 @@ G.BlackList = {
 	[15407] = true, -- 精神鞭笞
 }
 
--- 姓名板颜色
-local Customcoloredplates = {}
-
-for i = 1, 50 do
-	Customcoloredplates[i] = {
-		name = L["空"],
-		color = {r = 1, g = 1, b = 1},
-	}
-end
-
--- 姓名板能量
-local Custompowerplates = {}
-
-for i = 1, 50 do
-	Custompowerplates[i] = {
-		name = L["空"],
-	}
-end
-
 -- 团队框架治疗边角提示（图标）
 local default_HealerIndicatorAuraList = {
 	PRIEST = { 
@@ -703,10 +684,10 @@ local Character_default_Settings = {
 		otherfiltertype = "none", -- "whitelist", "none"
 		
 		-- 染色列表
-		customcoloredplates = Customcoloredplates,
+		customcoloredplates = {},
 		
 		-- 能量列表
-		custompowerplates = Custompowerplates,
+		custompowerplates = {},
 	},
 	TooltipOptions = {
 		enabletip = true,
@@ -747,9 +728,7 @@ local Character_default_Settings = {
 		flashtaskbar = true,
 		autopet = true,
 		LFGRewards = true,
-		autoacceptproposal = true,	
-		shiftfocus = false,	
-		ctrlmenu = false,
+		autoacceptproposal = true,
 	},
 	SkinOptions = {
 		combattext = "none",
@@ -864,17 +843,13 @@ T.ExportSettings = function(editbox)
 							end
 						end
 					elseif OptionCategroy == "PlateOptions" then
-						if setting == "customcoloredplates" then -- 非空则复制 7
-							for index, t in pairs(aCoreCDB["PlateOptions"]["customcoloredplates"]) do
-								if t.name ~= L["空"] then
-									str = str.."^"..OptionCategroy.."~"..setting.."~"..index.."~"..t.name.."~"..t.color.r.."~"..t.color.g.."~"..t.color.b
-								end
+						if setting == "customcoloredplates" then -- 完全复制 6
+							for name, t in pairs(aCoreCDB["PlateOptions"]["customcoloredplates"]) do
+								str = str.."^"..OptionCategroy.."~"..setting.."~"..name.."~"..t.r.."~"..t.g.."~"..t.b
 							end
-						elseif setting == "custompowerplates" then -- 非空则复制 4
-							for index, t in pairs(aCoreCDB["PlateOptions"]["custompowerplates"]) do
-								if t.name ~= L["空"] then
-									str = str.."^"..OptionCategroy.."~"..setting.."~"..index..t.name
-								end
+						elseif setting == "custompowerplates" then -- 完全复制 4
+							for name, _ in pairs(aCoreCDB["PlateOptions"]["custompowerplates"]) do
+								str = str.."^"..OptionCategroy.."~"..setting.."~"..name.."~true"
 							end
 						else -- 完全复制 4
 							for id, _ in pairs(aCoreCDB["PlateOptions"][setting]) do
@@ -1018,22 +993,17 @@ T.ImportSettings = function(str)
 								aCoreCDB[OptionCategroy][setting][arg1] = arg2
 							end
 						elseif OptionCategroy == "PlateOptions" then
-							if setting == "customcoloredplates" then -- 非空则复制 7 OptionCategroy.."~"..setting.."~"..index.."~"..t.name.."~"..t.color.r.."~"..t.color.g.."~"..t.color.b
+							if setting == "customcoloredplates" then -- 完全复制 6 OptionCategroy.."~"..setting.."~"..name.."~"..t.r.."~"..t.g.."~"..t.b
 								if sameclient then
-									aCoreCDB[OptionCategroy][setting][tonumber(arg1)] = {
-										name = arg2,
-										color = {
-											r = tonumber(arg3),
-											g = tonumber(arg4),
-											b = tonumber(arg5),
-										},
+									aCoreCDB[OptionCategroy][setting][arg1] = {	
+										r = tonumber(arg2),
+										g = tonumber(arg3),
+										b = tonumber(arg4),
 									}
 								end
 							elseif setting == "custompowerplates" then -- 非空则复制 4
 								if sameclient then
-									aCoreCDB[OptionCategroy][setting][tonumber(arg1)] = {
-										name = arg2,
-									}
+									aCoreCDB[OptionCategroy][setting][arg1] = true
 								end
 							elseif setting == "otherplateauralist" then -- 完全复制 4 OptionCategroy.."~"..setting.."~"..id.."~true"
 								aCoreCDB[OptionCategroy][setting][tonumber(arg1)] = true

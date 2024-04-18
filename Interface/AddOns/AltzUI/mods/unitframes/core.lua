@@ -38,57 +38,6 @@ local cpoints_colors = { -- combat points
 	{1, 1, 0},
 }
 
-local plate_c = {
-	color_unit = {},
-	power_unit = {},
-}
-
--- 姓名板自定义颜色
-local function UpdateNameplateColors(refresh)
-	plate_c.color_unit = {}
-	for _, info in pairs(aCoreCDB["PlateOptions"]["customcoloredplates"]) do
-		if info.name ~= L["空"] then
-			plate_c.color_unit[info.name] = {
-				r = info.color.r,
-				g = info.color.g, 
-				b = info.color.b,
-			}
-		end
-	end
-	if refresh then
-		for i, plate in ipairs(C_NamePlate.GetNamePlates(issecure())) do
-			if plate.unitFrame then
-				plate.unitFrame.Health:ForceUpdate()
-			end
-		end
-	end
-end
-
--- 姓名板自定义能量
-local function UpdateNameplatePowerbars(refresh)
-	plate_c.power_unit = {}
-	for _, info in pairs(aCoreCDB["PlateOptions"]["custompowerplates"]) do
-		if info.name ~= L["空"] then
-			plate_c.power_unit[info.name] = true
-		end
-	end
-	if refresh then
-		for i, plate in ipairs(C_NamePlate.GetNamePlates(issecure())) do
-			if plate.unitFrame then
-				local unit = plate.unitFrame.unit
-				if plate_c.power_unit[UnitName(unit)] then		
-					plate.unitFrame:EnableElement('Power')
-					plate.unitFrame.Power:ForceUpdate()
-					plate.unitFrame.Power:Show()
-				else
-					plate.unitFrame:DisableElement('Power')
-					plate.unitFrame.Power:Hide()
-				end
-			end
-		end
-	end
-end
-
 --=============================================--
 --[[ Functions ]]--
 --=============================================--
@@ -255,8 +204,8 @@ T.Updatehealthbar = function(self, unit, min, max)
 		if aCoreCDB["PlateOptions"]["focuscolored"] and UnitIsUnit(unit, "focus") then -- 焦点颜色
 			r, g, b = aCoreCDB["PlateOptions"]["focus_color"].r, aCoreCDB["PlateOptions"]["focus_color"].g, aCoreCDB["PlateOptions"]["focus_color"].b
 			r1, g1, b1 = r, g, b
-		elseif plate_c.color_unit[name] then -- 自定义颜色
-			r, g, b = plate_c.color_unit[name].r, plate_c.color_unit[name].g, plate_c.color_unit[name].b
+		elseif aCoreCDB["PlateOptions"]["customcoloredplates"][name] then -- 自定义颜色
+			r, g, b = aCoreCDB["PlateOptions"]["customcoloredplates"][name].r, aCoreCDB["PlateOptions"]["customcoloredplates"][name].g, aCoreCDB["PlateOptions"]["customcoloredplates"][name].b
 			r1, g1, b1 = r, g, b
 		elseif UnitIsTapDenied(unit) then
 			r, g, b = .6, .6, .6
@@ -2236,7 +2185,8 @@ function PostUpdatePlates(self, event, unit)
 				self.Health:ForceUpdate()
 				self.Power:Hide()
 				
-				if plate_c.power_unit[UnitName(unit)] then
+				local name = UnitName(unit, false)
+				if aCoreCDB["PlateOptions"]["custompowerplates"][name] then
 					self:EnableElement('Power')
 					self.Power:ForceUpdate()
 					self.Power.value:Show()
@@ -2272,7 +2222,8 @@ function PostUpdatePlates(self, event, unit)
 				self.Health:ForceUpdate()
 				self.Health:Show()
 				
-				if plate_c.power_unit[UnitName(unit)] then		
+				local name = UnitName(unit, false)
+				if aCoreCDB["PlateOptions"]["custompowerplates"][name] then
 					self:EnableElement('Power')
 					self.Power:ForceUpdate()
 					self.Power:Show()
@@ -2286,13 +2237,15 @@ function PostUpdatePlates(self, event, unit)
 				self:EnableElement('Castbar')
 				self.Castbar.bd:Show()
 				self.Castbar:ClearAllPoints()
-				if plate_c.power_unit[UnitName(unit)] then
+				
+				if aCoreCDB["PlateOptions"]["custompowerplates"][name] then
 					self.Castbar:SetPoint("TOPLEFT", self, "BOTTOMLEFT", 0, -7)
 					self.Castbar:SetPoint("TOPRIGHT", self, "BOTTOMRIGHT", 0, -7)
 				else
 					self.Castbar:SetPoint("TOPLEFT", self, "BOTTOMLEFT", 0, -3)
 					self.Castbar:SetPoint("TOPRIGHT", self, "BOTTOMRIGHT", 0, -3)
 				end
+				
 				self.Castbar.Text:ClearAllPoints()
 				self.Castbar.Text:SetPoint("TOP", self.Castbar, "BOTTOM", 0, -3)	
 				self.Castbar.Spark:Hide()
@@ -2336,113 +2289,55 @@ PlacePlateTargetElementEventFrame:RegisterEvent('PLAYER_TARGET_CHANGED')
 --=============================================--
 --[[ Ctrl+Click EasyMenu ]]--
 --=============================================--
--- From NDui
-local function CheckCPower(target_name)
-	local full, found_index, target_index
-	for index, info in pairs(aCoreCDB["PlateOptions"]["custompowerplates"]) do
-		if info.name == target_name then
-			found_index = index
-			break
+-- 姓名板自定义能量
+local function UpdateNameplatePowerbars()
+	local oUF = AltzUF or oUF
+	for _, obj in next, oUF.objects do
+		if obj.Health and obj.Health.plate_element then
+			local name = UnitName(obj.unit)
+			if aCoreCDB["PlateOptions"]["custompowerplates"][name] then		
+				obj:EnableElement('Power')
+				obj.Power:ForceUpdate()
+				obj.Power:Show()
+			else
+				obj:DisableElement('Power')
+				obj.Power:Hide()
+			end
 		end
 	end
-	
-	for index, info in pairs(aCoreCDB["PlateOptions"]["custompowerplates"]) do
-		if info.name == L["空"] then
-			target_index = index 
-			break
+end
+
+local function RemovefromCPower(name)
+	aCoreCDB["PlateOptions"]["custompowerplates"][name] = nil	
+	UpdateNameplatePowerbars()
+end
+
+local function AddtoCPower(name)
+	aCoreCDB["PlateOptions"]["custompowerplates"][name] = true
+	UpdateNameplatePowerbars()
+end
+
+-- 姓名板自定义颜色
+
+local function UpdateNameplateColor()	
+	local oUF = AltzUF or oUF
+	for _, obj in next, oUF.objects do
+		if obj.Health and obj.Health.plate_element then
+			obj.Health:ForceUpdate()
 		end
 	end
-	
-	if not target_index then
-		full = true
+end
+
+local function SetCColor(name)	
+	if not aCoreCDB["PlateOptions"]["customcoloredplates"][name] then
+		aCoreCDB["PlateOptions"]["customcoloredplates"][name] = {r = 1, g = 1, b = 1}
 	end
-	
-	return full, found_index, target_index
+	T.ColorPicker_OnClick(aCoreCDB["PlateOptions"]["customcoloredplates"][name], nil, nil, UpdateNameplateColor)
 end
 
-local function RemovefromCPower(target_index, target_name)
-	aCoreCDB["PlateOptions"]["custompowerplates"][target_index]["name"] = L["空"]
-	print(string.format(L["已从列表移除"], 255, 255, 0, target_name, L["自定义能量"]))
-	UpdateNameplatePowerbars(true)
-end
-
-local function AddtoCPower(target_index, target_name)
-	aCoreCDB["PlateOptions"]["custompowerplates"][target_index]["name"] = target_name
-	print(string.format(L["已加入列表"], 255, 255, 0, target_name, L["自定义能量"]))
-	UpdateNameplatePowerbars(true)
-end
-
-local function SetCColor(index, name, replace)
-	local r, g, b = aCoreCDB["PlateOptions"]["customcoloredplates"][index].color.r, aCoreCDB["PlateOptions"]["customcoloredplates"][index].color.g, aCoreCDB["PlateOptions"]["customcoloredplates"][index].color.b	
-	ColorPickerFrame:ClearAllPoints()
-	ColorPickerFrame:SetPoint("CENTER", UIParent, "CENTER")
-	ColorPickerFrame.hasOpacity = false
-	
-	ColorPickerFrame.func = function()
-		aCoreCDB["PlateOptions"]["customcoloredplates"][index].color.r, aCoreCDB["PlateOptions"]["customcoloredplates"][index].color.g, aCoreCDB["PlateOptions"]["customcoloredplates"][index].color.b = ColorPickerFrame:GetColorRGB()
-		if not replace then
-			aCoreCDB["PlateOptions"]["customcoloredplates"][index]["name"] = name
-		end	
-	end
-	
-	ColorPickerOkayButton:SetScript("OnClick", function()
-		local new_r, new_g, new_b = ColorPickerFrame:GetColorRGB()
-		ColorPickerFrame:Hide()
-		print(string.format(L["已加入列表"], new_r*255, new_g*255, new_b*255, name, L["自定义颜色"]))
-		UpdateNameplateColors(true)
-	end)
-	
-	ColorPickerFrame.previousValues = {r = r, g = g, b = b}
-	
-	ColorPickerFrame.cancelFunc = function()
-		aCoreCDB["PlateOptions"]["customcoloredplates"][index].color.r, aCoreCDB["PlateOptions"]["customcoloredplates"][index].color.g, aCoreCDB["PlateOptions"]["customcoloredplates"][index].color.b = r, g, b
-	end
-	
-	ColorPickerFrame:SetColorRGB(r, g, b)
-	ColorPickerFrame:Hide()
-	ColorPickerFrame:Show()
-end
-
-local function CheckCColor(target_name)
-	local full, found_index, target_index, r, g, b
-	for index, info in pairs(aCoreCDB["PlateOptions"]["customcoloredplates"]) do
-		if info.name == target_name then
-			found_index = index
-			r, g, b = info.color.r, info.color.g, info.color.b
-			break
-		end
-	end
-	
-	for index, info in pairs(aCoreCDB["PlateOptions"]["customcoloredplates"]) do
-		if info.name == L["空"] and info.color.r == 1 and info.color.g == 1 and info.color.b == 1 then
-			target_index = index 
-			break
-		end
-	end
-	
-	if not target_index then
-		full = true
-	end
-	
-	return full, found_index, target_index, r, g, b
-end
-
-local function RemovefromCColor(target_index, target_name)
-	table.wipe(aCoreCDB["PlateOptions"]["customcoloredplates"][target_index])
-	aCoreCDB["PlateOptions"]["customcoloredplates"][target_index] = {
-		name = L["空"],
-		color = {r = 1, g = 1, b = 1},
-	}
-	print(string.format(L["已从列表移除"], 255, 255, 0, target_name, L["自定义颜色"]))
-	UpdateNameplateColors(true)
-end
-
-local function AddtoCColor(target_index, target_name)
-	SetCColor(target_index, target_name)
-end
-
-local function ReplaceCColor(target_index, target_name)
-	SetCColor(target_index, target_name, true)	
+local function RemovefromCColor(name)
+	aCoreCDB["PlateOptions"]["customcoloredplates"][name] = nil	
+	UpdateNameplateColor()
 end
 
 local menuFrame = CreateFrame("Frame", "NDui_EastMarking", UIParent, "UIDropDownMenuTemplate")
@@ -2463,7 +2358,6 @@ local menuList = {
 }
 
 local function HookNameplateCtrlMenu()
-	if not aCoreCDB["OtherOptions"]["ctrlmenu"] then return end
 	WorldFrame:HookScript("OnMouseDown", function(_, btn)
 		C_Timer.After(0.3, function()
 			if btn == "LeftButton" and IsControlKeyDown() and UnitExists("target") then
@@ -2478,33 +2372,24 @@ local function HookNameplateCtrlMenu()
 					end
 					local target_name = GetUnitName("target", false)
 					
-					local power_full, power_found_index, power_target_index = CheckCPower(target_name)
-					if power_full then	-- 自定义能量已满
-						menuList[11].text = string.format(L["列表已满"], L["自定义能量"])
-					elseif power_found_index then -- 已经有了
+					if aCoreCDB["PlateOptions"]["custompowerplates"][target_name] then -- 已经有了
 						menuList[11].text = string.format(L["移除自定义能量"], target_name)
-						menuList[11].func = function() RemovefromCPower(power_found_index, target_name) end
-					elseif power_target_index then -- 可以添加
+						menuList[11].func = function() RemovefromCPower(target_name) end
+					else
 						menuList[11].text = string.format(L["添加自定义能量"], target_name)
-						menuList[11].func = function() AddtoCPower(power_target_index, target_name) end
+						menuList[11].func = function() AddtoCPower(target_name) end
 					end
-					
-					local color_full, color_found_index, color_target_index, r, g, b = CheckCColor(target_name)
-					if color_full then	-- 自定义颜色已满
-						menuList[12].text = string.format(L["列表已满"], L["自定义颜色"])
-						
-						menuList[13] = {}
-					elseif color_found_index then -- 已经有了
-					
+
+					if aCoreCDB["PlateOptions"]["customcoloredplates"][target_name] then -- 已经有了
+						local r, g, b = aCoreCDB["PlateOptions"]["customcoloredplates"][target_name].r, aCoreCDB["PlateOptions"]["customcoloredplates"][target_name].g, aCoreCDB["PlateOptions"]["customcoloredplates"][target_name].b
 						menuList[12].text = string.format(L["替换自定义颜色"], r*255, g*255, b*255, target_name)
-						menuList[12].func = function() ReplaceCColor(color_found_index, target_name) end
+						menuList[12].func = function() SetCColor(target_name) end
 						
 						menuList[13].text = string.format(L["移除自定义颜色"], r*255, g*255, b*255, target_name)
-						menuList[13].func = function() RemovefromCColor(color_found_index, target_name) end
-						
-					elseif color_target_index then -- 可以添加
+						menuList[13].func = function() RemovefromCColor(target_name) end		
+					else
 						menuList[12].text = string.format(L["添加自定义颜色"], target_name)
-						menuList[12].func = function() AddtoCColor(color_target_index, target_name) end
+						menuList[12].func = function() SetCColor(target_name) end
 						
 						menuList[13] = {}
 					end
@@ -2649,7 +2534,6 @@ T.RegisterInitCallback(function()
 		SetCVar("nameplateShowSelf", 0)
 	end
 	
-	UpdateNameplateColors()
 	UpdateNameplatePowerbars()
 	
 	ClassNameplateManaBarFrame:SetAlpha(0)
@@ -2694,7 +2578,7 @@ PetCastingBarFrame:UnregisterAllEvents()
 --=============================================--
 local function EnableUFSettings(elements)
 	local oUF = AltzUF or oUF
-		for _, obj in next, oUF.objects do
+	for _, obj in next, oUF.objects do
 		for k, e in pairs(elements) do
 			if obj[e] then
 				if obj[e].EnableSettings then
@@ -2708,7 +2592,7 @@ T.EnableUFSettings = EnableUFSettings
 
 local function ApplyUFSettings(elements)
 	local oUF = AltzUF or oUF
-		for _, obj in next, oUF.objects do
+	for _, obj in next, oUF.objects do
 		for k, e in pairs(elements) do
 			if obj[e] then
 				if obj[e].ApplySettings then
