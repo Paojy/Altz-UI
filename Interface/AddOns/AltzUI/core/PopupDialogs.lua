@@ -1,6 +1,6 @@
 local T, C, L, G = unpack(select(2, ...))
 
-StaticPopupDialogs[G.uiname.."incorrect item ID"] = {
+StaticPopupDialogs[G.uiname.."incorrect itemID"] = {
 	text = L["不正确的物品ID"],
 	button1 = ACCEPT, 
 	hideOnEscape = 1, 
@@ -8,15 +8,7 @@ StaticPopupDialogs[G.uiname.."incorrect item ID"] = {
 	preferredIndex = 3,
 }
 
-StaticPopupDialogs[G.uiname.."incorrect item quantity"]= {
-	text = L["不正确的数量"],
-	button1 = ACCEPT, 
-	hideOnEscape = 1, 
-	whileDead = true,
-	preferredIndex = 3,
-}
-
-StaticPopupDialogs[G.uiname.."incorrect spellid"] = {
+StaticPopupDialogs[G.uiname.."incorrect spellID"] = {
 	text = L["不正确的法术名称"],
 	button1 = ACCEPT, 
 	hideOnEscape = 1, 
@@ -24,7 +16,7 @@ StaticPopupDialogs[G.uiname.."incorrect spellid"] = {
 	preferredIndex = 3,
 }
 
-StaticPopupDialogs[G.uiname.."incorrect spell"] = {
+StaticPopupDialogs[G.uiname.."incorrect spellName"] = {
 	text = L["不正确的法术名称"],
 	button1 = ACCEPT, 
 	hideOnEscape = 1, 
@@ -32,7 +24,7 @@ StaticPopupDialogs[G.uiname.."incorrect spell"] = {
 	preferredIndex = 3,
 }
 
-StaticPopupDialogs[G.uiname.."incorrect level"] = {
+StaticPopupDialogs[G.uiname.."incorrect number"] = {
 	text = L["必须是一个数字"],
 	button1 = ACCEPT, 
 	hideOnEscape = 1, 
