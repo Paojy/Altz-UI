@@ -40,8 +40,11 @@ L["左"] = "Left"
 L["右"] = "Right"
 L["上"] = "Up"
 L["下"] = "Down"
+L["中间"] = "Center"
 L["左上"] = "Top Left"
 L["右上"] = "Top Right"
+L["左下"] = "Bottom Left"
+L["右下"] = "Bottom Right"
 L["上方"] = "Top"
 L["下方"] = "Bottom"
 L["垂直"] = "Vertical"
@@ -50,8 +53,8 @@ L["正向"] = "Ascending"
 L["反向"] = "Descending"
 L["显示冷却"] = "Show %s's cooldown."
 L["排列方向"] = "Anchor"
-L["白名单"] = "White list"
-L["黑名单"] = "Black list"
+L["白名单"] = "Always display"
+L["黑名单"] = "Never display"
 
 L["重置确认"] = "Do you want to reset all the %s settings?"
 L["重置"] = "Reset"
@@ -169,7 +172,6 @@ L["过滤增益"] = "Target Aura Filter: Ignore Buff"
 L["过滤增益提示"] = "Hide others' buff on friendly target."
 L["过滤减益"] = "Target Aura Filter: Ignore Debuff"
 L["过滤减益提示"] = "Hide others' debuffs on enemy target."
-L["白名单提示"] = "Edit whitelist to force an aura to show when enable filter.\nIf a debuff cast by others on an enemy is in whitelist, its color will not fade."
 L["图腾条"] = "Totembar"
 L["显示PvP标记"] = "Show PvP Icon"
 L["显示PvP标记提示"] = "Recommand in a PvE Server"
@@ -275,8 +277,6 @@ L["横向动作条"] = "Horizontal RightMultiActionBar"
 
 L["冷却提示"] = "Cooldown Alert"
 L["透明度"] = "Alpha"
-L["忽略法术"] = "Ignore Spells"
-L["忽略物品"] = "Ignore Items"
 
 -- 姓名板
 L["姓名板tip"] = "How do you want to display the nameplates?"
@@ -286,8 +286,8 @@ L["深色-条形"] = "Dark Color Bar"
 L["仇恨染色"] = "Enchat Threat Color to Nameplates."
 L["自定义颜色"] = "Custom Color"
 L["空"] = "Empty"
-L["我的法术"] = "My Auras"
-L["其他法术"] = "Other Auras"
+L["我施放的光环"] = "Auras I casted"
+L["其他人施放的光环"] = "Auras others casted"
 L["全部隐藏"] = "Hide All"
 L["过滤方式"] = "Filter Type"
 L["显示玩家姓名板"] = "Show My Nameplate"
@@ -313,14 +313,11 @@ L["图标数字大小"] = "Icon number size"
 L["空"] = "Empty"
 L["自定义能量"] = "Custom Nameplate Power List"
 L["自定义颜色"] = "Custom Nameplate Color List"
-L["列表已满"] = "%s is full."
-L["添加自定义颜色"] = "Add [%s] to Custom Nameplate Color List"
 L["添加自定义能量"] = "Add [%s] to Custom Nameplate Power List"
-L["移除自定义颜色"] = "Remove |cff%02x%02x%02x[%s]|r from Custom Nameplate Color List"
 L["移除自定义能量"] = "Remove [%s] from Custom Nameplate Power List"
+L["添加自定义颜色"] = "Add [%s] to Custom Nameplate Color List"
+L["移除自定义颜色"] = "Remove |cff%02x%02x%02x[%s]|r from Custom Nameplate Color List"
 L["替换自定义颜色"] = "Replace |cff%02x%02x%02x[%s]|r from Custom Nameplate Color List"
-L["已加入列表"] = "|cff7FFF00Added successfully|r Added |cff%02x%02x%02x[%s]|r to %s."
-L["已从列表移除"] = "|cff00FFFFRemoved successfully|r Removed |cff%02x%02x%02x[%s]|r from %s."
 
 -- 鼠标提示
 L["跟随光标"] = "Show at Mouse"
@@ -357,7 +354,6 @@ L["深色样式"] = "Dark Theme"
 L["普通样式"] = "Classic Theme"
 L["小地图尺寸"] = "Minimap Size"
 L["系统菜单尺寸"] = "Micromenu Scale"
-L["信息条"] = "Info Bar"
 L["信息条尺寸"] = "Info Bar Scale"
 L["整理小地图图标"] = "Collect minimapbuttons"
 L["整理栏位置"] = "Finishing box position"
@@ -392,10 +388,8 @@ L["提升截图画质"] = "Upgrade Screenshot picture quality"
 L["截图保存为tga格式"] = "Screenshot saved as TGA format"
 L["登陆屏幕"] = "Hide Interface on Login"
 L["暂离屏幕"] = "Hide interface when AFK"
-L["快速焦点"] = "Use SHIFT+Click to set focus."
 L["自定义任务追踪"] = "Custom Objective Tracker"
 L["自定义任务追踪提示"] = "Enable this if you are using a custom objective tracker addon.\n  (ex: Dugi Questing Essential, Kaliel's Tracker)"
-L["快速标记"] = "Use Ctrl+Click to add raid mark."
 
 -- 插件界面
 L["当前经验"] = "Current: "
@@ -482,7 +476,14 @@ L["战斗字体"] = "Combat Text"
 
 -- 命令
 L["命令"] = "Commands"
-L["指令"] = " %s/rl|r - Reload UI \n \n %sALT+Click|r - Mill/Prospect/Disenchant/Unlock instantly \n \n %sTab|r - Change between available channels. \n \n %s/Setup|r-Run the setup wizard"
+L["指令"] = [[
+/rl - Reload UI
+/Setup-Run the setup wizard
+SHIFT+Click - set focus to current mouseover target
+Ctrl+Click - add raid mark to current mouseover target
+ALT+Click - Mill/Prospect/Disenchant/Unlock instantly
+Tab - Change between available channels
+]]
 
 -- 制作
 L["制作"] = "Credits"

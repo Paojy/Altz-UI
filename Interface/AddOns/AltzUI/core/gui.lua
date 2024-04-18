@@ -578,73 +578,9 @@ CreateDividingLine(ItemOptions, -200)
 T.createcheckbutton(ItemOptions, 30, 210, L["自动售卖"], "ItemOptions", "autosell", L["自动售卖提示"])
 T.createcheckbutton(ItemOptions, 30, 240, L["自动购买"], "ItemOptions", "autobuy", L["自动购买提示"])
 
-ItemOptions.autobuy_list = T.createscrolllist(ItemOptions, {"TOPLEFT", ItemOptions, "TOPLEFT", 40, -310}, true, nil, 215)
+ItemOptions.autobuy_list = T.CreateItemListOption(ItemOptions, {"TOPLEFT", 35, -270}, 260, L["自动购买"]..L["设置"], "ItemOptions", "autobuylist", L["数量"])
 
-ItemOptions.autobuy_list:SetScript("OnShow", function()
-	for itemID, quantity in pairs(aCoreCDB["ItemOptions"]["autobuylist"]) do
-		local itemName = GetItemInfo(itemID)
-		local itemIcon = select(10, GetItemInfo(itemID))
-		local bu = ItemOptions.autobuy_list.list[itemID] or T.createscrollbutton("item", ItemOptions.autobuy_list, "ItemOptions", "autobuylist", itemID)
-		bu.display(itemIcon, itemName, nil, quantity)
-	end
-	T.lineuplist(aCoreCDB["ItemOptions"]["autobuylist"], ItemOptions.autobuy_list.list, ItemOptions.autobuy_list.anchor)
-end)
-
-ItemOptions.autobuy_iteminput = T.createinputbox(ItemOptions, {"TOPLEFT", 40, -280}, L["物品名称ID链接"], 150, true)
-function ItemOptions.autobuy_iteminput:apply()
-	local text = self:GetText()
-	local itemID = GetItemInfoInstant(text)
-	if itemID then
-		local itemName = GetItemInfo(itemID)
-		self:SetText(itemName)
-	else
-		StaticPopupDialogs[G.uiname.."incorrect item ID"].text = "|cff7FFF00"..text.." |r"..L["不正确的物品ID"]
-		StaticPopup_Show(G.uiname.."incorrect item ID")
-		self:SetText(L["物品名称ID链接"])
-	end
-end
-	
-ItemOptions.autobuy_quantityinput = T.createinputbox(ItemOptions, {"LEFT", ItemOptions.autobuy_iteminput, "RIGHT", 15, 0}, L["数量"], 80)
-function ItemOptions.autobuy_quantityinput:apply()
-	local quantity = self:GetText()
-	if tonumber(quantity) then
-		self:SetText(quantity)
-	else
-		StaticPopupDialogs[G.uiname.."incorrect item quantity"].text = "|cff7FFF00"..quantity.." |r"..L["不正确的数量"]
-		StaticPopup_Show(G.uiname.."incorrect item quantity")
-		self:SetText(L["数量"])
-	end
-end
-
-ItemOptions.autobuy_additembutton = T.createclickbutton(ItemOptions, {"LEFT", ItemOptions.autobuy_quantityinput, "RIGHT", 15, 0}, ADD)
-ItemOptions.autobuy_additembutton:SetScript("OnClick", function(self)
-	local text = ItemOptions.autobuy_iteminput:GetText()
-	local quantity = ItemOptions.autobuy_quantityinput:GetText()
-	local itemID, _, _, _, itemIcon = GetItemInfoInstant(text) 
-
-	if itemID and tonumber(quantity) then
-		local itemName = GetItemInfo(itemID)
-		aCoreCDB["ItemOptions"]["autobuylist"][itemID] = quantity
-
-		local bu = ItemOptions.autobuy_list.list[itemID] or T.createscrollbutton("item", ItemOptions.autobuy_list, "ItemOptions", "autobuylist", itemID)
-		bu.display(itemIcon, itemName, nil, quantity)
-		bu:Show()
-		
-		T.lineuplist(aCoreCDB["ItemOptions"]["autobuylist"], ItemOptions.autobuy_list.list, ItemOptions.autobuy_list.anchor)
-	else
-		if not itemID then
-			StaticPopupDialogs[G.uiname.."incorrect item ID"].text = "|cff7FFF00"..((text == L["物品名称ID链接"] and "") or text).." |r"..L["不正确的物品ID"]
-			StaticPopup_Show(G.uiname.."incorrect item ID")
-		elseif not tonumber(quantity) then
-			StaticPopupDialogs[G.uiname.."incorrect item quantity"].text = "|cff7FFF00"..((quantity == L["数量"] and "") or quantity).." |r"..L["不正确的数量"]
-			StaticPopup_Show(G.uiname.."incorrect item quantity")
-		end
-	end
-	ItemOptions.autobuy_iteminput:SetText(L["物品名称ID链接"])
-	ItemOptions.autobuy_quantityinput:SetText(L["数量"])
-end)
-
-T.createDR(ItemOptions.autobuy, ItemOptions.autobuy_list, ItemOptions.autobuy_iteminput, ItemOptions.autobuy_quantityinput, ItemOptions.autobuy_additembutton)
+T.createDR(ItemOptions.autobuy, ItemOptions.autobuy_list)
 --====================================================--
 --[[               -- Unit Frames --                ]]--
 --====================================================--
@@ -872,47 +808,7 @@ UFInnerframe.aura.AuraFilterignoreDebuff.apply = function()
 	T.ApplyUFSettings({"Auras"})
 end
 
-UFInnerframe.aura.aurafliter_title = T.createtext(UFInnerframe.aura, "OVERLAY", 14, "OUTLINE", "LEFT")
-UFInnerframe.aura.aurafliter_title:SetPoint("TOPLEFT", UFInnerframe.aura, "TOPLEFT", 30, -215)
-UFInnerframe.aura.aurafliter_title:SetText(AURAS..L["白名单"])
-
-UFInnerframe.aura.aura_list = T.createscrolllist(UFInnerframe.aura, {"TOPLEFT", UFInnerframe.aura, "TOPLEFT", 30, -265}, true, nil, 160)
-
-UFInnerframe.aura.aura_list:SetScript("OnShow", function()
-	for spellID, _ in pairs(aCoreCDB["UnitframeOptions"]["AuraFilterwhitelist"]) do
-		local spellName, _, spellIcon = GetSpellInfo(spellID)
-		local bu = UFInnerframe.aura.aura_list.list[spellID] or T.createscrollbutton("spell", UFInnerframe.aura.aura_list, "UnitframeOptions", "AuraFilterwhitelist", spellID)
-		bu.display(spellIcon, spellName, spellID)
-	end
-	T.lineuplist(aCoreCDB["UnitframeOptions"]["AuraFilterwhitelist"], UFInnerframe.aura.aura_list.list, UFInnerframe.aura.aura_list.anchor)
-end)
-
-UFInnerframe.aura.aurafilter_spellIDinput = T.createinputbox(UFInnerframe.aura, {"TOPLEFT", 30, -235}, L["输入法术ID"], 320)
-function UFInnerframe.aura.aurafilter_spellIDinput:apply()
-	local text = self:GetText()
-	local spellName, _, spellIcon, _, _, _, spellID = GetSpellInfo(text)
-	if spellName then
-		aCoreCDB["UnitframeOptions"]["AuraFilterwhitelist"][spellID] = true
-		local bu = UFInnerframe.aura.aura_list.list[spellID] or T.createscrollbutton("spell", UFInnerframe.aura.aura_list, "UnitframeOptions", "AuraFilterwhitelist", spellID)
-		bu.display(spellIcon, spellName, spellID)
-		bu:Show()
-		T.lineuplist(aCoreCDB["UnitframeOptions"]["AuraFilterwhitelist"], UFInnerframe.aura.aura_list.list, UFInnerframe.aura.aura_list.anchor)
-	else
-		StaticPopupDialogs[G.uiname.."incorrect spellid"].text = "|cff7FFF00"..text.." |r"..L["不是一个有效的法术ID"]
-		StaticPopup_Show(G.uiname.."incorrect spellid")
-	end
-	self:SetText(L["输入法术ID"])
-end
-
-UFInnerframe.aura.aurafilter_spellIDinput:SetScript("OnEnter", function(self) 
-	GameTooltip:SetOwner(self, "ANCHOR_RIGHT", -20, 10)
-	GameTooltip:AddLine(L["白名单提示"])
-	GameTooltip:Show() 
-end)
-
-UFInnerframe.aura.aurafilter_spellIDinput:SetScript("OnLeave", function(self) 
-	GameTooltip:Hide()
-end)
+UFInnerframe.aura.aurafliter_list = T.CreateAuraListOption(UFInnerframe.aura, {"TOPLEFT", 30, -215}, 230, L["白名单"]..AURAS, "UnitframeOptions", "AuraFilterwhitelist")
 
 -- 图腾
 UFInnerframe.totembar = CreateOptionPage("UF Options totembar", L["图腾条"], UFInnerframe, "VERTICAL", .3)
@@ -1146,14 +1042,8 @@ T.createradiobuttongroup(RFInnerframe.ind, 30, 100, L["样式"], "UnitframeOptio
 
 local function Updateindsettings()
 	if aCoreCDB["UnitframeOptions"]["hotind_style"] == "icon_ind" then
-		RFInnerframe.ind.aurafliter_title:SetTextColor(1, 1, 1)	
-		RFInnerframe.ind.hotind_filtertype:Enable()
-		RFInnerframe.ind.hotind_spellIDinput:Enable()
 		RFInnerframe.ind.hotind_list:Enable()
 	else
-		RFInnerframe.ind.aurafliter_title:SetTextColor(.5, .5, .5)
-		RFInnerframe.ind.hotind_filtertype:Disable()
-		RFInnerframe.ind.hotind_spellIDinput:Disable()
 		RFInnerframe.ind.hotind_list:Disable()
 	end
 end
@@ -1166,61 +1056,21 @@ RFInnerframe.ind.hotind_style:HookScript("OnShow", Updateindsettings)
 
 CreateDividingLine(RFInnerframe.ind, -135)
 
-RFInnerframe.ind.aurafliter_title = T.createtext(RFInnerframe.ind, "OVERLAY", 14, "OUTLINE", "LEFT")
-RFInnerframe.ind.aurafliter_title:SetPoint("TOPLEFT", RFInnerframe.ind, "TOPLEFT", 30, -150)
-RFInnerframe.ind.aurafliter_title:SetText(L["图标指示器"]..L["设置"])
-
-RFInnerframe.ind.reset = T.createclicktexbutton(RFInnerframe.ind, {"LEFT", RFInnerframe.ind.aurafliter_title, "RIGHT", 10, 0}, [[Interface\AddOns\AltzUI\media\icons\refresh.tga]], L["重置"])
-RFInnerframe.ind.reset:SetScript("OnClick", function(self)
-	StaticPopupDialogs[G.uiname.."Reset Confirm"].text = string.format(L["重置确认"], T.color_text(L["治疗指示器"]))
-	StaticPopupDialogs[G.uiname.."Reset Confirm"].OnAccept = function()
-		aCoreCDB["UnitframeOptions"]["hotind_style"] = "icon_ind"
-		aCoreCDB["UnitframeOptions"]["hotind_size"] = 15
-		aCoreCDB["UnitframeOptions"]["hotind_filtertype"] = "whitelist"
-		aCoreCDB["UnitframeOptions"]["hotind_auralist"] = nil
-		ReloadUI()
-	end
-	StaticPopup_Show(G.uiname.."Reset Confirm")
-end)
+RFInnerframe.ind.hotind_list = T.CreateAuraListOption(RFInnerframe.ind, {"TOPLEFT", 30, -150}, 270,  L["图标指示器"]..L["设置"], "UnitframeOptions", "hotind_auralist")
 
 local indicatorfiltertype_group = {
-	["whitelist"] = L["白名单"],
-	["blacklist"] = L["黑名单"],
+	["whitelist"] = L["白名单"]..AURAS,
+	["blacklist"] = L["黑名单"]..AURAS,
 }
-T.createradiobuttongroup(RFInnerframe.ind, 25, 165, L["过滤方式"], "UnitframeOptions", "hotind_filtertype", indicatorfiltertype_group)
+T.createradiobuttongroup(RFInnerframe.ind.hotind_list, -5, 40, L["过滤方式"], "UnitframeOptions", "hotind_filtertype", indicatorfiltertype_group)
+table.insert(RFInnerframe.ind.hotind_list.options, RFInnerframe.ind.hotind_list.hotind_filtertype)
 
-RFInnerframe.ind.hotind_list = T.createscrolllist(RFInnerframe.ind, {"TOPLEFT", 30, -220}, true, nil, 200)
-
-RFInnerframe.ind.hotind_list:SetScript("OnShow", function()
-	for spellID, _ in pairs(aCoreCDB["UnitframeOptions"]["hotind_auralist"]) do
-		local spellName, _, spellIcon = GetSpellInfo(spellID)
-		if spellName then
-			local bu = RFInnerframe.ind.hotind_list.list[spellID] or T.createscrollbutton("spell", RFInnerframe.ind.hotind_list, "UnitframeOptions", "hotind_auralist", spellID)
-			bu.display(spellIcon, spellName, spellID)
-		else
-			print("spell ID "..spellID.." is gone, delete it.")
-			aCoreCDB["UnitframeOptions"]["hotind_auralist"][spellID] = nil
-		end
-	end
-	T.lineuplist(aCoreCDB["UnitframeOptions"]["hotind_auralist"], RFInnerframe.ind.hotind_list.list, RFInnerframe.ind.hotind_list.anchor)
-end)
-
-RFInnerframe.ind.hotind_spellIDinput = T.createinputbox(RFInnerframe.ind, {"TOPLEFT", 30, -195}, L["输入法术ID"], 320)
-function RFInnerframe.ind.hotind_spellIDinput:apply()
-	local text = self:GetText()
-	local spellName, _, spellIcon, _, _, _, spellID = GetSpellInfo(text)
-	if spellName then
-		aCoreCDB["UnitframeOptions"]["hotind_auralist"][spellID] = true
-		local bu = RFInnerframe.ind.hotind_list.list[spellID] or T.createscrollbutton("spell", RFInnerframe.ind.hotind_list, "UnitframeOptions", "hotind_auralist", spellID)
-		bu.display(spellIcon, spellName, spellID)
-		bu:Show()
-		T.lineuplist(aCoreCDB["UnitframeOptions"]["hotind_auralist"], RFInnerframe.ind.hotind_list.list, RFInnerframe.ind.hotind_list.anchor)
-	else
-		StaticPopupDialogs[G.uiname.."incorrect spellid"].text = "|cff7FFF00"..text.." |r"..L["不是一个有效的法术ID"]
-		StaticPopup_Show(G.uiname.."incorrect spellid")
-	end
-	self:SetText(L["输入法术ID"])
+RFInnerframe.ind.hotind_list.reset.apply = function()
+	aCoreCDB["UnitframeOptions"]["hotind_filtertype"] = nil
 end
+
+RFInnerframe.ind.hotind_list.option_list:ClearAllPoints()
+RFInnerframe.ind.hotind_list.option_list:SetPoint("TOPLEFT", 0, -65)
 
 -- 点击施法
 RFInnerframe.clickcast = CreateOptionPage("RF Options clickcast", L["点击施法"], RFInnerframe, "VERTICAL", .3)
@@ -1368,7 +1218,7 @@ for i = 1, 5 do
 			elseif GetSpellInfo(var) or var == "NONE" then -- 法术已学会
 				aCoreCDB["UnitframeOptions"]["ClickCast"][index][v]["action"] = var
 			else
-				StaticPopupDialogs[G.uiname.."incorrect spell"].text = L["不正确的法术名称"].." |cff7FFF00"..var.." |r"
+				StaticPopupDialogs[G.uiname.."incorrect spellName"].text = L["不正确的法术名称"].." |cff7FFF00"..var.." |r"
 				StaticPopup_Show(G.uiname.."incorrect spell")
 				self:SetText(aCoreCDB["UnitframeOptions"]["ClickCast"][index][v]["action"])
 			end
@@ -1417,7 +1267,7 @@ for k, v in pairs(modifier) do
 		elseif GetSpellInfo(var) or var == "NONE" then -- 法术已学会
 			aCoreCDB["UnitframeOptions"]["ClickCast"][tostring(k+5)]["Click"]["action"] = var
 		else
-			StaticPopupDialogs[G.uiname.."incorrect spell"].text = L["不正确的法术名称"].." |cff7FFF00"..var.." |r"
+			StaticPopupDialogs[G.uiname.."incorrect spellName"].text = L["不正确的法术名称"].." |cff7FFF00"..var.." |r"
 			StaticPopup_Show(G.uiname.."incorrect spell")
 			self:SetText(aCoreCDB["UnitframeOptions"]["ClickCast"][tostring(k+5)]["Click"]["action"])
 		end
@@ -1465,7 +1315,7 @@ for k, v in pairs(modifier) do
 		elseif GetSpellInfo(var) or var == "NONE" then -- 法术已学会
 			aCoreCDB["UnitframeOptions"]["ClickCast"][tostring(k+9)]["Click"]["action"] = var
 		else
-			StaticPopupDialogs[G.uiname.."incorrect spell"].text = L["不正确的法术名称"].." |cff7FFF00"..var.." |r"
+			StaticPopupDialogs[G.uiname.."incorrect spellName"].text = L["不正确的法术名称"].." |cff7FFF00"..var.." |r"
 			StaticPopup_Show(G.uiname.."incorrect spell")
 			self:SetText(aCoreCDB["UnitframeOptions"]["ClickCast"][tostring(k+9)]["Click"]["action"])
 		end
@@ -1795,14 +1645,14 @@ local function CreateRaidDebuffOptions()
 		local spellID = tonumber(Spellinput:GetText())
 		local level = tonumber(Levelinput:GetText())
 		if not spellID then
-			StaticPopupDialogs[G.uiname.."incorrect spellid"].text = "|cff7FFF00".."/".." |r"..L["不是一个有效的法术ID"]
-			StaticPopup_Show(G.uiname.."incorrect spellid")
+			StaticPopupDialogs[G.uiname.."incorrect spellID"].text = "|cff7FFF00".."/".." |r"..L["不是一个有效的法术ID"]
+			StaticPopup_Show(G.uiname.."incorrect spellID")
 		elseif not GetSpellInfo(spellID) then
-			StaticPopupDialogs[G.uiname.."incorrect spellid"].text = "|cff7FFF00"..spellID.." |r"..L["不是一个有效的法术ID"]
-			StaticPopup_Show(G.uiname.."incorrect spellid")
+			StaticPopupDialogs[G.uiname.."incorrect spellID"].text = "|cff7FFF00"..spellID.." |r"..L["不是一个有效的法术ID"]
+			StaticPopup_Show(G.uiname.."incorrect spellID")
 		elseif not level then
-			StaticPopupDialogs[G.uiname.."incorrect level"].text = "|cff7FFF00"..Levelinput:GetText().." |r"..L["必须是一个数字"]
-			StaticPopup_Show(G.uiname.."incorrect level")	
+			StaticPopupDialogs[G.uiname.."incorrect number"].text = "|cff7FFF00"..Levelinput:GetText().." |r"..L["必须是一个数字"]
+			StaticPopup_Show(G.uiname.."incorrect number")	
 		else
 			if not aCoreCDB["RaidDebuff"][Selected_InstanceID] then
 				aCoreCDB["RaidDebuff"][Selected_InstanceID] = {}
@@ -1908,11 +1758,6 @@ local function CreateRaidDebuffOptions()
 	end
 end
 
-local function Click(b)
-	local func = b:GetScript("OnMouseDown") or b:GetScript("OnClick")
-	func(b)
-end
-
 hooksecurefunc("SetItemRef", function(link, text)
   if link:find("garrmission:altz") then
 	local InstanceID, encounterID, spellID = string.match(text, "altz::([^%]]+)%::([^%]]+)%::([^%]]+)%|h|c")
@@ -1920,9 +1765,9 @@ hooksecurefunc("SetItemRef", function(link, text)
 	encounterID = tonumber(encounterID)
 	spellID = tonumber(spellID)
 	if string.find(text, "config") then	
-		Click(GUI.tab6)
-		Click(RFInnerframe.tab8)
-		Click(_G[G.uiname.."Raiddebuff Tab"..InstanceID])
+		GUI.tab6:GetScript("OnClick")()
+		RFInnerframe.tab8:GetScript("OnClick")()
+		_G[G.uiname.."Raiddebuff Tab"..InstanceID]:GetScript("OnClick")()
 		GUI:Show()
 		GUI.df:Show()
 		GUI.scale:Show()
@@ -1950,104 +1795,17 @@ hooksecurefunc("SetItemRef", function(link, text)
 end)
 
 -- 全局减益和全局增益
-local function CreateCooldownAuraOption(parent, points, text, auratype)
-	local frame = CreateFrame("Frame", nil, parent, "BackdropTemplate")
-	frame:SetSize(400, 200)
-	frame:SetPoint(unpack(points))
-	
-	frame.title = T.createtext(frame, "OVERLAY", 14, "OUTLINE", "LEFT")
-	frame.title:SetPoint("TOPLEFT", frame, "TOPLEFT", 0, 0)
-	frame.title:SetText(text)
-	
-	frame.reset = T.createclicktexbutton(frame, {"LEFT", frame.title, "RIGHT", 10, 0}, [[Interface\AddOns\AltzUI\media\icons\refresh.tga]], L["重置"])
-	frame.reset:SetScript("OnClick", function(self)
-		StaticPopupDialogs[G.uiname.."Reset Confirm"].text = format(L["重置确认"], T.color_text(parent.title:GetText()..text))
-		StaticPopupDialogs[G.uiname.."Reset Confirm"].OnAccept = function()
-			aCoreCDB["CooldownAura"][auratype] = nil
-			ReloadUI()
-		end
-		StaticPopup_Show(G.uiname.."Reset Confirm")
-	end)
-	
-	frame.aura_list = T.createscrolllist(frame, {"TOPLEFT", 0, -45}, true, nil, 128)
-
-	frame:SetScript("OnShow", function()
-		for spellID, level in pairs(aCoreCDB["CooldownAura"][auratype]) do
-			local spellName, _, spellIcon = GetSpellInfo(spellID)
-			if spellName then
-				local bu = frame.aura_list.list[spellID] or T.createscrollbutton("spell", frame.aura_list, "CooldownAura", auratype, spellID)
-				bu.display(spellIcon, spellName, spellID, (auratype == "Debuffs_Black") and "" or level)
-			else
-				print("spell ID "..spellID.." is gone, delete it.")
-				aCoreCDB["CooldownAura"][auratype][spellID] = nil
-			end
-		end
-		T.lineuplist(aCoreCDB["CooldownAura"][auratype], frame.aura_list.list, frame.aura_list.anchor)
-	end)
-	
-	frame.spellIDinput = T.createinputbox(frame, {"TOPLEFT", 0, -20}, L["输入法术ID"], 120)
-	function frame.spellIDinput:apply()
-		local spellID = self:GetText()
-		local spellName = GetSpellInfo(spellID)
-		if spellName then	
-			self:SetText(spellName)
-		else
-			StaticPopupDialogs[G.uiname.."incorrect spellid"].text = "|cff7FFF00"..spellID.." |r"..L["不是一个有效的法术ID"]
-			StaticPopup_Show(G.uiname.."incorrect spellid")
-			self:SetText(L["输入法术ID"])
-		end
-	end
-
-	if (auratype ~= "Debuffs_Black") then
-		frame.levelinput = T.createinputbox(frame, {"LEFT", frame.spellIDinput, "RIGHT", 10, 0}, L["优先级"], 80)
-		function frame.levelinput:apply()
-			local level = self:GetText()
-			if tonumber(level) then
-				self:SetText(level)
-			else
-				StaticPopupDialogs[G.uiname.."incorrect level"].text = "|cff7FFF00"..level.." |r"..L["必须是一个数字"]
-				StaticPopup_Show(G.uiname.."incorrect level")
-				self:SetText(L["优先级"])
-			end
-		end
-	end
-	
-	frame.addbutton = T.createclickbutton(frame, {"LEFT", frame.levelinput or frame.spellIDinput, "RIGHT", 10, 0}, ADD)	
-	frame.addbutton:SetScript("OnClick", function(self)
-		local spellID = frame.spellIDinput:GetText()
-		local level = (auratype == "Debuffs_Black") and true or frame.levelinput:GetText()
-		local spellName, _, spellIcon, _, _, _, spellID = GetSpellInfo(spellID)
-			
-		if spellName and (auratype == "Debuffs_Black" or tonumber(level)) then
-			aCoreCDB["CooldownAura"][auratype][spellID] = level
-			local bu = frame.aura_list.list[spellID] or T.createscrollbutton("spell", frame.aura_list, "CooldownAura", auratype, spellID)
-			bu.display(spellIcon, spellName, spellID, (auratype == "Debuffs_Black") and "" or level)
-			bu:Show()
-			T.lineuplist(aCoreCDB["CooldownAura"][auratype], frame.aura_list.list, frame.aura_list.anchor)
-		elseif not spellName then
-			StaticPopupDialogs[G.uiname.."incorrect spellid"].text = "|cff7FFF00"..spellID.." |r"..L["不是一个有效的法术ID"]
-			StaticPopup_Show(G.uiname.."incorrect spellid")
-		else
-			StaticPopupDialogs[G.uiname.."incorrect level"].text = "|cff7FFF00"..level.." |r"..L["必须是一个数字"]
-			StaticPopup_Show(G.uiname.."incorrect level")
-		end	
-	end)
-	
-	return frame
-end
-
 RFInnerframe.globaldebuff = CreateOptionPage("RF Options Raid Debuff Fliter List", L["全局减益"], RFInnerframe, "VERTICAL", .3)
 
-RFInnerframe.globaldebuff.whitelist = CreateCooldownAuraOption(RFInnerframe.globaldebuff, {"TOPLEFT", 30, -55}, L["白名单"], "Debuffs")
+RFInnerframe.globaldebuff.whitelist = T.CreateAuraListOption(RFInnerframe.globaldebuff, {"TOPLEFT", 30, -55}, 200,  L["白名单"]..AURAS, "CooldownAura", "Debuffs", L["优先级"])
 
 CreateDividingLine(RFInnerframe.globaldebuff, -250)
 
-RFInnerframe.globaldebuff.blacklist = CreateCooldownAuraOption(RFInnerframe.globaldebuff, {"TOPLEFT", RFInnerframe.globaldebuff.whitelist, "BOTTOMLEFT", 0, -10}, L["黑名单"], "Debuffs_Black")
+RFInnerframe.globaldebuff.blacklist = T.CreateAuraListOption(RFInnerframe.globaldebuff, {"TOPLEFT", RFInnerframe.globaldebuff.whitelist, "BOTTOMLEFT", 0, -10}, 200, L["黑名单"]..AURAS, "CooldownAura", "Debuffs_Black")
 
 RFInnerframe.cooldownaura = CreateOptionPage("RF Options Cooldown Aura", L["全局增益"], RFInnerframe, "VERTICAL", .3)
 
-RFInnerframe.cooldownaura.whitelist = CreateCooldownAuraOption(RFInnerframe.cooldownaura, {"TOPLEFT", 30, -60}, L["白名单"], "Debuffs")
-RFInnerframe.cooldownaura.whitelist.aura_list:SetHeight(310)
+RFInnerframe.cooldownaura.whitelist = T.CreateAuraListOption(RFInnerframe.cooldownaura, {"TOPLEFT", 30, -60}, 380, L["白名单"]..AURAS, "CooldownAura", "Buffs", L["优先级"])
 --====================================================--
 --[[           -- Actionbar Options --              ]]--
 --====================================================--
@@ -2089,76 +1847,13 @@ ActionbarInnerframe.cdflash.cdflash_alpha:SetWidth(170)
 
 CreateDividingLine(ActionbarInnerframe.cdflash, -120)
 
-T.createDR(ActionbarInnerframe.cdflash.cdflash_enable, ActionbarInnerframe.cdflash.cdflash_size, ActionbarInnerframe.cdflash.cdflash_alpha)
+T.createDR(ActionbarInnerframe.cdflash.cdflash_enable, ActionbarInnerframe.cdflash.cdflash_size, ActionbarInnerframe.cdflash.cdflash_alpha, ActionbarInnerframe.cdflash.ignorespell_list, ActionbarInnerframe.cdflash.ignoreitem_list)
 
-ActionbarInnerframe.cdflash.ignorespell_title = T.createtext(ActionbarInnerframe.cdflash, "OVERLAY", 14, "OUTLINE", "LEFT")
-ActionbarInnerframe.cdflash.ignorespell_title:SetPoint("TOPLEFT", ActionbarInnerframe.cdflash, "TOPLEFT", 30, -125)
-ActionbarInnerframe.cdflash.ignorespell_title:SetText(L["忽略法术"])
+ActionbarInnerframe.cdflash.ignorespell_list = T.CreateAuraListOption(ActionbarInnerframe.cdflash, {"TOPLEFT", 30, -125}, 185, L["黑名单"]..SPELLS, "ActionbarOptions", "cdflash_ignorespells")
 
-ActionbarInnerframe.cdflash.spell_list = T.createscrolllist(ActionbarInnerframe.cdflash, {"TOPLEFT", 30, -170}, true, nil, 105)
+CreateDividingLine(ActionbarInnerframe.cdflash, -290)
 
-ActionbarInnerframe.cdflash.spell_list:SetScript("OnShow", function()
-	for spellID, _ in pairs(aCoreCDB["ActionbarOptions"]["cdflash_ignorespells"]) do
-		local spellName, _, spellIcon = GetSpellInfo(spellID)
-		local bu = ActionbarInnerframe.cdflash.spell_list.list[spellID] or T.createscrollbutton("spell", ActionbarInnerframe.cdflash.spell_list, "ActionbarOptions", "cdflash_ignorespells", spellID)
-		bu.display(spellIcon, spellName, spellID)
-	end
-	T.lineuplist(aCoreCDB["ActionbarOptions"]["cdflash_ignorespells"], ActionbarInnerframe.cdflash.spell_list.list, ActionbarInnerframe.cdflash.spell_list.anchor)
-end)
-
-ActionbarInnerframe.cdflash.spellIDinput = T.createinputbox(ActionbarInnerframe.cdflash, {"TOPLEFT", 30, -145}, L["输入法术ID"], 320)
-function ActionbarInnerframe.cdflash.spellIDinput:apply()
-	local text = self:GetText()
-	local spellName, _, spellIcon, _, _, _, spellID = GetSpellInfo(text)
-	if spellName then
-		aCoreCDB["ActionbarOptions"]["cdflash_ignorespells"][spellID] = true
-		local bu = ActionbarInnerframe.cdflash.spell_list.list[spellID] or T.createscrollbutton("spell", ActionbarInnerframe.cdflash.spell_list, "ActionbarOptions", "cdflash_ignorespells", spellID)
-		bu.display(spellIcon, spellName, spellID)
-		bu:Show()
-		T.lineuplist(aCoreCDB["ActionbarOptions"]["cdflash_ignorespells"], ActionbarInnerframe.cdflash.spell_list.list, ActionbarInnerframe.cdflash.spell_list.anchor)
-	else
-		StaticPopupDialogs[G.uiname.."incorrect spellid"].text = "|cff7FFF00"..text.." |r"..L["不是一个有效的法术ID"]
-		StaticPopup_Show(G.uiname.."incorrect spellid")
-	end
-	self:SetText(L["输入法术ID"])
-end
-
-CreateDividingLine(ActionbarInnerframe.cdflash, -280)
-
-ActionbarInnerframe.cdflash.ignoreitem_title = T.createtext(ActionbarInnerframe.cdflash, "OVERLAY", 14, "OUTLINE", "LEFT")
-ActionbarInnerframe.cdflash.ignoreitem_title:SetPoint("TOPLEFT", ActionbarInnerframe.cdflash, "TOPLEFT", 30, -285)
-ActionbarInnerframe.cdflash.ignoreitem_title:SetText(L["忽略物品"])
-
-ActionbarInnerframe.cdflash.item_list = T.createscrolllist(ActionbarInnerframe.cdflash, {"TOPLEFT", 30, -330}, true, nil, 105)
-
-ActionbarInnerframe.cdflash.item_list:SetScript("OnShow", function()
-	for itemID, _ in pairs(aCoreCDB["ActionbarOptions"]["cdflash_ignoreitems"]) do
-		local itemName = GetItemInfo(itemID)
-		local itemIcon = select(10, GetItemInfo(itemID))
-		local bu = ActionbarInnerframe.cdflash.item_list.list[itemID] or T.createscrollbutton("item", ActionbarInnerframe.cdflash.item_list, "ActionbarOptions", "cdflash_ignoreitems", itemID)
-		bu.display(itemIcon, itemName)
-	end
-	T.lineuplist(aCoreCDB["ActionbarOptions"]["cdflash_ignoreitems"], ActionbarInnerframe.cdflash.item_list.list, ActionbarInnerframe.cdflash.item_list.anchor)
-end)
-
-ActionbarInnerframe.cdflash.itemIDinput = T.createinputbox(ActionbarInnerframe.cdflash, {"TOPLEFT", 30, -305}, L["物品名称ID链接"], 320)
-function ActionbarInnerframe.cdflash.itemIDinput:apply()
-	local text = self:GetText()
-	local itemID, _, _, _, itemIcon = GetItemInfoInstant(text)
-	if itemID then
-		local itemName = GetItemInfo(itemID)
-		aCoreCDB["ActionbarOptions"]["cdflash_ignoreitems"][itemID] = true
-		local bu = ActionbarInnerframe.cdflash.item_list.list[itemID] or T.createscrollbutton("item", ActionbarInnerframe.cdflash.item_list, "ActionbarOptions", "cdflash_ignoreitems", itemID)
-		bu.display(itemIcon, itemName, itemID)
-		bu:Show()
-		T.lineuplist(aCoreCDB["ActionbarOptions"]["cdflash_ignoreitems"], ActionbarInnerframe.cdflash.item_list.list, ActionbarInnerframe.cdflash.item_list.anchor)
-	else
-		StaticPopupDialogs[G.uiname.."incorrect item ID"].text = "|cff7FFF00"..text.." |r"..L["不正确的物品ID"]
-		StaticPopup_Show(G.uiname.."incorrect item ID")
-		
-	end
-	self:SetText(L["物品名称ID链接"])
-end
+ActionbarInnerframe.cdflash.ignoreitem_list = T.CreateItemListOption(ActionbarInnerframe.cdflash, {"TOPLEFT", 30, -300}, 185, L["黑名单"]..ITEMS, "ActionbarOptions", "cdflash_ignoreitems")
 
 --====================================================--
 --[[           -- NamePlates Options --             ]]--
@@ -2260,354 +1955,42 @@ T.createDR(PlateInnerframe.playerresource.classresource_show, PlateInnerframe.pl
 -- 光环过滤列表 --
 PlateInnerframe.auralist = CreateOptionPage("Plate Options Aura", L["光环"], PlateInnerframe, "VERTICAL", .3)
 
-local plateauralistframe = CreateFrame("Frame", G.uiname.."Plate Aura List Options", PlateInnerframe.auralist, "BackdropTemplate")
-plateauralistframe:SetPoint("TOPLEFT", 30, -85)
-plateauralistframe:SetPoint("BOTTOMRIGHT", -30, 20)
-F.CreateBD(plateauralistframe, 0)
-plateauralistframe.tabindex = 1
-plateauralistframe.tabnum = 2
-for i = 1, 2 do
-	plateauralistframe["tab"..i] = CreateFrame("Frame", G.uiname.."plateauralistframe Tab"..i, plateauralistframe, "BackdropTemplate")
-	plateauralistframe["tab"..i]:SetScript("OnMouseDown", function() end)
+PlateInnerframe.auralist.my_filter = T.CreateAuraListOption(PlateInnerframe.auralist, {"TOPLEFT", 30, -55}, 200, L["我施放的光环"], "PlateOptions", "myplateauralist")
+
+T.createradiobuttongroup(PlateInnerframe.auralist.my_filter, -5, 40, L["过滤方式"], "PlateOptions", "myfiltertype", {
+	["none"] = L["全部隐藏"],
+	["whitelist"] = L["白名单"]..AURAS,
+	["blacklist"] = L["黑名单"]..AURAS,
+})
+
+PlateInnerframe.auralist.my_filter.reset.apply = function()
+	aCoreCDB["PlateOptions"]["myfiltertype"] = nil
 end
 
-local function LineUpplateauralist(parent, list)
-	local index = 1
-	for spellid, info in T.pairsByKeys(aCoreCDB["PlateOptions"][list]) do
-		_G[G.uiname..list..spellid]:SetPoint("TOPLEFT", parent, "TOPLEFT", 10, 20-index*30)
-		index =  index + 1
-	end
-end
-	
-local function CreateplateauralistButton(spellID, parent, list)
-	local bu = CreateFrame("Frame", G.uiname..list..spellID, parent)
-	bu:SetSize(330, 20)
+PlateInnerframe.auralist.my_filter.option_list:ClearAllPoints()
+PlateInnerframe.auralist.my_filter.option_list:SetPoint("TOPLEFT", 0, -65)
 
-	bu.icon = CreateFrame("Button", nil, bu)
-	bu.icon:SetSize(18, 18)
-	bu.icon:SetNormalTexture(select(3, GetSpellInfo(spellID)))
-	bu.icon:GetNormalTexture():SetTexCoord(0.1,0.9,0.1,0.9)
-	bu.icon:SetPoint"LEFT"
-	
-	bu.icon.bg = bu.icon:CreateTexture(nil, "BACKGROUND")
-	bu.icon.bg:SetPoint("TOPLEFT", -1, 1)
-	bu.icon.bg:SetPoint("BOTTOMRIGHT", 1, -1)
-	bu.icon.bg:SetTexture(G.media.blank)
-	bu.icon.bg:SetVertexColor(0, 0, 0)	
-	
-	bu.spellname = T.createtext(bu, "OVERLAY", 12, "OUTLINE", "LEFT")
-	bu.spellname:SetPoint("LEFT", 140, 0)
-	bu.spellname:SetTextColor(1, 1, 0)
-	bu.spellname:SetText(GetSpellInfo(spellID))
+CreateDividingLine(PlateInnerframe.auralist, -260)
 
-	bu.close = CreateFrame("Button", nil, bu)
-	bu.close:SetSize(22,22)
-	bu.close:SetPoint("LEFT", 310, 0)
-	bu.close.text = T.createtext(bu.close, "OVERLAY", 12, "OUTLINE", "CENTER")
-	bu.close.text:SetPoint("CENTER")
-	bu.close.text:SetText("x")
-	
-	bu.close:SetScript("OnClick", function() 
-		bu:Hide()
-		aCoreCDB["PlateOptions"][list][spellID] = nil
-		LineUpplateauralist(parent, list)
-	end)
-	
-	bu:SetScript("OnEnter", function(self)
-		GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-		GameTooltip:SetSpellByID(spellID)
-		GameTooltip:Show()
-	end)
-	bu:SetScript("OnLeave", function() GameTooltip:Hide() end)
-	
-	return bu
+PlateInnerframe.auralist.other_filter = T.CreateAuraListOption(PlateInnerframe.auralist, {"TOPLEFT", 30, -265}, 200, L["其他人施放的光环"], "PlateOptions", "otherplateauralist")
+
+T.createradiobuttongroup(PlateInnerframe.auralist.other_filter, -5, 40, L["过滤方式"], "PlateOptions", "otherfiltertype", {
+	["none"] = L["全部隐藏"],
+	["whitelist"] = L["白名单"]..AURAS,
+})
+
+PlateInnerframe.auralist.other_filter.reset.apply = function()
+	aCoreCDB["PlateOptions"]["otherfiltertype"] = nil
 end
 
-local function Createplateauralist(list, parent)
-	for spellID, info in T.pairsByKeys(aCoreCDB["PlateOptions"][list]) do
-		if GetSpellInfo(spellID) then
-			CreateplateauralistButton(spellID, parent, list)
-		else
-			print("spell ID "..spellID.." is gone, delete it.")
-			aCoreCDB["PlateOptions"][list][spellID] = nil
-		end
-	end
-	LineUpplateauralist(parent, list)
-end
-	
-local function CreatePlateAuraOptions(name, flitertype, list)
-	local plateauralist = CreateOptionPage(list.."Options", name, plateauralistframe, "HORIZONTAL", .3, true)
-	plateauralist.title:Hide()
-	plateauralist.line:Hide()
-	if list == "myplateauralist" then
-		plateauralist:Show()
-	end
-	
-	local filtertype_group = {}
-	local filtertype_order = {}
-	
-	filtertype_group["none"] = L["全部隐藏"]
-	filtertype_order["none"] = 1
-	filtertype_group["whitelist"] = L["白名单"]
-	filtertype_order["whitelist"] = 2
-	
-	if list == "myplateauralist" then
-		filtertype_group["blacklist"] = L["黑名单"]
-		filtertype_order["blacklist"] = 3
-	end
-	
-	T.createradiobuttongroup(plateauralist, 10, 0, L["过滤方式"], "PlateOptions", flitertype, filtertype_group, nil, filtertype_order)
-	
-	plateauralist.SF:SetPoint("TOPLEFT", 10, -50)
-	plateauralist.SF:SetPoint("BOTTOMRIGHT", -30, 20)
-	
-	Createplateauralist(list, plateauralist.SFAnchor)
-	
-	plateauralist.Spellinput = CreateFrame("EditBox", G.uiname..list.."Spell Input", plateauralist, "BackdropTemplate")
-	plateauralist.Spellinput:SetSize(120, 20)
-	plateauralist.Spellinput:SetPoint("TOPLEFT", plateauralist, "TOPLEFT", 20, -30)
-	F.CreateBD(plateauralist.Spellinput)
-	
-	plateauralist.Spellinput:SetFont(GameFontHighlight:GetFont(), 12, "OUTLINE")
-	plateauralist.Spellinput:SetAutoFocus(false)
-	plateauralist.Spellinput:SetTextInsets(3, 0, 0, 0)
-	
-	plateauralist.Spellinput:SetScript("OnShow", function(self) self:SetText(L["输入法术ID"]) end)
-	plateauralist.Spellinput:SetScript("OnEditFocusGained", function(self) self:HighlightText() end)
-	plateauralist.Spellinput:SetScript("OnEscapePressed", function(self) self:ClearFocus() self:SetText(L["输入法术ID"]) end)
-	plateauralist.Spellinput:SetScript("OnEnterPressed", function(self) self:ClearFocus() end)
-	
-	plateauralist.Add = CreateFrame("Button", G.uiname..list.."Add Button", plateauralist, "UIPanelButtonTemplate")
-	plateauralist.Add:SetPoint("LEFT", plateauralist.Spellinput, "RIGHT", 10, 0)
-	plateauralist.Add:SetSize(70, 20)
-	plateauralist.Add:SetText(ADD)
-	T.resize_font(plateauralist.Add.Text)
-	F.Reskin(plateauralist.Add)
-	
-	plateauralist.Add:SetScript("OnClick", function(self)
-		local spellID = tonumber(plateauralist.Spellinput:GetText())
-
-		if not spellID or not GetSpellInfo(spellID) then
-			StaticPopupDialogs[G.uiname.."incorrect spellid"].text = "|cff7FFF00"..plateauralist.Spellinput:GetText().." |r"..L["不是一个有效的法术ID"]
-			StaticPopup_Show(G.uiname.."incorrect spellid")
-		elseif not aCoreCDB["PlateOptions"][list][spellID] then
-			aCoreCDB["PlateOptions"][list][spellID] = true
-			if _G[G.uiname..list..spellID] then
-				_G[G.uiname..list..spellID]:Show()
-				LineUpplateauralist(plateauralist.SFAnchor, list)
-			else
-				CreateplateauralistButton(spellID, plateauralist.SFAnchor, list)
-				LineUpplateauralist(plateauralist.SFAnchor, list)
-			end
-		end
-	end)
-	
-	plateauralist.Reset = CreateFrame("Button", G.uiname..list.."Reset Button", plateauralist, "UIPanelButtonTemplate")
-	plateauralist.Reset:SetPoint("BOTTOM", GUI.reload, "TOP", 0, 10)
-	plateauralist.Reset:SetSize(100, 25)
-	plateauralist.Reset:SetText(L["重置"])	
-	T.resize_font(plateauralist.Reset.Text)
-	F.Reskin(plateauralist.Reset)
-	
-	plateauralist.Reset:SetScript("OnClick", function(self)
-		StaticPopupDialogs[G.uiname.."Reset Confirm"].text = format(L["重置确认"], T.color_text(name))
-		StaticPopupDialogs[G.uiname.."Reset Confirm"].OnAccept = function()
-			aCoreCDB["PlateOptions"][list] = nil
-			ReloadUI()
-		end
-		StaticPopup_Show(G.uiname.."Reset Confirm")
-	end)
-end
+PlateInnerframe.auralist.other_filter.option_list:ClearAllPoints()
+PlateInnerframe.auralist.other_filter.option_list:SetPoint("TOPLEFT", 0, -65)
 
 -- 自定义颜色 --
 PlateInnerframe.customcoloredplates = CreateOptionPage("Plate Options CColor", L["自定义颜色"], PlateInnerframe, "VERTICAL", .3, true)
 
-PlateInnerframe.customcoloredplates.SF:ClearAllPoints()
-PlateInnerframe.customcoloredplates.SF:SetPoint("TOPLEFT", PlateInnerframe.customcoloredplates, "TOPLEFT", 30, -60)
-PlateInnerframe.customcoloredplates.SF:SetPoint("BOTTOMRIGHT", PlateInnerframe.customcoloredplates, "BOTTOMRIGHT", -50, 30)
-
-local function CreateCColoredPlatesButton(parent, index, name, r, g, b)
-	local bu = CreateFrame("Frame", G.uiname.."CColoredPlatesList Button"..index, parent, "BackdropTemplate")
-	bu:SetPoint("TOPLEFT", parent, "TOPLEFT", 5, 20-index*30)
-	bu:SetSize(360, 28)
-	F.CreateBD(bu, .2)
-	
-	bu.index = T.createtext(bu, "OVERLAY", 16, "OUTLINE", "LEFT")
-	bu.index:SetPoint("LEFT", 10, 0)
-	bu.index:SetTextColor(1, 1, 1)
-	bu.index:SetText(index..".")
-	
-	bu.name_input = CreateFrame("EditBox", G.uiname.."CColoredPlatesList Button"..index.."NameInput", bu, "BackdropTemplate")
-	bu.name_input:SetSize(200, 20)
-	bu.name_input:SetPoint("LEFT", 40, 0)
-	F.CreateBD(bu.name_input, 0)
-	bu.name_input:SetBackdropColor(0, 0, 0, 0)
-	bu.name_input:SetBackdropBorderColor(0, 0, 0, 0)
-	
-	bu.name_input:SetFont(GameFontHighlight:GetFont(), 12, "OUTLINE")
-	bu.name_input:SetAutoFocus(false)
-	bu.name_input:SetTextInsets(3, 0, 0, 0)
-	
-	bu.name_input:SetScript("OnShow", function(self) self:SetText(aCoreCDB["PlateOptions"]["customcoloredplates"][index].name) end)
-	bu.name_input:SetScript("OnEditFocusGained", function(self) 
-		self:SetBackdropColor(0, 1, 1, .3)
-		self:SetBackdropBorderColor(1, 1, 1, 1)
-	end)
-	bu.name_input:SetScript("OnEditFocusLost", function(self) 
-		self:SetBackdropColor(0, 0, 0, 0)
-		self:SetBackdropBorderColor(0, 0, 0, 0)
-		self.new_value = self:GetText()
-		self:SetText(aCoreCDB["PlateOptions"]["customcoloredplates"][index].name)	
-	end)
-	bu.name_input:SetScript("OnEscapePressed", function(self)
-		self:ClearFocus()
-	end)
-	bu.name_input:SetScript("OnEnterPressed", function(self)
-		self:ClearFocus()
-		self:SetBackdropColor(0, 0, 0, 0)
-		self:SetBackdropBorderColor(0, 0, 0, 0)
-		aCoreCDB["PlateOptions"]["customcoloredplates"][index].name = self.new_value
-		self:SetText(self.new_value)
-	end)
-	
-	bu.cpb = CreateFrame("Button", G.uiname.."CColoredPlatesList Button"..index.."ColorPickerButton", bu, "UIPanelButtonTemplate")
-	bu.cpb:SetPoint("RIGHT", -60, 0)
-	bu.cpb:SetSize(55, 20)
-	F.Reskin(bu.cpb)
-	
-	bu.cpb.ctex = bu.cpb:CreateTexture(nil, "OVERLAY")
-	bu.cpb.ctex:SetTexture(G.media.blank)
-	bu.cpb.ctex:SetPoint"CENTER"
-	bu.cpb.ctex:SetSize(50, 18)
-	
-	bu.cpb:SetScript("OnShow", function(self) self.ctex:SetVertexColor(aCoreCDB["PlateOptions"]["customcoloredplates"][index].color.r, aCoreCDB["PlateOptions"]["customcoloredplates"][index].color.g, aCoreCDB["PlateOptions"]["customcoloredplates"][index].color.b) end)
-	bu.cpb:SetScript("OnClick", function(self)
-		local r, g, b = aCoreCDB["PlateOptions"]["customcoloredplates"][index].color.r, aCoreCDB["PlateOptions"]["customcoloredplates"][index].color.g, aCoreCDB["PlateOptions"]["customcoloredplates"][index].color.b
-		
-		ColorPickerFrame:ClearAllPoints()
-		ColorPickerFrame:SetPoint("TOPLEFT", self, "TOPRIGHT", 20, 0)
-		ColorPickerFrame.hasOpacity = false
-		
-		ColorPickerFrame.func = function()
-			aCoreCDB["PlateOptions"]["customcoloredplates"][index].color.r, aCoreCDB["PlateOptions"]["customcoloredplates"][index].color.g, aCoreCDB["PlateOptions"]["customcoloredplates"][index].color.b = ColorPickerFrame:GetColorRGB()
-			self.ctex:SetVertexColor(ColorPickerFrame:GetColorRGB())
-		end
-		
-		ColorPickerFrame.previousValues = {r = r, g = g, b = b}
-		
-		ColorPickerFrame.cancelFunc = function()
-			aCoreCDB["PlateOptions"]["customcoloredplates"][index].color.r, aCoreCDB["PlateOptions"]["customcoloredplates"][index].color.g, aCoreCDB["PlateOptions"]["customcoloredplates"][index].color.b = r, g, b
-			self.ctex:SetVertexColor(aCoreCDB["PlateOptions"]["customcoloredplates"][index].color.r, aCoreCDB["PlateOptions"]["customcoloredplates"][index].color.g, aCoreCDB["PlateOptions"]["customcoloredplates"][index].color.r)
-		end
-		
-		ColorPickerFrame:SetColorRGB(r, g, b)
-		ColorPickerFrame:Hide()
-		ColorPickerFrame:Show()
-	end)
-	
-	bu.reset = CreateFrame("Button", nil, bu, "UIPanelButtonTemplate")
-	bu.reset:SetSize(38,18)
-	bu.reset:SetPoint("RIGHT", -5, 0)
-	F.Reskin(bu.reset)
-	bu.reset:SetText(L["重置"])
-	T.resize_font(bu.reset.Text)
-	
-	bu.reset:SetScript("OnClick", function(self)
-		table.wipe(aCoreCDB["PlateOptions"]["customcoloredplates"][index])
-		aCoreCDB["PlateOptions"]["customcoloredplates"][index] = {
-			name = L["空"],
-			color = {r = 1, g = 1, b = 1},
-		}
-		bu.name_input:SetText(L["空"])
-		bu.cpb.ctex:SetVertexColor(1, 1, 1)
-	end)
-	
-	return bu
-end
-
-local function CreateCColoredPlatesList()
-	for index, info in pairs(aCoreCDB["PlateOptions"]["customcoloredplates"]) do
-		local name = info.name
-		local r, g, b =  info.color.r, info.color.g, info.color.b
-		CreateCColoredPlatesButton(PlateInnerframe.customcoloredplates.SFAnchor, index, name, r, g, b)
-	end
-end
-
 -- 自定义能量 --
 PlateInnerframe.custompowerplates = CreateOptionPage("Plate Options CPower", L["自定义能量"], PlateInnerframe, "VERTICAL", .3, true)
-
-PlateInnerframe.custompowerplates.SF:ClearAllPoints()
-PlateInnerframe.custompowerplates.SF:SetPoint("TOPLEFT", PlateInnerframe.custompowerplates, "TOPLEFT", 30, -60)
-PlateInnerframe.custompowerplates.SF:SetPoint("BOTTOMRIGHT", PlateInnerframe.custompowerplates, "BOTTOMRIGHT", -50, 30)
-
-local function CreateCPowerPlatesButton(parent, index, name)
-	local bu = CreateFrame("Frame", G.uiname.."CPowerPlatesList Button"..index, parent, "BackdropTemplate")
-	bu:SetPoint("TOPLEFT", parent, "TOPLEFT", 5, 20-index*30)
-	bu:SetSize(360, 28)
-	F.CreateBD(bu, .2)
-	
-	bu.index = T.createtext(bu, "OVERLAY", 16, "OUTLINE", "LEFT")
-	bu.index:SetPoint("LEFT", 10, 0)
-	bu.index:SetTextColor(1, 1, 1)
-	bu.index:SetText(index..".")
-	
-	bu.name_input = CreateFrame("EditBox", G.uiname.."CPowerPlatesList Button"..index.."NameInput", bu, "BackdropTemplate")
-	bu.name_input:SetSize(200, 20)
-	bu.name_input:SetPoint("LEFT", 40, 0)
-	F.CreateBD(bu.name_input, 0)
-	bu.name_input:SetBackdropColor(0, 0, 0, 0)
-	bu.name_input:SetBackdropBorderColor(0, 0, 0, 0)
-	
-	bu.name_input:SetFont(GameFontHighlight:GetFont(), 12, "OUTLINE")
-	bu.name_input:SetAutoFocus(false)
-	bu.name_input:SetTextInsets(3, 0, 0, 0)
-	
-	bu.name_input:SetScript("OnShow", function(self) self:SetText(aCoreCDB["PlateOptions"]["custompowerplates"][index].name) end)
-	bu.name_input:SetScript("OnEditFocusGained", function(self) 
-		self:SetBackdropColor(0, 1, 1, .3)
-		self:SetBackdropBorderColor(1, 1, 1, 1)
-	end)
-	bu.name_input:SetScript("OnEditFocusLost", function(self) 
-		self:SetBackdropColor(0, 0, 0, 0)
-		self:SetBackdropBorderColor(0, 0, 0, 0)
-		self.new_value = self:GetText()
-		self:SetText(aCoreCDB["PlateOptions"]["custompowerplates"][index].name)	
-	end)
-	bu.name_input:SetScript("OnEscapePressed", function(self)
-		self:ClearFocus()
-	end)
-	bu.name_input:SetScript("OnEnterPressed", function(self)
-		self:ClearFocus()
-		self:SetBackdropColor(0, 0, 0, 0)
-		self:SetBackdropBorderColor(0, 0, 0, 0)
-		aCoreCDB["PlateOptions"]["custompowerplates"][index].name = self.new_value
-		self:SetText(self.new_value)
-	end)
-	
-	bu.reset = CreateFrame("Button", nil, bu, "UIPanelButtonTemplate")
-	bu.reset:SetSize(38,18)
-	bu.reset:SetPoint("RIGHT", -5, 0)
-	F.Reskin(bu.reset)
-	bu.reset:SetText(L["重置"])
-	T.resize_font(bu.reset.Text)
-	
-	bu.reset:SetScript("OnClick", function(self)
-		table.wipe(aCoreCDB["PlateOptions"]["custompowerplates"][index])
-		aCoreCDB["PlateOptions"]["custompowerplates"][index] = {
-			name = L["空"],
-		}
-		bu.name_input:SetText(L["空"])
-	end)
-	
-	return bu
-end
-
-local function CreateCPowerPlatesList()
-	for index, info in pairs(aCoreCDB["PlateOptions"]["custompowerplates"]) do
-		local name = info.name
-		CreateCPowerPlatesButton(PlateInnerframe.custompowerplates.SFAnchor, index, name)
-	end
-end
 
 --====================================================--
 --[[             -- Tooltip Options --              ]]--
@@ -2649,8 +2032,6 @@ T.createcheckbutton(OtherOptions, 30, 90, L["稀有警报"], "OtherOptions", "vi
 T.createcheckbutton(OtherOptions, 300, 90, L["自动交接任务"], "OtherOptions", "autoquests", L["自动交接任务提示"])
 T.createcheckbutton(OtherOptions, 30, 120, L["战场自动释放灵魂"], "OtherOptions", "battlegroundres", L["战场自动释放灵魂提示"])
 T.createcheckbutton(OtherOptions, 300, 120, L["自动接受复活"], "OtherOptions", "acceptres", L["自动接受复活提示"])
-T.createcheckbutton(OtherOptions, 30, 150, L["快速焦点"], "OtherOptions", "shiftfocus")
-T.createcheckbutton(OtherOptions, 300, 150, L["快速标记"], "OtherOptions", "ctrlmenu")
 
 CreateDividingLine(OtherOptions, -230)
 
@@ -2823,11 +2204,6 @@ function eventframe:PLAYER_ENTERING_WORLD()
 	end
 
 	CreateRaidDebuffOptions()
-	
-	CreatePlateAuraOptions(L["我的法术"], "myfiltertype", "myplateauralist")
-	CreatePlateAuraOptions(L["其他法术"], "otherfiltertype", "otherplateauralist")
-	CreateCColoredPlatesList()
-	CreateCPowerPlatesList()
 	
 	SetClassColorButton:SetScript("OnClick", function() T.ResetClasscolors(true) end)
 	SetDBMButton:SetScript("OnClick", function() T.ResetDBM(true) end)
