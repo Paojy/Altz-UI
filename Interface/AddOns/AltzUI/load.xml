@@ -11,6 +11,7 @@
 	<Script file="locals\english.lua"/>
 
 	<Script file="core\PopupDialogs.lua"/>
+	<Script file="core\widget_api.lua"/>
 	<Script file="core\api.lua"/>
 	<Script file="core\db.lua"/>
 	<Script file="core\fader.lua"/>
