@@ -247,7 +247,7 @@ local function Reskinbox(box, name, value, width, height, ...)
 	gradient:SetPoint("TOPLEFT", bd, 1, -1)
 	gradient:SetPoint("BOTTOMRIGHT", bd, -1, 1)
 
-	box:SetFont(GameFontHighlight:GetFont(), 12, "OUTLINE")
+	box:SetFont(G.norFont, 12, "OUTLINE")
 	box:SetAutoFocus(false)
 	box:SetTextInsets(3, 0, 0, 0)
 
