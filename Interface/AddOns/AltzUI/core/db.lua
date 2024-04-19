@@ -473,163 +473,163 @@ local HealerIndicatorAuraList = default_HealerIndicatorAuraList[G.myClass]
 local Account_default_Settings = {
 	meet = false,
 	gold = {},
-	goldkeywordlist = "",
 }
 
-local Character_default_Settings = {
-	FramePoints = {},
+local Character_default_Settings = {	
+	SkinOptions = {
+		-- 界面风格
+		style = 1,
+		combattext = "none",
+		formattype = "k", -- w, w_chinese, none
+		showtopbar = true,
+		showbottombar = true,
+		showtopconerbar = true,
+		showbottomconerbar = true,		
+		setClassColor = true,
+		setDBM = true,
+		setSkada = true,
+		setBW = true,		
+		-- 界面布局
+		infobar = true,
+		infobarscale = 1,		
+		collapseWF = true,
+		afkscreen = true,
+		showAFKtips = true,
+		-- 非控制台内选项
+		gui_x = 300,
+		gui_y = 300,
+		gui_scale = 100,
+		collectminimapbuttons = true,
+		MBCFalwaysshow = false,
+		MBCFpos = "BOTTOM",
+		minimapbutton = true,
+	},
+	ChatOptions = {
+		channelreplacement = true,
+		autoscroll = true,
+		showbg = false,		
+		nogoldseller = true,
+		goldkeywordnum = 2,
+		goldkeywordlist = "",		
+		autoinvite = false,
+        autoinvitekeywords = "111 123",
+	},
+	ItemOptions = {
+		alreadyknown = true,
+		autorepair = true,
+		autorepair_guild = true,
+		autorepair_guild_auto = true,		
+		autosell = true,
+		autobuy = false,
+		autobuylist = {},
+	},	
 	UnitframeOptions = {
-		style = 1, 
+		--[[ 单位框架 ]]--
+		-- 样式
 		enablefade = true,
 		fadingalpha = 0.2,
-		valuefontsize = 16,
-		
-		-- health/power
+		portrait = true,
 		alwayshp = false,
 		alwayspp = false,
-		classcolormode = false,
-		nameclasscolormode = true,
-		
-		-- portrait
-		portrait = true,
-	
-		-- size
+		valuefontsize = 16,
+		-- 尺寸
 		height	= 18,
 		width = 230,
+		ppheight = 0.25, -- slider
 		widthpet = 70,
 		widthboss = 170,
-		widthparty = 200,
-		ppheight = 0.25, -- slider
-
-		-- castbar
-		castbars = true,
+		-- 施法条
+		castbars = true,	
 		cbIconsize = 33,
 		independentcb = true,
-		namepos = "LEFT",
-		timepos = "RIGHT",
 		cbheight = 16,
 		cbwidth = 230,
 		target_cbheight = 5,
 		target_cbwidth = 230,
 		focus_cbheight = 5,
-		focus_cbwidth = 230,
+		focus_cbwidth = 230,	
+		namepos = "LEFT",
+		timepos = "RIGHT",
+		Interruptible_color = {r =.6 , g = .4, b = .8},
+		notInterruptible_color = {r =.9 , g = 0, b = 1},
 		channelticks = false,
 		hideplayercastbaricon = false,
-		Interruptible_color = {r =.6 , g = .4, b = .8},	
-		notInterruptible_color = {r =.9 , g = 0, b = 1},	
-		
-		-- swing timer
+		-- 平砍计时条
 		swing = false,
 		swheight = 12,
-		swwidth = 230,
+		swwidth = 230,		
 		swtimer = true,
 		swtimersize = 12,
-		
-		-- auras
+		-- 光环
 		aura_size = 20,
 		playerdebuffenable = true,
 		AuraFilterignoreBuff = false,
 		AuraFilterignoreDebuff = false,
 		AuraFilterwhitelist = {},
-		
-		showthreatbar = true,
-
-		-- show/hide boss
-		bossframes = true,
-		
-		-- show/hide arena
-		arenaframes = true,
-
-		-- show player in party
-		showplayerinparty = true,
-		showpartypet = false,
-		
-		-- show pvp timer
-		pvpicon = false,
-		
-		-- show value
-		runecooldown = true,
-		dpsmana = true,
-		stagger = true,
-		valuefs = 12,
-		
-		-- totems
+		-- 图腾
 		totems = true,
 		totemsize = 25,
 		growthDirection = 'HORIZONTAL',
 		sortDirection = 'ASCENDING',
-		
-		--[[ share ]]--
+		-- 小队
+		widthparty = 200,
+		showplayerinparty = true,
+		showpartypet = false,
+		-- 其他
+		showthreatbar = true,
+		pvpicon = false,		
+		bossframes = true,
+		arenaframes = true,
+		runecooldown = true,
+		valuefs = 12,		
+		dpsmana = true,
+		stagger = true,
+		--[[ 团队框架 ]]--
+		-- 启用
 		enableraid = true,
-		raidframe_inparty = false,
 		party_num = 4,
-		showraidpet = false,
-		raidfontsize = 10,
-		namelength = 4,
+		hor_party = false,
+		party_connected = true,
 		showsolo = false,
+		raidframe_inparty = false,
+		showraidpet = false,
 		raidtool = true,
-		raidtool_show = true,
-		
-		--[[ style ]]--
+		raidtool_show = true, -- 非控制台内选项
+		-- 启用
 		raidheight = 45,
 		raidwidth = 120,
 		raidmanabars = true,
 		raidppheight = 0.1, -- slider
-		party_connected = true,
-		hor_party = false,
+		namelength = 4,		
+		raidfontsize = 10,
 		showgcd = true,
+		raidrole_icon = false,		
 		showmisshp = true,
 		healprediction = true,
-		raidrole_icon = false,
-		hotind_style = "icon_ind",-- "icon_ind", "number_ind"
+		-- 治疗指示器
 		hotind_size = 15,
+		hotind_style = "icon_ind",-- "icon_ind", "number_ind"
 		hotind_filtertype = "whitelist", -- "blacklist", "whitelist"
 		hotind_auralist = HealerIndicatorAuraList,
-		raid_debuff_num = 2,
-		raid_debuff_anchor_x = -50,
-		raid_debuff_anchor_y = -5,
-		raid_debuff_icon_size = 22,
-		raid_debuff_icon_fontsize = 8,
-		raid_buff_num = 1,
-		raid_buff_anchor_x = 5,
-		raid_buff_anchor_y = -5,
-		raid_buff_icon_size = 22,
-		raid_buff_icon_fontsize = 8,
-		
-		--[[ click cast ]]--
+		-- 点击施法
 		enableClickCast = false,
 		ClickCast = ClickCastDB,
-		
-		--[[ raid debuff ]]--
+		-- 光环图标	
+		raid_debuff_anchor_x = -50,
+		raid_debuff_anchor_y = -5,
+		raid_debuff_num = 2,
+		raid_debuff_icon_size = 22,
+		raid_debuff_icon_fontsize = 8,
+		raid_buff_anchor_x = 5,
+		raid_buff_anchor_y = -5,
+		raid_buff_num = 1,
+		raid_buff_icon_size = 22,
+		raid_buff_icon_fontsize = 8,
 		debuff_auto_add = true,
 		debuff_auto_add_level = 6,
 	},
-	ChatOptions = {
-		channelreplacement = true,
-		autoscroll = true,
-		nogoldseller = true,
-		goldkeywordnum = 2,
-		showbg = false,
-	},
-	ItemOptions = {
-		autorepair = true,
-		autorepair_guild = true,
-		autorepair_guild_auto = true,
-		autosell = true,
-		alreadyknown = true,
-		showitemlevel = true,
-		autobuy = false,
-		autobuylist = {},
-		itemlevels = {},
-		itembuttons = false,
-		itembuttons_size = 32,
-		itembuttons_fsize = 15,
-		growdirection_h = "LEFT",
-		growdirection_v = "UP",
-		number_perline = 6,
-		button_space = 2,
-	},
 	ActionbarOptions = {
+		-- 样式
 		cooldown = true,
 		cooldown_wa = true,
 		cooldownsize = 20,
@@ -637,9 +637,10 @@ local Character_default_Settings = {
 		keybindsize = 12,
 		macronamesize = 8,
 		countsize = 12,
+		-- 冷却提示
 		cdflash_enable = true,
-		cdflash_alpha = 100,
 		cdflash_size = 60,
+		cdflash_alpha = 100,
 		cdflash_ignorespells = {},
 		cdflash_ignoreitems = {
 			[6948] = true,
@@ -651,54 +652,47 @@ local Character_default_Settings = {
 		theme = "class", -- "dark" "class" "number"	
 		fontsize = 8,
 		numfontsize = 10,
-		threatcolor = true,		
 		plateauranum = 5,
 		plateaurasize = 15,	
 		Interruptible_color = {r =.6 , g = .4, b = .8},	
-		notInterruptible_color = {r =.9 , g = 0, b = 1},	
+		notInterruptible_color = {r =.9 , g = 0, b = 1},
 		focuscolored = true,
 		focus_color = {r = .5, g = .4, b = .9},
-		
+		threatcolor = true,
+		-- 样式
 		bar_width = 100,-- 条形
 		bar_height = 8,
 		bar_hp_perc = "perc", -- 数值样式  "perc" "value_perc"
 		bar_alwayshp = false, -- 满血显示生命值
 		bar_onlyname = false, -- 友方只显示名字
-		
+
 		number_size = 23,-- 数字型
-		number_alwayshp = false, -- 满血显示生命值	
 		number_cpwidth = 15, -- 职业能量长度
-		number_colorheperc = false,
-		
+		number_alwayshp = false, -- 满血显示生命值	
+		number_colorheperc = false,	
 		-- 玩家姓名板
 		playerplate = false,
 		plateaura = false,
 		platecastbar = false,
 		classresource_show = false,
-		classresource_pos = "player", --"player", "target"		
-		
-		-- 光环列表
-		myplateauralist = G.BlackList,		
-		otherplateauralist = G.WhiteList,
+		classresource_pos = "player", --"player", "target"				
+		-- 光环过滤列表
 		myfiltertype = "blacklist", -- "blacklist", "whitelist", "none"
+		myplateauralist = G.BlackList,
 		otherfiltertype = "none", -- "whitelist", "none"
-		
-		-- 染色列表
+		otherplateauralist = G.WhiteList,
+		-- 自定义
 		customcoloredplates = {},
-		
-		-- 能量列表
 		custompowerplates = {},
 	},
 	TooltipOptions = {
 		enabletip = true,
-		size = 1,
-		cursor = false,
 		combathide = true,
 	},
 	CombattextOptions = {
 		combattext = true,
+		hidblz_receive = false,		
 		hidblz = true,
-		hidblz_receive = false,
 		showreceivedct = true,
 		showoutputct = true,
 		cticonsize = 13,
@@ -708,53 +702,20 @@ local Character_default_Settings = {
 		ctshowpet = true,
 		ctfadetime = 3,	
 	},
-	RaidToolOptions = {
-		onlyactive = true,
-		unlockraidmarks = false,
-		potion = false,
-		potionblacklist = "",
-		pulltime = 8,
-	},
 	OtherOptions = {
-		hideerrors = true,
-		autoscreenshot = true,
-		acceptres = true,
-		battlegroundres = true,
-		autoinvite = false,
-        autoinvitekeywords = "111 123",		
-		autoquests = false,
-		showAFKtips = true,
-		vignettealert = true,
-		flashtaskbar = true,
 		autopet = true,
 		LFGRewards = true,
-		autoacceptproposal = true,
+		vignettealert = true,
+		autoquests = false,
+		battlegroundres = true,
+		acceptres = true,
+		
+		flashtaskbar = true,
+		hideerrors = true,
+		autoscreenshot = true,
 	},
-	SkinOptions = {
-		combattext = "none",
-		setClassColor = true,
-		setDBM = true,
-		setSkada = true,
-		setBW = true,
-		showtopbar = true,
-		showbottombar = true,
-		showtopconerbar = true,
-		showbottomconerbar = true,
-		formattype = "k", -- w, w_chinese, none
-		gui_x = 300,
-		gui_y = 300,
-		gui_scale = 100,		
-		infobar = true,
-		infobarscale = 1,
-		collectminimapbuttons = true,
-		MBCFalwaysshow = false,
-		MBCFpos = "BOTTOM",
-		collapseWF = true,
-		customobjectivetracker = false,
-		afklogin = false,
-		afkscreen = true,
-		minimapbutton = true,
-	},
+	
+	FramePoints = {},
 	RaidDebuff = {},
 	CooldownAura = AuraList,
 	AddonProfiles = {},

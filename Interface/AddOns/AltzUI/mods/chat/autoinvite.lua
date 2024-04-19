@@ -76,7 +76,7 @@ EventFrame:RegisterEvent("CHAT_MSG_WHISPER")
 EventFrame:RegisterEvent("CHAT_MSG_BN_WHISPER")
 
 local Update_Invite_Keyword = function()
-	local filter = {string.split(" ", aCoreDB["goldkeywordlist"])}
+	local filter = {string.split(" ", aCoreCDB["ChatOptions"]["autoinvitekeywords"])}
 	for _, keyword in pairs(filter) do
 		if keyword ~= "" then
 			keywords[keyword] = true

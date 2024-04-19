@@ -77,7 +77,7 @@ ChatFrame_AddMessageEventFilter("CHAT_MSG_YELL", FilterChat)
 ChatFrame_AddMessageEventFilter("CHAT_MSG_WHISPER", FilterChat)
 
 local Update_Chat_Filter = function()
-	local filter = {string.split(" ", aCoreDB["goldkeywordlist"])}
+	local filter = {string.split(" ", aCoreCDB["ChatOptions"]["goldkeywordlist"])}
 	for _, keyword in pairs(filter) do
 		if keyword ~= "" then
 			blacklist[keyword] = true

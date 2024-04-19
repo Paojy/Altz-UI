@@ -241,12 +241,12 @@ local func = function(self, unit)
 	hp.ApplySettings = function()
 		hp.ind:SetSize(1, aCoreCDB["UnitframeOptions"]["raidheight"])
 		
-		if aCoreCDB["UnitframeOptions"]["style"] == 1 then
+		if aCoreCDB["SkinOptions"]["style"] == 1 then
 			self.bg.tex:SetAlpha(0)
 			hp:SetStatusBarTexture(G.media.blank)
 			hp.bg:SetTexture(G.media.blank)
 			hp.bg:SetGradient("VERTICAL", CreateColor(.5, .5, .5, .5), CreateColor(0, 0, 0, 0))
-		elseif aCoreCDB["UnitframeOptions"]["style"] == 2 then
+		elseif aCoreCDB["SkinOptions"]["style"] == 2 then
 			self.bg.tex:SetAlpha(1)
 			hp:SetStatusBarTexture(G.media.ufbar)
 			hp.bg:SetTexture(G.media.ufbar)
@@ -286,7 +286,7 @@ local func = function(self, unit)
 	oUF:RegisterInitCallback(pp.EnableSettings)
 	
 	pp.ApplySettings = function()		
-		if aCoreCDB["UnitframeOptions"]["style"] == 1 then
+		if aCoreCDB["SkinOptions"]["style"] == 1 then
 			pp:SetStatusBarTexture(G.media.blank)
 		else
 			pp:SetStatusBarTexture(G.media.ufbar)
@@ -328,7 +328,7 @@ local func = function(self, unit)
 	}
 	
 	hp_predict.ApplySettings = function()
-		if aCoreCDB["UnitframeOptions"]["style"] ~= 3 then
+		if aCoreCDB["SkinOptions"]["style"] ~= 3 then
 			hp_predict.myBar:SetPoint('LEFT', self.Health:GetStatusBarTexture(), 'LEFT')
 			hp_predict.otherBar:SetPoint('LEFT', self.Health:GetStatusBarTexture(), 'LEFT')
 			hp_predict.absorbBar:SetPoint('LEFT', self.Health:GetStatusBarTexture(), 'LEFT')
@@ -769,12 +769,12 @@ local pfunc = function(self, unit)
 	self.Health.Override = T.Overridehealthbar
 	
 	self.Health.ApplySettings = function()
-		if aCoreCDB["UnitframeOptions"]["style"] == 1 then
+		if aCoreCDB["SkinOptions"]["style"] == 1 then
 			self.bg.tex:SetAlpha(0)
 			hp:SetStatusBarTexture(G.media.blank)
 			hp.bg:SetTexture(G.media.blank)
 			hp.bg:SetGradient("VERTICAL", CreateColor(.5, .5, .5, .5), CreateColor(0, 0, 0, 0))
-		elseif aCoreCDB["UnitframeOptions"]["style"] == 2 then
+		elseif aCoreCDB["SkinOptions"]["style"] == 2 then
 			self.bg.tex:SetAlpha(1)
 			hp:SetStatusBarTexture(G.media.ufbar)
 			hp.bg:SetTexture(G.media.ufbar)
@@ -849,7 +849,7 @@ local pfunc = function(self, unit)
 	pp.bd = T.createBackdrop(pp, pp, 1)
 
 	pp.ApplySettings = function()			
-		if aCoreCDB["UnitframeOptions"]["style"] == 1 then
+		if aCoreCDB["SkinOptions"]["style"] == 1 then
 			pp:SetStatusBarTexture(G.media.blank)
 		else
 			pp:SetStatusBarTexture(G.media.ufbar)

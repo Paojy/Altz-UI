@@ -135,9 +135,9 @@ T.Overridehealthbar = function(self, event, unit)
 	end
 
 	if r and g and b then
-		if aCoreCDB["UnitframeOptions"]["style"] == 1 then
+		if aCoreCDB["SkinOptions"]["style"] == 1 then
 			health:GetStatusBarTexture():SetGradient("VERTICAL", CreateColor(r, g, b, 1), CreateColor(r/3, g/3, b/3, 1))
-		elseif aCoreCDB["UnitframeOptions"]["style"] == 2 then
+		elseif aCoreCDB["SkinOptions"]["style"] == 2 then
 			health:SetStatusBarColor(r, g, b)
 		else
 			health:SetStatusBarColor(0, 0, 0)
@@ -145,7 +145,7 @@ T.Overridehealthbar = function(self, event, unit)
 	end
 	
 	if r1 and g1 and b1 then
-		if aCoreCDB["UnitframeOptions"]["style"] == 3 then
+		if aCoreCDB["SkinOptions"]["style"] == 3 then
 			self.bg.tex:SetVertexColor(r1, g1, b1)
 		else
 			self.bg.tex:SetVertexColor(0, 0, 0)
@@ -294,15 +294,15 @@ T.Updatehealthbar = function(self, unit, min, max)
 		end
 	else
 		r2, g2, b2 = oUF:RGBColorGradient(perc, 1, unpack(oUF.colors.smooth))
-		if aCoreCDB["UnitframeOptions"]["style"] == 1 then
+		if aCoreCDB["SkinOptions"]["style"] == 1 then
 			self:GetStatusBarTexture():SetGradient("VERTICAL", CreateColor(r2, g2, b2, 1),CreateColor(r2/3, g2/3, b2/3, 1))
-		elseif aCoreCDB["UnitframeOptions"]["style"] == 2 then
+		elseif aCoreCDB["SkinOptions"]["style"] == 2 then
 			self:SetStatusBarColor(r2, g2, b2)
 		else
 			self:SetStatusBarColor(0, 0, 0)
 		end
 		
-		if aCoreCDB["UnitframeOptions"]["style"] == 3 then
+		if aCoreCDB["SkinOptions"]["style"] == 3 then
 			self.__owner.bg.tex:SetVertexColor(r, g, b)
 		else
 			self.__owner.bg.tex:SetVertexColor(0, 0, 0)
@@ -341,7 +341,7 @@ T.Updatepowerbar = function(self, unit, cur, min, max)
 			r, g, b = unpack(oUF.colors.reaction[UnitReaction(unit, 'player') or 5])
 		end
 	else
-		if aCoreCDB["UnitframeOptions"]["style"] == 3 then -- 职业
+		if aCoreCDB["SkinOptions"]["style"] == 3 then -- 职业
 			r, g, b = unpack(powercolor)
 		elseif UnitIsPlayer(unit) then -- 深色或透明
 			local _, unitclass = UnitClass(unit)
@@ -358,7 +358,7 @@ T.Updatepowerbar = function(self, unit, cur, min, max)
 			self:GetStatusBarTexture():SetGradient("VERTICAL", CreateColor(r, g, b, 1),CreateColor(r/3, g/3, b/3, 1))
 		end
 	else
-		if aCoreCDB["UnitframeOptions"]["style"] ~= 1 then
+		if aCoreCDB["SkinOptions"]["style"] ~= 1 then
 			self:SetStatusBarColor(r, g, b)
 		else
 			self:GetStatusBarTexture():SetGradient("VERTICAL", CreateColor(r, g, b, 1),CreateColor(r/3, g/3, b/3, 1))
@@ -588,7 +588,7 @@ local function GetTickColor() -- 引导法术的分段竖线颜色
 	
 	if aCoreCDB["UnitframeOptions"]["independentcb"] then -- 独立施法条
 		r, g, b = 0, 0, 0
-	elseif aCoreCDB["UnitframeOptions"]["style"] == 1 or aCoreCDB["UnitframeOptions"]["style"] == 3 then -- 透明或者经典主题
+	elseif aCoreCDB["SkinOptions"]["style"] == 1 or aCoreCDB["SkinOptions"]["style"] == 3 then -- 透明或者经典主题
 		r, g, b = 0, 0, 0
 	else -- 深色主题
 		r, g, b = 1, 1, 1
@@ -859,7 +859,7 @@ local CreateCastbars = function(self, unit)
 						cb.Text:SetJustifyH("RIGHT")
 					end
 					
-					if aCoreCDB["UnitframeOptions"]["style"] == 1 then
+					if aCoreCDB["SkinOptions"]["style"] == 1 then
 						cb:SetStatusBarTexture(G.media.blank)
 					else
 						cb:SetStatusBarTexture(G.media.ufbar)
@@ -920,7 +920,7 @@ local CreateSwingTimer = function(self, unit) -- only for player
 	T.CreateDragFrame(bar)
 	bar.hideOoc = true -- 脱战隐藏
 	
-	local normTex = aCoreCDB["UnitframeOptions"]["style"] == 1 and G.media.blank or G.media.ufbar
+	local normTex = aCoreCDB["SkinOptions"]["style"] == 1 and G.media.blank or G.media.ufbar
 
 	bar.Twohand = CreateFrame("StatusBar", nil, bar)
 	bar.Twohand:SetPoint("TOPLEFT", bar, "TOPLEFT", 0, 0)
@@ -968,9 +968,9 @@ local CreateSwingTimer = function(self, unit) -- only for player
 	
 	bar.ApplySettings = function()		
 		-- texture
-		bar.Twohand:SetStatusBarTexture(aCoreCDB["UnitframeOptions"]["style"] == 1 and G.media.blank or G.media.ufbar)
-		bar.Mainhand:SetStatusBarTexture(aCoreCDB["UnitframeOptions"]["style"] == 1 and G.media.blank or G.media.ufbar)
-		bar.Offhand:SetStatusBarTexture(aCoreCDB["UnitframeOptions"]["style"] == 1 and G.media.blank or G.media.ufbar)
+		bar.Twohand:SetStatusBarTexture(aCoreCDB["SkinOptions"]["style"] == 1 and G.media.blank or G.media.ufbar)
+		bar.Mainhand:SetStatusBarTexture(aCoreCDB["SkinOptions"]["style"] == 1 and G.media.blank or G.media.ufbar)
+		bar.Offhand:SetStatusBarTexture(aCoreCDB["SkinOptions"]["style"] == 1 and G.media.blank or G.media.ufbar)
 				
 		-- height, width --
 		bar:SetSize(aCoreCDB["UnitframeOptions"]["swwidth"], aCoreCDB["UnitframeOptions"]["swheight"])
@@ -1459,12 +1459,12 @@ local func = function(self, unit)
 	tinsert(self.mouseovers, self.Health)
 	
 	self.Health.ApplySettings = function()
-		if aCoreCDB["UnitframeOptions"]["style"] == 1 then
+		if aCoreCDB["SkinOptions"]["style"] == 1 then
 			self.bg.tex:SetAlpha(0)
 			hp:SetStatusBarTexture(G.media.blank)
 			hp.bg:SetTexture(G.media.blank)
 			hp.bg:SetGradient("VERTICAL", CreateColor(.5, .5, .5, .5), CreateColor(0, 0, 0,0))
-		elseif aCoreCDB["UnitframeOptions"]["style"] == 2 then
+		elseif aCoreCDB["SkinOptions"]["style"] == 2 then
 			self.bg.tex:SetAlpha(1)
 			hp:SetStatusBarTexture(G.media.ufbar)
 			hp.bg:SetTexture(G.media.ufbar)
@@ -1554,7 +1554,7 @@ local func = function(self, unit)
 		end
 
 		pp.ApplySettings = function()
-			if aCoreCDB["UnitframeOptions"]["style"] == 1 then
+			if aCoreCDB["SkinOptions"]["style"] == 1 then
 				pp:SetStatusBarTexture(G.media.blank)
 			else
 				pp:SetStatusBarTexture(G.media.ufbar)

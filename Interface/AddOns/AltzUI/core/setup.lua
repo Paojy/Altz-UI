@@ -197,7 +197,7 @@ end)
 --====================================================--
 
 CreateTutorialsStepFrame(L["界面风格"], L["界面风格tip"])
-CreateOptions(TutorialsFrame[3], "group", true, "UnitframeOptions", "style", {L["透明样式"],L["深色样式"],L["普通样式"]})
+CreateOptions(TutorialsFrame[3], "group", true, "SkinOptions", "style", {L["透明样式"],L["深色样式"],L["普通样式"]})
 
 for i = 1, 3 do
 	TutorialsFrame[3]["style"][i]:HookScript("OnClick", function()

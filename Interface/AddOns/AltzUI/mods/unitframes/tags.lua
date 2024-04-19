@@ -21,7 +21,7 @@ oUF.Tags.Events['Altz:color'] = 'UNIT_FACTION' -- for tapping
 oUF.Tags.Methods['Altz:shortname'] = function(u, r)
 	local name = UnitName(r or u)
 	local color = _TAGS['Altz:color'](u)
-	if aCoreCDB["UnitframeOptions"]["style"] ~= 3 then
+	if aCoreCDB["SkinOptions"]["style"] ~= 3 then
 		return color..T.utf8sub(name, 8)
 	else
 		return T.utf8sub(name, 8)
@@ -63,7 +63,7 @@ oUF.Tags.Methods['Altz:longname'] = function(u, r)
 	local name = UnitName(r or u)
 	local status = _TAGS['status'](u) or ""
 	
-	if aCoreCDB["UnitframeOptions"]["style"] ~= 3 then
+	if aCoreCDB["SkinOptions"]["style"] ~= 3 then
 		return difficulty..level..shortclassification.."|r "..color..name.." "..status
 	else
 		return difficulty..level..shortclassification.."|r "..name.." "..status
@@ -92,7 +92,11 @@ oUF.Tags.Methods["Altz:hpraidname"] = function(u, r)
 		result = T.utf8sub(name, aCoreCDB["UnitframeOptions"]["namelength"])
 	end
 	if result then
-		return (aCoreCDB["UnitframeOptions"]["style"] ~= 3 and color)..result
+		if aCoreCDB["SkinOptions"]["style"] ~= 3 then
+			return color..result
+		else		
+			return result
+		end
 	end
 end
 oUF.Tags.Events["Altz:hpraidname"] = "UNIT_HEALTH UNIT_NAME_UPDATE"
