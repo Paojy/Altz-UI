@@ -122,7 +122,7 @@ GUI.editbox.bg:SetPoint("BOTTOMRIGHT", GUI, "BOTTOMRIGHT", 0, -36)
 GUI.editbox.bg:SetFrameLevel(GUI:GetFrameLevel()-1)
 F.SetBD(GUI.editbox.bg)
 
-GUI.editbox.button = T.createclickbutton(GUI.editbox, {"RIGHT", GUI.editbox, "RIGHT", -2, 0}, OKAY)
+GUI.editbox.button = T.createclickbutton(GUI.editbox, 0, {"RIGHT", GUI.editbox, "RIGHT", -2, 0}, OKAY)
 GUI.editbox.button:Hide()
 	
 GUI.GitHub = T.createclicktexbutton(GUI, {"BOTTOMLEFT", GUI, "BOTTOMLEFT", 5, 0}, [[Interface\AddOns\AltzUI\media\icons\GitHub.tga]], "GitHub")
@@ -282,6 +282,7 @@ local function CreateOptionPage(name, title, parent, orientation, db_key)
 	
 	tab.owner = frame
 	tab.index = #parent.tabs	
+	frame.hooked_tab = tab
 	
 	if orientation == "VERTICAL" then	
 		tab:SetSize(130, 25)
@@ -334,7 +335,7 @@ local function CreateInnerFrame(parent)
 	frame:SetPoint("BOTTOMLEFT", -20, 25)
 	frame:SetWidth(parent:GetWidth()-200)
 	
-	F.CreateBD(frame, .3)
+	F.CreateBD(frame, .2)
 	
 	return frame
 end
@@ -512,7 +513,7 @@ CreateDividingLine(ItemOptions, -200)
 T.createcheckbutton(ItemOptions, 30, 210, L["自动售卖"], "ItemOptions", "autosell", L["自动售卖提示"])
 T.createcheckbutton(ItemOptions, 30, 240, L["自动购买"], "ItemOptions", "autobuy", L["自动购买提示"])
 
-ItemOptions.autobuy_list = T.CreateItemListOption(ItemOptions, {"TOPLEFT", 35, -270}, 260, L["自动购买"]..L["设置"], "ItemOptions", "autobuylist", L["数量"])
+ItemOptions.autobuy_list = T.CreateItemListOption(ItemOptions, {"TOPLEFT", 35, -270}, 260, L["自动购买"]..L["设置"], "autobuylist", L["数量"])
 
 T.createDR(ItemOptions.autobuy, ItemOptions.autobuy_list)
 --====================================================--
@@ -730,7 +731,7 @@ UFInnerframe.aura.AuraFilterignoreDebuff.apply = function()
 	T.ApplyUFSettings({"Auras"})
 end
 
-UFInnerframe.aura.aurafliter_list = T.CreateAuraListOption(UFInnerframe.aura, {"TOPLEFT", 30, -215}, 230, L["白名单"]..AURAS, "UnitframeOptions", "AuraFilterwhitelist")
+UFInnerframe.aura.aurafliter_list = T.CreateAuraListOption(UFInnerframe.aura, {"TOPLEFT", 30, -215}, 230, L["白名单"]..AURAS, "AuraFilterwhitelist")
 
 -- 图腾
 UFInnerframe.totembar = CreateOptionPage("UF Options totembar", L["图腾条"], UFInnerframe, "VERTICAL", "UnitframeOptions")
@@ -962,7 +963,7 @@ RFInnerframe.ind.hotind_style:HookScript("OnShow", Updateindsettings)
 
 CreateDividingLine(RFInnerframe.ind, -135)
 
-RFInnerframe.ind.hotind_list = T.CreateAuraListOption(RFInnerframe.ind, {"TOPLEFT", 30, -150}, 270,  L["图标指示器"]..L["设置"], "UnitframeOptions", "hotind_auralist")
+RFInnerframe.ind.hotind_list = T.CreateAuraListOption(RFInnerframe.ind, {"TOPLEFT", 30, -150}, 270,  L["图标指示器"]..L["设置"], "hotind_auralist")
 
 T.createradiobuttongroup(RFInnerframe.ind.hotind_list, -5, 40, L["过滤方式"], "hotind_filtertype", {
 	{"whitelist", L["白名单"]..AURAS},
@@ -1023,7 +1024,7 @@ MacroPop.scrollBG.edit = CreateFrame("EditBox", G.uiname.."give macro MultiLineE
 MacroPop.scrollBG.edit:SetTextInsets(3, 3, 3, 3)
 MacroPop.scrollBG.edit:SetFrameLevel(MacroPop.scrollAC:GetFrameLevel()+1)
 MacroPop.scrollBG.edit:SetAllPoints()
-MacroPop.scrollBG.edit:SetFont(GameFontHighlight:GetFont(), 12, "OUTLINE")
+MacroPop.scrollBG.edit:SetFont(G.norFont, 12, "OUTLINE")
 MacroPop.scrollBG.edit:SetMultiLine(true)
 MacroPop.scrollBG.edit:EnableMouse(true)
 MacroPop.scrollBG.edit:SetAutoFocus(false)
@@ -1091,7 +1092,7 @@ for i = 1, 5 do
 		inputbox.name:SetPoint("LEFT", inputbox, "RIGHT", 10, 1)
 		inputbox.name:SetText(v)
 		
-		inputbox:SetFont(GameFontHighlight:GetFont(), 12, "OUTLINE")
+		inputbox:SetFont(G.norFont, 12, "OUTLINE")
 		inputbox:SetAutoFocus(false)
 		inputbox:SetTextInsets(3, 0, 0, 0)
 		
@@ -1140,7 +1141,7 @@ for k, v in pairs(modifier) do
 	inputbox.name:SetPoint("LEFT", inputbox, "RIGHT", 10, 1)
 	inputbox.name:SetText(v)
 		
-	inputbox:SetFont(GameFontHighlight:GetFont(), 12, "OUTLINE")
+	inputbox:SetFont(G.norFont, 12, "OUTLINE")
 	inputbox:SetAutoFocus(false)
 	inputbox:SetTextInsets(3, 0, 0, 0)
 		
@@ -1188,7 +1189,7 @@ for k, v in pairs(modifier) do
 	inputbox.name:SetPoint("LEFT", inputbox, "RIGHT", 10, 1)
 	inputbox.name:SetText(v)
 		
-	inputbox:SetFont(GameFontHighlight:GetFont(), 12, "OUTLINE")
+	inputbox:SetFont(G.norFont, 12, "OUTLINE")
 	inputbox:SetAutoFocus(false)
 	inputbox:SetTextInsets(3, 0, 0, 0)
 		
@@ -1270,20 +1271,349 @@ T.createslider(RFInnerframe.Icon_Display, 60, 430, L["自动添加的图标层�
 -- 团队减益
 RFInnerframe.raiddebuff = CreateOptionPage("RF Options Raid Debuff", L["副本减益"], RFInnerframe, "VERTICAL", "UnitframeOptions")
 
-RFInnerframe.raiddebuff.options = T.createscrolllist(RFInnerframe.raiddebuff, {"TOPLEFT", 25, -55}, true, 400, 400)
+RFInnerframe.raiddebuff.debuff_list = T.createscrolllist(RFInnerframe.raiddebuff, {"TOPLEFT", 10, -85}, false, 400, 370)
 
--- 全局减益和全局增益
-RFInnerframe.globaldebuff = CreateOptionPage("RF Options Raid Debuff Fliter List", L["全局减益"], RFInnerframe, "VERTICAL", "CooldownAura")
+local function UpdateEncounterTitle(option_list, i, encounterID, y)
+	if not option_list.titles[i] then
+		local frame = CreateFrame("Frame", nil, option_list)
+		frame:SetSize(380, 16)
+		
+		frame.tex = frame:CreateTexture(nil, "ARTWORK")
+		frame.tex:SetSize(60, 30)
+		frame.tex:SetPoint("BOTTOMLEFT", frame, "BOTTOMLEFT")
+		
+		frame.text = T.createtext(frame, "OVERLAY", 14, "OUTLINE", "LEFT")
+		frame.text:SetPoint("BOTTOMLEFT", frame.tex, "BOTTOMRIGHT", 0, 0)
+		
+		frame.line = frame:CreateTexture(nil, "ARTWORK")
+		frame.line:SetSize(380, 1)
+		frame.line:SetPoint("BOTTOM")
+		frame.line:SetColorTexture(1, 1, 1)
+		
+		option_list.titles[i] = frame
+	end
+	
+	local portrait = (encounterID == 1 and [[Interface\EncounterJournal\UI-EJ-BOSS-Default]]) or select(5, EJ_GetCreatureInfo(1, encounterID))
+	local name = (encounterID == 1 and L["杂兵"]) or EJ_GetEncounterInfo(encounterID)
+	
+	local title = option_list.titles[i]
+	title.tex:SetTexture(portrait)
+	title.text:SetText(name)
+	
+	title:ClearAllPoints()
+	title:SetPoint("TOPLEFT", option_list.anchor, "TOPLEFT", 20, y)
+	title:Show()
+end
 
-RFInnerframe.globaldebuff.whitelist = T.CreateAuraListOption(RFInnerframe.globaldebuff, {"TOPLEFT", 30, -55}, 200,  L["白名单"]..AURAS, "CooldownAura", "Debuffs", L["优先级"])
+local function UpdateEncounterButton(option_list, encounterID, spellID, level, y)
+	if not option_list.spells["icon"..encounterID.."_"..spellID] then
+		local parent = RFInnerframe.raiddebuff
+		local frame = T.createscrollbutton("spell", option_list, nil, nil, spellID)
+		frame:SetWidth(380)
+		
+		frame.close:SetScript("OnClick", function() 
+			frame:Hide()
+			aCoreCDB[parent.db_key]["raid_debuffs"][parent.selected_InstanceID][encounterID][spellID] = nil
+			option_list.OptionListChanged()
+		end)
+		
+		frame:SetScript("OnMouseDown", function(self)
+			UIDropDownMenu_SetSelectedValue(option_list.encounterDD, encounterID)	
+			option_list.spell_input:SetText(spellID)
+			option_list.spell_input.current_spellID = spellID
+			option_list.level_input:SetText(level)
+		end)
+		
+		option_list.spells["icon"..encounterID.."_"..spellID] = frame
+	end
+	
+	local spellName, _, spellIcon = GetSpellInfo(spellID)
+	
+	local bu = option_list.spells["icon"..encounterID.."_"..spellID]
+	bu.display(spellIcon, spellName, spellID, level)
+	
+	bu:ClearAllPoints()
+	bu:SetPoint("TOPLEFT", option_list.anchor, "TOPLEFT", 20, y)
+	bu:Show()
+end
 
+local function DisplayRaidDebuffList()
+	local parent = RFInnerframe.raiddebuff
+	local option_list = RFInnerframe.raiddebuff.debuff_list
+	
+	option_list.encounters = table.wipe(option_list.encounters)
+	
+	local dataIndex = 1
+	EJ_SelectInstance(parent.selected_InstanceID)
+	local encounterID = select(3, EJ_GetEncounterInfoByIndex(dataIndex, parent.selected_InstanceID))
+	while encounterID ~= nil do
+		table.insert(option_list.encounters, encounterID)
+		dataIndex = dataIndex + 1	
+		encounterID = select(3, EJ_GetEncounterInfoByIndex(dataIndex, parent.selected_InstanceID))
+	end
+	table.insert(option_list.encounters, 1)
+	
+	for k, v in pairs(option_list.titles) do v:Hide() end	
+	for k, v in pairs(option_list.spells) do v:Hide() end
+	
+	local y = -10
+	for i, encounterID in pairs(option_list.encounters) do
+		UpdateEncounterTitle(option_list, i, encounterID, y)
+		y = y - 20
+		if aCoreCDB[parent.db_key]["raid_debuffs"][parent.selected_InstanceID] and aCoreCDB[parent.db_key]["raid_debuffs"][parent.selected_InstanceID][encounterID] then
+			for spellID, level in pairs (aCoreCDB[parent.db_key]["raid_debuffs"][parent.selected_InstanceID][encounterID]) do
+				UpdateEncounterButton(option_list, encounterID, spellID, level, y)
+				y = y - 25
+			end
+		end
+		y = y - 15
+	end
+end
+
+do
+	local parent = RFInnerframe.raiddebuff 
+	local option_list = RFInnerframe.raiddebuff.debuff_list
+	option_list:Hide()
+	
+	option_list.encounters = {}
+	option_list.titles = {}
+	option_list.spells = {}
+	option_list.OptionListChanged = DisplayRaidDebuffList
+	
+	-- 重置
+	option_list.reset = T.createclicktexbutton(option_list, {"LEFT", parent.title, "RIGHT", 2, 0}, [[Interface\AddOns\AltzUI\media\icons\refresh.tga]], L["重置"])	
+	option_list.reset:SetScript("OnClick", function(self)
+		local InstanceName = EJ_GetInstanceInfo(parent.selected_InstanceID)
+		StaticPopupDialogs[G.uiname.."Reset Confirm"].text = format(L["重置确认"], T.color_text(InstanceName))
+		StaticPopupDialogs[G.uiname.."Reset Confirm"].OnAccept = function()
+			aCoreCDB[parent.db_key]["raid_debuffs"][parent.selected_InstanceID] = nil
+			ReloadUI()
+		end
+		StaticPopup_Show(G.uiname.."Reset Confirm")
+	end)
+	
+	-- 返回
+	option_list.back = T.createclicktexbutton(option_list, {"LEFT", parent.title, "RIGHT", 270, 0}, [[Interface\AddOns\AltzUI\media\refresh.tga]], BACK)
+	T.SetupArrow(option_list.back.tex, "left")
+	option_list.back:SetScript("OnClick", function() 
+		option_list:Hide()
+		parent.instance_list:Show()
+	end)
+	
+	-- 首领下拉菜单
+	option_list.encounterDD = CreateFrame("Frame", nil, option_list, "UIDropDownMenuTemplate")
+	option_list.encounterDD:SetPoint("BOTTOMLEFT", option_list, "TOPLEFT", 0, 2)
+	option_list.encounterDD.Text:SetFont(G.norFont, 12, "OUTLINE")
+	F.ReskinDropDown(option_list.encounterDD)
+	UIDropDownMenu_SetWidth(option_list.encounterDD, 120)
+	
+	-- 法术ID输入框
+	option_list.spell_input = T.createinputbox(option_list, {"LEFT", option_list.encounterDD, "RIGHT", -5, 2}, L["输入法术ID"], 100)
+	function option_list.spell_input:apply()
+		if self.current_spellID then
+			return true
+		else
+			local spellText = self:GetText()		
+			local spellName, _, spellIcon, _, _, _, spellID = GetSpellInfo(spellText)
+			if spellName then
+				self:SetText(spellName)
+				self.current_spellID = spellID
+				return true
+			else
+				StaticPopupDialogs[G.uiname.."incorrect spellID"].text = T.color_text((spellText == L["输入法术ID"] and "") or spellText)..L["不是一个有效的法术ID"]
+				StaticPopup_Show(G.uiname.."incorrect spellID")
+			end
+		end
+	end
+	
+	-- 优先级输入框
+	option_list.level_input = T.createinputbox(option_list, {"LEFT", option_list.spell_input, "RIGHT", 5, 0}, L["优先级"], 100)
+	function option_list.level_input:apply()
+		local level = self:GetText()
+		if tonumber(level) then
+			self:SetText(level)
+			return true
+		else
+			StaticPopupDialogs[G.uiname.."incorrect number"].text = T.color_text(level)..L["必须是一个数字"]
+			StaticPopup_Show(G.uiname.."incorrect number")
+		end
+	end
+	
+	-- 添加
+	option_list.add = T.createclickbutton(option_list, 0, {"LEFT", option_list.level_input, "RIGHT", 5, 0}, ADD)
+	option_list.add:SetScript("OnClick", function(self)
+		option_list.spell_input:GetScript("OnEnterPressed")(option_list.spell_input)
+		option_list.level_input:GetScript("OnEnterPressed")(option_list.level_input)
+		if not option_list.spell_input:apply() or not option_list.level_input:apply() then return end
+		
+		local encounterID = UIDropDownMenu_GetSelectedValue(option_list.encounterDD)
+		local spellName, _, spellIcon, _, _, _, spellID = GetSpellInfo(option_list.spell_input.current_spellID)
+		local level = option_list.level_input:GetText()
+		
+		if not aCoreCDB[parent.db_key]["raid_debuffs"][parent.selected_InstanceID][encounterID] then
+			aCoreCDB[parent.db_key]["raid_debuffs"][parent.selected_InstanceID][encounterID] = {}
+		end
+		
+		aCoreCDB[parent.db_key]["raid_debuffs"][parent.selected_InstanceID][encounterID][spellID] = level		
+		DisplayRaidDebuffList()
+		
+		option_list.spell_input:SetText(L["输入法术ID"])
+		option_list.spell_input.current_spellID = nil
+		option_list.level_input:SetText(L["优先级"])
+	end)
+end
+
+local CreateInstanceButton = function(frame, instanceID, instanceName, bgImage)
+	local parent = RFInnerframe.raiddebuff
+	local bu = T.createclickbutton(frame.anchor, 150, nil, instanceName, bgImage)
+	
+	bu:SetFrameLevel(frame.anchor:GetFrameLevel()+2)
+	bu.tex:SetTexCoord(0, 1, .4, .6)
+	bu.tex:SetAlpha(.3)
+	
+	if mod(frame.button_i, 2) == 1 then
+		bu:SetPoint("TOPLEFT", frame.anchor, "TOPLEFT", 20+mod(frame.button_i+1, 2)*200, frame.y)
+		frame.y = frame.y - 30
+	else
+		bu:SetPoint("TOPLEFT", frame.anchor, "TOPLEFT", 20+mod(frame.button_i+1, 2)*200, frame.y + 30)
+	end
+	
+	bu:HookScript("OnMouseDown", function()
+		parent.selected_InstanceID = instanceID
+		frame:Hide()
+		
+		local option_list = parent.debuff_list
+		option_list:Show()
+		
+		UIDropDownMenu_Initialize(option_list.encounterDD, function()
+			local dataIndex = 1
+			EJ_SelectInstance(parent.selected_InstanceID)
+			local encounterName, _, encounterID = EJ_GetEncounterInfoByIndex(dataIndex, parent.selected_InstanceID)
+			
+			while encounterName ~= nil do
+				local info = UIDropDownMenu_CreateInfo()
+				info.text = encounterName
+				info.value = encounterID
+				info.func = function()
+					UIDropDownMenu_SetSelectedValue(option_list.encounterDD, info.value)
+				end
+				UIDropDownMenu_AddButton(info)
+				
+				dataIndex = dataIndex + 1
+				encounterName, _, encounterID = EJ_GetEncounterInfoByIndex(dataIndex, parent.selected_InstanceID)
+			end
+			
+			local info = UIDropDownMenu_CreateInfo()
+			info.text = L["杂兵"]
+			info.value = 1
+			info.func = function()
+				UIDropDownMenu_SetSelectedValue(option_list.encounterDD, 1)
+			end
+			UIDropDownMenu_AddButton(info)
+		end)
+		
+		local first_encounterID = select(3, EJ_GetEncounterInfoByIndex(1, parent.selected_InstanceID))
+		UIDropDownMenu_SetSelectedValue(option_list.encounterDD, first_encounterID)
+		
+		DisplayRaidDebuffList()
+	end)
+	
+	if not aCoreCDB[parent.db_key]["raid_debuffs"][instanceID] then
+		aCoreCDB[parent.db_key]["raid_debuffs"][instanceID] = {}
+	end
+	
+	frame.list[instanceID] = bu
+	frame.button_i = frame.button_i + 1
+end
+
+RFInnerframe.raiddebuff.instance_list = T.createscrolllist(RFInnerframe.raiddebuff, {"TOPLEFT", 25, -55}, false, 400, 370)
+RFInnerframe.raiddebuff.instance_list:SetScript("OnShow", function(self)
+	if self.init then return end
+	
+	local parent = RFInnerframe.raiddebuff
+	local tier_num = EJ_GetNumTiers()
+	
+	self.y = -10
+	for i = tier_num, 1, -1 do
+		local tier_title = T.createtext(self.anchor, "OVERLAY", 16, "OUTLINE", "LEFT")
+		tier_title:SetPoint("TOPLEFT", self.anchor, "TOPLEFT", 20, self.y)
+		tier_title:SetText(EJ_GetTierInfo(i))
+		self.y = self.y - 20
+		
+		CreateDividingLine(self.anchor, self.y, 400)
+		self.y = self.y - 10
+		
+		EJ_SelectTier(i)
+		
+		self.button_i = 1	
+		local dungeon_i, raid_i = 1, 1
+		
+		-- 地下城
+		local instanceID, instanceName, _, _, _, _, bgImage = EJ_GetInstanceByIndex(dungeon_i, false)
+		while instanceID ~= nil do	
+			CreateInstanceButton(self, instanceID, instanceName, bgImage)	
+			
+			dungeon_i = dungeon_i + 1
+			instanceID, instanceName, _, _, _, _, bgImage = EJ_GetInstanceByIndex(dungeon_i, false)
+		end
+		
+		-- 团本
+		if i ~= tier_num then -- 当前赛季没有团本
+			instanceID, instanceName, _, _, _, _, bgImage = EJ_GetInstanceByIndex(raid_i, true)
+			while instanceID ~= nil do
+				CreateInstanceButton(self, instanceID, instanceName, bgImage)
+			
+				raid_i = raid_i + 1
+				instanceID, instanceName, _, _, _, _, bgImage = EJ_GetInstanceByIndex(raid_i, true)
+			end
+		end
+		
+		self.y = self.y - 10
+	end
+	
+	self.init = true
+end)
+
+-- 待测试
+hooksecurefunc("SetItemRef", function(link, text)
+  if link:find("garrmission:altz") then
+	local InstanceID, encounterID, spellID = string.match(text, "altz::([^%]]+)%::([^%]]+)%::([^%]]+)%|h|c")
+	InstanceID = tonumber(InstanceID)
+	encounterID = tonumber(encounterID)
+	spellID = tonumber(spellID)
+	
+	if string.find(text, "config") then	
+		RFOptions.hooked_tab:GetScript("OnMouseDown")()
+		RFInnerframe.raiddebuff.hooked_tab:GetScript("OnMouseDown")()
+		RFInnerframe.raiddebuff.instance_list.list[InstanceID]:GetScript("OnMouseDown")()
+		RFInnerframe.raiddebuff.debuff_list.spells["icon"..encounterID.."_"..spellID]:GetScript("OnMouseDown")()
+		
+		GUI:Show()
+		GUI.df:Show()
+		GUI.scale:Show()
+	elseif string.find(text, "delete") then
+		if aCoreCDB["UnitframeOptions"]["raid_debuffs"][InstanceID][encounterID][spellID] then
+			aCoreCDB["UnitframeOptions"]["raid_debuffs"][InstanceID][encounterID][spellID] = nil
+			DisplayRaidDebuffList()
+			local spell = GetSpellInfo(spellID)
+			aCoreCDB["UnitframeOptions"]["debuff_list_black"][spellID] = true
+			print(string.format(L["已删除并加入黑名单"], T.GetIconLink(spellID)))
+		end
+	end
+  end
+end)
+
+-- 全局减益
+RFInnerframe.globaldebuff = CreateOptionPage("RF Options Raid Debuff Fliter List", L["全局减益"], RFInnerframe, "VERTICAL", "UnitframeOptions")
+
+RFInnerframe.globaldebuff.whitelist = T.CreateAuraListOption(RFInnerframe.globaldebuff, {"TOPLEFT", 30, -55}, 200,  L["白名单"]..AURAS, "debuff_list", L["优先级"])
 CreateDividingLine(RFInnerframe.globaldebuff, -250)
+RFInnerframe.globaldebuff.blacklist = T.CreateAuraListOption(RFInnerframe.globaldebuff, {"TOPLEFT", RFInnerframe.globaldebuff.whitelist, "BOTTOMLEFT", 0, -10}, 200, L["黑名单"]..AURAS, "debuff_list_black")
 
-RFInnerframe.globaldebuff.blacklist = T.CreateAuraListOption(RFInnerframe.globaldebuff, {"TOPLEFT", RFInnerframe.globaldebuff.whitelist, "BOTTOMLEFT", 0, -10}, 200, L["黑名单"]..AURAS, "CooldownAura", "Debuffs_Black")
+-- 全局增益
+RFInnerframe.globalbuff = CreateOptionPage("RF Options Cooldown Aura", L["全局增益"], RFInnerframe, "VERTICAL", "UnitframeOptions")
 
-RFInnerframe.cooldownaura = CreateOptionPage("RF Options Cooldown Aura", L["全局增益"], RFInnerframe, "VERTICAL", "CooldownAura")
-
-RFInnerframe.cooldownaura.whitelist = T.CreateAuraListOption(RFInnerframe.cooldownaura, {"TOPLEFT", 30, -60}, 380, L["白名单"]..AURAS, "CooldownAura", "Buffs", L["优先级"])
+RFInnerframe.globalbuff.whitelist = T.CreateAuraListOption(RFInnerframe.globalbuff, {"TOPLEFT", 30, -60}, 380, L["白名单"]..AURAS, "buff_list", L["优先级"])
 --====================================================--
 --[[           -- Actionbar Options --              ]]--
 --====================================================--
@@ -1316,11 +1646,11 @@ CreateDividingLine(ActionbarInnerframe.cdflash, -120)
 
 T.createDR(ActionbarInnerframe.cdflash.cdflash_enable, ActionbarInnerframe.cdflash.cdflash_size, ActionbarInnerframe.cdflash.cdflash_alpha, ActionbarInnerframe.cdflash.ignorespell_list, ActionbarInnerframe.cdflash.ignoreitem_list)
 
-ActionbarInnerframe.cdflash.ignorespell_list = T.CreateAuraListOption(ActionbarInnerframe.cdflash, {"TOPLEFT", 30, -125}, 185, L["黑名单"]..SPELLS, "ActionbarOptions", "cdflash_ignorespells")
+ActionbarInnerframe.cdflash.ignorespell_list = T.CreateAuraListOption(ActionbarInnerframe.cdflash, {"TOPLEFT", 30, -125}, 185, L["黑名单"]..SPELLS, "cdflash_ignorespells")
 
 CreateDividingLine(ActionbarInnerframe.cdflash, -290)
 
-ActionbarInnerframe.cdflash.ignoreitem_list = T.CreateItemListOption(ActionbarInnerframe.cdflash, {"TOPLEFT", 30, -300}, 185, L["黑名单"]..ITEMS, "ActionbarOptions", "cdflash_ignoreitems")
+ActionbarInnerframe.cdflash.ignoreitem_list = T.CreateItemListOption(ActionbarInnerframe.cdflash, {"TOPLEFT", 30, -300}, 185, L["黑名单"]..ITEMS, "cdflash_ignoreitems")
 
 --====================================================--
 --[[           -- NamePlates Options --             ]]--
@@ -1411,7 +1741,7 @@ T.createDR(PlateInnerframe.playerresource.classresource_show, PlateInnerframe.pl
 -- 光环过滤列表
 PlateInnerframe.auralist = CreateOptionPage("Plate Options Aura", L["光环"], PlateInnerframe, "VERTICAL", "PlateOptions")
 
-PlateInnerframe.auralist.my_filter = T.CreateAuraListOption(PlateInnerframe.auralist, {"TOPLEFT", 30, -55}, 200, L["我施放的光环"], "PlateOptions", "myplateauralist")
+PlateInnerframe.auralist.my_filter = T.CreateAuraListOption(PlateInnerframe.auralist, {"TOPLEFT", 30, -55}, 200, L["我施放的光环"], "myplateauralist")
 
 T.createradiobuttongroup(PlateInnerframe.auralist.my_filter, -5, 40, L["过滤方式"], "myfiltertype", {
 	"none", L["全部隐藏"],
@@ -1428,7 +1758,7 @@ PlateInnerframe.auralist.my_filter.option_list:SetPoint("TOPLEFT", 0, -65)
 
 CreateDividingLine(PlateInnerframe.auralist, -260)
 
-PlateInnerframe.auralist.other_filter = T.CreateAuraListOption(PlateInnerframe.auralist, {"TOPLEFT", 30, -265}, 200, L["其他人施放的光环"], "PlateOptions", "otherplateauralist")
+PlateInnerframe.auralist.other_filter = T.CreateAuraListOption(PlateInnerframe.auralist, {"TOPLEFT", 30, -265}, 200, L["其他人施放的光环"], "otherplateauralist")
 
 T.createradiobuttongroup(PlateInnerframe.auralist.other_filter, -5, 40, L["过滤方式"], "otherfiltertype", {
 	{"none", L["全部隐藏"]},
@@ -1445,12 +1775,12 @@ PlateInnerframe.auralist.other_filter.option_list:SetPoint("TOPLEFT", 0, -65)
 -- 自定义
 PlateInnerframe.custom = CreateOptionPage("Plate Options Custom", CUSTOM, PlateInnerframe, "VERTICAL", "PlateOptions")
 
-PlateInnerframe.custom.color = T.CreatePlateColorOption(PlateInnerframe.custom,  {"TOPLEFT", 30, -55}, 200, L["自定义颜色"], "PlateOptions", "customcoloredplates")
+PlateInnerframe.custom.color = T.CreatePlateColorListOption(PlateInnerframe.custom,  {"TOPLEFT", 30, -55}, 200, L["自定义颜色"], "customcoloredplates")
 PlateInnerframe.custom.color.reset.apply = function()
 	aCoreCDB["UnitframeOptions"]["customcoloredplates"] = nil
 end
 
-PlateInnerframe.custom.power = T.CreatePlatePowerOption(PlateInnerframe.custom,  {"TOPLEFT", PlateInnerframe.custom.color, "BOTTOMLEFT", 0, -10}, 200, L["自定义能量"], "PlateOptions", "custompowerplates")
+PlateInnerframe.custom.power = T.CreatePlatePowerListOption(PlateInnerframe.custom,  {"TOPLEFT", PlateInnerframe.custom.color, "BOTTOMLEFT", 0, -10}, 200, L["自定义能量"], "custompowerplates")
 PlateInnerframe.custom.power.reset.apply = function()
 	aCoreCDB["UnitframeOptions"]["custompowerplates"] = nil
 end
