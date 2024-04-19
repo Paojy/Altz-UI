@@ -273,7 +273,7 @@ T.createStatusbar = function(parent, height, width, r, g, b, alpha, name)
 	end
 	
 	bar.bg = bar:CreateTexture(nil, "BACKGROUND")
-	if aCoreCDB["UnitframeOptions"]["style"] == 1 then
+	if aCoreCDB["SkinOptions"]["style"] == 1 then
 		bar:SetStatusBarTexture(G.media.blank)
 	else
 		bar:SetStatusBarTexture(G.media.ufbar)
@@ -284,7 +284,7 @@ T.createStatusbar = function(parent, height, width, r, g, b, alpha, name)
 	bar:GetStatusBarTexture():SetHorizTile(false)
 	bar:GetStatusBarTexture():SetVertTile(false)
 	
-	if aCoreCDB["UnitframeOptions"]["style"] == 1 then		
+	if aCoreCDB["SkinOptions"]["style"] == 1 then		
 		bar.bg:SetTexture(G.media.blank)
 	else	
 		bar.bg:SetTexture(G.media.ufbar)
@@ -1187,97 +1187,76 @@ T.createcolorpickerbu = function(parent, x, y, name, table, value)
 	parent[value] = cpb
 end
 
--- 多选一按钮 顺序重写
-T.createradiobuttongroup = function(parent, x, y, name, table, value, group, newline, order)
-	local frame = CreateFrame("Frame", G.uiname..value.."RadioButtonGroup", parent)
+-- 多选一按钮
+T.createradiobuttongroup = function(parent, x, y, name, value, group)	
+	local frame = CreateFrame("Frame", nil, parent)
 	frame:SetPoint("TOPLEFT", x, -y)
 	frame:SetSize(150, 30)
+	frame.buttons = {}
 	
-	local key = 1
-	for k, v in T.pairsByKeys(group) do
-		frame[k] = CreateFrame("CheckButton", G.uiname..value..k.."RadioButtonGroup", frame, "UIRadioButtonTemplate")
-		frame[k].order = order and order[k] or key
-		F.ReskinRadio(frame[k])
+	frame.text = T.createtext(frame, "OVERLAY", 12, "OUTLINE", "LEFT")
+	frame.text:SetPoint("LEFT", 0, 0)
+	frame.text:SetText(name)
+	
+	for i, info in T.pairsByKeys(group) do
+		local bu = CreateFrame("CheckButton", nil, frame, "UIRadioButtonTemplate")
 		
-		frame[k].text:SetText(v)
-		T.resize_font(frame[k].text)
+		if i == 1 then			
+			bu:SetPoint("LEFT", frame.text, "RIGHT", 10, 1)	
+		else
+			bu:SetPoint("LEFT", frame.buttons[i-1].text, "RIGHT", 5, 0)
+		end
 		
-		frame[k]:SetScript("OnShow", function(self)
-			self:SetChecked(aCoreCDB[table][value] == k)
+		F.ReskinRadio(bu)
+		T.resize_font(bu.text)
+		
+		bu.text:SetText(info[2])
+		
+		bu:SetScript("OnShow", function(self)
+			self:SetChecked(aCoreCDB[parent.db_key][value] == info[1])
 		end)
 		
-		frame[k]:SetScript("OnClick", function(self)
+		bu:SetScript("OnClick", function(self)
 			if self:GetChecked() then
-				aCoreCDB[table][value] = k
+				aCoreCDB[parent.db_key][value] = info[1]
 				if frame.apply then
 					frame.apply()
+				end
+				for i, b in pairs(frame.buttons) do
+					if b ~= self then
+						b:SetChecked(false)
+					end
 				end
 			else
 				self:SetChecked(true)
 			end
 		end)
 		
-		frame[k]:SetScript("OnDisable", function(self)
-			local tex = self:GetCheckedTexture()
-			tex:SetVertexColor(.7, .7, .7, .5)
-			frame[k].text:SetTextColor(.7, .7, .7, .5)
+		bu:SetScript("OnDisable", function(self)
+			self:GetCheckedTexture():SetVertexColor(.7, .7, .7, .5)
+			self.text:SetTextColor(.7, .7, .7, .5)
 		end)
 		
-		frame[k]:SetScript("OnEnable", function(self)
-			local tex = self:GetCheckedTexture()
-			tex:SetVertexColor(G.Ccolor.r, G.Ccolor.g, G.Ccolor.b)
-			frame[k].text:SetTextColor(1, .82, 0, 1)
+		bu:SetScript("OnEnable", function(self)
+			self:GetCheckedTexture():SetVertexColor(G.Ccolor.r, G.Ccolor.g, G.Ccolor.b)
+			self.text:SetTextColor(1, .82, 0, 1)
 		end)
 		
-		key = key + 1
+		frame.buttons[i] = bu
 	end
-	
-	for k, v in T.pairsByKeys(group) do
-		frame[k]:HookScript("OnClick", function(self)
-			if aCoreCDB[table][value] == k then
-				for key, value in T.pairsByKeys(group) do
-					if key ~= k then
-						frame[key]:SetChecked(false)
-					end
-				end
-			end
-		end)
-	end
-	
-	frame.name = frame:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
-	frame.name:SetText(name)
-	T.resize_font(frame.name)
-	
-	local buttons = {frame:GetChildren()}
-	
-	if order then
-		sort(buttons, function(a,b) return a.order < b.order end)
-	end
-	
-	for i = 1, #buttons do
-		if i == 1 then
-			frame.name:SetPoint("LEFT", 5, 0)
-			buttons[i]:SetPoint("LEFT", frame.name, "RIGHT", 10, 1)
-		elseif newline and i == newline then
-			buttons[i]:SetPoint("TOPLEFT", frame.name, "BOTTOMRIGHT", 10, -10)
-		else
-			buttons[i]:SetPoint("LEFT", buttons[i-1].text, "RIGHT", 5, 0)
-		end
-
-	end
-	
+		
 	frame.Enable = function()
-		for i = 1, #buttons do
-			buttons[i]:Enable()
+		frame.text:SetTextColor(1, 1, 1, 1)
+		for i, bu in pairs(frame.buttons) do
+			bu:Enable()
 		end
-		frame.name:SetTextColor(1, 1, 1, 1)
 	end
 	
 	frame.Disable = function()
-		for i = 1, #buttons do
-			buttons[i]:Disable()
-		end
-		frame.name:SetTextColor(0.7, 0.7, 0.7, 0.5)
+		frame.text:SetTextColor(0.7, 0.7, 0.7, 0.5)
+		for i, bu in pairs(frame.buttons) do
+			bu:Disable()
+		end		
 	end
 	
 	parent[value] = frame
@@ -1514,6 +1493,7 @@ local createscrolllist = function(parent, points, bg, width, height)
 	
 	return sf
 end
+T.createscrolllist = createscrolllist
 
 local createscrollbutton = function(type, option_list, table, value, key)
 	local bu = CreateFrame("Frame", nil, option_list.anchor, "BackdropTemplate")
@@ -1605,6 +1585,7 @@ local function CreateListOption(parent, points, height, text, OptionCategroy, Op
 	frame:SetSize(400, height)
 	frame:SetPoint(unpack(points))
 	frame.options = {}
+	frame.db_key = OptionCategroy
 	
 	frame.title = T.createtext(frame, "OVERLAY", 14, "OUTLINE", "LEFT")
 	frame.title:SetPoint("TOPLEFT", frame, "TOPLEFT", 0, 0)
