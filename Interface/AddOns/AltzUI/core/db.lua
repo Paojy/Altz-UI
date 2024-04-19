@@ -259,111 +259,111 @@ for k, _ in pairs(classClickdb) do
 end
 
 -- 团队框架光环
-local AuraList = {
-	["Buffs"] = {
+local cooldown_auras = {
 	--牧师
-		[33206]   = 15, -- 痛苦压制
-        [47788]   = 15, -- 守护之魂
-		[47585]   = 15, -- 消散		
+    [33206]   = 15, -- 痛苦压制
+    [47788]   = 15, -- 守护之魂
+    [47585]   = 15, -- 消散    
 	--小德        
-        [102342]  = 15, -- 铁木树皮
-		[22812]   = 15, -- 树皮术
-		[61336]   = 15, -- 生存本能
-		[22842]   = 15, -- 狂暴回复
+    [102342]  = 15, -- 铁木树皮
+    [22812]   = 15, -- 树皮术
+    [61336]   = 15, -- 生存本能
+    [22842]   = 15, -- 狂暴回复
 	--骑士        
-		[1022]    = 15, -- 保护之手
-		[31850]   = 15, -- 炽热防御者
-        [498]     = 15, -- 圣佑术
-		[642]     = 15, -- 圣盾术
-		[86659]   = 15, -- 远古列王守卫
-		[132403]  = 13, -- 个人添加：正义盾击
-		[204018]  = 15, -- 个人添加：破咒祝福
-		[6940]    = 15, -- 个人添加：牺牲祝福
+    [1022]    = 15, -- 保护之手
+    [31850]   = 15, -- 炽热防御者
+    [498]     = 15, -- 圣佑术
+    [642]     = 15, -- 圣盾术
+    [86659]   = 15, -- 远古列王守卫
+    [132403]  = 13, -- 个人添加：正义盾击
+    [204018]  = 15, -- 个人添加：破咒祝福
+    [6940]    = 15, -- 个人添加：牺牲祝福
 	--DK          
-		[48707]   = 15, -- 反魔法护罩
-		[48792]   = 15, -- 冰封之韧
-		[49028]   = 15, -- 吸血鬼之血
-		[55233]   = 15, -- 符文刃舞
-		[194844]  = 15, -- 个人添加：白骨风暴
+    [48707]   = 15, -- 反魔法护罩
+    [48792]   = 15, -- 冰封之韧
+    [49028]   = 15, -- 吸血鬼之血
+    [55233]   = 15, -- 符文刃舞
+    [194844]  = 15, -- 个人添加：白骨风暴
 	--战士        
-		[12975]   = 15, -- 破釜沉舟
-		[871]     = 15, -- 盾墙
-		[184364]  = 15, -- 狂怒回复
-		[118038]  = 15, -- 剑在人在
+    [12975]   = 15, -- 破釜沉舟
+    [871]     = 15, -- 盾墙
+    [184364]  = 15, -- 狂怒回复
+    [118038]  = 15, -- 剑在人在
 	--DH            
-		[196555]  = 15, -- 虚空行走 浩劫
-		[187827]  = 15, -- 恶魔变形
-		[212084]  = 15, -- 邪能毁灭
-		[204021]  = 15, -- 烈火烙印
-		[203720]  = 15, -- 恶魔尖刺
+    [196555]  = 15, -- 虚空行走 浩劫
+    [187827]  = 15, -- 恶魔变形
+    [212084]  = 15, -- 邪能毁灭
+    [204021]  = 15, -- 烈火烙印
+    [203720]  = 15, -- 恶魔尖刺
 	--猎人
-		[186265]  = 15, -- 灵龟守护
+    [186265]  = 15, -- 灵龟守护
 	--盗贼
-		[31224]   = 15, -- 暗影斗篷
-		[1966]    = 15, -- 佯攻
+    [31224]   = 15, -- 暗影斗篷
+    [1966]    = 15, -- 佯攻
 	--术士       
-		[104773]  = 15, -- 不灭决心
+    [104773]  = 15, -- 不灭决心
 	--法师       
-		[45438]   = 15, -- 寒冰屏障
+    [45438]   = 15, -- 寒冰屏障
 	--武僧       
-		[116849]  = 15, -- 作茧缚命
-		[115203]  = 15, -- 壮胆酒
-		[122470]  = 15, -- 业报之触
-		[122783]  = 15, -- 散魔功
+    [116849]  = 15, -- 作茧缚命
+    [115203]  = 15, -- 壮胆酒
+    [122470]  = 15, -- 业报之触
+    [122783]  = 15, -- 散魔功
 	--萨满       
-		[108271]  = 15, -- 星界转移
+    [108271]  = 15, -- 星界转移
 	--通用       
-		[324867]  = 6, -- 血肉铸造
-	},
-	["Debuffs"] = {
-		[240559]  = 6,  -- 重伤
-		[209858]  = 6,  -- 死疽
-					
-		--9.0       
-		[240443]  = 8, -- 爆裂词缀
-		[240447]  = 8, -- 践踏，地震词缀
-		[342494]  = 8, -- 狂妄吹嘘，昏迷
-		[342466]  = 8, -- 狂妄吹嘘，点名
-		[225080]  = 8, -- 萨满重生，可诈尸
-		[160029]  = 6, -- 正在复活
-		[292910]  = 8, -- 镣铐，爬塔
-		[1604]    = 6, -- 眩晕
-	},
-	["Debuffs_Black"] = {
-		[57723]   = 6, -- 筋疲力尽
-		[80354]   = 6, -- 时空错位
-		[264689]  = 6, -- 疲倦
-		[340880]  = 6, -- 傲慢
-		[206151]  = 6, -- 挑战者的负担
-		[15007]   = 6, -- 复活虚弱
-		[113942]  = 6, -- 无法再用恶魔传送门
-		[209261]  = 6, -- 未被污染的邪能，DH假死
-		[87024]   = 6, -- 灸灼，法师假死
-		[41425]   = 6, -- 低温，法师不能再用冰箱
-		[326809]  = 6, -- 餍足，DK假死
-		[45181]   = 6, -- 装死，盗贼假死
-		[320227]  = 6, -- 枯竭外壳，法夜诈尸
-		[340556]  = 6, -- 精确本能，导灵器
-		[348254]  = 6, -- 典狱长之眼
-		[338606]  = 6, -- 典狱长之链
-		[26013]   = 6, -- 逃亡者
-		[124275]  = 6, -- 轻度醉拳
-		[124274]  = 6, -- 中度醉拳
-		[340870]  = 6, -- 恐怖光环，圣物匠全屏aoe
-		[325184]  = 6, -- 自由心能，女勋爵全屏debuff
-		[334909]  = 6, -- 压制气场，议会全屏debuff
-		[346939]  = 6, -- 扭曲痛苦，议会全屏debuff
-		[332443]  = 6, -- 泥拳，震动的地基，全屏aoe
-		[343063]  = 6, -- 干将，大地之刺减速
-	},
+    [324867]  = 6, -- 血肉铸造
+}
+
+local global_debuffs = {
+	[240559]  = 6,  -- 重伤
+	[209858]  = 6,  -- 死疽
+	
+	--9.0       
+	[240443]  = 8, -- 爆裂词缀
+	[240447]  = 8, -- 践踏，地震词缀
+	[342494]  = 8, -- 狂妄吹嘘，昏迷
+	[342466]  = 8, -- 狂妄吹嘘，点名
+	[225080]  = 8, -- 萨满重生，可诈尸
+	[160029]  = 6, -- 正在复活
+	[292910]  = 8, -- 镣铐，爬塔
+	[1604]    = 6, -- 眩晕
 }
 
 if G.myClass == "PALADIN"  then
-	AuraList["Debuffs"][25771] = 6  -- 自律
+	global_debuffs[25771] = 6  -- 自律
 end
 
+local ignored_debuffs = {
+	[57723]   = 6, -- 筋疲力尽
+	[80354]   = 6, -- 时空错位
+	[264689]  = 6, -- 疲倦
+	[340880]  = 6, -- 傲慢
+	[206151]  = 6, -- 挑战者的负担
+	[15007]   = 6, -- 复活虚弱
+	[113942]  = 6, -- 无法再用恶魔传送门
+	[209261]  = 6, -- 未被污染的邪能，DH假死
+	[87024]   = 6, -- 灸灼，法师假死
+	[41425]   = 6, -- 低温，法师不能再用冰箱
+	[326809]  = 6, -- 餍足，DK假死
+	[45181]   = 6, -- 装死，盗贼假死
+	[320227]  = 6, -- 枯竭外壳，法夜诈尸
+	[340556]  = 6, -- 精确本能，导灵器
+	[348254]  = 6, -- 典狱长之眼
+	[338606]  = 6, -- 典狱长之链
+	[26013]   = 6, -- 逃亡者
+	[124275]  = 6, -- 轻度醉拳
+	[124274]  = 6, -- 中度醉拳
+	[340870]  = 6, -- 恐怖光环，圣物匠全屏aoe
+	[325184]  = 6, -- 自由心能，女勋爵全屏debuff
+	[334909]  = 6, -- 压制气场，议会全屏debuff
+	[346939]  = 6, -- 扭曲痛苦，议会全屏debuff
+	[332443]  = 6, -- 泥拳，震动的地基，全屏aoe
+	[343063]  = 6, -- 干将，大地之刺减速
+}
+
 -- 姓名板光环
-G.WhiteList = {
+local plate_auras = {
 	--BUFF
 	[209859] = true, -- 激励
 	-- DEBUFF
@@ -398,7 +398,7 @@ G.WhiteList = {
 	[81261] = true, -- 日光术
 }
 
-G.BlackList = {
+local plate_ignored_auras = {
 	[15407] = true, -- 精神鞭笞
 }
 
@@ -627,6 +627,13 @@ local Character_default_Settings = {
 		raid_buff_icon_fontsize = 8,
 		debuff_auto_add = true,
 		debuff_auto_add_level = 6,
+		-- 团队减益
+		raid_debuffs = {},
+		-- 全局减益
+		debuff_list = global_debuffs,
+		debuff_list_black = ignored_debuffs,
+		-- 全局增益
+		buff_list = cooldown_auras,
 	},
 	ActionbarOptions = {
 		-- 样式
@@ -678,9 +685,9 @@ local Character_default_Settings = {
 		classresource_pos = "player", --"player", "target"				
 		-- 光环过滤列表
 		myfiltertype = "blacklist", -- "blacklist", "whitelist", "none"
-		myplateauralist = G.BlackList,
+		myplateauralist = plate_ignored_auras,
 		otherfiltertype = "none", -- "whitelist", "none"
-		otherplateauralist = G.WhiteList,
+		otherplateauralist = plate_auras,
 		-- 自定义
 		customcoloredplates = {},
 		custompowerplates = {},
@@ -716,9 +723,6 @@ local Character_default_Settings = {
 	},
 	
 	FramePoints = {},
-	RaidDebuff = {},
-	CooldownAura = AuraList,
-	AddonProfiles = {},
 }
 
 function T.LoadVariables()
@@ -781,23 +785,7 @@ T.ExportSettings = function(editbox)
 						str = str.."^"..OptionCategroy.."~"..setting.."~"..valuetext
 					end
 				else
-					if OptionCategroy == "RaidDebuff" then -- 完全复制 5
-						for boss, auratable in pairs(value) do
-							for spellID, level in pairs (aCoreCDB["RaidDebuff"][setting][boss]) do
-								str = str.."^"..OptionCategroy.."~"..setting.."~"..boss.."~"..spellID.."~"..level
-							end
-						end
-					elseif OptionCategroy == "CooldownAura" then -- 完全复制 5
-						if setting == "Debuffs_Black" then
-							for spellID, bool in pairs (aCoreCDB["CooldownAura"][setting]) do
-								str = str.."^"..OptionCategroy.."~"..setting.."~"..spellID
-							end
-						else
-							for spellID, level in pairs (aCoreCDB["CooldownAura"][setting]) do
-								str = str.."^"..OptionCategroy.."~"..setting.."~"..spellID.."~"..level
-							end
-						end
-					elseif OptionCategroy == "ItemOptions" then
+					if OptionCategroy == "ItemOptions" then
 						if setting == "autobuylist" then -- 完全复制 4
 							for id, count in pairs(aCoreCDB["ItemOptions"]["autobuylist"]) do -- 默认是空的
 								str = str.."^"..OptionCategroy.."~"..setting.."~"..id.."~"..count
@@ -826,6 +814,22 @@ T.ExportSettings = function(editbox)
 									str = str.."^"..OptionCategroy.."~"..setting.."~"..k.."~"..j.."~"..action.."~"..macro
 								end
 							end
+						end
+					elseif setting == "raid_debuffs" then -- 完全复制 6
+						for instanceID, encouter_table in pairs(value) do
+							for boss, auratable in pairs(encouter_table) do
+								for spellID, level in pairs(auratable) do
+									str = str.."^"..OptionCategroy.."~"..setting.."~"..instanceID.."~"..boss.."~"..spellID.."~"..level
+								end
+							end
+						end
+					elseif setting == "debuff_list_black" then -- 完全复制 4
+						for spellID, bool in pairs(value) do
+							str = str.."^"..OptionCategroy.."~"..setting.."~"..spellID.."~true"
+						end
+					elseif setting == "debuff_list" or setting == "buff_list" then -- 完全复制 4
+						for spellID, level in pairs(value) do
+							str = str.."^"..OptionCategroy.."~"..setting.."~"..spellID.."~"..level
 						end
 					elseif setting == "AuraFilterwhitelist" then -- 完全复制 4
 						for id, _ in pairs(aCoreCDB["UnitframeOptions"]["AuraFilterwhitelist"]) do -- 默认是空的
@@ -894,6 +898,7 @@ T.ImportSettings = function(str)
 		if not (sameversion and sameclient and sameclass) then
 			import_str = import_str..L["不完整导入"]
 		end
+		
 		StaticPopupDialogs[G.uiname.."Import Confirm"].text = format(L["导入确认"]..import_str, "Altz UI")
 		StaticPopupDialogs[G.uiname.."Import Confirm"].OnAccept = function()
 			aCoreCDB = {}
@@ -901,18 +906,14 @@ T.ImportSettings = function(str)
 			T.LoadVariables()
 			
 			-- 完全复制的设置
-			if sameclient then
-				aCoreCDB.RaidDebuff = {}
-				aCoreCDB.CooldownAura = {}
-				aCoreCDB.CooldownAura.Buffs = {}
-				aCoreCDB.CooldownAura.Debuffs = {}
-				aCoreCDB.CooldownAura.Debuffs_Black = {}
-			end
-			
 			if sameclass then
 				aCoreCDB.PlateOptions.myplateauralist = {}
 				aCoreCDB.ActionbarOptions.cdflash_ignorespells = {}
-			end
+			end			
+			
+			aCoreCDB.UnitframeOptions.debuff_list = {}
+			aCoreCDB.UnitframeOptions.debuff_list_black = {}
+			aCoreCDB.UnitframeOptions.buff_list = {}
 			
 			aCoreCDB.ActionbarOptions.cdflash_ignoreitems = {}
 			aCoreCDB.PlateOptions.otherplateauralist = {}
@@ -934,24 +935,10 @@ T.ImportSettings = function(str)
 								aCoreCDB[OptionCategroy][setting] = arg1
 							end
 						end
-					else -- 是个表格 sameclient sameclass
-						if OptionCategroy == "RaidDebuff" then -- 完全复制 6 OptionCategroy.."~"..setting.."~"..boss.."~"..spellID.."~"..level
-							if not aCoreCDB[OptionCategroy][tonumber(setting)] then
-								aCoreCDB[OptionCategroy][tonumber(setting)] = {}
-							end
-							if not aCoreCDB[OptionCategroy][tonumber(setting)][tonumber(arg1)] then
-								aCoreCDB[OptionCategroy][tonumber(setting)][tonumber(arg1)] = {}
-							end
-							aCoreCDB[OptionCategroy][tonumber(setting)][tonumber(arg1)][tonumber(arg2)] = tonumber(arg3)
-						elseif OptionCategroy == "CooldownAura" then -- 完全复制 5 OptionCategroy.."~"..setting.."~"..spellID.."~"..level
-							if setting ~= "Debuffs_Black" then
-								aCoreCDB[OptionCategroy][setting][arg1] = tonumber(arg2)
-							else 
-								aCoreCDB[OptionCategroy][setting][arg1] = true
-							end
-						elseif OptionCategroy == "ItemOptions" then
+					else -- 是个表格
+						if OptionCategroy == "ItemOptions" then
 							if setting == "autobuylist" then -- 完全复制 4 OptionCategroy.."~"..setting.."~"..id.."~"..count
-								aCoreCDB[OptionCategroy][setting][arg1] = arg2
+								aCoreCDB[OptionCategroy][setting][tonumber(arg1)] = tonumber(arg2)
 							end
 						elseif OptionCategroy == "PlateOptions" then
 							if setting == "customcoloredplates" then -- 完全复制 6 OptionCategroy.."~"..setting.."~"..name.."~"..t.r.."~"..t.g.."~"..t.b
@@ -983,15 +970,26 @@ T.ImportSettings = function(str)
 							else
 								aCoreCDB[OptionCategroy][setting][arg1][arg2] = arg3
 							end
+						
 						elseif setting == "ClickCast" then -- 6 OptionCategroy.."~"..setting.."~"..k.."~"..j.."~"..action.."~"..macro
 							if sameclient and sameclass then
 								aCoreCDB[OptionCategroy][setting][tostring(arg1)][arg2]["action"] = arg3
 								aCoreCDB[OptionCategroy][setting][tostring(arg1)][arg2]["macro"] = arg4
 							end
-						elseif setting == "AuraFilterwhitelist" then -- 完全复制 4 OptionCategroy.."~"..setting.."~"..id.."~true"
-							if sameclient then
-								aCoreCDB[OptionCategroy][setting][arg1] = true
+						elseif setting == "raid_debuffs" then -- 完全复制 6 OptionCategroy.."~"..setting.."~"..instanceID.."~"..boss.."~"..spellID.."~"..level
+							if not aCoreCDB[OptionCategroy][setting][tonumber(arg1)] then
+								aCoreCDB[OptionCategroy][setting][tonumber(arg1)] = {}
 							end
+							if not aCoreCDB[OptionCategroy][setting][tonumber(arg1)][tonumber(arg2)] then
+								aCoreCDB[OptionCategroy][setting][tonumber(arg1)][tonumber(arg2)] = {}
+							end
+							aCoreCDB[OptionCategroy][setting][tonumber(arg1)][tonumber(arg2)][tonumber(arg3)] = tonumber(arg4)		
+						elseif setting == "debuff_list_black" then -- 完全复制 4 OptionCategroy.."~"..setting.."~"..spellID.."~"..true							
+							aCoreCDB[OptionCategroy][setting][tonumber(arg1)] = true
+						elseif setting == "debuff_list" or setting == "buff_list" then -- 完全复制 4 OptionCategroy.."~"..setting.."~"..spellID.."~"..level
+							aCoreCDB[OptionCategroy][setting][tonumber(arg1)] = tonumber(arg2)
+						elseif setting == "AuraFilterwhitelist" then -- 完全复制 4 OptionCategroy.."~"..setting.."~"..id.."~true"
+							aCoreCDB[OptionCategroy][setting][tonumber(arg1)] = true
 						elseif setting == "cdflash_ignorespells" and sameclass then -- 完全复制 4 OptionCategroy.."~"..setting.."~"..spellID.."~true"	
 							aCoreCDB[OptionCategroy][setting][tonumber(arg1)] = true
 						elseif setting == "cdflash_ignoreitems" then -- 完全复制 4 OptionCategroy.."~"..setting.."~"..spellID.."~true"	
