@@ -5,7 +5,14 @@ local F = unpack(AuroraClassic)
 -- 			通用		  --
 ----------------------------
 
-local function Click(b)
-	local func = b:GetScript("OnMouseDown") or b:GetScript("OnClick")
-	func(b)
+local arrowDegree = {
+	["up"] = 0,
+	["down"] = 180,
+	["left"] = 90,
+	["right"] = -90,
+}
+
+T.SetupArrow = function(tex, direction)
+	tex:SetTexture([[Interface\AddOns\AltzUI\media\arrow.tga]])
+	tex:SetRotation(rad(arrowDegree[direction]))
 end
