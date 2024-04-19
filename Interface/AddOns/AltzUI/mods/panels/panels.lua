@@ -94,7 +94,7 @@ BGFrame.Apply = function()
 	
 	-- 材质颜色
 	for k, panel in pairs(BGFrame.longpanels) do
-		if aCoreCDB["UnitframeOptions"]["style"] == 1 then
+		if aCoreCDB["SkinOptions"]["style"] == 1 then
 			panel.sd:SetBackdropColor(0, 0, 0, 0)
 		else
 			panel.sd:SetBackdropColor(0, 0, 0, 1)
@@ -1080,6 +1080,7 @@ BOTTOMPANEL.petmodelbutton = CreateFrame("PlayerModel", G.uiname.."AFKpetmodel",
 BOTTOMPANEL.petmodelbutton:SetSize(120,120)
 BOTTOMPANEL.petmodelbutton:SetPosition(-0.5, 0, 0)
 BOTTOMPANEL.petmodelbutton:SetPoint("CENTER", BOTTOMPANEL, "TOPRIGHT", -190, 0)
+BOTTOMPANEL.petmodelbutton:SetDisplayInfo(42522)
 
 BOTTOMPANEL.petmodelbutton.text = T.createtext(BOTTOMPANEL.petmodelbutton, "OVERLAY", 13, "OUTLINE", "RIGHT")
 BOTTOMPANEL.petmodelbutton.text:SetPoint("CENTER")
@@ -1134,7 +1135,7 @@ StaticPopupDialogs[G.uiname.."hideAFKtips"] = {
 }
 
 local function DontShowTips()
-	aCoreCDB["OtherOptions"]["showAFKtips"] = false
+	aCoreCDB["SkinOptions"]["showAFKtips"] = false
 	BOTTOMPANEL.tipframe:Hide()
 	StaticPopup_Show(G.uiname.."hideAFKtips")
 	T.fadein()
@@ -1176,7 +1177,7 @@ T.fadeout = function()
 	UIFrameFadeIn(BOTTOMPANEL, 3, BOTTOMPANEL:GetAlpha(), 1)
 	
 	SetRandomTip()
-	if aCoreCDB["OtherOptions"]["showAFKtips"] then
+	if aCoreCDB["SkinOptions"]["showAFKtips"] then
 		BOTTOMPANEL.tipframe:Show()
 	end
 	BOTTOMPANEL.t = 0
@@ -1228,37 +1229,13 @@ BOTTOMPANEL:SetScript("OnMouseDown", function(self)
 end)
 
 BOTTOMPANEL:SetScript("OnEvent",function(self, event) 
-	if event == "PLAYER_ENTERING_WORLD" and aCoreCDB["SkinOptions"]["afklogin"] and not InCombatLockdown() then
-		if aCoreDB.meet then
-			T.fadeout()
-		end
-		
-		local PetNumber = max(C_PetJournal.GetNumPets(false), 5)
-		local randomIndex = random(1 ,PetNumber)
-		local randomID = select(11, C_PetJournal.GetPetInfoByIndex(randomIndex))
-		if randomID then
-			self.petmodelbutton:SetCreature(randomID)
-		else
-			self.petmodelbutton:SetCreature(53623) -- 塞纳里奥角鹰兽宝宝
-		end
-		
-		hooksecurefunc("ToggleDropDownMenu", function(level, value, dropDownFrame, anchorName)
-			if level == 2 and value == SELECT_LOOT_SPECIALIZATION then
-				local listFrame = _G["DropDownList"..level]
-				local point, anchor, relPoint, _, y = listFrame:GetPoint()
-				listFrame:SetPoint(point, anchor, relPoint, 16, y)
-			end
-		end)
-		
-		self:UnregisterEvent("PLAYER_ENTERING_WORLD")
-	elseif event == "PLAYER_FLAGS_CHANGED" and aCoreCDB["SkinOptions"]["afkscreen"] then
+	if event == "PLAYER_FLAGS_CHANGED" and aCoreCDB["SkinOptions"]["afkscreen"] then
 		if UnitIsAFK("player") and not InCombatLockdown() then
 			T.fadeout()
 		end
 	end
 end)
 
-BOTTOMPANEL:RegisterEvent("PLAYER_ENTERING_WORLD")
 BOTTOMPANEL:RegisterEvent("PLAYER_FLAGS_CHANGED")
 
 --====================================================--
