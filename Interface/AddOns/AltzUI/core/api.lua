@@ -718,6 +718,7 @@ T.createDR = function(parent, ...)
 	end
 end
 
+-- 勾选按钮
 T.createcheckbutton = function(parent, x, y, name, table, value, tip)
 	local bu = CreateFrame("CheckButton", G.uiname..value.."Button", parent, "InterfaceOptionsCheckButtonTemplate")
 	bu:SetPoint("TOPLEFT", x, -y)
@@ -795,6 +796,7 @@ T.CVartogglebox = function(parent, x, y, value, name, arg1, arg2, tip)
 	parent[value] = bu
 end
 
+-- 输入框
 local inputbox = {}
 
 if not AltzUIEditBoxInsertLink then
@@ -828,6 +830,7 @@ T.createinputbox = function(parent, points, text, width, link)
 	box:SetSize(width or 100, 20)
 	if points then box:SetPoint(unpack(points)) end
 	F.CreateBD(box)
+	box:SetBackdropBorderColor(1, 1, 1)
 	
 	box:SetFont(GameFontHighlight:GetFont(), 12, "OUTLINE")
 	box:SetAutoFocus(false)
@@ -1030,6 +1033,7 @@ T.createmultilinebox = function(parent, width, height, x, y, name, table, value,
 	parent[value] = scrollBG
 end
 
+-- 滑动条
 local function TestSlider_OnValueChanged(self, value)
    if not self._onsetting then   -- is single threaded 
      self._onsetting = true
@@ -1103,6 +1107,7 @@ T.createslider = function(parent, x, y, name, table, value, divisor, min, max, s
 	parent[value] = slider
 end
 
+-- 取色按钮
 T.ColorPicker_OnClick = function(colors, has_opacity, points, apply)
 	local r, g, b, a = colors.r, colors.g, colors.b, colors.a
 	
@@ -1154,7 +1159,10 @@ T.createcolorpickerbu = function(parent, x, y, name, table, value)
 	cpb.name:SetText(name)
 	T.resize_font(cpb.name)
 	
-	cpb:SetScript("OnShow", function(self) self.ctex:SetVertexColor(aCoreCDB[table][value].r, aCoreCDB[table][value].g, aCoreCDB[table][value].b) end)
+	cpb:SetScript("OnShow", function(self) 
+		self.ctex:SetVertexColor(aCoreCDB[table][value].r, aCoreCDB[table][value].g, aCoreCDB[table][value].b)
+	end)
+	
 	cpb:SetScript("OnClick", function(self)
 		T.ColorPicker_OnClick(aCoreCDB[table][value], false, self)
 	end)
@@ -1179,7 +1187,7 @@ T.createcolorpickerbu = function(parent, x, y, name, table, value)
 	parent[value] = cpb
 end
 
--- 顺序重写
+-- 多选一按钮 顺序重写
 T.createradiobuttongroup = function(parent, x, y, name, table, value, group, newline, order)
 	local frame = CreateFrame("Frame", G.uiname..value.."RadioButtonGroup", parent)
 	frame:SetPoint("TOPLEFT", x, -y)
@@ -1400,6 +1408,7 @@ T.createbuttongroup = function(parent, width, x, y, hasvalue, table, value, grou
 	parent[value] = frame
 end
 
+-- 普通按钮
 T.createclickbutton = function(parent, points, text)
 	local bu = CreateFrame("Button", nil, parent, "UIPanelButtonTemplate")
 	bu:SetPoint(unpack(points))
@@ -1441,6 +1450,7 @@ T.createclicktexbutton = function(parent, points, tex, text, tex_size)
 end
 
 -- 设置列表
+
 local lineuplist = function(list, button_list, parent)
 	local t = {}
 	
@@ -1508,12 +1518,14 @@ end
 local createscrollbutton = function(type, option_list, table, value, key)
 	local bu = CreateFrame("Frame", nil, option_list.anchor, "BackdropTemplate")
 	bu:SetSize(300, 28)
+	bu:EnableMouse(true)
 	F.CreateBD(bu, .2)
 	
 	bu.icon = bu:CreateTexture(nil, "ARTWORK")
 	bu.icon:SetSize(20, 20)
 	bu.icon:SetTexCoord(0.1,0.9,0.1,0.9)
 	bu.icon:SetPoint("LEFT", 5, 0)
+	bu.icon:SetTexture(G.media.blank)
 	
 	bu.iconbg = bu:CreateTexture(nil, "BORDER")
 	bu.iconbg:SetPoint("TOPLEFT", bu.icon, "TOPLEFT", -1, 1)
@@ -1536,32 +1548,52 @@ local createscrollbutton = function(type, option_list, table, value, key)
 	bu.close:SetPoint("RIGHT", -5, 0)
 	F.Reskin(bu.close)
 	bu.close:SetText("x")
+	bu.close:SetScript("OnEnter", function(self)	
+		GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+		GameTooltip:AddLine(DELETE)
+		GameTooltip:Show()
+	end)
+	bu.close:SetScript("OnLeave", function()
+		GameTooltip:Hide()
+	end)
+	
 	bu.close:SetScript("OnClick", function() 
 		bu:Hide()
 		aCoreCDB[table][value][key] = nil
 		lineuplist(aCoreCDB[table][value], option_list.list, option_list.anchor)
+		if frame.OptionListChanged then
+			frame.OptionListChanged()
+		end
 	end)
 	
-	bu.display = function(icon, text1, text2, text3)
+	bu.display = function(icon, text1, text2, text3, color)
 		if icon then bu.icon:SetTexture(icon) end		
 		if text1 then bu.left:SetText(text1) end
 		if text2 then bu.mid:SetText(text2) end		
 		if text3 then bu.right:SetText(text3) end
+		if color then bu.icon:SetVertexColor(color.r, color.g, color.b) end
+		if not (icon or color) then
+			bu.icon:Hide()
+		else
+			bu.icon:Show()
+		end
 	end
 	
-	bu:SetScript("OnEnter", function(self)	
-		GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-		if type == "spell" then
-			GameTooltip:SetSpellByID(key)
-		elseif type == "item" then
-			GameTooltip:SetItemByID(key)
-		end
-		GameTooltip:Show()
-	end)
-	
-	bu:SetScript("OnLeave", function()
-		GameTooltip:Hide()
-	end)
+	if type == "spell" or type == "item" then
+		bu:SetScript("OnEnter", function(self)	
+			GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+			if type == "spell" then
+				GameTooltip:SetSpellByID(key)
+			elseif type == "item" then
+				GameTooltip:SetItemByID(key)
+			end
+			GameTooltip:Show()
+		end)
+		
+		bu:SetScript("OnLeave", function()
+			GameTooltip:Hide()
+		end)		
+	end
 	
 	option_list.list[key] = bu
 	
@@ -1591,23 +1623,17 @@ local function CreateListOption(parent, points, height, text, OptionCategroy, Op
 		end
 		StaticPopup_Show(G.uiname.."Reset Confirm")
 	end)
-	
 
-	frame.option_list = createscrolllist(frame, {"TOPLEFT", 0, (input_text_1 and -45) or -20}, true, nil, (input_text_1 and height - 70) or height - 45)
+	frame.option_list = createscrolllist(frame, {"TOPLEFT", 0, -45}, true, nil, height - 70)
 	table.insert(frame.options, frame.option_list)
-	
-	if input_text_1 then
-		frame.first_input = T.createinputbox(frame, {"TOPLEFT", 0, -20}, input_text_1, 120)
-		table.insert(frame.options, frame.first_input)
-	end
+	frame.first_input = T.createinputbox(frame, {"TOPLEFT", 0, -20}, input_text_1, 160)
+	table.insert(frame.options, frame.first_input)
 	if input_text_2 then
 		frame.second_input = T.createinputbox(frame, {"LEFT", frame.first_input, "RIGHT", 10, 0}, input_text_2, 80)
 		table.insert(frame.options, frame.second_input)
 	end
-	if input_text_1 then
-		frame.addbutton = T.createclickbutton(frame, {"LEFT", frame.second_input or frame.first_input, "RIGHT", 10, 0}, ADD)
-		table.insert(frame.options, frame.first_input)
-	end
+	frame.addbutton = T.createclickbutton(frame, {"LEFT", frame.second_input or frame.first_input, "RIGHT", 10, 0}, ADD)
+	table.insert(frame.options, frame.first_input)
 	
 	frame.Enable = function()		
 		for k, v in pairs(frame.options) do
@@ -1624,15 +1650,44 @@ local function CreateListOption(parent, points, height, text, OptionCategroy, Op
 	return frame
 end
 
+local function CreateListButton(type, frame, OptionCategroy, OptionName, key, Icon, left_text, mid_text, right_text, color)
+	local bu = frame.option_list.list[key] 
+	if not bu then
+		bu = createscrollbutton(type, frame.option_list, OptionCategroy, OptionName, key)
+		if right_text or color then
+			bu:SetScript("OnMouseDown", function()
+				frame.first_input:SetText(bu.left:GetText())
+				if frame.Button_OnClicked then
+					frame.Button_OnClicked(bu)
+				end
+				
+				if right_text then
+					frame.second_input:SetText(bu.right:GetText())
+				end
+				
+				if color then
+					frame.cpb.colors.r, frame.cpb.colors.g, frame.cpb.colors.b = color.r, color.g, color.b
+					frame.cpb.update_texcolor()
+				end
+			end)
+		end
+	end
+	bu.display(Icon, left_text, mid_text, right_text, color)
+	bu:Show()
+end
+
 T.CreateAuraListOption = function(parent, points, height, text, OptionCategroy, OptionName, input_text_2)
 	local frame = CreateListOption(parent, points, height, text, OptionCategroy, OptionName, L["输入法术ID"], input_text_2)
+	
+	frame.Button_OnClicked = function(bu)
+		frame.first_input.current_spellID = tonumber(bu.mid:GetText())
+	end
 	
 	frame:SetScript("OnShow", function()
 		for spellID, level in pairs(aCoreCDB[OptionCategroy][OptionName]) do
 			local spellName, _, spellIcon = GetSpellInfo(spellID)
 			if spellName then
-				local bu = frame.option_list.list[spellID] or createscrollbutton("spell", frame.option_list, OptionCategroy, OptionName, spellID)
-				bu.display(spellIcon, spellName, spellID, input_text_2 and level or "")
+				CreateListButton("spell", frame, OptionCategroy, OptionName, spellID, spellIcon, spellName, spellID, input_text_2 and level)
 			else
 				print("spell ID "..spellID.." is gone, delete it.")
 				aCoreCDB[OptionCategroy][OptionName][spellID] = nil
@@ -1685,11 +1740,10 @@ T.CreateAuraListOption = function(parent, points, height, text, OptionCategroy, 
 			local level = frame.second_input:GetText()
 			
 			aCoreCDB[OptionCategroy][OptionName][spellID] = tonumber(level)
-			local bu = frame.option_list.list[spellID] or createscrollbutton("spell", frame.option_list, OptionCategroy, OptionName, spellID)
-			bu.display(spellIcon, spellName, spellID, level)
-			bu:Show()
+			CreateListButton("spell", frame, OptionCategroy, OptionName, spellID, spellIcon, spellName, spellID, level)
 			
 			lineuplist(aCoreCDB[OptionCategroy][OptionName], frame.option_list.list, frame.option_list.anchor)
+			
 			frame.first_input:SetText(L["输入法术ID"])
 			frame.first_input.current_spellID = nil
 			frame.second_input:SetText(input_text_2)
@@ -1700,9 +1754,7 @@ T.CreateAuraListOption = function(parent, points, height, text, OptionCategroy, 
 			local spellName, _, spellIcon, _, _, _, spellID = GetSpellInfo(frame.first_input.current_spellID)
 			
 			aCoreCDB[OptionCategroy][OptionName][spellID] = true
-			local bu = frame.option_list.list[spellID] or createscrollbutton("spell", frame.option_list, OptionCategroy, OptionName, spellID)
-			bu.display(spellIcon, spellName, spellID)
-			bu:Show()
+			CreateListButton("spell", frame, OptionCategroy, OptionName, spellID, spellIcon, spellName, spellID)
 			
 			lineuplist(aCoreCDB[OptionCategroy][OptionName], frame.option_list.list, frame.option_list.anchor)
 			frame.first_input:SetText(L["输入法术ID"])
@@ -1721,8 +1773,7 @@ T.CreateItemListOption = function(parent, points, height, text, OptionCategroy, 
 			local itemName = GetItemInfo(itemID)
 			local itemIcon = select(10, GetItemInfo(itemID))
 			if itemName then
-				local bu = frame.option_list.list[itemID] or createscrollbutton("item", frame.option_list, OptionCategroy, OptionName, itemID)
-				bu.display(itemIcon, itemName, nil, input_text_2 and quantity or "")
+				CreateListButton("item", frame, OptionCategroy, OptionName, itemID, itemIcon, itemName, nil, input_text_2 and quantity)
 			else
 				print("item ID "..itemID.." is gone, delete it.")
 				aCoreCDB[OptionCategroy][OptionName][itemID] = nil
@@ -1772,9 +1823,7 @@ T.CreateItemListOption = function(parent, points, height, text, OptionCategroy, 
 			
 			local itemName = GetItemInfo(itemID)
 			aCoreCDB[OptionCategroy][OptionName][itemID] = quantity
-			local bu = frame.option_list.list[itemID] or createscrollbutton("item", frame.option_list, OptionCategroy, OptionName, itemID)
-			bu.display(itemIcon, itemName, nil, quantity)
-			bu:Show()
+			CreateListButton("item", frame, OptionCategroy, OptionName, itemID, itemIcon, itemName, nil, quantity)
 			
 			lineuplist(aCoreCDB[OptionCategroy][OptionName], frame.option_list.list, frame.option_list.anchor)
 			frame.first_input:SetText(L["物品名称ID链接"])
@@ -1788,9 +1837,7 @@ T.CreateItemListOption = function(parent, points, height, text, OptionCategroy, 
 			
 			local itemName = GetItemInfo(itemID)
 			aCoreCDB[OptionCategroy][OptionName][itemID] = true
-			local bu = frame.option_list.list[itemID] or createscrollbutton("item", frame.option_list, OptionCategroy, OptionName, itemID)
-			bu.display(itemIcon, itemName)
-			bu:Show()
+			CreateListButton("item", frame, OptionCategroy, OptionName, itemID, itemIcon, itemName)
 			
 			lineuplist(aCoreCDB[OptionCategroy][OptionName], frame.option_list.list, frame.option_list.anchor)
 			frame.first_input:SetText(L["物品名称ID链接"])
@@ -1801,87 +1848,87 @@ T.CreateItemListOption = function(parent, points, height, text, OptionCategroy, 
 end
 
 T.CreatePlateColorOption = function(parent, points, height, text, OptionCategroy, OptionName)
-	local frame = CreateListOption(parent, points, height, text, OptionCategroy, OptionName)
+	local frame = CreateListOption(parent, points, height, text, OptionCategroy, OptionName, L["输入npc名称"])
+	frame.OptionListChanged = T.UpdateNameplateColor
 	
 	frame:SetScript("OnShow", function()
-		for itemID, quantity in pairs(aCoreCDB[OptionCategroy][OptionName]) do
-			local itemName = GetItemInfo(itemID)
-			local itemIcon = select(10, GetItemInfo(itemID))
-			if itemName then
-				local bu = frame.option_list.list[itemID] or createscrollbutton("item", frame.option_list, OptionCategroy, OptionName, itemID)
-				bu.display(itemIcon, itemName, nil, input_text_2 and quantity or "")
-			else
-				print("item ID "..itemID.." is gone, delete it.")
-				aCoreCDB[OptionCategroy][OptionName][itemID] = nil
-			end
+		for name, color in pairs(aCoreCDB[OptionCategroy][OptionName]) do
+			CreateListButton("", frame, OptionCategroy, OptionName, name, nil, name, nil, nil, color)
 		end
 		lineuplist(aCoreCDB[OptionCategroy][OptionName], frame.option_list.list, frame.option_list.anchor)
 	end)
 	
-	function frame.first_input:apply()
-		local itemText = self:GetText()
-		local itemID = GetItemInfoInstant(itemText)
-		if itemID then
-			local itemName = GetItemInfo(itemID)
-			self:SetText(itemName)
-			return true
-		else
-			StaticPopupDialogs[G.uiname.."incorrect itemID"].text = T.color_text((itemText == L["物品名称ID链接"] and "") or itemText)..L["不正确的物品ID"]
-			StaticPopup_Show(G.uiname.."incorrect itemID")
-			self:SetText(L["物品名称ID链接"])
-		end
+	frame.cpb = CreateFrame("Button", nil, frame, "UIPanelButtonTemplate")
+	frame.cpb:SetPoint("LEFT", frame.first_input, "RIGHT", 5, 0)
+	frame.cpb:SetSize(40, 20)
+	F.Reskin(frame.cpb)
+	
+	frame.cpb.ctex = frame.cpb:CreateTexture(nil, "OVERLAY")
+	frame.cpb.ctex:SetTexture(G.media.blank)
+	frame.cpb.ctex:SetPoint("CENTER")
+	frame.cpb.ctex:SetSize(35, 15)
+	
+	frame.cpb.colors = {r = 1, g = 1, b = 1}
+	frame.cpb.update_texcolor = function()
+		frame.cpb.ctex:SetVertexColor(frame.cpb.colors.r, frame.cpb.colors.g, frame.cpb.colors.b)
 	end
-
-	if input_text_2 then		
-		function frame.second_input:apply()
-			local quantity = self:GetText()
-			if tonumber(quantity) then
-				self:SetText(quantity)
-				return true
-			else
-				StaticPopupDialogs[G.uiname.."incorrect number"].text = T.color_text((quantity == input_text_2 and "") or quantity)..L["必须是一个数字"]
-				StaticPopup_Show(G.uiname.."incorrect number")
-				self:SetText(input_text_2)
-			end
-		end
-		
-	end
-			
+	
+	frame.cpb:SetScript("OnClick", function(self)
+		T.ColorPicker_OnClick(frame.cpb.colors, false, {"TOPLEFT", frame.cpb, "BOTTOMLEFT", 0, -5}, frame.cpb.update_texcolor)
+	end)
+	
+	frame.addbutton:ClearAllPoints()
+	frame.addbutton:SetPoint("LEFT", frame.cpb, "RIGHT", 5, 0)
+	
 	frame.addbutton:SetScript("OnClick", function(self)
-		if input_text_2 then -- 含数量设置
-			frame.first_input:GetScript("OnEnterPressed")(frame.first_input)
-			frame.second_input:GetScript("OnEnterPressed")(frame.second_input)
-			if not frame.first_input:apply() or not frame.second_input:apply() then return end
-			
-			local itemText = frame.first_input:GetText()
-			local quantity = frame.second_input:GetText()
-			local itemID, _, _, _, itemIcon = GetItemInfoInstant(itemText)
-			
-			local itemName = GetItemInfo(itemID)
-			aCoreCDB[OptionCategroy][OptionName][itemID] = quantity
-			local bu = frame.option_list.list[itemID] or createscrollbutton("item", frame.option_list, OptionCategroy, OptionName, itemID)
-			bu.display(itemIcon, itemName, nil, quantity)
-			bu:Show()
-			
-			lineuplist(aCoreCDB[OptionCategroy][OptionName], frame.option_list.list, frame.option_list.anchor)
-			frame.first_input:SetText(L["物品名称ID链接"])
-			frame.second_input:SetText(input_text_2)
-		else
-			frame.first_input:GetScript("OnEnterPressed")(frame.first_input)
-			if not frame.first_input:apply() then return end
-			
-			local itemText = frame.first_input:GetText()	
-			local itemID, _, _, _, itemIcon = GetItemInfoInstant(itemText) 
-			
-			local itemName = GetItemInfo(itemID)
-			aCoreCDB[OptionCategroy][OptionName][itemID] = true
-			local bu = frame.option_list.list[itemID] or createscrollbutton("item", frame.option_list, OptionCategroy, OptionName, itemID)
-			bu.display(itemIcon, itemName)
-			bu:Show()
-			
-			lineuplist(aCoreCDB[OptionCategroy][OptionName], frame.option_list.list, frame.option_list.anchor)
-			frame.first_input:SetText(L["物品名称ID链接"])
+		frame.first_input:GetScript("OnEnterPressed")(frame.first_input)
+		
+		local name = frame.first_input:GetText()
+		if not aCoreCDB[OptionCategroy][OptionName][name] then
+			aCoreCDB[OptionCategroy][OptionName][name] = {}		
 		end
+		aCoreCDB[OptionCategroy][OptionName][name].r = frame.cpb.colors.r
+		aCoreCDB[OptionCategroy][OptionName][name].g = frame.cpb.colors.g
+		aCoreCDB[OptionCategroy][OptionName][name].b = frame.cpb.colors.b
+		
+		CreateListButton("", frame, OptionCategroy, OptionName, name, nil, name, nil, nil, frame.cpb.colors)
+		
+		lineuplist(aCoreCDB[OptionCategroy][OptionName], frame.option_list.list, frame.option_list.anchor)
+		
+		frame.first_input:SetText(L["输入npc名称"])
+		frame.cpb.colors.r, frame.cpb.colors.g, frame.cpb.colors.b = 1, 1, 1
+		frame.cpb.update_texcolor()
+		
+		frame.OptionListChanged() -- 生效
+	end)
+
+	return frame
+end
+
+T.CreatePlatePowerOption = function(parent, points, height, text, OptionCategroy, OptionName)
+	local frame = CreateListOption(parent, points, height, text, OptionCategroy, OptionName, L["输入npc名称"])
+	frame.OptionListChanged = T.UpdateNameplatePowerbars
+	
+	frame:SetScript("OnShow", function()
+		for name, _ in pairs(aCoreCDB[OptionCategroy][OptionName]) do
+			CreateListButton("", frame, OptionCategroy, OptionName, name, nil, name)
+		end
+		lineuplist(aCoreCDB[OptionCategroy][OptionName], frame.option_list.list, frame.option_list.anchor)
+	end)
+	
+	frame.addbutton:SetScript("OnClick", function(self)
+		frame.first_input:GetScript("OnEnterPressed")(frame.first_input)
+		
+		local name = frame.first_input:GetText()	
+		aCoreCDB[OptionCategroy][OptionName][name] = true
+		
+		CreateListButton("", frame, OptionCategroy, OptionName, name, nil, name)
+
+		lineuplist(aCoreCDB[OptionCategroy][OptionName], frame.option_list.list, frame.option_list.anchor)
+		
+		frame.first_input:SetText(L["输入npc名称"])
+		
+		frame.OptionListChanged() -- 生效
 	end)
 
 	return frame
