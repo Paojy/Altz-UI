@@ -104,14 +104,6 @@ GUI.title = T.createtext(GUI, "OVERLAY", 25, "OUTLINE", "CENTER")
 GUI.title:SetPoint("BOTTOM", GUI, "TOP", 0, -8)
 GUI.title:SetText(G.classcolor.."Altz UI  "..G.Version.."|r")
 
--- 控制台标签
-GUI.tabindex = 1
-GUI.tabnum = 20
-for i = 1, 20 do
-	GUI["tab"..i] = CreateFrame("Frame", G.uiname.."GUI Tab"..i, GUI, "BackdropTemplate")
-	GUI["tab"..i]:SetScript("OnMouseDown", function() end)
-end
-
 -- 输入框和按钮
 GUI.editbox = T.createeditbox(GUI, nil, nil, L["复制粘贴"])
 
@@ -250,199 +242,150 @@ end)
 --====================================================--
 --[[                   -- TABS --                   ]]--
 --====================================================--
-local function CreateTab(text, frame, parent, orientation, a)
-	local tab = parent["tab"..parent.tabindex]
-	tab.n = parent.tabindex
-	tab.fname = frame:GetName()
+local function CreateOptionPage(name, title, parent, orientation, db_key)	
+	local frame = CreateFrame("Frame", G.uiname..name, parent)
+	frame:SetAllPoints(parent)
+	frame:Hide()
+
+	frame.title = frame:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
+	frame.title:SetPoint("TOPLEFT", 35, -23)
+	frame.title:SetText(title)
+
+	frame.line = frame:CreateTexture(nil, "ARTWORK")
+	frame.line:SetSize(parent:GetWidth()-50, 1)
+	frame.line:SetPoint("TOP", 0, -50)
+	frame.line:SetColorTexture(1, 1, 1, .2)
 	
+	if db_key then
+		frame.db_key = db_key
+	end
+	
+	if not parent.tabs then
+		parent.tabs = {}
+		parent:HookScript("OnShow", function(self)
+			if not self.tab_selected then
+				self.tabs[1]:GetScript("OnMouseDown")()
+				self.tab_selected = true
+			end
+		end)
+	end
+	
+	local tab = CreateFrame("Frame", nil, parent, "BackdropTemplate")
 	tab:SetFrameLevel(parent:GetFrameLevel()+2)
+	tab:EnableMouse(true)
+	F.CreateBD(tab, .2)
 	
-	if a then
-		F.CreateBD(tab, a)
-	else
-		F.CreateBD(tab)
-	end
+	tab.text = T.createtext(tab, "OVERLAY", 12, "OUTLINE", "LEFT")
+	tab.text:SetText(title)
 	
-	tab.name = T.createtext(tab, "OVERLAY", 12, "OUTLINE", "LEFT")
-	tab.name:SetText(text)
+	table.insert(parent.tabs, tab)
 	
-	if orientation == "VERTICAL" then
-		tab.name:SetPoint("LEFT", 10, 0)
+	tab.owner = frame
+	tab.index = #parent.tabs	
+	
+	if orientation == "VERTICAL" then	
 		tab:SetSize(130, 25)
-		if tab.n == 1 then
+		tab:SetPoint("TOPLEFT", parent, "TOPRIGHT", 2, -30*tab.index)
+		
+		tab.text:SetJustifyH("LEFT")
+		tab.text:SetPoint("LEFT", 10, 0)
+		
+		tab:SetScript("OnMouseDown", function()
+			tab.owner:Show()
+			tab:SetPoint("TOPLEFT", parent, "TOPRIGHT", 8, -30*tab.index)
 			tab:SetBackdropBorderColor(G.Ccolor.r, G.Ccolor.g, G.Ccolor.b)
-		end
-		tab:HookScript("OnMouseDown", function(self)
-			frame:Show()
-			self:SetPoint("TOPLEFT", parent, "TOPRIGHT", 8, -30*tab.n)
-			tab:SetBackdropBorderColor(G.Ccolor.r, G.Ccolor.g, G.Ccolor.b)
-		end)
-		if tab.n == 1 then
-			tab:SetPoint("TOPLEFT", parent, "TOPRIGHT", 8, -30)
-		else
-			tab:SetPoint("TOPLEFT", parent, "TOPRIGHT", 2, -30*tab.n)
-		end
-		for i = 1, parent.tabnum do
-			if i ~= tab.n then
-				parent["tab"..i]:HookScript("OnMouseDown", function(self)
-					frame:Hide()
-					tab:SetPoint("TOPLEFT", parent, "TOPRIGHT", 2,  -30*tab.n)
-					tab:SetBackdropBorderColor(0, 0, 0)
-				end)
+			for i, t in pairs(parent.tabs) do
+				if t ~= tab then
+					t.owner:Hide()
+					t:SetPoint("TOPLEFT", parent, "TOPRIGHT", 2,  -30*t.index)
+					t:SetBackdropBorderColor(0, 0, 0)
+				end
 			end
-		end
+		end)
 	else
-		tab.name:SetJustifyH("CENTER")
-		tab.name:SetPoint("CENTER")
-		tab:SetSize(tab.name:GetWidth()+10, 25)
-		if tab.n == 1 then
-			tab:SetBackdropBorderColor(G.Ccolor.r, G.Ccolor.g, G.Ccolor.b)
+		tab:SetSize(tab.text:GetWidth()+10, 25)
+		if tab.index == 1 then
+			tab:SetPoint("BOTTOMLEFT", parent, "TOPLEFT", 15, 2)
+		else
+			tab:SetPoint("LEFT", parent.tabs[tab.index-1], "RIGHT", 4, 0)
 		end
-		tab:HookScript("OnMouseDown", function(self)
-			frame:Show()
+		
+		tab.text:SetJustifyH("CENTER")
+		tab.text:SetPoint("CENTER")
+		
+		tab:SetScript("OnMouseDown", function()
+			tab.owner:Show()
 			tab:SetBackdropBorderColor(G.Ccolor.r, G.Ccolor.g, G.Ccolor.b)
+			for i, t in pairs(parent.tabs) do
+				if t ~= tab then
+					t.owner:Hide()
+					t:SetBackdropBorderColor(0, 0, 0)
+				end
+			end
 		end)
-		for i = 1, parent.tabnum do
-			if i == 1 then
-				parent["tab"..i]:SetPoint("BOTTOMLEFT", parent, "TOPLEFT", 15, 2)
-			else
-				parent["tab"..i]:SetPoint("LEFT", parent["tab"..i-1], "RIGHT", 4, 0)
-			end
-			if i ~= tab.n then
-				parent["tab"..i]:HookScript("OnMouseDown", function(self)
-					frame:Hide()
-					tab:SetBackdropBorderColor(0, 0, 0)
-				end)
-			end
-		end
 	end
-	
-	parent.tabindex = parent.tabindex +1
+
+	return frame
 end
 
-local function CreateOptionPage(name, title, parent, orientation, a, scroll)
-	local Options = CreateFrame("Frame", G.uiname..name, parent)
-	CreateTab(title, Options, parent, orientation, a)
-	Options:SetAllPoints(parent)
-	Options:Hide()
-
-	Options.title = Options:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
-	Options.title:SetPoint("TOPLEFT", 35, -23)
-	Options.title:SetText(title)
-
-	Options.line = Options:CreateTexture(nil, "ARTWORK")
-	Options.line:SetSize(parent:GetWidth()-50, 1)
-	Options.line:SetPoint("TOP", 0, -50)
-	Options.line:SetColorTexture(1, 1, 1, .2)
+local function CreateInnerFrame(parent)
+	local frame = CreateFrame("Frame", nil, parent, "BackdropTemplate")
+	frame:SetPoint("TOPLEFT", 40, -60)
+	frame:SetPoint("BOTTOMLEFT", -20, 25)
+	frame:SetWidth(parent:GetWidth()-200)
 	
-	if scroll then -- 需要修改
-		--print(name)
-		Options.SF = CreateFrame("ScrollFrame", G.uiname..name.." ScrollFrame", Options, "UIPanelScrollFrameTemplate")
-		Options.SF:SetPoint("TOPLEFT", Options, "TOPLEFT", 10, -80)
-		Options.SF:SetPoint("BOTTOMRIGHT", Options, "BOTTOMRIGHT", -45, 35)
-		Options.SF:SetFrameLevel(Options:GetFrameLevel()+1)
-		Options.SF.bg = CreateFrame("Frame", nil, Options.SF, "BackdropTemplate")
-		Options.SF.bg:SetAllPoints(Options.SF)
+	F.CreateBD(frame, .3)
 	
-		Options.SFAnchor = CreateFrame("Frame", G.uiname..name.."ScrollAnchor", Options.SF)
-		Options.SFAnchor:SetPoint("TOPLEFT", Options.SF, "TOPLEFT", 0, -3)
-		Options.SFAnchor:SetWidth(Options.SF:GetWidth()-30)
-		Options.SFAnchor:SetHeight(Options.SF:GetHeight()+200)
-		Options.SFAnchor:SetFrameLevel(Options.SF:GetFrameLevel()+1)
-		
-		Options.SF:SetScrollChild(Options.SFAnchor)
-		
-		F.ReskinScroll(Options.SF.ScrollBar)
-		
-		Options.SF.Cover = CreateFrame("Frame", nil, Options.SF)
-		Options.SF.Cover:SetAllPoints()
-		Options.SF.Cover:SetFrameLevel(Options.SFAnchor:GetFrameLevel()+10)
-		Options.SF.Cover.tex = Options.SF.Cover:CreateTexture(nil, "OVERLAY")
-		Options.SF.Cover.tex:SetAllPoints()
-		Options.SF.Cover.tex:SetColorTexture(.3, .3, .3, .7)
-		Options.SF.Cover:EnableMouse(true)
-		Options.SF.Cover:Hide()
-		
-		Options.SF.Enable = function()
-			Options.SF.Cover:Hide()
-		end
-		
-		Options.SF.Disable = function()
-			Options.SF.Cover:Show()
-		end
-	end
-	
-	return Options
+	return frame
 end
 
 --====================================================--
 --[[            -- Interface Options --            ]]--
 --====================================================--
 local SkinOptions = CreateOptionPage("Interface Options", L["界面"], GUI, "VERTICAL")
-SkinOptions:Show()
+local SInnerframe = CreateInnerFrame(SkinOptions)
 
-local SInnerframe = CreateFrame("Frame", G.uiname.."Interface Options Innerframe", SkinOptions, "BackdropTemplate")
-SInnerframe:SetPoint("TOPLEFT", 40, -60)
-SInnerframe:SetPoint("BOTTOMLEFT", -20, 25)
-SInnerframe:SetWidth(SkinOptions:GetWidth()-200)
-F.CreateBD(SInnerframe, .3)
+-- 界面风格
+SInnerframe.theme = CreateOptionPage("Interface Options theme", L["界面风格"], SInnerframe, "VERTICAL", "SkinOptions")
 
-SInnerframe.tabindex = 1
-SInnerframe.tabnum = 20
-for i = 1, 20 do
-	SInnerframe["tab"..i] = CreateFrame("Frame", G.uiname.."SInnerframe Tab"..i, SInnerframe, "BackdropTemplate")
-	SInnerframe["tab"..i]:SetScript("OnMouseDown", function() end)
-end
+T.createradiobuttongroup(SInnerframe.theme, 30, 60, L["样式"], "style", {
+	{1, L["透明样式"]},
+	{2, L["深色样式"]},
+	{3, L["普通样式"]},
+})
 
-SInnerframe.theme = CreateOptionPage("Interface Options theme", L["界面风格"], SInnerframe, "VERTICAL", .3)
-SInnerframe.theme:Show()
-
-local style_group = {
-	[1] = L["透明样式"],
-	[2] = L["深色样式"],
-	[3] = L["普通样式"],
-}
-T.createradiobuttongroup(SInnerframe.theme, 30, 60, L["样式"], "UnitframeOptions", "style", style_group)
 SInnerframe.theme.style.apply = function()
 	G.BGFrame.Apply()
 	T.ApplyUFSettings({"Castbar", "Swing", "Health", "Power", "HealthPrediction"})
 end
 
 local combattextfont_group = {
-	["none"] = DEFAULT,
-	["combat1"] = "1234",
-	["combat2"] = "1234",
-	["combat3"] = "1234",
+	{"none", DEFAULT},
+	{"combat1", "1234"},
+	{"combat2", "1234"},
+	{"combat3", "1234"},
 }
-T.createradiobuttongroup(SInnerframe.theme, 30, 90, L["战斗字体"], "SkinOptions", "combattext", combattextfont_group)
-local CLIENT_RESTART_ALERT_SHOW
-for index, v in pairs(combattextfont_group) do
-	if index ~= "none" then
-		SInnerframe.theme.combattext[index].text:SetFont(G.combatFont[index], 10, "OUTLINE")	
+
+T.createradiobuttongroup(SInnerframe.theme, 30, 90, L["战斗字体"], "combattext", combattextfont_group)
+for i, info in pairs(combattextfont_group) do
+	local bu = SInnerframe.theme.combattext.buttons[i]
+	if info[1] ~= "none" then
+		bu.text:SetFont(G.combatFont[info[1]], 10, "OUTLINE")
 	end
-	SInnerframe.theme.combattext[index]:HookScript("OnClick", function()
-		if not CLIENT_RESTART_ALERT_SHOW then
-			StaticPopup_Show("CLIENT_RESTART_ALERT")
-			CLIENT_RESTART_ALERT_SHOW = true
-		end
-	end)
 end
-
-local textformattype_group = {
-	["k"] = "k m",
-	["w"] = "w kw",
-	["w_chinese"] = "万 千万",
-	["none"] = "不缩写",
-}
-
-local textformattype_order = {
-	["k"] = 1,
-	["w"] = 2,
-	["w_chinese"] = 3,
-	["none"] = 4,
-}
-
-T.createradiobuttongroup(SInnerframe.theme, 30, 120, L["数字缩写样式"], "SkinOptions", "formattype", textformattype_group, nil, textformattype_order)
+SInnerframe.theme.combattext.apply = function()
+	if not SInnerframe.theme.combattext.alert then
+		StaticPopup_Show("CLIENT_RESTART_ALERT")
+		SInnerframe.theme.combattext.alert = true
+	end
+end
+	
+T.createradiobuttongroup(SInnerframe.theme, 30, 120, L["数字缩写样式"], "formattype", {
+	{"k", "k m"},
+	{"w", "w kw"},
+	{"w_chinese", "万 千万"},
+	{"none", "不缩写"},
+})
 
 T.createcheckbutton(SInnerframe.theme, 30, 150, L["上方"].." "..L["边缘装饰"], "SkinOptions", "showtopbar")
 SInnerframe.theme.showtopbar.apply = G.BGFrame.Apply
@@ -507,8 +450,9 @@ local SetBWButton = CreateApplySettingButton("setBW")
 T.createcheckbutton(SInnerframe.theme, 30, 340, "Skada", "SkinOptions", "setSkada")
 local SetSkadaButton = CreateApplySettingButton("setSkada")
 
--- 布局
-SInnerframe.layout = CreateOptionPage("Interface Options Layout", L["界面布局"], SInnerframe, "VERTICAL", .3)
+-- 界面布局
+SInnerframe.layout = CreateOptionPage("Interface Options Layout", L["界面布局"], SInnerframe, "VERTICAL", "SkinOptions")
+
 T.createcheckbutton(SInnerframe.layout, 30, 60, L["信息条"], "SkinOptions", "infobar")
 SInnerframe.layout.infobar.apply = G.InfoFrame.Apply
 
@@ -520,13 +464,13 @@ T.createDR(SInnerframe.layout.infobar, SInnerframe.layout.infobarscale)
 CreateDividingLine(SInnerframe.layout, -150)
 
 T.createcheckbutton(SInnerframe.layout, 30, 170, L["在副本中收起任务追踪"], "SkinOptions", "collapseWF", L["在副本中收起任务追踪提示"])
-T.createcheckbutton(SInnerframe.layout, 30, 200, L["登陆屏幕"], "SkinOptions", "afklogin", L["登陆屏幕"])
-T.createcheckbutton(SInnerframe.layout, 30, 230, L["暂离屏幕"], "SkinOptions", "afkscreen", L["暂离屏幕"])
-
+T.createcheckbutton(SInnerframe.layout, 30, 200, L["暂离屏幕"], "SkinOptions", "afkscreen", L["暂离屏幕"])
+T.createcheckbutton(SInnerframe.layout, 30, 230, L["显示插件使用小提示"], "SkinOptions", "showAFKtips", L["显示插件使用小提示提示"])
+T.createDR(SInnerframe.layout.afkscreen, SInnerframe.layout.showAFKtips)
 --====================================================--
 --[[              -- Chat Options --                ]]--
 --====================================================--
-local ChatOptions = CreateOptionPage("Chat Options", SOCIAL_LABEL, GUI, "VERTICAL")
+local ChatOptions = CreateOptionPage("Chat Options", SOCIAL_LABEL, GUI, "VERTICAL", "ChatOptions")
 
 T.createcheckbutton(ChatOptions, 30, 60, L["频道缩写"], "ChatOptions", "channelreplacement")
 ChatOptions.channelreplacement.apply = T.UpdateChannelReplacement
@@ -539,33 +483,21 @@ CreateDividingLine(ChatOptions, -130)
 
 T.createcheckbutton(ChatOptions, 30, 140, L["聊天过滤"], "ChatOptions", "nogoldseller", L["聊天过滤提示"])
 T.createslider(ChatOptions, 30, 190, L["过滤阈值"], "ChatOptions", "goldkeywordnum", 1, 1, 5, 1, L["过滤阈值"])
-
 T.createmultilinebox(ChatOptions, 200, 100, 35, 235, L["关键词"], "ChatOptions", "goldkeywordlist", L["关键词输入"])
-ChatOptions.goldkeywordlist.edit:SetScript("OnShow", function(self) 
-	self:SetText(aCoreDB["goldkeywordlist"])
-end)
-ChatOptions.goldkeywordlist.edit:SetScript("OnEscapePressed", function(self)
-	self:SetText(aCoreDB["goldkeywordlist"])
-	self:ClearFocus()
-end)
-ChatOptions.goldkeywordlist.edit:SetScript("OnEnterPressed", function(self) 
-	self:ClearFocus() 
-	aCoreDB["goldkeywordlist"] = self:GetText()
-	T.Update_Chat_Filter()
-end)
+ChatOptions.goldkeywordlist.apply = T.Update_Chat_Filter
 T.createDR(ChatOptions.nogoldseller, ChatOptions.goldkeywordnum, ChatOptions.goldkeywordlist)
 
 CreateDividingLine(ChatOptions, -360)
 
-T.createcheckbutton(ChatOptions, 30, 370, L["自动邀请"], "OtherOptions", "autoinvite", L["自动邀请提示"])
-T.createeditbox(ChatOptions, 40, 405, L["关键词"], "OtherOptions", "autoinvitekeywords",  L["关键词输入"])
+T.createcheckbutton(ChatOptions, 30, 370, L["自动邀请"], "ChatOptions", "autoinvite", L["自动邀请提示"])
+T.createeditbox(ChatOptions, 40, 405, L["关键词"], "ChatOptions", "autoinvitekeywords",  L["关键词输入"])
 ChatOptions.autoinvitekeywords.apply = T.Update_Invite_Keyword
 T.createDR(ChatOptions.autoinvite, ChatOptions.autoinvitekeywords)
 
 --====================================================--
 --[[          -- Bag and Items Options --           ]]--
 --====================================================--
-local ItemOptions = CreateOptionPage("Item Options", ITEMS, GUI, "VERTICAL")
+local ItemOptions = CreateOptionPage("Item Options", ITEMS, GUI, "VERTICAL", "ItemOptions")
 
 T.createcheckbutton(ItemOptions, 30, 60, L["已会配方着色"], "ItemOptions", "alreadyknown", L["已会配方着色提示"])
 
@@ -587,23 +519,10 @@ T.createDR(ItemOptions.autobuy, ItemOptions.autobuy_list)
 --[[               -- Unit Frames --                ]]--
 --====================================================--
 local UFOptions = CreateOptionPage("UF Options", L["单位框体"], GUI, "VERTICAL")
-
-local UFInnerframe = CreateFrame("Frame", G.uiname.."UF Options Innerframe", UFOptions, "BackdropTemplate")
-UFInnerframe:SetPoint("TOPLEFT", 40, -60)
-UFInnerframe:SetPoint("BOTTOMLEFT", -20, 25)
-UFInnerframe:SetWidth(UFOptions:GetWidth()-200)
-F.CreateBD(UFInnerframe, .3)
-
-UFInnerframe.tabindex = 1
-UFInnerframe.tabnum = 20
-for i = 1, 20 do
-	UFInnerframe["tab"..i] = CreateFrame("Frame", G.uiname.."UFInnerframe Tab"..i, UFInnerframe, "BackdropTemplate")
-	UFInnerframe["tab"..i]:SetScript("OnMouseDown", function() end)
-end
+local UFInnerframe = CreateInnerFrame(UFOptions)
 
 -- 样式
-UFInnerframe.style = CreateOptionPage("UF Options style", L["样式"], UFInnerframe, "VERTICAL", .3)
-UFInnerframe.style:Show()
+UFInnerframe.style = CreateOptionPage("UF Options style", L["样式"], UFInnerframe, "VERTICAL", "UnitframeOptions")
 
 T.createcheckbutton(UFInnerframe.style, 30, 60, L["条件渐隐"], "UnitframeOptions", "enablefade", L["条件渐隐提示"])
 UFInnerframe.style.enablefade.apply = function()
@@ -638,7 +557,7 @@ UFInnerframe.style.valuefontsize.apply = function()
 end
 
 -- 尺寸
-UFInnerframe.size = CreateOptionPage("UF Options size", L["尺寸"], UFInnerframe, "VERTICAL", .3)
+UFInnerframe.size = CreateOptionPage("UF Options size", L["尺寸"], UFInnerframe, "VERTICAL", "UnitframeOptions")
 
 T.createslider(UFInnerframe.size, 30, 80, L["高度"], "UnitframeOptions", "height", 1, 5, 50, 1)
 UFInnerframe.size.height.apply = function()
@@ -669,7 +588,7 @@ UFInnerframe.size.widthboss.apply = function()
 end
 
 -- 施法条
-UFInnerframe.castbar = CreateOptionPage("UF Options castbar", L["施法条"], UFInnerframe, "VERTICAL", .3)
+UFInnerframe.castbar = CreateOptionPage("UF Options castbar", L["施法条"], UFInnerframe, "VERTICAL", "UnitframeOptions")
 
 T.createcheckbutton(UFInnerframe.castbar, 30, 60, L["启用"], "UnitframeOptions", "castbars")
 UFInnerframe.castbar.castbars.apply = function()
@@ -723,17 +642,18 @@ UFInnerframe.castbar.focus_cbwidth.apply = function()
 end
 
 local CBtextpos_group = {
-	["LEFT"] = L["左"],
-	["TOPLEFT"] = L["左上"],
-	["RIGHT"] = L["右"],
-	["TOPRIGHT"] = L["右上"],
+	{"LEFT", 		L["左"]},
+	{"TOPLEFT", 	L["左上"]},
+	{"RIGHT", 		L["右"]},
+	{"TOPRIGHT",	L["右上"]},
 }
-T.createradiobuttongroup(UFInnerframe.castbar, 30, 290, L["法术名称位置"], "UnitframeOptions", "namepos", CBtextpos_group)
+
+T.createradiobuttongroup(UFInnerframe.castbar, 30, 290, L["法术名称位置"], "namepos", CBtextpos_group)
 UFInnerframe.castbar.namepos.apply = function()
 	T.ApplyUFSettings({"Castbar"})
 end
 
-T.createradiobuttongroup(UFInnerframe.castbar, 30, 320, L["施法时间位置"], "UnitframeOptions", "timepos", CBtextpos_group)
+T.createradiobuttongroup(UFInnerframe.castbar, 30, 320, L["施法时间位置"], "timepos", CBtextpos_group)
 UFInnerframe.castbar.timepos.apply = function()
 	T.ApplyUFSettings({"Castbar"})
 end
@@ -753,7 +673,7 @@ UFInnerframe.castbar.target_cbheight, UFInnerframe.castbar.target_cbwidth, UFInn
 UFInnerframe.castbar.timepos, UFInnerframe.castbar.channelticks, UFInnerframe.castbar.hideplayercastbaricon, UFInnerframe.castbar.Interruptible_color, UFInnerframe.castbar.notInterruptible_color)
 
 -- 平砍计时条
-UFInnerframe.swingtimer = CreateOptionPage("UF Options swingtimer", L["平砍计时条"], UFInnerframe, "VERTICAL", .3)
+UFInnerframe.swingtimer = CreateOptionPage("UF Options swingtimer", L["平砍计时条"], UFInnerframe, "VERTICAL", "UnitframeOptions")
 
 T.createcheckbutton(UFInnerframe.swingtimer, 30, 60, L["启用"], "UnitframeOptions", "swing")
 UFInnerframe.swingtimer.swing.apply = function()
@@ -786,7 +706,7 @@ T.createDR(UFInnerframe.swingtimer.swing, UFInnerframe.swingtimer.swheight, UFIn
 T.createDR(UFInnerframe.swingtimer.swtimer, UFInnerframe.swingtimer.swtimersize)
 
 -- 光环
-UFInnerframe.aura = CreateOptionPage("UF Options aura", AURAS, UFInnerframe, "VERTICAL", .3)
+UFInnerframe.aura = CreateOptionPage("UF Options aura", AURAS, UFInnerframe, "VERTICAL", "UnitframeOptions")
 
 T.createslider(UFInnerframe.aura, 30, 80, L["图标大小"], "UnitframeOptions", "aura_size", 1, 15, 30, 1)
 UFInnerframe.aura.aura_size.apply = function()
@@ -813,7 +733,7 @@ end
 UFInnerframe.aura.aurafliter_list = T.CreateAuraListOption(UFInnerframe.aura, {"TOPLEFT", 30, -215}, 230, L["白名单"]..AURAS, "UnitframeOptions", "AuraFilterwhitelist")
 
 -- 图腾
-UFInnerframe.totembar = CreateOptionPage("UF Options totembar", L["图腾条"], UFInnerframe, "VERTICAL", .3)
+UFInnerframe.totembar = CreateOptionPage("UF Options totembar", L["图腾条"], UFInnerframe, "VERTICAL", "UnitframeOptions")
 
 T.createcheckbutton(UFInnerframe.totembar, 30, 60, L["启用"], "UnitframeOptions", "totems")
 UFInnerframe.totembar.totems.apply = T.ApplyTotemsBarSettings
@@ -821,22 +741,20 @@ UFInnerframe.totembar.totems.apply = T.ApplyTotemsBarSettings
 T.createslider(UFInnerframe.totembar, 30, 110, L["图标大小"], "UnitframeOptions", "totemsize", 1, 15, 40, 1)
 UFInnerframe.totembar.totemsize.apply = T.ApplyTotemsBarSettings
 
-local totembargrowthdirection_group = {
-	["HORIZONTAL"] = L["水平"],
-	["VERTICAL"] = L["垂直"],
-}
-T.createradiobuttongroup(UFInnerframe.totembar, 30, 140, L["排列方向"], "UnitframeOptions", "growthDirection", totembargrowthdirection_group)
+T.createradiobuttongroup(UFInnerframe.totembar, 30, 140, L["排列方向"], "growthDirection", {
+	{"HORIZONTAL", L["水平"]},
+	{"VERTICAL", L["垂直"]},
+})
 UFInnerframe.totembar.growthDirection.apply = T.ApplyTotemsBarSettings
 
-local totembarinneranchor_group = {
-	["ASCENDING"] = L["正向"],
-	["DESCENDING"] = L["反向"],
-}
-T.createradiobuttongroup(UFInnerframe.totembar, 30, 170, L["排列方向"], "UnitframeOptions", "sortDirection", totembarinneranchor_group)
+T.createradiobuttongroup(UFInnerframe.totembar, 30, 170, L["排列方向"], "sortDirection", {
+	{"ASCENDING", L["正向"]},
+	{"DESCENDING", L["反向"]},
+})
 UFInnerframe.totembar.sortDirection.apply = T.ApplyTotemsBarSettings
 
 -- 小队
-UFInnerframe.party = CreateOptionPage("UF Options party", PARTY, UFInnerframe, "VERTICAL", .3)
+UFInnerframe.party = CreateOptionPage("UF Options party", PARTY, UFInnerframe, "VERTICAL", "UnitframeOptions")
 
 T.createslider(UFInnerframe.party, 30, 80, PARTY..L["宽度"], "UnitframeOptions", "widthparty", 1, 50, 500, 1)
 UFInnerframe.party.widthparty.apply = function()
@@ -855,7 +773,7 @@ UFInnerframe.party.showpartypet.apply = function()
 end
 
 -- 其他
-UFInnerframe.other = CreateOptionPage("UF Options other", OTHER, UFInnerframe, "VERTICAL", .3)
+UFInnerframe.other = CreateOptionPage("UF Options other", OTHER, UFInnerframe, "VERTICAL", "UnitframeOptions")
 
 T.createcheckbutton(UFInnerframe.other, 30, 60, L["启用仇恨条"], "UnitframeOptions", "showthreatbar")
 UFInnerframe.other.showthreatbar.apply = function()
@@ -911,23 +829,10 @@ end
 --[[               -- Raid Frames --                ]]--
 --====================================================--
 local RFOptions = CreateOptionPage("RF Options", L["团队框架"], GUI, "VERTICAL")
+local RFInnerframe = CreateInnerFrame(RFOptions)
 
-local RFInnerframe = CreateFrame("Frame", G.uiname.."RF Options Innerframe", RFOptions, "BackdropTemplate")
-RFInnerframe:SetPoint("TOPLEFT", 40, -60)
-RFInnerframe:SetPoint("BOTTOMLEFT", -20, 25)
-RFInnerframe:SetWidth(RFOptions:GetWidth()-200)
-F.CreateBD(RFInnerframe, .3)
-
-RFInnerframe.tabindex = 1
-RFInnerframe.tabnum = 20
-for i = 1, 20 do
-	RFInnerframe["tab"..i] = CreateFrame("Frame", G.uiname.."RFInnerframe Tab"..i, RFInnerframe, "BackdropTemplate")
-	RFInnerframe["tab"..i]:SetScript("OnMouseDown", function() end)
-end
-
--- 通用
-RFInnerframe.common = CreateOptionPage("RF Options common", L["启用"], RFInnerframe, "VERTICAL", .3)
-RFInnerframe.common:Show()
+-- 启用
+RFInnerframe.common = CreateOptionPage("RF Options common", L["启用"], RFInnerframe, "VERTICAL", "UnitframeOptions")
 
 T.createcheckbutton(RFInnerframe.common, 30, 60, L["启用"], "UnitframeOptions", "enableraid")
 RFInnerframe.common.enableraid.apply = function()
@@ -972,7 +877,7 @@ RFInnerframe.common.raidtool.apply = function()
 end
 
 -- 样式
-RFInnerframe.style = CreateOptionPage("RF Options style", L["样式"], RFInnerframe, "VERTICAL", .3)
+RFInnerframe.style = CreateOptionPage("RF Options style", L["样式"], RFInnerframe, "VERTICAL", "UnitframeOptions")
 
 T.createslider(RFInnerframe.style, 30, 80, L["高度"], "UnitframeOptions", "raidheight", 1, 10, 150, 1)
 RFInnerframe.style.raidheight.apply = function()
@@ -1029,18 +934,17 @@ RFInnerframe.style.healprediction.apply = function()
 end
 
 -- 治疗指示器
-RFInnerframe.ind = CreateOptionPage("RF Options indicators", L["治疗指示器"], RFInnerframe, "VERTICAL", .3)
+RFInnerframe.ind = CreateOptionPage("RF Options indicators", L["治疗指示器"], RFInnerframe, "VERTICAL", "UnitframeOptions")
 
 T.createslider(RFInnerframe.ind, 30, 80, L["尺寸"], "UnitframeOptions", "hotind_size", 1, 10, 25, 1)
 RFInnerframe.ind.hotind_size.apply = function()
 	T.ApplyUFSettings({"AltzIndicators", "Auras"})
 end
 
-local indicatorstyle_group = {
-	["number_ind"] = L["数字指示器"],
-	["icon_ind"] = L["图标指示器"],
-}
-T.createradiobuttongroup(RFInnerframe.ind, 30, 100, L["样式"], "UnitframeOptions", "hotind_style", indicatorstyle_group)
+T.createradiobuttongroup(RFInnerframe.ind, 30, 100, L["样式"], "hotind_style", {
+	{"number_ind", L["数字指示器"]},
+	{"icon_ind", L["图标指示器"]},
+})
 
 local function Updateindsettings()
 	if aCoreCDB["UnitframeOptions"]["hotind_style"] == "icon_ind" then
@@ -1060,11 +964,10 @@ CreateDividingLine(RFInnerframe.ind, -135)
 
 RFInnerframe.ind.hotind_list = T.CreateAuraListOption(RFInnerframe.ind, {"TOPLEFT", 30, -150}, 270,  L["图标指示器"]..L["设置"], "UnitframeOptions", "hotind_auralist")
 
-local indicatorfiltertype_group = {
-	["whitelist"] = L["白名单"]..AURAS,
-	["blacklist"] = L["黑名单"]..AURAS,
-}
-T.createradiobuttongroup(RFInnerframe.ind.hotind_list, -5, 40, L["过滤方式"], "UnitframeOptions", "hotind_filtertype", indicatorfiltertype_group)
+T.createradiobuttongroup(RFInnerframe.ind.hotind_list, -5, 40, L["过滤方式"], "hotind_filtertype", {
+	{"whitelist", L["白名单"]..AURAS},
+	{"blacklist", L["黑名单"]..AURAS},
+})
 table.insert(RFInnerframe.ind.hotind_list.options, RFInnerframe.ind.hotind_list.hotind_filtertype)
 
 RFInnerframe.ind.hotind_list.reset.apply = function()
@@ -1075,7 +978,7 @@ RFInnerframe.ind.hotind_list.option_list:ClearAllPoints()
 RFInnerframe.ind.hotind_list.option_list:SetPoint("TOPLEFT", 0, -65)
 
 -- 点击施法
-RFInnerframe.clickcast = CreateOptionPage("RF Options clickcast", L["点击施法"], RFInnerframe, "VERTICAL", .3)
+RFInnerframe.clickcast = CreateOptionPage("RF Options clickcast", L["点击施法"], RFInnerframe, "VERTICAL", "UnitframeOptions")
 
 local enableClickCastbu = T.createcheckbutton(RFInnerframe.clickcast, 30, 60, L["启用"], "UnitframeOptions", "enableClickCast", format(L["点击施法提示"], G.classcolor, G.classcolor, G.classcolor, G.classcolor, G.classcolor, G.classcolor))
 
@@ -1083,12 +986,6 @@ local clickcastframe = CreateFrame("Frame", G.uiname.."ClickCast Options", RFInn
 clickcastframe:SetPoint("TOPLEFT", 30, -120)
 clickcastframe:SetPoint("BOTTOMRIGHT", -30, 20)
 F.CreateBD(clickcastframe, 0)
-clickcastframe.tabindex = 1
-clickcastframe.tabnum = 20
-for i = 1, 20 do
-	clickcastframe["tab"..i] = CreateFrame("Frame", G.uiname.."clickcastframe Tab"..i, clickcastframe, "BackdropTemplate")
-	clickcastframe["tab"..i]:SetScript("OnMouseDown", function() end)
-end
 
 local MacroPop = CreateFrame("Frame", G.uiname.."give macro", clickcastframe)
 MacroPop:SetPoint("TOPLEFT", clickcastframe, "TOPLEFT", 10, -150)
@@ -1177,7 +1074,7 @@ local active
 
 for i = 1, 5 do
 	local index = tostring(i)
-	clickcastframe["Button"..index] = CreateOptionPage("ClickCast Button"..index, L["Button"..index], clickcastframe, "HORIZONTAL", .3)
+	clickcastframe["Button"..index] = CreateOptionPage("ClickCast Button"..index, L["Button"..index], clickcastframe, "HORIZONTAL", "UnitframeOptions")
 	clickcastframe["Button"..index].title:Hide()
 	clickcastframe["Button"..index].line:Hide()
 	if i == 1 then
@@ -1229,7 +1126,7 @@ for i = 1, 5 do
 	end
 end
 
-clickcastframe["MouseUp"] = CreateOptionPage("ClickCast MouseUp", L["MouseUp"], clickcastframe, "HORIZONTAL", .3)
+clickcastframe["MouseUp"] = CreateOptionPage("ClickCast MouseUp", L["MouseUp"], clickcastframe, "HORIZONTAL", "UnitframeOptions")
 clickcastframe["MouseUp"].title:Hide()
 clickcastframe["MouseUp"].line:Hide()
 for k, v in pairs(modifier) do
@@ -1277,7 +1174,7 @@ for k, v in pairs(modifier) do
 	end)
 end
 
-clickcastframe["MouseDown"] = CreateOptionPage("ClickCast MouseDown", L["MouseDown"], clickcastframe, "HORIZONTAL", .3)
+clickcastframe["MouseDown"] = CreateOptionPage("ClickCast MouseDown", L["MouseDown"], clickcastframe, "HORIZONTAL", "UnitframeOptions")
 clickcastframe["MouseDown"].title:Hide()
 clickcastframe["MouseDown"].line:Hide()
 for k, v in pairs(modifier) do
@@ -1325,7 +1222,8 @@ for k, v in pairs(modifier) do
 	end)
 end
 
-RFInnerframe.Icon_Display = CreateOptionPage("RF Options Icon Display", L["光环"]..L["图标"], RFInnerframe, "VERTICAL", .3)
+-- 光环图标
+RFInnerframe.Icon_Display = CreateOptionPage("RF Options Icon Display", L["光环"]..L["图标"], RFInnerframe, "VERTICAL", "UnitframeOptions")
 
 local raidicon_debufftitle = T.createtext(RFInnerframe.Icon_Display, "OVERLAY", 18, "OUTLINE", "LEFT")
 raidicon_debufftitle:SetPoint("LEFT", RFInnerframe.Icon_Display, "TOPLEFT", 50, -75)
@@ -1370,464 +1268,12 @@ T.createcheckbutton(RFInnerframe.Icon_Display, 60, 380, L["自动添加团队减
 T.createslider(RFInnerframe.Icon_Display, 60, 430, L["自动添加的图标层级"], "UnitframeOptions", "debuff_auto_add_level", 1, 1, 20, 1)
 
 -- 团队减益
-RFInnerframe.raiddebuff = CreateOptionPage("RF Options Raid Debuff", L["副本减益"], RFInnerframe, "VERTICAL", .3, true)
+RFInnerframe.raiddebuff = CreateOptionPage("RF Options Raid Debuff", L["副本减益"], RFInnerframe, "VERTICAL", "UnitframeOptions")
 
-local Selected_InstanceID
-local Selected_Encounter
-
-local function CreateEncounterDebuffButton(InstanceID, encounterID, spellID, level)
-	local frame = RFInnerframe.raiddebuff.debufflist.SFAnchor
-	if not frame.spells["icon"..encounterID.."_"..spellID] then
-		local bu = CreateFrame("Frame", nil, frame)
-		bu.encounterID = encounterID
-	
-		bu:SetSize(330, 16)
-		
-		local name, _, icon = GetSpellInfo(spellID)
-		bu.icon = CreateFrame("Button", nil, bu, "BackdropTemplate")
-		bu.icon:SetSize(14, 14)
-		bu.icon:SetNormalTexture(icon)
-		bu.icon:GetNormalTexture():SetTexCoord(0.1,0.9,0.1,0.9)
-		bu.icon:SetPoint"LEFT"
-		
-		bu.icon.bg = bu.icon:CreateTexture(nil, "BACKGROUND")
-		bu.icon.bg:SetPoint("TOPLEFT", -1, 1)
-		bu.icon.bg:SetPoint("BOTTOMRIGHT", 1, -1)
-		bu.icon.bg:SetTexture(G.media.blank)
-		bu.icon.bg:SetVertexColor(0, 0, 0)
-		
-		bu.level = T.createtext(bu, "OVERLAY", 12, "OUTLINE", "LEFT")
-		bu.level:SetPoint("LEFT", 40, 0)
-		bu.level:SetTextColor(1, .2, .6)
-		bu.level:SetText(level)
-		
-		bu.spellname = T.createtext(bu, "OVERLAY", 12, "OUTLINE", "LEFT")
-		bu.spellname:SetPoint("LEFT", 140, 0)
-		bu.spellname:SetTextColor(1, 1, 0)
-		bu.spellname:SetText(name)
-		
-		bu.close = CreateFrame("Button", nil, bu)
-		bu.close:SetSize(22,22)
-		bu.close:SetPoint("LEFT", 310, 0)
-		bu.close.text = T.createtext(bu.close, "OVERLAY", 12, "OUTLINE", "CENTER")
-		bu.close.text:SetPoint("CENTER")
-		bu.close.text:SetText("x")
-		
-		bu.close:SetScript("OnClick", function() 
-			bu:Hide()
-			aCoreCDB["RaidDebuff"][InstanceID][encounterID][spellID] = nil
-			T.DisplayRaidDebuffList()
-		end)
-		
-		bu:SetScript("OnEnter", function(self)
-			GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-			GameTooltip:SetSpellByID(spellID)
-			GameTooltip:Show()
-		end)
-		bu:SetScript("OnLeave", function() GameTooltip:Hide() end)
-		
-		bu:SetScript("OnMouseDown", function(self)
-			local frame = RFInnerframe.raiddebuff.debufflist
-			if frame.selectdebuff ~= spellID then
-				local encounterName = EJ_GetEncounterInfo(encounterID)
-				UIDropDownMenu_SetText(frame.BossDD, encounterName)
-				frame.Spellinput:ClearFocus()
-				frame.Spellinput:SetText(spellID)
-				frame.Levelinput:ClearFocus()
-				frame.Levelinput:SetText(level)	
-				frame.selectdebuff = spellID
-			else
-				UIDropDownMenu_SetText(frame.BossDD, "")
-				frame.Spellinput:ClearFocus()
-				frame.Spellinput:SetText("")
-				frame.Levelinput:ClearFocus()
-				frame.Levelinput:SetText("")		
-				frame.selectdebuff = nil
-			end
-		end)
-		
-		frame.spells["icon"..encounterID.."_"..spellID] = bu
-		
-		return bu
-	end
-end
-
-local function UpdateEncounterTitle(parent, i, encounterID, y)
-	if not parent.titles[i] then
-		local frame = CreateFrame("Frame", nil, parent)
-		frame:SetSize(330, 16)
-		
-		frame.tex = frame:CreateTexture(nil, "ARTWORK")
-		frame.tex:SetSize(60, 30)
-		frame.tex:SetPoint("BOTTOMLEFT", frame, "BOTTOMLEFT")
-		
-		frame.text = T.createtext(frame, "OVERLAY", 14, "OUTLINE", "LEFT")
-		frame.text:SetPoint("BOTTOMLEFT", frame.tex, "BOTTOMRIGHT", 0, 0)
-		
-		frame.line = frame:CreateTexture(nil, "ARTWORK")
-		frame.line:SetSize(330, 1)
-		frame.line:SetPoint("BOTTOM")
-		frame.line:SetColorTexture(1, 1, 1)
-		
-		parent.titles[i] = frame
-	end
-	
-	local portrait = (encounterID == 1 and [[Interface\EncounterJournal\UI-EJ-BOSS-Default]]) or select(5, EJ_GetCreatureInfo(1, encounterID))
-	local name = (encounterID == 1 and L["杂兵"]) or EJ_GetEncounterInfo(encounterID)
-	
-	local title = parent.titles[i]
-	title.tex:SetTexture(portrait)
-	title.text:SetText(name)	
-	title:ClearAllPoints()
-	title:SetPoint("TOPLEFT", parent, "TOPLEFT", 20, y)
-	title:Show()
-end
-
-local function UpdateEncounterButton(parent, encounterID, spellID, level, y)
-	if not parent.spells["icon"..encounterID.."_"..spellID] then
-		CreateEncounterDebuffButton(Selected_InstanceID, encounterID, spellID, level)
-	end
-	
-	local bu = parent.spells["icon"..encounterID.."_"..spellID]
-	bu.level:SetText(level)
-	bu:ClearAllPoints()
-	bu:SetPoint("TOPLEFT", parent, "TOPLEFT", 20, y)
-	bu:Show()
-end
-
-local function DisplayRaidDebuffList()
-	if Selected_InstanceID then
-		local frame = RFInnerframe.raiddebuff.debufflist.SFAnchor
-		local y = -20
-		local bosstable = {}
-		local dataIndex = 1
-		
-		EJ_SelectInstance(Selected_InstanceID)
-		local encounterID = select(3, EJ_GetEncounterInfoByIndex(dataIndex, Selected_InstanceID))
-		while encounterID ~= nil do
-			table.insert(bosstable, encounterID)
-			dataIndex = dataIndex + 1
-			EJ_SelectInstance(Selected_InstanceID)
-			encounterID = select(3, EJ_GetEncounterInfoByIndex(dataIndex, Selected_InstanceID))
-		end
-		table.insert(bosstable, 1)
-		
-		for k, v in pairs(frame.titles) do
-			v:Hide()			
-		end
-		
-		for k, v in pairs(frame.spells) do
-			v:Hide()
-		end
-		
-		for i, encounterID in pairs (bosstable) do		
-			UpdateEncounterTitle(frame, i, encounterID, y)
-			y = y - 20
-			if aCoreCDB["RaidDebuff"][Selected_InstanceID] and aCoreCDB["RaidDebuff"][Selected_InstanceID][encounterID] then
-				for spellID, level in pairs (aCoreCDB["RaidDebuff"][Selected_InstanceID][encounterID]) do
-					UpdateEncounterButton(frame, encounterID, spellID, level, y)
-					y = y - 20
-				end
-			end
-			y = y - 10
-		end
-	end
-end
-T.DisplayRaidDebuffList = DisplayRaidDebuffList
-
-local function CreateEncounterDebuffList()
-	if Selected_InstanceID then
-		local BossDD = RFInnerframe.raiddebuff.debufflist.BossDD
-		UIDropDownMenu_Initialize(BossDD, function()
-			local dataIndex = 1	
-			EJ_SelectInstance(Selected_InstanceID)
-			local encounterName, _, encounterID = EJ_GetEncounterInfoByIndex(dataIndex, Selected_InstanceID)
-			while encounterName ~= nil do
-				local info = UIDropDownMenu_CreateInfo()
-				info.text = encounterName
-				info.value = encounterID
-				info.checked = function()
-					return (Selected_Encounter == info.value)
-				end
-				info.func = function()
-					UIDropDownMenu_SetText(BossDD, info.text)
-					CloseDropDownMenus()
-					Selected_Encounter = info.value
-				end
-				UIDropDownMenu_AddButton(info)
-				dataIndex = dataIndex + 1
-				EJ_SelectInstance(Selected_InstanceID)
-				encounterName, _, encounterID = EJ_GetEncounterInfoByIndex(dataIndex, Selected_InstanceID)
-			end
-			
-			local info = UIDropDownMenu_CreateInfo()
-			info.text = L["杂兵"]
-			info.checked = function()
-				return (Selected_Encounter == 1)
-			end
-			info.func = function()
-				UIDropDownMenu_SetText(BossDD, L["杂兵"])
-				CloseDropDownMenus()
-				Selected_Encounter = 1
-			end
-			UIDropDownMenu_AddButton(info)
-		end)
-		
-		Selected_Encounter = 1
-		UIDropDownMenu_SetText(BossDD, L["杂兵"])
-		
-		DisplayRaidDebuffList()
-	end
-end
-
-local function CreateRaidDebuffOptions()
-	local frame = RFInnerframe.raiddebuff
-	
-	-- 光环列表 --
-	frame.debufflist = CreateFrame("ScrollFrame", G.uiname.."Raiddebuff Frame List", frame, "UIPanelScrollFrameTemplate")
-	frame.debufflist:SetPoint("TOPLEFT", 40, -95)
-	frame.debufflist:SetPoint("BOTTOMRIGHT", -50, 20)
-	frame.debufflist:Hide()
-	frame.debufflist:SetScript("OnShow", function()
-		CreateEncounterDebuffList()
-	end)
-	
-	-- 重置按钮
-	local Reset = T.createclicktexbutton(frame.debufflist, {"LEFT", RFInnerframe.raiddebuff.title, "RIGHT", 2, 0}, [[Interface\AddOns\AltzUI\media\icons\refresh.tga]], L["重置"])	
-	Reset:SetScript("OnClick", function(self)
-		if Selected_InstanceID then
-			local InstanceName = EJ_GetInstanceInfo(Selected_InstanceID)
-			StaticPopupDialogs[G.uiname.."Reset Confirm"].text = format(L["重置确认"], T.color_text(InstanceName))
-			StaticPopupDialogs[G.uiname.."Reset Confirm"].OnAccept = function()
-				aCoreCDB["RaidDebuff"][Selected_InstanceID] = nil
-				ReloadUI()
-			end
-			StaticPopup_Show(G.uiname.."Reset Confirm")
-		end
-	end)
-	
-	frame.debufflist.SFAnchor = CreateFrame("Frame", G.uiname.."Raiddebuff Frame ListScrollAnchor", frame.debufflist)
-	frame.debufflist.SFAnchor:SetPoint("TOPLEFT", frame.debufflist, "TOPLEFT", 0, -3)
-	frame.debufflist.SFAnchor:SetWidth(frame.debufflist:GetWidth()-30)
-	frame.debufflist.SFAnchor:SetHeight(frame.debufflist:GetHeight()+200)
-	frame.debufflist.SFAnchor:SetFrameLevel(frame.debufflist:GetFrameLevel()+1)
-	
-	frame.debufflist.SFAnchor.titles = {}
-	frame.debufflist.SFAnchor.spells = {}
-	
-	frame.debufflist:SetScrollChild(frame.debufflist.SFAnchor)
-	F.ReskinScroll(_G[G.uiname.."Raiddebuff Frame ListScrollBar"])
-	
-	-- BOSS下拉菜单
-	local BossDD = CreateFrame("Frame", G.uiname.."RaidDebuff SelectBossDropdown", frame.debufflist, "UIDropDownMenuTemplate")
-	BossDD:SetPoint("BOTTOMLEFT", frame.debufflist, "TOPLEFT", 10, 5)	
-	UIDropDownMenu_SetWidth(BossDD, 100)
-	F.ReskinDropDown(BossDD)
-	
-	BossDD.name = T.createtext(BossDD, "OVERLAY", 13, "OUTLINE", "LEFT")
-	BossDD.name:SetPoint("BOTTOMRIGHT", BossDD, "BOTTOMLEFT", 15, 12)
-	BossDD.name:SetText("BOSS")
-	
-	frame.debufflist.BossDD = BossDD
-
-	-- SpellID输入框
-	local Spellinput = CreateFrame("EditBox", G.uiname.."RaidDebuff SpellInput", frame.debufflist, "BackdropTemplate")
-	Spellinput:SetSize(60, 20)
-	Spellinput:SetPoint("LEFT", BossDD, "RIGHT", -5, 2)
-	F.CreateBD(Spellinput)
-	
-	Spellinput:SetFont(GameFontHighlight:GetFont(), 12, "OUTLINE")
-	Spellinput:SetAutoFocus(false)
-	Spellinput:SetTextInsets(3, 0, 0, 0)
-	
-	Spellinput:SetScript("OnShow", function(self) self:SetText(L["输入法术ID"]) end)
-	Spellinput:SetScript("OnEditFocusGained", function(self) self:HighlightText() end)
-	Spellinput:SetScript("OnEscapePressed", function(self) self:ClearFocus() self:SetText(L["输入法术ID"]) end)
-	Spellinput:SetScript("OnEnterPressed", function(self) self:ClearFocus() end)
-	
-	frame.debufflist.Spellinput = Spellinput
-
-	-- 法术层级输入框
-	local Levelinput = CreateFrame("EditBox", G.uiname.."RaidDebuff Level Input", frame.debufflist, "BackdropTemplate")
-	Levelinput:SetSize(60, 20)
-	Levelinput:SetPoint("LEFT", Spellinput, "RIGHT", 5, 0)
-	F.CreateBD(Levelinput)
-	
-	Levelinput:SetFont(GameFontHighlight:GetFont(), 12, "OUTLINE")
-	Levelinput:SetAutoFocus(false)
-	Levelinput:SetTextInsets(3, 0, 0, 0)
-	
-	Levelinput:SetScript("OnShow", function(self) self:SetText(L["优先级"]) end)
-	Levelinput:SetScript("OnEditFocusGained", function(self) self:HighlightText() end)
-	Levelinput:SetScript("OnEscapePressed", function(self) self:ClearFocus() self:SetText(L["优先级"]) end)
-	Levelinput:SetScript("OnEnterPressed", function(self) self:ClearFocus() end)
-	
-	frame.debufflist.Levelinput = Levelinput	
-	
-	-- 添加按钮
-	local Add = CreateFrame("Button", G.uiname.."RaidDebuff Add Debuff Button", frame.debufflist, "UIPanelButtonTemplate")
-	Add:SetPoint("LEFT", Levelinput, "RIGHT", 10, 0)
-	Add:SetSize(70, 20)
-	Add:SetText(ADD)
-	T.resize_font(Add.Text)
-	F.Reskin(Add)
-	
-	Add:SetScript("OnClick", function(self)
-		local spellID = tonumber(Spellinput:GetText())
-		local level = tonumber(Levelinput:GetText())
-		if not spellID then
-			StaticPopupDialogs[G.uiname.."incorrect spellID"].text = "|cff7FFF00".."/".." |r"..L["不是一个有效的法术ID"]
-			StaticPopup_Show(G.uiname.."incorrect spellID")
-		elseif not GetSpellInfo(spellID) then
-			StaticPopupDialogs[G.uiname.."incorrect spellID"].text = "|cff7FFF00"..spellID.." |r"..L["不是一个有效的法术ID"]
-			StaticPopup_Show(G.uiname.."incorrect spellID")
-		elseif not level then
-			StaticPopupDialogs[G.uiname.."incorrect number"].text = "|cff7FFF00"..Levelinput:GetText().." |r"..L["必须是一个数字"]
-			StaticPopup_Show(G.uiname.."incorrect number")	
-		else
-			if not aCoreCDB["RaidDebuff"][Selected_InstanceID] then
-				aCoreCDB["RaidDebuff"][Selected_InstanceID] = {}
-			end
-			
-			if not aCoreCDB["RaidDebuff"][Selected_InstanceID][Selected_Encounter] then
-				aCoreCDB["RaidDebuff"][Selected_InstanceID][Selected_Encounter] = {}
-			end
-			
-			aCoreCDB["RaidDebuff"][Selected_InstanceID][Selected_Encounter][spellID] = level
-			DisplayRaidDebuffList()
-		end
-	end)
-	
-	frame.debufflist.Add = Add
-	
-	-- 返回按钮
-	local Back = T.createclicktexbutton(frame.debufflist, {"LEFT", Add, "RIGHT", 2, 0}, [[Interface\AddOns\AltzUI\media\refresh.tga]])
-	T.SetupArrow(Back.tex, "left")
-	Back:SetScript("OnClick", function() 
-		frame.debufflist:Hide()
-		frame.SF:Show()
-	end)
-	
-	-- 副本列表 --
-	local tier_num = EJ_GetNumTiers()
-	local y = 0
-	for i = tier_num, 1, -1 do
-		local tier_title = T.createtext(frame.SFAnchor, "OVERLAY", 16, "OUTLINE", "LEFT")
-		tier_title:SetPoint("TOPLEFT", frame.SFAnchor, "TOPLEFT", 20, y)
-		tier_title:SetText(EJ_GetTierInfo(i))
-		y = y - 20
-		CreateDividingLine(frame.SFAnchor, y, 400)
-		y = y - 10
-		EJ_SelectTier(i)
-		local ind = 0
-		-- 地下城
-		local dataIndex = 1
-		local instanceID, name = EJ_GetInstanceByIndex(dataIndex, false)
-		while instanceID ~= nil do
-			ind = ind + 1
-			local tab = CreateFrame("Button", G.uiname.."Raiddebuff Tab"..instanceID, frame.SFAnchor, "UIPanelButtonTemplate")
-			tab.instanceID = instanceID
-			tab:SetFrameLevel(frame.SFAnchor:GetFrameLevel()+2)
-			tab:SetSize(150, 25)
-			tab:SetText(name)		
-			if mod(ind,2) == 1 then
-				tab:SetPoint("TOPLEFT", frame.SFAnchor, "TOPLEFT", 20+mod(ind+1,2)*200, y)
-				y = y - 30
-			else
-				tab:SetPoint("TOPLEFT", frame.SFAnchor, "TOPLEFT", 20+mod(ind+1,2)*200, y + 30)
-			end
-			T.resize_font(tab.Text)
-			F.Reskin(tab)
-
-			tab:HookScript("OnMouseDown", function(self)
-				Selected_InstanceID = self.instanceID
-				frame.SF:Hide()
-				frame.debufflist:Show()
-			end)
-			
-			if not aCoreCDB["RaidDebuff"][instanceID] then
-				aCoreCDB["RaidDebuff"][instanceID] = {}
-			end
-			
-			dataIndex = dataIndex + 1
-			instanceID, name = EJ_GetInstanceByIndex(dataIndex, false)
-		end
-		-- 团本
-		if i ~= tier_num then
-			dataIndex = 1
-			instanceID, name = EJ_GetInstanceByIndex(dataIndex, true)
-			while instanceID ~= nil do
-				ind = ind + 1
-				local tab = CreateFrame("Button", G.uiname.."Raiddebuff Tab"..instanceID, frame.SFAnchor, "UIPanelButtonTemplate")
-				tab.instanceID = instanceID
-				tab:SetFrameLevel(frame.SFAnchor:GetFrameLevel()+2)
-				tab:SetSize(150, 25)
-				tab:SetText(name)		
-				if mod(ind,2) == 1 then
-					tab:SetPoint("TOPLEFT", frame.SFAnchor, "TOPLEFT", 20+mod(ind+1,2)*200, y)
-					y = y - 30
-				else
-					tab:SetPoint("TOPLEFT", frame.SFAnchor, "TOPLEFT", 20+mod(ind+1,2)*200, y + 30)
-				end
-				T.resize_font(tab.Text)
-				F.Reskin(tab)
-	
-				tab:HookScript("OnMouseDown", function(self)
-					Selected_InstanceID = self.instanceID
-					frame.SF:Hide()
-					frame.debufflist:Show()
-				end)
-				
-				if not aCoreCDB["RaidDebuff"][instanceID] then
-					aCoreCDB["RaidDebuff"][instanceID] = {}
-				end
-			
-				dataIndex = dataIndex + 1
-				instanceID, name = EJ_GetInstanceByIndex(dataIndex, true)
-			end
-		end
-		y = y - 10
-	end
-end
-
-hooksecurefunc("SetItemRef", function(link, text)
-  if link:find("garrmission:altz") then
-	local InstanceID, encounterID, spellID = string.match(text, "altz::([^%]]+)%::([^%]]+)%::([^%]]+)%|h|c")
-	InstanceID = tonumber(InstanceID)
-	encounterID = tonumber(encounterID)
-	spellID = tonumber(spellID)
-	if string.find(text, "config") then	
-		GUI.tab6:GetScript("OnClick")()
-		RFInnerframe.tab8:GetScript("OnClick")()
-		_G[G.uiname.."Raiddebuff Tab"..InstanceID]:GetScript("OnClick")()
-		GUI:Show()
-		GUI.df:Show()
-		GUI.scale:Show()
-			
-		local frame = RFInnerframe.raiddebuff.debufflist
-		if encounterID == 1 then
-			UIDropDownMenu_SetText(frame.BossDD, L["杂兵"])
-		else
-			local encounterName = EJ_GetEncounterInfo(encounterID)
-			UIDropDownMenu_SetText(frame.BossDD, encounterName)
-		end		
-		frame.Spellinput:SetText(spellID)
-		frame.Levelinput:SetText(aCoreCDB["UnitframeOptions"]["debuff_auto_add_level"])		
-	elseif string.find(text, "delete") then
-		if aCoreCDB["RaidDebuff"][InstanceID][encounterID][spellID] then
-			aCoreCDB["RaidDebuff"][InstanceID][encounterID][spellID] = nil
-			DisplayRaidDebuffList()
-			local spell = GetSpellInfo(spellID)
-			aCoreCDB["CooldownAura"]["Debuffs_Black"][spell] = {}
-			aCoreCDB["CooldownAura"]["Debuffs_Black"][spell]["id"] = spellID
-			print(string.format(L["已删除并加入黑名单"], T.GetIconLink(spellID)))
-		end
-	end
-  end
-end)
+RFInnerframe.raiddebuff.options = T.createscrolllist(RFInnerframe.raiddebuff, {"TOPLEFT", 25, -55}, true, 400, 400)
 
 -- 全局减益和全局增益
-RFInnerframe.globaldebuff = CreateOptionPage("RF Options Raid Debuff Fliter List", L["全局减益"], RFInnerframe, "VERTICAL", .3)
+RFInnerframe.globaldebuff = CreateOptionPage("RF Options Raid Debuff Fliter List", L["全局减益"], RFInnerframe, "VERTICAL", "CooldownAura")
 
 RFInnerframe.globaldebuff.whitelist = T.CreateAuraListOption(RFInnerframe.globaldebuff, {"TOPLEFT", 30, -55}, 200,  L["白名单"]..AURAS, "CooldownAura", "Debuffs", L["优先级"])
 
@@ -1835,29 +1281,17 @@ CreateDividingLine(RFInnerframe.globaldebuff, -250)
 
 RFInnerframe.globaldebuff.blacklist = T.CreateAuraListOption(RFInnerframe.globaldebuff, {"TOPLEFT", RFInnerframe.globaldebuff.whitelist, "BOTTOMLEFT", 0, -10}, 200, L["黑名单"]..AURAS, "CooldownAura", "Debuffs_Black")
 
-RFInnerframe.cooldownaura = CreateOptionPage("RF Options Cooldown Aura", L["全局增益"], RFInnerframe, "VERTICAL", .3)
+RFInnerframe.cooldownaura = CreateOptionPage("RF Options Cooldown Aura", L["全局增益"], RFInnerframe, "VERTICAL", "CooldownAura")
 
 RFInnerframe.cooldownaura.whitelist = T.CreateAuraListOption(RFInnerframe.cooldownaura, {"TOPLEFT", 30, -60}, 380, L["白名单"]..AURAS, "CooldownAura", "Buffs", L["优先级"])
 --====================================================--
 --[[           -- Actionbar Options --              ]]--
 --====================================================--
 local ActionbarOptions = CreateOptionPage("Actionbar Options", ACTIONBARS_LABEL, GUI, "VERTICAL")
+local ActionbarInnerframe = CreateInnerFrame(ActionbarOptions)
 
-local ActionbarInnerframe = CreateFrame("Frame", G.uiname.."Actionbar Options Innerframe", ActionbarOptions, "BackdropTemplate")
-ActionbarInnerframe:SetPoint("TOPLEFT", 40, -60)
-ActionbarInnerframe:SetPoint("BOTTOMLEFT", -20, 25)
-ActionbarInnerframe:SetWidth(ActionbarOptions:GetWidth()-200)
-F.CreateBD(ActionbarInnerframe, .3)
-
-ActionbarInnerframe.tabindex = 1
-ActionbarInnerframe.tabnum = 20
-for i = 1, 20 do
-	ActionbarInnerframe["tab"..i] = CreateFrame("Frame", G.uiname.."ActionbarInnerframe Tab"..i, ActionbarInnerframe, "BackdropTemplate")
-	ActionbarInnerframe["tab"..i]:SetScript("OnMouseDown", function() end)
-end
-
-ActionbarInnerframe.common = CreateOptionPage("Actionbar Options common", L["通用设置"], ActionbarInnerframe, "VERTICAL", .3)
-ActionbarInnerframe.common:Show()
+-- 样式
+ActionbarInnerframe.common = CreateOptionPage("Actionbar Options common", L["样式"], ActionbarInnerframe, "VERTICAL", "ActionbarOptions")
 
 T.createcheckbutton(ActionbarInnerframe.common, 30, 60, L["显示冷却时间"], "ActionbarOptions", "cooldown", L["显示冷却时间提示"])
 T.createcheckbutton(ActionbarInnerframe.common, 30, 90, L["显示冷却时间"].." (Weakauras)", "ActionbarOptions", "cooldown_wa", L["显示冷却时间提示WA"])
@@ -1868,7 +1302,8 @@ T.createslider(ActionbarInnerframe.common, 30, 260, L["宏名字字体大小"], 
 T.createslider(ActionbarInnerframe.common, 30, 300, L["可用次数字体大小"], "ActionbarOptions", "countsize", 1, 8, 20, 1)
 T.createDR(ActionbarInnerframe.common.cooldown, ActionbarInnerframe.common.cooldown_wa, ActionbarInnerframe.common.cooldownsize)
 
-ActionbarInnerframe.cdflash = CreateOptionPage("Actionbar Options cdflash", L["冷却提示"], ActionbarInnerframe, "VERTICAL", .3)
+-- 冷却提示
+ActionbarInnerframe.cdflash = CreateOptionPage("Actionbar Options cdflash", L["冷却提示"], ActionbarInnerframe, "VERTICAL", "ActionbarOptions")
 T.createcheckbutton(ActionbarInnerframe.cdflash, 30, 60, L["启用"], "ActionbarOptions", "cdflash_enable")
 
 T.createslider(ActionbarInnerframe.cdflash, 30, 100, L["图标大小"], "ActionbarOptions", "cdflash_size", 1, 15, 100, 1)
@@ -1891,32 +1326,20 @@ ActionbarInnerframe.cdflash.ignoreitem_list = T.CreateItemListOption(ActionbarIn
 --[[           -- NamePlates Options --             ]]--
 --====================================================--
 local PlateOptions = CreateOptionPage("Plate Options", UNIT_NAMEPLATES, GUI, "VERTICAL")
+local PlateInnerframe = CreateInnerFrame(PlateOptions)
 
-local PlateInnerframe = CreateFrame("Frame", G.uiname.."Actionbar Options Innerframe", PlateOptions, "BackdropTemplate")
-PlateInnerframe:SetPoint("TOPLEFT", 40, -60)
-PlateInnerframe:SetPoint("BOTTOMLEFT", -20, 25)
-PlateInnerframe:SetWidth(PlateOptions:GetWidth()-200)
-F.CreateBD(PlateInnerframe, .3)
-
-PlateInnerframe.tabindex = 1
-PlateInnerframe.tabnum = 20
-for i = 1, 20 do
-	PlateInnerframe["tab"..i] = CreateFrame("Frame", G.uiname.."PlateInnerframe Tab"..i, PlateInnerframe, "BackdropTemplate")
-	PlateInnerframe["tab"..i]:SetScript("OnMouseDown", function() end)
-end
--- 通用 --
-PlateInnerframe.common = CreateOptionPage("Nameplates Options common", L["通用设置"], PlateInnerframe, "VERTICAL", .3)
-PlateInnerframe.common:Show()
+-- 通用
+PlateInnerframe.common = CreateOptionPage("Nameplates Options common", L["通用设置"], PlateInnerframe, "VERTICAL", "PlateOptions")
 
 T.createcheckbutton(PlateInnerframe.common, 30, 60, L["启用"], "PlateOptions", "enableplate")
 T.CVartogglebox(PlateInnerframe.common, 160, 60, "nameplateShowAll", UNIT_NAMEPLATES_AUTOMODE, "1", "0")
 
-local plate_theme_group = {
-	["class"] = L["职业色-条形"],
-	["dark"] =  L["深色-条形"],
-	["number"] =  L["数字样式"],
-}
-T.createradiobuttongroup(PlateInnerframe.common, 30, 100, L["样式"], "PlateOptions", "theme", plate_theme_group)
+T.createradiobuttongroup(PlateInnerframe.common, 30, 100, L["样式"], "theme", {
+	{"class", L["职业色-条形"]},
+	{"dark", L["深色-条形"]},
+	{"number", L["数字样式"]},
+})
+
 T.createslider(PlateInnerframe.common, 30, 150, L["字体大小"], "PlateOptions", "fontsize", 1, 5, 25, 1)
 T.createslider(PlateInnerframe.common, 230, 150, L["图标数字大小"], "PlateOptions", "numfontsize", 1, 5, 25, 1)
 T.createslider(PlateInnerframe.common, 30, 190, L["光环"].." "..L["图标数量"], "PlateOptions", "plateauranum", 1, 3, 10, 1)
@@ -1936,19 +1359,20 @@ T.createDR(PlateInnerframe.common.enableplate, PlateInnerframe.common.theme, Pla
 PlateInnerframe.common.threatcolor, PlateInnerframe.common.plateauranum, PlateInnerframe.common.plateaurasize,
 PlateInnerframe.common.Interruptible_color, PlateInnerframe.common.notInterruptible_color)
 
--- 样式 --
-PlateInnerframe.style = CreateOptionPage("Nameplates Options common", L["样式"], PlateInnerframe, "VERTICAL", .3)
+-- 样式
+PlateInnerframe.style = CreateOptionPage("Nameplates Options common", L["样式"], PlateInnerframe, "VERTICAL", "PlateOptions")
 PlateInnerframe.style.title:SetText(L["条形样式"])
 
 T.createslider(PlateInnerframe.style, 30, 80, L["宽度"], "PlateOptions", "bar_width", 1, 70, 150, 5)
 T.createslider(PlateInnerframe.style, 230, 80, L["高度"], "PlateOptions", "bar_height", 1, 5, 25, 1)
 PlateInnerframe.style.bar_width:SetWidth(160)
 PlateInnerframe.style.bar_height:SetWidth(160)
-local plate_bar_hp_perc_group = {
-	["perc"] = L["百分比"],
-	["value_perc"] =  L["数值和百分比"],
-}
-T.createradiobuttongroup(PlateInnerframe.style, 30, 100, L["数值样式"], "PlateOptions", "bar_hp_perc", plate_bar_hp_perc_group)
+
+T.createradiobuttongroup(PlateInnerframe.style, 30, 100, L["数值样式"], "bar_hp_perc", {
+	{"perc", L["百分比"]},
+	{"value_perc", L["数值和百分比"]},
+})
+
 T.createcheckbutton(PlateInnerframe.style, 30, 140, L["总是显示生命值"], "PlateOptions", "bar_alwayshp", L["总是显示生命值提示"])
 T.createcheckbutton(PlateInnerframe.style, 30, 170, L["友方只显示名字"], "PlateOptions", "bar_onlyname")
 
@@ -1968,31 +1392,31 @@ PlateInnerframe.style.number_cpwidth:SetWidth(160)
 T.createcheckbutton(PlateInnerframe.style, 30, 310, string.format("%s(%s)", L["总是显示生命值"],L["数字样式"]), "PlateOptions", "number_alwayshp", L["总是显示生命值提示"])
 T.createcheckbutton(PlateInnerframe.style, 30, 340, string.format("%s(%s)", L["根据血量染色"],L["数字样式"]), "PlateOptions", "number_colorheperc")
 
--- 玩家姓名板 --
-PlateInnerframe.playerresource = CreateOptionPage("Player Resource Bar Options", L["玩家姓名板"], PlateInnerframe, "VERTICAL", .3)
+-- 玩家姓名板
+PlateInnerframe.playerresource = CreateOptionPage("Player Resource Bar Options", L["玩家姓名板"], PlateInnerframe, "VERTICAL", "PlateOptions")
 
 T.createcheckbutton(PlateInnerframe.playerresource, 30, 60, L["显示玩家姓名板"], "PlateOptions", "playerplate")
 T.createcheckbutton(PlateInnerframe.playerresource, 70, 90, L["显示玩家姓名板光环"], "PlateOptions", "plateaura")
 T.createcheckbutton(PlateInnerframe.playerresource, 70, 120, L["显示玩家施法条"], "PlateOptions", "platecastbar")
 T.createcheckbutton(PlateInnerframe.playerresource, 30, 150, DISPLAY_PERSONAL_RESOURCE, "PlateOptions", "classresource_show")
-local classresource_group = {
-	["target"] = L["目标姓名板"],
-	["player"] = L["玩家姓名板"],
-}
-T.createradiobuttongroup(PlateInnerframe.playerresource, 70, 180, L["姓名板资源位置"], "PlateOptions", "classresource_pos", classresource_group)
+
+T.createradiobuttongroup(PlateInnerframe.playerresource, 70, 180, L["姓名板资源位置"], "classresource_pos", {
+	{"target", L["目标姓名板"]},
+	{"player", L["玩家姓名板"]},
+})
 
 T.createDR(PlateInnerframe.playerresource.playerplate, PlateInnerframe.playerresource.plateaura)
 T.createDR(PlateInnerframe.playerresource.classresource_show, PlateInnerframe.playerresource.classresource_pos)
 
--- 光环过滤列表 --
-PlateInnerframe.auralist = CreateOptionPage("Plate Options Aura", L["光环"], PlateInnerframe, "VERTICAL", .3)
+-- 光环过滤列表
+PlateInnerframe.auralist = CreateOptionPage("Plate Options Aura", L["光环"], PlateInnerframe, "VERTICAL", "PlateOptions")
 
 PlateInnerframe.auralist.my_filter = T.CreateAuraListOption(PlateInnerframe.auralist, {"TOPLEFT", 30, -55}, 200, L["我施放的光环"], "PlateOptions", "myplateauralist")
 
-T.createradiobuttongroup(PlateInnerframe.auralist.my_filter, -5, 40, L["过滤方式"], "PlateOptions", "myfiltertype", {
-	["none"] = L["全部隐藏"],
-	["whitelist"] = L["白名单"]..AURAS,
-	["blacklist"] = L["黑名单"]..AURAS,
+T.createradiobuttongroup(PlateInnerframe.auralist.my_filter, -5, 40, L["过滤方式"], "myfiltertype", {
+	"none", L["全部隐藏"],
+	"whitelist", L["白名单"]..AURAS,
+	"blacklist", L["黑名单"]..AURAS,
 })
 
 PlateInnerframe.auralist.my_filter.reset.apply = function()
@@ -2006,9 +1430,9 @@ CreateDividingLine(PlateInnerframe.auralist, -260)
 
 PlateInnerframe.auralist.other_filter = T.CreateAuraListOption(PlateInnerframe.auralist, {"TOPLEFT", 30, -265}, 200, L["其他人施放的光环"], "PlateOptions", "otherplateauralist")
 
-T.createradiobuttongroup(PlateInnerframe.auralist.other_filter, -5, 40, L["过滤方式"], "PlateOptions", "otherfiltertype", {
-	["none"] = L["全部隐藏"],
-	["whitelist"] = L["白名单"]..AURAS,
+T.createradiobuttongroup(PlateInnerframe.auralist.other_filter, -5, 40, L["过滤方式"], "otherfiltertype", {
+	{"none", L["全部隐藏"]},
+	{"whitelist", L["白名单"]..AURAS},
 })
 
 PlateInnerframe.auralist.other_filter.reset.apply = function()
@@ -2018,8 +1442,8 @@ end
 PlateInnerframe.auralist.other_filter.option_list:ClearAllPoints()
 PlateInnerframe.auralist.other_filter.option_list:SetPoint("TOPLEFT", 0, -65)
 
--- 自定义 --
-PlateInnerframe.custom = CreateOptionPage("Plate Options Custom", CUSTOM, PlateInnerframe, "VERTICAL", .3)
+-- 自定义
+PlateInnerframe.custom = CreateOptionPage("Plate Options Custom", CUSTOM, PlateInnerframe, "VERTICAL", "PlateOptions")
 
 PlateInnerframe.custom.color = T.CreatePlateColorOption(PlateInnerframe.custom,  {"TOPLEFT", 30, -55}, 200, L["自定义颜色"], "PlateOptions", "customcoloredplates")
 PlateInnerframe.custom.color.reset.apply = function()
@@ -2033,17 +1457,16 @@ end
 --====================================================--
 --[[             -- Tooltip Options --              ]]--
 --====================================================--
-local TooltipOptions = CreateOptionPage("Tooltip Options", USE_UBERTOOLTIPS, GUI, "VERTICAL")
+local TooltipOptions = CreateOptionPage("Tooltip Options", USE_UBERTOOLTIPS, GUI, "VERTICAL", "TooltipOptions")
 
 T.createcheckbutton(TooltipOptions, 30, 60, L["启用"], "TooltipOptions", "enabletip")
-T.createcheckbutton(TooltipOptions, 30, 90, L["跟随光标"], "TooltipOptions", "cursor")
 T.createcheckbutton(TooltipOptions, 30, 120, L["战斗中隐藏"], "TooltipOptions", "combathide")
 
-T.createDR(TooltipOptions.enabletip, TooltipOptions.cursor, TooltipOptions.combathide)
+T.createDR(TooltipOptions.enabletip, TooltipOptions.combathide)
 --====================================================--
 --[[             -- Combattext Options --              ]]--
 --====================================================--
-local CombattextOptions = CreateOptionPage("CombatText Options", L["战斗信息"], GUI, "VERTICAL")
+local CombattextOptions = CreateOptionPage("CombatText Options", L["战斗信息"], GUI, "VERTICAL", "CombattextOptions")
 
 T.createcheckbutton(CombattextOptions, 30, 60, L["启用"], "CombattextOptions", "combattext")
 T.createcheckbutton(CombattextOptions, 30, 90, L["隐藏浮动战斗信息接受"], "CombattextOptions", "hidblz_receive")
@@ -2062,7 +1485,7 @@ T.createDR(CombattextOptions.combattext, CombattextOptions.hidblz_receive, Comba
 --====================================================--
 --[[              -- Other Options --                ]]--
 --====================================================--
-local OtherOptions = CreateOptionPage("Other Options", OTHER, GUI, "VERTICAL")
+local OtherOptions = CreateOptionPage("Other Options", OTHER, GUI, "VERTICAL", "OtherOptions")
 
 T.createcheckbutton(OtherOptions, 30, 60, L["自动召宝宝"], "OtherOptions", "autopet", L["自动召宝宝提示"])
 T.createcheckbutton(OtherOptions, 300, 60, L["随机奖励"], "OtherOptions", "LFGRewards", L["随机奖励提示"])
@@ -2075,7 +1498,6 @@ CreateDividingLine(OtherOptions, -230)
 
 T.createcheckbutton(OtherOptions, 30, 240, L["任务栏闪动"], "OtherOptions", "flashtaskbar", L["任务栏闪动提示"])
 T.createcheckbutton(OtherOptions, 300, 240, L["隐藏错误提示"], "OtherOptions", "hideerrors", L["隐藏错误提示提示"])	
-T.createcheckbutton(OtherOptions, 30, 270, L["显示插件使用小提示"], "OtherOptions", "showAFKtips", L["显示插件使用小提示提示"])
 T.createcheckbutton(OtherOptions, 300, 270, L["成就截图"], "OtherOptions", "autoscreenshot", L["成就截图提示"])
 T.CVartogglebox(OtherOptions, 30, 300, "screenshotQuality", L["提升截图画质"], "10", "1")
 T.CVartogglebox(OtherOptions, 300, 300, "screenshotFormat", L["截图保存为tga格式"], "tga", "jpg", "截图保存为tga提示")
@@ -2212,17 +1634,18 @@ eventframe:SetScript("OnEvent", function(self, event, ...) self[event](self, ...
 
 function eventframe:ADDON_LOADED(arg1)
 	if arg1 ~= "AltzUI" then return end
+	
 	if aCoreDB == nil then
 		aCoreDB = {}
 	end
+	
 	if aCoreCDB == nil then
 		aCoreCDB = {}
 	end
 	
 	T.LoadAccountVariables()
 	T.LoadVariables()
-	
-	
+
 	local scale = aCoreCDB["SkinOptions"]["gui_scale"]/100
 	GUI:ClearAllPoints()
 	GUI:SetPoint("TOPRIGHT", UIParent, "CENTER", aCoreCDB["SkinOptions"]["gui_x"]/scale, aCoreCDB["SkinOptions"]["gui_y"]/scale)
@@ -2241,8 +1664,6 @@ function eventframe:PLAYER_ENTERING_WORLD()
 		func()
 	end
 
-	CreateRaidDebuffOptions()
-	
 	SetClassColorButton:SetScript("OnClick", function() T.ResetClasscolors(true) end)
 	SetDBMButton:SetScript("OnClick", function() T.ResetDBM(true) end)
 	SetBWButton:SetScript("OnClick", function() T.ResetBW(true) end)
