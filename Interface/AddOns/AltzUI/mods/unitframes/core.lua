@@ -2306,6 +2306,7 @@ local function UpdateNameplatePowerbars()
 		end
 	end
 end
+T.UpdateNameplatePowerbars = UpdateNameplatePowerbars
 
 local function RemovefromCPower(name)
 	aCoreCDB["PlateOptions"]["custompowerplates"][name] = nil	
@@ -2327,6 +2328,7 @@ local function UpdateNameplateColor()
 		end
 	end
 end
+T.UpdateNameplateColor = UpdateNameplateColor
 
 local function SetCColor(name)	
 	if not aCoreCDB["PlateOptions"]["customcoloredplates"][name] then
