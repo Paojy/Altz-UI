@@ -172,7 +172,7 @@ GUI.curse:SetScript("OnClick", function()
 	end
 end)
 
-GUI.export = T.createclicktexbutton(GUI, {"LEFT", GUI.curse, "RIGHT", 2, 0}, [[Interface\AddOns\AltzUI\media\icons\Quests.tga]], L["导出"], 20)
+GUI.export = T.createclicktexbutton(GUI, {"LEFT", GUI.curse, "RIGHT", 2, 0}, [[Interface\AddOns\AltzUI\media\arrow.tga]], L["导出"], 20)
 GUI.export:SetScript("OnClick", function()	
 	if GUI.editbox.type ~= "export" then
 		GUI.editbox:Show()
@@ -184,8 +184,9 @@ GUI.export:SetScript("OnClick", function()
 		GUI.editbox.type = nil
 	end
 end)
+T.SetupArrow(GUI.export.tex, "down")
 
-GUI.import = T.createclicktexbutton(GUI, {"LEFT", GUI.export, "RIGHT", 2, 0}, [[Interface\AddOns\AltzUI\media\icons\Quests.tga]], L["导入"], 20)
+GUI.import = T.createclicktexbutton(GUI, {"LEFT", GUI.export, "RIGHT", 2, 0}, [[Interface\AddOns\AltzUI\media\arrow.tga]], L["导入"], 20)
 GUI.import:SetScript("OnClick", function()	
 	if GUI.editbox.type ~= "import" then
 		GUI.editbox:Show()
@@ -200,6 +201,7 @@ GUI.import:SetScript("OnClick", function()
 		GUI.editbox.type = nil
 	end
 end)
+T.SetupArrow(GUI.import.tex, "up")
 
 GUI.reset = T.createclicktexbutton(GUI, {"LEFT", GUI.import, "RIGHT", 2, 0}, [[Interface\AddOns\AltzUI\media\icons\refresh.tga]], L["重置"])
 GUI.reset:SetScript("OnClick", function()
@@ -1379,11 +1381,11 @@ local function CreateEncounterDebuffButton(InstanceID, encounterID, spellID, lev
 		local bu = CreateFrame("Frame", nil, frame)
 		bu.encounterID = encounterID
 	
-		bu:SetSize(330, 20)
+		bu:SetSize(330, 16)
 		
 		local name, _, icon = GetSpellInfo(spellID)
 		bu.icon = CreateFrame("Button", nil, bu, "BackdropTemplate")
-		bu.icon:SetSize(18, 18)
+		bu.icon:SetSize(14, 14)
 		bu.icon:SetNormalTexture(icon)
 		bu.icon:GetNormalTexture():SetTexCoord(0.1,0.9,0.1,0.9)
 		bu.icon:SetPoint"LEFT"
@@ -1450,13 +1452,56 @@ local function CreateEncounterDebuffButton(InstanceID, encounterID, spellID, lev
 	end
 end
 
+local function UpdateEncounterTitle(parent, i, encounterID, y)
+	if not parent.titles[i] then
+		local frame = CreateFrame("Frame", nil, parent)
+		frame:SetSize(330, 16)
+		
+		frame.tex = frame:CreateTexture(nil, "ARTWORK")
+		frame.tex:SetSize(60, 30)
+		frame.tex:SetPoint("BOTTOMLEFT", frame, "BOTTOMLEFT")
+		
+		frame.text = T.createtext(frame, "OVERLAY", 14, "OUTLINE", "LEFT")
+		frame.text:SetPoint("BOTTOMLEFT", frame.tex, "BOTTOMRIGHT", 0, 0)
+		
+		frame.line = frame:CreateTexture(nil, "ARTWORK")
+		frame.line:SetSize(330, 1)
+		frame.line:SetPoint("BOTTOM")
+		frame.line:SetColorTexture(1, 1, 1)
+		
+		parent.titles[i] = frame
+	end
+	
+	local portrait = (encounterID == 1 and [[Interface\EncounterJournal\UI-EJ-BOSS-Default]]) or select(5, EJ_GetCreatureInfo(1, encounterID))
+	local name = (encounterID == 1 and L["杂兵"]) or EJ_GetEncounterInfo(encounterID)
+	
+	local title = parent.titles[i]
+	title.tex:SetTexture(portrait)
+	title.text:SetText(name)	
+	title:ClearAllPoints()
+	title:SetPoint("TOPLEFT", parent, "TOPLEFT", 20, y)
+	title:Show()
+end
+
+local function UpdateEncounterButton(parent, encounterID, spellID, level, y)
+	if not parent.spells["icon"..encounterID.."_"..spellID] then
+		CreateEncounterDebuffButton(Selected_InstanceID, encounterID, spellID, level)
+	end
+	
+	local bu = parent.spells["icon"..encounterID.."_"..spellID]
+	bu.level:SetText(level)
+	bu:ClearAllPoints()
+	bu:SetPoint("TOPLEFT", parent, "TOPLEFT", 20, y)
+	bu:Show()
+end
+
 local function DisplayRaidDebuffList()
 	if Selected_InstanceID then
 		local frame = RFInnerframe.raiddebuff.debufflist.SFAnchor
-		
-		local y = 0
+		local y = -20
 		local bosstable = {}
 		local dataIndex = 1
+		
 		EJ_SelectInstance(Selected_InstanceID)
 		local encounterID = select(3, EJ_GetEncounterInfoByIndex(dataIndex, Selected_InstanceID))
 		while encounterID ~= nil do
@@ -1475,26 +1520,12 @@ local function DisplayRaidDebuffList()
 			v:Hide()
 		end
 		
-		for i, encounterID in pairs (bosstable) do
-			local encounterName = encounterID == 1 and L["杂兵"] or EJ_GetEncounterInfo(encounterID)
-			if not frame.titles[i] then
-				frame.titles[i] = T.createtext(frame, "OVERLAY", 16, "OUTLINE", "LEFT")
-			end
-			frame.titles[i]:Show()
-			frame.titles[i]:SetText(encounterName)
-			frame.titles[i]:ClearAllPoints()
-			frame.titles[i]:SetPoint("TOPLEFT", frame, "TOPLEFT", 20, y)
+		for i, encounterID in pairs (bosstable) do		
+			UpdateEncounterTitle(frame, i, encounterID, y)
 			y = y - 20
 			if aCoreCDB["RaidDebuff"][Selected_InstanceID] and aCoreCDB["RaidDebuff"][Selected_InstanceID][encounterID] then
 				for spellID, level in pairs (aCoreCDB["RaidDebuff"][Selected_InstanceID][encounterID]) do
-					if not frame.spells["icon"..encounterID.."_"..spellID] then
-						CreateEncounterDebuffButton(Selected_InstanceID, encounterID, spellID, level)
-					end
-					local bu = frame.spells["icon"..encounterID.."_"..spellID]
-					bu.level:SetText(level)
-					bu:ClearAllPoints()
-					bu:SetPoint("TOPLEFT", frame, "TOPLEFT", 20, y)
-					bu:Show()
+					UpdateEncounterButton(frame, encounterID, spellID, level, y)
 					y = y - 20
 				end
 			end
@@ -1670,7 +1701,8 @@ local function CreateRaidDebuffOptions()
 	frame.debufflist.Add = Add
 	
 	-- 返回按钮
-	local Back = T.createclicktexbutton(frame.debufflist, {"LEFT", Add, "RIGHT", 2, 0}, [[Interface\AddOns\AltzUI\media\icons\refresh.tga]])
+	local Back = T.createclicktexbutton(frame.debufflist, {"LEFT", Add, "RIGHT", 2, 0}, [[Interface\AddOns\AltzUI\media\refresh.tga]])
+	T.SetupArrow(Back.tex, "left")
 	Back:SetScript("OnClick", function() 
 		frame.debufflist:Hide()
 		frame.SF:Show()
@@ -1986,12 +2018,18 @@ end
 PlateInnerframe.auralist.other_filter.option_list:ClearAllPoints()
 PlateInnerframe.auralist.other_filter.option_list:SetPoint("TOPLEFT", 0, -65)
 
--- 自定义颜色 --
-PlateInnerframe.customcoloredplates = CreateOptionPage("Plate Options CColor", L["自定义颜色"], PlateInnerframe, "VERTICAL", .3, true)
+-- 自定义 --
+PlateInnerframe.custom = CreateOptionPage("Plate Options Custom", CUSTOM, PlateInnerframe, "VERTICAL", .3)
 
--- 自定义能量 --
-PlateInnerframe.custompowerplates = CreateOptionPage("Plate Options CPower", L["自定义能量"], PlateInnerframe, "VERTICAL", .3, true)
+PlateInnerframe.custom.color = T.CreatePlateColorOption(PlateInnerframe.custom,  {"TOPLEFT", 30, -55}, 200, L["自定义颜色"], "PlateOptions", "customcoloredplates")
+PlateInnerframe.custom.color.reset.apply = function()
+	aCoreCDB["UnitframeOptions"]["customcoloredplates"] = nil
+end
 
+PlateInnerframe.custom.power = T.CreatePlatePowerOption(PlateInnerframe.custom,  {"TOPLEFT", PlateInnerframe.custom.color, "BOTTOMLEFT", 0, -10}, 200, L["自定义能量"], "PlateOptions", "custompowerplates")
+PlateInnerframe.custom.power.reset.apply = function()
+	aCoreCDB["UnitframeOptions"]["custompowerplates"] = nil
+end
 --====================================================--
 --[[             -- Tooltip Options --              ]]--
 --====================================================--
