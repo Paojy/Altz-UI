@@ -107,85 +107,177 @@ end
 
 local RegisterClicks = function(object)
 	-- EnableWheelCastOnFrame
-	local enable = false
-	for i = 6, 13 do
-		if aCoreCDB["UnitframeOptions"]["ClickCast"][tostring(i)]["Click"]["action"] and aCoreCDB["UnitframeOptions"]["ClickCast"][tostring(i)]["Click"]["action"] ~= "NONE" then
-			--print(i, "a", aCoreCDB["UnitframeOptions"]["ClickCast"][tostring(i)]["Click"]["action"])
-			enable = true
-		elseif aCoreCDB["UnitframeOptions"]["ClickCast"][tostring(i)]["Click"]["macro"] and aCoreCDB["UnitframeOptions"]["ClickCast"][tostring(i)]["Click"]["macro"] ~= "" then
-			--print(i, "m", aCoreCDB["UnitframeOptions"]["ClickCast"][tostring(i)]["Click"]["macro"])
-			enable = true
+	object:RegisterForClicks("AnyDown")
+	object:SetAttribute("clickcast_onenter", [[
+		self:ClearBindings()
+		self:SetBindingClick(1, "MOUSEWHEELUP", self, "Button6")
+		self:SetBindingClick(1, "SHIFT-MOUSEWHEELUP", self, "Button7")
+		self:SetBindingClick(1, "CTRL-MOUSEWHEELUP", self, "Button8")
+		self:SetBindingClick(1, "ALT-MOUSEWHEELUP", self, "Button9")
+		self:SetBindingClick(1, "MOUSEWHEELDOWN", self, "Button10")
+		self:SetBindingClick(1, "SHIFT-MOUSEWHEELDOWN", self, "Button11")
+		self:SetBindingClick(1, "CTRL-MOUSEWHEELDOWN", self, "Button12")
+		self:SetBindingClick(1, "ALT-MOUSEWHEELDOWN", self, "Button13")
+	]])
+
+	object:SetAttribute("clickcast_onleave", [[
+		self:ClearBindings()
+	]])
+	
+	local C = aCoreCDB["UnitframeOptions"]["ClickCast"]
+	for id, var in pairs(C) do
+		for	key, info in pairs(var) do
+			local key_tmp = string.gsub(key, "Click", "")
+			local action = info.action
+			local spell = info.spell
+			local item = info.item
+			local macro = info.macro
+			
+			if action == "follow" then
+				object:SetAttribute(key_tmp.."type"..id, "macro")
+				object:SetAttribute(key_tmp.."macrotext"..id, "/follow mouseover")
+			elseif	action == "target" then
+				object:SetAttribute(key_tmp.."type"..id, "target")				
+			elseif	action == "focus" then		
+				object:SetAttribute(key_tmp.."type"..id, "focus")
+			elseif action == "menu" then
+				object:SetAttribute(key_tmp.."type"..id, "togglemenu")
+			elseif action == "macro" then
+				object:SetAttribute(key_tmp.."type"..id, "macro")
+				object:SetAttribute(key_tmp.."macrotext"..id, macro)
+			elseif action == "spell" then
+				object:SetAttribute(key_tmp.."type"..id, "spell")
+				object:SetAttribute(key_tmp.."spell"..id, spell)
+			elseif action == "item" then
+				object:SetAttribute(key_tmp.."type"..id, "item")
+				object:SetAttribute(key_tmp.."type"..id, string.format("item:%s", item))
+			end
 		end
 	end
-	if enable then
-		--print("Enable")
-		object:SetAttribute("clickcast_onenter", [[
-			self:ClearBindings()
-			self:SetBindingClick(1, "MOUSEWHEELUP", self, "Button6")
-			self:SetBindingClick(1, "SHIFT-MOUSEWHEELUP", self, "Button7")
-			self:SetBindingClick(1, "CTRL-MOUSEWHEELUP", self, "Button8")
-			self:SetBindingClick(1, "ALT-MOUSEWHEELUP", self, "Button9")
-			self:SetBindingClick(1, "MOUSEWHEELDOWN", self, "Button10")
-			self:SetBindingClick(1, "SHIFT-MOUSEWHEELDOWN", self, "Button11")
-			self:SetBindingClick(1, "CTRL-MOUSEWHEELDOWN", self, "Button12")
-			self:SetBindingClick(1, "ALT-MOUSEWHEELDOWN", self, "Button13")
-		]])
+end
 
-		object:SetAttribute("clickcast_onleave", [[
-			self:ClearBindings()
-		]])
-	end
+local UnregisterClicks = function(object)
+	object:SetAttribute("clickcast_onenter", nil)
+	object:SetAttribute("clickcast_onleave", nil)
 	
 	local action, macrotext, key_tmp
 	local C = aCoreCDB["UnitframeOptions"]["ClickCast"]
 	for id, var in pairs(C) do
-		for	key, _ in pairs(C[id]) do
+		for	key, _ in pairs(var) do
 			key_tmp = string.gsub(key, "Click", "")
-			action = C[id][key]["action"]
-			macro = C[id][key]["macro"]
-			if action == "follow" then
-				object:SetAttribute(key_tmp.."type"..id, "macro")
-				object:SetAttribute(key_tmp.."macrotext"..id, "/follow mouseover")
-			elseif	action == "tot" then		
-				object:SetAttribute(key_tmp.."type"..id, "macro")
-				object:SetAttribute(key_tmp.."macrotext"..id, "/target mouseovertarget")
-			elseif	action == "focus" then		
-				object:SetAttribute(key_tmp.."type"..id, "focus")
-			elseif	action == "target" then
-				object:SetAttribute(key_tmp.."type"..id, "target")
-			elseif action == "macro" then
-				object:SetAttribute(key_tmp.."type"..id, "macro")
-				object:SetAttribute(key_tmp.."macrotext"..id, macro)
-			else
-				object:SetAttribute(key_tmp.."type"..id, "spell")
-				object:SetAttribute(key_tmp.."spell"..id, action)
-			end				
+			object:SetAttribute(key_tmp.."type"..id, nil)
 		end
-		object:RegisterForClicks("AnyDown")
 	end
 end
 
-local clickcast_pendingFrames = {}
+-- 收集应用点击施法的单位框体
+G.ClickCast_Frames = {}
 
 local function CreateClickSets(self)
-	if not aCoreCDB["UnitframeOptions"]["enableClickCast"] then return end
-
-	if InCombatLockdown() then
-		clickcast_pendingFrames[self] = true
-	else
-		RegisterClicks(self)
-		clickcast_pendingFrames[self] = nil
-	end
+	table.insert(G.ClickCast_Frames, self)
 end
 T.CreateClickSets = CreateClickSets
 
-local function DelayClickSets()
-	if not next(clickcast_pendingFrames) then return end
+-- 启用点击施法
+local Register_PendingFrames = {}
 
-	for frame in next, clickcast_pendingFrames do
-		CreateClickSets(frame)
+local function RegisterClicksforAll()
+	for i, object in pairs(G.ClickCast_Frames) do
+		if InCombatLockdown() then
+			Register_PendingFrames[object] = true -- 等待脱战后生效
+		else
+			RegisterClicks(object)
+		end
+	end
+	if InCombatLockdown() then
+		StaticPopup_Show(G.uiname.."InCombat Alert")
 	end
 end
+T.RegisterClicksforAll = RegisterClicksforAll
+
+local function DelayRegisterClickSets()
+	if not next(Register_PendingFrames) then return end
+
+	for object, _ in next, Register_PendingFrames do
+		RegisterClicks(object)
+		Register_PendingFrames[object] = nil
+	end
+end
+
+-- 禁用点击施法
+local Unregister_PendingFrames = {}
+
+local function UnregisterClicksforAll()
+	for i, object in pairs(G.ClickCast_Frames) do
+		if InCombatLockdown() then
+			Unregister_PendingFrames[object] = true -- 等待脱战后生效
+		else
+			UnregisterClicks(object)
+		end
+	end
+	if InCombatLockdown() then
+		StaticPopup_Show(G.uiname.."InCombat Alert")
+	end
+end
+T.UnregisterClicksforAll = UnregisterClicksforAll
+
+local function DelayUnregisterClickSets()
+	if not next(Unregister_PendingFrames) then return end
+
+	for object, _ in next, Unregister_PendingFrames do
+		UnregisterClicks(object)
+		Unregister_PendingFrames[object] = nil
+	end
+end
+
+-- 刷新点击施法
+local modifier = {
+	"Click",
+	"shift-",
+	"ctrl-",
+	"alt-",
+}
+G.modifier = modifier
+
+local Update_PendingFrames = {}
+
+local function UpdateClicksforAll(id, key)
+	local action = aCoreCDB["UnitframeOptions"]["ClickCast"][id][key]["action"]
+	local spell = aCoreCDB["UnitframeOptions"]["ClickCast"][id][key]["spell"]
+	local item = aCoreCDB["UnitframeOptions"]["ClickCast"][id][key]["item"]
+	local macro = aCoreCDB["UnitframeOptions"]["ClickCast"][id][key]["macro"]
+	
+	for i, object in pairs(G.ClickCast_Frames) do
+		if InCombatLockdown() then
+			Update_PendingFrames[object] = true -- 等待脱战后生效
+		else
+			local key_tmp = string.gsub(key, "Click", "")
+			if action == "follow" then
+				object:SetAttribute(key_tmp.."type"..id, "macro")
+				object:SetAttribute(key_tmp.."macrotext"..id, "/follow mouseover")
+			elseif	action == "target" then
+				object:SetAttribute(key_tmp.."type"..id, "target")				
+			elseif	action == "focus" then		
+				object:SetAttribute(key_tmp.."type"..id, "focus")
+			elseif action == "menu" then
+				object:SetAttribute(key_tmp.."type"..id, "togglemenu")
+			elseif action == "macro" then
+				object:SetAttribute(key_tmp.."type"..id, "macro")
+				object:SetAttribute(key_tmp.."macrotext"..id, macro)
+			elseif action == "spell" then
+				object:SetAttribute(key_tmp.."type"..id, "spell")
+				object:SetAttribute(key_tmp.."spell"..id, spell)
+			elseif action == "item" then
+				object:SetAttribute(key_tmp.."type"..id, "macro")
+				object:SetAttribute(key_tmp.."macrotext"..id, "/use [@mouseover]"..item)
+			end	
+		end
+	end
+	if InCombatLockdown() then
+		StaticPopup_Show(G.uiname.."InCombat Alert")
+	end	
+end
+T.UpdateClicksforAll = UpdateClicksforAll
 
 --=============================================--
 --[[              Raid Frames                ]]--
@@ -523,10 +615,7 @@ local func = function(self, unit)
 	
 	self.Range = range
 	
-	if aCoreCDB["UnitframeOptions"]["enableClickCast"] then
-		T.CreateClickSets(self)
-	end
-	
+	T.CreateClickSets(self)
 	T.RaidOnMouseOver(self)
 end
 
@@ -908,10 +997,7 @@ local pfunc = function(self, unit)
 
 	T.CreateAuras(self, unit)
 
-	if aCoreCDB["UnitframeOptions"]["enableClickCast"] then
-		T.CreateClickSets(self)
-	end
-	
+	T.CreateClickSets(self)
 	T.RaidOnMouseOver(self)
 end
 
@@ -1010,7 +1096,8 @@ local EventFrame = CreateFrame("Frame")
 EventFrame:SetScript("OnEvent", function(self, event, ...)
 	if event == "PLAYER_REGEN_ENABLED" then
 		if aCoreCDB["UnitframeOptions"]["enableClickCast"] then
-			DelayClickSets()
+			DelayRegisterClickSets()
+			DelayUnregisterClickSets()
 		end
 	end
 end)
@@ -1035,6 +1122,10 @@ T.RegisterInitCallback(function()
 	Spawnparty()
 	T.UpdatePartySize()
 	T.UpdatePartyfilter()
+	
+	if aCoreCDB["UnitframeOptions"]["enableClickCast"] then
+		RegisterClicksforAll()
+	end
 	
 	EventFrame:RegisterEvent("PLAYER_REGEN_ENABLED")
 end)

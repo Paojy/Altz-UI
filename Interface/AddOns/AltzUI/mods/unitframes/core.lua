@@ -1406,9 +1406,7 @@ local func = function(self, unit)
 	
 	if u == "boss" then
 		T.RaidOnMouseOver(self)
-		if aCoreCDB["UnitframeOptions"]["enableClickCast"] then
-			T.CreateClickSets(self)
-		end
+		T.CreateClickSets(self)
 	else
 		T.OnMouseOver(self)
 	end

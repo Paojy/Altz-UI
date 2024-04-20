@@ -4,224 +4,137 @@
 local default_ClassClick = {
 	PRIEST = { 
 		["1"] = {
-			["Click"]		= {
-				["action"]	= "target",
-							},
-			["ctrl-"]		= {
-				["action"]	= 47788,--"守护之魂",
-							},
-		},
-		["2"] = {
-			["Click"]			= {
-				["action"]		= 17,--"真言術:盾",
-							},
-		},
-		["6"] = {
-			["Click"]			= {
-				["action"]	= 33076,	--"愈合",
-							},
+			["Click"] = {action = "target"},
+			["ctrl-"] = {action = "spell", spell = 47788}, -- 守护之魂
+		},                      
+		["2"] = {               
+			["Click"] = {action = "spell", spell = 17}, -- 真言術:盾
+		},                      
+		["6"] = {               
+			["Click"] = {action = "spell", spell = 33076}, -- 愈合祷言
 		},
 		["10"] = {
-			["Click"]			= {
-				["action"]	= 527,	--"驱散",
-							},
+			["Click"] = {action = "spell", spell = 527}, -- 纯净术（驱散）
 		},
 	},
 	DRUID = { 
 		["1"] = {
-			["Click"]		= {
-				["action"]	= "target",
-							},
-			["ctrl-"]		= {
-				["action"]	= 102342,--"铁木树皮",
-							},
+			["Click"] = {action = "target"},
+			["ctrl-"] = {action = "spell", spell = 102342}, -- 铁木树皮
 		},
 		["2"] = {
-			["Click"]			= {
-				["action"]		= 774,--"回春",
-							},
-			["ctrl-"]		= {
-				["action"]	= 20484,--"战复",
-							},				
+			["Click"] = {action = "spell", spell = 774}, -- 回春
+			["ctrl-"] = {action = "spell", spell = 20484}, -- 战复			
 		},
 		["6"] = {
-			["Click"]			= {
-				["action"]	= 18562,	--"迅捷治愈",
-							},
+			["Click"] = {action = "spell", spell = 18562}, -- 迅捷治愈
 		},
 		["10"] = {
-			["Click"]			= {
-				["action"]	= 33763,	--"生命绽放",
-							},
+			["Click"] = {action = "spell", spell = 33763}, -- 生命绽放
 		},					
 		["12"] = {
-			["Click"]			= {
-				["action"]	= 88423,	--"驱散",
-							},						
+			["Click"] = {action = "spell", spell = 88423}, -- 自然之愈（驱散）
 		},
 	},
 	SHAMAN = { 
 		["1"] = {
-			["Click"]		= {
-				["action"]	= "target",
-							},
+			["Click"] = {action = "target"},
 		},
 		["2"] = {
-			["Click"]			= {
-				["action"]	= 61295,	--"激流",
-							},
-			["ctrl-"]		= {
-				["action"]	= 546,		--水上行走
-							},
+			["Click"] = {action = "spell", spell = 61295}, -- 激流
+			["ctrl-"] = {action = "spell", spell = 546}, -- 水上行走
 		},
 		["6"] = {
-			["Click"]			= {
-				["action"]	= 8004,	--"治疗之涌",
-							},
+			["Click"] = {action = "spell", spell = 8004}, -- 治疗之涌
 		},
 		["10"] = {
-			["Click"]			= {
-				["action"]	= 77130,	--"净化灵魂",
-							},
+			["Click"] = {action = "spell", spell = 77130}, -- 净化灵魂（驱散）
 		},
 	},
 	PALADIN = { 
 		["1"] = {
-			["Click"]			= {
-				["action"]	= "target",
-							},
-			["ctrl-"]		= {
-				["action"]	= 6940,		--牺牲祝福
-							},		
+			["Click"] = {action = "target"},
+			["ctrl-"] = {action = "spell", spell = 6940}, -- 牺牲祝福			
 		},
 		["2"] = {
-			["Click"]			= {
-				["action"]	= 20476,  --"神圣震击",
-							},
-			["ctrl-"]		= {
-				["action"]	= 1022,		--保护祝福
-							},	
+			["Click"] = {action = "spell", spell = 20476}, -- 神圣震击
+			["ctrl-"] = {action = "spell", spell = 1022}, -- 保护祝福	
 		},
 		["6"] = {
-			["Click"]			= {
-				["action"]	= 183998,	--"殉道者之光",
-							},
+			["Click"] = {action = "spell", spell = 183998}, -- 殉道者之光
 		},
 		["8"] = {
-			["Click"]			= {
-				["action"]	= 53563,	--"圣光道标",
-							},
+			["Click"] = {action = "spell", spell = 53563}, -- 圣光道标
 		},			
 		["10"] = {
-			["Click"]			= {
-				["action"]	= 4987,	--"驱散",
-							},
+			["Click"] = {action = "spell", spell = 4987}, -- 清洁术（驱散）
 		},
 		["12"] = {
-			["Click"]			= {
-				["action"]	= 115450,	--"自由祝福",
-							},		
-		},
-							
+			["Click"] = {action = "spell", spell = 115450}, -- 自由祝福	
+		},					
 	},
 	WARRIOR = { 
 		["1"] = {
-			["Click"]			= {
-				["action"]	= "target",
-							},
+			["Click"] = {action = "target"},
 		},
 		["2"] = {
-			["Click"]			= {
-				["action"]	= 3411,--"阻擾",
-							},
+			["Click"] = {action = "spell", spell = 3411}, -- 援护
 		},
 	},
 	MAGE = { 
 		["1"] = {
-			["Click"]			= {
-				["action"]	= "target",
-							},
+			["Click"] = {action = "target"},
 		},
 	},
 	WARLOCK = { 
 		["1"] = {
-			["Click"]			= {
-				["action"]	= "target",
-							},
+			["Click"] = {action = "target"},
 		},
 	},
 	HUNTER = { 
 		["1"] = {
-			["Click"]			= {
-				["action"]	= "target",
-							},
+			["Click"] = {action = "target"},
 		},
 		["2"] = {
-			["Click"]			= {
-				["action"]	= 34477,--"誤導",
-							},
+			["Click"] = {action = "spell", spell = 34477}, -- 误导
 		},
 	},
 	ROGUE = { 
 		["1"] = {
-			["Click"]			= {
-				["action"]	= "target",
-							},
+			["Click"] = {action = "target"},
 		},
 		["2"] = {
-			["Click"]			= {
-				["action"]	= 57933,--"偷天換日", ---
-							},
+			["Click"] = {action = "spell", spell = 57934}, -- 嫁祸诀窍
 		},
 	},
 	DEATHKNIGHT = {
 		["1"] = {
-			["Click"]			= {
-				["action"]	= "target",
-							},
-			["shift-"]		= {
-				["action"]	= 61999, --复活盟友
-							},
+			["Click"] = {action = "target"},
+		},
+		["2"] = {
+			["Click"] = {action = "spell", spell = 61999}, -- 复活盟友
 		},
 	},
 	MONK = {
 		["1"] = {
-			["Click"]			= {
-				["action"]	= "target",
-							},
-			["ctrl-"]		= {
-				["action"]	= 116849,		--作茧缚命
-							},		
+			["Click"] = {action = "target"},
+			["ctrl-"] = {action = "spell", spell = 116849}, -- 作茧缚命
 		},
 		["2"] = {
-			["Click"]			= {
-				["action"]	= 119611,--"复苏之雾",
-							},
-		},
-		["6"] = {
-			["Click"]			= {
-				["action"]	= 115450,	--"神器",
-							},
+			["Click"] = {action = "spell", spell = 119611}, -- 复苏之雾
 		},
 		["10"] = {
-			["Click"]			= {
-				["action"]	= 115450,	--"驱散",
-							},
-		},
-		
+			["Click"] = {action = "spell", spell = 115450}, -- 清创生血（驱散）
+		},		
 	},
 	DEMONHUNTER = {
 		["1"] = {
-			["Click"]			= {
-				["action"]	= "target",
-							},
+			["Click"] = {action = "target"},
 		},
 	},
 	EVOKER = {
 		["1"] = {
-			["Click"]			= {
-				["action"]	= "target",
-							},
+			["Click"] = {action = "target"},
 		},
 	},
 }
@@ -237,26 +150,98 @@ for i = 1, 13  do
 		for _, modifier in ipairs(modifiers) do
 			ClickCastDB[tostring(i)][modifier] = {}
 			ClickCastDB[tostring(i)][modifier]["action"] = "NONE"
+			ClickCastDB[tostring(i)][modifier]["spell"] = ""
+			ClickCastDB[tostring(i)][modifier]["item"] = ""
 			ClickCastDB[tostring(i)][modifier]["macro"] = ""
 		end
 	else -- 滚轮用的
 		ClickCastDB[tostring(i)]["Click"] = {}
 		ClickCastDB[tostring(i)]["Click"]["action"] = "NONE"
+		ClickCastDB[tostring(i)]["Click"]["spell"] = ""
+		ClickCastDB[tostring(i)]["Click"]["item"] = ""
 		ClickCastDB[tostring(i)]["Click"]["macro"] = ""
 	end
 end
 
 for k, _ in pairs(classClickdb) do
 	for j, _ in pairs(classClickdb[k]) do
-		local var = classClickdb[k][j]["action"]
-		local spellname = GetSpellInfo(var)
-		if (var == "target" or var == "tot" or var == "follow" or var == "macro") then
-			ClickCastDB[k][j]["action"] = var
-		elseif spellname then
-			ClickCastDB[k][j]["action"] = spellname
+		local action = classClickdb[k][j]["action"]
+		local spellID = classClickdb[k][j]["spell"]
+		local spellName = GetSpellInfo(spellID)
+		
+		ClickCastDB[k][j]["action"] = action
+		if spellID then
+			if spellName then
+				ClickCastDB[k][j]["spell"] = spellName
+			else -- 法术错误
+				print("spell ID "..spellID.." is gone, delete it.")
+			end
 		end
 	end
 end
+
+local click_cast_spells = {
+	PRIEST = { 
+		47788, -- 守护之魂
+		17, -- 真言術:盾
+		33076, -- 愈合祷言
+		527, -- 纯净术（驱散）
+	},
+	DRUID = { 		
+		102342, -- 铁木树皮		
+		774, -- 回春
+		20484, -- 战复				
+		18562, -- 迅捷治愈
+		33763, -- 生命绽放
+		88423, -- 自然之愈（驱散）
+	},
+	SHAMAN = { 
+		61295, -- 激流
+		546, -- 水上行走
+		8004, -- 治疗之涌
+		77130, -- 净化灵魂（驱散）
+	},
+	PALADIN = { 
+		6940, -- 牺牲祝福			
+		20476, -- 神圣震击
+		1022, -- 保护祝福	
+		183998, -- 殉道者之光
+		53563, -- 圣光道标
+		4987, -- 清洁术（驱散）
+		115450, -- 自由祝福					
+	},
+	WARRIOR = { 
+		3411, -- 援护
+	},
+	MAGE = { 
+		
+	},
+	WARLOCK = { 
+		
+	},
+	HUNTER = { 
+		34477, -- 误导
+	},
+	ROGUE = { 
+		7934, -- 嫁祸诀窍
+	},
+	DEATHKNIGHT = {
+		61999, -- 复活盟友
+	},
+	MONK = {	
+		116849, -- 作茧缚命
+		119611, -- 复苏之雾
+		115450, -- 清创生血（驱散）	
+	},
+	DEMONHUNTER = {
+		
+	},
+	EVOKER = {
+		
+	},
+}
+
+G.ClickCastSpells = click_cast_spells[G.myClass]
 
 -- 团队框架光环
 local cooldown_auras = {

@@ -484,7 +484,7 @@ CreateDividingLine(ChatOptions, -130)
 
 T.createcheckbutton(ChatOptions, 30, 140, L["聊天过滤"], "ChatOptions", "nogoldseller", L["聊天过滤提示"])
 T.createslider(ChatOptions, 30, 190, L["过滤阈值"], "ChatOptions", "goldkeywordnum", 1, 1, 5, 1, L["过滤阈值"])
-T.createmultilinebox(ChatOptions, 200, 100, 35, 235, L["关键词"], "ChatOptions", "goldkeywordlist", L["关键词输入"])
+T.createmultilinebox(ChatOptions, 200, 100, 35, 225, L["关键词"], "ChatOptions", "goldkeywordlist", L["关键词输入"])
 ChatOptions.goldkeywordlist.apply = T.Update_Chat_Filter
 T.createDR(ChatOptions.nogoldseller, ChatOptions.goldkeywordnum, ChatOptions.goldkeywordlist)
 
@@ -981,247 +981,327 @@ RFInnerframe.ind.hotind_list.option_list:SetPoint("TOPLEFT", 0, -65)
 -- 点击施法
 RFInnerframe.clickcast = CreateOptionPage("RF Options clickcast", L["点击施法"], RFInnerframe, "VERTICAL", "UnitframeOptions")
 
-local enableClickCastbu = T.createcheckbutton(RFInnerframe.clickcast, 30, 60, L["启用"], "UnitframeOptions", "enableClickCast", format(L["点击施法提示"], G.classcolor, G.classcolor, G.classcolor, G.classcolor, G.classcolor, G.classcolor))
+T.createcheckbutton(RFInnerframe.clickcast, 30, 60, L["启用"], "UnitframeOptions", "enableClickCast")
+RFInnerframe.clickcast.enableClickCast.apply = function()
+	if aCoreCDB["UnitframeOptions"]["enableClickCast"] then
+		T.RegisterClicksforAll()
+	else
+		T.UnregisterClicksforAll()
+	end
+end
+
+-- 重置
+RFInnerframe.clickcast.reset = T.createclicktexbutton(RFInnerframe.clickcast, {"LEFT", RFInnerframe.clickcast.title, "RIGHT", 2, 0}, [[Interface\AddOns\AltzUI\media\icons\refresh.tga]], L["重置"])	
+RFInnerframe.clickcast.reset:SetScript("OnClick", function(self)
+	StaticPopupDialogs[G.uiname.."Reset Confirm"].text = format(L["重置确认"], T.color_text(L["点击施法"]))
+	StaticPopupDialogs[G.uiname.."Reset Confirm"].OnAccept = function()
+		aCoreCDB[RFInnerframe.clickcast.db_key]["ClickCast"] = nil
+		ReloadUI()
+	end
+	StaticPopup_Show(G.uiname.."Reset Confirm")
+end)
 
 local clickcastframe = CreateFrame("Frame", G.uiname.."ClickCast Options", RFInnerframe.clickcast, "BackdropTemplate")
 clickcastframe:SetPoint("TOPLEFT", 30, -120)
 clickcastframe:SetPoint("BOTTOMRIGHT", -30, 20)
 F.CreateBD(clickcastframe, 0)
 
-local MacroPop = CreateFrame("Frame", G.uiname.."give macro", clickcastframe)
-MacroPop:SetPoint("TOPLEFT", clickcastframe, "TOPLEFT", 10, -150)
-MacroPop:SetPoint("BOTTOMRIGHT", clickcastframe, "BOTTOMRIGHT", -10, 20)
+local click_buttons = {
+	{"1", L["Button1"]}, 
+	{"2", L["Button2"]},
+	{"3", L["Button3"]}, 
+	{"4", L["Button4"]}, 
+	{"5", L["Button5"]}, 
+	{"MouseUp", L["MouseUp"]}, 
+	{"MouseDown", L["MouseDown"]},
+}
 
-F.SetBD(MacroPop)
-MacroPop:Hide()
-MacroPop:SetScript("OnHide", function(self) self:Hide() end)
+local actions = {
+	{"target", TARGET},
+	{"focus", FOCUSTARGET},
+	{"spell", SPELLS},
+	{"item", ITEMS},
+	{"follow", FOLLOW},	
+	{"menu", L["打开菜单"]},
+	{"macro", MACRO},
+	{"NONE", NONE},
+}
 
-MacroPop.scrollBG = CreateFrame("ScrollFrame", G.uiname.."give macro MultiLineEditBox_BG", MacroPop, "UIPanelScrollFrameTemplate")
-MacroPop.scrollBG:SetPoint("TOPLEFT", 10, -30)
-MacroPop.scrollBG:SetSize(330, 80)
-MacroPop.scrollBG:SetFrameLevel(MacroPop:GetFrameLevel()+1)
-MacroPop.scrollBG.bg = CreateFrame("Frame", nil, MacroPop.scrollBG, "BackdropTemplate")
-MacroPop.scrollBG.bg:SetAllPoints(MacroPop.scrollBG)
-F.CreateBD(MacroPop.scrollBG.bg, 0)
-	
-MacroPop.scrollBG.gradient = F.CreateGradient(MacroPop.scrollBG)
-MacroPop.scrollBG.gradient:SetPoint("TOPLEFT", MacroPop.scrollBG, 1, -1)
-MacroPop.scrollBG.gradient:SetPoint("BOTTOMRIGHT", MacroPop.scrollBG, -1, 1)
-	
-MacroPop.scrollBG.name = MacroPop.scrollBG:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
-MacroPop.scrollBG.name:SetPoint("BOTTOMLEFT", MacroPop.scrollBG, "TOPLEFT", 5, 8)
-MacroPop.scrollBG.name:SetJustifyH("LEFT")
-MacroPop.scrollBG.name:SetText(L["输入一个宏"])
-
-MacroPop.scrollAC = CreateFrame("Frame", G.uiname.."give macro MultiLineEditBox_ScrollAC", MacroPop.scrollBG)
-MacroPop.scrollAC:SetPoint("TOP", MacroPop.scrollBG, "TOP", 0, -3)
-MacroPop.scrollAC:SetWidth(MacroPop.scrollBG:GetWidth())
-MacroPop.scrollAC:SetHeight(MacroPop.scrollBG:GetHeight())
-MacroPop.scrollAC:SetFrameLevel(MacroPop.scrollBG:GetFrameLevel()+1)
-MacroPop.scrollBG:SetScrollChild(MacroPop.scrollAC)
-
-MacroPop.scrollBG.edit = CreateFrame("EditBox", G.uiname.."give macro MultiLineEditBox", MacroPop.scrollAC)
-MacroPop.scrollBG.edit:SetTextInsets(3, 3, 3, 3)
-MacroPop.scrollBG.edit:SetFrameLevel(MacroPop.scrollAC:GetFrameLevel()+1)
-MacroPop.scrollBG.edit:SetAllPoints()
-MacroPop.scrollBG.edit:SetFont(G.norFont, 12, "OUTLINE")
-MacroPop.scrollBG.edit:SetMultiLine(true)
-MacroPop.scrollBG.edit:EnableMouse(true)
-MacroPop.scrollBG.edit:SetAutoFocus(false)
-MacroPop.scrollBG.edit:SetMaxLetters(255)
-
-MacroPop.scrollBG.limit = MacroPop.scrollBG:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
-MacroPop.scrollBG.limit:SetPoint("TOP", MacroPop.scrollBG, "BOTTOM", 0, -3)
-MacroPop.scrollBG.limit:SetJustifyH("CENTER")
-
-MacroPop.scrollBG.edit:SetScript("OnChar", function(self)
-	MacroPop.scrollBG.limit:SetText(format(MACROFRAME_CHAR_LIMIT, self:GetNumLetters()))
-end)
-
-MacroPop.Accept = CreateFrame("Button", G.uiname.."MacroPop Accept", MacroPop, "UIPanelButtonTemplate")
-MacroPop.Accept:SetPoint("BOTTOMRIGHT", MacroPop, "BOTTOM", -30, 7)
-MacroPop.Accept:SetSize(100, 25)
-MacroPop.Accept:SetText(ACCEPT)
-F.Reskin(MacroPop.Accept)
-
-local selectid, selectv
-
-MacroPop.Accept:SetScript("OnClick", function()
-	local m = MacroPop.scrollBG.edit:GetText()
-	aCoreCDB["UnitframeOptions"]["ClickCast"][selectid][selectv]["macro"] = m
-	MacroPop:Hide()
-end)
-
-MacroPop.Cancel = CreateFrame("Button", G.uiname.."MacroPop Cancel", MacroPop, "UIPanelButtonTemplate")
-MacroPop.Cancel:SetPoint("BOTTOMLEFT", MacroPop, "BOTTOM", 30, 7)
-MacroPop.Cancel:SetSize(100, 25)
-MacroPop.Cancel:SetText(CANCEL)
-F.Reskin(MacroPop.Cancel)
-
-MacroPop.Cancel:SetScript("OnClick", function()
-	MacroPop:Hide()
-end)
-
-MacroPop:SetScript("OnShow", function(self)
-	if not aCoreCDB["UnitframeOptions"]["ClickCast"][selectid][selectv]["macro"] then
-		aCoreCDB["UnitframeOptions"]["ClickCast"][selectid][selectv]["macro"] = ""
+local function GetClickcastValue(bu_tag, mod_ind, key)
+	local arg1, arg2, value
+	if bu_tag == "MouseUp" then
+		arg1 = tostring(5+mod_ind)
+		arg2 = "Click"
+	elseif bu_tag == "MouseDown" then
+		arg1 = tostring(9+mod_ind)
+		arg2 = "Click"
+	else
+		arg1 = bu_tag
+		arg2 = G.modifier[mod_ind]
 	end
-	self.scrollBG.edit:SetText(aCoreCDB["UnitframeOptions"]["ClickCast"][selectid][selectv]["macro"])
-	self.scrollBG.limit:SetText(format(MACROFRAME_CHAR_LIMIT, self.scrollBG.edit:GetNumLetters()))
-end)
+	value = aCoreCDB["UnitframeOptions"]["ClickCast"][arg1][arg2][key]
+	return value
+end
 
-local modifier = {"Click", "shift-", "ctrl-", "alt-"}
-local active
-
-for i = 1, 5 do
-	local index = tostring(i)
-	clickcastframe["Button"..index] = CreateOptionPage("ClickCast Button"..index, L["Button"..index], clickcastframe, "HORIZONTAL", "UnitframeOptions")
-	clickcastframe["Button"..index].title:Hide()
-	clickcastframe["Button"..index].line:Hide()
-	if i == 1 then
-		clickcastframe["Button"..index]:Show()
+local function ApplyClickcastValue(bu_tag, mod_ind, key, value)
+	local arg1, arg2
+	if bu_tag == "MouseUp" then
+		arg1 = tostring(5+mod_ind)
+		arg2 = "Click"
+	elseif bu_tag == "MouseDown" then
+		arg1 = tostring(9+mod_ind)
+		arg2 = "Click"
+	else
+		arg1 = bu_tag
+		arg2 = G.modifier[mod_ind]
 	end
-	for k, v in pairs(modifier) do
-		local inputbox = CreateFrame("EditBox", "ClickCast Button"..index..v.."EditBox", clickcastframe["Button"..index], "BackdropTemplate")
-		inputbox.id = "frame"..i.."index"..index.."value"..v
-		inputbox:SetSize(150, 20)
-		inputbox:SetPoint("TOPLEFT", 16, 20-k*30)
-		F.CreateBD(inputbox)
+	aCoreCDB["UnitframeOptions"]["ClickCast"][arg1][arg2][key] = value
+end
+
+local function UpdateClickCast(bu_tag, mod_ind)
+	local id, key
+	if bu_tag == "MouseUp" then
+		id = tostring(5+mod_ind)
+		key = "Click"
+	elseif bu_tag == "MouseDown" then
+		id = tostring(9+mod_ind)
+		key = "Click"
+	else
+		id = bu_tag
+		key = G.modifier[mod_ind]
+	end
+	T.UpdateClicksforAll(id, key)
+end
+
+local function CreateMacroEditBox(macro_input, frame, bu_tag, mod_ind)
+	macro_input.expand_bu = T.createclicktexbutton(macro_input, {"LEFT", macro_input, "RIGHT", 0, 0}, [[Interface\AddOns\AltzUI\media\icons\EJ.tga]], nil, 20)		
+	macro_input.expand_bu:SetScript("OnEnter", function(self)	
+		GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+		GameTooltip:AddLine(EDIT)
+		GameTooltip:Show()
+	end)
+	macro_input.expand_bu:SetScript("OnLeave", function()
+		GameTooltip:Hide()
+	end)
+	
+	local macro_box = T.createmultilinebox(macro_input, nil, 150)
+	macro_box:SetPoint("TOPLEFT", frame, "TOPLEFT", 10, -10)
+	macro_box:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -25, -10)
+	macro_box:Hide()
+	
+	macro_box.edit:SetMaxLetters(255)
+	macro_box.edit:HookScript("OnChar", function(self)
+		macro_box.bottom_text:SetText(format(MACROFRAME_CHAR_LIMIT, self:GetNumLetters()))
+	end)
+	
+	macro_box.edit:SetScript("OnShow", function(self)
+		local macroText = GetClickcastValue(bu_tag, mod_ind, "macro")
+		self:SetText(macroText)
+	end)
+
+	macro_box.button1:SetScript("OnClick", function()
+		macro_box.edit:ClearFocus()
+		local macroText = macro_box.edit:GetText()
+		if macroText then
+			ApplyClickcastValue(bu_tag, mod_ind, "macro", macroText)
+			UpdateClickCast(bu_tag, mod_ind)
+		end
+		macro_box:Hide()
+		macro_input:GetScript("OnShow")(macro_input)
+	end)
+	
+	macro_box.button2:SetScript("OnClick", function()
+		macro_box.edit:ClearFocus()
+		macro_box:Hide()
+	end)
+	
+	macro_input.expand_macro_box = macro_box
+	
+	macro_input.expand_bu:SetScript("OnClick", function()
+		macro_box:Show()
+	end)
+end
+
+local function CreateClickcastKeyOptions(bu_tag, text)
+	local frame = CreateOptionPage("ClickCast Button"..bu_tag, text, clickcastframe, "HORIZONTAL", "UnitframeOptions")
+	frame.title:Hide()
+	frame.line:Hide()
+	frame.options = {}
+	
+	for mod_ind, mod_name in pairs(G.modifier) do
+		frame.options[mod_ind] = {}
 		
-		inputbox.name = inputbox:CreateFontString(nil, "ARTWORK", "GameFontNormalLeftYellow")
-		inputbox.name:SetPoint("LEFT", inputbox, "RIGHT", 10, 1)
-		inputbox.name:SetText(v)
+		local mod_text = T.createtext(frame, "OVERLAY", 14, "OUTLINE", "LEFT")
+		mod_text:SetPoint("TOPLEFT", 25, 10-mod_ind*35)
+		mod_text:SetText(mod_name)
+		mod_text:SetWidth(40)
+		frame.options[mod_ind].mod_text = mod_text
 		
-		inputbox:SetFont(G.norFont, 12, "OUTLINE")
-		inputbox:SetAutoFocus(false)
-		inputbox:SetTextInsets(3, 0, 0, 0)
-		
-		inputbox:SetScript("OnShow", function(self) self:SetText(aCoreCDB["UnitframeOptions"]["ClickCast"][index][v]["action"]) end)
-		inputbox:SetScript("OnEscapePressed", function(self) self:SetText(aCoreCDB["UnitframeOptions"]["ClickCast"][index][v]["action"]) self:ClearFocus() end)
-		inputbox:SetScript("OnEditFocusGained", function(self)
-			active = self.id
-			if MacroPop.id ~= active then
-				MacroPop:Hide()
-			end
-		end)
-		inputbox:SetScript("OnHide", function() MacroPop:Hide() end)
-		
-		inputbox:SetScript("OnEnterPressed", function(self)
-			local var = self:GetText()
-			if (var == "target" or var == "tot" or var == "follow" or var == "macro" or var == "focus") then
-				aCoreCDB["UnitframeOptions"]["ClickCast"][index][v]["action"] = var
-				if var == "macro" then
-					selectid, selectv = index, v
-					MacroPop:Show()
-					MacroPop.id = self.id
+		-- 动作
+		local action_select = CreateFrame("Frame", nil, frame, "UIDropDownMenuTemplate")
+		action_select:SetPoint("LEFT", mod_text, "RIGHT", -5, -3)
+		action_select.Text:SetFont(G.norFont, 12, "OUTLINE")
+		F.ReskinDropDown(action_select)
+		UIDropDownMenu_SetWidth(action_select, 100)
+
+		UIDropDownMenu_Initialize(action_select, function()
+			for i, t in pairs(actions) do
+				local info = UIDropDownMenu_CreateInfo()
+				info.value = t[1]
+				info.text = t[2]
+				info.func = function()
+					UIDropDownMenu_SetSelectedValue(action_select, info.value)
+					ApplyClickcastValue(bu_tag, mod_ind, "action", info.value)					
+					UpdateClickCast(bu_tag, mod_ind)
+					frame.options[mod_ind].spell_select:SetShown(info.value == "spell")
+					frame.options[mod_ind].item_input:SetShown(info.value == "item")
+					frame.options[mod_ind].macro_input:SetShown(info.value == "macro")
 				end
-			elseif GetSpellInfo(var) or var == "NONE" then -- 法术已学会
-				aCoreCDB["UnitframeOptions"]["ClickCast"][index][v]["action"] = var
-			else
-				StaticPopupDialogs[G.uiname.."incorrect spellName"].text = L["不正确的法术名称"].." |cff7FFF00"..var.." |r"
-				StaticPopup_Show(G.uiname.."incorrect spell")
-				self:SetText(aCoreCDB["UnitframeOptions"]["ClickCast"][index][v]["action"])
+				UIDropDownMenu_AddButton(info)
 			end
-			self:ClearFocus()
+			
+			local action = GetClickcastValue(bu_tag, mod_ind, "action")
+			UIDropDownMenu_SetSelectedValue(action_select, action)
 		end)
+		
+		frame.options[mod_ind].action_select = action_select
+		
+		-- 法术
+		local spell_select = CreateFrame("Frame", nil, frame, "UIDropDownMenuTemplate")
+		spell_select:SetPoint("LEFT", action_select, "RIGHT", -25, 0)
+		spell_select.Text:SetFont(G.norFont, 12, "OUTLINE")
+		F.ReskinDropDown(spell_select)
+		UIDropDownMenu_SetWidth(spell_select, 130)
+		
+		UIDropDownMenu_Initialize(spell_select, function()
+			for i, spellID in pairs(G.ClickCastSpells) do
+				local spellName, _, spellIcon = GetSpellInfo(spellID)
+				local info = UIDropDownMenu_CreateInfo()
+				info.value = spellName
+				info.text = T.GetSpellIcon(spellID).." "..spellName
+				info.func = function()
+					UIDropDownMenu_SetSelectedValue(spell_select, info.value)
+					ApplyClickcastValue(bu_tag, mod_ind, "spell", info.value)
+					UpdateClickCast(bu_tag, mod_ind)
+				end
+				UIDropDownMenu_AddButton(info)
+			end
+
+			local spell = GetClickcastValue(bu_tag, mod_ind, "spell")
+			UIDropDownMenu_SetSelectedValue(spell_select, spell)		
+		end)
+		
+		frame.options[mod_ind].spell_select = spell_select
+		
+		-- 物品
+		local item_input = T.createinputbox(frame, {"LEFT", action_select, "RIGHT", -8, 2}, L["物品名称ID链接"], 140, true)
+		item_input:SetScript("OnShow", function(self)
+			local itemName = GetClickcastValue(bu_tag, mod_ind, "item")		
+			self:SetText(itemName)
+		end)
+		function item_input:apply()
+			local itemText = self:GetText()
+			local itemID = GetItemInfoInstant(itemText)
+			if itemID then
+				local itemName = GetItemInfo(itemID)
+				self:SetText(itemName)
+				ApplyClickcastValue(bu_tag, mod_ind, "item", itemName)
+				UpdateClickCast(bu_tag, mod_ind)
+			else
+				StaticPopupDialogs[G.uiname.."incorrect itemID"].text = T.color_text((itemText == L["物品名称ID链接"] and "") or itemText)..L["不正确的物品ID"]
+				StaticPopup_Show(G.uiname.."incorrect itemID")
+				self:SetText(L["物品名称ID链接"])
+			end
+		end
+		
+		frame.options[mod_ind].item_input = item_input
+		
+		-- 宏
+		local macro_input = T.createinputbox(frame, {"LEFT", action_select, "RIGHT", -8, 2}, L["输入一个宏"], 140)
+		CreateMacroEditBox(macro_input, frame, bu_tag, mod_ind)
+		
+		macro_input:SetScript("OnShow", function(self)
+			local macroText = GetClickcastValue(bu_tag, mod_ind, "macro")
+			if string.find(macroText, "\n") then
+				self:SetText("......")
+				self:Disable()
+			else
+				self:SetText(macroText)
+				if aCoreCDB["UnitframeOptions"]["enableClickCast"] then
+					self:Enable()
+				else
+					self:Disable()
+				end
+			end
+		end)
+		
+		macro_input:SetScript("OnHide", function(self)
+			self.expand_macro_box:Hide()
+		end)
+		
+		function macro_input:apply()
+			local macroText = self:GetText()
+			if macroText then
+				ApplyClickcastValue(bu_tag, mod_ind, "macro", macroText)
+				UpdateClickCast(bu_tag, mod_ind)
+			end
+		end
+
+		frame.options[mod_ind].macro_input = macro_input
 	end
-end
-
-clickcastframe["MouseUp"] = CreateOptionPage("ClickCast MouseUp", L["MouseUp"], clickcastframe, "HORIZONTAL", "UnitframeOptions")
-clickcastframe["MouseUp"].title:Hide()
-clickcastframe["MouseUp"].line:Hide()
-for k, v in pairs(modifier) do
-	local inputbox = CreateFrame("EditBox", "ClickCast MouseUp"..v.."EditBox", clickcastframe["MouseUp"], "BackdropTemplate")
-	inputbox.id = "MouseUp".."index"..k.."value"..v
-	inputbox:SetSize(150, 20)
-	inputbox:SetPoint("TOPLEFT", 16, 20-k*30)
-	F.CreateBD(inputbox)
-		
-	inputbox.name = inputbox:CreateFontString(nil, "ARTWORK", "GameFontNormalLeftYellow")
-	inputbox.name:SetPoint("LEFT", inputbox, "RIGHT", 10, 1)
-	inputbox.name:SetText(v)
-		
-	inputbox:SetFont(G.norFont, 12, "OUTLINE")
-	inputbox:SetAutoFocus(false)
-	inputbox:SetTextInsets(3, 0, 0, 0)
-		
-	inputbox:SetScript("OnShow", function(self) self:SetText(aCoreCDB["UnitframeOptions"]["ClickCast"][tostring(k+5)]["Click"]["action"]) end)
-	inputbox:SetScript("OnEscapePressed", function(self) self:SetText(aCoreCDB["UnitframeOptions"]["ClickCast"][tostring(k+5)]["Click"]["action"]) self:ClearFocus() end)
-	inputbox:SetScript("OnEditFocusGained", function(self)
-		active = self.id
-		if MacroPop.id ~= active then
-			MacroPop:Hide()
-		end
-	end)
-	inputbox:SetScript("OnHide", function() MacroPop:Hide() end)
-		
-	inputbox:SetScript("OnEnterPressed", function(self)
-		local var = self:GetText()
-		if (var == "target" or var == "tot" or var == "follow" or var == "macro" or var == "focus") then
-			aCoreCDB["UnitframeOptions"]["ClickCast"][tostring(k+5)]["Click"]["action"] = var
-			if var == "macro" then
-				selectid, selectv = tostring(k+5), "Click"
-				MacroPop:Show()
-				MacroPop.id = self.id
-			end
-		elseif GetSpellInfo(var) or var == "NONE" then -- 法术已学会
-			aCoreCDB["UnitframeOptions"]["ClickCast"][tostring(k+5)]["Click"]["action"] = var
-		else
-			StaticPopupDialogs[G.uiname.."incorrect spellName"].text = L["不正确的法术名称"].." |cff7FFF00"..var.." |r"
-			StaticPopup_Show(G.uiname.."incorrect spell")
-			self:SetText(aCoreCDB["UnitframeOptions"]["ClickCast"][tostring(k+5)]["Click"]["action"])
-		end
-		self:ClearFocus()
-	end)
-end
-
-clickcastframe["MouseDown"] = CreateOptionPage("ClickCast MouseDown", L["MouseDown"], clickcastframe, "HORIZONTAL", "UnitframeOptions")
-clickcastframe["MouseDown"].title:Hide()
-clickcastframe["MouseDown"].line:Hide()
-for k, v in pairs(modifier) do
-	local inputbox = CreateFrame("EditBox", "ClickCast MouseDown"..v.."EditBox", clickcastframe["MouseDown"], "BackdropTemplate")
-	inputbox.id = "MouseDown".."index"..k.."value"..v
-	inputbox:SetSize(150, 20)
-	inputbox:SetPoint("TOPLEFT", 16, 20-k*30)
-	F.CreateBD(inputbox)
-		
-	inputbox.name = inputbox:CreateFontString(nil, "ARTWORK", "GameFontNormalLeftYellow")
-	inputbox.name:SetPoint("LEFT", inputbox, "RIGHT", 10, 1)
-	inputbox.name:SetText(v)
-		
-	inputbox:SetFont(G.norFont, 12, "OUTLINE")
-	inputbox:SetAutoFocus(false)
-	inputbox:SetTextInsets(3, 0, 0, 0)
-		
-	inputbox:SetScript("OnShow", function(self) self:SetText(aCoreCDB["UnitframeOptions"]["ClickCast"][tostring(k+9)]["Click"]["action"]) end)
-	inputbox:SetScript("OnEscapePressed", function(self) self:SetText(aCoreCDB["UnitframeOptions"]["ClickCast"][tostring(k+9)]["Click"]["action"]) self:ClearFocus() end)
-	inputbox:SetScript("OnEditFocusGained", function(self)
-		active = self.id
-		if MacroPop.id ~= active then
-			MacroPop:Hide()
-		end
-	end)
-	inputbox:SetScript("OnHide", function() MacroPop:Hide() end)
 	
-	inputbox:SetScript("OnEnterPressed", function(self)
-		local var = self:GetText()
-		if (var == "target" or var == "tot" or var == "follow" or var == "macro" or var == "focus") then
-			aCoreCDB["UnitframeOptions"]["ClickCast"][tostring(k+9)]["Click"]["action"] = var
-			if var == "macro" then
-				selectid, selectv = tostring(k+9), "Click"
-				MacroPop:Show()
-				MacroPop.id = self.id
-			end
-		elseif GetSpellInfo(var) or var == "NONE" then -- 法术已学会
-			aCoreCDB["UnitframeOptions"]["ClickCast"][tostring(k+9)]["Click"]["action"] = var
-		else
-			StaticPopupDialogs[G.uiname.."incorrect spellName"].text = L["不正确的法术名称"].." |cff7FFF00"..var.." |r"
-			StaticPopup_Show(G.uiname.."incorrect spell")
-			self:SetText(aCoreCDB["UnitframeOptions"]["ClickCast"][tostring(k+9)]["Click"]["action"])
+	frame:SetScript("OnShow", function()
+		for mod_ind, _ in pairs(G.modifier) do
+			local action = GetClickcastValue(bu_tag, mod_ind, "action")
+			frame.options[mod_ind].spell_select:SetShown(action == "spell")
+			frame.options[mod_ind].item_input:SetShown(action == "item")
+			frame.options[mod_ind].macro_input:SetShown(action == "macro")
 		end
-		self:ClearFocus()
 	end)
+	
+	frame.Enable = function()
+		for mod_ind, _ in pairs(G.modifier) do
+			for key, option in pairs(frame.options[mod_ind]) do
+				if string.find(key, "_text") then
+					option:SetTextColor(1, 1, 1)
+				elseif string.find(key, "_select") then
+					UIDropDownMenu_EnableDropDown(option)
+				else
+					option:Enable()
+				end
+				if key == "macro_input" then
+					option.expand_bu:Enable()
+				end
+			end
+		end
+	end
+	
+	frame.Disable = function()
+		for mod_ind, _ in pairs(G.modifier) do
+			for key, option in pairs(frame.options[mod_ind]) do
+				if string.find(key, "_text") then
+					option:SetTextColor(.5, .5, .5)
+				elseif string.find(key, "_select") then
+					UIDropDownMenu_DisableDropDown(option)
+				else
+					option:Disable()
+				end
+				if key == "macro_input" then
+					option.expand_bu:Disable()
+					option.expand_macro_box:Hide()
+				end
+			end
+		end
+	end
+	
+	T.createDR(RFInnerframe.clickcast.enableClickCast, frame)
 end
+
+T.RegisterInitCallback(function()
+	for i, info in pairs(click_buttons) do
+		CreateClickcastKeyOptions(unpack(info))
+	end
+end)
 
 -- 光环图标
 RFInnerframe.Icon_Display = CreateOptionPage("RF Options Icon Display", L["光环"]..L["图标"], RFInnerframe, "VERTICAL", "UnitframeOptions")
