@@ -162,9 +162,14 @@ T.resize_font = function(t, size)
 	end
 end
 
+T.GetSpellIcon = function(spellID)
+	local icon = select(3, GetSpellInfo(spellID))
+	return "|T"..icon..":14:14:0:0:64:64:4:60:4:60|t"
+end
+
 T.GetIconLink = function(spellID)
 	local icon = select(3, GetSpellInfo(spellID))
-	return "|T"..icon..":12:12:0:0:64:64:4:60:4:60|t"..GetSpellLink(spellID)
+	return "|T"..icon..":14:14:0:0:64:64:4:60:4:60|t"..GetSpellLink(spellID)
 end
 
 T.CheckRole = function()
@@ -830,18 +835,27 @@ T.createinputbox = function(parent, points, text, width, link)
 	box:SetSize(width or 100, 20)
 	if points then box:SetPoint(unpack(points)) end
 	F.CreateBD(box)
-	box:SetBackdropBorderColor(1, 1, 1)
-	
+	box:SetBackdropBorderColor(.5, .5, .5)
+		
 	box:SetFont(G.norFont, 12, "OUTLINE")
 	box:SetAutoFocus(false)
 	box:SetTextInsets(3, 0, 0, 0)
 	
-	box:SetScript("OnShow", function(self)
-		self:SetText(text)
+	box:SetScript("OnChar", function(self) 
+		self.button:Show()
+		self:SetBackdropBorderColor(1, 1, 0)		
 	end)
 	
-	box:SetScript("OnChar", function(self) 
-		self.button:Show()		
+	box:SetScript("OnEditFocusGained", function(self)
+		self:SetBackdropBorderColor(1, 1, 1)
+	end)
+	
+	box:SetScript("OnEditFocusLost", function(self)
+		self:SetBackdropBorderColor(.5, .5, .5)
+	end)
+	
+	box:SetScript("OnShow", function(self)
+		self:SetText(text)
 	end)
 	
 	box:SetScript("OnEscapePressed", function(self)
@@ -882,6 +896,7 @@ T.createeditbox = function(parent, x, y, name, table, value, tip)
 	local box = CreateFrame("EditBox", nil, parent, "BackdropTemplate")
 	box:SetSize(200, 20)
 	F.CreateBD(box)
+	box:SetBackdropBorderColor(.5, .5, .5)
 	
 	box:SetFont(G.norFont, 12, "OUTLINE")
 	box:SetAutoFocus(false)
@@ -899,6 +914,10 @@ T.createeditbox = function(parent, x, y, name, table, value, tip)
 		box.name:SetPoint("TOPLEFT", parent, "TOPLEFT", x, -y)
 		box:SetPoint("TOPLEFT", parent, "TOPLEFT", x+box.name:GetWidth()+5, -y+4)
 	end
+	
+	box:SetScript("OnChar", function(self) self:SetBackdropBorderColor(1, 1, 0) end)
+	box:SetScript("OnEditFocusGained", function(self) self:SetBackdropBorderColor(1, 1, 1) end)
+	box:SetScript("OnEditFocusLost", function(self) self:SetBackdropBorderColor(.5, .5, .5) end)
 	
 	if table and value then
 		box:SetScript("OnShow", function(self) 
@@ -955,82 +974,97 @@ T.createeditbox = function(parent, x, y, name, table, value, tip)
 end
 
 T.createmultilinebox = function(parent, width, height, x, y, name, table, value, tip)
-	local scrollBG = CreateFrame("ScrollFrame", G.uiname..value.."MultiLineEditBox_BG", parent, "UIPanelScrollFrameTemplate")
-	scrollBG:SetPoint("TOPLEFT", x, -y)
-	scrollBG:SetSize(width or 200, height or 100)
-	scrollBG:SetFrameLevel(parent:GetFrameLevel()+1)
-	scrollBG.bg = CreateFrame("Frame", nil, scrollBG, "BackdropTemplate")
-	scrollBG.bg:SetAllPoints(scrollBG)
-	F.CreateBD(scrollBG.bg, 0)
+	local box = CreateFrame("ScrollFrame", nil, parent, "UIPanelScrollFrameTemplate")
 	
-	local gradient = F.CreateGradient(scrollBG.bg)
-	gradient:SetPoint("TOPLEFT", scrollBG.bg, 0, 0)
-	gradient:SetPoint("BOTTOMRIGHT", scrollBG.bg, 0, 0)
-	
-	if name then
-		scrollBG.name = scrollBG:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
-		scrollBG.name:SetPoint("BOTTOMLEFT", scrollBG, "TOPLEFT", 5, 8)
-		scrollBG.name:SetJustifyH("LEFT")
-		scrollBG.name:SetText(name)
-		T.resize_font(scrollBG.name)
+	if x and y then
+		box:SetPoint("TOPLEFT", x, -y)
 	end
 	
-	local scrollAC = CreateFrame("Frame", G.uiname..value.."MultiLineEditBox_ScrollAC", scrollBG)
-	scrollAC:SetPoint("TOP", scrollBG, "TOP", 0, -3)
-	scrollAC:SetWidth(scrollBG:GetWidth())
-	scrollAC:SetHeight(scrollBG:GetHeight())
-	scrollAC:SetFrameLevel(scrollBG:GetFrameLevel()+1)
-	scrollBG:SetScrollChild(scrollAC)
+	box:SetSize(width or 200, height or 100)
+	box:SetFrameLevel(parent:GetFrameLevel()+3)
+	
+	box.bg = CreateFrame("Frame", nil, box, "BackdropTemplate")
+	box.bg:SetFrameLevel(parent:GetFrameLevel()+2)
+	box.bg:SetAllPoints(box)
+	F.CreateBD(box.bg, 1)
+	box.bg:SetBackdropBorderColor(.5, .5, .5)
+	
+	box.top_text = T.createtext(box, "OVERLAY", 12, "OUTLINE", "LEFT")
+	box.top_text:SetPoint("BOTTOMLEFT", box, "TOPLEFT", 5, 3)
+	box.top_text:SetText(name or "")
+	
+	box.bottom_text = T.createtext(box, "OVERLAY", 10, "OUTLINE", "RIGHT")
+	box.bottom_text:SetPoint("BOTTOMRIGHT", box, "BOTTOMRIGHT", -2, 2)
 
-	scrollBG.edit = CreateFrame("EditBox", G.uiname..value.."MultiLineEditBox", scrollAC)
-	scrollBG.edit:SetTextInsets(5, 5, 5, 5)
-	scrollBG.edit:SetFrameLevel(scrollAC:GetFrameLevel()+1)
-	scrollBG.edit:SetAllPoints()
-	if value == "Import" then
-		scrollBG.edit:SetFont(G.norFont, 10, "OUTLINE")
-	else
-		scrollBG.edit:SetFontObject(ChatFontNormal)
-	end
-	scrollBG.edit:SetMultiLine(true)
-	scrollBG.edit:EnableMouse(true)
-	scrollBG.edit:SetAutoFocus(false)
-	
-	if table then
-		scrollBG.edit:SetScript("OnShow", function(self) self:SetText(aCoreCDB[table][value]) end)
-		scrollBG.edit:SetScript("OnEscapePressed", function(self) self:SetText(aCoreCDB[table][value]) self:ClearFocus() end)
-		scrollBG.edit:SetScript("OnEnterPressed", function(self) self:ClearFocus() aCoreCDB[table][value] = self:GetText() end)
-	end
-	
-	F.ReskinScroll(scrollBG.ScrollBar)
+	box.anchor = CreateFrame("Frame", nil, box)
+	box.anchor:SetPoint("TOP", box, "TOP", 0, -3)
+	box.anchor:SetWidth(box:GetWidth())
+	box.anchor:SetHeight(box:GetHeight())
+	box.anchor:SetFrameLevel(box:GetFrameLevel()+1)
+	box:SetScrollChild(box.anchor)
 
+	box.edit = CreateFrame("EditBox", nil, box.anchor)
+	box.edit:SetTextInsets(5, 5, 5, 5)
+	box.edit:SetFrameLevel(box.anchor:GetFrameLevel()+1)
+	box.edit:SetAllPoints()
+	
+	box.edit:SetFont(G.norFont, 12, "OUTLINE")
+	box.edit:SetMultiLine(true)
+	box.edit:EnableMouse(true)
+	box.edit:SetAutoFocus(false)
+	
+	box.edit:SetScript("OnChar", function(self) box.bg:SetBackdropBorderColor(1, 1, 0) end)
+	box.edit:SetScript("OnEditFocusGained", function(self) box.bg:SetBackdropBorderColor(1, 1, 1) end)
+	box.edit:SetScript("OnEditFocusLost", function(self) box.bg:SetBackdropBorderColor(.5, .5, .5) end)
+		
+	box.button1 = T.createclickbutton(box, 99, {"TOPRIGHT", box, "BOTTOM", -1, -2}, ACCEPT)	
+	box.button2 = T.createclickbutton(box, 99, {"TOPLEFT", box, "BOTTOM", 1, -2}, CANCEL)	
+	
+	if table and value then
+		box.edit:SetScript("OnShow", function(self)
+			self:SetText(aCoreCDB[table][value])
+		end)
+	
+		box.button1:SetScript("OnClick", function()
+			box.edit:ClearFocus()
+			aCoreCDB[table][value] = box.edit:GetText()
+			if box.apply then
+				box:apply()
+			end
+		end)
+		
+		box.button2:SetScript("OnClick", function()
+			box.edit:ClearFocus()
+			box.edit:SetText(aCoreCDB[table][value])
+		end)
+		
+		parent[value] = box
+	end
+	
+	F.ReskinScroll(box.ScrollBar)
+
+	box.Enable = function()
+		box.top_text:SetTextColor(1, 1, 1, 1)		
+		box.edit:SetTextColor(1, 1, 1, 1)
+		box.edit:Enable()
+	end
+	
+	box.Disable = function()	
+		box.top_text:SetTextColor(0.7, 0.7, 0.7, 0.5)
+		box.edit:SetTextColor(0.7, 0.7, 0.7, 0.5)
+		box.edit:Disable()
+	end
+	
 	if tip then
-		scrollBG.edit:SetScript("OnEnter", function(self) 
+		box.edit:SetScript("OnEnter", function(self) 
 			GameTooltip:SetOwner(self, "ANCHOR_RIGHT", -20, 10)
 			GameTooltip:AddLine(tip)
 			GameTooltip:Show() 
 		end)
-		scrollBG.edit:SetScript("OnLeave", function(self) GameTooltip:Hide() end)
+		box.edit:SetScript("OnLeave", function(self) GameTooltip:Hide() end)
 	end
-	
-	scrollBG.Enable = function()
-		if name then
-			scrollBG.name:SetTextColor(1, 1, 1, 1)
-		end
-		gradient:SetGradient("Vertical", CreateColor(0, 0, 0, .5), CreateColor(.3, .3, .3, .3))
-		scrollBG.edit:SetTextColor(1, 1, 1, 1)
-		scrollBG.edit:Enable()
-	end
-	
-	scrollBG.Disable = function()	
-		if name then
-			scrollBG.name:SetTextColor(0.7, 0.7, 0.7, 0.5)
-		end
-		gradient:SetVertexColor(.5, .5, .5, .3)
-		scrollBG.edit:SetTextColor(0.7, 0.7, 0.7, 0.5)
-		scrollBG.edit:Disable()
-	end
-	
-	parent[value] = scrollBG
+		
+	return box
 end
 
 -- 滑动条
@@ -1780,6 +1814,7 @@ T.CreateItemListOption = function(parent, points, height, text, OptionName, inpu
 		lineuplist(aCoreCDB[frame.db_key][OptionName], frame.option_list.list, frame.option_list.anchor)
 	end)
 	
+	table.insert(inputbox, frame.first_input) -- 支持链接/文字/数字
 	function frame.first_input:apply()
 		local itemText = self:GetText()
 		local itemID = GetItemInfoInstant(itemText)
