@@ -2,7 +2,7 @@
 local F = unpack(AuroraClassic)
 
 ----------------------------
--- 			通用		  --
+-- 			材质		  --
 ----------------------------
 
 local arrowDegree = {
@@ -15,4 +15,16 @@ local arrowDegree = {
 T.SetupArrow = function(tex, direction)
 	tex:SetTexture([[Interface\AddOns\AltzUI\media\arrow.tga]])
 	tex:SetRotation(rad(arrowDegree[direction]))
+end
+
+----------------------------
+-- 			文本		  --
+----------------------------
+
+T.memFormat = function(num)
+	if num > 1024 then
+		return format("%.2f mb", (num / 1024))
+	else
+		return format("%.1f kb", floor(num))
+	end
 end
