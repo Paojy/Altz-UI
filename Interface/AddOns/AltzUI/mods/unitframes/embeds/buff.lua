@@ -7,46 +7,53 @@ local glowBorder = {
     insets = {left = 1, right = 1, top = 1, bottom = 1}
 }
 
-local CreateAuraIcon = function(auras, size, ...)
-    local button = CreateFrame("Button", nil, auras)
-    button:EnableMouse(false)
-	button:SetSize(size, size)
-    button:SetPoint(...)
-
-    local icon = button:CreateTexture(nil, "ARTWORK")
-    icon:SetAllPoints(button)
-    icon:SetTexCoord(.07, .93, .07, .93)
-
-    local count = button:CreateFontString(nil, "OVERLAY")
-    count:SetFont(G.norFont, auras.cfontsize+2, "THINOUTLINE")
-	count:ClearAllPoints()
-    count:SetPoint("TOPLEFT", -4, 4)
-	count:SetJustifyH("LEFT")
-	count:SetTextColor(1, .5, .8)
+local CreateAuraIcon = function(auras, tag, icon_size, icon_fsize, ...)
+    if not auras[tag] then
+		local button = CreateFrame("Button", nil, auras)
+		button:EnableMouse(false)
+		button:SetSize(22, 22)		
 	
-    local border = CreateFrame("Frame", nil, button, "BackdropTemplate")
-    border:SetPoint("TOPLEFT", button, "TOPLEFT", -1, 1)
-    border:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", 1, -1)
-    border:SetFrameLevel(4)
-    border:SetBackdrop(glowBorder)
-    border:SetBackdropColor(0,0,0,1)
-    border:SetBackdropBorderColor(0,0,0,1)
-    button.border = border
+		local icon = button:CreateTexture(nil, "ARTWORK")
+		icon:SetAllPoints(button)
+		icon:SetTexCoord(.07, .93, .07, .93)
+		button.icon = icon
+		
+		local count = button:CreateFontString(nil, "OVERLAY")
+		count:SetFont(G.norFont, 10, "THINOUTLINE")
+		count:ClearAllPoints()
+		count:SetPoint("TOPLEFT", -4, 4)
+		count:SetJustifyH("LEFT")
+		count:SetTextColor(1, .5, .8)
+		button.count = count
+		
+		local border = CreateFrame("Frame", nil, button, "BackdropTemplate")
+		border:SetPoint("TOPLEFT", button, "TOPLEFT", -1, 1)
+		border:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", 1, -1)
+		border:SetFrameLevel(4)
+		border:SetBackdrop(glowBorder)
+		border:SetBackdropColor(0,0,0,1)
+		border:SetBackdropBorderColor(0,0,0,1)
+		button.border = border
+	
+		local remaining = button:CreateFontString(nil, "OVERLAY")
+		remaining:SetFont(G.norFont, 8, "THINOUTLINE")
+		remaining:SetPoint("BOTTOMRIGHT", 4, -2)
+		remaining:SetJustifyH("RIGHT")
+		remaining:SetTextColor(1, 1, 0)
+		button.remaining = remaining
 
-    local remaining = button:CreateFontString(nil, "OVERLAY")
-    remaining:SetFont(G.norFont, auras.tfontsize, "THINOUTLINE")
-    remaining:SetPoint("BOTTOMRIGHT", 4, -2)
-	remaining:SetJustifyH("RIGHT")
-    remaining:SetTextColor(1, 1, 0)
-
-    button.parent = auras
-    button.icon = icon
-    button.count = count
-	button.remaining = remaining
-    button.cd = cd
-    button:Hide()
-
-    return button
+		button.parent = auras
+		button:Hide()
+	
+		auras[tag] = button
+	end
+	
+    local bu = auras[tag]
+	bu:ClearAllPoints()
+	bu:SetPoint(...)
+	bu:SetSize(icon_size, icon_size)
+	bu.count:SetFont(G.norFont, icon_fsize+2, "THINOUTLINE")
+	bu.remaining:SetFont(G.norFont, icon_fsize, "THINOUTLINE")
 end
 
 local CustomFilter = function(...)
@@ -65,7 +72,6 @@ local CustomFilter = function(...)
 
 	return priority, asc
 end
-
 
 local AuraTimerAsc = function(self, elapsed)
     self.elapsed = (self.elapsed or 0) + elapsed
@@ -120,15 +126,16 @@ local updateBuff = function(icon, texture, count, dtype, duration, expires)
 end
 
 local Update = function(self, event, unit)
-    if(self.unit ~= unit) then
-	return end
+    if(self.unit ~= unit) then return end
 
 	local active_buffs = {}
 	local auras = self.AltzTankbuff
-	local numBuffs = auras.numBuffs
-	local Icon_size = auras.Icon_size
-	local anchor_x = auras.anchor_x
-	local anchor_y = auras.anchor_y
+	
+	local numBuffs = aCoreCDB["UnitframeOptions"]["raid_buff_num"]
+	local anchor_x = aCoreCDB["UnitframeOptions"]["raid_buff_anchor_x"]
+	local anchor_y = aCoreCDB["UnitframeOptions"]["raid_buff_anchor_y"]
+	local icon_size = aCoreCDB["UnitframeOptions"]["raid_buff_icon_size"]
+	local icon_fsize = aCoreCDB["UnitframeOptions"]["raid_buff_icon_fontsize"]
 	
     local index = 1
     while true do
@@ -150,7 +157,13 @@ local Update = function(self, event, unit)
 		
 		index = index + 1
     end
-
+	
+	local k = 1
+	while auras["button"..k] do
+		auras["button"..k].active = false
+		k = k + 1
+	end
+	
 	if index > 1 then
 		local t = {}
 		for name, info in pairs(active_buffs) do
@@ -161,38 +174,39 @@ local Update = function(self, event, unit)
 		
 		for k, info in pairs(t) do
 			if k <= numBuffs then
-				if not auras["button"..k] then
-					if k == 1 then
-						auras["button"..k] = CreateAuraIcon(auras, Icon_size, "LEFT", self, "CENTER", anchor_x, anchor_y)
-					else
-						auras["button"..k] = CreateAuraIcon(auras, Icon_size, "LEFT", auras["button"..(k-1)], "RIGHT", 3, 0)
-					end
+				if k == 1 then
+					CreateAuraIcon(auras, "button"..k, icon_size, icon_fsize, "LEFT", self, "CENTER", anchor_x, anchor_y)
+				else
+					CreateAuraIcon(auras, "button"..k, icon_size, icon_fsize, "LEFT", auras["button"..(k-1)], "RIGHT", 3, 0)
 				end
 				updateBuff(auras["button"..k], info["texture"], info["count"], info["dtype"], info["duration"], info["expires"])
 				auras["button"..k]:Show()
+				auras["button"..k].active = true
 			end
 		end
-		
-		auras.num_shown = #t
-	else
-		auras.num_shown = 0
 	end
 	
-    if auras.num_shown < numBuffs then
-        for i = numBuffs, auras.num_shown+1, -1 do
-			if auras["button"..i] and auras["button"..i]:IsShown() then
-				auras["button"..i]:Hide()
-			end
+    local k = 1
+	while auras["button"..k] do
+		if not auras["button"..k].active then
+			auras["button"..k]:Hide()
 		end
-    end
+		k = k + 1
+	end
+end
+
+local function ForceUpdate(element)
+	return Update(element.__owner, 'ForceUpdate', element.__owner.unit)
 end
 
 local Enable = function(self)
     local auras = self.AltzTankbuff
-
     if(auras) then
-		auras.num_shown = auras.num_shown or 0
+		auras.__owner = self
+		auras.ForceUpdate = ForceUpdate
+	
         self:RegisterEvent("UNIT_AURA", Update, true)
+		
         return true
     end
 end
@@ -201,6 +215,7 @@ local Disable = function(self)
     local auras = self.AltzTankbuff
 
     if(auras) then
+		auras:Hide()
         self:UnregisterEvent("UNIT_AURA", Update)
     end
 end
