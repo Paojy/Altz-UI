@@ -47,20 +47,32 @@ local function actionButton_Register(frame)
 	end
 end
 
+T.CooldownNumber_Edit = function()
+	for k, v in pairs(active) do
+		if k.text then
+			k.text:SetFont(G.numFont,  aCoreCDB["ActionbarOptions"]["cooldownsize"], "OUTLINE")
+		end
+	end
+end
+
 local Init = function()
 	local methods = getmetatable(ActionButton1Cooldown).__index
 	hooksecurefunc(methods, "SetCooldown", function(self, start, Duration)
+		if not aCoreCDB["ActionbarOptions"]["cooldown_number"] then return end
+		
 		if self.noshowcd or self:IsForbidden() then
 			return
-		elseif not aCoreCDB["ActionbarOptions"]["cooldown_wa"] then
+		
+		-- WA的图标不加冷却时间
+		elseif not aCoreCDB["ActionbarOptions"]["cooldown_number_wa"] then
 			local frameName = self.GetName and self:GetName() or ""
 			if strfind(frameName, "WeakAuras") then
 				return
 			end
-		end
-		local parent = self:GetParent()
-		if parent then
-			local parent_name = parent:GetName()
+		-- 团队框架上的图标不加冷却时间
+		
+		elseif self:GetParent() then
+			local parent_name = self:GetParent():GetName()
 			if parent_name and parent_name:find("CompactRaidFrame") then
 				return
 			end
@@ -82,7 +94,7 @@ local Init = function()
 						else
 							self.text:SetFont(G.numFont, aCoreCDB["ActionbarOptions"]["cooldownsize"], "OUTLINE")
 						end
-					else
+					else -- 15~25尺寸的框体
 						if not self.text then
 							self.text = T.createnumber(self, "OVERLAY", self:GetWidth()*.7+1, "OUTLINE", "CENTER")
 							self.text:SetTextColor(.4, .95, 1)
@@ -127,8 +139,7 @@ end
 T.RegisterInitCallback(Init)
 
 local EventFrame = CreateFrame('Frame')
-EventFrame:SetScript('OnEvent', function(self, event)
-	if not aCoreCDB["ActionbarOptions"]["cooldown"] then return end
+EventFrame:SetScript('OnEvent', function(self, event)	
 	if event == 'ACTIONBAR_UPDATE_COOLDOWN' then
 		for cooldown in pairs(active) do
 			local button = cooldown:GetParent()

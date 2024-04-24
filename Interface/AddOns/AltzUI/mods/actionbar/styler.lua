@@ -1,5 +1,7 @@
 ﻿local T, C, L, G = unpack(select(2, ...))
 
+local Styled_buttons = {}
+
 local textures = {
 	blank = "Interface\\Buttons\\WHITE8x8",
 	normal= "Interface\\AddOns\\AltzUI\\media\\gloss",
@@ -31,8 +33,8 @@ end
 --style extraactionbutton
 local function styleExtraActionButton(bu)
 	if not bu or (bu and bu.rabs_styled) then return end
-	local name = bu:GetName()
-	local ho = _G[name.."HotKey"]
+	
+	local ho = bu.HotKey
 	--remove the style background theme
 	bu.style:SetTexture(nil)
 	hooksecurefunc(bu.style, "SetTexture", function(self, texture)
@@ -87,8 +89,7 @@ end
 --动作条
 local function styleActionButton(bu)
 	if not bu or (bu and bu.rabs_styled) then return end
-	local name = bu:GetName()	
-	
+
 	-- 主动作条的背景
 	if bu.SlotArt then
 		bu.SlotArt:SetTexture(nil)
@@ -99,7 +100,7 @@ local function styleActionButton(bu)
 	end
 	
 	--hotkey
-	local ho= _G[name.."HotKey"]	
+	local ho = bu.HotKey
 	ho:SetFont(G.norFont, aCoreCDB["ActionbarOptions"]["keybindsize"], "OUTLINE")
 	ho:ClearAllPoints()
 	ho:SetJustifyH("RIGHT")
@@ -107,7 +108,7 @@ local function styleActionButton(bu)
 	ho:SetPoint("TOPRIGHT", bu, "TOPRIGHT", -2, -2)
 	
 	--macroname
-	local na= _G[name.."Name"]	
+	local na = bu.Name
 	na:SetFont(G.norFont, aCoreCDB["ActionbarOptions"]["macronamesize"], "OUTLINE")
 	na:ClearAllPoints()
 	na:SetJustifyH("LEFT")
@@ -115,7 +116,7 @@ local function styleActionButton(bu)
 	na:SetPoint("BOTTOMRIGHT", bu, "BOTTOMRIGHT", -2, 2)
 	
 	--count
-	local co= _G[name.."Count"]	
+	local co = bu.Count
 	co:SetFont(G.numFont, aCoreCDB["ActionbarOptions"]["countsize"], "OUTLINE")
 	co:ClearAllPoints()
 	co:SetJustifyH("RIGHT")
@@ -123,9 +124,9 @@ local function styleActionButton(bu)
 	
 	--applying the textures
 	bu.IconMask:Hide()
-	local nt= _G[name.."NormalTexture"]	
+	local nt = bu.NormalTexture
 	nt:SetTexture(textures.normal)
-	local bd = _G[name.."Border"]
+	local bd = bu.Border
 	bd:SetTexture(textures.pushed)
 	
 	bu:SetNormalTexture(textures.normal)
@@ -139,19 +140,21 @@ local function styleActionButton(bu)
 	bu.SlotBackground:SetTexture(nil)
 	
 	--cut the default border of the icons
-	local ic= _G[name.."Icon"]	
+	local ic = bu.Icon or bu.icon
 	ic:SetTexCoord( .1, .9, .1, .9)
 	ic:SetPoint("TOPLEFT", bu,"TOPLEFT", 0, 0)
 	ic:SetPoint("BOTTOMRIGHT", bu,"BOTTOMRIGHT", 0, 0)
 	
 	--adjust frame
-	local cd= _G[name.."Cooldown"]	
+	local cd = bu.cooldown
 	cd:SetAllPoints(bu)
 	cd:SetPoint("TOPLEFT", bu,"TOPLEFT", 0, 0)
 	cd:SetPoint("BOTTOMRIGHT", bu,"BOTTOMRIGHT", 0, 0)
 	
 	--apply background
 	if not bu.bg then applyBackground(bu) end
+	
+	table.insert(Styled_buttons, bu)
 	
 	bu.rabs_styled = true
 end
@@ -171,6 +174,14 @@ local function styleLeaveButton(bu)
 	bu.rabs_styled = true
 end
 
+local function UpdateActionbarsFontSize()
+	for i, bu in pairs(Styled_buttons) do
+		bu.HotKey:SetFont(G.norFont, aCoreCDB["ActionbarOptions"]["keybindsize"], "OUTLINE")
+		bu.Name:SetFont(G.norFont, aCoreCDB["ActionbarOptions"]["macronamesize"], "OUTLINE")
+		bu.Count:SetFont(G.numFont, aCoreCDB["ActionbarOptions"]["countsize"], "OUTLINE")
+	end
+end
+T.UpdateActionbarsFontSize = UpdateActionbarsFontSize
 ---------------------------------------
 -- INIT
 ---------------------------------------

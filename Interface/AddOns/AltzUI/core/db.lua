@@ -622,8 +622,8 @@ local Character_default_Settings = {
 	},
 	ActionbarOptions = {
 		-- 样式
-		cooldown = true,
-		cooldown_wa = true,
+		cooldown_number = true,
+		cooldown_number_wa = true,
 		cooldownsize = 20,
 		rangecolor = true,
 		keybindsize = 12,
@@ -642,7 +642,7 @@ local Character_default_Settings = {
 		-- 通用
 		enableplate = true,
 		theme = "class", -- "dark" "class" "number"	
-		fontsize = 8,
+		namefontsize = 8,
 		numfontsize = 10,
 		plateauranum = 5,
 		plateaurasize = 15,	
@@ -654,6 +654,7 @@ local Character_default_Settings = {
 		-- 样式
 		bar_width = 100,-- 条形
 		bar_height = 8,
+		valuefontsize = 8,
 		bar_hp_perc = "perc", -- 数值样式  "perc" "value_perc"
 		bar_alwayshp = false, -- 满血显示生命值
 		bar_onlyname = false, -- 友方只显示名字
@@ -664,7 +665,6 @@ local Character_default_Settings = {
 		number_colorheperc = false,	
 		-- 玩家姓名板
 		playerplate = false,
-		plateaura = false,
 		platecastbar = false,
 		classresource_show = false,
 		classresource_pos = "player", --"player", "target"				

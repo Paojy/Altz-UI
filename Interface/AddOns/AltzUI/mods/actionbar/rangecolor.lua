@@ -18,13 +18,18 @@ hooksecurefunc("ActionButton_UpdateRangeIndicator", function(self)
 		if (HasRange and InRange == false) then -- Out of range
 			Icon:SetVertexColor(0.8, 0.1, 0.1)
 			if NormalTexture then
-			NormalTexture:SetVertexColor(0.8, 0.1, 0.1)
+				NormalTexture:SetVertexColor(0.8, 0.1, 0.1)
 			end
 		else -- In range
 			Icon:SetVertexColor(1.0, 1.0, 1.0)
 			if NormalTexture then
-			NormalTexture:SetVertexColor(1.0, 1.0, 1.0)
+				NormalTexture:SetVertexColor(1.0, 1.0, 1.0)
 			end
 		end
+	else
+		--Icon:SetVertexColor(0, 0.5, 1.0)
+		--if NormalTexture then
+		--	NormalTexture:SetVertexColor(0, 0.5, 1.0)
+		--end
 	end
 end)

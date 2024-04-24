@@ -250,7 +250,7 @@ local function CreateOptionPage(name, title, parent, orientation, db_key)
 	frame.title = frame:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
 	frame.title:SetPoint("TOPLEFT", 35, -23)
 	frame.title:SetText(title)
-
+	
 	frame.line = frame:CreateTexture(nil, "ARTWORK")
 	frame.line:SetSize(parent:GetWidth()-50, 1)
 	frame.line:SetPoint("TOP", 0, -50)
@@ -331,11 +331,14 @@ end
 
 local function CreateInnerFrame(parent)
 	local frame = CreateFrame("Frame", nil, parent, "BackdropTemplate")
-	frame:SetPoint("TOPLEFT", 40, -60)
+	frame:SetPoint("TOPLEFT", 40, -50)
 	frame:SetPoint("BOTTOMLEFT", -20, 25)
 	frame:SetWidth(parent:GetWidth()-200)
 	
 	F.CreateBD(frame, .2)
+	frame:SetBackdropBorderColor(1, 1, 1)
+	
+	parent.line:Hide()
 	
 	return frame
 end
@@ -457,7 +460,7 @@ SInnerframe.layout = CreateOptionPage("Interface Options Layout", L["界面布�
 T.createcheckbutton(SInnerframe.layout, 30, 60, L["信息条"], "SkinOptions", "infobar")
 SInnerframe.layout.infobar.apply = G.InfoFrame.Apply
 
-T.createslider(SInnerframe.layout, 30, 110, L["信息条尺寸"], "SkinOptions", "infobarscale", 100, 50, 200, 5)
+T.createslider(SInnerframe.layout, "long", 30, 110, L["信息条尺寸"], "SkinOptions", "infobarscale", 100, 50, 200, 5)
 SInnerframe.layout.infobarscale.apply = G.InfoFrame.Apply
 
 T.createDR(SInnerframe.layout.infobar, SInnerframe.layout.infobarscale)
@@ -483,7 +486,7 @@ ChatOptions.showbg.apply = T.UpdateChatFrameBg
 CreateDividingLine(ChatOptions, -130)
 
 T.createcheckbutton(ChatOptions, 30, 140, L["聊天过滤"], "ChatOptions", "nogoldseller", L["聊天过滤提示"])
-T.createslider(ChatOptions, 30, 190, L["过滤阈值"], "ChatOptions", "goldkeywordnum", 1, 1, 5, 1, L["过滤阈值"])
+T.createslider(ChatOptions, "long", 30, 190, L["过滤阈值"], "ChatOptions", "goldkeywordnum", 1, 1, 5, 1, L["过滤阈值"])
 T.createmultilinebox(ChatOptions, 200, 100, 35, 225, L["关键词"], "ChatOptions", "goldkeywordlist", L["关键词输入"])
 ChatOptions.goldkeywordlist.apply = T.Update_Chat_Filter
 T.createDR(ChatOptions.nogoldseller, ChatOptions.goldkeywordnum, ChatOptions.goldkeywordlist)
@@ -530,7 +533,7 @@ UFInnerframe.style.enablefade.apply = function()
 	T.EnableUFSettings({"Fader"})
 end
 
-T.createslider(UFInnerframe.style, 30, 110, L["渐隐透明度"], "UnitframeOptions", "fadingalpha", 100, 0, 80, 5, L["渐隐透明度提示"])
+T.createslider(UFInnerframe.style, "long", 30, 110, L["渐隐透明度"], "UnitframeOptions", "fadingalpha", 100, 0, 80, 5, L["渐隐透明度提示"])
 T.createDR(UFInnerframe.style.enablefade, UFInnerframe.style.fadingalpha)
 
 CreateDividingLine(UFInnerframe.style, -140)
@@ -552,7 +555,7 @@ UFInnerframe.style.alwayspp.apply = function()
 	T.ApplyUFSettings({"Power"})
 end
 
-T.createslider(UFInnerframe.style, 30, 270, L["数值字号"], "UnitframeOptions", "valuefontsize", 1, 10, 25, 1, L["数值字号提示"])
+T.createslider(UFInnerframe.style, "long", 30, 270, L["数值字号"], "UnitframeOptions", "valuefontsize", 1, 10, 25, 1, L["数值字号提示"])
 UFInnerframe.style.valuefontsize.apply = function()
 	T.ApplyUFSettings({"Health", "Power", "Castbar"})
 end
@@ -560,30 +563,30 @@ end
 -- 尺寸
 UFInnerframe.size = CreateOptionPage("UF Options size", L["尺寸"], UFInnerframe, "VERTICAL", "UnitframeOptions")
 
-T.createslider(UFInnerframe.size, 30, 80, L["高度"], "UnitframeOptions", "height", 1, 5, 50, 1)
+T.createslider(UFInnerframe.size, "long", 30, 80, L["高度"], "UnitframeOptions", "height", 1, 5, 50, 1)
 UFInnerframe.size.height.apply = function()
 	T.ApplyUFSettings({"Health", "Power", "Auras", "Castbar", "ClassPower", "Runes", "Stagger", "Dpsmana", "PVPSpecIcon"})
 	T.UpdatePartySize()
 end
 
-T.createslider(UFInnerframe.size, 30, 120, L["宽度"], "UnitframeOptions", "width", 1, 50, 500, 1, L["宽度提示"])
+T.createslider(UFInnerframe.size, "long", 30, 120, L["宽度"], "UnitframeOptions", "width", 1, 50, 500, 1, L["宽度提示"])
 UFInnerframe.size.width.apply = function()
 	T.ApplyUFSettings({"Health", "Auras", "ClassPower", "Runes", "Stagger", "Dpsmana"})
 end
 
-T.createslider(UFInnerframe.size, 30, 160, L["能量条高度"], "UnitframeOptions", "ppheight", 100, 5, 100, 5)
+T.createslider(UFInnerframe.size, "long", 30, 160, L["能量条高度"], "UnitframeOptions", "ppheight", 100, 5, 100, 5)
 UFInnerframe.size.ppheight.apply = function()
 	T.ApplyUFSettings({"Health", "Power", "Auras", "Castbar", "ClassPower", "Runes", "Stagger", "Dpsmana"})
 end
 
 CreateDividingLine(UFInnerframe.size, -190)
 
-T.createslider(UFInnerframe.size, 30, 220, L["宠物框体宽度"], "UnitframeOptions", "widthpet", 1, 50, 500, 1)
+T.createslider(UFInnerframe.size, "long", 30, 220, L["宠物框体宽度"], "UnitframeOptions", "widthpet", 1, 50, 500, 1)
 UFInnerframe.size.widthpet.apply = function()
 	T.ApplyUFSettings({"Health", "Auras"})
 end
 
-T.createslider(UFInnerframe.size, 30, 260, L["首领框体和PVP框体的宽度"], "UnitframeOptions", "widthboss", 1, 50, 500, 1)
+T.createslider(UFInnerframe.size, "long", 30, 260, L["首领框体和PVP框体的宽度"], "UnitframeOptions", "widthboss", 1, 50, 500, 1)
 UFInnerframe.size.widthboss.apply = function()
 	T.ApplyUFSettings({"Health", "Auras"})
 end
@@ -596,7 +599,7 @@ UFInnerframe.castbar.castbars.apply = function()
 	T.EnableUFSettings({"Castbar"})
 end
 
-T.createslider(UFInnerframe.castbar, 30, 100, L["图标大小"], "UnitframeOptions", "cbIconsize", 1, 10, 50, 1)
+T.createslider(UFInnerframe.castbar, "long", 30, 100, L["图标大小"], "UnitframeOptions", "cbIconsize", 1, 10, 50, 1)
 UFInnerframe.castbar.cbIconsize.apply = function()
 	T.ApplyUFSettings({"Castbar"})
 end
@@ -606,38 +609,32 @@ UFInnerframe.castbar.independentcb.apply = function()
 	T.ApplyUFSettings({"Castbar"})
 end
 
-T.createslider(UFInnerframe.castbar, 30, 180, L["玩家施法条"]..L["高度"], "UnitframeOptions", "cbheight", 1, 5, 30, 1)
-UFInnerframe.castbar.cbheight:SetWidth(170)
+T.createslider(UFInnerframe.castbar, "short", 30, 180, L["玩家施法条"]..L["高度"], "UnitframeOptions", "cbheight", 1, 5, 30, 1)
 UFInnerframe.castbar.cbheight.apply = function()
 	T.ApplyUFSettings({"Castbar"})
 end
 
-T.createslider(UFInnerframe.castbar, 230, 180, L["玩家施法条"]..L["宽度"], "UnitframeOptions", "cbwidth", 1, 50, 500, 5)
-UFInnerframe.castbar.cbwidth:SetWidth(170)
+T.createslider(UFInnerframe.castbar, "short", 230, 180, L["玩家施法条"]..L["宽度"], "UnitframeOptions", "cbwidth", 1, 50, 500, 5)
 UFInnerframe.castbar.cbwidth.apply = function()
 	T.ApplyUFSettings({"Castbar"})
 end
 
-T.createslider(UFInnerframe.castbar, 30, 220, L["目标施法条"]..L["高度"], "UnitframeOptions", "target_cbheight", 1, 5, 30, 1)
-UFInnerframe.castbar.target_cbheight:SetWidth(170)
+T.createslider(UFInnerframe.castbar, "short", 30, 220, L["目标施法条"]..L["高度"], "UnitframeOptions", "target_cbheight", 1, 5, 30, 1)
 UFInnerframe.castbar.target_cbheight.apply = function()
 	T.ApplyUFSettings({"Castbar"})
 end
 
-T.createslider(UFInnerframe.castbar, 230, 220, L["目标施法条"]..L["宽度"], "UnitframeOptions", "target_cbwidth", 1, 50, 500, 5)
-UFInnerframe.castbar.target_cbwidth:SetWidth(170)
+T.createslider(UFInnerframe.castbar, "short", 230, 220, L["目标施法条"]..L["宽度"], "UnitframeOptions", "target_cbwidth", 1, 50, 500, 5)
 UFInnerframe.castbar.target_cbwidth.apply = function()
 	T.ApplyUFSettings({"Castbar"})
 end
 
-T.createslider(UFInnerframe.castbar, 30, 260, L["焦点施法条"]..L["高度"], "UnitframeOptions", "focus_cbheight", 1, 5, 30, 1)
-UFInnerframe.castbar.focus_cbheight:SetWidth(170)
+T.createslider(UFInnerframe.castbar, "short", 30, 260, L["焦点施法条"]..L["高度"], "UnitframeOptions", "focus_cbheight", 1, 5, 30, 1)
 UFInnerframe.castbar.focus_cbheight.apply = function()
 	T.ApplyUFSettings({"Castbar"})
 end
 
-T.createslider(UFInnerframe.castbar, 230, 260, L["焦点施法条"]..L["宽度"], "UnitframeOptions", "focus_cbwidth", 1, 50, 500, 5)
-UFInnerframe.castbar.focus_cbwidth:SetWidth(170)
+T.createslider(UFInnerframe.castbar, "short", 230, 260, L["焦点施法条"]..L["宽度"], "UnitframeOptions", "focus_cbwidth", 1, 50, 500, 5)
 UFInnerframe.castbar.focus_cbwidth.apply = function()
 	T.ApplyUFSettings({"Castbar"})
 end
@@ -662,7 +659,9 @@ end
 T.createDR(UFInnerframe.castbar.independentcb, UFInnerframe.castbar.cbheight, UFInnerframe.castbar.cbwidth, UFInnerframe.castbar.target_cbheight, UFInnerframe.castbar.target_cbwidth, UFInnerframe.castbar.focus_cbheight, UFInnerframe.castbar.focus_cbwidth, UFInnerframe.castbar.namepos, UFInnerframe.castbar.timepos)
 
 T.createcolorpickerbu(UFInnerframe.castbar, 30, 355, L["可打断施法条图标颜色"], "UnitframeOptions", "Interruptible_color")
+
 T.createcolorpickerbu(UFInnerframe.castbar, 230, 355, L["不可打断施法条图标颜色"], "UnitframeOptions", "notInterruptible_color")
+
 T.createcheckbutton(UFInnerframe.castbar, 30, 390, L["引导法术分段"], "UnitframeOptions", "channelticks")
 T.createcheckbutton(UFInnerframe.castbar, 30, 420, L["隐藏玩家施法条图标"], "UnitframeOptions", "hideplayercastbaricon")
 UFInnerframe.castbar.hideplayercastbaricon.apply = function()
@@ -681,12 +680,12 @@ UFInnerframe.swingtimer.swing.apply = function()
 	T.EnableUFSettings({"Swing"})
 end
 
-T.createslider(UFInnerframe.swingtimer, 30, 110, L["高度"], "UnitframeOptions", "swheight", 1, 5, 30, 1)
+T.createslider(UFInnerframe.swingtimer, "long", 30, 110, L["高度"], "UnitframeOptions", "swheight", 1, 5, 30, 1)
 UFInnerframe.swingtimer.swheight.apply = function()
 	T.ApplyUFSettings({"Swing"})
 end
 
-T.createslider(UFInnerframe.swingtimer, 30, 150, L["宽度"], "UnitframeOptions", "swwidth", 1, 50, 500, 5)
+T.createslider(UFInnerframe.swingtimer, "long", 30, 150, L["宽度"], "UnitframeOptions", "swwidth", 1, 50, 500, 5)
 UFInnerframe.swingtimer.swwidth.apply = function()
 	T.ApplyUFSettings({"Swing"})
 end
@@ -698,7 +697,7 @@ UFInnerframe.swingtimer.swtimer.apply = function()
 	T.ApplyUFSettings({"Swing"})
 end
 
-T.createslider(UFInnerframe.swingtimer, 30, 240, L["字体大小"], "UnitframeOptions", "swtimersize", 1, 8, 20, 1)
+T.createslider(UFInnerframe.swingtimer, "long", 30, 240, L["字体大小"], "UnitframeOptions", "swtimersize", 1, 8, 20, 1)
 UFInnerframe.swingtimer.swtimersize.apply = function()
 	T.ApplyUFSettings({"Swing"})
 end
@@ -709,7 +708,7 @@ T.createDR(UFInnerframe.swingtimer.swtimer, UFInnerframe.swingtimer.swtimersize)
 -- 光环
 UFInnerframe.aura = CreateOptionPage("UF Options aura", AURAS, UFInnerframe, "VERTICAL", "UnitframeOptions")
 
-T.createslider(UFInnerframe.aura, 30, 80, L["图标大小"], "UnitframeOptions", "aura_size", 1, 15, 30, 1)
+T.createslider(UFInnerframe.aura, "long", 30, 80, L["图标大小"], "UnitframeOptions", "aura_size", 1, 15, 30, 1)
 UFInnerframe.aura.aura_size.apply = function()
 	T.ApplyUFSettings({"Auras"})
 end
@@ -732,6 +731,9 @@ UFInnerframe.aura.AuraFilterignoreDebuff.apply = function()
 end
 
 UFInnerframe.aura.aurafliter_list = T.CreateAuraListOption(UFInnerframe.aura, {"TOPLEFT", 30, -215}, 230, L["白名单"]..AURAS, "AuraFilterwhitelist")
+UFInnerframe.aura.aurafliter_list.apply = function()
+	T.ApplyUFSettings({"Auras"})
+end
 
 -- 图腾
 UFInnerframe.totembar = CreateOptionPage("UF Options totembar", L["图腾条"], UFInnerframe, "VERTICAL", "UnitframeOptions")
@@ -739,7 +741,7 @@ UFInnerframe.totembar = CreateOptionPage("UF Options totembar", L["图腾条"], 
 T.createcheckbutton(UFInnerframe.totembar, 30, 60, L["启用"], "UnitframeOptions", "totems")
 UFInnerframe.totembar.totems.apply = T.ApplyTotemsBarSettings
 
-T.createslider(UFInnerframe.totembar, 30, 110, L["图标大小"], "UnitframeOptions", "totemsize", 1, 15, 40, 1)
+T.createslider(UFInnerframe.totembar, "long", 30, 110, L["图标大小"], "UnitframeOptions", "totemsize", 1, 15, 40, 1)
 UFInnerframe.totembar.totemsize.apply = T.ApplyTotemsBarSettings
 
 T.createradiobuttongroup(UFInnerframe.totembar, 30, 140, L["排列方向"], "growthDirection", {
@@ -757,7 +759,7 @@ UFInnerframe.totembar.sortDirection.apply = T.ApplyTotemsBarSettings
 -- 小队
 UFInnerframe.party = CreateOptionPage("UF Options party", PARTY, UFInnerframe, "VERTICAL", "UnitframeOptions")
 
-T.createslider(UFInnerframe.party, 30, 80, PARTY..L["宽度"], "UnitframeOptions", "widthparty", 1, 50, 500, 1)
+T.createslider(UFInnerframe.party, "long", 30, 80, PARTY..L["宽度"], "UnitframeOptions", "widthparty", 1, 50, 500, 1)
 UFInnerframe.party.widthparty.apply = function()
 	T.ApplyUFSettings({"Health", "Auras"})
 	T.UpdatePartySize()
@@ -803,7 +805,7 @@ if G.myClass == "DEATHKNIGHT" then
 		T.ApplyUFSettings({"Runes"})
 	end
 
-	T.createslider(UFInnerframe.other, 30, 240, L["字体大小"], "UnitframeOptions", "valuefs", 1, 8, 16, 1)
+	T.createslider(UFInnerframe.other, "long", 30, 240, L["字体大小"], "UnitframeOptions", "valuefs", 1, 8, 16, 1)
 	UFInnerframe.other.valuefs.apply = function()
 		T.ApplyUFSettings({"Runes"})
 	end
@@ -840,7 +842,7 @@ RFInnerframe.common.enableraid.apply = function()
 	StaticPopup_Show(G.uiname.."Reload Alert")
 end
 
-T.createslider(RFInnerframe.common, 30, 110, L["团队规模"], "UnitframeOptions", "party_num", 1, 2, 8, 2)
+T.createslider(RFInnerframe.common, "long", 30, 110, L["团队规模"], "UnitframeOptions", "party_num", 1, 2, 8, 2)
 RFInnerframe.common.party_num.apply = function()
 	T.UpdateGroupSize()
 	T.UpdateGroupfilter()
@@ -880,13 +882,13 @@ end
 -- 样式
 RFInnerframe.style = CreateOptionPage("RF Options style", L["样式"], RFInnerframe, "VERTICAL", "UnitframeOptions")
 
-T.createslider(RFInnerframe.style, 30, 80, L["高度"], "UnitframeOptions", "raidheight", 1, 10, 150, 1)
+T.createslider(RFInnerframe.style, "long", 30, 80, L["高度"], "UnitframeOptions", "raidheight", 1, 10, 150, 1)
 RFInnerframe.style.raidheight.apply = function()
 	T.ApplyUFSettings({"Health", "Auras"})
 	T.UpdateGroupSize()
 end
 
-T.createslider(RFInnerframe.style, 30, 120, L["宽度"], "UnitframeOptions", "raidwidth", 1, 10, 150, 1)
+T.createslider(RFInnerframe.style, "long", 30, 120, L["宽度"], "UnitframeOptions", "raidwidth", 1, 10, 150, 1)
 RFInnerframe.style.raidwidth.apply = function()
 	T.ApplyUFSettings({"Health", "Auras"})
 	T.UpdateGroupSize()
@@ -897,21 +899,21 @@ RFInnerframe.style.raidmanabars.apply = function()
 	T.EnableUFSettings({"Power"})
 end
 
-T.createslider(RFInnerframe.style,  30, 190, L["治疗法力条高度"], "UnitframeOptions", "raidppheight", 100, 5, 100, 5)
+T.createslider(RFInnerframe.style, "long", 30, 190, L["治疗法力条高度"], "UnitframeOptions", "raidppheight", 100, 5, 100, 5)
 RFInnerframe.style.raidppheight.apply = function()
 	T.ApplyUFSettings({"Power"})
 end
 
 T.createDR(RFInnerframe.style.raidmanabars, RFInnerframe.style.raidppheight)
 
-T.createslider(RFInnerframe.style, 30, 230, L["名字长度"], "UnitframeOptions", "namelength", 1, 2, 10, 1)
+T.createslider(RFInnerframe.style, "long", 30, 230, L["名字长度"], "UnitframeOptions", "namelength", 1, 2, 10, 1)
 RFInnerframe.style.namelength.apply = function()
-	T.UpdateGroupTag("update")
+	T.UpdateUFTags('Altz_Healerraid')
 end
 
-T.createslider(RFInnerframe.style, 30, 270, L["字体大小"], "UnitframeOptions", "raidfontsize", 1, 8, 20, 1)
+T.createslider(RFInnerframe.style, "long", 30, 270, L["字体大小"], "UnitframeOptions", "raidfontsize", 1, 8, 20, 1)
 RFInnerframe.style.raidfontsize.apply = function()
-	T.UpdateGroupTag("fontsize")
+	T.ApplyUFSettings({"Tag_LFD", 'Tag_Name', 'Tag_Status'}, 'Altz_Healerraid')
 end
 
 T.createcheckbutton(RFInnerframe.style, 30, 310, L["GCD"], "UnitframeOptions", "showgcd", L["GCD提示"])
@@ -926,7 +928,7 @@ end
 
 T.createcheckbutton(RFInnerframe.style, 30, 340, L["显示缺失生命值"], "UnitframeOptions", "showmisshp", L["显示缺失生命值提示"])
 RFInnerframe.style.showmisshp.apply = function()
-	T.UpdateGroupTag("update")
+	T.UpdateUFTags('Altz_Healerraid')
 end
 
 T.createcheckbutton(RFInnerframe.style, 200, 340, L["治疗和吸收预估"], "UnitframeOptions", "healprediction", L["治疗和吸收预估提示"])
@@ -937,7 +939,7 @@ end
 -- 治疗指示器
 RFInnerframe.ind = CreateOptionPage("RF Options indicators", L["治疗指示器"], RFInnerframe, "VERTICAL", "UnitframeOptions")
 
-T.createslider(RFInnerframe.ind, 30, 80, L["尺寸"], "UnitframeOptions", "hotind_size", 1, 10, 25, 1)
+T.createslider(RFInnerframe.ind, "long", 30, 80, L["尺寸"], "UnitframeOptions", "hotind_size", 1, 10, 25, 1)
 RFInnerframe.ind.hotind_size.apply = function()
 	T.ApplyUFSettings({"AltzIndicators", "Auras"})
 end
@@ -947,23 +949,26 @@ T.createradiobuttongroup(RFInnerframe.ind, 30, 100, L["样式"], "hotind_style",
 	{"icon_ind", L["图标指示器"]},
 })
 
-local function Updateindsettings()
+RFInnerframe.ind.hotind_style.hook = function()
 	if aCoreCDB["UnitframeOptions"]["hotind_style"] == "icon_ind" then
-		RFInnerframe.ind.hotind_list:Enable()
+		RFInnerframe.ind.hotind_list:Show()
 	else
-		RFInnerframe.ind.hotind_list:Disable()
+		RFInnerframe.ind.hotind_list:Hide()
 	end
 end
 
 RFInnerframe.ind.hotind_style.apply = function()
 	T.EnableUFSettings({"AltzIndicators", "Auras"})
-	Updateindsettings()
+	RFInnerframe.ind.hotind_style.hook()
 end
-RFInnerframe.ind.hotind_style:HookScript("OnShow", Updateindsettings)
+RFInnerframe.ind.hotind_style:HookScript("OnShow", RFInnerframe.ind.hotind_style.hook)
 
 CreateDividingLine(RFInnerframe.ind, -135)
 
 RFInnerframe.ind.hotind_list = T.CreateAuraListOption(RFInnerframe.ind, {"TOPLEFT", 30, -150}, 270,  L["图标指示器"]..L["设置"], "hotind_auralist")
+RFInnerframe.ind.hotind_list.apply = function()
+	T.ApplyUFSettings({"Auras"})
+end
 
 T.createradiobuttongroup(RFInnerframe.ind.hotind_list, -5, 40, L["过滤方式"], "hotind_filtertype", {
 	{"whitelist", L["白名单"]..AURAS},
@@ -1304,49 +1309,75 @@ T.RegisterInitCallback(function()
 end)
 
 -- 光环图标
-RFInnerframe.Icon_Display = CreateOptionPage("RF Options Icon Display", L["光环"]..L["图标"], RFInnerframe, "VERTICAL", "UnitframeOptions")
+RFInnerframe.icon_display = CreateOptionPage("RF Options Icon Display", L["光环"]..L["图标"], RFInnerframe, "VERTICAL", "UnitframeOptions")
 
-local raidicon_debufftitle = T.createtext(RFInnerframe.Icon_Display, "OVERLAY", 18, "OUTLINE", "LEFT")
-raidicon_debufftitle:SetPoint("LEFT", RFInnerframe.Icon_Display, "TOPLEFT", 50, -75)
+local raidicon_debufftitle = T.createtext(RFInnerframe.icon_display, "OVERLAY", 18, "OUTLINE", "LEFT")
+raidicon_debufftitle:SetPoint("LEFT", RFInnerframe.icon_display, "TOPLEFT", 50, -75)
 raidicon_debufftitle:SetTextColor(1, .5, .3)
 raidicon_debufftitle:SetText(L["Debuffs"])
 
-T.createslider(RFInnerframe.Icon_Display, 60, 100, "X", "UnitframeOptions", "raid_debuff_anchor_x", 1, -50, 50, 1)
-T.createslider(RFInnerframe.Icon_Display, 260, 100, "Y", "UnitframeOptions", "raid_debuff_anchor_y", 1, -50, 50, 1)
-T.createslider(RFInnerframe.Icon_Display, 60, 140, L["图标数量"], "UnitframeOptions", "raid_debuff_num", 1, 1, 5, 1)
-T.createslider(RFInnerframe.Icon_Display, 260, 140, L["图标大小"], "UnitframeOptions", "raid_debuff_icon_size", 1, 10, 40, 1)
-T.createslider(RFInnerframe.Icon_Display, 60, 180, L["字体大小"], "UnitframeOptions", "raid_debuff_icon_fontsize", 1, 5, 20, 1)
+T.createslider(RFInnerframe.icon_display, "short", 60, 100, "X", "UnitframeOptions", "raid_debuff_anchor_x", 1, -50, 50, 1)
+RFInnerframe.icon_display.raid_debuff_anchor_x.apply = function()
+	T.ApplyUFSettings({"AltzAuras2"})
+end
 
-RFInnerframe.Icon_Display.raid_debuff_num:SetWidth(160)
-RFInnerframe.Icon_Display.raid_debuff_icon_size:SetWidth(160)
-RFInnerframe.Icon_Display.raid_debuff_icon_fontsize:SetWidth(160)
-RFInnerframe.Icon_Display.raid_debuff_anchor_x:SetWidth(160)
-RFInnerframe.Icon_Display.raid_debuff_anchor_y:SetWidth(160)
+T.createslider(RFInnerframe.icon_display, "short", 260, 100, "Y", "UnitframeOptions", "raid_debuff_anchor_y", 1, -50, 50, 1)
+RFInnerframe.icon_display.raid_debuff_anchor_y.apply = function()
+	T.ApplyUFSettings({"AltzAuras2"})
+end
 
-local raidicon_bufftitle = T.createtext(RFInnerframe.Icon_Display, "OVERLAY", 18, "OUTLINE", "LEFT")
-raidicon_bufftitle:SetPoint("LEFT", RFInnerframe.Icon_Display, "TOPLEFT", 50, -225)
+T.createslider(RFInnerframe.icon_display, "short", 60, 140, L["图标大小"], "UnitframeOptions", "raid_debuff_icon_size", 1, 10, 40, 1)
+RFInnerframe.icon_display.raid_debuff_icon_size.apply = function()
+	T.ApplyUFSettings({"AltzAuras2"})
+end
+
+T.createslider(RFInnerframe.icon_display, "short", 260, 140, L["字体大小"], "UnitframeOptions", "raid_debuff_icon_fontsize", 1, 5, 20, 1)
+RFInnerframe.icon_display.raid_debuff_icon_fontsize.apply = function()
+	T.ApplyUFSettings({"AltzAuras2"})
+end
+
+T.createslider(RFInnerframe.icon_display, "short", 60, 180, L["图标数量"], "UnitframeOptions", "raid_debuff_num", 1, 1, 5, 1)
+RFInnerframe.icon_display.raid_debuff_num.apply = function()
+	T.ApplyUFSettings({"AltzAuras2"})
+end
+
+local raidicon_bufftitle = T.createtext(RFInnerframe.icon_display, "OVERLAY", 18, "OUTLINE", "LEFT")
+raidicon_bufftitle:SetPoint("LEFT", RFInnerframe.icon_display, "TOPLEFT", 50, -225)
 raidicon_bufftitle:SetTextColor(.3, 1, .5)
 raidicon_bufftitle:SetText(L["Buffs"])
 
-T.createslider(RFInnerframe.Icon_Display, 60, 250, "X", "UnitframeOptions", "raid_buff_anchor_x", 1, -50, 50, 1)
-T.createslider(RFInnerframe.Icon_Display, 260, 250, "Y", "UnitframeOptions", "raid_buff_anchor_y", 1, -50, 50, 1)
-T.createslider(RFInnerframe.Icon_Display, 60, 290, L["图标数量"], "UnitframeOptions", "raid_buff_num", 1, 1, 5, 1)
-T.createslider(RFInnerframe.Icon_Display, 260, 290, L["图标大小"], "UnitframeOptions", "raid_buff_icon_size", 1, 10, 40, 1)
-T.createslider(RFInnerframe.Icon_Display, 60, 330, L["字体大小"], "UnitframeOptions", "raid_buff_icon_fontsize", 1, 5, 20, 1)
+T.createslider(RFInnerframe.icon_display, "short", 60, 250, "X", "UnitframeOptions", "raid_buff_anchor_x", 1, -50, 50, 1)
+RFInnerframe.icon_display.raid_buff_anchor_x.apply = function()
+	T.ApplyUFSettings({"AltzTankbuff"})
+end
 
-RFInnerframe.Icon_Display.raid_buff_num:SetWidth(160)
-RFInnerframe.Icon_Display.raid_buff_icon_size:SetWidth(160)
-RFInnerframe.Icon_Display.raid_buff_icon_fontsize:SetWidth(160)
-RFInnerframe.Icon_Display.raid_buff_anchor_x:SetWidth(160)
-RFInnerframe.Icon_Display.raid_buff_anchor_y:SetWidth(160)
+T.createslider(RFInnerframe.icon_display, "short", 260, 250, "Y", "UnitframeOptions", "raid_buff_anchor_y", 1, -50, 50, 1)
+RFInnerframe.icon_display.raid_buff_anchor_y.apply = function()
+	T.ApplyUFSettings({"AltzTankbuff"})
+end
 
-RFInnerframe.Icon_Display.DividingLine = RFInnerframe.Icon_Display:CreateTexture(nil, "ARTWORK")
-RFInnerframe.Icon_Display.DividingLine:SetSize(RFInnerframe.Icon_Display:GetWidth()-50, 1)
-RFInnerframe.Icon_Display.DividingLine:SetPoint("TOP", 0, -360)
-RFInnerframe.Icon_Display.DividingLine:SetColorTexture(1, 1, 1, .2)
+T.createslider(RFInnerframe.icon_display, "short", 60, 290, L["图标大小"], "UnitframeOptions", "raid_buff_icon_size", 1, 10, 40, 1)
+RFInnerframe.icon_display.raid_buff_icon_size.apply = function()
+	T.ApplyUFSettings({"AltzTankbuff"})
+end
 
-T.createcheckbutton(RFInnerframe.Icon_Display, 60, 380, L["自动添加团队减益"], "UnitframeOptions", "debuff_auto_add", L["自动添加团队减益提示"])
-T.createslider(RFInnerframe.Icon_Display, 60, 430, L["自动添加的图标层级"], "UnitframeOptions", "debuff_auto_add_level", 1, 1, 20, 1)
+T.createslider(RFInnerframe.icon_display, "short", 260, 290, L["字体大小"], "UnitframeOptions", "raid_buff_icon_fontsize", 1, 5, 20, 1)
+RFInnerframe.icon_display.raid_buff_icon_fontsize.apply = function()
+	T.ApplyUFSettings({"AltzTankbuff"})
+end
+
+T.createslider(RFInnerframe.icon_display, "short", 60, 330, L["图标数量"], "UnitframeOptions", "raid_buff_num", 1, 1, 5, 1)
+RFInnerframe.icon_display.raid_buff_num.apply = function()
+	T.ApplyUFSettings({"AltzTankbuff"})
+end
+
+RFInnerframe.icon_display.DividingLine = RFInnerframe.icon_display:CreateTexture(nil, "ARTWORK")
+RFInnerframe.icon_display.DividingLine:SetSize(RFInnerframe.icon_display:GetWidth()-50, 1)
+RFInnerframe.icon_display.DividingLine:SetPoint("TOP", 0, -360)
+RFInnerframe.icon_display.DividingLine:SetColorTexture(1, 1, 1, .2)
+
+T.createcheckbutton(RFInnerframe.icon_display, 60, 380, L["自动添加团队减益"], "UnitframeOptions", "debuff_auto_add", L["自动添加团队减益提示"])
+T.createslider(RFInnerframe.icon_display, "long", 60, 430, L["自动添加的图标层级"], "UnitframeOptions", "debuff_auto_add_level", 1, 1, 20, 1)
 
 -- 团队减益
 RFInnerframe.raiddebuff = CreateOptionPage("RF Options Raid Debuff", L["副本减益"], RFInnerframe, "VERTICAL", "UnitframeOptions")
@@ -1385,7 +1416,7 @@ local function UpdateEncounterTitle(option_list, i, encounterID, y)
 	title:Show()
 end
 
-local function UpdateEncounterButton(option_list, encounterID, spellID, level, y)
+local function UpdateEncounterAuraButton(option_list, encounterID, spellID, level, y)
 	if not option_list.spells["icon"..encounterID.."_"..spellID] then
 		local parent = RFInnerframe.raiddebuff
 		local frame = T.createscrollbutton("spell", option_list, nil, nil, spellID)
@@ -1394,7 +1425,7 @@ local function UpdateEncounterButton(option_list, encounterID, spellID, level, y
 		frame.close:SetScript("OnClick", function() 
 			frame:Hide()
 			aCoreCDB[parent.db_key]["raid_debuffs"][parent.selected_InstanceID][encounterID][spellID] = nil
-			option_list.OptionListChanged()
+			option_list.apply()
 		end)
 		
 		frame:SetScript("OnMouseDown", function(self)
@@ -1442,7 +1473,7 @@ local function DisplayRaidDebuffList()
 		y = y - 20
 		if aCoreCDB[parent.db_key]["raid_debuffs"][parent.selected_InstanceID] and aCoreCDB[parent.db_key]["raid_debuffs"][parent.selected_InstanceID][encounterID] then
 			for spellID, level in pairs (aCoreCDB[parent.db_key]["raid_debuffs"][parent.selected_InstanceID][encounterID]) do
-				UpdateEncounterButton(option_list, encounterID, spellID, level, y)
+				UpdateEncounterAuraButton(option_list, encounterID, spellID, level, y)
 				y = y - 25
 			end
 		end
@@ -1458,7 +1489,10 @@ do
 	option_list.encounters = {}
 	option_list.titles = {}
 	option_list.spells = {}
-	option_list.OptionListChanged = DisplayRaidDebuffList
+	option_list.apply = function()
+		DisplayRaidDebuffList()
+		T.ApplyUFSettings({"AltzAuras2"})
+	end
 	
 	-- 重置
 	option_list.reset = T.createclicktexbutton(option_list, {"LEFT", parent.title, "RIGHT", 2, 0}, [[Interface\AddOns\AltzUI\media\icons\refresh.tga]], L["重置"])	
@@ -1535,7 +1569,7 @@ do
 		end
 		
 		aCoreCDB[parent.db_key]["raid_debuffs"][parent.selected_InstanceID][encounterID][spellID] = level		
-		DisplayRaidDebuffList()
+		option_list.apply()
 		
 		option_list.spell_input:SetText(L["输入法术ID"])
 		option_list.spell_input.current_spellID = nil
@@ -1687,13 +1721,24 @@ end)
 RFInnerframe.globaldebuff = CreateOptionPage("RF Options Raid Debuff Fliter List", L["全局减益"], RFInnerframe, "VERTICAL", "UnitframeOptions")
 
 RFInnerframe.globaldebuff.whitelist = T.CreateAuraListOption(RFInnerframe.globaldebuff, {"TOPLEFT", 30, -55}, 200,  L["白名单"]..AURAS, "debuff_list", L["优先级"])
+RFInnerframe.globaldebuff.whitelist.apply = function()
+	T.ApplyUFSettings({"AltzAuras2"})
+end
+
 CreateDividingLine(RFInnerframe.globaldebuff, -250)
+
 RFInnerframe.globaldebuff.blacklist = T.CreateAuraListOption(RFInnerframe.globaldebuff, {"TOPLEFT", RFInnerframe.globaldebuff.whitelist, "BOTTOMLEFT", 0, -10}, 200, L["黑名单"]..AURAS, "debuff_list_black")
+RFInnerframe.globaldebuff.blacklist.apply = function()
+	T.ApplyUFSettings({"AltzAuras2"})
+end
 
 -- 全局增益
 RFInnerframe.globalbuff = CreateOptionPage("RF Options Cooldown Aura", L["全局增益"], RFInnerframe, "VERTICAL", "UnitframeOptions")
 
 RFInnerframe.globalbuff.whitelist = T.CreateAuraListOption(RFInnerframe.globalbuff, {"TOPLEFT", 30, -60}, 380, L["白名单"]..AURAS, "buff_list", L["优先级"])
+RFInnerframe.globalbuff.whitelist.apply = function()
+	T.ApplyUFSettings({"AltzTankbuff"})
+end
 --====================================================--
 --[[           -- Actionbar Options --              ]]--
 --====================================================--
@@ -1703,24 +1748,41 @@ local ActionbarInnerframe = CreateInnerFrame(ActionbarOptions)
 -- 样式
 ActionbarInnerframe.common = CreateOptionPage("Actionbar Options common", L["样式"], ActionbarInnerframe, "VERTICAL", "ActionbarOptions")
 
-T.createcheckbutton(ActionbarInnerframe.common, 30, 60, L["显示冷却时间"], "ActionbarOptions", "cooldown", L["显示冷却时间提示"])
-T.createcheckbutton(ActionbarInnerframe.common, 30, 90, L["显示冷却时间"].." (Weakauras)", "ActionbarOptions", "cooldown_wa", L["显示冷却时间提示WA"])
-T.createslider(ActionbarInnerframe.common, 30, 140, L["冷却时间数字大小"], "ActionbarOptions", "cooldownsize", 1, 18, 25, 1, L["冷却时间数字大小提示"])
-T.createcheckbutton(ActionbarInnerframe.common, 30, 170, L["不可用颜色"], "ActionbarOptions", "rangecolor", L["不可用颜色提示"])
-T.createslider(ActionbarInnerframe.common, 30, 220, L["键位字体大小"], "ActionbarOptions", "keybindsize", 1, 8, 20, 1)
-T.createslider(ActionbarInnerframe.common, 30, 260, L["宏名字字体大小"], "ActionbarOptions", "macronamesize", 1, 8, 20, 1)
-T.createslider(ActionbarInnerframe.common, 30, 300, L["可用次数字体大小"], "ActionbarOptions", "countsize", 1, 8, 20, 1)
-T.createDR(ActionbarInnerframe.common.cooldown, ActionbarInnerframe.common.cooldown_wa, ActionbarInnerframe.common.cooldownsize)
+T.createcheckbutton(ActionbarInnerframe.common, 30, 60, L["显示冷却时间"], "ActionbarOptions", "cooldown_number", L["显示冷却时间提示"])
+
+T.createcheckbutton(ActionbarInnerframe.common, 30, 90, L["显示冷却时间"].." (Weakauras)", "ActionbarOptions", "cooldown_number_wa", L["显示冷却时间提示WA"])
+
+T.createslider(ActionbarInnerframe.common, "long", 30, 140, L["冷却时间数字大小"], "ActionbarOptions", "cooldownsize", 1, 18, 35, 1, L["冷却时间数字大小提示"])
+ActionbarInnerframe.common.cooldownsize.apply = T.CooldownNumber_Edit
+
+T.createDR(ActionbarInnerframe.common.cooldown_number, ActionbarInnerframe.common.cooldown_number_wa, ActionbarInnerframe.common.cooldownsize)
+
+CreateDividingLine(ActionbarInnerframe.common, -165)
+
+T.createcheckbutton(ActionbarInnerframe.common, 30, 180, L["不可用颜色"], "ActionbarOptions", "rangecolor", L["不可用颜色提示"])
+
+T.createslider(ActionbarInnerframe.common, "long", 30, 230, L["键位字体大小"], "ActionbarOptions", "keybindsize", 1, 8, 20, 1)
+ActionbarInnerframe.common.keybindsize.apply = function()
+	T.UpdateActionbarsFontSize()
+end
+
+T.createslider(ActionbarInnerframe.common, "long", 30, 270, L["宏名字字体大小"], "ActionbarOptions", "macronamesize", 1, 8, 20, 1)
+ActionbarInnerframe.common.macronamesize.apply = function()
+	T.UpdateActionbarsFontSize()
+end
+
+T.createslider(ActionbarInnerframe.common, "long", 30, 310, L["可用次数字体大小"], "ActionbarOptions", "countsize", 1, 8, 20, 1)
+ActionbarInnerframe.common.countsize.apply = function()
+	T.UpdateActionbarsFontSize()
+end
 
 -- 冷却提示
 ActionbarInnerframe.cdflash = CreateOptionPage("Actionbar Options cdflash", L["冷却提示"], ActionbarInnerframe, "VERTICAL", "ActionbarOptions")
 T.createcheckbutton(ActionbarInnerframe.cdflash, 30, 60, L["启用"], "ActionbarOptions", "cdflash_enable")
 
-T.createslider(ActionbarInnerframe.cdflash, 30, 100, L["图标大小"], "ActionbarOptions", "cdflash_size", 1, 15, 100, 1)
-ActionbarInnerframe.cdflash.cdflash_size:SetWidth(170)
+T.createslider(ActionbarInnerframe.cdflash, "short", 30, 100, L["图标大小"], "ActionbarOptions", "cdflash_size", 1, 15, 100, 1)
 
-T.createslider(ActionbarInnerframe.cdflash, 230, 100, L["透明度"], "ActionbarOptions", "cdflash_alpha", 1, 30, 100, 1)
-ActionbarInnerframe.cdflash.cdflash_alpha:SetWidth(170)
+T.createslider(ActionbarInnerframe.cdflash, "short", 230, 100, L["透明度"], "ActionbarOptions", "cdflash_alpha", 1, 30, 100, 1)
 
 CreateDividingLine(ActionbarInnerframe.cdflash, -120)
 
@@ -1742,80 +1804,191 @@ local PlateInnerframe = CreateInnerFrame(PlateOptions)
 PlateInnerframe.common = CreateOptionPage("Nameplates Options common", L["通用设置"], PlateInnerframe, "VERTICAL", "PlateOptions")
 
 T.createcheckbutton(PlateInnerframe.common, 30, 60, L["启用"], "PlateOptions", "enableplate")
-T.CVartogglebox(PlateInnerframe.common, 160, 60, "nameplateShowAll", UNIT_NAMEPLATES_AUTOMODE, "1", "0")
+PlateInnerframe.common.enableplate.apply = function()
+	StaticPopup_Show(G.uiname.."Reload Alert")
+end
 
-T.createradiobuttongroup(PlateInnerframe.common, 30, 100, L["样式"], "theme", {
+T.createslider(PlateInnerframe.common, "short", 30, 110, NAME..L["字体大小"], "PlateOptions", "namefontsize", 1, 5, 25, 1)
+PlateInnerframe.common.namefontsize.apply = function()
+	T.ApplyUFSettings({"Tag_Name", "Health", "Power"}, "Altz_Nameplates")
+end
+
+T.createslider(PlateInnerframe.common, "short", 230, 110, L["图标数字大小"], "PlateOptions", "numfontsize", 1, 5, 25, 1)
+PlateInnerframe.common.numfontsize.apply = function()
+	T.ApplyUFSettings({"Auras"}, "Altz_Nameplates")
+end
+
+T.createslider(PlateInnerframe.common, "short", 30, 150, L["光环"].." "..L["图标数量"], "PlateOptions", "plateauranum", 1, 3, 10, 1)
+PlateInnerframe.common.plateauranum.apply = function()
+	T.ApplyUFSettings({"Auras"}, "Altz_Nameplates")
+end
+
+T.createslider(PlateInnerframe.common, "short", 230, 150, L["光环"].." "..L["图标大小"], "PlateOptions", "plateaurasize", 1, 10, 30, 1)
+PlateInnerframe.common.plateaurasize.apply = function()
+	T.ApplyUFSettings({"Auras"}, "Altz_Nameplates")
+end
+
+T.createcolorpickerbu(PlateInnerframe.common, 30, 180, L["可打断施法条颜色"], "PlateOptions", "Interruptible_color")
+
+T.createcolorpickerbu(PlateInnerframe.common, 230, 180, L["不可打断施法条颜色"], "PlateOptions", "notInterruptible_color")
+
+T.createcheckbutton(PlateInnerframe.common, 30, 210, L["焦点染色"], "PlateOptions", "focuscolored")
+PlateInnerframe.common.focuscolored.apply = function()
+	T.ApplyUFSettings({"Health"}, "Altz_Nameplates")
+end
+
+T.createcolorpickerbu(PlateInnerframe.common, 230, 210, L["焦点颜色"], "PlateOptions", "focus_color")
+PlateInnerframe.common.focus_color.apply = function()
+	T.ApplyUFSettings({"Health"}, "Altz_Nameplates")
+end
+
+T.createDR(PlateInnerframe.common.focuscolored, PlateInnerframe.common.focus_color)
+
+T.createcheckbutton(PlateInnerframe.common, 30, 240, L["仇恨染色"], "PlateOptions", "threatcolor")
+PlateInnerframe.common.threatcolor.apply = function()
+	T.ApplyUFSettings({"Health"}, "Altz_Nameplates")
+end
+
+T.CVartogglebox(PlateInnerframe.common, 30, 270, "nameplateShowAll", UNIT_NAMEPLATES_AUTOMODE, "1", "0")
+
+T.createcheckbutton(PlateInnerframe.common, 30, 300, L["友方只显示名字"], "PlateOptions", "bar_onlyname")
+PlateInnerframe.common.bar_onlyname.apply = function()
+	T.ApplyUFSettings({"Health"}, "Altz_Nameplates")
+	T.PostUpdateAllPlates()
+end
+
+T.createDR(PlateInnerframe.common.enableplate,
+PlateInnerframe.common.namefontsize, PlateInnerframe.common.numfontsize,
+PlateInnerframe.common.plateauranum, PlateInnerframe.common.plateaurasize,
+PlateInnerframe.common.Interruptible_color, PlateInnerframe.common.notInterruptible_color,
+PlateInnerframe.common.focuscolored, PlateInnerframe.common.focus_color, PlateInnerframe.common.threatcolor)
+
+-- 样式
+PlateInnerframe.style = CreateOptionPage("Nameplates Options common", L["样式"], PlateInnerframe, "VERTICAL", "PlateOptions")
+
+T.createradiobuttongroup(PlateInnerframe.style, 30, 60, L["样式"], "theme", {
 	{"class", L["职业色-条形"]},
 	{"dark", L["深色-条形"]},
 	{"number", L["数字样式"]},
 })
 
-T.createslider(PlateInnerframe.common, 30, 150, L["字体大小"], "PlateOptions", "fontsize", 1, 5, 25, 1)
-T.createslider(PlateInnerframe.common, 230, 150, L["图标数字大小"], "PlateOptions", "numfontsize", 1, 5, 25, 1)
-T.createslider(PlateInnerframe.common, 30, 190, L["光环"].." "..L["图标数量"], "PlateOptions", "plateauranum", 1, 3, 10, 1)
-T.createslider(PlateInnerframe.common, 230, 190, L["光环"].." "..L["图标大小"], "PlateOptions", "plateaurasize", 1, 10, 30, 1)
-PlateInnerframe.common.fontsize:SetWidth(160)
-PlateInnerframe.common.numfontsize:SetWidth(160)
-PlateInnerframe.common.plateauranum:SetWidth(160)
-PlateInnerframe.common.plateaurasize:SetWidth(160)
-T.createcolorpickerbu(PlateInnerframe.common, 30, 220, L["可打断施法条颜色"], "PlateOptions", "Interruptible_color")
-T.createcolorpickerbu(PlateInnerframe.common, 230, 220, L["不可打断施法条颜色"], "PlateOptions", "notInterruptible_color")
+PlateInnerframe.style.theme.hook = function()
+	if aCoreCDB["PlateOptions"]["theme"] == "number" then
+		PlateInnerframe.style.bar_width:Hide()
+		PlateInnerframe.style.bar_height:Hide()
+		PlateInnerframe.style.valuefontsize:Hide()
+		PlateInnerframe.style.bar_hp_perc:Hide()
+		PlateInnerframe.style.bar_alwayshp:Hide()
+		
+		PlateInnerframe.style.number_size:Show()
+		PlateInnerframe.style.number_cpwidth:Show()
+		PlateInnerframe.style.number_alwayshp:Show()
+		PlateInnerframe.style.number_colorheperc:Show()
+	else
+		PlateInnerframe.style.bar_width:Show()
+		PlateInnerframe.style.bar_height:Show()
+		PlateInnerframe.style.valuefontsize:Show()
+		PlateInnerframe.style.bar_hp_perc:Show()
+		PlateInnerframe.style.bar_alwayshp:Show()
+	
+		PlateInnerframe.style.number_size:Hide()
+		PlateInnerframe.style.number_cpwidth:Hide()
+		PlateInnerframe.style.number_alwayshp:Hide()
+		PlateInnerframe.style.number_colorheperc:Hide()
+	end
+end
 
-T.createcheckbutton(PlateInnerframe.common, 30, 250, L["焦点染色"], "PlateOptions", "focuscolored")
-T.createcolorpickerbu(PlateInnerframe.common, 230, 250, L["焦点颜色"], "PlateOptions", "focus_color")
-T.createcheckbutton(PlateInnerframe.common, 30, 280, L["仇恨染色"], "PlateOptions", "threatcolor")
+PlateInnerframe.style.theme.apply = function()
+	T.ApplyUFSettings({"Health", "Power", "Castbar", "Auras", "ClassPower", 
+		"Runes", "RaidTargetIndicator", "Tag_Name", "PvPClassificationIndicator"}, "Altz_Nameplates")	
+	T.PostUpdateAllPlates()
+	T.PlacePlateClassSource()
+	PlateInnerframe.style.theme.hook()
+end
+PlateInnerframe.style.theme:HookScript("OnShow", PlateInnerframe.style.theme.hook)
 
-T.createDR(PlateInnerframe.common.enableplate, PlateInnerframe.common.theme, PlateInnerframe.common.fontsize, 
-PlateInnerframe.common.threatcolor, PlateInnerframe.common.plateauranum, PlateInnerframe.common.plateaurasize,
-PlateInnerframe.common.Interruptible_color, PlateInnerframe.common.notInterruptible_color)
+CreateDividingLine(PlateInnerframe.style, -95)
 
--- 样式
-PlateInnerframe.style = CreateOptionPage("Nameplates Options common", L["样式"], PlateInnerframe, "VERTICAL", "PlateOptions")
-PlateInnerframe.style.title:SetText(L["条形样式"])
+-- 条形样式的选项
+T.createslider(PlateInnerframe.style, "long", 30, 125, L["宽度"], "PlateOptions", "bar_width", 1, 70, 150, 5)
+PlateInnerframe.style.bar_width.apply = function()
+	T.ApplyUFSettings({"Health", "Castbar", "Auras"}, "Altz_Nameplates")
+end
 
-T.createslider(PlateInnerframe.style, 30, 80, L["宽度"], "PlateOptions", "bar_width", 1, 70, 150, 5)
-T.createslider(PlateInnerframe.style, 230, 80, L["高度"], "PlateOptions", "bar_height", 1, 5, 25, 1)
-PlateInnerframe.style.bar_width:SetWidth(160)
-PlateInnerframe.style.bar_height:SetWidth(160)
+T.createslider(PlateInnerframe.style, "long", 30, 165, L["高度"], "PlateOptions", "bar_height", 1, 5, 25, 1)
+PlateInnerframe.style.bar_height.apply = function()
+	T.ApplyUFSettings({"Health", "Power", "Castbar"}, "Altz_Nameplates")
+end
 
-T.createradiobuttongroup(PlateInnerframe.style, 30, 100, L["数值样式"], "bar_hp_perc", {
+T.createslider(PlateInnerframe.style, "long", 30, 205, L["数值"]..L["字体大小"], "PlateOptions", "valuefontsize", 1, 5, 25, 1)
+PlateInnerframe.style.valuefontsize.apply = function()
+	T.ApplyUFSettings({"Tag_Name", "Health", "Power"}, "Altz_Nameplates")
+end
+
+T.createradiobuttongroup(PlateInnerframe.style, 30, 225, L["数值"]..L["样式"], "bar_hp_perc", {
 	{"perc", L["百分比"]},
-	{"value_perc", L["数值和百分比"]},
+	{"value_perc", L["数值"].."+"..L["百分比"]},
 })
+PlateInnerframe.style.bar_hp_perc.apply = function()
+	T.ApplyUFSettings({"Health"}, "Altz_Nameplates")
+end
 
-T.createcheckbutton(PlateInnerframe.style, 30, 140, L["总是显示生命值"], "PlateOptions", "bar_alwayshp", L["总是显示生命值提示"])
-T.createcheckbutton(PlateInnerframe.style, 30, 170, L["友方只显示名字"], "PlateOptions", "bar_onlyname")
+T.createcheckbutton(PlateInnerframe.style, 30, 255, L["总是显示生命值"], "PlateOptions", "bar_alwayshp", L["总是显示生命值提示"])
+PlateInnerframe.style.bar_alwayshp.apply = function()
+	T.ApplyUFSettings({"Health"}, "Altz_Nameplates")
+end
 
-PlateInnerframe.style.title2 = PlateInnerframe.style:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
-PlateInnerframe.style.title2:SetPoint("TOPLEFT", 35, -220)
-PlateInnerframe.style.title2:SetText(L["数值样式"])
+-- 数值样式的选项
+T.createslider(PlateInnerframe.style, "long", 30, 125, string.format("%s(%s)", L["字体大小"], L["数字样式"]), "PlateOptions", "number_size", 1, 15, 35, 1)
+PlateInnerframe.style.number_size.apply = function()
+	T.ApplyUFSettings({"Health", "Power"}, "Altz_Nameplates")
+end
 
-PlateInnerframe.style.DividingLine2 = PlateInnerframe.style:CreateTexture(nil, "ARTWORK")
-PlateInnerframe.style.DividingLine2:SetSize(PlateInnerframe.style:GetWidth()-50, 1)
-PlateInnerframe.style.DividingLine2:SetPoint("TOP", 0, -245)
-PlateInnerframe.style.DividingLine2:SetColorTexture(1, 1, 1, .2)
+T.createslider(PlateInnerframe.style, "long", 30, 165, string.format("%s(%s)", L["姓名板资源尺寸"], L["数字样式"]), "PlateOptions", "number_cpwidth", 1, 5, 30, 1)
+PlateInnerframe.style.number_cpwidth.apply = function()
+	T.ApplyUFSettings({"Castbar"}, "Altz_Nameplates")
+end
 
-T.createslider(PlateInnerframe.style, 30, 280, string.format("%s(%s)", L["字体大小"], L["数字样式"]), "PlateOptions", "number_size", 1, 15, 35, 1)
-PlateInnerframe.style.number_size:SetWidth(160)
-T.createslider(PlateInnerframe.style, 230, 280, string.format("%s(%s)", L["姓名板资源尺寸"], L["数字样式"]), "PlateOptions", "number_cpwidth", 1, 5, 30, 1)
-PlateInnerframe.style.number_cpwidth:SetWidth(160)
-T.createcheckbutton(PlateInnerframe.style, 30, 310, string.format("%s(%s)", L["总是显示生命值"],L["数字样式"]), "PlateOptions", "number_alwayshp", L["总是显示生命值提示"])
-T.createcheckbutton(PlateInnerframe.style, 30, 340, string.format("%s(%s)", L["根据血量染色"],L["数字样式"]), "PlateOptions", "number_colorheperc")
+T.createcheckbutton(PlateInnerframe.style, 30, 195, string.format("%s(%s)", L["总是显示生命值"],L["数字样式"]), "PlateOptions", "number_alwayshp", L["总是显示生命值提示"])
+PlateInnerframe.style.number_alwayshp.apply = function()
+	T.ApplyUFSettings({"Health"}, "Altz_Nameplates")
+end
+
+T.createcheckbutton(PlateInnerframe.style, 30, 225, string.format("%s(%s)", L["根据血量染色"],L["数字样式"]), "PlateOptions", "number_colorheperc")
+PlateInnerframe.style.number_colorheperc.apply = function()
+	T.ApplyUFSettings({"Health"}, "Altz_Nameplates")
+end
 
 -- 玩家姓名板
 PlateInnerframe.playerresource = CreateOptionPage("Player Resource Bar Options", L["玩家姓名板"], PlateInnerframe, "VERTICAL", "PlateOptions")
 
 T.createcheckbutton(PlateInnerframe.playerresource, 30, 60, L["显示玩家姓名板"], "PlateOptions", "playerplate")
-T.createcheckbutton(PlateInnerframe.playerresource, 70, 90, L["显示玩家姓名板光环"], "PlateOptions", "plateaura")
-T.createcheckbutton(PlateInnerframe.playerresource, 70, 120, L["显示玩家施法条"], "PlateOptions", "platecastbar")
+PlateInnerframe.playerresource.playerplate.apply = function()
+	if aCoreCDB["PlateOptions"]["playerplate"] or aCoreCDB["PlateOptions"]["classresource_show"] then
+		SetCVar("nameplateShowSelf", 1)
+	else
+		SetCVar("nameplateShowSelf", 0)
+	end
+	T.PostUpdateAllPlates()
+end
+
+T.createcheckbutton(PlateInnerframe.playerresource, 70, 90, L["显示玩家施法条"], "PlateOptions", "platecastbar")
+PlateInnerframe.playerresource.platecastbar.apply = T.PostUpdateAllPlates
+
+T.createDR(PlateInnerframe.playerresource.playerplate, PlateInnerframe.playerresource.platecastbar)
+
 T.createcheckbutton(PlateInnerframe.playerresource, 30, 150, DISPLAY_PERSONAL_RESOURCE, "PlateOptions", "classresource_show")
+PlateInnerframe.playerresource.classresource_show.apply = T.PostUpdateAllPlates
 
 T.createradiobuttongroup(PlateInnerframe.playerresource, 70, 180, L["姓名板资源位置"], "classresource_pos", {
 	{"target", L["目标姓名板"]},
 	{"player", L["玩家姓名板"]},
 })
+PlateInnerframe.playerresource.classresource_pos.apply = function()
+	T.ApplyUFSettings({"Runes", "ClassPower"}, "Altz_Nameplates")
+	T.PlacePlateClassSource()
+end
 
-T.createDR(PlateInnerframe.playerresource.playerplate, PlateInnerframe.playerresource.plateaura)
 T.createDR(PlateInnerframe.playerresource.classresource_show, PlateInnerframe.playerresource.classresource_pos)
 
 -- 光环过滤列表
@@ -1824,11 +1997,14 @@ PlateInnerframe.auralist = CreateOptionPage("Plate Options Aura", L["光环"], P
 PlateInnerframe.auralist.my_filter = T.CreateAuraListOption(PlateInnerframe.auralist, {"TOPLEFT", 30, -55}, 200, L["我施放的光环"], "myplateauralist")
 
 T.createradiobuttongroup(PlateInnerframe.auralist.my_filter, -5, 40, L["过滤方式"], "myfiltertype", {
-	"none", L["全部隐藏"],
-	"whitelist", L["白名单"]..AURAS,
-	"blacklist", L["黑名单"]..AURAS,
+	{"none", L["全部隐藏"]},
+	{"whitelist", L["白名单"]..AURAS},
+	{"blacklist", L["黑名单"]..AURAS},
 })
 
+PlateInnerframe.auralist.my_filter.apply = function()
+	T.ApplyUFSettings({"Auras"})
+end
 PlateInnerframe.auralist.my_filter.reset.apply = function()
 	aCoreCDB["PlateOptions"]["myfiltertype"] = nil
 end
@@ -1845,6 +2021,9 @@ T.createradiobuttongroup(PlateInnerframe.auralist.other_filter, -5, 40, L["过�
 	{"whitelist", L["白名单"]..AURAS},
 })
 
+PlateInnerframe.auralist.other_filter.apply = function()
+	T.ApplyUFSettings({"Auras"})
+end
 PlateInnerframe.auralist.other_filter.reset.apply = function()
 	aCoreCDB["PlateOptions"]["otherfiltertype"] = nil
 end
@@ -1856,14 +2035,11 @@ PlateInnerframe.auralist.other_filter.option_list:SetPoint("TOPLEFT", 0, -65)
 PlateInnerframe.custom = CreateOptionPage("Plate Options Custom", CUSTOM, PlateInnerframe, "VERTICAL", "PlateOptions")
 
 PlateInnerframe.custom.color = T.CreatePlateColorListOption(PlateInnerframe.custom,  {"TOPLEFT", 30, -55}, 200, L["自定义颜色"], "customcoloredplates")
-PlateInnerframe.custom.color.reset.apply = function()
-	aCoreCDB["UnitframeOptions"]["customcoloredplates"] = nil
-end
+PlateInnerframe.custom.color.apply = T.PostUpdateAllPlates
 
 PlateInnerframe.custom.power = T.CreatePlatePowerListOption(PlateInnerframe.custom,  {"TOPLEFT", PlateInnerframe.custom.color, "BOTTOMLEFT", 0, -10}, 200, L["自定义能量"], "custompowerplates")
-PlateInnerframe.custom.power.reset.apply = function()
-	aCoreCDB["UnitframeOptions"]["custompowerplates"] = nil
-end
+PlateInnerframe.custom.power.apply = T.PostUpdateAllPlates
+
 --====================================================--
 --[[             -- Tooltip Options --              ]]--
 --====================================================--
@@ -1883,12 +2059,12 @@ T.createcheckbutton(CombattextOptions, 30, 90, L["隐藏浮动战斗信息接受
 T.createcheckbutton(CombattextOptions, 30, 120, L["隐藏浮动战斗信息输出"], "CombattextOptions", "hidblz")
 T.createcheckbutton(CombattextOptions, 30, 150, L["承受伤害/治疗"], "CombattextOptions", "showreceivedct")
 T.createcheckbutton(CombattextOptions, 30, 180, L["输出伤害/治疗"], "CombattextOptions", "showoutputct")
-T.createslider(CombattextOptions, 30, 230, L["图标大小"], "CombattextOptions", "cticonsize", 1, 10, 30, 1)
-T.createslider(CombattextOptions, 30, 270, L["暴击图标大小"], "CombattextOptions", "ctbigiconsize", 1, 10, 30, 1)
+T.createslider(CombattextOptions, "long", 30, 230, L["图标大小"], "CombattextOptions", "cticonsize", 1, 10, 30, 1)
+T.createslider(CombattextOptions, "long", 30, 270, L["暴击图标大小"], "CombattextOptions", "ctbigiconsize", 1, 10, 30, 1)
 T.createcheckbutton(CombattextOptions, 30, 300, L["显示DOT"], "CombattextOptions", "ctshowdots")
 T.createcheckbutton(CombattextOptions, 30, 330, L["显示HOT"], "CombattextOptions", "ctshowhots")
 T.createcheckbutton(CombattextOptions, 30, 360, L["显示宠物"], "CombattextOptions", "ctshowpet")
-T.createslider(CombattextOptions, 30, 410, L["隐藏时间"], "CombattextOptions", "ctfadetime", 10, 20, 100, 5, L["隐藏时间提示"])
+T.createslider(CombattextOptions, "long", 30, 410, L["隐藏时间"], "CombattextOptions", "ctfadetime", 10, 20, 100, 5, L["隐藏时间提示"])
 
 T.createDR(CombattextOptions.combattext, CombattextOptions.hidblz_receive, CombattextOptions.hidblz, CombattextOptions.showreceivedct, CombattextOptions.showoutputct, CombattextOptions.cticonsize, CombattextOptions.ctbigiconsize, CombattextOptions.ctshowdots, CombattextOptions.ctshowhots, CombattextOptions.ctshowpet, CombattextOptions.ctfadetime)
 
@@ -1924,6 +2100,20 @@ local Comands = CreateOptionPage("Comands", L["命令"], GUI, "VERTICAL")
 Comands.text = T.createtext(Comands, "OVERLAY", 12, "OUTLINE", "LEFT")
 Comands.text:SetPoint("TOPLEFT", 30, -60)
 Comands.text:SetText(format(L["指令"], G.classcolor, G.classcolor, G.classcolor, G.classcolor, G.classcolor, G.classcolor))
+
+Comands.mem = T.createtext(Comands, "OVERLAY", 12, "OUTLINE", "LEFT")
+Comands.mem:SetPoint("TOPLEFT", 30, -200)
+
+Comands.ef = CreateFrame("Frame")
+Comands.ef.t = 0
+Comands.ef:SetScript("OnUpdate", function(self, e)
+	self.t = self.t + e
+	if self.t > .5 then
+		UpdateAddOnMemoryUsage()
+		Comands.mem:SetText(T.memFormat(GetAddOnMemoryUsage("AltzUI")))
+		self.t = 0
+	end
+end)
 
 --====================================================--
 --[[               -- Credits --               ]]--
