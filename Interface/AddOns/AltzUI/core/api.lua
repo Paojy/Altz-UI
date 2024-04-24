@@ -239,21 +239,35 @@ local frameBD_thin = {
 	insets = {left = 1, right = 1, top = 1, bottom = 1}
 }
 
-T.createBackdrop = function(parent, anchor, a, BD_thin)
-	local frame = CreateFrame("Frame", nil, parent, "BackdropTemplate")
+T.SetBackdropOffset = function(frame, parent, size)
+	local s = size or 3
+	
+	frame:SetPoint("TOPLEFT", parent, "TOPLEFT", -s, s)
+	frame:SetPoint("BOTTOMRIGHT", parent, "BOTTOMRIGHT", s, -s)
+	
+	frame:SetBackdrop({
+		edgeFile = G.media.glow, edgeSize = s,
+		bgFile = G.media.blank,
+		insets = {left = s, right = s, top = s, bottom = s}
+	})
+end
 
+T.createBackdrop = function(parent, anchor, a, s)
+	local frame = CreateFrame("Frame", nil, parent, "BackdropTemplate")
+	local size = s or 3
+	
 	local flvl = parent:GetFrameLevel()
 	if flvl - 1 >= 0 then frame:SetFrameLevel(flvl-1) end
 
-	if BD_thin then
-		frame:SetPoint("TOPLEFT", anchor, "TOPLEFT", -1, 1)
-		frame:SetPoint("BOTTOMRIGHT", anchor, "BOTTOMRIGHT", 1, -1)
-		frame:SetBackdrop(frameBD_thin)
-	else
-		frame:SetPoint("TOPLEFT", anchor, "TOPLEFT", -3, 3)
-		frame:SetPoint("BOTTOMRIGHT", anchor, "BOTTOMRIGHT", 3, -3)
-		frame:SetBackdrop(frameBD)
-	end
+	frame:SetPoint("TOPLEFT", anchor, "TOPLEFT", -size, size)
+	frame:SetPoint("BOTTOMRIGHT", anchor, "BOTTOMRIGHT", size, -size)
+	frame:SetBackdrop({
+		edgeFile = G.media.glow,
+		edgeSize = size,
+		bgFile = G.media.blank,
+		insets = {left = size, right = size, top = size, bottom = size}
+	})
+	
 	if a then
 		frame:SetBackdropColor(.15, .15, .15, a)
 		frame:SetBackdropBorderColor(0, 0, 0)
@@ -262,40 +276,34 @@ T.createBackdrop = function(parent, anchor, a, BD_thin)
 	return frame
 end
 
-G.ThemeStatusbars = {}
-T.createStatusbar = function(parent, height, width, r, g, b, alpha, name)
-	local bar = CreateFrame("StatusBar", name, parent)
+T.createTexBackdrop = function(parent, anchor, drawlayer)
+	local bd = parent:CreateTexture(nil, drawlayer or "BORDER", nil, 3)
+	bd:SetPoint("TOPLEFT", anchor, "TOPLEFT", -1, 1)
+	bd:SetPoint("BOTTOMRIGHT", anchor, "BOTTOMRIGHT", 1, -1)
+	bd:SetTexture(G.media.blank)
+	bd:SetVertexColor(0, 0, 0)
 	
+	return bd
+end
+
+T.createStatusbar = function(parent, height, width, r, g, b, alpha)
+	local bar = CreateFrame("StatusBar", name, parent)
+	bar:SetStatusBarTexture(G.media.blank)
 	if height then
 		bar:SetHeight(height)
 	end
 	if width then
 		bar:SetWidth(width)
 	end
-
-	if r then
-		bar:SetStatusBarColor(r, g, b, alpha)
+	if r and g and b then
+		bar:SetStatusBarColor(r, g, b)
 	end
-	
-	bar.bg = bar:CreateTexture(nil, "BACKGROUND")
-	if aCoreCDB["SkinOptions"]["style"] == 1 then
-		bar:SetStatusBarTexture(G.media.blank)
-	else
-		bar:SetStatusBarTexture(G.media.ufbar)
+	if alpha then
+		bar:SetAlpha(alpha)
 	end
-	
-	bar.bg:SetAllPoints(bar)
 
 	bar:GetStatusBarTexture():SetHorizTile(false)
 	bar:GetStatusBarTexture():SetVertTile(false)
-	
-	if aCoreCDB["SkinOptions"]["style"] == 1 then		
-		bar.bg:SetTexture(G.media.blank)
-	else	
-		bar.bg:SetTexture(G.media.ufbar)
-	end
-	
-	table.insert(G.ThemeStatusbars, bar)
 	
 	return bar
 end
@@ -1078,10 +1086,11 @@ local function TestSlider_OnValueChanged(self, value)
  end
 T.TestSlider_OnValueChanged = TestSlider_OnValueChanged
 
-T.createslider = function(parent, x, y, name, table, value, divisor, min, max, step, tip)
+T.createslider = function(parent, width, x, y, name, table, value, divisor, min, max, step, tip)
 	local slider = CreateFrame("Slider", G.uiname..value.."Slider", parent, "OptionsSliderTemplate")
 	slider:SetPoint("TOPLEFT", x, -y)
-	slider:SetSize(220, 8)
+	slider:SetSize((width == "short" and 170) or (width == "long" and 220) or width, 8)
+
 	F.ReskinSlider(slider)
 	getmetatable(slider).__index.Enable(slider)
 	slider:SetMinMaxValues(min, max)
@@ -1163,6 +1172,9 @@ T.ColorPicker_OnClick = function(colors, has_opacity, points, apply)
 	
 	ColorPickerFrame.cancelFunc = function()
 		colors.r, colors.g, colors.b, colors.a = r, g, b, a
+		if apply then
+			apply()
+		end
 	end
 
 	if a then
@@ -1193,12 +1205,19 @@ T.createcolorpickerbu = function(parent, x, y, name, table, value)
 	cpb.name:SetText(name)
 	T.resize_font(cpb.name)
 	
+	cpb.apply_settings = function()
+		cpb.ctex:SetVertexColor(aCoreCDB[table][value].r, aCoreCDB[table][value].g, aCoreCDB[table][value].b)
+		if cpb.apply then
+			cpb.apply()
+		end
+	end
+	
 	cpb:SetScript("OnShow", function(self) 
 		self.ctex:SetVertexColor(aCoreCDB[table][value].r, aCoreCDB[table][value].g, aCoreCDB[table][value].b)
 	end)
 	
 	cpb:SetScript("OnClick", function(self)
-		T.ColorPicker_OnClick(aCoreCDB[table][value], false, self)
+		T.ColorPicker_OnClick(aCoreCDB[table][value], nil, nil, cpb.apply_settings)
 	end)
 	
 	cpb:SetScript("OnDisable", function(self)
@@ -1590,8 +1609,8 @@ local createscrollbutton = function(type, option_list, table, value, key)
 		bu:Hide()
 		aCoreCDB[table][value][key] = nil
 		lineuplist(aCoreCDB[table][value], option_list.list, option_list.anchor)
-		if frame.OptionListChanged then
-			frame.OptionListChanged()
+		if option_list.apply then
+			option_list.apply()
 		end
 	end)
 	
@@ -1779,6 +1798,8 @@ T.CreateAuraListOption = function(parent, points, height, text, OptionName, inpu
 			frame.first_input:SetText(L["输入法术ID"])
 			frame.first_input.current_spellID = nil
 			frame.second_input:SetText(input_text_2)
+			
+			frame.apply() -- 生效
 		else
 			frame.first_input:GetScript("OnEnterPressed")(frame.first_input)
 			if not frame.first_input:apply() then return end
@@ -1791,6 +1812,8 @@ T.CreateAuraListOption = function(parent, points, height, text, OptionName, inpu
 			lineuplist(aCoreCDB[frame.db_key][OptionName], frame.option_list.list, frame.option_list.anchor)
 			frame.first_input:SetText(L["输入法术ID"])
 			frame.first_input.current_spellID = nil
+			
+			frame.apply() -- 生效
 		end
 	end)
 	
@@ -1861,6 +1884,8 @@ T.CreateItemListOption = function(parent, points, height, text, OptionName, inpu
 			lineuplist(aCoreCDB[frame.db_key][OptionName], frame.option_list.list, frame.option_list.anchor)
 			frame.first_input:SetText(L["物品名称ID链接"])
 			frame.second_input:SetText(input_text_2)
+			
+			frame.apply() -- 生效
 		else
 			frame.first_input:GetScript("OnEnterPressed")(frame.first_input)
 			if not frame.first_input:apply() then return end
@@ -1874,6 +1899,8 @@ T.CreateItemListOption = function(parent, points, height, text, OptionName, inpu
 			
 			lineuplist(aCoreCDB[frame.db_key][OptionName], frame.option_list.list, frame.option_list.anchor)
 			frame.first_input:SetText(L["物品名称ID链接"])
+			
+			frame.apply() -- 生效
 		end
 	end)
 
@@ -1882,7 +1909,6 @@ end
 
 T.CreatePlateColorListOption = function(parent, points, height, text, OptionName)
 	local frame = CreateListOption(parent, points, height, text, OptionName, L["输入npc名称"])
-	frame.OptionListChanged = T.UpdateNameplateColor
 	
 	frame:SetScript("OnShow", function()
 		for name, color in pairs(aCoreCDB[frame.db_key][OptionName]) do
@@ -1932,7 +1958,7 @@ T.CreatePlateColorListOption = function(parent, points, height, text, OptionName
 		frame.cpb.colors.r, frame.cpb.colors.g, frame.cpb.colors.b = 1, 1, 1
 		frame.cpb.update_texcolor()
 		
-		frame.OptionListChanged() -- 生效
+		frame.apply() -- 生效
 	end)
 
 	return frame
@@ -1940,8 +1966,7 @@ end
 
 T.CreatePlatePowerListOption = function(parent, points, height, text, OptionName)
 	local frame = CreateListOption(parent, points, height, text, OptionName, L["输入npc名称"])
-	frame.OptionListChanged = T.UpdateNameplatePowerbars
-	
+
 	frame:SetScript("OnShow", function()
 		for name, _ in pairs(aCoreCDB[frame.db_key][OptionName]) do
 			CreateListButton("", frame, OptionName, name, nil, name)
@@ -1961,7 +1986,7 @@ T.CreatePlatePowerListOption = function(parent, points, height, text, OptionName
 		
 		frame.first_input:SetText(L["输入npc名称"])
 		
-		frame.OptionListChanged() -- 生效
+		frame.apply() -- 生效
 	end)
 
 	return frame
