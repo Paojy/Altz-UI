@@ -725,15 +725,6 @@ Durability:RegisterEvent("PLAYER_ENTERING_WORLD")
 -- 延迟和帧数
 local Net_Stats = CreateInfoButton("Net_Stats", InfoFrame, 80, 20, "RIGHT", "RIGHT", Durability, "LEFT", -5, 0)
 
--- Format String
-local memFormat = function(num)
-	if num > 1024 then
-		return format("%.2f mb", (num / 1024))
-	else
-		return format("%.1f kb", floor(num))
-	end
-end
-
 Net_Stats.t = 0
 Net_Stats:SetScript("OnUpdate", function(self, elapsed)
 	self.t = self.t + elapsed
@@ -797,12 +788,12 @@ Net_Stats:SetScript("OnEnter", function(self)
 			if ( topAddOns[i].value == 0 ) then
 				break
 			end
-			GameTooltip:AddDoubleLine(topAddOns[i].name, memFormat(topAddOns[i].value), 1, 1, 1, T.ColorGradient(topAddOns[i].value / 1024, 0, 1, 0, 1, 1, 0, 1, 0, 0))
+			GameTooltip:AddDoubleLine(topAddOns[i].name, T.memFormat(topAddOns[i].value), 1, 1, 1, T.ColorGradient(topAddOns[i].value / 1024, 0, 1, 0, 1, 1, 0, 1, 0, 0))
 		end
 		
 		GameTooltip:AddLine(" ")
-		GameTooltip:AddDoubleLine(L["自定义插件占用"], memFormat(totalMem), 1, 1, 1, T.ColorGradient(totalMem / (1024*20), 0, 1, 0, 1, 1, 0, 1, 0, 0))
-		GameTooltip:AddDoubleLine(L["所有插件占用"], memFormat(collectgarbage("count")), 1, 1, 1, T.ColorGradient(collectgarbage("count") / (1024*50) , 0, 1, 0, 1, 1, 0, 1, 0, 0))
+		GameTooltip:AddDoubleLine(L["自定义插件占用"], T.memFormat(totalMem), 1, 1, 1, T.ColorGradient(totalMem / (1024*20), 0, 1, 0, 1, 1, 0, 1, 0, 0))
+		GameTooltip:AddDoubleLine(L["所有插件占用"], T.memFormat(collectgarbage("count")), 1, 1, 1, T.ColorGradient(collectgarbage("count") / (1024*50) , 0, 1, 0, 1, 1, 0, 1, 0, 0))
 		
 		GameTooltip:AddLine(" ")
 		GameTooltip:AddLine(format(MAINMENUBAR_LATENCY_LABEL, latencyHome, latencyWorld), 1, 1, 1)
@@ -1172,6 +1163,12 @@ F.Reskin(BOTTOMPANEL.tipframe.dontshow)
 BOTTOMPANEL.tipframe.dontshow:SetScript("OnClick", DontShowTips)
 
 T.fadeout = function()
+	local oUF = AltzUF or oUF
+	for _, obj in next, oUF.objects do
+		if obj.Portrait and obj:IsElementEnabled("Portrait") then
+			obj.Portrait:Hide()
+		end
+	end
 	Minimap:Hide()
 	UIParent:SetAlpha(0)
 	UIFrameFadeIn(BOTTOMPANEL, 3, BOTTOMPANEL:GetAlpha(), 1)
@@ -1185,6 +1182,12 @@ T.fadeout = function()
 end
 
 T.fadein = function()
+	local oUF = AltzUF or oUF
+	for _, obj in next, oUF.objects do
+		if obj.Portrait and obj:IsElementEnabled("Portrait") then
+			obj.Portrait:Show()
+		end
+	end
 	Minimap:Show()
 	UIFrameFadeIn(UIParent, 2, 0, 1)
 	UIFrameFadeOut(BOTTOMPANEL, 2, BOTTOMPANEL:GetAlpha(), 0)
