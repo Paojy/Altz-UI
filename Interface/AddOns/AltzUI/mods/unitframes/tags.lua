@@ -135,10 +135,9 @@ oUF.Tags.Methods['Altz:DDG'] = function(u)
 end
 oUF.Tags.Events['Altz:DDG'] = 'UNIT_HEALTH UNIT_CONNECTION'
 
--- name plate --
-
-oUF.Tags.Methods["Altz:platename"] = function(u, r)
+oUF.Tags.Methods["Altz:platename"] = function(u, real)
 	if not UnitIsUnit(u, "player") then
+				
 		local class = ""
 		local c = UnitClassification(u)
 		if c == 'rare' then
@@ -146,8 +145,19 @@ oUF.Tags.Methods["Altz:platename"] = function(u, r)
 		elseif c == 'rareelite' then
 			class = 'R+ '
 		end
-        local name = UnitName(r or u)
-		return string.format('%s%s', class, name)
+		
+        local name = UnitName(real or u)
+		
+		local result
+		
+		if aCoreCDB["PlateOptions"]["theme"] ~= "class" then
+			local r, g, b = T.GetUnitColorforNameplate(u)
+			result = T.hex(r, g, b)..class..name.."|r"
+		else
+			result = class..name
+		end
+		
+		return result
 	end
 end
 oUF.Tags.Events["Altz:platename"] = "UNIT_CLASSIFICATION_CHANGED UNIT_FACTION UNIT_NAME_UPDATE"

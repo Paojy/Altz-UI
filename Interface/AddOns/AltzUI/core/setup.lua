@@ -635,28 +635,11 @@ local plate_theme_group = {
 CreateOptions(TutorialsFrame[5], "group", true, "PlateOptions", "theme", plate_theme_group)
 for k, text in pairs(plate_theme_group) do
 	TutorialsFrame[5]["theme"][k]:HookScript("OnClick", function()
-		for i, plate in ipairs(C_NamePlate.GetNamePlates(issecure())) do
-			if plate.unitFrame then	
-				for k, e in pairs({"Health", "Power", "Castbar", "Auras", "ClassPower", "Runes", "RaidTargetIndicator", "Name", "PvPClassificationIndicator"}) do
-					if plate.unitFrame[e] and plate.unitFrame[e].ApplySettings then
-						plate.unitFrame[e].ApplySettings()
-					end
-				end
-				plate.unitFrame:UpdateAllElements('OnUpdate')
-				T.PostUpdatePlates(plate.unitFrame, "NAME_PLATE_UNIT_ADDED", plate.unitFrame.unit)
-			end
-		end
+		T.ApplyUFSettings({"Health", "Power", "Castbar", "Auras", "ClassPower", 
+		"Runes", "RaidTargetIndicator", "Name", "PvPClassificationIndicator"}, 'Altz_Nameplates')	
+		T.PostUpdateAllPlates()
 		T.PlacePlateClassSource()
 	end)
-	TutorialsFrame[5]["theme"][k]:SetScript("OnEvent", function(self, event)
-		if event == "PLAYER_REGEN_ENABLED" then
-			self:Enable()
-		elseif event == "PLAYER_REGEN_DISABLED" then
-			self:Disable()
-		end
-	end)
-	TutorialsFrame[5]["theme"][k]:RegisterEvent("PLAYER_REGEN_ENABLED")
-	TutorialsFrame[5]["theme"][k]:RegisterEvent("PLAYER_REGEN_DISABLED")
 end
 
 CreateOptions(TutorialsFrame[5], "check", L["显示玩家姓名板"], "PlateOptions", "playerplate")
@@ -666,10 +649,7 @@ TutorialsFrame[5]["playerplate"]:HookScript("OnClick", function()
 	else
 		SetCVar("nameplateShowSelf", 0)
 	end
-	local playerPlate = C_NamePlate.GetNamePlateForUnit("player")
-	if playerPlate and playerPlate.unitFrame then
-		T.PostUpdatePlates(playerPlate.unitFrame, "NAME_PLATE_UNIT_ADDED", "player")
-	end
+	T.PostUpdateAllPlates()
 end)
 
 --====================================================--

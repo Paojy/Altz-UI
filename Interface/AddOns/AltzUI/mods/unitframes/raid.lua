@@ -52,22 +52,6 @@ local function healpreditionbar(self, ...)
 	return hpb
 end
 
-local function UpdateRaidMana(pp, unit, cur, min, max)
-	local _, ptype = UnitPowerType(unit)
-    if ptype == 'MANA' then		
-		if max == 0 then
-			pp.backdrop:SetBackdropColor(0, 0, 0.7)
-		elseif cur/max > 0.2 then
-			pp.backdrop:SetBackdropColor(.15, .15, .15)
-		elseif UnitIsDead(unit) or UnitIsGhost(unit) or not UnitIsConnected(unit) then
-			pp.backdrop:SetBackdropColor(.5, .5, .5)
-		else
-			pp.backdrop:SetBackdropColor(0, 0, 0.7)
-		end
-	end
-	T.Updatepowerbar(pp, unit, cur, min, max)
-end
-
 local HealerInd_AuraFilter = function(icons, unit, data)
 	if data.sourceUnit == "player" then -- show my buffs
 		if aCoreCDB["UnitframeOptions"]["hotind_filtertype"] == "blacklist" and not aCoreCDB["UnitframeOptions"]["hotind_auralist"][data.spellId] then
@@ -92,7 +76,7 @@ local PostCreateIndicatorIcon = function(auras, icon)
 	icon.Overlay:SetPoint("TOPLEFT", icon, "TOPLEFT", -1, 1)
 	icon.Overlay:SetPoint("BOTTOMRIGHT", icon, "BOTTOMRIGHT", 1, -1)
 
-	icon.bd = T.createBackdrop(icon, icon, 0, true)
+	icon.backdrop = T.createBackdrop(icon, icon, 0)
 
 	icon.Cooldown.noshowcd = true
 	icon.Cooldown:SetReverse(true)
@@ -283,9 +267,11 @@ T.UpdateClicksforAll = UpdateClicksforAll
 --[[              Raid Frames                ]]--
 --=============================================--
 
-local func = function(self, unit)
-
-    self:RegisterForClicks"AnyUp"
+local func = function(self, unit)  	
+	T.CreateClickSets(self)
+	T.RaidOnMouseOver(self)
+	
+	self:RegisterForClicks"AnyUp"
 	self.mouseovers = {}
 	
 	-- highlight --
@@ -294,6 +280,10 @@ local func = function(self, unit)
     self.hl:SetTexture(G.media.barhightlight)
     self.hl:SetVertexColor( 1, 1, 1, .3)
     self.hl:SetBlendMode("ADD")
+	
+	-- background --
+	self.bg = self:CreateTexture(nil, 'BACKGROUND')
+    self.bg:SetAllPoints(self)
 	
 	-- target border --
 	self.targetborder = Createpxborder(self, 2)
@@ -304,67 +294,47 @@ local func = function(self, unit)
 	self.threatborder = Createpxborder(self, 1)
 	self:RegisterEvent("UNIT_THREAT_SITUATION_UPDATE", UpdateThreat, true)
 	
-	-- backdrop --
-	self.bg = CreateFrame("Frame", nil, self)
-	self.bg:SetFrameLevel(0)
-	self.bg:SetAllPoints(self)
-	self.bg.tex = self.bg:CreateTexture(nil, "BACKGROUND")
-    self.bg.tex:SetAllPoints()
-	self.bg.tex:SetTexture(G.media.ufbar)
-	self.bg.tex:SetVertexColor(0, 0, 0)
-	
-	-- health --
+	-- health bar --
     local hp = T.createStatusbar(self, nil, nil, 1, 1, 1, 1)
-	hp:SetFrameLevel(3)
 	hp:SetAllPoints(self)
 	hp:SetReverseFill(true)
-    hp.frequentUpdates = true
 	
-	-- little black line to make the health bar more clear
+	hp.backdrop = T.createBackdrop(hp, hp, 0)
+	
+	hp.cover = hp:CreateTexture(nil, 'OVERLAY')
+    hp.cover:SetAllPoints(hp)
+	hp.cover:SetTexture(G.media.blank)
+	
 	hp.ind = hp:CreateTexture(nil, "OVERLAY", nil, 1)
     hp.ind:SetTexture("Interface\\Buttons\\WHITE8x8")
 	hp.ind:SetVertexColor(0, 0, 0)
 	hp.ind:SetSize(1, 45)
 	hp.ind:SetPoint("RIGHT", hp:GetStatusBarTexture(), "LEFT", 0, 0)
 	
-	-- border --
-	self.backdrop = T.createBackdrop(hp, hp, 0)
-	
 	hp.ApplySettings = function()
-		hp.ind:SetSize(1, aCoreCDB["UnitframeOptions"]["raidheight"])
+		T.ApplyHealthThemeSettings(self, hp)
 		
-		if aCoreCDB["SkinOptions"]["style"] == 1 then
-			self.bg.tex:SetAlpha(0)
-			hp:SetStatusBarTexture(G.media.blank)
-			hp.bg:SetTexture(G.media.blank)
-			hp.bg:SetGradient("VERTICAL", CreateColor(.5, .5, .5, .5), CreateColor(0, 0, 0, 0))
-		elseif aCoreCDB["SkinOptions"]["style"] == 2 then
-			self.bg.tex:SetAlpha(1)
-			hp:SetStatusBarTexture(G.media.ufbar)
-			hp.bg:SetTexture(G.media.ufbar)
-			hp.bg:SetGradient("VERTICAL", CreateColor(.2,.2,.2,.15), CreateColor(.25,.25,.25,.6))
-		else
-			self.bg.tex:SetAlpha(1)
-			hp:SetStatusBarTexture(G.media.ufbar)
-			hp.bg:SetTexture(G.media.ufbar)
-			hp.bg:SetGradient("VERTICAL", CreateColor(.2,.2,.2,0), CreateColor(.25,.25,.25,0))
-		end
+		hp.ind:SetSize(1, aCoreCDB["UnitframeOptions"]["raidheight"])
 	end
 	
-    self.Health = hp
-	self.Health.PostUpdate = T.Updatehealthbar
-	self.Health.Override = T.Overridehealthbar
+	hp.colorDisconnected = true	
+	hp.PostUpdateColor = T.PostUpdate_HealthColor
+	hp.PostUpdate = T.PostUpdate_Health
+	
+	self.Health = hp
 	self.Health.ApplySettings()
 	
 	-- raid manabars --
-	local pp = T.createStatusbar(self, nil, nil, 1, 1, 1, 1)
-	pp:SetFrameLevel(3)
+	local pp = T.createStatusbar(self)
 	pp:SetPoint("BOTTOMLEFT", self, "BOTTOMLEFT")
 	pp:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT")
 	
-	pp.bg:SetGradient("VERTICAL", CreateColor(.2,.2,.2,.15), CreateColor(.25,.25,.25,.6))
-	pp.backdrop = T.createBackdrop(pp, pp, 0)
-
+	pp.backdrop = T.createBackdrop(hp, hp, 0)
+	
+	pp.bg = pp:CreateTexture(nil, 'BACKGROUND')
+	pp.bg:SetAllPoints(pp)
+	pp.multiplier = .2
+	
 	pp.EnableSettings = function(object)
 		if not object or object == self then	
 			if aCoreCDB["UnitframeOptions"]["raidmanabars"] then			
@@ -378,17 +348,15 @@ local func = function(self, unit)
 	oUF:RegisterInitCallback(pp.EnableSettings)
 	
 	pp.ApplySettings = function()		
-		if aCoreCDB["SkinOptions"]["style"] == 1 then
-			pp:SetStatusBarTexture(G.media.blank)
-		else
-			pp:SetStatusBarTexture(G.media.ufbar)
-		end
-		
 		pp:SetHeight(aCoreCDB["UnitframeOptions"]["raidheight"]*aCoreCDB["UnitframeOptions"]["raidppheight"])
-	end	
+		
+		T.ApplyPowerThemeSettings(pp)
+	end
+	
+	pp.PostUpdateColor = T.PostUpdate_PowerColor
+	pp.PostUpdate = T.PostUpdate_Power
 	
 	self.Power = pp
-	self.Power.PostUpdate = UpdateRaidMana
 	self.Power.ApplySettings()
 	
 	-- gcd frane --
@@ -396,7 +364,7 @@ local func = function(self, unit)
     gcd:SetAllPoints(self)
     gcd:SetStatusBarTexture(G.media.blank)
     gcd:SetStatusBarColor(1, 1, 1, .4)
-    gcd:SetFrameLevel(5)
+    gcd:SetFrameLevel(self:GetFrameLevel()+2)
 	
 	gcd.EnableSettings = function(object)
 		if not object or object == self then	
@@ -419,6 +387,17 @@ local func = function(self, unit)
 		maxOverflow = 1.2,
 	}
 	
+	hp_predict.EnableSettings = function(object)
+		if not object or object == self then	
+			if aCoreCDB["UnitframeOptions"]["healprediction"] then
+				self:EnableElement("HealthPrediction")				
+			else
+				self:DisableElement("HealthPrediction")
+			end
+		end
+	end
+	oUF:RegisterInitCallback(hp_predict.EnableSettings)
+	
 	hp_predict.ApplySettings = function()
 		if aCoreCDB["SkinOptions"]["style"] ~= 3 then
 			hp_predict.myBar:SetPoint('LEFT', self.Health:GetStatusBarTexture(), 'LEFT')
@@ -431,36 +410,28 @@ local func = function(self, unit)
 		end
 	end
 	
-	hp_predict.EnableSettings = function(object)
-		if not object or object == self then	
-			if aCoreCDB["UnitframeOptions"]["healprediction"] then
-				self:EnableElement("HealthPrediction")				
-			else
-				self:DisableElement("HealthPrediction")
-			end
-		end
-	end
-	oUF:RegisterInitCallback(hp_predict.EnableSettings)
-	
 	self.HealthPrediction = hp_predict
-	self.HealthPrediction.ApplySettings()
+	hp_predict.ApplySettings()
 	
-	
+	-- 团队领袖
 	local leader = hp:CreateTexture(nil, "OVERLAY", nil, 1)
     leader:SetSize(10, 10)
     leader:SetPoint("BOTTOMLEFT", hp, "BOTTOMLEFT", 0, -5)
     self.LeaderIndicator = leader
-
+	
+	-- 团队助手
 	local assistant = hp:CreateTexture(nil, "OVERLAY", nil, 1)
     assistant:SetSize(10, 10)
     assistant:SetPoint("BOTTOMLEFT", hp, "BOTTOMLEFT", 0, -5)
 	self.AssistantIndicator = assistant
 	
+	-- 团队拾取
     local masterlooter = hp:CreateTexture(nil, 'OVERLAY', nil, 1)
     masterlooter:SetSize(10, 10)
     masterlooter:SetPoint('LEFT', leader, 'RIGHT', 0, 1)
     self.MasterLooterIndicator = masterlooter
 	
+	-- 主坦克、主助理标记
 	local raidrole = hp:CreateTexture(nil, 'OVERLAY', nil, 1)
 	raidrole:SetSize(10, 10)
 	raidrole:SetPoint('LEFT', masterlooter, 'RIGHT')
@@ -479,38 +450,27 @@ local func = function(self, unit)
 	
 	self.RaidRoleIndicator = raidrole
 	
-	local lfd =  T.createtext(hp, "OVERLAY", 13, "OUTLINE", "CENTER")
-	lfd:SetFont(G.symbols, aCoreCDB["UnitframeOptions"]["raidfontsize"]-3, "OUTLINE")
-	lfd:SetPoint("BOTTOM", hp, 0, -1)
-	self.tag_lfd = lfd
-	self:Tag(lfd, '[Altz:LFD]')
-	
-	local raidname = T.createtext(hp, "ARTWORK", aCoreCDB["UnitframeOptions"]["raidfontsize"], "OUTLINE", "RIGHT")
-	raidname:SetPoint("BOTTOMRIGHT", hp, "BOTTOMRIGHT", -1, 5)
-	self.tag_raidname = raidname
-	self:Tag(raidname, '[Altz:hpraidname]')
-	
-    local ricon = hp:CreateTexture(nil, "OVERLAY", nil, 1)
+	-- 团队标记
+	local ricon = hp:CreateTexture(nil, "OVERLAY", nil, 1)
 	ricon:SetSize(18 ,18)
     ricon:SetPoint("RIGHT", hp, "TOP", -8 , 0)
 	ricon:SetTexture[[Interface\AddOns\AltzUI\media\raidicons.blp]]
+	
     self.RaidTargetIndicator = ricon
 	
-	local status = T.createtext(hp, "OVERLAY", aCoreCDB["UnitframeOptions"]["raidfontsize"]-2, "OUTLINE", "LEFT")
-    status:SetPoint"TOPLEFT"
-	self.tag_status = status
-	self:Tag(status, '[Altz:AfkDnd][Altz:DDG]')
-	
+	-- 复活标记
 	local resurrecticon = hp:CreateTexture(nil, "OVERLAY")
     resurrecticon:SetSize(16, 16)
     resurrecticon:SetPoint"CENTER"
     self.ResurrectIndicator = resurrecticon
 	
+	-- 就位确认
     local readycheck = hp:CreateTexture(nil, 'OVERLAY', nil, 3)
     readycheck:SetSize(16, 16)
     readycheck:SetPoint"CENTER"
     self.ReadyCheckIndicator = readycheck
-
+	
+	-- 召唤标记
 	local summonIndicator = self:CreateTexture(nil, 'OVERLAY')
     summonIndicator:SetSize(32, 32)
     summonIndicator:SetPoint('TOPRIGHT', self)
@@ -518,26 +478,51 @@ local func = function(self, unit)
 	summonIndicator:Show()
     self.SummonIndicator = summonIndicator
 	
-	-- Debuffs
+	-- 团队职责
+	local lfd =  T.createtext(hp, "OVERLAY", 13, "OUTLINE", "CENTER")
+	lfd:SetFont(G.symbols, 7, "OUTLINE")
+	lfd:SetPoint("BOTTOM", hp, 0, -1)
+	
+	lfd.ApplySettings = function()
+		lfd:SetFont(G.symbols, aCoreCDB["UnitframeOptions"]["raidfontsize"]-3, "OUTLINE")
+	end
+	
+	self:Tag(lfd, '[Altz:LFD]')
+	self.Tag_LFD = lfd
+	lfd.ApplySettings()
+	
+	-- 名字
+	local raidname = T.createtext(hp, "ARTWORK", 10, "OUTLINE", "RIGHT")
+	raidname:SetPoint("BOTTOMRIGHT", hp, "BOTTOMRIGHT", -1, 5)
+	
+	raidname.ApplySettings = function()
+		raidname:SetFont(G.norFont, aCoreCDB["UnitframeOptions"]["raidfontsize"], "OUTLINE")
+	end
+	
+	self:Tag(raidname, '[Altz:hpraidname]')
+	self.Tag_Name = raidname
+	raidname.ApplySettings()
+	
+	-- 勿扰 暂离 离线 死亡 灵魂
+	local status = T.createtext(hp, "OVERLAY", 8, "OUTLINE", "LEFT")
+    status:SetPoint"TOPLEFT"
+	
+	status.ApplySettings = function()
+		status:SetFont(G.norFont, aCoreCDB["UnitframeOptions"]["raidfontsize"]-2, "OUTLINE")
+	end
+	
+	self:Tag(status, '[Altz:AfkDnd][Altz:DDG]')
+	self.Tag_Status = status
+	status.ApplySettings()
+	
+	-- 团队减益
 	local Auras = CreateFrame("Frame", nil, self)
-	Auras:SetFrameLevel(4)
-	Auras.tfontsize = aCoreCDB["UnitframeOptions"]["raid_debuff_icon_fontsize"]
-	Auras.cfontsize = aCoreCDB["UnitframeOptions"]["raid_debuff_icon_fontsize"]
-	Auras.Icon_size = aCoreCDB["UnitframeOptions"]["raid_debuff_icon_size"]
-	Auras.anchor_x = aCoreCDB["UnitframeOptions"]["raid_debuff_anchor_x"]
-	Auras.anchor_y = aCoreCDB["UnitframeOptions"]["raid_debuff_anchor_y"]
-	Auras.numDebuffs = aCoreCDB["UnitframeOptions"]["raid_debuff_num"]
+	Auras:SetFrameLevel(self:GetFrameLevel()+1)
 	self.AltzAuras2 = Auras
 	
-	-- Tankbuff
+	-- 团队增益
     local Tankbuff = CreateFrame("Frame", nil, self)
-	Tankbuff:SetFrameLevel(4)
-	Tankbuff.tfontsize = aCoreCDB["UnitframeOptions"]["raid_buff_icon_fontsize"]
-	Tankbuff.cfontsize = aCoreCDB["UnitframeOptions"]["raid_buff_icon_fontsize"]
-	Tankbuff.Icon_size = aCoreCDB["UnitframeOptions"]["raid_buff_icon_size"]
-	Tankbuff.anchor_x = aCoreCDB["UnitframeOptions"]["raid_buff_anchor_x"]
-	Tankbuff.anchor_y = aCoreCDB["UnitframeOptions"]["raid_buff_anchor_y"]
-	Tankbuff.numBuffs = aCoreCDB["UnitframeOptions"]["raid_buff_num"]
+	Tankbuff:SetFrameLevel(self:GetFrameLevel()+1)
 	self.AltzTankbuff = Tankbuff
 	
 	-- 治疗边角指示器（数字）
@@ -605,18 +590,14 @@ local func = function(self, unit)
 	end
 	
 	self.Auras = ind_icon
-	self.Auras.ApplySettings()
+	ind_icon.ApplySettings()
 
-	-- Range
+	-- 距离指示
     local range = {
         insideAlpha = 1,
         outsideAlpha = 0.3,
     }
-	
 	self.Range = range
-	
-	T.CreateClickSets(self)
-	T.RaidOnMouseOver(self)
 end
 
 oUF:RegisterStyle("Altz_Healerraid", func)
@@ -757,12 +738,14 @@ T.UpdateGroupSize = function()
 end
 	
 T.UpdateGroupfilter = function()
+	if not RaidFrame[1] then return end
+	
 	for i = 1, 8 do
 		if not aCoreCDB["UnitframeOptions"]["party_connected"] then -- 小队分离
 			RaidFrame[i]:SetAttribute("groupFilter", (i <= aCoreCDB["UnitframeOptions"]["party_num"]) and tostring(i) or '')
 		else
 			RaidFrame[i]:SetAttribute("groupFilter", (i == 1) and GetGroupfilter() or '')
-		end		
+		end
 	end
 	
 	RaidFrame[1]:SetAttribute("showSolo", aCoreCDB["UnitframeOptions"]["showsolo"])
@@ -773,21 +756,6 @@ T.UpdateGroupfilter = function()
 	else
 		RaidPetFrame[1]:SetAttribute("groupFilter", '')
 		T.ReleaseDragFrame(RaidPetFrame)
-	end
-end
-
-T.UpdateGroupTag = function(t)
-	local oUF = AltzUF or oUF
-	for _, obj in next, oUF.objects do	
-		if obj.style == 'Altz_Healerraid' then
-			if t == "update" then
-				obj:UpdateTags()
-			elseif t == "fontsize" then
-				obj.tag_lfd:SetFont(G.symbols, aCoreCDB["UnitframeOptions"]["raidfontsize"]-3, "OUTLINE")
-				obj.tag_raidname:SetFont(G.norFont, aCoreCDB["UnitframeOptions"]["raidfontsize"], "OUTLINE")
-				obj.tag_status:SetFont(G.norFont, aCoreCDB["UnitframeOptions"]["raidfontsize"]-2, "OUTLINE")
-			end
-		end
 	end
 end
 
@@ -812,7 +780,10 @@ end)
 --[[             Party Frames                ]]--
 --=============================================--
 
-local pfunc = function(self, unit)
+local pfunc = function(self, unit)	
+	T.CreateClickSets(self)
+	T.RaidOnMouseOver(self)
+
 	self:RegisterForClicks"AnyUp"
 	self.mouseovers = {}
 
@@ -823,61 +794,48 @@ local pfunc = function(self, unit)
 	self.hl:SetVertexColor( 1, 1, 1, .3)
 	self.hl:SetBlendMode("ADD")
 	
-	-- backdrop --
-	self.bg = CreateFrame("Frame", nil, self)
-	self.bg:SetFrameLevel(0)
-	self.bg:SetAllPoints(self)
-	self.bg.tex = self.bg:CreateTexture(nil, "BACKGROUND")
-    self.bg.tex:SetAllPoints()
-	self.bg.tex:SetTexture(G.media.ufbar)
-	self.bg.tex:SetVertexColor(0, 0, 0)
+	-- background --
+	self.bg = self:CreateTexture(nil, 'BACKGROUND')
+    self.bg:SetAllPoints(self)
 	
-    local hp = T.createStatusbar(self, nil, nil, 1, 1, 1, 1)
-	hp:SetFrameLevel(4)
+	-- target border --
+	self.targetborder = Createpxborder(self, 2)
+	self.targetborder:SetBackdropBorderColor(1, 1, .4)
+	self:RegisterEvent("PLAYER_TARGET_CHANGED", ChangedTarget, true)
+
+	-- threat border --
+	self.threatborder = Createpxborder(self, 1)
+	self:RegisterEvent("UNIT_THREAT_SITUATION_UPDATE", UpdateThreat, true)
+	
+	-- health bar --
+    local hp = T.createStatusbar(self)
     hp:SetAllPoints(self)
-	hp:SetPoint("TOPLEFT", self, "TOPLEFT")
-	hp:SetPoint("TOPRIGHT", self, "TOPRIGHT")
 	hp:SetReverseFill(true)
-    hp.frequentUpdates = true
 	
-	-- little black line to make the health bar more clear
+	hp.backdrop = T.createBackdrop(hp, hp, 0)
+	
+	hp.cover = hp:CreateTexture(nil, 'OVERLAY')
+    hp.cover:SetAllPoints(hp)
+	hp.cover:SetTexture(G.media.blank)
+	
+	hp.value = T.createnumber(hp, "OVERLAY", aCoreCDB["UnitframeOptions"]["valuefontsize"], "OUTLINE", "RIGHT")
+	hp.value:SetPoint("BOTTOMRIGHT", self, -4, -2)
+	
 	hp.ind = hp:CreateTexture(nil, "OVERLAY", nil, 1)
     hp.ind:SetTexture("Interface\\Buttons\\WHITE8x8")
 	hp.ind:SetVertexColor(0, 0, 0)
 	hp.ind:SetSize(1, 18)
 	hp.ind:SetPoint("RIGHT", hp:GetStatusBarTexture(), "LEFT", 0, 0)
-	
-	-- border --
-	self.backdrop = T.createBackdrop(hp, hp, 0)
-	
-	hp.value = T.createnumber(hp, "OVERLAY", aCoreCDB["UnitframeOptions"]["valuefontsize"], "OUTLINE", "RIGHT")
-	hp.value:SetPoint("BOTTOMRIGHT", self, -4, -2)	
-	
-    self.Health = hp
-	self.Health.PostUpdate = T.Updatehealthbar
-	self.Health.Override = T.Overridehealthbar
-	
-	self.Health.ApplySettings = function()
-		if aCoreCDB["SkinOptions"]["style"] == 1 then
-			self.bg.tex:SetAlpha(0)
-			hp:SetStatusBarTexture(G.media.blank)
-			hp.bg:SetTexture(G.media.blank)
-			hp.bg:SetGradient("VERTICAL", CreateColor(.5, .5, .5, .5), CreateColor(0, 0, 0, 0))
-		elseif aCoreCDB["SkinOptions"]["style"] == 2 then
-			self.bg.tex:SetAlpha(1)
-			hp:SetStatusBarTexture(G.media.ufbar)
-			hp.bg:SetTexture(G.media.ufbar)
-			hp.bg:SetGradient("VERTICAL", CreateColor(.2,.2,.2,.15), CreateColor(.25,.25,.25,.6))
-		else
-			self.bg.tex:SetAlpha(1)
-			hp:SetStatusBarTexture(G.media.ufbar)
-			hp.bg:SetTexture(G.media.ufbar)
-			hp.bg:SetGradient("VERTICAL", CreateColor(.2,.2,.2,0), CreateColor(.25,.25,.25,0))
-		end
+  
+	hp.ApplySettings = function()
+		T.ApplyHealthThemeSettings(self, hp)
 		
 		hp.ind:SetSize(1, aCoreCDB["UnitframeOptions"]["height"])
+		
+		-- height, width --
 		self:SetSize(aCoreCDB["UnitframeOptions"]["widthparty"], aCoreCDB["UnitframeOptions"]["height"])
 		
+		-- value --
 		if hp.value then
 			hp.value:SetFont(G.numFont, aCoreCDB["UnitframeOptions"]["valuefontsize"], "OUTLINE")
 			hp.value:ClearAllPoints()
@@ -888,14 +846,16 @@ local pfunc = function(self, unit)
 			end
 		end
 	end
+
+	hp.PostUpdateColor = T.PostUpdate_HealthColor
+	hp.PostUpdate = T.PostUpdate_Health
+	tinsert(self.mouseovers, hp)
 	
+	self.Health = hp
 	self.Health.ApplySettings()
-	
-	tinsert(self.mouseovers, self.Health)
 	
 	-- portrait
 	local portrait = CreateFrame('PlayerModel', nil, self)
-	portrait:SetFrameLevel(1)
 	portrait:SetPoint("TOPLEFT", 0, 0)
 	portrait:SetPoint("BOTTOMRIGHT", -1, 0)
 	
@@ -925,80 +885,49 @@ local pfunc = function(self, unit)
 	self.Portrait = portrait
 		
 	-- power bar --
-	local pp = T.createStatusbar(self, aCoreCDB["UnitframeOptions"]["height"]*aCoreCDB["UnitframeOptions"]["ppheight"], nil, 1, 1, 1, 1)
-	pp:SetFrameLevel(4)
-	pp:SetPoint"LEFT"
-	pp:SetPoint"RIGHT"
-	pp:SetPoint("TOP", self, "BOTTOM", 0, -1)
-	pp.frequentUpdates = true
+	local pp = T.createStatusbar(self)
+	pp:SetPoint("TOPLEFT", self, "BOTTOMLEFT", 0, -1)
+	pp:SetPoint("TOPRIGHT", self, "BOTTOMRIGHT", 0, -1)
 
-	pp.bg:SetGradient("VERTICAL", CreateColor(.2,.2,.2,.15), CreateColor(.25,.25,.25,.6))
-
-	-- backdrop for power bar --
-	pp.bd = T.createBackdrop(pp, pp, 1)
-
+	pp.backdrop = T.createBackdrop(pp, pp, 0)
+	
+	pp.bg = pp:CreateTexture(nil, 'BACKGROUND')
+	pp.bg:SetAllPoints(pp)
+	pp.multiplier = .2
+	
 	pp.ApplySettings = function()			
-		if aCoreCDB["SkinOptions"]["style"] == 1 then
-			pp:SetStatusBarTexture(G.media.blank)
-		else
-			pp:SetStatusBarTexture(G.media.ufbar)
-		end
 		pp:SetHeight(aCoreCDB["UnitframeOptions"]["height"]*aCoreCDB["UnitframeOptions"]["ppheight"])
+		
+		T.ApplyPowerThemeSettings(pp)
 	end
 	
-	self.Power = pp
-	self.Power.PostUpdate = T.Updatepowerbar
-	tinsert(self.mouseovers, self.Power)
-
-	-- target border --
-	self.targetborder = Createpxborder(self, 2)
-	self.targetborder:SetBackdropBorderColor(1, 1, .4)
-	self.targetborder:SetPoint("TOPLEFT", hp, "TOPLEFT", -3, 3)
-	self.targetborder:SetPoint("BOTTOMRIGHT", pp, "BOTTOMRIGHT", 3, -3)
-	self:RegisterEvent("PLAYER_TARGET_CHANGED", ChangedTarget, true)
-
-	-- threat border --
-	self.threatborder = Createpxborder(self, 1)
-	self.threatborder:SetPoint("TOPLEFT", hp, "TOPLEFT", -3, 3)
-	self.threatborder:SetPoint("BOTTOMRIGHT", pp, "BOTTOMRIGHT", 3, -3)
-	self:RegisterEvent("UNIT_THREAT_SITUATION_UPDATE", UpdateThreat, true)
+	pp.PostUpdateColor = T.PostUpdate_PowerColor
+	pp.PostUpdate = T.PostUpdate_Power
+	tinsert(self.mouseovers, pp)
 	
-	-- little thing around unit frames --
-	local leader = hp:CreateTexture(nil, "OVERLAY")
-	leader:SetSize(12, 12)
-	leader:SetPoint("BOTTOMLEFT", hp, "BOTTOMLEFT", 5, -5)
-	self.LeaderIndicator = leader
-
-	local assistant = hp:CreateTexture(nil, "OVERLAY")
-	assistant:SetSize(12, 12)
-	assistant:SetPoint("BOTTOMLEFT", hp, "BOTTOMLEFT", 5, -5)
-	self.AssistantIndicator = assistant
-
-	local masterlooter = hp:CreateTexture(nil, "OVERLAY")
-	masterlooter:SetSize(12, 12)
-	masterlooter:SetPoint("LEFT", leader, "RIGHT")
-	self.MasterLooterIndicator = masterlooter
-
+	self.Power = pp
+	self.Power.ApplySettings()
+	
+	-- 团队标记
 	local ricon = hp:CreateTexture(nil, "OVERLAY")
 	ricon:SetPoint("CENTER", hp, "CENTER", 0, 0)
 	ricon:SetSize(40, 40)
 	ricon:SetTexture[[Interface\AddOns\AltzUI\media\raidicons.blp]]
 	self.RaidTargetIndicator = ricon
-
+	
+	-- 拉人
     local summonIndicator = self:CreateTexture(nil, 'OVERLAY')
     summonIndicator:SetSize(32, 32)
     summonIndicator:SetPoint('TOPRIGHT', self)
     self.SummonIndicator = summonIndicator
 	
-	-- name --
-	local name = T.createtext(self.Health, "OVERLAY", 13, "OUTLINE", "LEFT")
-	name:SetPoint("TOPLEFT", self.Health, "TOPLEFT", 3, 9)
+	-- 名字
+	local name = T.createtext(hp, "OVERLAY", 13, "OUTLINE", "LEFT")
+	name:SetPoint("TOPLEFT", hp, "TOPLEFT", 3, 9)
 	self:Tag(name, "[Altz:longname]")
-
+	
+	-- 光环
 	T.CreateAuras(self, unit)
-
-	T.CreateClickSets(self)
-	T.RaidOnMouseOver(self)
 end
 
 oUF:RegisterStyle("Altz_party", pfunc)
