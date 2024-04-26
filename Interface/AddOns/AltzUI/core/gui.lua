@@ -1,5 +1,4 @@
 ﻿local T, C, L, G = unpack(select(2, ...))
-local F = unpack(AuroraClassic)
 
 local function CreateDividingLine(frame, y, width)
 	local tex = frame:CreateTexture(nil, "ARTWORK")
@@ -17,7 +16,10 @@ GUI:SetPoint("TOPRIGHT", UIParent, "CENTER", 300, 300)
 GUI:SetFrameStrata("HIGH")
 GUI:SetFrameLevel(2)
 GUI:Hide()
-F.SetBD(GUI)
+
+GUI.bd = T.createBackdrop(GUI, .5)
+T.setStripeBg(GUI.bd)
+
 G.GUI = GUI
 
 -- 移动
@@ -53,7 +55,7 @@ end)
 -- 控制台尺寸
 GUI.scale = CreateFrame("Slider", G.uiname.."GUIScaleSlider", UIParent, "OptionsSliderTemplate")
 GUI.scale:SetFrameLevel(20)
-F.ReskinSlider(GUI.scale)
+T.ReskinSlider(GUI.scale)
 getmetatable(GUI.scale).__index.Enable(GUI.scale)
 GUI.scale:SetMinMaxValues(50, 120)
 GUI.scale:SetValueStep(5)
@@ -67,8 +69,6 @@ GUI.scale.Thumb:SetSize(25, 16)
 
 GUI.scale.Text:ClearAllPoints()
 GUI.scale.Text:SetPoint("RIGHT", GUI.scale, "LEFT", 0, 0)
-GUI.scale.Text:SetFontObject(GameFontHighlight)
-T.resize_font(GUI.scale.Text)
 
 GUI.scale.High:SetAlpha(0)
 GUI.scale.Low:SetAlpha(0)
@@ -120,7 +120,8 @@ GUI.editbox.bg = CreateFrame("Frame", nil, GUI.editbox, "BackdropTemplate")
 GUI.editbox.bg:SetPoint("TOPLEFT", GUI, "BOTTOMLEFT", 0, -3)
 GUI.editbox.bg:SetPoint("BOTTOMRIGHT", GUI, "BOTTOMRIGHT", 0, -36)
 GUI.editbox.bg:SetFrameLevel(GUI:GetFrameLevel()-1)
-F.SetBD(GUI.editbox.bg)
+T.setBackdrop(GUI.editbox.bg, .5)
+T.setStripeBg(GUI.editbox.bg)
 
 GUI.editbox.button = T.createclickbutton(GUI.editbox, 0, {"RIGHT", GUI.editbox, "RIGHT", -2, 0}, OKAY)
 GUI.editbox.button:Hide()
@@ -273,7 +274,11 @@ local function CreateOptionPage(name, title, parent, orientation, db_key)
 	local tab = CreateFrame("Frame", nil, parent, "BackdropTemplate")
 	tab:SetFrameLevel(parent:GetFrameLevel()+2)
 	tab:EnableMouse(true)
-	F.CreateBD(tab, .2)
+	T.setBackdrop(tab, .5)
+	
+	if parent == GUI then
+		T.setStripeBg(tab)
+	end
 	
 	tab.text = T.createtext(tab, "OVERLAY", 12, "OUTLINE", "LEFT")
 	tab.text:SetText(title)
@@ -335,7 +340,7 @@ local function CreateInnerFrame(parent)
 	frame:SetPoint("BOTTOMLEFT", -20, 25)
 	frame:SetWidth(parent:GetWidth()-200)
 	
-	F.CreateBD(frame, .2)
+	T.setPXBackdrop(frame, .2)
 	frame:SetBackdropBorderColor(1, 1, 1)
 	
 	parent.line:Hide()
@@ -414,14 +419,15 @@ local function CreateApplySettingButton(addon)
 	Button:SetPoint("LEFT", SInnerframe.theme[addon], "RIGHT", 150, 0)
 	Button:SetSize(120, 25)
 	Button:SetText(L["更改设置"])
-	T.resize_font(Button.Text)
+	
+	T.ReskinButton(Button)
+	
 	Button:SetScript("OnEnter", function(self) 
 			GameTooltip:SetOwner(self, "ANCHOR_RIGHT",  -20, 10)
 			GameTooltip:AddLine(L["更改设置提示"])
 			GameTooltip:Show() 
 		end)
 	Button:SetScript("OnLeave", function(self) GameTooltip:Hide() end)
-	F.Reskin(Button)
 	
 	SInnerframe.theme[addon]:HookScript("OnClick", function(self)
 		if self:GetChecked() then
@@ -538,7 +544,7 @@ T.createDR(UFInnerframe.style.enablefade, UFInnerframe.style.fadingalpha)
 
 CreateDividingLine(UFInnerframe.style, -140)
 
-T.createcheckbutton(UFInnerframe.style, 30, 150, L["显示肖像"], "UnitframeOptions", "portrait")
+T.createcheckbutton(UFInnerframe.style, 30, 150, T.split_words(L["显示"],L["肖像"]), "UnitframeOptions", "portrait")
 UFInnerframe.style.portrait.apply = function()
 	T.EnableUFSettings({"Portrait"})
 end
@@ -609,32 +615,32 @@ UFInnerframe.castbar.independentcb.apply = function()
 	T.ApplyUFSettings({"Castbar"})
 end
 
-T.createslider(UFInnerframe.castbar, "short", 30, 180, L["玩家施法条"]..L["高度"], "UnitframeOptions", "cbheight", 1, 5, 30, 1)
+T.createslider(UFInnerframe.castbar, "short", 30, 180, T.split_words(PLAYER,L["施法条"],L["高度"]), "UnitframeOptions", "cbheight", 1, 5, 30, 1)
 UFInnerframe.castbar.cbheight.apply = function()
 	T.ApplyUFSettings({"Castbar"})
 end
 
-T.createslider(UFInnerframe.castbar, "short", 230, 180, L["玩家施法条"]..L["宽度"], "UnitframeOptions", "cbwidth", 1, 50, 500, 5)
+T.createslider(UFInnerframe.castbar, "short", 230, 180, T.split_words(PLAYER,L["施法条"],L["宽度"]), "UnitframeOptions", "cbwidth", 1, 50, 500, 5)
 UFInnerframe.castbar.cbwidth.apply = function()
 	T.ApplyUFSettings({"Castbar"})
 end
 
-T.createslider(UFInnerframe.castbar, "short", 30, 220, L["目标施法条"]..L["高度"], "UnitframeOptions", "target_cbheight", 1, 5, 30, 1)
+T.createslider(UFInnerframe.castbar, "short", 30, 220, T.split_words(TARGET,L["施法条"],L["高度"]), "UnitframeOptions", "target_cbheight", 1, 5, 30, 1)
 UFInnerframe.castbar.target_cbheight.apply = function()
 	T.ApplyUFSettings({"Castbar"})
 end
 
-T.createslider(UFInnerframe.castbar, "short", 230, 220, L["目标施法条"]..L["宽度"], "UnitframeOptions", "target_cbwidth", 1, 50, 500, 5)
+T.createslider(UFInnerframe.castbar, "short", 230, 220, T.split_words(TARGET,L["施法条"],L["宽度"]), "UnitframeOptions", "target_cbwidth", 1, 50, 500, 5)
 UFInnerframe.castbar.target_cbwidth.apply = function()
 	T.ApplyUFSettings({"Castbar"})
 end
 
-T.createslider(UFInnerframe.castbar, "short", 30, 260, L["焦点施法条"]..L["高度"], "UnitframeOptions", "focus_cbheight", 1, 5, 30, 1)
+T.createslider(UFInnerframe.castbar, "short", 30, 260, T.split_words(FOCUS,L["施法条"],L["宽度"]), "UnitframeOptions", "focus_cbheight", 1, 5, 30, 1)
 UFInnerframe.castbar.focus_cbheight.apply = function()
 	T.ApplyUFSettings({"Castbar"})
 end
 
-T.createslider(UFInnerframe.castbar, "short", 230, 260, L["焦点施法条"]..L["宽度"], "UnitframeOptions", "focus_cbwidth", 1, 50, 500, 5)
+T.createslider(UFInnerframe.castbar, "short", 230, 260, T.split_words(FOCUS,L["施法条"],L["宽度"]), "UnitframeOptions", "focus_cbwidth", 1, 50, 500, 5)
 UFInnerframe.castbar.focus_cbwidth.apply = function()
 	T.ApplyUFSettings({"Castbar"})
 end
@@ -692,7 +698,7 @@ end
 
 CreateDividingLine(UFInnerframe.swingtimer, -180)
 
-T.createcheckbutton(UFInnerframe.swingtimer, 30, 200, L["显示平砍计时"], "UnitframeOptions", "swtimer")
+T.createcheckbutton(UFInnerframe.swingtimer, 30, 200, T.split_words(L["显示"],L["时间"]), "UnitframeOptions", "swtimer")
 UFInnerframe.swingtimer.swtimer.apply = function()
 	T.ApplyUFSettings({"Swing"})
 end
@@ -713,7 +719,7 @@ UFInnerframe.aura.aura_size.apply = function()
 	T.ApplyUFSettings({"Auras"})
 end
 
-T.createcheckbutton(UFInnerframe.aura, 30, 100, L["玩家减益"], "UnitframeOptions", "playerdebuffenable", L["玩家减益提示"])
+T.createcheckbutton(UFInnerframe.aura, 30, 100, T.split_words(PLAYER, L["减益"]), "UnitframeOptions", "playerdebuffenable", L["玩家减益提示"])
 UFInnerframe.aura.playerdebuffenable.apply = function()
 	T.ApplyUFSettings({"Auras"})
 end
@@ -770,7 +776,7 @@ UFInnerframe.party.showplayerinparty.apply = function()
 	T.UpdatePartyfilter()
 end
 
-T.createcheckbutton(UFInnerframe.party, 30, 160, L["显示宠物"], "UnitframeOptions", "showpartypet")
+T.createcheckbutton(UFInnerframe.party, 30, 160, T.split_words(L["显示"],PET), "UnitframeOptions", "showpartypet")
 UFInnerframe.party.showpartypet.apply = function()
 	T.UpdatePartyfilter()
 end
@@ -783,7 +789,7 @@ UFInnerframe.other.showthreatbar.apply = function()
 	T.EnableUFSettings({"ThreatBar"})
 end
 
-T.createcheckbutton(UFInnerframe.other, 30, 90, L["显示PvP标记"], "UnitframeOptions", "pvpicon", L["显示PvP标记提示"])
+T.createcheckbutton(UFInnerframe.other, 30, 90, T.split_words(L["显示"],L["PvP标记"]), "UnitframeOptions", "pvpicon", L["PvP标记提示"])
 UFInnerframe.other.showthreatbar.apply = function()
 	T.EnableUFSettings({"PvPIndicator"})
 end
@@ -813,7 +819,7 @@ end
 
 if G.myClass == "SHAMAN" or G.myClass == "PRIEST" or G.myClass == "DRUID" then
 	CreateDividingLine(UFInnerframe.other, -180)
-    T.createcheckbutton(UFInnerframe.other, 30, 190, L["显示法力条"], "UnitframeOptions", "dpsmana", L["显示法力条提示"])
+    T.createcheckbutton(UFInnerframe.other, 30, 190, T.split_words(L["显示"],L["法力条"]), "UnitframeOptions", "dpsmana", L["显示法力条提示"])
 	UFInnerframe.other.dpsmana.apply = function()
 		T.EnableUFSettings({"Dpsmana"})
 		T.ApplyUFSettings({"ClassPower"})
@@ -869,7 +875,7 @@ RFInnerframe.common.raidframe_inparty.apply = function()
 	StaticPopup_Show(G.uiname.."Reload Alert")
 end
 
-T.createcheckbutton(RFInnerframe.common, 30, 270, L["显示宠物"], "UnitframeOptions", "showraidpet")
+T.createcheckbutton(RFInnerframe.common, 30, 270, T.split_words(L["显示"],PET), "UnitframeOptions", "showraidpet")
 RFInnerframe.common.showraidpet.apply = function()
 	T.UpdateGroupfilter()
 end
@@ -1009,7 +1015,7 @@ end)
 local clickcastframe = CreateFrame("Frame", G.uiname.."ClickCast Options", RFInnerframe.clickcast, "BackdropTemplate")
 clickcastframe:SetPoint("TOPLEFT", 30, -120)
 clickcastframe:SetPoint("BOTTOMRIGHT", -30, 20)
-F.CreateBD(clickcastframe, 0)
+T.setBackdrop(clickcastframe, 0)
 
 local click_buttons = {
 	{"1", L["Button1"]}, 
@@ -1146,7 +1152,7 @@ local function CreateClickcastKeyOptions(bu_tag, text)
 		local action_select = CreateFrame("Frame", nil, frame, "UIDropDownMenuTemplate")
 		action_select:SetPoint("LEFT", mod_text, "RIGHT", -5, -3)
 		action_select.Text:SetFont(G.norFont, 12, "OUTLINE")
-		F.ReskinDropDown(action_select)
+		T.ReskinDropDown(action_select)
 		UIDropDownMenu_SetWidth(action_select, 100)
 
 		UIDropDownMenu_Initialize(action_select, function()
@@ -1175,7 +1181,7 @@ local function CreateClickcastKeyOptions(bu_tag, text)
 		local spell_select = CreateFrame("Frame", nil, frame, "UIDropDownMenuTemplate")
 		spell_select:SetPoint("LEFT", action_select, "RIGHT", -25, 0)
 		spell_select.Text:SetFont(G.norFont, 12, "OUTLINE")
-		F.ReskinDropDown(spell_select)
+		T.ReskinDropDown(spell_select)
 		UIDropDownMenu_SetWidth(spell_select, 130)
 		
 		UIDropDownMenu_Initialize(spell_select, function()
@@ -1518,7 +1524,7 @@ do
 	option_list.encounterDD = CreateFrame("Frame", nil, option_list, "UIDropDownMenuTemplate")
 	option_list.encounterDD:SetPoint("BOTTOMLEFT", option_list, "TOPLEFT", 0, 2)
 	option_list.encounterDD.Text:SetFont(G.norFont, 12, "OUTLINE")
-	F.ReskinDropDown(option_list.encounterDD)
+	T.ReskinDropDown(option_list.encounterDD)
 	UIDropDownMenu_SetWidth(option_list.encounterDD, 120)
 	
 	-- 法术ID输入框
@@ -1718,7 +1724,7 @@ hooksecurefunc("SetItemRef", function(link, text)
 end)
 
 -- 全局减益
-RFInnerframe.globaldebuff = CreateOptionPage("RF Options Raid Debuff Fliter List", L["全局减益"], RFInnerframe, "VERTICAL", "UnitframeOptions")
+RFInnerframe.globaldebuff = CreateOptionPage("RF Options Raid Debuff Fliter List", T.split_words(L["全局"], L["减益"]), RFInnerframe, "VERTICAL", "UnitframeOptions")
 
 RFInnerframe.globaldebuff.whitelist = T.CreateAuraListOption(RFInnerframe.globaldebuff, {"TOPLEFT", 30, -55}, 200,  L["白名单"]..AURAS, "debuff_list", L["优先级"])
 RFInnerframe.globaldebuff.whitelist.apply = function()
@@ -1733,7 +1739,7 @@ RFInnerframe.globaldebuff.blacklist.apply = function()
 end
 
 -- 全局增益
-RFInnerframe.globalbuff = CreateOptionPage("RF Options Cooldown Aura", L["全局增益"], RFInnerframe, "VERTICAL", "UnitframeOptions")
+RFInnerframe.globalbuff = CreateOptionPage("RF Options Cooldown Aura", T.split_words(L["全局"], L["增益"]), RFInnerframe, "VERTICAL", "UnitframeOptions")
 
 RFInnerframe.globalbuff.whitelist = T.CreateAuraListOption(RFInnerframe.globalbuff, {"TOPLEFT", 30, -60}, 380, L["白名单"]..AURAS, "buff_list", L["优先级"])
 RFInnerframe.globalbuff.whitelist.apply = function()
@@ -2041,15 +2047,6 @@ PlateInnerframe.custom.power = T.CreatePlatePowerListOption(PlateInnerframe.cust
 PlateInnerframe.custom.power.apply = T.PostUpdateAllPlates
 
 --====================================================--
---[[             -- Tooltip Options --              ]]--
---====================================================--
-local TooltipOptions = CreateOptionPage("Tooltip Options", USE_UBERTOOLTIPS, GUI, "VERTICAL", "TooltipOptions")
-
-T.createcheckbutton(TooltipOptions, 30, 60, L["启用"], "TooltipOptions", "enabletip")
-T.createcheckbutton(TooltipOptions, 30, 120, L["战斗中隐藏"], "TooltipOptions", "combathide")
-
-T.createDR(TooltipOptions.enabletip, TooltipOptions.combathide)
---====================================================--
 --[[             -- Combattext Options --              ]]--
 --====================================================--
 local CombattextOptions = CreateOptionPage("CombatText Options", L["战斗信息"], GUI, "VERTICAL", "CombattextOptions")
@@ -2063,7 +2060,7 @@ T.createslider(CombattextOptions, "long", 30, 230, L["图标大小"], "Combattex
 T.createslider(CombattextOptions, "long", 30, 270, L["暴击图标大小"], "CombattextOptions", "ctbigiconsize", 1, 10, 30, 1)
 T.createcheckbutton(CombattextOptions, 30, 300, L["显示DOT"], "CombattextOptions", "ctshowdots")
 T.createcheckbutton(CombattextOptions, 30, 330, L["显示HOT"], "CombattextOptions", "ctshowhots")
-T.createcheckbutton(CombattextOptions, 30, 360, L["显示宠物"], "CombattextOptions", "ctshowpet")
+T.createcheckbutton(CombattextOptions, 30, 360, T.split_words(L["显示"],PET), "CombattextOptions", "ctshowpet")
 T.createslider(CombattextOptions, "long", 30, 410, L["隐藏时间"], "CombattextOptions", "ctfadetime", 10, 20, 100, 5, L["隐藏时间提示"])
 
 T.createDR(CombattextOptions.combattext, CombattextOptions.hidblz_receive, CombattextOptions.hidblz, CombattextOptions.showreceivedct, CombattextOptions.showoutputct, CombattextOptions.cticonsize, CombattextOptions.ctbigiconsize, CombattextOptions.ctshowdots, CombattextOptions.ctshowhots, CombattextOptions.ctshowpet, CombattextOptions.ctfadetime)
@@ -2073,24 +2070,29 @@ T.createDR(CombattextOptions.combattext, CombattextOptions.hidblz_receive, Comba
 --====================================================--
 local OtherOptions = CreateOptionPage("Other Options", OTHER, GUI, "VERTICAL", "OtherOptions")
 
-T.createcheckbutton(OtherOptions, 30, 60, L["自动召宝宝"], "OtherOptions", "autopet", L["自动召宝宝提示"])
-T.createcheckbutton(OtherOptions, 300, 60, L["随机奖励"], "OtherOptions", "LFGRewards", L["随机奖励提示"])
-T.createcheckbutton(OtherOptions, 30, 90, L["稀有警报"], "OtherOptions", "vignettealert", L["稀有警报提示"])
-T.createcheckbutton(OtherOptions, 300, 90, L["自动交接任务"], "OtherOptions", "autoquests", L["自动交接任务提示"])
-T.createcheckbutton(OtherOptions, 30, 120, L["战场自动释放灵魂"], "OtherOptions", "battlegroundres", L["战场自动释放灵魂提示"])
-T.createcheckbutton(OtherOptions, 300, 120, L["自动接受复活"], "OtherOptions", "acceptres", L["自动接受复活提示"])
+T.createcheckbutton(OtherOptions, 30, 60, T.split_words(L["鼠标提示"],L["显示"],L["法术编号"]), "OtherOptions", "show_spellID")
+T.createcheckbutton(OtherOptions, 300, 60, T.split_words(L["鼠标提示"],L["显示"],L["物品编号"]), "OtherOptions", "show_itemID")
+T.createcheckbutton(OtherOptions, 30, 90, T.split_words(L["战斗中隐藏"],L["鼠标提示"]), "OtherOptions", "combat_hide")
+T.createcheckbutton(OtherOptions, 300, 90, L["隐藏错误提示"], "OtherOptions", "hideerrors", L["隐藏错误提示提示"])
 
-CreateDividingLine(OtherOptions, -230)
+CreateDividingLine(OtherOptions, -120)
 
-T.createcheckbutton(OtherOptions, 30, 240, L["任务栏闪动"], "OtherOptions", "flashtaskbar", L["任务栏闪动提示"])
-T.createcheckbutton(OtherOptions, 300, 240, L["隐藏错误提示"], "OtherOptions", "hideerrors", L["隐藏错误提示提示"])	
-T.createcheckbutton(OtherOptions, 300, 270, L["成就截图"], "OtherOptions", "autoscreenshot", L["成就截图提示"])
-T.CVartogglebox(OtherOptions, 30, 300, "screenshotQuality", L["提升截图画质"], "10", "1")
-T.CVartogglebox(OtherOptions, 300, 300, "screenshotFormat", L["截图保存为tga格式"], "tga", "jpg", "截图保存为tga提示")
+T.createcheckbutton(OtherOptions, 30, 130, L["随机奖励"], "OtherOptions", "LFGRewards", L["随机奖励提示"])
+T.createcheckbutton(OtherOptions, 300, 130, L["稀有警报"], "OtherOptions", "vignettealert", L["稀有警报提示"])
+T.createcheckbutton(OtherOptions, 30, 160, L["自动交接任务"], "OtherOptions", "autoquests", L["自动交接任务提示"])
+T.createcheckbutton(OtherOptions, 300, 160, L["战场自动释放灵魂"], "OtherOptions", "battlegroundres", L["战场自动释放灵魂提示"])
+T.createcheckbutton(OtherOptions, 30, 190, L["自动接受复活"], "OtherOptions", "acceptres", L["自动接受复活提示"])
+
+CreateDividingLine(OtherOptions, -220)
+
+T.createcheckbutton(OtherOptions, 30, 230, L["自动召宝宝"], "OtherOptions", "autopet", L["自动召宝宝提示"])
+T.createcheckbutton(OtherOptions, 300, 230, L["任务栏闪动"], "OtherOptions", "flashtaskbar", L["任务栏闪动提示"])
+T.createcheckbutton(OtherOptions, 30, 260, L["成就截图"], "OtherOptions", "autoscreenshot", L["成就截图提示"])
+T.CVartogglebox(OtherOptions, 300, 260, "screenshotQuality", L["提升截图画质"], "10", "1")
 
 if G.Client == "zhCN" then
-	CreateDividingLine(OtherOptions, -350)
-	T.CVartogglebox(OtherOptions, 30, 390, "overrideArchive", "反和谐(大退生效)", "0", "1")
+	CreateDividingLine(OtherOptions, -290)
+	T.CVartogglebox(OtherOptions, 30, 300, "overrideArchive", "反和谐(大退生效)", "0", "1")
 end
 --====================================================--
 --[[               -- Commands --               ]]--
@@ -2277,7 +2279,7 @@ local GUIbutton = CreateFrame("Button", G.uiname.."GUI MenuButton", GameMenuFram
 GUIbutton:SetSize(GameMenuButtonMacros:GetWidth(), GameMenuButtonMacros:GetHeight())
 GUIbutton:SetPoint("BOTTOM", GameMenuButtonHelp, "TOP", 0, -1)
 GUIbutton:SetText("Altz UI")
-F.Reskin(GUIbutton)
+T.ReskinButton(GUIbutton)
 GameMenuButtonLogout:ClearAllPoints()
 GameMenuButtonLogout:SetPoint("TOP", GUIbutton, "BOTTOM", 0, -20)
 GameMenuFrame:SetHeight(GUIbutton:GetHeight()+GameMenuButtonMacros:GetHeight()+20)
