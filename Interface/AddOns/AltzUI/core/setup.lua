@@ -1,11 +1,12 @@
 ﻿local T, C, L, G = unpack(select(2, ...))
-local F = unpack(AuroraClassic)
 
-local TutorialsFrame = CreateFrame("Frame", G.uiname.."TutorialsFrame", UIParent, "BackdropTemplate")
+local TutorialsFrame = CreateFrame("Frame", G.uiname.."TutorialsFrame", UIParent)
 TutorialsFrame:SetFrameStrata("FULLSCREEN")
 TutorialsFrame:SetSize(700, 230)
 TutorialsFrame:SetPoint("CENTER")
-F.CreateBD(TutorialsFrame)
+
+TutorialsFrame.bd = T.createBackdrop(TutorialsFrame, .5)
+T.setStripeBg(TutorialsFrame.bd)
 
 TutorialsFrame.step = 1
 TutorialsFrame:Hide()
@@ -123,9 +124,10 @@ local function CreateTutorialsStepFrame(title, text)
 		local p_bu = CreateFrame("Button", G.uiname.."TutorialsStepFramePrevious", frame, "UIPanelButtonTemplate")
 		p_bu:SetPoint("BOTTOMLEFT", frame, "BOTTOMLEFT", 15, 5)
 		p_bu:SetSize(100, 25)
+		T.ReskinButton(p_bu)
+		
 		p_bu:SetText(L["上一步"])
-		T.resize_font(p_bu.Text)
-		F.Reskin(p_bu)
+		
 		p_bu:SetScript("OnClick", function() 
 			frame:Hide()
 			TutorialsFrame[step-1]:Show()
@@ -135,9 +137,10 @@ local function CreateTutorialsStepFrame(title, text)
 		local n_bu = CreateFrame("Button", G.uiname.."TutorialsStepFrameNext", frame, "UIPanelButtonTemplate")
 		n_bu:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -15, 5)
 		n_bu:SetSize(100, 25)
+		T.ReskinButton(n_bu)
+		
 		n_bu:SetText(L["下一步"])
-		T.resize_font(n_bu.Text)
-		F.Reskin(n_bu)
+
 		n_bu:SetScript("OnClick", function()
 			frame:Hide()
 			TutorialsFrame[step+1]:Show()
@@ -183,9 +186,10 @@ CreateTutorialsStepFrame(L["欢迎使用"], L["简介"])
 local skip = CreateFrame("Button", G.uiname.."TutorialsSkip", TutorialsFrame[2], "UIPanelButtonTemplate")
 skip:SetPoint("BOTTOM", TutorialsFrame[2], "BOTTOM", 0, 5)
 skip:SetSize(120, 25)
+T.ReskinButton(skip)
+
 skip:SetText(L["跳过"])
-T.resize_font(skip.Text)
-F.Reskin(skip)
+
 skip:SetScript("OnClick", function()
 	TutorialsFrame[2]:Hide()
 	TutorialsFrame:Hide()
@@ -581,47 +585,6 @@ TutorialsFrame[4]["unlock"][1]:SetScript("OnClick", function(self)
 	T.UnlockAll()
 end)
 TutorialsFrame[4]["unlock"][1]:SetScript("OnShow", function(self) self:SetText(L["解锁框体"]) end)
-
-local toggle_spec = {
-	dpser = {
-		["MONK"] = 2,
-		["PRIEST"] = 1,
-		["PALADIN"] = 1,
-		["DRUID"] = 4,
-		["SHAMAN"] = 3,
-	},
-	healer = {
-		["MONK"] = 1,
-		["PRIEST"] = 3,
-		["PALADIN"] = 2,
-		["DRUID"] = 1,
-		["SHAMAN"] = 1,
-	},
-}
-
-if toggle_spec.dpser[G.myClass] then -- 可治疗的职业才显示
-	CreateOptions(TutorialsFrame[4], "group", false, nil, "layout_spec", {"spec"})
-	TutorialsFrame[4]["layout_spec"][1]:SetScript("OnEvent", function(self, event, arg1)
-		if event == "PLAYER_LOGIN" then
-			self:SetText(L["当前模式"].." "..L[ T.CheckRole()])
-			self:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED")
-			self:RegisterEvent("PLAYER_REGEN_ENABLED")
-			self:RegisterEvent("PLAYER_REGEN_DISABLED")
-		elseif event == "PLAYER_SPECIALIZATION_CHANGED" and arg1 == "player" then
-			self:SetText(L["当前模式"].." "..L[T.CheckRole()])
-		elseif event == "PLAYER_REGEN_ENABLED" then
-			self:Enable()
-		elseif event == "PLAYER_REGEN_DISABLED" then
-			self:Disable()
-		end
-	end)
-	TutorialsFrame[4]["layout_spec"][1]:RegisterEvent("PLAYER_LOGIN")
-	
-	TutorialsFrame[4]["layout_spec"][1]:SetScript("OnClick", function(self)
-		local role = T.CheckRole()
-		SetSpecialization(toggle_spec[role][G.myClass])
-	end)
-end
 
 --====================================================--
 --[[               -- 姓名板 --                   ]]--
