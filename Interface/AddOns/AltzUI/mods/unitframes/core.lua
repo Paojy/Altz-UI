@@ -57,6 +57,44 @@ local function multicheck(check, ...)
 	return false
 end
 
+local function GetUnitColorforNameplate(unit)	
+	local r, g, b = 1, 1, 1
+	local name = GetUnitName(unit, false)
+	if aCoreCDB["PlateOptions"]["focuscolored"] and UnitIsUnit(unit, "focus") then -- 焦点颜色
+		r, g, b = aCoreCDB["PlateOptions"]["focus_color"].r, aCoreCDB["PlateOptions"]["focus_color"].g, aCoreCDB["PlateOptions"]["focus_color"].b
+	elseif  aCoreCDB["PlateOptions"]["customcoloredplates"][name] then -- 自定义颜色
+		r, g, b = aCoreCDB["PlateOptions"]["customcoloredplates"][name].r, aCoreCDB["PlateOptions"]["customcoloredplates"][name].g, aCoreCDB["PlateOptions"]["customcoloredplates"][name].b
+	elseif not UnitPlayerControlled(unit) and UnitIsTapDenied(unit) then
+		r, g, b = .6, .6, .6
+	elseif not UnitPlayerControlled(unit) and UnitThreatSituation('player', unit) and aCoreCDB["PlateOptions"]["threatcolor"] then
+		r, g, b = unpack(oUF.colors.threat[UnitThreatSituation('player', unit)])
+	elseif UnitIsPlayer(unit)  then
+		local _, unitclass = UnitClass(unit)
+		r, g, b = unpack(oUF.colors.class[unitclass]) 
+	elseif UnitReaction(unit, "player") then
+		r, g, b = unpack(oUF.colors.reaction[UnitReaction(unit, "player")])
+	else
+		r, g, b = oUF.colors.reaction[5]
+	end
+	return r, g, b
+end
+T.GetUnitColorforNameplate = GetUnitColorforNameplate
+
+local function GetUnitColor(unit)
+	local r, g, b = 1, 1, 1
+	if not UnitPlayerControlled(unit) and UnitIsTapDenied(unit) then
+		r, g, b = .6, .6, .6
+	elseif UnitIsPlayer(unit)  then
+		local _, unitclass = UnitClass(unit)
+		r, g, b = unpack(oUF.colors.class[unitclass]) 
+	elseif UnitReaction(unit, "player") then
+		r, g, b = unpack(oUF.colors.reaction[UnitReaction(unit, "player")])
+	else
+		r, g, b = oUF.colors.reaction[5]
+	end
+	return r, g, b
+end
+T.GetUnitColor = GetUnitColor
 --=============================================--
 --[[ MouseOn update ]]--
 --=============================================--
@@ -327,34 +365,13 @@ local PostUpdate_Health = function(self, unit, cur, max)
 	-- 数值
 	if self.value then
 		if status == "injured" or aCoreCDB["UnitframeOptions"]["alwayshp"] or (cur > 0 and self.__owner.isMouseOver and UnitIsConnected(unit)) then
-			self.value:SetText(T.ShortValue(cur).." "..T.hex(1, 1, 0)..math.floor(cur/max*100+.5).."|r")
+			self.value:SetText(T.ShortValue(cur).." "..T.hex_str(math.floor(cur/max*100+.5), 1, 1, 0))
 		else
 			self.value:SetText(nil)
 		end
 	end
 end
 T.PostUpdate_Health = PostUpdate_Health
-
-local function GetUnitColorforNameplate(unit)	
-	local r, g, b = 1, 1, 1
-	local name = GetUnitName(unit, false)
-	if aCoreCDB["PlateOptions"]["focuscolored"] and UnitIsUnit(unit, "focus") then -- 焦点颜色
-		r, g, b = aCoreCDB["PlateOptions"]["focus_color"].r, aCoreCDB["PlateOptions"]["focus_color"].g, aCoreCDB["PlateOptions"]["focus_color"].b
-	elseif  aCoreCDB["PlateOptions"]["customcoloredplates"][name] then -- 自定义颜色
-		r, g, b = aCoreCDB["PlateOptions"]["customcoloredplates"][name].r, aCoreCDB["PlateOptions"]["customcoloredplates"][name].g, aCoreCDB["PlateOptions"]["customcoloredplates"][name].b
-	elseif not UnitPlayerControlled(unit) and UnitIsTapDenied(unit) then
-		r, g, b = .6, .6, .6
-	elseif not UnitPlayerControlled(unit) and UnitThreatSituation('player', unit) and aCoreCDB["PlateOptions"]["threatcolor"] then
-		r, g, b = unpack(oUF.colors.threat[UnitThreatSituation('player', unit)])
-	elseif UnitIsPlayer(unit)  then
-		local _, unitclass = UnitClass(unit)
-		r, g, b = unpack(oUF.colors.class[unitclass]) 
-	else
-		r, g, b = unpack(oUF.colors.reaction[UnitReaction(unit, "player") or 5])
-	end
-	return r, g, b
-end
-T.GetUnitColorforNameplate = GetUnitColorforNameplate
 
 local Override_PlateHealthColor = function(self, event, unit)
 	if(not unit or self.unit ~= unit) then return end
@@ -417,9 +434,9 @@ local PostUpdate_PlateHealth = function(self, unit, cur, max)
 	else
 		if status == "injured" or aCoreCDB["PlateOptions"]["bar_alwayshp"] or (cur > 0 and self.__owner.isMouseOver and UnitIsConnected(unit))  then
 			if aCoreCDB["PlateOptions"]["bar_hp_perc"] == "perc" then
-				self.value:SetText(T.hex(1, 1, 0)..math.floor(cur/max*100+.5).."|r")
+				self.value:SetText(T.hex_str(math.floor(cur/max*100+.5), 1, 1, 0))
 			else
-				self.value:SetText(T.ShortValue(cur).." "..T.hex(1, 1, 0)..math.floor(cur/max*100+.5).."|r")
+				self.value:SetText(T.ShortValue(cur).." "..T.hex_str(math.floor(cur/max*100+.5), 1, 1, 0))
 			end
 		else
 			self.value:SetText(nil)
@@ -525,19 +542,19 @@ local CreateCastbars = function(self, unit)
 		-- 独立施法条锚点
 		if multicheck(u, "target", "player", "focus") then	
 			if unit == "player" then
-				cb.movingname = L["玩家施法条"]
+				cb.movingname = T.split_words(PLAYER,L["施法条"])
 				cb.point = {
 					healer = {a1 = "TOP", parent = "UIParent", a2 = "CENTER", x = 0, y = -150},
 					dpser = {a1 = "TOP", parent = "UIParent", a2 = "CENTER", x = 0, y = -150},
 				}
 			elseif unit == "target" then	
-				cb.movingname = L["目标施法条"]
+				cb.movingname = T.split_words(TARGET,L["施法条"])
 				cb.point = {
 					healer = {a1 = "TOPLEFT", parent = "oUF_AltzTarget", a2 = "BOTTOMLEFT", x = 0, y = -10},
 					dpser = {a1 = "TOPLEFT", parent = "oUF_AltzTarget", a2 = "BOTTOMLEFT", x = 0, y = -10},
 				}
 			elseif unit == "focus" then	
-				cb.movingname = L["焦点施法条"]
+				cb.movingname = T.split_words(FOCUS,L["施法条"])
 				cb.point = {
 					healer = {a1 = "TOPLEFT", parent = "oUF_AltzFocus", a2 = "BOTTOMLEFT", x = 0, y = -10},
 					dpser = {a1 = "TOPLEFT", parent = "oUF_AltzFocus", a2 = "BOTTOMLEFT", x = 0, y = -10},
@@ -548,7 +565,7 @@ local CreateCastbars = function(self, unit)
 		end
 		
 		-- 背景		
-		cb.backdrop = T.createBackdrop(cb, cb, 1)
+		cb.backdrop = T.createBackdrop(cb, 1)
 		
 		-- 法术名字和时间
 		cb.Text = T.createtext(cb, "OVERLAY", u == "nameplate" and 8 or 14, "OUTLINE", "CENTER")
@@ -564,7 +581,7 @@ local CreateCastbars = function(self, unit)
 		-- 图标
 		cb.Icon = cb:CreateTexture(nil, "OVERLAY", nil, 3)
 		cb.Icon:SetTexCoord(.1, .9, .1, .9)		
-		cb.Icon_bd = T.createBackdrop(cb, cb.Icon, 1)
+		cb.Icon_bd = T.createBackdrop(cb.Icon, 1, 2, cb)
 
 		-- 打断记号
 		cb.Shield = cb:CreateTexture(nil, "OVERLAY")
@@ -697,7 +714,7 @@ local CreatePlateCastbar = function(self, unit)
 	cb:SetStatusBarTexture(G.media.blank)
 	
 	-- 背景
-	cb.backdrop = T.createBackdrop(cb, cb, 1, 2)
+	cb.backdrop = T.createBackdrop(cb, 1, 2)
 		
 	-- 法术名字
 	cb.Text = T.createtext(cb, "OVERLAY", 8, "OUTLINE", "CENTER")
@@ -713,7 +730,7 @@ local CreatePlateCastbar = function(self, unit)
 	-- 图标
 	cb.Icon = cb:CreateTexture(nil, "OVERLAY", nil, 3)
 	cb.Icon:SetTexCoord(.1, .9, .1, .9)	
-	cb.Icon_bd = T.createBackdrop(cb, cb.Icon, 1, 2)	
+	cb.Icon_bd = T.createBackdrop(cb.Icon, 1, 2, cb)	
 	cb.Icon_bg = T.createTexBackdrop(cb, cb.Icon, "ARTWORK")
 	
 	-- 打断记号
@@ -809,7 +826,7 @@ local CreateSwingTimer = function(self, unit) -- only for player
 	bar.Twohand:SetStatusBarTexture(normTex)
 	bar.Twohand:SetStatusBarColor(1, 1, .2, 1)
 	
-	bar.Twohand.backdrop = T.createBackdrop(bar.Twohand, bar.Twohand, 1)
+	bar.Twohand.backdrop = T.createBackdrop(bar.Twohand, 1)
 	bar.Twohand:Hide()
 	bar.Text = T.createtext(bar.Twohand, "OVERLAY", 12, "OUTLINE", "CENTER")
 	bar.Text:SetPoint("CENTER")
@@ -820,7 +837,7 @@ local CreateSwingTimer = function(self, unit) -- only for player
 	bar.Mainhand:SetStatusBarTexture(normTex)
 	bar.Mainhand:SetStatusBarColor(1, 1, .2, 1)
 	
-	bar.Mainhand.backdrop = T.createBackdrop(bar.Mainhand, bar.Mainhand, 1)
+	bar.Mainhand.backdrop = T.createBackdrop(bar.Mainhand, 1)
 	bar.Mainhand:Hide()
 	bar.TextMH = T.createtext(bar.Mainhand, "OVERLAY", 12, "OUTLINE", "CENTER")
 	bar.TextMH:SetPoint("CENTER")
@@ -831,7 +848,7 @@ local CreateSwingTimer = function(self, unit) -- only for player
 	bar.Offhand:SetStatusBarTexture(normTex)
 	bar.Offhand:SetStatusBarColor(.2, 1, .2, 1)
 
-	bar.Offhand.backdrop = T.createBackdrop(bar.Offhand, bar.Offhand, 1)
+	bar.Offhand.backdrop = T.createBackdrop(bar.Offhand, 1)
 	bar.Offhand:Hide()
 	bar.TextOH = T.createtext(bar.Offhand, "OVERLAY", 12, "OUTLINE", "CENTER")
 	bar.TextOH:SetPoint("CENTER")
@@ -893,7 +910,7 @@ local PostCreateIcon = function(auras, icon)
 	icon.Overlay:SetPoint("TOPLEFT", icon, "TOPLEFT", -1, 1)
 	icon.Overlay:SetPoint("BOTTOMRIGHT", icon, "BOTTOMRIGHT", 1, -1)
 	
-	icon.backdrop = T.createBackdrop(icon, icon, 0, 2)
+	icon.backdrop = T.createBackdrop(icon, nil, 2)
 
 	if auras.__owner.style == 'Altz_Nameplates' then
 		icon.Count:SetFont(G.numFont, aCoreCDB["PlateOptions"]["numfontsize"], "OUTLINE")
@@ -1245,7 +1262,7 @@ local function CreateClassResources(self)
 				bars[i]:SetPoint("LEFT", bars[i-1], "RIGHT", 3, 0)
 			end
 	
-			bars[i].backdrop = T.createBackdrop(bars[i], bars[i], 1)
+			bars[i].backdrop = T.createBackdrop(bars[i], 1)
 			
 			bars[i].value = T.createtext(bars[i], "OVERLAY", 12, "OUTLINE", "CENTER")
 			bars[i].value:SetPoint("CENTER", bars[i], "CENTER")
@@ -1325,7 +1342,7 @@ local func = function(self, unit)
 	hp:SetFrameLevel(self:GetFrameLevel()+2) -- 高于肖像
 	hp:SetReverseFill(true)
 
-	hp.backdrop = T.createBackdrop(hp, hp, 0)
+	hp.backdrop = T.createBackdrop(hp)
 	
 	hp.cover = hp:CreateTexture(nil, 'OVERLAY')
     hp.cover:SetAllPoints(hp)
@@ -1401,7 +1418,7 @@ local func = function(self, unit)
 		pp:SetPoint("TOPLEFT", self, "BOTTOMLEFT", 0, -1)
 		pp:SetPoint("TOPRIGHT", self, "BOTTOMRIGHT", 0, -1)
 		
-		pp.backdrop = T.createBackdrop(pp, pp, 0)
+		pp.backdrop = T.createBackdrop(pp)
 		
 		pp.bg = pp:CreateTexture(nil, 'BACKGROUND')
 		pp.bg:SetAllPoints(pp)
@@ -1438,6 +1455,7 @@ local func = function(self, unit)
 	-- altpower bar --
 	if multicheck(u, "player", "boss", "pet") then
 		local altpp = T.createStatusbar(self, 5, nil, 1, 1, 0, 1)
+		
 		if unit == "pet" then
 			altpp:SetPoint("TOPLEFT", self.Power, "BOTTOMLEFT", 0, -5)
 			altpp:SetPoint("TOPRIGHT", self.Power, "BOTTOMRIGHT", 0, -5)
@@ -1446,7 +1464,7 @@ local func = function(self, unit)
 			altpp:SetPoint("TOPRIGHT", _G["oUF_AltzPlayer"].Power, "BOTTOMRIGHT", 0, -5)
 		end
 
-		altpp.backdrop = T.createBackdrop(altpp, altpp, 1)
+		altpp.backdrop = T.createBackdrop(altpp, 1)
 
 		altpp.value = T.createtext(altpp, "OVERLAY", 11, "OUTLINE", "CENTER")
 		altpp.value:SetPoint"CENTER"
@@ -1489,9 +1507,9 @@ local func = function(self, unit)
 		end
 	end
 	
-	--CreateCastbars(self, unit)
-	--CreateSwingTimer(self, unit)
-	--CreateAuras(self, unit)
+	CreateCastbars(self, unit)
+	CreateSwingTimer(self, unit)
+	CreateAuras(self, unit)
 	
 	-- fade --
 	if multicheck(unit, "target", "player", "focus", "pet", "targettarget") then
@@ -1540,7 +1558,7 @@ local UnitSpecific = {
 			stagger:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 0, 1)
 			stagger:SetPoint("BOTTOMRIGHT", self, "TOPRIGHT", 0, 1)
 			
-			stagger.backdrop = T.createBackdrop(stagger, stagger, 0)
+			stagger.backdrop = T.createBackdrop(stagger)
 			
 			stagger.bg = stagger:CreateTexture(nil, 'BACKGROUND')
 			stagger.bg:SetAllPoints(stagger)
@@ -1583,7 +1601,7 @@ local UnitSpecific = {
 			dpsmana:SetMinMaxValues(0, 2)
 			dpsmana:SetValue(1)
 			
-			dpsmana.backdrop = T.createBackdrop(dpsmana, dpsmana, 1)
+			dpsmana.backdrop = T.createBackdrop(dpsmana, 1)
 
 			dpsmana.bg = dpsmana:CreateTexture(nil, 'BACKGROUND')
 			dpsmana.bg:SetAllPoints(dpsmana)
@@ -1666,7 +1684,7 @@ local UnitSpecific = {
 		threatbar:SetPoint("TOPLEFT", self.Power, "BOTTOMLEFT", 0, -3)
 		threatbar:SetPoint("BOTTOMRIGHT", self.Power, "BOTTOMRIGHT", 0, -5)
 		
-		threatbar.backdrop = T.createBackdrop(threatbar, threatbar, 1)
+		threatbar.backdrop = T.createBackdrop(threatbar, 1)
 
 		threatbar.EnableSettings = function(object)
 			if not object or object == self then
@@ -1731,12 +1749,12 @@ local UnitSpecific = {
 			
 			self.prepFrame.Health = T.createStatusbar(self.prepFrame, nil, nil, 1, 1, 1, 1)
 			self.prepFrame.Health:SetAllPoints(self.prepFrame)
-			self.prepFrame.Health.backdrop = T.createBackdrop(self.prepFrame.Health, self.prepFrame.Health, 0)
+			self.prepFrame.Health.backdrop = T.createBackdrop(self.prepFrame.Health, nil)
 
 			self.prepFrame.Icon = self.prepFrame:CreateTexture(nil, "OVERLAY")
 			self.prepFrame.Icon:SetPoint("LEFT", self.prepFrame, "RIGHT", 5, 0)
 			self.prepFrame.Icon:SetTexCoord(.08, .92, .08, .92)
-			self.prepFrame.Icon.backdrop = T.createBackdrop(self.prepFrame, self.prepFrame.Icon, 0)
+			self.prepFrame.Icon.backdrop = T.createBackdrop(self.prepFrame.Icon, nil, nil, self.prepFrame)
 
 			self.prepFrame.SpecClass = T.createtext(self.prepFrame.Health, "OVERLAY", 13, "OUTLINE", "CENTER")
 			self.prepFrame.SpecClass:SetPoint("CENTER")
@@ -1744,12 +1762,12 @@ local UnitSpecific = {
 
 		local specIcon = CreateFrame("Frame", nil, self)
 		specIcon:SetPoint("LEFT", self, "RIGHT", 5, 0)
-		specIcon.backdrop = T.createBackdrop(specIcon, specIcon, 0)
+		specIcon.backdrop = T.createBackdrop(specIcon)
 		self.PVPSpecIcon = specIcon
 
 		local trinkets = CreateFrame("Frame", nil, self)
 		trinkets:SetPoint("LEFT", specIcon, "RIGHT", 5, 0)
-		trinkets.backdrop = T.createBackdrop(trinkets, trinkets, 0)
+		trinkets.backdrop = T.createBackdrop(trinkets)
 		trinkets.trinketUseAnnounce = true
 		trinkets.trinketUpAnnounce = true
 		self.Trinket = trinkets
@@ -1783,7 +1801,7 @@ local plate_func = function(self, unit)
 	local hp = T.createStatusbar(self)
 	hp:SetAllPoints(self)
 
-	hp.backdrop = T.createBackdrop(hp, hp, 0, 2)
+	hp.backdrop = T.createBackdrop(hp, nil, 2)
 
 	hp.value = T.createtext(hp, "OVERLAY", 10, "OUTLINE", "CENTER")
 	
@@ -1884,7 +1902,7 @@ local plate_func = function(self, unit)
 	pp:SetPoint("TOPLEFT", hp, "BOTTOMLEFT", 0, -3)
 	pp:SetPoint("TOPRIGHT", hp, "BOTTOMRIGHT", 0, -3)
 	
-	pp.backdrop = T.createBackdrop(pp, pp, 0, 2)
+	pp.backdrop = T.createBackdrop(pp, nil, 2)
 	
 	pp.bg = pp:CreateTexture(nil, 'BACKGROUND')
 	pp.bg:SetAllPoints(pp)
@@ -2129,14 +2147,14 @@ end
 local menuFrame = CreateFrame("Frame", "NDui_EastMarking", UIParent, "UIDropDownMenuTemplate")
 local menuList = {
 	{text = RAID_TARGET_NONE, func = function() SetRaidTarget("target", 0) end},
-	{text = T.hex(1, .92, 0)..RAID_TARGET_1.." "..ICON_LIST[1].."12|t", func = function() SetRaidTarget("target", 1) end},
-	{text = T.hex(.98, .57, 0)..RAID_TARGET_2.." "..ICON_LIST[2].."12|t", func = function() SetRaidTarget("target", 2) end},
-	{text = T.hex(.83, .22, .9)..RAID_TARGET_3.." "..ICON_LIST[3].."12|t", func = function() SetRaidTarget("target", 3) end},
-	{text = T.hex(.04, .95, 0)..RAID_TARGET_4.." "..ICON_LIST[4].."12|t", func = function() SetRaidTarget("target", 4) end},
-	{text = T.hex(.7, .82, .875)..RAID_TARGET_5.." "..ICON_LIST[5].."12|t", func = function() SetRaidTarget("target", 5) end},
-	{text = T.hex(0, .71, 1)..RAID_TARGET_6.." "..ICON_LIST[6].."12|t", func = function() SetRaidTarget("target", 6) end},
-	{text = T.hex(1, .24, .168)..RAID_TARGET_7.." "..ICON_LIST[7].."12|t", func = function() SetRaidTarget("target", 7) end},
-	{text = T.hex(.98, .98, .98)..RAID_TARGET_8.." "..ICON_LIST[8].."12|t", func = function() SetRaidTarget("target", 8) end},
+	{text = T.hex_str(RAID_TARGET_1, 1, .92, 0).." "..ICON_LIST[1].."12|t", func = function() SetRaidTarget("target", 1) end},
+	{text = T.hex_str(RAID_TARGET_2, .98, .57, 0).." "..ICON_LIST[2].."12|t", func = function() SetRaidTarget("target", 2) end},
+	{text = T.hex_str(RAID_TARGET_3, .83, .22, .9).." "..ICON_LIST[3].."12|t", func = function() SetRaidTarget("target", 3) end},
+	{text = T.hex_str(RAID_TARGET_4, .04, .95, 0).." "..ICON_LIST[4].."12|t", func = function() SetRaidTarget("target", 4) end},
+	{text = T.hex_str(RAID_TARGET_5, .7, .82, .875).." "..ICON_LIST[5].."12|t", func = function() SetRaidTarget("target", 5) end},
+	{text = T.hex_str(RAID_TARGET_6, 0, .71, 1).." "..ICON_LIST[6].."12|t", func = function() SetRaidTarget("target", 6) end},
+	{text = T.hex_str(RAID_TARGET_7, 1, .24, .168).." "..ICON_LIST[7].."12|t", func = function() SetRaidTarget("target", 7) end},
+	{text = T.hex_str(RAID_TARGET_8, .98, .98, .98).." "..ICON_LIST[8].."12|t", func = function() SetRaidTarget("target", 8) end},
 	{text = ""}, -- 10
 	{text = L["添加自定义能量"]},
 	{text = L["添加自定义颜色"]},
@@ -2214,7 +2232,7 @@ end
 T.RegisterInitCallback(function()
 	oUF:Factory(function(self)
 		local playerframe = spawnHelper(self, "player")
-		playerframe.movingname = L["玩家头像"]
+		playerframe.movingname = T.split_words(PLAYER,L["单位框架"])
 		playerframe.point = {
 			healer = {a1 = "TOPRIGHT", parent = "UIParent", a2 = "BOTTOM", x = -250, y = 350},
 			dpser = {a1 = "TOP", parent = "UIParent", a2 = "BOTTOM", x = 0, y = 280},
@@ -2222,7 +2240,7 @@ T.RegisterInitCallback(function()
 		T.CreateDragFrame(playerframe)
 
 		local petframe = spawnHelper(self, "pet")
-		petframe.movingname = L["宠物头像"]
+		petframe.movingname = T.split_words(PET,L["单位框架"])
 		petframe.point = {
 			healer = {a1 = "RIGHT", parent = playerframe:GetName(), a2 = "LEFT", x = -10, y = 0},
 			dpser = {a1 = "RIGHT", parent = playerframe:GetName(), a2 = "LEFT", x = -10, y = 0},
@@ -2230,7 +2248,7 @@ T.RegisterInitCallback(function()
 		T.CreateDragFrame(petframe)
 
 		local targetframe = spawnHelper(self, "target")
-		targetframe.movingname = L["目标头像"]
+		targetframe.movingname = T.split_words(TARGET,L["单位框架"])
 		targetframe.point = {
 			healer = {a1 = "TOPLEFT", parent = "UIParent", a2 = "BOTTOM", x = 250, y = 350},
 			dpser = {a1 = "TOPLEFT", parent = "UIParent", a2 = "BOTTOM", x = 150, y = 350},
@@ -2238,7 +2256,7 @@ T.RegisterInitCallback(function()
 		T.CreateDragFrame(targetframe)
 
 		local totframe = spawnHelper(self, "targettarget")
-		totframe.movingname = L["目标的目标头像"]
+		totframe.movingname = T.split_words(L["目标的目标"],L["单位框架"])
 		totframe.point = {
 			healer = {a1 = "LEFT", parent = targetframe:GetName(), a2 = "RIGHT" , x = 10, y = 0},
 			dpser = {a1 = "LEFT", parent = targetframe:GetName(), a2 = "RIGHT" , x = 10, y = 0},
@@ -2246,7 +2264,7 @@ T.RegisterInitCallback(function()
 		T.CreateDragFrame(totframe)
 
 		local focusframe = spawnHelper(self, "focus")
-		focusframe.movingname = L["焦点头像"]
+		focusframe.movingname = T.split_words(FOCUS,L["单位框架"])
 		focusframe.point = {
 			healer = {a1 = "BOTTOM", parent = targetframe:GetName(), a2 = "BOTTOM" , x = 0, y = 180},
 			dpser = {a1 = "BOTTOM", parent = targetframe:GetName(), a2 = "BOTTOM" , x = 0, y = 180},
@@ -2254,7 +2272,7 @@ T.RegisterInitCallback(function()
 		T.CreateDragFrame(focusframe)
 
 		local ftframe = spawnHelper(self, "focustarget")
-		ftframe.movingname = L["焦点的目标头像"]
+		ftframe.movingname = T.split_words(L["焦点的目标"],L["单位框架"])
 		ftframe.point = {
 			healer = {a1 = "LEFT", parent = focusframe:GetName(), a2 = "RIGHT" , x = 10, y = 0},
 			dpser = {a1 = "LEFT", parent = focusframe:GetName(), a2 = "RIGHT" , x = 10, y = 0},
@@ -2267,7 +2285,7 @@ T.RegisterInitCallback(function()
 				bossframes["boss"..i] = spawnHelper(self,"boss"..i)
 			end
 			for i = 1, MAX_BOSS_FRAMES do
-				bossframes["boss"..i].movingname = L["首领头像"]..i
+				bossframes["boss"..i].movingname = T.split_words(BOSS,L["单位框架"],i)
 				if i == 1 then
 					bossframes["boss"..i].point = {
 						healer = {a1 = "TOPRIGHT", parent = "UIParent", a2 = "TOPRIGHT" , x = -80, y = -300},
@@ -2291,7 +2309,7 @@ T.RegisterInitCallback(function()
 				arenaframes["arena"..i] = spawnHelper(self,"arena"..i)
 			end
 			for i = 1, 5 do
-				arenaframes["arena"..i].movingname = L["竞技场敌人头像"]..i
+				arenaframes["arena"..i].movingname = T.split_words(ARENA,L["单位框架"],i)
 				if i == 1 then
 					arenaframes["arena"..i].point = {
 						healer = {a1 = "TOPRIGHT", parent = "UIParent", a2 = "TOPRIGHT" , x = -140, y = -340},
