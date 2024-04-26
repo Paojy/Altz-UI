@@ -2,6 +2,8 @@
 解锁时预览框体
 鼠标提示字体
 单位框体shift+焦点失效
+队伍框架整合到core
+单位框架Auras重写
 
 Interface/SharedXML/Tooltip/TooltipDataHandler.lua:385: attempt to index field 'processingInfo' (a nil value)
 Count: 1
