@@ -24,6 +24,8 @@
 
 	<Script file="mods\panels\panels.lua"/>
 	<Script file="mods\panels\petbattles.lua"/>
+	<Script file="mods\panels\inspect_challenges.lua"/>
+	
 	<Include file="mods\unitframes\load.xml"/>
 	
 	<Script file="mods\actionbar\hide_blizzart.lua"/>
@@ -46,7 +48,6 @@
 	<Script file="mods\chat\autoinvite.lua"/>
 	
 	<Script file="mods\tip\tip.lua"/>
-	<Script file="mods\tip\talent.lua"/>
 	
 	<Script file="mods\tweaks\already known.lua"/>
 	<Script file="mods\tweaks\combattext.lua"/>
