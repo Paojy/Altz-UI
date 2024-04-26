@@ -2,40 +2,17 @@
 
 local oUF = AltzUF or oUF
 
-oUF.Tags.Methods['Altz:color'] = function(u, r)
-    local reaction = UnitReaction(u, "player")
-
-    if UnitIsTapDenied(u) then
-        return T.hex(oUF.colors.tapped)
-    elseif (UnitIsPlayer(u)) then
-        local _, class = UnitClass(u)
-        return T.hex(oUF.colors.class[class])
-    elseif reaction then
-        return T.hex(oUF.colors.reaction[reaction])
-    else
-        return T.hex(1, 1, 1)
-    end
-end
-oUF.Tags.Events['Altz:color'] = 'UNIT_FACTION' -- for tapping
-
 oUF.Tags.Methods['Altz:shortname'] = function(u, r)
 	local name = UnitName(r or u)
-	local color = _TAGS['Altz:color'](u)
 	if aCoreCDB["SkinOptions"]["style"] ~= 3 then
-		return color..T.utf8sub(name, 8)
+		return T.hex_str(T.utf8sub(name, 8), T.GetUnitColor(u))
 	else
 		return T.utf8sub(name, 8)
 	end
 end
 oUF.Tags.Events["Altz:shortname"] = "UNIT_NAME_UPDATE"
 
-oUF.Tags.Methods['Altz:longname'] = function(u, r)
-	local difficulty = ""
-	if UnitCanAttack('player', u) then
-		local l = UnitEffectiveLevel(u)
-		difficulty = T.hex(GetCreatureDifficultyColor((l > 0) and l or 999))
-	end
-	
+oUF.Tags.Methods['Altz:longname'] = function(u, r)	
 	local level = UnitLevel(u)
 	if UnitIsWildBattlePet(u) or UnitIsBattlePetCompanion(u) then
 		level = UnitBattlePetLevel(u)
@@ -58,23 +35,32 @@ oUF.Tags.Methods['Altz:longname'] = function(u, r)
 		shortclassification = '-'
 	end
 	
+	local level_str
+	if UnitCanAttack('player', u) then
+		local l = UnitEffectiveLevel(u)
+		local dif_color = GetCreatureDifficultyColor((l > 0) and l or 999)
+		level_str = T.hex_str(level..shortclassification, dif_color.r, dif_color.g, dif_color.b)
+	else
+		level_str = level..shortclassification
+	end
 	
-	local color = _TAGS['Altz:color'](u)
+	local name_str
 	local name = UnitName(r or u)
+	if aCoreCDB["SkinOptions"]["style"] ~= 3 then
+		name_str = T.hex_str(name, T.GetUnitColor(u))
+	else
+		name_str = name
+	end
+	
 	local status = _TAGS['status'](u) or ""
 	
-	if aCoreCDB["SkinOptions"]["style"] ~= 3 then
-		return difficulty..level..shortclassification.."|r "..color..name.." "..status
-	else
-		return difficulty..level..shortclassification.."|r "..name.." "..status
-	end
+	return level_str.." "..name_str.." "..status
 end
 oUF.Tags.Events["Altz:longname"] = "UNIT_NAME_UPDATE"
 
 oUF.Tags.Methods["Altz:hpraidname"] = function(u, r)
 	local name = UnitName(r or u)
 	if not name then return end
-	local color = _TAGS['Altz:color'](u)
 	local result
 	if aCoreCDB["UnitframeOptions"]["showmisshp"] then
 		local perc
@@ -93,7 +79,7 @@ oUF.Tags.Methods["Altz:hpraidname"] = function(u, r)
 	end
 	if result then
 		if aCoreCDB["SkinOptions"]["style"] ~= 3 then
-			return color..result
+			return T.hex_str(result, T.GetUnitColor(u))
 		else		
 			return result
 		end
@@ -151,8 +137,7 @@ oUF.Tags.Methods["Altz:platename"] = function(u, real)
 		local result
 		
 		if aCoreCDB["PlateOptions"]["theme"] ~= "class" then
-			local r, g, b = T.GetUnitColorforNameplate(u)
-			result = T.hex(r, g, b)..class..name.."|r"
+			result = T.hex_str(class..name, T.GetUnitColorforNameplate(u))
 		else
 			result = class..name
 		end
