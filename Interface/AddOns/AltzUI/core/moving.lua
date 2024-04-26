@@ -1,9 +1,25 @@
 ﻿local T, C, L, G = unpack(select(2, ...))
-local F = unpack(AuroraClassic)
 
 local CurrentFrame, CurrentRole = "NONE"
-local anchors = {"CENTER", "LEFT", "RIGHT", "TOP", "BOTTOM", "TOPLEFT", "TOPRIGHT", "BOTTOMLEFT", "BOTTOMRIGHT"}
+local anchors = {
+	{"CENTER", L["中间"]},
+	{"LEFT", L["左"]},
+	{"RIGHT", L["右"]},
+	{"TOP", L["上"]},
+	{"BOTTOM", L["下"]},
+	{"TOPLEFT", L["左上"]},
+	{"TOPRIGHT", L["右上"]},
+	{"BOTTOMLEFT", L["左下"]},
+	{"BOTTOMRIGHT", L["右下"]},
+}
 
+local function GetAnchorName(anchor)
+	for i, info in pairs(anchors) do
+		if info[1] == anchor then
+			return info[2]
+		end
+	end
+end
 ------------------
 ------- API ------
 ------------------
@@ -66,9 +82,11 @@ local function DisplayCurrentFramePoint()
 		SpecMover.ResetButton:Enable()
 		
 		local points = aCoreCDB["FramePoints"][CurrentFrame][CurrentRole]
-		UIDropDownMenu_SetText(SpecMover.a1box, points.a1)
+		UIDropDownMenu_SetSelectedValue(SpecMover.a1box, points.a1)
+		UIDropDownMenu_SetText(SpecMover.a1box, GetAnchorName(points.a1))
 		SpecMover.parentbox:SetText(points.parent)
-		UIDropDownMenu_SetText(SpecMover.a2box, points.a2)
+		UIDropDownMenu_SetSelectedValue(SpecMover.a2box, points.a2)
+		UIDropDownMenu_SetText(SpecMover.a2box, GetAnchorName(points.a2))
 		SpecMover.xbox:SetText(points.x)
 		SpecMover.ybox:SetText(points.y)
 	end
@@ -76,11 +94,6 @@ end
 
 local UnlockAll = function()
 	if not InCombatLockdown() then
-		if CurrentFrame ~= "NONE" then
-			SpecMover.curframe:SetText(L["选中的框体"].." "..G.classcolor..gsub(_G[CurrentFrame].movingname, "\n", "").."|r")
-		else
-			SpecMover.curframe:SetText(L["选中的框体"].." "..G.classcolor..CurrentFrame.."|r")
-		end
 		for i = 1, #G.dragFrameList do
 			local frame = G.dragFrameList[i]
 			if frame.df.enable then
@@ -88,6 +101,7 @@ local UnlockAll = function()
 			end		
 		end
 		SpecMover:Show()
+		DisplayCurrentFramePoint()
 	else
 		SpecMover:RegisterEvent("PLAYER_REGEN_ENABLED")
 		print(G.classcolor..L["进入战斗锁定"].."|r")
@@ -97,7 +111,6 @@ T.UnlockAll = UnlockAll
 
 local LockAll = function()
 	CurrentFrame = "NONE"
-	DisplayCurrentFramePoint()
 
 	for i = 1, #G.dragFrameList do
 		local frame = G.dragFrameList[i]
@@ -173,8 +186,7 @@ T.CreateDragFrame = function(frame)
 	frame.df:Hide()
 	
 	--overlay texture
-	frame.df.mask = F.CreateBDFrame(frame.df, 0.5)
-	T.CreateSD(frame.df.mask, 2, 0, 0, 0, 0, -1)
+	frame.df.mask = T.createBackdrop(frame.df, .5)	
 	frame.df.mask.text = T.createtext(frame.df, "OVERLAY", 13, "OUTLINE", "LEFT")
 	frame.df.mask.text:SetPoint("TOPLEFT")
 	frame.df.mask.text:SetText(frame.movingname)
@@ -229,27 +241,33 @@ T.RestoreDragFrame = function(frame)
 	end
 end
 
-local function Reskinbox(box, name, value, width, height, ...)
-	box:SetSize(width, height)
-	box:SetPoint(...)
-
+local function CreateInputBox(parent, width, points, name, value)
+	local box = CreateFrame("EditBox", nil, parent, "BackdropTemplate")
+	box:SetSize(width, 20)
+	box:SetPoint(unpack(points))
+	
+	T.setPXBackdrop(box, .3)
+	box:SetBackdropBorderColor(.5, .5, .5)
+	
 	box.name = T.createtext(box, "OVERLAY", 12, "OUTLINE", "LEFT")
 	box.name:SetPoint("BOTTOMLEFT", box, "TOPLEFT", 5, 8)
-	box.name:SetText(G.classcolor..name.."|r")
-
-	local bd = CreateFrame("Frame", nil, box, "BackdropTemplate")
-	bd:SetPoint("TOPLEFT", -2, 0)
-	bd:SetPoint("BOTTOMRIGHT")
-	bd:SetFrameLevel(box:GetFrameLevel()-1)
-	F.CreateBD(bd, 0)
-
-	local gradient = F.CreateGradient(box)
-	gradient:SetPoint("TOPLEFT", bd, 1, -1)
-	gradient:SetPoint("BOTTOMRIGHT", bd, -1, 1)
-
+	box.name:SetText(T.color_text(name))
+	
 	box:SetFont(G.norFont, 12, "OUTLINE")
 	box:SetAutoFocus(false)
 	box:SetTextInsets(3, 0, 0, 0)
+	
+	box:SetScript("OnChar", function(self) 
+		self:SetBackdropBorderColor(1, 1, 0)		
+	end)
+	
+	box:SetScript("OnEditFocusGained", function(self)
+		self:SetBackdropBorderColor(1, 1, 1)
+	end)
+	
+	box:SetScript("OnEditFocusLost", function(self)
+		self:SetBackdropBorderColor(.5, .5, .5)
+	end)
 
 	box:SetScript("OnShow", function(self)
 		if CurrentFrame ~= "NONE" then
@@ -278,39 +296,51 @@ local function Reskinbox(box, name, value, width, height, ...)
 		end
 		self:ClearFocus()
 	end)
+	
+	box:SetScript("OnEnable", function(self)	
+		self:SetTextColor(1, 1, 1, 1)	
+	end)
+	
+	box:SetScript("OnDisable", function(self)	
+		self:SetTextColor(.7, .7, .7, .5)
+	end)
+	
+	return box
 end
 
-local function ReskinDropDown(frame, name, value, ...)
-	frame:SetPoint(...)
+local function CreateDropDown(parent, points, name, value)
+	local dd = CreateFrame("Frame", G.uiname.."SpecMoverPoint1DropDown", SpecMover, "UIDropDownMenuTemplate")
+	dd:SetPoint(unpack(points))
 	
-	F.ReskinDropDown(frame)
+	T.ReskinDropDown(dd)
 	
-	frame.name = T.createtext(frame, "OVERLAY", 12, "OUTLINE", "LEFT")
-	frame.name:SetPoint("BOTTOMLEFT", frame, "TOPLEFT", 15, 5)
-	frame.name:SetText(G.classcolor..name.."|r")
+	dd.name = T.createtext(dd, "OVERLAY", 12, "OUTLINE", "LEFT")
+	dd.name:SetPoint("BOTTOMLEFT", dd, "TOPLEFT", 15, 5)
+	dd.name:SetText(T.color_text(name))
 	
-	UIDropDownMenu_SetWidth(frame, 100)
-	UIDropDownMenu_SetText(frame, "")
-
-	UIDropDownMenu_Initialize(frame, function(self, level, menuList)
+	UIDropDownMenu_SetWidth(dd, 100)
+	UIDropDownMenu_Initialize(dd, function(self, level, menuList)
 		local info = UIDropDownMenu_CreateInfo()
 		for i = 1, #anchors do
-			info.text = anchors[i]
+			info.value = anchors[i][1]
+			info.text = anchors[i][2]
 			info.checked = function()
 				if CurrentFrame ~= "NONE" then
-					return (aCoreCDB["FramePoints"][CurrentFrame][CurrentRole][value] == info.text)
+					return (aCoreCDB["FramePoints"][CurrentFrame][CurrentRole][value] == info.value)
 				end
 			end
 			info.func = function(self)
-				aCoreCDB["FramePoints"][CurrentFrame][CurrentRole][value] = anchors[i]
+				aCoreCDB["FramePoints"][CurrentFrame][CurrentRole][value] = info.value
 				local frame = _G[CurrentFrame]
 				PlaceFrame(frame)
-				UIDropDownMenu_SetSelectedName(frame, anchors[i], true)
-				UIDropDownMenu_SetText(frame, anchors[i])
+				UIDropDownMenu_SetSelectedValue(dd, info.value)
+				UIDropDownMenu_SetText(dd, info.text)
 			end
 			UIDropDownMenu_AddButton(info)
 		end
 	end)
+	
+	return dd
 end
 
 ------------------
@@ -330,11 +360,10 @@ SpecMover:SetClampedToScreen(true)
 SpecMover:SetMovable(true)
 SpecMover:EnableMouse(true)
 
-F.CreateBD(SpecMover, 1)
-T.CreateSD(SpecMover, 2, 0, 0, 0, 0, -1)
-SpecMover:SetBackdropColor(.05, .05, .05)
+SpecMover.backdrop = T.createBackdrop(SpecMover, .5)
+T.setStripeBg(SpecMover.backdrop)
 
-SpecMover.reset_all = T.createclicktexbutton(SpecMover, {"TOPRIGHT", SpecMover, "TOPRIGHT", -3, -3}, [["Interface\AddOns\AltzUI\media\refresh.tga"]], L["重置"])
+SpecMover.reset_all = T.createclicktexbutton(SpecMover, {"TOPRIGHT", SpecMover, "TOPRIGHT", -3, -3}, [[Interface\AddOns\AltzUI\media\icons\refresh.tga]], L["重置"])
 SpecMover.reset_all:SetScript("OnClick", function()
 	StaticPopupDialogs[G.uiname.."Reset Confirm"].text = string.format(L["重置确认"], L["框体位置"])
 	StaticPopupDialogs[G.uiname.."Reset Confirm"].OnAccept = T.ResetAllFramesPoint
@@ -352,31 +381,26 @@ SpecMover.curframe = T.createtext(SpecMover, "OVERLAY", 12, "OUTLINE", "LEFT")
 SpecMover.curframe:SetPoint("TOPLEFT", SpecMover, "TOPLEFT", 10, -30)
 
 -- a1
-SpecMover.a1box = CreateFrame("Frame", G.uiname.."SpecMoverPoint1DropDown", SpecMover, "UIDropDownMenuTemplate")
-ReskinDropDown(SpecMover.a1box, "Point1", "a1", "TOPLEFT", SpecMover, "TOPLEFT", 0, -70)
+SpecMover.a1box = CreateDropDown(SpecMover, {"TOPLEFT", SpecMover, "TOPLEFT", 0, -70}, L["锚点"].."1", "a1")
 
 -- parent
-SpecMover.parentbox = CreateFrame("EditBox", G.uiname.."SpecMoverParentBox", SpecMover)
-Reskinbox(SpecMover.parentbox, L["锚点框体"], "parent", 120, 20, "LEFT", SpecMover.a1box, "RIGHT", -2, 2)
+SpecMover.parentbox = CreateInputBox(SpecMover, 120, {"LEFT", SpecMover.a1box, "RIGHT", -2, 2}, L["锚点框体"], "parent")
 
 -- a2
-SpecMover.a2box = CreateFrame("Frame", G.uiname.."SpecMoverPoint2dropDown", SpecMover, "UIDropDownMenuTemplate")
-ReskinDropDown(SpecMover.a2box, "Point2", "a2", "LEFT", SpecMover.parentbox, "RIGHT", -4, -2)
+SpecMover.a2box = CreateDropDown(SpecMover, {"LEFT", SpecMover.parentbox, "RIGHT", -4, -2}, L["锚点"].."2", "a2")
 
 -- x
-SpecMover.xbox = CreateFrame("EditBox", G.uiname.."SpecMoverXBox", SpecMover)
-Reskinbox(SpecMover.xbox, "X", "x", 50, 20, "LEFT", SpecMover.a2box, "RIGHT", -2, 2)
+SpecMover.xbox = CreateInputBox(SpecMover, 50, {"LEFT", SpecMover.a2box, "RIGHT", -2, 2}, "X", "x")
 
 -- y
-SpecMover.ybox = CreateFrame("EditBox", G.uiname.."SpecMoverYBox", SpecMover)
-Reskinbox(SpecMover.ybox, "Y", "y", 50, 20, "LEFT", SpecMover.xbox, "RIGHT", 10, 0)
+SpecMover.ybox = CreateInputBox(SpecMover, 50, {"LEFT", SpecMover.xbox, "RIGHT", 10, 0}, "Y", "y")
 
 -- reset
 SpecMover.ResetButton = CreateFrame("Button", G.uiname.."SpecMoverResetButton", SpecMover, "UIPanelButtonTemplate")
 SpecMover.ResetButton:SetPoint("BOTTOMLEFT", SpecMover, "BOTTOMLEFT", 20, 10)
 SpecMover.ResetButton:SetSize(250, 25)
 SpecMover.ResetButton:SetText(L["重置位置"])
-F.Reskin(SpecMover.ResetButton)
+T.ReskinButton(SpecMover.ResetButton)
 SpecMover.ResetButton:SetScript("OnClick", function()
 	if CurrentFrame ~= "NONE" then
 		local frame = _G[CurrentFrame]
@@ -390,7 +414,7 @@ SpecMover.LockButton = CreateFrame("Button", G.uiname.."SpecMoverLockButton", Sp
 SpecMover.LockButton:SetPoint("LEFT", SpecMover.ResetButton, "RIGHT", 10, 0)
 SpecMover.LockButton:SetSize(250, 25)
 SpecMover.LockButton:SetText(L["锁定框体"])
-F.Reskin(SpecMover.LockButton)
+T.ReskinButton(SpecMover.LockButton)
 SpecMover.LockButton:SetScript("OnClick", LockAll)
 
 SpecMover:SetScript("OnEvent", function(self, event, arg1)
