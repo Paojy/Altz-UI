@@ -39,25 +39,14 @@ end
 oUF.Tags.Events['Mlight:rnw'] = "UNIT_AURA"
 
 oUF.Tags.Methods['Mlight:pws'] = function(u) -- 盾
-	local spell, pws_time, perc, r, g, b, colorstr
-	
 	local pws, _,_,_,_, pws_expiration = AuraUtil.FindAuraByName(GetSpellInfo(17), u, "PLAYER|HELPFUL")
 	if pws then
-		pws_time = T.FormatTime(pws_expiration-GetTime())
-		spell = Spell:CreateFromSpellID(17) 
+		local pws_time = T.FormatTime(pws_expiration-GetTime())
 		
-		real_absorb = select(16, AuraUtil.FindAuraByName(GetSpellInfo(17), u, "PLAYER|HELPFUL"))
-		max_absorb = tostring(string.match(gsub(gsub(GetSpellDescription(spell:GetSpellID()), ",", ""),"%d+","",1),"%d+"))
-		
-		perc = real_absorb/max_absorb
-		
-		r, g, b = T.ColorGradient(perc, 1, 0, 0, 1, 1, 0, 0, 1, 0)
-		colorstr = ('|cff%02x%02x%02x'):format(r * 255, g * 255, b * 255)
-		
-		return colorstr..pws_time.."|r"
+		return "|cffFFFF00"..pws_time.."|r"
 	end
 end
-oUF.Tags.Events['Mlight:pws'] = "UNIT_AURA UNIT_ABSORB_AMOUNT_CHANGED"
+oUF.Tags.Events['Mlight:pws'] = "UNIT_AURA"
 
 -- Druid 德鲁伊
 oUF.Tags.Methods['Mlight:lb'] = function(u) -- 生命绽放
