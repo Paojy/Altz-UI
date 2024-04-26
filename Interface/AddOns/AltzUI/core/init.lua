@@ -14,7 +14,9 @@ AltzUI = ns
 local T, C, L, G = unpack(select(2, ...))
 
 G.uiname = "AltzUI_"
-G.addon_c = "|cffff0000"
+
+G.addon_color = {1, 0, 0}
+G.addon_colorStr = "|cffff0000"
 
 G.dragFrameList = {}
 
