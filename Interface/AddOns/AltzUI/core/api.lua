@@ -1,312 +1,4 @@
 ﻿local T, C, L, G = unpack(select(2, ...))
-local F = unpack(AuroraClassic)
-
-----------------------------
--- 			通用		  --
-----------------------------
-T.dummy = function() end
-
-T.pairsByKeys = function(t)
-    local a = {}
-    for n in pairs(t) do table.insert(a, n) end
-    table.sort(a)
-    local i = 0      -- iterator variable
-    local iter = function ()   -- iterator function
-		i = i + 1
-        if a[i] == nil then return nil
-        else return a[i], t[a[i]]
-        end
-      end
-    return iter
-end
-
--- calculating the ammount of latters
-T.utf8sub = function(str, i, wrap)
-	if str then
-		local bytes = string.len(str)
-		if bytes <= i then
-			return str
-		else
-			local len, pos = 0, 1
-			while pos <= bytes do
-				len = len + 1
-				local c = string.byte(str, pos)
-				if c > 0 and c <= 127 then
-					pos = pos + 1
-				elseif c >= 192 and c <= 223 then
-					pos = pos + 2
-				elseif c >= 224 and c <= 239 then
-					pos = pos + 3
-					len = len + 1
-				elseif c >= 240 and c <= 247 then
-					pos = pos + 4
-					len = len + 1
-				end
-				if len == i then break end
-			end
-			if len == i and pos <= bytes then
-				if wrap then
-					return string.sub(str, 1, pos - 1).."\n"..T.utf8sub(string.sub(str, pos, bytes), i, true)
-				else
-					return string.sub(str, 1, pos - 1)
-				end
-			else
-				return str
-			end
-		end
-	end
-end
-
-T.hex = function(r, g, b)
-	if not r then return "|cffFFFFFF" end
-
-	if(type(r) == 'table') then
-		if(r.r) then r, g, b = r.r, r.g, r.b else r, g, b = unpack(r) end
-	end
-	return ('|cff%02x%02x%02x'):format(r * 255, g * 255, b * 255)
-end
-
-T.ShortValue = function(val)
-	if type(val) == "number" then
-		if aCoreCDB["SkinOptions"]["formattype"] == "w" then
-			if (val >= 1e7) then
-				return ("%.1fkw"):format(val / 1e7)
-			elseif (val >= 1e4) then
-				return ("%.1fw"):format(val / 1e4)
-			else
-				return ("%d"):format(val)
-			end
-		elseif aCoreCDB["SkinOptions"]["formattype"] == "w_chinese" then
-			if (val >= 1e7) then
-				return ("%.1f千万"):format(val / 1e7)
-			elseif (val >= 1e4) then
-				return ("%.1f万"):format(val / 1e4)
-			else
-				return ("%d"):format(val)
-			end
-		elseif aCoreCDB["SkinOptions"]["formattype"] == "k" then
-			if (val >= 1e6) then
-				return ("%.1fm"):format(val / 1e6)
-			elseif (val >= 1e3) then
-				return ("%.1fk"):format(val / 1e3)
-			else
-				return ("%d"):format(val)
-			end
-		else
-			return ("%d"):format(val)
-		end
-	else
-		return val
-	end
-end
-
-local day, hour, minute = 86400, 3600, 60
-T.FormatTime = function(s)
-	if s >= day then
-		return format("%dd", floor(s/day + 0.5))
-	elseif s >= hour then
-		return format("%dh", floor(s/hour + 0.5))
-	elseif s >= minute then
-		return format("%dm", floor(s/minute + 0.5))
-	end
-
-	return format("%d", math.fmod(s, minute))
-end
-
-T.FormatTime2 = function(time)
-	if time >= 60 then
-		return string.format('%.2d:%.2d', floor(time / 60), time % 60)
-	else
-		return string.format('%.2d', time)
-	end
-end
-
-T.ColorGradient = function(perc, ...)-- http://www.wowwiki.com/ColorGradient
-	local r, g, b, r1, g1, b1, r2, g2, b2
-	if (perc >= 1) then
-		r, g, b = select(select('#', ...) - 2, ...)
-		return r, g, b
-	elseif (perc < 0) then
-		r, g, b = ...
-		return r, g, b
-	else
-		local num = select('#', ...) / 3
-
-		local segment, relperc = math.modf(perc*(num-1))
-		r1, g1, b1, r2, g2, b2 = select((segment*3)+1, ...)
-
-		r, g, b = r1 + (r2-r1)*relperc, g1 + (g2-g1)*relperc, b1 + (b2-b1)*relperc
-		return r, g, b
-	end
-end
-
-T.createtext = function(f, layer, fontsize, flag, justifyh)
-	local text = f:CreateFontString(nil, layer)
-	text:SetFont(G.norFont, fontsize, flag)
-	text:SetJustifyH(justifyh)
-	return text
-end
-
-T.createnumber = function(f, layer, fontsize, flag, justifyh)
-	local text = f:CreateFontString(nil, layer)
-	text:SetFont(G.numFont, fontsize, flag)
-	text:SetJustifyH(justifyh)
-	return text
-end
-
-T.resize_font = function(t, size)
-	if not size then
-		t:SetFont(G.norFont, 12, "OUTLINE")
-	else
-		t:SetFont(G.norFont, size, "OUTLINE")
-	end
-end
-
-T.GetSpellIcon = function(spellID)
-	local icon = select(3, GetSpellInfo(spellID))
-	return "|T"..icon..":14:14:0:0:64:64:4:60:4:60|t"
-end
-
-T.GetIconLink = function(spellID)
-	local icon = select(3, GetSpellInfo(spellID))
-	return "|T"..icon..":14:14:0:0:64:64:4:60:4:60|t"..GetSpellLink(spellID)
-end
-
-T.CheckRole = function()
-	local role
-	local tree = GetSpecialization()
-	if (G.myClass == "MONK" and tree == 2) or (G.myClass == "PRIEST" and (tree == 1 or tree ==2)) or (G.myClass == "PALADIN" and tree == 1) or (G.myClass == "DRUID" and tree == 4) or (G.myClass == "SHAMAN" and tree == 3) then
-		role = "healer"
-	else
-		role = "dpser"
-	end
-	return role
-end
-
-----------------------------
--- 			文本		  --
-----------------------------
-T.color_text = function(text)
-	return string.format(G.addon_c.."%s|r", text)
-end
-----------------------------
--- 			皮肤		  --
-----------------------------
-
-T.CreateSD = function(parent, size, r, g, b, alpha, offset)
-	local sd = CreateFrame("Frame", nil, parent, "BackdropTemplate")
-	sd.size = size or 5
-	sd.offset = offset or 0
-	sd:SetBackdrop({
-		bgFile = G.media.blank,
-		edgeFile = G.media.glow,
-		edgeSize = sd.size,
-	})
-	sd:SetPoint("TOPLEFT", parent, -sd.size - sd.offset, sd.size + sd.offset)
-	sd:SetPoint("BOTTOMRIGHT", parent, sd.size + sd.offset, -sd.size - sd.offset)
-	sd:SetBackdropBorderColor(r or 0, g or 0, b or 0)
-	sd:SetBackdropColor(r or 0, g or 0, b or 0, alpha or 0)
-
-	return sd
-end
-
-T.CreateThinSD = function(parent, size, r, g, b, alpha, offset)
-	local sd = CreateFrame("Frame", nil, parent, "BackdropTemplate")
-	sd.size = size or 1
-	sd.offset = offset or 0
-	sd:SetBackdrop({
-		bgFile = G.media.blank,
-		edgeFile = G.media.blank,
-		edgeSize = sd.size,
-	})
-	sd:SetPoint("TOPLEFT", parent, -sd.size - 1 - sd.offset, sd.size + 1 + sd.offset)
-	sd:SetPoint("BOTTOMRIGHT", parent, sd.size + 1 + sd.offset, -sd.size - 1 - sd.offset)
-	sd:SetBackdropBorderColor(r or 0, g or 0, b or 0)
-	sd:SetBackdropColor(r or 0, g or 0, b or 0, alpha or 0)
-
-	return sd
-end
-
-local frameBD = {
-	edgeFile = G.media.glow, edgeSize = 3,
-	bgFile = G.media.blank,
-	insets = {left = 3, right = 3, top = 3, bottom = 3}
-}
-
-local frameBD_thin = {
-	edgeFile = G.media.blank, edgeSize = 1,
-	bgFile = G.media.blank,
-	insets = {left = 1, right = 1, top = 1, bottom = 1}
-}
-
-T.SetBackdropOffset = function(frame, parent, size)
-	local s = size or 3
-	
-	frame:SetPoint("TOPLEFT", parent, "TOPLEFT", -s, s)
-	frame:SetPoint("BOTTOMRIGHT", parent, "BOTTOMRIGHT", s, -s)
-	
-	frame:SetBackdrop({
-		edgeFile = G.media.glow, edgeSize = s,
-		bgFile = G.media.blank,
-		insets = {left = s, right = s, top = s, bottom = s}
-	})
-end
-
-T.createBackdrop = function(parent, anchor, a, s)
-	local frame = CreateFrame("Frame", nil, parent, "BackdropTemplate")
-	local size = s or 3
-	
-	local flvl = parent:GetFrameLevel()
-	if flvl - 1 >= 0 then frame:SetFrameLevel(flvl-1) end
-
-	frame:SetPoint("TOPLEFT", anchor, "TOPLEFT", -size, size)
-	frame:SetPoint("BOTTOMRIGHT", anchor, "BOTTOMRIGHT", size, -size)
-	frame:SetBackdrop({
-		edgeFile = G.media.glow,
-		edgeSize = size,
-		bgFile = G.media.blank,
-		insets = {left = size, right = size, top = size, bottom = size}
-	})
-	
-	if a then
-		frame:SetBackdropColor(.15, .15, .15, a)
-		frame:SetBackdropBorderColor(0, 0, 0)
-	end
-
-	return frame
-end
-
-T.createTexBackdrop = function(parent, anchor, drawlayer)
-	local bd = parent:CreateTexture(nil, drawlayer or "BORDER", nil, 3)
-	bd:SetPoint("TOPLEFT", anchor, "TOPLEFT", -1, 1)
-	bd:SetPoint("BOTTOMRIGHT", anchor, "BOTTOMRIGHT", 1, -1)
-	bd:SetTexture(G.media.blank)
-	bd:SetVertexColor(0, 0, 0)
-	
-	return bd
-end
-
-T.createStatusbar = function(parent, height, width, r, g, b, alpha)
-	local bar = CreateFrame("StatusBar", name, parent)
-	bar:SetStatusBarTexture(G.media.blank)
-	if height then
-		bar:SetHeight(height)
-	end
-	if width then
-		bar:SetWidth(width)
-	end
-	if r and g and b then
-		bar:SetStatusBarColor(r, g, b)
-	end
-	if alpha then
-		bar:SetAlpha(alpha)
-	end
-
-	bar:GetStatusBarTexture():SetHorizTile(false)
-	bar:GetStatusBarTexture():SetVertTile(false)
-	
-	return bar
-end
 
 ----------------------------
 --     	   默认设置	      --
@@ -642,14 +334,14 @@ T.ResetDBM =function(reload)
 			DBM_AllSavedOptions["Default"]["WarningIconRight"] = true
 			DBM_AllSavedOptions["Default"]["WarningIconLeft"] = true
 			DBM_AllSavedOptions["Default"]["WarningFontStyle"] = "THICKOUTLINE"
-			DBM_AllSavedOptions["Default"]["WarningFont"] = "Interface\\AddOns\\AuroraClassic\\media\\font.ttf"
+			DBM_AllSavedOptions["Default"]["WarningFont"] = G.norFont
 			DBM_AllSavedOptions["Default"]["WarningFontShadow"] = true
 			DBM_AllSavedOptions["Default"]["WarningPoint"] = "TOP"
 			DBM_AllSavedOptions["Default"]["WarningY"] = -150
 			DBM_AllSavedOptions["Default"]["WarningX"] = -0
 			-- 特殊警报
 			DBM_AllSavedOptions["Default"]["SpecialWarningFontSize"] = 65
-			DBM_AllSavedOptions["Default"]["SpecialWarningFont"] = "Interface\\AddOns\\AuroraClassic\\media\\font.ttf"
+			DBM_AllSavedOptions["Default"]["SpecialWarningFont"] = G.norFont
 			DBM_AllSavedOptions["Default"]["SpecialWarningFontStyle"] = "THICKOUTLINE"
 			DBM_AllSavedOptions["Default"]["SpecialWarningFontShadow"] = true
 			DBM_AllSavedOptions["Default"]["SpecialWarningPoint"] = "CENTER"
@@ -733,12 +425,11 @@ end
 
 -- 勾选按钮
 T.createcheckbutton = function(parent, x, y, name, table, value, tip)
-	local bu = CreateFrame("CheckButton", G.uiname..value.."Button", parent, "InterfaceOptionsCheckButtonTemplate")
+	local bu = CreateFrame("CheckButton", G.uiname..value.."Button", parent, "UICheckButtonTemplate")
 	bu:SetPoint("TOPLEFT", x, -y)
-	F.ReskinCheck(bu)
+	T.ReskinCheck(bu)
 	
 	bu.Text:SetText(name)
-	T.resize_font(bu.Text)
 	
 	bu:SetScript("OnShow", function(self) self:SetChecked(aCoreCDB[table][value]) end)
 	bu:SetScript("OnClick", function(self)
@@ -753,13 +444,11 @@ T.createcheckbutton = function(parent, x, y, name, table, value, tip)
 	end)
 	
 	bu:SetScript("OnDisable", function(self)
-		local tex = select(6, bu:GetRegions())
-		tex:SetVertexColor(.7, .7, .7, .5)
+		bu.Text:SetTextColor(.5, .5, .5)
 	end)
 	
 	bu:SetScript("OnEnable", function(self)
-		local tex = select(6, bu:GetRegions())
-		tex:SetVertexColor(1, 1, 1, 1)
+		bu.Text:SetTextColor(1, .82, 0)
 	end)
 	
 	if tip then
@@ -775,12 +464,11 @@ T.createcheckbutton = function(parent, x, y, name, table, value, tip)
 end
 
 T.CVartogglebox = function(parent, x, y, value, name, arg1, arg2, tip)
-	local bu = CreateFrame("CheckButton", G.uiname..value.."Button", parent, "InterfaceOptionsCheckButtonTemplate")
+	local bu = CreateFrame("CheckButton", G.uiname..value.."Button", parent, "UICheckButtonTemplate")
 	bu:SetPoint("TOPLEFT", x, -y)
-	F.ReskinCheck(bu)
+	T.ReskinCheck(bu)
 	
 	bu.Text:SetText(name)
-	T.resize_font(bu.Text)
 	
 	bu:SetScript("OnShow", function(self)
 		if GetCVar(value) == arg1 then
@@ -842,7 +530,8 @@ T.createinputbox = function(parent, points, text, width, link)
 	local box = CreateFrame("EditBox", nil, parent, "BackdropTemplate")
 	box:SetSize(width or 100, 20)
 	if points then box:SetPoint(unpack(points)) end
-	F.CreateBD(box)
+	
+	T.setPXBackdrop(box, .3)
 	box:SetBackdropBorderColor(.5, .5, .5)
 		
 	box:SetFont(G.norFont, 12, "OUTLINE")
@@ -903,17 +592,17 @@ end
 T.createeditbox = function(parent, x, y, name, table, value, tip)
 	local box = CreateFrame("EditBox", nil, parent, "BackdropTemplate")
 	box:SetSize(200, 20)
-	F.CreateBD(box)
+	
+	T.setPXBackdrop(box, .3)
 	box:SetBackdropBorderColor(.5, .5, .5)
 	
 	box:SetFont(G.norFont, 12, "OUTLINE")
 	box:SetAutoFocus(false)
 	box:SetTextInsets(3, 0, 0, 0)
-		
-	box.name = box:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
+	
+	box.name = T.createtext(box, "OVERLAY", 12, "OUTLINE", "LEFT")
 	box.name:SetPoint("LEFT", box, "RIGHT", 10, 1)
-	box.name:SetText(name or "")	
-	T.resize_font(box.name)
+	box.name:SetText(name or "")
 	
 	box.button = T.createclickbutton(box, 0, {"RIGHT", box, "RIGHT", -2, 0}, OKAY)
 	box.button:Hide()
@@ -991,12 +680,8 @@ T.createmultilinebox = function(parent, width, height, x, y, name, table, value,
 	box:SetSize(width or 200, height or 100)
 	box:SetFrameLevel(parent:GetFrameLevel()+3)
 	
-	box.bg = CreateFrame("Frame", nil, box, "BackdropTemplate")
-	box.bg:SetFrameLevel(parent:GetFrameLevel()+2)
-	box.bg:SetAllPoints(box)
-	F.CreateBD(box.bg, 1)
-	box.bg:SetBackdropBorderColor(.5, .5, .5)
-	
+	box.bg = T.createPXBackdrop(box, 1)
+
 	box.top_text = T.createtext(box, "OVERLAY", 12, "OUTLINE", "LEFT")
 	box.top_text:SetPoint("BOTTOMLEFT", box, "TOPLEFT", 5, 3)
 	box.top_text:SetText(name or "")
@@ -1049,7 +734,7 @@ T.createmultilinebox = function(parent, width, height, x, y, name, table, value,
 		parent[value] = box
 	end
 	
-	F.ReskinScroll(box.ScrollBar)
+	T.ReskinScroll(box.ScrollBar)
 
 	box.Enable = function()
 		box.top_text:SetTextColor(1, 1, 1, 1)		
@@ -1091,29 +776,15 @@ T.createslider = function(parent, width, x, y, name, table, value, divisor, min,
 	slider:SetPoint("TOPLEFT", x, -y)
 	slider:SetSize((width == "short" and 170) or (width == "long" and 220) or width, 8)
 
-	F.ReskinSlider(slider)
+	T.ReskinSlider(slider)
+	
 	getmetatable(slider).__index.Enable(slider)
+	
 	slider:SetMinMaxValues(min, max)
+	slider:SetValueStep(step)
 	
 	slider.Low:SetText(min/divisor)
-	slider.Low:ClearAllPoints()
-	slider.Low:SetPoint("RIGHT", slider, "LEFT", 15, 0)
-	slider.Low:SetFont(G.norFont, 10, "OUTLINE")
-	
 	slider.High:SetText(max/divisor)
-	slider.High:ClearAllPoints()
-	slider.High:SetPoint("LEFT", slider, "RIGHT", -15, 0)
-	slider.High:SetFont(G.norFont, 10, "OUTLINE")
-	
-	slider.Text:ClearAllPoints()
-	slider.Text:SetPoint("BOTTOM", slider, "TOP", 0, 3)
-	slider.Text:SetFontObject(GameFontHighlight)
-	T.resize_font(slider.Text)
-	
-	slider.Thumb:SetSize(25, 16)
-	
-	--slider:SetStepsPerPage(step)
-	slider:SetValueStep(step)
 	
 	slider:SetScript("OnShow", function(self)
 		self:SetValue((aCoreCDB[table][value])*divisor)
@@ -1193,18 +864,17 @@ T.createcolorpickerbu = function(parent, x, y, name, table, value)
 	local cpb = CreateFrame("Button", G.uiname..value.."ColorPickerButton", parent, "UIPanelButtonTemplate")
 	cpb:SetPoint("TOPLEFT", x+3, -y)
 	cpb:SetSize(20, 20)
-	F.Reskin(cpb)
+	T.ReskinButton(cpb)
 	
 	cpb.ctex = cpb:CreateTexture(nil, "OVERLAY")
 	cpb.ctex:SetTexture(G.media.blank)
 	cpb.ctex:SetPoint"CENTER"
 	cpb.ctex:SetSize(15, 15)
 
-	cpb.name = cpb:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
+	cpb.name = T.createtext(cpb, "OVERLAY", 12, "OUTLINE", "LEFT")
 	cpb.name:SetPoint("LEFT", cpb, "RIGHT", 10, 1)
 	cpb.name:SetText(name)
-	T.resize_font(cpb.name)
-	
+
 	cpb.apply_settings = function()
 		cpb.ctex:SetVertexColor(aCoreCDB[table][value].r, aCoreCDB[table][value].g, aCoreCDB[table][value].b)
 		if cpb.apply then
@@ -1253,16 +923,14 @@ T.createradiobuttongroup = function(parent, x, y, name, value, group)
 	
 	for i, info in T.pairsByKeys(group) do
 		local bu = CreateFrame("CheckButton", nil, frame, "UIRadioButtonTemplate")
+		T.ReskinRadio(bu)
 		
 		if i == 1 then			
 			bu:SetPoint("LEFT", frame.text, "RIGHT", 10, 1)	
 		else
 			bu:SetPoint("LEFT", frame.buttons[i-1].text, "RIGHT", 5, 0)
 		end
-		
-		F.ReskinRadio(bu)
-		T.resize_font(bu.text)
-		
+
 		bu.text:SetText(info[2])
 		
 		bu:SetScript("OnShow", function(self)
@@ -1286,13 +954,13 @@ T.createradiobuttongroup = function(parent, x, y, name, value, group)
 		end)
 		
 		bu:SetScript("OnDisable", function(self)
-			self:GetCheckedTexture():SetVertexColor(.7, .7, .7, .5)
-			self.text:SetTextColor(.7, .7, .7, .5)
+			self:GetCheckedTexture():SetVertexColor(.5, .5, .5, 1)
+			self.text:SetTextColor(.5, .5, .5)
 		end)
 		
 		bu:SetScript("OnEnable", function(self)
-			self:GetCheckedTexture():SetVertexColor(G.Ccolor.r, G.Ccolor.g, G.Ccolor.b)
-			self.text:SetTextColor(1, .82, 0, 1)
+			self:GetCheckedTexture():SetVertexColor(0, .9, .3, 1)
+			self.text:SetTextColor(1, .82, 0)
 		end)
 		
 		frame.buttons[i] = bu
@@ -1331,11 +999,10 @@ T.createbuttongroup = function(parent, width, x, y, hasvalue, table, value, grou
 		frame[k] = CreateFrame("Button", G.uiname..value..k.."BoxGroup", frame, "UIPanelButtonTemplate")
 		frame[k]:SetSize(button_width, 25)
 		frame[k].order = order and order[k] or key
-		F.Reskin(frame[k], true)
+		T.ReskinButton(frame[k], nil, true)
 		
 		frame[k].Text:SetText(v)
 		frame[k].Text:SetTextColor(1, 1, 1)
-		T.resize_font(frame[k].Text)
 		
 		if hasvalue then
 			frame[k]:SetScript("OnShow", function(self)
@@ -1450,9 +1117,8 @@ T.createclickbutton = function(parent, width, points, text, tex)
 	
 	bu:SetText(text or "")
 	
-	F.Reskin(bu)
-	T.resize_font(bu.Text)
-	
+	T.ReskinButton(bu)
+
 	if width == 0 then
 		bu:SetSize(bu.Text:GetWidth() + 5, 20)
 	else
@@ -1495,9 +1161,9 @@ T.createclicktexbutton = function(parent, points, tex, text, tex_size)
 	
 	return bu
 end
-
--- 设置列表
-
+-----------------------------
+--        设置列表         --
+-----------------------------
 local lineuplist = function(list, button_list, parent)
 	local t = {}
 	
@@ -1531,13 +1197,10 @@ local createscrolllist = function(parent, points, bg, width, height)
 	sf:SetScrollChild(sf.anchor)
 	
 	if bg then
-		sf.bg = CreateFrame("Frame", nil, sf, "BackdropTemplate")
-		sf.bg:SetAllPoints(sf)
-		sf.bg:SetFrameLevel(sf:GetFrameLevel()-1)
-		F.CreateBD(sf.bg, .3)
+		sf.bg = T.createBackdrop(sf, .3)
 	end
 	
-	F.ReskinScroll(sf.ScrollBar)
+	T.ReskinScroll(sf.ScrollBar)
 	
 	sf.cover = CreateFrame("Frame", nil, sf)
 	sf.cover:SetAllPoints()
@@ -1567,7 +1230,7 @@ local createscrollbutton = function(type, option_list, table, value, key)
 	local bu = CreateFrame("Frame", nil, option_list.anchor, "BackdropTemplate")
 	bu:SetSize(300, 28)
 	bu:EnableMouse(true)
-	F.CreateBD(bu, .2)
+	T.setPXBackdrop(bu, .2)
 	
 	bu.icon = bu:CreateTexture(nil, "ARTWORK")
 	bu.icon:SetSize(20, 20)
@@ -1577,7 +1240,7 @@ local createscrollbutton = function(type, option_list, table, value, key)
 	
 	bu.iconbg = bu:CreateTexture(nil, "BORDER")
 	bu.iconbg:SetPoint("TOPLEFT", bu.icon, "TOPLEFT", -1, 1)
-	bu.iconbg:SetPoint("BOTTOMRIGHT", bu.icon, "BOTTOMRIGHT", -1, 1)
+	bu.iconbg:SetPoint("BOTTOMRIGHT", bu.icon, "BOTTOMRIGHT", 1, -1)
 	bu.iconbg:SetColorTexture(0, 0, 0, 1)
 	
 	bu.left = T.createtext(bu, "OVERLAY", 12, "OUTLINE", "LEFT")
@@ -1591,11 +1254,10 @@ local createscrollbutton = function(type, option_list, table, value, key)
 	bu.right:SetTextColor(1, 1, 0)
 	bu.right:SetPoint("LEFT", bu, "RIGHT", -80, 0)
 	
-	bu.close = CreateFrame("Button", nil, bu, "UIPanelButtonTemplate")
-	bu.close:SetSize(18,18)
+	bu.close = CreateFrame("Button", nil, bu, "UIPanelCloseButton")
 	bu.close:SetPoint("RIGHT", -5, 0)
-	F.Reskin(bu.close)
-	bu.close:SetText("x")
+	T.ReskinClose(bu.close)
+
 	bu.close:SetScript("OnEnter", function(self)	
 		GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
 		GameTooltip:AddLine(DELETE)
@@ -1615,15 +1277,17 @@ local createscrollbutton = function(type, option_list, table, value, key)
 	end)
 	
 	bu.display = function(icon, text1, text2, text3, color)
-		if icon then bu.icon:SetTexture(icon) end		
+		if icon then bu.icon:SetTexture(icon) end
 		if text1 then bu.left:SetText(text1) end
 		if text2 then bu.mid:SetText(text2) end		
 		if text3 then bu.right:SetText(text3) end
 		if color then bu.icon:SetVertexColor(color.r, color.g, color.b) end
 		if not (icon or color) then
 			bu.icon:Hide()
+			bu.iconbg:Hide()
 		else
 			bu.icon:Show()
+			bu.iconbg:Show()
 		end
 	end
 	
@@ -1649,6 +1313,7 @@ local createscrollbutton = function(type, option_list, table, value, key)
 end
 T.createscrollbutton = createscrollbutton
 
+-- 列表选项
 local function CreateListOption(parent, points, height, text, OptionName, input_text_1, input_text_2)
 	local frame = CreateFrame("Frame", nil, parent, "BackdropTemplate")
 	frame:SetSize(400, height)
@@ -1700,6 +1365,7 @@ local function CreateListOption(parent, points, height, text, OptionName, input_
 	return frame
 end
 
+-- 列表按钮
 local function CreateListButton(type, frame, OptionName, key, Icon, left_text, mid_text, right_text, color)
 	local bu = frame.option_list.list[key]
 	
@@ -1920,7 +1586,7 @@ T.CreatePlateColorListOption = function(parent, points, height, text, OptionName
 	frame.cpb = CreateFrame("Button", nil, frame, "UIPanelButtonTemplate")
 	frame.cpb:SetPoint("LEFT", frame.first_input, "RIGHT", 5, 0)
 	frame.cpb:SetSize(40, 20)
-	F.Reskin(frame.cpb)
+	T.ReskinButton(frame.cpb)
 	
 	frame.cpb.ctex = frame.cpb:CreateTexture(nil, "OVERLAY")
 	frame.cpb.ctex:SetTexture(G.media.blank)
