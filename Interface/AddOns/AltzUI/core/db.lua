@@ -677,10 +677,6 @@ local Character_default_Settings = {
 		customcoloredplates = {},
 		custompowerplates = {},
 	},
-	TooltipOptions = {
-		enabletip = true,
-		combathide = true,
-	},
 	CombattextOptions = {
 		combattext = true,
 		hidblz_receive = false,		
@@ -695,6 +691,9 @@ local Character_default_Settings = {
 		ctfadetime = 3,	
 	},
 	OtherOptions = {
+		show_spellID = true,
+		show_itemID = true,
+		combat_hide = true,
 		autopet = true,
 		LFGRewards = true,
 		vignettealert = true,
