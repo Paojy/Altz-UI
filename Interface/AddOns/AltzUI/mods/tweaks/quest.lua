@@ -1,6 +1,5 @@
 ﻿-- Original Author: Weasoug, etc
 local T, C, L, G = unpack(select(2, ...))
-local F = unpack(AuroraClassic)
 
 --显示任务等级
 

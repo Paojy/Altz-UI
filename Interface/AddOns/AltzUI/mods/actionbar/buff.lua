@@ -1,5 +1,4 @@
 local T, C, L, G = unpack(select(2, ...))
-local F = unpack(AuroraClassic)
 
   ---------------------------------------
   -- FUNCTIONS
@@ -22,7 +21,7 @@ local function applySkin(aura)
 			aura.Count:SetPoint("TOPRIGHT", 2, 2)
 		end
 				
-		aura.bd = T.createBackdrop(aura, aura.Icon, 0)
+		aura.bd = T.createBackdrop(aura.Icon, nil, 2, aura)
 		
 		hooksecurefunc(aura, "UpdateAuraType", function(self, auraType)
 			self.DebuffBorder:Hide()

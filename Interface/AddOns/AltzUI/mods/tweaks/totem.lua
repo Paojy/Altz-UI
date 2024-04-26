@@ -1,5 +1,4 @@
 local T, C, L, G = unpack(select(2, ...))
-local F = unpack(AuroraClassic)
 
 local TotemBar = CreateFrame("Frame", "AltzUI_TotemBar", UIParent)
 TotemBar.movingname = L["图腾条"]
@@ -11,7 +10,7 @@ T.CreateDragFrame(TotemBar) --frame, dragFrameList, inset, clamp
 
 for i=1, MAX_TOTEMS do
 	local TotemBu = CreateFrame("Button", TotemBar:GetName().."Totem"..i, TotemBar)
-	T.CreateSD(TotemBu, 2, 0, 0, 0, 0, 0)
+	TotemBu.bd = T.createBackdrop(TotemBu)
 	TotemBu:Hide()
 
 	TotemBu.iconTexture = TotemBu:CreateTexture(nil, "ARTWORK")

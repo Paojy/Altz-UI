@@ -1,7 +1,9 @@
 local T, C, L, G = unpack(select(2, ...))
 
 local flash = CreateFrame("Frame", G.uiname.."Cooldown Flash", UIParent, "BackdropTemplate")
-T.CreateSD(flash)
+
+flash.backdrop = T.createBackdrop(flash)
+
 flash:SetSize(50,50)
 flash:Hide()
 flash.e = 0

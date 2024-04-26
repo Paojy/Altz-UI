@@ -1,18 +1,4 @@
 ﻿local T, C, L, G = unpack(select(2, ...))
-local F = unpack(AuroraClassic)
-
-local TAB_TEXTURES = {
-	"Left",
-	"Middle",
-	"Right",
-	"SelectedLeft",
-	"SelectedMiddle",
-	"SelectedRight",
-	"Glow",
-	"HighlightLeft",
-	"HighlightMiddle",
-	"HighlightRight",
-}
 
 local chatwindownum = NUM_CHAT_WINDOWS
 
@@ -66,15 +52,16 @@ local function init()
 		local ebtr = _G['ChatFrame'..i..'EditBoxRight']
 		if ebtr then ebtr:Hide() end
 		
-		_G['ChatFrame'..i..'EditBoxLanguage'].Show = _G['ChatFrame'..i..'EditBoxLanguage'].Hide 
-		_G['ChatFrame'..i..'EditBoxLanguage']:Hide()
+		local language = _G['ChatFrame'..i..'EditBoxLanguage']
+		language.Show = language.Hide 
+		language:Hide()
 		
 		local tex = {eb:GetRegions()}
 		tex[6]:SetAlpha(0)
 		tex[7]:SetAlpha(0)
 		tex[8]:SetAlpha(0)
 		
-		F.SetBD(eb)
+		eb.backdrop = T.createBackdrop(eb, .3)
 		
 		eb:SetScript("OnEditFocusLost", function(self)
 			self:SetAlpha(0)
@@ -111,15 +98,18 @@ local function init()
 				tab.selectedColorTable = { r = G.Ccolor.r, g = G.Ccolor.g, b = G.Ccolor.b };
 				tab:SetAlpha(1)
 			end
+			
 			tab.Middle:SetTexture(nil)
 			tab.Left:SetTexture(nil)
 			tab.Right:SetTexture(nil)
 			tab.ActiveLeft:SetTexture(nil)
 			tab.ActiveMiddle:SetTexture(nil)
 			tab.ActiveRight:SetTexture(nil)
+			tab.glow:SetTexture(nil)
 			tab.HighlightLeft:SetTexture(nil)
 			tab.HighlightMiddle:SetTexture(nil)
 			tab.HighlightRight:SetTexture(nil)
+			
 		end
 		tab:HookScript("OnClick", function(self)
 			eb:SetAlpha(0)
@@ -146,14 +136,7 @@ local function SetChatTabs()
 			if i ~= 11 then
 				tab.selectedColorTable = { r = G.Ccolor.r, g = G.Ccolor.g, b = G.Ccolor.b };
 				tab:SetAlpha(1)
-			end
-			
-			for index, value in pairs(TAB_TEXTURES) do
-				local texture = _G['ChatFrame'..i..'Tab'..value]
-				if texture then
-					texture:SetTexture(nil)
-				end
-			end
+			end		
 			
 			tab.Middle:SetTexture(nil)
 			tab.Left:SetTexture(nil)
@@ -190,7 +173,7 @@ EventFrame:SetScript("OnEvent", function(self, event, arg1)
 	end
 end)
 
-T.CreateSD(GeneralDockManagerOverflowButtonList, 3, 0, 0, 0, 0, -1)
+T.createBackdrop(GeneralDockManagerOverflowButtonList, .5)
 
 function FloatingChatFrame_OnMouseScroll(self, delta)
 	if ( delta > 0 ) then

@@ -1,5 +1,4 @@
 local T, C, L, G = unpack(select(2, ...))
-local F = unpack(AuroraClassic)
 
 local function Skin(self, timer, value, maxvalue, paused, label)	
 	local frame = MirrorTimerContainer.activeTimers[timer]
@@ -16,9 +15,8 @@ local function Skin(self, timer, value, maxvalue, paused, label)
 			end
 		end
 		
-		statusbar.backdrop = F.CreateBDFrame(statusbar, 0.5)
+		statusbar.backdrop = T.createBackdrop(statusbar, .5, 2)
 		statusbar.backdrop:SetPoint("BOTTOMRIGHT", statusbar, 1, -1)
-		T.CreateSD(statusbar.backdrop, 2)
 		
 		text:ClearAllPoints()
 		text:SetFont(G.norFont, 12, "OUTLINE")

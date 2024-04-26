@@ -1,5 +1,4 @@
 ﻿local T, C, L, G = unpack(select(2, ...))
-local F = unpack(AuroraClassic)
 
 --====================================================--
 --[[                 -- Panels --                   ]]--
@@ -25,7 +24,7 @@ local function CreateLongPanel(pos)
 	panel.tex:SetTexture(G.media.blank)
 	panel.tex:SetGradient("VERTICAL", CreateColor(.2,.2,.2,.15),CreateColor(.25,.25,.25,.6))
 	
-	panel.sd = T.createBackdrop(panel, panel, 1)
+	panel.backdrop = T.createBackdrop(panel, 1)
 	
 	BGFrame.longpanels[pos] = panel
 end
@@ -42,7 +41,7 @@ local function CreateShortPanel(pos)
 	local y_offset = string.find(pos, "TOP") and -9 or 9
 	panel:SetPoint(pos, BGFrame, pos, x_offset, y_offset)
 	
-	T.CreateSD(panel, 2)
+	panel.backdrop = T.createBackdrop(panel, nil, 2)
 	
 	panel.tex = panel:CreateTexture(nil, "ARTWORK")
 	panel.tex:SetAllPoints(panel)
@@ -68,11 +67,11 @@ BGFrame.Apply = function()
 	if aCoreCDB["SkinOptions"]["showtopconerbar"] then
 		BGFrame.shortpanels.TOPLEFT:Show()
 		BGFrame.shortpanels.TOPRIGHT:Show()
-		BGFrame.longpanels.TOP.sd:SetBackdropBorderColor(0, 0, 0)
+		BGFrame.longpanels.TOP.backdrop:SetBackdropBorderColor(0, 0, 0)
 	else
 		BGFrame.shortpanels.TOPLEFT:Hide()
 		BGFrame.shortpanels.TOPRIGHT:Hide()
-		BGFrame.longpanels.TOP.sd:SetBackdropBorderColor(G.Ccolor.r, G.Ccolor.g, G.Ccolor.b)
+		BGFrame.longpanels.TOP.backdrop:SetBackdropBorderColor(G.Ccolor.r, G.Ccolor.g, G.Ccolor.b)
 	end
 	
 	-- 下方材质
@@ -85,19 +84,19 @@ BGFrame.Apply = function()
 	if aCoreCDB["SkinOptions"]["showbottomconerbar"] then
 		BGFrame.shortpanels.BOTTOMLEFT:Show()
 		BGFrame.shortpanels.BOTTOMRIGHT:Show()
-		BGFrame.longpanels.BOTTOM.sd:SetBackdropBorderColor(0, 0, 0)
+		BGFrame.longpanels.BOTTOM.backdrop:SetBackdropBorderColor(0, 0, 0)
 	else
 		BGFrame.shortpanels.BOTTOMLEFT:Hide()
 		BGFrame.shortpanels.BOTTOMRIGHT:Hide()
-		BGFrame.longpanels.BOTTOM.sd:SetBackdropBorderColor(G.Ccolor.r, G.Ccolor.g, G.Ccolor.b)
+		BGFrame.longpanels.BOTTOM.backdrop:SetBackdropBorderColor(G.Ccolor.r, G.Ccolor.g, G.Ccolor.b)
 	end
 	
 	-- 材质颜色
 	for k, panel in pairs(BGFrame.longpanels) do
 		if aCoreCDB["SkinOptions"]["style"] == 1 then
-			panel.sd:SetBackdropColor(0, 0, 0, 0)
+			panel.backdrop:SetBackdropColor(0, 0, 0, 0)
 		else
-			panel.sd:SetBackdropColor(0, 0, 0, 1)
+			panel.backdrop:SetBackdropColor(0, 0, 0, 1)
 		end
 	end
 end
@@ -105,7 +104,8 @@ end
 --[[                   -- Minimap --                ]]--
 --====================================================--
 Minimap:SetMaskTexture(G.media.blank)
-T.CreateSD(Minimap, 3)
+Minimap.bd = T.createBackdrop(Minimap)
+
 function GetMinimapShape() return 'SQUARE' end
 
 -- 背景
@@ -116,10 +116,9 @@ ExpansionLandingPageMinimapButton:SetScale(.7)
 ExpansionLandingPageMinimapButton:GetNormalTexture():SetTexCoord(.2, .8, .2, .8)
 ExpansionLandingPageMinimapButton:GetPushedTexture():SetTexCoord(.2, .8, .2, .8)
 ExpansionLandingPageMinimapButton:GetHighlightTexture():SetTexCoord(.2, .8, .2, .8)
-T.CreateSD(ExpansionLandingPageMinimapButton, 3)
+ExpansionLandingPageMinimapButton.bd = T.createBackdrop(ExpansionLandingPageMinimapButton, nil, 2)
 
 -- 副本难度
---T.CreateSD(MinimapCluster.InstanceDifficulty, 2)
 MinimapCluster.InstanceDifficulty:SetScale(.7)
 
 -- 缩放
@@ -424,14 +423,14 @@ xpbar:SetHeight(5)
 xpbar:SetStatusBarTexture(G.media.blank)
 xpbar:SetStatusBarColor(.3, .4, 1)
 xpbar:SetFrameLevel(Minimap:GetFrameLevel()+3)
-xpbar.border = F.CreateBDFrame(xpbar, .8)
+xpbar.border = T.createBackdrop(xpbar, .8)
 
 local repbar = CreateFrame("StatusBar", G.uiname.."WatchedFactionBar", Minimap)
 repbar:SetHeight(5)
 repbar:SetStatusBarTexture(G.media.blank)
 repbar:SetStatusBarColor(.4, 1, .2)
 repbar:SetFrameLevel(Minimap:GetFrameLevel()+3)
-repbar.border = F.CreateBDFrame(repbar, .8)
+repbar.border = T.createBackdrop(repbar, .8)
 
 local function CommaValue(amount)
 	local formatted = amount
@@ -609,7 +608,7 @@ MainMenuBarBackpackButton:SetNormalTexture(textures.normal)
 MainMenuBarBackpackButton:SetPushedTexture(textures.pushed)
 MainMenuBarBackpackButton:SetHighlightTexture(textures.hover)
 MainMenuBarBackpackButton.SlotHighlightTexture:SetTexture(textures.checked)
-T.CreateSD(MainMenuBarBackpackButton, 2)
+MainMenuBarBackpackButton.bd = T.createBackdrop(MainMenuBarBackpackButton, nil, 2)
 
 hooksecurefunc(MainMenuBarBackpackButton, "UpdateFreeSlots", function(self)
 	self.Count:SetText(self.freeSlots)
@@ -633,7 +632,7 @@ for i, bu in pairs(bagbuttons) do
 			icon:SetTexCoord(.2, .8, .2, .8)
 		end
 		if not bu.bg then
-			bu.bg = T.CreateSD(bu, 2)
+			bu.bg = T.createBackdrop(bu, nil, 2)
 		end
 	end)
 	table.insert(fadebagbuttons, bu)
@@ -940,7 +939,7 @@ GameMenuButton:SetScript("OnClick", function()
 	HideUIPanel(GameMenuFrame)
 end)
 GameMenuButton:SetText(C_AddOns.GetAddOnMetadata("AltzUI", "Title"))
-F.Reskin(GameMenuButton)
+T.ReskinButton(GameMenuButton)
 
 GameMenuFrame:HookScript("OnShow", function()
 	G.GUI:Hide()
@@ -1008,9 +1007,8 @@ OrderHall_eframe:SetScript("OnEvent", function(self, event, arg1)
 				OrderHallCommandBar.ClassIcon:SetPoint("TOPLEFT", 15, -20)
 				OrderHallCommandBar.ClassIcon:SetSize(40,20)
 				OrderHallCommandBar.ClassIcon:SetAlpha(1)
-				local bg = F.CreateBDFrame(OrderHallCommandBar.ClassIcon, 0)
-				F.CreateBD(bg, 1)
-				
+				OrderHallCommandBar.ClassIconBD = T.createBackdrop(OrderHallCommandBar.ClassIcon, nil, nil, OrderHallCommandBar)
+	
 				OrderHallCommandBar.AreaName:ClearAllPoints()
 				OrderHallCommandBar.AreaName:SetPoint("LEFT", OrderHallCommandBar.ClassIcon, "RIGHT", 5, 0)
 				OrderHallCommandBar.AreaName:SetFont(G.norFont, 14, "OUTLINE")
@@ -1042,8 +1040,8 @@ OrderHall_eframe:SetScript("OnEvent", function(self, event, arg1)
 					child.TroopPortraitCover:Hide()
 					
 					child.Icon:SetSize(40,20)
-					local bg = F.CreateBDFrame(child.Icon, 0)
-					F.CreateBD(bg, 1)
+					
+					local bg = T.createBackdrop(child.Icon, 1, nil, child)
 					
 					child.Count:SetFont(G.norFont, 14, "OUTLINE")
 					child.Count:SetTextColor(1, 1, 1)
@@ -1064,8 +1062,10 @@ local BOTTOMPANEL = CreateFrame("Frame", G.uiname.."AFK Bottompanel", WorldFrame
 BOTTOMPANEL:SetFrameStrata("FULLSCREEN")
 BOTTOMPANEL:SetPoint("BOTTOMLEFT",WorldFrame,"BOTTOMLEFT",-5,-5)
 BOTTOMPANEL:SetPoint("TOPRIGHT",WorldFrame,"BOTTOMRIGHT",5,60)
-F.SetBD(BOTTOMPANEL)
 BOTTOMPANEL:Hide()
+
+BOTTOMPANEL.backdrop = T.createBackdrop(BOTTOMPANEL, .6)
+T.setStripeBg(BOTTOMPANEL.backdrop)
 
 BOTTOMPANEL.petmodelbutton = CreateFrame("PlayerModel", G.uiname.."AFKpetmodel", BOTTOMPANEL)
 BOTTOMPANEL.petmodelbutton:SetSize(120,120)
@@ -1138,7 +1138,7 @@ BOTTOMPANEL.tipframe.next:SetPoint("TOP", BOTTOMPANEL.tipframe, "CENTER", 0, -5)
 BOTTOMPANEL.tipframe.next:SetText(L["下一条"])
 BOTTOMPANEL.tipframe.next:Hide()
 _G[G.uiname.."Next tip ButtonText"]:SetFont(G.norFont, 8, "OUTLINE")
-F.Reskin(BOTTOMPANEL.tipframe.next)
+T.ReskinButton(BOTTOMPANEL.tipframe.next)
 
 BOTTOMPANEL.tipframe.next:SetScript("OnClick", Next_tip)
 
@@ -1148,7 +1148,7 @@ BOTTOMPANEL.tipframe.previous:SetPoint("RIGHT", BOTTOMPANEL.tipframe.next, "LEFT
 BOTTOMPANEL.tipframe.previous:SetText(L["上一条"])
 BOTTOMPANEL.tipframe.previous:Hide()
 _G[G.uiname.."Previous tip ButtonText"]:SetFont(G.norFont, 8, "OUTLINE")
-F.Reskin(BOTTOMPANEL.tipframe.previous)
+T.ReskinButton(BOTTOMPANEL.tipframe.previous)
 
 BOTTOMPANEL.tipframe.previous:SetScript("OnClick", Previous_tip)
 
@@ -1158,7 +1158,7 @@ BOTTOMPANEL.tipframe.dontshow:SetPoint("LEFT", BOTTOMPANEL.tipframe.next, "RIGHT
 BOTTOMPANEL.tipframe.dontshow:SetText(L["我不想看到这些提示"])
 BOTTOMPANEL.tipframe.dontshow:Hide()
 _G[G.uiname.."Dontshow tip ButtonText"]:SetFont(G.norFont, 8, "OUTLINE")
-F.Reskin(BOTTOMPANEL.tipframe.dontshow)
+T.ReskinButton(BOTTOMPANEL.tipframe.dontshow)
 
 BOTTOMPANEL.tipframe.dontshow:SetScript("OnClick", DontShowTips)
 
@@ -1272,7 +1272,7 @@ for i = 1, 9 do
 	bu:SetPoint("TOPLEFT", raidmark, "TOPLEFT", (i-1)*33, 0) 	
 	bu:SetSize(25, 25)
 	
-	bu.bg = T.CreateSD(bu, 3)
+	bu.bg = T.createBackdrop(bu, .5)
 	bu.bg:SetFrameLevel(0)
 	
 	bu.bgtex = bu:CreateTexture(nil, "BACKGROUND")
@@ -1315,7 +1315,7 @@ for i = 1, 9 do
 	bu:SetPoint("TOPLEFT", raidmark, "TOPLEFT", (i-1)*33, -33) 	
 	bu:SetSize(25, 25)
 	
-	bu.bg = T.CreateSD(bu, 3)
+	bu.bg = T.createBackdrop(bu, .5)
 	bu.bg:SetFrameLevel(0)
 	
 	bu.bgtex = bu:CreateTexture(nil, "BACKGROUND")
@@ -1378,7 +1378,7 @@ for i = 1, 4 do
 	bu.text:SetAllPoints(bu)
 	bu.text:SetText(raid_tool_buttons[i][2])
 	
-	bu.bg = T.CreateSD(bu, 3)
+	bu.bg = T.createBackdrop(bu, .5)
 	bu.bg:SetFrameLevel(0)
 	
 	bu.bgtex = bu:CreateTexture(nil, "BACKGROUND")
@@ -1439,7 +1439,7 @@ local raidmark_toggle = CreateFrame("Button", G.uiname.."Raid Mark Toggle", UIPa
 raidmark_toggle:SetPoint("TOPRIGHT", raidmark, "TOPLEFT", -7, 0)
 	
 raidmark_toggle:SetSize(10, 10)
-raidmark_toggle.bg = T.CreateSD(raidmark_toggle, 3)
+raidmark_toggle.bg = T.createBackdrop(raidmark_toggle, .5)
 raidmark_toggle.bg:SetFrameLevel(0)
 	
 raidmark_toggle.bgtex = raidmark_toggle:CreateTexture(nil, "BACKGROUND")

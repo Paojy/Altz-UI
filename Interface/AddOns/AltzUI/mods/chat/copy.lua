@@ -1,5 +1,4 @@
 local T, C, L, G = unpack(select(2, ...))
-local F = unpack(AuroraClassic)
 
 -- Chat Copy
 local lines = {}
@@ -8,9 +7,13 @@ frame:SetPoint("CENTER")
 frame:SetSize(700, 400)
 frame:Hide()
 frame:SetFrameStrata("DIALOG")
-F.SetBD(frame)
+
+frame.backdrop = T.createBackdrop(frame, .5)
+T.setStripeBg(frame.backdrop)
+
 frame.close = CreateFrame("Button", nil, frame, "UIPanelCloseButton")
 frame.close:SetPoint("TOPRIGHT", frame)
+T.ReskinClose(frame.close)
 
 local scrollArea = CreateFrame("ScrollFrame", "ChatCopyScrollFrame", frame, "UIPanelScrollFrameTemplate")
 scrollArea:SetPoint("TOPLEFT", frame, "TOPLEFT", 10, -30)
@@ -27,15 +30,6 @@ editBox:SetHeight(270)
 editBox:SetScript("OnEscapePressed", function(f) f:GetParent():GetParent():Hide() f:SetText("") end)
 scrollArea:SetScrollChild(editBox)
 
-local function colorReplace(msg, r, g, b)
-	local hexRGB = T.hex(r, g, b)
-	local hexReplace = format("|r%s", hexRGB)
-	msg = gsub(msg, "|r", hexReplace)
-	msg = format("%s%s|r", hexRGB, msg)
-
-	return msg
-end
-
 local function copyFunc(_, btn)
 	if not frame:IsShown() then
 		local chatframe = SELECTED_DOCK_FRAME
@@ -49,7 +43,7 @@ local function copyFunc(_, btn)
 			r = r or 1
 			g = g or 1
 			b = b or 1
-			message = colorReplace(message, r, g, b)
+			message = T.hex_str(message, r, g, b)
 
 			lines[index] = tostring(message)
 			index = index + 1
@@ -72,7 +66,7 @@ copy:SetSize(20, 20)
 copy.Icon = copy:CreateTexture(nil, "ARTWORK")
 copy.Icon:SetAllPoints()
 copy.Icon:SetTexture("Interface\\Buttons\\UI-GuildButton-PublicNote-Up")
-F.Reskin(copy)
+T.ReskinButton(copy)
 T.FrameFader(copy)
 
 copy:RegisterForClicks("AnyUp")
@@ -87,6 +81,4 @@ copy:HookScript("OnLeave", function(self)
 	GameTooltip:Hide()
 end)
 
-F.ReskinClose(frame.close)
-F.ReskinScroll(ChatCopyScrollFrameScrollBar)
-
+T.ReskinScroll(ChatCopyScrollFrameScrollBar)

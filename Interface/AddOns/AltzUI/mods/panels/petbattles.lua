@@ -1,5 +1,4 @@
 local T, C, L, G = unpack(select(2, ...))
-local F = unpack(AuroraClassic)
 
 local testmode = false
 
@@ -17,10 +16,7 @@ frame:SetPoint("TOPLEFT", parent, "TOPLEFT", 0, -40)
 local tooltips = {PetBattlePrimaryAbilityTooltip, PetBattlePrimaryUnitTooltip, FloatingBattlePetTooltip, BattlePetTooltip, FloatingPetBattleAbilityTooltip}
 for _, f in pairs(tooltips) do
 	f:DisableDrawLayer("BACKGROUND")
-	local bg = CreateFrame("Frame", nil, f, "BackdropTemplate")
-	bg:SetAllPoints()
-	bg:SetFrameLevel(0)
-	F.CreateBD(bg)
+	f.bg = T.createBackdrop(f, .3)
 end
 
 PetBattlePrimaryUnitTooltip.Delimiter:SetTexture(0, 0, 0)
@@ -35,8 +31,8 @@ FloatingPetBattleAbilityTooltip.Delimiter2:SetHeight(1)
 FloatingPetBattleAbilityTooltip.Delimiter2:SetTexture(0, 0, 0)
 FloatingBattlePetTooltip.Delimiter:SetTexture(0, 0, 0)
 FloatingBattlePetTooltip.Delimiter:SetHeight(1)
-F.ReskinClose(FloatingBattlePetTooltip.CloseButton)
-F.ReskinClose(FloatingPetBattleAbilityTooltip.CloseButton)
+T.ReskinClose(FloatingBattlePetTooltip.CloseButton)
+T.ReskinClose(FloatingPetBattleAbilityTooltip.CloseButton)
 
 frame.TopVersusText:SetPoint("TOP", frame, "TOP", 0, -46)
 
@@ -76,13 +72,9 @@ for index, unit in pairs(units) do
 	unit.Level:SetFont(G.norFont, 16)
 	unit.Level:SetTextColor(1, 1, 1)
 
-	local bg = CreateFrame("Frame", nil, unit, "BackdropTemplate")
-	bg:SetWidth(unit.healthBarWidth + 2)
-	bg:SetFrameLevel(unit:GetFrameLevel()-1)
-	T.CreateSD(bg, 3, 0, 0, 0, 0, -2)
-	F.CreateBD(bg, .5)
+	unit.bg = T.createBackdrop(unit, .3)
 	
-	unit.HealthText:SetPoint("CENTER", bg, "CENTER")
+	unit.HealthText:SetPoint("CENTER", unit.bg, "CENTER")
 
 	unit.PetTypeString = unit:CreateFontString(nil, "ARTWORK")
 	unit.PetTypeString:SetFontObject(GameFontNormalLarge)
@@ -98,29 +90,27 @@ for index, unit in pairs(units) do
 	unit.ActualHealthBar:ClearAllPoints()
 
 	if index == 1 then
-		bg:SetPoint("TOPLEFT", unit.ActualHealthBar, "TOPLEFT", -1, 1)
-		bg:SetPoint("BOTTOMLEFT", unit.ActualHealthBar, "BOTTOMLEFT", -1, -1)
+		unit.bg:SetPoint("TOPLEFT", unit.ActualHealthBar, "TOPLEFT", -1, 1)
+		unit.bg:SetPoint("BOTTOMLEFT", unit.ActualHealthBar, "BOTTOMLEFT", -1, -1)
 		--unit.ActualHealthBar:SetGradient("VERTICAL", .26, 1, .22, .13, .5, .11)
 		unit.ActualHealthBar:SetPoint("BOTTOMLEFT", unit.Icon, "BOTTOMRIGHT", 10, 0)
 		unit.ActualHealthBar:SetVertexColor(.26, 1, .22)
-		unit.Name:SetPoint("BOTTOMLEFT", bg, "TOPLEFT", 0, 4)
-		unit.PetTypeString:SetPoint("BOTTOMRIGHT", bg, "TOPRIGHT", 0, 4)
+		unit.Name:SetPoint("BOTTOMLEFT", unit.bg, "TOPLEFT", 0, 4)
+		unit.PetTypeString:SetPoint("BOTTOMRIGHT", unit.bg, "TOPRIGHT", 0, 4)
 		unit.PetTypeString:SetJustifyH("RIGHT")
 	else
-		bg:SetPoint("TOPRIGHT", unit.ActualHealthBar, "TOPRIGHT", 1, 1)
-		bg:SetPoint("BOTTOMRIGHT", unit.ActualHealthBar, "BOTTOMRIGHT", 1, -1)
+		unit.bg:SetPoint("TOPRIGHT", unit.ActualHealthBar, "TOPRIGHT", 1, 1)
+		unit.bg:SetPoint("BOTTOMRIGHT", unit.ActualHealthBar, "BOTTOMRIGHT", 1, -1)
 		--unit.ActualHealthBar:SetGradient("VERTICAL", 1, .12, .24, .5, .06, .12)
 		unit.ActualHealthBar:SetPoint("BOTTOMRIGHT", unit.Icon, "BOTTOMLEFT", -10, 0)
 		unit.ActualHealthBar:SetVertexColor(1, .12, .24)
-		unit.Name:SetPoint("BOTTOMRIGHT", bg, "TOPRIGHT", 0, 4)
-		unit.PetTypeString:SetPoint("BOTTOMLEFT", bg, "TOPLEFT", 0, 4)
+		unit.Name:SetPoint("BOTTOMRIGHT", unit.bg, "TOPRIGHT", 0, 4)
+		unit.PetTypeString:SetPoint("BOTTOMLEFT", unit.bg, "TOPLEFT", 0, 4)
 		unit.PetTypeString:SetJustifyH("LEFT")
 	end
 
 	unit.Icon:SetDrawLayer("ARTWORK", 2)
-	unit.Iconbg = CreateFrame("Frame", nil, unit, "BackdropTemplate")
-	unit.Iconbg:SetAllPoints(unit.Icon)
-	F.CreateBD(unit.Iconbg)
+	unit.Iconbg = T.createBackdrop(unit.Icon, .3, nil, unit)
 end
 
 local extraUnits = {
@@ -149,11 +139,7 @@ for index, unit in pairs(extraUnits) do
 	unit.BorderAlive:SetPoint("TOPLEFT", unit.Icon, -1, 1)
 	unit.BorderAlive:SetPoint("BOTTOMRIGHT", unit.Icon, 1, -1)
 
-	unit.bg = CreateFrame("Frame", nil, unit, "BackdropTemplate")
-	unit.bg:SetPoint("TOPLEFT", -1, 1)
-	unit.bg:SetPoint("BOTTOMRIGHT", 1, -1)
-	unit.bg:SetFrameLevel(unit:GetFrameLevel()-1)
-	F.CreateBD(unit.bg)
+	unit.bg = T.createBackdrop(unit, .3, 1)
 
 	if index < 3 then
 		unit.ActualHealthBar:SetGradient("VERTICAL", CreateColor(.26, 1, .22, 1), CreateColor(.13, .5, .11, 1))
@@ -166,22 +152,19 @@ end
 
 for i = 1, NUM_BATTLE_PETS_IN_BATTLE  do
 	local unit = bf.PetSelectionFrame["Pet"..i]
-	local icon = unit.Icon
-	
+
 	unit.HealthBarBG:Hide()
 	unit.Framing:Hide()
 	unit.HealthDivider:Hide()
 
-	unit.Name:SetPoint("TOPLEFT", icon, "TOPRIGHT", 3, -3)
-	unit.ActualHealthBar:SetPoint("BOTToMLEFT", icon, "BOTTOMRIGHT", 3, 0)
+	unit.Name:SetPoint("TOPLEFT", unit.Icon, "TOPRIGHT", 3, -3)
+	unit.ActualHealthBar:SetPoint("BOTToMLEFT", unit.Icon, "BOTTOMRIGHT", 3, 0)
 
-	icon:SetTexCoord(.08, .92, .08, .92)
-	unit.Iconbg = CreateFrame("Frame", nil, unit, "BackdropTemplate")
-	unit.Iconbg:SetAllPoints(unit.Icon)
-	F.CreateBD(unit.Iconbg)
-	
+	unit.Icon:SetTexCoord(.08, .92, .08, .92)
+	unit.Iconbg = T.createBackdrop(unit.Iconbg, .3, nil, unit)
+
 	unit.ActualHealthBar:SetTexture(G.media.blank)
-	F.CreateBDFrame(unit.ActualHealthBar)
+	unit.ActualHealthBar.bg = T.createBackdrop(unit.ActualHealthBar, .3, nil, unit)
 end
 
 hooksecurefunc("PetBattleUnitFrame_UpdateHealthInstant", function(self)
@@ -228,7 +211,7 @@ hooksecurefunc("PetBattleAuraHolder_Update", function(self)
 
 			if not frame.reskinned then
 				frame.Icon:SetTexCoord(.08, .92, .08, .92)
-				frame.bg = F.CreateBD(frame.Icon)
+				frame.bg = T.createBackdrop(frame.Icon, .3, nil, frame)
 			end
 
 			frame.Duration:SetFont(G.norFont, 8, "OUTLINEMONOCHROME")
@@ -278,9 +261,9 @@ bf.TurnTimer.SkipButton:SetParent(bar)
 bf.TurnTimer.SkipButton:SetWidth(bar:GetWidth())
 bf.TurnTimer.SkipButton:ClearAllPoints()
 bf.TurnTimer.SkipButton:SetPoint("BOTTOM", bar, "TOP", 0, 2)
-bf.TurnTimer.SkipButton.ClearAllPoints = F.dummy
-bf.TurnTimer.SkipButton.SetPoint = F.dummy
-F.Reskin(bf.TurnTimer.SkipButton)
+bf.TurnTimer.SkipButton.ClearAllPoints = T.dummy
+bf.TurnTimer.SkipButton.SetPoint = T.dummy
+T.ReskinButton(bf.TurnTimer.SkipButton)
 
 bf.TurnTimer.Bar:ClearAllPoints()
 bf.TurnTimer.Bar:SetPoint("LEFT")
@@ -289,14 +272,14 @@ bf.TurnTimer:SetParent(bar)
 bf.TurnTimer:SetSize(bf.TurnTimer.SkipButton:GetWidth() - 3, bf.TurnTimer.SkipButton:GetHeight())
 bf.TurnTimer:ClearAllPoints()
 bf.TurnTimer:SetPoint("BOTTOM", bf.TurnTimer.SkipButton, "TOP", 0, 5)
-bf.TurnTimer.bg = F.CreateBDFrame(bf.TurnTimer)
+bf.TurnTimer.bg = T.createBackdrop(bf.TurnTimer, .3)
 
 bf.xpBar:SetParent(bar)
 bf.xpBar:SetWidth(bar:GetWidth() - 3)
 bf.xpBar:ClearAllPoints()
 bf.xpBar:SetPoint("BOTTOM", bf.TurnTimer, "TOP", 0, 5)
 bf.xpBar:SetStatusBarTexture(G.media.bar)
-F.CreateBDFrame(bf.xpBar, 0)
+bf.xpBar.bg = T.createBackdrop(bf.xpBar)
 	
 for i = 7, 12 do
 	select(i, bf.xpBar:GetRegions()):Hide()

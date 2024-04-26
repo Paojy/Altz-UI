@@ -1,5 +1,4 @@
 local T, C, L, G = unpack(select(2, ...))
-local F = unpack(AuroraClassic)
 
 local EventFrame = CreateFrame("Frame")
 
@@ -9,12 +8,12 @@ EventFrame:SetScript("OnEvent", function(self, event, arg1)
 		MacroFrameCharLimitText:ClearAllPoints()
 		MacroFrameCharLimitText:SetPoint("BOTTOMRIGHT", MacroExitButton, "TOPRIGHT", 0, 10)
 		
-		local bu = CreateFrame("CheckButton", G.uiname.."Quick Delete Macro Button", MacroFrame, "InterfaceOptionsCheckButtonTemplate")
+		local bu = CreateFrame("CheckButton", G.uiname.."Quick Delete Macro Button", MacroFrame, "UICheckButtonTemplate")
 		bu:SetPoint("BOTTOMLEFT", MacroDeleteButton, "TOPLEFT", -3, 0)
-		F.ReskinCheck(bu)
-		bu.Text:SetText("快速删除")
-		T.resize_font(bu.Text)
+		T.ReskinCheck(bu)
 		
+		bu.Text:SetText("快速删除")
+	
 		bu:SetScript("OnClick", function(self) end)
 		
 		MacroDeleteButton:HookScript("OnClick", function()

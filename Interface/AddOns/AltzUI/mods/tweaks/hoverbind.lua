@@ -1,6 +1,5 @@
 ﻿--ncHoverBind
 local T, C, L, G = unpack(select(2, ...))
-local F = unpack(AuroraClassic)
 
 local hooked
 -- SLASH COMMAND

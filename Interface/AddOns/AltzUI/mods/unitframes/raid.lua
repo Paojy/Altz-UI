@@ -76,7 +76,7 @@ local PostCreateIndicatorIcon = function(auras, icon)
 	icon.Overlay:SetPoint("TOPLEFT", icon, "TOPLEFT", -1, 1)
 	icon.Overlay:SetPoint("BOTTOMRIGHT", icon, "BOTTOMRIGHT", 1, -1)
 
-	icon.backdrop = T.createBackdrop(icon, icon, 0)
+	icon.backdrop = T.createPXBackdrop(icon)
 
 	icon.Cooldown.noshowcd = true
 	icon.Cooldown:SetReverse(true)
@@ -299,7 +299,7 @@ local func = function(self, unit)
 	hp:SetAllPoints(self)
 	hp:SetReverseFill(true)
 	
-	hp.backdrop = T.createBackdrop(hp, hp, 0)
+	hp.backdrop = T.createBackdrop(hp)
 	
 	hp.cover = hp:CreateTexture(nil, 'OVERLAY')
     hp.cover:SetAllPoints(hp)
@@ -329,7 +329,7 @@ local func = function(self, unit)
 	pp:SetPoint("BOTTOMLEFT", self, "BOTTOMLEFT")
 	pp:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT")
 	
-	pp.backdrop = T.createBackdrop(hp, hp, 0)
+	pp.backdrop = T.createBackdrop(hp)
 	
 	pp.bg = pp:CreateTexture(nil, 'BACKGROUND')
 	pp.bg:SetAllPoints(pp)
@@ -642,7 +642,7 @@ RaidFrame.point = {
 T.CreateDragFrame(RaidFrame)
 
 local RaidPetFrame = CreateFrame("Frame", "Altz_RaidPet_Holder", UIParent)
-RaidPetFrame.movingname = L["宠物团队框架"]
+RaidPetFrame.movingname = PET.." "..L["团队框架"]
 RaidPetFrame.point = {
 	healer = {a1 = "TOPLEFT", parent = "Altz_Raid_Holder", a2 = "TOPRIGHT", x = 10, y = 0},
 	dpser = {a1 = "TOPLEFT", parent = "Altz_Raid_Holder", a2 = "TOPRIGHT", x = 10, y = 0},
@@ -812,7 +812,7 @@ local pfunc = function(self, unit)
     hp:SetAllPoints(self)
 	hp:SetReverseFill(true)
 	
-	hp.backdrop = T.createBackdrop(hp, hp, 0)
+	hp.backdrop = T.createBackdrop(hp)
 	
 	hp.cover = hp:CreateTexture(nil, 'OVERLAY')
     hp.cover:SetAllPoints(hp)
@@ -889,7 +889,7 @@ local pfunc = function(self, unit)
 	pp:SetPoint("TOPLEFT", self, "BOTTOMLEFT", 0, -1)
 	pp:SetPoint("TOPRIGHT", self, "BOTTOMRIGHT", 0, -1)
 
-	pp.backdrop = T.createBackdrop(pp, pp, 0)
+	pp.backdrop = T.createBackdrop(pp)
 	
 	pp.bg = pp:CreateTexture(nil, 'BACKGROUND')
 	pp.bg:SetAllPoints(pp)
