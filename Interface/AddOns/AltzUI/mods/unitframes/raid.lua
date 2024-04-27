@@ -333,7 +333,7 @@ local func = function(self, unit)
 	
 	pp.bg = pp:CreateTexture(nil, 'BACKGROUND')
 	pp.bg:SetAllPoints(pp)
-	pp.multiplier = .2
+	pp.bg.multiplier = .2
 	
 	pp.EnableSettings = function(object)
 		if not object or object == self then	
@@ -893,7 +893,7 @@ local pfunc = function(self, unit)
 	
 	pp.bg = pp:CreateTexture(nil, 'BACKGROUND')
 	pp.bg:SetAllPoints(pp)
-	pp.multiplier = .2
+	pp.bg.multiplier = .2
 	
 	pp.ApplySettings = function()			
 		pp:SetHeight(aCoreCDB["UnitframeOptions"]["height"]*aCoreCDB["UnitframeOptions"]["ppheight"])

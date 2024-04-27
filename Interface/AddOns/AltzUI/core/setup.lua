@@ -568,7 +568,7 @@ local ApplySizeAndPostions = function(group)
 		aCoreCDB[t.db_t][t.db_v] = t.value
 	end
 	G.BGFrame.Apply()
-	T.ApplyUFSettings({"Health", "Power", "Auras", "Castbar", "ClassPower", "Runes", "Stagger", "Dpsmana", "PVPSpecIcon"})
+	T.ApplyUFSettings({"Health", "Power", "Auras", "Castbar", "ClassPower", "Runes", "Stagger", "Dpsmana", "PVPSpecIcon", "Trinket"})
 end
 
 TutorialsFrame[4]["layout"][1]:SetScript("OnClick", function() ApplySizeAndPostions(Default_Layout) end)
@@ -599,15 +599,14 @@ CreateOptions(TutorialsFrame[5], "group", true, "PlateOptions", "theme", plate_t
 for k, text in pairs(plate_theme_group) do
 	TutorialsFrame[5]["theme"][k]:HookScript("OnClick", function()
 		T.ApplyUFSettings({"Health", "Power", "Castbar", "Auras", "ClassPower", 
-		"Runes", "RaidTargetIndicator", "Name", "PvPClassificationIndicator"}, 'Altz_Nameplates')	
+		"Runes", "RaidTargetIndicator", "Name", "PvPClassificationIndicator", "RedArrow"}, 'Altz_Nameplates')	
 		T.PostUpdateAllPlates()
-		T.PlacePlateClassSource()
 	end)
 end
 
-CreateOptions(TutorialsFrame[5], "check", L["显示玩家姓名板"], "PlateOptions", "playerplate")
+CreateOptions(TutorialsFrame[5], "check", T.split_words(L["显示"],PLAYER,UNIT_NAMEPLATES), "PlateOptions", "playerplate")
 TutorialsFrame[5]["playerplate"]:HookScript("OnClick", function()
-	if aCoreCDB["PlateOptions"]["playerplate"] or aCoreCDB["PlateOptions"]["classresource_show"] then
+	if aCoreCDB["PlateOptions"]["playerplate"] then
 		SetCVar("nameplateShowSelf", 1)
 	else
 		SetCVar("nameplateShowSelf", 0)

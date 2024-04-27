@@ -651,23 +651,22 @@ local Character_default_Settings = {
 		focuscolored = true,
 		focus_color = {r = .5, g = .4, b = .9},
 		threatcolor = true,
+		bar_onlyname = false, -- 友方只显示名字
+				
 		-- 样式
 		bar_width = 100,-- 条形
 		bar_height = 8,
 		valuefontsize = 8,
 		bar_hp_perc = "perc", -- 数值样式  "perc" "value_perc"
-		bar_alwayshp = false, -- 满血显示生命值
-		bar_onlyname = false, -- 友方只显示名字
+		bar_alwayshp = false,		
 
 		number_size = 23,-- 数字型
-		number_cpwidth = 15, -- 职业能量长度
-		number_alwayshp = false, -- 满血显示生命值	
+		number_alwayshp = false,
 		number_colorheperc = false,	
 		-- 玩家姓名板
 		playerplate = false,
 		platecastbar = false,
-		classresource_show = false,
-		classresource_pos = "player", --"player", "target"				
+		classresource_show = false,	
 		-- 光环过滤列表
 		myfiltertype = "blacklist", -- "blacklist", "whitelist", "none"
 		myplateauralist = plate_ignored_auras,

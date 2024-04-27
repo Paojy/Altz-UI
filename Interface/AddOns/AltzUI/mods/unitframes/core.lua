@@ -74,7 +74,7 @@ local function GetUnitColorforNameplate(unit)
 	elseif UnitReaction(unit, "player") then
 		r, g, b = unpack(oUF.colors.reaction[UnitReaction(unit, "player")])
 	else
-		r, g, b = oUF.colors.reaction[5]
+		r, g, b = unpack(oUF.colors.reaction[5])
 	end
 	return r, g, b
 end
@@ -119,172 +119,15 @@ end
 --=============================================--
 --[[ Some update ]]--
 --=============================================--
-
-local PostAltUpdate = function(altpp, unit, cur, min, max)
+local PostUpdate_AltPower = function(altpp, unit, cur, min, max)
 	altpp.value:SetText(cur)
 end
 
-local CombopointsUpdate = function(self, event, unit, powerType)
-	if(not (unit and (UnitIsUnit(unit, 'player') and (not powerType or powerType == 'COMBO_POINTS')
-		or unit == 'vehicle' and powerType == 'COMBO_POINTS'))) then
-		return
-	end
-
-	local element = self.ClassPower
-
-	local cur, max, oldMax
-	if(UnitHasVehicleUI'player') then
-		cur = GetComboPoints('vehicle', 'target')
-		max = UnitPowerMax('vehicle', Enum.PowerType.ComboPoints)
-	else
-		cur = UnitPower('player', Enum.PowerType.ComboPoints)
-		max = UnitPowerMax('player', Enum.PowerType.ComboPoints)
-	end
-
-	if max <= 6 then
-		for i = 1, max do
-			element[i]:SetStatusBarColor(unpack(cpoints_colors[1]))
-			if(i <= cur) then
-				element[i]:Show()
-			else
-				element[i]:Hide()
-			end
-		end
-	else
-		for i = 1, 5 do
-			if cur <= 5 then
-				element[i]:SetStatusBarColor(unpack(cpoints_colors[1]))
-				if(i <= cur) then
-					element[i]:Show()
-				else
-					element[i]:Hide()
-				end
-			else
-				for i = 1, cur - 5 do
-					element[i]:SetStatusBarColor(unpack(cpoints_colors[2]))
-				end
-				for i = cur - 4, 5 do
-					element[i]:SetStatusBarColor(unpack(cpoints_colors[1]))
-				end
-				element[i]:Show()
-			end
-		end
-	end
-
-	oldMax = element.__max
-	if(max ~= oldMax) then
-		for i = 1, 6 do
-			if max == 5 or max == 10 then
-				element[i]:SetWidth((element.width+3)/5-3)
-				if i == 6 then
-					element[i]:Hide()
-				end
-			else
-				element[i]:SetWidth((element.width+3)/max-3)
-				if i > max then
-					element[i]:Hide()
-				end
-			end
-		end
-		element.__max = max
-	end
-end
-
-local ClassIconsPostUpdate = function(element, cur, max, maxchange)
-	for i = 1, 6 do
-		if not max or not cur then return end
-		if max > 0 and cur == max then
-			element[i]:SetStatusBarColor(unpack(classicon_colors[max]))
-		else
-			element[i]:SetStatusBarColor(unpack(classicon_colors[i]))
-		end
-		if maxchange then
-			element[i]:SetWidth((element:GetWidth()+3)/max-3)
-		end
-	end
-end
-
-local PostUpdateRunes = function(self, runemap)
-	local rune, start, duration, runeReady
-	for index, runeID in next, runemap do
-		rune = self[index]
-		if(not rune) then break end
-		if not UnitHasVehicleUI('player') then
-			start, duration, runeReady = GetRuneCooldown(runeID)
-			if(runeReady) then
-				rune.value:SetText("")
-			elseif(start) then
-				rune.dur = GetTime() - start
-				rune:SetMinMaxValues(0, duration)
-				rune:SetValue(0)
-				rune:SetScript('OnUpdate', function(self, elapsed)
-					local dur = self.dur + elapsed
-					self.dur = dur
-					self:SetValue(dur)
-					if dur >= duration or dur <= 0 then
-						self.value:SetText("")
-					else
-						self.value:SetText(T.FormatTime(duration - dur))
-					end
-				end)
-			end
-		end
-	end
-end
-
-local CombatPostUpdate = function(self, inCombat)
+local PostUpdate_CombatIndicator = function(self, inCombat)
 	if inCombat then
 		self.__owner.RestingIndicator:Hide()
 	elseif IsResting() then
 		self.__owner.RestingIndicator:Show()
-	end
-end
-
-local function UpdatePrep()
-	local numOpps = GetNumArenaOpponentSpecs()
-	if numOpps > 0 then
-		for i=1, 5 do
-			if not _G["oUF_AltzArena"..i] then return end
-			local s = GetArenaOpponentSpec(i)
-			local _, spec, class, texture = nil, "UNKNOWN", "UNKNOWN", "INTERFACE\\ICONS\\INV_MISC_QUESTIONMARK"
-
-			if s and s > 0 then
-				_, spec, _, texture, _, _, class = GetSpecializationInfoByID(s)
-			end
-
-			if (i <= numOpps) then
-				if class and spec then
-					local color = oUF.colors.class[class]
-					--print("职业"..class.."颜色"..color.r.." "..color.g.." "..color.b)
-					_G["oUF_AltzArena"..i].prepFrame.SpecClass:SetText(spec.." - "..LOCALIZED_CLASS_NAMES_MALE[class])
-					_G["oUF_AltzArena"..i].prepFrame.Health:SetStatusBarColor(color.r, color.g, color.b)
-					_G["oUF_AltzArena"..i].prepFrame.Icon:SetTexture(G.media.blank)
-					_G["oUF_AltzArena"..i].prepFrame:Show()
-				end
-			else
-				_G["oUF_AltzArena"..i].prepFrame:Hide()
-			end
-		end
-	else
-		for i=1, 5 do
-			if not _G["oUF_AltzArena"..i] then return end
-			_G["oUF_AltzArena"..i].prepFrame:Hide()
-		end
-	end
-end
-
-local function RaidTargetIconPostUpdate(self)
-	if UnitIsUnit(self.__owner.unit, "player") then
-		self:Hide()
-	end
-end
-
-local function TargetRedArrowupdate(self, event, unit)
-	if event == "UNIT_AURA" and unit ~= self.unit then return end
-	if UnitIsUnit('target', self.unit) and not UnitIsUnit('player', self.unit) then
-		self.RedArrow:Show()
-	else
-		self.RedArrow:Hide()
 	end
 end
 
@@ -372,6 +215,14 @@ local PostUpdate_Health = function(self, unit, cur, max)
 	end
 end
 T.PostUpdate_Health = PostUpdate_Health
+
+local UpdateColorArenaPreparation = function(self, event, specID)	
+	if aCoreCDB["SkinOptions"]["style"] == 3 then
+		local _, _, _, _, _, class = GetSpecializationInfoByID(specID)
+		local r, g, b = unpack(oUF.colors.class[unitclass]) 
+		self.__owner.bg:SetVertexColor(r, g, b, 1)
+	end
+end
 
 local Override_PlateHealthColor = function(self, event, unit)
 	if(not unit or self.unit ~= unit) then return end
@@ -471,7 +322,6 @@ T.ApplyPowerThemeSettings = ApplyPowerThemeSettings
 local PostUpdate_PowerColor = function(self, unit)
 	local type = select(2, UnitPowerType(unit))
 	local powercolor = oUF.colors.power[type] or oUF.colors.power.FUEL
-	
 	if self.value then
 		self.value:SetTextColor(unpack(powercolor))
 	end
@@ -486,7 +336,7 @@ local PostUpdate_Power = function(self, unit, cur, min, max)
 			self.value:SetText(T.ShortValue(cur))
 		elseif (cur > 0 and cur < max) or aCoreCDB["UnitframeOptions"]["alwayspp"] or (self.__owner.style == 'Altz_Nameplates') then
 			if type == 'MANA' then
-				self.value:SetText("|cffFFFFFF"..math.floor(cur/max*100+.5)..'|r')
+				self.value:SetText(math.floor(cur/max*100+.5))
 			else
 				self.value:SetText(T.ShortValue(cur))
 			end
@@ -554,7 +404,7 @@ local CreateCastbars = function(self, unit)
 					dpser = {a1 = "TOPLEFT", parent = "oUF_AltzTarget", a2 = "BOTTOMLEFT", x = 0, y = -10},
 				}
 			elseif unit == "focus" then	
-				cb.movingname = T.split_words(FOCUS,L["施法条"])
+				cb.movingname = T.split_words(L["焦点"],L["施法条"])
 				cb.point = {
 					healer = {a1 = "TOPLEFT", parent = "oUF_AltzFocus", a2 = "BOTTOMLEFT", x = 0, y = -10},
 					dpser = {a1 = "TOPLEFT", parent = "oUF_AltzFocus", a2 = "BOTTOMLEFT", x = 0, y = -10},
@@ -988,12 +838,6 @@ local OverrideAurasSetPosition = function(auras, from, to)
 	if auras[1] then
 		auras[1]:SetPoint("LEFT", auras, "CENTER", -((aCoreCDB["PlateOptions"]["plateaurasize"]+4)*auras.iconnum-4)/2, 5)
 	end
-	
-	if auras[1] and auras[1]:IsShown() then
-		auras.__owner.RedArrow:SetPoint('BOTTOM', auras.__owner, 'TOP', 0, 15+aCoreCDB["PlateOptions"]["plateaurasize"]) -- 有光环
-	else
-		auras.__owner.RedArrow:SetPoint('BOTTOM', auras.__owner, 'TOP', 0, 15)
-	end
 end
 
 local CustomFilter = function(icons, unit, data)
@@ -1224,28 +1068,73 @@ end
 --=============================================--
 --[[ Class Resource ]]--
 --=============================================--
-
-local function GetClassbarSize(self)
-	local width, height
+local PostUpdate_ClassPower = function(element, cur, max, hasMaxChanged)
+	if not max or not cur then return end	
 	
-	if self.style == 'Altz_Nameplates' then
-		if aCoreCDB["PlateOptions"]["theme"] == "number" then
-			width = aCoreCDB["PlateOptions"]["number_cpwidth"]*5
-			height = 2
-		else
-			if aCoreCDB["PlateOptions"]["classresource_pos"] == "target" then
-				width = aCoreCDB["PlateOptions"]["bar_width"]*GetCVar("nameplateSelectedScale")
+	if max <= 6 then
+		for i = 1, max do
+			if cur == max then
+				element[i]:SetStatusBarColor(unpack(classicon_colors[max]))
 			else
-				width = aCoreCDB["PlateOptions"]["bar_width"]
+				element[i]:SetStatusBarColor(unpack(classicon_colors[i]))
 			end
-			height = aCoreCDB["PlateOptions"]["bar_height"]/4
 		end
 	else
-		width = aCoreCDB["UnitframeOptions"]["width"]
-		height = aCoreCDB["UnitframeOptions"]["height"]*aCoreCDB["UnitframeOptions"]["ppheight"]
+		for i = 1, 5 do
+			if cur <= 5 then
+				element[i]:SetStatusBarColor(unpack(cpoints_colors[1]))
+			else
+				if cur - 5 >= i then
+					element[i]:SetStatusBarColor(unpack(cpoints_colors[2]))
+				else
+					element[i]:SetStatusBarColor(unpack(cpoints_colors[1]))
+				end
+			end
+		end
 	end
 	
-	return width, height
+	if hasMaxChanged then
+		for i = 1, 6 do
+			if max == 5 or max == 10 then
+				element[i]:SetWidth((element:GetWidth()+3)/5-3)
+				if i == 6 then
+					element[i]:Hide()
+				end
+			else
+				element[i]:SetWidth((element:GetWidth()+3)/max-3)
+				if i > max then
+					element[i]:Hide()
+				end
+			end
+		end
+	end
+end
+
+local PostUpdate_Runes = function(self, runemap)
+	for index, runeID in next, runemap do
+		local rune = self[index]
+		if (not rune) then break end
+		if not UnitHasVehicleUI('player') then
+			local start, duration, runeReady = GetRuneCooldown(runeID)
+			if(runeReady) then
+				rune.value:SetText("")
+			elseif(start) then
+				rune.dur = GetTime() - start
+				rune:SetMinMaxValues(0, duration)
+				rune:SetValue(0)
+				rune:SetScript('OnUpdate', function(self, elapsed)
+					local dur = self.dur + elapsed
+					self.dur = dur
+					self:SetValue(dur)
+					if dur >= duration or dur <= 0 then
+						self.value:SetText("")
+					else
+						self.value:SetText(T.FormatTime(duration - dur))
+					end
+				end)
+			end
+		end
+	end
 end
 
 local function CreateClassResources(self)
@@ -1255,13 +1144,17 @@ local function CreateClassResources(self)
 		
 		for i = 1, count do
 			bars[i] = T.createStatusbar(bars)
-	
+			
 			if i == 1 then
 				bars[i]:SetPoint("BOTTOMLEFT", bars, "BOTTOMLEFT", 0, 0)
 			else
 				bars[i]:SetPoint("LEFT", bars[i-1], "RIGHT", 3, 0)
 			end
-	
+			
+			bars[i].bg = bars[i]:CreateTexture(nil, 'BACKGROUND')
+			bars[i].bg:SetAllPoints(bars[i])
+			bars[i].bg.multiplier = .2
+			
 			bars[i].backdrop = T.createBackdrop(bars[i], 1)
 			
 			bars[i].value = T.createtext(bars[i], "OVERLAY", 12, "OUTLINE", "CENTER")
@@ -1269,9 +1162,10 @@ local function CreateClassResources(self)
 		end
 		
 		bars.ApplySettings = function()
-			local width, height = GetClassbarSize(self)
+			local width, height = aCoreCDB["UnitframeOptions"]["width"], aCoreCDB["UnitframeOptions"]["height"]*aCoreCDB["UnitframeOptions"]["ppheight"]
 			
 			bars:SetSize(width, height)
+			
 			for i = 1, count do
 				bars[i]:SetSize((width+2)/count-3, height)
 				if G.myClass == "DEATHKNIGHT" then
@@ -1284,31 +1178,113 @@ local function CreateClassResources(self)
 				end
 			end
 			
-			if self.style ~= 'Altz_Nameplates' and G.myClass == "DRUID" and aCoreCDB["UnitframeOptions"]["dpsmana"] then
-				bars:SetPoint("BOTTOM", self, "TOP", 0, 8)
+			bars:ClearAllPoints()
+			
+			if G.myClass == "DRUID" and aCoreCDB["UnitframeOptions"]["dpsmana"] then
+				bars:SetPoint("BOTTOM", self, "TOP", 0, 6+height)
 			else
 				bars:SetPoint("BOTTOM", self, "TOP", 0, 3)
 			end
 		end
 		
-		bars.ApplySettings()
-		
 		if G.myClass == "DEATHKNIGHT" then	
-			for i = 1, 6 do
-				bars[i]:SetStatusBarColor(.7, .7, 1)
-			end
+			bars.PostUpdate = PostUpdate_Runes
+			
 			self.Runes = bars
-			self.Runes.PostUpdate = PostUpdateRunes
-		elseif G.myClass == "PALADIN" or G.myClass == "MONK" or G.myClass == "WARLOCK" or G.myClass == "MAGE" then
+			self.Runes.ApplySettings()
+		elseif multicheck(G.myClass , "PALADIN","MONK","WARLOCK","MAGE","ROGUE","DRUID") then
+			bars.PostUpdate = PostUpdate_ClassPower
+			
 			self.ClassPower = bars
-			self.ClassPower.PostUpdate = ClassIconsPostUpdate
-		elseif G.myClass == "ROGUE" or G.myClass == "DRUID" then			
-			self.ClassPower = bars
-			self.ClassPower.Override = CombopointsUpdate
+			self.ClassPower.ApplySettings()
 		end
 	end
 end
+
+local function CreatePlateClassResources(self)
+	if multicheck(G.myClass, "DEATHKNIGHT", "WARLOCK", "PALADIN", "MONK", "MAGE", "ROGUE", "DRUID") then
+		local count = 6		
+		local bars = CreateFrame("Frame", self:GetName().."SpecOrbs", self)
+		bars:SetFrameLevel(self.Health:GetFrameLevel()+10)
+				
+		for i = 1, count do
+			bars[i] = T.createStatusbar(bars)
 	
+			if i == 1 then
+				bars[i]:SetPoint("BOTTOMLEFT", bars, "BOTTOMLEFT", 0, 0)
+			else
+				bars[i]:SetPoint("LEFT", bars[i-1], "RIGHT", 3, 0)
+			end
+			
+			bars[i].bg = bars[i]:CreateTexture(nil, 'BACKGROUND')
+			bars[i].bg:SetAllPoints(bars[i])
+			bars[i].bg.multiplier = .2
+			
+			bars[i].backdrop = T.createBackdrop(bars[i], 1)
+			
+			bars[i].value = T.createtext(bars[i], "OVERLAY", 12, "OUTLINE", "CENTER")
+			bars[i].value:SetPoint("CENTER", bars[i], "CENTER")
+		end
+		
+		bars.Callback = function(self, event, unit)
+			local element = (G.myClass == "DEATHKNIGHT" and "Runes") or "ClassPower"
+			if not self[element] then return end
+			
+			if UnitIsUnit(unit, 'player') and aCoreCDB["PlateOptions"]["playerplate"] and aCoreCDB["PlateOptions"]["classresource_show"] then
+				self:EnableElement(element)
+				self[element]:ForceUpdate()
+				self[element]:Show()		
+			else
+				self:DisableElement(element)
+				self[element]:Hide()
+			end
+		end
+		RegisterNameplateEventCallback(bars.Callback)
+	
+		bars.ApplySettings = function()
+			local width, height
+					
+			if aCoreCDB["PlateOptions"]["theme"] == "number" then
+				width = 60
+				height = 2
+				bars:ClearAllPoints()
+				bars:SetPoint("TOP", self.Health.value, "BOTTOM", 0, -3)
+			else
+				width = aCoreCDB["PlateOptions"]["bar_width"]
+				height = aCoreCDB["PlateOptions"]["bar_height"]/4
+				bars:ClearAllPoints()
+				bars:SetPoint("TOP", self.Tag_Name, "BOTTOM", 0, -1)
+			end
+	
+			bars:SetSize(width, height)
+			
+			for i = 1, count do
+				bars[i]:SetSize((width+2)/count-3, height)
+				if G.myClass == "DEATHKNIGHT" then
+					if aCoreCDB["UnitframeOptions"]["runecooldown"] then
+						bars[i].value:Show()
+					else
+						bars[i].value:Hide()
+					end
+					bars[i].value:SetFont(G.norFont, aCoreCDB["UnitframeOptions"]["valuefs"], "OUTLINE")
+				end
+			end
+		end
+
+		if G.myClass == "DEATHKNIGHT" then	
+			bars.PostUpdate = PostUpdate_Runes
+			
+			self.Runes = bars
+			self.Runes.ApplySettings()
+		elseif multicheck(G.myClass , "PALADIN","MONK","WARLOCK","MAGE","ROGUE","DRUID") then
+			bars.PostUpdate = PostUpdate_ClassPower
+			
+			self.ClassPower = bars
+			self.ClassPower.ApplySettings()
+		end
+	end
+end
+
 --=============================================--
 --[[ Unit Frames ]]--
 --=============================================--
@@ -1386,6 +1362,8 @@ local func = function(self, unit)
 		
 	hp.PostUpdateColor = PostUpdate_HealthColor
 	hp.PostUpdate = PostUpdate_Health
+	hp.UpdateColorArenaPreparation = UpdateColorArenaPreparation
+	
 	tinsert(self.mouseovers, hp)
 	
 	self.Health = hp	
@@ -1422,7 +1400,7 @@ local func = function(self, unit)
 		
 		pp.bg = pp:CreateTexture(nil, 'BACKGROUND')
 		pp.bg:SetAllPoints(pp)
-		pp.multiplier = .2
+		pp.bg.multiplier = .2
 		
 		if not multicheck(u, "pet", "boss", "arena") then
 			pp.value = T.createnumber(pp, "OVERLAY", 16, "OUTLINE", "LEFT")
@@ -1470,7 +1448,7 @@ local func = function(self, unit)
 		altpp.value:SetPoint"CENTER"
 
 		self.AlternativePower = altpp
-		self.AlternativePower.PostUpdate = PostAltUpdate
+		self.AlternativePower.PostUpdate = PostUpdate_AltPower
 	end
 
 	-- little thing around unit frames --
@@ -1650,8 +1628,9 @@ local UnitSpecific = {
 		Combat:SetDesaturated(true)
 		Combat:SetPoint("RIGHT", self.Power, "RIGHT", -5, 0)
 		Combat:SetVertexColor( 1, 1, 0)
+		
 		self.CombatIndicator = Combat
-		self.CombatIndicator.PostUpdate = CombatPostUpdate
+		self.CombatIndicator.PostUpdate = PostUpdate_CombatIndicator
 
 		-- PvP
 		local PvP = self:CreateTexture(nil, 'OVERLAY')
@@ -1742,47 +1721,35 @@ local UnitSpecific = {
 	arena = function(self, ...)
 		func(self, ...)
 
-		if not self.prepFrame then
-			self.prepFrame = CreateFrame("Frame", self:GetName().."PrepFrame", UIParent)
-			self.prepFrame:SetFrameStrata("BACKGROUND")
-			self.prepFrame:SetAllPoints(self)
-			
-			self.prepFrame.Health = T.createStatusbar(self.prepFrame, nil, nil, 1, 1, 1, 1)
-			self.prepFrame.Health:SetAllPoints(self.prepFrame)
-			self.prepFrame.Health.backdrop = T.createBackdrop(self.prepFrame.Health, nil)
-
-			self.prepFrame.Icon = self.prepFrame:CreateTexture(nil, "OVERLAY")
-			self.prepFrame.Icon:SetPoint("LEFT", self.prepFrame, "RIGHT", 5, 0)
-			self.prepFrame.Icon:SetTexCoord(.08, .92, .08, .92)
-			self.prepFrame.Icon.backdrop = T.createBackdrop(self.prepFrame.Icon, nil, nil, self.prepFrame)
-
-			self.prepFrame.SpecClass = T.createtext(self.prepFrame.Health, "OVERLAY", 13, "OUTLINE", "CENTER")
-			self.prepFrame.SpecClass:SetPoint("CENTER")
-		end
-
 		local specIcon = CreateFrame("Frame", nil, self)
 		specIcon:SetPoint("LEFT", self, "RIGHT", 5, 0)
 		specIcon.backdrop = T.createBackdrop(specIcon)
+		
+		specIcon.ApplySettings = function()		
+			self.PVPSpecIcon:SetSize(aCoreCDB["UnitframeOptions"]["height"], aCoreCDB["UnitframeOptions"]["height"])	
+		end
+		
 		self.PVPSpecIcon = specIcon
-
+		self.PVPSpecIcon.ApplySettings()
+		
 		local trinkets = CreateFrame("Frame", nil, self)
 		trinkets:SetPoint("LEFT", specIcon, "RIGHT", 5, 0)
 		trinkets.backdrop = T.createBackdrop(trinkets)
 		trinkets.trinketUseAnnounce = true
 		trinkets.trinketUpAnnounce = true
+		
+		trinkets.ApplySettings = function()
+			self.Trinket:SetSize(aCoreCDB["UnitframeOptions"]["height"], aCoreCDB["UnitframeOptions"]["height"])
+		end
+		
 		self.Trinket = trinkets
+		self.Trinket.ApplySettings()
 		
 		local PvPClassificationIndicator = self:CreateTexture(nil, 'OVERLAY')
 		PvPClassificationIndicator:SetSize(24, 24)
 		PvPClassificationIndicator:SetPoint('CENTER')
-		self.PvPClassificationIndicator = PvPClassificationIndicator
 		
-		self.PVPSpecIcon.ApplySettings = function()
-			self.prepFrame.Icon:SetSize(aCoreCDB["UnitframeOptions"]["height"], aCoreCDB["UnitframeOptions"]["height"])
-			self.PVPSpecIcon:SetSize(aCoreCDB["UnitframeOptions"]["height"], aCoreCDB["UnitframeOptions"]["height"])
-			self.Trinket:SetSize(aCoreCDB["UnitframeOptions"]["height"], aCoreCDB["UnitframeOptions"]["height"])
-		end
-		self.PVPSpecIcon.ApplySettings()
+		self.PvPClassificationIndicator = PvPClassificationIndicator
 	end,
 }
 
@@ -1906,18 +1873,27 @@ local plate_func = function(self, unit)
 	
 	pp.bg = pp:CreateTexture(nil, 'BACKGROUND')
 	pp.bg:SetAllPoints(pp)
-	pp.multiplier = .2
+	pp.bg.multiplier = .2
 		
 	pp.value = T.createnumber(pp, "OVERLAY", 10, "OUTLINE", "LEFT")
 	
 	pp.Callback = function(self, event, unit)		
-		local name = UnitName(unit)
-		if aCoreCDB["PlateOptions"]["custompowerplates"][name] or UnitIsUnit(unit, "player") then	
-			self:EnableElement('Power')
-			self.Power:ForceUpdate()
+		if UnitIsUnit(unit, 'player') then
+			if aCoreCDB["PlateOptions"]["playerplate"] then
+				self:EnableElement("Power")	
+				self.Power:ForceUpdate()			
+			else
+				self:DisableElement("Power")
+			end		
 		else
-			self:DisableElement('Power')
-		end		
+			local name = UnitName(unit)
+			if aCoreCDB["PlateOptions"]["custompowerplates"][name] or UnitIsUnit(unit, "player") then	
+				self:EnableElement('Power')
+				self.Power:ForceUpdate()
+			else
+				self:DisableElement('Power')
+			end
+		end
 	end
 	RegisterNameplateEventCallback(pp.Callback)
 	
@@ -1927,16 +1903,19 @@ local plate_func = function(self, unit)
 		if aCoreCDB["PlateOptions"]["theme"] == "number" then
 			pp:GetStatusBarTexture():SetAlpha(0)
 			pp.backdrop:Hide()
+			pp.bg:Hide()
 			
 			pp.value:SetFont(G.plateFont, aCoreCDB["PlateOptions"]["number_size"]/2, "OUTLINE")
 			pp.value:ClearAllPoints()
-			pp.value:SetPoint("BOTTOMLEFT", hp.value, "BOTTOMRIGHT")
+			pp.value:SetPoint("BOTTOMLEFT", hp.value, "BOTTOMRIGHT", 0, 2)
 		else
 			pp:GetStatusBarTexture():SetAlpha(1)
+			pp.backdrop:Show()
+			pp.bg:Show()
+			
 			pp:SetStatusBarTexture(aCoreCDB["SkinOptions"]["style"] == 1 and G.media.blank or G.media.ufbar)
 			pp.bg:SetTexture(aCoreCDB["SkinOptions"]["style"] == 1 and G.media.blank or G.media.ufbar)
-			pp.backdrop:Show()
-			
+
 			pp.value:SetFont(G.numFont, aCoreCDB["PlateOptions"]["valuefontsize"], "OUTLINE")
 			pp.value:ClearAllPoints()			
 			pp.value:SetPoint("BOTTOMLEFT", self, 4, -2)
@@ -1963,7 +1942,7 @@ local plate_func = function(self, unit)
 	-- 施法条、光环、连击点/个人资源
 	CreatePlateCastbar(self, unit)
 	CreatePlateAuras(self, unit)
-	CreateClassResources(self)
+	CreatePlateClassResources(self)
 	
 	-- 团队标记
 	local ricon = self:CreateTexture(nil, "OVERLAY")
@@ -1980,10 +1959,8 @@ local plate_func = function(self, unit)
 		end
 	end
 	
-	ricon.PostUpdate = RaidTargetIconPostUpdate
-	
 	self.RaidTargetIndicator = ricon
-	ricon.ApplySettings()
+	self.RaidTargetIndicator.ApplySettings()
 	
 	-- 名字
 	local name = T.createtext(self, "OVERLAY", 8, "OUTLINE", "CENTER")
@@ -1999,10 +1976,10 @@ local plate_func = function(self, unit)
 			name:SetPoint("BOTTOMRIGHT", self, "TOPRIGHT", -5, 5)
 		end
 	end
-	
+
 	self:Tag(name, "[Altz:platename]")
 	self.Tag_Name = name
-	name.ApplySettings()
+	self.Tag_Name.ApplySettings()
 	
 	-- PVP标记
 	local PvP = self:CreateTexture(nil, 'OVERLAY')
@@ -2019,91 +1996,59 @@ local plate_func = function(self, unit)
 	end
 	
 	self.PvPClassificationIndicator = PvP
-	PvP.ApplySettings()
+	self.PvPClassificationIndicator.ApplySettings()
 	
-	-- target RedArrow --
+	-- 目标箭头
 	local RedArrow = self:CreateTexture(nil, 'OVERLAY')
 	RedArrow:SetTexture([[Interface\AddOns\AltzUI\media\NeonRedArrow]])
-    RedArrow:SetSize(50, 40)
-    RedArrow:SetPoint('BOTTOM', self, 'TOP', 0, 15)
+    RedArrow:SetSize(25, 20)
+	RedArrow:SetRotation(rad(-90))  
 	RedArrow:Hide()
 	
-	self.RedArrow = RedArrow
+	RedArrow.ApplySettings = function()
+		if aCoreCDB["PlateOptions"]["theme"] == "number" then
+			RedArrow:ClearAllPoints()
+			RedArrow:SetPoint("LEFT", self.Tag_Name, "RIGHT", 0, 0)
+		else
+			RedArrow:ClearAllPoints()
+			RedArrow:SetPoint("LEFT", self, "RIGHT", 0, 0)
+		end
+	end
 	
-	self:RegisterEvent("PLAYER_TARGET_CHANGED", TargetRedArrowupdate, true)
-	self:RegisterEvent("UNIT_AURA", TargetRedArrowupdate, true)
+	self.RedArrow = RedArrow
+	self.RedArrow.ApplySettings()
 end
 
-local function PlacePlateClassSource()
-	if multicheck(G.myClass, "DEATHKNIGHT", "WARLOCK", "PALADIN", "MONK", "MAGE", "ROGUE", "DRUID") then
-		if aCoreCDB["PlateOptions"]["classresource_show"] and aCoreCDB["PlateOptions"]["classresource_pos"] == "target" then -- 个人资源
-			local playerPlate = C_NamePlate.GetNamePlateForUnit("player")
-			if playerPlate and playerPlate.unitFrame then
-				if G.myClass == "DEATHKNIGHT" then
-					playerPlate.unitFrame.Runes:ClearAllPoints()
-					playerPlate.unitFrame.Runes:Hide()
-				else
-					playerPlate.unitFrame.ClassPower:ClearAllPoints()
-					playerPlate.unitFrame.ClassPower:Hide()
-				end
-				local targetPlate = C_NamePlate.GetNamePlateForUnit("target")	
-				if targetPlate and targetPlate.unitFrame and not UnitIsUnit("player", "target") then
-					if G.myClass == "DEATHKNIGHT" then
-						if aCoreCDB["PlateOptions"]["theme"] == "number" then
-							playerPlate.unitFrame.Runes:SetPoint("BOTTOM", targetPlate.unitFrame.Health.value, "TOP", 0, 0)
-						else
-							playerPlate.unitFrame.Runes:SetPoint("BOTTOM", targetPlate.unitFrame, "TOP", 0, 3)
-						end
-						playerPlate.unitFrame.Runes:Show()
-					else
-						if aCoreCDB["PlateOptions"]["theme"] == "number" then
-							playerPlate.unitFrame.ClassPower:SetPoint("BOTTOM", targetPlate.unitFrame.Health.value, "TOP", 0, 0)
-						else
-							playerPlate.unitFrame.ClassPower:SetPoint("BOTTOM", targetPlate.unitFrame, "TOP", 0, 3)
-						end
-						playerPlate.unitFrame.ClassPower:Show()
-					end
-				end		
+local function Update_ArrowPosition()
+	local oUF = AltzUF or oUF
+	for _, obj in next, oUF.objects do
+		if obj.style == "Altz_Nameplates" and obj.unit then
+			if UnitIsUnit("target", obj.unit) and not UnitIsUnit("player", obj.unit) then				
+				obj.RedArrow:Show()		
+			else
+				obj.RedArrow:Hide()
 			end
 		end
 	end
 end
-T.PlacePlateClassSource = PlacePlateClassSource
 
 local function PostUpdatePlate(self, event, unit)
-	if not self then return end
-	
 	if event == "NAME_PLATE_UNIT_ADDED" then
+		if not self then return end
+		
 		for _, func in pairs(nameplate_callbacks) do
 			func(self, event, unit)
 		end
 		
-		if G.myClass == "DEATHKNIGHT" and UnitIsUnit(unit, 'player') then
-			if aCoreCDB["PlateOptions"]["classresource_show"] then -- 个人资源
-				self:EnableElement('Runes')
-				PlacePlateClassSource()
-				self.Runes:ForceUpdate()
-				self.Runes:Show()
-			else
-				self:DisableElement('Runes')
-				self.Runes:Hide()
-			end
+		if UnitIsUnit("target", unit) and not UnitIsUnit("player", unit) then
+			self.RedArrow:Show()
+		else
+			self.RedArrow:Hide()
 		end
-		
-		if multicheck(G.myClass, "WARLOCK", "PALADIN", "MONK", "MAGE", "ROGUE", "DRUID") then
-			if UnitIsUnit(unit, 'player') and aCoreCDB["PlateOptions"]["classresource_show"] then -- 个人资源
-				self:EnableElement('ClassPower')
-				PlacePlateClassSource()
-				self.ClassPower:ForceUpdate()
-				self.ClassPower:Show()
-			else
-				self:DisableElement('ClassPower')
-				self.ClassPower:Hide()
-			end
-		end
+	elseif event == "PLAYER_TARGET_CHANGED" then
+		Update_ArrowPosition()		
 	end
 end
-T.PostUpdatePlate = PostUpdatePlate
 
 local function PostUpdateAllPlates()
 	local oUF = AltzUF or oUF
@@ -2114,11 +2059,6 @@ local function PostUpdateAllPlates()
 	end
 end
 T.PostUpdateAllPlates = PostUpdateAllPlates
-
-local PlacePlateTargetElementEventFrame = CreateFrame("Frame", nil, UIParent)
-PlacePlateTargetElementEventFrame:SetScript("OnEvent", PlacePlateClassSource)
-PlacePlateTargetElementEventFrame:RegisterEvent('PLAYER_TARGET_CHANGED')
-
 --=============================================--
 --[[ Ctrl+Click EasyMenu ]]--
 --=============================================--
@@ -2207,25 +2147,23 @@ end
 --=============================================--
 --[[ Init ]]--
 --=============================================--
-local EventFrame = CreateFrame("Frame", nil, UIParent)
-RegisterStateDriver(EventFrame, "visibility", "[petbattle] hide; show")
-
 oUF:RegisterStyle("Altz", func)
+
 for unit,layout in next, UnitSpecific do
-	oUF:RegisterStyle("Altz - " .. unit:gsub("^%l", string.upper), layout)
+	oUF:RegisterStyle("Altz - "..unit:gsub("^%l", string.upper), layout)
 end
 
 local spawnHelper = function(self, unit)
 	if(UnitSpecific[unit]) then
-		self:SetActiveStyle("Altz - " .. unit:gsub("^%l", string.upper))
+		self:SetActiveStyle("Altz - "..unit:gsub("^%l", string.upper))
 	elseif(UnitSpecific[unit:match("[^%d]+")]) then -- boss1 -> boss
-		self:SetActiveStyle("Altz - " .. unit:match("[^%d]+"):gsub("^%l", string.upper))
+		self:SetActiveStyle("Altz - "..unit:match("[^%d]+"):gsub("^%l", string.upper))
 	else
 		self:SetActiveStyle"Altz"
 	end
 
 	local object = self:Spawn(unit)
-	object:SetParent(EventFrame)
+	
 	return object
 end
 
@@ -2264,7 +2202,7 @@ T.RegisterInitCallback(function()
 		T.CreateDragFrame(totframe)
 
 		local focusframe = spawnHelper(self, "focus")
-		focusframe.movingname = T.split_words(FOCUS,L["单位框架"])
+		focusframe.movingname = T.split_words(L["焦点"],L["单位框架"])
 		focusframe.point = {
 			healer = {a1 = "BOTTOM", parent = targetframe:GetName(), a2 = "BOTTOM" , x = 0, y = 180},
 			dpser = {a1 = "BOTTOM", parent = targetframe:GetName(), a2 = "BOTTOM" , x = 0, y = 180},
@@ -2332,7 +2270,7 @@ T.RegisterInitCallback(function()
 		end
 	end)
 
-	if aCoreCDB["PlateOptions"]["playerplate"] or aCoreCDB["PlateOptions"]["classresource_show"] then
+	if aCoreCDB["PlateOptions"]["playerplate"] then
 		SetCVar("nameplateShowSelf", 1)
 	else
 		SetCVar("nameplateShowSelf", 0)
@@ -2346,34 +2284,7 @@ T.RegisterInitCallback(function()
 	ClassNameplateBarWarlockFrame:SetAlpha(0)
 	
 	HookNameplateCtrlMenu()
-	
-	EventFrame:RegisterEvent("ARENA_PREP_OPPONENT_SPECIALIZATIONS")
-	EventFrame:RegisterEvent("ARENA_OPPONENT_UPDATE")
-	EventFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
-	
 end)
-
-EventFrame:SetScript("OnEvent", function(self, event, ...)
-	self[event](self, ...)
-end)
-
-function EventFrame:ARENA_OPPONENT_UPDATE()
-	for i=1, 5 do
-		if not _G["oUF_AltzArena"..i] then return end
-		_G["oUF_AltzArena"..i].prepFrame:Hide()
-	end
-end
-
-function EventFrame:ARENA_PREP_OPPONENT_SPECIALIZATIONS()
-	UpdatePrep()
-end
-
-function EventFrame:PLAYER_ENTERING_WORLD()
-	UpdatePrep()
-end
-
-PetCastingBarFrame:Hide()
-PetCastingBarFrame:UnregisterAllEvents()
 
 --=============================================--
 --[[ API ]]--

@@ -571,7 +571,7 @@ UFInnerframe.size = CreateOptionPage("UF Options size", L["尺寸"], UFInnerfram
 
 T.createslider(UFInnerframe.size, "long", 30, 80, L["高度"], "UnitframeOptions", "height", 1, 5, 50, 1)
 UFInnerframe.size.height.apply = function()
-	T.ApplyUFSettings({"Health", "Power", "Auras", "Castbar", "ClassPower", "Runes", "Stagger", "Dpsmana", "PVPSpecIcon"})
+	T.ApplyUFSettings({"Health", "Power", "Auras", "Castbar", "ClassPower", "Runes", "Stagger", "Dpsmana", "PVPSpecIcon", "Trinket"})
 	T.UpdatePartySize()
 end
 
@@ -635,12 +635,12 @@ UFInnerframe.castbar.target_cbwidth.apply = function()
 	T.ApplyUFSettings({"Castbar"})
 end
 
-T.createslider(UFInnerframe.castbar, "short", 30, 260, T.split_words(FOCUS,L["施法条"],L["宽度"]), "UnitframeOptions", "focus_cbheight", 1, 5, 30, 1)
+T.createslider(UFInnerframe.castbar, "short", 30, 260, T.split_words(L["焦点"],L["施法条"],L["宽度"]), "UnitframeOptions", "focus_cbheight", 1, 5, 30, 1)
 UFInnerframe.castbar.focus_cbheight.apply = function()
 	T.ApplyUFSettings({"Castbar"})
 end
 
-T.createslider(UFInnerframe.castbar, "short", 230, 260, T.split_words(FOCUS,L["施法条"],L["宽度"]), "UnitframeOptions", "focus_cbwidth", 1, 50, 500, 5)
+T.createslider(UFInnerframe.castbar, "short", 230, 260, T.split_words(L["焦点"],L["施法条"],L["宽度"]), "UnitframeOptions", "focus_cbwidth", 1, 50, 500, 5)
 UFInnerframe.castbar.focus_cbwidth.apply = function()
 	T.ApplyUFSettings({"Castbar"})
 end
@@ -664,9 +664,9 @@ end
 
 T.createDR(UFInnerframe.castbar.independentcb, UFInnerframe.castbar.cbheight, UFInnerframe.castbar.cbwidth, UFInnerframe.castbar.target_cbheight, UFInnerframe.castbar.target_cbwidth, UFInnerframe.castbar.focus_cbheight, UFInnerframe.castbar.focus_cbwidth, UFInnerframe.castbar.namepos, UFInnerframe.castbar.timepos)
 
-T.createcolorpickerbu(UFInnerframe.castbar, 30, 355, L["可打断施法条图标颜色"], "UnitframeOptions", "Interruptible_color")
+T.createcolorpickerbu(UFInnerframe.castbar, 30, 355, T.split_words(L["可打断"],L["施法条"],L["颜色"]), "UnitframeOptions", "Interruptible_color")
 
-T.createcolorpickerbu(UFInnerframe.castbar, 230, 355, L["不可打断施法条图标颜色"], "UnitframeOptions", "notInterruptible_color")
+T.createcolorpickerbu(UFInnerframe.castbar, 230, 355, T.split_words(L["不可打断"],L["施法条"],L["颜色"]), "UnitframeOptions", "notInterruptible_color")
 
 T.createcheckbutton(UFInnerframe.castbar, 30, 390, L["引导法术分段"], "UnitframeOptions", "channelticks")
 T.createcheckbutton(UFInnerframe.castbar, 30, 420, L["隐藏玩家施法条图标"], "UnitframeOptions", "hideplayercastbaricon")
@@ -1814,36 +1814,36 @@ PlateInnerframe.common.enableplate.apply = function()
 	StaticPopup_Show(G.uiname.."Reload Alert")
 end
 
-T.createslider(PlateInnerframe.common, "short", 30, 110, NAME..L["字体大小"], "PlateOptions", "namefontsize", 1, 5, 25, 1)
+T.createslider(PlateInnerframe.common, "short", 30, 110, T.split_words(NAME,L["字体大小"]), "PlateOptions", "namefontsize", 1, 5, 25, 1)
 PlateInnerframe.common.namefontsize.apply = function()
 	T.ApplyUFSettings({"Tag_Name", "Health", "Power"}, "Altz_Nameplates")
 end
 
-T.createslider(PlateInnerframe.common, "short", 230, 110, L["图标数字大小"], "PlateOptions", "numfontsize", 1, 5, 25, 1)
+T.createslider(PlateInnerframe.common, "short", 230, 110, T.split_words(L["图标"],L["数字大小"]), "PlateOptions", "numfontsize", 1, 5, 25, 1)
 PlateInnerframe.common.numfontsize.apply = function()
 	T.ApplyUFSettings({"Auras"}, "Altz_Nameplates")
 end
 
-T.createslider(PlateInnerframe.common, "short", 30, 150, L["光环"].." "..L["图标数量"], "PlateOptions", "plateauranum", 1, 3, 10, 1)
+T.createslider(PlateInnerframe.common, "short", 30, 150, T.split_words(L["光环"],L["图标数量"]), "PlateOptions", "plateauranum", 1, 3, 10, 1)
 PlateInnerframe.common.plateauranum.apply = function()
 	T.ApplyUFSettings({"Auras"}, "Altz_Nameplates")
 end
 
-T.createslider(PlateInnerframe.common, "short", 230, 150, L["光环"].." "..L["图标大小"], "PlateOptions", "plateaurasize", 1, 10, 30, 1)
+T.createslider(PlateInnerframe.common, "short", 230, 150, T.split_words(L["光环"],L["图标大小"]), "PlateOptions", "plateaurasize", 1, 10, 30, 1)
 PlateInnerframe.common.plateaurasize.apply = function()
 	T.ApplyUFSettings({"Auras"}, "Altz_Nameplates")
 end
 
-T.createcolorpickerbu(PlateInnerframe.common, 30, 180, L["可打断施法条颜色"], "PlateOptions", "Interruptible_color")
+T.createcolorpickerbu(PlateInnerframe.common, 30, 180, T.split_words(L["可打断"],L["施法条"],L["颜色"]), "PlateOptions", "Interruptible_color")
 
-T.createcolorpickerbu(PlateInnerframe.common, 230, 180, L["不可打断施法条颜色"], "PlateOptions", "notInterruptible_color")
+T.createcolorpickerbu(PlateInnerframe.common, 230, 180, T.split_words(L["不可打断"],L["施法条"],L["颜色"]), "PlateOptions", "notInterruptible_color")
 
 T.createcheckbutton(PlateInnerframe.common, 30, 210, L["焦点染色"], "PlateOptions", "focuscolored")
 PlateInnerframe.common.focuscolored.apply = function()
 	T.ApplyUFSettings({"Health"}, "Altz_Nameplates")
 end
 
-T.createcolorpickerbu(PlateInnerframe.common, 230, 210, L["焦点颜色"], "PlateOptions", "focus_color")
+T.createcolorpickerbu(PlateInnerframe.common, 230, 210, T.split_words(L["焦点"],L["颜色"]), "PlateOptions", "focus_color")
 PlateInnerframe.common.focus_color.apply = function()
 	T.ApplyUFSettings({"Health"}, "Altz_Nameplates")
 end
@@ -1867,7 +1867,8 @@ T.createDR(PlateInnerframe.common.enableplate,
 PlateInnerframe.common.namefontsize, PlateInnerframe.common.numfontsize,
 PlateInnerframe.common.plateauranum, PlateInnerframe.common.plateaurasize,
 PlateInnerframe.common.Interruptible_color, PlateInnerframe.common.notInterruptible_color,
-PlateInnerframe.common.focuscolored, PlateInnerframe.common.focus_color, PlateInnerframe.common.threatcolor)
+PlateInnerframe.common.focuscolored, PlateInnerframe.common.focus_color, 
+PlateInnerframe.common.threatcolor, PlateInnerframe.common.bar_onlyname)
 
 -- 样式
 PlateInnerframe.style = CreateOptionPage("Nameplates Options common", L["样式"], PlateInnerframe, "VERTICAL", "PlateOptions")
@@ -1887,7 +1888,6 @@ PlateInnerframe.style.theme.hook = function()
 		PlateInnerframe.style.bar_alwayshp:Hide()
 		
 		PlateInnerframe.style.number_size:Show()
-		PlateInnerframe.style.number_cpwidth:Show()
 		PlateInnerframe.style.number_alwayshp:Show()
 		PlateInnerframe.style.number_colorheperc:Show()
 	else
@@ -1898,7 +1898,6 @@ PlateInnerframe.style.theme.hook = function()
 		PlateInnerframe.style.bar_alwayshp:Show()
 	
 		PlateInnerframe.style.number_size:Hide()
-		PlateInnerframe.style.number_cpwidth:Hide()
 		PlateInnerframe.style.number_alwayshp:Hide()
 		PlateInnerframe.style.number_colorheperc:Hide()
 	end
@@ -1906,9 +1905,8 @@ end
 
 PlateInnerframe.style.theme.apply = function()
 	T.ApplyUFSettings({"Health", "Power", "Castbar", "Auras", "ClassPower", 
-		"Runes", "RaidTargetIndicator", "Tag_Name", "PvPClassificationIndicator"}, "Altz_Nameplates")	
+		"Runes", "RaidTargetIndicator", "Tag_Name", "PvPClassificationIndicator", "RedArrow"}, "Altz_Nameplates")	
 	T.PostUpdateAllPlates()
-	T.PlacePlateClassSource()
 	PlateInnerframe.style.theme.hook()
 end
 PlateInnerframe.style.theme:HookScript("OnShow", PlateInnerframe.style.theme.hook)
@@ -1947,20 +1945,15 @@ end
 -- 数值样式的选项
 T.createslider(PlateInnerframe.style, "long", 30, 125, string.format("%s(%s)", L["字体大小"], L["数字样式"]), "PlateOptions", "number_size", 1, 15, 35, 1)
 PlateInnerframe.style.number_size.apply = function()
-	T.ApplyUFSettings({"Health", "Power"}, "Altz_Nameplates")
+	T.ApplyUFSettings({"Health", "Power", "ClassPower"}, "Altz_Nameplates")
 end
 
-T.createslider(PlateInnerframe.style, "long", 30, 165, string.format("%s(%s)", L["姓名板资源尺寸"], L["数字样式"]), "PlateOptions", "number_cpwidth", 1, 5, 30, 1)
-PlateInnerframe.style.number_cpwidth.apply = function()
-	T.ApplyUFSettings({"Castbar"}, "Altz_Nameplates")
-end
-
-T.createcheckbutton(PlateInnerframe.style, 30, 195, string.format("%s(%s)", L["总是显示生命值"],L["数字样式"]), "PlateOptions", "number_alwayshp", L["总是显示生命值提示"])
+T.createcheckbutton(PlateInnerframe.style, 30, 165, string.format("%s(%s)", L["总是显示生命值"],L["数字样式"]), "PlateOptions", "number_alwayshp", L["总是显示生命值提示"])
 PlateInnerframe.style.number_alwayshp.apply = function()
 	T.ApplyUFSettings({"Health"}, "Altz_Nameplates")
 end
 
-T.createcheckbutton(PlateInnerframe.style, 30, 225, string.format("%s(%s)", L["根据血量染色"],L["数字样式"]), "PlateOptions", "number_colorheperc")
+T.createcheckbutton(PlateInnerframe.style, 30, 195, string.format("%s(%s)", L["根据血量染色"],L["数字样式"]), "PlateOptions", "number_colorheperc")
 PlateInnerframe.style.number_colorheperc.apply = function()
 	T.ApplyUFSettings({"Health"}, "Altz_Nameplates")
 end
@@ -1968,9 +1961,9 @@ end
 -- 玩家姓名板
 PlateInnerframe.playerresource = CreateOptionPage("Player Resource Bar Options", L["玩家姓名板"], PlateInnerframe, "VERTICAL", "PlateOptions")
 
-T.createcheckbutton(PlateInnerframe.playerresource, 30, 60, L["显示玩家姓名板"], "PlateOptions", "playerplate")
+T.createcheckbutton(PlateInnerframe.playerresource, 30, 60, T.split_words(L["显示"],L["玩家姓名板"]), "PlateOptions", "playerplate")
 PlateInnerframe.playerresource.playerplate.apply = function()
-	if aCoreCDB["PlateOptions"]["playerplate"] or aCoreCDB["PlateOptions"]["classresource_show"] then
+	if aCoreCDB["PlateOptions"]["playerplate"] then
 		SetCVar("nameplateShowSelf", 1)
 	else
 		SetCVar("nameplateShowSelf", 0)
@@ -1978,24 +1971,13 @@ PlateInnerframe.playerresource.playerplate.apply = function()
 	T.PostUpdateAllPlates()
 end
 
-T.createcheckbutton(PlateInnerframe.playerresource, 70, 90, L["显示玩家施法条"], "PlateOptions", "platecastbar")
+T.createcheckbutton(PlateInnerframe.playerresource, 50, 90, T.split_words(L["显示"],PLAYER,L["施法条"]), "PlateOptions", "platecastbar")
 PlateInnerframe.playerresource.platecastbar.apply = T.PostUpdateAllPlates
 
-T.createDR(PlateInnerframe.playerresource.playerplate, PlateInnerframe.playerresource.platecastbar)
-
-T.createcheckbutton(PlateInnerframe.playerresource, 30, 150, DISPLAY_PERSONAL_RESOURCE, "PlateOptions", "classresource_show")
+T.createcheckbutton(PlateInnerframe.playerresource, 50, 120, DISPLAY_PERSONAL_RESOURCE, "PlateOptions", "classresource_show")
 PlateInnerframe.playerresource.classresource_show.apply = T.PostUpdateAllPlates
 
-T.createradiobuttongroup(PlateInnerframe.playerresource, 70, 180, L["姓名板资源位置"], "classresource_pos", {
-	{"target", L["目标姓名板"]},
-	{"player", L["玩家姓名板"]},
-})
-PlateInnerframe.playerresource.classresource_pos.apply = function()
-	T.ApplyUFSettings({"Runes", "ClassPower"}, "Altz_Nameplates")
-	T.PlacePlateClassSource()
-end
-
-T.createDR(PlateInnerframe.playerresource.classresource_show, PlateInnerframe.playerresource.classresource_pos)
+T.createDR(PlateInnerframe.playerresource.playerplate, PlateInnerframe.playerresource.platecastbar, PlateInnerframe.playerresource.classresource_show)
 
 -- 光环过滤列表
 PlateInnerframe.auralist = CreateOptionPage("Plate Options Aura", L["光环"], PlateInnerframe, "VERTICAL", "PlateOptions")
