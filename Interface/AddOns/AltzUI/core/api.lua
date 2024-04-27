@@ -485,6 +485,14 @@ T.CVartogglebox = function(parent, x, y, value, name, arg1, arg2, tip)
 		end
 	end)
 	
+	bu:SetScript("OnDisable", function(self)
+		bu.Text:SetTextColor(.5, .5, .5)
+	end)
+	
+	bu:SetScript("OnEnable", function(self)
+		bu.Text:SetTextColor(1, .82, 0)
+	end)
+	
 	if tip then
 		bu:SetScript("OnEnter", function(self) 
 			GameTooltip:SetOwner(self, "ANCHOR_RIGHT",  -20, 10)
