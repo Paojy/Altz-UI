@@ -654,7 +654,7 @@ local Character_default_Settings = {
 		bar_onlyname = false, -- 友方只显示名字
 				
 		-- 样式
-		bar_width = 100,-- 条形
+		bar_width = 90,-- 条形
 		bar_height = 8,
 		valuefontsize = 8,
 		bar_hp_perc = "perc", -- 数值样式  "perc" "value_perc"
