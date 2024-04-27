@@ -760,8 +760,10 @@ local PostCreateIcon = function(auras, icon)
 	icon.Overlay:SetDrawLayer("BACKGROUND")
 	icon.Overlay:SetPoint("TOPLEFT", icon, "TOPLEFT", -1, 1)
 	icon.Overlay:SetPoint("BOTTOMRIGHT", icon, "BOTTOMRIGHT", 1, -1)
-	
+
 	icon.backdrop = T.createBackdrop(icon, nil, 2)
+	
+	icon.Cooldown:SetReverse(true)
 end
 T.PostCreateIcon = PostCreateIcon
 
@@ -770,7 +772,7 @@ local PostUpdateGapButton = function(auras, unit, gapButton, position)
 end
 
 local PostUpdateIcon = function(icons, icon, unit, data, position)
-	if (data.sourceUnit == "player") or (UnitIsFriend("player", unit) and data.isHarmful) or aCoreCDB["UnitframeOptions"]["AuraFilterwhitelist"][data.spellId] then
+	if data.sourceUnit and UnitIsUnit(data.sourceUnit, "player") or (UnitIsFriend("player", unit) and data.isHarmful) or aCoreCDB["UnitframeOptions"]["AuraFilterwhitelist"][data.spellId] then
 		icon.Icon:SetDesaturated(false)		
 		icon.Count:Show()
 	else
@@ -802,7 +804,7 @@ local OverrideAurasSetPosition = function(auras, from, to)
 end
 
 local Target_AuraFilter = function(icons, unit, data)
-	if data.sourceUnit == "player" then -- show all my auras
+	if data.sourceUnit and UnitIsUnit(data.sourceUnit, "player") then -- show all my auras
 		return true
 	elseif UnitIsFriend("player", unit) and (not aCoreCDB["UnitframeOptions"]["AuraFilterignoreBuff"] or data.isHarmful) then
 		return true
@@ -814,19 +816,19 @@ local Target_AuraFilter = function(icons, unit, data)
 end
 
 local Boss_AuraFilter = function(icons, unit, data)
-	if data.sourceUnit == "player" or data.isHelpful then -- show buffs and my auras
+	if data.sourceUnit and UnitIsUnit(data.sourceUnit, "player") or data.isHelpful then -- show buffs and my auras
 		return true
 	end
 end
 
 local Party_AuraFilter = function(icons, unit, data)
-	if data.sourceUnit == "player" or data.isHarmful then -- show debuffs and my auras
+	if data.sourceUnit and UnitIsUnit(data.sourceUnit, "player") or data.isHarmful then -- show debuffs and my auras
 		return true
 	end
 end
 
 local NamePlate_AuraFilter = function(icons, unit, data)
-	if data.sourceUnit == "player" then
+	if data.sourceUnit and UnitIsUnit(data.sourceUnit, "player") then
 		if aCoreCDB["PlateOptions"]["myfiltertype"] == "none" then
 			return false
 		elseif aCoreCDB["PlateOptions"]["myfiltertype"] == "whitelist" and aCoreCDB["PlateOptions"]["myplateauralist"][data.spellId] then
@@ -1187,7 +1189,7 @@ end
 local func = function(self, unit)
 	local u = unit:match("[^%d]+")
 	
-	if u == "boss" then
+	if T.multicheck(u, "boss", "party", "partypet") then
 		T.RaidOnMouseOver(self)
 		T.CreateClickSets(self)
 	else
@@ -1208,7 +1210,28 @@ local func = function(self, unit)
 	self.bg = self:CreateTexture(nil, 'BACKGROUND')
     self.bg:SetAllPoints(self)
 	
-	-- health bar --
+	-- 目标指示器
+	if T.multicheck(u,"party","partypet","boss","arena") then
+		local targetborder = T.createPXBackdrop(self, nil, 2)
+		targetborder:SetBackdropBorderColor(1, 1, .4)
+		targetborder:SetFrameLevel(self:GetFrameLevel()+2)
+		targetborder:Hide()
+		targetborder.ShowPlayer =  true
+		
+		self.TargetIndicator = targetborder
+	end
+	
+	-- 仇恨边框
+	if u == "party" then
+		local threatborder = T.createPXBackdrop(self, nil, 2)
+		threatborder:SetFrameLevel(self:GetFrameLevel()+1)
+		threatborder:Hide()
+		
+		threatborder.Override = T.Override_ThreatUpdate
+		self.ThreatIndicator = threatborder
+	end
+	
+	-- 生命条
 	local hp = T.createStatusbar(self)
 	hp:SetAllPoints(self)
 	hp:SetFrameLevel(self:GetFrameLevel()+2) -- 高于肖像
@@ -1216,11 +1239,11 @@ local func = function(self, unit)
 
 	hp.backdrop = T.createBackdrop(hp)
 	
-	hp.cover = hp:CreateTexture(nil, 'OVERLAY')
+	hp.cover = hp:CreateTexture(nil, "BACKGROUND")
     hp.cover:SetAllPoints(hp)
 	hp.cover:SetTexture(G.media.blank)
 	
-	if not (unit == "targettarget" or unit == "focustarget" or unit == "pet") then
+	if not T.multicheck(u, "targettarget", "focustarget", "pet", "partypet") then
 		hp.value = T.createnumber(hp, "OVERLAY", aCoreCDB["UnitframeOptions"]["valuefontsize"], "OUTLINE", "RIGHT")
 	end
 
@@ -1236,10 +1259,12 @@ local func = function(self, unit)
 		hp.ind:SetSize(1, aCoreCDB["UnitframeOptions"]["height"])
 		
 		-- height, width --
-		if T.multicheck(u, "targettarget", "focustarget", "pet") then
+		if T.multicheck(u, "targettarget", "focustarget", "pet", "partypet") then
 			self:SetSize(aCoreCDB["UnitframeOptions"]["widthpet"], aCoreCDB["UnitframeOptions"]["height"])
 		elseif u == "boss" or u == "arena" then
 			self:SetSize(aCoreCDB["UnitframeOptions"]["widthboss"], aCoreCDB["UnitframeOptions"]["height"])
+		elseif u == "party" then
+			self:SetSize(aCoreCDB["UnitframeOptions"]["widthparty"], aCoreCDB["UnitframeOptions"]["height"])
 		else
 			self:SetSize(aCoreCDB["UnitframeOptions"]["width"], aCoreCDB["UnitframeOptions"]["height"])
 		end
@@ -1258,15 +1283,15 @@ local func = function(self, unit)
 		
 	hp.PostUpdateColor = PostUpdate_HealthColor
 	hp.PostUpdate = PostUpdate_Health
-	hp.UpdateColorArenaPreparation = UpdateColorArenaPreparation
-	
+	hp.UpdateColorArenaPreparation = (u == "arena" and UpdateColorArenaPreparation)
+
 	tinsert(self.mouseovers, hp)
 	
 	self.Health = hp	
 	self.Health.ApplySettings()	
 	
-	-- portrait 肖像
-	if T.multicheck(u, "player", "target", "focus", "boss", "arena") then
+	-- 肖像
+	if T.multicheck(u, "player", "target", "focus", "party", "boss", "arena") then
 		local portrait = CreateFrame('PlayerModel', nil, self)	
 		portrait:SetFrameLevel(self:GetFrameLevel())
 		portrait:SetAllPoints(hp)
@@ -1286,8 +1311,8 @@ local func = function(self, unit)
 		self.Portrait = portrait
 	end
 
-	-- power bar --
-	if not (unit == "targettarget" or unit == "focustarget") then
+	-- 能量
+	if not T.multicheck(u, "targettarget", "focustarget", "partypet") then
 		local pp = T.createStatusbar(self)
 		pp:SetPoint("TOPLEFT", self, "BOTTOMLEFT", 0, -1)
 		pp:SetPoint("TOPRIGHT", self, "BOTTOMRIGHT", 0, -1)
@@ -1347,29 +1372,41 @@ local func = function(self, unit)
 		self.AlternativePower.PostUpdate = PostUpdate_AltPower
 	end
 
-	-- little thing around unit frames --
+	-- 团队领袖
 	local leader = hp:CreateTexture(nil, "OVERLAY")
 	leader:SetSize(12, 12)
 	leader:SetPoint("BOTTOMLEFT", hp, "BOTTOMLEFT", 5, -5)
 	self.LeaderIndicator = leader
-
+	
+	-- 团队助手
 	local assistant = hp:CreateTexture(nil, "OVERLAY")
 	assistant:SetSize(12, 12)
 	assistant:SetPoint("BOTTOMLEFT", hp, "BOTTOMLEFT", 5, -5)
 	self.AssistantIndicator = assistant
-
+	
+	-- 团队拾取
 	local masterlooter = hp:CreateTexture(nil, "OVERLAY")
 	masterlooter:SetSize(12, 12)
 	masterlooter:SetPoint("LEFT", leader, "RIGHT")
 	self.MasterLooterIndicator = masterlooter
-
+	
+	-- 团队标记
 	local ricon = hp:CreateTexture(nil, "OVERLAY")
 	ricon:SetPoint("CENTER", hp, "CENTER", 0, 0)
 	ricon:SetSize(40, 40)
 	ricon:SetTexture[[Interface\AddOns\AltzUI\media\raidicons.blp]]
 	self.RaidTargetIndicator = ricon
-
-	-- name --
+	
+	-- 召唤标记
+	local summonIndicator = self:CreateTexture(nil, 'OVERLAY')
+	summonIndicator:SetSize(32, 32)
+	summonIndicator:SetPoint('TOPRIGHT')
+	summonIndicator:SetAtlas('Raid-Icon-SummonPending', true)
+	summonIndicator:Hide()
+	
+	self.SummonIndicator = summonIndicator
+	
+	-- 名字
 	if unit ~= "player" and unit ~= "pet" then
 		local name = T.createtext(hp, "OVERLAY", 13, "OUTLINE", "LEFT")
 		name:SetPoint("TOPLEFT", hp, "TOPLEFT", 3, 9)
@@ -1381,11 +1418,16 @@ local func = function(self, unit)
 		end
 	end
 	
+	-- 施法条
 	CreateCastbars(self, unit)
+	
+	-- 平砍计时条
 	CreateSwingTimer(self, unit)
+	
+	-- 光环
 	CreateAuras(self, unit)
 	
-	-- fade --
+	-- 渐隐
 	if T.multicheck(unit, "target", "player", "focus", "pet", "targettarget") then
 		local fader = {
 			FadeInSmooth = 0.4,
@@ -1604,6 +1646,20 @@ local UnitSpecific = {
 		func(self, ...)
 	end,
 
+	--========================--
+	-- Party
+	--========================--
+	praty = function(self, ...)
+		func(self, ...)
+	end,
+	
+	--========================--
+	-- PartyPet
+	--========================--
+	partypet = function(self, ...)
+		func(self, ...)
+	end,
+		
 	--========================--
 	-- Boss
 	--========================--
@@ -1882,7 +1938,7 @@ local plate_func = function(self, unit)
     arrow:SetSize(25, 20)
 	arrow:SetRotation(rad(-90))  
 	
-	self.TargetArrow = arrow
+	self.TargetIndicator = arrow
 end
 
 local function PostUpdatePlate(self, event, unit)
@@ -2061,9 +2117,46 @@ T.RegisterInitCallback(function()
 			dpser = {a1 = "LEFT", parent = focusframe:GetName(), a2 = "RIGHT" , x = 10, y = 0},
 		}
 		T.CreateDragFrame(ftframe)
-
-		local bossframes = {}
+				
+		if not aCoreCDB["UnitframeOptions"]["raidframe_inparty"] then
+			local partyframes = {} -- 小队
+			for i = 1, 4 do
+				partyframes["party"..i] = spawnHelper(self,"party"..i)
+			end
+			for i = 1, 4 do
+				partyframes["party"..i].movingname = T.split_words(PARTY,L["单位框架"],i)
+				if i == 1 then
+					partyframes["party"..i].point = {
+						healer = {a1 = "TOPLEFT", parent = "UIParent", a2 = "TOPLEFT" , x = 40, y = -340},
+						dpser = {a1 = "TOPLEFT", parent = "UIParent", a2 = "TOPLEFT" , x = 40, y = -340},
+					}
+				else
+					partyframes["party"..i].point = {
+						healer = {a1 = "TOP", parent = partyframes["party"..(i-1)]:GetName(), a2 = "BOTTOM" , x = 0, y = -60},
+						dpser = {a1 = "TOP", parent = partyframes["party"..(i-1)]:GetName(), a2 = "BOTTOM" , x = 0, y = -60},
+					}
+				end		
+				T.CreateDragFrame(partyframes["party"..i])
+			end
+			if aCoreCDB["UnitframeOptions"]["showpartypet"] then
+				local partypetframes = {} -- 小队宠物
+				for i = 1, 4 do
+					partypetframes["partypet"..i] = spawnHelper(self,"partypet"..i)
+				end
+				for i = 1, 4 do					
+					partypetframes["partypet"..i].movingname = T.split_words(PARTY,PET,L["单位框架"],i)
+					partypetframes["partypet"..i].point = {
+						healer = {a1 = "LEFT", parent = partyframes["party"..i]:GetName(), a2 = "RIGHT" , x = 5, y = 0},
+						dpser = {a1 = "LEFT", parent = partyframes["party"..i]:GetName(), a2 = "RIGHT" , x = 5, y = 0},
+					}
+					T.CreateDragFrame(partypetframes["party"..i])
+				end
+			end
+		end
+		
+		
 		if aCoreCDB["UnitframeOptions"]["bossframes"] then
+			local bossframes = {}
 			for i = 1, MAX_BOSS_FRAMES do
 				bossframes["boss"..i] = spawnHelper(self,"boss"..i)
 			end
@@ -2086,8 +2179,8 @@ T.RegisterInitCallback(function()
 			end
 		end
 
-		local arenaframes = {}
 		if aCoreCDB["UnitframeOptions"]["arenaframes"] then
+			local arenaframes = {}
 			for i = 1, 5 do
 				arenaframes["arena"..i] = spawnHelper(self,"arena"..i)
 			end
@@ -2107,7 +2200,7 @@ T.RegisterInitCallback(function()
 				T.CreateDragFrame(arenaframes["arena"..i])
 			end
 		end
-		
+
 		if aCoreCDB["PlateOptions"]["enableplate"] then
 			oUF:RegisterStyle("Altz_Nameplates", plate_func)
 			oUF:SetActiveStyle("Altz_Nameplates")

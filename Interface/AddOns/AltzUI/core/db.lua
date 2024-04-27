@@ -558,7 +558,6 @@ local Character_default_Settings = {
 		sortDirection = 'ASCENDING',
 		-- 小队
 		widthparty = 200,
-		showplayerinparty = true,
 		showpartypet = false,
 		-- 其他
 		showthreatbar = true,

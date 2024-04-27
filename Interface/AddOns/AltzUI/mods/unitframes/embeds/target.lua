@@ -2,9 +2,9 @@ local T, C, L, G = unpack(select(2, ...))
 local oUF = AltzUF or oUF
 
 local Update = function(self, event)
-	local element = self.TargetArrow
+	local element = self.TargetIndicator
 
-	local isTarget = (self.unit ~= "player" and UnitIsUnit(self.unit, "target"))
+	local isTarget = (element.ShowPlayer or self.unit ~= "player") and UnitIsUnit(self.unit, "target")
 	if(isTarget) then
 		element:Show()
 	else
@@ -13,7 +13,7 @@ local Update = function(self, event)
 end
 
 local function Path(self, ...)
-	return (self.TargetArrow.Override or Update) (self, ...)
+	return (self.TargetIndicator.Override or Update) (self, ...)
 end
 
 local function ForceUpdate(element)
@@ -21,7 +21,7 @@ local function ForceUpdate(element)
 end
 
 local function Enable(self)
-	local element = self.TargetArrow
+	local element = self.TargetIndicator
 	if(element) then
 		element.__owner = self
 		element.ForceUpdate = ForceUpdate
@@ -37,7 +37,7 @@ local function Enable(self)
 end
 
 local function Disable(self)
-	local element = self.TargetArrow
+	local element = self.TargetIndicator
 	if(element) then
 		element:Hide()
 
@@ -45,4 +45,4 @@ local function Disable(self)
 	end
 end
  
-oUF:AddElement('TargetArrow', Update, Enable, Disable)
+oUF:AddElement('TargetIndicator', Update, Enable, Disable)

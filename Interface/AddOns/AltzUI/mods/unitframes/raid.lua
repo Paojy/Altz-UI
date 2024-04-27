@@ -4,16 +4,6 @@ local oUF = AltzUF or oUF
 --=============================================--
 --[[ Functions ]]--
 --=============================================--
-local dispelClass = {
-	PRIEST = {Disease = true},
-    SHAMAN = {Curse = true},
-    PALADIN = {Poison = true, Disease = true},
-    DRUID = {Curse = true, Poison = true},
-    MONK = {Disease = true, Poison = true},	
-}
-
-local dispellist = dispelClass[G.myClass] or {}
-local dispelPriority = { Magic = 4, Curse = 3, Poison = 2, Disease = 1,}
 
 local current_encounter
 local gold_str = "|Hgarrmission:altz_config_altz::%s::%s::%s|h|cFFFFD700[%s]|r|h"
@@ -24,54 +14,32 @@ local UpdateHealManabar = function()
 	for _, obj in next, oUF.objects do	
 		if obj.style == 'Altz_Healerraid' and obj.Power then
 			local role = UnitGroupRolesAssigned(obj.unit)
-			if role == 'HEALER' then
-				obj.Power:SetAlpha(1)
+			if aCoreCDB["UnitframeOptions"]["raidmanabars"] and role == 'HEALER' then
+				obj:EnableElement("Power")
+				obj.Power:ForceUpdate()
 			else
-				obj.Power:SetAlpha(0)
+				obj:DisableElement("Power")
 			end
 		end
 	end
 end
 
---=============================================--
---[[               Some update               ]]--
---=============================================--
-local pxbackdrop = { edgeFile = [=[Interface\ChatFrame\ChatFrameBackground]=],  edgeSize = 2, }
-
-local function Createpxborder(self, lvl)
-	local pxbd = CreateFrame("Frame", nil, self, "BackdropTemplate")
-	pxbd:SetPoint("TOPLEFT", self, "TOPLEFT", -3, 3)
-	pxbd:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", 3, -3)
-	pxbd:SetBackdrop(pxbackdrop)
-	pxbd:SetFrameLevel(lvl)
-	pxbd:Hide()
-	return pxbd
-end
-
-local function ChangedTarget(self, event, unit)
-	if UnitIsUnit('target', self.unit) then
-		self.targetborder:Show()
-	else
-		self.targetborder:Hide()
-	end
-end
-
-local function UpdateThreat(self, event, unit)	
+local function Override_ThreatUpdate(self, event, unit)	
 	if (self.unit ~= unit) then return end
 	
-	unit = unit or self.unit
-	local threat = UnitThreatSituation(unit)
+	local element = self.ThreatIndicator
+	local status = UnitThreatSituation(unit)
 	
-	if threat and threat > 1 then
-		local r, g, b = GetThreatStatusColor(threat)
-		self.threatborder:SetBackdropBorderColor(r, g, b)
-		self.threatborder:Show()
+	if status and status > 1 then
+		element:SetBackdropBorderColor(GetThreatStatusColor(status))
+		element:Show()
 	else
-		self.threatborder:Hide()
+		element:Hide()
 	end
 end
+T.Override_ThreatUpdate = Override_ThreatUpdate
 
-local function healpreditionbar(self, ...)
+local function CreateHealPreditionBar(self, ...)
 	local hpb = CreateFrame('StatusBar', nil, self.Health)
 	hpb:SetFrameLevel(4)
 	hpb:SetStatusBarTexture("Interface\\RaidFrame\\Shield-Fill")
@@ -83,36 +51,38 @@ local function healpreditionbar(self, ...)
 	hpb:SetWidth(aCoreCDB["UnitframeOptions"]["raidwidth"])
 	return hpb
 end
+--=============================================--
+--[[ 				Dispel 					 ]]--
+--=============================================--
+local dispelClass = {
+	PRIEST = {Disease = true},
+    SHAMAN = {Curse = true},
+    PALADIN = {Poison = true, Disease = true},
+    DRUID = {Curse = true, Poison = true},
+    MONK = {Disease = true, Poison = true},	
+}
 
-local HealerInd_AuraFilter = function(icons, unit, data)
-	if data.sourceUnit == "player" then -- show my buffs
-		if aCoreCDB["UnitframeOptions"]["hotind_filtertype"] == "blacklist" and not aCoreCDB["UnitframeOptions"]["hotind_auralist"][data.spellId] then
-			return true
-		elseif aCoreCDB["UnitframeOptions"]["hotind_filtertype"] == "whitelist"	and aCoreCDB["UnitframeOptions"]["hotind_auralist"][data.spellId] then
-			return true
+local dispellist = dispelClass[G.myClass] or {}
+local dispelPriority = { Magic = 4, Curse = 3, Poison = 2, Disease = 1,}
+
+local UpdateDispelType = function()
+	if T.multicheck(G.myClass, "SHAMAN", "PALADIN", "DRUID", "PRIEST", "MONK") then
+		local tree = GetSpecialization()
+		
+		if G.myClass == "SHAMAN" then
+			dispellist.Magic = (tree == 3)
+		elseif G.myClass == "PALADIN" then
+			dispellist.Magic = (tree == 1)
+		elseif G.myClass == "DRUID" then
+			dispellist.Magic = (tree == 4)
+		elseif G.myClass == "PRIEST" then
+			dispellist.Magic = (tree == 1 or tree == 2)
+		elseif G.myClass == "MONK" then
+			dispellist.Magic = (tree == 2)
 		end
 	end
 end
 
-local PostCreateIndicatorIcon = function(auras, icon)
-	icon.Icon:SetTexCoord(.07, .93, .07, .93)
-
-	icon.Count:ClearAllPoints()
-	icon.Count:SetPoint("BOTTOM", 0, -3)
-	icon.Count:SetFontObject(nil)
-	icon.Count:SetFont(G.numFont, aCoreCDB["UnitframeOptions"]["hotind_size"]*.8, "OUTLINE")
-	icon.Count:SetTextColor(.9, .9, .1)
-
-	icon.Overlay:SetTexture(G.media.blank)
-	icon.Overlay:SetDrawLayer("BACKGROUND")
-	icon.Overlay:SetPoint("TOPLEFT", icon, "TOPLEFT", -1, 1)
-	icon.Overlay:SetPoint("BOTTOMRIGHT", icon, "BOTTOMRIGHT", 1, -1)
-
-	icon.backdrop = T.createPXBackdrop(icon)
-
-	icon.Cooldown.noshowcd = true
-	icon.Cooldown:SetReverse(true)
-end
 --=============================================--
 --[[              Click Cast                 ]]--
 --=============================================--
@@ -302,6 +272,7 @@ T.UpdateClicksforAll = UpdateClicksforAll
 
 local RaidDebuff_AuraFilter = function(debuffs, unit, data)
 	local spellID = data.spellId
+	local dtype = data.dispelName
 	
 	if aCoreCDB["UnitframeOptions"]["debuff_list_black"][spellID] then -- 黑名单不显示
 		return false
@@ -354,6 +325,7 @@ end
 
 local GetDebuffPriority = function(data)
 	local spellID = data.spellId
+	local dtype = data.dispelNameW
 	
 	if aCoreCDB["UnitframeOptions"]["debuff_list"][spellID] then
 		return aCoreCDB["UnitframeOptions"]["debuff_list"][spellID]
@@ -379,6 +351,27 @@ local SortDebuffs = function(a, b)
 	return a.priority > b.priority or a.auraInstanceID < b.auraInstanceID
 end
 
+local PostUpdateDebuffs = function(auras, unit)
+	local show_dispel
+	for i = 1, #auras do
+		local bu = auras[i]
+		if bu and bu.Overlay:IsShown() then
+			local data = C_UnitAuras.GetAuraDataByAuraInstanceID(unit, bu.auraInstanceID)
+			if data and dispellist[data.dispelName] then
+				local color = auras.__owner.colors.debuff[data.dispelName]
+				auras.__owner.dispelborder:SetBackdropBorderColor(unpack(color))
+				auras.__owner.dispelborder:Show()
+				show_dispel = true
+				return
+			end
+		end
+	end
+			
+	if not show_dispel then
+		auras.__owner.dispelborder:Hide()
+	end	
+end
+
 local CreateRaidDebuffs = function(self, unit)
 	local debuffs = CreateFrame("Frame", nil, self)				
 	debuffs.initialAnchor = "BOTTOMLEFT"
@@ -390,6 +383,7 @@ local CreateRaidDebuffs = function(self, unit)
 	debuffs.PostCreateButton = T.PostCreateIcon
 	debuffs.FilterAura = RaidDebuff_AuraFilter
 	debuffs.SortDebuffs = SortDebuffs
+	debuffs.PostUpdate = PostUpdateDebuffs
 	
 	debuffs.ApplySettings =  function()			
 		debuffs:SetPoint("LEFT", self, "CENTER", aCoreCDB["UnitframeOptions"]["raid_debuff_anchor_x"], aCoreCDB["UnitframeOptions"]["raid_debuff_anchor_y"])
@@ -451,6 +445,73 @@ local CreateRaidBuffs = function(self, unit)
 	self.Buffs = buffs
 	self.Buffs.ApplySettings()
 end
+
+-- 治疗指示器
+local PostCreateIndicatorIcon = function(auras, icon)
+	icon.Icon:SetTexCoord(.07, .93, .07, .93)
+
+	icon.Count:ClearAllPoints()
+	icon.Count:SetPoint("BOTTOM", 0, -3)
+	icon.Count:SetFontObject(nil)
+	icon.Count:SetFont(G.numFont, aCoreCDB["UnitframeOptions"]["hotind_size"]*.8, "OUTLINE")
+	icon.Count:SetTextColor(.9, .9, .1)
+
+	icon.Overlay:SetTexture(G.media.blank)
+	icon.Overlay:SetDrawLayer("BORDER")
+	icon.Overlay:SetPoint("TOPLEFT", icon, "TOPLEFT", -1, 1)
+	icon.Overlay:SetPoint("BOTTOMRIGHT", icon, "BOTTOMRIGHT", 1, -1)
+	
+	T.createTexBackdrop(icon, nil, "BACKGROUND")
+	
+	icon.Cooldown.noshowcd = true
+	icon.Cooldown:SetReverse(true)
+end
+
+local HealerInd_AuraFilter = function(icons, unit, data)
+	if data.sourceUnit and UnitIsUnit(data.sourceUnit, "player") then -- show my buffs
+		if aCoreCDB["UnitframeOptions"]["hotind_filtertype"] == "blacklist" and not aCoreCDB["UnitframeOptions"]["hotind_auralist"][data.spellId] then
+			return true
+		elseif aCoreCDB["UnitframeOptions"]["hotind_filtertype"] == "whitelist"	and aCoreCDB["UnitframeOptions"]["hotind_auralist"][data.spellId] then
+			return true
+		end
+	end
+end
+
+local CreateHealIndicator = function(self, unit)
+	local icons = CreateFrame("Frame", nil, self)
+	icons:SetPoint("TOPRIGHT", self, "TOPRIGHT", -1, -1)	
+	icons.initialAnchor = "TOPRIGHT"
+	icons["growth-x"] = "LEFT"
+	icons["growth-y"] = "DOWN"	
+	icons.spacing = 1
+
+	icons.numDebuffs = 1
+	icons.numBuffs = 8
+	
+	icons.FilterAura = HealerInd_AuraFilter
+	icons.PostCreateButton = PostCreateIndicatorIcon
+	
+	icons.EnableSettings = function(object)
+		if not object or object == self then	
+			if aCoreCDB["UnitframeOptions"]["hotind_style"] == "icon_ind" then
+				self:EnableElement("Auras")
+				self.Auras:ForceUpdate()
+			else
+				self:DisableElement("Auras")
+			end
+		end
+	end
+	oUF:RegisterInitCallback(icons.EnableSettings)
+	
+	icons.ApplySettings =  function()
+		icons:SetHeight(aCoreCDB["UnitframeOptions"]["raidheight"])
+		icons:SetWidth(aCoreCDB["UnitframeOptions"]["raidwidth"]-2)
+		icons.size = aCoreCDB["UnitframeOptions"]["hotind_size"]
+	end
+	
+	self.Auras = icons
+	self.Auras.ApplySettings()
+end
 --=============================================--
 --[[              Raid Frames                ]]--
 --=============================================--
@@ -473,14 +534,27 @@ local func = function(self, unit)
 	self.bg = self:CreateTexture(nil, 'BACKGROUND')
     self.bg:SetAllPoints(self)
 	
-	-- target border --
-	self.targetborder = Createpxborder(self, 2)
-	self.targetborder:SetBackdropBorderColor(1, 1, .4)
-	self:RegisterEvent("PLAYER_TARGET_CHANGED", ChangedTarget, true)
+	-- 目标边框
+	local targetborder = T.createPXBackdrop(self, nil, 2)
+	targetborder:SetBackdropBorderColor(1, 1, .4)
+	targetborder:SetFrameLevel(self:GetFrameLevel()+3)
+	targetborder:Hide()
+	targetborder.ShowPlayer =  true
+	
+	self.TargetIndicator = targetborder
+	
+	-- 驱散边框
+	self.dispelborder = T.createPXBackdrop(self, nil, 2)
+	self.dispelborder:SetFrameLevel(self:GetFrameLevel()+2)
+	self.dispelborder:Hide()
 
-	-- threat border --
-	self.threatborder = Createpxborder(self, 1)
-	self:RegisterEvent("UNIT_THREAT_SITUATION_UPDATE", UpdateThreat, true)
+	-- 仇恨边框
+	local threatborder = T.createPXBackdrop(self, nil, 2)
+	threatborder:SetFrameLevel(self:GetFrameLevel()+1)
+	threatborder:Hide()
+	
+	threatborder.Override = Override_ThreatUpdate
+	self.ThreatIndicator = threatborder
 	
 	-- health bar --
     local hp = T.createStatusbar(self, nil, nil, 1, 1, 1, 1)
@@ -489,7 +563,7 @@ local func = function(self, unit)
 	
 	hp.backdrop = T.createBackdrop(hp)
 	
-	hp.cover = hp:CreateTexture(nil, 'OVERLAY')
+	hp.cover = hp:CreateTexture(nil, "BACKGROUND")
     hp.cover:SetAllPoints(hp)
 	hp.cover:SetTexture(G.media.blank)
 	
@@ -512,7 +586,7 @@ local func = function(self, unit)
 	self.Health = hp
 	self.Health.ApplySettings()
 	
-	-- raid manabars --
+	-- 治疗蓝条
 	local pp = T.createStatusbar(self)
 	pp:SetPoint("BOTTOMLEFT", self, "BOTTOMLEFT")
 	pp:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT")
@@ -524,12 +598,15 @@ local func = function(self, unit)
 	pp.bg.multiplier = .2
 	
 	pp.EnableSettings = function(object)
-		if not object or object == self then	
-			if aCoreCDB["UnitframeOptions"]["raidmanabars"] then			
-				self:EnableElement("Power")
-				self.Power:ForceUpdate()
-			else
-				self:DisableElement("Power")
+		if not object or object == self then
+			if object.unit then
+				local role = UnitGroupRolesAssigned(object.unit)
+				if aCoreCDB["UnitframeOptions"]["raidmanabars"] and role == "HEALER" then
+					self:EnableElement("Power")
+					self.Power:ForceUpdate()
+				else
+					self:DisableElement("Power")
+				end
 			end
 		end
 	end
@@ -547,7 +624,7 @@ local func = function(self, unit)
 	self.Power = pp
 	self.Power.ApplySettings()
 	
-	-- gcd frane --
+	-- GCD
 	local gcd = CreateFrame("StatusBar", nil, self)
     gcd:SetAllPoints(self)
     gcd:SetStatusBarTexture(G.media.blank)
@@ -569,9 +646,9 @@ local func = function(self, unit)
 	
 	-- heal prediction --
 	local hp_predict = {
-		myBar = healpreditionbar(self, .4, .8, 0, .5),
-		otherBar = healpreditionbar(self, 0, .4, 0, .5),
-		absorbBar = healpreditionbar(self, .2, 1, 1, .7),
+		myBar = CreateHealPreditionBar(self, .4, .8, 0, .5),
+		otherBar = CreateHealPreditionBar(self, 0, .4, 0, .5),
+		absorbBar = CreateHealPreditionBar(self, .2, 1, 1, .7),
 		maxOverflow = 1.2,
 	}
 	
@@ -599,7 +676,7 @@ local func = function(self, unit)
 	end
 	
 	self.HealthPrediction = hp_predict
-	hp_predict.ApplySettings()
+	self.HealthPrediction.ApplySettings()
 	
 	-- 团队领袖
 	local leader = hp:CreateTexture(nil, "OVERLAY", nil, 1)
@@ -659,12 +736,13 @@ local func = function(self, unit)
     self.ReadyCheckIndicator = readycheck
 	
 	-- 召唤标记
-	local summonIndicator = self:CreateTexture(nil, 'OVERLAY')
-    summonIndicator:SetSize(32, 32)
-    summonIndicator:SetPoint('TOPRIGHT', self)
+	local summonIndicator = hp:CreateTexture(nil, 'OVERLAY')
+	summonIndicator:SetSize(32, 32)
+	summonIndicator:SetPoint('TOPRIGHT')
 	summonIndicator:SetAtlas('Raid-Icon-SummonPending', true)
-	summonIndicator:Show()
-    self.SummonIndicator = summonIndicator
+	summonIndicator:Hide()
+	
+	self.SummonIndicator = summonIndicator
 	
 	-- 团队职责
 	local lfd =  T.createtext(hp, "OVERLAY", 13, "OUTLINE", "CENTER")
@@ -680,7 +758,7 @@ local func = function(self, unit)
 	lfd.ApplySettings()
 	
 	-- 名字
-	local raidname = T.createtext(hp, "ARTWORK", 10, "OUTLINE", "RIGHT")
+	local raidname = T.createtext(hp, "OVERLAY", 10, "OUTLINE", "RIGHT")
 	raidname:SetPoint("BOTTOMRIGHT", hp, "BOTTOMRIGHT", -1, 5)
 	
 	raidname.ApplySettings = function()
@@ -709,9 +787,24 @@ local func = function(self, unit)
 	-- 团队增益
 	CreateRaidBuffs(self, unit)
 	
+	-- 治疗边角指示器（图标）
+	CreateHealIndicator(self, unit)
+	
 	-- 治疗边角指示器（数字）
 	local ind_number = CreateFrame("Frame", nil, self)
 	ind_number:SetAllPoints()
+	
+	ind_number.EnableSettings = function(object)
+		if not object or object == self then	
+			if aCoreCDB["UnitframeOptions"]["hotind_style"] == "number_ind" then
+				self:EnableElement("AltzIndicators")
+				self:UpdateTags()
+			else
+				self:DisableElement("AltzIndicators")
+			end
+		end
+	end
+	oUF:RegisterInitCallback(ind_number.EnableSettings)
 	
 	ind_number.ApplySettings = function()
 		ind_number.AuraStatusBL:SetFont(G.norFont, aCoreCDB["UnitframeOptions"]["hotind_size"], "OUTLINE")
@@ -729,52 +822,7 @@ local func = function(self, unit)
 		end
 	end
 	
-	ind_number.EnableSettings = function(object)
-		if not object or object == self then	
-			if aCoreCDB["UnitframeOptions"]["hotind_style"] == "number_ind" then
-				self:EnableElement("AltzIndicators")
-				self:UpdateTags()
-			else
-				self:DisableElement("AltzIndicators")
-			end
-		end
-	end
-	oUF:RegisterInitCallback(ind_number.EnableSettings)
-	
 	self.AltzIndicators = ind_number	
-	
-	-- 治疗边角指示器（图标）
-	local ind_icon = CreateFrame("Frame", nil, self)
-	ind_icon.spacing = 1
-	ind_icon:SetPoint("TOPRIGHT", self, "TOPRIGHT", -1, -1)
-	ind_icon.initialAnchor = "TOPRIGHT"
-	ind_icon["growth-x"] = "LEFT"
-	ind_icon["growth-y"] = "DOWN"
-	ind_icon.numDebuffs = 1
-	ind_icon.numBuffs = 8
-	ind_icon.FilterAura = HealerInd_AuraFilter
-	ind_icon.PostCreateButton = PostCreateIndicatorIcon
-	
-	ind_icon.EnableSettings = function(object)
-		if not object or object == self then	
-			if aCoreCDB["UnitframeOptions"]["hotind_style"] == "icon_ind" then
-				self:EnableElement("Auras")
-				self.Auras:ForceUpdate()
-			else
-				self:DisableElement("Auras")
-			end
-		end
-	end
-	oUF:RegisterInitCallback(ind_icon.EnableSettings)
-	
-	ind_icon.ApplySettings =  function()
-		ind_icon:SetHeight(aCoreCDB["UnitframeOptions"]["raidheight"])
-		ind_icon:SetWidth(aCoreCDB["UnitframeOptions"]["raidwidth"]-2)
-		ind_icon.size = aCoreCDB["UnitframeOptions"]["hotind_size"]
-	end
-	
-	self.Auras = ind_icon
-	ind_icon.ApplySettings()
 
 	-- 距离指示
     local range = {
@@ -810,12 +858,6 @@ local GetGroupfilter = function()
 		return "1,2,3,4,5,6,7,8"
 	end
 end
-
-local groupingOrder = {
-	["GROUP"] = "1,2,3,4,5,6,7,8",
-	["CLASS"] = "WARRIOR, DEATHKNIGHT, PALADIN, WARLOCK, SHAMAN, MAGE, MONK, HUNTER, PRIEST, ROGUE, DRUID",
-	["ROLE"] = "TANK, HEALER, DAMAGER"
-}
 
 local RaidFrame = CreateFrame("Frame", "Altz_Raid_Holder", UIParent)
 RaidFrame.movingname = L["团队框架"]
@@ -944,247 +986,6 @@ T.UpdateGroupfilter = function()
 end
 
 --=============================================--
---[[             Party Frames                ]]--
---=============================================--
-
-local pfunc = function(self, unit)	
-	T.CreateClickSets(self)
-	T.RaidOnMouseOver(self)
-
-	self:RegisterForClicks"AnyUp"
-	self.mouseovers = {}
-
-	-- highlight --
-	self.hl = self:CreateTexture(nil, "HIGHLIGHT")
-	self.hl:SetAllPoints()
-	self.hl:SetTexture(G.media.barhightlight)
-	self.hl:SetVertexColor( 1, 1, 1, .3)
-	self.hl:SetBlendMode("ADD")
-	
-	-- background --
-	self.bg = self:CreateTexture(nil, 'BACKGROUND')
-    self.bg:SetAllPoints(self)
-	
-	-- target border --
-	self.targetborder = Createpxborder(self, 2)
-	self.targetborder:SetBackdropBorderColor(1, 1, .4)
-	self:RegisterEvent("PLAYER_TARGET_CHANGED", ChangedTarget, true)
-
-	-- threat border --
-	self.threatborder = Createpxborder(self, 1)
-	self:RegisterEvent("UNIT_THREAT_SITUATION_UPDATE", UpdateThreat, true)
-	
-	-- health bar --
-    local hp = T.createStatusbar(self)
-    hp:SetAllPoints(self)
-	hp:SetReverseFill(true)
-	
-	hp.backdrop = T.createBackdrop(hp)
-	
-	hp.cover = hp:CreateTexture(nil, 'OVERLAY')
-    hp.cover:SetAllPoints(hp)
-	hp.cover:SetTexture(G.media.blank)
-	
-	hp.value = T.createnumber(hp, "OVERLAY", aCoreCDB["UnitframeOptions"]["valuefontsize"], "OUTLINE", "RIGHT")
-	hp.value:SetPoint("BOTTOMRIGHT", self, -4, -2)
-	
-	hp.ind = hp:CreateTexture(nil, "OVERLAY", nil, 1)
-    hp.ind:SetTexture("Interface\\Buttons\\WHITE8x8")
-	hp.ind:SetVertexColor(0, 0, 0)
-	hp.ind:SetSize(1, 18)
-	hp.ind:SetPoint("RIGHT", hp:GetStatusBarTexture(), "LEFT", 0, 0)
-  
-	hp.ApplySettings = function()
-		T.ApplyHealthThemeSettings(self, hp)
-		
-		hp.ind:SetSize(1, aCoreCDB["UnitframeOptions"]["height"])
-		
-		-- height, width --
-		self:SetSize(aCoreCDB["UnitframeOptions"]["widthparty"], aCoreCDB["UnitframeOptions"]["height"])
-		
-		-- value --
-		if hp.value then
-			hp.value:SetFont(G.numFont, aCoreCDB["UnitframeOptions"]["valuefontsize"], "OUTLINE")
-			hp.value:ClearAllPoints()
-			if aCoreCDB["UnitframeOptions"]["height"] >= aCoreCDB["UnitframeOptions"]["valuefontsize"] then
-				hp.value:SetPoint("BOTTOMRIGHT", self, -4, -2)
-			else
-				hp.value:SetPoint("TOPRIGHT", self, "BOTTOMRIGHT", -4, -2-(aCoreCDB["UnitframeOptions"]["height"]*aCoreCDB["UnitframeOptions"]["ppheight"]))
-			end
-		end
-	end
-
-	hp.PostUpdateColor = T.PostUpdate_HealthColor
-	hp.PostUpdate = T.PostUpdate_Health
-	tinsert(self.mouseovers, hp)
-	
-	self.Health = hp
-	self.Health.ApplySettings()
-	
-	-- portrait
-	local portrait = CreateFrame('PlayerModel', nil, self)
-	portrait:SetPoint("TOPLEFT", 0, 0)
-	portrait:SetPoint("BOTTOMRIGHT", -1, 0)
-	
-	portrait:RegisterEvent("PLAYER_FLAGS_CHANGED")
-	portrait:SetScript("OnEvent",function(self, event) 
-		if event == "PLAYER_FLAGS_CHANGED" and aCoreCDB["SkinOptions"]["afkscreen"] then
-			if UnitIsAFK("player") then
-				self:Hide()
-			else
-				self:Show()
-			end
-		end
-	end)
-	
-	portrait.EnableSettings = function(object)
-		if not object or object == self then	
-			if aCoreCDB["UnitframeOptions"]["portrait"] then
-				self:EnableElement("Portrait")
-				self.Portrait:ForceUpdate()
-			else
-				self:DisableElement("Portrait")
-			end
-		end
-	end
-	oUF:RegisterInitCallback(portrait.EnableSettings)
-	
-	self.Portrait = portrait
-		
-	-- power bar --
-	local pp = T.createStatusbar(self)
-	pp:SetPoint("TOPLEFT", self, "BOTTOMLEFT", 0, -1)
-	pp:SetPoint("TOPRIGHT", self, "BOTTOMRIGHT", 0, -1)
-
-	pp.backdrop = T.createBackdrop(pp)
-	
-	pp.bg = pp:CreateTexture(nil, 'BACKGROUND')
-	pp.bg:SetAllPoints(pp)
-	pp.bg.multiplier = .2
-	
-	pp.ApplySettings = function()			
-		pp:SetHeight(aCoreCDB["UnitframeOptions"]["height"]*aCoreCDB["UnitframeOptions"]["ppheight"])
-		
-		T.ApplyPowerThemeSettings(pp)
-	end
-	
-	pp.PostUpdateColor = T.PostUpdate_PowerColor
-	pp.PostUpdate = T.PostUpdate_Power
-	tinsert(self.mouseovers, pp)
-	
-	self.Power = pp
-	self.Power.ApplySettings()
-	
-	-- 团队标记
-	local ricon = hp:CreateTexture(nil, "OVERLAY")
-	ricon:SetPoint("CENTER", hp, "CENTER", 0, 0)
-	ricon:SetSize(40, 40)
-	ricon:SetTexture[[Interface\AddOns\AltzUI\media\raidicons.blp]]
-	self.RaidTargetIndicator = ricon
-	
-	-- 拉人
-    local summonIndicator = self:CreateTexture(nil, 'OVERLAY')
-    summonIndicator:SetSize(32, 32)
-    summonIndicator:SetPoint('TOPRIGHT', self)
-    self.SummonIndicator = summonIndicator
-	
-	-- 名字
-	local name = T.createtext(hp, "OVERLAY", 13, "OUTLINE", "LEFT")
-	name:SetPoint("TOPLEFT", hp, "TOPLEFT", 3, 9)
-	self:Tag(name, "[Altz:longname]")
-	
-	-- 光环
-	T.CreateAuras(self, unit)
-end
-
-oUF:RegisterStyle("Altz_party", pfunc)
-
-local PartyFrame = CreateFrame("Frame", "Altz_Party_Holder", UIParent)
-PartyFrame.movingname = PARTY
-PartyFrame.point = {
-	healer = {a1 = "TOPLEFT", parent = "UIParent", a2 = "TOPLEFT" , x = 240, y = -340},
-	dpser = {a1 = "TOPLEFT", parent = "UIParent", a2 = "TOPLEFT" , x = 240, y = -340},
-}
-T.CreateDragFrame(PartyFrame)
-
-local PartyPetFrame = CreateFrame("Frame", "Altz_PartyPet_Holder", UIParent)
-PartyPetFrame.movingname = PARTY..PET
-PartyPetFrame.point = {
-	healer = {a1 = "TOPLEFT", parent = "Altz_Party_Holder", a2 = "BOTTOMLEFT" , x = 0, y = -40},
-	dpser = {a1 = "TOPLEFT", parent = "Altz_Party_Holder", a2 = "BOTTOMLEFT" , x = 0, y = -40},
-}
-T.CreateDragFrame(PartyPetFrame)
-
-local function Spawnparty()
-	oUF:SetActiveStyle"Altz_party"
-	
-	PartyFrame[1] = oUF:SpawnHeader('Altz_Party', nil, not aCoreCDB["UnitframeOptions"]["raidframe_inparty"] and 'party',
-		'oUF-initialConfigFunction', initconfig:format(aCoreCDB["UnitframeOptions"]["widthparty"], aCoreCDB["UnitframeOptions"]["height"]),
-		'showPlayer', true,
-		'showSolo', false,
-		'showParty', true,
-		'showRaid', false,
-		'xOffset', 0,
-		'yOffset', -50,
-		'point', "TOP",
-		'groupFilter', "1,2,3,4,5,6,7,8",
-		'groupingOrder', "1,2,3,4,5,6,7,8",
-		'groupBy', "GROUP",
-		'maxColumns', 5,
-		'unitsPerColumn', 5,
-		'columnSpacing', 5,
-		'columnAnchorPoint', "LEFT"
-	)
-
-	PartyFrame[1]:SetPoint("TOPLEFT", PartyFrame, "TOPLEFT")
-	
-	PartyPetFrame[1] = oUF:SpawnHeader('Altz_PartyPet', 'SecureGroupPetHeaderTemplate', not aCoreCDB["UnitframeOptions"]["raidframe_inparty"] and 'party',
-		'oUF-initialConfigFunction', initconfig:format(aCoreCDB["UnitframeOptions"]["widthparty"], aCoreCDB["UnitframeOptions"]["height"]),
-		'showPlayer', true,
-		'showSolo', false,
-		'showParty', true,
-		'showRaid', false,
-		'xOffset', 0,
-		'yOffset', -50,
-		'point', "TOP",
-		'groupFilter', "1,2,3,4,5,6,7,8",
-		'groupingOrder', "1,2,3,4,5,6,7,8",
-		'groupBy', "GROUP",
-		'maxColumns', 5,
-		'unitsPerColumn', 5,
-		'columnSpacing', 5,
-		'columnAnchorPoint', "LEFT"
-	)
-    
-	PartyPetFrame[1]:SetPoint("TOPLEFT", PartyPetFrame, "TOPLEFT")
-end
-
-T.UpdatePartySize = function()
-	PartyFrame:SetSize(aCoreCDB["UnitframeOptions"]["widthparty"], aCoreCDB["UnitframeOptions"]["height"]*5+160)
-	PartyPetFrame:SetSize(aCoreCDB["UnitframeOptions"]["widthparty"], aCoreCDB["UnitframeOptions"]["height"]*5+160)
-end
-
-T.UpdatePartyfilter = function()
-	PartyFrame[1]:SetAttribute("showPlayer", aCoreCDB["UnitframeOptions"]["showplayerinparty"])
-	PartyPetFrame[1]:SetAttribute("showPlayer", aCoreCDB["UnitframeOptions"]["showplayerinparty"])
-	
-	if aCoreCDB["UnitframeOptions"]["raidframe_inparty"] then	
-		T.ReleaseDragFrame(PartyFrame)
-		T.ReleaseDragFrame(PartyPetFrame)
-	else
-		T.RestoreDragFrame(PartyFrame)
-		
-		if aCoreCDB["UnitframeOptions"]["showpartypet"] then
-			PartyPetFrame[1]:SetAttribute("groupFilter", "1,2,3,4,5,6,7,8")
-			T.RestoreDragFrame(PartyPetFrame)
-		else
-			PartyPetFrame[1]:SetAttribute("groupFilter", "")
-			T.ReleaseDragFrame(PartyPetFrame)
-		end		
-	end
-end
-
---=============================================--
 --[[                Events                   ]]--
 --=============================================--
 local EventFrame = CreateFrame("Frame")
@@ -1196,21 +997,7 @@ EventFrame:SetScript("OnEvent", function(self, event, ...)
 			DelayUnregisterClickSets()
 		end
 	elseif event == "PLAYER_SPECIALIZATION_CHANGED" then
-		if T.multicheck(G.myClass, "SHAMAN", "PALADIN", "DRUID", "PRIEST", "MONK") then
-			local tree = GetSpecialization()
-			
-			if G.myClass == "SHAMAN" then
-				dispellist.Magic = (tree == 3)
-			elseif G.myClass == "PALADIN" then
-				dispellist.Magic = (tree == 1)
-			elseif G.myClass == "DRUID" then
-				dispellist.Magic = (tree == 4)
-			elseif G.myClass == "PRIEST" then
-				dispellist.Magic = (tree == 1 or tree == 2)
-			elseif G.myClass == "MONK" then
-				dispellist.Magic = (tree == 2)
-			end
-		end
+		UpdateDispelType()
 	elseif event == "ENCOUNTER_START" then
 		local encounterID = ...
 		current_encounter = encounterID
@@ -1219,6 +1006,7 @@ EventFrame:SetScript("OnEvent", function(self, event, ...)
 	elseif	event == "PLAYER_ENTERING_WORLD" then
 		current_encounter = 1
 		UpdateHealManabar()
+		UpdateDispelType()
 	elseif event == "GROUP_ROSTER_UPDATE" then
 		UpdateHealManabar()
 	end
@@ -1240,11 +1028,7 @@ T.RegisterInitCallback(function()
 	T.UpdateGroupAnchor()
 	T.UpdateGroupSize()
 	T.UpdateGroupfilter()
-	
-	Spawnparty()
-	T.UpdatePartySize()
-	T.UpdatePartyfilter()
-	
+
 	if aCoreCDB["UnitframeOptions"]["enableClickCast"] then
 		RegisterClicksforAll()
 	end

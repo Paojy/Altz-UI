@@ -572,7 +572,6 @@ UFInnerframe.size = CreateOptionPage("UF Options size", L["尺寸"], UFInnerfram
 T.createslider(UFInnerframe.size, "long", 30, 80, L["高度"], "UnitframeOptions", "height", 1, 5, 50, 1)
 UFInnerframe.size.height.apply = function()
 	T.ApplyUFSettings({"Health", "Power", "Auras", "Castbar", "ClassPower", "Runes", "Stagger", "Dpsmana", "PVPSpecIcon", "Trinket"})
-	T.UpdatePartySize()
 end
 
 T.createslider(UFInnerframe.size, "long", 30, 120, L["宽度"], "UnitframeOptions", "width", 1, 50, 500, 1, L["宽度提示"])
@@ -768,17 +767,11 @@ UFInnerframe.party = CreateOptionPage("UF Options party", PARTY, UFInnerframe, "
 T.createslider(UFInnerframe.party, "long", 30, 80, PARTY..L["宽度"], "UnitframeOptions", "widthparty", 1, 50, 500, 1)
 UFInnerframe.party.widthparty.apply = function()
 	T.ApplyUFSettings({"Health", "Auras"})
-	T.UpdatePartySize()
 end
 
-T.createcheckbutton(UFInnerframe.party, 30, 130, L["在小队中显示自己"], "UnitframeOptions", "showplayerinparty")
-UFInnerframe.party.showplayerinparty.apply = function()
-	T.UpdatePartyfilter()
-end
-
-T.createcheckbutton(UFInnerframe.party, 30, 160, T.split_words(L["显示"],PET), "UnitframeOptions", "showpartypet")
+T.createcheckbutton(UFInnerframe.party, 30, 100, T.split_words(L["显示"], PET), "UnitframeOptions", "showpartypet")
 UFInnerframe.party.showpartypet.apply = function()
-	T.UpdatePartyfilter()
+	StaticPopup_Show(G.uiname.."Reload Alert")
 end
 
 -- 其他
@@ -1852,7 +1845,7 @@ T.createDR(PlateInnerframe.common.enableplate,
 PlateInnerframe.common.namefontsize, PlateInnerframe.common.plateauranum, PlateInnerframe.common.plateaurasize,
 PlateInnerframe.common.Interruptible_color, PlateInnerframe.common.notInterruptible_color,
 PlateInnerframe.common.focuscolored, PlateInnerframe.common.focus_color, 
-PlateInnerframe.common.threatcolor, PlateInnerframe.common.bar_onlyname)
+PlateInnerframe.common.threatcolor, PlateInnerframe.common.nameplateShowAll, PlateInnerframe.common.bar_onlyname)
 
 -- 样式
 PlateInnerframe.style = CreateOptionPage("Nameplates Options common", L["样式"], PlateInnerframe, "VERTICAL", "PlateOptions")
