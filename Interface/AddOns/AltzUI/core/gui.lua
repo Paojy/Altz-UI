@@ -1904,8 +1904,7 @@ PlateInnerframe.style.theme.hook = function()
 end
 
 PlateInnerframe.style.theme.apply = function()
-	T.ApplyUFSettings({"Health", "Power", "Castbar", "Auras", "ClassPower", 
-		"Runes", "RaidTargetIndicator", "Tag_Name", "PvPClassificationIndicator", "RedArrow"}, "Altz_Nameplates")	
+	T.ApplyUFSettings({"Health", "Power", "Castbar", "Auras", "ClassPower", "Runes", "Tag_Name"}, "Altz_Nameplates")	
 	T.PostUpdateAllPlates()
 	PlateInnerframe.style.theme.hook()
 end

@@ -598,8 +598,7 @@ local plate_theme_group = {
 CreateOptions(TutorialsFrame[5], "group", true, "PlateOptions", "theme", plate_theme_group)
 for k, text in pairs(plate_theme_group) do
 	TutorialsFrame[5]["theme"][k]:HookScript("OnClick", function()
-		T.ApplyUFSettings({"Health", "Power", "Castbar", "Auras", "ClassPower", 
-		"Runes", "RaidTargetIndicator", "Name", "PvPClassificationIndicator", "RedArrow"}, 'Altz_Nameplates')	
+		T.ApplyUFSettings({"Health", "Power", "Castbar", "Auras", "ClassPower", "Runes", "Tag_Name"}, 'Altz_Nameplates')	
 		T.PostUpdateAllPlates()
 	end)
 end

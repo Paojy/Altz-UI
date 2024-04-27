@@ -1764,12 +1764,16 @@ local plate_func = function(self, unit)
 	
 	self:SetPoint("CENTER")
 	
+	self.cover = CreateFrame("Frame", nil, self)
+	self.cover:SetAllPoints(self)
+	self.cover:SetFrameLevel(self:GetFrameLevel()+4)
+
 	-- health bar --
 	local hp = T.createStatusbar(self)
 	hp:SetAllPoints(self)
 
 	hp.backdrop = T.createBackdrop(hp, nil, 2)
-
+	
 	hp.value = T.createtext(hp, "OVERLAY", 10, "OUTLINE", "CENTER")
 	
 	hp.ind = hp:CreateTexture(nil, "OVERLAY", nil, 1)
@@ -1822,7 +1826,7 @@ local plate_func = function(self, unit)
 			
 			hp.value:SetFont(G.numFont, aCoreCDB["PlateOptions"]["valuefontsize"], "OUTLINE")			
 			hp.value:ClearAllPoints()
-			hp.value:SetPoint("BOTTOMRIGHT", hp, "TOPRIGHT", -5, -3)
+			hp.value:SetPoint("BOTTOMRIGHT", hp, -4, -2)
 			hp.value:SetJustifyH("RIGHT")
 			
 			hp:SetReverseFill(true)
@@ -1838,7 +1842,7 @@ local plate_func = function(self, unit)
 			
 			hp.value:SetFont(G.numFont, aCoreCDB["PlateOptions"]["valuefontsize"], "OUTLINE")
 			hp.value:ClearAllPoints()			
-			hp.value:SetPoint("BOTTOMRIGHT", hp, "TOPRIGHT", -5, -3)
+			hp.value:SetPoint("BOTTOMRIGHT", hp, -4, -2)
 			hp.value:SetJustifyH("RIGHT")
 			
 			hp:SetReverseFill(false)
@@ -1944,24 +1948,6 @@ local plate_func = function(self, unit)
 	CreatePlateAuras(self, unit)
 	CreatePlateClassResources(self)
 	
-	-- 团队标记
-	local ricon = self:CreateTexture(nil, "OVERLAY")
-	ricon:SetSize(20, 20)
-	ricon:SetTexture[[Interface\AddOns\AltzUI\media\raidicons.blp]]
-	
-	ricon.ApplySettings = function()	
-		if aCoreCDB["PlateOptions"]["theme"] == "number" then
-			ricon:ClearAllPoints()
-			ricon:SetPoint("RIGHT", self, "LEFT")
-		else
-			ricon:ClearAllPoints()
-			ricon:SetPoint("LEFT", self, "TOPLEFT", 5, 0)
-		end
-	end
-	
-	self.RaidTargetIndicator = ricon
-	self.RaidTargetIndicator.ApplySettings()
-	
 	-- 名字
 	local name = T.createtext(self, "OVERLAY", 8, "OUTLINE", "CENTER")
 	
@@ -1972,8 +1958,7 @@ local plate_func = function(self, unit)
 			name:SetPoint("TOP", self, "BOTTOM")
 		else
 			name:ClearAllPoints()
-			name:SetPoint("TOPLEFT", self, "TOPLEFT", 5, aCoreCDB["PlateOptions"]["namefontsize"])
-			name:SetPoint("BOTTOMRIGHT", self, "TOPRIGHT", -5, 5)
+			name:SetPoint("BOTTOM", self, "TOP", 0, 2)
 		end
 	end
 
@@ -1981,55 +1966,27 @@ local plate_func = function(self, unit)
 	self.Tag_Name = name
 	self.Tag_Name.ApplySettings()
 	
+	-- 团队标记
+	local ricon = self.cover:CreateTexture(nil, "OVERLAY")
+	ricon:SetPoint("RIGHT", self.Tag_Name, "LEFT")
+	ricon:SetSize(20, 20)
+	ricon:SetTexture[[Interface\AddOns\AltzUI\media\raidicons.blp]]
+	
+	self.RaidTargetIndicator = ricon
+	
 	-- PVP标记
-	local PvP = self:CreateTexture(nil, 'OVERLAY')
+	local PvP = self.cover:CreateTexture(nil, 'OVERLAY')
+	PvP:SetPoint("LEFT", name, "RIGHT", -3, 0)
 	PvP:SetSize(12, 12)
-	
-	PvP.ApplySettings = function()
-		if aCoreCDB["PlateOptions"]["theme"] == "number" then
-			PvP:ClearAllPoints()
-			PvP:SetPoint("LEFT", name, "RIGHT")
-		else
-			PvP:ClearAllPoints()
-			PvP:SetPoint("LEFT", self, "RIGHT", -8, 2)
-		end
-	end
-	
 	self.PvPClassificationIndicator = PvP
-	self.PvPClassificationIndicator.ApplySettings()
-	
-	-- 目标箭头
-	local RedArrow = self:CreateTexture(nil, 'OVERLAY')
-	RedArrow:SetTexture([[Interface\AddOns\AltzUI\media\NeonRedArrow]])
-    RedArrow:SetSize(25, 20)
-	RedArrow:SetRotation(rad(-90))  
-	RedArrow:Hide()
-	
-	RedArrow.ApplySettings = function()
-		if aCoreCDB["PlateOptions"]["theme"] == "number" then
-			RedArrow:ClearAllPoints()
-			RedArrow:SetPoint("LEFT", self.Tag_Name, "RIGHT", 0, 0)
-		else
-			RedArrow:ClearAllPoints()
-			RedArrow:SetPoint("LEFT", self, "RIGHT", 0, 0)
-		end
-	end
-	
-	self.RedArrow = RedArrow
-	self.RedArrow.ApplySettings()
-end
 
-local function Update_ArrowPosition()
-	local oUF = AltzUF or oUF
-	for _, obj in next, oUF.objects do
-		if obj.style == "Altz_Nameplates" and obj.unit then
-			if UnitIsUnit("target", obj.unit) and not UnitIsUnit("player", obj.unit) then				
-				obj.RedArrow:Show()		
-			else
-				obj.RedArrow:Hide()
-			end
-		end
-	end
+	-- 目标箭头
+	local arrow = self.cover:CreateTexture(nil, 'OVERLAY')
+	arrow:SetPoint("LEFT", name, "RIGHT", -3, 0)
+    arrow:SetSize(25, 20)
+	arrow:SetRotation(rad(-90))  
+	
+	self.TargetArrow = arrow
 end
 
 local function PostUpdatePlate(self, event, unit)
@@ -2039,14 +1996,6 @@ local function PostUpdatePlate(self, event, unit)
 		for _, func in pairs(nameplate_callbacks) do
 			func(self, event, unit)
 		end
-		
-		if UnitIsUnit("target", unit) and not UnitIsUnit("player", unit) then
-			self.RedArrow:Show()
-		else
-			self.RedArrow:Hide()
-		end
-	elseif event == "PLAYER_TARGET_CHANGED" then
-		Update_ArrowPosition()		
 	end
 end
 
