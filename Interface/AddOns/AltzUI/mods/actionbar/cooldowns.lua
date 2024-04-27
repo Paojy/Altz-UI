@@ -69,8 +69,8 @@ local Init = function()
 			if strfind(frameName, "WeakAuras") then
 				return
 			end
-		-- 团队框架上的图标不加冷却时间
-		
+			
+		-- 团队框架上的图标不加冷却时间	
 		elseif self:GetParent() then
 			local parent_name = self:GetParent():GetName()
 			if parent_name and parent_name:find("CompactRaidFrame") then
