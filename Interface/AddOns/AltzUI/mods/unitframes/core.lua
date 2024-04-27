@@ -49,14 +49,6 @@ end
 --=============================================--
 --[[ Functions ]]--
 --=============================================--
-
-local function multicheck(check, ...)
-	for i=1, select("#", ...) do
-		if check == select(i, ...) then return true end
-	end
-	return false
-end
-
 local function GetUnitColorforNameplate(unit)	
 	local r, g, b = 1, 1, 1
 	local name = GetUnitName(unit, false)
@@ -100,6 +92,8 @@ T.GetUnitColor = GetUnitColor
 --=============================================--
 
 T.OnMouseOver = function(self)
+	self:SetAttribute("shift-type1", "focus")
+	
 	self:SetScript("OnEnter", function(self)
 		UnitFrame_OnEnter(self)
 		self.isMouseOver = true
@@ -107,6 +101,7 @@ T.OnMouseOver = function(self)
 			element:ForceUpdate()
 		end
 	end)
+	
 	self:SetScript("OnLeave", function(self)
 		UnitFrame_OnLeave(self)
 		self.isMouseOver = false
@@ -207,7 +202,9 @@ local PostUpdate_Health = function(self, unit, cur, max)
 		
 	-- 数值
 	if self.value then
-		if status == "injured" or aCoreCDB["UnitframeOptions"]["alwayshp"] or (cur > 0 and self.__owner.isMouseOver and UnitIsConnected(unit)) then
+		if (cur > 0 and self.__owner.isMouseOver and UnitIsConnected(unit)) then
+			self.value:SetText(T.ShortValue(cur))
+		elseif status == "injured" or aCoreCDB["UnitframeOptions"]["alwayshp"] then
 			self.value:SetText(T.ShortValue(cur).." "..T.hex_str(math.floor(cur/max*100+.5), 1, 1, 0))
 		else
 			self.value:SetText(nil)
@@ -283,7 +280,9 @@ local PostUpdate_PlateHealth = function(self, unit, cur, max)
 			self.value:SetText(nil)
 		end
 	else
-		if status == "injured" or aCoreCDB["PlateOptions"]["bar_alwayshp"] or (cur > 0 and self.__owner.isMouseOver and UnitIsConnected(unit))  then
+		if (cur > 0 and self.__owner.isMouseOver and UnitIsConnected(unit)) then
+			self.value:SetText(T.ShortValue(cur))
+		elseif status == "injured" or aCoreCDB["PlateOptions"]["bar_alwayshp"] then
 			if aCoreCDB["PlateOptions"]["bar_hp_perc"] == "perc" then
 				self.value:SetText(T.hex_str(math.floor(cur/max*100+.5), 1, 1, 0))
 			else
@@ -291,7 +290,7 @@ local PostUpdate_PlateHealth = function(self, unit, cur, max)
 			end
 		else
 			self.value:SetText(nil)
-		end		
+		end
 	end
 end
 
@@ -351,9 +350,13 @@ T.PostUpdate_Power = PostUpdate_Power
 --=============================================--
 local UpdateCastbarColor = function(castbar, unit)
 	local u = unit:match("[^%d]+")
-	if u == "nameplate" or (multicheck(u, "target", "player", "focus") and aCoreCDB["UnitframeOptions"]["independentcb"]) then
-		local r, g, b = aCoreCDB["UnitframeOptions"]["Interruptible_color"].r, aCoreCDB["UnitframeOptions"]["Interruptible_color"].g, aCoreCDB["UnitframeOptions"]["Interruptible_color"].b
-		local r2, g2, b2 = aCoreCDB["UnitframeOptions"]["notInterruptible_color"].r, aCoreCDB["UnitframeOptions"]["notInterruptible_color"].g, aCoreCDB["UnitframeOptions"]["notInterruptible_color"].b
+	local category = (u == "nameplate" and "PlateOptions") or (T.multicheck(u, "target", "player", "focus") and aCoreCDB["UnitframeOptions"]["independentcb"] and "UnitframeOptions")
+	if category then		
+		local color = aCoreCDB[category]["Interruptible_color"]
+		local r, g, b = color.r, color.g, color.b
+		local color2 = aCoreCDB[category]["notInterruptible_color"]
+		local r2, g2, b2 = color2.r, color2.g, color2.b
+		
 		if unit == "player" then
 			castbar:SetStatusBarColor(r, g, b)		
 		else
@@ -362,7 +365,7 @@ local UpdateCastbarColor = function(castbar, unit)
 			else
 				castbar:SetStatusBarColor(r, g, b)
 			end
-		end
+		end	
 	end
 end
 
@@ -384,13 +387,13 @@ end
 
 local CreateCastbars = function(self, unit)
 	local u = unit:match("[^%d]+")
-	if multicheck(u, "target", "player", "focus", "boss", "arena") then
+	if T.multicheck(u, "target", "player", "focus", "boss", "arena") then
 		local cb = CreateFrame("StatusBar", G.uiname..unit.."Castbar", self)
 		cb:SetFrameLevel(self:GetFrameLevel()+2)
 		cb:SetStatusBarTexture(G.media.blank)
 		
 		-- 独立施法条锚点
-		if multicheck(u, "target", "player", "focus") then	
+		if T.multicheck(u, "target", "player", "focus") then	
 			if unit == "player" then
 				cb.movingname = T.split_words(PLAYER,L["施法条"])
 				cb.point = {
@@ -474,7 +477,7 @@ local CreateCastbars = function(self, unit)
 			cb.Icon:SetSize(aCoreCDB["UnitframeOptions"]["cbIconsize"], aCoreCDB["UnitframeOptions"]["cbIconsize"])
 			cb.Time:SetFont(G.numFont, aCoreCDB["UnitframeOptions"]["valuefontsize"], "OUTLINE")
 			
-			if multicheck(u, "target", "player", "focus") and aCoreCDB["UnitframeOptions"]["independentcb"] then -- 独立施法条	
+			if T.multicheck(u, "target", "player", "focus") and aCoreCDB["UnitframeOptions"]["independentcb"] then -- 独立施法条	
 				if u == "player" or u == "target" or u == "focus" then
 					T.RestoreDragFrame(cb)
 				end
@@ -646,10 +649,9 @@ local CreatePlateCastbar = function(self, unit)
 			cb.Icon_bd:Show()
 		end
 	end
-	
-	cb.ApplySettings()
 
 	self.Castbar = cb
+	self.Castbar.ApplySettings()
 end
 
 --=============================================--
@@ -739,9 +741,8 @@ local CreateSwingTimer = function(self, unit) -- only for player
 		bar.TextOH:SetFont(G.norFont, aCoreCDB["UnitframeOptions"]["swtimersize"], "OUTLINE")
 	end
 
-	bar.ApplySettings()
-	
 	self.Swing = bar
+	self.Swing.ApplySettings()
 end
 
 --=============================================--
@@ -752,7 +753,7 @@ local PostCreateIcon = function(auras, icon)
 	
 	icon.Count:ClearAllPoints()
 	icon.Count:SetPoint("BOTTOMRIGHT", 0, -3)
-	icon.Count:SetFontObject(nil)	
+	icon.Count:SetFont(G.numFont, 8, "OUTLINE")		
 	icon.Count:SetTextColor(.9, .9, .1)
 	
 	icon.Overlay:SetTexture(G.media.blank)
@@ -761,64 +762,24 @@ local PostCreateIcon = function(auras, icon)
 	icon.Overlay:SetPoint("BOTTOMRIGHT", icon, "BOTTOMRIGHT", 1, -1)
 	
 	icon.backdrop = T.createBackdrop(icon, nil, 2)
-
-	if auras.__owner.style == 'Altz_Nameplates' then
-		icon.Count:SetFont(G.numFont, aCoreCDB["PlateOptions"]["numfontsize"], "OUTLINE")
-		icon.remaining = T.createnumber(icon, "OVERLAY", aCoreCDB["PlateOptions"]["numfontsize"], "OUTLINE", "CENTER")
-	else
-		icon.Count:SetFont(G.numFont, aCoreCDB["UnitframeOptions"]["aura_size"]*.4, "OUTLINE")
-		icon.remaining = T.createnumber(icon, "OVERLAY", aCoreCDB["UnitframeOptions"]["aura_size"]*.4, "OUTLINE", "CENTER")
-	end
-	
-	icon.remaining:SetPoint("TOPLEFT", 0, 5)
-	
-	auras.showDebuffType = true
 end
+T.PostCreateIcon = PostCreateIcon
 
-local CreateAuraTimer = function(self, elapsed)
-	self.elapsed = (self.elapsed or 0) + elapsed
-
-	if self.elapsed < .2 then return end
-	self.elapsed = 0
-	local timeLeft = self.expires - GetTime()
-	if timeLeft <= 0 then
-		self.remaining:SetText(nil)
-	else
-		self.remaining:SetText(T.FormatTime(timeLeft))
-	end
+local PostUpdateGapButton = function(auras, unit, gapButton, position)
+	gapButton.backdrop:Hide()
 end
-
-local whitelist = {
-	[123059] = true, -- 动摇意志
-}
 
 local PostUpdateIcon = function(icons, icon, unit, data, position)
-	if icon.isPlayer or UnitIsFriend("player", unit) or not icon.isDebuff or aCoreCDB["UnitframeOptions"]["AuraFilterwhitelist"][data.spellId] or whitelist[data.spellId] then
-		icon.Icon:SetDesaturated(false)
-		if data.duration and data.duration > 0 then
-			icon.remaining:Show()
-		else
-			icon.remaining:Hide()
-		end
+	if (data.sourceUnit == "player") or (UnitIsFriend("player", unit) and data.isHarmful) or aCoreCDB["UnitframeOptions"]["AuraFilterwhitelist"][data.spellId] then
+		icon.Icon:SetDesaturated(false)		
 		icon.Count:Show()
 	else
 		icon.Icon:SetDesaturated(true) -- grey other's debuff casted on enemy.
-		icon.overlay:Hide()
-		icon.remaining:Hide()
+		icon.Overlay:Hide()
 		icon.Count:Hide()
 	end
 	
-	if data.duration then
-		icon.backdrop:Show() -- if the aura is not a gap icon show it"s backdrop
-	end
-	
-	icon.expires = data.expirationTime
-	icon:SetScript("OnUpdate", CreateAuraTimer)
-end
-
-local PostUpdateGapButton = function(auras, unit, icon, visibleBuffs)
-	icon.backdrop:Hide()
-	icon.remaining:Hide()
+	icon.backdrop:Show()
 end
 
 local OverrideAurasSetPosition = function(auras, from, to)
@@ -840,7 +801,7 @@ local OverrideAurasSetPosition = function(auras, from, to)
 	end
 end
 
-local CustomFilter = function(icons, unit, data)
+local Target_AuraFilter = function(icons, unit, data)
 	if data.sourceUnit == "player" then -- show all my auras
 		return true
 	elseif UnitIsFriend("player", unit) and (not aCoreCDB["UnitframeOptions"]["AuraFilterignoreBuff"] or data.isHarmful) then
@@ -852,30 +813,14 @@ local CustomFilter = function(icons, unit, data)
 	end
 end
 
-local BossAuraFilter = function(icons, unit, data)
-	if data.sourceUnit == "player" or data.isHelpful then -- show buff and my auras
-		return true
-	elseif whitelist[tostring(data.spellId)] then
+local Boss_AuraFilter = function(icons, unit, data)
+	if data.sourceUnit == "player" or data.isHelpful then -- show buffs and my auras
 		return true
 	end
 end
 
-blacklist ={
-	["36032"] = true, -- Arcane Charge
-	["134122"] = true, --Blue Beam
-	["134123"] = true, --Red Beam
-	["134124"] = true, --Yellow Beam
-	["124275"] = true, --轻度醉拳
-	["124274"] = true, --中度醉拳
-	["124273"] = true, --重度醉拳
-	--["80354"] = true, --时空错位
-	--["124273"] = true, --心满意足
-}
-
-local PlayerDebuffFilter = function(icons, unit, data)
-	if blacklist[tostring(data.spellId)] then
-		return false
-	else
+local Party_AuraFilter = function(icons, unit, data)
+	if data.sourceUnit == "player" or data.isHarmful then -- show debuffs and my auras
 		return true
 	end
 end
@@ -900,125 +845,87 @@ local CreateAuras = function(self, unit)
 	if not unit then return end
 	local u = unit:match("[^%d]+")
 	
-	if multicheck(u, "target", "focus", "boss", "arena", "party", "player", "pet") then
-		local Auras = CreateFrame("Frame", nil, self)
-		Auras.disableCooldown = true
-		Auras.showStealableBuffs = (G.myClass == "MAGE")
-		Auras.spacing = 3
-		Auras.PostCreateButton = PostCreateIcon
-		Auras.PostUpdateButton = PostUpdateIcon
-
-		if unit == "target" or unit == "focus" then
-			Auras:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 1, 14)
-			Auras.initialAnchor = "BOTTOMLEFT"
-			Auras["growth-x"] = "RIGHT"
-			Auras["growth-y"] = "UP"
-			Auras.gap = true
-			Auras.PostUpdateGapButton = PostUpdateGapButton
-			if unit == "target" then
-				Auras.FilterAura = CustomFilter
-			end
-		elseif unit == "player" then		
-			Auras.initialAnchor = "BOTTOMLEFT"
-			Auras["growth-x"] = "RIGHT"
-			Auras["growth-y"] = "UP"
-			Auras.gap = true
-			Auras.PostUpdateGapButton = PostUpdateGapButton
-			Auras.numDebuffs = 8
-			Auras.numBuffs = 0
-			Auras.FilterAura = PlayerDebuffFilter
-		elseif unit == "pet" then
-			Auras:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 1, 5)
-			Auras.initialAnchor = "BOTTOMLEFT"
-			Auras["growth-x"] = "RIGHT"
-			Auras["growth-y"] = "UP"
-			Auras.gap = true
-			Auras.PostUpdateGapButton = PostUpdateGapButton
-			Auras.numDebuffs = 5
-			Auras.numBuffs = 0
+	if T.multicheck(u, "target", "focus", "boss", "arena", "party", "player", "pet") then
+		local auras = CreateFrame("Frame", nil, self)		
+		auras:SetPoint("BOTTOMRIGHT", self, "TOPRIGHT", -1, 14)
+		auras:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 1, 14)
+		auras.initialAnchor = "BOTTOMLEFT"
+		auras["growth-x"] = "RIGHT"
+		auras["growth-y"] = "UP"
+		auras.spacing = 3
+		auras.gap = true
+		
+		auras.showStealableBuffs = (G.myClass == "MAGE")
+		auras.showDebuffType = true
+		
+		auras.PostCreateButton = PostCreateIcon
+		auras.PostUpdateButton = PostUpdateIcon
+		auras.PostUpdateGapButton = PostUpdateGapButton
+		
+		if unit == "player" or unit == "pet" then	
+			auras.numBuffs = 0
+			auras.numDebuffs = 6
+		elseif unit == "target" then
+			auras.FilterAura = Target_AuraFilter
 		elseif u == "boss" or u == "arena" then -- boss 1-5
-			Auras:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 1, 14)
-			Auras.initialAnchor = "BOTTOMLEFT"
-			Auras["growth-x"] = "RIGHT"
-			Auras["growth-y"] = "UP"
-			Auras.gap = true
-			Auras.PostUpdateGapButton = PostUpdateGapButton
-			Auras.numDebuffs = 6
-			Auras.numBuffs = 3
-			Auras.FilterAura = BossAuraFilter
+			auras.numBuffs = 3
+			auras.numDebuffs = 6		
+			auras.FilterAura = Boss_AuraFilter
 		elseif u == "party" or u == "partypet" then
-			Auras:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 1, 14)
-			Auras.initialAnchor = "BOTTOMLEFT"
-			Auras["growth-x"] = "RIGHT"
-			Auras["growth-y"] = "UP"
-			Auras.numDebuffs = 0
-			Auras.numBuffs = 5
-			Auras.onlyShowPlayer = true
-
-			local Debuffs = CreateFrame("Frame", nil, self)
-			Debuffs:SetPoint("BOTTOMLEFT", self.Power, "BOTTOMRIGHT", 8, -8)
-			Debuffs.disableCooldown = true
-			Debuffs.spacing = 3
-			Debuffs.PostCreateButton = PostCreateIcon
-			Debuffs.PostUpdateButton = PostUpdateIcon
-			Debuffs.initialAnchor = "TOPLEFT"
-			Debuffs["growth-x"] = "RIGHT"
-			Debuffs["growth-y"] = "DOWN"
-			Debuffs.num = 5
-			self.Debuffs = Debuffs
+			auras.numBuffs = 3
+			auras.numDebuffs = 6	
+			auras.FilterAura = Party_AuraFilter
 		end
 		
-		Auras.ApplySettings =  function()			
-			Auras:SetHeight(aCoreCDB["UnitframeOptions"]["height"]*2)
-			Auras:SetWidth(aCoreCDB["UnitframeOptions"]["width"]-2)		
-			Auras.size = aCoreCDB["UnitframeOptions"]["aura_size"]
-			
-			if unit == "player" then
-				Auras:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 1, aCoreCDB["UnitframeOptions"]["height"]*aCoreCDB["UnitframeOptions"]["ppheight"]+8)
-			elseif unit == "pet" then
-				Auras:SetWidth(aCoreCDB["UnitframeOptions"]["widthpet"]-2)
-			elseif u == "boss" then -- boss 1-5
-				Auras:SetWidth(aCoreCDB["UnitframeOptions"]["widthboss"]-2)
-			elseif u == "arena" then
-				Auras:SetWidth(aCoreCDB["UnitframeOptions"]["widthboss"]-2)
-			elseif u == "party" or u == "partypet" then			
-				self.Debuffs:SetHeight(aCoreCDB["UnitframeOptions"]["height"]*2)
-				self.Debuffs:SetWidth(aCoreCDB["UnitframeOptions"]["widthparty"]-2)				
-				self.Debuffs.size = aCoreCDB["UnitframeOptions"]["aura_size"]
-			end
-			
-			-- enable --
-			if unit == "player" then
-				if aCoreCDB["UnitframeOptions"]["playerdebuffenable"] then
-					self.Auras:SetAlpha(1)
-				else
-					self.Auras:SetAlpha(0)
+		auras.EnableSettings = function(object)
+			if not object or object == self then
+				if self.unit == "player" then
+					if aCoreCDB["UnitframeOptions"]["playerdebuffenable"] then
+						self:EnableElement("Auras")
+						self.Auras:ForceUpdate()
+					else
+						self:DisableElement("Auras")
+					end
 				end
 			end
 		end
+		oUF:RegisterInitCallback(auras.EnableSettings)
+		
+		auras.ApplySettings =  function()			
+			auras:SetHeight(aCoreCDB["UnitframeOptions"]["height"]*2)		
+			auras.size = aCoreCDB["UnitframeOptions"]["aura_size"]
+			
+			if unit == "player" then
+				auras:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 1, aCoreCDB["UnitframeOptions"]["height"]*aCoreCDB["UnitframeOptions"]["ppheight"]+8)			
+			end
+		end
 
-		self.Auras = Auras
+		self.Auras = auras
 		self.Auras.ApplySettings()
 	end	
 end
 T.CreateAuras = CreateAuras
 
 local CreatePlateAuras = function(self, unit)
-	local auras = CreateFrame("Frame", nil, self)		
-	auras.disableCooldown = true
-	auras.showStealableBuffs = (G.myClass == "MAGE")
-	auras.spacing = 3
+	local auras = CreateFrame("Frame", nil, self)
+	auras:SetPoint("BOTTOMRIGHT", self, "TOPRIGHT", -1, 14)
+	auras:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 1, 14)
 	auras.initialAnchor = "BOTTOMLEFT"
 	auras["growth-x"] = "RIGHT"
 	auras["growth-y"] = "UP"
+	auras.spacing = 3
 	auras.gap = true
-	auras.PostUpdateGapButton = PostUpdateGapButton	
+
+	auras.showStealableBuffs = (G.myClass == "MAGE")
+	auras.disableMouse = true
+	auras.showDebuffType = true
+	
 	auras.PostCreateButton = PostCreateIcon
 	auras.PostUpdateButton = PostUpdateIcon		
+	auras.PostUpdateGapButton = PostUpdateGapButton	
 	auras.SetPosition = OverrideAurasSetPosition
 	auras.FilterAura = NamePlate_AuraFilter
-	auras.disableMouse = true
-	
+
 	auras.Callback = function(self, event, unit)	
 		if UnitIsUnit(unit, 'player') then
 			self:DisableElement("Auras")
@@ -1037,8 +944,7 @@ local CreatePlateAuras = function(self, unit)
 	RegisterNameplateEventCallback(auras.Callback)
 	
 	auras.ApplySettings =  function()
-		auras:SetHeight(aCoreCDB["PlateOptions"]["plateaurasize"])
-		auras:SetWidth(aCoreCDB["PlateOptions"]["bar_width"])
+		auras:SetHeight(aCoreCDB["PlateOptions"]["plateaurasize"])		
 		auras.numDebuffs = aCoreCDB["PlateOptions"]["plateauranum"]
 		auras.numBuffs = aCoreCDB["PlateOptions"]["plateauranum"]
 		auras.size = aCoreCDB["PlateOptions"]["plateaurasize"]
@@ -1047,24 +953,14 @@ local CreatePlateAuras = function(self, unit)
 		if aCoreCDB["PlateOptions"]["theme"] == "number" then
 			auras:SetPoint("BOTTOM", self.Health.value, "TOP", 0, -5)
 		else
-			auras:SetPoint("BOTTOM", self, "TOP", 0, aCoreCDB["PlateOptions"]["namefontsize"]+7)
-		end
-		
-		for i, button in pairs(auras) do
-			if type(button) == "table" then
-				if button.Count then
-					button.Count:SetFont(G.numFont, aCoreCDB["PlateOptions"]["numfontsize"], "OUTLINE")
-				end
-				if button.remaining then
-					button.remaining:SetFont(G.numFont, aCoreCDB["PlateOptions"]["numfontsize"], "OUTLINE")
-				end
-			end
+			auras:SetPoint("BOTTOM", self, "TOP", 0, aCoreCDB["PlateOptions"]["namefontsize"]+3)
 		end
 	end
 	
 	self.Auras = auras
 	self.Auras.ApplySettings()
 end
+
 --=============================================--
 --[[ Class Resource ]]--
 --=============================================--
@@ -1138,7 +1034,7 @@ local PostUpdate_Runes = function(self, runemap)
 end
 
 local function CreateClassResources(self)
-	if multicheck(G.myClass, "DEATHKNIGHT", "WARLOCK", "PALADIN", "MONK", "MAGE", "ROGUE", "DRUID") then
+	if T.multicheck(G.myClass, "DEATHKNIGHT", "WARLOCK", "PALADIN", "MONK", "MAGE", "ROGUE", "DRUID") then
 		local count = 6		
 		local bars = CreateFrame("Frame", self:GetName().."SpecOrbs", self)
 		
@@ -1192,7 +1088,7 @@ local function CreateClassResources(self)
 			
 			self.Runes = bars
 			self.Runes.ApplySettings()
-		elseif multicheck(G.myClass , "PALADIN","MONK","WARLOCK","MAGE","ROGUE","DRUID") then
+		elseif T.multicheck(G.myClass , "PALADIN","MONK","WARLOCK","MAGE","ROGUE","DRUID") then
 			bars.PostUpdate = PostUpdate_ClassPower
 			
 			self.ClassPower = bars
@@ -1202,7 +1098,7 @@ local function CreateClassResources(self)
 end
 
 local function CreatePlateClassResources(self)
-	if multicheck(G.myClass, "DEATHKNIGHT", "WARLOCK", "PALADIN", "MONK", "MAGE", "ROGUE", "DRUID") then
+	if T.multicheck(G.myClass, "DEATHKNIGHT", "WARLOCK", "PALADIN", "MONK", "MAGE", "ROGUE", "DRUID") then
 		local count = 6		
 		local bars = CreateFrame("Frame", self:GetName().."SpecOrbs", self)
 		bars:SetFrameLevel(self.Health:GetFrameLevel()+10)
@@ -1276,7 +1172,7 @@ local function CreatePlateClassResources(self)
 			
 			self.Runes = bars
 			self.Runes.ApplySettings()
-		elseif multicheck(G.myClass , "PALADIN","MONK","WARLOCK","MAGE","ROGUE","DRUID") then
+		elseif T.multicheck(G.myClass , "PALADIN","MONK","WARLOCK","MAGE","ROGUE","DRUID") then
 			bars.PostUpdate = PostUpdate_ClassPower
 			
 			self.ClassPower = bars
@@ -1340,7 +1236,7 @@ local func = function(self, unit)
 		hp.ind:SetSize(1, aCoreCDB["UnitframeOptions"]["height"])
 		
 		-- height, width --
-		if multicheck(u, "targettarget", "focustarget", "pet") then
+		if T.multicheck(u, "targettarget", "focustarget", "pet") then
 			self:SetSize(aCoreCDB["UnitframeOptions"]["widthpet"], aCoreCDB["UnitframeOptions"]["height"])
 		elseif u == "boss" or u == "arena" then
 			self:SetSize(aCoreCDB["UnitframeOptions"]["widthboss"], aCoreCDB["UnitframeOptions"]["height"])
@@ -1370,7 +1266,7 @@ local func = function(self, unit)
 	self.Health.ApplySettings()	
 	
 	-- portrait 肖像
-	if multicheck(u, "player", "target", "focus", "boss", "arena") then
+	if T.multicheck(u, "player", "target", "focus", "boss", "arena") then
 		local portrait = CreateFrame('PlayerModel', nil, self)	
 		portrait:SetFrameLevel(self:GetFrameLevel())
 		portrait:SetAllPoints(hp)
@@ -1402,7 +1298,7 @@ local func = function(self, unit)
 		pp.bg:SetAllPoints(pp)
 		pp.bg.multiplier = .2
 		
-		if not multicheck(u, "pet", "boss", "arena") then
+		if not T.multicheck(u, "pet", "boss", "arena") then
 			pp.value = T.createnumber(pp, "OVERLAY", 16, "OUTLINE", "LEFT")
 		end
 
@@ -1431,7 +1327,7 @@ local func = function(self, unit)
 	end
 
 	-- altpower bar --
-	if multicheck(u, "player", "boss", "pet") then
+	if T.multicheck(u, "player", "boss", "pet") then
 		local altpp = T.createStatusbar(self, 5, nil, 1, 1, 0, 1)
 		
 		if unit == "pet" then
@@ -1478,7 +1374,7 @@ local func = function(self, unit)
 		local name = T.createtext(hp, "OVERLAY", 13, "OUTLINE", "LEFT")
 		name:SetPoint("TOPLEFT", hp, "TOPLEFT", 3, 9)
 		
-		if multicheck(u, "targettarget", "focustarget", "boss", "arena") then
+		if T.multicheck(u, "targettarget", "focustarget", "boss", "arena") then
 			self:Tag(name, "[Altz:shortname]")
 		else
 			self:Tag(name, "[Altz:longname]")
@@ -1490,7 +1386,7 @@ local func = function(self, unit)
 	CreateAuras(self, unit)
 	
 	-- fade --
-	if multicheck(unit, "target", "player", "focus", "pet", "targettarget") then
+	if T.multicheck(unit, "target", "player", "focus", "pet", "targettarget") then
 		local fader = {
 			FadeInSmooth = 0.4,
 			FadeOutSmooth = 1.5,
@@ -1571,7 +1467,7 @@ local UnitSpecific = {
 		end
 
 		-- Shaman mana
-		if multicheck(G.myClass, "SHAMAN", "PRIEST", "DRUID") then
+		if T.multicheck(G.myClass, "SHAMAN", "PRIEST", "DRUID") then
 			local dpsmana = T.createStatusbar(self, nil, nil, 1, 1, 1, 1)
 			dpsmana:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 0, 1)
 			dpsmana:SetPoint("BOTTOMRIGHT", self, "TOPRIGHT", 0, 1)
