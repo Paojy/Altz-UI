@@ -316,7 +316,7 @@ end
 ----------------------------
 
 T.createStatusbar = function(parent, height, width, r, g, b, alpha)
-	local bar = CreateFrame("StatusBar", name, parent)
+	local bar = CreateFrame("StatusBar", nil, parent)
 	bar:SetStatusBarTexture(G.media.blank)
 	if height then
 		bar:SetHeight(height)
