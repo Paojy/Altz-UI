@@ -6,6 +6,13 @@ local F = unpack(AuroraClassic)
 ----------------------------
 T.dummy = function() end
 
+T.multicheck = function(check, ...)
+	for i=1, select("#", ...) do
+		if check == select(i, ...) then return true end
+	end
+	return false
+end
+
 T.CheckRole = function()
 	local tree = GetSpecialization()
 	if tree then
