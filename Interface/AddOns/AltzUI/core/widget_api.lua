@@ -24,6 +24,16 @@ T.CheckRole = function()
 		end
 	end
 end
+
+-- 通过ID查找光环
+local function SpellIDPredicate(auraSpellIDToFind, _, _, _, _, _, _, _, _, _, _, _, spellID)
+	return auraSpellIDToFind == spellID
+end
+
+function T.FindAuraBySpellID(spellID, unit, filter)
+	return AuraUtil.FindAura(SpellIDPredicate, unit, filter, spellID)
+end
+
 ----------------------------
 -- 			表格		  --
 ----------------------------
