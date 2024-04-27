@@ -7,7 +7,7 @@ local x = "8"
 
 -- Priest 牧师
 oUF.Tags.Methods['Mlight:pom'] = function(u) -- 愈合祷言
-    local name,_, c = AuraUtil.FindAuraByName(GetSpellInfo(41635), u, "PLAYER|HELPFUL")
+    local name,_, c = T.FindAuraBySpellID(41635, u, "PLAYER|HELPFUL")
 	if name and c then
         if c and c ~= 0 then return "|cff66FFFF["..c.."]|r" end
 	end
@@ -15,7 +15,7 @@ end
 oUF.Tags.Events['Mlight:pom'] = "UNIT_AURA"
 
 oUF.Tags.Methods['Mlight:atonement'] = function(u) -- 救赎
-    local name, _,_,_,_, expirationTime = AuraUtil.FindAuraByName(GetSpellInfo(194384), u, "PLAYER|HELPFUL")
+    local name, _,_,_,_, expirationTime = T.FindAuraBySpellID(194384, u, "PLAYER|HELPFUL")
     if name then
         local spellTimer = expirationTime - GetTime()
         return "|cffFFE4C4"..T.FormatTime(spellTimer).."|r"
@@ -24,7 +24,7 @@ end
 oUF.Tags.Events['Mlight:atonement'] = "UNIT_AURA"
 
 oUF.Tags.Methods['Mlight:rnw'] = function(u) -- 恢复
-    local name,_,_,_,_, expirationTime = AuraUtil.FindAuraByName(GetSpellInfo(139), u, "PLAYER|HELPFUL")
+    local name,_,_,_,_, expirationTime = T.FindAuraBySpellID(139, u, "PLAYER|HELPFUL")
     if name then
         local spellTimer = expirationTime - GetTime()
         if spellTimer > 4 then
@@ -39,7 +39,7 @@ end
 oUF.Tags.Events['Mlight:rnw'] = "UNIT_AURA"
 
 oUF.Tags.Methods['Mlight:pws'] = function(u) -- 盾
-	local pws, _,_,_,_, pws_expiration = AuraUtil.FindAuraByName(GetSpellInfo(17), u, "PLAYER|HELPFUL")
+	local pws, _,_,_,_, pws_expiration = T.FindAuraBySpellID(17, u, "PLAYER|HELPFUL")
 	if pws then
 		local pws_time = T.FormatTime(pws_expiration-GetTime())
 		
@@ -50,7 +50,7 @@ oUF.Tags.Events['Mlight:pws'] = "UNIT_AURA"
 
 -- Druid 德鲁伊
 oUF.Tags.Methods['Mlight:lb'] = function(u) -- 生命绽放
-    local name, _, c,_,_, expirationTime = AuraUtil.FindAuraByName(GetSpellInfo(33763), u, "PLAYER|HELPFUL")
+    local name, _, c,_,_, expirationTime = T.FindAuraBySpellID(33763, u, "PLAYER|HELPFUL")
     if name then
 		local spellTimer = (expirationTime-GetTime())
 		local TimeLeft = T.FormatTime(spellTimer)
@@ -66,8 +66,8 @@ end
 oUF.Tags.Events['Mlight:lb'] = "UNIT_AURA"
 
 oUF.Tags.Methods['Mlight:rejuv'] = function(u) -- 回春
-    local name, _,_,_,_, expirationTime = AuraUtil.FindAuraByName(GetSpellInfo(774), u, "PLAYER|HELPFUL")
-	local name2, _,_,_,_, expirationTime2 = AuraUtil.FindAuraByName(GetSpellInfo(155777), u, "PLAYER|HELPFUL")
+    local name, _,_,_,_, expirationTime = T.FindAuraBySpellID(774, u, "PLAYER|HELPFUL")
+	local name2, _,_,_,_, expirationTime2 = T.FindAuraBySpellID(155777, u, "PLAYER|HELPFUL")
 	local text, text2 = "", ""
     if name then
         local spellTimer = (expirationTime-GetTime())
@@ -90,7 +90,7 @@ end
 oUF.Tags.Events['Mlight:rejuv'] = "UNIT_AURA"
 
 oUF.Tags.Methods['Mlight:regrow'] = function(u) -- 愈合
-	local name, _,_,_,_, expirationTime = AuraUtil.FindAuraByName(GetSpellInfo(8936), u, "PLAYER|HELPFUL")
+	local name, _,_,_,_, expirationTime = T.FindAuraBySpellID(8936, u, "PLAYER|HELPFUL")
     if name then
         local spellTimer = (expirationTime-GetTime())
 		local TimeLeft = T.FormatTime(spellTimer)
@@ -104,7 +104,7 @@ end
 oUF.Tags.Events['Mlight:regrow'] = "UNIT_AURA"
 
 oUF.Tags.Methods['Mlight:wildgrowth'] = function(u) -- 野性成长
-	local name, _,_,_,_, expirationTime = AuraUtil.FindAuraByName(GetSpellInfo(48438), u, "PLAYER|HELPFUL")
+	local name, _,_,_,_, expirationTime = T.FindAuraBySpellID(48438, u, "PLAYER|HELPFUL")
     if name then
         local spellTimer = (expirationTime-GetTime())
 		local TimeLeft = T.FormatTime(spellTimer)
@@ -114,43 +114,19 @@ end
 oUF.Tags.Events['Mlight:wildgrowth'] = "UNIT_AURA"
 
 oUF.Tags.Methods['Mlight:snla'] = function(u) --塞纳里奥结界
-	local name = AuraUtil.FindAuraByName(GetSpellInfo(102351), u, "PLAYER|HELPFUL")
+	local name = T.FindAuraBySpellID(102351, u, "PLAYER|HELPFUL")
+	local name2 = T.FindAuraBySpellID(102352, u, "PLAYER|HELPFUL")
 	if name then
-		local w = select(10, AuraUtil.FindAuraByName(GetSpellInfo(102351), u, "PLAYER|HELPFUL"))
-		if w == 102351 then
-			return "|cffFFF8DCY|r"
-		else
-			return "|cff33FF33b|r"
-		end
+		return "|cffFFF8DCY|r"
+	elseif name2 then
+		return "|cff33FF33b|r"
 	end
 end
 oUF.Tags.Events['Mlight:snla'] = "UNIT_AURA"
 
 -- Shaman 萨满
-oUF.Tags.Methods['Mlight:rip40'] = function(u) --激流40%
-	if IsEquippedItem(137085) then
-		local health, max_health, perc = UnitHealth(u), UnitHealthMax(u)
-		if health and max_health and max_health ~= 0 then
-			perc = health/max_health
-			local startTime, duration = GetSpellCooldown(61295)
-			startTime = startTime or 0
-			duration = duration or 0
-			cd = cd or 0
-			if duration <= 1.5 or (startTime+duration-GetTime()) <= 0 then
-				if not UnitIsDead(u) and perc < .35 then
-					return "|cff76EE00O|r"
-				elseif not UnitIsDead(u) and perc < .4 then
-					return "|cffFFFF00O|r"
-				end
-			end
-		end
-	end
-end
-oUF.Tags.Events['Mlight:Mlight:rip40'] = 'UNIT_AURA ACTIONBAR_UPDATE_STATE'
-
-
 oUF.Tags.Methods['Mlight:ripTime'] = function(u) --激流
-    local name, _,_,_,_, expirationTime = AuraUtil.FindAuraByName(GetSpellInfo(61295), u, "PLAYER|HELPFUL")
+    local name, _,_,_,_, expirationTime = T.FindAuraBySpellID(61295, u, "PLAYER|HELPFUL")
     if name then
         local spellTimer = (expirationTime-GetTime())
 		local TimeLeft = T.FormatTime(spellTimer)
@@ -162,7 +138,7 @@ end
 oUF.Tags.Events['Mlight:ripTime'] = 'UNIT_AURA'
 
 oUF.Tags.Methods['Mlight:ddzd'] = function(u) -- 大地之盾
-    local name,_, c = AuraUtil.FindAuraByName(GetSpellInfo(974), u, "PLAYER|HELPFUL")
+    local name,_, c = T.FindAuraBySpellID(974, u, "PLAYER|HELPFUL")
 	if name and c then
         if c and c ~= 0 then return "|cff66FFFF["..c.."]|r" end
 	end
@@ -171,9 +147,9 @@ oUF.Tags.Events['Mlight:ddzd'] = "UNIT_AURA"
 
 -- Paladin 骑士
 oUF.Tags.Methods['Mlight:beacon'] = function(u) --道标
-    local name, _,_,_,_, expirationTime = AuraUtil.FindAuraByName(GetSpellInfo(53563), u, "PLAYER|HELPFUL")
-	local name2, _,_,_,_, expirationTime2 = AuraUtil.FindAuraByName(GetSpellInfo(156910), u, "PLAYER|HELPFUL")
-	local name3, _,_,_,_, expirationTime3 = AuraUtil.FindAuraByName(GetSpellInfo(200025), u, "PLAYER|HELPFUL")
+    local name, _,_,_,_, expirationTime = T.FindAuraBySpellID(53563, u, "PLAYER|HELPFUL")
+	local name2, _,_,_,_, expirationTime2 = T.FindAuraBySpellID(156910, u, "PLAYER|HELPFUL")
+	local name3, _,_,_,_, expirationTime3 = T.FindAuraBySpellID(200025, u, "PLAYER|HELPFUL")
 	
     if name then
         return "|cffFFB90FO|r"
@@ -185,11 +161,15 @@ oUF.Tags.Methods['Mlight:beacon'] = function(u) --道标
 end
 oUF.Tags.Events['Mlight:beacon'] = 'UNIT_AURA'
 
-oUF.Tags.Methods['Mlight:forbearance'] = function(u) if AuraUtil.FindAuraByName(GetSpellInfo(25771), u, "HARMFUL") then return "|cffFF9900"..x.."|r" end end
-oUF.Tags.Events['Mlight:forbearance'] = "UNIT_AURA" -- 自律
+oUF.Tags.Methods['Mlight:forbearance'] = function(u) -- 自律
+	if T.FindAuraBySpellID(25771, u, "HARMFUL") then
+		return "|cffFF9900"..x.."|r" 
+	end
+end
+oUF.Tags.Events['Mlight:forbearance'] = "UNIT_AURA"
 
 oUF.Tags.Methods['Mlight:fyxy'] = function(u) -- 赋予信仰
-    local name, _,_,_,_, expirationTime = AuraUtil.FindAuraByName(GetSpellInfo(223306), u, "PLAYER|HELPFUL")
+    local name, _,_,_,_, expirationTime = T.FindAuraBySpellID(223306, u, "PLAYER|HELPFUL")
     if name then
         local spellTimer = (expirationTime-GetTime())
 		local TimeLeft = T.FormatTime(spellTimer)
@@ -201,7 +181,7 @@ end
 oUF.Tags.Events['Mlight:fyxy'] = 'UNIT_AURA'
 
 oUF.Tags.Methods['Mlight:sgss'] = function(u) -- 圣光闪烁
-    local name, _,_,_,_, expirationTime = AuraUtil.FindAuraByName(GetSpellInfo(287280), u, "PLAYER|HELPFUL")
+    local name, _,_,_,_, expirationTime = T.FindAuraBySpellID(287280, u, "PLAYER|HELPFUL")
     if name then
         local spellTimer = (expirationTime-GetTime())
 		local TimeLeft = T.FormatTime(spellTimer)
@@ -214,7 +194,7 @@ oUF.Tags.Events['Mlight:sgss'] = 'UNIT_AURA'
 
 -- Monk 武僧
 oUF.Tags.Methods['Mlight:jhzq'] = function(u) -- 精华之泉
-    local name, _,_,_,_, expirationTime = AuraUtil.FindAuraByName(GetSpellInfo(191840), u, "PLAYER|HELPFUL")
+    local name, _,_,_,_, expirationTime = T.FindAuraBySpellID(191840, u, "PLAYER|HELPFUL")
     if name then
         local spellTimer = (expirationTime-GetTime())
 		local TimeLeft = T.FormatTime(spellTimer)
@@ -226,7 +206,7 @@ end
 oUF.Tags.Events['Mlight:jhzq'] = 'UNIT_AURA'
 
 oUF.Tags.Methods['Mlight:sooth'] = function(u)-- 抚慰之雾
-	local name = AuraUtil.FindAuraByName(GetSpellInfo(115175), u, "PLAYER|HELPFUL")
+	local name = T.FindAuraBySpellID(115175, u, "PLAYER|HELPFUL")
 	if name then
 		return "|cff97FFFF"..x.."|r"
 	end
@@ -234,7 +214,7 @@ end
 oUF.Tags.Events['Mlight:sooth'] = "UNIT_AURA"
 
 oUF.Tags.Methods['Mlight:mist'] = function(u) -- 氤氲之雾
-    local name, _,_,_,_, expirationTime = AuraUtil.FindAuraByName(GetSpellInfo(124682), u, "PLAYER|HELPFUL")
+    local name, _,_,_,_, expirationTime = T.FindAuraBySpellID(124682, u, "PLAYER|HELPFUL")
     if name then
         local spellTimer = (expirationTime-GetTime())
 		local TimeLeft = T.FormatTime(spellTimer)
@@ -246,7 +226,7 @@ end
 oUF.Tags.Events['Mlight:mist'] = 'UNIT_AURA'
 
 oUF.Tags.Methods['Mlight:remist'] = function(u) -- 复苏之雾
-    local name, _,_,_,_, expirationTime = AuraUtil.FindAuraByName(GetSpellInfo(115151), u, "PLAYER|HELPFUL")
+    local name, _,_,_,_, expirationTime = T.FindAuraBySpellID(115151, u, "PLAYER|HELPFUL")
     if name then
         local spellTimer = (expirationTime-GetTime())
 		local TimeLeft = T.FormatTime(spellTimer)
@@ -257,65 +237,24 @@ oUF.Tags.Methods['Mlight:remist'] = function(u) -- 复苏之雾
 end 
 oUF.Tags.Events['Mlight:remist'] = 'UNIT_AURA'
 
-oUF.Tags.Methods['Mlight:ayj'] = function(u) --暗夜井释放
-    local name, _,_,_,_, expirationTime = AuraUtil.FindAuraByName(GetSpellInfo(225724), u, "PLAYER|HELPFUL")
-    if name then
-        return "|cffAB82FF-|r"
-    end
-end
-oUF.Tags.Events['Mlight:ayj'] = 'UNIT_AURA'
-
-oUF.Tags.Methods['Mlight:lt'] = function(u) --基尔加丹的蓝图
-    local name, _,_,_,_, expirationTime = AuraUtil.FindAuraByName(GetSpellInfo(242622), u, "PLAYER|HELPFUL") -- hot
-	local name2, _,_,_,_, expirationTime2 = AuraUtil.FindAuraByName(GetSpellInfo(242623), u, "PLAYER|HELPFUL") -- 吸收盾
-    if name then
-        return "|cffFF3030b|r"
-	elseif name2 then
-		return "|cffFF3030z|r"
-    end
-end
-oUF.Tags.Events['Mlight:lt'] = 'UNIT_AURA'
-
-oUF.Tags.Methods['Mlight:da'] = function(u) --信仰档案
-    local name, _,_,_,_, expirationTime = AuraUtil.FindAuraByName(GetSpellInfo(242619), u, "PLAYER|HELPFUL") -- hot
-	local name2, _,_,_,_, expirationTime2 = AuraUtil.FindAuraByName(GetSpellInfo(242621), u, "PLAYER|HELPFUL") -- 吸收盾
-    if name then
-        return "|cffFFD700b|r"
-	elseif name2 then
-		local w = select(10, AuraUtil.FindAuraByName(GetSpellInfo(242621), u, "PLAYER|HELPFUL"))
-		if w == 242621 then
-			return "|cffFFD700z|r"
-		end
-    end
-end
-oUF.Tags.Events['Mlight:da'] = 'UNIT_AURA'
-
-oUF.Tags.Methods['Mlight:xnhd'] = function(u) --邪能护盾
-    local name, _,_,_,_, expirationTime = AuraUtil.FindAuraByName(GetSpellInfo(344916), u, "PLAYER|HELPFUL")
-    if name then
-        return "|cffC0FF3Ez|r"
-    end
-end
-oUF.Tags.Events['Mlight:xnhd'] = 'UNIT_AURA'
-
 classIndicators={
     ["DRUID"] = {
         ["TL"] = "[Mlight:regrow]",
-        ["BR"] = "[Mlight:xnhd][Mlight:ayj][Mlight:da][Mlight:lt][Mlight:snla]",
+        ["BR"] = "[Mlight:snla]",
         ["BL"] = "[Mlight:wildgrowth]",
         ["TR"] = "[Mlight:rejuv]",
         ["Cen"] = "[Mlight:lb]",
     },
     ["PRIEST"] = {
         ["TL"] = "[Mlight:pws]",
-        ["BR"] = "[Mlight:xnhd][Mlight:ayj][Mlight:da][Mlight:lt]",
+        ["BR"] = "",
         ["BL"] = "[Mlight:rnw]",
         ["TR"] = "[Mlight:pom]",
         ["Cen"] = "[Mlight:atonement]",
     },
     ["PALADIN"] = {
         ["TL"] = "[Mlight:sgss]",
-        ["BR"] = "[Mlight:xnhd][Mlight:ayj][Mlight:da][Mlight:lt]",
+        ["BR"] = "",
         ["BL"] = "[Mlight:fyxy]",
         ["TR"] = "[Mlight:beacon]",
         ["Cen"] = "[Mlight:forbearance]",
@@ -343,7 +282,7 @@ classIndicators={
     },
     ["SHAMAN"] = {
         ["TL"] = "[Mlight:ripTime]",
-        ["BR"] = "[Mlight:xnhd][Mlight:ayj][Mlight:da][Mlight:lt][Mlight:rip40]",
+        ["BR"] = "",
         ["BL"] = "",
         ["TR"] = "[Mlight:ddzd]",
         ["Cen"] = "",
@@ -371,7 +310,7 @@ classIndicators={
     },
 	["MONK"] = {
         ["TL"] = "[Mlight:remist]",
-        ["BR"] = "[Mlight:xnhd][Mlight:ayj][Mlight:da][Mlight:lt]",
+        ["BR"] = "",
         ["BL"] = "[Mlight:mist]",
         ["TR"] = "[Mlight:jhzq]",
         ["Cen"] = "[Mlight:sooth]",
