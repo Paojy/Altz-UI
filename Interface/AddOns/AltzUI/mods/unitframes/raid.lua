@@ -2,6 +2,38 @@
 local oUF = AltzUF or oUF
 
 --=============================================--
+--[[ Functions ]]--
+--=============================================--
+local dispelClass = {
+	PRIEST = {Disease = true},
+    SHAMAN = {Curse = true},
+    PALADIN = {Poison = true, Disease = true},
+    DRUID = {Curse = true, Poison = true},
+    MONK = {Disease = true, Poison = true},	
+}
+
+local dispellist = dispelClass[G.myClass] or {}
+local dispelPriority = { Magic = 4, Curse = 3, Poison = 2, Disease = 1,}
+
+local current_encounter
+local gold_str = "|Hgarrmission:altz_config_altz::%s::%s::%s|h|cFFFFD700[%s]|r|h"
+local red_str = "|Hgarrmission:altz_delete_altz::%s::%s::%s|h|cFFDC143C[%s]|r|h"
+
+local UpdateHealManabar = function()
+	local oUF = AltzUF or oUF
+	for _, obj in next, oUF.objects do	
+		if obj.style == 'Altz_Healerraid' and obj.Power then
+			local role = UnitGroupRolesAssigned(obj.unit)
+			if role == 'HEALER' then
+				obj.Power:SetAlpha(1)
+			else
+				obj.Power:SetAlpha(0)
+			end
+		end
+	end
+end
+
+--=============================================--
 --[[               Some update               ]]--
 --=============================================--
 local pxbackdrop = { edgeFile = [=[Interface\ChatFrame\ChatFrameBackground]=],  edgeSize = 2, }
@@ -264,6 +296,162 @@ end
 T.UpdateClicksforAll = UpdateClicksforAll
 
 --=============================================--
+--[[              Raid Auras                 ]]--
+--=============================================--
+-- Debuffs
+
+local RaidDebuff_AuraFilter = function(debuffs, unit, data)
+	local spellID = data.spellId
+	
+	if aCoreCDB["UnitframeOptions"]["debuff_list_black"][spellID] then -- 黑名单不显示
+		return false
+	elseif aCoreCDB["UnitframeOptions"]["debuff_list"][spellID] then -- 白名单显示
+		return true
+	elseif dispellist[dtype] then -- 可驱散
+        return true
+	elseif IsInInstance() then -- 副本
+		local map = C_Map.GetBestMapForUnit("player")
+		local InstanceID = map and EJ_GetInstanceForMap(map)
+		if map and InstanceID and aCoreCDB["UnitframeOptions"]["raid_debuffs"][InstanceID] then -- 排除非手册副本、如场景战役
+			if current_encounter == 1 then
+				if not aCoreCDB["UnitframeOptions"]["raid_debuffs"][InstanceID][1] then
+					aCoreCDB["UnitframeOptions"]["raid_debuffs"][InstanceID][1] = {}
+				end
+				
+				if aCoreCDB["UnitframeOptions"]["raid_debuffs"][InstanceID][1][spellID] then -- 找到了
+					return true
+				elseif aCoreCDB["UnitframeOptions"]["debuff_auto_add"] and not castByPlayer then -- 没有找到，可以添加
+					aCoreCDB["UnitframeOptions"]["raid_debuffs"][InstanceID][1][spellID] = aCoreCDB["UnitframeOptions"]["debuff_auto_add_level"]
+					print(format(L["添加团队减益"], L["杂兵"], T.GetIconLink(spellID)), format(gold_str, InstanceID, 1, spellID, L["设置"]), format(red_str, InstanceID, 1, spellID, L["删除并加入黑名单"]))
+					return true
+				end
+			elseif current_encounter then -- BOSS战斗中
+				local dataIndex = 1
+				EJ_SelectInstance(InstanceID)
+				local encounterName, _, encounterID, _, _, _, dungeonEncounterID = EJ_GetEncounterInfoByIndex(dataIndex, InstanceID)
+				while encounterName ~= nil do
+					if dungeonEncounterID == current_encounter then
+						if not aCoreCDB["UnitframeOptions"]["raid_debuffs"][InstanceID][encounterID] then
+							aCoreCDB["UnitframeOptions"]["raid_debuffs"][InstanceID][encounterID] = {}
+						end
+						
+						if aCoreCDB["UnitframeOptions"]["raid_debuffs"][InstanceID][encounterID][spellID] then -- 找到了
+							return true
+						elseif aCoreCDB["UnitframeOptions"]["debuff_auto_add"] and not castByPlayer then -- 没有找到，可以添加
+							aCoreCDB["UnitframeOptions"]["raid_debuffs"][InstanceID][encounterID][spellID] = aCoreCDB["UnitframeOptions"]["debuff_auto_add_level"]
+							print(format(L["添加团队减益"], encounterName, T.GetIconLink(spellID)), format(gold_str, InstanceID, encounterID, spellID, L["设置"]), format(red_str, InstanceID, encounterID, spellID, L["删除并加入黑名单"]))
+							return true
+						end
+						break
+					end
+					dataIndex = dataIndex + 1
+					encounterName, _, encounterID, _, _, _, dungeonEncounterID = EJ_GetEncounterInfoByIndex(dataIndex, InstanceID)
+				end
+			end
+		end
+    end
+end
+
+local GetDebuffPriority = function(data)
+	local spellID = data.spellId
+	
+	if aCoreCDB["UnitframeOptions"]["debuff_list"][spellID] then
+		return aCoreCDB["UnitframeOptions"]["debuff_list"][spellID]
+	elseif dispellist[dtype] then -- 可驱散
+        return dispelPriority[dtype]
+	elseif IsInInstance() then -- 副本
+		local map = C_Map.GetBestMapForUnit("player")
+		local InstanceID = map and EJ_GetInstanceForMap(map)
+		for boss, info in pairs (aCoreCDB["UnitframeOptions"]["raid_debuffs"][InstanceID]) do
+			if info[spellID] then
+				return info[spellID]
+			end
+		end
+	else
+		return 0
+	end
+end
+
+local SortDebuffs = function(a, b)
+	a.priority = GetDebuffPriority(a)
+	b.priority = GetDebuffPriority(b)
+	
+	return a.priority > b.priority or a.auraInstanceID < b.auraInstanceID
+end
+
+local CreateRaidDebuffs = function(self, unit)
+	local debuffs = CreateFrame("Frame", nil, self)				
+	debuffs.initialAnchor = "BOTTOMLEFT"
+	debuffs["growth-x"] = "RIGHT"
+	debuffs["growth-y"] = "UP"
+	debuffs.spacing = 3
+	debuffs.showDebuffType = true
+
+	debuffs.PostCreateButton = T.PostCreateIcon
+	debuffs.FilterAura = RaidDebuff_AuraFilter
+	debuffs.SortDebuffs = SortDebuffs
+	
+	debuffs.ApplySettings =  function()			
+		debuffs:SetPoint("LEFT", self, "CENTER", aCoreCDB["UnitframeOptions"]["raid_debuff_anchor_x"], aCoreCDB["UnitframeOptions"]["raid_debuff_anchor_y"])
+		debuffs:SetWidth(aCoreCDB["UnitframeOptions"]["raid_debuff_icon_size"]*5+12)
+		debuffs:SetHeight(aCoreCDB["UnitframeOptions"]["raid_debuff_icon_size"])
+		debuffs.size = aCoreCDB["UnitframeOptions"]["raid_debuff_icon_size"]
+		debuffs.num = aCoreCDB["UnitframeOptions"]["raid_debuff_num"]	
+	end
+
+	self.Debuffs = debuffs
+	self.Debuffs.ApplySettings()
+end
+
+-- Buffs
+
+local RaidBuff_AuraFilter = function(debuffs, unit, data)
+	local spellID = data.spellId
+	if aCoreCDB["UnitframeOptions"]["buff_list"][spellID] then
+		return true
+    end
+end
+
+local GetBuffPriority = function(data)
+	local spellID = data.spellId
+	
+	if aCoreCDB["UnitframeOptions"]["buff_list"][spellID] then
+		return aCoreCDB["UnitframeOptions"]["buff_list"][spellID]
+	else
+		return 0
+    end
+end
+
+local SortBuffs = function(a, b)
+	a.priority = GetBuffPriority(a)
+	b.priority = GetBuffPriority(b)
+	
+	return a.priority > b.priority or a.auraInstanceID < b.auraInstanceID
+end
+
+local CreateRaidBuffs = function(self, unit)
+	local buffs = CreateFrame("Frame", nil, self)				
+	buffs.initialAnchor = "BOTTOMLEFT"
+	buffs["growth-x"] = "RIGHT"
+	buffs["growth-y"] = "UP"
+	buffs.spacing = 3
+
+	buffs.PostCreateButton = T.PostCreateIcon
+	buffs.FilterAura = RaidBuff_AuraFilter
+	buffs.SortBuffs = SortBuffs
+	
+	buffs.ApplySettings =  function()			
+		buffs:SetPoint("LEFT", self, "CENTER", aCoreCDB["UnitframeOptions"]["raid_buff_anchor_x"], aCoreCDB["UnitframeOptions"]["raid_buff_anchor_y"])
+		buffs:SetWidth(aCoreCDB["UnitframeOptions"]["raid_buff_icon_size"]*5+12)
+		buffs:SetHeight(aCoreCDB["UnitframeOptions"]["raid_buff_icon_size"])
+		buffs.size = aCoreCDB["UnitframeOptions"]["raid_buff_icon_size"]
+		buffs.num = aCoreCDB["UnitframeOptions"]["raid_buff_num"]	
+	end
+
+	self.Buffs = buffs
+	self.Buffs.ApplySettings()
+end
+--=============================================--
 --[[              Raid Frames                ]]--
 --=============================================--
 
@@ -516,14 +704,10 @@ local func = function(self, unit)
 	status.ApplySettings()
 	
 	-- 团队减益
-	local Auras = CreateFrame("Frame", nil, self)
-	Auras:SetFrameLevel(self:GetFrameLevel()+1)
-	self.AltzAuras2 = Auras
+	CreateRaidDebuffs(self, unit)
 	
 	-- 团队增益
-    local Tankbuff = CreateFrame("Frame", nil, self)
-	Tankbuff:SetFrameLevel(self:GetFrameLevel()+1)
-	self.AltzTankbuff = Tankbuff
+	CreateRaidBuffs(self, unit)
 	
 	-- 治疗边角指示器（数字）
 	local ind_number = CreateFrame("Frame", nil, self)
@@ -758,23 +942,6 @@ T.UpdateGroupfilter = function()
 		T.ReleaseDragFrame(RaidPetFrame)
 	end
 end
-
-RaidHealerManaBarUpdater = CreateFrame("Frame")
-RaidHealerManaBarUpdater:RegisterEvent('GROUP_ROSTER_UPDATE')
-RaidHealerManaBarUpdater:RegisterEvent('PLAYER_ENTERING_WORLD')
-RaidHealerManaBarUpdater:SetScript("OnEvent", function()
-	local oUF = AltzUF or oUF
-	for _, obj in next, oUF.objects do	
-		if obj.style == 'Altz_Healerraid' and obj.Power then
-			local role = UnitGroupRolesAssigned(obj.unit)
-			if role == 'HEALER' then
-				obj.Power:SetAlpha(1)
-			else
-				obj.Power:SetAlpha(0)
-			end
-		end
-	end
-end)
 
 --=============================================--
 --[[             Party Frames                ]]--
@@ -1028,6 +1195,32 @@ EventFrame:SetScript("OnEvent", function(self, event, ...)
 			DelayRegisterClickSets()
 			DelayUnregisterClickSets()
 		end
+	elseif event == "PLAYER_SPECIALIZATION_CHANGED" then
+		if T.multicheck(G.myClass, "SHAMAN", "PALADIN", "DRUID", "PRIEST", "MONK") then
+			local tree = GetSpecialization()
+			
+			if G.myClass == "SHAMAN" then
+				dispellist.Magic = (tree == 3)
+			elseif G.myClass == "PALADIN" then
+				dispellist.Magic = (tree == 1)
+			elseif G.myClass == "DRUID" then
+				dispellist.Magic = (tree == 4)
+			elseif G.myClass == "PRIEST" then
+				dispellist.Magic = (tree == 1 or tree == 2)
+			elseif G.myClass == "MONK" then
+				dispellist.Magic = (tree == 2)
+			end
+		end
+	elseif event == "ENCOUNTER_START" then
+		local encounterID = ...
+		current_encounter = encounterID
+	elseif event == "ENCOUNTER_END" then
+		current_encounter = 1
+	elseif	event == "PLAYER_ENTERING_WORLD" then
+		current_encounter = 1
+		UpdateHealManabar()
+	elseif event == "GROUP_ROSTER_UPDATE" then
+		UpdateHealManabar()
 	end
 end)
 
@@ -1057,4 +1250,9 @@ T.RegisterInitCallback(function()
 	end
 	
 	EventFrame:RegisterEvent("PLAYER_REGEN_ENABLED")
+	EventFrame:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED")
+	EventFrame:RegisterEvent("ENCOUNTER_START")
+	EventFrame:RegisterEvent("ENCOUNTER_END")
+	EventFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
+	EventFrame:RegisterEvent("GROUP_ROSTER_UPDATE")	
 end)
