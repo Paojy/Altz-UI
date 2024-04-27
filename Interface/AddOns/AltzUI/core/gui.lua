@@ -721,7 +721,7 @@ end
 
 T.createcheckbutton(UFInnerframe.aura, 30, 100, T.split_words(PLAYER, L["减益"]), "UnitframeOptions", "playerdebuffenable", L["玩家减益提示"])
 UFInnerframe.aura.playerdebuffenable.apply = function()
-	T.ApplyUFSettings({"Auras"})
+	T.EnableUFSettings({"Auras"})
 end
 
 CreateDividingLine(UFInnerframe.aura, -140)
@@ -1047,7 +1047,7 @@ local function GetClickcastValue(bu_tag, mod_ind, key)
 		arg1 = tostring(9+mod_ind)
 		arg2 = "Click"
 	else
-		arg1 = bu_tag
+		arg1 = tostring(bu_tag)
 		arg2 = G.modifier[mod_ind]
 	end
 	value = aCoreCDB["UnitframeOptions"]["ClickCast"][arg1][arg2][key]
@@ -1207,7 +1207,7 @@ local function CreateClickcastKeyOptions(bu_tag, text)
 		-- 物品
 		local item_input = T.createinputbox(frame, {"LEFT", action_select, "RIGHT", -8, 2}, L["物品名称ID链接"], 140, true)
 		item_input:SetScript("OnShow", function(self)
-			local itemName = GetClickcastValue(bu_tag, mod_ind, "item")		
+			local itemName = GetClickcastValue(bu_tag, mod_ind, "item")
 			self:SetText(itemName)
 		end)
 		function item_input:apply()
@@ -1324,66 +1324,56 @@ raidicon_debufftitle:SetText(L["Debuffs"])
 
 T.createslider(RFInnerframe.icon_display, "short", 60, 100, "X", "UnitframeOptions", "raid_debuff_anchor_x", 1, -50, 50, 1)
 RFInnerframe.icon_display.raid_debuff_anchor_x.apply = function()
-	T.ApplyUFSettings({"AltzAuras2"})
+	T.ApplyUFSettings({"Debuffs"}, "Altz_Healerraid")
 end
 
 T.createslider(RFInnerframe.icon_display, "short", 260, 100, "Y", "UnitframeOptions", "raid_debuff_anchor_y", 1, -50, 50, 1)
 RFInnerframe.icon_display.raid_debuff_anchor_y.apply = function()
-	T.ApplyUFSettings({"AltzAuras2"})
+	T.ApplyUFSettings({"Debuffs"}, "Altz_Healerraid")
 end
 
 T.createslider(RFInnerframe.icon_display, "short", 60, 140, L["图标大小"], "UnitframeOptions", "raid_debuff_icon_size", 1, 10, 40, 1)
 RFInnerframe.icon_display.raid_debuff_icon_size.apply = function()
-	T.ApplyUFSettings({"AltzAuras2"})
+	T.ApplyUFSettings({"Debuffs"}, "Altz_Healerraid")
 end
 
-T.createslider(RFInnerframe.icon_display, "short", 260, 140, L["字体大小"], "UnitframeOptions", "raid_debuff_icon_fontsize", 1, 5, 20, 1)
-RFInnerframe.icon_display.raid_debuff_icon_fontsize.apply = function()
-	T.ApplyUFSettings({"AltzAuras2"})
-end
-
-T.createslider(RFInnerframe.icon_display, "short", 60, 180, L["图标数量"], "UnitframeOptions", "raid_debuff_num", 1, 1, 5, 1)
+T.createslider(RFInnerframe.icon_display, "short", 260, 140, L["图标数量"], "UnitframeOptions", "raid_debuff_num", 1, 1, 5, 1)
 RFInnerframe.icon_display.raid_debuff_num.apply = function()
-	T.ApplyUFSettings({"AltzAuras2"})
+	T.ApplyUFSettings({"Debuffs"}, "Altz_Healerraid")
 end
 
 local raidicon_bufftitle = T.createtext(RFInnerframe.icon_display, "OVERLAY", 18, "OUTLINE", "LEFT")
-raidicon_bufftitle:SetPoint("LEFT", RFInnerframe.icon_display, "TOPLEFT", 50, -225)
+raidicon_bufftitle:SetPoint("LEFT", RFInnerframe.icon_display, "TOPLEFT", 50, -185)
 raidicon_bufftitle:SetTextColor(.3, 1, .5)
 raidicon_bufftitle:SetText(L["Buffs"])
 
-T.createslider(RFInnerframe.icon_display, "short", 60, 250, "X", "UnitframeOptions", "raid_buff_anchor_x", 1, -50, 50, 1)
+T.createslider(RFInnerframe.icon_display, "short", 60, 210, "X", "UnitframeOptions", "raid_buff_anchor_x", 1, -50, 50, 1)
 RFInnerframe.icon_display.raid_buff_anchor_x.apply = function()
-	T.ApplyUFSettings({"AltzTankbuff"})
+	T.ApplyUFSettings({"Buffs"}, "Altz_Healerraid")
 end
 
-T.createslider(RFInnerframe.icon_display, "short", 260, 250, "Y", "UnitframeOptions", "raid_buff_anchor_y", 1, -50, 50, 1)
+T.createslider(RFInnerframe.icon_display, "short", 260, 210, "Y", "UnitframeOptions", "raid_buff_anchor_y", 1, -50, 50, 1)
 RFInnerframe.icon_display.raid_buff_anchor_y.apply = function()
-	T.ApplyUFSettings({"AltzTankbuff"})
+	T.ApplyUFSettings({"Buffs"}, "Altz_Healerraid")
 end
 
-T.createslider(RFInnerframe.icon_display, "short", 60, 290, L["图标大小"], "UnitframeOptions", "raid_buff_icon_size", 1, 10, 40, 1)
+T.createslider(RFInnerframe.icon_display, "short", 60, 250, L["图标大小"], "UnitframeOptions", "raid_buff_icon_size", 1, 10, 40, 1)
 RFInnerframe.icon_display.raid_buff_icon_size.apply = function()
-	T.ApplyUFSettings({"AltzTankbuff"})
+	T.ApplyUFSettings({"Buffs"}, "Altz_Healerraid")
 end
 
-T.createslider(RFInnerframe.icon_display, "short", 260, 290, L["字体大小"], "UnitframeOptions", "raid_buff_icon_fontsize", 1, 5, 20, 1)
-RFInnerframe.icon_display.raid_buff_icon_fontsize.apply = function()
-	T.ApplyUFSettings({"AltzTankbuff"})
-end
-
-T.createslider(RFInnerframe.icon_display, "short", 60, 330, L["图标数量"], "UnitframeOptions", "raid_buff_num", 1, 1, 5, 1)
+T.createslider(RFInnerframe.icon_display, "short", 260, 250, L["图标数量"], "UnitframeOptions", "raid_buff_num", 1, 1, 5, 1)
 RFInnerframe.icon_display.raid_buff_num.apply = function()
-	T.ApplyUFSettings({"AltzTankbuff"})
+	T.ApplyUFSettings({"Buffs"}, "Altz_Healerraid")
 end
 
 RFInnerframe.icon_display.DividingLine = RFInnerframe.icon_display:CreateTexture(nil, "ARTWORK")
 RFInnerframe.icon_display.DividingLine:SetSize(RFInnerframe.icon_display:GetWidth()-50, 1)
-RFInnerframe.icon_display.DividingLine:SetPoint("TOP", 0, -360)
+RFInnerframe.icon_display.DividingLine:SetPoint("TOP", 0, -280)
 RFInnerframe.icon_display.DividingLine:SetColorTexture(1, 1, 1, .2)
 
-T.createcheckbutton(RFInnerframe.icon_display, 60, 380, L["自动添加团队减益"], "UnitframeOptions", "debuff_auto_add", L["自动添加团队减益提示"])
-T.createslider(RFInnerframe.icon_display, "long", 60, 430, L["自动添加的图标层级"], "UnitframeOptions", "debuff_auto_add_level", 1, 1, 20, 1)
+T.createcheckbutton(RFInnerframe.icon_display, 60, 300, L["自动添加团队减益"], "UnitframeOptions", "debuff_auto_add", L["自动添加团队减益提示"])
+T.createslider(RFInnerframe.icon_display, "long", 60, 350, L["自动添加的图标层级"], "UnitframeOptions", "debuff_auto_add_level", 1, 1, 20, 1)
 
 -- 团队减益
 RFInnerframe.raiddebuff = CreateOptionPage("RF Options Raid Debuff", L["副本减益"], RFInnerframe, "VERTICAL", "UnitframeOptions")
@@ -1497,7 +1487,7 @@ do
 	option_list.spells = {}
 	option_list.apply = function()
 		DisplayRaidDebuffList()
-		T.ApplyUFSettings({"AltzAuras2"})
+		T.ApplyUFSettings({"Debuffs"}, "Altz_Healerraid")
 	end
 	
 	-- 重置
@@ -1728,14 +1718,14 @@ RFInnerframe.globaldebuff = CreateOptionPage("RF Options Raid Debuff Fliter List
 
 RFInnerframe.globaldebuff.whitelist = T.CreateAuraListOption(RFInnerframe.globaldebuff, {"TOPLEFT", 30, -55}, 200,  L["白名单"]..AURAS, "debuff_list", L["优先级"])
 RFInnerframe.globaldebuff.whitelist.apply = function()
-	T.ApplyUFSettings({"AltzAuras2"})
+	T.ApplyUFSettings({"Debuffs"}, "Altz_Healerraid")
 end
 
 CreateDividingLine(RFInnerframe.globaldebuff, -250)
 
 RFInnerframe.globaldebuff.blacklist = T.CreateAuraListOption(RFInnerframe.globaldebuff, {"TOPLEFT", RFInnerframe.globaldebuff.whitelist, "BOTTOMLEFT", 0, -10}, 200, L["黑名单"]..AURAS, "debuff_list_black")
 RFInnerframe.globaldebuff.blacklist.apply = function()
-	T.ApplyUFSettings({"AltzAuras2"})
+	T.ApplyUFSettings({"Debuffs"}, "Altz_Healerraid")
 end
 
 -- 全局增益
@@ -1743,7 +1733,7 @@ RFInnerframe.globalbuff = CreateOptionPage("RF Options Cooldown Aura", T.split_w
 
 RFInnerframe.globalbuff.whitelist = T.CreateAuraListOption(RFInnerframe.globalbuff, {"TOPLEFT", 30, -60}, 380, L["白名单"]..AURAS, "buff_list", L["优先级"])
 RFInnerframe.globalbuff.whitelist.apply = function()
-	T.ApplyUFSettings({"AltzTankbuff"})
+	T.ApplyUFSettings({"Buffs"}, "Altz_Healerraid")
 end
 --====================================================--
 --[[           -- Actionbar Options --              ]]--
@@ -1814,58 +1804,52 @@ PlateInnerframe.common.enableplate.apply = function()
 	StaticPopup_Show(G.uiname.."Reload Alert")
 end
 
-T.createslider(PlateInnerframe.common, "short", 30, 110, T.split_words(NAME,L["字体大小"]), "PlateOptions", "namefontsize", 1, 5, 25, 1)
+T.createslider(PlateInnerframe.common, "long", 30, 110, T.split_words(NAME,L["字体大小"]), "PlateOptions", "namefontsize", 1, 5, 25, 1)
 PlateInnerframe.common.namefontsize.apply = function()
 	T.ApplyUFSettings({"Tag_Name", "Health", "Power"}, "Altz_Nameplates")
 end
 
-T.createslider(PlateInnerframe.common, "short", 230, 110, T.split_words(L["图标"],L["数字大小"]), "PlateOptions", "numfontsize", 1, 5, 25, 1)
-PlateInnerframe.common.numfontsize.apply = function()
-	T.ApplyUFSettings({"Auras"}, "Altz_Nameplates")
-end
-
-T.createslider(PlateInnerframe.common, "short", 30, 150, T.split_words(L["光环"],L["图标数量"]), "PlateOptions", "plateauranum", 1, 3, 10, 1)
+T.createslider(PlateInnerframe.common, "long", 30, 150, T.split_words(L["光环"],L["图标数量"]), "PlateOptions", "plateauranum", 1, 3, 10, 1)
 PlateInnerframe.common.plateauranum.apply = function()
 	T.ApplyUFSettings({"Auras"}, "Altz_Nameplates")
 end
 
-T.createslider(PlateInnerframe.common, "short", 230, 150, T.split_words(L["光环"],L["图标大小"]), "PlateOptions", "plateaurasize", 1, 10, 30, 1)
+T.createslider(PlateInnerframe.common, "long", 30, 190, T.split_words(L["光环"],L["图标大小"]), "PlateOptions", "plateaurasize", 1, 10, 30, 1)
 PlateInnerframe.common.plateaurasize.apply = function()
 	T.ApplyUFSettings({"Auras"}, "Altz_Nameplates")
 end
 
-T.createcolorpickerbu(PlateInnerframe.common, 30, 180, T.split_words(L["可打断"],L["施法条"],L["颜色"]), "PlateOptions", "Interruptible_color")
+T.createcolorpickerbu(PlateInnerframe.common, 30, 220, T.split_words(L["可打断"],L["施法条"],L["颜色"]), "PlateOptions", "Interruptible_color")
 
-T.createcolorpickerbu(PlateInnerframe.common, 230, 180, T.split_words(L["不可打断"],L["施法条"],L["颜色"]), "PlateOptions", "notInterruptible_color")
+T.createcolorpickerbu(PlateInnerframe.common, 230, 220, T.split_words(L["不可打断"],L["施法条"],L["颜色"]), "PlateOptions", "notInterruptible_color")
 
-T.createcheckbutton(PlateInnerframe.common, 30, 210, L["焦点染色"], "PlateOptions", "focuscolored")
+T.createcheckbutton(PlateInnerframe.common, 30, 250, L["焦点染色"], "PlateOptions", "focuscolored")
 PlateInnerframe.common.focuscolored.apply = function()
 	T.ApplyUFSettings({"Health"}, "Altz_Nameplates")
 end
 
-T.createcolorpickerbu(PlateInnerframe.common, 230, 210, T.split_words(L["焦点"],L["颜色"]), "PlateOptions", "focus_color")
+T.createcolorpickerbu(PlateInnerframe.common, 230, 250, T.split_words(L["焦点"],L["颜色"]), "PlateOptions", "focus_color")
 PlateInnerframe.common.focus_color.apply = function()
 	T.ApplyUFSettings({"Health"}, "Altz_Nameplates")
 end
 
 T.createDR(PlateInnerframe.common.focuscolored, PlateInnerframe.common.focus_color)
 
-T.createcheckbutton(PlateInnerframe.common, 30, 240, L["仇恨染色"], "PlateOptions", "threatcolor")
+T.createcheckbutton(PlateInnerframe.common, 30, 280, L["仇恨染色"], "PlateOptions", "threatcolor")
 PlateInnerframe.common.threatcolor.apply = function()
 	T.ApplyUFSettings({"Health"}, "Altz_Nameplates")
 end
 
-T.CVartogglebox(PlateInnerframe.common, 30, 270, "nameplateShowAll", UNIT_NAMEPLATES_AUTOMODE, "1", "0")
+T.CVartogglebox(PlateInnerframe.common, 30, 310, "nameplateShowAll", UNIT_NAMEPLATES_AUTOMODE, "1", "0")
 
-T.createcheckbutton(PlateInnerframe.common, 30, 300, L["友方只显示名字"], "PlateOptions", "bar_onlyname")
+T.createcheckbutton(PlateInnerframe.common, 30, 340, L["友方只显示名字"], "PlateOptions", "bar_onlyname")
 PlateInnerframe.common.bar_onlyname.apply = function()
 	T.ApplyUFSettings({"Health"}, "Altz_Nameplates")
 	T.PostUpdateAllPlates()
 end
 
 T.createDR(PlateInnerframe.common.enableplate,
-PlateInnerframe.common.namefontsize, PlateInnerframe.common.numfontsize,
-PlateInnerframe.common.plateauranum, PlateInnerframe.common.plateaurasize,
+PlateInnerframe.common.namefontsize, PlateInnerframe.common.plateauranum, PlateInnerframe.common.plateaurasize,
 PlateInnerframe.common.Interruptible_color, PlateInnerframe.common.notInterruptible_color,
 PlateInnerframe.common.focuscolored, PlateInnerframe.common.focus_color, 
 PlateInnerframe.common.threatcolor, PlateInnerframe.common.bar_onlyname)

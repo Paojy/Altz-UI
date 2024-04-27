@@ -604,12 +604,10 @@ local Character_default_Settings = {
 		raid_debuff_anchor_y = -5,
 		raid_debuff_num = 2,
 		raid_debuff_icon_size = 22,
-		raid_debuff_icon_fontsize = 8,
 		raid_buff_anchor_x = 5,
 		raid_buff_anchor_y = -5,
 		raid_buff_num = 1,
 		raid_buff_icon_size = 22,
-		raid_buff_icon_fontsize = 8,
 		debuff_auto_add = true,
 		debuff_auto_add_level = 6,
 		-- 团队减益
@@ -643,7 +641,6 @@ local Character_default_Settings = {
 		enableplate = true,
 		theme = "class", -- "dark" "class" "number"	
 		namefontsize = 8,
-		numfontsize = 10,
 		plateauranum = 5,
 		plateaurasize = 15,	
 		Interruptible_color = {r =.6 , g = .4, b = .8},	
