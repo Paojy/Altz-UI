@@ -7,6 +7,15 @@ local function CreateDividingLine(frame, y, width)
 	tex:SetColorTexture(1, 1, 1, .2)
 end
 
+local function CreateTitle(frame, x, y, text, fs, color)
+	local fs = T.createtext(frame, "OVERLAY", fs or 14, "OUTLINE", "LEFT")
+	fs:SetPoint("TOPLEFT", frame, "TOPLEFT", x, y)
+	fs:SetText(text)
+	if color then
+		fs:SetTextColor(unpack(color))
+	end
+end
+
 --====================================================--
 --[[             -- GUI Main Frame --               ]]--
 --====================================================--
@@ -19,8 +28,6 @@ GUI:Hide()
 
 GUI.bd = T.createBackdrop(GUI, .5)
 T.setStripeBg(GUI.bd)
-
-G.GUI = GUI
 
 -- 移动
 GUI:SetClampedToScreen(true)
@@ -102,7 +109,7 @@ GUI.scale:SetScript("OnMouseUp", GUI.scale.pointself)
 -- 标题
 GUI.title = T.createtext(GUI, "OVERLAY", 25, "OUTLINE", "CENTER")
 GUI.title:SetPoint("BOTTOM", GUI, "TOP", 0, -8)
-GUI.title:SetText(G.classcolor.."Altz UI  "..G.Version.."|r")
+GUI.title:SetText(G.addon_colorStr.."Altz UI  "..G.Version.."|r")
 
 -- 输入框和按钮
 GUI.editbox = T.createeditbox(GUI, nil, nil, L["复制粘贴"])
@@ -368,51 +375,27 @@ SInnerframe.theme.style.apply = function()
 	T.ApplyUFSettings({"Castbar", "Swing", "Health", "Power", "HealthPrediction"})
 end
 
-local combattextfont_group = {
-	{"none", DEFAULT},
-	{"combat1", "1234"},
-	{"combat2", "1234"},
-	{"combat3", "1234"},
-}
-
-T.createradiobuttongroup(SInnerframe.theme, 30, 90, L["战斗字体"], "combattext", combattextfont_group)
-for i, info in pairs(combattextfont_group) do
-	local bu = SInnerframe.theme.combattext.buttons[i]
-	if info[1] ~= "none" then
-		bu.text:SetFont(G.combatFont[info[1]], 10, "OUTLINE")
-	end
-end
-SInnerframe.theme.combattext.apply = function()
-	if not SInnerframe.theme.combattext.alert then
-		StaticPopup_Show("CLIENT_RESTART_ALERT")
-		SInnerframe.theme.combattext.alert = true
-	end
-end
-	
-T.createradiobuttongroup(SInnerframe.theme, 30, 120, L["数字缩写样式"], "formattype", {
+T.createradiobuttongroup(SInnerframe.theme, 30, 90, L["数字缩写样式"], "formattype", {
 	{"k", "k m"},
 	{"w", "w kw"},
 	{"w_chinese", "万 千万"},
 	{"none", "不缩写"},
 })
 
-T.createcheckbutton(SInnerframe.theme, 30, 150, L["上方"].." "..L["边缘装饰"], "SkinOptions", "showtopbar")
+T.createcheckbutton(SInnerframe.theme, 30, 120, L["上方"].." "..L["边缘装饰"], "SkinOptions", "showtopbar")
 SInnerframe.theme.showtopbar.apply = G.BGFrame.Apply
-T.createcheckbutton(SInnerframe.theme, 200, 150, L["上方"].." "..L["两侧装饰"], "SkinOptions", "showtopconerbar")
+T.createcheckbutton(SInnerframe.theme, 200, 120, L["上方"].." "..L["两侧装饰"], "SkinOptions", "showtopconerbar")
 SInnerframe.theme.showtopconerbar.apply = G.BGFrame.Apply
-T.createcheckbutton(SInnerframe.theme, 30, 180, L["下方"].." "..L["边缘装饰"], "SkinOptions", "showbottombar")
+T.createcheckbutton(SInnerframe.theme, 30, 150, L["下方"].." "..L["边缘装饰"], "SkinOptions", "showbottombar")
 SInnerframe.theme.showbottombar.apply = G.BGFrame.Apply
-T.createcheckbutton(SInnerframe.theme, 200, 180, L["下方"].." "..L["两侧装饰"], "SkinOptions", "showbottomconerbar")
+T.createcheckbutton(SInnerframe.theme, 200, 150, L["下方"].." "..L["两侧装饰"], "SkinOptions", "showbottomconerbar")
 SInnerframe.theme.showbottomconerbar.apply = G.BGFrame.Apply
 
-SInnerframe.theme.title = SInnerframe.theme:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
-SInnerframe.theme.title:SetPoint("TOPLEFT", 35, -213)
-SInnerframe.theme.title:SetText(L["插件皮肤"])
+local addonskin_title = SInnerframe.theme:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
+addonskin_title:SetPoint("TOPLEFT", 35, -183)
+addonskin_title:SetText(L["插件皮肤"])
 
-SInnerframe.theme.DividingLine = SInnerframe.theme:CreateTexture(nil, "ARTWORK")
-SInnerframe.theme.DividingLine:SetSize(SInnerframe.theme:GetWidth()-50, 1)
-SInnerframe.theme.DividingLine:SetPoint("TOP", 0, -240)
-SInnerframe.theme.DividingLine:SetColorTexture(1, 1, 1, .2)
+CreateDividingLine(SInnerframe.theme, -210)
 
 local function CreateApplySettingButton(addon)
 	local Button = CreateFrame("Button", G.uiname..addon.."ApplySettingButton", SInnerframe.theme, "UIPanelButtonTemplate")
@@ -448,16 +431,16 @@ local function CreateApplySettingButton(addon)
 	return Button
 end
 
-T.createcheckbutton(SInnerframe.theme, 30, 250, "ClassColor", "SkinOptions", "setClassColor")
+T.createcheckbutton(SInnerframe.theme, 30, 220, "ClassColor", "SkinOptions", "setClassColor")
 local SetClassColorButton = CreateApplySettingButton("setClassColor")
 
-T.createcheckbutton(SInnerframe.theme, 30, 280, "DBM", "SkinOptions", "setDBM")
+T.createcheckbutton(SInnerframe.theme, 30, 250, "DBM", "SkinOptions", "setDBM")
 local SetDBMButton = CreateApplySettingButton("setDBM")
 
-T.createcheckbutton(SInnerframe.theme, 30, 310, "BigWigs", "SkinOptions", "setBW")
+T.createcheckbutton(SInnerframe.theme, 30, 280, "BigWigs", "SkinOptions", "setBW")
 local SetBWButton = CreateApplySettingButton("setBW")
 
-T.createcheckbutton(SInnerframe.theme, 30, 340, "Skada", "SkinOptions", "setSkada")
+T.createcheckbutton(SInnerframe.theme, 30, 310, "Skada", "SkinOptions", "setSkada")
 local SetSkadaButton = CreateApplySettingButton("setSkada")
 
 -- 界面布局
@@ -514,8 +497,7 @@ T.createcheckbutton(ItemOptions, 30, 60, L["已会配方着色"], "ItemOptions",
 CreateDividingLine(ItemOptions, -110)
 
 T.createcheckbutton(ItemOptions, 30, 120, L["自动修理"], "ItemOptions", "autorepair", L["自动修理提示"])
-T.createcheckbutton(ItemOptions, 30, 150, L["自动公会修理"], "ItemOptions", "autorepair_guild", L["自动公会修理提示"])
-T.createcheckbutton(ItemOptions, 230, 150, L["灵活公会修理"], "ItemOptions", "autorepair_guild_auto", L["灵活公会修理提示"])
+T.createcheckbutton(ItemOptions, 30, 150, L["优先使用公会修理"], "ItemOptions", "autorepair_guild", L["优先使用公会修理提示"])
 
 CreateDividingLine(ItemOptions, -200)
 
@@ -1312,10 +1294,7 @@ end)
 -- 光环图标
 RFInnerframe.icon_display = CreateOptionPage("RF Options Icon Display", L["光环"]..L["图标"], RFInnerframe, "VERTICAL", "UnitframeOptions")
 
-local raidicon_debufftitle = T.createtext(RFInnerframe.icon_display, "OVERLAY", 18, "OUTLINE", "LEFT")
-raidicon_debufftitle:SetPoint("LEFT", RFInnerframe.icon_display, "TOPLEFT", 50, -75)
-raidicon_debufftitle:SetTextColor(1, .5, .3)
-raidicon_debufftitle:SetText(L["Debuffs"])
+CreateTitle(RFInnerframe.icon_display, 50, -65, L["Debuffs"], 18, {1, .5, .3})
 
 T.createslider(RFInnerframe.icon_display, "short", 60, 100, "X", "UnitframeOptions", "raid_debuff_anchor_x", 1, -50, 50, 1)
 RFInnerframe.icon_display.raid_debuff_anchor_x.apply = function()
@@ -1337,10 +1316,7 @@ RFInnerframe.icon_display.raid_debuff_num.apply = function()
 	T.ApplyUFSettings({"Debuffs"}, "Altz_Healerraid")
 end
 
-local raidicon_bufftitle = T.createtext(RFInnerframe.icon_display, "OVERLAY", 18, "OUTLINE", "LEFT")
-raidicon_bufftitle:SetPoint("LEFT", RFInnerframe.icon_display, "TOPLEFT", 50, -185)
-raidicon_bufftitle:SetTextColor(.3, 1, .5)
-raidicon_bufftitle:SetText(L["Buffs"])
+CreateTitle(RFInnerframe.icon_display, 50, -175, L["Buffs"], 18, {.3, 1, .5})
 
 T.createslider(RFInnerframe.icon_display, "short", 60, 210, "X", "UnitframeOptions", "raid_buff_anchor_x", 1, -50, 50, 1)
 RFInnerframe.icon_display.raid_buff_anchor_x.apply = function()
@@ -1362,10 +1338,7 @@ RFInnerframe.icon_display.raid_buff_num.apply = function()
 	T.ApplyUFSettings({"Buffs"}, "Altz_Healerraid")
 end
 
-RFInnerframe.icon_display.DividingLine = RFInnerframe.icon_display:CreateTexture(nil, "ARTWORK")
-RFInnerframe.icon_display.DividingLine:SetSize(RFInnerframe.icon_display:GetWidth()-50, 1)
-RFInnerframe.icon_display.DividingLine:SetPoint("TOP", 0, -280)
-RFInnerframe.icon_display.DividingLine:SetColorTexture(1, 1, 1, .2)
+CreateDividingLine(RFInnerframe.icon_display, -280)
 
 T.createcheckbutton(RFInnerframe.icon_display, 60, 300, L["自动添加团队减益"], "UnitframeOptions", "debuff_auto_add", L["自动添加团队减益提示"])
 T.createslider(RFInnerframe.icon_display, "long", 60, 350, L["自动添加的图标层级"], "UnitframeOptions", "debuff_auto_add_level", 1, 1, 20, 1)
@@ -2006,50 +1979,99 @@ PlateInnerframe.custom.power.apply = T.PostUpdateAllPlates
 --====================================================--
 --[[             -- Combattext Options --              ]]--
 --====================================================--
-local CombattextOptions = CreateOptionPage("CombatText Options", L["战斗信息"], GUI, "VERTICAL", "CombattextOptions")
+local CombattextOptions = CreateOptionPage("CombatText Options", L["战斗数字"], GUI, "VERTICAL", "CombattextOptions")
 
-T.createcheckbutton(CombattextOptions, 30, 60, L["启用"], "CombattextOptions", "combattext")
-T.createcheckbutton(CombattextOptions, 30, 90, L["隐藏浮动战斗信息接受"], "CombattextOptions", "hidblz_receive")
-T.createcheckbutton(CombattextOptions, 30, 120, L["隐藏浮动战斗信息输出"], "CombattextOptions", "hidblz")
-T.createcheckbutton(CombattextOptions, 30, 150, L["承受伤害/治疗"], "CombattextOptions", "showreceivedct")
-T.createcheckbutton(CombattextOptions, 30, 180, L["输出伤害/治疗"], "CombattextOptions", "showoutputct")
-T.createslider(CombattextOptions, "long", 30, 230, L["图标大小"], "CombattextOptions", "cticonsize", 1, 10, 30, 1)
-T.createslider(CombattextOptions, "long", 30, 270, L["暴击图标大小"], "CombattextOptions", "ctbigiconsize", 1, 10, 30, 1)
-T.createcheckbutton(CombattextOptions, 30, 300, L["显示DOT"], "CombattextOptions", "ctshowdots")
-T.createcheckbutton(CombattextOptions, 30, 330, L["显示HOT"], "CombattextOptions", "ctshowhots")
-T.createcheckbutton(CombattextOptions, 30, 360, T.split_words(L["显示"],PET), "CombattextOptions", "ctshowpet")
-T.createslider(CombattextOptions, "long", 30, 410, L["隐藏时间"], "CombattextOptions", "ctfadetime", 10, 20, 100, 5, L["隐藏时间提示"])
+CreateTitle(CombattextOptions, 30, -70, L["滚动战斗数字"])
 
-T.createDR(CombattextOptions.combattext, CombattextOptions.hidblz_receive, CombattextOptions.hidblz, CombattextOptions.showreceivedct, CombattextOptions.showoutputct, CombattextOptions.cticonsize, CombattextOptions.ctbigiconsize, CombattextOptions.ctshowdots, CombattextOptions.ctshowhots, CombattextOptions.ctshowpet, CombattextOptions.ctfadetime)
+T.createcheckbutton(CombattextOptions, 30, 90, L["承受伤害/治疗"], "CombattextOptions", "showreceivedct")
+CombattextOptions.showreceivedct.apply = function()
+	if aCoreCDB["CombattextOptions"]["showreceivedct"] then
+		T.RestoreDragFrame(G.CombatText_Frames.damagetaken)
+		T.RestoreDragFrame(G.CombatText_Frames.healingtaken)
+		G.CombatText_Frames:RegisterEvent("COMBAT_TEXT_UPDATE")
+	else
+		T.ReleaseDragFrame(G.CombatText_Frames.damagetaken)
+		T.RestoreDragFrame(G.CombatText_Frames.healingtaken)
+		G.CombatText_Frames:RegisterEvent("COMBAT_TEXT_UPDATE")
+	end
+end
 
+T.createcheckbutton(CombattextOptions, 230, 90, L["输出伤害/治疗"], "CombattextOptions", "showoutputct")
+CombattextOptions.showoutputct.apply = function()
+	if aCoreCDB["CombattextOptions"]["showoutputct"] then
+		T.RestoreDragFrame(G.CombatText_Frames.outputdamage)
+		T.RestoreDragFrame(G.CombatText_Frames.outputhealing)
+		G.CombatText_Frames:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
+	else
+		T.ReleaseDragFrame(G.CombatText_Frames.outputdamage)
+		T.RestoreDragFrame(G.CombatText_Frames.outputhealing)
+		G.CombatText_Frames:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
+	end
+end
+
+T.createcheckbutton(CombattextOptions, 30, 120, L["显示DOT"], "CombattextOptions", "ctshowdots")
+T.createcheckbutton(CombattextOptions, 230, 120, L["显示HOT"], "CombattextOptions", "ctshowhots")
+T.createcheckbutton(CombattextOptions, 30, 150, T.split_words(L["显示"],PET), "CombattextOptions", "ctshowpet")
+
+CreateDividingLine(CombattextOptions, -190)
+CreateTitle(CombattextOptions, 30, -200, L["浮动战斗数字"])
+
+T.CVartogglebox(CombattextOptions, 30, 220, "floatingCombatTextCombatDamage", T.split_words(L["显示"], L["受到伤害"], L["战斗数字"]), "1", "0")
+T.CVartogglebox(CombattextOptions, 30, 250, "floatingCombatTextCombatHealing", T.split_words(L["显示"], L["受到治疗"], L["战斗数字"]), "1", "0")
+T.CVartogglebox(CombattextOptions, 30, 280, "enableFloatingCombatText", T.split_words(L["显示"], L["造成伤害和治疗"], L["战斗数字"]), "1", "0")
+local combattextfont_group = {
+	{"none", DEFAULT},
+	{"combat1", "1234"},
+	{"combat2", "1234"},
+	{"combat3", "1234"},
+}
+
+T.createradiobuttongroup(CombattextOptions, 30, 310, L["字体"], "combattext_font", combattextfont_group)
+for i, info in pairs(combattextfont_group) do
+	local bu = CombattextOptions.combattext_font.buttons[i]
+	if info[1] ~= "none" then
+		bu.text:SetFont(G.combatFont[info[1]], 10, "OUTLINE")
+	end
+end
+
+CombattextOptions.combattext_font.apply = function()
+	if not CombattextOptions.combattext_font.alert then
+		StaticPopup_Show("CLIENT_RESTART_ALERT")
+		CombattextOptions.combattext_font.alert = true
+	end
+end
 --====================================================--
 --[[              -- Other Options --                ]]--
 --====================================================--
 local OtherOptions = CreateOptionPage("Other Options", OTHER, GUI, "VERTICAL", "OtherOptions")
 
-T.createcheckbutton(OtherOptions, 30, 60, T.split_words(L["鼠标提示"],L["显示"],L["法术编号"]), "OtherOptions", "show_spellID")
-T.createcheckbutton(OtherOptions, 300, 60, T.split_words(L["鼠标提示"],L["显示"],L["物品编号"]), "OtherOptions", "show_itemID")
-T.createcheckbutton(OtherOptions, 30, 90, T.split_words(L["战斗中隐藏"],L["鼠标提示"]), "OtherOptions", "combat_hide")
-T.createcheckbutton(OtherOptions, 300, 90, L["隐藏错误提示"], "OtherOptions", "hideerrors", L["隐藏错误提示提示"])
+CreateTitle(OtherOptions, 30, -70, L["鼠标提示"])
+T.createcheckbutton(OtherOptions, 30, 90, T.split_words(L["鼠标提示"],L["显示"],L["法术编号"]), "OtherOptions", "show_spellID")
+T.createcheckbutton(OtherOptions, 230, 90, T.split_words(L["鼠标提示"],L["显示"],L["物品编号"]), "OtherOptions", "show_itemID")
+T.createcheckbutton(OtherOptions, 30, 120, T.split_words(L["战斗中隐藏"],L["鼠标提示"]), "OtherOptions", "combat_hide")
 
-CreateDividingLine(OtherOptions, -120)
+CreateDividingLine(OtherOptions, -160)
+CreateTitle(OtherOptions, 30, -170, L["讯息提示"])
 
-T.createcheckbutton(OtherOptions, 30, 130, L["随机奖励"], "OtherOptions", "LFGRewards", L["随机奖励提示"])
-T.createcheckbutton(OtherOptions, 300, 130, L["稀有警报"], "OtherOptions", "vignettealert", L["稀有警报提示"])
-T.createcheckbutton(OtherOptions, 30, 160, L["自动交接任务"], "OtherOptions", "autoquests", L["自动交接任务提示"])
-T.createcheckbutton(OtherOptions, 300, 160, L["战场自动释放灵魂"], "OtherOptions", "battlegroundres", L["战场自动释放灵魂提示"])
-T.createcheckbutton(OtherOptions, 30, 190, L["自动接受复活"], "OtherOptions", "acceptres", L["自动接受复活提示"])
+T.createcheckbutton(OtherOptions, 30, 190, L["任务栏闪动"], "OtherOptions", "flashtaskbar", L["任务栏闪动提示"])
+T.createcheckbutton(OtherOptions, 230, 190, L["隐藏错误提示"], "OtherOptions", "hideerrors", L["隐藏错误提示提示"])
+T.createcheckbutton(OtherOptions, 30, 220, L["随机奖励"], "OtherOptions", "LFGRewards", L["随机奖励提示"])
+T.createcheckbutton(OtherOptions, 230, 220, L["稀有警报"], "OtherOptions", "vignettealert", L["稀有警报提示"])
 
-CreateDividingLine(OtherOptions, -220)
+CreateDividingLine(OtherOptions, -260)
+CreateTitle(OtherOptions, 30, -270, L["辅助功能"])
 
-T.createcheckbutton(OtherOptions, 30, 230, L["自动召宝宝"], "OtherOptions", "autopet", L["自动召宝宝提示"])
-T.createcheckbutton(OtherOptions, 300, 230, L["任务栏闪动"], "OtherOptions", "flashtaskbar", L["任务栏闪动提示"])
-T.createcheckbutton(OtherOptions, 30, 260, L["成就截图"], "OtherOptions", "autoscreenshot", L["成就截图提示"])
-T.CVartogglebox(OtherOptions, 300, 260, "screenshotQuality", L["提升截图画质"], "10", "1")
+T.createcheckbutton(OtherOptions, 30, 290, L["成就截图"], "OtherOptions", "autoscreenshot", L["成就截图提示"])
+T.CVartogglebox(OtherOptions, 230, 290, "screenshotQuality", L["提升截图画质"], "10", "1")
+T.createcheckbutton(OtherOptions, 30, 320, L["战场自动释放灵魂"], "OtherOptions", "battlegroundres", L["战场自动释放灵魂提示"])
+T.createcheckbutton(OtherOptions, 230, 320, L["自动接受复活"], "OtherOptions", "acceptres", L["自动接受复活提示"])
+T.createcheckbutton(OtherOptions, 30, 350, L["自动召宝宝"], "OtherOptions", "autopet", L["自动召宝宝提示"])
+T.createcheckbutton(OtherOptions, 230, 350, L["优先偏爱宝宝"], "OtherOptions", "autopet_favorite", L["优先偏爱宝宝提示"])
+
+T.createDR(OtherOptions.autopet, OtherOptions.autopet_favorite)
 
 if G.Client == "zhCN" then
-	CreateDividingLine(OtherOptions, -290)
-	T.CVartogglebox(OtherOptions, 30, 300, "overrideArchive", "反和谐(大退生效)", "0", "1")
+	T.CVartogglebox(OtherOptions, 30, 380, "overrideArchive", "反和谐(大退生效)", "0", "1")
 end
 --====================================================--
 --[[               -- Commands --               ]]--
@@ -2060,8 +2082,8 @@ Comands.text = T.createtext(Comands, "OVERLAY", 12, "OUTLINE", "LEFT")
 Comands.text:SetPoint("TOPLEFT", 30, -60)
 Comands.text:SetText(format(L["指令"], G.classcolor, G.classcolor, G.classcolor, G.classcolor, G.classcolor, G.classcolor))
 
-Comands.mem = T.createtext(Comands, "OVERLAY", 12, "OUTLINE", "LEFT")
-Comands.mem:SetPoint("TOPLEFT", 30, -200)
+Comands.mem = T.createtext(Comands, "OVERLAY", 12, "OUTLINE", "RIGHT")
+Comands.mem:SetPoint("TOPRIGHT", -30, -60)
 
 Comands.ef = CreateFrame("Frame")
 Comands.ef.t = 0
@@ -2210,6 +2232,7 @@ function eventframe:ADDON_LOADED(arg1)
 	GUI:SetPoint("TOPRIGHT", UIParent, "CENTER", aCoreCDB["SkinOptions"]["gui_x"]/scale, aCoreCDB["SkinOptions"]["gui_y"]/scale)
 	GUI:SetScale(scale)
 	GUI.scale.pointself()
+	
 	T.ToggleMinimapButton()
 	
 	for _, func in next, G.Init_callbacks do
@@ -2231,22 +2254,64 @@ function eventframe:PLAYER_ENTERING_WORLD()
 	eventframe:UnregisterEvent("PLAYER_ENTERING_WORLD")
 end
 
---[[
-local GUIbutton = CreateFrame("Button", G.uiname.."GUI MenuButton", GameMenuFrame, "GameMenuButtonTemplate")
-GUIbutton:SetSize(GameMenuButtonMacros:GetWidth(), GameMenuButtonMacros:GetHeight())
-GUIbutton:SetPoint("BOTTOM", GameMenuButtonHelp, "TOP", 0, -1)
-GUIbutton:SetText("Altz UI")
-T.ReskinButton(GUIbutton)
-GameMenuButtonLogout:ClearAllPoints()
-GameMenuButtonLogout:SetPoint("TOP", GUIbutton, "BOTTOM", 0, -20)
-GameMenuFrame:SetHeight(GUIbutton:GetHeight()+GameMenuButtonMacros:GetHeight()+20)
+--====================================================--
+--[[                  -- Game menu --               ]]--
+--====================================================--
 
-GUIbutton:SetScript("OnClick", function()
+local GameMenuButton = CreateFrame("Button", G.uiname.."GameMenuButton", GameMenuFrame, "GameMenuButtonTemplate")
+GameMenuButton:SetPoint("TOP", GameMenuButtonAddons, "BOTTOM", 0, -1)
+GameMenuButton:SetText(T.color_text("AltzUI"))
+T.ReskinButton(GameMenuButton, 14)
+
+GameMenuButton:SetScript("OnClick", function()
+	GUI:Show()
+	GUI.df:Show()
+	GUI.scale:Show()
 	HideUIPanel(GameMenuFrame)
-	_G["AltzUI_GUI Main Frame"]:Show()
 end)
 
-]]--
+GameMenuFrame:HookScript("OnShow", function()
+	GUI:Hide()
+	GUI.df:Hide()
+	GUI.scale:Hide()
+end)
+
+GameMenuButtonRatings:SetPoint("TOP", GameMenuButton, "BOTTOM", 0, -1)
+
+function GameMenuFrame_UpdateVisibleButtons(self)
+	local height = 332;
+
+	local buttonToReanchor = GameMenuButtonWhatsNew
+	local reanchorYOffset = -1
+
+	if IsCharacterNewlyBoosted() or not C_SplashScreen.CanViewSplashScreen() then
+		GameMenuButtonWhatsNew:Hide()
+		height = height - 20
+		buttonToReanchor = GameMenuButtonSettings
+		reanchorYOffset = -16
+	else
+		GameMenuButtonWhatsNew:Show()
+	end
+
+	if ( C_StorePublic.IsEnabled() ) then
+		height = height + 20
+		GameMenuButtonStore:Show()
+		buttonToReanchor:SetPoint("TOP", GameMenuButtonStore, "BOTTOM", 0, reanchorYOffset)
+	else
+		GameMenuButtonStore:Hide()
+		buttonToReanchor:SetPoint("TOP", GameMenuButtonHelp, "BOTTOM", 0, reanchorYOffset)
+	end
+	
+	if ( GameMenuButtonRatings:IsShown() ) then
+		height = height + 20;
+		GameMenuButtonLogout:SetPoint("TOP", GameMenuButtonRatings, "BOTTOM", 0, -16)
+	else
+		GameMenuButtonLogout:SetPoint("TOP", GameMenuButton, "BOTTOM", 0, -16)
+	end
+
+	self:SetHeight(height)
+end
+
 --[[ CPU and Memroy testing
 local interval = 0
 cfg:SetScript("OnUpdate", function(self, elapsed)

@@ -464,7 +464,6 @@ local Character_default_Settings = {
 	SkinOptions = {
 		-- 界面风格
 		style = 1,
-		combattext = "none",
 		formattype = "k", -- w, w_chinese, none
 		showtopbar = true,
 		showbottombar = true,
@@ -673,29 +672,23 @@ local Character_default_Settings = {
 		custompowerplates = {},
 	},
 	CombattextOptions = {
-		combattext = true,
-		hidblz_receive = false,		
-		hidblz = true,
 		showreceivedct = true,
 		showoutputct = true,
-		cticonsize = 13,
-		ctbigiconsize = 25,
 		ctshowdots = false,
 		ctshowhots = false,
 		ctshowpet = true,
-		ctfadetime = 3,	
+		combattext_font = "none",
 	},
 	OtherOptions = {
 		show_spellID = true,
 		show_itemID = true,
 		combat_hide = true,
 		autopet = true,
+		autopet_favorite = true,
 		LFGRewards = true,
 		vignettealert = true,
-		autoquests = false,
 		battlegroundres = true,
 		acceptres = true,
-		
 		flashtaskbar = true,
 		hideerrors = true,
 		autoscreenshot = true,
