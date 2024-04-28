@@ -1377,7 +1377,7 @@ local function CreateListOption(parent, points, height, text, OptionName, input_
 		table.insert(frame.options, frame.second_input)
 	end
 	frame.addbutton = T.createclickbutton(frame, 0, {"LEFT", frame.second_input or frame.first_input, "RIGHT", 10, 0}, ADD)
-	table.insert(frame.options, frame.first_input)
+	table.insert(frame.options, frame.addbutton)
 	
 	frame.Enable = function()		
 		for k, v in pairs(frame.options) do
@@ -1494,7 +1494,9 @@ T.CreateAuraListOption = function(parent, points, height, text, OptionName, inpu
 			frame.first_input.current_spellID = nil
 			frame.second_input:SetText(input_text_2)
 			
-			frame.apply() -- 生效
+			if frame.apply then
+				frame.apply() -- 生效
+			end
 		else
 			frame.first_input:GetScript("OnEnterPressed")(frame.first_input)
 			if not frame.first_input:apply() then return end
@@ -1508,7 +1510,9 @@ T.CreateAuraListOption = function(parent, points, height, text, OptionName, inpu
 			frame.first_input:SetText(L["输入法术ID"])
 			frame.first_input.current_spellID = nil
 			
-			frame.apply() -- 生效
+			if frame.apply then
+				frame.apply() -- 生效
+			end
 		end
 	end)
 	
@@ -1518,12 +1522,16 @@ end
 T.CreateItemListOption = function(parent, points, height, text, OptionName, input_text_2)
 	local frame = CreateListOption(parent, points, height, text, OptionName, L["物品名称ID链接"], input_text_2)
 	
+	frame.Button_OnClicked = function(bu)
+		frame.first_input.current_itemID = tonumber(bu.mid:GetText())
+	end
+	
 	frame:SetScript("OnShow", function()
 		for itemID, quantity in pairs(aCoreCDB[frame.db_key][OptionName]) do
 			local itemName = GetItemInfo(itemID)
 			local itemIcon = select(10, GetItemInfo(itemID))
 			if itemName then
-				CreateListButton("item", frame, OptionName, itemID, itemIcon, itemName, nil, input_text_2 and quantity)
+				CreateListButton("item", frame, OptionName, itemID, itemIcon, itemName, itemID, input_text_2 and quantity)
 			else
 				print("item ID "..itemID.." is gone, delete it.")
 				aCoreCDB[frame.db_key][OptionName][itemID] = nil
@@ -1532,18 +1540,27 @@ T.CreateItemListOption = function(parent, points, height, text, OptionName, inpu
 		lineuplist(aCoreCDB[frame.db_key][OptionName], frame.option_list.list, frame.option_list.anchor)
 	end)
 	
+	frame.first_input:HookScript("OnChar", function(self) 
+		self.current_itemID = nil
+	end)
+	
 	table.insert(inputbox, frame.first_input) -- 支持链接/文字/数字
 	function frame.first_input:apply()
-		local itemText = self:GetText()
-		local itemID = GetItemInfoInstant(itemText)
-		if itemID then
-			local itemName = GetItemInfo(itemID)
-			self:SetText(itemName)
+		if self.current_itemID then
 			return true
 		else
-			StaticPopupDialogs[G.uiname.."incorrect itemID"].text = T.color_text((itemText == L["物品名称ID链接"] and "") or itemText)..L["不正确的物品ID"]
-			StaticPopup_Show(G.uiname.."incorrect itemID")
-			self:SetText(L["物品名称ID链接"])
+			local itemText = self:GetText()
+			local itemID = GetItemInfoInstant(itemText)
+			if itemID then
+				local itemName = GetItemInfo(itemID)
+				self.current_itemID = itemID
+				self:SetText(itemName)
+				return true
+			else
+				StaticPopupDialogs[G.uiname.."incorrect itemID"].text = T.color_text((itemText == L["物品名称ID链接"] and "") or itemText)..L["不正确的物品ID"]
+				StaticPopup_Show(G.uiname.."incorrect itemID")
+				self:SetText(L["物品名称ID链接"])
+			end
 		end
 	end
 
@@ -1568,34 +1585,38 @@ T.CreateItemListOption = function(parent, points, height, text, OptionName, inpu
 			frame.second_input:GetScript("OnEnterPressed")(frame.second_input)
 			if not frame.first_input:apply() or not frame.second_input:apply() then return end
 			
-			local itemText = frame.first_input:GetText()
+			local itemID, _, _, _, itemIcon = GetItemInfoInstant(frame.first_input.current_itemID)
 			local quantity = frame.second_input:GetText()
-			local itemID, _, _, _, itemIcon = GetItemInfoInstant(itemText)
-			
 			local itemName = GetItemInfo(itemID)
-			aCoreCDB[frame.db_key][OptionName][itemID] = quantity
-			CreateListButton("item", frame, OptionName, itemID, itemIcon, itemName, nil, quantity)
+			
+			aCoreCDB[frame.db_key][OptionName][itemID] = tonumber(quantity)
+			CreateListButton("item", frame, OptionName, itemID, itemIcon, itemName, itemID, quantity)
 			
 			lineuplist(aCoreCDB[frame.db_key][OptionName], frame.option_list.list, frame.option_list.anchor)
 			frame.first_input:SetText(L["物品名称ID链接"])
+			frame.first_input.current_itemID = nil
 			frame.second_input:SetText(input_text_2)
 			
-			frame.apply() -- 生效
+			if frame.apply then
+				frame.apply() -- 生效
+			end
 		else
 			frame.first_input:GetScript("OnEnterPressed")(frame.first_input)
 			if not frame.first_input:apply() then return end
 			
-			local itemText = frame.first_input:GetText()	
-			local itemID, _, _, _, itemIcon = GetItemInfoInstant(itemText) 
+			local itemID, _, _, _, itemIcon = GetItemInfoInstant(frame.first_input.current_itemID)
 			
 			local itemName = GetItemInfo(itemID)
 			aCoreCDB[frame.db_key][OptionName][itemID] = true
-			CreateListButton("item", frame, OptionName, itemID, itemIcon, itemName)
+			CreateListButton("item", frame, OptionName, itemID, itemIcon, itemName, itemID)
 			
 			lineuplist(aCoreCDB[frame.db_key][OptionName], frame.option_list.list, frame.option_list.anchor)
 			frame.first_input:SetText(L["物品名称ID链接"])
+			frame.first_input.current_itemID = nil
 			
-			frame.apply() -- 生效
+			if frame.apply then
+				frame.apply() -- 生效
+			end
 		end
 	end)
 
@@ -1653,7 +1674,9 @@ T.CreatePlateColorListOption = function(parent, points, height, text, OptionName
 		frame.cpb.colors.r, frame.cpb.colors.g, frame.cpb.colors.b = 1, 1, 1
 		frame.cpb.update_texcolor()
 		
-		frame.apply() -- 生效
+		if frame.apply then
+			frame.apply() -- 生效
+		end
 	end)
 
 	return frame
@@ -1681,7 +1704,9 @@ T.CreatePlatePowerListOption = function(parent, points, height, text, OptionName
 		
 		frame.first_input:SetText(L["输入npc名称"])
 		
-		frame.apply() -- 生效
+		if frame.apply then
+			frame.apply() -- 生效
+		end
 	end)
 
 	return frame
