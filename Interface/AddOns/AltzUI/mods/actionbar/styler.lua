@@ -3,254 +3,175 @@
 local Styled_buttons = {}
 
 local textures = {
-	blank = "Interface\\Buttons\\WHITE8x8",
 	normal= "Interface\\AddOns\\AltzUI\\media\\gloss",
 	flash = "Interface\\AddOns\\AltzUI\\media\\flash",
 	hover = "Interface\\AddOns\\AltzUI\\media\\hover",
 	pushed= "Interface\\AddOns\\AltzUI\\media\\pushed",
 	checked = "Interface\\AddOns\\AltzUI\\media\\checked",
-	outer_shadow= "Interface\\AddOns\\AltzUI\\media\\glow",
 }
 
-local function applyBackground(bu)
-	if bu:GetFrameLevel() < 2 then bu:SetFrameLevel(2) end
-	bu.bg = CreateFrame("Frame", nil, bu, "BackdropTemplate")
-	bu.bg:SetAllPoints(bu)
-	bu.bg:SetPoint("TOPLEFT", bu, "TOPLEFT", -2, 2)
-	bu.bg:SetPoint("BOTTOMRIGHT", bu, "BOTTOMRIGHT", 2, -2)
-	bu.bg:SetFrameLevel(bu:GetFrameLevel()-2)
-	bu.bg:SetBackdrop({
-		bgFile = textures.blank,
-		edgeFile = textures.outer_shadow,
-		tile = false,
-		edgeSize = 2,
-		insets = { left = 2, right = 2, top = 2, bottom = 2 },
-	})
-	bu.bg:SetBackdropColor(0.05, 0.05, 0.05, 0.7)
-	bu.bg:SetBackdropBorderColor(0,0,0)
-end
-
---style extraactionbutton
-local function styleExtraActionButton(bu)
-	if not bu or (bu and bu.rabs_styled) then return end
-	
-	local ho = bu.HotKey
-	--remove the style background theme
-	bu.style:SetTexture(nil)
-	hooksecurefunc(bu.style, "SetTexture", function(self, texture)
-		if texture then
-			--print("reseting texture: "..texture)
-			self:SetTexture(nil)
-		end
-	end)
-	--icon
-	bu.icon:SetTexCoord(0.1,0.9,0.1,0.9)
-	bu.icon:SetAllPoints(bu)
-	--cooldown
-	bu.cooldown:SetAllPoints(bu.icon)
-	--hotkey
-	ho:Hide()
-	--add button normaltexture
-	bu:SetNormalTexture(textures.normal)
-	local nt = bu:GetNormalTexture()
-	nt:SetAllPoints(bu)
-	--apply background
-	if not bu.bg then applyBackground(bu) end
-	bu:SetScript("OnShow", function()
-		bu.bg:SetFrameLevel(bu:GetFrameLevel()-1 >= 0 and bu:GetFrameLevel()-1 or 0)
-	end)
-	bu.rabs_styled = true
-end
-
-local function styleExtraActionButton2(bu)
-	if not bu or (bu and bu.rabs_styled) then return end
-	
-	hooksecurefunc(ZoneAbilityFrame, "UpdateDisplayedZoneAbilities", function(self)
-		for spellButton in self.SpellButtonContainer:EnumerateActive() do
-			if spellButton and not spellButton.styled then
-				spellButton.NormalTexture:SetAllPoints(spellButton)
-				spellButton:SetNormalTexture(textures.normal)
-				spellButton:SetPushedTexture(textures.pushed) --force it to gain a texture
-				spellButton:GetHighlightTexture():SetColorTexture(1, 1, 1, .25)
-				spellButton:GetHighlightTexture():SetTexCoord(0.1,0.9,0.1,0.9)
-				spellButton.Icon:SetTexCoord(0.1,0.9,0.1,0.9)
-				spellButton.Icon:SetAllPoints(spellButton)
-				spellButton.Cooldown:SetAllPoints(spellButton.Icon)
-				
-				if not spellButton.bg then applyBackground(spellButton) end
-				spellButton.styled = true
-			end
-		end
-	end)
-	
-	bu.rabs_styled = true
-end
-
---动作条
+-- 动作条
 local function styleActionButton(bu)
-	if not bu or (bu and bu.rabs_styled) then return end
+	if not bu then return end
+	if not bu.rabs_styled then
+		if bu.HotKey then
+			bu.HotKey:SetFont(G.norFont, aCoreCDB["ActionbarOptions"]["keybindsize"], "OUTLINE")
+			bu.HotKey:ClearAllPoints()
+			bu.HotKey:SetJustifyH("RIGHT")
+			bu.HotKey:SetPoint("TOPLEFT", bu, "TOPLEFT", 2, -2)
+			bu.HotKey:SetPoint("TOPRIGHT", bu, "TOPRIGHT", -2, -2)
+		end
+		
+		if bu.Name then
+			bu.Name:SetFont(G.norFont, aCoreCDB["ActionbarOptions"]["macronamesize"], "OUTLINE")
+			bu.Name:ClearAllPoints()
+			bu.Name:SetJustifyH("LEFT")
+			bu.Name:SetPoint("BOTTOMLEFT", bu, "BOTTOMLEFT", 2, 2)	
+			bu.Name:SetPoint("BOTTOMRIGHT", bu, "BOTTOMRIGHT", -2, 2)
+		end
 
-	-- 主动作条的背景
-	if bu.SlotArt then
-		bu.SlotArt:SetTexture(nil)
+		if bu.Count then
+			bu.Count:SetFont(G.numFont, aCoreCDB["ActionbarOptions"]["countsize"], "OUTLINE")
+			bu.Count:ClearAllPoints()
+			bu.Count:SetJustifyH("RIGHT")
+			bu.Count:SetPoint("BOTTOMRIGHT", bu, "BOTTOMRIGHT", -2, 2)
+		end
+						
+		bu.icon:SetTexCoord( .1, .9, .1, .9)
+		bu.icon:SetAllPoints(bu)
+		
+		bu.cooldown:SetAllPoints(bu)
+		
+		-- 额外动作条的材质
+		if bu.style then
+			bu.style:SetAlpha(0)
+		end
+		
+		if bu.IconMask then
+			bu.IconMask:Hide()
+		end
+		
+		if bu.Border then
+			bu.Border:SetTexture(textures.pushed)
+		end
+		
+		if bu.SlotArt then -- 动作条的背景
+			bu.SlotArt:SetTexture(nil)
+		end
+		
+		if bu.SlotBackground then -- 动作条的背景
+			bu.SlotBackground:SetTexture(nil)
+		end
+				
+		bu.bg = T.createBackdrop(bu, .7, 2)
+		if bu:GetFrameLevel() > 0 then
+			bu.bg:SetFrameLevel(bu:GetFrameLevel()-1)
+		end
+					
+		local highlight = bu:GetHighlightTexture()
+		if highlight then
+			bu:SetHighlightTexture(textures.hover)
+			highlight:SetAllPoints(bu)
+		end
+
+		local check = bu:GetCheckedTexture()
+		if check then
+			bu:SetCheckedTexture(textures.checked)
+			check:SetAllPoints(bu)
+		end		
+
+		table.insert(Styled_buttons, bu)
+		
+		bu.rabs_styled = true
 	end
 	
-	if bu.RightDivider then
-		bu.RightDivider:Hide()
+	local pushed = bu:GetPushedTexture()
+	if pushed then
+		bu:SetPushedTexture(textures.pushed)
+		pushed:SetAllPoints(bu)
+	end		
+
+	local normal = bu:GetNormalTexture()
+	if normal then
+		bu:SetNormalTexture(textures.normal)
+		normal:SetAllPoints(bu)
 	end
-	
-	--hotkey
-	local ho = bu.HotKey
-	ho:SetFont(G.norFont, aCoreCDB["ActionbarOptions"]["keybindsize"], "OUTLINE")
-	ho:ClearAllPoints()
-	ho:SetJustifyH("RIGHT")
-	ho:SetPoint("TOPLEFT", bu, "TOPLEFT", 2, -2)
-	ho:SetPoint("TOPRIGHT", bu, "TOPRIGHT", -2, -2)
-	
-	--macroname
-	local na = bu.Name
-	na:SetFont(G.norFont, aCoreCDB["ActionbarOptions"]["macronamesize"], "OUTLINE")
-	na:ClearAllPoints()
-	na:SetJustifyH("LEFT")
-	na:SetPoint("BOTTOMLEFT", bu, "BOTTOMLEFT", 2, 2)	
-	na:SetPoint("BOTTOMRIGHT", bu, "BOTTOMRIGHT", -2, 2)
-	
-	--count
-	local co = bu.Count
-	co:SetFont(G.numFont, aCoreCDB["ActionbarOptions"]["countsize"], "OUTLINE")
-	co:ClearAllPoints()
-	co:SetJustifyH("RIGHT")
-	co:SetPoint("BOTTOMRIGHT", bu, "BOTTOMRIGHT", -2, 2)
-	
-	--applying the textures
-	bu.IconMask:Hide()
-	local nt = bu.NormalTexture
-	nt:SetTexture(textures.normal)
-	local bd = bu.Border
-	bd:SetTexture(textures.pushed)
-	
-	bu:SetNormalTexture(textures.normal)
-	bu:SetHighlightTexture(textures.hover)
-	bu.HighlightTexture:SetAllPoints(bu)	
-	bu:SetPushedTexture(textures.pushed)
-	bu.PushedTexture:SetAllPoints(bu)	
-	bu:SetCheckedTexture(textures.checked)
-	bu.CheckedTexture:SetAllPoints(bu)	
-	if bu:GetChecked() then bu.CheckedTexture:Show() end
-	bu.SlotBackground:SetTexture(nil)
-	
-	--cut the default border of the icons
-	local ic = bu.Icon or bu.icon
-	ic:SetTexCoord( .1, .9, .1, .9)
-	ic:SetPoint("TOPLEFT", bu,"TOPLEFT", 0, 0)
-	ic:SetPoint("BOTTOMRIGHT", bu,"BOTTOMRIGHT", 0, 0)
-	
-	--adjust frame
-	local cd = bu.cooldown
-	cd:SetAllPoints(bu)
-	cd:SetPoint("TOPLEFT", bu,"TOPLEFT", 0, 0)
-	cd:SetPoint("BOTTOMRIGHT", bu,"BOTTOMRIGHT", 0, 0)
-	
-	--apply background
-	if not bu.bg then applyBackground(bu) end
-	
-	table.insert(Styled_buttons, bu)
-	
-	bu.rabs_styled = true
 end
 
 --离开载具
 local function styleLeaveButton(bu)
 	if not bu or (bu and bu.rabs_styled) then return end
 	
-	local nt = bu:GetNormalTexture()
-	nt:SetTexCoord( .2, .8, .2, .8)
-	local pt = bu:GetPushedTexture()
-	pt:SetTexCoord( .2, .8, .2, .8)
-	
-	--apply background
-	if not bu.bg then applyBackground(bu) end
-	
+	bu:GetNormalTexture():SetTexCoord( .2, .8, .2, .8)
+	bu:GetPushedTexture():SetTexCoord( .2, .8, .2, .8)
+
 	bu.rabs_styled = true
 end
 
 local function UpdateActionbarsFontSize()
 	for i, bu in pairs(Styled_buttons) do
-		bu.HotKey:SetFont(G.norFont, aCoreCDB["ActionbarOptions"]["keybindsize"], "OUTLINE")
-		bu.Name:SetFont(G.norFont, aCoreCDB["ActionbarOptions"]["macronamesize"], "OUTLINE")
-		bu.Count:SetFont(G.numFont, aCoreCDB["ActionbarOptions"]["countsize"], "OUTLINE")
+		if bu.HotKey then
+			bu.HotKey:SetFont(G.norFont, aCoreCDB["ActionbarOptions"]["keybindsize"], "OUTLINE")
+		end
+		if bu.Name then
+			bu.Name:SetFont(G.norFont, aCoreCDB["ActionbarOptions"]["macronamesize"], "OUTLINE")
+		end
+		if bu.Count then
+			bu.Count:SetFont(G.numFont, aCoreCDB["ActionbarOptions"]["countsize"], "OUTLINE")
+		end
 	end
 end
 T.UpdateActionbarsFontSize = UpdateActionbarsFontSize
 ---------------------------------------
 -- INIT
 ---------------------------------------
-local function init()
-	for i = 1, NUM_ACTIONBAR_BUTTONS do
-		styleActionButton(_G["ActionButton"..i])
-		styleActionButton(_G["MultiBarBottomLeftButton"..i])
-		styleActionButton(_G["MultiBarBottomRightButton"..i])
-		styleActionButton(_G["MultiBarLeftButton"..i])		
-		styleActionButton(_G["MultiBarRightButton"..i])
-		styleActionButton(_G["MultiBar5Button"..i])
-		styleActionButton(_G["MultiBar6Button"..i])
-		styleActionButton(_G["MultiBar7Button"..i])
+T.RegisterInitCallback(function()
+	for i = 1, 12 do
+		local bu = _G["ActionButton"..i]
+		hooksecurefunc(bu, "UpdateButtonArt", function(self)
+			styleActionButton(bu)
+		end)
 	end
 	
-	for i = 1, 6 do
-		styleActionButton(_G["OverrideActionBarButton"..i])
+	-- 动作条(8)1-12,OverrideActionBar1~6,ExtraActionButton1,MultiCastActionButton1-12	
+	for i, bu in pairs(ActionBarButtonEventsFrame.frames) do
+		styleActionButton(bu)
 	end
 	
-	MainMenuBar.HorizontalDividersPool:ReleaseAll()
-	MainMenuBar.VerticalDividersPool:ReleaseAll()
+	-- 宠物动作条
+	for i, bu in pairs(PetActionBar.actionButtons) do
+		styleActionButton(bu)
+	end
 	
-	hooksecurefunc(MainMenuBar, "UpdateDividers", function(self)
-		self.HorizontalDividersPool:ReleaseAll()
-		self.VerticalDividersPool:ReleaseAll()
-	end)
+	-- 心控动作条
+	for i, bu in pairs(PossessActionBar.actionButtons) do
+		styleActionButton(bu)
+	end
+	
+	-- 姿态条
+	for i, bu in pairs(StanceBar.actionButtons) do
+		styleActionButton(bu)
+	end
 
-	--petbar buttons
-	for i=1, NUM_PET_ACTION_SLOTS do
-		styleActionButton(_G["PetActionButton"..i])
-	end
-	
-	--style leave button
-	styleLeaveButton(OverrideActionBarLeaveFrameLeaveButton)
-	styleLeaveButton(MainMenuBarVehicleLeaveButton)
-	
-	--stance bar
-	hooksecurefunc(StanceBar, "Update", function(self)
-		if not ActionBarBusy() then
-			for i, button in pairs(StanceBar.actionButtons) do
-				styleActionButton(button)
-			end
-		end
-	end)
-	
-	--possess buttons
-	for i=1, NUM_POSSESS_SLOTS do
-		styleActionButton(_G["PossessButton"..i])
-	end
-	
-	--extraactionbutton
-	styleExtraActionButton(ExtraActionButton1)
-	styleExtraActionButton2(ZoneAbilityFrame)
-	
-	--spell flyout
+	-- 弹出的动作条按钮
 	SpellFlyout.Background.End:SetTexture(nil)
 	SpellFlyout.Background.HorizontalMiddle:SetTexture(nil)
 	SpellFlyout.Background.VerticalMiddle:SetTexture(nil)
 	
-	local function checkForFlyoutButtons(self)
-		local NUM_FLYOUT_BUTTONS = 10
-		for i = 1, NUM_FLYOUT_BUTTONS do
-			styleActionButton(_G["SpellFlyoutButton"..i])
+	SpellFlyout:HookScript("OnShow", function(self)
+		local i = 1
+		while _G["SpellFlyoutButton"..i] do
+			local bu = _G["SpellFlyoutButton"..i]
+			styleActionButton(bu)
+			i = i + 1
 		end
-	end
-	SpellFlyout:HookScript("OnShow",checkForFlyoutButtons)
-end
+	end)
+	
+	styleLeaveButton(OverrideActionBarLeaveFrameLeaveButton)
+	styleLeaveButton(MainMenuBarVehicleLeaveButton)	
+end)
 
--- CALL
-local a = CreateFrame("Frame")
-a:RegisterEvent("PLAYER_LOGIN")
-a:SetScript("OnEvent", init)
+-- 禁止创建竖线
+MainMenuBar.UpdateDividers = nil
+MainMenuBar.HorizontalDividersPool:ReleaseAll();
+MainMenuBar.VerticalDividersPool:ReleaseAll();
