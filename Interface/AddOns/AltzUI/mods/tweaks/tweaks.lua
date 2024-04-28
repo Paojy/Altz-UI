@@ -7,15 +7,6 @@ eventframe:SetScript('OnEvent', function(self, event, ...)
 end)
 
 --[[-----------------------------------------------------------------------------
-Hide Errors
--------------------------------------------------------------------------------]]
-T.RegisterInitCallback(function()
-	if aCoreCDB["OtherOptions"]["hideerrors"] then
-		UIErrorsFrame:UnregisterEvent('UI_ERROR_MESSAGE')
-	end
-end)
-
---[[-----------------------------------------------------------------------------
 Reload Cmd
 -------------------------------------------------------------------------------]]
 SLASH_ALTZRL1 = "/rl"
@@ -24,33 +15,12 @@ SlashCmdList["ALTZRL"] = ReloadUI
 --[[-----------------------------------------------------------------------------
 Auto Screenshot
 -------------------------------------------------------------------------------]]
-local function TakeScreen(delay, func, ...) 
-	local waitTable = {} 
-	local waitFrame = CreateFrame("Frame", "WaitFrame", UIParent) 
-	waitFrame:SetScript("onUpdate", function (self, elapse) 
-		local count = #waitTable 
-		local i = 1 
-		while (i <= count) do 
-			local waitRecord = tremove(waitTable, i) 
-			local d = tremove(waitRecord, 1) 
-			local f = tremove(waitRecord, 1) 
-			local p = tremove(waitRecord, 1) 
-			if (d > elapse) then 
-				tinsert(waitTable, i, {d-elapse, f, p}) 
-				i = i + 1 
-			else 
-				count = count - 1 
-				f(unpack(p)) 
-			end 
-		end 
-	end) 
-	tinsert(waitTable, {delay, func, {...} }) 
-end
-
 eventframe:RegisterEvent('ACHIEVEMENT_EARNED')
 function eventframe:ACHIEVEMENT_EARNED()
 	if aCoreCDB["OtherOptions"]["autoscreenshot"] then
-		TakeScreen(1, Screenshot)
+		C_Timer.After(1, function()
+			Screenshot()
+		end)
 	end
 end
 --[[-----------------------------------------------------------------------------
@@ -61,9 +31,10 @@ for _, slot in pairs({"Head", "Shoulder", "Chest", "Waist", "Legs", "Feet", "Wri
 	IDs[slot] = GetInventorySlotInfo(slot .. "Slot")
 end
 
-local greylist = {
-	[129158] = true,
+local ignored_grey_items = {
+	
 }
+
 eventframe:RegisterEvent('MERCHANT_SHOW')
 function eventframe:MERCHANT_SHOW()
 	if CanMerchantRepair() and aCoreCDB["ItemOptions"]["autorepair"] then
@@ -71,7 +42,7 @@ function eventframe:MERCHANT_SHOW()
 		local cost = GetRepairAllCost()
 		if cost > 0 and CanGuildBankRepair() and aCoreCDB["ItemOptions"]["autorepair_guild"] then
 			if GetGuildBankWithdrawMoney() > cost then
-				RepairAllItems(1)
+				RepairAllItems(true)
 				for slot, id in pairs(IDs) do
 					local dur, maxdur = GetInventoryItemDurability(id)
 					if dur and maxdur and dur < maxdur then
@@ -82,7 +53,7 @@ function eventframe:MERCHANT_SHOW()
 				if gearRepaired then
 					print(format(L["修理花费"].." %.1fg ("..GUILD..")", cost * 0.0001))
 				end
-			elseif aCoreCDB["ItemOptions"]["autorepair_guild_auto"] and GetMoney() > cost then
+			elseif GetMoney() > cost then
 				RepairAllItems()
 				print(format(L["修理花费"].." %.1fg", cost * 0.0001))
 			end
@@ -96,29 +67,41 @@ function eventframe:MERCHANT_SHOW()
 			for slot = 0, C_Container.GetContainerNumSlots(bag) do
 				local link = C_Container.GetContainerItemLink(bag, slot)
 				local id = C_Container.GetContainerItemID(bag, slot)
-				if link and (select(3, GetItemInfo(link))==0) and not greylist[id] then
+				if link and (select(3, GetItemInfo(link)) == 0) and not ignored_grey_items[id] then
 					C_Container.UseContainerItem(bag, slot)
 				end
 			end
 		end
 	end
 	if aCoreCDB["ItemOptions"]["autobuy"] then
-		for ItemName, Need in pairs(aCoreCDB["ItemOptions"]["autobuylist"]) do
-			local ItemCount = GetItemCount(ItemName)
+		for itemID, Need in pairs(aCoreCDB["ItemOptions"]["autobuylist"]) do
+			local ItemCount = GetItemCount(itemID)
+			local ItemName = GetItemInfo(itemID)
 			if ItemCount < Need then			
 				local numMerchantItems = GetMerchantNumItems()
 				for index = 1, numMerchantItems do
 					local name, texture, price, quantity, numAvailable, isUsable, extendedCost = GetMerchantItemInfo(index)
 					if ItemName == name then-- 有卖的嘛？
+						local maxbuy = GetMerchantItemMaxStack(index)
 						local needbuy = Need - ItemCount
-						if numAvailable >1 and needbuy > numAvailable then -- 数量够不够
-							print(L["货物不足"]..G.classcolor.." "..ItemName.."|r")
-						elseif needbuy/quantity*price > GetMoney() then -- 钱够不够
-							print(L["钱不够"]..G.classcolor.." "..ItemName.."|r")
-						elseif needbuy > 0 then
-							BuyMerchantItem(index, needbuy)
-							print(format(L["购买"], needbuy, G.classcolor..ItemName.."|r"))
+						local afford_num = floor(GetMoney()/price*quantity)
+						local supplied_num = quantity*numAvailable
+						local result, reason
+						
+						if maxbuy < needbuy then
+							reason = string.format(L["每次最多购买"], maxbuy, T.color_text(ItemName))
+						else
+							reason = ""
 						end
+						
+						if numAvailable > 1 then -- 有限数量的商品
+							result = min(maxbuy, needbuy, afford_num, supplied_num)
+						else
+							result = min(maxbuy, needbuy, afford_num)
+						end
+						
+						BuyMerchantItem(index, result)
+						print(string.format(L["购买"], result, T.color_text(ItemName), reason))
 					end
 				end
 			end
@@ -169,8 +152,14 @@ function eventframe:PLAYER_DEAD()
 end
 
 --[[-----------------------------------------------------------------------------
-Hide Errors
+隐藏错误提示
 -------------------------------------------------------------------------------]]
+T.RegisterInitCallback(function()
+	if aCoreCDB["OtherOptions"]["hideerrors"] then
+		UIErrorsFrame:UnregisterEvent('UI_ERROR_MESSAGE')
+	end
+end)
+
 local allowedErrors = { }
 eventframe:RegisterEvent('UI_ERROR_MESSAGE')
 function eventframe:UI_ERROR_MESSAGE(message)
@@ -244,18 +233,18 @@ end
 Random Pet
 -------------------------------------------------------------------------------]]
 
-local function SummonPet(fav)
+local function SummonPet()
 	if aCoreCDB["OtherOptions"]["autopet"] then
 		C_Timer.After(3, function()
 			if InCombatLockdown() then return end
-			local active = C_PetJournal.GetSummonedPetGUID()
-			if not active and not UnitOnTaxi("player") then		
-				if fav then
-					C_PetJournal.SummonRandomPet(false)
-				else
+			local has_pet = C_PetJournal.GetSummonedPetGUID()
+			if not has_pet and not UnitOnTaxi("player") then
+				if C_PetJournal.HasFavoritePets() and aCoreCDB["OtherOptions"]["autopet_favorite"] then
 					C_PetJournal.SummonRandomPet(true)
+				else
+					C_PetJournal.SummonRandomPet(false)
 				end
-			end		
+			end
 		end)
 	end
 end
@@ -282,7 +271,7 @@ function eventframe:PLAYER_ALIVE()
 end
 
 --[[-----------------------------------------------------------------------------
-LFG Call to Arms rewards
+随机奖励
 
 for i = 1, GetNumRandomDungeons() do
   local id, name = GetLFGRandomDungeonInfo(i)
