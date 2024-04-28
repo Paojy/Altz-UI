@@ -457,7 +457,9 @@ T.createcheckbutton = function(parent, x, y, name, table, value, tip)
 			GameTooltip:AddLine(tip)
 			GameTooltip:Show() 
 		end)
-		bu:SetScript("OnLeave", function(self) GameTooltip:Hide() end)
+		bu:SetScript("OnLeave", function(self)
+			GameTooltip:Hide()
+		end)
 	end
 	
 	parent[value] = bu
@@ -499,7 +501,9 @@ T.CVartogglebox = function(parent, x, y, value, name, arg1, arg2, tip)
 			GameTooltip:AddLine(tip)
 			GameTooltip:Show() 
 		end)
-		bu:SetScript("OnLeave", function(self) GameTooltip:Hide() end)
+		bu:SetScript("OnLeave", function(self)
+			GameTooltip:Hide()
+		end)
 	end
 	
 	parent[value] = bu
@@ -672,7 +676,9 @@ T.createeditbox = function(parent, x, y, name, table, value, tip)
 			GameTooltip:AddLine(tip)
 			GameTooltip:Show() 
 		end)
-		box:SetScript("OnLeave", function(self) GameTooltip:Hide() end)
+		box:SetScript("OnLeave", function(self)
+			GameTooltip:Hide()
+		end)
 	end
 	
 	return box
@@ -762,7 +768,9 @@ T.createmultilinebox = function(parent, width, height, x, y, name, table, value,
 			GameTooltip:AddLine(tip)
 			GameTooltip:Show() 
 		end)
-		box.edit:SetScript("OnLeave", function(self) GameTooltip:Hide() end)
+		box.edit:SetScript("OnLeave", function(self)
+			GameTooltip:Hide()
+		end)
 	end
 		
 	return box
@@ -912,7 +920,9 @@ T.createcolorpickerbu = function(parent, x, y, name, table, value)
 			GameTooltip:AddLine(tip)
 			GameTooltip:Show() 
 		end)
-		cpb:SetScript("OnLeave", function(self) GameTooltip:Hide() end)
+		cpb:SetScript("OnLeave", function(self)
+			GameTooltip:Hide()
+		end)
 	end
 	
 	parent[value] = cpb
@@ -970,6 +980,17 @@ T.createradiobuttongroup = function(parent, x, y, name, value, group)
 			self:GetCheckedTexture():SetVertexColor(0, .9, .3, 1)
 			self.text:SetTextColor(1, .82, 0)
 		end)
+		
+		if info[3] then -- tip
+			bu:SetScript("OnEnter", function(self) 
+				GameTooltip:SetOwner(self, "ANCHOR_RIGHT", 10, 10)
+				GameTooltip:AddLine(info[3])
+				GameTooltip:Show() 
+			end)
+			bu:SetScript("OnLeave", function(self)
+				GameTooltip:Hide()
+			end)
+		end
 		
 		frame.buttons[i] = bu
 	end
