@@ -841,7 +841,7 @@ RFInnerframe.common.enableraid.apply = function()
 	StaticPopup_Show(G.uiname.."Reload Alert")
 end
 
-T.createslider(RFInnerframe.common, "long", 30, 110, L["团队规模"], "UnitframeOptions", "party_num", 1, 2, 8, 2)
+T.createslider(RFInnerframe.common, "long", 30, 110, L["团队规模"], "UnitframeOptions", "party_num", 1, 4, 8, 2)
 RFInnerframe.common.party_num.apply = function()
 	T.UpdateGroupSize()
 	T.UpdateGroupfilter()

@@ -277,7 +277,6 @@ T.UpdateClicksforAll = UpdateClicksforAll
 --[[              Raid Auras                 ]]--
 --=============================================--
 -- Debuffs
-print(format(L["添加团队减益"], L["杂兵"], T.GetIconLink(17)), format(gold_str, 716, 1, 17, L["设置"]), format(red_str, 716, 1, 17, L["删除并加入黑名单"]))
 
 local RaidDebuff_AuraFilter = function(debuffs, unit, data)
 	local spellID = data.spellId
@@ -953,30 +952,64 @@ T.UpdateGroupAnchor = function()
 end
 
 T.UpdateGroupSize = function()
-	local oUF = AltzUF or oUF
-	for _, obj in next, oUF.objects do	
-		if obj.style == 'Altz_Healerraid' then
-			obj:SetSize(aCoreCDB["UnitframeOptions"]["raidwidth"], aCoreCDB["UnitframeOptions"]["raidheight"])
+	local group_member_size = min(GetNumGroupMembers(), aCoreCDB["UnitframeOptions"]["party_num"]*5)
+	local w, h = aCoreCDB["UnitframeOptions"]["raidwidth"], aCoreCDB["UnitframeOptions"]["raidheight"]
+	if aCoreCDB["UnitframeOptions"]["hor_party"] then
+		if group_member_size > 30 then -- 7~8个队伍
+			h = h*.5
+		elseif group_member_size > 20 then -- 5~6个队伍
+			h = h*.75
+		end
+	else
+		if group_member_size > 30 then -- 7~8个队伍
+			w = w*.5
+		elseif group_member_size > 20 then -- 5~6个队伍
+			w = w*.75
 		end
 	end
 	
-	if aCoreCDB["UnitframeOptions"]["hor_party"] then -- 水平小队
-		RaidFrame:SetSize(5*(aCoreCDB["UnitframeOptions"]["raidwidth"]+5)-5, aCoreCDB["UnitframeOptions"]["party_num"]*(aCoreCDB["UnitframeOptions"]["raidheight"]+5)-5)
-		RaidPetFrame:SetSize(5*(aCoreCDB["UnitframeOptions"]["raidwidth"]+5)-5, aCoreCDB["UnitframeOptions"]["raidheight"])
+	local oUF = AltzUF or oUF	
+	for _, obj in next, oUF.objects do	
+		if obj.style == 'Altz_Healerraid' then
+			obj:SetSize(w, h)
+		end
+	end
+	
+	if aCoreCDB["UnitframeOptions"]["hor_party"] then
+		if group_member_size > 30 then -- 7~8个队伍
+			RaidFrame:SetSize(5*(w+5)-5, 8*(h+5)-5)
+		elseif group_member_size > 20 then -- 5~6个队伍
+			RaidFrame:SetSize(5*(w+5)-5, 6*(h+5)-5)			
+		else
+			RaidFrame:SetSize(5*(w+5)-5, 4*(h+5)-5)
+		end
+		RaidPetFrame:SetSize(5*(w+5)-5, h)
 	else
-		RaidFrame:SetSize(aCoreCDB["UnitframeOptions"]["party_num"]*(aCoreCDB["UnitframeOptions"]["raidwidth"]+5)-5, 5*(aCoreCDB["UnitframeOptions"]["raidheight"]+5)-5)
-		RaidPetFrame:SetSize(aCoreCDB["UnitframeOptions"]["raidwidth"], 5*(aCoreCDB["UnitframeOptions"]["raidheight"]+5)-5)
+		if group_member_size > 30 then -- 7~8个队伍
+			RaidFrame:SetSize(8*(w+5)-5, 5*(h+5)-5)
+		elseif group_member_size > 20 then -- 5~6个队伍
+			RaidFrame:SetSize(6*(w+5)-5, 5*(h+5)-5)			
+		else
+			RaidFrame:SetSize(4*(w+5)-5, 5*(h+5)-5)
+		end
+		RaidPetFrame:SetSize(w, 5*(h+5)-5)
 	end
 end
 	
 T.UpdateGroupfilter = function()
 	if not RaidFrame[1] then return end
-	
-	for i = 1, 8 do
-		if not aCoreCDB["UnitframeOptions"]["party_connected"] then -- 小队分离
+		
+	if not aCoreCDB["UnitframeOptions"]["party_connected"] then -- 小队分离
+		for i = 1, 8 do
 			RaidFrame[i]:SetAttribute("groupFilter", (i <= aCoreCDB["UnitframeOptions"]["party_num"]) and tostring(i) or '')
-		else
-			RaidFrame[i]:SetAttribute("groupFilter", (i == 1) and GetGroupfilter() or '')
+		end
+	else
+		for i = 1, 8 do
+			if i == 1 then
+				RaidFrame[i]:SetAttribute("groupFilter", GetGroupfilter())
+			else
+				RaidFrame[i]:SetAttribute("groupFilter", '')
+			end
 		end
 	end
 	
@@ -1015,6 +1048,7 @@ EventFrame:SetScript("OnEvent", function(self, event, ...)
 		UpdateDispelType()
 	elseif event == "GROUP_ROSTER_UPDATE" then
 		UpdateHealManabar()
+		T.UpdateGroupSize()
 	end
 end)
 
