@@ -34,6 +34,14 @@ function T.FindAuraBySpellID(spellID, unit, filter)
 	return AuraUtil.FindAura(SpellIDPredicate, unit, filter, spellID)
 end
 
+-- 获取NPCID
+T.GetUnitNpcID = function(unit)
+	local guid = UnitGUID(unit)
+	if guid then
+		return select(6, strsplit("-", guid))
+	end
+end
+
 ----------------------------
 -- 			表格		  --
 ----------------------------
