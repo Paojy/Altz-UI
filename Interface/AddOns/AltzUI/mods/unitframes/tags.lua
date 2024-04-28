@@ -62,7 +62,7 @@ oUF.Tags.Methods["Altz:hpraidname"] = function(u, r)
 	local name = UnitName(r or u)
 	if not name then return end
 	local result
-	if aCoreCDB["UnitframeOptions"]["showmisshp"] then
+	if aCoreCDB["UnitframeOptions"]["name_style"] == "missing_hp" then
 		local perc
 		if UnitHealthMax(u) and UnitHealthMax(u) ~= 0 then
 			perc = UnitHealth(u)/UnitHealthMax(u)
@@ -74,9 +74,12 @@ oUF.Tags.Methods["Altz:hpraidname"] = function(u, r)
 		else
 			result = T.ShortValue(UnitHealthMax(u) - UnitHealth(u))
 		end
-	else
+	elseif aCoreCDB["UnitframeOptions"]["name_style"] == "name" then
 		result = T.utf8sub(name, aCoreCDB["UnitframeOptions"]["namelength"])
+	elseif aCoreCDB["UnitframeOptions"]["name_style"] == "none" then
+		result = ""
 	end
+	
 	if result then
 		if aCoreCDB["SkinOptions"]["style"] ~= 3 then
 			return T.hex_str(result, T.GetUnitColor(u))

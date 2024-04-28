@@ -920,19 +920,23 @@ RFInnerframe.style.showgcd.apply = function()
 	T.EnableUFSettings({"GCD"})
 end
 
-T.createcheckbutton(RFInnerframe.style, 200, 310, L["主坦克和主助手"], "UnitframeOptions", "raidrole_icon", L["主坦克和主助手提示"])
+T.createcheckbutton(RFInnerframe.style, 30, 340, L["治疗和吸收预估"], "UnitframeOptions", "healprediction", L["治疗和吸收预估提示"])
+RFInnerframe.style.healprediction.apply = function()
+	T.EnableUFSettings({"HealthPrediction"})
+end
+
+T.createcheckbutton(RFInnerframe.style, 30, 370, L["主坦克和主助手"], "UnitframeOptions", "raidrole_icon", L["主坦克和主助手提示"])
 RFInnerframe.style.raidrole_icon.apply = function()
 	T.EnableUFSettings({"RaidRoleIndicator"})
 end
 
-T.createcheckbutton(RFInnerframe.style, 30, 340, L["显示缺失生命值"], "UnitframeOptions", "showmisshp", L["显示缺失生命值提示"])
-RFInnerframe.style.showmisshp.apply = function()
+T.createradiobuttongroup(RFInnerframe.style, 30, 400, T.split_words(NAME,L["样式"]), "name_style", {
+	{"missing_hp", NAME.."/"..L["缺失生命值"], L["缺失生命值提示"]},
+	{"name", NAME},
+	{"none", L["隐藏"]},
+})
+RFInnerframe.style.name_style.apply = function()
 	T.UpdateUFTags('Altz_Healerraid')
-end
-
-T.createcheckbutton(RFInnerframe.style, 200, 340, L["治疗和吸收预估"], "UnitframeOptions", "healprediction", L["治疗和吸收预估提示"])
-RFInnerframe.style.healprediction.apply = function()
-	T.EnableUFSettings({"HealthPrediction"})
 end
 
 -- 治疗指示器

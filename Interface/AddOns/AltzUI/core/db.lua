@@ -588,7 +588,7 @@ local Character_default_Settings = {
 		raidfontsize = 10,
 		showgcd = true,
 		raidrole_icon = false,		
-		showmisshp = true,
+		name_style = "missing_hp", -- "name", "none"
 		healprediction = true,
 		-- 治疗指示器
 		hotind_size = 15,
@@ -600,11 +600,11 @@ local Character_default_Settings = {
 		ClickCast = ClickCastDB,
 		-- 光环图标	
 		raid_debuff_anchor_x = -50,
-		raid_debuff_anchor_y = -5,
+		raid_debuff_anchor_y = 0,
 		raid_debuff_num = 2,
 		raid_debuff_icon_size = 22,
 		raid_buff_anchor_x = 5,
-		raid_buff_anchor_y = -5,
+		raid_buff_anchor_y = 0,
 		raid_buff_num = 1,
 		raid_buff_icon_size = 22,
 		debuff_auto_add = true,
