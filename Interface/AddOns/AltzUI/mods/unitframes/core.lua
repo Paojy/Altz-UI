@@ -1936,6 +1936,14 @@ local plate_func = function(self, unit)
 	
 	self.RaidTargetIndicator = ricon
 	
+	-- 任务标记
+	local qicon = self.cover:CreateTexture(nil, "OVERLAY")
+	qicon:SetPoint("RIGHT", self.Tag_Name, "LEFT", 3, 0)
+	qicon:SetSize(10, 10)
+	qicon:SetAtlas("QuestNormal")
+	
+	self.QuestIndicator = qicon
+	
 	-- PVP标记
 	local PvP = self.cover:CreateTexture(nil, 'OVERLAY')
 	PvP:SetPoint("LEFT", name, "RIGHT", -3, 0)
