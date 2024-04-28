@@ -1103,7 +1103,6 @@ local function CreatePlateClassResources(self)
 	if T.multicheck(G.myClass, "DEATHKNIGHT", "WARLOCK", "PALADIN", "MONK", "MAGE", "ROGUE", "DRUID") then
 		local count = 6		
 		local bars = CreateFrame("Frame", self:GetName().."SpecOrbs", self)
-		bars:SetFrameLevel(self.Health:GetFrameLevel()+10)
 				
 		for i = 1, count do
 			bars[i] = T.createStatusbar(bars)
@@ -1198,23 +1197,28 @@ local func = function(self, unit)
 	
 	self:RegisterForClicks"AnyUp"
 	self.mouseovers = {}
-
-	-- highlight --
+	
+	-- 文字/标记框体层
+	self.cover = CreateFrame("Frame", nil, self)
+	self.cover:SetAllPoints(self)
+	self.cover:SetFrameLevel(self:GetFrameLevel()+5)
+	
+	-- 高亮
 	self.hl = self:CreateTexture(nil, "HIGHLIGHT")
 	self.hl:SetAllPoints()
 	self.hl:SetTexture(G.media.barhightlight)
 	self.hl:SetVertexColor( 1, 1, 1, .3)
 	self.hl:SetBlendMode("ADD")
 	
-	-- background --
+	-- 背景
 	self.bg = self:CreateTexture(nil, 'BACKGROUND')
     self.bg:SetAllPoints(self)
 	
-	-- 目标指示器
+	-- 目标边框
 	if T.multicheck(u,"party","partypet","boss","arena") then
 		local targetborder = T.createPXBackdrop(self, nil, 2)
 		targetborder:SetBackdropBorderColor(1, 1, .4)
-		targetborder:SetFrameLevel(self:GetFrameLevel()+2)
+		targetborder:SetFrameLevel(self:GetFrameLevel()+4)
 		targetborder:Hide()
 		targetborder.ShowPlayer =  true
 		
@@ -1224,7 +1228,7 @@ local func = function(self, unit)
 	-- 仇恨边框
 	if u == "party" then
 		local threatborder = T.createPXBackdrop(self, nil, 2)
-		threatborder:SetFrameLevel(self:GetFrameLevel()+1)
+		threatborder:SetFrameLevel(self:GetFrameLevel()+3)
 		threatborder:Hide()
 		
 		threatborder.Override = T.Override_ThreatUpdate
@@ -1234,7 +1238,7 @@ local func = function(self, unit)
 	-- 生命条
 	local hp = T.createStatusbar(self)
 	hp:SetAllPoints(self)
-	hp:SetFrameLevel(self:GetFrameLevel()+2) -- 高于肖像
+	hp:SetFrameLevel(self:GetFrameLevel()+1)
 	hp:SetReverseFill(true)
 
 	hp.backdrop = T.createBackdrop(hp)
@@ -1316,6 +1320,7 @@ local func = function(self, unit)
 		local pp = T.createStatusbar(self)
 		pp:SetPoint("TOPLEFT", self, "BOTTOMLEFT", 0, -1)
 		pp:SetPoint("TOPRIGHT", self, "BOTTOMRIGHT", 0, -1)
+		pp:SetFrameLevel(self:GetFrameLevel()+2)
 		
 		pp.backdrop = T.createBackdrop(pp)
 		
@@ -1351,7 +1356,7 @@ local func = function(self, unit)
 		self.Power.ApplySettings()		
 	end
 
-	-- altpower bar --
+	-- Alt能量
 	if T.multicheck(u, "player", "boss", "pet") then
 		local altpp = T.createStatusbar(self, 5, nil, 1, 1, 0, 1)
 		
@@ -1371,53 +1376,7 @@ local func = function(self, unit)
 		self.AlternativePower = altpp
 		self.AlternativePower.PostUpdate = PostUpdate_AltPower
 	end
-
-	-- 团队领袖
-	local leader = hp:CreateTexture(nil, "OVERLAY")
-	leader:SetSize(12, 12)
-	leader:SetPoint("BOTTOMLEFT", hp, "BOTTOMLEFT", 5, -5)
-	self.LeaderIndicator = leader
-	
-	-- 团队助手
-	local assistant = hp:CreateTexture(nil, "OVERLAY")
-	assistant:SetSize(12, 12)
-	assistant:SetPoint("BOTTOMLEFT", hp, "BOTTOMLEFT", 5, -5)
-	self.AssistantIndicator = assistant
-	
-	-- 团队拾取
-	local masterlooter = hp:CreateTexture(nil, "OVERLAY")
-	masterlooter:SetSize(12, 12)
-	masterlooter:SetPoint("LEFT", leader, "RIGHT")
-	self.MasterLooterIndicator = masterlooter
-	
-	-- 团队标记
-	local ricon = hp:CreateTexture(nil, "OVERLAY")
-	ricon:SetPoint("CENTER", hp, "CENTER", 0, 0)
-	ricon:SetSize(40, 40)
-	ricon:SetTexture[[Interface\AddOns\AltzUI\media\raidicons.blp]]
-	self.RaidTargetIndicator = ricon
-	
-	-- 召唤标记
-	local summonIndicator = self:CreateTexture(nil, 'OVERLAY')
-	summonIndicator:SetSize(32, 32)
-	summonIndicator:SetPoint('TOPRIGHT')
-	summonIndicator:SetAtlas('Raid-Icon-SummonPending', true)
-	summonIndicator:Hide()
-	
-	self.SummonIndicator = summonIndicator
-	
-	-- 名字
-	if unit ~= "player" and unit ~= "pet" then
-		local name = T.createtext(hp, "OVERLAY", 13, "OUTLINE", "LEFT")
-		name:SetPoint("TOPLEFT", hp, "TOPLEFT", 3, 9)
 		
-		if T.multicheck(u, "targettarget", "focustarget", "boss", "arena") then
-			self:Tag(name, "[Altz:shortname]")
-		else
-			self:Tag(name, "[Altz:longname]")
-		end
-	end
-	
 	-- 施法条
 	CreateCastbars(self, unit)
 	
@@ -1427,6 +1386,52 @@ local func = function(self, unit)
 	-- 光环
 	CreateAuras(self, unit)
 	
+	-- 名字
+	if unit ~= "player" and unit ~= "pet" then
+		local name = T.createtext(self.cover, "OVERLAY", 13, "OUTLINE", "LEFT")
+		name:SetPoint("TOPLEFT", self.cover, "TOPLEFT", 3, 9)
+		
+		if T.multicheck(u, "targettarget", "focustarget", "boss", "arena") then
+			self:Tag(name, "[Altz:shortname]")
+		else
+			self:Tag(name, "[Altz:longname]")
+		end
+	end
+	
+	-- 团队领袖
+	local leader = self.cover:CreateTexture(nil, "OVERLAY")
+	leader:SetSize(12, 12)
+	leader:SetPoint("BOTTOMLEFT", self.cover, "BOTTOMLEFT", 5, -5)
+	self.LeaderIndicator = leader
+	
+	-- 团队助手
+	local assistant = self.cover:CreateTexture(nil, "OVERLAY")
+	assistant:SetSize(12, 12)
+	assistant:SetPoint("BOTTOMLEFT", self.cover, "BOTTOMLEFT", 5, -5)
+	self.AssistantIndicator = assistant
+	
+	-- 团队拾取
+	local masterlooter = self.cover:CreateTexture(nil, "OVERLAY")
+	masterlooter:SetSize(12, 12)
+	masterlooter:SetPoint("LEFT", leader, "RIGHT")
+	self.MasterLooterIndicator = masterlooter
+	
+	-- 团队标记
+	local ricon = self.cover:CreateTexture(nil, "OVERLAY")
+	ricon:SetPoint("CENTER", self.cover, "CENTER", 0, 0)
+	ricon:SetSize(40, 40)
+	ricon:SetTexture[[Interface\AddOns\AltzUI\media\raidicons.blp]]
+	self.RaidTargetIndicator = ricon
+	
+	-- 召唤标记
+	local summonIndicator = self.cover:CreateTexture(nil, 'OVERLAY')
+	summonIndicator:SetSize(32, 32)
+	summonIndicator:SetPoint('TOPRIGHT')
+	summonIndicator:SetAtlas('Raid-Icon-SummonPending', true)
+	summonIndicator:Hide()
+	
+	self.SummonIndicator = summonIndicator
+
 	-- 渐隐
 	if T.multicheck(unit, "target", "player", "focus", "pet", "targettarget") then
 		local fader = {
@@ -1716,11 +1721,12 @@ local plate_func = function(self, unit)
 	
 	self:SetPoint("CENTER")
 	
+	-- 文字/标记框体层
 	self.cover = CreateFrame("Frame", nil, self)
 	self.cover:SetAllPoints(self)
-	self.cover:SetFrameLevel(self:GetFrameLevel()+4)
+	self.cover:SetFrameLevel(self:GetFrameLevel()+5)
 
-	-- health bar --
+	-- 生命条
 	local hp = T.createStatusbar(self)
 	hp:SetAllPoints(self)
 
@@ -1895,13 +1901,17 @@ local plate_func = function(self, unit)
 	self.Power = pp
 	self.Power.ApplySettings()
 	
-	-- 施法条、光环、连击点/个人资源
+	-- 施法条
 	CreatePlateCastbar(self, unit)
+	
+	-- 光环
 	CreatePlateAuras(self, unit)
+	
+	-- 连击点/个人资源
 	CreatePlateClassResources(self)
 	
 	-- 名字
-	local name = T.createtext(self, "OVERLAY", 8, "OUTLINE", "CENTER")
+	local name = T.createtext(self.cover, "OVERLAY", 8, "OUTLINE", "CENTER")
 	
 	name.ApplySettings = function()
 		name:SetFont(G.norFont, aCoreCDB["PlateOptions"]["namefontsize"], "OUTLINE")
@@ -2050,6 +2060,11 @@ end
 --=============================================--
 oUF:RegisterStyle("Altz", func)
 
+local PartyToggle = CreateFrame('Frame', G.uiname..'PartyToggle', UIParent, 'SecureHandlerStateTemplate')
+PartyToggle:SetAllPoints()
+PartyToggle:SetFrameStrata('LOW')
+RegisterStateDriver(PartyToggle, 'visibility', '[group:party,nogroup:raid,nopetbattle]show;hide')
+
 for unit,layout in next, UnitSpecific do
 	oUF:RegisterStyle("Altz - "..unit:gsub("^%l", string.upper), layout)
 end
@@ -2122,6 +2137,7 @@ T.RegisterInitCallback(function()
 			local partyframes = {} -- 小队
 			for i = 1, 4 do
 				partyframes["party"..i] = spawnHelper(self,"party"..i)
+				partyframes["party"..i]:SetParent(PartyToggle) -- 团队中隐藏小队
 			end
 			for i = 1, 4 do
 				partyframes["party"..i].movingname = T.split_words(PARTY,L["单位框架"],i)
@@ -2135,13 +2151,14 @@ T.RegisterInitCallback(function()
 						healer = {a1 = "TOP", parent = partyframes["party"..(i-1)]:GetName(), a2 = "BOTTOM" , x = 0, y = -60},
 						dpser = {a1 = "TOP", parent = partyframes["party"..(i-1)]:GetName(), a2 = "BOTTOM" , x = 0, y = -60},
 					}
-				end		
+				end
 				T.CreateDragFrame(partyframes["party"..i])
 			end
 			if aCoreCDB["UnitframeOptions"]["showpartypet"] then
 				local partypetframes = {} -- 小队宠物
 				for i = 1, 4 do
 					partypetframes["partypet"..i] = spawnHelper(self,"partypet"..i)
+					partypetframes["partypet"..i]:SetParent(PartyToggle) -- 团队中隐藏小队宠物
 				end
 				for i = 1, 4 do					
 					partypetframes["partypet"..i].movingname = T.split_words(PARTY,PET,L["单位框架"],i)

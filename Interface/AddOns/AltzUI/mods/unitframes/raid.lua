@@ -1,13 +1,13 @@
 ﻿local T, C, L, G = unpack(select(2, ...))
 local oUF = AltzUF or oUF
 
---=============================================--
---[[ Functions ]]--
---=============================================--
-
 local current_encounter
 local gold_str = "|Hgarrmission:altz_config_altz::%s::%s::%s|h|cFFFFD700[%s]|r|h"
 local red_str = "|Hgarrmission:altz_delete_altz::%s::%s::%s|h|cFFDC143C[%s]|r|h"
+
+--=============================================--
+--[[              治疗法力条				 ]]--
+--=============================================--
 
 local UpdateHealManabar = function()
 	local oUF = AltzUF or oUF
@@ -24,6 +24,10 @@ local UpdateHealManabar = function()
 	end
 end
 
+--=============================================--
+--[[ 		     	仇恨		    		 ]]--
+--=============================================--
+
 local function Override_ThreatUpdate(self, event, unit)	
 	if (self.unit ~= unit) then return end
 	
@@ -39,11 +43,14 @@ local function Override_ThreatUpdate(self, event, unit)
 end
 T.Override_ThreatUpdate = Override_ThreatUpdate
 
+--=============================================--
+--[[ 	    	治疗预估和吸收 				 ]]--
+--=============================================--
+
 local function CreateHealPreditionBar(self, ...)
 	local hpb = CreateFrame('StatusBar', nil, self.Health)
-	hpb:SetFrameLevel(4)
-	hpb:SetStatusBarTexture("Interface\\RaidFrame\\Shield-Fill")
-	hpb:GetStatusBarTexture():SetBlendMode("ADD")
+	hpb:SetFrameLevel(self:GetFrameLevel()+1)
+	hpb:SetStatusBarTexture(G.media.blank)
 	hpb:SetStatusBarColor(...)
 	hpb:SetPoint('TOP')
 	hpb:SetPoint('BOTTOM')
@@ -51,8 +58,9 @@ local function CreateHealPreditionBar(self, ...)
 	hpb:SetWidth(aCoreCDB["UnitframeOptions"]["raidwidth"])
 	return hpb
 end
+
 --=============================================--
---[[ 				Dispel 					 ]]--
+--[[ 				驱散 					 ]]--
 --=============================================--
 local dispelClass = {
 	PRIEST = {Disease = true},
@@ -84,7 +92,7 @@ local UpdateDispelType = function()
 end
 
 --=============================================--
---[[              Click Cast                 ]]--
+--[[              点击施法                 ]]--
 --=============================================--
 T.RaidOnMouseOver = function(self)
     self:HookScript("OnEnter", function(self) UnitFrame_OnEnter(self) end)
@@ -373,7 +381,8 @@ local PostUpdateDebuffs = function(auras, unit)
 end
 
 local CreateRaidDebuffs = function(self, unit)
-	local debuffs = CreateFrame("Frame", nil, self)				
+	local debuffs = CreateFrame("Frame", nil, self)
+	debuffs:SetFrameLevel(self:GetFrameLevel()+2)
 	debuffs.initialAnchor = "BOTTOMLEFT"
 	debuffs["growth-x"] = "RIGHT"
 	debuffs["growth-y"] = "UP"
@@ -424,7 +433,8 @@ local SortBuffs = function(a, b)
 end
 
 local CreateRaidBuffs = function(self, unit)
-	local buffs = CreateFrame("Frame", nil, self)				
+	local buffs = CreateFrame("Frame", nil, self)
+	buffs:SetFrameLevel(self:GetFrameLevel()+2)	
 	buffs.initialAnchor = "BOTTOMLEFT"
 	buffs["growth-x"] = "RIGHT"
 	buffs["growth-y"] = "UP"
@@ -479,6 +489,7 @@ end
 
 local CreateHealIndicator = function(self, unit)
 	local icons = CreateFrame("Frame", nil, self)
+	icons:SetFrameLevel(self:GetFrameLevel()+2)
 	icons:SetPoint("TOPRIGHT", self, "TOPRIGHT", -1, -1)	
 	icons.initialAnchor = "TOPRIGHT"
 	icons["growth-x"] = "LEFT"
@@ -523,21 +534,26 @@ local func = function(self, unit)
 	self:RegisterForClicks"AnyUp"
 	self.mouseovers = {}
 	
-	-- highlight --
+	-- 文字/标记框体层
+	self.cover = CreateFrame("Frame", nil, self)
+	self.cover:SetAllPoints(self)
+	self.cover:SetFrameLevel(self:GetFrameLevel()+7)
+	
+	-- 高亮
 	self.hl = self:CreateTexture(nil, "HIGHLIGHT")
     self.hl:SetAllPoints()
     self.hl:SetTexture(G.media.barhightlight)
     self.hl:SetVertexColor( 1, 1, 1, .3)
     self.hl:SetBlendMode("ADD")
 	
-	-- background --
+	-- 背景
 	self.bg = self:CreateTexture(nil, 'BACKGROUND')
     self.bg:SetAllPoints(self)
 	
 	-- 目标边框
 	local targetborder = T.createPXBackdrop(self, nil, 2)
 	targetborder:SetBackdropBorderColor(1, 1, .4)
-	targetborder:SetFrameLevel(self:GetFrameLevel()+3)
+	targetborder:SetFrameLevel(self:GetFrameLevel()+6)
 	targetborder:Hide()
 	targetborder.ShowPlayer =  true
 	
@@ -545,20 +561,21 @@ local func = function(self, unit)
 	
 	-- 驱散边框
 	self.dispelborder = T.createPXBackdrop(self, nil, 2)
-	self.dispelborder:SetFrameLevel(self:GetFrameLevel()+2)
+	self.dispelborder:SetFrameLevel(self:GetFrameLevel()+5)
 	self.dispelborder:Hide()
 
 	-- 仇恨边框
 	local threatborder = T.createPXBackdrop(self, nil, 2)
-	threatborder:SetFrameLevel(self:GetFrameLevel()+1)
+	threatborder:SetFrameLevel(self:GetFrameLevel()+4)
 	threatborder:Hide()
 	
 	threatborder.Override = Override_ThreatUpdate
 	self.ThreatIndicator = threatborder
 	
-	-- health bar --
+	-- 生命条
     local hp = T.createStatusbar(self, nil, nil, 1, 1, 1, 1)
 	hp:SetAllPoints(self)
+	hp:SetFrameLevel(self:GetFrameLevel())
 	hp:SetReverseFill(true)
 	
 	hp.backdrop = T.createBackdrop(hp)
@@ -590,6 +607,7 @@ local func = function(self, unit)
 	local pp = T.createStatusbar(self)
 	pp:SetPoint("BOTTOMLEFT", self, "BOTTOMLEFT")
 	pp:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT")
+	pp:SetFrameLevel(self:GetFrameLevel()+3)
 	
 	pp.backdrop = T.createBackdrop(hp)
 	
@@ -644,14 +662,18 @@ local func = function(self, unit)
 	
     self.GCD = gcd
 	
-	-- heal prediction --
+	-- 治疗预估和吸收
 	local hp_predict = {
-		myBar = CreateHealPreditionBar(self, .4, .8, 0, .5),
-		otherBar = CreateHealPreditionBar(self, 0, .4, 0, .5),
+		myBar = CreateHealPreditionBar(self, .4, .8, 0),
+		otherBar = CreateHealPreditionBar(self, 0, .4, 0),
 		absorbBar = CreateHealPreditionBar(self, .2, 1, 1, .7),
-		maxOverflow = 1.2,
+		healAbsorbBar = CreateHealPreditionBar(self, 1, 0, 1, .7),		
+		maxOverflow = 1.05,
 	}
 	
+	hp_predict.otherBar:SetPoint('LEFT', hp_predict.myBar:GetStatusBarTexture(), 'RIGHT')
+	hp_predict.absorbBar:SetPoint('LEFT', hp_predict.otherBar:GetStatusBarTexture(), 'RIGHT')
+ 
 	hp_predict.EnableSettings = function(object)
 		if not object or object == self then	
 			if aCoreCDB["UnitframeOptions"]["healprediction"] then
@@ -666,120 +688,15 @@ local func = function(self, unit)
 	hp_predict.ApplySettings = function()
 		if aCoreCDB["SkinOptions"]["style"] ~= 3 then
 			hp_predict.myBar:SetPoint('LEFT', self.Health:GetStatusBarTexture(), 'LEFT')
-			hp_predict.otherBar:SetPoint('LEFT', self.Health:GetStatusBarTexture(), 'LEFT')
-			hp_predict.absorbBar:SetPoint('LEFT', self.Health:GetStatusBarTexture(), 'LEFT')
+			hp_predict.healAbsorbBar:SetPoint('LEFT', self.Health:GetStatusBarTexture(), 'LEFT')
 		else
 			hp_predict.myBar:SetPoint('LEFT', self.Health:GetStatusBarTexture(), 'RIGHT')
-			hp_predict.otherBar:SetPoint('LEFT', self.Health:GetStatusBarTexture(), 'RIGHT')
-			hp_predict.absorbBar:SetPoint('LEFT', self.Health:GetStatusBarTexture(), 'RIGHT')
+			hp_predict.healAbsorbBar:SetPoint('LEFT', self.Health:GetStatusBarTexture(), 'RIGHT')
 		end
 	end
 	
 	self.HealthPrediction = hp_predict
 	self.HealthPrediction.ApplySettings()
-	
-	-- 团队领袖
-	local leader = hp:CreateTexture(nil, "OVERLAY", nil, 1)
-    leader:SetSize(10, 10)
-    leader:SetPoint("BOTTOMLEFT", hp, "BOTTOMLEFT", 0, -5)
-    self.LeaderIndicator = leader
-	
-	-- 团队助手
-	local assistant = hp:CreateTexture(nil, "OVERLAY", nil, 1)
-    assistant:SetSize(10, 10)
-    assistant:SetPoint("BOTTOMLEFT", hp, "BOTTOMLEFT", 0, -5)
-	self.AssistantIndicator = assistant
-	
-	-- 团队拾取
-    local masterlooter = hp:CreateTexture(nil, 'OVERLAY', nil, 1)
-    masterlooter:SetSize(10, 10)
-    masterlooter:SetPoint('LEFT', leader, 'RIGHT', 0, 1)
-    self.MasterLooterIndicator = masterlooter
-	
-	-- 主坦克、主助理标记
-	local raidrole = hp:CreateTexture(nil, 'OVERLAY', nil, 1)
-	raidrole:SetSize(10, 10)
-	raidrole:SetPoint('LEFT', masterlooter, 'RIGHT')
-	
-	raidrole.EnableSettings = function(object)
-		if not object or object == self then	
-			if aCoreCDB["UnitframeOptions"]["raidrole_icon"] then
-				self:EnableElement("RaidRoleIndicator")
-				self.RaidRoleIndicator:ForceUpdate()
-			else
-				self:DisableElement("RaidRoleIndicator")
-			end
-		end
-	end
-	oUF:RegisterInitCallback(raidrole.EnableSettings)
-	
-	self.RaidRoleIndicator = raidrole
-	
-	-- 团队标记
-	local ricon = hp:CreateTexture(nil, "OVERLAY", nil, 1)
-	ricon:SetSize(18 ,18)
-    ricon:SetPoint("RIGHT", hp, "TOP", -8 , 0)
-	ricon:SetTexture[[Interface\AddOns\AltzUI\media\raidicons.blp]]
-	
-    self.RaidTargetIndicator = ricon
-	
-	-- 复活标记
-	local resurrecticon = hp:CreateTexture(nil, "OVERLAY")
-    resurrecticon:SetSize(16, 16)
-    resurrecticon:SetPoint"CENTER"
-    self.ResurrectIndicator = resurrecticon
-	
-	-- 就位确认
-    local readycheck = hp:CreateTexture(nil, 'OVERLAY', nil, 3)
-    readycheck:SetSize(16, 16)
-    readycheck:SetPoint"CENTER"
-    self.ReadyCheckIndicator = readycheck
-	
-	-- 召唤标记
-	local summonIndicator = hp:CreateTexture(nil, 'OVERLAY')
-	summonIndicator:SetSize(32, 32)
-	summonIndicator:SetPoint('TOPRIGHT')
-	summonIndicator:SetAtlas('Raid-Icon-SummonPending', true)
-	summonIndicator:Hide()
-	
-	self.SummonIndicator = summonIndicator
-	
-	-- 团队职责
-	local lfd =  T.createtext(hp, "OVERLAY", 13, "OUTLINE", "CENTER")
-	lfd:SetFont(G.symbols, 7, "OUTLINE")
-	lfd:SetPoint("BOTTOM", hp, 0, -1)
-	
-	lfd.ApplySettings = function()
-		lfd:SetFont(G.symbols, aCoreCDB["UnitframeOptions"]["raidfontsize"]-3, "OUTLINE")
-	end
-	
-	self:Tag(lfd, '[Altz:LFD]')
-	self.Tag_LFD = lfd
-	lfd.ApplySettings()
-	
-	-- 名字
-	local raidname = T.createtext(hp, "OVERLAY", 10, "OUTLINE", "RIGHT")
-	raidname:SetPoint("BOTTOMRIGHT", hp, "BOTTOMRIGHT", -1, 5)
-	
-	raidname.ApplySettings = function()
-		raidname:SetFont(G.norFont, aCoreCDB["UnitframeOptions"]["raidfontsize"], "OUTLINE")
-	end
-	
-	self:Tag(raidname, '[Altz:hpraidname]')
-	self.Tag_Name = raidname
-	raidname.ApplySettings()
-	
-	-- 勿扰 暂离 离线 死亡 灵魂
-	local status = T.createtext(hp, "OVERLAY", 8, "OUTLINE", "LEFT")
-    status:SetPoint"TOPLEFT"
-	
-	status.ApplySettings = function()
-		status:SetFont(G.norFont, aCoreCDB["UnitframeOptions"]["raidfontsize"]-2, "OUTLINE")
-	end
-	
-	self:Tag(status, '[Altz:AfkDnd][Altz:DDG]')
-	self.Tag_Status = status
-	status.ApplySettings()
 	
 	-- 团队减益
 	CreateRaidDebuffs(self, unit)
@@ -823,7 +740,110 @@ local func = function(self, unit)
 	end
 	
 	self.AltzIndicators = ind_number	
-
+		
+	-- 团队领袖
+	local leader = self.cover:CreateTexture(nil, "OVERLAY", nil, 1)
+    leader:SetSize(10, 10)
+    leader:SetPoint("BOTTOMLEFT", self.cover, "BOTTOMLEFT", 0, -5)
+    self.LeaderIndicator = leader
+	
+	-- 团队助手
+	local assistant = self.cover:CreateTexture(nil, "OVERLAY", nil, 1)
+    assistant:SetSize(10, 10)
+    assistant:SetPoint("BOTTOMLEFT", self.cover, "BOTTOMLEFT", 0, -5)
+	self.AssistantIndicator = assistant
+	
+	-- 团队拾取
+    local masterlooter = self.cover:CreateTexture(nil, 'OVERLAY', nil, 1)
+    masterlooter:SetSize(10, 10)
+    masterlooter:SetPoint('LEFT', leader, 'RIGHT', 0, 1)
+    self.MasterLooterIndicator = masterlooter
+	
+	-- 主坦克、主助理标记
+	local raidrole = self.cover:CreateTexture(nil, 'OVERLAY', nil, 1)
+	raidrole:SetSize(10, 10)
+	raidrole:SetPoint('LEFT', masterlooter, 'RIGHT')
+	
+	raidrole.EnableSettings = function(object)
+		if not object or object == self then	
+			if aCoreCDB["UnitframeOptions"]["raidrole_icon"] then
+				self:EnableElement("RaidRoleIndicator")
+				self.RaidRoleIndicator:ForceUpdate()
+			else
+				self:DisableElement("RaidRoleIndicator")
+			end
+		end
+	end
+	oUF:RegisterInitCallback(raidrole.EnableSettings)
+	
+	self.RaidRoleIndicator = raidrole
+	
+	-- 团队标记
+	local ricon = self.cover:CreateTexture(nil, "OVERLAY", nil, 1)
+	ricon:SetSize(18 ,18)
+    ricon:SetPoint("RIGHT", self.cover, "TOP", -8 , 0)
+	ricon:SetTexture[[Interface\AddOns\AltzUI\media\raidicons.blp]]
+	
+    self.RaidTargetIndicator = ricon
+	
+	-- 复活标记
+	local resurrecticon = self.cover:CreateTexture(nil, "OVERLAY")
+    resurrecticon:SetSize(16, 16)
+    resurrecticon:SetPoint("CENTER")
+    self.ResurrectIndicator = resurrecticon
+	
+	-- 就位确认
+    local readycheck = self.cover:CreateTexture(nil, 'OVERLAY', nil, 3)
+    readycheck:SetSize(16, 16)
+    readycheck:SetPoint("CENTER")
+    self.ReadyCheckIndicator = readycheck
+	
+	-- 召唤标记
+	local summonIndicator = self.cover:CreateTexture(nil, 'OVERLAY')
+	summonIndicator:SetSize(32, 32)
+	summonIndicator:SetPoint('CENTER')
+	summonIndicator:SetAtlas('Raid-Icon-SummonPending', true)
+	summonIndicator:Hide()
+	
+	self.SummonIndicator = summonIndicator
+	
+	-- 团队职责
+	local lfd =  T.createtext(self.cover, "OVERLAY", 13, "OUTLINE", "CENTER")
+	lfd:SetFont(G.symbols, 7, "OUTLINE")
+	lfd:SetPoint("BOTTOM", self.cover, 0, -1)
+	
+	lfd.ApplySettings = function()
+		lfd:SetFont(G.symbols, aCoreCDB["UnitframeOptions"]["raidfontsize"]-3, "OUTLINE")
+	end
+	
+	self:Tag(lfd, '[Altz:LFD]')
+	self.Tag_LFD = lfd
+	lfd.ApplySettings()
+	
+	-- 名字
+	local raidname = T.createtext(hp, "OVERLAY", 10, "OUTLINE", "RIGHT")
+	raidname:SetPoint("BOTTOMRIGHT", hp, "BOTTOMRIGHT", -1, 5)
+	
+	raidname.ApplySettings = function()
+		raidname:SetFont(G.norFont, aCoreCDB["UnitframeOptions"]["raidfontsize"], "OUTLINE")
+	end
+	
+	self:Tag(raidname, '[Altz:hpraidname]')
+	self.Tag_Name = raidname
+	raidname.ApplySettings()
+	
+	-- 勿扰 暂离 离线 死亡 灵魂
+	local status = T.createtext(hp, "OVERLAY", 8, "OUTLINE", "LEFT")
+    status:SetPoint("TOPLEFT")
+	
+	status.ApplySettings = function()
+		status:SetFont(G.norFont, aCoreCDB["UnitframeOptions"]["raidfontsize"]-2, "OUTLINE")
+	end
+	
+	self:Tag(status, '[Altz:AfkDnd][Altz:DDG]')
+	self.Tag_Status = status
+	status.ApplySettings()
+	
 	-- 距离指示
     local range = {
         insideAlpha = 1,
