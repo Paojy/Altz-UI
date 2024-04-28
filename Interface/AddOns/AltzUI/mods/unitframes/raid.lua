@@ -542,7 +542,7 @@ local func = function(self, unit)
 	-- 高亮
 	self.hl = self:CreateTexture(nil, "HIGHLIGHT")
     self.hl:SetAllPoints()
-    self.hl:SetTexture(G.media.barhightlight)
+    self.hl:SetTexture([[Interface\AddOns\AltzUI\media\highlight.tga]])
     self.hl:SetVertexColor( 1, 1, 1, .3)
     self.hl:SetBlendMode("ADD")
 	

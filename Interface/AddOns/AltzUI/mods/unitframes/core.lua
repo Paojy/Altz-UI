@@ -621,7 +621,7 @@ local CreatePlateCastbar = function(self, unit)
 	
 	cb.ApplySettings = function()		
 		if aCoreCDB["PlateOptions"]["theme"] == "number" then
-			cb:SetStatusBarTexture(G.media.iconcastbar)
+			cb:SetStatusBarTexture([[Interface\AddOns\AltzUI\media\iconcastbar.tga]])
 			cb:SetSize(25, 25)
 			
 			cb:ClearAllPoints()	
@@ -1206,7 +1206,7 @@ local func = function(self, unit)
 	-- 高亮
 	self.hl = self:CreateTexture(nil, "HIGHLIGHT")
 	self.hl:SetAllPoints()
-	self.hl:SetTexture(G.media.barhightlight)
+	self.hl:SetTexture([[Interface\AddOns\AltzUI\media\highlight.tga]])
 	self.hl:SetVertexColor( 1, 1, 1, .3)
 	self.hl:SetBlendMode("ADD")
 	
@@ -1558,7 +1558,7 @@ local UnitSpecific = {
 		-- Zzz
 		local Resting = self.Health:CreateTexture(nil, 'OVERLAY')
 		Resting:SetSize(18, 18)
-		Resting:SetTexture(G.media.reseting)
+		Resting:SetTexture([[Interface\AddOns\AltzUI\media\resting.tga]])
 		Resting:SetDesaturated(true)
 		Resting:SetVertexColor( 0, 1, 0)
 		Resting:SetPoint("RIGHT", self.Power, "RIGHT", -5, 0)
@@ -1567,7 +1567,7 @@ local UnitSpecific = {
 		-- Combat
 		local Combat = self.Health:CreateTexture(nil, "OVERLAY")
 		Combat:SetSize(18, 18)
-		Combat:SetTexture(G.media.combat)
+		Combat:SetTexture([[Interface\AddOns\AltzUI\media\combat.tga]])
 		Combat:SetDesaturated(true)
 		Combat:SetPoint("RIGHT", self.Power, "RIGHT", -5, 0)
 		Combat:SetVertexColor( 1, 1, 0)

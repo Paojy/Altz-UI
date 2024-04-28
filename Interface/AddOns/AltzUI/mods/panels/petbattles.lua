@@ -5,6 +5,11 @@ local testmode = false
 local frame = PetBattleFrame
 local bf = frame.BottomFrame
 
+local textures = {
+	bar = [[Interface\AddOns\AltzUI\media\statusbar.tga]],
+	checked = [[Interface\AddOns\AltzUI\media\checked.tga]],
+}
+
 if testmode then frame:Show() end
 
 frame.TopArtLeft:Hide()
@@ -57,13 +62,13 @@ for index, unit in pairs(units) do
 	unit.SpeedUnderlay:SetAlpha(0)
 	unit.PetType:Hide()
 
-	unit.ActualHealthBar:SetTexture(G.media.bar)
+	unit.ActualHealthBar:SetTexture(textures.bar)
 
-	unit.Border:SetTexture(G.media.checked)
+	unit.Border:SetTexture(textures.checked)
 	unit.Border:SetTexCoord(0, 1, 0, 1)
 	unit.Border:SetPoint("TOPLEFT", unit.Icon, -1, 1)
 	unit.Border:SetPoint("BOTTOMRIGHT", unit.Icon, 1, -1)
-	unit.Border2:SetTexture(G.media.checked)
+	unit.Border2:SetTexture(textures.checked)
 	unit.Border2:SetVertexColor(.89, .88, .06)
 	unit.Border2:SetTexCoord(0, 1, 0, 1)
 	unit.Border2:SetPoint("TOPLEFT", unit.Icon, -1, 1)
@@ -134,7 +139,7 @@ for index, unit in pairs(extraUnits) do
 	unit.ActualHealthBar:ClearAllPoints()
 	unit.ActualHealthBar:SetPoint("BOTTOM", 0, -1)
 
-	unit.BorderAlive:SetTexture(G.media.checked)
+	unit.BorderAlive:SetTexture(textures.checked)
 	unit.BorderAlive:SetTexCoord(0, 1, 0, 1)
 	unit.BorderAlive:SetPoint("TOPLEFT", unit.Icon, -1, 1)
 	unit.BorderAlive:SetPoint("BOTTOMRIGHT", unit.Icon, 1, -1)
@@ -278,7 +283,7 @@ bf.xpBar:SetParent(bar)
 bf.xpBar:SetWidth(bar:GetWidth() - 3)
 bf.xpBar:ClearAllPoints()
 bf.xpBar:SetPoint("BOTTOM", bf.TurnTimer, "TOP", 0, 5)
-bf.xpBar:SetStatusBarTexture(G.media.bar)
+bf.xpBar:SetStatusBarTexture(textures.bar)
 bf.xpBar.bg = T.createBackdrop(bf.xpBar)
 	
 for i = 7, 12 do
@@ -391,7 +396,7 @@ hooksecurefunc("PetBattleFrame_UpdateActionBarLayout", function(self)
 	bf.SwitchPetButton:SetSize(40, 40)
 	bf.SwitchPetButton:ClearAllPoints()
 	bf.SwitchPetButton:SetPoint("LEFT", bf.abilityButtons[NUM_BATTLE_PET_ABILITIES], "RIGHT", 3, 0)
-	bf.SwitchPetButton:SetCheckedTexture(G.media.checked)
+	bf.SwitchPetButton:SetCheckedTexture(textures.checked)
 	bf.CatchButton:SetParent(bar)
 	bf.CatchButton:SetSize(40, 40)
 	bf.CatchButton:ClearAllPoints()

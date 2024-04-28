@@ -32,15 +32,8 @@ end
 
 G.media = {
 	blank = "Interface\\Buttons\\WHITE8x8",
-	bar = "Interface\\AddOns\\AltzUI\\media\\statusbar",
 	ufbar = "Interface\\AddOns\\AltzUI\\media\\ufbar",
 	glow = "Interface\\AddOns\\AltzUI\\media\\glow",
-	checked = "Interface\\AddOns\\AltzUI\\media\\CheckButtonHilight",
-	barhightlight = "Interface\\AddOns\\AltzUI\\media\\highlight",
-	buttonhighlight = "Interface\\AddOns\\AltzUI\\media\\highlight2",
-	reseting = "Interface\\AddOns\\AltzUI\\media\\resting",
-	combat = "Interface\\AddOns\\AltzUI\\media\\combat",
-	iconcastbar = "Interface\\AddOns\\AltzUI\\media\\dM3",
 }
 
 local LSM = LibStub("LibSharedMedia-3.0")
