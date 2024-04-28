@@ -15,14 +15,14 @@ local UpdateHealManabar = function()
 		if obj.style == 'Altz_Healerraid' and obj.Power then
 			local role = UnitGroupRolesAssigned(obj.unit)
 			if aCoreCDB["UnitframeOptions"]["raidmanabars"] and role == 'HEALER' then
-				obj:EnableElement("Power")
-				obj.Power:ForceUpdate()
+				obj.Power:SetAlpha(1)
 			else
-				obj:DisableElement("Power")
+				obj.Power:SetAlpha(0)
 			end
 		end
 	end
 end
+T.UpdateHealManabar = UpdateHealManabar
 
 --=============================================--
 --[[ 		     	仇恨		    		 ]]--
@@ -277,6 +277,7 @@ T.UpdateClicksforAll = UpdateClicksforAll
 --[[              Raid Auras                 ]]--
 --=============================================--
 -- Debuffs
+print(format(L["添加团队减益"], L["杂兵"], T.GetIconLink(17)), format(gold_str, 716, 1, 17, L["设置"]), format(red_str, 716, 1, 17, L["删除并加入黑名单"]))
 
 local RaidDebuff_AuraFilter = function(debuffs, unit, data)
 	local spellID = data.spellId
@@ -299,7 +300,7 @@ local RaidDebuff_AuraFilter = function(debuffs, unit, data)
 				
 				if aCoreCDB["UnitframeOptions"]["raid_debuffs"][InstanceID][1][spellID] then -- 找到了
 					return true
-				elseif aCoreCDB["UnitframeOptions"]["debuff_auto_add"] and not castByPlayer then -- 没有找到，可以添加
+				elseif not data.isFromPlayerOrPlayerPet and aCoreCDB["UnitframeOptions"]["debuff_auto_add"] and not castByPlayer then -- 没有找到，可以添加
 					aCoreCDB["UnitframeOptions"]["raid_debuffs"][InstanceID][1][spellID] = aCoreCDB["UnitframeOptions"]["debuff_auto_add_level"]
 					print(format(L["添加团队减益"], L["杂兵"], T.GetIconLink(spellID)), format(gold_str, InstanceID, 1, spellID, L["设置"]), format(red_str, InstanceID, 1, spellID, L["删除并加入黑名单"]))
 					return true
@@ -316,7 +317,7 @@ local RaidDebuff_AuraFilter = function(debuffs, unit, data)
 						
 						if aCoreCDB["UnitframeOptions"]["raid_debuffs"][InstanceID][encounterID][spellID] then -- 找到了
 							return true
-						elseif aCoreCDB["UnitframeOptions"]["debuff_auto_add"] and not castByPlayer then -- 没有找到，可以添加
+						elseif not data.isFromPlayerOrPlayerPet and aCoreCDB["UnitframeOptions"]["debuff_auto_add"] and not castByPlayer then -- 没有找到，可以添加
 							aCoreCDB["UnitframeOptions"]["raid_debuffs"][InstanceID][encounterID][spellID] = aCoreCDB["UnitframeOptions"]["debuff_auto_add_level"]
 							print(format(L["添加团队减益"], encounterName, T.GetIconLink(spellID)), format(gold_str, InstanceID, encounterID, spellID, L["设置"]), format(red_str, InstanceID, encounterID, spellID, L["删除并加入黑名单"]))
 							return true
@@ -614,21 +615,6 @@ local func = function(self, unit)
 	pp.bg = pp:CreateTexture(nil, 'BACKGROUND')
 	pp.bg:SetAllPoints(pp)
 	pp.bg.multiplier = .2
-	
-	pp.EnableSettings = function(object)
-		if not object or object == self then
-			if object.unit then
-				local role = UnitGroupRolesAssigned(object.unit)
-				if aCoreCDB["UnitframeOptions"]["raidmanabars"] and role == "HEALER" then
-					self:EnableElement("Power")
-					self.Power:ForceUpdate()
-				else
-					self:DisableElement("Power")
-				end
-			end
-		end
-	end
-	oUF:RegisterInitCallback(pp.EnableSettings)
 	
 	pp.ApplySettings = function()		
 		pp:SetHeight(aCoreCDB["UnitframeOptions"]["raidheight"]*aCoreCDB["UnitframeOptions"]["raidppheight"])

@@ -3,7 +3,7 @@
 local function CreateDividingLine(frame, y, width)
 	local tex = frame:CreateTexture(nil, "ARTWORK")
 	tex:SetSize(width or frame:GetWidth()-50, 1)
-	tex:SetPoint("TOP", 0, y)
+	tex:SetPoint("TOP", frame, "TOP", 0, y)
 	tex:SetColorTexture(1, 1, 1, .2)
 end
 
@@ -894,9 +894,7 @@ RFInnerframe.style.raidwidth.apply = function()
 end
 
 T.createcheckbutton(RFInnerframe.style, 30, 140, L["治疗法力条"], "UnitframeOptions", "raidmanabars")
-RFInnerframe.style.raidmanabars.apply = function()
-	T.EnableUFSettings({"Power"})
-end
+RFInnerframe.style.raidmanabars.apply = T.UpdateHealManabar
 
 T.createslider(RFInnerframe.style, "long", 30, 190, L["治疗法力条高度"], "UnitframeOptions", "raidppheight", 100, 5, 100, 5)
 RFInnerframe.style.raidppheight.apply = function()
@@ -1379,7 +1377,7 @@ RFInnerframe.raiddebuff.debuff_list = T.createscrolllist(RFInnerframe.raiddebuff
 
 local function UpdateEncounterTitle(option_list, i, encounterID, y)
 	if not option_list.titles[i] then
-		local frame = CreateFrame("Frame", nil, option_list)
+		local frame = CreateFrame("Frame", nil, option_list.anchor)
 		frame:SetSize(380, 16)
 		
 		frame.tex = frame:CreateTexture(nil, "ARTWORK")
@@ -1585,7 +1583,7 @@ local CreateInstanceButton = function(frame, instanceID, instanceName, bgImage)
 		bu:SetPoint("TOPLEFT", frame.anchor, "TOPLEFT", 20+mod(frame.button_i+1, 2)*200, frame.y + 30)
 	end
 	
-	bu:HookScript("OnMouseDown", function()
+	bu:SetScript("OnMouseDown", function()
 		parent.selected_InstanceID = instanceID
 		frame:Hide()
 		
@@ -1634,11 +1632,10 @@ local CreateInstanceButton = function(frame, instanceID, instanceName, bgImage)
 end
 
 RFInnerframe.raiddebuff.instance_list = T.createscrolllist(RFInnerframe.raiddebuff, {"TOPLEFT", 25, -55}, false, 400, 370)
-RFInnerframe.raiddebuff.instance_list:SetScript("OnShow", function(self)
-	if self.init then return end
-	
+T.RegisterInitCallback(function()	
 	local parent = RFInnerframe.raiddebuff
 	local tier_num = EJ_GetNumTiers()
+	local self = RFInnerframe.raiddebuff.instance_list
 	
 	self.y = -10
 	for i = tier_num, 1, -1 do
@@ -1677,32 +1674,30 @@ RFInnerframe.raiddebuff.instance_list:SetScript("OnShow", function(self)
 		
 		self.y = self.y - 10
 	end
-	
-	self.init = true
 end)
 
 -- 待测试
 hooksecurefunc("SetItemRef", function(link, text)
   if link:find("garrmission:altz") then
 	local InstanceID, encounterID, spellID = string.match(text, "altz::([^%]]+)%::([^%]]+)%::([^%]]+)%|h|c")
+	
 	InstanceID = tonumber(InstanceID)
 	encounterID = tonumber(encounterID)
 	spellID = tonumber(spellID)
-	
+
 	if string.find(text, "config") then	
-		RFOptions.hooked_tab:GetScript("OnMouseDown")()
-		RFInnerframe.raiddebuff.hooked_tab:GetScript("OnMouseDown")()
-		RFInnerframe.raiddebuff.instance_list.list[InstanceID]:GetScript("OnMouseDown")()
-		RFInnerframe.raiddebuff.debuff_list.spells["icon"..encounterID.."_"..spellID]:GetScript("OnMouseDown")()
-		
 		GUI:Show()
 		GUI.df:Show()
 		GUI.scale:Show()
+		
+		RFOptions.hooked_tab:GetScript("OnMouseDown")()	
+		RFInnerframe.raiddebuff.hooked_tab:GetScript("OnMouseDown")()
+		RFInnerframe.raiddebuff.instance_list.list[InstanceID]:GetScript("OnMouseDown")()
+		RFInnerframe.raiddebuff.debuff_list.spells["icon"..encounterID.."_"..spellID]:GetScript("OnMouseDown")()
+				
 	elseif string.find(text, "delete") then
 		if aCoreCDB["UnitframeOptions"]["raid_debuffs"][InstanceID][encounterID][spellID] then
 			aCoreCDB["UnitframeOptions"]["raid_debuffs"][InstanceID][encounterID][spellID] = nil
-			DisplayRaidDebuffList()
-			local spell = GetSpellInfo(spellID)
 			aCoreCDB["UnitframeOptions"]["debuff_list_black"][spellID] = true
 			print(string.format(L["已删除并加入黑名单"], T.GetIconLink(spellID)))
 		end
