@@ -439,4 +439,4 @@ Tab - Change between available channels
 
 -- 制作
 L["制作"] = "Credits"
-L["制作说明"] = "AltzUI ver %s \n \n \n \n Paopao zhCN \n \n \n \n %s Thanks to \n \n %s \n and everyone who help me with this Compilations.|r"
+L["制作说明"] = "AltzUI ver %s \n \n \n \n Paopao zhCN \n \n \n \n Thanks to \n \n %s \n and everyone who help me with this Compilations."

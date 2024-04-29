@@ -439,4 +439,4 @@ Tab - 切换聊天频道
 
 -- 制作
 L["制作"] = "制作"
-L["制作说明"] = "AltzUI ver %s \n \n \n \n 泡泡 zhCN \n \n \n \n %s Thanks to \n \n %s \n 和每一个帮我我完成一个插件包的朋友。|r"
+L["制作说明"] = "AltzUI ver %s \n \n \n \n 泡泡 zhCN \n \n \n \n Thanks to \n \n %s \n 和每一个帮我我完成一个插件包的朋友。"
