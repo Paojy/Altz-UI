@@ -193,6 +193,7 @@ T.RegisterInitCallback(function()
 	-- 战斗文字字体
 	local font = aCoreCDB["CombattextOptions"]["combattext_font"]
 	if font ~= "none" then
-		DAMAGE_TEXT_FONT = G.combatFont[font]
+		local index = string.match(font, "%d")
+		DAMAGE_TEXT_FONT = G["combatFont"..index]
 	end
 end)
