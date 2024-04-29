@@ -87,71 +87,48 @@ local function init()
 			cf:SetShadowOffset(0,0)
 			cf:SetFrameStrata("LOW")
 			cf:SetFrameLevel(2)
-		end
-		
-		-- 标签
-		local tab = _G['ChatFrame'..i..'Tab']
-		if tab then
-			tab:GetFontString():SetFont(G.norFont, 13, "THINOUTLINE")
-			tab:GetFontString():SetShadowOffset(0,0)
-			if i ~= 11 then
-				tab.selectedColorTable = { r = G.Ccolor.r, g = G.Ccolor.g, b = G.Ccolor.b };
-				tab:SetAlpha(1)
-			end
-			
-			tab.Middle:SetTexture(nil)
-			tab.Left:SetTexture(nil)
-			tab.Right:SetTexture(nil)
-			tab.ActiveLeft:SetTexture(nil)
-			tab.ActiveMiddle:SetTexture(nil)
-			tab.ActiveRight:SetTexture(nil)
-			tab.glow:SetTexture(nil)
-			tab.HighlightLeft:SetTexture(nil)
-			tab.HighlightMiddle:SetTexture(nil)
-			tab.HighlightRight:SetTexture(nil)
-			
-		end
-		tab:HookScript("OnClick", function(self)
-			eb:SetAlpha(0)
-		end)
+		end		
 	end
+	
 	UpdateChatFrameBg()
 end
 
-BNToastFrame:SetClampedToScreen(true)
+hooksecurefunc("FCFTab_UpdateColors", function(tab, selected)
+	if not tab.skined then
+		tab.Text:SetFont(G.norFont, 13, "THINOUTLINE")
+		tab.Text:SetShadowOffset(0,0)
+		
+		tab.Middle:SetTexture(nil)
+		tab.Left:SetTexture(nil)
+		tab.Right:SetTexture(nil)
+		tab.ActiveLeft:SetTexture(nil)
+		tab.ActiveMiddle:SetTexture(nil)
+		tab.ActiveRight:SetTexture(nil)
+		tab.HighlightLeft:SetTexture(nil)
+		tab.HighlightMiddle:SetTexture(nil)
+		tab.HighlightRight:SetTexture(nil)
+		
+		tab:HookScript("OnClick", function(self)
+			local chat_frame = self:GetParent()
+			if chat_frame.editBox then
+				chat_frame.editBox:SetAlpha(0)
+			end
+		end)
+		
+		tab.skined = true
+	end
+	
+	if ( selected ) then
+		tab.Text:SetTextColor(unpack(G.addon_color))
+	else
+		tab.Text:SetTextColor(1, 1, 1)
+	end
+end)
 
 local EventFrame = CreateFrame("Frame")
 
 EventFrame:RegisterEvent("PLAYER_LOGIN")
 EventFrame:RegisterEvent("PET_BATTLE_OPENING_START")
-
-local function SetChatTabs()
-	for i = 11, 20 do
-		-- chat tabs
-		local tab = _G['ChatFrame'..i..'Tab']
-		if tab and not tab.skinned then
-			tab.skinned = true
-			tab:GetFontString():SetFont(G.norFont, 13, "THINOUTLINE")
-			tab:GetFontString():SetShadowOffset(0,0)
-			if i ~= 11 then
-				tab.selectedColorTable = { r = G.Ccolor.r, g = G.Ccolor.g, b = G.Ccolor.b };
-				tab:SetAlpha(1)
-			end		
-			
-			tab.Middle:SetTexture(nil)
-			tab.Left:SetTexture(nil)
-			tab.Right:SetTexture(nil)
-			tab.ActiveLeft:SetTexture(nil)
-			tab.ActiveMiddle:SetTexture(nil)
-			tab.ActiveRight:SetTexture(nil)
-			tab.HighlightLeft:SetTexture(nil)
-			tab.HighlightMiddle:SetTexture(nil)
-			tab.HighlightRight:SetTexture(nil)
-		end
-	end
-end
-
-hooksecurefunc("FCF_OpenTemporaryWindow", SetChatTabs)
 
 EventFrame:SetScript("OnEvent", function(self, event, arg1)
 	if event == "PLAYER_LOGIN" then
@@ -165,15 +142,15 @@ EventFrame:SetScript("OnEvent", function(self, event, arg1)
 		CHAT_FRAME_TAB_ALERTING_NOMOUSE_ALPHA = .3
 		
 		BackupChatFrameBg()
+		
 		init()
 	elseif event == "PET_BATTLE_OPENING_START" then
 		chatwindownum = 11
+		
 		init()
 		EventFrame:UnregisterEvent("PET_BATTLE_OPENING_START")
 	end
 end)
-
-T.createBackdrop(GeneralDockManagerOverflowButtonList, .5)
 
 function FloatingChatFrame_OnMouseScroll(self, delta)
 	if ( delta > 0 ) then
@@ -191,6 +168,10 @@ function FloatingChatFrame_OnMouseScroll(self, delta)
 	end
 end
 
+BNToastFrame:SetClampedToScreen(true)
+
+T.createBackdrop(GeneralDockManagerOverflowButtonList, .5)
+
 QuickJoinToastButton:ClearAllPoints()
 QuickJoinToastButton:SetPoint("BOTTOMLEFT", ChatFrame1.editBox, "TOPLEFT", 5, 5)
 QuickJoinToastButton.SetPoint = function() end
@@ -198,4 +179,3 @@ T.FrameFader(QuickJoinToastButton)
 
 ChatAlertFrame:ClearAllPoints()
 ChatAlertFrame:SetPoint("BOTTOMLEFT", QuickJoinToastButton, "TOPLEFT", 0, 20)
-
