@@ -156,26 +156,6 @@ local function CreateTutorialsStepFrame(title, text)
 	TutorialsFrame.step = TutorialsFrame.step + 1
 end
 
-local function CreateOptions(parent, type, text, table, value, group, order)
-	if type == "check" then
-		T.createcheckbutton(parent, 200, 30+parent.index*30, text, table, value)
-	elseif type == "group" then
-		T.createbuttongroup(parent, 450, 200, 30+parent.index*30, text, table, value, group, order)
-	elseif type == "editbox" then
-		T.createeditbox(parent, 200, 30+parent.index*30, text, table, value)
-		parent[value]:SetText(G.links[text])
-		parent[value]:SetWidth(400)
-		parent[value]:SetScript("OnEditFocusGained", function(self)
-			self:HighlightText()
-		end)
-		parent[value]:SetScript("OnEditFocusLost", function(self)
-			self:HighlightText(0,0)
-		end)
-		parent[value].name:SetTextColor(G.Ccolor.r, G.Ccolor.g, G.Ccolor.b)
-	end
-	parent.index = parent.index + 1
-end
-
 --====================================================--
 --[[           -- 欢迎使用 和 简介 --               ]]--
 --====================================================--
@@ -201,24 +181,26 @@ end)
 --====================================================--
 
 CreateTutorialsStepFrame(L["界面风格"], L["界面风格tip"])
-CreateOptions(TutorialsFrame[3], "group", true, "SkinOptions", "style", {L["透明样式"],L["深色样式"],L["普通样式"]})
 
-for i = 1, 3 do
-	TutorialsFrame[3]["style"][i]:HookScript("OnClick", function()
-		G.BGFrame.Apply()
-		T.ApplyUFSettings({"Castbar", "Swing", "Health", "Power", "HealthPrediction"})
-	end)
+TutorialsFrame[3].style = T.ButtonGroup(TutorialsFrame[3], 450, 200, 30, {
+	{1, L["透明样式"]},
+	{2, L["深色样式"]},
+	{3, L["普通样式"]},
+})
+
+TutorialsFrame[3].style.apply = function(key)
+	aCoreCDB["SkinOptions"]["style"] = key
+	G.BGFrame.Apply()
+	T.ApplyUFSettings({"Castbar", "Swing", "Health", "Power", "HealthPrediction"})
 end
-
 
 --====================================================--
 --[[               -- 界面布局 --                   ]]--
 --====================================================--
 
 CreateTutorialsStepFrame(L["界面布局"], L["界面布局tip"])
-CreateOptions(TutorialsFrame[4], "group", false, nil, "layout", {L["默认布局"],L["极简布局"],L["聚合布局"]})
 
-Default_Layout = {
+local Default_Layout = {
 	frames = {
 		{
 			f = "oUF_AltzPlayer",
@@ -321,15 +303,10 @@ Default_Layout = {
 			db_v = "focus_cbwidth",
 			value = 230,	
 		},
-		{
-			db_t = "UnitframeOptions", 
-			db_v = "raidmanabars",
-			value = true,	
-		},
 	},
 }
 
-Simplicity_Layout = {
+local Simplicity_Layout = {
 	frames = {
 		{
 			f = "oUF_AltzPlayer",
@@ -432,15 +409,10 @@ Simplicity_Layout = {
 			db_v = "focus_cbwidth",
 			value = 190,
 		},
-		{
-			db_t = "UnitframeOptions", 
-			db_v = "raidmanabars",
-			value = false,
-		},
 	},
 }
 
-Centralized_Layout = {
+local Centralized_Layout = {
 	frames = {
 		{
 			f = "oUF_AltzPlayer",
@@ -543,11 +515,6 @@ Centralized_Layout = {
 			db_v = "focus_cbwidth",
 			value = 230,
 		},
-		{
-			db_t = "UnitframeOptions", 
-			db_v = "raidmanabars",
-			value = true,
-		},
 	},
 }
 
@@ -560,63 +527,63 @@ local ApplySizeAndPostions = function(group)
 		aCoreCDB["FramePoints"][t.f][role]["a2"] = t.a2
 		aCoreCDB["FramePoints"][t.f][role]["x"] = t.x
 		aCoreCDB["FramePoints"][t.f][role]["y"] = t.y
-		
 		T.PlaceFrame(_G[t.f])
 	end
 	-- 选项
 	for i, t in pairs(group.options) do
 		aCoreCDB[t.db_t][t.db_v] = t.value
 	end
+end
+
+TutorialsFrame[4].layout = T.ButtonGroup(TutorialsFrame[4], 450, 200, 30, {
+	{1, L["默认布局"]},
+	{2, L["极简布局"]},
+	{3, L["聚合布局"]},
+})
+
+TutorialsFrame[4].layout.apply = function(key)
+	if key == 1 then
+		ApplySizeAndPostions(Default_Layout)
+	elseif key == 2 then
+		ApplySizeAndPostions(Simplicity_Layout)
+	elseif key == 3 then
+		ApplySizeAndPostions(Centralized_Layout)
+	end
 	G.BGFrame.Apply()
 	T.ApplyUFSettings({"Health", "Power", "Auras", "Castbar", "ClassPower", "Runes", "Stagger", "Dpsmana", "PVPSpecIcon", "Trinket"})
 end
-
-TutorialsFrame[4]["layout"][1]:SetScript("OnClick", function() ApplySizeAndPostions(Default_Layout) end)
-TutorialsFrame[4]["layout"][2]:SetScript("OnClick", function() ApplySizeAndPostions(Simplicity_Layout) end)
-TutorialsFrame[4]["layout"][3]:SetScript("OnClick", function() ApplySizeAndPostions(Centralized_Layout) end)
-
-CreateOptions(TutorialsFrame[4], "group", false, nil, "unlock", {"unlock"})
-TutorialsFrame[4]["unlock"][1]:SetScript("OnClick", function(self)
-	G.SpecMover:SetScript("OnHide", function()
-		TutorialsFrame:Show()
-		G.SpecMover:SetScript("OnHide", nil)
-	end)
-	TutorialsFrame:Hide()
-	T.UnlockAll()
-end)
-TutorialsFrame[4]["unlock"][1]:SetScript("OnShow", function(self) self:SetText(L["解锁框体"]) end)
-
 --====================================================--
 --[[               -- 姓名板 --                   ]]--
 --====================================================--
+
 CreateTutorialsStepFrame(UNIT_NAMEPLATES, L["姓名板tip"])
-local plate_theme_group = {
-	["class"] = L["职业色-条形"],
-	["dark"] =  L["深色-条形"],
-	["number"] =  L["数字样式"],
-}
-CreateOptions(TutorialsFrame[5], "group", true, "PlateOptions", "theme", plate_theme_group)
-for k, text in pairs(plate_theme_group) do
-	TutorialsFrame[5]["theme"][k]:HookScript("OnClick", function()
-		T.ApplyUFSettings({"Health", "Power", "Castbar", "Auras", "ClassPower", "Runes", "Tag_Name"}, 'Altz_Nameplates')	
-		T.PostUpdateAllPlates()
-	end)
+
+TutorialsFrame[5].theme = T.ButtonGroup(TutorialsFrame[5], 450, 200, 30, {
+	{"class", L["职业色-条形"]},
+	{"dark", L["深色-条形"]},
+	{"number", L["数字样式"]},
+})
+
+TutorialsFrame[5].theme.apply = function(key)
+	aCoreCDB["PlateOptions"]["theme"] = key
+	T.ApplyUFSettings({"Health", "Power", "Castbar", "Auras", "ClassPower", "Runes", "Tag_Name"}, 'Altz_Nameplates')	
+	T.PostUpdateAllPlates()
 end
 
-CreateOptions(TutorialsFrame[5], "check", T.split_words(L["显示"],PLAYER,UNIT_NAMEPLATES), "PlateOptions", "playerplate")
-TutorialsFrame[5]["playerplate"]:HookScript("OnClick", function()
+T.Checkbutton_db(TutorialsFrame[5], 450, 200, 60, T.split_words(L["显示"],PLAYER,UNIT_NAMEPLATES), "playerplate")
+TutorialsFrame[5].apply = function()
 	if aCoreCDB["PlateOptions"]["playerplate"] then
 		SetCVar("nameplateShowSelf", 1)
 	else
 		SetCVar("nameplateShowSelf", 0)
 	end
 	T.PostUpdateAllPlates()
-end)
+end
 
 --====================================================--
 --[[               -- 快捷指令 --                   ]]--
 --====================================================--
-CreateTutorialsStepFrame(L["命令"], format(L["指令"], G.classcolor, G.classcolor, G.classcolor, G.classcolor, G.classcolor, G.classcolor))
+CreateTutorialsStepFrame(L["命令"], L["指令"])
 
 --====================================================--
 --[[               -- 更新日志 --                   ]]--
