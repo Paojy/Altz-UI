@@ -70,7 +70,7 @@ ResetButton:RegisterForClicks("AnyDown")
 local function ShowMoneyTooltip()
 	GameTooltip:SetOwner(Gold, "ANCHOR_TOPLEFT")
 	GameTooltip:SetPoint("BOTTOMLEFT", _G[G.uiname.."bag"], "TOPLEFT", -1, 2)
-	GameTooltip:AddLine(L["本次登陆"]..": ", G.Ccolor.r, G.Ccolor.g, G.Ccolor.b)
+	GameTooltip:AddLine(L["本次登陆"]..": ", unpack(G.addon_color))
 	GameTooltip:AddDoubleLine(L["赚得"], formatMoney(Profit), 1, 1, 1, 1, 1, 1)
 	GameTooltip:AddDoubleLine(L["消费"], formatMoney(Spent), 1, 1, 1, 1, 1, 1)
 	if Profit < Spent then
@@ -80,19 +80,19 @@ local function ShowMoneyTooltip()
 	end				
 	GameTooltip:AddLine(" ")
 	local totalGold = 0				
-	GameTooltip:AddLine(L["角色"]..": ", G.Ccolor.r, G.Ccolor.g, G.Ccolor.b)
+	GameTooltip:AddLine(L["角色"]..": ", unpack(G.addon_color))
 	for k,v in pairs(aCoreDB.gold[G.PlayerRealm]) do
 		GameTooltip:AddDoubleLine(k, FormatTooltipMoney(v), 1, 1, 1, 1, 1, 1)
 		totalGold = totalGold + v
 	end 
 	GameTooltip:AddLine(" ")
-	GameTooltip:AddLine(L["服务器"]..": ", G.Ccolor.r, G.Ccolor.g, G.Ccolor.b)
+	GameTooltip:AddLine(L["服务器"]..": ", unpack(G.addon_color))
 	GameTooltip:AddDoubleLine(TOTAL..": ", FormatTooltipMoney(totalGold), 1, 1, 1, 1, 1, 1)
 	for i = 1, 3 do
 		local name, count, extraCurrencyType, icon, itemID = C_CurrencyInfo.GetBackpackCurrencyInfo(i)
 		if name and i == 1 then
 			GameTooltip:AddLine(" ")
-			GameTooltip:AddLine(CURRENCY, G.Ccolor.r, G.Ccolor.g, G.Ccolor.b)
+			GameTooltip:AddLine(CURRENCY,unpack(G.addon_color))
 		end
 		local r, g, b = 1 ,1 ,1
 		if itemID then r, g, b = GetItemQualityColor(select(3, GetItemInfo(itemID))) end

@@ -1,6 +1,9 @@
 ﻿local T, C, L, G = unpack(select(2, ...))
 
+G.dragFrameList = {}
+
 local CurrentFrame, CurrentRole = "NONE"
+
 local anchors = {
 	{"CENTER", L["中间"]},
 	{"LEFT", L["左"]},
@@ -56,7 +59,7 @@ end
 
 local function DisplayCurrentFramePoint()
 	if CurrentFrame == "NONE" then
-		SpecMover.curframe:SetText(L["选中的框体"].." "..G.classcolor.."NONE|r")
+		SpecMover.curframe:SetText(L["选中的框体"].." "..T.color_text("NONE"))
 		
 		UIDropDownMenu_DisableDropDown(SpecMover.a1box)
 		UIDropDownMenu_DisableDropDown(SpecMover.a2box)
@@ -72,7 +75,7 @@ local function DisplayCurrentFramePoint()
 		SpecMover.ybox:SetText("")
 	else
 		local frame = _G[CurrentFrame]
-		SpecMover.curframe:SetText(L["选中的框体"].." "..G.classcolor..gsub(frame.movingname, "\n", "").."|r")
+		SpecMover.curframe:SetText(L["选中的框体"].." "..T.color_text(gsub(frame.movingname, "\n", "")))
 		
 		UIDropDownMenu_EnableDropDown(SpecMover.a1box)
 		UIDropDownMenu_EnableDropDown(SpecMover.a2box)
@@ -104,7 +107,7 @@ local UnlockAll = function()
 		DisplayCurrentFramePoint()
 	else
 		SpecMover:RegisterEvent("PLAYER_REGEN_ENABLED")
-		print(G.classcolor..L["进入战斗锁定"].."|r")
+		print(T.color_text(L["进入战斗锁定"]))
 	end
 end
 T.UnlockAll = UnlockAll
@@ -363,7 +366,7 @@ SpecMover:EnableMouse(true)
 SpecMover.backdrop = T.createBackdrop(SpecMover, .5)
 T.setStripeBg(SpecMover.backdrop)
 
-SpecMover.reset_all = T.createclicktexbutton(SpecMover, {"TOPRIGHT", SpecMover, "TOPRIGHT", -3, -3}, [[Interface\AddOns\AltzUI\media\icons\refresh.tga]], L["重置"])
+SpecMover.reset_all = T.ClickTexButton(SpecMover, {"TOPRIGHT", SpecMover, "TOPRIGHT", -3, -3}, [[Interface\AddOns\AltzUI\media\icons\refresh.tga]], L["重置"])
 SpecMover.reset_all:SetScript("OnClick", function()
 	StaticPopupDialogs[G.uiname.."Reset Confirm"].text = string.format(L["重置确认"], L["框体位置"])
 	StaticPopupDialogs[G.uiname.."Reset Confirm"].OnAccept = T.ResetAllFramesPoint
@@ -372,7 +375,7 @@ end)
 
 SpecMover.title = T.createtext(SpecMover, "OVERLAY", 16, "OUTLINE", "CENTER")
 SpecMover.title:SetPoint("TOP", SpecMover, "TOP", 0, -2)
-SpecMover.title:SetText(G.classcolor..L["界面移动工具"].."|r")
+SpecMover.title:SetText(T.color_text(L["界面移动工具"]))
 
 SpecMover.curmode = T.createtext(SpecMover, "OVERLAY", 12, "OUTLINE", "LEFT")
 SpecMover.curmode:SetPoint("TOPLEFT", SpecMover, "TOPLEFT", 10, -15)
@@ -423,7 +426,7 @@ SpecMover:SetScript("OnEvent", function(self, event, arg1)
 	elseif event == "PLAYER_REGEN_DISABLED" then
 		if SpecMover:IsShown() then
 			LockAll()
-			print(G.classcolor..L["进入战斗锁定"].."|r")
+			print(T.color_text(L["进入战斗锁定"]))
 		end
 	elseif event == "PLAYER_REGEN_ENABLED" then
 		UnlockAll()

@@ -7,28 +7,35 @@ ns[3] = {} -- L, localization
 ns[4] = {} -- G, globals (Optionnal)
 
 AltzUI = ns
---[[--------------
--- init --
---------------]]--
 
 local T, C, L, G = unpack(select(2, ...))
 
+--====================================================--
+--[[                 -- Globals --                   ]]--
+--====================================================--
 G.uiname = "AltzUI_"
+G.Client = GetLocale()
+G.Version = C_AddOns.GetAddOnMetadata("AltzUI", "Version")
 
-G.addon_color = {1, 0, 0}
-G.addon_colorStr = "|cffff0000"
+G.PlayerRealm = GetRealmName()
+G.PlayerName = UnitName("player")
+G.myClass = select(2, UnitClass("player"))
 
-G.dragFrameList = {}
-
+G.links = {
+	GitHub = "github.com/Paojy/Altz-UI",
+	WoWInterface = "www.wowinterface.com/downloads/info21263-AltzUIforShadowlands.html",
+	Curse = "www.curseforge.com/wow/addons",
+}
+--====================================================--
+--[[                  -- Media --                   ]]--
+--====================================================--
 G.norFont = "Interface\\AddOns\\AltzUI\\media\\font.ttf"
 G.numFont = "Interface\\AddOns\\AltzUI\\media\\number.ttf"
 G.symbols = "Interface\\Addons\\AltzUI\\media\\PIZZADUDEBULLETS.ttf"
 G.plateFont = "Interface\\AddOns\\AltzUI\\media\\Infinity Gears.ttf"
-
-G.combatFont = {}
-for i = 1, 3 do
-	G.combatFont["combat"..i] = "Interface\\AddOns\\AltzUI\\media\\combat"..i..".ttf"
-end
+G.combatFont1 = "Interface\\AddOns\\AltzUI\\media\\combat1.ttf"
+G.combatFont2 = "Interface\\AddOns\\AltzUI\\media\\combat2.ttf"
+G.combatFont3 = "Interface\\AddOns\\AltzUI\\media\\combat3.ttf"
 
 G.media = {
 	blank = "Interface\\Buttons\\WHITE8x8",
@@ -44,56 +51,22 @@ LSM.MediaTable.border["AltzUI_glow"]					= [[Interface\AddOns\AltzUI\media\glow]
 LSM.MediaTable.statusbar["AltzUI_bar"]					= [[Interface\AddOns\AltzUI\media\statusbar]]
 LSM.MediaTable.statusbar["AltzUI_ufbar"]				= [[Interface\AddOns\AltzUI\media\ufbar]]
 
-G.Iconpath = "Interface\\AddOns\\AltzUI\\media\\icons\\"
-
-G.Client = GetLocale()
-G.Version = C_AddOns.GetAddOnMetadata("AltzUI", "Version")
-
-G.PlayerRealm = GetRealmName()
-G.PlayerName = UnitName("player");
-
-local width, height = GetPhysicalScreenSize();
-local renderScale = GetCVar("RenderScale")
-G.screenheight = tonumber(math.floor(height * renderScale))
-G.screenwidth = tonumber(math.floor(width * renderScale))
-
-G.myClass = select(2, UnitClass("player"))
-
-G.Ccolor = {}
-if(IsAddOnLoaded'!ClassColors' and CUSTOM_CLASS_COLORS) then
-	G.Ccolor = CUSTOM_CLASS_COLORS[G.myClass]
+--====================================================--
+--[[                  -- Color --                   ]]--
+--====================================================--
+G.ClassColors = {}
+if IsAddOnLoaded'!ClassColors' and CUSTOM_CLASS_COLORS then
+	G.ClassColors = CUSTOM_CLASS_COLORS
 else
-	G.Ccolor = RAID_CLASS_COLORS[G.myClass]
+	G.ClassColors = RAID_CLASS_COLORS
 end
 
-G.Ccolors = {}
-if(IsAddOnLoaded'!ClassColors' and CUSTOM_CLASS_COLORS) then
-	G.Ccolors = CUSTOM_CLASS_COLORS
-else
-	G.Ccolors = RAID_CLASS_COLORS
-end
+G.addon_color = {G.ClassColors[G.myClass].r, G.ClassColors[G.myClass].g, G.ClassColors[G.myClass].b}
+G.addon_colorStr = "|c"..G.ClassColors[G.myClass].colorStr
 
-G.classcolor = ('|cff%02x%02x%02x'):format(G.Ccolor.r * 255, G.Ccolor.g * 255, G.Ccolor.b * 255)
-
-BACKDROP_ALTZ_3 = {
-	bgFile = "Interface\\ChatFrame\\ChatFrameBackground",
-	edgeFile = "Interface\\AddOns\\AltzUI\\media\\glow",
-	edgeSize = 3,
-	insets = { left = 3, right = 3, top = 3, bottom = 3 },
-}
-
-BACKDROP_ALTZ_COLOR_0	= CreateColor(0, 0, 0, 1)
-BACKDROP_ALTZ_COLOR_15	= CreateColor(.15, .15, .15, 1)
-
-G.links = {
-	GitHub = "github.com/Paojy/Altz-UI",
-	WoWInterface = "www.wowinterface.com/downloads/info21263-AltzUIforShadowlands.html",
-	Curse = "www.curseforge.com/wow/addons",
-}
-
--------------------------------------------------
---				   Callbacks				   --
--------------------------------------------------
+--====================================================--
+--[[                -- Callbacks --                 ]]--
+--====================================================--
 G.Init_callbacks = {}
 T.RegisterInitCallback = function(func)
 	table.insert(G.Init_callbacks, func)

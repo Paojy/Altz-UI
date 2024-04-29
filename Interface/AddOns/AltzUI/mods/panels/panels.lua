@@ -1,5 +1,10 @@
 ﻿local T, C, L, G = unpack(select(2, ...))
 
+local width, height = GetPhysicalScreenSize();
+local renderScale = GetCVar("RenderScale")
+local screenheight = tonumber(math.floor(height * renderScale))
+local screenwidth = tonumber(math.floor(width * renderScale))
+
 --====================================================--
 --[[                 -- Panels --                   ]]--
 --====================================================--
@@ -35,7 +40,7 @@ CreateLongPanel("BOTTOM")
 local function CreateShortPanel(pos)
 	local panel = CreateFrame("Frame", G.uiname..pos.."short panel", BGFrame)
 	panel:SetFrameLevel(2)
-	panel:SetSize(G.screenwidth/6, 5)
+	panel:SetSize(screenwidth/6, 5)
 	
 	local x_offset = string.find(pos, "LEFT") and 12 or -12
 	local y_offset = string.find(pos, "TOP") and -9 or 9
@@ -46,7 +51,7 @@ local function CreateShortPanel(pos)
 	panel.tex = panel:CreateTexture(nil, "ARTWORK")
 	panel.tex:SetAllPoints(panel)
 	panel.tex:SetTexture(G.media.ufbar)
-	panel.tex:SetVertexColor(G.Ccolor.r, G.Ccolor.g, G.Ccolor.b)
+	panel.tex:SetVertexColor(unpack(G.addon_color))
 	
 	BGFrame.shortpanels[pos] = panel
 end
@@ -71,7 +76,7 @@ BGFrame.Apply = function()
 	else
 		BGFrame.shortpanels.TOPLEFT:Hide()
 		BGFrame.shortpanels.TOPRIGHT:Hide()
-		BGFrame.longpanels.TOP.backdrop:SetBackdropBorderColor(G.Ccolor.r, G.Ccolor.g, G.Ccolor.b)
+		BGFrame.longpanels.TOP.backdrop:SetBackdropBorderColor(unpack(G.addon_color))
 	end
 	
 	-- 下方材质
@@ -88,7 +93,7 @@ BGFrame.Apply = function()
 	else
 		BGFrame.shortpanels.BOTTOMLEFT:Hide()
 		BGFrame.shortpanels.BOTTOMRIGHT:Hide()
-		BGFrame.longpanels.BOTTOM.backdrop:SetBackdropBorderColor(G.Ccolor.r, G.Ccolor.g, G.Ccolor.b)
+		BGFrame.longpanels.BOTTOM.backdrop:SetBackdropBorderColor(unpack(G.addon_color))
 	end
 	
 	-- 材质颜色
@@ -141,7 +146,7 @@ Minimap:SetScript('OnMouseUp', function (self, button)
 		GameTooltip:Hide()
 		ToggleDropDownMenu(1, nil, MinimapCluster.TrackingFrame.DropDown, Minimap, (Minimap:GetWidth()+8), (Minimap:GetHeight()))
 		DropDownList1:ClearAllPoints()
-		if select(2, Minimap:GetCenter())/G.screenheight > .5 then -- In the upper part of the screen
+		if select(2, Minimap:GetCenter())/screenheight > .5 then -- In the upper part of the screen
 			DropDownList1:SetPoint("TOPRIGHT", Minimap, "BOTTOMRIGHT", 0, -8)
 		else
 			DropDownList1:SetPoint("BOTTOMRIGHT", Minimap, "TOPRIGHT", 0, 8)
@@ -450,9 +455,9 @@ xpbar:SetScript("OnEnter", function()
 	local restXP = GetXPExhaustion()
 	
 	if UnitLevel("player") < MAX_PLAYER_LEVEL then
-		GameTooltip:AddDoubleLine(L["当前经验"], string.format("%s/%s (%d%%)", CommaValue(XP), CommaValue(maxXP), (XP/maxXP)*100), G.Ccolor.r, G.Ccolor.g, G.Ccolor.b, 1, 1, 1)
-		GameTooltip:AddDoubleLine(L["剩余经验"], string.format("%s", CommaValue(maxXP-XP)), G.Ccolor.r, G.Ccolor.g, G.Ccolor.b, 1, 1, 1)
-		if restXP then GameTooltip:AddDoubleLine(L["双倍"], string.format("|cffb3e1ff%s (%d%%)", CommaValue(restXP), restXP/maxXP*100), G.Ccolor.r, G.Ccolor.g, G.Ccolor.b) end
+		GameTooltip:AddDoubleLine(L["当前经验"], string.format("%s/%s (%d%%)", CommaValue(XP), CommaValue(maxXP), (XP/maxXP)*100), unpack(G.addon_color), 1, 1, 1)
+		GameTooltip:AddDoubleLine(L["剩余经验"], string.format("%s", CommaValue(maxXP-XP)), unpack(G.addon_color), 1, 1, 1)
+		if restXP then GameTooltip:AddDoubleLine(L["双倍"], string.format("|cffb3e1ff%s (%d%%)", CommaValue(restXP), restXP/maxXP*100), unpack(G.addon_color)) end
 	end
 	
 	GameTooltip:Show()
@@ -482,11 +487,11 @@ repbar:SetScript("OnEnter", function()
 			minrep, maxrep, valuerep = minRep, maxRep, value
 		end
 		
-		GameTooltip:AddLine(name..ranktext, G.Ccolor.r, G.Ccolor.g, G.Ccolor.b)
+		GameTooltip:AddLine(name..ranktext, unpack(G.addon_color))
 		
 		if maxrep and maxrep > valuerep then
-			GameTooltip:AddDoubleLine(L["声望"], string.format("%s/%s (%d%%)", CommaValue(valuerep-minrep), CommaValue(maxrep-minrep), (valuerep-minrep)/(maxrep-minrep)*100), G.Ccolor.r, G.Ccolor.g, G.Ccolor.b, 1, 1, 1)
-			GameTooltip:AddDoubleLine(L["剩余声望"], string.format("%s", CommaValue(maxrep-valuerep)), G.Ccolor.r, G.Ccolor.g, G.Ccolor.b, 1, 1, 1)
+			GameTooltip:AddDoubleLine(L["声望"], string.format("%s/%s (%d%%)", CommaValue(valuerep-minrep), CommaValue(maxrep-minrep), (valuerep-minrep)/(maxrep-minrep)*100), unpack(G.addon_color), 1, 1, 1)
+			GameTooltip:AddDoubleLine(L["剩余声望"], string.format("%s", CommaValue(maxrep-valuerep)), unpack(G.addon_color), 1, 1, 1)
 		end
 	end	
 	
@@ -585,7 +590,7 @@ for i, name in pairs(MICRO_BUTTONS) do
 	
 	if tex.normal then
 		tex.normal:SetDesaturated(true)
-		tex.normal:SetVertexColor(G.Ccolor.r, G.Ccolor.g, G.Ccolor.b)	
+		tex.normal:SetVertexColor(unpack(G.addon_color))	
 	end
 end
 
@@ -703,7 +708,7 @@ Durability:SetScript("OnMouseDown", function(self)
 		UpdateEquipSetsList()
 		EasyMenu(EquipSetsList, EquipSetsMenu, "cursor", 0, 0, "MENU", 2)
 		DropDownList1:ClearAllPoints()
-		if select(2, InfoFrame:GetCenter())/G.screenheight > .5 then -- In the upper part of the screen
+		if select(2, InfoFrame:GetCenter())/screenheight > .5 then -- In the upper part of the screen
 			DropDownList1:SetPoint("TOPLEFT", self, "BOTTOMLEFT", -5, -5)
 		else
 			DropDownList1:SetPoint("BOTTOMLEFT", self, "TOPLEFT", -5, 5)
@@ -715,7 +720,7 @@ Durability:SetScript("OnEvent", function(self, event)
 	if event == "PLAYER_ENTERING_WORLD" then
 		self:UnregisterEvent("PLAYER_ENTERING_WORLD")
 	end
-		self.text:SetText(format("%d"..G.classcolor.."dur|r", GetLowestDurability()*100))
+		self.text:SetText(format("%d"..T.color_text("dur"), GetLowestDurability()*100))
 end)
 
 Durability:RegisterEvent("UPDATE_INVENTORY_DURABILITY")
@@ -728,8 +733,8 @@ Net_Stats.t = 0
 Net_Stats:SetScript("OnUpdate", function(self, elapsed)
 	self.t = self.t + elapsed
 	if self.t > 3 then -- 每秒刷新一次
-		fps = format("%d"..G.classcolor.."fps|r", GetFramerate())
-		lag = format("%d"..G.classcolor.."ms|r", select(4, GetNetStats()))	
+		fps = format("%d"..T.color_text("fps"), GetFramerate())
+		lag = format("%d"..T.color_text("ms"), select(4, GetNetStats()))	
 		self.text:SetText(fps.."  "..lag)
 		self.t = 0
 	end
@@ -744,7 +749,7 @@ end
 Net_Stats:SetScript("OnEnter", function(self)
 	GameTooltip:SetOwner(self, "ANCHOR_NONE")
 	
-	if select(2, InfoFrame:GetCenter())/G.screenheight > .5 then -- In the upper part of the screen
+	if select(2, InfoFrame:GetCenter())/screenheight > .5 then -- In the upper part of the screen
 		GameTooltip:SetPoint("TOP", InfoFrame, "BOTTOM", 0, -5)
 	else
 		GameTooltip:SetPoint("BOTTOM", InfoFrame, "TOP", 0, 5)
@@ -780,7 +785,7 @@ Net_Stats:SetScript("OnEnter", function(self)
 	local bandwidthIn, bandwidthOut, latencyHome, latencyWorld = GetNetStats()
 	
 	if ( totalMem > 0 ) then
-		GameTooltip:AddLine(format(L["占用前 %d 的插件"], min(NUM_ADDONS_TO_DISPLAY,GetNumAddOns())), G.Ccolor.r, G.Ccolor.g, G.Ccolor.b)
+		GameTooltip:AddLine(format(L["占用前 %d 的插件"], min(NUM_ADDONS_TO_DISPLAY,GetNumAddOns())), unpack(G.addon_color))
 		GameTooltip:AddLine(" ")
 		
 		for i=1, NUM_ADDONS_TO_DISPLAY, 1 do
@@ -860,9 +865,9 @@ Talent:SetScript("OnEvent", function(self, event)
 		
 		if specName then
 			if Loot_specName then
-				self.text:SetText(format(G.classcolor.."%s ("..SELECT_LOOT_SPECIALIZATION.." %s)|r", specName, Loot_specName))
+				self.text:SetText(format(T.color_text("%s (%s %s)"), specName, SELECT_LOOT_SPECIALIZATION, Loot_specName))
 			else
-				self.text:SetText(format(G.classcolor.."%s|r", specName))
+				self.text:SetText(T.color_text(specName))
 			end
 			
 			SpecList[2]["disabled"] = false
@@ -912,7 +917,7 @@ Talent:SetScript("OnEvent", function(self, event)
 	else
 		SpecList[2]["disabled"] = true
 		SpecList[3]["disabled"] = true
-		self.text:SetText(G.classcolor.."No Talents|r")
+		self.text:SetText(T.color_text("No Talents"))
 	end
 end)
 
@@ -1196,7 +1201,7 @@ raidmark.point = {
 	healer = {a1 = "TOP", parent = "UIParent", a2 = "TOP", x = 0, y = -50},
 	dpser = {a1 = "TOP", parent = "UIParent", a2 = "TOP", x = 0, y = -50},
 }
-T.CreateDragFrame(raidmark) --frame, dragFrameList, inset, clamp
+T.CreateDragFrame(raidmark)
 raidmark:SetWidth(290)
 raidmark:SetHeight(25)
 	

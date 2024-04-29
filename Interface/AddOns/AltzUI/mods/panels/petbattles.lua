@@ -311,7 +311,7 @@ end)
 
 -- [[ Buttons ]]
 
-local r, g, b = unpack(G.Ccolor)
+local r, g, b = unpack(G.addon_color)
 
 local function stylePetBattleButton(bu)
 	if bu.reskinned then return end
