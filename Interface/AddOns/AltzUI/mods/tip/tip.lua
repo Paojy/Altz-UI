@@ -57,17 +57,17 @@ local function UpdateGameTooltipStatusBar()
 	GameTooltipStatusBar:SetStatusBarTexture("Interface\\Buttons\\WHITE8x8")
 	T.createBackdrop(GameTooltipStatusBar, 1)
 	
+	GameTooltipStatusBar.text = T.createtext(GameTooltipStatusBar, "OVERLAY", 12, "OUTLINE", "CENTER")
+	GameTooltipStatusBar.text:SetPoint("BOTTOM", GameTooltipStatusBar, "BOTTOM", 0, 0)
+
 	GameTooltipStatusBar:SetScript("OnValueChanged", function(self, value)
 		if not value then return end
 		local min, max = self:GetMinMaxValues()
 		if (value < min) or (value > max) then return end
 		local _, unit = GameTooltip:GetUnit()
+		
 		if unit then
 			min, max = UnitHealth(unit), UnitHealthMax(unit)
-			if not self.text then
-				self.text = T.createtext(self, "OVERLAY", 12, "OUTLINE", "CENTER")
-				self.text:SetPoint("BOTTOM", self, "BOTTOM", 0, 0)
-			end
 			local hp = T.ShortValue(min).." / "..T.ShortValue(max)
 			self.text:SetText(hp)
 			self.text:Show()
