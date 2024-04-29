@@ -6,7 +6,7 @@ TotemBar.point = {
 	healer = {a1 = "BOTTOMLEFT", parent = "UIParent", a2 = "BOTTOMLEFT", x = 10, y = 270},
 	dpser = {a1 = "BOTTOMLEFT", parent = "UIParent", a2 = "BOTTOMLEFT", x = 10, y = 270},
 }
-T.CreateDragFrame(TotemBar) --frame, dragFrameList, inset, clamp
+T.CreateDragFrame(TotemBar)
 
 for i=1, MAX_TOTEMS do
 	local TotemBu = CreateFrame("Button", TotemBar:GetName().."Totem"..i, TotemBar)
