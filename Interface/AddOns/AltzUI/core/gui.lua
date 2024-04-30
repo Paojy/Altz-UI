@@ -180,6 +180,7 @@ GUI.export:SetScript("OnClick", function()
 	end
 end)
 T.SetupArrow(GUI.export.tex, "down")
+T.SetupArrow(GUI.export.hl_tex, "down")
 
 GUI.import = T.ClickTexButton(GUI, {"LEFT", GUI.export, "RIGHT", 2, 0}, [[Interface\AddOns\AltzUI\media\arrow.tga]], L["导入"], 20)
 GUI.import:SetScript("OnClick", function()	
@@ -197,6 +198,7 @@ GUI.import:SetScript("OnClick", function()
 	end
 end)
 T.SetupArrow(GUI.import.tex, "up")
+T.SetupArrow(GUI.import.hl_tex, "up")
 
 GUI.reset = T.ClickTexButton(GUI, {"LEFT", GUI.import, "RIGHT", 2, 0}, [[Interface\AddOns\AltzUI\media\icons\refresh.tga]], L["重置"])
 GUI.reset:SetScript("OnClick", function()
@@ -455,7 +457,7 @@ CreateDividingLine(SInnerframe.layout, -150)
 
 T.Checkbutton_db(SInnerframe.layout, 30, 170, L["在副本中收起任务追踪"], "collapseWF", L["在副本中收起任务追踪提示"])
 T.Checkbutton_db(SInnerframe.layout, 30, 200, L["暂离屏幕"], "afkscreen", L["暂离屏幕"])
-T.Checkbutton_db(SInnerframe.layout, 30, 230, L["显示插件使用小提示"], "showAFKtips", L["显示插件使用小提示提示"])
+T.Checkbutton_db(SInnerframe.layout, 50, 230, L["显示插件使用小提示"], "showAFKtips", L["显示插件使用小提示提示"])
 T.createDR(SInnerframe.layout.afkscreen, SInnerframe.layout.showAFKtips)
 --====================================================--
 --[[              -- Chat Options --                ]]--
@@ -1067,15 +1069,7 @@ local function UpdateClickCast(bu_tag, mod_ind)
 end
 
 local function CreateMacroEditBox(macro_input, frame, bu_tag, mod_ind)
-	macro_input.expand_bu = T.ClickTexButton(macro_input, {"LEFT", macro_input, "RIGHT", 0, 0}, [[Interface\AddOns\AltzUI\media\icons\EJ.tga]], nil, 20)		
-	macro_input.expand_bu:SetScript("OnEnter", function(self)	
-		GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-		GameTooltip:AddLine(EDIT)
-		GameTooltip:Show()
-	end)
-	macro_input.expand_bu:SetScript("OnLeave", function()
-		GameTooltip:Hide()
-	end)
+	macro_input.expand_bu = T.ClickTexButton(macro_input, {"LEFT", macro_input, "RIGHT", 0, 0}, [[Interface\AddOns\AltzUI\media\icons\EJ.tga]], nil, 20, EDIT)		
 	
 	local macro_box = T.EditboxMultiLine(macro_input, nil, 150)
 	macro_box.bg:SetBackdropColor(0, 0, 0, 1)
@@ -1188,11 +1182,13 @@ local function CreateClickcastKeyOptions(bu_tag, text)
 		frame.options[mod_ind].spell_select = spell_select
 		
 		-- 物品
-		local item_input = T.EditboxWithText(frame, {"LEFT", action_select, "RIGHT", -8, 2}, L["物品名称ID链接"], 140, true)
+		local item_input = T.EditboxWithText(frame, {"LEFT", action_select, "RIGHT", -14, 2}, L["物品名称ID链接"], 140, true)
+		
 		item_input:SetScript("OnShow", function(self)
 			local itemName = GetClickcastValue(bu_tag, mod_ind, "item")
 			self:SetText(itemName)
 		end)
+		
 		function item_input:apply()
 			local itemText = self:GetText()
 			local itemID = GetItemInfoInstant(itemText)
@@ -1211,7 +1207,7 @@ local function CreateClickcastKeyOptions(bu_tag, text)
 		frame.options[mod_ind].item_input = item_input
 		
 		-- 宏
-		local macro_input = T.EditboxWithText(frame, {"LEFT", action_select, "RIGHT", -8, 2}, L["输入一个宏"], 140)
+		local macro_input = T.EditboxWithText(frame, {"LEFT", action_select, "RIGHT", -14, 2}, L["输入一个宏"], 140)
 		CreateMacroEditBox(macro_input, frame, bu_tag, mod_ind)
 		
 		macro_input:SetScript("OnShow", function(self)
@@ -1479,6 +1475,8 @@ do
 	-- 返回
 	option_list.back = T.ClickTexButton(option_list, {"LEFT", parent.title, "RIGHT", 270, 0}, [[Interface\AddOns\AltzUI\media\refresh.tga]], BACK)
 	T.SetupArrow(option_list.back.tex, "left")
+	T.SetupArrow(option_list.back.hl_tex, "left")
+	
 	option_list.back:SetScript("OnClick", function() 
 		option_list:Hide()
 		parent.instance_list:Show()
@@ -2148,13 +2146,13 @@ MinimapButton:RegisterForClicks("AnyDown")
 
 MinimapButton.icon = MinimapButton:CreateTexture(nil, "BORDER")
 MinimapButton.icon:SetTexture(348547)
-MinimapButton.icon:SetSize(20,20)
+MinimapButton.icon:SetSize(18,18)
 MinimapButton.icon:SetPoint("CENTER")
 MinimapButton.icon:SetTexCoord(.1, .9, .1, .9)
 
 MinimapButton.icon2 = MinimapButton:CreateTexture(nil, "BORDER")
 MinimapButton.icon2:SetTexture(348547)
-MinimapButton.icon2:SetSize(20,20)
+MinimapButton.icon2:SetSize(18,18)
 MinimapButton.icon2:SetPoint("CENTER")
 MinimapButton.icon2:SetTexCoord(.1, .9, .1, .9)
 MinimapButton.icon2:SetVertexColor(1, .5, .5, 1)
