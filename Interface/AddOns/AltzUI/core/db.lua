@@ -456,7 +456,6 @@ local HealerIndicatorAuraList = default_HealerIndicatorAuraList[G.myClass]
 ----          默认配置         ----
 -----------------------------------
 local Account_default_Settings = {
-	meet = false,
 	gold = {},
 }
 

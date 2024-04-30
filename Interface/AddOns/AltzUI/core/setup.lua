@@ -1,192 +1,112 @@
 ﻿local T, C, L, G = unpack(select(2, ...))
 
-local TutorialsFrame = CreateFrame("Frame", G.uiname.."TutorialsFrame", UIParent)
+local TutorialsFrame = CreateFrame("Frame", nil, UIParent)
 TutorialsFrame:SetFrameStrata("FULLSCREEN")
 TutorialsFrame:SetSize(700, 230)
 TutorialsFrame:SetPoint("CENTER")
-
-TutorialsFrame.bd = T.createBackdrop(TutorialsFrame, .5)
-T.setStripeBg(TutorialsFrame.bd)
-
-TutorialsFrame.step = 1
 TutorialsFrame:Hide()
 
-Model = {
-	{
-		height = TutorialsFrame:GetHeight(),
-		width = TutorialsFrame:GetWidth(),
-		points = {"CENTER", TutorialsFrame, "CENTER"},
-		displayinfo = 41039,
-		position = {-12.5, 0, -6.2},
-		camdistancescale = 0.7,
-	},
-	{
-		height = 400,
-		width = 400,
-		points = {"RIGHT", TutorialsFrame, "CENTER"},
-		displayinfo = 42522,
-		position = {-2, 0, 0},
-		camdistancescale = 0.7,
-	},
-	{
-		height = 400,
-		width = 400,
-		points = {"RIGHT", TutorialsFrame, "CENTER"},
-		displayinfo = 42522,
-		position = {-2, 0, 0},
-		camdistancescale = 0.7,
-	},
-	{
-		height = 400,
-		width = 400,
-		points = {"RIGHT", TutorialsFrame, "CENTER"},
-		displayinfo = 42522,
-		position = {-2, 0, 0},
-		camdistancescale = 0.7,
-	},
-	{
-		height = 400,
-		width = 400,
-		points = {"RIGHT", TutorialsFrame, "CENTER"},
-		displayinfo = 42522,
-		position = {-2, 0, 0},
-		camdistancescale = 0.7,
-	},
-	{
-		height = 400,
-		width = 400,
-		points = {"RIGHT", TutorialsFrame, "CENTER"},
-		displayinfo = 42522,
-		position = {-2, 0, 0},
-		camdistancescale = 0.7,
-	},
-	{
-		height = 400,
-		width = 400,
-		points = {"RIGHT", TutorialsFrame, "CENTER"},
-		displayinfo = 42522,
-		position = {-2, 0, 0},
-		camdistancescale = 0.7,
-	},
-	{
-		height = 400,
-		width = 400,
-		points = {"RIGHT", TutorialsFrame, "CENTER"},
-		displayinfo = 42522,
-		position = {-2, 0, 0},
-		camdistancescale = 0.7,
-	},
-	{
-		height = 400,
-		width = 400,
-		points = {"RIGHT", TutorialsFrame, "CENTER"},
-		displayinfo = 42522,
-		position = {-2, 0, 0},
-		camdistancescale = 0.7,
-	},
-}
+TutorialsFrame.backdrop = T.createBackdrop(TutorialsFrame, .5)
+T.setStripeBg(TutorialsFrame.backdrop)
 
+local step = 0
 local function CreateTutorialsStepFrame(title, text)
-	local step = TutorialsFrame.step
-	local frame = CreateFrame("Frame", G.uiname.."TutorialsStepFrame"..step, TutorialsFrame)
+	step = step + 1
+	
+	local frame = CreateFrame("Frame", nil, TutorialsFrame)
 	frame:SetAllPoints(TutorialsFrame)
 	frame:SetFrameLevel(2)
-	frame:Hide()
 	
-	frame.model = CreateFrame("PlayerModel", G.uiname.."TutorialsStepFrameModel"..step, frame)
-	frame.model:SetPoint(unpack(Model[step]["points"]))
-	frame.model:SetSize(Model[step]["width"], Model[step]["height"])
+	frame.index = step
+	
+	frame.model = CreateFrame("PlayerModel", nil, frame)
 	frame.model:SetFrameLevel(1)
-	frame.model:SetDisplayInfo(Model[step]["displayinfo"])
-	frame.model:SetCamDistanceScale(Model[step]["camdistancescale"])
-	frame.model:SetPosition(unpack(Model[step]["position"]))
+
+	local step_text = T.createtext(frame, "OVERLAY", 14, "NONE", "CENTER")
+	step_text:SetPoint("BOTTOM", frame, "BOTTOM", 0, 5)
+	frame.step_text = step_text
+	
+	local previous_step = T.ClickButton(frame, 100, {"BOTTOMLEFT", frame, "BOTTOMLEFT", 15, 5}, L["上一步"])
+	frame.previous_step = previous_step
+	
+	local next_step = T.ClickButton(frame, 100, {"BOTTOMRIGHT", frame, "BOTTOMRIGHT", -15, 5}, L["下一步"])
+	next_step:SetScript("OnClick", function(self)
+		frame:Hide()
+		TutorialsFrame[frame.index+1]:Show()
+	end)
+	frame.next_step = next_step
 	
 	if step == 1 then
 		frame.title = T.createtext(frame, "OVERLAY", 35, "NONE", "CENTER")
 		frame.title:SetPoint("BOTTOM", frame, "CENTER", 0, 50)
-
+		frame.title:SetText(title)
+		
 		frame.text = T.createtext(frame, "OVERLAY", 15, "NONE", "CENTER")
 		frame.text:SetPoint("TOP", frame.title, "BOTTOM", 0, -10)
+		frame.text:SetText(text)
 		
-		frame:SetScript("OnMouseDown", function()
-			frame:Hide()
-			TutorialsFrame[step+1]:Show()
+		frame.model:SetPoint("CENTER", TutorialsFrame, "CENTER")
+		frame.model:SetSize(700, 230)
+		frame.model:SetDisplayInfo(41039)
+		frame.model:SetCamDistanceScale(.7)
+		frame.model:SetPosition(-12.5, .2, -6.2)
+			
+		previous_step:SetScript("OnClick", function(self)
+			TutorialsFrame:Hide()
+			StaticPopup_Show(G.uiname.."Run Setup")
 		end)
 	else
 		frame.title = T.createtext(frame, "OVERLAY", 15, "NONE", "CENTER")
 		frame.title:SetPoint("TOP", frame, "TOP", 80, -5)
-
+		frame.title:SetText(title)
+		
 		frame.text = T.createtext(frame, "OVERLAY", 15, "NONE", "LEFT")
 		frame.text:SetPoint("TOPLEFT", frame, "TOP", -150, -40)
 		frame.text:SetSize(480, 150)
 		frame.text:SetJustifyV("TOP")
+		frame.text:SetText(text)
 		
-		local p_bu = CreateFrame("Button", G.uiname.."TutorialsStepFramePrevious", frame, "UIPanelButtonTemplate")
-		p_bu:SetPoint("BOTTOMLEFT", frame, "BOTTOMLEFT", 15, 5)
-		p_bu:SetSize(100, 25)
-		T.ReskinButton(p_bu)
+		frame.model:SetPoint("RIGHT", TutorialsFrame, "CENTER")
+		frame.model:SetSize(400, 400)
+		frame.model:SetDisplayInfo(42522)
+		frame.model:SetCamDistanceScale(.7)
+		frame.model:SetPosition(-2, 0, 0)
 		
-		p_bu:SetText(L["上一步"])
-		
-		p_bu:SetScript("OnClick", function() 
+		previous_step:SetScript("OnClick", function(self) 
 			frame:Hide()
-			TutorialsFrame[step-1]:Show()
-		end)
-		frame.p = p_bu
-		
-		local n_bu = CreateFrame("Button", G.uiname.."TutorialsStepFrameNext", frame, "UIPanelButtonTemplate")
-		n_bu:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -15, 5)
-		n_bu:SetSize(100, 25)
-		T.ReskinButton(n_bu)
-		
-		n_bu:SetText(L["下一步"])
-
-		n_bu:SetScript("OnClick", function()
-			frame:Hide()
-			TutorialsFrame[step+1]:Show()
-		end)
-		frame.n = n_bu
+			TutorialsFrame[frame.index-1]:Show()
+		end)	
 	end
-	
-	frame.title:SetText(title)
-	frame.text:SetText(text)
-	
-	frame.index = 1
-	TutorialsFrame[TutorialsFrame.step] = frame
-	TutorialsFrame.step = TutorialsFrame.step + 1
+
+	TutorialsFrame[step] = frame
 end
 
 --====================================================--
---[[           -- 欢迎使用 和 简介 --               ]]--
+--[[                -- 1 欢迎使用 --                ]]--
 --====================================================--
-
 CreateTutorialsStepFrame(L["欢迎使用"], "ver"..G.Version.." "..L["小泡泡"])
 
+--====================================================--
+--[[                  -- 2 简介 --                  ]]--
+--====================================================--
 CreateTutorialsStepFrame(L["欢迎使用"], L["简介"])
-local skip = CreateFrame("Button", G.uiname.."TutorialsSkip", TutorialsFrame[2], "UIPanelButtonTemplate")
-skip:SetPoint("BOTTOM", TutorialsFrame[2], "BOTTOM", 0, 5)
-skip:SetSize(120, 25)
-T.ReskinButton(skip)
 
-skip:SetText(L["跳过"])
-
-skip:SetScript("OnClick", function()
-	TutorialsFrame[2]:Hide()
-	TutorialsFrame:Hide()
-	StaticPopup_Show(G.uiname.."Run Setup")
-end)
-		
 --====================================================--
---[[               -- 界面风格 --                   ]]--
+--[[               -- 3 界面风格 --                   ]]--
 --====================================================--
-
 CreateTutorialsStepFrame(L["界面风格"], L["界面风格tip"])
 
-TutorialsFrame[3].style = T.ButtonGroup(TutorialsFrame[3], 450, 200, 30, {
+TutorialsFrame[3].style = T.ButtonGroup(TutorialsFrame[3], 450, 200, 60, {
 	{1, L["透明样式"]},
 	{2, L["深色样式"]},
 	{3, L["普通样式"]},
 })
+
+TutorialsFrame[3].style.pre_update = function()
+	for i, bu in pairs(TutorialsFrame[3].style.buttons) do
+		bu.selected = (aCoreCDB["SkinOptions"]["style"] == bu.value_key)
+	end
+end
 
 TutorialsFrame[3].style.apply = function(key)
 	aCoreCDB["SkinOptions"]["style"] = key
@@ -195,9 +115,8 @@ TutorialsFrame[3].style.apply = function(key)
 end
 
 --====================================================--
---[[               -- 界面布局 --                   ]]--
+--[[               -- 4 界面布局 --                 ]]--
 --====================================================--
-
 CreateTutorialsStepFrame(L["界面布局"], L["界面布局tip"])
 
 local Default_Layout = {
@@ -535,7 +454,7 @@ local ApplySizeAndPostions = function(group)
 	end
 end
 
-TutorialsFrame[4].layout = T.ButtonGroup(TutorialsFrame[4], 450, 200, 30, {
+TutorialsFrame[4].layout = T.ButtonGroup(TutorialsFrame[4], 450, 200, 60, {
 	{1, L["默认布局"]},
 	{2, L["极简布局"]},
 	{3, L["聚合布局"]},
@@ -553,16 +472,21 @@ TutorialsFrame[4].layout.apply = function(key)
 	T.ApplyUFSettings({"Health", "Power", "Auras", "Castbar", "ClassPower", "Runes", "Stagger", "Dpsmana", "PVPSpecIcon", "Trinket"})
 end
 --====================================================--
---[[               -- 姓名板 --                   ]]--
+--[[               -- 5 姓名板 --                   ]]--
 --====================================================--
-
 CreateTutorialsStepFrame(UNIT_NAMEPLATES, L["姓名板tip"])
 
-TutorialsFrame[5].theme = T.ButtonGroup(TutorialsFrame[5], 450, 200, 30, {
+TutorialsFrame[5].theme = T.ButtonGroup(TutorialsFrame[5], 450, 200, 60, {
 	{"class", L["职业色-条形"]},
 	{"dark", L["深色-条形"]},
 	{"number", L["数字样式"]},
 })
+
+TutorialsFrame[5].theme.pre_update = function()
+	for i, bu in pairs(TutorialsFrame[5].theme.buttons) do
+		bu.selected = (aCoreCDB["PlateOptions"]["theme"] == bu.value_key)
+	end
+end
 
 TutorialsFrame[5].theme.apply = function(key)
 	aCoreCDB["PlateOptions"]["theme"] = key
@@ -570,73 +494,55 @@ TutorialsFrame[5].theme.apply = function(key)
 	T.PostUpdateAllPlates()
 end
 
-T.Checkbutton_db(TutorialsFrame[5], 450, 200, 60, T.split_words(L["显示"],PLAYER,UNIT_NAMEPLATES), "playerplate")
-TutorialsFrame[5].apply = function()
-	if aCoreCDB["PlateOptions"]["playerplate"] then
-		SetCVar("nameplateShowSelf", 1)
-	else
-		SetCVar("nameplateShowSelf", 0)
-	end
-	T.PostUpdateAllPlates()
-end
-
 --====================================================--
---[[               -- 快捷指令 --                   ]]--
---====================================================--
-CreateTutorialsStepFrame(L["命令"], L["指令"])
-
---====================================================--
---[[               -- 更新日志 --                   ]]--
+--[[               -- 6 更新日志 --                 ]]--
 --====================================================--
 CreateTutorialsStepFrame(G.Version.." "..L["更新日志"], L["更新日志tip"])
 
 --====================================================--
 --[[                 -- INIT --                     ]]--
 --====================================================--
-function TutorialsFrame:ShowFrame(page, reload)
-	TutorialsFrame:Show()
-	TutorialsFrame[page]:Show()
-	local last = TutorialsFrame.step-1
-	if page == last then
-		TutorialsFrame[last].p:Hide()
-		TutorialsFrame[last].n:Hide()
-		TutorialsFrame[last]:SetScript("OnMouseDown", function(self)
-			TutorialsFrame[last]:Hide()
+
+for i = 1, step do
+	local frame = TutorialsFrame[i]
+	frame.step_text:SetText(string.format("%d / %d", frame.index, step))
+	if i == step then
+		frame.next_step:SetScript("OnClick", function(self)
 			TutorialsFrame:Hide()
 		end)
+	end
+end
+
+function TutorialsFrame:ShowFrame(page)
+	for i = 1, step do
+		local frame = TutorialsFrame[i]
+		frame:Hide()
+	end
+	TutorialsFrame:Show()
+	TutorialsFrame[page]:Show()
+
+	if page == step then
+		TutorialsFrame[step].previous_step:Hide()
+		TutorialsFrame[step].next_step:SetText(OKAY)
 	else
-		TutorialsFrame[last].p:Show()
-		TutorialsFrame[last].n:Show()
-		TutorialsFrame[last]:SetScript("OnMouseDown", nil)
-		TutorialsFrame[last].n:SetText(L["完成"])
-		if reload then
-			TutorialsFrame[last].n:SetScript("OnClick", ReloadUI)
-		else
-			TutorialsFrame[last].n:SetScript("OnClick", function()
-				TutorialsFrame[last]:Hide()
-				TutorialsFrame:Hide()
-			end)
-		end
+		TutorialsFrame[step].previous_step:Show()
+		TutorialsFrame[step].next_step:SetText(L["完成"])
 	end
 end
 
 local eventframe = CreateFrame("Frame")
 eventframe:RegisterEvent("PLAYER_ENTERING_WORLD")
-eventframe:SetScript("OnEvent", function(self, event, arg1) 
+eventframe:SetScript("OnEvent", function(self, event, arg1)
 	if not aCoreCDB.meet then
-		if not aCoreDB.meet then
-			T.ResetAllAddonSettings()
-			SetCVar("useUiScale", 0)
-			aCoreDB.meet = true
-		end
-		T.SetChatFrame()
-		TutorialsFrame:ShowFrame(1, true)
+		TutorialsFrame[4].layout.buttons[1].selected = true
+		TutorialsFrame:ShowFrame(1)
 		aCoreDB.ver = G.Version
 		aCoreCDB.meet = true
 	elseif aCoreDB.ver ~= G.Version then
-		TutorialsFrame:ShowFrame(9)
+		TutorialsFrame:ShowFrame(step)
 		aCoreDB.ver = G.Version
 	end
+	self:UnregisterEvent("PLAYER_ENTERING_WORLD")
 end)
 
 T.RunSetup = function()
