@@ -82,3 +82,11 @@ StaticPopupDialogs[G.uiname.."InCombat Alert"] = {
 	OnAccept = ReloadUI,
 	showAlert = 1,
 }
+
+StaticPopupDialogs[G.uiname.."hideAFKtips"] = {
+	text = L["隐藏提示的提示"],
+	button1 = ACCEPT, 
+	hideOnEscape = 1, 
+	whileDead = true,
+	preferredIndex = 3,
+}
