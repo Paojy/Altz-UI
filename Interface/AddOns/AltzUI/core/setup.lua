@@ -19,9 +19,6 @@ local function CreateTutorialsStepFrame(title, text)
 	
 	frame.index = step
 	
-	frame.model = CreateFrame("PlayerModel", nil, frame)
-	frame.model:SetFrameLevel(1)
-
 	local step_text = T.createtext(frame, "OVERLAY", 14, "NONE", "CENTER")
 	step_text:SetPoint("BOTTOM", frame, "BOTTOM", 0, 5)
 	frame.step_text = step_text
@@ -45,12 +42,9 @@ local function CreateTutorialsStepFrame(title, text)
 		frame.text:SetPoint("TOP", frame.title, "BOTTOM", 0, -10)
 		frame.text:SetText(text)
 		
-		frame.model:SetPoint("CENTER", TutorialsFrame, "CENTER")
-		frame.model:SetSize(700, 230)
-		frame.model:SetDisplayInfo(41039)
-		frame.model:SetCamDistanceScale(.7)
-		frame.model:SetPosition(-12.5, .2, -6.2)
-			
+		frame.model = T.CreateCreatureModel(frame, 700, 230, {"CENTER", TutorialsFrame, "CENTER"}, 41039, {-12.5, .2, -6.2}, .7)
+		frame.model:SetFrameLevel(1)
+		
 		previous_step:SetScript("OnClick", function(self)
 			TutorialsFrame:Hide()
 			StaticPopup_Show(G.uiname.."Run Setup")
@@ -66,11 +60,8 @@ local function CreateTutorialsStepFrame(title, text)
 		frame.text:SetJustifyV("TOP")
 		frame.text:SetText(text)
 		
-		frame.model:SetPoint("RIGHT", TutorialsFrame, "CENTER")
-		frame.model:SetSize(400, 400)
-		frame.model:SetDisplayInfo(42522)
-		frame.model:SetCamDistanceScale(.7)
-		frame.model:SetPosition(-2, 0, 0)
+		frame.model = T.CreateCreatureModel(frame, 400, 400, {"RIGHT", TutorialsFrame, "CENTER"}, 42522, {-2, 0, 0}, .7)
+		frame.model:SetFrameLevel(1)
 		
 		previous_step:SetScript("OnClick", function(self) 
 			frame:Hide()

@@ -42,6 +42,11 @@ T.GetUnitNpcID = function(unit)
 	end
 end
 
+-- 获取装备ID
+G.SLOTS = {}
+for _,slot in pairs({"Head", "Shoulder", "Chest", "Waist", "Legs", "Feet", "Wrist", "Hands", "MainHand", "SecondaryHand"}) do 
+	G.SLOTS[slot] = GetInventorySlotInfo(slot .. "Slot")
+end
 ----------------------------
 -- 			表格		  --
 ----------------------------
@@ -179,7 +184,7 @@ T.color_text = function(text)
 end
 
 -- 根据数值渐变颜色
-T.ColorGradient = function(perc, ...)-- http://www.wowwiki.com/ColorGradient
+local ColorGradient = function(perc, ...)-- http://www.wowwiki.com/ColorGradient
 	local r, g, b, r1, g1, b1, r2, g2, b2
 	if (perc >= 1) then
 		r, g, b = select(select('#', ...) - 2, ...)
@@ -198,6 +203,16 @@ T.ColorGradient = function(perc, ...)-- http://www.wowwiki.com/ColorGradient
 	end
 end
 
+T.ColorGradient = function(perc, max_color)
+	local r, g, b
+	if max_color == "red" then
+		r, g, b = ColorGradient(perc, 0, 1, 0, 1, 1, 0, 1, 0, 0)
+	else
+		r, g, b = ColorGradient(perc, 1, 0, 0, 1, 1, 0, 0, 1, 0)
+	end
+	return r, g, b
+end
+
 -- 创建文本
 T.createtext = function(f, layer, fontsize, flag, justifyh)
 	local text = f:CreateFontString(nil, layer)
@@ -214,6 +229,12 @@ T.createnumber = function(f, layer, fontsize, flag, justifyh)
 	return text
 end
 
+-- 材质转文本
+T.GetTexStr = function(tex, size)
+	local s = size or 12
+	return "|T"..tex..":"..s..":"..s..":0:0:64:64:4:60:4:60|t"
+end
+
 -- 法术图标
 T.GetSpellIcon = function(spellID)
 	local icon = select(3, GetSpellInfo(spellID))
@@ -225,6 +246,7 @@ T.GetIconLink = function(spellID)
 	local icon = select(3, GetSpellInfo(spellID))
 	return "|T"..icon..":14:14:0:0:64:64:4:60:4:60|t"..GetSpellLink(spellID)
 end
+
 
 -- 非中文文本中间加空格
 T.split_words = function(...)
@@ -335,6 +357,21 @@ T.setStripeBg = function(bd_frame, anchor)
 	tex:SetHorizTile(true)
 	tex:SetVertTile(true)
 	tex:SetBlendMode("ADD")
+end
+
+----------------------------
+-- 			模型		  --
+----------------------------
+T.CreateCreatureModel = function(parent, width, height, points, creatureID, position, scale)
+	local model = CreateFrame("PlayerModel", nil, parent)
+	model:SetSize(width, height)
+	model:SetPosition(unpack(position))
+	model:SetPoint(unpack(points))
+	model:SetDisplayInfo(creatureID)
+	if scale then
+		model:SetCamDistanceScale(scale)
+	end
+	return model
 end
 ----------------------------
 --  	  计量条		  --

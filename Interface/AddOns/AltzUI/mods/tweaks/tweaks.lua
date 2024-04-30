@@ -26,11 +26,6 @@ end
 --[[-----------------------------------------------------------------------------
 Auto repair and sell grey items
 -------------------------------------------------------------------------------]]
-local IDs = {}
-for _, slot in pairs({"Head", "Shoulder", "Chest", "Waist", "Legs", "Feet", "Wrist", "Hands", "MainHand", "SecondaryHand"}) do 	
-	IDs[slot] = GetInventorySlotInfo(slot .. "Slot")
-end
-
 local ignored_grey_items = {
 	
 }
@@ -43,7 +38,7 @@ function eventframe:MERCHANT_SHOW()
 		if cost > 0 and CanGuildBankRepair() and aCoreCDB["ItemOptions"]["autorepair_guild"] then
 			if GetGuildBankWithdrawMoney() > cost then
 				RepairAllItems(true)
-				for slot, id in pairs(IDs) do
+				for slot, id in pairs(G.SLOTS) do
 					local dur, maxdur = GetInventoryItemDurability(id)
 					if dur and maxdur and dur < maxdur then
 						gearRepaired = false
