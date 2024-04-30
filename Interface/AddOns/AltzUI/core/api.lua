@@ -454,7 +454,7 @@ local ClickButton = function(parent, width, points, text, tex)
 end
 T.ClickButton = ClickButton
 
-local ClickTexButton = function(parent, points, tex, text, tex_size)
+local ClickTexButton = function(parent, points, tex, text, tex_size, tip)
 	local bu = CreateFrame("Button", nil, parent)
 	bu:SetPoint(unpack(points))
 	
@@ -466,8 +466,10 @@ local ClickTexButton = function(parent, points, tex, text, tex_size)
 	bu.tex:SetBlendMode("ADD")
 	
 	bu.hl_tex = bu:CreateTexture(nil, "HIGHLIGHT")
-	bu.hl_tex:SetAllPoints()
-	bu.hl_tex:SetColorTexture(.7, .7, .7, .2)
+	bu.hl_tex:SetAllPoints(bu.tex)
+	bu.hl_tex:SetTexture(tex)
+	bu.hl_tex:SetVertexColor(unpack(G.addon_color))
+	bu.hl_tex:SetBlendMode("ADD")
 	
 	bu.text = T.createtext(bu, "OVERLAY", 12, "OUTLINE", "LEFT")
 	bu.text:SetPoint("LEFT", tex and bu.tex or bu,  tex and "RIGHT" or "LEFT", 2, 0)
@@ -475,9 +477,20 @@ local ClickTexButton = function(parent, points, tex, text, tex_size)
 	bu.text:SetText(text)
 	
 	bu:SetHeight(20)
-	bu:SetWidth((tex and 22) + bu.text:GetWidth() + (text and 2 or 0))
+	bu:SetWidth((tex and 20) + bu.text:GetWidth() + (text and 2 or 0))
 	
 	bu:EnableMouse(true)
+	
+	if tip then
+		bu:SetScript("OnEnter", function(self) 
+			GameTooltip:SetOwner(self, "ANCHOR_RIGHT",  -20, 10)
+			GameTooltip:AddLine(tip)
+			GameTooltip:Show() 
+		end)
+		bu:SetScript("OnLeave", function(self)
+			GameTooltip:Hide()
+		end)
+	end
 	
 	return bu
 end
@@ -1083,17 +1096,20 @@ local ButtonGroup = function(parent, width, x, y, group)
 	
 	frame.update_state = function()
 		for i, bu in pairs(frame.buttons) do
-			if not self:IsEnabled() then 
-				self.Text:SetTextColor(.5, .5, .5)
+			if not bu:IsEnabled() then 
+				bu.Text:SetTextColor(.5, .5, .5)
 			elseif bu.selected then
-				self.Text:SetTextColor(1, 1, 0)
+				bu.Text:SetTextColor(1, 1, 0)
 			else
-				self.Text:SetTextColor(1, 1, 1)
+				bu.Text:SetTextColor(1, 1, 1)
 			end
 		end
 	end
 	
 	frame:SetScript("OnShow", function(self)
+		if self.pre_update then
+			self.pre_update()
+		end
 		self.update_state()
 	end)
 		
@@ -1121,9 +1137,7 @@ local ButtonGroup = function(parent, width, x, y, group)
 		bu:SetScript("OnClick", function(self)
 			if not self.selected then
 				self.selected = true
-				if frame.apply then
-					frame.apply(self.value_key)
-				end
+				frame.apply(self.value_key)
 				for i, b in pairs(frame.buttons) do
 					if b ~= self then
 						b.selected = false
