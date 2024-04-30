@@ -4,7 +4,7 @@ if G.Client == "zhCN" or G.Client == "zhTW" then return end
 -- 安装
 L["小泡泡"] = "Paopao"
 L["欢迎使用"] = "Welcome to Altz UI Setup"
-L["简介"] = "Altz UI is a minimalistic compilation with in-game configuration supported. I wanted to make a UI which gives people the feeling of hiding almost all UI elements, just like after pressing Alt+Z, and that is the origin of the name.  It was first released at November 11, 2011. The theme of AltzUI is simplicity. It only shows necessary elements when you want to see them. Also its memory usage and CPU footprint is very low, with only 2 ~ 3mb it is able to complete most of the functionality you need. Please help by spreading the word about this UI by recommending it to your guild members and friends. Thank you."
+L["简介"] = "Altz UI is a minimalistic compilation with in-game configuration supported. Suggest taking a few minutes to quickly set up the addon."
 
 L["上一步"] = "Previous"
 L["下一步"] = "Next"
@@ -369,12 +369,10 @@ L["一直显示插件按钮"] = "Always show addon buttons"
 L["小地图按钮"]	= "Altz UI Button"
 
 -- 插件提示
-L["上一条"] = "Previous"
-L["下一条"] = "Next"
-L["我不想看到这些提示"] = "I don't want to see them"
-L["隐藏提示的提示"] = "You can re-enable these tips in GUI → Other"
+L["隐藏提示的提示"] = "You can re-enable these tips in Interface → Layout"
 L["TIPS"] = {
 	"Click the date on the minimap to open the calendar",
+	"Right click on the minimap to open the minimap tracking menu",
 	"Want to display the independent castbar? GUI → Unit Frames → Castbar → Independent player castbar",
 	"Want to use a custom color of the nameplate of a specific unit? CTRL+click on the mob's dropdown menu and select,or GUI → Unit Nameplates → Custom",
 	"/rl - reload UI",
