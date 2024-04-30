@@ -31,28 +31,26 @@ G.SpecMover = SpecMover
 
 local function GetDefaultPositions(frame, name)
 	if aCoreCDB["FramePoints"][name] == nil then
-		aCoreCDB["FramePoints"][name] = frame.point
-	else
-		for role, points in pairs(frame.point) do
-			if aCoreCDB["FramePoints"][name][role] == nil then
-				aCoreCDB["FramePoints"][name][role] = frame.point[role]
-			else
-				if aCoreCDB["FramePoints"][name][role]["a1"] == nil then
-					aCoreCDB["FramePoints"][name][role]["a1"] = frame.point[role].a1
-				end
-				if aCoreCDB["FramePoints"][name][role]["a2"] == nil then
-					aCoreCDB["FramePoints"][name][role]["a2"] = frame.point[role].a2
-				end
-				if aCoreCDB["FramePoints"][name][role]["parent"] == nil then
-					aCoreCDB["FramePoints"][name][role]["parent"] = frame.point[role].parent
-				end
-				if aCoreCDB["FramePoints"][name][role]["x"] == nil then
-					aCoreCDB["FramePoints"][name][role]["x"] = frame.point[role].x
-				end
-				if aCoreCDB["FramePoints"][name][role]["y"] == nil then
-					aCoreCDB["FramePoints"][name][role]["y"] = frame.point[role].y
-				end
-			end
+		aCoreCDB["FramePoints"][name] = {}
+	end
+	for role in pairs(frame.point) do
+		if aCoreCDB["FramePoints"][name][role] == nil then
+			aCoreCDB["FramePoints"][name][role] = {}
+		end
+		if aCoreCDB["FramePoints"][name][role]["a1"] == nil then
+			aCoreCDB["FramePoints"][name][role]["a1"] = frame.point[role].a1
+		end
+		if aCoreCDB["FramePoints"][name][role]["a2"] == nil then
+			aCoreCDB["FramePoints"][name][role]["a2"] = frame.point[role].a2
+		end
+		if aCoreCDB["FramePoints"][name][role]["parent"] == nil then
+			aCoreCDB["FramePoints"][name][role]["parent"] = frame.point[role].parent
+		end
+		if aCoreCDB["FramePoints"][name][role]["x"] == nil then
+			aCoreCDB["FramePoints"][name][role]["x"] = frame.point[role].x
+		end
+		if aCoreCDB["FramePoints"][name][role]["y"] == nil then
+			aCoreCDB["FramePoints"][name][role]["y"] = frame.point[role].y
 		end
 	end
 end
