@@ -633,8 +633,7 @@ local EditboxWithButton = function(parent, width, points, text, tip)
 	box:SetSize(width or 200, 20)
 	
 	box.bg = T.createPXBackdrop(box, .3)
-	box.bg:SetBackdropBorderColor(.5, .5, .5)
-	
+
 	box:SetFont(G.norFont, 12, "OUTLINE")
 	box:SetAutoFocus(false)
 	box:SetTextInsets(3, 0, 0, 0)
@@ -657,7 +656,7 @@ local EditboxWithButton = function(parent, width, points, text, tip)
 	end)
 	
 	box:SetScript("OnEditFocusLost", function(self)
-		self.bg:SetBackdropBorderColor(.5, .5, .5)
+		self.bg:SetBackdropBorderColor(0, 0, 0)
 	end)
 	
 	if tip then
@@ -678,7 +677,7 @@ local EditboxWithButton = function(parent, width, points, text, tip)
 	box.Hide = function() anchor:Hide() end
 	
 	box:SetScript("OnEnable", function(self)
-		self.name:SetTextColor(1, 1, 1, 1)		
+		self.name:SetTextColor(1, 1, 1, 1)
 		self:SetTextColor(1, 1, 1, 1)
 	end)
 	
