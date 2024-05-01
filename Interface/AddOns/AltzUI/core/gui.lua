@@ -108,7 +108,7 @@ GUI.scale:SetScript("OnMouseUp", GUI.scale.pointself)
 
 -- 标题
 GUI.title = T.createtext(GUI, "OVERLAY", 20, "OUTLINE", "CENTER")
-GUI.title:SetPoint("BOTTOM", GUI, "TOP", 0, -10)
+GUI.title:SetPoint("TOP", GUI, "TOP", 0, 8)
 GUI.title:SetText(T.color_text("AltzUI "..G.Version))
 
 -- 输入框和按钮
