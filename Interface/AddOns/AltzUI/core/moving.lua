@@ -23,9 +23,9 @@ local function GetAnchorName(anchor)
 		end
 	end
 end
-------------------
-------- API ------
-------------------
+--====================================================--
+--[[                   -- API --                    ]]--
+--====================================================--
 local SpecMover
 G.SpecMover = SpecMover
 
@@ -59,8 +59,8 @@ local function DisplayCurrentFramePoint()
 	if CurrentFrame == "NONE" then
 		SpecMover.curframe:SetText(L["选中的框体"].." "..T.color_text("NONE"))
 		
-		UIDropDownMenu_DisableDropDown(SpecMover.a1box)
-		UIDropDownMenu_DisableDropDown(SpecMover.a2box)
+		SpecMover.a1box:Disable()
+		SpecMover.a2box:Disable()
 		SpecMover.parentbox:Disable()
 		SpecMover.xbox:Disable()
 		SpecMover.ybox:Disable()
@@ -75,8 +75,8 @@ local function DisplayCurrentFramePoint()
 		local frame = _G[CurrentFrame]
 		SpecMover.curframe:SetText(L["选中的框体"].." "..T.color_text(gsub(frame.movingname, "\n", "")))
 		
-		UIDropDownMenu_EnableDropDown(SpecMover.a1box)
-		UIDropDownMenu_EnableDropDown(SpecMover.a2box)
+		SpecMover.a1box:Enable()
+		SpecMover.a2box:Enable()
 		SpecMover.parentbox:Enable()
 		SpecMover.xbox:Enable()
 		SpecMover.ybox:Enable()
@@ -217,8 +217,7 @@ T.CreateDragFrame = function(frame)
 		aCoreCDB["FramePoints"][name][CurrentRole].x = aCoreCDB["FramePoints"][name][CurrentRole].x + x1
 		aCoreCDB["FramePoints"][name][CurrentRole].y = aCoreCDB["FramePoints"][name][CurrentRole].y + y1
 		
-		PlaceFrame(frame) -- 重新连接到锚点
-		
+		PlaceFrame(frame) -- 重新连接到锚点	
 		DisplayCurrentFramePoint()
 	end)
 end
@@ -242,34 +241,19 @@ T.RestoreDragFrame = function(frame)
 	end
 end
 
-local function CreateInputBox(parent, width, points, name, value)
-	local box = CreateFrame("EditBox", nil, parent, "BackdropTemplate")
-	box:SetSize(width, 20)
+local function CreateInputBox(parent, points, name, value, numeric)
+	local box = T.EditboxWithButton(parent, 133, points, name)
+	box:ClearAllPoints()
 	box:SetPoint(unpack(points))
 	
-	T.setPXBackdrop(box, .3)
-	box:SetBackdropBorderColor(.5, .5, .5)
+	box.name:SetJustifyH("RIGHT")
+	box.name:ClearAllPoints()
+	box.name:SetPoint("RIGHT", box, "LEFT", -5, 0)
 	
-	box.name = T.createtext(box, "OVERLAY", 12, "OUTLINE", "LEFT")
-	box.name:SetPoint("BOTTOMLEFT", box, "TOPLEFT", 5, 8)
-	box.name:SetText(T.color_text(name))
+	if numeric then
+		box:SetNumeric(true)
+	end
 	
-	box:SetFont(G.norFont, 12, "OUTLINE")
-	box:SetAutoFocus(false)
-	box:SetTextInsets(3, 0, 0, 0)
-	
-	box:SetScript("OnChar", function(self) 
-		self:SetBackdropBorderColor(1, 1, 0)		
-	end)
-	
-	box:SetScript("OnEditFocusGained", function(self)
-		self:SetBackdropBorderColor(1, 1, 1)
-	end)
-	
-	box:SetScript("OnEditFocusLost", function(self)
-		self:SetBackdropBorderColor(.5, .5, .5)
-	end)
-
 	box:SetScript("OnShow", function(self)
 		if CurrentFrame ~= "NONE" then
 			self:SetText(aCoreCDB["FramePoints"][CurrentFrame][CurrentRole][value])
@@ -295,34 +279,27 @@ local function CreateInputBox(parent, width, points, name, value)
 		else
 			self:SetText("")
 		end
+		self.button:Hide()
 		self:ClearFocus()
-	end)
-	
-	box:SetScript("OnEnable", function(self)	
-		self:SetTextColor(1, 1, 1, 1)	
-	end)
-	
-	box:SetScript("OnDisable", function(self)	
-		self:SetTextColor(.7, .7, .7, .5)
 	end)
 	
 	return box
 end
 
 local function CreateDropDown(parent, points, name, value)
-	local dd = CreateFrame("Frame", G.uiname.."SpecMoverPoint1DropDown", SpecMover, "UIDropDownMenuTemplate")
+	local dd = CreateFrame("Frame", nil, SpecMover, "UIDropDownMenuTemplate")
 	dd:SetPoint(unpack(points))
 	
 	T.ReskinDropDown(dd)
 	
-	dd.name = T.createtext(dd, "OVERLAY", 12, "OUTLINE", "LEFT")
-	dd.name:SetPoint("BOTTOMLEFT", dd, "TOPLEFT", 15, 5)
-	dd.name:SetText(T.color_text(name))
+	dd.name = T.createtext(dd, "OVERLAY", 12, "OUTLINE", "RIGHT")
+	dd.name:SetPoint("RIGHT", dd, "LEFT", 12, 2)
+	dd.name:SetText(name)
 	
-	UIDropDownMenu_SetWidth(dd, 100)
+	UIDropDownMenu_SetWidth(dd, 120)
 	UIDropDownMenu_Initialize(dd, function(self, level, menuList)
-		local info = UIDropDownMenu_CreateInfo()
 		for i = 1, #anchors do
+			local info = UIDropDownMenu_CreateInfo()
 			info.value = anchors[i][1]
 			info.text = anchors[i][2]
 			info.checked = function()
@@ -341,15 +318,24 @@ local function CreateDropDown(parent, points, name, value)
 		end
 	end)
 	
+	dd.Enable = function()
+		UIDropDownMenu_EnableDropDown(dd)
+		dd.name:SetTextColor(1, 1, 1, 1)
+	end
+	
+	dd.Disable = function()
+		UIDropDownMenu_DisableDropDown(dd)
+		dd.name:SetTextColor(0.7, 0.7, 0.7, 0.5)
+	end
+	
 	return dd
 end
-
-------------------
--- 移动控制面板 --
-------------------
+--====================================================--
+--[[                -- 移动控制面板 --              ]]--
+--====================================================--
 SpecMover = CreateFrame("Frame", G.uiname.."SpecMover", UIParent, "BackdropTemplate")
 SpecMover:SetPoint("CENTER", 0, -300)
-SpecMover:SetSize(540, 140)
+SpecMover:SetSize(220, 270)
 SpecMover:SetFrameStrata("HIGH")
 SpecMover:SetFrameLevel(30)
 SpecMover:Hide()
@@ -372,34 +358,34 @@ SpecMover.reset_all:SetScript("OnClick", function()
 end)
 
 SpecMover.title = T.createtext(SpecMover, "OVERLAY", 16, "OUTLINE", "CENTER")
-SpecMover.title:SetPoint("TOP", SpecMover, "TOP", 0, -2)
+SpecMover.title:SetPoint("TOP", SpecMover, "TOP", 0, 8)
 SpecMover.title:SetText(T.color_text(L["界面移动工具"]))
 
 SpecMover.curmode = T.createtext(SpecMover, "OVERLAY", 12, "OUTLINE", "LEFT")
-SpecMover.curmode:SetPoint("TOPLEFT", SpecMover, "TOPLEFT", 10, -15)
+SpecMover.curmode:SetPoint("TOPLEFT", SpecMover, "TOPLEFT", 10, -20)
 
 SpecMover.curframe = T.createtext(SpecMover, "OVERLAY", 12, "OUTLINE", "LEFT")
-SpecMover.curframe:SetPoint("TOPLEFT", SpecMover, "TOPLEFT", 10, -30)
+SpecMover.curframe:SetPoint("TOPLEFT", SpecMover, "TOPLEFT", 10, -35)
 
 -- a1
-SpecMover.a1box = CreateDropDown(SpecMover, {"TOPLEFT", SpecMover, "TOPLEFT", 0, -70}, L["锚点"].."1", "a1")
+SpecMover.a1box = CreateDropDown(SpecMover, {"TOPLEFT", SpecMover, "TOPLEFT", 50, -55}, L["锚点"].."1", "a1")
 
 -- parent
-SpecMover.parentbox = CreateInputBox(SpecMover, 120, {"LEFT", SpecMover.a1box, "RIGHT", -2, 2}, L["锚点框体"], "parent")
+SpecMover.parentbox = CreateInputBox(SpecMover, {"TOPLEFT", SpecMover.a1box, "BOTTOMLEFT", 17, 3}, L["锚点框体"], "parent")
 
 -- a2
-SpecMover.a2box = CreateDropDown(SpecMover, {"LEFT", SpecMover.parentbox, "RIGHT", -4, -2}, L["锚点"].."2", "a2")
+SpecMover.a2box = CreateDropDown(SpecMover, {"TOPLEFT", SpecMover.parentbox, "BOTTOMLEFT", -17, -2}, L["锚点"].."2", "a2")
 
 -- x
-SpecMover.xbox = CreateInputBox(SpecMover, 50, {"LEFT", SpecMover.a2box, "RIGHT", -2, 2}, "X", "x")
+SpecMover.xbox = CreateInputBox(SpecMover, {"TOPLEFT", SpecMover.a2box, "BOTTOMLEFT", 17, 3}, "X", "x", true)
 
 -- y
-SpecMover.ybox = CreateInputBox(SpecMover, 50, {"LEFT", SpecMover.xbox, "RIGHT", 10, 0}, "Y", "y")
+SpecMover.ybox = CreateInputBox(SpecMover, {"TOPLEFT", SpecMover.xbox, "BOTTOMLEFT", 0, -7}, "Y", "y", true)
 
 -- reset
 SpecMover.ResetButton = CreateFrame("Button", G.uiname.."SpecMoverResetButton", SpecMover, "UIPanelButtonTemplate")
-SpecMover.ResetButton:SetPoint("BOTTOMLEFT", SpecMover, "BOTTOMLEFT", 20, 10)
-SpecMover.ResetButton:SetSize(250, 25)
+SpecMover.ResetButton:SetPoint("BOTTOM", SpecMover, "BOTTOM", 0, 40)
+SpecMover.ResetButton:SetSize(190, 25)
 SpecMover.ResetButton:SetText(L["重置位置"])
 T.ReskinButton(SpecMover.ResetButton)
 SpecMover.ResetButton:SetScript("OnClick", function()
@@ -412,8 +398,8 @@ end)
 
 -- lock
 SpecMover.LockButton = CreateFrame("Button", G.uiname.."SpecMoverLockButton", SpecMover, "UIPanelButtonTemplate")
-SpecMover.LockButton:SetPoint("LEFT", SpecMover.ResetButton, "RIGHT", 10, 0)
-SpecMover.LockButton:SetSize(250, 25)
+SpecMover.LockButton:SetPoint("TOPLEFT", SpecMover.ResetButton, "BOTTOMLEFT", 0, -5)
+SpecMover.LockButton:SetSize(190, 25)
 SpecMover.LockButton:SetText(L["锁定框体"])
 T.ReskinButton(SpecMover.LockButton)
 SpecMover.LockButton:SetScript("OnClick", LockAll)
