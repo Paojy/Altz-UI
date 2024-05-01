@@ -64,6 +64,16 @@ T.pairsByKeys = function(t)
     return iter
 end
 
+T.table_remove = function(t, v)
+	local index = 1
+	while t[index] do
+		if ( t[index] == v ) then 
+			table.remove(t, index)
+			return 
+		end
+		index = index + 1
+	end
+end
 ----------------------------
 -- 			材质		  --
 ----------------------------
