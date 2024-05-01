@@ -257,7 +257,6 @@ T.GetIconLink = function(spellID)
 	return "|T"..icon..":14:14:0:0:64:64:4:60:4:60|t"..GetSpellLink(spellID)
 end
 
-
 -- 非中文文本中间加空格
 T.split_words = function(...)
 	local words = {...}
@@ -496,8 +495,10 @@ T.ReskinButton = function(bu, fontsize, noHighlight, override)
 end
 
 -- 下拉菜单
-T.ReskinDropDown = function(dd)
+T.ReskinDropDown = function(dd, fontsize)
 	F.ReskinDropDown(dd)
+	local fs = fontsize or 12
+	dd.Text:SetFont(G.norFont, fs, "OUTLINE")
 end
 
 -- 标签
