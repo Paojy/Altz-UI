@@ -122,9 +122,9 @@ local function UpdateActionbarsFontSize()
 	end
 end
 T.UpdateActionbarsFontSize = UpdateActionbarsFontSize
----------------------------------------
--- INIT
----------------------------------------
+--====================================================--
+--[[                  -- Init --                    ]]--
+--====================================================--
 T.RegisterInitCallback(function()
 	for i = 1, 12 do
 		local bu = _G["ActionButton"..i]
@@ -175,3 +175,61 @@ end)
 MainMenuBar.UpdateDividers = nil
 MainMenuBar.HorizontalDividersPool:ReleaseAll();
 MainMenuBar.VerticalDividersPool:ReleaseAll();
+
+--====================================================--
+--[[                 -- Fader --                    ]]--
+--====================================================--
+local actionbars = {
+	"MainMenuBar",
+	"MultiBarBottomLeft",
+	"MultiBarBottomRight",
+	"MultiBarLeft",
+	"MultiBarRight",
+	"MultiBar5",
+	"MultiBar6",
+	"MultiBar7",
+}
+
+local ApplyActionbarFadeAlpha = function()	
+	for i, name in pairs(actionbars) do
+		local frame = _G[name]
+		if aCoreCDB["ActionbarOptions"]["fadingalpha_type"] == "uf" then
+			frame.fadeOut_alpha = aCoreCDB["UnitframeOptions"]["fadingalpha"]
+		else
+			frame.fadeOut_alpha = aCoreCDB["ActionbarOptions"]["fadingalpha"]
+		end
+		if aCoreCDB["ActionbarOptions"]["enablefade"] then
+			frame:SetAlpha(frame.fadeOut_alpha)
+		end
+	end
+end
+T.ApplyActionbarFadeAlpha = ApplyActionbarFadeAlpha
+
+local ApplyActionbarFadeEnable = function()
+	for i, name in pairs(actionbars) do
+		local frame = _G[name]	
+		if aCoreCDB["ActionbarOptions"]["enablefade"] then
+			frame.enable_fade = true
+			T.RegisterEventFade(frame)
+			
+			T.UIFrameFadeOut(frame, .4, frame:GetAlpha(), frame.fadeOut_alpha)
+		else
+			frame.enable_fade = false
+			T.UnregisterEventFade(frame)
+			
+			T.UIFrameFadeIn(frame, .4, frame:GetAlpha(), 1)					
+		end		
+	end
+end
+T.ApplyActionbarFadeEnable = ApplyActionbarFadeEnable
+
+T.RegisterInitCallback(function()
+	local fade_actionbars = {}
+	for i, name in pairs(actionbars) do
+		table.insert(fade_actionbars, _G[name])
+	end	
+	T.ActionbarFader(fade_actionbars)
+	
+	ApplyActionbarFadeAlpha()
+	ApplyActionbarFadeEnable()
+end)

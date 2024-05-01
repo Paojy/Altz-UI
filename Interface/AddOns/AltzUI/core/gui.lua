@@ -517,7 +517,7 @@ T.createDR(ItemOptions.autobuy, ItemOptions.autobuy_list)
 --====================================================--
 --[[               -- Unit Frames --                ]]--
 --====================================================--
-local UFOptions = CreateOptionPage("UF Options", L["单位框体"], GUI, "VERTICAL")
+local UFOptions = CreateOptionPage("UF Options", L["单位框架"], GUI, "VERTICAL")
 local UFInnerframe = CreateInnerFrame(UFOptions)
 
 -- 样式
@@ -529,6 +529,11 @@ UFInnerframe.style.enablefade.apply = function()
 end
 
 T.Slider_db(UFInnerframe.style, "long", 30, 110, L["渐隐透明度"], "fadingalpha", 100, 0, 80, 5, L["渐隐透明度提示"])
+UFInnerframe.style.fadingalpha.apply = function()
+	T.ApplyUFSettings({"Fader"})
+	T.ApplyActionbarFadeAlpha()
+end
+
 T.createDR(UFInnerframe.style.enablefade, UFInnerframe.style.fadingalpha)
 
 CreateDividingLine(UFInnerframe.style, -140)
@@ -1743,6 +1748,36 @@ T.Slider_db(ActionbarInnerframe.common, "long", 30, 310, L["可用次数字体�
 ActionbarInnerframe.common.countsize.apply = function()
 	T.UpdateActionbarsFontSize()
 end
+
+CreateDividingLine(ActionbarInnerframe.common, -335)
+
+T.Checkbutton_db(ActionbarInnerframe.common, 30, 350, L["条件渐隐"], "enablefade", L["条件渐隐提示"])
+ActionbarInnerframe.common.enablefade.apply = T.ApplyActionbarFadeEnable
+
+T.RadioButtonGroup_db(ActionbarInnerframe.common, 40, 380, "", "fadingalpha_type", {
+	{"uf", T.split_words(USE, L["单位框架"], L["渐隐透明度"])},
+	{"custom", T.split_words(CUSTOM, L["渐隐透明度"])},
+})
+
+T.Slider_db(ActionbarInnerframe.common, "long", 50, 430, L["渐隐透明度"], "fadingalpha", 100, 0, 80, 5, L["渐隐透明度提示"])
+ActionbarInnerframe.common.fadingalpha.apply = T.ApplyActionbarFadeAlpha
+
+ActionbarInnerframe.common.fadingalpha_type.hook = function()
+	if aCoreCDB["ActionbarOptions"]["fadingalpha_type"] == "custom" then
+		ActionbarInnerframe.common.fadingalpha:Show()
+	else
+		ActionbarInnerframe.common.fadingalpha:Hide()
+	end
+end
+
+ActionbarInnerframe.common.fadingalpha_type.apply = function()
+	T.ApplyActionbarFadeAlpha()
+	ActionbarInnerframe.common.fadingalpha_type.hook()
+end
+ActionbarInnerframe.common.fadingalpha_type:HookScript("OnShow", ActionbarInnerframe.common.fadingalpha_type.hook)
+
+T.createDR(ActionbarInnerframe.common.enablefade, ActionbarInnerframe.common.fadingalpha_type, ActionbarInnerframe.common.fadingalpha)
+
 
 -- 冷却提示
 ActionbarInnerframe.cdflash = CreateOptionPage("Actionbar Options cdflash", L["冷却提示"], ActionbarInnerframe, "VERTICAL", "ActionbarOptions")

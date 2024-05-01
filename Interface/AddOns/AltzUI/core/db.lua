@@ -624,6 +624,9 @@ local Character_default_Settings = {
 		keybindsize = 12,
 		macronamesize = 8,
 		countsize = 12,
+		enablefade = true,
+		fadingalpha_type = "uf", -- "uf", "custom"
+		fadingalpha = 0.2,
 		-- 冷却提示
 		cdflash_enable = true,
 		cdflash_size = 60,
