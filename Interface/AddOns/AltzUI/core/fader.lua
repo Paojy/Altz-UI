@@ -1,11 +1,34 @@
 local T, C, L, G = unpack(select(2, ...))
 -- by zork
 
-local defaultFadeIn = {time = 0.4, alpha = 1}
-local defaultFadeOut = {time = 0.4, alpha = 0}
-local defaultEventFadeOut = {time = 1.5, alpha = 0}
+local fadeIn_time = .4
+local fadeIn_alpha = 1
+
+local fadeOut_time = .4
+local fadeOut_time_event = 1.5
+local fadeOut_alpha = 0
 
 local frameFadeManager = CreateFrame("FRAME")
+local eventmode = 0
+local event_fade_frames = {}
+
+T.RegisterEventFade = function(frame)
+	local name = frame:GetName()
+	if name then
+		event_fade_frames[name] = frame
+	else
+		print("RegisterFading bug, no frame name")
+	end
+end
+
+T.UnregisterEventFade = function(frame)
+	local name = frame:GetName()
+	if name then
+		event_fade_frames[name] = nil
+	else
+		print("UnregisterFading bug, no frame name")
+	end
+end
 
 -- Generic fade function
 local function UIFrameFade(frame, fadeInfo)
@@ -44,6 +67,11 @@ local function UIFrameFadeIn(frame, timeToFade, startAlpha, endAlpha)
 	if frame.Portrait then
 		UIFrameFade(frame.Portrait, fadeInfo)
 	end
+	if frame.actionButtons then
+		for _, bu in pairs(frame.actionButtons) do
+			bu.cooldown:SetDrawBling(true)
+		end
+	end
 end
 T.UIFrameFadeIn = UIFrameFadeIn
 
@@ -58,153 +86,92 @@ local function UIFrameFadeOut(frame, timeToFade, startAlpha, endAlpha)
 	if frame.Portrait then
 		UIFrameFade(frame.Portrait, fadeInfo)
 	end
+	if frame.actionButtons then
+		for _, bu in pairs(frame.actionButtons) do
+			bu.cooldown:SetDrawBling(false)
+		end		
+	end
 end
 T.UIFrameFadeOut = UIFrameFadeOut
 --==================================================================--
 -- fade-in on enter/fade-out on leave --
 --==================================================================--
-
-function T.ActionbarFader(frame, buttonList, fadeIn, fadeOut)
-	if not frame or not buttonList then return end
-	if not fadeIn then fadeIn = defaultFadeIn end
-	if not fadeOut then fadeOut = defaultFadeOut end
-	frame:EnableMouse(true)
-
-	frame:SetScript("OnEnter", function(self)
-		if frame.eventmode ~= 1 then
-			UIFrameFadeIn(frame, fadeIn.time, frame:GetAlpha(), fadeIn.alpha)
-			for _, bu in pairs(buttonList) do
-				local name = bu:GetName()
-				local cd= _G[name.."Cooldown"]
-				cd:SetDrawBling(true)
-			end
-		end
-
-	end)
-	frame:SetScript("OnLeave", function(self)
-		if frame.eventmode ~= 1 then
-			UIFrameFadeOut(frame, fadeOut.time, frame:GetAlpha(), fadeOut.alpha)
-			for _, bu in pairs(buttonList) do
-				local name = bu:GetName()
-				local cd= _G[name.."Cooldown"]
-				cd:SetDrawBling(false)
-			end
-		end
-	end)
-
-	for _, button in pairs(buttonList) do
-		if button then
-			button:HookScript("OnEnter", function()
-				if frame.eventmode ~= 1 then
-					UIFrameFadeIn( frame, fadeIn.time, frame:GetAlpha(), fadeIn.alpha)
-					for _, bu in pairs(buttonList) do
-						local name = bu:GetName()
-						local cd= _G[name.."Cooldown"]
-						cd:SetDrawBling(true)
-					end
-				end
-			end)
-
-			button:HookScript("OnLeave", function()
-				if frame.eventmode ~= 1 then
-					UIFrameFadeOut(frame, fadeOut.time, frame:GetAlpha(), fadeOut.alpha)
-					for _, bu in pairs(buttonList) do
-						local name = bu:GetName()
-						local cd= _G[name.."Cooldown"]
-						cd:SetDrawBling(false)
-					end
-				end
-			end)
-		end
-	end
-
-	UIFrameFadeOut(frame, fadeOut.time, frame:GetAlpha(), fadeOut.alpha)
-	for _, bu in pairs(buttonList) do
-		local name = bu:GetName()
-		local cd= _G[name.."Cooldown"]
-		cd:SetDrawBling(false)
-	end
-end
-
-function T.FrameFader(frame, fadeIn, fadeOut)
+function T.FrameFader(frame)
 	if not frame then return end
-	if not fadeIn then fadeIn = defaultFadeIn end
-	if not fadeOut then fadeOut = defaultFadeOut end
 	
-	frame:SetAlpha(fadeOut.alpha) -- 初始透明度
 	frame:EnableMouse(true)
-	frame:HookScript("OnEnter", function(self) if frame.eventmode ~= 1 then UIFrameFadeIn(frame, fadeIn.time, frame:GetAlpha(), fadeIn.alpha) end end)
-	frame:HookScript("OnLeave", function(self) if frame.eventmode ~= 1 then UIFrameFadeOut(frame, fadeOut.time, frame:GetAlpha(), fadeOut.alpha) end end)
-
-	UIFrameFadeOut(frame, fadeOut.time, frame:GetAlpha(), fadeOut.alpha)
+	frame:SetAlpha(frame.fadeOut_alpha or fadeOut_alpha) -- 初始透明度
+	
+	frame:HookScript("OnEnter", function(self)
+		if eventmode ~= 1 then
+			UIFrameFadeIn(frame, fadeIn_time, frame:GetAlpha(), fadeIn_alpha)
+		end
+	end)
+	
+	frame:HookScript("OnLeave", function(self) 
+		if eventmode ~= 1 then
+			UIFrameFadeOut(frame, fadeOut_time, frame:GetAlpha(), frame.fadeOut_alpha or fadeOut_alpha)
+		end
+	end)
 end
 
-function T.ParentFader(parent, children, fadeIn, fadeOut)
+local function IsFramesMouseOver(frames)
+	for i, f in pairs(frames) do
+		if f:IsMouseOver() then
+			return true			
+		end	
+	end
+	
+	return false
+end
+
+function T.ChildrenFader(parent, children)
 	if not parent or not children then return end
-	if not fadeIn then fadeIn = defaultFadeIn end
-	if not fadeOut then fadeOut = defaultFadeOut end
 	
 	for i, f in pairs(children) do
-		f:SetAlpha(fadeOut.alpha) -- 初始透明度
+		f:SetAlpha(parent.fadeOut_alpha or fadeOut_alpha) -- 初始透明度
 		f:EnableMouse(true)
 	end
 	
 	parent:HookScript("OnEnter", function(self)
 		for i, f in pairs(children) do
-			if f.eventmode ~= 1 then
-				UIFrameFadeIn(f, fadeIn.time, f:GetAlpha(), fadeIn.alpha) 
+			if eventmode ~= 1 then
+				UIFrameFadeIn(f, fadeIn_time, f:GetAlpha(), fadeIn_alpha)
 			end
 		end	
 	end)
 	
-	parent:HookScript("OnLeave", function(self)
-		local hovered
-		
-		for i, f in pairs(children) do
-			if f:IsMouseOver() then
-				hovered = true
-			end
-		end
-		
-		if not hovered then
+	parent:HookScript("OnLeave", function(self)	
+		if not IsFramesMouseOver(children) then
 			for i, f in pairs(children) do
-				if f.eventmode ~= 1 then
-					UIFrameFadeOut(f, fadeOut.time, f:GetAlpha(), fadeOut.alpha)
+				if eventmode ~= 1 then
+					UIFrameFadeOut(f, fadeOut_time, f:GetAlpha(), parent.fadeOut_alpha or fadeOut_alpha)
 				end
 			end
 		end
-	end)	
+	end)
 end
 
-function T.GroupFader(framegroup, fadeIn, fadeOut)
+function T.GroupFader(framegroup)
 	if not framegroup then return end
-	if not fadeIn then fadeIn = defaultFadeIn end
-	if not fadeOut then fadeOut = defaultFadeOut end
 	
 	for i, frame in pairs(framegroup) do
-		frame:SetAlpha(fadeOut.alpha) -- 初始透明度
+		frame:SetAlpha(frame.fadeOut_alpha or fadeOut_alpha) -- 初始透明度
 		frame:EnableMouse(true)
+		
 		frame:HookScript("OnEnter", function(self)
 			for i, f in pairs(framegroup) do
-				if f.eventmode ~= 1 then
-					UIFrameFadeIn(f, fadeIn.time, f:GetAlpha(), fadeIn.alpha) 
+				if eventmode ~= 1 then
+					UIFrameFadeIn(f, fadeIn_time, f:GetAlpha(), fadeIn_alpha)
 				end
 			end	
 		end)
 		
 		frame:HookScript("OnLeave", function(self)
-			local hovered
-			
-			for i, f in pairs(framegroup) do
-				if f:IsMouseOver() then
-					hovered = true
-				end
-			end
-			
-			if not hovered then
+			if not IsFramesMouseOver(framegroup) then
 				for i, f in pairs(framegroup) do
-					if f.eventmode ~= 1 then
-						UIFrameFadeOut(f, fadeOut.time, f:GetAlpha(), fadeOut.alpha)
+					if eventmode ~= 1 then
+						UIFrameFadeOut(f, fadeOut_time, f:GetAlpha(), f.fadeOut_alpha or fadeOut_alpha)	
 					end
 				end
 			end
@@ -212,50 +179,64 @@ function T.GroupFader(framegroup, fadeIn, fadeOut)
 	end
 end
 
+local function IsActionbarMouseOver(actionbars)
+	for i, bar in pairs(actionbars) do
+		if bar:IsMouseOver() then
+			return true			
+		end
+		for k, bu in pairs(bar.actionButtons) do
+			if bu:IsMouseOver() then
+				return true
+			end
+		end
+	end
+	
+	return false
+end
+
+local function ActionbarsFade(actionbars, mode)
+	if mode == "in" then
+		for i, bar in pairs(actionbars) do
+			if bar.enable_fade and eventmode ~= 1 then
+				UIFrameFadeIn(bar, fadeIn_time, bar:GetAlpha(), fadeIn_alpha)
+			end
+		end
+	elseif not IsActionbarMouseOver(actionbars) then
+		for i, bar in pairs(actionbars) do
+			if bar.enable_fade and eventmode ~= 1 then
+				UIFrameFadeOut(bar, fadeOut_time, bar:GetAlpha(), bar.fadeOut_alpha or fadeOut_alpha)	
+			end
+		end
+	end
+end
+
+function T.ActionbarFader(actionbars)
+	if not actionbars then return end
+	
+	for i, bar in pairs(actionbars) do
+		bar:HookScript("OnEnter", function(self)
+			ActionbarsFade(actionbars, "in")
+		end)
+		
+		bar:HookScript("OnLeave", function(self)
+			ActionbarsFade(actionbars, "out")
+		end)
+		
+		for k, bu in pairs(bar.actionButtons) do	
+			bu:HookScript("OnEnter", function(self)
+				ActionbarsFade(actionbars, "in")
+			end)
+			
+			bu:HookScript("OnLeave", function(self)
+				ActionbarsFade(actionbars, "out")
+			end)
+		end
+	end	
+end
+
 --==================================================================--
 -- fade-in when center conditions meets --
 --==================================================================--
-local function regi(frame)
-	frame:RegisterEvent('PLAYER_REGEN_DISABLED')
-	frame:RegisterEvent('PLAYER_REGEN_ENABLED')
-	frame:RegisterEvent('UNIT_TARGET')
-	frame:RegisterEvent('PLAYER_TARGET_CHANGED')
-	frame:RegisterEvent('UNIT_HEALTH')
-	frame:RegisterEvent('UNIT_MAXHEALTH')
-	frame:RegisterEvent('UNIT_POWER_UPDATE')
-	frame:RegisterEvent('UNIT_MAXPOWER')
-	frame:RegisterEvent('UNIT_SPELLCAST_START')
-	frame:RegisterEvent('UNIT_SPELLCAST_FAILED')
-	frame:RegisterEvent('UNIT_SPELLCAST_STOP')
-	frame:RegisterEvent('UNIT_SPELLCAST_INTERRUPTED')
-	frame:RegisterEvent('UNIT_SPELLCAST_CHANNEL_START')
-	--frame:RegisterEvent('UNIT_SPELLCAST_CHANNEL_INTERRUPTED')
-	frame:RegisterEvent('UNIT_SPELLCAST_CHANNEL_STOP')
-	frame:RegisterEvent("PLAYER_ENTERING_WORLD")
-end
-
---[[
-MANA = 0
-*RAGE = 1
-FOCUS = 2
-ENERGY = 3
-COMBO_POINTS = 4
-RUNES = 5
-*RUNIC_POWER = 6
-SOUL_SHARDS = 7
-*LUNAR_POWER = 8
-HOLY_POWER = 9
-ALTERNATE_POWER = 10
-*MAELSTROM = 11
-CHI = 12
-*INSANITY = 13
-OBSOLETE = 14
-OBSOLETE2 = 15
-ARCANE_CHARGES = 16
-*FURY = 17
-*PAIN = 18
-]]
-
 local EmptyPowerType = {
 	["RAGE"] = true,
 	["RUNIC_POWER"] = true,
@@ -266,71 +247,39 @@ local EmptyPowerType = {
 	["PAIN"] = true,
 }
 
-function T.ActionbarEventFader(frame,buttonList,fadeIn,fadeOut)
-	if not frame or not buttonList then return end
-	if not fadeIn then fadeIn = defaultFadeIn end
-	if not fadeOut then fadeOut = defaultEventFadeOut end
+frameFadeManager:RegisterEvent("PLAYER_REGEN_DISABLED")
+frameFadeManager:RegisterEvent("PLAYER_REGEN_ENABLED")
+frameFadeManager:RegisterEvent("PLAYER_TARGET_CHANGED")
+frameFadeManager:RegisterEvent("PLAYER_ENTERING_WORLD")
 
-	regi(frame)
+frameFadeManager:RegisterUnitEvent("UNIT_HEALTH", "player")
+frameFadeManager:RegisterUnitEvent("UNIT_MAXHEALTH", "player")
+frameFadeManager:RegisterUnitEvent("UNIT_POWER_UPDATE", "player")
+frameFadeManager:RegisterUnitEvent("UNIT_MAXPOWER", "player")
+frameFadeManager:RegisterUnitEvent("UNIT_SPELLCAST_START", "player")
+frameFadeManager:RegisterUnitEvent("UNIT_SPELLCAST_FAILED", "player")
+frameFadeManager:RegisterUnitEvent("UNIT_SPELLCAST_STOP", "player")
+frameFadeManager:RegisterUnitEvent("UNIT_SPELLCAST_INTERRUPTED", "player")
+frameFadeManager:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_START", "player")
+frameFadeManager:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_STOP", "player")
 
-	frame:SetScript("OnEvent", function(self,event)
-		if
-		UnitCastingInfo('player') or UnitChannelInfo('player') or
-		UnitAffectingCombat('player') or
-		UnitExists('target') or
-		UnitHealth('player') < UnitHealthMax('player') or
-		(EmptyPowerType[select(2, UnitPowerType("player"))] and UnitPower("player") > 0) or
-		(not EmptyPowerType[select(2, UnitPowerType("player"))] and UnitPower("player") < UnitPowerMax("player"))
-		then
-			frame.eventmode = 1
-			UIFrameFadeIn( frame, fadeIn.time, frame:GetAlpha(), fadeIn.alpha)
-			for _, bu in pairs(buttonList) do
-				local name = bu:GetName()
-				local cd= _G[name.."Cooldown"]
-				cd:SetDrawBling(true)
-			end
-		else
-			frame.eventmode = 0
-			UIFrameFadeOut(frame, fadeOut.time, frame:GetAlpha(), fadeOut.alpha)
-			for _, bu in pairs(buttonList) do
-				local name = bu:GetName()
-				local cd= _G[name.."Cooldown"]
-				cd:SetDrawBling(false)
-			end
+frameFadeManager:SetScript("OnEvent", function(self,event)
+	if
+	UnitCastingInfo('player') or UnitChannelInfo('player') or
+	UnitAffectingCombat('player') or
+	UnitExists('target') or
+	UnitHealth('player') < UnitHealthMax('player') or
+	(EmptyPowerType[select(2, UnitPowerType("player"))] and UnitPower("player") > 0) or
+	(not EmptyPowerType[select(2, UnitPowerType("player"))] and UnitPower("player") < UnitPowerMax("player"))
+	then
+		eventmode = 1
+		for name, frame in pairs(event_fade_frames) do
+			UIFrameFadeIn( frame, fadeIn_time, frame:GetAlpha(), fadeIn_alpha)
 		end
-	end)
-
-	UIFrameFadeOut(frame, fadeOut.time, frame:GetAlpha(), fadeOut.alpha)
-	for _, bu in pairs(buttonList) do
-		local name = bu:GetName()
-		local cd= _G[name.."Cooldown"]
-		cd:SetDrawBling(false)
+	else
+		eventmode = 0
+		for name, frame in pairs(event_fade_frames) do
+			UIFrameFadeOut(frame, fadeOut_time_event, frame:GetAlpha(), frame.fadeOut_alpha or fadeOut_alpha)	
+		end
 	end
-end
-
-function T.FrameEventFader(frame,fadeIn,fadeOut)
-	if not frame then return end
-	if not fadeIn then fadeIn = defaultFadeIn end
-	if not fadeOut then fadeOut = defaultEventFadeOut end
-
-	regi(frame)
-
-	frame:SetScript("OnEvent", function(self,event)
-		if
-		UnitCastingInfo('player') or UnitChannelInfo('player') or
-		UnitAffectingCombat('player') or
-		UnitExists('target') or
-		UnitHealth('player') < UnitHealthMax('player') or
-		(EmptyPowerType[select(2, UnitPowerType("player"))] and UnitPower("player") > 0) or
-		(not EmptyPowerType[select(2, UnitPowerType("player"))] and UnitPower("player") < UnitPowerMax("player"))
-		then
-			frame.eventmode = 1
-			UIFrameFadeIn( frame, fadeIn.time, frame:GetAlpha(), fadeIn.alpha)
-		else
-			frame.eventmode = 0
-			UIFrameFadeOut(frame, fadeOut.time, frame:GetAlpha(), fadeOut.alpha)
-		end
-	end)
-
-	UIFrameFadeOut(frame, fadeOut.time, frame:GetAlpha(), fadeOut.alpha)
-end
+end)

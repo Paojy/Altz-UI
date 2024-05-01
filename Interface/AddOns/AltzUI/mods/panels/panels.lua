@@ -383,7 +383,7 @@ hooksecurefunc(MinimapCluster, "SetHeaderUnderneath", function(self, headerUnder
 end)
 
 -- 小地图悬停渐隐
-T.ParentFader(Minimap, {MinimapCluster.ZoneTextButton, TimeManagerClockButton, GameTimeFrame, AddonCompartmentFrame, MBCF_Button})
+T.ChildrenFader(Minimap, {MinimapCluster.ZoneTextButton, TimeManagerClockButton, GameTimeFrame, AddonCompartmentFrame, MBCF_Button})
 
 --====================================================--
 --[[             -- 经验条和声望条 --               ]]--
