@@ -164,7 +164,7 @@ local UnregisterClicks = function(object)
 	end
 end
 
--- 收集应用点击施法的单位框体
+-- 收集应用点击施法的单位框架
 G.ClickCast_Frames = {}
 
 local function CreateClickSets(self)

@@ -128,8 +128,8 @@ L["每次最多购买"] = "Purchase up to %d at a time"
 L["光标"] = "cursor"
 L["当前"] = "current"
 
--- 单位框体
-L["单位框体"] = "Unit Frames"
+-- 单位框架
+L["单位框架"] = "Unit Frames"
 L["样式"] =  "Style"
 L["总是显示生命值"] = "Always show HP"
 L["总是显示生命值提示"] = "disable to show HP only when it's not full."
