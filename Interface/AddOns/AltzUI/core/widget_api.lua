@@ -368,6 +368,12 @@ T.setStripeBg = function(bd_frame, anchor)
 	tex:SetBlendMode("ADD")
 end
 
+T.setStripBD = function(frame)
+	local bd = T.createBackdrop(frame, .6)
+	T.setStripeBg(bd)
+	return bd
+end
+
 ----------------------------
 -- 			模型		  --
 ----------------------------

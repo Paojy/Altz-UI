@@ -198,8 +198,7 @@ local MBCF_Frame = CreateFrame("Frame", "MinimapButtonCollectFrame", Minimap)
 MBCF_Frame:SetHeight(20)
 MBCF_Frame.buttons = {}
 
-MBCF_Frame.backdrop = T.createBackdrop(MBCF_Frame, .5)
-T.setStripeBg(MBCF_Frame.backdrop)
+T.setStripBD(MBCF_Frame)
 
 local MBCF_Button = CreateFrame("Frame", "MinimapButtonCollectFrame_Toggle", Minimap)
 MBCF_Button:SetFrameStrata("MEDIUM")
@@ -584,7 +583,8 @@ MainMenuBarBackpackButton:SetNormalTexture(textures.normal)
 MainMenuBarBackpackButton:SetPushedTexture(textures.pushed)
 MainMenuBarBackpackButton:SetHighlightTexture(textures.hover)
 MainMenuBarBackpackButton.SlotHighlightTexture:SetTexture(textures.checked)
-MainMenuBarBackpackButton.backdrop = T.createBackdrop(MainMenuBarBackpackButton)
+
+T.createBackdrop(MainMenuBarBackpackButton)
 
 MainMenuBarBackpackButton.Icon = MainMenuBarBackpackButton:CreateTexture(nil, "ARTWORK")
 MainMenuBarBackpackButton.Icon:SetAllPoints(MainMenuBarBackpackButton)
@@ -974,8 +974,7 @@ AFK_Frame:SetPoint("BOTTOMLEFT", WorldFrame, "BOTTOMLEFT", -5, -5)
 AFK_Frame:SetPoint("TOPRIGHT", WorldFrame, "BOTTOMRIGHT", 5, 60)
 AFK_Frame:Hide()
 
-AFK_Frame.backdrop = T.createBackdrop(AFK_Frame, .6)
-T.setStripeBg(AFK_Frame.backdrop)
+T.setStripBD(AFK_Frame)
 
 AFK_Frame.petmodel = T.CreateCreatureModel(AFK_Frame, 120, 120, {"CENTER", AFK_Frame, "TOPRIGHT", -190, 0}, 42522, {-0.5, 0, 0})
 

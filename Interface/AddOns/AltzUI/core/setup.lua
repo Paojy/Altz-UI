@@ -6,8 +6,7 @@ TutorialsFrame:SetSize(700, 230)
 TutorialsFrame:SetPoint("CENTER")
 TutorialsFrame:Hide()
 
-TutorialsFrame.backdrop = T.createBackdrop(TutorialsFrame, .5)
-T.setStripeBg(TutorialsFrame.backdrop)
+T.setStripBD(TutorialsFrame)
 
 local step = 0
 local function CreateTutorialsStepFrame(title, text)

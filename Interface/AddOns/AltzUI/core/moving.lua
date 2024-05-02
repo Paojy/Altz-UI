@@ -347,8 +347,7 @@ SpecMover:SetClampedToScreen(true)
 SpecMover:SetMovable(true)
 SpecMover:EnableMouse(true)
 
-SpecMover.backdrop = T.createBackdrop(SpecMover, .5)
-T.setStripeBg(SpecMover.backdrop)
+T.setStripBD(SpecMover)
 
 SpecMover.reset_all = T.ClickTexButton(SpecMover, {"TOPRIGHT", SpecMover, "TOPRIGHT", -3, -3}, [[Interface\AddOns\AltzUI\media\icons\refresh.tga]], L["重置"])
 SpecMover.reset_all:SetScript("OnClick", function()
