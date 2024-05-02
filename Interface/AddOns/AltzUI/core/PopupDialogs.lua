@@ -82,3 +82,13 @@ StaticPopupDialogs[G.uiname.."hideAFKtips"] = {
 	whileDead = true,
 	preferredIndex = 3,
 }
+
+--====================================================--
+--[[                 -- Blz fix --                  ]]--
+--====================================================--
+
+T.RegisterEnteringWorldCallback(function()
+	if UnitIsDead("player") then
+		StaticPopup_Show("DEATH")
+	end
+end)
