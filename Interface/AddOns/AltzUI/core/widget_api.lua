@@ -178,9 +178,9 @@ T.FormatTime = function(s)
 		return format("%dh", floor(s/hour + 0.5))
 	elseif s >= minute then
 		return format("%dm", floor(s/minute + 0.5))
+	else
+		return format("%d", math.fmod(s, minute))
 	end
-
-	return format("%d", math.fmod(s, minute))
 end
 
 -- 染色
