@@ -34,7 +34,6 @@ end
 
 local blizzHider = CreateFrame("Frame", "Altz_BizzardHider")
 blizzHider:RegisterEvent("PLAYER_LOGIN")
-blizzHider:RegisterEvent("ADDON_LOADED")
 blizzHider:Hide()
 T.blizzHider = blizzHider
 
@@ -56,17 +55,6 @@ function blizzHider:PLAYER_LOGIN()
 		texture:SetTexture(nil)
 	end
 end
-
-function blizzHider:ADDON_LOADED(addon)
-	if addon == "Blizzard_BindingUI" then
-		if QuickKeybindFrame.phantomExtraActionButton then
-			QuickKeybindFrame.phantomExtraActionButton.Show = QuickKeybindFrame.phantomExtraActionButton.Hide
-			QuickKeybindFrame.phantomExtraActionButton:Hide()
-			blizzHider:UnregisterEvent("ADDON_LOADED")
-		end
-	end
-end
-
 
 --remove OverrideBar textures
 local textureList =  {
