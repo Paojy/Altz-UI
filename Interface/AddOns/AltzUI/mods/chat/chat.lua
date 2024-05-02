@@ -2,6 +2,9 @@
 
 local chatwindownum = NUM_CHAT_WINDOWS
 
+--====================================================--
+--[[              -- 聊天框美化 --                  ]]--
+--====================================================--
 local ChatFrameTexturesDefualt = {}
 local function BackupChatFrameBg()
 	for i = 1, chatwindownum do
@@ -152,30 +155,67 @@ EventFrame:SetScript("OnEvent", function(self, event, arg1)
 	end
 end)
 
-function FloatingChatFrame_OnMouseScroll(self, delta)
-	if ( delta > 0 ) then
-		if IsModifierKeyDown() then
-			self:ScrollToTop()
-		else
-			self:ScrollUp()
-		end
-	else
-		if IsModifierKeyDown() then
-			self:ScrollToBottom()
-		else
-			self:ScrollDown()
-		end
-	end
-end
+--====================================================--
+--[[       -- 战网讯息和快速加入按钮 --             ]]--
+--====================================================--
+QuickJoinToastButton:ClearAllPoints()
+QuickJoinToastButton:SetPoint("LEFT", ChatFrame1.editBox, "LEFT", 5, 0)
+QuickJoinToastButton.SetPoint = function() end
+
+ChatAlertFrame:ClearAllPoints()
+ChatAlertFrame:SetPoint("BOTTOMLEFT", QuickJoinToastButton, "TOPLEFT", 0, 20)
 
 BNToastFrame:SetClampedToScreen(true)
 
 T.createBackdrop(GeneralDockManagerOverflowButtonList, .5)
+--====================================================--
+--[[                -- 复制聊天 --                  ]]--
+--====================================================--
 
-QuickJoinToastButton:ClearAllPoints()
-QuickJoinToastButton:SetPoint("BOTTOMLEFT", ChatFrame1.editBox, "TOPLEFT", 5, 5)
-QuickJoinToastButton.SetPoint = function() end
-T.FrameFader(QuickJoinToastButton)
+local frame = CreateFrame("Frame", nil, UIParent)
+frame:SetFrameStrata("DIALOG")
+frame:SetPoint("CENTER")
+frame:SetSize(700, 400)
+frame:Hide()
 
-ChatAlertFrame:ClearAllPoints()
-ChatAlertFrame:SetPoint("BOTTOMLEFT", QuickJoinToastButton, "TOPLEFT", 0, 20)
+T.setStripBD(frame)
+
+frame.close = CreateFrame("Button", nil, frame, "UIPanelCloseButton")
+frame.close:SetPoint("TOPRIGHT", frame)
+T.ReskinClose(frame.close)
+
+local copy_box = T.EditboxMultiLine(frame, 640, 380, {"TOPLEFT", 10, -10})
+
+copy_box.button1:Hide()
+copy_box.button2:Hide()
+
+copy_box.edit:SetScript("OnEscapePressed", function(self) 
+	frame:Hide()
+	self:SetText("")
+end)
+
+local chatcopy_button = T.ClickTexButton(UIParent, {"LEFT", QuickJoinToastButton, "RIGHT", 0, 0}, [[Interface\Buttons\UI-GuildButton-PublicNote-Up]], nil, 20, L["复制聊天"])
+
+local chat_lines = {}
+
+chatcopy_button:SetScript("OnClick", function()
+	if not frame:IsShown() then
+		local chatframe = SELECTED_DOCK_FRAME
+		chat_lines = table.wipe(chat_lines)
+		
+		for i = 1, chatframe:GetNumMessages() do
+			local message = chatframe:GetMessageInfo(i)
+			message = message:gsub("|T[^|]+|t", "") -- 去掉材质
+			table.insert(chat_lines, message)
+		end
+
+		copy_box.edit:SetText(table.concat(chat_lines, "\n"))	
+		copy_box:UpdateScrollChildRect()
+		
+		frame:Show()
+	else
+		frame:Hide()
+	end
+end)
+
+T.GroupFader({QuickJoinToastButton, chatcopy_button})

@@ -66,3 +66,19 @@ for i = 1, NUM_CHAT_WINDOWS do
         end   
     end 
 end
+
+function FloatingChatFrame_OnMouseScroll(self, delta)
+	if ( delta > 0 ) then
+		if IsModifierKeyDown() then
+			self:ScrollToTop()
+		else
+			self:ScrollUp()
+		end
+	else
+		if IsModifierKeyDown() then
+			self:ScrollToBottom()
+		else
+			self:ScrollDown()
+		end
+	end
+end
