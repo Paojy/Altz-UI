@@ -3,11 +3,10 @@
 hooksecurefunc("ActionButton_UpdateRangeIndicator", function(self)
 	if not aCoreCDB["ActionbarOptions"]["rangecolor"] then return end
 	
-	--print(self:GetName())
+	local ID = self.action
 	local Icon = self.icon
-	local NormalTexture = self.NormalTexture
-    local ID = self.action
-	
+	local NormalTexture = self:GetNormalTexture()
+    
 	if not ID then return end
 
 	local IsUsable = IsUsableAction(ID)
@@ -26,10 +25,5 @@ hooksecurefunc("ActionButton_UpdateRangeIndicator", function(self)
 				NormalTexture:SetVertexColor(1.0, 1.0, 1.0)
 			end
 		end
-	else
-		--Icon:SetVertexColor(0, 0.5, 1.0)
-		--if NormalTexture then
-		--	NormalTexture:SetVertexColor(0, 0.5, 1.0)
-		--end
 	end
 end)
