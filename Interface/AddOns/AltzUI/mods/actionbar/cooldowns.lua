@@ -2,7 +2,11 @@
 local T, C, L, G = unpack(select(2, ...))
 
 local format, floor, GetTime = string.format, math.floor, GetTime
-local Multiplier = 0.8
+local cd_frames = {}
+
+--====================================================--
+--[[                    -- API --                   ]]--
+--====================================================--
 
 local function GetFormattedTime(s)
 	if s>3600 then
@@ -22,8 +26,8 @@ local function Timer_OnUpdate(self, elapsed)
 	if self.text:IsShown() then
 		if self.nextUpdate>0 then
 			self.nextUpdate = self.nextUpdate - elapsed
-		elseif self.Duration then
-			local remain = self.Duration - (GetTime() - self.start)
+		elseif self.duration then
+			local remain = self.duration - (GetTime() - self.start)
 			if floor(remain + 0.5) > 0 then
 				local time, nextUpdate = GetFormattedTime(remain)
 				self.text:SetText(time)
@@ -35,8 +39,49 @@ local function Timer_OnUpdate(self, elapsed)
 	end
 end
 
+local function UpdateTextAlpha(cd)
+	if aCoreCDB["ActionbarOptions"]["cooldown_number"] then
+		local frameName = cd.GetName and cd:GetName() or ""
+		if strfind(frameName, "WeakAuras") and not aCoreCDB["ActionbarOptions"]["cooldown_number_wa"] then
+			cd.text:SetAlpha(0)
+		else
+			cd.text:SetAlpha(1)
+		end
+	else
+		cd.text:SetAlpha(0)
+	end
+end
+
+T.CooldownNumber_Edit = function()
+	for k, cd in pairs(cd_frames) do
+		UpdateTextAlpha(cd)
+		
+		local fontsize = min(aCoreCDB["ActionbarOptions"]["cooldownsize"], cd:GetWidth()*.9, cd:GetHeight()*.9)
+		cd.text:SetFont(G.numFont, fontsize, "OUTLINE")
+	end
+end
+
+--====================================================--
+--[[                 -- Update --                   ]]--
+--====================================================--
 local hooked = {}
 local active = {}
+
+local EventFrame = CreateFrame('Frame')
+EventFrame:SetScript('OnEvent', function(self, event)	
+	if event == 'ACTIONBAR_UPDATE_COOLDOWN' then
+		for cooldown in pairs(active) do
+			local button = cooldown:GetParent()
+			local start, dur, enable = GetActionCooldown(button.action)
+			cooldown:SetCooldown(start, dur)
+		end
+	elseif event == "PLAYER_LOGIN" then
+		SetCVar("countdownForCooldowns", 0)
+	end
+end)
+
+EventFrame:RegisterEvent('ACTIONBAR_UPDATE_COOLDOWN')
+EventFrame:RegisterEvent('PLAYER_LOGIN')
 
 local function actionButton_Register(frame)
 	local cooldown = frame.cooldown
@@ -47,84 +92,49 @@ local function actionButton_Register(frame)
 	end
 end
 
-T.CooldownNumber_Edit = function()
-	for k, v in pairs(active) do
-		if k.text then
-			k.text:SetFont(G.numFont,  aCoreCDB["ActionbarOptions"]["cooldownsize"], "OUTLINE")
-		end
-	end
-end
-
-local Init = function()
+T.RegisterInitCallback(function()
 	local methods = getmetatable(ActionButton1Cooldown).__index
-	hooksecurefunc(methods, "SetCooldown", function(self, start, Duration)
-		if not aCoreCDB["ActionbarOptions"]["cooldown_number"] then return end
-		
+	
+	hooksecurefunc(methods, "SetCooldown", function(self, start, dur)
+
 		if self.noshowcd or self:IsForbidden() then
 			return
-		
-		-- WA的图标不加冷却时间
-		elseif not aCoreCDB["ActionbarOptions"]["cooldown_number_wa"] then
-			local frameName = self.GetName and self:GetName() or ""
-			if strfind(frameName, "WeakAuras") then
-				return
-			end
-			
-		-- 团队框架上的图标不加冷却时间	
 		elseif self:GetParent() then
 			local parent_name = self:GetParent():GetName()
-			if parent_name and parent_name:find("CompactRaidFrame") then
+			if parent_name and parent_name:find("CompactRaidFrame") then -- 暴雪团队框架上的图标不加冷却时间	
 				return
 			end
 		end
 		
-		if (self:GetWidth() >= 15) and (self:GetHeight() >= 15) then
-			local s, d = tonumber(start), tonumber(Duration)
+		-- 添加时间
+		if self:GetWidth() >= 10 and self:GetHeight() >= 10 then
+			local s, d = tonumber(start), tonumber(dur)
 			if s and d then
-				if s > 0 and d > 2.5 then	
+				if s > 0 and d > 2.5 then -- CD > 2.5 显示
 					self.start = s
-					self.Duration = d
-					self.nextUpdate = 0
-			
-					if (self:GetWidth() >= 25) and (self:GetHeight() >= 25) then
-						if not self.text then
-							self.text = T.createnumber(self, "OVERLAY", aCoreCDB["ActionbarOptions"]["cooldownsize"], "OUTLINE", "CENTER")
-							self.text:SetTextColor(.4, .95, 1)
-							self.text:SetPoint("CENTER", 0, 0)					
-						else
-							self.text:SetFont(G.numFont, aCoreCDB["ActionbarOptions"]["cooldownsize"], "OUTLINE")
-						end
-					else -- 15~25尺寸的框体
-						if not self.text then
-							self.text = T.createnumber(self, "OVERLAY", self:GetWidth()*.7+1, "OUTLINE", "CENTER")
-							self.text:SetTextColor(.4, .95, 1)
-							self.text:SetPoint("CENTER", 0, 0)						
-						else
-							self.text:SetFont(G.numFont, self:GetWidth()*.7+1, "OUTLINE")
-						end
+					self.duration = d
+					self.nextUpdate = 0		
+					if not self.text then
+						local fontsize = min(aCoreCDB["ActionbarOptions"]["cooldownsize"], self:GetWidth()*.9, self:GetHeight()*.9)
+						self.text = T.createnumber(self, "OVERLAY", fontsize, "OUTLINE", "CENTER")
+						self.text:SetTextColor(.4, .95, 1)
+						self.text:SetPoint("CENTER")
+						table.insert(cd_frames, self)
 					end
 					
 					if not self:GetScript("OnUpdate") then
 						self:SetScript("OnUpdate", Timer_OnUpdate)
-					end
+					end		
 					
+					UpdateTextAlpha(self)
+
 					self.text:Show()
-					
-				elseif self.text then
+				
+				elseif self.text then -- 无CD或GCD 隐藏
+				
 					self.text:Hide()
+					
 				end
-			end
-		elseif self.text then
-			if start>0 and Duration>2.5 then
-				self.start = start
-				self.Duration = Duration
-				self.nextUpdate = 0
-				if not self:GetScript("OnUpdate") then
-					self:SetScript("OnUpdate", Timer_OnUpdate)
-					self.text:Show()
-				end
-			else
-				self.text:Hide()
 			end
 		end
 	end)
@@ -134,22 +144,5 @@ local Init = function()
 	end
 
 	hooksecurefunc(ActionBarButtonEventsFrame, 'RegisterFrame', actionButton_Register)
-end
-
-T.RegisterInitCallback(Init)
-
-local EventFrame = CreateFrame('Frame')
-EventFrame:SetScript('OnEvent', function(self, event)	
-	if event == 'ACTIONBAR_UPDATE_COOLDOWN' then
-		for cooldown in pairs(active) do
-			local button = cooldown:GetParent()
-			local start, Duration, enable = GetActionCooldown(button.action)
-			cooldown:SetCooldown(start, Duration)
-		end
-	elseif event == "PLAYER_LOGIN" then
-		SetCVar("countdownForCooldowns", 0)
-	end
 end)
 
-EventFrame:RegisterEvent('ACTIONBAR_UPDATE_COOLDOWN')
-EventFrame:RegisterEvent('PLAYER_LOGIN')
