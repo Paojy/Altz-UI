@@ -100,7 +100,6 @@ function T.FrameFader(frame)
 	if not frame then return end
 	
 	frame:EnableMouse(true)
-	frame:SetAlpha(frame.fadeOut_alpha or fadeOut_alpha) -- 初始透明度
 	
 	frame:HookScript("OnEnter", function(self)
 		if eventmode ~= 1 then
@@ -112,6 +111,10 @@ function T.FrameFader(frame)
 		if eventmode ~= 1 then
 			UIFrameFadeOut(frame, fadeOut_time, frame:GetAlpha(), frame.fadeOut_alpha or fadeOut_alpha)
 		end
+	end)
+	
+	T.RegisterEnteringWorldCallback(function()
+		frame:SetAlpha(frame.fadeOut_alpha or fadeOut_alpha) -- 初始透明度
 	end)
 end
 
@@ -129,7 +132,9 @@ function T.ChildrenFader(parent, children)
 	if not parent or not children then return end
 	
 	for i, f in pairs(children) do
-		f:SetAlpha(parent.fadeOut_alpha or fadeOut_alpha) -- 初始透明度
+		T.RegisterEnteringWorldCallback(function()
+			f:SetAlpha(parent.fadeOut_alpha or fadeOut_alpha) -- 初始透明度
+		end)
 		f:EnableMouse(true)
 	end
 	
@@ -156,7 +161,9 @@ function T.GroupFader(framegroup)
 	if not framegroup then return end
 	
 	for i, frame in pairs(framegroup) do
-		frame:SetAlpha(frame.fadeOut_alpha or fadeOut_alpha) -- 初始透明度
+		T.RegisterEnteringWorldCallback(function()
+			frame:SetAlpha(frame.fadeOut_alpha or fadeOut_alpha) -- 初始透明度
+		end)	
 		frame:EnableMouse(true)
 		
 		frame:HookScript("OnEnter", function(self)
