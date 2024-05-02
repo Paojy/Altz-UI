@@ -427,7 +427,7 @@ T.createDR = createDR
 --====================================================--
 --[[                -- 普通按钮 --                ]]--
 --====================================================--
-local ClickButton = function(parent, width, points, text, tex)
+local ClickButton = function(parent, width, points, text, tex, tip)
 	local bu = CreateFrame("Button", nil, parent, "UIPanelButtonTemplate")
 	
 	if points then
@@ -450,6 +450,17 @@ local ClickButton = function(parent, width, points, text, tex)
 		bu.tex:SetTexture(tex)
 	end
 
+	if tip then
+		bu:SetScript("OnEnter", function(self) 
+			GameTooltip:SetOwner(self, "ANCHOR_RIGHT",  -20, 10)
+			GameTooltip:AddLine(tip)
+			GameTooltip:Show() 
+		end)
+		bu:SetScript("OnLeave", function(self)
+			GameTooltip:Hide()
+		end)
+	end
+	
 	return bu
 end
 T.ClickButton = ClickButton
@@ -763,30 +774,22 @@ local EditboxMultiLine = function(parent, width, height, points, name, tip)
 	box.bottom_text = T.createtext(box, "OVERLAY", 10, "OUTLINE", "RIGHT")
 	box.bottom_text:SetPoint("BOTTOMRIGHT", box, "BOTTOMRIGHT", -2, 2)
 
-	box.anchor = CreateFrame("Frame", nil, box)
-	box.anchor:SetPoint("TOP", box, "TOP", 0, -3)
-	box.anchor:SetWidth(box:GetWidth())
-	box.anchor:SetHeight(box:GetHeight())
-	box.anchor:SetFrameLevel(box:GetFrameLevel()+1)
-	box:SetScrollChild(box.anchor)
-	
-	box.edit = CreateFrame("EditBox", nil, box.anchor)
-	box.edit:SetTextInsets(5, 5, 5, 5)
-	box.edit:SetFrameLevel(box.anchor:GetFrameLevel()+1)
-	box.edit:SetAllPoints()
+	box.edit = CreateFrame("EditBox", nil, box)
+	box.edit:SetWidth(width or 200)
+	box:SetScrollChild(box.edit)
 	
 	box.edit:SetFont(G.norFont, 12, "OUTLINE")
+	box.edit:SetTextInsets(5, 5, 5, 5)
 	box.edit:SetMultiLine(true)
 	box.edit:EnableMouse(true)
 	box.edit:SetAutoFocus(false)
 	
 	box.edit:SetScript("OnChar", function(self) box.bg:SetBackdropBorderColor(1, 1, 0) end)
 	box.edit:SetScript("OnEditFocusGained", function(self) box.bg:SetBackdropBorderColor(1, 1, 1) end)
-	box.edit:SetScript("OnEditFocusLost", function(self) box.bg:SetBackdropBorderColor(.5, .5, .5) end)
-	
+	box.edit:SetScript("OnEditFocusLost", function(self) box.bg:SetBackdropBorderColor(0, 0, 0) end)
+
 	box.button1 = ClickButton(box, 99, {"TOPRIGHT", box, "BOTTOM", -1, -2}, ACCEPT)	
 	box.button2 = ClickButton(box, 99, {"TOPLEFT", box, "BOTTOM", 1, -2}, CANCEL)
-	
 
 	box.Enable = function()
 		box.top_text:SetTextColor(1, 1, 1, 1)		
