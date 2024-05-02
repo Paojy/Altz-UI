@@ -26,8 +26,7 @@ GUI:SetFrameStrata("MEDIUM")
 GUI:SetFrameLevel(2)
 GUI:Hide()
 
-GUI.bd = T.createBackdrop(GUI, .5)
-T.setStripeBg(GUI.bd)
+T.setStripBD(GUI)
 
 -- 移动
 GUI:SetClampedToScreen(true)
@@ -112,31 +111,28 @@ GUI.title:SetPoint("TOP", GUI, "TOP", 0, 8)
 GUI.title:SetText(T.color_text("AltzUI "..G.Version))
 
 -- 输入框和按钮
-GUI.editbox = T.EditboxWithButton(GUI, 200, {"TOPLEFT", GUI, "BOTTOMLEFT", 5, -13}, L["复制粘贴"])
-GUI.editbox:Hide()
+GUI.EditFrame = CreateFrame("Frame", nil, GUI)
+GUI.EditFrame:SetPoint("TOPLEFT", GUI, "BOTTOMLEFT", 0, -3)
+GUI.EditFrame:SetPoint("TOPRIGHT", GUI, "BOTTOMRIGHT", 0, -3)
+GUI.EditFrame:SetHeight(40)
+GUI.EditFrame:Hide()
+T.setStripBD(GUI.EditFrame)
 
-GUI.editbox:SetPoint("BOTTOMRIGHT", GUI, "BOTTOMRIGHT", -5, -33)
+GUI.editbox = T.EditboxWithButton(GUI.EditFrame, 200, {"TOPLEFT", 5, -10}, L["复制粘贴"])
 
 GUI.editbox:SetScript("OnEditFocusGained", function(self) self:HighlightText() end)
 GUI.editbox:SetScript("OnEditFocusLost", function(self) self:HighlightText(0,0) end)
 GUI.editbox:HookScript("OnHide", function(self) self.button:Hide() end)
 
-GUI.editbg = T.createBackdrop(GUI.editbox, .5)
-GUI.editbg:ClearAllPoints()
-GUI.editbg:SetPoint("TOPLEFT", GUI, "BOTTOMLEFT", -3, -3)
-GUI.editbg:SetPoint("BOTTOMRIGHT", GUI, "BOTTOMRIGHT", 3, -40)
-T.setBackdrop(GUI.editbg, .5)
-T.setStripeBg(GUI.editbg)
-
 GUI.GitHub = T.ClickTexButton(GUI, {"BOTTOMLEFT", GUI, "BOTTOMLEFT", 5, 0}, [[Interface\AddOns\AltzUI\media\icons\GitHub.tga]], "GitHub")
 GUI.GitHub:SetScript("OnClick", function()
 	if GUI.editbox.type ~= "GitHub" then
-		GUI.editbox:Show()
+		GUI.EditFrame:Show()
 		GUI.editbox.button:Hide()
 		GUI.editbox:SetText(G.links["GitHub"])
 		GUI.editbox.type = "GitHub"
 	else
-		GUI.editbox:Hide()
+		GUI.EditFrame:Hide()
 		GUI.editbox.type = nil
 	end
 end)
@@ -144,12 +140,12 @@ end)
 GUI.wowi = T.ClickTexButton(GUI, {"LEFT", GUI.GitHub, "RIGHT", 2, 0}, [[Interface\AddOns\AltzUI\media\icons\EJ.tga]], "WoWInterface", 20)
 GUI.wowi:SetScript("OnClick", function()
 	if GUI.editbox.type ~= "WoWInterface" then
-		GUI.editbox:Show()
+		GUI.EditFrame:Show()
 		GUI.editbox.button:Hide()
 		GUI.editbox:SetText(G.links["WoWInterface"])
 		GUI.editbox.type = "WoWInterface"
 	else
-		GUI.editbox:Hide()
+		GUI.EditFrame:Hide()
 		GUI.editbox.type = nil
 	end
 end)
@@ -157,12 +153,12 @@ end)
 GUI.curse = T.ClickTexButton(GUI, {"LEFT", GUI.wowi, "RIGHT", 2, 0}, [[Interface\AddOns\AltzUI\media\icons\Spellbook.tga]], "Curse", 20)
 GUI.curse:SetScript("OnClick", function()
 	if GUI.editbox.type ~= "Curse" then
-		GUI.editbox:Show()
+		GUI.EditFrame:Show()
 		GUI.editbox.button:Hide()
 		GUI.editbox:SetText(G.links["Curse"])
 		GUI.editbox.type = "Curse"
 	else
-		GUI.editbox:Hide()
+		GUI.EditFrame:Hide()
 		GUI.editbox.type = nil
 	end
 end)
@@ -170,12 +166,12 @@ end)
 GUI.export = T.ClickTexButton(GUI, {"LEFT", GUI.curse, "RIGHT", 2, 0}, [[Interface\AddOns\AltzUI\media\arrow.tga]], L["导出"], 20)
 GUI.export:SetScript("OnClick", function()	
 	if GUI.editbox.type ~= "export" then
-		GUI.editbox:Show()
+		GUI.EditFrame:Show()
 		GUI.editbox.button:Hide()
 		T.ExportSettings(GUI.editbox)
 		GUI.editbox.type = "export"
 	else
-		GUI.editbox:Hide()
+		GUI.EditFrame:Hide()
 		GUI.editbox.type = nil
 	end
 end)
@@ -185,7 +181,7 @@ T.SetupArrow(GUI.export.hl_tex, "down")
 GUI.import = T.ClickTexButton(GUI, {"LEFT", GUI.export, "RIGHT", 2, 0}, [[Interface\AddOns\AltzUI\media\arrow.tga]], L["导入"], 20)
 GUI.import:SetScript("OnClick", function()	
 	if GUI.editbox.type ~= "import" then
-		GUI.editbox:Show()
+		GUI.EditFrame:Show()
 		GUI.editbox.button:Show()
 		GUI.editbox:SetScript("OnEnterPressed", function()
 			T.ImportSettings(GUI.editbox:GetText())
@@ -193,7 +189,7 @@ GUI.import:SetScript("OnClick", function()
 		GUI.editbox:SetText("")
 		GUI.editbox.type = "import"
 	else
-		GUI.editbox:Hide()
+		GUI.EditFrame:Hide()
 		GUI.editbox.type = nil
 	end
 end)
@@ -202,7 +198,7 @@ T.SetupArrow(GUI.import.hl_tex, "up")
 
 GUI.reset = T.ClickTexButton(GUI, {"LEFT", GUI.import, "RIGHT", 2, 0}, [[Interface\AddOns\AltzUI\media\icons\refresh.tga]], L["重置"])
 GUI.reset:SetScript("OnClick", function()
-	GUI.editbox:Hide()
+	GUI.EditFrame:Hide()
 	GUI.editbox.type = nil
 	
 	StaticPopupDialogs[G.uiname.."Reset Confirm"].text = format(L["重置确认"], T.color_text("Altz UI"))
@@ -218,7 +214,7 @@ end)
 
 GUI.unlock = T.ClickTexButton(GUI, {"LEFT", GUI.reset, "RIGHT", 2, 0}, [[Interface\AddOns\AltzUI\media\icons\lock.tga]], L["解锁框体"], 20)
 GUI.unlock:SetScript("OnClick", function()	
-	GUI.editbox:Hide()
+	GUI.EditFrame:Hide()
 	GUI.editbox.type = nil
 	
 	T.UnlockAll()
@@ -240,7 +236,7 @@ end)
 GUI:HookScript("OnHide", function()
 	StaticPopup_Hide(G.uiname.."Import Confirm")
 	StaticPopup_Hide(G.uiname.."Reset Confirm")
-	GUI.editbox:Hide()
+	GUI.EditFrame:Hide()
 	GUI.editbox.type = nil
 end)
 
@@ -275,15 +271,14 @@ local function CreateOptionPage(name, title, parent, orientation, db_key)
 		end)
 	end
 	
-	local tab = CreateFrame("Frame", nil, parent, "BackdropTemplate")
+	local tab = CreateFrame("Frame", nil, parent)
 	tab:SetFrameLevel(parent:GetFrameLevel()+2)
 	tab:EnableMouse(true)
 	
-	if parent == GUI then
-		T.setBackdrop(tab, .5)
-		T.setStripeBg(tab)
+	if parent == GUI then	
+		tab.backdrop = T.setStripBD(tab)
 	else
-		T.setBackdrop(tab, 0)
+		tab.backdrop = T.createBackdrop(tab, 0)
 	end
 	
 	tab.text = T.createtext(tab, "OVERLAY", 12, "OUTLINE", "LEFT")
@@ -296,7 +291,7 @@ local function CreateOptionPage(name, title, parent, orientation, db_key)
 	frame.hooked_tab = tab
 	
 	if orientation == "VERTICAL" then	
-		tab:SetSize(130, 25)
+		tab:SetSize(130, 20)
 		tab:SetPoint("TOPLEFT", parent, "TOPRIGHT", 2, -30*tab.index)
 		
 		tab.text:SetJustifyH("LEFT")
@@ -305,17 +300,17 @@ local function CreateOptionPage(name, title, parent, orientation, db_key)
 		tab:SetScript("OnMouseDown", function()
 			tab.owner:Show()
 			tab:SetPoint("TOPLEFT", parent, "TOPRIGHT", 8, -30*tab.index)
-			tab:SetBackdropBorderColor(unpack(G.addon_color))
+			tab.backdrop:SetBackdropBorderColor(unpack(G.addon_color))
 			for i, t in pairs(parent.tabs) do
 				if t ~= tab then
 					t.owner:Hide()
 					t:SetPoint("TOPLEFT", parent, "TOPRIGHT", 2,  -30*t.index)
-					t:SetBackdropBorderColor(0, 0, 0)
+					t.backdrop:SetBackdropBorderColor(0, 0, 0)
 				end
 			end
 		end)
 	else
-		tab:SetSize(tab.text:GetWidth()+10, 25)
+		tab:SetSize(tab.text:GetWidth()+10, 20)
 		if tab.index == 1 then
 			tab:SetPoint("BOTTOMLEFT", parent, "TOPLEFT", 15, 2)
 		else
@@ -327,11 +322,11 @@ local function CreateOptionPage(name, title, parent, orientation, db_key)
 		
 		tab:SetScript("OnMouseDown", function()
 			tab.owner:Show()
-			tab:SetBackdropBorderColor(unpack(G.addon_color))
+			tab.backdrop:SetBackdropBorderColor(unpack(G.addon_color))
 			for i, t in pairs(parent.tabs) do
 				if t ~= tab then
 					t.owner:Hide()
-					t:SetBackdropBorderColor(0, 0, 0)
+					t.backdrop:SetBackdropBorderColor(0, 0, 0)
 				end
 			end
 		end)
@@ -1785,8 +1780,6 @@ T.Checkbutton_db(ActionbarInnerframe.cdflash, 30, 60, L["启用"], "cdflash_enab
 
 T.Slider_db(ActionbarInnerframe.cdflash, "short", 30, 100, L["图标大小"], "cdflash_size", 1, 15, 100, 1)
 
-T.Slider_db(ActionbarInnerframe.cdflash, "short", 230, 100, L["透明度"], "cdflash_alpha", 1, 30, 100, 1)
-
 CreateDividingLine(ActionbarInnerframe.cdflash, -120)
 
 ActionbarInnerframe.cdflash.ignorespell_list = T.CreateAuraListOption(ActionbarInnerframe.cdflash, {"TOPLEFT", 30, -125}, 185, L["黑名单"]..SPELLS, "cdflash_ignorespells")
@@ -1795,8 +1788,7 @@ CreateDividingLine(ActionbarInnerframe.cdflash, -290)
 
 ActionbarInnerframe.cdflash.ignoreitem_list = T.CreateItemListOption(ActionbarInnerframe.cdflash, {"TOPLEFT", 30, -300}, 185, L["黑名单"]..ITEMS, "cdflash_ignoreitems")
 
-T.createDR(ActionbarInnerframe.cdflash.cdflash_enable, 
-ActionbarInnerframe.cdflash.cdflash_size, ActionbarInnerframe.cdflash.cdflash_alpha, 
+T.createDR(ActionbarInnerframe.cdflash.cdflash_enable, ActionbarInnerframe.cdflash.cdflash_size, 
 ActionbarInnerframe.cdflash.ignorespell_list, ActionbarInnerframe.cdflash.ignoreitem_list)
 
 --====================================================--

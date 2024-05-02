@@ -630,7 +630,6 @@ local Character_default_Settings = {
 		-- 冷却提示
 		cdflash_enable = true,
 		cdflash_size = 60,
-		cdflash_alpha = 100,
 		cdflash_ignorespells = {},
 		cdflash_ignoreitems = {
 			[6948] = true,
