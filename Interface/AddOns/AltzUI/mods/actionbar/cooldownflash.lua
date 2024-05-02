@@ -33,9 +33,11 @@ flash:SetScript("OnUpdate", function(self, e)
 	end
 end)
 
-T.RegisterInitCallback(function()
+T.UpdateCooldownFlashSize = function()
 	flash:SetSize(aCoreCDB["ActionbarOptions"]["cdflash_size"],aCoreCDB["ActionbarOptions"]["cdflash_size"])
-end)
+end
+
+T.RegisterInitCallback(T.UpdateCooldownFlashSize)
 
 --====================================================--
 --[[                 -- Update --                   ]]--

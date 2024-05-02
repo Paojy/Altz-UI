@@ -1717,8 +1717,10 @@ local ActionbarInnerframe = CreateInnerFrame(ActionbarOptions)
 ActionbarInnerframe.common = CreateOptionPage("Actionbar Options common", L["样式"], ActionbarInnerframe, "VERTICAL", "ActionbarOptions")
 
 T.Checkbutton_db(ActionbarInnerframe.common, 30, 60, L["显示冷却时间"], "cooldown_number", L["显示冷却时间提示"])
+ActionbarInnerframe.common.cooldown_number.apply = T.CooldownNumber_Edit
 
 T.Checkbutton_db(ActionbarInnerframe.common, 30, 90, L["显示冷却时间"].." (Weakauras)", "cooldown_number_wa", L["显示冷却时间提示WA"])
+ActionbarInnerframe.common.cooldown_number_wa.apply = T.CooldownNumber_Edit
 
 T.Slider_db(ActionbarInnerframe.common, "long", 30, 140, L["冷却时间数字大小"], "cooldownsize", 1, 18, 35, 1, L["冷却时间数字大小提示"])
 ActionbarInnerframe.common.cooldownsize.apply = T.CooldownNumber_Edit
@@ -1776,9 +1778,11 @@ T.createDR(ActionbarInnerframe.common.enablefade, ActionbarInnerframe.common.fad
 
 -- 冷却提示
 ActionbarInnerframe.cdflash = CreateOptionPage("Actionbar Options cdflash", L["冷却提示"], ActionbarInnerframe, "VERTICAL", "ActionbarOptions")
+
 T.Checkbutton_db(ActionbarInnerframe.cdflash, 30, 60, L["启用"], "cdflash_enable")
 
 T.Slider_db(ActionbarInnerframe.cdflash, "short", 30, 100, L["图标大小"], "cdflash_size", 1, 15, 100, 1)
+ActionbarInnerframe.cdflash.cdflash_size.apply = T.UpdateCooldownFlashSize
 
 CreateDividingLine(ActionbarInnerframe.cdflash, -120)
 
