@@ -16,14 +16,6 @@ StaticPopupDialogs[G.uiname.."incorrect spellID"] = {
 	preferredIndex = 3,
 }
 
-StaticPopupDialogs[G.uiname.."incorrect spellName"] = {
-	text = L["不正确的法术名称"],
-	button1 = ACCEPT, 
-	hideOnEscape = 1, 
-	whileDead = true,
-	preferredIndex = 3,
-}
-
 StaticPopupDialogs[G.uiname.."incorrect number"] = {
 	text = L["必须是一个数字"],
 	button1 = ACCEPT, 
