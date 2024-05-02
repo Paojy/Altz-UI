@@ -2083,7 +2083,7 @@ CombattextOptions.combattext_font.apply = function()
 	end
 end
 --====================================================--
---[[              -- Other Options --                ]]--
+--[[              -- Other Options --               ]]--
 --====================================================--
 local OtherOptions = CreateOptionPage("Other Options", OTHER, GUI, "VERTICAL", "OtherOptions")
 
@@ -2097,6 +2097,7 @@ CreateTitle(OtherOptions, 30, -170, L["讯息提示"])
 
 T.Checkbutton_db(OtherOptions, 30, 190, L["任务栏闪动"], "flashtaskbar", L["任务栏闪动提示"])
 T.Checkbutton_db(OtherOptions, 230, 190, L["隐藏错误提示"], "hideerrors", L["隐藏错误提示提示"])
+OtherOptions.hideerrors.apply = T.EnableErrorMsg
 T.Checkbutton_db(OtherOptions, 30, 220, L["随机奖励"], "LFGRewards", L["随机奖励提示"])
 T.Checkbutton_db(OtherOptions, 230, 220, L["稀有警报"], "vignettealert", L["稀有警报提示"])
 

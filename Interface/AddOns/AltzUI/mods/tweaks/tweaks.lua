@@ -149,21 +149,15 @@ end
 --[[-----------------------------------------------------------------------------
 隐藏错误提示
 -------------------------------------------------------------------------------]]
-T.RegisterInitCallback(function()
+T.EnableErrorMsg = function()
 	if aCoreCDB["OtherOptions"]["hideerrors"] then
 		UIErrorsFrame:UnregisterEvent('UI_ERROR_MESSAGE')
-	end
-end)
-
-local allowedErrors = { }
-eventframe:RegisterEvent('UI_ERROR_MESSAGE')
-function eventframe:UI_ERROR_MESSAGE(message)
-	if aCoreCDB["OtherOptions"]["hideerrors"] then
-		if allowedErrors[message] then
-			UIErrorsFrame:AddMessage(message, 1, .1, .1)
-		end
+	else
+		UIErrorsFrame:RegisterEvent('UI_ERROR_MESSAGE')
 	end
 end
+
+T.RegisterInitCallback(T.EnableErrorMsg)
 
 --[[-----------------------------------------------------------------------------
 Simple Vignette alert
