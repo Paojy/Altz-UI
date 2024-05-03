@@ -832,13 +832,13 @@ RFInnerframe.style = CreateOptionPage("RF Options style", L["样式"], RFInnerfr
 
 T.Slider_db(RFInnerframe.style, "long", 30, 80, L["高度"], "raidheight", 1, 10, 150, 1)
 RFInnerframe.style.raidheight.apply = function()
-	T.ApplyUFSettings({"Health", "Auras"})
+	T.ApplyUFSettings({"Health", "Auras"}, "Altz_Healerraid")
 	T.UpdateGroupSize()
 end
 
 T.Slider_db(RFInnerframe.style, "long", 30, 120, L["宽度"], "raidwidth", 1, 10, 150, 1)
 RFInnerframe.style.raidwidth.apply = function()
-	T.ApplyUFSettings({"Health", "Auras"})
+	T.ApplyUFSettings({"Health", "Auras"}, "Altz_Healerraid")
 	T.UpdateGroupSize()
 end
 
@@ -847,7 +847,7 @@ RFInnerframe.style.raidmanabars.apply = T.UpdateHealManabar
 
 T.Slider_db(RFInnerframe.style, "long", 30, 190, L["治疗法力条高度"], "raidppheight", 100, 5, 100, 5)
 RFInnerframe.style.raidppheight.apply = function()
-	T.ApplyUFSettings({"Power"})
+	T.ApplyUFSettings({"Power"}, "Altz_Healerraid")
 end
 
 T.createDR(RFInnerframe.style.raidmanabars, RFInnerframe.style.raidppheight)
@@ -864,17 +864,17 @@ end
 
 T.Checkbutton_db(RFInnerframe.style, 30, 310, L["GCD"], "showgcd", L["GCD提示"])
 RFInnerframe.style.showgcd.apply = function()
-	T.EnableUFSettings({"GCD"})
+	T.EnableUFSettings({"GCD"}, "Altz_Healerraid")
 end
 
 T.Checkbutton_db(RFInnerframe.style, 30, 340, L["治疗和吸收预估"], "healprediction", L["治疗和吸收预估提示"])
 RFInnerframe.style.healprediction.apply = function()
-	T.EnableUFSettings({"HealthPrediction"})
+	T.EnableUFSettings({"HealthPrediction"}, "Altz_Healerraid")
 end
 
 T.Checkbutton_db(RFInnerframe.style, 30, 370, L["主坦克和主助手"], "raidrole_icon", L["主坦克和主助手提示"])
 RFInnerframe.style.raidrole_icon.apply = function()
-	T.EnableUFSettings({"RaidRoleIndicator"})
+	T.EnableUFSettings({"RaidRoleIndicator"}, "Altz_Healerraid")
 end
 
 T.RadioButtonGroup_db(RFInnerframe.style, 30, 400, T.split_words(NAME,L["样式"]), "name_style", {
@@ -891,7 +891,7 @@ RFInnerframe.ind = CreateOptionPage("RF Options indicators", L["治疗指示器"
 
 T.Slider_db(RFInnerframe.ind, "long", 30, 80, L["尺寸"], "hotind_size", 1, 10, 25, 1)
 RFInnerframe.ind.hotind_size.apply = function()
-	T.ApplyUFSettings({"AltzIndicators", "Auras"})
+	T.ApplyUFSettings({"AltzIndicators", "Auras"}, "Altz_Healerraid")
 end
 
 T.RadioButtonGroup_db(RFInnerframe.ind, 30, 100, L["样式"], "hotind_style", {
@@ -908,7 +908,7 @@ RFInnerframe.ind.hotind_style.hook = function()
 end
 
 RFInnerframe.ind.hotind_style.apply = function()
-	T.EnableUFSettings({"AltzIndicators", "Auras"})
+	T.EnableUFSettings({"AltzIndicators", "Auras"}, "Altz_Healerraid")
 	RFInnerframe.ind.hotind_style.hook()
 end
 RFInnerframe.ind.hotind_style:HookScript("OnShow", RFInnerframe.ind.hotind_style.hook)
@@ -917,7 +917,7 @@ CreateDividingLine(RFInnerframe.ind, -135)
 
 RFInnerframe.ind.hotind_list = T.CreateAuraListOption(RFInnerframe.ind, {"TOPLEFT", 30, -150}, 270,  L["图标指示器"]..L["设置"], "hotind_auralist")
 RFInnerframe.ind.hotind_list.apply = function()
-	T.ApplyUFSettings({"Auras"})
+	T.ApplyUFSettings({"Auras"}, "Altz_Healerraid")
 end
 
 T.RadioButtonGroup_db(RFInnerframe.ind.hotind_list, -5, 40, L["过滤方式"], "hotind_filtertype", {
@@ -1939,7 +1939,7 @@ T.RadioButtonGroup_db(PlateInnerframe.auralist.my_filter, -5, 40, L["过滤方�
 })
 
 PlateInnerframe.auralist.my_filter.apply = function()
-	T.ApplyUFSettings({"Auras"})
+	T.ApplyUFSettings({"Auras"}, "Altz_Nameplates")
 end
 PlateInnerframe.auralist.my_filter.reset.apply = function()
 	aCoreCDB["PlateOptions"]["myfiltertype"] = nil
@@ -1958,7 +1958,7 @@ T.RadioButtonGroup_db(PlateInnerframe.auralist.other_filter, -5, 40, L["过滤�
 })
 
 PlateInnerframe.auralist.other_filter.apply = function()
-	T.ApplyUFSettings({"Auras"})
+	T.ApplyUFSettings({"Auras"}, "Altz_Nameplates")
 end
 PlateInnerframe.auralist.other_filter.reset.apply = function()
 	aCoreCDB["PlateOptions"]["otherfiltertype"] = nil
