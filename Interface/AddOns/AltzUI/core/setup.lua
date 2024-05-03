@@ -346,7 +346,7 @@ local Centralized_Layout = {
 			parent = "UIParent",	
 			a2 = "CENTER",
 			x = 250,
-			y = -130,
+			y = -150,
 		},
 	},
 	options = {
