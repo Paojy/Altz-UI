@@ -22,12 +22,8 @@ local function InvitePlayer(name)
 			if not IsRealPartyLeader() then
 				return false, L["我不能组人"]
 			end
-			if partyMemberCount == 4 then
-				if aCoreCDB["OtherOptions"]["autoinviteautoconvert"] then
-					C_PartyInfo.ConvertToRaid()
-				else
-					return false, L["小队满了"]
-				end
+			if partyMemberCount == 4 then	
+				C_PartyInfo.ConvertToRaid()
 			end
 			InviteUnit(name)
 			return true

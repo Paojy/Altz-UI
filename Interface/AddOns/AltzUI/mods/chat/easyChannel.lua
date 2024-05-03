@@ -8,7 +8,7 @@ function ChatEdit_CustomTabPressed(self)
 	local channel = self:GetAttribute("channelTarget")	
 	local header = _G[self:GetName().."Header"]
 	
-	if  (chattype == "SAY")  then
+	if (chattype == "SAY") then
 		if name then
 			--print("target",name)
 			if BNet_GetBNetIDAccount(name) then
@@ -22,133 +22,115 @@ function ChatEdit_CustomTabPressed(self)
 			end
 		elseif IsInInstance() and HasLFGRestrictions() then
 			self:SetAttribute("chatType", "INSTANCE_CHAT")
-			ChatEdit_UpdateHeader(self)
 		elseif IsInRaid() then
 			self:SetAttribute("chatType", "RAID")
-			ChatEdit_UpdateHeader(self)
 		elseif IsInGroup() then
 			self:SetAttribute("chatType", "PARTY")
-			ChatEdit_UpdateHeader(self)
 		elseif IsInGuild() then
 			self:SetAttribute("chatType", "GUILD")
-			ChatEdit_UpdateHeader(self)
 		elseif GetChannelName(2) == 2 then
 			self:SetAttribute("channelTarget", 2)
 			self:SetAttribute("chatType", "CHANNEL")
-			ChatEdit_UpdateHeader(self)
 		elseif GetChannelName(1) == 1 then
 			self:SetAttribute("channelTarget", 1)
-			self:SetAttribute("chatType", "CHANNEL")
+			self:SetAttribute("chatType", "CHANNEL")	
+		end
+		
+		if not name then
 			ChatEdit_UpdateHeader(self)
-		else
-			return
 		end
 	elseif (chattype == "BN_WHISPER") or (chattype == "WHISPER") then
 		if IsInInstance() and HasLFGRestrictions() then
 			self:SetAttribute("chatType", "INSTANCE_CHAT")
-			ChatEdit_UpdateHeader(self)
 		elseif IsInRaid() then
 			self:SetAttribute("chatType", "RAID")
-			ChatEdit_UpdateHeader(self)
 		elseif IsInGroup() then
 			self:SetAttribute("chatType", "PARTY")
-			ChatEdit_UpdateHeader(self)
 		elseif IsInGuild() then
 			self:SetAttribute("chatType", "GUILD")
-			ChatEdit_UpdateHeader(self)
 		elseif GetChannelName(2) == 2 then
 			self:SetAttribute("channelTarget", 2)
 			self:SetAttribute("chatType", "CHANNEL")
-			ChatEdit_UpdateHeader(self)
 		elseif GetChannelName(1) == 1 then
 			self:SetAttribute("channelTarget", 1)
 			self:SetAttribute("chatType", "CHANNEL")
-			ChatEdit_UpdateHeader(self)
 		else
 			self:SetAttribute("chatType", "SAY")
-			ChatEdit_UpdateHeader(self)
-		end		
+		end
+		
+		ChatEdit_UpdateHeader(self)		
 	elseif (chattype == "INSTANCE_CHAT") then
 		if IsInRaid() then
 			self:SetAttribute("chatType", "RAID")
-			ChatEdit_UpdateHeader(self)
 		elseif IsInGroup() then
 			self:SetAttribute("chatType", "PARTY")
-			ChatEdit_UpdateHeader(self)
 		elseif IsInGuild() then
 			self:SetAttribute("chatType", "GUILD")
-			ChatEdit_UpdateHeader(self)
 		elseif GetChannelName(2) == 2 then
 			self:SetAttribute("channelTarget", 2)
 			self:SetAttribute("chatType", "CHANNEL")
-			ChatEdit_UpdateHeader(self)
 		elseif GetChannelName(1) == 1 then
 			self:SetAttribute("channelTarget", 1)
 			self:SetAttribute("chatType", "CHANNEL")
-			ChatEdit_UpdateHeader(self)
 		else
 			self:SetAttribute("chatType", "SAY")
-			ChatEdit_UpdateHeader(self)
-		end			
+		end
+		
+		ChatEdit_UpdateHeader(self)		
 	elseif (chattype == "RAID") then
 		if IsInGroup() then
 			self:SetAttribute("chatType", "PARTY")
-			ChatEdit_UpdateHeader(self)
 		elseif IsInGuild() then
 			self:SetAttribute("chatType", "GUILD")
-			ChatEdit_UpdateHeader(self)
 		elseif GetChannelName(2) == 2 then
 			self:SetAttribute("channelTarget", 2)
 			self:SetAttribute("chatType", "CHANNEL")
-			ChatEdit_UpdateHeader(self)
 		elseif GetChannelName(1) == 1 then
 			self:SetAttribute("channelTarget", 1)
 			self:SetAttribute("chatType", "CHANNEL")
-			ChatEdit_UpdateHeader(self)
 		else
-			self:SetAttribute("chatType", "SAY")
-			ChatEdit_UpdateHeader(self)
+			self:SetAttribute("chatType", "SAY")	
 		end
+		
+		ChatEdit_UpdateHeader(self)
 	elseif (chattype == "PARTY") then
 		if IsInGuild() then
 			self:SetAttribute("chatType", "GUILD")
-			ChatEdit_UpdateHeader(self)
 		elseif GetChannelName(2) == 2 then
 			self:SetAttribute("channelTarget", 2)
 			self:SetAttribute("chatType", "CHANNEL")
-			ChatEdit_UpdateHeader(self)
 		elseif GetChannelName(1) == 1 then
 			self:SetAttribute("channelTarget", 1)
 			self:SetAttribute("chatType", "CHANNEL")
-			ChatEdit_UpdateHeader(self)
 		else
-			self:SetAttribute("chatType", "SAY")
-			ChatEdit_UpdateHeader(self)
+			self:SetAttribute("chatType", "SAY")			
 		end
+		
+		ChatEdit_UpdateHeader(self)
 	elseif (chattype == "GUILD") then
 		if GetChannelName(2) == 2 then
 			self:SetAttribute("channelTarget", 2)
 			self:SetAttribute("chatType", "CHANNEL")
-			ChatEdit_UpdateHeader(self)
 		elseif GetChannelName(1) == 1 then
 			self:SetAttribute("channelTarget", 1)
 			self:SetAttribute("chatType", "CHANNEL")
-			ChatEdit_UpdateHeader(self)
 		else
-			self:SetAttribute("chatType", "SAY")
-			ChatEdit_UpdateHeader(self)
+			self:SetAttribute("chatType", "SAY")			
 		end
+		
+		ChatEdit_UpdateHeader(self)
 	elseif (chattype == "CHANNEL") and channel == 2 then
 		if GetChannelName(1) == 1 then
 			self:SetAttribute("channelTarget", 1)
 			self:SetAttribute("chatType", "CHANNEL")
-			ChatEdit_UpdateHeader(self)
 		else
 			self:SetAttribute("chatType", "SAY")
-			ChatEdit_UpdateHeader(self)
 		end
+		
+		ChatEdit_UpdateHeader(self)
 	elseif (chattype == "CHANNEL") and channel == 1 then
 		self:SetAttribute("chatType", "SAY")
+		
 		ChatEdit_UpdateHeader(self)
 	end
 end

@@ -227,7 +227,7 @@ end
 T.createtext = function(f, layer, fontsize, flag, justifyh)
 	local text = f:CreateFontString(nil, layer)
 	text:SetFont(G.norFont, fontsize, flag)
-	text:SetJustifyH(justifyh)
+	text:SetJustifyH(justifyh or "CENTER")
 	return text
 end
 

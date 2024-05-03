@@ -311,3 +311,94 @@ function eventframe:LFG_PROPOSAL_SHOW()
 	end
 end
 ]]--
+
+--[[-----------------------------------------------------------------------------
+shift+click 设置焦点
+-------------------------------------------------------------------------------]]
+local modifier = "shift" --- "alt" "ctrl"
+local mouseButton = "1" --- 1 = leftbutton, 2 = tightbutton, 3 = middle button(mouse wheel)
+
+T.RegisterInitCallback(function()
+	-- Keybinding override so that models can be shift/alt/ctrl+clicked 
+	local f = CreateFrame("CheckButton", "FocuserButton", UIParent, "SecureActionButtonTemplate") 
+	f:SetAttribute("type1", "macro") 
+	f:SetAttribute("macrotext", "/focus mouseover") 
+	SetOverrideBindingClick(FocuserButton, true, modifier.."-BUTTON"..mouseButton, "FocuserButton") 
+end)
+
+--[[-----------------------------------------------------------------------------
+/hb 按键绑定
+-------------------------------------------------------------------------------]]
+
+SlashCmdList.MOUSEOVERBIND = function()
+	EditModeManagerFrame:ClearSelectedSystem();
+	EditModeManagerFrame:SetEditModeLockState("hideSelections");
+	HideUIPanel(EditModeManagerFrame);
+	QuickKeybindFrame:Show()
+end
+
+SLASH_MOUSEOVERBIND1 = "/hb"
+
+T.RegisterInitCallback(function()
+	QuickKeybindFrame:HookScript("OnHide", function()
+		HideUIPanel(SettingsPanel)
+	end)
+	SettingsPanel:HookScript("OnHide", function()
+		HideUIPanel(GameMenuFrame)
+	end)
+end)
+
+--[[-----------------------------------------------------------------------------
+快速删除宏
+-------------------------------------------------------------------------------]]
+
+eventframe:RegisterEvent("ADDON_LOADED")
+function eventframe:ADDON_LOADED(arg1)
+	if arg1 == "Blizzard_MacroUI" then
+		MacroFrame:SetHeight(MacroFrame:GetHeight()+15)
+		MacroFrameCharLimitText:ClearAllPoints()
+		MacroFrameCharLimitText:SetPoint("BOTTOMRIGHT", MacroExitButton, "TOPRIGHT", 0, 10)
+		
+		local bu = CreateFrame("CheckButton", G.uiname.."Quick Delete Macro Button", MacroFrame, "UICheckButtonTemplate")
+		bu:SetPoint("BOTTOMLEFT", MacroDeleteButton, "TOPLEFT", -3, 0)
+		T.ReskinCheck(bu)
+		
+		bu.Text:SetText(L["快速删除"])	
+		bu:SetScript("OnClick", function() end)
+		
+		MacroDeleteButton:HookScript("OnClick", function()
+			if bu:GetChecked() then
+				StaticPopup_Hide("CONFIRM_DELETE_SELECTED_MACRO")
+				MacroFrame:DeleteMacro()
+			end
+		end)
+	end
+end
+
+--[[-----------------------------------------------------------------------------
+快速脱装备
+-------------------------------------------------------------------------------]]
+local EquipmentSlots = {16,17,1,3,5,6,7,8,9,10}
+
+local undress = CreateFrame("Button", "_UndressButton", PaperDollFrame, "UIPanelButtonTemplate")
+undress:SetPoint("TOPLEFT", CharacterWristSlot, "BOTTOMLEFT", 0, -5)
+undress:SetSize(80, 20)
+undress.Text:SetText(L["脱装备"])
+T.ReskinButton(undress)
+
+undress:SetScript("OnClick", function()
+	if InCombatLockdown() then return end
+
+	local n = 1
+	for i= 0,4 do 
+		for j= 1, C_Container.GetContainerNumSlots(i) do 
+			if not C_Container.GetContainerItemLink(i,j) and EquipmentSlots[n] then 
+				PickupInventoryItem(EquipmentSlots[n])
+				C_Container.PickupContainerItem(i,j)
+				n= n + 1
+			end
+		end
+	end
+end)
+
+

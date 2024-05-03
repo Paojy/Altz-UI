@@ -20,9 +20,7 @@ do
 
 	function IsAlreadyKnown (itemLink)
 		if not aCoreCDB["ItemOptions"]["alreadyknown"] then return end
-		if ( not itemLink ) then
-			return
-		end
+		if not itemLink then return end
 
 		local itemID = itemLink:match('item:(%d+):')
 		if ( knowns[itemID] ) then
@@ -47,7 +45,6 @@ do
 		end
 	end
 end
-
 
 -- merchant frame
 
@@ -101,7 +98,6 @@ end
 
 hooksecurefunc('MerchantFrame_UpdateBuybackInfo', MerchantFrame_UpdateBuybackInfo)
 
-
 -- guild bank frame
 
 local function GuildBankFrame_Update ()
@@ -134,7 +130,6 @@ if ( IsAddOnLoaded('Blizzard_GuildBankUI') ) then
 
 	hooksecurefunc('GuildBankFrame_Update', GuildBankFrame_Update)
 end
-
 
 -- auction frame
 

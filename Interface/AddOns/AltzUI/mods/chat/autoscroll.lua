@@ -2,7 +2,10 @@ local T, C, L, G = unpack(select(2, ...))
 
 local handlers = {}
 local running = {}
-
+local scrolldowns = {}
+local delay = 15  -- Change this value if you want a different delay between your last scroll
+                  -- and the time the frame resets.  This value is in seconds.
+				  
 local frame = CreateFrame("Frame")
 frame:Hide()
 frame:SetScript("OnUpdate", function (frame, elapsed)   
@@ -19,7 +22,12 @@ frame:SetScript("OnUpdate", function (frame, elapsed)
 end)
 
 local function Register(name, func, rate, ...)
-    handlers[name] = {      name = name,      func = func,      rate = rate or 0,      ...   }
+    handlers[name] = {
+		name = name,
+		func = func,
+		rate = rate or 0,
+		...
+	}
 end
 
 local function Start(name)   
@@ -30,13 +38,11 @@ end
 
 local function Stop(name)   
     running[name] = nil   
-    if not next(running) then frame:Hide() end
+    if not next(running) then
+		frame:Hide()
+	end
 end
-
-local scrolldowns = {}
-local delay = 15  -- Change this value if you want a different delay between your last scroll
-                  -- and the time the frame resets.  This value is in seconds.
-				  
+	  
 local function ResetFrame(name, frame)   
     Stop(name.."DownTimeout")   
     Start(name.."DownTick")
@@ -51,6 +57,7 @@ local function ScrollOnce(name, frame)
 end
 
 local funcs = {"ScrollUp", "ScrollDown", "ScrollToTop", "PageUp", "PageDown"}
+
 for i = 1, NUM_CHAT_WINDOWS do
 	local name = 'ChatFrame'..i 
 	local frame = _G[name]  

@@ -5,7 +5,24 @@ local blacklist = {}
 local recent_msg = {}
 local index = 1
 
-function FilterChat(self, event, message, author, language, channelString, target, flags, _, channelNumber, channelName, _, counter, guid)
+local function IsFriend(name)
+	for i = 1, C_FriendList.GetNumFriends() do
+		if C_FriendList.GetFriendInfoByIndex(i) == name then
+			return true
+		end
+	end
+	for i = 1, BNGetNumFriends() do
+		local account_num = C_BattleNet.GetFriendNumGameAccounts(i)
+		for j = 1, account_num do
+			local toonName = select(4, C_BattleNet.GetFriendGameAccountInfo(i, j))
+			if toonName == name then
+				return true
+			end
+		end
+	end
+end
+
+local function FilterChat(self, event, message, author, language, channelString, target, flags, _, channelNumber, channelName, _, counter, guid)
 	if not aCoreCDB["ChatOptions"]["nogoldseller"] then return end
 	local sender = string.split("-", author)
 	
@@ -13,21 +30,8 @@ function FilterChat(self, event, message, author, language, channelString, targe
 		return
 	elseif UnitIsInMyGuild(sender) or UnitInRaid(sender) or UnitInParty(sender) or UnitIsUnit(sender, "player") then
 		return
-	else
-		for i = 1, C_FriendList.GetNumFriends() do
-			if C_FriendList.GetFriendInfoByIndex(i) == sender then
-				return
-			end
-		end
-		for i = 1, BNGetNumFriends() do
-			local account_num = C_BattleNet.GetFriendNumGameAccounts(i)
-			for j = 1, account_num do
-				local toonName = select(4, C_BattleNet.GetFriendGameAccountInfo(i, j))
-				if toonName == sender then
-					return
-				end
-			end
-		end
+	elseif IsFriend(sender) then
+		return
 	end
 	
 	-- 过滤重复信息
@@ -72,7 +76,7 @@ function FilterChat(self, event, message, author, language, channelString, targe
 end
 
 ChatFrame_AddMessageEventFilter("CHAT_MSG_CHANNEL",FilterChat)
-ChatFrame_AddMessageEventFilter("CHAT_MSG_SAY", FilterChat) 
+ChatFrame_AddMessageEventFilter("CHAT_MSG_SAY", FilterChat)
 ChatFrame_AddMessageEventFilter("CHAT_MSG_YELL", FilterChat) 
 ChatFrame_AddMessageEventFilter("CHAT_MSG_WHISPER", FilterChat)
 

@@ -68,7 +68,6 @@ local Enable = function(self)
 	end
 end
 
-
 local function Disable(self)
 	local gcd = self.GCD
 	if gcd then

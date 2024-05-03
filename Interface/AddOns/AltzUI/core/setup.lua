@@ -44,6 +44,7 @@ local function CreateTutorialsStepFrame(title, text)
 		frame.model = T.CreateCreatureModel(frame, 700, 230, {"CENTER", TutorialsFrame, "CENTER"}, 41039, {-12.5, .2, -6.2}, .7)
 		frame.model:SetFrameLevel(1)
 		
+		previous_step:SetText(L["跳过"])
 		previous_step:SetScript("OnClick", function(self)
 			TutorialsFrame:Hide()
 			StaticPopup_Show(G.uiname.."Run Setup")
@@ -497,6 +498,7 @@ for i = 1, step do
 	local frame = TutorialsFrame[i]
 	frame.step_text:SetText(string.format("%d / %d", frame.index, step))
 	if i == step then
+		frame.next_step:SetText(L["完成"])
 		frame.next_step:SetScript("OnClick", function(self)
 			TutorialsFrame:Hide()
 		end)
