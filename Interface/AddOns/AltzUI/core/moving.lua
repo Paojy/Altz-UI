@@ -250,10 +250,6 @@ local function CreateInputBox(parent, points, name, value, numeric)
 	box.name:ClearAllPoints()
 	box.name:SetPoint("RIGHT", box, "LEFT", -5, 0)
 	
-	if numeric then
-		box:SetNumeric(true)
-	end
-	
 	box:SetScript("OnShow", function(self)
 		if CurrentFrame ~= "NONE" then
 			self:SetText(aCoreCDB["FramePoints"][CurrentFrame][CurrentRole][value])
@@ -273,9 +269,20 @@ local function CreateInputBox(parent, points, name, value, numeric)
 
 	box:SetScript("OnEnterPressed", function(self)
 		if CurrentFrame ~= "NONE" then
-			aCoreCDB["FramePoints"][CurrentFrame][CurrentRole][value] = self:GetText()
-			local frame = _G[CurrentFrame]
-			PlaceFrame(frame)
+			local text = self:GetText()
+			if numeric then
+				local v = tonumber(text)
+				if v then
+					aCoreCDB["FramePoints"][CurrentFrame][CurrentRole][value] = v
+					PlaceFrame(_G[CurrentFrame])
+				else
+					StaticPopupDialogs[G.uiname.."incorrect number"].text = T.color_text(text)..L["必须是一个数字"]
+					StaticPopup_Show(G.uiname.."incorrect number")
+				end
+			else
+				aCoreCDB["FramePoints"][CurrentFrame][CurrentRole][value] = text
+				PlaceFrame(_G[CurrentFrame])
+			end
 		else
 			self:SetText("")
 		end
