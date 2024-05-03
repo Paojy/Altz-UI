@@ -118,7 +118,6 @@ local LockAll = function()
 		frame.df.mask:SetBackdropBorderColor(0, 0, 0)
 		frame.df:Hide()
 	end
-	
 	SpecMover:Hide()
 end
 T.LockAll = LockAll
@@ -140,7 +139,8 @@ end
 T.PlaceFrame = PlaceFrame
 
 local PlaceAllFrames = function()
-	CurrentRole = CurrentRole or T.CheckRole()
+	CurrentRole = T.CheckRole()
+
 	SpecMover.curmode:SetText(L["当前模式"].." "..L[CurrentRole])
 	
 	for i = 1, #G.dragFrameList do
