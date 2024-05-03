@@ -870,7 +870,6 @@ T.ImportSettings = function(str)
 		StaticPopupDialogs[G.uiname.."Import Confirm"].text = format(L["导入确认"]..import_str, "Altz UI")
 		StaticPopupDialogs[G.uiname.."Import Confirm"].OnAccept = function()
 			aCoreCDB = {}
-			T.SetChatFrame()
 			T.LoadVariables()
 			
 			-- 完全复制的设置

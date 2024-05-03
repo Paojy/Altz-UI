@@ -204,7 +204,6 @@ GUI.reset:SetScript("OnClick", function()
 	StaticPopupDialogs[G.uiname.."Reset Confirm"].text = format(L["重置确认"], T.color_text("Altz UI"))
 	StaticPopupDialogs[G.uiname.."Reset Confirm"].OnAccept = function()
 		aCoreCDB = {}
-		T.SetChatFrame()
 		T.LoadVariables()
 		T.ResetAllAddonSettings()
 		ReloadUI()
