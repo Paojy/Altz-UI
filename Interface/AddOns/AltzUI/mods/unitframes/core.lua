@@ -451,8 +451,7 @@ local CreateCastbars = function(self, unit)
 		cb.CustomTimeText = CustomTimeText
 		cb.CustomDelayText = CustomDelayText
 		cb.PostCastStart = UpdateCastbarColor
-		cb.PostChannelStart = UpdateCastbarColor
-		
+
 		cb.EnableSettings = function(object)
 			if not object or object == self then	
 				if aCoreCDB["UnitframeOptions"]["castbars"] then
@@ -593,7 +592,6 @@ local CreatePlateCastbar = function(self, unit)
 	cb.Shield:SetPoint("RIGHT", cb.Text, "LEFT", -3, 0)
 		
 	cb.PostCastStart = UpdateCastbarColor
-	cb.PostChannelStart = UpdateCastbarColor
 	
 	cb.Callback = function(self, event, unit)	
 		if UnitIsUnit(unit, 'player') then
