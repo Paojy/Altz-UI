@@ -430,26 +430,31 @@ T.Checkbutton_db(ChatOptions, 30, 90, L["滚动聊天框"], "autoscroll", L["滚
 T.Checkbutton_db(ChatOptions, 230, 90, L["显示聊天框背景"], "showbg")
 ChatOptions.showbg.apply = T.UpdateChatFrameBg
 
-CreateDividingLine(ChatOptions, -130)
+CreateDividingLine(ChatOptions, -125)
 
-T.Checkbutton_db(ChatOptions, 30, 140, L["聊天过滤"], "nogoldseller", L["聊天过滤提示"])
+T.Checkbutton_db(ChatOptions, 30, 135, L["聊天过滤"], "nogoldseller", L["聊天过滤提示"])
 
-T.Slider_db(ChatOptions, "long", 30, 190, L["过滤阈值"], "goldkeywordnum", 1, 1, 5, 1, L["过滤阈值"])
+T.Slider_db(ChatOptions, "long", 30, 175, L["过滤阈值"], "goldkeywordnum", 1, 1, 5, 1, L["过滤阈值"])
 
-T.EditboxMultiLine_db(ChatOptions, 200, 100, 35, 225, L["关键词"], "goldkeywordlist", L["关键词输入"])
+T.EditboxMultiLine_db(ChatOptions, 200, 70, 35, 210, L["关键词"], "goldkeywordlist", L["关键词输入"])
 ChatOptions.goldkeywordlist.apply = T.Update_Chat_Filter
 
 T.createDR(ChatOptions.nogoldseller, ChatOptions.goldkeywordnum, ChatOptions.goldkeywordlist)
 
-CreateDividingLine(ChatOptions, -360)
+CreateDividingLine(ChatOptions, -315)
 
-T.Checkbutton_db(ChatOptions, 30, 370, L["自动邀请"], "autoinvite", L["自动邀请提示"])
+T.Checkbutton_db(ChatOptions, 30, 325, L["自动邀请"], "autoinvite", L["自动邀请提示"])
 
-T.EditboxWithButton_db(ChatOptions, 40, 405, L["关键词"], "autoinvitekeywords",  L["关键词输入"])
+T.EditboxWithButton_db(ChatOptions, 140, 327, L["关键词"], "autoinvitekeywords",  L["关键词输入"])
 ChatOptions.autoinvitekeywords.apply = T.Update_Invite_Keyword
 
 T.createDR(ChatOptions.autoinvite, ChatOptions.autoinvitekeywords)
 
+T.Checkbutton_db(ChatOptions, 30, 355, L["自动接受好友的组队邀请"], "acceptInvite_friend")
+T.Checkbutton_db(ChatOptions, 30, 385, L["自动接受公会成员的组队邀请"], "acceptInvite_guild")
+T.Checkbutton_db(ChatOptions, 30, 415, L["自动接受社区成员的组队邀请"], "acceptInvite_club")
+T.Checkbutton_db(ChatOptions, 30, 445, L["自动接受同一战网其他角色的组队邀请"], "acceptInvite_account")
+T.Checkbutton_db(ChatOptions, 30, 475, L["拒绝陌生人的组队邀请"], "refuseInvite_stranger")
 --====================================================--
 --[[          -- Bag and Items Options --           ]]--
 --====================================================--
@@ -1616,7 +1621,6 @@ RFInnerframe.raiddebuff.instance_list:SetScript("OnShow", function(self)
 	self.init = true
 end)
 
--- 待测试
 hooksecurefunc("SetItemRef", function(link, text)
   if link:find("garrmission:altz") then
 	local InstanceID, encounterID, spellID = string.match(text, "altz::([^%]]+)%::([^%]]+)%::([^%]]+)%|h|c")

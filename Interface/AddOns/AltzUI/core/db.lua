@@ -492,6 +492,11 @@ local Character_default_Settings = {
 		goldkeywordlist = "",		
 		autoinvite = false,
         autoinvitekeywords = "111 123",
+		acceptInvite_friend = true,
+		acceptInvite_guild = true,
+		acceptInvite_club = true,
+		acceptInvite_account = true,		
+		refuseInvite_stranger = false,
 	},
 	ItemOptions = {
 		alreadyknown = true,

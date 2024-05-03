@@ -219,6 +219,12 @@ L["客户端错误"] = "I can't invite you by keyword now, your account seems to
 L["聊天过滤"] = "Chat Filter"
 L["聊天过滤提示"] = "Hide repeated chat messages and chat messages containing key word(s) below."
 L["过滤阈值"] = "Chat Filter Keyword Number"
+L["自动接受好友的组队邀请"] = "Automatically accept team invitations from friends"
+L["自动接受公会成员的组队邀请"] = "Automatically accept team invitations from guild members"
+L["自动接受社区成员的组队邀请"] = "Automatically accept team invitations from club members"
+L["自动接受同一战网其他角色的组队邀请"] = "Automatically accept team invitations from other characters in the same battle net"
+L["拒绝陌生人的组队邀请"] = "Refusing team invitations from strangers"
+L["邀请过滤"] = "|cff7FFF00[Invitation filtering]|r Received a stranger team invitation from |cff00FFFF%s|r, rejected"
 
 --====================================================--
 --[[                 -- 物品 --                     ]]--
@@ -388,8 +394,6 @@ L["自动接受复活"] = "Accept Resurrects"
 L["自动接受复活提示"] = "Accept Resurrects, only available when out of combat."
 L["战场自动释放灵魂"] = "Releases Spirit in BG"
 L["战场自动释放灵魂提示"] = "Releases your spirit in BG, Wintergrasp and Tol Barad."
-L["自动接受邀请"] = "Accept Invites"
-L["自动接受邀请提示"] = "Accept invites from your friends or guild members."
 L["自动召宝宝"] = "Automatically summon a pet"
 L["自动召宝宝提示"] = "Automatically summon a pet when you login, resurrect or leave vehicle."
 L["优先偏爱宝宝"] = "Prioritize summoning preferred pets"
