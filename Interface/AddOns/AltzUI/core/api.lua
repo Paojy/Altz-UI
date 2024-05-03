@@ -3,7 +3,6 @@
 --====================================================--
 --[[              -- 其他插件设置 --                ]]--
 --====================================================--
-
 T.SetChatFrame = function ()
 	FCF_ResetChatWindows()
 	
@@ -47,15 +46,14 @@ T.SetChatFrame = function ()
 	FCF_FadeInChatFrame(ChatFrame1)
 end
 
-T.ResetAurora = function(reload)
+T.ResetAurora = function()
 	if IsAddOnLoaded("AuroraClassic") then
 		AuroraClassicDB["Bags"] = true
 	end
-	if reload then ReloadUI() end
 end
 
-T.ResetClasscolors = function(reload)
-	if aCoreCDB["SkinOptions"]["setClassColor"] and IsAddOnLoaded("!ClassColors") then
+T.ResetClasscolors = function()
+	if IsAddOnLoaded("!ClassColors") then
 		if ClassColorsDB then wipe(ClassColorsDB) end
 		ClassColorsDB = {
 			["DEATHKNIGHT"] = {
@@ -149,253 +147,20 @@ T.ResetClasscolors = function(reload)
 			},
 		}
 	end
-	if reload then ReloadUI() end
 end
 
-T.ResetSkada =function(reload)
-	if aCoreCDB["SkinOptions"]["setSkada"] and IsAddOnLoaded("Skada") then
-		local Skada = Skada
-		local windows = Skada:GetWindows()
-		if #windows == 0 then
-			Skada:CreateWindow("altz_1", nil, "bar")
-			Skada:CreateWindow("altz_2", nil, "bar")		
-		elseif #windows == 1 then
-			Skada:CreateWindow("altz_1", nil, "bar")
-		end
-		SkadaDB["profiles"] = {
-				["Default"] = {
-					["autostop"] = true,
-					["windows"] = {
-						{
-							["barheight"] = 21,
-							["classicons"] = false,
-							["barslocked"] = true,
-							["y"] = 46,
-							["x"] = -195,
-							["name"] = "1",
-							["point"] = "BOTTOMRIGHT",
-							["buttons"] = {
-								["menu"] = false,
-								["mode"] = false,
-								["reset"] = false,
-							},
-							["barwidth"] = 155,
-							["barfontflags"] = "",
-							["background"] = {
-								["color"] = {
-									["a"] = 0,
-								},
-								["height"] = 175,
-							},
-							["title"] = {
-								["color"] = {
-									["a"] = 0,
-									["b"] = 0.3,
-									["g"] = 0.1,
-									["r"] = 0.1,
-								},
-								["bordertexture"] = "None",
-								["font"] = "Accidental Presidency",
-								["borderthickness"] = 2,
-								["fontsize"] = 11,
-								["fontflags"] = "",
-								["height"] = 24,
-								["margin"] = 0,
-								["texture"] = "Aluminium",
-							},
-						}, -- [1]
-						{
-							["titleset"] = true,
-							["barheight"] = 21,
-							["classicons"] = false,
-							["barslocked"] = true,
-							["enabletitle"] = true,
-							["wipemode"] = "",
-							["set"] = "current",
-							["hidden"] = false,
-							["y"] = 46,
-							["barfont"] = "Accidental Presidency",
-							["name"] = "2",
-							["display"] = "bar",
-							["barfontflags"] = "",
-							["classcolortext"] = false,
-							["scale"] = 1,
-							["reversegrowth"] = false,
-							["returnaftercombat"] = false,
-							["roleicons"] = false,
-							["barorientation"] = 1,
-							["snapto"] = true,
-							["version"] = 1,
-							["modeincombat"] = "",
-							["bartexture"] = "BantoBar",
-							["barwidth"] = 155,
-							["barspacing"] = 0,
-							["clickthrough"] = false,
-							["barfontsize"] = 11,
-							["barbgcolor"] = {
-								["a"] = 0.6,
-								["b"] = 0.3,
-								["g"] = 0.3,
-								["r"] = 0.3,
-							},
-							["background"] = {
-								["borderthickness"] = 0,
-								["height"] = 175,
-								["color"] = {
-									["a"] = 0,
-									["b"] = 0.5,
-									["g"] = 0,
-									["r"] = 0,
-								},
-								["bordertexture"] = "None",
-								["margin"] = 0,
-								["texture"] = "Solid",
-							},
-							["barcolor"] = {
-								["a"] = 1,
-								["b"] = 0.8,
-								["g"] = 0.3,
-								["r"] = 0.3,
-							},
-							["classcolorbars"] = true,
-							["title"] = {
-								["color"] = {
-									["a"] = 0,
-									["b"] = 0.3,
-									["g"] = 0.1,
-									["r"] = 0.1,
-								},
-								["bordertexture"] = "None",
-								["font"] = "Accidental Presidency",
-								["borderthickness"] = 2,
-								["fontsize"] = 11,
-								["fontflags"] = "",
-								["height"] = 24,
-								["margin"] = 0,
-								["texture"] = "Aluminium",
-							},
-							["buttons"] = {
-								["segment"] = true,
-								["menu"] = false,
-								["mode"] = false,
-								["report"] = true,
-								["reset"] = false,
-							},
-							["x"] = -351,
-							["point"] = "BOTTOMRIGHT",
-						}, -- [2]
-					},
-				},
-			}
-		local Skada_L = LibStub("AceLocale-3.0"):GetLocale("Skada", false)
-		SkadaDB["profiles"]["Default"]["columns"] = {}
-		SkadaDB["profiles"]["Default"]["columns"][Skada_L["Damage"].."_Percent"] = false
-		SkadaDB["profiles"]["Default"]["columns"][Skada_L["Healing"].."_Percent"] = false
-		SkadaDB["profiles"]["Default"]["columns"][Skada_L["Damage taken"].."_Percent"] = false
-		SkadaDB["profiles"]["Default"]["showranks"] = false
-		if reload then ReloadUI() end
-	end	
-end
-
-T.ResetDBM =function(reload)
-	if aCoreCDB["SkinOptions"]["setDBM"] and IsAddOnLoaded("DBM-Core") then
-		if DBM_AllSavedOptions then
-			--DBM.Bars:SetSkin("AltzUI")		
-			DBM_AllSavedOptions["Default"]["ShowMinimapButton"] = false
-			-- BOSS血条
-			DBM_AllSavedOptions["Default"]["HPFramePoint"] = "BOTTOM"			
-			DBM_AllSavedOptions["Default"]["HPFrameY"] = 120
-			DBM_AllSavedOptions["Default"]["HPFrameX"] = -375
-			DBM_AllSavedOptions["Default"]["HealthFrameWidth"] = 200
-			DBM_AllSavedOptions["Default"]["AlwaysShowHealthFrame"] = false
-			DBM_AllSavedOptions["Default"]["HealthFrameGrowUp"] = false
-			-- 信息框
-			DBM_AllSavedOptions["Default"]["InfoFramePoint"] = "BOTTOM"
-			DBM_AllSavedOptions["Default"]["InfoFrameX"] = -310
-			DBM_AllSavedOptions["Default"]["InfoFrameY"] = 195
-			-- 距离框
-			DBM_AllSavedOptions["Default"]["RangeFramePoint"] = "BOTTOM"
-			DBM_AllSavedOptions["Default"]["RangeFrameX"] = 450
-			DBM_AllSavedOptions["Default"]["RangeFrameY"] = 270
-			DBM_AllSavedOptions["Default"]["RangeFrameRadarPoint"] = "BOTTOM"
-			DBM_AllSavedOptions["Default"]["RangeFrameRadarX"] = 300
-			DBM_AllSavedOptions["Default"]["RangeFrameRadarY"] = 180
-			DBM_AllSavedOptions["Default"]["RangeFrameFrames"] = "radar"
-			-- 一般计时条
-			DBT_AllPersistentOptions["Default"]["DBM"]["TimerPoint"] = "LEFT"
-			DBT_AllPersistentOptions["Default"]["DBM"]["TimerY"] = 50
-			DBT_AllPersistentOptions["Default"]["DBM"]["TimerX"] = 150
-			DBT_AllPersistentOptions["Default"]["DBM"]["FillUpBars"] = true
-			-- 大型计时条
-			DBT_AllPersistentOptions["Default"]["DBM"]["HugeTimerPoint"] = "CENTER"
-			DBT_AllPersistentOptions["Default"]["DBM"]["HugeTimerX"] = -330
-			DBT_AllPersistentOptions["Default"]["DBM"]["HugeTimerY"] = 0			
-			-- 一般警报
-			DBM_AllSavedOptions["Default"]["WarningIconRight"] = true
-			DBM_AllSavedOptions["Default"]["WarningIconLeft"] = true
-			DBM_AllSavedOptions["Default"]["WarningFontStyle"] = "THICKOUTLINE"
-			DBM_AllSavedOptions["Default"]["WarningFont"] = G.norFont
-			DBM_AllSavedOptions["Default"]["WarningFontShadow"] = true
-			DBM_AllSavedOptions["Default"]["WarningPoint"] = "TOP"
-			DBM_AllSavedOptions["Default"]["WarningY"] = -150
-			DBM_AllSavedOptions["Default"]["WarningX"] = -0
-			-- 特殊警报
-			DBM_AllSavedOptions["Default"]["SpecialWarningFontSize"] = 65
-			DBM_AllSavedOptions["Default"]["SpecialWarningFont"] = G.norFont
-			DBM_AllSavedOptions["Default"]["SpecialWarningFontStyle"] = "THICKOUTLINE"
-			DBM_AllSavedOptions["Default"]["SpecialWarningFontShadow"] = true
-			DBM_AllSavedOptions["Default"]["SpecialWarningPoint"] = "CENTER"
-			DBM_AllSavedOptions["Default"]["SpecialWarningX"] = 0
-			DBM_AllSavedOptions["Default"]["SpecialWarningY"] = 150
-		end
-		if reload then ReloadUI() end
-	end
-end
-
-T.ResetBW =function(reload)
-	if aCoreCDB["SkinOptions"]["setBW"] and IsAddOnLoaded("Bigwigs") then
-		if BigWigs3DB then
-			BigWigs3DB["namespaces"]["BigWigs_Plugins_Bars"]["profiles"]["Default"]["barStyle"] = "AltzUI"
-
-			--BigWigs3DB["namespaces"]["BigWigs_Plugins_Alt Power"]["profiles"]["Default"]["posx"] = 420
-			--BigWigs3DB["namespaces"]["BigWigs_Plugins_Alt Power"]["profiles"]["Default"]["posy"] = 160
-			
-			BigWigs3DB["namespaces"]["BigWigs_Plugins_Bars"]["profiles"]["Default"]["fill"] = true
-			BigWigs3DB["namespaces"]["BigWigs_Plugins_Bars"]["profiles"]["Default"]["BigWigsAnchor_width"] = 150
-			
-			--BigWigs3DB["namespaces"]["BigWigs_Plugins_Bars"]["profiles"]["Default"]["BigWigsAnchor_x"] = 38.4006290244915
-			--BigWigs3DB["namespaces"]["BigWigs_Plugins_Bars"]["profiles"]["Default"]["BigWigsAnchor_y"] = 504.53291841031
-			
-			BigWigs3DB["namespaces"]["BigWigs_Plugins_Bars"]["profiles"]["Default"]["BigWigsEmphasizeAnchor_width"] = 200
-			BigWigs3DB["namespaces"]["BigWigs_Plugins_Bars"]["profiles"]["Default"]["emphasizeScale"] = 1
-			--BigWigs3DB["namespaces"]["BigWigs_Plugins_Bars"]["profiles"]["Default"]["BigWigsEmphasizeAnchor_x"] = 356.266867036815			
-			--BigWigs3DB["namespaces"]["BigWigs_Plugins_Bars"]["profiles"]["Default"]["BigWigsEmphasizeAnchor_y"] = 432.000146594044
-			
-			--BigWigs3DB["namespaces"]["BigWigs_Plugins_Messages"]["profiles"]["Default"]["BWMessageAnchor_x"] = 617.066548707488
-			--BigWigs3DB["namespaces"]["BigWigs_Plugins_Messages"]["profiles"]["Default"]["BWMessageAnchor_y"] = 584.533190059665
-			
-			--BigWigs3DB["namespaces"]["BigWigs_Plugins_Messages"]["profiles"]["Default"]["BWEmphasizeMessageAnchor_x"] = 615.99986904383
-			--BigWigs3DB["namespaces"]["BigWigs_Plugins_Messages"]["profiles"]["Default"]["BWEmphasizeMessageAnchor_y"] = 496.000067038534
-			
-			--BigWigs3DB["namespaces"]["BigWigs_Plugins_Messages"]["profiles"]["Default"]["BWEmphasizeCountdownMessageAnchor_x"] = 668.799985051155
-			--BigWigs3DB["namespaces"]["BigWigs_Plugins_Messages"]["profiles"]["Default"]["BWEmphasizeCountdownMessageAnchor_y"] = 449.066786837575
-			
-			--BigWigs3DB["namespaces"]["BigWigs_Plugins_Proximity"]["profiles"]["Default"]["width"] = 140.00016784668
-			--BigWigs3DB["namespaces"]["BigWigs_Plugins_Proximity"]["profiles"]["Default"]["height"] = 119.999984741211
-			
-			--BigWigs3DB["namespaces"]["BigWigs_Plugins_Proximity"]["profiles"]["Default"]["posy"] = 143.999772171979
-			--BigWigs3DB["namespaces"]["BigWigs_Plugins_Proximity"]["profiles"]["Default"]["posx"] = 817.067012987129
-
-		end
-		if reload then ReloadUI() end
+T.ResetBW =function()
+	if IsAddOnLoaded("Bigwigs") and BigWigs3DB then
+		BigWigs3DB["namespaces"]["BigWigs_Plugins_Bars"]["profiles"]["Default"]["barStyle"] = "AltzUI"
+		BigWigs3DB["namespaces"]["BigWigs_Plugins_Bars"]["profiles"]["Default"]["fill"] = true
+		BigWigs3DB["namespaces"]["BigWigs_Plugins_Bars"]["profiles"]["Default"]["BigWigsAnchor_width"] = 150
+		BigWigs3DB["namespaces"]["BigWigs_Plugins_Bars"]["profiles"]["Default"]["BigWigsEmphasizeAnchor_width"] = 200
 	end
 end
 
 T.ResetAllAddonSettings = function()
 	T.ResetAurora()
 	T.ResetClasscolors()
-	T.ResetSkada()
-	T.ResetDBM()
 	T.ResetBW()
 end
 

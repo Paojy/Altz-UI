@@ -467,11 +467,7 @@ local Character_default_Settings = {
 		showtopbar = true,
 		showbottombar = true,
 		showtopconerbar = true,
-		showbottomconerbar = true,		
-		setClassColor = true,
-		setDBM = true,
-		setSkada = true,
-		setBW = true,		
+		showbottomconerbar = true,	
 		-- 界面布局
 		infobar = true,
 		infobarscale = 1,		
@@ -535,7 +531,6 @@ local Character_default_Settings = {
 		timepos = "RIGHT",
 		Interruptible_color = {r =.6 , g = .4, b = .8},
 		notInterruptible_color = {r =.9 , g = 0, b = 1},
-		channelticks = false,
 		hideplayercastbaricon = false,
 		-- 平砍计时条
 		swing = false,

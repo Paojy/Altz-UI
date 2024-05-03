@@ -17,13 +17,11 @@
 	<Script file="core\fader.lua"/>
 	<Script file="core\moving.lua"/>
 	
-	<Script file="mods\skins\Skada.lua"/>
-	<Script file="mods\skins\Mirrortimer.lua"/>
-	<Include file="mods\skins\TimerSkin.xml"/>	
-	<Script file="mods\skins\Skin.lua"/>
-
+	<Script file="mods\skins\mirrortimer.lua"/>
+	<Script file="mods\skins\petbattles.lua"/>	
+	<Script file="mods\skins\BW_Skin.lua"/>
+	
 	<Script file="mods\panels\panels.lua"/>
-	<Script file="mods\panels\petbattles.lua"/>
 	<Script file="mods\panels\inspect_challenges.lua"/>
 	
 	<Include file="mods\unitframes\load.xml"/>
@@ -51,14 +49,9 @@
 	<Script file="mods\tweaks\already known.lua"/>
 	<Script file="mods\tweaks\combattext.lua"/>
 	<Script file="mods\tweaks\dragemall.lua"/>
-	<Script file="mods\tweaks\focus.lua"/>
-	<Script file="mods\tweaks\hoverbind.lua"/>
 	<Script file="mods\tweaks\inspectfix.lua"/>
-	<Script file="mods\tweaks\macroframe.lua"/>
-	<Script file="mods\tweaks\paperdollframe.lua"/>
 	<Script file="mods\tweaks\tweaks.lua"/>
 	<Script file="mods\tweaks\watchframe.lua"/>
-	<Script file="mods\tweaks\quest.lua"/>
 	<Script file="mods\tweaks\totem.lua"/>
 	
 	<Script file="core\gui.lua"/>

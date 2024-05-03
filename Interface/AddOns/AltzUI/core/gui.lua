@@ -391,51 +391,13 @@ addonskin_title:SetText(L["插件皮肤"])
 
 CreateDividingLine(SInnerframe.theme, -210)
 
-local function CreateApplySettingButton(addon)
-	local Button = CreateFrame("Button", G.uiname..addon.."ApplySettingButton", SInnerframe.theme, "UIPanelButtonTemplate")
-	Button:SetPoint("LEFT", SInnerframe.theme[addon], "RIGHT", 150, 0)
-	Button:SetSize(120, 25)
-	Button:SetText(L["更改设置"])
-	
-	T.ReskinButton(Button)
-	
-	Button:SetScript("OnEnter", function(self) 
-			GameTooltip:SetOwner(self, "ANCHOR_RIGHT",  -20, 10)
-			GameTooltip:AddLine(L["更改设置提示"])
-			GameTooltip:Show() 
-		end)
-	Button:SetScript("OnLeave", function(self) GameTooltip:Hide() end)
-	
-	SInnerframe.theme[addon]:HookScript("OnClick", function(self)
-		if self:GetChecked() then
-			Button:Enable()
-		else
-			Button:Disable()
-		end
-	end)
-	
-	SInnerframe.theme[addon]:HookScript("OnShow", function(self)
-		if self:GetChecked() then
-			Button:Enable()
-		else
-			Button:Disable()
-		end
-	end)
-	
-	return Button
+local function CreateApplySettingButton(func, text, addon, y)
+	local Button = T.ClickButton(SInnerframe.theme, 160, {"TOPLEFT", 30, y}, text, nil, string.format(L["更改设置提示"], addon))
+	Button:SetScript("OnClick", func)
 end
 
-T.Checkbutton_db(SInnerframe.theme, 30, 220, "ClassColor", "setClassColor")
-local SetClassColorButton = CreateApplySettingButton("setClassColor")
-
-T.Checkbutton_db(SInnerframe.theme, 30, 250, "DBM", "setDBM")
-local SetDBMButton = CreateApplySettingButton("setDBM")
-
-T.Checkbutton_db(SInnerframe.theme, 30, 280, "BigWigs", "setBW")
-local SetBWButton = CreateApplySettingButton("setBW")
-
-T.Checkbutton_db(SInnerframe.theme, 30, 310, "Skada", "setSkada")
-local SetSkadaButton = CreateApplySettingButton("setSkada")
+local SetClassColorButton = CreateApplySettingButton(T.ResetClasscolors, L["重置职业颜色"], "ClassColors", -220)
+local SetBWButton = CreateApplySettingButton(T.ResetBW, L["重置BW计时条皮肤"], "BigWigs", -250)
 
 -- 界面布局
 SInnerframe.layout = CreateOptionPage("Interface Options Layout", L["界面布局"], SInnerframe, "VERTICAL", "SkinOptions")
@@ -443,7 +405,7 @@ SInnerframe.layout = CreateOptionPage("Interface Options Layout", L["界面布�
 T.Checkbutton_db(SInnerframe.layout, 30, 60, L["信息条"], "infobar")
 SInnerframe.layout.infobar.apply = G.InfoFrame.Apply
 
-T.Slider_db(SInnerframe.layout, "long", 30, 110, L["信息条尺寸"], "infobarscale", 100, 50, 200, 5)
+T.Slider_db(SInnerframe.layout, "long", 30, 110, T.split_words(L["信息条"],L["尺寸"]), "infobarscale", 100, 50, 200, 5)
 SInnerframe.layout.infobarscale.apply = G.InfoFrame.Apply
 
 T.createDR(SInnerframe.layout.infobar, SInnerframe.layout.infobarscale)
@@ -506,7 +468,7 @@ CreateDividingLine(ItemOptions, -200)
 T.Checkbutton_db(ItemOptions, 30, 210, L["自动售卖"], "autosell", L["自动售卖提示"])
 T.Checkbutton_db(ItemOptions, 30, 240, L["自动购买"], "autobuy", L["自动购买提示"])
 
-ItemOptions.autobuy_list = T.CreateItemListOption(ItemOptions, {"TOPLEFT", 35, -270}, 260, L["自动购买"]..L["设置"], "autobuylist", L["数量"])
+ItemOptions.autobuy_list = T.CreateItemListOption(ItemOptions, {"TOPLEFT", 35, -270}, 260, L["自动购买"]..L["设置"], "autobuylist", L["物品数量"])
 
 T.createDR(ItemOptions.autobuy, ItemOptions.autobuy_list)
 --====================================================--
@@ -540,17 +502,17 @@ end
 
 CreateDividingLine(UFInnerframe.style, -180)
 
-T.Checkbutton_db(UFInnerframe.style, 30, 190, L["总是显示生命值"], "alwayshp", L["总是显示生命值提示"])
+T.Checkbutton_db(UFInnerframe.style, 30, 190, T.split_words(L["总是"],L["显示"],L["生命值"]), "alwayshp", string.format(L["总是显示数值提示"], L["生命值"]))
 UFInnerframe.style.alwayshp.apply = function()
 	T.ApplyUFSettings({"Health"})
 end
 
-T.Checkbutton_db(UFInnerframe.style, 30, 220, L["总是显示能量值"], "alwayspp", L["总是显示能量值提示"])
+T.Checkbutton_db(UFInnerframe.style, 30, 220, T.split_words(L["总是"],L["显示"],L["能量值"]), "alwayspp", string.format(L["总是显示数值提示"], L["能量值"]))
 UFInnerframe.style.alwayspp.apply = function()
 	T.ApplyUFSettings({"Power"})
 end
 
-T.Slider_db(UFInnerframe.style, "long", 30, 270, L["数值字号"], "valuefontsize", 1, 10, 25, 1, L["数值字号提示"])
+T.Slider_db(UFInnerframe.style, "long", 30, 270, T.split_words(L["数值"],L["字体"],L["尺寸"]), "valuefontsize", 1, 10, 25, 1)
 UFInnerframe.style.valuefontsize.apply = function()
 	T.ApplyUFSettings({"Health", "Power", "Castbar"})
 end
@@ -568,19 +530,19 @@ UFInnerframe.size.width.apply = function()
 	T.ApplyUFSettings({"Health", "Auras", "ClassPower", "Runes", "Stagger", "Dpsmana"})
 end
 
-T.Slider_db(UFInnerframe.size, "long", 30, 160, L["能量条高度"], "ppheight", 100, 5, 100, 5)
+T.Slider_db(UFInnerframe.size, "long", 30, 160, T.split_words(L["能量条"], L["高度"]), "ppheight", 100, 5, 100, 5)
 UFInnerframe.size.ppheight.apply = function()
 	T.ApplyUFSettings({"Health", "Power", "Auras", "Castbar", "ClassPower", "Runes", "Stagger", "Dpsmana"})
 end
 
 CreateDividingLine(UFInnerframe.size, -190)
 
-T.Slider_db(UFInnerframe.size, "long", 30, 220, L["宠物框体宽度"], "widthpet", 1, 50, 500, 1)
+T.Slider_db(UFInnerframe.size, "long", 30, 220, T.split_words(PET,L["单位框架"],L["宽度"]), "widthpet", 1, 50, 500, 1)
 UFInnerframe.size.widthpet.apply = function()
 	T.ApplyUFSettings({"Health", "Auras"})
 end
 
-T.Slider_db(UFInnerframe.size, "long", 30, 260, L["首领框体和PVP框体的宽度"], "widthboss", 1, 50, 500, 1)
+T.Slider_db(UFInnerframe.size, "long", 30, 260, T.split_words(BOSS,"&",ARENA,L["单位框架"],L["宽度"]), "widthboss", 1, 50, 500, 1)
 UFInnerframe.size.widthboss.apply = function()
 	T.ApplyUFSettings({"Health", "Auras"})
 end
@@ -593,12 +555,12 @@ UFInnerframe.castbar.castbars.apply = function()
 	T.EnableUFSettings({"Castbar"})
 end
 
-T.Slider_db(UFInnerframe.castbar, "long", 30, 100, L["图标大小"], "cbIconsize", 1, 10, 50, 1)
+T.Slider_db(UFInnerframe.castbar, "long", 30, 100, T.split_words(L["图标"], L["尺寸"]), "cbIconsize", 1, 10, 50, 1)
 UFInnerframe.castbar.cbIconsize.apply = function()
 	T.ApplyUFSettings({"Castbar"})
 end
 
-T.Checkbutton_db(UFInnerframe.castbar, 30, 130, L["独立施法条"], "independentcb")
+T.Checkbutton_db(UFInnerframe.castbar, 30, 130, T.split_words(L["独立"], L["施法条"]), "independentcb")
 UFInnerframe.castbar.independentcb.apply = function()
 	T.ApplyUFSettings({"Castbar"})
 end
@@ -640,12 +602,12 @@ local CBtextpos_group = {
 	{"TOPRIGHT",	L["右上"]},
 }
 
-T.RadioButtonGroup_db(UFInnerframe.castbar, 30, 290, L["法术名称位置"], "namepos", CBtextpos_group)
+T.RadioButtonGroup_db(UFInnerframe.castbar, 30, 290, T.split_words(SPELLS, NAME, L["位置"]), "namepos", CBtextpos_group)
 UFInnerframe.castbar.namepos.apply = function()
 	T.ApplyUFSettings({"Castbar"})
 end
 
-T.RadioButtonGroup_db(UFInnerframe.castbar, 30, 320, L["施法时间位置"], "timepos", CBtextpos_group)
+T.RadioButtonGroup_db(UFInnerframe.castbar, 30, 320, T.split_words(L["时间"], L["位置"]), "timepos", CBtextpos_group)
 UFInnerframe.castbar.timepos.apply = function()
 	T.ApplyUFSettings({"Castbar"})
 end
@@ -656,15 +618,14 @@ T.Colorpicker_db(UFInnerframe.castbar, 30, 355, T.split_words(L["可打断"],L["
 
 T.Colorpicker_db(UFInnerframe.castbar, 230, 355, T.split_words(L["不可打断"],L["施法条"],L["颜色"]), "notInterruptible_color")
 
-T.Checkbutton_db(UFInnerframe.castbar, 30, 390, L["引导法术分段"], "channelticks")
-T.Checkbutton_db(UFInnerframe.castbar, 30, 420, L["隐藏玩家施法条图标"], "hideplayercastbaricon")
+T.Checkbutton_db(UFInnerframe.castbar, 30, 390, T.split_words(L["隐藏"],PLAYER,L["施法条"],L["图标"]), "hideplayercastbaricon")
 UFInnerframe.castbar.hideplayercastbaricon.apply = function()
 	T.ApplyUFSettings({"Castbar"})
 end
 
 T.createDR(UFInnerframe.castbar.castbars, UFInnerframe.castbar.cbIconsize, UFInnerframe.castbar.independentcb, UFInnerframe.castbar.cbheight, UFInnerframe.castbar.cbwidth, 
 UFInnerframe.castbar.target_cbheight, UFInnerframe.castbar.target_cbwidth, UFInnerframe.castbar.focus_cbheight, UFInnerframe.castbar.focus_cbwidth, UFInnerframe.castbar.namepos, 
-UFInnerframe.castbar.timepos, UFInnerframe.castbar.channelticks, UFInnerframe.castbar.hideplayercastbaricon, UFInnerframe.castbar.Interruptible_color, UFInnerframe.castbar.notInterruptible_color)
+UFInnerframe.castbar.timepos, UFInnerframe.castbar.hideplayercastbaricon, UFInnerframe.castbar.Interruptible_color, UFInnerframe.castbar.notInterruptible_color)
 
 -- 平砍计时条
 UFInnerframe.swingtimer = CreateOptionPage("UF Options swingtimer", L["平砍计时条"], UFInnerframe, "VERTICAL", "UnitframeOptions")
@@ -691,7 +652,7 @@ UFInnerframe.swingtimer.swtimer.apply = function()
 	T.ApplyUFSettings({"Swing"})
 end
 
-T.Slider_db(UFInnerframe.swingtimer, "long", 30, 240, L["字体大小"], "swtimersize", 1, 8, 20, 1)
+T.Slider_db(UFInnerframe.swingtimer, "long", 30, 240, T.split_words(L["字体"],L["大小"]), "swtimersize", 1, 8, 20, 1)
 UFInnerframe.swingtimer.swtimersize.apply = function()
 	T.ApplyUFSettings({"Swing"})
 end
@@ -702,7 +663,7 @@ T.createDR(UFInnerframe.swingtimer.swtimer, UFInnerframe.swingtimer.swtimersize)
 -- 光环
 UFInnerframe.aura = CreateOptionPage("UF Options aura", AURAS, UFInnerframe, "VERTICAL", "UnitframeOptions")
 
-T.Slider_db(UFInnerframe.aura, "long", 30, 80, L["图标大小"], "aura_size", 1, 15, 30, 1)
+T.Slider_db(UFInnerframe.aura, "long", 30, 80, T.split_words(L["图标"], L["尺寸"]), "aura_size", 1, 15, 30, 1)
 UFInnerframe.aura.aura_size.apply = function()
 	T.ApplyUFSettings({"Auras"})
 end
@@ -735,7 +696,7 @@ UFInnerframe.totembar = CreateOptionPage("UF Options totembar", L["图腾条"], 
 T.Checkbutton_db(UFInnerframe.totembar, 30, 60, L["启用"], "totems")
 UFInnerframe.totembar.totems.apply = T.ApplyTotemsBarSettings
 
-T.Slider_db(UFInnerframe.totembar, "long", 30, 110, L["图标大小"], "totemsize", 1, 15, 40, 1)
+T.Slider_db(UFInnerframe.totembar, "long", 30, 110, T.split_words(L["图标"], L["尺寸"]), "totemsize", 1, 15, 40, 1)
 UFInnerframe.totembar.totemsize.apply = T.ApplyTotemsBarSettings
 
 T.RadioButtonGroup_db(UFInnerframe.totembar, 30, 140, L["排列方向"], "growthDirection", {
@@ -744,9 +705,9 @@ T.RadioButtonGroup_db(UFInnerframe.totembar, 30, 140, L["排列方向"], "growth
 })
 UFInnerframe.totembar.growthDirection.apply = T.ApplyTotemsBarSettings
 
-T.RadioButtonGroup_db(UFInnerframe.totembar, 30, 170, L["排列方向"], "sortDirection", {
-	{"ASCENDING", L["正向"]},
-	{"DESCENDING", L["反向"]},
+T.RadioButtonGroup_db(UFInnerframe.totembar, 30, 170, L["排列顺序"], "sortDirection", {
+	{"ASCENDING", L["正序"]},
+	{"DESCENDING", L["反序"]},
 })
 UFInnerframe.totembar.sortDirection.apply = T.ApplyTotemsBarSettings
 
@@ -766,7 +727,7 @@ end
 -- 其他
 UFInnerframe.other = CreateOptionPage("UF Options other", OTHER, UFInnerframe, "VERTICAL", "UnitframeOptions")
 
-T.Checkbutton_db(UFInnerframe.other, 30, 60, L["启用仇恨条"], "showthreatbar")
+T.Checkbutton_db(UFInnerframe.other, 30, 60, T.split_words(L["显示"],L["仇恨条"]), "showthreatbar")
 UFInnerframe.other.showthreatbar.apply = function()
 	T.EnableUFSettings({"ThreatBar"})
 end
@@ -776,12 +737,12 @@ UFInnerframe.other.showthreatbar.apply = function()
 	T.EnableUFSettings({"PvPIndicator"})
 end
 
-T.Checkbutton_db(UFInnerframe.other, 30, 120, L["启用首领框体"], "bossframes")
+T.Checkbutton_db(UFInnerframe.other, 30, 120, T.split_words(L["启用"],BOSS,L["单位框架"]), "bossframes")
 UFInnerframe.other.bossframes.apply = function()
 	StaticPopup_Show(G.uiname.."Reload Alert")
 end
 
-T.Checkbutton_db(UFInnerframe.other, 30, 150, L["启用PVP框体"], "arenaframes")
+T.Checkbutton_db(UFInnerframe.other, 30, 150, T.split_words(L["启用"],ARENA,L["单位框架"]), "arenaframes")
 UFInnerframe.other.arenaframes.apply = function()
 	StaticPopup_Show(G.uiname.."Reload Alert")
 end
@@ -793,7 +754,7 @@ if G.myClass == "DEATHKNIGHT" then
 		T.ApplyUFSettings({"Runes"})
 	end
 
-	T.Slider_db(UFInnerframe.other, "long", 30, 240, L["字体大小"], "valuefs", 1, 8, 16, 1)
+	T.Slider_db(UFInnerframe.other, "long", 30, 240, T.split_words(L["字体"],L["大小"]), "valuefs", 1, 8, 16, 1)
 	UFInnerframe.other.valuefs.apply = function()
 		T.ApplyUFSettings({"Runes"})
 	end
@@ -810,7 +771,7 @@ end
 
 if G.myClass == "MONK" then
 	CreateDividingLine(UFInnerframe.other, -180)
-    T.Checkbutton_db(UFInnerframe.other, 30, 190, L["显示醉拳条"], "stagger")
+    T.Checkbutton_db(UFInnerframe.other, 30, 190, T.split_words(L["显示"],L["醉拳条"]), "stagger")
 	UFInnerframe.other.dpsmana.apply = function()
 		T.EnableUFSettings({"Stagger"})
 	end
@@ -892,12 +853,12 @@ end
 
 T.createDR(RFInnerframe.style.raidmanabars, RFInnerframe.style.raidppheight)
 
-T.Slider_db(RFInnerframe.style, "long", 30, 230, L["名字长度"], "namelength", 1, 2, 10, 1)
+T.Slider_db(RFInnerframe.style, "long", 30, 230, T.split_words(NAME,L["长度"]), "namelength", 1, 2, 10, 1)
 RFInnerframe.style.namelength.apply = function()
 	T.UpdateUFTags('Altz_Healerraid')
 end
 
-T.Slider_db(RFInnerframe.style, "long", 30, 270, L["字体大小"], "raidfontsize", 1, 8, 20, 1)
+T.Slider_db(RFInnerframe.style, "long", 30, 270, T.split_words(L["字体"],L["大小"]), "raidfontsize", 1, 8, 20, 1)
 RFInnerframe.style.raidfontsize.apply = function()
 	T.ApplyUFSettings({"Tag_LFD", 'Tag_Name', 'Tag_Status'}, 'Altz_Healerraid')
 end
@@ -1296,7 +1257,7 @@ end)
 -- 光环图标
 RFInnerframe.icon_display = CreateOptionPage("RF Options Icon Display", L["光环"]..L["图标"], RFInnerframe, "VERTICAL", "UnitframeOptions")
 
-CreateTitle(RFInnerframe.icon_display, 50, -65, L["Debuffs"], 18, {1, .5, .3})
+CreateTitle(RFInnerframe.icon_display, 50, -65, L["减益"], 18, {1, .5, .3})
 
 T.Slider_db(RFInnerframe.icon_display, "short", 60, 100, "X", "raid_debuff_anchor_x", 1, -50, 50, 1)
 RFInnerframe.icon_display.raid_debuff_anchor_x.apply = function()
@@ -1308,17 +1269,17 @@ RFInnerframe.icon_display.raid_debuff_anchor_y.apply = function()
 	T.ApplyUFSettings({"Debuffs"}, "Altz_Healerraid")
 end
 
-T.Slider_db(RFInnerframe.icon_display, "short", 60, 140, L["图标大小"], "raid_debuff_icon_size", 1, 10, 40, 1)
+T.Slider_db(RFInnerframe.icon_display, "short", 60, 140, T.split_words(L["图标"], L["尺寸"]), "raid_debuff_icon_size", 1, 10, 40, 1)
 RFInnerframe.icon_display.raid_debuff_icon_size.apply = function()
 	T.ApplyUFSettings({"Debuffs"}, "Altz_Healerraid")
 end
 
-T.Slider_db(RFInnerframe.icon_display, "short", 260, 140, L["图标数量"], "raid_debuff_num", 1, 1, 5, 1)
+T.Slider_db(RFInnerframe.icon_display, "short", 260, 140, T.split_words(L["图标"], L["数量"]), "raid_debuff_num", 1, 1, 5, 1)
 RFInnerframe.icon_display.raid_debuff_num.apply = function()
 	T.ApplyUFSettings({"Debuffs"}, "Altz_Healerraid")
 end
 
-CreateTitle(RFInnerframe.icon_display, 50, -175, L["Buffs"], 18, {.3, 1, .5})
+CreateTitle(RFInnerframe.icon_display, 50, -175, L["增益"], 18, {.3, 1, .5})
 
 T.Slider_db(RFInnerframe.icon_display, "short", 60, 210, "X", "raid_buff_anchor_x", 1, -50, 50, 1)
 RFInnerframe.icon_display.raid_buff_anchor_x.apply = function()
@@ -1330,12 +1291,12 @@ RFInnerframe.icon_display.raid_buff_anchor_y.apply = function()
 	T.ApplyUFSettings({"Buffs"}, "Altz_Healerraid")
 end
 
-T.Slider_db(RFInnerframe.icon_display, "short", 60, 250, L["图标大小"], "raid_buff_icon_size", 1, 10, 40, 1)
+T.Slider_db(RFInnerframe.icon_display, "short", 60, 250, T.split_words(L["图标"], L["尺寸"]), "raid_buff_icon_size", 1, 10, 40, 1)
 RFInnerframe.icon_display.raid_buff_icon_size.apply = function()
 	T.ApplyUFSettings({"Buffs"}, "Altz_Healerraid")
 end
 
-T.Slider_db(RFInnerframe.icon_display, "short", 260, 250, L["图标数量"], "raid_buff_num", 1, 1, 5, 1)
+T.Slider_db(RFInnerframe.icon_display, "short", 260, 250, T.split_words(L["图标"], L["数量"]), "raid_buff_num", 1, 1, 5, 1)
 RFInnerframe.icon_display.raid_buff_num.apply = function()
 	T.ApplyUFSettings({"Buffs"}, "Altz_Healerraid")
 end
@@ -1346,7 +1307,7 @@ T.Checkbutton_db(RFInnerframe.icon_display, 60, 300, L["自动添加团队减益
 T.Slider_db(RFInnerframe.icon_display, "long", 60, 350, L["自动添加的图标层级"], "debuff_auto_add_level", 1, 1, 20, 1)
 
 -- 团队减益
-RFInnerframe.raiddebuff = CreateOptionPage("RF Options Raid Debuff", L["副本减益"], RFInnerframe, "VERTICAL", "UnitframeOptions")
+RFInnerframe.raiddebuff = CreateOptionPage("RF Options Raid Debuff", T.split_words(L["副本"],L["减益"]), RFInnerframe, "VERTICAL", "UnitframeOptions")
 
 RFInnerframe.raiddebuff.debuff_list = T.createscrolllist(RFInnerframe.raiddebuff, {"TOPLEFT", 10, -85}, false, 395, 400)
 
@@ -1716,13 +1677,13 @@ local ActionbarInnerframe = CreateInnerFrame(ActionbarOptions)
 -- 样式
 ActionbarInnerframe.common = CreateOptionPage("Actionbar Options common", L["样式"], ActionbarInnerframe, "VERTICAL", "ActionbarOptions")
 
-T.Checkbutton_db(ActionbarInnerframe.common, 30, 60, L["显示冷却时间"], "cooldown_number", L["显示冷却时间提示"])
+T.Checkbutton_db(ActionbarInnerframe.common, 30, 60, T.split_words(L["显示"],L["冷却"],L["时间"]), "cooldown_number", L["显示冷却时间提示"])
 ActionbarInnerframe.common.cooldown_number.apply = T.CooldownNumber_Edit
 
-T.Checkbutton_db(ActionbarInnerframe.common, 30, 90, L["显示冷却时间"].." (Weakauras)", "cooldown_number_wa", L["显示冷却时间提示WA"])
+T.Checkbutton_db(ActionbarInnerframe.common, 30, 90, T.split_words(L["显示"],L["冷却"],L["时间"]).." (Weakauras)", "cooldown_number_wa", L["显示冷却时间提示WA"])
 ActionbarInnerframe.common.cooldown_number_wa.apply = T.CooldownNumber_Edit
 
-T.Slider_db(ActionbarInnerframe.common, "long", 30, 140, L["冷却时间数字大小"], "cooldownsize", 1, 18, 35, 1, L["冷却时间数字大小提示"])
+T.Slider_db(ActionbarInnerframe.common, "long", 30, 140, T.split_words(L["冷却"],L["数字"],L["大小"]), "cooldownsize", 1, 18, 35, 1)
 ActionbarInnerframe.common.cooldownsize.apply = T.CooldownNumber_Edit
 
 T.createDR(ActionbarInnerframe.common.cooldown_number, ActionbarInnerframe.common.cooldown_number_wa, ActionbarInnerframe.common.cooldownsize)
@@ -1731,17 +1692,17 @@ CreateDividingLine(ActionbarInnerframe.common, -165)
 
 T.Checkbutton_db(ActionbarInnerframe.common, 30, 180, L["不可用颜色"], "rangecolor", L["不可用颜色提示"])
 
-T.Slider_db(ActionbarInnerframe.common, "long", 30, 230, L["键位字体大小"], "keybindsize", 1, 8, 20, 1)
+T.Slider_db(ActionbarInnerframe.common, "long", 30, 230, T.split_words(L["键位"],L["字体"],L["尺寸"]), "keybindsize", 1, 8, 20, 1)
 ActionbarInnerframe.common.keybindsize.apply = function()
 	T.UpdateActionbarsFontSize()
 end
 
-T.Slider_db(ActionbarInnerframe.common, "long", 30, 270, L["宏名字字体大小"], "macronamesize", 1, 8, 20, 1)
+T.Slider_db(ActionbarInnerframe.common, "long", 30, 270, T.split_words(MACRO,NAME,L["字体"],L["尺寸"]), "macronamesize", 1, 8, 20, 1)
 ActionbarInnerframe.common.macronamesize.apply = function()
 	T.UpdateActionbarsFontSize()
 end
 
-T.Slider_db(ActionbarInnerframe.common, "long", 30, 310, L["可用次数字体大小"], "countsize", 1, 8, 20, 1)
+T.Slider_db(ActionbarInnerframe.common, "long", 30, 310, T.split_words(L["次数"],L["字体"],L["尺寸"]), "countsize", 1, 8, 20, 1)
 ActionbarInnerframe.common.countsize.apply = function()
 	T.UpdateActionbarsFontSize()
 end
@@ -1781,7 +1742,7 @@ ActionbarInnerframe.cdflash = CreateOptionPage("Actionbar Options cdflash", L["�
 
 T.Checkbutton_db(ActionbarInnerframe.cdflash, 30, 60, L["启用"], "cdflash_enable")
 
-T.Slider_db(ActionbarInnerframe.cdflash, "short", 30, 100, L["图标大小"], "cdflash_size", 1, 15, 100, 1)
+T.Slider_db(ActionbarInnerframe.cdflash, "short", 30, 100, T.split_words(L["图标"], L["尺寸"]), "cdflash_size", 1, 15, 100, 1)
 ActionbarInnerframe.cdflash.cdflash_size.apply = T.UpdateCooldownFlashSize
 
 CreateDividingLine(ActionbarInnerframe.cdflash, -120)
@@ -1802,24 +1763,24 @@ local PlateOptions = CreateOptionPage("Plate Options", UNIT_NAMEPLATES, GUI, "VE
 local PlateInnerframe = CreateInnerFrame(PlateOptions)
 
 -- 通用
-PlateInnerframe.common = CreateOptionPage("Nameplates Options common", L["通用设置"], PlateInnerframe, "VERTICAL", "PlateOptions")
+PlateInnerframe.common = CreateOptionPage("Nameplates Options common", T.split_words(L["一般"], L["设置"]), PlateInnerframe, "VERTICAL", "PlateOptions")
 
 T.Checkbutton_db(PlateInnerframe.common, 30, 60, L["启用"], "enableplate")
 PlateInnerframe.common.enableplate.apply = function()
 	StaticPopup_Show(G.uiname.."Reload Alert")
 end
 
-T.Slider_db(PlateInnerframe.common, "long", 30, 110, T.split_words(NAME,L["字体大小"]), "namefontsize", 1, 5, 25, 1)
+T.Slider_db(PlateInnerframe.common, "long", 30, 110, T.split_words(NAME,L["字体"],L["大小"]), "namefontsize", 1, 5, 25, 1)
 PlateInnerframe.common.namefontsize.apply = function()
 	T.ApplyUFSettings({"Tag_Name", "Health", "Power"}, "Altz_Nameplates")
 end
 
-T.Slider_db(PlateInnerframe.common, "long", 30, 150, T.split_words(L["光环"],L["图标数量"]), "plateauranum", 1, 3, 10, 1)
+T.Slider_db(PlateInnerframe.common, "long", 30, 150, T.split_words(L["光环"],L["图标"],L["数量"]), "plateauranum", 1, 3, 10, 1)
 PlateInnerframe.common.plateauranum.apply = function()
 	T.ApplyUFSettings({"Auras"}, "Altz_Nameplates")
 end
 
-T.Slider_db(PlateInnerframe.common, "long", 30, 190, T.split_words(L["光环"],L["图标大小"]), "plateaurasize", 1, 10, 30, 1)
+T.Slider_db(PlateInnerframe.common, "long", 30, 190, T.split_words(L["光环"],L["图标"],L["尺寸"]), "plateaurasize", 1, 10, 30, 1)
 PlateInnerframe.common.plateaurasize.apply = function()
 	T.ApplyUFSettings({"Auras"}, "Altz_Nameplates")
 end
@@ -1912,12 +1873,12 @@ PlateInnerframe.style.bar_height.apply = function()
 	T.ApplyUFSettings({"Health", "Power", "Castbar"}, "Altz_Nameplates")
 end
 
-T.Slider_db(PlateInnerframe.style, "long", 30, 205, L["数值"]..L["字体大小"], "valuefontsize", 1, 5, 25, 1)
+T.Slider_db(PlateInnerframe.style, "long", 30, 205, T.split_words(L["数值"],L["字体"],L["大小"]), "valuefontsize", 1, 5, 25, 1)
 PlateInnerframe.style.valuefontsize.apply = function()
 	T.ApplyUFSettings({"Tag_Name", "Health", "Power"}, "Altz_Nameplates")
 end
 
-T.RadioButtonGroup_db(PlateInnerframe.style, 30, 225, L["数值"]..L["样式"], "bar_hp_perc", {
+T.RadioButtonGroup_db(PlateInnerframe.style, 30, 225, T.split_words(L["数值"],L["样式"]), "bar_hp_perc", {
 	{"perc", L["百分比"]},
 	{"value_perc", L["数值"].."+"..L["百分比"]},
 })
@@ -1925,18 +1886,18 @@ PlateInnerframe.style.bar_hp_perc.apply = function()
 	T.ApplyUFSettings({"Health"}, "Altz_Nameplates")
 end
 
-T.Checkbutton_db(PlateInnerframe.style, 30, 255, L["总是显示生命值"], "bar_alwayshp", L["总是显示生命值提示"])
+T.Checkbutton_db(PlateInnerframe.style, 30, 255, T.split_words(L["总是"],L["显示"],L["生命值"]), "bar_alwayshp", string.format(L["总是显示数值提示"], L["生命值"]))
 PlateInnerframe.style.bar_alwayshp.apply = function()
 	T.ApplyUFSettings({"Health"}, "Altz_Nameplates")
 end
 
 -- 数值样式的选项
-T.Slider_db(PlateInnerframe.style, "long", 30, 125, string.format("%s(%s)", L["字体大小"], L["数字样式"]), "number_size", 1, 15, 35, 1)
+T.Slider_db(PlateInnerframe.style, "long", 30, 125, T.split_words(L["字体"],L["大小"]), "number_size", 1, 15, 35, 1)
 PlateInnerframe.style.number_size.apply = function()
 	T.ApplyUFSettings({"Health", "Power", "ClassPower"}, "Altz_Nameplates")
 end
 
-T.Checkbutton_db(PlateInnerframe.style, 30, 165, string.format("%s(%s)", L["总是显示生命值"],L["数字样式"]), "number_alwayshp", L["总是显示生命值提示"])
+T.Checkbutton_db(PlateInnerframe.style, 30, 165, T.split_words(L["总是"],L["显示"],L["生命值"]), "number_alwayshp", string.format(L["总是显示数值提示"], L["生命值"]))
 PlateInnerframe.style.number_alwayshp.apply = function()
 	T.ApplyUFSettings({"Health"}, "Altz_Nameplates")
 end
@@ -2049,16 +2010,16 @@ CombattextOptions.showoutputct.apply = function()
 	end
 end
 
-T.Checkbutton_db(CombattextOptions, 30, 120, L["显示DOT"], "ctshowdots")
-T.Checkbutton_db(CombattextOptions, 230, 120, L["显示HOT"], "ctshowhots")
-T.Checkbutton_db(CombattextOptions, 30, 150, T.split_words(L["显示"],PET), "ctshowpet")
+T.Checkbutton_db(CombattextOptions, 30, 120, T.split_words(L["显示"], "DOT"), "ctshowdots")
+T.Checkbutton_db(CombattextOptions, 230, 120, T.split_words(L["显示"], "HOT"), "ctshowhots")
+T.Checkbutton_db(CombattextOptions, 30, 150, T.split_words(L["显示"], PET), "ctshowpet")
 
 CreateDividingLine(CombattextOptions, -190)
 CreateTitle(CombattextOptions, 30, -200, L["浮动战斗数字"])
 
-T.CVarCheckbutton(CombattextOptions, 30, 220, "floatingCombatTextCombatDamage", T.split_words(L["显示"], L["受到伤害"], L["战斗数字"]), "1", "0")
-T.CVarCheckbutton(CombattextOptions, 30, 250, "floatingCombatTextCombatHealing", T.split_words(L["显示"], L["受到治疗"], L["战斗数字"]), "1", "0")
-T.CVarCheckbutton(CombattextOptions, 30, 280, "enableFloatingCombatText", T.split_words(L["显示"], L["造成伤害和治疗"], L["战斗数字"]), "1", "0")
+T.CVarCheckbutton(CombattextOptions, 30, 220, "floatingCombatTextCombatDamage", T.split_words(L["显示"], L["承受伤害"], L["战斗数字"]), "1", "0")
+T.CVarCheckbutton(CombattextOptions, 30, 250, "floatingCombatTextCombatHealing", T.split_words(L["显示"], L["承受治疗"], L["战斗数字"]), "1", "0")
+T.CVarCheckbutton(CombattextOptions, 30, 280, "enableFloatingCombatText", T.split_words(L["显示"], L["输出伤害/治疗"], L["战斗数字"]), "1", "0")
 
 local combattextfont_group = {
 	{"none", DEFAULT},
@@ -2284,15 +2245,9 @@ function eventframe:ADDON_LOADED(arg1)
 end
 
 function eventframe:PLAYER_ENTERING_WORLD()
-
 	for _, func in next, G.EnteringWorld_callbacks do
 		func()
 	end
-
-	SetClassColorButton:SetScript("OnClick", function() T.ResetClasscolors(true) end)
-	SetDBMButton:SetScript("OnClick", function() T.ResetDBM(true) end)
-	SetBWButton:SetScript("OnClick", function() T.ResetBW(true) end)
-	SetSkadaButton:SetScript("OnClick", function() T.ResetSkada(true) end)	
 	
 	eventframe:UnregisterEvent("PLAYER_ENTERING_WORLD")
 end
