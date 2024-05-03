@@ -9,7 +9,7 @@ StaticPopupDialogs[G.uiname.."incorrect itemID"] = {
 }
 
 StaticPopupDialogs[G.uiname.."incorrect spellID"] = {
-	text = L["不正确的法术名称"],
+	text = L["不是一个有效的法术ID"],
 	button1 = ACCEPT, 
 	hideOnEscape = 1, 
 	whileDead = true,

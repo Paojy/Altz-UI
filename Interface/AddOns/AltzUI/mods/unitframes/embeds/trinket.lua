@@ -32,7 +32,7 @@ local Update = function(self, event, ...)
 		if eventType == "SPELL_CAST_SUCCESS" and sourceGUID == UnitGUID(self.unit) and trinketSpells[spellID] then
 			self.Trinket.cooldownFrame:SetCooldown(GetTime(), trinketSpells[spellID])
 			if self.Trinket.trinketUseAnnounce then
-				SendChatMessage(sourceName..L["使用了徽章"], "SAY")
+				SendChatMessage(string.format(L["使用了徽章"], sourceName), "SAY")
 			end
 		end
 	elseif event == "ARENA_OPPONENT_UPDATE" then
@@ -71,7 +71,7 @@ local Enable = function(self)
 			self.Trinket.cooldownFrame:SetScript("OnHide", function()
 				local name = GetUnitName(self.unit, false) or "unknown"
 				if self:IsShown() then
-				SendChatMessage(name..L["的徽章冷却就绪"], "SAY")
+				SendChatMessage(string.format(L["徽章冷却就绪"], name), "SAY")
 				end
 			end)
 		end

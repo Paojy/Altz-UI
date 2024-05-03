@@ -662,7 +662,7 @@ local CreateSwingTimer = function(self, unit) -- only for player
 	
 	local bar = CreateFrame("Frame", G.uiname.."SwingTimer", self)
 	bar:SetSize(aCoreCDB["UnitframeOptions"]["swwidth"], aCoreCDB["UnitframeOptions"]["swheight"])
-	bar.movingname = L["玩家平砍计时条"]
+	bar.movingname = L["平砍计时条"]
 	bar.point = {
 		healer = {a1 = "TOP", parent = "UIParent", a2 = "CENTER", x = 0, y = -160},
 		dpser = {a1 = "TOP", parent = "UIParent", a2 = "CENTER", x = 0, y = -160},
