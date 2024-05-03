@@ -49,6 +49,7 @@ local frames = {
 	["EncounterJournal"] = false,
 	["ContainerFrameCombinedBags"] = false,
 	["WorldMapFrame"] = false,
+	["EditModeImportLayoutDialog"] = false,
 }
 
 -- Frames provided by load on demand addons, hooked when the addon is loaded.
