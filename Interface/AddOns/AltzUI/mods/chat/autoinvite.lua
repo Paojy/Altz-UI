@@ -41,7 +41,9 @@ local function InvitePlayer(name)
 	end
 end
 
-local red_str = "|Hgarrmission:altzinvite_addIgnore::%s|h|cFFDC143C[".. IGNORE.."]|r|h"
+
+local red_str = "|cFFDC143C|Haddon:altz:invite_addIgnore:%s|h[".. IGNORE.."]|h|r"
+
 local my_battle_tag
 
 local accept_invite = function()
@@ -70,12 +72,10 @@ local hassameclub = function(guid)
     end
 end
 
-hooksecurefunc("SetItemRef", function(link, text)
-    if link:find("garrmission:altzinvite") then
-        local name = string.match(text, "::([^%]]+)%|h|c")
-        if string.find(text, "addIgnore") then
-            C_FriendList.AddIgnore(name)
-        end
+hooksecurefunc("SetItemRef", function(link)
+    if link:find("addon:altz:invite_addIgnore") then
+        local _, _, _, name = string.split(":", link)
+        C_FriendList.AddIgnore(name)
     end
 end)
 

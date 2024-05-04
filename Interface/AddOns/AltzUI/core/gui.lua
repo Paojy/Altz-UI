@@ -1405,8 +1405,8 @@ local function UpdateEncounterAuraButton(option_list, encounterID, spellID, leve
 			option_list.apply()
 		end)
 		
-		frame:SetScript("OnMouseDown", function(self)
-			local encounterName = EJ_GetEncounterInfo(encounterID)
+		frame:SetScript("OnMouseDown", function(self)	
+			local encounterName = (encounterID == 1 and L["杂兵"]) or EJ_GetEncounterInfo(encounterID)
 			UIDropDownMenu_SetSelectedValue(option_list.encounterDD, encounterID)
 			UIDropDownMenu_SetText(option_list.encounterDD, encounterName)
 			option_list.spell_input:SetText(spellID)
@@ -1504,6 +1504,9 @@ do
 	
 	-- 法术ID输入框
 	option_list.spell_input = T.EditboxWithText(option_list, {"LEFT", option_list.encounterDD, "RIGHT", -5, 2}, L["输入法术ID"], 100)
+	option_list.spell_input:HookScript("OnChar", function(self) 
+		self.current_spellID = nil
+	end)
 	function option_list.spell_input:apply()
 		if self.current_spellID then
 			return true
@@ -1671,15 +1674,15 @@ RFInnerframe.raiddebuff.instance_list:SetScript("OnShow", function(self)
 	self.init = true
 end)
 
-hooksecurefunc("SetItemRef", function(link, text)
-  if link:find("garrmission:altz") then
-	local InstanceID, encounterID, spellID = string.match(text, "altz::([^%]]+)%::([^%]]+)%::([^%]]+)%|h|c")
+hooksecurefunc("SetItemRef", function(link)
+  if link:find("addon:altz:raiddebuff") then
+	local _, _, action, InstanceID, encounterID, spellID = string.split(":", link)
 	
 	InstanceID = tonumber(InstanceID)
 	encounterID = tonumber(encounterID)
 	spellID = tonumber(spellID)
 
-	if string.find(text, "config") then	
+	if action == "raiddebuff_config" then	
 		GUI:Show()
 		GUI.df:Show()
 		GUI.scale:Show()
@@ -1689,10 +1692,13 @@ hooksecurefunc("SetItemRef", function(link, text)
 		RFInnerframe.raiddebuff.instance_list.list[InstanceID]:GetScript("OnMouseDown")()
 		RFInnerframe.raiddebuff.debuff_list.spells["icon"..encounterID.."_"..spellID]:GetScript("OnMouseDown")()
 				
-	elseif string.find(text, "delete") then
+	elseif action == "raiddebuff_delete" then
 		if aCoreCDB["UnitframeOptions"]["raid_debuffs"][InstanceID][encounterID][spellID] then
 			aCoreCDB["UnitframeOptions"]["raid_debuffs"][InstanceID][encounterID][spellID] = nil
 			aCoreCDB["UnitframeOptions"]["debuff_list_black"][spellID] = true
+			if RFInnerframe.raiddebuff.selected_InstanceID == InstanceID then
+				DisplayRaidDebuffList()
+			end
 			print(string.format(L["已删除并加入黑名单"], T.GetIconLink(spellID)))
 		end
 	end

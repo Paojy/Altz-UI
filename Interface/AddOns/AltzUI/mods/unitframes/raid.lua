@@ -2,8 +2,9 @@
 local oUF = AltzUF or oUF
 
 local current_encounter
-local gold_str = "|Hgarrmission:altz_config_altz::%s::%s::%s|h|cFFFFD700[%s]|r|h"
-local red_str = "|Hgarrmission:altz_delete_altz::%s::%s::%s|h|cFFDC143C[%s]|r|h"
+
+local gold_str = "|cFFFFD700|Haddon:altz:raiddebuff_config:%s:%s:%s|h[%s]|h|r"
+local red_str = "|cFFDC143C|Haddon:altz:raiddebuff_delete:%s:%s:%s|h[%s]|h|r"
 
 --=============================================--
 --[[              治疗法力条				 ]]--
@@ -285,7 +286,6 @@ T.UpdateClicksforAll = UpdateClicksforAll
 --[[              Raid Auras                 ]]--
 --=============================================--
 -- Debuffs
-
 local RaidDebuff_AuraFilter = function(debuffs, unit, data)
 	local spellID = data.spellId
 	local dtype = data.dispelName
