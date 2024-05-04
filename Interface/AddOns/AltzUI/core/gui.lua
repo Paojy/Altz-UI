@@ -965,6 +965,21 @@ local clickcastframe = CreateFrame("Frame", G.uiname.."ClickCast Options", RFInn
 clickcastframe:SetPoint("TOPLEFT", 30, -120)
 clickcastframe:SetPoint("BOTTOMRIGHT", -30, 20)
 T.setBackdrop(clickcastframe, 0)
+G.ClickcastOptions = clickcastframe
+
+-- 当前天赋
+local cur_spec = T.createtext(clickcastframe, "OVERLAY", 12, "OUTLINE", "LEFT")
+cur_spec:SetPoint("LEFT", RFInnerframe.clickcast.enableClickCast.Text, "RIGHT", 5, 0)
+
+clickcastframe:SetScript("OnShow", function()
+	local specID = T.GetSpecID()
+	if specID == "nospec" then
+		cur_spec:SetText(string.format("%s: %s", L["当前设置"], T.split_words(NONE,SPECIALIZATION)))
+	else
+		local _, name, _, icon = GetSpecializationInfoByID(specID)
+		cur_spec:SetText(string.format("%s: %s%s", L["当前设置"], T.GetTexStr(icon), name))
+	end
+end)
 
 local click_buttons = {
 	{"1", L["Button1"]}, 
@@ -999,7 +1014,8 @@ local function GetClickcastValue(bu_tag, mod_ind, key)
 		arg1 = tostring(bu_tag)
 		arg2 = G.modifier[mod_ind]
 	end
-	value = aCoreCDB["UnitframeOptions"]["ClickCast"][arg1][arg2][key]
+	local specID = T.GetSpecID()
+	value = aCoreCDB["UnitframeOptions"]["ClickCast"][specID][arg1][arg2][key]
 	return value
 end
 
@@ -1015,7 +1031,8 @@ local function ApplyClickcastValue(bu_tag, mod_ind, key, value)
 		arg1 = bu_tag
 		arg2 = G.modifier[mod_ind]
 	end
-	aCoreCDB["UnitframeOptions"]["ClickCast"][arg1][arg2][key] = value
+	local specID = T.GetSpecID()
+	aCoreCDB["UnitframeOptions"]["ClickCast"][specID][arg1][arg2][key] = value
 end
 
 local function UpdateClickCast(bu_tag, mod_ind)
@@ -1127,21 +1144,36 @@ local function CreateClickcastKeyOptions(bu_tag, text)
 		UIDropDownMenu_SetWidth(spell_select, 130)
 		
 		UIDropDownMenu_Initialize(spell_select, function()
-			for i, spellID in pairs(G.ClickCastSpells) do
-				local spellName, _, spellIcon = GetSpellInfo(spellID)
-				local info = UIDropDownMenu_CreateInfo()
-				info.value = spellName
-				info.text = T.GetSpellIcon(spellID).." "..spellName
-				info.func = function()
-					UIDropDownMenu_SetSelectedValue(spell_select, info.value)
-					ApplyClickcastValue(bu_tag, mod_ind, "spell", info.value)
-					UpdateClickCast(bu_tag, mod_ind)
+			local spells = {}
+			for tag, info in pairs(G.ClickCastSpells) do
+				local cur_spec = T.GetSpecID()
+				if tag == "class" or tag == cur_spec then
+					for i, spellID in pairs(info) do
+						table.insert(spells, spellID)
+					end
 				end
-				UIDropDownMenu_AddButton(info)
 			end
-
+			if #spells > 0 then
+				for i, spellID in pairs(spells) do
+					local spellName, _, spellIcon = GetSpellInfo(spellID)
+					local info = UIDropDownMenu_CreateInfo()
+					info.value = spellName
+					info.text = T.GetSpellIcon(spellID).." "..spellName
+					info.func = function()
+						UIDropDownMenu_SetSelectedValue(spell_select, info.value)
+						ApplyClickcastValue(bu_tag, mod_ind, "spell", info.value)
+						UpdateClickCast(bu_tag, mod_ind)
+					end
+					UIDropDownMenu_AddButton(info)
+				end
+			end
+			
 			local spell = GetClickcastValue(bu_tag, mod_ind, "spell")
-			UIDropDownMenu_SetSelectedValue(spell_select, spell)		
+			if spell ~= "" then
+				UIDropDownMenu_SetSelectedValue(spell_select, spell)
+			else
+				UIDropDownMenu_SetText(spell_select, NONE)
+			end
 		end)
 		
 		frame.options[mod_ind].spell_select = spell_select
@@ -1249,10 +1281,11 @@ local function CreateClickcastKeyOptions(bu_tag, text)
 		end
 	end
 	
+	table.insert(G.ClickcastOptions, frame)
 	T.createDR(RFInnerframe.clickcast.enableClickCast, frame)
 end
 
-T.RegisterInitCallback(function()
+T.RegisterEnteringWorldCallback(function()
 	for i, info in pairs(click_buttons) do
 		CreateClickcastKeyOptions(unpack(info))
 	end

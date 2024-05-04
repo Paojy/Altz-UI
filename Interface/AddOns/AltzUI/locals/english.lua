@@ -290,6 +290,7 @@ L["缺失生命值提示"] = "Display missing health when health is less than 90
 L["治疗和吸收预估"] = "Heal Prediction and Absorb effects"
 L["治疗和吸收预估提示"] = "Show heal prediction bar and absorb bar on raid frame."
 L["点击施法"] = "Click-Cast"
+L["当前设置"] = "Current settings"
 L["Button1"] = "Left"
 L["Button2"] = "Right"
 L["Button3"] = "Middle"

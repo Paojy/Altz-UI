@@ -99,26 +99,9 @@ T.RaidOnMouseOver = function(self)
     self:HookScript("OnLeave", function(self) UnitFrame_OnLeave(self) end)
 end
 
-local RegisterClicks = function(object)
-	-- EnableWheelCastOnFrame
-	object:RegisterForClicks("AnyDown")
-	object:SetAttribute("clickcast_onenter", [[
-		self:ClearBindings()
-		self:SetBindingClick(1, "MOUSEWHEELUP", self, "Button6")
-		self:SetBindingClick(1, "SHIFT-MOUSEWHEELUP", self, "Button7")
-		self:SetBindingClick(1, "CTRL-MOUSEWHEELUP", self, "Button8")
-		self:SetBindingClick(1, "ALT-MOUSEWHEELUP", self, "Button9")
-		self:SetBindingClick(1, "MOUSEWHEELDOWN", self, "Button10")
-		self:SetBindingClick(1, "SHIFT-MOUSEWHEELDOWN", self, "Button11")
-		self:SetBindingClick(1, "CTRL-MOUSEWHEELDOWN", self, "Button12")
-		self:SetBindingClick(1, "ALT-MOUSEWHEELDOWN", self, "Button13")
-	]])
-
-	object:SetAttribute("clickcast_onleave", [[
-		self:ClearBindings()
-	]])
-	
-	local C = aCoreCDB["UnitframeOptions"]["ClickCast"]
+local function UpdateClickActions(object)
+	local specID = T.GetSpecID()
+	local C = aCoreCDB["UnitframeOptions"]["ClickCast"][specID]
 	for id, var in pairs(C) do
 		for	key, info in pairs(var) do
 			local key_tmp = string.gsub(key, "Click", "")
@@ -150,12 +133,35 @@ local RegisterClicks = function(object)
 	end
 end
 
+local RegisterClicks = function(object)
+	-- EnableWheelCastOnFrame
+	object:RegisterForClicks("AnyDown")
+	object:SetAttribute("clickcast_onenter", [[
+		self:ClearBindings()
+		self:SetBindingClick(1, "MOUSEWHEELUP", self, "Button6")
+		self:SetBindingClick(1, "SHIFT-MOUSEWHEELUP", self, "Button7")
+		self:SetBindingClick(1, "CTRL-MOUSEWHEELUP", self, "Button8")
+		self:SetBindingClick(1, "ALT-MOUSEWHEELUP", self, "Button9")
+		self:SetBindingClick(1, "MOUSEWHEELDOWN", self, "Button10")
+		self:SetBindingClick(1, "SHIFT-MOUSEWHEELDOWN", self, "Button11")
+		self:SetBindingClick(1, "CTRL-MOUSEWHEELDOWN", self, "Button12")
+		self:SetBindingClick(1, "ALT-MOUSEWHEELDOWN", self, "Button13")
+	]])
+
+	object:SetAttribute("clickcast_onleave", [[
+		self:ClearBindings()
+	]])
+	
+	UpdateClickActions(object)
+end
+
 local UnregisterClicks = function(object)
 	object:SetAttribute("clickcast_onenter", nil)
 	object:SetAttribute("clickcast_onleave", nil)
 	
 	local action, macrotext, key_tmp
-	local C = aCoreCDB["UnitframeOptions"]["ClickCast"]
+	local specID = T.GetSpecID()
+	local C = aCoreCDB["UnitframeOptions"]["ClickCast"][specID]
 	for id, var in pairs(C) do
 		for	key, _ in pairs(var) do
 			key_tmp = string.gsub(key, "Click", "")
@@ -236,10 +242,11 @@ G.modifier = modifier
 local Update_PendingFrames = {}
 
 local function UpdateClicksforAll(id, key)
-	local action = aCoreCDB["UnitframeOptions"]["ClickCast"][id][key]["action"]
-	local spell = aCoreCDB["UnitframeOptions"]["ClickCast"][id][key]["spell"]
-	local item = aCoreCDB["UnitframeOptions"]["ClickCast"][id][key]["item"]
-	local macro = aCoreCDB["UnitframeOptions"]["ClickCast"][id][key]["macro"]
+	local specID = T.GetSpecID()
+	local action = aCoreCDB["UnitframeOptions"]["ClickCast"][specID][id][key]["action"]
+	local spell = aCoreCDB["UnitframeOptions"]["ClickCast"][specID][id][key]["spell"]
+	local item = aCoreCDB["UnitframeOptions"]["ClickCast"][specID][id][key]["item"]
+	local macro = aCoreCDB["UnitframeOptions"]["ClickCast"][specID][id][key]["macro"]
 	
 	for i, object in pairs(G.ClickCast_Frames) do
 		if InCombatLockdown() then
@@ -272,6 +279,7 @@ local function UpdateClicksforAll(id, key)
 	end	
 end
 T.UpdateClicksforAll = UpdateClicksforAll
+
 
 --=============================================--
 --[[              Raid Auras                 ]]--
@@ -1037,12 +1045,25 @@ EventFrame:SetScript("OnEvent", function(self, event, ...)
 		end
 	elseif event == "PLAYER_SPECIALIZATION_CHANGED" then
 		UpdateDispelType()
+		
+		for i, object in pairs(G.ClickCast_Frames) do
+			UpdateClickActions(object)
+		end
+		local options = G.ClickcastOptions
+		if options:IsShown() then -- force GUI update
+			options:Hide()
+			options:Show()
+		end
 	elseif event == "ENCOUNTER_START" then
 		local encounterID = ...
 		current_encounter = encounterID
 	elseif event == "ENCOUNTER_END" then
 		current_encounter = 1
-	elseif	event == "PLAYER_ENTERING_WORLD" then
+	elseif event == "PLAYER_LOGIN" then		
+		if aCoreCDB["UnitframeOptions"]["enableClickCast"] then
+			RegisterClicksforAll()
+		end
+	elseif event == "PLAYER_ENTERING_WORLD" then
 		current_encounter = 1
 		UpdateHealManabar()
 		UpdateDispelType()
@@ -1068,15 +1089,12 @@ T.RegisterInitCallback(function()
 	T.UpdateGroupAnchor()
 	T.UpdateGroupSize()
 	T.UpdateGroupfilter()
-
-	if aCoreCDB["UnitframeOptions"]["enableClickCast"] then
-		RegisterClicksforAll()
-	end
 	
 	EventFrame:RegisterEvent("PLAYER_REGEN_ENABLED")
 	EventFrame:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED")
 	EventFrame:RegisterEvent("ENCOUNTER_START")
-	EventFrame:RegisterEvent("ENCOUNTER_END")
+	EventFrame:RegisterEvent("ENCOUNTER_END")	
 	EventFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
+	EventFrame:RegisterEvent("PLAYER_LOGIN")
 	EventFrame:RegisterEvent("GROUP_ROSTER_UPDATE")	
 end)
