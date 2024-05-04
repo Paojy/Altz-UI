@@ -119,6 +119,8 @@ GUI.EditFrame:Hide()
 T.setStripBD(GUI.EditFrame)
 
 GUI.editbox = T.EditboxWithButton(GUI.EditFrame, 200, {"TOPLEFT", 5, -10}, L["复制粘贴"])
+GUI.editbox:SetPoint("TOPRIGHT", GUI.EditFrame, "TOPRIGHT", -5, -10)
+GUI.editbox:SetAutoFocus(true)
 
 GUI.editbox:SetScript("OnEditFocusGained", function(self) self:HighlightText() end)
 GUI.editbox:SetScript("OnEditFocusLost", function(self) self:HighlightText(0,0) end)
@@ -1129,9 +1131,16 @@ local function CreateClickcastKeyOptions(bu_tag, text)
 				end
 				UIDropDownMenu_AddButton(info)
 			end
-			
-			local action = GetClickcastValue(bu_tag, mod_ind, "action")
-			UIDropDownMenu_SetSelectedValue(action_select, action)
+		end)
+		
+		action_select:SetScript("OnShow", function(self)
+			local action = GetClickcastValue(bu_tag, mod_ind, "action")			
+			UIDropDownMenu_SetSelectedValue(self, action)
+			for i, t in pairs(actions) do
+				if action == t[1] then
+					UIDropDownMenu_SetText(self, t[2])
+				end
+			end
 		end)
 		
 		frame.options[mod_ind].action_select = action_select
@@ -1157,7 +1166,7 @@ local function CreateClickcastKeyOptions(bu_tag, text)
 				for i, spellID in pairs(spells) do
 					local spellName, _, spellIcon = GetSpellInfo(spellID)
 					local info = UIDropDownMenu_CreateInfo()
-					info.value = spellName
+					info.value = spellID
 					info.text = T.GetSpellIcon(spellID).." "..spellName
 					info.func = function()
 						UIDropDownMenu_SetSelectedValue(spell_select, info.value)
@@ -1167,12 +1176,16 @@ local function CreateClickcastKeyOptions(bu_tag, text)
 					UIDropDownMenu_AddButton(info)
 				end
 			end
-			
-			local spell = GetClickcastValue(bu_tag, mod_ind, "spell")
-			if spell ~= "" then
-				UIDropDownMenu_SetSelectedValue(spell_select, spell)
+		end)
+		
+		spell_select:SetScript("OnShow", function(self)
+			local spellID = GetClickcastValue(bu_tag, mod_ind, "spell")
+			if spellID == "" then
+				UIDropDownMenu_SetText(self, NONE)
 			else
-				UIDropDownMenu_SetText(spell_select, NONE)
+				UIDropDownMenu_SetSelectedValue(self, spellID)
+				local name, _, icon = GetSpellInfo(spellID)
+				UIDropDownMenu_SetText(self, T.GetTexStr(icon).." "..name)				
 			end
 		end)
 		
@@ -1393,7 +1406,9 @@ local function UpdateEncounterAuraButton(option_list, encounterID, spellID, leve
 		end)
 		
 		frame:SetScript("OnMouseDown", function(self)
-			UIDropDownMenu_SetSelectedValue(option_list.encounterDD, encounterID)	
+			local encounterName = EJ_GetEncounterInfo(encounterID)
+			UIDropDownMenu_SetSelectedValue(option_list.encounterDD, encounterID)
+			UIDropDownMenu_SetText(option_list.encounterDD, encounterName)
 			option_list.spell_input:SetText(spellID)
 			option_list.spell_input.current_spellID = spellID
 			option_list.level_input:SetText(level)
@@ -1593,7 +1608,9 @@ local CreateInstanceButton = function(frame, instanceID, instanceName, bgImage)
 		end)
 		
 		local first_encounterID = select(3, EJ_GetEncounterInfoByIndex(1, parent.selected_InstanceID))
+		local encounterName = EJ_GetEncounterInfo(first_encounterID)
 		UIDropDownMenu_SetSelectedValue(option_list.encounterDD, first_encounterID)
+		UIDropDownMenu_SetText(option_list.encounterDD, encounterName)
 		
 		DisplayRaidDebuffList()
 	end)

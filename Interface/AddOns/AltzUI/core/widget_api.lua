@@ -260,6 +260,7 @@ T.GetSpellIcon = function(spellID)
 		return "|T"..icon..":14:14:0:0:64:64:4:60:4:60|t"
 	else
 		print(spellID, "bug")
+		return "|T134400:14:14:0:0:64:64:4:60:4:60|t"		
 	end
 end
 

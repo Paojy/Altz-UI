@@ -106,7 +106,7 @@ local function UpdateClickActions(object)
 		for	key, info in pairs(var) do
 			local key_tmp = string.gsub(key, "Click", "")
 			local action = info.action
-			local spell = info.spell
+			local spell = GetSpellInfo(info.spell)
 			local item = info.item
 			local macro = info.macro
 			
