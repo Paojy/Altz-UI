@@ -42,16 +42,15 @@ local function InvitePlayer(name)
 end
 
 local red_str = "|Hgarrmission:altzinvite_addIgnore::%s|h|cFFDC143C[".. IGNORE.."]|r|h"
-local my_info = C_BattleNet.GetAccountInfoByGUID(UnitGUID("player"))
-local my_battle_tag = my_info.battleTag
+local my_battle_tag
 
-local accept_invite = function(name, guid)
+local accept_invite = function()
     PlaySound(SOUNDKIT.IG_PLAYER_INVITE)
     AcceptGroup()
     StaticPopup_Hide("PARTY_INVITE")
 end
 
-local cancel_invite = function(name, guid)
+local cancel_invite = function(name)
     print(string.format(L["邀请过滤"], name), string.format(red_str, name))
     StaticPopup_Hide("PARTY_INVITE")
     DeclineGroup()
@@ -110,28 +109,33 @@ EventFrame:SetScript('OnEvent', function(self, event, arg1, arg2, ...)
 		local name = arg1
 		local guid = select(5, ...)
         if C_GuildInfo.MemberExistsByName(guid) and aCoreCDB["ChatOptions"]["acceptInvite_guild"] then -- 公会
-            accept_invite(name, guid)
+            accept_invite()
             
         elseif C_FriendList.IsFriend(guid) and aCoreCDB["ChatOptions"]["acceptInvite_friend"] then -- 好友
-            accept_invite(name, guid)
+            accept_invite()
             
         elseif not C_BattleNet.GetAccountInfoByGUID(guid) then
             local info = C_BattleNet.GetAccountInfoByGUID(guid)
             if info.isFriend and aCoreCDB["ChatOptions"]["acceptInvite_friend"] then -- 战网实名好友
-                accept_invite(name, guid)
+                accept_invite()
                
             elseif info.isBattleTagFriend and aCoreCDB["ChatOptions"]["acceptInvite_friend"] then -- 是战网好友
-                accept_invite(name, guid)
+                accept_invite()
                
             elseif hassameclub(guid) and aCoreCDB["ChatOptions"]["acceptInvite_club"] then -- 有共同社区
-                accept_invite(name, guid)
+                accept_invite()
 				
-            elseif info.battleTag == my_battle_tag and aCoreCDB["ChatOptions"]["acceptInvite_account"] then -- 我的角色
-                accept_invite(name, guid)
-				
+            else
+				if not my_battle_tag then
+					local my_info = C_BattleNet.GetAccountInfoByGUID(UnitGUID("player"))
+					my_battle_tag = my_info.battleTag
+				end
+				if my_battle_tag and info.battleTag == my_battle_tag and aCoreCDB["ChatOptions"]["acceptInvite_account"] then -- 我的角色
+					accept_invite()
+				end
             end
         elseif aCoreCDB["ChatOptions"]["refuseInvite_stranger"] then
-            cancel_invite(name, guid)
+            cancel_invite(name)
 			
         end
 	end
