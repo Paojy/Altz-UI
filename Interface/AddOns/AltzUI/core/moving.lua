@@ -266,7 +266,11 @@ local function CreateInputBox(parent, points, name, value, numeric)
 		end
 		self:ClearFocus()
 	end)
-
+	
+	if numeric then
+		box:SetNumericFullRange(true)
+	end
+	
 	box:SetScript("OnEnterPressed", function(self)
 		if CurrentFrame ~= "NONE" then
 			local text = self:GetText()
