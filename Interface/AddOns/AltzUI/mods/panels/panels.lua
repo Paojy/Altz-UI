@@ -883,7 +883,7 @@ Talent:SetScript("OnEvent", function(self, event)
 		
 		UIDropDownMenu_Initialize(self.DropDown, TalentDropDown_Initialize, "MENU")
 	else
-		self.text:SetText(T.color_text("No Talents"))
+		self.text:SetText(T.color_text(T.split_words(NONE,SPECIALIZATION)))
 	end
 	
 	if event == "PLAYER_ENTERING_WORLD" then

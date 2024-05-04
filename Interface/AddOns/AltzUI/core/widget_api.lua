@@ -25,6 +25,14 @@ T.CheckRole = function()
 	end
 end
 
+T.GetSpecID = function()
+	local specIndex, specID = GetSpecialization(), "nospec"
+	if specIndex and specIndex ~= 5 then
+		specID = GetSpecializationInfo(specIndex)
+	end
+	return specID
+end
+
 -- 通过ID查找光环
 local function SpellIDPredicate(auraSpellIDToFind, _, _, _, _, _, _, _, _, _, _, _, spellID)
 	return auraSpellIDToFind == spellID
@@ -248,7 +256,11 @@ end
 -- 法术图标
 T.GetSpellIcon = function(spellID)
 	local icon = select(3, GetSpellInfo(spellID))
-	return "|T"..icon..":14:14:0:0:64:64:4:60:4:60|t"
+	if icon then
+		return "|T"..icon..":14:14:0:0:64:64:4:60:4:60|t"
+	else
+		print(spellID, "bug")
+	end
 end
 
 -- 法术图标和链接
