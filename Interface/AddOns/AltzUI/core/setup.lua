@@ -526,6 +526,8 @@ local eventframe = CreateFrame("Frame")
 eventframe:RegisterEvent("PLAYER_ENTERING_WORLD")
 eventframe:SetScript("OnEvent", function(self, event, arg1)
 	if not aCoreCDB.meet then
+		T.ResetEditModeLayout()
+		T.ResetAllAddonSettings()
 		TutorialsFrame[4].layout.buttons[1].selected = true
 		TutorialsFrame:ShowFrame(1)
 		aCoreDB.ver = G.Version

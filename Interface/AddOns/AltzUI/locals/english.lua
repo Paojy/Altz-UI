@@ -150,18 +150,11 @@ L["无法导入"] = "Cannot Import"
 --====================================================--
 --[[                 -- 界面移动 --                 ]]--
 --====================================================--
-L["界面移动工具"] = "Frame Mover"
-L["选中的框体"] = "CurrentFrame"
 L["锚点"] = "Anchor"
 L["锚点框体"] = "Anchor Frame"
 L["当前模式"] = "CurrentMode"
 L["healer"] = "|cff76EE00Healer|r"
 L["dpser"] = "|cffE066FFDps/Tank|r"
-L["框体位置"] = "Frame Positions"
-L["锁定框体"] = "Lock all frames"
-L["解锁框体"] = "Unlock all frames"
-L["重置位置"] = "Reset this frame to it's default position."
-L["进入战斗锁定"] = "Entered combat, lock all frames."
 
 --====================================================--
 --[[                   -- 界面 --                   ]]--

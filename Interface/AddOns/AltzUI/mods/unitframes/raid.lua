@@ -879,6 +879,7 @@ RaidFrame.point = {
 	dpser = {a1 = "BOTTOMLEFT", parent = "UIParent", a2 = "BOTTOMLEFT", x = 10, y = 250},
 }
 T.CreateDragFrame(RaidFrame)
+G.RaidFrame = RaidFrame
 
 local RaidPetFrame = CreateFrame("Frame", "Altz_RaidPet_Holder", UIParent)
 RaidPetFrame.movingname = PET.." "..L["团队框架"]
@@ -887,6 +888,7 @@ RaidPetFrame.point = {
 	dpser = {a1 = "TOPLEFT", parent = "Altz_Raid_Holder", a2 = "TOPRIGHT", x = 10, y = 0},
 }
 T.CreateDragFrame(RaidPetFrame)
+G.RaidPetFrame = RaidPetFrame
 
 local function Spawnraid()
 	oUF:SetActiveStyle"Altz_Healerraid"

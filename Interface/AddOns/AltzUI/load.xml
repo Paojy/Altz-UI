@@ -16,6 +16,7 @@
 	<Script file="core\db.lua"/>
 	<Script file="core\fader.lua"/>
 	<Script file="core\moving.lua"/>
+	<Script file="core\editmode.lua"/>
 	
 	<Script file="mods\skins\mirrortimer.lua"/>
 	<Script file="mods\skins\petbattles.lua"/>	

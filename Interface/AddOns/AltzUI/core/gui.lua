@@ -81,14 +81,14 @@ GUI.scale.Low:SetAlpha(0)
 
 GUI.scale:SetScript("OnShow", function(self)
 	self:SetValue((aCoreCDB["SkinOptions"]["gui_scale"]))
-	self.Text:SetText(L["控制台"]..L["尺寸"].." |cFF00FFFF"..aCoreCDB["SkinOptions"]["gui_scale"].."|r")
+	self.Text:SetText(L["控制台"]..L["尺寸"]..T.color_text(aCoreCDB["SkinOptions"]["gui_scale"]))
 end)
 
 GUI.scale:SetScript("OnValueChanged", function(self, getvalue)
 	aCoreCDB["SkinOptions"]["gui_scale"] = getvalue
 	T.TestSlider_OnValueChanged(self, getvalue)
 
-	self.Text:SetText(L["控制台"]..L["尺寸"].." |cFF00FFFF"..aCoreCDB["SkinOptions"]["gui_scale"].."|r")
+	self.Text:SetText(L["控制台"]..L["尺寸"]..T.color_text(aCoreCDB["SkinOptions"]["gui_scale"]))
 	
 	local scale = aCoreCDB["SkinOptions"]["gui_scale"]/100
 	GUI:ClearAllPoints()
@@ -207,24 +207,12 @@ GUI.reset:SetScript("OnClick", function()
 	StaticPopupDialogs[G.uiname.."Reset Confirm"].OnAccept = function()
 		aCoreCDB = {}
 		T.LoadVariables()
-		T.ResetAllAddonSettings()
 		ReloadUI()
 	end
 	StaticPopup_Show(G.uiname.."Reset Confirm")
 end)
 
-GUI.unlock = T.ClickTexButton(GUI, {"LEFT", GUI.reset, "RIGHT", 2, 0}, [[Interface\AddOns\AltzUI\media\icons\lock.tga]], L["解锁框体"], 20)
-GUI.unlock:SetScript("OnClick", function()	
-	GUI.EditFrame:Hide()
-	GUI.editbox.type = nil
-	
-	T.UnlockAll()
-	GUI:Hide()
-	GUI.df:Hide()
-	GUI.scale:Hide()
-end)
-
-GUI.reload = T.ClickTexButton(GUI, {"LEFT", GUI.unlock, "RIGHT", 2, 0}, [[Interface\AddOns\AltzUI\media\icons\RaidTool.tga]], RELOADUI, 20)
+GUI.reload = T.ClickTexButton(GUI, {"LEFT", GUI.reset, "RIGHT", 2, 0}, [[Interface\AddOns\AltzUI\media\icons\RaidTool.tga]], RELOADUI, 20)
 GUI.reload:SetScript("OnClick", ReloadUI)
 
 GUI.close = T.ClickTexButton(GUI, {"BOTTOMRIGHT", GUI, "BOTTOMRIGHT", -5, 0}, [[Interface\AddOns\AltzUI\media\icons\exit.tga]], nil, 20)
@@ -249,9 +237,10 @@ local function CreateOptionPage(name, title, parent, orientation, db_key)
 	frame:SetAllPoints(parent)
 	frame:Hide()
 
-	frame.title = frame:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
+	frame.title = T.createtext(frame, "ARTWORK", 16, "OUTLINE", "LEFT")
 	frame.title:SetPoint("TOPLEFT", 35, -23)
 	frame.title:SetText(title)
+	frame.title:SetTextColor(1, .82, 0)
 	
 	frame.line = frame:CreateTexture(nil, "ARTWORK")
 	frame.line:SetSize(parent:GetWidth()-50, 1)
@@ -282,7 +271,7 @@ local function CreateOptionPage(name, title, parent, orientation, db_key)
 		tab.backdrop = T.createBackdrop(tab, 0)
 	end
 	
-	tab.text = T.createtext(tab, "OVERLAY", 12, "OUTLINE", "LEFT")
+	tab.text = T.createtext(tab, "OVERLAY", 14, "OUTLINE", "LEFT")
 	tab.text:SetText(title)
 	
 	table.insert(parent.tabs, tab)
@@ -292,20 +281,20 @@ local function CreateOptionPage(name, title, parent, orientation, db_key)
 	frame.hooked_tab = tab
 	
 	if orientation == "VERTICAL" then	
-		tab:SetSize(130, 20)
-		tab:SetPoint("TOPLEFT", parent, "TOPRIGHT", 2, -30*tab.index)
+		tab:SetSize(130, 25)
+		tab:SetPoint("TOPLEFT", parent, "TOPRIGHT", 2, -35*tab.index)
 		
 		tab.text:SetJustifyH("LEFT")
-		tab.text:SetPoint("LEFT", 10, 0)
+		tab.text:SetPoint("LEFT", 14, 0)
 		
 		tab:SetScript("OnMouseDown", function()
 			tab.owner:Show()
-			tab:SetPoint("TOPLEFT", parent, "TOPRIGHT", 8, -30*tab.index)
+			tab:SetPoint("TOPLEFT", parent, "TOPRIGHT", 8, -35*tab.index)
 			tab.backdrop:SetBackdropBorderColor(unpack(G.addon_color))
 			for i, t in pairs(parent.tabs) do
 				if t ~= tab then
 					t.owner:Hide()
-					t:SetPoint("TOPLEFT", parent, "TOPRIGHT", 2,  -30*t.index)
+					t:SetPoint("TOPLEFT", parent, "TOPRIGHT", 2,  -35*t.index)
 					t.backdrop:SetBackdropBorderColor(0, 0, 0)
 				end
 			end
@@ -386,14 +375,11 @@ SInnerframe.theme.showbottombar.apply = G.BGFrame.Apply
 T.Checkbutton_db(SInnerframe.theme, 200, 150, L["下方"].." "..L["两侧装饰"], "showbottomconerbar")
 SInnerframe.theme.showbottomconerbar.apply = G.BGFrame.Apply
 
-local addonskin_title = SInnerframe.theme:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
-addonskin_title:SetPoint("TOPLEFT", 35, -183)
-addonskin_title:SetText(L["插件皮肤"])
-
+CreateTitle(SInnerframe.theme, 35, -183, L["插件皮肤"])
 CreateDividingLine(SInnerframe.theme, -210)
 
 local function CreateApplySettingButton(func, text, addon, y)
-	local Button = T.ClickButton(SInnerframe.theme, 160, {"TOPLEFT", 30, y}, text, nil, string.format(L["更改设置提示"], addon))
+	local Button = T.ClickButton(SInnerframe.theme, 200, {"TOPLEFT", 30, y}, text, nil, string.format(L["更改设置提示"], addon))
 	Button:SetScript("OnClick", func)
 end
 
@@ -417,6 +403,18 @@ T.Checkbutton_db(SInnerframe.layout, 30, 170, L["在副本中收起任务追踪"
 T.Checkbutton_db(SInnerframe.layout, 30, 200, L["暂离屏幕"], "afkscreen", L["暂离屏幕"])
 T.Checkbutton_db(SInnerframe.layout, 50, 230, L["显示插件使用小提示"], "showAFKtips", L["显示插件使用小提示提示"])
 T.createDR(SInnerframe.layout.afkscreen, SInnerframe.layout.showAFKtips)
+
+CreateDividingLine(SInnerframe.layout, -270)
+
+local ResetLayoutButton = T.ClickButton(SInnerframe.layout, 200, {"TOPLEFT", 30, -280}, HUD_EDIT_MODE_RESET_POSITION)
+ResetLayoutButton:SetScript("OnClick", function()
+	StaticPopupDialogs[G.uiname.."Reset Confirm"].text = format(L["重置确认"], T.color_text(T.split_words(L["界面布局"], L["位置"])))
+	StaticPopupDialogs[G.uiname.."Reset Confirm"].OnAccept = function()
+		T.ResetEditModeLayout()
+		T.ResetAllFramesPoint()
+	end
+	StaticPopup_Show(G.uiname.."Reset Confirm")
+end)
 --====================================================--
 --[[              -- Chat Options --                ]]--
 --====================================================--
@@ -425,7 +423,7 @@ local ChatOptions = CreateOptionPage("Chat Options", SOCIAL_LABEL, GUI, "VERTICA
 T.Checkbutton_db(ChatOptions, 30, 60, L["频道缩写"], "channelreplacement")
 ChatOptions.channelreplacement.apply = T.UpdateChannelReplacement
 
-T.CVarCheckbutton(ChatOptions, 230, 60, "showTimestamps", SHOW_TIMESTAMP, "|cff64C2F5%H:%M|r ", "none")
+T.CVarCheckbutton(ChatOptions, 230, 60, "showTimestamps", SHOW_TIMESTAMP, T.color_text("H:%M "), "none")
 
 T.Checkbutton_db(ChatOptions, 30, 90, L["滚动聊天框"], "autoscroll", L["滚动聊天框提示"])
 

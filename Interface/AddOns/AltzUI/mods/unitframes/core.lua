@@ -2106,7 +2106,8 @@ T.RegisterInitCallback(function()
 			dpser = {a1 = "RIGHT", parent = playerframe:GetName(), a2 = "LEFT", x = -10, y = 0},
 		}
 		T.CreateDragFrame(petframe)
-
+		G.petframe = petframe
+		
 		local targetframe = spawnHelper(self, "target")
 		targetframe.movingname = T.split_words(TARGET,L["单位框架"])
 		targetframe.point = {
@@ -2160,6 +2161,7 @@ T.RegisterInitCallback(function()
 				end
 				T.CreateDragFrame(partyframes["party"..i])
 			end
+			G.partyframes = partyframes
 			if aCoreCDB["UnitframeOptions"]["showpartypet"] then
 				local partypetframes = {} -- 小队宠物
 				for i = 1, 4 do
@@ -2174,10 +2176,10 @@ T.RegisterInitCallback(function()
 					}
 					T.CreateDragFrame(partypetframes["party"..i])
 				end
+				G.partypetframes = partypetframes
 			end
 		end
-		
-		
+
 		if aCoreCDB["UnitframeOptions"]["bossframes"] then
 			local bossframes = {}
 			for i = 1, MAX_BOSS_FRAMES do
@@ -2200,6 +2202,7 @@ T.RegisterInitCallback(function()
 			for i = 1, MAX_BOSS_FRAMES do
 				T.CreateDragFrame(bossframes["boss"..i])
 			end
+			G.bossframes = bossframes
 		end
 
 		if aCoreCDB["UnitframeOptions"]["arenaframes"] then
@@ -2222,6 +2225,7 @@ T.RegisterInitCallback(function()
 				end
 				T.CreateDragFrame(arenaframes["arena"..i])
 			end
+			G.arenaframes = arenaframes
 		end
 
 		if aCoreCDB["PlateOptions"]["enableplate"] then

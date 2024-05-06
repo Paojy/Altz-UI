@@ -2,7 +2,8 @@
 
 G.dragFrameList = {}
 
-local CurrentFrame, CurrentRole = "NONE"
+local EMF = EditModeManagerFrame
+local CurrentRole = "NONE"
 
 local anchors = {
 	{"CENTER", L["中间"]},
@@ -16,6 +17,18 @@ local anchors = {
 	{"BOTTOMRIGHT", L["右下"]},
 }
 
+local EditModeSystemSelectionLayout = {
+	["TopRightCorner"] = { atlas = "%s-NineSlice-Corner", mirrorLayout = true, x=8, y=8 },
+	["TopLeftCorner"] = { atlas = "%s-NineSlice-Corner", mirrorLayout = true, x=-8, y=8 },
+	["BottomLeftCorner"] = { atlas = "%s-NineSlice-Corner", mirrorLayout = true, x=-8, y=-8 },
+	["BottomRightCorner"] = { atlas = "%s-NineSlice-Corner",  mirrorLayout = true, x=8, y=-8 },
+	["TopEdge"] = { atlas = "_%s-NineSlice-EdgeTop" },
+	["BottomEdge"] = { atlas = "_%s-NineSlice-EdgeBottom" },
+	["LeftEdge"] = { atlas = "!%s-NineSlice-EdgeLeft" },
+	["RightEdge"] = { atlas = "!%s-NineSlice-EdgeRight" },
+	["Center"] = { atlas = "%s-NineSlice-Center", x = -8, y = 8, x1 = 8, y1 = -8, },
+}
+
 local function GetAnchorName(anchor)
 	for i, info in pairs(anchors) do
 		if info[1] == anchor then
@@ -23,13 +36,166 @@ local function GetAnchorName(anchor)
 		end
 	end
 end
+
+function EMF.AccountSettings:RefreshPartyFrames()
+	local showPartyFrames = self.settingsCheckButtons.PartyFrames:IsControlChecked()
+	if not aCoreCDB["UnitframeOptions"]["raidframe_inparty"] then
+		for i, uf in pairs(G.partyframes) do
+			if showPartyFrames then
+				T.RestoreDragFrame(uf)
+			else
+				T.ReleaseDragFrame(uf)	
+			end
+		end
+		if aCoreCDB["UnitframeOptions"]["showpartypet"] then
+			for i, uf in pairs(G.partypetframes) do
+				if showPartyFrames then
+					T.RestoreDragFrame(uf)
+				else
+					T.ReleaseDragFrame(uf)	
+				end
+			end
+		end
+	else
+		if showPartyFrames then
+			PartyFrame:HighlightSystem()
+			PartyFrame:Raise()
+		else
+			PartyFrame:ClearHighlight()
+		end
+	
+		CompactPartyFrame:RefreshMembers()
+		UpdateRaidAndPartyFrames()
+	end
+end
+
+function EMF.AccountSettings:RefreshRaidFrames()
+	local showRaidFrames = self.settingsCheckButtons.RaidFrames:IsControlChecked()
+	if aCoreCDB["UnitframeOptions"]["enableraid"] then
+		if showRaidFrames then
+			T.RestoreDragFrame(G.RaidFrame)
+		else
+			T.ReleaseDragFrame(G.RaidFrame)	
+		end
+		if aCoreCDB["UnitframeOptions"]["showraidpet"] then
+			if showRaidFrames then
+				T.RestoreDragFrame(G.RaidPetFrame)
+			else
+				T.ReleaseDragFrame(G.RaidPetFrame)	
+			end
+		end
+	else
+		if showRaidFrames then
+			CompactRaidFrameManager_SetSetting("IsShown", true)
+			CompactRaidFrameContainer:HighlightSystem()
+		else
+			CompactRaidFrameContainer:ClearHighlight()
+		end
+		CompactRaidFrameContainer:ApplyToFrames("group", CompactRaidGroup_UpdateUnits)
+		CompactRaidFrameContainer:TryUpdate()
+		EditModeManagerFrame:UpdateRaidContainerFlow()
+		UpdateRaidAndPartyFrames()
+	end
+end
+
+function EMF.AccountSettings:RefreshBossFrames()
+	local showBossFrames = self.settingsCheckButtons.BossFrames:IsControlChecked()
+	if aCoreCDB["UnitframeOptions"]["bossframes"] then
+		for i, uf in pairs(G.bossframes) do
+			if showBossFrames then
+				T.RestoreDragFrame(uf)
+			else
+				T.ReleaseDragFrame(uf)	
+			end
+		end
+	else
+		if showBossFrames then
+			BossTargetFrameContainer.isInEditMode = true
+			BossTargetFrameContainer:HighlightSystem()
+		else
+			BossTargetFrameContainer.isInEditMode = false
+			BossTargetFrameContainer:ClearHighlight()
+		end
+	
+		BossTargetFrameContainer:UpdateShownState()
+	end
+end
+
+function EMF.AccountSettings:RefreshArenaFrames()
+	local showArenaFrames = self.settingsCheckButtons.ArenaFrames:IsControlChecked()
+	if aCoreCDB["UnitframeOptions"]["arenaframes"] then
+		for i, uf in pairs(G.arenaframes) do
+			if showArenaFrames then
+				T.RestoreDragFrame(uf)
+			else
+				T.ReleaseDragFrame(uf)	
+			end
+		end
+	else
+		CompactArenaFrame:SetIsInEditMode(showArenaFrames)
+	end
+end
+
+function EMF.AccountSettings:RefreshPetFrame()
+	local showPetFrame = self.settingsCheckButtons.PetFrame:IsControlChecked()	
+	if showPetFrame then
+		T.RestoreDragFrame(G.petframe)
+	else
+		T.ReleaseDragFrame(G.petframe)	
+	end
+end
+
+function EMF.AccountSettings:RefreshCastBar()
+	local showCastBar = self.settingsCheckButtons.CastBar:IsControlChecked()
+	if aCoreCDB["UnitframeOptions"]["independentcb"] then
+		local oUF = AltzUF or oUF
+		for _, obj in next, oUF.objects do
+			if obj.Castbar and obj.unit and T.multicheck(obj.unit, "target", "player", "focus") then
+				if showCastBar then
+					T.RestoreDragFrame(obj.Castbar)
+				else
+					T.ReleaseDragFrame(obj.Castbar)	
+				end
+			end
+		end
+	end
+end
+
+function EMF.AccountSettings:RefreshStatusTrackingBar2()
+	local showStatusTrackingBar2 = self.settingsCheckButtons.StatusTrackingBar2:IsControlChecked()
+	if aCoreCDB["SkinOptions"]["infobar"] then
+		if showStatusTrackingBar2 then
+			T.RestoreDragFrame(G.InfoFrame)
+		else
+			T.ReleaseDragFrame(G.InfoFrame)	
+		end
+	end
+end
 --====================================================--
 --[[                   -- API --                    ]]--
 --====================================================--
 local SpecMover
-G.SpecMover = SpecMover
 
-local function GetDefaultPositions(frame, name)
+local GetSelected = function()
+	for i = 1, #G.dragFrameList do
+		local frame = G.dragFrameList[i]
+		if frame.df.selected then
+			return frame
+		end
+	end
+end
+
+local RemoveSelected = function()
+	for i = 1, #G.dragFrameList do
+		local df = G.dragFrameList[i].df
+		df.selected = false
+		NineSliceUtil.ApplyLayout(df, EditModeSystemSelectionLayout, "editmode-actionbar-highlight")
+		df.Label:Hide()
+	end
+	SpecMover:Hide()
+end
+
+local GetDefaultPositions = function(frame, name)
 	if aCoreCDB["FramePoints"][name] == nil then
 		aCoreCDB["FramePoints"][name] = {}
 	end
@@ -55,82 +221,46 @@ local function GetDefaultPositions(frame, name)
 	end
 end
 
-local function DisplayCurrentFramePoint()
-	if CurrentFrame == "NONE" then
-		SpecMover.curframe:SetText(L["选中的框体"].." "..T.color_text("NONE"))
-		
-		SpecMover.a1box:Disable()
-		SpecMover.a2box:Disable()
-		SpecMover.parentbox:Disable()
-		SpecMover.xbox:Disable()
-		SpecMover.ybox:Disable()
-		SpecMover.ResetButton:Disable()
-		
-		UIDropDownMenu_SetText(SpecMover.a1box, "")
-		SpecMover.parentbox:SetText("")
-		UIDropDownMenu_SetText(SpecMover.a2box, "")
-		SpecMover.xbox:SetText("")
-		SpecMover.ybox:SetText("")
-	else
-		local frame = _G[CurrentFrame]
-		SpecMover.curframe:SetText(L["选中的框体"].." "..T.color_text(gsub(frame.movingname, "\n", "")))
-		
-		SpecMover.a1box:Enable()
-		SpecMover.a2box:Enable()
-		SpecMover.parentbox:Enable()
-		SpecMover.xbox:Enable()
-		SpecMover.ybox:Enable()
-		SpecMover.ResetButton:Enable()
-		
-		local points = aCoreCDB["FramePoints"][CurrentFrame][CurrentRole]
-		UIDropDownMenu_SetSelectedValue(SpecMover.a1box, points.a1)
-		UIDropDownMenu_SetText(SpecMover.a1box, GetAnchorName(points.a1))
-		SpecMover.parentbox:SetText(points.parent)
-		UIDropDownMenu_SetSelectedValue(SpecMover.a2box, points.a2)
-		UIDropDownMenu_SetText(SpecMover.a2box, GetAnchorName(points.a2))
-		SpecMover.xbox:SetText(points.x)
-		SpecMover.ybox:SetText(points.y)
-	end
+local DisplayFramePoint = function(frame, name)	
+	SpecMover.Title:SetText(T.color_text(frame.movingname))
+	
+	local points = aCoreCDB["FramePoints"][name][CurrentRole]
+	UIDropDownMenu_SetSelectedValue(SpecMover.a1box, points.a1)
+	UIDropDownMenu_SetText(SpecMover.a1box, GetAnchorName(points.a1))
+	SpecMover.parentbox:SetText(points.parent)
+	UIDropDownMenu_SetSelectedValue(SpecMover.a2box, points.a2)
+	UIDropDownMenu_SetText(SpecMover.a2box, GetAnchorName(points.a2))
+	SpecMover.xbox:SetText(points.x)
+	SpecMover.ybox:SetText(points.y)
+	
+	SpecMover:ClearAllPoints()
+	SpecMover:SetPoint("BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", -250, 200)
+	SpecMover:Show()
 end
 
 local UnlockAll = function()
-	if not InCombatLockdown() then
-		for i = 1, #G.dragFrameList do
-			local frame = G.dragFrameList[i]
-			if frame.df.enable then
-				frame.df:Show()
-			end		
-		end
-		SpecMover:Show()
-		DisplayCurrentFramePoint()
-	else
-		SpecMover:RegisterEvent("PLAYER_REGEN_ENABLED")
-		print(T.color_text(L["进入战斗锁定"]))
-	end
-end
-T.UnlockAll = UnlockAll
-
-local LockAll = function()
-	CurrentFrame = "NONE"
-
 	for i = 1, #G.dragFrameList do
 		local frame = G.dragFrameList[i]
-		frame.df.mask:SetBackdropBorderColor(0, 0, 0)
+		if frame.df.enable then
+			frame.df:Show()
+		end		
+	end
+end
+
+local LockAll = function()
+	RemoveSelected()
+	for i = 1, #G.dragFrameList do
+		local frame = G.dragFrameList[i]	
 		frame.df:Hide()
 	end
-	SpecMover:Hide()
 end
-T.LockAll = LockAll
 
-local function PlaceFrame(frame)
-	local name = frame:GetName()
-	
+local PlaceFrame = function(frame)
+	local name = frame:GetName()	
 	if not aCoreCDB["FramePoints"][name] then
 		GetDefaultPositions(frame, name)
 	end
-
-	local points = aCoreCDB["FramePoints"][name][CurrentRole]
-	
+	local points = aCoreCDB["FramePoints"][name][CurrentRole]	
 	if points and frame.df.enable then
 		frame:ClearAllPoints()
 		frame:SetPoint(points.a1, _G[points.parent], points.a2, points.x, points.y)
@@ -140,31 +270,25 @@ T.PlaceFrame = PlaceFrame
 
 local PlaceAllFrames = function()
 	CurrentRole = T.CheckRole()
-
-	SpecMover.curmode:SetText(L["当前模式"].." "..L[CurrentRole])
-	
+	SpecMover.curmode:SetText(L["当前模式"].." "..L[CurrentRole])	
 	for i = 1, #G.dragFrameList do
 		local frame = G.dragFrameList[i]
 		PlaceFrame(frame)
 	end
 end
-T.PlaceAllFrames = PlaceAllFrames
 
 local ResetFramePoint = function(frame)
-	local name = frame:GetName()
-	
+	local name = frame:GetName()	
 	aCoreCDB["FramePoints"][name] = nil
-	
 	PlaceFrame(frame)
 end
-T.ResetFramePoint = ResetFramePoint
 
 local ResetAllFramesPoint = function()
+	RemoveSelected()
 	for i = 1, #G.dragFrameList do
 		local frame = G.dragFrameList[i]
 		ResetFramePoint(frame)
 	end
-	CurrentFrame = "NONE"
 end
 T.ResetAllFramesPoint = ResetAllFramesPoint
 
@@ -177,7 +301,7 @@ T.CreateDragFrame = function(frame)
 	frame:SetMovable(true)
 	frame:SetClampedToScreen(true)
 	
-	frame.df = CreateFrame("Frame", name.."DragFrame", UIParent)
+	frame.df = CreateFrame("Frame", name.."DragFrame", UIParent, "NineSliceCodeTemplate")
 	frame.df:SetAllPoints(frame)
 	frame.df:SetFrameStrata("HIGH")
 	frame.df:EnableMouse(true)
@@ -186,23 +310,23 @@ T.CreateDragFrame = function(frame)
 	frame.df.enable = true
 	frame.df:Hide()
 	
-	--overlay texture
-	frame.df.mask = T.createBackdrop(frame.df, .5)	
-	frame.df.mask.text = T.createtext(frame.df, "OVERLAY", 13, "OUTLINE", "LEFT")
-	frame.df.mask.text:SetPoint("TOPLEFT")
-	frame.df.mask.text:SetText(frame.movingname)
+	frame.df.Label = T.createtext(frame.df, "OVERLAY", 20, "OUTLINE", "CENTER")
+	frame.df.Label:SetAllPoints()
+	frame.df.Label:SetText(frame.movingname)
+	
+	NineSliceUtil.ApplyLayout(frame.df, EditModeSystemSelectionLayout, "editmode-actionbar-highlight")
+	frame.df.Label:Hide()
+	frame.df.selected = false
 	
 	frame.df:SetScript("OnMouseDown", function(self)
-		CurrentFrame = name
-		DisplayCurrentFramePoint()
-		
-		for i = 1, #G.dragFrameList do
-			if G.dragFrameList[i]:GetName() == name then
-				G.dragFrameList[i].df.mask:SetBackdropBorderColor(0, 1, 1)
-			else
-				G.dragFrameList[i].df.mask:SetBackdropBorderColor(0, 0, 0)
-			end
-		end	
+		if not self.selected then
+			EMF:ClearSelectedSystem()
+			RemoveSelected()
+			self.selected = true
+			NineSliceUtil.ApplyLayout(self, EditModeSystemSelectionLayout, "editmode-actionbar-selected")
+			frame.df.Label:Show()
+			DisplayFramePoint(frame, name)
+		end
 	end)
 	
 	frame.df:SetScript("OnDragStart", function(self)	
@@ -218,7 +342,7 @@ T.CreateDragFrame = function(frame)
 		aCoreCDB["FramePoints"][name][CurrentRole].y = aCoreCDB["FramePoints"][name][CurrentRole].y + y1
 		
 		PlaceFrame(frame) -- 重新连接到锚点	
-		DisplayCurrentFramePoint()
+		DisplayFramePoint(frame, name)
 	end)
 end
 
@@ -235,7 +359,7 @@ T.RestoreDragFrame = function(frame)
 	if frame.df then
 		frame.df.enable = true
 		PlaceFrame(frame)
-		if SpecMover:IsShown() then
+		if EMF:IsShown() then
 			frame.df:Show()
 		end
 	end
@@ -250,21 +374,13 @@ local function CreateInputBox(parent, points, name, value, numeric)
 	box.name:ClearAllPoints()
 	box.name:SetPoint("RIGHT", box, "LEFT", -5, 0)
 	
-	box:SetScript("OnShow", function(self)
-		if CurrentFrame ~= "NONE" then
-			self:SetText(aCoreCDB["FramePoints"][CurrentFrame][CurrentRole][value])
-		else
-			self:SetText("")
-		end
-	end)
-
 	box:SetScript("OnEscapePressed", function(self)
-		if CurrentFrame ~= "NONE" then
-			self:SetText(aCoreCDB["FramePoints"][CurrentFrame][CurrentRole][value])
-		else
-			self:SetText("")
+		local frame = GetSelected()
+		if frame then
+			local name = frame:GetName()
+			self:SetText(aCoreCDB["FramePoints"][name][CurrentRole][value])
+			self:ClearFocus()
 		end
-		self:ClearFocus()
 	end)
 	
 	if numeric then
@@ -272,24 +388,19 @@ local function CreateInputBox(parent, points, name, value, numeric)
 	end
 	
 	box:SetScript("OnEnterPressed", function(self)
-		if CurrentFrame ~= "NONE" then
+		local frame = GetSelected()
+		if frame then
+			local name = frame:GetName()
 			local text = self:GetText()
 			if numeric then
-				local v = tonumber(text)
-				if v then
-					aCoreCDB["FramePoints"][CurrentFrame][CurrentRole][value] = v
-					PlaceFrame(_G[CurrentFrame])
-				else
-					StaticPopupDialogs[G.uiname.."incorrect number"].text = T.color_text(text)..L["必须是一个数字"]
-					StaticPopup_Show(G.uiname.."incorrect number")
-				end
+				aCoreCDB["FramePoints"][name][CurrentRole][value] = tonumber(text)
+				PlaceFrame(frame)
 			else
-				aCoreCDB["FramePoints"][CurrentFrame][CurrentRole][value] = text
-				PlaceFrame(_G[CurrentFrame])
+				aCoreCDB["FramePoints"][name][CurrentRole][value] = text
+				PlaceFrame(frame)
 			end
-		else
-			self:SetText("")
 		end
+		
 		self.button:Hide()
 		self:ClearFocus()
 	end)
@@ -303,7 +414,7 @@ local function CreateDropDown(parent, points, name, value)
 	
 	T.ReskinDropDown(dd)
 	
-	dd.name = T.createtext(dd, "OVERLAY", 12, "OUTLINE", "RIGHT")
+	dd.name = T.createtext(dd, "OVERLAY", 14, "OUTLINE", "RIGHT")
 	dd.name:SetPoint("RIGHT", dd, "LEFT", 12, 2)
 	dd.name:SetText(name)
 	
@@ -314,30 +425,25 @@ local function CreateDropDown(parent, points, name, value)
 			info.value = anchors[i][1]
 			info.text = anchors[i][2]
 			info.checked = function()
-				if CurrentFrame ~= "NONE" then
-					return (aCoreCDB["FramePoints"][CurrentFrame][CurrentRole][value] == info.value)
+				local frame = GetSelected()
+				if frame then
+					local name = frame:GetName()
+					return (aCoreCDB["FramePoints"][name][CurrentRole][value] == info.value)
 				end
 			end
 			info.func = function(self)
-				aCoreCDB["FramePoints"][CurrentFrame][CurrentRole][value] = info.value
-				local frame = _G[CurrentFrame]
-				PlaceFrame(frame)
-				UIDropDownMenu_SetSelectedValue(dd, info.value)
-				UIDropDownMenu_SetText(dd, info.text)
+				local frame = GetSelected()
+				if frame then
+					local name = frame:GetName()
+					aCoreCDB["FramePoints"][name][CurrentRole][value] = info.value
+					PlaceFrame(frame)
+					UIDropDownMenu_SetSelectedValue(dd, info.value)
+					UIDropDownMenu_SetText(dd, info.text)
+				end
 			end
 			UIDropDownMenu_AddButton(info)
 		end
 	end)
-	
-	dd.Enable = function()
-		UIDropDownMenu_EnableDropDown(dd)
-		dd.name:SetTextColor(1, 1, 1, 1)
-	end
-	
-	dd.Disable = function()
-		UIDropDownMenu_DisableDropDown(dd)
-		dd.name:SetTextColor(0.7, 0.7, 0.7, 0.5)
-	end
 	
 	return dd
 end
@@ -345,8 +451,8 @@ end
 --[[                -- 移动控制面板 --              ]]--
 --====================================================--
 SpecMover = CreateFrame("Frame", G.uiname.."SpecMover", UIParent, "BackdropTemplate")
-SpecMover:SetPoint("CENTER", 0, -300)
-SpecMover:SetSize(220, 270)
+SpecMover:SetPoint("BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", -250, 220)
+SpecMover:SetSize(370, 300)
 SpecMover:SetFrameStrata("HIGH")
 SpecMover:SetFrameLevel(30)
 SpecMover:Hide()
@@ -357,79 +463,76 @@ SpecMover:SetScript("OnDragStop", function(self) self:StopMovingOrSizing() end)
 SpecMover:SetClampedToScreen(true)
 SpecMover:SetMovable(true)
 SpecMover:EnableMouse(true)
+SpecMover:EnableKeyboard(true)
 
 T.setStripBD(SpecMover)
 
-SpecMover.reset_all = T.ClickTexButton(SpecMover, {"TOPRIGHT", SpecMover, "TOPRIGHT", -3, -3}, [[Interface\AddOns\AltzUI\media\icons\refresh.tga]], L["重置"])
-SpecMover.reset_all:SetScript("OnClick", function()
-	StaticPopupDialogs[G.uiname.."Reset Confirm"].text = string.format(L["重置确认"], L["框体位置"])
-	StaticPopupDialogs[G.uiname.."Reset Confirm"].OnAccept = T.ResetAllFramesPoint
-	StaticPopup_Show(G.uiname.."Reset Confirm")
-end)
+SpecMover.close = CreateFrame("Button", nil, SpecMover, "UIPanelCloseButton")
+SpecMover.close:SetPoint("TOPRIGHT", -5, -5)
+T.ReskinClose(SpecMover.close)
 
-SpecMover.title = T.createtext(SpecMover, "OVERLAY", 16, "OUTLINE", "CENTER")
-SpecMover.title:SetPoint("TOP", SpecMover, "TOP", 0, 8)
-SpecMover.title:SetText(T.color_text(L["界面移动工具"]))
+SpecMover.close:SetScript("OnClick", RemoveSelected)
 
-SpecMover.curmode = T.createtext(SpecMover, "OVERLAY", 12, "OUTLINE", "LEFT")
-SpecMover.curmode:SetPoint("TOPLEFT", SpecMover, "TOPLEFT", 10, -20)
+SpecMover.Title = T.createtext(SpecMover, "OVERLAY", 16, "OUTLINE", "LEFT")
+SpecMover.Title:SetPoint("TOP", SpecMover, "TOP", 0, -15)
 
-SpecMover.curframe = T.createtext(SpecMover, "OVERLAY", 12, "OUTLINE", "LEFT")
-SpecMover.curframe:SetPoint("TOPLEFT", SpecMover, "TOPLEFT", 10, -35)
+SpecMover.curmode = T.createtext(SpecMover, "OVERLAY", 14, "OUTLINE", "LEFT")
+SpecMover.curmode:SetPoint("TOPLEFT", SpecMover, "TOPLEFT", 10, -50)
 
 -- a1
-SpecMover.a1box = CreateDropDown(SpecMover, {"TOPLEFT", SpecMover, "TOPLEFT", 50, -55}, L["锚点"].."1", "a1")
+SpecMover.a1box = CreateDropDown(SpecMover, {"TOPLEFT", SpecMover, "TOPLEFT", 80, -80}, L["锚点"].."1", "a1")
 
 -- parent
-SpecMover.parentbox = CreateInputBox(SpecMover, {"TOPLEFT", SpecMover.a1box, "BOTTOMLEFT", 17, 3}, L["锚点框体"], "parent")
+SpecMover.parentbox = CreateInputBox(SpecMover, {"TOPLEFT", SpecMover.a1box, "BOTTOMLEFT", 17, -2}, L["锚点框体"], "parent")
 
 -- a2
-SpecMover.a2box = CreateDropDown(SpecMover, {"TOPLEFT", SpecMover.parentbox, "BOTTOMLEFT", -17, -2}, L["锚点"].."2", "a2")
+SpecMover.a2box = CreateDropDown(SpecMover, {"TOPLEFT", SpecMover.parentbox, "BOTTOMLEFT", -17, -7}, L["锚点"].."2", "a2")
 
 -- x
-SpecMover.xbox = CreateInputBox(SpecMover, {"TOPLEFT", SpecMover.a2box, "BOTTOMLEFT", 17, 3}, "X", "x", true)
+SpecMover.xbox = CreateInputBox(SpecMover, {"TOPLEFT", SpecMover.a2box, "BOTTOMLEFT", 17, -2}, "X", "x", true)
 
 -- y
-SpecMover.ybox = CreateInputBox(SpecMover, {"TOPLEFT", SpecMover.xbox, "BOTTOMLEFT", 0, -7}, "Y", "y", true)
+SpecMover.ybox = CreateInputBox(SpecMover, {"TOPLEFT", SpecMover.xbox, "BOTTOMLEFT", 0, -12}, "Y", "y", true)
 
 -- reset
 SpecMover.ResetButton = CreateFrame("Button", G.uiname.."SpecMoverResetButton", SpecMover, "UIPanelButtonTemplate")
-SpecMover.ResetButton:SetPoint("BOTTOM", SpecMover, "BOTTOM", 0, 40)
+SpecMover.ResetButton:SetPoint("BOTTOM", SpecMover, "BOTTOM", 0, 10)
 SpecMover.ResetButton:SetSize(190, 25)
-SpecMover.ResetButton:SetText(L["重置位置"])
+SpecMover.ResetButton:SetText(HUD_EDIT_MODE_RESET_POSITION)
 T.ReskinButton(SpecMover.ResetButton)
 SpecMover.ResetButton:SetScript("OnClick", function()
-	if CurrentFrame ~= "NONE" then
-		local frame = _G[CurrentFrame]
+	local frame = GetSelected()
+	if frame then
 		ResetFramePoint(frame)
-		DisplayCurrentFramePoint()
+		DisplayFramePoint(frame, frame:GetName())
 	end
 end)
 
--- lock
-SpecMover.LockButton = CreateFrame("Button", G.uiname.."SpecMoverLockButton", SpecMover, "UIPanelButtonTemplate")
-SpecMover.LockButton:SetPoint("TOPLEFT", SpecMover.ResetButton, "BOTTOMLEFT", 0, -5)
-SpecMover.LockButton:SetSize(190, 25)
-SpecMover.LockButton:SetText(L["锁定框体"])
-T.ReskinButton(SpecMover.LockButton)
-SpecMover.LockButton:SetScript("OnClick", LockAll)
+SpecMover:SetScript("OnKeyDown", function(self, key)
+	if key == "ESCAPE" then
+		RemoveSelected()
+	end
+end)
 
 SpecMover:SetScript("OnEvent", function(self, event, arg1)
 	if event == "PLAYER_SPECIALIZATION_CHANGED" and arg1 == "player" then
 		PlaceAllFrames()
-	elseif event == "PLAYER_REGEN_DISABLED" then
-		if SpecMover:IsShown() then
-			LockAll()
-			print(T.color_text(L["进入战斗锁定"]))
-		end
-	elseif event == "PLAYER_REGEN_ENABLED" then
-		UnlockAll()
-		self:UnregisterEvent("PLAYER_REGEN_ENABLED")
 	elseif event == "PLAYER_LOGIN" then
 		PlaceAllFrames()
 		self:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED")
-		self:RegisterEvent("PLAYER_REGEN_DISABLED")
 	end
 end)
 
 SpecMover:RegisterEvent("PLAYER_LOGIN")
+
+EMF:HookScript("OnShow", function()
+	UnlockAll()
+end)
+
+EMF:HookScript("OnHide", function()
+	LockAll()
+end)
+
+EditModeSystemSettingsDialog:HookScript("OnShow", function()
+	RemoveSelected()
+end)
