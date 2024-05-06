@@ -378,13 +378,42 @@ SInnerframe.theme.showbottomconerbar.apply = G.BGFrame.Apply
 CreateTitle(SInnerframe.theme, 35, -183, L["插件皮肤"])
 CreateDividingLine(SInnerframe.theme, -210)
 
-local function CreateApplySettingButton(func, text, addon, y)
+local function CreateApplySettingButton(text, addon, y, func)
 	local Button = T.ClickButton(SInnerframe.theme, 200, {"TOPLEFT", 30, y}, text, nil, string.format(L["更改设置提示"], addon))
 	Button:SetScript("OnClick", func)
 end
 
-local SetClassColorButton = CreateApplySettingButton(T.ResetClasscolors, L["重置职业颜色"], "ClassColors", -220)
-local SetBWButton = CreateApplySettingButton(T.ResetBW, L["重置BW计时条皮肤"], "BigWigs", -250)
+local SetClassColorButton = CreateApplySettingButton(T.split_words(L["重置"],L["职业颜色"]), "ClassColors", -220, function()
+	if IsAddOnLoaded("!ClassColors") then
+		StaticPopupDialogs[G.uiname.."Reset Confirm2"].text = string.format(L["重置确认"], T.color_text(L["职业颜色"]))
+		StaticPopupDialogs[G.uiname.."Reset Confirm2"].button1 = T.split_words(L["鲜明"],L["职业颜色"])
+		StaticPopupDialogs[G.uiname.."Reset Confirm2"].OnAccept = function()
+			T.ResetClasscolors()
+			ReloadUI()
+		end
+		StaticPopupDialogs[G.uiname.."Reset Confirm2"].button2 = T.split_words(L["原生"],L["职业颜色"])
+		StaticPopupDialogs[G.uiname.."Reset Confirm2"].OnCancel = function()
+			table.wipe(ClassColorsDB)
+			ReloadUI()
+		end
+		StaticPopupDialogs[G.uiname.."Reset Confirm2"].OnAlt = function(self)
+			self:Hide()
+		end
+		StaticPopup_Show(G.uiname.."Reset Confirm2")
+	else
+		StaticPopupDialogs[G.uiname.."need addon"].text = string.format(L["未加载插件"], "ClassColors")
+		StaticPopup_Show(G.uiname.."need addon")
+	end
+end)
+
+local SetBWButton = CreateApplySettingButton(T.split_words(L["重置"],L["BW计时条皮肤"]), "BigWigs", -250, function()
+	if IsAddOnLoaded("BigWigs") then	
+		T.ResetBW()
+	else
+		StaticPopupDialogs[G.uiname.."need addon"].text = string.format(L["未加载插件"], "BigWigs")
+		StaticPopup_Show(G.uiname.."need addon")
+	end
+end)
 
 -- 界面布局
 SInnerframe.layout = CreateOptionPage("Interface Options Layout", L["界面布局"], SInnerframe, "VERTICAL", "SkinOptions")

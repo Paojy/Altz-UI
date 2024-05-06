@@ -24,10 +24,29 @@ StaticPopupDialogs[G.uiname.."incorrect number"] = {
 	preferredIndex = 3,
 }
 
+StaticPopupDialogs[G.uiname.."need addon"] = {
+	text = L["未加载插件"],
+	button1 = ACCEPT, 
+	hideOnEscape = 1, 
+	whileDead = true,
+	preferredIndex = 3,
+}
+
 StaticPopupDialogs[G.uiname.."Reset Confirm"] = {
 	text = L["重置确认"],
 	button1 = ACCEPT,
 	button2 = CANCEL,
+	showAlert = true,
+	hideOnEscape = 1, 
+	whileDead = true,
+	preferredIndex = 3,
+}
+
+StaticPopupDialogs[G.uiname.."Reset Confirm2"] = {
+	text = L["重置确认"],
+	button1 = ACCEPT,
+	button2 = ACCEPT,
+	button3 = CANCEL,	
 	showAlert = true,
 	hideOnEscape = 1, 
 	whileDead = true,

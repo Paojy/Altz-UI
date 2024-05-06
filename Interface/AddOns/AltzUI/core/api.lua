@@ -11,7 +11,7 @@ end
 
 T.ResetClasscolors = function()
 	if IsAddOnLoaded("!ClassColors") then
-		if ClassColorsDB then wipe(ClassColorsDB) end
+		if ClassColorsDB then table.wipe(ClassColorsDB) end
 		ClassColorsDB = {
 			["DEATHKNIGHT"] = {
 				["hex"] = "ffb3040f",
@@ -49,11 +49,11 @@ T.ResetClasscolors = function()
 				["r"] = 1,
 			},
 			["WARLOCK"] = {
-				["hex"] = "ffe200ff",
-				["colorStr"] = "ffe200ff",
-				["b"] = 0.95,
-				["g"] = 0.56,
-				["r"] = 0.76,
+				["hex"] = "ff7f44ff",
+				["colorStr"] = "ff7f44ff",
+				["b"] = 1,
+				["g"] = 0.27,
+				["r"] = 0.5,
 			},
 			["SHAMAN"] = {
 				["hex"] = "ff0700ff",
