@@ -1189,7 +1189,7 @@ local Character_default_Settings = {
 		-- 平砍计时条
 		swing = false,
 		swheight = 12,
-		swwidth = 230,		
+		swwidth = 230,
 		swtimer = true,
 		swtimersize = 12,
 		-- 光环

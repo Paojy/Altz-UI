@@ -340,10 +340,8 @@ local Enable = function(self)
 		
 		-- 左中 数字
 		if not ind.AuraStatusBL then
-			ind.AuraStatusBL = ind:CreateFontString(nil, "OVERLAY")
+			ind.AuraStatusBL = T.createtext(ind, "OVERLAY", aCoreCDB["UnitframeOptions"]["hotind_size"], "OUTLINE", "LEFT")
 			ind.AuraStatusBL:SetPoint("LEFT", 1, 0)
-			ind.AuraStatusBL:SetJustifyH("LEFT")
-			ind.AuraStatusBL:SetFont(G.norFont, aCoreCDB["UnitframeOptions"]["hotind_size"], "OUTLINE")
 			ind.AuraStatusBL.frequentUpdates = update	
 		end
 		self:Tag(ind.AuraStatusBL, classIndicators[G.myClass]["BL"])
@@ -351,10 +349,8 @@ local Enable = function(self)
 		
 		-- 右中 符号
 		if not ind.AuraStatusBR then
-			ind.AuraStatusBR = ind:CreateFontString(nil, "OVERLAY")
+			ind.AuraStatusBR = T.createsymbol(ind, "OVERLAY", aCoreCDB["UnitframeOptions"]["hotind_size"], "OUTLINE", "RIGHT")
 			ind.AuraStatusBR:SetPoint("RIGHT", -1, 0)
-			ind.AuraStatusBR:SetJustifyH("RIGHT")
-			ind.AuraStatusBR:SetFont(G.symbols, aCoreCDB["UnitframeOptions"]["hotind_size"], "OUTLINE")
 			ind.AuraStatusBR.frequentUpdates = update
 		end
 		self:Tag(ind.AuraStatusBR, classIndicators[G.myClass]["BR"])
@@ -362,24 +358,21 @@ local Enable = function(self)
 		
 		-- 左上 数字
 		if not ind.AuraStatusTL then
-			ind.AuraStatusTL = ind:CreateFontString(nil, "OVERLAY")
+			ind.AuraStatusTL = T.createtext(ind, "OVERLAY", aCoreCDB["UnitframeOptions"]["hotind_size"], "OUTLINE", "LEFT")
 			ind.AuraStatusTL:SetPoint("TOPLEFT", 1, 0)
-			ind.AuraStatusTL:SetJustifyH("LEFT")
-			ind.AuraStatusTL:SetFont(G.norFont, aCoreCDB["UnitframeOptions"]["hotind_size"], "OUTLINE")
 			ind.AuraStatusTL.frequentUpdates = update
 		end
 		self:Tag(ind.AuraStatusTL, classIndicators[G.myClass]["TL"])
 		ind.AuraStatusTL:Show()
 		
 		-- 右上
-		if not ind.AuraStatusTR then
-			ind.AuraStatusTR = ind:CreateFontString(nil, "OVERLAY")
-			if G.myClass == "DRUID" or G.myClass == "MONK" or G.myClass == "PRIEST" or G.myClass == "SHAMAN" then
+		if not ind.AuraStatusTR then	
+			if G.myClass == "DRUID" or G.myClass == "MONK" or G.myClass == "PRIEST" or G.myClass == "SHAMAN" then -- 数字
+				ind.AuraStatusTR = T.createtext(ind, "OVERLAY", aCoreCDB["UnitframeOptions"]["hotind_size"], "OUTLINE", "RIGHT")
 				ind.AuraStatusTR:SetPoint("TOPRIGHT", 0, 0)
-				ind.AuraStatusTR:SetFont(G.norFont, aCoreCDB["UnitframeOptions"]["hotind_size"], "OUTLINE") -- 数字
-			else
+			else -- 符号
+				ind.AuraStatusTR = T.createsymbol(ind, "OVERLAY", aCoreCDB["UnitframeOptions"]["hotind_size"], "OUTLINE", "RIGHT")
 				ind.AuraStatusTR:SetPoint("CENTER", ind, "TOPRIGHT", -4, -4)
-				ind.AuraStatusTR:SetFont(G.symbols, aCoreCDB["UnitframeOptions"]["hotind_size"], "OUTLINE") -- 符号
 			end
 			ind.AuraStatusTR.frequentUpdates = update			
 		end
@@ -388,13 +381,11 @@ local Enable = function(self)
 		
 		-- 中上
 		if not ind.AuraStatusCen then
-			ind.AuraStatusCen = ind:CreateFontString(nil, "OVERLAY")
-			ind.AuraStatusCen:SetJustifyH("CENTER")
 			if G.myClass == "DRUID" or G.myClass == "PRIEST" then
-				ind.AuraStatusCen:SetFont(G.norFont, aCoreCDB["UnitframeOptions"]["hotind_size"], "OUTLINE") -- 文字
+				ind.AuraStatusCen = T.createtext(ind, "OVERLAY", aCoreCDB["UnitframeOptions"]["hotind_size"], "OUTLINE") -- 文字
 				ind.AuraStatusCen:SetPoint("TOP", 0, 0)
 			else
-				ind.AuraStatusCen:SetFont(G.symbols, aCoreCDB["UnitframeOptions"]["hotind_size"]/2, "OUTLINE") -- 符号
+				ind.AuraStatusCen = T.createsymbol(ind, "OVERLAY", aCoreCDB["UnitframeOptions"]["hotind_size"]/2, "OUTLINE") -- 符号	
 				ind.AuraStatusCen:SetPoint("TOP", 0, 2)
 			end
 			ind.AuraStatusCen:SetWidth(0)

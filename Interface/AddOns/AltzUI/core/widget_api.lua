@@ -243,7 +243,15 @@ end
 T.createnumber = function(f, layer, fontsize, flag, justifyh)
 	local text = f:CreateFontString(nil, layer)
 	text:SetFont(G.numFont, fontsize, flag)
-	text:SetJustifyH(justifyh)
+	text:SetJustifyH(justifyh or "CENTER")
+	return text
+end
+
+-- 创建符号
+T.createsymbol = function(f, layer, fontsize, flag, justifyh)
+	local text = f:CreateFontString(nil, layer)
+	text:SetFont(G.symbols, fontsize, flag)
+	text:SetJustifyH(justifyh or "CENTER")
 	return text
 end
 
@@ -450,7 +458,7 @@ T.ReskinCheck = function(bu, fontsize)
 	ch2:SetVertexColor(.5, .5, .5)
 	
 	if bu.Text then
-		local fs = fontsize or 12
+		local fs = fontsize or 14
 		bu.Text:SetFont(G.norFont, fs, "OUTLINE")
 	end
 end
@@ -463,7 +471,7 @@ T.ReskinRadio =  function(bu, fontsize)
 	ch:SetVertexColor(0, .9, .3, 1)
 	
 	if bu.text then
-		local fs = fontsize or 12
+		local fs = fontsize or 14
 		bu.text:SetFont(G.norFont, fs, "OUTLINE")
 	end
 end
@@ -495,7 +503,7 @@ T.ReskinSlider = function(slider, fontsize)
 	end
 	
 	if slider.Text then
-		local fs = fontsize or 12
+		local fs = fontsize or 14
 		slider.Text:ClearAllPoints()
 		slider.Text:SetPoint("BOTTOM", slider, "TOP", 0, 3)
 		slider.Text:SetFont(G.norFont, fs, "OUTLINE")
@@ -508,7 +516,7 @@ end
 T.ReskinButton = function(bu, fontsize, noHighlight, override)
 	F.Reskin(bu, noHighlight, override)
 	if bu.Text then
-		local fs = fontsize or 12
+		local fs = fontsize or 14
 		bu.Text:SetFont(G.norFont, fs, "OUTLINE")
 	end
 end
@@ -516,7 +524,7 @@ end
 -- 下拉菜单
 T.ReskinDropDown = function(dd, fontsize)
 	F.ReskinDropDown(dd)
-	local fs = fontsize or 12
+	local fs = fontsize or 14
 	dd.Text:SetFont(G.norFont, fs, "OUTLINE")
 end
 

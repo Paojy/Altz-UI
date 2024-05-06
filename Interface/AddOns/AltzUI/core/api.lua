@@ -357,7 +357,7 @@ local EditboxWithButton = function(parent, width, points, text, tip)
 		anchor:SetPoint(unpack(points))
 	end
 	
-	local name = T.createtext(anchor, "OVERLAY", 12, "OUTLINE", "LEFT")
+	local name = T.createtext(anchor, "OVERLAY", 14, "OUTLINE", "LEFT")
 	name:SetPoint("LEFT", anchor, "LEFT", 0, 0)
 	name:SetText(text or "")
 	
@@ -367,7 +367,7 @@ local EditboxWithButton = function(parent, width, points, text, tip)
 	
 	box.bg = T.createPXBackdrop(box, .3)
 
-	box:SetFont(G.norFont, 12, "OUTLINE")
+	box:SetFont(G.norFont, 14, "OUTLINE")
 	box:SetAutoFocus(false)
 	box:SetTextInsets(3, 0, 0, 0)
 
@@ -500,7 +500,7 @@ local EditboxMultiLine = function(parent, width, height, points, name, tip)
 	box.edit:SetWidth(width or 200)
 	box:SetScrollChild(box.edit)
 	
-	box.edit:SetFont(G.norFont, 12, "OUTLINE")
+	box.edit:SetFont(G.norFont, 14, "OUTLINE")
 	box.edit:SetTextInsets(5, 5, 5, 5)
 	box.edit:SetMultiLine(true)
 	box.edit:EnableMouse(true)
@@ -732,7 +732,7 @@ local RadioButtonGroup_db = function(parent, x, y, name, value, group)
 	frame:SetSize(150, 30)
 	frame.buttons = {}
 	
-	frame.text = T.createtext(frame, "OVERLAY", 12, "OUTLINE", "LEFT")
+	frame.text = T.createtext(frame, "OVERLAY", 14, "OUTLINE", "LEFT")
 	frame.text:SetPoint("LEFT", 0, 0)
 	frame.text:SetText(name)
 	
