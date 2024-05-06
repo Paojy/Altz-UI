@@ -188,6 +188,10 @@ local actionbars = {
 	"MultiBar5",
 	"MultiBar6",
 	"MultiBar7",
+	"StanceBar",
+	"PetActionBar",
+	--"PossessActionBar",
+	--"MainMenuBarVehicleLeaveButton",
 }
 
 local ApplyActionbarFadeAlpha = function()	

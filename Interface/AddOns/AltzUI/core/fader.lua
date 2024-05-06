@@ -96,25 +96,52 @@ T.UIFrameFadeOut = UIFrameFadeOut
 --==================================================================--
 -- fade-in on enter/fade-out on leave --
 --==================================================================--
-function T.FrameFader(frame)
-	if not frame then return end
-	
-	frame:EnableMouse(true)
-	
-	frame:HookScript("OnEnter", function(self)
-		if eventmode ~= 1 then
-			UIFrameFadeIn(frame, fadeIn_time, frame:GetAlpha(), fadeIn_alpha)
+local function IsFrameMouseOver(parent, children)	
+	if parent:IsMouseOver() then
+		return true			
+	end
+	for _, bu in pairs(children) do
+		if bu:IsMouseOver() then
+			return true
 		end
-	end)
-	
-	frame:HookScript("OnLeave", function(self) 
-		if eventmode ~= 1 then
-			UIFrameFadeOut(frame, fadeOut_time, frame:GetAlpha(), frame.fadeOut_alpha or fadeOut_alpha)
-		end
-	end)
+	end	
+	return false
+end
+
+function T.ParentFader(parent, children)
+	if not parent or not children then return end
 	
 	T.RegisterEnteringWorldCallback(function()
-		frame:SetAlpha(frame.fadeOut_alpha or fadeOut_alpha) -- 初始透明度
+		parent:SetAlpha(parent.fadeOut_alpha or fadeOut_alpha) -- 初始透明度
+	end)
+	parent:EnableMouse(true)
+	
+	parent:HookScript("OnEnter", function(self)
+		UIFrameFadeIn(self, fadeIn_time, self:GetAlpha(), fadeIn_alpha)
+	end)
+	
+	parent:HookScript("OnLeave", function(self)
+		if not IsFrameMouseOver(self, children) then
+			UIFrameFadeOut(self, fadeOut_time, self:GetAlpha(), self.fadeOut_alpha or fadeOut_alpha)
+		end
+	end)
+	
+	for k, bu in pairs(children) do	
+		bu:HookScript("OnEnter", function()
+			UIFrameFadeIn(parent, fadeIn_time, parent:GetAlpha(), fadeIn_alpha)
+		end)
+		
+		bu:HookScript("OnLeave", function()
+			if not IsFrameMouseOver(parent, children) then
+				UIFrameFadeOut(parent, fadeOut_time, parent:GetAlpha(), parent.fadeOut_alpha or fadeOut_alpha)
+			end
+		end)
+	end
+	
+	EditModeManagerFrame:HookScript("OnHide", function()
+		if not IsFrameMouseOver(parent, children) then
+			UIFrameFadeOut(parent, fadeOut_time, parent:GetAlpha(), parent.fadeOut_alpha or fadeOut_alpha)
+		end
 	end)
 end
 
@@ -140,18 +167,14 @@ function T.ChildrenFader(parent, children)
 	
 	parent:HookScript("OnEnter", function(self)
 		for i, f in pairs(children) do
-			if eventmode ~= 1 then
-				UIFrameFadeIn(f, fadeIn_time, f:GetAlpha(), fadeIn_alpha)
-			end
+			UIFrameFadeIn(f, fadeIn_time, f:GetAlpha(), fadeIn_alpha)
 		end	
 	end)
 	
 	parent:HookScript("OnLeave", function(self)	
 		if not IsFramesMouseOver(children) then
 			for i, f in pairs(children) do
-				if eventmode ~= 1 then
-					UIFrameFadeOut(f, fadeOut_time, f:GetAlpha(), parent.fadeOut_alpha or fadeOut_alpha)
-				end
+				UIFrameFadeOut(f, fadeOut_time, f:GetAlpha(), parent.fadeOut_alpha or fadeOut_alpha)
 			end
 		end
 	end)
@@ -168,18 +191,14 @@ function T.GroupFader(framegroup)
 		
 		frame:HookScript("OnEnter", function(self)
 			for i, f in pairs(framegroup) do
-				if eventmode ~= 1 then
-					UIFrameFadeIn(f, fadeIn_time, f:GetAlpha(), fadeIn_alpha)
-				end
+				UIFrameFadeIn(f, fadeIn_time, f:GetAlpha(), fadeIn_alpha)
 			end	
 		end)
 		
 		frame:HookScript("OnLeave", function(self)
 			if not IsFramesMouseOver(framegroup) then
 				for i, f in pairs(framegroup) do
-					if eventmode ~= 1 then
-						UIFrameFadeOut(f, fadeOut_time, f:GetAlpha(), f.fadeOut_alpha or fadeOut_alpha)	
-					end
+					UIFrameFadeOut(f, fadeOut_time, f:GetAlpha(), f.fadeOut_alpha or fadeOut_alpha)	
 				end
 			end
 		end)
@@ -238,7 +257,7 @@ function T.ActionbarFader(actionbars)
 				ActionbarsFade(actionbars, "out")
 			end)
 		end
-	end	
+	end
 end
 
 --==================================================================--

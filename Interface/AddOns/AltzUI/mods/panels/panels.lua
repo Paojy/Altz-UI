@@ -565,7 +565,7 @@ for i, name in pairs(MICRO_BUTTONS) do
 	table.insert(microbuttons, bu)
 end
 
-T.GroupFader(microbuttons)
+T.ParentFader(MicroMenu, microbuttons)
 
 --====================================================--
 --[[                  -- 背包按钮 --                ]]--
@@ -625,7 +625,7 @@ T.GroupFader(fadebagbuttons)
 --====================================================--
 local InfoFrame = CreateFrame("Frame", G.uiname.."Info Frame", UIParent)
 InfoFrame:SetFrameLevel(4)
-InfoFrame:SetSize(260, 25)
+InfoFrame:SetSize(270, 25)
 G.InfoFrame = InfoFrame
 
 InfoFrame.movingname = L["信息条"]
@@ -647,14 +647,14 @@ InfoFrame.Apply = function()
 end
 T.RegisterInitCallback(InfoFrame.Apply)
 
-local function CreateInfoButton(width, justify, points, dropdown)
+local function CreateInfoButton(width, points, dropdown)
 	local Frame = CreateFrame("Frame", nil, InfoFrame)
-	Frame:SetSize(width, 25)
 	Frame:SetPoint(unpack(points))
+	Frame:SetSize(width, 25)
 	
-	Frame.text = T.createtext(Frame, "OVERLAY", 12, "OUTLINE", justify)
-	Frame.text:SetPoint(justify)
-	
+	Frame.text = T.createtext(Frame, "OVERLAY", 12, "OUTLINE", "LEFT")
+	Frame.text:SetPoint("LEFT")
+
 	if dropdown then	
 		Frame.Button = CreateFrame("DropDownToggleButton", nil, Frame)
 		Frame.Button:SetSize(width, 25)
@@ -675,62 +675,8 @@ local function PointMenuFrame(frame, anchor)
 	end
 end
 
--- 耐久
-local Durability = CreateInfoButton(50, "CENTER", {"CENTER", InfoFrame, "CENTER", 20, 0}, true)
-
-local function Durability_Initialize(self, level)
-	local count = C_EquipmentSet.GetNumEquipmentSets()	
-	if count > 0 then
-		local sets = C_EquipmentSet.GetEquipmentSetIDs()
-		for i, setID in pairs(sets) do
-			local name, icon, _, isEquipped = C_EquipmentSet.GetEquipmentSetInfo(setID)
-			info = UIDropDownMenu_CreateInfo()
-			info.text = string.format(EQUIPMENT_SETS, T.GetTexStr(icon).." "..name)
-			info.checked = isEquipped
-			info.func = function() C_EquipmentSet.UseEquipmentSet(index) end
-			UIDropDownMenu_AddButton(info)
-		end
-	end
-end
-
-Durability.Button:SetScript("OnMouseDown", function(self)
-	local count = C_EquipmentSet.GetNumEquipmentSets()
-	if count > 0 then
-		
-		Durability.DropDown.point = "BOTTOMLEFT";
-		Durability.DropDown.relativePoint = "TOPLEFT"
-		ToggleDropDownMenu(1, nil, Durability.DropDown, Durability, 0, 5)	
-	end
-end)
-
-Durability:SetScript("OnEvent", function(self, event)
-	if event == "PLAYER_EQUIPMENT_CHANGED" or event == "EQUIPMENT_SETS_CHANGED" or event == "PLAYER_ENTERING_WORLD" then
-		UIDropDownMenu_Initialize(Durability.DropDown, Durability_Initialize, "MENU")
-	end
-	
-	if event == "UPDATE_INVENTORY_DURABILITY" or event == "PLAYER_ENTERING_WORLD" then
-		local lowest = 1
-		for slot,id in pairs(G.SLOTS) do
-			local current, maximum = GetInventoryItemDurability(id)
-			if current and maximum and maximum ~= 0 then
-				lowest = math.min(current/maximum, lowest)
-			end
-		end
-		Durability.text:SetText(format("%d"..T.color_text("dur"), lowest*100))
-	end
-	
-	if event == "PLAYER_ENTERING_WORLD" then
-		self:UnregisterEvent("PLAYER_ENTERING_WORLD")
-	end
-end)
-
-Durability:RegisterEvent("PLAYER_EQUIPMENT_CHANGED")
-Durability:RegisterEvent("EQUIPMENT_SETS_CHANGED")
-Durability:RegisterEvent("UPDATE_INVENTORY_DURABILITY")
-Durability:RegisterEvent("PLAYER_ENTERING_WORLD")
-
 -- 延迟和帧数
-local Net_Stats = CreateInfoButton(100, "RIGHT", {"RIGHT", Durability, "LEFT", -5, 0})
+local Net_Stats = CreateInfoButton(95, {"LEFT", InfoFrame, "LEFT", 0, 0})
 
 Net_Stats.t = 0
 Net_Stats:SetScript("OnUpdate", function(self, elapsed)
@@ -788,8 +734,62 @@ Net_Stats:SetScript("OnLeave", function(self)
 	GameTooltip:Hide()
 end)
 
+-- 耐久
+local Durability = CreateInfoButton(55, {"LEFT", Net_Stats, "RIGHT", 0, 0}, true)
+
+local function Durability_Initialize(self, level)
+	local count = C_EquipmentSet.GetNumEquipmentSets()	
+	if count > 0 then
+		local sets = C_EquipmentSet.GetEquipmentSetIDs()
+		for i, setID in pairs(sets) do
+			local name, icon, _, isEquipped = C_EquipmentSet.GetEquipmentSetInfo(setID)
+			info = UIDropDownMenu_CreateInfo()
+			info.text = string.format(EQUIPMENT_SETS, T.GetTexStr(icon).." "..name)
+			info.checked = isEquipped
+			info.func = function() C_EquipmentSet.UseEquipmentSet(index) end
+			UIDropDownMenu_AddButton(info)
+		end
+	end
+end
+
+Durability.Button:SetScript("OnMouseDown", function(self)
+	local count = C_EquipmentSet.GetNumEquipmentSets()
+	if count > 0 then
+		
+		Durability.DropDown.point = "BOTTOMLEFT";
+		Durability.DropDown.relativePoint = "TOPLEFT"
+		ToggleDropDownMenu(1, nil, Durability.DropDown, Durability, 0, 5)	
+	end
+end)
+
+Durability:SetScript("OnEvent", function(self, event)
+	if event == "PLAYER_EQUIPMENT_CHANGED" or event == "EQUIPMENT_SETS_CHANGED" or event == "PLAYER_ENTERING_WORLD" then
+		UIDropDownMenu_Initialize(Durability.DropDown, Durability_Initialize, "MENU")
+	end
+	
+	if event == "UPDATE_INVENTORY_DURABILITY" or event == "PLAYER_ENTERING_WORLD" then
+		local lowest = 1
+		for slot,id in pairs(G.SLOTS) do
+			local current, maximum = GetInventoryItemDurability(id)
+			if current and maximum and maximum ~= 0 then
+				lowest = math.min(current/maximum, lowest)
+			end
+		end
+		Durability.text:SetText(format("%d"..T.color_text("dur"), lowest*100))
+	end
+	
+	if event == "PLAYER_ENTERING_WORLD" then
+		self:UnregisterEvent("PLAYER_ENTERING_WORLD")
+	end
+end)
+
+Durability:RegisterEvent("PLAYER_EQUIPMENT_CHANGED")
+Durability:RegisterEvent("EQUIPMENT_SETS_CHANGED")
+Durability:RegisterEvent("UPDATE_INVENTORY_DURABILITY")
+Durability:RegisterEvent("PLAYER_ENTERING_WORLD")
+
 -- 天赋
-local Talent = CreateInfoButton(100, "LEFT", {"LEFT", Durability, "RIGHT", 10, 0}, true)
+local Talent = CreateInfoButton(120, {"LEFT", Durability, "RIGHT", 0, 0}, true)
 
 local function TalentDropDown_Initialize(self, level, menuList)
 	local current_spec_index = GetSpecialization()
