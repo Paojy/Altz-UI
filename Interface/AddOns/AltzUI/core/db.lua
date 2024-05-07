@@ -1389,8 +1389,9 @@ end
 ----         导出、导入        ----
 -----------------------------------
 
-T.ExportSettings = function(editbox)
-	local str = "AltzUI Export".."~"..G.Version.."~"..G.Client.."~"..G.myClass
+T.ExportSettings = function()
+	local BlzLayoutStr = T.ExportLayout()
+	local str = "AltzUI Export".."~"..G.Version.."~"..G.Client.."~"..G.myClass.."~"..G.PlayerName.."~"..BlzLayoutStr
 	for OptionCategroy, OptionTable in pairs(Character_default_Settings) do
 		if type(OptionTable) == "table" then
 			for setting, value in pairs(OptionTable) do
@@ -1483,21 +1484,18 @@ T.ExportSettings = function(editbox)
 						str = str.."^FramePoints~"..frame.."~"..mode.."~"..key.."~"..xy[key]
 						--print(frame.."~"..mode.."~"..key.."~"..xy[key])
 					end
-				else -- 框体在当前配置尚未创建
-					str = str.."^FramePoints~"..frame.."~"..mode.."~"..key.."~"..xy[key]
-					--print(frame.."~"..mode.."~"..key.."~"..xy[key])
 				end
 			end
 		end
 	end
-	editbox:SetText(str)
-	editbox:HighlightText()
+	
+	return str
 end
 
 T.ImportSettings = function(str)
 	local optionlines = {string.split("^", str)}
-	local uiname, version, client, class = string.split("~", optionlines[1])
-	local sameversion, sameclient, sameclass
+	local uiname, version, client, class, sender, BlzLayoutStr = string.split("~", optionlines[1])
+	local sameversion, sameclient, sameclass, importLayoutInfo
 	
 	if uiname ~= "AltzUI Export" then
 		StaticPopup_Show(G.uiname.."Cannot Import")
@@ -1521,7 +1519,12 @@ T.ImportSettings = function(str)
 			sameclass = true
 		end
 		
-		if not (sameversion and sameclient and sameclass) then
+		importLayoutInfo = C_EditMode.ConvertStringToLayoutInfo(BlzLayoutStr)	
+		if not importLayoutInfo then
+			import_str = import_str..L["暴雪布局字串有误"]
+		end
+	
+		if not (sameversion and sameclient and sameclass and importLayoutInfo) then
 			import_str = import_str..L["不完整导入"]
 		end
 		
@@ -1627,10 +1630,14 @@ T.ImportSettings = function(str)
 							aCoreCDB[OptionCategroy][setting][tonumber(arg1)] = true
 						end
 					end
-
 				end
 			end
-		ReloadUI()
+			
+			if importLayoutInfo then
+				T.ImportLayout(importLayoutInfo, string.format("%s[%s]", sender, version), true)
+			end
+			
+			ReloadUI()
 		end
 		StaticPopup_Show(G.uiname.."Import Confirm")
 	end

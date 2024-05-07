@@ -144,6 +144,7 @@ L["导入确认"] = "Do you want to import all the %s settings?\n"
 L["版本不符合"] = "\nImport Version %s（Current Version %s）"
 L["客户端不符合"] = "\nGame Client %s（Current Client %s）"
 L["职业不符合"] = "\nClass %s（Current Class %s）"
+L["暴雪布局字串有误"] = "Blizzard layout string error"
 L["不完整导入"] = "\nMay not import completely."
 L["无法导入"] = "Cannot Import"
 

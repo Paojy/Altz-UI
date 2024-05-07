@@ -658,10 +658,11 @@ local function GetSystems(systemsMap)
 	return systems
 end
 
-T.ResetEditModeLayout = function()
+local function GetLayoutInfo(name, character)
 	local editModeLayouts = EditModeManagerFrame:GetLayouts()
 	local layout_names = {}
 	local account_num = 0
+	local new_layout_type, new_layout_name
 	
 	for index, layout in ipairs(editModeLayouts) do
 		layout_names[layout.layoutName] = true
@@ -670,25 +671,54 @@ T.ResetEditModeLayout = function()
 		end
 	end
 	
-	local AltzUI_layoutInfo = {		
-		layoutName = "AltzUI",
-		layoutType = account_num < 5 and 1 or 2,
-		systems = GetSystems(EDIT_MODE_ALTZ_SYSTEM_MAP),
-	}
+	if character then
+		new_layout_type = 2
+	else
+		new_layout_type = account_num < 5 and 1 or 2
+	end
 	
-	if layout_names["AltzUI"] then
+	if not layout_names[name] then
+		new_layout_name = name
+	else
 		local i = 0
 		while true do
 			i = i + 1
-			local new_name = string.format("AltzUI_%d", i)
+			local new_name = name.."_"..tostring(i)
 			if not layout_names[new_name] then
-				AltzUI_layoutInfo.layoutName = new_name
+				new_layout_name = new_name
 				break
 			end
 		end
 	end
+	
+	return new_layout_type, new_layout_name
+end
+
+T.ResetEditModeLayout = function()
+	local new_layout_type, new_layout_name = GetLayoutInfo("AltzUI")
+	
+	local AltzUI_layoutInfo = {		
+		layoutName = new_layout_name,
+		layoutType = new_layout_type,
+		systems = GetSystems(EDIT_MODE_ALTZ_SYSTEM_MAP),
+	}
 
 	EditModeManagerFrame:UpdateDropdownOptions()
 	EditModeManagerFrame:MakeNewLayout(AltzUI_layoutInfo, AltzUI_layoutInfo.layoutType, AltzUI_layoutInfo.layoutName, false)
+end
+
+T.ExportLayout = function()
+	CloseDropDownMenus()
+	local activeLayoutInfo = EditModeManagerFrame:GetActiveLayoutInfo()
+	local str = C_EditMode.ConvertLayoutInfoToString(activeLayoutInfo)
+	return str
+end
+
+T.ImportLayout = function(importLayoutInfo, name, character)
+	local new_layout_type, new_layout_name = GetLayoutInfo(name, character)
+	
+	EditModeManagerFrame:UpdateDropdownOptions()
+	EditModeManagerFrame:ImportLayout(importLayoutInfo, new_layout_type, new_layout_name)
+	print(name, new_layout_type, new_layout_name)
 end
 
