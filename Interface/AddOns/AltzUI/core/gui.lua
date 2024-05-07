@@ -139,7 +139,7 @@ GUI.GitHub:SetScript("OnClick", function()
 	end
 end)
 
-GUI.wowi = T.ClickTexButton(GUI, {"LEFT", GUI.GitHub, "RIGHT", 2, 0}, [[Interface\AddOns\AltzUI\media\icons\EJ.tga]], "WoWInterface", 20)
+GUI.wowi = T.ClickTexButton(GUI, {"LEFT", GUI.GitHub, "RIGHT", 2, 0}, [[Interface\AddOns\AltzUI\media\icons\doc.tga]], "WoWInterface", 20)
 GUI.wowi:SetScript("OnClick", function()
 	if GUI.editbox.type ~= "WoWInterface" then
 		GUI.EditFrame:Show()
@@ -152,7 +152,7 @@ GUI.wowi:SetScript("OnClick", function()
 	end
 end)
 
-GUI.curse = T.ClickTexButton(GUI, {"LEFT", GUI.wowi, "RIGHT", 2, 0}, [[Interface\AddOns\AltzUI\media\icons\Spellbook.tga]], "Curse", 20)
+GUI.curse = T.ClickTexButton(GUI, {"LEFT", GUI.wowi, "RIGHT", 2, 0}, [[Interface\AddOns\AltzUI\media\icons\fire.tga]], "Curse", 20)
 GUI.curse:SetScript("OnClick", function()
 	if GUI.editbox.type ~= "Curse" then
 		GUI.EditFrame:Show()
@@ -212,7 +212,7 @@ GUI.reset:SetScript("OnClick", function()
 	StaticPopup_Show(G.uiname.."Reset Confirm")
 end)
 
-GUI.reload = T.ClickTexButton(GUI, {"LEFT", GUI.reset, "RIGHT", 2, 0}, [[Interface\AddOns\AltzUI\media\icons\RaidTool.tga]], RELOADUI, 20)
+GUI.reload = T.ClickTexButton(GUI, {"LEFT", GUI.reset, "RIGHT", 2, 0}, [[Interface\AddOns\AltzUI\media\icons\save.tga]], RELOADUI, 20)
 GUI.reload:SetScript("OnClick", ReloadUI)
 
 GUI.close = T.ClickTexButton(GUI, {"BOTTOMRIGHT", GUI, "BOTTOMRIGHT", -5, 0}, [[Interface\AddOns\AltzUI\media\icons\exit.tga]], nil, 20)
@@ -1080,7 +1080,7 @@ local function UpdateClickCast(bu_tag, mod_ind)
 end
 
 local function CreateMacroEditBox(macro_input, frame, bu_tag, mod_ind)
-	macro_input.expand_bu = T.ClickTexButton(macro_input, {"LEFT", macro_input, "RIGHT", 0, 0}, [[Interface\AddOns\AltzUI\media\icons\EJ.tga]], nil, 20, EDIT)		
+	macro_input.expand_bu = T.ClickTexButton(macro_input, {"LEFT", macro_input, "RIGHT", 0, 0}, [[Interface\AddOns\AltzUI\media\icons\doc.tga]], nil, 20, EDIT)		
 	
 	local macro_box = T.EditboxMultiLine(macro_input, nil, 150)
 	macro_box.bg:SetBackdropColor(0, 0, 0, 1)
