@@ -209,10 +209,12 @@ chatcopy_button:SetScript("OnClick", function()
 			table.insert(chat_lines, message)
 		end
 
-		copy_box.edit:SetText(table.concat(chat_lines, "\n"))	
+		copy_box.edit:SetText(table.concat(chat_lines, "\n"))
 		copy_box:UpdateScrollChildRect()
 		
 		frame:Show()
+		
+		copy_box.edit:SetFocus()
 	else
 		frame:Hide()
 	end
