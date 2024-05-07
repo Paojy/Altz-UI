@@ -216,7 +216,7 @@ local ApplyActionbarFadeEnable = function()
 			frame.enable_fade = true
 			T.RegisterEventFade(frame)
 			
-			T.UIFrameFadeOut(frame, .4, frame:GetAlpha(), frame.fadeOut_alpha)
+			G.frameFadeManager:GetScript("OnEvent")()
 		else
 			frame.enable_fade = false
 			T.UnregisterEventFade(frame)

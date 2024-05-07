@@ -9,6 +9,7 @@ local fadeOut_time_event = 1.5
 local fadeOut_alpha = 0
 
 local frameFadeManager = CreateFrame("FRAME")
+G.frameFadeManager = frameFadeManager
 local eventmode = 0
 local event_fade_frames = {}
 

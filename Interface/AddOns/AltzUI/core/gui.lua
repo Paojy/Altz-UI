@@ -59,36 +59,21 @@ GUI.df:SetScript("OnDragStop", function(self)
 end)
 
 -- 控制台尺寸
-GUI.scale = CreateFrame("Slider", G.uiname.."GUIScaleSlider", UIParent, "OptionsSliderTemplate")
+GUI.scale = T.SliderWithValueText(UIParent, "GUIScale", 100, nil, 50, 120, 5, T.split_words(L["控制台"],L["尺寸"]))
 GUI.scale:SetFrameLevel(20)
-T.ReskinSlider(GUI.scale)
-getmetatable(GUI.scale).__index.Enable(GUI.scale)
-GUI.scale:SetMinMaxValues(50, 120)
-GUI.scale:SetValueStep(5)
 GUI.scale:SetFrameStrata("HIGH")
 GUI.scale:SetMovable(true)
 GUI.scale:SetClampedToScreen(true)
 GUI.scale:Hide()
-GUI.scale:SetSize(100, 12)
-
-GUI.scale.Thumb:SetSize(25, 16)
-
-GUI.scale.Text:ClearAllPoints()
-GUI.scale.Text:SetPoint("RIGHT", GUI.scale, "LEFT", 0, 0)
-
-GUI.scale.High:SetAlpha(0)
-GUI.scale.Low:SetAlpha(0)
 
 GUI.scale:SetScript("OnShow", function(self)
 	self:SetValue((aCoreCDB["SkinOptions"]["gui_scale"]))
-	self.Text:SetText(L["控制台"]..L["尺寸"]..T.color_text(aCoreCDB["SkinOptions"]["gui_scale"]))
+	self.Text:SetText(T.color_text(aCoreCDB["SkinOptions"]["gui_scale"]))
 end)
 
 GUI.scale:SetScript("OnValueChanged", function(self, getvalue)
 	aCoreCDB["SkinOptions"]["gui_scale"] = getvalue
-	T.TestSlider_OnValueChanged(self, getvalue)
-
-	self.Text:SetText(L["控制台"]..L["尺寸"]..T.color_text(aCoreCDB["SkinOptions"]["gui_scale"]))
+	self.Text:SetText(T.color_text(aCoreCDB["SkinOptions"]["gui_scale"]))
 	
 	local scale = aCoreCDB["SkinOptions"]["gui_scale"]/100
 	GUI:ClearAllPoints()
@@ -100,7 +85,7 @@ GUI.scale.pointself = function()
 	local scale = aCoreCDB["SkinOptions"]["gui_scale"]/100
 	--GUI.scale:SetClampRectInsets(-650*scale+160, 0, 0, -550*scale+20)	
 	GUI.scale:ClearAllPoints()
-	GUI.scale:SetPoint("TOPRIGHT", UIParent, "CENTER", aCoreCDB["SkinOptions"]["gui_x"]-3, aCoreCDB["SkinOptions"]["gui_y"]-5)	
+	GUI.scale:SetPoint("TOPRIGHT", UIParent, "CENTER", aCoreCDB["SkinOptions"]["gui_x"]-15, aCoreCDB["SkinOptions"]["gui_y"]-5)	
 end
 
 GUI.scale:SetScript("OnMouseUp", GUI.scale.pointself)
@@ -426,7 +411,7 @@ local ChatOptions = CreateOptionPage("Chat Options", SOCIAL_LABEL, GUI, "VERTICA
 T.Checkbutton_db(ChatOptions, 30, 60, L["频道缩写"], "channelreplacement")
 ChatOptions.channelreplacement.apply = T.UpdateChannelReplacement
 
-T.CVarCheckbutton(ChatOptions, 230, 60, "showTimestamps", SHOW_TIMESTAMP, T.color_text("H:%M "), "none")
+T.CVarCheckbutton(ChatOptions, 230, 60, SHOW_TIMESTAMP, "showTimestamps", T.color_text("H:%M "), "none")
 
 T.Checkbutton_db(ChatOptions, 30, 90, L["滚动聊天框"], "autoscroll", L["滚动聊天框提示"])
 
@@ -490,6 +475,7 @@ UFInnerframe.style = CreateOptionPage("UF Options style", L["样式"], UFInnerfr
 T.Checkbutton_db(UFInnerframe.style, 30, 60, L["条件渐隐"], "enablefade", L["条件渐隐提示"])
 UFInnerframe.style.enablefade.apply = function()
 	T.EnableUFSettings({"Fader"})
+	T.ApplyUFSettings({"Fader"})
 end
 
 T.Slider_db(UFInnerframe.style, "long", 30, 110, L["渐隐透明度"], "fadingalpha", 100, 0, 80, 5, L["渐隐透明度提示"])
@@ -1866,7 +1852,7 @@ PlateInnerframe.common.threatcolor.apply = function()
 	T.ApplyUFSettings({"Health"}, "Altz_Nameplates")
 end
 
-T.CVarCheckbutton(PlateInnerframe.common, 30, 310, "nameplateShowAll", UNIT_NAMEPLATES_AUTOMODE, "1", "0")
+T.CVarCheckbutton(PlateInnerframe.common, 30, 310, UNIT_NAMEPLATES_AUTOMODE, "nameplateShowAll", "1", "0", nil, true)
 
 T.Checkbutton_db(PlateInnerframe.common, 30, 340, L["友方只显示名字"], "bar_onlyname")
 PlateInnerframe.common.bar_onlyname.apply = function()
@@ -2057,9 +2043,9 @@ T.Checkbutton_db(CombattextOptions, 30, 150, T.split_words(L["显示"], PET), "c
 CreateDividingLine(CombattextOptions, -190)
 CreateTitle(CombattextOptions, 30, -200, L["浮动战斗数字"])
 
-T.CVarCheckbutton(CombattextOptions, 30, 220, "floatingCombatTextCombatDamage", T.split_words(L["显示"], L["承受伤害"], L["战斗数字"]), "1", "0")
-T.CVarCheckbutton(CombattextOptions, 30, 250, "floatingCombatTextCombatHealing", T.split_words(L["显示"], L["承受治疗"], L["战斗数字"]), "1", "0")
-T.CVarCheckbutton(CombattextOptions, 30, 280, "enableFloatingCombatText", T.split_words(L["显示"], L["输出伤害/治疗"], L["战斗数字"]), "1", "0")
+T.CVarCheckbutton(CombattextOptions, 30, 220, T.split_words(L["显示"], L["承受伤害"], L["战斗数字"]), "floatingCombatTextCombatDamage", "1", "0")
+T.CVarCheckbutton(CombattextOptions, 30, 250, T.split_words(L["显示"], L["承受治疗"], L["战斗数字"]), "floatingCombatTextCombatHealing", "1", "0")
+T.CVarCheckbutton(CombattextOptions, 30, 280, T.split_words(L["显示"], L["输出伤害/治疗"], L["战斗数字"]), "enableFloatingCombatText", "1", "0")
 
 local combattextfont_group = {
 	{"none", DEFAULT},
@@ -2106,7 +2092,7 @@ CreateDividingLine(OtherOptions, -260)
 CreateTitle(OtherOptions, 30, -270, L["辅助功能"])
 
 T.Checkbutton_db(OtherOptions, 30, 290, L["成就截图"], "autoscreenshot", L["成就截图提示"])
-T.CVarCheckbutton(OtherOptions, 230, 290, "screenshotQuality", L["提升截图画质"], "10", "1")
+T.CVarCheckbutton(OtherOptions, 230, 290, L["提升截图画质"], "screenshotQuality", "10", "1")
 T.Checkbutton_db(OtherOptions, 30, 320, L["战场自动释放灵魂"], "battlegroundres", L["战场自动释放灵魂提示"])
 T.Checkbutton_db(OtherOptions, 230, 320, L["自动接受复活"], "acceptres", L["自动接受复活提示"])
 T.Checkbutton_db(OtherOptions, 30, 350, L["自动召宝宝"], "autopet", L["自动召宝宝提示"])
@@ -2115,7 +2101,7 @@ T.Checkbutton_db(OtherOptions, 230, 350, L["优先偏爱宝宝"], "autopet_favor
 T.createDR(OtherOptions.autopet, OtherOptions.autopet_favorite)
 
 if G.Client == "zhCN" then
-	T.CVarCheckbutton(OtherOptions, 30, 380, "overrideArchive", "反和谐(大退生效)", "0", "1")
+	T.CVarCheckbutton(OtherOptions, 30, 380, "反和谐(大退生效)", "overrideArchive", "0", "1")
 end
 --====================================================--
 --[[               -- Commands --               ]]--

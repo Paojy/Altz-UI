@@ -29,7 +29,7 @@ local function Update(self)
 			(fader.FadePower and (not EmptyPowerType[select(2, UnitPowerType("player"))]) and UnitPower("player") < UnitPowerMax("player")) or
 			(fader.FadeHover and GetMouseFocus() == self)
 		then
-			T.UIFrameFadeIn(self, fader.FadeInSmooth, self:GetAlpha(), self.FadeMaxAlpha or 1)
+			T.UIFrameFadeIn(self, fader.FadeInSmooth, self:GetAlpha(), 1)
 		else
 			T.UIFrameFadeOut(self, fader.FadeOutSmooth, self:GetAlpha(), aCoreCDB["UnitframeOptions"]["fadingalpha"] or 0.3)
 		end
@@ -117,11 +117,10 @@ local function Disable(self, unit)
 			self:UnregisterEvent('UNIT_SPELLCAST_STOP', Update)
 			self:UnregisterEvent('UNIT_SPELLCAST_INTERRUPTED', Update)
 			self:UnregisterEvent('UNIT_SPELLCAST_CHANNEL_START', Update)
-			--self:UnregisterEvent('UNIT_SPELLCAST_CHANNEL_INTERRUPTED', Update)
 			self:UnregisterEvent('UNIT_SPELLCAST_CHANNEL_STOP', Update)
 		end
 		
-		self:SetAlpha(1)
+		T.UIFrameFadeIn(self, fader.FadeInSmooth, self:GetAlpha(), 1)
 	end
 end
 
