@@ -4,7 +4,7 @@ if G.Client == "zhCN" or G.Client == "zhTW" then return end
 --====================================================--
 --[[           -- 更新日志和插件提示 --             ]]--
 --====================================================--
-L["更新日志tip"] = "New feature:\nUpdate for 10.00"
+--L["更新日志tip"] = "New feature:\nUpdate for 10.00"
 
 L["TIPS"] = {
 	"Click the date on the minimap to open the calendar",
@@ -129,8 +129,7 @@ L["设置向导"] = "Setup Wizard"
 L["界面风格tip"] = "How do you want to display the UnitFrames?"
 L["界面布局"] = "Layout"
 L["界面布局tip"] = "How do you want to layout the Interface?"
-L["默认布局"] = "Default Layout"
-L["极简布局"] = "Minimal Layout"
+L["对称布局"] = "Symmetric layout"
 L["聚合布局"] = "Centralized layout"
 L["姓名板tip"] = "How do you want to display the nameplates?"
 L["更新日志"] = "Update Log"
