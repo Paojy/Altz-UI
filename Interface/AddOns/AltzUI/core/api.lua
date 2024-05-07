@@ -232,12 +232,41 @@ T.ClickTexButton = ClickTexButton
 --====================================================--
 --[[                 -- 勾选按钮 --                 ]]--
 --====================================================--
-local Checkbutton_db = function(parent, x, y, name, value, tip)
+local Checkbutton = function(parent, points, text, tip)
 	local bu = CreateFrame("CheckButton", nil, parent, "UICheckButtonTemplate")
-	bu:SetPoint("TOPLEFT", x, -y)
+	
+	if points then
+		bu:SetPoint(unpack(points))
+	end
+	
 	T.ReskinCheck(bu)
+	bu.Text:SetText(text)
+			
+	bu:SetScript("OnDisable", function(self)
+		bu.Text:SetTextColor(.5, .5, .5)
+	end)
+	
+	bu:SetScript("OnEnable", function(self)
+		bu.Text:SetTextColor(1, .82, 0)
+	end)
+	
+	if tip then
+		bu:SetScript("OnEnter", function(self) 
+			GameTooltip:SetOwner(self, "ANCHOR_RIGHT",  -20, 10)
+			GameTooltip:AddLine(tip)
+			GameTooltip:Show() 
+		end)
+		bu:SetScript("OnLeave", function(self)
+			GameTooltip:Hide()
+		end)
+	end
+	
+	return bu
+end
+T.Checkbutton = Checkbutton
 
-	bu.Text:SetText(name)
+local Checkbutton_db = function(parent, x, y, text, value, tip)
+	local bu = Checkbutton(parent, {"TOPLEFT", parent, "TOPLEFT", x, -y}, text, tip)
 	
 	bu:SetScript("OnShow", function(self)
 		self:SetChecked(aCoreCDB[parent.db_key][value])
@@ -249,36 +278,13 @@ local Checkbutton_db = function(parent, x, y, name, value, tip)
 			self.apply()
 		end
 	end)
-	
-	bu:SetScript("OnDisable", function(self)
-		bu.Text:SetTextColor(.5, .5, .5)
-	end)
-	
-	bu:SetScript("OnEnable", function(self)
-		bu.Text:SetTextColor(1, .82, 0)
-	end)
-	
-	if tip then
-		bu:SetScript("OnEnter", function(self) 
-			GameTooltip:SetOwner(self, "ANCHOR_RIGHT",  -20, 10)
-			GameTooltip:AddLine(tip)
-			GameTooltip:Show() 
-		end)
-		bu:SetScript("OnLeave", function(self)
-			GameTooltip:Hide()
-		end)
-	end
-	
+
 	parent[value] = bu
 end
 T.Checkbutton_db = Checkbutton_db
 
-local CVarCheckbutton = function(parent, x, y, value, name, arg1, arg2, tip)
-	local bu = CreateFrame("CheckButton", G.uiname..value.."Button", parent, "UICheckButtonTemplate")
-	bu:SetPoint("TOPLEFT", x, -y)
-	T.ReskinCheck(bu)
-	
-	bu.Text:SetText(name)
+local CVarCheckbutton = function(parent, x, y, text, value, arg1, arg2, tip, secure)
+	local bu = Checkbutton(parent, {"TOPLEFT", parent, "TOPLEFT", x, -y}, text, tip)
 	
 	bu:SetScript("OnShow", function(self)
 		if GetCVar(value) == arg1 then
@@ -287,32 +293,16 @@ local CVarCheckbutton = function(parent, x, y, value, name, arg1, arg2, tip)
 			self:SetChecked(false)
 		end
 	end)
+	
 	bu:SetScript("OnClick", function(self)
-		if self:GetChecked() then
-			SetCVar(value, arg1)
-		else
-			SetCVar(value, arg2)
+		if not InCombatLockdown() or not secure then
+			if self:GetChecked() then
+				SetCVar(value, arg1)
+			else
+				SetCVar(value, arg2)
+			end
 		end
 	end)
-	
-	bu:SetScript("OnDisable", function(self)
-		bu.Text:SetTextColor(.5, .5, .5)
-	end)
-	
-	bu:SetScript("OnEnable", function(self)
-		bu.Text:SetTextColor(1, .82, 0)
-	end)
-	
-	if tip then
-		bu:SetScript("OnEnter", function(self) 
-			GameTooltip:SetOwner(self, "ANCHOR_RIGHT",  -20, 10)
-			GameTooltip:AddLine(tip)
-			GameTooltip:Show() 
-		end)
-		bu:SetScript("OnLeave", function(self)
-			GameTooltip:Hide()
-		end)
-	end
 	
 	parent[value] = bu
 end
@@ -567,49 +557,93 @@ T.EditboxMultiLine_db = EditboxMultiLine_db
 --====================================================--
 --[[                 -- 滑动条 --                   ]]--
 --====================================================--
-local function TestSlider_OnValueChanged(self, value)
-   if not self._onsetting then   -- is single threaded 
-     self._onsetting = true
-     self:SetValue(self:GetValue())
-     value = self:GetValue()     -- cant use original 'value' parameter
-     self._onsetting = false
-   else return end               -- ignore recursion for actual event handler
- end
-T.TestSlider_OnValueChanged = TestSlider_OnValueChanged
-
-local Slider_db = function(parent, width, x, y, name, value, divisor, min, max, step, tip)
-	local slider = CreateFrame("Slider", G.uiname..value.."Slider", parent, "OptionsSliderTemplate")
-	slider:SetPoint("TOPLEFT", x, -y)
-	slider:SetSize((width == "short" and 170) or (width == "long" and 220) or width, 8)
-
-	T.ReskinSlider(slider)
+local SliderWithValueText = function(parent, name, width, points, min, max, step, tip, button)
+	local slider = CreateFrame("Slider", name and (G.uiname..name.."MiniSlider"), parent, "MinimalSliderTemplate")
+	if points then
+		slider:SetPoint(unpack(points))
+	end
 	
-	getmetatable(slider).__index.Enable(slider)
+	slider.Text = T.createtext(slider, "OVERLAY", 10, "OUTLINE")
+	slider.Text:SetPoint("LEFT", slider, "RIGHT", -5, 0)
+	
+	if width == "short" then
+		slider:SetSize(170, 12)
+	elseif width == "long" then
+		slider:SetSize(170, 12)
+	elseif type(width) == "number" then
+		slider:SetSize(width, 12)
+	end
+	
+	T.ReskinSlider(slider)
 	
 	slider:SetMinMaxValues(min, max)
 	slider:SetValueStep(step)
+	slider:SetObeyStepOnDrag(true)
 	
-	slider.Low:SetText(min/divisor)
-	slider.High:SetText(max/divisor)
+	if button then
+		slider.button = ClickButton(slider, 50, {"LEFT", slider, "RIGHT", 30, 0}, APPLY)
+		slider.button:Hide()
+		
+		slider:SetScript("OnHide", function(self)
+			self.button:Hide()
+		end)
+	end
 	
-	slider:SetScript("OnShow", function(self)
-		self:SetValue((aCoreCDB[parent.db_key][value])*divisor)
-		self.Text:SetText(name.." |cFF00FFFF"..aCoreCDB[parent.db_key][value].."|r")
-	end)
+	slider.Enable = function()		
+		slider:SetEnabled(true)
+		slider.Text:SetTextColor(1, 1, 1, 1)
+		slider.Thumb:Show()
+	end
 	
-	slider:SetScript("OnValueChanged", function(self, getvalue)
-		aCoreCDB[parent.db_key][value] = getvalue/divisor
-		TestSlider_OnValueChanged(self, getvalue)
-		self.Text:SetText(name.." |cFF00FFFF"..aCoreCDB[parent.db_key][value].."|r")
-		if self.apply then
-			self.apply()
+	slider.Disable = function()
+		slider:SetEnabled(false)
+		slider.Text:SetTextColor(0.7, 0.7, 0.7, 0.5)
+		slider.Thumb:Hide()
+		if slider.button then
+			slider.button:Hide()
 		end
-	end)
+	end
 	
-	if tip then slider.tooltipText = tip end
+	if tip then
+		slider:SetScript("OnEnter", function(self) 
+			GameTooltip:SetOwner(self, "ANCHOR_RIGHT", -20, 10)
+			GameTooltip:AddLine(tip)
+			GameTooltip:Show() 
+		end)
+		slider:SetScript("OnLeave", function(self)
+			GameTooltip:Hide()
+		end)
+	end
+	
+	return slider
+end
+T.SliderWithValueText = SliderWithValueText
+
+local SliderWithLowHighText = function(parent, name, width, points, min, max, step, tip)
+	local slider = CreateFrame("Slider", name and (G.uiname..name.."Slider"), parent, "OptionsSliderTemplate")
+	if points then
+		slider:SetPoint(unpack(points))
+	end
+	
+	if width == "short" then
+		slider:SetSize(170, 12)
+	elseif width == "long" then
+		slider:SetSize(170, 12)
+	elseif type(width) == "number" then
+		slider:SetSize(width, 12)
+	end
+	
+	T.ReskinSlider(slider)
+
+	slider:SetMinMaxValues(min, max)
+	slider:SetValueStep(step)
+	slider:SetObeyStepOnDrag(true)
+	
+	slider.Low:SetText(min)
+	slider.High:SetText(max)
 	
 	slider.Enable = function()
-		getmetatable(slider).__index.Enable(slider)
+		slider:SetEnabled(true)
 		slider.Text:SetTextColor(1, 1, 1, 1)
 		slider.Low:SetTextColor(1, 1, 1, 1)
 		slider.High:SetTextColor(1, 1, 1, 1)
@@ -617,13 +651,46 @@ local Slider_db = function(parent, width, x, y, name, value, divisor, min, max, 
 	end
 	
 	slider.Disable = function()
-		getmetatable(slider).__index.Disable(slider)
+		slider:SetEnabled(false)
 		slider.Text:SetTextColor(0.7, 0.7, 0.7, 0.5)
 		slider.Low:SetTextColor(0.7, 0.7, 0.7, 0.5)
 		slider.High:SetTextColor(0.7, 0.7, 0.7, 0.5)
 		slider.Thumb:Hide()
 	end
 	
+	if tip then
+		slider:SetScript("OnEnter", function(self) 
+			GameTooltip:SetOwner(self, "ANCHOR_RIGHT", -20, 10)
+			GameTooltip:AddLine(tip)
+			GameTooltip:Show() 
+		end)
+		slider:SetScript("OnLeave", function(self)
+			GameTooltip:Hide()
+		end)
+	end
+	
+	return slider
+end
+
+local Slider_db = function(parent, width, x, y, text, value, divisor, min, max, step, tip)
+	local slider = SliderWithLowHighText(parent, nil, width, {"TOPLEFT", parent, "TOPLEFT", x, -y}, min, max, step, tip)
+	
+	slider.Low:SetText(min/divisor)
+	slider.High:SetText(max/divisor)
+	
+	slider:SetScript("OnShow", function(self)
+		self:SetValue((aCoreCDB[parent.db_key][value])*divisor)
+		self.Text:SetText(text.." "..aCoreCDB[parent.db_key][value])
+	end)
+	
+	slider:SetScript("OnValueChanged", function(self, getvalue)
+		aCoreCDB[parent.db_key][value] = getvalue/divisor
+		self.Text:SetText(text.." "..aCoreCDB[parent.db_key][value])
+		if self.apply then
+			self.apply()
+		end
+	end)
+
 	parent[value] = slider
 end
 T.Slider_db = Slider_db
@@ -831,8 +898,8 @@ local ButtonGroup = function(parent, width, x, y, group)
 	end
 	
 	frame:SetScript("OnShow", function(self)
-		if self.pre_update then
-			self.pre_update()
+		if self.updateOnShow then
+			self.updateOnShow()
 		end
 		self.update_state()
 	end)
