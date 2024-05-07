@@ -202,7 +202,6 @@ f:SetScript("OnEvent", function(self, event, addon)
 
 		pickers[i].SetValue = function(self, r, g, b)
 			self.label:SetTextColor(r, g, b)
-
 			color.r = r
 			color.g = g
 			color.b = b
@@ -432,9 +431,7 @@ do
 
 	local function SetColor(self, r, g, b)
 		self.swatch:SetVertexColor(r, g, b)
-		if not ColorPickerFrame:IsShown() then
-			self:SetValue(r, g, b)
-		end
+		self:SetValue(r, g, b)
 	end
 
 	function f:CreateColorPicker(name)
