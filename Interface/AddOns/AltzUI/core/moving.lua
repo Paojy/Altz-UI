@@ -50,27 +50,29 @@ frameChooserBox:SetBackdrop({
 frameChooserBox:SetBackdropBorderColor(0, 1, 0)
 frameChooserBox:Hide()
 
-local StopFrameChooser = function(button, editbox, frame, parent)	
+local StopFrameChooser = function(editbox, parent)	
 	FrameChooseInProgress = false
 	
 	frameChooserFrame:SetScript("OnUpdate", nil)
 	frameChooserBox:Hide()
 	ResetCursor()
 	
-	editbox:SetText(parent)
-	editbox:GetScript("OnEnterPressed")(editbox)
+	if editbox and parent then
+		editbox:SetText(parent)
+		editbox:GetScript("OnEnterPressed")(editbox)
+	end
 end
 
-local StartFrameChooser = function(button, editbox, frame, old_parent)
+local StartFrameChooser = function(editbox, name, old_parent)
 	FrameChooseInProgress = true
-	
+
 	local currentFocus, currentFocusName
 	
 	frameChooserFrame:SetScript("OnUpdate", function()
 		if IsMouseButtonDown("LeftButton") and currentFocusName then
-			StopFrameChooser(button, editbox, frame, currentFocusName)
+			StopFrameChooser(editbox, currentFocusName)
 		elseif IsMouseButtonDown("RightButton") then
-			StopFrameChooser(button, editbox, frame, old_parent)
+			StopFrameChooser(editbox, old_parent)
 		else
 			SetCursor("CAST_CURSOR")
 	
@@ -81,11 +83,14 @@ local StartFrameChooser = function(button, editbox, frame, old_parent)
 				if focus then
 					if focus.anchor_parent then
 						focusName = focus.anchor_parent:GetName()
+						if focusName == name then -- 不能是自身
+							focusName = nil
+						end
 					elseif focus.highlightTextureKit and focus.selectedTextureKit then
 						focusName = focus.parent:GetName()
 					else
 						focusName = focus:GetName()
-						if focusName == "WorldFrame" then
+						if focusName == "WorldFrame" then -- 不能是屏幕
 							focusName = nil
 						end
 					end
@@ -150,29 +155,28 @@ end
 local GetDefaultPositions = function(frame, name)
 	if aCoreCDB["FramePoints"][name] == nil then
 		aCoreCDB["FramePoints"][name] = {}
-		
-		for role in pairs(frame.point) do
-			if aCoreCDB["FramePoints"][name][role] == nil then
-				aCoreCDB["FramePoints"][name][role] = {}
-			end
-			if aCoreCDB["FramePoints"][name][role]["a1"] == nil then
-				aCoreCDB["FramePoints"][name][role]["a1"] = frame.point[role].a1
-			end
-			if aCoreCDB["FramePoints"][name][role]["a2"] == nil then
-				aCoreCDB["FramePoints"][name][role]["a2"] = frame.point[role].a2
-			end
-			if aCoreCDB["FramePoints"][name][role]["anchor_type"] == nil then
-				aCoreCDB["FramePoints"][name][role]["anchor_type"] = (frame.point[role].parent == "UIParent") and "Screen" or "ChooseFrame"
-			end
-			if aCoreCDB["FramePoints"][name][role]["parent"] == nil then
-				aCoreCDB["FramePoints"][name][role]["parent"] = frame.point[role].parent
-			end
-			if aCoreCDB["FramePoints"][name][role]["x"] == nil then
-				aCoreCDB["FramePoints"][name][role]["x"] = frame.point[role].x
-			end
-			if aCoreCDB["FramePoints"][name][role]["y"] == nil then
-				aCoreCDB["FramePoints"][name][role]["y"] = frame.point[role].y
-			end
+	end	
+	for role, info in pairs(frame.point) do
+		if aCoreCDB["FramePoints"][name][role] == nil then
+			aCoreCDB["FramePoints"][name][role] = {}
+		end
+		if aCoreCDB["FramePoints"][name][role]["a1"] == nil then
+			aCoreCDB["FramePoints"][name][role]["a1"] = info.a1
+		end
+		if aCoreCDB["FramePoints"][name][role]["a2"] == nil then
+			aCoreCDB["FramePoints"][name][role]["a2"] = info.a2
+		end
+		if aCoreCDB["FramePoints"][name][role]["anchor_type"] == nil then
+			aCoreCDB["FramePoints"][name][role]["anchor_type"] = (info.parent == "UIParent") and "Screen" or "ChooseFrame"
+		end
+		if aCoreCDB["FramePoints"][name][role]["parent"] == nil then
+			aCoreCDB["FramePoints"][name][role]["parent"] = info.parent
+		end
+		if aCoreCDB["FramePoints"][name][role]["x"] == nil then
+			aCoreCDB["FramePoints"][name][role]["x"] = info.x
+		end
+		if aCoreCDB["FramePoints"][name][role]["y"] == nil then
+			aCoreCDB["FramePoints"][name][role]["y"] = info.y
 		end
 	end
 end
@@ -221,7 +225,7 @@ end
 local PlaceFrame = function(frame)
 	local name = frame:GetName()
 	GetDefaultPositions(frame, name)
-	local points = aCoreCDB["FramePoints"][name][CurrentRole]	
+	local points = aCoreCDB["FramePoints"][name][CurrentRole]
 	if points and frame.df.enable then
 		frame:ClearAllPoints()
 		if points.anchor_type == "Screen" then
@@ -480,22 +484,19 @@ SpecMover.ArrangeOptions = function()
 end
 
 SpecMover.parentbox.frameselect_button = T.ClickTexButton(SpecMover.parentbox, {"LEFT", SpecMover.parentbox, "RIGHT", 0, 0}, [[Interface\AddOns\AltzUI\media\icons\search.tga]], nil, 20, T.split_words(CHOOSE,L["锚点框体"]))		
-SpecMover.parentbox.frameselect_button:SetScript("OnClick", function(self)
+SpecMover.parentbox.frameselect_button:SetScript("OnClick", function(self)	
 	local frame = GetSelected()
 	if frame then
 		local name = frame:GetName()
 		local value = aCoreCDB["FramePoints"][name][CurrentRole]["parent"]
-		StartFrameChooser(self, SpecMover.parentbox, frame, value)
+		if not FrameChooseInProgress then
+			StartFrameChooser(SpecMover.parentbox, name, value)
+		else
+			StopFrameChooser(SpecMover.parentbox, value)
+		end
 	end
 end)
-SpecMover.parentbox.frameselect_button:HookScript("OnHide", function(self)
-	local frame = GetSelected()
-	if frame then
-		local name = frame:GetName()
-		local value = aCoreCDB["FramePoints"][name][CurrentRole]["parent"]
-		StopFrameChooser(self, SpecMover.parentbox, frame, value)
-	end
-end)
+SpecMover.parentbox.frameselect_button:HookScript("OnHide", StopFrameChooser)
 
 -- reset
 SpecMover.ResetButton = T.ClickButton(SpecMover, 340, {"BOTTOM", SpecMover, "BOTTOM", 0, 10}, HUD_EDIT_MODE_RESET_POSITION)
