@@ -161,9 +161,9 @@ local ClickButton = function(parent, width, points, text, tex, tip)
 	T.ReskinButton(bu)
 
 	if width == 0 then
-		bu:SetSize(bu.Text:GetWidth() + 5, 20)
+		bu:SetSize(bu.Text:GetWidth() + 5, 25)
 	else
-		bu:SetSize(width, 20)
+		bu:SetSize(width, 25)
 	end
 	
 	if tex then
