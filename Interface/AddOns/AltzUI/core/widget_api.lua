@@ -492,24 +492,22 @@ T.ReskinSlider = function(slider, fontsize)
 	
 	if slider.Low then
 		slider.Low:ClearAllPoints()
-		slider.Low:SetPoint("RIGHT", slider, "LEFT", 15, 0)
+		slider.Low:SetPoint("RIGHT", slider, "LEFT", 10, 0)
 		slider.Low:SetFont(G.norFont, 10, "OUTLINE")
 	end
 	
 	if slider.High then
 		slider.High:ClearAllPoints()
-		slider.High:SetPoint("LEFT", slider, "RIGHT", -15, 0)
+		slider.High:SetPoint("LEFT", slider, "RIGHT", -10, 0)
 		slider.High:SetFont(G.norFont, 10, "OUTLINE")
 	end
 	
 	if slider.Text then
-		local fs = fontsize or 14
-		slider.Text:ClearAllPoints()
-		slider.Text:SetPoint("BOTTOM", slider, "TOP", 0, 3)
+		local fs = fontsize or 10
 		slider.Text:SetFont(G.norFont, fs, "OUTLINE")
 	end
 	
-	slider.Thumb:SetSize(25, 16)
+	slider.Thumb:SetSize(25, slider:GetHeight()*2)
 end
 
 -- 按钮
