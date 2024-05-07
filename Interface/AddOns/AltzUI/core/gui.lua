@@ -2071,30 +2071,10 @@ local CombattextOptions = CreateOptionPage("CombatText Options", L["战斗数字
 CreateTitle(CombattextOptions, 30, -70, L["滚动战斗数字"])
 
 T.Checkbutton_db(CombattextOptions, 30, 90, L["承受伤害/治疗"], "showreceivedct")
-CombattextOptions.showreceivedct.apply = function()
-	if aCoreCDB["CombattextOptions"]["showreceivedct"] then
-		T.RestoreDragFrame(G.CombatText_Frames.damagetaken)
-		T.RestoreDragFrame(G.CombatText_Frames.healingtaken)
-		G.CombatText_Frames:RegisterEvent("COMBAT_TEXT_UPDATE")
-	else
-		T.ReleaseDragFrame(G.CombatText_Frames.damagetaken)
-		T.RestoreDragFrame(G.CombatText_Frames.healingtaken)
-		G.CombatText_Frames:RegisterEvent("COMBAT_TEXT_UPDATE")
-	end
-end
+CombattextOptions.showreceivedct.apply = T.ToggleCTVisibility
 
 T.Checkbutton_db(CombattextOptions, 230, 90, L["输出伤害/治疗"], "showoutputct")
-CombattextOptions.showoutputct.apply = function()
-	if aCoreCDB["CombattextOptions"]["showoutputct"] then
-		T.RestoreDragFrame(G.CombatText_Frames.outputdamage)
-		T.RestoreDragFrame(G.CombatText_Frames.outputhealing)
-		G.CombatText_Frames:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
-	else
-		T.ReleaseDragFrame(G.CombatText_Frames.outputdamage)
-		T.RestoreDragFrame(G.CombatText_Frames.outputhealing)
-		G.CombatText_Frames:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
-	end
-end
+CombattextOptions.showoutputct.apply = T.ToggleCTVisibility
 
 T.Checkbutton_db(CombattextOptions, 30, 120, T.split_words(L["显示"], "DOT"), "ctshowdots")
 T.Checkbutton_db(CombattextOptions, 230, 120, T.split_words(L["显示"], "HOT"), "ctshowhots")

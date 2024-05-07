@@ -30,8 +30,7 @@ local tbl = {
 	["SPELL_ABSORBED"] = 	{frame = "damagetaken",		prefix = "Absorb", 	special = true, 	r = 0.79, 	g = 0.3, 	b = 0.85},
 }
 
-local frames = CreateFrame("Frame")
-G.CombatText_Frames = frames
+local eventFrame = CreateFrame("Frame")
 
 local function GetSpellTextureFormatted(spellID, size)
 	local msg = ""
@@ -48,47 +47,53 @@ local function GetSpellTextureFormatted(spellID, size)
 	return msg
 end
 
-local function CreateCTFrame(i, movingname, justify, a1, parent, a2, x, y)
-	local frame = CreateFrame("ScrollingMessageFrame", "Combat Text"..i, UIParent)
-	
-	frame:SetFont("Interface\\AddOns\\AltzUI\\media\\number.ttf", iconsize, "OUTLINE")
-	frame:SetJustifyH(justify)
-	
-	frame:SetShadowColor(0, 0, 0, 0)
-	frame:SetFadeDuration(0.2)
-	frame:SetTimeVisible(3)
-	frame:SetMaxLines(20)
-	frame:SetSpacing(3)
-	frame:SetWidth(84)
-	frame:SetHeight(150)
+local function CreateCTFrame(tag, movingname, justify, a1, parent, a2, x, y)
+	local frame = CreateFrame("ScrollingMessageFrame", "Combat Text"..tag, UIParent)
+	frame:SetSize(84,150)
 	
 	frame.movingname = movingname
 	frame.point = {
 		healer = {a1 = a1, parent = parent:GetName(), a2 = a2, x = x, y = y},
 		dpser = {a1 = a1, parent = parent:GetName(), a2 = a2, x = x, y = y},
 	}
+	
 	T.CreateDragFrame(frame)
 	
 	frame.df:SetScript("OnUpdate", function(self, elapsed)
 		self.timer = (self.timer or 0) + elapsed
-		if self.timer > 1 then	
-			self.number = random(1 , 10000)
-			if aCoreCDB["CombattextOptions"]["showreceivedct"] then
-				frames.damagetaken:AddMessage("-"..self.number, 1, 0, 0)
-				frames.healingtaken:AddMessage("+"..self.number, 0, 1, 0)
-			end
-			if aCoreCDB["CombattextOptions"]["showoutputct"] then
-				frames.outputdamage:AddMessage(GetSpellTextureFormatted(6603, iconsize)..self.number, 1, 1, 0)
-				frames.outputhealing:AddMessage(GetSpellTextureFormatted(139, iconsize)..self.number, 0.3, 1, 0)
+		if self.timer > 1 then		
+			local number = random(1 , 10000)
+			if tag == "damagetaken" then
+				frame:AddMessage("-"..number, 1, 0, 0)
+			elseif tag == "healingtaken" then
+				frame:AddMessage("+"..number, 0, 1, 0)
+			elseif tag == "outputdamage" then
+				frame:AddMessage(GetSpellTextureFormatted(6603, iconsize)..number, 1, 1, 0)
+			elseif tag == "outputhealing" then
+				frame:AddMessage(GetSpellTextureFormatted(139, iconsize)..number, 0.3, 1, 0)
 			end
 			self.timer = 0
 		end
 	end)
 	
+	frame:SetFont("Interface\\AddOns\\AltzUI\\media\\number.ttf", iconsize, "OUTLINE")
+	frame:SetJustifyH(justify)
+	frame:SetShadowColor(0, 0, 0, 0)
+	frame:SetFadeDuration(0.2)
+	frame:SetTimeVisible(3)
+	frame:SetMaxLines(20)
+	frame:SetSpacing(3)
+	
 	return frame
 end
 
-frames:SetScript("OnEvent", function(self, event, ...)
+local damagetaken = CreateCTFrame("damagetaken", L["承受伤害"], "LEFT", "RIGHT", UIParent, "CENTER", -485, 0)
+local healingtaken = CreateCTFrame("healingtaken", L["承受治疗"], "RIGHT", "LEFT", UIParent, "CENTER", -665, 0)
+
+local outputdamage = CreateCTFrame("outputdamage", L["输出伤害"], "RIGHT", "LEFT", UIParent, "CENTER", 485, 80)
+local outputhealing = CreateCTFrame("outputhealing", L["输出治疗"], "LEFT", "RIGHT", UIParent, "CENTER", 665, 80)	
+
+eventFrame:SetScript("OnEvent", function(self, event, ...)
 	if event == "COMBAT_TEXT_UPDATE" then
 		local spelltype = ...
 		local info = tbl[spelltype]
@@ -106,7 +111,11 @@ frames:SetScript("OnEvent", function(self, event, ...)
 				msg = info.prefix
 			end
 			
-			frames[info.frame]:AddMessage(msg, info.r, info.g, info.b)
+			if info.frame == "damagetaken" then
+				damagetaken:AddMessage(msg, info.r, info.g, info.b)
+			elseif info.frame == "healingtaken" then
+				healingtaken:AddMessage(msg, info.r, info.g, info.b)
+			end
 		end
 	elseif event == "COMBAT_LOG_EVENT_UNFILTERED" then
 		local icon, spellId, amount, critical, spellSchool
@@ -117,7 +126,7 @@ frames:SetScript("OnEvent", function(self, event, ...)
 				amount = arg15
 				critical = arg18
 				icon = GetSpellTextureFormatted(spellId, critical and crit_iconsize or iconsize)
-				frames.outputhealing:AddMessage(T.ShortValue(amount)..""..icon, 0, 1, 0)
+				outputhealing:AddMessage(T.ShortValue(amount)..""..icon, 0, 1, 0)
 			elseif destGUID ~= UnitGUID("player") then
 				if eventType=="SWING_DAMAGE" then
 					amount = arg12
@@ -146,15 +155,15 @@ frames:SetScript("OnEvent", function(self, event, ...)
 				if amount and icon then
 					if critical then
 						if dmgcolor[spellSchool] then
-							frames.outputdamage:AddMessage("+"..T.ShortValue(amount)..""..icon, dmgcolor[spellSchool][1], dmgcolor[spellSchool][2], dmgcolor[spellSchool][3])
+							outputdamage:AddMessage("+"..T.ShortValue(amount)..""..icon, dmgcolor[spellSchool][1], dmgcolor[spellSchool][2], dmgcolor[spellSchool][3])
 						else
-							frames.outputdamage:AddMessage("+"..T.ShortValue(amount)..""..icon, dmgcolor[1][1], dmgcolor[1][2], dmgcolor[1][3])
+							outputdamage:AddMessage("+"..T.ShortValue(amount)..""..icon, dmgcolor[1][1], dmgcolor[1][2], dmgcolor[1][3])
 						end
 					else
 						if dmgcolor[spellSchool] then
-							frames.outputdamage:AddMessage(T.ShortValue(amount)..""..icon, dmgcolor[spellSchool][1], dmgcolor[spellSchool][2], dmgcolor[spellSchool][3])
+							outputdamage:AddMessage(T.ShortValue(amount)..""..icon, dmgcolor[spellSchool][1], dmgcolor[spellSchool][2], dmgcolor[spellSchool][3])
 						else
-							frames.outputdamage:AddMessage(T.ShortValue(amount)..""..icon, dmgcolor[1][1], dmgcolor[1][2], dmgcolor[1][3])
+							outputdamage:AddMessage(T.ShortValue(amount)..""..icon, dmgcolor[1][1], dmgcolor[1][2], dmgcolor[1][3])
 						end
 					end
 				end
@@ -163,33 +172,30 @@ frames:SetScript("OnEvent", function(self, event, ...)
 	end
 end)
 
-T.RegisterInitCallback(function()
-	frames.damagetaken = CreateCTFrame("damagetaken", L["承受伤害"], "LEFT", "RIGHT", UIParent, "CENTER", -485, 0)
-	frames.healingtaken = CreateCTFrame("healingtaken", L["承受治疗"], "RIGHT", "LEFT", UIParent, "CENTER", -665, 0)
-	
+local function ToggleCTVisibility()
 	if aCoreCDB["CombattextOptions"]["showreceivedct"] then
-		T.RestoreDragFrame(frames.damagetaken)
-		T.RestoreDragFrame(frames.healingtaken)
-		frames:RegisterEvent("COMBAT_TEXT_UPDATE")
+		T.RestoreDragFrame(damagetaken)
+		T.RestoreDragFrame(healingtaken)
+		eventFrame:RegisterEvent("COMBAT_TEXT_UPDATE")
 	else
-		T.ReleaseDragFrame(frames.damagetaken)
-		T.RestoreDragFrame(frames.healingtaken)
-		frames:RegisterEvent("COMBAT_TEXT_UPDATE")
+		T.ReleaseDragFrame(damagetaken)
+		T.RestoreDragFrame(healingtaken)
+		eventFrame:RegisterEvent("COMBAT_TEXT_UPDATE")
 	end
-	
-	frames.outputdamage = CreateCTFrame("outputdamage", L["输出伤害"], "RIGHT", "LEFT", UIParent, "CENTER", 485, 80)
-	frames.outputhealing = CreateCTFrame("outputhealing", L["输出治疗"], "LEFT", "RIGHT", UIParent, "CENTER", 665, 80)	
-	
 	if aCoreCDB["CombattextOptions"]["showoutputct"] then
-		T.RestoreDragFrame(frames.outputdamage)
-		T.RestoreDragFrame(frames.outputhealing)
-		frames:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
+		T.RestoreDragFrame(outputdamage)
+		T.RestoreDragFrame(outputhealing)
+		eventFrame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 	else
-		T.ReleaseDragFrame(frames.outputdamage)
-		T.RestoreDragFrame(frames.outputhealing)
-		frames:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
+		T.ReleaseDragFrame(outputdamage)
+		T.RestoreDragFrame(outputhealing)
+		eventFrame:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 	end
-	
+end
+T.ToggleCTVisibility = ToggleCTVisibility
+
+T.RegisterInitCallback(function()
+	ToggleCTVisibility()
 	-- 战斗文字字体
 	local font = aCoreCDB["CombattextOptions"]["combattext_font"]
 	if font ~= "none" then
