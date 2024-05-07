@@ -397,8 +397,8 @@ local CreateCastbars = function(self, unit)
 			if unit == "player" then
 				cb.movingname = T.split_words(PLAYER,L["施法条"])
 				cb.point = {
-					healer = {a1 = "TOP", parent = "UIParent", a2 = "CENTER", x = 0, y = -150},
-					dpser = {a1 = "TOP", parent = "UIParent", a2 = "CENTER", x = 0, y = -150},
+					healer = {a1 = "BOTTOM", parent = "UIParent", a2 = "BOTTOM", x = 0, y = 450},
+					dpser = {a1 = "BOTTOM", parent = "UIParent", a2 = "BOTTOM", x = 0, y = 450},
 				}
 			elseif unit == "target" then	
 				cb.movingname = T.split_words(TARGET,L["施法条"])
@@ -662,8 +662,8 @@ local CreateSwingTimer = function(self, unit) -- only for player
 	bar:SetSize(aCoreCDB["UnitframeOptions"]["swwidth"], aCoreCDB["UnitframeOptions"]["swheight"])
 	bar.movingname = L["平砍计时条"]
 	bar.point = {
-		healer = {a1 = "TOP", parent = "UIParent", a2 = "CENTER", x = 0, y = -160},
-		dpser = {a1 = "TOP", parent = "UIParent", a2 = "CENTER", x = 0, y = -160},
+		healer = {a1 = "TOP", parent = "AltzUI_playerCastbar", a2 = "BOTTOM", x = 0, y = -10},
+		dpser = {a1 = "TOP", parent = "AltzUI_playerCastbar", a2 = "BOTTOM", x = 0, y = -10},
 	}
 	T.CreateDragFrame(bar)
 	bar.hideOoc = true -- 脱战隐藏
@@ -707,8 +707,10 @@ local CreateSwingTimer = function(self, unit) -- only for player
 		if not object or object == self then
 			if aCoreCDB["UnitframeOptions"]["swing"] then	
 				self:EnableElement("Swing")
+				T.RestoreDragFrame(object.Swing)
 			else
 				self:DisableElement("Swing")
+				T.ReleaseDragFrame(object.Swing)
 			end
 		end
 	end
@@ -1554,7 +1556,7 @@ local UnitSpecific = {
 		end
 
 		-- Zzz
-		local Resting = self.Health:CreateTexture(nil, 'OVERLAY')
+		local Resting = self.cover:CreateTexture(nil, 'OVERLAY')
 		Resting:SetSize(18, 18)
 		Resting:SetTexture([[Interface\AddOns\AltzUI\media\resting.tga]])
 		Resting:SetDesaturated(true)
@@ -1563,7 +1565,7 @@ local UnitSpecific = {
 		self.RestingIndicator = Resting
 
 		-- Combat
-		local Combat = self.Health:CreateTexture(nil, "OVERLAY")
+		local Combat = self.cover:CreateTexture(nil, "OVERLAY")
 		Combat:SetSize(18, 18)
 		Combat:SetTexture([[Interface\AddOns\AltzUI\media\combat.tga]])
 		Combat:SetDesaturated(true)
@@ -1574,7 +1576,7 @@ local UnitSpecific = {
 		self.CombatIndicator.PostUpdate = PostUpdate_CombatIndicator
 
 		-- PvP
-		local PvP = self:CreateTexture(nil, 'OVERLAY')
+		local PvP = self.cover:CreateTexture(nil, 'OVERLAY')
 		PvP:SetSize(35, 35)
 		PvP:SetPoint("CENTER", self, "TOPRIGHT", 5, -5)
 		
@@ -2094,8 +2096,8 @@ T.RegisterInitCallback(function()
 		local playerframe = spawnHelper(self, "player")
 		playerframe.movingname = T.split_words(PLAYER,L["单位框架"])
 		playerframe.point = {
-			healer = {a1 = "TOPRIGHT", parent = "UIParent", a2 = "BOTTOM", x = -250, y = 350},
-			dpser = {a1 = "TOP", parent = "UIParent", a2 = "BOTTOM", x = 0, y = 280},
+			healer = {a1 = "TOPRIGHT", parent = "UIParent", a2 = "BOTTOM", x = -250, y = 450},
+			dpser = {a1 = "TOPRIGHT", parent = "UIParent", a2 = "BOTTOM", x = -250, y = 450},
 		}
 		T.CreateDragFrame(playerframe)
 
@@ -2111,8 +2113,8 @@ T.RegisterInitCallback(function()
 		local targetframe = spawnHelper(self, "target")
 		targetframe.movingname = T.split_words(TARGET,L["单位框架"])
 		targetframe.point = {
-			healer = {a1 = "TOPLEFT", parent = "UIParent", a2 = "BOTTOM", x = 250, y = 350},
-			dpser = {a1 = "TOPLEFT", parent = "UIParent", a2 = "BOTTOM", x = 150, y = 350},
+			healer = {a1 = "TOPLEFT", parent = "UIParent", a2 = "BOTTOM", x = 250, y = 450},
+			dpser = {a1 = "TOPLEFT", parent = "UIParent", a2 = "BOTTOM", x = 250, y = 450},
 		}
 		T.CreateDragFrame(targetframe)
 

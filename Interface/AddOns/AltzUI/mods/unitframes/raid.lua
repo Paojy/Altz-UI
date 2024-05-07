@@ -875,8 +875,8 @@ end
 local RaidFrame = CreateFrame("Frame", "Altz_Raid_Holder", UIParent)
 RaidFrame.movingname = L["团队框架"]
 RaidFrame.point = {
-	healer = {a1 = "CENTER", parent = "UIParent", a2 = "BOTTOM", x = 0, y = 225},
-	dpser = {a1 = "BOTTOMLEFT", parent = "UIParent", a2 = "BOTTOMLEFT", x = 10, y = 250},
+	healer = {a1 = "BOTTOM", parent = "UIParent", a2 = "BOTTOM", x = 0, y = 200},
+	dpser = {a1 = "BOTTOMLEFT", parent = "UIParent", a2 = "BOTTOMLEFT", x = 10, y = 205},
 }
 T.CreateDragFrame(RaidFrame)
 G.RaidFrame = RaidFrame
