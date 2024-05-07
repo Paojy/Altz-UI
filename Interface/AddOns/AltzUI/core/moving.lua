@@ -155,28 +155,28 @@ end
 local GetDefaultPositions = function(frame, name)
 	if aCoreCDB["FramePoints"][name] == nil then
 		aCoreCDB["FramePoints"][name] = {}
-	end	
-	for role, info in pairs(frame.point) do
-		if aCoreCDB["FramePoints"][name][role] == nil then
-			aCoreCDB["FramePoints"][name][role] = {}
-		end
-		if aCoreCDB["FramePoints"][name][role]["a1"] == nil then
-			aCoreCDB["FramePoints"][name][role]["a1"] = info.a1
-		end
-		if aCoreCDB["FramePoints"][name][role]["a2"] == nil then
-			aCoreCDB["FramePoints"][name][role]["a2"] = info.a2
-		end
-		if aCoreCDB["FramePoints"][name][role]["anchor_type"] == nil then
-			aCoreCDB["FramePoints"][name][role]["anchor_type"] = (info.parent == "UIParent") and "Screen" or "ChooseFrame"
-		end
-		if aCoreCDB["FramePoints"][name][role]["parent"] == nil then
-			aCoreCDB["FramePoints"][name][role]["parent"] = info.parent
-		end
-		if aCoreCDB["FramePoints"][name][role]["x"] == nil then
-			aCoreCDB["FramePoints"][name][role]["x"] = info.x
-		end
-		if aCoreCDB["FramePoints"][name][role]["y"] == nil then
-			aCoreCDB["FramePoints"][name][role]["y"] = info.y
+		for role, info in pairs(frame.point) do
+			if aCoreCDB["FramePoints"][name][role] == nil then
+				aCoreCDB["FramePoints"][name][role] = {}
+			end
+			if aCoreCDB["FramePoints"][name][role]["a1"] == nil then
+				aCoreCDB["FramePoints"][name][role]["a1"] = info.a1
+			end
+			if aCoreCDB["FramePoints"][name][role]["a2"] == nil then
+				aCoreCDB["FramePoints"][name][role]["a2"] = info.a2
+			end
+			if aCoreCDB["FramePoints"][name][role]["anchor_type"] == nil then
+				aCoreCDB["FramePoints"][name][role]["anchor_type"] = info.anchor_type
+			end
+			if aCoreCDB["FramePoints"][name][role]["parent"] == nil then
+				aCoreCDB["FramePoints"][name][role]["parent"] = info.parent
+			end
+			if aCoreCDB["FramePoints"][name][role]["x"] == nil then
+				aCoreCDB["FramePoints"][name][role]["x"] = info.x
+			end
+			if aCoreCDB["FramePoints"][name][role]["y"] == nil then
+				aCoreCDB["FramePoints"][name][role]["y"] = info.y
+			end
 		end
 	end
 end
@@ -264,6 +264,10 @@ T.ResetAllFramesPoint = ResetAllFramesPoint
 -- 创建移动框
 T.CreateDragFrame = function(frame)
 	local name = frame:GetName()
+	
+	for role, info in pairs(frame.point) do
+		info.anchor_type = (info.parent == "UIParent") and "Screen" or "ChooseFrame"
+	end	
 	
 	table.insert(G.dragFrameList, frame) --add frame object to the list
 	
