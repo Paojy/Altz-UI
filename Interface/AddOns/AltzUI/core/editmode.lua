@@ -659,6 +659,8 @@ local function GetSystems(systemsMap)
 end
 
 local function GetLayoutInfo(name, character)
+	EditModeManagerFrame:UpdateDropdownOptions()
+	
 	local editModeLayouts = EditModeManagerFrame:GetLayouts()
 	local layout_names = {}
 	local account_num = 0
@@ -696,14 +698,11 @@ end
 
 T.ResetEditModeLayout = function()
 	local new_layout_type, new_layout_name = GetLayoutInfo("AltzUI")
-	
 	local AltzUI_layoutInfo = {		
 		layoutName = new_layout_name,
 		layoutType = new_layout_type,
 		systems = GetSystems(EDIT_MODE_ALTZ_SYSTEM_MAP),
 	}
-
-	EditModeManagerFrame:UpdateDropdownOptions()
 	EditModeManagerFrame:MakeNewLayout(AltzUI_layoutInfo, AltzUI_layoutInfo.layoutType, AltzUI_layoutInfo.layoutName, false)
 end
 
@@ -716,9 +715,6 @@ end
 
 T.ImportLayout = function(importLayoutInfo, name, character)
 	local new_layout_type, new_layout_name = GetLayoutInfo(name, character)
-	
-	EditModeManagerFrame:UpdateDropdownOptions()
 	EditModeManagerFrame:ImportLayout(importLayoutInfo, new_layout_type, new_layout_name)
-	print(name, new_layout_type, new_layout_name)
 end
 
