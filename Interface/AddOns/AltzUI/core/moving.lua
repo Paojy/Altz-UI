@@ -118,10 +118,12 @@ end
 --====================================================--
 --[[                   -- API --                    ]]--
 --====================================================--
-local ValueToText = function(t, value)
+local UIDropDownMenu_SetSelectedValueText = function(dd, t, value)
+	UIDropDownMenu_SetSelectedValue(dd, value)
 	for i, info in pairs(t) do
 		if info[1] == value then
-			return info[2]
+			UIDropDownMenu_SetText(dd, info[2])
+			break
 		end
 	end
 end
@@ -148,32 +150,29 @@ end
 local GetDefaultPositions = function(frame, name)
 	if aCoreCDB["FramePoints"][name] == nil then
 		aCoreCDB["FramePoints"][name] = {}
-	end
-	for role in pairs(frame.point) do
-		if aCoreCDB["FramePoints"][name][role] == nil then
-			aCoreCDB["FramePoints"][name][role] = {}
-		end
-		if aCoreCDB["FramePoints"][name][role]["a1"] == nil then
-			aCoreCDB["FramePoints"][name][role]["a1"] = frame.point[role].a1
-		end
-		if aCoreCDB["FramePoints"][name][role]["a2"] == nil then
-			aCoreCDB["FramePoints"][name][role]["a2"] = frame.point[role].a2
-		end
-		if aCoreCDB["FramePoints"][name][role]["anchor_type"] == nil then
-			if frame.point[role].parent == "UIParent" then
-				aCoreCDB["FramePoints"][name][role]["anchor_type"] = "Screen"
-			else
-				aCoreCDB["FramePoints"][name][role]["anchor_type"] = "ChooseFrame"
+		
+		for role in pairs(frame.point) do
+			if aCoreCDB["FramePoints"][name][role] == nil then
+				aCoreCDB["FramePoints"][name][role] = {}
 			end
-		end
-		if aCoreCDB["FramePoints"][name][role]["parent"] == nil then
-			aCoreCDB["FramePoints"][name][role]["parent"] = frame.point[role].parent
-		end
-		if aCoreCDB["FramePoints"][name][role]["x"] == nil then
-			aCoreCDB["FramePoints"][name][role]["x"] = frame.point[role].x
-		end
-		if aCoreCDB["FramePoints"][name][role]["y"] == nil then
-			aCoreCDB["FramePoints"][name][role]["y"] = frame.point[role].y
+			if aCoreCDB["FramePoints"][name][role]["a1"] == nil then
+				aCoreCDB["FramePoints"][name][role]["a1"] = frame.point[role].a1
+			end
+			if aCoreCDB["FramePoints"][name][role]["a2"] == nil then
+				aCoreCDB["FramePoints"][name][role]["a2"] = frame.point[role].a2
+			end
+			if aCoreCDB["FramePoints"][name][role]["anchor_type"] == nil then
+				aCoreCDB["FramePoints"][name][role]["anchor_type"] = (frame.point[role].parent == "UIParent") and "Screen" or "ChooseFrame"
+			end
+			if aCoreCDB["FramePoints"][name][role]["parent"] == nil then
+				aCoreCDB["FramePoints"][name][role]["parent"] = frame.point[role].parent
+			end
+			if aCoreCDB["FramePoints"][name][role]["x"] == nil then
+				aCoreCDB["FramePoints"][name][role]["x"] = frame.point[role].x
+			end
+			if aCoreCDB["FramePoints"][name][role]["y"] == nil then
+				aCoreCDB["FramePoints"][name][role]["y"] = frame.point[role].y
+			end
 		end
 	end
 end
@@ -182,13 +181,10 @@ local DisplayFramePoint = function(frame, name)
 	SpecMover.Title:SetText(T.color_text(frame.movingname))
 	
 	local points = aCoreCDB["FramePoints"][name][CurrentRole]
-	UIDropDownMenu_SetSelectedValue(SpecMover.a1dd, points.a1)
-	UIDropDownMenu_SetText(SpecMover.a1dd, ValueToText(anchors, points.a1))
-	UIDropDownMenu_SetSelectedValue(SpecMover.anchor_type, points.anchor_type)
-	UIDropDownMenu_SetText(SpecMover.anchor_type, ValueToText(anchor_types, points.anchor_type))
-	SpecMover.parentbox:SetText(points.parent)	
-	UIDropDownMenu_SetSelectedValue(SpecMover.a2dd, points.a2)
-	UIDropDownMenu_SetText(SpecMover.a2dd, ValueToText(anchors, points.a2))
+	UIDropDownMenu_SetSelectedValueText(SpecMover.a1dd, anchors, points.a1)
+	UIDropDownMenu_SetSelectedValueText(SpecMover.anchor_type, anchor_types, points.anchor_type)
+	SpecMover.parentbox:SetText(points.parent)
+	UIDropDownMenu_SetSelectedValueText(SpecMover.a2dd, anchors, points.a2)
 	SpecMover.xbox:SetText(points.x)
 	SpecMover.ybox:SetText(points.y)
 	
@@ -197,6 +193,7 @@ local DisplayFramePoint = function(frame, name)
 	else
 		SpecMover.parentbox:Show()
 	end
+	
 	SpecMover.ArrangeOptions()
 	
 	SpecMover:ClearAllPoints()
@@ -222,10 +219,8 @@ local LockAll = function()
 end
 
 local PlaceFrame = function(frame)
-	local name = frame:GetName()	
-	if not aCoreCDB["FramePoints"][name] then
-		GetDefaultPositions(frame, name)
-	end
+	local name = frame:GetName()
+	GetDefaultPositions(frame, name)
 	local points = aCoreCDB["FramePoints"][name][CurrentRole]	
 	if points and frame.df.enable then
 		frame:ClearAllPoints()
@@ -484,7 +479,7 @@ SpecMover.ArrangeOptions = function()
 	end
 end
 
-SpecMover.parentbox.frameselect_button = T.ClickTexButton(SpecMover.parentbox, {"LEFT", SpecMover.parentbox, "RIGHT", 0, 0}, [[Interface\AddOns\AltzUI\media\icons\EJ.tga]], nil, 20, T.split_words(CHOOSE,L["锚点框体"]))		
+SpecMover.parentbox.frameselect_button = T.ClickTexButton(SpecMover.parentbox, {"LEFT", SpecMover.parentbox, "RIGHT", 0, 0}, [[Interface\AddOns\AltzUI\media\icons\search.tga]], nil, 20, T.split_words(CHOOSE,L["锚点框体"]))		
 SpecMover.parentbox.frameselect_button:SetScript("OnClick", function(self)
 	local frame = GetSelected()
 	if frame then
@@ -503,11 +498,7 @@ SpecMover.parentbox.frameselect_button:HookScript("OnHide", function(self)
 end)
 
 -- reset
-SpecMover.ResetButton = CreateFrame("Button", G.uiname.."SpecMoverResetButton", SpecMover, "UIPanelButtonTemplate")
-SpecMover.ResetButton:SetPoint("BOTTOM", SpecMover, "BOTTOM", 0, 10)
-SpecMover.ResetButton:SetSize(190, 25)
-SpecMover.ResetButton:SetText(HUD_EDIT_MODE_RESET_POSITION)
-T.ReskinButton(SpecMover.ResetButton)
+SpecMover.ResetButton = T.ClickButton(SpecMover, 340, {"BOTTOM", SpecMover, "BOTTOM", 0, 10}, HUD_EDIT_MODE_RESET_POSITION)
 SpecMover.ResetButton:SetScript("OnClick", function()
 	local frame = GetSelected()
 	if frame then
