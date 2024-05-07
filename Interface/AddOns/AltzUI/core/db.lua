@@ -1155,7 +1155,7 @@ local Character_default_Settings = {
 	UnitframeOptions = {
 		--[[ 单位框架 ]]--
 		-- 样式
-		enablefade = true,
+		enablefade = false,
 		fadingalpha = 0.2,
 		portrait = true,
 		alwayshp = false,
@@ -1224,7 +1224,7 @@ local Character_default_Settings = {
 		raidtool_show = true, -- 非控制台内选项
 		-- 启用
 		raidheight = 45,
-		raidwidth = 120,
+		raidwidth = 100,
 		raidmanabars = true,
 		raidppheight = 0.1, -- slider
 		namelength = 4,		
@@ -1269,7 +1269,7 @@ local Character_default_Settings = {
 		keybindsize = 12,
 		macronamesize = 8,
 		countsize = 12,
-		enablefade = true,
+		enablefade = false,
 		fadingalpha_type = "uf", -- "uf", "custom"
 		fadingalpha = 0.2,
 		-- 冷却提示
