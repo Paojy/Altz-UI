@@ -623,7 +623,7 @@ T.GroupFader(fadebagbuttons)
 --====================================================--
 --[[                  --  信息条 --                 ]]--
 --====================================================--
-local InfoFrame = CreateFrame("Frame", G.uiname.."Info Frame", UIParent)
+local InfoFrame = CreateFrame("Frame", G.uiname.."InfoFrame", UIParent)
 InfoFrame:SetFrameLevel(4)
 InfoFrame:SetSize(270, 25)
 G.InfoFrame = InfoFrame
@@ -1072,7 +1072,7 @@ end)
 --[[                -- 团队标记 --                  ]]--
 --====================================================--
 
-local raidmark = CreateFrame("Frame", G.uiname.."Raid Mark Frame", UIParent)
+local raidmark = CreateFrame("Frame", G.uiname.."RaidMarkFrame", UIParent)
 raidmark:SetSize(290, 25)
 
 raidmark.movingname = L["团队工具"]

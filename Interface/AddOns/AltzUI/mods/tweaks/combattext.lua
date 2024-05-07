@@ -48,7 +48,7 @@ local function GetSpellTextureFormatted(spellID, size)
 end
 
 local function CreateCTFrame(tag, movingname, justify, a1, parent, a2, x, y)
-	local frame = CreateFrame("ScrollingMessageFrame", "Combat Text"..tag, UIParent)
+	local frame = CreateFrame("ScrollingMessageFrame", "CombatText"..tag, UIParent)
 	frame:SetSize(84,150)
 	
 	frame.movingname = movingname

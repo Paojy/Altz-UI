@@ -4,7 +4,7 @@ local T, C, L, G = unpack(select(2, ...))
 --[[               -- Flash Icon --                 ]]--
 --====================================================--
 
-local flash = CreateFrame("Frame", G.uiname.."Cooldown Flash", UIParent, "BackdropTemplate")
+local flash = CreateFrame("Frame", G.uiname.."CooldownFlash", UIParent, "BackdropTemplate")
 flash:SetSize(50,50)
 flash:Hide()
 
