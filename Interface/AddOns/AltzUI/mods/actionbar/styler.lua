@@ -13,6 +13,7 @@ local textures = {
 -- 动作条
 local function styleActionButton(bu)
 	if not bu then return end
+	
 	if not bu.rabs_styled then
 		if bu.HotKey then
 			bu.HotKey:SetFont(G.norFont, aCoreCDB["ActionbarOptions"]["keybindsize"], "OUTLINE")
@@ -78,7 +79,20 @@ local function styleActionButton(bu)
 		if check then
 			bu:SetCheckedTexture(textures.checked)
 			check:SetAllPoints(bu)
-		end		
+		end
+		
+		if bu.SetShowGrid then
+			hooksecurefunc(bu, "SetShowGrid", function(self, showGrid, reason)			
+				if not InCombatLockdown() and self:GetShowGrid() ~= showGrid then
+					local showGridAttribute = self:GetAttribute("showgrid")
+					if ( showGrid ) then
+						self:SetAttribute("showgrid", bit.bor(showGridAttribute or 0, reason))
+					else
+						self:SetAttribute("showgrid", bit.band(showGridAttribute or 0, bit.bnot(reason)))
+					end
+				end
+			end)
+		end
 
 		table.insert(Styled_buttons, bu)
 		
