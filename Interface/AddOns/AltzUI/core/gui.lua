@@ -120,80 +120,54 @@ T.setStripBD(GUI.EditFrame)
 
 GUI.editbox = T.EditboxWithButton(GUI.EditFrame, 200, {"TOPLEFT", 5, -10}, L["复制粘贴"])
 GUI.editbox:SetPoint("TOPRIGHT", GUI.EditFrame, "TOPRIGHT", -5, -10)
-GUI.editbox:SetAutoFocus(true)
 
 GUI.editbox:SetScript("OnEditFocusGained", function(self) self:HighlightText() end)
 GUI.editbox:SetScript("OnEditFocusLost", function(self) self:HighlightText(0,0) end)
+GUI.editbox:SetScript("OnEscapePressed", function(self) self:ClearFocus() end)
 GUI.editbox:HookScript("OnHide", function(self) self.button:Hide() end)
 
-GUI.GitHub = T.ClickTexButton(GUI, {"BOTTOMLEFT", GUI, "BOTTOMLEFT", 5, 0}, [[Interface\AddOns\AltzUI\media\icons\GitHub.tga]], "GitHub")
-GUI.GitHub:SetScript("OnClick", function()
-	if GUI.editbox.type ~= "GitHub" then
+local function ToggleGUIEditBox(t, text, highlight_text, show_button, func)
+	if GUI.editbox.type ~= t then
+		GUI.editbox.button:SetShown(show_button)
+		GUI.editbox:SetScript("OnEnterPressed", func)
+		GUI.editbox:SetText(text)
+		if highlight_text then
+			GUI.editbox:HighlightText()
+		end
+		GUI.editbox.type = t	
 		GUI.EditFrame:Show()
-		GUI.editbox.button:Hide()
-		GUI.editbox:SetText(G.links["GitHub"])
-		GUI.editbox.type = "GitHub"
+		GUI.editbox:SetFocus()
 	else
 		GUI.EditFrame:Hide()
 		GUI.editbox.type = nil
 	end
+end
+
+GUI.GitHub = T.ClickTexButton(GUI, {"BOTTOMLEFT", GUI, "BOTTOMLEFT", 5, 0}, [[Interface\AddOns\AltzUI\media\icons\GitHub.tga]], "GitHub")
+GUI.GitHub:SetScript("OnClick", function()
+	ToggleGUIEditBox("GitHub", G.links["GitHub"], true, false)
 end)
 
 GUI.wowi = T.ClickTexButton(GUI, {"LEFT", GUI.GitHub, "RIGHT", 2, 0}, [[Interface\AddOns\AltzUI\media\icons\doc.tga]], "WoWInterface", 20)
 GUI.wowi:SetScript("OnClick", function()
-	if GUI.editbox.type ~= "WoWInterface" then
-		GUI.EditFrame:Show()
-		GUI.editbox.button:Hide()
-		GUI.editbox:SetText(G.links["WoWInterface"])
-		GUI.editbox.type = "WoWInterface"
-	else
-		GUI.EditFrame:Hide()
-		GUI.editbox.type = nil
-	end
+	ToggleGUIEditBox("WoWInterface", G.links["WoWInterface"], true, false)
 end)
 
 GUI.curse = T.ClickTexButton(GUI, {"LEFT", GUI.wowi, "RIGHT", 2, 0}, [[Interface\AddOns\AltzUI\media\icons\fire.tga]], "Curse", 20)
 GUI.curse:SetScript("OnClick", function()
-	if GUI.editbox.type ~= "Curse" then
-		GUI.EditFrame:Show()
-		GUI.editbox.button:Hide()
-		GUI.editbox:SetText(G.links["Curse"])
-		GUI.editbox.type = "Curse"
-	else
-		GUI.EditFrame:Hide()
-		GUI.editbox.type = nil
-	end
+	ToggleGUIEditBox("Curse", G.links["Curse"], true, false)
 end)
 
 GUI.export = T.ClickTexButton(GUI, {"LEFT", GUI.curse, "RIGHT", 2, 0}, [[Interface\AddOns\AltzUI\media\arrow.tga]], L["导出"], 20)
 GUI.export:SetScript("OnClick", function()	
-	if GUI.editbox.type ~= "export" then
-		GUI.EditFrame:Show()
-		GUI.editbox.button:Hide()
-		T.ExportSettings(GUI.editbox)
-		GUI.editbox.type = "export"
-	else
-		GUI.EditFrame:Hide()
-		GUI.editbox.type = nil
-	end
+	ToggleGUIEditBox("export", T.ExportSettings(), true, false)
 end)
 T.SetupArrow(GUI.export.tex, "down")
 T.SetupArrow(GUI.export.hl_tex, "down")
 
 GUI.import = T.ClickTexButton(GUI, {"LEFT", GUI.export, "RIGHT", 2, 0}, [[Interface\AddOns\AltzUI\media\arrow.tga]], L["导入"], 20)
-GUI.import:SetScript("OnClick", function()	
-	if GUI.editbox.type ~= "import" then
-		GUI.EditFrame:Show()
-		GUI.editbox.button:Show()
-		GUI.editbox:SetScript("OnEnterPressed", function()
-			T.ImportSettings(GUI.editbox:GetText())
-		end)
-		GUI.editbox:SetText("")
-		GUI.editbox.type = "import"
-	else
-		GUI.EditFrame:Hide()
-		GUI.editbox.type = nil
-	end
+GUI.import:SetScript("OnClick", function()
+	ToggleGUIEditBox("import", "", false, true, function() T.ImportSettings(GUI.editbox:GetText()) end)
 end)
 T.SetupArrow(GUI.import.tex, "up")
 T.SetupArrow(GUI.import.hl_tex, "up")
