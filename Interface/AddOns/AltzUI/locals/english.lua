@@ -152,6 +152,8 @@ L["无法导入"] = "Cannot Import"
 --====================================================--
 L["锚点"] = "Anchor"
 L["锚点框体"] = "Anchor Frame"
+L["对齐到"] = "Align to"
+L["屏幕"] = "Screen"
 L["当前模式"] = "CurrentMode"
 L["healer"] = "|cff76EE00Healer|r"
 L["dpser"] = "|cffE066FFDps/Tank|r"
