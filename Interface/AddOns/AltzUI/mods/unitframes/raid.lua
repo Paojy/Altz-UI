@@ -702,13 +702,13 @@ local func = function(self, unit)
 	
 	-- 治疗边角指示器（数字）
 	local ind_number = CreateFrame("Frame", nil, self)
-	ind_number:SetAllPoints()
+	ind_number:SetPoint("TOPLEFT", 3, -3)
+	ind_number:SetPoint("BOTTOMRIGHT", -3, 3)
 	
 	ind_number.EnableSettings = function(object)
 		if not object or object == self then	
 			if aCoreCDB["UnitframeOptions"]["hotind_style"] == "number_ind" then
 				self:EnableElement("AltzIndicators")
-				self:UpdateTags()
 			else
 				self:DisableElement("AltzIndicators")
 			end
@@ -717,23 +717,12 @@ local func = function(self, unit)
 	oUF:RegisterInitCallback(ind_number.EnableSettings)
 	
 	ind_number.ApplySettings = function()
-		ind_number.AuraStatusBL:SetFont(G.norFont, aCoreCDB["UnitframeOptions"]["hotind_size"], "OUTLINE")
-		ind_number.AuraStatusBR:SetFont(G.symbols, aCoreCDB["UnitframeOptions"]["hotind_size"], "OUTLINE")
-		ind_number.AuraStatusTL:SetFont(G.norFont, aCoreCDB["UnitframeOptions"]["hotind_size"], "OUTLINE")
-		if G.myClass == "DRUID" or G.myClass == "MONK" or G.myClass == "PRIEST" or G.myClass == "SHAMAN" then
-			ind_number.AuraStatusTR:SetFont(G.norFont, aCoreCDB["UnitframeOptions"]["hotind_size"], "OUTLINE") -- 数字
-		else
-			ind_number.AuraStatusTR:SetFont(G.symbols, aCoreCDB["UnitframeOptions"]["hotind_size"], "OUTLINE") -- 符号
-		end
-		if G.myClass == "DRUID" or G.myClass == "PRIEST" then
-			ind_number.AuraStatusCen:SetFont(G.norFont, aCoreCDB["UnitframeOptions"]["hotind_size"], "OUTLINE") -- 文字
-		else
-			ind_number.AuraStatusCen:SetFont(G.symbols, aCoreCDB["UnitframeOptions"]["hotind_size"]/2, "OUTLINE") -- 符号
-		end
+		ind_number.size = aCoreCDB["UnitframeOptions"]["hotind_size"]
 	end
 	
 	self.AltzIndicators = ind_number	
-		
+	self.AltzIndicators.ApplySettings()
+	
 	-- 团队领袖
 	local leader = self.cover:CreateTexture(nil, "OVERLAY", nil, 1)
     leader:SetSize(10, 10)

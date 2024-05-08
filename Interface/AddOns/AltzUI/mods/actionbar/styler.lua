@@ -245,7 +245,7 @@ T.RegisterInitCallback(function()
 	local fade_actionbars = {}
 	for i, name in pairs(actionbars) do
 		table.insert(fade_actionbars, _G[name])
-	end	
+	end
 	T.ActionbarFader(fade_actionbars)
 	
 	ApplyActionbarFadeAlpha()

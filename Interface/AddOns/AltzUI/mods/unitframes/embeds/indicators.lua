@@ -1,398 +1,420 @@
 ﻿local T, C, L, G = unpack(select(2, ...))
 local oUF = AltzUF or oUF
 
-local x = "8"
+local UpdateRate = .25
 
--- [[ Healers' indicators ]] -- 
-
--- Priest 牧师
-oUF.Tags.Methods['Mlight:pom'] = function(u) -- 愈合祷言
-    local name,_, c = T.FindAuraBySpellID(41635, u, "PLAYER|HELPFUL")
-	if name and c then
-        if c and c ~= 0 then return "|cff66FFFF["..c.."]|r" end
-	end
-end
-oUF.Tags.Events['Mlight:pom'] = "UNIT_AURA"
-
-oUF.Tags.Methods['Mlight:atonement'] = function(u) -- 救赎
-    local name, _,_,_,_, expirationTime = T.FindAuraBySpellID(194384, u, "PLAYER|HELPFUL")
-    if name then
-        local spellTimer = expirationTime - GetTime()
-        return "|cffFFE4C4"..T.FormatTime(spellTimer).."|r"
-    end
-end
-oUF.Tags.Events['Mlight:atonement'] = "UNIT_AURA"
-
-oUF.Tags.Methods['Mlight:rnw'] = function(u) -- 恢复
-    local name,_,_,_,_, expirationTime = T.FindAuraBySpellID(139, u, "PLAYER|HELPFUL")
-    if name then
-        local spellTimer = expirationTime - GetTime()
-        if spellTimer > 4 then
-            return "|cff33FF33"..T.FormatTime(spellTimer).."|r"
-        elseif spellTimer > 2 then
-            return "|cffFF9900"..T.FormatTime(spellTimer).."|r"
-        else
-            return "|cffFF0000"..T.FormatTime(spellTimer).."|r"
-        end
-    end
-end
-oUF.Tags.Events['Mlight:rnw'] = "UNIT_AURA"
-
-oUF.Tags.Methods['Mlight:pws'] = function(u) -- 盾
-	local pws, _,_,_,_, pws_expiration = T.FindAuraBySpellID(17, u, "PLAYER|HELPFUL")
-	if pws then
-		local pws_time = T.FormatTime(pws_expiration-GetTime())
-		
-		return "|cffFFFF00"..pws_time.."|r"
-	end
-end
-oUF.Tags.Events['Mlight:pws'] = "UNIT_AURA"
-
--- Druid 德鲁伊
-oUF.Tags.Methods['Mlight:lb'] = function(u) -- 生命绽放
-    local name, _, c,_,_, expirationTime = T.FindAuraBySpellID(33763, u, "PLAYER|HELPFUL")
-    if name then
-		local spellTimer = (expirationTime-GetTime())
-		local TimeLeft = T.FormatTime(spellTimer)
-        if c > 2 then
-            return "|cffA7FD0A"..TimeLeft.."|r"
-        elseif c > 1 then
-            return "|cffFF9900"..TimeLeft.."|r"
-        else
-            return "|cffFF0000"..TimeLeft.."|r"
-        end
-    end
-end
-oUF.Tags.Events['Mlight:lb'] = "UNIT_AURA"
-
-oUF.Tags.Methods['Mlight:rejuv'] = function(u) -- 回春
-    local name, _,_,_,_, expirationTime = T.FindAuraBySpellID(774, u, "PLAYER|HELPFUL")
-	local name2, _,_,_,_, expirationTime2 = T.FindAuraBySpellID(155777, u, "PLAYER|HELPFUL")
-	local text, text2 = "", ""
-    if name then
-        local spellTimer = (expirationTime-GetTime())
-		local TimeLeft = T.FormatTime(spellTimer)
-        if spellTimer > 0 then
-            text = "|cffFF00BB"..TimeLeft.."|r"
-        end
-    end
-	if name2 then
-        local spellTimer2 = (expirationTime2-GetTime())
-		local TimeLeft2 = T.FormatTime(spellTimer2)
-        if spellTimer2 > 0 then
-            text2 = "|cffFF6EB4 "..TimeLeft2.."|r"
-        end
-    end
-	if text or text2 then
-		return text..text2
-	end
-end
-oUF.Tags.Events['Mlight:rejuv'] = "UNIT_AURA"
-
-oUF.Tags.Methods['Mlight:regrow'] = function(u) -- 愈合
-	local name, _,_,_,_, expirationTime = T.FindAuraBySpellID(8936, u, "PLAYER|HELPFUL")
-    if name then
-        local spellTimer = (expirationTime-GetTime())
-		local TimeLeft = T.FormatTime(spellTimer)
-        if spellTimer > 3 then
-			return "|cffFFA500"..TimeLeft.."|r"
-		elseif spellTimer > 0 then
-            return "|cff33FF33"..TimeLeft.."|r"
-        end
-    end
-end
-oUF.Tags.Events['Mlight:regrow'] = "UNIT_AURA"
-
-oUF.Tags.Methods['Mlight:wildgrowth'] = function(u) -- 野性成长
-	local name, _,_,_,_, expirationTime = T.FindAuraBySpellID(48438, u, "PLAYER|HELPFUL")
-    if name then
-        local spellTimer = (expirationTime-GetTime())
-		local TimeLeft = T.FormatTime(spellTimer)
-        return "|cff33FF33"..TimeLeft.."|r"
-    end
-end
-oUF.Tags.Events['Mlight:wildgrowth'] = "UNIT_AURA"
-
-oUF.Tags.Methods['Mlight:snla'] = function(u) --塞纳里奥结界
-	local name = T.FindAuraBySpellID(102351, u, "PLAYER|HELPFUL")
-	local name2 = T.FindAuraBySpellID(102352, u, "PLAYER|HELPFUL")
-	if name then
-		return "|cffFFF8DCY|r"
-	elseif name2 then
-		return "|cff33FF33b|r"
-	end
-end
-oUF.Tags.Events['Mlight:snla'] = "UNIT_AURA"
-
--- Shaman 萨满
-oUF.Tags.Methods['Mlight:ripTime'] = function(u) --激流
-    local name, _,_,_,_, expirationTime = T.FindAuraBySpellID(61295, u, "PLAYER|HELPFUL")
-    if name then
-        local spellTimer = (expirationTime-GetTime())
-		local TimeLeft = T.FormatTime(spellTimer)
-        if spellTimer > 0 then
-            return "|cff00FFDD"..TimeLeft.."|r"
-        end
-    end
-end
-oUF.Tags.Events['Mlight:ripTime'] = 'UNIT_AURA'
-
-oUF.Tags.Methods['Mlight:ddzd'] = function(u) -- 大地之盾
-    local name,_, c = T.FindAuraBySpellID(974, u, "PLAYER|HELPFUL")
-	if name and c then
-        if c and c ~= 0 then return "|cff66FFFF["..c.."]|r" end
-	end
-end
-oUF.Tags.Events['Mlight:ddzd'] = "UNIT_AURA"
-
--- Paladin 骑士
-oUF.Tags.Methods['Mlight:beacon'] = function(u) --道标
-    local name, _,_,_,_, expirationTime = T.FindAuraBySpellID(53563, u, "PLAYER|HELPFUL")
-	local name2, _,_,_,_, expirationTime2 = T.FindAuraBySpellID(156910, u, "PLAYER|HELPFUL")
-	local name3, _,_,_,_, expirationTime3 = T.FindAuraBySpellID(200025, u, "PLAYER|HELPFUL")
+local ClassSpells = {
+	PRIEST = {
+		[139] = { -- 恢复
+			font = "text",
+			update_type = "dur",
+			color = {.81, .98, .48},
+			point = {"TOPLEFT", 0, 0},
+		},
+		[41635] = { -- 愈合祷言
+			font = "text",
+			update_type = "stack",
+			color = {.94, .8, .33},
+			point = {"TOPRIGHT", 0, 0},
+			str = {"①","②","③","④","⑤","⑥","⑦","⑧","⑨","⑩","⑪","⑫","⑬","⑭","⑮","⑯","⑰","⑱","⑲","⑳"}
+		},
+		[194384] = { -- 救赎
+			font = "text",
+			update_type = "dur",
+			color = {.96, .91, .6},
+			point = {"TOPRIGHT", 0, 0},
+		},
+		[17] = { -- 盾
+			font = "symbol",
+			adjust = -1,
+			color = {.93, .87, .87},
+			point = {"TOP", 0, 0},
+			str = "T",
+		},
+	},
+	DRUID = {
+		[33763] = { -- 生命绽放
+			font = "text",
+			update_type = "dur",
+			color = {.15, .71, .38},
+			point = {"TOP", 0, 0},
+		},
+		[774] = { -- 回春
+			font = "text",
+			update_type = "dur",
+			color = {.98, .43, .98},
+			point = {"TOPRIGHT", 0, 0},
+		},
+		[155777] = { -- 回春(萌芽)
+			font = "text",
+			update_type = "dur",
+			color = {.69, .56, 1},
+			point = {"TOPRIGHT", -20, 0},
+		},
+		[8936] = { -- 愈合
+			font = "text",
+			update_type = "dur",
+			color = {.71, .87, .6},
+			point = {"TOPLEFT", 0, 0},
+		},
+		[48438] = { -- 野性成长
+			font = "text",
+			update_type = "dur",
+			color = {.64, .96, .5},
+			point = {"LEFT", 0, 0},
+		},
+		[102351] = { -- 塞纳里奥结界(盾)
+			font = "symbol",
+			adjust = -1,
+			color = {.85, .87, .77},
+			point = {"RIGHT", 0, 0},
+			str = "Y",
+		},
+		[102352] = { -- 塞纳里奥结界(HOT)
+			font = "symbol",
+			adjust = -1,
+			color = {.8, .87, .6},
+			point = {"RIGHT", 0, 0},
+			str = "b",
+		},
+	},
+	PALADIN = {
+		[53563] = { -- 道标
+			font = "symbol",
+			adjust = -1,
+			color = {.98, .82, .54},
+			point = {"TOPRIGHT", 0, 0},
+			str = "O",
+		},
+		[156910] = { -- 信仰道标
+			font = "symbol",
+			adjust = -1,
+			color = {.38, .71, .82},
+			point = {"TOPRIGHT", 0, 0},
+			str = "O",
+		},
+		[200025] = { -- 美德道标
+			font = "symbol",
+			adjust = -1,
+			color = {.96, .87, .29},
+			point = {"TOPRIGHT", 0, 0},
+			str = "O",
+		},
+		[25771] = { -- 自律
+			source = "all",
+			font = "symbol",
+			adjust = -1,
+			color = {.66, .49, .71},
+			point = {"TOP", 0, 0},
+			str = "F",
+		},
+		[223306] = { -- 赋予信仰		
+			font = "text",
+			update_type = "dur",
+			color = {.98, .96, .66},
+			point = {"RIGHT", 0, 0},
+		},
+		[287280] = { -- 圣光闪烁		
+			font = "text",
+			update_type = "dur",
+			color = {.98, .63, .35},
+			point = {"TOPLEFT", 0, 0},
+		},
+	},
+	SHAMAN = {
+		[61295] = { -- 激流
+			font = "text",
+			update_type = "dur",
+			color = {.16, .62, .7},
+			point = {"TOPRIGHT", 0, 0},
+		},
+		[974] = { -- 大地之盾
+			font = "text",
+			update_type = "stack",
+			color = {.95, .93, .79},
+			point = {"TOPLEFT", 0, 0},
+			str = {"①","②","③","④","⑤","⑥","⑦","⑧","⑨","⑩","⑪","⑫","⑬","⑭","⑮","⑯","⑰","⑱","⑲","⑳"}
+		},
+	},
+	MONK = {
+		[191840] = { -- 精华之泉		
+			font = "text",
+			update_type = "dur",
+			color = {.42, .88, .84},
+			point = {"TOPRIGHT", 0, 0},
+		},
+		[115175] = { -- 抚慰之雾		
+			font = "symbol",
+			adjust = -1,
+			color = {.34, .86, .59},
+			point = {"TOP", 0, 0},
+			str = "U",
+		},
+		[124682] = { -- 氤氲之雾		
+			font = "text",
+			update_type = "dur",
+			color = {.84, .8, .46},
+			point = {"LEFT", 0, 0},
+		},
+		[115151] = { -- 复苏之雾		
+			font = "text",
+			update_type = "dur",
+			color = {.28, .75, .6},
+			point = {"LEFT", 0, 0},
+		},
+	},
+	EVOKER = {
 	
-    if name then
-        return "|cffFFB90FO|r"
-	elseif name2 then
-		return "|cffE0FFFFO|r"
-	elseif name3 then
-		return "|cff7CFC00O|r"
-    end
-end
-oUF.Tags.Events['Mlight:beacon'] = 'UNIT_AURA'
-
-oUF.Tags.Methods['Mlight:forbearance'] = function(u) -- 自律
-	if T.FindAuraBySpellID(25771, u, "HARMFUL") then
-		return "|cffFF9900"..x.."|r" 
-	end
-end
-oUF.Tags.Events['Mlight:forbearance'] = "UNIT_AURA"
-
-oUF.Tags.Methods['Mlight:fyxy'] = function(u) -- 赋予信仰
-    local name, _,_,_,_, expirationTime = T.FindAuraBySpellID(223306, u, "PLAYER|HELPFUL")
-    if name then
-        local spellTimer = (expirationTime-GetTime())
-		local TimeLeft = T.FormatTime(spellTimer)
-        if spellTimer > 0 then
-            return "|cff97FFFF"..TimeLeft.."|r"
-        end
-    end
-end
-oUF.Tags.Events['Mlight:fyxy'] = 'UNIT_AURA'
-
-oUF.Tags.Methods['Mlight:sgss'] = function(u) -- 圣光闪烁
-    local name, _,_,_,_, expirationTime = T.FindAuraBySpellID(287280, u, "PLAYER|HELPFUL")
-    if name then
-        local spellTimer = (expirationTime-GetTime())
-		local TimeLeft = T.FormatTime(spellTimer)
-        if spellTimer > 0 then
-            return "|cff97FFFF"..TimeLeft.."|r"
-        end
-    end
-end
-oUF.Tags.Events['Mlight:sgss'] = 'UNIT_AURA'
-
--- Monk 武僧
-oUF.Tags.Methods['Mlight:jhzq'] = function(u) -- 精华之泉
-    local name, _,_,_,_, expirationTime = T.FindAuraBySpellID(191840, u, "PLAYER|HELPFUL")
-    if name then
-        local spellTimer = (expirationTime-GetTime())
-		local TimeLeft = T.FormatTime(spellTimer)
-        if spellTimer > 0 then
-            return "|cff97FFFF"..TimeLeft.."|r"
-        end
-    end
-end
-oUF.Tags.Events['Mlight:jhzq'] = 'UNIT_AURA'
-
-oUF.Tags.Methods['Mlight:sooth'] = function(u)-- 抚慰之雾
-	local name = T.FindAuraBySpellID(115175, u, "PLAYER|HELPFUL")
-	if name then
-		return "|cff97FFFF"..x.."|r"
-	end
-end 
-oUF.Tags.Events['Mlight:sooth'] = "UNIT_AURA"
-
-oUF.Tags.Methods['Mlight:mist'] = function(u) -- 氤氲之雾
-    local name, _,_,_,_, expirationTime = T.FindAuraBySpellID(124682, u, "PLAYER|HELPFUL")
-    if name then
-        local spellTimer = (expirationTime-GetTime())
-		local TimeLeft = T.FormatTime(spellTimer)
-        if spellTimer > 0 then
-            return "|cffEEB422"..TimeLeft.."|r"
-        end
-    end
-end 
-oUF.Tags.Events['Mlight:mist'] = 'UNIT_AURA'
-
-oUF.Tags.Methods['Mlight:remist'] = function(u) -- 复苏之雾
-    local name, _,_,_,_, expirationTime = T.FindAuraBySpellID(115151, u, "PLAYER|HELPFUL")
-    if name then
-        local spellTimer = (expirationTime-GetTime())
-		local TimeLeft = T.FormatTime(spellTimer)
-        if spellTimer > 0 then
-            return "|cff55FF00"..TimeLeft.."|r"
-        end
-    end
-end 
-oUF.Tags.Events['Mlight:remist'] = 'UNIT_AURA'
-
-classIndicators={
-    ["DRUID"] = {
-        ["TL"] = "[Mlight:regrow]",
-        ["BR"] = "[Mlight:snla]",
-        ["BL"] = "[Mlight:wildgrowth]",
-        ["TR"] = "[Mlight:rejuv]",
-        ["Cen"] = "[Mlight:lb]",
-    },
-    ["PRIEST"] = {
-        ["TL"] = "[Mlight:pws]",
-        ["BR"] = "",
-        ["BL"] = "[Mlight:rnw]",
-        ["TR"] = "[Mlight:pom]",
-        ["Cen"] = "[Mlight:atonement]",
-    },
-    ["PALADIN"] = {
-        ["TL"] = "[Mlight:sgss]",
-        ["BR"] = "",
-        ["BL"] = "[Mlight:fyxy]",
-        ["TR"] = "[Mlight:beacon]",
-        ["Cen"] = "[Mlight:forbearance]",
-    },
-    ["WARLOCK"] = {
-        ["TL"] = "",
-        ["BR"] = "",
-        ["BL"] = "",
-        ["TR"] = "",
-        ["Cen"] = "",
-    },
-    ["WARRIOR"] = {
-        ["TL"] = "",
-        ["BR"] = "",
-        ["BL"] = "",
-        ["TR"] = "",
-        ["Cen"] = "",
-    },
-    ["DEATHKNIGHT"] = {
-        ["TL"] = "",
-        ["BR"] = "",
-        ["BL"] = "",
-        ["TR"] = "",
-        ["Cen"] = "",
-    },
-    ["SHAMAN"] = {
-        ["TL"] = "[Mlight:ripTime]",
-        ["BR"] = "",
-        ["BL"] = "",
-        ["TR"] = "[Mlight:ddzd]",
-        ["Cen"] = "",
-    },
-    ["HUNTER"] = {
-        ["TL"] = "",
-        ["BR"] = "",
-        ["BL"] = "",
-        ["TR"] = "",
-        ["Cen"] = "",
-    },
-    ["ROGUE"] = {
-        ["TL"] = "",
-        ["BR"] = "",
-        ["BL"] = "",
-        ["TR"] = "",
-        ["Cen"] = "",
-    },
-    ["MAGE"] = {
-        ["TL"] = "",
-        ["BR"] = "",
-        ["BL"] = "",
-        ["TR"] = "",
-        ["Cen"] = "",
-    },
-	["MONK"] = {
-        ["TL"] = "[Mlight:remist]",
-        ["BR"] = "",
-        ["BL"] = "[Mlight:mist]",
-        ["TR"] = "[Mlight:jhzq]",
-        ["Cen"] = "[Mlight:sooth]",
-    },
-	["DEMONHUNTER"] = {
-        ["TL"] = "",
-        ["BR"] = "",
-        ["BL"] = "",
-        ["TR"] = "",
-        ["Cen"] = "",
-    },
-	["EVOKER"] = {
-        ["TL"] = "",
-        ["BR"] = "",
-        ["BL"] = "",
-        ["TR"] = "",
-        ["Cen"] = "",
-    },
+	},
 }
 
-local update = .25
+local IndInfo = ClassSpells[G.myClass]
+
+local function CreateButton(element, spellID)
+	local button = CreateFrame('Button', nil, element)
+	local info = IndInfo[spellID]
+	
+	button:SetSize(10, 10)
+	button:SetPoint(unpack(info.point))
+	button.spellID = spellID
+	
+	if info.font == "text" then
+		button.text = T.createtext(button, "OVERLAY", element.size + (info.adjust or 0), "OUTLINE")
+	elseif info.font == "symbol" then
+		button.text = T.createsymbol(button, "OVERLAY", element.size + (info.adjust or 0), "OUTLINE")
+	end
+	
+	button.text:SetPoint("CENTER")
+	button.text:SetTextColor(info.color[1], info.color[2], info.color[3])
+	
+	if info.update_type == "dur" then
+		button.t = 0
+	end
+	
+	return button
+end
+
+local function updateAura(element, unit, data)
+	if (not data.name) then return end
+	
+	local spellID = data.spellId
+	local info = IndInfo[spellID]
+
+	local button = element.inds[spellID]
+	
+	if not button then
+		button = CreateButton(element, spellID)
+		element.inds[spellID] = button
+	end
+	
+	button.auraID = data.auraInstanceID
+	
+	if info.update_type == "dur" then
+		button:SetScript("OnUpdate", function(self, e)
+			self.t = self.t - e
+			if self.t < 0 then
+				local remain = data.expirationTime - GetTime()
+				if remain > 0 then
+					self.text:SetText(format("%d", remain))
+				else
+					self.text:SetText("")
+					self:SetScript("OnUpdate", nil)
+				end	
+				self.t = UpdateRate					
+			end
+		end)
+	elseif info.update_type == "stack" then
+		if data.applications >= 1 then
+			if info.str then
+				button.text:SetText(info.str[data.applications] or data.applications)
+			else
+				button.text:SetText(data.applications)
+			end
+		else
+			button.text:SetText("")
+		end
+	elseif info.str then
+		button.text:SetText(info.str)
+	end
+
+	button:Show()
+end
+
+local function FilterAura(element, unit, data)
+	if (data.isPlayerAura and IndInfo[data.spellId]) 
+	or (IndInfo[data.spellId] and IndInfo[data.spellId]["source"] == "all")
+	or (not data.isPlayerAura and IndInfo[data.spellId] and IndInfo[data.spellId]["source"] == "others") then
+		return true
+	end
+end
+
+local function processData(element, unit, data)
+	if(not data) then return end
+
+	data.isPlayerAura = data.sourceUnit and (UnitIsUnit('player', data.sourceUnit) or UnitIsOwnerOrControllerOfUnit('player', data.sourceUnit))
+
+	return data
+end
+
+local function UpdateAuras(self, event, unit, updateInfo)
+	if(self.unit ~= unit) then return end
+
+	local isFullUpdate = not updateInfo or updateInfo.isFullUpdate
+
+	local ind = self.AltzIndicators
+	if(ind) then		
+		local buffsChanged, debuffsChanged
+		
+		if(isFullUpdate) then
+			ind.allBuffs = table.wipe(ind.allBuffs or {})
+			ind.activeBuffs = table.wipe(ind.activeBuffs or {})
+			buffsChanged = true
+
+			local slots = {C_UnitAuras.GetAuraSlots(unit, 'HELPFUL')}
+			for i = 2, #slots do -- #1 return is continuationToken, we don't care about it
+				local data = processData(ind, unit, C_UnitAuras.GetAuraDataBySlot(unit, slots[i]))
+				ind.allBuffs[data.auraInstanceID] = data
+
+				if FilterAura(ind, unit, data) then
+					ind.activeBuffs[data.auraInstanceID] = true
+				end
+			end
+
+			ind.allDebuffs = table.wipe(ind.allDebuffs or {})
+			ind.activeDebuffs = table.wipe(ind.activeDebuffs or {})
+			debuffsChanged = true
+
+			slots = {C_UnitAuras.GetAuraSlots(unit, 'HARMFUL')}
+			for i = 2, #slots do
+				local data = processData(ind, unit, C_UnitAuras.GetAuraDataBySlot(unit, slots[i]))
+				ind.allDebuffs[data.auraInstanceID] = data
+
+				if FilterAura(ind, unit, data) then
+					ind.activeDebuffs[data.auraInstanceID] = true
+				end
+			end
+		else
+			if updateInfo.addedAuras then
+				for _, data in next, updateInfo.addedAuras do
+					if(data.isHelpful and not C_UnitAuras.IsAuraFilteredOutByInstanceID(unit, data.auraInstanceID, 'HELPFUL')) then
+						data = processData(ind, unit, data)
+						ind.allBuffs[data.auraInstanceID] = data
+
+						if FilterAura(ind, unit, data) then
+							ind.activeBuffs[data.auraInstanceID] = true
+							buffsChanged = true
+						end
+					elseif(data.isHarmful and not C_UnitAuras.IsAuraFilteredOutByInstanceID(unit, data.auraInstanceID, 'HARMFUL')) then
+						data = processData(ind, unit, data)
+						ind.allDebuffs[data.auraInstanceID] = data
+
+						if FilterAura(ind, unit, data) then
+							ind.activeDebuffs[data.auraInstanceID] = true
+							debuffsChanged = true
+						end
+					end
+				end
+			end
+
+			if(updateInfo.updatedAuraInstanceIDs) then
+				for _, auraInstanceID in next, updateInfo.updatedAuraInstanceIDs do
+					if(ind.allBuffs[auraInstanceID]) then
+						ind.allBuffs[auraInstanceID] = processData(ind, unit, C_UnitAuras.GetAuraDataByAuraInstanceID(unit, auraInstanceID))
+
+						-- only update if it's actually active
+						if(ind.activeBuffs[auraInstanceID]) then
+							ind.activeBuffs[auraInstanceID] = true
+							buffsChanged = true
+						end
+					elseif(ind.allDebuffs[auraInstanceID]) then
+						ind.allDebuffs[auraInstanceID] = processData(ind, unit, C_UnitAuras.GetAuraDataByAuraInstanceID(unit, auraInstanceID))
+
+						if(ind.activeDebuffs[auraInstanceID]) then
+							ind.activeDebuffs[auraInstanceID] = true
+							debuffsChanged = true
+						end
+					end
+				end
+			end
+
+			if(updateInfo.removedAuraInstanceIDs) then
+				for _, auraInstanceID in next, updateInfo.removedAuraInstanceIDs do
+					if(ind.allBuffs[auraInstanceID]) then
+						ind.allBuffs[auraInstanceID] = nil
+
+						if(ind.activeBuffs[auraInstanceID]) then
+							ind.activeBuffs[auraInstanceID] = nil
+							buffsChanged = true
+						end
+					elseif(ind.allDebuffs[auraInstanceID]) then
+						ind.allDebuffs[auraInstanceID] = nil
+
+						if(ind.activeDebuffs[auraInstanceID]) then
+							ind.activeDebuffs[auraInstanceID] = nil
+							debuffsChanged = true
+						end
+					end
+				end
+			end
+		end
+
+		if buffsChanged then
+			for auraInstanceID in next, ind.activeBuffs do
+				updateAura(ind, unit, ind.allBuffs[auraInstanceID])
+			end
+		end
+		
+		if debuffsChanged then	
+			for auraInstanceID in next, ind.activeDebuffs do
+				updateAura(ind, unit, ind.allBuffs[auraInstanceID])
+			end	
+		end
+		
+		for spellID, bu in pairs(ind.inds) do
+			if not (ind.allDebuffs[bu.auraID] or ind.allBuffs[bu.auraID]) then
+				bu:Hide()
+				if bu:GetScript("OnUpdate") then
+					bu:SetScript("OnUpdate", nil)
+				end
+			end
+		end
+	end
+end
+
+local function Update(self, event, unit, updateInfo)
+	if(self.unit ~= unit) then return end
+
+	UpdateAuras(self, event, unit, updateInfo)
+	
+	if(event == 'ForceUpdate' or not event) then
+		local ind = self.AltzIndicators
+		for spellID, bu in pairs(ind.inds) do
+			local info = IndInfo[bu.spellID]
+			if info.font == "text" then
+				button.text:SetFont(G.norFont, ind.size + (info.adjust or 0), "OUTLINE")				
+			elseif info.font == "symbol" then
+				button.text:SetFont(G.symbols, ind.size + (info.adjust or 0), "OUTLINE")		
+			end
+		end
+	end
+end
+
+local function ForceUpdate(element)
+	return UpdateAuras(element.__owner, 'ForceUpdate', element.__owner.unit)
+end
 
 local Enable = function(self)
 	local ind = self.AltzIndicators
     if ind then
+		self:RegisterEvent('UNIT_AURA', UpdateAuras)
+		
 		ind.__owner = self
+		ind.ForceUpdate = ForceUpdate
 		
-		-- 左中 数字
-		if not ind.AuraStatusBL then
-			ind.AuraStatusBL = T.createtext(ind, "OVERLAY", aCoreCDB["UnitframeOptions"]["hotind_size"], "OUTLINE", "LEFT")
-			ind.AuraStatusBL:SetPoint("LEFT", 1, 0)
-			ind.AuraStatusBL.frequentUpdates = update	
-		end
-		self:Tag(ind.AuraStatusBL, classIndicators[G.myClass]["BL"])
-		ind.AuraStatusBL:Show()
-		
-		-- 右中 符号
-		if not ind.AuraStatusBR then
-			ind.AuraStatusBR = T.createsymbol(ind, "OVERLAY", aCoreCDB["UnitframeOptions"]["hotind_size"], "OUTLINE", "RIGHT")
-			ind.AuraStatusBR:SetPoint("RIGHT", -1, 0)
-			ind.AuraStatusBR.frequentUpdates = update
-		end
-		self:Tag(ind.AuraStatusBR, classIndicators[G.myClass]["BR"])
-		ind.AuraStatusBR:Show()
-		
-		-- 左上 数字
-		if not ind.AuraStatusTL then
-			ind.AuraStatusTL = T.createtext(ind, "OVERLAY", aCoreCDB["UnitframeOptions"]["hotind_size"], "OUTLINE", "LEFT")
-			ind.AuraStatusTL:SetPoint("TOPLEFT", 1, 0)
-			ind.AuraStatusTL.frequentUpdates = update
-		end
-		self:Tag(ind.AuraStatusTL, classIndicators[G.myClass]["TL"])
-		ind.AuraStatusTL:Show()
-		
-		-- 右上
-		if not ind.AuraStatusTR then	
-			if G.myClass == "DRUID" or G.myClass == "MONK" or G.myClass == "PRIEST" or G.myClass == "SHAMAN" then -- 数字
-				ind.AuraStatusTR = T.createtext(ind, "OVERLAY", aCoreCDB["UnitframeOptions"]["hotind_size"], "OUTLINE", "RIGHT")
-				ind.AuraStatusTR:SetPoint("TOPRIGHT", 0, 0)
-			else -- 符号
-				ind.AuraStatusTR = T.createsymbol(ind, "OVERLAY", aCoreCDB["UnitframeOptions"]["hotind_size"], "OUTLINE", "RIGHT")
-				ind.AuraStatusTR:SetPoint("CENTER", ind, "TOPRIGHT", -4, -4)
-			end
-			ind.AuraStatusTR.frequentUpdates = update			
-		end
-		self:Tag(ind.AuraStatusTR, classIndicators[G.myClass]["TR"])
-		ind.AuraStatusTR:Show()
-		
-		-- 中上
-		if not ind.AuraStatusCen then
-			if G.myClass == "DRUID" or G.myClass == "PRIEST" then
-				ind.AuraStatusCen = T.createtext(ind, "OVERLAY", aCoreCDB["UnitframeOptions"]["hotind_size"], "OUTLINE") -- 文字
-				ind.AuraStatusCen:SetPoint("TOP", 0, 0)
-			else
-				ind.AuraStatusCen = T.createsymbol(ind, "OVERLAY", aCoreCDB["UnitframeOptions"]["hotind_size"]/2, "OUTLINE") -- 符号	
-				ind.AuraStatusCen:SetPoint("TOP", 0, 2)
-			end
-			ind.AuraStatusCen:SetWidth(0)
-			ind.AuraStatusCen.frequentUpdates = update
-		end
-		self:Tag(ind.AuraStatusCen, classIndicators[G.myClass]["Cen"])
-		ind.AuraStatusCen:Show()
+		ind.size = ind.size or 10
+		ind.inds = {}
+
+		ind:Show()
 		
 		return true
     end
@@ -401,21 +423,10 @@ end
 local Disable = function(self)
 	local ind = self.AltzIndicators
     if ind then
-		ind.AuraStatusBL:Hide()
-		self:Untag(ind.AuraStatusBL)
+		self:UnregisterEvent('UNIT_AURA', UpdateAuras)
 		
-		ind.AuraStatusBR:Hide()
-		self:Untag(ind.AuraStatusBR)
-		
-		ind.AuraStatusTL:Hide()
-		self:Untag(ind.AuraStatusTL)
-		
-		ind.AuraStatusTR:Hide()
-		self:Untag(ind.AuraStatusTR)
-		
-		ind.AuraStatusCen:Hide()
-		self:Untag(ind.AuraStatusCen)
+		if(self.AltzIndicators) then self.AltzIndicators:Hide() end
 	end
 end
 
-oUF:AddElement('AltzIndicators', nil, Enable, Disable)
+oUF:AddElement('AltzIndicators', Update, Enable, Disable)
