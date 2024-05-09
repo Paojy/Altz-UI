@@ -901,7 +901,8 @@ RFInnerframe.ind.hotind_style.hook = function()
 end
 
 RFInnerframe.ind.hotind_style.apply = function()
-	T.EnableUFSettings({"AltzIndicators", "Auras"}, "Altz_Healerraid")
+	T.EnableUFSettings({"AltzIndicators"}, "Altz_Healerraid")
+	T.ApplyUFSettings({"Auras"}, "Altz_Healerraid")
 	RFInnerframe.ind.hotind_style.hook()
 end
 RFInnerframe.ind.hotind_style:HookScript("OnShow", RFInnerframe.ind.hotind_style.hook)
@@ -2163,45 +2164,63 @@ MinimapButton:SetPoint("BOTTOMLEFT", 0, 0)
 MinimapButton:RegisterForClicks("AnyDown")
 
 MinimapButton.icon = MinimapButton:CreateTexture(nil, "BORDER")
-MinimapButton.icon:SetTexture(348547)
+MinimapButton.icon:SetTexture(G.media.addon_icon)
 MinimapButton.icon:SetSize(18,18)
 MinimapButton.icon:SetPoint("CENTER")
 MinimapButton.icon:SetTexCoord(.1, .9, .1, .9)
 
-MinimapButton.icon2 = MinimapButton:CreateTexture(nil, "BORDER")
-MinimapButton.icon2:SetTexture(348547)
-MinimapButton.icon2:SetSize(18,18)
-MinimapButton.icon2:SetPoint("CENTER")
-MinimapButton.icon2:SetTexCoord(.1, .9, .1, .9)
-MinimapButton.icon2:SetVertexColor(1, .5, .5, 1)
-MinimapButton.icon2:Hide()
+MinimapButton.CircleGlow = MinimapButton:CreateTexture(nil, "OVERLAY")
+MinimapButton.CircleGlow:SetAtlas("GarrLanding-CircleGlow")
+MinimapButton.CircleGlow:SetSize(30, 30)
+MinimapButton.CircleGlow:SetBlendMode("ADD")
+MinimapButton.CircleGlow:SetPoint("CENTER")
+MinimapButton.CircleGlow:Hide()
+
+MinimapButton.SoftButtonGlow = MinimapButton:CreateTexture(nil, "OVERLAY")
+MinimapButton.SoftButtonGlow:SetAtlas("GarrLanding-SideToast-Glow", true)
+MinimapButton.SoftButtonGlow:SetBlendMode("ADD")
+MinimapButton.SoftButtonGlow:SetPoint("CENTER")
+MinimapButton.SoftButtonGlow:Hide()
 
 MinimapButton.anim = MinimapButton:CreateAnimationGroup()
-MinimapButton.anim:SetLooping("BOUNCE")
-MinimapButton.timer = MinimapButton.anim:CreateAnimation()
-MinimapButton.timer:SetDuration(2)
+MinimapButton.anim:SetLooping("REPEAT")
+
+MinimapButton.anim:SetScript("OnPlay", function(self)
+	MinimapButton.CircleGlow:Show()
+	MinimapButton.SoftButtonGlow:Show()
+end)
+
+MinimapButton.anim:SetScript("OnStop", function(self)
+	MinimapButton.CircleGlow:Hide()
+	MinimapButton.SoftButtonGlow:Hide()
+end)
+
+MinimapButton.anim:SetScript("OnFinished", function(self)
+	MinimapButton.CircleGlow:Hide()
+	MinimapButton.SoftButtonGlow:Hide()
+end)
+
+T.CreateAnimations(MinimapButton, MinimapButton.anim, {
+	{"Alpha", "CircleGlow", 0, .1, 1, 0, 1},
+	{"Alpha", "CircleGlow", .1, .5, 1, 1, 0},
+	{"Scale", "CircleGlow", 0, .25, 1, .75, 1.5},
+	{"Alpha", "SoftButtonGlow", 0, .5, 1, 0, 1},
+	{"Alpha", "SoftButtonGlow", .5, .5, 1, 1, 0},
+	{"Scale", "SoftButtonGlow", 0, .75, 1, 1, 1.5},
+})
 
 MinimapButton:SetScript("OnEnter",function(self) 
 	GameTooltip:SetOwner(self, "ANCHOR_LEFT") 
-	GameTooltip:AddLine(G.addon_cname)
+	GameTooltip:AddLine("AltzUI")
 	GameTooltip:Show()
-	
-	self.timer:SetScript("OnUpdate", function(s, elapsed) 
-		local v = s:GetProgress()
-		self.icon2:SetVertexColor(v, .5, 1-v)
-	end)
+
 	self.anim:Play()
-	self.icon:Hide()
-	self.icon2:Show()
 end)
 
 MinimapButton:SetScript("OnLeave", function(self)    
 	GameTooltip:Hide()
 	
-	self.timer:SetScript("OnUpdate", nil)
 	self.anim:Stop()
-	self.icon:Show()
-	self.icon2:Hide()
 end)
 
 local AddonConfigMenu = CreateFrame("Frame", G.uiname.."AddonConfigMenu", UIParent, "UIDropDownMenuTemplate")

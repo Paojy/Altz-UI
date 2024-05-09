@@ -38,6 +38,7 @@ G.combatFont2 = "Interface\\AddOns\\AltzUI\\media\\combat2.ttf"
 G.combatFont3 = "Interface\\AddOns\\AltzUI\\media\\combat3.ttf"
 
 G.media = {
+	addon_icon = "Interface\\AddOns\\AltzUI\\media\\icons\\addon_icon.png",
 	blank = "Interface\\Buttons\\WHITE8x8",
 	ufbar = "Interface\\AddOns\\AltzUI\\media\\ufbar",
 	glow = "Interface\\AddOns\\AltzUI\\media\\glow",
