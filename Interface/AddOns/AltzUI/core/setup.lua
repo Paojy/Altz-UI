@@ -60,7 +60,7 @@ local function CreateTutorialsStepFrame(title, text)
 		frame.text:SetJustifyV("TOP")
 		frame.text:SetText(text)
 		
-		frame.model = T.CreateCreatureModel(frame, 400, 400, {"RIGHT", TutorialsFrame, "CENTER"}, 42522, {-2, 0, 0}, .7)
+		frame.model = T.CreateCreatureModel(frame, 150, 150, {"LEFT", TutorialsFrame, "LEFT", 25, 0}, 47747, {1.3, 0, .35}, nil, 4)	
 		frame.model:SetFrameLevel(1)
 		
 		previous_step:SetScript("OnClick", function(self) 

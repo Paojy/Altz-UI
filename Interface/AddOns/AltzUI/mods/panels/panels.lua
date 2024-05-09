@@ -976,10 +976,10 @@ AFK_Frame:Hide()
 
 T.setStripBD(AFK_Frame)
 
-AFK_Frame.petmodel = T.CreateCreatureModel(AFK_Frame, 120, 120, {"CENTER", AFK_Frame, "TOPRIGHT", -190, 0}, 42522, {-0.5, 0, 0})
+AFK_Frame.petmodel = T.CreateCreatureModel(AFK_Frame, 100, 100, {"CENTER", AFK_Frame, "TOPRIGHT", -190, 0}, 47747, {1.5, 0, .5}, nil, 1)
 
 AFK_Frame.petmodel.text = T.createtext(AFK_Frame.petmodel, "OVERLAY", 13, "OUTLINE", "RIGHT")
-AFK_Frame.petmodel.text:SetPoint("CENTER")
+AFK_Frame.petmodel.text:SetPoint("RIGHT", AFK_Frame.petmodel, "LEFT", 0, 0)
 AFK_Frame.petmodel.text:SetText("AltzUI")
 
 AFK_Frame.tipframe = CreateFrame("Frame", nil, AFK_Frame)

@@ -396,7 +396,7 @@ end
 ----------------------------
 -- 			模型		  --
 ----------------------------
-T.CreateCreatureModel = function(parent, width, height, points, creatureID, position, scale)
+T.CreateCreatureModel = function(parent, width, height, points, creatureID, position, scale, anim)
 	local model = CreateFrame("PlayerModel", nil, parent)
 	model:SetSize(width, height)
 	model:SetPosition(unpack(position))
@@ -404,6 +404,9 @@ T.CreateCreatureModel = function(parent, width, height, points, creatureID, posi
 	model:SetDisplayInfo(creatureID)
 	if scale then
 		model:SetCamDistanceScale(scale)
+	end
+	if anim then
+		model:SetAnimation(anim)
 	end
 	return model
 end
@@ -527,4 +530,37 @@ end
 -- 标签
 T.ReskinTab = function(tab)
 	F.ReskinTab(tab)
+end
+
+----------------------------
+--  	    动画		  --
+----------------------------
+--local animInfo = {
+--	{"Alpha", "CircleGlow", 0, .1, 1, 0, 1},
+--	{"Alpha", "CircleGlow", .1, .5, 1, 1, 0},
+--	{"Scale", "CircleGlow", 0, .25, 1, .75, 1.5},
+--	{"Alpha", "SoftButtonGlow", 0, .5, 1, 0, 1},
+--	{"Alpha", "SoftButtonGlow", .5, .5, 1, 1, 0},
+--	{"Scale", "SoftButtonGlow", 0, .75, 1, 1, 1.5},
+--}
+
+T.CreateAnimations = function(frame, anim_group, animInfo)
+	for i, info in pairs(animInfo) do
+		frame["anim"..i] = anim_group:CreateAnimation(info[1])
+		frame["anim"..i]:SetChildKey(info[2])
+		
+		if info[3] > 0 then
+			frame["anim"..i]:SetStartDelay(info[3])
+		end
+		frame["anim"..i]:SetDuration(info[4])
+		frame["anim"..i]:SetOrder(info[5])
+		
+		if info[1] == "Alpha" then
+			frame["anim"..i]:SetFromAlpha(info[6])
+			frame["anim"..i]:SetToAlpha(info[7])
+		elseif info[1] == "Scale" then
+			frame.anim3:SetScaleFrom(info[6], info[6])
+			frame.anim3:SetScaleTo(info[7], info[7])
+		end
+	end
 end
