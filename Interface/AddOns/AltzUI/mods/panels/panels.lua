@@ -743,7 +743,7 @@ local function Durability_Initialize(self, level)
 		local sets = C_EquipmentSet.GetEquipmentSetIDs()
 		for i, setID in pairs(sets) do
 			local name, icon, _, isEquipped = C_EquipmentSet.GetEquipmentSetInfo(setID)
-			info = UIDropDownMenu_CreateInfo()
+			local info = UIDropDownMenu_CreateInfo()
 			info.text = string.format(EQUIPMENT_SETS, T.GetTexStr(icon).." "..name)
 			info.checked = isEquipped
 			info.func = function() C_EquipmentSet.UseEquipmentSet(index) end
@@ -756,7 +756,7 @@ Durability.Button:SetScript("OnMouseDown", function(self)
 	local count = C_EquipmentSet.GetNumEquipmentSets()
 	if count > 0 then
 		
-		Durability.DropDown.point = "BOTTOMLEFT";
+		Durability.DropDown.point = "BOTTOMLEFT"
 		Durability.DropDown.relativePoint = "TOPLEFT"
 		ToggleDropDownMenu(1, nil, Durability.DropDown, Durability, 0, 5)	
 	end
