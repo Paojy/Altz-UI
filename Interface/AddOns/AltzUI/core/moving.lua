@@ -1,8 +1,9 @@
 ﻿local T, C, L, G = unpack(select(2, ...))
 
+-- 开关编辑模式后+占用
+
 G.dragFrameList = {}
 
-local EMF = EditModeManagerFrame
 local CurrentRole = "NONE"
 local SpecMover
 
@@ -295,7 +296,7 @@ T.CreateDragFrame = function(frame)
 	
 	frame.df:SetScript("OnMouseDown", function(self)
 		if not FrameChooseInProgress and not self.isSelected then
-			EMF:ClearSelectedSystem()
+			EditModeManagerFrame:ClearSelectedSystem()
 			RemoveSelected()
 			self.isSelected = true
 			
@@ -335,7 +336,7 @@ T.RestoreDragFrame = function(frame)
 	if frame.df then
 		frame.df.enable = true
 		PlaceFrame(frame)
-		if EMF:IsShown() then
+		if EditModeManagerFrame:IsShown() then
 			frame.df:Show()
 		end
 	end
@@ -568,7 +569,7 @@ SpecMover:SetScript("OnShow", SpecMover.ArrangeOptions)
 --[[            -- Edit Mode Settings --            ]]--
 --====================================================--
 
-function EMF.AccountSettings:RefreshPartyFrames()
+function EditModeManagerFrame.AccountSettings:RefreshPartyFrames()
 	local showPartyFrames = self.settingsCheckButtons.PartyFrames:IsControlChecked()
 	if not aCoreCDB["UnitframeOptions"]["raidframe_inparty"] then
 		for i, uf in pairs(G.partyframes) do
@@ -600,7 +601,7 @@ function EMF.AccountSettings:RefreshPartyFrames()
 	end
 end
 
-function EMF.AccountSettings:RefreshRaidFrames()
+function EditModeManagerFrame.AccountSettings:RefreshRaidFrames()
 	local showRaidFrames = self.settingsCheckButtons.RaidFrames:IsControlChecked()
 	if aCoreCDB["UnitframeOptions"]["enableraid"] then
 		if showRaidFrames then
@@ -629,7 +630,7 @@ function EMF.AccountSettings:RefreshRaidFrames()
 	end
 end
 
-function EMF.AccountSettings:RefreshBossFrames()
+function EditModeManagerFrame.AccountSettings:RefreshBossFrames()
 	local showBossFrames = self.settingsCheckButtons.BossFrames:IsControlChecked()
 	if aCoreCDB["UnitframeOptions"]["bossframes"] then
 		for i, uf in pairs(G.bossframes) do
@@ -652,7 +653,7 @@ function EMF.AccountSettings:RefreshBossFrames()
 	end
 end
 
-function EMF.AccountSettings:RefreshArenaFrames()
+function EditModeManagerFrame.AccountSettings:RefreshArenaFrames()
 	local showArenaFrames = self.settingsCheckButtons.ArenaFrames:IsControlChecked()
 	if aCoreCDB["UnitframeOptions"]["arenaframes"] then
 		for i, uf in pairs(G.arenaframes) do
@@ -667,7 +668,7 @@ function EMF.AccountSettings:RefreshArenaFrames()
 	end
 end
 
-function EMF.AccountSettings:RefreshPetFrame()
+function EditModeManagerFrame.AccountSettings:RefreshPetFrame()
 	local showPetFrame = self.settingsCheckButtons.PetFrame:IsControlChecked()	
 	if showPetFrame then
 		T.RestoreDragFrame(G.petframe)
@@ -676,7 +677,7 @@ function EMF.AccountSettings:RefreshPetFrame()
 	end
 end
 
-function EMF.AccountSettings:RefreshCastBar()
+function EditModeManagerFrame.AccountSettings:RefreshCastBar()
 	local showCastBar = self.settingsCheckButtons.CastBar:IsControlChecked()
 	if aCoreCDB["UnitframeOptions"]["independentcb"] then
 		local oUF = AltzUF or oUF
@@ -692,7 +693,7 @@ function EMF.AccountSettings:RefreshCastBar()
 	end
 end
 
-function EMF.AccountSettings:RefreshStatusTrackingBar2()
+function EditModeManagerFrame.AccountSettings:RefreshStatusTrackingBar2()
 	local showStatusTrackingBar2 = self.settingsCheckButtons.StatusTrackingBar2:IsControlChecked()
 	if aCoreCDB["SkinOptions"]["infobar"] then
 		if showStatusTrackingBar2 then
@@ -704,12 +705,12 @@ function EMF.AccountSettings:RefreshStatusTrackingBar2()
 end
 
 local frame_choose_hooked
-EMF:HookScript("OnShow", function()
+EditModeManagerFrame:HookScript("OnShow", function()
 	if not frame_choose_hooked then
-		for _, system in pairs(EMF.registeredSystemFrames) do		
+		for _, system in pairs(EditModeManagerFrame.registeredSystemFrames) do		
 			system.Selection:SetScript("OnMouseDown", function(self)
 				if not FrameChooseInProgress then
-					EMF:SelectSystem(self.parent)
+					EditModeManagerFrame:SelectSystem(self.parent)
 				end
 			end)
 		end
@@ -718,7 +719,7 @@ EMF:HookScript("OnShow", function()
 	UnlockAll()
 end)
 
-EMF:HookScript("OnHide", LockAll)
+EditModeManagerFrame:HookScript("OnHide", LockAll)
 
 EditModeSystemSettingsDialog:HookScript("OnShow", RemoveSelected)
 
