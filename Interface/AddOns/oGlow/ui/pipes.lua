@@ -184,7 +184,7 @@ do
 	function frame:refresh()
 		local sChild = self.scrollchild
 		local filterFrame = self.filterFrame
-
+		
 		-- XXX: Rewrite this to use oGlow:GetNumFilters()
 		local filters = {}
 		for name, type, desc in oGlow.IterateFilters() do
@@ -249,20 +249,22 @@ do
 			filterFrame:SetHeight(((split-1) * 16) + 28)
 			filterFrame:Hide()			
 		end
-
-		local n = 1
-		for pipe, active, name, desc in oGlow.IteratePipes() do
-			local row = sChild.rows[n] or createRow(sChild, n)
-
-			row.bg:SetBackdropBorderColor(.3, .3, .3)
-			row:SetHeight(24)
-
-			row.owner = self
-			row.pipe = pipe
-			row.check:SetChecked(active)
-			row.label:SetText(name)
-
-			n = n + 1
+		
+		if sChild then
+			local n = 1			
+			for pipe, active, name, desc in oGlow.IteratePipes() do
+				local row = sChild.rows[n] or createRow(sChild, n)
+	
+				row.bg:SetBackdropBorderColor(.3, .3, .3)
+				row:SetHeight(24)
+	
+				row.owner = self
+				row.pipe = pipe
+				row.check:SetChecked(active)
+				row.label:SetText(name)
+	
+				n = n + 1
+			end
 		end
 	end
 end

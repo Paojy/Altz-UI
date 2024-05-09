@@ -160,7 +160,7 @@ TimeManagerClockTicker:ClearAllPoints()
 TimeManagerClockTicker:SetPoint("RIGHT", 0, 0)
 TimeManagerClockTicker:SetFont(G.norFont, 12, "OUTLINE")
 TimeManagerClockTicker:SetJustifyH("RIGHT")
-TimeManagerClockTicker:SetJustifyV("CENTER")
+TimeManagerClockTicker:SetJustifyV("MIDDLE")
 TimeManagerClockButton:SetHeight(18)
 
 -- 日历
@@ -170,7 +170,7 @@ GameTimeFrame:GetPushedTexture():SetAlpha(0)
 GameTimeFrame:GetHighlightTexture():SetAlpha(0)
 GameTimeFrame.Text = T.createtext(GameTimeFrame, "OVERLAY", 12, "OUTLINE", "RIGHT")
 GameTimeFrame.Text:SetPoint("RIGHT", 0, 0)
-GameTimeFrame.Text:SetJustifyV("CENTER")
+GameTimeFrame.Text:SetJustifyV("MIDDLE")
 
 function GameTimeFrame_SetDate()
 	local currentCalendarTime = C_DateAndTime.GetCurrentCalendarTime()
