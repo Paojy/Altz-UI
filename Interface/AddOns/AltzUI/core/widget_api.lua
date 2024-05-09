@@ -520,6 +520,11 @@ T.ReskinButton = function(bu, fontsize, noHighlight, override)
 	end
 end
 
+T.ReskinFilterToggle = function(bu)
+	F.StripTextures(bu)
+	F.Reskin(bu)
+end
+
 -- 下拉菜单
 T.ReskinDropDown = function(dd, fontsize)
 	F.ReskinDropDown(dd)
