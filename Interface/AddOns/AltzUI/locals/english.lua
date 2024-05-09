@@ -248,7 +248,7 @@ L["本次登陆"] = "Session"
 L["服务器"] = "Server"
 L["角色"] = "Character"
 L["重置金币信息"] = "Click to reset."
-L["收藏"] = "Join favorites"
+L["收藏"] = "Favorites"
 L["加入收藏"] = "Drag items here to add or remove from favorites"
 
 --====================================================--
