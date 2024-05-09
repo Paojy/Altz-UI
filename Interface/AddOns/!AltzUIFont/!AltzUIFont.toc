@@ -1,4 +1,4 @@
-## Interface: 100100
+## Interface: 100207
 ## Title: |cffEE3A8CAltz|rUI Font
 ## IconTexture: 348547
 ## Version: 10.0

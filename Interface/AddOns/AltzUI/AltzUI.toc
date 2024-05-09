@@ -1,8 +1,8 @@
-﻿## Interface: 100105
+﻿## Interface: 100207
 ## Title: |cffEE3A8CAltz|rUI
 ## IconTexture: 348547
 ## X-oUF: AltzUF
-## Version: 10.02
+## Version: 10.00
 ## Author: Paopao001
 ## Dependencies: AuroraClassic
 ## OptionalDeps: !ClassColors, BigWigs
