@@ -487,7 +487,9 @@ end
 
 local HealerInd_AuraFilter = function(icons, unit, data)
 	if data.sourceUnit and UnitIsUnit(data.sourceUnit, "player") then -- show my buffs
-		if aCoreCDB["UnitframeOptions"]["hotind_filtertype"] == "blacklist" and not aCoreCDB["UnitframeOptions"]["hotind_auralist"][data.spellId] then
+		if aCoreCDB["UnitframeOptions"]["hotind_style"] == "number_ind" then
+			return false
+		elseif aCoreCDB["UnitframeOptions"]["hotind_filtertype"] == "blacklist" and not aCoreCDB["UnitframeOptions"]["hotind_auralist"][data.spellId] then
 			return true
 		elseif aCoreCDB["UnitframeOptions"]["hotind_filtertype"] == "whitelist"	and aCoreCDB["UnitframeOptions"]["hotind_auralist"][data.spellId] then
 			return true
@@ -509,18 +511,6 @@ local CreateHealIndicator = function(self, unit)
 	
 	icons.FilterAura = HealerInd_AuraFilter
 	icons.PostCreateButton = PostCreateIndicatorIcon
-	
-	icons.EnableSettings = function(object)
-		if not object or object == self then	
-			if aCoreCDB["UnitframeOptions"]["hotind_style"] == "icon_ind" then
-				self:EnableElement("Auras")
-				self.Auras:ForceUpdate()
-			else
-				self:DisableElement("Auras")
-			end
-		end
-	end
-	oUF:RegisterInitCallback(icons.EnableSettings)
 	
 	icons.ApplySettings =  function()
 		icons:SetHeight(aCoreCDB["UnitframeOptions"]["raidheight"])
