@@ -50,7 +50,6 @@
 	<Script file="mods\tweaks\already known.lua"/>
 	<Script file="mods\tweaks\combattext.lua"/>
 	<Script file="mods\tweaks\dragemall.lua"/>
-	<Script file="mods\tweaks\inspectfix.lua"/>
 	<Script file="mods\tweaks\tweaks.lua"/>
 	<Script file="mods\tweaks\watchframe.lua"/>
 	<Script file="mods\tweaks\totem.lua"/>
