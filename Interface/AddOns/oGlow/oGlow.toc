@@ -1,6 +1,6 @@
 ## Interface: 100207
 ## Title: oGlow
-## IconTexture: 348547
+## IconTexture: Interface\AddOns\AltzUI\media\icons\addon_icon.png
 ## Author: Haste
 ## Version: 2.2.5
 ## SavedVariables: oGlowDB

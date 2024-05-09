@@ -1,6 +1,6 @@
 ## Interface: 100207
 ## Title: |cffEE3A8CAltz|rUI Font
-## IconTexture: 348547
+## IconTexture: Interface\AddOns\AltzUI\media\icons\addon_icon.png
 ## Version: 10.0
 ## Author: Paopao001
 
