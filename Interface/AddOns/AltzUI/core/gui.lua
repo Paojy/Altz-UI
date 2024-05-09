@@ -322,7 +322,6 @@ T.RadioButtonGroup_db(SInnerframe.theme, 30, 90, L["数字缩写样式"], "forma
 	{"k", "k m"},
 	{"w", "w kw"},
 	{"w_chinese", "万 千万"},
-	{"none", "不缩写"},
 })
 
 T.Checkbutton_db(SInnerframe.theme, 30, 120, L["上方"].." "..L["边缘装饰"], "showtopbar")

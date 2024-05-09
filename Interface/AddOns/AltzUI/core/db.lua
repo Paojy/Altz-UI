@@ -1108,7 +1108,7 @@ local Character_default_Settings = {
 	SkinOptions = {
 		-- 界面风格
 		style = 1,
-		formattype = "k", -- w, w_chinese, none
+		formattype = "k", -- w, w_chinese
 		showtopbar = true,
 		showbottombar = true,
 		showtopconerbar = true,

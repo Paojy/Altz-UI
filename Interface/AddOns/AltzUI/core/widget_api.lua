@@ -161,7 +161,7 @@ T.ShortValue = function(val)
 			else
 				return ("%d"):format(val)
 			end
-		elseif aCoreCDB["SkinOptions"]["formattype"] == "k" then
+		else -- "k"
 			if (val >= 1e6) then
 				return ("%.1fm"):format(val / 1e6)
 			elseif (val >= 1e3) then
@@ -169,8 +169,6 @@ T.ShortValue = function(val)
 			else
 				return ("%d"):format(val)
 			end
-		else
-			return ("%d"):format(val)
 		end
 	else
 		return val
