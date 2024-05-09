@@ -1151,6 +1151,7 @@ local Character_default_Settings = {
 		autosell = true,
 		autobuy = false,
 		autobuylist = {},
+		favoriteitemIDs = {},
 	},	
 	UnitframeOptions = {
 		--[[ 单位框架 ]]--
