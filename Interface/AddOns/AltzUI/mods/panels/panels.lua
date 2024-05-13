@@ -1033,7 +1033,7 @@ local fadein = function()
 	AFK_Frame:EnableMouse(true)
 end
 
-AFK_Frame.tipframe.next = T.ClickTexButton(AFK_Frame.tipframe, {"LEFT", AFK_Frame.tipframe.text, "RIGHT", 0, 0}, [[Interface\AddOns\AltzUI\media\arrow.tga]], nil, 14)
+AFK_Frame.tipframe.next = T.ClickTexButton(AFK_Frame.tipframe, {"LEFT", AFK_Frame.tipframe.text, "RIGHT", 0, 0}, G.textureFile.."arrow.tga", nil, 14)
 T.SetupArrow(AFK_Frame.tipframe.next.tex, "right")
 T.SetupArrow(AFK_Frame.tipframe.next.hl_tex, "right")
 
@@ -1041,7 +1041,7 @@ AFK_Frame.tipframe.next:SetScript("OnClick", function()
 	SetTip(current_tip == #L["TIPS"] and 1 or(current_tip + 1))
 end)
 
-AFK_Frame.tipframe.previous = T.ClickTexButton(AFK_Frame.tipframe, {"RIGHT", AFK_Frame.tipframe.text, "LEFT", 0, 0}, [[Interface\AddOns\AltzUI\media\arrow.tga]], nil, 14)
+AFK_Frame.tipframe.previous = T.ClickTexButton(AFK_Frame.tipframe, {"RIGHT", AFK_Frame.tipframe.text, "LEFT", 0, 0}, G.textureFile.."arrow.tga", nil, 14)
 T.SetupArrow(AFK_Frame.tipframe.previous.tex, "left")
 T.SetupArrow(AFK_Frame.tipframe.previous.hl_tex, "left")
 AFK_Frame.tipframe.previous:SetScript("OnClick", function()
@@ -1229,7 +1229,7 @@ for i = 1, 4 do
 	raidmark[tag] = bu
 end
 	
-local raidmark_toggle = T.ClickTexButton(UIParent, {"TOPRIGHT", raidmark, "TOPLEFT", -7, 0}, [[Interface\AddOns\AltzUI\media\icons\star.tga]], L["团队工具"], 18)
+local raidmark_toggle = T.ClickTexButton(UIParent, {"TOPRIGHT", raidmark, "TOPLEFT", -7, 0}, G.iconFile.."star.tga", L["团队工具"], 18)
 raidmark_toggle:SetSize(18, 18)
 
 T.UpdateRaidTools = function()

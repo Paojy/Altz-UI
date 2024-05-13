@@ -29,7 +29,7 @@ local function Enable(self)
 		self:RegisterEvent("PLAYER_TARGET_CHANGED", Path, true)
 
 		if(element:IsObjectType('Texture') and not element:GetTexture()) then
-			element:SetTexture([[Interface\AddOns\AltzUI\media\NeonRedArrow]])
+			element:SetTexture(G.textureFile.."NeonRedArrow")
 		end
 
 		return true

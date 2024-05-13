@@ -1,8 +1,5 @@
 local T, C, L, G = unpack(select(2, ...))
 
-local glowTex = "Interface\\AddOns\\AltzUI\\media\\glow"
-local bgTex = "Interface\\AddOns\\AltzUI\\media\\statusbar"
-
 local function removeStyle(bar)
 	local cbb = bar.candyBarBar
 
@@ -80,7 +77,7 @@ local function styleBar(bar)
     timer:ClearAllPoints()
     timer:SetPoint("RIGHT", bar, "RIGHT", -4, 0)
 	
-	bar:SetTexture(bgTex)
+	bar:SetTexture(G.media.statusbar)
 end
 
 if BigWigsAPI then

@@ -29,28 +29,33 @@ G.links = {
 --====================================================--
 --[[                  -- Media --                   ]]--
 --====================================================--
-G.norFont = "Interface\\AddOns\\AltzUI\\media\\font.ttf"
-G.numFont = "Interface\\AddOns\\AltzUI\\media\\number.ttf"
-G.symbols = "Interface\\Addons\\AltzUI\\media\\PIZZADUDEBULLETS.ttf"
-G.plateFont = "Interface\\AddOns\\AltzUI\\media\\Infinity Gears.ttf"
-G.combatFont1 = "Interface\\AddOns\\AltzUI\\media\\combat1.ttf"
-G.combatFont2 = "Interface\\AddOns\\AltzUI\\media\\combat2.ttf"
-G.combatFont3 = "Interface\\AddOns\\AltzUI\\media\\combat3.ttf"
+G.fontFile = [[Interface\AddOns\AltzUI\media\fonts\]]
+G.textureFile = [[Interface\AddOns\AltzUI\media\]]
+G.iconFile = [[Interface\AddOns\AltzUI\media\icons\]]
+
+G.norFont = G.fontFile.."font.ttf"
+G.numFont = G.fontFile.."number.ttf"
+G.symbols = G.fontFile.."PIZZADUDEBULLETS.ttf"
+G.plateFont = G.fontFile.."Infinity Gears.ttf"
+G.combatFont1 = G.fontFile.."combat1.ttf"
+G.combatFont2 = G.fontFile.."combat2.ttf"
+G.combatFont3 = G.fontFile.."combat3.ttf"
 
 G.media = {
-	addon_icon = "Interface\\AddOns\\AltzUI\\media\\icons\\addon_icon.png",
-	blank = "Interface\\Buttons\\WHITE8x8",
-	ufbar = "Interface\\AddOns\\AltzUI\\media\\ufbar",
-	glow = "Interface\\AddOns\\AltzUI\\media\\glow",
+	addon_icon = G.iconFile.."addon_icon.png",
+	blank = [[Interface\Buttons\WHITE8x8]],
+	glow = G.textureFile.."glow",
+	statusbar = G.textureFile.."statusbar",
+	ufbar = G.textureFile.."ufbar",	
 }
 
 local LSM = LibStub("LibSharedMedia-3.0")
 
-LSM.MediaTable.font["AltzUI"]							= [[Interface\AddOns\AltzUI\media\font.ttf]]
-LSM.MediaTable.font["AltzUI_number"]					= [[Interface\AddOns\AltzUI\media\number.ttf]]
-LSM.MediaTable.border["AltzUI_glow"]					= [[Interface\AddOns\AltzUI\media\glow]]
-LSM.MediaTable.statusbar["AltzUI_bar"]					= [[Interface\AddOns\AltzUI\media\statusbar]]
-LSM.MediaTable.statusbar["AltzUI_ufbar"]				= [[Interface\AddOns\AltzUI\media\ufbar]]
+LSM.MediaTable.font["AltzUI"]							= G.norFont
+LSM.MediaTable.font["AltzUI_number"]					= G.numFont
+LSM.MediaTable.border["AltzUI_glow"]					= G.media.glow
+LSM.MediaTable.statusbar["AltzUI_bar"]					= G.media.statusbar
+LSM.MediaTable.statusbar["AltzUI_ufbar"]				= G.media.ufbar
 
 --====================================================--
 --[[                  -- Color --                   ]]--

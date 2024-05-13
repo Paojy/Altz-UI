@@ -88,7 +88,7 @@ for i, bu in ipairs(buttons) do
 	HookTooltip(bu)
 end
 
-local ResetButton = T.ClickTexButton(Gold, {"RIGHT", Gold, "RIGHT", 0, 0}, [[Interface\AddOns\AltzUI\media\icons\refresh.tga]], nil, nil, L["重置金币信息"])
+local ResetButton = T.ClickTexButton(Gold, {"RIGHT", Gold, "RIGHT", 0, 0}, G.iconFile.."refresh.tga", nil, nil, L["重置金币信息"])
 
 ResetButton:SetScript("OnClick", function(self)
 	aCoreDB.gold[G.PlayerRealm] = table.wipe(aCoreDB.gold[G.PlayerRealm])

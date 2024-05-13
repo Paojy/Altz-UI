@@ -76,7 +76,7 @@ local function CreateCTFrame(tag, movingname, justify, a1, parent, a2, x, y)
 		end
 	end)
 	
-	frame:SetFont("Interface\\AddOns\\AltzUI\\media\\number.ttf", iconsize, "OUTLINE")
+	frame:SetFont(G.numFont, iconsize, "OUTLINE")
 	frame:SetJustifyH(justify)
 	frame:SetShadowColor(0, 0, 0, 0)
 	frame:SetFadeDuration(0.2)

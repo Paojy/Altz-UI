@@ -6,11 +6,6 @@ local T, C, L, G = unpack(select(2, ...))
 
 local testmode = false
 
-local textures = {
-	bar = [[Interface\AddOns\AltzUI\media\statusbar.tga]],
-	icon = [[Interface\AddOns\AltzUI\media\pushed.tga]],
-}
-
 local frame = PetBattleFrame
 local wf = frame.WeatherFrame
 local bf = frame.BottomFrame
@@ -37,12 +32,12 @@ for index, unit in pairs({frame.ActiveAlly, frame.ActiveEnemy}) do
 	unit.SpeedUnderlay:SetAlpha(0)
 	unit.PetType:Hide()
 	
-	unit.Border:SetTexture(textures.icon)
+	unit.Border:SetTexture(G.textureFile.."pushed.tga")
 	unit.Border:SetTexCoord(0, 1, 0, 1)
 	unit.Border:SetPoint("TOPLEFT", unit.Icon, -1, 1)
 	unit.Border:SetPoint("BOTTOMRIGHT", unit.Icon, 1, -1)
 	
-	unit.Border2:SetTexture(textures.icon)
+	unit.Border2:SetTexture(G.textureFile.."pushed.tga")
 	unit.Border2:SetTexCoord(0, 1, 0, 1)
 	unit.Border2:SetPoint("TOPLEFT", unit.Icon, -1, 1)
 	unit.Border2:SetPoint("BOTTOMRIGHT", unit.Icon, 1, -1)
@@ -52,7 +47,7 @@ for index, unit in pairs({frame.ActiveAlly, frame.ActiveEnemy}) do
 	
 	local hp = unit.ActualHealthBar
 	hp:ClearAllPoints()
-	hp:SetTexture(textures.bar)
+	hp:SetTexture(G.media.statusbar)
 	T.createBackdrop(hp, .3, nil, unit)
 	
 	if index == 1 then
@@ -107,7 +102,7 @@ for index, unit in pairs({frame.Ally2, frame.Ally3, frame.Enemy2, frame.Enemy3})
 		unit:SetPoint("TOPLEFT", frame.ActiveEnemy, "TOPRIGHT", 10, 0)
 	end
 	
-	unit.BorderAlive:SetTexture(textures.icon)
+	unit.BorderAlive:SetTexture(G.textureFile.."pushed.tga")
 	unit.BorderAlive:SetTexCoord(0, 1, 0, 1)
 	unit.BorderAlive:SetAllPoints(unit.Icon)
 end
@@ -248,7 +243,7 @@ bf.xpBar:SetParent(bar)
 bf.xpBar:SetWidth(bar:GetWidth() - 3)
 bf.xpBar:ClearAllPoints()
 bf.xpBar:SetPoint("BOTTOM", bf.TurnTimer, "TOP", 0, 5)
-bf.xpBar:SetStatusBarTexture(textures.bar)
+bf.xpBar:SetStatusBarTexture(G.media.statusbar)
 bf.xpBar.bg = T.createBackdrop(bf.xpBar)
 	
 for i = 7, 12 do
