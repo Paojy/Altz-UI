@@ -20,7 +20,7 @@ L["TIPS"] = {
 
 L["指令"] = [[
 /rl - Reload UI
-/Setup-Run the setup wizard
+/setup-Run the setup wizard
 SHIFT+Click - set focus to current mouseover target
 Ctrl+Click - add raid mark to current mouseover target
 ALT+Click - Mill/Prospect/Disenchant/Unlock instantly
@@ -127,6 +127,7 @@ L["下一步"] = "Next"
 L["完成"] = "Finish"
 L["跳过"] = "Skip Setup Wizard"
 L["设置向导"] = "Setup Wizard"
+L["设置向导提示"] = "Chat frame input /setup or right-click on the minimap addon icon to run Setup Wizard"
 L["界面风格tip"] = "How do you want to display the UnitFrames?"
 L["界面布局"] = "Layout"
 L["界面布局tip"] = "How do you want to layout the Interface?"

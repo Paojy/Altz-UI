@@ -22,10 +22,10 @@ local function CreateTutorialsStepFrame(title, text)
 	step_text:SetPoint("BOTTOM", frame, "BOTTOM", 0, 5)
 	frame.step_text = step_text
 	
-	local previous_step = T.ClickButton(frame, 100, {"BOTTOMLEFT", frame, "BOTTOMLEFT", 15, 5}, L["上一步"])
+	local previous_step = T.ClickButton(frame, 100, nil, {"BOTTOMLEFT", frame, "BOTTOMLEFT", 15, 5}, L["上一步"])
 	frame.previous_step = previous_step
 	
-	local next_step = T.ClickButton(frame, 100, {"BOTTOMRIGHT", frame, "BOTTOMRIGHT", -15, 5}, L["下一步"])
+	local next_step = T.ClickButton(frame, 100, nil, {"BOTTOMRIGHT", frame, "BOTTOMRIGHT", -15, 5}, L["下一步"])
 	next_step:SetScript("OnClick", function(self)
 		frame:Hide()
 		TutorialsFrame[frame.index+1]:Show()
@@ -89,52 +89,52 @@ CreateTutorialsStepFrame(L["欢迎使用"], L["简介"])
 --====================================================--
 local TF_UIScale = CreateTutorialsStepFrame(UI_SCALE, T.split_words(OPTION_TOOLTIP_UI_SCALE,OPTION_TOOLTIP_USE_UISCALE))
 
-T.CVarCheckbutton(TF_UIScale, 200, 80, USE_UISCALE, "useUiScale", "1", "0", nil, true)
+do
+	local bu = T.CVarCheckButton(TF_UIScale, {"SetupOptions", "useUiScale"})
+	bu:SetPoint("TOPLEFT", 200, -80)
+	
+	local frame = T.SliderWithSteppers(TF_UIScale, "long", UI_SCALE, {"TOPLEFT", TF_UIScale, "TOPLEFT", 300, -100}, 65, 115, 1, nil, true)
+	
+	frame.Slider:SetScript("OnShow", function(self)
+		local value = floor(GetCVar("uiScale")*100)
+		self:SetValue(value)
+		frame.RightText:SetText(value)
+		frame.button:Hide()
+	end)
+	
+	frame.Slider:SetScript("OnValueChanged", function(self, getvalue)
+		local value = self:GetValue()
+		frame.RightText:SetText(value)
+		frame.button:Show()
+	end)
+	
+	frame.button:SetScript("OnClick", function(self)
+		if not InCombatLockdown() then
+			local value = frame.Slider:GetValue()
+			SetCVar("uiScale", value/100)
+			self:Hide()
+		end
+	end)
+	
+	T.createDR(bu, frame)
+end
 
-TF_UIScale.uiScale = T.SliderWithValueText(TF_UIScale, nil, "short", {"TOPLEFT", TF_UIScale, "TOPLEFT", 190, -110}, 65, 115, 1, nil, true)
-
-TF_UIScale.uiScale:SetScript("OnShow", function(self)
-	local value = floor(GetCVar("uiScale")*100)
-	self:SetValue(value)
-	self.Text:SetText(value)	
-end)
-
-TF_UIScale.uiScale:SetScript("OnValueChanged", function(self, getvalue)
-	local value = self:GetValue()
-	self.Text:SetText(value)
-	self.button:Show()
-end)
-
-TF_UIScale.uiScale.button:SetScript("OnClick", function(self)
-	if not InCombatLockdown() then
-		local value = TF_UIScale.uiScale:GetValue()
-		SetCVar("uiScale", value/100)
-		self:Hide()
-	end
-end)
-
-T.createDR(TF_UIScale.useUiScale, TF_UIScale.uiScale)
 --====================================================--
 --[[               -- 4 界面风格 --                 ]]--
 --====================================================--
 local TF_Theme = CreateTutorialsStepFrame(L["界面风格"], L["界面风格tip"])
 
-TF_Theme.style = T.ButtonGroup(TF_Theme, 450, 200, 60, {
-	{1, L["透明样式"]},
-	{2, L["深色样式"]},
-	{3, L["普通样式"]},
-})
-
-TF_Theme.style.updateOnShow = function()
-	for i, bu in pairs(TF_Theme.style.buttons) do
-		bu.selected = (aCoreCDB["SkinOptions"]["style"] == bu.value_key)
+do
+	local frame = T.ButtonGroup(TF_Theme, 450, 200, 60, {"SkinOptions","style"}, {
+		{1, L["透明样式"]},
+		{2, L["深色样式"]},
+		{3, L["普通样式"]},
+	})
+	
+	frame.apply = function()
+		G.BGFrame.Apply()
+		T.ApplyUFSettings({"Castbar", "Swing", "Health", "Power", "HealthPrediction"})
 	end
-end
-
-TF_Theme.style.apply = function(key)
-	aCoreCDB["SkinOptions"]["style"] = key
-	G.BGFrame.Apply()
-	T.ApplyUFSettings({"Castbar", "Swing", "Health", "Power", "HealthPrediction"})
 end
 
 --====================================================--
@@ -282,6 +282,7 @@ local ApplySizeAndPostions = function(group)
 			aCoreCDB["FramePoints"][info.f][role]["x"] = info.x
 			aCoreCDB["FramePoints"][info.f][role]["y"] = info.y
 			T.PlaceFrame(_G[info.f])
+			print(info.f)
 		end
 	end
 	-- 选项
@@ -290,84 +291,85 @@ local ApplySizeAndPostions = function(group)
 	end
 end
 
-TF_Layout.layout = T.ButtonGroup(TF_Layout, 450, 200, 60, {
-	{1, L["对称布局"]},
-	{2, L["聚合布局"]},
-})
-
-TF_Layout.layout.apply = function(key)
-	if key == 1 then
-		ApplySizeAndPostions(Default_Layout)
-	elseif key == 2 then
-		ApplySizeAndPostions(Centralized_Layout)
+do
+	local frame = T.ButtonGroup(TF_Layout, 450, 200, 60, nil, {
+		{1, L["对称布局"]},
+		{2, L["聚合布局"]},
+	})
+	
+	frame.apply = function(key)
+		if key == 1 then
+			ApplySizeAndPostions(Default_Layout)
+		elseif key == 2 then
+			ApplySizeAndPostions(Centralized_Layout)
+		end
+		G.BGFrame.Apply()
 	end
-	G.BGFrame.Apply()
+	
+	TF_Layout.layout = frame
+	
+	local bu = T.Checkbutton(TF_Layout, {"TOPLEFT", TF_Layout, "TOPLEFT", 200, -100}, HUD_EDIT_MODE_MENU)
+	
+	bu:SetScript("OnShow", function(self)
+		self:SetEnabled(EditModeManagerFrame:CanEnterEditMode())
+		self:SetChecked(EditModeManagerFrame:IsShown())
+	end)
+	
+	bu:SetScript("OnClick", function(self)
+		if self:GetChecked() then
+			EditModeManagerFrame.AccountSettings:SetExpandedState(false, true)
+			ShowUIPanel(EditModeManagerFrame)
+		else
+			HideUIPanel(EditModeManagerFrame)
+		end
+	end)
+	
+	bu:SetScript("OnHide", function(self)
+		if EditModeManagerFrame:IsShown() then
+			HideUIPanel(EditModeManagerFrame)
+		end
+	end)
 end
-
-TF_Layout.unlock = T.Checkbutton(TF_Layout, {"TOPLEFT", TF_Layout, "TOPLEFT", 200, -100}, HUD_EDIT_MODE_MENU)
-
-TF_Layout.unlock:SetScript("OnShow", function(self)
-	self:SetEnabled(EditModeManagerFrame:CanEnterEditMode())
-	self:SetChecked(EditModeManagerFrame:IsShown())
-end)
-
-TF_Layout.unlock:SetScript("OnClick", function(self)
-	if self:GetChecked() then
-		EditModeManagerFrame.AccountSettings:SetExpandedState(false, true)
-		ShowUIPanel(EditModeManagerFrame)
-	else
-		HideUIPanel(EditModeManagerFrame)
-	end
-end)
-
-TF_Layout.unlock:SetScript("OnHide", function(self)
-	if EditModeManagerFrame:IsShown() then
-		HideUIPanel(EditModeManagerFrame)
-	end
-end)
 --====================================================--
 --[[               -- 6 渐隐 --                   ]]--
 --====================================================--
 local TF_Fade = CreateTutorialsStepFrame(T.split_words(L["界面"], L["条件渐隐"]), gsub(L["条件渐隐提示"], "\n", ""))
 
-TF_Fade.enable = T.Checkbutton(TF_Fade, {"TOPLEFT", TF_Fade, "TOPLEFT", 200, -80}, L["条件渐隐"])
-
-TF_Fade.enable:SetScript("OnShow", function(self)
-	if aCoreCDB["UnitframeOptions"]["enablefade"] and aCoreCDB["ActionbarOptions"]["enablefade"] then
-		self:SetChecked(true)
-	else
-		self:SetChecked(false)
-	end
-end)
-
-TF_Fade.enable:SetScript("OnClick", function(self)
-	aCoreCDB["UnitframeOptions"]["enablefade"] = self:GetChecked()
-	aCoreCDB["ActionbarOptions"]["enablefade"] = self:GetChecked()
-	T.EnableUFSettings({"Fader"})
-	T.ApplyUFSettings({"Fader"})
-	T.ApplyActionbarFadeEnable()	
-end)
+do
+	local bu = T.Checkbutton(TF_Fade, {"TOPLEFT", TF_Fade, "TOPLEFT", 200, -80}, L["条件渐隐"])
+	
+	bu:SetScript("OnShow", function(self)
+		if aCoreCDB["UnitframeOptions"]["enablefade"] and aCoreCDB["ActionbarOptions"]["enablefade"] then
+			self:SetChecked(true)
+		else
+			self:SetChecked(false)
+		end
+	end)
+	
+	bu:SetScript("OnClick", function(self)
+		aCoreCDB["UnitframeOptions"]["enablefade"] = self:GetChecked()
+		aCoreCDB["ActionbarOptions"]["enablefade"] = self:GetChecked()
+		T.EnableUFSettings({"Fader"})
+		T.ApplyUFSettings({"Fader"})
+		T.ApplyActionbarFadeEnable()	
+	end)
+end
 --====================================================--
 --[[               -- 7 姓名板 --                   ]]--
 --====================================================--
 local TF_Nameplate = CreateTutorialsStepFrame(UNIT_NAMEPLATES, L["姓名板tip"])
 
-TF_Nameplate.theme = T.ButtonGroup(TF_Nameplate, 450, 200, 60, {
-	{"class", L["职业色-条形"]},
-	{"dark", L["深色-条形"]},
-	{"number", L["数字样式"]},
-})
-
-TF_Nameplate.theme.updateOnShow = function()
-	for i, bu in pairs(TF_Nameplate.theme.buttons) do
-		bu.selected = (aCoreCDB["PlateOptions"]["theme"] == bu.value_key)
+do
+	local frame = T.ButtonGroup(TF_Nameplate, 450, 200, 60, {"PlateOptions", "theme"}, {
+		{"class", L["职业色-条形"]},
+		{"dark", L["深色-条形"]},
+		{"number", L["数字样式"]},
+	})
+	
+	frame.apply = function()
+		T.ApplyUFSettings({"Health", "Power", "Castbar", "Auras", "ClassPower", "Runes", "Tag_Name"}, 'Altz_Nameplates')	
+		T.PostUpdateAllPlates()
 	end
-end
-
-TF_Nameplate.theme.apply = function(key)
-	aCoreCDB["PlateOptions"]["theme"] = key
-	T.ApplyUFSettings({"Health", "Power", "Castbar", "Auras", "ClassPower", "Runes", "Tag_Name"}, 'Altz_Nameplates')	
-	T.PostUpdateAllPlates()
 end
 
 --====================================================--
@@ -413,15 +415,21 @@ T.RegisterEnteringWorldCallback(function()
 	if not aCoreCDB.meet then
 		T.ResetEditModeLayout()
 		T.ResetAllAddonSettings()
+		
 		TF_Layout.layout.buttons[1].selected = true
+		
 		TutorialsFrame:ShowFrame(1)
+		
 		aCoreDB.ver = G.Version
 		aCoreCDB.meet = true
+		
 	elseif aCoreDB.ver ~= G.Version then
 		if L["更新日志tip"] then
 			TutorialsFrame:ShowFrame(step)
 		end
+		
 		aCoreDB.ver = G.Version
+		
 	end
 end)
 
