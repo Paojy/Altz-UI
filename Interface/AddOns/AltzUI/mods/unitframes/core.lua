@@ -350,7 +350,7 @@ T.PostUpdate_Power = PostUpdate_Power
 --=============================================--
 local UpdateCastbarColor = function(castbar, unit)
 	local u = unit:match("[^%d]+")
-	local category = (u == "nameplate" and "PlateOptions") or (T.multicheck(u, "target", "player", "focus") and aCoreCDB["UnitframeOptions"]["independentcb"] and "UnitframeOptions")
+	local category = (u == "nameplate" and "PlateOptions") or (T.multicheck(u, "target", "player", "focus") and (aCoreCDB["UnitframeOptions"]["cbstyle"] == "independent") and "UnitframeOptions")
 	if category then		
 		local color = aCoreCDB[category]["Interruptible_color"]
 		local r, g, b = color.r, color.g, color.b
@@ -476,7 +476,7 @@ local CreateCastbars = function(self, unit)
 			cb.Icon:SetSize(aCoreCDB["UnitframeOptions"]["cbIconsize"], aCoreCDB["UnitframeOptions"]["cbIconsize"])
 			cb.Time:SetFont(G.numFont, aCoreCDB["UnitframeOptions"]["valuefontsize"], "OUTLINE")
 			
-			if T.multicheck(u, "target", "player", "focus") and aCoreCDB["UnitframeOptions"]["independentcb"] then -- 独立施法条	
+			if T.multicheck(u, "target", "player", "focus") and (aCoreCDB["UnitframeOptions"]["cbstyle"] == "independent") then -- 独立施法条	
 				if u == "player" or u == "target" or u == "focus" then
 					T.RestoreDragFrame(cb)
 				end
@@ -619,7 +619,7 @@ local CreatePlateCastbar = function(self, unit)
 	
 	cb.ApplySettings = function()		
 		if aCoreCDB["PlateOptions"]["theme"] == "number" then
-			cb:SetStatusBarTexture([[Interface\AddOns\AltzUI\media\iconcastbar.tga]])
+			cb:SetStatusBarTexture(G.textureFile.."iconcastbar.tga")
 			cb:SetSize(25, 25)
 			
 			cb:ClearAllPoints()	
@@ -726,16 +726,6 @@ local CreateSwingTimer = function(self, unit) -- only for player
 		bar:SetSize(aCoreCDB["UnitframeOptions"]["swwidth"], aCoreCDB["UnitframeOptions"]["swheight"])
 		
 		-- timer --
-		if aCoreCDB["UnitframeOptions"]["swtimer"] then
-			bar.Text:Show()
-			bar.TextMH:Show()
-			bar.TextOH:Show()
-		else
-			bar.Text:Hide()
-			bar.TextMH:Hide()
-			bar.TextOH:Hide()
-		end
-
 		bar.Text:SetFont(G.norFont, aCoreCDB["UnitframeOptions"]["swtimersize"], "OUTLINE")
 		bar.TextMH:SetFont(G.norFont, aCoreCDB["UnitframeOptions"]["swtimersize"], "OUTLINE")
 		bar.TextOH:SetFont(G.norFont, aCoreCDB["UnitframeOptions"]["swtimersize"], "OUTLINE")
@@ -1206,7 +1196,7 @@ local func = function(self, unit)
 	-- 高亮
 	self.hl = self:CreateTexture(nil, "HIGHLIGHT")
 	self.hl:SetAllPoints()
-	self.hl:SetTexture([[Interface\AddOns\AltzUI\media\highlight.tga]])
+	self.hl:SetTexture(G.textureFile.."highlight.tga")
 	self.hl:SetVertexColor( 1, 1, 1, .3)
 	self.hl:SetBlendMode("ADD")
 	
@@ -1265,8 +1255,10 @@ local func = function(self, unit)
 		-- height, width --
 		if T.multicheck(u, "targettarget", "focustarget", "pet", "partypet") then
 			self:SetSize(aCoreCDB["UnitframeOptions"]["widthpet"], aCoreCDB["UnitframeOptions"]["height"])
-		elseif u == "boss" or u == "arena" then
+		elseif u == "boss" then
 			self:SetSize(aCoreCDB["UnitframeOptions"]["widthboss"], aCoreCDB["UnitframeOptions"]["height"])
+		elseif u == "arena" then
+			self:SetSize(aCoreCDB["UnitframeOptions"]["widtharena"], aCoreCDB["UnitframeOptions"]["height"])	
 		elseif u == "party" then
 			self:SetSize(aCoreCDB["UnitframeOptions"]["widthparty"], aCoreCDB["UnitframeOptions"]["height"])
 		else
@@ -1420,7 +1412,7 @@ local func = function(self, unit)
 	local ricon = self.cover:CreateTexture(nil, "OVERLAY")
 	ricon:SetPoint("CENTER", self.cover, "CENTER", 0, 0)
 	ricon:SetSize(40, 40)
-	ricon:SetTexture[[Interface\AddOns\AltzUI\media\raidicons.blp]]
+	ricon:SetTexture(G.textureFile.."raidicons.blp")
 	self.RaidTargetIndicator = ricon
 	
 	-- 召唤标记
@@ -1433,7 +1425,7 @@ local func = function(self, unit)
 	self.SummonIndicator = summonIndicator
 
 	-- 渐隐
-	if T.multicheck(unit, "target", "player", "focus", "pet", "targettarget") then
+	if T.multicheck(unit, "player", "focus", "pet", "focustarget") then
 		local fader = {
 			FadeInSmooth = 0.4,
 			FadeOutSmooth = 1.5,
@@ -1558,7 +1550,7 @@ local UnitSpecific = {
 		-- Zzz
 		local Resting = self.cover:CreateTexture(nil, 'OVERLAY')
 		Resting:SetSize(18, 18)
-		Resting:SetTexture([[Interface\AddOns\AltzUI\media\resting.tga]])
+		Resting:SetTexture(G.textureFile.."resting.tga")
 		Resting:SetDesaturated(true)
 		Resting:SetVertexColor( 0, 1, 0)
 		Resting:SetPoint("RIGHT", self.Power, "RIGHT", -5, 0)
@@ -1567,7 +1559,7 @@ local UnitSpecific = {
 		-- Combat
 		local Combat = self.cover:CreateTexture(nil, "OVERLAY")
 		Combat:SetSize(18, 18)
-		Combat:SetTexture([[Interface\AddOns\AltzUI\media\combat.tga]])
+		Combat:SetTexture(G.textureFile.."combat.tga")
 		Combat:SetDesaturated(true)
 		Combat:SetPoint("RIGHT", self.Power, "RIGHT", -5, 0)
 		Combat:SetVertexColor( 1, 1, 0)
@@ -1932,7 +1924,7 @@ local plate_func = function(self, unit)
 	local ricon = self.cover:CreateTexture(nil, "OVERLAY")
 	ricon:SetPoint("RIGHT", self.Tag_Name, "LEFT")
 	ricon:SetSize(20, 20)
-	ricon:SetTexture[[Interface\AddOns\AltzUI\media\raidicons.blp]]
+	ricon:SetTexture(G.textureFile.."raidicons.blp")
 	
 	self.RaidTargetIndicator = ricon
 	
@@ -1995,7 +1987,11 @@ local function SetCColor(name)
 	if not aCoreCDB["PlateOptions"]["customcoloredplates"][name] then
 		aCoreCDB["PlateOptions"]["customcoloredplates"][name] = {r = 1, g = 1, b = 1}
 	end
-	T.ColorPicker_OnClick(aCoreCDB["PlateOptions"]["customcoloredplates"][name], nil, nil, PostUpdateAllPlates)
+	local color = aCoreCDB["PlateOptions"]["customcoloredplates"][name]
+	T.ColorPicker_OnClick(color, function(r, g, b)
+		T.TableValueToPath(aCoreCDB, {"PlateOptions", "customcoloredplates", name}, {r = r, g = g, b = b})
+		PostUpdateAllPlates()
+	end)
 end
 
 local function RemovefromCColor(name)
