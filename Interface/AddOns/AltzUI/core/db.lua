@@ -1168,10 +1168,11 @@ local Character_default_Settings = {
 		ppheight = 0.25, -- slider
 		widthpet = 70,
 		widthboss = 170,
+		widtharena = 170,
 		-- 施法条
 		castbars = true,	
 		cbIconsize = 33,
-		independentcb = true,
+		cbstyle = "independent", -- "independent", "attachment"
 		cbheight = 16,
 		cbwidth = 230,
 		target_cbheight = 5,
@@ -1180,14 +1181,13 @@ local Character_default_Settings = {
 		focus_cbwidth = 230,	
 		namepos = "LEFT",
 		timepos = "RIGHT",
-		Interruptible_color = {r =.6 , g = .4, b = .8},
-		notInterruptible_color = {r =.9 , g = 0, b = 1},
+		Interruptible_color = {r = .49, g = .91, b = 1},
+		notInterruptible_color = {r = .94, g = .8, b = .33},
 		hideplayercastbaricon = false,
 		-- 平砍计时条
 		swing = false,
 		swheight = 12,
 		swwidth = 230,
-		swtimer = true,
 		swtimersize = 12,
 		-- 光环
 		aura_size = 20,
@@ -1288,8 +1288,8 @@ local Character_default_Settings = {
 		namefontsize = 8,
 		plateauranum = 5,
 		plateaurasize = 15,	
-		Interruptible_color = {r =.6 , g = .4, b = .8},	
-		notInterruptible_color = {r =.9 , g = 0, b = 1},
+		Interruptible_color = {r = .49, g = .91, b = 1},
+		notInterruptible_color = {r = .94, g = .8, b = .33},
 		focuscolored = true,
 		focus_color = {r = .5, g = .4, b = .9},
 		threatcolor = true,

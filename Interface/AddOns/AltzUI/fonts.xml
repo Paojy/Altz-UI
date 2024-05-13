@@ -1,0 +1,65 @@
+﻿<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\..\..\..\..\WoW\Data\Interface\AddOns\Blizzard_SharedXML\UI.xsd">
+	<FontFamily name="Altz_Combat1" virtual="true">
+		<Member alphabet="roman">
+			<Font font="Interface\AddOns\AltzUI\media\fonts\combat1.TTF" height="14"/>
+		</Member>
+		<Member alphabet="korean">
+			<Font font="Interface\AddOns\AltzUI\media\fonts\combat1.TTF" height="14"/>
+		</Member>
+		<Member alphabet="simplifiedchinese">
+			<Font font="Interface\AddOns\AltzUI\media\fonts\combat1.TTF" height="14"/>
+		</Member>
+		<Member alphabet="traditionalchinese">
+			<Font font="Interface\AddOns\AltzUI\media\fonts\combat1.TTF" height="14"/>
+		</Member>
+		<Member alphabet="russian">
+			<Font font="Interface\AddOns\AltzUI\media\fonts\combat1.TTF" height="14"/>
+		</Member>
+	</FontFamily>
+	<Font name="Altz_CombatFont_1" inherits="Altz_Combat1" justifyH="LEFT" virtual="true">
+		<Color r="1.0" g="1.0" b="1.0"/>
+	</Font>
+	
+	<FontFamily name="Altz_Combat2" virtual="true">
+		<Member alphabet="roman">
+			<Font font="Interface\AddOns\AltzUI\media\fonts\combat2.TTF" height="14"/>
+		</Member>
+		<Member alphabet="korean">
+			<Font font="Interface\AddOns\AltzUI\media\fonts\combat2.TTF" height="14"/>
+		</Member>
+		<Member alphabet="simplifiedchinese">
+			<Font font="Interface\AddOns\AltzUI\media\fonts\combat2.TTF" height="14"/>
+		</Member>
+		<Member alphabet="traditionalchinese">
+			<Font font="Interface\AddOns\AltzUI\media\fonts\combat2.TTF" height="14"/>
+		</Member>
+		<Member alphabet="russian">
+			<Font font="Interface\AddOns\AltzUI\media\fonts\combat2.TTF" height="14"/>
+		</Member>
+	</FontFamily>
+	<Font name="Altz_CombatFont_2" inherits="Altz_Combat2" justifyH="LEFT" virtual="true">
+		<Color r="1.0" g="1.0" b="1.0"/>
+	</Font>
+	
+	<FontFamily name="Altz_Combat3" virtual="true">
+		<Member alphabet="roman">
+			<Font font="Interface\AddOns\AltzUI\media\fonts\combat3.TTF" height="14"/>
+		</Member>
+		<Member alphabet="korean">
+			<Font font="Interface\AddOns\AltzUI\media\fonts\combat3.TTF" height="14"/>
+		</Member>
+		<Member alphabet="simplifiedchinese">
+			<Font font="Interface\AddOns\AltzUI\media\fonts\combat3.TTF" height="14"/>
+		</Member>
+		<Member alphabet="traditionalchinese">
+			<Font font="Interface\AddOns\AltzUI\media\fonts\combat3.TTF" height="14"/>
+		</Member>
+		<Member alphabet="russian">
+			<Font font="Interface\AddOns\AltzUI\media\fonts\combat3.TTF" height="14"/>
+		</Member>
+	</FontFamily>
+	<Font name="Altz_CombatFont_3" inherits="Altz_Combat3" justifyH="LEFT" virtual="true">
+		<Color r="1.0" g="1.0" b="1.0"/>
+	</Font>
+</Ui>

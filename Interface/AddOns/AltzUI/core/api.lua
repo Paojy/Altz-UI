@@ -3,7 +3,7 @@
 --====================================================--
 --[[              -- 其他插件设置 --                ]]--
 --====================================================--
-T.ResetAurora = function()
+local ResetAurora = function()
 	if IsAddOnLoaded("AuroraClassic") then
 		AuroraClassicDB["Bags"] = true
 	end
@@ -116,29 +116,53 @@ T.ResetBW =function()
 end
 
 T.ResetAllAddonSettings = function()
-	T.ResetAurora()
+	ResetAurora()
 	T.ResetClasscolors()
 	T.ResetBW()
 end
 
 --====================================================--
---[[                -- 控制台API --                 ]]--
+--[[                -- 依赖关系 --                  ]]--
 --====================================================--
 -- 启用依赖关系
 local createDR = function(parent, ...)
-    for i=1, select("#", ...) do
+	for i=1, select("#", ...) do
 		local object = select(i, ...)
 		parent:HookScript("OnShow", function(self)
 			if self:GetChecked() and self:IsEnabled() then
-				object:Enable()
+				if object.Enable then
+					object:Enable()
+				end
 			else
-				object:Disable()
+				if object.Disable then
+					object:Disable()
+				end
 			end
 		end)
 		parent:HookScript("OnClick", function(self)
 			if self:GetChecked() and self:IsEnabled() then
-				object:Enable()
+				if object.Enable then
+					object:Enable()
+				end
 			else
+				if object.Disable then
+					object:Disable()
+				end
+			end
+		end)		
+		parent:HookScript("OnEnable", function(self)
+			if self:GetChecked() and self:IsEnabled() then
+				if object.Enable then
+					object:Enable()
+				end
+			else
+				if object.Disable then
+					object:Disable()
+				end
+			end
+		end)
+		parent:HookScript("OnDisable", function()
+			if object.Disable then
 				object:Disable()
 			end
 		end)
@@ -146,10 +170,66 @@ local createDR = function(parent, ...)
 end
 T.createDR = createDR
 
+-- 显示依赖关系
+local createVisibleDR = function(func, parent, ...)
+	for i=1, select("#", ...) do
+		local object = select(i, ...)
+		parent:HookScript("OnShow", function(self)
+			if func() then
+				object:Show()
+			else
+				object:Hide()
+			end
+		end)
+		if parent:HasScript("OnClick") then
+			parent:HookScript("OnClick", function(self)
+				if func() then
+					object:Show()
+				else
+					object:Hide()
+				end
+			end)
+		else
+			local oldfunc = parent.visible_apply
+			parent.visible_apply = function()
+				if oldfunc then
+					oldfunc()
+				end
+				if func() then
+					object:Show()
+				else
+					object:Hide()
+				end
+			end
+		end
+	end
+end
+T.createVisibleDR = createVisibleDR
+
+--====================================================--
+--[[                -- 标题/分割线 --                ]]--
+--====================================================--
+local function CreateGUITitle(parent, text, line, color)
+	local fs = T.createtext(parent, "OVERLAY", 16, "OUTLINE", "LEFT")
+	fs:SetText(text or " ")
+	if line then
+		local tex = parent:CreateTexture(nil, "ARTWORK")
+		tex:SetSize(parent:GetWidth()-50, 1)
+		tex:SetPoint("TOPLEFT", fs, "BOTTOMLEFT", 0, -5)
+		tex:SetColorTexture(1, 1, 1, .2)
+	end
+	if color then
+		fs:SetTextColor(unpack(color))
+	else
+		fs:SetTextColor(1, .82, 0)
+	end
+	return fs
+end
+
 --====================================================--
 --[[                -- 普通按钮 --                ]]--
 --====================================================--
-local ClickButton = function(parent, width, points, text, tex, tip)
+local ClickButton = function(parent, width, height, points, text, tex, tip)
 	local bu = CreateFrame("Button", nil, parent, "UIPanelButtonTemplate")
 	
 	if points then
@@ -161,9 +241,9 @@ local ClickButton = function(parent, width, points, text, tex, tip)
 	T.ReskinButton(bu)
 
 	if width == 0 then
-		bu:SetSize(bu.Text:GetWidth() + 5, 25)
+		bu:SetSize(bu.Text:GetWidth() + 5, height or 25)
 	else
-		bu:SetSize(width, 25)
+		bu:SetSize(width, height or 25)
 	end
 	
 	if tex then
@@ -241,13 +321,14 @@ local Checkbutton = function(parent, points, text, tip)
 	
 	T.ReskinCheck(bu)
 	bu.Text:SetText(text)
-			
+	bu.Text:SetTextColor(1, 1, 1)
+	
 	bu:SetScript("OnDisable", function(self)
 		bu.Text:SetTextColor(.5, .5, .5)
 	end)
 	
 	bu:SetScript("OnEnable", function(self)
-		bu.Text:SetTextColor(1, .82, 0)
+		bu.Text:SetTextColor(1, 1, 1)
 	end)
 	
 	if tip then
@@ -265,29 +346,31 @@ local Checkbutton = function(parent, points, text, tip)
 end
 T.Checkbutton = Checkbutton
 
-local Checkbutton_db = function(parent, x, y, text, value, tip)
-	local bu = Checkbutton(parent, {"TOPLEFT", parent, "TOPLEFT", x, -y}, text, tip)
+local Checkbutton_DB = function(parent, path)
+	local info = T.GetOptionInfo(path)
+	local bu = Checkbutton(parent, nil, info.text, info.tip)
 	
 	bu:SetScript("OnShow", function(self)
-		self:SetChecked(aCoreCDB[parent.db_key][value])
+		self:SetChecked(T.ValueFromPath(aCoreCDB, path))
 	end)
 	
 	bu:SetScript("OnClick", function(self)
-		aCoreCDB[parent.db_key][value] = self:GetChecked()
-		if self.apply then
-			self.apply()
+		T.ValueToPath(aCoreCDB, path, self:GetChecked())
+		if info.apply then
+			info.apply()
 		end
 	end)
 
-	parent[value] = bu
+	return bu
 end
-T.Checkbutton_db = Checkbutton_db
+T.Checkbutton_DB = Checkbutton_DB
 
-local CVarCheckbutton = function(parent, x, y, text, value, arg1, arg2, tip, secure)
-	local bu = Checkbutton(parent, {"TOPLEFT", parent, "TOPLEFT", x, -y}, text, tip)
+local CVarCheckButton = function(parent, path)
+	local info = T.GetOptionInfo(path)
+	local bu = Checkbutton(parent, nil, info.text, info.tip)
 	
 	bu:SetScript("OnShow", function(self)
-		if GetCVar(value) == arg1 then
+		if GetCVar(info.key) == info.arg1 then
 			self:SetChecked(true)
 		else
 			self:SetChecked(false)
@@ -295,18 +378,21 @@ local CVarCheckbutton = function(parent, x, y, text, value, arg1, arg2, tip, sec
 	end)
 	
 	bu:SetScript("OnClick", function(self)
-		if not InCombatLockdown() or not secure then
+		if not InCombatLockdown() or not info.secure then
 			if self:GetChecked() then
-				SetCVar(value, arg1)
+				SetCVar(info.key, info.arg1)
 			else
-				SetCVar(value, arg2)
+				SetCVar(info.key, info.arg2)
+			end
+			if info.apply then
+				info.apply()
 			end
 		end
 	end)
 	
-	parent[value] = bu
+	return bu
 end
-T.CVarCheckbutton = CVarCheckbutton
+T.CVarCheckButton = CVarCheckButton
 
 --====================================================--
 --[[                 -- 输入框 --                   ]]--
@@ -339,29 +425,21 @@ function AltzUIStackSplitHook(text)
 	end
 end
 
--- 单行模板
-local EditboxWithButton = function(parent, width, points, text, tip)
-	local anchor = CreateFrame("Frame", nil, parent)
-	anchor:SetSize(20, 20)
+-- 输入框基础模板
+local EditboxWithButton = function(parent, width, points, tip)	
+	local box = CreateFrame("EditBox", nil, parent)
 	if points then
-		anchor:SetPoint(unpack(points))
+		box:SetPoint(unpack(points))
 	end
 	
-	local name = T.createtext(anchor, "OVERLAY", 14, "OUTLINE", "LEFT")
-	name:SetPoint("LEFT", anchor, "LEFT", 0, 0)
-	name:SetText(text or "")
-	
-	local box = CreateFrame("EditBox", nil, anchor)
-	box:SetPoint("LEFT", name, "RIGHT", 5, 0)
-	box:SetSize(width or 200, 20)
-	
+	box:SetSize(width or 200, 20)	
 	box.bg = T.createPXBackdrop(box, .3)
 
 	box:SetFont(G.norFont, 14, "OUTLINE")
 	box:SetAutoFocus(false)
 	box:SetTextInsets(3, 0, 0, 0)
 
-	box.button = ClickButton(box, 0, {"RIGHT", box, "RIGHT", -2, 0}, OKAY)
+	box.button = ClickButton(box, 0, 20, {"RIGHT", box, "RIGHT", -2, 0}, OKAY)
 	box.button:Hide()
 	box.button:SetScript("OnClick", function()
 		if box:GetScript("OnEnterPressed") then
@@ -382,6 +460,10 @@ local EditboxWithButton = function(parent, width, points, text, tip)
 		self.bg:SetBackdropBorderColor(0, 0, 0)
 	end)
 	
+	box:SetScript("OnHide", function(self) 
+		self.button:Hide()
+	end)
+
 	if tip then
 		box:SetScript("OnEnter", function(self) 
 			GameTooltip:SetOwner(self, "ANCHOR_RIGHT", -20, 10)
@@ -393,27 +475,19 @@ local EditboxWithButton = function(parent, width, points, text, tip)
 		end)
 	end
 	
-	box.name = name
-	box.anchor = anchor
-	
-	box.Show = function() anchor:Show() end
-	box.Hide = function() anchor:Hide() end
-	
 	box:SetScript("OnEnable", function(self)
-		self.name:SetTextColor(1, 1, 1, 1)
 		self:SetTextColor(1, 1, 1, 1)
 	end)
 	
-	box:SetScript("OnDisable", function(self)	
-		self.name:SetTextColor(0.7, 0.7, 0.7, 0.5)
+	box:SetScript("OnDisable", function(self)
 		self:SetTextColor(0.7, 0.7, 0.7, 0.5)
 	end)
-	
+
 	return box
 end
-T.EditboxWithButton = EditboxWithButton
 
-local EditboxWithText = function(parent, points, text, width, link)
+-- 带默认文字的输入框
+local EditboxWithStr = function(parent, points, text, width, link)
 	local box = EditboxWithButton(parent, width, points)
 	
 	box:SetScript("OnShow", function(self)
@@ -426,8 +500,8 @@ local EditboxWithText = function(parent, points, text, width, link)
 	end)
 	
 	box:SetScript("OnEnterPressed", function(self) 			
-		if box.apply then
-			box:apply()
+		if self.apply then
+			self:apply()
 		end
 		self:ClearFocus()
 		self.button:Hide()
@@ -439,32 +513,64 @@ local EditboxWithText = function(parent, points, text, width, link)
 	
 	return box
 end
-T.EditboxWithText = EditboxWithText
+T.EditboxWithStr = EditboxWithStr
 
-local EditboxWithButton_db = function(parent, x, y, text, value, tip)
-	local box = EditboxWithButton(parent, nil, {"TOPLEFT", x, -y}, text, tip)
+-- 带标题的输入框组合
+local EditFrame = function(parent, width, text, points, tip)
+	local frame = CreateFrame("Frame", nil, parent)
+	frame:SetSize(20, 20)
+	if points then
+		frame:SetPoint(unpack(points))
+	end
+	
+	local name = T.createtext(frame, "OVERLAY", 14, "OUTLINE", "LEFT")
+	name:SetPoint("LEFT", frame, "LEFT", 0, 0)
+	name:SetText(text or "")	
+	frame.name = name
+	
+	local box = EditboxWithButton(parent, width, {"LEFT", frame, "LEFT", 100, 0}, tip)
+	frame.box = box
+	
+	return frame
+end
+T.EditFrame = EditFrame
 
-	box:SetScript("OnShow", function(self)
-		self:SetText(aCoreCDB[parent.db_key][value])
+local EditboxFrame_DB = function(parent, path)
+	local info = T.GetOptionInfo(path)
+	
+	local frame = EditFrame(parent, 200, info.text, nil, info.tip, info.numeric)
+	
+	frame:SetScript("OnShow", function(self)
+		self.box:SetText(T.ValueFromPath(aCoreCDB, path))
 	end)
 	
-	box:SetScript("OnEscapePressed", function(self)
-		self:SetText(aCoreCDB[parent.db_key][value])
+	frame.box:SetScript("OnEscapePressed", function(self)
+		self:SetText(T.ValueFromPath(aCoreCDB, path))
 		self:ClearFocus()
 	end)
 	
-	box:SetScript("OnEnterPressed", function(self)
+	frame.box:SetScript("OnEnterPressed", function(self)
+		local val = self:GetText()
 		self:ClearFocus()
-		aCoreCDB[parent.db_key][value] = self:GetText()
-		if box.apply then
-			box.apply()
+		T.ValueToPath(aCoreCDB, path, info.numeric and tonumber(val) or val)
+		if info.apply then
+			info.apply()
 		end
 		self.button:Hide()
 	end)
 	
-	parent[value] = box
+	frame.Enable = function()
+		frame.name:SetTextColor(1, 1, 1)
+		frame.box:Enable()
+	end
+	
+	frame.Disable = function()
+		frame.name:SetTextColor(.5, .5, .5)
+		frame.box:Disable()
+	end
+	
+	return frame
 end
-T.EditboxWithButton_db = EditboxWithButton_db
 
 -- 多行模板
 local EditboxMultiLine = function(parent, width, height, points, name, tip)
@@ -477,19 +583,24 @@ local EditboxMultiLine = function(parent, width, height, points, name, tip)
 	box:SetFrameLevel(parent:GetFrameLevel()+3)
 	T.ReskinScroll(box.ScrollBar)
 	
+	box:EnableMouse(true)
+	box:SetScript("OnMouseDown", function(self)
+		self.edit:SetFocus()
+	end)
+
 	box.bg = T.createPXBackdrop(box, .3)
 
-	box.top_text = T.createtext(box, "OVERLAY", 12, "OUTLINE", "LEFT")
-	box.top_text:SetPoint("BOTTOMLEFT", box, "TOPLEFT", 5, 3)
+	box.top_text = T.createtext(box, "OVERLAY", 14, "OUTLINE", "LEFT")
+	box.top_text:SetPoint("BOTTOMLEFT", box, "TOPLEFT", 0, 3)
 	box.top_text:SetText(name or "")
 	
 	box.bottom_text = T.createtext(box, "OVERLAY", 10, "OUTLINE", "RIGHT")
 	box.bottom_text:SetPoint("BOTTOMRIGHT", box, "BOTTOMRIGHT", -2, 2)
 
 	box.edit = CreateFrame("EditBox", nil, box)
-	box.edit:SetWidth(width or 200)
+	box.edit:SetSize(width or 200, height or 100)
 	box:SetScrollChild(box.edit)
-	
+
 	box.edit:SetFont(G.norFont, 14, "OUTLINE")
 	box.edit:SetTextInsets(5, 5, 5, 5)
 	box.edit:SetMultiLine(true)
@@ -500,19 +611,23 @@ local EditboxMultiLine = function(parent, width, height, points, name, tip)
 	box.edit:SetScript("OnEditFocusGained", function(self) box.bg:SetBackdropBorderColor(1, 1, 1) end)
 	box.edit:SetScript("OnEditFocusLost", function(self) box.bg:SetBackdropBorderColor(0, 0, 0) end)
 
-	box.button1 = ClickButton(box, 99, {"TOPRIGHT", box, "BOTTOM", -1, -2}, ACCEPT)	
-	box.button2 = ClickButton(box, 99, {"TOPLEFT", box, "BOTTOM", 1, -2}, CANCEL)
+	box.button1 = ClickButton(box, 99, nil, {"TOPRIGHT", box, "BOTTOM", -1, -2}, ACCEPT)	
+	box.button2 = ClickButton(box, 99, nil, {"TOPLEFT", box, "BOTTOM", 1, -2}, CANCEL)
 
 	box.Enable = function()
 		box.top_text:SetTextColor(1, 1, 1, 1)		
 		box.edit:SetTextColor(1, 1, 1, 1)
 		box.edit:Enable()
+		box.button1:Enable()
+		box.button2:Enable()
 	end
 	
 	box.Disable = function()	
 		box.top_text:SetTextColor(0.7, 0.7, 0.7, 0.5)
 		box.edit:SetTextColor(0.7, 0.7, 0.7, 0.5)
 		box.edit:Disable()
+		box.button1:Disable()
+		box.button2:Disable()
 	end
 	
 	if tip then
@@ -530,29 +645,30 @@ local EditboxMultiLine = function(parent, width, height, points, name, tip)
 end
 T.EditboxMultiLine = EditboxMultiLine
 
-local EditboxMultiLine_db = function(parent, width, height, x, y, name, value, tip)
-	local box = EditboxMultiLine(parent, width, height, {"TOPLEFT", x, -y}, name, tip)
+local EditboxMultiLine_DB = function(parent, path)
+	local info = T.GetOptionInfo(path)
+	
+	local box = EditboxMultiLine(parent, info.edit_width or 200, info.edit_height or 70, nil, info.text, info.tip)
 
 	box.edit:SetScript("OnShow", function(self)
-		self:SetText(aCoreCDB[parent.db_key][value])
+		self:SetText(T.ValueFromPath(aCoreCDB, path))
 	end)
 	
 	box.button1:SetScript("OnClick", function()
 		box.edit:ClearFocus()
-		aCoreCDB[parent.db_key][value] = box.edit:GetText()
-		if box.apply then
-			box.apply()
+		T.ValueToPath(aCoreCDB, path, box.edit:GetText())	
+		if info.apply then
+			info.apply()
 		end
 	end)
 	
 	box.button2:SetScript("OnClick", function()
+		self:SetText(T.ValueFromPath(aCoreCDB, path))
 		box.edit:ClearFocus()
-		box.edit:SetText(aCoreCDB[parent.db_key][value])
 	end)
 	
-	parent[value] = box
+	return box
 end
-T.EditboxMultiLine_db = EditboxMultiLine_db
 
 --====================================================--
 --[[                 -- 滑动条 --                   ]]--
@@ -581,7 +697,7 @@ local SliderWithValueText = function(parent, name, width, points, min, max, step
 	slider:SetObeyStepOnDrag(true)
 	
 	if button then
-		slider.button = ClickButton(slider, 50, {"LEFT", slider, "RIGHT", 30, 0}, APPLY)
+		slider.button = ClickButton(slider, 50, 20, {"LEFT", slider, "RIGHT", 30, 0}, APPLY)
 		slider.button:Hide()
 		
 		slider:SetScript("OnHide", function(self)
@@ -619,88 +735,109 @@ local SliderWithValueText = function(parent, name, width, points, min, max, step
 end
 T.SliderWithValueText = SliderWithValueText
 
-local SliderWithLowHighText = function(parent, name, width, points, min, max, step, tip)
-	local slider = CreateFrame("Slider", name and (G.uiname..name.."Slider"), parent, "OptionsSliderTemplate")
+local SliderWithSteppers = function(parent, width, text, points, min, max, step, tip, button)
+	local frame = CreateFrame("Slider", nil, parent, "MinimalSliderWithSteppersTemplate")
 	if points then
-		slider:SetPoint(unpack(points))
+		frame:SetPoint(unpack(points))
 	end
 	
 	if width == "short" then
-		slider:SetSize(170, 12)
+		frame:SetWidth(160)
 	elseif width == "long" then
-		slider:SetSize(170, 12)
+		frame:SetWidth(200)
 	elseif type(width) == "number" then
-		slider:SetSize(width, 12)
+		frame:SetWidth(width)
 	end
 	
-	T.ReskinSlider(slider)
+	T.ReskinStepperSlider(frame)
+	
+	frame.LeftText:ClearAllPoints()
+	frame.LeftText:SetPoint("LEFT", frame.Slider, "LEFT", -115, 0)
+	frame.LeftText:SetJustifyH("LEFT")
+	frame.LeftText:SetText(text)
+	frame.LeftText:SetTextColor(1, 1, 1, 1)
+	frame.LeftText:Show()
+	
+	frame.RightText:SetTextColor(1, 1, 1, 1)
+	frame.RightText:Show()
 
-	slider:SetMinMaxValues(min, max)
-	slider:SetValueStep(step)
-	slider:SetObeyStepOnDrag(true)
+	frame.Slider:SetMinMaxValues(min, max)
+	frame.Slider:SetValueStep(step)
+	frame.Slider:SetObeyStepOnDrag(true)
 	
-	slider.Low:SetText(min)
-	slider.High:SetText(max)
-	
-	slider.Enable = function()
-		slider:SetEnabled(true)
-		slider.Text:SetTextColor(1, 1, 1, 1)
-		slider.Low:SetTextColor(1, 1, 1, 1)
-		slider.High:SetTextColor(1, 1, 1, 1)
-		slider.Thumb:Show()
+	frame.Enable = function()
+		frame.Slider:SetEnabled(true)
+		frame.Slider.Thumb:Show()
+		frame.Back:Enable()
+		frame.Forward:Enable()
+		frame.Back.__texture:SetVertexColor(1, 1, 1, 1)
+		frame.Forward.__texture:SetVertexColor(1, 1, 1, 1)
+		frame.LeftText:SetTextColor(1, 1, 1, 1)
+		frame.RightText:SetTextColor(1, 1, 1, 1)
 	end
 	
-	slider.Disable = function()
-		slider:SetEnabled(false)
-		slider.Text:SetTextColor(0.7, 0.7, 0.7, 0.5)
-		slider.Low:SetTextColor(0.7, 0.7, 0.7, 0.5)
-		slider.High:SetTextColor(0.7, 0.7, 0.7, 0.5)
-		slider.Thumb:Hide()
+	frame.Disable = function()
+		frame.Slider:SetEnabled(false)
+		frame.Slider.Thumb:Hide()
+		frame.Back:Disable()
+		frame.Forward:Disable()
+		frame.Back.__texture:SetVertexColor(0.7, 0.7, 0.7, 0.5)
+		frame.Forward.__texture:SetVertexColor(0.7, 0.7, 0.7, 0.5)
+		frame.LeftText:SetTextColor(0.7, 0.7, 0.7, 0.5)
+		frame.RightText:SetTextColor(0.7, 0.7, 0.7, 0.5)
+		if button then
+			frame.button:Hide()
+		end
 	end
 	
 	if tip then
-		slider:SetScript("OnEnter", function(self) 
+		frame:SetScript("OnEnter", function(self) 
 			GameTooltip:SetOwner(self, "ANCHOR_RIGHT", -20, 10)
 			GameTooltip:AddLine(tip)
 			GameTooltip:Show() 
 		end)
-		slider:SetScript("OnLeave", function(self)
+		frame:SetScript("OnLeave", function(self)
 			GameTooltip:Hide()
 		end)
 	end
 	
-	return slider
+	if button then
+		frame.button = ClickButton(frame, 50, 20, {"LEFT", frame, "RIGHT", 30, 0}, APPLY)
+		frame:SetScript("OnHide", function(self)
+			self.button:Hide()
+		end)
+	end
+	
+	return frame
 end
+T.SliderWithSteppers = SliderWithSteppers
 
-local Slider_db = function(parent, width, x, y, text, value, divisor, min, max, step, tip)
-	local slider = SliderWithLowHighText(parent, nil, width, {"TOPLEFT", parent, "TOPLEFT", x, -y}, min, max, step, tip)
+local Slider_DB = function(parent, width, path)
+	local info = T.GetOptionInfo(path)
+	local multipler = (info.min < 1 and info.min > 0 and 100) or 1
+
+	local frame = SliderWithSteppers(parent, width, info.text, nil, info.min*multipler, info.max*multipler, info.step*multipler, info.tip)
 	
-	slider.Low:SetText(min/divisor)
-	slider.High:SetText(max/divisor)
-	
-	slider:SetScript("OnShow", function(self)
-		self:SetValue((aCoreCDB[parent.db_key][value])*divisor)
-		self.Text:SetText(text.." "..aCoreCDB[parent.db_key][value])
+	frame.Slider:SetScript("OnShow", function(self)
+		local value = T.ValueFromPath(aCoreCDB, path)
+		self:SetValue(value*multipler)
+		frame.RightText:SetText(floor(value*multipler)..((multipler == 100 and "%") or ""))
 	end)
 	
-	slider:SetScript("OnValueChanged", function(self, getvalue)
-		aCoreCDB[parent.db_key][value] = getvalue/divisor
-		self.Text:SetText(text.." "..aCoreCDB[parent.db_key][value])
-		if self.apply then
-			self.apply()
-		end
+	frame.Slider:SetScript("OnValueChanged", function(self, getvalue)
+		T.ValueToPath(aCoreCDB, path, getvalue/multipler)
+		frame.RightText:SetText(getvalue..((multipler == 100 and "%") or ""))
+		if info.apply then info.apply() end
 	end)
-
-	parent[value] = slider
+	
+	return frame
 end
-T.Slider_db = Slider_db
+T.Slider_DB = Slider_DB
 
 --====================================================--
 --[[                 -- 取色按钮 --                 ]]--
 --====================================================--
-local ColorPicker_OnClick = function(colors, has_opacity, points, apply)
-	local r, g, b, a = colors.r, colors.g, colors.b, colors.a
-	
+local ColorPicker_OnClick = function(color_old, apply, points)
 	ColorPickerFrame:ClearAllPoints()
 	if points then
 		ColorPickerFrame:SetPoint(unpack(points))
@@ -708,65 +845,41 @@ local ColorPicker_OnClick = function(colors, has_opacity, points, apply)
 		ColorPickerFrame:SetPoint("CENTER", UIParent, "CENTER")
 	end
 	
-	ColorPickerFrame.previousValues = {r = r, g = g, b = b, opacity = a}
+	ColorPickerFrame.previousValues = {r = color_old.r, g = color_old.g, b = color_old.b, opacity = color_old.a}
 	
 	ColorPickerFrame.swatchFunc = function()
-		colors.r, colors.g, colors.b = ColorPickerFrame:GetColorRGB()
-		if apply then
-			apply()
-		end
+		local r, g, b = ColorPickerFrame:GetColorRGB()
+		apply(r, g, b)
 	end
 	
 	ColorPickerFrame.cancelFunc = function()
-		colors.r, colors.g, colors.b, colors.a = r, g, b, a
-		if apply then
-			apply()
-		end
-	end
-
-	if a then
-		ColorPickerFrame.hasOpacity, ColorPickerFrame.opacity = true, a		
-		ColorPickerFrame.opacityFunc = function()
-			colors.a = ColorPickerFrame:GetColorAlpha()
-		end
+		apply(color_old.r, color_old.g, color_old.b)
 	end
 	
-	ColorPickerFrame.Content.ColorPicker:SetColorRGB(r, g, b)
+	ColorPickerFrame.Content.ColorPicker:SetColorRGB(color_old.r, color_old.g, color_old.b)
 	ColorPickerFrame:Hide()
 	ColorPickerFrame:Show()
 end
 T.ColorPicker_OnClick = ColorPicker_OnClick
 
-local Colorpicker_db = function(parent, x, y, name, value)
-	local cpb = CreateFrame("Button", G.uiname..value.."ColorPickerButton", parent, "UIPanelButtonTemplate")
-	cpb:SetPoint("TOPLEFT", x+3, -y)
+local ColorpickerButton = function(parent, text, points, tip)
+	local cpb = CreateFrame("Button", nil, parent, "UIPanelButtonTemplate")
 	cpb:SetSize(20, 20)
 	T.ReskinButton(cpb)
 	
+	if points then
+		cpb:SetPoint(unpack(points))
+	end
+
 	cpb.ctex = cpb:CreateTexture(nil, "OVERLAY")
 	cpb.ctex:SetTexture(G.media.blank)
 	cpb.ctex:SetPoint"CENTER"
 	cpb.ctex:SetSize(15, 15)
 
-	cpb.name = T.createtext(cpb, "OVERLAY", 12, "OUTLINE", "LEFT")
+	cpb.name = T.createtext(cpb, "OVERLAY", 14, "OUTLINE", "LEFT")
 	cpb.name:SetPoint("LEFT", cpb, "RIGHT", 10, 1)
-	cpb.name:SetText(name)
+	cpb.name:SetText(text or "")
 
-	cpb.apply_settings = function()
-		cpb.ctex:SetVertexColor(aCoreCDB[parent.db_key][value].r, aCoreCDB[parent.db_key][value].g, aCoreCDB[parent.db_key][value].b)
-		if cpb.apply then
-			cpb.apply()
-		end
-	end
-	
-	cpb:SetScript("OnShow", function(self) 
-		self.ctex:SetVertexColor(aCoreCDB[parent.db_key][value].r, aCoreCDB[parent.db_key][value].g, aCoreCDB[parent.db_key][value].b)
-	end)
-	
-	cpb:SetScript("OnClick", function(self)
-		ColorPicker_OnClick(aCoreCDB[parent.db_key][value], nil, nil, cpb.apply_settings)
-	end)
-	
 	cpb:SetScript("OnDisable", function(self)
 		self.name:SetTextColor(0.7, 0.7, 0.7, 0.5)
 	end)
@@ -786,97 +899,35 @@ local Colorpicker_db = function(parent, x, y, name, value)
 		end)
 	end
 	
-	parent[value] = cpb
+	return cpb
 end
-T.Colorpicker_db = Colorpicker_db
 
+local ColorpickerButton_DB = function(parent, path)
+	local info = T.GetOptionInfo(path)
+	
+	local cpb = ColorpickerButton(parent, info.text, nil, info.tip)
+	
+	cpb:SetScript("OnShow", function(self)
+		local color = T.ValueFromPath(aCoreCDB, path)
+		self.ctex:SetVertexColor(color.r, color.g, color.b)	
+	end)
+	
+	cpb:SetScript("OnClick", function(self)
+		local color = T.ValueFromPath(aCoreCDB, path)
+		ColorPicker_OnClick(color, function(r, g, b)
+			self.ctex:SetVertexColor(r, g, b)
+			T.TableValueToPath(aCoreCDB, path, {r = r, g = g, b = b})
+			if info.apply then
+				info.apply()
+			end
+		end)
+	end)
+	
+	return cpb
+end
 --====================================================--
 --[[                -- 多选一按钮 --                ]]--
 --====================================================--
-local RadioButtonGroup_db = function(parent, x, y, name, value, group)
-	local frame = CreateFrame("Frame", nil, parent)
-	frame:SetPoint("TOPLEFT", x, -y)
-	frame:SetSize(150, 30)
-	frame.buttons = {}
-	
-	frame.text = T.createtext(frame, "OVERLAY", 14, "OUTLINE", "LEFT")
-	frame.text:SetPoint("LEFT", 0, 0)
-	frame.text:SetText(name)
-	
-	for i, info in T.pairsByKeys(group) do
-		local bu = CreateFrame("CheckButton", nil, frame, "UIRadioButtonTemplate")
-		T.ReskinRadio(bu)
-		
-		if i == 1 then			
-			bu:SetPoint("LEFT", frame.text, "RIGHT", 10, 1)	
-		else
-			bu:SetPoint("LEFT", frame.buttons[i-1].text, "RIGHT", 5, 0)
-		end
-
-		bu.text:SetText(info[2])
-		
-		bu:SetScript("OnShow", function(self)
-			self:SetChecked(aCoreCDB[parent.db_key][value] == info[1])
-		end)
-		
-		bu:SetScript("OnClick", function(self)
-			if self:GetChecked() then
-				aCoreCDB[parent.db_key][value] = info[1]
-				if frame.apply then
-					frame.apply()
-				end
-				for i, b in pairs(frame.buttons) do
-					if b ~= self then
-						b:SetChecked(false)
-					end
-				end
-			else
-				self:SetChecked(true)
-			end
-		end)
-		
-		bu:SetScript("OnDisable", function(self)
-			self:GetCheckedTexture():SetVertexColor(.5, .5, .5, 1)
-			self.text:SetTextColor(.5, .5, .5)
-		end)
-		
-		bu:SetScript("OnEnable", function(self)
-			self:GetCheckedTexture():SetVertexColor(0, .9, .3, 1)
-			self.text:SetTextColor(1, .82, 0)
-		end)
-		
-		if info[3] then -- tip
-			bu:SetScript("OnEnter", function(self) 
-				GameTooltip:SetOwner(self, "ANCHOR_RIGHT", 10, 10)
-				GameTooltip:AddLine(info[3])
-				GameTooltip:Show() 
-			end)
-			bu:SetScript("OnLeave", function(self)
-				GameTooltip:Hide()
-			end)
-		end
-		
-		frame.buttons[i] = bu
-	end
-		
-	frame.Enable = function()
-		frame.text:SetTextColor(1, 1, 1, 1)
-		for i, bu in pairs(frame.buttons) do
-			bu:Enable()
-		end
-	end
-	
-	frame.Disable = function()
-		frame.text:SetTextColor(0.7, 0.7, 0.7, 0.5)
-		for i, bu in pairs(frame.buttons) do
-			bu:Disable()
-		end
-	end
-	
-	parent[value] = frame
-end
-T.RadioButtonGroup_db = RadioButtonGroup_db
-
 local ButtonGroup = function(parent, width, x, y, group)
 	local frame = CreateFrame("Frame", nil, parent)
 	frame:SetPoint("TOPLEFT", x, -y)
@@ -911,7 +962,7 @@ local ButtonGroup = function(parent, width, x, y, group)
 		
 		bu.hl = bu:CreateTexture(nil, "HIGHLIGHT")
 		bu.hl:SetAllPoints()
-		bu.hl:SetTexture([[Interface\AddOns\AltzUI\media\highlight.tga]])
+		bu.hl:SetTexture(G.textureFile.."highlight.tga")
 		bu.hl:SetVertexColor( 1, 1, 1, .3)
 		bu.hl:SetBlendMode("ADD")
 		
@@ -960,6 +1011,107 @@ end
 T.ButtonGroup = ButtonGroup
 
 --====================================================--
+--[[                -- 下拉菜单 --                ]]--
+--====================================================--
+local UIDropDownMenu_SetSelectedValueText = function(dd, t, value)
+	UIDropDownMenu_SetSelectedValue(dd, value)
+	for i, info in pairs(t) do
+		if info[1] == value then
+			UIDropDownMenu_SetText(dd, info[2])
+			if info[3] then
+				local index = string.match(info[3], "%d")
+				if index then
+					dd.Text:SetFont(G["combatFont"..index], 14, "NONE")
+				else
+					dd.Text:SetFont(G.norFont, 14, "OUTLINE")
+				end
+			end
+			break
+		end
+	end
+end
+T.UIDropDownMenu_SetSelectedValueText = UIDropDownMenu_SetSelectedValueText
+
+local UIDropDownMenuFrame = function(parent, width, text, points)
+	local frame = CreateFrame("Frame", nil, parent)
+	frame:SetSize(20, 20)
+	if points then
+		frame:SetPoint(unpack(points))
+	end
+	
+	local name = T.createtext(frame, "OVERLAY", 14, "OUTLINE", "LEFT")
+	name:SetPoint("LEFT", frame, "LEFT", 0, 0)
+	name:SetTextColor(1, 1, 1)
+	name:SetText(text or "")
+	frame.name = name
+	
+	local dd = CreateFrame("Frame", nil, frame, "UIDropDownMenuTemplate")
+	dd:SetPoint("LEFT", frame, "LEFT", 92, 0)
+	frame.dd = dd
+	
+	T.ReskinDropDown(dd)
+	
+	if width == "short" then
+		UIDropDownMenu_SetWidth(dd, 140)		
+	elseif width == "long" then
+		UIDropDownMenu_SetWidth(dd, 176)
+	else
+		UIDropDownMenu_SetWidth(dd, width)
+	end
+
+	frame.Enable = function()
+		frame.name:SetTextColor(1, 1, 1)
+		UIDropDownMenu_EnableDropDown(frame.dd)
+	end
+	
+	frame.Disable = function()
+		frame.name:SetTextColor(.5, .5, .5)
+		UIDropDownMenu_DisableDropDown(frame.dd)
+	end
+	
+	return frame
+end
+T.UIDropDownMenuFrame = UIDropDownMenuFrame
+
+local UIDropDownMenuFrame_DB = function(parent, width, path)
+	local info = T.GetOptionInfo(path)
+	local option_table = info.option_table
+	local frame = UIDropDownMenuFrame(parent, width, info.text)
+	
+	local function DD_UpdateChecked(self, arg1)
+		return (T.ValueFromPath(aCoreCDB, path) == arg1)
+	end
+	
+	local function DD_SetChecked(self, arg1, arg2)
+		T.ValueToPath(aCoreCDB, path, arg1)
+		T.UIDropDownMenu_SetSelectedValueText(frame.dd, option_table, arg1)
+		if info.apply then info.apply() end
+		if frame.visible_apply then frame.visible_apply() end
+	end
+	
+	UIDropDownMenu_Initialize(frame.dd, function(self, level)
+		local dd_info = UIDropDownMenu_CreateInfo()
+		for i = 1, #option_table do
+			dd_info.value = option_table[i][1]
+			dd_info.arg1 = option_table[i][1]
+			dd_info.text = option_table[i][2]
+			if option_table[i][3] then
+				dd_info.fontObject = option_table[i][3]
+			end
+			dd_info.checked = DD_UpdateChecked
+			dd_info.func = DD_SetChecked
+			UIDropDownMenu_AddButton(dd_info)
+		end
+	end)
+	
+	frame:SetScript("OnShow", function()
+		T.UIDropDownMenu_SetSelectedValueText(frame.dd, option_table, T.ValueFromPath(aCoreCDB, path))		
+	end)
+	
+	return frame
+end
+T.UIDropDownMenuFrame_DB = UIDropDownMenuFrame_DB
+--====================================================--
 --[[                 -- 设置列表 --                 ]]--
 --====================================================--
 local lineuplist = function(list, button_list, parent)
@@ -979,7 +1131,7 @@ local lineuplist = function(list, button_list, parent)
 end
 
 local createscrolllist = function(parent, points, bg, width, height)
-	local w = width or 320
+	local w = width or 370
 	local h = height or 220
 	
 	local sf = CreateFrame("ScrollFrame", nil, parent, "UIPanelScrollFrameTemplate")
@@ -995,28 +1147,10 @@ local createscrolllist = function(parent, points, bg, width, height)
 	sf:SetScrollChild(sf.anchor)
 	
 	if bg then
-		sf.bg = T.createBackdrop(sf, .3)
+		sf.bg = T.createPXBackdrop(sf, .3)
 	end
 	
 	T.ReskinScroll(sf.ScrollBar)
-	
-	sf.cover = CreateFrame("Frame", nil, sf)
-	sf.cover:SetAllPoints()
-	sf.cover:SetFrameLevel(sf.anchor:GetFrameLevel()+5)
-	
-	sf.cover.tex = sf.cover:CreateTexture(nil, "OVERLAY")
-	sf.cover.tex:SetAllPoints()
-	sf.cover.tex:SetColorTexture(.3, .3, .3, .7)
-	sf.cover:EnableMouse(true)
-	sf.cover:Hide()
-	
-	sf.Enable = function()
-		sf.cover:Hide()
-	end
-	
-	sf.Disable = function()
-		sf.cover:Show()
-	end
 	
 	sf.list = {}
 	
@@ -1024,9 +1158,12 @@ local createscrolllist = function(parent, points, bg, width, height)
 end
 T.createscrolllist = createscrolllist
 
-local createscrollbutton = function(type, option_list, table, value, key)
+local createscrollbutton = function(type, option_list, path, key)
+	local key_path = {}
+	T.CopyTableInsertElement(key_path, path, key)
+
 	local bu = CreateFrame("Frame", nil, option_list.anchor, "BackdropTemplate")
-	bu:SetSize(300, 28)
+	bu:SetSize(360, 28)
 	bu:EnableMouse(true)
 	T.setPXBackdrop(bu, .2)
 	
@@ -1067,8 +1204,12 @@ local createscrollbutton = function(type, option_list, table, value, key)
 	
 	bu.close:SetScript("OnClick", function() 
 		bu:Hide()
-		aCoreCDB[table][value][key] = nil
-		lineuplist(aCoreCDB[table][value], option_list.list, option_list.anchor)
+		T.ValueToPath(aCoreCDB, key_path, nil)
+		if option_list.lineuplist then
+			option_list.lineuplist()
+		else
+			lineuplist(T.ValueFromPath(aCoreCDB, path), option_list.list, option_list.anchor)
+		end
 		if option_list.apply then
 			option_list.apply()
 		end
@@ -1112,63 +1253,54 @@ end
 T.createscrollbutton = createscrollbutton
 
 -- 列表选项
-local function CreateListOption(parent, points, height, text, OptionName, input_text_1, input_text_2)
+local function CreateListOption(parent, points, height, text, path, input_text_1, input_text_2, filter_path)
 	local frame = CreateFrame("Frame", nil, parent, "BackdropTemplate")
-	frame:SetSize(400, height)
+	frame:SetSize(450, height)
 	frame:SetPoint(unpack(points))
-	frame.options = {}
-	frame.db_key = parent.db_key
-	
+
 	frame.title = T.createtext(frame, "OVERLAY", 14, "OUTLINE", "LEFT")
 	frame.title:SetPoint("TOPLEFT", frame, "TOPLEFT", 0, 0)
 	frame.title:SetText(text)
+	frame.title:SetTextColor(1, .82, 0)
 	
-	frame.reset = ClickTexButton(frame, {"LEFT", frame.title, "RIGHT", 10, 0}, [[Interface\AddOns\AltzUI\media\icons\refresh.tga]], L["重置"])
-	table.insert(frame.options, frame.reset)
+	frame.reset = ClickTexButton(frame, {"LEFT", frame.title, "RIGHT", 10, 0}, G.iconFile.."refresh.tga", L["重置"])
 	frame.reset:SetScript("OnClick", function(self)
-		StaticPopupDialogs[G.uiname.."Reset Confirm"].text = format(L["重置确认"], T.color_text(parent.title:GetText()..text))
+		StaticPopupDialogs[G.uiname.."Reset Confirm"].text = format(L["重置确认"], T.color_text(text))
 		StaticPopupDialogs[G.uiname.."Reset Confirm"].OnAccept = function()
-			aCoreCDB[frame.db_key][OptionName] = nil
-			if frame.reset.apply then
-				frame.reset.apply()
+			T.ValueToPath(aCoreCDB, path, nil)			
+			if filter_path then
+				T.ValueToPath(aCoreCDB, filter_path, nil)
 			end
 			ReloadUI()
 		end
 		StaticPopup_Show(G.uiname.."Reset Confirm")
 	end)
-
-	frame.option_list = createscrolllist(frame, {"TOPLEFT", 0, -45}, true, nil, height - 70)
-	table.insert(frame.options, frame.option_list)
-	frame.first_input = EditboxWithText(frame, {"TOPLEFT", 0, -20}, input_text_1, 160)
-	table.insert(frame.options, frame.first_input)
+	
+	if filter_path then
+		local obj = UIDropDownMenuFrame_DB(frame, "long", filter_path)
+		obj.dd:SetPoint("LEFT", obj, "LEFT", -8, 0)
+		obj:SetPoint("TOPLEFT", frame, 0, -20)
+	end
+	
+	frame.first_input = EditboxWithStr(frame, {"TOPLEFT", 0, filter_path and -45 or -20}, input_text_1, 199)
+	
 	if input_text_2 then
-		frame.second_input = EditboxWithText(frame, {"LEFT", frame.first_input, "RIGHT", 10, 0}, input_text_2, 80)
-		table.insert(frame.options, frame.second_input)
-	end
-	frame.addbutton = ClickButton(frame, 0, {"LEFT", frame.second_input or frame.first_input, "RIGHT", 10, 0}, ADD)
-	table.insert(frame.options, frame.addbutton)
-	
-	frame.Enable = function()		
-		for k, v in pairs(frame.options) do
-			v:Enable()
-		end
+		frame.second_input = EditboxWithStr(frame, {"LEFT", frame.first_input, "RIGHT", 10, 0}, input_text_2, 80)
 	end
 	
-	frame.Disable = function()
-		for k, v in pairs(frame.options) do
-			v:Disable()
-		end
-	end
+	frame.addbutton = ClickButton(frame, 0, 22, {"LEFT", frame.second_input or frame.first_input, "RIGHT", 10, 0}, ADD)
+	
+	frame.option_list = createscrolllist(frame, {"TOPLEFT", 0, filter_path and -70 or -45}, true, nil, height - 70)
 	
 	return frame
 end
 
 -- 列表按钮
-local function CreateListButton(type, frame, OptionName, key, Icon, left_text, mid_text, right_text, color)
+local function CreateListButton(type, frame, path, key, Icon, left_text, mid_text, right_text, color)
 	local bu = frame.option_list.list[key]
 	
 	if not bu then
-		bu = createscrollbutton(type, frame.option_list, frame.db_key, OptionName, key)
+		bu = createscrollbutton(type, frame.option_list, path, key)
 		if right_text or color then
 			bu:SetScript("OnMouseDown", function()
 				frame.first_input:SetText(bu.left:GetText())
@@ -1181,8 +1313,8 @@ local function CreateListButton(type, frame, OptionName, key, Icon, left_text, m
 				end
 				
 				if color then
-					frame.cpb.colors.r, frame.cpb.colors.g, frame.cpb.colors.b = color.r, color.g, color.b
-					frame.cpb.update_texcolor()
+					T.TableValueToPath(frame, {"cpb", "colors"}, {r = color.r, g = color.g, b = color.b})
+					frame.cpb.ctex:SetVertexColor(color.r, color.g, color.b)
 				end
 			end)
 		end
@@ -1192,24 +1324,27 @@ local function CreateListButton(type, frame, OptionName, key, Icon, left_text, m
 end
 
 -- 类型列表：法术
-T.CreateAuraListOption = function(parent, points, height, text, OptionName, input_text_2)
-	local frame = CreateListOption(parent, points, height, text, OptionName, L["输入法术ID"], input_text_2)
-
+T.CreateAuraListOption = function(parent, points, height, text, path, input_text_2, filter_path)
+	local frame = CreateListOption(parent, points, height, text, path, L["输入法术ID"], input_text_2, filter_path)
+		
 	frame.Button_OnClicked = function(bu)
 		frame.first_input.current_spellID = tonumber(bu.mid:GetText())
 	end
 	
 	frame:SetScript("OnShow", function()
-		for spellID, level in pairs(aCoreCDB[frame.db_key][OptionName]) do
+		for spellID, level in pairs(T.ValueFromPath(aCoreCDB, path)) do
 			local spellName, _, spellIcon = GetSpellInfo(spellID)
+			
 			if spellName then
-				CreateListButton("spell", frame, OptionName, spellID, spellIcon, spellName, spellID, input_text_2 and level)
+				CreateListButton("spell", frame, path, spellID, spellIcon, spellName, spellID, input_text_2 and level)
 			else
+				local key_path = {}
+				T.CopyTableInsertElement(key_path, path, spellID)
 				print("spell ID "..spellID.." is gone, delete it.")
-				aCoreCDB[frame.db_key][OptionName][spellID] = nil
+				T.ValueToPath(aCoreCDB, key_path, nil)
 			end
 		end
-		lineuplist(aCoreCDB[frame.db_key][OptionName], frame.option_list.list, frame.option_list.anchor)
+		lineuplist(T.ValueFromPath(aCoreCDB, path), frame.option_list.list, frame.option_list.anchor)
 	end)
 	
 	frame.first_input:HookScript("OnChar", function(self) 
@@ -1254,11 +1389,13 @@ T.CreateAuraListOption = function(parent, points, height, text, OptionName, inpu
 			
 			local spellName, _, spellIcon, _, _, _, spellID = GetSpellInfo(frame.first_input.current_spellID)
 			local level = frame.second_input:GetText()
+			local key_path = {}
+			T.CopyTableInsertElement(key_path, path, spellID)
 			
-			aCoreCDB[frame.db_key][OptionName][spellID] = tonumber(level)
-			CreateListButton("spell", frame, OptionName, spellID, spellIcon, spellName, spellID, level)
+			T.ValueToPath(aCoreCDB, key_path, tonumber(level))
+			CreateListButton("spell", frame, path, spellID, spellIcon, spellName, spellID, level)
 			
-			lineuplist(aCoreCDB[frame.db_key][OptionName], frame.option_list.list, frame.option_list.anchor)
+			lineuplist(T.ValueFromPath(aCoreCDB, path), frame.option_list.list, frame.option_list.anchor)
 			
 			frame.first_input:SetText(L["输入法术ID"])
 			frame.first_input.current_spellID = nil
@@ -1272,11 +1409,14 @@ T.CreateAuraListOption = function(parent, points, height, text, OptionName, inpu
 			if not frame.first_input:apply() then return end
 			
 			local spellName, _, spellIcon, _, _, _, spellID = GetSpellInfo(frame.first_input.current_spellID)
+			local key_path = {}
+			T.CopyTableInsertElement(key_path, path, spellID)
 			
-			aCoreCDB[frame.db_key][OptionName][spellID] = true
-			CreateListButton("spell", frame, OptionName, spellID, spellIcon, spellName, spellID)
+			T.ValueToPath(aCoreCDB, key_path, true)
+			CreateListButton("spell", frame, path, spellID, spellIcon, spellName, spellID)
 			
-			lineuplist(aCoreCDB[frame.db_key][OptionName], frame.option_list.list, frame.option_list.anchor)
+			lineuplist(T.ValueFromPath(aCoreCDB, path), frame.option_list.list, frame.option_list.anchor)
+			
 			frame.first_input:SetText(L["输入法术ID"])
 			frame.first_input.current_spellID = nil
 			
@@ -1290,25 +1430,27 @@ T.CreateAuraListOption = function(parent, points, height, text, OptionName, inpu
 end
 
 -- 类型列表：物品
-T.CreateItemListOption = function(parent, points, height, text, OptionName, input_text_2)
-	local frame = CreateListOption(parent, points, height, text, OptionName, L["物品名称ID链接"], input_text_2)
+T.CreateItemListOption = function(parent, points, height, text, path, input_text_2, filter_path)
+	local frame = CreateListOption(parent, points, height, text, path, L["物品名称ID链接"], input_text_2, filter_path)
 	
 	frame.Button_OnClicked = function(bu)
 		frame.first_input.current_itemID = tonumber(bu.mid:GetText())
 	end
 	
 	frame:SetScript("OnShow", function()
-		for itemID, quantity in pairs(aCoreCDB[frame.db_key][OptionName]) do
+		for itemID, quantity in pairs(T.ValueFromPath(aCoreCDB, path)) do
 			local itemName = GetItemInfo(itemID)
 			local itemIcon = select(10, GetItemInfo(itemID))
 			if itemName then
-				CreateListButton("item", frame, OptionName, itemID, itemIcon, itemName, itemID, input_text_2 and quantity)
+				CreateListButton("item", frame, path, itemID, itemIcon, itemName, itemID, input_text_2 and quantity)
 			else
+				local key_path = {}
+				T.CopyTableInsertElement(key_path, path, itemID)
 				print("item ID "..itemID.." is gone, delete it.")
-				aCoreCDB[frame.db_key][OptionName][itemID] = nil
+				T.ValueToPath(aCoreCDB, key_path, nil)
 			end
 		end
-		lineuplist(aCoreCDB[frame.db_key][OptionName], frame.option_list.list, frame.option_list.anchor)
+		lineuplist(T.ValueFromPath(aCoreCDB, path), frame.option_list.list, frame.option_list.anchor)
 	end)
 	
 	frame.first_input:HookScript("OnChar", function(self) 
@@ -1359,11 +1501,14 @@ T.CreateItemListOption = function(parent, points, height, text, OptionName, inpu
 			local itemID, _, _, _, itemIcon = GetItemInfoInstant(frame.first_input.current_itemID)
 			local quantity = frame.second_input:GetText()
 			local itemName = GetItemInfo(itemID)
+			local key_path = {}
+			T.CopyTableInsertElement(key_path, path, itemID)
+				
+			T.ValueToPath(aCoreCDB, key_path, tonumber(quantity))
+			CreateListButton("item", frame, path, itemID, itemIcon, itemName, itemID, quantity)
 			
-			aCoreCDB[frame.db_key][OptionName][itemID] = tonumber(quantity)
-			CreateListButton("item", frame, OptionName, itemID, itemIcon, itemName, itemID, quantity)
+			lineuplist(T.ValueFromPath(aCoreCDB, path), frame.option_list.list, frame.option_list.anchor)
 			
-			lineuplist(aCoreCDB[frame.db_key][OptionName], frame.option_list.list, frame.option_list.anchor)
 			frame.first_input:SetText(L["物品名称ID链接"])
 			frame.first_input.current_itemID = nil
 			frame.second_input:SetText(input_text_2)
@@ -1376,12 +1521,15 @@ T.CreateItemListOption = function(parent, points, height, text, OptionName, inpu
 			if not frame.first_input:apply() then return end
 			
 			local itemID, _, _, _, itemIcon = GetItemInfoInstant(frame.first_input.current_itemID)
-			
 			local itemName = GetItemInfo(itemID)
-			aCoreCDB[frame.db_key][OptionName][itemID] = true
-			CreateListButton("item", frame, OptionName, itemID, itemIcon, itemName, itemID)
+			local key_path = {}
+			T.CopyTableInsertElement(key_path, path, itemID)
 			
-			lineuplist(aCoreCDB[frame.db_key][OptionName], frame.option_list.list, frame.option_list.anchor)
+			T.ValueToPath(aCoreCDB, key_path, true)
+			CreateListButton("item", frame, path, itemID, itemIcon, itemName, itemID)
+			
+			lineuplist(T.ValueFromPath(aCoreCDB, path), frame.option_list.list, frame.option_list.anchor)
+			
 			frame.first_input:SetText(L["物品名称ID链接"])
 			frame.first_input.current_itemID = nil
 			
@@ -1395,33 +1543,25 @@ T.CreateItemListOption = function(parent, points, height, text, OptionName, inpu
 end
 
 -- 类型列表：颜色
-T.CreatePlateColorListOption = function(parent, points, height, text, OptionName)
-	local frame = CreateListOption(parent, points, height, text, OptionName, L["输入npc名称"])
+T.CreatePlateColorListOption = function(parent, points, height, text, path, filter_path)
+	local frame = CreateListOption(parent, points, height, text, path, L["输入npc名称"], nil, filter_path)
 	
 	frame:SetScript("OnShow", function()
-		for name, color in pairs(aCoreCDB[frame.db_key][OptionName]) do
-			CreateListButton("", frame, OptionName, name, nil, name, nil, nil, color)
+		for name, color in pairs(T.ValueFromPath(aCoreCDB, path)) do
+			CreateListButton("", frame, path, name, nil, name, nil, nil, color)
 		end
-		lineuplist(aCoreCDB[frame.db_key][OptionName], frame.option_list.list, frame.option_list.anchor)
+		lineuplist(T.ValueFromPath(aCoreCDB, path), frame.option_list.list, frame.option_list.anchor)
 	end)
 	
-	frame.cpb = CreateFrame("Button", nil, frame, "UIPanelButtonTemplate")
-	frame.cpb:SetPoint("LEFT", frame.first_input, "RIGHT", 5, 0)
-	frame.cpb:SetSize(40, 20)
-	T.ReskinButton(frame.cpb)
-	
-	frame.cpb.ctex = frame.cpb:CreateTexture(nil, "OVERLAY")
-	frame.cpb.ctex:SetTexture(G.media.blank)
-	frame.cpb.ctex:SetPoint("CENTER")
-	frame.cpb.ctex:SetSize(35, 15)
+	frame.cpb = ColorpickerButton(frame, nil, {"LEFT", frame.first_input, "RIGHT", 5, 0})	
 	
 	frame.cpb.colors = {r = 1, g = 1, b = 1}
-	frame.cpb.update_texcolor = function()
-		frame.cpb.ctex:SetVertexColor(frame.cpb.colors.r, frame.cpb.colors.g, frame.cpb.colors.b)
-	end
 	
 	frame.cpb:SetScript("OnClick", function(self)
-		ColorPicker_OnClick(frame.cpb.colors, false, {"TOPLEFT", frame.cpb, "BOTTOMLEFT", 0, -5}, frame.cpb.update_texcolor)
+		ColorPicker_OnClick(frame.cpb.colors, function(r, g, b)
+			T.TableValueToPath(frame, {"cpb", "colors"}, {r = r, g = g, b = b})
+			frame.cpb.ctex:SetVertexColor(r, g, b)
+		end, {"TOPLEFT", frame.cpb, "BOTTOMLEFT", 0, -5})
 	end)
 	
 	frame.addbutton:ClearAllPoints()
@@ -1431,20 +1571,17 @@ T.CreatePlateColorListOption = function(parent, points, height, text, OptionName
 		frame.first_input:GetScript("OnEnterPressed")(frame.first_input)
 		
 		local name = frame.first_input:GetText()
-		if not aCoreCDB[frame.db_key][OptionName][name] then
-			aCoreCDB[frame.db_key][OptionName][name] = {}		
-		end
-		aCoreCDB[frame.db_key][OptionName][name].r = frame.cpb.colors.r
-		aCoreCDB[frame.db_key][OptionName][name].g = frame.cpb.colors.g
-		aCoreCDB[frame.db_key][OptionName][name].b = frame.cpb.colors.b
+		local key_path = {}
+		T.CopyTableInsertElement(key_path, path, name)
+		T.TableValueToPath(aCoreCDB, key_path, frame.cpb.colors)
+
+		CreateListButton("", frame, path, name, nil, name, nil, nil, frame.cpb.colors)
 		
-		CreateListButton("", frame, OptionName, name, nil, name, nil, nil, frame.cpb.colors)
-		
-		lineuplist(aCoreCDB[frame.db_key][OptionName], frame.option_list.list, frame.option_list.anchor)
+		lineuplist(T.ValueFromPath(aCoreCDB, path), frame.option_list.list, frame.option_list.anchor)
 		
 		frame.first_input:SetText(L["输入npc名称"])
 		frame.cpb.colors.r, frame.cpb.colors.g, frame.cpb.colors.b = 1, 1, 1
-		frame.cpb.update_texcolor()
+		frame.cpb.ctex:SetVertexColor(1, 1, 1)
 		
 		if frame.apply then
 			frame.apply() -- 生效
@@ -1455,25 +1592,27 @@ T.CreatePlateColorListOption = function(parent, points, height, text, OptionName
 end
 
 -- 类型列表：名称
-T.CreatePlatePowerListOption = function(parent, points, height, text, OptionName)
-	local frame = CreateListOption(parent, points, height, text, OptionName, L["输入npc名称"])
+T.CreatePlatePowerListOption = function(parent, points, height, text, path, filter_path)
+	local frame = CreateListOption(parent, points, height, text, path, L["输入npc名称"], nil, filter_path)
 
 	frame:SetScript("OnShow", function()
-		for name, _ in pairs(aCoreCDB[frame.db_key][OptionName]) do
-			CreateListButton("", frame, OptionName, name, nil, name)
+		for name, _ in pairs(T.ValueFromPath(aCoreCDB, path)) do
+			CreateListButton("", frame, path, name, nil, name)
 		end
-		lineuplist(aCoreCDB[frame.db_key][OptionName], frame.option_list.list, frame.option_list.anchor)
+		lineuplist(T.ValueFromPath(aCoreCDB, path), frame.option_list.list, frame.option_list.anchor)
 	end)
 	
 	frame.addbutton:SetScript("OnClick", function(self)
 		frame.first_input:GetScript("OnEnterPressed")(frame.first_input)
 		
-		local name = frame.first_input:GetText()	
-		aCoreCDB[frame.db_key][OptionName][name] = true
+		local name = frame.first_input:GetText()
+		local key_path = {}
+		T.CopyTableInsertElement(key_path, path, name)
+		T.ValueToPath(aCoreCDB, key_path, true)
 		
-		CreateListButton("", frame, OptionName, name, nil, name)
+		CreateListButton("", frame, path, name, nil, name)
 
-		lineuplist(aCoreCDB[frame.db_key][OptionName], frame.option_list.list, frame.option_list.anchor)
+		lineuplist(T.ValueFromPath(aCoreCDB, path), frame.option_list.list, frame.option_list.anchor)
 		
 		frame.first_input:SetText(L["输入npc名称"])
 		
@@ -1484,3 +1623,136 @@ T.CreatePlatePowerListOption = function(parent, points, height, text, OptionName
 
 	return frame
 end
+
+--====================================================--
+--[[              -- GUI 选项排列 --                ]]--
+--====================================================--
+-- GUI位置
+local SetGUIPoint = function(parent, width_perc, obj, before_gap, after_gap, x_offset, y_offset)
+	local width = parent:GetWidth() - 20
+	local line_height = 30
+	
+	parent.option_x = parent.option_x or 0
+	parent.option_y = parent.option_y or 0
+	
+	if before_gap then -- 与上一项之间的行间距
+		parent.option_y = parent.option_y + before_gap
+	end
+	
+	if obj.istitle then
+		local line = parent:CreateTexture(nil, "BACKGROUND")
+		line:SetTexture(G.media.blank)
+		line:SetGradient("HORIZONTAL", CreateColor(1, 1, 0, .8), CreateColor(1, 0, 0, 0))
+		line:SetSize(parent:GetWidth(), 2)
+		line:SetPoint("TOPLEFT", obj, "BOTTOMLEFT", -40, -5)
+	end
+		
+	if parent.option_x + width_perc*width > width then -- 需要换行
+		obj:SetPoint("TOPLEFT", parent, "TOPLEFT", 20 + (x_offset or 0), - parent.option_y - line_height + (y_offset or 0))
+		
+		-- 下一项的锚点
+		parent.option_x = width_perc*width
+		parent.option_y = parent.option_y + math.ceil(width_perc)*line_height
+		
+		if after_gap then -- 与下一项之间的行间距
+			parent.option_y = parent.option_y + after_gap
+		end
+	else
+		obj:SetPoint("TOPLEFT", parent, "TOPLEFT", 20 + (x_offset or 0) + parent.option_x, - parent.option_y + (y_offset or 0))
+		
+		-- 下一项的锚点
+		parent.option_x = parent.option_x + width_perc*width
+	end
+end
+
+-- GUI功能
+local CreateGUIOpitons = function(parent, OptionCategroy, start_ind, end_ind)
+	local start_ = start_ind or 1
+	local end_ = end_ind or #G.Options[OptionCategroy]
+	for i = start_, end_ do
+		local info = G.Options[OptionCategroy][i]
+		local path = {OptionCategroy, info.key}
+		local obj
+		
+		if (not info.class or info.class[G.myClass]) and (not info.client or info.client[G.Client]) then
+			if info.option_type == "title" then
+				obj = CreateGUITitle(parent, info.text, info.line, info.color)
+			elseif info.option_type == "ddmenu" then
+				obj = UIDropDownMenuFrame_DB(parent, "long", path)
+			elseif info.option_type == "check" then
+				obj = Checkbutton_DB(parent, path)
+			elseif info.option_type == "slider" then
+				obj = Slider_DB(parent, "long", path)
+			elseif info.option_type == "editbox" then
+				obj = EditboxFrame_DB(parent, path)
+			elseif info.option_type == "cvar_check" then
+				obj = CVarCheckButton(parent, path)
+			elseif info.option_type == "multi_editbox" then
+				obj = EditboxMultiLine_DB(parent, path)
+			elseif info.option_type == "color" then
+				obj = ColorpickerButton_DB(parent, path)
+			end
+			
+			if info.rely then
+				createDR(parent[info.rely], obj)
+			end
+			
+			local before_gap, after_gap, x_offset, y_offset = 0, 0, 0, 0
+			
+			-- 段前间距
+			if info.option_type == "title" then
+				if info.text then
+					before_gap = 20
+				else
+					before_gap = -10
+				end
+			elseif info.option_type == "multi_editbox" then
+				before_gap = 15
+			end
+			
+			if info.skip then
+				before_gap = -30
+			end
+			
+			-- 水平调整
+			if info.option_type == "check" or info.option_type == "cvar_check"  then
+				x_offset = x_offset - 5
+			elseif info.option_type == "slider" then
+				x_offset = x_offset + 155
+			end
+			
+			-- 缩进
+			if info.rely and (not info.width or info.width > 1) then 
+				if info.option_type == "slider" then
+					obj.LeftText:SetPoint("LEFT", obj.Slider, "LEFT", -155, 0)
+				elseif info.option_type == "ddmenu" then
+					obj.dd:SetPoint("LEFT", obj, "LEFT", 135, 0)
+				end
+				
+				if info.option_type ~= "slider" then
+					x_offset = x_offset + 20
+				end
+			else
+				if info.option_type == "slider" then
+					obj.LeftText:SetPoint("LEFT", obj.Slider, "LEFT", -175, 0)
+				elseif info.option_type == "ddmenu" then
+					obj.dd:SetPoint("LEFT", obj, "LEFT", 155, 0)
+				end
+			end
+			
+			-- 垂直调整
+			if info.option_type == "slider" then
+				y_offset = 10
+			elseif info.option_type == "ddmenu" then
+				y_offset = -4
+			end
+			
+			SetGUIPoint(parent, info.width or 1, obj, before_gap, after_gap, x_offset, y_offset)
+			
+			if info.key then
+				parent[info.key] = obj
+			end
+		end
+	end
+end
+T.CreateGUIOpitons = CreateGUIOpitons

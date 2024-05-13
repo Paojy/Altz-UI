@@ -1,4 +1,6 @@
 ﻿<Ui xmlns="http://www.blizzard.com/wow/ui/">
+	<Include file="fonts.xml"/>
+	
 	<Include file="lib\oUF\oUF.xml"/>
 	<Script file= "lib\LibStub\LibStub.lua"/>
 	<Script file="lib\CallbackHandler-1.0\CallbackHandler-1.0.lua"/>	
@@ -14,6 +16,7 @@
 	<Script file="core\widget_api.lua"/>
 	<Script file="core\api.lua"/>
 	<Script file="core\db.lua"/>
+	<Script file="core\options.lua"/>
 	<Script file="core\fader.lua"/>
 	<Script file="core\moving.lua"/>
 	<Script file="core\editmode.lua"/>
