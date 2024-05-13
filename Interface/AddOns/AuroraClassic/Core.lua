@@ -547,7 +547,7 @@ do
 		local down = self.Button or frameName and (_G[frameName.."Button"] or _G[frameName.."_Button"])
 
 		local bg = B.CreateBDFrame(self, 0, true)
-		bg:SetPoint("TOPLEFT", 16, -4)
+		bg:SetPoint("TOPLEFT", 8, -4)
 		bg:SetPoint("BOTTOMRIGHT", -18, 8)
 
 		down:ClearAllPoints()
