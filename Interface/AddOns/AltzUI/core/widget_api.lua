@@ -82,6 +82,72 @@ T.table_remove = function(t, v)
 		index = index + 1
 	end
 end
+
+T.ValueFromPath = function(data, path)
+	if not data then
+		return nil
+	end
+	if (#path == 0) then
+		return data
+	elseif(#path == 1) then
+		return data[path[1]]
+	else
+		local reducedPath = {}
+		for i= 2, #path do
+			reducedPath[i-1] = path[i]
+		end
+		return T.ValueFromPath(data[path[1]], reducedPath)
+	end
+end
+
+T.ValueToPath = function(data, path, value)
+	if not data then
+		return
+	end
+	if(#path == 1) then
+		data[path[1]] = value
+	else
+		local reducedPath = {}
+		for i= 2, #path do
+			reducedPath[i-1] = path[i]
+		end
+		T.ValueToPath(data[path[1]], reducedPath, value)
+	end
+end
+
+T.TableValueToPath = function(data, path, t)
+	if not data then
+		return
+	end
+	if(#path == 1) then
+		if not data[path[1]] then
+			data[path[1]] = {}
+		end
+		for k, v in pairs(t) do
+			data[path[1]][k] = v
+		end
+	else
+		local reducedPath = {}
+		for i= 2, #path do
+			reducedPath[i-1] = path[i]
+		end
+		T.TableValueToPath(data[path[1]], reducedPath, t)
+	end
+end
+
+T.CopyTable = function(target_t, copy_t)
+	if not target_t then
+		target_t = {}
+	end
+	for k, v in pairs(copy_t) do
+		target_t[k] = v
+	end
+end
+
+T.CopyTableInsertElement = function(target_t, copy_t, new_element)
+	T.CopyTable(target_t, copy_t)
+	table.insert(target_t, new_element)
+end
 ----------------------------
 -- 			材质		  --
 ----------------------------
@@ -93,7 +159,7 @@ local arrowDegree = {
 }
 
 T.SetupArrow = function(tex, direction)
-	tex:SetTexture([[Interface\AddOns\AltzUI\media\arrow.tga]])
+	tex:SetTexture(G.textureFile.."arrow.tga")
 	tex:SetRotation(rad(arrowDegree[direction]))
 end
 
@@ -381,7 +447,7 @@ end
 T.setStripeBg = function(bd_frame, anchor)
 	local tex = bd_frame:CreateTexture(nil, "BACKGROUND", nil, 1)
 	tex:SetAllPoints(anchor or bd_frame)
-	tex:SetTexture([[Interface\AddOns\AltzUI\media\stripeTex]], true, true)
+	tex:SetTexture(G.textureFile.."stripeTex", true, true)
 	tex:SetHorizTile(true)
 	tex:SetVertTile(true)
 	tex:SetBlendMode("ADD")
@@ -511,6 +577,18 @@ T.ReskinSlider = function(slider, fontsize)
 	slider.Thumb:SetSize(25, slider:GetHeight()*2)
 end
 
+-- 滑动条带左右按钮
+T.ReskinStepperSlider = function(frame, fontsize)
+	local fs = fontsize or 14
+	
+	F.ReskinStepperSlider(frame)
+	
+	frame.LeftText:SetFont(G.norFont, fs, "OUTLINE")		
+	frame.LeftText:SetTextColor(1, .82, 0)
+	
+	frame.Slider.Thumb:SetSize(25, 40)
+end
+
 -- 按钮
 T.ReskinButton = function(bu, fontsize, noHighlight, override)
 	F.Reskin(bu, noHighlight, override)
@@ -528,6 +606,7 @@ end
 -- 下拉菜单
 T.ReskinDropDown = function(dd, fontsize)
 	F.ReskinDropDown(dd)
+	
 	local fs = fontsize or 14
 	dd.Text:SetFont(G.norFont, fs, "OUTLINE")
 end
