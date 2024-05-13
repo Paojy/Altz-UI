@@ -1683,7 +1683,7 @@ G.Options = {
 			option_type = "check",			
 			text = L["友方只显示名字"],
 			apply = function()
-				T.ApplyUFSettings({"Health"}, "Altz_Nameplates")
+				T.UpdateUFTags('Altz_Nameplates')
 				T.PostUpdateAllPlates()
 			end,
 			rely = "enableplate",

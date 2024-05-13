@@ -135,11 +135,13 @@ oUF.Tags.Methods["Altz:platename"] = function(u, real)
 			class = 'R+ '
 		end
 		
-        local name = UnitName(real or u)
+        local name = UnitName(real or u) or ""
 		
 		local result
 		
 		if aCoreCDB["PlateOptions"]["theme"] ~= "class" then
+			result = T.hex_str(class..name, T.GetUnitColorforNameplate(u))
+		elseif aCoreCDB["PlateOptions"]["bar_onlyname"] and UnitReaction(u, 'player') and UnitReaction(u, 'player') >= 5 then -- 友方只显示名字
 			result = T.hex_str(class..name, T.GetUnitColorforNameplate(u))
 		else
 			result = class..name
