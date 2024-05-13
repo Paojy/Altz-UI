@@ -602,7 +602,7 @@ local CreatePlateCastbar = function(self, unit)
 				self:DisableElement("Castbar")
 				self.Castbar:Hide()
 			end
-		elseif UnitIsPlayer(unit) and UnitReaction(unit, 'player') >= 5 then -- 友方只显示名字
+		elseif UnitReaction(unit, 'player') >= 5 then -- 友方只显示名字
 			if not aCoreCDB["PlateOptions"]["bar_onlyname"] then
 				self:EnableElement("Castbar")
 				self.Castbar:ForceUpdate()
@@ -921,7 +921,7 @@ local CreatePlateAuras = function(self, unit)
 	auras.Callback = function(self, event, unit)	
 		if UnitIsUnit(unit, 'player') then
 			self:DisableElement("Auras")
-		elseif UnitIsPlayer(unit) and UnitReaction(unit, 'player') >= 5 then -- 友方只显示名字
+		elseif UnitReaction(unit, 'player') >= 5 then -- 友方只显示名字
 			if not aCoreCDB["PlateOptions"]["bar_onlyname"] then
 				self:EnableElement("Auras")
 				self.Auras:ForceUpdate()
@@ -1740,7 +1740,7 @@ local plate_func = function(self, unit)
 			else
 				self:DisableElement("Health")
 			end
-		elseif UnitIsPlayer(unit) and UnitReaction(unit, 'player') >= 5 then -- 友方只显示名字
+		elseif UnitReaction(unit, 'player') >= 5 then -- 友方只显示名字
 			if not aCoreCDB["PlateOptions"]["bar_onlyname"] then
 				self:EnableElement("Health")
 				self.Health:ForceUpdate()
