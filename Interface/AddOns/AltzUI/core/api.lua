@@ -928,7 +928,7 @@ end
 --====================================================--
 --[[                -- 多选一按钮 --                ]]--
 --====================================================--
-local ButtonGroup = function(parent, width, x, y, group)
+local ButtonGroup = function(parent, width, x, y, path, group)
 	local frame = CreateFrame("Frame", nil, parent)
 	frame:SetPoint("TOPLEFT", x, -y)
 	frame:SetSize(width, 25)
@@ -949,8 +949,10 @@ local ButtonGroup = function(parent, width, x, y, group)
 	end
 	
 	frame:SetScript("OnShow", function(self)
-		if self.updateOnShow then
-			self.updateOnShow()
+		if path then
+			for i, bu in pairs(self.buttons) do
+				bu.selected = T.ValueFromPath(aCoreCDB, path) == bu.value_key
+			end
 		end
 		self.update_state()
 	end)
@@ -978,14 +980,20 @@ local ButtonGroup = function(parent, width, x, y, group)
 		bu.value_key = info[1]
 		bu:SetScript("OnClick", function(self)
 			if not self.selected then
-				self.selected = true
-				frame.apply(self.value_key)
 				for i, b in pairs(frame.buttons) do
 					if b ~= self then
 						b.selected = false
+					else
+						b.selected = true
 					end
 				end
 				frame.update_state()
+				
+				if path then
+					T.ValueToPath(aCoreCDB, path, self.value_key)
+				end
+				
+				frame.apply(self.value_key)
 			end
 		end)
 		
