@@ -14,7 +14,13 @@ local UpdateHealManabar = function()
 	local oUF = AltzUF or oUF
 	for _, obj in next, oUF.objects do	
 		if obj.style == 'Altz_Healerraid' and obj.Power then
-			local role = UnitGroupRolesAssigned(obj.unit)
+			local role
+			if UnitInParty("player") then
+				role = UnitGroupRolesAssigned(obj.unit)
+			else
+				role = select(5, GetSpecializationInfo(GetSpecialization()))
+			end
+			
 			if aCoreCDB["UnitframeOptions"]["raidmanabars"] and role == 'HEALER' then
 				obj.Power:SetAlpha(1)
 			else
@@ -540,7 +546,7 @@ local func = function(self, unit)
 	-- 高亮
 	self.hl = self:CreateTexture(nil, "HIGHLIGHT")
     self.hl:SetAllPoints()
-    self.hl:SetTexture([[Interface\AddOns\AltzUI\media\highlight.tga]])
+    self.hl:SetTexture(G.textureFile.."highlight")
     self.hl:SetVertexColor( 1, 1, 1, .3)
     self.hl:SetBlendMode("ADD")
 	
@@ -754,7 +760,7 @@ local func = function(self, unit)
 	local ricon = self.cover:CreateTexture(nil, "OVERLAY", nil, 1)
 	ricon:SetSize(18 ,18)
     ricon:SetPoint("RIGHT", self.cover, "TOP", -8 , 0)
-	ricon:SetTexture[[Interface\AddOns\AltzUI\media\raidicons.blp]]
+	ricon:SetTexture(G.textureFile.."raidicons")
 	
     self.RaidTargetIndicator = ricon
 	
