@@ -49,7 +49,7 @@ local function CreateTitle(self, str)
 	
 	if not frame then
 		frame = CreateFrame("Frame", nil, self)
-		frame:SetSize(self:GetWidth()-10, title_height)
+		frame:SetSize(self:GetWidth()-33, title_height)
 		
 		frame.text = T.createtext(frame, "OVERLAY", 10, "NONE", "LEFT")
 		frame.text:SetPoint("LEFT", frame, "LEFT")
@@ -65,7 +65,7 @@ local function CreateTitle(self, str)
 	
 	frame:ClearAllPoints()
 	if self.class_index == 1 then
-		frame:SetPoint("TOPLEFT", self, "TOPLEFT", 8, -25)
+		frame:SetPoint("TOPLEFT", self, "TOPLEFT", 18, -25)
 	else
 		frame:SetPoint("TOPLEFT", self.anchor_button, "BOTTOMLEFT", 0, -2)
 	end
@@ -256,3 +256,4 @@ hooksecurefunc("UpdateContainerFrameAnchors", function()
 	ContainerFrameCombinedBags:ClearAllPoints()
 	ContainerFrameCombinedBags:SetPoint("BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", -12, 17)
 end)
+
