@@ -229,25 +229,21 @@ G.Options = {
 		{ -- 13 自动接受好友的组队邀请
 			key = "acceptInvite_friend",
 			option_type = "check",
-			width = .4,
 			text = L["自动接受好友的组队邀请"],
 		},
 		{ -- 14 自动接受公会成员的组队邀请
 			key = "acceptInvite_guild",
 			option_type = "check",
-			width = .6,
 			text = L["自动接受公会成员的组队邀请"],
 		},
 		{ -- 15 自动接受社区成员的组队邀请
 			key = "acceptInvite_club",
 			option_type = "check",
-			width = .4,
 			text = L["自动接受社区成员的组队邀请"],
 		},
 		{ -- 16 自动接受同一战网其他角色的组队邀请
 			key = "acceptInvite_account",
 			option_type = "check",
-			width = .6,
 			text = L["自动接受同一战网其他角色的组队邀请"],
 		},
 		{ -- 17 拒绝陌生人的组队邀请

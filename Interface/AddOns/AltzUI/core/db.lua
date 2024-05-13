@@ -1494,30 +1494,30 @@ T.ImportSettings = function(str)
 	else
 		local import_str = ""
 		if version ~= G.Version then
-			import_str = import_str..format(L["版本不符合"], version, G.Version)
+			import_str = import_str.."\n"..format(L["版本不符合"], version, G.Version)
 		else
 			sameversion = true
 		end
 		
 		if client ~= G.Client then
-			import_str = import_str..format(L["客户端不符合"], client, G.Client)
+			import_str = import_str.."\n"..format(L["客户端不符合"], client, G.Client)
 		else
 			sameclient = true
 		end
 		
 		if class ~= G.myClass then
-			import_str = import_str..format(L["职业不符合"], G.ClassInfo[class], G.ClassInfo[G.myClass])
+			import_str = import_str.."\n"..format(L["职业不符合"], G.ClassInfo[class], G.ClassInfo[G.myClass])
 		else
 			sameclass = true
 		end
 		
 		importLayoutInfo = C_EditMode.ConvertStringToLayoutInfo(BlzLayoutStr)	
 		if not importLayoutInfo then
-			import_str = import_str..L["暴雪布局字串有误"]
+			import_str = import_str.."\n"..L["暴雪布局字串有误"]
 		end
 	
 		if not (sameversion and sameclient and sameclass and importLayoutInfo) then
-			import_str = import_str..L["不完整导入"]
+			import_str = import_str.."\n"..L["不完整导入"]
 		end
 		
 		StaticPopupDialogs[G.uiname.."Import Confirm"].text = format(L["导入确认"]..import_str, "Altz UI")

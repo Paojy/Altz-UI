@@ -4,7 +4,8 @@ if G.Client == "zhCN" or G.Client == "zhTW" then return end
 --====================================================--
 --[[           -- 更新日志和插件提示 --             ]]--
 --====================================================--
---L["更新日志tip"] = "New feature:\nUpdate for 10.00"
+--L["更新日志tip"] = [[New feature:
+--Update for 10.00]]
 
 L["TIPS"] = {
 	"Click the date on the minimap to open the calendar",
@@ -114,7 +115,12 @@ L["优先级"] = "Priority"
 
 L["命令"] = "Commands"
 L["制作"] = "Credits"
-L["制作说明"] = "AltzUI ver %s \n \n \n \n Paopao zhCN \n \n \n \n Thanks to \n \n %s \n and everyone who help me with this Compilations."
+L["制作说明"] = [[AltzUI ver %s
+Paopao zhCN
+
+Thanks to
+%s
+and everyone who help me with this Compilations.]]
 
 --====================================================--
 --[[                 -- 安装 --                     ]]--
@@ -125,7 +131,7 @@ L["简介"] = "Altz UI is a minimalistic compilation with in-game configuration 
 L["上一步"] = "Previous"
 L["下一步"] = "Next"
 L["完成"] = "Finish"
-L["跳过"] = "Skip Setup Wizard"
+L["跳过"] = "Skip Setup"
 L["设置向导"] = "Setup Wizard"
 L["设置向导提示"] = "Chat frame input /setup or right-click on the minimap addon icon to run Setup Wizard"
 L["界面风格tip"] = "How do you want to display the UnitFrames?"
@@ -141,12 +147,12 @@ L["更新日志"] = "Update Log"
 --====================================================--
 L["导入"] = "Import"
 L["导出"] = "Export"
-L["导入确认"] = "Do you want to import all the %s settings?\n"
-L["版本不符合"] = "\nImport Version %s（Current Version %s）"
-L["客户端不符合"] = "\nGame Client %s（Current Client %s）"
-L["职业不符合"] = "\nClass %s（Current Class %s）"
+L["导入确认"] = "Do you want to import all the %s settings?"
+L["版本不符合"] = "Import Version %s（Current Version %s）"
+L["客户端不符合"] = "Game Client %s（Current Client %s）"
+L["职业不符合"] = "Class %s（Current Class %s）"
 L["暴雪布局字串有误"] = "Blizzard layout string error"
-L["不完整导入"] = "\nMay not import completely."
+L["不完整导入"] = "May not import completely."
 L["无法导入"] = "Cannot Import"
 
 --====================================================--
@@ -367,10 +373,10 @@ L["评分层数"] = "Score（Highest Level）"
 --====================================================--
 L["战斗数字"] = "Combat Text"
 L["滚动战斗数字"] = "Scrolling combat text"
-L["承受伤害"] = "Received\nDamage Text"
-L["承受治疗"] = "Received\nHealing Text"
-L["输出伤害"] = "Output\nDamage Text"
-L["输出治疗"] = "Output\nHealing Text"
+L["承受伤害"] = "Received Damage Text"
+L["承受治疗"] = "Received Healing Text"
+L["输出伤害"] = "Output Damage Text"
+L["输出治疗"] = "Output Healing Text"
 L["承受伤害/治疗"] = "Received Healing/Damage Text"
 L["输出伤害/治疗"] = "Output Healing/Damage Text"
 L["浮动战斗数字"] = "Blizzard combat text"
