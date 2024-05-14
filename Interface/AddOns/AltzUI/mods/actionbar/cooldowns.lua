@@ -23,17 +23,17 @@ local function GetFormattedTime(s)
 end
 
 local function Timer_OnUpdate(self, elapsed)
-	if self.text:IsShown() then
-		if self.nextUpdate>0 then
-			self.nextUpdate = self.nextUpdate - elapsed
-		elseif self.duration then
-			local remain = self.duration - (GetTime() - self.start)
+	if self.altz_text:IsShown() then
+		if self.altz_nextUpdate>0 then
+			self.altz_nextUpdate = self.altz_nextUpdate - elapsed
+		elseif self.altz_duration then
+			local remain = self.altz_duration - (GetTime() - self.altz_start)
 			if floor(remain + 0.5) > 0 then
 				local time, nextUpdate = GetFormattedTime(remain)
-				self.text:SetText(time)
-				self.nextUpdate = nextUpdate
+				self.altz_text:SetText(time)
+				self.altz_nextUpdate = nextUpdate
 			else
-				self.text:Hide()
+				self.altz_text:Hide()
 			end
 		end
 	end
@@ -43,12 +43,12 @@ local function UpdateTextAlpha(cd)
 	if aCoreCDB["ActionbarOptions"]["cooldown_number"] then
 		local frameName = cd.GetName and cd:GetName() or ""
 		if strfind(frameName, "WeakAuras") and not aCoreCDB["ActionbarOptions"]["cooldown_number_wa"] then
-			cd.text:SetAlpha(0)
+			cd.altz_text:SetAlpha(0)
 		else
-			cd.text:SetAlpha(1)
+			cd.altz_text:SetAlpha(1)
 		end
 	else
-		cd.text:SetAlpha(0)
+		cd.altz_text:SetAlpha(0)
 	end
 end
 
@@ -57,7 +57,7 @@ T.CooldownNumber_Edit = function()
 		UpdateTextAlpha(cd)
 		
 		local fontsize = min(aCoreCDB["ActionbarOptions"]["cooldownsize"], cd:GetWidth()*.9, cd:GetHeight()*.9)
-		cd.text:SetFont(G.numFont, fontsize, "OUTLINE")
+		cd.altz_text:SetFont(G.numFont, fontsize, "OUTLINE")
 	end
 end
 
@@ -96,7 +96,7 @@ T.RegisterInitCallback(function()
 	local methods = getmetatable(ActionButton1Cooldown).__index
 	
 	hooksecurefunc(methods, "SetCooldown", function(self, start, dur)
-
+	
 		if self.noshowcd or self:IsForbidden() then
 			return
 		elseif self:GetParent() then
@@ -111,14 +111,14 @@ T.RegisterInitCallback(function()
 			local s, d = tonumber(start), tonumber(dur)
 			if s and d then
 				if s > 0 and d > 2.5 then -- CD > 2.5 显示
-					self.start = s
-					self.duration = d
-					self.nextUpdate = 0		
-					if not self.text then
+					self.altz_start = s
+					self.altz_duration = d
+					self.altz_nextUpdate = 0		
+					if not self.altz_text then
 						local fontsize = min(aCoreCDB["ActionbarOptions"]["cooldownsize"], self:GetWidth()*.9, self:GetHeight()*.9)
-						self.text = T.createnumber(self, "OVERLAY", fontsize, "OUTLINE", "CENTER")
-						self.text:SetTextColor(.4, .95, 1)
-						self.text:SetPoint("CENTER")
+						self.altz_text = T.createnumber(self, "OVERLAY", fontsize, "OUTLINE", "CENTER")
+						self.altz_text:SetTextColor(.4, .95, 1)
+						self.altz_text:SetPoint("CENTER")
 						table.insert(cd_frames, self)
 					end
 					
@@ -127,12 +127,12 @@ T.RegisterInitCallback(function()
 					end		
 					
 					UpdateTextAlpha(self)
-
-					self.text:Show()
+	
+					self.altz_text:Show()
 				
-				elseif self.text then -- 无CD或GCD 隐藏
+				elseif self.altz_text then -- 无CD或GCD 隐藏
 				
-					self.text:Hide()
+					self.altz_text:Hide()
 					
 				end
 			end
