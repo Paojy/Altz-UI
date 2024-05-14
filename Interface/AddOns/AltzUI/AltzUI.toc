@@ -2,7 +2,7 @@
 ## Title: |cffEE3A8CAltz|rUI
 ## IconTexture: Interface\AddOns\AltzUI\media\icons\addon_icon.png
 ## X-oUF: AltzUF
-## Version: 10.00
+## Version: 10.01
 ## Author: Paopao001
 ## Dependencies: AuroraClassic
 ## OptionalDeps: !ClassColors, BigWigs
