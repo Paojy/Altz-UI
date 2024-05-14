@@ -23,8 +23,8 @@ G.myClass = select(2, UnitClass("player"))
 
 G.links = {
 	GitHub = "github.com/Paojy/Altz-UI",
-	WoWInterface = "www.wowinterface.com/downloads/info21263-AltzUIforShadowlands.html",
-	Curse = "www.curseforge.com/wow/addons",
+	WoWInterface = "www.wowinterface.com/downloads/info21263-AltzUI",
+	Curse = "www.curseforge.com/wow/addons/altzui",
 }
 --====================================================--
 --[[                  -- Media --                   ]]--
