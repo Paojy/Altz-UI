@@ -179,7 +179,7 @@ local function ToggleCTVisibility()
 		eventFrame:RegisterEvent("COMBAT_TEXT_UPDATE")
 	else
 		T.ReleaseDragFrame(damagetaken)
-		T.RestoreDragFrame(healingtaken)
+		T.ReleaseDragFrame(healingtaken)
 		eventFrame:RegisterEvent("COMBAT_TEXT_UPDATE")
 	end
 	if aCoreCDB["CombattextOptions"]["showoutputct"] then
@@ -188,7 +188,7 @@ local function ToggleCTVisibility()
 		eventFrame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 	else
 		T.ReleaseDragFrame(outputdamage)
-		T.RestoreDragFrame(outputhealing)
+		T.ReleaseDragFrame(outputhealing)
 		eventFrame:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 	end
 end
