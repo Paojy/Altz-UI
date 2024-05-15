@@ -1,148 +1,54 @@
--- 'Basic' version of OmniCC
 local T, C, L, G = unpack(select(2, ...))
 
-local format, floor, GetTime = string.format, math.floor, GetTime
 local cd_frames = {}
 
 --====================================================--
 --[[                    -- API --                   ]]--
 --====================================================--
-
-local function GetFormattedTime(s)
-	if s>3600 then
-		return format("%dh", floor(s/3600 + 0.5)), s % 3600
-	elseif s>60 then
-		return format("%dm", floor(s/60 + 0.5)), s % 60
-	elseif s>8 then
-		return floor(s + 0.5), s - floor(s)
-	elseif s>3 then
-		return format("|cFFEEEE00%d|r", floor(s + 0.5)), s - floor(s)
+local function AdjustFontStringSize(frame)
+	local w, h = frame:GetSize(false)
+	local fontsize
+	if w > 0 and h > 0 then
+		fontsize = min(aCoreCDB["ActionbarOptions"]["cooldownsize"], w*.6, h*.6)
 	else
-		return format("|cFFFF2400%.1f|r", s), 0.05
+		fontsize = aCoreCDB["ActionbarOptions"]["cooldownsize"]
 	end
+	frame.altz_text:SetFont(G.numFont, fontsize, "OUTLINE")
 end
 
-local function Timer_OnUpdate(self, elapsed)
-	if self.altz_text:IsShown() then
-		if self.altz_nextUpdate>0 then
-			self.altz_nextUpdate = self.altz_nextUpdate - elapsed
-		elseif self.altz_duration then
-			local remain = self.altz_duration - (GetTime() - self.altz_start)
-			if floor(remain + 0.5) > 0 then
-				local time, nextUpdate = GetFormattedTime(remain)
-				self.altz_text:SetText(time)
-				self.altz_nextUpdate = nextUpdate
-			else
-				self.altz_text:Hide()
-			end
-		end
-	end
-end
-
-local function UpdateTextAlpha(cd)
-	if aCoreCDB["ActionbarOptions"]["cooldown_number"] then
-		local frameName = cd.GetName and cd:GetName() or ""
-		if strfind(frameName, "WeakAuras") and not aCoreCDB["ActionbarOptions"]["cooldown_number_wa"] then
-			cd.altz_text:SetAlpha(0)
-		else
-			cd.altz_text:SetAlpha(1)
-		end
-	else
-		cd.altz_text:SetAlpha(0)
-	end
+local function AdjustFontStringColor(frame)
+	frame.altz_text:SetTextColor(.4, .95, 1)
 end
 
 T.CooldownNumber_Edit = function()
 	for k, cd in pairs(cd_frames) do
-		UpdateTextAlpha(cd)
-		
-		local fontsize = min(aCoreCDB["ActionbarOptions"]["cooldownsize"], cd:GetWidth()*.9, cd:GetHeight()*.9)
-		cd.altz_text:SetFont(G.numFont, fontsize, "OUTLINE")
+		AdjustFontStringSize(cd)
+		AdjustFontStringColor(cd)		
 	end
 end
 
 --====================================================--
 --[[                 -- Update --                   ]]--
 --====================================================--
-local hooked = {}
-local active = {}
-
-local EventFrame = CreateFrame('Frame')
-EventFrame:SetScript('OnEvent', function(self, event)	
-	if event == 'ACTIONBAR_UPDATE_COOLDOWN' then
-		for cooldown in pairs(active) do
-			local button = cooldown:GetParent()
-			local start, dur, enable = GetActionCooldown(button.action)
-			cooldown:SetCooldown(start, dur)
-		end
-	elseif event == "PLAYER_LOGIN" then
-		SetCVar("countdownForCooldowns", 0)
-	end
-end)
-
-EventFrame:RegisterEvent('ACTIONBAR_UPDATE_COOLDOWN')
-EventFrame:RegisterEvent('PLAYER_LOGIN')
-
-local function actionButton_Register(frame)
-	local cooldown = frame.cooldown
-	if not hooked[cooldown] then
-		cooldown:HookScript('OnShow', function(self) active[self] = true end)
-		cooldown:HookScript('OnHide', function(self) active[self] = nil end)
-		hooked[cooldown] = true
-	end
-end
-
 T.RegisterInitCallback(function()
 	local methods = getmetatable(ActionButton1Cooldown).__index
-	
-	hooksecurefunc(methods, "SetCooldown", function(self, start, dur)
-	
-		if self.noshowcd or self:IsForbidden() then
-			return
-		elseif self:GetParent() then
-			local parent_name = self:GetParent():GetName()
-			if parent_name and parent_name:find("CompactRaidFrame") then -- 暴雪团队框架上的图标不加冷却时间	
-				return
-			end
-		end
 		
-		-- 添加时间
-		if self:GetWidth() >= 10 and self:GetHeight() >= 10 then
-			local s, d = tonumber(start), tonumber(dur)
-			if s and d then
-				if s > 0 and d > 2.5 then -- CD > 2.5 显示
-					self.altz_start = s
-					self.altz_duration = d
-					self.altz_nextUpdate = 0		
-					if not self.altz_text then
-						local fontsize = min(aCoreCDB["ActionbarOptions"]["cooldownsize"], self:GetWidth()*.9, self:GetHeight()*.9)
-						self.altz_text = T.createnumber(self, "OVERLAY", fontsize, "OUTLINE", "CENTER")
-						self.altz_text:SetTextColor(.4, .95, 1)
-						self.altz_text:SetPoint("CENTER")
-						table.insert(cd_frames, self)
-					end
-					
-					if not self:GetScript("OnUpdate") then
-						self:SetScript("OnUpdate", Timer_OnUpdate)
-					end		
-					
-					UpdateTextAlpha(self)
-	
-					self.altz_text:Show()
-				
-				elseif self.altz_text then -- 无CD或GCD 隐藏
-				
-					self.altz_text:Hide()
-					
+	hooksecurefunc(methods, "SetCooldown", function(self, start, dur)
+		if self:IsForbidden() then return end
+		
+		if not self.cooldown_added then
+			for i = 1, self:GetNumRegions() do
+				local obj = select(i, self:GetRegions())
+				if obj:GetObjectType() == "FontString" then
+					self.altz_text = obj
+					AdjustFontStringSize(self)
+					AdjustFontStringColor(self)
+					table.insert(cd_frames, self)
+					break
 				end
 			end
+			self.cooldown_added = true
 		end
 	end)
-	
-	for i, frame in pairs(ActionBarButtonEventsFrame.frames) do
-		actionButton_Register(frame)
-	end
-
-	hooksecurefunc(ActionBarButtonEventsFrame, 'RegisterFrame', actionButton_Register)
 end)
 
