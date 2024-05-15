@@ -399,11 +399,11 @@ local RFInnerframe = CreateInnerFrame(RFOptions)
 
 -- 样式
 RFInnerframe.style = CreateOptionPage("RF Options style", L["样式"], RFInnerframe, "VERTICAL")
-T.CreateGUIOpitons(RFInnerframe.style, "UnitframeOptions", 59, 72)
+T.CreateGUIOpitons(RFInnerframe.style, "UnitframeOptions", 58, 71)
 
 -- 治疗指示器
 RFInnerframe.ind = CreateOptionPage("RF Options indicators", L["治疗指示器"], RFInnerframe, "VERTICAL")
-T.CreateGUIOpitons(RFInnerframe.ind, "UnitframeOptions", 81, 84)
+T.CreateGUIOpitons(RFInnerframe.ind, "UnitframeOptions", 80, 83)
 
 RFInnerframe.ind.hotind_list = T.CreateAuraListOption(RFInnerframe.ind, {"TOPLEFT", 20, -140}, 270,
 T.split_words(L["图标指示器"],AURAS), {"UnitframeOptions", "hotind_auralist"}, nil, {"UnitframeOptions", "hotind_filtertype"})
@@ -423,7 +423,7 @@ end
 
 -- 点击施法
 RFInnerframe.clickcast = CreateOptionPage("RF Options clickcast", L["点击施法"], RFInnerframe, "VERTICAL")
-T.CreateGUIOpitons(RFInnerframe.clickcast, "UnitframeOptions", 86, 87)
+T.CreateGUIOpitons(RFInnerframe.clickcast, "UnitframeOptions", 85, 86)
 
 RFInnerframe.clickcast.reset = T.ClickTexButton(RFInnerframe.clickcast, {"TOPLEFT", RFInnerframe.clickcast, "TOPLEFT", 100, -5}, G.iconFile.."refresh.tga", L["重置"])	
 RFInnerframe.clickcast.reset:SetScript("OnClick", function(self)
@@ -777,11 +777,11 @@ end)
 
 -- 光环图标
 RFInnerframe.icon_display = CreateOptionPage("RF Options Icon Display", T.split_words(L["光环"],L["图标"]), RFInnerframe, "VERTICAL")
-T.CreateGUIOpitons(RFInnerframe.icon_display, "UnitframeOptions", 88, 100)
+T.CreateGUIOpitons(RFInnerframe.icon_display, "UnitframeOptions", 87, 99)
 
 -- 团队减益
 RFInnerframe.raiddebuff = CreateOptionPage("RF Options Raid Debuff", T.split_words(L["副本"],L["减益"]), RFInnerframe, "VERTICAL")
-T.CreateGUIOpitons(RFInnerframe.raiddebuff, "UnitframeOptions", 101, 101)
+T.CreateGUIOpitons(RFInnerframe.raiddebuff, "UnitframeOptions", 100, 100)
 
 RFInnerframe.raiddebuff.debuff_list = T.createscrolllist(RFInnerframe.raiddebuff, {"TOPLEFT", 10, -85}, false, 395, 400)
 
@@ -1125,7 +1125,7 @@ end)
 
 -- 全局减益
 RFInnerframe.globaldebuff = CreateOptionPage("RF Options Raid Debuff Fliter List", T.split_words(L["全局"], L["减益"]), RFInnerframe, "VERTICAL")
-T.CreateGUIOpitons(RFInnerframe.globaldebuff, "UnitframeOptions", 102, 102)
+T.CreateGUIOpitons(RFInnerframe.globaldebuff, "UnitframeOptions", 101, 101)
 
 RFInnerframe.globaldebuff.whitelist = T.CreateAuraListOption(RFInnerframe.globaldebuff, {"TOPLEFT", 30, -55}, 200,
 L["白名单"]..AURAS, {"UnitframeOptions", "debuff_list"}, L["优先级"])
@@ -1143,7 +1143,7 @@ end
 
 -- 全局增益
 RFInnerframe.globalbuff = CreateOptionPage("RF Options Cooldown Aura", T.split_words(L["全局"], L["增益"]), RFInnerframe, "VERTICAL")
-T.CreateGUIOpitons(RFInnerframe.globalbuff, "UnitframeOptions", 103, 103)
+T.CreateGUIOpitons(RFInnerframe.globalbuff, "UnitframeOptions", 102, 102)
 
 RFInnerframe.globalbuff.whitelist = T.CreateAuraListOption(RFInnerframe.globalbuff, {"TOPLEFT", 30, -60}, 380,
 L["白名单"]..AURAS, {"UnitframeOptions", "buff_list"}, L["优先级"])
@@ -1158,7 +1158,7 @@ local ActionbarInnerframe = CreateInnerFrame(ActionbarOptions)
 
 -- 样式
 ActionbarInnerframe.common = CreateOptionPage("Actionbar Options common", L["样式"], ActionbarInnerframe, "VERTICAL")
-T.CreateGUIOpitons(ActionbarInnerframe.common, "ActionbarOptions", 1, 13)
+T.CreateGUIOpitons(ActionbarInnerframe.common, "ActionbarOptions", 1, 12)
 
 do
 	local ShouldShow = function()
@@ -1172,7 +1172,7 @@ end
 
 -- 冷却提示
 ActionbarInnerframe.cdflash = CreateOptionPage("Actionbar Options cdflash", L["冷却提示"], ActionbarInnerframe, "VERTICAL")
-T.CreateGUIOpitons(ActionbarInnerframe.cdflash, "ActionbarOptions", 14, 16)
+T.CreateGUIOpitons(ActionbarInnerframe.cdflash, "ActionbarOptions", 13, 15)
 
 do
 	local ShouldShow = function()

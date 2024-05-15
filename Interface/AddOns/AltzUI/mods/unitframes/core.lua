@@ -751,7 +751,8 @@ local PostCreateIcon = function(auras, icon)
 
 	icon.backdrop = T.createBackdrop(icon, nil, 2)
 	
-	icon.Cooldown:SetReverse(true)
+	icon.Cooldown:SetSize(auras.size, auras.size)
+	icon.Cooldown:SetReverse(true)	
 end
 T.PostCreateIcon = PostCreateIcon
 
@@ -1203,7 +1204,7 @@ local func = function(self, unit)
     self.bg:SetAllPoints(self)
 	
 	-- 目标边框
-	if T.multicheck(u,"party","partypet","boss","arena") then
+	if T.multicheck(u, "party", "partypet", "boss", "arena") then
 		local targetborder = T.createPXBackdrop(self, nil, 2)
 		targetborder:SetBackdropBorderColor(1, 1, .4)
 		targetborder:SetFrameLevel(self:GetFrameLevel()+4)
@@ -1420,8 +1421,7 @@ local func = function(self, unit)
 	summonIndicator:SetSize(32, 32)
 	summonIndicator:SetPoint('TOPRIGHT')
 	summonIndicator:SetAtlas('Raid-Icon-SummonPending', true)
-	summonIndicator:Hide()
-	
+	summonIndicator:Hide()	
 	self.SummonIndicator = summonIndicator
 
 	-- 渐隐
@@ -1592,27 +1592,6 @@ local UnitSpecific = {
 	--========================--
 	target = function(self, ...)
 		func(self, ...)
-		
-		-- threat bar --	
-		local threatbar = T.createStatusbar(UIParent, nil, nil, 0.25, 0.25, 0.25, 1)
-		threatbar:SetPoint("TOPLEFT", self.Power, "BOTTOMLEFT", 0, -3)
-		threatbar:SetPoint("BOTTOMRIGHT", self.Power, "BOTTOMRIGHT", 0, -5)
-		
-		threatbar.backdrop = T.createBackdrop(threatbar, 1)
-
-		threatbar.EnableSettings = function(object)
-			if not object or object == self then
-				if aCoreCDB["UnitframeOptions"]["showthreatbar"] then
-					self:EnableElement("ThreatBar")
-					self.ThreatBar:ForceUpdate()
-				else
-					self:DisableElement("ThreatBar")
-				end
-			end
-		end
-		oUF:RegisterInitCallback(threatbar.EnableSettings)
-		
-		self.ThreatBar = threatbar
 	end,
 
 	--========================--

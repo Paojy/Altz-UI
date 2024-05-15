@@ -1,4 +1,4 @@
-local T, C, L, G = unpack(select(2, ...))
+﻿local T, C, L, G = unpack(select(2, ...))
 local oUF = AltzUF or oUF
 
 local current_encounter
@@ -487,7 +487,7 @@ local PostCreateIndicatorIcon = function(auras, icon)
 	
 	T.createTexBackdrop(icon, nil, "BACKGROUND")
 	
-	icon.Cooldown.noshowcd = true
+	icon.Cooldown:SetSize(auras.size, auras.size)
 	icon.Cooldown:SetReverse(true)
 end
 

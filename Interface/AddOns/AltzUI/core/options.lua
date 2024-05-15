@@ -921,17 +921,6 @@ G.Options = {
 				["oUF_AltzPlayer"] = true,
 			},
 		},
-		{ -- 仇恨条
-			key = "showthreatbar",
-			option_type = "check",
-			text = T.split_words(L["显示"],L["仇恨条"]),
-			apply = function()
-				T.EnableUFSettings({"ThreatBar"}, "Altz - Target")
-			end,
-			relatedFrames = {
-				["oUF_AltzTarget"] = true,
-			},
-		},
 		{ -- 符文冷却
 			key = "runecooldown",
 			option_type = "check",
@@ -1001,7 +990,7 @@ G.Options = {
 			text = L["样式"],
 			line = true,
 		},
-		{ -- 60 启用团队框架
+		{ -- 启用团队框架
 			key = "enableraid",
 			option_type = "check",
 			text = L["启用"],
@@ -1009,7 +998,7 @@ G.Options = {
 				StaticPopup_Show(G.uiname.."Reload Alert")
 			end,
 		},
-		{ -- 团队样式的小队框体
+		{ -- 60 团队样式的小队框体
 			key = "raidframe_inparty",
 			option_type = "check",
 			text = USE_RAID_STYLE_PARTY_FRAMES,
@@ -1096,7 +1085,7 @@ G.Options = {
 			end,
 			rely = "enableraid",
 		},
-		{ -- 70 主坦克和主助手
+		{ -- 主坦克和主助手
 			key = "raidrole_icon",
 			option_type = "check",
 			text = L["主坦克和主助手"],
@@ -1106,7 +1095,7 @@ G.Options = {
 			end,
 			rely = "enableraid",
 		},
-		{ -- 分割线
+		{ -- 70 分割线
 			option_type = "title",
 			line = true,
 		},
@@ -1211,7 +1200,7 @@ G.Options = {
 				["Altz_Raid_Holder"] = true,		
 			},
 		},
-		{ -- 80 治疗法力条高度
+		{ -- 治疗法力条高度
 			key = "raidppheight",
 			option_type = "slider",
 			text = L["治疗法力条高度"],
@@ -1226,7 +1215,7 @@ G.Options = {
 			},
 			rely = "raidmanabars",
 		},
-		{ -- 标题:治疗指示器
+		{ -- 80 标题:治疗指示器
 			option_type = "title",
 			text = L["治疗指示器"],
 			line = true,
@@ -1305,7 +1294,7 @@ G.Options = {
 				T.ApplyUFSettings({"Debuffs"}, "Altz_Healerraid")
 			end,
 		},
-		{ -- 90 减益垂直偏移
+		{ -- 减益垂直偏移
 			key = "raid_debuff_anchor_y",
 			option_type = "slider",
 			text = L["垂直偏移"],
@@ -1316,7 +1305,7 @@ G.Options = {
 				T.ApplyUFSettings({"Debuffs"}, "Altz_Healerraid")
 			end,
 		},
-		{ -- 图标尺寸
+		{ -- 90 图标尺寸
 			key = "raid_debuff_icon_size",
 			option_type = "slider",
 			text = T.split_words(L["图标"], L["尺寸"]),
@@ -1398,7 +1387,7 @@ G.Options = {
 			text = L["自动添加团队减益"],
 			tip = L["自动添加团队减益提示"],	
 		},
-		{ -- 100 自动添加的图标层级
+		{ -- 自动添加的图标层级
 			key = "debuff_auto_add_level",
 			option_type = "slider",
 			text = L["优先级"],
@@ -1406,7 +1395,7 @@ G.Options = {
 			max = 20,
 			step = 1,
 		},
-		{ -- 标题:副本减益
+		{ -- 100 标题:副本减益
 			option_type = "title",
 			text = T.split_words(L["副本"],L["减益"]),
 			line = true,
@@ -1429,25 +1418,14 @@ G.Options = {
 			line = true,
 		},
 		{ -- 2 显示冷却时间
-			key = "cooldown_number",
-			option_type = "check",			
+			key = "countdownForCooldowns",
+			option_type = "cvar_check",			
 			text = T.split_words(L["显示"],L["冷却"],L["时间"]),
 			tip = L["显示冷却时间提示"],
-			apply = function()
-				T.CooldownNumber_Edit()
-			end,
+			arg1 = "1",
+			arg2 = "0",
 		},
-		{ -- 3 显示冷却时间 WA
-			key = "cooldown_number_wa",
-			option_type = "check",			
-			text = T.split_words(L["显示"],L["冷却"],L["时间"],"(Weakauras)"),
-			tip = L["显示冷却时间提示WA"],
-			apply = function()
-				T.CooldownNumber_Edit()
-			end,
-			rely = "cooldown_number",
-		},
-		{ -- 4 冷却数字大小
+		{ -- 3 冷却数字大小
 			key = "cooldownsize",
 			option_type = "slider",
 			text = T.split_words(L["冷却"],L["数字"],L["大小"]),
@@ -1457,13 +1435,13 @@ G.Options = {
 			apply = function()
 				T.CooldownNumber_Edit()
 			end,
-			rely = "cooldown_number",
+			rely = "countdownForCooldowns",
 		},
-		{ -- 5 分割线
+		{ -- 7 分割线
 			option_type = "title",
 			line = true,
 		},
-		{ -- 6 键位字体大小
+		{ -- 8 键位字体大小
 			key = "keybindsize",
 			option_type = "slider",
 			text = T.split_words(L["键位"],L["字体"],L["尺寸"]),
@@ -1474,7 +1452,7 @@ G.Options = {
 				T.UpdateActionbarsFontSize()
 			end,
 		},
-		{ -- 7 宏字体大小
+		{ -- 6 宏字体大小
 			key = "macronamesize",
 			option_type = "slider",
 			text = T.split_words(MACRO,NAME,L["字体"],L["尺寸"]),
@@ -1485,7 +1463,7 @@ G.Options = {
 				T.UpdateActionbarsFontSize()
 			end,
 		},
-		{ -- 8 次数字体大小
+		{ -- 7 次数字体大小
 			key = "countsize",
 			option_type = "slider",
 			text = T.split_words(L["次数"],L["字体"],L["尺寸"]),
@@ -1496,17 +1474,17 @@ G.Options = {
 				T.UpdateActionbarsFontSize()
 			end,
 		},
-		{ -- 9 分割线
+		{ -- 8 分割线
 			option_type = "title",
 			line = true,
 		},
-		{ -- 10 不可用颜色
+		{ -- 9 不可用颜色
 			key = "rangecolor",
 			option_type = "check",			
 			text = L["不可用颜色"],
 			tip = L["不可用颜色提示"],
 		},
-		{ -- 11 条件渐隐
+		{ -- 10 条件渐隐
 			key = "enablefade",
 			option_type = "check",			
 			text = L["条件渐隐"],
@@ -1515,7 +1493,7 @@ G.Options = {
 				T.ApplyActionbarFadeEnable()
 			end,		
 		},
-		{ -- 12 渐隐同步
+		{ -- 11 渐隐同步
 			key = "fadingalpha_type",
 			option_type = "ddmenu",
 			text = "",			
@@ -1529,7 +1507,7 @@ G.Options = {
 			skip = true,
 			rely = "enablefade",
 		},
-		{ -- 13 渐隐透明度
+		{ -- 12 渐隐透明度
 			key = "fadingalpha",
 			option_type = "slider",
 			text = L["渐隐透明度"],
@@ -1542,17 +1520,17 @@ G.Options = {
 			end,
 			rely = "enablefade",
 		},
-		{ -- 14 标题:冷却提示
+		{ -- 13 标题:冷却提示
 			option_type = "title",
 			text = L["冷却提示"],
 			line = true,
 		},
-		{ -- 15 启用冷却提示
+		{ -- 14 启用冷却提示
 			key = "cdflash_enable",
 			option_type = "check",			
 			text = L["启用"],
 		},
-		{ -- 16 冷却提示图标尺寸
+		{ -- 15 冷却提示图标尺寸
 			key = "cdflash_size",
 			option_type = "slider",
 			text = T.split_words(L["图标"], L["尺寸"]),

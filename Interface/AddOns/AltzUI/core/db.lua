@@ -1204,7 +1204,6 @@ local Character_default_Settings = {
 		widthparty = 200,
 		showpartypet = false,
 		-- 其他
-		showthreatbar = true,
 		pvpicon = false,		
 		bossframes = true,
 		arenaframes = true,
@@ -1263,8 +1262,6 @@ local Character_default_Settings = {
 	},
 	ActionbarOptions = {
 		-- 样式
-		cooldown_number = true,
-		cooldown_number_wa = true,
 		cooldownsize = 20,
 		rangecolor = true,
 		keybindsize = 12,
