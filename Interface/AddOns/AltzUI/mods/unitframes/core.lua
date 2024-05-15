@@ -1343,7 +1343,7 @@ local func = function(self, unit)
 		tinsert(self.mouseovers, pp)
 		
 		self.Power = pp
-		self.Power.ApplySettings()		
+		self.Power.ApplySettings()
 	end
 
 	-- Alt能量
@@ -1380,6 +1380,8 @@ local func = function(self, unit)
 	if unit ~= "player" and unit ~= "pet" then
 		local name = T.createtext(self.cover, "OVERLAY", 13, "OUTLINE", "LEFT")
 		name:SetPoint("TOPLEFT", self.cover, "TOPLEFT", 3, 9)
+		name:SetPoint("TOPRIGHT", self.cover, "TOPRIGHT", -3, 9)
+		name:SetHeight(13)
 		
 		if T.multicheck(u, "targettarget", "focustarget", "boss", "arena") then
 			self:Tag(name, "[Altz:shortname]")
