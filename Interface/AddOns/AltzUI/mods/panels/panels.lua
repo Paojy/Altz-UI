@@ -681,7 +681,7 @@ local Net_Stats = CreateInfoButton(95, {"LEFT", InfoFrame, "LEFT", 0, 0})
 Net_Stats.t = 0
 Net_Stats:SetScript("OnUpdate", function(self, elapsed)
 	self.t = self.t + elapsed
-	if self.t > 3 then -- 每秒刷新一次
+	if self.t > 3 then -- 每3秒刷新一次
 		fps = format("%d"..T.color_text("fps"), GetFramerate())
 		lag = format("%d"..T.color_text("ms"), select(4, GetNetStats()))	
 		self.text:SetText(fps.."  "..lag)
