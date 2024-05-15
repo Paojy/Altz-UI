@@ -388,6 +388,7 @@ end
 local CreateCastbars = function(self, unit)
 	local u = unit:match("[^%d]+")
 	if T.multicheck(u, "target", "player", "focus", "boss", "arena") then
+		
 		local cb = CreateFrame("StatusBar", G.uiname..unit.."Castbar", self)
 		cb:SetFrameLevel(self:GetFrameLevel()+2)
 		cb:SetStatusBarTexture(G.media.blank)
@@ -476,7 +477,7 @@ local CreateCastbars = function(self, unit)
 			cb.Icon:SetSize(aCoreCDB["UnitframeOptions"]["cbIconsize"], aCoreCDB["UnitframeOptions"]["cbIconsize"])
 			cb.Time:SetFont(G.numFont, aCoreCDB["UnitframeOptions"]["valuefontsize"], "OUTLINE")
 			
-			if T.multicheck(u, "target", "player", "focus") and (aCoreCDB["UnitframeOptions"]["cbstyle"] == "independent") then -- 独立施法条	
+			if T.multicheck(u, "target", "player", "focus") and (aCoreCDB["UnitframeOptions"]["cbstyle"] == "independent") then -- 独立施法条		
 				if u == "player" or u == "target" or u == "focus" then
 					T.RestoreDragFrame(cb)
 				end
@@ -528,12 +529,9 @@ local CreateCastbars = function(self, unit)
 					cb.Text:SetJustifyH("RIGHT")
 				end				
 			else -- 附着施法条
-				if u == "player" or u == "target" or u == "focus" then
-					T.ReleaseDragFrame(cb)
-					
-					cb:ClearAllPoints()
-					cb:SetAllPoints(self)
-				end
+				T.ReleaseDragFrame(cb)	
+				cb:ClearAllPoints()
+				cb:SetAllPoints(self)
 				
 				cb:SetStatusBarColor(0, 0, 0, 0)
 				cb.backdrop:Hide()
