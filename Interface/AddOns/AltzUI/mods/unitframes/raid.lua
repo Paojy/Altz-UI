@@ -512,8 +512,7 @@ local CreateHealIndicator = function(self, unit)
 	icons["growth-y"] = "DOWN"	
 	icons.spacing = 1
 
-	icons.numDebuffs = 1
-	icons.numBuffs = 8
+	icons.numTotal = 9
 	
 	icons.FilterAura = HealerInd_AuraFilter
 	icons.PostCreateButton = PostCreateIndicatorIcon

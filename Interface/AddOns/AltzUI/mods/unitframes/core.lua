@@ -774,21 +774,16 @@ local PostUpdateIcon = function(icons, icon, unit, data, position)
 end
 
 local OverrideAurasSetPosition = function(auras, from, to)
-	auras.iconnum = 1
 	for i = from, to do
 		local button = auras[i]
-		
-		if not button or not button:IsShown() then break end
-		
-		auras.iconnum = i
-		button:ClearAllPoints()
-		if i ~= 1 then
-			button:SetPoint("LEFT", auras[i-1], "RIGHT", 4, 0)		
+		if button and button:IsShown() then
+			button:ClearAllPoints()
+			if i == 1 then
+				button:SetPoint("LEFT", auras, "CENTER", -((aCoreCDB["PlateOptions"]["plateaurasize"]+4)*to-4)/2, 0)
+			else
+				button:SetPoint("LEFT", auras[i-1], "RIGHT", 4, 0)		
+			end
 		end
-	end
-	
-	if auras[1] then
-		auras[1]:SetPoint("LEFT", auras, "CENTER", -((aCoreCDB["PlateOptions"]["plateaurasize"]+4)*auras.iconnum-4)/2, 5)
 	end
 end
 
@@ -859,12 +854,10 @@ local CreateAuras = function(self, unit)
 		elseif unit == "target" then
 			auras.FilterAura = Target_AuraFilter
 		elseif u == "boss" or u == "arena" then -- boss 1-5
-			auras.numBuffs = 3
-			auras.numDebuffs = 6		
+			auras.numTotal = 9
 			auras.FilterAura = Boss_AuraFilter
 		elseif u == "party" or u == "partypet" then
-			auras.numBuffs = 3
-			auras.numDebuffs = 6	
+			auras.numTotal = 9
 			auras.FilterAura = Party_AuraFilter
 		end
 		
@@ -910,6 +903,7 @@ local CreatePlateAuras = function(self, unit)
 	auras.showStealableBuffs = (G.myClass == "MAGE")
 	auras.disableMouse = true
 	auras.showDebuffType = true
+	auras.reanchorIfVisibleChanged = true
 	
 	auras.PostCreateButton = PostCreateIcon
 	auras.PostUpdateButton = PostUpdateIcon		
@@ -936,11 +930,9 @@ local CreatePlateAuras = function(self, unit)
 	
 	auras.ApplySettings =  function()
 		auras:SetHeight(aCoreCDB["PlateOptions"]["plateaurasize"])		
-		auras.numDebuffs = aCoreCDB["PlateOptions"]["plateauranum"]
-		auras.numBuffs = aCoreCDB["PlateOptions"]["plateauranum"]
+		auras.numTotal = aCoreCDB["PlateOptions"]["plateauranum"]
 		auras.size = aCoreCDB["PlateOptions"]["plateaurasize"]
-		
-		auras:ClearAllPoints()
+
 		if aCoreCDB["PlateOptions"]["theme"] == "number" then
 			auras:SetPoint("BOTTOM", self.Health.value, "TOP", 0, -5)
 		else
@@ -1733,7 +1725,7 @@ local plate_func = function(self, unit)
 	end
 	RegisterNameplateEventCallback(hp.Callback)
 	
-	hp.ApplySettings = function()		
+	hp.ApplySettings = function()
 		if aCoreCDB["PlateOptions"]["theme"] == "number" then
 			self:SetSize(aCoreCDB["PlateOptions"]["number_size"], aCoreCDB["PlateOptions"]["number_size"])
 			
@@ -1745,6 +1737,7 @@ local plate_func = function(self, unit)
 			hp.value:ClearAllPoints()
 			hp.value:SetPoint("BOTTOM")
 			hp.value:SetJustifyH("CENTER")
+			
 		elseif aCoreCDB["PlateOptions"]["theme"] == "dark" then
 			self:SetSize(aCoreCDB["PlateOptions"]["bar_width"], aCoreCDB["PlateOptions"]["bar_height"])
 			
@@ -1782,6 +1775,8 @@ local plate_func = function(self, unit)
 		
 		if aCoreCDB["PlateOptions"]["threatcolor"] then
 			hp.colorThreat = true
+		else
+			hp.colorThreat = false
 		end
 	end
 	
