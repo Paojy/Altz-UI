@@ -5,9 +5,9 @@ local oUF = AltzUF or oUF
 oUF.Tags.Methods['Altz:shortname'] = function(u, r)
 	local name = UnitName(r or u)
 	if aCoreCDB["SkinOptions"]["style"] ~= 3 then
-		return T.hex_str(T.utf8sub(name, 8), T.GetUnitColor(u))
+		return T.hex_str(name, T.GetUnitColor(u))
 	else
-		return T.utf8sub(name, 8)
+		return name
 	end
 end
 oUF.Tags.Events["Altz:shortname"] = "UNIT_NAME_UPDATE"
@@ -70,12 +70,12 @@ oUF.Tags.Methods["Altz:hpraidname"] = function(u, r)
 			perc = 1
 		end
 		if perc > .9 or UnitIsDead(u) then
-			result = T.utf8sub(name, aCoreCDB["UnitframeOptions"]["namelength"])
+			result = name
 		else
 			result = T.ShortValue(UnitHealthMax(u) - UnitHealth(u))
 		end
 	elseif aCoreCDB["UnitframeOptions"]["name_style"] == "name" then
-		result = T.utf8sub(name, aCoreCDB["UnitframeOptions"]["namelength"])
+		result = name
 	elseif aCoreCDB["UnitframeOptions"]["name_style"] == "none" then
 		result = ""
 	end

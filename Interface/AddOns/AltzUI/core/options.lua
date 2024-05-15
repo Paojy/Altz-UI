@@ -1049,14 +1049,14 @@ G.Options = {
 			rely = "enableraid",
 		},
 		{ -- 名字长度
-			key = "namelength",
+			key = "namewidth",
 			option_type = "slider",
-			text = T.split_words(NAME,L["长度"]),
-			min = 2,
-			max = 10,
-			step = 1,
+			text = T.split_words(NAME,L["长度"],L["比例"]),
+			min = .3,
+			max = 1,
+			step = 0.05,
 			apply = function()
-				T.UpdateUFTags('Altz_Healerraid')
+				T.ApplyUFSettings({"Tag_Name"}, 'Altz_Healerraid')
 			end,
 			rely = "enableraid",
 		},

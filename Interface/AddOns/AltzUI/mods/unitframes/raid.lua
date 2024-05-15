@@ -1,4 +1,4 @@
-﻿local T, C, L, G = unpack(select(2, ...))
+local T, C, L, G = unpack(select(2, ...))
 local oUF = AltzUF or oUF
 
 local current_encounter
@@ -803,6 +803,7 @@ local func = function(self, unit)
 	raidname:SetPoint("BOTTOMRIGHT", hp, "BOTTOMRIGHT", -1, 5)
 	
 	raidname.ApplySettings = function()
+		raidname:SetSize(aCoreCDB["UnitframeOptions"]["raidwidth"]*aCoreCDB["UnitframeOptions"]["namewidth"], aCoreCDB["UnitframeOptions"]["raidfontsize"])
 		raidname:SetFont(G.norFont, aCoreCDB["UnitframeOptions"]["raidfontsize"], "OUTLINE")
 	end
 	
