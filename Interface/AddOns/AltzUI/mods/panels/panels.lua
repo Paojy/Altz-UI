@@ -1111,7 +1111,7 @@ local skin_rm = function(bu, index, bg_color)
 		
 		bu.tex:SetTexture([[Interface\TargetingFrame\UI-RaidTargetingIcon_]]..index)
 		if bg_color then
-			bu.bg:SetBackdropColor(rm_colors[i][1], rm_colors[i][2], rm_colors[i][3], .5)
+			bu.bg:SetBackdropColor(rm_colors[index][1], rm_colors[index][2], rm_colors[index][3], .5)
 		end
 	end
 	
@@ -1141,9 +1141,8 @@ local wm_index = {5, 6, 3, 2, 7, 1, 4, 8}
 for i = 1, 9 do
 	local bu = CreateFrame("Button", nil, raidmark, "SecureActionButtonTemplate")     
 	bu:SetPoint("TOPLEFT", raidmark, "TOPLEFT", (i-1)*33, -33) 	
-	skin_rm(bu, i)
+	skin_rm(bu, i, true)
 	
-
 	bu:SetAttribute("type", "macro") 
 	bu:SetAttribute("macrotext1", (i == 9 and "/cwm 0") or "/wm "..wm_index[i])	
 
