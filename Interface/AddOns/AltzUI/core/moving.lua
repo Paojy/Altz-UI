@@ -339,7 +339,7 @@ local EM_options_info = {
 
 for OptionCategroy, t in pairs(G.Options) do
 	for i, info in pairs(t) do
-		if info.relatedFrames then
+		if info.relatedFrames and (not info.class or info.class[G.myClass]) then
 			table.insert(EM_options_info, {tag = info.key, option_type = info.option_type, path = {OptionCategroy, info.key}, rely = info.rely})
 		end
 	end
