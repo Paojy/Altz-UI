@@ -258,46 +258,54 @@ G.Options = {
 			text = ITEMS,
 			line = true,
 		},
-		{ -- 2 已会配方着色
+		{ -- 2 显示物品等级
+			key = "itemLevel",
+			option_type = "check",
+			text = T.split_words(L["显示"],string.gsub(ITEM_LEVEL, "%%d", "")),
+			apply = function()
+				T.ToggleItemLevel()
+			end,
+		},		
+		{ -- 3 已会配方着色
 			key = "alreadyknown",
 			option_type = "check",
 			text = L["已会配方着色"],
 			tip = L["已会配方着色提示"],
 		},
-		{ -- 3 分割线
+		{ -- 4 分割线
 			option_type = "title",
 			line = true,
 		},
-		{ -- 4 自动修理
+		{ -- 5 自动修理
 			key = "autorepair",
 			option_type = "check",
 			text = L["自动修理"],
 			tip = L["自动修理提示"],
 		},
-		{ -- 5 优先使用公会修理
+		{ -- 6 优先使用公会修理
 			key = "autorepair_guild",
 			option_type = "check",
 			text = L["优先使用公会修理"],
 			tip = L["优先使用公会修理提示"],
 			rely = "autorepair",
 		},
-		{ -- 6 分割线
+		{ -- 7 分割线
 			option_type = "title",
 			line = true,
 		},
-		{ -- 7 自动售卖
+		{ -- 8 自动售卖
 			key = "autosell",
 			option_type = "check",
 			text = L["自动售卖"],
 			tip = L["自动售卖提示"],
 		},
-		{ -- 8 自动购买
+		{ -- 9 自动购买
 			key = "autobuy",
 			option_type = "check",
 			text = L["自动购买"],
 			tip = L["自动购买提示"],
 		},
-		{ -- 9 分割线
+		{ -- 10 分割线
 			option_type = "title",
 			line = true,
 		},

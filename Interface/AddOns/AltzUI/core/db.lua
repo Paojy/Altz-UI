@@ -1144,6 +1144,7 @@ local Character_default_Settings = {
 		refuseInvite_stranger = false,
 	},
 	ItemOptions = {
+		itemLevel = true,
 		alreadyknown = true,
 		autorepair = true,
 		autorepair_guild = true,
