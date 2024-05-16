@@ -956,8 +956,8 @@ G.Options = {
 		{ -- DPS MANA
 			key = "dpsmana",
 			option_type = "check",
-			text = T.split_words(L["显示"],L["法力条"]),
-			tip = L["显示法力条提示"],
+			text = T.split_words(L["额外法力条"]),
+			tip = L["法力条提示"],
 			apply = function()
 				T.EnableUFSettings({"Dpsmana"}, "Altz - Player")
 				T.ApplyUFSettings({"ClassPower"}, "Altz - Player")
