@@ -53,8 +53,6 @@ hooksecurefunc(GameTooltip, "ProcessLines", function(self)
 				tiptext_right:SetFont(G.norFont, 12, "OUTLINE")
 			end
 		end
-		
-		tooltipData = table.wipe(tooltipData) -- 避免高占用
 	end
 end)
 
