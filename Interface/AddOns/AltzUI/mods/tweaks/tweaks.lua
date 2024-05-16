@@ -323,7 +323,7 @@ T.RegisterInitCallback(function()
 	local f = CreateFrame("CheckButton", "FocuserButton", UIParent, "SecureActionButtonTemplate") 
 	f:SetAttribute("type1", "macro") 
 	f:SetAttribute("macrotext", "/focus mouseover") 
-	SetOverrideBindingClick(FocuserButton, true, modifier.."-BUTTON"..mouseButton, "FocuserButton") 
+	SetOverrideBindingClick(f, true, modifier.."-BUTTON"..mouseButton, "FocuserButton") 
 end)
 
 --[[-----------------------------------------------------------------------------
