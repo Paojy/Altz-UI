@@ -211,9 +211,26 @@ local function CreateOptionPage(name, title, parent, orientation)
 	tab:EnableMouse(true)
 	
 	if parent == GUI then	
-		tab.backdrop = T.setStripBD(tab)
+		T.setStripBD(tab)
+		function tab:Glow()
+			tab.bd:SetBackdropBorderColor(unpack(G.addon_color))
+			tab.pxbd:SetBackdropBorderColor(unpack(G.addon_color))
+		end
+		function tab:Fade()
+			tab.bd:SetBackdropBorderColor(0, 0, 0, .5)
+			tab.pxbd:SetBackdropBorderColor(0, 0, 0, .5)
+		end
 	else
-		tab.backdrop = T.createBackdrop(tab, 0)
+		tab.bd = T.createBackdrop(tab, 0)
+		tab.pxbd = T.createPXBackdrop(tab, 0)
+		function tab:Glow()
+			tab.bd:SetBackdropBorderColor(unpack(G.addon_color))
+			tab.pxbd:SetBackdropBorderColor(unpack(G.addon_color))
+		end
+		function tab:Fade()
+			tab.bd:SetBackdropBorderColor(0, 0, 0, .5)
+			tab.pxbd:SetBackdropBorderColor(0, 0, 0, .5)
+		end
 	end
 	
 	tab.text = T.createtext(tab, "OVERLAY", 14, "OUTLINE", "LEFT")
@@ -227,20 +244,21 @@ local function CreateOptionPage(name, title, parent, orientation)
 	
 	if orientation == "VERTICAL" then	
 		tab:SetSize(130, 25)
-		tab:SetPoint("TOPLEFT", parent, "TOPRIGHT", 2, -35*tab.index)
+		tab:SetPoint("TOPLEFT", parent, "TOPRIGHT", 4, -35*tab.index)
 		
 		tab.text:SetJustifyH("LEFT")
 		tab.text:SetPoint("LEFT", 14, 0)
 		
 		tab:SetScript("OnMouseDown", function()
-			tab.owner:Show()
-			tab:SetPoint("TOPLEFT", parent, "TOPRIGHT", 8, -35*tab.index)
-			tab.backdrop:SetBackdropBorderColor(unpack(G.addon_color))
 			for i, t in pairs(parent.tabs) do
-				if t ~= tab then
+				if t == tab then
+					t.owner:Show()
+					t:SetPoint("TOPLEFT", parent, "TOPRIGHT", 8, -35*tab.index)
+					t:Glow()
+				else
 					t.owner:Hide()
-					t:SetPoint("TOPLEFT", parent, "TOPRIGHT", 2,  -35*t.index)
-					t.backdrop:SetBackdropBorderColor(0, 0, 0)
+					t:SetPoint("TOPLEFT", parent, "TOPRIGHT", 4,  -35*t.index)
+					t:Fade()
 				end
 			end
 		end)
@@ -256,12 +274,13 @@ local function CreateOptionPage(name, title, parent, orientation)
 		tab.text:SetPoint("CENTER")
 		
 		tab:SetScript("OnMouseDown", function()
-			tab.owner:Show()
-			tab.backdrop:SetBackdropBorderColor(unpack(G.addon_color))
 			for i, t in pairs(parent.tabs) do
-				if t ~= tab then
+				if t == tab then
+					t.owner:Show()
+					t:Glow()
+				else
 					t.owner:Hide()
-					t.backdrop:SetBackdropBorderColor(0, 0, 0)
+					t:Fade()
 				end
 			end
 		end)

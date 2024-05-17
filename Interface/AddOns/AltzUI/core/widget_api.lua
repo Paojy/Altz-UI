@@ -421,9 +421,11 @@ T.setStripeBg = function(bd_frame, anchor)
 end
 
 T.setStripBD = function(frame)
-	local bd = T.createBackdrop(frame, .6)
-	T.setStripeBg(bd)
-	return bd
+	frame.bd = T.createBackdrop(frame, .5, 5)
+	frame.bd:SetBackdropBorderColor(0, 0, 0, .5)
+	frame.pxbd = T.createPXBackdrop(frame)
+	frame.pxbd:SetBackdropBorderColor(0, 0, 0, .5)
+	T.setStripeBg(frame.bd)
 end
 
 ----------------------------
