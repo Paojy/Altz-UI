@@ -67,7 +67,7 @@ end
 local eventFrame = CreateFrame('Frame')
 eventFrame:SetScript('OnEvent', function(self, event, bagID)
 	if event == "BAG_UPDATE" then
-		if bagID >= 0 and bagID <= 4 then		
+		if bagID >= 0 and bagID <= 4 then
 			UpdateBag(bagID)
 		end
 	end

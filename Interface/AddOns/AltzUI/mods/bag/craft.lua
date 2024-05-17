@@ -1,5 +1,7 @@
 local T, C, L, G = unpack(select(2, ...))
 
+--C_SpellBook.ContainsAnyDisenchantSpell()
+
 local action_spells = {
 	51005, --milling
 	31252, --prospecting

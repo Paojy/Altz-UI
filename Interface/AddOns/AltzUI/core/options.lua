@@ -261,7 +261,7 @@ G.Options = {
 		{ -- 2 显示物品等级
 			key = "itemLevel",
 			option_type = "check",
-			text = T.split_words(L["显示"],string.gsub(ITEM_LEVEL, "%%d", "")),
+			text = T.split_words(L["显示"],STAT_AVERAGE_ITEM_LEVEL),
 			apply = function()
 				T.ToggleItemLevel()
 			end,
