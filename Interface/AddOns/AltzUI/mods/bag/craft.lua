@@ -208,7 +208,7 @@ T.RegisterEnteringWorldCallback(function()
 			lastItemID = nil
 			
 			--get the bag slot info
-			local bag = owner:GetParent():GetID()
+			local bag = owner:GetBagID()
 			local slot = owner:GetID()
 			local _, _, qual, itemLevel, _, itemType, _, _, EquipLoc = GetItemInfo(link)
 						
