@@ -1134,7 +1134,7 @@ local Character_default_Settings = {
 		showbg = false,		
 		nogoldseller = true,
 		goldkeywordnum = 2,
-		goldkeywordlist = "",		
+		goldkeywordlist = "",
 		autoinvite = false,
         autoinvitekeywords = "111 123",
 		acceptInvite_friend = true,
@@ -1151,12 +1151,12 @@ local Character_default_Settings = {
 		autorepair_guild_auto = true,		
 		autosell = true,
 		autobuy = false,
-		autobuylist = {},
-		favoriteitemIDs = {},
+		autobuylist = {}, -- 导出、导入
+		favoriteitemIDs = {}, -- 导出、导入
 		equiplist = true,
 		equiplist_inspect = true,
-		specloot_encounters = {},
-		specloot_instances = {},
+		specloot_encounters = {}, -- 导出、导入
+		specloot_instances = {}, -- 导出、导入
 	},	
 	UnitframeOptions = {
 		--[[ 单位框架 ]]--
@@ -1186,8 +1186,8 @@ local Character_default_Settings = {
 		focus_cbwidth = 230,	
 		namepos = "LEFT",
 		timepos = "RIGHT",
-		Interruptible_color = {r = .49, g = .91, b = 1},
-		notInterruptible_color = {r = .94, g = .8, b = .33},
+		Interruptible_color = {r = .49, g = .91, b = 1}, -- 导出、导入
+		notInterruptible_color = {r = .94, g = .8, b = .33}, -- 导出、导入
 		hideplayercastbaricon = false,
 		-- 平砍计时条
 		swing = false,
@@ -1199,7 +1199,7 @@ local Character_default_Settings = {
 		playerdebuffenable = true,
 		AuraFilterignoreBuff = false,
 		AuraFilterignoreDebuff = false,
-		AuraFilterwhitelist = {},
+		AuraFilterwhitelist = {}, -- 导出、导入
 		-- 图腾
 		totems = true,
 		totemsize = 25,
@@ -1242,10 +1242,10 @@ local Character_default_Settings = {
 		hotind_size = 15,
 		hotind_style = "icon_ind",-- "icon_ind", "number_ind"
 		hotind_filtertype = "whitelist", -- "blacklist", "whitelist"
-		hotind_auralist = HealerIndicatorAuraList,
+		hotind_auralist = HealerIndicatorAuraList, -- 导出、导入
 		-- 点击施法
 		enableClickCast = false,
-		ClickCast = ClickCastDB,
+		ClickCast = ClickCastDB, -- 导出、导入
 		-- 光环图标	
 		raid_debuff_anchor_x = -50,
 		raid_debuff_anchor_y = 0,
@@ -1258,12 +1258,12 @@ local Character_default_Settings = {
 		debuff_auto_add = true,
 		debuff_auto_add_level = 6,
 		-- 团队减益
-		raid_debuffs = {},
+		raid_debuffs = {}, -- 导出、导入
 		-- 全局减益
-		debuff_list = global_debuffs,
-		debuff_list_black = ignored_debuffs,
+		debuff_list = global_debuffs, -- 导出、导入
+		debuff_list_black = ignored_debuffs, -- 导出、导入
 		-- 全局增益
-		buff_list = cooldown_auras,
+		buff_list = cooldown_auras, -- 导出、导入
 	},
 	ActionbarOptions = {
 		-- 样式
@@ -1278,8 +1278,8 @@ local Character_default_Settings = {
 		-- 冷却提示
 		cdflash_enable = true,
 		cdflash_size = 60,
-		cdflash_ignorespells = {},
-		cdflash_ignoreitems = {
+		cdflash_ignorespells = {}, -- 导出、导入
+		cdflash_ignoreitems = { -- 导出、导入
 			[6948] = true,
 		},
 	},
@@ -1290,10 +1290,10 @@ local Character_default_Settings = {
 		namefontsize = 8,
 		plateauranum = 5,
 		plateaurasize = 15,	
-		Interruptible_color = {r = .49, g = .91, b = 1},
-		notInterruptible_color = {r = .94, g = .8, b = .33},
+		Interruptible_color = {r = .49, g = .91, b = 1}, -- 导出、导入
+		notInterruptible_color = {r = .94, g = .8, b = .33}, -- 导出、导入
 		focuscolored = true,
-		focus_color = {r = .5, g = .4, b = .9},
+		focus_color = {r = .5, g = .4, b = .9}, -- 导出、导入
 		threatcolor = true,
 		bar_onlyname = false, -- 友方只显示名字
 				
@@ -1313,12 +1313,12 @@ local Character_default_Settings = {
 		classresource_show = false,	
 		-- 光环过滤列表
 		myfiltertype = "blacklist", -- "blacklist", "whitelist", "none"
-		myplateauralist = {},
+		myplateauralist = {}, -- 导出、导入
 		otherfiltertype = "none", -- "whitelist", "none"
-		otherplateauralist = plate_auras,
+		otherplateauralist = plate_auras, -- 导出、导入
 		-- 自定义
-		customcoloredplates = {},
-		custompowerplates = {},
+		customcoloredplates = {}, -- 导出、导入
+		custompowerplates = {}, -- 导出、导入
 	},
 	CombattextOptions = {
 		showreceivedct = true,
@@ -1399,6 +1399,14 @@ T.ExportSettings = function()
 							for id, count in pairs(aCoreCDB[OptionCategroy][setting]) do
 								str = str.."^"..OptionCategroy.."~"..setting.."~"..id.."~"..count
 							end
+						elseif setting == "favoriteitemIDs" then
+							for id, _ in pairs(aCoreCDB[OptionCategroy][setting]) do
+								str = str.."^"..OptionCategroy.."~"..setting.."~"..id.."~true"
+							end
+						elseif setting == "specloot_encounters" or setting == "specloot_instances" then
+							for id, spec in pairs(aCoreCDB[OptionCategroy][setting]) do
+								str = str.."^"..OptionCategroy.."~"..setting.."~"..id.."~"..spec
+							end			
 						end
 					elseif OptionCategroy == "PlateOptions" then
 						if setting == "customcoloredplates" then -- 6
@@ -1567,6 +1575,10 @@ T.ImportSettings = function(str)
 					else -- 是个表格
 						if OptionCategroy == "ItemOptions" then
 							if setting == "autobuylist" then -- 4 OptionCategroy.."~"..setting.."~"..id.."~"..count
+								aCoreCDB[OptionCategroy][setting][tonumber(arg1)] = tonumber(arg2)
+							elseif setting == "favoriteitemIDs" then -- 4 OptionCategroy.."~"..setting.."~"..id.."~true"
+								aCoreCDB[OptionCategroy][setting][tonumber(arg1)] = true
+							elseif (setting == "specloot_encounters" or setting == "specloot_instances") and sameclass then	-- 4 OptionCategroy.."~"..setting.."~"..id.."~"..spec						
 								aCoreCDB[OptionCategroy][setting][tonumber(arg1)] = tonumber(arg2)
 							end
 						elseif OptionCategroy == "PlateOptions" then
