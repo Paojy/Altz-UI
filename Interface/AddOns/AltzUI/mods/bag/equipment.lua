@@ -22,6 +22,14 @@ local equiment_slots = {
 	{ name = SECONDARYHANDSLOT, slot = INVSLOT_OFFHAND},
 }
 
+local statsInfo = {
+	{ key = "ITEM_MOD_CRIT_RATING_SHORT", name = ITEM_MOD_CRIT_RATING_SHORT, color = {1,0,0}},
+	{ key = "ITEM_MOD_HASTE_RATING_SHORT", name = ITEM_MOD_HASTE_RATING_SHORT, color = {0,1,0}},
+	{ key = "ITEM_MOD_MASTERY_RATING_SHORT", name = ITEM_MOD_MASTERY_RATING_SHORT, color = {0,1,1}},
+	{ key = "ITEM_MOD_VERSATILITY", name = ITEM_MOD_VERSATILITY, color = {1,1,0}},
+}
+
+local frame_width = 400
 local enchantformat = string.gsub(ENCHANTED_TOOLTIP_LINE, "%%s", "([^.]+)")
 local itemlevelfomat = string.gsub(ITEM_LEVEL, "%%d", "([^.]+)")
 
@@ -68,56 +76,63 @@ local function ShouldShowSecondHand(parent)
 	end
 end
 
-local function CreateEnchantSocket(frame)
+local function CreateEnchantSocket(bu, frame)
+	frame.Enchant = CreateFrame("Frame", nil, frame)
+	frame.Enchant:SetSize(14, 14)
 	
-		frame.Enchant = CreateFrame("Frame", nil, frame)
-		frame.Enchant:SetSize(14, 14)
-		
-		frame.Enchant.Border = frame.Enchant:CreateTexture(nil, "OVERLAY")
-		frame.Enchant.Border:SetAtlas("Adventurers-Followers-Frame")
-		frame.Enchant.Border:SetAllPoints()
-		
-		frame.Enchant.tex_mask = frame.Enchant:CreateMaskTexture(nil, "ARTWORK")
-		frame.Enchant.tex_mask:SetTexture([[Interface\CharacterFrame\TempPortraitAlphaMask]])
-		frame.Enchant.tex_mask:SetAllPoints()
-		
-		frame.Enchant.Icon = frame.Enchant:CreateTexture(nil, "ARTWORK")
-		frame.Enchant.Icon:SetTexCoord(.1, .9, .1, .9)
-		frame.Enchant.Icon:SetAllPoints()
-		frame.Enchant.Icon:SetTexture(136244)
-		frame.Enchant.Icon:AddMaskTexture(frame.Enchant.tex_mask)
-		
-		frame.Enchant.Text = T.createtext(frame.Enchant, "OVERLAY", 12, "OUTLINE", "LEFT")
-		frame.Enchant.Text:SetPoint("LEFT", frame.Enchant, "RIGHT", 0, 0)
+	frame.Enchant.border = frame.Enchant:CreateTexture(nil, "OVERLAY")
+	frame.Enchant.border:SetAtlas("Adventurers-Followers-Frame")
+	frame.Enchant.border:SetAllPoints()
 	
+	frame.Enchant.tex_mask = frame.Enchant:CreateMaskTexture(nil, "ARTWORK")
+	frame.Enchant.tex_mask:SetTexture([[Interface\CharacterFrame\TempPortraitAlphaMask]])
+	frame.Enchant.tex_mask:SetAllPoints()
+	
+	frame.Enchant.icon = frame.Enchant:CreateTexture(nil, "ARTWORK")
+	frame.Enchant.icon:SetTexCoord(.1, .9, .1, .9)
+	frame.Enchant.icon:SetAllPoints()
+	frame.Enchant.icon:SetTexture(136244)
+	frame.Enchant.icon:AddMaskTexture(frame.Enchant.tex_mask)
+	
+	frame.Enchant.text = T.createtext(frame.Enchant, "OVERLAY", 12, "OUTLINE", "LEFT")
+	frame.Enchant.text:SetPoint("LEFT", frame.Enchant, "RIGHT", 0, 0)
+	frame.Enchant.text:SetTextColor(.12, 1, 0)
+	frame.Enchant.text:SetHeight(14)
+	frame.Enchant.text:SetPoint("RIGHT", bu, "RIGHT", -70, 0)
 end
 
 local function CreateSockets(bu)
 	local frame = CreateFrame("Frame", nil, bu)
-	frame:SetSize(48, 16)
+	frame:SetSize(42, 14)
 	frame:SetPoint("LEFT", bu.mid, "RIGHT", 0, 0)
 	frame.Slots = {}
 	
 	for i = 1, 3 do
 		local f = CreateFrame("Frame", nil, frame)
-		f:SetSize(16, 16)
-		f:SetPoint("LEFT", 16*(i-1), 0)
+		f:SetSize(14, 14)
+		f:SetPoint("LEFT", 14*(i-1), 0)
 		
 		f.Slot = f:CreateTexture(nil, "BORDER")
-		f.Slot:SetAtlas("character-emptysocket")
+		f.Slot:SetAtlas("Adventurers-Followers-Frame")
 		f.Slot:SetAllPoints(true)
 
+		f.Gem_mask = f:CreateMaskTexture(nil, "ARTWORK")
+		f.Gem_mask:SetTexture([[Interface\CharacterFrame\TempPortraitAlphaMask]])
+		f.Gem_mask:SetPoint("TOPLEFT", 2, -2)
+		f.Gem_mask:SetPoint("BOTTOMRIGHT", -2, 2)
+		
 		f.Gem = f:CreateTexture(nil, "ARTWORK")
 		f.Gem:SetTexCoord(.2, .8, .2, .8)
 		f.Gem:SetPoint("TOPLEFT", 2, -2)
 		f.Gem:SetPoint("BOTTOMRIGHT", -2, 2)
+		f.Gem:AddMaskTexture(f.Gem_mask)
 		f.Gem:Hide()
 		
 		table.insert(frame.Slots, f)
 	end
 	
 	if bu.enchant then
-		CreateEnchantSocket(frame)
+		CreateEnchantSocket(bu, frame)
 	end
 	
 	function frame:SetItem(item, slot_index, enchant_str)
@@ -147,7 +162,7 @@ local function CreateSockets(bu)
 				end
 				
 				if index <= numSockets then
-					anchor = anchor + 16
+					anchor = anchor + 14
 				end
 			end
 		else
@@ -160,11 +175,11 @@ local function CreateSockets(bu)
 			frame.Enchant:ClearAllPoints()
 			frame.Enchant:SetPoint("LEFT", frame, "LEFT", anchor, 0)
 			if enchant_str then
-				frame.Enchant.Icon:SetDesaturated(false)
-				frame.Enchant.Text:SetText(enchant_str)
+				frame.Enchant.icon:SetDesaturated(false)
+				frame.Enchant.text:SetText(enchant_str)
 			else
-				frame.Enchant.Icon:SetDesaturated(true)
-				frame.Enchant.Text:SetText(T.hex_str(T.split_words(NONE,ENCHANTS), .5, .5, .5))
+				frame.Enchant.icon:SetDesaturated(true)
+				frame.Enchant.text:SetText(T.hex_str(T.split_words(NONE,ENCHANTS), .5, .5, .5))
 			end
 		end
 		
@@ -174,17 +189,67 @@ local function CreateSockets(bu)
 	bu.sockets = frame
 end
 
+local function CreateStats(bu)
+	local frame = CreateFrame("Frame", nil, bu)
+	frame:SetSize(80, 14)
+	frame:SetPoint("LEFT", bu.right, "RIGHT", 0, 0)
+	frame.buttons = {}
+	frame.active_buttons = {}
+	frame.stats_info = {}
+	
+	for i, info in pairs(statsInfo) do
+		local f = CreateFrame("Frame", nil, frame)
+		f:SetSize(20, 14)
+		
+		f.backdrop = T.createPXBackdrop(f)
+		f.backdrop:SetBackdropBorderColor(info.color[1], info.color[2], info.color[3], .5)
+		
+		f.text = T.createtext(f, "OVERLAY", 8, "OUTLINE", "CENTER")
+		f.text:SetAllPoints()
+		f.text:SetTextColor(unpack(info.color))
+		f.text:SetText(info.name)
+		
+		frame.buttons[info.key] = f
+	end
+	
+	function frame:SetItemStats(item)
+		frame.active_buttons = table.wipe(frame.active_buttons)
+		frame.stats_info = table.wipe(frame.stats_info)
+		frame.stats_info = GetItemStats(item)
+		
+		for key, f in pairs(frame.buttons) do
+			f:Hide()
+		end
+		
+		for key, value in pairs(frame.stats_info) do
+			local f = frame.buttons[key]
+			if f then
+				f.v = value
+				table.insert(frame.active_buttons, f)
+			end
+		end
+		
+		table.sort(frame.active_buttons, function(a, b) return a.v > b.v end)
+				
+		for i, f in pairs(frame.active_buttons) do
+			f:Show()
+			f:SetPoint("LEFT", frame, "LEFT", 4+(i-1)*24, 0)
+		end		
+	end
+	
+	bu.stats = frame
+end
+
 local function CreateSlotButton(parent, index)
 	local bu = CreateFrame("Frame", nil, parent)
-	bu:SetSize(400, 18)
+	bu:SetSize(frame_width-10, 18)
 	
 	local info = equiment_slots[index]
 	bu.slot_name = info.name
 	bu.slot = info.slot
 	bu.compare = info.compare
 	bu.enchant = info.enchant
-	bu.itemLevel = 0
-	bu.stats = {}
+	bu.itemLevel = 0	
 	
 	bu.left = T.createtext(bu, "OVERLAY", 12, "OUTLINE", "LEFT")
 	bu.left:SetPoint("LEFT", bu, "LEFT", 0, 0)
@@ -201,9 +266,10 @@ local function CreateSlotButton(parent, index)
 	bu.mid:SetPoint("LEFT", bu.icon, "RIGHT", 0, 0)
 	
 	bu.right = T.createtext(bu, "OVERLAY", 12, "OUTLINE", "RIGHT")
-	bu.right:SetPoint("RIGHT", bu, "RIGHT", 0, 0)
+	bu.right:SetPoint("RIGHT", bu, "RIGHT", -50, 0)
 	
 	CreateSockets(bu)
+	CreateStats(bu)
 	
 	bu:SetScript("OnEnter", function(self) 
 		GameTooltip:SetOwner(self, "ANCHOR_RIGHT", -18, 10)
@@ -223,7 +289,7 @@ end
 
 local function CreateSetButton(parent)
 	local bu = CreateFrame("Frame", nil, parent)
-	bu:SetSize(450, 18)
+	bu:SetSize(frame_width-10, 18)
 	
 	bu.text = T.createtext(bu, "OVERLAY", 12, "OUTLINE", "LEFT")
 	bu.text:SetPoint("LEFT", bu, "LEFT", 0, 0)
@@ -241,7 +307,7 @@ end
 local function UpdateEquipSlot(parent, bu)
 	local itemLink = GetInventoryItemLink(parent.unit, bu.slot)
 	if itemLink then	
-		local itemName, itemLink, itemQuality, _, _, _, _, _, _, itemTexture, _, _, _, _, _, setID = C_Item.GetItemInfo(itemLink)
+		local itemName, _, itemQuality, _, _, _, _, _, _, itemTexture, _, _, _, _, _, setID = C_Item.GetItemInfo(itemLink)
 		local level, enchant_str = GetTooltipData(parent.unit, bu.slot, itemLink)
 		
 		bu.itemLevel = level or 0
@@ -252,6 +318,7 @@ local function UpdateEquipSlot(parent, bu)
 		bu.mid:SetText(itemLink)
 		bu.right:SetText(level)
 		bu.sockets:SetItem(itemLink, bu.slot, enchant_str)
+		bu.stats:SetItemStats(itemLink)
 		
 		if setID then		
 			if not parent.active_sets[setID] then			
@@ -371,11 +438,11 @@ end
 --====================================================--
 --[[               -- Frames --                     ]]--
 --====================================================--
-local function CreateEquipListFrame(parent, unit)
+local function CreateEquipListFrame(parent, unit, path)
 	local frame = CreateFrame("Frame", nil, parent)
 	frame:SetPoint("TOPLEFT", parent, "TOPRIGHT", 5, -1)
 	frame:SetPoint("BOTTOMLEFT", parent, "BOTTOMRIGHT", 5, 1)
-	frame:SetWidth(410)
+	frame:SetWidth(frame_width)
 	T.setStripBD(frame)
 	
 	frame.close = CreateFrame("Button", nil, frame, "UIPanelCloseButton")
@@ -394,19 +461,23 @@ local function CreateEquipListFrame(parent, unit)
 	frame.toggle:SetScript("OnEnter", function(self) 
 		GameTooltip:SetOwner(self, "ANCHOR_RIGHT",  -20, 10)
 		GameTooltip:AddLine(L["装备列表"])
-		GameTooltip:Show() 
+		GameTooltip:Show()
+		self.tex:SetVertexColor(unpack(G.addon_color))
 	end)
 	
 	frame.toggle:SetScript("OnLeave", function(self)
 		GameTooltip:Hide()
+		self.tex:SetVertexColor(1, 1, 1)
 	end)
 	
-	frame.close:SetScript("OnClick", function() 
+	frame.close:SetScript("OnClick", function()
+		T.ValueToPath(aCoreCDB, path, false)
 		frame:Hide()
 		frame.toggle:Show()
 	end)
 
 	frame.toggle:SetScript("OnClick", function()
+		T.ValueToPath(aCoreCDB, path, true)
 		frame:Show()
 	end)
 	
@@ -418,12 +489,12 @@ local function CreateEquipListFrame(parent, unit)
 	frame.itemLevel:SetPoint("TOPLEFT", 5, -10)
 	
 	frame.line = frame:CreateTexture(nil, "ARTWORK")
-	frame.line:SetSize(400, 1)
+	frame.line:SetSize(frame_width-10, 1)
 	frame.line:SetPoint("TOPLEFT", frame.itemLevel, "BOTTOMLEFT", 0, -5)
 	frame.line:SetColorTexture(1, 1, 1, .2)
 	
 	frame.line2 = frame:CreateTexture(nil, "ARTWORK")
-	frame.line2:SetSize(400, 1)
+	frame.line2:SetSize(frame_width-10, 1)
 	frame.line2:SetColorTexture(1, 1, 1, .2)
 	frame.line2:Hide()
 	
@@ -440,7 +511,7 @@ local function CreateEquipListFrame(parent, unit)
 	return frame
 end
 
-local EquipFrame = CreateEquipListFrame(_G["CharacterFrame"], "player")
+local EquipFrame = CreateEquipListFrame(_G["CharacterFrame"], "player", {"ItemOptions", "equiplist"})
 local in_progress
 
 EquipFrame:SetScript('OnEvent', function(self, event)
@@ -459,7 +530,8 @@ EquipFrame:SetScript('OnEvent', function(self, event)
 		self.buttons[16]:SetShown(ShouldShowSecondHand(self))
 		UpdateAll(self)
 		UpdateDurability(self)
-		self:UnregisterEvent("PLAYER_ENTERING_WORLD")	
+		self:SetShown(aCoreCDB.ItemOptions.equiplist)
+		self:UnregisterEvent("PLAYER_ENTERING_WORLD")
 	end
 end)
 
@@ -471,7 +543,7 @@ local ef = CreateFrame("Frame")
 ef:RegisterEvent("ADDON_LOADED")
 ef:SetScript("OnEvent", function(self, event, addon)
 	if addon == "Blizzard_InspectUI" then
-		local Inspect_EquipFrame = CreateEquipListFrame(_G["InspectFrame"])
+		local Inspect_EquipFrame = CreateEquipListFrame(_G["InspectFrame"], nil, {"ItemOptions", "equiplist_inspect"})
 		Inspect_EquipFrame:SetScript("OnEvent", function(self, event)
 			self.unit = InspectFrame.unit
 			if self.unit then
@@ -480,5 +552,6 @@ ef:SetScript("OnEvent", function(self, event, addon)
 			end
 		end)
 		Inspect_EquipFrame:RegisterEvent("INSPECT_READY")
+		Inspect_EquipFrame:SetShown(aCoreCDB.ItemOptions.equiplist_inspect)
 	end
 end)

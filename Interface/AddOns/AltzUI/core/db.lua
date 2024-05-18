@@ -1153,6 +1153,8 @@ local Character_default_Settings = {
 		autobuy = false,
 		autobuylist = {},
 		favoriteitemIDs = {},
+		equiplist = true,
+		equiplist_inspect = true,
 	},	
 	UnitframeOptions = {
 		--[[ 单位框架 ]]--
