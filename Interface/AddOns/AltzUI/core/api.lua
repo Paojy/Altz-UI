@@ -528,7 +528,7 @@ local EditFrame = function(parent, width, text, points, tip)
 	name:SetText(text or "")	
 	frame.name = name
 	
-	local box = EditboxWithButton(parent, width, {"LEFT", frame, "LEFT", 100, 0}, tip)
+	local box = EditboxWithButton(frame, width, {"LEFT", frame, "LEFT", 100, 0}, tip)
 	frame.box = box
 	
 	return frame

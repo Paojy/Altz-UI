@@ -457,7 +457,7 @@ function SpecMover:ArrangeOptions()
 		end
 		
 		option:Hide()
-	
+		
 		if info.tag == "parentbox" then
 			if not option.frameselect_button then
 				option.frameselect_button = T.ClickTexButton(option, {"LEFT", option.box, "RIGHT", 0, 0}, G.iconFile.."search.tga", nil, 20, T.split_words(CHOOSE,L["锚点框体"]))		
@@ -466,9 +466,9 @@ function SpecMover:ArrangeOptions()
 					if frame then
 						local value = aCoreCDB["FramePoints"][name][CurrentRole]["parent"]
 						if not FrameChooseInProgress then
-							StartFrameChooser(option, name, value)
+							StartFrameChooser(option.box, name, value)
 						else
-							StopFrameChooser(option, value)
+							StopFrameChooser(option.box, value)
 						end
 					end
 				end)
@@ -476,12 +476,8 @@ function SpecMover:ArrangeOptions()
 			end
 			
 			local frame, name = GetSelected()
-			if frame then
-				if T.ValueFromPath(aCoreCDB, {"FramePoints", name, CurrentRole, "anchor_type"}) == "Screen" then
-					option:Hide()
-				else					
-					option:Show()
-				end
+			if T.ValueFromPath(aCoreCDB, {"FramePoints", name, CurrentRole, "anchor_type"}) == "ChooseFrame" then	
+				option:Show()
 			end
 		elseif not info.path then
 			option:Show()
@@ -498,7 +494,7 @@ function SpecMover:ArrangeOptions()
 
 		local adjust = info.path and -20 or 0
 		if option:IsVisible() then
-			index = index + 1			
+			index = index + 1
 			if info.option_type == "dd" then
 				option:SetPoint("TOPLEFT", SpecMover, "TOPLEFT", 20, -50-index*30+adjust)
 			elseif info.option_type == "box" then
@@ -517,7 +513,7 @@ function SpecMover:ArrangeOptions()
 end
 
 SpecMover:SetScript("OnShow", function(self)
-	SpecMover:ArrangeOptions()
+	self:ArrangeOptions()
 end)
 
 -- reset
