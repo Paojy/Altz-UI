@@ -1155,6 +1155,8 @@ local Character_default_Settings = {
 		favoriteitemIDs = {},
 		equiplist = true,
 		equiplist_inspect = true,
+		specloot_encounters = {},
+		specloot_instances = {},
 	},	
 	UnitframeOptions = {
 		--[[ 单位框架 ]]--
