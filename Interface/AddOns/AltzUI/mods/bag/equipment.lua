@@ -221,20 +221,22 @@ local function CreateStats(bu)
 			f:Hide()
 		end
 		
-		for key, value in pairs(frame.stats_info) do
-			local f = frame.buttons[key]
-			if f then
-				f.v = value
-				table.insert(frame.active_buttons, f)
+		if frame.stats_info then
+			for key, value in pairs(frame.stats_info) do
+				local f = frame.buttons[key]
+				if f then
+					f.v = value
+					table.insert(frame.active_buttons, f)
+				end
 			end
+			
+			table.sort(frame.active_buttons, function(a, b) return a.v > b.v end)
+					
+			for i, f in pairs(frame.active_buttons) do
+				f:Show()
+				f:SetPoint("LEFT", frame, "LEFT", 4+(i-1)*24, 0)
+			end		
 		end
-		
-		table.sort(frame.active_buttons, function(a, b) return a.v > b.v end)
-				
-		for i, f in pairs(frame.active_buttons) do
-			f:Show()
-			f:SetPoint("LEFT", frame, "LEFT", 4+(i-1)*24, 0)
-		end		
 	end
 	
 	bu.stats = frame
