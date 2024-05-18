@@ -374,7 +374,7 @@ T.CreateGUIOpitons(ChatOptions, "ChatOptions")
 local ItemOptions = CreateOptionPage("Item Options", ITEMS, GUI, "VERTICAL")
 T.CreateGUIOpitons(ItemOptions, "ItemOptions")
 
-ItemOptions.autobuy_list = T.CreateItemListOption(ItemOptions, {"TOPLEFT", 20, -260}, 260,
+ItemOptions.autobuy_list = T.CreateItemListOption(ItemOptions, {"TOPLEFT", 20, -290}, 260,
 L["自动购买"]..L["设置"], {"ItemOptions", "autobuylist"}, L["物品数量"])
 
 do
@@ -1095,14 +1095,12 @@ RFInnerframe.raiddebuff.instance_list:SetScript("OnShow", function(self)
 		end
 		
 		-- 团本
-		if i ~= tier_num then -- 当前赛季没有团本
+		instanceID, instanceName, _, _, _, _, bgImage = EJ_GetInstanceByIndex(raid_i, true)
+		while instanceID ~= nil do
+			CreateInstanceButton(self, instanceID, instanceName, bgImage)
+		
+			raid_i = raid_i + 1
 			instanceID, instanceName, _, _, _, _, bgImage = EJ_GetInstanceByIndex(raid_i, true)
-			while instanceID ~= nil do
-				CreateInstanceButton(self, instanceID, instanceName, bgImage)
-			
-				raid_i = raid_i + 1
-				instanceID, instanceName, _, _, _, _, bgImage = EJ_GetInstanceByIndex(raid_i, true)
-			end
 		end
 		
 		self.y = self.y - 10
