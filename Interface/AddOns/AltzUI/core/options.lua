@@ -261,13 +261,15 @@ G.Options = {
 		{ -- 2 显示物品等级
 			key = "itemLevel",
 			option_type = "check",
+			width = .4,
 			text = T.split_words(L["显示"],STAT_AVERAGE_ITEM_LEVEL),
 			apply = function()
 				T.ToggleItemLevel()
 			end,
-		},		
+		},
 		{ -- 3 已会配方着色
 			key = "alreadyknown",
+			width = .6,
 			option_type = "check",
 			text = L["已会配方着色"],
 			tip = L["已会配方着色提示"],
@@ -276,39 +278,81 @@ G.Options = {
 			option_type = "title",
 			line = true,
 		},
-		{ -- 5 自动修理
+		{ -- 5 自动ROLL(公会队伍)
+			key = "autoloot_guild",
+			option_type = "ddmenu",
+			text = string.format("%s(%s)", L["自动ROLL"], GUILD_GROUP),
+			option_table = {
+				{1, PASS},
+				{2, NEED.."/"..GREED},
+				{3, L["手动"]},
+			},
+			apply = function()
+				T.UpdateAutoLoot()
+			end,
+		},
+		{ -- 6 自动ROLL(非公会队伍)
+			key = "autoloot_noguild",
+			option_type = "ddmenu",
+			text = string.format("%s(%s)", L["自动ROLL"], L["非"]..GUILD_GROUP),
+			option_table = {
+				{1, PASS},
+				{2, NEED.."/"..GREED},
+				{3, L["手动"]},
+			},
+			apply = function()
+				T.UpdateAutoLoot()
+			end,
+		},
+		{ -- 7 ROLL结果截图
+			key = "lootroll_screenshot",
+			option_type = "check",
+			width = .4,
+			text = L["ROLL结果截图"],
+			apply = function()
+				T.UpdatedLootScreenShotEnabled()
+			end,
+		},
+		{ -- 8 截图后关闭ROLL点框
+			key = "lootroll_screenshot_close",
+			option_type = "check",
+			width = .6,
+			text = L["截图后关闭ROLL点框"],
+			rely = "lootroll_screenshot",
+		},
+		{ -- 9 分割线
+			option_type = "title",
+			line = true,
+		},
+		{ -- 10 自动修理
 			key = "autorepair",
 			option_type = "check",
+			width = .4,
 			text = L["自动修理"],
 			tip = L["自动修理提示"],
 		},
-		{ -- 6 优先使用公会修理
+		{ -- 11 优先使用公会修理
 			key = "autorepair_guild",
 			option_type = "check",
+			width = .6,
 			text = L["优先使用公会修理"],
 			tip = L["优先使用公会修理提示"],
 			rely = "autorepair",
 		},
-		{ -- 7 分割线
-			option_type = "title",
-			line = true,
-		},
-		{ -- 8 自动售卖
+		{ -- 12 自动售卖
 			key = "autosell",
 			option_type = "check",
+			width = .4,
 			text = L["自动售卖"],
 			tip = L["自动售卖提示"],
 		},
-		{ -- 9 自动购买
+		{ -- 13 自动购买
 			key = "autobuy",
 			option_type = "check",
+			width = .6,
 			text = L["自动购买"],
 			tip = L["自动购买提示"],
-		},
-		{ -- 10 分割线
-			option_type = "title",
-			line = true,
-		},
+		},		
 	},
 	UnitframeOptions = {
 		{ -- 标题:样式
@@ -1020,7 +1064,7 @@ G.Options = {
 			option_type = "check",
 			text = L["未进组时显示"],
 			apply = function()
-				T.UpdateGroupfilter()
+				T.UpdatePartyConnected()
 			end,
 			relatedFrames = {
 				["Altz_Raid_Holder"] = true,
@@ -1133,7 +1177,7 @@ G.Options = {
 			option_type = "check",
 			text = COMPACT_UNIT_FRAME_PROFILE_KEEPGROUPSTOGETHER,
 			apply = function()
-				T.UpdateGroupfilter()
+				T.UpdatePartyConnected()
 			end,
 			relatedFrames = {
 				["Altz_Raid_Holder"] = true,
@@ -1144,7 +1188,7 @@ G.Options = {
 			option_type = "check",
 			text = T.split_words(L["显示"],PET),
 			apply = function()
-				T.UpdateGroupfilter()
+				T.UpdatePartyConnected()
 			end,
 			relatedFrames = {
 				["Altz_Raid_Holder"] = true,
@@ -1159,7 +1203,6 @@ G.Options = {
 			step = 2,
 			apply = function()
 				T.UpdateGroupSize()
-				T.UpdateGroupfilter()
 			end,
 			relatedFrames = {
 				["Altz_Raid_Holder"] = true,

@@ -625,7 +625,7 @@ T.GroupFader(fadebagbuttons)
 --====================================================--
 local InfoFrame = CreateFrame("Frame", G.uiname.."InfoFrame", UIParent)
 InfoFrame:SetFrameLevel(4)
-InfoFrame:SetSize(270, 25)
+InfoFrame:SetSize(520, 25)
 G.InfoFrame = InfoFrame
 
 InfoFrame.movingname = L["信息条"]
@@ -741,9 +741,10 @@ local function Durability_Initialize(self, level)
 	local count = C_EquipmentSet.GetNumEquipmentSets()	
 	if count > 0 then
 		local sets = C_EquipmentSet.GetEquipmentSetIDs()
+		local info
 		for i, setID in pairs(sets) do
 			local name, icon, _, isEquipped = C_EquipmentSet.GetEquipmentSetInfo(setID)
-			local info = UIDropDownMenu_CreateInfo()
+			info = UIDropDownMenu_CreateInfo()
 			info.text = string.format(EQUIPMENT_SETS, T.GetTexStr(icon).." "..name)
 			info.checked = isEquipped
 			info.func = function() C_EquipmentSet.UseEquipmentSet(index) end
@@ -789,7 +790,7 @@ Durability:RegisterEvent("UPDATE_INVENTORY_DURABILITY")
 Durability:RegisterEvent("PLAYER_ENTERING_WORLD")
 
 -- 天赋
-local Talent = CreateInfoButton(120, {"LEFT", Durability, "RIGHT", 0, 0}, true)
+local Talent = CreateInfoButton(140, {"LEFT", Durability, "RIGHT", 0, 0}, true)
 
 local function TalentDropDown_Initialize(self, level, menuList)
 	local current_spec_index = GetSpecialization()
@@ -797,9 +798,10 @@ local function TalentDropDown_Initialize(self, level, menuList)
 	local cur_specID, cur_specName, _, cur_Icon = GetSpecializationInfo(current_spec_index)
 	local cur_LootspecID, cur_LootspecName = GetSpecializationInfoByID(current_lootspec_index)
 	local numspec = GetNumSpecializations()
-
+	local info
+	
 	if level == 1 then
-		local info = UIDropDownMenu_CreateInfo()
+		info = UIDropDownMenu_CreateInfo()
 		-- 启用专精
 		info.text = ACTIVATE..SPECIALIZATION
 		info.notCheckable = true
@@ -817,7 +819,7 @@ local function TalentDropDown_Initialize(self, level, menuList)
 		-- 天赋和专精
 		info.text = TALENTS_BUTTON
 		info.notCheckable = true
-		info.keepShownOnClick = true
+		info.keepShownOnClick = false
 		info.hasArrow = false
 		info.menuList = nil
 		info.func = ToggleTalentFrame
@@ -894,6 +896,129 @@ end)
 Talent:RegisterEvent("PLAYER_LOOT_SPEC_UPDATED")
 Talent:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED")
 Talent:RegisterEvent("PLAYER_ENTERING_WORLD")
+
+-- ROLL
+local AutoLoot = CreateInfoButton(230, {"LEFT", Talent, "RIGHT", 0, 0}, true)
+local Autolootoptions = {
+	CreateAtlasMarkup("lootroll-icon-pass", 16, 16)..PASS,
+	CreateAtlasMarkup("lootroll-toast-icon-need-up", 16, 16)..NEED.."/"..CreateAtlasMarkup("lootroll-toast-icon-greed-up", 16, 16)..GREED,
+	L["手动"],
+}
+
+local function AutoLootDropDown_Initialize(self, level, menuList)	
+	local info
+	if level == 1 then
+		info = UIDropDownMenu_CreateInfo()
+		-- 自动ROLL(公会队伍)
+		info.text = string.format("%s(%s)", L["自动ROLL"], GUILD_GROUP)
+		info.notCheckable = true
+		info.keepShownOnClick = true
+		info.hasArrow = true
+		info.menuList = "autoLoot_guild"
+		UIDropDownMenu_AddButton(info)
+		-- 自动ROLL(非公会队伍)
+		info.text = string.format("%s(%s)", L["自动ROLL"], L["非"]..GUILD_GROUP)
+		info.notCheckable = true
+		info.keepShownOnClick = true
+		info.hasArrow = true
+		info.menuList = "autoLoot_nonguild"
+		UIDropDownMenu_AddButton(info)
+		-- ROLL结果截图
+		info.text = L["ROLL结果截图"]
+		info.notCheckable = false
+		info.keepShownOnClick = false
+		info.hasArrow = false
+		info.menuList = nil
+		info.checked = function()
+			return T.ValueFromPath(aCoreCDB, {"ItemOptions", "lootroll_screenshot"})
+		end
+		info.func = function()			
+			local cur_value = T.ValueFromPath(aCoreCDB, {"ItemOptions", "lootroll_screenshot"})
+			if cur_value then
+				T.ValueToPath(aCoreCDB, {"ItemOptions", "lootroll_screenshot"}, false)
+			else
+				T.ValueToPath(aCoreCDB, {"ItemOptions", "lootroll_screenshot"}, true)
+			end
+			T.UpdatedLootScreenShotEnabled()
+		end
+		UIDropDownMenu_AddButton(info)
+		-- 截图后关闭ROLL点框
+		info.text = L["截图后关闭ROLL点框"]
+		info.checked = function()	
+			return T.ValueFromPath(aCoreCDB, {"ItemOptions", "lootroll_screenshot_close"})
+		end
+		info.disabled = not T.ValueFromPath(aCoreCDB, {"ItemOptions", "lootroll_screenshot"})
+		info.func = function(self, arg1, arg2)
+			local cur_value = T.ValueFromPath(aCoreCDB, {"ItemOptions", "lootroll_screenshot_close"})
+			if cur_value then
+				T.ValueToPath(aCoreCDB, {"ItemOptions", "lootroll_screenshot_close"}, false)
+			else
+				T.ValueToPath(aCoreCDB, {"ItemOptions", "lootroll_screenshot_close"}, true)
+			end
+		end
+		UIDropDownMenu_AddButton(info)
+	elseif menuList == "autoLoot_guild" then
+		info = UIDropDownMenu_CreateInfo()
+		for i = 1, 3 do
+			info.text = Autolootoptions[i]
+			info.checked = function()
+				local v = T.ValueFromPath(aCoreCDB, {"ItemOptions", "autoloot_guild"})
+				return i == v
+			end
+			info.func = function()
+				T.ValueToPath(aCoreCDB, {"ItemOptions", "autoloot_guild"}, i)
+				T.UpdateAutoLoot()
+				HideDropDownMenu(1)
+			end
+			UIDropDownMenu_AddButton(info, level)
+		end
+	elseif menuList == "autoLoot_nonguild" then
+		info = UIDropDownMenu_CreateInfo()
+		for i = 1, 3 do
+			info.text = Autolootoptions[i]
+			info.checked = function()
+				local v = T.ValueFromPath(aCoreCDB, {"ItemOptions", "autoloot_noguild"})
+				return i == v
+			end
+			info.func = function()
+				T.ValueToPath(aCoreCDB, {"ItemOptions", "autoloot_noguild"}, i)
+				T.UpdateAutoLoot()
+				HideDropDownMenu(1)
+			end
+			UIDropDownMenu_AddButton(info, level)
+		end
+	end
+end
+
+local function UpdateAutoLoot()
+	if IsInGuildGroup() then
+		local value = aCoreCDB.ItemOptions.autoloot_guild
+		AutoLoot.text:SetText(string.format("%s(%s):%s", L["自动ROLL"], GUILD_GROUP, Autolootoptions[value]))
+	else
+		local value = aCoreCDB.ItemOptions.autoloot_noguild
+		AutoLoot.text:SetText(string.format("%s(%s):%s", L["自动ROLL"], L["非"]..GUILD_GROUP, Autolootoptions[value]))
+	end
+	UIDropDownMenu_Initialize(AutoLoot.DropDown, AutoLootDropDown_Initialize, "MENU")
+end
+T.UpdateAutoLoot = UpdateAutoLoot
+
+AutoLoot.Button:SetScript("OnMouseDown", function(self)
+	if UnitLevel("player") >= 10 then -- 10 级别后有天赋
+		AutoLoot.DropDown.point = "BOTTOMLEFT";
+		AutoLoot.DropDown.relativePoint = "TOPLEFT"
+		ToggleDropDownMenu(1, nil, AutoLoot.DropDown, AutoLoot, 0, 5)
+	end
+end)
+
+AutoLoot:SetScript("OnEvent", function(self, event)
+	UpdateAutoLoot()
+	
+	if event == "PLAYER_ENTERING_WORLD" then
+		self:UnregisterEvent("PLAYER_ENTERING_WORLD")
+	end
+end)
+AutoLoot:RegisterEvent("PLAYER_ENTERING_WORLD")
+AutoLoot:RegisterEvent("GUILD_PARTY_STATE_UPDATED")
 --====================================================--
 --[[          --  Order Hall Command Bar --         ]]--
 --====================================================--
@@ -1062,7 +1187,7 @@ AFK_Frame:SetScript("OnKeyDown", fadein)
 AFK_Frame:RegisterEvent("PLAYER_FLAGS_CHANGED")
 AFK_Frame:SetScript("OnEvent",function(self, event) 
 	if aCoreCDB["SkinOptions"]["afkscreen"] then
-		if UnitIsAFK("player") and not InCombatLockdown() then
+		if UnitIsAFK("player") and not UnitIsDead("player") and not InCombatLockdown() then
 			fadeout()
 		end
 	end

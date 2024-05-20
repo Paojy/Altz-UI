@@ -45,6 +45,7 @@ L["不可打断"] = "Not interruptible"
 L["焦点"] = "Focus"
 L["目标的目标"] = "ToT"
 L["焦点的目标"] = "ToF"
+L["非"] = "Non-"
 
 --====================================================--
 --[[                 -- 控制台 --                   ]]--
@@ -259,6 +260,12 @@ L["重置金币信息"] = "Click to reset."
 L["收藏"] = "Favorites"
 L["加入收藏"] = "Drag items here to add or remove from favorites"
 L["装备列表"] = "Equipment List"
+L["自动ROLL"] = "Automatic Roll"
+L["自动ROLL%s"] = "You automatically select %2$s for %1$s"
+L["手动"] = "Manual"
+L["ROLL结果截图"] = "ROLL Result Screenshot"
+L["截图后关闭ROLL点框"] = "Close the Roll box after taking a screenshot"
+L["自动截图%s"] = "The roll result of %s has been screenshot taken"
 
 --====================================================--
 --[[               -- 单位框架 --                   ]]--
