@@ -245,7 +245,7 @@ local default_ClassClick = {
 				["Click"] = {action = "spell", spell = 19750}, -- 圣光闪现
 			},
 			["7"] = {
-				["Click"] = {action = "spell", spell = 115450}, -- 自由祝福	
+				["Click"] = {action = "spell", spell = 1044}, -- 自由祝福	
 			},
 			["8"] = {
 				["Click"] = {action = "spell", spell = 85673}, -- 荣耀圣令	
@@ -276,7 +276,7 @@ local default_ClassClick = {
 				["Click"] = {action = "spell", spell = 19750}, -- 圣光闪现
 			},
 			["7"] = {
-				["Click"] = {action = "spell", spell = 115450}, -- 自由祝福	
+				["Click"] = {action = "spell", spell = 1044}, -- 自由祝福	
 			},
 			["8"] = {
 				["Click"] = {action = "spell", spell = 85673}, -- 荣耀圣令	
@@ -298,7 +298,7 @@ local default_ClassClick = {
 				["Click"] = {action = "spell", spell = 19750}, -- 圣光闪现
 			},
 			["7"] = {
-				["Click"] = {action = "spell", spell = 115450}, -- 自由祝福	
+				["Click"] = {action = "spell", spell = 1044}, -- 自由祝福	
 			},
 			["8"] = {
 				["Click"] = {action = "spell", spell = 85673}, -- 荣耀圣令	
@@ -1157,6 +1157,10 @@ local Character_default_Settings = {
 		equiplist_inspect = true,
 		specloot_encounters = {}, -- 导出、导入
 		specloot_instances = {}, -- 导出、导入
+		autoloot_guild = 3,
+		autoloot_noguild = 3,
+		lootroll_screenshot = false,
+		lootroll_screenshot_close = false,
 	},	
 	UnitframeOptions = {
 		--[[ 单位框架 ]]--
