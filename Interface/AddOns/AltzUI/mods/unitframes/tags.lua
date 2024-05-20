@@ -5,7 +5,12 @@ local oUF = AltzUF or oUF
 oUF.Tags.Methods['Altz:shortname'] = function(u, r)
 	local name = UnitName(r or u)
 	if aCoreCDB["SkinOptions"]["style"] ~= 3 then
-		return T.hex_str(name, T.GetUnitColor(u))
+		local r, g, b = T.GetUnitColor(u)
+		if r and g and b then
+			return T.hex_str(name, r, g, b)
+		else
+			return name
+		end
 	else
 		return name
 	end
@@ -47,7 +52,12 @@ oUF.Tags.Methods['Altz:longname'] = function(u, r)
 	local name_str
 	local name = UnitName(r or u)
 	if aCoreCDB["SkinOptions"]["style"] ~= 3 then
-		name_str = T.hex_str(name, T.GetUnitColor(u))
+		local r, g, b = T.GetUnitColor(u)
+		if r and g and b then
+			name_str = T.hex_str(name, r, g, b)
+		else
+			name_str = name
+		end
 	else
 		name_str = name
 	end
@@ -82,7 +92,12 @@ oUF.Tags.Methods["Altz:hpraidname"] = function(u, r)
 	
 	if result then
 		if aCoreCDB["SkinOptions"]["style"] ~= 3 then
-			return T.hex_str(result, T.GetUnitColor(u))
+			local r, g, b = T.GetUnitColor(u)
+			if r and g and b then
+				return T.hex_str(result, r, g, b)
+			else
+				return result
+			end
 		else		
 			return result
 		end
@@ -136,13 +151,15 @@ oUF.Tags.Methods["Altz:platename"] = function(u, real)
 		end
 		
         local name = UnitName(real or u) or ""
-		
+		local r, g, b = T.GetUnitColorforNameplate(u)
 		local result
 		
-		if aCoreCDB["PlateOptions"]["theme"] ~= "class" then
-			result = T.hex_str(class..name, T.GetUnitColorforNameplate(u))
+		if not (r and g and b) then
+			result = class..name 
+		elseif aCoreCDB["PlateOptions"]["theme"] ~= "class" then
+			result = T.hex_str(class..name, r, g, b)
 		elseif aCoreCDB["PlateOptions"]["bar_onlyname"] and UnitReaction(u, 'player') and UnitReaction(u, 'player') >= 5 then -- 友方只显示名字
-			result = T.hex_str(class..name, T.GetUnitColorforNameplate(u))
+			result = T.hex_str(class..name, r, g, b)
 		else
 			result = class..name
 		end

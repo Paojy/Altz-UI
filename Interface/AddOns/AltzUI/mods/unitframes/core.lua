@@ -228,15 +228,15 @@ local Override_PlateHealthColor = function(self, event, unit)
 	local r, g, b = GetUnitColorforNameplate(unit)
 	local r2, g2, b2 = self:ColorGradient(hp.cur or 1, hp.max or 1, unpack(self.colors.smooth))
 	
-	if aCoreCDB["PlateOptions"]["theme"] == "number" and aCoreCDB["PlateOptions"]["number_colorheperc"] then
+	if aCoreCDB["PlateOptions"]["theme"] == "number" and aCoreCDB["PlateOptions"]["number_colorheperc"] and r2 and g2 and b2 then
 		hp.value:SetTextColor(r2, g2, b2)
 	else
 		hp.value:SetTextColor(1, 1, 1)
 	end
 	
-	if aCoreCDB["PlateOptions"]["theme"] == "dark" then		
+	if aCoreCDB["PlateOptions"]["theme"] == "dark" and r2 and g2 and b2 then		
 		hp:SetStatusBarColor(r2, g2, b2)
-	elseif aCoreCDB["PlateOptions"]["theme"] == "class" then
+	elseif aCoreCDB["PlateOptions"]["theme"] == "class" and r and g and b then
 		hp:SetStatusBarColor(r, g, b)
 		hp.backdrop:SetBackdropColor(r*.2, g*.2, b*.2, 1)
 	end
@@ -852,6 +852,7 @@ local CreateAuras = function(self, unit)
 			auras.numBuffs = 0
 			auras.numDebuffs = 6
 		elseif unit == "target" then
+			auras.numTotal = 9
 			auras.FilterAura = Target_AuraFilter
 		elseif u == "boss" or u == "arena" then -- boss 1-5
 			auras.numTotal = 9

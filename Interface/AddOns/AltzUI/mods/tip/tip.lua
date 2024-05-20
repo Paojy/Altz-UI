@@ -32,14 +32,15 @@ hooksecurefunc(GameTooltip, "ProcessLines", function(self)
 			end
 		elseif tooltipData.type == EnumUnit then
 			local _, unit = self:GetUnit()
-			if unit then
-				local r, g, b = T.GetUnitColor(unit)
-				
+			if unit then				
 				if UnitIsDeadOrGhost(unit) then
 					GameTooltipStatusBar:Hide()
+				else			
+					local r, g, b = T.GetUnitColor(unit)
+					if r and g and b then
+						GameTooltipStatusBar:SetStatusBarColor(r, g, b)
+					end
 				end
-				
-				GameTooltipStatusBar:SetStatusBarColor(r, g, b)
 			end
 		end
 		
