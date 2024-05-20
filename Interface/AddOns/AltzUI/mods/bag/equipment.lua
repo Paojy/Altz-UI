@@ -513,7 +513,7 @@ local function CreateEquipListFrame(parent, unit, path)
 	return frame
 end
 
-local EquipFrame = CreateEquipListFrame(_G["CharacterFrame"], "player", {"ItemOptions", "equiplist"})
+local EquipFrame = CreateEquipListFrame(CharacterFrame, "player", {"ItemOptions", "equiplist"})
 local in_progress
 
 EquipFrame:SetScript('OnEvent', function(self, event)
@@ -527,25 +527,30 @@ EquipFrame:SetScript('OnEvent', function(self, event)
 			end)			
 		end
 	elseif event == "UPDATE_INVENTORY_DURABILITY" then
-		UpdateDurability(self)	
-	elseif event == "PLAYER_ENTERING_WORLD" then	
-		self.buttons[16]:SetShown(ShouldShowSecondHand(self))
-		UpdateAll(self)
 		UpdateDurability(self)
-		self:SetShown(aCoreCDB.ItemOptions.equiplist)
-		self:UnregisterEvent("PLAYER_ENTERING_WORLD")
 	end
 end)
 
-EquipFrame:RegisterEvent("PLAYER_EQUIPMENT_CHANGED")
-EquipFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
-EquipFrame:RegisterEvent("UPDATE_INVENTORY_DURABILITY")
+CharacterFrame:HookScript("OnShow", function()
+	EquipFrame.buttons[16]:SetShown(ShouldShowSecondHand(EquipFrame))
+	UpdateDurability(EquipFrame)
+	UpdateAll(EquipFrame)
+	EquipFrame:SetShown(aCoreCDB.ItemOptions.equiplist)
+	
+	EquipFrame:RegisterEvent("PLAYER_EQUIPMENT_CHANGED")
+	EquipFrame:RegisterEvent("UPDATE_INVENTORY_DURABILITY")	
+end)
+
+CharacterFrame:HookScript("OnHide", function()
+	EquipFrame:UnregisterEvent("PLAYER_EQUIPMENT_CHANGED")
+	EquipFrame:UnregisterEvent("UPDATE_INVENTORY_DURABILITY")	
+end)
 
 local ef = CreateFrame("Frame")
 ef:RegisterEvent("ADDON_LOADED")
 ef:SetScript("OnEvent", function(self, event, addon)
 	if addon == "Blizzard_InspectUI" then
-		local Inspect_EquipFrame = CreateEquipListFrame(_G["InspectFrame"], nil, {"ItemOptions", "equiplist_inspect"})
+		local Inspect_EquipFrame = CreateEquipListFrame(InspectFrame, nil, {"ItemOptions", "equiplist_inspect"})
 		Inspect_EquipFrame:SetScript("OnEvent", function(self, event)
 			self.unit = InspectFrame.unit
 			if self.unit then
