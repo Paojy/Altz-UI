@@ -862,11 +862,14 @@ G.RaidPetFrame = RaidPetFrame
 
 local function Spawnraid()
 	oUF:SetActiveStyle"Altz_Healerraid"
+	local filter = aCoreCDB["UnitframeOptions"]["raidframe_inparty"] and 'raid,party,solo' or 'raid,solo'
 	
-	RaidFrame.all = oUF:SpawnHeader('Altz_HealerRaid', nil, aCoreCDB["UnitframeOptions"]["raidframe_inparty"] and 'raid,party,solo' or 'raid, solo',
+	RaidFrame.all = oUF:SpawnHeader('Altz_HealerRaid', nil, filter,
 		'oUF-initialConfigFunction', initconfig:format(aCoreCDB["UnitframeOptions"]["raidwidth"], aCoreCDB["UnitframeOptions"]["raidheight"]),
 		'showPlayer', true,
 		'showRaid', true,
+		'showParty', aCoreCDB["UnitframeOptions"]["raidframe_inparty"],
+		'showSolo', aCoreCDB["UnitframeOptions"]["showsolo"],
 		'xOffset', 5,
 		'yOffset', -5,
 		'point', "LEFT",
@@ -881,10 +884,12 @@ local function Spawnraid()
 	RaidFrame.all:SetPoint("TOPLEFT", RaidFrame, "TOPLEFT", 0, 0)
 	
 	for i = 1, 8 do
-		RaidFrame[i] = oUF:SpawnHeader('Altz_HealerRaidGroup'..i, nil, i == 1 and aCoreCDB["UnitframeOptions"]["raidframe_inparty"] and 'raid,party,solo' or 'raid, solo',
+		RaidFrame[i] = oUF:SpawnHeader('Altz_HealerRaidGroup'..i, nil, filter,
 			'oUF-initialConfigFunction', initconfig:format(aCoreCDB["UnitframeOptions"]["raidwidth"], aCoreCDB["UnitframeOptions"]["raidheight"]),
 			'showPlayer', true,
 			'showRaid', true,
+			'showParty', aCoreCDB["UnitframeOptions"]["raidframe_inparty"] and i == 1,
+			'showSolo', aCoreCDB["UnitframeOptions"]["showsolo"] and i == 1,
 			'xOffset', 5,
 			'yOffset', -5,
 			'point', "LEFT",
@@ -898,10 +903,12 @@ local function Spawnraid()
 		)	
 	end
 
-	RaidPetFrame.all = oUF:SpawnHeader('Altz_HealerPetRaid', 'SecureGroupPetHeaderTemplate', aCoreCDB["UnitframeOptions"]["raidframe_inparty"] and 'raid,party,solo' or 'raid, solo',
+	RaidPetFrame.all = oUF:SpawnHeader('Altz_HealerPetRaid', 'SecureGroupPetHeaderTemplate', filter,
 		'oUF-initialConfigFunction', initconfig:format(aCoreCDB["UnitframeOptions"]["raidwidth"], aCoreCDB["UnitframeOptions"]["raidheight"]),
 		'showPlayer', true,
 		'showRaid', true,
+		'showParty', aCoreCDB["UnitframeOptions"]["raidframe_inparty"],
+		'showSolo', aCoreCDB["UnitframeOptions"]["showsolo"],
 		'xOffset', 5,
 		'yOffset', -5,
 		'point', "LEFT",
@@ -1014,24 +1021,33 @@ end
 
 T.UpdatePartyConnected = function()
 	T.CombatDelayFunc(function()
-		RaidFrame.all:SetAttribute("showSolo", aCoreCDB["UnitframeOptions"]["party_connected"] and aCoreCDB["UnitframeOptions"]["showsolo"])
-		RaidFrame.all:SetAttribute("showParty",	aCoreCDB["UnitframeOptions"]["party_connected"] and aCoreCDB["UnitframeOptions"]["raidframe_inparty"])
-		RaidFrame.all:SetAttribute("showRaid", aCoreCDB["UnitframeOptions"]["party_connected"])
-		
-		RaidFrame[1]:SetAttribute("showSolo", not aCoreCDB["UnitframeOptions"]["party_connected"] and aCoreCDB["UnitframeOptions"]["showsolo"])		
-		RaidFrame[1]:SetAttribute("showParty", not aCoreCDB["UnitframeOptions"]["party_connected"] and aCoreCDB["UnitframeOptions"]["raidframe_inparty"])		
-		for i = 1, 8 do
-			RaidFrame[i]:SetAttribute("showRaid", not aCoreCDB["UnitframeOptions"]["party_connected"])
-		end		
-		
-		RaidPetFrame.all:SetAttribute("showSolo", aCoreCDB["UnitframeOptions"]["showraidpet"] and aCoreCDB["UnitframeOptions"]["showsolo"])
-		RaidPetFrame.all:SetAttribute("showParty", aCoreCDB["UnitframeOptions"]["showraidpet"] and aCoreCDB["UnitframeOptions"]["raidframe_inparty"])
-		RaidPetFrame.all:SetAttribute("showRaid", aCoreCDB["UnitframeOptions"]["showraidpet"])
+		local groupFilter = GetGroupfilter()
+		if aCoreCDB["UnitframeOptions"]["party_connected"] then
+			RaidFrame.all:SetAttribute("groupFilter", groupFilter)
+			for i = 1, 8 do
+				RaidFrame[i]:SetAttribute("groupFilter", "")
+			end
+		else
+			RaidFrame.all:SetAttribute("groupFilter", "")
+			for i = 1, 8 do
+				RaidFrame[i]:SetAttribute("groupFilter", tostring(i))
+			end
+		end
+
+		if aCoreCDB["UnitframeOptions"]["showraidpet"] then
+			RaidPetFrame.all:SetAttribute("groupFilter", groupFilter)		
+		else
+			RaidPetFrame.all:SetAttribute("groupFilter", "")
+		end
 		if aCoreCDB["UnitframeOptions"]["showraidpet"] then
 			T.RestoreDragFrame(RaidPetFrame)
 		else
 			T.ReleaseDragFrame(RaidPetFrame)
 		end
+		
+		RaidFrame.all:SetAttribute("showSolo", aCoreCDB["UnitframeOptions"]["party_connected"] and aCoreCDB["UnitframeOptions"]["showsolo"])
+		RaidFrame[1]:SetAttribute("showSolo", (not aCoreCDB["UnitframeOptions"]["party_connected"]) and aCoreCDB["UnitframeOptions"]["showsolo"])		
+		RaidPetFrame.all:SetAttribute("showSolo", aCoreCDB["UnitframeOptions"]["showraidpet"] and aCoreCDB["UnitframeOptions"]["showsolo"])
 	end)
 end
 
