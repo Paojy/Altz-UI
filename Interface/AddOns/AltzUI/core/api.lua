@@ -8,11 +8,9 @@ local delayframe = CreateFrame("Frame")
 delayframe.func = {}
 
 delayframe:RegisterEvent("PLAYER_REGEN_ENABLED")
-delayframe:RegisterEvent("PLAYER_REGEN_DISABLED")
 
-delayframe:SetScript("OnEvent", function(self)
-	while #delayframe.func > 0 do
-		print(#delayframe.func)
+delayframe:SetScript("OnEvent", function(self, event)
+	while #delayframe.func > 0 do		
 		local cur_func = delayframe.func[1]
 		table.remove(delayframe.func, 1)
 		cur_func()
@@ -26,8 +24,6 @@ T.CombatDelayFunc = function(func)
 		func()
 	end
 end
-
-
 --====================================================--
 --[[              -- 其他插件设置 --                ]]--
 --====================================================--
