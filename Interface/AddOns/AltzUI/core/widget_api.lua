@@ -166,6 +166,11 @@ end
 ----------------------------
 -- 			文本		  --
 ----------------------------
+-- 聊天框提示
+T.msg = function(msg)
+	print(T.color_text("AltzUI>"), msg)
+end
+
 -- 内存
 T.memFormat = function(num)
 	if num > 1024 then
