@@ -374,7 +374,7 @@ T.CreateGUIOpitons(ChatOptions, "ChatOptions")
 local ItemOptions = CreateOptionPage("Item Options", ITEMS, GUI, "VERTICAL")
 T.CreateGUIOpitons(ItemOptions, "ItemOptions")
 
-ItemOptions.autobuy_list = T.CreateItemListOption(ItemOptions, {"TOPLEFT", 20, -290}, 260,
+ItemOptions.autobuy_list = T.CreateItemListOption(ItemOptions, {"TOPLEFT", 20, -260}, 220,
 L["自动购买"]..L["设置"], {"ItemOptions", "autobuylist"}, L["物品数量"])
 
 do
@@ -444,7 +444,7 @@ end
 RFInnerframe.clickcast = CreateOptionPage("RF Options clickcast", L["点击施法"], RFInnerframe, "VERTICAL")
 T.CreateGUIOpitons(RFInnerframe.clickcast, "UnitframeOptions", 85, 86)
 
-RFInnerframe.clickcast.reset = T.ClickTexButton(RFInnerframe.clickcast, {"TOPLEFT", RFInnerframe.clickcast, "TOPLEFT", 100, -5}, G.iconFile.."refresh.tga", L["重置"])	
+RFInnerframe.clickcast.reset = T.ClickTexButton(RFInnerframe.clickcast, {"TOPLEFT", RFInnerframe.clickcast, "TOPLEFT", 100, -18}, G.iconFile.."refresh.tga", L["重置"])	
 RFInnerframe.clickcast.reset:SetScript("OnClick", function(self)
 	StaticPopupDialogs[G.uiname.."Reset Confirm"].text = format(L["重置确认"], T.color_text(L["点击施法"]))
 	StaticPopupDialogs[G.uiname.."Reset Confirm"].OnAccept = function()
@@ -802,7 +802,7 @@ T.CreateGUIOpitons(RFInnerframe.icon_display, "UnitframeOptions", 87, 99)
 RFInnerframe.raiddebuff = CreateOptionPage("RF Options Raid Debuff", T.split_words(L["副本"],L["减益"]), RFInnerframe, "VERTICAL")
 T.CreateGUIOpitons(RFInnerframe.raiddebuff, "UnitframeOptions", 100, 100)
 
-RFInnerframe.raiddebuff.debuff_list = T.createscrolllist(RFInnerframe.raiddebuff, {"TOPLEFT", 10, -85}, false, 395, 400)
+RFInnerframe.raiddebuff.debuff_list = T.createscrolllist(RFInnerframe.raiddebuff, {"TOPLEFT", 10, -85}, false, 395, 380)
 
 local function UpdateEncounterTitle(option_list, i, encounterID, y)
 	if not option_list.titles[i] then
@@ -911,7 +911,7 @@ do
 	end
 	
 	-- 重置
-	option_list.reset = T.ClickTexButton(option_list, {"TOPLEFT", parent, "TOPLEFT", 200, 0}, G.iconFile.."refresh.tga", L["重置"])	
+	option_list.reset = T.ClickTexButton(option_list, {"TOPLEFT", parent, "TOPLEFT", 100, -18}, G.iconFile.."refresh.tga", L["重置"])	
 	option_list.reset:SetScript("OnClick", function(self)
 		local InstanceName = EJ_GetInstanceInfo(parent.selected_InstanceID)
 		StaticPopupDialogs[G.uiname.."Reset Confirm"].text = format(L["重置确认"], T.color_text(InstanceName))
@@ -923,7 +923,7 @@ do
 	end)
 	
 	-- 返回
-	option_list.back = T.ClickTexButton(option_list, {"TOPRIGHT", parent, "TOPRIGHT", 0, 0}, G.iconFile.."refresh.tga", BACK)
+	option_list.back = T.ClickTexButton(option_list, {"TOPRIGHT", parent, "TOPRIGHT", -30, -20}, G.iconFile.."refresh.tga", BACK)
 	T.SetupArrow(option_list.back.tex, "left")
 	T.SetupArrow(option_list.back.hl_tex, "left")
 	
@@ -1125,8 +1125,11 @@ hooksecurefunc("SetItemRef", function(link)
 		RFOptions.hooked_tab:GetScript("OnMouseDown")()	
 		RFInnerframe.raiddebuff.hooked_tab:GetScript("OnMouseDown")()
 		RFInnerframe.raiddebuff.instance_list.list[InstanceID]:GetScript("OnMouseDown")()
-		RFInnerframe.raiddebuff.debuff_list.spells["icon"..encounterID.."_"..spellID]:GetScript("OnMouseDown")()
-				
+		local button = RFInnerframe.raiddebuff.debuff_list.spells["icon"..encounterID.."_"..spellID]
+		if button then
+			button:GetScript("OnMouseDown")(button)
+		end
+		
 	elseif action == "raiddebuff_delete" then
 		if aCoreCDB["UnitframeOptions"]["raid_debuffs"][InstanceID][encounterID][spellID] then
 			aCoreCDB["UnitframeOptions"]["raid_debuffs"][InstanceID][encounterID][spellID] = nil
