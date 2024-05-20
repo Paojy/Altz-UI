@@ -186,56 +186,24 @@ end
 T.CreateClickSets = CreateClickSets
 
 -- 启用点击施法
-local Register_PendingFrames = {}
-
-local function RegisterClicksforAll()
-	for i, object in pairs(G.ClickCast_Frames) do
-		if InCombatLockdown() then
-			Register_PendingFrames[object] = true -- 等待脱战后生效
-		else
+local function RegisterClicksforAll()	
+	T.CombatDelayFunc(function()
+		for i, object in pairs(G.ClickCast_Frames) do
 			RegisterClicks(object)
 		end
-	end
-	if InCombatLockdown() then
-		StaticPopup_Show(G.uiname.."InCombat Alert")
-	end
+	end)
 end
 T.RegisterClicksforAll = RegisterClicksforAll
 
-local function DelayRegisterClickSets()
-	if not next(Register_PendingFrames) then return end
-
-	for object, _ in next, Register_PendingFrames do
-		RegisterClicks(object)
-		Register_PendingFrames[object] = nil
-	end
-end
-
 -- 禁用点击施法
-local Unregister_PendingFrames = {}
-
 local function UnregisterClicksforAll()
-	for i, object in pairs(G.ClickCast_Frames) do
-		if InCombatLockdown() then
-			Unregister_PendingFrames[object] = true -- 等待脱战后生效
-		else
+	T.CombatDelayFunc(function()
+		for i, object in pairs(G.ClickCast_Frames) do
 			UnregisterClicks(object)
 		end
-	end
-	if InCombatLockdown() then
-		StaticPopup_Show(G.uiname.."InCombat Alert")
-	end
+	end)
 end
 T.UnregisterClicksforAll = UnregisterClicksforAll
-
-local function DelayUnregisterClickSets()
-	if not next(Unregister_PendingFrames) then return end
-
-	for object, _ in next, Unregister_PendingFrames do
-		UnregisterClicks(object)
-		Unregister_PendingFrames[object] = nil
-	end
-end
 
 -- 刷新点击施法
 local modifier = {
@@ -246,19 +214,15 @@ local modifier = {
 }
 G.modifier = modifier
 
-local Update_PendingFrames = {}
-
 local function UpdateClicksforAll(id, key)
-	local specID = T.GetSpecID()
-	local action = aCoreCDB["UnitframeOptions"]["ClickCast"][specID][id][key]["action"]
-	local spell = aCoreCDB["UnitframeOptions"]["ClickCast"][specID][id][key]["spell"]
-	local item = aCoreCDB["UnitframeOptions"]["ClickCast"][specID][id][key]["item"]
-	local macro = aCoreCDB["UnitframeOptions"]["ClickCast"][specID][id][key]["macro"]
-	
-	for i, object in pairs(G.ClickCast_Frames) do
-		if InCombatLockdown() then
-			Update_PendingFrames[object] = true -- 等待脱战后生效
-		else
+	T.CombatDelayFunc(function()
+		local specID = T.GetSpecID()
+		local action = aCoreCDB["UnitframeOptions"]["ClickCast"][specID][id][key]["action"]
+		local spell = aCoreCDB["UnitframeOptions"]["ClickCast"][specID][id][key]["spell"]
+		local item = aCoreCDB["UnitframeOptions"]["ClickCast"][specID][id][key]["item"]
+		local macro = aCoreCDB["UnitframeOptions"]["ClickCast"][specID][id][key]["macro"]
+		
+		for i, object in pairs(G.ClickCast_Frames) do		
 			local key_tmp = string.gsub(key, "Click", "")
 			if action == "follow" then
 				object:SetAttribute(key_tmp.."type"..id, "macro")
@@ -280,10 +244,7 @@ local function UpdateClicksforAll(id, key)
 				object:SetAttribute(key_tmp.."macrotext"..id, "/use [@mouseover]"..item)
 			end	
 		end
-	end
-	if InCombatLockdown() then
-		StaticPopup_Show(G.uiname.."InCombat Alert")
-	end	
+	end)
 end
 T.UpdateClicksforAll = UpdateClicksforAll
 
@@ -346,24 +307,31 @@ local RaidDebuff_AuraFilter = function(debuffs, unit, data)
 end
 
 local GetDebuffPriority = function(data)
-	local spellID = data.spellId
-	local dtype = data.dispelNameW
+	local priority = 0
 	
-	if aCoreCDB["UnitframeOptions"]["debuff_list"][spellID] then
-		return aCoreCDB["UnitframeOptions"]["debuff_list"][spellID]
-	elseif dispellist[dtype] then -- 可驱散
-        return dispelPriority[dtype]
-	elseif IsInInstance() then -- 副本
-		local map = C_Map.GetBestMapForUnit("player")
-		local InstanceID = map and EJ_GetInstanceForMap(map)
-		for boss, info in pairs (aCoreCDB["UnitframeOptions"]["raid_debuffs"][InstanceID]) do
-			if info[spellID] then
-				return info[spellID]
+	if data then
+		local spellID = data.spellId
+		local dtype = data.dispelNameW
+		
+		
+		if aCoreCDB["UnitframeOptions"]["debuff_list"][spellID] then
+			priority = aCoreCDB["UnitframeOptions"]["debuff_list"][spellID]
+		elseif dispellist[dtype] then -- 可驱散
+			priority = dispelPriority[dtype]
+		elseif IsInInstance() then -- 副本
+			local map = C_Map.GetBestMapForUnit("player")
+			local InstanceID = map and EJ_GetInstanceForMap(map)
+			if aCoreCDB["UnitframeOptions"]["raid_debuffs"][InstanceID] then
+				for boss, info in pairs (aCoreCDB["UnitframeOptions"]["raid_debuffs"][InstanceID]) do
+					if info[spellID] then
+						priority = info[spellID]
+					end
+				end
 			end
 		end
-	else
-		return 0
 	end
+	
+	return priority
 end
 
 local SortDebuffs = function(a, b)
@@ -401,8 +369,9 @@ local CreateRaidDebuffs = function(self, unit)
 	debuffs["growth-x"] = "RIGHT"
 	debuffs["growth-y"] = "UP"
 	debuffs.spacing = 3
+	
 	debuffs.showDebuffType = true
-
+	debuffs.disableMouse = true
 	debuffs.PostCreateButton = T.PostCreateIcon
 	debuffs.FilterAura = RaidDebuff_AuraFilter
 	debuffs.SortDebuffs = SortDebuffs
@@ -430,13 +399,17 @@ local RaidBuff_AuraFilter = function(debuffs, unit, data)
 end
 
 local GetBuffPriority = function(data)
-	local spellID = data.spellId
+	local priority = 0
 	
-	if aCoreCDB["UnitframeOptions"]["buff_list"][spellID] then
-		return aCoreCDB["UnitframeOptions"]["buff_list"][spellID]
-	else
-		return 0
-    end
+	if data then
+		local spellID = data.spellId
+	
+		if aCoreCDB["UnitframeOptions"]["buff_list"][spellID] then
+			priority = aCoreCDB["UnitframeOptions"]["buff_list"][spellID]
+		end
+	end
+	
+	return priority
 end
 
 local SortBuffs = function(a, b)
@@ -453,7 +426,8 @@ local CreateRaidBuffs = function(self, unit)
 	buffs["growth-x"] = "RIGHT"
 	buffs["growth-y"] = "UP"
 	buffs.spacing = 3
-
+	
+	buffs.disableMouse = true
 	buffs.PostCreateButton = T.PostCreateIcon
 	buffs.FilterAura = RaidBuff_AuraFilter
 	buffs.SortBuffs = SortBuffs
@@ -511,11 +485,11 @@ local CreateHealIndicator = function(self, unit)
 	icons["growth-x"] = "LEFT"
 	icons["growth-y"] = "DOWN"	
 	icons.spacing = 1
-
 	icons.numTotal = 9
 	
-	icons.FilterAura = HealerInd_AuraFilter
+	icons.disableMouse = true
 	icons.PostCreateButton = PostCreateIndicatorIcon
+	icons.FilterAura = HealerInd_AuraFilter
 	
 	icons.ApplySettings =  function()
 		icons:SetHeight(aCoreCDB["UnitframeOptions"]["raidheight"])
@@ -529,6 +503,17 @@ end
 --=============================================--
 --[[              Raid Frames                ]]--
 --=============================================--
+
+local function ClearChildrenPoints(parent)
+	local buttonNum = 0
+	repeat
+		buttonNum = buttonNum + 1;
+		local unitButton = parent:GetAttribute("child"..buttonNum)
+		if ( unitButton ) then
+			unitButton:ClearAllPoints()
+		end
+	until not ( unitButton )
+end
 
 local func = function(self, unit)  	
 	T.CreateClickSets(self)
@@ -878,145 +863,176 @@ G.RaidPetFrame = RaidPetFrame
 local function Spawnraid()
 	oUF:SetActiveStyle"Altz_Healerraid"
 	
+	RaidFrame.all = oUF:SpawnHeader('Altz_HealerRaid', nil, aCoreCDB["UnitframeOptions"]["raidframe_inparty"] and 'raid,party,solo' or 'raid, solo',
+		'oUF-initialConfigFunction', initconfig:format(aCoreCDB["UnitframeOptions"]["raidwidth"], aCoreCDB["UnitframeOptions"]["raidheight"]),
+		'showPlayer', true,
+		'showRaid', true,
+		'xOffset', 5,
+		'yOffset', -5,
+		'point', "LEFT",
+		'groupFilter', '1,2,3,4,5,6,7,8',
+		'groupingOrder', '1,2,3,4,5,6,7,8',
+		'groupBy', 'GROUP',
+		'maxColumns', 8,
+		'unitsPerColumn', 5,
+		'columnSpacing', 5,
+		'columnAnchorPoint', "TOP"
+	)
+	RaidFrame.all:SetPoint("TOPLEFT", RaidFrame, "TOPLEFT", 0, 0)
+	
 	for i = 1, 8 do
-		RaidFrame[i] = oUF:SpawnHeader(i== 1 and 'Altz_HealerRaid' or 'Altz_HealerRaid'..i, nil, aCoreCDB["UnitframeOptions"]["raidframe_inparty"] and 'raid,party,solo' or 'raid,solo',
+		RaidFrame[i] = oUF:SpawnHeader('Altz_HealerRaidGroup'..i, nil, i == 1 and aCoreCDB["UnitframeOptions"]["raidframe_inparty"] and 'raid,party,solo' or 'raid, solo',
 			'oUF-initialConfigFunction', initconfig:format(aCoreCDB["UnitframeOptions"]["raidwidth"], aCoreCDB["UnitframeOptions"]["raidheight"]),
 			'showPlayer', true,
-			'showSolo', true,
-			'showParty', true,
 			'showRaid', true,
 			'xOffset', 5,
 			'yOffset', -5,
 			'point', "LEFT",
-			'groupFilter', '1,2,3,4,5,6,7,8',
+			'groupFilter', tostring(i),
 			'groupingOrder', '1,2,3,4,5,6,7,8',
 			'groupBy', 'GROUP',
 			'maxColumns', 1,
 			'unitsPerColumn', 5,
 			'columnSpacing', 5,
 			'columnAnchorPoint', "TOP"
-		)
+		)	
 	end
 
-	RaidPetFrame[1] = oUF:SpawnHeader('Altz_HealerPetRaid', 'SecureGroupPetHeaderTemplate', aCoreCDB["UnitframeOptions"]["raidframe_inparty"] and 'raid,PartyFrame,solo' or 'raid,solo',
+	RaidPetFrame.all = oUF:SpawnHeader('Altz_HealerPetRaid', 'SecureGroupPetHeaderTemplate', aCoreCDB["UnitframeOptions"]["raidframe_inparty"] and 'raid,party,solo' or 'raid, solo',
 		'oUF-initialConfigFunction', initconfig:format(aCoreCDB["UnitframeOptions"]["raidwidth"], aCoreCDB["UnitframeOptions"]["raidheight"]),
 		'showPlayer', true,
-		'showSolo', true,
-		'showParty', true,
 		'showRaid', true,
 		'xOffset', 5,
 		'yOffset', -5,
 		'point', "LEFT",
-		'groupFilter', GetGroupfilter(),
+		'groupFilter', '1,2,3,4,5,6,7,8',
 		'groupingOrder', '1,2,3,4,5,6,7,8',
 		'groupBy', 'GROUP',
 		'maxColumns', 8,
 		'unitsPerColumn', 5,
 		'columnSpacing', 5,
 		'columnAnchorPoint', "TOP",
-		--'useOwnerUnit', true,
+		'useOwnerUnit', true,
 		'unitsuffix', 'pet'
 	)
+	RaidPetFrame.all:SetPoint("TOPLEFT", RaidPetFrame, "TOPLEFT")
+	
 end
 
+
+
 T.UpdateGroupAnchor = function()
-	local oUF = AltzUF or oUF
-	for _, obj in next, oUF.objects do	
-		if obj.style == 'Altz_Healerraid' then
-			obj:ClearAllPoints()
+	T.CombatDelayFunc(function()
+		local point = aCoreCDB["UnitframeOptions"]["hor_party"] and "LEFT" or "TOP"
+		local columnpoint = aCoreCDB["UnitframeOptions"]["hor_party"] and "TOP" or "LEFT"
+		
+		RaidFrame.all:SetAttribute("point", point)
+		RaidFrame.all:SetAttribute("columnAnchorPoint", columnpoint)
+		ClearChildrenPoints(RaidFrame.all)
+		
+		RaidPetFrame.all:SetAttribute("point", point)
+		RaidPetFrame.all:SetAttribute("columnAnchorPoint", columnpoint)
+		ClearChildrenPoints(RaidPetFrame.all)
+		
+		for i = 1, 8 do			
+			RaidFrame[i]:ClearAllPoints()
+			if i == 1 then
+				RaidFrame[i]:SetPoint("TOPLEFT", RaidFrame, "TOPLEFT", 0, 0)
+			elseif aCoreCDB["UnitframeOptions"]["hor_party"] then -- 水平小队
+				RaidFrame[i]:SetPoint("TOPLEFT", RaidFrame[i-1], "BOTTOMLEFT", 0, -5)
+			else -- 垂直小队
+				RaidFrame[i]:SetPoint("TOPLEFT", RaidFrame[i-1], "TOPRIGHT", 5, 0)
+			end
+			
+			RaidFrame[i]:SetAttribute("point", point)
+			RaidFrame[i]:SetAttribute("columnAnchorPoint", columnpoint)
+			ClearChildrenPoints(RaidFrame[i])
 		end
-	end
-	
-	for i = 1, 8 do
-		RaidFrame[i]:ClearAllPoints()
-		if i == 1 then
-			RaidFrame[i]:SetPoint("TOPLEFT", RaidFrame, "TOPLEFT", 0, 0)
-		elseif aCoreCDB["UnitframeOptions"]["hor_party"] then -- 水平小队
-			RaidFrame[i]:SetPoint("TOPLEFT", RaidFrame[i-1], "BOTTOMLEFT", 0, -5)
-		else -- 垂直小队
-			RaidFrame[i]:SetPoint("TOPLEFT", RaidFrame[i-1], "TOPRIGHT", 5, 0)
-		end
-		RaidFrame[i]:SetAttribute('point', aCoreCDB["UnitframeOptions"]["hor_party"] and "LEFT" or "TOP")
-		RaidFrame[i]:SetAttribute('columnAnchorPoint', aCoreCDB["UnitframeOptions"]["hor_party"] and "TOP" or "LEFT")
-	end
-	
-	RaidPetFrame[1]:ClearAllPoints()
-	RaidPetFrame[1]:SetPoint("TOPLEFT", RaidPetFrame, "TOPLEFT")
-	RaidPetFrame[1]:SetAttribute('point', aCoreCDB["UnitframeOptions"]["hor_party"] and "LEFT" or "TOP")
-	RaidPetFrame[1]:SetAttribute('columnAnchorPoint', aCoreCDB["UnitframeOptions"]["hor_party"] and "TOP" or "LEFT")
+	end)
 end
 
 T.UpdateGroupSize = function()
-	local group_member_size = min(GetNumGroupMembers(), aCoreCDB["UnitframeOptions"]["party_num"]*5)
-	local w, h = aCoreCDB["UnitframeOptions"]["raidwidth"], aCoreCDB["UnitframeOptions"]["raidheight"]
-	if aCoreCDB["UnitframeOptions"]["hor_party"] then
-		if group_member_size > 30 then -- 7~8个队伍
-			h = h*.5
-		elseif group_member_size > 20 then -- 5~6个队伍
-			h = h*.75
-		end
-	else
-		if group_member_size > 30 then -- 7~8个队伍
-			w = w*.5
-		elseif group_member_size > 20 then -- 5~6个队伍
-			w = w*.75
-		end
-	end
-	
-	local oUF = AltzUF or oUF	
-	for _, obj in next, oUF.objects do	
-		if obj.style == 'Altz_Healerraid' then
-			obj:SetSize(w, h)
-		end
-	end
-	
-	if aCoreCDB["UnitframeOptions"]["hor_party"] then
-		if group_member_size > 30 then -- 7~8个队伍
-			RaidFrame:SetSize(5*(w+5)-5, 8*(h+5)-5)
-		elseif group_member_size > 20 then -- 5~6个队伍
-			RaidFrame:SetSize(5*(w+5)-5, 6*(h+5)-5)			
-		else
-			RaidFrame:SetSize(5*(w+5)-5, 4*(h+5)-5)
-		end
-		RaidPetFrame:SetSize(5*(w+5)-5, h)
-	else
-		if group_member_size > 30 then -- 7~8个队伍
-			RaidFrame:SetSize(8*(w+5)-5, 5*(h+5)-5)
-		elseif group_member_size > 20 then -- 5~6个队伍
-			RaidFrame:SetSize(6*(w+5)-5, 5*(h+5)-5)			
-		else
-			RaidFrame:SetSize(4*(w+5)-5, 5*(h+5)-5)
-		end
-		RaidPetFrame:SetSize(w, 5*(h+5)-5)
-	end
-end
-	
-T.UpdateGroupfilter = function()
-	if not RaidFrame[1] then return end
+	T.CombatDelayFunc(function()	
+		local party_num = aCoreCDB["UnitframeOptions"]["party_num"]
+		local group_member_size = min(GetNumGroupMembers(), party_num*5)
+		local w, h = aCoreCDB["UnitframeOptions"]["raidwidth"], aCoreCDB["UnitframeOptions"]["raidheight"]
+		local groupFilter = GetGroupfilter()
 		
-	if not aCoreCDB["UnitframeOptions"]["party_connected"] then -- 小队分离
+		RaidFrame.all:SetAttribute("groupFilter", groupFilter)
+		RaidPetFrame.all:SetAttribute("groupFilter", groupFilter)
+		
 		for i = 1, 8 do
-			RaidFrame[i]:SetAttribute("groupFilter", (i <= aCoreCDB["UnitframeOptions"]["party_num"]) and tostring(i) or '')
-		end
-	else
-		for i = 1, 8 do
-			if i == 1 then
-				RaidFrame[i]:SetAttribute("groupFilter", GetGroupfilter())
+			if i <= party_num then
+				RaidFrame[i]:SetAttribute("groupFilter", tostring(i))
 			else
 				RaidFrame[i]:SetAttribute("groupFilter", '')
 			end
+		end		
+		
+		if aCoreCDB["UnitframeOptions"]["hor_party"] then
+			if group_member_size > 30 then -- 7~8个队伍
+				h = h*.5
+			elseif group_member_size > 20 then -- 5~6个队伍
+				h = h*.75
+			end
+		else
+			if group_member_size > 30 then -- 7~8个队伍
+				w = w*.5
+			elseif group_member_size > 20 then -- 5~6个队伍
+				w = w*.75
+			end
 		end
-	end
-	
-	RaidFrame[1]:SetAttribute("showSolo", aCoreCDB["UnitframeOptions"]["showsolo"])
-	
-	if aCoreCDB["UnitframeOptions"]["showraidpet"] then
-		RaidPetFrame[1]:SetAttribute("groupFilter", GetGroupfilter())
-		T.RestoreDragFrame(RaidPetFrame)
-	else
-		RaidPetFrame[1]:SetAttribute("groupFilter", '')
-		T.ReleaseDragFrame(RaidPetFrame)
-	end
+		
+		local oUF = AltzUF or oUF	
+		for _, obj in next, oUF.objects do	
+			if obj.style == 'Altz_Healerraid' then
+				obj:SetSize(w, h)
+			end
+		end
+		
+		if aCoreCDB["UnitframeOptions"]["hor_party"] then
+			if group_member_size > 30 then -- 7~8个队伍
+				RaidFrame:SetSize(5*(w+5)-5, 8*(h+5)-5)
+			elseif group_member_size > 20 then -- 5~6个队伍
+				RaidFrame:SetSize(5*(w+5)-5, 6*(h+5)-5)			
+			else
+				RaidFrame:SetSize(5*(w+5)-5, 4*(h+5)-5)
+			end
+			RaidPetFrame:SetSize(5*(w+5)-5, h)
+		else
+			if group_member_size > 30 then -- 7~8个队伍
+				RaidFrame:SetSize(8*(w+5)-5, 5*(h+5)-5)
+			elseif group_member_size > 20 then -- 5~6个队伍
+				RaidFrame:SetSize(6*(w+5)-5, 5*(h+5)-5)			
+			else
+				RaidFrame:SetSize(4*(w+5)-5, 5*(h+5)-5)
+			end
+			RaidPetFrame:SetSize(w, 5*(h+5)-5)
+		end
+	end)
+end
+
+T.UpdatePartyConnected = function()
+	T.CombatDelayFunc(function()
+		RaidFrame.all:SetAttribute("showSolo", aCoreCDB["UnitframeOptions"]["party_connected"] and aCoreCDB["UnitframeOptions"]["showsolo"])
+		RaidFrame.all:SetAttribute("showParty",	aCoreCDB["UnitframeOptions"]["party_connected"] and aCoreCDB["UnitframeOptions"]["raidframe_inparty"])
+		RaidFrame.all:SetAttribute("showRaid", aCoreCDB["UnitframeOptions"]["party_connected"])
+		
+		RaidFrame[1]:SetAttribute("showSolo", not aCoreCDB["UnitframeOptions"]["party_connected"] and aCoreCDB["UnitframeOptions"]["showsolo"])		
+		RaidFrame[1]:SetAttribute("showParty", not aCoreCDB["UnitframeOptions"]["party_connected"] and aCoreCDB["UnitframeOptions"]["raidframe_inparty"])		
+		for i = 1, 8 do
+			RaidFrame[i]:SetAttribute("showRaid", not aCoreCDB["UnitframeOptions"]["party_connected"])
+		end		
+		
+		RaidPetFrame.all:SetAttribute("showSolo", aCoreCDB["UnitframeOptions"]["showraidpet"] and aCoreCDB["UnitframeOptions"]["showsolo"])
+		RaidPetFrame.all:SetAttribute("showParty", aCoreCDB["UnitframeOptions"]["showraidpet"] and aCoreCDB["UnitframeOptions"]["raidframe_inparty"])
+		RaidPetFrame.all:SetAttribute("showRaid", aCoreCDB["UnitframeOptions"]["showraidpet"])
+		if aCoreCDB["UnitframeOptions"]["showraidpet"] then
+			T.RestoreDragFrame(RaidPetFrame)
+		else
+			T.ReleaseDragFrame(RaidPetFrame)
+		end
+	end)
 end
 
 --=============================================--
@@ -1025,14 +1041,8 @@ end
 local EventFrame = CreateFrame("Frame")
 
 EventFrame:SetScript("OnEvent", function(self, event, ...)
-	if event == "PLAYER_REGEN_ENABLED" then
-		if aCoreCDB["UnitframeOptions"]["enableClickCast"] then
-			DelayRegisterClickSets()
-			DelayUnregisterClickSets()
-		end
-	elseif event == "PLAYER_SPECIALIZATION_CHANGED" then
-		UpdateDispelType()
-		
+	if event == "PLAYER_SPECIALIZATION_CHANGED" then
+		UpdateDispelType()	
 		for i, object in pairs(G.ClickCast_Frames) do
 			UpdateClickActions(object)
 		end
@@ -1073,11 +1083,10 @@ T.RegisterInitCallback(function()
 	end
 
 	Spawnraid()
-	T.UpdateGroupAnchor()
 	T.UpdateGroupSize()
-	T.UpdateGroupfilter()
-	
-	EventFrame:RegisterEvent("PLAYER_REGEN_ENABLED")
+	T.UpdateGroupAnchor()
+	T.UpdatePartyConnected()
+
 	EventFrame:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED")
 	EventFrame:RegisterEvent("ENCOUNTER_START")
 	EventFrame:RegisterEvent("ENCOUNTER_END")	
