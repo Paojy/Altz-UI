@@ -282,7 +282,6 @@ local ApplySizeAndPostions = function(group)
 			aCoreCDB["FramePoints"][info.f][role]["x"] = info.x
 			aCoreCDB["FramePoints"][info.f][role]["y"] = info.y
 			T.PlaceFrame(_G[info.f])
-			print(info.f)
 		end
 	end
 	-- 选项
