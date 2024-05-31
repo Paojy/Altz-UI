@@ -8,9 +8,9 @@ local EnumUnit = Enum.TooltipDataType.Unit
 hooksecurefunc(GameTooltip, "ProcessLines", function(self)
 	local tooltipData = self:GetPrimaryTooltipData()
 	if tooltipData then
-		if aCoreCDB["OtherOptions"]["combathide"] and InCombatLockdown() then
-			 self:Hide()
-			 return
+		if aCoreCDB["OtherOptions"]["combat_hide"] and InCombatLockdown() then
+			self:Hide()
+			return
 		end
 		if tooltipData.type == EnumItem then	
 			if aCoreCDB["OtherOptions"]["show_itemID"] then
@@ -82,4 +82,15 @@ local function UpdateGameTooltipStatusBar()
 	end)
 end
 
-T.RegisterInitCallback(UpdateGameTooltipStatusBar)
+local function UpdateTooltipAnchor()
+	hooksecurefunc("GameTooltip_SetDefaultAnchor", function(self, parent)
+		if aCoreCDB["OtherOptions"]["anchor_cursor"] then
+			self:SetOwner(parent, "ANCHOR_CURSOR") 
+		end
+	end)
+end
+
+T.RegisterInitCallback(function()
+	UpdateGameTooltipStatusBar()
+	UpdateTooltipAnchor()
+end)

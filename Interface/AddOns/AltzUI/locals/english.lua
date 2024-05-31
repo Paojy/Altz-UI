@@ -377,6 +377,7 @@ L["替换自定义颜色"] = "Replace |cff%02x%02x%02x[%s]|r from Custom Namepla
 L["鼠标提示"] = "Game Tooltip"
 L["战斗中隐藏"] = "Hide in Combat"
 L["评分层数"] = "Score（Highest Level）"
+L["跟随光标"] = "Position always follows the cursor"
 
 --====================================================--
 --[[                 -- 战斗信息 --                 ]]--

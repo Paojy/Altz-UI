@@ -1337,6 +1337,7 @@ local Character_default_Settings = {
 		show_spellID = true,
 		show_itemID = true,
 		combat_hide = true,
+		anchor_cursor = false,
 		autopet = true,
 		autopet_favorite = true,
 		LFGRewards = true,
