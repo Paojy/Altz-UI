@@ -1231,6 +1231,7 @@ local Character_default_Settings = {
 		showraidpet = false,
 		raidtool = true,
 		raidtool_show = true, -- 非控制台内选项
+		combatlog_diffs = {}, -- 非控制台内选项
 		-- 启用
 		raidheight = 45,
 		raidwidth = 100,
@@ -1434,7 +1435,11 @@ T.ExportSettings = function()
 							end
 						end
 					elseif OptionCategroy == "UnitframeOptions" then
-						if setting == "AuraFilterwhitelist" or setting == "hotind_auralist" or setting == "debuff_list_black" then -- 4
+						if setting == "combatlog_diffs" then
+							for id, _ in pairs(aCoreCDB[OptionCategroy][setting]) do
+								str = str.."^"..OptionCategroy.."~"..setting.."~"..id.."~true"
+							end
+						elseif setting == "AuraFilterwhitelist" or setting == "hotind_auralist" or setting == "debuff_list_black" then -- 4
 							for id, _ in pairs(aCoreCDB[OptionCategroy][setting]) do
 								str = str.."^"..OptionCategroy.."~"..setting.."~"..id.."~true"
 							end
@@ -1599,8 +1604,10 @@ T.ImportSettings = function(str)
 							elseif string.find(setting, "_color") then -- 4 OptionCategroy.."~"..setting.."~"..k.."~"..color_v
 								aCoreCDB[OptionCategroy][setting][arg1] = tonumber(arg2)
 							end
-						elseif OptionCategroy == "UnitframeOptions" then -- 9 OptionCategroy.."~"..setting.."~"..specID.."~"..k.."~"..j.."~"..action.."~"..spell.."~"..item.."~"..macro
-							if setting == "AuraFilterwhitelist" or (setting == "hotind_auralist" and sameclass) or setting == "debuff_list_black" then -- 4 OptionCategroy.."~"..setting.."~"..id.."~true"
+						elseif OptionCategroy == "UnitframeOptions" then
+							if setting == "combatlog_diffs" then
+								aCoreCDB[OptionCategroy][setting][tonumber(arg1)] = true
+							elseif setting == "AuraFilterwhitelist" or (setting == "hotind_auralist" and sameclass) or setting == "debuff_list_black" then -- 4 OptionCategroy.."~"..setting.."~"..id.."~true"
 								aCoreCDB[OptionCategroy][setting][tonumber(arg1)] = true
 							elseif setting == "debuff_list" or setting == "buff_list" then -- 4 OptionCategroy.."~"..setting.."~"..spellID.."~"..level
 								aCoreCDB[OptionCategroy][setting][tonumber(arg1)] = tonumber(arg2)

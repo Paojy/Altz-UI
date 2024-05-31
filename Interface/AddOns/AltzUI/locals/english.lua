@@ -328,6 +328,10 @@ L["杂兵"] = "Trash"
 L["删除并加入黑名单"] = "Delete and add to blacklist"
 L["已删除并加入黑名单"] = "|cff7FFF00Deleted and added to blacklist:%s|r"
 L["团队工具"] = "RaidTools"
+L["自动记录%s"] = "Automatic recording in %s"
+L["正在记录战斗日志"] = "Recording combat logs……"
+L["开始记录"] = "Start recording"
+L["停止记录"] = "Stop recording"
 
 --====================================================--
 --[[                 -- 动作条 --                   ]]--

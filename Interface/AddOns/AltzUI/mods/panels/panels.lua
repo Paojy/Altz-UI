@@ -1197,15 +1197,15 @@ end)
 --[[                -- 团队标记 --                  ]]--
 --====================================================--
 
-local raidmark = CreateFrame("Frame", G.uiname.."RaidMarkFrame", UIParent)
-raidmark:SetSize(290, 25)
+local RaidTool = CreateFrame("Frame", G.uiname.."RaidToolFrame", UIParent)
+RaidTool:SetSize(290, 25)
 
-raidmark.movingname = L["团队工具"]
-raidmark.point = {
+RaidTool.movingname = L["团队工具"]
+RaidTool.point = {
 	healer = {a1 = "TOP", parent = "UIParent", a2 = "TOP", x = 0, y = -50},
 	dpser = {a1 = "TOP", parent = "UIParent", a2 = "TOP", x = 0, y = -50},
 }
-T.CreateDragFrame(raidmark)
+T.CreateDragFrame(RaidTool)
 	
 local rm_colors = {
 	{1, 1, 0},
@@ -1218,7 +1218,16 @@ local rm_colors = {
 	{1, 1, 1},
 	{1, 0, 0},
 }
-	
+
+local wm_index = {5, 6, 3, 2, 7, 1, 4, 8}
+
+local raid_tool_buttons = {
+	{"readycheck", READY_CHECK, "UI-LFG-ReadyMark", 20},
+	{"rolecheck", ROLE_POLL, "UI-LFG-PendingMark", 20},
+	{"convertgroup", CONVERT_TO_RAID, nil, 76},
+	{"pull", PLAYER_COUNTDOWN_BUTTON, nil, 49},	
+}
+
 local skin_rm = function(bu, index, bg_color)
 	bu:SetSize(25, 25)
 	bu.bg = T.createBackdrop(bu, .5)
@@ -1249,86 +1258,75 @@ local skin_rm = function(bu, index, bg_color)
 	end)
 end
 
+RaidTool.markframe = CreateFrame("Frame", nil, RaidTool)
+RaidTool.markframe:SetPoint("TOPLEFT", RaidTool, "TOPLEFT", 0, 0)
+RaidTool.markframe:SetPoint("TOPRIGHT", RaidTool, "TOPRIGHT", 0, 0)
+RaidTool.markframe:SetHeight(25)
+RaidTool.markframe.ms = {}
+RaidTool.markframe.wms = {}
+
 for i = 1, 9 do
-	local bu = CreateFrame("Button", nil, raidmark)
-	bu:SetPoint("TOPLEFT", raidmark, "TOPLEFT", (i-1)*33, 0) 	
+	local bu = CreateFrame("Button", nil, RaidTool.markframe)
+	bu:SetPoint("TOPLEFT", RaidTool.markframe, "TOPLEFT", (i-1)*30, 0) 	
 	skin_rm(bu, i)
 	
 	bu:SetScript("OnClick", function()
 		SetRaidTarget("target", (i == 9 and 0) or i)
 	end)
 	
-	raidmark["mark"..i] = bu	
+	table.insert(RaidTool.markframe.ms, bu)	
 end
 
-local wm_index = {5, 6, 3, 2, 7, 1, 4, 8}
-
 for i = 1, 9 do
-	local bu = CreateFrame("Button", nil, raidmark, "SecureActionButtonTemplate")     
-	bu:SetPoint("TOPLEFT", raidmark, "TOPLEFT", (i-1)*33, -33) 	
+	local bu = CreateFrame("Button", nil, RaidTool.markframe, "SecureActionButtonTemplate")     
+	bu:SetPoint("TOPLEFT", RaidTool.markframe, "TOPLEFT", (i-1)*30, -30) 	
 	skin_rm(bu, i, true)
 	
 	bu:SetAttribute("type", "macro") 
 	bu:SetAttribute("macrotext1", (i == 9 and "/cwm 0") or "/wm "..wm_index[i])	
-
-	bu:SetScript("OnEvent", function(self, event)
-		if (IsInGroup() and not IsInRaid()) or UnitIsGroupLeader("player") or UnitIsGroupAssistant("player") then
-			self:Show()
-		else
-			self:Hide()
-		end
-	end)
 	
-	bu:RegisterEvent("GROUP_ROSTER_UPDATE")
-	bu:RegisterEvent("PLAYER_ENTERING_WORLD")
-	
-	raidmark["wm"..i] = bu
+	table.insert(RaidTool.markframe.wms, bu)
 end
-
-local raid_tool_buttons = {
-	{"readycheck", READY_CHECK},
-	{"rolecheck", ROLE_POLL},
-	{"convertgroup", CONVERT_TO_RAID},
-	{"pull", PLAYER_COUNTDOWN_BUTTON},
-}
 
 for i = 1, 4 do
 	local tag = raid_tool_buttons[i][1]
-	local bu = CreateFrame("Button", nil, raidmark)
-	bu:SetPoint("TOPLEFT", raidmark, "TOPLEFT", math.fmod((i-1), 2)*149, -66-math.floor((i-1)/2)*30) 	
-	bu:SetSize(140, 20)
+	local bu = CreateFrame("Button", nil, RaidTool.markframe)
+	if i == 1 then
+		bu:SetPoint("TOPLEFT", RaidTool.markframe, "TOPLEFT", 85, -60)
+	else
+		bu:SetPoint("LEFT", RaidTool.markframe[raid_tool_buttons[i-1][1]], "RIGHT", 5, 0)
+	end
+	bu:SetSize(raid_tool_buttons[i][4], 20)
 	
-	bu.text = T.createtext(bu, "OVERLAY", 13, "OUTLINE", "CENTER")
+	bu.text = T.createtext(bu, "OVERLAY", 12, "OUTLINE", "CENTER")
 	bu.text:SetAllPoints(bu)
-	bu.text:SetText(raid_tool_buttons[i][2])
+	
+	bu.tex = bu:CreateTexture(nil, "ARTWORK")
+	bu.tex:SetAllPoints(bu)
+
+	if raid_tool_buttons[i][3] then
+		bu.tex:SetAtlas(raid_tool_buttons[i][3])
+	else
+		bu.text:SetText(raid_tool_buttons[i][2])
+	end
 	
 	bu.bg = T.createBackdrop(bu, .5)
 
 	bu:SetScript("OnEnter", function(self)
 		self.bg:SetBackdropBorderColor(1, 1, 1)
-	end)
-	bu:SetScript("OnLeave", function(self)
-		self.bg:SetBackdropBorderColor(0, 0, 0)
-	end)
-		
-	bu:SetScript("OnEvent", function(self, event)
-		if (IsInGroup() and not IsInRaid()) or UnitIsGroupLeader("player") or UnitIsGroupAssistant("player") then
-			self:Show()
-		else
-			self:Hide()
-		end
-		
-		if tag == "convertgroup" then
-			if IsInRaid() then
-				bu.text:SetText(CONVERT_TO_PARTY)
-			else
-				bu.text:SetText(CONVERT_TO_RAID)
-			end
+		if raid_tool_buttons[i][3] then
+			GameTooltip:SetOwner(self, "ANCHOR_BOTTOMRIGHT", 0, 0)
+			GameTooltip:AddLine(raid_tool_buttons[i][2])
+			GameTooltip:Show()
 		end
 	end)
 	
-	bu:RegisterEvent("GROUP_ROSTER_UPDATE")
-	bu:RegisterEvent("PLAYER_ENTERING_WORLD")
+	bu:SetScript("OnLeave", function(self)
+		self.bg:SetBackdropBorderColor(0, 0, 0)
+		if raid_tool_buttons[i][3] then
+			GameTooltip:Hide()
+		end
+	end)
 
 	bu:SetScript("OnClick", function()
 		if tag == "readycheck" then
@@ -1350,28 +1348,268 @@ for i = 1, 4 do
 		end
 	end)
 	
-	raidmark[tag] = bu
+	RaidTool.markframe[tag] = bu
 end
+
+RaidTool.markframe:SetScript("OnEvent", function(self, event)
+	if (IsInGroup() and not IsInRaid()) or UnitIsGroupLeader("player") or UnitIsGroupAssistant("player") then
+		for _, bu in pairs(self.wms) do
+			bu:Show()
+		end
+		self.readycheck:Show()
+		self.rolecheck:Show()
+		self.convertgroup:Show()
+		self.pull:Show()
+		self:SetHeight(60)
+	else
+		for _, bu in pairs(self.wms) do
+			bu:Hide()
+		end
+		self.readycheck:Hide()
+		self.rolecheck:Hide()
+		self.convertgroup:Hide()
+		self.pull:Hide()
+		self:SetHeight(30)
+	end
 	
-local raidmark_toggle = T.ClickTexButton(UIParent, {"TOPRIGHT", raidmark, "TOPLEFT", -7, 0}, G.iconFile.."star.tga", L["团队工具"], 18)
+	if IsInRaid() then
+		self.convertgroup.text:SetText(CONVERT_TO_PARTY)
+	else
+		self.convertgroup.text:SetText(CONVERT_TO_RAID)
+	end
+end)
+	
+RaidTool.markframe:RegisterEvent("GROUP_ROSTER_UPDATE")
+RaidTool.markframe:RegisterEvent("PLAYER_ENTERING_WORLD")	
+
+RaidTool.logframe = CreateFrame("Frame", nil, RaidTool)
+RaidTool.logframe:SetPoint("TOPLEFT", RaidTool.markframe, "BOTTOMLEFT", 0, 0)
+RaidTool.logframe:SetSize(80, 20)
+T.createBackdrop(RaidTool.logframe, .5)
+
+local function CreateLogFrameButton(button_type, size, points, normal_tex, tip)
+	local bu = CreateFrame(button_type, nil, RaidTool.logframe)
+	bu:SetPoint(unpack(points))
+	bu:SetSize(size, size)
+	
+	bu:SetNormalTexture(normal_tex)
+	bu:GetNormalTexture():SetDesaturated(true)
+	bu:GetNormalTexture():SetVertexColor(1,1,1)
+	bu:SetHighlightTexture(normal_tex)
+	bu:GetHighlightTexture():SetDesaturated(true)
+	bu:GetHighlightTexture():SetVertexColor(1,.82,0)
+	bu:SetDisabledTexture(normal_tex)
+	bu:GetDisabledTexture():SetDesaturated(true)
+	if normal_tex == "CreditsScreen-Assets-Buttons-Play" then
+		bu:GetDisabledTexture():SetVertexColor(0,1,0)
+	elseif normal_tex == "CreditsScreen-Assets-Buttons-Pause" then
+		bu:GetDisabledTexture():SetVertexColor(1,0,0)
+	end
+	
+	bu:SetScript("OnEnter", function(self) 
+		GameTooltip:SetOwner(self, "ANCHOR_BOTTOMRIGHT", 0, 0)
+		GameTooltip:AddLine(tip)
+		GameTooltip:Show()
+	end)
+	
+	bu:SetScript("OnLeave", function(self)
+		GameTooltip:Hide()
+	end)
+	
+	return bu
+end
+
+RaidTool.logframe.config_button = CreateLogFrameButton("DropDownToggleButton", 30, {"LEFT", 0, 0},  "GM-icon-settings", SETTINGS)
+RaidTool.logframe.DropDown = CreateFrame("Frame", nil, RaidTool.logframe, "UIDropDownMenuTemplate")
+
+RaidTool.logframe.play_button = CreateLogFrameButton("Button", 20, {"LEFT", RaidTool.logframe.config_button, "RIGHT", 0, 0}, "CreditsScreen-Assets-Buttons-Play", L["开始记录"])
+
+RaidTool.logframe.stop_button = CreateLogFrameButton("Button", 20, {"LEFT", RaidTool.logframe.play_button, "RIGHT", 5, 0}, "CreditsScreen-Assets-Buttons-Pause", L["停止记录"])
+
+local COMBATLOGDISABLED = COMBATLOGDISABLED
+local COMBATLOGENABLED = COMBATLOGENABLED
+
+local function ToggleAdvancedCombatlog()
+	if GetCVar("advancedCombatLogging") == "1" then
+		SetCVar("advancedCombatLogging", "0")
+	else
+		SetCVar("advancedCombatLogging", "1")
+	end
+end
+
+local function ToggleCombatlogDifficulty(self, DifficultyID)
+	if T.ValueFromPath(aCoreCDB, {"UnitframeOptions", "combatlog_diffs", DifficultyID}) then
+		T.ValueToPath(aCoreCDB, {"UnitframeOptions", "combatlog_diffs", DifficultyID}, false)
+	else
+		T.ValueToPath(aCoreCDB, {"UnitframeOptions", "combatlog_diffs", DifficultyID}, true)
+	end
+end
+
+local RaidDifficulties = {
+	16, -- 史诗
+	15, -- 英雄
+	14, -- 普通
+	17, -- 随机
+}
+
+local DungeonDifficulties = {
+	8, -- 史诗钥匙
+	23, -- 史诗
+	2, -- 英雄
+	1, -- 普通
+}
+
+local function Combatlog_Initialize(self, level, menuList)
+	local info
+	if level == 1 then
+		info = UIDropDownMenu_CreateInfo()
+		info.text = ADVANCED_COMBAT_LOGGING
+		info.keepShownOnClick = true
+		info.checked = GetCVar("advancedCombatLogging") == "1"
+		info.func = ToggleAdvancedCombatlog
+		UIDropDownMenu_AddButton(info)
+		
+		info = UIDropDownMenu_CreateInfo()
+		info.text = string.format(L["自动记录%s"], RAIDS)
+		info.notCheckable = true
+		info.keepShownOnClick = true
+		info.hasArrow = true
+		info.menuList = "Raids"
+		UIDropDownMenu_AddButton(info)
+		
+		info = UIDropDownMenu_CreateInfo()
+		info.text = string.format(L["自动记录%s"], DUNGEONS)
+		info.notCheckable = true
+		info.keepShownOnClick = true
+		info.hasArrow = true
+		info.menuList = "Dungeons"
+		UIDropDownMenu_AddButton(info)
+	elseif menuList == "Raids" then
+		info = UIDropDownMenu_CreateInfo()
+		for i, DifficultyID in pairs(RaidDifficulties) do
+			local name = GetDifficultyInfo(DifficultyID)
+			info.text = name
+			info.arg1 = DifficultyID
+			info.keepShownOnClick = true
+			info.checked = T.ValueFromPath(aCoreCDB, {"UnitframeOptions", "combatlog_diffs", DifficultyID})
+			info.func = ToggleCombatlogDifficulty
+			UIDropDownMenu_AddButton(info, level)
+		end
+	elseif menuList == "Dungeons" then
+		info = UIDropDownMenu_CreateInfo()
+		for i, DifficultyID in pairs(DungeonDifficulties) do
+			local name = GetDifficultyInfo(DifficultyID)
+			info.text = name
+			info.arg1 = DifficultyID
+			info.keepShownOnClick = true
+			info.checked = T.ValueFromPath(aCoreCDB, {"UnitframeOptions", "combatlog_diffs", DifficultyID})
+			info.func = ToggleCombatlogDifficulty
+			UIDropDownMenu_AddButton(info, level)
+		end
+	end
+end
+
+RaidTool.logframe.config_button:HookScript("OnMouseDown", function(self)
+	RaidTool.logframe.DropDown.point = "TOPLEFT"
+	RaidTool.logframe.DropDown.relativePoint = "BOTTOMLEFT"
+	ToggleDropDownMenu(1, nil, RaidTool.logframe.DropDown, RaidTool.logframe, 0, -5)
+	GameTooltip:Hide()
+end)
+
+RaidTool.logframe.play_button:HookScript("OnMouseUp", function(self)
+	if self:IsEnabled() then
+		LoggingCombat(true)
+		local info = ChatTypeInfo["SYSTEM"]
+		DEFAULT_CHAT_FRAME:AddMessage(COMBATLOGENABLED, info.r, info.g, info.b, info.id)
+		self:Disable()
+	end
+end)
+
+RaidTool.logframe.stop_button:HookScript("OnMouseUp", function(self)
+	if self:IsEnabled() then
+		LoggingCombat(false)
+		local info = ChatTypeInfo["SYSTEM"]
+		DEFAULT_CHAT_FRAME:AddMessage(COMBATLOGDISABLED, info.r, info.g, info.b, info.id)
+		self:Disable()
+	end
+end)
+
+hooksecurefunc("LoggingCombat", function(arg)
+	if arg == true then		
+		RaidTool.logframe.play_button:Disable()
+		RaidTool.logframe.stop_button:Enable()
+	elseif arg == false then
+		RaidTool.logframe.play_button:Enable()
+		RaidTool.logframe.stop_button:Disable()
+	end
+end)
+
+local function ToggleComabatLog()
+	local _, _, DifficultyID = GetInstanceInfo()	
+	if LoggingCombat() then
+		if not T.ValueFromPath(aCoreCDB, {"UnitframeOptions", "combatlog_diffs", DifficultyID}) then
+			LoggingCombat(false)
+			local info = ChatTypeInfo["SYSTEM"]
+			DEFAULT_CHAT_FRAME:AddMessage(COMBATLOGDISABLED, info.r, info.g, info.b, info.id)
+		end
+	else
+		if T.ValueFromPath(aCoreCDB, {"UnitframeOptions", "combatlog_diffs", DifficultyID}) then
+			LoggingCombat(true)
+			local info = ChatTypeInfo["SYSTEM"]
+			DEFAULT_CHAT_FRAME:AddMessage(COMBATLOGENABLED, info.r, info.g, info.b, info.id)
+		end
+	end
+end
+
+local function UpdateComabatLogStatus()
+	if LoggingCombat() then
+		RaidTool.logframe.play_button:Disable()
+		RaidTool.logframe.stop_button:Enable()
+	else
+		RaidTool.logframe.play_button:Enable()
+		RaidTool.logframe.stop_button:Disable()
+	end
+end
+
+RaidTool.logframe:SetScript("OnEvent", function(self, event, ...)
+	if event == "ZONE_CHANGED_NEW_AREA" then -- 登录时也会触发
+		ToggleComabatLog()
+	elseif event == "PLAYER_ENTERING_WORLD" then
+		UIDropDownMenu_Initialize(self.DropDown, Combatlog_Initialize, "MENU")
+		UpdateComabatLogStatus()
+		self:UnregisterEvent("PLAYER_ENTERING_WORLD")
+	elseif event == "CVAR_UPDATE" then	
+		local name, value = ...
+		if ( name == "advancedCombatLogging" ) then
+			UIDropDownMenu_Initialize(self.DropDown, Combatlog_Initialize, "MENU")
+		end
+	end
+end)
+
+RaidTool.logframe:RegisterEvent("CVAR_UPDATE")
+RaidTool.logframe:RegisterEvent("PLAYER_ENTERING_WORLD")
+RaidTool.logframe:RegisterEvent("ZONE_CHANGED_NEW_AREA")
+
+-- 开关
+local raidmark_toggle = T.ClickTexButton(UIParent, {"TOPRIGHT", RaidTool, "TOPLEFT", -7, 0}, G.iconFile.."star.tga", L["团队工具"], 18)
 raidmark_toggle:SetSize(18, 18)
 
 T.UpdateRaidTools = function()
 	if aCoreCDB["UnitframeOptions"]["raidtool"] then	
-		T.RestoreDragFrame(raidmark)
+		T.RestoreDragFrame(RaidTool)
 		if aCoreCDB["UnitframeOptions"]["raidtool_show"] then
-			raidmark:Show()
+			RaidTool:Show()
 			raidmark_toggle.text:Hide()
 			raidmark_toggle:SetAlpha(.3)
 		else
-			raidmark:Hide()
+			RaidTool:Hide()
 			raidmark_toggle.text:Show()
 			raidmark_toggle:SetAlpha(1)
 		end
 		raidmark_toggle:Show()
 	else
-		T.ReleaseDragFrame(raidmark)
-		raidmark:Hide()
+		T.ReleaseDragFrame(RaidTool)
+		RaidTool:Hide()
 		raidmark_toggle:Hide()
 	end
 end
