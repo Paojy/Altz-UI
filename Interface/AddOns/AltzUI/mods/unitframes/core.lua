@@ -126,6 +126,18 @@ local PostUpdate_CombatIndicator = function(self, inCombat)
 	end
 end
 
+local Override_QusetUpdate = function(self, event, unit)
+	if(unit ~= self.unit) then return end
+
+	local element = self.QuestIndicator
+	
+	if C_QuestLog.UnitIsRelatedToActiveQuest(unit) then
+		element:Show()
+	else
+		element:Hide()
+	end
+end
+
 --=============================================--
 --[[ Health ]]--
 --=============================================--
@@ -1908,7 +1920,7 @@ local plate_func = function(self, unit)
 	qicon:SetPoint("RIGHT", self.Tag_Name, "LEFT", 3, 0)
 	qicon:SetSize(10, 10)
 	qicon:SetAtlas("QuestNormal")
-	
+	qicon.Override = Override_QusetUpdate
 	self.QuestIndicator = qicon
 	
 	-- PVP标记
