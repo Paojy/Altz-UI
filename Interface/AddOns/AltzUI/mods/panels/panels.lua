@@ -121,7 +121,7 @@ for i, key in pairs(BorderTopTextures) do
 end
 
 -- 巨龙群岛概要
-ExpansionLandingPageMinimapButton:SetScale(.7)
+ExpansionLandingPageMinimapButton:SetScale(.5)
 ExpansionLandingPageMinimapButton:GetNormalTexture():SetTexCoord(.2, .8, .2, .8)
 ExpansionLandingPageMinimapButton:GetPushedTexture():SetTexCoord(.2, .8, .2, .8)
 ExpansionLandingPageMinimapButton:GetHighlightTexture():SetTexCoord(.2, .8, .2, .8)
@@ -137,8 +137,8 @@ Minimap.ZoomIn:EnableMouse(false)
 Minimap.ZoomOut:EnableMouse(false)
 
 -- 追踪
-MinimapCluster.TrackingFrame:Hide()
-MinimapCluster.TrackingFrame.Show = T.dummy
+MinimapCluster.Tracking:Hide()
+MinimapCluster.Tracking.Show = T.dummy
 Minimap:SetScript('OnMouseUp', function (self, button)
 	if button == 'RightButton' then
 		MinimapCluster.TrackingFrame.DropDown.point = "TOPRIGHT";
@@ -344,30 +344,34 @@ T.RegisterEnteringWorldCallback(function()
 	MBCF_Toggle()
 end)
 
+
 -- 小地图元素位置
+hooksecurefunc(ExpansionLandingPageMinimapButton, "SetLandingPageIconOffset", function()
+	ExpansionLandingPageMinimapButton:ClearAllPoints()
+	ExpansionLandingPageMinimapButton:SetPoint("BOTTOMRIGHT", Minimap, "BOTTOMRIGHT", -40, 0)
+	
+	MinimapCluster.InstanceDifficulty:ClearAllPoints()
+	MinimapCluster.InstanceDifficulty:SetPoint("BOTTOMRIGHT", ExpansionLandingPageMinimapButton, "BOTTOMLEFT", -5, 0)
+end)
+
 hooksecurefunc(MinimapCluster, "SetHeaderUnderneath", function(self, headerUnderneath)
 	local scale = self.MinimapContainer:GetScale()
 	
 	self.MinimapContainer:ClearAllPoints()
 	self.BorderTop:ClearAllPoints()
 	GameTimeFrame:ClearAllPoints()
-	ExpansionLandingPageMinimapButton:ClearAllPoints()
-	self.InstanceDifficulty:ClearAllPoints()
+	
 	MBCF_Button:ClearAllPoints()
 	
 	if (headerUnderneath) then					
 		self.MinimapContainer:SetPoint("BOTTOM", self, "BOTTOM", 10 / scale, 5 / scale)
 		self.BorderTop:SetPoint("BOTTOMLEFT", Minimap, "BOTTOMLEFT", 0, 2)
-		GameTimeFrame:SetPoint("BOTTOMRIGHT", Minimap, "BOTTOMRIGHT", 0, 2)		
-		ExpansionLandingPageMinimapButton:SetPoint("TOPRIGHT", Minimap, "TOPRIGHT", -40, 0)
-		self.InstanceDifficulty:SetPoint("TOPRIGHT", ExpansionLandingPageMinimapButton, "TOPLEFT", -5, 0)
+		GameTimeFrame:SetPoint("BOTTOMRIGHT", Minimap, "BOTTOMRIGHT", 0, 2)				
 		MBCF_Button:SetPoint("TOPLEFT", Minimap, "TOPLEFT", 2, -2)	
 	else				
 		self.MinimapContainer:SetPoint("TOP", self, "TOP", 10 / scale, -5 / scale)	
 		self.BorderTop:SetPoint("TOPLEFT", Minimap, "TOPLEFT", 0, -2)
-		GameTimeFrame:SetPoint("TOPRIGHT", Minimap, "TOPRIGHT", 0, -2)
-		ExpansionLandingPageMinimapButton:SetPoint("BOTTOMRIGHT", Minimap, "BOTTOMRIGHT", -40, 0)
-		self.InstanceDifficulty:SetPoint("BOTTOMRIGHT", ExpansionLandingPageMinimapButton, "BOTTOMLEFT", -5, 0)
+		GameTimeFrame:SetPoint("TOPRIGHT", Minimap, "TOPRIGHT", 0, -2)		
 		MBCF_Button:SetPoint("BOTTOMLEFT", Minimap, "BOTTOMLEFT", 2, 2)
 	end
 	
@@ -415,13 +419,13 @@ xpbar:SetScript("OnLeave", function()
 end)
 
 xpbar.update = function()
-	if UnitLevel("player") < MAX_PLAYER_LEVEL and not IsXPUserDisabled() then
+	if ( not exhaustionThreshold or exhaustionThreshold <= 0 or IsPlayerAtEffectiveMaxLevel() or IsXPUserDisabled() ) then
+		xpbar:Hide()
+	else
 		local XP, maxXP = UnitXP("player"), UnitXPMax("player")
 		xpbar:SetMinMaxValues(min(0, XP), maxXP)
 		xpbar:SetValue(XP)
-		xpbar:Show()
-	else
-		xpbar:Hide()
+		xpbar:Show()		
 	end
 end
 
@@ -433,8 +437,13 @@ G.repbar = repbar
 
 repbar:SetScript("OnEnter", function()
 	GameTooltip:SetOwner(repbar, "ANCHOR_TOPRIGHT")
-	
-	local name, rank, minRep, maxRep, value, factionID = GetWatchedFactionInfo()
+	local data = C_Reputation.GetWatchedFactionData()
+	local name = data.name
+	local rank = data.reaction
+	local minRep = 0
+	local maxRep = data.nextReactionThreshold - data.currentReactionThreshold
+	local value = data.currentStanding - data.currentReactionThreshold
+	local factionID = data.factionID
 	local ranktext = _G["FACTION_STANDING_LABEL"..rank]
 	
 	if name then
@@ -468,8 +477,14 @@ repbar:SetScript("OnLeave", function() GameTooltip:Hide() end)
 repbar:SetScript("OnMouseDown", function() ToggleCharacter("ReputationFrame") end)
 
 repbar.update = function()
-	if GetWatchedFactionInfo() then
-		local name, rank, minRep, maxRep, value, factionID = GetWatchedFactionInfo()	
+	if C_Reputation.GetWatchedFactionData() then
+		local data = C_Reputation.GetWatchedFactionData()
+		local name = data.name
+		local rank = data.reaction
+		local minRep = 0
+		local maxRep = data.nextReactionThreshold - data.currentReactionThreshold
+		local value = data.currentStanding - data.currentReactionThreshold
+		local factionID = data.factionID
 		local reputationInfo = C_GossipInfo.GetFriendshipReputation(factionID)
 		if reputationInfo and reputationInfo.friendshipFactionID ~= 0 then
 			if reputationInfo.nextThreshold then
@@ -503,14 +518,15 @@ repbar.update = function()
 end
 
 local update_bar_positions = function()
-	local showXP = UnitLevel("player") < MAX_PLAYER_LEVEL and not IsXPUserDisabled()
-	local showRep = GetWatchedFactionInfo()
+	local exhaustionThreshold = GetXPExhaustion()
+	local HideXP = ( not exhaustionThreshold or exhaustionThreshold <= 0 or IsPlayerAtEffectiveMaxLevel() or IsXPUserDisabled() )
+	local showRep = C_Reputation.GetWatchedFactionData()
 	
-	xpbar.shown = showXP
+	xpbar.shown = not HideXP
 	repbar.shown = showRep
 	
 	if (xpbar.shown or repbar.shown) and (xpbar.shown ~= xpbar.shown_old or repbar.shown ~= repbar.shown_old) then
-		if showXP then
+		if xpbar.shown then
 			xpbar:SetPoint("TOPLEFT", Minimap, "BOTTOMLEFT", 0, 0)
 			xpbar:SetPoint("TOPRIGHT", Minimap, "BOTTOMRIGHT", 0, 0)
 			if showRep then
@@ -804,22 +820,17 @@ local function TalentDropDown_Initialize(self, level, menuList)
 		info = UIDropDownMenu_CreateInfo()
 		-- 启用专精
 		info.text = ACTIVATE..SPECIALIZATION
-		info.notCheckable = true
-		info.keepShownOnClick = true
 		info.hasArrow = true
 		info.menuList = "Spec"
 		UIDropDownMenu_AddButton(info)
 		-- 专精拾取
 		info.text = SELECT_LOOT_SPECIALIZATION
-		info.notCheckable = true
-		info.keepShownOnClick = true
 		info.hasArrow = true
 		info.menuList = "LootSpec"
 		UIDropDownMenu_AddButton(info)
 		-- 天赋和专精
 		info.text = TALENTS_BUTTON
 		info.notCheckable = true
-		info.keepShownOnClick = false
 		info.hasArrow = false
 		info.menuList = nil
 		info.func = ToggleTalentFrame
@@ -911,22 +922,16 @@ local function AutoLootDropDown_Initialize(self, level, menuList)
 		info = UIDropDownMenu_CreateInfo()
 		-- 自动ROLL(公会队伍)
 		info.text = string.format("%s(%s)", L["自动ROLL"], GUILD_GROUP)
-		info.notCheckable = true
-		info.keepShownOnClick = true
 		info.hasArrow = true
 		info.menuList = "autoLoot_guild"
 		UIDropDownMenu_AddButton(info)
 		-- 自动ROLL(非公会队伍)
 		info.text = string.format("%s(%s)", L["自动ROLL"], L["非"]..GUILD_GROUP)
-		info.notCheckable = true
-		info.keepShownOnClick = true
 		info.hasArrow = true
 		info.menuList = "autoLoot_nonguild"
 		UIDropDownMenu_AddButton(info)
 		-- ROLL结果截图
 		info.text = L["ROLL结果截图"]
-		info.notCheckable = false
-		info.keepShownOnClick = false
 		info.hasArrow = false
 		info.menuList = nil
 		info.checked = function()
@@ -1194,7 +1199,7 @@ AFK_Frame:SetScript("OnEvent",function(self, event)
 end)
 
 --====================================================--
---[[                -- 团队标记 --                  ]]--
+--[[                -- 团队工具 --                  ]]--
 --====================================================--
 
 local RaidTool = CreateFrame("Frame", G.uiname.."RaidToolFrame", UIParent)
@@ -1394,10 +1399,10 @@ local function CreateLogFrameButton(button_type, size, points, normal_tex, tip)
 	
 	bu:SetNormalTexture(normal_tex)
 	bu:GetNormalTexture():SetDesaturated(true)
-	bu:GetNormalTexture():SetVertexColor(1,1,1)
+	bu:GetNormalTexture():SetVertexColor(1, 1, 1)
 	bu:SetHighlightTexture(normal_tex)
 	bu:GetHighlightTexture():SetDesaturated(true)
-	bu:GetHighlightTexture():SetVertexColor(1,.82,0)
+	bu:GetHighlightTexture():SetVertexColor(1, .82, 0)
 	bu:SetDisabledTexture(normal_tex)
 	bu:GetDisabledTexture():SetDesaturated(true)
 	if normal_tex == "CreditsScreen-Assets-Buttons-Play" then
@@ -1419,7 +1424,7 @@ local function CreateLogFrameButton(button_type, size, points, normal_tex, tip)
 	return bu
 end
 
-RaidTool.logframe.config_button = CreateLogFrameButton("DropDownToggleButton", 30, {"LEFT", 0, 0},  "GM-icon-settings", SETTINGS)
+RaidTool.logframe.config_button = CreateLogFrameButton("DropDownToggleButton", 30, {"LEFT", 0, 0}, "GM-icon-settings", SETTINGS)
 RaidTool.logframe.DropDown = CreateFrame("Frame", nil, RaidTool.logframe, "UIDropDownMenuTemplate")
 
 RaidTool.logframe.play_button = CreateLogFrameButton("Button", 20, {"LEFT", RaidTool.logframe.config_button, "RIGHT", 0, 0}, "CreditsScreen-Assets-Buttons-Play", L["开始记录"])
@@ -1471,16 +1476,12 @@ local function Combatlog_Initialize(self, level, menuList)
 		
 		info = UIDropDownMenu_CreateInfo()
 		info.text = string.format(L["自动记录%s"], RAIDS)
-		info.notCheckable = true
-		info.keepShownOnClick = true
 		info.hasArrow = true
 		info.menuList = "Raids"
 		UIDropDownMenu_AddButton(info)
 		
 		info = UIDropDownMenu_CreateInfo()
 		info.text = string.format(L["自动记录%s"], DUNGEONS)
-		info.notCheckable = true
-		info.keepShownOnClick = true
 		info.hasArrow = true
 		info.menuList = "Dungeons"
 		UIDropDownMenu_AddButton(info)
