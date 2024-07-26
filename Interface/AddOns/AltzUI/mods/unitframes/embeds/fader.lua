@@ -11,6 +11,15 @@ local EmptyPowerType = {
 	["PAIN"] = true,
 }
 
+local function IsMouseOver(self)
+	local mouseFoci = GetMouseFoci()
+	for _, mouseFocus in ipairs(mouseFoci) do
+		if mouseFocus == self then
+			return true
+		end
+	end
+end
+
 local function Update(self)
 	local unit = self.unit
 	local fader = self.Fader
@@ -19,6 +28,7 @@ local function Update(self)
 	local power = UnitPower(unit)
 	
 	if fader and aCoreCDB["UnitframeOptions"]["enablefade"] then
+		
 		if
 			(fader.FadeCasting and (UnitCastingInfo(unit) or UnitChannelInfo(unit))) or
 			(fader.FadeCombat and UnitAffectingCombat(unit)) or
@@ -27,7 +37,7 @@ local function Update(self)
 			(fader.FadeHealth and UnitHealth(unit) < UnitHealthMax(unit)) or
 			(fader.FadePower and EmptyPowerType[select(2, UnitPowerType("player"))] and UnitPower("player") > 0) or
 			(fader.FadePower and (not EmptyPowerType[select(2, UnitPowerType("player"))]) and UnitPower("player") < UnitPowerMax("player")) or
-			(fader.FadeHover and GetMouseFocus() == self)
+			(fader.FadeHover and IsMouseOver(self))
 		then
 			T.UIFrameFadeIn(self, fader.FadeInSmooth, self:GetAlpha(), 1)
 		else

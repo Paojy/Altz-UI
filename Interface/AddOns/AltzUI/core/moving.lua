@@ -64,6 +64,15 @@ local StopFrameChooser = function(editbox, parent)
 	end
 end
 
+local function GetMouseOver()
+	local mouseFoci = GetMouseFoci()
+	for _, mouseFocus in ipairs(mouseFoci) do
+		if mouseFocus then
+			return mouseFocus
+		end
+	end
+end
+
 local StartFrameChooser = function(editbox, name, old_parent)
 	FrameChooseInProgress = true
 
@@ -77,7 +86,7 @@ local StartFrameChooser = function(editbox, name, old_parent)
 		else
 			SetCursor("CAST_CURSOR")
 	
-			local focus = GetMouseFocus()
+			local focus = GetMouseOver()
 			local focusName
 			
 			if currentFocus ~= focus then
