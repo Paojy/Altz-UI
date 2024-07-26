@@ -6,9 +6,9 @@ eventframe:RegisterEvent("PLAYER_ENTERING_WORLD")
 eventframe:SetScript("OnEvent", function()
 	if aCoreCDB["SkinOptions"]["collapseWF"] then
 		if IsInInstance() then
-			ObjectiveTracker_Collapse()
+			ObjectiveTrackerFrame.Header:SetCollapsed(true)
 		else
-			ObjectiveTracker_Expand()
+			ObjectiveTrackerFrame.Header:SetCollapsed(true)
 		end
 	end
 end)
