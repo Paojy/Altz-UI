@@ -4,8 +4,7 @@
 ## X-oUF: AltzUF
 ## Version: 10.06
 ## Author: Paopao001
-## Dependencies: AuroraClassic
-## OptionalDeps: !ClassColors, BigWigs
+## OptionalDeps: AuroraClassic, !ClassColors, BigWigs
 ## SavedVariables: aCoreDB
 ## SavedVariablesPerCharacter: aCoreCDB
 
