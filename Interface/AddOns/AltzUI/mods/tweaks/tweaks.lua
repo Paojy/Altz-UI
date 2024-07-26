@@ -3,7 +3,7 @@ local T, C, L, G = unpack(select(2, ...))
 
 local eventframe = CreateFrame('Frame')
 eventframe:SetScript('OnEvent', function(self, event, ...)
-	eventframe[event](self, ...)
+	self[event](self, ...)
 end)
 
 --[[-----------------------------------------------------------------------------
@@ -107,7 +107,7 @@ end
 Accept Res
 -------------------------------------------------------------------------------]]
 eventframe:RegisterEvent('RESURRECT_REQUEST')
-function eventframe:RESURRECT_REQUEST(name)
+function eventframe:RESURRECT_REQUEST()
 	if aCoreCDB["OtherOptions"]["acceptres"] then
 		if UnitAffectingCombat('player') then return end
 		if IsInGroup() then
