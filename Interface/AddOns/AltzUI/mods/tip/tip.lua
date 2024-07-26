@@ -5,13 +5,15 @@ local EnumSpell = Enum.TooltipDataType.Spell
 local EnumAura = Enum.TooltipDataType.UnitAura
 local EnumUnit = Enum.TooltipDataType.Unit
 
+hooksecurefunc(GameTooltip, "Show", function(self)
+	if aCoreCDB["OtherOptions"]["combat_hide"] and InCombatLockdown() then
+		self:Hide()
+	end
+end)
+
 hooksecurefunc(GameTooltip, "ProcessLines", function(self)
 	local tooltipData = self:GetPrimaryTooltipData()
-	if tooltipData then
-		if aCoreCDB["OtherOptions"]["combat_hide"] and InCombatLockdown() then
-			self:Hide()
-			return
-		end
+	if tooltipData then	
 		if tooltipData.type == EnumItem then	
 			if aCoreCDB["OtherOptions"]["show_itemID"] then
 				local itemID = tooltipData.id
