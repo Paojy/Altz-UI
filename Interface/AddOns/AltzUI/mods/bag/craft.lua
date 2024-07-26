@@ -1,4 +1,5 @@
 local T, C, L, G = unpack(select(2, ...))
+local LCG = LibStub("LibCustomGlow-1.0")
 
 --C_SpellBook.ContainsAnyDisenchantSpell()
 
@@ -10,10 +11,10 @@ local action_spells = {
 }
 
 local colors = {
-	[51005] = {r=181/255, g=230/255, b=29/255},	--milling
-	[31252] = {r=1, g=127/255, b=138/255},  	--prospecting
-	[13262] = {r=128/255, g=128/255, b=1},   	--disenchant
-    [1804] = {r=200/255, g=75/255, b=75/255},   --lock picking  (Thanks to kaisoul)
+	[51005] = {181/255, 230/255, 29/255},	--milling
+	[31252] = {1, 127/255, 138/255},  	--prospecting
+	[13262] = {128/255, 128/255, 1},   	--disenchant
+    [1804] = {200/255, 75/255, 75/255},   --lock picking  (Thanks to kaisoul)
 }
 
 local spells = {}
@@ -40,7 +41,7 @@ local function checkCombat(btn, force)
 	end
 end
 
-local button = CreateFrame("Button", "xMP_ButtonFrame", UIParent, "SecureActionButtonTemplate,SecureHandlerEnterLeaveTemplate,AutoCastShineTemplate")
+local button = CreateFrame("Button", "xMP_ButtonFrame", UIParent, "SecureActionButtonTemplate,SecureHandlerEnterLeaveTemplate")
 button:RegisterEvent('MODIFIER_STATE_CHANGED')
 button:Hide()
 
@@ -57,7 +58,7 @@ button:SetFrameStrata("TOOLTIP")
 button:SetAttribute("_onleave", "self:ClearAllPoints() self:SetAlpha(0) self:Hide()") 
 
 button:HookScript("OnLeave", function(self)
-	AutoCastShine_AutoCastStop(self)
+	LCG.PixelGlow_Stop(self)
 	if InCombatLockdown() then --prevent combat errors
 		checkCombat(self) 
 	else
@@ -67,7 +68,7 @@ button:HookScript("OnLeave", function(self)
 end)
 
 button:HookScript("OnReceiveDrag", function(self)
-	AutoCastShine_AutoCastStop(self)
+	LCG.PixelGlow_Stop(self)
 	if InCombatLockdown() then --prevent combat errors
 		checkCombat(self)
 	else
@@ -77,7 +78,7 @@ button:HookScript("OnReceiveDrag", function(self)
 end)
 
 button:HookScript("OnDragStop", function(self, button)
-	AutoCastShine_AutoCastStop(self)
+	LCG.PixelGlow_Stop(self)
 	if InCombatLockdown() then --prevent combat errors
 		checkCombat(self)
 	else
@@ -90,7 +91,7 @@ function button:MODIFIER_STATE_CHANGED(event, modi)
 	if modi and (modi == "LALT" or modi == "RALT") and self:IsShown() then
 		--clear the auto shine if alt key has been released
 		if not IsAltKeyDown() and not InCombatLockdown() then
-			AutoCastShine_AutoCastStop(self)
+			LCG.PixelGlow_Stop(self)
 			self:ClearAllPoints()
 			self:Hide()
 		elseif InCombatLockdown() then
@@ -104,18 +105,10 @@ function button:PLAYER_REGEN_ENABLED()
 	checkCombat(self, true)
 end
 
---AutoCastShineTemplate
---set the sparkles otherwise it will throw an error
---increase the sparkles a bit for clarity
-for _, sparks in pairs(button.sparkles) do
-	sparks:SetHeight(sparks:GetHeight() * 3)
-	sparks:SetWidth(sparks:GetWidth() * 3)
-end
-
 --if the lootframe is showing then disable everything
 LootFrame:HookScript("OnShow", function(self)
 	if button:IsShown() and not InCombatLockdown() then
-		AutoCastShine_AutoCastStop(button)
+		LCG.PixelGlow_Stop(button)
 		button:ClearAllPoints()
 		button:Hide()
 	end
@@ -124,23 +117,6 @@ end)
 --[[------------------------
 	CORE
 --------------------------]]
---this update is JUST IN CASE the autoshine is still going even after the alt press is gone
-local TimerOnUpdate = function(self, time)
-	if self.active and not IsAltKeyDown() then
-		self.OnUpdateCounter = (self.OnUpdateCounter or 0) + time
-		if self.OnUpdateCounter < 0.5 then return end
-		self.OnUpdateCounter = 0
-
-		self.tick = (self.tick or 0) + 1
-		if self.tick >= 1 then
-			AutoCastShine_AutoCastStop(self)
-			self.active = false
-			self.tick = 0
-			self:SetScript("OnUpdate", nil)
-		end
-	end
-end
-
 local processCheck = function(itemID, EquipLoc, qual, link, bag, slot)
 	if not spells then return end
 	
@@ -219,19 +195,13 @@ T.RegisterEnteringWorldCallback(function()
 				if spellID == 13262 then
 					lastItemID = itemID
 				end
-				button:SetScript("OnUpdate", TimerOnUpdate)
-				button.tick = 0
-				button.active = true
 				button:SetAttribute('macrotext', string.format('/cast %s\n/use %s %s', spells[spellID], bag, slot))
 				button:SetAllPoints(owner)
 				button:SetAlpha(1)
 				button:Show()
 				
-				AutoCastShine_AutoCastStart(button, colors[spellID].r, colors[spellID].g, colors[spellID].b)
+				LCG.PixelGlow_Start(button, colors[spellID])
 			else
-				button:SetScript("OnUpdate", nil)
-				button.tick = 0
-				button.active = false
 				button:ClearAllPoints()
 				button:Hide()
 			end
