@@ -794,8 +794,10 @@ local SliderWithSteppers = function(parent, width, text, points, min, max, step,
 		frame.Slider.Thumb:Show()
 		frame.Back:Enable()
 		frame.Forward:Enable()
-		frame.Back.__texture:SetVertexColor(1, 1, 1, 1)
-		frame.Forward.__texture:SetVertexColor(1, 1, 1, 1)
+		if frame.Back.__texture and frame.Forward.__texture then
+			frame.Back.__texture:SetVertexColor(1, 1, 1, 1)
+			frame.Forward.__texture:SetVertexColor(1, 1, 1, 1)
+		end
 		frame.LeftText:SetTextColor(1, 1, 1, 1)
 		frame.RightText:SetTextColor(1, 1, 1, 1)
 	end
@@ -805,8 +807,10 @@ local SliderWithSteppers = function(parent, width, text, points, min, max, step,
 		frame.Slider.Thumb:Hide()
 		frame.Back:Disable()
 		frame.Forward:Disable()
-		frame.Back.__texture:SetVertexColor(0.7, 0.7, 0.7, 0.5)
-		frame.Forward.__texture:SetVertexColor(0.7, 0.7, 0.7, 0.5)
+		if frame.Back.__texture and frame.Forward.__texture then
+			frame.Back.__texture:SetVertexColor(0.7, 0.7, 0.7, 0.5)
+			frame.Forward.__texture:SetVertexColor(0.7, 0.7, 0.7, 0.5)
+		end
 		frame.LeftText:SetTextColor(0.7, 0.7, 0.7, 0.5)
 		frame.RightText:SetTextColor(0.7, 0.7, 0.7, 0.5)
 		if button then
@@ -1669,14 +1673,6 @@ local SetGUIPoint = function(parent, width_perc, obj, before_gap, after_gap, x_o
 	
 	if before_gap then -- 与上一项之间的行间距
 		parent.option_y = parent.option_y + before_gap
-	end
-	
-	if obj.istitle then
-		local line = parent:CreateTexture(nil, "BACKGROUND")
-		line:SetTexture(G.media.blank)
-		line:SetGradient("HORIZONTAL", CreateColor(1, 1, 0, .8), CreateColor(1, 0, 0, 0))
-		line:SetSize(parent:GetWidth(), 2)
-		line:SetPoint("TOPLEFT", obj, "BOTTOMLEFT", -40, -5)
 	end
 		
 	if parent.option_x + width_perc*width > width then -- 需要换行
