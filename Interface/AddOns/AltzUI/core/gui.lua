@@ -1496,16 +1496,16 @@ end
 --[[                  -- Game menu --               ]]--
 --====================================================--
 
-local GameMenuButton = CreateFrame("Button", G.uiname.."GameMenuButton", GameMenuFrame, "GameMenuButtonTemplate")
-GameMenuButton:SetPoint("TOP", GameMenuButtonAddons, "BOTTOM", 0, -1)
-GameMenuButton:SetText(T.color_text("AltzUI"))
-T.ReskinButton(GameMenuButton, 14)
 
-GameMenuButton:SetScript("OnClick", function()
+local function ShowGUI()
 	GUI:Show()
 	GUI.df:Show()
 	GUI.scale:Show()
 	HideUIPanel(GameMenuFrame)
+end
+
+hooksecurefunc(GameMenuFrame, "InitButtons", function()
+	GameMenuFrame:AddButton("AltzUI", ShowGUI)
 end)
 
 GameMenuFrame:HookScript("OnShow", function()
@@ -1514,41 +1514,7 @@ GameMenuFrame:HookScript("OnShow", function()
 	GUI.scale:Hide()
 end)
 
-GameMenuButtonRatings:SetPoint("TOP", GameMenuButton, "BOTTOM", 0, -1)
 
-function GameMenuFrame_UpdateVisibleButtons(self)
-	local height = 332;
-
-	local buttonToReanchor = GameMenuButtonWhatsNew
-	local reanchorYOffset = -1
-
-	if IsCharacterNewlyBoosted() or not C_SplashScreen.CanViewSplashScreen() then
-		GameMenuButtonWhatsNew:Hide()
-		height = height - 20
-		buttonToReanchor = GameMenuButtonSettings
-		reanchorYOffset = -16
-	else
-		GameMenuButtonWhatsNew:Show()
-	end
-
-	if ( C_StorePublic.IsEnabled() ) then
-		height = height + 20
-		GameMenuButtonStore:Show()
-		buttonToReanchor:SetPoint("TOP", GameMenuButtonStore, "BOTTOM", 0, reanchorYOffset)
-	else
-		GameMenuButtonStore:Hide()
-		buttonToReanchor:SetPoint("TOP", GameMenuButtonHelp, "BOTTOM", 0, reanchorYOffset)
-	end
-	
-	if ( GameMenuButtonRatings:IsShown() ) then
-		height = height + 20;
-		GameMenuButtonLogout:SetPoint("TOP", GameMenuButtonRatings, "BOTTOM", 0, -16)
-	else
-		GameMenuButtonLogout:SetPoint("TOP", GameMenuButton, "BOTTOM", 0, -16)
-	end
-
-	self:SetHeight(height)
-end
 
 --[[ CPU and Memroy testing
 local interval = 0
