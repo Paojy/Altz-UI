@@ -65,7 +65,7 @@ local function CreateTitle(self, str)
 	
 	frame:ClearAllPoints()
 	if self.class_index == 1 then
-		frame:SetPoint("TOPLEFT", self, "TOPLEFT", 18, -25)
+		frame:SetPoint("TOPLEFT", self, "TOPLEFT", 18, -35)
 	else
 		frame:SetPoint("TOPLEFT", self.anchor_button, "BOTTOMLEFT", 0, -2)
 	end
@@ -139,7 +139,7 @@ local function CalculateHeight(self)
 	local itemButton = self.Items[1]
 	local itemsHeight = (rows * itemButton:GetHeight()) + ((rows - 1) * space_y)
 
-	return itemsHeight + titlesHeight + self:CalculateExtraHeight() - 20
+	return itemsHeight + titlesHeight + self:CalculateExtraHeight()
 end
 
 hooksecurefunc(ContainerFrameCombinedBags, "UpdateItemLayout", function(self)
@@ -205,21 +205,14 @@ local function UpdateFavoriteItem()
 end
 
 hooksecurefunc(ContainerFrameCombinedBags, "UpdateSearchBox", function(self)
-	if self:IsBackpack() or self:IsCombinedBagContainer() then
-		self.bagIcon:SetSize(18, 18)
-		self.bagIcon:ClearAllPoints()
-		self.bagIcon:SetPoint("TOPLEFT", self, "TOPLEFT", 5, -5)
-		
-		self.PortraitButton:SetAllPoints(self.bagIcon)
-		
+	if self:IsBackpack() or self:IsCombinedBagContainer() then				
 		BagItemAutoSortButton:ClearAllPoints()
-		BagItemAutoSortButton:SetPoint("LEFT", self.bagIcon, "RIGHT", 5, 0)
-		BagItemAutoSortButton:SetSize(18, 18)
+		BagItemAutoSortButton:SetPoint("LEFT", self.PortraitButton, "RIGHT", 5, -15)
 		
 		if not self.addFavorite then
 			local button = CreateFrame("Button", nil, self)
 			button:SetPoint("LEFT", BagItemAutoSortButton, "RIGHT", 5, 0)
-			button:SetSize(18, 18)
+			button:SetSize(16, 16)
 			T.createTexBackdrop(button)
 			
 			local tex = button:CreateTexture(nil, "ARTWORK")
@@ -243,8 +236,8 @@ hooksecurefunc(ContainerFrameCombinedBags, "UpdateSearchBox", function(self)
 		end
 		
 		BagItemSearchBox:ClearAllPoints()
-		BagItemSearchBox:SetPoint("TOPLEFT", self.addFavorite, "TOPRIGHT", 10, 0)
-		BagItemSearchBox:SetWidth(320)
+		BagItemSearchBox:SetPoint("TOPLEFT", self.addFavorite, "TOPRIGHT", 10, 2)
+		BagItemSearchBox:SetWidth(300)
 	end
 end)
 
