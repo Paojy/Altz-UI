@@ -96,23 +96,29 @@ local function startCooldown(id, starttime, duration, class)
 end
 
 local function parsespellbook(spellbook)
-	i = 1
+	local i = 1
 	while true do
-		skilltype, id = GetSpellBookItemInfo(i, spellbook)
-		name = GetSpellBookItemName(i, spellbook)		
-		cd_id = FindSpellOverrideByID(id)
-
-		if name and skilltype == "SPELL" and spellbook == BOOKTYPE_SPELL and not IsPassiveSpell(i, spellbook) then
-			spells[id] = cd_id
+		local spellBookItemInfo = C_SpellBook.GetSpellBookItemInfo(i, spellbook)
+		local skilltype = spellBookItemInfo.itemType
+		local id = spellBookItemInfo.spellID
+		
+		if skilltype and id then			
+			local name = C_SpellBook.GetSpellBookItemName(i, spellbook)
+			local cd_id = FindSpellOverrideByID(id)
+			local passive = C_SpellBook.IsSpellBookItemPassive(i, spellbook)
+			
+			if name and skilltype == 1 and not passive then				
+				spells[id] = cd_id
+			end
+			
+			if (id == 88625 or id == 88684 or id == 88685) and skilltype == 1 then
+				spells[88625] = cd_id
+				spells[88684] = cd_id
+				spells[88685] = cd_id
+			end
 		end
 		i = i + 1
 		if i >= totalspellnum then i = 1 break end
-		
-		if (id == 88625 or id == 88684 or id == 88685) and (skilltype == "SPELL" and spellbook == BOOKTYPE_SPELL) then
-		   spells[88625] = cd_id
-		   spells[88684] = cd_id
-		   spells[88685] = cd_id
-		end
 	end
 end
 
@@ -159,7 +165,7 @@ function addon:LEARNED_SPELL_IN_TAB()
 		local numSpells = select(4, GetSpellTabInfo(i))
 		totalspellnum = totalspellnum + numSpells
 	end
-	parsespellbook(BOOKTYPE_SPELL)
+	parsespellbook(0)
 end
 
 function addon:SPELL_UPDATE_COOLDOWN()
@@ -171,14 +177,14 @@ function addon:SPELL_UPDATE_COOLDOWN()
 		if starttime == nil then
 			watched[id] = nil
 		elseif starttime == 0 and watched[id] then
-			stopCooldown(id, "spell")
+			stopCooldown(id, "spell")			
 		elseif starttime ~= 0 then		
 			local timeleft = starttime + duration - now
-			if enabled == 1 and timeleft > 1.51 then
+			if enabled and timeleft > 1.51 then				
 				if not aCoreCDB["ActionbarOptions"]["cdflash_ignorespells"][id] and (not watched[id] or watched[id].start ~= starttime) then
 					startCooldown(id, starttime, timeleft, "spell")
 				end
-			elseif enabled == 1 and watched[id] and timeleft <= 0 then
+			elseif enabled and watched[id] and timeleft <= 0 then			
 				stopCooldown(id, "spell")
 			end
 		end
@@ -188,9 +194,9 @@ end
 function addon:BAG_UPDATE_COOLDOWN()
 	for id in next, items do
 		local starttime, duration, enabled = GetItemCooldown(id)
-		if not aCoreCDB["ActionbarOptions"]["cdflash_ignoreitems"][id] and enabled == 1 and duration > 10 then
+		if not aCoreCDB["ActionbarOptions"]["cdflash_ignoreitems"][id] and enabled and duration > 10 then
 			startCooldown(id, starttime, duration, "item")
-		elseif enabled == 1 and watched[id] and duration <= 0 then
+		elseif enabled and watched[id] and duration <= 0 then
 			stopCooldown(id, "item")
 		end
 	end
