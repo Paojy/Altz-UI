@@ -1692,7 +1692,7 @@ local UnitSpecific = {
 local plate_func = function(self, unit)
 	T.OnMouseOver(self)
 	
-	self:SetMouseClickEnabled(false)
+	self:SetMouseClickEnabled(true)
 	self.mouseovers = {}
 	
 	self:SetPoint("CENTER")
