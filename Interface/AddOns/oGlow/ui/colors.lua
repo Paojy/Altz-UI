@@ -213,4 +213,4 @@ function frame:CreateOptions()
 	self:refresh()
 end
 
-InterfaceOptions_AddCategory(frame)
+--InterfaceOptions_AddCategory(frame)

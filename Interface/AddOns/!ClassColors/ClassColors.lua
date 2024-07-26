@@ -374,7 +374,7 @@ f:SetScript("OnEvent", function(self, event, addon)
 
 	--------------------------------------------------------------------
 
-	InterfaceOptions_AddCategory(self)
+	--InterfaceOptions_AddCategory(self)
 
 	--------------------------------------------------------------------
 

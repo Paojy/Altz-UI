@@ -79,4 +79,4 @@ function frame:CreateOptions()
 	end
 end
 
-InterfaceOptions_AddCategory(frame)
+--InterfaceOptions_AddCategory(frame)

@@ -269,7 +269,7 @@ do
 	end
 end
 
-InterfaceOptions_AddCategory(frame)
+--InterfaceOptions_AddCategory(frame)
 
 SLASH_OGLOW_UI1 = '/oglow'
 SlashCmdList['OGLOW_UI'] = function()
