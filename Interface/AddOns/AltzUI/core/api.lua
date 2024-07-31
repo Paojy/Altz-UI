@@ -1085,7 +1085,7 @@ local UIDropDownMenuFrame = function(parent, width, text, points)
 	dd:SetPoint("LEFT", frame, "LEFT", 92, 0)
 	frame.dd = dd
 	
-	T.ReskinDropDown(dd)
+	--T.ReskinDropDown(dd)
 	
 	if width == "short" then
 		UIDropDownMenu_SetWidth(dd, 140)		

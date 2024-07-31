@@ -603,7 +603,7 @@ local function CreateClickcastKeyOptions(bu_tag, text)
 		local action_select = CreateFrame("Frame", nil, frame, "UIDropDownMenuTemplate")
 		action_select:SetPoint("LEFT", mod_text, "RIGHT", -5, -3)
 		action_select.Text:SetFont(G.norFont, 12, "OUTLINE")
-		T.ReskinDropDown(action_select)
+		--T.ReskinDropDown(action_select)
 		UIDropDownMenu_SetWidth(action_select, 100)
 
 		UIDropDownMenu_Initialize(action_select, function()
@@ -639,7 +639,7 @@ local function CreateClickcastKeyOptions(bu_tag, text)
 		local spell_select = CreateFrame("Frame", nil, frame, "UIDropDownMenuTemplate")
 		spell_select:SetPoint("LEFT", action_select, "RIGHT", -25, 0)
 		spell_select.Text:SetFont(G.norFont, 12, "OUTLINE")
-		T.ReskinDropDown(spell_select)
+		--T.ReskinDropDown(spell_select)
 		UIDropDownMenu_SetWidth(spell_select, 130)
 		
 		UIDropDownMenu_Initialize(spell_select, function()
@@ -936,7 +936,7 @@ do
 	option_list.encounterDD = CreateFrame("Frame", nil, option_list, "UIDropDownMenuTemplate")
 	option_list.encounterDD:SetPoint("BOTTOMLEFT", option_list, "TOPLEFT", 0, 2)
 	option_list.encounterDD.Text:SetFont(G.norFont, 12, "OUTLINE")
-	T.ReskinDropDown(option_list.encounterDD)
+	--T.ReskinDropDown(option_list.encounterDD)
 	UIDropDownMenu_SetWidth(option_list.encounterDD, 120)
 	
 	-- 法术ID输入框
