@@ -119,16 +119,22 @@ local EJ_init = function()
 		
 		scrollBox:SetDataProvider(dataProvider)
 	end)
-
+	
+	EncounterJournal.encounter.info.difficulty:SetWidth(80)
+	
 	local parent = EncounterJournal.encounter.info.LootContainer
+	parent.filter:SetWidth(80)
+	
 	parent.slotFilter:ClearAllPoints()
 	parent.slotFilter:SetPoint("LEFT", parent.filter, "RIGHT", 0, 0)
+	parent.slotFilter:SetWidth(80)
 	
-	local StatsFilter = CreateFrame("DropDownToggleButton", nil, parent, "EJButtonTemplate")
+	local StatsFilter = CreateFrame("DropdownButton", nil, parent, "WowStyle1DropdownTemplate")
+	StatsFilter:SetWidth(80)
 	StatsFilter:SetText(STAT_CATEGORY_ENHANCEMENTS)
 	StatsFilter:SetPoint("LEFT", parent.slotFilter, "RIGHT", 0, 0)
-	T.ReskinFilterToggle(StatsFilter)
-
+	T.ReskinDropDown(StatsFilter)
+	
 	StatsFilter.DropDown = CreateFrame("Frame", nil, StatsFilter, "UIDropDownMenuTemplate")
 	UIDropDownMenu_Initialize(StatsFilter.DropDown, StatsFilter_Initialize, "MENU")
 	
