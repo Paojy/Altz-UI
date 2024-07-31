@@ -137,13 +137,11 @@ Minimap.ZoomIn:EnableMouse(false)
 Minimap.ZoomOut:EnableMouse(false)
 
 -- 追踪
-MinimapCluster.Tracking:Hide()
-MinimapCluster.Tracking.Show = T.dummy
+--MinimapCluster.Tracking:Hide()
+--MinimapCluster.Tracking.Show = T.dummy
 Minimap:SetScript('OnMouseUp', function (self, button)
 	if button == 'RightButton' then
-		MinimapCluster.TrackingFrame.DropDown.point = "TOPRIGHT";
-		MinimapCluster.TrackingFrame.DropDown.relativePoint = "BOTTOMRIGHT";		
-		ToggleDropDownMenu(1, nil, MinimapCluster.TrackingFrame.DropDown, self, 0, 0)
+		MinimapCluster.Tracking.Button:Click()
 		PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
 	end
 end)
