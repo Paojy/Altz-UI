@@ -1,4 +1,5 @@
 ﻿local T, C, L, G = unpack(select(2, ...))
+local F = AuroraClassic and unpack(AuroraClassic)
 
 ----------------------------
 -- 			通用		  --
@@ -487,7 +488,9 @@ end
 
 -- 勾选选项
 T.ReskinCheck = function(bu, fontsize)
-	--F.ReskinCheck(bu)
+	if F then
+		F.ReskinCheck(bu)
+	end
 	
 	bu:SetSize(25, 25)
 	
@@ -511,7 +514,9 @@ end
 
 -- 多选一选项
 T.ReskinRadio =  function(bu, fontsize)
-	--F.ReskinRadio(bu)
+	if F then
+		F.ReskinRadio(bu)
+	end
 	
 	local ch = bu:GetCheckedTexture()
 	ch:SetVertexColor(0, .9, .3, 1)
@@ -524,17 +529,23 @@ end
 
 -- 滚动条
 T.ReskinScroll = function(ScrollBar)
-	--F.ReskinScroll(ScrollBar)
+	if F then
+		F.ReskinScroll(ScrollBar)
+	end
 end
 
 -- 关闭按钮
 T.ReskinClose = function(bu)
-	--F.ReskinClose(bu)
+	if F then
+		F.ReskinClose(bu)
+	end
 end
 
 -- 滑动条
 T.ReskinSlider = function(slider, fontsize)
-	--F.ReskinSlider(slider)
+	if F then
+		F.ReskinSlider(slider)
+	end
 	
 	if slider.Low then
 		slider.Low:ClearAllPoints()
@@ -558,7 +569,9 @@ end
 T.ReskinStepperSlider = function(frame, fontsize)
 	local fs = fontsize or 14
 	
-	--F.ReskinStepperSlider(frame)
+	if F then
+		F.ReskinStepperSlider(frame)
+	end
 	
 	frame.LeftText:SetFont(G.norFont, fs, "OUTLINE")		
 	frame.LeftText:SetTextColor(1, .82, 0)
@@ -566,21 +579,21 @@ end
 
 -- 按钮
 T.ReskinButton = function(bu, fontsize, noHighlight, override)
-	--F.Reskin(bu, noHighlight, override)
+	if F then
+		F.Reskin(bu, noHighlight, override)
+	end
+	
 	if bu.Text then
 		local fs = fontsize or 14
 		bu.Text:SetFont(G.norFont, fs, "OUTLINE")
 	end
 end
 
-T.ReskinFilterToggle = function(bu)
-	--F.StripTextures(bu)
-	--F.Reskin(bu)
-end
-
 -- 下拉菜单
 T.ReskinDropDown = function(dd, fontsize)
-	--F.ReskinDropDown(dd)
+	if F then
+		F.ReskinDropDown(dd)
+	end
 	
 	local fs = fontsize or 14
 	dd.Text:SetFont(G.norFont, fs, "OUTLINE")
@@ -588,7 +601,9 @@ end
 
 -- 标签
 T.ReskinTab = function(tab)
-	--F.ReskinTab(tab)
+	if F then
+		F.ReskinTab(tab)
+	end
 end
 
 ----------------------------
