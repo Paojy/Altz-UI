@@ -11,22 +11,19 @@ tinsert(C.defaultThemes, function()
 	PVEFrameTab2:SetPoint("LEFT", PVEFrameTab1, "RIGHT", -15, 0)
 	PVEFrameTab3:SetPoint("LEFT", PVEFrameTab2, "RIGHT", -15, 0)
 
-	GroupFinderFrameGroupButton1.icon:SetTexture("Interface\\Icons\\INV_Helmet_08")
-	GroupFinderFrameGroupButton2.icon:SetTexture("Interface\\Icons\\Icon_Scenarios")
-	GroupFinderFrameGroupButton3.icon:SetTexture("Interface\\Icons\\inv_helmet_06")
-
 	local iconSize = 60-2*C.mult
-	for i = 1, 3 do
+	for i = 1, 4 do
 		local bu = GroupFinderFrame["groupButton"..i]
-
-		bu.ring:Hide()
-		B.Reskin(bu, true)
-		bu.bg:SetColorTexture(r, g, b, .25)
-		bu.bg:SetInside(bu.__bg)
-
-		bu.icon:SetPoint("LEFT", bu, "LEFT")
-		bu.icon:SetSize(iconSize, iconSize)
-		B.ReskinIcon(bu.icon)
+		if bu then
+			bu.ring:Hide()
+			B.Reskin(bu, true)
+			bu.bg:SetColorTexture(r, g, b, .25)
+			bu.bg:SetInside(bu.__bg)
+	
+			bu.icon:SetPoint("LEFT", bu, "LEFT")
+			bu.icon:SetSize(iconSize, iconSize)
+			B.ReskinIcon(bu.icon)
+		end
 	end
 
 	hooksecurefunc("GroupFinderFrame_SelectGroupButton", function(index)
@@ -42,7 +39,7 @@ tinsert(C.defaultThemes, function()
 
 	B.ReskinPortraitFrame(PVEFrame)
 
-	for i = 1, 3 do
+	for i = 1, 4 do
 		local tab = _G["PVEFrameTab"..i]
 		if tab then
 			B.ReskinTab(tab)
@@ -50,6 +47,17 @@ tinsert(C.defaultThemes, function()
 				tab:ClearAllPoints()
 				tab:SetPoint("TOPLEFT", _G["PVEFrameTab"..(i-1)], "TOPRIGHT", -15, 0)
 			end
+		end
+	end
+
+	if ScenarioQueueFrame then
+		B.StripTextures(ScenarioFinderFrame)
+		ScenarioQueueFrameBackground:SetAlpha(0)
+		B.ReskinDropDown(ScenarioQueueFrameTypeDropdown)
+		B.Reskin(ScenarioQueueFrameFindGroupButton)
+		B.ReskinTrimScroll(ScenarioQueueFrameRandomScrollFrame.ScrollBar)
+		if ScenarioQueueFrameRandomScrollFrameScrollBar then
+			ScenarioQueueFrameRandomScrollFrameScrollBar:SetAlpha(0)
 		end
 	end
 end)

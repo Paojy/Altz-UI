@@ -18,6 +18,9 @@ local function ReskinPvPFrame(frame)
 	reward.Ring:Hide()
 	reward.CircleMask:Hide()
 	B.ReskinIcon(reward.Icon)
+	if reward.CheckMark then
+		reward.CheckMark:SetAtlas("checkmark-minimal")
+	end
 end
 
 local function ConquestFrameButton_OnEnter(self)
@@ -107,7 +110,7 @@ C.themes["Blizzard_PVPUI"] = function()
 	HonorFrame.Inset:Hide()
 	ReskinPvPFrame(HonorFrame)
 	B.Reskin(HonorFrame.QueueButton)
-	B.ReskinDropDown(HonorFrameTypeDropDown)
+	B.ReskinDropDown(HonorFrameTypeDropdown)
 	B.ReskinTrimScroll(HonorFrame.SpecificScrollBar)
 
 	hooksecurefunc(HonorFrame.SpecificScrollBox, "Update", function(self)
@@ -165,7 +168,7 @@ C.themes["Blizzard_PVPUI"] = function()
 	ConquestFrame.RatedBG:HookScript("OnEnter", ConquestFrameButton_OnEnter)
 	B.Reskin(ConquestFrame.JoinButton)
 
-	local names = {"RatedSoloShuffle", "Arena2v2", "Arena3v3", "RatedBG"}
+	local names = {"RatedSoloShuffle", "RatedBGBlitz", "Arena2v2", "Arena3v3", "RatedBG"}
 	for _, name in pairs(names) do
 		local bu = ConquestFrame[name]
 		if bu then
@@ -201,14 +204,17 @@ C.themes["Blizzard_PVPUI"] = function()
 		if not rewardTexture and itemRewards then
 			local reward = itemRewards[1]
 			if reward then
-				_, _, rewardQuaility, _, _, _, _, _, _, rewardTexture = GetItemInfo(reward.id)
+				_, _, rewardQuaility, _, _, _, _, _, _, rewardTexture = C_Item.GetItemInfo(reward.id)
 			end
 		end
 
 		if rewardTexture then
-			rewardFrame.Icon:SetTexture(rewardTexture)
-			local color = DB.QualityColors[rewardQuaility]
-			rewardFrame.Icon.bg:SetBackdropBorderColor(color.r, color.g, color.b)
+			local icon = rewardFrame.Icon
+			icon:SetTexture(rewardTexture)
+			if icon.bg then
+				local color = DB.QualityColors[rewardQuaility]
+				icon.bg:SetBackdropBorderColor(color.r, color.g, color.b)
+			end
 		end
 	end)
 end

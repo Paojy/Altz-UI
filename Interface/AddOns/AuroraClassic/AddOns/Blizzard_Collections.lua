@@ -75,6 +75,7 @@ C.themes["Blizzard_Collections"] = function()
 	PetJournal.PetCount:SetWidth(140)
 	B.CreateBDFrame(MountJournal.MountDisplay.ModelScene, .25)
 	B.ReskinIcon(MountJournal.MountDisplay.InfoButton.Icon)
+	B.ReskinModelControl(MountJournal.MountDisplay.ModelScene)
 
 	B.Reskin(MountJournalMountButton)
 	B.Reskin(PetJournalSummonButton)
@@ -111,7 +112,7 @@ C.themes["Blizzard_Collections"] = function()
 		if petID and isOwned then
 			local rarity = select(5, C_PetJournal.GetPetStats(petID))
 			if rarity then
-				local r, g, b = GetItemQualityColor(rarity-1)
+				local r, g, b = C_Item.GetItemQualityColor(rarity-1)
 				button.name:SetTextColor(r, g, b)
 			else
 				button.name:SetTextColor(1, 1, 1)
@@ -135,8 +136,8 @@ C.themes["Blizzard_Collections"] = function()
 
 	B.ReskinInput(MountJournalSearchBox)
 	B.ReskinInput(PetJournalSearchBox)
-	B.ReskinFilterButton(PetJournalFilterButton)
-	B.ReskinFilterButton(MountJournalFilterButton)
+	B.ReskinFilterButton(PetJournal.FilterDropdown)
+	B.ReskinFilterButton(MountJournal.FilterDropdown)
 
 	local togglePlayer = MountJournal.MountDisplay.ModelScene.TogglePlayer
 	B.ReskinCheck(togglePlayer)
@@ -146,9 +147,6 @@ C.themes["Blizzard_Collections"] = function()
 	local bg = B.CreateBDFrame(MountJournal.BottomLeftInset, .25)
 	bg:SetPoint("TOPLEFT", 3, 0)
 	bg:SetPoint("BOTTOMRIGHT", -24, 2)
-
-	MountJournalFilterButton:SetPoint("TOPRIGHT", MountJournal.LeftInset, -5, -8)
-	PetJournalFilterButton:SetPoint("TOPRIGHT", PetJournalLeftInset, -5, -8)
 	PetJournalTutorialButton:SetPoint("TOPLEFT", PetJournal, "TOPLEFT", -14, 14)
 
 	local function reskinToolButton(button)
@@ -177,6 +175,20 @@ C.themes["Blizzard_Collections"] = function()
 			movedButton = true
 		end
 	end)
+
+	local function reskinDynamicButton(button, index)
+		if button.Border then button.Border:Hide() end
+		button:SetPushedTexture(0)
+		button:GetHighlightTexture():SetColorTexture(1, 1, 1, .25)
+		B.ReskinIcon(select(index, button:GetRegions()), nil)
+		button:SetNormalTexture(0)
+	end
+	reskinDynamicButton(MountJournal.ToggleDynamicFlightFlyoutButton, 1)
+
+	local flyout = MountJournal.DynamicFlightFlyout
+	flyout.Background:Hide()
+	reskinDynamicButton(flyout.OpenDynamicFlightSkillTreeButton, 4)
+	reskinDynamicButton(flyout.DynamicFlightModeButton, 4)
 
 	-- Pet card
 
@@ -311,7 +323,7 @@ C.themes["Blizzard_Collections"] = function()
 
 	B.StripTextures(iconsFrame)
 	B.ReskinInput(ToyBox.searchBox)
-	B.ReskinFilterButton(ToyBoxFilterButton)
+	B.ReskinFilterButton(ToyBox.FilterDropdown)
 	B.ReskinArrow(ToyBox.PagingFrame.PrevPageButton, "left")
 	B.ReskinArrow(ToyBox.PagingFrame.NextPageButton, "right")
 
@@ -336,9 +348,9 @@ C.themes["Blizzard_Collections"] = function()
 		local itemID = bu.itemID
 
 		if PlayerHasToy(itemID) then
-			local quality = select(3, GetItemInfo(itemID))
+			local quality = select(3, C_Item.GetItemInfo(itemID))
 			if quality then
-				local r, g, b = GetItemQualityColor(quality)
+				local r, g, b = C_Item.GetItemQualityColor(quality)
 				text:SetTextColor(r, g, b)
 			else
 				text:SetTextColor(1, 1, 1)
@@ -373,8 +385,8 @@ C.themes["Blizzard_Collections"] = function()
 
 	B.StripTextures(icons)
 	B.ReskinInput(HeirloomsJournalSearchBox)
-	B.ReskinDropDown(HeirloomsJournalClassDropDown)
-	B.ReskinFilterButton(HeirloomsJournal.FilterButton)
+	B.ReskinDropDown(HeirloomsJournal.ClassDropdown)
+	B.ReskinFilterButton(HeirloomsJournal.FilterDropdown)
 	B.ReskinArrow(HeirloomsJournal.PagingFrame.PrevPageButton, "left")
 	B.ReskinArrow(HeirloomsJournal.PagingFrame.NextPageButton, "right")
 
@@ -467,8 +479,8 @@ C.themes["Blizzard_Collections"] = function()
 
 	B.StripTextures(ItemsCollectionFrame)
 	B.ReskinFilterButton(WardrobeCollectionFrame.FilterButton)
-	B.ReskinDropDown(WardrobeCollectionFrameWeaponDropDown)
 	B.ReskinInput(WardrobeCollectionFrameSearchBox)
+	B.ReskinDropDown(WardrobeCollectionFrame.ClassDropdown)
 
 	hooksecurefunc(WardrobeCollectionFrame, "SetTab", function(self, tabID)
 		for index = 1, 2 do
@@ -510,9 +522,15 @@ C.themes["Blizzard_Collections"] = function()
 			if not child.styled then
 				child.Background:Hide()
 				child.HighlightTexture:SetTexture("")
-				child.Icon:SetSize(42, 42)
-				B.ReskinIcon(child.Icon)
-				child.IconCover:SetOutside(child.Icon)
+
+				local icon = child.IconFrame and child.IconFrame.Icon or child.Icon
+				if icon then
+					icon:SetSize(42, 42)
+					B.ReskinIcon(icon)
+					if child.IconCover then
+						child.IconCover:SetOutside(icon)
+					end
+				end
 
 				child.SelectedTexture:SetDrawLayer("BACKGROUND")
 				child.SelectedTexture:SetColorTexture(cr, cg, cb, .25)
@@ -529,7 +547,7 @@ C.themes["Blizzard_Collections"] = function()
 	local DetailsFrame = SetsCollectionFrame.DetailsFrame
 	DetailsFrame.ModelFadeTexture:Hide()
 	DetailsFrame.IconRowBackground:Hide()
-	B.ReskinFilterButton(DetailsFrame.VariantSetsButton, "Down")
+	B.ReskinDropDown(DetailsFrame.VariantSetsDropdown)
 
 	hooksecurefunc(SetsCollectionFrame, "SetItemFrameQuality", function(_, itemFrame)
 		local ic = itemFrame.Icon
@@ -560,10 +578,15 @@ C.themes["Blizzard_Collections"] = function()
 	B.StripTextures(WardrobeTransmogFrame)
 	B.ReskinPortraitFrame(WardrobeFrame)
 	B.Reskin(WardrobeTransmogFrame.ApplyButton)
-	B.StripTextures(WardrobeTransmogFrame.SpecButton)
-	B.ReskinArrow(WardrobeTransmogFrame.SpecButton, "down")
-	WardrobeTransmogFrame.SpecButton:SetPoint("RIGHT", WardrobeTransmogFrame.ApplyButton, "LEFT", -3, 0)
+
+	local specButton = WardrobeTransmogFrame.SpecDropdown
+	if specButton then
+		B.StripTextures(specButton)
+		B.ReskinArrow(specButton, "down")
+		specButton:SetPoint("RIGHT", WardrobeTransmogFrame.ApplyButton, "LEFT", -3, 0)
+	end
 	B.ReskinCheck(WardrobeTransmogFrame.ToggleSecondaryAppearanceCheckbox)
+	B.ReskinModelControl(WardrobeTransmogFrame.ModelScene)
 
 	local modelScene = WardrobeTransmogFrame.ModelScene
 	modelScene.ClearAllPendingButton:DisableDrawLayer("BACKGROUND")
@@ -582,15 +605,12 @@ C.themes["Blizzard_Collections"] = function()
 	end
 
 	-- Outfit Frame
-	B.Reskin(WardrobeOutfitDropDown.SaveButton)
-	B.ReskinDropDown(WardrobeOutfitDropDown)
-	WardrobeOutfitDropDown:SetHeight(32)
-	WardrobeOutfitDropDown.SaveButton:SetPoint("LEFT", WardrobeOutfitDropDown, "RIGHT", -13, 2)
+	B.Reskin(WardrobeTransmogFrame.OutfitDropdown.SaveButton)
 
 	-- HPetBattleAny
 	local reskinHPet
 	CollectionsJournal:HookScript("OnShow", function()
-		if not IsAddOnLoaded("HPetBattleAny") then return end
+		if not C_AddOns.IsAddOnLoaded("HPetBattleAny") then return end
 		if not reskinHPet then
 			if HPetInitOpenButton then
 				B.Reskin(HPetInitOpenButton)

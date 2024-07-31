@@ -10,11 +10,10 @@ tinsert(C.defaultThemes, function()
 	B.Reskin(AddonListCancelButton)
 	B.Reskin(AddonListOkayButton)
 	B.ReskinCheck(AddonListForceLoad)
-	B.ReskinDropDown(AddonCharacterDropDown)
+	B.ReskinDropDown(AddonList.Dropdown)
 	B.ReskinTrimScroll(AddonList.ScrollBar)
 
 	AddonListForceLoad:SetSize(26, 26)
-	AddonCharacterDropDown:SetWidth(170)
 
 	local function forceSaturation(self, _, force)
 		if force then return end

@@ -1,6 +1,7 @@
 local _, ns = ...
 local B, C, L, DB = unpack(ns)
 local r, g, b = DB.r, DB.g, DB.b
+local IsAddOnLoaded = C_AddOns.IsAddOnLoaded
 
 local function ReskinMissionPage(self)
 	B.StripTextures(self)
@@ -785,7 +786,7 @@ C.themes["Blizzard_GarrisonUI"] = function()
 	-- Pick
 	local Pick = GarrisonRecruiterFrame.Pick
 	B.Reskin(Pick.ChooseRecruits)
-	B.ReskinDropDown(Pick.ThreatDropDown)
+	B.ReskinDropDown(Pick.ThreatDropdown)
 	B.ReskinRadio(Pick.Radio1)
 	B.ReskinRadio(Pick.Radio2)
 
@@ -957,7 +958,6 @@ C.themes["Blizzard_GarrisonUI"] = function()
 	CombatLog.ElevatedFrame:SetAlpha(0)
 	B.StripTextures(CombatLog.CombatLogMessageFrame)
 	B.CreateBDFrame(CombatLog.CombatLogMessageFrame, .25)
-	-- todo CombatLog.CombatLogMessageFrame.ScrollBar
 
 	B.Reskin(HealFollowerButtonTemplate)
 	local bg = B.CreateBDFrame(CovenantMissionFrame.FollowerTab, .25)

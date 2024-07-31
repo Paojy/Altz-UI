@@ -542,17 +542,19 @@ do
 	-- Handle dropdown
 	function B:ReskinDropDown()
 		B.StripTextures(self)
-
-		local frameName = self.GetName and self:GetName()
-		local down = self.Button or frameName and (_G[frameName.."Button"] or _G[frameName.."_Button"])
+		if self.Arrow then self.Arrow:SetAlpha(0) end
 
 		local bg = B.CreateBDFrame(self, 0, true)
-		bg:SetPoint("TOPLEFT", 8, -4)
-		bg:SetPoint("BOTTOMRIGHT", -18, 8)
+		bg:SetPoint("TOPLEFT", 0, -2)
+		bg:SetPoint("BOTTOMRIGHT", 0, 2)
+		local tex = self:CreateTexture(nil, "ARTWORK")
+		tex:SetPoint("RIGHT", bg, -3, 0)
+		tex:SetSize(18, 18)
+		B.SetupArrow(tex, "down")
+		self.__texture = tex
 
-		down:ClearAllPoints()
-		down:SetPoint("RIGHT", bg, -2, 0)
-		B.ReskinArrow(down, "down")
+		self:HookScript("OnEnter", B.Texture_OnEnter)
+		self:HookScript("OnLeave", B.Texture_OnLeave)
 	end
 
 	-- Handle close button
@@ -651,6 +653,7 @@ do
 	function B:ReskinArrow(direction)
 		self:SetSize(16, 16)
 		B.Reskin(self, true)
+		if self.Texture then self.Texture:SetAlpha(0) end
 
 		self:SetDisabledTexture(DB.bdTex)
 		local dis = self:GetDisabledTexture()
@@ -692,6 +695,12 @@ do
 		if self.ResetButton then
 			B.ReskinFilterReset(self.ResetButton)
 		end
+		self.__bg:SetOutside()
+		local tex = self:CreateTexture(nil, "ARTWORK")
+		B.SetupArrow(tex, "right")
+		tex:SetSize(16, 16)
+		tex:SetPoint("RIGHT", -2, 0)
+		self.__texture = tex
 	end
 
 	function B:ReskinNavBar()
@@ -868,7 +877,7 @@ do
 		local bg = B.CreateBDFrame(self, .25, true)
 		bg:ClearAllPoints()
 		bg:SetSize(13, 13)
-		bg:SetPoint("TOPLEFT", self:GetNormalTexture())
+		bg:SetPoint("LEFT", self:GetNormalTexture())
 		self.bg = bg
 
 		self.__texture = bg:CreateTexture(nil, "OVERLAY")
@@ -1021,19 +1030,16 @@ do
 	end
 
 	-- Role Icons
-	function B:GetRoleTex()
-		if self == "TANK" then
-			return DB.tankTex
-		elseif self == "DPS" or self == "DAMAGER" then
-			return DB.dpsTex
-		elseif self == "HEALER" then
-			return DB.healTex
-		end
-	end
+	local GroupRoleTex = {
+		TANK = "groupfinder-icon-role-micro-tank",
+		HEALER = "groupfinder-icon-role-micro-heal",
+		DAMAGER = "groupfinder-icon-role-micro-dps",
+		DPS = "groupfinder-icon-role-micro-dps",
+	}
 
 	function B:ReskinSmallRole(role)
-		self:SetTexture(B.GetRoleTex(role))
 		self:SetTexCoord(0, 1, 0, 1)
+		self:SetAtlas(GroupRoleTex[role])
 	end
 
 	function B:ReskinRole()
@@ -1042,7 +1048,7 @@ do
 		local cover = self.cover or self.Cover
 		if cover then cover:SetTexture("") end
 
-		local checkButton = self.checkButton or self.CheckButton or self.CheckBox
+		local checkButton = self.checkButton or self.CheckButton or self.CheckBox or self.Checkbox
 		if checkButton then
 			checkButton:SetFrameLevel(self:GetFrameLevel() + 2)
 			checkButton:SetPoint("BOTTOMLEFT", -2, -2)

@@ -37,7 +37,7 @@ end
 
 tinsert(C.defaultThemes, function()
 	B.ReskinPortraitFrame(MerchantFrame)
-	B.ReskinDropDown(MerchantFrameLootFilter)
+	B.ReskinDropDown(MerchantFrame.FilterDropdown)
 	B.StripTextures(MerchantPrevPageButton)
 	B.ReskinArrow(MerchantPrevPageButton, "left")
 	B.StripTextures(MerchantNextPageButton)

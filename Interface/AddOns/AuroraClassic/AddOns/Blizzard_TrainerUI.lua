@@ -53,5 +53,5 @@ C.themes["Blizzard_TrainerUI"] = function()
 	end)
 
 	B.Reskin(ClassTrainerTrainButton)
-	B.ReskinDropDown(ClassTrainerFrameFilterDropDown)
+	B.ReskinFilterButton(ClassTrainerFrame.FilterDropdown)
 end

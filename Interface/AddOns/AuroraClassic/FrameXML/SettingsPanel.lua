@@ -88,6 +88,12 @@ tinsert(C.defaultThemes, function()
 		ReskinDropDownArrow(option.IncrementButton, "right")
 	end
 
+	local function ReskinDropdown(option)
+		B.Reskin(option.Dropdown)
+		B.Reskin(option.DecrementButton)
+		B.Reskin(option.IncrementButton)
+	end
+
 	local function UpdateKeybindButtons(self)
 		if not self.bindingsPool then return end
 		for panel in self.bindingsPool:EnumerateActive() do
@@ -108,7 +114,9 @@ tinsert(C.defaultThemes, function()
 	end
 
 	local function forceSaturation(self)
-		self.CheckBox:DesaturateHierarchy(1)
+		if self.Checkbox then
+			self.Checkbox:DesaturateHierarchy(1)
+		end
 	end
 
 	local function ReskinControlsGroup(controls)
@@ -117,12 +125,12 @@ tinsert(C.defaultThemes, function()
 			if element.SliderWithSteppers then
 				B.ReskinStepperSlider(element.SliderWithSteppers)
 			end
-			if element.DropDown then
-				ReskinOptionDropDown(element.DropDown)
+			if element.Control then
+				ReskinDropdown(element.Control)
 			end
-			if element.CheckBox then
-				B.ReskinCheck(element.CheckBox)
-				element.CheckBox.bg:SetInside(nil, 6, 6)
+			if element.Checkbox then
+				B.ReskinCheck(element.Checkbox)
+				element.Checkbox.bg:SetInside(nil, 6, 6)
 				hooksecurefunc(element, "DesaturateHierarchy", forceSaturation)
 			end
 		end
@@ -143,19 +151,16 @@ tinsert(C.defaultThemes, function()
 					child.CheckBox.bg:SetInside(nil, 6, 6)
 					hooksecurefunc(child, "DesaturateHierarchy", forceSaturation)
 				end
-				if child.DropDown then
-					ReskinOptionDropDown(child.DropDown)
+				if child.Checkbox then
+					B.ReskinCheck(child.Checkbox)
+					child.Checkbox.bg:SetInside(nil, 6, 6)
+					hooksecurefunc(child, "DesaturateHierarchy", forceSaturation)
 				end
 				if child.ColorBlindFilterDropDown then
 					ReskinOptionDropDown(child.ColorBlindFilterDropDown)
 				end
-				for j = 1, 13 do
-					local control = child["Control"..j]
-					if control then
-						if control.DropDown then
-							ReskinOptionDropDown(control.DropDown)
-						end
-					end
+				if child.Control then
+					ReskinDropdown(child.Control)
 				end
 				if child.Button then
 					if child.Button:GetWidth() < 250 then

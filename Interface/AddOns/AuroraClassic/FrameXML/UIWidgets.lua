@@ -5,6 +5,7 @@ local Type_StatusBar = _G.Enum.UIWidgetVisualizationType.StatusBar
 local Type_CaptureBar = _G.Enum.UIWidgetVisualizationType.CaptureBar
 local Type_SpellDisplay = _G.Enum.UIWidgetVisualizationType.SpellDisplay
 local Type_DoubleStatusBar = _G.Enum.UIWidgetVisualizationType.DoubleStatusBar
+local Type_ItemDisplay = _G.Enum.UIWidgetVisualizationType.ItemDisplay
 
 local function ResetLabelColor(text, _, _, _, _, force)
 	if not force then
@@ -89,6 +90,14 @@ local function ReskinPowerBarWidget(self)
 	end
 end
 
+local function ReskinWidgetItemDisplay(item)
+	if not item.bg then
+		item.bg = B.ReskinIcon(item.Icon)
+		B.ReskinIconBorder(item.IconBorder, true)
+	end
+	item.IconMask:Hide()
+end
+
 local function ReskinWidgetGroups(self)
 	if not self.widgetFrames then return end
 
@@ -101,6 +110,8 @@ local function ReskinWidgetGroups(self)
 				ReskinSpellDisplayWidget(widgetFrame.Spell)
 			elseif widgetType == Type_StatusBar then
 				ReskinWidgetStatusBar(widgetFrame.Bar)
+			elseif widgetType == Type_ItemDisplay then
+				ReskinWidgetItemDisplay(widgetFrame.Item)
 			end
 		end
 	end
@@ -125,19 +136,8 @@ tinsert(C.defaultThemes, function()
 	hooksecurefunc(_G.UIWidgetPowerBarContainerFrame, "UpdateWidgetLayout", ReskinPowerBarWidget)
 	ReskinPowerBarWidget(_G.UIWidgetPowerBarContainerFrame)
 
-	hooksecurefunc(_G.TopScenarioWidgetContainerBlock.WidgetContainer, "UpdateWidgetLayout", ReskinPowerBarWidget)
-
-	hooksecurefunc(_G.BottomScenarioWidgetContainerBlock.WidgetContainer, "UpdateWidgetLayout", function(self)
-		if not self.widgetFrames then return end
-	
-		for _, widgetFrame in pairs(self.widgetFrames) do
-			if widgetFrame.widgetType == Type_SpellDisplay then
-				if not widgetFrame:IsForbidden() then
-					ReskinSpellDisplayWidget(widgetFrame.Spell)
-				end
-			end
-		end
-	end)
+	hooksecurefunc(_G.ObjectiveTrackerUIWidgetContainer, "UpdateWidgetLayout", ReskinPowerBarWidget)
+	ReskinPowerBarWidget(_G.ObjectiveTrackerUIWidgetContainer)
 
 	-- if font outline enabled in tooltip, fix text shows in two lines on Torghast info
 	hooksecurefunc(_G.UIWidgetTemplateTextWithStateMixin, "Setup", function(self)

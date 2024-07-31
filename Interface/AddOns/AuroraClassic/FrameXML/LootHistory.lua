@@ -11,7 +11,7 @@ tinsert(C.defaultThemes, function()
 	B.SetBD(frame)
 	B.ReskinClose(frame.ClosePanelButton)
 	B.ReskinTrimScroll(frame.ScrollBar)
-	B.ReskinDropDown(frame.EncounterDropDown)
+	B.ReskinDropDown(frame.EncounterDropdown)
 
 	local bar = frame.Timer
 	if bar then
@@ -48,12 +48,10 @@ tinsert(C.defaultThemes, function()
 	-- Item frame
 	local function ReskinLootButton(button)
 		if not button.styled then
-			if button.NameFrame then
-				button.NameFrame:SetAlpha(0)
-			end
-			if button.BorderFrame then
-				button.BorderFrame:SetAlpha(0)
-				B.CreateBDFrame(button.BorderFrame, .25)
+			if button.BackgroundArtFrame then
+				button.BackgroundArtFrame.NameFrame:SetAlpha(0)
+				button.BackgroundArtFrame.BorderFrame:SetAlpha(0)
+				B.CreateBDFrame(button.BackgroundArtFrame.BorderFrame, .25)
 			end
 			local item = button.Item
 			if item then

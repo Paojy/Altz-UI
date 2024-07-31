@@ -11,6 +11,7 @@ C.themes["Blizzard_GuildBankUI"] = function()
 	B.Reskin(GuildBankFrame.DepositButton)
 	B.ReskinTrimScroll(GuildBankFrame.Log.ScrollBar)
 	B.ReskinTrimScroll(GuildBankInfoScrollFrame.ScrollBar)
+
 	B.Reskin(GuildBankFrame.BuyInfo.PurchaseButton)
 	B.Reskin(GuildBankFrame.Info.SaveButton)
 	B.ReskinInput(GuildItemSearchBox)

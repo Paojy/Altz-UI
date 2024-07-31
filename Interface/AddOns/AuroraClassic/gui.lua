@@ -58,10 +58,12 @@ local function createToggleBox(parent, value, text, category, index)
 end
 
 -- create frames/widgets
-
 local oncall = CreateFrame("Frame", "AuroraCallingFrame", UIParent)
 oncall.name = "AuroraClassic"
-InterfaceOptions_AddCategory(oncall)
+
+local category = Settings.RegisterCanvasLayoutCategory(oncall, oncall.name, oncall.name)
+category.ID = oncall.name
+Settings.RegisterAddOnCategory(category)
 
 local header = oncall:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
 header:SetPoint("TOPLEFT", 20, -26)

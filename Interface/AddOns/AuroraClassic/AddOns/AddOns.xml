@@ -13,7 +13,6 @@
 	<Script file="Blizzard_Calendar.lua"/>
 	<Script file="Blizzard_ChallengesUI.lua"/>
 	<Script file="Blizzard_ChromieTimeUI.lua"/>
-	<Script file="Blizzard_ClassTalentUI.lua"/>
 	<Script file="Blizzard_ClickBindingUI.lua"/>
 	<Script file="Blizzard_Collections.lua"/>
 	<Script file="Blizzard_Communities.lua"/>
@@ -21,6 +20,7 @@
 	<Script file="Blizzard_Covenant.lua"/>
 	<Script file="Blizzard_DeathRecap.lua"/>
 	<Script file="Blizzard_DebugTools.lua"/>
+	<Script file="Blizzard_Delves.lua"/>
 	<Script file="Blizzard_EncounterJournal.lua"/>
 	<Script file="Blizzard_EventTrace.lua"/>
 	<Script file="Blizzard_ExpansionLandingPage.lua"/>
@@ -41,17 +41,19 @@
 	<Script file="Blizzard_PartyPoseUI.lua"/>
 	<Script file="Blizzard_PerksProgram.lua"/>
 	<Script file="Blizzard_PlayerChoice.lua"/>
+	<Script file="Blizzard_PlayerSpells.lua"/>
 	<Script file="Blizzard_Professions.lua"/>
+	<Script file="Blizzard_ProfessionsBook.lua"/>
 	<Script file="Blizzard_ProfessionsCustomerOrders.lua"/>
 	<Script file="Blizzard_PVPUI.lua"/>
 	<Script file="Blizzard_RaidUI.lua"/>
 	<Script file="Blizzard_RuneforgeUI.lua"/>
 	<Script file="Blizzard_ScrappingMachineUI.lua"/>
 	<Script file="Blizzard_Soulbinds.lua"/>
+	<Script file="Blizzard_StableUI.lua"/>
 	<Script file="Blizzard_SubscriptionInterstitialUI.lua"/>
 	<Script file="Blizzard_TalentUI.lua"/>
 	<Script file="Blizzard_TorghastLevelPicker.lua"/>
-	<Script file="Blizzard_TimeManager.lua"/>
 	<Script file="Blizzard_TrainerUI.lua"/>
 	<Script file="Blizzard_Tutorial.lua"/>
 	<Script file="Blizzard_VoidStorageUI.lua"/>

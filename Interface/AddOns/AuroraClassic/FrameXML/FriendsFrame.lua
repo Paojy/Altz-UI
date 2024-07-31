@@ -95,9 +95,6 @@ tinsert(C.defaultThemes, function()
 		end
 	end)
 
-	FriendsFrameStatusDropDown:ClearAllPoints()
-	FriendsFrameStatusDropDown:SetPoint("TOPLEFT", FriendsFrame, "TOPLEFT", 10, -28)
-
 	-- FriendsFrameBattlenetFrame
 
 	FriendsFrameBattlenetFrame:GetRegions():Hide()
@@ -141,9 +138,10 @@ tinsert(C.defaultThemes, function()
 	B.ReskinTrimScroll(IgnoreListFrame.ScrollBar)
 	B.ReskinTrimScroll(WhoFrame.ScrollBar)
 	B.ReskinTrimScroll(FriendsFriendsFrame.ScrollBar)
-	B.ReskinDropDown(FriendsFrameStatusDropDown)
-	B.ReskinDropDown(WhoFrameDropDown)
-	B.ReskinDropDown(FriendsFriendsFrameDropDown)
+	B.ReskinDropDown(FriendsFrameStatusDropdown)
+	B.ReskinDropDown(WhoFrameDropdown)
+	B.ReskinDropDown(FriendsFriendsFrameDropdown)
+	FriendsFrameStatusDropdown:SetWidth(58)
 	B.Reskin(FriendsListFrameContinueButton)
 	B.ReskinInput(AddFriendNameEditBox)
 	B.StripTextures(AddFriendFrame)

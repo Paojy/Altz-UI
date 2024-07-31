@@ -20,7 +20,7 @@ C.defaultThemes = {}
 C.themes = {}
 
 -- Data
-DB.isNewPatch = select(4, GetBuildInfo()) >= 100200 -- 10.2.0
+DB.isNewPatch = select(4, GetBuildInfo()) >= 110002 -- 11.0.2
 DB.MyClass = select(2, UnitClass("player"))
 DB.ClassColors = {}
 
@@ -55,9 +55,6 @@ DB.bgTex = mediaPath.."bgTex"
 DB.pushedTex = mediaPath.."pushed"
 DB.ArrowUp = mediaPath.."arrow"
 DB.closeTex = mediaPath.."close"
-DB.tankTex = mediaPath.."Tank"
-DB.healTex = mediaPath.."Healer"
-DB.dpsTex = mediaPath.."DPS"
 DB.sparkTex = "Interface\\CastingBar\\UI-CastingBar-Spark"
 DB.TexCoord = {.08, .92, .08, .92}
 DB.Font = {STANDARD_TEXT_FONT, 12, "OUTLINE"}

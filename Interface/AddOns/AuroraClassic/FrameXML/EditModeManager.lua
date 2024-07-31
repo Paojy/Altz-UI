@@ -14,7 +14,7 @@ tinsert(C.defaultThemes, function()
 	B.ReskinClose(frame.CloseButton)
 	B.Reskin(frame.RevertAllChangesButton)
 	B.Reskin(frame.SaveChangesButton)
-	B.ReskinDropDown(frame.LayoutDropdown.DropDownMenu)
+	B.ReskinDropDown(frame.LayoutDropdown)
 	reskinOptionCheck(frame.ShowGridCheckButton.Button)
 	reskinOptionCheck(frame.EnableSnapCheckButton.Button)
 	reskinOptionCheck(frame.EnableAdvancedOptionsCheckButton.Button)
@@ -27,17 +27,35 @@ tinsert(C.defaultThemes, function()
 	B.StripTextures(dialog)
 	B.SetBD(dialog)
 	B.ReskinClose(dialog.CloseButton)
+	frame.AccountSettings.SettingsContainer.BorderArt:Hide()
+	B.CreateBDFrame(frame.AccountSettings.SettingsContainer, .25)
+	B.ReskinTrimScroll(frame.AccountSettings.SettingsContainer.ScrollBar)
 
-	hooksecurefunc(frame.AccountSettings, "OnEditModeEnter", function(self)
-		local settings = self.SettingsContainer.ScrollChild.BasicOptionsContainer
-		if not settings then return end
-
+	local function reskinOptionChecks(settings)
 		for i = 1, settings:GetNumChildren() do
 			local option = select(i, settings:GetChildren())
 			if option.Button and not option.styled then
 				reskinOptionCheck(option.Button)
 				option.styled = true
 			end
+		end
+	end
+
+	hooksecurefunc(frame.AccountSettings, "OnEditModeEnter", function(self)
+		local basicOptions = self.SettingsContainer.ScrollChild.BasicOptionsContainer
+		if basicOptions then
+			reskinOptionChecks(basicOptions)
+		end
+
+		local advancedOptions = self.SettingsContainer.ScrollChild.AdvancedOptionsContainer
+		if advancedOptions.FramesContainer then
+			reskinOptionChecks(advancedOptions.FramesContainer)
+		end
+		if advancedOptions.CombatContainer then
+			reskinOptionChecks(advancedOptions.CombatContainer)
+		end
+		if advancedOptions.MiscContainer then
+			reskinOptionChecks(advancedOptions.MiscContainer)
 		end
 	end)
 
@@ -65,7 +83,7 @@ tinsert(C.defaultThemes, function()
 
 		for dropdown in self.pools:EnumerateActiveByTemplate("EditModeSettingDropdownTemplate") do
 			if not dropdown.styled then
-				B.ReskinDropDown(dropdown.Dropdown.DropDownMenu)
+				B.ReskinDropDown(dropdown.Dropdown)
 				dropdown.styled = true
 			end
 		end

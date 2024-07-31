@@ -2,34 +2,6 @@ local _, ns = ...
 local B, C, L, DB = unpack(ns)
 local r, g, b = DB.r, DB.g, DB.b
 
-local function reskinPickerOptions(self)
-	local scrollTarget = self.ScrollBox.ScrollTarget
-	if scrollTarget then
-		for i = 1, scrollTarget:GetNumChildren() do
-			local child = select(i, scrollTarget:GetChildren())
-			if not child.styled then
-				child.UnCheck:SetTexture(nil)
-				child.Highlight:SetColorTexture(r, g, b, .25)
-
-				local check = child.Check
-				check:SetColorTexture(r, g, b, .6)
-				check:SetSize(10, 10)
-				check:SetPoint("LEFT", 2, 0)
-				B.CreateBDFrame(check, .25)
-
-				child.styled = true
-			end
-		end
-	end
-end
-
-local function ReskinVoicePicker(voicePicker)
-	local customFrame = voicePicker:GetChildren()
-	B.StripTextures(customFrame)
-	B.SetBD(customFrame, .7)
-	voicePicker:HookScript("OnShow", reskinPickerOptions)
-end
-
 tinsert(C.defaultThemes, function()
 	B.StripTextures(ChatConfigFrame)
 	B.SetBD(ChatConfigFrame)
@@ -38,7 +10,7 @@ tinsert(C.defaultThemes, function()
 	hooksecurefunc("ChatConfig_UpdateCheckboxes", function(frame)
 		if not FCF_GetCurrentChatFrame() then return end
 
-		local nameString = frame:GetName().."CheckBox"
+		local nameString = frame:GetName().."Checkbox"
 		for index in ipairs(frame.checkBoxTable) do
 			local checkBoxName = nameString..index
 			local checkbox = _G[checkBoxName]
@@ -56,7 +28,7 @@ tinsert(C.defaultThemes, function()
 	hooksecurefunc("ChatConfig_CreateTieredCheckboxes", function(frame, checkBoxTable)
 		if frame.styled then return end
 
-		local nameString = frame:GetName().."CheckBox"
+		local nameString = frame:GetName().."Checkbox"
 		for index, value in ipairs(checkBoxTable) do
 			local checkBoxName = nameString..index
 			B.ReskinCheck(_G[checkBoxName])
@@ -222,7 +194,7 @@ tinsert(C.defaultThemes, function()
 	hooksecurefunc("TextToSpeechFrame_UpdateMessageCheckboxes", function(frame)
 		local checkBoxTable = frame.checkBoxTable
 		if checkBoxTable then
-			local checkBoxNameString = frame:GetName().."CheckBox"
+			local checkBoxNameString = frame:GetName().."Checkbox"
 			local checkBoxName, checkBox
 			for index in ipairs(checkBoxTable) do
 				checkBoxName = checkBoxNameString..index
@@ -237,8 +209,5 @@ tinsert(C.defaultThemes, function()
 	end)
 
 	-- voice pickers
-	ReskinVoicePicker(TextToSpeechFrameTtsVoicePicker)
-	ReskinVoicePicker(TextToSpeechFrameTtsVoiceAlternatePicker)
-
 	B.StripTextures(ChatConfigTextToSpeechChannelSettingsLeft)
 end)

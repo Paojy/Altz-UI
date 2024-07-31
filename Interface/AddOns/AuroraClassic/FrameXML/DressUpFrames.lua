@@ -16,11 +16,8 @@ tinsert(C.defaultThemes, function()
 	-- Dressup Frame
 
 	B.ReskinPortraitFrame(DressUpFrame)
-	B.Reskin(DressUpFrameOutfitDropDown.SaveButton)
 	B.Reskin(DressUpFrameCancelButton)
 	B.Reskin(DressUpFrameResetButton)
-	B.StripTextures(DressUpFrameOutfitDropDown)
-	B.ReskinDropDown(DressUpFrameOutfitDropDown)
 	B.ReskinMinMax(DressUpFrame.MaximizeMinimizeFrame)
 
 	B.Reskin(DressUpFrame.LinkButton)
@@ -42,11 +39,33 @@ tinsert(C.defaultThemes, function()
 		end
 	end)
 
-	DressUpFrameOutfitDropDown:SetHeight(32)
-	DressUpFrameOutfitDropDown.SaveButton:SetPoint("LEFT", DressUpFrameOutfitDropDown, "RIGHT", -13, 2)
 	DressUpFrameResetButton:SetPoint("RIGHT", DressUpFrameCancelButton, "LEFT", -1, 0)
 
 	B.ReskinCheck(TransmogAndMountDressupFrame.ShowMountCheckButton)
+	B.ReskinModelControl(DressUpFrame.ModelScene)
+
+	local selectionPanel = DressUpFrame.SetSelectionPanel
+	if selectionPanel then
+		B.StripTextures(selectionPanel)
+		B.SetBD(selectionPanel):SetInside(nil, 9, 9)
+
+		local function SetupSetButton(button)
+			if button.styled then return end
+			button.bg = B.ReskinIcon(button.Icon)
+			B.ReskinIconBorder(button.IconBorder, true, true)
+			button.BackgroundTexture:SetAlpha(0)
+			button.SelectedTexture:SetColorTexture(1, .8, 0, .25)
+			button.HighlightTexture:SetColorTexture(1, 1, 1, .25)
+			button.styled = true
+		end
+
+		hooksecurefunc(selectionPanel.ScrollBox, "Update", function(self)
+			self:ForEachFrame(SetupSetButton)
+		end)
+	end
+
+	B.ReskinDropDown(DressUpFrameOutfitDropdown)
+	B.Reskin(DressUpFrameOutfitDropdown.SaveButton)
 
 	-- SideDressUp
 
@@ -61,22 +80,6 @@ tinsert(C.defaultThemes, function()
 	end)
 
 	-- Outfit frame
-
-	B.StripTextures(WardrobeOutfitFrame)
-	B.SetBD(WardrobeOutfitFrame, .7)
-
-	hooksecurefunc(WardrobeOutfitFrame, "Update", function(self)
-		for i = 1, C_TransmogCollection.GetNumMaxOutfits() do
-			local button = self.Buttons[i]
-			if button and button:IsShown() and not button.styled then
-				B.ReskinIcon(button.Icon)
-				button.Selection:SetColorTexture(1, 1, 1, .25)
-				button.Highlight:SetColorTexture(r, g, b, .25)
-
-				button.styled = true
-			end
-		end
-	end)
 
 	B.StripTextures(WardrobeOutfitEditFrame)
 	WardrobeOutfitEditFrame.EditBox:DisableDrawLayer("BACKGROUND")
