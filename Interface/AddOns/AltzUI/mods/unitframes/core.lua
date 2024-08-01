@@ -2162,7 +2162,7 @@ T.RegisterInitCallback(function()
 		if not aCoreCDB["UnitframeOptions"]["raidframe_inparty"] then
 			local partyframes = {} -- 小队
 			for i = 1, 4 do
-				partyframes["party"..i] = spawnHelper(self,"party"..i)
+				partyframes["party"..i] = spawnHelper(self, "party"..i)
 				partyframes["party"..i]:SetParent(PartyToggle) -- 团队中隐藏小队
 			end
 			for i = 1, 4 do
