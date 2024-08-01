@@ -1514,8 +1514,10 @@ local function ShowGUI()
 end
 
 hooksecurefunc(GameMenuFrame, "InitButtons", function()
-	GameMenuFrame:AddButton("AltzUI", ShowGUI)
+	GameMenuFrame:AddButton(G.addon_colorStr.."AltzUI".."|r", ShowGUI)
 end)
+
+GameMenuFrame:InitButtons()
 
 GameMenuFrame:HookScript("OnShow", function()
 	GUI:Hide()
