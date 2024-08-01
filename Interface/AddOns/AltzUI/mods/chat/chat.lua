@@ -34,6 +34,31 @@ local function UpdateChatFrameBg()
 end
 T.UpdateChatFrameBg = UpdateChatFrameBg
 
+function ChatFrame_OnMouseScroll(self, delta)
+	local numScrollMessages = 3
+	if delta < 0 then
+		if IsShiftKeyDown() then
+			self:ScrollToBottom()
+		elseif IsAltKeyDown() then
+			self:ScrollDown()
+		else
+			for _ = 1, numScrollMessages do
+				self:ScrollDown()
+			end
+		end
+	elseif delta > 0 then
+		if IsShiftKeyDown() then
+			self:ScrollToTop()
+		elseif IsAltKeyDown() then
+			self:ScrollUp()
+		else
+			for _ = 1, numScrollMessages do
+				self:ScrollUp()
+			end
+		end
+	end
+end
+
 local function init()
 	for i = 1, chatwindownum do
 		local cf = _G['ChatFrame'..i]
@@ -90,7 +115,9 @@ local function init()
 			cf:SetShadowOffset(0,0)
 			cf:SetFrameStrata("LOW")
 			cf:SetFrameLevel(2)
-		end		
+		end
+		
+		cf:SetScript('OnMouseWheel', function(self, delta) ChatFrame_OnMouseScroll(self, delta) end)
 	end
 	
 	UpdateChatFrameBg()
