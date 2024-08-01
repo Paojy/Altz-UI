@@ -189,6 +189,10 @@ function oUF:HandleUnit(object, unit)
 		object:SetAttribute('oUF-enableArenaPrep', true)
 		-- the event handler only fires for visible frames, so we have to hook it for arena prep
 		object:HookScript('OnEvent', updateArenaPreparation)
+	elseif (unit:match('party%d?$')) then
+		object:RegisterEvent('PARTY_LEADER_CHANGED', object.UpdateAllElements, true)
+		object:RegisterEvent('PARTY_MEMBER_DISABLE', object.UpdateAllElements, true)
+		object:RegisterEvent('PARTY_MEMBER_ENABLE', object.UpdateAllElements, true)
 	end
 end
 
