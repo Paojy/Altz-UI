@@ -60,7 +60,7 @@ local function GetUnitColorforNameplate(unit)
 		r, g, b = .6, .6, .6
 	elseif not UnitPlayerControlled(unit) and UnitThreatSituation('player', unit) and aCoreCDB["PlateOptions"]["threatcolor"] then
 		r, g, b = unpack(oUF.colors.threat[UnitThreatSituation('player', unit)])
-	elseif UnitIsPlayer(unit)  then
+	elseif UnitIsPlayer(unit) and UnitClass(unit) then
 		local _, unitclass = UnitClass(unit)
 		r, g, b = unpack(oUF.colors.class[unitclass]) 
 	elseif UnitReaction(unit, "player") then
@@ -76,7 +76,7 @@ local function GetUnitColor(unit)
 	local r, g, b = 1, 1, 1
 	if not UnitPlayerControlled(unit) and UnitIsTapDenied(unit) then
 		r, g, b = .6, .6, .6
-	elseif UnitIsPlayer(unit)  then
+	elseif UnitIsPlayer(unit) and UnitClass(unit) then
 		local _, unitclass = UnitClass(unit)
 		r, g, b = unpack(oUF.colors.class[unitclass]) 
 	elseif UnitReaction(unit, "player") then
