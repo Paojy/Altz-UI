@@ -1421,9 +1421,17 @@ end)
 
 local AddonConfigMenu = CreateFrame("Frame", G.uiname.."AddonConfigMenu", UIParent, "UIDropDownMenuTemplate")
 
-local AddonConfigMenuList = {
-	{ text = L["设置向导"], notCheckable = true, func = function() T.RunSetup() end},
-}
+local function AddonConfigMenu_Initialize(self, level, menuList)
+	local info = UIDropDownMenu_CreateInfo()
+	info.text = L["设置向导"]
+	info.func = T.RunSetup
+	info.notCheckable = true
+	UIDropDownMenu_AddButton(info)
+end
+
+T.RegisterInitCallback(function()
+	UIDropDownMenu_Initialize(AddonConfigMenu, AddonConfigMenu_Initialize, "MENU")
+end)
 
 MinimapButton:SetScript("OnClick", function(self, btn)
 	if btn == "LeftButton" then
@@ -1437,7 +1445,7 @@ MinimapButton:SetScript("OnClick", function(self, btn)
 			GUI.scale:Show()
 		end
 	else
-		EasyMenu(AddonConfigMenuList, AddonConfigMenu, "cursor", 0, 0, "MENU", 2)
+		ToggleDropDownMenu(1, nil, AddonConfigMenu, self, 0, 5)
 	end
 end)
 
@@ -1448,6 +1456,7 @@ T.ToggleMinimapButton = function()
 		MinimapButton:Hide()
 	end
 end
+
 
 --====================================================--
 --[[                -- Init --                      ]]--

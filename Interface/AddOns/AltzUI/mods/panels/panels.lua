@@ -293,43 +293,69 @@ T.CollectMinimapButtons = function()
 end
 
 local MBCF_PosMenu = CreateFrame("Frame", G.uiname.."MBCF_PosMenu", UIParent, "UIDropDownMenuTemplate")
-local MBCF_PosList = {
-	{ text = L["上方"], func = function()
+
+local function MBCF_Menu_Initialize(self, level, menuList)
+	local info = UIDropDownMenu_CreateInfo()
+	info.text = L["上方"]
+	info.func = function()
 		aCoreCDB["SkinOptions"]["MBCFpos"] = "TOP"
 		MBCF_UpdatePoints()
-	end},
-	{ text = L["下方"], func = function()
+	end
+	info.checked = function()
+		return aCoreCDB["SkinOptions"]["MBCFpos"] == "TOP"
+	end	
+	UIDropDownMenu_AddButton(info)
+	
+	info.text = L["下方"]
+	info.func = function()
 		aCoreCDB["SkinOptions"]["MBCFpos"] = "BOTTOM"
 		MBCF_UpdatePoints()
-	end},
-	{ text = "------------------",  disabled = true},
-	{ text = L["一直显示插件按钮"], func = function()
+	end
+	info.checked = function()
+		return aCoreCDB["SkinOptions"]["MBCFpos"] == "BOTTOM"
+	end	
+	UIDropDownMenu_AddButton(info)
+	
+	UIDropDownMenu_AddSeparator()
+	
+	info.text = L["一直显示插件按钮"]
+	info.func = function()
 		if not aCoreCDB["SkinOptions"]["MBCFalwaysshow"] then
 			aCoreCDB["SkinOptions"]["MBCFalwaysshow"] = true
 		else
 			aCoreCDB["SkinOptions"]["MBCFalwaysshow"] = false
 		end
 		MBCF_Toggle()
-	end},
-	{ text = L["小地图按钮"].." |T348547:12:12:0:0:64:64:4:60:4:60|t", func = function()
+	end
+	info.checked = function()
+		return aCoreCDB["SkinOptions"]["MBCFalwaysshow"]
+	end
+	UIDropDownMenu_AddButton(info)
+	
+	info.text = L["小地图按钮"].." |T348547:12:12:0:0:64:64:4:60:4:60|t"
+	info.func = function()
 		if not aCoreCDB["SkinOptions"]["minimapbutton"] then
 			aCoreCDB["SkinOptions"]["minimapbutton"] = true
 		else
 			aCoreCDB["SkinOptions"]["minimapbutton"] = false
 		end
 		T.ToggleMinimapButton()
-	end},
-}
+	end
+	info.checked = function()
+		return aCoreCDB["SkinOptions"]["minimapbutton"]
+	end
+	UIDropDownMenu_AddButton(info)	
+end
+
+T.RegisterInitCallback(function()
+	UIDropDownMenu_Initialize(MBCF_PosMenu, MBCF_Menu_Initialize, "MENU")
+end)
 
 MBCF_Button:SetScript("OnMouseDown", function(self, button)
 	if button == "LeftButton" then
 		MBCF_Toggle(true)
 	else
-		MBCF_PosList[1].checked = (aCoreCDB["SkinOptions"]["MBCFpos"] == "TOP")
-		MBCF_PosList[2].checked = (aCoreCDB["SkinOptions"]["MBCFpos"] == "BOTTOM")
-		MBCF_PosList[4].checked = aCoreCDB["SkinOptions"]["MBCFalwaysshow"]
-		MBCF_PosList[5].checked = aCoreCDB["SkinOptions"]["minimapbutton"]
-		EasyMenu(MBCF_PosList, MBCF_PosMenu, "cursor", 0, 0, "MENU")
+		ToggleDropDownMenu(1, nil, MBCF_PosMenu, self, 0, 5)
 	end
 end)
 
@@ -341,7 +367,6 @@ T.RegisterEnteringWorldCallback(function()
 	MBCF_UpdatePoints()
 	MBCF_Toggle()
 end)
-
 
 -- 小地图元素位置
 hooksecurefunc(ExpansionLandingPageMinimapButton, "SetLandingPageIconOffset", function()

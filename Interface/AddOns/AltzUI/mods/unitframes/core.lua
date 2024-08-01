@@ -1987,60 +1987,94 @@ local function RemovefromCColor(name)
 end
 
 local menuFrame = CreateFrame("Frame", "NDui_EastMarking", UIParent, "UIDropDownMenuTemplate")
-local menuList = {
-	{text = RAID_TARGET_NONE, func = function() SetRaidTarget("target", 0) end},
-	{text = T.hex_str(RAID_TARGET_1, 1, .92, 0).." "..ICON_LIST[1].."12|t", func = function() SetRaidTarget("target", 1) end},
-	{text = T.hex_str(RAID_TARGET_2, .98, .57, 0).." "..ICON_LIST[2].."12|t", func = function() SetRaidTarget("target", 2) end},
-	{text = T.hex_str(RAID_TARGET_3, .83, .22, .9).." "..ICON_LIST[3].."12|t", func = function() SetRaidTarget("target", 3) end},
-	{text = T.hex_str(RAID_TARGET_4, .04, .95, 0).." "..ICON_LIST[4].."12|t", func = function() SetRaidTarget("target", 4) end},
-	{text = T.hex_str(RAID_TARGET_5, .7, .82, .875).." "..ICON_LIST[5].."12|t", func = function() SetRaidTarget("target", 5) end},
-	{text = T.hex_str(RAID_TARGET_6, 0, .71, 1).." "..ICON_LIST[6].."12|t", func = function() SetRaidTarget("target", 6) end},
-	{text = T.hex_str(RAID_TARGET_7, 1, .24, .168).." "..ICON_LIST[7].."12|t", func = function() SetRaidTarget("target", 7) end},
-	{text = T.hex_str(RAID_TARGET_8, .98, .98, .98).." "..ICON_LIST[8].."12|t", func = function() SetRaidTarget("target", 8) end},
-	{text = ""}, -- 10
-	{text = L["添加自定义能量"]},
-	{text = L["添加自定义颜色"]},
-	{text = L["添加自定义颜色"]},
+
+local rt_colors = {
+	{1, .92, 0},
+	{.98, .57, 0},
+	{.83, .22, .9},
+	{.04, .95, 0},
+	{.7, .82, .875},
+	{0, .71, 1},
+	{1, .24, .17},
+	{.98, .98, .98},
 }
+
+local function TargetMenu_Initialize(self, level, menuList)
+	local target_name = GetUnitName("target", false)
+	local info = UIDropDownMenu_CreateInfo()
+	info.text = RAID_TARGET_NONE
+	info.func = function()
+		SetRaidTarget("target", 0)
+	end
+	info.checked = function()
+		return not GetRaidTargetIndex("target")
+	end
+	UIDropDownMenu_AddButton(info)
+	
+	for i = 1, 8 do
+		local r, g, b = unpack(rt_colors[i])
+		info.text = T.hex_str(_G["RAID_TARGET_"..i], r, g, b).." "..ICON_LIST[i].."12|t"
+		info.func = function()
+			SetRaidTarget("target", i)
+		end
+		info.checked = function()
+			return GetRaidTargetIndex("target") == i
+		end
+		UIDropDownMenu_AddButton(info)
+	end
+	
+	UIDropDownMenu_AddSeparator()
+	
+	info.notCheckable = true
+	
+	if aCoreCDB["PlateOptions"]["custompowerplates"][target_name] then -- 已经有了
+		info.text = string.format(L["移除自定义能量"], target_name)	
+	else
+		info.text = string.format(L["添加自定义能量"], target_name)
+	end	
+		
+	info.func = function()
+		if aCoreCDB["PlateOptions"]["custompowerplates"][target_name] then -- 已经有了
+			RemovefromCPower(target_name)
+		else
+			AddtoCPower(target_name)
+		end
+	end
+
+	UIDropDownMenu_AddButton(info)
+	
+	if aCoreCDB["PlateOptions"]["customcoloredplates"][target_name] then -- 已经有了
+		local r, g, b = aCoreCDB["PlateOptions"]["customcoloredplates"][target_name].r, aCoreCDB["PlateOptions"]["customcoloredplates"][target_name].g, aCoreCDB["PlateOptions"]["customcoloredplates"][target_name].b
+		info.text = string.format(L["替换自定义颜色"], r*255, g*255, b*255, target_name)
+	else
+		info.text = string.format(L["添加自定义颜色"], target_name)
+	end
+		
+	info.func = function()
+		SetCColor(target_name)
+	end
+	
+	UIDropDownMenu_AddButton(info)
+	
+	if aCoreCDB["PlateOptions"]["customcoloredplates"][target_name] then -- 已经有了
+		local r, g, b = aCoreCDB["PlateOptions"]["customcoloredplates"][target_name].r, aCoreCDB["PlateOptions"]["customcoloredplates"][target_name].g, aCoreCDB["PlateOptions"]["customcoloredplates"][target_name].b
+		info.text = string.format(L["移除自定义颜色"], r*255, g*255, b*255, target_name)
+			
+		info.func = function()
+			RemovefromCColor(target_name)
+		end
+		
+		UIDropDownMenu_AddButton(info)
+	end
+end
 
 local function HookNameplateCtrlMenu()
 	WorldFrame:HookScript("OnMouseDown", function(_, btn)
 		C_Timer.After(0.3, function()
 			if btn == "LeftButton" and IsControlKeyDown() and UnitExists("target") then
 				if not IsInGroup() or (IsInGroup() and not IsInRaid()) or UnitIsGroupLeader("player") or UnitIsGroupAssistant("player") then
-					local ricon = GetRaidTargetIndex("target")
-					for i = 1, 8 do
-						if ricon == i then
-							menuList[i+1].checked = true
-						else
-							menuList[i+1].checked = false
-						end
-					end
-					local target_name = GetUnitName("target", false)
-					
-					if aCoreCDB["PlateOptions"]["custompowerplates"][target_name] then -- 已经有了
-						menuList[11].text = string.format(L["移除自定义能量"], target_name)
-						menuList[11].func = function() RemovefromCPower(target_name) end
-					else
-						menuList[11].text = string.format(L["添加自定义能量"], target_name)
-						menuList[11].func = function() AddtoCPower(target_name) end
-					end
-
-					if aCoreCDB["PlateOptions"]["customcoloredplates"][target_name] then -- 已经有了
-						local r, g, b = aCoreCDB["PlateOptions"]["customcoloredplates"][target_name].r, aCoreCDB["PlateOptions"]["customcoloredplates"][target_name].g, aCoreCDB["PlateOptions"]["customcoloredplates"][target_name].b
-						menuList[12].text = string.format(L["替换自定义颜色"], r*255, g*255, b*255, target_name)
-						menuList[12].func = function() SetCColor(target_name) end
-						
-						menuList[13].text = string.format(L["移除自定义颜色"], r*255, g*255, b*255, target_name)
-						menuList[13].func = function() RemovefromCColor(target_name) end		
-					else
-						menuList[12].text = string.format(L["添加自定义颜色"], target_name)
-						menuList[12].func = function() SetCColor(target_name) end
-						
-						menuList[13] = {}
-					end
-					
-					EasyMenu(menuList, menuFrame, "cursor", 0, 0, "MENU", 1)
+					UIDropDownMenu_Initialize(menuFrame, TargetMenu_Initialize, "MENU")
+					ToggleDropDownMenu(1, nil, menuFrame, "cursor", 3, -3)
 				end
 			end
 		end)
