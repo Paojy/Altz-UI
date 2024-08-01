@@ -1510,7 +1510,7 @@ hooksecurefunc(GameMenuFrame, "InitButtons", function()
 	GameMenuFrame:AddButton(G.addon_colorStr.."AltzUI".."|r", ShowGUI)
 end)
 
-T.RegisterInitCallback(function()
+T.RegisterEnteringWorldCallback(function()
 	GameMenuFrame:InitButtons()
 end)
 
