@@ -183,10 +183,10 @@ end
 
 local DisplayFramePoint = function(name)
 	local points = T.ValueFromPath(aCoreCDB, {"FramePoints", name, CurrentRole})
-	T.UIDropDownMenu_SetSelectedValueText(SpecMover.a1dd.dd, anchors, points.a1)
-	T.UIDropDownMenu_SetSelectedValueText(SpecMover.anchor_typedd.dd, anchor_types, points.anchor_type)
+	T.UIDropDownMenu_SetSelectedValueText(SpecMover.a1dd, anchors, points.a1)
+	T.UIDropDownMenu_SetSelectedValueText(SpecMover.anchor_typedd, anchor_types, points.anchor_type)
 	SpecMover.parentbox.box:SetText(points.parent)
-	T.UIDropDownMenu_SetSelectedValueText(SpecMover.a2dd.dd, anchors, points.a2)
+	T.UIDropDownMenu_SetSelectedValueText(SpecMover.a2dd, anchors, points.a2)
 	SpecMover.xbox.box:SetText(points.x)
 	SpecMover.ybox.box:SetText(points.y)
 end
@@ -355,7 +355,7 @@ for OptionCategroy, t in pairs(G.Options) do
 end
 
 local function CreateInputBox(parent, name, key, numeric)
-	local anchor = T.EditFrame(parent, 200, name)
+	local anchor = T.EditFrame(parent, 190, name)
 	
 	anchor.box:SetScript("OnEscapePressed", function(self)
 		local frame, name = GetSelected()
@@ -391,14 +391,14 @@ local function CreateDropDown(parent, name, key, option_table)
 	local function DD_SetChecked(self, value)
 		local frame, name = GetSelected()
 		T.ValueToPath(aCoreCDB, {"FramePoints", name, CurrentRole, key}, value)
-		T.UIDropDownMenu_SetSelectedValueText(anchor.dd, option_table, value)
+		T.UIDropDownMenu_SetSelectedValueText(anchor, option_table, value)
 		if key == "anchor_type" then
 			SpecMover:ArrangeOptions()
 		end
 		PlaceFrame(frame)
 	end
 	
-	UIDropDownMenu_Initialize(anchor.dd, function(self, level)
+	UIDropDownMenu_Initialize(anchor.DropDown, function(self, level)
 		local info = UIDropDownMenu_CreateInfo()
 		for i = 1, #option_table do
 			info.value = option_table[i][1]
@@ -505,7 +505,7 @@ function SpecMover:ArrangeOptions()
 		if option:IsVisible() then
 			index = index + 1
 			if info.option_type == "dd" then
-				option:SetPoint("TOPLEFT", SpecMover, "TOPLEFT", 20, -50-index*30+adjust)
+				option:SetPoint("TOPLEFT", SpecMover, "TOPLEFT", 120, -50-index*30+adjust)
 			elseif info.option_type == "box" then
 				option:SetPoint("TOPLEFT", SpecMover, "TOPLEFT", 20, -50-index*30+adjust)
 			elseif info.option_type == "check" then
@@ -513,7 +513,7 @@ function SpecMover:ArrangeOptions()
 			elseif info.option_type == "slider" then
 				option:SetPoint("TOPLEFT", SpecMover, "TOPLEFT", 120, -50-index*30+adjust)
 			elseif info.option_type == "ddmenu" then
-				option:SetPoint("TOPLEFT", SpecMover, "TOPLEFT", 20, -50-index*30+adjust)
+				option:SetPoint("TOPLEFT", SpecMover, "TOPLEFT", 120, -50-index*30+adjust)
 			end
 		end
 	end

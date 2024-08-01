@@ -590,13 +590,13 @@ T.ReskinButton = function(bu, fontsize, noHighlight, override)
 end
 
 -- 下拉菜单
-T.ReskinDropDown = function(dd, fontsize)
+T.ReskinDropDown = function(frame, fontsize)
 	if F then
-		F.ReskinDropDown(dd)
+		F.ReskinDropDown(frame)
 	end
 	
 	local fs = fontsize or 14
-	dd.Text:SetFont(G.norFont, fs, "OUTLINE")
+	frame.Text:SetFont(G.norFont, fs, "OUTLINE")
 end
 
 -- 标签

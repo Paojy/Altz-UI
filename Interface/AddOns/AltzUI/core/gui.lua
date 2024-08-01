@@ -600,19 +600,16 @@ local function CreateClickcastKeyOptions(bu_tag, text)
 		frame.options[mod_ind].mod_text = mod_text
 		
 		-- 动作
-		local action_select = CreateFrame("Frame", nil, frame, "UIDropDownMenuTemplate")
-		action_select:SetPoint("LEFT", mod_text, "RIGHT", -5, -3)
-		action_select.Text:SetFont(G.norFont, 12, "OUTLINE")
-		--T.ReskinDropDown(action_select)
-		UIDropDownMenu_SetWidth(action_select, 100)
-
-		UIDropDownMenu_Initialize(action_select, function()
+		local action_select = T.SetupDropdown(frame, 100, {"LEFT", mod_text, "RIGHT", -5, 0})
+	
+		UIDropDownMenu_Initialize(action_select.DropDown, function()
 			for i, t in pairs(actions) do
 				local info = UIDropDownMenu_CreateInfo()
 				info.value = t[1]
 				info.text = t[2]
 				info.func = function()
-					UIDropDownMenu_SetSelectedValue(action_select, info.value)
+					UIDropDownMenu_SetSelectedValue(action_select.DropDown, info.value)
+					action_select:SetText(info.text)
 					ApplyClickcastValue(bu_tag, mod_ind, "action", info.value)					
 					UpdateClickCast(bu_tag, mod_ind)
 					frame.options[mod_ind].spell_select:SetShown(info.value == "spell")
@@ -621,14 +618,14 @@ local function CreateClickcastKeyOptions(bu_tag, text)
 				end
 				UIDropDownMenu_AddButton(info)
 			end
-		end)
+		end, "MENU")
 		
 		action_select:SetScript("OnShow", function(self)
 			local action = GetClickcastValue(bu_tag, mod_ind, "action")			
-			UIDropDownMenu_SetSelectedValue(self, action)
+			UIDropDownMenu_SetSelectedValue(self.DropDown, action)
 			for i, t in pairs(actions) do
 				if action == t[1] then
-					UIDropDownMenu_SetText(self, t[2])
+					self:SetText(t[2])
 				end
 			end
 		end)
@@ -636,13 +633,9 @@ local function CreateClickcastKeyOptions(bu_tag, text)
 		frame.options[mod_ind].action_select = action_select
 		
 		-- 法术
-		local spell_select = CreateFrame("Frame", nil, frame, "UIDropDownMenuTemplate")
-		spell_select:SetPoint("LEFT", action_select, "RIGHT", -25, 0)
-		spell_select.Text:SetFont(G.norFont, 12, "OUTLINE")
-		--T.ReskinDropDown(spell_select)
-		UIDropDownMenu_SetWidth(spell_select, 130)
-		
-		UIDropDownMenu_Initialize(spell_select, function()
+		local spell_select = T.SetupDropdown(frame, 130, {"LEFT", action_select, "RIGHT", 20, 0})
+
+		UIDropDownMenu_Initialize(spell_select.DropDown, function()
 			local spells = {}
 			for tag, info in pairs(G.ClickCastSpells) do
 				local cur_spec = T.GetSpecID()
@@ -659,7 +652,8 @@ local function CreateClickcastKeyOptions(bu_tag, text)
 					info.value = spellID
 					info.text = T.GetSpellIcon(spellID).." "..spellName
 					info.func = function()
-						UIDropDownMenu_SetSelectedValue(spell_select, info.value)
+						UIDropDownMenu_SetSelectedValue(spell_select.DropDown, info.value)
+						spell_select:SetText(info.text)
 						ApplyClickcastValue(bu_tag, mod_ind, "spell", info.value)
 						UpdateClickCast(bu_tag, mod_ind)
 					end
@@ -671,11 +665,11 @@ local function CreateClickcastKeyOptions(bu_tag, text)
 		spell_select:SetScript("OnShow", function(self)
 			local spellID = GetClickcastValue(bu_tag, mod_ind, "spell")
 			if spellID == "" then
-				UIDropDownMenu_SetText(self, NONE)
+				self:SetText(NONE)
 			else
-				UIDropDownMenu_SetSelectedValue(self, spellID)
+				UIDropDownMenu_SetSelectedValue(self.DropDown, spellID)
 				local name, _, icon = GetSpellInfo(spellID)
-				UIDropDownMenu_SetText(self, T.GetTexStr(icon).." "..name)				
+				self:SetText(T.GetTexStr(icon).." "..name)
 			end
 		end)
 		
@@ -844,8 +838,8 @@ local function UpdateEncounterAuraButton(option_list, encounterID, spellID, leve
 		
 		frame:SetScript("OnMouseDown", function(self)	
 			local encounterName = (encounterID == 1 and L["杂兵"]) or EJ_GetEncounterInfo(encounterID)
-			UIDropDownMenu_SetSelectedValue(option_list.encounterDD, encounterID)
-			UIDropDownMenu_SetText(option_list.encounterDD, encounterName)
+			UIDropDownMenu_SetSelectedValue(option_list.encounterDD.DropDown, encounterID)
+			option_list.encounterDD:SetText(encounterName)
 			option_list.spell_input:SetText(spellID)
 			option_list.spell_input.current_spellID = spellID
 			option_list.level_input:SetText(level)
@@ -933,14 +927,10 @@ do
 	end)
 	
 	-- 首领下拉菜单
-	option_list.encounterDD = CreateFrame("Frame", nil, option_list, "UIDropDownMenuTemplate")
-	option_list.encounterDD:SetPoint("BOTTOMLEFT", option_list, "TOPLEFT", 0, 2)
-	option_list.encounterDD.Text:SetFont(G.norFont, 12, "OUTLINE")
-	--T.ReskinDropDown(option_list.encounterDD)
-	UIDropDownMenu_SetWidth(option_list.encounterDD, 120)
+	option_list.encounterDD = T.SetupDropdown(option_list, 120, {"BOTTOMLEFT", option_list, "TOPLEFT", 0, 2})
 	
 	-- 法术ID输入框
-	option_list.spell_input = T.EditboxWithStr(option_list, {"LEFT", option_list.encounterDD, "RIGHT", -5, 2}, L["输入法术ID"], 100)
+	option_list.spell_input = T.EditboxWithStr(option_list, {"LEFT", option_list.encounterDD, "RIGHT", -5, 0}, L["输入法术ID"], 100)
 	option_list.spell_input:HookScript("OnChar", function(self) 
 		self.current_spellID = nil
 	end)
@@ -981,7 +971,7 @@ do
 		option_list.level_input:GetScript("OnEnterPressed")(option_list.level_input)
 		if not option_list.spell_input:apply() or not option_list.level_input:apply() then return end
 		
-		local encounterID = UIDropDownMenu_GetSelectedValue(option_list.encounterDD)
+		local encounterID = UIDropDownMenu_GetSelectedValue(option_list.encounterDD.DropDown)
 		local spellName, _, spellIcon, _, _, _, spellID = GetSpellInfo(option_list.spell_input.current_spellID)
 		local level = option_list.level_input:GetText()
 		
@@ -991,6 +981,7 @@ do
 		
 		aCoreCDB["UnitframeOptions"]["raid_debuffs"][parent.selected_InstanceID][encounterID][spellID] = level		
 		option_list.apply()
+		DisplayRaidDebuffList()
 		
 		option_list.spell_input:SetText(L["输入法术ID"])
 		option_list.spell_input.current_spellID = nil
@@ -1020,7 +1011,7 @@ local CreateInstanceButton = function(frame, instanceID, instanceName, bgImage)
 		local option_list = parent.debuff_list
 		option_list:Show()
 		
-		UIDropDownMenu_Initialize(option_list.encounterDD, function()
+		UIDropDownMenu_Initialize(option_list.encounterDD.DropDown, function()
 			local dataIndex = 1
 			EJ_SelectInstance(parent.selected_InstanceID)
 			local encounterName, _, encounterID = EJ_GetEncounterInfoByIndex(dataIndex, parent.selected_InstanceID)
@@ -1030,7 +1021,8 @@ local CreateInstanceButton = function(frame, instanceID, instanceName, bgImage)
 				info.text = encounterName
 				info.value = encounterID
 				info.func = function()
-					UIDropDownMenu_SetSelectedValue(option_list.encounterDD, info.value)
+					option_list.encounterDD:SetText(info.text)
+					UIDropDownMenu_SetSelectedValue(option_list.encounterDD.DropDown, info.value)
 				end
 				UIDropDownMenu_AddButton(info)
 				
@@ -1042,15 +1034,16 @@ local CreateInstanceButton = function(frame, instanceID, instanceName, bgImage)
 			info.text = L["杂兵"]
 			info.value = 1
 			info.func = function()
-				UIDropDownMenu_SetSelectedValue(option_list.encounterDD, 1)
+				option_list.encounterDD:SetText(info.text)
+				UIDropDownMenu_SetSelectedValue(option_list.encounterDD.DropDown, 1)
 			end
 			UIDropDownMenu_AddButton(info)
 		end)
 		
 		local first_encounterID = select(3, EJ_GetEncounterInfoByIndex(1, parent.selected_InstanceID))
 		local encounterName = EJ_GetEncounterInfo(first_encounterID)
-		UIDropDownMenu_SetSelectedValue(option_list.encounterDD, first_encounterID)
-		UIDropDownMenu_SetText(option_list.encounterDD, encounterName)
+		option_list.encounterDD:SetText(encounterName)
+		UIDropDownMenu_SetSelectedValue(option_list.encounterDD.DropDown, first_encounterID)
 		
 		DisplayRaidDebuffList()
 	end)
@@ -1517,7 +1510,9 @@ hooksecurefunc(GameMenuFrame, "InitButtons", function()
 	GameMenuFrame:AddButton(G.addon_colorStr.."AltzUI".."|r", ShowGUI)
 end)
 
-GameMenuFrame:InitButtons()
+T.RegisterInitCallback(function()
+	GameMenuFrame:InitButtons()
+end)
 
 GameMenuFrame:HookScript("OnShow", function()
 	GUI:Hide()

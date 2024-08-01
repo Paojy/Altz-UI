@@ -1049,17 +1049,17 @@ T.ButtonGroup = ButtonGroup
 --====================================================--
 --[[                -- 下拉菜单 --                ]]--
 --====================================================--
-local UIDropDownMenu_SetSelectedValueText = function(dd, t, value)
-	UIDropDownMenu_SetSelectedValue(dd, value)
+local UIDropDownMenu_SetSelectedValueText = function(frame, t, value)
+	UIDropDownMenu_SetSelectedValue(frame.DropDown, value)
 	for i, info in pairs(t) do
 		if info[1] == value then
-			UIDropDownMenu_SetText(dd, info[2])
+			frame:SetText(info[2])
 			if info[3] then
 				local index = string.match(info[3], "%d")
 				if index then
-					dd.Text:SetFont(G["combatFont"..index], 14, "NONE")
+					frame.Text:SetFont(G["combatFont"..index], 14, "NONE")
 				else
-					dd.Text:SetFont(G.norFont, 14, "OUTLINE")
+					frame.Text:SetFont(G.norFont, 14, "OUTLINE")
 				end
 			end
 			break
@@ -1068,42 +1068,45 @@ local UIDropDownMenu_SetSelectedValueText = function(dd, t, value)
 end
 T.UIDropDownMenu_SetSelectedValueText = UIDropDownMenu_SetSelectedValueText
 
-local UIDropDownMenuFrame = function(parent, width, text, points)
-	local frame = CreateFrame("Frame", nil, parent)
-	frame:SetSize(20, 20)
+local SetupDropdown = function(parent, width, points)
+	local button = CreateFrame("DropdownButton", nil, parent, "WowStyle1DropdownTemplate")
+	
 	if points then
-		frame:SetPoint(unpack(points))
+		button:SetPoint(unpack(points))
 	end
 	
+	button:SetWidth(width)
+	T.ReskinDropDown(button)
+	
+	button.DropDown = CreateFrame("Frame", nil, action_select, "UIDropDownMenuTemplate")
+	button:SetScript("OnMouseDown", function(self)
+		self.DropDown.point = "TOPLEFT"
+		self.DropDown.relativePoint = "BOTTOMLEFT"
+		ToggleDropDownMenu(1, nil, self.DropDown, self, 0, 5)	
+	end)
+	
+	return button
+end
+T.SetupDropdown = SetupDropdown
+
+local UIDropDownMenuFrame = function(parent, width, text, points)
+	local w
+	
+	if width == "short" then
+		w = 140
+	elseif width == "long" then
+		w = 190
+	else
+		w = width
+	end
+	
+	local frame = SetupDropdown(parent, w, points)
+	
 	local name = T.createtext(frame, "OVERLAY", 14, "OUTLINE", "LEFT")
-	name:SetPoint("LEFT", frame, "LEFT", 0, 0)
+	name:SetPoint("LEFT", frame, "LEFT", -100, 0)
 	name:SetTextColor(1, 1, 1)
 	name:SetText(text or "")
 	frame.name = name
-	
-	local dd = CreateFrame("Frame", nil, frame, "UIDropDownMenuTemplate")
-	dd:SetPoint("LEFT", frame, "LEFT", 92, 0)
-	frame.dd = dd
-	
-	--T.ReskinDropDown(dd)
-	
-	if width == "short" then
-		UIDropDownMenu_SetWidth(dd, 140)		
-	elseif width == "long" then
-		UIDropDownMenu_SetWidth(dd, 176)
-	else
-		UIDropDownMenu_SetWidth(dd, width)
-	end
-
-	frame.Enable = function()
-		frame.name:SetTextColor(1, 1, 1)
-		UIDropDownMenu_EnableDropDown(frame.dd)
-	end
-	
-	frame.Disable = function()
-		frame.name:SetTextColor(.5, .5, .5)
-		UIDropDownMenu_DisableDropDown(frame.dd)
-	end
 	
 	return frame
 end
@@ -1120,12 +1123,12 @@ local UIDropDownMenuFrame_DB = function(parent, width, path)
 	
 	local function DD_SetChecked(self, arg1, arg2)
 		T.ValueToPath(aCoreCDB, path, arg1)
-		T.UIDropDownMenu_SetSelectedValueText(frame.dd, option_table, arg1)
+		T.UIDropDownMenu_SetSelectedValueText(frame, option_table, arg1)
 		if info.apply then info.apply() end
 		if frame.visible_apply then frame.visible_apply() end
 	end
 	
-	UIDropDownMenu_Initialize(frame.dd, function(self, level)
+	UIDropDownMenu_Initialize(frame.DropDown, function(self, level)
 		local dd_info = UIDropDownMenu_CreateInfo()
 		for i = 1, #option_table do
 			dd_info.value = option_table[i][1]
@@ -1138,10 +1141,10 @@ local UIDropDownMenuFrame_DB = function(parent, width, path)
 			dd_info.func = DD_SetChecked
 			UIDropDownMenu_AddButton(dd_info)
 		end
-	end)
+	end, "MENU")
 	
 	frame:SetScript("OnShow", function()
-		T.UIDropDownMenu_SetSelectedValueText(frame.dd, option_table, T.ValueFromPath(aCoreCDB, path))		
+		T.UIDropDownMenu_SetSelectedValueText(frame, option_table, T.ValueFromPath(aCoreCDB, path))		
 	end)
 	
 	return frame
@@ -1314,7 +1317,6 @@ local function CreateListOption(parent, points, height, text, path, input_text_1
 	
 	if filter_path then
 		local obj = UIDropDownMenuFrame_DB(frame, "long", filter_path)
-		obj.dd:SetPoint("LEFT", obj, "LEFT", -8, 0)
 		obj:SetPoint("TOPLEFT", frame, 0, -20)
 	end
 	
@@ -1747,14 +1749,15 @@ local CreateGUIOpitons = function(parent, OptionCategroy, start_ind, end_ind)
 				x_offset = x_offset - 5
 			elseif info.option_type == "slider" then
 				x_offset = x_offset + 155
+			elseif info.option_type == "ddmenu" then
+				x_offset = x_offset + 155
+				obj.name:SetPoint("LEFT", obj, "LEFT", -155, 0)
 			end
 			
 			-- 缩进
 			if info.rely and (not info.width or info.width > 1) then 
 				if info.option_type == "slider" then
 					obj.LeftText:SetPoint("LEFT", obj.Slider, "LEFT", -155, 0)
-				elseif info.option_type == "ddmenu" then
-					obj.dd:SetPoint("LEFT", obj, "LEFT", 135, 0)
 				end
 				
 				if info.option_type ~= "slider" then
@@ -1763,8 +1766,6 @@ local CreateGUIOpitons = function(parent, OptionCategroy, start_ind, end_ind)
 			else
 				if info.option_type == "slider" then
 					obj.LeftText:SetPoint("LEFT", obj.Slider, "LEFT", -175, 0)
-				elseif info.option_type == "ddmenu" then
-					obj.dd:SetPoint("LEFT", obj, "LEFT", 155, 0)
 				end
 			end
 			
