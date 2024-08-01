@@ -137,8 +137,9 @@ Minimap.ZoomIn:EnableMouse(false)
 Minimap.ZoomOut:EnableMouse(false)
 
 -- 追踪
---MinimapCluster.Tracking:Hide()
---MinimapCluster.Tracking.Show = T.dummy
+MinimapCluster.Tracking:ClearAllPoints()
+MinimapCluster.Tracking:SetPoint("TOPLEFT", Minimap, "TOPLEFT", 2, -2)
+
 Minimap:SetScript('OnMouseUp', function (self, button)
 	if button == 'RightButton' then
 		MinimapCluster.Tracking.Button:Click()
@@ -147,6 +148,8 @@ Minimap:SetScript('OnMouseUp', function (self, button)
 end)
 
 -- 地名
+MinimapCluster.ZoneTextButton:ClearAllPoints()
+MinimapCluster.ZoneTextButton:SetPoint("LEFT", MinimapCluster.Tracking, "RIGHT", 2, 0)
 MinimapCluster.ZoneTextButton:SetFrameLevel(Minimap:GetFrameLevel()+1)
 MinimapCluster.ZoneTextButton:SetWidth(80)
 MinimapZoneText:ClearAllPoints()
@@ -215,10 +218,10 @@ local MBCF_UpdatePoints = function()
 	else
 		local y_offset = -3
 		if G.xpbar:IsShown() then
-			y_offset = y_offset - 5
+			y_offset = y_offset - 10
 		end
 		if G.repbar:IsShown() then
-			y_offset = y_offset - 5
+			y_offset = y_offset - 10
 		end
 		MBCF_Frame:SetPoint("TOPLEFT", Minimap, "BOTTOMLEFT", 0, y_offset)
 		MBCF_Frame:SetPoint("TOPRIGHT", Minimap, "BOTTOMRIGHT", 0, y_offset)
@@ -409,7 +412,7 @@ hooksecurefunc(MinimapCluster, "SetHeaderUnderneath", function(self, headerUnder
 end)
 
 -- 小地图悬停渐隐
-T.ChildrenFader(Minimap, {MinimapCluster.ZoneTextButton, TimeManagerClockButton, GameTimeFrame, AddonCompartmentFrame, MBCF_Button})
+T.ChildrenFader(Minimap, {MinimapCluster.Tracking, MinimapCluster.ZoneTextButton, TimeManagerClockButton, GameTimeFrame, ExpansionLandingPageMinimapButton, AddonCompartmentFrame, MBCF_Button})
 
 --====================================================--
 --[[             -- 经验条和声望条 --               ]]--
@@ -550,15 +553,15 @@ local update_bar_positions = function()
 	
 	if (xpbar.shown or repbar.shown) and (xpbar.shown ~= xpbar.shown_old or repbar.shown ~= repbar.shown_old) then
 		if xpbar.shown then
-			xpbar:SetPoint("TOPLEFT", Minimap, "BOTTOMLEFT", 0, 0)
-			xpbar:SetPoint("TOPRIGHT", Minimap, "BOTTOMRIGHT", 0, 0)
+			xpbar:SetPoint("TOPLEFT", Minimap, "BOTTOMLEFT", 0, 2)
+			xpbar:SetPoint("TOPRIGHT", Minimap, "BOTTOMRIGHT", 0, 2)
 			if showRep then
 				repbar:SetPoint("TOPLEFT", xpbar, "BOTTOMLEFT", 0, -1)
 				repbar:SetPoint("TOPRIGHT", xpbar, "BOTTOMRIGHT", 0, -1)
 			end
 		elseif showRep then
-			repbar:SetPoint("TOPLEFT", Minimap, "BOTTOMLEFT", 0, 0)
-			repbar:SetPoint("TOPRIGHT", Minimap, "BOTTOMRIGHT", 0, 0)
+			repbar:SetPoint("TOPLEFT", Minimap, "BOTTOMLEFT", 0, 2)
+			repbar:SetPoint("TOPRIGHT", Minimap, "BOTTOMRIGHT", 0, 2)
 		end
 		xpbar.shown_old = xpbar.shown
 		repbar.shown_old = repbar.shown
