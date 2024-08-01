@@ -114,7 +114,7 @@ EventFrame:SetScript('OnEvent', function(self, event, arg1, arg2, ...)
         elseif C_FriendList.IsFriend(guid) and aCoreCDB["ChatOptions"]["acceptInvite_friend"] then -- 好友
             accept_invite()
             
-        elseif not C_BattleNet.GetAccountInfoByGUID(guid) then
+        elseif C_BattleNet.GetAccountInfoByGUID(guid) then
             local info = C_BattleNet.GetAccountInfoByGUID(guid)
             if info.isFriend and aCoreCDB["ChatOptions"]["acceptInvite_friend"] then -- 战网实名好友
                 accept_invite()
