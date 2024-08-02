@@ -1450,7 +1450,6 @@ T.ToggleMinimapButton = function()
 	end
 end
 
-
 --====================================================--
 --[[                -- Init --                      ]]--
 --====================================================--
@@ -1507,11 +1506,8 @@ local function ShowGUI()
 end
 
 hooksecurefunc(GameMenuFrame, "InitButtons", function()
-	GameMenuFrame:AddButton(G.addon_colorStr.."AltzUI".."|r", ShowGUI)
-end)
-
-T.RegisterEnteringWorldCallback(function()
-	GameMenuFrame:InitButtons()
+	local GUI_button = GameMenuFrame:AddButton(G.addon_colorStr.."AltzUI".."|r", ShowGUI)
+	T.SetMenuButtonBD(GUI_button)
 end)
 
 GameMenuFrame:HookScript("OnShow", function()

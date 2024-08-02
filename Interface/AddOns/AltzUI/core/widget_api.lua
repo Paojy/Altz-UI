@@ -439,6 +439,20 @@ T.setStripBD = function(frame)
 	T.setStripeBg(frame.bd)
 end
 
+-- 主菜单按钮美化
+T.SetMenuButtonBD = function(button)
+	button:DisableDrawLayer("BACKGROUND")
+	button.bg = F.CreateBDFrame(button, 0, true)
+	
+	local cr, cg, cb = G.ClassColors[G.myClass].r, G.ClassColors[G.myClass].g, G.ClassColors[G.myClass].b
+	local hl = button:GetHighlightTexture()
+	hl:SetColorTexture(cr, cg, cb, .25)
+	hl:SetInside(button.bg)
+	
+	button.bg:SetInside(nil, 3, 3)
+	button.styled = true
+end
+
 ----------------------------
 -- 			模型		  --
 ----------------------------
