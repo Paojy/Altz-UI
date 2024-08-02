@@ -121,10 +121,7 @@ EventFrame:SetScript('OnEvent', function(self, event, arg1, arg2, ...)
                
             elseif info.isBattleTagFriend and aCoreCDB["ChatOptions"]["acceptInvite_friend"] then -- 是战网好友
                 accept_invite()
-               
-            elseif hassameclub(guid) and aCoreCDB["ChatOptions"]["acceptInvite_club"] then -- 有共同社区
-                accept_invite()
-				
+
             else
 				if not my_battle_tag then
 					local my_info = C_BattleNet.GetAccountInfoByGUID(UnitGUID("player"))
@@ -134,6 +131,8 @@ EventFrame:SetScript('OnEvent', function(self, event, arg1, arg2, ...)
 					accept_invite()
 				end
             end
+		elseif hassameclub(guid) and aCoreCDB["ChatOptions"]["acceptInvite_club"] then -- 有共同社区
+            accept_invite()
         elseif aCoreCDB["ChatOptions"]["refuseInvite_stranger"] then
             cancel_invite(name)
 			
