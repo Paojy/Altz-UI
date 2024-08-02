@@ -1,5 +1,8 @@
 ﻿local T, C, L, G = unpack(select(2, ...))
 
+-- accountupgradebanner-dragonflight
+-- CreditsScreen-Keyart-9
+
 local TutorialsFrame = CreateFrame("Frame", nil, UIParent)
 TutorialsFrame:SetFrameStrata("FULLSCREEN")
 TutorialsFrame:SetSize(700, 230)
@@ -14,11 +17,11 @@ local function CreateTutorialsStepFrame(title, text)
 	
 	local frame = CreateFrame("Frame", nil, TutorialsFrame)
 	frame:SetAllPoints(TutorialsFrame)
-	frame:SetFrameLevel(2)
+	frame:SetFrameLevel(1)
 	
 	frame.index = step
 	
-	local step_text = T.createtext(frame, "OVERLAY", 14, "NONE", "CENTER")
+	local step_text = T.createtext(frame, "OVERLAY", 14, "OUTLINE", "CENTER")
 	step_text:SetPoint("BOTTOM", frame, "BOTTOM", 0, 5)
 	frame.step_text = step_text
 	
@@ -32,37 +35,30 @@ local function CreateTutorialsStepFrame(title, text)
 	end)
 	frame.next_step = next_step
 	
+	frame.bg_tex = frame:CreateTexture(nil, "BACKGROUND")
+	frame.bg_tex:SetAllPoints()
+	frame.bg_tex:SetAtlas("CreditsScreen-Keyart-"..(step+2))
+	frame.bg_tex:SetTexCoord(0, 1, .25, .75)
+	frame.bg_tex:SetAlpha(.5)
+	
+	frame.title = T.createtext(frame, "OVERLAY", 35, "OUTLINE", "CENTER")
+	frame.title:SetPoint("BOTTOM", frame, "CENTER", 0, 50)
+	frame.title:SetText(title)
+	
+	frame.text = T.createtext(frame, "OVERLAY", 15, "OUTLINE", "CENTER")
+	frame.text:SetPoint("TOP", frame.title, "BOTTOM", 0, -10)
+	frame.text:SetText(text)
+	
 	if step == 1 then
-		frame.title = T.createtext(frame, "OVERLAY", 35, "NONE", "CENTER")
-		frame.title:SetPoint("BOTTOM", frame, "CENTER", 0, 50)
-		frame.title:SetText(title)
-		
-		frame.text = T.createtext(frame, "OVERLAY", 15, "NONE", "CENTER")
-		frame.text:SetPoint("TOP", frame.title, "BOTTOM", 0, -10)
-		frame.text:SetText(text)
-		
 		frame.model = T.CreateCreatureModel(frame, 700, 230, {"CENTER", TutorialsFrame, "CENTER"}, 41039, {-12.5, .2, -6.2}, .7)
-		frame.model:SetFrameLevel(1)
+		frame.model:SetFrameLevel(2)
 		
 		previous_step:SetText(L["跳过"])
 		previous_step:SetScript("OnClick", function(self)
 			TutorialsFrame:Hide()
 			StaticPopup_Show(G.uiname.."Run Setup")
 		end)
-	else
-		frame.title = T.createtext(frame, "OVERLAY", 15, "NONE", "CENTER")
-		frame.title:SetPoint("TOP", frame, "TOP", 80, -5)
-		frame.title:SetText(title)
-		
-		frame.text = T.createtext(frame, "OVERLAY", 15, "NONE", "LEFT")
-		frame.text:SetPoint("TOPLEFT", frame, "TOP", -150, -40)
-		frame.text:SetSize(480, 150)
-		frame.text:SetJustifyV("TOP")
-		frame.text:SetText(text)
-		
-		frame.model = T.CreateCreatureModel(frame, 150, 150, {"LEFT", TutorialsFrame, "LEFT", 25, 0}, 47747, {1.3, 0, .35}, nil, 4)	
-		frame.model:SetFrameLevel(1)
-		
+	else	
 		previous_step:SetScript("OnClick", function(self) 
 			frame:Hide()
 			TutorialsFrame[frame.index-1]:Show()
@@ -91,9 +87,9 @@ local TF_UIScale = CreateTutorialsStepFrame(UI_SCALE, T.split_words(OPTION_TOOLT
 
 do
 	local bu = T.CVarCheckButton(TF_UIScale, {"SetupOptions", "useUiScale"})
-	bu:SetPoint("TOPLEFT", 200, -80)
+	bu:SetPoint("TOPLEFT", 200, -100)
 	
-	local frame = T.SliderWithSteppers(TF_UIScale, "long", UI_SCALE, {"TOPLEFT", TF_UIScale, "TOPLEFT", 300, -100}, 65, 115, 1, nil, true)
+	local frame = T.SliderWithSteppers(TF_UIScale, "long", UI_SCALE, {"TOPLEFT", TF_UIScale, "TOPLEFT", 300, -120}, 65, 115, 1, nil, true)
 	
 	frame.Slider:SetScript("OnShow", function(self)
 		local value = floor(GetCVar("uiScale")*100)
@@ -125,7 +121,7 @@ end
 local TF_Theme = CreateTutorialsStepFrame(L["界面风格"], L["界面风格tip"])
 
 do
-	local frame = T.ButtonGroup(TF_Theme, 450, 200, 60, {"SkinOptions","style"}, {
+	local frame = T.ButtonGroup(TF_Theme, 450, {"TOP", 0, -100}, {"SkinOptions","style"}, {
 		{1, L["透明样式"]},
 		{2, L["深色样式"]},
 		{3, L["普通样式"]},
@@ -291,7 +287,7 @@ local ApplySizeAndPostions = function(group)
 end
 
 do
-	local frame = T.ButtonGroup(TF_Layout, 450, 200, 60, nil, {
+	local frame = T.ButtonGroup(TF_Layout, 450, {"TOP", 0, -100}, nil, {
 		{1, L["对称布局"]},
 		{2, L["聚合布局"]},
 	})
@@ -307,7 +303,7 @@ do
 	
 	TF_Layout.layout = frame
 	
-	local bu = T.Checkbutton(TF_Layout, {"TOPLEFT", TF_Layout, "TOPLEFT", 200, -100}, HUD_EDIT_MODE_MENU)
+	local bu = T.Checkbutton(TF_Layout, {"TOP", TF_Layout, "TOP", -50, -140}, HUD_EDIT_MODE_MENU)
 	
 	bu:SetScript("OnShow", function(self)
 		self:SetEnabled(EditModeManagerFrame:CanEnterEditMode())
@@ -335,7 +331,7 @@ end
 local TF_Fade = CreateTutorialsStepFrame(T.split_words(L["界面"], L["条件渐隐"]), gsub(L["条件渐隐提示"], "\n", ""))
 
 do
-	local bu = T.Checkbutton(TF_Fade, {"TOPLEFT", TF_Fade, "TOPLEFT", 200, -80}, L["条件渐隐"])
+	local bu = T.Checkbutton(TF_Fade, {"TOP", TF_Fade, "TOP", -50, -120}, L["条件渐隐"])
 	
 	bu:SetScript("OnShow", function(self)
 		if aCoreCDB["UnitframeOptions"]["enablefade"] and aCoreCDB["ActionbarOptions"]["enablefade"] then
@@ -359,7 +355,7 @@ end
 local TF_Nameplate = CreateTutorialsStepFrame(UNIT_NAMEPLATES, L["姓名板tip"])
 
 do
-	local frame = T.ButtonGroup(TF_Nameplate, 450, 200, 60, {"PlateOptions", "theme"}, {
+	local frame = T.ButtonGroup(TF_Nameplate, 450, {"TOP", 0, -100}, {"PlateOptions", "theme"}, {
 		{"class", L["职业色-条形"]},
 		{"dark", L["深色-条形"]},
 		{"number", L["数字样式"]},

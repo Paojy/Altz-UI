@@ -956,9 +956,9 @@ end
 --====================================================--
 --[[                -- 多选一按钮 --                ]]--
 --====================================================--
-local ButtonGroup = function(parent, width, x, y, path, group)
+local ButtonGroup = function(parent, width, points, path, group)
 	local frame = CreateFrame("Frame", nil, parent)
-	frame:SetPoint("TOPLEFT", x, -y)
+	frame:SetPoint(unpack(points))
 	frame:SetSize(width, 25)
 	frame.buttons = {}
 	
