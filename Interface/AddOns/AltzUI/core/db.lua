@@ -1380,6 +1380,13 @@ end
 -----------------------------------
 ----         导出、导入        ----
 -----------------------------------
+local ClassInfo = {}
+
+for i = 1, GetNumClasses() do
+	local className, classFile = GetClassInfo(i) 
+	local r, g, b = G.ClassColors[classFile].r, G.ClassColors[classFile].g, G.ClassColors[classFile].b
+	ClassInfo[classFile] = T.hex_str(className, r, g, b)
+end
 
 T.ExportSettings = function()
 	local BlzLayoutStr = T.ExportLayout()
@@ -1524,9 +1531,9 @@ T.ImportSettings = function(str)
 		else
 			sameclient = true
 		end
-		
+
 		if class ~= G.myClass then
-			import_str = import_str.."\n"..format(L["职业不符合"], G.ClassInfo[class], G.ClassInfo[G.myClass])
+			import_str = import_str.."\n"..format(L["职业不符合"], ClassInfo[class], ClassInfo[G.myClass])
 		else
 			sameclass = true
 		end
