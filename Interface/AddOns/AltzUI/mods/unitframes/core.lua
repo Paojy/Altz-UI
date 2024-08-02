@@ -2070,14 +2070,16 @@ end
 
 local function HookNameplateCtrlMenu()
 	WorldFrame:HookScript("OnMouseDown", function(_, btn)
-		C_Timer.After(0.3, function()
-			if btn == "LeftButton" and IsControlKeyDown() and UnitExists("target") then
-				if not IsInGroup() or (IsInGroup() and not IsInRaid()) or UnitIsGroupLeader("player") or UnitIsGroupAssistant("player") then
-					UIDropDownMenu_Initialize(menuFrame, TargetMenu_Initialize, "MENU")
-					ToggleDropDownMenu(1, nil, menuFrame, "cursor", 3, -3)
+		if not IsShiftKeyDown() then
+			C_Timer.After(0.3, function()
+				if btn == "LeftButton" and IsControlKeyDown() and UnitExists("target") then
+					if not IsInGroup() or (IsInGroup() and not IsInRaid()) or UnitIsGroupLeader("player") or UnitIsGroupAssistant("player") then
+						UIDropDownMenu_Initialize(menuFrame, TargetMenu_Initialize, "MENU")
+						ToggleDropDownMenu(1, nil, menuFrame, "cursor", 3, -3)
+					end
 				end
-			end
-		end)
+			end)
+		end
 	end)
 end
 --=============================================--

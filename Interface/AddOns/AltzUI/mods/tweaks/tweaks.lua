@@ -315,15 +315,19 @@ end
 --[[-----------------------------------------------------------------------------
 shift+click 设置焦点
 -------------------------------------------------------------------------------]]
-local modifier = "shift" --- "alt" "ctrl"
+local modifier = "shift" --- "shift" "alt" "ctrl"
 local mouseButton = "1" --- 1 = leftbutton, 2 = tightbutton, 3 = middle button(mouse wheel)
 
 T.RegisterInitCallback(function()
 	-- Keybinding override so that models can be shift/alt/ctrl+clicked 
 	local f = CreateFrame("CheckButton", "FocuserButton", UIParent, "SecureActionButtonTemplate") 
 	f:SetAttribute("type1", "macro") 
-	f:SetAttribute("macrotext", "/focus mouseover") 
-	SetOverrideBindingClick(f, true, modifier.."-BUTTON"..mouseButton, "FocuserButton") 
+	f:SetAttribute("macrotext", "/focus mouseover")
+	SetOverrideBindingClick(f, true, modifier.."-BUTTON"..mouseButton, "FocuserButton")
+	f:RegisterForClicks("LeftButtonUp", "LeftButtonDown")
+	
+	--	f:RegisterForClicks("LeftButtonUp") -- /dump SetCVar("ActionButtonUseKeyDown",1) 冲突
+	--	f:RegisterForClicks("LeftButtonDown") -- /dump SetCVar("ActionButtonUseKeyDown",0) 冲突
 end)
 
 --[[-----------------------------------------------------------------------------
