@@ -854,14 +854,21 @@ local function TalentDropDown_Initialize(self, level, menuList)
 		info.hasArrow = true
 		info.menuList = "LootSpec"
 		UIDropDownMenu_AddButton(info)
-		-- 天赋和专精
-		info.text = TALENTS_BUTTON
+		-- 专精
+		info.text = SPECIALIZATION
 		info.notCheckable = true
 		info.hasArrow = false
 		info.menuList = nil
-		info.func = ToggleTalentFrame
+		info.func = function() PlayerSpellsUtil.TogglePlayerSpellsFrame(1) end
 		UIDropDownMenu_AddButton(info)
-	
+		-- 天赋
+		info.text = TALENTS
+		info.notCheckable = true
+		info.hasArrow = false
+		info.menuList = nil
+		info.func = function() PlayerSpellsUtil.TogglePlayerSpellsFrame(2) end
+		UIDropDownMenu_AddButton(info)
+		
 	elseif menuList == "Spec" then
 		info = UIDropDownMenu_CreateInfo()
 		for i = 1, numspec do
