@@ -316,8 +316,8 @@ end
 
 -- 法术图标和链接
 T.GetIconLink = function(spellID)
-	local icon = select(3, GetSpellInfo(spellID))
-	return "|T"..icon..":14:14:0:0:64:64:4:60:4:60|t"..GetSpellLink(spellID)
+	local name, _, icon = GetSpellInfo(spellID)
+	return (icon and "|T"..icon..":12:12:0:0:64:64:4:60:4:60|t" or "").."|cff71d5ff["..name.."]|r"
 end
 
 -- 非中文文本中间加空格
