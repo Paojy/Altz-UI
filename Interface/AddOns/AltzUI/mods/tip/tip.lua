@@ -5,7 +5,7 @@ local EnumSpell = Enum.TooltipDataType.Spell
 local EnumAura = Enum.TooltipDataType.UnitAura
 local EnumUnit = Enum.TooltipDataType.Unit
 
-hooksecurefunc(GameTooltip, "Show", function(self)
+hooksecurefunc(GameTooltip, "ProcessInfo", function(self)
 	if aCoreCDB["OtherOptions"]["combat_hide"] and InCombatLockdown() then
 		self:Hide()
 	end
