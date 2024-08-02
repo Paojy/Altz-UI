@@ -1,7 +1,7 @@
 ## Interface: 100207
 ## Version: 8.0.0.1
 
-## Title: Class Colors
+## Title: !Class Colors
 ## IconTexture: Interface\AddOns\AltzUI\media\icons\addon_icon.png
 ## Notes: Change class colors without breaking parts of the default UI.
 ## Notes-deDE: Ändert die Klassenfarben ohne Interferenzen mit dem Standard-UI.
