@@ -429,7 +429,7 @@ xpbar:SetScript("OnEnter", function()
 	local XP, maxXP = UnitXP("player"), UnitXPMax("player")
 	local restXP = GetXPExhaustion()
 	
-	if UnitLevel("player") < MAX_PLAYER_LEVEL then
+	if UnitLevel("player") < 70 then
 		GameTooltip:AddDoubleLine(T.color_text(L["当前经验"]), string.format("%s/%s (%d%%)", T.ShortValue(XP), T.ShortValue(maxXP), (XP/maxXP)*100))
 		GameTooltip:AddDoubleLine(T.color_text(L["剩余经验"]), string.format("%s", T.ShortValue(maxXP-XP)))
 		if restXP then
@@ -445,7 +445,7 @@ xpbar:SetScript("OnLeave", function()
 end)
 
 xpbar.update = function()
-	if ( not exhaustionThreshold or exhaustionThreshold <= 0 or IsPlayerAtEffectiveMaxLevel() or IsXPUserDisabled() ) then
+	if IsPlayerAtEffectiveMaxLevel() or IsXPUserDisabled() then
 		xpbar:Hide()
 	else
 		local XP, maxXP = UnitXP("player"), UnitXPMax("player")
@@ -544,8 +544,7 @@ repbar.update = function()
 end
 
 local update_bar_positions = function()
-	local exhaustionThreshold = GetXPExhaustion()
-	local HideXP = ( not exhaustionThreshold or exhaustionThreshold <= 0 or IsPlayerAtEffectiveMaxLevel() or IsXPUserDisabled() )
+	local HideXP = IsPlayerAtEffectiveMaxLevel() or IsXPUserDisabled()
 	local showRep = C_Reputation.GetWatchedFactionData()
 	
 	xpbar.shown = not HideXP
