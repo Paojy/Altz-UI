@@ -22,6 +22,13 @@ local classItems = {}
 local otherItems = {}
 local emptyButtons = {}
 
+for k, v in pairs({ContainerFrameCombinedBags:GetChildren()}) do
+	local object_type = v:GetObjectType()
+	if object_type == "Button" and v.routeToSibling then
+		v:Hide()
+	end
+end
+
 local function SortItems(item1, item2)
 	local bag1 = item1:GetBagID()
 	local id1 = item1:GetID()
@@ -139,7 +146,16 @@ local function CalculateHeight(self)
 	local itemButton = self.Items[1]
 	local itemsHeight = (rows * itemButton:GetHeight()) + ((rows - 1) * space_y)
 
-	return itemsHeight + titlesHeight + self:CalculateExtraHeight() - 20
+	return itemsHeight + titlesHeight + self:CalculateExtraHeight()
+end
+
+local function CalculateWidth(self)
+	local columns = self:GetColumns()
+	
+	local itemButton = self.Items[1]
+	local itemsWidth = (columns * itemButton:GetWidth()) + ((columns - 1) * 5)
+
+	return itemsWidth + self:GetPaddingWidth()
 end
 
 hooksecurefunc(ContainerFrameCombinedBags, "UpdateItemLayout", function(self)
@@ -152,6 +168,7 @@ hooksecurefunc(ContainerFrameCombinedBags, "UpdateItemLayout", function(self)
 		local bagID = bu:GetBagID()
 		local buttonID = bu:GetID()
 		local itemID = C_Container.GetContainerItemID(bagID, buttonID)
+		bu:SetSize(aCoreCDB["ItemOptions"]["bagbuttonsize"], aCoreCDB["ItemOptions"]["bagbuttonsize"])
 		
 		if itemID then
 			if aCoreCDB and aCoreCDB["ItemOptions"]["favoriteitemIDs"][itemID] then				
@@ -184,7 +201,7 @@ hooksecurefunc(ContainerFrameCombinedBags, "UpdateItemLayout", function(self)
 	
 	GridLayout(self, favoriteItems, classItems, otherItems, emptyButtons)
 	
-	self:SetSize(self:CalculateWidth(), CalculateHeight(self))
+	self:SetSize(CalculateWidth(self), CalculateHeight(self))
 end)
 
 local function UpdateFavoriteItem()
@@ -256,4 +273,3 @@ hooksecurefunc("UpdateContainerFrameAnchors", function()
 	ContainerFrameCombinedBags:ClearAllPoints()
 	ContainerFrameCombinedBags:SetPoint("BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", -12, 17)
 end)
-

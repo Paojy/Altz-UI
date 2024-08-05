@@ -257,8 +257,21 @@ G.Options = {
 			option_type = "title",
 			text = ITEMS,
 			line = true,
+		},	
+		{ -- 2 背包按钮大小
+			key = "bagbuttonsize",
+			option_type = "slider",
+			text = T.split_words(L["背包按钮"], L["大小"]),
+			min = 30,
+			max = 45,
+			step = 1,
+			apply = function()
+				if ContainerFrameCombinedBags:IsShown() then
+					ContainerFrameCombinedBags:UpdateItemLayout()
+				end
+			end,
 		},
-		{ -- 2 显示物品等级
+		{ -- 3 显示物品等级
 			key = "itemLevel",
 			option_type = "check",
 			width = .4,
@@ -267,18 +280,18 @@ G.Options = {
 				T.ToggleItemLevel()
 			end,
 		},
-		{ -- 3 已会配方着色
+		{ -- 4 已会配方着色
 			key = "alreadyknown",
 			width = .6,
 			option_type = "check",
 			text = L["已会配方着色"],
 			tip = L["已会配方着色提示"],
 		},
-		{ -- 4 分割线
+		{ -- 5 分割线
 			option_type = "title",
 			line = true,
 		},
-		{ -- 5 自动ROLL(公会队伍)
+		{ -- 6 自动ROLL(公会队伍)
 			key = "autoloot_guild",
 			option_type = "ddmenu",
 			text = string.format("%s(%s)", L["自动ROLL"], GUILD_GROUP),
@@ -291,7 +304,7 @@ G.Options = {
 				T.UpdateAutoLoot()
 			end,
 		},
-		{ -- 6 自动ROLL(非公会队伍)
+		{ -- 7 自动ROLL(非公会队伍)
 			key = "autoloot_noguild",
 			option_type = "ddmenu",
 			text = string.format("%s(%s)", L["自动ROLL"], L["非"]..GUILD_GROUP),
@@ -304,7 +317,7 @@ G.Options = {
 				T.UpdateAutoLoot()
 			end,
 		},
-		{ -- 7 ROLL结果截图
+		{ -- 8 ROLL结果截图
 			key = "lootroll_screenshot",
 			option_type = "check",
 			width = .4,
@@ -313,25 +326,25 @@ G.Options = {
 				T.UpdatedLootScreenShotEnabled()
 			end,
 		},
-		{ -- 8 截图后关闭ROLL点框
+		{ -- 9 截图后关闭ROLL点框
 			key = "lootroll_screenshot_close",
 			option_type = "check",
 			width = .6,
 			text = L["截图后关闭ROLL点框"],
 			rely = "lootroll_screenshot",
 		},
-		{ -- 9 分割线
+		{ -- 10 分割线
 			option_type = "title",
 			line = true,
 		},
-		{ -- 10 自动修理
+		{ -- 11 自动修理
 			key = "autorepair",
 			option_type = "check",
 			width = .4,
 			text = L["自动修理"],
 			tip = L["自动修理提示"],
 		},
-		{ -- 11 优先使用公会修理
+		{ -- 12 优先使用公会修理
 			key = "autorepair_guild",
 			option_type = "check",
 			width = .6,
@@ -339,14 +352,14 @@ G.Options = {
 			tip = L["优先使用公会修理提示"],
 			rely = "autorepair",
 		},
-		{ -- 12 自动售卖
+		{ -- 13 自动售卖
 			key = "autosell",
 			option_type = "check",
 			width = .4,
 			text = L["自动售卖"],
 			tip = L["自动售卖提示"],
 		},
-		{ -- 13 自动购买
+		{ -- 14 自动购买
 			key = "autobuy",
 			option_type = "check",
 			width = .6,
