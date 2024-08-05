@@ -35,6 +35,7 @@ local classicon_colors = { --monk/paladin/preist
 	{1, .3, .4},
 	{1, .4, .5},
 	{1, .5, .6},
+	{1, 1, 0},
 }
 
 local cpoints_colors = { -- combat points
@@ -963,7 +964,7 @@ end
 local PostUpdate_ClassPower = function(element, cur, max, hasMaxChanged)
 	if not max or not cur then return end	
 	
-	if max <= 6 then
+	if max <= 7 then
 		for i = 1, max do
 			if cur == max then
 				element[i]:SetStatusBarColor(unpack(classicon_colors[max]))
@@ -984,12 +985,11 @@ local PostUpdate_ClassPower = function(element, cur, max, hasMaxChanged)
 			end
 		end
 	end
-	
 	if hasMaxChanged then
-		for i = 1, 6 do
+		for i = 1, 7 do
 			if max == 5 or max == 10 then
 				element[i]:SetWidth((element:GetWidth()+3)/5-3)
-				if i == 6 then
+				if i > 5 then
 					element[i]:Hide()
 				end
 			else
@@ -1031,7 +1031,7 @@ end
 
 local function CreateClassResources(self)
 	if T.multicheck(G.myClass, "DEATHKNIGHT", "WARLOCK", "PALADIN", "MONK", "MAGE", "ROGUE", "DRUID") then
-		local count = 6		
+		local count = 7		
 		local bars = CreateFrame("Frame", self:GetName().."SpecOrbs", self)
 		
 		for i = 1, count do
@@ -1095,7 +1095,7 @@ end
 
 local function CreatePlateClassResources(self)
 	if T.multicheck(G.myClass, "DEATHKNIGHT", "WARLOCK", "PALADIN", "MONK", "MAGE", "ROGUE", "DRUID") then
-		local count = 6		
+		local count = 7	
 		local bars = CreateFrame("Frame", self:GetName().."SpecOrbs", self)
 				
 		for i = 1, count do
