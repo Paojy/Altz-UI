@@ -82,3 +82,8 @@ G.EnteringWorld_callbacks = {}
 T.RegisterEnteringWorldCallback = function(func)
 	table.insert(G.EnteringWorld_callbacks, func)
 end
+
+
+-- TO DO LIST
+
+-- 技能书拖动
