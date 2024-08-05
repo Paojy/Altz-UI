@@ -12,23 +12,3 @@ eventframe:SetScript("OnEvent", function()
 		end
 	end
 end)
-
-OBJECTIVE_TRACKER_COLOR["Normal"]["r"] = 1
-OBJECTIVE_TRACKER_COLOR["Normal"]["g"] = 1
-OBJECTIVE_TRACKER_COLOR["Normal"]["b"] = 1
-
-OBJECTIVE_TRACKER_COLOR["NormalHighlight"]["r"] = 1
-OBJECTIVE_TRACKER_COLOR["NormalHighlight"]["g"] = 1
-OBJECTIVE_TRACKER_COLOR["NormalHighlight"]["b"] = 0
-
-OBJECTIVE_TRACKER_COLOR["Header"]["r"] = G.addon_color[1]
-OBJECTIVE_TRACKER_COLOR["Header"]["g"] = G.addon_color[2]
-OBJECTIVE_TRACKER_COLOR["Header"]["b"] = G.addon_color[3]
-
-OBJECTIVE_TRACKER_COLOR["HeaderHighlight"]["r"] = G.addon_color[1]
-OBJECTIVE_TRACKER_COLOR["HeaderHighlight"]["g"] = G.addon_color[2]
-OBJECTIVE_TRACKER_COLOR["HeaderHighlight"]["b"] = G.addon_color[3]
-
-OBJECTIVE_TRACKER_COLOR["Complete"]["r"] = 1
-OBJECTIVE_TRACKER_COLOR["Complete"]["g"] = 1
-OBJECTIVE_TRACKER_COLOR["Complete"]["b"] = 1
