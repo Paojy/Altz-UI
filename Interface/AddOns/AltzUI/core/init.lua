@@ -61,7 +61,7 @@ LSM.MediaTable.statusbar["AltzUI_ufbar"]				= G.media.ufbar
 --[[                  -- Color --                   ]]--
 --====================================================--
 G.ClassColors = {}
-if IsAddOnLoaded'!ClassColors' and CUSTOM_CLASS_COLORS then
+if C_AddOns.IsAddOnLoaded'!ClassColors' and CUSTOM_CLASS_COLORS then
 	G.ClassColors = CUSTOM_CLASS_COLORS
 else
 	G.ClassColors = RAID_CLASS_COLORS

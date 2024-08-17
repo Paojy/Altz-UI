@@ -70,7 +70,8 @@ do
 	local slamelapsed = 0
 	local slamtime = 0
 	local now
-	local slam = GetSpellInfo(1464)
+	local slam_info = C_Spell.GetSpellInfo(1464)
+	local slam = slam_info.name
 	function OnDurationUpdate(self, elapsed)
 		now = GetTime()
 		
@@ -254,7 +255,7 @@ end
 
 local Ranged = function(self, event, unit, spellName)
 	if unit ~= "player" then return end
-	if spellName ~= GetSpellInfo(75) and spellName ~= GetSpellInfo(5019) then return end
+	if spellName ~= T.GetSpellInfo(75) and spellName ~= T.GetSpellInfo(5019) then return end
 	
 	local bar = self.Swing
 	

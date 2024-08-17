@@ -59,7 +59,7 @@ local function stopCooldown(id, class)
 	if class=="item" then
 		icon = GetItemIcon(id)
 	elseif class=="spell" then
-		icon = select(3, GetSpellInfo(id))
+		icon = select(3, T.GetSpellInfo(id))
 	end
 	flash.icon:SetTexture(icon)
 	
@@ -159,10 +159,11 @@ function addon:ACTION_BAR_SLOT_CHANGED(slot)
 end
 
 function addon:LEARNED_SPELL_IN_TAB()
-	numTabs = GetNumSpellTabs()
+	numTabs = C_SpellBook.GetNumSpellBookSkillLines()
 	totalspellnum = 0
 	for i=1, numTabs do
-		local numSpells = select(4, GetSpellTabInfo(i))
+		local info = C_SpellBook.GetSpellBookSkillLineInfo(i)
+		local numSpells = info.numSpellBookItems
 		totalspellnum = totalspellnum + numSpells
 	end
 	parsespellbook(0)
@@ -172,8 +173,9 @@ function addon:SPELL_UPDATE_COOLDOWN()
 	local now = GetTime()
 
 	for id, cd_id in pairs(spells) do
-		local starttime, duration, enabled = GetSpellCooldown(cd_id)
-		
+		local cd_info = C_Spell.GetSpellCooldown(cd_id)
+		local starttime, duration, enabled = cd_info.startTime, cd_info.duration, cd_info.isEnabled
+
 		if starttime == nil then
 			watched[id] = nil
 		elseif starttime == 0 and watched[id] then

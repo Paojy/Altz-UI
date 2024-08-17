@@ -156,7 +156,7 @@ MinimapZoneText:ClearAllPoints()
 MinimapZoneText:SetPoint("LEFT", MinimapCluster.ZoneTextButton, "LEFT", 0, 0)
 
 -- 时钟
-if not IsAddOnLoaded("Blizzard_TimeManager") then LoadAddOn("Blizzard_TimeManager") end
+if not C_AddOns.IsAddOnLoaded("Blizzard_TimeManager") then C_AddOns.LoadAddOn("Blizzard_TimeManager") end
 TimeManagerClockTicker:ClearAllPoints()
 TimeManagerClockTicker:SetPoint("RIGHT", 0, 0)
 TimeManagerClockTicker:SetFont(G.norFont, 12, "OUTLINE")

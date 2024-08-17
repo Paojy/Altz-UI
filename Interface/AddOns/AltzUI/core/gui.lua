@@ -317,7 +317,7 @@ local function CreateApplySettingButton(text, addon, y, func)
 end
 
 local SetClassColorButton = CreateApplySettingButton(T.split_words(L["重置"],L["职业颜色"]), "ClassColors", -220, function()
-	if IsAddOnLoaded("!ClassColors") then
+	if C_AddOns.IsAddOnLoaded("!ClassColors") then
 		StaticPopupDialogs[G.uiname.."Reset Confirm2"].text = string.format(L["重置确认"], T.color_text(L["职业颜色"]))
 		StaticPopupDialogs[G.uiname.."Reset Confirm2"].button1 = T.split_words(L["鲜明"],L["职业颜色"])
 		StaticPopupDialogs[G.uiname.."Reset Confirm2"].OnAccept = function()
@@ -340,7 +340,7 @@ local SetClassColorButton = CreateApplySettingButton(T.split_words(L["重置"],L
 end)
 
 local SetBWButton = CreateApplySettingButton(T.split_words(L["重置"],L["BW计时条皮肤"]), "BigWigs", -250, function()
-	if IsAddOnLoaded("BigWigs") then	
+	if C_AddOns.IsAddOnLoaded("BigWigs") then	
 		T.ResetBW()
 	else
 		StaticPopupDialogs[G.uiname.."need addon"].text = string.format(L["未加载插件"], "BigWigs")
@@ -647,7 +647,7 @@ local function CreateClickcastKeyOptions(bu_tag, text)
 			end
 			if #spells > 0 then
 				for i, spellID in pairs(spells) do
-					local spellName, _, spellIcon = GetSpellInfo(spellID)
+					local spellName, _, spellIcon = T.GetSpellInfo(spellID)
 					local info = UIDropDownMenu_CreateInfo()
 					info.value = spellID
 					info.text = T.GetSpellIcon(spellID).." "..spellName
@@ -668,7 +668,7 @@ local function CreateClickcastKeyOptions(bu_tag, text)
 				self:SetText(NONE)
 			else
 				UIDropDownMenu_SetSelectedValue(self.DropDown, spellID)
-				local name, _, icon = GetSpellInfo(spellID)
+				local name, _, icon = T.GetSpellInfo(spellID)
 				self:SetText(T.GetTexStr(icon).." "..name)
 			end
 		end)
@@ -848,7 +848,7 @@ local function UpdateEncounterAuraButton(option_list, encounterID, spellID, leve
 		option_list.spells["icon"..encounterID.."_"..spellID] = frame
 	end
 	
-	local spellName, _, spellIcon = GetSpellInfo(spellID)
+	local spellName, _, spellIcon = T.GetSpellInfo(spellID)
 	
 	local bu = option_list.spells["icon"..encounterID.."_"..spellID]
 	bu.display(spellIcon, spellName, spellID, level)
@@ -939,7 +939,7 @@ do
 			return true
 		else
 			local spellText = self:GetText()		
-			local spellName, _, spellIcon, _, _, _, spellID = GetSpellInfo(spellText)
+			local spellName, _, spellIcon, _, _, _, spellID = T.GetSpellInfo(spellText)
 			if spellName then
 				self:SetText(spellName)
 				self.current_spellID = spellID
@@ -972,7 +972,7 @@ do
 		if not option_list.spell_input:apply() or not option_list.level_input:apply() then return end
 		
 		local encounterID = UIDropDownMenu_GetSelectedValue(option_list.encounterDD.DropDown)
-		local spellName, _, spellIcon, _, _, _, spellID = GetSpellInfo(option_list.spell_input.current_spellID)
+		local spellName, _, spellIcon, _, _, _, spellID = T.GetSpellInfo(option_list.spell_input.current_spellID)
 		local level = option_list.level_input:GetText()
 		
 		if not aCoreCDB["UnitframeOptions"]["raid_debuffs"][parent.selected_InstanceID][encounterID] then

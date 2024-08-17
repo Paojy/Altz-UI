@@ -152,7 +152,7 @@ end
 T.RegisterEnteringWorldCallback(function()	
 	for i, spellID in pairs(action_spells) do
 		if(IsSpellKnown(spellID)) then
-			spells[spellID] = GetSpellInfo(spellID)
+			spells[spellID] = T.GetSpellInfo(spellID)
 		end
 	end
 

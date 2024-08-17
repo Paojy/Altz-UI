@@ -28,13 +28,13 @@ end
 --[[              -- 其他插件设置 --                ]]--
 --====================================================--
 local ResetAurora = function()
-	if IsAddOnLoaded("AuroraClassic") then
+	if C_AddOns.IsAddOnLoaded("AuroraClassic") then
 		AuroraClassicDB["Bags"] = true
 	end
 end
 
 T.ResetClasscolors = function()
-	if IsAddOnLoaded("!ClassColors") then
+	if C_AddOns.IsAddOnLoaded("!ClassColors") then
 		if ClassColorsDB then table.wipe(ClassColorsDB) end
 		ClassColorsDB = {
 			["DEATHKNIGHT"] = {
@@ -131,7 +131,7 @@ T.ResetClasscolors = function()
 end
 
 T.ResetBW =function()
-	if IsAddOnLoaded("Bigwigs") and BigWigs3DB then
+	if C_AddOns.IsAddOnLoaded("Bigwigs") and BigWigs3DB then
 		BigWigs3DB["namespaces"]["BigWigs_Plugins_Bars"]["profiles"]["Default"]["barStyle"] = "AltzUI"
 		BigWigs3DB["namespaces"]["BigWigs_Plugins_Bars"]["profiles"]["Default"]["fill"] = true
 		BigWigs3DB["namespaces"]["BigWigs_Plugins_Bars"]["profiles"]["Default"]["BigWigsAnchor_width"] = 150
@@ -1371,7 +1371,7 @@ T.CreateAuraListOption = function(parent, points, height, text, path, input_text
 	
 	frame:SetScript("OnShow", function()
 		for spellID, level in pairs(T.ValueFromPath(aCoreCDB, path)) do
-			local spellName, _, spellIcon = GetSpellInfo(spellID)
+			local spellName, _, spellIcon = T.GetSpellInfo(spellID)
 			
 			if spellName then
 				CreateListButton("spell", frame, path, spellID, spellIcon, spellName, spellID, input_text_2 and level)
@@ -1394,7 +1394,7 @@ T.CreateAuraListOption = function(parent, points, height, text, path, input_text
 			return true
 		else
 			local spellText = self:GetText()		
-			local spellName, _, spellIcon, _, _, _, spellID = GetSpellInfo(spellText)
+			local spellName, _, spellIcon, _, _, _, spellID = T.GetSpellInfo(spellText)
 			if spellName then
 				self:SetText(spellName)
 				self.current_spellID = spellID
@@ -1425,7 +1425,7 @@ T.CreateAuraListOption = function(parent, points, height, text, path, input_text
 			frame.second_input:GetScript("OnEnterPressed")(frame.second_input)
 			if not frame.first_input:apply() or not frame.second_input:apply() then return end
 			
-			local spellName, _, spellIcon, _, _, _, spellID = GetSpellInfo(frame.first_input.current_spellID)
+			local spellName, _, spellIcon, _, _, _, spellID = T.GetSpellInfo(frame.first_input.current_spellID)
 			local level = frame.second_input:GetText()
 			local key_path = {}
 			T.CopyTableInsertElement(key_path, path, spellID)
@@ -1446,7 +1446,7 @@ T.CreateAuraListOption = function(parent, points, height, text, path, input_text
 			frame.first_input:GetScript("OnEnterPressed")(frame.first_input)
 			if not frame.first_input:apply() then return end
 			
-			local spellName, _, spellIcon, _, _, _, spellID = GetSpellInfo(frame.first_input.current_spellID)
+			local spellName, _, spellIcon, _, _, _, spellID = T.GetSpellInfo(frame.first_input.current_spellID)
 			local key_path = {}
 			T.CopyTableInsertElement(key_path, path, spellID)
 			

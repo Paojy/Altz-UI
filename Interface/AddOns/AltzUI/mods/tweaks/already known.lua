@@ -125,7 +125,7 @@ local function GuildBankFrame_Update ()
 end
 
 local isBlizzard_GuildBankUILoaded
-if ( IsAddOnLoaded('Blizzard_GuildBankUI') ) then
+if ( C_AddOns.IsAddOnLoaded('Blizzard_GuildBankUI') ) then
 	isBlizzard_GuildBankUILoaded = true
 
 	hooksecurefunc('GuildBankFrame_Update', GuildBankFrame_Update)
@@ -205,7 +205,7 @@ local function AuctionFrameAuctions_Update ()
 end
 
 local isBlizzard_AuctionUILoaded
-if ( IsAddOnLoaded('Blizzard_AuctionUI') ) then
+if ( C_AddOns.IsAddOnLoaded('Blizzard_AuctionUI') ) then
 	isBlizzard_AuctionUILoaded = true
 
 	hooksecurefunc('AuctionFrameBrowse_Update', AuctionFrameBrowse_Update)

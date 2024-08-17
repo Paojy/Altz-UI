@@ -215,7 +215,7 @@ local function CreateStats(bu)
 	function frame:SetItemStats(item)
 		frame.active_buttons = table.wipe(frame.active_buttons)
 		frame.stats_info = table.wipe(frame.stats_info)
-		frame.stats_info = GetItemStats(item)
+		frame.stats_info = C_Item.GetItemStats(item)
 		
 		for key, f in pairs(frame.buttons) do
 			f:Hide()

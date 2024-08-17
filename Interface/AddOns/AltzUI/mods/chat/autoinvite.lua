@@ -108,7 +108,7 @@ EventFrame:SetScript('OnEvent', function(self, event, arg1, arg2, ...)
 	elseif event == "PARTY_INVITE_REQUEST" then
 		local name = arg1
 		local guid = select(5, ...)
-        if C_GuildInfo.MemberExistsByName(guid) and aCoreCDB["ChatOptions"]["acceptInvite_guild"] then -- 公会
+        if C_GuildInfo.MemberExistsByName(name) and aCoreCDB["ChatOptions"]["acceptInvite_guild"] then -- 公会
             accept_invite()
             
         elseif C_FriendList.IsFriend(guid) and aCoreCDB["ChatOptions"]["acceptInvite_friend"] then -- 好友
@@ -155,4 +155,3 @@ end
 T.Update_Invite_Keyword = T.Update_Invite_Keyword
 
 T.RegisterInitCallback(Update_Invite_Keyword)
-

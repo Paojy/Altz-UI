@@ -650,7 +650,7 @@ for specID, info in pairs(classClickdb) do
 			
 			local spellID = info[k][j]["spell"]
 			if spellID then
-				if GetSpellInfo(spellID) then
+				if T.GetSpellInfo(spellID) then
 					ClickCastDB[specID][k][j]["spell"] = spellID
 				else -- 法术错误
 					print("spell ID "..spellID.." is gone, delete it.")
@@ -1161,7 +1161,7 @@ local Character_default_Settings = {
 		autoloot_guild = 3,
 		autoloot_noguild = 3,
 		lootroll_screenshot = false,
-		lootroll_screenshot_close = false,
+		lootroll_screenshot_close = false,	
 	},	
 	UnitframeOptions = {
 		--[[ 单位框架 ]]--
