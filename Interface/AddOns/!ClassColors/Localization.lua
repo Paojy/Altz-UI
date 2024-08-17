@@ -14,7 +14,7 @@ ns.L = L
 L.TITLE = C_AddOns.GetAddOnMetadata(ADDON, "Title")
 L.NOTES = C_AddOns.GetAddOnMetadata(ADDON, "Notes")
 
-FillLocalizedClassList(L, false)
+--FillLocalizedClassList(L, false)
 
 setmetatable(L, { __index = function(t, k)
 	local v = tostring(k)
