@@ -191,7 +191,7 @@ end
 
 local function CreateStats(bu)
 	local frame = CreateFrame("Frame", nil, bu)
-	frame:SetSize(80, 14)
+	frame:SetSize(84, 14)
 	frame:SetPoint("LEFT", bu.right, "RIGHT", 0, 0)
 	frame.buttons = {}
 	frame.active_buttons = {}
@@ -199,7 +199,7 @@ local function CreateStats(bu)
 	
 	for i, info in pairs(statsInfo) do
 		local f = CreateFrame("Frame", nil, frame)
-		f:SetSize(20, 14)
+		f:SetSize(22, 14)
 		
 		f.backdrop = T.createPXBackdrop(f)
 		f.backdrop:SetBackdropBorderColor(info.color[1], info.color[2], info.color[3], .5)
@@ -234,7 +234,7 @@ local function CreateStats(bu)
 					
 			for i, f in pairs(frame.active_buttons) do
 				f:Show()
-				f:SetPoint("LEFT", frame, "LEFT", 4+(i-1)*24, 0)
+				f:SetPoint("LEFT", frame, "LEFT", 4+(i-1)*26, 0)
 			end		
 		end
 	end
