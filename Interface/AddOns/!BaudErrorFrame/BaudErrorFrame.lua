@@ -97,11 +97,7 @@ end
 
 function BaudErrorFrameMinimapButton_OnUpdate(self)
 	self:ClearAllPoints()
-	if IsAddOnLoaded("NDui") then
-		self:SetPoint("BOTTOMRIGHT", UIParent)
-	else
-		self:SetPoint("TOPRIGHT", Minimap, "TOPRIGHT", 0, 0)
-	end
+	self:SetPoint("TOPRIGHT", Minimap, "TOPRIGHT", 0, 0)
 end
 
 function BaudErrorFrameHandler(Error)
@@ -235,23 +231,21 @@ f:RegisterEvent("PLAYER_ENTERING_WORLD")
 f:SetScript("OnEvent", function()
 	f:UnregisterEvent("PLAYER_ENTERING_WORLD")
 
-	if IsAddOnLoaded("NDui") then
-		local B, _, _, DB = unpack(NDui)
-		if DB.isDeveloper then
-			RegisterTaintEvents(BaudErrorFrame)
-		end
-		B.CreateMF(BaudErrorFrame)
-		B.SetBD(BaudErrorFrame)
+	if C_AddOns.IsAddOnLoaded("AltzUI") then
+		local T, C, L, G = unpack(AltzUI)
+		
+		T.setStripeBg(BaudErrorFrame)
+		T.setStripBD(BaudErrorFrame)
 
 		BaudErrorFrameBackground:SetAlpha(0)
 		BaudErrorFrameDetailScrollBoxBackground:SetAlpha(0)
-		BaudErrorFrameListScrollBoxHighlightTexture:SetVertexColor(DB.r, DB.g, DB.b, .25)
-		B.CreateBDFrame(BaudErrorFrameDetailScrollBox, .25)
+		BaudErrorFrameListScrollBoxHighlightTexture:SetVertexColor(G.addon_color[1], G.addon_color[2], G.addon_color[3], .25)
+		--B.CreateBDFrame(BaudErrorFrameDetailScrollBox, .25)
 
-		B.ReskinScroll(BaudErrorFrameListScrollBoxScrollBarScrollBar)
-		B.ReskinScroll(BaudErrorFrameDetailScrollFrameScrollBar)
-		B.Reskin(BaudErrorFrameClearButton)
-		B.Reskin(BaudErrorFrameCloseButton)
-		B.Reskin(BaudErrorFrameReloadUIButton)
+		T.ReskinScroll(BaudErrorFrameListScrollBoxScrollBarScrollBar)
+		T.ReskinScroll(BaudErrorFrameDetailScrollFrameScrollBar)
+		T.ReskinButton(BaudErrorFrameClearButton)
+		T.ReskinButton(BaudErrorFrameCloseButton)
+		T.ReskinButton(BaudErrorFrameReloadUIButton)
 	end
 end)

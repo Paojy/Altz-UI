@@ -4,7 +4,6 @@
 ## Title-zhTW: |cff0080ffBaudErrorFrame|r 報錯收集
 ## Notes: Improved error reporting
 ## Author: Baudzilla, wolftankk, Siweia
-## Version: NDui Mod
 ## SavedVariables: BaudErrorFrameConfig
 
 BaudErrorFrame.xml
