@@ -57,7 +57,7 @@ function B:LoadSkins(event, addon)
 			wipe(C.defaultThemes)
 
 			for addonName, func in pairs(C.themes) do
-				local isLoaded, isFinished = IsAddOnLoaded(addonName)
+				local isLoaded, isFinished = C_AddOns.IsAddOnLoaded(addonName)
 				if isLoaded and isFinished then
 					func()
 					C.themes[addonName] = nil
