@@ -731,7 +731,7 @@ Net_Stats:SetScript("OnUpdate", function(self, elapsed)
 end)
 
 Net_Stats:SetScript("OnEnter", function(self)
-	local numAddons = GetNumAddOns()
+	local numAddons = C_AddOns.GetNumAddOns()
 	local customMem = 0	
 	local topAddOns = {}	
 
@@ -739,7 +739,7 @@ Net_Stats:SetScript("OnEnter", function(self)
 	
 	for i=1, numAddons do
 		local mem = GetAddOnMemoryUsage(i)
-		local addon_name = GetAddOnInfo(i)
+		local addon_name = C_AddOns.GetAddOnInfo(i)
 		customMem = customMem + mem
 		table.insert(topAddOns, {name = addon_name, value = mem})
 	end

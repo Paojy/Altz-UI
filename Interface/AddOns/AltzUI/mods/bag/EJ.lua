@@ -81,7 +81,7 @@ local EJ_init = function()
 		for i = 1, EJ_GetNumLoot() do
 			local itemInfo = C_EncounterJournal.GetLootInfoByIndex(i)
 			if itemInfo.link then
-				local stats = GetItemStats(itemInfo.link)
+				local stats = C_Item.GetItemStats(itemInfo.link)
 				if FilterItemStat(stats) then
 					if itemInfo.displayAsPerPlayerLoot then
 						tinsert(perPlayerLoot, i)

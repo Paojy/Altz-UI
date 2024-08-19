@@ -1,8 +1,6 @@
 ﻿local T, C, L, G = unpack(select(2, ...))
 local oUF = AltzUF or oUF
 
-local GetTime = GetTime
-local GetSpellCooldown = GetSpellCooldown
 local gcdisshown
 
 local spellid = 61304
@@ -32,7 +30,8 @@ local Update = function(self, event, unit)
 	local gcd = self.GCD
 	
 	if gcd then
-		local start, dur = GetSpellCooldown(spellid)
+		local cd_info = C_Spell.GetSpellCooldown(spellid)
+		local start, dur = cd_info.startTime, cd_info.duration
 
 		if (not start) then return end
 		if (not dur) then dur = 0 end
