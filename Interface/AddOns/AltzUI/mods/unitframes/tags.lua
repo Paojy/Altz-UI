@@ -64,7 +64,7 @@ oUF.Tags.Methods['Altz:longname'] = function(u, r)
 	
 	local status = _TAGS['status'](u) or ""
 	
-	return level_str.." "..name_str.." "..status
+	return level_str.." "..(name_str or "").." "..status
 end
 oUF.Tags.Events["Altz:longname"] = "UNIT_NAME_UPDATE"
 

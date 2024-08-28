@@ -218,10 +218,10 @@ local MBCF_UpdatePoints = function()
 	else
 		local y_offset = -3
 		if G.xpbar:IsShown() then
-			y_offset = y_offset - 10
+			y_offset = y_offset - 6
 		end
 		if G.repbar:IsShown() then
-			y_offset = y_offset - 10
+			y_offset = y_offset - 6
 		end
 		MBCF_Frame:SetPoint("TOPLEFT", Minimap, "BOTTOMLEFT", 0, y_offset)
 		MBCF_Frame:SetPoint("TOPRIGHT", Minimap, "BOTTOMRIGHT", 0, y_offset)
@@ -425,11 +425,11 @@ G.xpbar = xpbar
 
 xpbar:SetScript("OnEnter", function()
 	GameTooltip:SetOwner(xpbar, "ANCHOR_TOPRIGHT")
-	
+
 	local XP, maxXP = UnitXP("player"), UnitXPMax("player")
 	local restXP = GetXPExhaustion()
 	
-	if UnitLevel("player") < 70 then
+	if UnitLevel("player") < 80 then
 		GameTooltip:AddDoubleLine(T.color_text(L["当前经验"]), string.format("%s/%s (%d%%)", T.ShortValue(XP), T.ShortValue(maxXP), (XP/maxXP)*100))
 		GameTooltip:AddDoubleLine(T.color_text(L["剩余经验"]), string.format("%s", T.ShortValue(maxXP-XP)))
 		if restXP then
@@ -552,16 +552,17 @@ local update_bar_positions = function()
 	
 	if (xpbar.shown or repbar.shown) and (xpbar.shown ~= xpbar.shown_old or repbar.shown ~= repbar.shown_old) then
 		if xpbar.shown then
-			xpbar:SetPoint("TOPLEFT", Minimap, "BOTTOMLEFT", 0, 2)
-			xpbar:SetPoint("TOPRIGHT", Minimap, "BOTTOMRIGHT", 0, 2)
-			if showRep then
+			xpbar:SetPoint("TOPLEFT", Minimap, "BOTTOMLEFT", 0, -2)
+			xpbar:SetPoint("TOPRIGHT", Minimap, "BOTTOMRIGHT", 0, -2)
+			if repbar.shown then
 				repbar:SetPoint("TOPLEFT", xpbar, "BOTTOMLEFT", 0, -1)
 				repbar:SetPoint("TOPRIGHT", xpbar, "BOTTOMRIGHT", 0, -1)
 			end
-		elseif showRep then
+		elseif repbar.shown then
 			repbar:SetPoint("TOPLEFT", Minimap, "BOTTOMLEFT", 0, 2)
 			repbar:SetPoint("TOPRIGHT", Minimap, "BOTTOMRIGHT", 0, 2)
 		end
+		
 		xpbar.shown_old = xpbar.shown
 		repbar.shown_old = repbar.shown
 		
