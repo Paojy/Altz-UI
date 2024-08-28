@@ -693,6 +693,7 @@ local function CreateInfoButton(width, points, dropdown)
 	local Frame = CreateFrame("Frame", nil, InfoFrame)
 	Frame:SetPoint(unpack(points))
 	Frame:SetSize(width, 25)
+	--T.createBackdrop(Frame, .3)
 	
 	Frame.text = T.createtext(Frame, "OVERLAY", 12, "OUTLINE", "LEFT")
 	Frame.text:SetPoint("LEFT")
@@ -718,7 +719,7 @@ local function PointMenuFrame(frame, anchor)
 end
 
 -- 延迟和帧数
-local Net_Stats = CreateInfoButton(95, {"LEFT", InfoFrame, "LEFT", 0, 0})
+local Net_Stats = CreateInfoButton(100, {"LEFT", InfoFrame, "LEFT", 30, 0})
 
 Net_Stats.t = 0
 Net_Stats:SetScript("OnUpdate", function(self, elapsed)
@@ -777,7 +778,7 @@ Net_Stats:SetScript("OnLeave", function(self)
 end)
 
 -- 耐久
-local Durability = CreateInfoButton(55, {"LEFT", Net_Stats, "RIGHT", 0, 0}, true)
+local Durability = CreateInfoButton(60, {"LEFT", Net_Stats.text, "RIGHT", 30, 0}, true)
 
 local function Durability_Initialize(self, level)
 	local count = C_EquipmentSet.GetNumEquipmentSets()	
@@ -832,7 +833,7 @@ Durability:RegisterEvent("UPDATE_INVENTORY_DURABILITY")
 Durability:RegisterEvent("PLAYER_ENTERING_WORLD")
 
 -- 天赋
-local Talent = CreateInfoButton(140, {"LEFT", Durability, "RIGHT", 0, 0}, true)
+local Talent = CreateInfoButton(140, {"LEFT", Durability.text, "RIGHT", 30, 0}, true)
 
 local function TalentDropDown_Initialize(self, level, menuList)
 	local current_spec_index = GetSpecialization()
@@ -942,7 +943,7 @@ Talent:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED")
 Talent:RegisterEvent("PLAYER_ENTERING_WORLD")
 
 -- ROLL
-local AutoLoot = CreateInfoButton(230, {"LEFT", Talent, "RIGHT", 0, 0}, true)
+local AutoLoot = CreateInfoButton(230, {"LEFT", Talent.text, "RIGHT", 30, 0}, true)
 local Autolootoptions = {
 	CreateAtlasMarkup("lootroll-icon-pass", 16, 16)..PASS,
 	CreateAtlasMarkup("lootroll-toast-icon-need-up", 16, 16)..NEED.."/"..CreateAtlasMarkup("lootroll-toast-icon-greed-up", 16, 16)..GREED,
