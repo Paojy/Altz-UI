@@ -140,6 +140,23 @@ local Override_QusetUpdate = function(self, event, unit)
 end
 
 --=============================================--
+--[[ 	    	治疗预估和吸收 				 ]]--
+--=============================================--
+
+local function CreateHealPreditionBar(self, ...)
+	local hpb = CreateFrame('StatusBar', nil, self.Health)
+	hpb:SetFrameLevel(self:GetFrameLevel()+2)
+	hpb:SetStatusBarTexture(G.media.blank)
+	hpb:SetStatusBarColor(...)
+	hpb:SetPoint('TOP')
+	hpb:SetPoint('BOTTOM')
+	
+	hpb:SetWidth(aCoreCDB["UnitframeOptions"]["raidwidth"])
+	return hpb
+end
+T.CreateHealPreditionBar = CreateHealPreditionBar
+
+--=============================================--
 --[[ Health ]]--
 --=============================================--
 
@@ -1289,6 +1306,44 @@ local func = function(self, unit)
 	
 	self.Health = hp	
 	self.Health.ApplySettings()	
+	
+	-- 治疗预估和吸收
+	if T.multicheck(u, "player", "target", "focus") then
+		local hp_predict = {
+			myBar = CreateHealPreditionBar(self, .4, .8, 0),
+			otherBar = CreateHealPreditionBar(self, 0, .4, 0),
+			absorbBar = CreateHealPreditionBar(self, .2, 1, 1, .7),
+			healAbsorbBar = CreateHealPreditionBar(self, 1, 0, 1, .7),		
+			maxOverflow = 1.05,
+		}
+		
+		hp_predict.otherBar:SetPoint('LEFT', hp_predict.myBar:GetStatusBarTexture(), 'RIGHT')
+		hp_predict.absorbBar:SetPoint('LEFT', hp_predict.otherBar:GetStatusBarTexture(), 'RIGHT')
+	
+		hp_predict.EnableSettings = function(object)
+			if not object or object == self then	
+				if aCoreCDB["UnitframeOptions"]["uf_healprediction"] then
+					self:EnableElement("HealthPrediction")				
+				else
+					self:DisableElement("HealthPrediction")
+				end
+			end
+		end
+		oUF:RegisterInitCallback(hp_predict.EnableSettings)
+		
+		hp_predict.ApplySettings = function()
+			if aCoreCDB["SkinOptions"]["style"] ~= 3 then
+				hp_predict.myBar:SetPoint('LEFT', self.Health:GetStatusBarTexture(), 'LEFT')
+				hp_predict.healAbsorbBar:SetPoint('LEFT', self.Health:GetStatusBarTexture(), 'LEFT')
+			else
+				hp_predict.myBar:SetPoint('LEFT', self.Health:GetStatusBarTexture(), 'RIGHT')
+				hp_predict.healAbsorbBar:SetPoint('LEFT', self.Health:GetStatusBarTexture(), 'RIGHT')
+			end
+		end
+		
+		self.HealthPrediction = hp_predict
+		self.HealthPrediction.ApplySettings()
+	end
 	
 	-- 肖像
 	if T.multicheck(u, "player", "target", "focus", "party", "boss", "arena") then

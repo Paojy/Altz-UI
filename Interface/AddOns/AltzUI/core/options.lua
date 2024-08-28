@@ -459,6 +459,15 @@ G.Options = {
 				T.ApplyUFSettings({"Health", "Power", "Castbar"})
 			end,
 		},
+		{ -- 治疗和吸收预估
+			key = "hp_healprediction",
+			option_type = "check",
+			text = L["治疗和吸收预估"],
+			tip = L["单位框架治疗和吸收预估提示"],
+			apply = function()
+				T.EnableUFSettings({"HealthPrediction"}, "Altz - Player", "Altz - Target", "Altz - Focus")
+			end,
+		},
 		{ -- 10 分割线
 			option_type = "title",
 			line = true,
@@ -500,7 +509,7 @@ G.Options = {
 			relatedFrames = {
 				["AltzUI_TotemBar"] = true,
 			},
-		},		
+		},
 		{ -- 排列方向
 			key = "growthDirection",
 			option_type = "ddmenu",

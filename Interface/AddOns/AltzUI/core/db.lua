@@ -1172,6 +1172,7 @@ local Character_default_Settings = {
 		alwayshp = false,
 		alwayspp = false,
 		valuefontsize = 16,
+		uf_healprediction = true,
 		-- 尺寸
 		height	= 18,
 		width = 230,

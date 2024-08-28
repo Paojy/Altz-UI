@@ -394,16 +394,16 @@ local UFInnerframe = CreateInnerFrame(UFOptions)
 
 -- 样式
 UFInnerframe.style = CreateOptionPage("UF Options style", L["样式"], UFInnerframe, "VERTICAL")
-T.CreateGUIOpitons(UFInnerframe.style, "UnitframeOptions", 1, 13)
+T.CreateGUIOpitons(UFInnerframe.style, "UnitframeOptions", 1, 14)
 
 -- 施法条
 UFInnerframe.castbar = CreateOptionPage("UF Options castbar", L["施法条"], UFInnerframe, "VERTICAL")
-T.CreateGUIOpitons(UFInnerframe.castbar, "UnitframeOptions", 26, 30)
-T.CreateGUIOpitons(UFInnerframe.castbar, "UnitframeOptions", 41, 42)
+T.CreateGUIOpitons(UFInnerframe.castbar, "UnitframeOptions", 27, 31)
+T.CreateGUIOpitons(UFInnerframe.castbar, "UnitframeOptions", 42, 43)
 
 -- 光环
 UFInnerframe.aura = CreateOptionPage("UF Options aura", AURAS, UFInnerframe, "VERTICAL")
-T.CreateGUIOpitons(UFInnerframe.aura, "UnitframeOptions", 46, 51)
+T.CreateGUIOpitons(UFInnerframe.aura, "UnitframeOptions", 47, 52)
 
 UFInnerframe.aura.aurafliter_list = T.CreateAuraListOption(UFInnerframe.aura, {"TOPLEFT", 20, -180}, 230,
 L["白名单"]..AURAS, {"UnitframeOptions", "AuraFilterwhitelist"})
@@ -418,11 +418,11 @@ local RFInnerframe = CreateInnerFrame(RFOptions)
 
 -- 样式
 RFInnerframe.style = CreateOptionPage("RF Options style", L["样式"], RFInnerframe, "VERTICAL")
-T.CreateGUIOpitons(RFInnerframe.style, "UnitframeOptions", 58, 71)
+T.CreateGUIOpitons(RFInnerframe.style, "UnitframeOptions", 59, 72)
 
 -- 治疗指示器
 RFInnerframe.ind = CreateOptionPage("RF Options indicators", L["治疗指示器"], RFInnerframe, "VERTICAL")
-T.CreateGUIOpitons(RFInnerframe.ind, "UnitframeOptions", 80, 83)
+T.CreateGUIOpitons(RFInnerframe.ind, "UnitframeOptions", 81, 84)
 
 RFInnerframe.ind.hotind_list = T.CreateAuraListOption(RFInnerframe.ind, {"TOPLEFT", 20, -140}, 270,
 T.split_words(L["图标指示器"],AURAS), {"UnitframeOptions", "hotind_auralist"}, nil, {"UnitframeOptions", "hotind_filtertype"})
@@ -442,7 +442,7 @@ end
 
 -- 点击施法
 RFInnerframe.clickcast = CreateOptionPage("RF Options clickcast", L["点击施法"], RFInnerframe, "VERTICAL")
-T.CreateGUIOpitons(RFInnerframe.clickcast, "UnitframeOptions", 85, 86)
+T.CreateGUIOpitons(RFInnerframe.clickcast, "UnitframeOptions", 86, 87)
 
 RFInnerframe.clickcast.reset = T.ClickTexButton(RFInnerframe.clickcast, {"TOPLEFT", RFInnerframe.clickcast, "TOPLEFT", 100, -18}, G.iconFile.."refresh.tga", L["重置"])	
 RFInnerframe.clickcast.reset:SetScript("OnClick", function(self)
@@ -790,11 +790,11 @@ end)
 
 -- 光环图标
 RFInnerframe.icon_display = CreateOptionPage("RF Options Icon Display", T.split_words(L["光环"],L["图标"]), RFInnerframe, "VERTICAL")
-T.CreateGUIOpitons(RFInnerframe.icon_display, "UnitframeOptions", 87, 99)
+T.CreateGUIOpitons(RFInnerframe.icon_display, "UnitframeOptions", 88, 100)
 
 -- 团队减益
 RFInnerframe.raiddebuff = CreateOptionPage("RF Options Raid Debuff", T.split_words(L["副本"],L["减益"]), RFInnerframe, "VERTICAL")
-T.CreateGUIOpitons(RFInnerframe.raiddebuff, "UnitframeOptions", 100, 100)
+T.CreateGUIOpitons(RFInnerframe.raiddebuff, "UnitframeOptions", 101, 102)
 
 RFInnerframe.raiddebuff.debuff_list = T.createscrolllist(RFInnerframe.raiddebuff, {"TOPLEFT", 10, -85}, false, 395, 380)
 
@@ -1138,7 +1138,7 @@ end)
 
 -- 全局减益
 RFInnerframe.globaldebuff = CreateOptionPage("RF Options Raid Debuff Fliter List", T.split_words(L["全局"], L["减益"]), RFInnerframe, "VERTICAL")
-T.CreateGUIOpitons(RFInnerframe.globaldebuff, "UnitframeOptions", 101, 101)
+T.CreateGUIOpitons(RFInnerframe.globaldebuff, "UnitframeOptions", 102, 102)
 
 RFInnerframe.globaldebuff.whitelist = T.CreateAuraListOption(RFInnerframe.globaldebuff, {"TOPLEFT", 30, -55}, 200,
 L["白名单"]..AURAS, {"UnitframeOptions", "debuff_list"}, L["优先级"])
@@ -1156,7 +1156,7 @@ end
 
 -- 全局增益
 RFInnerframe.globalbuff = CreateOptionPage("RF Options Cooldown Aura", T.split_words(L["全局"], L["增益"]), RFInnerframe, "VERTICAL")
-T.CreateGUIOpitons(RFInnerframe.globalbuff, "UnitframeOptions", 102, 102)
+T.CreateGUIOpitons(RFInnerframe.globalbuff, "UnitframeOptions", 103, 103)
 
 RFInnerframe.globalbuff.whitelist = T.CreateAuraListOption(RFInnerframe.globalbuff, {"TOPLEFT", 30, -60}, 380,
 L["白名单"]..AURAS, {"UnitframeOptions", "buff_list"}, L["优先级"])

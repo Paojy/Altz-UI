@@ -51,22 +51,6 @@ end
 T.Override_ThreatUpdate = Override_ThreatUpdate
 
 --=============================================--
---[[ 	    	治疗预估和吸收 				 ]]--
---=============================================--
-
-local function CreateHealPreditionBar(self, ...)
-	local hpb = CreateFrame('StatusBar', nil, self.Health)
-	hpb:SetFrameLevel(self:GetFrameLevel()+1)
-	hpb:SetStatusBarTexture(G.media.blank)
-	hpb:SetStatusBarColor(...)
-	hpb:SetPoint('TOP')
-	hpb:SetPoint('BOTTOM')
-	
-	hpb:SetWidth(aCoreCDB["UnitframeOptions"]["raidwidth"])
-	return hpb
-end
-
---=============================================--
 --[[ 				驱散 					 ]]--
 --=============================================--
 local dispelClass = {
@@ -637,10 +621,10 @@ local func = function(self, unit)
 	
 	-- 治疗预估和吸收
 	local hp_predict = {
-		myBar = CreateHealPreditionBar(self, .4, .8, 0),
-		otherBar = CreateHealPreditionBar(self, 0, .4, 0),
-		absorbBar = CreateHealPreditionBar(self, .2, 1, 1, .7),
-		healAbsorbBar = CreateHealPreditionBar(self, 1, 0, 1, .7),		
+		myBar = T.CreateHealPreditionBar(self, .4, .8, 0),
+		otherBar = T.CreateHealPreditionBar(self, 0, .4, 0),
+		absorbBar = T.CreateHealPreditionBar(self, .2, 1, 1, .7),
+		healAbsorbBar = T.CreateHealPreditionBar(self, 1, 0, 1, .7),		
 		maxOverflow = 1.05,
 	}
 	
