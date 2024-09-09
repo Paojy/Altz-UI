@@ -33,7 +33,7 @@ end
 T.RegisterInitCallback(function()
 	local methods = getmetatable(ActionButton1Cooldown).__index
 		
-	hooksecurefunc(methods, "SetCooldown", function(self, start, dur)
+	hooksecurefunc(methods, "SetCooldown", function(self, start, dur)		
 		if self:IsForbidden() then return end
 		
 		if not self.cooldown_added then

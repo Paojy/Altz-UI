@@ -7,7 +7,7 @@ local default_ClassClick = {
 			["1"] = {
 				["Click"] = {action = "target"},
 				["shift-"] = {action = "spell", spell = 10060}, -- 能量灌注				
-				["ctrl-"] = {action = "spell", spell = 33206}, -- 痛苦压制			
+				["ctrl-"] = {action = "spell", spell = 33206}, -- 痛苦压制
 				["alt-"] = {action = "spell", spell = 47540}, -- 苦修
 			},                      
 			["2"] = {               
