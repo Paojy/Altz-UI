@@ -205,7 +205,7 @@ L["更改设置提示"] = "Load default settings for this addon"
 L["边缘装饰"] = "Strip Decoration"
 L["两侧装饰"] = "Decoration on both sides"
 L["快速删除"] = "Quick Delete"
-
+L["复制宏"] = "Copy"
 --====================================================--
 --[[                 -- 社交 --                     ]]--
 --====================================================--

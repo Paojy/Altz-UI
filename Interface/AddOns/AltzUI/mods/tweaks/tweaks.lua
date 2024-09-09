@@ -376,6 +376,21 @@ function eventframe:ADDON_LOADED(arg1)
 				MacroFrame:DeleteMacro()
 			end
 		end)
+		
+		local bu2 = T.ClickButton(MacroFrame, 80, 22, {"LEFT", MacroDeleteButton, "RIGHT", 5, 0}, L["复制宏"])
+		bu2:SetScript("OnClick", function()
+			PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
+			MacroFrame:SaveMacro()
+			
+			local actualIndex = MacroFrame:GetMacroDataIndex(MacroFrame:GetSelectedIndex())
+			local name, iconTexture, text = GetMacroInfo(actualIndex)
+			local isCharacterMacro = MacroFrame.macroBase > 0
+		
+			CreateMacro(name, iconTexture, text, isCharacterMacro)
+		
+			local retainScrollPosition = true
+			MacroFrame:Update(retainScrollPosition)
+		end)
 	end
 end
 
