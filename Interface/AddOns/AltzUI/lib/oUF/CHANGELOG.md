@@ -1,3 +1,56 @@
+**Changes in 12.0.1:**
+
+- _Val Voronov (1):_
+    1. range: Register updater
+- 1 file changed, 1 insertion(+), 1 deletion(-)
+
+**Changes in 12.0.0:**
+
+- _Adrian L Lange (9):_
+    1. colors: We like fallback values
+    2. Update source comments
+    3. classpower: Update docs to match implementation
+    4. auras: Link directly to symbol
+    5. colors: Use provided enum
+    6. Point links to warcraft.wiki.gg
+    7. Update README and links for Discussions ([#681](https://github.com/oUF-wow/oUF/issues/681))
+    8. castbar: Add override for unit checks ([#677](https://github.com/oUF-wow/oUF/issues/677))
+    9. castbar: Don't force using frames for pips ([#675](https://github.com/oUF-wow/oUF/issues/675))
+- _Val Voronov (15):_
+    1. healthprediction: Add showRawAbsorb option
+    2. health: Update docs
+    3. healthprediction: Add missing docs
+    4. powerprediction: Add dynamic size adjustment
+    5. core: Only update visible eventless frames
+    6. healthprediction: Add dynamic size adjustment
+    7. healthprediction: Remove dynamic size adjustment
+    8. healthprediction: Use legit events
+    9. health: Keep max hp reduction event registered
+    10. powerprediction: Update API
+    11. Make linter happy
+    12. healthprediction: Add optional element size adjustment
+    13. range: Use events to drive updates
+    14. grouproleindicator: Update API
+    15. health: Add temp max health loss sub-widget
+- 23 files changed, 310 insertions(+), 134 deletions(-)
+
+**Changes in 11.3.0:**
+
+- _Adrian L Lange (1):_
+    1. core: Use new ping template and add support for nameplates ([#670](https://github.com/oUF-wow/oUF/issues/670))
+- _Val Voronov (6):_
+    1. tags: Fix threatcolor tag ([#674](https://github.com/oUF-wow/oUF/issues/674))
+    2. classpower: Use UPU ([#625](https://github.com/oUF-wow/oUF/issues/625))
+    3. colors: Update color fetching ([#667](https://github.com/oUF-wow/oUF/issues/667))
+    4. healthprediction: Remove unnecessary hack ([#669](https://github.com/oUF-wow/oUF/issues/669))
+    5. auras: Update element ([#668](https://github.com/oUF-wow/oUF/issues/668))
+    6. healthprediction: Fix unwanted statusbar behaviour ([#664](https://github.com/oUF-wow/oUF/issues/664))
+- _dependabot[bot] (1):_
+    1. build(deps): bump peter-evans/create-pull-request from 5 to 6 ([#672](https://github.com/oUF-wow/oUF/issues/672))
+- _p3lim (1):_
+    1. Update license
+- 8 files changed, 32 insertions(+), 38 deletions(-)
+
 **Changes in 11.2.3:**
 
 - _Adrian L Lange (2):_
