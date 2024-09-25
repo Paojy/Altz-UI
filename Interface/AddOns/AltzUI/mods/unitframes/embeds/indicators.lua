@@ -166,6 +166,27 @@ local ClassSpells = {
 	EVOKER = {
 	
 	},
+	WARRIOR = {
+	
+	},
+	MAGE = {
+	
+	},
+	WARLOCK = {
+	
+	},
+	HUNTER = {
+	
+	},
+	ROGUE = {
+	
+	},
+	DEATHKNIGHT = {
+	
+	},
+	DEMONHUNTER = {
+	
+	},
 }
 
 local IndInfo = ClassSpells[G.myClass]

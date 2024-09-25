@@ -732,7 +732,7 @@ local CreateSwingTimer = function(self, unit) -- only for player
 	bar.TextOH:SetPoint("CENTER")
 	
 	bar.EnableSettings = function(object)
-		if not object or object == self then
+		if object == self then
 			if aCoreCDB["UnitframeOptions"]["swing"] then	
 				self:EnableElement("Swing")
 				T.RestoreDragFrame(object.Swing)
