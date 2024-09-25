@@ -647,7 +647,7 @@ local function CreateClickcastKeyOptions(bu_tag, text)
 			end
 			if #spells > 0 then
 				for i, spellID in pairs(spells) do
-					local spellName, _, spellIcon = T.GetSpellInfo(spellID)
+					local spellName, spellIcon = T.GetSpellInfo(spellID)
 					local info = UIDropDownMenu_CreateInfo()
 					info.value = spellID
 					info.text = T.GetSpellIcon(spellID).." "..spellName
@@ -668,7 +668,7 @@ local function CreateClickcastKeyOptions(bu_tag, text)
 				self:SetText(NONE)
 			else
 				UIDropDownMenu_SetSelectedValue(self.DropDown, spellID)
-				local name, _, icon = T.GetSpellInfo(spellID)
+				local name, icon = T.GetSpellInfo(spellID)
 				self:SetText(T.GetTexStr(icon).." "..name)
 			end
 		end)
@@ -848,7 +848,7 @@ local function UpdateEncounterAuraButton(option_list, encounterID, spellID, leve
 		option_list.spells["icon"..encounterID.."_"..spellID] = frame
 	end
 	
-	local spellName, _, spellIcon = T.GetSpellInfo(spellID)
+	local spellName, spellIcon = T.GetSpellInfo(spellID)
 	
 	local bu = option_list.spells["icon"..encounterID.."_"..spellID]
 	bu.display(spellIcon, spellName, spellID, level)
@@ -939,7 +939,7 @@ do
 			return true
 		else
 			local spellText = self:GetText()		
-			local spellName, _, spellIcon, _, _, _, spellID = T.GetSpellInfo(spellText)
+			local spellName, spellIcon, _, spellID = T.GetSpellInfo(spellText)
 			if spellName then
 				self:SetText(spellName)
 				self.current_spellID = spellID
@@ -972,7 +972,7 @@ do
 		if not option_list.spell_input:apply() or not option_list.level_input:apply() then return end
 		
 		local encounterID = UIDropDownMenu_GetSelectedValue(option_list.encounterDD.DropDown)
-		local spellName, _, spellIcon, _, _, _, spellID = T.GetSpellInfo(option_list.spell_input.current_spellID)
+		local spellName, spellIcon, _, spellID = T.GetSpellInfo(option_list.spell_input.current_spellID)
 		local level = option_list.level_input:GetText()
 		
 		if not aCoreCDB["UnitframeOptions"]["raid_debuffs"][parent.selected_InstanceID][encounterID] then

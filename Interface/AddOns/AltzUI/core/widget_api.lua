@@ -49,7 +49,7 @@ T.GetSpellInfo = function(spellID)
 
   local spellInfo = C_Spell.GetSpellInfo(spellID)
   if spellInfo then
-    return spellInfo.name, 1, spellInfo.iconID, spellInfo.castTime
+    return spellInfo.name, spellInfo.iconID, spellInfo.castTime, spellInfo.spellID
   end
 end
 
@@ -316,7 +316,7 @@ end
 
 -- 法术图标
 T.GetSpellIcon = function(spellID)
-	local icon = select(3, T.GetSpellInfo(spellID))
+	local name, icon = T.GetSpellInfo(spellID)
 	if icon then
 		return "|T"..icon..":14:14:0:0:64:64:4:60:4:60|t"
 	else
@@ -327,7 +327,7 @@ end
 
 -- 法术图标和链接
 T.GetIconLink = function(spellID)
-	local name, _, icon = T.GetSpellInfo(spellID)
+	local name, icon = T.GetSpellInfo(spellID)
 	return (icon and "|T"..icon..":12:12:0:0:64:64:4:60:4:60|t" or "").."|cff71d5ff["..name.."]|r"
 end
 

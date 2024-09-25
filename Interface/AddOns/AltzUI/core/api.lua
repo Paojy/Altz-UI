@@ -1371,7 +1371,7 @@ T.CreateAuraListOption = function(parent, points, height, text, path, input_text
 	
 	frame:SetScript("OnShow", function()
 		for spellID, level in pairs(T.ValueFromPath(aCoreCDB, path)) do
-			local spellName, _, spellIcon = T.GetSpellInfo(spellID)
+			local spellName, spellIcon = T.GetSpellInfo(spellID)
 			
 			if spellName then
 				CreateListButton("spell", frame, path, spellID, spellIcon, spellName, spellID, input_text_2 and level)
@@ -1394,7 +1394,8 @@ T.CreateAuraListOption = function(parent, points, height, text, path, input_text
 			return true
 		else
 			local spellText = self:GetText()		
-			local spellName, _, spellIcon, _, _, _, spellID = T.GetSpellInfo(spellText)
+			local spellName, spellIcon, _, spellID = T.GetSpellInfo(spellText)
+
 			if spellName then
 				self:SetText(spellName)
 				self.current_spellID = spellID
@@ -1425,7 +1426,7 @@ T.CreateAuraListOption = function(parent, points, height, text, path, input_text
 			frame.second_input:GetScript("OnEnterPressed")(frame.second_input)
 			if not frame.first_input:apply() or not frame.second_input:apply() then return end
 			
-			local spellName, _, spellIcon, _, _, _, spellID = T.GetSpellInfo(frame.first_input.current_spellID)
+			local spellName, spellIcon,  _, spellID = T.GetSpellInfo(frame.first_input.current_spellID)
 			local level = frame.second_input:GetText()
 			local key_path = {}
 			T.CopyTableInsertElement(key_path, path, spellID)
@@ -1446,10 +1447,11 @@ T.CreateAuraListOption = function(parent, points, height, text, path, input_text
 			frame.first_input:GetScript("OnEnterPressed")(frame.first_input)
 			if not frame.first_input:apply() then return end
 			
-			local spellName, _, spellIcon, _, _, _, spellID = T.GetSpellInfo(frame.first_input.current_spellID)
+			local spellName, spellIcon, _, spellID = T.GetSpellInfo(frame.first_input.current_spellID)
+			
 			local key_path = {}
 			T.CopyTableInsertElement(key_path, path, spellID)
-			
+
 			T.ValueToPath(aCoreCDB, key_path, true)
 			CreateListButton("spell", frame, path, spellID, spellIcon, spellName, spellID)
 			

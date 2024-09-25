@@ -59,7 +59,7 @@ local function stopCooldown(id, class)
 	if class=="item" then
 		icon = GetItemIcon(id)
 	elseif class=="spell" then
-		icon = select(3, T.GetSpellInfo(id))
+		icon = select(2, T.GetSpellInfo(id))
 	end
 	flash.icon:SetTexture(icon)
 	

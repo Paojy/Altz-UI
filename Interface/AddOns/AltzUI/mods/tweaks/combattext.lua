@@ -37,7 +37,7 @@ local function GetSpellTextureFormatted(spellID, size)
 	if spellID == PET_ATTACK_TEXTURE then
 		msg = " \124T"..PET_ATTACK_TEXTURE..":"..size..":"..size..":0:0:64:64:5:59:5:59\124t"
 	else
-		local _, _, icon = T.GetSpellInfo(spellID)
+		local name, icon = T.GetSpellInfo(spellID)
 		if icon then
 			msg = " \124T"..icon..":"..size..":"..size..":0:0:64:64:5:59:5:59\124t"
 		else
