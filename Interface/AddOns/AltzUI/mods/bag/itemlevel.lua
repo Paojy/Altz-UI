@@ -16,7 +16,7 @@ end
 
 local function HideAll()	
 	for i, itemButton in ContainerFrameCombinedBags:EnumerateValidItems() do		
-		if itemButton.itemLeveltext then
+		if itemButton and itemButton.itemLeveltext then
 			itemButton.itemLeveltext:Hide()
 		end
 	end
