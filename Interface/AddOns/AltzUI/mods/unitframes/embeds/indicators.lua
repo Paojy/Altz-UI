@@ -33,7 +33,7 @@ local ClassSpells = {
 		},
 	},
 	DRUID = {
-		[33763] = { -- 生命绽放
+		[188550] = { -- 生命绽放
 			font = "text",
 			update_type = "dur",
 			color = {.15, .71, .38},

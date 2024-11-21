@@ -150,7 +150,7 @@ local default_ClassClick = {
 				["Click"] = {action = "spell", spell = 18562}, -- 迅捷治愈
 			},
 			["8"] = {
-				["Click"] = {action = "spell", spell = 33763}, -- 生命绽放
+				["Click"] = {action = "spell", spell = 188550}, -- 生命绽放
 			},
 			["9"] = {
 				["Click"] = {action = "spell", spell = 48438}, -- 野性成长
@@ -721,7 +721,7 @@ local click_cast_spells = {
 		},
 		[105] = { -- 恢复
 			102342, -- 铁木树皮		
-			33763, -- 生命绽放		
+			188550, -- 生命绽放		
 			102351, -- 塞纳里奥结界
 			50464, -- 滋养
 			102693, -- 林莽卫士
@@ -1044,7 +1044,7 @@ local default_HealerIndicatorAuraList = {
 	    [774] = true,		-- 回春
         [155777] = true,	-- 萌芽
         [8936] = true,		-- 愈合
-        [33763] = true,		-- 生命绽放
+        [188550] = true,		-- 生命绽放
         [48438] = true,		-- 野性成长
 		[102351] = true,	-- 塞纳里奥结界
         [102352] = true,	-- 塞纳里奥结界

@@ -93,32 +93,34 @@ end
 local function UpdateClickActions(object)
 	local specID = T.GetSpecID()
 	local C = aCoreCDB["UnitframeOptions"]["ClickCast"][specID]
-	for id, var in pairs(C) do
-		for	key, info in pairs(var) do
-			local key_tmp = string.gsub(key, "Click", "")
-			local action = info.action
-			local spell = T.GetSpellInfo(info.spell)
-			local item = info.item
-			local macro = info.macro
-			
-			if action == "follow" then
-				object:SetAttribute(key_tmp.."type"..id, "macro")
-				object:SetAttribute(key_tmp.."macrotext"..id, "/follow mouseover")
-			elseif	action == "target" then
-				object:SetAttribute(key_tmp.."type"..id, "target")				
-			elseif	action == "focus" then		
-				object:SetAttribute(key_tmp.."type"..id, "focus")
-			elseif action == "menu" then
-				object:SetAttribute(key_tmp.."type"..id, "togglemenu")
-			elseif action == "macro" then
-				object:SetAttribute(key_tmp.."type"..id, "macro")
-				object:SetAttribute(key_tmp.."macrotext"..id, macro)
-			elseif action == "spell" then
-				object:SetAttribute(key_tmp.."type"..id, "spell")
-				object:SetAttribute(key_tmp.."spell"..id, spell)
-			elseif action == "item" then
-				object:SetAttribute(key_tmp.."type"..id, "item")
-				object:SetAttribute(key_tmp.."type"..id, string.format("item:%s", item))
+	if C then
+		for id, var in pairs(C) do
+			for	key, info in pairs(var) do
+				local key_tmp = string.gsub(key, "Click", "")
+				local action = info.action
+				local spell = T.GetSpellInfo(info.spell)
+				local item = info.item
+				local macro = info.macro
+				
+				if action == "follow" then
+					object:SetAttribute(key_tmp.."type"..id, "macro")
+					object:SetAttribute(key_tmp.."macrotext"..id, "/follow mouseover")
+				elseif	action == "target" then
+					object:SetAttribute(key_tmp.."type"..id, "target")				
+				elseif	action == "focus" then		
+					object:SetAttribute(key_tmp.."type"..id, "focus")
+				elseif action == "menu" then
+					object:SetAttribute(key_tmp.."type"..id, "togglemenu")
+				elseif action == "macro" then
+					object:SetAttribute(key_tmp.."type"..id, "macro")
+					object:SetAttribute(key_tmp.."macrotext"..id, macro)
+				elseif action == "spell" then
+					object:SetAttribute(key_tmp.."type"..id, "spell")
+					object:SetAttribute(key_tmp.."spell"..id, spell)
+				elseif action == "item" then
+					object:SetAttribute(key_tmp.."type"..id, "item")
+					object:SetAttribute(key_tmp.."type"..id, string.format("item:%s", item))
+				end
 			end
 		end
 	end
@@ -165,7 +167,8 @@ end
 G.ClickCast_Frames = {}
 
 local function CreateClickSets(self)
-	table.insert(G.ClickCast_Frames, self)
+	table.insert(G.ClickCast_Frames, self)	
+	RegisterClicks(self)
 end
 T.CreateClickSets = CreateClickSets
 
@@ -502,7 +505,7 @@ end
 local func = function(self, unit)  	
 	T.CreateClickSets(self)
 	T.RaidOnMouseOver(self)
-	
+
 	self:RegisterForClicks"AnyUp"
 	self.mouseovers = {}
 	
