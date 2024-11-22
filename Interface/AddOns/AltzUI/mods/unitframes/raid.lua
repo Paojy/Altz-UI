@@ -300,7 +300,6 @@ local GetDebuffPriority = function(data)
 		local spellID = data.spellId
 		local dtype = data.dispelNameW
 		
-		
 		if aCoreCDB["UnitframeOptions"]["debuff_list"][spellID] then
 			priority = aCoreCDB["UnitframeOptions"]["debuff_list"][spellID]
 		elseif dispellist[dtype] then -- 可驱散
@@ -322,10 +321,11 @@ local GetDebuffPriority = function(data)
 end
 
 local SortDebuffs = function(a, b)
-	a.priority = GetDebuffPriority(a)
-	b.priority = GetDebuffPriority(b)
-	
-	return a.priority > b.priority or a.auraInstanceID < b.auraInstanceID
+	if GetDebuffPriority(a) > GetDebuffPriority(b) then
+		return true
+	elseif GetDebuffPriority(a) == GetDebuffPriority(b) and a.auraInstanceID < b.auraInstanceID then
+		return true
+	end
 end
 
 local PostUpdateDebuffs = function(auras, unit)
