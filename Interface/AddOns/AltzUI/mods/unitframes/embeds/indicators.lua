@@ -71,11 +71,12 @@ local ClassSpells = {
 			str = "Y",
 		},
 		[102352] = { -- 塞纳里奥结界(HOT)
-			font = "symbol",
+			font = "text",
+			update_type = "dur",
 			adjust = -1,
 			color = {.8, .87, .6},
 			point = {"RIGHT", 0, 0},
-			str = "b",
+			str = {"①","②","③","④","⑤","⑥","⑦","⑧","⑨","⑩","⑪","⑫","⑬","⑭","⑮","⑯","⑰","⑱","⑲","⑳"}
 		},
 	},
 	PALADIN = {
@@ -234,9 +235,13 @@ local function updateAura(element, unit, data)
 		button:SetScript("OnUpdate", function(self, e)
 			self.t = self.t - e
 			if self.t < 0 then
-				local remain = data.expirationTime - GetTime()
+				local remain = ceil(data.expirationTime - GetTime())
 				if remain > 0 then
-					self.text:SetText(format("%d", remain))
+					if info.str then
+						self.text:SetText(info.str[remain] or remain)
+					else
+						self.text:SetText(remain)
+					end
 				else
 					self.text:SetText("")
 					self:SetScript("OnUpdate", nil)
