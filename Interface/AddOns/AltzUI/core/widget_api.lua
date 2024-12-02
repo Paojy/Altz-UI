@@ -507,6 +507,51 @@ T.createStatusbar = function(parent, height, width, r, g, b, alpha)
 	return bar
 end
 
+T.CreateTextureIndforStatusbar = function(bar)
+	if not bar.ind then	
+		bar.ind = bar:CreateTexture(nil, "OVERLAY", nil, 1)
+		bar.ind:SetTexture("Interface\\Buttons\\WHITE8x8")
+		bar.ind:SetVertexColor(0, 0, 0)
+		bar.ind:SetSize(1, bar:GetHeight())
+		bar.ind:SetPoint("RIGHT", bar:GetStatusBarTexture(), "LEFT", 0, 0)
+		
+		bar:HookScript("OnSizeChanged", function(self, width, height)
+			self.ind:SetSize(1, 18)
+		end)
+			
+		bar:HookScript("OnMinMaxChanged", function(self, min_v, max_v)		
+			if not self.cur_value then
+				self.cur_value = self:GetValue()
+			end
+			
+			self.max_value = max_v
+	
+			if self.cur_value and self.max_value then
+				if self.cur_value == 0 or self.cur_value == self.max_value then
+					self.ind:Hide()
+				else
+					self.ind:Show()
+				end
+			end
+		end)
+		
+		bar:HookScript("OnValueChanged", function(self, cur_v)
+			if not self.max_value then
+				self.max_value = select(2, bar:GetMinMaxValues())
+			end
+			
+			self.cur_value = cur_v
+	
+			if self.cur_value and self.max_value then
+				if self.cur_value == 0 or self.cur_value == self.max_value then
+					self.ind:Hide()
+				else
+					self.ind:Show()
+				end
+			end
+		end)
+	end
+end
 ----------------------------
 --  	选项皮肤		  --
 ----------------------------
