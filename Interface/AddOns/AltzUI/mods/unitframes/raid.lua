@@ -573,7 +573,7 @@ local func = function(self, unit)
 	
 	hp.colorDisconnected = true	
 	hp.PostUpdateColor = T.PostUpdate_HealthColor
-	hp.PostUpdate = T.PostUpdate_Health
+	hp.Override = T.Override_Health
 	
 	self.Health = hp
 	self.Health.ApplySettings()
@@ -912,8 +912,6 @@ local function Spawnraid()
 	RaidPetFrame.all:SetPoint("TOPLEFT", RaidPetFrame, "TOPLEFT")
 	
 end
-
-
 
 T.UpdateGroupAnchor = function()
 	T.CombatDelayFunc(function()

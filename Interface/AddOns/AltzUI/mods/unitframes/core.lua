@@ -204,44 +204,35 @@ local PostUpdate_HealthColor = function(self, unit)
 end
 T.PostUpdate_HealthColor = PostUpdate_HealthColor
 
-local PostUpdate_Health = function(self, unit, cur, max)
-	local perc, status
+local Override_Health = function(self, event, unit)
+	if (not unit or not UnitIsUnit(self.unit, unit)) then return end
 	
-	if max ~= 0 then
-		perc = cur/max 
-	else 
-		perc = 1
-	end
+	local element = self.Health	
+	local cur, max = UnitHealth(unit), UnitHealthMax(unit)
 	
-	if cur == 0 then
-		status = "dead"
-	elseif perc == 1 then
-		status = "full"
+	element.cur = cur
+	element.max = max
+	
+	element:SetMinMaxValues(0, max)
+	
+	if (UnitIsConnected(unit)) then
+		element:SetValue(max - cur)
 	else
-		status = "injured"
+		element:SetValue(max)
 	end
 	
-	self:SetValue(max - cur)
-
-	-- 标记
-	if status == "injured" then
-		self.ind:Show()
-	else
-		self.ind:Hide()
-	end
-		
 	-- 数值
-	if self.value then
-		if (cur > 0 and self.__owner.isMouseOver and UnitIsConnected(unit)) then
-			self.value:SetText(T.ShortValue(cur))
-		elseif status == "injured" or aCoreCDB["UnitframeOptions"]["alwayshp"] then
-			self.value:SetText(T.ShortValue(cur).." "..T.hex_str(math.floor(cur/max*100+.5), 1, 1, 0))
+	if element.value then
+		if (cur > 0 and self.isMouseOver and UnitIsConnected(unit)) then
+			element.value:SetText(T.ShortValue(cur))
+		elseif (cur ~= 0 and cur ~= max) or aCoreCDB["UnitframeOptions"]["alwayshp"] then
+			element.value:SetText(T.ShortValue(cur).." "..T.hex_str(math.floor(cur/max*100+.5), 1, 1, 0))
 		else
-			self.value:SetText(nil)
+			element.value:SetText("")
 		end
 	end
 end
-T.PostUpdate_Health = PostUpdate_Health
+T.Override_Health = Override_Health
 
 local UpdateColorArenaPreparation = function(self, event, specID)	
 	if aCoreCDB["SkinOptions"]["style"] == 3 then
@@ -272,54 +263,45 @@ local Override_PlateHealthColor = function(self, event, unit)
 	end
 end
 
-local PostUpdate_PlateHealth = function(self, unit, cur, max)
-	local perc, status
-
-	if max ~= 0 then
-		perc = cur/max 
-	else 
-		perc = 1 
-	end
+local Override_PlateHealth = function(self, event, unit)
+	if (not unit or not UnitIsUnit(self.unit, unit)) then return end
 	
-	if cur == 0 then
-		status = "dead"
-	elseif perc == 1 then
-		status = "full"
-	else
-		status = "injured"
-	end
+	local element = self.Health	
+	local cur, max = UnitHealth(unit), UnitHealthMax(unit)
 	
-	if aCoreCDB["PlateOptions"]["theme"] == "dark" then
-		self:SetValue(max - cur)
-	end
+	element.cur = cur
+	element.max = max
 	
-	-- 标记
-	if aCoreCDB["PlateOptions"]["theme"] ~= "number" then
-		if status == "injured" then
-			self.ind:Show()
+	element:SetMinMaxValues(0, max)
+		
+	if (UnitIsConnected(unit)) then
+		if aCoreCDB["PlateOptions"]["theme"] == "dark" then
+			element:SetValue(max - cur)
 		else
-			self.ind:Hide()
+			element:SetValue(cur)
 		end
+	else
+		element:SetValue(max)
 	end
 	
 	-- 数值
 	if aCoreCDB["PlateOptions"]["theme"] == "number" then
-		if status == "injured" or aCoreCDB["PlateOptions"]["number_alwayshp"] then
-			self.value:SetText(math.floor(perc*100+.5))
+		if (cur ~= 0 and cur ~= max) or aCoreCDB["PlateOptions"]["number_alwayshp"] then
+			element.value:SetText(math.floor(perc*100+.5))
 		else
-			self.value:SetText(nil)
+			element.value:SetText(nil)
 		end
 	else
-		if (cur > 0 and self.__owner.isMouseOver and UnitIsConnected(unit)) then
-			self.value:SetText(T.ShortValue(cur))
-		elseif status == "injured" or aCoreCDB["PlateOptions"]["bar_alwayshp"] then
+		if (cur > 0 and self.isMouseOver and UnitIsConnected(unit)) then
+			element.value:SetText(T.ShortValue(cur))
+		elseif (cur ~= 0 and cur ~= max) or aCoreCDB["PlateOptions"]["bar_alwayshp"] then
 			if aCoreCDB["PlateOptions"]["bar_hp_perc"] == "perc" then
-				self.value:SetText(T.hex_str(math.floor(cur/max*100+.5), 1, 1, 0))
+				element.value:SetText(T.hex_str(math.floor(cur/max*100+.5), 1, 1, 0))
 			else
-				self.value:SetText(T.ShortValue(cur).." "..T.hex_str(math.floor(cur/max*100+.5), 1, 1, 0))
+				element.value:SetText(T.ShortValue(cur).." "..T.hex_str(math.floor(cur/max*100+.5), 1, 1, 0))
 			end
 		else
-			self.value:SetText(nil)
+			element.value:SetText(nil)
 		end
 	end
 end
@@ -1261,18 +1243,12 @@ local func = function(self, unit)
 	if not T.multicheck(u, "targettarget", "focustarget", "pet", "partypet") then
 		hp.value = T.createnumber(hp, "OVERLAY", aCoreCDB["UnitframeOptions"]["valuefontsize"], "OUTLINE", "RIGHT")
 	end
-
-	hp.ind = hp:CreateTexture(nil, "OVERLAY", nil, 1)
-	hp.ind:SetTexture("Interface\\Buttons\\WHITE8x8")
-	hp.ind:SetVertexColor(0, 0, 0)
-	hp.ind:SetSize(1, 18)
-	hp.ind:SetPoint("RIGHT", hp:GetStatusBarTexture(), "LEFT", 0, 0)
-
+	
+	T.CreateTextureIndforStatusbar(hp)
+	
 	hp.ApplySettings = function()
 		T.ApplyHealthThemeSettings(self, hp)
-		
-		hp.ind:SetSize(1, aCoreCDB["UnitframeOptions"]["height"])
-		
+				
 		-- height, width --
 		if T.multicheck(u, "targettarget", "focustarget", "pet", "partypet") then
 			self:SetSize(aCoreCDB["UnitframeOptions"]["widthpet"], aCoreCDB["UnitframeOptions"]["height"])
@@ -1299,12 +1275,12 @@ local func = function(self, unit)
 	end
 		
 	hp.PostUpdateColor = PostUpdate_HealthColor
-	hp.PostUpdate = PostUpdate_Health
+	hp.Override = Override_Health
 	hp.UpdateColorArenaPreparation = (u == "arena" and UpdateColorArenaPreparation)
 
 	tinsert(self.mouseovers, hp)
 	
-	self.Health = hp	
+	self.Health = hp
 	self.Health.ApplySettings()	
 	
 	-- 治疗预估和吸收
@@ -1765,12 +1741,8 @@ local plate_func = function(self, unit)
 	
 	hp.value = T.createtext(hp, "OVERLAY", 10, "OUTLINE", "CENTER")
 	
-	hp.ind = hp:CreateTexture(nil, "OVERLAY", nil, 1)
-	hp.ind:SetTexture("Interface\\Buttons\\WHITE8x8")
-	hp.ind:SetVertexColor(0, 0, 0)
-	hp.ind:SetSize(1, hp:GetHeight())
-	hp.ind:SetPoint("RIGHT", hp:GetStatusBarTexture(), "LEFT", 0, 0)
-			
+	T.CreateTextureIndforStatusbar(hp)
+	
 	hp.Callback = function(self, event, unit)
 		if UnitIsUnit(unit, 'player') then
 			if aCoreCDB["PlateOptions"]["playerplate"] then
@@ -1799,7 +1771,7 @@ local plate_func = function(self, unit)
 			
 			hp:GetStatusBarTexture():SetAlpha(0)
 			hp.backdrop:Hide()
-			hp.ind:Hide()
+			hp.ind:SetAlpha(0)
 			
 			hp.value:SetFont(G.plateFont, aCoreCDB["PlateOptions"]["number_size"], "OUTLINE")
 			hp.value:ClearAllPoints()
@@ -1813,6 +1785,7 @@ local plate_func = function(self, unit)
 			hp:GetStatusBarTexture():SetAlpha(1)
 			hp.backdrop:SetBackdropColor(.15, .15, .15, 1)
 			hp.backdrop:Show()
+			hp.ind:SetAlpha(1)
 			
 			hp.value:SetFont(G.numFont, aCoreCDB["PlateOptions"]["valuefontsize"], "OUTLINE")			
 			hp.value:ClearAllPoints()
@@ -1829,6 +1802,7 @@ local plate_func = function(self, unit)
 			hp:SetStatusBarTexture(aCoreCDB["SkinOptions"]["style"] == 1 and G.media.blank or G.media.ufbar)		
 			hp:GetStatusBarTexture():SetAlpha(1)
 			hp.backdrop:Show()
+			hp.ind:SetAlpha(1)
 			
 			hp.value:SetFont(G.numFont, aCoreCDB["PlateOptions"]["valuefontsize"], "OUTLINE")
 			hp.value:ClearAllPoints()			
@@ -1849,7 +1823,7 @@ local plate_func = function(self, unit)
 	end
 	
 	hp.UpdateColor = Override_PlateHealthColor
-	hp.PostUpdate = PostUpdate_PlateHealth
+	hp.Override = Override_PlateHealth
 	tinsert(self.mouseovers, hp)
 	
 	self.Health = hp
