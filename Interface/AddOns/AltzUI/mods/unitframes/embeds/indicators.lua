@@ -217,7 +217,7 @@ local function CreateButton(element, spellID)
 end
 
 local function updateAura(element, unit, data)
-	if (not data.name) then return end
+	if (not data or not data.name) then return end
 	
 	local spellID = data.spellId
 	local info = IndInfo[spellID]
@@ -283,8 +283,8 @@ local function processData(element, unit, data)
 end
 
 local function UpdateAuras(self, event, unit, updateInfo)
-	if(self.unit ~= unit) then return end
-
+	if (not unit or not UnitIsUnit(self.unit, unit)) then return end
+	
 	local isFullUpdate = not updateInfo or updateInfo.isFullUpdate
 
 	local ind = self.AltzIndicators
