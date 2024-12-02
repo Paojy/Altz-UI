@@ -794,7 +794,7 @@ T.CreateGUIOpitons(RFInnerframe.icon_display, "UnitframeOptions", 88, 100)
 
 -- 团队减益
 RFInnerframe.raiddebuff = CreateOptionPage("RF Options Raid Debuff", T.split_words(L["副本"],L["减益"]), RFInnerframe, "VERTICAL")
-T.CreateGUIOpitons(RFInnerframe.raiddebuff, "UnitframeOptions", 101, 102)
+T.CreateGUIOpitons(RFInnerframe.raiddebuff, "UnitframeOptions", 101, 101)
 
 RFInnerframe.raiddebuff.debuff_list = T.createscrolllist(RFInnerframe.raiddebuff, {"TOPLEFT", 10, -85}, false, 395, 380)
 
