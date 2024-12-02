@@ -154,7 +154,7 @@ G.Options = {
 			option_type = "cvar_check",
 			width = .6,
 			text = SHOW_TIMESTAMP,
-			arg1 = T.color_text("H:%M "),
+			arg1 = T.color_text("%H:%M "),
 			arg2 = "none",
 		},
 		{ -- 4 滚动聊天框
