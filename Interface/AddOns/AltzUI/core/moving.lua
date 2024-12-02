@@ -155,28 +155,29 @@ end
 local GetDefaultPositions = function(frame, name)
 	if aCoreCDB["FramePoints"][name] == nil then
 		aCoreCDB["FramePoints"][name] = {}
-		for role, info in pairs(frame.point) do
-			if aCoreCDB["FramePoints"][name][role] == nil then
-				aCoreCDB["FramePoints"][name][role] = {}
-			end
-			if aCoreCDB["FramePoints"][name][role]["a1"] == nil then
-				aCoreCDB["FramePoints"][name][role]["a1"] = info.a1
-			end
-			if aCoreCDB["FramePoints"][name][role]["a2"] == nil then
-				aCoreCDB["FramePoints"][name][role]["a2"] = info.a2
-			end
-			if aCoreCDB["FramePoints"][name][role]["anchor_type"] == nil then
-				aCoreCDB["FramePoints"][name][role]["anchor_type"] = info.anchor_type
-			end
-			if aCoreCDB["FramePoints"][name][role]["parent"] == nil then
-				aCoreCDB["FramePoints"][name][role]["parent"] = info.parent
-			end
-			if aCoreCDB["FramePoints"][name][role]["x"] == nil then
-				aCoreCDB["FramePoints"][name][role]["x"] = info.x
-			end
-			if aCoreCDB["FramePoints"][name][role]["y"] == nil then
-				aCoreCDB["FramePoints"][name][role]["y"] = info.y
-			end
+	end
+	
+	for role, info in pairs(frame.point) do
+		if aCoreCDB["FramePoints"][name][role] == nil then
+			aCoreCDB["FramePoints"][name][role] = {}
+		end
+		if aCoreCDB["FramePoints"][name][role]["a1"] == nil then
+			aCoreCDB["FramePoints"][name][role]["a1"] = info.a1
+		end
+		if aCoreCDB["FramePoints"][name][role]["a2"] == nil then
+			aCoreCDB["FramePoints"][name][role]["a2"] = info.a2
+		end
+		if aCoreCDB["FramePoints"][name][role]["anchor_type"] == nil then
+			aCoreCDB["FramePoints"][name][role]["anchor_type"] = (info.parent == "UIParent") and "Screen" or "ChooseFrame"
+		end
+		if aCoreCDB["FramePoints"][name][role]["parent"] == nil then
+			aCoreCDB["FramePoints"][name][role]["parent"] = info.parent
+		end
+		if aCoreCDB["FramePoints"][name][role]["x"] == nil then
+			aCoreCDB["FramePoints"][name][role]["x"] = info.x
+		end
+		if aCoreCDB["FramePoints"][name][role]["y"] == nil then
+			aCoreCDB["FramePoints"][name][role]["y"] = info.y
 		end
 	end
 end
@@ -208,9 +209,13 @@ local LockAll = function()
 	end
 end
 
-local PlaceFrame = function(frame)
+local PlaceFrame = function(frame, get_default)
 	local name = frame:GetName()
-	GetDefaultPositions(frame, name)
+	
+	if get_default then
+		GetDefaultPositions(frame, name)
+	end
+	
 	local points = aCoreCDB["FramePoints"][name][CurrentRole]
 	if points and frame.df.enable then
 		frame:ClearAllPoints()
@@ -223,19 +228,19 @@ local PlaceFrame = function(frame)
 end
 T.PlaceFrame = PlaceFrame
 
-local PlaceAllFrames = function()
+local PlaceAllFrames = function(get_default)
 	CurrentRole = T.CheckRole()
 	SpecMover.curmode:SetText(L["当前模式"].." "..L[CurrentRole])	
 	for i = 1, #G.dragFrameList do
 		local frame = G.dragFrameList[i]
-		PlaceFrame(frame)
+		PlaceFrame(frame, get_default)
 	end
 end
 
 local ResetFramePoint = function(frame)
 	local name = frame:GetName()	
 	aCoreCDB["FramePoints"][name] = nil
-	PlaceFrame(frame)
+	PlaceFrame(frame, true)
 end
 
 local ResetAllFramesPoint = function()
@@ -326,7 +331,7 @@ end
 T.RestoreDragFrame = function(frame)
 	if frame.df then
 		frame.df.enable = true
-		PlaceFrame(frame)
+		PlaceFrame(frame, true)
 		if EditModeManagerFrame:IsShown() then
 			frame.df:Show()
 		end
@@ -579,7 +584,7 @@ SpecMover:SetScript("OnEvent", function(self, event, arg1)
 	if event == "PLAYER_SPECIALIZATION_CHANGED" and arg1 == "player" then
 		PlaceAllFrames()
 	elseif event == "PLAYER_LOGIN" then
-		PlaceAllFrames()
+		PlaceAllFrames(true)
 		self:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED")
 	end
 end)
