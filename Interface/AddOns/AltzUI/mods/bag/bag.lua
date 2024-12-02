@@ -40,7 +40,7 @@ local function SortItems(item1, item2)
 	local itemID2 = C_Container.GetContainerItemID(bag2, id2)
 	local subclassID2 = select(13, GetItemInfo(itemID2))
 		
-	if subclassID1 ~= subclassID2 then
+	if subclassID1 and subclassID2 and subclassID1 ~= subclassID2 then
 		return subclassID1 > subclassID2
 	end
 	
