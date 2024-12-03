@@ -718,3 +718,5 @@ T.ImportLayout = function(importLayoutInfo, name, character)
 	EditModeManagerFrame:ImportLayout(importLayoutInfo, new_layout_type, new_layout_name)
 end
 
+-- 修正暴雪bug 无法删除角色专用的界面布局
+Enum.EditModeLayoutType.Server = 2 -- 修改为同Enum.EditModeLayoutType.Character
