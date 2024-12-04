@@ -507,16 +507,21 @@ T.createStatusbar = function(parent, height, width, r, g, b, alpha)
 	return bar
 end
 
-T.CreateTextureIndforStatusbar = function(bar)
+T.CreateTextureIndforStatusbar = function(bar, rev)
 	if not bar.ind then	
 		bar.ind = bar:CreateTexture(nil, "OVERLAY", nil, 1)
 		bar.ind:SetTexture("Interface\\Buttons\\WHITE8x8")
 		bar.ind:SetVertexColor(0, 0, 0)
 		bar.ind:SetSize(1, bar:GetHeight())
-		bar.ind:SetPoint("RIGHT", bar:GetStatusBarTexture(), "LEFT", 0, 0)
+		
+		if rev then
+			bar.ind:SetPoint("LEFT", bar:GetStatusBarTexture(), "RIGHT", 0, 0)
+		else
+			bar.ind:SetPoint("RIGHT", bar:GetStatusBarTexture(), "LEFT", 0, 0)
+		end
 		
 		bar:HookScript("OnSizeChanged", function(self, width, height)
-			self.ind:SetSize(1, 18)
+			self.ind:SetSize(1, height)
 		end)
 			
 		bar:HookScript("OnMinMaxChanged", function(self, min_v, max_v)		
