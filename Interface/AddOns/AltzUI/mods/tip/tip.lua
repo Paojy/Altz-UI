@@ -45,8 +45,14 @@ hooksecurefunc(GameTooltip, "ProcessLines", function(self)
 				end
 			end
 		end
-		
-		for i= 1, self:NumLines() do
+	end
+end)
+
+local styled_lines = {}
+
+hooksecurefunc(GameTooltip, "AddLine", function(self)
+	for i= 1, self:NumLines() do
+		if not styled_lines[i] then
 			local tiptext_left = _G["GameTooltipTextLeft"..i]
 			local tiptext_right = _G["GameTooltipTextRight"..i]
 			if tiptext_left then
@@ -55,6 +61,7 @@ hooksecurefunc(GameTooltip, "ProcessLines", function(self)
 			if	tiptext_right then
 				tiptext_right:SetFont(G.norFont, 12, "OUTLINE")
 			end
+			styled_lines[i] = true
 		end
 	end
 end)
