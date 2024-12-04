@@ -1295,6 +1295,7 @@ local Character_default_Settings = {
 		enableplate = true,
 		theme = "class", -- "dark" "class" "number"	
 		namefontsize = 8,
+		targetnamefontsize = 8,
 		plateauranum = 5,
 		plateaurasize = 15,	
 		Interruptible_color = {r = .49, g = .91, b = 1}, -- 导出、导入

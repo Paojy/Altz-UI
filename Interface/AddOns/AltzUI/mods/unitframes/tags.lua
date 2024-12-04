@@ -168,3 +168,29 @@ oUF.Tags.Methods["Altz:platename"] = function(u, real)
 	end
 end
 oUF.Tags.Events["Altz:platename"] = "UNIT_CLASSIFICATION_CHANGED UNIT_FACTION UNIT_NAME_UPDATE"
+
+oUF.Tags.Methods["Altz:platetargetname"] = function(u, real)
+	if not UnitIsUnit(u, "player") then
+		local target_unit = u.."target"
+		if UnitExists(target_unit) then
+			local name = UnitName(target_unit) or ""
+			local r, g, b = T.GetUnitColorforNameplateTarget(target_unit)
+			local result
+			
+			if UnitReaction(u, 'player') and UnitReaction(u, 'player') < 5 then -- 只显示敌方目标的目标名字
+				if aCoreCDB["PlateOptions"]["theme"] == "number" then
+					result = (r and g and b and string.format(">%s", T.hex_str(name, r, g, b))) or name
+				else
+					result = (r and g and b and T.hex_str(name, r, g, b)) or name
+				end
+			else
+				result = ""
+			end
+				
+			return result
+		else
+			return ""
+		end
+	end
+end
+oUF.Tags.Events["Altz:platetargetname"] = "UNIT_FACTION UNIT_NAME_UPDATE UNIT_TARGET"

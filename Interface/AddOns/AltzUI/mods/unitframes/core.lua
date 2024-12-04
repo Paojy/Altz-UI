@@ -73,6 +73,22 @@ local function GetUnitColorforNameplate(unit)
 end
 T.GetUnitColorforNameplate = GetUnitColorforNameplate
 
+local function GetUnitColorforNameplateTarget(unit)	
+	local r, g, b = 1, 1, 1
+	local name = GetUnitName(unit, false)
+	
+	if UnitIsPlayer(unit) and UnitClass(unit) then
+		local _, unitclass = UnitClass(unit)
+		r, g, b = unpack(oUF.colors.class[unitclass]) 
+	elseif UnitReaction(unit, "player") then
+		r, g, b = unpack(oUF.colors.reaction[UnitReaction(unit, "player")])
+	else
+		r, g, b = unpack(oUF.colors.reaction[5])
+	end
+	return r, g, b
+end
+T.GetUnitColorforNameplateTarget = GetUnitColorforNameplateTarget
+
 local function GetUnitColor(unit)
 	local r, g, b = 1, 1, 1
 	if not UnitPlayerControlled(unit) and UnitIsTapDenied(unit) then
@@ -205,7 +221,7 @@ end
 T.PostUpdate_HealthColor = PostUpdate_HealthColor
 
 local Override_Health = function(self, event, unit)
-	if (not unit or not UnitIsUnit(self.unit, unit)) then return end
+	if (not unit or self.unit ~= unit) then return end
 	
 	local element = self.Health	
 	local cur, max = UnitHealth(unit), UnitHealthMax(unit)
@@ -243,7 +259,7 @@ local UpdateColorArenaPreparation = function(self, event, specID)
 end
 
 local Override_PlateHealthColor = function(self, event, unit)
-	if(not unit or self.unit ~= unit) then return end
+	if (not unit or self.unit ~= unit) then return end
 	local hp = self.Health
 	
 	local r, g, b = GetUnitColorforNameplate(unit)
@@ -1741,7 +1757,7 @@ local plate_func = function(self, unit)
 	
 	hp.value = T.createtext(hp, "OVERLAY", 10, "OUTLINE", "CENTER")
 	
-	T.CreateTextureIndforStatusbar(hp)
+	T.CreateTextureIndforStatusbar(hp, true)
 	
 	hp.Callback = function(self, event, unit)
 		if UnitIsUnit(unit, 'player') then
@@ -1936,6 +1952,24 @@ local plate_func = function(self, unit)
 	self.Tag_Name = name
 	self.Tag_Name.ApplySettings()
 	
+	-- 目标名字
+	local targetname = T.createtext(self.cover, "OVERLAY", 8, "OUTLINE", "LEFT")
+	
+	targetname.ApplySettings = function()
+		targetname:SetFont(G.norFont, aCoreCDB["PlateOptions"]["targetnamefontsize"], "OUTLINE")
+		if aCoreCDB["PlateOptions"]["theme"] == "number" then
+			targetname:ClearAllPoints()
+			targetname:SetPoint("TOP", name, "BOTTOM", 0, 0)
+		else
+			targetname:ClearAllPoints()
+			targetname:SetPoint("LEFT", self, "RIGHT", 2, 0)
+		end
+	end
+	
+	self:Tag(targetname, "[Altz:platetargetname]")
+	self.Tag_TargetName = targetname
+	self.Tag_TargetName.ApplySettings()
+	
 	-- 团队标记
 	local ricon = self.cover:CreateTexture(nil, "OVERLAY")
 	ricon:SetPoint("RIGHT", self.Tag_Name, "LEFT")
@@ -1946,7 +1980,7 @@ local plate_func = function(self, unit)
 	
 	-- 任务标记
 	local qicon = self.cover:CreateTexture(nil, "OVERLAY")
-	qicon:SetPoint("RIGHT", self.Tag_Name, "LEFT", 3, 0)
+	qicon:SetPoint("RIGHT", name, "LEFT", 3, 0)
 	qicon:SetSize(10, 10)
 	qicon:SetAtlas("QuestNormal")
 	qicon.Override = Override_QusetUpdate
@@ -1959,10 +1993,19 @@ local plate_func = function(self, unit)
 	self.PvPClassificationIndicator = PvP
 
 	-- 目标箭头
-	local arrow = self.cover:CreateTexture(nil, 'OVERLAY')
-	arrow:SetPoint("LEFT", name, "RIGHT", -3, 0)
-    arrow:SetSize(25, 20)
-	arrow:SetRotation(rad(-90))  
+	local arrow = CreateFrame("Frame", nil, self.cover)
+	
+	arrow.right = arrow:CreateTexture(nil, 'OVERLAY')
+	arrow.right:SetPoint("LEFT", name, "RIGHT", 0, 0)
+    arrow.right:SetSize(25, 20)
+	arrow.right:SetRotation(rad(-90))  
+	arrow.right:SetTexture(G.textureFile.."NeonRedArrow")
+	
+	arrow.left = arrow:CreateTexture(nil, 'OVERLAY')
+	arrow.left:SetPoint("RIGHT", name, "LEFT", 0, 0)
+    arrow.left:SetSize(25, 20)
+	arrow.left:SetRotation(rad(90))  
+	arrow.left:SetTexture(G.textureFile.."NeonRedArrow")
 	
 	self.TargetIndicator = arrow
 end

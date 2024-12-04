@@ -1212,13 +1212,13 @@ local PlateInnerframe = CreateInnerFrame(PlateOptions)
 
 -- 通用
 PlateInnerframe.common = CreateOptionPage("Nameplates Options common", T.split_words(L["一般"], L["设置"]), PlateInnerframe, "VERTICAL")
-T.CreateGUIOpitons(PlateInnerframe.common, "PlateOptions", 1, 15)
+T.CreateGUIOpitons(PlateInnerframe.common, "PlateOptions", 1, 16)
 
 -- 样式
 PlateInnerframe.style = CreateOptionPage("Nameplates Options style", L["样式"], PlateInnerframe, "VERTICAL")
-T.CreateGUIOpitons(PlateInnerframe.style, "PlateOptions", 16, 22)
+T.CreateGUIOpitons(PlateInnerframe.style, "PlateOptions", 17, 23)
 PlateInnerframe.style.option_y = PlateInnerframe.style.option_y - 150
-T.CreateGUIOpitons(PlateInnerframe.style, "PlateOptions", 23, 25)
+T.CreateGUIOpitons(PlateInnerframe.style, "PlateOptions", 24, 26)
 
 do
 	local ShouldShowNumber = function()
@@ -1245,11 +1245,11 @@ end
 
 -- 玩家姓名板
 PlateInnerframe.playerresource = CreateOptionPage("Player Resource Bar Options", L["玩家姓名板"], PlateInnerframe, "VERTICAL")
-T.CreateGUIOpitons(PlateInnerframe.playerresource, "PlateOptions", 26, 29)
+T.CreateGUIOpitons(PlateInnerframe.playerresource, "PlateOptions", 27, 30)
 
 -- 光环过滤列表
 PlateInnerframe.auralist = CreateOptionPage("Plate Options Aura", L["光环"], PlateInnerframe, "VERTICAL")
-T.CreateGUIOpitons(PlateInnerframe.auralist, "PlateOptions", 30, 30)
+T.CreateGUIOpitons(PlateInnerframe.auralist, "PlateOptions", 31, 31)
 
 PlateInnerframe.auralist.my_filter = T.CreateAuraListOption(PlateInnerframe.auralist, {"TOPLEFT", 20, -55}, 200,
 L["我施放的光环"], {"PlateOptions", "myplateauralist"}, nil, {"PlateOptions", "myfiltertype"})
@@ -1267,7 +1267,7 @@ end
 
 -- 自定义
 PlateInnerframe.custom = CreateOptionPage("Plate Options Custom", CUSTOM, PlateInnerframe, "VERTICAL")
-T.CreateGUIOpitons(PlateInnerframe.custom, "PlateOptions", 33, 33)
+T.CreateGUIOpitons(PlateInnerframe.custom, "PlateOptions", 34, 34)
 
 PlateInnerframe.custom.color = T.CreatePlateColorListOption(PlateInnerframe.custom,  {"TOPLEFT", 30, -55}, 200,
 L["自定义颜色"], {"PlateOptions", "customcoloredplates"})

@@ -362,7 +362,7 @@ do
 	})
 	
 	frame.apply = function()
-		T.ApplyUFSettings({"Health", "Power", "Castbar", "Auras", "ClassPower", "Runes", "Tag_Name"}, 'Altz_Nameplates')	
+		T.ApplyUFSettings({"Health", "Power", "Castbar", "Auras", "ClassPower", "Runes", "Tag_Name", "Tag_TargetName"}, 'Altz_Nameplates')	
 		T.PostUpdateAllPlates()
 	end
 end
