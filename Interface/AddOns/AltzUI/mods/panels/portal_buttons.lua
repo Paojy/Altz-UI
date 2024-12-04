@@ -21,33 +21,53 @@ local Data = {
 }
 
 local function UpdateCooldownText(button)
-    local spellCooldownInfo = C_Spell.GetSpellCooldown(button.spellID)
+	if button.spellID then
+		local spellCooldownInfo = C_Spell.GetSpellCooldown(button.spellID)
+	
+		if spellCooldownInfo then
+			local startTime = spellCooldownInfo.startTime
+			local duration = spellCooldownInfo.duration
+			local isEnabled = spellCooldownInfo.isEnabled
+	
+			if startTime > 0 and duration > 0 and isEnabled then
+				local remaining = max(0, (startTime + duration) - GetTime())
+	
+				-- Hide text and overlay if remaining time is 5 seconds or less
+				if remaining > 5 then
+					button.cooldownText:SetText(T.FormatTime(remaining))
+				else
+					button.cooldownText:SetText(T.hex_str(L["传送可用"], 0, 1, 0))
+				end
+			else
+				button.cooldownText:SetText(T.hex_str(L["传送可用"], 0, 1, 0))
+			end
+		else
+			button.cooldownText:SetText(T.hex_str(L["传送不可用"], 1, 0, 0))
+		end
+	else
+		button.cooldownText:SetText("")
+	end
+end
 
-    if spellCooldownInfo then
-        local startTime = spellCooldownInfo.startTime
-        local duration = spellCooldownInfo.duration
-        local isEnabled = spellCooldownInfo.isEnabled
-
-        if startTime > 0 and duration > 0 and isEnabled then
-            local remaining = max(0, (startTime + duration) - GetTime())
-
-            -- Hide text and overlay if remaining time is 5 seconds or less
-            if remaining > 5 then
-                button.cooldownText:SetText(T.FormatTime(remaining))
-            else
-                button.cooldownText:SetText(T.hex_str(L["传送可用"], 0, 1, 0))
-            end
-        else
-            button.cooldownText:SetText(T.hex_str(L["传送可用"], 0, 1, 0))
-        end
-    else
-        button.cooldownText:SetText(T.hex_str(L["传送不可用"], 1, 0, 0))
-    end
+local function AddScoreToTooltip(Info, overTime)
+	GameTooltip_AddBlankLineToTooltip(GameTooltip)
+	GameTooltip_AddNormalLine(GameTooltip, LFG_LIST_BEST_RUN..string.format("[%s]", L["赛季"]))
+	GameTooltip_AddColoredLine(GameTooltip, MYTHIC_PLUS_POWER_LEVEL:format(Info.level), HIGHLIGHT_FONT_COLOR)
+	
+	local displayZeroHours = Info.durationSec >= SECONDS_PER_HOUR
+	local durationText = SecondsToClock(Info.durationSec, displayZeroHours)
+	
+	if overTime then
+		local overtimeText = DUNGEON_SCORE_OVERTIME_TIME:format(durationText)
+		GameTooltip_AddColoredLine(GameTooltip, overtimeText, LIGHTGRAY_FONT_COLOR)
+	else
+		GameTooltip_AddColoredLine(GameTooltip, durationText, HIGHLIGHT_FONT_COLOR)
+	end
 end
 
 local function AddAffixScoreToTooltip(affixInfo)
 	GameTooltip_AddBlankLineToTooltip(GameTooltip)
-	GameTooltip_AddNormalLine(GameTooltip, LFG_LIST_BEST_RUN)
+	GameTooltip_AddNormalLine(GameTooltip, LFG_LIST_BEST_RUN..string.format("[%s]", L["当前词缀"]))
 	GameTooltip_AddColoredLine(GameTooltip, MYTHIC_PLUS_POWER_LEVEL:format(affixInfo.level), HIGHLIGHT_FONT_COLOR)
 
 	local displayZeroHours = affixInfo.durationSec >= SECONDS_PER_HOUR
@@ -73,6 +93,15 @@ local function ChallengesDungeonIconOnEnter(parent, self)
 		local color = C_ChallengeMode.GetSpecificDungeonOverallScoreRarityColor(overallScore) or HIGHLIGHT_FONT_COLOR
 		local overallText = DUNGEON_SCORE_TOTAL_SCORE:format(color:WrapTextInColorCode(overallScore))
 		GameTooltip_AddNormalLine(GameTooltip, overallText, GREEN_FONT_COLOR)
+		
+		local inTimeScore = inTimeInfo and inTimeInfo.dungeonScore or 0
+		local overTimeScore = overtimeInfo and overtimeInfo.dungeonScore or 0
+		
+		if inTimeScore >= overTimeScore then
+			AddScoreToTooltip(inTimeInfo)
+		elseif overTimeScore > 0 then
+			AddScoreToTooltip(overtimeInfo, true)
+		end
 	end
 	
 	if affixScores then
@@ -108,7 +137,8 @@ local function CreateSpellButton(parent, spellID)
 	hoverOverlay:SetBlendMode("ADD")
 	hoverOverlay:SetAllPoints(button)
 	hoverOverlay:SetTexture("Interface\\AddOns\\AltzUI\\media\\hover")
-
+	button.hoverOverlay = hoverOverlay
+	
 	button:RegisterEvent("SPELL_UPDATE_COOLDOWN")
 	button:SetScript("OnEvent", function(self, event, ...)
 		if self:IsShown() and event == "SPELL_UPDATE_COOLDOWN" then
@@ -136,14 +166,17 @@ local function UpdateSpellButton(parent)
 	local spellID = Data[parent.mapID]
 	
 	if IsSpellKnown(spellID) then
-		--print("Show", C_ChallengeMode.GetMapUIInfo(parent.mapID))
-		button:Show()
+		--print("Show", C_ChallengeMode.GetMapUIInfo(parent.mapID))	
 		button:SetAttribute("spell", spellID)
-		button.spellID = spellID
+		button.spellID = spellID		
 		UpdateCooldownText(button)
+		button.hoverOverlay:Show()
 	else
 		--print("Hide", C_ChallengeMode.GetMapUIInfo(parent.mapID))
-		button:Hide()
+		button:SetAttribute("spell", nil)
+		button.spellID = nil
+		UpdateCooldownText(button)
+		button.hoverOverlay:Hide()
 	end
 end
 

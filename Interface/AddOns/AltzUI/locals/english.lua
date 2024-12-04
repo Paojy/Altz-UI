@@ -207,8 +207,13 @@ L["两侧装饰"] = "Decoration on both sides"
 L["快速删除"] = "Quick Delete"
 L["复制宏"] = "Copy"
 
-L["可用"] = "Portal"
-L["不可用"] = "No Portal"
+L["赛季"] = "Season"
+L["当前词缀"] = "Current Affix"
+L["传送可用"] = "Portal"
+L["传送不可用"] = "No Portal"
+
+L["玩家位置"] = "Player Coords"
+L["鼠标位置"] = "Cursor Coords"
 --====================================================--
 --[[                 -- 社交 --                     ]]--
 --====================================================--
