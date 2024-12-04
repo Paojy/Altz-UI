@@ -1655,3 +1655,47 @@ raidmark_toggle:SetScript("OnClick", function()
 	aCoreCDB["UnitframeOptions"]["raidtool_show"] = not aCoreCDB["UnitframeOptions"]["raidtool_show"]
 	T.UpdateRaidTools()
 end)
+
+--====================================================--
+--[[                -- 地图坐标 --                  ]]--
+--====================================================--
+
+CoordsFrame = CreateFrame("Frame", nil, WorldMapFrame.ScrollContainer)
+CoordsFrame:SetFrameStrata("HIGH")
+CoordsFrame:SetSize(100, 20)
+CoordsFrame:SetPoint("BOTTOM", 0, 5)
+
+CoordsFrame.text = T.createtext(CoordsFrame, "OVERLAY", 12, "OUTLINE", "CENTER")
+CoordsFrame.text:SetPoint("CENTER")
+
+CoordsFrame.t = 0
+
+local function UpdateCharacterCoords(self, elapsed)
+	self.t = self.t + elapsed
+	if self.t > 0.2 then
+		local player_coords, cursor_coords
+		
+		CoordsFrame.info = nil
+		CoordsFrame.info = C_Map.GetPlayerMapPosition(0, "player")
+		
+		if CoordsFrame.info then
+			player_coords = string.format(L["玩家位置"].." X:%0.1f, Y:%0.1f", CoordsFrame.info.x * 100, CoordsFrame.info.y * 100)
+		else
+			player_coords = ""
+		end
+		
+		local cursorX, cursorY = WorldMapFrame:GetNormalizedCursorPosition()	
+	
+		if (cursorX > 0  and cursorY > 0 and cursorX <1 and cursorY <1) then
+            cursor_coords = string.format("  "..L["鼠标位置"].." X:%0.1f, Y:%0.1f", cursorX * 100, cursorY * 100)
+		else
+			cursor_coords = ""
+        end
+		
+		CoordsFrame.text:SetText(player_coords..cursor_coords)
+		
+		self.t = 0
+	end
+end
+
+CoordsFrame:SetScript("OnUpdate", UpdateCharacterCoords)
