@@ -235,10 +235,84 @@ local function UpdateClicksforAll(id, key)
 end
 T.UpdateClicksforAll = UpdateClicksforAll
 
+--=============================================--
+--[[              Private Auras				 ]]--
+--=============================================--
+
+local CreatePrivateAurasAnchors = function()
+	local oUF = AltzUF or oUF
+	local icon_size = aCoreCDB["UnitframeOptions"]["raid_debuff_icon_size"]
+	for _, obj in next, oUF.objects do
+		if obj.style == 'Altz_Healerraid' and obj.unit and UnitExists(obj.unit) then			
+			for i = 1, 4 do		
+				if not obj["auraAnchorID"..i] then
+					obj["auraAnchorID"..i] = C_UnitAuras.AddPrivateAuraAnchor({
+						unitToken = obj.unit,
+						auraIndex = i,
+						parent = obj,
+						showCountdownFrame = true,
+						showCountdownNumbers = false,
+						iconInfo = {
+							iconWidth = icon_size,
+							iconHeight = icon_size,
+							iconAnchor = {
+								point = "BOTTOMLEFT",
+								relativeTo = obj,
+								relativePoint = "BOTTOMLEFT",
+								offsetX = 1 + icon_size*(i-1),
+								offsetY = 1,
+							},
+						},
+					})					
+				end
+				--print("create", obj.unit, i, obj["auraAnchorID"..i])
+			end
+		end
+	end
+end
+T.CreatePrivateAurasAnchors = CreatePrivateAurasAnchors
+
+local UpdatePrivateAuras = function()
+	local oUF = AltzUF or oUF
+	local icon_size = aCoreCDB["UnitframeOptions"]["raid_debuff_icon_size"]
+	
+	for _, obj in next, oUF.objects do
+		if obj.style == 'Altz_Healerraid' and obj.unit and UnitExists(obj.unit) then			
+			for i = 1, 4 do
+				if obj["auraAnchorID"..i] then
+					C_UnitAuras.RemovePrivateAuraAnchor(obj["auraAnchorID"..i])
+					
+				end
+				
+				obj["auraAnchorID"..i] = C_UnitAuras.AddPrivateAuraAnchor({
+					unitToken = obj.unit,
+					auraIndex = i,
+					parent = obj,
+					showCountdownFrame = true,
+					showCountdownNumbers = false,
+					iconInfo = {
+						iconWidth = icon_size,
+						iconHeight = icon_size,
+						iconAnchor = {
+							point = "BOTTOMLEFT",
+							relativeTo = obj,
+							relativePoint = "BOTTOMLEFT",
+							offsetX = 1 + icon_size*(i-1),
+							offsetY = 1,
+						},
+					},
+				})
+				--print("update", obj.unit, i, obj["auraAnchorID"..i])
+			end		
+		end
+	end
+end
+T.UpdatePrivateAuras = UpdatePrivateAuras
 
 --=============================================--
 --[[              Raid Auras                 ]]--
 --=============================================--
+
 -- Debuffs
 local RaidDebuff_AuraFilter = function(debuffs, unit, data)
 	local spellID = data.spellId
@@ -364,12 +438,15 @@ local CreateRaidDebuffs = function(self, unit)
 	debuffs.SortDebuffs = SortDebuffs
 	debuffs.PostUpdate = PostUpdateDebuffs
 	
-	debuffs.ApplySettings =  function()			
+	debuffs.ApplySettings =  function()
+		local icon_size = aCoreCDB["UnitframeOptions"]["raid_debuff_icon_size"]
+		
 		debuffs:SetPoint("LEFT", self, "CENTER", aCoreCDB["UnitframeOptions"]["raid_debuff_anchor_x"], aCoreCDB["UnitframeOptions"]["raid_debuff_anchor_y"])
-		debuffs:SetWidth(aCoreCDB["UnitframeOptions"]["raid_debuff_icon_size"]*5+12)
-		debuffs:SetHeight(aCoreCDB["UnitframeOptions"]["raid_debuff_icon_size"])
-		debuffs.size = aCoreCDB["UnitframeOptions"]["raid_debuff_icon_size"]
-		debuffs.num = aCoreCDB["UnitframeOptions"]["raid_debuff_num"]	
+		debuffs:SetWidth(icon_size*5+12)
+		debuffs:SetHeight(icon_size)
+		
+		debuffs.size = icon_size
+		debuffs.num = aCoreCDB["UnitframeOptions"]["raid_debuff_num"]			
 	end
 
 	self.Debuffs = debuffs
@@ -559,16 +636,10 @@ local func = function(self, unit)
     hp.cover:SetAllPoints(hp)
 	hp.cover:SetTexture(G.media.blank)
 	
-	hp.ind = hp:CreateTexture(nil, "OVERLAY", nil, 1)
-    hp.ind:SetTexture("Interface\\Buttons\\WHITE8x8")
-	hp.ind:SetVertexColor(0, 0, 0)
-	hp.ind:SetSize(1, 45)
-	hp.ind:SetPoint("RIGHT", hp:GetStatusBarTexture(), "LEFT", 0, 0)
+	T.CreateTextureIndforStatusbar(hp)
 	
 	hp.ApplySettings = function()
 		T.ApplyHealthThemeSettings(self, hp)
-		
-		hp.ind:SetSize(1, aCoreCDB["UnitframeOptions"]["raidheight"])
 	end
 	
 	hp.colorDisconnected = true	
@@ -1065,9 +1136,11 @@ EventFrame:SetScript("OnEvent", function(self, event, ...)
 		current_encounter = 1
 		UpdateHealManabar()
 		UpdateDispelType()
+		CreatePrivateAurasAnchors()
 	elseif event == "GROUP_ROSTER_UPDATE" then
 		UpdateHealManabar()
 		T.UpdateGroupSize()
+		CreatePrivateAurasAnchors()
 	end
 end)
 

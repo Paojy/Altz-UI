@@ -1087,6 +1087,7 @@ G.Options = {
 			text = L["未进组时显示"],
 			apply = function()
 				T.UpdatePartyConnected()
+				T.CreatePrivateAurasAnchors()
 			end,
 			relatedFrames = {
 				["Altz_Raid_Holder"] = true,
@@ -1386,7 +1387,8 @@ G.Options = {
 			max = 40,
 			step = 1,
 			apply = function()
-				T.ApplyUFSettings({"Debuffs"}, "Altz_Healerraid")
+				T.ApplyUFSettings({"Debuffs", }, "Altz_Healerraid")
+				T.UpdatePrivateAuras()
 			end,
 		},
 		{ -- 图标数量
