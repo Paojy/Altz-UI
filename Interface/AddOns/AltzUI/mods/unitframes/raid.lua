@@ -480,7 +480,11 @@ local SortBuffs = function(a, b)
 	a.priority = GetBuffPriority(a)
 	b.priority = GetBuffPriority(b)
 	
-	return a.priority > b.priority or a.auraInstanceID < b.auraInstanceID
+	if a.priority > b.priority then
+		return true
+	elseif a.priority == b.priority and a.auraInstanceID < b.auraInstanceID then		
+		return true
+	end
 end
 
 local CreateRaidBuffs = function(self, unit)
