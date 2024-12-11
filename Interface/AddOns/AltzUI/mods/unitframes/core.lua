@@ -373,6 +373,7 @@ local PostUpdate_Power = function(self, unit, cur, min, max)
 	end
 end
 T.PostUpdate_Power = PostUpdate_Power
+
 --=============================================--
 --[[ Castbars ]]--
 --=============================================--
@@ -1000,6 +1001,7 @@ local PostUpdate_ClassPower = function(element, cur, max, hasMaxChanged)
 			end
 		end
 	end
+	
 	if hasMaxChanged then
 		for i = 1, 7 do
 			if max == 5 or max == 10 then
@@ -1046,7 +1048,7 @@ end
 
 local function CreateClassResources(self)
 	if T.multicheck(G.myClass, "DEATHKNIGHT", "WARLOCK", "PALADIN", "MONK", "MAGE", "ROGUE", "DRUID") then
-		local count = 7		
+		local count = (G.myClass == "DEATHKNIGHT") and 6 or 7
 		local bars = CreateFrame("Frame", self:GetName().."SpecOrbs", self)
 		
 		for i = 1, count do
@@ -1074,7 +1076,7 @@ local function CreateClassResources(self)
 			bars:SetSize(width, height)
 			
 			for i = 1, count do
-				bars[i]:SetSize((width+2)/count-3, height)
+				bars[i]:SetSize((width+3)/count-3, height)
 				if G.myClass == "DEATHKNIGHT" then
 					if aCoreCDB["UnitframeOptions"]["runecooldown"] then
 						bars[i].value:Show()
@@ -1110,7 +1112,7 @@ end
 
 local function CreatePlateClassResources(self)
 	if T.multicheck(G.myClass, "DEATHKNIGHT", "WARLOCK", "PALADIN", "MONK", "MAGE", "ROGUE", "DRUID") then
-		local count = 7	
+		local count = (G.myClass == "DEATHKNIGHT") and 6 or 7
 		local bars = CreateFrame("Frame", self:GetName().."SpecOrbs", self)
 				
 		for i = 1, count do
@@ -1165,7 +1167,7 @@ local function CreatePlateClassResources(self)
 			bars:SetSize(width, height)
 			
 			for i = 1, count do
-				bars[i]:SetSize((width+2)/count-3, height)
+				bars[i]:SetSize((width+3)/count-3, height)
 				if G.myClass == "DEATHKNIGHT" then
 					if aCoreCDB["UnitframeOptions"]["runecooldown"] then
 						bars[i].value:Show()
