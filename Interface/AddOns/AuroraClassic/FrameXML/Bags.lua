@@ -186,10 +186,6 @@ tinsert(C.defaultThemes, function()
 	BankFrameMoneyFrameBorder:Hide()
 	BankSlotsFrame.NineSlice:SetAlpha(0)
 
-	-- "item slots" and "bag slots" text
-	select(9, BankSlotsFrame:GetRegions()):SetDrawLayer("OVERLAY")
-	select(10, BankSlotsFrame:GetRegions()):SetDrawLayer("OVERLAY")
-
 	B.ReskinPortraitFrame(BankFrame)
 	B.Reskin(BankFramePurchaseButton)
 	B.ReskinTab(BankFrameTab1)
