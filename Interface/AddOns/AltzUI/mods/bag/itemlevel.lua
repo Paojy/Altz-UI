@@ -22,31 +22,42 @@ local function HideAll()
 	end
 end
 
+local function UpdateItemButtonLevel(itemButton)
+	local bagID = itemButton:GetBagID()
+	local itemLoc = ItemLocation:CreateFromBagAndSlot(bagID, itemButton:GetID())
+	local show_level
+	
+	if itemLoc:IsValid() then
+		local itemID = C_Item.GetItemID(itemLoc)
+		local quality = C_Item.GetItemQuality(itemLoc)
+		
+		if itemID and quality and quality > 1 then
+			local class = select(12, GetItemInfo(itemID))
+			if class == 2 or class == 4 then -- 2 Weapon 4 Armor
+				SetItemButtonLevel(itemButton, quality, C_Item.GetCurrentItemLevel(itemLoc))
+				show_level = true
+			end
+		end	
+	end
+	
+	if not show_level and itemButton.itemLeveltext then
+		itemButton.itemLeveltext:Hide()
+	end
+end
+T.UpdateItemButtonLevel = UpdateItemButtonLevel
+
 hooksecurefunc(ContainerFrameCombinedBags, "UpdateItems", function(self)
 	if aCoreCDB.ItemOptions.itemLevel then
-		for i, itemButton in self:EnumerateValidItems() do
-			
-				local bagID = itemButton:GetBagID()
-				local itemLoc = ItemLocation:CreateFromBagAndSlot(bagID, itemButton:GetID())
-				local show_level
-				
-				if itemLoc:IsValid() then
-					local itemID = C_Item.GetItemID(itemLoc)
-					local quality = C_Item.GetItemQuality(itemLoc)
-					
-					if itemID and quality and quality > 1 then
-						local class = select(12, GetItemInfo(itemID))
-						if class == 2 or class == 4 then -- 2 Weapon 4 Armor
-							
-							SetItemButtonLevel(itemButton, quality, C_Item.GetCurrentItemLevel(itemLoc))
-							show_level = true
-						end
-					end	
-				end
-				
-				if not show_level and itemButton.itemLeveltext then
-					itemButton.itemLeveltext:Hide()
-				end
+		for i, itemButton in self:EnumerateValidItems() do			
+			UpdateItemButtonLevel(itemButton)
+		end
+	end
+end)
+
+hooksecurefunc("BankFrame_UpdateItems", function(self)
+	if aCoreCDB.ItemOptions.itemLevel then
+		for i, itemButton in BankFrame:EnumerateValidItems() do			
+			UpdateItemButtonLevel(itemButton)
 		end
 	end
 end)
