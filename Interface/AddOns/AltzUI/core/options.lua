@@ -1768,7 +1768,7 @@ G.Options = {
 				{"number", L["数字样式"]},
 			},
 			apply = function()
-				T.ApplyUFSettings({"Health", "Power", "Castbar", "Auras", "ClassPower", "Runes", "Tag_Name", "Tag_TargetName"}, "Altz_Nameplates")
+				T.ApplyUFSettings({"Health", "Power", "Castbar", "Auras", "ClassPower", "Runes", "Tag_Name", "Tag_TargetName", "RaidTargetIndicator"}, "Altz_Nameplates")
 				T.PostUpdateAllPlates()				
 			end,
 		},

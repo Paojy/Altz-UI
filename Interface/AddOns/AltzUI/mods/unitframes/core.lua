@@ -150,11 +150,43 @@ local Override_QusetUpdate = function(self, event, unit)
 	
 	if C_QuestLog.UnitIsRelatedToActiveQuest(unit) then
 		element:Show()
+		element:SetWidth(element.width)
 	else
 		element:Hide()
+		element:SetWidth(1)
 	end
 end
 
+local ICONS = {
+	[Enum.PvPUnitClassification.FlagCarrierHorde or 0] = "nameplates-icon-flag-horde",
+	[Enum.PvPUnitClassification.FlagCarrierAlliance or 1] = "nameplates-icon-flag-alliance",
+	[Enum.PvPUnitClassification.FlagCarrierNeutral or 2] = "nameplates-icon-flag-neutral",
+	[Enum.PvPUnitClassification.CartRunnerHorde or 3] = "nameplates-icon-cart-horde",
+	[Enum.PvPUnitClassification.CartRunnerAlliance or 4] = "nameplates-icon-cart-alliance",
+	[Enum.PvPUnitClassification.AssassinHorde or 5] = "nameplates-icon-bounty-horde",
+	[Enum.PvPUnitClassification.AssassinAlliance or 6] = "nameplates-icon-bounty-alliance",
+	[Enum.PvPUnitClassification.OrbCarrierBlue or 7] = "nameplates-icon-orb-blue",
+	[Enum.PvPUnitClassification.OrbCarrierGreen or 8] = "nameplates-icon-orb-green",
+	[Enum.PvPUnitClassification.OrbCarrierOrange or 9] = "nameplates-icon-orb-orange",
+	[Enum.PvPUnitClassification.OrbCarrierPurple or 10] = "nameplates-icon-orb-purple",
+}
+
+local Override_PvPUpdate = function(self, event, unit)
+	if(unit ~= self.unit) then return end
+
+	local element = self.PvPClassificationIndicator
+	
+	local class = UnitPvpClassification(unit)
+	local icon = ICONS[class]
+	if(icon) then
+		element:SetAtlas(icon)
+		element:Show()
+		element:SetWidth(element.width)
+	else
+		element:Hide()
+		element:SetWidth(1)
+	end
+end
 --=============================================--
 --[[ 	    	治疗预估和吸收 				 ]]--
 --=============================================--
@@ -303,7 +335,7 @@ local Override_PlateHealth = function(self, event, unit)
 	-- 数值
 	if aCoreCDB["PlateOptions"]["theme"] == "number" then
 		if (cur ~= 0 and cur ~= max) or aCoreCDB["PlateOptions"]["number_alwayshp"] then
-			element.value:SetText(math.floor(perc*100+.5))
+			element.value:SetText(math.floor(cur/max*100+.5))
 		else
 			element.value:SetText(nil)
 		end
@@ -1961,10 +1993,12 @@ local plate_func = function(self, unit)
 		targetname:SetFont(G.norFont, aCoreCDB["PlateOptions"]["targetnamefontsize"], "OUTLINE")
 		if aCoreCDB["PlateOptions"]["theme"] == "number" then
 			targetname:ClearAllPoints()
+			targetname:SetJustifyH("CENTER")
 			targetname:SetPoint("TOP", name, "BOTTOM", 0, 0)
 		else
 			targetname:ClearAllPoints()
-			targetname:SetPoint("LEFT", self, "RIGHT", 2, 0)
+			targetname:SetJustifyH("RIGHT")
+			targetname:SetPoint("RIGHT", self, "BOTTOMRIGHT", -5, 0)
 		end
 	end
 	
@@ -1974,17 +2008,29 @@ local plate_func = function(self, unit)
 	
 	-- 团队标记
 	local ricon = self.cover:CreateTexture(nil, "OVERLAY")
-	ricon:SetPoint("RIGHT", self.Tag_Name, "LEFT")
+	ricon:SetPoint("LEFT", self, "TOPLEFT", 5, 0)
 	ricon:SetSize(20, 20)
 	ricon:SetTexture(G.textureFile.."raidicons.blp")
 	
+	ricon.ApplySettings = function()		
+		if aCoreCDB["PlateOptions"]["theme"] == "number" then
+			ricon:ClearAllPoints()
+			ricon:SetPoint("RIGHT", hp.value, "LEFT", 0, 0)
+		else
+			ricon:ClearAllPoints()
+			ricon:SetPoint("LEFT", self, "TOPLEFT", 5, 0)
+		end
+	end
+	
 	self.RaidTargetIndicator = ricon
+	self.RaidTargetIndicator.ApplySettings()
 	
 	-- 任务标记
 	local qicon = self.cover:CreateTexture(nil, "OVERLAY")
 	qicon:SetPoint("RIGHT", name, "LEFT", 3, 0)
 	qicon:SetSize(10, 10)
 	qicon:SetAtlas("QuestNormal")
+	qicon.width = 10
 	qicon.Override = Override_QusetUpdate
 	self.QuestIndicator = qicon
 	
@@ -1992,19 +2038,21 @@ local plate_func = function(self, unit)
 	local PvP = self.cover:CreateTexture(nil, 'OVERLAY')
 	PvP:SetPoint("LEFT", name, "RIGHT", -3, 0)
 	PvP:SetSize(12, 12)
+	PvP.width = 12
+	PvP.Override = Override_PvPUpdate
 	self.PvPClassificationIndicator = PvP
 
 	-- 目标箭头
 	local arrow = CreateFrame("Frame", nil, self.cover)
 	
 	arrow.right = arrow:CreateTexture(nil, 'OVERLAY')
-	arrow.right:SetPoint("LEFT", name, "RIGHT", 0, 0)
+	arrow.right:SetPoint("LEFT", PvP, "RIGHT", 0, 0)
     arrow.right:SetSize(25, 20)
 	arrow.right:SetRotation(rad(-90))  
 	arrow.right:SetTexture(G.textureFile.."NeonRedArrow")
 	
 	arrow.left = arrow:CreateTexture(nil, 'OVERLAY')
-	arrow.left:SetPoint("RIGHT", name, "LEFT", 0, 0)
+	arrow.left:SetPoint("RIGHT", qicon, "LEFT", 0, 0)
     arrow.left:SetSize(25, 20)
 	arrow.left:SetRotation(rad(90))  
 	arrow.left:SetTexture(G.textureFile.."NeonRedArrow")
