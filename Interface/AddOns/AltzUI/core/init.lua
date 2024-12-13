@@ -47,6 +47,7 @@ G.media = {
 	glow = G.textureFile.."glow",
 	statusbar = G.textureFile.."statusbar",
 	ufbar = G.textureFile.."ufbar",	
+	invisible = G.textureFile.."invisible",	
 }
 
 local LSM = LibStub("LibSharedMedia-3.0")
