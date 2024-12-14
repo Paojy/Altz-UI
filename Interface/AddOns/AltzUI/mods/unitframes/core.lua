@@ -1998,7 +1998,7 @@ local plate_func = function(self, unit)
 		else
 			targetname:ClearAllPoints()
 			targetname:SetJustifyH("RIGHT")
-			targetname:SetPoint("RIGHT", self, "BOTTOMRIGHT", -5, 0)
+			targetname:SetPoint("LEFT", self, "RIGHT", 0, 0)
 		end
 	end
 	
