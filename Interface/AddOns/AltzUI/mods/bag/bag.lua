@@ -1,9 +1,5 @@
 local T, C, L, G = unpack(select(2, ...))
 
---====================================================--
---[[                 -- 背包分类 --                 ]]--
---====================================================--
-
 local columns = 10
 local bank_columns = 14
 local space_x = 3
@@ -21,19 +17,25 @@ local classIDs = {
 
 local classOrder = {0, 2, 4, 5, 7, 19}
 
-local favoriteItems = {}
-local newItems = {}
-local classItems = {}
-local otherItems = {}
-local emptyButtons = {}
+local Items = {
+	bag = {
+		favoriteItems = {},
+		newItems = {},
+		classItems = {},
+		otherItems = {},
+		emptyButtons = {},
+	},
+	bank = {
+		favoriteItems = {},
+		classItems = {},
+		otherItems = {},
+		emptyButtons = {},
+	},
+}
 
-for k, v in pairs({ContainerFrameCombinedBags:GetChildren()}) do
-	local object_type = v:GetObjectType()
-	if object_type == "Button" and v.routeToSibling then
-		v:Hide()
-	end
-end
-
+--====================================================--
+--[[                    -- API --                   ]]--
+--====================================================--
 local function SortItems(item1, item2)
 	local bag1 = item1:GetBagID()
 	local id1 = item1:GetID()
@@ -56,8 +58,9 @@ local function SortItems(item1, item2)
 	return id1 > id2
 end
 
-local function CreateTitle(self, str, isbank)
+local function CreateTitle(self, container_tag, str)
 	local frame = self.title_frames[self.class_index]
+	local isbank = container_tag == "bank"
 	local y = isbank and -50 or -25
 	
 	if not frame then
@@ -86,8 +89,10 @@ local function CreateTitle(self, str, isbank)
 	frame.text:SetText(str)
 end
 
-local function LayoutItemButtons(self, itemButtons, isbank)
+local function LayoutItemButtons(self, container_tag, itemButtons)
+	local isbank = container_tag == "bank"
 	local col = isbank and bank_columns or columns
+	
 	for i, bu in pairs(itemButtons) do
 		bu:ClearAllPoints()
 		if i == 1 then
@@ -104,7 +109,7 @@ local function LayoutItemButtons(self, itemButtons, isbank)
 	end
 end
 
-local function GridLayout(self, isbank, favoriteItems, newItems, classItems, otherItems, emptyButtons)	
+local function GridLayout(self, container_tag)
 	if not self.title_frames then
 		self.title_frames = {}
 	end
@@ -112,37 +117,37 @@ local function GridLayout(self, isbank, favoriteItems, newItems, classItems, oth
 	self.class_index = 0
 	self.rows = 1
 	
-	if #favoriteItems > 0 then
+	if #Items[container_tag]["favoriteItems"] > 0 then
 		self.class_index = self.class_index + 1
-		CreateTitle(self, L["收藏"], isbank)
-		LayoutItemButtons(self, favoriteItems, isbank)
+		CreateTitle(self, container_tag, L["收藏"])
+		LayoutItemButtons(self, container_tag, Items[container_tag]["favoriteItems"])
 	end
 	
-	if newItems and #newItems > 0 then
+	if Items[container_tag]["newItems"] and #Items[container_tag]["newItems"] > 0 then
 		self.class_index = self.class_index + 1
-		CreateTitle(self, L["新物品"], isbank)
-		LayoutItemButtons(self, newItems, isbank)
+		CreateTitle(self, container_tag, L["新物品"])
+		LayoutItemButtons(self, container_tag, Items[container_tag]["newItems"])
 	end
 	
 	for i, classID in pairs(classOrder) do
-		if classItems[classID] then
+		if Items[container_tag]["classItems"][classID] then
 			self.class_index = self.class_index + 1
-			CreateTitle(self, GetItemClassInfo(classID), isbank)
-			LayoutItemButtons(self, classItems[classID], isbank)
+			CreateTitle(self, container_tag, GetItemClassInfo(classID))
+			LayoutItemButtons(self, container_tag, Items[container_tag]["classItems"][classID])
 		end
 	end
 	
-	if #otherItems + #emptyButtons > 0 then
+	if #Items[container_tag]["otherItems"] + #Items[container_tag]["emptyButtons"] > 0 then
 		local buttons = {}
-		for i, bu in pairs(otherItems) do
+		for i, bu in pairs(Items[container_tag]["otherItems"]) do
 			table.insert(buttons, bu)
 		end
-		for i, bu in pairs(emptyButtons) do
+		for i, bu in pairs(Items[container_tag]["emptyButtons"]) do
 			table.insert(buttons, bu)
 		end
 		self.class_index = self.class_index + 1
-		CreateTitle(self, OTHER, isbank)
-		LayoutItemButtons(self, buttons, isbank)		
+		CreateTitle(self, container_tag, OTHER)
+		LayoutItemButtons(self, container_tag, buttons)		
 	end
 	
 	for i = self.class_index + 1, #self.title_frames do
@@ -150,7 +155,8 @@ local function GridLayout(self, isbank, favoriteItems, newItems, classItems, oth
 	end
 end
 
-local function CalculateHeight(self, isbank)
+local function CalculateHeight(self, container_tag)
+	local isbank = container_tag == "bank"
 	local titles = self.class_index or 1
 	local titlesHeight = titles*(title_height+space_y)
 	
@@ -160,7 +166,8 @@ local function CalculateHeight(self, isbank)
 	return itemsHeight + titlesHeight + (isbank and 70 or self:CalculateExtraHeight())
 end
 
-local function CalculateWidth(self, isbank)
+local function CalculateWidth(self, container_tag)
+	local isbank = container_tag == "bank"
 	local col = isbank and bank_columns or columns
 	
 	local itemButton = isbank and self.Item1 or self.Items[1]
@@ -169,54 +176,74 @@ local function CalculateWidth(self, isbank)
 	return itemsWidth + 15
 end
 
-hooksecurefunc(ContainerFrameCombinedBags, "UpdateItemLayout", function(self)
-	favoriteItems = table.wipe(favoriteItems)
-	newItems = table.wipe(newItems)
-	classItems = table.wipe(classItems)
-	otherItems = table.wipe(otherItems)
-	emptyButtons = table.wipe(emptyButtons)
+local function InitItemsData(container_tag)
+	for k, v in pairs(Items[container_tag]) do
+		Items[container_tag][k] = table.wipe(Items[container_tag][k])
+	end
+end
+
+local function SortButton(container_tag, bu)
+	local bagID = bu:GetBagID()
+	local buttonID = bu:GetID()
+	local itemID = C_Container.GetContainerItemID(bagID, buttonID)
+	bu:SetSize(aCoreCDB["ItemOptions"]["bagbuttonsize"], aCoreCDB["ItemOptions"]["bagbuttonsize"])
 	
-	for i, bu in self:EnumerateValidItems() do
-		local bagID = bu:GetBagID()
-		local buttonID = bu:GetID()
-		local itemID = C_Container.GetContainerItemID(bagID, buttonID)
-		bu:SetSize(aCoreCDB["ItemOptions"]["bagbuttonsize"], aCoreCDB["ItemOptions"]["bagbuttonsize"])
-		
-		if itemID then
-			if aCoreCDB and aCoreCDB["ItemOptions"]["favoriteitemIDs"][itemID] then				
-				table.insert(favoriteItems, bu)
-			elseif C_NewItems.IsNewItem(bagID, buttonID) then
-				table.insert(newItems, bu)
-			else
-				local itemQuality = select(3, GetItemInfo(itemID))
-				local classID = select(12, GetItemInfo(itemID))
-				if itemQuality == 0 then
-					table.insert(otherItems, bu)
-				elseif classIDs[classID] then
-					if not classItems[classID] then
-						classItems[classID] = {}
-					end
-					table.insert(classItems[classID], bu)
-				else
-					table.insert(otherItems, bu)
-				end
-			end
+	if itemID then
+		if aCoreCDB and aCoreCDB["ItemOptions"]["favoriteitemIDs"][itemID] then				
+			table.insert(Items[container_tag].favoriteItems, bu)
+		elseif tag == "bag" and C_NewItems.IsNewItem(bagID, buttonID) then
+			table.insert(Items[container_tag].newItems, bu)			
 		else
-			table.insert(emptyButtons, bu)
+			local itemQuality = select(3, GetItemInfo(itemID))
+			local classID = select(12, GetItemInfo(itemID))
+			if itemQuality == 0 then
+				table.insert(Items[container_tag].otherItems, bu)
+			elseif classIDs[classID] then
+				if not Items[container_tag]["classItems"][classID] then
+					Items[container_tag]["classItems"][classID] = {}
+				end
+				table.insert(Items[container_tag]["classItems"][classID], bu)
+			else
+				table.insert(Items[container_tag].otherItems, bu)
+			end
+		end
+	else	
+		table.insert(Items[container_tag].emptyButtons, bu)
+	end
+end
+
+local function SortItemsData(container_tag)
+	for k, v in pairs(Items[container_tag]) do
+		if k == "classItems" then
+			for classID, buttons in pairs(Items[container_tag][k]) do
+				table.sort(buttons, SortItems)
+			end
+		elseif k ~= "emptyButtons" then
+			table.sort(Items[container_tag][k], SortItems)
 		end
 	end
+end
+--====================================================--
+--[[                   -- 背包 --                   ]]--
+--====================================================--
+
+for k, v in pairs({ContainerFrameCombinedBags:GetChildren()}) do
+	local object_type = v:GetObjectType()
+	if object_type == "Button" and v.routeToSibling then
+		v:Hide()
+	end
+end
+
+hooksecurefunc(ContainerFrameCombinedBags, "UpdateItemLayout", function(self)
+	InitItemsData("bag")
 	
-	table.sort(favoriteItems, SortItems)
-	table.sort(newItems, SortItems)
-	table.sort(otherItems, SortItems)
-	
-	for classID, buttons in pairs(classItems) do
-		table.sort(buttons, SortItems)
+	for i, bu in self:EnumerateValidItems() do
+		SortButton("bag", bu)
 	end
 	
-	GridLayout(self, false, favoriteItems, newItems, classItems, otherItems, emptyButtons)
-	
-	self:SetSize(CalculateWidth(self), CalculateHeight(self))
+	SortItemsData("bag")
+	GridLayout(self, "bag")	
+	self:SetSize(CalculateWidth(self, "bag"), CalculateHeight(self, "bag"))
 end)
 
 local function UpdateFavoriteItem()
@@ -289,47 +316,15 @@ hooksecurefunc("UpdateContainerFrameAnchors", function()
 	ContainerFrameCombinedBags:SetPoint("BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", -12, 17)
 end)
 
--- 银行背包整合
-
-local bank_favoriteItems = {}
-local bank_classItems = {}
-local bank_otherItems = {}
-local bank_emptyButtons = {}
-
-local function SortBankButton(bu, bank_favoriteItems, bank_classItems, bank_otherItems, bank_emptyButtons)
-	local bagID = bu:GetBagID()
-	local buttonID = bu:GetID()
-	local itemID = C_Container.GetContainerItemID(bagID, buttonID)
-	bu:SetSize(aCoreCDB["ItemOptions"]["bagbuttonsize"], aCoreCDB["ItemOptions"]["bagbuttonsize"])
-	
-	if itemID then
-		if aCoreCDB and aCoreCDB["ItemOptions"]["favoriteitemIDs"][itemID] then				
-			table.insert(bank_favoriteItems, bu)
-		else
-			local itemQuality = select(3, GetItemInfo(itemID))
-			local classID = select(12, GetItemInfo(itemID))
-			if itemQuality == 0 then
-				table.insert(bank_otherItems, bu)
-			elseif classIDs[classID] then
-				if not bank_classItems[classID] then
-					bank_classItems[classID] = {}
-				end
-				table.insert(bank_classItems[classID], bu)
-			else
-				table.insert(bank_otherItems, bu)
-			end
-		end
-	else	
-		table.insert(bank_emptyButtons, bu)
-	end
-end
-
+--====================================================--
+--[[                   -- 银行 --                   ]]--
+--====================================================--
 local function updateIconBorderColor(border, r, g, b)
 	if not r or r == greyRGB or (r>.99 and g>.99 and b>.99) then
 		r, g, b = 0, 0, 0
 	end
 	border.__owner.bg:SetBackdropBorderColor(r, g, b)
-	border:Hide(true) -- fix icon border
+	border:Hide(true)
 end
 
 local function resetIconBorderColor(border, texture)
@@ -357,6 +352,7 @@ end
 local function ReskinBagSlot(slot)
 	slot:SetNormalTexture(0)
 	slot:SetPushedTexture(0)
+	
 	if slot.Background then slot.Background:SetAlpha(0) end
 	
 	slot:GetHighlightTexture():SetColorTexture(1, 1, 1, .25)
@@ -366,6 +362,7 @@ local function ReskinBagSlot(slot)
 
 	slot.icon:SetTexCoord(.08, .92, .08, .92)
 	slot.bg = T.createPXBackdrop(slot, .25)
+	
 	ReskinIconBorder(slot.IconBorder)
 
 	local questTexture = slot.IconQuestTexture
@@ -393,15 +390,7 @@ local function ConstructContainerButton(f, bagID, slotID)
 	
 	slot.BagID = bagID
 	slot.SlotID = slotID
-	
-	slot.Cooldown = _G[slotName..'Cooldown']
-	if slot.Cooldown then
-		slot.Cooldown:HookScript('OnHide', function(self)
-			self.start = nil
-			self.duration = nil
-		end)
-	end
-	
+
 	if not slot.itemLocation then
 		slot.itemLocation = _G.ItemLocation:CreateFromBagAndSlot(bagID, slotID)
 	end
@@ -464,13 +453,10 @@ end
 
 local function ContainerFrame_GenerateFrame()		
 	if BankFrame.activeTabIndex == 1 then		
-		bank_favoriteItems = table.wipe(bank_favoriteItems)
-		bank_classItems = table.wipe(bank_classItems)
-		bank_otherItems = table.wipe(bank_otherItems)
-		bank_emptyButtons = table.wipe(bank_emptyButtons)
+		InitItemsData("bank")
 		
 		for i, bu in BankFrame:EnumerateValidItems() do
-			SortBankButton(bu, bank_favoriteItems, bank_classItems, bank_otherItems, bank_emptyButtons)
+			SortButton("bank", bu)
 		end
 		
 		for bagID = 6, 12 do
@@ -479,28 +465,21 @@ local function ContainerFrame_GenerateFrame()
 				local tag = "bag"..bagID.."item"..slotID
 				local bu = BankSlotsFrame.bag_items[tag]
 				
-				SortBankButton(bu, bank_favoriteItems, bank_classItems, bank_otherItems, bank_emptyButtons)
+				SortButton("bank", bu)
 				bu:Show()
 				
 				UpdateSlot(bagID, slotID)
 			end
 		end
 		
-		table.sort(bank_favoriteItems, SortItems)
-		table.sort(bank_otherItems, SortItems)
-		
-		for classID, buttons in pairs(bank_classItems) do
-			table.sort(buttons, SortItems)
-		end
-		
-		GridLayout(BankSlotsFrame, true, bank_favoriteItems, nil, bank_classItems, bank_otherItems, bank_emptyButtons)
+		SortItemsData("bank")		
+		GridLayout(BankSlotsFrame, "bank")
+		BankFrame:SetSize(CalculateWidth(BankSlotsFrame, "bank"), CalculateHeight(BankSlotsFrame, "bank"))
 		
 		BankSlotsFrame.Bag1:ClearAllPoints()
 		BankSlotsFrame.Bag1:SetPoint("BOTTOMLEFT", BankFrame, "BOTTOMLEFT", 20, 10)
 		
 		BankSlotsFrame.EdgeShadows:SetPoint("BOTTOMRIGHT", 0, 50)
-		
-		BankFrame:SetSize(CalculateWidth(BankSlotsFrame, true), CalculateHeight(BankSlotsFrame, true))
 	end
 end
 
