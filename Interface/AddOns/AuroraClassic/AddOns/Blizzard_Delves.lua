@@ -15,7 +15,8 @@ end
 local function reskinOptionSlot(frame, skip)
 	local option = frame.OptionsList
 	B.StripTextures(option)
-	B.SetBD(option, nil, -5, 5, 5, -5)
+	local bg = B.SetBD(option, nil, -5, 5, 5, -5)
+	bg:SetFrameLevel(3)
 	if not skip then
 		hooksecurefunc(option.ScrollBox, "Update", updateButton)
 	end
@@ -50,20 +51,22 @@ C.themes["Blizzard_DelvesDashboardUI"] = function()
 	B.Reskin(DelvesDashboardFrame.ButtonPanelLayoutFrame.CompanionConfigButtonPanel.CompanionConfigButton)
 end
 
+local function handleRewards(self)
+	for rewardFrame in self.rewardPool:EnumerateActive() do
+		if not rewardFrame.bg then
+			B.CreateBDFrame(rewardFrame, .25)
+			rewardFrame.NameFrame:SetAlpha(0)
+			rewardFrame.bg = B.ReskinIcon(rewardFrame.Icon)
+			B.ReskinIconBorder(rewardFrame.IconBorder, true)
+		end
+	end
+end
+
 C.themes["Blizzard_DelvesDifficultyPicker"] = function()
 	B.ReskinPortraitFrame(DelvesDifficultyPickerFrame)
 	B.ReskinDropDown(DelvesDifficultyPickerFrame.Dropdown)
 	B.Reskin(DelvesDifficultyPickerFrame.EnterDelveButton)
 
-	hooksecurefunc(DelvesDifficultyPickerFrame.DelveRewardsContainerFrame, "SetRewards", function(self)
-		for rewardFrame in self.rewardPool:EnumerateActive() do
-			if not rewardFrame.styled then
-				B.CreateBDFrame(rewardFrame, .25)
-				rewardFrame.NameFrame:SetAlpha(0)
-				rewardFrame.IconBorder:SetAlpha(0)
-				B.ReskinIcon(rewardFrame.Icon)
-				rewardFrame.styled = true
-			end
-		end
-	end)
+	DelvesDifficultyPickerFrame.DelveRewardsContainerFrame:HookScript("OnShow", handleRewards)
+	hooksecurefunc(DelvesDifficultyPickerFrame.DelveRewardsContainerFrame, "SetRewards", handleRewards)
 end

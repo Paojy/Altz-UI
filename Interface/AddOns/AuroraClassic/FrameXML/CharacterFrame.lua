@@ -42,6 +42,18 @@ function B:ReskinModelControl()
 	end
 end
 
+local function NoTaintArrow(self, direction) -- needs review
+	B.StripTextures(self)
+
+	local tex = self:CreateTexture(nil, "ARTWORK")
+	tex:SetAllPoints()
+	B.SetupArrow(tex, direction)
+	self.__texture = tex
+
+	self:HookScript("OnEnter", B.Texture_OnEnter)
+	self:HookScript("OnLeave", B.Texture_OnLeave)
+end
+
 tinsert(C.defaultThemes, function()
 	local r, g, b = DB.r, DB.g, DB.b
 
@@ -320,6 +332,8 @@ tinsert(C.defaultThemes, function()
 	B.Reskin(detailFrame.ViewRenownButton)
 
 	-- Token frame
+	B.ReskinTrimScroll(TokenFrame.ScrollBar, true) -- taint if touching thumb, needs review
+	B.ReskinDropDown(TokenFrame.filterDropdown)
 	if TokenFramePopup.CloseButton then -- blizz typo by parentKey "CloseButton" into "$parent.CloseButton"
 		B.ReskinClose(TokenFramePopup.CloseButton)
 	else
@@ -329,18 +343,37 @@ tinsert(C.defaultThemes, function()
 	B.Reskin(TokenFramePopup.CurrencyTransferToggleButton)
 	B.ReskinCheck(TokenFramePopup.InactiveCheckbox)
 	B.ReskinCheck(TokenFramePopup.BackpackCheckbox)
-	B.ReskinArrow(TokenFrame.CurrencyTransferLogToggleButton, "right")
+
+	NoTaintArrow(TokenFrame.CurrencyTransferLogToggleButton, "right") -- taint control, needs review
 	B.ReskinPortraitFrame(CurrencyTransferLog)
+	B.ReskinTrimScroll(CurrencyTransferLog.ScrollBar)
+
+	local function handleCurrencyIcon(button)
+		local icon = button.CurrencyIcon
+		if icon then
+			B.ReskinIcon(icon)
+		end
+	end
+	hooksecurefunc(CurrencyTransferLog.ScrollBox, "Update", function(self)
+		self:ForEachFrame(handleCurrencyIcon)
+	end)
 
 	B.ReskinPortraitFrame(CurrencyTransferMenu)
+	B.CreateBDFrame(CurrencyTransferMenu.SourceSelector, .25)
 	CurrencyTransferMenu.SourceSelector.SourceLabel:SetWidth(56)
 	B.ReskinDropDown(CurrencyTransferMenu.SourceSelector.Dropdown)
-	B.ReskinInput(CurrencyTransferMenu.AmountSelector.InputBox)
 	B.ReskinIcon(CurrencyTransferMenu.SourceBalancePreview.BalanceInfo.CurrencyIcon)
 	B.ReskinIcon(CurrencyTransferMenu.PlayerBalancePreview.BalanceInfo.CurrencyIcon)
 	B.Reskin(CurrencyTransferMenu.ConfirmButton)
 	B.Reskin(CurrencyTransferMenu.CancelButton)
-	B.ReskinTrimScroll(TokenFrame.ScrollBar)
+
+	local amountSelector = CurrencyTransferMenu.AmountSelector
+	if amountSelector then
+		B.CreateBDFrame(amountSelector, .25)
+		B.Reskin(amountSelector.MaxQuantityButton)
+		B.ReskinEditBox(amountSelector.InputBox)
+		amountSelector.InputBox.__bg:SetInside(nil, 3, 3)
+	end
 
 	hooksecurefunc(TokenFrame.ScrollBox, "Update", function(self)
 		for i = 1, self.ScrollTarget:GetNumChildren() do

@@ -8,6 +8,10 @@ do
 		return
 	end
 
+	function B:SmoothBar()
+		return
+	end
+
 	B.HiddenFrame = CreateFrame("Frame")
 	B.HiddenFrame:Hide()
 
@@ -517,7 +521,7 @@ do
 	end
 
 	-- WowTrimScrollBar
-	function B:ReskinTrimScroll()
+	function B:ReskinTrimScroll(noTaint)
 		B.StripTextures(self)
 		reskinScrollArrow(self.Back, "up", true)
 		reskinScrollArrow(self.Forward, "down", true)
@@ -525,6 +529,7 @@ do
 			self.Track:DisableDrawLayer("ARTWORK")
 		end
 
+		if noTaint then return end
 		local thumb = self:GetThumb()
 		if thumb then
 			thumb:DisableDrawLayer("ARTWORK")
@@ -559,7 +564,7 @@ do
 
 	-- Handle close button
 	function B:Texture_OnEnter()
-		if self:IsEnabled() then
+		if self.IsEnabled and self:IsEnabled() then
 			if self.bg then
 				self.bg:SetBackdropColor(cr, cg, cb, .25)
 			else
@@ -1072,7 +1077,7 @@ do
 				frame:SetTexelSnappingBias(0)
 			elseif frame.GetStatusBarTexture then
 				local texture = frame:GetStatusBarTexture()
-				if texture and texture.SetSnapToPixelGrid then
+				if type(texture) == "table" and texture.SetSnapToPixelGrid then
 					texture:SetSnapToPixelGrid(false)
 					texture:SetTexelSnappingBias(0)
 				end

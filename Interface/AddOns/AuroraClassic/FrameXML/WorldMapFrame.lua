@@ -24,8 +24,6 @@ tinsert(C.defaultThemes, function()
 	sideToggle.CloseButton:GetRegions():Hide()
 	B.ReskinArrow(sideToggle.CloseButton, "left")
 
-	B.ReskinNavBar(WorldMapFrame.NavBar)
-
 	for i = 1, #overlayFrames do
 		local frame = overlayFrames[i]
 		local dropdown = frame.BountyDropdown

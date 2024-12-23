@@ -9,14 +9,12 @@ local function reskinQuestIcon(button)
 	if not button.SetNormalTexture then return end
 
 	if not button.styled then
-		button:SetSize(24, 24)
 		button:SetNormalTexture(0)
 		button:SetPushedTexture(0)
 		button:GetHighlightTexture():SetColorTexture(1, 1, 1, .25)
 		local icon = button.icon or button.Icon
 		if icon then
 			button.bg = B.ReskinIcon(icon, true)
-			icon:SetInside()
 		end
 
 		button.styled = true
@@ -29,16 +27,7 @@ end
 
 local function reskinQuestIcons(_, block)
 	reskinQuestIcon(block.ItemButton)
-	reskinQuestIcon(block.itemButton)
-	reskinQuestIcon(block.groupFinderButton)
-
-	local check = block.currentLine and block.currentLine.Check
-	if check and not check.styled then
-		check:SetAtlas("checkmark-minimal")
-		check:SetDesaturated(true)
-		check:SetVertexColor(0, 1, 0)
-		check.styled = true
-	end
+	reskinQuestIcon(block.rightEdgeFrame)
 end
 
 local function reskinHeader(header)
@@ -60,7 +49,6 @@ local function reskinBarTemplate(bar)
 	bar:SetStatusBarTexture(DB.normTex)
 	bar:SetStatusBarColor(r, g, b)
 	bar.bg = B.SetBD(bar)
-	--B:SmoothBar(bar)
 end
 
 local function reskinBar(self, key)
@@ -156,11 +144,12 @@ local function ReskinMawBuffsContainer(container)
 end
 
 tinsert(C.defaultThemes, function()
+	if not AuroraClassicDB.ObjectiveTracker then return end
 	if C_AddOns.IsAddOnLoaded("!KalielsTracker") then return end
 
 	-- Reskin Headers
 	local mainHeader = ObjectiveTrackerFrame.Header
-	reskinHeader(mainHeader)
+	B.StripTextures(mainHeader) -- main header looks simple this way
 
 	-- Minimize Button
 	local mainMinimize =mainHeader.MinimizeButton
@@ -190,7 +179,7 @@ tinsert(C.defaultThemes, function()
 	hooksecurefunc(ScenarioObjectiveTracker.StageBlock, "UpdateStageBlock", function(block)
 		block.NormalBG:SetTexture("")
 		if not block.bg then
-			block.bg = B.SetBD(block.GlowTexture, nil, 4, -2, -4, 2)
+			block.bg = B.SetBD(block.GlowTexture, nil, 0, -2, 4, 2)
 		end
 	end)
 
