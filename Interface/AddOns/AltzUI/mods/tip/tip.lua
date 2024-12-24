@@ -13,7 +13,7 @@ end)
 
 hooksecurefunc(GameTooltip, "ProcessLines", function(self)
 	local tooltipData = self:GetPrimaryTooltipData()
-	if tooltipData then	
+	if tooltipData then
 		if tooltipData.type == EnumItem then	
 			if aCoreCDB["OtherOptions"]["show_itemID"] then
 				local itemID = tooltipData.id
