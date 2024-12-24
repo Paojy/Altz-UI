@@ -696,11 +696,12 @@ local CreatePlateCastbar = function(self, unit)
 			cb:ClearAllPoints()
 			cb:SetPoint("TOPLEFT", self, "BOTTOMLEFT", 0, -3)
 			cb:SetPoint("TOPRIGHT", self, "BOTTOMRIGHT", 0, -3)
-			cb:SetHeight(aCoreCDB["PlateOptions"]["bar_height"]/4)
+			cb:SetHeight(aCoreCDB["PlateOptions"]["castbar_height"])
 			
-			cb.Spark:SetSize(8, aCoreCDB["PlateOptions"]["bar_height"]*2)
+			cb.Spark:SetSize(8, aCoreCDB["PlateOptions"]["castbar_height"]*2)
 			
-			cb.Icon:SetSize(aCoreCDB["PlateOptions"]["bar_height"]*1.25+3, aCoreCDB["PlateOptions"]["bar_height"]*1.25+3)
+			local icon_size = aCoreCDB["PlateOptions"]["bar_height"]+aCoreCDB["PlateOptions"]["castbar_height"]+3
+			cb.Icon:SetSize(icon_size, icon_size)
 			cb.Icon:ClearAllPoints()
 			cb.Icon:SetPoint("BOTTOMRIGHT", cb, "BOTTOMLEFT", -5, 0)
 			cb.Icon_bd:Show()
