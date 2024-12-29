@@ -112,16 +112,6 @@ local function styleActionButton(bu)
 	end
 end
 
---离开载具
-local function styleLeaveButton(bu)
-	if not bu or (bu and bu.rabs_styled) then return end
-	
-	bu:GetNormalTexture():SetTexCoord( .2, .8, .2, .8)
-	bu:GetPushedTexture():SetTexCoord( .2, .8, .2, .8)
-
-	bu.rabs_styled = true
-end
-
 local function UpdateActionbarsFontSize()
 	for i, bu in pairs(Styled_buttons) do
 		if bu.HotKey then
@@ -180,9 +170,6 @@ T.RegisterInitCallback(function()
 			i = i + 1
 		end
 	end)
-	
-	styleLeaveButton(OverrideActionBarLeaveFrameLeaveButton)
-	styleLeaveButton(MainMenuBarVehicleLeaveButton)	
 end)
 
 -- 禁止创建竖线
