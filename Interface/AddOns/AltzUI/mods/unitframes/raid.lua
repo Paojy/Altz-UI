@@ -1158,6 +1158,11 @@ T.RegisterInitCallback(function()
 		CompactRaidFrameManager:HookScript("OnShow", function()
 			CompactRaidFrameManager_SetSetting("IsShown", "0")
 		end)
+		CompactRaidFrameManager.toggleButtonForward:Hide()
+		
+		for i, tex in next, {CompactRaidFrameManager:GetRegions()} do
+			tex:SetAlpha(0)
+		end
 	end
 
 	Spawnraid()
