@@ -1308,10 +1308,11 @@ local Character_default_Settings = {
 		-- 样式
 		bar_width = 90,-- 条形
 		bar_height = 8,
+		castbar_height = 2,
 		valuefontsize = 8,
 		bar_hp_perc = "perc", -- 数值样式  "perc" "value_perc"
 		bar_alwayshp = false,		
-
+			
 		number_size = 23,-- 数字型
 		number_alwayshp = false,
 		number_colorheperc = false,	

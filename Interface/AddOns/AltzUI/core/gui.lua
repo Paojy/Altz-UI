@@ -1216,9 +1216,9 @@ T.CreateGUIOpitons(PlateInnerframe.common, "PlateOptions", 1, 16)
 
 -- 样式
 PlateInnerframe.style = CreateOptionPage("Nameplates Options style", L["样式"], PlateInnerframe, "VERTICAL")
-T.CreateGUIOpitons(PlateInnerframe.style, "PlateOptions", 17, 23)
+T.CreateGUIOpitons(PlateInnerframe.style, "PlateOptions", 17, 24)
 PlateInnerframe.style.option_y = PlateInnerframe.style.option_y - 150
-T.CreateGUIOpitons(PlateInnerframe.style, "PlateOptions", 24, 26)
+T.CreateGUIOpitons(PlateInnerframe.style, "PlateOptions", 25, 27)
 
 do
 	local ShouldShowNumber = function()
@@ -1239,17 +1239,17 @@ do
 	
 	T.createVisibleDR(ShouldShowBar, PlateInnerframe.style.theme,
 		PlateInnerframe.style.bar_width, PlateInnerframe.style.bar_height,
-		PlateInnerframe.style.valuefontsize, PlateInnerframe.style.bar_hp_perc, 
-		PlateInnerframe.style.bar_alwayshp)
+		PlateInnerframe.style.castbar_height, PlateInnerframe.style.valuefontsize,
+		PlateInnerframe.style.bar_hp_perc, PlateInnerframe.style.bar_alwayshp)
 end
 
 -- 玩家姓名板
 PlateInnerframe.playerresource = CreateOptionPage("Player Resource Bar Options", L["玩家姓名板"], PlateInnerframe, "VERTICAL")
-T.CreateGUIOpitons(PlateInnerframe.playerresource, "PlateOptions", 27, 30)
+T.CreateGUIOpitons(PlateInnerframe.playerresource, "PlateOptions", 28, 31)
 
 -- 光环过滤列表
 PlateInnerframe.auralist = CreateOptionPage("Plate Options Aura", L["光环"], PlateInnerframe, "VERTICAL")
-T.CreateGUIOpitons(PlateInnerframe.auralist, "PlateOptions", 31, 31)
+T.CreateGUIOpitons(PlateInnerframe.auralist, "PlateOptions", 32, 32)
 
 PlateInnerframe.auralist.my_filter = T.CreateAuraListOption(PlateInnerframe.auralist, {"TOPLEFT", 20, -55}, 200,
 L["我施放的光环"], {"PlateOptions", "myplateauralist"}, nil, {"PlateOptions", "myfiltertype"})
@@ -1267,7 +1267,7 @@ end
 
 -- 自定义
 PlateInnerframe.custom = CreateOptionPage("Plate Options Custom", CUSTOM, PlateInnerframe, "VERTICAL")
-T.CreateGUIOpitons(PlateInnerframe.custom, "PlateOptions", 34, 34)
+T.CreateGUIOpitons(PlateInnerframe.custom, "PlateOptions", 35, 35)
 
 PlateInnerframe.custom.color = T.CreatePlateColorListOption(PlateInnerframe.custom,  {"TOPLEFT", 30, -55}, 200,
 L["自定义颜色"], {"PlateOptions", "customcoloredplates"})

@@ -1794,7 +1794,18 @@ G.Options = {
 				T.ApplyUFSettings({"Health", "Power", "Castbar"}, "Altz_Nameplates")
 			end,
 		},
-		{ -- 21 数值字体大小
+		{ -- 21 施法条高度
+			key = "castbar_height",
+			option_type = "slider",
+			text = T.split_words(L["施法条"],L["高度"]),
+			min = 2,
+			max = 25,
+			step = 1,
+			apply = function()
+				T.ApplyUFSettings({"Health", "Power", "Castbar"}, "Altz_Nameplates")
+			end,
+		},
+		{ -- 22 数值字体大小
 			key = "valuefontsize",
 			option_type = "slider",
 			text = T.split_words(L["数值"],L["字体"],L["大小"]),
@@ -1805,7 +1816,7 @@ G.Options = {
 				T.ApplyUFSettings({"Tag_Name", "Tag_TargetName", "Health", "Power"}, "Altz_Nameplates")
 			end,
 		},
-		{ -- 22 数值样式
+		{ -- 23 数值样式
 			key = "bar_hp_perc",
 			option_type = "ddmenu",
 			text = T.split_words(L["数值"],L["样式"]),			
@@ -1817,7 +1828,7 @@ G.Options = {
 				T.ApplyUFSettings({"Health"}, "Altz_Nameplates")
 			end,
 		},
-		{ -- 23 总是显示生命值
+		{ -- 24 总是显示生命值
 			key = "bar_alwayshp",
 			option_type = "check",			
 			text = T.split_words(L["总是"],L["显示"],L["生命值"]),
@@ -1826,7 +1837,7 @@ G.Options = {
 				T.ApplyUFSettings({"Health"}, "Altz_Nameplates")
 			end,
 		},
-		{ -- 24 数字样式的选项 字体大小
+		{ -- 25 数字样式的选项 字体大小
 			key = "number_size",
 			option_type = "slider",
 			text = T.split_words(L["字体"],L["大小"]),
@@ -1837,7 +1848,7 @@ G.Options = {
 				T.ApplyUFSettings({"Health", "Power", "ClassPower"}, "Altz_Nameplates")
 			end,
 		},
-		{ -- 25 总是显示生命值
+		{ -- 26 总是显示生命值
 			key = "number_alwayshp",
 			option_type = "check",			
 			text = T.split_words(L["总是"],L["显示"],L["生命值"]),
@@ -1846,7 +1857,7 @@ G.Options = {
 				T.ApplyUFSettings({"Health"}, "Altz_Nameplates")
 			end,
 		},
-		{ -- 26 根据血量变色
+		{ -- 27 根据血量变色
 			key = "number_colorheperc",
 			option_type = "check",			
 			text = L["根据血量变色"],
@@ -1854,12 +1865,12 @@ G.Options = {
 				T.ApplyUFSettings({"Health"}, "Altz_Nameplates")
 			end,
 		},
-		{ -- 27 标题:玩家姓名板
+		{ -- 28 标题:玩家姓名板
 			option_type = "title",
 			text = L["玩家姓名板"],
 			line = true,
 		},
-		{ -- 28 启用
+		{ -- 29 启用
 			key = "playerplate",
 			option_type = "check",			
 			text = T.split_words(L["显示"],L["玩家姓名板"]),
@@ -1872,7 +1883,7 @@ G.Options = {
 				T.PostUpdateAllPlates()
 			end,
 		},
-		{ -- 29 施法条
+		{ -- 30 施法条
 			key = "platecastbar",
 			option_type = "check",			
 			text = T.split_words(L["显示"],PLAYER,L["施法条"]),
@@ -1881,7 +1892,7 @@ G.Options = {
 			end,
 			rely = "playerplate",
 		},
-		{ -- 30 个人资源
+		{ -- 31 个人资源
 			key = "classresource_show",
 			option_type = "check",			
 			text = DISPLAY_PERSONAL_RESOURCE,
@@ -1890,12 +1901,12 @@ G.Options = {
 			end,
 			rely = "playerplate",
 		},
-		{ -- 31 标题:光环
+		{ -- 32 标题:光环
 			option_type = "title",
 			text = L["光环"],
 			line = true,
 		},
-		{ -- 32 过滤方式
+		{ -- 33 过滤方式
 			key = "myfiltertype",
 			option_type = "ddmenu",
 			text = "",			
@@ -1908,7 +1919,7 @@ G.Options = {
 				T.ApplyUFSettings({"Auras"}, "Altz_Nameplates")
 			end,
 		},
-		{ -- 33 过滤方式
+		{ -- 34 过滤方式
 			key = "otherfiltertype",
 			option_type = "ddmenu",
 			text = "",			
@@ -1920,7 +1931,7 @@ G.Options = {
 				T.ApplyUFSettings({"Auras"}, "Altz_Nameplates")
 			end,
 		},
-		{ -- 34 标题:自定义
+		{ -- 35 标题:自定义
 			option_type = "title",
 			text = CUSTOM,
 			line = true,
