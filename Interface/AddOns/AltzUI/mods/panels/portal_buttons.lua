@@ -32,17 +32,23 @@ local function UpdateCooldownText(button)
 			if startTime > 0 and duration > 0 and isEnabled then
 				local remaining = max(0, (startTime + duration) - GetTime())
 	
-				-- Hide text and overlay if remaining time is 5 seconds or less
 				if remaining > 5 then
 					button.cooldownText:SetText(T.FormatTime(remaining))
+					button.cooldownIcon:Hide()
 				else
-					button.cooldownText:SetText(T.hex_str(L["传送可用"], 0, 1, 0))
+					button.cooldownText:SetText("")
+					button.cooldownIcon:SetAtlas("Raid-Icon-SummonPending")
+					button.cooldownIcon:Show()
 				end
 			else
-				button.cooldownText:SetText(T.hex_str(L["传送可用"], 0, 1, 0))
+				button.cooldownText:SetText("")
+				button.cooldownIcon:SetAtlas("Raid-Icon-SummonPending")
+				button.cooldownIcon:Show()
 			end
 		else
-			button.cooldownText:SetText(T.hex_str(L["传送不可用"], 1, 0, 0))
+			button.cooldownText:SetText("")
+			button.cooldownIcon:SetAtlas("Raid-Icon-SummonDeclined")
+			button.cooldownIcon:Show()
 		end
 	else
 		button.cooldownText:SetText("")
@@ -120,6 +126,13 @@ end
 local function CreateSpellButton(parent, spellID)
 	if parent.portal_bu then return end
 	
+	parent.HighestLevel:ClearAllPoints()
+	parent.HighestLevel:SetPoint("TOP", parent, "TOP", 0, -4)
+	parent.HighestLevel:SetFont(G.numFont, 25, "OUTLINE")
+	parent.HighestLevel:SetShadowOffset(0, 0)
+	
+	parent.Icon:SetAlpha(.5)
+	
 	local spellID = Data[parent.mapID]
 	
 	local button = CreateFrame("Button", nil, parent, "SecureActionButtonTemplate")
@@ -127,10 +140,23 @@ local function CreateSpellButton(parent, spellID)
 	button:RegisterForClicks("AnyUp", "AnyDown")
 	button:SetAttribute("type", "spell")
 	
+	-- Cooldown icon
+	local cooldownIcon = button:CreateTexture(nil, "OVERLAY")
+	cooldownIcon:SetSize(25, 25)
+	cooldownIcon:SetPoint("BOTTOM", 0, 13)	
+	button.cooldownIcon = cooldownIcon
+	
 	-- Cooldown text
 	local cooldownText = T.createtext(button, "OVERLAY", 12, "OUTLINE", "CENTER")
-	cooldownText:SetPoint("BOTTOM", 0, 2)
+	cooldownText:SetPoint("CENTER", cooldownIcon, "CENTER", 0, 0)
 	button.cooldownText = cooldownText
+	
+	-- Name text
+	local nameText = T.createtext(button, "OVERLAY", 12, "OUTLINE", "CENTER")
+	nameText:SetPoint("BOTTOMLEFT", button, "BOTTOMLEFT", 0, 2)
+	nameText:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", 0, 2)
+	nameText:SetHeight(12)
+	button.nameText = nameText
 	
 	-- Hover overlay
 	local hoverOverlay = button:CreateTexture(nil, "HIGHLIGHT")
@@ -164,15 +190,16 @@ end
 local function UpdateSpellButton(parent)
 	local button = parent.portal_bu
 	local spellID = Data[parent.mapID]
+	local name = C_ChallengeMode.GetMapUIInfo(parent.mapID)
+	
+	button.nameText:SetText(name)
 	
 	if IsSpellKnown(spellID) then
-		--print("Show", C_ChallengeMode.GetMapUIInfo(parent.mapID))	
 		button:SetAttribute("spell", spellID)
 		button.spellID = spellID		
 		UpdateCooldownText(button)
 		button.hoverOverlay:Show()
 	else
-		--print("Hide", C_ChallengeMode.GetMapUIInfo(parent.mapID))
 		button:SetAttribute("spell", nil)
 		button.spellID = nil
 		UpdateCooldownText(button)
@@ -187,9 +214,10 @@ eventFrame:SetScript("OnEvent", function(self, event, ...)
 	if event == "ADDON_LOADED" then
 		local addon = ...
 		if addon == "Blizzard_ChallengesUI" and ChallengesFrame then
-			ChallengesFrame:HookScript("OnShow", function(self)
+			ChallengesFrame.WeeklyInfo.Child.DungeonScoreInfo.Score:SetFont(G.numFont, 40, "OUTLINE")
+			hooksecurefunc(ChallengesFrame, "Update", function()
 				for i = 1, 8 do
-					local bu = self.DungeonIcons[i]
+					local bu = ChallengesFrame.DungeonIcons[i]
 					CreateSpellButton(bu)
 					UpdateSpellButton(bu)
 				end
