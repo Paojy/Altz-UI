@@ -129,6 +129,13 @@ local ClassSpells = {
 			color = {.73, .93, .97},
 			point = {"TOPRIGHT", 0, 0},
 		},
+		[974] = { -- 大地之盾
+			font = "text",
+			update_type = "stack",
+			color = {.95, .93, .79},
+			point = {"TOPLEFT", 0, 0},
+			str = {"⑴","⑵","⑶","⑷","⑸","⑹","⑺","⑻","⑼","⑽","⑾","⑿","⒀","⒁","⒂","⒃","⒄","⒅","⒆","⒇"},
+		},
 		[383648] = { -- 大地之盾
 			font = "text",
 			update_type = "stack",
