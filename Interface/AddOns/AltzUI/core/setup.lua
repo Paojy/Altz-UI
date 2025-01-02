@@ -12,7 +12,7 @@ TutorialsFrame:Hide()
 T.setStripBD(TutorialsFrame)
 
 local step = 0
-local function CreateTutorialsStepFrame(title, text)
+local function CreateTutorialsStepFrame(title, text, left)
 	step = step + 1
 	
 	local frame = CreateFrame("Frame", nil, TutorialsFrame)
@@ -47,7 +47,15 @@ local function CreateTutorialsStepFrame(title, text)
 	
 	frame.text = T.createtext(frame, "OVERLAY", 15, "OUTLINE", "CENTER")
 	frame.text:SetPoint("TOP", frame.title, "BOTTOM", 0, -10)
-	frame.text:SetText(text)
+		
+	frame.left_text = T.createtext(frame, "OVERLAY", 15, "OUTLINE", "LEFT")
+	frame.left_text:SetPoint("TOP", frame.title, "BOTTOM", 0, -10)
+	
+	if left then
+		frame.left_text:SetText(text)
+	else
+		frame.text:SetText(text)
+	end
 	
 	if step == 1 then
 		frame.model = T.CreateCreatureModel(frame, 700, 230, {"CENTER", TutorialsFrame, "CENTER"}, 41039, {-12.5, .2, -6.2}, .7)
@@ -371,7 +379,7 @@ end
 --[[               -- 8 更新日志 --                 ]]--
 --====================================================--
 if L["更新日志tip"] then
-	CreateTutorialsStepFrame(G.Version.." "..L["更新日志"], L["更新日志tip"])
+	CreateTutorialsStepFrame(G.Version.." "..L["更新日志"], L["更新日志tip"], true)
 end
 
 --====================================================--
@@ -398,9 +406,11 @@ function TutorialsFrame:ShowFrame(page)
 	TutorialsFrame[page]:Show()
 
 	if page == step then
-		TutorialsFrame[step].previous_step:Hide()
-		TutorialsFrame[step].next_step:SetText(OKAY)
+		TutorialsFrame[step].step_text:Hide()
+		TutorialsFrame[step].previous_step:Hide()	
+		TutorialsFrame[step].next_step:SetText(OKAY)		
 	else
+		TutorialsFrame[step].step_text:Show()
 		TutorialsFrame[step].previous_step:Show()
 		TutorialsFrame[step].next_step:SetText(L["完成"])
 	end

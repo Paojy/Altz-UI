@@ -4,7 +4,7 @@ if G.Client == "zhCN" or G.Client == "zhTW" then return end
 --====================================================--
 --[[           -- 更新日志和插件提示 --             ]]--
 --====================================================--
-L["更新日志tip"] = [[11.12
+L["更新日志tip"] = [[
 Add the option to adjust the height of the nameplate castbar.
 Correction of departure vehicle button error
 Complete Chinese characters in numeric fonts
