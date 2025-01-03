@@ -56,18 +56,20 @@ local function UpdateCooldownText(button)
 end
 
 local function AddScoreToTooltip(Info, overTime)
-	GameTooltip_AddBlankLineToTooltip(GameTooltip)
-	GameTooltip_AddNormalLine(GameTooltip, LFG_LIST_BEST_RUN..string.format("[%s]", L["赛季"]))
-	GameTooltip_AddColoredLine(GameTooltip, MYTHIC_PLUS_POWER_LEVEL:format(Info.level), HIGHLIGHT_FONT_COLOR)
-	
-	local displayZeroHours = Info.durationSec >= SECONDS_PER_HOUR
-	local durationText = SecondsToClock(Info.durationSec, displayZeroHours)
-	
-	if overTime then
-		local overtimeText = DUNGEON_SCORE_OVERTIME_TIME:format(durationText)
-		GameTooltip_AddColoredLine(GameTooltip, overtimeText, LIGHTGRAY_FONT_COLOR)
-	else
-		GameTooltip_AddColoredLine(GameTooltip, durationText, HIGHLIGHT_FONT_COLOR)
+	if info then
+		GameTooltip_AddBlankLineToTooltip(GameTooltip)
+		GameTooltip_AddNormalLine(GameTooltip, LFG_LIST_BEST_RUN..string.format("[%s]", L["赛季"]))
+		GameTooltip_AddColoredLine(GameTooltip, MYTHIC_PLUS_POWER_LEVEL:format(Info.level), HIGHLIGHT_FONT_COLOR)
+		
+		local displayZeroHours = Info.durationSec >= SECONDS_PER_HOUR
+		local durationText = SecondsToClock(Info.durationSec, displayZeroHours)
+		
+		if overTime then
+			local overtimeText = DUNGEON_SCORE_OVERTIME_TIME:format(durationText)
+			GameTooltip_AddColoredLine(GameTooltip, overtimeText, LIGHTGRAY_FONT_COLOR)
+		else
+			GameTooltip_AddColoredLine(GameTooltip, durationText, HIGHLIGHT_FONT_COLOR)
+		end
 	end
 end
 
