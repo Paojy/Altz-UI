@@ -1289,7 +1289,7 @@ T.CreateGUIOpitons(CombattextOptions, "CombattextOptions", 1, 11)
 --[[              -- Other Options --               ]]--
 --====================================================--
 local OtherOptions = CreateOptionPage("Other Options", OTHER, GUI, "VERTICAL")
-T.CreateGUIOpitons(OtherOptions, "OtherOptions", 1, 18)
+T.CreateGUIOpitons(OtherOptions, "OtherOptions", 1, 20)
 
 --====================================================--
 --[[               -- Commands --               ]]--

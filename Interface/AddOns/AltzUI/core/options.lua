@@ -2029,48 +2029,60 @@ G.Options = {
 		},
 	},
 	OtherOptions = {
-		{ -- 1 标题:鼠标提示
+		{ -- 1 标题:增益效果和负面效果
+			option_type = "title",
+			text = HUD_EDIT_MODE_BUFFS_AND_DEBUFFS_LABEL,
+			line = true,
+		},
+		{ -- 显示光环时间
+			key = "buffDurations",
+			option_type = "cvar_check",
+			text = T.split_words(L["显示"],L["光环"],L["时间"]),
+			arg1 = "1",
+			arg2 = "0",
+		},
+		{ -- 标题:鼠标提示
 			option_type = "title",
 			text = L["鼠标提示"],
 			line = true,
 		},
-		{ -- 2 法术编号
+		{ -- 法术编号
 			key = "show_spellID",
 			option_type = "check",
 			width = .4,
 			text = T.split_words(L["鼠标提示"],L["显示"],L["法术编号"]),	
 		},
-		{ -- 3 物品编号
+		{ -- 5 物品编号
 			key = "show_itemID",
 			option_type = "check",
 			width = .6,
 			text = T.split_words(L["鼠标提示"],L["显示"],L["物品编号"]),	
 		},
-		{ -- 4 战斗中隐藏
+		{ -- 战斗中隐藏
 			key = "combat_hide",
 			option_type = "check",
 			width = .4,
 			text = T.split_words(L["战斗中隐藏"],L["鼠标提示"]),	
 		},
-		{ -- 5 跟随光标
+		{ -- 跟随光标
 			key = "anchor_cursor",
 			option_type = "check",
 			width = .6,
 			text = T.split_words(L["鼠标提示"],L["跟随光标"]),	
 		},
-		{ -- 6 标题:讯息提示
+		{ -- 标题:讯息提示
 			option_type = "title",
 			text = L["讯息提示"],
 			line = true,
 		},
-		{ -- 7 任务栏闪动
+		{ -- 任务栏闪动
 			key = "flashtaskbar",
 			option_type = "check",
 			width = .4,
 			text = L["任务栏闪动"],	
 			tip = L["任务栏闪动提示"],
 		},
-		{ -- 8 隐藏错误提示
+		{ -- 10 隐藏错误提示
 			key = "hideerrors",
 			option_type = "check",
 			width = .6,
@@ -2080,33 +2092,33 @@ G.Options = {
 				T.EnableErrorMsg()
 			end,
 		},
-		{ -- 9 随机奖励
+		{ -- 随机奖励
 			key = "LFGRewards",
 			option_type = "check",
 			width = .4,
 			text = L["随机奖励"],	
 			tip = L["随机奖励提示"],
 		},
-		{ -- 10 稀有警报
+		{ -- 稀有警报
 			key = "vignettealert",
 			option_type = "check",
 			width = .6,
 			text = L["稀有警报"],	
 			tip = L["稀有警报提示"],
 		},
-		{ -- 11 标题:辅助功能
+		{ -- 标题:辅助功能
 			option_type = "title",
 			text = L["辅助功能"],
 			line = true,
 		},
-		{ -- 12 成就截图
+		{ -- 成就截图
 			key = "autoscreenshot",
 			option_type = "check",
 			width = .4,
 			text = L["成就截图"],	
 			tip = L["成就截图提示"],
 		},
-		{ -- 13 提升截图画质
+		{ -- 15 提升截图画质
 			key = "screenshotQuality",
 			option_type = "cvar_check",
 			width = .6,
@@ -2114,28 +2126,28 @@ G.Options = {
 			arg1 = "10",
 			arg2 = "1",
 		},
-		{ -- 14 战场自动释放灵魂
+		{ -- 战场自动释放灵魂
 			key = "battlegroundres",
 			option_type = "check",
 			width = .4,
 			text = L["战场自动释放灵魂"],	
 			tip = L["战场自动释放灵魂提示"],
 		},
-		{ -- 15 自动接受复活
+		{ -- 自动接受复活
 			key = "acceptres",
 			option_type = "check",
 			width = .6,
 			text = L["自动接受复活"],	
 			tip = L["自动接受复活提示"],
 		},
-		{ -- 16 自动召宝宝
+		{ -- 自动召宝宝
 			key = "autopet",
 			option_type = "check",
 			width = .4,
 			text = L["自动召宝宝"],	
 			tip = L["自动召宝宝提示"],
 		},
-		{ -- 17 优先偏爱宝宝
+		{ -- 优先偏爱宝宝
 			key = "autopet_favorite",
 			option_type = "check",
 			width = .6,
@@ -2143,7 +2155,7 @@ G.Options = {
 			tip = L["优先偏爱宝宝提示"],
 			rely = "autopet",
 		},
-		{ -- 18 反和谐
+		{ -- 20 反和谐
 			key = "overrideArchive",
 			option_type = "cvar_check",
 			width = .4,
