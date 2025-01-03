@@ -89,11 +89,7 @@ local function init()
 		tex[7]:SetAlpha(0)
 		tex[8]:SetAlpha(0)
 		
-		eb.backdrop = T.createBackdrop(eb, .3)
-		
-		eb:SetScript("OnEditFocusLost", function(self)
-			self:SetAlpha(0)
-		end)
+		eb.backdrop = T.createBackdrop(eb, .3)		
 
 		-- 输入框位置
 		if eb and cf then
