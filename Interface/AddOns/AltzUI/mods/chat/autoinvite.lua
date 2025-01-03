@@ -80,34 +80,40 @@ hooksecurefunc("SetItemRef", function(link)
 end)
 
 local EventFrame = CreateFrame('Frame')
-EventFrame:SetScript('OnEvent', function(self, event, arg1, arg2, ...)
+EventFrame:SetScript('OnEvent', function(self, event, ...)
 	if event == "CHAT_MSG_WHISPER" or event == "CHAT_MSG_BN_WHISPER" then
+		local name = ...
 		if aCoreCDB["ChatOptions"]["autoinvite"] then
 			local success, reason
 			for keyword, _ in pairs(keywords) do
-				if keyword:lower() == arg1:lower() then
+				if keyword:lower() == name:lower() then
 					if event == "CHAT_MSG_WHISPER" then
-						success, reason = InvitePlayer(arg2)
+						local name = select(2, ...)
+						success, reason = InvitePlayer(name)
 						if not success then
-							SendChatMessage(L["无法自动邀请进组:"]..reason, "WHISPER", nil, arg2)
+							SendChatMessage(L["无法自动邀请进组:"]..reason, "WHISPER", nil, name)
 						end
-					elseif event == "CHAT_MSG_BN_WHISPER" then
-						local _, toonName, client, realmName = BNGetToonInfo(select(11, ...))
-						if client == "WoW" then
-							success, reason = InvitePlayer(toonName.."-"..realmName)
-							if not success then
-								BNSendWhisper(select(11, ...), L["无法自动邀请进组:"]..reason)
+					elseif event == "CHAT_MSG_BN_WHISPER" then						
+						local senderBnetIDAccount = select(13, ...)
+						local _, BNcount = BNGetNumFriends() 
+						for i = 1, BNcount do
+							if senderBnetIDAccount == C_BattleNet.GetFriendAccountInfo(i)["bnetAccountID"] then
+								local numGameAccounts = C_BattleNet.GetFriendNumGameAccounts(i)
+								for j = 1, numGameAccounts do
+									local info = C_BattleNet.GetFriendGameAccountInfo(i, j)
+									if info and info.clientProgram == BNET_CLIENT_WOW and info.isInCurrentRegion and info.wowProjectID == WOW_PROJECT_MAINLINE then
+										BNInviteFriend(info.gameAccountID)
+									end
+								end
+								break
 							end
-						else
-							BNSendWhisper(select(11, ...), L["无法自动邀请进组:"]..string.format(L["客户端错误"], BlzGames[client]))
 						end
 					end
 				end
 			end
 		end
 	elseif event == "PARTY_INVITE_REQUEST" then
-		local name = arg1
-		local guid = select(5, ...)
+		local name, _, _, _, guid = ...
         if C_GuildInfo.MemberExistsByName(name) and aCoreCDB["ChatOptions"]["acceptInvite_guild"] then -- 公会
             accept_invite()
             
@@ -135,7 +141,6 @@ EventFrame:SetScript('OnEvent', function(self, event, arg1, arg2, ...)
             accept_invite()
         elseif aCoreCDB["ChatOptions"]["refuseInvite_stranger"] then
             cancel_invite(name)
-			
         end
 	end
 end)
