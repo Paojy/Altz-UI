@@ -113,7 +113,7 @@ EventFrame:SetScript('OnEvent', function(self, event, ...)
 			end
 		end
 	elseif event == "PARTY_INVITE_REQUEST" then
-		local name, _, _, _, guid = ...
+		local name, _, _, _, _, _, guid = ...
         if C_GuildInfo.MemberExistsByName(name) and aCoreCDB["ChatOptions"]["acceptInvite_guild"] then -- 公会
             accept_invite()
             
