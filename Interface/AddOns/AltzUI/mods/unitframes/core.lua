@@ -266,7 +266,7 @@ local Override_Health = function(self, event, unit)
 	if (UnitIsConnected(unit)) then
 		element:SetValue(max - cur)
 	else
-		element:SetValue(max)
+		element:SetValue(0)
 	end
 	
 	-- 数值
@@ -446,6 +446,22 @@ local CustomDelayText = function(castbar, duration)
 	end
 end
 
+local CreatePip = function(element, stage)
+	local frame = CreateFrame('Frame', nil, element)
+	frame:SetSize(1, 10)
+	
+	frame.tex = frame:CreateTexture(nil, "OVERLAY")
+	frame.tex:SetTexture(G.media.blank)
+	frame.tex:SetVertexColor(0, 0, 0)
+	frame.tex:SetAllPoints(frame)
+	
+	frame.text = T.createnumber(frame, "OVERLAY", 12, "OUTLINE", "CENTER")
+	frame.text:SetPoint("BOTTOM", frame, "TOP", 0, 2)
+	frame.text:SetText(stage)
+	
+	return frame
+end
+
 local CreateCastbars = function(self, unit)
 	local u = unit:match("[^%d]+")
 	if T.multicheck(u, "target", "player", "focus", "boss", "arena") then
@@ -513,7 +529,8 @@ local CreateCastbars = function(self, unit)
 		cb.CustomTimeText = CustomTimeText
 		cb.CustomDelayText = CustomDelayText
 		cb.PostCastStart = UpdateCastbarColor
-
+		cb.CreatePip = CreatePip
+		
 		cb.EnableSettings = function(object)
 			if not object or object == self then	
 				if aCoreCDB["UnitframeOptions"]["castbars"] then
@@ -711,7 +728,6 @@ local CreatePlateCastbar = function(self, unit)
 	self.Castbar = cb
 	self.Castbar.ApplySettings()
 end
-
 --=============================================--
 --[[ Swing Timer ]]--
 --=============================================--
@@ -1080,7 +1096,7 @@ local PostUpdate_Runes = function(self, runemap)
 end
 
 local function CreateClassResources(self)
-	if T.multicheck(G.myClass, "DEATHKNIGHT", "WARLOCK", "PALADIN", "MONK", "MAGE", "ROGUE", "DRUID") then
+	if T.multicheck(G.myClass, "DEATHKNIGHT", "WARLOCK", "PALADIN", "MONK", "MAGE", "ROGUE", "DRUID","EVOKER") then
 		local count = (G.myClass == "DEATHKNIGHT") and 6 or 7
 		local bars = CreateFrame("Frame", self:GetName().."SpecOrbs", self)
 		
@@ -1134,7 +1150,7 @@ local function CreateClassResources(self)
 			
 			self.Runes = bars
 			self.Runes.ApplySettings()
-		elseif T.multicheck(G.myClass , "PALADIN","MONK","WARLOCK","MAGE","ROGUE","DRUID") then
+		elseif T.multicheck(G.myClass , "PALADIN","MONK","WARLOCK","MAGE","ROGUE","DRUID","EVOKER") then
 			bars.PostUpdate = PostUpdate_ClassPower
 			
 			self.ClassPower = bars
