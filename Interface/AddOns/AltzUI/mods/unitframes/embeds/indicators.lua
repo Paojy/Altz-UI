@@ -16,7 +16,7 @@ local ClassSpells = {
 			update_type = "stack",
 			color = {.94, .8, .33},
 			point = {"TOPRIGHT", 0, 0},
-			str = {"①","②","③","④","⑤","⑥","⑦","⑧","⑨","⑩","⑪","⑫","⑬","⑭","⑮","⑯","⑰","⑱","⑲","⑳"}
+			str = {"⑴","⑵","⑶","⑷","⑸","⑹","⑺","⑻","⑼","⑽","⑾","⑿","⒀","⒁","⒂","⒃","⒄","⒅","⒆","⒇"},
 		},
 		[194384] = { -- 救赎
 			font = "text",
@@ -172,7 +172,25 @@ local ClassSpells = {
 		},
 	},
 	EVOKER = {
-	
+		[366155] = { -- 逆转
+			font = "text",
+			update_type = "dur",
+			color = {.95, .91, .51},
+			point = {"TOPLEFT", 0, 0},
+		},
+		[409895] = { -- 精神之花
+			font = "text",
+			update_type = "dur",
+			color = {.22, 1, .78},
+			point = {"LEFT", 0, 0},
+		},
+		[364343] = { -- 回响
+			font = "symbol",
+			adjust = -1,
+			color = {.8, .87, .6},
+			point = {"RIGHT", 0, 0},
+			str = "Y",
+		},
 	},
 	WARRIOR = {
 	
