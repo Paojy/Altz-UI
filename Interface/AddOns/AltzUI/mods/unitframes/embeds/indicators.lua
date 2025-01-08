@@ -109,18 +109,6 @@ local ClassSpells = {
 			point = {"TOP", 0, 0},
 			str = "F",
 		},
-		[223306] = { -- 赋予信仰		
-			font = "text",
-			update_type = "dur",
-			color = {.98, .96, .66},
-			point = {"RIGHT", 0, 0},
-		},
-		[287280] = { -- 圣光闪烁		
-			font = "text",
-			update_type = "dur",
-			color = {.98, .63, .35},
-			point = {"TOPLEFT", 0, 0},
-		},
 	},
 	SHAMAN = {
 		[61295] = { -- 激流
@@ -145,12 +133,6 @@ local ClassSpells = {
 		},
 	},
 	MONK = {
-		[191840] = { -- 精华之泉		
-			font = "text",
-			update_type = "dur",
-			color = {.42, .88, .84},
-			point = {"TOPRIGHT", 0, 0},
-		},
 		[115175] = { -- 抚慰之雾		
 			font = "symbol",
 			adjust = -1,
@@ -164,7 +146,7 @@ local ClassSpells = {
 			color = {.84, .8, .46},
 			point = {"LEFT", 0, 0},
 		},
-		[115151] = { -- 复苏之雾		
+		[119611] = { -- 复苏之雾		
 			font = "text",
 			update_type = "dur",
 			color = {.28, .75, .6},
