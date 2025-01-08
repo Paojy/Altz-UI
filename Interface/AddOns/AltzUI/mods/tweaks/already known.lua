@@ -41,9 +41,11 @@ end
 hooksecurefunc('MerchantFrame_UpdateMerchantInfo', MerchantFrame_UpdateMerchantInfo)
 
 local function IsBuyBackItemAlreadyKnown(index)
-	for _, v in pairs(C_TooltipInfo.GetBuybackItem(index)["lines"]) do
-		if v.leftText and v.leftText == ITEM_SPELL_KNOWN then
-			return true
+	if index then
+		for _, v in pairs(C_TooltipInfo.GetBuybackItem(index)["lines"]) do
+			if v.leftText and v.leftText == ITEM_SPELL_KNOWN then
+				return true
+			end
 		end
 	end
 end
