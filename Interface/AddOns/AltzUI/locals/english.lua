@@ -5,11 +5,17 @@ if G.Client == "zhCN" or G.Client == "zhTW" then return end
 --[[           -- 更新日志和插件提示 --             ]]--
 --====================================================--
 L["更新日志tip"] = [[
-Add the option to adjust the height of the nameplate castbar.
-Correction of departure vehicle button error
-Complete Chinese characters in numeric fonts
-Raid Healer Indicators appearance adjustment, spell ID correction (Cenarion Ward, Earth Shield, Riptide)
-Hide Blizzard Compact Raid Frame Manager]]
+Raid frames click casting and aura filter spell data correction, cleaning expired spells.
+Appearance adjustment of the Mythic+ interface, correction of misalignment of the portal button.
+Error correction for automatic invitation of monitoring keywords into groups.
+Error correction for automatically accepting friend invitations.
+Correction of the error where the input box does not display when player names are clicked in the chat box.
+Unit offline health color display error correction.
+The player's unit frame add essence of Evokers.
+Add rank display in the cast bar.
+Add the option to the display buff/debuff icons' duration text.(GUI - Others)
+Add the option to display/hide the player's debuff icon on the unitframe (GUI - Unit Frame - Aura)
+]]
 
 L["TIPS"] = {
 	"Click the date on the minimap to open the calendar",
