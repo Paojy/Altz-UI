@@ -403,9 +403,9 @@ T.CreateGUIOpitons(UFInnerframe.castbar, "UnitframeOptions", 42, 43)
 
 -- 光环
 UFInnerframe.aura = CreateOptionPage("UF Options aura", AURAS, UFInnerframe, "VERTICAL")
-T.CreateGUIOpitons(UFInnerframe.aura, "UnitframeOptions", 47, 52)
+T.CreateGUIOpitons(UFInnerframe.aura, "UnitframeOptions", 47, 53)
 
-UFInnerframe.aura.aurafliter_list = T.CreateAuraListOption(UFInnerframe.aura, {"TOPLEFT", 20, -180}, 230,
+UFInnerframe.aura.aurafliter_list = T.CreateAuraListOption(UFInnerframe.aura, {"TOPLEFT", 20, -220}, 230,
 L["白名单"]..AURAS, {"UnitframeOptions", "AuraFilterwhitelist"})
 UFInnerframe.aura.aurafliter_list.apply = function()
 	T.ApplyUFSettings({"Auras"})
@@ -701,7 +701,7 @@ local function CreateClickcastKeyOptions(bu_tag, text)
 		frame.options[mod_ind].item_input = item_input
 		
 		-- 宏
-		local macro_input = T.EditboxWithStr(frame, {"LEFT", action_select, "RIGHT", -14, 2}, L["输入一个宏"], 140)
+		local macro_input = T.EditboxWithStr(frame, {"LEFT", action_select, "RIGHT", 20, 0}, L["输入一个宏"], 120)
 		CreateMacroEditBox(macro_input, frame, bu_tag, mod_ind)
 		
 		macro_input:SetScript("OnShow", function(self)

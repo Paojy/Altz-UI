@@ -459,7 +459,7 @@ G.Options = {
 				T.ApplyUFSettings({"Health", "Power", "Castbar"})
 			end,
 		},
-		{ -- 治疗和吸收预估
+		{ -- 10 治疗和吸收预估
 			key = "hp_healprediction",
 			option_type = "check",
 			text = L["治疗和吸收预估"],
@@ -468,7 +468,7 @@ G.Options = {
 				T.EnableUFSettings({"HealthPrediction"}, "Altz - Player", "Altz - Target", "Altz - Focus")
 			end,
 		},
-		{ -- 10 分割线
+		{ -- 分割线
 			option_type = "title",
 			line = true,
 		},
@@ -586,7 +586,7 @@ G.Options = {
 				["oUF_AltzFocus"] = true,
 			},
 		},
-		{ -- 能量条高度
+		{ -- 20 能量条高度
 			key = "ppheight",
 			option_type = "slider",
 			text = T.split_words(L["能量条"], L["高度"],L["比例"]),
@@ -597,7 +597,7 @@ G.Options = {
 				T.ApplyUFSettings({"Health", "Power", "Auras", "Castbar", "ClassPower", "Runes", "Stagger", "Dpsmana"})
 			end,
 		},
-		{ -- 20 分割线
+		{ -- 分割线
 			option_type = "title",
 			line = true,
 		},
@@ -710,13 +710,13 @@ G.Options = {
 			end,
 			rely = "castbars",
 		},
-		{ -- 可打断施法条颜色
+		{ -- 30 可打断施法条颜色
 			key = "Interruptible_color",
 			option_type = "color",
 			text = T.split_words(L["可打断"],L["施法条"],L["颜色"]),
 			rely = "castbars",
 		},
-		{ -- 30 不可打断施法条颜色
+		{ -- 不可打断施法条颜色
 			key = "notInterruptible_color",
 			option_type = "color",
 			text = T.split_words(L["不可打断"],L["施法条"],L["颜色"]),
@@ -844,7 +844,7 @@ G.Options = {
 				["AltzUI_focusCastbar"] = true,
 			},
 		},
-		{ -- 施法条图标尺寸
+		{ -- 40 施法条图标尺寸
 			key = "cbIconsize",
 			option_type = "slider",
 			text = T.split_words(L["图标"], L["尺寸"]),
@@ -860,7 +860,7 @@ G.Options = {
 				["AltzUI_focusCastbar"] = true,
 			},
 		},
-		{ -- 40 隐藏玩家施法条图标
+		{ -- 隐藏玩家施法条图标
 			key = "hideplayercastbaricon",
 			option_type = "check",
 			text = T.split_words(L["隐藏"],PLAYER,L["施法条"],L["图标"]),
@@ -949,6 +949,18 @@ G.Options = {
 			option_type = "title",
 			line = true,
 		},
+		{ -- 50 玩家减益
+			key = "playerdebuffenable",
+			option_type = "check",
+			text = T.split_words(PLAYER, L["减益"]),
+			tip = L["玩家减益提示"],
+			apply = function()
+				T.EnableUFSettings({"Auras"}, "Altz - Player")
+			end,
+			relatedFrames = {
+				["oUF_AltzPlayer"] = true,
+			},
+		},
 		{ -- 过滤增益
 			key = "AuraFilterignoreBuff",
 			option_type = "check",
@@ -958,7 +970,7 @@ G.Options = {
 				T.ApplyUFSettings({"Auras"})
 			end,
 		},
-		{ -- 50 过滤减益
+		{ -- 过滤减益
 			key = "AuraFilterignoreDebuff",
 			option_type = "check",
 			text = L["过滤减益"],
@@ -970,18 +982,6 @@ G.Options = {
 		{ -- 分割线
 			option_type = "title",
 			line = true,
-		},
-		{ -- 玩家减益
-			key = "playerdebuffenable",
-			option_type = "check",
-			text = T.split_words(PLAYER, L["减益"]),
-			tip = L["玩家减益提示"],
-			apply = function()
-				T.EnableUFSettings({"Auras"}, "Altz - Player")
-			end,
-			relatedFrames = {
-				["oUF_AltzPlayer"] = true,
-			},
 		},
 		{ -- PvP标记
 			key = "pvpicon",
@@ -1064,7 +1064,7 @@ G.Options = {
 			text = L["样式"],
 			line = true,
 		},
-		{ -- 启用团队框架
+		{ -- 60 启用团队框架
 			key = "enableraid",
 			option_type = "check",
 			text = L["启用"],
@@ -1072,7 +1072,7 @@ G.Options = {
 				StaticPopup_Show(G.uiname.."Reload Alert")
 			end,
 		},
-		{ -- 60 团队样式的小队框体
+		{ -- 团队样式的小队框体
 			key = "raidframe_inparty",
 			option_type = "check",
 			text = USE_RAID_STYLE_PARTY_FRAMES,
@@ -1160,7 +1160,7 @@ G.Options = {
 			end,
 			rely = "enableraid",
 		},
-		{ -- 主坦克和主助手
+		{ -- 70 主坦克和主助手
 			key = "raidrole_icon",
 			option_type = "check",
 			text = L["主坦克和主助手"],
@@ -1170,7 +1170,7 @@ G.Options = {
 			end,
 			rely = "enableraid",
 		},
-		{ -- 70 分割线
+		{ -- 分割线
 			option_type = "title",
 			line = true,
 		},
@@ -1274,7 +1274,7 @@ G.Options = {
 				["Altz_Raid_Holder"] = true,		
 			},
 		},
-		{ -- 治疗法力条高度
+		{ -- 80 治疗法力条高度
 			key = "raidppheight",
 			option_type = "slider",
 			text = L["治疗法力条高度"],
@@ -1289,7 +1289,7 @@ G.Options = {
 			},
 			rely = "raidmanabars",
 		},
-		{ -- 80 标题:治疗指示器
+		{ -- 标题:治疗指示器
 			option_type = "title",
 			text = L["治疗指示器"],
 			line = true,
@@ -1368,7 +1368,7 @@ G.Options = {
 				T.ApplyUFSettings({"Debuffs"}, "Altz_Healerraid")
 			end,
 		},
-		{ -- 减益垂直偏移
+		{ -- 90 减益垂直偏移
 			key = "raid_debuff_anchor_y",
 			option_type = "slider",
 			text = L["垂直偏移"],
@@ -1379,7 +1379,7 @@ G.Options = {
 				T.ApplyUFSettings({"Debuffs"}, "Altz_Healerraid")
 			end,
 		},
-		{ -- 90 图标尺寸
+		{ -- 图标尺寸
 			key = "raid_debuff_icon_size",
 			option_type = "slider",
 			text = T.split_words(L["图标"], L["尺寸"]),
@@ -1462,7 +1462,7 @@ G.Options = {
 			text = L["自动添加团队减益"],
 			tip = L["自动添加团队减益提示"],	
 		},
-		{ -- 自动添加的图标层级
+		{ -- 100 自动添加的图标层级
 			key = "debuff_auto_add_level",
 			option_type = "slider",
 			text = L["优先级"],
@@ -1470,7 +1470,7 @@ G.Options = {
 			max = 20,
 			step = 1,
 		},
-		{ -- 100 标题:副本减益
+		{ -- 标题:副本减益
 			option_type = "title",
 			text = T.split_words(L["副本"],L["减益"]),
 			line = true,
