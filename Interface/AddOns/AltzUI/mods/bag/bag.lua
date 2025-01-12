@@ -191,7 +191,7 @@ local function SortButton(container_tag, bu)
 	if itemID then
 		if aCoreCDB and aCoreCDB["ItemOptions"]["favoriteitemIDs"][itemID] then				
 			table.insert(Items[container_tag].favoriteItems, bu)
-		elseif tag == "bag" and C_NewItems.IsNewItem(bagID, buttonID) then
+		elseif container_tag == "bag" and C_NewItems.IsNewItem(bagID, buttonID) then
 			table.insert(Items[container_tag].newItems, bu)			
 		else
 			local itemQuality = select(3, GetItemInfo(itemID))
