@@ -1086,7 +1086,7 @@ G.Options = {
 			option_type = "check",
 			text = L["未进组时显示"],
 			apply = function()
-				T.UpdatePartyConnected()
+				T.UpdateShowSolo()
 				T.CreatePrivateAurasAnchors()
 			end,
 			relatedFrames = {
@@ -1200,7 +1200,8 @@ G.Options = {
 			option_type = "check",
 			text = COMPACT_UNIT_FRAME_PROFILE_KEEPGROUPSTOGETHER,
 			apply = function()
-				T.UpdatePartyConnected()
+				T.UpdateGroupfilter()
+				T.UpdateShowSolo()
 			end,
 			relatedFrames = {
 				["Altz_Raid_Holder"] = true,
@@ -1211,7 +1212,7 @@ G.Options = {
 			option_type = "check",
 			text = T.split_words(L["显示"],PET),
 			apply = function()
-				T.UpdatePartyConnected()
+				T.UpdatePetGroup()
 			end,
 			relatedFrames = {
 				["Altz_Raid_Holder"] = true,
@@ -1225,6 +1226,8 @@ G.Options = {
 			max = 8,
 			step = 2,
 			apply = function()
+				T.UpdatePetGroup()
+				T.UpdateGroupfilter()
 				T.UpdateGroupSize()
 			end,
 			relatedFrames = {

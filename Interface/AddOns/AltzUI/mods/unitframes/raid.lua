@@ -892,18 +892,6 @@ local initconfig = [[
 	end
 ]]
 
-local GetGroupfilter = function()
-	if aCoreCDB["UnitframeOptions"]["party_num"] == 2 then
-		return "1,2"
-	elseif aCoreCDB["UnitframeOptions"]["party_num"] == 4 then
-		return "1,2,3,4"
-	elseif aCoreCDB["UnitframeOptions"]["party_num"] == 6 then
-		return "1,2,3,4,5,6"
-	else
-		return "1,2,3,4,5,6,7,8"
-	end
-end
-
 local RaidFrame = CreateFrame("Frame", "Altz_Raid_Holder", UIParent)
 RaidFrame.movingname = L["团队框架"]
 RaidFrame.point = {
@@ -1023,19 +1011,7 @@ T.UpdateGroupSize = function()
 		local party_num = aCoreCDB["UnitframeOptions"]["party_num"]
 		local group_member_size = min(GetNumGroupMembers(), party_num*5)
 		local w, h = aCoreCDB["UnitframeOptions"]["raidwidth"], aCoreCDB["UnitframeOptions"]["raidheight"]
-		local groupFilter = GetGroupfilter()
-		
-		RaidFrame.all:SetAttribute("groupFilter", groupFilter)
-		RaidPetFrame.all:SetAttribute("groupFilter", groupFilter)
-		
-		for i = 1, 8 do
-			if i <= party_num then
-				RaidFrame[i]:SetAttribute("groupFilter", tostring(i))
-			else
-				RaidFrame[i]:SetAttribute("groupFilter", '')
-			end
-		end		
-		
+	
 		if aCoreCDB["UnitframeOptions"]["hor_party"] then
 			if group_member_size > 30 then -- 7~8个队伍
 				h = h*.5
@@ -1079,38 +1055,66 @@ T.UpdateGroupSize = function()
 	end)
 end
 
-T.UpdatePartyConnected = function()
+T.UpdateShowSolo = function()
 	T.CombatDelayFunc(function()
-		local groupFilter = GetGroupfilter()
+		RaidFrame.all:SetAttribute("showSolo", aCoreCDB["UnitframeOptions"]["party_connected"] and aCoreCDB["UnitframeOptions"]["showsolo"])
+		RaidFrame[1]:SetAttribute("showSolo", (not aCoreCDB["UnitframeOptions"]["party_connected"]) and aCoreCDB["UnitframeOptions"]["showsolo"])
+		RaidPetFrame.all:SetAttribute("showSolo", aCoreCDB["UnitframeOptions"]["showraidpet"] and aCoreCDB["UnitframeOptions"]["showsolo"])
+	end)
+end
+
+local GetGroupfilter = function()
+	if aCoreCDB["UnitframeOptions"]["party_num"] == 2 then
+		return "1,2"
+	elseif aCoreCDB["UnitframeOptions"]["party_num"] == 4 then
+		return "1,2,3,4"
+	elseif aCoreCDB["UnitframeOptions"]["party_num"] == 6 then
+		return "1,2,3,4,5,6"
+	else
+		return "1,2,3,4,5,6,7,8"
+	end
+end
+
+T.UpdateGroupfilter = function()
+	T.CombatDelayFunc(function()
 		if aCoreCDB["UnitframeOptions"]["party_connected"] then
-			RaidFrame.all:SetAttribute("groupFilter", groupFilter)
+			RaidFrame.all:SetAttribute("groupFilter", GetGroupfilter())
+			
 			for i = 1, 8 do
 				RaidFrame[i]:SetAttribute("groupFilter", "")
 			end
 		else
 			RaidFrame.all:SetAttribute("groupFilter", "")
+			
+			local party_num = aCoreCDB["UnitframeOptions"]["party_num"]
 			for i = 1, 8 do
-				RaidFrame[i]:SetAttribute("groupFilter", tostring(i))
-			end
+				if i <= party_num then
+					RaidFrame[i]:SetAttribute("groupFilter", tostring(i))
+				else
+					RaidFrame[i]:SetAttribute("groupFilter", "")
+				end
+			end			
 		end
+	end)
+end
 
-		if aCoreCDB["UnitframeOptions"]["showraidpet"] then
-			RaidPetFrame.all:SetAttribute("groupFilter", groupFilter)		
-		else
-			RaidPetFrame.all:SetAttribute("groupFilter", "")
-		end
+T.UpdatePetGroup = function()
+	T.CombatDelayFunc(function()
 		if aCoreCDB["UnitframeOptions"]["showraidpet"] then
 			T.RestoreDragFrame(RaidPetFrame)
 		else
 			T.ReleaseDragFrame(RaidPetFrame)
 		end
 		
-		RaidFrame.all:SetAttribute("showSolo", aCoreCDB["UnitframeOptions"]["party_connected"] and aCoreCDB["UnitframeOptions"]["showsolo"])
-		RaidFrame[1]:SetAttribute("showSolo", (not aCoreCDB["UnitframeOptions"]["party_connected"]) and aCoreCDB["UnitframeOptions"]["showsolo"])		
+		if aCoreCDB["UnitframeOptions"]["showraidpet"] then
+			RaidPetFrame.all:SetAttribute("groupFilter", GetGroupfilter())		
+		else
+			RaidPetFrame.all:SetAttribute("groupFilter", "")
+		end
+		
 		RaidPetFrame.all:SetAttribute("showSolo", aCoreCDB["UnitframeOptions"]["showraidpet"] and aCoreCDB["UnitframeOptions"]["showsolo"])
 	end)
 end
-
 --=============================================--
 --[[                Events                   ]]--
 --=============================================--
@@ -1166,10 +1170,13 @@ T.RegisterInitCallback(function()
 	end
 
 	Spawnraid()
+	
+	T.UpdateGroupfilter()	
 	T.UpdateGroupSize()
 	T.UpdateGroupAnchor()
-	T.UpdatePartyConnected()
-
+	T.UpdateShowSolo()	
+	T.UpdatePetGroup()
+	
 	EventFrame:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED")
 	EventFrame:RegisterEvent("ENCOUNTER_START")
 	EventFrame:RegisterEvent("ENCOUNTER_END")	
