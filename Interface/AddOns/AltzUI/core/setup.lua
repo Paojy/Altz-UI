@@ -378,9 +378,7 @@ end
 --====================================================--
 --[[               -- 8 更新日志 --                 ]]--
 --====================================================--
-if L["更新日志tip"] then
-	CreateTutorialsStepFrame("AltzUI "..G.Version.." "..L["更新日志"], L["更新日志tip"], true)
-end
+CreateTutorialsStepFrame("AltzUI "..L["更新日志"], L["UpdateLogs"][1], true)
 
 --====================================================--
 --[[                 -- INIT --                     ]]--
@@ -429,10 +427,7 @@ T.RegisterEnteringWorldCallback(function()
 		aCoreCDB.meet = true
 		
 	elseif aCoreDB.ver ~= G.Version then
-		if L["更新日志tip"] then
-			TutorialsFrame:ShowFrame(step)
-		end
-		
+		TutorialsFrame:ShowFrame(step)
 		aCoreDB.ver = G.Version
 		
 	end

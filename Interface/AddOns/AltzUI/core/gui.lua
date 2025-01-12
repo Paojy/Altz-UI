@@ -301,6 +301,39 @@ local function CreateInnerFrame(parent)
 	return frame
 end
 
+local function HideScorllBar(scrollframe)
+	local scrollBar = scrollframe.ScrollBar
+	scrollBar:SetAlpha(0)
+	scrollBar:EnableMouse(false)
+	
+	scrollBar.ScrollDownButton:SetAlpha(0)
+	scrollBar.ScrollDownButton:EnableMouse(false)
+	
+	scrollBar.ScrollUpButton:SetAlpha(0)
+	scrollBar.ScrollUpButton:EnableMouse(false)
+	
+	scrollBar.ThumbTexture:SetAlpha(0)
+	scrollBar.ThumbTexture:EnableMouse(false)
+end
+
+local function CreateScrollFrame(frame)
+	local name = frame:GetName()
+	
+	frame.sf = CreateFrame("ScrollFrame", name.."ScrollFrame", frame, "UIPanelScrollFrameTemplate")
+	frame.sf:SetPoint("TOPLEFT", frame, "TOPLEFT", 20, -20)
+	frame.sf:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -20, 20)
+	frame.sf:SetFrameLevel(frame:GetFrameLevel()+1)
+	HideScorllBar(frame.sf)
+	
+	frame.sfa = CreateFrame("Frame", name.."ScrollAnchor", frame.sf)
+	frame.sfa:SetPoint("TOPLEFT", frame.sf, "TOPLEFT", 0, 0)
+	frame.sfa:SetWidth(frame.sf:GetWidth())
+	frame.sfa:SetHeight(frame.sf:GetHeight())
+	frame.sfa:SetFrameLevel(frame.sf:GetFrameLevel()+1)
+	
+	frame.sf:SetScrollChild(frame.sfa)
+end
+
 --====================================================--
 --[[            -- Interface Options --            ]]--
 --====================================================--
@@ -1324,6 +1357,18 @@ Credits.text = T.createtext(Credits, "OVERLAY", 12, "OUTLINE", "CENTER")
 Credits.text:SetPoint("CENTER")
 Credits.text:SetText(format(L["制作说明"], G.Version, "fgprodigal susnow Zork Haste Tukz Haleth Qulight Freebaser Monolit warbaby siweia"))
 
+--====================================================--
+--[[             -- UpdateLog Options --            ]]--
+--====================================================--
+local UpdateLogPage = CreateOptionPage("UpdateLog", L["更新日志"], GUI, "VERTICAL")
+CreateScrollFrame(UpdateLogPage)
+
+UpdateLogPage.text = T.createtext(UpdateLogPage.sfa, "OVERLAY", 14, "OUTLINE", "LEFT")
+UpdateLogPage.text:SetWidth(UpdateLogPage.sfa:GetWidth()-20)
+UpdateLogPage.text:SetPoint("TOPLEFT", 20, -20)
+UpdateLogPage.text:SetText(
+strjoin("\n\n", unpack(L["UpdateLogs"]))
+)
 --====================================================--
 --[[       -- 插件按钮和小地图按钮 --               ]]--
 --====================================================--

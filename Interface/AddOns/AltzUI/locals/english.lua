@@ -2,43 +2,6 @@
 if G.Client == "zhCN" or G.Client == "zhTW" then return end
 
 --====================================================--
---[[           -- 更新日志和插件提示 --             ]]--
---====================================================--
-L["更新日志tip"] = [[
-Raid frames click casting and aura filter spell data correction, cleaning expired spells.
-Appearance adjustment of the Mythic+ interface, correction of misalignment of the portal button.
-Error correction for automatic invitation of monitoring keywords into groups.
-Error correction for automatically accepting friend invitations.
-Correction of the error where the input box does not display when player names are clicked in the chat box.
-Unit offline health color display error correction.
-The player's unit frame add essence of Evokers.
-Add rank display in the cast bar.
-Add the option to the display buff/debuff icons' duration text.(GUI - Others)
-Add the option to display/hide the player's debuff icon on the unitframe (GUI - Unit Frame - Aura)
-]]
-
-L["TIPS"] = {
-	"Click the date on the minimap to open the calendar",
-	"Right click on the minimap to open the minimap tracking menu",
-	"Want to use a custom color of the nameplate of a specific unit? CTRL+click on the mob's dropdown menu and select,or GUI → Unit Nameplates → Custom",
-	"/rl - reload UI",
-	"/hb - Key Binding Mode",
-	"Use SHIFT+Click to set your focus; it's available for unit frames",
-	"Use ALT+Click to mill/prospect, disenchant, unlock instantly",
-	"Press Tab to change between available channels when the edit box of the chat frame is activated",
-	"Hold Ctrl, Alt or Shift to scroll chat frame to top/bottom.",
-}
-
-L["指令"] = [[
-/rl - Reload UI
-/setup-Run the setup wizard
-SHIFT+Click - set focus to current mouseover target
-Ctrl+Click - add raid mark to current mouseover target
-ALT+Click - Mill/Prospect/Disenchant/Unlock instantly
-Tab - Change between available channels
-]]
-
---====================================================--
 --[[                 -- 通用 --                     ]]--
 --====================================================--
 L["生效"] = " to take effect"
@@ -439,3 +402,28 @@ L["自动召宝宝"] = "Automatically summon a pet"
 L["自动召宝宝提示"] = "Automatically summon a pet when you login, resurrect or leave vehicle."
 L["优先偏爱宝宝"] = "Prioritize summoning preferred pets"
 L["优先偏爱宝宝提示"] = "Prioritize summoning small pets set as preferred, otherwise randomly summon one."
+
+--====================================================--
+--[[                 -- 插件提示 --                 ]]--
+--====================================================--
+L["TIPS"] = {
+	"Click the date on the minimap to open the calendar",
+	"Right click on the minimap to open the minimap tracking menu",
+	"Want to use a custom color of the nameplate of a specific unit? CTRL+click on the mob's dropdown menu and select,or GUI → Unit Nameplates → Custom",
+	"/rl - reload UI",
+	"/hb - Key Binding Mode",
+	"Use SHIFT+Click to set your focus; it's available for unit frames",
+	"Use ALT+Click to mill/prospect, disenchant, unlock instantly",
+	"Press Tab to change between available channels when the edit box of the chat frame is activated",
+	"Hold Ctrl, Alt or Shift to scroll chat frame to top/bottom.",
+}
+
+L["指令"] = [[
+/rl - Reload UI
+/setup-Run the setup wizard
+SHIFT+Click - set focus to current mouseover target
+Ctrl+Click - add raid mark to current mouseover target
+ALT+Click - Mill/Prospect/Disenchant/Unlock instantly
+Tab - Change between available channels
+]]
+

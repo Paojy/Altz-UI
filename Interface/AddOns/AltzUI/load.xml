@@ -12,7 +12,11 @@
 	<Script file="locals\chinese.lua"/>	
 	<Script file="locals\twchinese.lua"/>
 	<Script file="locals\english.lua"/>
-
+	
+	<Script file="updatelogs\chinese.lua"/>	
+	<Script file="updatelogs\twchinese.lua"/>
+	<Script file="updatelogs\english.lua"/>
+	
 	<Script file="core\PopupDialogs.lua"/>
 	<Script file="core\widget_api.lua"/>
 	<Script file="core\api.lua"/>
