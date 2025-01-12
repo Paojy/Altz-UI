@@ -1327,6 +1327,14 @@ for i = 1, 9 do
 	table.insert(RaidTool.markframe.wms, bu)
 end
 
+local function IsTimerRunning()
+	for a, b in pairs(TimerTracker.timerList) do
+		if b.type == Enum.StartTimerType.PlayerCountdown and not b.isFree then
+			return true
+		end
+	end
+end
+
 for i = 1, 4 do
 	local tag = raid_tool_buttons[i][1]
 	local bu = CreateFrame("Button", nil, RaidTool.markframe)
@@ -1382,8 +1390,12 @@ for i = 1, 4 do
 				C_PartyInfo.ConvertToRaid()
 			end				
 		elseif tag == "pull" then
-			PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
-			C_PartyInfo.DoCountdown(10)
+			if IsTimerRunning() then
+				C_PartyInfo.DoCountdown(0)
+			else
+				PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
+				C_PartyInfo.DoCountdown(10)
+			end			
 		end
 	end)
 	
