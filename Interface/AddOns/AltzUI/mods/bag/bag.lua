@@ -265,15 +265,17 @@ end
 
 hooksecurefunc(ContainerFrameCombinedBags, "UpdateSearchBox", function(self)
 	if self:IsBackpack() or self:IsCombinedBagContainer() then				
-		self.bagIcon:SetSize(18, 18)
-		self.bagIcon:ClearAllPoints()
-		self.bagIcon:SetPoint("TOPLEFT", self, "TOPLEFT", 5, -5)
-		
-		self.PortraitButton:SetAllPoints(self.bagIcon)
-		
-		BagItemAutoSortButton:ClearAllPoints()
-		BagItemAutoSortButton:SetPoint("LEFT", self.bagIcon, "RIGHT", 5, 0)
-		BagItemAutoSortButton:SetSize(18, 18)
+		if G.Build ~= 110100 then
+			self.bagIcon:SetSize(18, 18)
+			self.bagIcon:ClearAllPoints()
+			self.bagIcon:SetPoint("TOPLEFT", self, "TOPLEFT", 5, -5)
+			
+			self.PortraitButton:SetAllPoints(self.bagIcon)
+			
+			BagItemAutoSortButton:ClearAllPoints()
+			BagItemAutoSortButton:SetPoint("LEFT", self.bagIcon, "RIGHT", 5, 0)
+			BagItemAutoSortButton:SetSize(18, 18)
+		end
 		
 		if not self.addFavorite then
 			local button = CreateFrame("Button", nil, self)
@@ -358,7 +360,7 @@ local function ReskinBagSlot(slot)
 	slot:GetHighlightTexture():SetColorTexture(1, 1, 1, .25)
 	
 	slot.searchOverlay:SetColorTexture(0, 0, 0, 0.6)
-	slot.searchOverlay:SetOutside()
+	--slot.searchOverlay:SetOutside()
 
 	slot.icon:SetTexCoord(.08, .92, .08, .92)
 	slot.bg = T.createPXBackdrop(slot, .25)
