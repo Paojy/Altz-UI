@@ -104,13 +104,11 @@ local function GetUnitColor(unit)
 	return r, g, b
 end
 T.GetUnitColor = GetUnitColor
+
 --=============================================--
 --[[ MouseOn update ]]--
 --=============================================--
-
-T.OnMouseOver = function(self)
-	self:SetAttribute("shift-type1", "focus")
-	
+local OnMouseOver = function(self)
 	self:SetScript("OnEnter", function(self)
 		UnitFrame_OnEnter(self)
 		self.isMouseOver = true
@@ -190,7 +188,6 @@ end
 --=============================================--
 --[[ 	    	治疗预估和吸收 				 ]]--
 --=============================================--
-
 local function CreateHealPreditionBar(self, ...)
 	local hpb = CreateFrame('StatusBar', nil, self.Health)
 	hpb:SetFrameLevel(self:GetFrameLevel()+2)
@@ -316,6 +313,8 @@ local Override_PlateHealth = function(self, event, unit)
 	
 	local element = self.Health	
 	local cur, max = UnitHealth(unit), UnitHealthMax(unit)
+	
+	if not cur or not max or max <= 0 then return end
 	
 	element.cur = cur
 	element.max = max
@@ -1252,7 +1251,8 @@ local func = function(self, unit)
 		T.RaidOnMouseOver(self)
 		T.CreateClickSets(self)
 	else
-		T.OnMouseOver(self)
+		OnMouseOver(self)
+		self:SetAttribute("shift-type1", "focus")
 	end
 	
 	self:RegisterForClicks"AnyUp"
@@ -1787,11 +1787,8 @@ local UnitSpecific = {
 --=============================================--
 --[[ Nameplates ]]--
 --=============================================--
-local plate_func = function(self, unit)
-	T.OnMouseOver(self)
-	
+local plate_func = function(self, unit)	
 	self:SetMouseClickEnabled(false)
-	self.mouseovers = {}
 	
 	self:SetPoint("CENTER")
 	
@@ -1891,7 +1888,6 @@ local plate_func = function(self, unit)
 	
 	hp.UpdateColor = Override_PlateHealthColor
 	hp.Override = Override_PlateHealth
-	tinsert(self.mouseovers, hp)
 	
 	self.Health = hp
 	self.Health.ApplySettings()
@@ -1971,7 +1967,6 @@ local plate_func = function(self, unit)
 	
 	pp.PostUpdateColor = PostUpdate_PowerColor
 	pp.PostUpdate = PostUpdate_Power
-	tinsert(self.mouseovers, pp)
 
 	self.Power = pp
 	self.Power.ApplySettings()
@@ -2096,6 +2091,7 @@ local function PostUpdateAllPlates()
 	end
 end
 T.PostUpdateAllPlates = PostUpdateAllPlates
+
 --=============================================--
 --[[ Ctrl+Click EasyMenu ]]--
 --=============================================--
@@ -2139,27 +2135,33 @@ local rt_colors = {
 }
 
 local function TargetMenu_Initialize(self, level, menuList)
-	local target_name = GetUnitName("target", false)
-	local info = UIDropDownMenu_CreateInfo()
-	info.text = RAID_TARGET_NONE
-	info.func = function()
-		SetRaidTarget("target", 0)
-	end
-	info.checked = function()
-		return not GetRaidTargetIndex("target")
-	end
-	UIDropDownMenu_AddButton(info)
+	local GUID = UnitGUID("mouseover")
+	local unit = UnitTokenFromGUID(GUID)
+	local target_name = UnitName(unit)
 	
-	for i = 1, 8 do
-		local r, g, b = unpack(rt_colors[i])
-		info.text = T.hex_str(_G["RAID_TARGET_"..i], r, g, b).." "..ICON_LIST[i].."12|t"
+	local info = UIDropDownMenu_CreateInfo()
+	
+	if T.CanSetRaidMark() then
+		info.text = RAID_TARGET_NONE
 		info.func = function()
-			SetRaidTarget("target", i)
+			SetRaidTarget(unit, 0)
 		end
 		info.checked = function()
-			return GetRaidTargetIndex("target") == i
+			return not GetRaidTargetIndex(unit)
 		end
 		UIDropDownMenu_AddButton(info)
+		
+		for i = 1, 8 do
+			local r, g, b = unpack(rt_colors[i])
+			info.text = T.hex_str(_G["RAID_TARGET_"..i], r, g, b).." "..ICON_LIST[i].."12|t"
+			info.func = function()
+				SetRaidTarget(unit, i)
+			end
+			info.checked = function()
+				return GetRaidTargetIndex(unit) == i
+			end
+			UIDropDownMenu_AddButton(info)
+		end
 	end
 	
 	UIDropDownMenu_AddSeparator()
@@ -2208,19 +2210,21 @@ local function TargetMenu_Initialize(self, level, menuList)
 end
 
 local function HookNameplateCtrlMenu()
-	WorldFrame:HookScript("OnMouseDown", function(_, btn)
-		if not IsShiftKeyDown() then
-			C_Timer.After(0.3, function()
-				if btn == "LeftButton" and IsControlKeyDown() and UnitExists("target") then
-					if not IsInGroup() or (IsInGroup() and not IsInRaid()) or UnitIsGroupLeader("player") or UnitIsGroupAssistant("player") then
-						UIDropDownMenu_Initialize(menuFrame, TargetMenu_Initialize, "MENU")
-						ToggleDropDownMenu(1, nil, menuFrame, "cursor", 3, -3)
-					end
-				end
-			end)
+	local f = CreateFrame("CheckButton", "PlateMenuButton", UIParent)	
+	f:RegisterForClicks("LeftButtonUp", "LeftButtonDown")
+	f:SetScript("OnMouseDown", function(_, btn)					
+		if UnitExists("mouseover") then
+			UIDropDownMenu_Initialize(menuFrame, TargetMenu_Initialize, "MENU")
+			ToggleDropDownMenu(1, nil, menuFrame, "cursor", 3, -3)
 		end
 	end)
+	
+	local modifier = "ctrl"
+	local mouseButton = "1"
+	
+	SetOverrideBindingClick(f, true, modifier.."-BUTTON"..mouseButton, "PlateMenuButton")
 end
+
 --=============================================--
 --[[ Init ]]--
 --=============================================--
