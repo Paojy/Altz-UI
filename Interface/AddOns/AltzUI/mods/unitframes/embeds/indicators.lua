@@ -160,6 +160,24 @@ local ClassSpells = {
 			color = {.95, .91, .51},
 			point = {"TOPLEFT", 0, 0},
 		},
+		[367364] = { -- 逆转（复制）
+			font = "text",
+			update_type = "dur",
+			color = {.95, .91, .51},
+			point = {"BOTTOMLEFT", 0, 5},
+		},		
+		[355941] = { -- 梦境吐息
+			font = "text",
+			update_type = "dur",
+			color = {.61, 1, .83},
+			point = {"TOP", 0, 0},
+		},
+		[376788] = { -- 梦境吐息（复制）
+			font = "text",
+			update_type = "dur",
+			color = {.61, 1, .83},
+			point = {"BOTTOM", 0, 5},
+		},
 		[409895] = { -- 精神之花
 			font = "text",
 			update_type = "dur",
