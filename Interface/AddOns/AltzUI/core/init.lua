@@ -16,6 +16,7 @@ local T, C, L, G = unpack(select(2, ...))
 G.uiname = "AltzUI_"
 G.Client = GetLocale()
 G.Version = C_AddOns.GetAddOnMetadata("AltzUI", "Version")
+G.Build = select(4, GetBuildInfo())
 
 G.PlayerRealm = GetRealmName()
 G.PlayerName = UnitName("player")

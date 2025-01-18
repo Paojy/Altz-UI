@@ -1027,8 +1027,11 @@ local CreateInstanceButton = function(frame, instanceID, instanceName, bgImage)
 	local bu = T.ClickButton(frame.anchor, 150, 20, nil, instanceName, bgImage)
 	
 	bu:SetFrameLevel(frame.anchor:GetFrameLevel()+2)
-	bu.tex:SetTexCoord(0, 1, .4, .6)
-	bu.tex:SetAlpha(.3)
+	
+	if bu.tex then
+		bu.tex:SetTexCoord(0, 1, .4, .6)
+		bu.tex:SetAlpha(.3)
+	end
 	
 	if mod(frame.button_i, 2) == 1 then
 		bu:SetPoint("TOPLEFT", frame.anchor, "TOPLEFT", 20+mod(frame.button_i+1, 2)*200, frame.y)

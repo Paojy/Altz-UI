@@ -192,20 +192,23 @@ end
 local function UpdateSpellButton(parent)
 	local button = parent.portal_bu
 	local spellID = Data[parent.mapID]
-	local name = C_ChallengeMode.GetMapUIInfo(parent.mapID)
 	
-	button.nameText:SetText(name)
-	
-	if IsSpellKnown(spellID) then
-		button:SetAttribute("spell", spellID)
-		button.spellID = spellID		
-		UpdateCooldownText(button)
-		button.hoverOverlay:Show()
-	else
-		button:SetAttribute("spell", nil)
-		button.spellID = nil
-		UpdateCooldownText(button)
-		button.hoverOverlay:Hide()
+	if spellID then
+		local name = C_ChallengeMode.GetMapUIInfo(parent.mapID)
+		
+		button.nameText:SetText(name)
+		
+		if IsSpellKnown(spellID) then
+			button:SetAttribute("spell", spellID)
+			button.spellID = spellID		
+			UpdateCooldownText(button)
+			button.hoverOverlay:Show()
+		else
+			button:SetAttribute("spell", nil)
+			button.spellID = nil
+			UpdateCooldownText(button)
+			button.hoverOverlay:Hide()
+		end
 	end
 end
 
