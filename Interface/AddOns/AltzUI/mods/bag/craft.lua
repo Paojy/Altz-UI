@@ -118,7 +118,7 @@ end)
 	CORE
 --------------------------]]
 local processCheck = function(itemID, EquipLoc, qual, link, bag, slot)
-	if not spells then return end
+	if not (spells and bag and slot) then return end
 	
 	local classID, subclassID = select(12, GetItemInfo(itemID))
 	
