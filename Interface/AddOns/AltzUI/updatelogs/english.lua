@@ -2,6 +2,13 @@
 if G.Client == "zhCN" or G.Client == "zhTW" then return end
 
 L["UpdateLogs"] = {
+[[11.15
+Add Preservation Evoker talent Golden Hour heal prediction bar on raid frames(requires manual enable).
+The Preservation Evoker raid frames heal indicators (numbers/symbols) are complete.
+GUI options display error correction.
+Raid frames overlap error correction.
+]],
+
 [[11.14
 When the countdown button for pull is clicked again, the countdown can be canceled.
 New item not separately classified error corrected.
