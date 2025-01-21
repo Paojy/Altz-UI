@@ -137,7 +137,7 @@ do
 	
 	frame.apply = function()
 		G.BGFrame.Apply()
-		T.ApplyUFSettings({"Castbar", "Swing", "Health", "Power", "HealthPrediction"})
+		T.ApplyUFSettings({"Castbar", "Swing", "Health", "Power", "HealthPrediction", "ReversionBar"})
 	end
 end
 

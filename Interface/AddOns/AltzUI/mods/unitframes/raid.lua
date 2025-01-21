@@ -35,9 +35,8 @@ T.UpdateHealManabar = UpdateHealManabar
 --[[ 		     	仇恨		    		 ]]--
 --=============================================--
 
-local function Override_ThreatUpdate(self, event, unit)	
+local function Override_ThreatUpdate(self, event, unit)
 	if (self.unit ~= unit) then return end
-	
 	local element = self.ThreatIndicator
 	local status = UnitThreatSituation(unit)
 	
@@ -708,16 +707,17 @@ local func = function(self, unit)
 	
 	hp_predict.otherBar:SetPoint('LEFT', hp_predict.myBar:GetStatusBarTexture(), 'RIGHT')
 	hp_predict.absorbBar:SetPoint('LEFT', hp_predict.otherBar:GetStatusBarTexture(), 'RIGHT')
- 
+
 	hp_predict.EnableSettings = function(object)
 		if not object or object == self then	
 			if aCoreCDB["UnitframeOptions"]["healprediction"] then
-				self:EnableElement("HealthPrediction")				
+				self:EnableElement("HealthPrediction")
 			else
 				self:DisableElement("HealthPrediction")
 			end
 		end
 	end
+	
 	oUF:RegisterInitCallback(hp_predict.EnableSettings)
 	
 	hp_predict.ApplySettings = function()
@@ -732,6 +732,34 @@ local func = function(self, unit)
 	
 	self.HealthPrediction = hp_predict
 	self.HealthPrediction.ApplySettings()
+	
+	-- 恩护黄金时间预估
+	if G.myClass == "EVOKER" then
+		local reversionBar = T.CreateHealPreditionBar(self, .4, .2, 1)
+		
+		reversionBar.EnableSettings = function(object)
+			if not object or object == self then	
+				if aCoreCDB["UnitframeOptions"]["reversion"] then
+					self:EnableElement("Reversion")
+				else
+					self:DisableElement("Reversion")
+				end
+			end
+		end
+		
+		oUF:RegisterInitCallback(reversionBar.EnableSettings)
+		
+		reversionBar.ApplySettings = function()
+			if aCoreCDB["SkinOptions"]["style"] ~= 3 then
+				reversionBar:SetPoint('LEFT', self.Health:GetStatusBarTexture(), 'LEFT')
+			else
+				reversionBar:SetPoint('LEFT', self.Health:GetStatusBarTexture(), 'RIGHT')
+			end
+		end
+		
+		self.ReversionBar = reversionBar
+		self.ReversionBar.ApplySettings()
+	end
 	
 	-- 团队减益
 	CreateRaidDebuffs(self, unit)
@@ -760,6 +788,9 @@ local func = function(self, unit)
 	
 	ind_number.ApplySettings = function()
 		ind_number.size = aCoreCDB["UnitframeOptions"]["hotind_size"]
+		if ind_number.ForceUpdate then
+			ind_number:ForceUpdate()
+		end
 	end
 	
 	self.AltzIndicators = ind_number	
@@ -1163,7 +1194,7 @@ T.RegisterInitCallback(function()
 			CompactRaidFrameManager_SetSetting("IsShown", "0")
 		end)
 		CompactRaidFrameManager.toggleButtonForward:Hide()
-		
+
 		for i, tex in next, {CompactRaidFrameManager:GetRegions()} do
 			tex:SetAlpha(0)
 		end

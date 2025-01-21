@@ -20,7 +20,7 @@ G.Options = {
 			},
 			apply = function()
 				G.BGFrame.Apply()
-				T.ApplyUFSettings({"Castbar", "Swing", "Health", "Power", "HealthPrediction"})
+				T.ApplyUFSettings({"Castbar", "Swing", "Health", "Power", "HealthPrediction", "ReversionBar"})
 			end,
 		},
 		{ -- 3 数字缩写样式
@@ -34,7 +34,7 @@ G.Options = {
 			},
 			apply = function()
 				G.BGFrame.Apply()
-				T.ApplyUFSettings({"Castbar", "Swing", "Health", "Power", "HealthPrediction"})
+				T.ApplyUFSettings({"Health", "Power"})
 			end,
 		},
 		{ -- 4 上方边缘装饰
@@ -1170,6 +1170,18 @@ G.Options = {
 			end,
 			rely = "enableraid",
 		},
+		{ -- 奶龙逆转（黄金时间）
+			key = "reversion",
+			option_type = "check",
+			text = T.split_words(L["显示"], C_Spell.GetSpellInfo(378196)["name"], L["预计治疗量"]),
+			apply = function()
+				T.EnableUFSettings({"ReversionBar"}, "Altz_Healerraid")
+			end,
+			class = {
+				["EVOKER"] = true,
+			},
+			rely = "enableraid",
+		},
 		{ -- 分割线
 			option_type = "title",
 			line = true,
@@ -1266,7 +1278,7 @@ G.Options = {
 				["Altz_RaidPet_Holder"] = true,
 			},
 		},
-		{ -- 治疗法力条
+		{ -- 80 治疗法力条
 			key = "raidmanabars",
 			option_type = "check",
 			text = L["治疗法力条"],
@@ -1277,7 +1289,7 @@ G.Options = {
 				["Altz_Raid_Holder"] = true,		
 			},
 		},
-		{ -- 80 治疗法力条高度
+		{ -- 治疗法力条高度
 			key = "raidppheight",
 			option_type = "slider",
 			text = L["治疗法力条高度"],
@@ -1360,7 +1372,7 @@ G.Options = {
 			line = true,
 			color = {1, .5, .3},
 		},
-		{ -- 减益水平偏移
+		{ -- 90 减益水平偏移
 			key = "raid_debuff_anchor_x",
 			option_type = "slider",
 			text = L["水平偏移"],
@@ -1371,7 +1383,7 @@ G.Options = {
 				T.ApplyUFSettings({"Debuffs"}, "Altz_Healerraid")
 			end,
 		},
-		{ -- 90 减益垂直偏移
+		{ -- 减益垂直偏移
 			key = "raid_debuff_anchor_y",
 			option_type = "slider",
 			text = L["垂直偏移"],
@@ -1459,13 +1471,13 @@ G.Options = {
 			option_type = "title",
 			line = true,
 		},
-		{ -- 自动添加团队减益
+		{ -- 100 自动添加团队减益
 			key = "debuff_auto_add",
 			option_type = "check",
 			text = L["自动添加团队减益"],
 			tip = L["自动添加团队减益提示"],	
 		},
-		{ -- 100 自动添加的图标层级
+		{ -- 自动添加的图标层级
 			key = "debuff_auto_add_level",
 			option_type = "slider",
 			text = L["优先级"],

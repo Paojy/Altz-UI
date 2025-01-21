@@ -9,7 +9,8 @@
 	<Script file="embeds\swing.lua"/>	
 	<Script file="embeds\trinket.lua"/>
 	<Script file="embeds\target.lua"/>
-
+	<Script file="embeds\reversion.lua"/>
+	
 	<Script file="core.lua"/>
 	<Script file="raid.lua"/>
 </Ui>

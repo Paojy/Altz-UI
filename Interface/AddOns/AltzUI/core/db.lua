@@ -1209,6 +1209,8 @@ local Character_default_Settings = {
 		totemsize = 25,
 		growthDirection = 'HORIZONTAL',
 		sortDirection = 'ASCENDING',
+		-- 奶龙逆转（黄金时间）
+		reversion = false,
 		-- 小队
 		widthparty = 200,
 		showpartypet = false,
