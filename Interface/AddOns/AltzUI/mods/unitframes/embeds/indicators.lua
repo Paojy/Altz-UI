@@ -160,24 +160,24 @@ local ClassSpells = {
 			color = {.95, .91, .51},
 			point = {"TOPLEFT", 0, 0},
 		},
-		[367364] = { -- 逆转（复制）
-			font = "text",
-			update_type = "dur",
-			color = {.95, .91, .51},
-			point = {"BOTTOMLEFT", 0, 5},
-		},		
+		--[367364] = { -- 逆转（复制）
+		--	font = "text",
+		--	update_type = "dur",
+		--	color = {.95, .91, .51},
+		--	point = {"BOTTOMLEFT", 0, 5},
+		--},
 		[355941] = { -- 梦境吐息
 			font = "text",
 			update_type = "dur",
 			color = {.61, 1, .83},
 			point = {"TOP", 0, 0},
 		},
-		[376788] = { -- 梦境吐息（复制）
-			font = "text",
-			update_type = "dur",
-			color = {.61, 1, .83},
-			point = {"BOTTOM", 0, 5},
-		},
+		--[376788] = { -- 梦境吐息（复制）
+		--	font = "text",
+		--	update_type = "dur",
+		--	color = {.61, 1, .83},
+		--	point = {"BOTTOM", 0, 5},
+		--},
 		[409895] = { -- 精神之花
 			font = "text",
 			update_type = "dur",
@@ -190,6 +190,20 @@ local ClassSpells = {
 			color = {.8, .87, .6},
 			point = {"RIGHT", 0, 0},
 			str = "Y",
+		},
+		[370889] = { -- 双生护卫
+			font = "symbol",
+			adjust = -1,
+			color = {.34, .79, .98},
+			point = {"TOPRIGHT", 0, 0},
+			str = "z",
+		},
+		[373267] = { -- 缚誓生命
+			font = "symbol",
+			adjust = -1,
+			color = {.74, .29, .29},
+			point = {"TOPRIGHT", -20, 0},
+			str = "z",
 		},
 	},
 	WARRIOR = {
@@ -442,16 +456,16 @@ local function Update(self, event, unit, updateInfo)
 		for spellID, bu in pairs(ind.inds) do
 			local info = IndInfo[bu.spellID]
 			if info.font == "text" then
-				button.text:SetFont(G.norFont, ind.size + (info.adjust or 0), "OUTLINE")				
+				bu.text:SetFont(G.norFont, ind.size + (info.adjust or 0), "OUTLINE")				
 			elseif info.font == "symbol" then
-				button.text:SetFont(G.symbols, ind.size + (info.adjust or 0), "OUTLINE")		
+				bu.text:SetFont(G.symbols, ind.size + (info.adjust or 0), "OUTLINE")		
 			end
 		end
 	end
 end
 
 local function ForceUpdate(element)
-	return UpdateAuras(element.__owner, 'ForceUpdate', element.__owner.unit)
+	return Update(element.__owner, 'ForceUpdate', element.__owner.unit)
 end
 
 local Enable = function(self)
