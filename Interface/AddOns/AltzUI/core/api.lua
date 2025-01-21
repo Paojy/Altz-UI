@@ -195,38 +195,36 @@ end
 T.createDR = createDR
 
 -- 显示依赖关系
-local createVisibleDR = function(func, parent, ...)
-	for i=1, select("#", ...) do
-		local object = select(i, ...)
-		parent:HookScript("OnShow", function(self)
-			if func() then
+local createVisibleDR = function(func, parent, ...)	
+	local children = {...}
+	parent:HookScript("OnShow", function(self)
+		if func() then
+			for _, object in pairs(children) do
 				object:Show()
-			else
+			end
+		else
+			for _, object in pairs(children) do
 				object:Hide()
 			end
-		end)
-		if parent:HasScript("OnClick") then
-			parent:HookScript("OnClick", function(self)
-				if func() then
+		end
+	end)
+	
+	
+		local oldfunc = parent.visible_apply	
+		parent.visible_apply = function()
+			if oldfunc then
+				oldfunc()
+			end
+			if func() then
+				for _, object in pairs(children) do
 					object:Show()
-				else
-					object:Hide()
 				end
-			end)
-		else
-			local oldfunc = parent.visible_apply
-			parent.visible_apply = function()
-				if oldfunc then
-					oldfunc()
-				end
-				if func() then
-					object:Show()
-				else
+			else
+				for _, object in pairs(children) do
 					object:Hide()
 				end
 			end
 		end
-	end
 end
 T.createVisibleDR = createVisibleDR
 
@@ -380,9 +378,8 @@ local Checkbutton_DB = function(parent, path)
 	
 	bu:SetScript("OnClick", function(self)
 		T.ValueToPath(aCoreCDB, path, self:GetChecked())
-		if info.apply then
-			info.apply()
-		end
+		if info.apply then info.apply() end
+		if self.visible_apply then self.visible_apply() end
 	end)
 
 	return bu
