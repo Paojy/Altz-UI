@@ -52,7 +52,7 @@ local function ShouldApplyAura(unit)
 end
 
 local function UpdateValue(element)
-	local value = value_data[element.unitGUID]	
+	local value = value_data[element.unitGUID]
 	if value and value > 0 and ShouldApplyAura(element.__owner.unit) then
 		element:SetValue(value*0.15)
 	else
@@ -84,19 +84,22 @@ local function Update(self, event, unit, ...)
 				table.insert(data[destGUID], {ts = GetTime(), value = amount})
 			end
 		end
-	else
+	elseif event == "UNIT_MAXHEALTH" then
 		if unit == self.unit then
 			local element = self.ReversionBar
-			if event == "OnAttributeChanged" then
-				element.unitGUID = UnitGUID(unit)
-				UpdateValue(element)
-			end
-			
 			local maxHealth = UnitHealthMax(unit)
 			if maxHealth and maxHealth > 0 then
 				element:SetMinMaxValues(0, maxHealth)
 			end
 		end
+	else
+		local element = self.ReversionBar
+		local maxHealth = UnitHealthMax(self.unit)
+		if maxHealth and maxHealth > 0 then
+			element:SetMinMaxValues(0, maxHealth)
+		end	
+		element.unitGUID = UnitGUID(self.unit)
+		UpdateValue(element)
 	end
 end
 
@@ -108,7 +111,7 @@ local Visibility = function(self, event, unit)
 	local element = self.ReversionBar
 	if self:IsElementEnabled('ReversionBar') and IsPlayerSpell(378196) then
 		if (not element:IsShown()) then
-			element:Show()			
+			element:Show()
 			element.t = update_gap
 			element:SetScript("OnUpdate", function(s, e)
 				s.t = s.t + e
