@@ -150,7 +150,7 @@ local ClassSpells = {
 			font = "text",
 			update_type = "dur",
 			color = {.28, .75, .6},
-			point = {"LEFT", 0, 0},
+			point = {"TOPLEFT", 0, 0},
 		},
 	},
 	EVOKER = {
@@ -204,6 +204,25 @@ local ClassSpells = {
 			color = {.74, .29, .29},
 			point = {"TOPRIGHT", -20, 0},
 			str = "z",
+		},
+		[395296] = { -- 黑檀之力
+			font = "text",
+			update_type = "dur",
+			color = {.65, .25, .13},
+			point = {"TOPLEFT", 0, 0},
+		},
+		[410089] = { -- 先知先觉
+			font = "text",
+			update_type = "dur",
+			color = {.85, .7, .3},
+			point = {"LEFT", 0, 0},
+		},
+		[360827] = { -- 炽火龙鳞
+			font = "text",
+			update_type = "stack",
+			color = {.95, .93, .79},
+			point = {"RIGHT", 0, 0},
+			str = {"⑴","⑵","⑶","⑷","⑸","⑹","⑺","⑻","⑼","⑽","⑾","⑿","⒀","⒁","⒂","⒃","⒄","⒅","⒆","⒇"},
 		},
 	},
 	WARRIOR = {
