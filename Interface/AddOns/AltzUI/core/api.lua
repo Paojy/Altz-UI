@@ -1238,7 +1238,7 @@ local createscrollbutton = function(type, option_list, path, key)
 		GameTooltip:Hide()
 	end)
 	
-	bu.close:SetScript("OnClick", function() 
+	bu.close:SetScript("OnClick", function()
 		bu:Hide()
 		T.ValueToPath(aCoreCDB, key_path, nil)
 		if option_list.lineuplist then
