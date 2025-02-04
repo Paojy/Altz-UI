@@ -85,7 +85,10 @@ end
 --[[              点击施法                 ]]--
 --=============================================--
 T.RaidOnMouseOver = function(self)
-    self:HookScript("OnEnter", function(self) UnitFrame_OnEnter(self) end)
+    self:HookScript("OnEnter", function(self) 
+		UnitFrame_OnEnter(self)
+		self.Health:ForceUpdate()		
+	end)
     self:HookScript("OnLeave", function(self) UnitFrame_OnLeave(self) end)
 end
 
