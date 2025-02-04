@@ -867,7 +867,7 @@ local function UpdateEncounterAuraButton(option_list, encounterID, spellID, leve
 	if not option_list.spells["icon"..encounterID.."_"..spellID] then
 		local parent = RFInnerframe.raiddebuff
 		local frame = T.createscrollbutton("spell", option_list, {"UnitframeOptions", "raid_debuffs", parent.selected_InstanceID, encounterID}, spellID)
-		frame:SetWidth(380)
+		frame:SetWidth(370)
 		
 		frame:SetScript("OnMouseDown", function(self)	
 			local encounterName = (encounterID == 1 and L["杂兵"]) or EJ_GetEncounterInfo(encounterID)
@@ -1030,7 +1030,7 @@ local CreateInstanceButton = function(frame, instanceID, instanceName, bgImage)
 	
 	if bu.tex then
 		bu.tex:SetTexCoord(0, 1, .4, .6)
-		bu.tex:SetAlpha(.3)
+		bu.tex:SetAlpha(.4)
 	end
 	
 	if mod(frame.button_i, 2) == 1 then
