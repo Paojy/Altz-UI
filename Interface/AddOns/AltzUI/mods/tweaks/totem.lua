@@ -1,5 +1,22 @@
 local T, C, L, G = unpack(select(2, ...))
 
+local function UpdateTooltip(self)
+	GameTooltip:SetTotem(self:GetID())
+end
+
+local function OnEnter(self)
+	if(GameTooltip:IsForbidden() or not self:IsVisible()) then return end
+
+	GameTooltip:SetOwner(self, 'ANCHOR_BOTTOMRIGHT')
+	self:UpdateTooltip()
+end
+
+local function OnLeave()
+	if(GameTooltip:IsForbidden()) then return end
+
+	GameTooltip:Hide()
+end
+
 local TotemBar = CreateFrame("Frame", "AltzUI_TotemBar", UIParent)
 TotemBar.movingname = L["图腾条"]
 TotemBar.buttons = {}
@@ -14,7 +31,8 @@ for i=1, MAX_TOTEMS do
 	local TotemBu = CreateFrame("Button", TotemBar:GetName().."Totem"..i, TotemBar)
 	T.createBackdrop(TotemBu)
 	TotemBu:Hide()
-
+	TotemBu:SetID(i)
+	
 	TotemBu.iconTexture = TotemBu:CreateTexture(nil, "ARTWORK")
 	TotemBu.iconTexture:SetAllPoints()
 	TotemBu.iconTexture:SetTexCoord(0.1, 0.9, 0.1, 0.9)
@@ -22,6 +40,11 @@ for i=1, MAX_TOTEMS do
 	TotemBu.cooldown = CreateFrame("Cooldown", nil, TotemBu, "CooldownFrameTemplate")
 	TotemBu.cooldown:SetReverse(true)
 	TotemBu.cooldown:SetAllPoints()
+	
+	TotemBu.UpdateTooltip = UpdateTooltip
+	TotemBu:SetScript('OnEnter', OnEnter)
+	TotemBu:SetScript('OnLeave', OnLeave)
+	
 	TotemBar.buttons[i] = TotemBu
 end
 
