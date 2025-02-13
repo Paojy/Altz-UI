@@ -513,7 +513,7 @@ local function CreateEquipListFrame(parent, unit, path)
 	return frame
 end
 
-local EquipFrame = CreateEquipListFrame(CharacterFrame, "player", {"ItemOptions", "equiplist"})
+local EquipFrame = CreateEquipListFrame(PaperDollItemsFrame, "player", {"ItemOptions", "equiplist"})
 local in_progress
 
 EquipFrame:SetScript('OnEvent', function(self, event)
