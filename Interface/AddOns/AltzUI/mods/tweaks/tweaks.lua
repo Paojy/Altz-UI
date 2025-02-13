@@ -76,7 +76,8 @@ function eventframe:MERCHANT_SHOW()
 				local numMerchantItems = GetMerchantNumItems()
 				for index = 1, numMerchantItems do
 					local name, texture, price, quantity, numAvailable, isUsable, extendedCost = GetMerchantItemInfo(index)
-					if ItemName == name then-- 有卖的嘛？
+					local itemCount = GetMerchantItemCostInfo(index)
+					if ItemName == name and itemCount == 0 then-- 有卖的嘛？
 						local maxbuy = GetMerchantItemMaxStack(index)
 						local needbuy = Need - ItemCount
 						local afford_num = floor(GetMoney()/price*quantity)
