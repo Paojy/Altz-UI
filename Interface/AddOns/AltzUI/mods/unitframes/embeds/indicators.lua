@@ -80,6 +80,36 @@ local ClassSpells = {
 		},
 	},
 	PALADIN = {
+		[156322] = { -- 永恒之火
+			font = "text",
+			update_type = "dur",
+			color = {1, .77, .15},
+			point = {"TOPLEFT", 0, 0},
+		},
+		[388013] = { -- 阳春祝福
+			font = "text",
+			update_type = "dur",
+			color = {.73, 1, .64},
+			point = {"TOP", 0, 0},
+		},
+		[388007] = { -- 仲夏祝福
+			font = "text",
+			update_type = "dur",
+			color = {1, .29, .55},
+			point = {"TOP", 0, 0},
+		},
+		--[388010] = { -- 暮秋祝福
+		--	font = "text",
+		--	update_type = "dur",
+		--	color = {1, .84, .25},
+		--	point = {"TOP", 0, 0},
+		--},
+		--[388011] = { -- 凛冬祝福
+		--	font = "text",
+		--	update_type = "dur",
+		--	color = {.21, .56, 1},
+		--	point = {"TOP", 0, 0},
+		--},
 		[53563] = { -- 道标
 			font = "symbol",
 			adjust = -1,
@@ -105,9 +135,15 @@ local ClassSpells = {
 			source = "all",
 			font = "symbol",
 			adjust = -1,
-			color = {.66, .49, .71},
-			point = {"TOP", 0, 0},
+			color = {1, .51, .32},
+			point = {"LEFT", 0, 0},
 			str = "F",
+		},		
+		[431381] = { -- 晨光
+			font = "text",
+			update_type = "dur",
+			color = {1, 1, 0},
+			point = {"BOTTOMLEFT", 0, 5},
 		},
 	},
 	SHAMAN = {
@@ -160,12 +196,12 @@ local ClassSpells = {
 			color = {.95, .91, .51},
 			point = {"TOPLEFT", 0, 0},
 		},
-		--[367364] = { -- 逆转（复制）
-		--	font = "text",
-		--	update_type = "dur",
-		--	color = {.95, .91, .51},
-		--	point = {"BOTTOMLEFT", 0, 5},
-		--},
+		[367364] = { -- 逆转（复制）
+			font = "text",
+			update_type = "dur",
+			color = {.95, .91, .51},
+			point = {"BOTTOMLEFT", 0, 5},
+		},
 		[355941] = { -- 梦境吐息
 			font = "text",
 			update_type = "dur",
@@ -205,17 +241,29 @@ local ClassSpells = {
 			point = {"TOPRIGHT", -20, 0},
 			str = "z",
 		},
-		[395296] = { -- 黑檀之力
-			font = "text",
-			update_type = "dur",
-			color = {.65, .25, .13},
-			point = {"TOPLEFT", 0, 0},
-		},
+		--[395296] = { -- 黑檀之力
+		--	font = "text",
+		--	update_type = "dur",
+		--	color = {.65, .25, .13},
+		--	point = {"BOTTOMLEFT", 0, 0},
+		--},
+		--[395152] = { -- 黑檀之力
+		--	font = "text",
+		--	update_type = "dur",
+		--	color = {.65, .25, .13},
+		--	point = {"BOTTOMLEFT", 0, 0},
+		--},
 		[410089] = { -- 先知先觉
 			font = "text",
 			update_type = "dur",
 			color = {.85, .7, .3},
-			point = {"LEFT", 0, 0},
+			point = {"TOP", 0, 0},
+		},
+		[361022] = { -- 威力感知
+			font = "text",
+			update_type = "dur",
+			color = {.49, .62, 1},
+			point = {"TOPLEFT", 0, 0},
 		},
 		[360827] = { -- 炽火龙鳞
 			font = "text",
@@ -368,9 +416,9 @@ local function UpdateAuras(self, event, unit, updateInfo)
 			ind.activeDebuffs = table.wipe(ind.activeDebuffs or {})
 			debuffsChanged = true
 
-			slots = {C_UnitAuras.GetAuraSlots(unit, 'HARMFUL')}
-			for i = 2, #slots do
-				local data = processData(ind, unit, C_UnitAuras.GetAuraDataBySlot(unit, slots[i]))
+			local debuffslots = {C_UnitAuras.GetAuraSlots(unit, 'HARMFUL')}
+			for i = 2, #debuffslots do
+				local data = processData(ind, unit, C_UnitAuras.GetAuraDataBySlot(unit, debuffslots[i]))
 				ind.allDebuffs[data.auraInstanceID] = data
 
 				if FilterAura(ind, unit, data) then
@@ -450,7 +498,7 @@ local function UpdateAuras(self, event, unit, updateInfo)
 		
 		if debuffsChanged then	
 			for auraInstanceID in next, ind.activeDebuffs do
-				updateAura(ind, unit, ind.allBuffs[auraInstanceID])
+				updateAura(ind, unit, ind.allDebuffs[auraInstanceID])
 			end	
 		end
 		
