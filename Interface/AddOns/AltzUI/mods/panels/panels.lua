@@ -483,7 +483,7 @@ repbar:SetScript("OnEnter", function()
 			minrep, maxrep, valuerep = 0, threshold, mod(currentValue, threshold)
 		elseif C_Reputation.IsMajorFaction(factionID) then
 			local majorFactionData = C_MajorFactions.GetMajorFactionData(factionID)
-			minrep, maxrep, valuerep = 0, majorFactionData.renownLevelThreshold, value
+			minrep, maxrep, valuerep = 0, majorFactionData.renownLevelThreshold, majorFactionData.renownReputationEarned
 			ranktext = majorFactionData.renownLevel
 		else
 			minrep, maxrep, valuerep = minRep, maxRep, value
@@ -527,7 +527,7 @@ repbar.update = function()
 		elseif C_Reputation.IsMajorFaction(factionID) then
 			local majorFactionData = C_MajorFactions.GetMajorFactionData(factionID)
 			repbar:SetMinMaxValues(0, majorFactionData.renownLevelThreshold)
-			repbar:SetValue(value)
+			repbar:SetValue(majorFactionData.renownReputationEarned)
 		else
 			if rank == MAX_REPUTATION_REACTION then
 				repbar:SetMinMaxValues(0, 1)
