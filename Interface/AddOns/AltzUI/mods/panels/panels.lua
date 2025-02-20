@@ -1711,3 +1711,105 @@ local function UpdateCharacterCoords(self, elapsed)
 end
 
 CoordsFrame:SetScript("OnUpdate", UpdateCharacterCoords)
+
+--====================================================--
+--[[              -- 队伍查找器按钮 --              ]]--
+--====================================================--
+
+local icon_size = 22
+local icon_space = 3
+local DungeonSearchButtons = {}
+
+local Dungeons = {
+  {mapID = 507, searchID = 56}, -- 格瑞姆巴托
+  {mapID = 503, searchID = 323}, -- 回响
+  {mapID = 505, searchID = 326}, -- 破晨
+  {mapID = 501, searchID = 328}, -- 宝库
+  {mapID = 502, searchID = 329}, -- 千丝
+  {mapID = 375, searchID = 262}, -- 仙林
+  {mapID = 376, searchID = 265}, -- 通灵
+  {mapID = 353, searchID = 146}, -- 围攻
+}
+
+local function LFGListAdvancedFiltersCheckAllDifficulties(enabled)
+	enabled.difficultyNormal = true;
+	enabled.difficultyHeroic = true;
+	enabled.difficultyMythic = true;
+	enabled.difficultyMythicPlus = true;
+end
+
+local function LFGDoSearch(dungeonID)
+	local enabled = C_LFGList.GetAdvancedFilter()
+	enabled.needsTank = false
+	enabled.needsHealer = false
+	enabled.needsDamage = false
+	enabled.needsMyClass = false
+	enabled.hasTank = false
+	enabled.hasHealer = false
+	enabled.minimumRating = 0
+	
+	enabled.activities = {}
+	table.insert(enabled.activities, dungeonID)
+	
+	LFGListAdvancedFiltersCheckAllDifficulties(enabled)	
+	C_LFGList.SaveAdvancedFilter(enabled)
+	LFGListSearchPanel_DoSearch(LFGListFrame.SearchPanel)
+end
+
+for i, info in pairs(Dungeons) do
+	local name, _, _, texture, backgroundTexture = C_ChallengeMode.GetMapUIInfo(info.mapID)
+	local button = CreateFrame("Button", nil, LFGListFrame.SearchPanel)
+	
+	button.searchID = info.searchID
+	
+	button:SetPoint("RIGHT", LFGListFrame.SearchPanel.RefreshButton, "LEFT", -(i-1)*(icon_size+icon_space)-icon_space, 0)
+	button:SetSize(icon_size, icon_size)
+	T.createPXBackdrop(button)
+	
+	button.cooldown = CreateFrame("Cooldown", nil, button, 'CooldownFrameTemplate')
+	button.cooldown:SetAllPoints()
+	button.cooldown:SetDrawEdge(false)
+	
+	button.tex = button:CreateTexture(nil, "ARTWORK")
+	button.tex:SetAllPoints()
+	button.tex:SetTexture(texture)
+	
+	button:SetScript("OnEnter", function(self) 
+		GameTooltip:SetOwner(self, "ANCHOR_TOPLEFT", -1, 5)
+		GameTooltip:AddLine(name)
+		GameTooltip:Show() 
+	end)
+	
+	button:SetScript("OnLeave", function(self)
+		GameTooltip:Hide()
+	end)
+	
+	button:SetScript("OnClick", function(self)
+		LFGDoSearch(self.searchID)
+		for i, bu in pairs(DungeonSearchButtons) do
+			bu.cooldown:SetCooldown(GetTime(), 2.5)
+			bu.cooldown:Show()
+			bu:EnableMouse(false)
+		end
+	end)
+	
+	button.cooldown:SetScript("OnCooldownDone", function()
+		button:EnableMouse(true)
+	end)
+	
+	table.insert(DungeonSearchButtons, button)
+end
+
+LFGListFrame.SearchPanel:HookScript("OnShow", function()
+	if LFGListFrame.CategorySelection.selectedCategory == 2 then
+		for i, bu in pairs(DungeonSearchButtons) do
+			bu:Show()
+		end
+	end
+end)
+
+LFGListFrame.SearchPanel:HookScript("OnHide", function()
+	for i, bu in pairs(DungeonSearchButtons) do
+		bu:Hide()
+	end
+end)
