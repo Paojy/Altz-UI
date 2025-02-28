@@ -416,7 +416,6 @@ local function UpdateSlot(bagID, slotID)
 	local readable = info and info.IsReadable
 	local itemLink = info and info.hyperlink
 	local isFiltered = info and info.isFiltered
-	local noValue = info and info.hasNoValue
 	local itemID = info and info.itemID
 	local isBound = info and info.isBound
 	local questInfo = C_Container.GetContainerItemQuestInfo(bagID, slot:GetID())

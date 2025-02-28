@@ -1075,7 +1075,7 @@ local SetupDropdown = function(parent, width, points)
 	button:SetWidth(width)
 	T.ReskinDropDown(button)
 	
-	button.DropDown = CreateFrame("Frame", nil, action_select, "UIDropDownMenuTemplate")
+	button.DropDown = CreateFrame("Frame", nil, parent, "UIDropDownMenuTemplate")
 	button:SetScript("OnMouseDown", function(self)
 		self.DropDown.point = "TOPLEFT"
 		self.DropDown.relativePoint = "BOTTOMLEFT"
