@@ -5,15 +5,15 @@ tinsert(C.defaultThemes, function()
 	local cr, cg, cb = DB.r, DB.g, DB.b
 
 	B.ReskinPortraitFrame(AddonList)
-	B.Reskin(AddonListEnableAllButton)
-	B.Reskin(AddonListDisableAllButton)
-	B.Reskin(AddonListCancelButton)
-	B.Reskin(AddonListOkayButton)
-	B.ReskinCheck(AddonListForceLoad)
+	B.Reskin(AddonList.EnableAllButton)
+	B.Reskin(AddonList.DisableAllButton)
+	B.Reskin(AddonList.CancelButton)
+	B.Reskin(AddonList.OkayButton)
+	B.ReskinCheck(AddonList.ForceLoad)
 	B.ReskinDropDown(AddonList.Dropdown)
 	B.ReskinTrimScroll(AddonList.ScrollBar)
 
-	AddonListForceLoad:SetSize(26, 26)
+	AddonList.ForceLoad:SetSize(26, 26)
 
 	local function forceSaturation(self, _, force)
 		if force then return end
@@ -21,16 +21,16 @@ tinsert(C.defaultThemes, function()
 		self:SetDesaturated(true, true)
 	end
 
-	hooksecurefunc("AddonList_InitButton", function(entry)
-		if not entry.styled then
-			B.ReskinCheck(entry.Enabled, true)
-			B.Reskin(entry.LoadAddonButton)
-			hooksecurefunc(entry.Enabled:GetCheckedTexture(), "SetDesaturated", forceSaturation)
-
-			B.ReplaceIconString(entry.Title)
-			hooksecurefunc(entry.Title, "SetText", B.ReplaceIconString)
-
-			entry.styled = true
-		end
-	end)
+	--hooksecurefunc("AddonList_InitButton", function(entry)
+	--	if not entry.styled then
+	--		B.ReskinCheck(entry.Enabled, true)
+	--		B.Reskin(entry.LoadAddonButton)
+	--		hooksecurefunc(entry.Enabled:GetCheckedTexture(), "SetDesaturated", forceSaturation)
+	--
+	--		B.ReplaceIconString(entry.Title)
+	--		hooksecurefunc(entry.Title, "SetText", B.ReplaceIconString)
+	--
+	--		entry.styled = true
+	--	end
+	--end)
 end)

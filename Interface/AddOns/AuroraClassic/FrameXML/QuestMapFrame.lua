@@ -52,13 +52,13 @@ tinsert(C.defaultThemes, function()
 	B.StripTextures(QuestScrollFrame.BorderFrame)
 	B.StripTextures(QuestMapFrame.DetailsFrame.BackFrame)
 
-	local campaignOverview = QuestMapFrame.CampaignOverview
-	campaignOverview.BG:SetAlpha(0)
-	ReskinQuestHeader(campaignOverview.Header)
+	--local campaignOverview = QuestMapFrame.CampaignOverview
+	--campaignOverview.BG:SetAlpha(0)
+	--ReskinQuestHeader(campaignOverview.Header)
 
 	QuestScrollFrame.Edge:Hide()
 	B.ReskinTrimScroll(QuestScrollFrame.ScrollBar)
-	B.ReskinTrimScroll(campaignOverview.ScrollFrame.ScrollBar)
+	--B.ReskinTrimScroll(campaignOverview.ScrollFrame.ScrollBar)
 	B.ReskinEditBox(QuestScrollFrame.SearchBox)
 
 	-- Quest details
@@ -140,7 +140,7 @@ tinsert(C.defaultThemes, function()
 	local mapLegend = QuestMapFrame.MapLegend
 	if mapLegend then
 		B.StripTextures(mapLegend.BorderFrame)
-		B.Reskin(mapLegend.BackButton)
+		--B.Reskin(mapLegend.BackButton)
 		B.ReskinTrimScroll(mapLegend.ScrollFrame.ScrollBar)
 		B.StripTextures(mapLegend.ScrollFrame)
 		B.CreateBDFrame(mapLegend.ScrollFrame, .25)
