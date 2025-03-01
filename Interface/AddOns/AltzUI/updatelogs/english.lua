@@ -2,6 +2,17 @@
 if G.Client == "zhCN" or G.Client == "zhTW" then return end
 
 L["UpdateLogs"] = {
+[[11.16
+Add filtering buttons to the LFG list.
+Automatically purchase goods without buying items that require other currencies.
+The totem bar displays it's tooltip.
+Correction of major reputation monitoring errors.
+Close the equipment list when viewing the reputation of the character frame.
+The Raid frames refreshes health when hovering over the mouse.
+The Raid frames healer indicators updates (Holy Paladin, Mistweaver Monk, Augmentation Evoker).
+Add some spell options for click casting to the Raid frames.
+]],
+
 [[11.15
 Add Preservation Evoker talent Golden Hour heal prediction bar on raid frames(requires manual enable).
 The Preservation Evoker raid frames heal indicators (numbers/symbols) are complete.
