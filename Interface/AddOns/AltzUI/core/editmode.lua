@@ -659,51 +659,55 @@ local function GetSystems(systemsMap)
 end
 
 local function GetLayoutInfo(name, character)
-	EditModeManagerFrame:UpdateDropdownOptions()
-	
-	local editModeLayouts = EditModeManagerFrame:GetLayouts()
-	local layout_names = {}
-	local account_num = 0
-	local new_layout_type, new_layout_name
-	
-	for index, layout in ipairs(editModeLayouts) do
-		layout_names[layout.layoutName] = true
-		if layout.layoutType == 1 then
-			account_num = account_num + 1
-		end
-	end
-	
-	if character then
-		new_layout_type = 2
-	else
-		new_layout_type = account_num < 5 and 1 or 2
-	end
-	
-	if not layout_names[name] then
-		new_layout_name = name
-	else
-		local i = 0
-		while true do
-			i = i + 1
-			local new_name = name.."_"..tostring(i)
-			if not layout_names[new_name] then
-				new_layout_name = new_name
-				break
+	if EditModeManagerFrame.layoutInfo then 
+		EditModeManagerFrame:UpdateDropdownOptions()
+		
+		local editModeLayouts = EditModeManagerFrame:GetLayouts()
+		local layout_names = {}
+		local account_num = 0
+		local new_layout_type, new_layout_name
+		
+		for index, layout in ipairs(editModeLayouts) do
+			layout_names[layout.layoutName] = true
+			if layout.layoutType == 1 then
+				account_num = account_num + 1
 			end
 		end
+		
+		if character then
+			new_layout_type = 2
+		else
+			new_layout_type = account_num < 5 and 1 or 2
+		end
+		
+		if not layout_names[name] then
+			new_layout_name = name
+		else
+			local i = 0
+			while true do
+				i = i + 1
+				local new_name = name.."_"..tostring(i)
+				if not layout_names[new_name] then
+					new_layout_name = new_name
+					break
+				end
+			end
+		end
+		
+		return new_layout_type, new_layout_name
 	end
-	
-	return new_layout_type, new_layout_name
 end
 
 T.ResetEditModeLayout = function()
 	local new_layout_type, new_layout_name = GetLayoutInfo("AltzUI")
-	local AltzUI_layoutInfo = {		
-		layoutName = new_layout_name,
-		layoutType = new_layout_type,
-		systems = GetSystems(EDIT_MODE_ALTZ_SYSTEM_MAP),
-	}
-	EditModeManagerFrame:MakeNewLayout(AltzUI_layoutInfo, AltzUI_layoutInfo.layoutType, AltzUI_layoutInfo.layoutName, false)
+	if new_layout_type and new_layout_name then
+		local AltzUI_layoutInfo = {		
+			layoutName = new_layout_name,
+			layoutType = new_layout_type,
+			systems = GetSystems(EDIT_MODE_ALTZ_SYSTEM_MAP),
+		}
+		EditModeManagerFrame:MakeNewLayout(AltzUI_layoutInfo, AltzUI_layoutInfo.layoutType, AltzUI_layoutInfo.layoutName, false)
+	end
 end
 
 T.ExportLayout = function()
