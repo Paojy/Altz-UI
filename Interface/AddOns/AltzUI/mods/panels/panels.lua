@@ -877,7 +877,7 @@ local function TalentDropDown_Initialize(self, level, menuList)
 			info.text = T.GetTexStr(icon).." "..name
 			info.checked = (cur_specID == id)
 			info.func = function()
-				SetSpecialization(i)
+				C_SpecializationInfo.SetSpecialization(i)
 				HideDropDownMenu(1)
 			end
 			UIDropDownMenu_AddButton(info, level)

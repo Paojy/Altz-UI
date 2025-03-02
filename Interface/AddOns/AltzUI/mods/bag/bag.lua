@@ -264,19 +264,19 @@ local function UpdateFavoriteItem()
 end
 
 hooksecurefunc(ContainerFrameCombinedBags, "UpdateSearchBox", function(self)
-	if self:IsBackpack() or self:IsCombinedBagContainer() then				
-		if G.Build ~= 110100 then
-			self.bagIcon:SetSize(18, 18)
-			self.bagIcon:ClearAllPoints()
-			self.bagIcon:SetPoint("TOPLEFT", self, "TOPLEFT", 5, -5)
-			
-			self.PortraitButton:SetAllPoints(self.bagIcon)
-			
-			BagItemAutoSortButton:ClearAllPoints()
-			BagItemAutoSortButton:SetPoint("LEFT", self.bagIcon, "RIGHT", 5, 0)
-			BagItemAutoSortButton:SetSize(18, 18)
+	if self:IsBackpack() or self:IsCombinedBagContainer() then
+		self.PortraitButton:SetSize(18, 18)
+		self.PortraitButton:ClearAllPoints()
+		self.PortraitButton:SetPoint("TOPLEFT", self, "TOPLEFT", 5, -5)
+		
+		if self.bagIcon then
+			self.bagIcon:SetAllPoints(self.PortraitButton)
 		end
 		
+		BagItemAutoSortButton:ClearAllPoints()
+		BagItemAutoSortButton:SetPoint("LEFT", self.PortraitButton, "RIGHT", 5, 0)
+		BagItemAutoSortButton:SetSize(18, 18)
+
 		if not self.addFavorite then
 			local button = CreateFrame("Button", nil, self)
 			button:SetPoint("LEFT", BagItemAutoSortButton, "RIGHT", 5, 0)

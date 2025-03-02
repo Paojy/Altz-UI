@@ -166,6 +166,7 @@ local ClassSpells = {
 			color = {.95, .93, .79},
 			point = {"TOPLEFT", 0, 0},
 			str = {"⑴","⑵","⑶","⑷","⑸","⑹","⑺","⑻","⑼","⑽","⑾","⑿","⒀","⒁","⒂","⒃","⒄","⒅","⒆","⒇"},
+			backup_str = "o",
 		},
 	},
 	MONK = {
@@ -363,7 +364,7 @@ local function updateAura(element, unit, data)
 				button.text:SetText(data.applications)
 			end
 		else
-			button.text:SetText("")
+			button.text:SetText(info.backup_str or "")
 		end
 	elseif info.str then
 		button.text:SetText(info.str)
