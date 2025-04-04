@@ -2,6 +2,11 @@
 if G.Client == "zhCN" or G.Client == "zhTW" then return end
 
 L["UpdateLogs"] = {
+[[11.17
+The group finder updates the S2 mythic+ filtering button.
+Update S2 score information and portal button on the mythic+ interface.
+]],
+
 [[11.16
 Add filtering buttons to the LFG list.
 Automatically purchase goods without buying items that require other currencies.
