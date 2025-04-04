@@ -1,23 +1,14 @@
 ﻿local T, C, L, G = unpack(select(2, ...))
 
-local factionGroup = UnitFactionGroup("player")
-
-local siegeID
-if factionGroup == "Horde" then
-    siegeID = 464256
-elseif factionGroup == "Alliance" then
-    siegeID = 445418
-end
-
 local Data = {
-    [375] = 354464, -- 塞兹仙林的迷雾
-    [505] = 445414, -- 破晨号
-    [353] = siegeID, -- 围攻伯拉勒斯
-    [376] = 354462, -- 通灵战潮
-    [507] = 445424,	-- 格瑞姆巴托
-    [501] = 445269, -- 矶石宝库
-    [502] = 445416, -- 千丝之城	
-    [503] = 445417, -- 回响之城
+    [525] = 1216786, -- 水闸行动
+    [500] = 445443, -- 驭雷栖巢
+	[506] = 445440, -- 燧酿酒庄
+	[504] = 445441, -- 暗焰裂口
+	[499] = 445444, -- 圣焰隐修院
+	[247] = 467555, -- 暴富矿区！！
+	[382] = 354467, -- 伤逝剧场
+	[370] = 373274, -- 麦卡贡行动: 车间
 }
 
 local function UpdateCooldownText(button)

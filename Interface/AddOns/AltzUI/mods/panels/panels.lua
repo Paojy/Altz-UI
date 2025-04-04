@@ -1721,14 +1721,14 @@ local icon_space = 3
 local DungeonSearchButtons = {}
 
 local Dungeons = {
-  {mapID = 507, searchID = 56}, -- 格瑞姆巴托
-  {mapID = 503, searchID = 323}, -- 回响
-  {mapID = 505, searchID = 326}, -- 破晨
-  {mapID = 501, searchID = 328}, -- 宝库
-  {mapID = 502, searchID = 329}, -- 千丝
-  {mapID = 375, searchID = 262}, -- 仙林
-  {mapID = 376, searchID = 265}, -- 通灵
-  {mapID = 353, searchID = 146}, -- 围攻
+	{mapID = 525, searchID = 371}, -- 水闸行动
+	{mapID = 500, searchID = 325}, -- 驭雷栖巢
+	{mapID = 506, searchID = 327}, -- 燧酿酒庄
+	{mapID = 504, searchID = 322}, -- 暗焰裂口
+	{mapID = 499, searchID = 324}, -- 圣焰隐修院
+	{mapID = 247, searchID = 140}, -- 暴富矿区！！
+	{mapID = 382, searchID = 266}, -- 伤逝剧场
+	{mapID = 370, searchID = 257}, -- 麦卡贡行动: 车间
 }
 
 local function LFGListAdvancedFiltersCheckAllDifficulties(enabled)
