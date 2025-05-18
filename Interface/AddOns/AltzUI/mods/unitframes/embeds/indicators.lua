@@ -22,7 +22,7 @@ local ClassSpells = {
 			font = "text",
 			update_type = "dur",
 			color = {.96, .91, .6},
-			point = {"TOPRIGHT", 0, 0},
+			point = {"LEFT", 0, 0},
 		},
 		[17] = { -- 盾
 			font = "symbol",
@@ -34,6 +34,12 @@ local ClassSpells = {
 	},
 	DRUID = {
 		[188550] = { -- 生命绽放
+			font = "text",
+			update_type = "dur",
+			color = {.15, .71, .38},
+			point = {"TOP", 0, 0},
+		},
+		[33763] = { -- 生命绽放
 			font = "text",
 			update_type = "dur",
 			color = {.15, .71, .38},
@@ -144,6 +150,20 @@ local ClassSpells = {
 			update_type = "dur",
 			color = {1, 1, 0},
 			point = {"BOTTOMLEFT", 0, 5},
+		},
+		[432496] = { -- 神圣壁垒
+			font = "text",
+			update_type = "dur",
+			color = {.98, 1, .75},
+			point = {"RIGHT", 0, 0},
+			str = {"⑴","⑵","⑶","⑷","⑸","⑹","⑺","⑻","⑼","⑽","⑾","⑿","⒀","⒁","⒂","⒃","⒄","⒅","⒆","⒇"},
+		},
+		[432502] = { -- 圣洁武器
+			font = "text",
+			update_type = "dur",
+			color = {.96, .5, .17},
+			point = {"RIGHT", -15, 0},
+			str = {"⑴","⑵","⑶","⑷","⑸","⑹","⑺","⑻","⑼","⑽","⑾","⑿","⒀","⒁","⒂","⒃","⒄","⒅","⒆","⒇"},
 		},
 	},
 	SHAMAN = {
