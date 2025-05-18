@@ -93,7 +93,7 @@ local function GetUnitColor(unit)
 	local r, g, b = 1, 1, 1
 	if not UnitPlayerControlled(unit) and UnitIsTapDenied(unit) then
 		r, g, b = .6, .6, .6
-	elseif UnitIsPlayer(unit) and UnitClass(unit) then
+	elseif (UnitIsPlayer(unit) or UnitInParty(unit) or UnitInRaid(unit)) and UnitClass(unit) then
 		local _, unitclass = UnitClass(unit)
 		r, g, b = unpack(oUF.colors.class[unitclass]) 
 	elseif UnitReaction(unit, "player") then

@@ -77,15 +77,15 @@ function eventframe:MERCHANT_SHOW()
 				for index = 1, numMerchantItems do
 					local name, texture, price, quantity, numAvailable, isUsable, extendedCost = GetMerchantItemInfo(index)
 					local itemCount = GetMerchantItemCostInfo(index)
-					if ItemName == name and itemCount == 0 then-- 有卖的嘛？
+					if ItemName and ItemName == name and itemCount == 0 then-- 有卖的嘛？
 						local maxbuy = GetMerchantItemMaxStack(index)
 						local needbuy = Need - ItemCount
 						local afford_num = floor(GetMoney()/price*quantity)
 						local supplied_num = quantity*numAvailable
 						local result, reason
 						
-						if maxbuy < needbuy then
-							reason = string.format(L["每次最多购买"], maxbuy, T.color_text(ItemName))
+						if maxbuy and maxbuy < needbuy then
+							reason = string.format(L["每次最多购买"], maxbuy)
 						else
 							reason = ""
 						end
@@ -96,8 +96,10 @@ function eventframe:MERCHANT_SHOW()
 							result = min(maxbuy, needbuy, afford_num)
 						end
 						
-						BuyMerchantItem(index, result)
-						print(string.format(L["购买"], result, T.color_text(ItemName), reason))
+						if result then
+							BuyMerchantItem(index, result)
+							print(string.format(L["购买"], result, T.color_text(ItemName), reason))
+						end
 					end
 				end
 			end

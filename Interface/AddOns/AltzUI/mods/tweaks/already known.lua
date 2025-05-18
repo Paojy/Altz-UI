@@ -42,9 +42,12 @@ hooksecurefunc('MerchantFrame_UpdateMerchantInfo', MerchantFrame_UpdateMerchantI
 
 local function IsBuyBackItemAlreadyKnown(index)
 	if index then
-		for _, v in pairs(C_TooltipInfo.GetBuybackItem(index)["lines"]) do
-			if v.leftText and v.leftText == ITEM_SPELL_KNOWN then
-				return true
+		local info = C_TooltipInfo.GetBuybackItem(index)
+		if info and info.lines then
+			for _, v in pairs(info.lines) do
+				if v.leftText and v.leftText == ITEM_SPELL_KNOWN then
+					return true
+				end
 			end
 		end
 	end
@@ -82,6 +85,7 @@ local function IsItemAlreadyKnownbyID(itemID)
 end
 
 local function AuctionFrameBrowse_Update ()
+	if not AuctionHouseFrame.BrowseResultsFrame.ItemList.tableBuilder then return end
 	for i = 1, 22 do
 		local row = AuctionHouseFrame.BrowseResultsFrame.ItemList.tableBuilder.rows[i]
 		if row then
