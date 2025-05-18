@@ -672,6 +672,7 @@ local click_cast_spells = {
 			108968, -- 虚空转移
 			21562, -- 真言术：韧（BUFF）			
 			2006, -- 复活术（复活）
+			33076, -- 愈合祷言
 		},
 		[256] = { -- 戒律		
 			47540, -- 苦修
@@ -683,7 +684,6 @@ local click_cast_spells = {
 			47536, -- 全神贯注
 		},
 		[257] = { -- 神圣
-			33076, -- 愈合祷言
 			2050, -- 圣言术：静
 			47788, -- 守护之魂		
 			204883, -- 治疗之环
@@ -776,6 +776,7 @@ local click_cast_spells = {
 			156910, -- 信仰道标
 			4987, -- 清洁术（驱散）
 			212056, -- 宽恕（复活）
+			432472, -- 圣洁武器
 		},
 		[66] = { -- 防护
 			204018, -- 破咒祝福
@@ -1111,7 +1112,8 @@ local HealerIndicatorAuraList = default_HealerIndicatorAuraList[G.myClass]
 ----          默认配置         ----
 -----------------------------------
 local Account_default_Settings = {
-	gold = {},
+	money = {},
+	concentration = {},
 }
 
 local Character_default_Settings = {	
