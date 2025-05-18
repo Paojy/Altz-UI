@@ -1248,13 +1248,13 @@ local PlateInnerframe = CreateInnerFrame(PlateOptions)
 
 -- 通用
 PlateInnerframe.common = CreateOptionPage("Nameplates Options common", T.split_words(L["一般"], L["设置"]), PlateInnerframe, "VERTICAL")
-T.CreateGUIOpitons(PlateInnerframe.common, "PlateOptions", 1, 16)
+T.CreateGUIOpitons(PlateInnerframe.common, "PlateOptions", 1, 17)
 
 -- 样式
 PlateInnerframe.style = CreateOptionPage("Nameplates Options style", L["样式"], PlateInnerframe, "VERTICAL")
-T.CreateGUIOpitons(PlateInnerframe.style, "PlateOptions", 17, 24)
+T.CreateGUIOpitons(PlateInnerframe.style, "PlateOptions", 18, 25)
 PlateInnerframe.style.option_y = PlateInnerframe.style.option_y - 150
-T.CreateGUIOpitons(PlateInnerframe.style, "PlateOptions", 25, 27)
+T.CreateGUIOpitons(PlateInnerframe.style, "PlateOptions", 26, 28)
 
 do
 	local ShouldShowNumber = function()
@@ -1281,11 +1281,11 @@ end
 
 -- 玩家姓名板
 PlateInnerframe.playerresource = CreateOptionPage("Player Resource Bar Options", L["玩家姓名板"], PlateInnerframe, "VERTICAL")
-T.CreateGUIOpitons(PlateInnerframe.playerresource, "PlateOptions", 28, 31)
+T.CreateGUIOpitons(PlateInnerframe.playerresource, "PlateOptions", 29, 32)
 
 -- 光环过滤列表
 PlateInnerframe.auralist = CreateOptionPage("Plate Options Aura", L["光环"], PlateInnerframe, "VERTICAL")
-T.CreateGUIOpitons(PlateInnerframe.auralist, "PlateOptions", 32, 32)
+T.CreateGUIOpitons(PlateInnerframe.auralist, "PlateOptions", 33, 33)
 
 PlateInnerframe.auralist.my_filter = T.CreateAuraListOption(PlateInnerframe.auralist, {"TOPLEFT", 20, -55}, 200,
 L["我施放的光环"], {"PlateOptions", "myplateauralist"}, nil, {"PlateOptions", "myfiltertype"})
@@ -1303,7 +1303,7 @@ end
 
 -- 自定义
 PlateInnerframe.custom = CreateOptionPage("Plate Options Custom", CUSTOM, PlateInnerframe, "VERTICAL")
-T.CreateGUIOpitons(PlateInnerframe.custom, "PlateOptions", 35, 35)
+T.CreateGUIOpitons(PlateInnerframe.custom, "PlateOptions", 36, 36)
 
 PlateInnerframe.custom.color = T.CreatePlateColorListOption(PlateInnerframe.custom,  {"TOPLEFT", 30, -55}, 200,
 L["自定义颜色"], {"PlateOptions", "customcoloredplates"})
@@ -1544,8 +1544,6 @@ end
 --====================================================--
 --[[                  -- Game menu --               ]]--
 --====================================================--
-
-
 local function ShowGUI()
 	GUI:Show()
 	GUI.df:Show()
@@ -1563,8 +1561,6 @@ GameMenuFrame:HookScript("OnShow", function()
 	GUI.df:Hide()
 	GUI.scale:Hide()
 end)
-
-
 
 --[[ CPU and Memroy testing
 local interval = 0

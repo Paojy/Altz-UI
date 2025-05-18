@@ -208,23 +208,22 @@ local createVisibleDR = function(func, parent, ...)
 			end
 		end
 	end)
-	
-	
-		local oldfunc = parent.visible_apply	
-		parent.visible_apply = function()
-			if oldfunc then
-				oldfunc()
+		
+	local oldfunc = parent.visible_apply	
+	parent.visible_apply = function()
+		if oldfunc then
+			oldfunc()
+		end
+		if func() then
+			for _, object in pairs(children) do
+				object:Show()
 			end
-			if func() then
-				for _, object in pairs(children) do
-					object:Show()
-				end
-			else
-				for _, object in pairs(children) do
-					object:Hide()
-				end
+		else
+			for _, object in pairs(children) do
+				object:Hide()
 			end
 		end
+	end
 end
 T.createVisibleDR = createVisibleDR
 
