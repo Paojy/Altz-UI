@@ -1760,7 +1760,8 @@ G.Options = {
 		},
 		{ -- 16 友方只显示名字
 			key = "bar_onlyname",
-			option_type = "check",			
+			option_type = "check",		
+			width = .4,			
 			text = L["友方只显示名字"],
 			apply = function()
 				T.UpdateUFTags('Altz_Nameplates')
@@ -1768,12 +1769,20 @@ G.Options = {
 			end,
 			rely = "enableplate",
 		},
-		{ -- 17 标题:样式
+		{ -- 17 友方只显示名字
+			key = "nameplateShowOnlyNames",
+			option_type = "cvar_check",
+			width = .6,
+			text = T.split_words(L["原生姓名板"],L["友方只显示名字"]),
+			arg1 = "1",
+			arg2 = "0",
+		},
+		{ -- 18 标题:样式
 			option_type = "title",
 			text = L["样式"],
 			line = true,
 		},
-		{ -- 18 样式
+		{ -- 19 样式
 			key = "theme",
 			option_type = "ddmenu",
 			text = L["样式"],			
@@ -1787,7 +1796,7 @@ G.Options = {
 				T.PostUpdateAllPlates()				
 			end,
 		},
-		{ -- 19 条形样式的选项 宽度
+		{ -- 20 条形样式的选项 宽度
 			key = "bar_width",
 			option_type = "slider",
 			text = L["宽度"],
@@ -1798,7 +1807,7 @@ G.Options = {
 				T.ApplyUFSettings({"Health", "Castbar", "Auras"}, "Altz_Nameplates")
 			end,
 		},
-		{ -- 20 高度
+		{ -- 21 高度
 			key = "bar_height",
 			option_type = "slider",
 			text = L["高度"],
@@ -1809,7 +1818,7 @@ G.Options = {
 				T.ApplyUFSettings({"Health", "Power", "Castbar"}, "Altz_Nameplates")
 			end,
 		},
-		{ -- 21 施法条高度
+		{ -- 22 施法条高度
 			key = "castbar_height",
 			option_type = "slider",
 			text = T.split_words(L["施法条"],L["高度"]),
@@ -1820,7 +1829,7 @@ G.Options = {
 				T.ApplyUFSettings({"Health", "Power", "Castbar"}, "Altz_Nameplates")
 			end,
 		},
-		{ -- 22 数值字体大小
+		{ -- 23 数值字体大小
 			key = "valuefontsize",
 			option_type = "slider",
 			text = T.split_words(L["数值"],L["字体"],L["大小"]),
@@ -1831,7 +1840,7 @@ G.Options = {
 				T.ApplyUFSettings({"Tag_Name", "Tag_TargetName", "Health", "Power"}, "Altz_Nameplates")
 			end,
 		},
-		{ -- 23 数值样式
+		{ -- 24 数值样式
 			key = "bar_hp_perc",
 			option_type = "ddmenu",
 			text = T.split_words(L["数值"],L["样式"]),			
@@ -1843,7 +1852,7 @@ G.Options = {
 				T.ApplyUFSettings({"Health"}, "Altz_Nameplates")
 			end,
 		},
-		{ -- 24 总是显示生命值
+		{ -- 25 总是显示生命值
 			key = "bar_alwayshp",
 			option_type = "check",			
 			text = T.split_words(L["总是"],L["显示"],L["生命值"]),
@@ -1852,7 +1861,7 @@ G.Options = {
 				T.ApplyUFSettings({"Health"}, "Altz_Nameplates")
 			end,
 		},
-		{ -- 25 数字样式的选项 字体大小
+		{ -- 26 数字样式的选项 字体大小
 			key = "number_size",
 			option_type = "slider",
 			text = T.split_words(L["字体"],L["大小"]),
@@ -1863,7 +1872,7 @@ G.Options = {
 				T.ApplyUFSettings({"Health", "Power", "ClassPower"}, "Altz_Nameplates")
 			end,
 		},
-		{ -- 26 总是显示生命值
+		{ -- 27 总是显示生命值
 			key = "number_alwayshp",
 			option_type = "check",			
 			text = T.split_words(L["总是"],L["显示"],L["生命值"]),
@@ -1872,7 +1881,7 @@ G.Options = {
 				T.ApplyUFSettings({"Health"}, "Altz_Nameplates")
 			end,
 		},
-		{ -- 27 根据血量变色
+		{ -- 28 根据血量变色
 			key = "number_colorheperc",
 			option_type = "check",			
 			text = L["根据血量变色"],
@@ -1880,12 +1889,12 @@ G.Options = {
 				T.ApplyUFSettings({"Health"}, "Altz_Nameplates")
 			end,
 		},
-		{ -- 28 标题:玩家姓名板
+		{ -- 29 标题:玩家姓名板
 			option_type = "title",
 			text = L["玩家姓名板"],
 			line = true,
 		},
-		{ -- 29 启用
+		{ -- 30 启用
 			key = "playerplate",
 			option_type = "check",			
 			text = T.split_words(L["显示"],L["玩家姓名板"]),
@@ -1898,7 +1907,7 @@ G.Options = {
 				T.PostUpdateAllPlates()
 			end,
 		},
-		{ -- 30 施法条
+		{ -- 31 施法条
 			key = "platecastbar",
 			option_type = "check",			
 			text = T.split_words(L["显示"],PLAYER,L["施法条"]),
@@ -1907,7 +1916,7 @@ G.Options = {
 			end,
 			rely = "playerplate",
 		},
-		{ -- 31 个人资源
+		{ -- 32 个人资源
 			key = "classresource_show",
 			option_type = "check",			
 			text = DISPLAY_PERSONAL_RESOURCE,
@@ -1916,12 +1925,12 @@ G.Options = {
 			end,
 			rely = "playerplate",
 		},
-		{ -- 32 标题:光环
+		{ -- 33 标题:光环
 			option_type = "title",
 			text = L["光环"],
 			line = true,
 		},
-		{ -- 33 过滤方式
+		{ -- 34 过滤方式
 			key = "myfiltertype",
 			option_type = "ddmenu",
 			text = "",			
@@ -1934,7 +1943,7 @@ G.Options = {
 				T.ApplyUFSettings({"Auras"}, "Altz_Nameplates")
 			end,
 		},
-		{ -- 34 过滤方式
+		{ -- 35 过滤方式
 			key = "otherfiltertype",
 			option_type = "ddmenu",
 			text = "",			
@@ -1946,7 +1955,7 @@ G.Options = {
 				T.ApplyUFSettings({"Auras"}, "Altz_Nameplates")
 			end,
 		},
-		{ -- 35 标题:自定义
+		{ -- 36 标题:自定义
 			option_type = "title",
 			text = CUSTOM,
 			line = true,
