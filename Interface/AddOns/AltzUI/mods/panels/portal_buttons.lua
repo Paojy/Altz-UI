@@ -1,12 +1,21 @@
 ﻿local T, C, L, G = unpack(select(2, ...))
 
+local factionGroup = UnitFactionGroup("player")
+
+local factionID
+if factionGroup == "Horde" then
+    factionID = 467555
+elseif factionGroup == "Alliance" then
+    factionID = 467553
+end
+
 local Data = {
     [525] = 1216786, -- 水闸行动
     [500] = 445443, -- 驭雷栖巢
 	[506] = 445440, -- 燧酿酒庄
 	[504] = 445441, -- 暗焰裂口
 	[499] = 445444, -- 圣焰隐修院
-	[247] = 467555, -- 暴富矿区！！
+	[247] = factionID, -- 暴富矿区！！
 	[382] = 354467, -- 伤逝剧场
 	[370] = 373274, -- 麦卡贡行动: 车间
 }
@@ -43,6 +52,7 @@ local function UpdateCooldownText(button)
 		end
 	else
 		button.cooldownText:SetText("")
+		button.cooldownIcon:Hide()
 	end
 end
 
