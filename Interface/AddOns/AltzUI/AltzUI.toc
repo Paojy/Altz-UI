@@ -1,8 +1,8 @@
-﻿## Interface: 110100
+﻿## Interface: 110105, 110107, 110100
 ## Title: |cffEE3A8CAltz|rUI
 ## IconTexture: Interface\AddOns\AltzUI\media\icons\addon_icon.png
 ## X-oUF: AltzUF
-## Version: 11.17
+## Version: 11.18
 ## Author: Paopao001
 ## OptionalDeps: AuroraClassic, !ClassColors, BigWigs
 ## SavedVariables: aCoreDB
