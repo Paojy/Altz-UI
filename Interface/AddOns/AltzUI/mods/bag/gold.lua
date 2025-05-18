@@ -42,7 +42,7 @@ eventframe:SetScript("OnEvent", function(self, event)
 	end
 	
 	OldMoney = NewMoney
-	aCoreDB.gold[G.PlayerRealm][G.PlayerName] = GetMoney()
+	aCoreDB.money[G.PlayerName] = GetMoney()
 end)
 
 eventframe:RegisterEvent("PLAYER_MONEY")
@@ -64,9 +64,9 @@ local function ShowMoneyTooltip()
 		GameTooltip:AddDoubleLine(L["盈利"], formatMoney(Profit-Spent), 0, 1, 0, 1, 1, 1)
 	end				
 	GameTooltip:AddLine(" ")
-	local totalGold = 0				
+	local totalGold = 0
 	GameTooltip:AddLine(L["角色"]..": ", unpack(G.addon_color))
-	for k,v in pairs(aCoreDB.gold[G.PlayerRealm]) do
+	for k,v in pairs(aCoreDB.money) do
 		GameTooltip:AddDoubleLine(k, FormatTooltipMoney(v), 1, 1, 1, 1, 1, 1)
 		totalGold = totalGold + v
 	end 
@@ -91,8 +91,8 @@ end
 local ResetButton = T.ClickTexButton(Gold, {"RIGHT", Gold, "RIGHT", 0, 0}, G.iconFile.."refresh.tga", nil, nil, L["重置金币信息"])
 
 ResetButton:SetScript("OnClick", function(self)
-	aCoreDB.gold[G.PlayerRealm] = table.wipe(aCoreDB.gold[G.PlayerRealm])
-	aCoreDB.gold[G.PlayerRealm][G.PlayerName] = GetMoney()
+	aCoreDB.money = table.wipe(aCoreDB.money)
+	aCoreDB.money[G.PlayerName] = GetMoney()
 	ShowMoneyTooltip()
 end)
 
@@ -103,9 +103,6 @@ end)
 
 T.RegisterEnteringWorldCallback(function()
 	OldMoney = GetMoney()
-	if aCoreDB.gold[G.PlayerRealm] == nil then 
-		aCoreDB.gold[G.PlayerRealm] = {}
-	end
 	MONEY_TEXT_VADJUST = 0
 end)
 

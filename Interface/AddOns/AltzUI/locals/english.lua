@@ -238,6 +238,7 @@ L["本次登陆"] = "Session"
 L["服务器"] = "Server"
 L["角色"] = "Character"
 L["重置金币信息"] = "Click to reset."
+L["重置专注信息"] = "Click to reset."
 L["收藏"] = "Favorites"
 L["加入收藏"] = "Drag items here to add or remove from favorites"
 L["新物品"] = "New"
@@ -355,6 +356,7 @@ L["移除自定义能量"] = "Remove [%s] from Custom Nameplate Power List"
 L["添加自定义颜色"] = "Add [%s] to Custom Nameplate Color List"
 L["移除自定义颜色"] = "Remove |cff%02x%02x%02x[%s]|r from Custom Nameplate Color List"
 L["替换自定义颜色"] = "Replace |cff%02x%02x%02x[%s]|r from Custom Nameplate Color List"
+L["原生姓名板"] = "Blizzard Nameplate"
 
 --====================================================--
 --[[                 -- 鼠标提示 --                 ]]--
