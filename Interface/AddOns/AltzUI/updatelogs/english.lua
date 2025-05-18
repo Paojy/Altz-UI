@@ -2,6 +2,16 @@
 if G.Client == "zhCN" or G.Client == "zhTW" then return end
 
 L["UpdateLogs"] = {
+[[11.18
+Show the concentration value statistics of the professions in the Warbands.
+Alliance The MOTHERLODE!! teleportation button correction.
+Add Cvar option to only displays the name on friendly nameplates in instance.
+Improvement of the raid frame healing indicators.
+Improvement of the raid frame Click-casting spell options.
+Aurora update.
+Other error corrections.
+]],
+
 [[11.17
 The group finder updates the S2 mythic+ filtering button.
 Update S2 score information and portal button on the mythic+ interface.
