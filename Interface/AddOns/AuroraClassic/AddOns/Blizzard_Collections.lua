@@ -43,12 +43,14 @@ C.themes["Blizzard_Collections"] = function()
 	-- [[ General ]]
 
 	CollectionsJournal.bg = B.ReskinPortraitFrame(CollectionsJournal) -- need this for Rematch skin
-	for i = 1, 5 do
+	for i = 1, 6 do
 		local tab = _G["CollectionsJournalTab"..i]
-		B.ReskinTab(tab)
-		if i ~= 1 then
-			tab:ClearAllPoints()
-			tab:SetPoint("TOPLEFT", _G["CollectionsJournalTab"..(i-1)], "TOPRIGHT", -15, 0)
+		if tab then
+			B.ReskinTab(tab)
+			if i ~= 1 then
+				tab:ClearAllPoints()
+				tab:SetPoint("TOPLEFT", _G["CollectionsJournalTab"..(i-1)], "TOPRIGHT", -15, 0)
+			end
 		end
 	end
 
@@ -150,6 +152,13 @@ C.themes["Blizzard_Collections"] = function()
 	PetJournalTutorialButton:SetPoint("TOPLEFT", PetJournal, "TOPLEFT", -14, 14)
 
 	local function reskinToolButton(button)
+		if DB.isNewPatch then
+			button.Border:Hide()
+			button:SetPushedTexture(0)
+			button:GetHighlightTexture():SetColorTexture(1, 1, 1, .25)
+			B.ReskinIcon(button.Icon)
+			return
+		end
 		local border = _G[button:GetName().."Border"]
 		if border then border:Hide() end
 		button:SetPushedTexture(0)
@@ -157,15 +166,26 @@ C.themes["Blizzard_Collections"] = function()
 		B.ReskinIcon(button.texture)
 	end
 
+	if DB.isNewPatch then
+		reskinToolButton(PetJournal.HealPetSpellFrame.Button)
+	else
 	reskinToolButton(PetJournalHealPetButton)
+	end
 
 	PetJournalLoadoutBorderSlotHeaderText:SetParent(PetJournal)
 	PetJournalLoadoutBorderSlotHeaderText:SetPoint("CENTER", PetJournalLoadoutBorderTop, "TOP", 0, 4)
 
+	if DB.isNewPatch then
+		reskinToolButton(PetJournal.SummonRandomPetSpellFrame.Button)
+	else
 	reskinToolButton(PetJournalSummonRandomFavoritePetButton)
+	end
 
 	-- Favourite mount button
 
+	if DB.isNewPatch then
+		reskinToolButton(MountJournal.SummonRandomFavoriteSpellFrame.Button)
+	else
 	reskinToolButton(MountJournalSummonRandomFavoriteButton)
 
 	local movedButton
@@ -175,6 +195,7 @@ C.themes["Blizzard_Collections"] = function()
 			movedButton = true
 		end
 	end)
+	end
 
 	local function reskinDynamicButton(button, index)
 		if button.Border then button.Border:Hide() end
@@ -183,12 +204,14 @@ C.themes["Blizzard_Collections"] = function()
 		B.ReskinIcon(select(index, button:GetRegions()), nil)
 		button:SetNormalTexture(0)
 	end
-	reskinDynamicButton(MountJournal.ToggleDynamicFlightFlyoutButton, 1)
+	reskinDynamicButton(MountJournal.ToggleDynamicFlightFlyoutButton, 3)
 
-	local flyout = MountJournal.DynamicFlightFlyout
-	flyout.Background:Hide()
-	reskinDynamicButton(flyout.OpenDynamicFlightSkillTreeButton, 4)
-	reskinDynamicButton(flyout.DynamicFlightModeButton, 4)
+	local flyout = MountJournal.ToggleDynamicFlightFlyoutButton.popup or MountJournal.DynamicFlightFlyout
+	if flyout then
+		flyout.Background:Hide()
+		reskinDynamicButton(flyout.OpenDynamicFlightSkillTreeButton, 4)
+		reskinDynamicButton(flyout.DynamicFlightModeButton, 4)
+	end
 
 	-- Pet card
 
@@ -633,4 +656,25 @@ C.themes["Blizzard_Collections"] = function()
 			reskinHPet = true
 		end
 	end)
+
+	-- WarbandSceneJournal
+	if WarbandSceneJournal then
+		local iconsFrame = WarbandSceneJournal.IconsFrame
+		if iconsFrame then
+			B.StripTextures(iconsFrame)
+
+			local controls = iconsFrame.Icons and iconsFrame.Icons.Controls
+			if controls then
+				local showCheck = controls and controls.ShowOwned and controls.ShowOwned.Checkbox
+				if showCheck then
+					B.ReskinCheck(showCheck)
+					showCheck:SetSize(28, 28)
+				end
+				if controls.PagingControls then
+					B.ReskinArrow(controls.PagingControls.PrevPageButton, "left")
+					B.ReskinArrow(controls.PagingControls.NextPageButton, "right")
+				end
+			end
+		end
+	end
 end

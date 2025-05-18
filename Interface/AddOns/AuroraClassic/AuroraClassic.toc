@@ -1,4 +1,4 @@
-## Interface: 110007
+## Interface: 110105, 110107
 ## Title: |cff0080ffAuroraClassic|r
 ## Title-zhCN: |cff0080ffAuroraClassic|r 材质美化
 ## Title-zhTW: |cff0080ffAuroraClassic|r 材質美化
@@ -6,10 +6,22 @@
 ## Author: Siweia
 ## X-Credits: Haleth, Gethe
 ## X-Curse-Project-ID: 776149
-## Version: 7.4.0
+## Version: 7.7.0
 ## X-Website: https://github.com/siweia/AuroraClassic
 ## SavedVariables: AuroraClassicDB
 ## IconTexture: Interface\HELPFRAME\HelpIcon-HotIssues
+
+## Category-enUS: User Interface
+## Category-deDE: Benutzerinterface
+## Category-esES: Interfaz de usuario
+## Category-esMX: Interfaz de usuario
+## Category-frFR: Interface utilisateur
+## Category-itIT: Interfaccia utente
+## Category-koKR: 사용자 인터페이스
+## Category-ptBR: Interface do usuário
+## Category-ruRU: Интерфейс пользователя
+## Category-zhCN: 用户界面
+## Category-zhTW: 使用者介面
 
 Init.lua
 Config.lua

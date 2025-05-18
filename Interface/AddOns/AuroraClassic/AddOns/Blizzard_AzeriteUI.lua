@@ -1,5 +1,6 @@
 local _, ns = ...
 local B, C, L, DB = unpack(ns)
+local r, g, b = DB.r, DB.g, DB.b
 
 C.themes["Blizzard_AzeriteUI"] = function()
 	B.ReskinPortraitFrame(AzeriteEmpoweredItemUI)
@@ -13,18 +14,24 @@ local function updateEssenceButton(button)
 		bg:SetPoint("TOPLEFT", 1, 0)
 		bg:SetPoint("BOTTOMRIGHT", 0, 2)
 
-		B.ReskinIcon(button.Icon)
-		button.PendingGlow:SetTexture("")
-		local hl = button:GetHighlightTexture()
-		hl:SetColorTexture(r, g, b, .25)
-		hl:SetInside(bg)
+		if button.Icon then
+			B.ReskinIcon(button.Icon)
+			button.PendingGlow:SetTexture("")
+			local hl = button:GetHighlightTexture()
+			hl:SetColorTexture(r, g, b, .25)
+			hl:SetInside(bg)
+			button.Background:SetAlpha(0)
+		end
+		if button.ExpandedIcon then
+			button:DisableDrawLayer("BACKGROUND")
+			button:DisableDrawLayer("BORDER")
+		end
 
 		button.bg = bg
 	end
-	button.Background:SetTexture("")
 
 	if button:IsShown() then
-		if button.PendingGlow:IsShown() then
+		if button.PendingGlow and button.PendingGlow:IsShown() then
 			button.bg:SetBackdropBorderColor(1, .8, 0)
 		else
 			button.bg:SetBackdropBorderColor(0, 0, 0)
@@ -33,8 +40,6 @@ local function updateEssenceButton(button)
 end
 
 C.themes["Blizzard_AzeriteEssenceUI"] = function()
-	local r, g, b = DB.r, DB.g, DB.b
-
 	B.ReskinPortraitFrame(AzeriteEssenceUI)
 	B.StripTextures(AzeriteEssenceUI.PowerLevelBadgeFrame)
 	B.ReskinTrimScroll(AzeriteEssenceUI.EssenceList.ScrollBar)

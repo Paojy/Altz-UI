@@ -94,8 +94,17 @@ local function reskinMinimizeButton(button, header)
 	button:GetNormalTexture():SetAlpha(0)
 	button:GetPushedTexture():SetAlpha(0)
 	button.__texture:DoCollapse(false)
-	if button.SetCollapsed then
-		hooksecurefunc(button, "SetCollapsed", updateMinimizeButton)
+	if header.SetCollapsed then
+		hooksecurefunc(header, "SetCollapsed", updateMinimizeButton)
+	end
+end
+
+local function GetMawBuffsAnchor(frame)
+	local center = frame:GetCenter()
+	if center and center < GetScreenWidth()/2 then
+		return "LEFT"
+	else
+		return "RIGHT"
 	end
 end
 
@@ -152,7 +161,7 @@ tinsert(C.defaultThemes, function()
 	B.StripTextures(mainHeader) -- main header looks simple this way
 
 	-- Minimize Button
-	local mainMinimize =mainHeader.MinimizeButton
+	local mainMinimize = mainHeader.MinimizeButton
 	reskinMinimizeButton(mainMinimize, mainHeader)
 	mainMinimize.bg:SetBackdropBorderColor(1, .8, 0, .5)
 

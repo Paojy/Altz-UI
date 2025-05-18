@@ -1,4 +1,4 @@
-﻿Copyright © 2015-2023 siweia (https://github.com/siweia/AuroraClassic)
+﻿Copyright © 2015-2025 siweia (https://github.com/siweia/AuroraClassic)
 
 The contents of this addon, excluding third-party resources, are
 copyrighted to its authors with all rights reserved.
