@@ -245,13 +245,18 @@ local CreatePrivateAurasAnchors = function()
 	local oUF = AltzUF or oUF
 	local icon_size = aCoreCDB["UnitframeOptions"]["raid_debuff_icon_size"]
 	for _, obj in next, oUF.objects do
-		if obj.style == 'Altz_Healerraid' and obj.unit and UnitExists(obj.unit) then			
+		if obj.style == 'Altz_Healerraid' and obj.unit and UnitExists(obj.unit) then
+			if not obj.pa_holder then
+				obj.pa_holder = CreateFrame("Frame", nil, obj)
+				obj.pa_holder:SetPoint("BOTTOMLEFT", obj.Power, "TOPLEFT")
+				obj.pa_holder:SetSize(1, 1)
+			end
 			for i = 1, 4 do		
-				if not obj["auraAnchorID"..i] then
-					obj["auraAnchorID"..i] = C_UnitAuras.AddPrivateAuraAnchor({
+				if not obj.pa_holder["auraAnchorID"..i] then
+					obj.pa_holder["auraAnchorID"..i] = C_UnitAuras.AddPrivateAuraAnchor({
 						unitToken = obj.unit,
 						auraIndex = i,
-						parent = obj,
+						parent = obj.pa_holder,
 						showCountdownFrame = true,
 						showCountdownNumbers = false,
 						iconInfo = {
@@ -259,7 +264,7 @@ local CreatePrivateAurasAnchors = function()
 							iconHeight = icon_size,
 							iconAnchor = {
 								point = "BOTTOMLEFT",
-								relativeTo = obj,
+								relativeTo = obj.pa_holder,
 								relativePoint = "BOTTOMLEFT",
 								offsetX = 1 + icon_size*(i-1),
 								offsetY = 1,
@@ -267,7 +272,7 @@ local CreatePrivateAurasAnchors = function()
 						},
 					})					
 				end
-				--print("create", obj.unit, i, obj["auraAnchorID"..i])
+				--print("create", obj.unit, i, obj.pa_holder["auraAnchorID"..i])
 			end
 		end
 	end
@@ -280,16 +285,19 @@ local UpdatePrivateAuras = function()
 	
 	for _, obj in next, oUF.objects do
 		if obj.style == 'Altz_Healerraid' and obj.unit and UnitExists(obj.unit) then			
+			if not obj.pa_holder then
+				obj.pa_holder = CreateFrame("Frame", nil, obj)
+				obj.pa_holder:SetPoint("BOTTOMLEFT", obj.Power, "TOPLEFT")
+				obj.pa_holder:SetSize(1, 1)
+			end
 			for i = 1, 4 do
-				if obj["auraAnchorID"..i] then
-					C_UnitAuras.RemovePrivateAuraAnchor(obj["auraAnchorID"..i])
-					
+				if obj.pa_holder["auraAnchorID"..i] then
+					C_UnitAuras.RemovePrivateAuraAnchor(obj.pa_holder["auraAnchorID"..i])
 				end
-				
-				obj["auraAnchorID"..i] = C_UnitAuras.AddPrivateAuraAnchor({
+				obj.pa_holder["auraAnchorID"..i] = C_UnitAuras.AddPrivateAuraAnchor({
 					unitToken = obj.unit,
 					auraIndex = i,
-					parent = obj,
+					parent = obj.pa_holder,
 					showCountdownFrame = true,
 					showCountdownNumbers = false,
 					iconInfo = {
@@ -297,14 +305,14 @@ local UpdatePrivateAuras = function()
 						iconHeight = icon_size,
 						iconAnchor = {
 							point = "BOTTOMLEFT",
-							relativeTo = obj,
+							relativeTo = obj.pa_holder,
 							relativePoint = "BOTTOMLEFT",
 							offsetX = 1 + icon_size*(i-1),
 							offsetY = 1,
 						},
 					},
 				})
-				--print("update", obj.unit, i, obj["auraAnchorID"..i])
+				--print("update", obj.unit, i, obj.pa_holder["auraAnchorID"..i])
 			end		
 		end
 	end
