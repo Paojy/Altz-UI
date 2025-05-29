@@ -2,9 +2,10 @@
 if G.Client == "zhCN" or G.Client == "zhTW" then return end
 
 L["UpdateLogs"] = {
-[[11.19
+[[11.20
 Raid frames Private Aura Icon and click casting conflict correction.
 Improvement of the raid frame healing indicators.
+Add Raid frames click casting mouse markers.
 ]],
 
 [[11.18
