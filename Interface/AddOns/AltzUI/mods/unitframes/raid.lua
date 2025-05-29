@@ -84,12 +84,18 @@ end
 --=============================================--
 --[[              点击施法                 ]]--
 --=============================================--
+local WeakAuras = WeakAuras
+
 T.RaidOnMouseOver = function(self)
     self:HookScript("OnEnter", function(self) 
 		UnitFrame_OnEnter(self)
 		self.Health:ForceUpdate()		
+		WeakAuras.ScanEvents("MOUSEOVER_ON")
 	end)
-    self:HookScript("OnLeave", function(self) UnitFrame_OnLeave(self) end)
+    self:HookScript("OnLeave", function(self)
+		UnitFrame_OnLeave(self)
+		WeakAuras.ScanEvents("MOUSEOVER_OFF")
+	end)
 end
 
 local function UpdateClickActions(object)
