@@ -2,6 +2,11 @@
 if G.Client == "zhCN" or G.Client == "zhTW" then return end
 
 L["UpdateLogs"] = {
+[[11.19
+Raid frames Private Aura Icon and click casting conflict correction.
+Improvement of the raid frame healing indicators.
+]],
+
 [[11.18
 Show the concentration value statistics of the professions in the Warbands.
 Alliance The MOTHERLODE!! teleportation button correction.

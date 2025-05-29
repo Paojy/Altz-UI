@@ -2,6 +2,11 @@
 if G.Client ~= "zhTW" then return end
 
 L["UpdateLogs"] = {
+[[11.19
+團隊框架Private Aura圖標與點擊施法衝突修正。
+團隊框架治療邊角提示完善。
+]],
+
 [[11.18
 戰團製造業專注值統計。
 聯盟暴富礦區傳送按鈕修正。

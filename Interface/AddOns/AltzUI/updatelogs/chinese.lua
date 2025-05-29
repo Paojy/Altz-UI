@@ -2,6 +2,11 @@
 if G.Client ~= "zhCN" then return end
 
 L["UpdateLogs"] = {
+[[11.19
+团队框架Private Aura图标与点击施法冲突修正。
+团队框架治疗边角提示完善。
+]],
+
 [[11.18
 战团制造业专注值统计。
 联盟暴富矿区传送按钮修正。
