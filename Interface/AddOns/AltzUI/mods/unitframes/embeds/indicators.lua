@@ -31,6 +31,13 @@ local ClassSpells = {
 			point = {"TOP", 0, 0},
 			str = "T",
 		},
+		[443526] = { -- 慰藉预兆
+			font = "symbol",
+			adjust = -1,
+			color = {1, 1, 0},
+			point = {"TOP", -15, 0},
+			str = "T",
+		},
 	},
 	DRUID = {
 		[188550] = { -- 生命绽放
