@@ -84,17 +84,66 @@ end
 --=============================================--
 --[[              点击施法                 ]]--
 --=============================================--
-local WeakAuras = WeakAuras
+local RFCursor = CreateFrame("Frame")
+RFCursor:SetSize(20, 20)
+RFCursor:SetAlpha(0)
+
+RFCursor.on = false
+RFCursor.t = 0
+
+RFCursor.tex = RFCursor:CreateTexture(nil, 'OVERLAY')
+RFCursor.tex:SetAllPoints()
+RFCursor.tex:SetAtlas("cursor_crosshairs_48", true)
+
+local function UpdateCursorTex()
+	if aCoreCDB["UnitframeOptions"]["ClickCastTex"] == "none" then
+		RFCursor:SetAlpha(0)
+	else
+		if RFCursor.on then
+			if aCoreCDB["UnitframeOptions"]["ClickCastTex"] == "on" then
+				RFCursor:SetAlpha(1)
+			elseif aCoreCDB["UnitframeOptions"]["ClickCastTex"] == "off" then
+				RFCursor:SetAlpha(0)
+			end
+		else
+			if aCoreCDB["UnitframeOptions"]["ClickCastTex"] == "on" then
+				RFCursor:SetAlpha(0)
+			elseif aCoreCDB["UnitframeOptions"]["ClickCastTex"] == "off" then
+				RFCursor:SetAlpha(1)
+			end
+		end
+	end
+end
+
+T.ToggleCursorTex = function()
+	if aCoreCDB["UnitframeOptions"]["ClickCastTex"] == "none" then
+		RFCursor:SetScript("OnUpdate", nil)
+	else
+		RFCursor:SetScript("OnUpdate", function(self, e)
+			self.t = self.t + e
+			if self.t > .02 then
+				local x, y = GetCursorPosition()
+				self:SetPoint("CENTER", UIParent, "BOTTOMLEFT", x, y)
+				self.t = 0
+			end
+		end)		
+	end
+	UpdateCursorTex()
+end
 
 T.RaidOnMouseOver = function(self)
     self:HookScript("OnEnter", function(self) 
 		UnitFrame_OnEnter(self)
-		self.Health:ForceUpdate()		
-		WeakAuras.ScanEvents("MOUSEOVER_ON")
+		self.Health:ForceUpdate()
+		RFCursor.on = true
+		UpdateCursorTex()
 	end)
     self:HookScript("OnLeave", function(self)
 		UnitFrame_OnLeave(self)
-		WeakAuras.ScanEvents("MOUSEOVER_OFF")
+		RFCursor.on = false
+		C_Timer.After(.2, function()
+			UpdateCursorTex()
+		end)
 	end)
 end
 
@@ -1224,11 +1273,12 @@ T.RegisterInitCallback(function()
 	T.UpdateGroupAnchor()
 	T.UpdateShowSolo()	
 	T.UpdatePetGroup()
+	T.ToggleCursorTex()
 	
 	EventFrame:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED")
 	EventFrame:RegisterEvent("ENCOUNTER_START")
 	EventFrame:RegisterEvent("ENCOUNTER_END")	
 	EventFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
 	EventFrame:RegisterEvent("PLAYER_LOGIN")
-	EventFrame:RegisterEvent("GROUP_ROSTER_UPDATE")	
+	EventFrame:RegisterEvent("GROUP_ROSTER_UPDATE")
 end)

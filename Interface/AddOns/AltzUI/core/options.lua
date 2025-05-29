@@ -1366,6 +1366,19 @@ G.Options = {
 				end
 			end,
 		},
+		{ -- 点击施法图案
+			key = "ClickCastTex",
+			option_type = "ddmenu",
+			text = L["点击施法鼠标标记"],
+			option_table = {
+				{"on", L["生效标记"]},
+				{"off", L["不生效标记"]},
+				{"none", L["无标记"]},
+			},
+			apply = function()
+				T.ToggleCursorTex()
+			end,
+		},
 		{ -- 标题:减益
 			option_type = "title",
 			text = L["减益"],

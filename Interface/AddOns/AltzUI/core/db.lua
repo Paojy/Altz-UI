@@ -1266,6 +1266,7 @@ local Character_default_Settings = {
 		hotind_auralist = HealerIndicatorAuraList, -- 导出、导入
 		-- 点击施法
 		enableClickCast = false,
+		ClickCastTex = "none", -- "on", "off", "none"
 		ClickCast = ClickCastDB, -- 导出、导入
 		-- 光环图标	
 		raid_debuff_anchor_x = -50,
