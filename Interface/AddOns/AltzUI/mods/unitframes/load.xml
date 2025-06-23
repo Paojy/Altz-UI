@@ -1,4 +1,5 @@
 ﻿<Ui xmlns="http://www.blizzard.com/wow/ui/">
+	<Script file="blzfix.lua"/>
 	<Script file="tags.lua"/>
 	
 	<Script file="embeds\fader.lua"/>
