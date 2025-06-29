@@ -270,7 +270,7 @@ local Override_Health = function(self, event, unit)
 	if element.value then
 		if (cur > 0 and self.isMouseOver and UnitIsConnected(unit)) then
 			element.value:SetText(T.ShortValue(cur))
-		elseif (cur ~= 0 and cur ~= max) or aCoreCDB["UnitframeOptions"]["alwayshp"] then
+		elseif max ~= 0 and ((cur ~= 0 and cur ~= max) or aCoreCDB["UnitframeOptions"]["alwayshp"]) then
 			element.value:SetText(T.ShortValue(cur).." "..T.hex_str(math.floor(cur/max*100+.5), 1, 1, 0))
 		else
 			element.value:SetText("")
