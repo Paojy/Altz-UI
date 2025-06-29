@@ -1112,8 +1112,10 @@ local HealerIndicatorAuraList = default_HealerIndicatorAuraList[G.myClass]
 ----          默认配置         ----
 -----------------------------------
 local Account_default_Settings = {
+	character_info = {},
 	money = {},
 	concentration = {},
+	mythic_info = {},
 }
 
 local Character_default_Settings = {	
@@ -1139,6 +1141,7 @@ local Character_default_Settings = {
 		MBCFalwaysshow = false,
 		MBCFpos = "BOTTOM",
 		minimapbutton = true,
+		mythicInfo = true,
 	},
 	ChatOptions = {
 		channelreplacement = true,
@@ -1394,6 +1397,13 @@ function T.LoadAccountVariables()
 			end
 		end
 	end
+	
+	if not aCoreDB.character_info[G.PlayerName] then
+		aCoreDB.character_info[G.PlayerName] = {}
+	end
+	
+	aCoreDB.character_info[G.PlayerName].class = G.myClass
+	aCoreDB.character_info[G.PlayerName].name = G.addon_colorStr..G.PlayerName.."|r"
 end
 
 -----------------------------------

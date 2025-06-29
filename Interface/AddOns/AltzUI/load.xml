@@ -34,6 +34,7 @@
 	<Script file="mods\panels\panels.lua"/>
 	<Script file="mods\panels\inspect_challenges.lua"/>
 	<Script file="mods\panels\portal_buttons.lua"/>
+	<Script file="mods\panels\mythic+.lua"/>
 	<Script file="mods\panels\craft.lua"/>
 	
 	<Include file="mods\unitframes\load.xml"/>
