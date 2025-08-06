@@ -1722,13 +1722,13 @@ local DungeonSearchButtons = {}
 
 local Dungeons = {
 	{mapID = 525, searchID = 371}, -- 水闸行动
-	{mapID = 500, searchID = 325}, -- 驭雷栖巢
-	{mapID = 506, searchID = 327}, -- 燧酿酒庄
-	{mapID = 504, searchID = 322}, -- 暗焰裂口
 	{mapID = 499, searchID = 324}, -- 圣焰隐修院
-	{mapID = 247, searchID = 140}, -- 暴富矿区！！
-	{mapID = 382, searchID = 266}, -- 伤逝剧场
-	{mapID = 370, searchID = 257}, -- 麦卡贡行动: 车间
+	{mapID = 378, searchID = 261}, -- 赎罪大厅
+	{mapID = 503, searchID = 323}, -- 艾拉-卡拉，回响之城
+	{mapID = 505, searchID = 326}, -- 破晨号
+	{mapID = 542, searchID = 381}, -- 奥尔达尼生态圆顶
+	{mapID = 391, searchID = 280}, -- 塔扎维什：琳彩天街
+	{mapID = 392, searchID = 281}, -- 塔扎维什：索·莉亚的宏图
 }
 
 local function LFGListAdvancedFiltersCheckAllDifficulties(enabled)
