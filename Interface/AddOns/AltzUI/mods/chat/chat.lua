@@ -182,7 +182,7 @@ end)
 --[[       -- 战网讯息和快速加入按钮 --             ]]--
 --====================================================--
 QuickJoinToastButton:ClearAllPoints()
-QuickJoinToastButton:SetPoint("LEFT", ChatFrame1.editBox, "LEFT", 5, 0)
+QuickJoinToastButton:SetPoint("BOTTOMLEFT", ChatFrame1.editBox, "TOPLEFT", 5, 0)
 QuickJoinToastButton.SetPoint = function() end
 
 ChatAlertFrame:ClearAllPoints()
