@@ -2,22 +2,15 @@
 
 local factionGroup = UnitFactionGroup("player")
 
-local factionID
-if factionGroup == "Horde" then
-    factionID = 467555
-elseif factionGroup == "Alliance" then
-    factionID = 467553
-end
-
 local Data = {
     [525] = 1216786, -- 水闸行动
-    [500] = 445443, -- 驭雷栖巢
-	[506] = 445440, -- 燧酿酒庄
-	[504] = 445441, -- 暗焰裂口
 	[499] = 445444, -- 圣焰隐修院
-	[247] = factionID, -- 暴富矿区！！
-	[382] = 354467, -- 伤逝剧场
-	[370] = 373274, -- 麦卡贡行动: 车间
+	[378] = 354465, -- 赎罪大厅
+	[503] = 445417, -- 艾拉-卡拉，回响之城
+	[505] = 445414, -- 破晨号
+	[542] = 1237215, -- 奥尔达尼生态圆顶
+	[391] = 367416, -- 塔扎维什：琳彩天街
+	[392] = 367416, -- 塔扎维什：索·莉亚的宏图
 }
 
 local function UpdateCooldownText(button)
