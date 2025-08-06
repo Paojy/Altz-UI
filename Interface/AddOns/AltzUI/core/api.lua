@@ -131,7 +131,7 @@ T.ResetClasscolors = function()
 end
 
 T.ResetBW =function()
-	if C_AddOns.IsAddOnLoaded("Bigwigs") and BigWigs3DB then
+	if C_AddOns.IsAddOnLoaded("Bigwigs") and BigWigs3DB and BigWigs3DB["namespaces"]["BigWigs_Plugins_Bars"] then
 		BigWigs3DB["namespaces"]["BigWigs_Plugins_Bars"]["profiles"]["Default"]["barStyle"] = "AltzUI"
 		BigWigs3DB["namespaces"]["BigWigs_Plugins_Bars"]["profiles"]["Default"]["fill"] = true
 		BigWigs3DB["namespaces"]["BigWigs_Plugins_Bars"]["profiles"]["Default"]["BigWigsAnchor_width"] = 150
