@@ -77,9 +77,10 @@ local EJ_init = function()
 		local perPlayerLoot = {}
 		local veryRareLoot = {}
 		local extremelyRareLoot = {}
-	
+		--print("---")
 		for i = 1, EJ_GetNumLoot() do
 			local itemInfo = C_EncounterJournal.GetLootInfoByIndex(i)
+			--print("			"..itemInfo.itemID..", --"..itemInfo.name)
 			if itemInfo.link then
 				local stats = C_Item.GetItemStats(itemInfo.link)
 				if FilterItemStat(stats) then
