@@ -34,7 +34,12 @@ G.fontFile = [[Interface\AddOns\AltzUI\media\fonts\]]
 G.textureFile = [[Interface\AddOns\AltzUI\media\]]
 G.iconFile = [[Interface\AddOns\AltzUI\media\icons\]]
 
-G.norFont = G.fontFile.."font.ttf"
+if G.Client == "ruRU" then
+	G.norFont = G.fontFile.."narrowfont.ttf"
+else
+	G.norFont = G.fontFile.."font.ttf"
+end
+
 G.numFont = G.fontFile.."number.ttf"
 G.symbols = G.fontFile.."PIZZADUDEBULLETS.ttf"
 G.plateFont = G.fontFile.."Infinity Gears.ttf"

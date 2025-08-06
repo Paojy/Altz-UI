@@ -11,6 +11,7 @@
 	
 	<Script file="locals\chinese.lua"/>	
 	<Script file="locals\twchinese.lua"/>
+	<Script file="locals\russian.lua"/>
 	<Script file="locals\english.lua"/>
 	
 	<Script file="updatelogs\chinese.lua"/>	
