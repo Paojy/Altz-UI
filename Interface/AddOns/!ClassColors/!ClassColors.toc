@@ -1,4 +1,4 @@
-## Interface: 110105, 110107, 110100
+## Interface: 110200
 ## Version: 8.0.0.1
 
 ## Title: !Class Colors
