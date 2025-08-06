@@ -2,6 +2,11 @@
 if G.Client ~= "zhTW" then return end
 
 L["UpdateLogs"] = {
+[[11.21
+更新以適配11.2內容。
+新增大秘境記錄功能。
+]],
+
 [[11.20
 團隊框架Private Aura圖標與點擊施法衝突修正。
 團隊框架治療邊角提示完善。

@@ -2,6 +2,11 @@
 if G.Client ~= "zhCN" then return end
 
 L["UpdateLogs"] = {
+[[11.21
+更新以适配11.2内容。
+新增大秘境记录功能。
+]],
+
 [[11.20
 团队框架Private Aura图标与点击施法冲突修正。
 团队框架治疗边角提示完善。

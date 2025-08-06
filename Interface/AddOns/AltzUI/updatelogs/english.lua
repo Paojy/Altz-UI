@@ -2,6 +2,11 @@
 if G.Client == "zhCN" or G.Client == "zhTW" then return end
 
 L["UpdateLogs"] = {
+[[11.21
+Update to adapt to 11.2 content.
+Added the function of recording the Mythic+ runs.
+]],
+
 [[11.20
 Raid frames Private Aura Icon and click casting conflict correction.
 Improvement of the raid frame healing indicators.
