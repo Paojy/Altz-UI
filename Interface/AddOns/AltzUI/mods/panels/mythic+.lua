@@ -9,7 +9,7 @@ local function GetKeyInfo(mapID, level)
 	local text
 	if mapID and level then
 		local name, _, _, icon = C_ChallengeMode.GetMapUIInfo(mapID)
-		text = string.format("%s%d%s", T.GetTexStr(icon), level, name)
+		text = string.format("%s%s%d%s", T.GetTexStr(525134), T.GetTexStr(icon), level, name)
 	else
 		text = string.format("%s%s", T.GetTexStr(525134), "?")
 	end
@@ -116,6 +116,7 @@ local function CreateCharacterFrame(playerName)
 	
 	f.left = T.createtext(f, "OVERLAY", 14, "OUTLINE", "LEFT")
 	f.left:SetPoint("LEFT", f, "LEFT", 0, 0)
+	f.left:SetSize(200, 20)
 	
 	f.right = T.createtext(f, "OVERLAY", 14, "OUTLINE", "RIGHT")
 	f.right:SetPoint("RIGHT", f, "RIGHT", 0, 0)
@@ -142,6 +143,8 @@ local function CreateCharacterFrame(playerName)
 			self:SetScript("OnEnter", function(self) 
 				GameTooltip:SetOwner(self, "ANCHOR_BOTTOMRIGHT", 5, 20)
 				GameTooltip:AddLine(playerName)
+				GameTooltip:AddLine(key_str)
+				GameTooltip:AddLine(" ")
 				for index, run in pairs(details) do
 					local name, _, _, icon = C_ChallengeMode.GetMapUIInfo(run.mapID)
 					local level = run.level
@@ -154,6 +157,9 @@ local function CreateCharacterFrame(playerName)
 		else
 			self:SetScript("OnEnter", function(self) 
 				GameTooltip:SetOwner(self, "ANCHOR_BOTTOMRIGHT", 5, 20)
+				GameTooltip:AddLine(playerName)
+				GameTooltip:AddLine(key_str)
+				GameTooltip:AddLine(" ")
 				GameTooltip:AddLine(playerName..L["无大秘境记录"])
 				GameTooltip:Show()
 			end)
