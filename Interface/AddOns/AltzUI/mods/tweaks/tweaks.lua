@@ -423,4 +423,11 @@ undress:SetScript("OnClick", function()
 	end
 end)
 
+--[[-----------------------------------------------------------------------------
+追踪任务
+-------------------------------------------------------------------------------]]
 
+T.RegisterInitCallback(function()
+	SetCVar("autoQuestProgress", "1")
+	SetCVar("autoQuestWatch", "1")
+end)
