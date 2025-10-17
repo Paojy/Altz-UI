@@ -683,7 +683,7 @@ local EditboxMultiLine_DB = function(parent, path)
 	end)
 	
 	box.button2:SetScript("OnClick", function()
-		self:SetText(T.ValueFromPath(aCoreCDB, path))
+		box.edit:SetText(T.ValueFromPath(aCoreCDB, path))
 		box.edit:ClearFocus()
 	end)
 	
