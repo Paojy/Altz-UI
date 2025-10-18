@@ -29,7 +29,7 @@ local statsInfo = {
 	{ key = "ITEM_MOD_VERSATILITY", name = ITEM_MOD_VERSATILITY, color = {1,1,0}},
 }
 
-local frame_width = 400
+local frame_width = 450
 local enchantformat = string.gsub(ENCHANTED_TOOLTIP_LINE, "%%s", "([^.]+)")
 local itemlevelfomat = string.gsub(ITEM_LEVEL, "%%d", "([^.]+)")
 
@@ -97,8 +97,8 @@ local function CreateEnchantSocket(bu, frame)
 	frame.Enchant.text = T.createtext(frame.Enchant, "OVERLAY", 12, "OUTLINE", "LEFT")
 	frame.Enchant.text:SetPoint("LEFT", frame.Enchant, "RIGHT", 0, 0)
 	frame.Enchant.text:SetTextColor(.12, 1, 0)
-	frame.Enchant.text:SetHeight(14)
-	frame.Enchant.text:SetPoint("RIGHT", bu, "RIGHT", -70, 0)
+	frame.Enchant.text:SetHeight(12)
+	frame.Enchant.text:SetPoint("RIGHT", bu, "RIGHT", -120, 0)
 end
 
 local function CreateSockets(bu)
@@ -312,13 +312,19 @@ local function UpdateEquipSlot(parent, bu)
 		local itemName, _, itemQuality, _, _, _, _, _, _, itemTexture, _, _, _, _, _, setID = C_Item.GetItemInfo(itemLink)
 		local level, enchant_str = GetTooltipData(parent.unit, bu.slot, itemLink)
 		
+		local upgradeString = ""
+		local upgradeInfo = C_Item.GetItemUpgradeInfo(itemLink)
+		if upgradeInfo and upgradeInfo.trackString and upgradeInfo.currentLevel then
+			upgradeString = string.format(" %s(%d)", upgradeInfo.trackString, upgradeInfo.currentLevel)
+		end
+		
 		bu.itemLevel = level or 0
 		
 		bu.icon:SetTexture(itemTexture)
 		bu.icon:Show()
 		bu.iconbg:Show()		
 		bu.mid:SetText(itemLink)
-		bu.right:SetText(level)
+		bu.right:SetText(level..upgradeString)
 		bu.sockets:SetItem(itemLink, bu.slot, enchant_str)
 		bu.stats:SetItemStats(itemLink)
 		
@@ -539,12 +545,16 @@ CharacterFrame:HookScript("OnShow", function()
 	EquipFrame.toggle:SetShown(not aCoreCDB.ItemOptions.equiplist)
 	
 	EquipFrame:RegisterEvent("PLAYER_EQUIPMENT_CHANGED")
-	EquipFrame:RegisterEvent("UPDATE_INVENTORY_DURABILITY")	
+	EquipFrame:RegisterEvent("UPDATE_INVENTORY_DURABILITY")
+	EquipFrame:RegisterEvent("ENCHANT_SPELL_COMPLETED")
+	EquipFrame:RegisterEvent("SOCKET_INFO_UPDATE")
 end)
 
 CharacterFrame:HookScript("OnHide", function()
 	EquipFrame:UnregisterEvent("PLAYER_EQUIPMENT_CHANGED")
-	EquipFrame:UnregisterEvent("UPDATE_INVENTORY_DURABILITY")	
+	EquipFrame:UnregisterEvent("UPDATE_INVENTORY_DURABILITY")
+	EquipFrame:UnregisterEvent("ENCHANT_SPELL_COMPLETED")
+	EquipFrame:UnregisterEvent("SOCKET_INFO_UPDATE")
 end)
 
 local ef = CreateFrame("Frame")
