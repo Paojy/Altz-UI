@@ -254,6 +254,7 @@ L["手动"] = "Manual"
 L["ROLL结果截图"] = "ROLL Result Screenshot"
 L["截图后关闭ROLL点框"] = "Close the Roll box after taking a screenshot"
 L["自动截图%s"] = "The roll result of %s has been screenshot taken"
+L["美化"] = "Embellishment"
 
 --====================================================--
 --[[               -- 单位框架 --                   ]]--
@@ -365,7 +366,10 @@ L["移除自定义能量"] = "Remove [%s] from Custom Nameplate Power List"
 L["添加自定义颜色"] = "Add [%s] to Custom Nameplate Color List"
 L["移除自定义颜色"] = "Remove |cff%02x%02x%02x[%s]|r from Custom Nameplate Color List"
 L["替换自定义颜色"] = "Replace |cff%02x%02x%02x[%s]|r from Custom Nameplate Color List"
+L["强制修改姓名板CVar"] = "Force modification of nameplate CVars (may conflict with other addons)"
 L["原生姓名板"] = "Blizzard Nameplate"
+L["姓名板横向分散"] = "nameplate Overlap Horizontal"
+L["姓名板纵向分散"] = "nameplate Overlap Vertical"
 
 --====================================================--
 --[[                 -- 鼠标提示 --                 ]]--

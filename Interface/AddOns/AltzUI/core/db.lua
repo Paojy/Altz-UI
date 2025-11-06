@@ -1322,7 +1322,7 @@ local Character_default_Settings = {
 		focus_color = {r = .5, g = .4, b = .9}, -- 导出、导入
 		threatcolor = true,
 		bar_onlyname = false, -- 友方只显示名字
-				
+		
 		-- 样式
 		bar_width = 90,-- 条形
 		bar_height = 8,
@@ -1346,6 +1346,11 @@ local Character_default_Settings = {
 		-- 自定义
 		customcoloredplates = {}, -- 导出、导入
 		custompowerplates = {}, -- 导出、导入
+		
+		forceNameplateCVar = false,
+		nameplateShowOnlyNames = false,
+		nameplateOverlapH = .8,
+		nameplateOverlapV = 1.1,
 	},
 	CombattextOptions = {
 		showreceivedct = true,

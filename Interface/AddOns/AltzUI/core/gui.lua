@@ -1248,13 +1248,13 @@ local PlateInnerframe = CreateInnerFrame(PlateOptions)
 
 -- 通用
 PlateInnerframe.common = CreateOptionPage("Nameplates Options common", T.split_words(L["一般"], L["设置"]), PlateInnerframe, "VERTICAL")
-T.CreateGUIOpitons(PlateInnerframe.common, "PlateOptions", 1, 17)
+T.CreateGUIOpitons(PlateInnerframe.common, "PlateOptions", 1, 16)
 
 -- 样式
 PlateInnerframe.style = CreateOptionPage("Nameplates Options style", L["样式"], PlateInnerframe, "VERTICAL")
-T.CreateGUIOpitons(PlateInnerframe.style, "PlateOptions", 18, 25)
+T.CreateGUIOpitons(PlateInnerframe.style, "PlateOptions", 17, 24)
 PlateInnerframe.style.option_y = PlateInnerframe.style.option_y - 150
-T.CreateGUIOpitons(PlateInnerframe.style, "PlateOptions", 26, 28)
+T.CreateGUIOpitons(PlateInnerframe.style, "PlateOptions", 25, 27)
 
 do
 	local ShouldShowNumber = function()
@@ -1281,11 +1281,11 @@ end
 
 -- 玩家姓名板
 PlateInnerframe.playerresource = CreateOptionPage("Player Resource Bar Options", L["玩家姓名板"], PlateInnerframe, "VERTICAL")
-T.CreateGUIOpitons(PlateInnerframe.playerresource, "PlateOptions", 29, 32)
+T.CreateGUIOpitons(PlateInnerframe.playerresource, "PlateOptions", 28, 31)
 
 -- 光环过滤列表
 PlateInnerframe.auralist = CreateOptionPage("Plate Options Aura", L["光环"], PlateInnerframe, "VERTICAL")
-T.CreateGUIOpitons(PlateInnerframe.auralist, "PlateOptions", 33, 33)
+T.CreateGUIOpitons(PlateInnerframe.auralist, "PlateOptions", 32, 32)
 
 PlateInnerframe.auralist.my_filter = T.CreateAuraListOption(PlateInnerframe.auralist, {"TOPLEFT", 20, -55}, 200,
 L["我施放的光环"], {"PlateOptions", "myplateauralist"}, nil, {"PlateOptions", "myfiltertype"})
@@ -1303,7 +1303,7 @@ end
 
 -- 自定义
 PlateInnerframe.custom = CreateOptionPage("Plate Options Custom", CUSTOM, PlateInnerframe, "VERTICAL")
-T.CreateGUIOpitons(PlateInnerframe.custom, "PlateOptions", 36, 36)
+T.CreateGUIOpitons(PlateInnerframe.custom, "PlateOptions", 35, 35)
 
 PlateInnerframe.custom.color = T.CreatePlateColorListOption(PlateInnerframe.custom,  {"TOPLEFT", 30, -55}, 200,
 L["自定义颜色"], {"PlateOptions", "customcoloredplates"})
@@ -1315,6 +1315,9 @@ PlateInnerframe.custom.power = T.CreatePlatePowerListOption(PlateInnerframe.cust
 L["自定义能量"], {"PlateOptions", "custompowerplates"})
 PlateInnerframe.custom.power.apply = T.PostUpdateAllPlates
 
+-- CVar
+PlateInnerframe.cvar = CreateOptionPage("Plate Options CVar", "CVar", PlateInnerframe, "VERTICAL")
+T.CreateGUIOpitons(PlateInnerframe.cvar, "PlateOptions", 36, 40)
 --====================================================--
 --[[             -- Combattext Options --              ]]--
 --====================================================--
@@ -1527,6 +1530,7 @@ function eventframe:ADDON_LOADED(arg1)
 	GUI.scale.pointself()
 	
 	T.ToggleMinimapButton()
+	T.ApplyForcedCvars()
 	
 	for _, func in next, G.Init_callbacks do
 		func()
