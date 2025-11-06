@@ -33,6 +33,101 @@ local frame_width = 450
 local enchantformat = string.gsub(ENCHANTED_TOOLTIP_LINE, "%%s", "([^.]+)")
 local itemlevelfomat = string.gsub(ITEM_LEVEL, "%%d", "([^.]+)")
 
+local Embellished_items = {
+	[222463] = true, -- 虹吸短剑
+	[219511] = true, -- 鸫羽裹腕
+	[219512] = true, -- 饱经风霜的锋面外衣
+	[222459] = true, -- 贝雷达尔的壁垒
+	[219502] = true, -- 肾上腺素激涌腰带
+	[222809] = true, -- 织造萤暮手套
+	[222810] = true, -- 织造萤暮便鞋
+	[222807] = true, -- 织造曙光之握
+	[222808] = true, -- 织造曙光之履
+	[215133] = true, -- 知己之玑
+	[219507] = true, -- 焖燃花粉半身甲
+	[219513] = true, -- 滚雷击爪
+	[219509] = true, -- 忙碌蜜蜂腰扣
+	[219508] = true, -- 强化的刚毛飞靴
+	[215134] = true, -- 开裂的宝石吊坠
+	[219501] = true, -- 暗坠臂铠
+	[219492] = true, -- 圣化的火炬手之握
+	[222458] = true, -- 圣化之步
+	[219489] = true, -- 团结之焰涉水靴
+}
+
+local Embellishments = {
+	[221938] = true, -- 隐匿混沌模组
+	[221939] = true,
+	[221940] = true,
+	[219504] = true, -- 蠕动装甲带
+	[219505] = true,
+	[219506] = true,
+	[219495] = true, -- 蒙福武器握柄
+	[219496] = true,
+	[219497] = true,
+	[222871] = true, -- 萤暮线内衬
+	[222872] = true,
+	[222873] = true,
+	[221941] = true, -- 能量重分配信标
+	[221942] = true,
+	[221943] = true,
+	[213771] = true, -- 棱彩虚无石
+	[213772] = true,
+	[213773] = true,
+	[226031] = true, -- 暗月徽记：盎溢
+	[226032] = true,
+	[226033] = true,
+	[226022] = true, -- 暗月徽记：扬升
+	[226023] = true,
+	[226024] = true,
+	[226028] = true, -- 暗月徽记：共生
+	[226029] = true,
+	[226030] = true,
+	[226025] = true, -- 暗月徽记：光辉
+	[226026] = true,
+	[226027] = true,
+	[222868] = true, -- 晖晨线内衬
+	[222869] = true,
+	[222870] = true,
+	[213774] = true, -- 囚获星光
+	[213775] = true,
+	[213776] = true,
+	[213768] = true, -- 元素焦镜
+	[213769] = true,
+	[213770] = true,
+	[221935] = true, -- 一袋便携手榴弹
+	[221936] = true,
+	[221937] = true,
+}
+
+local function GetEmbellishment(link)
+	local _, linkOptions = LinkUtil.ExtractLink(link)
+	local item = {strsplit(":", linkOptions)}
+	local itemID = tonumber(item[1])
+	
+	if Embellished_items[itemID] then
+		return L["美化"]
+	end
+	
+	local idx = 13
+	
+	local numBonusIDs = tonumber(item[idx])	
+	idx = idx + (numBonusIDs or 0) + 1
+	
+	local numModifiers = tonumber(item[idx])
+	if numModifiers then
+		for i = 1, numModifiers do
+			local offset = i*2
+			local modifierType = tonumber(item[idx+offset-1])
+			local modifierValue = tonumber(item[idx+offset])
+			if modifierType >= 43 and modifierType <= 57 and Embellishments[modifierValue] then
+				local itemName = C_Item.GetItemInfo(modifierValue)
+				return itemName or L["美化"]
+			end
+		end
+	end
+end
+
 local function GetTooltipData(unit, slot, itemLink)	
 	local data = C_TooltipInfo.GetInventoryItem(unit, slot, true)
 	
@@ -60,7 +155,31 @@ local function GetTooltipData(unit, slot, itemLink)
 		end
 	end
 	
+	local embellishment_str
+	
 	return level, enchant_str
+end
+
+local function IsCraftEquipment(link)
+	local _, linkOptions = LinkUtil.ExtractLink(link)
+	local item = {strsplit(":", linkOptions)}
+	
+	local idx = 13
+	
+	local numBonusIDs = tonumber(item[idx])	
+	idx = idx + (numBonusIDs or 0) + 1
+	
+	local numModifiers = tonumber(item[idx])
+	if numModifiers then
+		for i = 1, numModifiers do
+			local offset = i*2
+			local modifierType = tonumber(item[idx+offset-1])
+			local modifierValue = tonumber(item[idx+offset])
+			if modifierType == 38 then
+				return true
+			end
+		end
+	end
 end
 
 local function ShouldShowSecondHand(parent)
@@ -104,8 +223,9 @@ end
 local function CreateSockets(bu)
 	local frame = CreateFrame("Frame", nil, bu)
 	frame:SetSize(42, 14)
-	frame:SetPoint("LEFT", bu.mid, "RIGHT", 0, 0)
 	frame.Slots = {}
+	
+	frame:SetPoint("LEFT", bu.embellishmentText, "RIGHT", 0, 0)
 	
 	for i = 1, 3 do
 		local f = CreateFrame("Frame", nil, frame)
@@ -135,22 +255,29 @@ local function CreateSockets(bu)
 		CreateEnchantSocket(bu, frame)
 	end
 	
-	function frame:SetItem(item, slot_index, enchant_str)
+	function frame:SetItem(item, slot_index, enchant_str, embellishmentStr)
 		local numSockets = C_Item.GetItemNumSockets(item)	
 		local anchor = 0
+		
+		if embellishmentStr then
+			bu.embellishmentText:SetText(string.format("|cffff00ff[%s]|r", embellishmentStr))
+		else
+			bu.embellishmentText:SetText("")
+		end
 		
 		if numSockets > 0 then
 			for index, slot in ipairs(self.Slots) do
 				slot:SetShown(index <= numSockets)
+				slot.Slot:SetVertexColor(1, 1, 1)
 				
 				local gemID = C_Item.GetItemGemID(item, index)
 				local hasGem = gemID ~= nil
-		
+				
 				slot.Gem:SetShown(hasGem)
 				
 				if hasGem then
 					local gemItem = Item:CreateFromItemID(gemID)
-				
+					
 					if not gemItem:IsItemDataCached() then
 						slot.Gem:SetTexture()
 					end
@@ -166,8 +293,17 @@ local function CreateSockets(bu)
 				end
 			end
 		else
-			for index, slot in ipairs(self.Slots) do
-				slot:Hide()
+			if slot_index == 2 or slot_index == 11 or slot_index == 12 then
+				for index, slot in ipairs(self.Slots) do
+					slot:SetShown(index <= 2)
+					slot.Slot:SetVertexColor(1, 0, 0)
+				end
+				anchor = anchor + 14*2
+			else
+				for index, slot in ipairs(self.Slots) do
+					slot:Hide()
+					slot.Slot:SetVertexColor(1, 1, 1)
+				end
 			end
 		end
 		
@@ -182,7 +318,7 @@ local function CreateSockets(bu)
 				frame.Enchant.text:SetText(T.hex_str(T.split_words(NONE,ENCHANTS), .5, .5, .5))
 			end
 		end
-		
+				
 		frame:Show()
 	end
 	
@@ -267,6 +403,9 @@ local function CreateSlotButton(parent, index)
 	bu.mid = T.createtext(bu, "OVERLAY", 12, "OUTLINE", "LEFT")
 	bu.mid:SetPoint("LEFT", bu.icon, "RIGHT", 0, 0)
 	
+	bu.embellishmentText = T.createtext(bu, "OVERLAY", 12, "OUTLINE", "LEFT")
+	bu.embellishmentText:SetPoint("LEFT", bu.mid, "RIGHT", 0, 0)
+	
 	bu.right = T.createtext(bu, "OVERLAY", 12, "OUTLINE", "RIGHT")
 	bu.right:SetPoint("RIGHT", bu, "RIGHT", -50, 0)
 	
@@ -311,11 +450,14 @@ local function UpdateEquipSlot(parent, bu)
 	if itemLink then	
 		local itemName, _, itemQuality, _, _, _, _, _, _, itemTexture, _, _, _, _, _, setID = C_Item.GetItemInfo(itemLink)
 		local level, enchant_str = GetTooltipData(parent.unit, bu.slot, itemLink)
+		local embellishmentStr = GetEmbellishment(itemLink)
 		
 		local upgradeString = ""
 		local upgradeInfo = C_Item.GetItemUpgradeInfo(itemLink)
 		if upgradeInfo and upgradeInfo.trackString and upgradeInfo.currentLevel then
 			upgradeString = string.format(" %s(%d)", upgradeInfo.trackString, upgradeInfo.currentLevel)
+		elseif IsCraftEquipment(itemLink) then
+			upgradeString = string.format(" |cffff00ff%s|r", PROFESSIONS_CRAFTING)
 		end
 		
 		bu.itemLevel = level or 0
@@ -325,7 +467,7 @@ local function UpdateEquipSlot(parent, bu)
 		bu.iconbg:Show()		
 		bu.mid:SetText(itemLink)
 		bu.right:SetText(level..upgradeString)
-		bu.sockets:SetItem(itemLink, bu.slot, enchant_str)
+		bu.sockets:SetItem(itemLink, bu.slot, enchant_str, embellishmentStr)
 		bu.stats:SetItemStats(itemLink)
 		
 		if setID then		
@@ -530,7 +672,7 @@ EquipFrame:SetScript('OnEvent', function(self, event)
 				self.buttons[16]:SetShown(ShouldShowSecondHand(self))
 				UpdateAll(self)
 				in_progress = false
-			end)			
+			end)
 		end
 	elseif event == "UPDATE_INVENTORY_DURABILITY" then
 		UpdateDurability(self)
