@@ -228,7 +228,30 @@ end
 T.createVisibleDR = createVisibleDR
 
 --====================================================--
---[[                -- 标题/分割线 --                ]]--
+--[[               -- 强制修改Cvar --               ]]--
+--====================================================--
+local ForcedCvars = {}
+
+T.ApplyForcedCvars = function()
+	if not aCoreCDB.PlateOptions.forceNameplateCVar then return end
+	for key, path in pairs(ForcedCvars) do
+		local info = T.GetOptionInfo(path)
+		local value = T.ValueFromPath(aCoreCDB, path)
+		
+		if info.option_type == "cvar_check" then
+			if value then
+				SetCVar(info.key, info.arg1)
+			else
+				SetCVar(info.key, info.arg2)
+			end
+		else
+			SetCVar(info.key, value)
+		end	
+	end
+end
+
+--====================================================--
+--[[                -- 标题/分割线 --               ]]--
 --====================================================--
 local function CreateGUITitle(parent, text, line, color)
 	local fs = T.createtext(parent, "OVERLAY", 16, "OUTLINE", "LEFT")
@@ -389,6 +412,10 @@ local CVarCheckButton = function(parent, path)
 	local info = T.GetOptionInfo(path)
 	local bu = Checkbutton(parent, nil, info.text, info.tip)
 	
+	if info.store then
+		ForcedCvars[info.key] = path
+	end
+	
 	bu:SetScript("OnShow", function(self)
 		if GetCVar(info.key) == info.arg1 then
 			self:SetChecked(true)
@@ -404,6 +431,11 @@ local CVarCheckButton = function(parent, path)
 			else
 				SetCVar(info.key, info.arg2)
 			end
+			
+			if info.store then
+				T.ValueToPath(aCoreCDB, path, self:GetChecked())
+			end
+			
 			if info.apply then
 				info.apply()
 			end
@@ -851,13 +883,50 @@ local Slider_DB = function(parent, width, path)
 	frame.Slider:SetScript("OnValueChanged", function(self, getvalue)
 		T.ValueToPath(aCoreCDB, path, getvalue/multipler)
 		frame.RightText:SetText(getvalue..((multipler == 100 and "%") or ""))
-		if info.apply then info.apply() end
+		if info.apply then
+			info.apply()
+		end
 	end)
 	
 	return frame
 end
 T.Slider_DB = Slider_DB
 
+local CVarSlider = function(parent, width, path)
+	local info = T.GetOptionInfo(path)
+	
+	if info.store then
+		ForcedCvars[info.key] = path
+	end
+	
+	local multipler = (info.min < 1 and info.min > 0 and 100) or 1
+	
+	local frame = SliderWithSteppers(parent, width, info.text, nil, info.min*multipler, info.max*multipler, info.step*multipler, info.tip)
+	
+	frame.Slider:SetScript("OnShow", function(self)
+		local value = GetCVar(info.key)
+		self:SetValue(value*multipler)	
+		frame.RightText:SetText(floor(value*multipler)..((multipler == 100 and "%") or ""))
+	end)
+	
+	frame.Slider:SetScript("OnValueChanged", function(self, getvalue)
+		if not InCombatLockdown() or not info.secure then
+			SetCVar(info.key, getvalue/multipler)
+			
+			if info.store then
+				T.ValueToPath(aCoreCDB, path, getvalue/multipler)
+			end
+			
+			frame.RightText:SetText(getvalue..((multipler == 100 and "%") or ""))
+			if info.apply then
+				info.apply()
+			end
+		end
+	end)
+	
+	return frame
+end
+T.CVarSlider = CVarSlider
 --====================================================--
 --[[                 -- 取色按钮 --                 ]]--
 --====================================================--
@@ -1715,6 +1784,8 @@ local CreateGUIOpitons = function(parent, OptionCategroy, start_ind, end_ind)
 				obj = EditboxFrame_DB(parent, path)
 			elseif info.option_type == "cvar_check" then
 				obj = CVarCheckButton(parent, path)
+			elseif info.option_type == "cvar_slider" then
+				obj = CVarSlider(parent, "long", path)
 			elseif info.option_type == "multi_editbox" then
 				obj = EditboxMultiLine_DB(parent, path)
 			elseif info.option_type == "color" then
@@ -1745,7 +1816,7 @@ local CreateGUIOpitons = function(parent, OptionCategroy, start_ind, end_ind)
 			-- 水平调整
 			if info.option_type == "check" or info.option_type == "cvar_check"  then
 				x_offset = x_offset - 5
-			elseif info.option_type == "slider" then
+			elseif info.option_type == "slider" or info.option_type == "cvar_slider" then
 				x_offset = x_offset + 155
 			elseif info.option_type == "ddmenu" then
 				x_offset = x_offset + 155
@@ -1754,21 +1825,19 @@ local CreateGUIOpitons = function(parent, OptionCategroy, start_ind, end_ind)
 			
 			-- 缩进
 			if info.rely and (not info.width or info.width > 1) then 
-				if info.option_type == "slider" then
+				if info.option_type == "slider" or info.option_type == "cvar_slider" then
 					obj.LeftText:SetPoint("LEFT", obj.Slider, "LEFT", -155, 0)
-				end
-				
-				if info.option_type ~= "slider" then
+				else
 					x_offset = x_offset + 20
 				end
 			else
-				if info.option_type == "slider" then
+				if info.option_type == "slider" or info.option_type == "cvar_slider" then
 					obj.LeftText:SetPoint("LEFT", obj.Slider, "LEFT", -175, 0)
 				end
 			end
 			
 			-- 垂直调整
-			if info.option_type == "slider" then
+			if info.option_type == "slider" or info.option_type == "cvar_slider" then
 				y_offset = 10
 			elseif info.option_type == "ddmenu" then
 				y_offset = -4
