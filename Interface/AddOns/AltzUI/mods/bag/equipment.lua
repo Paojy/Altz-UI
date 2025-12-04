@@ -265,46 +265,70 @@ local function CreateSockets(bu)
 			bu.embellishmentText:SetText("")
 		end
 		
-		if numSockets > 0 then
+		if slot_index == 2 or slot_index == 11 or slot_index == 12 then
 			for index, slot in ipairs(self.Slots) do
-				slot:SetShown(index <= numSockets)
-				slot.Slot:SetVertexColor(1, 1, 1)
-				
-				local gemID = C_Item.GetItemGemID(item, index)
-				local hasGem = gemID ~= nil
-				
-				slot.Gem:SetShown(hasGem)
-				
-				if hasGem then
-					local gemItem = Item:CreateFromItemID(gemID)
+				slot:SetShown(index <= 2)
+				if index > numSockets then
+					slot.Slot:SetVertexColor(1, 0, 0)
+				else
+					slot.Slot:SetVertexColor(1, 1, 1)
 					
-					if not gemItem:IsItemDataCached() then
-						slot.Gem:SetTexture()
+					local gemID = C_Item.GetItemGemID(item, index)
+					local hasGem = gemID ~= nil
+					
+					slot.Gem:SetShown(hasGem)
+					
+					if hasGem then
+						local gemItem = Item:CreateFromItemID(gemID)
+						
+						if not gemItem:IsItemDataCached() then
+							slot.Gem:SetTexture()
+						end
+					
+						gemItem:ContinueOnItemLoad(function()
+							local gemIcon = C_Item.GetItemIconByID(gemID)
+							slot.Gem:SetTexture(gemIcon)
+						end)
 					end
-				
-					gemItem:ContinueOnItemLoad(function()
-						local gemIcon = C_Item.GetItemIconByID(gemID)
-						slot.Gem:SetTexture(gemIcon)
-					end)
-				end
-				
-				if index <= numSockets then
-					anchor = anchor + 14
 				end
 			end
+			
+			anchor = anchor + 14*2
 		else
-			if slot_index == 2 or slot_index == 11 or slot_index == 12 then
+			if numSockets > 0 then
 				for index, slot in ipairs(self.Slots) do
-					slot:SetShown(index <= 2)
-					slot.Slot:SetVertexColor(1, 0, 0)
+					slot:SetShown(index <= numSockets)
+					slot.Slot:SetVertexColor(1, 1, 1)
+					
+					local gemID = C_Item.GetItemGemID(item, index)
+					local hasGem = gemID ~= nil
+					
+					slot.Gem:SetShown(hasGem)
+					
+					if hasGem then
+						local gemItem = Item:CreateFromItemID(gemID)
+						
+						if not gemItem:IsItemDataCached() then
+							slot.Gem:SetTexture()
+						end
+					
+						gemItem:ContinueOnItemLoad(function()
+							local gemIcon = C_Item.GetItemIconByID(gemID)
+							slot.Gem:SetTexture(gemIcon)
+						end)
+					end
+					
+					if index <= numSockets then
+						anchor = anchor + 14
+					end
 				end
-				anchor = anchor + 14*2
 			else
 				for index, slot in ipairs(self.Slots) do
 					slot:Hide()
 					slot.Slot:SetVertexColor(1, 1, 1)
 				end
 			end
+		
 		end
 		
 		if bu.enchant then
