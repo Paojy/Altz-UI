@@ -2,6 +2,14 @@
 if G.Client == "zhCN" or G.Client == "zhTW" then return end
 
 L["UpdateLogs"] = {
+[[11.22
+Update to align with the content of 11.27.
+The equipment list displays information such as upgrades, embellishments, and available gem slots.
+Enable the automatic tracking task function.
+Add nameplate Cvar-related options (default off).
+The auction house interface can now be dragged.
+]],
+
 [[11.21
 Update to adapt to 11.2 content.
 Added the function of recording the Mythic+ runs.
