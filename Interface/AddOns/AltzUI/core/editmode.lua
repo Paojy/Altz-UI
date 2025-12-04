@@ -36,7 +36,7 @@ local EDIT_MODE_ALTZ_SYSTEM_MAP = {
 			},
 			anchorInfo = {
 				point = "BOTTOM",
-				relativeTo = "MainMenuBar",
+				relativeTo = "MainActionBar",
 				relativePoint = "TOP",
 				offsetX = 0,
 				offsetY = 3,
@@ -55,7 +55,7 @@ local EDIT_MODE_ALTZ_SYSTEM_MAP = {
 			},
 			anchorInfo = {
 				point = "BOTTOMRIGHT",
-				relativeTo = "MainMenuBar",
+				relativeTo = "MainActionBar",
 				relativePoint = "BOTTOMLEFT",
 				offsetX = -5,
 				offsetY = 0,
@@ -75,7 +75,7 @@ local EDIT_MODE_ALTZ_SYSTEM_MAP = {
 			},
 			anchorInfo = {
 				point = "BOTTOMLEFT",
-				relativeTo = "MainMenuBar",
+				relativeTo = "MainActionBar",
 				relativePoint = "BOTTOMRIGHT",
 				offsetX = 5,
 				offsetY = 0,

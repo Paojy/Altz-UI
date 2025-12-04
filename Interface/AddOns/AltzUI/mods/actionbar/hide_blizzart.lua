@@ -5,18 +5,16 @@ local scripts = {
 }
 
 local framesToHide = {
-	MainMenuBar.ActionBarPageNumber,
-	MainMenuBar.BorderArt,
-	MainMenuBar.EndCaps,
-	MainMenuBar.Background,
+	MainActionBar.ActionBarPageNumber,
+	MainActionBar.BorderArt,
+	MainActionBar.EndCaps,
 	StatusTrackingBarManager,
 }
 
 local framesToDisable = {
-	MainMenuBar.ActionBarPageNumber,
-	MainMenuBar.BorderArt,
-	MainMenuBar.EndCaps,
-	MainMenuBar.Background,
+	MainActionBar.ActionBarPageNumber,
+	MainActionBar.BorderArt,
+	MainActionBar.EndCaps,
 	StatusTrackingBarManager,
 }
 

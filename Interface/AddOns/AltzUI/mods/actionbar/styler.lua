@@ -172,16 +172,11 @@ T.RegisterInitCallback(function()
 	end)
 end)
 
--- 禁止创建竖线
-MainMenuBar.UpdateDividers = nil
-MainMenuBar.HorizontalDividersPool:ReleaseAll();
-MainMenuBar.VerticalDividersPool:ReleaseAll();
-
 --====================================================--
 --[[                 -- Fader --                    ]]--
 --====================================================--
 local actionbars = {
-	"MainMenuBar",
+	"MainActionBar",
 	"MultiBarBottomLeft",
 	"MultiBarBottomRight",
 	"MultiBarLeft",
