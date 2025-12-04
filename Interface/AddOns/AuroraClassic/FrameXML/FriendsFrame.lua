@@ -56,7 +56,7 @@ tinsert(C.defaultThemes, function()
 		end
 	end
 	FriendsFrameIcon:Hide()
-	B.StripTextures(IgnoreListFrame)
+	--B.StripTextures(IgnoreListFrame)
 
 	local INVITE_RESTRICTION_NONE = 9
 	hooksecurefunc("FriendsFrame_UpdateFriendButton", function(button)
@@ -103,14 +103,14 @@ tinsert(C.defaultThemes, function()
 	bg:SetPoint("BOTTOMRIGHT", -2, 2)
 	bg:SetBackdropColor(0, .6, 1, .25)
 
-	local broadcastButton = FriendsFrameBattlenetFrame.BroadcastButton
-	broadcastButton:SetSize(20, 20)
-	broadcastButton:GetNormalTexture():SetAlpha(0)
-	broadcastButton:GetPushedTexture():SetAlpha(0)
-	B.Reskin(broadcastButton)
-	local newIcon = broadcastButton:CreateTexture(nil, "ARTWORK")
-	newIcon:SetAllPoints()
-	newIcon:SetTexture("Interface\\FriendsFrame\\BroadcastIcon")
+	--local broadcastButton = FriendsFrameBattlenetFrame.BroadcastButton
+	--broadcastButton:SetSize(20, 20)
+	--broadcastButton:GetNormalTexture():SetAlpha(0)
+	--broadcastButton:GetPushedTexture():SetAlpha(0)
+	--B.Reskin(broadcastButton)
+	--local newIcon = broadcastButton:CreateTexture(nil, "ARTWORK")
+	--newIcon:SetAllPoints()
+	--newIcon:SetTexture("Interface\\FriendsFrame\\BroadcastIcon")
 
 	local broadcastFrame = FriendsFrameBattlenetFrame.BroadcastFrame
 	B.StripTextures(broadcastFrame)
@@ -132,10 +132,10 @@ tinsert(C.defaultThemes, function()
 	B.ReskinPortraitFrame(FriendsFrame)
 	B.Reskin(FriendsFrameAddFriendButton)
 	B.Reskin(FriendsFrameSendMessageButton)
-	B.Reskin(FriendsFrameIgnorePlayerButton)
-	B.Reskin(FriendsFrameUnsquelchButton)
+	--B.Reskin(FriendsFrameIgnorePlayerButton)
+	--B.Reskin(FriendsFrameUnsquelchButton)
 	B.ReskinTrimScroll(FriendsListFrame.ScrollBar)
-	B.ReskinTrimScroll(IgnoreListFrame.ScrollBar)
+	--B.ReskinTrimScroll(IgnoreListFrame.ScrollBar)
 	B.ReskinTrimScroll(WhoFrame.ScrollBar)
 	B.ReskinTrimScroll(FriendsFriendsFrame.ScrollBar)
 	B.ReskinDropDown(FriendsFrameStatusDropdown)
@@ -171,9 +171,9 @@ tinsert(C.defaultThemes, function()
 		whoBg:SetPoint("BOTTOMRIGHT", WhoFrameEditBoxInset, -1, 1)
 	end
 
-	for i = 1, 3 do
-		B.StripTextures(_G["FriendsTabHeaderTab"..i])
-	end
+	--for i = 1, 3 do
+	--	B.StripTextures(_G["FriendsTabHeaderTab"..i])
+	--end
 
 	WhoFrameWhoButton:SetPoint("RIGHT", WhoFrameAddFriendButton, "LEFT", -1, 0)
 	WhoFrameAddFriendButton:SetPoint("RIGHT", WhoFrameGroupInviteButton, "LEFT", -1, 0)
