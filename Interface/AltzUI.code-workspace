@@ -1,0 +1,10 @@
+{
+	"folders": [
+		{
+			"path": "AddOns/AltzUI"
+		}
+	],
+	"settings": {
+		"kiroAgent.configureMCP": "Disabled"
+	}
+}
